@@ -172,6 +172,14 @@ The user asked for implementation to be finished before the Mac so Mac time goes
 
 Calibration on the iPhone: feature-print distance scale, registration limits, item/person thresholds, settle times. Object-matching upgrades researched (DINOv2-S, ALIKED+LightGlue, OpenCV) need a model download go-ahead; see PROGRESS.
 
+## Later features requested by the user (2026-10-09) — all on-device, free, offline
+
+- [ ] **V09 — Colour.** Name the colour at the centre of the camera view from pixels in code (not the model); compare two items. Exit: named colours under room lighting, honest "can't tell" in dim light.
+- [ ] **V10 — Lights on/off.** ARKit light estimate (ambient intensity) plus brightness by region: "the lights are off", "the lamp on your left is on". Exit: on/off and lamp cases in real rooms.
+- [ ] **V11 — Money.** Vision text recognition of printed denominations plus colour/size cues; same "sure, or say so and ask to flip it" rule as items; Saudi riyal first. Exit: every note, both sides, folded and partly covered; never a confident wrong value.
+- [ ] **V12 — Supermarket products.** Built-in barcode detection plus label reading; product names from an offline product list on the phone (licence to check, e.g. Open Food Facts ODbL). Exit: barcode and label cases offline.
+- [ ] **E15 — Quick actions by gesture and word.** One gesture or one word each for describe, read text, colour, money, find my things, lights: VoiceOver Magic Tap (two-finger double-tap), the iPhone Action Button, Back Tap, and short spoken words. Fold into the Mac-day design pass. Exit: each action reachable in one step with VoiceOver on.
+
 ## Completion rule
 
 Every implementation completion entry must name the adapted upstream/API, exact source/release, changed files, new integration behavior, test command/result/log, and remaining device limitations. Update PROGRESS and TODO at the same time. If testing is deferred, leave the implementation task unchecked and say "implemented, verification pending" in PROGRESS.
