@@ -28,9 +28,9 @@ Odds: the first home slice (own iPhone, own home: hazard cues, user-confirmed or
 | FR-06 | One word ledger: engine charges at decision time, `readScene` charges its own `narrationBudget`. Make the engine the owner; add `release(key:)` for undelivered items. | E10 | partial: release(key) added; single ledger open |
 | FR-07 | Offer lifecycle: answer window measured from when the offer is spoken; withdraw without decline on mobility interruption, room change or out-of-band hazard. | E12 | done in source: window from spoken time; room change withdraws without decline |
 | FR-08 | Visit counting: dwell time and last-visit date (M12 asks for last visit); a doorway flicker must not inflate visits. | M12 | flicker/blip done in source (2 s settle, visit continues); last-visit date open |
-| FR-09 | Ask the user about Git; several sessions share the tree with no rollback. | process | asked |
-| FR-10 | Archive historical layers of PROGRESS/TODO/TASKS; task counts differ between places (71 vs 74). | process | open |
-| FR-11 | With an install go-ahead, the swift.org Windows toolchain could compile/test BlindCore here (Foundation-only; check corelibs differences such as `folding`). | Q02 | needs user decision |
+| FR-09 | Ask the user about Git; several sessions share the tree with no rollback. | process | done: Git initialised, private GitHub remote |
+| FR-10 | Archive historical layers of PROGRESS/TODO/TASKS; task counts differ between places (71 vs 74). | process | done: PROGRESS/TODO shortened, history in research/ARCHIVE_TRACKERS_2026-10-08.md |
+| FR-11 | With an install go-ahead, the swift.org Windows toolchain could compile/test BlindCore here (Foundation-only; check corelibs differences such as `folding`). | Q02 | done differently: BlindCore compiled and tested in a Linux Swift 6.2 container (235/235) |
 | FR-12 | Room identity/localisation: one world map per home with room polygons in that frame; bounded start-up recovery across the home's maps; user confirmation as fallback. | O02,O09 | open |
 | FR-13 | Body heading: use ARKit translation over the last ~2 m as body heading while walking; compare with camera yaw to notice mount slip; confirm at landmarks. | O03 | open |
 | FR-14 | On-device model quality: Q09 through the relay first, then the same frames on device (local vs cloud); keep Vision fallback; length from the engine reservation. | V01,Q09 | open |

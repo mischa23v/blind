@@ -1,6 +1,42 @@
 # Mac mini handoff
 
-**Current transfer checkpoint — 2026-10-08:** start with [CONTINUATION_HANDOFF](research/CONTINUATION_HANDOFF.md). The user requested a pause. Latest recorded suite has 39 passing checks, but subsequent changes are untested; 22 hosted native tests, six UI tests and expanded package tests await Apple execution. The full minimum is unfinished. Use the newest source archive containing that handoff. Earlier counts below describe historical checkpoints; setup commands remain preparation for the user's Mac testing go-ahead.
+## Mac day — start here (2026-10-09)
+
+**Get the code:** `git clone https://github.com/mischa23v/blind.git` (private). No archive is needed any more. `server/.env` (developer API keys) is not in Git; it is not needed on the Mac. The Anthropic test key pasted in chat on 2026-10-09 is for one week; revoke it in the Anthropic console afterwards.
+
+**Where things stand:**
+- **BlindCore** (all decision logic, matching rules, safety checks): builds with Swift 6.2 and **all 235 XCTests pass** in a Linux container (`artifacts/windows-stage/swift-test-3.log`), including 8 walking scenarios on the sourced OAS apartment plan (transcripts in `artifacts/windows-stage/home-walk-transcript-*.txt`).
+- **iOS app files** pass a Swift syntax check only. The app target has **never been compiled**; expect a round of small fixes. An independent review already fixed the clearest issues.
+- **Node relay/tools:** 54/54.
+- Rules to keep (see AGENTS.md): free on-device model only; nothing leaves the phone; spatial safety rule; identity by image comparison, never by the model; speed first; minimum words while moving.
+
+**Order for the first session:**
+1. `node tools/mac-preflight.mjs --multimodal`, then `npm ci --ignore-scripts`, then `npm run mac:setup -- --multimodal --ui` (Xcode 27 / iOS 27 SDK). Fix compile errors until BlindCore, BlindMemory and the app build and their tests pass. Also build without `--multimodal` (Vision fallback).
+2. On the iPhone 18 Pro Max, measure the **built-in model**: time to first words and total, with the compact guide prompt (`BlindCore/Sources/BlindCore/Resources/guide-prompt.txt`), using the existing signposts in Instruments.
+3. Implement **speaking the first sentence early** (left for the Mac because the API needs checking): use the Foundation Models streaming response in `LocalImageAssistant`; as each complete sentence arrives, run `SpatialClaimGuard` on that sentence, keep within the word reservation, check the view is still current, and pass it to `Feedback`; stop the stream if the view, goal or room changes.
+4. **Your eyes-open walk** (you, not your brother): scan two rooms; walk between them; check room recognition and the first-visit offer; "this is my cup" (turn it) then "where is my cup" from a different spot; "where is the exit sign" on a printed sign; a chair placed in the path; restart the app in a room and check it asks before giving directions; open Settings › Saved memory and delete an item and a room.
+5. **Calibrate with your real rooms and objects** (values are placeholders until then):
+   - `ios/BlindAssist/RoomRecall.swift`: `maxDistance` (feature-print scale), `borderline`, `verifiedScore`, the registration limits in `registers`, `learnInterval`.
+   - `BlindCore/.../ItemAppearanceMatch.swift`: `acceptDistance`, `similarDistance`, `margin` (try two similar cups).
+   - `BlindCore/.../RoomRecognizer.swift`: `strongImage`, `strongFurniture`, `strongLayout`, `competitorMargin`.
+   - `ItemAppearance.swift`: `newViewDistance`; `NavigationModel` learning views (4) and timeout (25 s).
+   - `GuidanceCadence` milestones (5/3/2/1 m), `BodyHeadingEstimator.minWalkDistance` (1.5 m), room settle time (2 s), answer window (5 s), offer window (14 s).
+
+**Design pass (VoiceOver reads every word on screen when he swipes):**
+- Shorten every on-screen help paragraph to a few words (Guide, Ask, Settings).
+- Say "From the camera:" at most once, and not at all once the chest mount is set.
+- Consider dropping "metres" while walking ("Door: ahead, 2"), keeping it when standing.
+- Check offer and question wording with your brother; review the Arabic phrasing.
+
+**Decided not to build:** family-phone detection and exact face recognition (dropped 2026-10-09). The consent people registry exists but is not wired. **Needs a decision later:** a bundled object detector for "where is the fork" (today: text and people), and DINOv2-S / ALIKED+LightGlue for stronger matching (on-device, need a download go-ahead).
+
+**Privacy check on device:** the app build has no picture-sending path (cloud scene request only with the developer flag `BLIND_DEVELOPER_CLOUD`, never set by the project generator). Confirm in Settings that no scene-service fields appear.
+
+---
+
+## Earlier handoff notes (history)
+
+**Transfer checkpoint — 2026-10-08:** start with [CONTINUATION_HANDOFF](research/CONTINUATION_HANDOFF.md). The user requested a pause. Latest recorded suite has 39 passing checks, but subsequent changes are untested; 22 hosted native tests, six UI tests and expanded package tests await Apple execution. The full minimum is unfinished. Use the newest source archive containing that handoff. Earlier counts below describe historical checkpoints; setup commands remain preparation for the user's Mac testing go-ahead.
 
 This is a development prototype for supervised evaluation. The Mac builds the iPhone app; the iPhone supplies camera, depth, motion and Bluetooth. No provider account is needed for offline monitoring, maps, text recognition or deterministic descriptions.
 
