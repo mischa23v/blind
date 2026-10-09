@@ -36,7 +36,8 @@ final class NavigationTests: XCTestCase {
     }
     func testMotionAndInformationBudget() {
         var policy = AttentionPolicy()
-        for i in 0..<40 { policy.observe(camera: Point3(0, 1, 0), at: Double(i) * 0.1, tracking: true) }
+        // i / 10 gives exactly 3.9 for the last sample; i * 0.1 would land just after it.
+        for i in 0..<40 { policy.observe(camera: Point3(0, 1, 0), at: Double(i) / 10, tracking: true) }
         XCTAssertTrue(policy.stationary)
         XCTAssertTrue(policy.permitsAmbient(detail: .minimal, urgent: false, now: 3.9))
         XCTAssertFalse(policy.permitsAmbient(detail: .detailed, urgent: true, now: 3.9))

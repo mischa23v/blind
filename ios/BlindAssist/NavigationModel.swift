@@ -118,6 +118,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var userConfirmedRoomID: String?
     private var establishedRoomHistory: [String] = []
     private var leftRoomID: String?
+    /// Basis of the current recognised room; pictures are learned only from trusted clues.
+    private var recognizedBasis: [String] = []
     private var roomQuestionCandidate: InformationCandidate?
     private var bodyHeadingEstimator = BodyHeadingEstimator()
     private var mountSlipAnnounced = false
@@ -186,7 +188,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             items = saved
         }
         places.currentCoordinate = { [weak self] in
-            self?.outdoor.location.map { (latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude) }
+            (self?.outdoor.coarseLocation ?? self?.outdoor.location).map { (latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude) }
         }
         for publisher in [places.objectWillChange, indoor.objectWillChange, outdoor.objectWillChange, mapping.objectWillChange, journeys.objectWillChange, voice.objectWillChange, survey.objectWillChange, visualStairs.objectWillChange, peopleTracking.objectWillChange] {
             publisher.sink { [weak self] _ in self?.objectWillChange.send() }.store(in: &subscriptions)
@@ -233,7 +235,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         guard supported else { message = "This device does not support LiDAR scene depth. You can try simulation."; return }
         let id = UUID(); requestID = id
         switch AVCaptureDevice.authorizationStatus(for: .video) {
-        case .authorized: launchWithNearbyPlace()
+        case .authorized: outdoor.requestCoarseLocation(); launchWithNearbyPlace()
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
                 DispatchQueue.main.async {
@@ -250,7 +252,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         recognizedPlace = nil
         // After any (re)start the room is unknown until freshly established.
         recognizedRoomID = nil; alignedRoomID = nil; userConfirmedRoomID = nil; leftRoomID = nil
-        roomQuestionCandidate = nil; roomRecognizer.reset(); bodyHeadingEstimator.reset()
+        roomQuestionCandidate = nil; roomRecognizer.reset(); bodyHeadingEstimator.reset(); recognizedBasis = []
+        // World yaw restarts with each session, so view-direction baselines start fresh too.
+        changeDetector = SceneChangeDetector()
         if map == nil { awaitingPlace = nil; placeRecovery.reset() }
         visualStairs.reset()
         survey.reset()
@@ -432,6 +436,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     func scanPlace(name: String, compare: Bool = false) {
         guard running, !simulation, !places.scanning else { message = "Start the live camera first."; return }
         guard !compare || recognizedPlace != nil else { message = "Recognize a saved place before comparing."; return }
+        outdoor.requestCoarseLocation()
         mapping.stop(); journeys.breakTracking(); fixedBodyMount = false; indoor.invalidatePosition(); peopleTracking.reset()
         visualStairs.reset()
         invalidateReturn(); cancelDescription(); voice.cancel(); detector.reset(); feedback.stop()
@@ -449,7 +454,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             placeRecoveryQuestion = ""
             indoor.invalidatePosition(); launch(map: map)
             message = arabic ? "جارٍ التحقق من \(place.name). ابق ثابتاً ووجّه الكاميرا ببطء إلى معالم قريبة إن كان ذلك مريحاً." : "Checking \(place.name). Stay still and slowly point the camera at nearby landmarks if comfortable."
-        } catch { message = "Saved place could not be loaded." }
+        } catch {
+            message = "Saved place could not be loaded."
+            if !running { launch() }
+        }
     }
     func continueWithoutPlaceMatch() {
         guard running, !simulation, supported, !places.scanning,
@@ -1011,9 +1019,9 @@ extension NavigationModel {
     }
 
     /// Start by trying the saved place nearest to the phone's coarse location (it only narrows which
-    /// map to try). With no location and a single saved place, try that one. A failed match stays unresolved.
+    /// map to try). A failed match stays unresolved.
     private func launchWithNearbyPlace() {
-        let here = outdoor.location
+        let here = outdoor.coarseLocation ?? outdoor.location
         let candidates = places.places.map { place -> PlaceCandidate in
             var distance: Double?
             if let here, let latitude = place.latitude, let longitude = place.longitude {
@@ -1022,7 +1030,8 @@ extension NavigationModel {
             return PlaceCandidate(placeID: place.id.uuidString, name: place.name, distanceMetres: distance)
         }
         let nearby = RoomRecognizer.nearbyPlaces(candidates)
-        let choice = nearby.first(where: { $0.distanceMetres != nil }) ?? (places.places.count == 1 ? nearby.first : nil)
+        // Only a measured nearby place is tried; without a location the room is established by clues instead.
+        let choice = nearby.first(where: { $0.distanceMetres != nil })
         if let choice, let place = places.places.first(where: { $0.id.uuidString == choice.placeID }) { recognize(place) }
         else { launch() }
     }
@@ -1064,31 +1073,43 @@ extension NavigationModel {
         let image = frame.capturedImage
         let sector = Self.viewSector(currentBodyForward() ?? observation.forward)
         let established = alignedRoomID ?? recognizedPlace.map { "place:\($0.id.uuidString)" } ?? recognizedRoomID
-        if let established { roomRecall.learn(room: established, image: image, now: now, sector: sector) }
+        // Learn pictures only when the room came from a map match or the person's answer, so a wrong
+        // guess from appearance never teaches itself.
+        let trusted = alignedRoomID != nil || recognizedPlace != nil || recognizedBasis.contains { $0.hasPrefix("worldMap") || $0.hasPrefix("user") }
         var candidates = Array(companion.memory.rooms.keys.sorted().prefix(12))
         if let established, !candidates.contains(established) { candidates.append(established) }
         recallInFlight = true
-        roomRecall.evidence(image: image, candidates: candidates) { [weak self] evidence, texts in
+        roomRecall.evidence(image: image, candidates: candidates) { [weak self] evidence, view in
             guard let self else { return }
             self.recallInFlight = false
+            if let established, trusted { self.roomRecall.learn(room: established, view: view, image: image, now: now, sector: sector) }
+            let texts = view.texts
             var clues = evidence
             if let room = self.alignedRoomID { clues.append(.worldMapMatched(roomID: room)) }
-            if let place = self.recognizedPlace { clues.append(.worldMapMatched(roomID: "place:\(place.id.uuidString)")) }
+            else if let place = self.recognizedPlace { clues.append(.worldMapMatched(roomID: "place:\(place.id.uuidString)")) }
             if let confirmed = self.userConfirmedRoomID { clues.append(.userConfirmed(roomID: confirmed)); self.userConfirmedRoomID = nil }
+            // Walking out of a room through its only mapped door is one clue for the room beyond it.
             if let left = self.leftRoomID {
-                clues += self.connectedRooms(from: left).map { RoomEvidence.movedThrough(fromRoomID: left, toRoomID: $0) }
+                let beyond = self.connectedRooms(from: left)
+                if beyond.count == 1 { clues.append(.movedThrough(fromRoomID: left, toRoomID: beyond[0])) }
             }
             switch self.roomRecognizer.decide(clues, at: now) {
-            case .established(let room, _):
-                if self.alignedRoomID == nil && self.recognizedPlace == nil { self.recognizedRoomID = room }
-                if room != self.leftRoomID { self.leftRoomID = nil }
+            case .established(let room, let basis):
+                if self.alignedRoomID == nil && self.recognizedPlace == nil {
+                    if let previous = self.recognizedRoomID, previous != room { self.leftRoomID = previous }
+                    self.recognizedRoomID = room; self.recognizedBasis = basis
+                }
+                if self.leftRoomID == room { self.leftRoomID = nil }
                 self.roomQuestionCandidate = nil
             case .ask(let room):
                 self.askRoom([room], now: now)
             case .askWhich(let rooms):
                 self.askRoom(rooms, now: now)
             case .unknown:
-                break
+                // Leaving a known room: remember it so the next room can use the movement clue.
+                if let previous = self.recognizedRoomID, self.alignedRoomID == nil, self.recognizedPlace == nil {
+                    self.leftRoomID = previous
+                }
             }
             // Relevant changes in an established room: newcomers, people no longer in view, new signs.
             let current = self.alignedRoomID ?? self.recognizedPlace.map { "place:\($0.id.uuidString)" } ?? self.recognizedRoomID
@@ -1102,9 +1123,10 @@ extension NavigationModel {
 
     /// "Is this your bedroom?" — or, for look-alike rooms, "Is this your bedroom or your brother's room?"
     private func askRoom(_ rooms: [String], now: Double) {
-        guard roomQuestionCandidate == nil, let first = rooms.first, first != recognizedRoomID else { return }
-        let names = rooms.prefix(2).compactMap { companion.memory.rooms[$0]?.name }
-        guard let firstName = names.first else { return }
+        guard roomQuestionCandidate == nil else { return }
+        let named = rooms.prefix(2).compactMap { id in companion.memory.rooms[id]?.name.map { (id: id, name: $0) } }
+        guard let first = named.first?.id, let firstName = named.first?.name, first != recognizedRoomID else { return }
+        let names = named.map(\.name)
         let text: String
         if names.count == 2 {
             text = arabic ? "هل هذه \(names[0]) أم \(names[1])؟ قل نعم إن كانت \(names[0])." : "Is this your \(names[0]) or your \(names[1])? Say yes if it is your \(names[0])."
@@ -1191,7 +1213,7 @@ extension NavigationModel {
         let image = frame.capturedImage, arabic = self.arabic, facing = currentBodyForward()
         Task.detached(priority: .userInitiated) { [weak self] in
             let found = try? VisionService.locate(target: target, image: image, orientation: .right, arabic: arabic)
-            await MainActor.run {
+            await MainActor.run { [weak self] in
                 guard let self else { return }
                 if let found, let point = DepthSampler.worldPoint(from: frame, uprightX: found.x, uprightY: found.y),
                    let measured = SpatialFacts.relation(from: observation.camera, facing: facing ?? observation.forward, to: point) {
@@ -1317,4 +1339,27 @@ extension NavigationModel {
         }
         return true
     }
+}
+
+// MARK: - Saved memory review (privacy: see and delete everything the phone remembers)
+extension NavigationModel {
+    var savedItems: [RememberedItem] { items.items }
+    func itemViewCount(_ item: RememberedItem) -> Int { itemAppearance.viewCount(item.key) }
+    func forgetItem(_ item: RememberedItem) {
+        items.forget(item.name); itemAppearance.forget(item.key); persistItems(); objectWillChange.send()
+    }
+    var savedRooms: [(id: String, name: String, visits: Int)] {
+        companion.memory.rooms.map { (id: $0.key, name: $0.value.name ?? (arabic ? "غرفة دون اسم" : "Unnamed room"), visits: $0.value.visits) }
+            .sorted { $0.name < $1.name }
+    }
+    /// Removes the room's saved pictures, fingerprints and furniture labels; the room stays known.
+    func forgetRoomPictures(_ id: String) { roomRecall.forget(room: id); objectWillChange.send() }
+    /// Removes everything about the room: pictures, visits and its name.
+    func forgetRoom(_ id: String) {
+        roomRecall.forget(room: id); companion.memory.forgetRoom(id); changeDetector.forgetRoom(id); persistCompanion()
+        if recognizedRoomID == id { recognizedRoomID = nil }
+        objectWillChange.send()
+    }
+    var learnedHints: [LearnedHint] { companion.memory.hints }
+    func removeHint(_ id: String) { companion.memory.removeHint(id: id); persistCompanion(); objectWillChange.send() }
 }

@@ -10,8 +10,9 @@ final class RoomRecognizerTests: XCTestCase {
         let unreadable = PlaceCandidate(placeID: "school", name: "School", distanceMetres: .nan)
         let unnamed = PlaceCandidate(placeID: "", name: "Blank", distanceMetres: 5)
         let all = [aunt, cousin, neighbour, unreadable, home, unnamed]
-        XCTAssertEqual(RoomRecognizer.nearbyPlaces(all), [home, neighbour, cousin, unreadable])
-        XCTAssertEqual(RoomRecognizer.nearbyPlaces(all, radiusMetres: 50), [home, cousin, unreadable])
+        // Compare IDs: a NaN distance never equals itself, so whole candidates cannot be compared.
+        XCTAssertEqual(RoomRecognizer.nearbyPlaces(all).map(\.placeID), [home, neighbour, cousin, unreadable].map(\.placeID))
+        XCTAssertEqual(RoomRecognizer.nearbyPlaces(all, radiusMetres: 50).map(\.placeID), [home, cousin, unreadable].map(\.placeID))
         XCTAssertEqual(RoomRecognizer.nearbyPlaces([]), [])
     }
 

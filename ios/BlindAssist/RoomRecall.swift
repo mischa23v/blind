@@ -124,14 +124,14 @@ final class RoomRecall {
             abs(Double(m.columns.0.z)) < 0.003 && abs(Double(m.columns.1.z)) < 0.003
     }
 
-    /// While a room is established, keep pictures from each facing direction and its scene labels.
-    func learn(room: String, image: CVPixelBuffer, now: Double, sector: Int) {
+    /// While a room is established by a trusted clue, keep pictures from each facing direction and its
+    /// scene labels. Reuses the Vision pass already made for `evidence`.
+    func learn(room: String, view: View, image: CVPixelBuffer, now: Double, sector: Int) {
         let key = "\(room)#\(sector)"
         guard !room.isEmpty, (0..<Self.sectors).contains(sector),
               now - (lastLearned[key] ?? -.infinity) >= Self.learnInterval else { return }
         lastLearned[key] = now
         queue.async { [weak self] in
-            let view = Self.analyze(image)
             guard let self, let print = view.print,
                   let data = try? NSKeyedArchiver.archivedData(withRootObject: print, requiringSecureCoding: true) else { return }
             let thumbnail = Self.thumbnail(image).flatMap { UIImage(cgImage: $0).jpegData(compressionQuality: 0.6) }
@@ -163,7 +163,7 @@ final class RoomRecall {
     /// Clues for the candidate rooms from the current view, plus the view's sign text for change
     /// detection. Calls back on the main queue.
     func evidence(image: CVPixelBuffer, candidates: [String],
-                  completion: @escaping ([RoomEvidence], [String]) -> Void) {
+                  completion: @escaping ([RoomEvidence], View) -> Void) {
         let snapshot = Dictionary(uniqueKeysWithValues: candidates.map { ($0, load($0)) })
         let prints = Dictionary(uniqueKeysWithValues: candidates.map { ($0, printCache[$0] ?? []) })
         let objectPrints = Dictionary(uniqueKeysWithValues: candidates.map { ($0, objectCache[$0] ?? []) })
@@ -185,7 +185,9 @@ final class RoomRecall {
                         if Self.borderline.contains(score), let thumbnails = snapshot[room]?.thumbnails, index < thumbnails.count,
                            let savedImage = UIImage(data: thumbnails[index])?.cgImage {
                             if currentThumbnail == nil { currentThumbnail = Self.thumbnail(image) }
-                            if let currentThumbnail, Self.registers(currentThumbnail, with: savedImage) { score = max(score, Self.verifiedScore) }
+                            // Registration can return a plausible warp even for unrelated pictures, so it only
+                            // lifts a borderline score a little until calibrated on the iPhone.
+                            if let currentThumbnail, Self.registers(currentThumbnail, with: savedImage) { score = min(Self.verifiedScore, score + 0.1) }
                         }
                         // His bed, not just a bed: the cut-out objects' own appearance can lift the score.
                         if let currentObject = view.objectPrint, let savedObjects = objectPrints[room], !savedObjects.isEmpty {
@@ -204,7 +206,7 @@ final class RoomRecall {
                     result.append(.furnitureSignature(roomID: room, overlap: Double(signature.intersection(seen).count) / Double(signature.count)))
                 }
             }
-            DispatchQueue.main.async { completion(result, view.texts) }
+            DispatchQueue.main.async { completion(result, view) }
         }
     }
 

@@ -56,8 +56,10 @@ public struct ItemMemory: Codable, Equatable, Sendable {
         let existing = items.firstIndex { $0.key == key }
         guard existing != nil || items.count < Self.limit else { return nil }
         let id = existing.map { items[$0].id } ?? UUID().uuidString
-        let item = RememberedItem(id: id, name: name, roomID: Self.clean(roomID), roomName: Self.clean(roomName),
+        var item = RememberedItem(id: id, name: name, roomID: Self.clean(roomID), roomName: Self.clean(roomName),
                                   position: position, frameID: Self.clean(frameID), savedAt: savedAt)
+        // Saving a new place keeps the item's spoken description.
+        if let existing { item.description = items[existing].description }
         guard Self.isValid(item) else { return nil }
         if let existing { items[existing] = item } else { items.append(item) }
         return item
@@ -305,7 +307,12 @@ public enum ItemCommand: Equatable, Sendable {
         for (prefix, suffix) in rememberPatterns { if let value = payload(prefix, suffix) { return .remember(value) } }
         for (prefix, suffix) in findPatterns { if let value = payload(prefix, suffix) { return .find(value) } }
         for (prefix, suffix) in forgetPatterns { if let value = payload(prefix, suffix) { return .forget(value) } }
-        for (prefix, suffix) in learnPatterns { if let value = payload(prefix, suffix) { return .learn(value) } }
+        for (prefix, suffix) in learnPatterns {
+            guard let value = payload(prefix, suffix) else { continue }
+            // Arabic "هذا كوبي" needs the possessive ending, so "هذا ماذا؟" stays a question.
+            if prefix.count == 1, !(value.hasSuffix("ي") || value.hasSuffix("ى")) { continue }
+            return .learn(value)
+        }
         return nil
     }
 }

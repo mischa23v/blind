@@ -24,6 +24,7 @@ final class ItemAppearanceMatchTests: XCTestCase {
         XCTAssertEqual(ItemCommand.parse("This is my cup"), .learn("cup"))
         XCTAssertEqual(ItemCommand.parse("هذا كوبي"), .learn("كوبي"))
         XCTAssertEqual(ItemCommand.parse("where is my cup"), .find("cup"))
+        XCTAssertNotEqual(ItemCommand.parse("هذا ماذا؟"), .learn("ماذا"), "an Arabic question is not a request to learn")
     }
 
     func testDescriptionIsStoredForSpeakingOnly() {
@@ -32,5 +33,7 @@ final class ItemAppearanceMatchTests: XCTestCase {
         XCTAssertTrue(memory.describe("cup", as: "Blue mug with a white handle."))
         XCTAssertEqual(memory.find("cup")?.description, "Blue mug with a white handle.")
         XCTAssertFalse(memory.describe("spoon", as: "Silver spoon."))
+        memory.remember(name: "cup", roomName: "kitchen", at: Date(timeIntervalSince1970: 60))
+        XCTAssertEqual(memory.find("cup")?.description, "Blue mug with a white handle.", "re-saving keeps the description")
     }
 }

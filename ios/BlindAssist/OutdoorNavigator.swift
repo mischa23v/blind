@@ -11,6 +11,10 @@ final class OutdoorNavigator: NSObject, ObservableObject, CLLocationManagerDeleg
     @Published private(set) var routeSteps: [MKRoute.Step] = []
     @Published private(set) var location: CLLocation?
     @Published private(set) var heading: CLHeading?
+    /// One coarse fix from the phone's own location services, independent of internet access and of
+    /// outdoor search. It only narrows which saved home map to try; it is never sent anywhere.
+    @Published private(set) var coarseLocation: CLLocation?
+    func requestCoarseLocation() { manager.requestWhenInUseAuthorization(); manager.requestLocation() }
     private let manager = CLLocationManager()
     private var search: MKLocalSearch?
     private var directions: MKDirections?
@@ -71,7 +75,10 @@ final class OutdoorNavigator: NSObject, ObservableObject, CLLocationManagerDeleg
         let relative = (bearing - north + 720).truncatingRemainder(dividingBy: 360)
         return (Int((relative / 45).rounded()) % 8, location.distance(from: target))
     }
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) { location = locations.last }
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        location = locations.last
+        if let last = locations.last { coarseLocation = last }
+    }
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) { heading = newHeading }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) { message = "Location unavailable." }
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {

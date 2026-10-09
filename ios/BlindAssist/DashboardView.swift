@@ -355,6 +355,8 @@ struct DashboardView: View {
             Section(t("Language & detail", "اللغة والتفاصيل")) {
                 NavigationLink(t("Interests and preferences", "الاهتمامات والتفضيلات")) { AssistantPreferencesView(model: model) }
                     .accessibilityIdentifier("assistant-preferences")
+                NavigationLink(t("Saved memory", "الذاكرة المحفوظة")) { SavedMemoryView(model: model) }
+                    .accessibilityIdentifier("saved-memory")
                 NavigationLink(t("Recent descriptions", "الأوصاف الأخيرة")) { NarrationHistoryView(model: model) }
                     .accessibilityIdentifier("narration-history")
                 Toggle(t("Build private 3D map on next start", "بناء خريطة ثلاثية الأبعاد عند البدء التالي"), isOn: $model.buildPrivateMap)
