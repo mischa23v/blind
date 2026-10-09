@@ -161,10 +161,13 @@ struct DashboardView: View {
                     .accessibilityIdentifier("local-answer")
                 Text(t("On supported builds and devices, the local model describes the camera image using your question and goal. Otherwise, it uses detected text, people counts and scene categories. Person recognition and unseen-room mapping remain unavailable.", "في الإصدارات والأجهزة المدعومة، يصف النموذج المحلي صورة الكاميرا وفق سؤالك وهدفك. وإلا فيستخدم النص المرصود وعدد الأشخاص وتصنيفات المشهد. التعرف على هوية الأشخاص ورسم غرف غير مرئية غير متاحين بعد."))
                     .font(.callout).foregroundStyle(.secondary)
+                #if BLIND_DEVELOPER_CLOUD
+                // Developer comparison builds only. The app build never sends a camera picture off the phone.
                 Button(t("Ask with one photo · online", "اسأل بصورة واحدة · عبر الإنترنت")) { uploadConfirmed = true }
                     .controlSize(.large).frame(minHeight: 52)
                     .disabled(model.busy || model.simulation || !model.running || model.offlineOnly)
                     .accessibilityIdentifier("cloud-answer")
+                #endif
                 Text(t("For directions to a destination, use Routes. Descriptions cover the current camera view; turn the camera only while stationary to examine another area.", "للاتجاهات إلى وجهة استخدم المسارات. الوصف يغطي مجال الكاميرا الحالي؛ غيّر اتجاهها أثناء الوقوف فقط لفحص منطقة أخرى."))
             }
             Section(t("Answer", "الإجابة")) {
@@ -180,12 +183,14 @@ struct DashboardView: View {
                     .accessibilityIdentifier("stop-descriptions")
             }
         }
+        #if BLIND_DEVELOPER_CLOUD
         .confirmationDialog(t("Send this photo, question, goal, saved interests, up to six conversation turns, four recent description attempts and the matched room's saved inventory to the configured scene service?", "هل تريد إرسال الصورة والسؤال والهدف والاهتمامات المحفوظة وما يصل إلى ست رسائل وأربع محاولات وصف حديثة وعناصر الغرفة المطابقة المحفوظة إلى خدمة المشهد؟"),
                             isPresented: $uploadConfirmed, titleVisibility: .visible) {
             Button(t("Send photo and question", "إرسال الصورة والسؤال")) {
                 model.readScene(cloud: true, question: sceneQuestion, focus: focus)
             }
         }
+        #endif
     }
     private var sceneQuestion: String {
         let question = model.assistantQuestion.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -357,6 +362,7 @@ struct DashboardView: View {
                 if !model.mapping.available { Text(t("Install the native mapping build to enable 3D mapping.", "ثبّت إصدار الخرائط الأصلي لتفعيل الخرائط الثلاثية الأبعاد.")) }
                 Toggle(t("Offline only · keep data on this phone", "دون إنترنت · إبقاء البيانات على الهاتف"), isOn: $model.offlineOnly)
                 Toggle(t("Automatic surroundings descriptions", "وصف المحيط تلقائياً"), isOn: $model.ambientDescriptions)
+                Toggle(t("Listen for yes or no after a question", "الاستماع لنعم أو لا بعد السؤال"), isOn: $model.listenAfterQuestions)
                 Picker(t("New rooms", "الغرف الجديدة"), selection: $model.firstVisitRooms) {
                     Text(t("Ask before describing", "اسأل قبل الوصف")).tag(FirstVisitMode.offer)
                     Text(t("Describe the first time", "صف في المرة الأولى")).tag(FirstVisitMode.describe)
@@ -375,10 +381,12 @@ struct DashboardView: View {
                 }
                 Button(t("Test voice and vibration", "اختبار الصوت والاهتزاز")) { model.feedback.alert(Detection(.obstacle)) }
             }
-            Section(t("Optional scene service", "خدمة المشهد الاختيارية")) {
+            Section(t("Descriptions on this phone", "الوصف على هذا الهاتف")) {
                 Text(LocalImageAssistant.status(arabic: model.arabic))
                 if !model.localImageStatus.isEmpty { Text(model.localImageStatus) }
                 Text(OfflineSummary.status(arabic: model.arabic))
+                Text(t("Camera pictures, room pictures and saved items stay on this phone.", "تبقى صور الكاميرا وصور الغرف والأغراض المحفوظة على هذا الهاتف."))
+                #if BLIND_DEVELOPER_CLOUD
                 TextField("https://your-service.example", text: $model.serviceURL)
                     .keyboardType(.URL).textInputAutocapitalization(.never).autocorrectionDisabled()
                     .accessibilityLabel(t("Scene service HTTPS address", "عنوان خدمة المشهد"))
@@ -388,6 +396,7 @@ struct DashboardView: View {
                 if !model.serviceStatus.isEmpty { Text(model.serviceStatus) }
                 Text(t("Only the service access token belongs here. Provider API credentials stay on the server.",
                        "أدخل رمز الوصول للخدمة فقط. تبقى مفاتيح مزود الذكاء الاصطناعي على الخادم."))
+                #endif
             }
             Section(t("Testing", "الاختبار")) {
                 Text(t("Phone vibration may be hard to feel in a harness. Confirm alerts with your chosen headphones and belt.",

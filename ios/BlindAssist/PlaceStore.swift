@@ -10,6 +10,9 @@ struct SavedPlace: Codable, Identifiable {
     var name: String
     var createdAt: Date
     var objects: [MappedObject]
+    /// Coarse phone location when saved. Only narrows which saved maps to try; never proves a place.
+    var latitude: Double? = nil
+    var longitude: Double? = nil
 }
 
 final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
@@ -30,6 +33,8 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     private var lastInstruction = ""
     private var lastInstructionTime = -Double.infinity
     var onScanFinished: (() -> Void)?
+    /// Supplied by the app from on-device location; nil when location is off or unavailable.
+    var currentCoordinate: (() -> (latitude: Double, longitude: Double)?)?
     var onMessage: ((String) -> Void)?
     override init() {
         directory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
@@ -149,7 +154,9 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
                     }
                 }
                 try Task.checkCancellation(); guard scanID == id else { return }
-                let place = SavedPlace(id: UUID(), name: savedName, createdAt: Date(), objects: objects)
+                let coordinate = self.currentCoordinate?()
+                let place = SavedPlace(id: UUID(), name: savedName, createdAt: Date(), objects: objects,
+                                       latitude: coordinate?.latitude, longitude: coordinate?.longitude)
                 let prefix = directory.appendingPathComponent(place.id.uuidString)
                 let mapData = try NSKeyedArchiver.archivedData(withRootObject: map, requiringSecureCoding: true)
                 try mapData.write(to: prefix.appendingPathExtension("worldmap"), options: .atomic)

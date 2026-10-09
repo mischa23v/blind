@@ -8,6 +8,40 @@ enum DepthSampler {
         if hypot(forward.x, forward.z) <= 0.25 { return .cameraOrientation }
         return .depthUnavailable
     }
+    /// World position of the surface at a point of the upright (portrait, .right) camera image,
+    /// measured by LiDAR: median of confident depths in a small window. Nil when not measured.
+    static func worldPoint(from frame: ARFrame, uprightX: Double, uprightY: Double) -> Point3? {
+        guard let depth = frame.sceneDepth, let confidence = depth.confidenceMap,
+              (0...1).contains(uprightX), (0...1).contains(uprightY) else { return nil }
+        let buffer = depth.depthMap
+        guard CVPixelBufferGetPixelFormatType(buffer) == kCVPixelFormatType_DepthFloat32,
+              CVPixelBufferLockBaseAddress(buffer, .readOnly) == kCVReturnSuccess else { return nil }
+        defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
+        guard CVPixelBufferLockBaseAddress(confidence, .readOnly) == kCVReturnSuccess else { return nil }
+        defer { CVPixelBufferUnlockBaseAddress(confidence, .readOnly) }
+        guard let base = CVPixelBufferGetBaseAddress(buffer), let confidenceBase = CVPixelBufferGetBaseAddress(confidence) else { return nil }
+        let width = CVPixelBufferGetWidth(buffer), height = CVPixelBufferGetHeight(buffer)
+        // Portrait (.right) to sensor: sensor x follows upright top→bottom, sensor y follows upright right→left.
+        let column = Int((uprightY * Double(width - 1)).rounded()), row = Int(((1 - uprightX) * Double(height - 1)).rounded())
+        var values: [Double] = []
+        for r in max(0, row - 2)...min(height - 1, row + 2) {
+            let depths = base.advanced(by: r * CVPixelBufferGetBytesPerRow(buffer)).assumingMemoryBound(to: Float.self)
+            let confidences = confidenceBase.advanced(by: r * CVPixelBufferGetBytesPerRow(confidence)).assumingMemoryBound(to: UInt8.self)
+            for c in max(0, column - 2)...min(width - 1, column + 2) where confidences[c] >= 1 {
+                let value = Double(depths[c]); if (0.15...8).contains(value) { values.append(value) }
+            }
+        }
+        guard values.count >= 5 else { return nil }
+        let median = values.sorted()[values.count / 2]
+        let size = frame.camera.imageResolution, intrinsics = frame.camera.intrinsics
+        let sx = Double(width) / size.width, sy = Double(height) / size.height
+        let projection = DepthProjection(fx: Double(intrinsics.columns.0.x) * sx, fy: Double(intrinsics.columns.1.y) * sy,
+                                         cx: Double(intrinsics.columns.2.x) * sx, cy: Double(intrinsics.columns.2.y) * sy)
+        guard let camera = projection.cameraPoint(column: Double(column), row: Double(row), depth: median) else { return nil }
+        let world = frame.camera.transform * SIMD4<Float>(Float(camera.x), Float(camera.y), Float(camera.z), 1)
+        let point = Point3(Double(world.x), Double(world.y), Double(world.z))
+        return point.isFinite ? point : nil
+    }
     static func observation(from frame: ARFrame) -> Observation? {
         guard let depth = frame.sceneDepth, let confidence = depth.confidenceMap else { return nil }
         let buffer = depth.depthMap

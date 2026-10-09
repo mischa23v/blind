@@ -2,7 +2,8 @@ import AVFoundation
 import Speech
 import Combine
 
-/// Push-to-talk only. Audio is never sent to a recognizer that requires a network.
+/// Push-to-talk, plus a short answer window right after the assistant asks a yes/no question
+/// (when the person allows it in Settings). Audio is never sent to a recognizer that requires a network.
 final class VoiceInput: ObservableObject {
     @Published private(set) var listening = false
     @Published private(set) var transcript = ""
@@ -13,7 +14,7 @@ final class VoiceInput: ObservableObject {
     private var generation = UUID()
     private var timer: Timer?
     var onFinished: ((String) -> Void)?
-    func start(arabic: Bool) {
+    func start(arabic: Bool, timeout: Double = 20) {
         cancel(); transcript = ""
         let id = UUID(); generation = id
         SFSpeechRecognizer.requestAuthorization { [weak self] status in
@@ -21,12 +22,12 @@ final class VoiceInput: ObservableObject {
                 DispatchQueue.main.async {
                     guard let self, self.generation == id else { return }
                     guard status == .authorized, allowed else { self.message = "Enable microphone and speech permissions in Settings, or type your question."; return }
-                    self.capture(arabic: arabic, id: id)
+                    self.capture(arabic: arabic, id: id, timeout: timeout)
                 }
             }
         }
     }
-    private func capture(arabic: Bool, id: UUID) {
+    private func capture(arabic: Bool, id: UUID, timeout: Double) {
         guard let recognizer = SFSpeechRecognizer(locale: Locale(identifier: arabic ? "ar-SA" : "en-US")),
               recognizer.isAvailable, recognizer.supportsOnDeviceRecognition else {
             message = "Offline speech recognition is unavailable for this language. Type your question."; return
@@ -53,7 +54,7 @@ final class VoiceInput: ObservableObject {
             }
             engine.prepare(); try engine.start(); listening = true
             message = "Listening on this phone. Tap Finish question when done."
-            timer = Timer.scheduledTimer(withTimeInterval: 20, repeats: false) { [weak self] _ in self?.finish() }
+            timer = Timer.scheduledTimer(withTimeInterval: max(2, min(20, timeout)), repeats: false) { [weak self] _ in self?.finish() }
         } catch { cancel(); message = "Microphone unavailable. Type your question." }
     }
     func finish() {

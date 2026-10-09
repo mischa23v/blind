@@ -152,6 +152,26 @@ The user's framing: like reaction time in a game, every second of delay is time 
 
 - [ ] **E14 — Meet latency targets per tier and remove avoidable delay.** Targets: hazards (drop, stairs, obstacle in path, approaching person) under 100 ms from sensors with no model, gate, network or budget on the path (already the design; measure on device). Mobility cues and code-rendered sensor facts under 300 ms. A requested location ("where is the fork / lamp") answered first from on-device detection plus LiDAR depth by code in under 1 s, with richer model detail following. Model descriptions stream and speak the first sentence as soon as it passes the per-sentence spatial check (target under 1.5 s), instead of waiting for the whole answer. Measured 2026-10-09 (`artifacts/windows-stage/q09/latency.json`): network handshake ~0.3 s; gpt-6.1-sol 3.9–4.9 s model time; gpt-5.4-mini 0.85–1.0 s; low image detail saves 0.3–0.6 s; spatial check 8.5 µs; prompt input ~2,900 tokens per call. Work: shorten the instruction prompt (~400 tokens) for on-device prefill; per-sentence filtering instead of whole-answer retries on the hot path; keep-alive connection; low image detail; fast models by default with the large model on request; relay rate limit only for cost control, never on the phone's live path; measure Apple Foundation Models (official 2024: ~30 tok/s, 0.6 ms/prompt token on iPhone 15 Pro; third-party estimate 70–86 tok/s on iPhone 17 Pro) on the iPhone 18 Pro Max; Claude Haiku/Sonnet speed needs an Anthropic API key. Exit: per-tier latency logged on device with signposts; hazard and requested-location targets met.
 
+## Build-out 2026-10-09 — source written, verification on the Mac
+
+The user asked for implementation to be finished before the Mac so Mac time goes to design, testing and fixing. Everything below is source only (no Swift toolchain on Windows); each owning task stays unchecked until compiled and verified. Node suite 54/54 at this point.
+
+| Area | Source | Owning tasks |
+| --- | --- | --- |
+| Goal-led engine wired into the live loop; offers, spoken/tapped yes-no, short listen window after a question | `CompanionAttention.swift`, `NavigationModel.swift`, `VoiceInput.swift`, `DashboardView.swift` | E02, E12, FR-02, FR-04 |
+| Room recognition from agreeing clues: map match, saved pictures per facing direction (Vision feature prints, pinned revision), object cut-out prints, part-by-part check of borderline matches (Vision homographic registration), furniture labels, movement through mapped doors, user answer; asks when unsure or for look-alike rooms | `RoomRecognizer.swift`, `RoomRecall.swift`, `NavigationModel.swift` | O09, M12, FR-03, FR-12 |
+| Coarse phone location saved with each place; start tries the nearest saved place | `PlaceStore.swift`, `NavigationModel.swift` | O09 |
+| Body heading from walking direction; declared-mount offset; mount-slip notice | `BodyHeading.swift`, `IndoorNavigator.swift` | O03, FR-13 |
+| Orientation from matched furniture (2D rigid fit, fallback/cross-check to ARKit) | `LandmarkPose.swift` (not yet wired: needs object positions from a detector) | O02, O04 |
+| Change detection in familiar rooms (newcomers, no longer in view, new signs) | `SceneChangeDetector.swift` | V08, FR-05 |
+| Remembered items: "remember my X here", "where is my X", "forget my X"; guided "this is my cup" saving several views + marks + on-phone description; "is this my cup?"; identity by image comparison with look-alike margin, never by the model | `ItemMemory.swift`, `ItemAppearanceMatch.swift`, `ItemAppearance.swift` | M11 |
+| Sensor-measured phrases (confident) and instant "where is the X" via Vision text/people boxes (+ optional detector) and LiDAR depth | `SpatialFacts.swift`, `LocateCommand.swift`, `VisionService.swift`, `DepthSampler.swift` | E13, E14 |
+| Consent-based people registry (self/guardian consent, delete any time, anonymous unless enrolled and clearly matched) | `PeopleRegistry.swift`; face embedding model not yet selected (OpenCV Zoo SFace has the clearest weights licence; training-data question open); not wired | V04, V05 |
+| Privacy: no picture-sending path in the app build (developer flag only); public place library only on GitHub | `NavigationModel.swift`, `DashboardView.swift`, `tools/test/privacy-rule.test.mjs` | C03, C05, C06 (withdrawn) |
+| Shared on-device guide prompt and compact situation | `GuidePrompt.swift`, `Resources/guide-prompt.txt`, `LocalImageAssistant.swift` | V01, E14 |
+
+Calibration on the iPhone: feature-print distance scale, registration limits, item/person thresholds, settle times. Object-matching upgrades researched (DINOv2-S, ALIKED+LightGlue, OpenCV) need a model download go-ahead; see PROGRESS.
+
 ## Completion rule
 
 Every implementation completion entry must name the adapted upstream/API, exact source/release, changed files, new integration behavior, test command/result/log, and remaining device limitations. Update PROGRESS and TODO at the same time. If testing is deferred, leave the implementation task unchecked and say "implemented, verification pending" in PROGRESS.

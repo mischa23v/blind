@@ -76,6 +76,8 @@ public struct LearnedHint: Codable, Equatable, Identifiable, Sendable {
 public struct RoomRecord: Codable, Equatable, Sendable {
     public var visits = 0
     public var described = false
+    /// The room's spoken name, for questions such as "Is this your bedroom?".
+    public var name: String?
     /// A user-stated identity; never geometry, alignment or clearance.
     public var confirmedByUser = false
     public init() {}

@@ -142,19 +142,31 @@ final class IndoorNavigator: ObservableObject {
         anchorWorld = nil; anchorMap = nil; worldForward = nil; mapForward = nil; alignedLevel = nil
         route = []; waypointIndex = 0
     }
-    func situation(camera: Point3?, forward: Point3?, frameAge: Double, tracking: Bool, fixedBodyMount: Bool) -> IndoorSituation? {
+    /// `bodyForward` is a separately established body heading in world coordinates (walking
+    /// direction or a declared mount with its learned offset); otherwise a declared fixed mount
+    /// uses the camera heading, and without either the body heading stays unknown.
+    func situation(camera: Point3?, forward: Point3?, frameAge: Double, tracking: Bool, fixedBodyMount: Bool,
+                   bodyForward: Point3? = nil) -> IndoorSituation? {
         guard let map else { return nil }
-        var position: Point3?, direction: Point3?
+        var position: Point3?, direction: Point3?, bodyDirection: Point3?
         if tracking, frameAge.isFinite, (0...0.5).contains(frameAge),
            let camera, let forward, forward.isFinite, abs(hypot(forward.x, forward.z) - 1) < 0.01,
-           let wf = worldForward, let mf = mapForward, anchorWorld != nil {
+           worldForward != nil, mapForward != nil, anchorWorld != nil {
             position = mapPosition(camera: camera)
-            let along = forward.x * wf.x + forward.z * wf.z, side = -forward.x * wf.z + forward.z * wf.x
-            direction = Point3(along * mf.x - side * mf.z, 0, along * mf.z + side * mf.x)
+            direction = mapDirection(forward)
+            if let bodyForward, bodyForward.isFinite, abs(hypot(bodyForward.x, bodyForward.z) - 1) < 0.01 {
+                bodyDirection = mapDirection(bodyForward)
+            }
         }
         return IndoorSituation(map: map, package: activePackage, revision: revision.uuidString,
             alignment: alignmentRevision.uuidString, level: alignedLevel, position: position, cameraForward: direction,
-            bodyForward: fixedBodyMount ? direction : nil, age: frameAge)
+            bodyForward: bodyDirection ?? (fixedBodyMount ? direction : nil), age: frameAge)
+    }
+    /// A horizontal world direction expressed in the aligned map frame; nil without alignment.
+    func mapDirection(_ forward: Point3) -> Point3? {
+        guard forward.isFinite, let wf = worldForward, let mf = mapForward else { return nil }
+        let along = forward.x * wf.x + forward.z * wf.z, side = -forward.x * wf.z + forward.z * wf.x
+        return Point3(along * mf.x - side * mf.z, 0, along * mf.z + side * mf.x)
     }
     func mapPosition(camera: Point3) -> Point3? {
         guard camera.isFinite, let aw = anchorWorld, let am = anchorMap,
