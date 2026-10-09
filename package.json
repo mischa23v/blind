@@ -1,0 +1,28 @@
+{
+  "name": "blind-assist-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test --test-concurrency=1 server/test/*.test.mjs tools/test/*.test.mjs",
+    "server": "node --env-file-if-exists=server/.env server/src/main.mjs",
+    "project": "node tools/generate-xcode-project.mjs",
+    "native:prepare": "node tools/prepare-rtabmap.mjs",
+    "mac:setup": "node tools/mac-setup.mjs",
+    "mac:preflight": "node tools/mac-preflight.mjs",
+    "handoff": "node tools/package-handoff.mjs",
+    "simulate": "node tools/simulate.mjs",
+    "evaluate:apple": "swift run --package-path BlindCore --scratch-path artifacts/swift-macos AppleModelEvaluation artifacts/simulation/report.json artifacts/simulation/apple-model-results.json",
+    "evaluate:images": "swift run --package-path BlindCore --scratch-path artifacts/swift-macos ImageModelEvaluation artifacts/stairs artifacts/stairs/apple-image-results.json",
+    "evaluate:openai": "node --env-file-if-exists=server/.env tools/evaluate-openai.mjs",
+    "maps": "node tools/import-imdf.mjs",
+    "verify": "node tools/verify.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.132.1",
+    "ajv": "8.20.0"
+  }
+}

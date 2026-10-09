@@ -1,0 +1,69 @@
+{
+  "name": "Example center — author and verify before use",
+  "nodes": [
+    {
+      "id": "entrance",
+      "name": "Entrance",
+      "level": "0",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "nameArabic": "المدخل"
+    },
+    {
+      "id": "hall",
+      "name": "Hall landmark",
+      "level": "0",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -4
+      },
+      "nameArabic": "معلم الممر"
+    },
+    {
+      "id": "reception",
+      "name": "Reception",
+      "level": "0",
+      "position": {
+        "x": 3,
+        "y": 0,
+        "z": -4
+      },
+      "nameArabic": "الاستقبال"
+    },
+    {
+      "id": "training",
+      "name": "Training room",
+      "level": "0",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -9
+      },
+      "nameArabic": "غرفة التدريب"
+    }
+  ],
+  "edges": [
+    {
+      "from": "entrance",
+      "to": "hall",
+      "distance": 4,
+      "accessible": true
+    },
+    {
+      "from": "hall",
+      "to": "reception",
+      "distance": 3,
+      "accessible": true
+    },
+    {
+      "from": "hall",
+      "to": "training",
+      "distance": 5,
+      "accessible": true
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "requestedRepository": "ml-explore/mlx-swift-lm",
+  "retrievedAt": "2026-10-08T14:58:58.895Z",
+  "execution": "Not installed, compiled, or tested",
+  "repository": "ml-explore/mlx-swift-lm",
+  "url": "https://github.com/ml-explore/mlx-swift-lm",
+  "defaultBranch": "main",
+  "archived": false,
+  "pushedAt": "2026-10-07T23:02:32Z",
+  "createdAt": "2025-10-02T00:45:12Z",
+  "declaredLicense": "MIT",
+  "openIssuesAndPRs": 110,
+  "revision": "3615fe461c7c8c5ff90c40c70ca30e8b46399727",
+  "commitDate": "2026-10-07T23:02:32Z",
+  "treeTruncated": false,
+  "testPathCount": 264,
+  "testPaths": [
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/.github/scripts/ci-state.test.js",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/AttachmentLabelTemplateIntegrationTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/BidirectionalMasksTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/CoherenceIntegrationTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/Gemma4AssistantDraftModelIntegrationTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/Gemma4EseriesLoadIntegrationTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/GenerationObservabilityIntegrationTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/HarmonyTokenizerIntegrationTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GoldenReplay/GoldenFixtureManifestTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GoldenReplay/GoldenReplayTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GoldenReplay/MalformedSchemaErrorParityTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/GenerableRoundTripTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/Grammar/EmitStopSignalTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/Grammar/FastForwardTokenizationDisagreementTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/Grammar/ForkIndependenceTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/Grammar/LoopInvariantsOnXGrammarTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/Grammar/RollbackDeterminismTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/Grammar/TokenizerVocabExtractorTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/Grammar/XGrammarBridgeTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/GuidedGenerationBenchmarkTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/GuidedGenerationIntegrationTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/GuidedGenerationTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/GuidedGenerationUsageTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/HardReserveStressTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/MaxTokenTruncationTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/MultiModelGuidedGenerationTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/PrewarmGrammarTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/RequiredPropertyStressTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/GuidedGeneration/StopTokenRegressionIntegrationTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/PlatformAvailability/ColdHubClientFetchTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/Reasoning/ConfigurationResolverRoutingTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/Reasoning/ReasoningCapabilityGateTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/Reasoning/ReasoningFamilyVerificationTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/Reasoning/ReasoningIntegrationTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/TextGeneration/ApplyChatTemplateProbeTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/TextGeneration/IntegrationTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/TextGeneration/PlainChatGenerationTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/TextGeneration/SamplingModeBehaviorTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/TextGeneration/SessionUsageAccountingTests.swift",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/MLXFoundationModelsIntegration/TextGeneration/StreamingDeltaTests.swift"
+  ],
+  "workflows": [
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/.github/workflows/ci-state.yml",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/.github/workflows/integration_tests.yml",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/.github/workflows/pull_request.yml",
+    "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/.github/workflows/reset-ci-state.yml"
+  ],
+  "evidence": [
+    {
+      "path": "README.md",
+      "url": "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/README.md",
+      "sha256": "1ddf451a99982179a3de9d6f468f9735dc5a28b04cccc234a57dc38fb7363946",
+      "localFile": "README.md"
+    },
+    {
+      "path": "LICENSE",
+      "url": "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/LICENSE",
+      "sha256": "7b1d86acac816ce8192209d7e01141c129b4d48d474c15cc5fb4af62f497c323",
+      "localFile": "LICENSE"
+    },
+    {
+      "path": "Package.swift",
+      "url": "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/Package.swift",
+      "sha256": "2b6698d6625eb832aacf4ec59ed32f587e7ae06f3020932ce6a70b9483abc02a",
+      "localFile": "Package.swift"
+    },
+    {
+      "path": ".github/workflows/ci-state.yml",
+      "url": "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/.github/workflows/ci-state.yml",
+      "sha256": "056dd3077586e2505a2b71274773a0b2cf77b314a0e2353e1e835c7e0f0ac4cb",
+      "localFile": ".github__workflows__ci-state.yml"
+    },
+    {
+      "path": "IntegrationTesting/IntegrationTestingTests/AttachmentLabelTemplateIntegrationTests.swift",
+      "url": "https://github.com/ml-explore/mlx-swift-lm/blob/3615fe461c7c8c5ff90c40c70ca30e8b46399727/IntegrationTesting/IntegrationTestingTests/AttachmentLabelTemplateIntegrationTests.swift",
+      "sha256": "73124078dcf3e1f69165edbee3fc91280024befc2e1c766eda149eec2dd4c54a",
+      "localFile": "IntegrationTesting__IntegrationTestingTests__AttachmentLabelTemplateIntegrationTests.swift"
+    }
+  ]
+}

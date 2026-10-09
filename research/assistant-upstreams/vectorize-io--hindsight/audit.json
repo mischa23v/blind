@@ -1,0 +1,115 @@
+{
+  "requestedRepository": "vectorize-io/hindsight",
+  "retrievedAt": "2026-10-08T14:58:54.974Z",
+  "execution": "Not installed, compiled, or tested",
+  "repository": "vectorize-io/hindsight",
+  "url": "https://github.com/vectorize-io/hindsight",
+  "defaultBranch": "main",
+  "archived": false,
+  "pushedAt": "2026-10-08T14:28:55Z",
+  "createdAt": "2025-10-30T11:49:48Z",
+  "declaredLicense": "MIT",
+  "openIssuesAndPRs": 156,
+  "revision": "1152717735237c26986b877789704b89bac89681",
+  "commitDate": "2026-10-08T14:22:49Z",
+  "treeTruncated": false,
+  "testPathCount": 1251,
+  "testPaths": [
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/.github/workflows/test.yml",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-all-npm/src/command.test.ts",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-all-npm/src/server.test.ts",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-all/tests/README.md",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-all/tests/__init__.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-all/tests/test_cleanup_timeout.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-all/tests/test_embedded.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-all/tests/test_embedded_config.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-all/tests/test_embedded_namespaces.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-all/tests/test_server_integration.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/__init__.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/aiohttp_stub.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/chunking_reference.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/codex_stream_stub.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/conftest.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/consolidation_actions.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/data/query_analyzer_golden.json",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/e2e_oracle_smoke.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/entity_resolution_cases.jsonl",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/fixtures/README.md",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/fixtures/locomo_conversation_sample.json",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/llm_judge.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/ollama_stub.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/pg_extension_fakes.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/query_analyzer_bench.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/query_analyzer_corpus.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/retain_result_capture.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/sub_batch_helpers.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/test_admin_backup_restore.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/test_admin_bank_transfer.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/test_admin_rename_bank.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/test_admission_control.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/test_agents_api.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/test_aiohttp_session.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/test_alembic_dag.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/test_ann_iterative_scan.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/test_anthropic_batch.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/test_anthropic_prompt_caching.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/test_anthropic_structured_tool_use.py",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/test_append_body_invariants.py"
+  ],
+  "workflows": [
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/.github/workflows/deploy-docs.yml",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/.github/workflows/perf-test.yml",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/.github/workflows/release-integration.yml",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/.github/workflows/release-tool.yml",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/.github/workflows/release.yml",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/.github/workflows/security-scan.yml",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/.github/workflows/sign-images.yml",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/.github/workflows/test.yml",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/.github/workflows/triage-labels.yml",
+    "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/.github/workflows/windows-smoke.yml"
+  ],
+  "evidence": [
+    {
+      "path": "README.md",
+      "url": "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/README.md",
+      "sha256": "a3e2745dedec4f9e0d4452857ef054699e60414740f5d8f12d41bd42711d476a",
+      "localFile": "README.md"
+    },
+    {
+      "path": "LICENSE",
+      "url": "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/LICENSE",
+      "sha256": "01fde0bedf83bdc185065d7af524a61690efe576a67f922eaff3a1280c17b63a",
+      "localFile": "LICENSE"
+    },
+    {
+      "path": "package.json",
+      "url": "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/package.json",
+      "sha256": "cb2dc56a1a4a1b6c386e81ebfcb33fa1eefa909ad5da06175f0adfdf4a977534",
+      "localFile": "package.json"
+    },
+    {
+      "path": ".github/workflows/perf-test.yml",
+      "url": "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/.github/workflows/perf-test.yml",
+      "sha256": "8ca47d48199483a1a3774684b5d11cf53ea8020c41ba9a0e0259d3acf250d718",
+      "localFile": ".github__workflows__perf-test.yml"
+    },
+    {
+      "path": "hindsight-all/tests/__init__.py",
+      "url": "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-all/tests/__init__.py",
+      "sha256": "a0ce69073fa43c0c0327f0faced6d36c20efdd168a31417b0eb767f52220e9cf",
+      "localFile": "hindsight-all__tests____init__.py"
+    },
+    {
+      "path": "hindsight-api-slim/tests/test_bank_config_atomicity.py",
+      "url": "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/test_bank_config_atomicity.py",
+      "localFile": "hindsight-api-slim__tests__test_bank_config_atomicity.py",
+      "sha256": "de2b0cf84039a67b5b4b8fe09426df4965dbf84640bdf6c6fedd170e6cea7a10"
+    },
+    {
+      "path": "hindsight-api-slim/tests/test_bank_file_storage.py",
+      "url": "https://github.com/vectorize-io/hindsight/blob/1152717735237c26986b877789704b89bac89681/hindsight-api-slim/tests/test_bank_file_storage.py",
+      "localFile": "hindsight-api-slim__tests__test_bank_file_storage.py",
+      "sha256": "febcd8d421004cbcd95165d4977df70a561ea90a5cc07ee4783c5935631ede40"
+    }
+  ]
+}

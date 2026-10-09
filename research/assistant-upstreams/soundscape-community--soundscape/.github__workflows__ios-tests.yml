@@ -1,0 +1,70 @@
+name: ios-tests
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - 'apps/ios/**'
+            - '.github/workflows/ios-tests.yml'
+    pull_request:
+        branches:
+            - main
+        paths:
+            - 'apps/ios/**'
+    workflow_dispatch:
+concurrency:
+    group: ${{ github.ref }}
+    cancel-in-progress: true
+jobs:
+    unit-tests:
+        runs-on: macos-15
+        steps:
+            - uses: actions/checkout@v6
+            # Keep CI on the newest stable Xcode available on the macOS 15 runner image.
+            - uses: maxim-lobanov/setup-xcode@v1
+              with:
+                xcode-version: latest-stable
+            - name: setup
+              run: |
+                xcodebuild -version
+                gem install xcpretty
+                : > xcodebuild.log
+                : > xcodebuild-test.log
+            # Resolve an installed iPhone simulator dynamically so runner image updates do not require downloads.
+            - name: Resolve simulator destination
+              id: simulator
+              run: |
+                destination="$(apps/ios/Scripts/ci/select-simulator-destination.sh)"
+                echo "destination=$destination" >> "$GITHUB_OUTPUT"
+                echo "Using simulator destination: $destination"
+            - name: Run LocalizationLinter
+              working-directory: apps/ios
+              run: |
+                swift Scripts/LocalizationLinter/main.swift
+            # Disable TSan in GitHub Actions only until the audio-engine race is fixed in code.
+            - name: Build
+              run: |
+                set -o pipefail
+                xcodebuild build-for-testing -workspace apps/ios/GuideDogs.xcworkspace \
+                  -scheme Soundscape -enableThreadSanitizer NO \
+                  -destination '${{ steps.simulator.outputs.destination }}' \
+                  CODE_SIGN_IDENTITY= CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
+                  | tee xcodebuild.log | xcpretty
+                exit ${PIPESTATUS[0]}
+            # Local scheme/test-plan sanitizer settings remain unchanged.
+            - name: Test
+              run: |
+                set -o pipefail
+                xcodebuild test-without-building -workspace apps/ios/GuideDogs.xcworkspace \
+                  -scheme Soundscape -enableThreadSanitizer NO \
+                  -destination '${{ steps.simulator.outputs.destination }}' \
+                  | tee xcodebuild-test.log | xcpretty
+                exit ${PIPESTATUS[0]}
+            - name: uploadlog
+              if: always()
+              uses: actions/upload-artifact@v7
+              with:
+                name: xcodebuild-log
+                path: |
+                  xcodebuild.log
+                  xcodebuild-test.log

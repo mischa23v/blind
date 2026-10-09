@@ -1,0 +1,75 @@
+Searched the web, read a file
+Phone
+iPhone 17 Pro or newer (Pro or Pro Max only). Apple has kept LiDAR off its non-Pro iPhones, and it has appeared on every Pro and Pro Max through the iPhone 17 Pro. Android phones don't have reliable LiDAR, so do Android later.
+
+You'll also need a Mac (Xcode only runs on macOS) and an Apple Developer account.
+
+Shopping list
+Stage 1: Phone setup
+Item	Qty	Notes
+iPhone 17 Pro (or newer Pro)	1	LiDAR + camera + compute
+Chest harness with phone clamp	1	Action-camera style, hands-free
+Bone-conduction headphones (Shokz)	1	Keeps ears open
+Apple Watch (optional)	1	Haptic alerts with no extra hardware
+Stage 2: Safety belt
+Item	Qty	Job
+ESP32-S3 dev board (Seeed XIAO or Adafruit Feather)	2	Belt brain + spare
+Benewake TFmini-S or TF-Luna (single-point LiDAR)	2	Drop/stair detection, redundant, sunlight-tolerant
+ST VL53L8CX or VL53L5CX multi-zone ToF breakout	4–6	Sides/back obstacles
+MaxBotix LV-MaxSonar EZ4 (ultrasonic, narrow beam)	1–2	Glass detection
+Upward-angled VL53L1X ToF	1	Overhead hazards
+TCA9548A I2C multiplexer	2	Many identical sensors on one bus
+DRV2605L haptic driver boards	8	Crisp vibration patterns
+LRA vibration motors	10	8 + spares
+10,000 mAh USB-C power bank	1	Simplest safe power for v1
+Utility belt + velcro + 3D-printed housings	1 set	Mounting
+Qwiic/STEMMA QT cables, breadboard, soldering kit, multimeter	1 set	Wiring
+Roughly $200–300 total for the belt.
+
+Stage 3: Wristband
+Item	Qty	Job
+Seeed XIAO nRF52840 Sense	1	Bluetooth + built-in IMU (pointing direction)
+VL53L1X ToF	1	Precise pointing distance
+MaxBotix EZ4 ultrasonic	1	Glass
+DRV2605L + LRA motor	1	Pulse-rate feedback
+400–500 mAh LiPo + strap/case	1	Power and wearing
+Later (skip for now)
+mmWave radar (TI IWR6843-class kit) for people behind or beside the user. Powerful but complex. Add after the basics work.
+Software stack
+Phone (Swift, iOS)
+Tool	Use
+ARKit scene depth	LiDAR depth every frame, for drop and obstacle detection
+ARKit scene reconstruction	3D mesh with labels (floor, wall, door, seat, table)
+ARWorldMap	Save a place and recognize it later. Basis for change detection in familiar places
+RoomPlan	Scan a room into a model with walls, doors, furniture. Perfect for home, office, your center
+Vision framework	Text reading, people detection. Verify Arabic text support on current iOS
+Core ML	Run object detection on-device
+AVSpeechSynthesizer	Arabic and English voice
+AVAudioEngine spatial audio	Sounds that come from the direction of the object
+Core Bluetooth	Talk to the belt and wristband
+Apple Foundation Models (on-device)	Fast, offline text tasks
+Claude or GPT API	Scene questions with images, only on demand
+Belt and wristband firmware (C++, Arduino or ESP-IDF)
+SparkFun VL53L5CX library for multi-zone ToF.
+Pololu VL53L1X library for single-point ToF.
+Benewake TFmini Arduino library for drop sensors.
+Adafruit DRV2605 library for vibration patterns.
+NimBLE-Arduino for Bluetooth to the phone.
+Maps
+IMDF (Apple's indoor map format, an open standard) or OSM Simple Indoor Tagging for mall maps. Ask your friend which format their LiDAR data exports to.
+RTAB-Map (BSD license) for large venue mapping and positioning later.
+Open source to build on
+Soundscape (community version). Microsoft Research built it around 3D audio cues that help people build a mental map and feel more comfortable in unfamiliar spaces. Microsoft released the code on GitHub, and a community effort has filled in missing pieces to keep it working. It's iOS-only, like your plan. Fork it for spatial audio and outdoor awareness instead of building those from scratch.
+RTAB-Map for SLAM and relocalization in big venues.
+License warnings
+ORB-SLAM3 is GPLv3. Avoid it for a commercial product.
+Ultralytics YOLO is AGPL-3.0. Commercial use needs their paid license. Alternatives: YOLOX or RT-DETR (Apache-2.0), or Apple's built-in detectors.
+Build order (what code to write first)
+Day 1 app: ARKit LiDAR depth → detect when the floor ahead drops → strong vibration + "stop." This proves the core safety idea on the phone alone.
+ESP32 + 2 drop sensors + 1 motor, standalone, no phone. Proves the independent safety loop.
+Bluetooth link between belt and phone.
+Full belt: multi-zone ToF ring + 8 motors with pulse-rate encoding.
+Familiar-place mode: RoomPlan scan of your center → ARWorldMap relocalization → "chair moved" alerts.
+LLM layer with the priority filter and adaptive levels.
+Soundscape fork for spatial audio and outdoor navigation, then the wristband and mall maps.
+I can write the Step 1 starter code (the ARKit drop detector) or the ESP32 firmware next, or put this whole plan into a doc you can share.

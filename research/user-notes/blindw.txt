@@ -1,0 +1,2369 @@
+Worked for 4m 13s
+Research Report: Building an AI That Gives Blind People the Visual Information They Actually Need
+Product research • Visual perception • Blind and low-vision experiences • Orientation and mobility • AI assistance • Spatial memory
+
+Executive summary
+Your idea addresses something much bigger than identifying objects through a camera.
+
+A sighted person walks into a room and almost immediately gains an understanding of its layout, the people present, available paths, unusual changes, potential dangers, useful objects, and social activity. They don't consciously narrate everything they're seeing. Their visual system continuously selects information that matters while filtering out enormous amounts of detail.
+
+A blind person may obtain much of that same information through hearing, touch, memory, a cane, a guide dog, or previous experience. However, certain information can be difficult, slow, awkward, or impossible to obtain independently.
+
+The opportunity is to create a personalized, context-aware environmental information system—not merely a camera that describes images.
+
+The distinction is fundamental.
+
+An ordinary AI camera might say:
+
+"There is a wooden table, four chairs, a window, a lamp, and a backpack."
+
+A context-aware assistant could instead say:
+
+"The room is arranged differently from yesterday. A chair is pulled into your usual path to the kitchen. Your backpack is on the sofa, and the kitchen entrance is ahead on your left."
+
+The second description is useful because it understands the user's environment, expectations, priorities, and what has changed.
+
+This is a product hypothesis, not yet proof that every blind user would prefer this type of assistance. But it is strongly motivated by the research.
+
+1. What the existing research tells us
+Several studies are particularly valuable because they investigate what blind people actually ask for, rather than assuming their needs.
+
+Visual Challenges in the Everyday Lives of Blind People — Brady et al., CHI 2013
+
+5,329 blind users • 40,748 questions • Yearlong deployment
+
+Researchers studied questions submitted through VizWiz, an application allowing blind users to photograph something and ask a question. Questions extended beyond identifying objects to reading text, understanding appearances, interpreting information, and resolving real-life uncertainties.
+
+Implication: Build around the questions people are trying to answer, not just a list of objects the camera can recognize.
+
+Read the research
+
+What Do Blind and Low-Vision People Really Want from Assistive Smart Devices? — Gamage et al., ASSETS 2023
+
+646 research studies reviewed • 24 blind/low-vision participants interviewed
+
+The researchers found only a weak positive relationship between the tasks assistive AI researchers focused on and what participants considered important. Participants preferred conversational interaction and head-mounted devices.
+
+Implication: Technical achievements in object detection do not necessarily correspond to everyday value.
+
+Read the research
+
+Understanding Use Cases for AI-Powered Visual Interpretation Services — Gonzalez et al., CHI 2024
+
+16 blind/low-vision participants • Two-week diary study
+
+Participants used AI scene descriptions for tasks ranging from identifying characteristics of familiar objects to understanding potentially dangerous objects. Mean satisfaction was 2.76/5 and mean trust was 2.43/4.
+
+Implication: Better descriptions alone are not enough. Relevance, reliability, and user control are essential.
+
+Read the research
+
+Supporting Blind People in Recreational Window Shopping with AI-Infused Technology — 2024 research
+
+Includes notification-preference research with 10 blind interview participants
+
+Participants distinguished between information they wanted automatically, information they wanted only on request, and things they did not want announced. Preferences differed depending on mobility aid and circumstance.
+
+Implication: The system must learn what to say and what to leave unsaid.
+
+Read the research
+
+Exploring Navigation App Use Among Blind and Low-Vision People — 2025
+
+139 survey participants
+
+The study found that app use varied with the type of task. Most respondents used apps primarily on unfamiliar routes; these tools generally complemented rather than replaced canes or guide dogs.
+
+Implication: Your app should add information to established mobility skills rather than attempting to replace them.
+
+Read the research
+
+The recurring theme is that information has different value depending on the task, location, familiarity, timing, and individual user.
+
+That is why your idea of combining visual recognition, memory, and a contextual map is especially interesting.
+
+2. How sighted people perceive the world: what attracts attention, what gets ignored, and why
+The first design problem is understanding what vision provides beyond simply recognizing objects.
+
+2.1 Sighted people do not consciously process everything they see
+Visual attention is selective. People sample their environments, identify important patterns, predict what will happen next, and devote additional processing to particular elements.
+
+Research into semantic meaning maps shows that the meaningfulness of a scene region can predict where people look, beyond purely visual properties such as brightness or contrast. 
+
+PMC
++1
+
+Consider walking into an unfamiliar kitchen.
+
+A large kitchen with a stove, sink, and refrigerator photo – Free Interior design Image on Unsplash
+4 bedroom detached house for sale in  , Taunton, TA3 | Symonds & Sampson
+Uklizecky24.online | Jednorázový Úklid / Pravidelný Úklid
+A sighted person might rapidly notice:
+
+The doorway, room size, and arrangement of counters.
+
+Where the sink, fridge, and stove are.
+
+The open path between the doorway and counter.
+
+A bag lying unexpectedly on the floor.
+
+A person cooking at the stove.
+
+Whether something appears unusual or out of place.
+
+At the same time, they may barely register:
+
+How many cupboard handles there are.
+
+The exact color of every utensil.
+
+The number of ceiling lights.
+
+Unimportant decorative objects.
+
+Familiar furniture that has not changed.
+
+This illustrates a useful distinction:
+
+The brain is not producing a complete verbal description of the scene. It is constructing a task-relevant understanding of it.
+
+2.2 Six mechanisms shape visual attention
+Mechanism
+
+What tends to attract attention
+
+Implication for your AI
+
+Goal-directed attention
+
+A door when leaving, a cup when thirsty
+
+Prioritize the user's current intention
+
+Visual salience
+
+Motion, contrast, sudden appearance
+
+Notice changes, but don't announce them all
+
+Meaning
+
+A spill, an exit, a person waiting
+
+Evaluate significance, not merely appearance
+
+Expectations
+
+Something being in the wrong place
+
+Compare observations against memory
+
+Threat and urgency
+
+An approaching vehicle or a drop-off
+
+Escalate credible time-critical hazards
+
+Social attention
+
+Faces, gestures, gaze, interactions
+
+Make social context available when requested or relevant
+
+These mechanisms interact. A bright red painting may be visually salient but completely irrelevant to someone trying to find the bathroom. A partly open cupboard at head height may be visually unremarkable but highly relevant to safe movement.
+
+For your app, a semantic relevance model is likely to matter more than a conventional visual salience detector.
+
+2.3 What changes attracts attention
+Imagine someone lives in the same apartment for two years.
+
+They already know:
+
+The sofa is against the west wall.
+
+The kitchen is through the doorway.
+
+Their shoes normally sit near the entrance.
+
+The bathroom door opens inward.
+
+The table is usually clear of obstructions.
+
+A sighted person doesn't repeatedly rediscover those facts. But if someone moves the sofa or leaves a suitcase in the passage, the change becomes meaningful.
+
+Your AI should have a similar distinction between:
+
+Stable spatial knowledge
+
+Memory
+"The sofa is on the north wall."
+
+Current observations
+
+Camera
+"A suitcase is in front of the sofa."
+
+Useful change
+
+Potential obstruction
+"A suitcase is blocking the usual route alongside the sofa."
+
+This comparison is an important opportunity for your app.
+
+2.4 People also miss obvious things
+The phenomenon of inattentional blindness is especially relevant: sighted people sometimes fail to notice quite conspicuous objects when concentrating on another task. Visual attention is not an infallible danger detector. 
+
+ScienceDirect
+
+So the goal should not be to replicate every sighted person's attention exactly.
+
+A better goal is to build an assistive attention system that combines the useful properties of vision—spatial awareness, changes, object relationships, and anticipation—with the blind user's existing abilities.
+
+2.5 A proposed hierarchy of environmental information
+For initial product development, I would test the following hierarchy:
+
+01
+
+Immediate safety relevance
+
+A credible imminent hazard or sudden change that could affect movement.
+
+02
+
+Goal relevance
+
+Information needed to do what the user is attempting right now.
+
+03
+
+Unexpected changes
+
+Items moved, doors newly closed, unusual objects in familiar spaces.
+
+04
+
+Orientation
+
+Where the user is, how the environment is arranged, and how spaces connect.
+
+05
+
+Social information
+
+Nearby people, available interactions, gestures, queues, or requests for attention.
+
+06
+
+Curiosity and aesthetics
+
+Colors, scenery, architecture, activities, and descriptions of the surrounding world.
+
+This is a proposed design priority order, not an empirically established ranking shared by all blind people. A user reading a recipe, for example, may want text information above almost anything else; someone relaxing at home might prioritize atmosphere or social activity.
+
+The crucial idea is adaptive attention rather than a fixed ranking.
+
+3. What blind people actually want to know
+The most useful way to organize these needs is by the questions people want answered.
+
+Not everyone wants the same information. Someone blind from birth, someone who lost vision recently, someone with tunnel vision, and someone with limited central vision may have very different information needs.
+
+Also, blind people are already skilled users of nonvisual information. The aim should not be to announce everything a sighted person sees.
+
+3.1 Spatial awareness: "What is around me?"
+This is particularly relevant to your idea of building maps of rooms and houses.
+
+In an unfamiliar location, people may want to know:
+
+What kind of room am I in?
+
+Roughly how large is it?
+
+Where are the doors and exits?
+
+How many doors are there?
+
+Are they open or closed?
+
+Where is the furniture?
+
+Is there enough space between objects?
+
+Which areas are accessible?
+
+Where are the stairs, lifts, bathrooms, and reception desks?
+
+What are the important landmarks?
+
+How are rooms connected?
+
+Am I facing the same direction as before?
+
+An ordinary visual description might identify everything visible without communicating how the objects relate.
+
+Your app should therefore describe spatial relationships, orientation, and connectivity.
+
+For example:
+
+"You're in a rectangular living room. The kitchen entrance is ahead and slightly right. There's a sofa along your left wall and a coffee table in the middle. A second doorway behind you leads to the hallway."
+
+That description is far more useful for understanding a room than an unordered object inventory.
+
+Research on orientation and mobility supports teaching spatial concepts, directional language, environmental landmarks, and the interpretation of tactile and auditory cues. 
+
+Perkins School for the Blind
+
+3.2 Changes: "Is something different?"
+This is one of the strongest applications of spatial memory.
+
+Potentially useful questions include:
+
+Has anyone moved a chair?
+
+Is the corridor blocked today?
+
+Did someone leave the cupboard open?
+
+Is my door open or closed?
+
+Is the usual route still available?
+
+Has something fallen?
+
+Are my keys where I left them?
+
+Has someone placed something on the counter?
+
+Is the room more crowded than usual?
+
+Has the bus-stop location changed because of roadworks?
+
+Consider a user entering their kitchen every morning.
+
+A useful assistant could say:
+
+"The kitchen layout is unchanged. There are two new items on the counter: a delivery package near the sink and a mug beside the kettle."
+
+It does not need to repeat the location of the refrigerator, sink, and cupboards.
+
+Product requirement: Maintain a distinction between permanent structure, familiar movable objects, and unexpected temporary changes.
+
+This is a design inference from the broader research on orientation, contextual descriptions, and notification preferences. It needs testing with actual users.
+
+3.3 Locating things: "Where is the thing I need?"
+Searching is a different task from understanding an entire room.
+
+Examples include finding:
+
+Keys, wallet, phone, headphones, and glasses.
+
+A particular shirt among clothes.
+
+A medication package.
+
+A named product on a shelf.
+
+A seat in a waiting room.
+
+A plug socket.
+
+A bin.
+
+A cup or cooking utensil.
+
+A specific button on a machine.
+
+A dropped object.
+
+The system should answer in terms of the user's reference frame.
+
+Weak:
+
+"There is a mug on a table."
+
+Better:
+
+"The mug is on the table to your right."
+
+Better with confirmed geometry:
+
+"The mug is near the right edge of the table, approximately an arm's length away."
+
+The last description is only appropriate if the system has sufficient spatial accuracy. Apparent size in a single image is not enough to reliably determine distance.
+
+A major opportunity for a memory-based system is remembering where an item was last seen:
+
+"Your wallet was last detected on the hallway shelf yesterday evening. I haven't confirmed that it's still there."
+
+The final sentence is critical. Memory is not current observation.
+
+3.4 Understanding activities: "What's happening?"
+Vision provides information about events, not just things.
+
+People may want to know:
+
+Is someone approaching?
+
+Is anyone waving?
+
+Is the cashier ready for me?
+
+Has the waiter brought my food?
+
+Has my companion left the table?
+
+Is the queue moving?
+
+Is the meeting starting?
+
+Did someone raise their hand?
+
+Are people looking toward an event?
+
+Is the traffic light illuminated?
+
+Are children playing nearby?
+
+For example, a person standing in a crowded café could ask:
+
+"Is there a line, and where does it begin?"
+
+A useful answer might be:
+
+"Three people appear to be waiting beside the counter. The end of the line is to your left."
+
+A good system distinguishes what is visibly observable from speculation. It should not confidently announce that the people are queuing unless the context supports that interpretation.
+
+3.5 Social awareness: "Am I missing a social cue?"
+A major category worth exploring is nonverbal communication.
+
+Important questions may include:
+
+Who has entered the room?
+
+Is someone trying to get my attention?
+
+Is a person looking at me?
+
+Is someone holding out their hand?
+
+Is the group watching something?
+
+Is there a seat beside my friends?
+
+Is someone showing me an object?
+
+Is a person leaving or approaching?
+
+However, there is a privacy and dignity distinction between describing observable actions and making psychological judgments.
+
+Appropriate:
+
+"The person across the table is holding out a sheet of paper toward you."
+
+Risky:
+
+"The person across from you is angry and doesn't trust you."
+
+Emotion, intention, and personality should not be inferred from facial appearance as fact.
+
+A useful design option would be a user-controlled social awareness mode, separate from safety and navigation.
+
+3.6 Visual aesthetics: "What does this actually look like?"
+One mistake assistive-technology developers can make is assuming that useful information always means safety or task completion.
+
+People may also want to experience the visual aspects of the world.
+
+Examples include:
+
+What does the sunset look like?
+
+What is unusual about this building?
+
+How is this restaurant decorated?
+
+What is my friend's outfit like?
+
+What colors are the flowers?
+
+What's happening in a painting?
+
+How does the city skyline look today?
+
+What expression is someone making?
+
+What looks beautiful or interesting in this environment?
+
+The original VizWiz study included questions about the sky's appearance and other personal, aesthetic, and social visual information. 
+
+cs.rochester.edu
+
+An assistant should therefore provide more than practical mobility support.
+
+I would include an optional Explore mode that gives rich descriptions of surroundings, objects, architecture, and scenery.
+
+These descriptions should be available without interrupting someone who is trying to travel safely.
+
+3.7 Reading and interpreting information
+A huge amount of everyday information is visual but not part of the spatial environment.
+
+Examples:
+
+Environment
+
+Valuable information
+
+Kitchen
+
+Expiration dates, ingredients, appliance displays
+
+Bedroom
+
+Clothing colors, labels, matching garments
+
+Bathroom
+
+Product identification and packaging
+
+Office
+
+Printed papers, screens, charts, whiteboards
+
+Street
+
+Road signs, construction notices, bus numbers
+
+Restaurant
+
+Menus, prices, table numbers
+
+Supermarket
+
+Product names, prices, discounts
+
+Hospital
+
+Department signs, queue numbers, written instructions
+
+Transport
+
+Platform numbers, destination signs, departures
+
+Reading text accurately is a different technical problem from creating a plausible description of a scene.
+
+In a 2019 analysis of 265 medication-package images submitted to VizWiz, only 46% of images contained legible text, and only 6% contained complete information. 
+
+PMC
+
+This creates an important requirement: the system must help with camera alignment and framing, recognize incomplete information, and request another view when needed.
+
+For medication, financial transactions, and other consequential tasks, it should not guess unreadable text.
+
+4. What blind communities on Reddit say
+I reviewed discussions from r/Blind and related communities, including conversations about navigation, accessibility, smart glasses, AI description tools, independence, and room orientation.
+
+These are qualitative examples, not a representative survey. Reddit participants are self-selected, and comments from family members or sighted people are not interchangeable with firsthand experiences from blind users.
+
+4.1 "I want independence, not somebody taking over"
+In a thread asking what sighted people should understand, a commenter stressed that offers of help are welcome, but refusing help must be respected. Unwanted intervention can make navigation harder. 
+
+Reddit
+
+This is probably the most important principle for your interface.
+
+The AI should support the user's decisions, not attempt to control them.
+
+Avoid a system that constantly orders the user around:
+
+"Turn left. Stop. Go right. Don't do that."
+
+Prefer optional information:
+
+"The corridor continues ahead. There's an open doorway to your right."
+
+For a critical, sufficiently verified hazard, a more direct warning may be warranted. But users should control their routine level of assistance.
+
+4.2 "Sometimes I don't need directions. I need orientation."
+A particularly revealing r/Blind thread discusses difficulty with spatial awareness and mentally mapping larger environments. The poster describes being able to explore a small room but having difficulty maintaining orientation as places become more complex. 
+
+Reddit
+
+This suggests an important distinction:
+
+Knowing where an obstacle is does not necessarily mean knowing where you are.
+
+Your app could offer orientation recovery:
+
+"You're in the hallway beside the bedroom doorway. The kitchen is at the far end, and the living room is behind you."
+
+It could also allow someone to ask:
+
+"Which way am I facing?"
+
+"What room am I nearest?"
+
+"How did I get here?"
+
+"Where does this corridor lead?"
+
+"Describe the layout again."
+
+"What's behind this door?"
+
+The technology must be able to localize itself reliably before making these statements. If localization is uncertain, it should say so.
+
+4.3 "Real independence can include asking for help."
+Another r/Blind discussion makes an insightful point: even people with strong orientation-and-mobility skills sometimes need help in unfamiliar environments, and seeking assistance does not negate independence. 
+
+Reddit
+
+For your app, that argues for human assistance as a first-class feature.
+
+A strong system might respond:
+
+"I can't confirm which platform this train is using. I can help you locate station staff or connect you to a sighted assistant."
+
+It should not pretend to know information that its camera cannot establish.
+
+4.4 "A phone is useful, but I don't want to keep holding it."
+A September 2026 r/Blind discussion on smart glasses contains a useful disagreement.
+
+Some users prefer glasses because their hands are already occupied with a cane, food, shopping, or other tasks. One commenter explains the convenience of asking about the surroundings without reaching for a phone.
+
+Others argue that smartphone applications already perform many of the same tasks and that smart-glasses marketing exaggerates the advantages. 
+
+Reddit
+
+The product lesson is not simply "build glasses."
+
+It is to separate the software experience from the camera device, while designing for hands-free use.
+
+Potential camera configurations:
+
+Smartphone held in the hand.
+
+Smartphone mounted on clothing.
+
+Smart glasses.
+
+A dedicated body-worn camera.
+
+A future combination of phone, wearable camera, and optional depth sensor.
+
+A phone-first prototype can validate whether the information is useful before requiring specialized hardware.
+
+4.5 "AI descriptions are useful, but I don't always trust them."
+In the same discussion, users raise concerns about inaccurate AI-generated text and ingredient descriptions. Some prefer specialized reading applications rather than general-purpose visual-language models for tasks requiring exact transcription. 
+
+Reddit
+
+In a separate discussion comparing Seeing AI and Be My Eyes, users describe different strengths: faster text recognition and specialized tools on one side, richer AI interpretation and human help on the other. 
+
+Reddit
+
+The distinction for your architecture:
+
+Text recognition: Exact text, structured reading, repeatability.
+
+Scene understanding: Relationships, objects, activities, context.
+
+Spatial mapping: Geometry, location, free space, motion.
+
+Human assistance: Ambiguous, difficult, or sensitive situations where automated tools are inadequate.
+
+A single generative model should not be responsible for all four without independent validation.
+
+4.6 "Privacy matters, even when the technology helps."
+The September 2026 smart-glasses thread is particularly important for privacy.
+
+Some commenters strongly defend wearable accessibility technology because it makes daily activities easier. Others object to persistent cameras collecting information about bystanders and private situations.
+
+There is also disagreement over the claims manufacturers make about recording indicators and data handling. 
+
+Reddit
+
+Your memory feature makes this issue more important.
+
+A camera that briefly describes a room is one thing. A system that remembers people, objects, locations, routines, and changes over time creates a much more sensitive record.
+
+I would make persistent visual memory opt-in, visible in the interface, user-editable, and easy to erase.
+
+4.7 "I want access to ordinary things, not a demonstration of fancy AI."
+A March 2026 r/Blind discussion criticizes inaccessible touchscreens on devices such as payment terminals and car controls. The central complaint is not the absence of computer vision; it's the absence of accessible interaction with everyday devices. 
+
+Reddit
+
+This suggests a particularly practical feature:
+
+Control-panel interpretation.
+
+A person could point a camera at an unfamiliar washing machine and ask:
+
+"Where is the start button?"
+
+The app could reply:
+
+"There are three controls across the top. The start button is the rightmost control, below the small display."
+
+The app should guide the camera into a suitable position and ask for another view if labels cannot be read.
+
+4.8 "I still want to experience beautiful things."
+In an April 2026 discussion about what people would want to see, some participants mentioned experiences such as a beach sunset or a baseball game. Others rejected the premise or prioritized challenges unrelated to sight. 
+
+Reddit
+
+That disagreement matters.
+
+Do not design as if all blind people are longing to experience vision in the same way. Some may value scenic description deeply; others may not care.
+
+The product should offer rich visual exploration without framing blindness as an incomplete life that AI must fix.
+
+Reddit evidence summary
+Community theme
+
+What it means for the app
+
+Autonomy
+
+User decides when assistance is wanted
+
+Orientation
+
+Describe spatial relationships, not only objects
+
+Hands-free interaction
+
+Minimize phone handling
+
+Trust
+
+Admit uncertainty and support verification
+
+Practical everyday access
+
+Prioritize controls, text, objects, and labels
+
+Privacy
+
+Give users control over recording and memory
+
+Individual differences
+
+Customize modes and notification preferences
+
+Social and aesthetic access
+
+Do not reduce the experience to collision avoidance
+
+A notable limitation: these threads establish recurring design concerns, not how common each preference is across the whole blind community. More formal participatory research is needed to rank them.
+
+5. What professional sighted guides and orientation-and-mobility specialists are trained to communicate
+This is one of the richest sources of design inspiration for your application.
+
+First, distinguish two related disciplines.
+
+Sighted or human guide technique refers to helping a blind or low-vision person move through an environment with another person.
+
+Orientation and mobility (O&M) is broader professional instruction that helps a person understand environments, plan routes, use environmental information, and travel independently. A certified O&M specialist teaches much more than verbally announcing obstacles.
+
+Guidance from the Royal National Institute of Blind People (RNIB), American Foundation for the Blind (AFB), and Perkins School for the Blind provides relevant principles. 
+
+RNIB
++2
+
+5.1 What guides are generally advised to communicate
+Situation
+
+Information to provide
+
+Example phrasing
+
+Approaching stairs
+
+Direction of elevation change, proximity
+
+"Stairs going down ahead."
+
+Approaching a curb
+
+Presence of the curb and whether it rises or drops
+
+"There's a curb down ahead."
+
+Narrow passage
+
+Change in available width
+
+"The passage narrows here."
+
+Door
+
+Location and relevant orientation
+
+"Door ahead, opening inward."
+
+Uneven ground
+
+Meaningful surface change
+
+"Uneven paving ahead."
+
+Obstruction
+
+Specific object and location
+
+"There's a low table on the right."
+
+Chair
+
+Chair position and a way to orient toward it
+
+"The chair back is beside your left hand."
+
+Route choice
+
+Precise destination and direction
+
+"Third door on the left."
+
+Arrival
+
+Confirmation of location
+
+"We're at the reception desk."
+
+Departure
+
+Inform the person that you are leaving
+
+"I'm going now."
+
+These are illustrative utterances consistent with the principles in the sources, not transcripts of a single formal training curriculum.
+
+RNIB explicitly advises people to ask whether help is wanted, ask how the person prefers to be guided, identify steps and curbs and whether they go up or down, and describe hazards and their locations. 
+
+RNIB
+
+AFB similarly stresses specific directions and avoiding ambiguous language such as "over there." 
+
+American Foundation for the Blind
+
+5.2 What makes a useful warning?
+Compare these examples.
+
+Poor: "Watch out!"
+
+This communicates urgency but not what the hazard is or where it is.
+
+Better: "Low obstacle ahead."
+
+This gives the object category and direction.
+
+Best when verified: "Low bench, directly ahead, about two metres."
+
+This provides the obstacle, its spatial relationship, and distance.
+
+The ideal message depends on time and uncertainty. If an imminent hazard is detected, a short warning may be better than a long sentence.
+
+For AI, this suggests representing each potential hazard as structured information:
+
+object + position + motion + proximity + severity + confidence
+
+The verbal description should be generated from that structured representation, not invented freely.
+
+5.3 Guides communicate transitions, not just objects
+This is an important insight.
+
+A professional guide does not ordinarily list every lamppost, chair, tree, and person encountered.
+
+Useful information often concerns a transition:
+
+Level ground becomes stairs.
+
+A wide corridor becomes narrow.
+
+An indoor route becomes an outdoor path.
+
+A sidewalk ends.
+
+A doorway is reached.
+
+The person arrives at a destination.
+
+The route changes from familiar to unfamiliar.
+
+This gives your system a strong design principle:
+
+Detect meaningful transitions in the user's experience.
+
+For example:
+
+"You've entered the lobby. The space opens up, and the reception desk is ahead on your right."
+
+That is useful because it updates the user's mental model.
+
+5.4 Guides communicate information early enough to use it
+Timing is a core part of effective communication.
+
+A description delivered after the user passes an object has little value. But repeated warnings far in advance can be confusing or tiring.
+
+For the app, timing must depend on:
+
+Walking speed.
+
+Distance to a verified object or hazard.
+
+How quickly the object is moving.
+
+How long the spoken message takes.
+
+The user's reaction time and preferred amount of advance notice.
+
+Whether the information is already available through a cane or guide dog.
+
+For example, a downward staircase requires earlier notification than an interesting painting.
+
+I would not hard-code a universal warning distance. It needs empirical testing with O&M specialists and users under controlled conditions.
+
+5.5 Guides help users build independent knowledge
+O&M instruction includes spatial awareness, directional concepts, route knowledge, and interpretation of environmental cues. 
+
+Perkins School for the Blind
+
+For your app, this suggests a distinction between two experiences:
+
+Immediate assistance
+
+"The bathroom is the second doorway on your right."
+
+Spatial learning
+
+"The bathroom connects to the hallway, directly opposite the laundry room. Its doorway has a raised threshold you can identify."
+
+The second response helps develop a reusable understanding of the environment.
+
+A good system should not force the user to rely on it continuously for information they can learn.
+
+5.6 What AI should not copy from a human guide
+Human guiding involves physical contact, immediate feedback, judgment, and shared movement. A camera-based AI does not automatically have these capabilities.
+
+It cannot safely assume:
+
+That a visible route is traversable.
+
+That a clear-looking floor is free of hazards.
+
+That a staircase has been fully detected.
+
+That a moving person will continue in the same direction.
+
+That the camera is pointing exactly where the user is walking.
+
+That a previously mapped room has not changed.
+
+Your product should complement mobility aids and professional O&M skills, not position itself as a replacement for them.
+
+This is especially important for stairs, road crossings, vehicle movement, and other high-consequence environments.
+
+6. A critical design question: When should the AI speak, and when should it stay silent?
+This may be the single most important interaction-design problem.
+
+A system that describes every object could quickly become overwhelming. It may also mask useful sounds such as traffic, footsteps, voices, or environmental cues.
+
+A system that rarely speaks may miss information its user would have wanted.
+
+The answer is not simply to make speech shorter. It is to make information selective, personalized, and available on demand.
+
+6.1 Research supports multiple notification styles
+Research into blind people's recreational window-shopping experiences specifically investigated different approaches to environmental notifications:
+
+Automatically presenting certain information.
+
+Providing information only when requested.
+
+Allowing users to preselect categories of interest.
+
+Suppressing information about some environmental features.
+
+Participants' preferences differed considerably. Some wanted notification about structural objects serving as orientation cues, while others considered these unnecessary because they already used a cane or guide robot. Users were more likely to want proactive notification about potentially significant trip hazards than minor flooring changes. 
+
+PMC
+
+This argues against a universal default that announces every detected obstacle.
+
+6.2 An adaptive speech policy
+I would build a decision-making layer that evaluates whether a piece of information deserves interruption.
+
+The factors could include:
+
+Factor
+
+Question the AI should answer
+
+Relevance
+
+Is this useful to the current task?
+
+Urgency
+
+Does the user need to know immediately?
+
+Novelty
+
+Is this something new or changed?
+
+Familiarity
+
+Does the user already know this location?
+
+Accessibility through other senses
+
+Is the information already readily available without the camera?
+
+Reliability
+
+How confident is the system in the underlying observation?
+
+Timing
+
+Is there still enough time to use the information?
+
+Repetition
+
+Has this already been announced?
+
+Preference
+
+Does the user generally want this kind of information?
+
+Audio cost
+
+Will speaking interfere with listening to the surroundings?
+
+A simple early prototype could use a configurable scoring system:
+
+P
+=
+w
+r
+R
++
+w
+u
+U
++
+w
+n
+N
++
+w
+g
+G
+−
+w
+c
+C
+P=w 
+r
+​
+ R+w 
+u
+​
+ U+w 
+n
+​
+ N+w 
+g
+​
+ G−w 
+c
+​
+ C
+Where:
+
+R
+R: task relevance
+
+U
+U: urgency
+
+N
+N: novelty
+
+G
+G: user preference or goal alignment
+
+C
+C: interruption cost
+
+This is a conceptual product model, not a validated scientific equation.
+
+Crucially, hazard warnings should be handled by a separately validated safety policy, not merely by a general score that could suppress dangerous information because the user dislikes interruptions.
+
+6.3 Example: what gets announced in a familiar living room?
+Interactive example — simulated AI attention filter
+
+The user is walking through their familiar living room toward the kitchen. Choose which information to hear.
+
+
+Essential only — safety and current goal
+
+Contextual — essential information and changes
+
+Explore — describe everything detected
+Chair blocking usual walkway
+
+"A chair appears to be in your usual route to the kitchen."
+
+Backpack on the coffee table
+
+"A backpack has appeared on the coffee table."
+
+Kitchen doorway
+
+"The kitchen doorway is ahead to your right."
+
+Window is open
+
+"The living-room window appears to be open."
+
+This illustrates a design concept, not a working perception system or validated safety classifier.
+In practice, even the contextual mode should not read every eligible statement at once. Information should be prioritized, consolidated, and delivered when relevant.
+
+6.4 Information should be layered
+Instead of giving a long description immediately, use progressive detail.
+
+User: "Describe this room."
+
+Assistant:
+
+"You're in a medium-sized office. There are four desks, two doors, and a clear central aisle."
+
+User: "Where are the desks?"
+
+Assistant:
+
+"Two are against the left wall. Two are grouped near the windows on your right."
+
+User: "Anything unusual?"
+
+Assistant:
+
+"One chair is pulled into the central aisle."
+
+This conversational approach allows a user to control the level of detail.
+
+A 2026 study, Say It My Way, found that blind participants commonly approached visual question answering through natural conversational questions, rather than elaborate prompting strategies. 
+
+PMC
+
+6.5 Speech is not always the best output
+You should investigate audio and haptic interaction together.
+
+Potential channels:
+
+Output channel
+
+Best candidate uses
+
+Spoken description
+
+Scene meaning, directions, reading, explanations
+
+Short distinctive sound
+
+Simple state confirmation
+
+Vibration
+
+Nonverbal attention alerts
+
+Spatial audio
+
+Indicating a direction or target, where hardware permits
+
+User-triggered speech
+
+Detailed descriptions and questions
+
+Screen-reader interface
+
+Settings, history, stored maps, search
+
+These choices need careful user testing. Spatial audio in particular should not be assumed to improve navigation without evidence, and important environmental sounds must remain audible.
+
+The default communication behavior I would investigate is:
+
+Quiet by default, concise when useful, detailed when asked, with carefully validated urgent alerts.
+
+7. How to build the memory and room-map intelligence
+This is where your concept could provide something beyond the current crop of general-purpose visual description apps.
+
+You are proposing an assistant that doesn't just see an image. It knows where it is, recognizes relationships, and remembers relevant facts.
+
+To achieve that, I would divide memory into five layers.
+
+Live visual observations
+
+Camera • Motion • Optional depth • OCR
+
+Spatial memory
+
+Rooms, doorways, landmarks, connections
+
+Object memory
+
+Object locations and last-seen times
+
+Change memory
+
+What has moved or changed
+
+Preference memory
+
+Goals, interests, familiar places, notification rules
+
+Context and attention engine
+
+What matters right now? What is known? What is uncertain?
+
+Personalized communication
+
+Speech • Audio cues • Haptics • Conversation
+
+7.1 Spatial memory
+Spatial memory should maintain information such as:
+
+Rooms and their approximate shapes.
+
+Doors, passageways, and connections.
+
+Fixed furniture and architectural landmarks.
+
+Important functional locations.
+
+Relative positions and orientations.
+
+Routes between places.
+
+Confidence in each part of the map.
+
+The structure could be a topological graph, a metric map, or a combination.
+
+A topological graph represents relationships:
+
+Hallway → Kitchen → Dining room
+
+A metric map represents estimated positions, distances, and geometry.
+
+Both can be useful. A person asking "Which room connects to the kitchen?" may need a topological answer. A person asking "How far away is the table?" needs reliable metric information.
+
+7.2 Stable memory versus temporary state
+This distinction is extremely important.
+
+Consider the following records:
+
+Knowledge
+
+Example
+
+Memory behavior
+
+Architectural
+
+Kitchen connects to hallway
+
+Long-term
+
+Normally stable
+
+Sofa near west wall
+
+Long-term, periodically verify
+
+Movable object
+
+Chair beside desk
+
+Revalidate
+
+Temporary item
+
+Backpack on floor
+
+Short-lived
+
+Dynamic activity
+
+Person walking past
+
+Current observation only
+
+User preference
+
+Announce overhead obstructions
+
+Persist until changed
+
+A room map should not assume that a temporarily observed object will stay in place.
+
+For instance, storing "a person is standing in the kitchen" as a permanent room property would be nonsensical.
+
+7.3 Object persistence and "last seen"
+This would be particularly useful for everyday object search.
+
+A user says:
+
+"Remember where I put my headphones."
+
+The system identifies the headphones and their location.
+
+Later:
+
+"Where are my headphones?"
+
+The AI replies:
+
+"They were last seen on your bedroom desk this morning."
+
+If a live view confirms them:
+
+"Your headphones are still on the bedroom desk, next to the monitor."
+
+These are different claims.
+
+I would enforce this distinction at the data level.
+
+Every observation should include:
+
+Timestamp.
+
+Camera or sensor source.
+
+Location estimate.
+
+Detection confidence.
+
+Whether independently verified.
+
+Freshness or last confirmation.
+
+Relationship to other objects.
+
+7.4 Change detection
+A memory-based system can compare the current scene with prior observations.
+
+But raw image comparison is inadequate because of changes in lighting, camera angle, occlusion, and positioning.
+
+A more robust system would compare semantic structures:
+
+Previously: Chair beside dining table.
+
+Currently: Chair in center of passageway.
+
+Detected difference: Chair location changed.
+
+Context: The user is walking toward that passageway.
+
+Potential output: "A chair appears to be in the passageway."
+
+The last step should occur only if the observation and location estimates meet the required confidence threshold.
+
+7.5 Egocentric and room-relative descriptions
+This is a subtle but very important distinction.
+
+Egocentric coordinates describe things relative to the user:
+
+"The doorway is on your right."
+
+Room-relative coordinates describe things relative to the environment:
+
+"The doorway is on the north wall of the kitchen."
+
+Both have value.
+
+Egocentric information is often easier to use immediately. Room-relative information can help build a persistent mental map.
+
+Your app should support both, without silently mixing them.
+
+For example:
+
+"The fridge is on the west wall, currently behind you to your left."
+
+The system must know both the room coordinate frame and the user's current orientation to make that statement accurately.
+
+7.6 Spatial memory needs explicit uncertainty
+There are several distinct types of uncertainty:
+
+Object uncertainty: Is that a backpack or a folded jacket?
+
+Distance uncertainty: Is it one metre away or three?
+
+Localization uncertainty: Which room or section of the room is the user in?
+
+Coverage uncertainty: Has the camera seen the whole room?
+
+Freshness uncertainty: Is a stored object still in its last-known position?
+
+Motion uncertainty: Where will a moving obstacle be when the user reaches it?
+
+These must not be combined into a single vague confidence score.
+
+Example:
+
+"I can identify the kitchen doorway, but I can't reliably determine your distance from it."
+
+This is far safer than fabricating a precise distance.
+
+Research on long-form visual question answering found that generated descriptions can contain incorrect visual details, especially when questions cannot be answered from the supplied image. 
+
+arXiv
+
+The system should be designed to abstain, ask for another view, and communicate uncertainty.
+
+8. What kinds of things should the AI ignore?
+This deserves as much design attention as object recognition.
+
+I would distinguish irrelevant information, redundant information, and information available through other senses.
+
+8.1 Potentially unnecessary announcements
+Examples:
+
+A familiar chair in its usual location.
+
+Wall color while someone is concentrating on walking.
+
+Ordinary pedestrians not affecting the route.
+
+Small decorative items.
+
+A repeated description of a doorway that was just announced.
+
+Flooring texture that the user already perceives clearly through their cane or feet.
+
+Stable architecture in a familiar room.
+
+However, these should not be permanently excluded. A user asking for room decoration should receive wall colors. A user mapping an unfamiliar room might want every chair.
+
+8.2 Do not assume every obstacle requires speech
+The window-shopping research found that some participants considered notifications about obstacles unnecessary when another mobility aid was already handling them. Others wanted particular obstacles announced because they also served as location cues. 
+
+PMC
+
+This implies that the same object can serve different purposes.
+
+A pillar can be:
+
+An obstacle.
+
+A useful landmark.
+
+An architectural feature.
+
+Irrelevant background information.
+
+The AI must decide which role matters in context.
+
+8.3 Dynamic objects deserve special consideration
+Movement can matter more than object identity alone.
+
+A study of a context-aware hazard attention system for people with peripheral vision loss found that four out of five participants in its small exploratory group preferred notifications about moving rather than stationary objects, especially vehicles, people, and bicycles. 
+
+PMC
+
+This is a five-person finding, not a general population estimate. Nevertheless, it supports investigating motion-sensitive prioritization.
+
+For example, compare:
+
+"A bicycle is parked beside the wall."
+
+with:
+
+"A bicycle is moving toward the path ahead."
+
+The second may be more time-sensitive.
+
+A future system could track object trajectories, but predicting collision risk requires accurate motion estimates and thorough testing. A general vision-language model's verbal interpretation should not be treated as a validated collision-warning system.
+
+9. The existing products you should study
+There are already useful products in this space. Their capabilities show what can be built, while their limitations suggest opportunities for your concept.
+
+A Microsoft lança o aplicativo móvel Seeing AI para ajudar usuários com baixa visão a descrever o mundo usando o Azure AI - NotebookCheck.info News
+Seeing AI
+
+Camera-based recognition for text, documents, products, scenes, and other visual information. Microsoft also provides audio guidance for capturing documents and detailed scene exploration.
+
+Study: Fast specialized tools, accessible modes, text recognition, and camera-framing assistance.
+
+Official information
+ 
+
+Microsoft Accessibility Blog
+
+Be My Eyes app | Healthify
+Be My Eyes
+
+Combines volunteer video assistance with AI-powered image descriptions and follow-up questions.
+
+Study: Conversational visual assistance, difficult-task escalation, and the human-in-the-loop experience.
+
+Official help guide
+ 
+
+Be My Eyes Help Center
+
+Downtown Campus Navigation with GoodMaps | JCTC
+GoodMaps
+
+Provides indoor navigation, destination finding, and audio guidance in supported mapped venues.
+
+Study: Indoor positioning, route graphs, destination discovery, and building-scale wayfinding.
+
+Official website
+ 
+
+Indoor Navigation Platform
+
+Best camera glasses | Digital Camera World
+Ray-Ban Meta smart glasses
+
+Camera-enabled glasses used by some blind and low-vision people for hands-free descriptions, reading, and communication.
+
+Study: Camera placement, natural voice interaction, portability, comfort, and privacy expectations.
+
+Blind community discussion
+
+As of October 2026, Google has also introduced Guided Vision through Gemini Live for compatible Android devices, with real-time camera descriptions and assistance positioning the camera. Google cautions against using it as a navigation substitute. 
+
+The Verge
+
+Your potential differentiation is not simply "better AI descriptions."
+
+It is the combination of:
+
+Personalized environmental awareness.
+
+Memory of familiar spaces and objects.
+
+Detection of meaningful changes.
+
+Knowledge of the user's current task.
+
+Adaptive notification timing and silence.
+
+Conversational access to the spatial map.
+
+Existing products already overlap with parts of this idea, so these differentiators would need competitor testing rather than assuming no one has implemented them.
+
+10. Recommended product features, prioritized
+Based on the research, I would split your product into four phases. These are my proposed priorities, not a ranking directly measured in the studies.
+
+Feature
+
+Priority
+
+Why
+
+Ask questions about a camera view
+
+P0
+
+Foundational visual access
+
+Read and locate text
+
+P0
+
+Common practical need
+
+Describe layout and object relationships
+
+P0
+
+Core spatial understanding
+
+Explain camera framing limitations
+
+P0
+
+Prevents incorrect answers
+
+Personalized speaking preferences
+
+P0
+
+Reduces information overload
+
+Explicit uncertainty and abstention
+
+P0
+
+Essential for trust
+
+Save familiar room layout
+
+P1
+
+Enables contextual memory
+
+Find last-seen objects
+
+P1
+
+Strong everyday utility
+
+Detect changes in familiar rooms
+
+P1
+
+Potential differentiator
+
+Goal-specific information modes
+
+P1
+
+Improves relevance
+
+Conversation about room layout
+
+P1
+
+Supports mental mapping
+
+Human-assistance handoff
+
+P1
+
+Handles AI limitations
+
+Spatial audio and haptics
+
+P2
+
+Requires user validation
+
+Moving-object awareness
+
+P2
+
+Higher technical and safety burden
+
+Person recognition with consent
+
+P2
+
+Privacy-sensitive
+
+Real-time mobility warnings
+
+P3
+
+Safety-critical, requires rigorous testing
+
+Autonomous route guidance
+
+P3
+
+High localization and safety demands
+
+The five modes I would prototype
+1. Understand
+
+"What's around me?" "What does this machine look like?" "Where is the chair?"
+
+Gives an overview with optional follow-up detail.
+
+2. Orient
+
+"What room am I in?" "What connects to this hallway?" "Describe the layout."
+
+Provides a spatial explanation based on verified map information.
+
+3. Find
+
+"Where did I leave my keys?" "Find the microwave button."
+
+Searches current observations and clearly labeled last-seen memory.
+
+4. What's Changed?
+
+"Is anything different?" "Has something moved?"
+
+Compares current observations with prior confirmed observations.
+
+5. Explore
+
+"Describe the sunset." "Tell me about the painting." "What's happening at the party?"
+
+Offers optional richer visual and social context.
+
+One particularly interesting detail: these modes need not be visible menu choices.
+
+The user could simply ask questions naturally, and the system could infer the intended kind of information. Explicit modes would still be useful for controlling unsolicited announcements.
+
+11. Technical architecture I would investigate
+For an initial version, I would avoid attempting to solve everything through a single large vision-language model.
+
+Instead, use separate subsystems.
+
+Perception
+Processes visual input and generates structured observations.
+
+Potential components:
+
+Object recognition and segmentation.
+
+Optical character recognition.
+
+Doorway and structural-feature detection.
+
+Semantic segmentation of floors, walls, and openings.
+
+Object tracking.
+
+Visual-inertial odometry.
+
+Optional depth sensing.
+
+Spatial understanding
+Combines observations over time.
+
+Potential components:
+
+Camera pose estimation.
+
+Visual SLAM or visual-inertial SLAM.
+
+Room classification.
+
+Topological scene graphs.
+
+Metric maps where sufficiently reliable.
+
+Object-instance tracking.
+
+Localization confidence.
+
+Context and memory
+Maintains a persistent, editable environment representation.
+
+Potential components:
+
+A home/room database.
+
+Current user location estimate.
+
+Object last-seen records.
+
+Temporal scene changes.
+
+User-selected interests and priorities.
+
+Observational provenance and timestamps.
+
+Attention and communication
+Selects which facts should be communicated.
+
+Potential components:
+
+User intent detection.
+
+Relevance ranking.
+
+Duplicate suppression.
+
+Notification preferences.
+
+Safety policy.
+
+Natural-language generation.
+
+Accessible speech/haptic output.
+
+A key design rule
+Generative AI should describe facts provided by the perception and mapping subsystems; it should not invent physical geometry.
+
+That doesn't remove hallucination risk, but it creates opportunities for verification.
+
+For example, the language model should receive a structured observation saying:
+
+object = chair; location = kitchen_path; confidence = high; last_seen = current
+
+rather than being asked to imagine the location of every object from a vague scene description.
+
+The spatial map also needs to distinguish a directly observed object from a location predicted using old memory.
+
+12. Example real-life scenarios and ideal interactions
+These are proposed product interactions, not claims that current AI can perform them reliably.
+
+Scenario A: Entering an unfamiliar office
+User: "Describe the room."
+
+AI: "It's a medium-sized office. There are three desks, a meeting table, and two doors. The central area is mostly open."
+
+User: "Where's the meeting table?"
+
+AI: "Toward the far side of the room, to your left."
+
+User: "Remember this room."
+
+AI: "I'll save the observed layout as an incomplete map. The area behind the desks hasn't been scanned."
+
+The word incomplete matters. A camera cannot map unseen areas.
+
+Scenario B: Returning home
+User: "Anything different?"
+
+AI: "The hallway appears unchanged. There's a new box on the floor near the entrance."
+
+User: "Where exactly?"
+
+AI: "On the right side of the entrance, beside the shoe rack. I can't estimate its distance precisely."
+
+This communicates change without exaggerating measurement accuracy.
+
+Scenario C: Finding a lost object
+User: "Where are my glasses?"
+
+AI: "I last saw your glasses on the bedroom desk yesterday afternoon."
+
+User: "Are they still there?"
+
+AI: "I haven't checked. Point the camera toward the desk and I can look."
+
+This avoids converting a remembered fact into a live claim.
+
+Scenario D: In a restaurant
+User: "What's the layout?"
+
+AI: "The counter is ahead, with seating on both sides. Several people appear to be waiting near the counter."
+
+User: "Is there a free table?"
+
+AI: "I can see two tables that appear unoccupied, but I can't tell whether they're reserved."
+
+The AI expresses an observation and a limitation.
+
+Scenario E: Reading an appliance
+User: "How do I start this washing machine?"
+
+AI: "I can see the control panel, but the labels are too small to read. Move the camera closer and slightly to the right."
+
+Once the text is clear, the app identifies controls using OCR and known machine information where available.
+
+Scenario F: A social situation
+User: "Is anyone trying to get my attention?"
+
+AI: "The person across the table appears to be holding a paper toward you."
+
+This describes observable behavior rather than guessing intention.
+
+Scenario G: Exploring something beautiful
+User: "What does the view look like?"
+
+AI: "The horizon is covered in warm orange light. There are scattered clouds, with darker layers along the bottom and lighter edges where the sunlight catches them."
+
+Aesthetic descriptions matter, and they should not be sacrificed to a purely functional product design.
+
+13. Research you should conduct before building the full app
+The strongest product would be developed with blind and low-vision people as co-designers, not merely recruited to test a finished system.
+
+I would recommend a mixed-method research program.
+
+Study 1: Information diary
+Recruit approximately 20–30 participants with diverse visual abilities, ages, mobility aids, and technical experience.
+
+For two weeks, ask them to record moments when:
+
+They wanted visual information.
+
+They needed to ask someone for information.
+
+Existing technology helped.
+
+Existing technology failed.
+
+They encountered unexpected changes.
+
+They wanted information but did not want to interrupt someone.
+
+An assistive tool spoke unnecessarily.
+
+Record the question, environment, task, urgency, and preferred answer format.
+
+This will reveal actual demand rather than hypothetical feature requests.
+
+Study 2: Human-guide information collection
+Work with certified O&M specialists and blind participants.
+
+In consented, controlled environments, study how experienced guides communicate information during:
+
+First entry into a room.
+
+Familiar routes.
+
+Unfamiliar routes.
+
+Changes in layout.
+
+Searching for objects.
+
+Finding seats.
+
+Entering and exiting spaces.
+
+Navigating social situations.
+
+With permission, transcribe guide utterances and annotate what prompted each statement.
+
+A useful dataset might represent each utterance using:
+
+trigger → context → information type → wording → timing → response
+
+You could then compare different guide styles and learn which information is useful.
+
+Importantly, professional guide instructions alone are not a substitute for actual blind-user feedback.
+
+Study 3: What should the AI say?
+Show participants brief recorded scenes with alternative descriptions.
+
+For a video showing a chair near a doorway, compare:
+
+A. "There is a chair."
+
+B. "There is a chair near the doorway."
+
+C. "A chair has been moved near the doorway since your last visit."
+
+D. Silence.
+
+Ask which response they would want under different circumstances.
+
+Repeat with familiar places, unfamiliar places, shopping, cooking, meetings, and relaxation.
+
+Study 4: Speech versus silence
+This is the experiment I would prioritize.
+
+Measure whether people prefer:
+
+Continuous description.
+
+Periodic summaries.
+
+Change-triggered descriptions.
+
+User-initiated descriptions.
+
+A hybrid mode.
+
+Test in nonhazardous settings first.
+
+Metrics could include user-rated relevance, interruption burden, missed useful information, ability to recall environmental structure, and task completion.
+
+Study 5: Spatial memory
+Test whether a persistent map improves the user's understanding of a place.
+
+For example:
+
+Participant explores a model apartment or controlled test environment.
+
+System records a map with user consent.
+
+Participant returns after a period of time.
+
+Some nonhazardous movable objects have changed.
+
+Participant asks questions or searches for objects.
+
+Compare contextual memory assistance against ordinary one-shot scene description.
+
+Evaluate whether the map actually improves performance and confidence.
+
+Study 6: Trust and failure
+Deliberately include controlled cases where:
+
+An object is occluded.
+
+The camera view is incomplete.
+
+The lighting is poor.
+
+The map is stale.
+
+The item has moved.
+
+Localization is uncertain.
+
+Printed text is unreadable.
+
+Measure whether the system abstains appropriately and whether users correctly understand its uncertainty.
+
+This is essential. An AI that gives a perfect-sounding answer when uncertain may be more harmful than one that says it doesn't know.
+
+14. Research interview questions I would use
+These questions are intended for open-ended qualitative interviews.
+
+Interview guide — copyable research questions
+
+15 open-ended questions covering information needs, memory, autonomy, trust, mobility, and privacy.
+
+Avoid asking only questions such as "Would you like an AI that maps your house?" That can bias participants toward your proposed solution.
+
+Instead, ask what they currently do and what is difficult, slow, unpleasant, or unexpectedly easy.
+
+Also recruit people who are skeptical about visual AI. Their reasons may be extremely valuable.
+
+15. How to measure whether the product is successful
+I would not use object recognition accuracy as the main measure of success.
+
+Instead, measure outcomes that users actually care about.
+
+Outcome
+
+Suggested measurement
+
+Information relevance
+
+Percentage of announcements rated useful
+
+Over-announcement
+
+Unwanted announcements per session
+
+Missed information
+
+User-identified information the system failed to provide
+
+Answer reliability
+
+Accuracy and appropriate abstention
+
+Search effectiveness
+
+Time and success rate finding objects
+
+Spatial understanding
+
+Ability to describe or recall room connections
+
+Map quality
+
+Coverage, localization, and object placement accuracy
+
+Memory reliability
+
+Correct last-seen versus current-state distinctions
+
+Trust calibration
+
+Whether users understand what the system does and doesn't know
+
+Autonomy
+
+Reported control and independence
+
+Cognitive burden
+
+Perceived mental effort and interruption load
+
+Safety
+
+Hazard misses, false alarms, and task-specific adverse events
+
+Privacy
+
+User comprehension and control over retained data
+
+A particularly valuable metric would be:
+
+Useful information delivered per minute of spoken output.
+
+This is a proposed efficiency measure, not a standard clinical outcome.
+
+A system that provides three highly relevant statements may be better than one that provides 30 accurate but unhelpful observations.
+
+Safety metrics must also be evaluated independently. High information efficiency cannot justify missing a critical hazard.
+
+16. Important ethical and practical requirements
+Privacy and consent
+A persistent camera and memory system can capture highly sensitive information about homes, children, visitors, documents, personal routines, and relationships.
+
+I would recommend:
+
+On-device processing where feasible.
+
+No permanent video recording by default.
+
+Explicit consent to save room maps or object memories.
+
+Clear separation between short-term perception and persistent storage.
+
+User-controlled deletion and editing of memories.
+
+Strong encryption for stored maps and observations.
+
+Visible recording status.
+
+Clear rules for bystanders and sensitive spaces.
+
+Avoidance of automatic facial identification without appropriate consent.
+
+Configurable data retention.
+
+Accessibility
+The app itself must work fully with screen readers and nonvisual input.
+
+It should support:
+
+VoiceOver and TalkBack.
+
+Accessible controls and labels.
+
+Voice interaction without requiring elaborate prompts.
+
+Simple physical or gesture-based activation where available.
+
+Adjustable speech rate.
+
+Compatible audio output.
+
+No reliance on visual-only calibration.
+
+Multilingual and culturally appropriate directional language.
+
+Safety boundaries
+A prototype that describes objects is not automatically safe for independent navigation.
+
+The difference between "there is a chair ahead" and "you can safely walk forward" is enormous.
+
+Do not infer safe passage solely because no obstacle was detected.
+
+Similarly, the app should never claim that crossing a road, stepping onto a platform, or descending stairs is safe merely from a generative camera description.
+
+Any safety-critical mobility functions need a separate development and validation track involving mobility experts, real-world sensor evaluation, and rigorous safety engineering.
+
+17. What I would build first
+Given your original concept—camera plus contextual memory plus maps of rooms and houses—I would start with a personal spatial memory assistant for familiar indoor environments.
+
+This is a narrower and more testable first product than trying to build a universal real-time navigation system.
+
+Its first release could do five things:
+
+Describe the current room and important relationships.
+
+Let users save and correct a room map.
+
+Remember where selected objects were last seen.
+
+Report meaningful changes between observations.
+
+Answer conversational questions about the current view and saved environment.
+
+I would make all movement guidance informational rather than autonomous at this stage.
+
+Why this direction?
+
+Because the app could become useful through accumulated personal context, even before you solve every technical challenge of real-time navigation.
+
+Consider the difference after six months of use.
+
+An ordinary camera AI might still tell the user:
+
+"There is a coffee table in the living room."
+
+Your system could know:
+
+"This is your living room. The table is normally beside the sofa. It appears to have been moved toward the doorway."
+
+That is a distinct and potentially valuable kind of assistance.
+
+The hardest engineering problems will probably be reliable camera localization, maintaining an accurate spatial map as objects move, and knowing when old information is no longer trustworthy.
+
+Those problems are difficult enough that I would validate the interaction concept with a human-in-the-loop prototype before investing heavily in full automatic mapping.
+
+18. Research gaps and novel opportunities
+After reviewing the literature and community discussions, several areas stand out as promising for further investigation.
+
+These are opportunities and hypotheses, not claims that no prior research exists.
+
+Opportunity
+
+Research question
+
+Personalized attention
+
+Can a system learn what a particular user wants announced?
+
+Persistent environmental memory
+
+Does remembering familiar places reduce repeated information seeking?
+
+Change detection
+
+Is change-triggered speech more helpful than continuous scene description?
+
+Spatial conversational memory
+
+Can questions about saved room layouts improve spatial understanding?
+
+Familiarity-based notification
+
+Should a system speak less in a familiar environment?
+
+User-controlled environmental awareness
+
+Can users fine-tune their own information priorities naturally?
+
+O&M-informed language generation
+
+Do descriptions based on guide-training principles improve comprehension?
+
+Trust-aware communication
+
+Can explicit uncertainty improve trust without making the system cumbersome?
+
+Multimodal attention
+
+When should information be spoken, presented haptically, or left silent?
+
+Social participation
+
+Which observable nonverbal cues are worth communicating?
+
+One particularly promising research question is:
+
+Can we learn a personalized model of what a person would want to know about their environment, without requiring them to ask every time?
+
+That connects computer vision, assistive technology, human attention, memory, human-computer interaction, and personalization.
+
+It is also something you could measure experimentally.
+
+19. Source library for deeper reading
+These are the most useful starting points for your research. I have separated published evidence, professional guidance, and community experiences because they provide different kinds of knowledge.
+
+Academic research
+Research
+
+Main value
+
+Visual Challenges in the Everyday Lives of Blind People
+
+Real visual questions collected from thousands of blind users
+
+VizWiz-VQA dataset
+
+Real images and questions for testing vision AI
+
+What Do Blind and Low-Vision People Really Want?
+
+Comparison between technology research and user priorities
+
+Understanding Use Cases for AI-Powered Visual Interpretation
+
+Real-world use, satisfaction, and trust
+
+Supporting Blind People in Recreational Window Shopping
+
+Environmental notification preferences
+
+Say It My Way
+
+Conversational visual question answering and user control
+
+Long-Form Answers to Visual Questions
+
+Rich descriptions and hallucination problems
+
+Meaning and Attentional Guidance in Scenes
+
+How meaning influences sighted attention
+
+Scene Perception & Event Comprehension Theory (2026)
+
+Attention, current tasks, and event understanding
+
+Navigation App Use and Future Priorities
+
+Real navigation-app behavior and gaps
+
+Professional guidance
+Resource
+
+What to learn
+
+RNIB: Guiding a Blind or Partially Sighted Person
+
+How guides communicate environmental information
+
+Perkins: Orientation and Mobility
+
+Environmental cues, landmarks, and orientation skills
+
+AFB: Environmental Orientation and Directions
+
+Specific directional language and assistance
+
+Be My Eyes: Volunteer Training Resources
+
+Practical visual interpretation and assisting through a camera
+
+Reddit and community discussions
+Discussion
+
+Insight
+
+What do you wish sighted people knew?
+
+Autonomy, respect, and unwanted assistance
+
+Orientation and mobility difficulties
+
+Mental mapping and spatial awareness
+
+What do you wish you knew earlier?
+
+Independence and requesting assistance
+
+Seeing AI versus Be My Eyes
+
+Practical tool preferences
+
+Smart glasses: benefits and privacy concerns
+
+Hands-free usability, limitations, disagreement
+
+Touchscreens and inaccessible interfaces
+
+Everyday barriers beyond navigation
+
+Experiences people wish to see
+
+Aesthetic access and diverse perspectives
+
+Important methodological limitations
+This report is a targeted synthesis of published research, accessible source material, and selected community threads as of October 8, 2026. It is not a systematic review of all blindness research or a quantitative analysis of Reddit.
+
+Some studies are small, and others involve different populations—for example, people with peripheral vision loss rather than people with no functional vision. Their findings should not be treated as interchangeable.
+
+The interface architecture, product priorities, example utterances, and memory model above are recommendations derived from the evidence. They have not been validated as a complete product.
+
+Final conclusion
+I think there are three questions your app must answer extremely well:
+
+What is happening around me that I cannot easily know?
+
+What has changed from what I already understand or remember?
+
+What information matters to me right now, and what can be left unsaid?
+
+The third question is the most subtle.
+
+A system that can recognize 1,000 objects might still be frustrating if it constantly announces irrelevant information. A system that recognizes fewer objects but understands the user's environment and priorities could be more useful.
+
+The strongest direction for your idea is to build an AI assistant with spatial understanding, temporal memory, personalized attention, and disciplined communication.
+
+It should know when to describe, when to warn, when to offer more detail, when to ask for a better camera view, and when to remain silent.
+
+And above all, it should give people more information and more control over their own decisions—not make those decisions for them.
+
+That is the standard I would use to guide the product.

@@ -1,0 +1,112 @@
+{
+  "requestedRepository": "apple/swift-async-algorithms",
+  "retrievedAt": "2026-10-08T14:59:04.863Z",
+  "execution": "Not installed, compiled, or tested",
+  "repository": "apple/swift-async-algorithms",
+  "url": "https://github.com/apple/swift-async-algorithms",
+  "defaultBranch": "main",
+  "archived": false,
+  "pushedAt": "2026-10-05T14:11:41Z",
+  "createdAt": "2022-01-10T22:02:09Z",
+  "declaredLicense": "Apache-2.0",
+  "openIssuesAndPRs": 81,
+  "revision": "cbde9aed744bc058974e6bd5c0367ca55a6bf97c",
+  "commitDate": "2026-10-05T14:11:40Z",
+  "treeTruncated": false,
+  "testPathCount": 61,
+  "testPaths": [
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Sources/AsyncSequenceValidation/Test.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/Interspersed/TestInterspersed.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/MultiProducerSingleConsumerChannel/MultiProducerSingleConsumerAsyncChannelTests.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/Performance/TestThroughput.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/Performance/ThroughputMeasurement.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/Support/Asserts.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/Support/Failure.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/Support/Gate.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/Support/GatedSequence.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/Support/Indefinite.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/Support/Locking.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/Support/ManualClock.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/Support/ManualExecutor.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/Support/ReportingSequence.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/Support/Validator.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/Support/ViolatingSequence.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestAdjacentPairs.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestBuffer.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestBufferedByteIterator.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestChain.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestChannel.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestChunk.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestCombineLatest.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestCompacted.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestDebounce.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestDictionary.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestFlatMapLatest.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestJoin.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestLazy.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestManualClock.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestMapError.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestMerge.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestRangeReplaceableCollection.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestReductions.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestRemoveDuplicates.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestSetAlgebra.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestShare.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestThrottle.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestThrowingChannel.swift",
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestTimer.swift"
+  ],
+  "workflows": [
+    "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/.github/workflows/pull_request.yml"
+  ],
+  "evidence": [
+    {
+      "path": "README.md",
+      "url": "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/README.md",
+      "sha256": "d89eb0c5b61b84b99ac79188b62afc2bcac166aa52ea8a4f773565fc9bb627d8",
+      "localFile": "README.md"
+    },
+    {
+      "path": "LICENSE.txt",
+      "url": "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/LICENSE.txt",
+      "sha256": "770af8291f708538d8ff885a0bbc4e045cd700531741c4f99528d435c14d7f55",
+      "localFile": "LICENSE.txt"
+    },
+    {
+      "path": "Package.swift",
+      "url": "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Package.swift",
+      "sha256": "de05a65354f62ef845244e34fdaf019d99908bd072b73d0d932ae662d2a8e7c9",
+      "localFile": "Package.swift"
+    },
+    {
+      "path": ".github/workflows/pull_request.yml",
+      "url": "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/.github/workflows/pull_request.yml",
+      "sha256": "6eb8b23d9d48adf74cf96c3c83459e3b5074465ebecff7863c56c72d2318a255",
+      "localFile": ".github__workflows__pull_request.yml"
+    },
+    {
+      "path": "Tests/AsyncAlgorithmsTests/MultiProducerSingleConsumerChannel/MultiProducerSingleConsumerAsyncChannelTests.swift",
+      "url": "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/MultiProducerSingleConsumerChannel/MultiProducerSingleConsumerAsyncChannelTests.swift",
+      "sha256": "5393fcfd542b99012c0f86454dce1482f339601a12f6006631878d6fcd419f30",
+      "localFile": "Tests__AsyncAlgorithmsTests__MultiProducerSingleConsumerChannel__MultiProducerSingleConsumerAsyncChannelTests.swift"
+    },
+    {
+      "path": "Tests/AsyncAlgorithmsTests/TestThrottle.swift",
+      "url": "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestThrottle.swift",
+      "localFile": "Tests__AsyncAlgorithmsTests__TestThrottle.swift",
+      "sha256": "1ddacedf068dffa05a3991fa80e09d9ac42549707879d7780a98505cee4aafa3"
+    },
+    {
+      "path": "Tests/AsyncAlgorithmsTests/TestDebounce.swift",
+      "url": "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestDebounce.swift",
+      "localFile": "Tests__AsyncAlgorithmsTests__TestDebounce.swift",
+      "sha256": "70753fda9694dd8b0f49120a1d5e37a78465bc9186e4b0f9b51e6023c848efaa"
+    },
+    {
+      "path": "Tests/AsyncAlgorithmsTests/TestChannel.swift",
+      "url": "https://github.com/apple/swift-async-algorithms/blob/cbde9aed744bc058974e6bd5c0367ca55a6bf97c/Tests/AsyncAlgorithmsTests/TestChannel.swift",
+      "localFile": "Tests__AsyncAlgorithmsTests__TestChannel.swift",
+      "sha256": "2f1ad890a4723c1739af5928633729a0ba0dbad4eadeade254627294782695e4"
+    }
+  ]
+}

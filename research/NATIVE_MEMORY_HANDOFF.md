@@ -1,0 +1,48 @@
+# Native assistant implementation and Mac handoff
+
+Updated 2026-10-08. This is implemented source awaiting Apple compilation and device verification, not a finished mobility product. The Mac is available; the user is waiting for keyboard/mouse delivery tomorrow. Docker, model downloads and heavy builds remain off.
+
+**Later continuation:** [community library, explicit interests and local image adapter](COMMUNITY_IMPLEMENTATION_HANDOFF.md) now adds source and test fixtures. All tests for that continuation are deferred until tomorrow. The passing count in this document belongs to the preceding checkpoint; it does not cover the new code. Partial community download and rich-image adapters now exist, while their acceptance gates remain open.
+
+## Implemented in this work package
+
+| Area | Implementation | Remaining evidence |
+| --- | --- | --- |
+| Room persistence | New `BlindMemory` package uses GRDB 7.11.1 `DatabaseQueue`, `DatabaseMigrator` and transactions. Revision head, immutable revision payloads, stored proposals and profile-scoped keys. Existing scan files are imported once and preserved. | Actual Swift package resolution, compilation, migration/fault tests on Mac/iPhone. |
+| Approval and undo | The user can write a room description or request an Apple-model draft, review before/after, approve or reject. Approval reads the stored proposal and compares its base revision. History restoration creates another reviewed revision. Only labels/type/descriptions change; this editor cannot replace measured geometry. | Accessible review/dismissal, concurrent-edit behavior, model failure and Arabic operation on device. User review is not proof of geometry or zero hallucinations. |
+| Deletion | Database deletion cascades revisions/proposals and retains only a profile/opaque-room-ID marker. Leftover scan files cannot be reimported through the memory adapter. Cleanup retries on launch or via the UI; failures remain visible. | File protection/storage-failure testing. This is logical deletion, not a forensic erasure guarantee. |
+| Unknown-place recovery | Fresh AR session clears recognized place. ARKit matching has a 30-second unresolved timeout, stationary camera guidance and a continue-with-place-unknown action. No match does not establish a new place. Existing consecutive-frame requirement is retained. | Actual ARKit recognition, false matches, second homes, interruptions, cross-device alignment. The timeout/frame values are prototype policy, not measured thresholds. |
+| Goal/conversation | Explicit ongoing goal, versioned changes, at most six bounded turns, local GRDB persistence, clear action. Goal change cancels generation and invalidates current routes. Intermediate questions do not replace the goal. | Speech-based goal extraction and complete conversational routing remain open; goal entry has an accessible manual action. |
+| Native relay context | Photo requests now include goal/dialogue and, when available, matched-room saved inventory. Confirmation names these fields. Fresh-start empty catalogues are valid. The native adapter deliberately reports location unknown because it does not yet have validated room/floor/frame/body alignment. Inventory remains mapped history. | Full live map/image/sensor/pose fusion is incomplete. No floor or room is fabricated just to satisfy the schema. No native request has been exercised here. |
+| Information controls | Words per rolling 60 seconds and minimum narration interval are independent of detail and VoiceOver speed. Generation gets the remaining allowance; complete answers are counted again with Apple's `NLTokenizer` before dispatch. Interrupted output retains its charged words. Due mobility/urgent feedback uses the independent path. | Swift budget tests and real English/Arabic segmentation/device checks. The existing single outstanding request plus dispatch recheck bounds this producer; this is not yet a general multi-producer reservation engine. |
+| Automatic speech | Opt-in automatic narration can post VoiceOver announcements. One active app announcement blocks additional ordinary narration; completed/interrupted callbacks release it; a 120-second lost-callback timeout prevents permanent blocking. No FIFO of stale scene answers is created. Mobility can interrupt scene narration; urgent alerts keep their direct path. | Device preemption/callback/VoiceOver-control interaction. No successful-delivery fact-history implementation yet; dispatch is not proof the user heard it. |
+| Moving descriptions | Moving does not reduce detailed selection to three items or automatically disable optional narration. Existing live tracking, hazard, age, displacement and rotation checks still apply. | Useful throughput while moving remains unmeasured; the conservative stale-view checks can discard delayed descriptions. |
+
+## Proven upstream versus new adapter
+
+GRDB source: <https://github.com/groue/GRDB.swift/releases/tag/v7.11.1>, commit `b83108d10f42680d78f23fe4d4d80fc88dab3212`, MIT. Exact source/license hashes are in `assistant-selected/grdb-7.11.1/SELECTED_SOURCE.json`. Its inspected queue, configuration and migration code supply actual persistence/concurrency APIs. The license is copied into `BlindMemory/Sources/BlindMemory/LICENSE` and declared as a package resource. New domain SQL and Swift adapters are ours and are **not battle-tested**. No GRDB upstream suite or Apple integration has run here.
+
+ARKit, RoomPlan, Foundation Models, UIKit accessibility announcements, AVSpeechSynthesizer and NaturalLanguage remain platform integrations, not replacements for SLAM, a database or speech synthesis. Soundscape informed lifecycle requirements; its audio engine was not copied. No face model, model weights, Dot connection or community service was installed.
+
+## Local checks and limits
+
+Later hardware steering added [the iPhone performance plan](IPHONE_PERFORMANCE_PLAN.md) and Apple signposts for camera-frame work, scene responses, memory reads/approval and alert dispatch. This instrumentation is prepared for Mac/device profiling, not a performance result.
+
+`tools/test/memory-sql.test.mjs` executes the **actual packaged SQL** through Node's SQLite binding: cross-room/profile constraints, draft isolation, stale compare-and-swap rollback, invalid-head commit failure, payload bounds and cascading deletion. It does not execute the Swift `MemoryStore` adapter. The adapter has direct XCTest cases in `BlindMemory/Tests/BlindMemoryTests` for approval reuse/rejection, stale edits, restoration, reopen/profile isolation and deleted-scan reimport.
+
+New BlindCore tests cover legacy layout decoding, description bounds, goal persistence, bounded dialogue, restart/timeout gates, moving detail and rolling narration accounting. They are **prepared, not executed** on Windows; Swift/Xcode are unavailable. The generated Xcode project includes both local packages and the native context adapter. RTAB-Map preparation source was updated and syntax checked, but its preparation/dependency build was not run.
+
+The bounded Node regression passed **31 tests, 0 failures**; log: `../artifacts/native-memory/node-tests.tap`. Earlier model evaluations and downloaded-map evidence remain historical; no new provider requests were made in this work package. The full assistant remains incomplete: community download/publish/backups, supported account sign-in, person recognition, complete room/building/floor alignment and routing, stronger local multimodal answers, and child-readiness gates stay open in TASKS.
+
+## Mac sequence after build approval
+
+1. Extract the newest archive; verify its SHA-256 and `HANDOFF_MANIFEST.json`. Run `node tools/mac-preflight.mjs` without starting builds. It checks full Xcode, iPhone SDK, Node >=22 and Swift >=6.1.
+2. After the user's build go-ahead, run `npm ci --ignore-scripts`, then `npm run mac:setup -- --ui`. Read the first failing log under `artifacts/mac-checks`; do not count skipped tests as passes. Both Swift packages precede app builds. No Docker is needed.
+3. Test memory with existing scans: inspect a legacy room, create/edit/reject/approve a description, make two proposals from the same base, verify the stale one fails, review restoration, quit/reopen, delete and verify no resurrection. Simulate failed export/storage access; exports must not substitute an older revision.
+4. Test recovery with adult assistance: start without a map, restart in another room/home, select the wrong saved map, interrupt matching and wait for its timeout. Current location must stay unresolved; the app must not invent an exit or route. Test correct ARKit matching separately from floor/body orientation.
+5. Exercise VoiceOver in English/Arabic: automatic narration, slow and fast system rates, low/high word allowances, interrupted speech, active controls, moving briefly, stale image results, goal changes during generation, urgent alert during long narration and missing completion callbacks. Verify ordinary output never suppresses due mobility or danger. Record time-to-alert rather than assuming priority code meets latency needs.
+6. Keep physical trials supervised and adult-only until Q04–Q06 are satisfied. Authored downloaded maps and supplied-pose LLM scenarios do not establish physical navigation acceptance.
+
+## Continuity
+
+Original pre-edit source baseline: `artifacts/assistant-baselines/20261008-184236/BASELINE_MANIFEST.json`; additional native-memory start files: `artifacts/assistant-baselines/native-memory-start/manifest.json`. No Git repository exists here; do not reset/restore directories or overwrite other sessions' work. TASKS remains the checklist authority. Prepared tests do not close implementation tasks.

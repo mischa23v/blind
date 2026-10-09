@@ -1,0 +1,14 @@
+{
+  "name": "FICTIONAL school route — replace coordinates after surveying",
+  "nodes": [
+    {"id":"classroom","name":"Classroom","nameArabic":"الفصل","level":"0","position":{"x":1,"y":0,"z":1}},
+    {"id":"corner","name":"Corridor corner","nameArabic":"زاوية الممر","level":"0","position":{"x":1,"y":0,"z":5}},
+    {"id":"restroom","name":"Restroom","nameArabic":"دورة المياه","level":"0","position":{"x":5,"y":0,"z":5}},
+    {"id":"reception","name":"Reception","nameArabic":"الاستقبال","level":"0","position":{"x":1,"y":0,"z":9}}
+  ],
+  "edges": [
+    {"from":"classroom","to":"corner","distance":4,"accessible":true},
+    {"from":"corner","to":"restroom","distance":4,"accessible":true},
+    {"from":"corner","to":"reception","distance":4,"accessible":true}
+  ]
+}
