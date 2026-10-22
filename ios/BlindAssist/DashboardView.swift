@@ -66,7 +66,7 @@ struct DashboardView: View {
                 .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 24))
                 Button(model.running ? t("Stop monitoring", "إيقاف الرصد") : t("Start monitoring", "بدء الرصد")) {
                     if model.running { model.stop() } else { model.start() }
-                }.buttonStyle(.borderedProminent).controlSize(.large).frame(minHeight: 56)
+                }.buttonStyle(.borderedProminent).foregroundStyle(.black).controlSize(.large).frame(minHeight: 56)
                     .accessibilityIdentifier("monitor-toggle")
                 if model.running && !model.places.scanning {
                     Button(t("Repeat monitoring status", "إعادة حالة الرصد")) { model.repeatMonitoringStatus() }
@@ -107,6 +107,7 @@ struct DashboardView: View {
                 Button(model.returning ? t("Stop return guidance", "إيقاف إرشاد العودة") : t("Retrace this session", "تتبع مسار الجلسة للعودة")) {
                     if model.returning { model.stopReturn() } else { model.startReturn() }
                 }.buttonStyle(.bordered).controlSize(.large).disabled(!model.running || model.simulation)
+                    .accessibilityIdentifier("retrace-session")
                 if model.returning { Button(t("Repeat trail direction", "تكرار اتجاه المسار")) { model.speakReturnCue() } }
                 if !model.returnStatus.isEmpty { Text(model.returnStatus) }
                 Button(t("Repeat current status", "تكرار الحالة الحالية")) { model.repeatMonitoringStatus() }
@@ -155,13 +156,17 @@ struct DashboardView: View {
                     .accessibilityIdentifier("voice-question")
                 if model.voice.listening { Text(model.voice.transcript) }
                 if !model.voice.message.isEmpty { Text(model.voice.message).font(.callout) }
-                Button(t("Find destination on saved map", "البحث عن الوجهة في الخريطة المحفوظة")) {
+                Button {
                     model.findMapDestination()
+                } label: {
+                    Text(t("Find destination on saved map", "البحث عن الوجهة في الخريطة المحفوظة"))
+                        .font(.body)
+                        .fixedSize(horizontal: false, vertical: true)
                 }.disabled(model.busy || model.indoor.map == nil || model.assistantQuestion.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     .accessibilityIdentifier("map-destination")
                 Button(t("Answer using this phone", "الإجابة باستخدام هذا الهاتف")) {
                     model.readScene(cloud: false, question: sceneQuestion, focus: focus)
-                }.buttonStyle(.borderedProminent).controlSize(.large).frame(minHeight: 52)
+                }.buttonStyle(.borderedProminent).foregroundStyle(.black).controlSize(.large).frame(minHeight: 52)
                     .disabled(model.busy || model.simulation || !model.running)
                     .accessibilityIdentifier("local-answer")
                 Text(t("On supported builds and devices, the local model describes the camera image using your question and goal. Otherwise, it uses detected text, people counts and scene categories. Person recognition and unseen-room mapping remain unavailable.", "في الإصدارات والأجهزة المدعومة، يصف النموذج المحلي صورة الكاميرا وفق سؤالك وهدفك. وإلا فيستخدم النص المرصود وعدد الأشخاص وتصنيفات المشهد. التعرف على هوية الأشخاص ورسم غرف غير مرئية غير متاحين بعد."))

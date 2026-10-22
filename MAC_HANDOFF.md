@@ -1,5 +1,13 @@
 # Mac mini handoff
 
+## Mac validation update — 2026-10-22
+
+Local pre-currency ZIP testing completed on M1/8 GiB with Xcode 27.1: base simulator/device, optional multimodal device, and signed AuraFace device builds passed. XS Max installation succeeded and the user confirmed launch. Hosted iOS tests passed 22/22; the latest UI batch passed 5/6, with a remaining Dynamic Type audit failure. See PROGRESS for exact scope and unresolved Xcode AppKit layout crashes. These results do not validate the later Saudi-banknote code or all device scenarios.
+
+XS Max can launch the app and exercise simulation, but has no LiDAR. The current live-monitoring and familiar-face camera capture gates require scene depth. Use a LiDAR-capable physical iPhone for those acceptance checks. The base iPhone 18 Pro Max simulator passed tab navigation and simulation start/stop; it does not validate real LiDAR or AuraFace. Preserve the physical AuraFace configuration and keep the optional Vision veto off initially. Do not regenerate the default project after selecting the backend.
+
+For local development installation, select full Xcode command-line tools, sign in privately to Xcode and select the development team. Enable Developer Mode on the phone, confirm after restart, unlock it during preparation, and complete developer-profile trust/online verification when prompted. These device setup steps are separate from compiler errors. No signing credentials, model assets or machine-specific generated project should be committed.
+
 ## Primary master branch — current familiar-person handoff (2026-10-22)
 
 This section supersedes the older status counts below. This is an opt-in experimental assistive hint, not a production release, Face ID, or permission to follow someone. Linux checks do not compile Apple SDK code. Mac/Xcode and physical iPhone checks are still required before supervised use.

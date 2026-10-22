@@ -1,5 +1,7 @@
 # Implementation task checklist
 
+**Mac validation — 2026-10-22:** Build/UI fixes published with local evidence in PROGRESS. Base simulator/device, optional multimodal device and signed AuraFace device builds passed; XS Max launch confirmed by user. Hosted iOS tests 22/22; latest UI batch 5/6 with Dynamic Type audit still failing. Simulator tab navigation and simulation start/stop passed. Real recognition, sensor/VoiceOver/thermal and child-use gates stay open. These Mac results cover the pre-currency checkout; combined master needs validation.
+
 **Cloud review and primary-branch handoff — 2026-10-22:** Regression fixes, additive private-memory migration, opt-in multi-example familiar-person/AuraFace/voice flow and centralized speech admission are implemented. Final portable checks: Node 88/88, BlindCore 306/306, BlindMemory 14/14, MobilitySimulation 17/17; see PROGRESS for research and source-check distinctions. All 75 named acceptance scenarios are inventoried, but only executable portable/synthetic suites have run. Do not close Apple SDK, VoiceOver/device, real sensor, thermal or child-use gates from Linux parsing. The user authorized integrating the completed work into the existing shared primary master branch after the portable checks. No force update, branch rename, deployment or production-readiness claim.
 
 

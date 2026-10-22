@@ -1,3 +1,10 @@
+## Mac follow-up — 2026-10-22
+
+- Resolve the remaining Dynamic Type accessibility audit failure; latest six-test UI batch was 5 passed / 1 failed.
+- Investigate Xcode's repeated AppKit layout crash; use serial command-line builds/tests while the IDE failure is unresolved.
+- Validate combined current master, including the separately added currency preparation. Local Mac results in PROGRESS cover the pre-currency checkout only.
+- Complete physical familiar-person, VoiceOver, pixel/orientation, latency and thermal tests on a LiDAR-capable iPhone. XS Max launch is confirmed, but its current live-monitoring/face-capture gate cannot run without scene depth.
+
 ## Saudi banknotes: current next steps
 
 - Keep `SaudiBanknoteModelProfile.selected = nil` until licensed real data/model and independent end-to-end evaluation are complete. Code and tests are preparation, not a finished recognizer.

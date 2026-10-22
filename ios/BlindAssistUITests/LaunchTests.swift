@@ -13,7 +13,7 @@ final class LaunchTests: XCTestCase {
     }
     func testAccessibleMainModesAndOfflineDefault() {
         XCTAssertTrue(app.buttons["monitor-toggle"].waitForExistence(timeout: 10))
-        app.tabBars.buttons["Ask"].tap()
+        app.buttons["Ask"].tap()
         XCTAssertTrue(app.buttons["voice-question"].exists)
         reveal(app.buttons["local-answer"])
         // The production privacy build contains no photo-upload control. Developer builds
@@ -22,7 +22,7 @@ final class LaunchTests: XCTestCase {
             reveal(app.buttons["cloud-answer"])
             XCTAssertFalse(app.buttons["cloud-answer"].isEnabled)
         }
-        app.tabBars.buttons["Routes"].tap()
+        app.buttons["Routes"].tap()
         XCTAssertTrue(app.buttons["Import indoor route JSON"].exists)
     }
     func testSimulationIsExplicitAndCanStop() {
@@ -36,19 +36,30 @@ final class LaunchTests: XCTestCase {
         XCTAssertEqual(app.buttons["monitor-toggle"].label, "Start monitoring")
     }
     func testDescribeFocusAndStopControl() {
-        app.tabBars.buttons["Ask"].tap()
+        app.buttons["Ask"].tap()
         XCTAssertTrue(app.textFields["Question or target"].exists || app.textViews["Question or target"].exists)
         reveal(app.buttons["stop-descriptions"])
         app.buttons["stop-descriptions"].tap()
-        XCTAssertFalse(app.buttons["cloud-answer"].isEnabled)
+        // The production privacy build omits the cloud control entirely.
+        let cloudAnswer = app.buttons["cloud-answer"]
+        XCTAssertFalse(cloudAnswer.exists && cloudAnswer.isEnabled)
+        XCTAssertTrue(app.buttons["stop-descriptions"].exists)
     }
     func testAccessibilityAuditOfGuideAndAsk() throws {
-        try app.performAccessibilityAudit()
-        app.tabBars.buttons["Ask"].tap()
-        try app.performAccessibilityAudit()
+        try app.performAccessibilityAudit { issue in
+            // WCAG exempts inactive controls; retain every other audit finding.
+            guard issue.auditType == .contrast, let element = issue.element else { return false }
+            return element.identifier == "retrace-session" && !element.isEnabled
+        }
+        app.buttons["Ask"].tap()
+        try app.performAccessibilityAudit { issue in
+            // WCAG exempts inactive controls; retain every other audit finding.
+            guard issue.auditType == .contrast, let element = issue.element else { return false }
+            return element.identifier == "retrace-session" && !element.isEnabled
+        }
     }
     func testOfflineCommunityLibraryKeepsLocalImportAvailable() {
-        app.tabBars.buttons["Places"].tap()
+        app.buttons["Places"].tap()
         app.buttons["community-maps"].tap()
         let search = app.buttons["community-search"], localImport = app.buttons["community-import"]
         XCTAssertTrue(search.waitForExistence(timeout: 5)); XCTAssertFalse(search.isEnabled)
@@ -58,7 +69,7 @@ final class LaunchTests: XCTestCase {
         waitForExpectations(timeout: 5)
     }
     func testEmptyInterestDoesNotBecomeStoredPreference() {
-        app.tabBars.buttons["Settings"].tap()
+        app.buttons["Settings"].tap()
         app.buttons["assistant-preferences"].tap()
         let save = app.buttons["interest-save"]
         reveal(save); save.tap()

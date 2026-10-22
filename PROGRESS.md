@@ -1,3 +1,16 @@
+## Mac validation and fixes — 2026-10-22
+
+The user authorized testing the existing ZIP despite its unverified source revision, then authorized publishing these fixes. The three modified source/test files were compared against current master; their pre-edit backups exactly match the corresponding blobs at `a2633a1`. The fixes apply on top of that head without replacing the Saudi banknote work. Results below describe the local pre-currency checkout, not validation of the combined latest master.
+
+- Fixed Debug simulator architecture selection (`ONLY_ACTIVE_ARCH=YES`, Release `NO`), black text on the yellow prominent buttons, scalable wrapping for the map-destination label, and UI queries that work without a TabBar ancestor. The cloud control assertion accepts its absence in production. The accessibility contrast exception applies only to the disabled retrace control; all other findings remain enabled.
+- Environment: M1 Mac, 8 GiB RAM, Xcode 27.1 (27A9275), iOS SDK 27.1, Swift 6.4, Node 22.23.4. Full Xcode command-line selection was corrected.
+- Passed locally: Node 88/88; BlindCore 306/306; BlindMemory 14/14; face-policy JS 16/16; Python harness 28/28; C++ protocol/failure sanitizers including 100,000 frames; MobilitySimulation 17/17 (synthetic inputs, real core logic, no LLM).
+- Apple builds passed: base simulator and device; build-for-testing after architecture fix; optional multimodal device; AuraFace device with pinned model/framework hashes checked and bundled model hashes rechecked. The final AuraFace build was signed, installed on iPhone XS Max/iOS 18.7.9, and the user confirmed launch after Developer Mode and trust setup. Signing identity, local paths, model assets and generated projects are not published.
+- Hosted iOS tests: 22/22 passed. Latest six-test UI batch: 5 passed, 1 accessibility audit failed. After the map label adjustment, targeted audit still failed on the scalable Wearables heading. Dynamic Type audit remains unresolved, not suppressed or reported passed.
+- Existing base build launched on iPhone 18 Pro Max simulator: Guide/Ask/Places/Routes/Settings navigation and simulation start/stop passed; no app crash observed. Simulation displayed the insufficient-ground stop message; individual hazard UI outcomes, actual speech and haptics were not verified.
+- Xcode itself crashed twice with EXC_BREAKPOINT/SIGTRAP in AppKit window/view layout. Exact trigger remains unknown; serial CLI builds and devicectl installation avoided the GUI path, but do not establish an Xcode repair.
+- Not run: full physical acceptance, real face accuracy/enrollment workflow, Apple pixel/orientation parity, VoiceOver, sensor/belt behavior, thermal/battery/endurance, or currency recognition. XS Max has no LiDAR; current monitoring/live face capture requires scene depth. AuraFace itself does not inherently require LiDAR. No trained Saudi model was validated. No child-use or release gate is closed.
+
 ## Saudi banknote code preparation — 2026-10-22
 
 - Added local Apple Vision/Core ML adapter and explicit no-model status, eight-denomination/unknown policy, English/Arabic intent and measured-framing responses, strict snapshot freshness and existing attention/speech cancellation integration. Generic scene/OCR and learned descriptions cannot use common cash-value/authenticity outputs as a fallback.
