@@ -193,3 +193,5 @@ Every implementation completion entry must name the adapted upstream/API, exact 
 
 - [x] Package and upload all available Windows scenarios, room fixtures, pictures, recorded LiDAR/depth, maps, replay data, reports, source snapshot and Git history for private Mac testing; verify archive and uploaded SHA-256 digests. [Transfer release](https://github.com/mischa23v/blind/releases/tag/mac-transfer-20261022). Transfer integrity only; no iOS/device task closed.
 - [ ] Verify download/extraction on the Mac mini and scan the user's actual rooms on the iPhone; recorded source places do not establish live home alignment.
+
+- [x] Transfer the user-supplied 7sys44td9c-1.zip unchanged to private GitHub assets in four parts, with original/part checksums and Mac instructions. [Download](https://github.com/mischa23v/blind/releases/tag/currency-transfer-20261022). Transfer only; V11 implementation/training/device gates stay open.

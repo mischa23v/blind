@@ -31,3 +31,5 @@ The earlier 2026-10-09 notes below are historical.
 5. Design pass: shorten on-screen text (VoiceOver reads every word), wording review with the brother.
 
 TASKS.md remains the only checklist; PROGRESS.md records what happened. Older pointers are archived in [research/ARCHIVE_TRACKERS_2026-10-08.md](research/ARCHIVE_TRACKERS_2026-10-08.md).
+
+Currency data: download all eight assets from the [private currency transfer](https://github.com/mischa23v/blind/releases/tag/currency-transfer-20261022), verify/reassemble using RESTORE_CURRENCY_ON_MAC.md, then inspect licence/labels on the Mac before training.

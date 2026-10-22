@@ -75,3 +75,7 @@ Build-out toward a Mac day of design and testing only (user direction): see the 
 Independent Fable review recorded in `research/FABLE_REVIEW_2026-10-09.md` (FR-01–FR-20, tracked in TASKS). Dataset for Q09: CA-1M val capture 42898570 (Apple, CC BY-NC-ND 4.0, iPad Pro LiDAR, 996 frames at ~10 Hz, 1024×768 RGB, depth, per-frame pose, 99 labelled objects incl. door, door frame, walls, closet, TV, nightstand), downloaded to `research/datasets/ca1m-val-42898570/` (sha256 4fe2251d…c5c6). Recorded device poses test reasoning over real sensor data, not live localisation.
 
 Older progress history (2026-10-02 to 2026-10-08) is in [research/ARCHIVE_TRACKERS_2026-10-08.md](research/ARCHIVE_TRACKERS_2026-10-08.md).
+
+## Currency dataset transfer — 2026-10-22
+
+At the user's request, uploaded the existing Downloads/7sys44td9c-1.zip to the [private currency transfer release](https://github.com/mischa23v/blind/releases/tag/currency-transfer-20261022): 6,752,380,788 bytes, split into four binary parts with reassembly instructions and original/part SHA-256 checksums. All eight uploaded assets match GitHub SHA-256 digests. The outer ZIP contains 7sys44td9c-1/Saudi Currency.zip. No dataset extraction, training, dependency installation, model download or app tests performed. Dataset licence, labels, training suitability and Mac extraction remain unverified. Original ZIP retained in Downloads. This records transfer only; V11 remains open.
