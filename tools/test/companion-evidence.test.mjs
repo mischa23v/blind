@@ -48,10 +48,12 @@ test('main screen shows only the current reply above the bottom tab buttons', as
   assert.doesNotMatch(home, /\.toolbar\(\.hidden, for: \.tabBar\)/, 'the user wants the bottom buttons kept');
   assert.match(home, /\.toolbar\(\.hidden, for: \.navigationBar\)/);
   assert.doesNotMatch(home, /companion-greeting|home-status|companion-goal|microphone-status|practice-status/);
-  // The only on-screen button is the developer typing control, shown in --text-only builds.
+  // On screen: the reply, the reading-tool row above the tab buttons, and (developer --text-only
+  // builds only) the typing control.
   const body = home.split('var body: some View')[1].split('.sheet(')[0];
   assert.equal((body.match(/Button\(/g) ?? []).length, 1);
   assert.match(body, /if model\.textOnly \{\s*Button/);
+  assert.ok(body.indexOf('Text(reply)') < body.indexOf('HomeToolButtons(model: model)'), 'reply first, tools below it');
 });
 
 test('a manual or answer-window turn never switches continuous listening off', async () => {

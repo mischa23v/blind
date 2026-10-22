@@ -27,8 +27,12 @@ final class LaunchTests: XCTestCase {
         XCTAssertFalse(reply.label.isEmpty)
         let tabs = app.tabBars.firstMatch
         XCTAssertTrue(tabs.exists, "Bottom tab buttons stay on the main screen")
+        // Reply, then the five reading tools above the bottom tab buttons; nothing else.
+        for id in ["tool-read-text", "tool-read-page", "tool-scan-code", "tool-light", "tool-explore"] {
+            XCTAssertTrue(app.buttons[id].exists, id)
+        }
         let hittable = app.buttons.allElementsBoundByIndex.filter(\.isHittable)
-        XCTAssertEqual(hittable.count, tabs.buttons.count, "Only the bottom tab buttons besides the reply")
+        XCTAssertEqual(hittable.count, tabs.buttons.count + 5, "Only the reading tools and the bottom tab buttons besides the reply")
         XCTAssertFalse(app.buttons["write-message"].exists)
     }
     func testSettingsAndWearableSetupAreReachable() {

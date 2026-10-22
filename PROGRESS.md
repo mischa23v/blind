@@ -7,7 +7,7 @@ The Seeing AI app source is not public. I compared its documented features and a
 - a light detector;
 - explore a picture by touch.
 
-Voice commands: "Read text", "Read the page", "Scan the barcode", "Call this …", "Is the light on?", "Stop reading". They also appear under Settings › Ask and goals › Reading tools, and as a stop action on the main reply. Details are in research/SEEING_AI_CODE_REFERENCES.md. npm test 130/130. Swift and device behaviour are unverified (no Swift toolchain here).
+Main screen (user request): the five tools are large buttons above the bottom tab buttons, under the reply, and a running tool's button becomes its Stop button. Voice commands: "Read text", "Read the page", "Scan the barcode", "Call this …", "Is the light on?", "Stop reading". They also appear under Settings › Ask and goals › Reading tools, and as a stop action on the main reply. Details are in research/SEEING_AI_CODE_REFERENCES.md. npm test 130/130. Swift and device behaviour are unverified (no Swift toolchain here).
 
 ## Tracked target and instant acknowledgement — 2026-10-22 (follow-up)
 

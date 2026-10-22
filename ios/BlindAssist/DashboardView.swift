@@ -8,8 +8,8 @@ struct DashboardView: View {
     var body: some View { AssistantToolsView(model: model, initialTab: "companion") }
 }
 
-/// The main screen holds only the assistant's current reply above the bottom tab buttons, so
-/// VoiceOver reads the reply and the tabs and nothing else (user, 2026-10-22). Speech already
+/// The main screen holds the assistant's current reply, a row of reading tools, and the bottom tab
+/// buttons, so VoiceOver reads the reply first and nothing else in between (user, 2026-10-22). Speech already
 /// announces each new reply; Yes/No, Repeat and Write are VoiceOver actions on the reply (and a
 /// long-press menu), or are said aloud.
 private struct CompanionHomeView: View {
@@ -35,6 +35,8 @@ private struct CompanionHomeView: View {
                     .accessibilityActions { actions }
                     .contextMenu { actions }
             }
+            // Seeing AI-style tools, just above the bottom tab buttons (user, 2026-10-22).
+            HomeToolButtons(model: model)
             // Developer typing tests only (--text-only); not part of the everyday screen.
             if model.textOnly {
                 Button(t("Write a message", "اكتب رسالة")) { writing = true }
@@ -80,6 +82,53 @@ private struct CompanionHomeView: View {
             if model.running { model.restartSensors() } else { model.startExperience() }
         }
         Button(t("Write a message", "اكتب رسالة")) { writing = true }
+    }
+}
+
+/// Large tool buttons above the tab bar. A running tool's button stops it.
+private struct HomeToolButtons: View {
+    @ObservedObject var model: NavigationModel
+    private func t(_ en: String, _ ar: String) -> String { model.arabic ? ar : en }
+    private let columns = [GridItem(.adaptive(minimum: 104), spacing: 10)]
+
+    private func tool(_ kind: ReadingTool, _ title: String, _ stopTitle: String, _ symbol: String, _ id: String) -> some View {
+        let active = model.readingTool == kind
+        return Button {
+            if active { model.stopReadingTool(announce: true) } else { model.startReadingTool(kind) }
+        } label: {
+            label(active ? stopTitle : title, symbol: active ? "stop.circle.fill" : symbol, active: active)
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(active ? .isSelected : [])
+        .accessibilityIdentifier(id)
+    }
+
+    private func label(_ title: String, symbol: String, active: Bool) -> some View {
+        VStack(spacing: 4) {
+            Image(systemName: symbol).font(.title2).accessibilityHidden(true)
+            Text(title).font(.callout.weight(.semibold)).multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, minHeight: 64)
+        .padding(8)
+        .foregroundStyle(active ? Color.black : Color.white)
+        .background(active ? Color.yellow : Color(white: 0.18), in: RoundedRectangle(cornerRadius: 14))
+        .contentShape(Rectangle())
+    }
+
+    var body: some View {
+        LazyVGrid(columns: columns, spacing: 10) {
+            tool(.liveText, t("Read text", "اقرأ النص"), t("Stop reading", "أوقف القراءة"), "text.viewfinder", "tool-read-text")
+            tool(.document, t("Read page", "اقرأ صفحة"), t("Stop page", "أوقف الصفحة"), "doc.text.viewfinder", "tool-read-page")
+            tool(.barcode, t("Scan code", "امسح رمزاً"), t("Stop scan", "أوقف المسح"), "barcode.viewfinder", "tool-scan-code")
+            tool(.light, t("Light", "الضوء"), t("Stop light", "أوقف الضوء"), "lightbulb", "tool-light")
+            NavigationLink { ExplorePictureView(model: model) } label: {
+                label(t("Explore picture", "استكشف صورة"), symbol: "hand.point.up.left", active: false)
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("tool-explore")
+        }
+        .padding(.horizontal, 16)
+        .padding(.bottom, 12)
     }
 }
 
