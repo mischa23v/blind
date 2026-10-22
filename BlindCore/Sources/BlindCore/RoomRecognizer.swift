@@ -130,6 +130,13 @@ public struct RoomRecognizer: Sendable {
         }
         if let mapped = summary.mapRooms.first {
             clearPending()
+            // A map match contradicted by a strong clue for another room, with no clue of its own,
+            // is a look-alike doubt (a sibling's similar room): ask instead of deciding.
+            let ownClues = summary.clues[mapped]?.strongKinds ?? []
+            let rivals = summary.clues.keys.sorted().filter { $0 != mapped && !(summary.clues[$0]?.strongKinds ?? []).isEmpty }
+            if ownClues.isEmpty, !rivals.isEmpty {
+                return .askWhich(Array(([mapped] + rivals).prefix(Self.maxAskWhich)))
+            }
             var basis = [Self.worldMapBasis]
             basis += summary.clues[mapped]?.strongKinds ?? []
             basis += summary.clueConflicts(excluding: mapped)

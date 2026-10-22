@@ -100,9 +100,10 @@ final class RoomRecognizerTests: XCTestCase {
 
     func testConflictPrefersWorldMapAndNotesConflict() {
         var recognizer = RoomRecognizer()
+        // A lone map match against a strong clue for another room is doubt: ask.
         XCTAssertEqual(recognizer.decide([.worldMapMatched(roomID: "bedroom"),
                                           .imageSimilarity(roomID: "kitchen", score: 0.9)], at: 0),
-                       .established(roomID: "bedroom", basis: ["worldMap", "conflict:imageSimilarity:kitchen"]))
+                       .askWhich(["bedroom", "kitchen"]))
         XCTAssertEqual(recognizer.decide([.worldMapMatched(roomID: "bedroom"),
                                           .furnitureSignature(roomID: "bedroom", overlap: 0.7),
                                           .imageSimilarity(roomID: "kitchen", score: 0.9)], at: 1),

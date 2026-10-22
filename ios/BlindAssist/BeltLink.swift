@@ -187,7 +187,10 @@ final class BeltLink: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
         if let old = device.role, old != packet.role { return }
         if let expected = expectedRoles[peripheral.identifier], expected != packet.role { return }
         if devices.contains(where: { $0.key != peripheral.identifier && $0.value.role == packet.role }) {
-            status = "A device with this role is already connected"; onUpdate?(); return
+            // A second belt (or wristband) would report "uncertain" forever; drop it instead.
+            status = "A device with this role is already connected"
+            selected.remove(peripheral.identifier); devices.removeValue(forKey: peripheral.identifier)
+            central.cancelPeripheralConnection(peripheral); onUpdate?(); return
         }
         device.role = packet.role; device.packet = packet
         expectedRoles[peripheral.identifier] = packet.role

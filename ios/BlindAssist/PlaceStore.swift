@@ -30,6 +30,7 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     private var scanID = UUID()
     private var processing: Task<Void, Never>?
     var arabic = false
+    private func t(_ english: String, _ arabic: String) -> String { self.arabic ? arabic : english }
     private var lastInstruction = ""
     private var lastInstructionTime = -Double.infinity
     var onScanFinished: (() -> Void)?
@@ -53,7 +54,7 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
             var protectedDirectory = memoryDirectory; try protectedDirectory.setResourceValues(memoryProtection)
             memory = try MemoryStore(path: memoryDirectory.appendingPathComponent("memory.sqlite").path)
             retryDeletionCleanup()
-            } catch { message = "Room memory is unavailable. Saved files are read-only." }
+            } catch { message = t("Room memory is unavailable. Saved files are read-only.", "ذاكرة الغرف غير متاحة. الملفات المحفوظة للقراءة فقط.") }
             let files = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
             places = files.filter { $0.pathExtension == "json" }.compactMap {
                 guard let data = try? Data(contentsOf: $0) else { return nil }
@@ -61,12 +62,12 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
                 if let memory, (try? memory.isDeleted(room: place.id.uuidString)) != false { return nil }
                 return place
             }.sorted { $0.createdAt > $1.createdAt }
-        } catch { message = "Could not load saved places: \(error.localizedDescription)" }
+        } catch { message = t("Could not load saved places.", "تعذر تحميل الأماكن المحفوظة.") }
     }
     func startScan(session: ARSession, name: String, compare: SavedPlace? = nil, relocalized: Bool = false) {
         guard !scanning else { return }
         finishing = false
-        guard compare == nil || relocalized else { message = "Recognize the saved place before comparing."; return }
+        guard compare == nil || relocalized else { message = t("Recognize the saved place before comparing.", "تعرّف على المكان المحفوظ قبل المقارنة."); return }
         self.name = name.isEmpty ? "My place" : name
         scanID = UUID()
         lastInstruction = ""; lastInstructionTime = -.infinity
@@ -102,7 +103,7 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
             try memory.deleteRoom(place.id.uuidString)
             places.removeAll { $0.id == place.id }
             retryDeletionCleanup()
-        } catch { message = "Place deletion could not finish. Some private files may remain; retry deletion after restoring storage access." }
+        } catch { message = t("Deleting the place did not finish. Some private files may remain; try again.", "لم يكتمل حذف المكان. قد تبقى بعض الملفات الخاصة؛ أعد المحاولة.") }
     }
     func retryDeletionCleanup() {
         do {
@@ -117,10 +118,12 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
             needsDeletionCleanup = false
         } catch {
             needsDeletionCleanup = true
-            message = "Deleted rooms are blocked, but some private files remain. Retry cleanup when storage is available."
+            message = t("Deleted rooms are blocked, but some private files remain. Try cleanup again later.", "الغرف المحذوفة محجوبة، لكن بعض الملفات الخاصة باقية. أعد التنظيف لاحقاً.")
         }
     }
     func captureSession(_ session: RoomCaptureSession, didEndWith data: CapturedRoomData, error: Error?) {
+        // Scan state is owned by the main thread; the delegate may call from elsewhere.
+        guard Thread.isMainThread else { DispatchQueue.main.async { self.captureSession(session, didEndWith: data, error: error) }; return }
         guard capture === session, scanning else { return }
         let id = scanID, savedName = name, baseline = comparison, localized = comparisonLocalized
         processing = Task { @MainActor in
@@ -170,7 +173,7 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
                 message = arabic ? "حُفظت \(place.name). راجع الأبواب والأثاث في مخطط الغرفة." : "Saved \(place.name). Review the doors and furniture in the room map."
                 onMessage?(message)
             } catch is CancellationError {} catch {
-                if scanID == id { message = "Scan failed: \(error.localizedDescription)"; onMessage?(message) }
+                if scanID == id { message = t("The room scan failed. Try again with a helper.", "فشل مسح الغرفة. أعد المحاولة مع مساعد."); onMessage?(message) }
             }
         }
     }
@@ -216,14 +219,14 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
             do {
                 guard try !memory.isDeleted(room: place.id.uuidString) else { return nil }
                 if let revision = try memory.current(room: place.id.uuidString) { return try decoded(revision) }
-            } catch { message = "Room memory could not be read. No older copy was substituted."; return nil }
+            } catch { message = t("Room memory could not be read.", "تعذرت قراءة ذاكرة الغرفة."); return nil }
         }
         let legacyURL = directory.appendingPathComponent("\(place.id).layout.json")
         if let data = try? Data(contentsOf: legacyURL),
            let layout = try? JSONDecoder().decode(RoomLayout.self, from: data), (try? layout.validate()) != nil {
             guard let memory else { return layout } // Read-only legacy access when memory is unavailable.
             do { return try decoded(memory.importRoom(room: place.id.uuidString, payload: data)) }
-            catch { message = "Room import failed. Original files were kept."; return nil }
+            catch { message = t("Room import failed. The original files were kept.", "فشل استيراد الغرفة. بقيت الملفات الأصلية."); return nil }
         }
         if let url = fileURL(for: place, extension: "room.json"), let data = try? Data(contentsOf: url),
            let room = try? JSONDecoder().decode(CapturedRoom.self, from: data) {
@@ -279,7 +282,7 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
         do {
             try JSONEncoder().encode(layout).write(to: prefix.appendingPathExtension("layout.json"), options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
             try Data(layout.svg().utf8).write(to: prefix.appendingPathExtension("svg"), options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
-        } catch { message = "The room revision was saved; its export could not be refreshed." }
+        } catch { message = t("The room was saved; its export could not be refreshed.", "حُفظت الغرفة؛ تعذر تحديث ملف التصدير.") }
     }
     func savePhoto(_ jpeg: Data, for place: SavedPlace) throws {
         guard jpeg.count <= 2_000_000, places.contains(where: { $0.id == place.id }) else { throw CocoaError(.fileWriteUnknown) }

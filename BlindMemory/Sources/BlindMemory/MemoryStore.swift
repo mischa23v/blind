@@ -162,11 +162,13 @@ public final class MemoryStore: Sendable {
               at.timeIntervalSince1970.isFinite, sourceIDs.count <= 64,
               sourceIDs.allSatisfy({ !$0.isEmpty && $0.count <= 64 }) else { throw MemoryError.invalid }
         let sources = try JSONEncoder().encode(sourceIDs)
+        // Match the table CHECK so oversized multibyte ID lists surface as MemoryError.invalid.
+        guard sources.count <= 8192 else { throw MemoryError.invalid }
         try database.write { db in
             try db.execute(sql: "INSERT INTO narrationReceipt(profile,id,sessionID,goalRevision,snapshotID,sourceIDs,text,outcome,created) VALUES (?,?,?,?,?,?,?,'pending',?)",
                            arguments: [profile, id, sessionID, goalRevision, snapshotID, sources, text, at.timeIntervalSince1970])
             // Bounded history; current/newest entries survive, independent of wall-clock rollback.
-            try db.execute(sql: "DELETE FROM narrationReceipt WHERE profile=? AND rowid NOT IN (SELECT rowid FROM narrationReceipt WHERE profile=? ORDER BY rowid DESC LIMIT 20)", arguments: [profile, profile])
+            try db.execute(sql: "DELETE FROM narrationReceipt WHERE profile=? AND rowid NOT IN (SELECT rowid FROM narrationReceipt WHERE profile=? ORDER BY created DESC, rowid DESC LIMIT 20)", arguments: [profile, profile])
         }
     }
     public func finishNarration(id: String, outcome: String, at: Date) throws {
@@ -181,7 +183,7 @@ public final class MemoryStore: Sendable {
     }
     public func recentNarrations() throws -> [NarrationRecord] {
         try database.read { db in
-            try Row.fetchAll(db, sql: "SELECT * FROM narrationReceipt WHERE profile=? ORDER BY rowid DESC LIMIT 20", arguments: [profile]).map {
+            try Row.fetchAll(db, sql: "SELECT * FROM narrationReceipt WHERE profile=? ORDER BY created DESC, rowid DESC LIMIT 20", arguments: [profile]).map {
                 NarrationRecord(id: $0["id"], sessionID: $0["sessionID"], goalRevision: $0["goalRevision"], snapshotID: $0["snapshotID"], sourceIDs: try JSONDecoder().decode([String].self, from: $0["sourceIDs"]), text: $0["text"], outcome: $0["outcome"], created: Date(timeIntervalSince1970: $0["created"]))
             }
         }

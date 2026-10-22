@@ -102,6 +102,7 @@ actor CommunityPackageStorage {
     private var networkOperation = false
     private var generation = UUID()
     private var page = 0
+    private var emptyPages = 0
     private var repository = ""
     var networkAllowed = false { didSet { if !networkAllowed && networkOperation { cancel() } } }
     init(storage: CommunityPackageStorage = CommunityPackageStorage(), client: PublicMapClient = PublicMapClient()) {
@@ -125,12 +126,15 @@ actor CommunityPackageStorage {
         guard networkAllowed else { status = CommunityError.offline.localizedDescription; return }
         let target = repository.trimmingCharacters(in: .whitespacesAndNewlines)
         let next = more && target == self.repository ? page + 1 : 1
+        if next == 1 { emptyPages = 0 }
         perform(network: true) { [self] in
             let result = try await client.releases(repository: target, page: next)
             try Task.checkCancellation(); guard networkAllowed else { throw CommunityError.offline }
             if next == 1 { releases = [] }
             let existing = Set(releases.map(\.id)); releases += result.filter { !existing.contains($0.id) }
-            page = next; self.repository = target; hasNextPage = next < 50
+            // Stop offering more pages at GitHub's limit or after three pages with nothing usable.
+            emptyPages = result.isEmpty ? emptyPages + 1 : 0
+            page = next; self.repository = target; hasNextPage = next < 50 && emptyPages < 3
             status = result.isEmpty ? "No compatible map assets on this release page. You can check the next page." : "Choose a package to download and review. GitHub stars do not verify its map."
         }
     }

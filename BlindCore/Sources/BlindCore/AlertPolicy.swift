@@ -7,6 +7,8 @@ public struct AlertPolicy: Sendable {
     private var lastReason: MonitoringReason?
     public init() {}
     public mutating func shouldAnnounce(_ detection: Detection, at time: Double) -> Bool {
+        // A non-finite time would freeze repetition of the same urgent hazard; announce, store nothing.
+        guard time.isFinite else { return detection.hazard.isUrgent }
         let changedUrgentEvidence = detection.hazard.isUrgent && lastHazard == detection.hazard && lastReason != detection.reason
         lastReason = detection.reason
         let scheduled = shouldAnnounce(detection.hazard, at: time)

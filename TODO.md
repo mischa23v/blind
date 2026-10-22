@@ -1,3 +1,15 @@
+## Next — Mac and iPhone (always-on build)
+
+1. Build BlindCore/BlindMemory and run their XCTests, including `CompanionEvidenceTests`. Build the app and fix compile errors. Check `GenerationOptions(samplingMode:)` versus `sampling:` against the installed SDK.
+2. On the iPhone, verify always-on:
+   - Lock the screen and switch apps: speech warns at once and every 30 s, and listening continues.
+   - Return: the camera restarts.
+   - Phone call or Siri interruption: listening recovers.
+   - Bluetooth off/on and a belt power cycle: the belt reconnects by itself.
+3. Retype the recorded chat failures. Run "help me find my cup" with the camera on (search result types) and with it off (code reply).
+4. Do a VoiceOver walkthrough of every tab, run the rewritten UI tests and the accessibility audits.
+5. Firmware: run the PlatformIO builds, then hardware tests of the debounced floor loss, no-target behaviour and the watchdog.
+
 ## Next — Mac validation of the hallucination fix (2026-10-22)
 
 1. Build BlindCore and run XCTests, including `CompanionEvidenceTests` (shared fixture must match Node). Then build the app (`--text-only` and normal) and fix any compile errors in `LocalImageAssistant.swift`, `NavigationModel.swift`, `DashboardView.swift`, `VisionService.swift` and `VoiceInput.swift`.

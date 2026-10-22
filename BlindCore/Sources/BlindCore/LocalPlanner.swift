@@ -61,7 +61,7 @@ public struct LocalPlanner: Sendable {
             return true
         }
         // This is a look-ahead plan. The unobserved ground directly under the wearer is not asserted safe.
-        let start = Cell(x: 0, z: Int(0.6 / resolution))
+        let start = Cell(x: 0, z: Int((0.6 / resolution).rounded()))
         guard traversable(start) else { return result }
         let direction = observation.coordinates(target)
         let length = hypot(direction.side, direction.ahead)

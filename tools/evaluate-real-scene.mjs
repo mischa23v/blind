@@ -146,7 +146,8 @@ try {
       const result = await response.json();
       Object.assign(row, { status: response.status, latencyMS: Date.now() - started, providerCalls: calls - before,
         answer: result.answer ?? null, refusal: result.error ?? null,
-        discardedAnswers: raw.slice(before, calls).filter(text => text !== result.answer) });
+        // A raw answer whose sentences were kept (after filtering/trimming) was used, not discarded.
+        discardedAnswers: raw.slice(before, calls).filter(text => !result.answer || !text.includes(result.answer.split(/(?<=[.!?])\s/)[0])) });
       if (row.answer) {
         row.spatialGuardOnFinal = containsSpatialClaim(row.answer);
         if (s.history) history.push(row.answer);

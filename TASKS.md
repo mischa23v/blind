@@ -1,3 +1,11 @@
+## Always-on and full-scan follow-ups — 2026-10-22 (source written; Mac/device verification pending)
+
+- [ ] **H07 — Always on.** Background listening, speech and belt; the camera pause is announced every 30 s; restart on return, failure or frame loss; no off switch; practice auto-ends. Exit: iPhone test with the screen locked, app switching, a phone call, Siri, Bluetooth off/on and a belt power cycle; listening is never lost silently.
+- [ ] **H08 — Sensor-backed object search.** Exit: found/measured, seen-without-depth and not-located results on device; the hint stays fresh while turning.
+- [ ] **H09 — Accessible screens.** Exit: VoiceOver walkthrough of every tab by a blind tester; accessibility audits pass; every delete and share is confirmed.
+- [ ] **H10 — Firmware robustness.** Exit: PlatformIO builds; a hardware test of the debounced floor loss, no-target behaviour, watchdog reset with the motor off, and the pairing window.
+- [ ] **H11 — Live Activity / Lock Screen status** (needs a widget extension target in the project generator).
+
 ## Conversation evidence rule — 2026-10-22 (source written; Mac verification pending)
 
 - [ ] **H01 — Code-owned object facts.** `CompanionUtterance`/`CompanionFactBook` answer find requests and location reports without the model; reports stay historical with time. Exit: BlindCore `CompanionEvidenceTests` pass on the Mac, and the recorded cup failure is answered correctly in the running app.

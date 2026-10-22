@@ -1,3 +1,14 @@
+## CURRENT — always-on build to validate first (2026-10-22, cloud session)
+
+Supersedes the "hallucination fix" section below as the starting point. The companion is now always on: no off switch, listening/speech/belt continue in the background, camera loss announced and restarted automatically. See PROGRESS (top entry), AGENTS.md "Always on", and research/HALLUCINATION_REVIEW.md (dots research and scan verdicts).
+
+**Guardian setup on the phone:**
+- Turn on Guided Access (Settings › Accessibility) so the app stays in front and the side button cannot lock it by accident.
+- Allow microphone, speech, camera, Bluetooth and location.
+- Optionally assign the Action button or Siri: "Open Blind Assist".
+
+**First Mac steps:** follow TODO "Next — Mac and iPhone (always-on build)". Node 129/129 and the firmware host tests pass; Swift and hardware builds are unverified.
+
 ## CURRENT — hallucination fix to validate first (2026-10-22, cloud session)
 
 This supersedes the "pause checkpoint" below for the next Mac session. Read [research/HALLUCINATION_REVIEW.md](research/HALLUCINATION_REVIEW.md).

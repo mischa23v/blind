@@ -241,6 +241,8 @@ public struct CompanionAttention: Sendable {
 
     private mutating func gate(_ item: InformationCandidate, moment: CompanionMoment,
                                settings: CompanionSettings, speaking: SpeechPriority?) -> CompanionDecision {
+        // A hazard is never dropped for bookkeeping reasons (zero words for a tone, open expiry).
+        if item.kind == .hazard, !item.key.isEmpty, moment.now.isFinite { return .say(item, .hazard) }
         guard item.words > 0, !item.key.isEmpty, item.createdAt.isFinite, item.expiresAt.isFinite,
               moment.now.isFinite else { return .drop(item.key, .invalid) }
         guard moment.now <= item.expiresAt else { return .drop(item.key, .expired) }

@@ -14,8 +14,9 @@ const scene = { question: 'Describe what is in front of me.', image, language: '
   context: { version: 1, motion: 'unknown', monitoring: 'unknown', observations: [] }, wordAllowance: 55 };
 
 // Connection timing to the API host, without a model call.
+// The key goes to curl on stdin (-H @-), never on the command line where `ps` would show it.
 const curl = spawnSync('curl', ['-s', '-o', '/dev/null', '-w', '%{time_namelookup} %{time_connect} %{time_appconnect} %{time_starttransfer} %{time_total}',
-  'https://api.openai.com/v1/models', '-H', `Authorization: Bearer ${process.env.OPENAI_API_KEY}`], { encoding: 'utf8' });
+  'https://api.openai.com/v1/models', '-H', '@-'], { encoding: 'utf8', input: `Authorization: Bearer ${process.env.OPENAI_API_KEY}\n` });
 const [dns, tcp, tls, firstByte, total] = curl.stdout.trim().split(' ').map(v => Math.round(Number(v) * 1000));
 const results = { imageBytes: readFileSync(frame).length, network: { dnsMS: dns, tcpConnectMS: tcp, tlsDoneMS: tls, firstByteMS: firstByte, totalMS: total }, variants: [] };
 

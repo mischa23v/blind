@@ -98,6 +98,10 @@ struct AssistantToolsView: View {
     @State private var confirmClearConversation = false
     @State private var placesToDelete: [SavedPlace] = []
     @State private var journeysToDelete: [Journey] = []
+    @State private var confirmRouteImport = false
+    @State private var confirmRouteDelete = false
+    @State private var shareJourney: Journey?
+    @State private var shareRouteMap = false
     @State private var selectedTab: String
     init(model: NavigationModel, initialTab: String = "settings") {
         self.model = model
@@ -248,9 +252,9 @@ struct AssistantToolsView: View {
                 Text(model.sceneAnswer.isEmpty ? t("No answer yet.", "لا توجد إجابة بعد.") : model.sceneAnswer)
                     .textSelection(.enabled)
                     .accessibilityIdentifier("assistant-answer")
-                Button(t("Repeat answer", "كرر الإجابة")) {
-                    if model.detection.hazard == .observing { model.speakRequested(model.sceneAnswer) }
-                }.disabled(model.sceneAnswer.isEmpty)
+                // The speech gate already holds this back during urgent hazards.
+                Button(t("Repeat answer", "كرر الإجابة")) { model.speakRequested(model.sceneAnswer) }
+                    .disabled(model.sceneAnswer.isEmpty)
                 Button(t("Stop descriptions, keep alerts", "أوقف الوصف وأبقِ التنبيهات")) { model.stopDescriptions() }
                     .accessibilityIdentifier("stop-descriptions")
             } header: { Text(t("Answer", "الإجابة")) }
@@ -282,7 +286,10 @@ struct AssistantToolsView: View {
     }
     private var sceneQuestion: String {
         let question = model.assistantQuestion.trimmingCharacters(in: .whitespacesAndNewlines)
-        return question.isEmpty ? (model.arabic ? "صف \(focus) في مجال الكاميرا الحالي." : "Describe \(focus) in the current camera view.") : question
+        guard question.isEmpty else { return question }
+        let english = ["surroundings": "what is around me", "room": "the room layout", "people": "the people", "object": "the object in front of me", "path": "the path features", "text": "the text"]
+        let arabic = ["surroundings": "ما حولي", "room": "تخطيط الغرفة", "people": "الأشخاص", "object": "الغرض أمامي", "path": "معالم المسار", "text": "النص"]
+        return model.arabic ? "صف \(arabic[focus] ?? "ما حولي") في مجال الكاميرا الحالي." : "Describe \(english[focus] ?? "what is around me") in the current camera view."
     }
 
     /// Where am I, saved places, scanning, community maps and private maps.
@@ -305,10 +312,11 @@ struct AssistantToolsView: View {
                 ForEach(model.places.places) { place in
                     VStack(alignment: .leading, spacing: 8) {
                         Text(place.name + ", " + "\(place.objects.count) " + t("things mapped", "أشياء مرسومة")).font(.headline)
-                        NavigationLink(t("Room map and labels", "خريطة الغرفة والتسميات")) {
+                        NavigationLink(t("Room map and labels for ", "خريطة وتسميات ") + place.name) {
                             RoomDetailView(model: model, place: place)
                         }
-                        Button(t("Recognize this place", "تعرّف على هذا المكان")) { model.recognize(place) }
+                        Button(t("Recognize ", "تعرّف على ") + place.name) { model.recognize(place) }
+                        Button(t("Delete ", "احذف ") + place.name, role: .destructive) { placesToDelete = [place] }
                     }
                 }
                 .onDelete { offsets in placesToDelete = offsets.map { model.places.places[$0] } }
@@ -331,17 +339,23 @@ struct AssistantToolsView: View {
             Section {
                 Text(model.mapping.status)
                 NavigationLink(t("Mapping progress", "تقدم رسم الخريطة")) { SurveyProgressView(model: model) }
-                if let url = model.mapping.exportURL {
-                    ShareLink(t("Export private map", "تصدير الخريطة الخاصة"), item: url)
+                // No export: the 3D map database can hold camera pictures of the home (privacy rule).
+                if model.mapping.exportURL != nil {
                     Button(t("Delete private map", "حذف الخريطة الخاصة"), role: .destructive) { deletePrivateMap = true }
                 }
             } header: { Text(t("Private 3D map", "الخريطة الثلاثية الأبعاد الخاصة")) }
             Section {
                 Text(String(format: model.arabic ? "المسافة المسجلة: %.1f متر" : "Recorded distance: %.1f metres", model.journeys.distance))
                 ForEach(model.journeys.saved, id: \.id) { journey in
+                    let title = journey.createdAt.formatted(date: .abbreviated, time: .shortened) + ", " + String(format: model.arabic ? "%.1f متر" : "%.1f metres", journey.distance)
                     VStack(alignment: .leading) {
-                        Text(journey.createdAt.formatted(date: .abbreviated, time: .shortened) + ", " + String(format: model.arabic ? "%.1f متر" : "%.1f metres", journey.distance))
-                        ShareLink(t("Export journey", "تصدير الرحلة"), item: model.journeys.url(for: journey))
+                        Text(title)
+                        // A journey is a trail of where the child walked: a helper confirms before sharing.
+                        if shareJourney?.id == journey.id {
+                            ShareLink(t("Share journey ", "شارك الرحلة ") + title, item: model.journeys.url(for: journey))
+                        } else {
+                            Button(t("Export journey ", "صدّر الرحلة ") + title) { shareJourney = journey }
+                        }
                     }
                 }
                 .onDelete { offsets in journeysToDelete = offsets.map { model.journeys.saved[$0] } }
@@ -361,7 +375,7 @@ struct AssistantToolsView: View {
         }
         .confirmationDialog(t("Delete this saved place and its pictures?", "حذف هذا المكان المحفوظ وصوره؟"),
                             isPresented: Binding(get: { !placesToDelete.isEmpty }, set: { if !$0 { placesToDelete = [] } }), titleVisibility: .visible) {
-            Button(t("Delete place", "حذف المكان"), role: .destructive) { placesToDelete.forEach { model.places.delete($0) }; placesToDelete = [] }
+            Button(t("Delete place", "حذف المكان"), role: .destructive) { placesToDelete.forEach { model.deletePlace($0) }; placesToDelete = [] }
         }
         .confirmationDialog(t("Delete this journey?", "حذف هذه الرحلة؟"),
                             isPresented: Binding(get: { !journeysToDelete.isEmpty }, set: { if !$0 { journeysToDelete = [] } }), titleVisibility: .visible) {
@@ -419,6 +433,8 @@ struct AssistantToolsView: View {
                             if model.running, model.detection.hazard == .observing, let cue = model.outdoor.bearing(to: item) {
                                 model.feedback.beacon(sector: cue.sector, distance: min(10, cue.distance))
                                 model.speakRequested(item.name ?? t("Destination", "الوجهة"))
+                            } else {
+                                model.speakRequested(t("I can't point the way yet. The camera and sensors need to be running and set up.", "لا أستطيع الإشارة إلى الطريق بعد. يجب تشغيل الكاميرا والحساسات وإعدادها."))
                             }
                         }
                         Button(t("Load walking directions", "حمّل اتجاهات المشي")) { model.outdoor.plan(to: item) }
@@ -437,12 +453,19 @@ struct AssistantToolsView: View {
                 }
             } header: { Text(t("Outdoor", "في الخارج")) }
             Section {
-                Button(t("Import indoor route JSON", "استيراد ملف المسار الداخلي")) { importing = true }
+                Button(t("Import indoor route JSON", "استيراد ملف المسار الداخلي")) {
+                    // Replacing a map loses its keep-out areas: confirm first.
+                    if model.indoor.map != nil { confirmRouteImport = true } else { importing = true }
+                }
                 if let map = model.indoor.map {
                     NavigationLink(t("Keep-out areas", "المناطق المحظورة")) {
                         KeepOutZonesView(indoor: model.indoor, arabic: model.arabic)
                     }
-                    if let url = model.indoor.exportURL { ShareLink(t("Export route map", "تصدير خريطة المسار"), item: url) }
+                    if let url = model.indoor.exportURL {
+                        if shareRouteMap { ShareLink(t("Share route map", "شارك خريطة المسار"), item: url) }
+                        else { Button(t("Export route map", "صدّر خريطة المسار")) { shareRouteMap = true } }
+                    }
+                    Button(t("Delete route map", "احذف خريطة المسار"), role: .destructive) { confirmRouteDelete = true }
                     Text(map.surfaces == nil ? t("Route lines only; no wall or furniture shapes.", "خطوط المسار فقط دون أشكال الجدران والأثاث.") : t("Includes body and head clearance. Live alerts still needed.", "يشمل خلوص الجسم والرأس. التنبيهات المباشرة ما زالت لازمة."))
                     if let revision = map.packageRevision {
                         Text(t("Map version: ", "إصدار الخريطة: ") + revision)
@@ -452,6 +475,12 @@ struct AssistantToolsView: View {
                     }
                 }
             } header: { Text(t("Route map", "خريطة المسار")) }
+        }
+        .confirmationDialog(t("Replace the route map? Its keep-out areas will be lost.", "استبدال خريطة المسار؟ ستُفقد المناطق المحظورة فيها."), isPresented: $confirmRouteImport, titleVisibility: .visible) {
+            Button(t("Choose a new route map", "اختر خريطة مسار جديدة")) { importing = true }
+        }
+        .confirmationDialog(t("Delete the route map from this phone?", "حذف خريطة المسار من هذا الهاتف؟"), isPresented: $confirmRouteDelete, titleVisibility: .visible) {
+            Button(t("Delete route map", "احذف خريطة المسار"), role: .destructive) { model.stopReturn(); model.indoor.deleteMap() }
         }
         .fileImporter(isPresented: $importing, allowedContentTypes: [.json]) { result in
             do {
@@ -526,7 +555,7 @@ struct AssistantToolsView: View {
                 Text(t("Vibration can be hard to feel in a harness. Check alerts with your headphones and belt.", "قد يصعب الشعور بالاهتزاز في الحامل. تحقق من التنبيهات بالسماعات والحزام."))
             }
             Section {
-                Toggle(t("Offline only", "دون إنترنت فقط"), isOn: $model.offlineOnly)
+                Toggle(t("Offline only (no map downloads or outdoor search)", "دون إنترنت فقط (بلا تنزيل خرائط أو بحث خارجي)"), isOn: $model.offlineOnly)
                 Toggle(t("Build private 3D map on next start", "ابنِ خريطة ثلاثية الأبعاد عند البدء التالي"), isOn: $model.buildPrivateMap)
                     .disabled(model.running || !model.mapping.available)
                 if !model.mapping.available { Text(t("3D mapping needs the mapping build.", "الخرائط الثلاثية الأبعاد تحتاج إصدار الخرائط.")) }

@@ -77,7 +77,12 @@ final class OutdoorNavigator: NSObject, ObservableObject, CLLocationManagerDeleg
     }
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         location = locations.last
-        if let last = locations.last { coarseLocation = last }
+        // Saved with places only to narrow which map to try: round to about 1 km so a precise home
+        // position is never stored.
+        if let last = locations.last {
+            let round = { (value: Double) in (value * 100).rounded() / 100 }
+            coarseLocation = CLLocation(latitude: round(last.coordinate.latitude), longitude: round(last.coordinate.longitude))
+        }
     }
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) { heading = newHeading }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) { message = "Location unavailable." }

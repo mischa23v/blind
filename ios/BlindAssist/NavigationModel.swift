@@ -300,14 +300,16 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 self.session.run(configuration)
                 if self.buildPrivateMap { self.mapping.start() }
             }
-            self.message = "Room scan finished. Recalibrate the floor to resume monitoring."
+            self.message = self.arabic ? "انتهى مسح الغرفة. لتعود تنبيهات الكاميرا، قف على أرض مستوية وقل: أنا واقف على أرض مستوية."
+                : "Room scan finished. To bring camera alerts back, stand on a level floor and say: I'm standing on a level floor."
+            _ = self.speakMobility(self.message)
         }
     }
     var supported: Bool { ARWorldTrackingConfiguration.supportsFrameSemantics(.sceneDepth) }
     func start() {
         guard !running, !places.scanning else { return }
         guard supported else {
-            message = arabic ? "لا يستطيع هذا الهاتف فحص المسار. يمكنك تجربة التدريب من المزيد." : "This phone cannot check the path. You can try practice in More."
+            message = arabic ? "لا يستطيع هذا الهاتف فحص المسار. التدريب موجود في الإعدادات." : "This phone cannot check the path. Practice is in Settings."
             speakOperation(message)
             return
         }
@@ -2190,6 +2192,18 @@ extension NavigationModel {
         }
         objectWillChange.send()
     }
+    /// Deletes a saved place and everything derived from it: scans, room pictures, the companion's
+    /// room record, and the current-place state if it was this place.
+    func deletePlace(_ place: SavedPlace) {
+        let roomID = "place:\(place.id.uuidString)"
+        if recognizedPlace?.id == place.id { recognizedPlace = nil; invalidateRecognizedRoom() }
+        if awaitingPlace?.id == place.id { awaitingPlace = nil; placeRecovery.reset(); placeRecoveryQuestion = "" }
+        invalidatePerceptionWork()
+        if companion.memory.rooms[roomID] != nil { forgetRoom(roomID) } else { _ = roomRecall.forget(room: roomID) }
+        places.delete(place)
+        objectWillChange.send()
+    }
+
     /// Removes everything about the room: pictures, visits and its name.
     func forgetRoom(_ id: String) {
         invalidatePerceptionWork()

@@ -19,6 +19,15 @@ async function collect(directory) {
   }
 }
 for (const directory of ['BlindCore', 'BlindMemory', 'ios', 'firmware', 'hardware', 'integration', 'maps', 'server', 'tools', 'research']) await collect(directory);
+// Never package what .gitignore keeps private (datasets, currency references, local models): keep
+// only files Git would track, when Git metadata is available.
+const ignoredCheck = spawnSync('git', ['check-ignore', '--stdin'], { cwd: root, input: files.join('\n'), encoding: 'utf8' });
+if (ignoredCheck.status === 0 || ignoredCheck.status === 1) {
+  const ignored = new Set(ignoredCheck.stdout.split('\n').filter(Boolean));
+  for (let index = files.length - 1; index >= 0; index--) if (ignored.has(files[index])) files.splice(index, 1);
+} else {
+  throw new Error('Could not check .gitignore; refusing to package possibly private files.');
+}
 files.push('README.md', 'MAC_HANDOFF.md', 'blind.txt', 'package.json', 'package-lock.json', '.gitignore',
   'AGENTS.md', 'PROJECT_PLAN.md', 'TASKS.md', 'TODO.md', 'PROGRESS.md');
 // Include only these known synthetic evaluation artifacts, never personal map databases.

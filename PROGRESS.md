@@ -1,3 +1,86 @@
+## Always-on companion, sensor-backed search, full code scan fixes — 2026-10-22 (cloud session, continued)
+
+User direction: the companion must work like an always-on agent (OpenAI dots): always listening, never off, because any gap is a danger to the child; keep every function; keep the reply-only main screen with the bottom buttons; sort and make accessible all other screens; sensors and data are the source of truth. Reviewed the second-opinion review (Astra) and ran four parallel code scans (core app, other screens, Swift packages, server/tools/firmware). About 90 findings; verdicts and changes are in [research/HALLUCINATION_REVIEW.md](research/HALLUCINATION_REVIEW.md).
+
+**Always on**
+- Background audio and Bluetooth modes.
+- BLE state restoration and saved pairings.
+- The camera pause is announced and repeated every 30 s.
+- Foreground return restarts everything.
+- Camera failure and frame-loss restart.
+- The microphone retries forever, including after permission or language-model gaps.
+- No off switch: Restart replaces Stop, practice ends after 2 minutes, and the belt has Reconnect instead of Disconnect.
+- A Siri/Action-button App Shortcut opens the app.
+
+**Evidence**
+- Live object search with an explicit result: found and measured from the current pose, seen but not measurable, or not located (never "not here").
+- One constrained image-model hint, freshness-checked.
+- Saved search record.
+- Detector-only identity ("a cup", never "your cup").
+- Absence, identity and unhedged-direction filters.
+- Arabic object grounding.
+- Strict 2-of-3 frame agreement.
+- Wider spatial, chat and utterance coverage, with every scan-found miss added to the shared fixtures.
+- The relay keeps a fixed "possible hazard visible" line.
+
+**App fixes**
+- Conversation not cancelled during calibration or lost monitoring; replies still spoken.
+- Calibration feedback and the "monitoring active" announcement.
+- Greeting before camera start.
+- Conversational goals keep map alignment.
+- Room descriptions no longer cancel requests.
+- Item lookups protected.
+- Echo window 3 s.
+- Arabic restarts listening in the new language.
+- Learned item descriptions grounded.
+- Place deletion removes pictures and state.
+- Room-recall index alignment; object lift capped.
+- Duplicate-role wearable dropped.
+- Scan announcements.
+- Many Arabic messages.
+
+**Screens**
+- Main screen: only the reply, above the bottom tabs; VoiceOver actions for Yes/No, Repeat, Quiet, Restart, End practice and Write.
+- Settings, Places, Routes, Ask, Camera, Saved memory, Interests, History, Community and Room detail are reorganised: headers, most-used first, item names in labels, short sentences, a voice-command help page, and confirmations before deleting or sharing.
+- Private 3D map export removed (it can hold pictures).
+- Home layout, journey and route exports need a helper confirmation.
+- Public map drafts require a venue type and permission.
+- Review links are https only.
+- The precise location is rounded to about 1 km.
+- The photo client is compiled only in developer builds.
+
+**Swift packages**
+- A lone map match against a strong rival clue now asks.
+- Single-saved-item matching is stricter.
+- Hazards are never dropped as invalid.
+- NaN-time fixes, planner rounding, a storage size check and recency ordering.
+- The AppleModelEvaluation `@main` file was renamed.
+
+**Firmware**
+- A weak floor frame is debounced.
+- A lost floor while calibrated is treated as a possible drop with a kept baseline (recalibration after 5 s).
+- "No target in range" is no longer a fault.
+- Watchdogs added, the timer-wrap stop is fixed, and the belt has a 60 s pairing window.
+
+**Server/tools**
+- Recursive privacy test with `#if/#else` tracking.
+- The handoff packager honours `.gitignore`.
+- The relay refuses plain-HTTP LAN binding unless explicitly allowed.
+- The API key is kept out of `ps`.
+- Evaluation labelling fixed.
+
+**Not changed**
+- `GenerationOptions(samplingMode:)` stays: the scan said `sampling:`, but the earlier Mac build compiled with `samplingMode:`. Verify on Mac.
+- Frame-retention pressure is noted only.
+- A Live Activity needs a widget extension.
+- Some remaining English-only strings in CommunityLibrary/BeltLink/OutdoorNavigator, and FamiliarPeopleView labels.
+
+**Tests**
+- `npm test` 129/129.
+- Firmware `protocol_test` and `failure_test` pass (g++ with ASan/UBSan).
+- Swift not compiled in this container: BlindCore/BlindMemory XCTests, the app build, the rewritten UI tests and device behaviour (background audio, BLE restoration, camera interruption, VoiceOver) must be verified on the Mac and iPhone.
+- Firmware has not been built for hardware (PlatformIO not run); the NimBLE pairing callback and watchdog APIs need a hardware build.
+
 ## Hallucination fix, reply-only main screen and microphone fixes — 2026-10-22 (cloud session, source only)
 
 The user asked for a review of all handoff problems, focused on the Apple model inventing answers and objects, then approved the recommended fix. Full review, model comparison (Apple on-device vs Gemini Nano vs Gemma vs Private Cloud Compute) and sources: [research/HALLUCINATION_REVIEW.md](research/HALLUCINATION_REVIEW.md).
