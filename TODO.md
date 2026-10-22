@@ -1,5 +1,8 @@
 ## Mac follow-up — 2026-10-22
 
+2026-10-22: Download the [complete private test-data transfer](https://github.com/mischa23v/blind/releases/tag/mac-transfer-20261022) on the Mac; verify SHA256SUMS and follow RESTORE_ON_MAC.md. Preserve the current Mac source. Then scan your own rooms on the iPhone; recorded datasets remain repeatable test inputs.
+
+
 - Resolve the remaining Dynamic Type accessibility audit failure; latest six-test UI batch was 5 passed / 1 failed.
 - Investigate Xcode's repeated AppKit layout crash; use serial command-line builds/tests while the IDE failure is unresolved.
 - Validate combined current master, including the separately added currency preparation. Local Mac results in PROGRESS cover the pre-currency checkout only.

@@ -1,5 +1,10 @@
 ## Mac validation and fixes — 2026-10-22
 
+## Private Mac transfer — 2026-10-22
+
+Uploaded the Windows project snapshot, Git history and all recorded workspace test assets to the [private transfer release](https://github.com/mischa23v/blind/releases/tag/mac-transfer-20261022). Seven assets, approximately 987 MB total: 9,635 workspace files, including the unchanged 826,767,360-byte CA-1M capture (2,988 PNG images inside), 205 image files outside that archive, all scenarios, room fixtures, maps, point clouds, replay inputs, historical reports and transcripts. Verified 9,634 project-archive entries against individual SHA-256 hashes, 36 stair originals against publisher hashes, the Git bundle, and all seven uploaded asset digests. Credentials and platform build/dependency caches excluded. No app/model/iOS tests run for this transfer. Newer Mac source was preserved; the Windows snapshot is reference material, not a replacement for the current checkout. Mac download/extraction and real iPhone room scanning remain to be verified. Windows originals retained. Read research/MAC_TRANSFER_2026-10-22.md for restore steps.
+
+
 The user authorized testing the existing ZIP despite its unverified source revision, then authorized publishing these fixes. The three modified source/test files were compared against current master; their pre-edit backups exactly match the corresponding blobs at `a2633a1`. The fixes apply on top of that head without replacing the Saudi banknote work. Results below describe the local pre-currency checkout, not validation of the combined latest master.
 
 - Fixed Debug simulator architecture selection (`ONLY_ACTIVE_ARCH=YES`, Release `NO`), black text on the yellow prominent buttons, scalable wrapping for the map-destination label, and UI queries that work without a TabBar ancestor. The cloud control assertion accepts its absence in production. The accessibility contrast exception applies only to the disabled retrace control; all other findings remain enabled.

@@ -188,3 +188,8 @@ Calibration on the iPhone: feature-print distance scale, registration limits, it
 ## Completion rule
 
 Every implementation completion entry must name the adapted upstream/API, exact source/release, changed files, new integration behavior, test command/result/log, and remaining device limitations. Update PROGRESS and TODO at the same time. If testing is deferred, leave the implementation task unchecked and say "implemented, verification pending" in PROGRESS.
+
+## Mac transfer — 2026-10-22
+
+- [x] Package and upload all available Windows scenarios, room fixtures, pictures, recorded LiDAR/depth, maps, replay data, reports, source snapshot and Git history for private Mac testing; verify archive and uploaded SHA-256 digests. [Transfer release](https://github.com/mischa23v/blind/releases/tag/mac-transfer-20261022). Transfer integrity only; no iOS/device task closed.
+- [ ] Verify download/extraction on the Mac mini and scan the user's actual rooms on the iPhone; recorded source places do not establish live home alignment.
