@@ -195,3 +195,5 @@ Every implementation completion entry must name the adapted upstream/API, exact 
 - [ ] Verify download/extraction on the Mac mini and scan the user's actual rooms on the iPhone; recorded source places do not establish live home alignment.
 
 - [x] Transfer the user-supplied 7sys44td9c-1.zip unchanged to private GitHub assets in four parts, with original/part checksums and Mac instructions. [Download](https://github.com/mischa23v/blind/releases/tag/currency-transfer-20261022). Transfer only; V11 implementation/training/device gates stay open.
+
+- [x] Upload hello.zip privately and record all eleven user-listed Seeing AI/related code repositories with pinned evidence and licence limits. [References](research/SEEING_AI_CODE_REFERENCES.md). Research/transfer only; D03/V11 integration and device checks remain open.
