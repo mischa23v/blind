@@ -103,3 +103,22 @@ Conclusion: switching to another small model does not remove the failure class. 
   - No off switch.
 - **Later:** a Live Activity (needs a widget extension target, not in the generated project yet) to show listening status on the Lock Screen and in the Dynamic Island.
 - **Not adopted:** a cloud dot for perception. Pictures stay on the phone.
+
+## Related projects reviewed (user shortlist, 2026-10-22): what is used, and how
+
+No third-party code was copied. These are design patterns, recorded with their licence limits.
+
+| Project | Licence (as reported) | Used here |
+| --- | --- | --- |
+| [WorldScribe](https://github.com/HumanAILab/worldscribe) | MIT; explicitly unfinished | Pattern: tie each visual answer to the frame it came from and drop outdated answers. Already present: request IDs, capture time and pose checks (`SceneDelivery.allowed`), a 6 s answer expiry that was not extended, search results re-measured from the current pose and discarded after 2 s, and a hint dropped if the camera turned. |
+| [CMU AR + object detection + LLM indoor navigation](https://github.com/CMU-TBD/ar-od-llm-indoor-navigation) | MIT server code; iPhone client not in the repo | Pattern: spatial memory, detections and route planning are kept apart from conversational wording. Done: `CompanionFacts`, `ObjectSearch`, `TrackedTarget` and maps are code; the model only labels and chats. Their study's switch from chest to handheld use is noted as a mounting risk to test. |
+| [Touvigation](https://arxiv.org/html/2609.21828v1) | Paper; no verified code release | Pattern: one tracked 3D target through search, approach and reach. Added `BlindCore/TrackedTarget.swift`: after the sensors find an object, guidance is re-measured from LiDAR every frame (spoken at 3/2/1 m and on a turn of 45° or more), "Within reach" at 0.6 m, re-detected every 1.5 s, and "I can't see it any more" after 8 s. No model calls. |
+| [NaviGPT](https://github.com/PSU-IST-CIL/NaviGPT) | Non-commercial | Studied only: depth/haptic feedback independent of the model, which is already how hazards work here. Its "ask the LLM whether walking is safe" design is rejected (spatial rule). |
+| [EgoBlind](https://github.com/doc-doc/EgoBlind) | Non-commercial dataset | Categories only: unsupported premises, misleading questions, outdated information. Added the `UnsupportedPremiseTests` real-model regression suite (our own synthetic cases) in `ios/BlindAssistTests/CommunityTests.swift`. |
+| [WalkVLM / WalkStream](https://github.com/xiaoyuan1996/walkvlm) | Reuse licence unclear; GPU/server | Studied only: when to issue a reminder. The existing attention gate (goal mode, words-per-minute budget) covers this. |
+
+**Response time.**
+- Hazards never involve a model: LiDAR runs at 15 frames/s, and the belt firmware decides on its own about 20 times a second, so alerts take well under 0.1 s.
+- Find, where, report, quiet, repeat, search results and tracked-target distances are written by code and instant.
+- Only chat uses the on-device model. A spoken "One moment." follows if no sentence has started within 1 s, and sessions are prewarmed.
+- A target of under 1 s to the first model sentence remains unmeasured on the iPhone (TASKS H05).

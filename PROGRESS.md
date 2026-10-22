@@ -1,3 +1,11 @@
+## Tracked target and instant acknowledgement — 2026-10-22 (follow-up)
+
+- Added `TrackedTarget` (Touvigation pattern): once the sensors find an object, guidance is re-measured from LiDAR every frame, spoken at 3/2/1 m and on turns, "Within reach" at 0.6 m, refreshed by re-detection every 1.5 s, and ended with "lost sight" after 8 s. No model calls.
+- Chat replies that haven't started within 1 s speak "One moment."
+- Added `UnsupportedPremiseTests` (EgoBlind-style categories, our own cases) to the Mac real-model tests.
+- The user's shortlist of related projects is recorded with licence limits in research/HALLUCINATION_REVIEW.md. No code copied.
+- npm test 129/129. `TrackedTargetTests` is written but not run (no Swift toolchain here).
+
 ## Always-on companion, sensor-backed search, full code scan fixes — 2026-10-22 (cloud session, continued)
 
 User direction: the companion must work like an always-on agent (OpenAI dots): always listening, never off, because any gap is a danger to the child; keep every function; keep the reply-only main screen with the bottom buttons; sort and make accessible all other screens; sensors and data are the source of truth. Reviewed the second-opinion review (Astra) and ran four parallel code scans (core app, other screens, Swift packages, server/tools/firmware). About 90 findings; verdicts and changes are in [research/HALLUCINATION_REVIEW.md](research/HALLUCINATION_REVIEW.md).

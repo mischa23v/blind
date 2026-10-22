@@ -175,6 +175,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published private(set) var companionGreeting = ""
     private var objectSearch: ObjectSearch?
     private var searchInFlight = false
+    /// A found object kept as one 3D target while the child approaches it (sensor-only guidance).
+    private var trackedTarget: TrackedTarget?
+    private var trackLookInFlight = false
+    private var lastTrackLook = -Double.infinity
     /// The running question is a conversation reply, which does not depend on the camera view.
     private var questionIsChat = false
     /// "Is this my cup?" / "where is my cup" image comparison in progress.
@@ -486,7 +490,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         updateRoomRecognition(frame: frame, observation: observation)
         updateItemLearning(frame: frame)
         continueSearch()
-        if ambientDescriptions, !returning, objectSearch == nil, !lookupInFlight, !voice.awaitingUtterance, lastFrameWallTime - lastAmbientAttempt >= 4,
+        updateTrackedTarget()
+        if ambientDescriptions, !returning, objectSearch == nil, trackedTarget == nil, !lookupInFlight, !voice.awaitingUtterance, lastFrameWallTime - lastAmbientAttempt >= 4,
            attention.permitsAmbient(detail: detail, urgent: detection.hazard != .observing, now: lastFrameWallTime) {
             lastAmbientAttempt = lastFrameWallTime
             readScene(cloud: false, automatic: true)
@@ -561,7 +566,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     private func cancelDescription() {
         questionTimeoutTask?.cancel(); questionTimeoutTask = nil
-        objectSearch?.cancel(); objectSearch = nil
+        objectSearch?.cancel(); objectSearch = nil; trackedTarget = nil
         currencyActive = false
         colorActive = false
         pendingQuestion = nil
@@ -583,7 +588,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // monitoring; camera work (searches, scene answers) is.
         if detection.hazard.requiresImmediateAttention && !previousHazard.requiresImmediateAttention {
             if questionIsChat {
-                objectSearch?.cancel(); objectSearch = nil; currencyActive = false; colorActive = false; pendingQuestion = nil
+                objectSearch?.cancel(); objectSearch = nil; trackedTarget = nil; currencyActive = false; colorActive = false; pendingQuestion = nil
             } else {
                 cancelDescription()
             }
@@ -1398,6 +1403,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 self.sceneAnswer = self.arabic ? "استغرق الرد وقتاً طويلاً. حاول مرة أخرى." : "That reply took too long. Please try again."
             }
         }
+        // A reply that has not started within a second gets a short spoken acknowledgement, so the
+        // child is never left in silence; code answers (find, where, reports) are already instant.
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(1))
+            guard let self, self.requestID == id, self.busy, self.sceneAnswer.isEmpty else { return }
+            _ = self.speakOperation(self.arabic ? "لحظة." : "One moment.", replace: false)
+        }
         questionTask = Task { @MainActor [weak self] in
             guard let self else { return }
             let revision = self.companionWorkingState.goalRevision
@@ -1971,12 +1983,14 @@ extension NavigationModel {
                 // where the person is now. Old frames, lost tracking or a new request discard the result.
                 let now = ProcessInfo.processInfo.systemUptime
                 var phrase: String?
+                var located: Point3?
                 let current = self.running && self.requestID == request && self.perceptionGeneration == generation &&
                     self.indoor.revision == mapRevision && self.indoor.alignmentRevision == alignmentRevision &&
                     now - capturedAt < 2.0 && self.lastObservation?.trackingNormal == true
                 if let found, current, let here = self.lastObservation {
                     if let point = DepthSampler.worldPoint(from: frame, uprightX: found.x, uprightY: found.y),
                        let measured = SpatialFacts.relation(from: here.camera, facing: self.currentBodyForward() ?? here.forward, to: point) {
+                        located = point
                         let text = SpatialFacts.phrase(label: found.label, relation: measured, arabic: arabic, inView: nil)
                         // Without an established body heading, directions are from the camera.
                         phrase = self.currentBodyForward() == nil ? (arabic ? "من الكاميرا: " : "From the camera: ") + text : text
@@ -1990,6 +2004,11 @@ extension NavigationModel {
                     self.objectSearch = nil
                     self.recordSearch(target, located: true)
                     if let phrase { self.say(phrase) }
+                    // Keep guiding to the measured point as the child walks, from sensors only.
+                    if let located, let label = found?.label {
+                        self.trackedTarget = TrackedTarget(label: label, query: visionTarget, point: located, now: now)
+                        self.lastTrackLook = now
+                    }
                 case .notLocated:
                     self.objectSearch = nil
                     self.recordSearch(target, located: false)
@@ -2001,6 +2020,36 @@ extension NavigationModel {
                     }
                     self.objectSearch = current
                 }
+            }
+        }
+    }
+
+    /// Re-measures the tracked target from the current pose every frame (instant, sensor-only),
+    /// refreshes its point with a new detection about every 1.5 s, and ends at reach or lost sight.
+    private func updateTrackedTarget() {
+        guard var target = trackedTarget, running, !simulation, detection.hazard == .observing,
+              let here = lastObservation, here.trackingNormal else { return }
+        let now = ProcessInfo.processInfo.systemUptime
+        let facing = currentBodyForward()
+        switch target.update(from: here.camera, facing: facing ?? here.forward, now: now, arabic: arabic, fromCamera: facing == nil) {
+        case .guidance(let text): trackedTarget = target; _ = speakMobility(text)
+        case .reached(let text): trackedTarget = nil; _ = speakMobility(text)
+        case .lost(let text): trackedTarget = nil; _ = speakMobility(text)
+        case .none: trackedTarget = target
+        }
+        guard let tracked = trackedTarget, !trackLookInFlight, now - lastTrackLook >= 1.5, let frame = session.currentFrame else { return }
+        trackLookInFlight = true; lastTrackLook = now
+        let image = frame.capturedImage, arabic = self.arabic, generation = perceptionGeneration, capturedAt = lastFrameWallTime
+        Task.detached(priority: .userInitiated) { [weak self] in
+            let found = try? VisionService.locate(target: tracked.query, image: image, orientation: .right, arabic: arabic)
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                self.trackLookInFlight = false
+                guard let found, var current = self.trackedTarget, current.query == tracked.query,
+                      self.perceptionGeneration == generation, ProcessInfo.processInfo.systemUptime - capturedAt < 2.0,
+                      let point = DepthSampler.worldPoint(from: frame, uprightX: found.x, uprightY: found.y) else { return }
+                current.seen(at: point, now: ProcessInfo.processInfo.systemUptime)
+                self.trackedTarget = current
             }
         }
     }
