@@ -15,7 +15,9 @@ Packet packet;
 BeltAlertPolicy localAlerts;
 bool rangeReady = false, motorReady = false;
 volatile bool identifyRequested = false;
-uint32_t lastTick = 0, lastPulse = 0, stopPulse = 0;
+uint32_t lastTick = 0, lastPulse = 0, stopPulse = 0, rangerAlive = 0;
+bool pulsing = false;  // separate flag: a stop time that wraps to 0 must still be honoured
+void feedWatchdog() { NRF_WDT->RR[0] = WDT_RR_RR_Reload; }
 void connected(uint16_t handle) {
     if (auto* connection = Bluefruit.Connection(handle)) connection->requestPairing();
 }
@@ -32,6 +34,9 @@ void commandReceived(uint16_t, BLECharacteristic*, uint8_t* bytes, uint16_t leng
     // A pointing wristband cannot represent body-relative navigation sectors.
 }
 void setup() {
+    // Hardware watchdog (5 s): a hung loop resets the wristband with its motor off.
+    NRF_WDT->CONFIG = (WDT_CONFIG_SLEEP_Run << WDT_CONFIG_SLEEP_Pos) | (WDT_CONFIG_HALT_Pause << WDT_CONFIG_HALT_Pos);
+    NRF_WDT->CRV = 5 * 32768; NRF_WDT->RREN = WDT_RREN_RR0_Msk; NRF_WDT->TASKS_START = 1;
     Wire.begin();
     ranger.setTimeout(20); rangeReady = ranger.init();
     if (rangeReady) { ranger.setDistanceMode(VL53L1X::Long); ranger.setMeasurementTimingBudget(50000); ranger.startContinuous(50); }
@@ -57,15 +62,20 @@ void setup() {
 }
 void loop() {
     const uint32_t now = millis();
-    if (stopPulse && int32_t(now - stopPulse) >= 0) { if (motorReady) motor.setRealtimeValue(0); stopPulse = 0; }
+    feedWatchdog();
+    if (pulsing && int32_t(now - stopPulse) >= 0) { if (motorReady) motor.setRealtimeValue(0); pulsing = false; }
     if (uint32_t(now - lastTick) < 50) { delay(1); return; }
     lastTick = now;
     if (rangeReady && ranger.dataReady()) {
         const auto mm = ranger.read(false);
-        pointing.update(ranger.ranging_data.range_status == VL53L1X::RangeValid ? mm : UNKNOWN, now);
+        const auto status = ranger.ranging_data.range_status;
+        if (status != VL53L1X::HardwareFail) rangerAlive = now;
+        if (status == VL53L1X::RangeValid) pointing.update(mm, now);
     }
     const bool valid = pointing.fresh(now);
-    packet.flags = valid && motorReady ? Calibrated : Fault;
+    // Nothing within pointing range is not a fault: the sensor answered. Range stays unknown.
+    const bool responsive = rangeReady && uint32_t(now - rangerAlive) <= 350;
+    packet.flags = responsive && motorReady ? Calibrated : Fault;
     packet.range[0] = valid ? pointing.mm : UNKNOWN;
     if (valid && pointing.mm < 600) packet.flags |= Obstacle;
     const auto alert = localAlerts.update(packet.flags, packet.range, nullptr, now);
@@ -73,11 +83,11 @@ void loop() {
     if (localWarning) identifyRequested = false;
     if (motorReady && alert.active) {
         // DRV2605 signed RTP uses positive amplitudes 0...127, as on the belt.
-        motor.setRealtimeValue(alert.intensity / 2); stopPulse = now + alert.durationMS; lastPulse = now;
+        motor.setRealtimeValue(alert.intensity / 2); stopPulse = now + alert.durationMS; pulsing = true; lastPulse = now;
     }
     const uint32_t interval = valid ? constrain(pointing.mm, 150, 2000) : 1000;
     if (motorReady && !localWarning && (identifyRequested || uint32_t(now - lastPulse) >= interval)) {
-        motor.setRealtimeValue(valid ? 90 : 40); stopPulse = now + 80; lastPulse = now; identifyRequested = false;
+        motor.setRealtimeValue(valid ? 90 : 40); stopPulse = now + 80; pulsing = true; lastPulse = now; identifyRequested = false;
     }
     ++packet.sequence; uint8_t bytes[20]; packet.encode(bytes); notifyEncrypted(telemetry, bytes, sizeof(bytes));
     if (valid && packet.sequence % 2 == 0) {

@@ -23,13 +23,24 @@ static void groundFailures() {
     }
     ranges[0].update(UNKNOWN, 230);
     assert(monitor.update(ranges, 230) == (Fault | Drop));
+    // A brief loss resumes on the kept baseline, but the drop clears only after three normal samples.
     ranges[0].update(1000, 240); ranges[1].update(1100, 240);
-    assert(monitor.update(ranges, 240) == (Fault | Drop)); // do not silently recover
+    assert(monitor.update(ranges, 240) == (Calibrated | Drop));
+    ranges[0].update(1000, 250); assert(monitor.update(ranges, 250) == (Calibrated | Drop));
+    ranges[0].update(1000, 260); assert(monitor.update(ranges, 260) == Calibrated);
+    // A lost floor return while calibrated warns as a possible drop-off, not just a fault.
     calibrate(monitor, ranges, 300);
     ranges[1].update(UNKNOWN, 500);
-    assert(monitor.update(ranges, 500) == Fault);
+    assert(monitor.update(ranges, 500) == (Fault | Drop));
     ranges[0].update(1000, 510); ranges[1].update(1100, 510);
-    assert(monitor.update(ranges, 510) == Fault);
+    assert(monitor.update(ranges, 510) == (Calibrated | Drop));
+    // A loss longer than maxLostReturnMS requires a new calibration (the mount may have moved).
+    calibrate(monitor, ranges, 600);
+    ranges[0].update(UNKNOWN, 800);
+    assert(monitor.update(ranges, 800) == (Fault | Drop));
+    assert(monitor.update(ranges, 800 + GroundMonitor::maxLostReturnMS + 1) == (Fault | Drop));
+    ranges[0].update(1000, 6000); ranges[1].update(1100, 6000);
+    assert(monitor.update(ranges, 6000) == (Fault | Drop)); // latched, no silent recovery
 
     // Re-reading a normal sample cannot advance the three-sample release filter.
     calibrate(monitor, ranges, 1000);
@@ -39,7 +50,7 @@ static void groundFailures() {
     for (uint32_t time = 1250; time < 1260; ++time) assert(monitor.update(ranges, time) & Drop);
     ranges[0].update(1000, 1260); assert(monitor.update(ranges, 1260) & Drop);
     ranges[0].update(1000, 1270); assert(!(monitor.update(ranges, 1270) & Drop));
-    assert(monitor.update(ranges, 1521) == Fault);
+    assert(monitor.update(ranges, 1521) == (Fault | Drop)); // stale floor returns: possible drop
 
     // A simultaneous fault on the other sensor must not mask the first danger sample.
     for (int danger = 0; danger < 2; ++danger) {
@@ -55,7 +66,7 @@ static void groundFailures() {
         ranges[raised].update(600, 1800);
         assert(monitor.update(ranges, 1800) & Obstacle);
         ranges[1-raised].update(UNKNOWN, 1810);
-        assert(monitor.update(ranges, 1810) == (Fault | Obstacle | GroundRise));
+        assert(monitor.update(ranges, 1810) == (Fault | Drop | Obstacle | GroundRise));
     }
     calibrate(monitor, ranges, 1600);
     ranges[0].update(600, 1800); ranges[1].update(1500, 1800);
@@ -116,6 +127,11 @@ static void parserFailures() {
         for (auto byte : frame) parser.push(byte, test, range);
         assert(test < 100 ? range.mm == UNKNOWN : range.mm == 1000);
     }
+    // A later weak frame keeps the last good return, which then expires by age (debounce).
+    uint8_t weak[9] = {0x59, 0x59, 100, 0, 50, 0, 0, 0, 0};
+    for (int i = 0; i < 8; ++i) weak[8] += weak[i];
+    for (auto byte : weak) parser.push(byte, 300, range);
+    assert(range.mm == 1000 && range.timestamp == 255 && range.fresh(300) && !range.fresh(506));
     // Deterministic random command frames must never admit out-of-range haptic parameters.
     uint32_t random = 0x456789AB;
     int accepted = 0;

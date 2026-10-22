@@ -45,8 +45,9 @@ int main() {
     down[0].update(1400, 1100); down[1].update(1050, 1100);
     assert(monitor.update(down, 1100) & Drop);
     assert(monitor.update(down, 1500) == (Fault | Drop)); // loss of readings cannot clear a known drop
+    // A brief loss keeps the baseline but cannot clear the drop until three normal samples.
     down[0].update(1000, 1550); down[1].update(1050, 1550);
-    assert(!(monitor.update(down, 1550) & Calibrated));
+    assert(monitor.update(down, 1550) == (Calibrated | Drop));
     sample.update(1000, UINT32_MAX - 20); assert(sample.fresh(20));
     puts("Firmware protocol, UART parser, calibration, duplicate/stale samples, and timer wrap passed.");
 }

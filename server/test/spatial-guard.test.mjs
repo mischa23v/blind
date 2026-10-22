@@ -44,8 +44,14 @@ test('relay retries once, then speaks only a compliant answer', async () => {
   assert.equal(result.body.answer, 'Stairs are visible near the door; the sensors will give their position.');
 });
 
-test('relay refuses when the retry still gives hazard geometry', async () => {
+test('relay keeps only a fixed hazard line when the retry still gives hazard geometry', async () => {
   const result = await ask(['The path is clear.', 'Go down the stairs on your left.']);
+  assert.equal(result.status, 200);
+  assert.equal(result.body.answer, 'A possible hazard is visible; the sensors give its position.');
+});
+
+test('relay refuses when the retry still claims clearance without naming a hazard', async () => {
+  const result = await ask(['The path is clear.', 'The way is clear.']);
   assert.equal(result.status, 502);
   assert.equal(result.body.answer, undefined);
 });
@@ -70,7 +76,7 @@ test('only the offending sentence is dropped, with no second model call', async 
   const result = await ask(['A lamp stands on the desk beside the bed. The stairs are 10 steps ahead.']);
   assert.equal(result.status, 200);
   assert.equal(result.calls.length, 1);
-  assert.equal(result.body.answer, 'A lamp stands on the desk beside the bed.');
+  assert.equal(result.body.answer, 'A possible hazard is visible; the sensors give its position. A lamp stands on the desk beside the bed.');
 });
 
 test('leading whole sentences that fit the budget are kept without a retry', async () => {
@@ -114,9 +120,11 @@ test('sentence filtering preserves original hazard context in both languages', a
   ];
   for (const [text, expected] of cases) {
     assert.equal(keepSafeSentences(text, 'ar'), expected, text);
+    // A seen hazard is never silently lost: with nothing compliant left, a fixed line reports it.
     const result = await ask([text, text]);
-    assert.equal(result.status, expected ? 200 : 502, text);
-    assert.equal(result.body.answer, expected || undefined, text);
+    assert.equal(result.status, 200, text);
+    const notices = ['A possible hazard is visible; the sensors give its position.', 'قد يظهر درج أو عائق؛ الحساسات تحدد موقعه.'];
+    assert.ok(expected ? result.body.answer === expected : notices.includes(result.body.answer), text);
   }
 });
 

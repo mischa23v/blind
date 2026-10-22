@@ -41,11 +41,11 @@ test('image descriptions are grounded in detector agreement before speech', asyn
   assert.ok(agreed > 0 && grounded > agreed && marked > grounded);
 });
 
-test('main screen shows only the current reply', async () => {
+test('main screen shows only the current reply above the bottom tab buttons', async () => {
   const view = await read('ios/BlindAssist/DashboardView.swift');
   const home = view.split('private struct CompanionHomeView')[1].split('\nstruct AssistantToolsView')[0];
   assert.match(home, /accessibilityIdentifier\("companion-reply"\)/);
-  assert.match(home, /\.toolbar\(\.hidden, for: \.tabBar\)/);
+  assert.doesNotMatch(home, /\.toolbar\(\.hidden, for: \.tabBar\)/, 'the user wants the bottom buttons kept');
   assert.match(home, /\.toolbar\(\.hidden, for: \.navigationBar\)/);
   assert.doesNotMatch(home, /companion-greeting|home-status|companion-goal|microphone-status|practice-status/);
   // The only on-screen button is the developer typing control, shown in --text-only builds.
@@ -57,6 +57,44 @@ test('main screen shows only the current reply', async () => {
 test('a manual or answer-window turn never switches continuous listening off', async () => {
   const voice = await read('ios/BlindAssist/VoiceInput.swift');
   const start = voice.split('func start(arabic: Bool')[1].split('func startContinuous')[0];
-  assert.match(start, /if continuous && listening && self\.arabic == arabic \{ beginTurn\(\); return \}/);
+  assert.match(start, /if wantsContinuous && self\.arabic == arabic \{\s*if continuous && listening \{ beginTurn\(\) \}\s*return\s*\}/);
+  assert.match(voice, /cancel\(\); resumeContinuousIfWanted\(\)/, 'a one-off turn returns to always-on listening');
   assert.doesNotMatch(voice, /Listening couldn't recover/);
+});
+
+test('object search is decided by sensors with an explicit result, never a free model guess', async () => {
+  const model = await read('ios/BlindAssist/NavigationModel.swift');
+  const search = model.split('private func locate(_ target: String')[1].split('// MARK: - The person')[0];
+  assert.doesNotMatch(search, /readScene\(/, 'no free image-model fallback when the sensors miss');
+  assert.match(search, /case \.notLocated:[\s\S]*ObjectSearch\.notLocated/);
+  assert.match(search, /DepthSampler\.worldPoint/);
+  assert.match(search, /recordSearch\(target, located: false\)/);
+  // The model hint is a constrained yes/no plus side, worded by code.
+  assert.match(search, /ObjectSearch\.hint\(target: target, side: side/);
+  const assistant = await read('ios/BlindAssist/LocalImageAssistant.swift');
+  assert.match(assistant, /generating: SpotResult\.self/);
+});
+
+test('always on: no path switches listening, the belt or the awake screen off', async () => {
+  const model = await read('ios/BlindAssist/NavigationModel.swift');
+  assert.doesNotMatch(model, /voice\.(?:cancel|stopListening)\(\)/, 'the companion never stops listening');
+  assert.doesNotMatch(model, /wearables\.disconnect\(\)/, 'the belt is never disconnected by the app');
+  assert.doesNotMatch(model, /isIdleTimerDisabled = false/, 'the screen is kept awake');
+  assert.doesNotMatch(model, /func stopExperience/, 'no off switch');
+  // Background: announce the camera pause and keep reminding; return restarts everything.
+  const suspend = model.split('func suspendExperience()')[1].split('\n    func ')[0];
+  assert.doesNotMatch(suspend, /\bstop\(\)/);
+  assert.match(suspend, /backgroundReminder = Timer\.scheduledTimer\(withTimeInterval: 30/);
+  assert.match(model, /if !running \{ start\(\) \}; reconnectListening\(\)/);
+  // Camera failures restart by themselves; practice ends by itself.
+  assert.match(model, /The camera stopped\. Restarting it\./);
+  assert.match(model, /The camera failed\. Restarting it\./);
+  assert.match(model, /practiceTimer = Timer\.scheduledTimer\(withTimeInterval: 120/);
+  const plist = await read('ios/BlindAssist/Info.plist');
+  assert.match(plist, /<key>UIBackgroundModes<\/key>\s*<array>\s*<string>audio<\/string>\s*<string>bluetooth-central<\/string>/);
+  const voice = await read('ios/BlindAssist/VoiceInput.swift');
+  assert.match(voice, /private func retryLater\(\)/);
+  assert.doesNotMatch(voice, /guard failures <= 3/);
+  const view = await read('ios/BlindAssist/DashboardView.swift');
+  assert.doesNotMatch(view, /Stop monitoring|stopExperience|wearables\.disconnect\(\) \}/);
 });

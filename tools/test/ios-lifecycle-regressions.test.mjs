@@ -7,12 +7,19 @@ const read = file => readFile(new URL(`../../${file}`, import.meta.url), 'utf8')
 
 test('all fast image-answer completions revalidate their request and current scene', async () => {
   const source = await read('ios/BlindAssist/NavigationModel.swift');
-  for (const name of ['locate(', 'findItemByLook(', 'verifyHeldItem(']) {
+  for (const name of ['findItemByLook(', 'verifyHeldItem(']) {
     const start = source.indexOf(`private func ${name}`);
     const end = source.indexOf('\n    private func ', start + 1);
     const body = source.slice(start, end < 0 ? undefined : end);
     assert.match(body, /perceptionResultAllowed\(/, name);
     assert.match(body, /mapRevision: mapRevision, alignmentRevision: alignmentRevision/, name);
+  }
+  // The live object search re-measures the fixed world point from the current pose, so it checks
+  // request, perception generation, map revisions, frame age and tracking instead of an unmoved pose.
+  const search = source.slice(source.indexOf('private func continueSearch('), source.indexOf('private func offerSearchHint('));
+  for (const required of ['self.requestID == request', 'self.perceptionGeneration == generation', 'self.indoor.revision == mapRevision',
+    'self.indoor.alignmentRevision == alignmentRevision', 'now - capturedAt < 2.0', 'trackingNormal']) {
+    assert.ok(search.includes(required), required);
   }
   const gate = source.slice(source.indexOf('private func perceptionResultAllowed'), source.indexOf('private func cancelDescription'));
   for (const required of ['running', '!simulation', '!places.scanning', 'requestID == request', 'perceptionGeneration == generation', 'SceneDelivery.allowed', 'indoor.revision == mapRevision', 'indoor.alignmentRevision == alignmentRevision']) {

@@ -108,7 +108,7 @@ struct FamiliarPeopleView: View {
             HStack {
                 Button(model.voice.listening ? "Finish speaking" : "Speak face command") { toggleVoice() }
                     .accessibilityIdentifier("familiar-voice")
-                Button("Cancel", role: .cancel) { cancelPhotoLoad(); experiment.cancel(); model.voice.cancel() }
+                Button("Cancel", role: .cancel) { cancelPhotoLoad(); experiment.cancel(); model.voice.endManualTurn() }
                 Button("Retry capture") { experiment.captureExample(model: model) }.disabled(experiment.draftLabel == nil || experiment.busy)
             }.padding().background(.regularMaterial)
         }
@@ -118,9 +118,9 @@ struct FamiliarPeopleView: View {
         .onChange(of: experiment.enrollmentToken) { _, _ in cancelPhotoLoad() }
         .onChange(of: selectedPhotos) { _, selected in loadPhotos(selected) }
         .onAppear { experiment.presentationActive = true; if !experiment.enabled && !experiment.awaitingConfirmation { experiment.reload() } }
-        .onDisappear { experiment.presentationActive = false; cancelPhotoLoad(); experiment.setEnabled(false); model.voice.cancel() }
+        .onDisappear { experiment.presentationActive = false; cancelPhotoLoad(); experiment.setEnabled(false); model.voice.endManualTurn() }
         .onChange(of: scenePhase) { _, phase in
-            if phase != .active { cancelPhotoLoad(); experiment.setEnabled(false); acknowledged = false; model.voice.cancel() }
+            if phase != .active { cancelPhotoLoad(); experiment.setEnabled(false); acknowledged = false; model.voice.endManualTurn() }
         }
         .confirmationDialog("Delete every experimental face template and label on this phone?", isPresented: $confirmDeleteAll) {
             Button("Delete all experimental people", role: .destructive) { cancelPhotoLoad(); experiment.deleteAll() }

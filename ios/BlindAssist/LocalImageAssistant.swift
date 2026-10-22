@@ -33,10 +33,12 @@ struct CompanionWorkingState: Codable, Sendable {
     var factBook = CompanionFactBook()
     /// The object being discussed, so "I left it on the table" resolves to it.
     var focusObject = ""
+    /// The last sensor search result, so "did you find it?" is answered from it, not guessed.
+    var lastSearch: SearchRecord?
 
     // Older saved states also carried model-proposed steps and model-extracted facts; those
     // keys are ignored on decoding (2026-10-22: the model no longer writes task state).
-    private enum CodingKeys: String, CodingKey { case goal, goalRevision, reports, factBook, focusObject }
+    private enum CodingKeys: String, CodingKey { case goal, goalRevision, reports, factBook, focusObject, lastSearch }
     init() {}
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -45,6 +47,7 @@ struct CompanionWorkingState: Codable, Sendable {
         reports = try c.decodeIfPresent([Report].self, forKey: .reports) ?? []
         factBook = try c.decodeIfPresent(CompanionFactBook.self, forKey: .factBook) ?? CompanionFactBook()
         focusObject = try c.decodeIfPresent(String.self, forKey: .focusObject) ?? ""
+        lastSearch = try c.decodeIfPresent(SearchRecord.self, forKey: .lastSearch)
     }
 
     mutating func record(_ text: String) {
@@ -64,6 +67,10 @@ struct CompanionWorkingState: Codable, Sendable {
             changeGoal(String(message.trimmingCharacters(in: .whitespacesAndNewlines).prefix(300)))
             focusObject = object
             if let fact = factBook.latest(for: object) { return fact.recall(now: now, arabic: arabic) }
+            if let search = lastSearch, search.matches(object) {
+                let ask = arabic ? " أين كان آخر مرة؟" : " Where did you last have it?"
+                return search.sentence(now: now, arabic: arabic) + (search.located ? "" : ask)
+            }
             return CompanionFact.unknown(object: object, arabic: arabic)
         case .report(let named, let place, let tense, let hedged):
             guard let object = named ?? (focusObject.isEmpty ? nil : focusObject) else {
@@ -108,6 +115,25 @@ struct CompanionIntent {
     var place: String
     @Guide(description: "lastHadEarlier when they say where they left or last had it; isThereNow when they say where it is.")
     var time: CompanionReportTime
+}
+
+/// Constrained search hint: the image model may only answer yes/no/unsure and a side of the image.
+/// Code writes the uncertain sentence; the sensor search decides the actual result.
+@available(iOS 26.0, *)
+@Generable
+enum SpotAnswer { case yes, no, unsure }
+
+@available(iOS 26.0, *)
+@Generable
+enum SpotSide { case left, centre, right, unknown }
+
+@available(iOS 26.0, *)
+@Generable
+struct SpotResult {
+    @Guide(description: "yes only when the named thing is clearly visible in the photo")
+    var visible: SpotAnswer
+    @Guide(description: "Which part of the photo it is in")
+    var side: SpotSide
 }
 
 /// Each turn takes a fresh session whose instructions were processed ahead of time, so earlier
@@ -219,7 +245,7 @@ enum LocalImageAssistant {
 
     /// Plain lines, not JSON: the small on-device model reads short labelled text best.
     private static func chatPrompt(latest: String, earlier: [String], name: String, goal: String,
-                                   facts: [CompanionFact], likes: [String], now: Date) -> String {
+                                   facts: [CompanionFact], search: SearchRecord?, likes: [String], now: Date) -> String {
         var lines: [String] = []
         if !name.isEmpty { lines.append("Saved name: \(name).") }
         if !goal.isEmpty { lines.append("Current task: \(goal)") }
@@ -227,6 +253,10 @@ enum LocalImageAssistant {
         for fact in facts.suffix(3) {
             let elapsed = ItemMemory.relativeTime(from: fact.at, to: now, arabic: false)
             lines.append("The child said \(elapsed), not checked: \(fact.object) \(fact.tense == .earlier ? "last had" : "was") \(fact.place).")
+        }
+        if let search {
+            let elapsed = ItemMemory.relativeTime(from: search.at, to: now, arabic: false)
+            lines.append("Camera search \(elapsed) for \(search.target): \(search.located ? "seen then, may have moved" : "not located, which does not mean absent").")
         }
         if !earlier.isEmpty { lines.append("Earlier the child said: " + earlier.map { "\"\($0)\"" }.joined(separator: " ")) }
         lines.append("No camera view now; the child's location is unknown.")
@@ -275,7 +305,7 @@ enum LocalImageAssistant {
                 let likes = (situation["preferences"] as? [[String: Any]] ?? []).compactMap { $0["value"] as? String }.prefix(4)
                 let prompt = chatPrompt(latest: latest, earlier: Array(earlier.filter { $0 != latest }.suffix(4)),
                                         name: String(preferredName.prefix(80)), goal: goal, facts: workingState.factBook.facts,
-                                        likes: Array(likes), now: Date())
+                                        search: workingState.lastSearch, likes: Array(likes), now: Date())
                 // One retry when nothing compliant came back, then refuse (same rule as the relay).
                 for attempt in 0..<2 {
                     let request = attempt == 0 ? prompt : prompt + "\nYour previous reply claimed something you cannot know. Reply again without saying where anything is, whether it is missing, or what you see."
@@ -313,6 +343,31 @@ enum LocalImageAssistant {
         #endif
         return LocalImageAnswer(text: nil, status: arabic ? "نموذج المحادثة غير متاح على هذا الجهاز." : "The on-device conversation model is unavailable on this device.")
     }
+    /// Uncertain hint for a live search: "left", "centre", "right", "" (visible, side unknown), or nil
+    /// when the model says no or unsure, or the image model is unavailable. Never a stated fact.
+    static func spot(target: String, image: CVPixelBuffer, arabic: Bool) async -> String? {
+        #if BLIND_APPLE_MULTIMODAL && canImport(FoundationModels)
+        if #available(iOS 27.0, *), OnDeviceLanguage.supports(arabic: arabic) {
+            let session = LanguageModelSession(instructions: "You check one photo for one named thing. Answer yes only when you can clearly see it.")
+            do {
+                let result = try await session.respond(generating: SpotResult.self,
+                    options: GenerationOptions(samplingMode: .greedy, maximumResponseTokens: 30)) {
+                    "Is there a \(String(target.prefix(40))) in this photo?"
+                    Attachment(image, orientation: .right)
+                }.content
+                guard result.visible == .yes else { return nil }
+                switch result.side {
+                case .left: return "left"
+                case .centre: return "centre"
+                case .right: return "right"
+                case .unknown: return ""
+                }
+            } catch { return nil }
+        }
+        #endif
+        return nil
+    }
+
     static func status(arabic: Bool) -> String {
         #if BLIND_APPLE_MULTIMODAL && canImport(FoundationModels)
         if #available(iOS 27.0, *) {

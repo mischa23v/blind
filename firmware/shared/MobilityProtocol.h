@@ -63,7 +63,9 @@ public:
         if (checksum != bytes[8]) return false;
         const uint16_t cm = uint16_t(bytes[2]) | uint16_t(bytes[3]) << 8;
         const uint16_t strength = uint16_t(bytes[4]) | uint16_t(bytes[5]) << 8;
-        if (cm < 10 || cm > 800 || strength < 100 || strength == 65535) { range.mm = UNKNOWN; return false; }
+        // A weak or out-of-range frame leaves the last good return in place; Range::fresh then
+        // expires it after 250 ms, so one dark/shiny/sunlit frame does not count as a lost floor.
+        if (cm < 10 || cm > 800 || strength < 100 || strength == 65535) return false;
         range.update(cm * 10, now); return true;
     }
 };
@@ -71,13 +73,15 @@ class GroundMonitor {
     uint16_t baseline[2] = {}, low[2] = {UNKNOWN, UNKNOWN}, high[2] = {};
     uint32_t sums[2] = {};
     uint8_t count = 0, releaseRemaining[2] = {}, riseReleaseRemaining[2] = {};
-    bool calibrating = false, calibrated = false, faulted = false;
+    bool calibrating = false, calibrated = false, faulted = false, stale = false;
     uint8_t latchedHazards = 0;
-    uint32_t lastSamples[2] = {UINT32_MAX, UINT32_MAX};
+    uint32_t lastSamples[2] = {UINT32_MAX, UINT32_MAX}, staleSince = 0;
     uint8_t lastFlags = 0;
 public:
+    /// A floor return missing longer than this means the mount may have moved: recalibrate.
+    static constexpr uint32_t maxLostReturnMS = 5000;
     void beginCalibration() {
-        calibrated = false; calibrating = true; faulted = false; latchedHazards = 0; count = 0;
+        calibrated = false; calibrating = true; faulted = false; stale = false; latchedHazards = 0; count = 0;
         lastSamples[0] = lastSamples[1] = UINT32_MAX; lastFlags = 0;
         for (int i = 0; i < 2; ++i) { sums[i] = 0; low[i] = UNKNOWN; high[i] = 0; releaseRemaining[i] = 0; riseReleaseRemaining[i] = 0; }
     }
@@ -98,12 +102,24 @@ public:
                 | ((riseReleaseRemaining[0] || riseReleaseRemaining[1]) ? (Obstacle | GroundRise) : 0);
         }
         if (!ranges[0].fresh(now) || !ranges[1].fresh(now)) {
-            // No floor return is not a cleared drop. Require an explicit new calibration.
+            // No floor return is never a cleared path. While calibrated, a lost return may be a
+            // drop-off, so it warns as a drop and keeps the baseline briefly; the release filter
+            // then needs three normal samples before the drop clears. A long loss needs a new
+            // calibration because the mount may have moved.
             latchedHazards |= lastFlags & (Drop | Obstacle | GroundRise);
-            calibrated = false; calibrating = false; faulted = true;
+            if (calibrated) {
+                if (!stale) { stale = true; staleSince = now; }
+                for (int i = 0; i < 2; ++i) if (!ranges[i].fresh(now)) releaseRemaining[i] = 3;
+                if (uint32_t(now - staleSince) <= maxLostReturnMS) {
+                    lastFlags = Fault | Drop | latchedHazards;
+                    return lastFlags;
+                }
+            }
+            calibrated = false; calibrating = false; faulted = true; stale = false;
             lastFlags = Fault | latchedHazards;
             return lastFlags;
         }
+        if (stale) { stale = false; latchedHazards = 0; }
         if (faulted) return Fault | latchedHazards;
         if (calibrating) {
             // Calibration consumes complete pairs; runtime drop evidence is independent per sensor.

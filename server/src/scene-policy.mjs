@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { cleanSituation } from './situation-context.mjs';
-import { containsSpatialClaim } from './spatial-guard.mjs';
+import { containsSpatialClaim, mentionsHazard } from './spatial-guard.mjs';
 export const FOCUSES = ['surroundings', 'room', 'people', 'object', 'path', 'text'];
 export const RANGE_POLICY = 'Range observations are fresh wearable reports relative to the belt or wrist, not the camera. They do not identify an object/person, establish floor support, or provide a map position. Do not attach a sensor distance to an object in the photograph. For range records, confidence indicates a valid received report, not a probability of physical accuracy.';
 export const SYSTEM = `You are the optional contextual visual-information assistant for a blind or low-vision person. Help them understand their surroundings, people and choices, enjoy things that interest them, and make their own decisions. Speak directly and respectfully, without pity, baby talk, or unnecessary preambles.
@@ -76,6 +76,13 @@ const sentencesOf = (text, language) => [...new Intl.Segmenter(language, { granu
 // Check referents against the original answer, before dropping any antecedents.
 export function keepSafeSentences(answer, language) {
   return sentencesOf(answer, language).filter(sentence => !containsSpatialClaim(sentence, answer)).join(' ');
+}
+
+// The rule allows saying a hazard is visible. When a dropped sentence named one, the relay keeps
+// that warning with a fixed line instead of silently losing it; the model's geometry is not kept.
+export const HAZARD_NOTICE = { en: 'A possible hazard is visible; the sensors give its position.', ar: 'قد يظهر درج أو عائق؛ الحساسات تحدد موقعه.' };
+export function droppedHazard(answer, language) {
+  return sentencesOf(answer, language).some(sentence => containsSpatialClaim(sentence, answer) && mentionsHazard(sentence));
 }
 
 // Keep the leading whole sentences that fit the reservation; the model puts the most important first.

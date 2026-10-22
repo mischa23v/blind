@@ -67,3 +67,20 @@ Conclusion: switching to another small model does not remove the failure class. 
 - [Apple Intelligence Foundation Language Models Tech Report 2025](https://arxiv.org/abs/2507.13575) and [Apple ML research page](https://machinelearning.apple.com/research/apple-foundation-models-tech-report-2025)
 - [ML Kit GenAI Prompt API alpha (Gemini Nano)](https://android-developers.googleblog.com/2025/10/ml-kit-genai-prompt-api-alpha-release.html), [Gemini Nano on Android](https://developer.android.com/ml/aicore), [Capacitor local LLM limits](https://capacitorjs.com/docs/apis/local-llm)
 - [Gemma 3n](https://deepmind.google/models/gemma/gemma-3n/), [Gemma mobile integration](https://ai.google.dev/gemma/docs/integrations/mobile)
+
+## Second review (Astra, at d6d4236) and what was done — 2026-10-22
+
+| Astra point | Verdict | Change |
+| --- | --- | --- |
+| A remembered report became a current fact; absence was claimed without a search | Agree | Fixed in the first pass (`CompanionFacts`, `ConversationClaimGuard`). |
+| The failing chat had no live vision or search tools | Agree | With the camera running, a find request now starts a real sensor search (`ObjectSearch`) instead of chat. |
+| Detector not in the repo; a failed locate fell back to a free generative answer | Agree | Fallback removed. The search keeps looking with Vision/detector plus LiDAR for up to 20 s. The image model may give one constrained yes/no plus side hint, worded by code as uncertain ("I might see something like a cup…"). Time up gives "I haven't located your cup… That doesn't mean it isn't nearby." |
+| Latency; speech waited for a metadata call; stale scene results | Agree | Metadata call removed earlier. The 6 s scene expiry is kept (not extended). Search results are measured from the person's current pose to the fixed world point and discarded when older than 1 s or after a new request. |
+| Keep the attention system | Agree | Unchanged; the ambient description pauses while a search runs. |
+| Combined build not validated | Agree | Still true: Swift has not been compiled in these cloud sessions. |
+| Evidence status per fact | Agree | Seen now: sensor search found, spoken immediately with a measurement. Seen earlier: `SearchRecord` located / saved `ItemMemory`, spoken with time. Reported by the child: `CompanionFact`, attributed and historical. Inferred: the model hint, always "might / not sure". Unknown: `CompanionFact.unknown`, or "not located". |
+| Identity: "a cup" is not "your cup" | Agree | Detector results use the detector label. `VisualGrounding` drops "your <object>" sentences from image answers. Only image comparison with saved views (`findItemByLook`) says "your". |
+| No detection must not become "it isn't here" | Agree | `VisualGrounding` drops absence sentences ("there are no stairs", "I can't see a cup"). The search result says "not located". |
+| Model should select observation IDs, validated before rendering | Partly | For find/report the model is removed from the facts entirely; code renders them, which is stricter and faster on the small model. The existing `OfflineSummary` ID-selection path is kept. Free image descriptions use detector grounding instead of IDs. A full ID-selection schema for image answers remains a possible later step if grounding proves too lossy. |
+| Cloud Gemini hybrid for richer questions | Not now | Camera pictures may not leave the phone (privacy rule). A text-only optional cloud path is a later, opt-in decision. |
+| Background camera interruption must be announced | Agree | `suspendExperience` already says "Camera and listening stopped outside the app."; device test pending. |

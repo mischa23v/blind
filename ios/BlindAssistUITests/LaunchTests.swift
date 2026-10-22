@@ -11,56 +11,49 @@ final class LaunchTests: XCTestCase {
         app = XCUIApplication(); app.launchArguments = ["--ui-testing", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
         app.launch()
     }
-    /// The main screen has no visible controls; a long press on the reply offers the other screens
-    /// (VoiceOver users get the same items as actions on the reply).
-    private func openFromMainScreen(_ item: String) {
-        let reply = app.staticTexts["companion-reply"]
-        XCTAssertTrue(reply.waitForExistence(timeout: 10))
-        reply.press(forDuration: 1.2)
-        let button = app.buttons[item]
-        XCTAssertTrue(button.waitForExistence(timeout: 5))
-        button.tap()
+    private func openTab(_ name: String) {
+        let tab = app.tabBars.buttons[name]
+        XCTAssertTrue(tab.waitForExistence(timeout: 10))
+        tab.tap()
     }
-    private func openSettingsPage(_ link: String) {
-        openFromMainScreen("Settings")
-        let page = app.buttons[link]
+    private func openSettingsPage(_ identifier: String) {
+        openTab("Settings")
+        let page = app.buttons[identifier]
         reveal(page); page.tap()
     }
-    func testMainScreenShowsOnlyTheReply() {
+    func testMainScreenShowsOnlyTheReplyAndTabs() {
         let reply = app.staticTexts["companion-reply"]
         XCTAssertTrue(reply.waitForExistence(timeout: 10))
         XCTAssertFalse(reply.label.isEmpty)
-        XCTAssertTrue(app.buttons.allElementsBoundByIndex.filter(\.isHittable).isEmpty, "No buttons on the main screen")
-        XCTAssertEqual(app.staticTexts.allElementsBoundByIndex.filter(\.isHittable).count, 1, "Only the reply is readable")
-        XCTAssertFalse(app.tabBars.firstMatch.exists && app.tabBars.firstMatch.isHittable)
+        let tabs = app.tabBars.firstMatch
+        XCTAssertTrue(tabs.exists, "Bottom tab buttons stay on the main screen")
+        let hittable = app.buttons.allElementsBoundByIndex.filter(\.isHittable)
+        XCTAssertEqual(hittable.count, tabs.buttons.count, "Only the bottom tab buttons besides the reply")
         XCTAssertFalse(app.buttons["write-message"].exists)
     }
     func testSettingsAndWearableSetupAreReachable() {
-        openFromMainScreen("Settings")
-        let wearableSetup = app.buttons["wearable-setup"]
-        reveal(wearableSetup); wearableSetup.tap()
+        openSettingsPage("wearable-setup")
         XCTAssertTrue(app.buttons["Connect belt & wristband"].waitForExistence(timeout: 5))
-        app.tabBars.buttons["Assistant"].tap()
+        openTab("Assistant")
         XCTAssertTrue(app.staticTexts["companion-reply"].waitForExistence(timeout: 5))
     }
     func testPracticeIsAnnouncedAndCanStop() {
-        openFromMainScreen("Settings")
-        let practice = app.buttons["home-practice"]
-        reveal(practice); practice.tap()
-        let reply = app.staticTexts["companion-reply"]
-        XCTAssertTrue(reply.waitForExistence(timeout: 5))
-        openSettingsPage("Camera and sensor details")
+        openSettingsPage("home-practice")
+        XCTAssertTrue(app.staticTexts["companion-reply"].waitForExistence(timeout: 5))
+        openSettingsPage("camera-screen")
         XCTAssertTrue(app.staticTexts["SIMULATION · generated readings"].waitForExistence(timeout: 5))
-        let toggle = app.buttons["monitor-toggle"]
-        XCTAssertEqual(toggle.label, "Stop monitoring")
-        toggle.tap()
-        XCTAssertEqual(toggle.label, "Start monitoring")
+        // There is no off switch; practice ends by itself or with "End practice" and returns to live sensing.
+        XCTAssertFalse(app.buttons["Stop monitoring"].exists)
+        let end = app.buttons["end-practice"]
+        reveal(end); end.tap()
+        XCTAssertFalse(app.staticTexts["SIMULATION · generated readings"].exists)
+        XCTAssertTrue(app.buttons["monitor-toggle"].label.contains("camera and sensors"))
     }
     func testAccessibleMainModesAndOfflineDefault() {
-        openSettingsPage("Camera and sensor details")
+        openSettingsPage("camera-screen")
         XCTAssertTrue(app.buttons["monitor-toggle"].waitForExistence(timeout: 10))
         app.navigationBars.buttons.element(boundBy: 0).tap()
-        let ask = app.buttons["Reading and questions"]
+        let ask = app.buttons["ask-screen"]
         reveal(ask); ask.tap()
         XCTAssertTrue(app.buttons["voice-question"].waitForExistence(timeout: 5))
         reveal(app.buttons["local-answer"])
@@ -70,11 +63,12 @@ final class LaunchTests: XCTestCase {
             reveal(app.buttons["cloud-answer"])
             XCTAssertFalse(app.buttons["cloud-answer"].isEnabled)
         }
-        app.tabBars.buttons["Routes"].tap()
-        XCTAssertTrue(app.buttons["Import indoor route JSON"].exists)
+        openTab("Routes")
+        let importMap = app.buttons["Import indoor route JSON"]
+        reveal(importMap)
     }
     func testDescribeFocusAndStopControl() {
-        openSettingsPage("Reading and questions")
+        openSettingsPage("ask-screen")
         XCTAssertTrue(app.textFields["Question or target"].exists || app.textViews["Question or target"].exists)
         reveal(app.buttons["stop-descriptions"])
         app.buttons["stop-descriptions"].tap()
@@ -87,15 +81,15 @@ final class LaunchTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["companion-reply"].waitForExistence(timeout: 10))
         try app.performAccessibilityAudit()
     }
-    func testAccessibilityAuditOfGuideAndAsk() throws {
-        openSettingsPage("Camera and sensor details")
+    func testAccessibilityAuditOfCameraAndAsk() throws {
+        openSettingsPage("camera-screen")
         try app.performAccessibilityAudit { issue in
             // WCAG exempts inactive controls; retain every other audit finding.
             guard issue.auditType == .contrast, let element = issue.element else { return false }
             return element.identifier == "retrace-session" && !element.isEnabled
         }
         app.navigationBars.buttons.element(boundBy: 0).tap()
-        let ask = app.buttons["Reading and questions"]
+        let ask = app.buttons["ask-screen"]
         reveal(ask); ask.tap()
         try app.performAccessibilityAudit { issue in
             // WCAG exempts inactive controls; retain every other audit finding.
@@ -104,8 +98,9 @@ final class LaunchTests: XCTestCase {
         }
     }
     func testOfflineCommunityLibraryKeepsLocalImportAvailable() {
-        openFromMainScreen("Places")
-        app.buttons["community-maps"].tap()
+        openTab("Places")
+        let community = app.buttons["community-maps"]
+        reveal(community); community.tap()
         let search = app.buttons["community-search"], localImport = app.buttons["community-import"]
         XCTAssertTrue(search.waitForExistence(timeout: 5)); XCTAssertFalse(search.isEnabled)
         reveal(localImport)

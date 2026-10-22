@@ -20,6 +20,8 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     private var currentUtterance: AVSpeechUtterance?
     private var activePriority: SpeechPriority?
     private var lastDeliveredText = ""
+    /// When our own speech last ended; the final transcript of an echo arrives about 1.5 s later.
+    private var lastSpeechEnded = -Double.infinity
     var onNarrationFinished: ((UUID, String, NarrationDelivery) -> Void)?
     var onIdle: (() -> Void)?
     private let engine = AVAudioEngine()
@@ -74,15 +76,16 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     }
     /// No raw text is accepted by the public sink; admission is minted by NavigationModel.
     @discardableResult func deliver(_ admitted: AdmittedSpeech, narrationID: UUID? = nil, alert: Detection? = nil) -> Bool {
-        lastDeliveredText = admitted.text
         if let alert { alertSignals(alert) }
-        if let narrationID { return speakAmbient(admitted.text, id: narrationID) }
-        return speak(admitted.text, urgent: admitted.urgent, priority: admitted.priority)
+        let spoken = narrationID.map { speakAmbient(admitted.text, id: $0) } ?? speak(admitted.text, urgent: admitted.urgent, priority: admitted.priority)
+        // Only text actually spoken can echo back through the microphone.
+        if spoken { lastDeliveredText = admitted.text }
+        return spoken
     }
     /// Acoustic echo cancellation is primary. Also reject exact multi-word echoes
     /// of our active output; this is not speaker identification.
     func isLikelyOwnSpeech(_ text: String) -> Bool {
-        guard speechPriority != nil else { return false }
+        guard speechPriority != nil || ProcessInfo.processInfo.systemUptime - lastSpeechEnded < 3 else { return false }
         let words = text.lowercased().split { !$0.isLetter && !$0.isNumber }.map(String.init)
         guard words.count >= 3 else { return false }
         let spoken = lastDeliveredText.lowercased().split { !$0.isLetter && !$0.isNumber }.map(String.init)
@@ -177,7 +180,10 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     private func finishNarration(success: Bool) {
         finishNarration(outcome: success ? .completed : .interrupted)
     }
-    private func notifyIdle() { DispatchQueue.main.async { [weak self] in self?.onIdle?() } }
+    private func notifyIdle() {
+        lastSpeechEnded = ProcessInfo.processInfo.systemUptime
+        DispatchQueue.main.async { [weak self] in self?.onIdle?() }
+    }
     private func finishNarration(outcome: NarrationDelivery) {
         if let text = narrationText, let id = narrationID {
             narrationText = nil; narrationID = nil; onNarrationFinished?(id, text, outcome)

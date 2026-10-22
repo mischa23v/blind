@@ -23,6 +23,9 @@ final class VoiceInput: ObservableObject {
     private var observers: [NSObjectProtocol] = []
     private var arabic = false
     private(set) var continuous = false
+    /// The companion wants always-on listening. Survives manual turns and recovery pauses, so
+    /// listening comes back by itself; only stopListening() clears it.
+    private(set) var wantsContinuous = false
     /// An open microphone is not itself a speaking turn.
     var awaitingUtterance: Bool {
         listening && (!continuous || (!transcript.isEmpty && shouldIgnore?(transcript) != true))
@@ -53,14 +56,30 @@ final class VoiceInput: ObservableObject {
 
     func start(arabic: Bool, timeout: Double = 20) {
         // The always-on companion microphone already hears this turn. A manual or answer-window
-        // turn must never switch continuous listening off (2026-10-22 fix).
-        if continuous && listening && self.arabic == arabic { beginTurn(); return }
+        // turn must never switch continuous listening off (2026-10-22 fix); during a recovery
+        // pause, recovery brings listening back.
+        if wantsContinuous && self.arabic == arabic {
+            if continuous && listening { beginTurn() }
+            return
+        }
         begin(arabic: arabic, continuous: false, timeout: timeout)
     }
 
     func startContinuous(arabic: Bool) {
+        wantsContinuous = true
         guard !continuous || !listening || self.arabic != arabic else { return }
         begin(arabic: arabic, continuous: true, timeout: 50)
+    }
+
+    /// Explicit stop (the person stopped the assistant): no automatic return to listening.
+    func stopListening() {
+        wantsContinuous = false
+        cancel()
+    }
+
+    /// After a one-off turn ends, return to always-on listening if the companion wants it.
+    private func resumeContinuousIfWanted() {
+        if wantsContinuous && !continuous { begin(arabic: arabic, continuous: true, timeout: 50) }
     }
 
     private func begin(arabic: Bool, continuous: Bool, timeout: Double) {
@@ -73,6 +92,7 @@ final class VoiceInput: ObservableObject {
                     guard status == .authorized, allowed else {
                         self.continuous = false
                         self.unavailable(arabic ? "أحتاج إذن الميكروفون والتعرف على الكلام. اطلب المساعدة في الإعدادات." : "I need microphone and speech permission. Ask for help in Settings.")
+                        self.retryLater()
                         return
                     }
                     self.capture(timeout: timeout)
@@ -86,6 +106,7 @@ final class VoiceInput: ObservableObject {
               recognizer.isAvailable, recognizer.supportsOnDeviceRecognition else {
             continuous = false
             unavailable(arabic ? "لا يتوفر الاستماع دون إنترنت بهذه اللغة على هذا الهاتف." : "Offline listening isn't available in this language on this phone.")
+            retryLater()
             return
         }
         do {
@@ -151,13 +172,13 @@ final class VoiceInput: ObservableObject {
     func finish() {
         let text = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
         let ignored = shouldIgnore?(text) == true
-        if continuous && engine?.isRunning == true { beginTurn() } else { cancel() }
+        if continuous && engine?.isRunning == true { beginTurn() } else { cancel(); resumeContinuousIfWanted() }
         guard !text.isEmpty, !ignored else { return }
         onFinished?(text)
     }
 
     /// Existing scene operations may end a manual turn, but never disable the companion microphone.
-    func endManualTurn() { if !continuous { cancel() } }
+    func endManualTurn() { if !continuous { cancel(); resumeContinuousIfWanted() } }
 
     func cancel() {
         continuous = false; generation = UUID(); recovery?.cancel(); recovery = nil
@@ -187,6 +208,18 @@ final class VoiceInput: ObservableObject {
     }
 
     private func unavailable(_ text: String) { message = text; onUnavailable?(text) }
+
+    /// Listening must never stay off: when permission or the on-device recogniser is missing
+    /// (for example while iOS downloads the language), try again every 30 seconds.
+    private func retryLater() {
+        guard wantsContinuous else { return }
+        recovery?.cancel()
+        recovery = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(30))
+            guard !Task.isCancelled, let self, self.wantsContinuous, !self.listening else { return }
+            self.begin(arabic: self.arabic, continuous: true, timeout: 50)
+        }
+    }
 }
 
 /// Audio callbacks run off the main thread; swapping recognition requests is atomic.

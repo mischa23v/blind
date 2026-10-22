@@ -1,27 +1,237 @@
 {
   "purpose": "Shared cases for the conversation evidence rules (2026-10-22 hallucination fix). Code parses the child's find requests and location reports; model chat replies may not assert where an object is now, that it is present or absent, or that the assistant perceived anything; image descriptions keep only hedged sentences or sentences whose objects the phone's detectors agreed on. server/src/companion-guards.mjs and BlindCore (CompanionUtterance, ConversationClaimGuard, VisualGrounding) must agree on every case. Includes the actual failed replies recorded in ios/validation/companion-chat/text-chat-status.json.",
   "utterances": [
-    { "text": "Help me find my cup.", "expect": { "kind": "find", "object": "cup" } },
-    { "text": "Can you help me find my backpack?", "expect": { "kind": "find", "object": "backpack" } },
-    { "text": "I changed my mind. Help me find my backpack instead.", "expect": { "kind": "find", "object": "backpack" } },
-    { "text": "I left it on the table. Can you remember that?", "expect": { "kind": "report", "object": null, "place": "on the table", "tense": "earlier", "hedged": false } },
-    { "text": "I can't find my braille book", "expect": { "kind": "find", "object": "braille book" } },
-    { "text": "I lost my shoes please", "expect": { "kind": "find", "object": "shoes" } },
-    { "text": "I'm looking for my water bottle.", "expect": { "kind": "find", "object": "water bottle" } },
-    { "text": "Find my red cup", "expect": { "kind": "find", "object": "red cup" } },
-    { "text": "I last left it on the kitchen table.", "expect": { "kind": "report", "object": null, "place": "on the kitchen table", "tense": "earlier", "hedged": false } },
-    { "text": "I left my cup on the kitchen table.", "expect": { "kind": "report", "object": "cup", "place": "on the kitchen table", "tense": "earlier", "hedged": false } },
-    { "text": "I think I put my backpack in my bedroom.", "expect": { "kind": "report", "object": "backpack", "place": "in my bedroom", "tense": "earlier", "hedged": true } },
-    { "text": "My cup is on the table.", "expect": { "kind": "report", "object": "cup", "place": "on the table", "tense": "current", "hedged": false } },
-    { "text": "It's under the sofa.", "expect": { "kind": "report", "object": null, "place": "under the sofa", "tense": "current", "hedged": false } },
-    { "text": "The remote was next to the TV.", "expect": { "kind": "report", "object": "remote", "place": "next to the TV", "tense": "earlier", "hedged": false } },
-    { "text": "Is my cup on the table?", "expect": null },
-    { "text": "The fridge door is closed.", "expect": null },
-    { "text": "What is my name?", "expect": null },
-    { "text": "ساعدني ألاقي كوبي", "expect": { "kind": "find", "object": "كوبي" } },
-    { "text": "ضاعت شنطتي", "expect": { "kind": "find", "object": "شنطتي" } },
-    { "text": "تركت كوبي على طاولة المطبخ", "expect": { "kind": "report", "object": "كوبي", "place": "على طاولة المطبخ", "tense": "earlier", "hedged": false } },
-    { "text": "تركته على طاولة المطبخ", "expect": { "kind": "report", "object": null, "place": "على طاولة المطبخ", "tense": "earlier", "hedged": false } }
+    {
+      "text": "Help me find my cup.",
+      "expect": {
+        "kind": "find",
+        "object": "cup"
+      }
+    },
+    {
+      "text": "Can you help me find my backpack?",
+      "expect": {
+        "kind": "find",
+        "object": "backpack"
+      }
+    },
+    {
+      "text": "I changed my mind. Help me find my backpack instead.",
+      "expect": {
+        "kind": "find",
+        "object": "backpack"
+      }
+    },
+    {
+      "text": "I left it on the table. Can you remember that?",
+      "expect": {
+        "kind": "report",
+        "object": null,
+        "place": "on the table",
+        "tense": "earlier",
+        "hedged": false
+      }
+    },
+    {
+      "text": "I can't find my braille book",
+      "expect": {
+        "kind": "find",
+        "object": "braille book"
+      }
+    },
+    {
+      "text": "I lost my shoes please",
+      "expect": {
+        "kind": "find",
+        "object": "shoes"
+      }
+    },
+    {
+      "text": "I'm looking for my water bottle.",
+      "expect": {
+        "kind": "find",
+        "object": "water bottle"
+      }
+    },
+    {
+      "text": "Find my red cup",
+      "expect": {
+        "kind": "find",
+        "object": "red cup"
+      }
+    },
+    {
+      "text": "I last left it on the kitchen table.",
+      "expect": {
+        "kind": "report",
+        "object": null,
+        "place": "on the kitchen table",
+        "tense": "earlier",
+        "hedged": false
+      }
+    },
+    {
+      "text": "I left my cup on the kitchen table.",
+      "expect": {
+        "kind": "report",
+        "object": "cup",
+        "place": "on the kitchen table",
+        "tense": "earlier",
+        "hedged": false
+      }
+    },
+    {
+      "text": "I think I put my backpack in my bedroom.",
+      "expect": {
+        "kind": "report",
+        "object": "backpack",
+        "place": "in my bedroom",
+        "tense": "earlier",
+        "hedged": true
+      }
+    },
+    {
+      "text": "My cup is on the table.",
+      "expect": {
+        "kind": "report",
+        "object": "cup",
+        "place": "on the table",
+        "tense": "current",
+        "hedged": false
+      }
+    },
+    {
+      "text": "It's under the sofa.",
+      "expect": {
+        "kind": "report",
+        "object": null,
+        "place": "under the sofa",
+        "tense": "current",
+        "hedged": false
+      }
+    },
+    {
+      "text": "The remote was next to the TV.",
+      "expect": {
+        "kind": "report",
+        "object": "remote",
+        "place": "next to the TV",
+        "tense": "earlier",
+        "hedged": false
+      }
+    },
+    {
+      "text": "Is my cup on the table?",
+      "expect": null
+    },
+    {
+      "text": "The fridge door is closed.",
+      "expect": null
+    },
+    {
+      "text": "What is my name?",
+      "expect": null
+    },
+    {
+      "text": "ساعدني ألاقي كوبي",
+      "expect": {
+        "kind": "find",
+        "object": "كوبي"
+      }
+    },
+    {
+      "text": "ضاعت شنطتي",
+      "expect": {
+        "kind": "find",
+        "object": "شنطتي"
+      }
+    },
+    {
+      "text": "تركت كوبي على طاولة المطبخ",
+      "expect": {
+        "kind": "report",
+        "object": "كوبي",
+        "place": "على طاولة المطبخ",
+        "tense": "earlier",
+        "hedged": false
+      }
+    },
+    {
+      "text": "تركته على طاولة المطبخ",
+      "expect": {
+        "kind": "report",
+        "object": null,
+        "place": "على طاولة المطبخ",
+        "tense": "earlier",
+        "hedged": false
+      }
+    },
+    {
+      "text": "Where is my cup?",
+      "expect": {
+        "kind": "find",
+        "object": "cup"
+      }
+    },
+    {
+      "text": "Where's my cup",
+      "expect": {
+        "kind": "find",
+        "object": "cup"
+      }
+    },
+    {
+      "text": "وين كوبي؟",
+      "expect": {
+        "kind": "find",
+        "object": "كوبي"
+      }
+    },
+    {
+      "text": "Find the remote",
+      "expect": {
+        "kind": "find",
+        "object": "the remote"
+      }
+    },
+    {
+      "text": "help me find the remote",
+      "expect": {
+        "kind": "find",
+        "object": "the remote"
+      }
+    },
+    {
+      "text": "Where did I put my shoes?",
+      "expect": {
+        "kind": "find",
+        "object": "shoes"
+      }
+    },
+    {
+      "text": "I put my cup back on the table.",
+      "expect": {
+        "kind": "report",
+        "object": "cup",
+        "place": "on the table",
+        "tense": "earlier",
+        "hedged": false
+      }
+    },
+    {
+      "text": "My cup is on the table I think.",
+      "expect": {
+        "kind": "report",
+        "object": "cup",
+        "place": "on the table",
+        "tense": "current",
+        "hedged": true
+      }
+    },
+    {
+      "text": "I left my cup in the morning.",
+      "expect": null
+    }
   ],
   "claims": {
     "unsupported": [
@@ -38,7 +248,32 @@
       "Your shoes are gone.",
       "كوبك موجود على الطاولة.",
       "شفت كوبك.",
-      "الكوب غير موجود."
+      "الكوب غير موجود.",
+      "Your cup is on the kitchen table, isn't it?",
+      "It's under the bed, right?",
+      "Your cup's on the table.",
+      "They're under the bed.",
+      "It's not here.",
+      "Your cup is sitting on the table.",
+      "It is probably still on the table.",
+      "I've found your cup.",
+      "I just saw your cup.",
+      "كوبك على الطاولة.",
+      "هو تحت الكنبة.",
+      "الكوب في المطبخ.",
+      "كوبك هناك.",
+      "لقيته!",
+      "Your cup sits on the table.",
+      "Your cup is to your left.",
+      "Your cup is where you left it.",
+      "Here it is!",
+      "You can find it on the table.",
+      "I saw your cup on the table.",
+      "Your cup is not on the table.",
+      "I don't see your cup.",
+      "There is no cup here.",
+      "There are toys on the floor.",
+      "A cup is on the table."
     ],
     "allowed": [
       "You told me just now you last had your cup on the kitchen table.",
@@ -63,45 +298,313 @@
     {
       "text": "A cup is on the table. There is a lamp by the window.",
       "frames": [
-        { "labels": ["cup", "table", "furniture"], "people": 0 },
-        { "labels": ["coffee_cup", "table"], "people": 0 },
-        { "labels": ["table", "window"], "people": 0 }
+        {
+          "labels": [
+            "cup",
+            "table",
+            "furniture"
+          ],
+          "people": 0
+        },
+        {
+          "labels": [
+            "coffee_cup",
+            "table"
+          ],
+          "people": 0
+        },
+        {
+          "labels": [
+            "table",
+            "window"
+          ],
+          "people": 0
+        }
       ],
       "expect": "A cup is on the table."
     },
     {
       "text": "Two people are talking. Maybe a dog is under the chair.",
       "frames": [
-        { "labels": ["structure"], "people": 2 },
-        { "labels": [], "people": 2 },
-        { "labels": ["structure"], "people": 0 }
+        {
+          "labels": [
+            "structure"
+          ],
+          "people": 2
+        },
+        {
+          "labels": [],
+          "people": 2
+        },
+        {
+          "labels": [
+            "structure"
+          ],
+          "people": 0
+        }
       ],
       "expect": "Two people are talking. Maybe a dog is under the chair."
     },
     {
       "text": "A sofa and a television.",
       "frames": [
-        { "labels": ["sofa", "television"], "people": 0 },
-        { "labels": ["couch"], "people": 0 },
-        { "labels": ["tv"], "people": 0 }
+        {
+          "labels": [
+            "sofa",
+            "television"
+          ],
+          "people": 0
+        },
+        {
+          "labels": [
+            "couch"
+          ],
+          "people": 0
+        },
+        {
+          "labels": [
+            "tv"
+          ],
+          "people": 0
+        }
       ],
       "expect": "A sofa and a television."
     },
     {
       "text": "A bright room with a bed.",
       "frames": [
-        { "labels": ["bed"], "people": 0 },
-        { "labels": ["indoor"], "people": 0 },
-        { "labels": ["indoor"], "people": 0 }
+        {
+          "labels": [
+            "bed"
+          ],
+          "people": 0
+        },
+        {
+          "labels": [
+            "indoor"
+          ],
+          "people": 0
+        },
+        {
+          "labels": [
+            "indoor"
+          ],
+          "people": 0
+        }
+      ],
+      "expect": ""
+    },
+    {
+      "text": "Your cup is on the table. A table is near the window.",
+      "frames": [
+        {
+          "labels": [
+            "cup",
+            "table",
+            "window"
+          ],
+          "people": 0
+        },
+        {
+          "labels": [
+            "cup",
+            "table",
+            "window"
+          ],
+          "people": 0
+        }
+      ],
+      "expect": "A table is near the window."
+    },
+    {
+      "text": "There are no stairs here. A chair is near the wall.",
+      "frames": [
+        {
+          "labels": [
+            "chair"
+          ],
+          "people": 0
+        },
+        {
+          "labels": [
+            "chair",
+            "wall"
+          ],
+          "people": 0
+        }
+      ],
+      "expect": "A chair is near the wall."
+    },
+    {
+      "text": "I can't see any cup. Maybe it is behind the sofa.",
+      "frames": [
+        {
+          "labels": [
+            "sofa"
+          ],
+          "people": 0
+        },
+        {
+          "labels": [],
+          "people": 0
+        }
+      ],
+      "expect": "Maybe it is behind the sofa."
+    },
+    {
+      "text": "لا يوجد كوب على الطاولة.",
+      "frames": [
+        {
+          "labels": [
+            "table"
+          ],
+          "people": 0
+        }
       ],
       "expect": ""
     },
     {
       "text": "The room is bright and quiet.",
       "frames": [
-        { "labels": ["indoor"], "people": 0 }
+        {
+          "labels": [
+            "indoor"
+          ],
+          "people": 0
+        }
       ],
       "expect": "The room is bright and quiet."
+    },
+    {
+      "text": "Your blue backpack is by the door. A knife is on the table.",
+      "frames": [
+        {
+          "labels": [
+            "backpack",
+            "door",
+            "table"
+          ],
+          "people": 0
+        },
+        {
+          "labels": [
+            "backpack",
+            "door",
+            "table"
+          ],
+          "people": 0
+        }
+      ],
+      "expect": ""
+    },
+    {
+      "text": "The cat's on the sofa. Your mom is here.",
+      "frames": [
+        {
+          "labels": [
+            "sofa"
+          ],
+          "people": 1
+        },
+        {
+          "labels": [
+            "sofa"
+          ],
+          "people": 1
+        }
+      ],
+      "expect": ""
+    },
+    {
+      "text": "The cup is to your left. The cup is roughly to your left, I think.",
+      "frames": [
+        {
+          "labels": [
+            "cup"
+          ],
+          "people": 0
+        },
+        {
+          "labels": [
+            "cup"
+          ],
+          "people": 0
+        }
+      ],
+      "expect": "The cup is roughly to your left, I think."
+    },
+    {
+      "text": "No stairs are visible. I see no door.",
+      "frames": [
+        {
+          "labels": [
+            "door"
+          ],
+          "people": 0
+        },
+        {
+          "labels": [
+            "door"
+          ],
+          "people": 0
+        }
+      ],
+      "expect": ""
+    },
+    {
+      "text": "كوبك على الطاولة. يوجد كرسي بجانب الباب. ربما توجد قطة.",
+      "frames": [
+        {
+          "labels": [
+            "cup",
+            "table",
+            "door"
+          ],
+          "people": 0
+        },
+        {
+          "labels": [
+            "cup",
+            "table",
+            "door"
+          ],
+          "people": 0
+        }
+      ],
+      "expect": "ربما توجد قطة."
+    },
+    {
+      "text": "الكرسي بجانب الباب.",
+      "frames": [
+        {
+          "labels": [
+            "chair",
+            "door"
+          ],
+          "people": 0
+        },
+        {
+          "labels": [
+            "chair",
+            "door"
+          ],
+          "people": 0
+        }
+      ],
+      "expect": "الكرسي بجانب الباب."
+    },
+    {
+      "text": "A lamp is on the desk.",
+      "frames": [
+        {
+          "labels": [
+            "lamp",
+            "desk"
+          ],
+          "people": 0
+        }
+      ],
+      "expect": ""
     }
   ]
 }
