@@ -20,7 +20,7 @@ public struct CompanionOffer: Equatable, Sendable {
 }
 
 public struct InformationCandidate: Equatable, Sendable {
-    public enum Kind: String, Sendable { case hazard, mobility, answer, goal, change, roomDescription, social, discovery, offer }
+    public enum Kind: String, Sendable { case hazard, mobility, operation, answer, goal, change, roomDescription, social, discovery, offer }
     /// Stable semantic subject, e.g. "room:kitchen:description" or "track:3:arrival".
     public let key: String
     public let kind: Kind
@@ -47,7 +47,7 @@ public struct InformationCandidate: Equatable, Sendable {
 }
 
 public enum CompanionReason: String, Sendable {
-    case hazard, mobility, requested, goal, change, firstVisit, information, offered
+    case hazard, mobility, operation, requested, goal, change, firstVisit, information, offered
     case invalid, expired, speechBusy, quiet, muted, onRequestOnly, alreadySaid, familiarRoom
     case goalInProgress, offerFirst, declined, never, tooSoon, offerPending, budget
 }
@@ -120,10 +120,15 @@ public struct CompanionSettings: Sendable {
 public struct CompanionMoment: Sendable {
     public var now: Double
     public var goalActive: Bool
+    /// A short explicit task, such as finding a named person, also focuses attention while still.
+    /// This is not a motion estimate and does not replace the person's persistent destination.
+    public var focusedTaskActive: Bool
     public var activity: CompanionActivity
     public var speaking: SpeechPriority?
-    public init(now: Double, goalActive: Bool = false, activity: CompanionActivity = .unknown, speaking: SpeechPriority? = nil) {
-        self.now = now; self.goalActive = goalActive; self.activity = activity; self.speaking = speaking
+    public init(now: Double, goalActive: Bool = false, focusedTaskActive: Bool = false,
+                activity: CompanionActivity = .unknown, speaking: SpeechPriority? = nil) {
+        self.now = now; self.goalActive = goalActive; self.focusedTaskActive = focusedTaskActive
+        self.activity = activity; self.speaking = speaking
     }
 }
 
@@ -133,6 +138,9 @@ public struct CompanionMoment: Sendable {
 public struct CompanionAttention: Sendable {
     public static let hintThreshold = 3
     public static let deliveredLimit = 512
+    /// Essential feedback for one current explicit action, never a description or identity hint.
+    public static let maximumOperationWords = 80
+    public static let maximumOperationLifetime = 30.0
     public var memory: CompanionMemory
     public private(set) var pendingOffer: CompanionOffer?
     public private(set) var currentRoom: String?
@@ -215,7 +223,7 @@ public struct CompanionAttention: Sendable {
                     if delivered.count >= Self.deliveredLimit { delivered.removeAll(keepingCapacity: true) }
                     delivered[said.key] = said.revision
                 }
-                if said.priority == .information {
+                if said.priority == .information && said.kind != .operation {
                     budget.charge(words: said.words, limit: settings.wordsPerMinute, now: moment.now)
                     lastOrdinary = moment.now
                     if said.kind == .roomDescription, let room = said.room { memory.rooms[room, default: RoomRecord()].described = true }
@@ -242,6 +250,15 @@ public struct CompanionAttention: Sendable {
         case .mobility:
             if delivered[item.key] == item.revision { return .drop(item.key, .alreadySaid) }
             return item.priority.canInterrupt(speaking) ? .say(item, .mobility) : .wait(item.key, .speechBusy)
+        case .operation:
+            // Consent, confirmation, cancellation, error and bounded progress for a current
+            // user action must remain audible even when ordinary narration has used its budget.
+            // Callers never queue these notices, and identity/scene answers stay ordinary answers.
+            guard item.requested, item.words <= Self.maximumOperationWords,
+                  item.createdAt <= moment.now, item.expiresAt >= item.createdAt,
+                  item.expiresAt - item.createdAt <= Self.maximumOperationLifetime,
+                  !item.revision.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return .drop(item.key, .invalid) }
+            return speaking == nil ? .say(item, .operation) : .wait(item.key, .speechBusy)
         default: break
         }
         // An explicit request is answered even for a muted category, in quiet mode, or as a repeat.
@@ -253,6 +270,9 @@ public struct CompanionAttention: Sendable {
         if let reason = dropReason(item, settings) { return .drop(item.key, reason) }
         if speaking != nil { return .wait(item.key, .speechBusy) }
         if item.goalRelevant { return fits(item, settings, moment) ? .say(item, .goal) : .wait(item.key, .budget) }
+        // An explicit focused task suppresses unrelated narration even while stationary.
+        // Fresh hazards, mobility, requested answers and task-relevant information passed above.
+        if moment.focusedTaskActive { return .wait(item.key, .goalInProgress) }
         if pendingOffer != nil { return .wait(item.key, .offerPending) }
         // Walking toward a goal: offers and descriptions wait; room identity questions do not.
         if moment.goalActive && moment.activity != .stationary && item.offerKind != .confirmRoom {
@@ -320,6 +340,7 @@ public struct CompanionAttention: Sendable {
         switch item.kind {
         case .hazard: return 0
         case .mobility: return 1
+        case .operation: return 2
         default: return item.requested ? 2 : item.goalRelevant ? 3 : item.kind == .change ? 4 : 5
         }
     }

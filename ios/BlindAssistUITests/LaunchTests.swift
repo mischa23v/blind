@@ -16,8 +16,12 @@ final class LaunchTests: XCTestCase {
         app.tabBars.buttons["Ask"].tap()
         XCTAssertTrue(app.buttons["voice-question"].exists)
         reveal(app.buttons["local-answer"])
-        reveal(app.buttons["cloud-answer"])
-        XCTAssertFalse(app.buttons["cloud-answer"].isEnabled)
+        // The production privacy build contains no photo-upload control. Developer builds
+        // may expose it, but offline mode must still disable it.
+        if app.buttons["cloud-answer"].exists {
+            reveal(app.buttons["cloud-answer"])
+            XCTAssertFalse(app.buttons["cloud-answer"].isEnabled)
+        }
         app.tabBars.buttons["Routes"].tap()
         XCTAssertTrue(app.buttons["Import indoor route JSON"].exists)
     }

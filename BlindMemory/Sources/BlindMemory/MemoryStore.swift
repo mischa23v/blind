@@ -30,7 +30,7 @@ public struct NarrationRecord: Sendable, Identifiable {
 public final class MemoryStore: Sendable {
     private let database: DatabaseQueue
     private let profile: String
-    private static func sql(_ name: String) throws -> String {
+    static func sql(_ name: String) throws -> String {
         guard let url = Bundle.module.url(forResource: name, withExtension: "sql") else { throw MemoryError.missing }
         return try String(contentsOf: url, encoding: .utf8)
     }
@@ -44,6 +44,7 @@ public final class MemoryStore: Sendable {
         migrator.registerMigration("assistant-memory-v1") { db in try db.execute(sql: Self.sql("schema")) }
         migrator.registerMigration("assistant-memory-v2-deletion") { db in try db.execute(sql: Self.sql("deletion")) }
         migrator.registerMigration("assistant-memory-v3-narration") { db in try db.execute(sql: Self.sql("narration")) }
+        migrator.registerMigration("assistant-memory-v4-private-values") { db in try db.execute(sql: Self.sql("private_values")) }
         try migrator.migrate(database)
     }
     private static func revision(_ row: Row) -> RoomRevision {
@@ -122,14 +123,38 @@ public final class MemoryStore: Sendable {
     public func deletedRooms() throws -> [String] {
         try database.read { db in try String.fetchAll(db, sql: "SELECT id FROM deletedRoom WHERE profile=?", arguments: [profile]) }
     }
+    /// Encoded payload budgets, not permission to persist live location or camera streams.
+    /// Room recall keeps at most 16 320px thumbnails plus 16 scene and 16 object prints.
+    /// 8 MiB budgets 16 RGB-sized thumbnails, 32 x 32 KiB archived prints, base64
+    /// expansion and metadata. It is a ceiling, not a guarantee about Vision archive sizes.
+    /// Item appearance has six prints and text marks, without thumbnails: 1 MiB.
+    /// Other namespaces retain the original 64,000-byte budget. Oversize writes throw
+    /// and preserve the previous value; callers must surface failure, not claim success.
+    public static func maximumPayloadBytes(namespace: String) throws -> Int {
+        switch namespace {
+        case "room-recall": return 8 * 1024 * 1024
+        case "item-appearance": return 1024 * 1024
+        case "preferences", "objective", "dialogue", "people", "places", "companion", "items": return 64_000
+        default: throw MemoryError.invalid
+        }
+    }
+    private static func validateValueKey(namespace: String, id: String) throws {
+        _ = try maximumPayloadBytes(namespace: namespace)
+        guard !id.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, id.count <= 100 else { throw MemoryError.invalid }
+    }
     public func saveValue(namespace: String, id: String, payload: Data) throws {
-        guard ["preferences", "objective", "dialogue", "people", "places"].contains(namespace),
-              !id.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, id.count <= 100,
-              (1...64000).contains(payload.count) else { throw MemoryError.invalid }
+        try Self.validateValueKey(namespace: namespace, id: id)
+        guard (1...(try Self.maximumPayloadBytes(namespace: namespace))).contains(payload.count) else { throw MemoryError.invalid }
         try database.write { db in try db.execute(sql: "INSERT INTO memoryValue(profile,namespace,id,payload,updated) VALUES (?,?,?,?,?) ON CONFLICT(profile,namespace,id) DO UPDATE SET payload=excluded.payload, updated=excluded.updated", arguments: [profile, namespace, id, payload, Date().timeIntervalSince1970]) }
     }
     public func value(namespace: String, id: String) throws -> Data? {
-        try database.read { db in try Data.fetchOne(db, sql: "SELECT payload FROM memoryValue WHERE profile=? AND namespace=? AND id=?", arguments: [profile, namespace, id]) }
+        try Self.validateValueKey(namespace: namespace, id: id)
+        return try database.read { db in try Data.fetchOne(db, sql: "SELECT payload FROM memoryValue WHERE profile=? AND namespace=? AND id=?", arguments: [profile, namespace, id]) }
+    }
+    /// Idempotent and profile-scoped. Throws on failure; never replaces deletion with an empty record.
+    public func deleteValue(namespace: String, id: String) throws {
+        try Self.validateValueKey(namespace: namespace, id: id)
+        try database.write { db in try db.execute(sql: "DELETE FROM memoryValue WHERE profile=? AND namespace=? AND id=?", arguments: [profile, namespace, id]) }
     }
     public func startNarration(id: String, sessionID: String, goalRevision: String, snapshotID: String, sourceIDs: [String] = [], text: String, at: Date) throws {
         guard [id, sessionID, goalRevision, snapshotID].allSatisfy({ !$0.isEmpty && $0.count <= 64 }),

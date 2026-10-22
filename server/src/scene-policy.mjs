@@ -73,8 +73,9 @@ const sentencesOf = (text, language) => [...new Intl.Segmenter(language, { granu
 
 // Fast path (E14): drop only sentences that break the spatial safety rule, so one bad sentence
 // does not cost a second model call. Whole sentences are kept or dropped, never cut.
+// Check referents against the original answer, before dropping any antecedents.
 export function keepSafeSentences(answer, language) {
-  return sentencesOf(answer, language).filter(sentence => !containsSpatialClaim(sentence)).join(' ');
+  return sentencesOf(answer, language).filter(sentence => !containsSpatialClaim(sentence, answer)).join(' ');
 }
 
 // Keep the leading whole sentences that fit the reservation; the model puts the most important first.

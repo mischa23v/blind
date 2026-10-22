@@ -20,8 +20,8 @@ test('relay checks every model answer and retries once', async () => {
 test('app checks model text before speaking it', async () => {
   const model = await read('ios/BlindAssist/NavigationModel.swift');
   const guardAt = model.indexOf('if fromModel && SpatialClaimGuard.containsSpatialClaim(answer)');
-  const speakAt = model.indexOf('self.feedback.speakAmbient(answer', guardAt);
-  assert.ok(guardAt > 0 && speakAt > guardAt, 'spatial check must come before ambient speech of a model answer');
+  const speakAt = model.indexOf('self.deliverCandidate(candidate', guardAt);
+  assert.ok(guardAt > 0 && speakAt > guardAt, 'spatial check must come before gated delivery of a model answer');
   assert.equal((model.match(/fromModel = true/g) ?? []).length, 2, 'cloud and on-device answers are both marked as model text');
 });
 

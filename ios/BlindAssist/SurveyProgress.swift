@@ -59,7 +59,7 @@ struct SurveyProgressView: View {
                 }.frame(height: 360).background(Color.black.opacity(0.4)).accessibilityHidden(true)
                 Text(t("Yellow: where the phone travelled. Blue: floor cells with measured samples. White dot: current phone position. Blank space is unknown, not a wall or an open passage.", "الأصفر: مسار الهاتف. الأزرق: أجزاء أرض رُصدت بقياسات. النقطة البيضاء: موقع الهاتف. الفراغ غير معروف؛ لا يعني جداراً أو ممراً مفتوحاً."))
                 Text(t("Observed floor cells", "أجزاء الأرض المرصودة") + ": \(survey.floorCells.count). " + t("Trail samples", "نقاط المسار") + ": \(survey.trail.count).")
-                Button(t("Repeat mapping status", "تكرار حالة رسم الخريطة")) { model.feedback.speak(status) }
+                Button(t("Repeat mapping status", "تكرار حالة رسم الخريطة")) { model.speakOperation(status) }
                 Text(t("This is one continuous-session preview, not a coverage percentage or a walking route. The native mapping build saves the full 3D database. Keep the camera running between rooms; tracking loss resets this preview.", "هذا عرض لجلسة متصلة، وليس نسبة اكتمال أو مسار مشي. يحفظ إصدار الخرائط الأصلي قاعدة البيانات الثلاثية الأبعاد. أبقِ الكاميرا تعمل بين الغرف؛ يُعاد العرض عند فقدان التتبع."))
             }.padding()
         }.navigationTitle(t("Mapping progress", "تقدم رسم الخريطة"))

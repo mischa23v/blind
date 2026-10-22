@@ -1,0 +1,128 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { generateProject, familiarModelHashes } from '../generate-xcode-project.mjs';
+const read = path => readFile(new URL(`../../${path}`, import.meta.url), 'utf8');
+test('default project does not enable or link experimental face inference', () => {
+  const value = generateProject(['FamiliarFaceExperiment.swift']);
+  assert.doesNotMatch(value, /BLIND_FAMILIAR_PEOPLE|BAFaceEngine\.mm|wrapper\.framework|face_detection_yunet/);
+});
+test('explicit experimental project links static upstream and controlled model resources', () => {
+  assert.throws(() => generateProject([], { familiarPeople: true }));
+  const value = generateProject(['FamiliarFaceExperiment.swift'], { familiarPeople: true, opencvFramework: '/external/OpenCV/opencv2.framework', familiarModels: '/external/models' });
+  assert.match(value, /BLIND_FAMILIAR_PEOPLE/);
+  assert.match(value, /BAFaceEngine\.mm/);
+  assert.match(value, /SWIFT_OBJC_BRIDGING_HEADER/);
+  assert.match(value, /PBXResourcesBuildPhase/);
+  assert.match(value, /EXCLUDED_ARCHS\[sdk=iphonesimulator\*\]/);
+  assert.match(value, /-lc\+\+/);
+  assert.doesNotMatch(value, /PBXCopyFilesBuildPhase|CodeSignOnCopy/); // static framework must not be embedded
+  for (const name of Object.keys(familiarModelHashes)) assert.ok(value.includes(`/external/models/${name}`));
+  const both = generateProject([], { multimodal: true, familiarPeople: true, opencvFramework: '/x/opencv2.framework', familiarModels: '/m' });
+  assert.match(both, /BLIND_APPLE_MULTIMODAL BLIND_FAMILIAR_PEOPLE/);
+});
+test('native pipeline uses actual upstream detection, landmark alignment and cosine matching', async () => {
+  const code = await read('ios/BlindAssist/FamiliarNative/BAFaceEngine.mm');
+  for (const literal of ['cv::FaceDetectorYN::create', 'cv::FaceRecognizerSF::create', 'setInputSize', '->detect', '->alignCrop', '->feature', '->match', 'cv::FaceRecognizerSF::FR_COSINE', 'cv::COLOR_RGBA2BGR', 'faces.rows != 1', 'probe.clone()', 'CV_VERSION_MINOR != 14']) assert.ok(code.includes(literal), literal);
+  assert.doesNotMatch(code, /imwrite|NSLog|printf|std::cout/);
+});
+test('encrypted gallery has device-only key, complete protection, backup exclusion and no image persistence', async () => {
+  const code = await read('ios/BlindAssist/FamiliarFaceStore.swift');
+  for (const literal of ['AES.GCM.seal', 'AES.GCM.open', 'kSecAttrAccessibleWhenUnlockedThisDeviceOnly', 'kSecAttrSynchronizable as String: false', 'isExcludedFromBackup = true', '.completeFileProtection', 'FileProtectionType.complete', 'SecItemDelete', 'consentAt', 'FamiliarFacePolicy.validFeature']) assert.ok(code.includes(literal), literal);
+  assert.doesNotMatch(code, /UIImage|CGImage|CVPixelBuffer|URLSession|UserDefaults/);
+});
+test('experimental controller discards cancellation, obsolete gallery and stale camera results', async () => {
+  const code = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');
+  for (const literal of ['var enabled = false', 'generation == token', '!Task.isCancelled', 'model.familiarCaptureIsCurrent(capture)', 'result.faceCount == 1', 'Task.sleep', 'func revalidate', 'FamiliarFacePolicy.candidateForAttempt(', 'try store.save', 'resultCapture = nil']) assert.ok(code.includes(literal), literal);
+  for (const name of ['deleteAll', 'reload']) assert.match(code, new RegExp(`func ${name}[^}]*cancel\\(\\)`));
+  assert.doesNotMatch(code, /URLSession|feedback\.speak|AVSpeech|UserDefaults/);
+  const model = await read('ios/BlindAssist/NavigationModel.swift');
+  assert.match(model, /invalidatePerceptionWork\(\) \{\s*#if BLIND_FAMILIAR_PEOPLE\s*if familiarPeople.enabled && familiarPeople.hasActiveWork \{ familiarPeople.cancel\(\)/);
+  assert.match(model, /familiarPeople.revalidate\(model: self\)/);
+  assert.match(model, /perceptionGeneration == capture.generation/);
+});
+test('enrollment is explicit consent, default off, per-attempt and accessible', async () => {
+  const view = await read('ios/BlindAssist/FamiliarPeopleView.swift');
+  for (const literal of ['acknowledged = false', 'familiar-consent', '.disabled(!acknowledged)', 'familiar-disclosure', 'experiment.setEnabled(false)', 'phase != .active', 'familiar-delete-all', 'Confirm exact spoken face action']) {
+    assert.ok(view.includes(literal), literal);
+  }
+  assert.match(view, /Photos or screens may fool it/);
+  assert.match(view, /falsely named 7 of 200/);
+  assert.match(view, /Child enrollment is unavailable/);
+  assert.doesNotMatch(view, /tag\("guardian-for-child"\)/);
+  assert.match(view, /cannot establish consent or a family relationship/);
+});
+test('optional Apple comparison consumes only upstream aligned face and versioned secure prints', async () => {
+  const bridge = await read('ios/BlindAssist/FamiliarNative/BAFaceEngine.mm');
+  assert.match(bridge, /if \(includeAlignedFace\)/);
+  assert.match(bridge, /cv::cvtColor\(aligned, rgb, cv::COLOR_BGR2RGB\)/);
+  assert.match(bridge, /aligned.rows != 112 \|\| aligned.cols != 112/);
+  const vision = await read('ios/BlindAssist/FamiliarVisionComparison.swift');
+  for (const literal of ['alignedRGB.count == 112 * 112 * 3', 'VNGenerateImageFeaturePrintRequestRevision2', 'request.imageCropAndScaleOption = .scaleFill', 'orientation: .up', 'requiringSecureCoding: true', 'stored.revision == Int(revision)', 'stored.cropContract == cropContract', 'stored.osVersion == osVersion', 'reference.requestRevision == revision', 'computeDistance', 'distance.isFinite']) assert.ok(vision.includes(literal), literal);
+  assert.doesNotMatch(vision, /CVPixelBuffer|VNGenerateForegroundInstanceMaskRequest|VNRecognizeTextRequest|URLSession|UIImage/);
+});
+test('second pipeline is opt-in veto only, invalidates toggles, and never silently bypasses missing references', async () => {
+  const controller = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');
+  assert.match(controller, /var dualPipeline = false/);
+  assert.match(controller, /setDualPipeline[^}]*cancel\(\); dualPipeline = value/);
+  assert.match(controller, /if !value \{ dualPipeline = false \}/);
+  assert.ok(controller.indexOf('FamiliarFacePolicy.candidateForAttempt(') < controller.indexOf('FamiliarFacePolicy.corroboratedCandidate(sface: id'));
+  assert.match(controller, /includeAlignedFace: dualPipeline/);
+  assert.match(controller, /if !enrolling \{ visionDistances = try FamiliarVisionComparison.distances/);
+  assert.match(controller, /let token = generation, gallery = people, useVision = dualPipeline/);
+  const view = await read('ios/BlindAssist/FamiliarPeopleView.swift');
+  assert.match(view, /Both can agree on the wrong person/);
+  assert.match(view, /No improvement has been measured on Apple hardware/);
+  const store = await read('ios/BlindAssist/FamiliarFaceStore.swift');
+  assert.match(store, /guard sealed.count < 512_000/);
+  assert.match(store, /visionPrint: FamiliarVisionPrint\?/);
+  assert.doesNotMatch(store, /guardian-for-child/);
+});
+
+test('multiple examples use bounded per-person means and strict build-selected encrypted profiles', async () => {
+  const store = await read('ios/BlindAssist/FamiliarFaceStore.swift');
+  for (const literal of ['version: 2', 'archive.version == 2', 'archive.model == Self.modelID', 'examples: [FamiliarExample]', '(1...6).contains(person.examples.count)', 'FamiliarFacePolicy.normalizedMean', 'expectedDimension:', 'profile.backendKind', 'profile.recognizerSHA256', 'profile.detectorSHA256', 'profile.embeddingDimension', 'guard sealed.count < 512_000']) assert.ok(store.includes(literal), literal);
+  const vision = await read('ios/BlindAssist/FamiliarVisionComparison.swift');
+  assert.match(vision, /person.examples.map/);
+  assert.match(vision, /FamiliarFacePolicy.meanVisionDistance/);
+  const controller = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');
+  for (const literal of ['draft.examples.count >= 3', 'draft.examples.count < 6', 'quality >= 0.25', 'result.faceWidth >= 80', 'result.faceHeight >= 80', 'confirmation.consume(token', 'confirmation.cancel()', 'Labels do not verify relationships']) assert.ok(controller.includes(literal), literal);
+});
+test('real local PhotosPicker imports bind to enrollment token and never store original images', async () => {
+  const view = await read('ios/BlindAssist/FamiliarPeopleView.swift');
+  for (const literal of ['import PhotosUI', '.photosPicker(', 'loadTransferable(type: Data.self)', 'photoGeneration == id', 'experiment.enrollmentToken == enrollmentToken', 'photoTask?.cancel()', 'experiment.importPhotos(data)', '.onChange(of: experiment.enrollmentToken)', 'Voice can open it but cannot choose its photos']) assert.ok(view.includes(literal), literal);
+  const controller = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');
+  for (const literal of ['CGImageSourceCreateWithData', 'CGImageSourceGetCount(source) == 1', 'kCGImageSourceCreateThumbnailWithTransform: true', '20_000_000', 'photos.count <= remainingExamples', 'try accept(result, source: "selected-photo")', 'draft.previews[example.id] = result.alignedRGB']) assert.ok(controller.includes(literal), literal);
+  assert.doesNotMatch(view + controller, /URLSession|PHPhotoLibrary.shared\(\).performChanges/);
+});
+test('voice commands route before generic assistant actions and retain urgent speech priority', async () => {
+  const model = await read('ios/BlindAssist/NavigationModel.swift');
+  for (const literal of ['routeFamiliarPeopleCommand(text)', 'routeFamiliarPeopleCommand(question)', 'FamiliarPeopleCommand.parse(text)', 'familiarPeople.handle(command, model: self)', 'speakOperation(text, revision: self.familiarPeople.operationRevision.uuidString)', 'feedback.stopInformation()']) assert.ok(model.includes(literal), literal);
+  const view = await read('ios/BlindAssist/FamiliarPeopleView.swift');
+  for (const literal of ['.accessibilityAction(.magicTap)', 'model.startVoiceQuestion()', 'model.voice.finish()', 'familiar-voice', 'Generic yes or no does not confirm']) assert.ok(view.includes(literal), literal);
+  const feedback = await read('ios/BlindAssist/Feedback.swift');
+  assert.match(feedback, /func stopInformation[\s\S]*?activePriority != \.mobility, activePriority != \.danger/);
+});
+
+test('named search is exact-label bounded quiet and reuses current candidate and snapshot publication', async () => {
+  const code = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');
+  const search = code.slice(code.indexOf('func find(_ label:'), code.indexOf('func handle(_ command:'));
+  for (const literal of ['caseInsensitiveCompare(label)', 'FamiliarSearchBudget(', 'for poll in 0..<10', '2_000_000_000', '20_000_000_000', 'budget.consumeAttempt(now: now)', 'model.familiarCaptureIsCurrent(capture)', '== target.id', 'generation == token', 'publishSnapshot(match: target', 'setSilentStatus']) assert.ok(search.includes(literal), literal);
+  assert.doesNotMatch(search, /Comparing locally|showFaceGuidance/);
+  assert.match(search, /setSilentStatus\("Looking briefly/);
+  assert.match(search, /guard !announcedMiss else \{ return \}/);
+  assert.ok(search.indexOf('reportFirstMiss(); continue') > search.indexOf('for poll in 0..<10'));
+  assert.match(search, /onSearchStarted\?\(\)/);
+  const model = await read('ios/BlindAssist/NavigationModel.swift');
+  assert.match(model, /if !automatic \{ familiarPeople.cancelSearchForNewGoal\(\) \}/);
+  for (const method of ['setAssistantObjective', 'clearAssistantConversation']) assert.match(model, new RegExp(`func ${method}\\(\\) \\{\\s*#if BLIND_FAMILIAR_PEOPLE\\s*familiarPeople.cancelSearchForNewGoal`));
+  assert.match(code, /searching && \(!model.running \|\| model.detection.hazard != \.observing\)/);
+});
+test('past snapshot speech has separate bounded lifetime without extending live display', async () => {
+  const code = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');
+  const publish = code.slice(code.indexOf('private func publishSnapshot'), code.indexOf('func find(_ label:'));
+  for (const literal of ['1.5 -', 'resultCapture = nil', 'setSilentStatus', '10_500_000_000', 'snapshotCapture = nil; onCancelSpeech?()', 'Snapshot: might be']) assert.ok(publish.includes(literal), literal);
+  assert.match(code, /familiarSnapshotContextIsCurrent/);
+  assert.match(code, /shouldSpeakFaceGuidance/);
+  assert.match(code, /ask them to look toward you/);
+});

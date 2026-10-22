@@ -34,6 +34,11 @@ struct DashboardView: View {
         .tint(accent)
         .preferredColorScheme(.dark)
         .environment(\.layoutDirection, model.arabic ? .rightToLeft : .leftToRight)
+        #if BLIND_FAMILIAR_PEOPLE
+        .sheet(isPresented: $model.showFamiliarPeople) {
+            NavigationStack { FamiliarPeopleView(model: model, experiment: model.familiarPeople) }
+        }
+        #endif
         .onAppear { relayToken = TokenStore.read() }
         .accessibilityAction(named: Text(t("Stop descriptions", "إيقاف الوصف"))) { model.stopDescriptions() }
     }
@@ -94,7 +99,7 @@ struct DashboardView: View {
                 if let distance = model.wearables.wristDistance {
                     Text(t("Pointing range", "مسافة الإشارة") + " " + String(format: "%.2f m", distance))
                     Button(t("Speak pointing range", "نطق مسافة الإشارة")) {
-                        model.feedback.speak(String(format: model.arabic ? "المسافة %.2f متر" : "Range %.2f meters", distance))
+                        model.speakRequested(String(format: model.arabic ? "المسافة %.2f متر" : "Range %.2f meters", distance))
                     }
                 }
                 Divider()
@@ -104,7 +109,7 @@ struct DashboardView: View {
                 }.buttonStyle(.bordered).controlSize(.large).disabled(!model.running || model.simulation)
                 if model.returning { Button(t("Repeat trail direction", "تكرار اتجاه المسار")) { model.speakReturnCue() } }
                 if !model.returnStatus.isEmpty { Text(model.returnStatus) }
-                Button(t("Repeat current status", "تكرار الحالة الحالية")) { model.feedback.alert(model.detection) }
+                Button(t("Repeat current status", "تكرار الحالة الحالية")) { model.repeatMonitoringStatus() }
                     .controlSize(.large)
                 Button(t("Stop descriptions · keep hazard alerts", "إيقاف الوصف مع إبقاء تنبيهات المخاطر")) { model.stopDescriptions() }
                     .controlSize(.large)
@@ -176,7 +181,7 @@ struct DashboardView: View {
                 Text(model.sceneAnswer.isEmpty ? t("Your answer appears here.", "تظهر الإجابة هنا.") : model.sceneAnswer).textSelection(.enabled)
                     .accessibilityIdentifier("assistant-answer")
                 Button(t("Repeat answer", "تكرار الإجابة")) {
-                    if model.detection.hazard == .observing { model.feedback.speak(model.sceneAnswer) }
+                    if model.detection.hazard == .observing { model.speakRequested(model.sceneAnswer) }
                 }.disabled(model.sceneAnswer.isEmpty).controlSize(.large)
                 Button(t("Stop descriptions · keep hazard alerts", "إيقاف الوصف مع إبقاء تنبيهات المخاطر")) { model.stopDescriptions() }
                     .controlSize(.large)
@@ -330,13 +335,13 @@ struct DashboardView: View {
                         Button(t("Hear direction", "سماع الاتجاه")) {
                             if model.running, model.detection.hazard == .observing, let cue = model.outdoor.bearing(to: item) {
                                 model.feedback.beacon(sector: cue.sector, distance: min(10, cue.distance))
-                                model.feedback.speak(item.name ?? "Destination")
+                                model.speakRequested(item.name ?? "Destination")
                             }
                         }
                     }
                 }
                 ForEach(Array(model.outdoor.routeSteps.enumerated()), id: \.offset) { _, step in
-                    Button(step.instructions) { model.feedback.speak(step.instructions) }
+                    Button(step.instructions) { model.speakRequested(step.instructions) }
                 }
             }
         }
@@ -355,6 +360,10 @@ struct DashboardView: View {
             Section(t("Language & detail", "اللغة والتفاصيل")) {
                 NavigationLink(t("Interests and preferences", "الاهتمامات والتفضيلات")) { AssistantPreferencesView(model: model) }
                     .accessibilityIdentifier("assistant-preferences")
+                #if BLIND_FAMILIAR_PEOPLE
+                NavigationLink("Familiar people · supervised experiment") { FamiliarPeopleView(model: model, experiment: model.familiarPeople) }
+                    .accessibilityIdentifier("familiar-people")
+                #endif
                 NavigationLink(t("Saved memory", "الذاكرة المحفوظة")) { SavedMemoryView(model: model) }
                     .accessibilityIdentifier("saved-memory")
                 NavigationLink(t("Recent descriptions", "الأوصاف الأخيرة")) { NarrationHistoryView(model: model) }
@@ -381,7 +390,7 @@ struct DashboardView: View {
                     Text(t("Balanced", "متوازن")).tag(DetailLevel.balanced)
                     Text(t("Detailed", "مفصل")).tag(DetailLevel.detailed)
                 }
-                Button(t("Test voice and vibration", "اختبار الصوت والاهتزاز")) { model.feedback.alert(Detection(.obstacle)) }
+                Button(t("Test voice and vibration", "اختبار الصوت والاهتزاز")) { model.testFeedback() }
             }
             Section(t("Descriptions on this phone", "الوصف على هذا الهاتف")) {
                 Text(LocalImageAssistant.status(arabic: model.arabic))

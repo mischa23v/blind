@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { containsSpatialClaim } from '../src/spatial-guard.mjs';
 import { createApp } from '../src/app.mjs';
-import { SYSTEM, SYSTEM_COMPACT, systemFor } from '../src/scene-policy.mjs';
+import { SYSTEM, SYSTEM_COMPACT, systemFor, keepSafeSentences } from '../src/scene-policy.mjs';
 
 const fixture = JSON.parse(await readFile(new URL('../../BlindCore/Tests/BlindCoreTests/Fixtures/spatial-claims.json', import.meta.url), 'utf8'));
 const config = { apiKey: 'test-key', model: 'test-model', token: 'secret' };
@@ -92,4 +92,35 @@ test('compliant object estimate passes without a retry', async () => {
   const result = await ask(['The lamp is on the desk to your left, roughly two metres away.']);
   assert.equal(result.status, 200);
   assert.equal(result.calls.length, 1);
+});
+
+// Actual relay regressions use only a local stub, never a real model/API call.
+test('clearance paraphrases cannot pass the relay unchanged', async () => {
+  for (const text of ['The corridor is unobstructed.', 'You can safely walk forward.', 'الممر سالك.', 'يمكنك المشي بأمان.']) {
+    const result = await ask([text, text]);
+    assert.equal(result.status, 502, text);
+    assert.equal(result.calls.length, 2, text);
+    assert.equal(result.body.answer, undefined, text);
+  }
+});
+
+test('sentence filtering preserves original hazard context in both languages', async () => {
+  const cases = [
+    ['There is a staircase. It is roughly two metres ahead.', 'There is a staircase.'],
+    ['The staircase is on your left. It is roughly two metres ahead.', ''],
+    ['It is roughly two metres ahead. There is a staircase.', 'There is a staircase.'],
+    ['يوجد درج. إنه أمامك بحوالي مترين.', 'يوجد درج.'],
+    ['الدرج على يمينك. هو على بعد مترين تقريباً.', ''],
+  ];
+  for (const [text, expected] of cases) {
+    assert.equal(keepSafeSentences(text, 'ar'), expected, text);
+    const result = await ask([text, text]);
+    assert.equal(result.status, expected ? 200 : 502, text);
+    assert.equal(result.body.answer, expected || undefined, text);
+  }
+});
+
+test('filter retains useful named everyday-object estimates beside a hazard mention', () => {
+  const text = 'Stairs are visible. The lamp is roughly two metres to your left.';
+  assert.equal(keepSafeSentences(text, 'en'), text);
 });

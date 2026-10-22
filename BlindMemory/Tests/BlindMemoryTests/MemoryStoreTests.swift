@@ -1,4 +1,5 @@
 import XCTest
+import GRDB
 @testable import BlindMemory
 
 final class MemoryStoreTests: XCTestCase {
@@ -101,4 +102,91 @@ final class MemoryStoreTests: XCTestCase {
         XCTAssertNil(try store.current(room: "private-room"))
         XCTAssertTrue(try store.history(room: "private-room").isEmpty)
     }
+    func testActualPrivateNamespacesSurviveReopenAndStayIsolated() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let path = directory.appendingPathComponent("private.sqlite").path
+        let namespaces = ["companion", "items", "room-recall", "item-appearance"]
+        // Synthetic encoded shape, not real images or evidence of Vision/device matching.
+        struct RecallFixture: Encodable {
+            let thumbnails = Array(repeating: Data(repeating: 42, count: 64_000), count: 16)
+            let prints = Array(repeating: Data(repeating: 43, count: 16_000), count: 16)
+            let objectPrints = Array(repeating: Data(repeating: 44, count: 16_000), count: 16)
+        }
+        let roomPayload = try JSONEncoder().encode(RecallFixture())
+        XCTAssertGreaterThan(roomPayload.count, 64_000)
+        let expected = ["companion": payload("companion"), "items": payload("items"),
+                        "room-recall": roomPayload, "item-appearance": Data(repeating: 42, count: 100_000)]
+        var first: MemoryStore? = try MemoryStore(path: path, profile: "a")
+        for namespace in namespaces {
+            try XCTUnwrap(first).saveValue(namespace: namespace, id: "same-key", payload: XCTUnwrap(expected[namespace]))
+        }
+        first = nil
+        let reopened = try MemoryStore(path: path, profile: "a")
+        let other = try MemoryStore(path: path, profile: "b")
+        for namespace in namespaces {
+            XCTAssertEqual(try reopened.value(namespace: namespace, id: "same-key"), expected[namespace])
+            XCTAssertNil(try other.value(namespace: namespace, id: "same-key"))
+            try other.saveValue(namespace: namespace, id: "same-key", payload: payload("other profile"))
+            try reopened.deleteValue(namespace: namespace, id: "same-key")
+            try reopened.deleteValue(namespace: namespace, id: "same-key")
+            XCTAssertNil(try reopened.value(namespace: namespace, id: "same-key"))
+            XCTAssertEqual(try other.value(namespace: namespace, id: "same-key"), payload("other profile"))
+        }
+        let again = try MemoryStore(path: path, profile: "a")
+        for namespace in namespaces { XCTAssertNil(try again.value(namespace: namespace, id: "same-key")) }
+    }
+    func testPrivatePayloadLimitsAndRejectedWritesPreservePreviousValue() throws {
+        let store = try MemoryStore(path: ":memory:")
+        for (namespace, limit) in [("companion", 64_000), ("items", 64_000), ("room-recall", 8_388_608), ("item-appearance", 1_048_576)] {
+            XCTAssertEqual(try MemoryStore.maximumPayloadBytes(namespace: namespace), limit)
+            let maximum = Data(repeating: 42, count: limit)
+            try store.saveValue(namespace: namespace, id: "key", payload: maximum)
+            XCTAssertThrowsError(try store.saveValue(namespace: namespace, id: "key", payload: Data()))
+            XCTAssertThrowsError(try store.saveValue(namespace: namespace, id: "key", payload: Data(repeating: 42, count: limit + 1)))
+            XCTAssertEqual(try store.value(namespace: namespace, id: "key"), maximum)
+        }
+        for namespace in ["unknown", "livePose"] {
+            XCTAssertThrowsError(try store.saveValue(namespace: namespace, id: "key", payload: payload("no")))
+            XCTAssertThrowsError(try store.value(namespace: namespace, id: "key"))
+            XCTAssertThrowsError(try store.deleteValue(namespace: namespace, id: "key"))
+        }
+    }
+    func testV3MigrationPreservesExistingRowsAndEnforcesSQLBudgets() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let path = directory.appendingPathComponent("upgrade.sqlite").path
+        var legacy: DatabaseQueue? = try DatabaseQueue(path: path)
+        var migrator = DatabaseMigrator()
+        for (identifier, resource) in [("assistant-memory-v1", "schema"), ("assistant-memory-v2-deletion", "deletion"), ("assistant-memory-v3-narration", "narration")] {
+            migrator.registerMigration(identifier) { db in try db.execute(sql: MemoryStore.sql(resource)) }
+        }
+        try migrator.migrate(XCTUnwrap(legacy))
+        try XCTUnwrap(legacy).write { db in
+            for profile in ["a", "b"] {
+                try db.execute(sql: "INSERT INTO memoryValue VALUES (?,?,?,?,?)", arguments: [profile, "preferences", "key", payload(profile), 123.0])
+            }
+            // Preserve even out-of-API legacy rows, without exposing unknown namespaces via the API.
+            try db.execute(sql: "INSERT INTO memoryValue VALUES ('a','legacy-extension','key',?,123)", arguments: [payload("legacy")])
+        }
+        legacy = nil
+        let upgraded = try MemoryStore(path: path, profile: "a")
+        XCTAssertEqual(try upgraded.value(namespace: "preferences", id: "key"), payload("a"))
+        let other = try MemoryStore(path: path, profile: "b")
+        XCTAssertEqual(try other.value(namespace: "preferences", id: "key"), payload("b"))
+        try upgraded.saveValue(namespace: "room-recall", id: "key", payload: Data(repeating: 42, count: 700_000))
+        let sql = try DatabaseQueue(path: path)
+        try sql.read { db in
+            XCTAssertEqual(try Double.fetchOne(db, sql: "SELECT updated FROM memoryValue WHERE profile='a' AND namespace='preferences'"), 123)
+            XCTAssertEqual(try Data.fetchOne(db, sql: "SELECT payload FROM memoryValue WHERE namespace='legacy-extension'"), payload("legacy"))
+        }
+        for (namespace, count) in [("preferences", 64_001), ("room-recall", 8_388_609), ("item-appearance", 1_048_577)] {
+            XCTAssertThrowsError(try sql.write { db in
+                try db.execute(sql: "INSERT INTO memoryValue VALUES ('a',?,'too-big',?,123)", arguments: [namespace, Data(repeating: 42, count: count)])
+            })
+        }
+    }
+
 }

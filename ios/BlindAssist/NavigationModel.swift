@@ -10,6 +10,16 @@ import NaturalLanguage
 import CoreLocation
 import os
 
+/// Only this file can mint a speech admission after the companion gate.
+struct AdmittedSpeech {
+    let text: String
+    let priority: SpeechPriority
+    let urgent: Bool
+    fileprivate init(_ candidate: InformationCandidate) {
+        text = candidate.text; priority = candidate.priority; urgent = candidate.kind == .hazard
+    }
+}
+
 enum AssistantPerformance {
     // Timing only: never attach scene text, names, map contents or credentials.
     static let signposter = OSSignposter(subsystem: "org.blindassist.mobility", category: "AssistantPerformance")
@@ -92,6 +102,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     let survey = SurveyProgress()
     let visualStairs = VisualStairMonitor()
     let peopleTracking = PersonTrackingMonitor()
+    #if BLIND_FAMILIAR_PEOPLE
+    let familiarPeople = FamiliarFaceExperiment()
+    @Published var showFamiliarPeople = false
+    #endif
     private var returnTrail = ReturnTrail()
     private var returnCue: TrailCue?
     private var lastReturnAnnouncement = -Double.infinity
@@ -113,6 +127,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private lazy var roomRecall = RoomRecall(memory: places.memory)
     private var lastRecallCheck = -Double.infinity
     private var recallInFlight = false
+    private var perceptionGeneration = UUID()
     private var recognizedRoomID: String?
     private var alignedRoomID: String?
     private var userConfirmedRoomID: String?
@@ -128,10 +143,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var items = ItemMemory()
     private lazy var itemAppearance = ItemAppearance(memory: places.memory)
     /// Guided saving of how an item looks: "this is my cup", then turning it slowly.
+    private var itemMemoryRevision = UUID()
     private var learningItem: (name: String, key: String, started: Double, lastTick: Double)?
     private var listenedOfferKey = ""
     private var locateFallback = false
-    @Published var listenAfterQuestions = UserDefaults.standard.object(forKey: "listen-after-questions") as? Bool ?? true {
+    @Published var listenAfterQuestions = UserDefaults.standard.object(forKey: "listen-after-questions") as? Bool ?? false {
         didSet { UserDefaults.standard.set(listenAfterQuestions, forKey: "listen-after-questions") }
     }
     @Published private(set) var companionOffer: CompanionOffer?
@@ -193,6 +209,21 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         for publisher in [places.objectWillChange, indoor.objectWillChange, outdoor.objectWillChange, mapping.objectWillChange, journeys.objectWillChange, voice.objectWillChange, survey.objectWillChange, visualStairs.objectWillChange, peopleTracking.objectWillChange] {
             publisher.sink { [weak self] _ in self?.objectWillChange.send() }.store(in: &subscriptions)
         }
+        #if BLIND_FAMILIAR_PEOPLE
+        familiarPeople.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }.store(in: &subscriptions)
+        familiarPeople.onStatus = { [weak self] text in
+            guard let self, self.showFamiliarPeople || self.familiarPeople.presentationActive || self.familiarPeople.enabled,
+                  !self.running || self.detection.hazard == .observing else { return }
+            _ = self.speakOperation(text, revision: self.familiarPeople.operationRevision.uuidString)
+        }
+        familiarPeople.onSearchStarted = { [weak self] in
+            guard let self else { return }
+            self.cancelDescription(); self.companion.withdrawOffer(); self.companionOffer = nil
+            self.roomOfferCandidate = nil; self.roomQuestionCandidate = nil
+        }
+        familiarPeople.onSnapshotHint = { [weak self] text in _ = self?.speakRequested(text) }
+        familiarPeople.onCancelSpeech = { [weak self] in _ = self?.feedback.stopInformation() }
+        #endif
         wearables.onUpdate = { [weak self] in
             guard let self else { return }
             self.wearableStatus = self.wearables.status
@@ -201,6 +232,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         voice.onFinished = { [weak self] text in
             guard let self else { return }
+            #if BLIND_FAMILIAR_PEOPLE
+            if self.routeFamiliarPeopleCommand(text) { return }
+            self.familiarPeople.cancelSearchForNewGoal()
+            #endif
             // A whole-utterance yes/no answers the current offer; anything longer is a question.
             if self.companion.pendingOffer != nil, let answer = AssistantControl.offerAnswer(text) {
                 self.answerCompanionOffer(answer); return
@@ -215,7 +250,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             self.publish()
             self.resumePendingQuestion()
         }
-        places.onMessage = { [weak self] text in self?.feedback.speak(text) }
+        feedback.onControlAnnouncement = { [weak self] text in _ = self?.speakOperation(text, replace: false) }
+        places.onMessage = { [weak self] text in _ = self?.speakOperation(text) }
         places.onScanFinished = { [weak self] in
             guard let self else { return }
             self.session.delegate = self; self.detector.reset(); self.phoneDetection = Detection(.needsCalibration)
@@ -247,6 +283,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     private func launch(map: ARWorldMap? = nil) {
+        invalidatePerceptionWork()
         peopleTracking.reset()
         fixedBodyMount = false
         recognizedPlace = nil
@@ -275,6 +312,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         startWatchdog(); message = "Mount the rear camera facing ahead and slightly down. Calibrate on a known level floor."
     }
     func stop() {
+        invalidatePerceptionWork()
         peopleTracking.reset()
         fixedBodyMount = false
         visualStairs.reset()
@@ -294,11 +332,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         guard running, !places.scanning, awaitingPlace == nil else { return }
         detector.beginCalibration(); calibrationProgress = 0; phoneDetection = Detection(.calibrating)
         message = "Stand still on known level ground. Keep nearby floor in view."
-        feedback.speak(arabic ? "اثبت على أرض مستوية معروفة." : "Hold still on known level ground.")
+        speakOperation(arabic ? "اثبت على أرض مستوية معروفة." : "Hold still on known level ground.")
     }
     func connectWearables() { wearables.connect() }
     func repeatMonitoringStatus() {
-        feedback.speak(GuidanceText.detection(detection, arabic: arabic), urgent: true)
+        announceDetection(detection, requested: true)
     }
     func calibrateBelt() { wearables.send(WearableCommand.calibrate) }
     func identifyBelt() { wearables.send(WearableCommand.identify) }
@@ -310,11 +348,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 self.awaitingPlace = nil; self.launch()
                 self.placeRecoveryQuestion = self.arabic ? "لم أتأكد من المكان. هل أنت في مكان محفوظ أم في مكان آخر؟ اختر المكان للمحاولة مجدداً. يمكنك البقاء ثابتاً وتحريك الكاميرا ببطء إن كان ذلك مريحاً." : "I could not confirm this place. Are you in a saved place or somewhere else? Select a place to retry. You can stay still and slowly turn the camera if comfortable."
                 self.message = self.placeRecoveryQuestion
-                self.feedback.speak(self.placeRecoveryQuestion)
+                self.speakMobility(self.placeRecoveryQuestion)
             }
             if self.simulation { self.demoFrame() }
             else if ProcessInfo.processInfo.systemUptime - self.lastFrameWallTime > 0.5 {
                 // Invalidate calibration and held evidence when callbacks stop.
+                self.invalidatePerceptionWork()
+                self.invalidateRecognizedRoom()
                 self.detector.reset(); self.phoneDetection = Detection(.uncertain, reason: .frameUnavailable)
                 self.visualStairs.reset()
                 self.peopleTracking.reset()
@@ -345,11 +385,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     recognizedPlace = place; awaitingPlace = nil
                     placeRecoveryQuestion = ""
                     message = "Saved map matched: \(place.name). Recalibrate the floor."
-                    feedback.speak(message)
+                    speakOperation(message)
             }
             phoneDetection = Detection(.uncertain, reason: .localizing); publish(); return
         }
         guard let observation = DepthSampler.observation(from: frame) else {
+            invalidatePerceptionWork(); invalidateRecognizedRoom()
             survey.invalidate()
             journeys.breakTracking(); attention.resetMotion()
             invalidateReturn()
@@ -357,6 +398,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             phoneDetection = Detection(.uncertain, reason: DepthSampler.unavailableReason(from: frame)); lastObservation = nil; publish(); return
         }
         if !observation.trackingNormal {
+            invalidatePerceptionWork(); invalidateRecognizedRoom()
             detector.reset(); recognizedPlace = nil; indoor.invalidatePosition(); fixedBodyMount = false
             invalidateReturn()
         }
@@ -369,6 +411,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         phoneDetection = detector.process(observation)
         survey.observe(observation, floor: detector.floorHeight)
         calibrationProgress = detector.calibrationProgress; publish()
+        #if BLIND_FAMILIAR_PEOPLE
+        familiarPeople.revalidate(model: self)
+        #endif
         updateReturn(observation)
         if !returning, fixedBodyMount, indoor.isAligned, detection.hazard == .observing,
            lastFrameWallTime - lastIndoorAnnouncement >= 8 { indoorBeacon(automatic: true) }
@@ -384,6 +429,71 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             readScene(cloud: false, automatic: true)
         }
     }
+    #if BLIND_FAMILIAR_PEOPLE
+    @discardableResult func routeFamiliarPeopleCommand(_ text: String) -> Bool {
+        guard let command = FamiliarPeopleCommand.parse(text) else { return false }
+        guard command == .cancel || command == .stop || !running || detection.hazard == .observing else { message = "Current monitoring alerts take priority."; return true }
+        if !showFamiliarPeople && !familiarPeople.enabled {
+            showFamiliarPeople = true
+            familiarPeople.reload()
+        }
+        familiarPeople.handle(command, model: self)
+        return true
+    }
+    /// Short-lived rear-camera input for the explicit experimental screen only.
+    func captureFamiliarFace() -> FamiliarCapture? {
+        guard running, !simulation, !places.scanning, awaitingPlace == nil,
+              detection.hazard == .observing, attention.stationary,
+              UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }),
+              let observation = lastObservation, observation.trackingNormal,
+              let frame = session.currentFrame,
+              FamiliarFacePolicy.fresh(capturedAt: lastFrameWallTime, now: ProcessInfo.processInfo.systemUptime, frameAt: lastFrameWallTime)
+        else { return nil }
+        return FamiliarCapture(image: frame.capturedImage, capturedAt: lastFrameWallTime, generation: perceptionGeneration,
+            camera: observation.camera, forward: observation.forward)
+    }
+    func familiarCaptureIsCurrent(_ capture: FamiliarCapture) -> Bool {
+        familiarContextIsCurrent(capture, snapshotSpeech: false)
+    }
+    /// Only authorizes finishing a past-snapshot utterance, never a live name/position.
+    func familiarSnapshotContextIsCurrent(_ capture: FamiliarCapture) -> Bool {
+        familiarContextIsCurrent(capture, snapshotSpeech: true)
+    }
+    private func familiarContextIsCurrent(_ capture: FamiliarCapture, snapshotSpeech: Bool) -> Bool {
+        let now = ProcessInfo.processInfo.systemUptime
+        let ageOK = snapshotSpeech
+            ? FamiliarFacePolicy.snapshotSpeechFresh(capturedAt: capture.capturedAt, now: now, frameAt: lastFrameWallTime)
+            : FamiliarFacePolicy.fresh(capturedAt: capture.capturedAt, now: now, frameAt: lastFrameWallTime)
+        guard running, !simulation, !places.scanning, awaitingPlace == nil,
+              detection.hazard == .observing, attention.stationary,
+              perceptionGeneration == capture.generation, let observation = lastObservation, observation.trackingNormal,
+              UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }),
+              ageOK,
+              observation.camera.distance(to: capture.camera) < 0.10 else { return false }
+        let dot = observation.forward.x * capture.forward.x + observation.forward.y * capture.forward.y + observation.forward.z * capture.forward.z
+        return dot > cos(.pi / 36)
+    }
+    #endif
+    private func invalidatePerceptionWork() {
+        #if BLIND_FAMILIAR_PEOPLE
+        if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel() }
+        #endif
+        perceptionGeneration = UUID(); recallInFlight = false; learningItem = nil
+        roomRecall.cancelPendingWork(); itemAppearance.cancelPendingWork()
+    }
+    private func invalidateRecognizedRoom() {
+        if let previous = recognizedRoomID { leftRoomID = previous }
+        recognizedRoomID = nil; recognizedBasis = []
+        roomRecall.cancelPendingWork()
+    }
+    private func perceptionResultAllowed(request: UUID, generation: UUID, capturedAt: Double, observation: Observation, mapRevision: UUID, alignmentRevision: UUID) -> Bool {
+        running && !simulation && !places.scanning && requestID == request && perceptionGeneration == generation &&
+        indoor.revision == mapRevision && indoor.alignmentRevision == alignmentRevision &&
+        SceneDelivery.allowed(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime,
+            origin: observation.camera, current: lastObservation?.camera, currentFrameAt: lastFrameWallTime,
+            hazard: detection.hazard, tracking: lastObservation?.trackingNormal == true,
+            originForward: observation.forward, currentForward: lastObservation?.forward)
+    }
     private func cancelDescription() {
         pendingQuestion = nil
         requestID = UUID(); questionTask?.cancel(); questionTask = nil; busy = false; questionIsAutomatic = false
@@ -395,10 +505,17 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         detection = continuity.process(AlertPolicy.highest(visual + [phoneDetection] + (simulation ? [] : wearables.detections(at: now))), at: now)
         if previousHazard == .uncertain && detection.hazard == .observing {
             // A status update, never an instruction to start walking.
-            feedback.speak(GuidanceText.hazard(.observing, arabic: arabic), urgent: true)
+            speakMobility(GuidanceText.hazard(.observing, arabic: arabic))
         }
         if detection.hazard != .observing { feedback.interruptAmbient() }
-        if detection.hazard.requiresImmediateAttention { cancelDescription(); if voice.listening { voice.cancel() } }
+        if detection.hazard.requiresImmediateAttention {
+            cancelDescription(); companion.withdrawOffer(); companionOffer = nil
+            roomOfferCandidate = nil; roomQuestionCandidate = nil
+            #if BLIND_FAMILIAR_PEOPLE
+            if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel() }
+            #endif
+            if voice.listening { voice.cancel() }
+        }
         if policy.shouldAnnounce(detection, at: now) {
             if detection.hazard.isUrgent {
                 questionTask?.cancel(); questionTask = nil; busy = false
@@ -406,10 +523,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     wearables.send(WearableCommand.haptic(sector: detection.sector, intensity: 220, durationMS: 300))
                 }
             }
-            feedback.alert(detection)
+            announceDetection(detection)
         }
     }
     func session(_ session: ARSession, didFailWithError error: Error) {
+        invalidatePerceptionWork()
         peopleTracking.reset()
         fixedBodyMount = false
         awaitingPlace = nil; placeRecovery.reset()
@@ -420,6 +538,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         indoor.invalidatePosition(); message = "Camera session failed: \(error.localizedDescription)"; publish()
     }
     func sessionWasInterrupted(_ session: ARSession) {
+        invalidatePerceptionWork()
         peopleTracking.reset()
         fixedBodyMount = false
         awaitingPlace = nil; placeRecovery.reset()
@@ -464,7 +583,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
               AVCaptureDevice.authorizationStatus(for: .video) == .authorized else { return }
         launch(); placeRecoveryQuestion = ""
         message = arabic ? "المكان غير معروف. لن أستخدم الغرفة السابقة لإعطاء اتجاهات. أعد معايرة الأرضية." : "Place is unknown. I will not use the previous room for directions. Recalibrate the floor."
-        feedback.speak(message)
+        speakOperation(message)
     }
     func alignIndoor() {
         guard let observation = lastObservation, observation.trackingNormal, !simulation,
@@ -477,12 +596,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
               ProcessInfo.processInfo.systemUptime - lastFrameWallTime < 0.5,
               detection.hazard == .observing else { return }
         guard let cue = indoor.next(camera: observation.camera, forward: observation.forward) else {
-            _ = feedback.speak(indoor.message, priority: .mobility)
+            _ = speakMobility(indoor.message)
             lastIndoorAnnouncement = ProcessInfo.processInfo.systemUptime; return
         }
         let key = "\(indoor.alignmentRevision):\(indoor.waypointIndex):\(cue.sector):\(cue.distance <= 1)"
         if automatic, key == lastIndoorCueKey { return }
-        if feedback.speak(indoor.message, priority: .mobility) {
+        if speakMobility(indoor.message) {
             if fixedBodyMount { feedback.beacon(sector: cue.sector, distance: min(10, cue.distance)) }
             lastIndoorAnnouncement = ProcessInfo.processInfo.systemUptime
             lastIndoorCueKey = key
@@ -493,7 +612,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // Privacy rule (AGENTS.md): camera pictures never leave the phone in the app build.
         let cloud = false
         #endif
+        #if BLIND_FAMILIAR_PEOPLE
+        if !automatic, routeFamiliarPeopleCommand(question) { return }
+        if !automatic { familiarPeople.cancelSearchForNewGoal() }
+        #endif
         if !automatic, handleAssistantControl(question) { return }
+        if !automatic { cancelDescription() }
         // Saved items and live "where is it" answers come from sensors first (E13/E14).
         let fromLocate = locateFallback; locateFallback = false
         if !automatic, !fromLocate, handleItemOrLocate(question) { return }
@@ -502,7 +626,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             if indoor.map != nil { findMapDestination() }
             else {
                 message = arabic ? "حُفظ الهدف. لم تُحدد خريطة للوصول إليه بعد." : "Goal saved. A map for reaching it has not been selected yet."
-                _ = feedback.speak(message)
+                _ = speakOperation(message)
             }
             return
         }
@@ -642,7 +766,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 if fromModel && SpatialClaimGuard.containsSpatialClaim(answer) {
                     if !automatic {
                         self.message = arabic ? "حذفتُ إجابة فيها مسافة أو موقع خطر لم تقسه الحساسات. تنبيهات الحساسات مستمرة." : "I held back an answer that gave a hazard position or distance the sensors had not measured. Sensor alerts continue."
-                        _ = self.feedback.speak(self.message)
+                        _ = self.speakOperation(self.message)
                     }
                     return
                 }
@@ -655,19 +779,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 }
                 // Automatic descriptions go through the companion engine: what is in view must have
                 // changed (evidence revision), and goal, quiet, offers and frequency all apply.
-                var ambientKey: String?
-                if automatic {
-                    let revision = Set(context.observations.map { "\($0.kind.rawValue):\($0.text)" }).sorted().joined(separator: "|")
-                    let candidate = InformationCandidate(key: "view:\(self.companion.currentRoom ?? "unknown")", kind: .discovery,
-                        text: answer, words: words, revision: revision.isEmpty ? answer : revision,
-                        createdAt: capturedAt, expiresAt: capturedAt + 6)
-                    guard case .say = self.companion.decide([candidate], moment: self.companionMoment(now), settings: self.companionSettings).first else { return }
-                    ambientKey = candidate.key
-                }
-                // All scene narration yields to necessary mobility/status cues.
-                let spoken = self.feedback.speakAmbient(answer, id: currentRequest)
+                let revision = Set(context.observations.map { "\($0.kind.rawValue):\($0.text)" }).sorted().joined(separator: "|")
+                let candidate = InformationCandidate(key: automatic ? "view:\(self.companion.currentRoom ?? "unknown")" : "answer:\(currentRequest)",
+                    kind: automatic ? .discovery : .answer, text: answer, words: words,
+                    revision: automatic ? (revision.isEmpty ? answer : revision) : currentRequest.uuidString,
+                    createdAt: capturedAt, expiresAt: capturedAt + 6, requested: !automatic)
+                let spoken = self.deliverCandidate(candidate, narrationID: currentRequest)
                 guard spoken else {
-                    if let ambientKey { self.companion.release(ambientKey) }
                     if !automatic { self.queueQuestion(question, cloud: cloud, focus: focus, camera: origin, forward: originForward) }
                     return
                 }
@@ -689,14 +807,74 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let tokenizer = NLTokenizer(unit: .word); tokenizer.string = text
         return tokenizer.tokens(for: text.startIndex..<text.endIndex).count
     }
+    /// One admission point for new candidates; approved producers use the private
+    /// already-admitted path so the same words are never charged twice here.
+    @discardableResult private func deliverCandidate(_ candidate: InformationCandidate,
+        alreadyAdmitted: Bool = false, narrationID: UUID? = nil, alert: Detection? = nil) -> Bool {
+        let now = ProcessInfo.processInfo.systemUptime
+        guard candidate.createdAt <= now, now <= candidate.expiresAt else { return false }
+        if candidate.kind == .hazard {
+            cancelDescription(); companion.withdrawOffer(); companionOffer = nil
+            roomOfferCandidate = nil; roomQuestionCandidate = nil
+            #if BLIND_FAMILIAR_PEOPLE
+            if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel() }
+            #endif
+        } else if candidate.kind != .mobility {
+            guard !voice.listening, !running || !detection.hazard.requiresImmediateAttention else { return false }
+        }
+        if !alreadyAdmitted {
+            guard case .say = companion.decide([candidate], moment: companionMoment(now), settings: companionSettings).first else { return false }
+        }
+        let admitted = AdmittedSpeech(candidate)
+        let spoken = feedback.deliver(admitted, narrationID: narrationID, alert: alert)
+        if !spoken { companion.release(candidate.key) }
+        return spoken
+    }
+    @discardableResult private func dispatchText(_ text: String, kind: InformationCandidate.Kind,
+        requested: Bool = false, replace: Bool = false, revision: String = UUID().uuidString,
+        narrationID: UUID? = nil, alert: Detection? = nil) -> Bool {
+        let now = ProcessInfo.processInfo.systemUptime
+        let candidate = InformationCandidate(key: "speech:" + revision, kind: kind, text: text,
+            words: Self.wordCount(text), revision: revision, createdAt: now, expiresAt: now + 2,
+            requested: requested)
+        if replace { _ = feedback.stopInformation(announceCancellation: false) }
+        let delivered = deliverCandidate(candidate, narrationID: narrationID, alert: alert)
+        if replace && !delivered { feedback.requestCancellationAnnouncement() }
+        return delivered
+    }
+    /// Descriptive answers and repeats retain normal information budgets.
+    @discardableResult func speakRequested(_ text: String, replace: Bool = true, narrationID: UUID? = nil) -> Bool {
+        dispatchText(text, kind: .answer, requested: true, replace: replace, narrationID: narrationID)
+    }
+    /// Only short current-action consent/progress/confirmation/error, never scene descriptions.
+    @discardableResult func speakOperation(_ text: String, replace: Bool = true, revision: String = UUID().uuidString) -> Bool {
+        dispatchText(text, kind: .operation, requested: true, replace: replace, revision: revision)
+    }
+    @discardableResult private func speakMobility(_ text: String) -> Bool { dispatchText(text, kind: .mobility) }
+    private func announceDetection(_ value: Detection, requested: Bool = false) {
+        let kind: InformationCandidate.Kind = value.hazard.requiresImmediateAttention ? .hazard : requested ? .answer : .mobility
+        _ = dispatchText(GuidanceText.detection(value, arabic: arabic), kind: kind, requested: requested,
+            replace: requested && !value.hazard.requiresImmediateAttention, alert: value)
+    }
+    func testFeedback() {
+        _ = dispatchText(arabic ? "اختبار التنبيه. ليس خطراً مقاساً." : "Alert test. This is not a measured hazard.", kind: .operation,
+            requested: true, replace: true, alert: Detection(.obstacle))
+    }
+    private var focusedFaceSearch: Bool {
+        #if BLIND_FAMILIAR_PEOPLE
+        return familiarPeople.isSearching
+        #else
+        return false
+        #endif
+    }
     private var companionSettings: CompanionSettings {
         CompanionSettings(firstVisitRooms: firstVisitRooms, minimumGap: Double(narrationInterval), wordsPerMinute: wordsPerMinute,
                           preferences: assistantPreferences, quiet: !ambientDescriptions, offerWindow: 14)
     }
     private func companionMoment(_ now: Double) -> CompanionMoment {
-        CompanionMoment(now: now, goalActive: !assistantDialogue.goal.isEmpty,
+        CompanionMoment(now: now, goalActive: !assistantDialogue.goal.isEmpty, focusedTaskActive: focusedFaceSearch,
                         activity: attention.stationary ? .stationary : lastObservation?.trackingNormal == true ? .moving : .unknown,
-                        speaking: feedback.canSpeakAmbient ? nil : .information)
+                        speaking: feedback.speechPriority)
     }
     private func persistCompanion() {
         guard let memory = places.memory, let data = try? JSONEncoder().encode(companion.memory) else { return }
@@ -737,7 +915,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     // Same timing gates as an offer, without asking first.
                     companion.answerOffer(.yes)
                     readScene(cloud: false, question: arabic ? "صف هذه الغرفة." : "Describe this room.", focus: "room")
-                } else if feedback.canSpeakAmbient, feedback.speak(offer.prompt, priority: .information) { companionOffer = offer }
+                } else if feedback.canSpeakAmbient, deliverCandidate(InformationCandidate(key: "offer:" + offer.subject,
+                    kind: .offer, text: offer.prompt, words: Self.wordCount(offer.prompt), createdAt: now,
+                    expiresAt: offer.expiresAt), alreadyAdmitted: true) { companionOffer = offer }
                 else { companion.withdrawOffer() }
             case .drop(let key, _):
                 if key == roomQuestionCandidate?.key { roomQuestionCandidate = nil } else if key == roomOfferCandidate?.key { roomOfferCandidate = nil }
@@ -761,10 +941,16 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func setAssistantObjective() {
+        #if BLIND_FAMILIAR_PEOPLE
+        familiarPeople.cancelSearchForNewGoal()
+        #endif
         cancelDescription(); feedback.stop(); stopReturn(); indoor.invalidatePosition()
         assistantDialogue.setGoal(objectiveDraft); objectiveDraft = assistantDialogue.goal; persistDialogue()
     }
     func clearAssistantConversation() {
+        #if BLIND_FAMILIAR_PEOPLE
+        familiarPeople.cancelSearchForNewGoal()
+        #endif
         cancelDescription(); feedback.stop(); stopReturn(); indoor.invalidatePosition()
         assistantDialogue = AssistantDialogue(); objectiveDraft = ""; persistDialogue()
     }
@@ -832,7 +1018,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if !matches.isEmpty {
             indoor.suggestDestination(id: matches.count == 1 ? matches[0].id : nil)
             sceneAnswer = indoor.message
-            if !running || detection.hazard == .observing { feedback.speak(sceneAnswer, priority: .mobility) }
+            if !running || detection.hazard == .observing { speakRequested(sceneAnswer) }
             return
         }
         let position = lastObservation.flatMap {
@@ -846,7 +1032,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             let id = await OfflineSummary.destination(context, question: question, arabic: self.arabic)
             guard !Task.isCancelled, self.requestID == request, self.indoor.revision == revision else { return }
             self.indoor.suggestDestination(id: id); self.sceneAnswer = self.indoor.message
-            if !self.running || self.detection.hazard == .observing { self.feedback.speak(self.sceneAnswer, priority: .mobility) }
+            if !self.running || self.detection.hazard == .observing { self.speakRequested(self.sceneAnswer) }
         }
     }
     func stopDescriptions() { cancelDescription(); voice.cancel(); feedback.interruptAmbient(); ambientDescriptions = false }
@@ -882,7 +1068,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         case .repeatDescription: repeatDescription(); return true
         }
         message = arabic ? "تم تحديث إعدادات الوصف." : "Description settings updated."
-        _ = feedback.speak(message)
+        _ = speakOperation(message)
         return true
     }
     func repeatDescription() {
@@ -903,7 +1089,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         cancelDescription()
         let id = UUID(), session = narrationSession, revision = assistantDialogue.goalRevision, at = Date()
-        guard feedback.speakAmbient(text, id: id) else { return }
+        guard speakRequested(text, narrationID: id) else { return }
         narrationBudget.charge(words: count, limit: wordsPerMinute, now: now)
         // Do not recursively prepend older repeat labels to later requests.
         enqueueNarration { try await $0.start(id: id, sessionID: session, goalRevision: revision,
@@ -950,7 +1136,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         switch returnTrail.state {
         case .arrived:
             returning = false; returnStatus = arabic ? "أنت قرب نقطة بداية المسار المسجل. تأكد من المعلم." : "Near the recorded start. Confirm your starting landmark."
-            feedback.speak(returnStatus, priority: .mobility)
+            speakMobility(returnStatus)
         case .invalidated: returning = false; returnStatus = returnTrail.reason
         case .paused: returnStatus = "Return guidance paused while monitoring is unavailable or a hazard is present."
         default:
@@ -967,7 +1153,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             ["ahead", "ahead to your right", "to your right", "behind to your right", "behind you", "behind to your left", "to your left", "ahead to your left"]
         returnStatus = arabic ? "نقطة المسار المسجل \(directions[cue.sector])، نحو \(String(format: "%.1f", cue.distance)) متر." :
             "Recorded trail point \(directions[cue.sector]), about \(String(format: "%.1f", cue.distance)) meters."
-        if feedback.speak(returnStatus, priority: .mobility) {
+        if speakMobility(returnStatus) {
             feedback.beacon(sector: cue.sector, distance: max(0.5, min(10, cue.distance)))
             lastReturnAnnouncement = ProcessInfo.processInfo.systemUptime
         }
@@ -977,7 +1163,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         demonstrationTime = 0; demonstrationHazard = .observing; policy = AlertPolicy(); continuity = MonitoringContinuity()
         for _ in 0..<15 { demoFrame() }
         startWatchdog(); message = "Simulation uses generated depth. No live sensing is active."
-        feedback.speak(arabic ? "وضع المحاكاة. لا توجد قراءات حقيقية." : "Simulation. No live sensors.")
+        speakOperation(arabic ? "وضع المحاكاة. لا توجد قراءات حقيقية." : "Simulation. No live sensors.")
     }
     func simulate(_ hazard: Hazard) { demonstrationHazard = hazard }
     private func demoFrame() {
@@ -1015,7 +1201,7 @@ extension NavigationModel {
         mountSlipAnnounced = true
         fixedBodyMount = false
         message = arabic ? "ربما تحرّك الهاتف على الحامل. تحقق منه ثم فعّل التثبيت مجدداً." : "The phone may have shifted on its mount. Check it, then turn the fixed mount on again."
-        _ = feedback.speak(message, priority: .mobility)
+        _ = speakMobility(message)
     }
 
     /// Start by trying the saved place nearest to the phone's coarse location (it only narrows which
@@ -1036,7 +1222,7 @@ extension NavigationModel {
         else { launch() }
     }
 
-    /// After a yes/no question finishes speaking, listen briefly for the answer (setting, default on).
+    /// After a yes/no question finishes speaking, listen briefly only when explicitly enabled.
     private func listenForOfferAnswer() {
         guard listenAfterQuestions, let offer = companionOffer, companion.pendingOffer != nil, !voice.listening,
               !running || detection.hazard == .observing else { return }
@@ -1078,23 +1264,25 @@ extension NavigationModel {
         let trusted = alignedRoomID != nil || recognizedPlace != nil || recognizedBasis.contains { $0.hasPrefix("worldMap") || $0.hasPrefix("user") }
         var candidates = Array(companion.memory.rooms.keys.sorted().prefix(12))
         if let established, !candidates.contains(established) { candidates.append(established) }
+        let generation = perceptionGeneration
         recallInFlight = true
         roomRecall.evidence(image: image, candidates: candidates) { [weak self] evidence, view in
-            guard let self else { return }
+            guard let self, self.perceptionGeneration == generation else { return }
             self.recallInFlight = false
-            if let established, trusted { self.roomRecall.learn(room: established, view: view, image: image, now: now, sector: sector) }
+            guard self.running, SceneDelivery.allowed(capturedAt: now, now: ProcessInfo.processInfo.systemUptime,
+                origin: observation.camera, current: self.lastObservation?.camera, currentFrameAt: self.lastFrameWallTime,
+                hazard: self.detection.hazard, tracking: self.lastObservation?.trackingNormal == true,
+                originForward: observation.forward, currentForward: self.lastObservation?.forward) else { return }
             let texts = view.texts
             var clues = evidence
             if let room = self.alignedRoomID { clues.append(.worldMapMatched(roomID: room)) }
             else if let place = self.recognizedPlace { clues.append(.worldMapMatched(roomID: "place:\(place.id.uuidString)")) }
             if let confirmed = self.userConfirmedRoomID { clues.append(.userConfirmed(roomID: confirmed)); self.userConfirmedRoomID = nil }
-            // Walking out of a room through its only mapped door is one clue for the room beyond it.
-            if let left = self.leftRoomID {
-                let beyond = self.connectedRooms(from: left)
-                if beyond.count == 1 { clues.append(.movedThrough(fromRoomID: left, toRoomID: beyond[0])) }
-            }
             switch self.roomRecognizer.decide(clues, at: now) {
             case .established(let room, let basis):
+                if basis.contains("user") || (room == established && trusted) {
+                    self.roomRecall.learn(room: room, view: view, image: image, now: now, sector: sector)
+                }
                 if self.alignedRoomID == nil && self.recognizedPlace == nil {
                     if let previous = self.recognizedRoomID, previous != room { self.leftRoomID = previous }
                     self.recognizedRoomID = room; self.recognizedBasis = basis
@@ -1102,14 +1290,13 @@ extension NavigationModel {
                 if self.leftRoomID == room { self.leftRoomID = nil }
                 self.roomQuestionCandidate = nil
             case .ask(let room):
+                self.invalidateRecognizedRoom()
                 self.askRoom([room], now: now)
             case .askWhich(let rooms):
+                self.invalidateRecognizedRoom()
                 self.askRoom(rooms, now: now)
             case .unknown:
-                // Leaving a known room: remember it so the next room can use the movement clue.
-                if let previous = self.recognizedRoomID, self.alignedRoomID == nil, self.recognizedPlace == nil {
-                    self.leftRoomID = previous
-                }
+                self.invalidateRecognizedRoom()
             }
             // Relevant changes in an established room: newcomers, people no longer in view, new signs.
             let current = self.alignedRoomID ?? self.recognizedPlace.map { "place:\($0.id.uuidString)" } ?? self.recognizedRoomID
@@ -1141,13 +1328,13 @@ extension NavigationModel {
         guard !candidates.isEmpty, !voice.listening else { return }
         for decision in companion.decide(candidates, moment: companionMoment(now), settings: companionSettings) {
             guard case .say(let item, _) = decision else { continue }
-            if !(feedback.canSpeakAmbient && feedback.speak(item.text, priority: .information)) { companion.release(item.key) }
+            if !(feedback.canSpeakAmbient && deliverCandidate(item, alreadyAdmitted: true)) { companion.release(item.key) }
         }
     }
 
     private func say(_ text: String) {
         message = text
-        _ = feedback.speak(text, priority: .information)
+        _ = speakRequested(text)
     }
 
     private func persistItems() {
@@ -1195,8 +1382,9 @@ extension NavigationModel {
                     say(ItemMemory.answer(for: nil, asked: name, now: Date(), sameFrame: false, measuredRelation: nil, arabic: arabic))
                 }
             case .forget(let name):
-                let removed = items.forget(name)
-                if removed { persistItems() }
+                let saved = items.find(name)
+                if let saved, !forgetItem(saved) { return true }
+                let removed = saved != nil
                 say(removed ? (arabic ? "نسيت \(name)." : "Forgot your \(name).") : (arabic ? "لا يوجد \(name) محفوظ." : "No saved \(name) to forget."))
             }
             return true
@@ -1211,10 +1399,13 @@ extension NavigationModel {
         guard running, !simulation, detection.hazard == .observing, let frame = session.currentFrame,
               let observation = lastObservation, observation.trackingNormal else { return false }
         let image = frame.capturedImage, arabic = self.arabic, facing = currentBodyForward()
+        let request = requestID, generation = perceptionGeneration, capturedAt = lastFrameWallTime
+        let mapRevision = indoor.revision, alignmentRevision = indoor.alignmentRevision
         Task.detached(priority: .userInitiated) { [weak self] in
             let found = try? VisionService.locate(target: target, image: image, orientation: .right, arabic: arabic)
             await MainActor.run { [weak self] in
-                guard let self else { return }
+                guard let self, self.perceptionResultAllowed(request: request, generation: generation,
+                    capturedAt: capturedAt, observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return }
                 if let found, let point = DepthSampler.worldPoint(from: frame, uprightX: found.x, uprightY: found.y),
                    let measured = SpatialFacts.relation(from: observation.camera, facing: facing ?? observation.forward, to: point) {
                     let phrase = SpatialFacts.phrase(label: found.label, relation: measured, arabic: arabic, inView: true)
@@ -1239,6 +1430,7 @@ extension NavigationModel {
     static let learningTimeout = 25.0
 
     private func learnItem(_ name: String) {
+        itemMemoryRevision = UUID(); itemAppearance.cancelPendingWork()
         guard running, !simulation, detection.hazard == .observing else {
             say(arabic ? "ابدأ الكاميرا أولاً ثم أعد المحاولة." : "Start the camera first, then try again."); return
         }
@@ -1261,11 +1453,11 @@ extension NavigationModel {
         learning.lastTick = now; learningItem = learning
         if now - learning.started > Self.learningTimeout { finishLearning(frame: frame); return }
         guard detection.hazard == .observing else { return }
-        let key = learning.key
+        let key = learning.key, revision = itemMemoryRevision
         itemAppearance.addView(key, image: frame.capturedImage) { [weak self] count in
-            guard let self, let count, self.learningItem?.key == key else { return }
+            guard let self, let count, self.itemMemoryRevision == revision, self.learningItem?.key == key else { return }
             if count >= Self.learningViews { self.finishLearning(frame: frame) }
-            else { _ = self.feedback.speak(self.arabic ? "\(count) من \(Self.learningViews)" : "\(count) of \(Self.learningViews)", priority: .information) }
+            else { _ = self.speakOperation(self.arabic ? "\(count) من \(Self.learningViews)" : "\(count) of \(Self.learningViews)") }
         }
     }
 
@@ -1279,12 +1471,15 @@ extension NavigationModel {
         say(arabic ? "حفظت \(count) صور لـ\(learning.name)." : "Saved \(count) views of your \(learning.name).")
         // A short description for speaking only, written by the free model on this phone.
         let image = frame.capturedImage, arabic = self.arabic
+        let generation = perceptionGeneration, revision = itemMemoryRevision
         let context = SceneContext(observations: [], at: ProcessInfo.processInfo.systemUptime, arabic: arabic, detail: .balanced,
                                    stationary: true, hazard: detection.hazard, requested: true)
         let question = arabic ? "صف هذا الغرض باختصار: اللون والشكل والمادة وأي علامات." : "Describe this object briefly: colour, shape, material and any markings."
         Task { @MainActor [weak self] in
             let answer = await LocalImageAssistant.describe(image: image, question: question, context: context, situation: [:], wordAllowance: 20)
-            guard let self, let text = answer.text, !SpatialClaimGuard.containsSpatialClaim(text) else { return }
+            guard let self, self.perceptionGeneration == generation, self.itemMemoryRevision == revision,
+                  self.items.find(learning.name)?.key == learning.key,
+                  let text = answer.text, !SpatialClaimGuard.containsSpatialClaim(text) else { return }
             if self.items.describe(learning.name, as: text) { self.persistItems() }
         }
     }
@@ -1297,11 +1492,16 @@ extension NavigationModel {
     /// Finds the saved item by its look. Same → measured position; similar → honest doubt and a request
     /// to turn it; not seen → last-seen memory and its description.
     private func findItemByLook(_ item: RememberedItem, name: String, frame: ARFrame) {
-        let keys = items.items.map(\.key), facing = currentBodyForward(), observation = lastObservation, arabic = self.arabic
+        guard let observation = lastObservation else { return }
+        let keys = items.items.map(\.key), facing = currentBodyForward(), arabic = self.arabic
+        let request = requestID, generation = perceptionGeneration, capturedAt = lastFrameWallTime
+        let mapRevision = indoor.revision, alignmentRevision = indoor.alignmentRevision
         itemAppearance.find(item.key, among: keys, image: frame.capturedImage) { [weak self] result, x, y in
-            guard let self else { return }
+            guard let self, self.items.find(name)?.key == item.key,
+                  self.perceptionResultAllowed(request: request, generation: generation,
+                    capturedAt: capturedAt, observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return }
             let measured = { (label: String) -> String? in
-                guard let observation, let point = DepthSampler.worldPoint(from: frame, uprightX: x, uprightY: y),
+                guard let point = DepthSampler.worldPoint(from: frame, uprightX: x, uprightY: y),
                       let relation = SpatialFacts.relation(from: observation.camera, facing: facing ?? observation.forward, to: point) else { return nil }
                 let phrase = SpatialFacts.phrase(label: label, relation: relation, arabic: arabic, inView: true)
                 return facing == nil ? (arabic ? "من الكاميرا: " : "From the camera: ") + phrase : phrase
@@ -1329,8 +1529,13 @@ extension NavigationModel {
               let frame = session.currentFrame else {
             say(arabic ? "لم أحفظ شكل \(item.name) بعد. قل: هذا \(item.name)، وأنت تمسكه." : "I haven't saved how your \(item.name) looks yet. Say: this is my \(item.name), while holding it."); return true
         }
+        guard let observation = lastObservation else { return true }
+        let request = requestID, generation = perceptionGeneration, capturedAt = lastFrameWallTime
+        let mapRevision = indoor.revision, alignmentRevision = indoor.alignmentRevision
         itemAppearance.find(item.key, among: items.items.map(\.key), image: frame.capturedImage) { [weak self] result, _, _ in
-            guard let self else { return }
+            guard let self, self.items.find(name)?.key == item.key,
+                  self.perceptionResultAllowed(request: request, generation: generation,
+                    capturedAt: capturedAt, observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return }
             switch result {
             case .same: self.say(self.arabic ? "نعم، هذا \(item.name)." : "Yes, this is your \(item.name).")
             case .similar: self.say(self.arabic ? "يشبه \(item.name) لكنني لست متأكداً. أدره ببطء." : "It looks like your \(item.name), but I can't be sure. Turn it slowly.")
@@ -1345,19 +1550,44 @@ extension NavigationModel {
 extension NavigationModel {
     var savedItems: [RememberedItem] { items.items }
     func itemViewCount(_ item: RememberedItem) -> Int { itemAppearance.viewCount(item.key) }
-    func forgetItem(_ item: RememberedItem) {
-        items.forget(item.name); itemAppearance.forget(item.key); persistItems(); objectWillChange.send()
+    @discardableResult func forgetItem(_ item: RememberedItem) -> Bool {
+        itemMemoryRevision = UUID()
+        cancelDescription()
+        if learningItem?.key == item.key { learningItem = nil }
+        do {
+            guard let memory = places.memory, itemAppearance.forget(item.key) else { throw MemoryError.missing }
+            var updated = items; updated.forget(item.name)
+            try memory.saveValue(namespace: "items", id: "all", payload: JSONEncoder().encode(updated))
+            items = updated; objectWillChange.send(); return true
+        } catch {
+            say(arabic ? "لم يكتمل الحذف. أعد المحاولة عند توفر التخزين." : "Deletion could not finish. Retry when storage is available.")
+            return false
+        }
     }
     var savedRooms: [(id: String, name: String, visits: Int)] {
         companion.memory.rooms.map { (id: $0.key, name: $0.value.name ?? (arabic ? "غرفة دون اسم" : "Unnamed room"), visits: $0.value.visits) }
             .sorted { $0.name < $1.name }
     }
     /// Removes the room's saved pictures, fingerprints and furniture labels; the room stays known.
-    func forgetRoomPictures(_ id: String) { roomRecall.forget(room: id); objectWillChange.send() }
+    func forgetRoomPictures(_ id: String) {
+        invalidatePerceptionWork()
+        guard roomRecall.forget(room: id) else {
+            say(arabic ? "تعذر حذف صور الغرفة. أعد المحاولة." : "Room pictures could not be deleted. Please retry."); return
+        }
+        objectWillChange.send()
+    }
     /// Removes everything about the room: pictures, visits and its name.
     func forgetRoom(_ id: String) {
-        roomRecall.forget(room: id); companion.memory.forgetRoom(id); changeDetector.forgetRoom(id); persistCompanion()
-        if recognizedRoomID == id { recognizedRoomID = nil }
+        invalidatePerceptionWork()
+        do {
+            guard let memory = places.memory, roomRecall.forget(room: id) else { throw MemoryError.missing }
+            var updated = companion.memory; updated.forgetRoom(id)
+            try memory.saveValue(namespace: "companion", id: "memory", payload: JSONEncoder().encode(updated))
+            companion.memory = updated; changeDetector.forgetRoom(id)
+        } catch {
+            say(arabic ? "لم يكتمل حذف الغرفة. أعد المحاولة." : "Room deletion could not finish. Please retry."); return
+        }
+        if recognizedRoomID == id { invalidateRecognizedRoom() }
         objectWillChange.send()
     }
     var learnedHints: [LearnedHint] { companion.memory.hints }

@@ -1,0 +1,78 @@
+{
+  "purpose": "Metadata-only snapshot of the completed frozen Aberdeen research evaluation; no images, weights, embeddings, or per-image scores.",
+  "protocolSHA256": "5ec165aa47a3ad93c2f6dc268608af01e848b1be2ddf172d9f5125c3b85fd096",
+  "archiveSHA256": "162772fe62940fc27ad00c55a75b41f7f41da7c92d0688b8c8e895eda55a544d",
+  "aggregateRows": 50,
+  "aggregateCSV_SHA256": "c147d8d3d11997a1ab0f83844f9d56c077d1d1890156a8e58b2afac114d2a6d2",
+  "originalExecutionReportSHA256": "bd8560dcce86e18e88e54c586ee3192a93a444e8c80d0cfd7f06710ac2cfa65b",
+  "originalCalibrationReportSHA256": "be50d430bcf7d479196ad64e818dd69965827276f096d4a6c2856004e58c3c5b",
+  "opencv": "4.14.0",
+  "elapsedSeconds": 174.73593706300016,
+  "sourceHashesAtPackaging": {
+    "fresh_benchmark.py": "44ac4ce402c4aa0ce254de31ee75feb4d6011dc5856e6d8eb9f978dfb0502e49",
+    "test_fresh_benchmark.py": "ec7d272f321f28a8394fcfd6238f2377efe8b5be840127c3a7a76de03c69579f",
+    "alternate_model.py": "84455777d8ac65bfbff0a5f5430b27d8e1b34cf022f408e007f25ab8868a391a",
+    "benchmark.py": "0c21b17a4b747a375b8943efbd46aedddb95e8f24a514a173c71dd62826af1fc",
+    "image_smoke.py": "57803be973f033f9882aac32251070dcd5c4d3fee0c994996269c53443b330e2"
+  },
+  "sourceHashCaveat": "Source hashes identify the delivered packaging snapshot; they were not recorded as a signed pre-execution code attestation.",
+  "phases": {
+    "calibration": {
+      "imageCount": 324,
+      "identityCount": 31,
+      "detectionStatusCounts": {
+        "uniqueFace": 324
+      },
+      "models": {
+        "sface": {
+          "intendedGallerySize": 10,
+          "successfulGallerySize": 10,
+          "calibrationSelectedPolicy": {
+            "threshold": 0.7,
+            "margin": 0.2
+          }
+        },
+        "auraface": {
+          "intendedGallerySize": 10,
+          "successfulGallerySize": 10,
+          "calibrationSelectedPolicy": {
+            "threshold": 0.5,
+            "margin": 0.2
+          }
+        }
+      }
+    },
+    "heldout": {
+      "imageCount": 285,
+      "identityCount": 30,
+      "detectionStatusCounts": {
+        "uniqueFace": 285
+      },
+      "models": {
+        "sface": {
+          "intendedGallerySize": 10,
+          "successfulGallerySize": 10,
+          "calibrationSelectedPolicy": {
+            "threshold": 0.7,
+            "margin": 0.2
+          }
+        },
+        "auraface": {
+          "intendedGallerySize": 10,
+          "successfulGallerySize": 10,
+          "calibrationSelectedPolicy": {
+            "threshold": 0.5,
+            "margin": 0.2
+          }
+        }
+      }
+    }
+  },
+  "limits": [
+    "Identity labels inferred from canonical provider filenames, not independently established.",
+    "Images cluster within identities and acquisition sessions; Wilson query intervals are nominal only.",
+    "No test-set threshold tuning or replacement of failed enrollment/probes.",
+    "Biological cross-dataset identity overlap, training overlap, demographics, PAD and iOS parity unverified.",
+    "Research-use images must not be redistributed with source or reports."
+  ]
+}

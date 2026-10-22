@@ -18,6 +18,8 @@ final class ItemAppearance {
     private let memory: MemoryStore?
     private var cache: [String: [VNFeaturePrintObservation]] = [:]
     private var marks: [String: [String]] = [:]
+    private var workRevision = WorkRevision()
+    func cancelPendingWork() { workRevision.invalidateAll() }
     private let queue = DispatchQueue(label: "org.blindassist.item-appearance", qos: .userInitiated)
 
     init(memory: MemoryStore?) { self.memory = memory }
@@ -81,7 +83,7 @@ final class ItemAppearance {
     /// Adds the held object (nearest the image centre) as a view when it shows a new side.
     /// Calls back with the new total, or nil when no new view was added.
     func addView(_ key: String, image: CVPixelBuffer, completion: @escaping (Int?) -> Void) {
-        let existing = load(key)
+        let existing = load(key), revision = workRevision.token(for: key)
         queue.async {
             let held = Self.objects(in: image).min { hypot($0.x - 0.5, $0.y - 0.5) < hypot($1.x - 0.5, $1.y - 0.5) }
             let isNew = held.map { candidate in
@@ -91,24 +93,27 @@ final class ItemAppearance {
                 }
             } ?? false
             DispatchQueue.main.async {
-                guard let held, isNew else { completion(nil); return }
+                guard self.workRevision.accepts(revision), let held, isNew else { completion(nil); return }
                 let prints = Array((self.load(key) + [held.print]).suffix(Self.maxViews))
                 var stored = Stored()
                 stored.views = prints.compactMap { try? NSKeyedArchiver.archivedData(withRootObject: $0, requiringSecureCoding: true) }
                 stored.marks = Array(Set((self.marks[key] ?? []) + held.text.filter { $0.count >= 2 })).sorted()
-                self.cache[key] = prints; self.marks[key] = stored.marks
-                if let payload = try? JSONEncoder().encode(stored) { try? self.memory?.saveValue(namespace: "item-appearance", id: key, payload: payload) }
-                completion(prints.count)
+                do {
+                    guard let memory = self.memory else { completion(nil); return }
+                    try memory.saveValue(namespace: "item-appearance", id: key, payload: JSONEncoder().encode(stored))
+                    self.cache[key] = prints; self.marks[key] = stored.marks
+                    completion(prints.count)
+                } catch { completion(nil) }
+
             }
         }
     }
 
     /// Looks for saved items in the current view. Returns the decision and where the object is in the
-    /// upright image, for a LiDAR measurement. A matching mark (same readable text) confirms a near match.
+    /// upright image, for a LiDAR measurement. Readable marks never override an ambiguous image match.
     func find(_ key: String, among keys: [String], image: CVPixelBuffer,
               completion: @escaping (ItemAppearanceMatch.Result, Double, Double) -> Void) {
         let saved = Dictionary(uniqueKeysWithValues: keys.map { ($0, load($0)) }).filter { !$0.value.isEmpty }
-        let savedMarks = marks
         queue.async {
             var best: (ItemAppearanceMatch.Result, Double, Double, Float) = (.none, 0.5, 0.5, .infinity)
             for object in Self.objects(in: image) {
@@ -118,10 +123,8 @@ final class ItemAppearance {
                         var distance: Float = .infinity; _ = try? object.print.computeDistance(&distance, to: print); return distance
                     }.min()
                 }
-                var result = ItemAppearanceMatch.decide(distances)
-                let markMatch = !(savedMarks[key] ?? []).isEmpty &&
-                    object.text.contains { seen in (savedMarks[key] ?? []).contains { LocateCommand.matches(target: $0, label: seen) } }
-                if case .similar(let name) = result, name == key, markMatch { result = .same(key) }
+                // Shared logos/text are not independent proof of ownership. Keep the image margin.
+                let result = ItemAppearanceMatch.decide(distances)
                 guard let distance = distances[key] else { continue }
                 let relevant: Bool
                 switch result { case .same(let name), .similar(let name): relevant = name == key; case .none: relevant = false }
@@ -131,8 +134,13 @@ final class ItemAppearance {
         }
     }
 
-    func forget(_ key: String) {
-        cache[key] = nil; marks[key] = nil
-        try? memory?.saveValue(namespace: "item-appearance", id: key, payload: JSONEncoder().encode(Stored()))
+    @discardableResult func forget(_ key: String) -> Bool {
+        workRevision.invalidate(key)
+        do {
+            guard let memory else { return false }
+            try memory.deleteValue(namespace: "item-appearance", id: key)
+            cache[key] = nil; marks[key] = nil
+            return true
+        } catch { return false }
     }
 }

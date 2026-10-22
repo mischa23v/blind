@@ -17,4 +17,10 @@ final class SpatialClaimGuardTests: XCTestCase {
         XCTAssertEqual(SpatialClaimGuard.normalizeArabic("أمامكَ"), "امامك")
         XCTAssertEqual(SpatialClaimGuard.normalizeArabic("خطوة"), "خطوه")
     }
+
+    func testSentenceBoundariesPreserveDecimalEstimates() {
+        XCTAssertEqual(SpatialClaimGuard.sentences("About 2.5 metres. A lamp."), ["About 2.5 metres.", " A lamp."])
+        XCTAssertEqual(SpatialClaimGuard.sentences("يوجد درج؛ هو أمامك."), ["يوجد درج؛", " هو أمامك."])
+    }
+
 }

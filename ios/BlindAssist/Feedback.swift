@@ -55,7 +55,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
             tone = buffer; try engine.start(); spatialReady = true
         } catch { spatialReady = false }
     }
-    func alert(_ detection: Detection) {
+    private func alertSignals(_ detection: Detection) {
         let timing = AssistantPerformance.signposter.beginInterval("AlertDispatch", id: AssistantPerformance.signposter.makeSignpostID())
         defer { AssistantPerformance.signposter.endInterval("AlertDispatch", timing) }
         if detection.hazard.requiresImmediateAttention {
@@ -67,9 +67,22 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
                 WCSession.default.sendMessage(["hazard": detection.hazard.rawValue], replyHandler: nil)
             }
         }
-        speak(GuidanceText.detection(detection, arabic: arabic), urgent: detection.hazard.requiresImmediateAttention)
     }
-    @discardableResult func speak(_ text: String, urgent: Bool = false, priority: SpeechPriority = .status) -> Bool {
+    /// No raw text is accepted by the public sink; admission is minted by NavigationModel.
+    @discardableResult func deliver(_ admitted: AdmittedSpeech, narrationID: UUID? = nil, alert: Detection? = nil) -> Bool {
+        if let alert { alertSignals(alert) }
+        if let narrationID { return speakAmbient(admitted.text, id: narrationID) }
+        return speak(admitted.text, urgent: admitted.urgent, priority: admitted.priority)
+    }
+    var speechPriority: SpeechPriority? {
+        if ProcessInfo.processInfo.systemUptime < urgentUntil { return .danger }
+        return speech.isSpeaking || accessibilityAnnouncement != nil ? activePriority : nil
+    }
+    var onControlAnnouncement: ((String) -> Void)?
+    func requestCancellationAnnouncement() {
+        if UIAccessibility.isVoiceOverRunning { onControlAnnouncement?(arabic ? "أُلغي." : "Canceled.") }
+    }
+    @discardableResult private func speak(_ text: String, urgent: Bool = false, priority: SpeechPriority = .status) -> Bool {
         guard !text.isEmpty else { return false }
         let now = ProcessInfo.processInfo.systemUptime
         if urgent { urgentUntil = now + 5 }
@@ -100,7 +113,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     var canSpeakAmbient: Bool {
         !speech.isSpeaking && accessibilityAnnouncement == nil && ProcessInfo.processInfo.systemUptime >= urgentUntil
     }
-    @discardableResult func speakAmbient(_ text: String, id: UUID) -> Bool {
+    @discardableResult private func speakAmbient(_ text: String, id: UUID) -> Bool {
         guard canSpeakAmbient, speak(text, priority: .information) else { return false }
         speakingAmbient = true; narrationText = text; narrationID = id; return true
     }
@@ -109,7 +122,8 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
             finishNarration(success: false)
             speech.stopSpeaking(at: .immediate); speakingAmbient = false
             if UIAccessibility.isVoiceOverRunning, accessibilityAnnouncement != nil {
-                announce(arabic ? "تم إيقاف الوصف." : "Description stopped.")
+                accessibilityAnnouncement = nil; activePriority = nil; currentUtterance = nil; announcementTimeout?.invalidate()
+                requestCancellationAnnouncement()
             }
         }
     }
@@ -165,13 +179,25 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         finishNarration(success: false); speakingAmbient = false; currentUtterance = nil; activePriority = nil
         notifyIdle()
     }
+    @discardableResult func stopInformation(announceCancellation: Bool = true) -> Bool {
+        guard ProcessInfo.processInfo.systemUptime >= urgentUntil,
+              activePriority != .mobility, activePriority != .danger else { return false }
+        let hadAnnouncement = accessibilityAnnouncement != nil
+        finishNarration(success: false)
+        speakingAmbient = false; speech.stopSpeaking(at: .immediate)
+        currentUtterance = nil; activePriority = nil
+        announcementTimeout?.invalidate(); accessibilityAnnouncement = nil
+        if announceCancellation && hadAnnouncement { requestCancellationAnnouncement() }
+        return true
+    }
     func stop(includingAlerts: Bool = false) {
         guard includingAlerts || ProcessInfo.processInfo.systemUptime >= urgentUntil else { return }
         if includingAlerts { urgentUntil = -.infinity }
         finishNarration(success: false)
         speakingAmbient = false; speech.stopSpeaking(at: .immediate); player.stop()
         if UIAccessibility.isVoiceOverRunning, accessibilityAnnouncement != nil {
-            announce(arabic ? "تم إيقاف الوصف." : "Descriptions stopped.")
+            accessibilityAnnouncement = nil; activePriority = nil; currentUtterance = nil; announcementTimeout?.invalidate()
+            requestCancellationAnnouncement()
         }
     }
     deinit { announcementTimeout?.invalidate(); NotificationCenter.default.removeObserver(self) }

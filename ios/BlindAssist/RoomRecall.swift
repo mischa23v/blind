@@ -46,6 +46,8 @@ final class RoomRecall {
     private var objectCache: [String: [VNFeaturePrintObservation]] = [:]
     static let maxObjectPrints = 16
     private var lastLearned: [String: Double] = [:]
+    private var workRevision = WorkRevision()
+    func cancelPendingWork() { workRevision.invalidateAll() }
     private let queue = DispatchQueue(label: "org.blindassist.room-recall", qos: .utility)
     private static let imageContext = CIContext()
 
@@ -65,10 +67,13 @@ final class RoomRecall {
         return stored
     }
 
-    private func save(_ room: String, _ stored: Stored) {
-        rooms[room] = stored
-        guard let data = try? JSONEncoder().encode(stored) else { return }
-        try? memory?.saveValue(namespace: "room-recall", id: room, payload: data)
+    private func save(_ room: String, _ stored: Stored) -> Bool {
+        do {
+            guard let memory else { return false }
+            try memory.saveValue(namespace: "room-recall", id: room, payload: JSONEncoder().encode(stored))
+            rooms[room] = stored
+            return true
+        } catch { return false }
     }
 
     /// Prints from different Vision revisions cannot be compared, so the revision is pinned and saved.
@@ -131,12 +136,14 @@ final class RoomRecall {
         guard !room.isEmpty, (0..<Self.sectors).contains(sector),
               now - (lastLearned[key] ?? -.infinity) >= Self.learnInterval else { return }
         lastLearned[key] = now
+        let revision = workRevision.token(for: room)
         queue.async { [weak self] in
             guard let self, let print = view.print,
                   let data = try? NSKeyedArchiver.archivedData(withRootObject: print, requiringSecureCoding: true) else { return }
             let thumbnail = Self.thumbnail(image).flatMap { UIImage(cgImage: $0).jpegData(compressionQuality: 0.6) }
             let objectData = view.objectPrint.flatMap { try? NSKeyedArchiver.archivedData(withRootObject: $0, requiringSecureCoding: true) }
             DispatchQueue.main.async {
+                guard self.workRevision.accepts(revision) else { return }
                 var stored = self.load(room)
                 var cache = self.printCache[room] ?? []
                 // Replace the oldest picture of this direction once it has two.
@@ -150,12 +157,13 @@ final class RoomRecall {
                 while stored.thumbnails.count < stored.prints.count - 1 { stored.thumbnails.append(Data()) }
                 stored.thumbnails.append(thumbnail ?? Data())
                 for label in Set(view.labels) { stored.labels[label, default: 0] += 1 }
+                var objects = self.objectCache[room] ?? []
                 if let objectData, let objectPrint = view.objectPrint {
                     stored.objectPrints = Array((stored.objectPrints + [objectData]).suffix(Self.maxObjectPrints))
-                    self.objectCache[room] = Array(((self.objectCache[room] ?? []) + [objectPrint]).suffix(Self.maxObjectPrints))
+                    objects = Array((objects + [objectPrint]).suffix(Self.maxObjectPrints))
                 }
-                self.printCache[room] = cache
-                self.save(room, stored)
+                guard self.save(room, stored) else { self.lastLearned[key] = nil; return }
+                self.printCache[room] = cache; self.objectCache[room] = objects
             }
         }
     }
@@ -211,9 +219,14 @@ final class RoomRecall {
     }
 
     /// Removes a room's saved pictures and labels.
-    func forget(room: String) {
-        rooms[room] = nil; printCache[room] = nil; objectCache[room] = nil
-        lastLearned = lastLearned.filter { !$0.key.hasPrefix("\(room)#") }
-        try? memory?.saveValue(namespace: "room-recall", id: room, payload: JSONEncoder().encode(Stored()))
+    @discardableResult func forget(room: String) -> Bool {
+        workRevision.invalidate(room)
+        do {
+            guard let memory else { return false }
+            try memory.deleteValue(namespace: "room-recall", id: room)
+            rooms[room] = nil; printCache[room] = nil; objectCache[room] = nil
+            lastLearned = lastLearned.filter { !$0.key.hasPrefix("\(room)#") }
+            return true
+        } catch { return false }
     }
 }

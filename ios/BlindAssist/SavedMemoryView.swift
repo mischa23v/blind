@@ -12,6 +12,13 @@ struct SavedMemoryView: View {
             Section {
                 Text(t("Saved on this phone only. Delete anything at any time.", "محفوظ على هذا الهاتف فقط. احذف أي شيء في أي وقت."))
             }
+            #if BLIND_FAMILIAR_PEOPLE
+            Section("Experimental people") {
+                NavigationLink("Review or delete consented face templates") {
+                    FamiliarPeopleView(model: model, experiment: model.familiarPeople)
+                }
+            }
+            #endif
             Section(t("My things", "أغراضي")) {
                 if model.savedItems.isEmpty {
                     Text(t("No saved items. Say: this is my cup, while holding it.", "لا أغراض محفوظة. قل: هذا كوبي، وأنت تمسكه."))

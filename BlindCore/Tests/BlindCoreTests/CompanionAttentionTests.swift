@@ -121,6 +121,123 @@ final class CompanionAttentionTests: XCTestCase {
                                           settings: CompanionSettings()).first else { return XCTFail("expected the offer once seated") }
     }
 
+    func testStationaryFocusedTaskSuppressesUnrelatedRoomAndClothing() {
+        var engine = CompanionAttention()
+        engine.enterRoom("lounge", established: true)
+        let focused = CompanionMoment(now: 0, focusedTaskActive: true, activity: .stationary)
+        let candidates = [roomOffer("lounge"),
+                          item("person:clothing", .social, category: "social"),
+                          item("lounge:art", .discovery)]
+        XCTAssertEqual(reasons(engine.decide(candidates, moment: focused, settings: CompanionSettings())),
+                       [.goalInProgress, .goalInProgress, .goalInProgress])
+        XCTAssertNil(engine.pendingOffer)
+        XCTAssertEqual(focused.activity, .stationary)
+        XCTAssertFalse(focused.goalActive)
+    }
+
+    func testFocusedIdentityAnswerDoesNotAppendUnrequestedClothing() {
+        var engine = CompanionAttention()
+        let identity = InformationCandidate(key: "person:requested-identity", kind: .answer,
+            text: "Snapshot: might be Mom. Could be wrong. Ask them to speak.", words: 13,
+            createdAt: 0, expiresAt: 1.5, category: "social", requested: true)
+        let clothing = item("person:clothing", .social, category: "social")
+        let decisions = engine.decide([clothing, identity],
+            moment: CompanionMoment(now: 0, focusedTaskActive: true, activity: .stationary),
+            settings: CompanionSettings())
+        let spoken = decisions.compactMap { decision -> String? in
+            guard case .say(let candidate, _) = decision else { return nil }
+            return candidate.text
+        }
+        XCTAssertEqual(spoken, [identity.text])
+        XCTAssertEqual(reasons(decisions), [.requested, .speechBusy])
+    }
+
+    func testFocusedTaskRetainsHazardMobilityRequestedAndRelevantInformation() {
+        let cases: [(InformationCandidate, CompanionReason)] = [
+            (item("hazard:current", .hazard), .hazard),
+            (item("route:turn", .mobility), .mobility),
+            (item("person:answer", .answer, requested: true), .requested),
+            (item("person:search-update", .goal, goal: true), .goal)
+        ]
+        for (candidate, expected) in cases {
+            var engine = CompanionAttention()
+            XCTAssertEqual(reasons(engine.decide([candidate],
+                moment: CompanionMoment(now: 0, focusedTaskActive: true, activity: .stationary),
+                settings: CompanionSettings())), [expected])
+        }
+        var engine = CompanionAttention()
+        let requested = item("person:answer", .answer, words: 10, requested: true)
+        XCTAssertEqual(reasons(engine.decide([requested],
+            moment: CompanionMoment(now: 0, focusedTaskActive: true, activity: .stationary),
+            settings: CompanionSettings(wordsPerMinute: 5))), [.budget])
+    }
+
+    func testFocusedTaskNeverRetainsExpiredSuppressedContentForLaterSpeech() {
+        var engine = CompanionAttention()
+        let old = item("lounge:art", .discovery, at: 0, ttl: 1)
+        XCTAssertEqual(reasons(engine.decide([old],
+            moment: CompanionMoment(now: 0, focusedTaskActive: true, activity: .stationary),
+            settings: CompanionSettings())), [.goalInProgress])
+        XCTAssertTrue(engine.decide([], moment: CompanionMoment(now: 2), settings: CompanionSettings()).isEmpty)
+        XCTAssertEqual(reasons(engine.decide([old], moment: CompanionMoment(now: 2), settings: CompanionSettings())), [.expired])
+        XCTAssertEqual(reasons(engine.decide([item("lounge:art", .discovery, at: 2, revision: "fresh")],
+            moment: CompanionMoment(now: 2, activity: .stationary), settings: CompanionSettings())), [.information])
+    }
+
+    func testDefaultStationaryMomentStillAllowsOrdinaryInformation() {
+        var engine = CompanionAttention()
+        let moment = CompanionMoment(now: 0, goalActive: true, activity: .stationary)
+        XCTAssertFalse(moment.focusedTaskActive)
+        XCTAssertEqual(reasons(engine.decide([item("lounge:art", .discovery)], moment: moment,
+            settings: CompanionSettings())), [.information])
+    }
+
+    func testCurrentOperationFeedbackBypassesOnlyOrdinaryNarrationGates() {
+        var preferences = AssistantPreferences(); preferences.setMode("muted", for: "social")
+        let settings = CompanionSettings(wordsPerMinute: 1, preferences: preferences, quiet: true)
+        var engine = CompanionAttention()
+        let consent = item("operation:consent", .operation, words: 60, category: "social", requested: true)
+        XCTAssertEqual(reasons(engine.decide([consent],
+            moment: CompanionMoment(now: 0, focusedTaskActive: true, activity: .stationary), settings: settings)), [.operation])
+        // A descriptive/identity answer is not operational feedback and retains the chosen budget.
+        let answer = item("person:identity", .answer, words: 8, category: "social", requested: true)
+        XCTAssertEqual(reasons(engine.decide([answer], moment: CompanionMoment(now: 1), settings: settings)), [.budget])
+    }
+
+    func testOperationFeedbackIsBoundedCurrentAndDoesNotSpendDescriptionBudget() {
+        var engine = CompanionAttention()
+        let settings = CompanionSettings(wordsPerMinute: 10)
+        let operation = item("operation:confirmation", .operation, words: 80, requested: true)
+        XCTAssertEqual(reasons(engine.decide([operation], moment: CompanionMoment(now: 0), settings: settings)), [.operation])
+        XCTAssertEqual(reasons(engine.decide([item("person:answer", .answer, words: 10, at: 1, requested: true)],
+            moment: CompanionMoment(now: 1), settings: settings)), [.requested])
+        XCTAssertEqual(reasons(engine.decide([item("unsolicited", .operation)], moment: CompanionMoment(now: 2), settings: settings)), [.invalid])
+        XCTAssertEqual(reasons(engine.decide([item("unbounded", .operation, words: 81, requested: true)],
+            moment: CompanionMoment(now: 2), settings: settings)), [.invalid])
+        XCTAssertEqual(reasons(engine.decide([item("future", .operation, at: 3, requested: true)],
+            moment: CompanionMoment(now: 2), settings: settings)), [.invalid])
+        XCTAssertEqual(reasons(engine.decide([item("long-lived", .operation, ttl: 30.001, requested: true)],
+            moment: CompanionMoment(now: 2), settings: settings)), [.invalid])
+        XCTAssertEqual(reasons(engine.decide([item("missing-operation-revision", .operation, requested: true, revision: " ")],
+            moment: CompanionMoment(now: 2), settings: settings)), [.invalid])
+        XCTAssertEqual(reasons(engine.decide([operation], moment: CompanionMoment(now: 31), settings: settings)), [.expired])
+        XCTAssertTrue(engine.decide([], moment: CompanionMoment(now: 31), settings: settings).isEmpty)
+    }
+
+    func testOperationFeedbackCannotInterruptSpeechAndHazardNeverResumesOldOperation() {
+        let settings = CompanionSettings(wordsPerMinute: 1, quiet: true)
+        let operation = item("operation:progress", .operation, at: 0, ttl: 1, requested: true)
+        for priority in [SpeechPriority.status, .information, .mobility, .danger] {
+            var engine = CompanionAttention()
+            XCTAssertEqual(reasons(engine.decide([operation], moment: CompanionMoment(now: 0, speaking: priority), settings: settings)), [.speechBusy])
+        }
+        var engine = CompanionAttention()
+        XCTAssertEqual(reasons(engine.decide([operation, item("hazard:current", .hazard, at: 0)],
+            moment: CompanionMoment(now: 0, speaking: .information), settings: settings)), [.hazard, .speechBusy])
+        XCTAssertTrue(engine.decide([], moment: CompanionMoment(now: 2), settings: settings).isEmpty)
+        XCTAssertEqual(reasons(engine.decide([operation], moment: CompanionMoment(now: 2), settings: settings)), [.expired])
+    }
+
     // OFF-06: a hazard interrupts an offer; the offer is cleared without counting as a decline.
     func testHazardInterruptsOfferAndQuietMode() {
         var engine = CompanionAttention(), settings = CompanionSettings()

@@ -1,16 +1,39 @@
-import { readdir, mkdir, writeFile } from 'node:fs/promises';
+import { readdir, mkdir, writeFile, readFile, stat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { resolve, join } from 'node:path';
+import { resolve, join, dirname, basename } from 'node:path';
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const id = name => createHash('sha256').update(name).digest('hex').slice(0, 24).toUpperCase();
-export function generateProject(files, { multimodal = false } = {}) {
+export function generateProject(files, { multimodal = false, familiarPeople = false, familiarBackend = 'sface', opencvFramework, familiarModels } = {}) {
+  if (familiarPeople && (!opencvFramework || !familiarModels)) throw new Error('Experimental people requires explicit framework and model paths.');
+  if (!['sface', 'auraface'].includes(familiarBackend)) throw new Error('Unknown familiar backend.');
+  if (!familiarPeople && familiarBackend !== 'sface') throw new Error('AuraFace requires --familiar-people.');
   const objects = [], add = (name, body) => { objects.push(`${id(name)} = { ${body} };`); return id(name); };
   const refs = [], sources = [];
   for (const file of files) {
     const ref = add(file, `isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ${JSON.stringify(`BlindAssist/${file}`)}; sourceTree = "<group>";`);
     refs.push(ref); sources.push(add(`build:${file}`, `isa = PBXBuildFile; fileRef = ${ref};`));
   }
+  const nativeFrameworkBuilds = [], resourceBuilds = [];
+  if (familiarPeople) {
+    const notice = add('face-notice', 'isa = PBXFileReference; lastKnownFileType = text; path = BlindAssist/FamiliarNative/MODEL_NOTICES.txt; sourceTree = "<group>";');
+    refs.push(notice); resourceBuilds.push(add('build:face-notice', `isa = PBXBuildFile; fileRef = ${notice};`));
+    const native = add('face-native', 'isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BlindAssist/FamiliarNative/BAFaceEngine.mm; sourceTree = "<group>";');
+    refs.push(native); sources.push(add('build:face-native', `isa = PBXBuildFile; fileRef = ${native};`));
+    const framework = add('opencv-framework', `isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ${JSON.stringify(opencvFramework)}; sourceTree = "<absolute>";`);
+    refs.push(framework); nativeFrameworkBuilds.push(add('build:opencv', `isa = PBXBuildFile; fileRef = ${framework};`));
+    for (const name of ['UIKit', 'Accelerate', 'CoreGraphics', 'QuartzCore']) {
+      const ref = add(`face-framework:${name}`, `isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = System/Library/Frameworks/${name}.framework; sourceTree = SDKROOT;`);
+      refs.push(ref); nativeFrameworkBuilds.push(add(`build:face-framework:${name}`, `isa = PBXBuildFile; fileRef = ${ref};`));
+    }
+    for (const name of Object.keys(familiarHashesForBackend(familiarBackend))) {
+      const ref = add(`face-model:${name}`, `isa = PBXFileReference; lastKnownFileType = file; path = ${JSON.stringify(join(familiarModels, name))}; sourceTree = "<absolute>";`);
+      refs.push(ref); resourceBuilds.push(add(`build:face-model:${name}`, `isa = PBXBuildFile; fileRef = ${ref};`));
+    }
+  }
+  const resourcesPhase = add('resources', `isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (${resourceBuilds.join(',')}${resourceBuilds.length ? ',' : ''}); runOnlyForDeploymentPostprocessing = 0;`);
+  const conditions = ['$(inherited)', ...(multimodal ? ['BLIND_APPLE_MULTIMODAL'] : []), ...(familiarPeople ? ['BLIND_FAMILIAR_PEOPLE'] : []), ...(familiarPeople && familiarBackend === 'auraface' ? ['BLIND_FAMILIAR_AURAFACE'] : [])].join(' ');
+  const nativeSettings = familiarPeople ? `SWIFT_OBJC_BRIDGING_HEADER = BlindAssist/FamiliarNative/BlindAssist-Bridging-Header.h; CLANG_CXX_LANGUAGE_STANDARD = "c++17"; CLANG_CXX_LIBRARY = "libc++"; CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES; GCC_ENABLE_CPP_EXCEPTIONS = YES; FRAMEWORK_SEARCH_PATHS = ("$(inherited)",${JSON.stringify(dirname(opencvFramework))},); OTHER_LDFLAGS = ("$(inherited)","-lc++",); "EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;` : '';
   const product = add('product', 'isa = PBXFileReference; explicitFileType = wrapper.application; path = BlindAssist.app; sourceTree = BUILT_PRODUCTS_DIR;');
   const pkg = add('package', 'isa = XCLocalSwiftPackageReference; relativePath = ../BlindCore;');
   const dependency = add('dependency', `isa = XCSwiftPackageProductDependency; package = ${pkg}; productName = BlindCore;`);
@@ -19,12 +42,12 @@ export function generateProject(files, { multimodal = false } = {}) {
   const memoryDependency = add('memory-dependency', `isa = XCSwiftPackageProductDependency; package = ${memoryPackage}; productName = BlindMemory;`);
   const memoryLibrary = add('memory-lib', `isa = PBXBuildFile; productRef = ${memoryDependency};`);
   const sourcesPhase = add('sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${sources.join(',')},); runOnlyForDeploymentPostprocessing = 0;`);
-  const frameworksPhase = add('frameworks', `isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (${lib},${memoryLibrary},); runOnlyForDeploymentPostprocessing = 0;`);
+  const frameworksPhase = add('frameworks', `isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (${lib},${memoryLibrary},${nativeFrameworkBuilds.join(",")}${nativeFrameworkBuilds.length ? "," : ""}); runOnlyForDeploymentPostprocessing = 0;`);
   const group = add('group', `isa = PBXGroup; children = (${refs.join(',')},${product},${id('ui-file')},${id('ui-product')},${id('unit-file')},${id('unit-product')},); sourceTree = "<group>";`);
   const configs = [];
-  for (const name of ['Debug', 'Release']) configs.push(add(name, `isa = XCBuildConfiguration; name = ${name}; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility; INFOPLIST_FILE = BlindAssist/Info.plist; CODE_SIGN_STYLE = Automatic; ENABLE_USER_SCRIPT_SANDBOXING = YES; ENABLE_TESTABILITY = ${name === 'Debug' ? 'YES' : 'NO'}; SWIFT_OPTIMIZATION_LEVEL = "${name === 'Debug' ? '-Onone' : '-O'}"; };`));
+  for (const name of ['Debug', 'Release']) configs.push(add(name, `isa = XCBuildConfiguration; name = ${name}; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "${conditions}"; ${nativeSettings} TARGETED_DEVICE_FAMILY = "1"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility; INFOPLIST_FILE = BlindAssist/Info.plist; CODE_SIGN_STYLE = Automatic; ENABLE_USER_SCRIPT_SANDBOXING = YES; ENABLE_TESTABILITY = ${name === 'Debug' ? 'YES' : 'NO'}; SWIFT_OPTIMIZATION_LEVEL = "${name === 'Debug' ? '-Onone' : '-O'}"; };`));
   const configList = add('configs', `isa = XCConfigurationList; buildConfigurations = (${configs.join(',')},); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;`);
-  const target = add('target', `isa = PBXNativeTarget; buildConfigurationList = ${configList}; buildPhases = (${sourcesPhase},${frameworksPhase},); buildRules = (); dependencies = (); name = BlindAssist; productName = BlindAssist; productReference = ${product}; productType = "com.apple.product-type.application"; packageProductDependencies = (${dependency},${memoryDependency},);`);
+  const target = add('target', `isa = PBXNativeTarget; buildConfigurationList = ${configList}; buildPhases = (${sourcesPhase},${frameworksPhase},${resourcesPhase},); buildRules = (); dependencies = (); name = BlindAssist; productName = BlindAssist; productReference = ${product}; productType = "com.apple.product-type.application"; packageProductDependencies = (${dependency},${memoryDependency},);`);
   const uiFile = add('ui-file', 'isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindAssistUITests/LaunchTests.swift; sourceTree = SOURCE_ROOT;');
   const uiBuild = add('ui-build', `isa = PBXBuildFile; fileRef = ${uiFile};`);
   const uiSources = add('ui-sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${uiBuild},); runOnlyForDeploymentPostprocessing = 0;`);
@@ -47,7 +70,6 @@ export function generateProject(files, { multimodal = false } = {}) {
   const unitTarget = add('unit-target', `isa = PBXNativeTarget; buildConfigurationList = ${unitConfigList}; buildPhases = (${unitSources},${unitFrameworks},); buildRules = (); dependencies = (${unitDependency},); name = BlindAssistTests; productName = BlindAssistTests; productReference = ${unitProduct}; productType = "com.apple.product-type.bundle.unit-test"; packageProductDependencies = (${unitCore},);`);
   const project = add('project', `isa = PBXProject; attributes = { LastUpgradeCheck = 1600; TargetAttributes = { ${uiTarget} = { TestTargetID = ${target}; }; ${unitTarget} = { TestTargetID = ${target}; }; }; }; buildConfigurationList = ${configList}; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, ar, Base); mainGroup = ${group}; projectDirPath = ""; projectRoot = ""; packageReferences = (${pkg},${memoryPackage},); targets = (${target},${uiTarget},${unitTarget},);`);
   let result = `// !$*UTF8*$!\n{ archiveVersion = 1; classes = {}; objectVersion = 56; objects = {\n${objects.join('\n')}\n}; rootObject = ${project}; }\n`;
-  if (multimodal) result = result.replaceAll('SWIFT_VERSION = 5.0;', 'SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) BLIND_APPLE_MULTIMODAL";');
   return result;
 }
 export function generateScheme() {
@@ -62,10 +84,40 @@ export function generateScheme() {
 <AnalyzeAction buildConfiguration="Debug"/><ArchiveAction buildConfiguration="Release" revealArchiveInOrganizer="YES"/>
 </Scheme>\n`;
 }
+export const familiarModelHashes = Object.freeze({
+  'face_detection_yunet_2023mar.onnx': '8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4',
+  'face_recognition_sface_2021dec.onnx': '0ba9fbfa01b5270c96627c4ef784da859931e02f04419c829e83484087c34e79',
+});
+export function familiarHashesForBackend(backend = 'sface') {
+  if (backend === 'sface') return familiarModelHashes;
+  if (backend !== 'auraface') throw new Error('Unknown familiar backend.');
+  return Object.freeze({
+    'face_detection_yunet_2023mar.onnx': familiarModelHashes['face_detection_yunet_2023mar.onnx'],
+    'glintr100.onnx': 'a7933ea5330113b01c9b60351d8f4c33003f145d8470ac5f0e52ee2effe25c60',
+  });
+}
+export async function verifyFamiliarInputs(framework, models, backend = 'sface') {
+  if (basename(framework) !== 'opencv2.framework' || !(await stat(framework)).isDirectory()) throw new Error('Use the verified static opencv2.framework, not a guessed SDK path.');
+  const header = await readFile(join(framework, 'Headers/core/version.hpp'), 'utf8');
+  if (!/#define CV_VERSION_MAJOR\s+4\b/.test(header) || !/#define CV_VERSION_MINOR\s+14\b/.test(header) || !/#define CV_VERSION_REVISION\s+0\b/.test(header)) throw new Error('OpenCV 4.14.0 required.');
+  for (const [name, expected] of Object.entries(familiarHashesForBackend(backend))) {
+    if (createHash('sha256').update(await readFile(join(models, name))).digest('hex') !== expected) throw new Error(`Model hash mismatch: ${name}`);
+  }
+}
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const files = (await readdir(join(root, 'ios/BlindAssist'))).filter(file => file.endsWith('.swift')).sort();
   const output = join(root, 'ios/BlindAssist.xcodeproj'); await mkdir(output, { recursive: true });
-  await writeFile(join(output, 'project.pbxproj'), generateProject(files, { multimodal: process.argv.includes('--multimodal') }));
+  const familiarPeople = process.argv.includes('--familiar-people');
+  const option = name => { const at = process.argv.indexOf(name); if (at < 0 || !process.argv[at + 1] || process.argv[at + 1].startsWith('--')) throw new Error(`Missing ${name} <path>`); return resolve(process.argv[at + 1]); };
+  const backendAt = process.argv.indexOf('--familiar-backend');
+  if (backendAt >= 0 && !familiarPeople) throw new Error('--familiar-backend requires --familiar-people.');
+  if (backendAt >= 0 && (!process.argv[backendAt + 1] || process.argv[backendAt + 1].startsWith('--'))) throw new Error('Missing --familiar-backend <sface|auraface>');
+  const familiarBackend = backendAt >= 0 ? process.argv[backendAt + 1] : 'sface';
+  familiarHashesForBackend(familiarBackend);
+  const opencvFramework = familiarPeople ? option('--opencv-framework') : undefined;
+  const familiarModels = familiarPeople ? option('--familiar-models') : undefined;
+  if (familiarPeople) await verifyFamiliarInputs(opencvFramework, familiarModels, familiarBackend);
+  await writeFile(join(output, 'project.pbxproj'), generateProject(files, { multimodal: process.argv.includes('--multimodal'), familiarPeople, familiarBackend, opencvFramework, familiarModels }));
   const schemes = join(output, 'xcshareddata/xcschemes'); await mkdir(schemes, { recursive: true });
   await writeFile(join(schemes, 'BlindAssist.xcscheme'), generateScheme());
   console.log('Generated ios/BlindAssist.xcodeproj (phone/BLE build). For native RTAB-Map use npm run native:prepare.');

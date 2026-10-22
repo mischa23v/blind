@@ -1,5 +1,38 @@
 # Mac mini handoff
 
+## Familiar-person test branch — current handoff (2026-10-22)
+
+This section supersedes the older status counts below. This is an opt-in experimental assistive hint, not a production release, Face ID, or permission to follow someone. Linux checks do not compile Apple SDK code. Mac/Xcode and physical iPhone checks are still required before supervised use.
+
+Use a separate checkout so existing local work is untouched:
+
+```sh
+git clone --branch review/familiar-people-20261022 https://github.com/mischa23v/blind.git blind-familiar-review
+cd blind-familiar-review
+npm ci --ignore-scripts
+npm run mac:setup -- --ui
+```
+
+That setup command regenerates the DEFAULT project. Run it first, not after selecting the experimental backend. Finish Xcode setup and select its command-line tools first. Use a current stable Xcode compatible with the phone's installed iOS. No developer cloud keys are needed.
+
+Next obtain the exact OpenCV framework and external models documented in `research/FAMILIAR_PEOPLE_EXPERIMENT.md`, `research/AURAFACE_NATIVE_BACKEND.md` and `ios/BlindAssist/FamiliarNative/MODEL_NOTICES.txt`. Keep them outside the checkout. The supplied model-assets ZIP contains YuNet and SFace only; AuraFace is a separate 260.7 MB official pinned download. Do not substitute a similarly named checkpoint. The generator checks the selected model hashes and OpenCV version.
+
+For the optional AuraFace experiment:
+
+```sh
+node tools/generate-xcode-project.mjs --familiar-people --familiar-backend auraface --opencv-framework /absolute/path/opencv2.framework --familiar-models /absolute/path/models
+xcodebuild -project ios/BlindAssist.xcodeproj -scheme BlindAssist -configuration Debug -jobs 2 -destination 'generic/platform=iOS' -derivedDataPath artifacts/xcode-familiar-device CODE_SIGNING_ALLOWED=NO build
+open ios/BlindAssist.xcodeproj
+```
+
+Replace both absolute paths with actual local asset paths. Choose `--familiar-backend sface` for the smaller alternative. Model galleries are backend-specific and cannot be carried between these two models. The pinned prebuilt OpenCV framework contains arm64 iPhone and x86_64 simulator slices, but NOT arm64 simulator. On an M1 Mac, use the device build for this experiment; default simulator UI checks do not test the face engine. A compatible custom XCFramework is a separate, unverified build path.
+
+Select the app target, signing team and connected LiDAR-capable iPhone in Xcode. Resolve signing and device development prompts yourself. Start existing monitoring and calibrate it, then open Settings → Familiar people. Enable the experiment explicitly. Enroll consenting adults under your own labels using imported local photos or guided camera capture; review at least three and at most six examples before confirming. Photo selection uses Apple's accessible picker, not custom voice control inside that picker. The two-pipeline Vision veto is optional and uncalibrated; keep it off for the initial single-backend comparison.
+
+The child-use design assumes a chest-worn rear camera, but actual framing, orientation, field of view and usable face size need checking at that height. A person looking toward the wearer may still be outside the camera. The current capture gate requires a steady, tracked portrait view; reliable walking recognition has not been demonstrated. Short hints remain uncertain and must not replace listening or adult supervision.
+
+Device acceptance must include actual enrollment/import/review/deletion, interrupted and cancelled actions, speech and VoiceOver, unknown/lookalike faces, no face, multiple people, turning away/back, stale/out-of-order results, tracking loss, hazards, foreground/background transitions, model load, Apple pixel/orientation parity, memory, latency and thermal/battery behavior. A passing photograph benchmark is not a pass for these app scenarios. No 24-hour/background-camera operation is promised. Use simulated hazards, not real drops or stairs, during initial checks.
+
 ## Mac day — start here (2026-10-09)
 
 **Get the code:** `git clone https://github.com/mischa23v/blind.git` (private). No archive is needed any more. `server/.env` (developer API keys) is not in Git; it is not needed on the Mac. The Anthropic test key pasted in chat on 2026-10-09 is for one week; revoke it in the Anthropic console afterwards.

@@ -1,0 +1,40 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { generateProject, familiarHashesForBackend } from '../generate-xcode-project.mjs';
+const options = { familiarPeople: true, opencvFramework: '/external/opencv2.framework', familiarModels: '/external/models' };
+test('AuraFace is explicit and bundles only the selected recognizer with YuNet', () => {
+  const sface = generateProject([], options);
+  assert.match(sface, /face_recognition_sface_2021dec.onnx/);
+  assert.doesNotMatch(sface, /BLIND_FAMILIAR_AURAFACE|glintr100.onnx/);
+  const aura = generateProject([], { ...options, familiarBackend: 'auraface' });
+  assert.match(aura, /BLIND_FAMILIAR_PEOPLE BLIND_FAMILIAR_AURAFACE/);
+  assert.match(aura, /glintr100.onnx/);
+  assert.match(aura, /face_detection_yunet_2023mar.onnx/);
+  assert.doesNotMatch(aura, /face_recognition_sface_2021dec.onnx/);
+  assert.throws(() => generateProject([], { familiarBackend: 'auraface' }));
+  assert.throws(() => generateProject([], { ...options, familiarBackend: 'typo' }));
+  assert.throws(() => familiarHashesForBackend('typo'));
+  assert.equal(familiarHashesForBackend('auraface')['glintr100.onnx'], 'a7933ea5330113b01c9b60351d8f4c33003f145d8470ac5f0e52ee2effe25c60');
+});
+test('native AuraFace preprocessing leaves SFace and aligned RGB untouched', async () => {
+  const code = await readFile(new URL('../../ios/BlindAssist/FamiliarNative/BAFaceEngine.mm', import.meta.url), 'utf8');
+  assert.match(code, /_dimension = _auraFace \? 512 : 128/);
+  assert.match(code, /unknown backend/);
+  assert.match(code, /values.count != dimension/);
+  assert.match(code, /vectorFrom\(values, _dimension\)/);
+  assert.match(code, /feature.total\(\) != \(size_t\)_dimension/);
+  assert.match(code, /aligned.convertTo\(normalized, CV_32FC3\)/);
+  assert.match(code, /normalized -= cv::Scalar\(127.5, 127.5, 127.5\)/);
+  assert.match(code, /normalized \*= 1.0 \/ 127.5/);
+  assert.match(code, /else \{\s*_recognizer->feature\(aligned, feature\)/);
+  assert.ok(code.indexOf('result.alignedRGB = [NSData dataWithBytes:') < code.indexOf('aligned.convertTo(normalized'));
+});
+test('app profiles explicitly name separate dataset-calibrated decision policies', async () => {
+  const code = await readFile(new URL('../../ios/BlindAssist/FamiliarModelConfiguration.swift', import.meta.url), 'utf8');
+  assert.match(code, /cosineThreshold: 0\.5/);
+  assert.match(code, /cosineThreshold: 0\.7/);
+  assert.equal((code.match(/minimumMargin: 0\.2/g) || []).length, 2);
+  assert.match(code, /aberdeen-calibration-20261022-auraface-cosine050-margin020-v1/);
+  assert.match(code, /aberdeen-calibration-20261022-sface-cosine070-margin020-v1/);
+});
