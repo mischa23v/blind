@@ -1,10 +1,12 @@
 import SwiftUI
+import PhotosUI
 
 /// Explore a picture by touch (Seeing AI-style): with VoiceOver on, moving a finger over the picture
 /// reads what Vision found at that spot (text, people, a page, detector objects) and where it is.
 /// The picture stays in memory only; it is never saved or sent. Nothing is guessed by a model.
 struct ExplorePictureView: View {
     @ObservedObject var model: NavigationModel
+    @State private var photo: PhotosPickerItem?
     private func t(_ en: String, _ ar: String) -> String { model.arabic ? ar : en }
 
     private func position(_ rect: CGRect) -> String {
@@ -18,6 +20,17 @@ struct ExplorePictureView: View {
             Section {
                 Button(t("Take a new picture to explore", "التقط صورة جديدة للاستكشاف")) { model.captureExploreSnapshot() }
                     .accessibilityIdentifier("explore-capture")
+                // A library photo is read on this phone only and never saved by the app.
+                PhotosPicker(selection: $photo, matching: .images) { Text(t("Describe a photo from my library", "صف صورة من مكتبتي")) }
+                    .accessibilityIdentifier("explore-library")
+                if !model.sceneAnswer.isEmpty, model.exploreSnapshot != nil { Text(model.sceneAnswer) }
+            }
+            .onChange(of: photo) { _, item in
+                guard let item else { return }
+                Task { @MainActor in
+                    if let data = try? await item.loadTransferable(type: Data.self), let image = UIImage(data: data) { model.explorePhoto(image) }
+                    photo = nil
+                }
             }
             if let snapshot = model.exploreSnapshot {
                 Section {

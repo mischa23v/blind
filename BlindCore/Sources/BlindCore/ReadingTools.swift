@@ -99,7 +99,13 @@ public enum DocumentGuidance: Equatable, Sendable {
         guard let corners, corners.count == 4, corners.allSatisfy({ $0.x.isFinite && $0.y.isFinite }) else { return .noPage }
         let xs = corners.map { $0.x }, ys = corners.map { $0.y }
         let minX = xs.min()!, maxX = xs.max()!, minY = ys.min()!, maxY = ys.max()!
-        let area = abs(zip(corners, corners.dropFirst() + [corners[0]]).map { $0.x * $1.y - $1.x * $0.y }.reduce(0, +)) / 2
+        // Shoelace area of the page quadrilateral.
+        var twiceArea = 0.0
+        for index in 0..<4 {
+            let a = corners[index], b = corners[(index + 1) % 4]
+            twiceArea += a.x * b.y - b.x * a.y
+        }
+        let area = abs(twiceArea) / 2
         let left = minX <= edgeMargin, right = maxX >= 1 - edgeMargin, top = minY <= edgeMargin, bottom = maxY >= 1 - edgeMargin
         if area > maximumArea || (left && right) || (top && bottom) { return .moveBack }
         // A cut edge means the page continues beyond the view on that side: move the phone that way.

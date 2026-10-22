@@ -1672,6 +1672,9 @@ extension NavigationModel {
         guard !ProcessInfo.processInfo.arguments.contains("--ui-testing") else { return }
         backgroundReminder?.invalidate(); backgroundReminder = nil
         UIApplication.shared.isIdleTimerDisabled = true
+        #if BLIND_LIVE_ACTIVITY
+        if !textOnly { CompanionLiveActivity.shared.show(cameraOn: true, arabic: arabic) }
+        #endif
         // Every return to the foreground brings everything back on by itself.
         if experienceActive {
             if !textOnly { if !running { start() }; reconnectListening() }
@@ -1702,6 +1705,9 @@ extension NavigationModel {
         message = arabic ? "توقفت الكاميرا لأن التطبيق في الخلفية. افتح المساعد لأرى مجدداً. ما زلت أستمع، والحزام يعمل."
             : "The camera stopped because the app is in the background. Open Blind Assist so I can see again. I'm still listening, and the belt still works."
         _ = speakMobility(message)
+        #if BLIND_LIVE_ACTIVITY
+        CompanionLiveActivity.shared.show(cameraOn: false, arabic: arabic)
+        #endif
         backgroundReminder?.invalidate()
         backgroundReminder = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
             guard let self else { return }
@@ -2432,4 +2438,47 @@ extension NavigationModel {
         }
     }
     func clearExploreSnapshot() { exploreSnapshot = nil }
+
+    /// Describe a photo chosen from the library (Seeing AI's "describe photos"): what Vision found,
+    /// explorable by touch, plus a hedged overview from whole-picture categories. In memory only.
+    func explorePhoto(_ image: UIImage) {
+        guard let cg = image.cgImage else { speakOperation(arabic ? "تعذر فتح الصورة." : "I couldn't open that photo."); return }
+        let orientation = CGImagePropertyOrientation(image.imageOrientation), arabic = self.arabic
+        Task.detached(priority: .userInitiated) { [weak self] in
+            let regions = (try? VisionService.exploreRegions(photo: cg, orientation: orientation, arabic: arabic)) ?? []
+            let categories = (try? VisionService.photoCategories(photo: cg, orientation: orientation)) ?? []
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                self.exploreSnapshot = ExploreSnapshot(image: image, regions: regions)
+                var parts: [String] = []
+                if !categories.isEmpty {
+                    parts.append((arabic ? "قد تُظهر الصورة: " : "The photo may show: ") + categories.joined(separator: ", ") + ".")
+                }
+                let texts = regions.filter { $0.label.hasPrefix(arabic ? "نص: " : "Text: ") }.prefix(3).map(\.label)
+                if !texts.isEmpty { parts.append(texts.joined(separator: ". ") + ".") }
+                let people = regions.filter { $0.label == (arabic ? "شخص" : "Person") }.count
+                if people > 0 { parts.append(arabic ? "أشخاص: \(people)." : "People: \(people).") }
+                parts.append(arabic ? "حرّك إصبعك على الصورة لتستكشفها." : "Move your finger over the picture to explore it.")
+                self.sceneAnswer = parts.joined(separator: " ")
+                self.speakRequested(self.sceneAnswer)
+            }
+        }
+    }
+}
+
+extension CGImagePropertyOrientation {
+    /// Maps UIKit photo orientation to the Vision orientation.
+    init(_ orientation: UIImage.Orientation) {
+        switch orientation {
+        case .up: self = .up
+        case .down: self = .down
+        case .left: self = .left
+        case .right: self = .right
+        case .upMirrored: self = .upMirrored
+        case .downMirrored: self = .downMirrored
+        case .leftMirrored: self = .leftMirrored
+        case .rightMirrored: self = .rightMirrored
+        @unknown default: self = .up
+        }
+    }
 }

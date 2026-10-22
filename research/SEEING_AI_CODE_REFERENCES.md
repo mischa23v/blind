@@ -108,7 +108,8 @@ The Seeing AI app source is internal, so this compares its documented features (
 | **Product**: beeps toward the barcode | **Added**: "Scan the barcode". A tick every 0.8 s while searching (30 s limit). It reads QR text and names link hosts without opening them, and reads product codes. "Call this apple juice" saves a name on the phone (`ProductMemory`); later scans say "This is apple juice". There is no online product lookup (offline rule). |
 | **Light** detector | **Added**: "Is the light on?". ARKit light estimate gives dark, dim, normal, bright or very bright, spoken on change, with beeps that get faster in brighter light (`LightLevel`). |
 | **Explore photo by touch** | **Added**: "Explore a picture by touch" (Settings › Ask and goals). The picture stays in memory only. Text, people, the page and detector objects are VoiceOver regions labelled with where they are, and the picture is forgotten on leaving. |
-| Describe photos shared from other apps | Not yet: needs a share extension target |
+| Describe photos from the library | **Added**: "Describe a photo from my library" in Explore a picture. Apple's Photos picker opens; the photo is read in memory only. It gets the same touch regions, plus a hedged overview ("may show") from Vision image categories. |
+| Describe photos shared from other apps | Not yet: needs a share extension target. The library picker covers saved photos. |
 | Handwriting | Covered partly by accurate OCR in page reading; not separately evaluated |
 
 Tests: `BlindCore/Tests/BlindCoreTests/ReadingToolsTests.swift` (written, not run here), plus a static check in `tools/test/companion-evidence.test.mjs` that the reading tools use no model or upload path.

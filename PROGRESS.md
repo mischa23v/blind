@@ -1,3 +1,18 @@
+## Photo library, Arabic statuses, optional Live Activity, Linux Swift results — 2026-10-22 (follow-up)
+
+- **Describe a photo from my library** (Seeing AI "describe photos"): Explore a picture › "Describe a photo from my library" opens Apple's Photos picker. The photo is read in memory only (never saved or sent). It gets the same touch-explorable Vision regions (text, people, page, detector objects), plus a hedged overview from `VNClassifyImageRequest` categories with confidence ≥ 0.5 ("The photo may show: …"). No language model is involved.
+- **Arabic for the remaining status lines.** `StatusText` translates the wearable, outdoor-route, private 3D map, community-library and first indoor-route status lines where they are shown, so a language switch applies at once. Room-change comparison results are now spoken in Arabic. The experimental adult-only familiar-people lab screen stays English.
+- **Optional Lock Screen / Dynamic Island status** (H11): `node tools/generate-xcode-project.mjs --live-activity` adds a WidgetKit extension (`ios/BlindAssistLiveActivity/`) and `BLIND_LIVE_ACTIVITY`. It shows only "Assistant is listening" and whether the camera is on, with no replies, places or people, because anyone near the Lock Screen can read it. There is no push token. The default build has no extension target. A node test covers both project variants.
+- The checked-in Xcode project was regenerated; it was missing the newer Swift files.
+- **Verified here, in a disposable Linux Swift 6.2 container** (authorised bounded builds):
+  - BlindCore `swift test`: **361/361 pass**.
+  - BlindMemory: **14/14 pass**.
+  - All app, test and extension Swift files pass `swiftc -parse` with the default, `BLIND_DEVELOPER_CLOUD` and `BLIND_LIVE_ACTIVITY`+`BLIND_APPLE_MULTIMODAL` flags.
+  - `npm test`: **131/131 pass**.
+  This supersedes the "no Swift toolchain here" notes in the three entries below for BlindCore and BlindMemory, including `CompanionEvidenceTests`, `TrackedTargetTests` and `ReadingToolsTests`.
+- Two defects these runs found are fixed: a type-checker timeout in the page-area code, and expired hazard warnings still being spoken.
+- **Not verified:** the iOS app build and type-check (the Linux container has no UIKit, ARKit, Vision or SwiftUI), UI tests, device behaviour and the widget extension build all need the Mac.
+
 ## Seeing AI-style reading tools — 2026-10-22 (follow-up)
 
 The Seeing AI app source is not public. I compared its documented features and added the missing ones, all on-device and decided by Vision, ARKit and code:

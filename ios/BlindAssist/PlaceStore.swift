@@ -140,11 +140,18 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
                 if let baseline {
                     let changes = PlaceComparison.changes(baseline: baseline.objects, current: objects,
                                                          relocalized: localized)
-                    message = changes.isEmpty ? "No confidently matched changes found." : changes.map { change in
+                    let arabic = self.arabic
+                    let name = { (category: String) in
+                        RoomFeature(id: "", kind: "object", category: category, confidence: "", corners: []).name(arabic: arabic)
+                    }
+                    message = changes.isEmpty ? (arabic ? "لم أجد تغييرات مؤكدة." : "No confidently matched changes found.") : changes.map { change in
                         switch change {
-                        case let .moved(category, distance): return "\(category) may have moved \(String(format: "%.1f", distance)) meters."
-                        case let .added(category): return "Newly observed \(category)."
-                        case let .notObserved(category): return "Previously mapped \(category) was not observed in this scan."
+                        case let .moved(category, distance):
+                            let metres = String(format: "%.1f", distance)
+                            return arabic ? "ربما تحرّك \(name(category)) بمقدار \(metres) متر." : "\(category) may have moved \(metres) meters."
+                        case let .added(category): return arabic ? "رُصد \(name(category)) جديد." : "Newly observed \(category)."
+                        case let .notObserved(category):
+                            return arabic ? "لم يُرصد \(name(category)) المحفوظ سابقاً في هذا المسح." : "Previously mapped \(category) was not observed in this scan."
                         }
                     }.joined(separator: " ")
                     onMessage?(message); return

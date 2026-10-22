@@ -6,7 +6,8 @@
 - [ ] **H10 — Firmware robustness.** Exit: PlatformIO builds; a hardware test of the debounced floor loss, no-target behaviour, watchdog reset with the motor off, and the pairing window.
 - [ ] **H12 — Reading tools (Seeing AI-style).** Live text, page reading with guidance, barcode/QR with product names, light detector, explore by touch. Exit: `ReadingToolsTests` pass on the Mac; device tests with real pages, signs, products, QR codes, dark and bright rooms, and a VoiceOver explore-by-touch session.
 
-- [ ] **H11 — Live Activity / Lock Screen status** (needs a widget extension target in the project generator).
+- [ ] **H11 — Live Activity / Lock Screen status.** Source and the opt-in `--live-activity` generator target are written; the project test passes. Exit: the extension builds on the Mac; on the iPhone the Lock Screen shows listening and camera state, VoiceOver reads it in one swipe, and it updates when the app goes to the background and returns.
+- [ ] **H13 — Describe a library photo and Arabic statuses.** Exit: on the iPhone, pick photos with text, people and none of either and check the regions and overview; switch to Arabic and check the Devices, Routes, Places and Community maps status lines.
 
 ## Conversation evidence rule — 2026-10-22 (source written; Mac verification pending)
 

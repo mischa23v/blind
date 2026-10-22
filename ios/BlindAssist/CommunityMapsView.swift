@@ -67,7 +67,7 @@ import BlindCore
                 }
                 if library.busy { ProgressView(t("Working…", "جارٍ العمل…")); Button(t("Cancel", "إلغاء")) { library.cancel() } }
                 if model.offlineOnly { Text(t("Online search is off. Turn off \"Offline only\" in Settings to search.", "البحث عبر الإنترنت متوقف. أوقف «دون إنترنت فقط» في الإعدادات للبحث.")) }
-                if !library.status.isEmpty { Text(library.status) }
+                if !library.status.isEmpty { Text(StatusText.localized(library.status, arabic: model.arabic)) }
                 if !error.isEmpty { Text(error) }
             } header: { Text(t("Get a map", "احصل على خريطة")) }
             if let package = library.preview {

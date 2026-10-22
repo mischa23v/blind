@@ -122,10 +122,17 @@ enum VisionService {
     /// Detected regions for exploring a picture by touch: text, people, a page and detector objects.
     /// Only what Vision found is listed; nothing is guessed.
     static func exploreRegions(image: CVPixelBuffer, orientation: CGImagePropertyOrientation, arabic: Bool) throws -> [(label: String, rect: CGRect)] {
+        try exploreRegions(handler: { VNImageRequestHandler(cvPixelBuffer: image, orientation: orientation) }, arabic: arabic)
+    }
+    /// Same for a photo chosen from the library (kept in memory only).
+    static func exploreRegions(photo: CGImage, orientation: CGImagePropertyOrientation, arabic: Bool) throws -> [(label: String, rect: CGRect)] {
+        try exploreRegions(handler: { VNImageRequestHandler(cgImage: photo, orientation: orientation) }, arabic: arabic)
+    }
+    private static func exploreRegions(handler makeHandler: () -> VNImageRequestHandler, arabic: Bool) throws -> [(label: String, rect: CGRect)] {
         let text = VNRecognizeTextRequest(); text.recognitionLevel = .accurate
         let people = VNDetectHumanRectanglesRequest()
         let page = VNDetectDocumentSegmentationRequest()
-        try VNImageRequestHandler(cvPixelBuffer: image, orientation: orientation).perform([text, people, page])
+        try makeHandler().perform([text, people, page])
         let flip = { (box: CGRect) in CGRect(x: box.minX, y: 1 - box.maxY, width: box.width, height: box.height) }
         var regions: [(label: String, rect: CGRect)] = []
         for box in text.results ?? [] {
@@ -142,12 +149,18 @@ enum VisionService {
         if let url = Bundle.main.url(forResource: "Detector", withExtension: "mlmodelc") {
             let request = VNCoreMLRequest(model: try VNCoreMLModel(for: MLModel(contentsOf: url)))
             request.imageCropAndScaleOption = .scaleFit
-            try VNImageRequestHandler(cvPixelBuffer: image, orientation: orientation).perform([request])
+            try makeHandler().perform([request])
             for object in (request.results as? [VNRecognizedObjectObservation] ?? []) where object.confidence > 0.6 {
                 if let label = object.labels.first?.identifier { regions.append((label, flip(object.boundingBox))) }
             }
         }
         return regions
+    }
+    /// Whole-picture categories Vision is fairly sure of, for a hedged overview of a library photo.
+    static func photoCategories(photo: CGImage, orientation: CGImagePropertyOrientation) throws -> [String] {
+        let request = VNClassifyImageRequest()
+        try VNImageRequestHandler(cgImage: photo, orientation: orientation).perform([request])
+        return (request.results ?? []).filter { $0.confidence >= 0.5 }.prefix(5).map { $0.identifier.replacingOccurrences(of: "_", with: " ") }
     }
 
     /// Accept any compatible object-detection model supplied as Detector.mlmodelc.

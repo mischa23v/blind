@@ -7,7 +7,9 @@ Supersedes the "hallucination fix" section below as the starting point. The comp
 - Allow microphone, speech, camera, Bluetooth and location.
 - Optionally assign the Action button or Siri: "Open Blind Assist".
 
-**First Mac steps:** follow TODO "Next — Mac and iPhone (always-on build)". Node 129/129 and the firmware host tests pass; Swift and hardware builds are unverified.
+**First Mac steps:** follow TODO "Next — Mac and iPhone (always-on build)". Already verified in a Linux Swift 6.2 container: BlindCore 361/361, BlindMemory 14/14, and all app Swift files parse. Also verified: Node 131/131 and the firmware host tests. Unverified: the iOS app build, UI tests, the hardware builds and anything on a device.
+
+**Project:** the checked-in `ios/BlindAssist.xcodeproj` is current. To test the optional Lock Screen status, run `node tools/generate-xcode-project.mjs --live-activity` (it adds the `BlindAssistLiveActivity` widget extension); run the generator without the flag to go back.
 
 ## CURRENT — hallucination fix to validate first (2026-10-22, cloud session)
 

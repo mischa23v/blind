@@ -400,7 +400,7 @@ struct AssistantToolsView: View {
                     .accessibilityIdentifier("community-maps")
             } header: { Text(t("Public places", "الأماكن العامة")) }
             Section {
-                Text(model.mapping.status)
+                Text(StatusText.localized(model.mapping.status, arabic: model.arabic))
                 NavigationLink(t("Mapping progress", "تقدم رسم الخريطة")) { SurveyProgressView(model: model) }
                 // No export: the 3D map database can hold camera pictures of the home (privacy rule).
                 if model.mapping.exportURL != nil {
@@ -475,7 +475,7 @@ struct AssistantToolsView: View {
                 } else {
                     Text(t("No route map yet.", "لا توجد خريطة مسار بعد."))
                 }
-                if !model.indoor.message.isEmpty { Text(model.indoor.message) }
+                if !model.indoor.message.isEmpty { Text(StatusText.localized(model.indoor.message, arabic: model.arabic)) }
                 if !importError.isEmpty { Text(importError).foregroundStyle(.red) }
             } header: { Text(t("Indoor route", "مسار داخلي")) }
             Section {
@@ -488,7 +488,7 @@ struct AssistantToolsView: View {
                 TextField(t("Search nearby places", "ابحث عن أماكن قريبة"), text: $outdoorQuery)
                 Button(t("Search", "بحث")) { model.outdoor.search(outdoorQuery) }
                     .disabled(outdoorQuery.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                if !model.outdoor.message.isEmpty { Text(model.outdoor.message) }
+                if !model.outdoor.message.isEmpty { Text(StatusText.localized(model.outdoor.message, arabic: model.arabic)) }
                 ForEach(Array(model.outdoor.results.enumerated()), id: \.offset) { _, item in
                     VStack(alignment: .leading, spacing: 8) {
                         Text(item.name ?? t("Place", "مكان")).font(.headline).accessibilityAddTraits(.isHeader)
@@ -690,7 +690,7 @@ private struct WearableSetupView: View {
     var body: some View {
         Form {
             Section {
-                Text(model.wearableStatus)
+                Text(StatusText.localized(model.wearableStatus, arabic: model.arabic))
                 Text(t("Sensors sending readings: ", "حساسات ترسل قراءات: ") + "\(model.wearables.freshSensorCount)")
             } header: { Text(t("Status", "الحالة")) }
             Section {

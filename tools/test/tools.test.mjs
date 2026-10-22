@@ -40,3 +40,19 @@ test('on-device image APIs require explicit SDK-gated project selection', () => 
   assert.match(enabled, /SWIFT_ACTIVE_COMPILATION_CONDITIONS = "\$\(inherited\) BLIND_APPLE_MULTIMODAL"/);
   assert.doesNotMatch(enabled, /BLIND_RTABMAP/);
 });
+
+test('Lock Screen Live Activity is an explicit opt-in extension target', () => {
+  const files = ['BlindAssistApp.swift', 'CompanionLiveActivity.swift'];
+  const standard = generateProject(files);
+  assert.doesNotMatch(standard, /BlindAssistLiveActivity|BLIND_LIVE_ACTIVITY|app-extension/);
+  const project = generateProject(files, { liveActivity: true });
+  const ids = [...project.matchAll(/^([A-F0-9]{24}) = /gm)].map(match => match[1]);
+  assert.equal(ids.length, new Set(ids).size);
+  for (const match of project.matchAll(/(?:fileRef|productReference|target|targetProxy|remoteGlobalIDString|buildConfigurationList) = ([A-F0-9]{24});/g)) assert.ok(ids.includes(match[1]), match[1]);
+  assert.match(project, /productType = "com.apple.product-type.app-extension"/);
+  assert.match(project, /dstSubfolderSpec = 13/);
+  assert.match(project, /SWIFT_ACTIVE_COMPILATION_CONDITIONS = "\$\(inherited\) BLIND_LIVE_ACTIVITY"/);
+  // The shared attributes compile into the app as well as the extension; the widget only into the extension.
+  assert.equal((project.match(/BlindAssistLiveActivity\/CompanionActivityAttributes.swift/g) ?? []).length, 1);
+  assert.equal([...project.matchAll(/isa = PBXBuildFile; fileRef = ([A-F0-9]{24});/g)].filter(m => project.includes(`${m[1]} = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlindAssistLiveActivity/CompanionActivityAttributes.swift"`)).length, 2);
+});
