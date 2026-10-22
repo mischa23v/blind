@@ -1,3 +1,13 @@
+## Latest actual result — chat still not accepted
+
+Compact role and separated reply/state extraction compile, but final real UI promotes I last left it on the kitchen table into Your cup is on the kitchen table. First sentence8.385s. Fix evidence interpretation and isolate context contributions before broadening features or comparing another model. Minimal plain diagnostic answered the initial cup request correctly; do not confuse it with full-path success. Exact evidence in ios/.validation-results/text-chat-status.json.
+
+## Current priority — typed interactive companion
+
+Finish actual-app task request/replacement/cancellation retest, then correction, progress and restart cases in ios/.validation-results/interactive-agent-scenarios.json. Closed/open understanding improved; latency9–11s to first complete sentence remains unacceptable. Keep Apple model and voice off while isolating context/inference overhead. No model comparison yet. See current PROGRESS entry and text-chat-status.json; do not treat build or guard passes as conversation acceptance.
+
+
+
 ## Mac follow-up — 2026-10-22
 
 2026-10-22: Download the [complete private test-data transfer](https://github.com/mischa23v/blind/releases/tag/mac-transfer-20261022) on the Mac; verify SHA256SUMS and follow RESTORE_ON_MAC.md. Preserve the current Mac source. Then scan your own rooms on the iPhone; recorded datasets remain repeatable test inputs.

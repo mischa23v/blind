@@ -1,0 +1,106 @@
+{
+  "scope": "Typed actual-app acceptance scenarios; not evidence of sensors or physical action",
+  "inspiration": [
+    "https://innermonologue.github.io/",
+    "https://github.com/sierra-research/tau2-bench",
+    "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+  ],
+  "evaluation": "Read actual replies and inspect goal/progress state. Record first useful reply latency. Repeat with paraphrases; keywords alone are insufficient.",
+  "cases": [
+    {
+      "id": "state_change",
+      "messages": [
+        "The fridge door is closed.",
+        "The fridge door is open now. What changed?"
+      ],
+      "criteria": [
+        "Explicitly contrast closed before with open now",
+        "Do not claim camera observation"
+      ],
+      "status": "pending current revision"
+    },
+    {
+      "id": "goal_change",
+      "messages": [
+        "Help me find my cup.",
+        "I changed my mind. Help me find my backpack instead.",
+        "Cancel that task."
+      ],
+      "criteria": [
+        "Ask relevant missing detail if no observation exists",
+        "Current goal switches to backpack",
+        "Cancel clears goal and pending step",
+        "No claim of search without actual result"
+      ],
+      "status": "pending current revision"
+    },
+    {
+      "id": "reported_progress",
+      "messages": [
+        "Help me find my backpack.",
+        "I last left it on the sofa.",
+        "I found it."
+      ],
+      "criteria": [
+        "Use last-reported location as historical report",
+        "Do not invent current location or directions",
+        "Recognize reported completion without claiming sensor confirmation"
+      ],
+      "status": "pending current revision"
+    },
+    {
+      "id": "correction",
+      "messages": [
+        "My cup is on the table.",
+        "Sorry, I meant the shelf.",
+        "Where did I say my cup was?"
+      ],
+      "criteria": [
+        "Latest correction wins",
+        "Do not present report as camera evidence"
+      ],
+      "status": "pending current revision"
+    },
+    {
+      "id": "ambiguity",
+      "messages": [
+        "Help me find it."
+      ],
+      "criteria": [
+        "Resolve referent from relevant history or ask one concise question",
+        "Do not invent an object"
+      ],
+      "status": "pending current revision"
+    },
+    {
+      "id": "resume",
+      "messages": [
+        "Help me find my cup.",
+        "Pause that. Help me find my backpack.",
+        "Go back to finding my cup."
+      ],
+      "criteria": [
+        "Explicit task suspension/resumption",
+        "No obsolete pending directions",
+        "Currently unimplemented full suspended-task ledger"
+      ],
+      "status": "pending current revision"
+    },
+    {
+      "id": "restart",
+      "messages": [
+        "Help me find my backpack.",
+        "I last left it on the sofa.",
+        "RESTART_APP",
+        "What were we doing?"
+      ],
+      "criteria": [
+        "Persist goal and user report",
+        "Live position remains unknown"
+      ],
+      "status": "pending current revision"
+    }
+  ],
+  "latest_result_reference": "text-chat-status.json",
+  "overall_status": "Not accepted: history-to-current location certainty and latency fail actual UI"
+}

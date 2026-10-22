@@ -19,6 +19,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     private var announcementAmbiguous = false
     private var currentUtterance: AVSpeechUtterance?
     private var activePriority: SpeechPriority?
+    private var lastDeliveredText = ""
     var onNarrationFinished: ((UUID, String, NarrationDelivery) -> Void)?
     var onIdle: (() -> Void)?
     private let engine = AVAudioEngine()
@@ -34,7 +35,10 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(voiceOverChanged), name: UIAccessibility.voiceOverStatusDidChangeNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(announcementFinished(_:)), name: UIAccessibility.announcementDidFinishNotification, object: nil)
         if WCSession.isSupported() { WCSession.default.delegate = self; WCSession.default.activate() }
-        configureSpatialAudio()
+        if !ProcessInfo.processInfo.arguments.contains("--text-only") &&
+            ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+            configureSpatialAudio()
+        }
     }
     func configureSpatialAudio() {
         do {
@@ -70,9 +74,19 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     }
     /// No raw text is accepted by the public sink; admission is minted by NavigationModel.
     @discardableResult func deliver(_ admitted: AdmittedSpeech, narrationID: UUID? = nil, alert: Detection? = nil) -> Bool {
+        lastDeliveredText = admitted.text
         if let alert { alertSignals(alert) }
         if let narrationID { return speakAmbient(admitted.text, id: narrationID) }
         return speak(admitted.text, urgent: admitted.urgent, priority: admitted.priority)
+    }
+    /// Acoustic echo cancellation is primary. Also reject exact multi-word echoes
+    /// of our active output; this is not speaker identification.
+    func isLikelyOwnSpeech(_ text: String) -> Bool {
+        guard speechPriority != nil else { return false }
+        let words = text.lowercased().split { !$0.isLetter && !$0.isNumber }.map(String.init)
+        guard words.count >= 3 else { return false }
+        let spoken = lastDeliveredText.lowercased().split { !$0.isLetter && !$0.isNumber }.map(String.init)
+        return spoken.joined(separator: " ").contains(words.joined(separator: " "))
     }
     var speechPriority: SpeechPriority? {
         if ProcessInfo.processInfo.systemUptime < urgentUntil { return .danger }

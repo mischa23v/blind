@@ -1,0 +1,40 @@
+Blind Assist startup role and context review — 2026-10-22
+
+Sources (Apple primary documentation, read through Xcode DocumentationSearch and web):
+https://developer.apple.com/documentation/foundationmodels/prompting-an-on-device-foundation-model
+https://developer.apple.com/documentation/foundationmodels/managing-the-context-window
+https://developer.apple.com/documentation/foundationmodels/instructions
+https://developer.apple.com/documentation/foundationmodels/generating-content-and-performing-tasks-with-foundation-models
+
+Findings: on-device prompting requires concise explicit roles, behavior and task-specific information. Use conditional handling for questions and updates. Profile/user/map data belongs in prompts, not trusted Instructions. Instructions, input, history, tools and replies all consume context. Prompts need actual output evaluation; no documented universal best prompt guarantees reliability.
+
+Local integration: three-paragraph companion role covers purpose, child-led goals, capability/evidence boundaries, updates, progress/completion evidence, concise replies and independence. Every text request receives saved name, persistent goal, confirmed preferences, historical map context when present, explicit unavailable camera/depth/location/audio, and existing navigation checkpoint progress labelled unverified. Context uses existing AssistantSituation/GuidePrompt adapters. Recent assistant transcript recitations are excluded as model examples without erasing user history. Text mode has no tool calls; availableActions is empty. No live sensor, route action, money recognition or general task planner is claimed by this path.
+
+Required next architecture: persistent reviewable task record with goal revision, active step, completed/pending/blocked/cancelled states, evidence source and timestamp. Child changes goal => supersede obsolete pending actions; sensor contradiction => revise/block affected step; interruption => preserve resumable work; completion => require tool result or explicit user confirmation. Do not infer arrival from room name or model narrative. Preserve goal/profile/task state when rolling session history, but re-establish live position on restart. This general task tracker is not implemented by the prompt change.
+
+Runtime budget gap: existing six-turn history is bounded by turn count/scalars, not exact token usage; robust rollover and confirmed fact extraction remain outstanding. A name stored in preferences survives restart, but arbitrary user facts and general task steps are not yet durable beyond the dialogue window.
+
+Acceptance: use actual typed UI conversations, contaminated existing history, goal changes, corrected names, scene updates and explicit unavailable evidence. Automated keyword checks missed real behavior and are not acceptance evidence. No child mobility or all-day readiness claim.
+
+Further upstream architecture references reviewed (not adopted or executed):
+https://github.com/nasa-jpl/rosa — LLM tools/prompts above ROS1/2 robot capabilities; Apache2.0, Python/ROS rather than iOS native.
+https://say-can.github.io/ — high-level LLM plans grounded in executable skills and feasibility; research reference, not an iOS dependency.
+https://github.com/BehaviorTree/BehaviorTree.CPP — asynchronous/reactive action execution and interruption; MIT C++ library, integration untested.
+https://github.com/langchain-ai/langgraph — durable agent state and workflow memory; MIT Python/JS architecture reference, not installed.
+https://github.com/microsoft/psi — multimodal stream synchronization; MIT core with separate application licenses, not adopted here.
+https://developer.apple.com/videos/play/wwdc2026/242/ — native Foundation Models agentic app patterns.
+
+Final actual UI result: researched role/context still contradicted closed fridge input and repeated the same open-fridge reply on follow-up. Chat acceptance FAILED. Saved profile persistence passed. More prompt wording alone is not a validated fix; supervisor/tool/state architecture must be evaluated against actual app behavior.
+
+2026-10-22 local alternative correction: Google Gemma (not Gemini cloud) has downloadable on-device models. Official sources: https://deepmind.google/models/gemma/gemma-3n/ and https://ai.google.dev/gemma/docs/integrations/mobile . Mobile documentation lists iOS support; exact model/runtime compatibility, licenses, memory and latency require verification before adoption. No Gemma model installed or tested. Latest UI baseline recorded in text-chat-status.json.
+
+2026-10-22 follow-up: interactive task agents and feedback loops
+- Inner Monologue, https://innermonologue.github.io/ ; paper https://arxiv.org/abs/2207.05608 . Authors report improved completion with scene and success feedback; demonstrations include replacing a goal, resuming previous task, stopping and adapting after failure. Apply observed-result feedback, not generated narrative as proof. Not an iPhone runtime or child validation.
+- tau2-bench, https://arxiv.org/abs/2506.07982 and https://github.com/sierra-research/tau2-bench . Dual control: user and agent can alter environment; test final state plus conversation. Separate reasoning from communication/coordination. Source reviewed online, not installed/executed or ported.
+- Anthropic https://www.anthropic.com/engineering/building-effective-agents and https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents . Simple composable loop, explicit tools, compact relevant context, durable notes. Practitioner guidance, not proof for Apple model.
+- WorldScribe https://worldscribe.org/ ; https://github.com/HumanAILab/worldscribe . Intent/scene/sound-dependent descriptions; no new code adopted.
+- CHI2026 diary study https://arxiv.org/abs/2602.13469 ; 20 BLV users, follow-up failures despite useful initial captions. Test full dialogue and grounded detail.
+- StreamingBench https://streamingbench.github.io/ ; temporal questions at multiple timestamps; no benchmark run here.
+- StreamBridge https://machinelearning.apple.com/research/proactive-streaming-assistant ; memory buffer/compression and separate activation model; no runtime adoption.
+- VSAS-Bench https://arxiv.org/abs/2604.07634 ; accuracy/latency/consistency evaluation. Announced GitHub apple/ml-vsas-bench returned404 during review; do not claim source obtained.
+Implementation implication: maintain request, goal, proposed action, actual result, uncertainty, and source/time independently; re-evaluate after human/sensor updates; measure task state and actual replies, not keywords alone. Our latest simplified adapter supplies original chronological reports and answer first. It still lacks full task suspension/resumption, sensor tool execution and long-session retrieval; no all-pass claim.

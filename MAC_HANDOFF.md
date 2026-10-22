@@ -1,3 +1,65 @@
+## CURRENT — pause checkpoint for Claude review, 2026-10-22
+
+**Combined source checkpoint:** newer master `694eccb499eb3b505386210c7a875abb85448821` was fetched through the GitHub connection and reconciled with the Mac work before pushing. Currency/reference-matching and clothing-colour integration are preserved. Two NavigationModel conflicts were resolved by retaining both the conversation timeout and currency/colour properties/cancellation resets. Existing remote documentation is retained below. The combined source has NOT had a fresh Apple SDK build or full scenario run; the user requested stopping for the night. Tomorrow validate the combined source first. The active generated AuraFace project is preserved, not regenerated; no model/photo/signing/tool-cache upload. The ZIP folder still has no Git metadata.
+
+User requested saving/pushing the current work and continuing tomorrow. This is a work-in-progress checkpoint, NOT a working/accepted companion. Keep all local changes. Do not change model before diagnosing our Apple-model integration. Voice is paused; launch with `--text-only`. Do not regenerate the active AuraFace project. No physical iPhone is available for this checkpoint.
+
+### What the app is meant to do
+
+An eight-year-old blind child's conversational companion: understand the child's requests, keep goals/progress, respond to new observations and corrections, use available sensors/tools, and adapt when the child changes their mind. Normal interaction should not require Start/Talk/Repeat. Useful bottom tabs remain for people, maps and settings. Immediate sensor warnings must not wait for an LLM. Current work is typed chat first; continuous sensing, speech and 24-hour operation are NOT proven.
+
+### Exact actual-app failures and comparison
+
+These were typed into the running iPhone simulator app, not inferred from keyword tests. Synthetic scene statements are child reports, NOT camera/LiDAR observations.
+
+| Build/path | Input | Actual reply | Assessment |
+| --- | --- | --- | --- |
+| Earlier structured path | The fridge door is closed. | fridge door: The fridge door is closed.. | Our field-to-text rendering was poor; removed. |
+| Revised context | The fridge door is open now. What changed? | The fridge door was closed, then it is open now. | Correct change after a preceding closed report; awkward wording. |
+| Task request | Help me find my cup. | Your cup is not found. Would you like help searching? | No search occurred; redundant permission question. |
+| Explicit missing-location workflow | Help me find my cup. | Your cup is not here. Where did you last have it? | Still invents absence. |
+| Debug minimal plain conversation | Help me find my cup. | Where did you last have your cup? | Single-turn diagnostic passed. No old context or structured task output; does NOT validate normal app. |
+| FINAL normal compact-context path | Help me find my cup. | Your task is to find your cup. Did you last have your cup near the table? | No absence assertion, but stiff wording and unsupported leading suggestion. |
+| FINAL follow-up | I last left it on the kitchen table. | Your cup is on the kitchen table. | FAILED: historical report becomes certain current location. |
+
+Desired final follow-up behavior: acknowledge that the table is the last reported location, keep current location unknown, and offer a useful next step only supported by available inputs. Example: “You last left it on the kitchen table. I don't know whether it's still there.” This is an example of the evidence distinction, not a phrase to hard-code.
+
+Earlier normal revision: backpack replacement updated visible goal to `find my backpack`; cancellation removed visible goal. First cup goal extraction initially failed, later fixed by copying the entire explicit request. Final compact build displayed `Help me find my cup.`. Full switch/cancel regression was not rerun after the final context change.
+
+### Timing and validation
+
+- FINAL active Xcode `BuildProject`: PASSED,6.980 seconds. Isolated base simulator Apple-SDK build: PASSED. This is an actual iOS build, not syntax checking.
+- FINAL affected privacy/spatial Node checks:6 passed. Earlier broader guard selection:17 passed. These checks do not catch all ungrounded conversational statements.
+- FINAL normal first complete sentence:8.384551 seconds; natural reply finished9.141065 seconds, measured by app timing logs. FAILS responsiveness target. UI screenshots give looser upper bounds, not exact latency.
+- Earlier compact attempts: roughly9–11 seconds to first sentence. Structured model-selected context tool round trip previously exceeded60 seconds and was removed.
+- NOT RUN for final build: full scenario matrix, restart/correction/long-session reliability, real phone sensors/ARKit/LiDAR, voice/VoiceOver conversation, thermal/battery/24-hour operation, Gemma comparison.
+- Older22 XCTest passes and other historical suites are NOT proof of the final conversational changes.
+
+### Current implementation and what was tried
+
+`ios/BlindAssist/LocalImageAssistant.swift`: short role; labeled original chronological child messages; saved name, goal, proposed step and reported progress; historical map records distinct from live inputs. Empty fields, old assistant replies, old extracted facts and duplicate copies of the current request are omitted from the prompt. All persisted data is retained. Current prompt window is bounded; general long-term retrieval is unfinished.
+
+Normal path now streams a plain natural reply first, then performs a separate guided `CompanionDecision` task/fact extraction in the same native Apple session. Metadata cannot rewrite the answer. Spatial text checks remain. `--chat-baseline` is DEBUG-only and uses a minimal role plus latest typed message, without saved context or task updates. Final app was left in NORMAL `--text-only`, not baseline mode.
+
+`NavigationModel.swift`: protected on-phone working state and name; records the user message before inference; validates request identity/goal revision; cancellation clears obsolete steps;30-second failure deadline preserves an already displayed reply. Structured extraction still depends on the model. Quote validation does not establish semantic truth. Full task suspension/resumption and sensor/action execution are missing.
+
+Do not conclude Apple is simply a bad model: the minimal baseline answered correctly while the contextual path failed. Conversely, stronger instructions alone have not fixed the normal path. No switch to Gemini/Gemma, cloud calls or personal photo uploads occurred.
+
+### Questions for Claude / next investigation
+
+1. Which supplied context field or instruction causes unknown/last-reported locations to become present-tense claims? Compare one component at a time against the successful minimal baseline, using the same messages in the running app.
+2. Is the conversation role still overloaded? How should facts, historical reports, goals, proposals and actual tool results be represented for this small local model?
+3. Should conversational generation and state extraction use separate sessions, or another verified native transcript structure? Measure quality and delay instead of adding more prompt rules blindly.
+4. How can temporal/source constraints be enforced without hard-coded replies or suppressing useful conversation? “Never hallucinate” is already requested but not sufficient.
+5. How do we retain a task and useful memory across interruptions/restarts while excluding obsolete instructions? Add repeatable state/result assertions, then manually inspect replies; keyword-only tests previously missed failures.
+6. Profile prefill, first useful sentence, metadata generation and thermal load. The current8.4 seconds is not instant; a Mac-backed simulator result is not an iPhone performance result.
+
+Relevant research: [Inner Monologue](https://innermonologue.github.io/) demonstrates scene/success feedback, changed goals, resumption and stop; [tau2-bench](https://github.com/sierra-research/tau2-bench) evaluates human/agent shared-state coordination; Anthropic [agent patterns](https://www.anthropic.com/engineering/building-effective-agents) and [context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) emphasize simple loops and relevant context. These do not prove our integration. Existing bounded code ports and licenses are listed in `ios/ThirdParty/AGENT_PORTS.txt`; no claim of fully porting those frameworks.
+
+Detailed local evidence is in `ios/.validation-results/text-chat-status.json`, `interactive-agent-scenarios.json`, and `companion-prompt-research.txt`; shareable snapshots accompany this checkpoint under `ios/validation/companion-chat/`. Preserve failed examples. No further model/setup work tonight.
+
+
+
 # Mac mini handoff
 
 ## Current currency and colour addition — 2026-10-22

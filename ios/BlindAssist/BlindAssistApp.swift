@@ -7,8 +7,9 @@ struct BlindAssistApp: App {
     var body: some Scene {
         WindowGroup {
             DashboardView(model: model)
-                .onChange(of: scenePhase) { _, phase in
-                    if phase == .background { model.stop() }
+                .onChange(of: scenePhase, initial: true) { _, phase in
+                    if phase == .background { model.suspendExperience() }
+                    if phase == .active { model.resumeExperienceIfNeeded() }
                 }
         }
     }

@@ -1,3 +1,28 @@
+## Interactive task-agent acceptance — 2026-10-22
+
+- [ ] Natural typed requests start a useful response and persist the requested goal without redundant permission questions.
+- [ ] Changed/cancelled goals retire pending steps; reported completion is separate from measured completion.
+- [ ] Corrections, ambiguous references, interruption, restart and suspended-task resumption pass actual conversation checks.
+- [ ] Meet first-useful-response target on the actual target hardware; current simulator first-sentence timing9–11s fails.
+
+Sources and executable/manual boundary: ios/.validation-results/interactive-agent-scenarios.json. Closed/open pair now correct in actual UI; no full acceptance gate closed. Voice and fresh camera/depth tools remain separate unfinished work.
+
+## Current acceptance correction — 2026-10-22
+
+- [ ] Continuous hands-free companion: persistent camera/depth/audio input, goal-aware conversation and interruptible output; no Talk/Repeat/Start requirement for everyday use.
+- [ ] Voice-guided setup and simple bottom tabs preserving feature access; quiet does not disable perception.
+- [ ] Same app pipeline accepts recorded images/maps/depth/audio for a kitchen/fridge conversation walkthrough and injected failures.
+- [ ] Correct fenced-JSON Apple response handling; retain strict ID/evidence validation.
+- [ ] Physical foreground/background/lock, audio interruptions, recovery, battery/thermal and sustained-operation evidence. Simulator and direct Mac model results cannot close this gate.
+
+Review complete; implementation/acceptance items above remain open. Evidence: ios/.reference-materials/review-694eccb/CONTINUOUS_COMPANION_REVIEW.txt. Earlier home UI remains local work, not approved final UX.
+
+## Local usability revision — 2026-10-22
+
+User priority: normal use should start on opening, prompt through speech, and never expose wearable diagnostics on the child home. Simple home/More/Settings separation and automatic startup are implemented. Final signed device build-for-testing and isolated simulator build pass; Node 88/88. Home audit and functional navigation/stop checks pass; detailed Ask contrast audit, real speech/VoiceOver, physical startup and child usability remain open. No acceptance gate is closed merely by this UI change. See PROGRESS and ios/.validation-results/voice-home-summary.json.
+
+
+
 # Implementation task checklist
 
 **Mac validation — 2026-10-22:** Build/UI fixes published with local evidence in PROGRESS. Base simulator/device, optional multimodal device and signed AuraFace device builds passed; XS Max launch confirmed by user. Hosted iOS tests 22/22; latest UI batch 5/6 with Dynamic Type audit still failing. Simulator tab navigation and simulation start/stop passed. Real recognition, sensor/VoiceOver/thermal and child-use gates stay open. These Mac results cover the pre-currency checkout; combined master needs validation.

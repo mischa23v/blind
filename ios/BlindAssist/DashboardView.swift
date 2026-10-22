@@ -4,8 +4,116 @@ import MapKit
 import BlindCore
 
 struct DashboardView: View {
+    @ObservedObject var model: NavigationModel
+    var body: some View { AssistantToolsView(model: model, initialTab: "companion") }
+}
+
+/// Conversation is the everyday experience; management tools stay in the tab bar.
+private struct CompanionHomeView: View {
+    @ObservedObject var model: NavigationModel
+    @State private var typedMessage = ""
+    @State private var writing = false
+    private func t(_ en: String, _ ar: String) -> String { model.arabic ? ar : en }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                Text(model.companionGreeting.isEmpty ? t("What would you like to do?", "ماذا تريد أن نفعل؟") : model.companionGreeting)
+                    .font(.title2.weight(.semibold))
+                    .accessibilityAddTraits(.isHeader)
+                    .accessibilityIdentifier("companion-greeting")
+                Text(model.homePrompt)
+                    .font(.body)
+                    .accessibilityIdentifier("home-status")
+                if !model.textOnly && !model.voice.listening {
+                    Text(t("Microphone is not listening.", "الميكروفون لا يستمع الآن."))
+                        .font(.body).accessibilityIdentifier("microphone-status")
+                }
+                if model.simulation {
+                    Text(t("Practice only · no live camera", "تدريب فقط · دون كاميرا مباشرة"))
+                        .accessibilityIdentifier("practice-status")
+                }
+                if !model.assistantDialogue.goal.isEmpty {
+                    Text(t("Our goal: ", "هدفنا: ") + model.assistantDialogue.goal)
+                        .font(.body).accessibilityIdentifier("companion-goal")
+                }
+                if !model.sceneAnswer.isEmpty {
+                    Text(model.sceneAnswer).font(.body).accessibilityIdentifier("companion-answer")
+                }
+                if let offer = model.companionOffer {
+                    HomeOffer(prompt: offer.prompt, arabic: model.arabic,
+                              yes: { model.answerCompanionOffer(.yes) },
+                              no: { model.answerCompanionOffer(.no) })
+                }
+                // Alternative access remains available when speech cannot be used.
+                Button(t("Write a message", "اكتب رسالة")) { writing = true }
+                    .buttonStyle(.bordered).accessibilityIdentifier("write-message")
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(24)
+        }
+        .navigationTitle(t("Assistant", "المساعد"))
+        .sheet(isPresented: $writing) {
+            NavigationStack {
+                Form {
+                    TextField(t("Your message", "رسالتك"), text: $typedMessage, axis: .vertical)
+                        .accessibilityIdentifier("companion-message")
+                    Button(t("Send", "إرسال")) {
+                        model.receiveCompanionUtterance(typedMessage)
+                        typedMessage = ""; writing = false
+                    }
+                    .disabled(typedMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .accessibilityIdentifier("send-companion-message")
+                }
+                .navigationTitle(t("Write a message", "اكتب رسالة"))
+                .toolbar { Button(t("Done", "تم")) { writing = false } }
+            }
+        }
+    }
+}
+
+private struct HomeAction: View {
+    let title: String
+    let symbol: String
+    let identifier: String
+    var prominent = false
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label(title, systemImage: symbol)
+                .font(.title2.weight(.semibold))
+                .frame(maxWidth: .infinity, minHeight: 56)
+                .padding(12)
+                .fixedSize(horizontal: false, vertical: true)
+                .foregroundStyle(prominent ? Color.black : Color.white)
+                .background(prominent ? Color.yellow : Color(white: 0.16), in: RoundedRectangle(cornerRadius: 18))
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier(identifier)
+    }
+}
+
+private struct HomeOffer: View {
+    let prompt: String
+    let arabic: Bool
+    let yes: () -> Void
+    let no: () -> Void
+
+    var body: some View {
+        VStack(spacing: 12) {
+            Text(prompt).font(.body).fixedSize(horizontal: false, vertical: true)
+            HomeAction(title: arabic ? "نعم" : "Yes", symbol: "checkmark", identifier: "offer-yes", action: yes)
+            HomeAction(title: arabic ? "لا" : "No", symbol: "xmark", identifier: "offer-no", action: no)
+        }
+    }
+}
+
+struct AssistantToolsView: View {
     @Environment(\.openURL) private var openURL
     @ObservedObject var model: NavigationModel
+    @State private var preferredNameDraft = ""
     @State private var placeName = ""
     @State private var focus = "surroundings"
     @State private var deletePrivateMap = false
@@ -16,20 +124,32 @@ struct DashboardView: View {
     @State private var relayToken = ""
     @State private var uploadConfirmed = false
     @State private var importError = ""
+    @State private var selectedTab: String
+    init(model: NavigationModel, initialTab: String = "settings") {
+        self.model = model
+        _selectedTab = State(initialValue: initialTab)
+    }
     private let accent = Color(red: 1, green: 0.8, blue: 0.33)
     private func t(_ en: String, _ ar: String) -> String { model.arabic ? ar : en }
     var body: some View {
-        TabView {
-            NavigationStack { monitor.navigationTitle(t("Guide", "الإرشاد")) }
-                .tabItem { Label(t("Guide", "الإرشاد"), systemImage: "sensor.tag.radiowaves.forward.fill") }
-            NavigationStack { assistant.navigationTitle(t("Ask & describe", "اسأل وصف")) }
-                .tabItem { Label(t("Ask", "اسأل"), systemImage: "bubble.left.and.text.bubble.right") }
+        TabView(selection: $selectedTab) {
+            NavigationStack { CompanionHomeView(model: model) }
+                .tabItem { Label(t("Assistant", "المساعد"), systemImage: "bubble.left.and.bubble.right") }
+                .tag("companion")
             NavigationStack { places.navigationTitle(t("Familiar places", "الأماكن المألوفة")) }
                 .tabItem { Label(t("Places", "الأماكن"), systemImage: "house") }
+                .tag("places")
             NavigationStack { routes.navigationTitle(t("Routes", "المسارات")) }
                 .tabItem { Label(t("Routes", "المسارات"), systemImage: "map") }
+                .tag("routes")
+            #if BLIND_FAMILIAR_PEOPLE
+            NavigationStack { FamiliarPeopleView(model: model, experiment: model.familiarPeople) }
+                .tabItem { Label(t("People", "الأشخاص"), systemImage: "person.2") }
+                .tag("people")
+            #endif
             NavigationStack { settings.navigationTitle(t("Settings", "الإعدادات")) }
                 .tabItem { Label(t("Settings", "الإعدادات"), systemImage: "gearshape") }
+                .tag("settings")
         }
         .tint(accent)
         .preferredColorScheme(.dark)
@@ -65,7 +185,7 @@ struct DashboardView: View {
                 .frame(maxWidth: .infinity, alignment: .leading).padding(24)
                 .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 24))
                 Button(model.running ? t("Stop monitoring", "إيقاف الرصد") : t("Start monitoring", "بدء الرصد")) {
-                    if model.running { model.stop() } else { model.start() }
+                    if model.running { model.stopExperience() } else { model.startExperience() }
                 }.buttonStyle(.borderedProminent).foregroundStyle(.black).controlSize(.large).frame(minHeight: 56)
                     .accessibilityIdentifier("monitor-toggle")
                 if model.running && !model.places.scanning {
@@ -80,27 +200,6 @@ struct DashboardView: View {
                 if !model.message.isEmpty { Text(model.message).foregroundStyle(.secondary) }
                 if model.running && !model.simulation {
                     Text(model.visualStairs.status(arabic: model.arabic)).font(.callout).foregroundStyle(.secondary)
-                }
-                Divider()
-                Text(t("Wearables", "الأجهزة القابلة للارتداء")).font(.title2.bold())
-                Text(model.wearableStatus)
-                Text(t("Sensors delivering current measurements", "حساسات ترسل قياسات حديثة") + ": \(model.wearables.freshSensorCount)")
-                Button(t("Connect belt & wristband", "توصيل الحزام والسوار")) { model.connectWearables() }
-                Button(t("Disconnect wearables", "فصل الأجهزة القابلة للارتداء")) { model.wearables.disconnect() }
-                ForEach(model.wearables.discovered, id: \.identifier) { peripheral in
-                    Button(t("Pair", "اقتران") + " · " + (peripheral.name ?? peripheral.identifier.uuidString)) {
-                        model.wearables.select(peripheral)
-                    }
-                }
-                HStack {
-                    Button(t("Calibrate belt", "معايرة الحزام")) { model.calibrateBelt() }
-                    Button(t("Identify belt", "تحديد الحزام")) { model.identifyBelt() }
-                }.buttonStyle(.bordered)
-                if let distance = model.wearables.wristDistance {
-                    Text(t("Pointing range", "مسافة الإشارة") + " " + String(format: "%.2f m", distance))
-                    Button(t("Speak pointing range", "نطق مسافة الإشارة")) {
-                        model.speakRequested(String(format: model.arabic ? "المسافة %.2f متر" : "Range %.2f meters", distance))
-                    }
                 }
                 Divider()
                 Text(t("Return to start", "العودة إلى البداية")).font(.title2.bold())
@@ -150,6 +249,7 @@ struct DashboardView: View {
                 Button(t("Set ongoing goal", "تحديد الهدف المستمر")) { model.setAssistantObjective() }
                 if !model.assistantDialogue.goal.isEmpty { Text(t("Current goal: ", "الهدف الحالي: ") + model.assistantDialogue.goal) }
                 Button(t("Clear goal and recent conversation", "مسح الهدف والمحادثة الأخيرة"), role: .destructive) { model.clearAssistantConversation() }
+                    .foregroundStyle(Color(red: 1, green: 0.65, blue: 0.65))
                 Button(model.voice.listening ? t("Finish question", "إنهاء السؤال") : t("Talk · on-device transcription", "تحدث · تحويل الكلام على الهاتف")) {
                     if model.voice.listening { model.voice.finish() } else { model.startVoiceQuestion() }
                 }.controlSize(.large).frame(minHeight: 52)
@@ -362,6 +462,30 @@ struct DashboardView: View {
     }
     private var settings: some View {
         Form {
+            Section(t("Your name", "اسمك")) {
+                TextField(t("Preferred name", "الاسم المفضل"), text: $preferredNameDraft)
+                    .accessibilityIdentifier("preferred-name")
+                    .onAppear { preferredNameDraft = model.preferredName }
+                Button(t("Save name", "حفظ الاسم")) { model.savePreferredName(preferredNameDraft) }
+                    .accessibilityIdentifier("save-preferred-name")
+                Button(t("Forget saved name", "حذف الاسم المحفوظ"), role: .destructive) {
+                    model.savePreferredName(""); preferredNameDraft = model.preferredName
+                }
+                if !model.profileStatus.isEmpty { Text(model.profileStatus) }
+            }
+            Section(t("Assistant", "المساعد")) {
+                Button(t("Reconnect microphone", "إعادة توصيل الميكروفون")) { model.reconnectListening() }
+                    .accessibilityIdentifier("reconnect-microphone")
+                NavigationLink(t("Reading and questions", "القراءة والأسئلة")) { assistant }
+                NavigationLink(t("Camera and sensor details", "تفاصيل الكاميرا والمستشعرات")) { monitor }
+                Button(t("Try practice", "جرب التدريب")) { model.startSimulation(); selectedTab = "companion" }
+                    .accessibilityIdentifier("home-practice")
+            }
+            Section {
+                NavigationLink(t("Wearable setup", "إعداد الأجهزة القابلة للارتداء")) {
+                    WearableSetupView(model: model)
+                }.accessibilityIdentifier("wearable-setup")
+            }
             Section(t("Language & detail", "اللغة والتفاصيل")) {
                 NavigationLink(t("Interests and preferences", "الاهتمامات والتفضيلات")) { AssistantPreferencesView(model: model) }
                     .accessibilityIdentifier("assistant-preferences")
@@ -421,5 +545,34 @@ struct DashboardView: View {
                        "يعتمد التعرف على النص العربي على دعم اللغة في إصدار iOS المثبت."))
             }
         }
+    }
+}
+
+private struct WearableSetupView: View {
+    @ObservedObject var model: NavigationModel
+    private func t(_ en: String, _ ar: String) -> String { model.arabic ? ar : en }
+    var body: some View {
+        Form {
+                Text(model.wearableStatus)
+                Text(t("Sensors delivering current measurements", "حساسات ترسل قياسات حديثة") + ": \(model.wearables.freshSensorCount)")
+                Button(t("Connect belt & wristband", "توصيل الحزام والسوار")) { model.connectWearables() }
+                Button(t("Disconnect wearables", "فصل الأجهزة القابلة للارتداء")) { model.wearables.disconnect() }
+                ForEach(model.wearables.discovered, id: \.identifier) { peripheral in
+                    Button(t("Pair", "اقتران") + " · " + (peripheral.name ?? peripheral.identifier.uuidString)) {
+                        model.wearables.select(peripheral)
+                    }
+                }
+                HStack {
+                    Button(t("Calibrate belt", "معايرة الحزام")) { model.calibrateBelt() }
+                    Button(t("Identify belt", "تحديد الحزام")) { model.identifyBelt() }
+                }.buttonStyle(.bordered)
+                if let distance = model.wearables.wristDistance {
+                    Text(t("Pointing range", "مسافة الإشارة") + " " + String(format: "%.2f m", distance))
+                    Button(t("Speak pointing range", "نطق مسافة الإشارة")) {
+                        model.speakRequested(String(format: model.arabic ? "المسافة %.2f متر" : "Range %.2f meters", distance))
+                    }
+                }
+        }
+        .navigationTitle(t("Wearable setup", "إعداد الأجهزة القابلة للارتداء"))
     }
 }

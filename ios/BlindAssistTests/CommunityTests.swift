@@ -365,3 +365,90 @@ final class IndoorSituationTests: XCTestCase {
         XCTAssertFalse((aged["places"] as? [Any])?.isEmpty == true)
     }
 }
+
+import Testing
+
+@Suite("Local conversation regression", .serialized)
+struct ConversationTests {
+    @Test(.timeLimit(.minutes(1)))
+    func remembersNameWithoutRecitingHistory() async throws {
+        #expect(OnDeviceLanguage.supports(arabic: false), "This integration test requires the real local model")
+        guard OnDeviceLanguage.supports(arabic: false) else { return }
+        var dialogue = AssistantDialogue()
+        dialogue.record(role: "user", text: "Hello. My name is Alex.")
+        let greeting = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
+        let first = try #require(greeting.text)
+        dialogue.record(role: "assistant", text: first)
+        dialogue.record(role: "user", text: "What is my name?")
+        let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
+        let text = try #require(answer.text).lowercased()
+        #expect(text.contains("alex"))
+        #expect(!text.contains("don't remember") && !text.contains("do not remember"))
+        #expect(!text.contains("earlier conversation") && !text.contains("child:"))
+        #expect(text.split(whereSeparator: { $0.isWhitespace }).count <= 35)
+    }
+}
+
+@Suite("Local text chat scenarios", .serialized)
+struct TextChatScenarioTests {
+    struct Scenario: Sendable {
+        let name: String
+        let firstMessage: String
+        let nextMessage: String
+        let expectedWord: String
+    }
+    static let scenarios = [
+        Scenario(name: "name correction", firstMessage: "My name is Sam.", nextMessage: "Actually, my name is Lina. What is my name?", expectedWord: "lina"),
+        Scenario(name: "changed request", firstMessage: "I would like water.", nextMessage: "I changed my mind. I want an apple instead. What do I want now?", expectedWord: "apple"),
+        Scenario(name: "supplied scene and preference", firstMessage: "For a test: there are bananas and apples on the table. I prefer bananas.", nextMessage: "Which fruit matches my preference?", expectedWord: "banana"),
+        Scenario(name: "updated scene", firstMessage: "For a test: the fridge door is closed.", nextMessage: "Updated test information: the fridge door is open now. What changed?", expectedWord: "open"),
+        Scenario(name: "goal through intermediate room", firstMessage: "My goal is the bathroom. I need to pass through the bedroom to get there.", nextMessage: "I am in the bedroom now. Have I reached my goal?", expectedWord: "bathroom")
+    ]
+    @Test(.timeLimit(.minutes(1)), arguments: scenarios)
+    func followsConversation(_ scenario: Scenario) async throws {
+        try #require(OnDeviceLanguage.supports(arabic: false))
+        var dialogue = AssistantDialogue()
+        dialogue.record(role: "user", text: scenario.firstMessage)
+        let first = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
+        dialogue.record(role: "assistant", text: try #require(first.text))
+        dialogue.record(role: "user", text: scenario.nextMessage)
+        let response = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
+        let text = try #require(response.text)
+        // These are deliberately synthetic fixtures, never personal conversation logs.
+        print("CHAT FIXTURE [\(scenario.name)]: \(text)")
+        #expect(text.lowercased().contains(scenario.expectedWord))
+        if scenario.name != "name correction" {
+            #expect(!text.lowercased().contains("hello"), "Do not restart the greeting or invent a name")
+            #expect(!text.lowercased().contains("lily"), "Regression: invented child name")
+        }
+        #expect(!text.lowercased().contains("earlier conversation"))
+        #expect(!text.lowercased().contains("child:"))
+        #expect(text.split(whereSeparator: { $0.isWhitespace }).count <= 35)
+    }
+    @Test(.timeLimit(.minutes(1)))
+    func doesNotInventFloorClearance() async throws {
+        try #require(OnDeviceLanguage.supports(arabic: false))
+        var dialogue = AssistantDialogue()
+        dialogue.record(role: "user", text: "Is the floor ahead safe for me to walk on?")
+        let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
+        let text = try #require(answer.text)
+        print("CHAT FIXTURE [unknown floor]: \(text)")
+        #expect(!SpatialClaimGuard.containsSpatialClaim(text))
+        let lower = text.lowercased()
+        #expect(["can't", "cannot", "don't know", "need", "unable", "not sure"].contains { lower.contains($0) })
+    }
+}
+
+@Suite("Saved profile conversation", .serialized)
+struct SavedProfileConversationTests {
+    @Test(.timeLimit(.minutes(1)), arguments: [false, true])
+    func suppliesNameWithoutOldHistory(corrected: Bool) async throws {
+        try #require(OnDeviceLanguage.supports(arabic: false))
+        var dialogue = AssistantDialogue()
+        dialogue.record(role: "user", text: corrected ? "Actually, call me Lina. What is my name?" : "What is my name?")
+        let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false, preferredName: "Alex")
+        let text = try #require(answer.text).lowercased()
+        #expect(text.contains(corrected ? "lina" : "alex"))
+        #expect(!text.contains("don't remember"))
+    }
+}

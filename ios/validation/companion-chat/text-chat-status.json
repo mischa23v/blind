@@ -1,0 +1,173 @@
+{
+  "scope": "Local text chat; microphone paused; no physical phone",
+  "changes": [
+    "Proper role-based model transcript",
+    "Shorter replies and no invented-name prompt",
+    "--text-only launch mode",
+    "Preferred name in existing private memory; Settings save/forget; injected into each chat model session"
+  ],
+  "passed": [
+    "Xcode BuildProject 10.731s",
+    "22 iOS XCTest tests in final build",
+    "6 privacy/spatial Node tests",
+    "Previous revised chat run: 7 cases, 57.250s"
+  ],
+  "incomplete": [
+    "Final expanded model suite deliberately interrupted to prioritize hands-on UI at user request",
+    "Saved profile restart and fresh-context verification pending",
+    "Physical sensors, voice, images and 24-hour operation not validated here"
+  ],
+  "ui": "Final researched-role build failed actual closed/open pair: both replies The fridge door is now open. What should you do next? First contradicts closed input. No duplicate input. Session closed; voice off.",
+  "hands_on": {
+    "before_fix": "Two actual UI messages reproduced transcript recitation and contradictory recall. Tests had missed the persisted-history case.",
+    "fix": "Exclude malformed historical assistant replies from model examples without deleting saved user history; reject oversized or transcript-reciting output. Clarify companion identity and current text-only evidence.",
+    "observed_after_fix": [
+      {
+        "input": "What is my name?",
+        "output": "Alex."
+      },
+      {
+        "input": "Change of plan: I want to make tea, not go outside.",
+        "output": "You could use a mug and a kettle. Would you like help finding anything?"
+      },
+      {
+        "input": "I am at the fridge now. I found the milk. What should I do next for my tea?",
+        "output": "You could pour the milk into the mug. What else do you need?"
+      }
+    ],
+    "limits": "These are typed user-supplied scenes, not camera perception or navigation validation.",
+    "additional_failures": [
+      "Settings save initially failed: unsupported profile namespace; changed to existing preferences namespace.",
+      "Closed fridge update produced unsupported suggestion about tea bags in fridge.",
+      "Open fridge change question produced kettle suggestion instead of answering change."
+    ],
+    "pending_retest": "Supported preferences storage and explicit update-acknowledgement instructions installed; testing saved Maya + restart and closed/open pair in actual UI.",
+    "profile_result": "Save Maya, relaunch persistence, recall overriding old Alex passed. Original blank profile restored. Reply appended unnecessary question."
+  },
+  "latest_build": "Final compact role/context: Xcode BuildProject6.980s and isolated simulator build passed;6affected privacy/spatial checks passed. Actual UI evidence handling and latency FAILED.",
+  "latest_validation": {
+    "date": "2026-10-22",
+    "build": "Latest state build: Apple SDK simulator build succeeded; active Xcode BuildProject previously passed 7.353s",
+    "checks": "17 Node privacy/spatial checks passed; these do not validate model quality",
+    "actual_ui": [
+      {
+        "input": "The fridge door is closed.",
+        "reply": "fridge door: The fridge door is closed..",
+        "observed_by_seconds": 16.9,
+        "no_reply_at_seconds": 5.4
+      },
+      {
+        "input": "The fridge door is open now. What changed?",
+        "reply": "The fridge door was closed before.",
+        "observed_by_seconds": 18.2,
+        "no_reply_at_seconds": 7.5
+      }
+    ],
+    "assessment": "Previous state recall improved; malformed formatting and incomplete change description. Instant-response acceptance FAILED. Timing is UI observation bound, not precise first-token timing.",
+    "not_run": [
+      "Goal replacement/cancellation in latest build",
+      "Restart persistence of new fact fields",
+      "Physical sensors",
+      "Voice",
+      "Gemma comparison"
+    ],
+    "next": "Evaluate local Google Gemma candidate against same synthetic scenarios; no cloud switch or weight download performed."
+  },
+  "simplified_contract_validation": {
+    "build": "Xcode BuildProject passed9.006s; isolated simulator Apple SDK build succeeded",
+    "checks": "17 Node privacy/spatial checks passed",
+    "actual_ui": [
+      {
+        "input": "The fridge door is closed.",
+        "reply": "The fridge door is closed. That\u2019s the current state.",
+        "first_sentence_seconds": 10.546057,
+        "total_generation_seconds": 12.585053
+      },
+      {
+        "input": "The fridge door is open now. What changed?",
+        "reply": "The fridge door was closed, then it is open now.",
+        "first_sentence_seconds": 9.281298,
+        "total_generation_seconds": 10.303855
+      },
+      {
+        "input": "Help me find my cup.",
+        "reply": "Your cup is not found. Would you like help searching?",
+        "goal_visible": false
+      },
+      {
+        "input": "I changed my mind. Help me find my backpack instead.",
+        "reply": "Your backpack is not found. Would you like help searching?",
+        "visible_goal": "find my backpack"
+      },
+      {
+        "input": "Cancel that task.",
+        "reply": "Your backpack search is cancelled. Would you like help finding something else?",
+        "goal_cleared": true
+      }
+    ],
+    "assessment": "State comparison improved; initial goal extraction and task replies failed. Latency still unacceptable.",
+    "next_revision": "Feedback instruction, whole-request goal extraction, cancellation removes pending proposed step. Xcode BuildProject7.193s and isolated simulator build passed. Actual UI retest pending."
+  },
+  "feedback_revision_validation": {
+    "actual_input": "Help me find my cup.",
+    "actual_reply": "Your cup is not here. Would you like help finding something else?",
+    "visible_goal": "Help me find my cup.",
+    "assessment": "Goal extraction passed; response failed unsupported absence and irrelevant follow-up. Switch/cancel not rerun in this revision.",
+    "next_fix": "Removed prior assistant reply from context; explicit missing-location workflow. Xcode BuildProject passed7.184s; isolated simulator build passed;6affected Node guard checks passed. Actual UI retest pending."
+  },
+  "evidence_context_validation": {
+    "input": "Help me find my cup.",
+    "reply": "Your cup is not here. Where did you last have it?",
+    "assessment": "Unsupported absence remains; clarification improved. Failed.",
+    "first_sentence_seconds": 10.775801,
+    "total_generation_seconds": 12.118423
+  },
+  "plain_baseline_validation": {
+    "mode": "DEBUG --chat-baseline --text-only; minimal role, no saved model context or task output schema",
+    "input": "Help me find my cup.",
+    "reply": "Where did you last have your cup?",
+    "assessment": "Single-turn reply passed. Does not prove task or memory path.",
+    "timing": "No answer4.1s; observed completed17.7s; UI sampling bounds only"
+  },
+  "separated_pipeline_validation": {
+    "input": "Help me find my cup.",
+    "reply": "Your cup is not here. Where did you last have it?",
+    "assessment": "Still failed unsupported absence. Separation alone insufficient.",
+    "first_sentence_seconds": 9.39223,
+    "reply_finished_seconds": 10.449696
+  },
+  "compact_context_validation": {
+    "input": "Help me find my cup.",
+    "reply": "Your task is to find your cup. Did you last have your cup near the table?",
+    "visible_goal": "Help me find my cup.",
+    "first_sentence_seconds": 8.384551,
+    "reply_finished_seconds": 9.141065,
+    "assessment": "No false absence in initial reply, but leading question and historical-to-current claim fail evidence handling. First-sentence latency8.385s fails target.",
+    "followup": {
+      "input": "I last left it on the kitchen table.",
+      "reply": "Your cup is on the kitchen table.",
+      "assessment": "FAILED: historical child report promoted to certain current location. No current observation supplied."
+    }
+  },
+  "current_status": {
+    "passed": [
+      "Apple SDK builds",
+      "6affected privacy/spatial checks",
+      "Goal persistence for explicit cup request",
+      "Earlier revised build: closed/open comparison, backpack goal switch and cancellation"
+    ],
+    "failed": [
+      "Final history/location evidence handling",
+      "Natural concise wording",
+      "First useful response latency"
+    ],
+    "not_run": [
+      "Full goal switch/cancel regression on final compact build",
+      "Restart/correction/long-session acceptance",
+      "Live sensors and physical phone",
+      "Voice",
+      "Other models"
+    ],
+    "mode": "Normal --text-only, diagnostic baseline off; UI session closed; no data reset"
+  }
+}

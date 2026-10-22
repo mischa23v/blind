@@ -26,6 +26,10 @@ enum AssistantPerformance {
 }
 
 final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
+    /// Developer chat validation does not start microphones, speech or live sensors.
+    let textOnly = ProcessInfo.processInfo.arguments.contains("--text-only") ||
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+    private var automaticStartupAllowed = true
     @Published private(set) var running = false
     @Published private(set) var simulation = false
     @Published private(set) var detection = Detection(.stopped)
@@ -39,6 +43,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published private(set) var returning = false
     @Published var assistantQuestion = ""
     @Published var objectiveDraft = ""
+    @Published private(set) var preferredName = ""
+    @Published private(set) var profileStatus = ""
+    private var companionWorkingState = CompanionWorkingState()
     @Published private(set) var assistantDialogue = AssistantDialogue()
     @Published private(set) var assistantPreferences = AssistantPreferences()
     private var preferencesRevision = UUID()
@@ -64,7 +71,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     @Published private(set) var serviceStatus = ""
     @Published private(set) var localImageStatus = ""
-    @Published var ambientDescriptions = UserDefaults.standard.bool(forKey: "ambient-descriptions") {
+    @Published var ambientDescriptions = UserDefaults.standard.object(forKey: "ambient-descriptions") as? Bool ?? true {
         didSet { UserDefaults.standard.set(ambientDescriptions, forKey: "ambient-descriptions"); if !ambientDescriptions { if questionIsAutomatic { cancelDescription() }; feedback.interruptAmbient() } }
     }
     @Published var buildPrivateMap = UserDefaults.standard.bool(forKey: "private-mapping") {
@@ -146,6 +153,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var itemMemoryRevision = UUID()
     private var learningItem: (name: String, key: String, started: Double, lastTick: Double)?
     private var listenedOfferKey = ""
+    private var experienceActive = false
+    @Published private(set) var companionGreeting = ""
     private var locateFallback = false
     @Published var listenAfterQuestions = UserDefaults.standard.object(forKey: "listen-after-questions") as? Bool ?? false {
         didSet { UserDefaults.standard.set(listenAfterQuestions, forKey: "listen-after-questions") }
@@ -162,6 +171,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var phoneDetection = Detection(.stopped)
     private var requestID = UUID()
     private var questionTask: Task<Void, Never>?
+    private var questionTimeoutTask: Task<Void, Never>?
     private let saudiBanknotes = SaudiBanknoteReferenceRecognition()
     private var currencyActive = false
     private let clothingColors = ClothingColorReader()
@@ -175,6 +185,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var demonstrationHazard: Hazard = .observing
     override init() {
         super.init(); session.delegate = self; session.delegateQueue = .main
+        if let data = try? places.memory?.value(namespace: "preferences", id: "preferred-name"),
+           let name = try? JSONDecoder().decode(String.self, from: data) {
+            preferredName = name
+        }
+        if let data = try? places.memory?.value(namespace: "companion", id: "working-state"),
+           let saved = try? JSONDecoder().decode(CompanionWorkingState.self, from: data) {
+            companionWorkingState = saved
+        }
         if let data = try? places.memory?.value(namespace: "dialogue", id: "active"),
            let saved = try? JSONDecoder().decode(AssistantDialogue.self, from: data), saved.valid {
             assistantDialogue = saved; objectiveDraft = saved.goal
@@ -234,21 +252,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             // A received danger packet must not wait for the 100 ms watchdog tick.
             if self.running { self.publish() }
         }
-        voice.onFinished = { [weak self] text in
+        voice.onUnavailable = { [weak self] text in
             guard let self else { return }
-            #if BLIND_FAMILIAR_PEOPLE
-            if self.routeFamiliarPeopleCommand(text) { return }
-            self.familiarPeople.cancelSearchForNewGoal()
-            #endif
-            // A whole-utterance yes/no answers the current offer; anything longer is a question.
-            if self.companion.pendingOffer != nil, let answer = AssistantControl.offerAnswer(text) {
-                self.answerCompanionOffer(answer); return
-            }
-            self.assistantQuestion = text
-            // Starting a voice question authorizes answering it locally after recognition.
-            // No new cloud permission or continuous microphone access is inferred.
-            self.readScene(cloud: false, question: text)
+            self.message = text
+            self.speakOperation(text)
         }
+        voice.shouldIgnore = { [weak self] text in self?.feedback.isLikelyOwnSpeech(text) == true }
+        voice.onFinished = { [weak self] text in self?.receiveCompanionUtterance(text) }
         visualStairs.onUpdate = { [weak self] in
             guard let self, self.running, !self.simulation, !self.places.scanning else { return }
             self.publish()
@@ -272,7 +282,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     var supported: Bool { ARWorldTrackingConfiguration.supportsFrameSemantics(.sceneDepth) }
     func start() {
         guard !running, !places.scanning else { return }
-        guard supported else { message = "This device does not support LiDAR scene depth. You can try simulation."; return }
+        guard supported else {
+            message = arabic ? "لا يستطيع هذا الهاتف فحص المسار. يمكنك تجربة التدريب من المزيد." : "This phone cannot check the path. You can try practice in More."
+            speakOperation(message)
+            return
+        }
         let id = UUID(); requestID = id
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized: outdoor.requestCoarseLocation(); launchWithNearbyPlace()
@@ -280,11 +294,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
                 DispatchQueue.main.async {
                     guard let self, self.requestID == id else { return }
-                    if granted { self.launch() } else { self.message = "Camera permission denied. Enable it in iPhone Settings." }
+                    if granted { self.launch() } else { self.cameraPermissionNeeded() }
                 }
             }
-        default: message = "Camera permission denied. Enable it in iPhone Settings."
+        default: cameraPermissionNeeded()
         }
+    }
+    private func cameraPermissionNeeded() {
+        message = arabic ? "أحتاج إذن الكاميرا. اطلب المساعدة في إعدادات الهاتف." : "I need camera permission. Ask for help in the phone's Settings."
+        speakOperation(message)
     }
     private func launch(map: ARWorldMap? = nil) {
         invalidatePerceptionWork()
@@ -313,7 +331,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         session.delegate = self; session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         if buildPrivateMap { mapping.start() }
         UIApplication.shared.isIdleTimerDisabled = true
-        startWatchdog(); message = "Mount the rear camera facing ahead and slightly down. Calibrate on a known level floor."
+        startWatchdog()
+        message = arabic ? "قف على أرض مستوية. وجّه الكاميرا نحو الأرض أمامك، ثم اضغط أنا واقف على أرض مستوية." : "Stand on a level floor. Point the camera at the ground ahead, then choose I'm standing on a level floor."
+        speakMobility(message)
     }
     func stop() {
         invalidatePerceptionWork()
@@ -427,7 +447,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         updateCompanionRoom(observation)
         updateRoomRecognition(frame: frame, observation: observation)
         updateItemLearning(frame: frame)
-        if ambientDescriptions, !returning, !voice.listening, lastFrameWallTime - lastAmbientAttempt >= 4,
+        if ambientDescriptions, !returning, !voice.awaitingUtterance, lastFrameWallTime - lastAmbientAttempt >= 4,
            attention.permitsAmbient(detail: detail, urgent: detection.hazard != .observing, now: lastFrameWallTime) {
             lastAmbientAttempt = lastFrameWallTime
             readScene(cloud: false, automatic: true)
@@ -501,6 +521,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             originForward: observation.forward, currentForward: lastObservation?.forward)
     }
     private func cancelDescription() {
+        questionTimeoutTask?.cancel(); questionTimeoutTask = nil
         currencyActive = false
         colorActive = false
         pendingQuestion = nil
@@ -522,7 +543,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             #if BLIND_FAMILIAR_PEOPLE
             if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel() }
             #endif
-            if voice.listening { voice.cancel() }
+            if voice.listening { voice.endManualTurn() }
         }
         if policy.shouldAnnounce(detection, at: now) {
             if detection.hazard.isUrgent {
@@ -566,7 +587,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         outdoor.requestCoarseLocation()
         mapping.stop(); journeys.breakTracking(); fixedBodyMount = false; indoor.invalidatePosition(); peopleTracking.reset()
         visualStairs.reset()
-        invalidateReturn(); cancelDescription(); voice.cancel(); detector.reset(); feedback.stop()
+        invalidateReturn(); cancelDescription(); voice.endManualTurn(); detector.reset(); feedback.stop()
         phoneDetection = Detection(.uncertain); detection = phoneDetection
         places.startScan(session: session, name: name, compare: compare ? recognizedPlace : nil, relocalized: recognizedPlace != nil)
     }
@@ -792,13 +813,16 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
               let origin = lastObservation?.camera,
               let originForward = lastObservation?.forward,
               let frame = session.currentFrame, ProcessInfo.processInfo.systemUptime - lastFrameWallTime < 0.5 else {
-            message = "A current camera view is required; urgent alerts take priority."; return
+            if !automatic {
+                answerConversation(question)
+            }
+            return
         }
         if !automatic, !feedback.canSpeakAmbient {
             queueQuestion(question, cloud: cloud, focus: focus, camera: origin, forward: originForward)
             return
         }
-        voice.cancel()
+        voice.endManualTurn()
         // Moving toward a goal: fewest words needed, fewer the faster they walk (user, 2026-10-09);
         // full detail when still, in a room description, or asked.
         let standard = detail == .minimal ? 25 : detail == .balanced ? 55 : 110
@@ -973,6 +997,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// already-admitted path so the same words are never charged twice here.
     @discardableResult private func deliverCandidate(_ candidate: InformationCandidate,
         alreadyAdmitted: Bool = false, narrationID: UUID? = nil, alert: Detection? = nil) -> Bool {
+        guard !textOnly else { return false }
         let now = ProcessInfo.processInfo.systemUptime
         guard candidate.createdAt <= now, now <= candidate.expiresAt else { return false }
         if candidate.kind == .hazard {
@@ -982,7 +1007,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel() }
             #endif
         } else if candidate.kind != .mobility {
-            guard !voice.listening, !running || !detection.hazard.requiresImmediateAttention else { return false }
+            guard !voice.awaitingUtterance, !running || !detection.hazard.requiresImmediateAttention else { return false }
         }
         if !alreadyAdmitted {
             guard case .say = companion.decide([candidate], moment: companionMoment(now), settings: companionSettings).first else { return false }
@@ -1010,7 +1035,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     /// Only short current-action consent/progress/confirmation/error, never scene descriptions.
     @discardableResult func speakOperation(_ text: String, replace: Bool = true, revision: String = UUID().uuidString) -> Bool {
-        dispatchText(text, kind: .operation, requested: true, replace: replace, revision: revision)
+        if textOnly { sceneAnswer = text; return false }
+        return dispatchText(text, kind: .operation, requested: true, replace: replace, revision: revision)
     }
     @discardableResult private func speakMobility(_ text: String) -> Bool { dispatchText(text, kind: .mobility) }
     private func announceDetection(_ value: Detection, requested: Bool = false) {
@@ -1068,7 +1094,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if roomID == nil { roomOfferCandidate = nil }
         if companion.pendingOffer == nil { companionOffer = nil }
         let candidates = [roomOfferCandidate, roomQuestionCandidate].compactMap { $0 }
-        guard !candidates.isEmpty, detection.hazard == .observing, !voice.listening else { return }
+        guard !candidates.isEmpty, detection.hazard == .observing, !voice.awaitingUtterance else { return }
         for decision in companion.decide(candidates, moment: companionMoment(now), settings: companionSettings) {
             switch decision {
             case .offer(let offer, _):
@@ -1108,6 +1134,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #endif
         cancelDescription(); feedback.stop(); stopReturn(); indoor.invalidatePosition()
         assistantDialogue.setGoal(objectiveDraft); objectiveDraft = assistantDialogue.goal; persistDialogue()
+        companionWorkingState.changeGoal(assistantDialogue.goal); persistWorkingState()
     }
     func clearAssistantConversation() {
         #if BLIND_FAMILIAR_PEOPLE
@@ -1115,7 +1142,32 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #endif
         cancelDescription(); feedback.stop(); stopReturn(); indoor.invalidatePosition()
         assistantDialogue = AssistantDialogue(); objectiveDraft = ""; persistDialogue()
+        companionWorkingState = CompanionWorkingState(); persistWorkingState()
     }
+    func savePreferredName(_ draft: String) {
+        let name = draft.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard name.count <= 80, !name.unicodeScalars.contains(where: { CharacterSet.controlCharacters.contains($0) }) else {
+            profileStatus = arabic ? "استخدم اسماً لا يتجاوز ٨٠ حرفاً." : "Use a name of at most 80 characters."
+            return
+        }
+        do {
+            guard let memory = places.memory else { throw CocoaError(.fileWriteUnknown) }
+            try memory.saveValue(namespace: "preferences", id: "preferred-name", payload: JSONEncoder().encode(name))
+            cancelDescription()
+            preferredName = name
+            profileStatus = name.isEmpty ? (arabic ? "حُذف الاسم المحفوظ." : "Saved name removed.") : (arabic ? "حُفظ الاسم على هذا الهاتف." : "Name saved on this phone.")
+        } catch {
+            profileStatus = arabic ? "تعذر حفظ الاسم." : "Could not save the name."
+        }
+    }
+
+    private func persistWorkingState() {
+        do {
+            guard let memory = places.memory else { throw CocoaError(.fileWriteUnknown) }
+            try memory.saveValue(namespace: "companion", id: "working-state", payload: JSONEncoder().encode(companionWorkingState))
+        } catch { message = "Task context could not be saved on this phone." }
+    }
+
     private func persistDialogue() {
         do {
             guard let memory = places.memory else { throw CocoaError(.fileWriteUnknown) }
@@ -1168,13 +1220,108 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         cancelDescription(); feedback.interruptAmbient()
         enqueueNarration { try await $0.clear() }
     }
+    func receiveCompanionUtterance(_ text: String) {
+        let normalized = text.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters)).lowercased()
+        if ["i'm standing on a level floor", "i am standing on a level floor", "أنا واقف على أرض مستوية"].contains(normalized),
+           running && detection.hazard == .needsCalibration { calibrate(); return }
+        // The person can interrupt ordinary information, never suppress urgent alerts.
+        _ = feedback.stopInformation()
+        #if BLIND_FAMILIAR_PEOPLE
+        if routeFamiliarPeopleCommand(text) { return }
+        familiarPeople.cancelSearchForNewGoal()
+        #endif
+        // A whole-utterance yes/no answers the current offer; anything longer is a question.
+        if companion.pendingOffer != nil, let answer = AssistantControl.offerAnswer(text) {
+            answerCompanionOffer(answer); return
+        }
+        assistantQuestion = text
+        // Starting a voice question authorizes answering it locally after recognition.
+        // No cloud permission is inferred; the ongoing microphone was enabled by the companion session.
+        readScene(cloud: false, question: text)
+    }
+
+    private func answerConversation(_ question: String) {
+        if companionWorkingState.reports.isEmpty {
+            for turn in assistantDialogue.turns where turn.role == "user" {
+                companionWorkingState.record(turn.text)
+            }
+        }
+        companionWorkingState.record(question)
+        persistWorkingState()
+        assistantDialogue.record(role: "user", text: question)
+        persistDialogue()
+        let dialogue = assistantDialogue
+        let preview = recognizedPlace
+        var situation = AssistantSituation.snapshot(dialogue: dialogue, preview: preview,
+            layout: preview.flatMap { places.layout(for: $0) }, preferences: assistantPreferences, arabic: arabic)
+        situation["taskProgress"] = [
+            "source": "app navigation state",
+            "state": indoor.route.isEmpty ? "no route selected" : "saved route; current position unverified",
+            "routeCheckpointIndex": indoor.waypointIndex,
+            "routeCheckpointCount": indoor.route.count,
+            "arrivalConfirmedThisTurn": false
+        ]
+        let id = UUID()
+        requestID = id; busy = true; sceneAnswer = ""
+        questionTimeoutTask?.cancel()
+        questionTimeoutTask = Task { @MainActor [weak self] in
+            do { try await Task.sleep(for: .seconds(30)) } catch { return }
+            guard let self, self.requestID == id, self.busy else { return }
+            self.cancelDescription()
+            if self.sceneAnswer.isEmpty {
+                self.sceneAnswer = self.arabic ? "استغرق الرد وقتاً طويلاً. حاول مرة أخرى." : "That reply took too long. Please try again."
+            }
+        }
+        questionTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            let revision = self.companionWorkingState.goalRevision
+            let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: self.arabic, preferredName: self.preferredName, situation: situation, workingState: self.companionWorkingState) { @MainActor [weak self] partial in
+                guard let self, self.requestID == id, !Task.isCancelled else { return }
+                self.sceneAnswer = partial
+            }
+            // Re-evaluate the action prerequisites after inference; a new request or
+            // changed objective invalidates the old decision before it can act.
+            let admission = CompanionReactiveSequence.tick([
+                .init(tick: { Task.isCancelled ? .failure : .success }),
+                .init(tick: { self.requestID == id ? .success : .failure }),
+                .init(tick: { self.companionWorkingState.goalRevision == revision ? .success : .failure })
+            ])
+            guard admission == .success else { return }
+            self.questionTimeoutTask?.cancel(); self.questionTimeoutTask = nil
+            self.busy = false
+            guard let text = answer.text else {
+                self.sceneAnswer = answer.status
+                self.speakOperation(answer.status)
+                return
+            }
+            if let update = answer.taskUpdate {
+                let oldGoal = self.companionWorkingState.goal
+                self.companionWorkingState.apply(update, latest: question)
+                if oldGoal != self.companionWorkingState.goal {
+                    self.objectiveDraft = self.companionWorkingState.goal
+                    self.setAssistantObjective()
+                }
+                self.persistWorkingState()
+            }
+            self.sceneAnswer = text
+            if self.textOnly || self.speakRequested(text) {
+                self.assistantDialogue.record(role: "assistant", text: text)
+                self.persistDialogue()
+            }
+        }
+    }
+
     func startVoiceQuestion() {
-        guard !running || detection.hazard == .observing else { message = "Current monitoring alerts take priority."; return }
+        guard !textOnly else { return }
+        guard !running || detection.hazard == .observing else {
+            repeatMonitoringStatus()
+            return
+        }
         cancelDescription(); feedback.stop(); voice.start(arabic: arabic)
     }
     func findMapDestination() {
         guard !busy, let map = indoor.map else { message = "Import a map in Routes first."; return }
-        voice.cancel()
+        voice.endManualTurn()
         let question = assistantQuestion, revision = indoor.revision
         let matches = MapContext.matchingDestinations(question: question, in: map)
         if !matches.isEmpty {
@@ -1197,7 +1344,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             if !self.running || self.detection.hazard == .observing { self.speakRequested(self.sceneAnswer) }
         }
     }
-    func stopDescriptions() { cancelDescription(); voice.cancel(); feedback.interruptAmbient(); ambientDescriptions = false }
+    func stopDescriptions() { cancelDescription(); voice.endManualTurn(); feedback.interruptAmbient(); ambientDescriptions = false }
     private func queueQuestion(_ question: String, cloud: Bool, focus: String, camera: Point3, forward: Point3) {
         pendingQuestion = PendingQuestion(question: question, cloud: cloud, focus: focus,
             goalRevision: assistantDialogue.goalRevision, mapRevision: indoor.revision.uuidString,
@@ -1348,6 +1495,87 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
 }
 
+// MARK: - Everyday controls
+extension NavigationModel {
+    var homePrompt: String {
+        if textOnly { return busy ? "Thinking…" : "Text chat · voice is off" }
+        if running && detection.hazard.requiresImmediateAttention {
+            if detection.hazard == .needsCalibration {
+                return arabic ? "قف على أرض مستوية ووجّه الكاميرا نحو الأرض أمامك." : "Stand on a level floor. Point the camera at the ground ahead."
+            }
+            return GuidanceText.detection(detection, arabic: arabic)
+        }
+        if voice.listening { return arabic ? "أنا أستمع." : "I'm listening." }
+        if busy { return arabic ? "لحظة واحدة." : "One moment." }
+        if !running {
+            return message.isEmpty ? (arabic ? "ماذا تريد أن نفعل؟" : "What would you like to do?") : message
+        }
+        if detection.hazard == .calibrating { return arabic ? "اثبت لحظة." : "Hold still a moment." }
+        return arabic ? "أنا معك." : "I'm here."
+    }
+
+    func resumeExperienceIfNeeded() {
+        guard automaticStartupAllowed, !experienceActive,
+              !ProcessInfo.processInfo.arguments.contains("--ui-testing") else { return }
+        experienceActive = true
+        if !textOnly { start() }
+        let firstVisit = !UserDefaults.standard.bool(forKey: "companion-introduced")
+        companionGreeting = firstVisit
+            ? (arabic ? "مرحباً، أنا مساعدك. تحدث معي عندما تحتاجني. ماذا تريد أن نفعل؟" : "Hello, I'm your assistant. You can speak to me. What would you like to do?")
+            : (arabic ? "مرحباً. ماذا سنفعل اليوم؟" : "Hi. What are we doing today?")
+        let capability = supported
+            ? (arabic ? "قف على أرض مستوية وقل أنا واقف على أرض مستوية لإعداد قياس الأرض." : "To set up ground measurements, stand on a level floor and say I'm standing on a level floor.")
+            : (arabic ? "هذا الهاتف لا يستطيع قياس المسار. يمكننا التحدث عن هدفك." : "This phone cannot measure the path. We can still talk about your goal.")
+        speakOperation(companionGreeting + " " + capability)
+        UserDefaults.standard.set(true, forKey: "companion-introduced")
+        if !textOnly { voice.startContinuous(arabic: arabic) }
+    }
+
+    func suspendExperience() {
+        experienceActive = false
+        stop()
+        message = arabic ? "توقف الاستماع والكاميرا خارج التطبيق." : "Camera and listening stopped outside the app."
+        speakOperation(message)
+    }
+
+    func reconnectListening() { if !textOnly { voice.startContinuous(arabic: arabic) } }
+
+
+    func startExperience() {
+        automaticStartupAllowed = true
+        start()
+    }
+
+    func stopExperience() {
+        automaticStartupAllowed = false
+        stop()
+        message = arabic ? "توقفت. اضغط ابدأ عندما تريد المتابعة." : "Stopped. Tap Start when you want to continue."
+        speakOperation(message)
+    }
+
+    func toggleHomeDescriptions() {
+        if ambientDescriptions {
+            stopDescriptions()
+            speakOperation(arabic ? "سأتوقف عن الوصف. تبقى تنبيهات المسار مفعلة." : "I'll be quiet. Path alerts stay on.")
+        } else {
+            ambientDescriptions = true
+            speakOperation(arabic ? "سأصف ما يتغير حولك." : "I'll describe changes around you.")
+        }
+    }
+
+    func repeatHomeInformation() {
+        if running && detection.hazard != .observing { repeatMonitoringStatus() }
+        else if !narrationHistory.isEmpty { repeatDescription() }
+        else { speakOperation(homePrompt) }
+    }
+
+    func speakHomeHelp() {
+        speakOperation(arabic
+            ? "اضغط تحدث لطرح سؤال، ثم توقف قليلاً عندما تنتهي. اضغط كرر لسماع الكلام مجدداً. إيقاف يوقف المساعد. الخرائط والإعدادات في المزيد."
+            : "Tap Talk to ask a question, then pause when you're done. Repeat says it again. Stop turns the assistant off. Maps and Settings are in More.")
+    }
+}
+
 // MARK: - Room recognition, orientation, changes and remembered items (2026-10-09)
 // Rooms are recognised from agreeing clues (map match, saved pictures, furniture, movement,
 // the person's answer); when unsure the app asks. Positions and distances are measured by code.
@@ -1386,7 +1614,7 @@ extension NavigationModel {
 
     /// After a yes/no question finishes speaking, listen briefly only when explicitly enabled.
     private func listenForOfferAnswer() {
-        guard listenAfterQuestions, let offer = companionOffer, companion.pendingOffer != nil, !voice.listening,
+        guard !textOnly, !voice.continuous, listenAfterQuestions, let offer = companionOffer, companion.pendingOffer != nil, !voice.awaitingUtterance,
               !running || detection.hazard == .observing else { return }
         let key = "\(offer.kind.rawValue):\(offer.subject):\(offer.expiresAt)"
         guard key != listenedOfferKey else { return }
@@ -1487,7 +1715,7 @@ extension NavigationModel {
     }
 
     private func speakCompanionCandidates(_ candidates: [InformationCandidate], now: Double) {
-        guard !candidates.isEmpty, !voice.listening else { return }
+        guard !candidates.isEmpty, !voice.awaitingUtterance else { return }
         for decision in companion.decide(candidates, moment: companionMoment(now), settings: companionSettings) {
             guard case .say(let item, _) = decision else { continue }
             if !(feedback.canSpeakAmbient && deliverCandidate(item, alreadyAdmitted: true)) { companion.release(item.key) }
@@ -1759,3 +1987,4 @@ extension NavigationModel {
     var learnedHints: [LearnedHint] { companion.memory.hints }
     func removeHint(_ id: String) { companion.memory.removeHint(id: id); persistCompanion(); objectWillChange.send() }
 }
+
