@@ -8,51 +8,43 @@ struct DashboardView: View {
     var body: some View { AssistantToolsView(model: model, initialTab: "companion") }
 }
 
-/// Conversation is the everyday experience; management tools stay in the tab bar.
+/// The main screen holds only the assistant's current reply, so VoiceOver reads the reply and
+/// nothing else (user, 2026-10-22). Speech already announces each new reply; everything else is
+/// reached through VoiceOver actions, a long press, or by voice.
 private struct CompanionHomeView: View {
     @ObservedObject var model: NavigationModel
+    let openTab: (String) -> Void
     @State private var typedMessage = ""
     @State private var writing = false
     private func t(_ en: String, _ ar: String) -> String { model.arabic ? ar : en }
 
+    private var reply: String {
+        if !model.currentReply.isEmpty { return model.currentReply }
+        return model.companionGreeting.isEmpty ? model.homePrompt : model.companionGreeting
+    }
+
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                Text(model.companionGreeting.isEmpty ? t("What would you like to do?", "ماذا تريد أن نفعل؟") : model.companionGreeting)
-                    .font(.title2.weight(.semibold))
-                    .accessibilityAddTraits(.isHeader)
-                    .accessibilityIdentifier("companion-greeting")
-                Text(model.homePrompt)
-                    .font(.body)
-                    .accessibilityIdentifier("home-status")
-                if !model.textOnly && !model.voice.listening {
-                    Text(t("Microphone is not listening.", "الميكروفون لا يستمع الآن."))
-                        .font(.body).accessibilityIdentifier("microphone-status")
-                }
-                if model.simulation {
-                    Text(t("Practice only · no live camera", "تدريب فقط · دون كاميرا مباشرة"))
-                        .accessibilityIdentifier("practice-status")
-                }
-                if !model.assistantDialogue.goal.isEmpty {
-                    Text(t("Our goal: ", "هدفنا: ") + model.assistantDialogue.goal)
-                        .font(.body).accessibilityIdentifier("companion-goal")
-                }
-                if !model.sceneAnswer.isEmpty {
-                    Text(model.sceneAnswer).font(.body).accessibilityIdentifier("companion-answer")
-                }
-                if let offer = model.companionOffer {
-                    HomeOffer(prompt: offer.prompt, arabic: model.arabic,
-                              yes: { model.answerCompanionOffer(.yes) },
-                              no: { model.answerCompanionOffer(.no) })
-                }
-                // Alternative access remains available when speech cannot be used.
-                Button(t("Write a message", "اكتب رسالة")) { writing = true }
-                    .buttonStyle(.bordered).accessibilityIdentifier("write-message")
+        VStack(spacing: 0) {
+            ScrollView {
+                Text(reply)
+                    .font(.title2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(24)
+                    .accessibilityIdentifier("companion-reply")
+                    .accessibilityActions { actions }
+                    .contextMenu { actions }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(24)
+            // Developer typing tests only (--text-only); not part of the everyday screen.
+            if model.textOnly {
+                Button(t("Write a message", "اكتب رسالة")) { writing = true }
+                    .buttonStyle(.bordered).padding(.bottom, 16).accessibilityIdentifier("write-message")
+            }
         }
-        .navigationTitle(t("Assistant", "المساعد"))
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(Color.black)
+        .toolbar(.hidden, for: .navigationBar)
+        .toolbar(.hidden, for: .tabBar)
+        .accessibilityAction(.magicTap) { model.repeatHomeInformation() }
         .sheet(isPresented: $writing) {
             NavigationStack {
                 Form {
@@ -70,43 +62,20 @@ private struct CompanionHomeView: View {
             }
         }
     }
-}
 
-private struct HomeAction: View {
-    let title: String
-    let symbol: String
-    let identifier: String
-    var prominent = false
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Label(title, systemImage: symbol)
-                .font(.title2.weight(.semibold))
-                .frame(maxWidth: .infinity, minHeight: 56)
-                .padding(12)
-                .fixedSize(horizontal: false, vertical: true)
-                .foregroundStyle(prominent ? Color.black : Color.white)
-                .background(prominent ? Color.yellow : Color(white: 0.16), in: RoundedRectangle(cornerRadius: 18))
-                .contentShape(Rectangle())
+    @ViewBuilder private var actions: some View {
+        if model.companionOffer != nil {
+            Button(t("Yes", "نعم")) { model.answerCompanionOffer(.yes) }
+            Button(t("No", "لا")) { model.answerCompanionOffer(.no) }
         }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier(identifier)
-    }
-}
-
-private struct HomeOffer: View {
-    let prompt: String
-    let arabic: Bool
-    let yes: () -> Void
-    let no: () -> Void
-
-    var body: some View {
-        VStack(spacing: 12) {
-            Text(prompt).font(.body).fixedSize(horizontal: false, vertical: true)
-            HomeAction(title: arabic ? "نعم" : "Yes", symbol: "checkmark", identifier: "offer-yes", action: yes)
-            HomeAction(title: arabic ? "لا" : "No", symbol: "xmark", identifier: "offer-no", action: no)
-        }
+        Button(t("Repeat", "كرر")) { model.repeatHomeInformation() }
+        Button(t("Write a message", "اكتب رسالة")) { writing = true }
+        Button(t("Places", "الأماكن")) { openTab("places") }
+        Button(t("Routes", "المسارات")) { openTab("routes") }
+        #if BLIND_FAMILIAR_PEOPLE
+        Button(t("People", "الأشخاص")) { openTab("people") }
+        #endif
+        Button(t("Settings", "الإعدادات")) { openTab("settings") }
     }
 }
 
@@ -133,7 +102,7 @@ struct AssistantToolsView: View {
     private func t(_ en: String, _ ar: String) -> String { model.arabic ? ar : en }
     var body: some View {
         TabView(selection: $selectedTab) {
-            NavigationStack { CompanionHomeView(model: model) }
+            NavigationStack { CompanionHomeView(model: model, openTab: { selectedTab = $0 }) }
                 .tabItem { Label(t("Assistant", "المساعد"), systemImage: "bubble.left.and.bubble.right") }
                 .tag("companion")
             NavigationStack { places.navigationTitle(t("Familiar places", "الأماكن المألوفة")) }

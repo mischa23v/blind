@@ -1,3 +1,12 @@
+## Conversation evidence rule — 2026-10-22 (source written; Mac verification pending)
+
+- [ ] **H01 — Code-owned object facts.** `CompanionUtterance`/`CompanionFactBook` answer find requests and location reports without the model; reports stay historical with time. Exit: BlindCore `CompanionEvidenceTests` pass on the Mac, and the recorded cup failure is answered correctly in the running app.
+- [ ] **H02 — Chat claim guard on every chat path.** `ConversationClaimGuard` plus `SpatialClaimGuard` before partial and final text; retry once, then refuse. Exit: shared fixture passes in Swift (Node 125/125 already) and actual typed scenarios show no invented location, absence or perception.
+- [ ] **H03 — Image grounding.** `VisualGrounding` 2-of-3-frame detector agreement before an object is named as fact. Exit: recorded-image comparison and device check. Add a licence-cleared detector and ARKit mesh labels.
+- [ ] **H04 — Reply-only main screen.** Exit: VoiceOver reads only the reply; actions and long press reach every tab; rewritten UI tests and accessibility audit pass.
+- [ ] **H05 — Latency with prewarmed sessions.** Exit: first sentence under ~1.5 s on the target iPhone, measured with signposts or logs.
+- [ ] **H06 — Continuous microphone survives offers and interruptions.** Exit: device test of offer answer, phone call/Siri interruption and recovery.
+
 ## Interactive task-agent acceptance — 2026-10-22
 
 - [ ] Natural typed requests start a useful response and persist the requested goal without redundant permission questions.

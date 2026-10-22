@@ -52,6 +52,9 @@ final class VoiceInput: ObservableObject {
     deinit { observers.forEach(NotificationCenter.default.removeObserver); recovery?.cancel() }
 
     func start(arabic: Bool, timeout: Double = 20) {
+        // The always-on companion microphone already hears this turn. A manual or answer-window
+        // turn must never switch continuous listening off (2026-10-22 fix).
+        if continuous && listening && self.arabic == arabic { beginTurn(); return }
         begin(arabic: arabic, continuous: false, timeout: timeout)
     }
 
@@ -104,6 +107,7 @@ final class VoiceInput: ObservableObject {
             Self.logger.error("Capture failed: \(failure.domain, privacy: .public) code \(failure.code)")
             stopCapture()
             unavailable(arabic ? "لا أستطيع سماعك الآن. تحقق من الميكروفون في الإعدادات." : "I can't hear you right now. Check the microphone in Settings.")
+            if continuous { recover() }
         }
     }
 
@@ -166,16 +170,17 @@ final class VoiceInput: ObservableObject {
         engine?.stop(); engine?.inputNode.removeTap(onBus: 0); engine = nil; recognizer = nil; listening = false
     }
 
+    /// Keeps retrying with growing pauses (1, 2, 4 … 30 s) instead of giving up for good, so the
+    /// companion comes back after a call, Siri or a route change without anyone pressing a button.
     private func recover() {
         recovery?.cancel(); failures += 1
-        guard failures <= 3 else {
-            continuous = false
-            unavailable(arabic ? "تعذر استعادة الاستماع. اطلب المساعدة في الإعدادات." : "Listening couldn't recover. Ask for help in Settings.")
-            return
+        if failures == 4 {
+            unavailable(arabic ? "ما زال الاستماع متوقفاً. سأستمر في المحاولة؛ اطلب المساعدة إن لم يعد." : "Listening keeps stopping. I'll keep trying; ask for help if it doesn't come back.")
         }
+        let delay = min(30.0, pow(2.0, Double(min(failures - 1, 5))))
         let id = generation
         recovery = Task { @MainActor [weak self] in
-            try? await Task.sleep(for: .seconds(1))
+            try? await Task.sleep(for: .seconds(delay))
             guard !Task.isCancelled, let self, self.generation == id, self.continuous else { return }
             self.capture()
         }

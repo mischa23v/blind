@@ -1,4 +1,29 @@
-## CURRENT — pause checkpoint for Claude review, 2026-10-22
+## CURRENT — hallucination fix to validate first (2026-10-22, cloud session)
+
+This supersedes the "pause checkpoint" below for the next Mac session. Read [research/HALLUCINATION_REVIEW.md](research/HALLUCINATION_REVIEW.md).
+
+**What changed (source only, not compiled here):**
+- Code answers find requests and location reports from the child's own reports (`BlindCore/CompanionFacts.swift`).
+- Model chat is checked by `ConversationClaimGuard` and `SpatialClaimGuard`.
+- Image descriptions keep only objects the detectors agreed on in 2 of 3 frames, or hedged sentences (`VisualGrounding`).
+- Sessions are prewarmed. The old model-written task state and the decorative agent ports were removed, along with `ios/ThirdParty`.
+- The main screen shows only the current reply.
+- Answering an offer no longer switches the microphone off.
+
+**Model decision:** keep Apple's free on-device model. Gemini Nano is Android-only and the same size class. Gemma 3n is a possible side-by-side test, not a fix. Private Cloud Compute breaks the privacy and offline rules.
+
+**Order on the Mac:**
+1. Run `swift test` for BlindCore, including `CompanionEvidenceTests`.
+2. Build the app with and without `--multimodal`, and fix compile errors.
+3. Run the rewritten `LaunchTests` and the real-model `ConversationTests`/`TextChatScenarioTests`.
+4. Retype the recorded failures in `--text-only`.
+5. Do the timing and VoiceOver checks on a LiDAR iPhone.
+
+Node is 125/125. Swift is unverified.
+
+**Main screen access:** with VoiceOver, swipe up/down on the reply for Repeat, Write a message, Places, Routes, (People), Settings, and Yes/No when the assistant asked a question. Sighted helpers long-press the reply for the same menu. Magic tap repeats the reply. Other tabs keep the normal tab bar, so tap Assistant to return.
+
+## Previous pause checkpoint for Claude review, 2026-10-22 (superseded by the section above)
 
 **Combined source checkpoint:** newer master `694eccb499eb3b505386210c7a875abb85448821` was fetched through the GitHub connection and reconciled with the Mac work before pushing. Currency/reference-matching and clothing-colour integration are preserved. Two NavigationModel conflicts were resolved by retaining both the conversation timeout and currency/colour properties/cancellation resets. Existing remote documentation is retained below. The combined source has NOT had a fresh Apple SDK build or full scenario run; the user requested stopping for the night. Tomorrow validate the combined source first. The active generated AuraFace project is preserved, not regenerated; no model/photo/signing/tool-cache upload. The ZIP folder still has no Git metadata.
 
@@ -54,7 +79,7 @@ Do not conclude Apple is simply a bad model: the minimal baseline answered corre
 5. How do we retain a task and useful memory across interruptions/restarts while excluding obsolete instructions? Add repeatable state/result assertions, then manually inspect replies; keyword-only tests previously missed failures.
 6. Profile prefill, first useful sentence, metadata generation and thermal load. The current8.4 seconds is not instant; a Mac-backed simulator result is not an iPhone performance result.
 
-Relevant research: [Inner Monologue](https://innermonologue.github.io/) demonstrates scene/success feedback, changed goals, resumption and stop; [tau2-bench](https://github.com/sierra-research/tau2-bench) evaluates human/agent shared-state coordination; Anthropic [agent patterns](https://www.anthropic.com/engineering/building-effective-agents) and [context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) emphasize simple loops and relevant context. These do not prove our integration. Existing bounded code ports and licenses are listed in `ios/ThirdParty/AGENT_PORTS.txt`; no claim of fully porting those frameworks.
+Relevant research: [Inner Monologue](https://innermonologue.github.io/) demonstrates scene/success feedback, changed goals, resumption and stop; [tau2-bench](https://github.com/sierra-research/tau2-bench) evaluates human/agent shared-state coordination; Anthropic [agent patterns](https://www.anthropic.com/engineering/building-effective-agents) and [context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) emphasize simple loops and relevant context. These do not prove our integration. The bounded ROSA/SayCan/LangGraph/BehaviorTree ports listed at the time were removed later on 2026-10-22 (they did not change behaviour); see research/HALLUCINATION_REVIEW.md.
 
 Detailed local evidence is in `ios/.validation-results/text-chat-status.json`, `interactive-agent-scenarios.json`, and `companion-prompt-research.txt`; shareable snapshots accompany this checkpoint under `ios/validation/companion-chat/`. Preserve failed examples. No further model/setup work tonight.
 
@@ -128,7 +153,7 @@ Device acceptance must include actual enrollment/import/review/deletion, interru
 
 **Where things stand:**
 - **BlindCore** (all decision logic, matching rules, safety checks): builds with Swift 6.2 and **all 235 XCTests pass** in a Linux container (`artifacts/windows-stage/swift-test-3.log`), including 8 walking scenarios on the sourced OAS apartment plan (transcripts in `artifacts/windows-stage/home-walk-transcript-*.txt`).
-- **iOS app files** pass a Swift syntax check only. The app target has **never been compiled**; expect a round of small fixes. An independent review already fixed the clearest issues.
+- **iOS app files** (historical, 2026-10-09) passed a Swift syntax check only at that time; the app has since been built on the Mac (see sections above). An independent review already fixed the clearest issues.
 - **Node relay/tools:** 54/54.
 - Rules to keep (see AGENTS.md): free on-device model only; nothing leaves the phone; spatial safety rule; identity by image comparison, never by the model; speed first; minimum words while moving.
 

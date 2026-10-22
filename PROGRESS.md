@@ -1,3 +1,26 @@
+## Hallucination fix, reply-only main screen and microphone fixes — 2026-10-22 (cloud session, source only)
+
+The user asked for a review of all handoff problems, focused on the Apple model inventing answers and objects, then approved the recommended fix. Full review, model comparison (Apple on-device vs Gemini Nano vs Gemma vs Private Cloud Compute) and sources: [research/HALLUCINATION_REVIEW.md](research/HALLUCINATION_REVIEW.md).
+
+- **Code owns facts; the model only labels and talks.** New BlindCore `CompanionUtterance` / `CompanionFactBook` parse find requests and location reports (English/Arabic, "it", hedges, multi-sentence). Code answers them instantly and keeps reports historical with their time. Model chat passes the new `ConversationClaimGuard` (no current location, presence, absence or perception claims) plus `SpatialClaimGuard`, with one retry and then "I don't know that." The recorded failure "I last left it on the kitchen table" now produces "Got it. You last had your cup on the kitchen table. I'll remember that."
+- **Image grounding.** `VisualGrounding`: unhedged model sentences naming an object are spoken only when the phone's detectors agreed on it in 2 of 3 frames about 150 ms apart. The image prompt lists confirmed objects.
+- **Speed.**
+  - Sessions are prepared and prewarmed ahead of time; the app prewarms at launch.
+  - Plain-line context replaces the JSON blob and the pretend tool call.
+  - The model-written `CompanionDecision` task state was removed.
+  - The decorative ROSA/SayCan/LangGraph/BehaviorTree ports and `ios/ThirdParty` were removed.
+- **Find requests** use the saved item (by look or saved place), then the child's report, then a live Vision/LiDAR search, before "I don't know".
+- **Main screen** shows only the current reply (no tab bar, no navigation bar) so VoiceOver reads only that. Other screens are reached through VoiceOver actions or a long press on the reply; magic tap repeats. The typing control appears only with `--text-only`. UI tests were rewritten for this layout.
+- **Microphone.**
+  - Answering a yes/no offer no longer switches continuous listening off for good (it used to call the manual `start`, which cancelled continuous mode).
+  - Recovery now retries with back-off instead of stopping after three failures.
+  - Audio-session failures retry.
+- **Tests:**
+  - `npm test` 125/125 after installing the two small Node packages with `npm ci --ignore-scripts`.
+  - New tests: the shared fixture `companion-evidence.json` in Node, and 5 static checks in `tools/test/companion-evidence.test.mjs`.
+  - Two stale assertions were updated: microphone permission wording, and the currency `cancelDescription` regex.
+- **NOT run:** Swift compilation, BlindCore XCTests (including new `CompanionEvidenceTests`), Apple SDK app build, UI tests, real-model conversation tests, phone timing and VoiceOver. There was no Swift toolchain in this container and Docker was not authorised. Nothing here is accepted until the Mac run.
+
 ## Final typed-chat diagnostic and remaining failure — 2026-10-22
 
 A debug-only --chat-baseline in the running app, with a minimal role and no history/schema, answered Help me find my cup with Where did you last have your cup? This one turn passed; it does not validate the full app. Normal path was then separated into streamed natural reply followed by guided task extraction, preserving source reports and task state. Empty navigation records, previous model replies, duplicate current requests and older extracted facts were removed from prompt context; durable records were not erased. Cancellation cannot retain a proposed step, and metadata timeout cannot erase an already displayed answer.

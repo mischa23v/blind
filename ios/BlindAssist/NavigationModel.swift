@@ -36,7 +36,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published private(set) var calibrationProgress = 0.0
     @Published private(set) var message = ""
     @Published private(set) var wearableStatus = "Disconnected"
-    @Published private(set) var sceneAnswer = ""
+    @Published private(set) var sceneAnswer = "" {
+        didSet { if !sceneAnswer.isEmpty { currentReply = sceneAnswer } }
+    }
+    /// What the assistant last said or wrote: the only content of the main screen, so VoiceOver
+    /// reads the reply and nothing else.
+    @Published private(set) var currentReply = ""
     @Published private(set) var busy = false
     @Published private(set) var attentionMode: AttentionMode = .moving
     @Published private(set) var returnStatus = ""
@@ -779,6 +784,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if !automatic { cancelDescription() }
         // Saved items and live "where is it" answers come from sensors first (E13/E14).
         let fromLocate = locateFallback; locateFallback = false
+        if !automatic, !fromLocate, let utterance = CompanionUtterance.parse(question) {
+            answerCompanionUtterance(utterance, question: question); return
+        }
         if !automatic, !fromLocate, handleItemOrLocate(question) { return }
         // A precise neutral/uniform question not understood by the command grammar must still
         // never reach a model that could answer "yes" without repeating a colour word.
@@ -863,6 +871,18 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     try VisionService.inspect(image: image, orientation: .right, arabic: arabic, capturedAt: capturedAt)
                 }.value
                 try Task.checkCancellation()
+                // Grounding (2026-10-22): a model may name an object as fact only when the phone's
+                // detectors agreed on it in at least two of three frames a moment apart.
+                var groundingFrames = [result.grounding]
+                for _ in 0..<2 {
+                    try await Task.sleep(for: .milliseconds(150))
+                    guard let later = self.session.currentFrame?.capturedImage else { break }
+                    if let extra = try? await Task.detached(priority: .userInitiated, operation: {
+                        try VisionService.groundingFrame(image: later, orientation: .right)
+                    }).value { groundingFrames.append(extra) }
+                }
+                try Task.checkCancellation()
+                let confirmedObjects = VisualGrounding.agreedObjects(groundingFrames)
                 let situation = AssistantSituation.aged(initialSituation, milliseconds: (ProcessInfo.processInfo.systemUptime - situationCreatedAt) * 1000)
                 var evidence = result.observations.filter {
                     focus == "people" ? $0.kind == .people : focus == "text" ? $0.kind == .text : true
@@ -898,11 +918,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                         answer = arabic ? "استخدم تبويب المسارات لتحديد وجهة. لا يكفي وصف الصورة لتحديد مسار قابل للمشي." : "Use Routes to select a destination. A scene description does not establish a walkable route."
                     } else {
                         let local = await LocalImageAssistant.describe(image: image, question: question, context: context,
-                                                                       situation: situation, wordAllowance: allowance)
+                                                                       situation: situation, wordAllowance: allowance,
+                                                                       confirmedObjects: Array(confirmedObjects))
                         try Task.checkCancellation()
                         guard self.requestID == currentRequest else { return }
                         self.localImageStatus = local.status
-                        if let description = local.text { answer = description; fromModel = true }
+                        // Unhedged sentences naming objects the detectors did not confirm are dropped.
+                        let grounded = local.text.map { VisualGrounding.groundedDescription($0, confirmed: confirmedObjects) } ?? ""
+                        if !grounded.isEmpty { answer = grounded; fromModel = true }
                         else if context.observations.isEmpty {
                             if automatic { return }
                             answer = arabic ? "لم أتعرف على تفاصيل مؤكدة في هذه الصورة." : "I could not identify confident details in this view."
@@ -1014,7 +1037,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         let admitted = AdmittedSpeech(candidate)
         let spoken = feedback.deliver(admitted, narrationID: narrationID, alert: alert)
-        if !spoken { companion.release(candidate.key) }
+        if spoken { currentReply = candidate.text } else { companion.release(candidate.key) }
         return spoken
     }
     @discardableResult private func dispatchText(_ text: String, kind: InformationCandidate.Kind,
@@ -1240,7 +1263,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         readScene(cloud: false, question: text)
     }
 
-    private func answerConversation(_ question: String) {
+    private func recordCompanionMessage(_ question: String) {
         if companionWorkingState.reports.isEmpty {
             for turn in assistantDialogue.turns where turn.role == "user" {
                 companionWorkingState.record(turn.text)
@@ -1250,17 +1273,51 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         persistWorkingState()
         assistantDialogue.record(role: "user", text: question)
         persistDialogue()
+    }
+
+    /// Conversation evidence rule (2026-10-22): find requests and location reports are answered
+    /// by code from the child's own reports, saved items and live sensors, never by the model.
+    private func answerCompanionUtterance(_ utterance: CompanionUtterance, question: String) {
+        recordCompanionMessage(question)
+        applyCompanion(.utterance(utterance), question: question, reply: nil)
+    }
+
+    private func applyCompanion(_ action: CompanionAction, question: String, reply: String?) {
+        let oldGoal = companionWorkingState.goal
+        var text = reply ?? ""
+        var findObject: String?
+        switch action {
+        case .utterance(let utterance):
+            text = companionWorkingState.respond(to: utterance, message: question, arabic: arabic)
+            if case .find(let object) = utterance { findObject = object }
+        case .cancelTask:
+            text = companionWorkingState.cancelTask(arabic: arabic)
+        case .newTask(let task):
+            companionWorkingState.changeGoal(task)
+        }
+        if oldGoal != companionWorkingState.goal {
+            objectiveDraft = companionWorkingState.goal
+            setAssistantObjective()
+        }
+        persistWorkingState()
+        // Saved items and live sensors answer a find request before "I don't know".
+        if let findObject, findWithSensors(findObject, question: question) { return }
+        if !text.isEmpty { deliverConversationReply(text) }
+    }
+
+    private func deliverConversationReply(_ text: String) {
+        sceneAnswer = text
+        if textOnly || speakRequested(text) {
+            assistantDialogue.record(role: "assistant", text: text)
+            persistDialogue()
+        }
+    }
+
+    private func answerConversation(_ question: String) {
+        recordCompanionMessage(question)
         let dialogue = assistantDialogue
-        let preview = recognizedPlace
-        var situation = AssistantSituation.snapshot(dialogue: dialogue, preview: preview,
-            layout: preview.flatMap { places.layout(for: $0) }, preferences: assistantPreferences, arabic: arabic)
-        situation["taskProgress"] = [
-            "source": "app navigation state",
-            "state": indoor.route.isEmpty ? "no route selected" : "saved route; current position unverified",
-            "routeCheckpointIndex": indoor.waypointIndex,
-            "routeCheckpointCount": indoor.route.count,
-            "arrivalConfirmedThisTurn": false
-        ]
+        let situation = AssistantSituation.snapshot(dialogue: dialogue, preview: nil, layout: nil,
+            preferences: assistantPreferences, arabic: arabic)
         let id = UUID()
         requestID = id; busy = true; sceneAnswer = ""
         questionTimeoutTask?.cancel()
@@ -1279,35 +1336,20 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 guard let self, self.requestID == id, !Task.isCancelled else { return }
                 self.sceneAnswer = partial
             }
-            // Re-evaluate the action prerequisites after inference; a new request or
-            // changed objective invalidates the old decision before it can act.
-            let admission = CompanionReactiveSequence.tick([
-                .init(tick: { Task.isCancelled ? .failure : .success }),
-                .init(tick: { self.requestID == id ? .success : .failure }),
-                .init(tick: { self.companionWorkingState.goalRevision == revision ? .success : .failure })
-            ])
-            guard admission == .success else { return }
+            // A new request or changed task while the model ran makes this answer obsolete.
+            guard !Task.isCancelled, self.requestID == id, self.companionWorkingState.goalRevision == revision else { return }
             self.questionTimeoutTask?.cancel(); self.questionTimeoutTask = nil
             self.busy = false
+            if let action = answer.action {
+                self.applyCompanion(action, question: question, reply: answer.text)
+                return
+            }
             guard let text = answer.text else {
                 self.sceneAnswer = answer.status
                 self.speakOperation(answer.status)
                 return
             }
-            if let update = answer.taskUpdate {
-                let oldGoal = self.companionWorkingState.goal
-                self.companionWorkingState.apply(update, latest: question)
-                if oldGoal != self.companionWorkingState.goal {
-                    self.objectiveDraft = self.companionWorkingState.goal
-                    self.setAssistantObjective()
-                }
-                self.persistWorkingState()
-            }
-            self.sceneAnswer = text
-            if self.textOnly || self.speakRequested(text) {
-                self.assistantDialogue.record(role: "assistant", text: text)
-                self.persistDialogue()
-            }
+            self.deliverConversationReply(text)
         }
     }
 
@@ -1518,6 +1560,8 @@ extension NavigationModel {
         guard automaticStartupAllowed, !experienceActive,
               !ProcessInfo.processInfo.arguments.contains("--ui-testing") else { return }
         experienceActive = true
+        // Load the on-device model before the first message so the first reply is not delayed.
+        LocalImageAssistant.prewarm(arabic: arabic)
         if !textOnly { start() }
         let firstVisit = !UserDefaults.standard.bool(forKey: "companion-introduced")
         companionGreeting = firstVisit
@@ -1753,23 +1797,9 @@ extension NavigationModel {
             case .learn(let name):
                 learnItem(name)
             case .find(let name):
-                if let item = items.find(name), itemAppearance.viewCount(item.key) > 0,
-                   running, !simulation, detection.hazard == .observing, let frame = session.currentFrame {
-                    findItemByLook(item, name: name, frame: frame)
-                } else if let item = items.find(name) {
-                    let sameFrame = indoor.isAligned && item.frameID == indoor.alignmentRevision.uuidString
-                    var relation: String?
-                    if sameFrame, let target = item.position, let observation = lastObservation,
-                       let here = indoor.mapPosition(camera: observation.camera),
-                       let facing = currentBodyForward().flatMap({ indoor.mapDirection($0) }),
-                       let measured = SpatialFacts.relation(from: here, facing: facing, to: target) {
-                        relation = SpatialFacts.phrase(label: item.name, relation: measured, arabic: arabic, inView: nil)
-                    }
-                    say(ItemMemory.answer(for: item, asked: name, now: Date(), sameFrame: sameFrame, measuredRelation: relation, arabic: arabic))
-                } else if let target = LocateCommand.target(question) {
-                    return locate(target, question: question)
-                } else {
-                    say(ItemMemory.answer(for: nil, asked: name, now: Date(), sameFrame: false, measuredRelation: nil, arabic: arabic))
+                if !findWithSensors(name, question: question) {
+                    if let fact = companionWorkingState.factBook.latest(for: name) { say(fact.recall(now: Date(), arabic: arabic)) }
+                    else { say(ItemMemory.answer(for: nil, asked: name, now: Date(), sameFrame: false, measuredRelation: nil, arabic: arabic)) }
                 }
             case .forget(let name):
                 let saved = items.find(name)
@@ -1781,6 +1811,31 @@ extension NavigationModel {
         }
         if let target = LocateCommand.target(question) { return locate(target, question: question) }
         return false
+    }
+
+    /// Saved item (by look, or its saved place) newer than the child's last report, then a live
+    /// search of the current view. False when neither applies; the caller speaks the report or "unknown".
+    private func findWithSensors(_ name: String, question: String) -> Bool {
+        let fact = companionWorkingState.factBook.latest(for: name)
+        if let item = items.find(name), fact.map({ item.savedAt > $0.at }) ?? true {
+            if itemAppearance.viewCount(item.key) > 0, running, !simulation, detection.hazard == .observing,
+               let frame = session.currentFrame {
+                findItemByLook(item, name: name, frame: frame)
+                return true
+            }
+            let sameFrame = indoor.isAligned && item.frameID == indoor.alignmentRevision.uuidString
+            var relation: String?
+            if sameFrame, let target = item.position, let observation = lastObservation,
+               let here = indoor.mapPosition(camera: observation.camera),
+               let facing = currentBodyForward().flatMap({ indoor.mapDirection($0) }),
+               let measured = SpatialFacts.relation(from: here, facing: facing, to: target) {
+                relation = SpatialFacts.phrase(label: item.name, relation: measured, arabic: arabic, inView: nil)
+            }
+            say(ItemMemory.answer(for: item, asked: name, now: Date(), sameFrame: sameFrame, measuredRelation: relation, arabic: arabic))
+            return true
+        }
+        if fact != nil { return false }
+        return locate(LocateCommand.target(question) ?? name, question: question)
     }
 
     /// Live search of the current view; distance measured by LiDAR and spoken plainly. When the target

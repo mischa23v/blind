@@ -5,6 +5,8 @@ import BlindCore
 
 struct VisualDescription {
     var observations: [SceneObservation]
+    /// Detector evidence used to ground model descriptions (VisualGrounding).
+    var grounding: VisualGrounding.Frame
 }
 enum VisionService {
     static func inspect(image: CVPixelBuffer, orientation: CGImagePropertyOrientation, arabic: Bool, capturedAt: Double) throws -> VisualDescription {
@@ -30,7 +32,21 @@ enum VisionService {
             SceneObservation(id: "category-\(index)", kind: .object, text: result.identifier,
                              confidence: Double(result.confidence), capturedAt: capturedAt)
         }
-        return VisualDescription(observations: observations)
+        let labels = groundingLabels(classifyRequest.results ?? []) + ((try? detectObjects(image: image, orientation: orientation)) ?? [])
+        return VisualDescription(observations: observations, grounding: VisualGrounding.Frame(labels: labels, people: people.count))
+    }
+    /// Classification labels plausible enough to support a model's object mention when they recur.
+    private static func groundingLabels(_ results: [VNClassificationObservation]) -> [String] {
+        results.filter { $0.confidence >= 0.3 }.prefix(20).map(\.identifier)
+    }
+    /// Lighter pass for the extra frames: classification, people and the optional detector, no text.
+    static func groundingFrame(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) throws -> VisualGrounding.Frame {
+        let peopleRequest = VNDetectHumanRectanglesRequest()
+        let classifyRequest = VNClassifyImageRequest()
+        try VNImageRequestHandler(cvPixelBuffer: image, orientation: orientation).perform([peopleRequest, classifyRequest])
+        let people = (peopleRequest.results ?? []).filter { $0.confidence >= 0.6 }.count
+        let labels = groundingLabels(classifyRequest.results ?? []) + ((try? detectObjects(image: image, orientation: orientation)) ?? [])
+        return VisualGrounding.Frame(labels: labels, people: people)
     }
     /// Live search for a requested target (E14). Returns the matching label and its box centre in the
     /// upright image (x left→right, y top→bottom, 0...1). Text and people use built-in Vision; other

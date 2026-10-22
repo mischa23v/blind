@@ -26,7 +26,7 @@ test('money result is fresh, cancellable and uses existing speech gate', async (
   assert.match(body, /self.perceptionResultAllowed/);
   assert.match(body, /self.attention.stationary/);
   assert.match(body, /speakRequested\(self.message, narrationID: request\)/);
-  assert.match(source, /private func cancelDescription\(\) \{\s*currencyActive = false/);
+  assert.match(source, /private func cancelDescription\(\) \{[^}]*currencyActive = false/);
   assert.match(source, /focusedTaskActive: focusedFaceSearch \|\| currencyActive/);
   assert.doesNotMatch(body, /feedback\.deliver|feedback\.speak|cloud: true/);
 });

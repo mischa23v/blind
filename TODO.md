@@ -1,3 +1,13 @@
+## Next — Mac validation of the hallucination fix (2026-10-22)
+
+1. Build BlindCore and run XCTests, including `CompanionEvidenceTests` (shared fixture must match Node). Then build the app (`--text-only` and normal) and fix any compile errors in `LocalImageAssistant.swift`, `NavigationModel.swift`, `DashboardView.swift`, `VisionService.swift` and `VoiceInput.swift`.
+2. Retype the recorded failures in the running app:
+   - "Help me find my cup." should be answered by code: "I don't know where your cup is yet. Where did you last have it?"
+   - "I last left it on the kitchen table." should be acknowledged as history.
+   - Then try the closed/open fridge pair, a goal switch and a cancel. Record exact replies and timings.
+3. Measure the label and first-sentence timing with prewarm on the iPhone (target under ~1.5 s), and with VoiceOver confirm that the main screen reads only the reply.
+4. Image path: compare grounded and ungrounded descriptions on the recorded stair and room images; evaluate an Apache-2.0 detector and ARKit mesh classification as extra grounding sources.
+
 ## Latest actual result — chat still not accepted
 
 Compact role and separated reply/state extraction compile, but final real UI promotes I last left it on the kitchen table into Your cup is on the kitchen table. First sentence8.385s. Fix evidence interpretation and isolate context contributions before broadening features or comparing another model. Minimal plain diagnostic answered the initial cup request correctly; do not confuse it with full-path success. Exact evidence in ios/.validation-results/text-chat-status.json.
