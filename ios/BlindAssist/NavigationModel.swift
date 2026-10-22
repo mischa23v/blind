@@ -162,6 +162,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var phoneDetection = Detection(.stopped)
     private var requestID = UUID()
     private var questionTask: Task<Void, Never>?
+    private let saudiBanknotes = SaudiBanknoteRecognition()
+    private var currencyActive = false
     private var questionIsAutomatic = false
     private var pendingQuestion: PendingQuestion?
     private var awaitingPlace: SavedPlace?
@@ -432,6 +434,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     #if BLIND_FAMILIAR_PEOPLE
     @discardableResult func routeFamiliarPeopleCommand(_ text: String) -> Bool {
         guard let command = FamiliarPeopleCommand.parse(text) else { return false }
+        if currencyActive { cancelDescription() }
         guard command == .cancel || command == .stop || !running || detection.hazard == .observing else { message = "Current monitoring alerts take priority."; return true }
         if !showFamiliarPeople && !familiarPeople.enabled {
             showFamiliarPeople = true
@@ -478,6 +481,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #if BLIND_FAMILIAR_PEOPLE
         if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel() }
         #endif
+        if currencyActive { cancelDescription() }
         perceptionGeneration = UUID(); recallInFlight = false; learningItem = nil
         roomRecall.cancelPendingWork(); itemAppearance.cancelPendingWork()
     }
@@ -495,6 +499,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             originForward: observation.forward, currentForward: lastObservation?.forward)
     }
     private func cancelDescription() {
+        currencyActive = false
         pendingQuestion = nil
         requestID = UUID(); questionTask?.cancel(); questionTask = nil; busy = false; questionIsAutomatic = false
     }
@@ -607,7 +612,65 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             lastIndoorCueKey = key
         }
     }
+    /// Explicit single-photo money request. Unknown/unavailable never falls through to an LLM.
+    @discardableResult func routeSaudiBanknoteCommand(_ text: String) -> Bool {
+        guard SaudiBanknoteCommand.matches(text) else { return false }
+        cancelDescription()
+        #if BLIND_FAMILIAR_PEOPLE
+        familiarPeople.cancelSearchForNewGoal()
+        #endif
+        guard SaudiBanknoteModelProfile.selected != nil else {
+            message = arabic ? "التعرف على الأوراق النقدية السعودية غير متاح في هذا الإصدار. لن أخمّن القيمة." : "Saudi banknote recognition is not available in this build. I won't guess the value."
+            _ = speakOperation(message)
+            return true
+        }
+        guard running, !simulation, !places.scanning, awaitingPlace == nil,
+              attention.stationary, detection.hazard == .observing,
+              UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }),
+              let observation = lastObservation, observation.trackingNormal,
+              let frame = session.currentFrame else {
+            message = arabic ? "توقف وثبّت الهاتف عمودياً وأظهر ورقة واحدة كاملة للكاميرا، ثم حاول مرة أخرى." : "Hold still with the phone upright and show one whole banknote to the camera, then try again."
+            _ = speakOperation(message)
+            return true
+        }
+        let capturedAt = lastFrameWallTime, generation = perceptionGeneration, request = requestID
+        let mapRevision = indoor.revision, alignmentRevision = indoor.alignmentRevision
+        guard SaudiBanknotePolicy.fresh(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime),
+              perceptionResultAllowed(request: request, generation: generation, capturedAt: capturedAt,
+                                      observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return true }
+        let image = frame.capturedImage
+        busy = true; currencyActive = true; questionIsAutomatic = false
+        questionTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            defer { if self.requestID == request { self.busy = false; self.currencyActive = false; self.questionTask = nil } }
+            do {
+                let result = try await self.saudiBanknotes.inspect(image: image, orientation: .right)
+                try Task.checkCancellation()
+                guard self.currencyActive, self.attention.stationary,
+                      SaudiBanknotePolicy.fresh(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime),
+                      UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }),
+                      self.perceptionResultAllowed(request: request, generation: generation, capturedAt: capturedAt,
+                          observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return }
+                self.message = result.speech(arabic: self.arabic)
+                // Value answers retain the ordinary attention/budget gate. Never queue stale money.
+                _ = self.speakRequested(self.message, narrationID: request)
+            } catch is CancellationError {
+                return
+            } catch {
+                guard self.requestID == request, self.currencyActive,
+                      SaudiBanknotePolicy.fresh(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime),
+                      self.perceptionResultAllowed(request: request, generation: generation, capturedAt: capturedAt,
+                          observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return }
+                self.message = self.arabic ? "تعذر التعرف على قيمة الورقة. لن أخمّن." : "I couldn't identify the banknote. I won't guess."
+                _ = self.speakOperation(self.message)
+            }
+        }
+        return true
+    }
+
     func readScene(cloud: Bool, question: String = "Describe what is in front of me.", automatic: Bool = false, focus: String = "surroundings") {
+        if !automatic, routeSaudiBanknoteCommand(question) { return }
+        if automatic, currencyActive { return }
         #if !BLIND_DEVELOPER_CLOUD
         // Privacy rule (AGENTS.md): camera pictures never leave the phone in the app build.
         let cloud = false
@@ -761,6 +824,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     originForward: originForward, currentForward: self.lastObservation?.forward) else {
                     self.message = "The view changed before the answer was ready. Request a new description."; return
                 }
+                // Generic VLM and OCR summaries cannot bypass dedicated money recognition.
+                if SaudiBanknotePolicy.containsUnverifiedMoneyValue(answer) {
+                    if !automatic {
+                        self.message = arabic ? "لن أخمّن قيمة النقود من وصف عام. اطلب قراءة ورقة نقدية واحدة." : "I won't identify money from a general scene description. Ask me to read one banknote."
+                        _ = self.speakOperation(self.message)
+                    }
+                    return
+                }
                 // Spatial safety rule (AGENTS.md, E13): hazard geometry, step counts, clear-path
                 // statements and unhedged distances from a model are never spoken.
                 if fromModel && SpatialClaimGuard.containsSpatialClaim(answer) {
@@ -872,7 +943,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                           preferences: assistantPreferences, quiet: !ambientDescriptions, offerWindow: 14)
     }
     private func companionMoment(_ now: Double) -> CompanionMoment {
-        CompanionMoment(now: now, goalActive: !assistantDialogue.goal.isEmpty, focusedTaskActive: focusedFaceSearch,
+        CompanionMoment(now: now, goalActive: !assistantDialogue.goal.isEmpty, focusedTaskActive: focusedFaceSearch || currencyActive,
                         activity: attention.stationary ? .stationary : lastObservation?.trackingNormal == true ? .moving : .unknown,
                         speaking: feedback.speechPriority)
     }
@@ -1479,13 +1550,15 @@ extension NavigationModel {
             let answer = await LocalImageAssistant.describe(image: image, question: question, context: context, situation: [:], wordAllowance: 20)
             guard let self, self.perceptionGeneration == generation, self.itemMemoryRevision == revision,
                   self.items.find(learning.name)?.key == learning.key,
-                  let text = answer.text, !SpatialClaimGuard.containsSpatialClaim(text) else { return }
+                  let text = answer.text, !SpatialClaimGuard.containsSpatialClaim(text),
+                  !SaudiBanknotePolicy.containsUnverifiedMoneyValue(text) else { return }
             if self.items.describe(learning.name, as: text) { self.persistItems() }
         }
     }
 
     private func spokenDescription(_ item: RememberedItem) -> String {
-        guard let text = item.description, !SpatialClaimGuard.containsSpatialClaim(text) else { return "" }
+        guard let text = item.description, !SpatialClaimGuard.containsSpatialClaim(text),
+              !SaudiBanknotePolicy.containsUnverifiedMoneyValue(text) else { return "" }
         return arabic ? " وصفه: \(text)" : " It looks like this: \(text)"
     }
 

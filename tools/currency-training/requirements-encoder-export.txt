@@ -1,0 +1,12 @@
+# Separate Python 3.11 environment, not the existing NumPy 2 face-eval environment.
+# Proposed legacy-Keras conversion compatibility set. NOT installed or tested here.
+# Do not call this a verified lockfile. Verify wheels/platform compatibility first.
+numpy==1.26.4
+Pillow>=10,<13
+h5py>=3.10,<4
+tensorflow-cpu==2.15.1; platform_system != "Darwin"
+tensorflow==2.15.1; platform_system == "Darwin"
+coremltools==8.3.0
+scikit-learn>=1.4,<1.7
+scipy>=1.11,<1.15
+threadpoolctl>=3.1,<4

@@ -1,5 +1,7 @@
 # Blind Assist: persistent awareness and personal assistance
 
+**Saudi money checkpoint, 2026-10-22:** Single-note recognition is being prepared with reuse of the official BankNote-Net encoder, a Saudi-specific trained head, Apple Vision/Core ML and conservative evidence/speech gates. No ready cleared Saudi model is bundled. V11 stays open until real data, conversion, held-out unknown/costly-confusion tests and phone acceptance pass. See [Saudi preparation](research/SAUDI_BANKNOTES.md).
+
 **Current checkpoint — 2026-10-08:** paused for later continuation. [CONTINUATION_HANDOFF](research/CONTINUATION_HANDOFF.md) records manual map context, anonymous tracks, speech/control/preferences and unfinished work. Latest recorded suite: 39 passed before further edits; current source and Apple integration are unverified. Earlier evidence summaries below remain historical; the product requirements remain applicable.
 
 Updated: 2026-10-08. **The relay and production-SQL checks pass; native memory/approval/recovery/dialogue/speech source is prepared for Mac verification. The complete assistant remains unfinished.** See [native handoff](research/NATIVE_MEMORY_HANDOFF.md) and PROGRESS for exact evidence and remaining work.

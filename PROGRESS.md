@@ -1,3 +1,10 @@
+## Saudi banknote code preparation — 2026-10-22
+
+- Added local Apple Vision/Core ML adapter and explicit no-model status, eight-denomination/unknown policy, English/Arabic intent and measured-framing responses, strict snapshot freshness and existing attention/speech cancellation integration. Generic scene/OCR and learned descriptions cannot use common cash-value/authenticity outputs as a fallback.
+- This is **not installed working recognition**. No dataset inspection, Saudi-trained weights, real recognition accuracy, Core ML conversion/runtime parity or phone test is claimed. The selected profile is nil. V11 stays open. No image/weight redistribution, merge or deployment performed.
+- Portable checks: BlindCore 315/315 and Node 92/92 passed; all iOS Swift sources parse in default, familiar-person and AuraFace configurations. These are synthetic/source tests, not Apple SDK typechecking or currency accuracy. Training 32/32 and evaluation 37/37 synthetic harness tests also pass. These are not model-accuracy results.
+- Dataset is being downloaded by the user. Next: local VOC/data/group inventory, real encoder/head training, calibration and held-out whole-frame costly-confusion/unknown tests, then Mac/iPhone validation. See [Saudi handoff](research/SAUDI_BANKNOTES.md).
+
 # Project progress and continuation record
 
 ## Cloud review, familiar-person experiment and speech wiring — 2026-10-22

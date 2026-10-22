@@ -1,3 +1,11 @@
+## Saudi banknotes: current next steps
+
+- Keep `SaudiBanknoteModelProfile.selected = nil` until licensed real data/model and independent end-to-end evaluation are complete. Code and tests are preparation, not a finished recognizer.
+- Inspect the user's downloaded archive locally; preserve labels/attribution, establish physical-note groups and exact issue/side/material coverage, including polymer 5 and 20/200.
+- Run the real training pipeline and group-disjoint evaluation, including 100↔1 and foreign/non-money/multiple-note rejection. Calibrate only before test. Do not publish photos or weights without rights review.
+- Verify exported Core ML preprocessing/probabilities and the whole rectangle-proposal chain on Mac/iPhone. Add reviewed raw-model project resources and profile only after acceptance. Adult trials before child use. See [Saudi handoff](research/SAUDI_BANKNOTES.md).
+
+
 # Next actions
 
 **2026-10-22 — Mac test handoff.** Portable checks pass on the completed regression fixes, multi-photo/guided-camera/voice familiar-person flow, optional AuraFace configuration and centralized speech gate. The next gate is actual Apple compilation/runtime, not more face-model research. Follow the current top section of `MAC_HANDOFF.md`: default setup first, explicit experimental generator second, generic iOS/device build for the M1 because the checked OpenCV framework has no arm64 simulator slice. Verify native model/pixel parity, capture/import/consent/cancel/delete, short speech/VoiceOver, stale/hazard suppression and memory/thermal behavior. The completed face work now belongs on the shared primary master branch at the user’s request. Primary integration does not constitute deployment or child-ready certification.
