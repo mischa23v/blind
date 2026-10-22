@@ -1,3 +1,4 @@
+#include "../OpenCVRuntime.hpp"
 // API/pipeline: OpenCV 4.14.0 samples/dnn/face_detect.cpp (Apache-2.0).
 // Local adaptation: CGImage input, bounded resize, error translation, one-face gate.
 #import "BAFaceEngine.h"
@@ -45,7 +46,7 @@ static cv::Mat vectorFrom(NSArray<NSNumber *> *values, int dimension) {
                 throw std::runtime_error("unknown backend");
             _auraFace = [backendKind isEqualToString:@"auraface"];
             _dimension = _auraFace ? 512 : 128;
-            cv::setNumThreads(1);
+            ba_runtime::configureOpenCVOnce();
             _detector = cv::FaceDetectorYN::create(detectorPath.UTF8String, "", cv::Size(320, 320), 0.9f, 0.3f, 5000);
             _recognizer = cv::FaceRecognizerSF::create(recognizerPath.UTF8String, "");
         } catch (const std::exception &) { failure(error); return nil; }

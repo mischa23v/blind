@@ -19,3 +19,8 @@ research/datasets/
 currency-private/
 **/__pycache__/
 *.pyc
+
+# Private photographed banknote packs are never source artifacts.
+**/SaudiBanknoteReferences/
+
+.venv/

@@ -1,3 +1,9 @@
+# Current direction: no-new-training reference matching
+
+The current user-selected route is local reference-image comparison, not classifier training. See [the current implementation and validation gaps](CURRENCY_REFERENCE_MATCHING.md). No validated reference pack is selected, so currency recognition remains unavailable in the app. The training instructions below are retained as a dormant alternative, not the next action and not permission to train.
+
+---
+
 # Saudi single-banknote preparation
 
 ## Status and scope

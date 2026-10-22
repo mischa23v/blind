@@ -1,5 +1,22 @@
 # Mac mini handoff
 
+## Current currency and colour addition — 2026-10-22
+
+Preserve the Mac fixes recorded below. This combined source preserves `c4f7a26` and the subsequent `295ca393` transfer record and adds no-new-training currency comparison plus requested clothing-colour appearance. Currency remains explicitly unavailable because no independently validated reference pack is selected. A folder or successful build does not activate it. Do not start the dormant classifier-training route.
+
+Colour commands include “What colour is this shirt?”, “Check the colour”, “ما لون هذا القميص” and “وش لونها”. Results describe captured appearance, not certified fabric reflectance; white/gray/cream and school acceptance stay uncertain. Two-item comparison is still unfinished. Test real fabrics, masking/background spill, lighting and interrupted/repeated requests on the phone.
+
+Fresh recovery checks: core 349/349, Node 116/116, reconstructed portable mechanics 55/55, strict Clang/GCC header syntax, and 40 app Swift files parsed in three configurations. This is not a combined Apple SDK build or phone test. Prior Mac face/UI results below cover their own checkout. The source recovery and lost original photo-evaluation evidence are explicitly documented; no old accuracy claim is inherited by reconstructed code.
+
+After default setup, generate the optional currency native build with:
+
+```sh
+node tools/generate-xcode-project.mjs --currency-reference --opencv-framework /absolute/path/opencv2.framework
+```
+
+Use the pinned official OpenCV 4.14.0 framework from the face workflow. It lacks arm64 simulator support, so use the device build on M1. Existing face options may be combined; OpenCV is linked once. Reference images remain private and are not supplied. See `research/CURRENCY_REFERENCE_MATCHING.md`, `research/CLOTHING_COLOR.md` and the runtime pack contract. Before enabling money, require audited denomination/side/material coverage, independent costly-confusion/unknown/multiple-note tests, actual composite rejection, native parity, adult device tests and a reviewed immutable profile. No authenticity or summing feature exists.
+
+
 ## Mac validation update — 2026-10-22
 
 Local pre-currency ZIP testing completed on M1/8 GiB with Xcode 27.1: base simulator/device, optional multimodal device, and signed AuraFace device builds passed. XS Max installation succeeded and the user confirmed launch. Hosted iOS tests passed 22/22; the latest UI batch passed 5/6, with a remaining Dynamic Type audit failure. See PROGRESS for exact scope and unresolved Xcode AppKit layout crashes. These results do not validate the later Saudi-banknote code or all device scenarios.

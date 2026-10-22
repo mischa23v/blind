@@ -162,8 +162,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var phoneDetection = Detection(.stopped)
     private var requestID = UUID()
     private var questionTask: Task<Void, Never>?
-    private let saudiBanknotes = SaudiBanknoteRecognition()
+    private let saudiBanknotes = SaudiBanknoteReferenceRecognition()
     private var currencyActive = false
+    private let clothingColors = ClothingColorReader()
+    private var colorActive = false
     private var questionIsAutomatic = false
     private var pendingQuestion: PendingQuestion?
     private var awaitingPlace: SavedPlace?
@@ -434,7 +436,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     #if BLIND_FAMILIAR_PEOPLE
     @discardableResult func routeFamiliarPeopleCommand(_ text: String) -> Bool {
         guard let command = FamiliarPeopleCommand.parse(text) else { return false }
-        if currencyActive { cancelDescription() }
+        if currencyActive || colorActive { cancelDescription() }
         guard command == .cancel || command == .stop || !running || detection.hazard == .observing else { message = "Current monitoring alerts take priority."; return true }
         if !showFamiliarPeople && !familiarPeople.enabled {
             showFamiliarPeople = true
@@ -481,7 +483,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #if BLIND_FAMILIAR_PEOPLE
         if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel() }
         #endif
-        if currencyActive { cancelDescription() }
+        if currencyActive || colorActive { cancelDescription() }
         perceptionGeneration = UUID(); recallInFlight = false; learningItem = nil
         roomRecall.cancelPendingWork(); itemAppearance.cancelPendingWork()
     }
@@ -500,6 +502,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     private func cancelDescription() {
         currencyActive = false
+        colorActive = false
         pendingQuestion = nil
         requestID = UUID(); questionTask?.cancel(); questionTask = nil; busy = false; questionIsAutomatic = false
     }
@@ -619,7 +622,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #if BLIND_FAMILIAR_PEOPLE
         familiarPeople.cancelSearchForNewGoal()
         #endif
-        guard SaudiBanknoteModelProfile.selected != nil else {
+        guard SaudiBanknoteReferenceRecognition.isAvailable else {
             message = arabic ? "التعرف على الأوراق النقدية السعودية غير متاح في هذا الإصدار. لن أخمّن القيمة." : "Saudi banknote recognition is not available in this build. I won't guess the value."
             _ = speakOperation(message)
             return true
@@ -639,6 +642,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
               perceptionResultAllowed(request: request, generation: generation, capturedAt: capturedAt,
                                       observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return true }
         let image = frame.capturedImage
+        let transform = frame.camera.transform
+        let currencyOrigin = Point3(Double(transform.columns.3.x), Double(transform.columns.3.y), Double(transform.columns.3.z))
+        let currencyForward = Point3(-Double(transform.columns.2.x), -Double(transform.columns.2.y), -Double(transform.columns.2.z))
         busy = true; currencyActive = true; questionIsAutomatic = false
         questionTask = Task { @MainActor [weak self] in
             guard let self else { return }
@@ -647,6 +653,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 let result = try await self.saudiBanknotes.inspect(image: image, orientation: .right)
                 try Task.checkCancellation()
                 guard self.currencyActive, self.attention.stationary,
+                      self.visualCapturePoseAllowed(origin: currencyOrigin, forward: currencyForward),
                       SaudiBanknotePolicy.fresh(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime),
                       UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }),
                       self.perceptionResultAllowed(request: request, generation: generation, capturedAt: capturedAt,
@@ -657,7 +664,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             } catch is CancellationError {
                 return
             } catch {
-                guard self.requestID == request, self.currencyActive,
+                guard self.requestID == request, self.currencyActive, self.attention.stationary,
+                      self.visualCapturePoseAllowed(origin: currencyOrigin, forward: currencyForward),
                       SaudiBanknotePolicy.fresh(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime),
                       self.perceptionResultAllowed(request: request, generation: generation, capturedAt: capturedAt,
                           observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return }
@@ -668,13 +676,80 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         return true
     }
 
+    /// Explicit, one-frame colour request. Never falls back to a language-model colour guess.
+    @discardableResult func routeClothingColorCommand(_ text: String) -> Bool {
+        guard ClothingColorCommand.matches(text) else { return false }
+        cancelDescription()
+        #if BLIND_FAMILIAR_PEOPLE
+        familiarPeople.cancelSearchForNewGoal()
+        #endif
+        guard running, !simulation, !places.scanning, awaitingPlace == nil,
+              attention.stationary, detection.hazard == .observing,
+              UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }),
+              let observation = lastObservation, observation.trackingNormal,
+              let frame = session.currentFrame else {
+            message = arabic ? "ثبّت الهاتف عمودياً وأمسك غرضاً واحداً مسطحاً في وسط الكاميرا بإضاءة متجانسة، ثم اطلب فحص اللون." : "Hold still with the phone upright. Hold one separate item flat in the centre under even lighting, then ask to check its colour."
+            _ = speakOperation(message)
+            return true
+        }
+        let capturedAt = lastFrameWallTime, generation = perceptionGeneration, request = requestID
+        let mapRevision = indoor.revision, alignmentRevision = indoor.alignmentRevision
+        guard ClothingColorCapturePolicy.fresh(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime),
+              perceptionResultAllowed(request: request, generation: generation, capturedAt: capturedAt,
+                  observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return true }
+        let image = frame.capturedImage
+        let transform = frame.camera.transform
+        let colorOrigin = Point3(Double(transform.columns.3.x), Double(transform.columns.3.y), Double(transform.columns.3.z))
+        let colorForward = Point3(-Double(transform.columns.2.x), -Double(transform.columns.2.y), -Double(transform.columns.2.z))
+        let preciseNeutral = ClothingColorCommand.requiresNeutralVerification(text)
+        busy = true; colorActive = true; questionIsAutomatic = false
+        questionTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            defer { if self.requestID == request { self.busy = false; self.colorActive = false; self.questionTask = nil } }
+            do {
+                let result = try await self.clothingColors.read(image: image, orientation: .right)
+                try Task.checkCancellation()
+                guard self.colorActive, self.attention.stationary,
+                      self.visualCapturePoseAllowed(origin: colorOrigin, forward: colorForward),
+                      ClothingColorCapturePolicy.fresh(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime),
+                      UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }),
+                      self.perceptionResultAllowed(request: request, generation: generation, capturedAt: capturedAt,
+                          observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return }
+                // Coloured illumination can make white fabric appear saturated. Precise neutral
+                // verification always abstains, even when an appearance candidate was available.
+                self.message = (preciseNeutral ? ClothingColor.Result.nearNeutral : result).speech(arabic: self.arabic)
+                _ = self.speakRequested(self.message, narrationID: request)
+            } catch is CancellationError {
+                return
+            } catch {
+                guard self.requestID == request, self.colorActive, self.attention.stationary,
+                      self.visualCapturePoseAllowed(origin: colorOrigin, forward: colorForward),
+                      ClothingColorCapturePolicy.fresh(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime),
+                      self.perceptionResultAllowed(request: request, generation: generation, capturedAt: capturedAt,
+                          observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return }
+                self.message = self.arabic ? "لم أستطع عزل منطقة القماش. أمسك غرضاً واحداً منفصلاً ومسطحاً في وسط الكاميرا، بعيداً عن الجلد والشعر والظلال واللمعان، ثم حاول مجدداً." : "I couldn't isolate the fabric area. Hold one separate item flat in the centre, away from skin, hair, shadows and glare, then try again."
+                _ = self.speakOperation(self.message)
+            }
+        }
+        return true
+    }
+
+    private func visualCapturePoseAllowed(origin: Point3, forward: Point3) -> Bool {
+        guard let frame = session.currentFrame else { return false }
+        let transform = frame.camera.transform
+        let current = Point3(Double(transform.columns.3.x), Double(transform.columns.3.y), Double(transform.columns.3.z))
+        let direction = Point3(-Double(transform.columns.2.x), -Double(transform.columns.2.y), -Double(transform.columns.2.z))
+        return RequestedVisualCapturePose.poseStable(origin: origin, current: current, originForward: forward, currentForward: direction)
+    }
+
     func readScene(cloud: Bool, question: String = "Describe what is in front of me.", automatic: Bool = false, focus: String = "surroundings") {
-        if !automatic, routeSaudiBanknoteCommand(question) { return }
-        if automatic, currencyActive { return }
         #if !BLIND_DEVELOPER_CLOUD
         // Privacy rule (AGENTS.md): camera pictures never leave the phone in the app build.
         let cloud = false
         #endif
+        if !automatic, routeSaudiBanknoteCommand(question) { return }
+        if !automatic, routeClothingColorCommand(question) { return }
+        if automatic, currencyActive || colorActive { return }
         #if BLIND_FAMILIAR_PEOPLE
         if !automatic, routeFamiliarPeopleCommand(question) { return }
         if !automatic { familiarPeople.cancelSearchForNewGoal() }
@@ -684,6 +759,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // Saved items and live "where is it" answers come from sensors first (E13/E14).
         let fromLocate = locateFallback; locateFallback = false
         if !automatic, !fromLocate, handleItemOrLocate(question) { return }
+        // A precise neutral/uniform question not understood by the command grammar must still
+        // never reach a model that could answer "yes" without repeating a colour word.
+        if !automatic, ClothingColorCommand.requiresNeutralVerification(question) {
+            message = ClothingColor.Result.nearNeutral.speech(arabic: arabic)
+            _ = speakRequested(message)
+            return
+        }
         if !automatic, let goal = AssistantControl.explicitGoal(question) {
             objectiveDraft = goal; setAssistantObjective(); assistantQuestion = goal
             if indoor.map != nil { findMapDestination() }
@@ -832,6 +914,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     }
                     return
                 }
+                // A model cannot certify clothing colour or overwrite a qualified camera reading.
+                // Code-produced OCR remains readable verbatim; this veto applies to model claims.
+                if fromModel && ClothingColorCommand.containsUnverifiedColorClaim(answer) {
+                    if !automatic {
+                        self.message = arabic ? "لن أخمّن لون القماش من وصف عام. أمسك الغرض في الوسط واطلب فحص اللون." : "I won't guess fabric colour from a general description. Hold the item in the centre and ask me to check its colour."
+                        _ = self.speakOperation(self.message)
+                    }
+                    return
+                }
                 // Spatial safety rule (AGENTS.md, E13): hazard geometry, step counts, clear-path
                 // statements and unhedged distances from a model are never spoken.
                 if fromModel && SpatialClaimGuard.containsSpatialClaim(answer) {
@@ -943,7 +1034,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                           preferences: assistantPreferences, quiet: !ambientDescriptions, offerWindow: 14)
     }
     private func companionMoment(_ now: Double) -> CompanionMoment {
-        CompanionMoment(now: now, goalActive: !assistantDialogue.goal.isEmpty, focusedTaskActive: focusedFaceSearch || currencyActive,
+        CompanionMoment(now: now, goalActive: !assistantDialogue.goal.isEmpty, focusedTaskActive: focusedFaceSearch || currencyActive || colorActive,
                         activity: attention.stationary ? .stationary : lastObservation?.trackingNormal == true ? .moving : .unknown,
                         speaking: feedback.speechPriority)
     }
@@ -1545,20 +1636,22 @@ extension NavigationModel {
         let generation = perceptionGeneration, revision = itemMemoryRevision
         let context = SceneContext(observations: [], at: ProcessInfo.processInfo.systemUptime, arabic: arabic, detail: .balanced,
                                    stationary: true, hazard: detection.hazard, requested: true)
-        let question = arabic ? "صف هذا الغرض باختصار: اللون والشكل والمادة وأي علامات." : "Describe this object briefly: colour, shape, material and any markings."
+        let question = arabic ? "صف هذا الغرض باختصار: الشكل والمادة وأي علامات. لا تخمّن اللون." : "Describe this object briefly: shape, material and any markings. Do not guess colour."
         Task { @MainActor [weak self] in
             let answer = await LocalImageAssistant.describe(image: image, question: question, context: context, situation: [:], wordAllowance: 20)
             guard let self, self.perceptionGeneration == generation, self.itemMemoryRevision == revision,
                   self.items.find(learning.name)?.key == learning.key,
                   let text = answer.text, !SpatialClaimGuard.containsSpatialClaim(text),
-                  !SaudiBanknotePolicy.containsUnverifiedMoneyValue(text) else { return }
+                  !SaudiBanknotePolicy.containsUnverifiedMoneyValue(text),
+                  !ClothingColorCommand.containsUnverifiedColorClaim(text) else { return }
             if self.items.describe(learning.name, as: text) { self.persistItems() }
         }
     }
 
     private func spokenDescription(_ item: RememberedItem) -> String {
         guard let text = item.description, !SpatialClaimGuard.containsSpatialClaim(text),
-              !SaudiBanknotePolicy.containsUnverifiedMoneyValue(text) else { return "" }
+              !SaudiBanknotePolicy.containsUnverifiedMoneyValue(text),
+              !ClothingColorCommand.containsUnverifiedColorClaim(text) else { return "" }
         return arabic ? " وصفه: \(text)" : " It looks like this: \(text)"
     }
 

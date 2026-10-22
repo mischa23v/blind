@@ -8,13 +8,12 @@
 - Validate combined current master, including the separately added currency preparation. Local Mac results in PROGRESS cover the pre-currency checkout only.
 - Complete physical familiar-person, VoiceOver, pixel/orientation, latency and thermal tests on a LiDAR-capable iPhone. XS Max launch is confirmed, but its current live-monitoring/face-capture gate cannot run without scene depth.
 
-## Saudi banknotes: current next steps
+## Currency and clothing colour: current next steps
 
-- Keep `SaudiBanknoteModelProfile.selected = nil` until licensed real data/model and independent end-to-end evaluation are complete. Code and tests are preparation, not a finished recognizer.
-- Inspect the user's downloaded archive locally; preserve labels/attribution, establish physical-note groups and exact issue/side/material coverage, including polymer 5 and 20/200.
-- Run the real training pipeline and group-disjoint evaluation, including 100↔1 and foreign/non-money/multiple-note rejection. Calibrate only before test. Do not publish photos or weights without rights review.
-- Verify exported Core ML preprocessing/probabilities and the whole rectangle-proposal chain on Mac/iPhone. Add reviewed raw-model project resources and profile only after acceptance. Adult trials before child use. See [Saudi handoff](research/SAUDI_BANKNOTES.md).
-
+- Keep `SaudiBanknoteReferenceProfile.selected = nil` until a rights-reviewed, human-audited reference pack and independent whole-frame/device acceptance exist. No new classifier training is part of the current direction.
+- Inventory the user's locally downloaded data when available, preserving labels/attribution and physical-note/capture groups. Fill modern 1/20, both sides, issues/materials, negative/overlap/fold/blur/lighting gaps. Do not publish photographs or reference packs.
+- Validate the actual native matcher, polygon/proposal veto, preprocessing parity, interruptions and costly confusions on Mac/iPhone. Small development outcomes are not held-out accuracy; original private image-evaluation artifacts are unavailable after workspace loss. Adult controlled trials before child use. See [currency handoff](research/CURRENCY_REFERENCE_MATCHING.md).
+- Build and test the colour path with physical fabrics and varied lighting, including white/light-gray/cream/pale tints, masks, background spill and phone movement. Keep neutral uncertainty and no school-certification claim. Two-item comparison remains unfinished. See [colour handoff](research/CLOTHING_COLOR.md).
 
 # Next actions
 

@@ -1,13 +1,17 @@
-import { readdir, mkdir, writeFile, readFile, stat } from 'node:fs/promises';
+import { readdir, mkdir, writeFile, readFile, stat, lstat, realpath, open, opendir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { resolve, join, dirname, basename } from 'node:path';
+import { resolve, join, dirname, basename, isAbsolute, sep } from 'node:path';
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const id = name => createHash('sha256').update(name).digest('hex').slice(0, 24).toUpperCase();
-export function generateProject(files, { multimodal = false, familiarPeople = false, familiarBackend = 'sface', opencvFramework, familiarModels } = {}) {
+export function generateProject(files, { multimodal = false, familiarPeople = false, familiarBackend = 'sface', opencvFramework, familiarModels, currencyReference = false, currencyReferencePack } = {}) {
   if (familiarPeople && (!opencvFramework || !familiarModels)) throw new Error('Experimental people requires explicit framework and model paths.');
   if (!['sface', 'auraface'].includes(familiarBackend)) throw new Error('Unknown familiar backend.');
   if (!familiarPeople && familiarBackend !== 'sface') throw new Error('AuraFace requires --familiar-people.');
+  const nativeEnabled = familiarPeople || currencyReference;
+  if (nativeEnabled && (!opencvFramework || !isAbsolute(opencvFramework) || basename(opencvFramework) !== 'opencv2.framework')) throw new Error('Native inference requires an explicit absolute opencv2.framework path.');
+  if (currencyReferencePack && !currencyReference) throw new Error('A reference pack requires --currency-reference.');
+  if (currencyReferencePack && (!isAbsolute(currencyReferencePack) || basename(currencyReferencePack) !== 'SaudiBanknoteReferences')) throw new Error('The reference folder must be named SaudiBanknoteReferences.');
   const objects = [], add = (name, body) => { objects.push(`${id(name)} = { ${body} };`); return id(name); };
   const refs = [], sources = [];
   for (const file of files) {
@@ -20,20 +24,36 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
     refs.push(notice); resourceBuilds.push(add('build:face-notice', `isa = PBXBuildFile; fileRef = ${notice};`));
     const native = add('face-native', 'isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BlindAssist/FamiliarNative/BAFaceEngine.mm; sourceTree = "<group>";');
     refs.push(native); sources.push(add('build:face-native', `isa = PBXBuildFile; fileRef = ${native};`));
-    const framework = add('opencv-framework', `isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ${JSON.stringify(opencvFramework)}; sourceTree = "<absolute>";`);
-    refs.push(framework); nativeFrameworkBuilds.push(add('build:opencv', `isa = PBXBuildFile; fileRef = ${framework};`));
-    for (const name of ['UIKit', 'Accelerate', 'CoreGraphics', 'QuartzCore']) {
-      const ref = add(`face-framework:${name}`, `isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = System/Library/Frameworks/${name}.framework; sourceTree = SDKROOT;`);
-      refs.push(ref); nativeFrameworkBuilds.push(add(`build:face-framework:${name}`, `isa = PBXBuildFile; fileRef = ${ref};`));
-    }
     for (const name of Object.keys(familiarHashesForBackend(familiarBackend))) {
       const ref = add(`face-model:${name}`, `isa = PBXFileReference; lastKnownFileType = file; path = ${JSON.stringify(join(familiarModels, name))}; sourceTree = "<absolute>";`);
       refs.push(ref); resourceBuilds.push(add(`build:face-model:${name}`, `isa = PBXBuildFile; fileRef = ${ref};`));
     }
   }
+  if (currencyReference) {
+    const native = add('currency-native', 'isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BlindAssist/CurrencyNative/BACurrencyReferenceEngine.mm; sourceTree = "<group>";');
+    refs.push(native); sources.push(add('build:currency-native', `isa = PBXBuildFile; fileRef = ${native};`));
+    const notice = add('currency-notice', 'isa = PBXFileReference; lastKnownFileType = text; path = BlindAssist/CurrencyNative/THIRD_PARTY_NOTICES.txt; sourceTree = "<group>";');
+    refs.push(notice); resourceBuilds.push(add('build:currency-notice', `isa = PBXBuildFile; fileRef = ${notice};`));
+    if (currencyReferencePack) {
+      // A folder reference copies the reviewed private directory intact, not its
+      // contents flattened into the bundle. No copy or activation occurs here.
+      const pack = add('currency-pack', `isa = PBXFileReference; lastKnownFileType = folder; path = ${JSON.stringify(currencyReferencePack)}; sourceTree = "<absolute>";`);
+      refs.push(pack); resourceBuilds.push(add('build:currency-pack', `isa = PBXBuildFile; fileRef = ${pack};`));
+    }
+  }
+  if (nativeEnabled) {
+    const framework = add('opencv-framework', `isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ${JSON.stringify(opencvFramework)}; sourceTree = "<absolute>";`);
+    refs.push(framework); nativeFrameworkBuilds.push(add('build:opencv', `isa = PBXBuildFile; fileRef = ${framework};`));
+    for (const name of ['UIKit', 'Accelerate', 'CoreGraphics', 'QuartzCore', ...(currencyReference ? ['ImageIO'] : [])]) {
+      const ref = add(`face-framework:${name}`, `isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = System/Library/Frameworks/${name}.framework; sourceTree = SDKROOT;`);
+      refs.push(ref); nativeFrameworkBuilds.push(add(`build:face-framework:${name}`, `isa = PBXBuildFile; fileRef = ${ref};`));
+    }
+  }
   const resourcesPhase = add('resources', `isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (${resourceBuilds.join(',')}${resourceBuilds.length ? ',' : ''}); runOnlyForDeploymentPostprocessing = 0;`);
-  const conditions = ['$(inherited)', ...(multimodal ? ['BLIND_APPLE_MULTIMODAL'] : []), ...(familiarPeople ? ['BLIND_FAMILIAR_PEOPLE'] : []), ...(familiarPeople && familiarBackend === 'auraface' ? ['BLIND_FAMILIAR_AURAFACE'] : [])].join(' ');
-  const nativeSettings = familiarPeople ? `SWIFT_OBJC_BRIDGING_HEADER = BlindAssist/FamiliarNative/BlindAssist-Bridging-Header.h; CLANG_CXX_LANGUAGE_STANDARD = "c++17"; CLANG_CXX_LIBRARY = "libc++"; CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES; GCC_ENABLE_CPP_EXCEPTIONS = YES; FRAMEWORK_SEARCH_PATHS = ("$(inherited)",${JSON.stringify(dirname(opencvFramework))},); OTHER_LDFLAGS = ("$(inherited)","-lc++",); "EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;` : '';
+  const conditions = ['$(inherited)', ...(multimodal ? ['BLIND_APPLE_MULTIMODAL'] : []), ...(familiarPeople ? ['BLIND_FAMILIAR_PEOPLE'] : []), ...(familiarPeople && familiarBackend === 'auraface' ? ['BLIND_FAMILIAR_AURAFACE'] : []), ...(currencyReference ? ['BLIND_CURRENCY_REFERENCE'] : [])].join(' ');
+  const nativeDefinitions = ['$(inherited)', ...(familiarPeople ? ['BLIND_FAMILIAR_PEOPLE=1'] : []), ...(currencyReference ? ['BLIND_CURRENCY_REFERENCE=1'] : [])];
+  const bridge = currencyReference ? 'BlindAssist/CurrencyNative/BlindAssist-Currency-Bridging-Header.h' : 'BlindAssist/FamiliarNative/BlindAssist-Bridging-Header.h';
+  const nativeSettings = nativeEnabled ? `SWIFT_OBJC_BRIDGING_HEADER = ${bridge}; GCC_PREPROCESSOR_DEFINITIONS = (${nativeDefinitions.map(value => JSON.stringify(value)).join(',')},); CLANG_CXX_LANGUAGE_STANDARD = "c++17"; CLANG_CXX_LIBRARY = "libc++"; CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES; GCC_ENABLE_CPP_EXCEPTIONS = YES; FRAMEWORK_SEARCH_PATHS = ("$(inherited)",${JSON.stringify(dirname(opencvFramework))},); OTHER_LDFLAGS = ("$(inherited)","-lc++",); "EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;` : '';
   const product = add('product', 'isa = PBXFileReference; explicitFileType = wrapper.application; path = BlindAssist.app; sourceTree = BUILT_PRODUCTS_DIR;');
   const pkg = add('package', 'isa = XCLocalSwiftPackageReference; relativePath = ../BlindCore;');
   const dependency = add('dependency', `isa = XCSwiftPackageProductDependency; package = ${pkg}; productName = BlindCore;`);
@@ -96,28 +116,123 @@ export function familiarHashesForBackend(backend = 'sface') {
     'glintr100.onnx': 'a7933ea5330113b01c9b60351d8f4c33003f145d8470ac5f0e52ee2effe25c60',
   });
 }
-export async function verifyFamiliarInputs(framework, models, backend = 'sface') {
-  if (basename(framework) !== 'opencv2.framework' || !(await stat(framework)).isDirectory()) throw new Error('Use the verified static opencv2.framework, not a guessed SDK path.');
+export async function verifyOpenCVFramework(framework) {
+  if (typeof framework !== 'string' || basename(framework) !== 'opencv2.framework' || !(await stat(framework)).isDirectory()) throw new Error('Use the verified static opencv2.framework, not a guessed SDK path.');
   const header = await readFile(join(framework, 'Headers/core/version.hpp'), 'utf8');
   if (!/#define CV_VERSION_MAJOR\s+4\b/.test(header) || !/#define CV_VERSION_MINOR\s+14\b/.test(header) || !/#define CV_VERSION_REVISION\s+0\b/.test(header)) throw new Error('OpenCV 4.14.0 required.');
+  const binary = await stat(join(framework, 'opencv2'));
+  if (!binary.isFile() || binary.size === 0) throw new Error('OpenCV framework binary is missing or empty.');
+  // This checks version/layout, not provenance or redistribution clearance. The
+  // externally obtained official archive must still have its receipt reviewed.
+}
+export async function verifyFamiliarInputs(framework, models, backend = 'sface') {
+  await verifyOpenCVFramework(framework);
   for (const [name, expected] of Object.entries(familiarHashesForBackend(backend))) {
     if (createHash('sha256').update(await readFile(join(models, name))).digest('hex') !== expected) throw new Error(`Model hash mismatch: ${name}`);
   }
 }
+const packLimits = Object.freeze({ manifest: 256 * 1024, image: 8 * 1024 * 1024, total: 96 * 1024 * 1024, references: 48 });
+const safePackPath = path => typeof path === 'string' && path.length > 0 && path.length <= 256
+  && !/[\p{Cc}\\:%]/u.test(path) && !isAbsolute(path)
+  && path.split('/').every(part => part && part !== '.' && part !== '..');
+async function boundedPackFile(root, relative, limit) {
+  if (!safePackPath(relative)) throw new Error('Unsafe reference pack path.');
+  let current = root;
+  for (const part of relative.split('/')) {
+    current = join(current, part);
+    if ((await lstat(current)).isSymbolicLink()) throw new Error('Reference pack symlinks are forbidden.');
+  }
+  const info = await lstat(current);
+  if (!info.isFile() || info.size <= 0 || info.size > limit || !(await realpath(current)).startsWith(root + sep)) throw new Error('Invalid reference pack file or byte limit.');
+  const handle = await open(current, 'r');
+  try {
+    const bytes = Buffer.alloc(info.size + 1);
+    let length = 0;
+    while (length < bytes.length) {
+      const { bytesRead } = await handle.read(bytes, length, bytes.length - length, null);
+      if (bytesRead === 0) break;
+      length += bytesRead;
+    }
+    if (length !== info.size) throw new Error('Reference pack changed while reading.');
+    return bytes.subarray(0, length);
+  } finally { await handle.close(); }
+}
+export async function verifyCurrencyReferencePack(folder) {
+  if (typeof folder !== 'string' || basename(folder) !== 'SaudiBanknoteReferences') throw new Error('The reference folder must be named SaudiBanknoteReferences.');
+  const info = await lstat(folder);
+  if (!info.isDirectory() || info.isSymbolicLink()) throw new Error('Reference pack must be a directory, not a symlink.');
+  const root = await realpath(folder);
+  const bytes = await boundedPackFile(root, 'manifest.json', packLimits.manifest);
+  const manifest = JSON.parse(bytes.toString('utf8'));
+  if (!manifest || manifest.schema_version !== 2 || manifest.reference_kind !== 'private_banknote_photos' || manifest.currency !== 'SAR'
+      || JSON.stringify(manifest.labels) !== '[1,5,10,20,50,100,200,500]' || !Array.isArray(manifest.references)
+      || manifest.references.length > packLimits.references) throw new Error('Invalid reference pack schema or inventory.');
+  const expected = new Set(['manifest.json']), directories = new Set(), hashes = new Set();
+  let total = 0;
+  for (const ref of manifest.references) {
+    if (!ref || !safePackPath(ref.path) || !/\.(?:png|jpe?g)$/i.test(ref.path) || expected.has(ref.path)
+        || typeof ref.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(ref.sha256) || hashes.has(ref.sha256)) throw new Error('Invalid or duplicate reference image path/hash.');
+    expected.add(ref.path); hashes.add(ref.sha256);
+    const parts = ref.path.split('/');
+    for (let i = 1; i < parts.length; i++) directories.add(parts.slice(0, i).join('/'));
+    const image = await boundedPackFile(root, ref.path, packLimits.image);
+    total += image.length;
+    if (total > packLimits.total) throw new Error('Reference pack exceeds total byte limit.');
+    if (createHash('sha256').update(image).digest('hex') !== ref.sha256) throw new Error('Reference image hash mismatch.');
+  }
+  // Folder resources copy every member. Reject stray images, hidden files,
+  // symlinks and unlisted directories rather than accidentally packaging them.
+  async function checkInventory(relative = '') {
+    for await (const entry of await opendir(join(root, relative))) {
+      const path = relative ? `${relative}/${entry.name}` : entry.name;
+      if (entry.isDirectory() && directories.has(path)) await checkInventory(path);
+      else if (!entry.isFile() || !expected.delete(path)) throw new Error('Unlisted or unsafe reference pack member.');
+    }
+  }
+  await checkInventory();
+  if (expected.size) throw new Error('Reference pack inventory is incomplete.');
+  // Packaging preflight only. The runtime strict parser also validates duplicate
+  // JSON keys, labels, metadata, review and boundaries against the pinned profile.
+  return Object.freeze({ manifestSHA256: createHash('sha256').update(bytes).digest('hex'), references: manifest.references.length });
+}
+export function parseProjectArguments(args) {
+  const booleans = new Set(['--multimodal', '--familiar-people', '--currency-reference']);
+  const values = new Set(['--familiar-backend', '--opencv-framework', '--familiar-models', '--currency-reference-pack']);
+  const parsed = new Map();
+  for (let i = 0; i < args.length; i++) {
+    const name = args[i];
+    if ((!booleans.has(name) && !values.has(name)) || parsed.has(name)) throw new Error(`Unknown or repeated option: ${name}`);
+    if (booleans.has(name)) parsed.set(name, true);
+    else {
+      if (!args[i + 1] || args[i + 1].startsWith('--')) throw new Error(`Missing ${name} <value>`);
+      parsed.set(name, args[++i]);
+    }
+  }
+  const familiarPeople = parsed.has('--familiar-people'), currencyReference = parsed.has('--currency-reference');
+  if (!familiarPeople && (parsed.has('--familiar-backend') || parsed.has('--familiar-models'))) throw new Error('Face options require --familiar-people.');
+  if (!currencyReference && parsed.has('--currency-reference-pack')) throw new Error('A reference pack requires --currency-reference.');
+  if (!familiarPeople && !currencyReference && parsed.has('--opencv-framework')) throw new Error('The framework requires an explicit native feature.');
+  if ((familiarPeople || currencyReference) && !parsed.has('--opencv-framework')) throw new Error('Missing --opencv-framework <path>');
+  if (familiarPeople && !parsed.has('--familiar-models')) throw new Error('Missing --familiar-models <path>');
+  const familiarBackend = parsed.get('--familiar-backend') ?? 'sface';
+  familiarHashesForBackend(familiarBackend);
+  const path = name => parsed.has(name) ? resolve(parsed.get(name)) : undefined;
+  return { multimodal: parsed.has('--multimodal'), familiarPeople, familiarBackend, currencyReference,
+    opencvFramework: path('--opencv-framework'), familiarModels: path('--familiar-models'), currencyReferencePack: path('--currency-reference-pack') };
+}
+export async function verifyProjectInputs(options) {
+  if (options.familiarPeople) await verifyFamiliarInputs(options.opencvFramework, options.familiarModels, options.familiarBackend);
+  else if (options.currencyReference) await verifyOpenCVFramework(options.opencvFramework);
+  if (options.currencyReferencePack) return verifyCurrencyReferencePack(options.currencyReferencePack);
+}
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const files = (await readdir(join(root, 'ios/BlindAssist'))).filter(file => file.endsWith('.swift')).sort();
+  const options = parseProjectArguments(process.argv.slice(2));
+  const pack = await verifyProjectInputs(options);
+  const project = generateProject(files, options);
   const output = join(root, 'ios/BlindAssist.xcodeproj'); await mkdir(output, { recursive: true });
-  const familiarPeople = process.argv.includes('--familiar-people');
-  const option = name => { const at = process.argv.indexOf(name); if (at < 0 || !process.argv[at + 1] || process.argv[at + 1].startsWith('--')) throw new Error(`Missing ${name} <path>`); return resolve(process.argv[at + 1]); };
-  const backendAt = process.argv.indexOf('--familiar-backend');
-  if (backendAt >= 0 && !familiarPeople) throw new Error('--familiar-backend requires --familiar-people.');
-  if (backendAt >= 0 && (!process.argv[backendAt + 1] || process.argv[backendAt + 1].startsWith('--'))) throw new Error('Missing --familiar-backend <sface|auraface>');
-  const familiarBackend = backendAt >= 0 ? process.argv[backendAt + 1] : 'sface';
-  familiarHashesForBackend(familiarBackend);
-  const opencvFramework = familiarPeople ? option('--opencv-framework') : undefined;
-  const familiarModels = familiarPeople ? option('--familiar-models') : undefined;
-  if (familiarPeople) await verifyFamiliarInputs(opencvFramework, familiarModels, familiarBackend);
-  await writeFile(join(output, 'project.pbxproj'), generateProject(files, { multimodal: process.argv.includes('--multimodal'), familiarPeople, familiarBackend, opencvFramework, familiarModels }));
+  await writeFile(join(output, 'project.pbxproj'), project);
+  if (pack) console.log(`Private reference manifest SHA-256: ${pack.manifestSHA256}. Packaging does not activate recognition.`);
   const schemes = join(output, 'xcshareddata/xcschemes'); await mkdir(schemes, { recursive: true });
   await writeFile(join(schemes, 'BlindAssist.xcscheme'), generateScheme());
   console.log('Generated ios/BlindAssist.xcodeproj (phone/BLE build). For native RTAB-Map use npm run native:prepare.');
