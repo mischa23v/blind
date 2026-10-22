@@ -1,13 +1,15 @@
 # Mac mini handoff
 
-## Familiar-person test branch — current handoff (2026-10-22)
+## Primary master branch — current familiar-person handoff (2026-10-22)
 
 This section supersedes the older status counts below. This is an opt-in experimental assistive hint, not a production release, Face ID, or permission to follow someone. Linux checks do not compile Apple SDK code. Mac/Xcode and physical iPhone checks are still required before supervised use.
+
+The shared primary branch is named `master`, not `main`; do not rename it. The completed face work is integrated there at the user’s request. Future authorized changes to this repository should reconcile the current remote head and integrate without force, so cooperating tools share one primary version. This is a collaboration workflow, not a production-readiness claim. If you downloaded an older master ZIP, obtain a fresh copy after this update. Do not overwrite local edits.
 
 Use a separate checkout so existing local work is untouched:
 
 ```sh
-git clone --branch review/familiar-people-20261022 https://github.com/mischa23v/blind.git blind-familiar-review
+git clone --branch master https://github.com/mischa23v/blind.git blind-familiar-review
 cd blind-familiar-review
 npm ci --ignore-scripts
 npm run mac:setup -- --ui
