@@ -98,3 +98,16 @@ test('always on: no path switches listening, the belt or the awake screen off', 
   const view = await read('ios/BlindAssist/DashboardView.swift');
   assert.doesNotMatch(view, /Stop monitoring|stopExperience|wearables\.disconnect\(\) \}/);
 });
+
+test('Seeing AI-style reading tools are decided by Vision and code only', async () => {
+  const model = await read('ios/BlindAssist/NavigationModel.swift');
+  const tools = model.split('// MARK: - Reading tools')[1];
+  assert.ok(tools, 'reading tools section exists');
+  assert.doesNotMatch(tools, /LocalImageAssistant|LanguageModelSession|SceneQuestionClient/, 'no model or upload in reading tools');
+  assert.match(tools, /VisionService\.textLines/);
+  assert.match(tools, /VisionService\.documentCorners/);
+  assert.match(tools, /VisionService\.code\(/);
+  assert.match(tools, /LightLevel\.from\(lumens:/);
+  const explore = await read('ios/BlindAssist/ExplorePictureView.swift');
+  assert.match(explore, /\.onDisappear \{ model\.clearExploreSnapshot\(\) \}/, 'the explored picture is forgotten when leaving');
+});

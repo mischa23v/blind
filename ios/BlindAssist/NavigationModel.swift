@@ -175,6 +175,20 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published private(set) var companionGreeting = ""
     private var objectSearch: ObjectSearch?
     private var searchInFlight = false
+    /// Seeing AI-style reading tools: one at a time, decided by Vision and code only.
+    @Published private(set) var readingTool: ReadingTool?
+    private var readingInFlight = false
+    private var lastReadingLook = -Double.infinity
+    private var readingStarted = -Double.infinity
+    private var lastReadingBeep = -Double.infinity
+    private var liveTextReader = LiveTextReader()
+    private var lastDocumentGuidance: DocumentGuidance?
+    private var steadyDocumentLooks = 0
+    private var lastLightLevel: LightLevel?
+    private var products = ProductMemory()
+    private var lastScannedCode: String?
+    /// A picture kept in memory (never saved or sent) with the regions Vision found, to explore by touch.
+    @Published private(set) var exploreSnapshot: ExploreSnapshot?
     /// A found object kept as one 3D target while the child approaches it (sensor-only guidance).
     private var trackedTarget: TrackedTarget?
     private var trackLookInFlight = false
@@ -215,6 +229,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if let data = try? places.memory?.value(namespace: "preferences", id: "preferred-name"),
            let name = try? JSONDecoder().decode(String.self, from: data) {
             preferredName = name
+        }
+        if let data = try? places.memory?.value(namespace: "products", id: "names"),
+           let saved = try? JSONDecoder().decode(ProductMemory.self, from: data) {
+            products = saved
         }
         if let data = try? places.memory?.value(namespace: "companion", id: "working-state"),
            let saved = try? JSONDecoder().decode(CompanionWorkingState.self, from: data) {
@@ -491,7 +509,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         updateItemLearning(frame: frame)
         continueSearch()
         updateTrackedTarget()
-        if ambientDescriptions, !returning, objectSearch == nil, trackedTarget == nil, !lookupInFlight, !voice.awaitingUtterance, lastFrameWallTime - lastAmbientAttempt >= 4,
+        updateReadingTool(frame: frame)
+        if ambientDescriptions, !returning, objectSearch == nil, trackedTarget == nil, readingTool == nil, !lookupInFlight, !voice.awaitingUtterance, lastFrameWallTime - lastAmbientAttempt >= 4,
            attention.permitsAmbient(detail: detail, urgent: detection.hazard != .observing, now: lastFrameWallTime) {
             lastAmbientAttempt = lastFrameWallTime
             readScene(cloud: false, automatic: true)
@@ -840,6 +859,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #endif
         if !automatic, routeSaudiBanknoteCommand(question) { return }
         if !automatic, routeClothingColorCommand(question) { return }
+        if !automatic, routeReadingToolCommand(question) { return }
+        // Anything else the child says ends a running reading tool, so two things never talk at once.
+        if !automatic, readingTool != nil { stopReadingTool(announce: false) }
         if automatic, currencyActive || colorActive { return }
         #if BLIND_FAMILIAR_PEOPLE
         if !automatic, routeFamiliarPeopleCommand(question) { return }
@@ -1156,7 +1178,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                           preferences: assistantPreferences, quiet: !ambientDescriptions, offerWindow: 14)
     }
     private func companionMoment(_ now: Double) -> CompanionMoment {
-        CompanionMoment(now: now, goalActive: !assistantDialogue.goal.isEmpty, focusedTaskActive: focusedFaceSearch || currencyActive || colorActive || objectSearch != nil || busy || pendingQuestion != nil || lookupInFlight,
+        CompanionMoment(now: now, goalActive: !assistantDialogue.goal.isEmpty, focusedTaskActive: focusedFaceSearch || currencyActive || colorActive || objectSearch != nil || busy || pendingQuestion != nil || lookupInFlight || readingTool != nil,
                         activity: attention.stationary ? .stationary : lastObservation?.trackingNormal == true ? .moving : .unknown,
                         speaking: feedback.speechPriority)
     }
@@ -2271,3 +2293,143 @@ extension NavigationModel {
     func removeHint(_ id: String) { companion.memory.removeHint(id: id); persistCompanion(); objectWillChange.send() }
 }
 
+// MARK: - Reading tools: live text, a page, codes, light, explore by touch (Seeing AI-style, 2026-10-22)
+// Everything spoken here comes from on-device Vision, ARKit light estimates and code. No model.
+struct ExploreSnapshot {
+    let image: UIImage
+    /// Upright, top-left normalised rectangles with code-written labels.
+    let regions: [(label: String, rect: CGRect)]
+}
+
+extension NavigationModel {
+    @discardableResult func routeReadingToolCommand(_ text: String) -> Bool {
+        guard let command = ReadingToolCommand.parse(text) else { return false }
+        switch command {
+        case .start(let tool): startReadingTool(tool)
+        case .stop: stopReadingTool(announce: true)
+        case .nameProduct(let name):
+            guard let code = lastScannedCode, products.save(name, for: code) else {
+                speakRequested(arabic ? "امسح رمز المنتج أولاً، ثم قل: سمّه، والاسم." : "Scan the product's code first, then say: call this, and its name.")
+                return true
+            }
+            if let memory = places.memory, let data = try? JSONEncoder().encode(products) {
+                try? memory.saveValue(namespace: "products", id: "names", payload: data)
+            }
+            speakRequested(arabic ? "حفظت هذا المنتج باسم \(name)." : "Saved this product as \(name).")
+        }
+        return true
+    }
+
+    func startReadingTool(_ tool: ReadingTool) {
+        guard running, !simulation, !places.scanning else {
+            speakOperation(arabic ? "أحتاج الكاميرا لهذا. ستعمل عندما تكون الكاميرا جاهزة." : "I need the camera for that. It will work once the camera is running.")
+            return
+        }
+        readingTool = tool; readingInFlight = false; lastReadingLook = -.infinity
+        readingStarted = ProcessInfo.processInfo.systemUptime
+        liveTextReader = LiveTextReader(); lastDocumentGuidance = nil; steadyDocumentLooks = 0; lastLightLevel = nil
+        let intro: String
+        switch tool {
+        case .liveText: intro = arabic ? "أقرأ النص الذي أراه. قل: أوقف القراءة، للتوقف." : "Reading text as I see it. Say stop reading to stop."
+        case .document: intro = arabic ? "وجّه الهاتف نحو الصفحة. سأساعدك على وضعها كاملة." : "Point the phone at the page. I'll help you fit all of it in."
+        case .barcode: intro = arabic ? "أبحث عن رمز. أدر المنتج ببطء؛ الرموز غالباً في الخلف أو الأسفل." : "Looking for a code. Turn the product slowly; codes are often on the back or bottom."
+        case .light: intro = arabic ? "كاشف الضوء يعمل. الصفير أسرع كلما زاد الضوء." : "Light detector on. Faster beeps mean more light."
+        }
+        speakOperation(intro)
+    }
+
+    func stopReadingTool(announce: Bool) {
+        guard readingTool != nil else { return }
+        readingTool = nil; readingInFlight = false
+        if announce { speakOperation(arabic ? "توقفت القراءة. ما زلت أستمع." : "Stopped. I'm still listening.") }
+    }
+
+    private func updateReadingTool(frame: ARFrame) {
+        guard let tool = readingTool, !readingInFlight else { return }
+        let now = ProcessInfo.processInfo.systemUptime
+        let intervals: [ReadingTool: Double] = [.liveText: 0.7, .document: 0.4, .barcode: 0.3, .light: 0.5]
+        let interval = intervals[tool] ?? 0.5
+        guard now - lastReadingLook >= interval else { return }
+        lastReadingLook = now
+        let arabic = self.arabic
+        switch tool {
+        case .light:
+            guard let lumens = frame.lightEstimate.map({ Double($0.ambientIntensity) }), let level = LightLevel.from(lumens: lumens) else { return }
+            if level != lastLightLevel { lastLightLevel = level; speakRequested(level.speech(arabic: arabic)) }
+            if now - lastReadingBeep >= level.beepInterval { lastReadingBeep = now; feedback.beacon(sector: 0, distance: 1) }
+            return
+        case .barcode where now - readingStarted > 30:
+            stopReadingTool(announce: false)
+            speakRequested(arabic ? "لم أجد رمزاً بعد. أدر المنتج ببطء وحاول مجدداً." : "No code found yet. Turn the product slowly and try again.")
+            return
+        default: break
+        }
+        if tool == .barcode, now - lastReadingBeep >= 0.8 { lastReadingBeep = now; feedback.beacon(sector: 0, distance: 1) }
+        readingInFlight = true
+        let image = frame.capturedImage
+        Task.detached(priority: .userInitiated) { [weak self] in
+            let lines: [TextLine] = tool == .liveText ? ((try? VisionService.textLines(image: image, orientation: .right, arabic: arabic, accurate: false)) ?? []) : []
+            let corners: [(x: Double, y: Double)]? = tool == .document ? (try? VisionService.documentCorners(image: image, orientation: .right)) ?? nil : nil
+            let code: (payload: String, isQR: Bool)? = tool == .barcode ? (try? VisionService.code(image: image, orientation: .right)) ?? nil : nil
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                self.readingInFlight = false
+                guard self.readingTool == tool else { return }
+                switch tool {
+                case .liveText:
+                    let fresh = self.liveTextReader.newLines(lines, now: ProcessInfo.processInfo.systemUptime)
+                    if !fresh.isEmpty { self.speakRequested(fresh.joined(separator: ". "), replace: false) }
+                case .document:
+                    let guidance = DocumentGuidance.evaluate(corners)
+                    self.steadyDocumentLooks = guidance == .holdStill ? self.steadyDocumentLooks + 1 : 0
+                    if guidance != self.lastDocumentGuidance { self.lastDocumentGuidance = guidance; self.speakOperation(guidance.speech(arabic: arabic)) }
+                    if self.steadyDocumentLooks >= 3 { self.readWholePage(image: image) }
+                case .barcode:
+                    guard let code else { return }
+                    self.lastScannedCode = code.payload
+                    self.stopReadingTool(announce: false)
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    self.speakRequested(CodeReading.speech(payload: code.payload, isQR: code.isQR, savedName: self.products.name(for: code.payload), arabic: arabic))
+                case .light: break
+                }
+            }
+        }
+    }
+
+    /// Accurate text recognition of the framed page, read top to bottom; then the tool ends.
+    private func readWholePage(image: CVPixelBuffer) {
+        readingTool = nil; readingInFlight = false
+        let arabic = self.arabic
+        Task.detached(priority: .userInitiated) { [weak self] in
+            let lines = (try? VisionService.textLines(image: image, orientation: .right, arabic: arabic, accurate: true)) ?? []
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                let text = lines.filter { $0.confidence >= 0.4 }.sorted { $0.y == $1.y ? $0.x < $1.x : $0.y < $1.y }.map(\.text).joined(separator: " ")
+                self.sceneAnswer = text
+                self.speakRequested(text.isEmpty ? (arabic ? "لم أستطع قراءة نص في الصفحة." : "I couldn't read any text on the page.") : text)
+            }
+        }
+    }
+
+    /// Keeps the current camera picture in memory with the regions Vision found, to explore by touch.
+    func captureExploreSnapshot() {
+        guard running, !simulation, let frame = session.currentFrame else {
+            speakOperation(arabic ? "أحتاج الكاميرا لالتقاط صورة." : "I need the camera to take a picture."); return
+        }
+        let pixels = frame.capturedImage, arabic = self.arabic
+        let oriented = CIImage(cvPixelBuffer: pixels).oriented(.right)
+        guard let cg = CIContext().createCGImage(oriented, from: oriented.extent) else { return }
+        let image = UIImage(cgImage: cg)
+        Task.detached(priority: .userInitiated) { [weak self] in
+            let regions = (try? VisionService.exploreRegions(image: pixels, orientation: .right, arabic: arabic)) ?? []
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                self.exploreSnapshot = ExploreSnapshot(image: image, regions: regions)
+                self.speakOperation(regions.isEmpty
+                    ? (arabic ? "التقطت صورة، لكنني لم أجد نصاً أو أشخاصاً فيها." : "Picture taken, but I found no text or people in it.")
+                    : (arabic ? "التقطت صورة فيها \(regions.count) أشياء. حرّك إصبعك على الصورة لتستكشفها." : "Picture taken with \(regions.count) things found. Move your finger over the picture to explore it."))
+            }
+        }
+    }
+    func clearExploreSnapshot() { exploreSnapshot = nil }
+}

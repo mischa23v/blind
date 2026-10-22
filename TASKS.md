@@ -4,6 +4,8 @@
 - [ ] **H08 — Sensor-backed object search.** Exit: found/measured, seen-without-depth and not-located results on device; the hint stays fresh while turning.
 - [ ] **H09 — Accessible screens.** Exit: VoiceOver walkthrough of every tab by a blind tester; accessibility audits pass; every delete and share is confirmed.
 - [ ] **H10 — Firmware robustness.** Exit: PlatformIO builds; a hardware test of the debounced floor loss, no-target behaviour, watchdog reset with the motor off, and the pairing window.
+- [ ] **H12 — Reading tools (Seeing AI-style).** Live text, page reading with guidance, barcode/QR with product names, light detector, explore by touch. Exit: `ReadingToolsTests` pass on the Mac; device tests with real pages, signs, products, QR codes, dark and bright rooms, and a VoiceOver explore-by-touch session.
+
 - [ ] **H11 — Live Activity / Lock Screen status** (needs a widget extension target in the project generator).
 
 ## Conversation evidence rule — 2026-10-22 (source written; Mac verification pending)

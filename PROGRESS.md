@@ -1,3 +1,14 @@
+## Seeing AI-style reading tools — 2026-10-22 (follow-up)
+
+The Seeing AI app source is not public. I compared its documented features and added the missing ones, all on-device and decided by Vision, ARKit and code:
+- live text reading;
+- page reading with framing guidance;
+- barcode and QR scanning with ticks and saved product names;
+- a light detector;
+- explore a picture by touch.
+
+Voice commands: "Read text", "Read the page", "Scan the barcode", "Call this …", "Is the light on?", "Stop reading". They also appear under Settings › Ask and goals › Reading tools, and as a stop action on the main reply. Details are in research/SEEING_AI_CODE_REFERENCES.md. npm test 130/130. Swift and device behaviour are unverified (no Swift toolchain here).
+
 ## Tracked target and instant acknowledgement — 2026-10-22 (follow-up)
 
 - Added `TrackedTarget` (Touvigation pattern): once the sensors find an object, guidance is re-measured from LiDAR every frame, spoken at 3/2/1 m and on turns, "Within reach" at 0.6 m, refreshed by re-detection every 1.5 s, and ended with "lost sight" after 8 s. No model calls.

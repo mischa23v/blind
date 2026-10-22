@@ -70,6 +70,9 @@ private struct CompanionHomeView: View {
         }
         Button(t("Repeat", "كرر")) { model.repeatHomeInformation() }
         Button(t("Quiet descriptions (alerts and listening stay on)", "أوقف الأوصاف (التنبيهات والاستماع مستمرة)")) { model.stopDescriptions() }
+        if model.readingTool != nil {
+            Button(t("Stop reading tool", "أوقف أداة القراءة")) { model.stopReadingTool(announce: true) }
+        }
         if model.simulation {
             Button(t("End practice", "أنهِ التدريب")) { model.endPractice() }
         }
@@ -258,6 +261,17 @@ struct AssistantToolsView: View {
                 Button(t("Stop descriptions, keep alerts", "أوقف الوصف وأبقِ التنبيهات")) { model.stopDescriptions() }
                     .accessibilityIdentifier("stop-descriptions")
             } header: { Text(t("Answer", "الإجابة")) }
+            Section {
+                Button(t("Read text as it appears", "اقرأ النص عند ظهوره")) { model.startReadingTool(.liveText) }
+                Button(t("Read a whole page", "اقرأ صفحة كاملة")) { model.startReadingTool(.document) }
+                Button(t("Scan a barcode or QR code", "امسح باركود أو رمز QR")) { model.startReadingTool(.barcode) }
+                Button(t("Light detector", "كاشف الضوء")) { model.startReadingTool(.light) }
+                NavigationLink(t("Explore a picture by touch", "استكشف صورة باللمس")) { ExplorePictureView(model: model) }
+                    .accessibilityIdentifier("explore-picture")
+                if model.readingTool != nil {
+                    Button(t("Stop reading tool", "أوقف أداة القراءة")) { model.stopReadingTool(announce: true) }
+                }
+            } header: { Text(t("Reading tools", "أدوات القراءة")) }
             Section {
                 if !model.assistantDialogue.goal.isEmpty { Text(t("Current goal: ", "الهدف الحالي: ") + model.assistantDialogue.goal) }
                 TextField(t("New goal, for example: the bathroom", "هدف جديد، مثلاً: الحمام"), text: $model.objectiveDraft, axis: .vertical)
@@ -596,6 +610,13 @@ struct AssistantToolsView: View {
                 Text(t("Where is the exit sign?", "أين لافتة الخروج؟"))
                 Text(t("What colour is this shirt?", "ما لون هذا القميص؟"))
             } header: { Text(t("Finding things", "البحث عن الأشياء")) }
+            Section {
+                Text(t("Read text.", "اقرأ النص."))
+                Text(t("Read the page.", "اقرأ الصفحة."))
+                Text(t("Scan the barcode. Then: call this apple juice.", "امسح الباركود. ثم: سمّه عصير تفاح."))
+                Text(t("Is the light on?", "هل النور مضاء؟"))
+                Text(t("Stop reading.", "أوقف القراءة."))
+            } header: { Text(t("Reading", "القراءة")) }
             Section {
                 Text(t("Quiet", "أوقف الوصف"))
                 Text(t("Resume", "استأنف"))

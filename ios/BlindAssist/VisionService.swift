@@ -83,6 +83,73 @@ enum VisionService {
         }
         return nil
     }
+    // MARK: Reading tools (Seeing AI-style, 2026-10-22). Vision boxes are normalised with the origin
+    // at the bottom left of the upright image; these return top-left coordinates.
+
+    /// Recognised text lines with their centres, for live reading or a whole page.
+    static func textLines(image: CVPixelBuffer, orientation: CGImagePropertyOrientation, arabic: Bool, accurate: Bool) throws -> [TextLine] {
+        let request = VNRecognizeTextRequest()
+        request.recognitionLevel = accurate ? .accurate : .fast
+        request.usesLanguageCorrection = accurate
+        let supported = try request.supportedRecognitionLanguages()
+        request.recognitionLanguages = (arabic ? ["ar-SA", "ar", "en-US"] : ["en-US"]).filter { supported.contains($0) }
+        if request.recognitionLanguages.isEmpty { request.recognitionLanguages = ["en-US"] }
+        try VNImageRequestHandler(cvPixelBuffer: image, orientation: orientation).perform([request])
+        return (request.results ?? []).compactMap { box in
+            guard let best = box.topCandidates(1).first else { return nil }
+            return TextLine(text: best.string, confidence: Double(best.confidence),
+                            x: Double(box.boundingBox.midX), y: 1 - Double(box.boundingBox.midY))
+        }
+    }
+
+    /// The page's four corners, if Vision finds a document.
+    static func documentCorners(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) throws -> [(x: Double, y: Double)]? {
+        let request = VNDetectDocumentSegmentationRequest()
+        try VNImageRequestHandler(cvPixelBuffer: image, orientation: orientation).perform([request])
+        guard let page = request.results?.first, page.confidence >= 0.5 else { return nil }
+        return [page.topLeft, page.topRight, page.bottomRight, page.bottomLeft].map { (x: Double($0.x), y: 1 - Double($0.y)) }
+    }
+
+    /// The first decoded barcode or QR code in view.
+    static func code(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) throws -> (payload: String, isQR: Bool)? {
+        let request = VNDetectBarcodesRequest()
+        try VNImageRequestHandler(cvPixelBuffer: image, orientation: orientation).perform([request])
+        guard let found = (request.results ?? []).first(where: { !($0.payloadStringValue ?? "").isEmpty }),
+              let payload = found.payloadStringValue else { return nil }
+        return (payload, found.symbology == .qr)
+    }
+
+    /// Detected regions for exploring a picture by touch: text, people, a page and detector objects.
+    /// Only what Vision found is listed; nothing is guessed.
+    static func exploreRegions(image: CVPixelBuffer, orientation: CGImagePropertyOrientation, arabic: Bool) throws -> [(label: String, rect: CGRect)] {
+        let text = VNRecognizeTextRequest(); text.recognitionLevel = .accurate
+        let people = VNDetectHumanRectanglesRequest()
+        let page = VNDetectDocumentSegmentationRequest()
+        try VNImageRequestHandler(cvPixelBuffer: image, orientation: orientation).perform([text, people, page])
+        let flip = { (box: CGRect) in CGRect(x: box.minX, y: 1 - box.maxY, width: box.width, height: box.height) }
+        var regions: [(label: String, rect: CGRect)] = []
+        for box in text.results ?? [] {
+            if let line = box.topCandidates(1).first, line.confidence >= 0.5 {
+                regions.append(((arabic ? "نص: " : "Text: ") + line.string, flip(box.boundingBox)))
+            }
+        }
+        for person in (people.results ?? []) where person.confidence >= 0.6 {
+            regions.append((arabic ? "شخص" : "Person", flip(person.boundingBox)))
+        }
+        if let document = page.results?.first, document.confidence >= 0.5 {
+            regions.append((arabic ? "صفحة" : "Page", flip(document.boundingBox)))
+        }
+        if let url = Bundle.main.url(forResource: "Detector", withExtension: "mlmodelc") {
+            let request = VNCoreMLRequest(model: try VNCoreMLModel(for: MLModel(contentsOf: url)))
+            request.imageCropAndScaleOption = .scaleFit
+            try VNImageRequestHandler(cvPixelBuffer: image, orientation: orientation).perform([request])
+            for object in (request.results as? [VNRecognizedObjectObservation] ?? []) where object.confidence > 0.6 {
+                if let label = object.labels.first?.identifier { regions.append((label, flip(object.boundingBox))) }
+            }
+        }
+        return regions
+    }
+
     /// Accept any compatible object-detection model supplied as Detector.mlmodelc.
     /// Built-in human detection/classification work without a downloaded model.
     static func detectObjects(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) throws -> [String] {
