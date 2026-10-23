@@ -1,6 +1,51 @@
+## Final coordinated source checkpoint — 2026-10-23
+
+This is the current record; older entries and counts below are historical. Integration preserves primary `30999a9` and incorporates the reviewed seven-commit Claude branch through `61001267`, plus the coordinated Saudi device-test and familiar-person work. It is source integration, not a deployment or Apple/device acceptance.
+
+**Canonical acceptance tracker:** [CHILD_ASSISTANT_TEST_TRACKER.md](CHILD_ASSISTANT_TEST_TRACKER.md). It records the goal, provenance rules, 24 child-style scenarios, three response paths (ordinary chat, independent hazards, evidence-gated physical requests), and executed versus still-pending checks. Use [CLAUDE_INTEGRATION_REVIEW.md](CLAUDE_INTEGRATION_REVIEW.md) for fixes and evidence, [PROJECT_VISION.md](PROJECT_VISION.md) for product intent, and [SESSION_LOG.md](SESSION_LOG.md) for decisions.
+
+Final portable checks: **530/530 BlindCore**, **14/14 BlindMemory**, **216/216 Node**, **17/17 synthetic MobilitySimulation**; firmware protocol and sanitized failure tests plus native face-slot C++ tests passed. All iOS Swift source parses in default and combined optional configurations. Aggregate verify passed in a disposable copy; the active project was not regenerated. Parsing/source contracts do not replace Apple SDK typechecking, native linking, actual model behavior, audible latency or VoiceOver testing.
+
+The first tab is settled assistant replies only; helper/settings tabs retain accessible mute/end/setup. Foreground startup starts an idle conversation and permitted sensing after setup, respecting saved camera-off and explicit mute/end on foreground return. Rooms show real RoomPlan layout/counts during start/stop scanning. Family enrollment uses photos, then name, then confirmed save. Consented foreground recognition checks bounded face batches and proposes one tentative saved-person notice per encounter; no position, follow or authentication claim. Actual recognition accuracy remains unmeasured here.
+
+Saudi recognition is functional only in an explicitly configured **Debug device-test build**, with the private 16-reference pack pinned by manifest hash. Default/Release has no approved production profile. See [tools/currency-reference/DEVICE_TEST.md](tools/currency-reference/DEVICE_TEST.md); preserve existing face/model/framework options when generating that test variant. No reference images or weights are committed. Dataset diagnostics are not independent phone accuracy.
+
+Physical object direction/reach/pickup guidance remains withheld because specific-target/depth binding is not validated. Typed find tools can gather fresh nonspatial candidates and attributed historical memory; the LLM cannot self-authorize a physical instruction. Bounded lexical guards are not exhaustive semantic proof. Current temperature/weather requests cannot be answered from camera or model memory: this build has no live weather/thermometer tool. A real fresh device-clock tool is included.
+
+**Next, in order:** build the exact selected configuration on the Mac; run the tracker with real model and recorded provenance; measure first audible reply, interruption and hazard-preemption timing; run native camera/currency/family/reading and VoiceOver cases with a sighted adult. Retain the earlier hallucination and latency failures as open until exact-build retests pass. Broader child trials, native hardware acceptance, all-day operation and independent unsupervised use are not validated by these checks.
+
+## Current integration checkpoint: 2026-10-23
+
+This checkpoint integrates the seven commits ending at `61001267dc0633c6b3cb941038b18dbb380cdc3d` onto primary `master` source `30999a9ed0e921491ff62a1a93e073fe6af092ff`, not onto the older shared ancestor. The assistant-first voice, evidence, executable-tool, memory, audience and cancellation work remains. Older “no off switch”, unconditional background listening, confirmed device behavior and test counts below are historical, **not current requirements or evidence**. Explicit mute/end, independent camera control and opt-in supported background voice remain. The latest child-first direction defaults active foreground camera awareness on, respecting a saved off choice and OS permission/background limits; old camera-off-default notes below are superseded.
+
+See [CLAUDE_INTEGRATION_REVIEW.md](CLAUDE_INTEGRATION_REVIEW.md) for the reviewed scope, fixes, portable checks and exact remaining acceptance scenarios. No Apple SDK build, actual model/phone accuracy test, firmware board build, deployment or device readiness is claimed.
+
 ## Current next gate — 2026-10-23
 
 Build the integrated continuous-assistant source in the preserved Mac project, then run the exact real-model and device scenarios in [ASSISTANT_FEATURE_CHECKLIST.md](ASSISTANT_FEATURE_CHECKLIST.md). Source now separates conversation/camera, adds session controls, partial-onset cancellation, streamed completion-accounted speech, bounded memory/tasks and executable read-only tools. The earlier current-location hallucination and 8.385-second response failure remain **unclosed actual-app failures**, not overwritten by portable test passes.
+
+<!-- Historical Claude-branch entries below; current integration status above supersedes old controller and test claims. -->
+## Next — Mac and iPhone (always-on build)
+
+1. Build BlindCore/BlindMemory and run their XCTests on macOS. They already pass on Linux: 361/361 and 14/14. Build the app and fix compile errors, then build once with `--live-activity` as well. Check `GenerationOptions(samplingMode:)` versus `sampling:` against the installed SDK.
+2. On the iPhone, verify always-on:
+   - Lock the screen and switch apps: speech warns at once and every 30 s, and listening continues.
+   - Return: the camera restarts.
+   - Phone call or Siri interruption: listening recovers.
+   - Bluetooth off/on and a belt power cycle: the belt reconnects by itself.
+3. Try the reading tools, "Describe a photo from my library" and the Arabic status lines. Retype the recorded chat failures. Run "help me find my cup" with the camera on (search result types) and with it off (code reply).
+4. Do a VoiceOver walkthrough of every tab, run the rewritten UI tests and the accessibility audits.
+5. Firmware: run the PlatformIO builds, then hardware tests of the debounced floor loss, no-target behaviour and the watchdog.
+
+## Next — Mac validation of the hallucination fix (2026-10-22)
+
+1. Build BlindCore and run XCTests, including `CompanionEvidenceTests` (shared fixture must match Node). Then build the app (`--text-only` and normal) and fix any compile errors in `LocalImageAssistant.swift`, `NavigationModel.swift`, `DashboardView.swift`, `VisionService.swift` and `VoiceInput.swift`.
+2. Retype the recorded failures in the running app:
+   - "Help me find my cup." should be answered by code: "I don't know where your cup is yet. Where did you last have it?"
+   - "I last left it on the kitchen table." should be acknowledged as history.
+   - Then try the closed/open fridge pair, a goal switch and a cancel. Record exact replies and timings.
+3. Measure the label and first-sentence timing with prewarm on the iPhone (target under ~1.5 s), and with VoiceOver confirm that the main screen reads only the reply.
+4. Image path: compare grounded and ungrounded descriptions on the recorded stair and room images; evaluate an Apache-2.0 detector and ARKit mesh classification as extra grounding sources.
 
 ## Latest actual result — chat still not accepted
 

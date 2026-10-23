@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve, join, dirname, basename, isAbsolute, sep } from 'node:path';
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const id = name => createHash('sha256').update(name).digest('hex').slice(0, 24).toUpperCase();
-export function generateProject(files, { multimodal = false, familiarPeople = false, familiarBackend = 'sface', opencvFramework, familiarModels, currencyReference = false, currencyReferencePack } = {}) {
+export function generateProject(files, { multimodal = false, familiarPeople = false, familiarBackend = 'sface', opencvFramework, familiarModels, currencyReference = false, currencyReferencePack, currencyDeviceTest = false, currencyReferencePackSHA256, liveActivity = false } = {}) {
   if (familiarPeople && (!opencvFramework || !familiarModels)) throw new Error('Experimental people requires explicit framework and model paths.');
   if (!['sface', 'auraface'].includes(familiarBackend)) throw new Error('Unknown familiar backend.');
   if (!familiarPeople && familiarBackend !== 'sface') throw new Error('AuraFace requires --familiar-people.');
@@ -12,11 +12,22 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
   if (nativeEnabled && (!opencvFramework || !isAbsolute(opencvFramework) || basename(opencvFramework) !== 'opencv2.framework')) throw new Error('Native inference requires an explicit absolute opencv2.framework path.');
   if (currencyReferencePack && !currencyReference) throw new Error('A reference pack requires --currency-reference.');
   if (currencyReferencePack && (!isAbsolute(currencyReferencePack) || basename(currencyReferencePack) !== 'SaudiBanknoteReferences')) throw new Error('The reference folder must be named SaudiBanknoteReferences.');
+  if (currencyDeviceTest && (!currencyReference || !currencyReferencePack)) throw new Error('Device testing requires --currency-reference and --currency-reference-pack.');
+  if (currencyDeviceTest && (typeof currencyReferencePackSHA256 !== 'string' || !/^[a-f0-9]{64}$/.test(currencyReferencePackSHA256))) throw new Error('Device testing requires the verified reference manifest SHA-256.');
+  if (!currencyDeviceTest && currencyReferencePackSHA256 !== undefined) throw new Error('A device-test manifest pin requires --currency-device-test.');
   const objects = [], add = (name, body) => { objects.push(`${id(name)} = { ${body} };`); return id(name); };
   const refs = [], sources = [];
   for (const file of files) {
     const ref = add(file, `isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ${JSON.stringify(`BlindAssist/${file}`)}; sourceTree = "<group>";`);
     refs.push(ref); sources.push(add(`build:${file}`, `isa = PBXBuildFile; fileRef = ${ref};`));
+  }
+  // Optional Lock Screen / Dynamic Island status (--live-activity): a WidgetKit extension plus
+  // attributes shared with the app. Off by default so the standard build has no extension target.
+  const activityFiles = ['CompanionActivityAttributes.swift', 'CompanionLiveActivityWidget.swift'];
+  const activityRefs = [];
+  if (liveActivity) {
+    for (const file of activityFiles) activityRefs.push(add(`activity:${file}`, `isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ${JSON.stringify(`BlindAssistLiveActivity/${file}`)}; sourceTree = "<group>";`));
+    sources.push(add('build:app-activity-attributes', `isa = PBXBuildFile; fileRef = ${activityRefs[0]};`));
   }
   const nativeFrameworkBuilds = [], resourceBuilds = [];
   if (familiarPeople) {
@@ -50,7 +61,7 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
     }
   }
   const resourcesPhase = add('resources', `isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (${resourceBuilds.join(',')}${resourceBuilds.length ? ',' : ''}); runOnlyForDeploymentPostprocessing = 0;`);
-  const conditions = ['$(inherited)', ...(multimodal ? ['BLIND_APPLE_MULTIMODAL'] : []), ...(familiarPeople ? ['BLIND_FAMILIAR_PEOPLE'] : []), ...(familiarPeople && familiarBackend === 'auraface' ? ['BLIND_FAMILIAR_AURAFACE'] : []), ...(currencyReference ? ['BLIND_CURRENCY_REFERENCE'] : [])].join(' ');
+  const conditions = ['$(inherited)', ...(multimodal ? ['BLIND_APPLE_MULTIMODAL'] : []), ...(familiarPeople ? ['BLIND_FAMILIAR_PEOPLE'] : []), ...(familiarPeople && familiarBackend === 'auraface' ? ['BLIND_FAMILIAR_AURAFACE'] : []), ...(currencyReference ? ['BLIND_CURRENCY_REFERENCE'] : []), ...(liveActivity ? ['BLIND_LIVE_ACTIVITY'] : [])].join(' ');
   const nativeDefinitions = ['$(inherited)', ...(familiarPeople ? ['BLIND_FAMILIAR_PEOPLE=1'] : []), ...(currencyReference ? ['BLIND_CURRENCY_REFERENCE=1'] : [])];
   const bridge = currencyReference ? 'BlindAssist/CurrencyNative/BlindAssist-Currency-Bridging-Header.h' : 'BlindAssist/FamiliarNative/BlindAssist-Bridging-Header.h';
   const nativeSettings = nativeEnabled ? `SWIFT_OBJC_BRIDGING_HEADER = ${bridge}; GCC_PREPROCESSOR_DEFINITIONS = (${nativeDefinitions.map(value => JSON.stringify(value)).join(',')},); CLANG_CXX_LANGUAGE_STANDARD = "c++17"; CLANG_CXX_LIBRARY = "libc++"; CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES; GCC_ENABLE_CPP_EXCEPTIONS = YES; FRAMEWORK_SEARCH_PATHS = ("$(inherited)",${JSON.stringify(dirname(opencvFramework))},); OTHER_LDFLAGS = ("$(inherited)","-lc++",); "EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;` : '';
@@ -63,11 +74,33 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
   const memoryLibrary = add('memory-lib', `isa = PBXBuildFile; productRef = ${memoryDependency};`);
   const sourcesPhase = add('sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${sources.join(',')},); runOnlyForDeploymentPostprocessing = 0;`);
   const frameworksPhase = add('frameworks', `isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (${lib},${memoryLibrary},${nativeFrameworkBuilds.join(",")}${nativeFrameworkBuilds.length ? "," : ""}); runOnlyForDeploymentPostprocessing = 0;`);
+  let activityTarget, activityEmbed;
+  if (liveActivity) {
+    const activityProduct = add('activity-product', 'isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; path = BlindAssistLiveActivity.appex; sourceTree = BUILT_PRODUCTS_DIR;');
+    const activityPlist = add('activity-plist', 'isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = BlindAssistLiveActivity/Info.plist; sourceTree = "<group>";');
+    refs.push(...activityRefs, activityPlist, activityProduct);
+    const activitySources = add('activity-sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${activityRefs.map((ref, index) => add(`build:activity:${activityFiles[index]}`, `isa = PBXBuildFile; fileRef = ${ref};`)).join(',')},); runOnlyForDeploymentPostprocessing = 0;`);
+    const activityFrameworks = add('activity-frameworks', 'isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0;');
+    const activityConfigs = ['Debug', 'Release'].map(name => add(`activity-${name}`, `isa = XCBuildConfiguration; name = ${name}; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) BLIND_LIVE_ACTIVITY"; TARGETED_DEVICE_FAMILY = "1"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility.liveactivity; INFOPLIST_FILE = BlindAssistLiveActivity/Info.plist; APPLICATION_EXTENSION_API_ONLY = YES; SKIP_INSTALL = YES; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)","@executable_path/Frameworks","@executable_path/../../Frameworks",); CODE_SIGN_STYLE = Automatic; ENABLE_USER_SCRIPT_SANDBOXING = YES; SWIFT_OPTIMIZATION_LEVEL = "${name === 'Debug' ? '-Onone' : '-O'}"; };`));
+    const activityConfigList = add('activity-configs', `isa = XCConfigurationList; buildConfigurations = (${activityConfigs.join(',')},); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;`);
+    activityTarget = add('activity-target', `isa = PBXNativeTarget; buildConfigurationList = ${activityConfigList}; buildPhases = (${activitySources},${activityFrameworks},); buildRules = (); dependencies = (); name = BlindAssistLiveActivity; productName = BlindAssistLiveActivity; productReference = ${activityProduct}; productType = "com.apple.product-type.app-extension";`);
+    const activityProxy = add('activity-proxy', `isa = PBXContainerItemProxy; containerPortal = ${id('project')}; proxyType = 1; remoteGlobalIDString = ${activityTarget}; remoteInfo = BlindAssistLiveActivity;`);
+    add('activity-dep', `isa = PBXTargetDependency; target = ${activityTarget}; targetProxy = ${activityProxy};`);
+    const embedBuild = add('build:activity-embed', `isa = PBXBuildFile; fileRef = ${activityProduct}; settings = { ATTRIBUTES = (RemoveHeadersOnCopy,); };`);
+    activityEmbed = add('activity-embed', `isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 13; files = (${embedBuild},); name = "Embed Foundation Extensions"; runOnlyForDeploymentPostprocessing = 0;`);
+  }
   const group = add('group', `isa = PBXGroup; children = (${refs.join(',')},${product},${id('ui-file')},${id('ui-product')},${id('unit-file')},${id('unit-product')},); sourceTree = "<group>";`);
   const configs = [];
-  for (const name of ['Debug', 'Release']) configs.push(add(name, `isa = XCBuildConfiguration; name = ${name}; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "${conditions}"; ${nativeSettings} TARGETED_DEVICE_FAMILY = "1"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility; INFOPLIST_FILE = BlindAssist/Info.plist; CODE_SIGN_STYLE = Automatic; ENABLE_USER_SCRIPT_SANDBOXING = YES; ENABLE_TESTABILITY = ${name === 'Debug' ? 'YES' : 'NO'}; ONLY_ACTIVE_ARCH = ${name === 'Debug' ? 'YES' : 'NO'}; SWIFT_OPTIMIZATION_LEVEL = "${name === 'Debug' ? '-Onone' : '-O'}"; };`));
+  for (const name of ['Debug', 'Release']) {
+    // Adult-configured private device trial only. Release receives neither the
+    // activation flag nor a manifest pin; the production profile remains nil.
+    const deviceTest = currencyDeviceTest && name === 'Debug';
+    const configurationConditions = conditions + (deviceTest ? ' DEBUG BLIND_CURRENCY_DEVICE_TEST' : '');
+    const deviceSettings = deviceTest ? `CURRENCY_REFERENCE_PACK_SHA256 = "${currencyReferencePackSHA256}";` : '';
+    configs.push(add(name, `isa = XCBuildConfiguration; name = ${name}; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "${configurationConditions}"; ${deviceSettings} ${nativeSettings} TARGETED_DEVICE_FAMILY = "1"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility; INFOPLIST_FILE = BlindAssist/Info.plist; CODE_SIGN_STYLE = Automatic; ENABLE_USER_SCRIPT_SANDBOXING = YES; ENABLE_TESTABILITY = ${name === 'Debug' ? 'YES' : 'NO'}; ONLY_ACTIVE_ARCH = ${name === 'Debug' ? 'YES' : 'NO'}; SWIFT_OPTIMIZATION_LEVEL = "${name === 'Debug' ? '-Onone' : '-O'}"; };`));
+  }
   const configList = add('configs', `isa = XCConfigurationList; buildConfigurations = (${configs.join(',')},); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;`);
-  const target = add('target', `isa = PBXNativeTarget; buildConfigurationList = ${configList}; buildPhases = (${sourcesPhase},${frameworksPhase},${resourcesPhase},); buildRules = (); dependencies = (); name = BlindAssist; productName = BlindAssist; productReference = ${product}; productType = "com.apple.product-type.application"; packageProductDependencies = (${dependency},${memoryDependency},);`);
+  const target = add('target', `isa = PBXNativeTarget; buildConfigurationList = ${configList}; buildPhases = (${sourcesPhase},${frameworksPhase},${resourcesPhase},${activityEmbed ? `${activityEmbed},` : ''}); buildRules = (); dependencies = (${activityTarget ? `${id('activity-dep')},` : ''}); name = BlindAssist; productName = BlindAssist; productReference = ${product}; productType = "com.apple.product-type.application"; packageProductDependencies = (${dependency},${memoryDependency},);`);
   const uiFile = add('ui-file', 'isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindAssistUITests/LaunchTests.swift; sourceTree = SOURCE_ROOT;');
   const uiBuild = add('ui-build', `isa = PBXBuildFile; fileRef = ${uiFile};`);
   const uiSources = add('ui-sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${uiBuild},); runOnlyForDeploymentPostprocessing = 0;`);
@@ -88,7 +121,7 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
   const unitConfigList = add('unit-configs', `isa = XCConfigurationList; buildConfigurations = (${unitConfigs.join(',')},); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug;`);
   const unitDependency = add('unit-dep', `isa = PBXTargetDependency; target = ${target}; targetProxy = ${proxy};`);
   const unitTarget = add('unit-target', `isa = PBXNativeTarget; buildConfigurationList = ${unitConfigList}; buildPhases = (${unitSources},${unitFrameworks},); buildRules = (); dependencies = (${unitDependency},); name = BlindAssistTests; productName = BlindAssistTests; productReference = ${unitProduct}; productType = "com.apple.product-type.bundle.unit-test"; packageProductDependencies = (${unitCore},);`);
-  const project = add('project', `isa = PBXProject; attributes = { LastUpgradeCheck = 1600; TargetAttributes = { ${uiTarget} = { TestTargetID = ${target}; }; ${unitTarget} = { TestTargetID = ${target}; }; }; }; buildConfigurationList = ${configList}; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, ar, Base); mainGroup = ${group}; projectDirPath = ""; projectRoot = ""; packageReferences = (${pkg},${memoryPackage},); targets = (${target},${uiTarget},${unitTarget},);`);
+  const project = add('project', `isa = PBXProject; attributes = { LastUpgradeCheck = 1600; TargetAttributes = { ${uiTarget} = { TestTargetID = ${target}; }; ${unitTarget} = { TestTargetID = ${target}; }; }; }; buildConfigurationList = ${configList}; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, ar, Base); mainGroup = ${group}; projectDirPath = ""; projectRoot = ""; packageReferences = (${pkg},${memoryPackage},); targets = (${target},${uiTarget},${unitTarget},${activityTarget ? `${activityTarget},` : ''});`);
   let result = `// !$*UTF8*$!\n{ archiveVersion = 1; classes = {}; objectVersion = 56; objects = {\n${objects.join('\n')}\n}; rootObject = ${project}; }\n`;
   return result;
 }
@@ -196,7 +229,7 @@ export async function verifyCurrencyReferencePack(folder) {
   return Object.freeze({ manifestSHA256: createHash('sha256').update(bytes).digest('hex'), references: manifest.references.length });
 }
 export function parseProjectArguments(args) {
-  const booleans = new Set(['--multimodal', '--familiar-people', '--currency-reference']);
+  const booleans = new Set(['--multimodal', '--familiar-people', '--currency-reference', '--currency-device-test', '--live-activity']);
   const values = new Set(['--familiar-backend', '--opencv-framework', '--familiar-models', '--currency-reference-pack']);
   const parsed = new Map();
   for (let i = 0; i < args.length; i++) {
@@ -209,6 +242,8 @@ export function parseProjectArguments(args) {
     }
   }
   const familiarPeople = parsed.has('--familiar-people'), currencyReference = parsed.has('--currency-reference');
+  const currencyDeviceTest = parsed.has('--currency-device-test');
+  if (currencyDeviceTest && (!currencyReference || !parsed.has('--currency-reference-pack'))) throw new Error('Device testing requires --currency-reference and --currency-reference-pack.');
   if (!familiarPeople && (parsed.has('--familiar-backend') || parsed.has('--familiar-models'))) throw new Error('Face options require --familiar-people.');
   if (!currencyReference && parsed.has('--currency-reference-pack')) throw new Error('A reference pack requires --currency-reference.');
   if (!familiarPeople && !currencyReference && parsed.has('--opencv-framework')) throw new Error('The framework requires an explicit native feature.');
@@ -217,22 +252,32 @@ export function parseProjectArguments(args) {
   const familiarBackend = parsed.get('--familiar-backend') ?? 'sface';
   familiarHashesForBackend(familiarBackend);
   const path = name => parsed.has(name) ? resolve(parsed.get(name)) : undefined;
-  return { multimodal: parsed.has('--multimodal'), familiarPeople, familiarBackend, currencyReference,
+  return { multimodal: parsed.has('--multimodal'), liveActivity: parsed.has('--live-activity'), familiarPeople, familiarBackend, currencyReference, currencyDeviceTest,
     opencvFramework: path('--opencv-framework'), familiarModels: path('--familiar-models'), currencyReferencePack: path('--currency-reference-pack') };
 }
 export async function verifyProjectInputs(options) {
+  if (options.currencyDeviceTest && (!options.currencyReference || !options.currencyReferencePack || !options.opencvFramework)) throw new Error('Device testing requires explicit native currency, a reference pack and OpenCV.');
   if (options.familiarPeople) await verifyFamiliarInputs(options.opencvFramework, options.familiarModels, options.familiarBackend);
   else if (options.currencyReference) await verifyOpenCVFramework(options.opencvFramework);
-  if (options.currencyReferencePack) return verifyCurrencyReferencePack(options.currencyReferencePack);
+  if (options.currencyReferencePack) {
+    const pack = await verifyCurrencyReferencePack(options.currencyReferencePack);
+    if (options.currencyDeviceTest && pack.references === 0) throw new Error('Device testing requires a nonempty verified reference pack.');
+    return pack;
+  }
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const files = (await readdir(join(root, 'ios/BlindAssist'))).filter(file => file.endsWith('.swift')).sort();
   const options = parseProjectArguments(process.argv.slice(2));
   const pack = await verifyProjectInputs(options);
-  const project = generateProject(files, options);
+  const project = generateProject(files, {
+    ...options,
+    ...(options.currencyDeviceTest ? { currencyReferencePackSHA256: pack?.manifestSHA256 } : {})
+  });
   const output = join(root, 'ios/BlindAssist.xcodeproj'); await mkdir(output, { recursive: true });
   await writeFile(join(output, 'project.pbxproj'), project);
-  if (pack) console.log(`Private reference manifest SHA-256: ${pack.manifestSHA256}. Packaging does not activate recognition.`);
+  if (pack) console.log(`Private reference manifest SHA-256: ${pack.manifestSHA256}. ${options.currencyDeviceTest
+    ? 'Debug-only adult-supervised device-test profile. Unvalidated recognition; Release stays disabled.'
+    : 'Packaging does not activate recognition.'}`);
   const schemes = join(output, 'xcshareddata/xcschemes'); await mkdir(schemes, { recursive: true });
   await writeFile(join(schemes, 'BlindAssist.xcscheme'), generateScheme());
   console.log('Generated ios/BlindAssist.xcodeproj (phone/BLE build). For native RTAB-Map use npm run native:prepare.');

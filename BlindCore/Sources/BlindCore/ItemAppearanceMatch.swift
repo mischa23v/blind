@@ -29,7 +29,10 @@ public enum ItemAppearanceMatch {
         let ranked = distances.filter { $0.value.isFinite && $0.value >= 0 }.sorted { $0.value < $1.value }
         guard let best = ranked.first else { return .none }
         let runnerUp = ranked.dropFirst().first?.value ?? .infinity
-        if best.value <= accept && runnerUp - best.value >= margin { return .same(best.key) }
+        // With nothing else saved there is no look-alike to beat, so an unsaved sibling's cup could
+        // pass the margin trivially: require a stricter distance in that case.
+        let limit = ranked.count < 2 ? accept * 0.75 : accept
+        if best.value <= limit && runnerUp - best.value >= margin { return .same(best.key) }
         if best.value <= similar { return .similar(best.key) }
         return .none
     }

@@ -1,6 +1,49 @@
+## Final coordinated source checkpoint — 2026-10-23
+
+This is the current record; older entries and counts below are historical. Integration preserves primary `30999a9` and incorporates the reviewed seven-commit Claude branch through `61001267`, plus the coordinated Saudi device-test and familiar-person work. It is source integration, not a deployment or Apple/device acceptance.
+
+**Canonical acceptance tracker:** [CHILD_ASSISTANT_TEST_TRACKER.md](CHILD_ASSISTANT_TEST_TRACKER.md). It records the goal, provenance rules, 24 child-style scenarios, three response paths (ordinary chat, independent hazards, evidence-gated physical requests), and executed versus still-pending checks. Use [CLAUDE_INTEGRATION_REVIEW.md](CLAUDE_INTEGRATION_REVIEW.md) for fixes and evidence, [PROJECT_VISION.md](PROJECT_VISION.md) for product intent, and [SESSION_LOG.md](SESSION_LOG.md) for decisions.
+
+Final portable checks: **530/530 BlindCore**, **14/14 BlindMemory**, **216/216 Node**, **17/17 synthetic MobilitySimulation**; firmware protocol and sanitized failure tests plus native face-slot C++ tests passed. All iOS Swift source parses in default and combined optional configurations. Aggregate verify passed in a disposable copy; the active project was not regenerated. Parsing/source contracts do not replace Apple SDK typechecking, native linking, actual model behavior, audible latency or VoiceOver testing.
+
+The first tab is settled assistant replies only; helper/settings tabs retain accessible mute/end/setup. Foreground startup starts an idle conversation and permitted sensing after setup, respecting saved camera-off and explicit mute/end on foreground return. Rooms show real RoomPlan layout/counts during start/stop scanning. Family enrollment uses photos, then name, then confirmed save. Consented foreground recognition checks bounded face batches and proposes one tentative saved-person notice per encounter; no position, follow or authentication claim. Actual recognition accuracy remains unmeasured here.
+
+Saudi recognition is functional only in an explicitly configured **Debug device-test build**, with the private 16-reference pack pinned by manifest hash. Default/Release has no approved production profile. See [tools/currency-reference/DEVICE_TEST.md](tools/currency-reference/DEVICE_TEST.md); preserve existing face/model/framework options when generating that test variant. No reference images or weights are committed. Dataset diagnostics are not independent phone accuracy.
+
+Physical object direction/reach/pickup guidance remains withheld because specific-target/depth binding is not validated. Typed find tools can gather fresh nonspatial candidates and attributed historical memory; the LLM cannot self-authorize a physical instruction. Bounded lexical guards are not exhaustive semantic proof. Current temperature/weather requests cannot be answered from camera or model memory: this build has no live weather/thermometer tool. A real fresh device-clock tool is included.
+
+**Next, in order:** build the exact selected configuration on the Mac; run the tracker with real model and recorded provenance; measure first audible reply, interruption and hazard-preemption timing; run native camera/currency/family/reading and VoiceOver cases with a sighted adult. Retain the earlier hallucination and latency failures as open until exact-build retests pass. Broader child trials, native hardware acceptance, all-day operation and independent unsupervised use are not validated by these checks.
+
+## Current integration checkpoint: 2026-10-23
+
+This checkpoint integrates the seven commits ending at `61001267dc0633c6b3cb941038b18dbb380cdc3d` onto primary `master` source `30999a9ed0e921491ff62a1a93e073fe6af092ff`, not onto the older shared ancestor. The assistant-first voice, evidence, executable-tool, memory, audience and cancellation work remains. Older “no off switch”, unconditional background listening, confirmed device behavior and test counts below are historical, **not current requirements or evidence**. Explicit mute/end, independent camera control and opt-in supported background voice remain. The latest child-first direction defaults active foreground camera awareness on, respecting a saved off choice and OS permission/background limits; old camera-off-default notes below are superseded.
+
+See [CLAUDE_INTEGRATION_REVIEW.md](CLAUDE_INTEGRATION_REVIEW.md) for the reviewed scope, fixes, portable checks and exact remaining acceptance scenarios. No Apple SDK build, actual model/phone accuracy test, firmware board build, deployment or device readiness is claimed.
+
 ## Current continuous-assistant acceptance — 2026-10-23
 
 The complete 44-capability checklist and concrete scenarios now live in [ASSISTANT_FEATURE_CHECKLIST.md](ASSISTANT_FEATURE_CHECKLIST.md). Source fixes are not acceptance: Apple compilation/model evaluation, physical audio/background/accessibility/latency/endurance, semantic grounding, age-sensitive safety, model-aware context compaction and broader scene/action tool coverage remain open. Product intent and session decisions: [PROJECT_VISION.md](PROJECT_VISION.md), [SESSION_LOG.md](SESSION_LOG.md).
+
+<!-- Historical Claude-branch entries below; current integration status above supersedes old controller and test claims. -->
+## Always-on and full-scan follow-ups — 2026-10-22 (source written; Mac/device verification pending)
+
+- [ ] **H07 — Always on.** Background listening, speech and belt; the camera pause is announced every 30 s; restart on return, failure or frame loss; no off switch; practice auto-ends. Exit: iPhone test with the screen locked, app switching, a phone call, Siri, Bluetooth off/on and a belt power cycle; listening is never lost silently.
+- [ ] **H08 — Sensor-backed object search.** Exit: found/measured, seen-without-depth and not-located results on device; the hint stays fresh while turning.
+- [ ] **H09 — Accessible screens.** Exit: VoiceOver walkthrough of every tab by a blind tester; accessibility audits pass; every delete and share is confirmed.
+- [ ] **H10 — Firmware robustness.** Exit: PlatformIO builds; a hardware test of the debounced floor loss, no-target behaviour, watchdog reset with the motor off, and the pairing window.
+- [ ] **H12 — Reading tools (Seeing AI-style).** Live text, page reading with guidance, barcode/QR with product names, light detector, explore by touch. Exit: `ReadingToolsTests` pass on the Mac; device tests with real pages, signs, products, QR codes, dark and bright rooms, and a VoiceOver explore-by-touch session.
+
+- [ ] **H11 — Live Activity / Lock Screen status.** Source and the opt-in `--live-activity` generator target are written; the project test passes. Exit: the extension builds on the Mac; on the iPhone the Lock Screen shows listening and camera state, VoiceOver reads it in one swipe, and it updates when the app goes to the background and returns.
+- [ ] **H13 — Describe a library photo and Arabic statuses.** Exit: on the iPhone, pick photos with text, people and none of either and check the regions and overview; switch to Arabic and check the Devices, Routes, Places and Community maps status lines.
+
+## Conversation evidence rule — 2026-10-22 (source written; Mac verification pending)
+
+- [ ] **H01 — Code-owned object facts.** `CompanionUtterance`/`CompanionFactBook` answer find requests and location reports without the model; reports stay historical with time. Exit: BlindCore `CompanionEvidenceTests` pass on the Mac, and the recorded cup failure is answered correctly in the running app.
+- [ ] **H02 — Chat claim guard on every chat path.** `ConversationClaimGuard` plus `SpatialClaimGuard` before partial and final text; retry once, then refuse. Exit: shared fixture passes in Swift (Node 125/125 already) and actual typed scenarios show no invented location, absence or perception.
+- [ ] **H03 — Image grounding.** `VisualGrounding` 2-of-3-frame detector agreement before an object is named as fact. Exit: recorded-image comparison and device check. Add a licence-cleared detector and ARKit mesh labels.
+- [ ] **H04 — Reply-only main screen.** Exit: VoiceOver reads only the reply; actions and long press reach every tab; rewritten UI tests and accessibility audit pass.
+- [ ] **H05 — Latency with prewarmed sessions.** Exit: first sentence under ~1.5 s on the target iPhone, measured with signposts or logs.
+- [ ] **H06 — Continuous microphone survives offers and interruptions.** Exit: device test of offer answer, phone call/Siri interruption and recovery.
 
 ## Interactive task-agent acceptance — 2026-10-22
 

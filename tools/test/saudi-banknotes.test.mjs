@@ -29,7 +29,7 @@ test('money result is fresh, cancellable and uses existing speech gate', async (
   const cancellation = source.slice(source.indexOf('private func cancelDescription()'), source.indexOf('private func publish()'));
   assert.match(cancellation, /currencyActive = false/);
   assert.match(cancellation, /questionTask\?\.cancel\(\)/);
-  assert.match(source, /focusedTaskActive: focusedFaceSearch \|\| currencyActive/);
+  assert.match(source, /focusedTaskActive: focusedFaceSearch \|\| currencyActive \|\| currencyRetake.isPending/);
   assert.doesNotMatch(body, /feedback\.deliver|feedback\.speak|cloud: true/);
 });
 

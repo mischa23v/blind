@@ -34,6 +34,8 @@ enum TokenStore {
         SecItemAdd(add as CFDictionary, nil)
     }
 }
+// The photo-sending client exists only in developer comparison builds (privacy rule).
+#if BLIND_DEVELOPER_CLOUD
 struct SceneQuestionClient {
     var endpoint: String
     var token: String
@@ -71,6 +73,7 @@ struct SceneQuestionClient {
         return try JSONDecoder().decode(Status.self, from: data).sceneConfigured
     }
 }
+#endif
 
 enum OfflineSummary {
     static func status(arabic: Bool) -> String {

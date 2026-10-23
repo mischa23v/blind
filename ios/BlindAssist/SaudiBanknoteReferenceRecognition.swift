@@ -7,16 +7,40 @@ import Vision
 import BlindCore
 
 /// Build-time selection only: no remote config or query-driven threshold fitting.
-/// All three algorithms are available, but no production algorithm/profile is chosen.
+/// No production profile is chosen. A separate explicit Debug device-test build
+/// can pin a limited reviewed private pack; it does not fabricate release evidence.
 struct SaudiBanknoteReferenceProfile: Sendable {
+    enum Authorization: Sendable {
+        case release(SaudiBanknoteReferencePolicy.ReleaseApproval)
+        case deviceTest(SaudiBanknoteReferencePolicy.DeviceTestAuthorization)
+    }
     let algorithm: SaudiBanknoteReferencePolicy.Algorithm
     let manifestSHA256: String
     let thresholds: SaudiBanknoteReferencePolicy.Thresholds
-    let approval: SaudiBanknoteReferencePolicy.ReleaseApproval
+    let authorization: Authorization
+    #if DEBUG && BLIND_CURRENCY_DEVICE_TEST && BLIND_CURRENCY_REFERENCE
+    static let selected: SaudiBanknoteReferenceProfile? = {
+        guard let hash = Bundle.main.object(forInfoDictionaryKey: "BACurrencyDeviceTestManifestSHA256") as? String,
+              SaudiBanknoteReferencePolicy.validSHA(hash) else { return nil }
+        return .init(algorithm: .sift, manifestSHA256: hash, thresholds: .experimental,
+                     authorization: .deviceTest(.init(referencePackSHA256: hash)))
+    }()
+    #else
     static let selected: SaudiBanknoteReferenceProfile? = nil
+    #endif
     var valid: Bool {
-        SaudiBanknoteReferencePolicy.validSHA(manifestSHA256) && thresholds.valid && approval.valid
-            && approval.referencePackSHA256 == manifestSHA256
+        guard SaudiBanknoteReferencePolicy.validSHA(manifestSHA256), thresholds.valid else { return false }
+        switch authorization {
+        case .release(let approval):
+            return approval.valid && approval.referencePackSHA256 == manifestSHA256
+        case .deviceTest(let permission):
+            #if DEBUG && BLIND_CURRENCY_DEVICE_TEST && BLIND_CURRENCY_REFERENCE
+            return permission.valid && permission.referencePackSHA256 == manifestSHA256
+                && algorithm == .sift && thresholds == .experimental
+            #else
+            return false
+            #endif
+        }
     }
 }
 
@@ -24,7 +48,8 @@ struct SaudiBanknoteReferenceProfile: Sendable {
 /// No query pixels, descriptors, metadata or outputs are written to disk or sent.
 /// Vision rectangles are a conservative veto, not a single-note proof. Same-design,
 /// overlapping, hidden, folded and unknown notes can evade both detectors. This
-/// source is not release-ready, and the selected profile deliberately remains nil.
+/// source is not release-ready. Only an explicitly configured Debug device-test
+/// build selects a limited pack; ordinary builds keep the selected profile nil.
 actor SaudiBanknoteReferenceRecognition {
     enum Failure: Error { case unavailable, incompatible }
     nonisolated static var isAvailable: Bool {
@@ -96,7 +121,17 @@ actor SaudiBanknoteReferenceRecognition {
             overlaps: native.overlaps.map(\.doubleValue), queryWidth: native.queryWidth, queryHeight: native.queryHeight,
             frameProposals: frameProposals)
         try Task.checkCancellation()
-        return SaudiBanknoteReferencePolicy.decide(evidence, thresholds: profile.thresholds, approval: profile.approval)
+        switch profile.authorization {
+        case .release(let approval):
+            return SaudiBanknoteReferencePolicy.decide(evidence, thresholds: profile.thresholds, approval: approval)
+        case .deviceTest(let authorization):
+            #if DEBUG && BLIND_CURRENCY_DEVICE_TEST
+            return SaudiBanknoteReferencePolicy.decideForDeviceTest(evidence, thresholds: profile.thresholds,
+                                                                   authorization: authorization)
+            #else
+            throw Failure.unavailable
+            #endif
+        }
         #else
         throw Failure.unavailable
         #endif
@@ -109,7 +144,16 @@ actor SaudiBanknoteReferenceRecognition {
         let bytes = try boundedFile(root: root, relativePath: "manifest.json", limit: SaudiBanknoteReferencePolicy.Limits.manifestBytes)
         guard digest(bytes) == profile.manifestSHA256 else { throw Failure.incompatible }
         let pack = try SaudiBanknoteReferencePack.parse(bytes)
-        guard pack.allHumanReviewed, pack.minimumCoverage else { throw Failure.unavailable }
+        switch profile.authorization {
+        case .release:
+            guard pack.allHumanReviewed, pack.minimumCoverage else { throw Failure.unavailable }
+        case .deviceTest:
+            #if DEBUG && BLIND_CURRENCY_DEVICE_TEST
+            guard pack.deviceTestCoverage else { throw Failure.unavailable }
+            #else
+            throw Failure.unavailable
+            #endif
+        }
         var inputs: [BACurrencyReferenceInput] = [], totalBytes = 0
         for reference in pack.references {
             try Task.checkCancellation()

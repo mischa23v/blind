@@ -18,7 +18,9 @@ final class CompanionEvidenceTests: XCTestCase {
         for reply in ["كوبك على طاولة المطبخ.", "الكوب موجود على الطاولة.", "هو على الطاولة.", "وجدت الكوب."] {
             XCTAssertFalse(CompanionEvidenceGuard.allows(reply, reports: [report]), reply)
         }
-        XCTAssertTrue(CompanionEvidenceGuard.allows("قلت: «آخر مرة تركت الكوب على طاولة المطبخ».", reports: [report]))
+        // The stricter model-output boundary also withholds quoted physical geometry.
+        // Exact historical receipts remain code-owned in the controller, not model authority.
+        XCTAssertFalse(CompanionEvidenceGuard.allows("قلت: «آخر مرة تركت الكوب على طاولة المطبخ».", reports: [report]))
     }
     func testExactAttributionPreservesProvenanceAndNegation() {
         XCTAssertTrue(CompanionEvidenceGuard.allows("You said: “I last left it on the kitchen table”. That could be a place to check.", reports: historical))

@@ -23,11 +23,12 @@ test('native AuraFace preprocessing leaves SFace and aligned RGB untouched', asy
   assert.match(code, /unknown backend/);
   assert.match(code, /values.count != dimension/);
   assert.match(code, /vectorFrom\(values, _dimension\)/);
-  assert.match(code, /feature.total\(\) != \(size_t\)_dimension/);
+  assert.match(code, /feature.total\(\) != \(size_t\)dimension/);
   assert.match(code, /aligned.convertTo\(normalized, CV_32FC3\)/);
   assert.match(code, /normalized -= cv::Scalar\(127.5, 127.5, 127.5\)/);
   assert.match(code, /normalized \*= 1.0 \/ 127.5/);
-  assert.match(code, /else \{\s*_recognizer->feature\(aligned, feature\)/);
+  assert.match(code, /else \{\s*recognizer->feature\(aligned, feature\)/);
+  assert.match(code, /extractFace\(bgr, faces, order\[slot\], _recognizer, _auraFace, _dimension/);
   assert.ok(code.indexOf('result.alignedRGB = [NSData dataWithBytes:') < code.indexOf('aligned.convertTo(normalized'));
 });
 test('app profiles explicitly name separate dataset-calibrated decision policies', async () => {

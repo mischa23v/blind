@@ -15,6 +15,24 @@ final class CompanionAttentionTests: XCTestCase {
     }
     private func reasons(_ decisions: [CompanionDecision]) -> [CompanionReason] { decisions.map(\.reason) }
 
+    func testRelevantSavedPersonNoticeDuringGoalStillObeysAttention() {
+        let notice = item("familiar-arrival:person", .social, at: 100, ttl: 1.5,
+                          category: "social", goal: true)
+        let moment = CompanionMoment(now: 100, goalActive: true, focusedTaskActive: true, activity: .stationary)
+        var engine = CompanionAttention()
+        XCTAssertEqual(reasons(engine.decide([notice], moment: moment, settings: CompanionSettings())), [.goal])
+        var quietEngine = CompanionAttention(), quiet = CompanionSettings()
+        quiet.quiet = true
+        XCTAssertEqual(reasons(quietEngine.decide([notice], moment: moment, settings: quiet)), [.quiet])
+        var expiredEngine = CompanionAttention()
+        XCTAssertEqual(reasons(expiredEngine.decide([notice], moment: CompanionMoment(now: 102), settings: CompanionSettings())), [.expired])
+        var hazardEngine = CompanionAttention()
+        let danger = item("danger", .hazard, at: 100, ttl: 1)
+        let decisions = hazardEngine.decide([notice, danger], moment: moment, settings: CompanionSettings())
+        XCTAssertEqual(decisions.first?.reason, .hazard)
+        XCTAssertFalse(decisions.contains { if case .say(let candidate, _) = $0 { return candidate.key == notice.key }; return false })
+    }
+
     // OFF-01: first visit gets one short offer; silence declines it for the session.
     func testFirstVisitOffersOnceAndSilenceDeclines() {
         var engine = CompanionAttention(), settings = CompanionSettings()

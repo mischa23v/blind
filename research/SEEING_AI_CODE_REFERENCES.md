@@ -91,3 +91,25 @@ screenshots, IMG_6575.PNG, IMG_6576.PNG and IMG_6577.PNG, showing the Read, Desc
 and More interface. These are user-supplied developer reference material, not a
 training dataset or approval to upload app users' camera/memory data. Keep pictures
 as private release assets; only this written note and repository evidence go in Git.
+
+## Seeing AI features compared with this app, and what was added (2026-10-22)
+
+The Seeing AI app source is internal, so this compares its documented features ([Microsoft: Seeing AI 2](https://blogs.microsoft.com/accessibility/seeing-ai-2/), [What's new](https://blogs.microsoft.com/accessibility/?p=5455), [VOA](https://learningenglish.voanews.com/amp/personal-tech-seeing-ai/3949984.html), [1.3 release notes](https://apkmirror.com/apk/microsoft-corporation/seeing-ai/seeing-ai-1-3-release)) with this app. No code was copied. Everything added uses Apple's on-device Vision, ARKit and code: free, offline, private, and with no language model deciding what is there.
+
+| Seeing AI | Here |
+| --- | --- |
+| Scene / Describe | Already present (grounded image descriptions) |
+| Person | Opt-in familiar-people experiment; no age, emotion or traits (rule) |
+| Currency | Present, disabled until a reviewed reference pack exists |
+| Colour | Requested clothing colour |
+| Find my things | Saved items by look and place, live search, tracked target to reach |
+| **Short Text**: speaks text as it appears | **Added**: "Read text". Live OCR every 0.7 s; each line spoken once, top to bottom, repeated only after 10 s out of view (`LiveTextReader`). |
+| **Document**: guidance to centre the page | **Added**: "Read the page". Vision document detection tells the child to move left, right, up or down, closer or further, until the page is held still for three looks, then reads it with accurate OCR (`DocumentGuidance`). |
+| **Product**: beeps toward the barcode | **Added**: "Scan the barcode". A tick every 0.8 s while searching (30 s limit). It reads QR text and names link hosts without opening them, and reads product codes. "Call this apple juice" saves a name on the phone (`ProductMemory`); later scans say "This is apple juice". There is no online product lookup (offline rule). |
+| **Light** detector | **Added**: "Is the light on?". ARKit light estimate gives dark, dim, normal, bright or very bright, spoken on change, with beeps that get faster in brighter light (`LightLevel`). |
+| **Explore photo by touch** | **Added**: "Explore a picture by touch" (Settings › Ask and goals). The picture stays in memory only. Text, people, the page and detector objects are VoiceOver regions labelled with where they are, and the picture is forgotten on leaving. |
+| Describe photos from the library | **Added**: "Describe a photo from my library" in Explore a picture. Apple's Photos picker opens; the photo is read in memory only. It gets the same touch regions, plus a hedged overview ("may show") from Vision image categories. |
+| Describe photos shared from other apps | Not yet: needs a share extension target. The library picker covers saved photos. |
+| Handwriting | Covered partly by accurate OCR in page reading; not separately evaluated |
+
+Tests: `BlindCore/Tests/BlindCoreTests/ReadingToolsTests.swift` (written, not run here), plus a static check in `tools/test/companion-evidence.test.mjs` that the reading tools use no model or upload path.

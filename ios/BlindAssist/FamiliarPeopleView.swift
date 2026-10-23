@@ -1,8 +1,34 @@
 #if BLIND_FAMILIAR_PEOPLE
 import SwiftUI
 import PhotosUI
+import AVFoundation
 
+/// A short People landing page; experimental controls are only in the helper workflow.
 struct FamiliarPeopleView: View {
+    @ObservedObject var model: NavigationModel
+    @ObservedObject var experiment: FamiliarFaceExperiment
+    private func t(_ english: String, _ arabic: String) -> String { model.arabic ? arabic : english }
+    var body: some View {
+        List {
+            Section(t("Saved people", "الأشخاص المحفوظون")) {
+                if experiment.people.isEmpty { Text(t("No people saved yet.", "لا يوجد أشخاص محفوظون بعد.")) }
+                ForEach(experiment.people) { person in
+                    NavigationLink(person.label) { FamiliarPeopleToolsView(model: model, experiment: experiment) }
+                        .frame(minHeight: 44)
+                }
+            }
+            NavigationLink(t("Add person", "أضف شخصاً")) { FamiliarPeopleToolsView(model: model, experiment: experiment) }
+                .frame(minHeight: 44).accessibilityIdentifier("familiar-add-person")
+            Text(t("Use a sighted helper. A familiar-person hint can be wrong.", "استعن بمساعد مبصر. قد يخطئ التعرف على الشخص المألوف."))
+        }
+        .navigationTitle(t("People", "الأشخاص"))
+        .onAppear {
+            if !experiment.enabled && !experiment.hasActiveWork { experiment.reload() }
+        }
+    }
+}
+
+private struct FamiliarPeopleToolsView: View {
     @ObservedObject var model: NavigationModel
     @ObservedObject var experiment: FamiliarFaceExperiment
     @Environment(\.scenePhase) private var scenePhase
@@ -14,53 +40,42 @@ struct FamiliarPeopleView: View {
     @State private var photoLoadError = ""
     @State private var photoGeneration = UUID()
     @State private var photoTask: Task<Void, Never>?
+    @State private var awaitingCameraForEnrollment = false
     var body: some View {
         Form {
-            Section("Experimental familiar-person hints") {
-                Text("A tentative hint, not authentication. Current enrollment uses consenting adults for supervised stationary lab tests. Mac and phone checks are pending; supervised child-user feasibility comes later. An earlier baseline offline benchmark falsely named 7 of 200 unknown-person photos. Photos or screens may fool it. No safe-to-follow, trust or navigation advice.")
-                Text("Only one consenting adult in each capture or selected photo. Crowds are unsupported: a detector can miss another person even when it reports one face. Position means the camera image, never your body's direction or distance.")
-                Toggle("I understand the limits and have sighted supervision for this first-stage test", isOn: $acknowledged)
-                    .accessibilityIdentifier("familiar-disclosure")
-                    .onChange(of: acknowledged) { _, value in if !value { experiment.setEnabled(false) } }
-                Toggle("Enable experimental hints for this visit", isOn: Binding(get: { experiment.enabled }, set: { experiment.setEnabled($0) }))
-                    .disabled(!acknowledged).accessibilityIdentifier("familiar-enable")
-                Button("Hear limits and confirm by voice") { experiment.requestEnable() }
-                Text("Off by default and when leaving. Templates and labels stay encrypted on this phone, excluded from backups. No app uploads. Original or aligned photos are not saved by this app; selected photos remain in your Photos library.")
-                Text("Start camera monitoring and complete calibration before camera enrollment. Starting or stopping a camera session cancels unfinished face work. Existing-photo enrollment does not require camera monitoring.")
-                Button(model.running ? "Stop live camera" : "Start live camera monitoring") { if model.running { model.stop() } else { model.start() } }
-            }
-            Section("Voice and gesture controls") {
-                Text("Tap Speak, or use VoiceOver's two-finger double-tap here, to start or finish the existing offline speech input. Say familiar people; enroll person Mom; confirm face action; capture face; import face photos; finish face enrollment; who is this; find person Mom; review person Mom; add face examples for Mom; replace face examples for Mom; delete person Mom; cancel face action; or stop familiar people. Mom and Dad are labels you choose, never inferred relationships. Generic yes or no does not confirm a face action.")
-                Text(model.voice.message)
-                if !model.voice.transcript.isEmpty { Text(model.voice.transcript) }
-            }
-            Section("Build-selected experimental model") {
-                Text("\(FamiliarModelConfiguration.selected.backendKind): cosine floor \(FamiliarModelConfiguration.selected.cosineThreshold), margin \(FamiliarModelConfiguration.selected.minimumMargin). These were selected on separate still-photo calibration, not validated for this multi-example phone workflow.")
-            }
-            Section("Optional second pipeline") {
-                Toggle("Also require Apple image-similarity agreement", isOn: Binding(get: { experiment.dualPipeline }, set: { experiment.setDualPipeline($0) }))
-                    .disabled(!experiment.enabled).accessibilityIdentifier("familiar-dual-pipeline")
-                Text("Off by default. Uses the same aligned face crop, not whole-scene clothing or surroundings. Agreement can only retain the selected face-model candidate; Both can agree on the wrong person. Every example needs compatible prints. Generic image distance 0.3 and margin 0.1 are uncalibrated. No improvement has been measured on Apple hardware. These settings may reject every face.")
+            Section("Add a person with a helper") {
+                Text("For now, enroll only a consenting adult with sighted supervision. Familiar-person hints can be wrong; ask the person to speak. Photos and templates stay on this phone.")
+                if !experiment.enabled {
+                    Button("Review limits and enable for this visit") { experiment.requestEnable() }
+                        .frame(minHeight: 44).accessibilityIdentifier("familiar-guided-enable")
+                }
             }
             Section("Current action") {
                 Text(experiment.status).accessibilityIdentifier("familiar-status")
+                if !photoLoadError.isEmpty { Text(photoLoadError) }
                 if experiment.awaitingConfirmation {
                     Button("Confirm exact spoken face action") { experiment.confirm() }.accessibilityIdentifier("familiar-confirm")
                     Text("Confirmation expires after 30 seconds. Confirm the exact label, consent and operation you just heard.")
                 }
                 Button("Compare the face now") { experiment.compare(model: model) }
                     .disabled(!experiment.enabled || experiment.busy || photoLoading).accessibilityIdentifier("familiar-compare")
-                Text("Named search checks for at most 20 seconds and six fresh comparisons, quietly between attempts. It still requires calibrated portrait monitoring and three seconds stationary; it does not recognize while walking. Looking toward a chest-worn phone does not guarantee a face is visible.")
-                Text("The hint might be wrong. Ask the person to speak and recognize them yourself; this is not your only way to identify anyone.")
             }
-            Section("Enroll a consenting adult") {
-                TextField("Your label, such as Mom or Dad", text: $label).accessibilityIdentifier("familiar-label")
-                Button("Begin enrollment and hear consent confirmation") { experiment.requestEnrollment(label: label) }
+            if !experiment.hasEnrollmentDraft {
+            Section("1. Take photos") {
+                Button(model.cameraAwareness ? "Take photos of a person" : "Turn on camera and take photos") {
+                    if model.running { experiment.requestUnnamedEnrollment() }
+                    else { startCameraForEnrollment() }
+                }
                     .disabled(!experiment.enabled || experiment.busy || photoLoading).accessibilityIdentifier("familiar-consent")
+                Button("Use photos already on this phone") { experiment.requestUnnamedEnrollment() }
+                    .disabled(!experiment.enabled || experiment.busy || photoLoading)
+                if awaitingCameraForEnrollment { Text("Waiting for camera permission or startup. You can cancel at any time.") }
+                if !model.running { Text(model.message) }
                 Text("Child enrollment is unavailable in this build. Enroll only the adult who permits these examples. Imported photos cannot establish consent or a family relationship. All examples must show the same adult alone.")
             }
-            if let draftLabel = experiment.draftLabel {
-                Section("Review unfinished examples for \(draftLabel)") {
+            }
+            if experiment.hasEnrollmentDraft {
+                Section("1. Take three clear photos") {
                     Text("\(experiment.draftExamples.count) of 6 examples. At least 3 required to finish. \(experiment.captureInstruction)")
                     Button("Capture face · next angle") { experiment.captureExample(model: model) }
                         .disabled(experiment.busy || photoLoading || experiment.remainingExamples == 0).accessibilityIdentifier("familiar-capture")
@@ -68,7 +83,6 @@ struct FamiliarPeopleView: View {
                         .disabled(experiment.busy || photoLoading || experiment.remainingExamples == 0).accessibilityIdentifier("familiar-import")
                     Text("Apple's accessible Photos picker selects up to the remaining six-example limit. Voice can open it but cannot choose its photos. System Photos may need to download an existing iCloud original; unavailable offline selections fail without an app upload. Maximum 20 MB per selected still image.")
                     if photoLoading { ProgressView("Loading selected photos locally") }
-                    if !photoLoadError.isEmpty { Text(photoLoadError) }
                     ForEach(Array(experiment.draftExamples.enumerated()), id: \.element.id) { index, example in
                         VStack(alignment: .leading) {
                             Text("Example \(index + 1): \(example.source == "camera" ? "camera capture" : "selected photo")")
@@ -79,10 +93,29 @@ struct FamiliarPeopleView: View {
                             Button("Remove unfinished example \(index + 1)", role: .destructive) { experiment.removeDraftExample(example.id) }
                         }
                     }
-                    Text("Enrollment checks for one detected face, at least 80-pixel face width/height, and Apple capture quality at least 0.25. These are uncalibrated lab filters, not identity confidence or spoof protection. A rejection asks you to retry; it never enrolls a bystander automatically.")
-                    Button("Review label and finish enrollment") { experiment.finishEnrollment() }
-                        .disabled(experiment.busy || photoLoading || experiment.draftExamples.count < 3).accessibilityIdentifier("familiar-finish-enrollment")
+                    Text("Only one person in each photo. If a photo is unclear, try again.")
                 }
+                if experiment.draftExamples.count >= 3 {
+                    Section("2. Name and save") {
+                        TextField("Their name, such as Mom or Dad", text: $label).accessibilityIdentifier("familiar-label")
+                            .onChange(of: label) { _, value in
+                                // Editing cannot leave an old named-save confirmation active.
+                                if value.trimmingCharacters(in: .whitespacesAndNewlines) != experiment.draftLabel {
+                                    experiment.cancelSaveConfirmation()
+                                }
+                            }
+                        Button("Save person") {
+                            if experiment.setDraftLabel(label) { experiment.finishEnrollment() }
+                        }
+                        .disabled(experiment.busy || photoLoading || label.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        .accessibilityIdentifier("familiar-finish-enrollment")
+                        Text("Review the name and photos, then confirm the save above.")
+                    }
+                }
+            }
+            Section {
+                NavigationLink("Helper setup and full limitations") { helperDetails }
+                    .frame(minHeight: 44).accessibilityIdentifier("familiar-helper-setup")
             }
             Section("Private gallery") {
                 Button("Reload private gallery") { cancelPhotoLoad(); experiment.reload() }
@@ -103,13 +136,13 @@ struct FamiliarPeopleView: View {
                 Button("Delete all experimental people", role: .destructive) { confirmDeleteAll = true }.accessibilityIdentifier("familiar-delete-all")
             }
         }
-        .navigationTitle("Familiar people · experiment")
+        .navigationTitle("Add or manage a person")
         .safeAreaInset(edge: .bottom) {
             HStack {
                 Button(model.voice.listening ? "Finish speaking" : "Speak face command") { toggleVoice() }
                     .accessibilityIdentifier("familiar-voice")
-                Button("Cancel", role: .cancel) { cancelPhotoLoad(); experiment.cancel(); model.voice.cancel() }
-                Button("Retry capture") { experiment.captureExample(model: model) }.disabled(experiment.draftLabel == nil || experiment.busy)
+                Button("Cancel", role: .cancel) { awaitingCameraForEnrollment = false; cancelPhotoLoad(); experiment.cancel(); model.voice.endManualTurn() }
+                Button("Retry capture") { experiment.captureExample(model: model) }.disabled(!experiment.hasEnrollmentDraft || experiment.busy)
             }.padding().background(.regularMaterial)
         }
         .accessibilityAction(.magicTap) { toggleVoice() }
@@ -117,14 +150,72 @@ struct FamiliarPeopleView: View {
             maxSelectionCount: max(1, experiment.remainingExamples), matching: .images, preferredItemEncoding: .current)
         .onChange(of: experiment.enrollmentToken) { _, _ in cancelPhotoLoad() }
         .onChange(of: selectedPhotos) { _, selected in loadPhotos(selected) }
+        .onChange(of: model.running) { _, running in
+            if running && awaitingCameraForEnrollment { awaitingCameraForEnrollment = false; experiment.requestUnnamedEnrollment() }
+        }
+        .onChange(of: model.message) { _, _ in
+            if !model.running && (AVCaptureDevice.authorizationStatus(for: .video) == .denied || AVCaptureDevice.authorizationStatus(for: .video) == .restricted || !model.supported) {
+                awaitingCameraForEnrollment = false
+            }
+        }
+        .onChange(of: experiment.draftLabel) { _, name in if let name { label = name } }
         .onAppear { experiment.presentationActive = true; if !experiment.enabled && !experiment.awaitingConfirmation { experiment.reload() } }
-        .onDisappear { experiment.presentationActive = false; cancelPhotoLoad(); experiment.setEnabled(false); model.voice.cancel() }
+        .onDisappear { awaitingCameraForEnrollment = false; cancelPhotoLoad(); experiment.leaveEnrollmentScreen(); model.voice.endManualTurn() }
         .onChange(of: scenePhase) { _, phase in
-            if phase != .active { cancelPhotoLoad(); experiment.setEnabled(false); acknowledged = false; model.voice.cancel() }
+            if phase != .active { awaitingCameraForEnrollment = false; cancelPhotoLoad(); experiment.leaveEnrollmentScreen(); model.voice.endManualTurn() }
         }
         .confirmationDialog("Delete every experimental face template and label on this phone?", isPresented: $confirmDeleteAll) {
             Button("Delete all experimental people", role: .destructive) { cancelPhotoLoad(); experiment.deleteAll() }
         }
+    }
+    private func startCameraForEnrollment() {
+        guard model.supported, !model.textOnly else {
+            photoLoadError = "Live camera enrollment is unavailable on this device or in text-only mode. Use existing photos instead."
+            return
+        }
+        awaitingCameraForEnrollment = true
+        // The button explicitly says it turns the camera on. Merely visiting People
+        // never changes a previously saved camera-off choice.
+        if !model.cameraAwareness { model.cameraAwareness = true } else { model.start() }
+        if AVCaptureDevice.authorizationStatus(for: .video) == .denied || AVCaptureDevice.authorizationStatus(for: .video) == .restricted {
+            awaitingCameraForEnrollment = false
+        }
+    }
+
+    private var helperDetails: some View {
+        Form {
+            Section("Experimental familiar-person hints") {
+                Text("A tentative hint, not authentication. Current enrollment uses consenting adults for supervised stationary lab tests. Mac and phone checks are pending; supervised child-user feasibility comes later. An earlier baseline offline benchmark falsely named 7 of 200 unknown-person photos. Photos or screens may fool it. No safe-to-follow, trust or navigation advice.")
+                Text("Enrollment needs one consenting adult in each photo. Recognition checks up to two detected faces per pass, rotating through up to 32 faces. Larger crowds are unsupported. A detector can miss people. Position means the camera image, never your body's direction or distance.")
+                Toggle("I understand the limits and have sighted supervision for this first-stage test", isOn: $acknowledged)
+                    .accessibilityIdentifier("familiar-disclosure")
+                    .onChange(of: acknowledged) { _, value in if !value { experiment.setEnabled(false) } }
+                Toggle("Enable experimental hints for this visit", isOn: Binding(get: { experiment.enabled }, set: { experiment.setEnabled($0) }))
+                    .disabled(!acknowledged).accessibilityIdentifier("familiar-enable")
+                Button("Hear limits and confirm by voice") { experiment.requestEnable() }
+                Text("Off by default. Once enabled, familiar people are checked while your foreground camera is active, including outside this screen. A newly recognized person gets one tentative notice, not repeated chatter. Stop familiar people here or by voice. Templates and labels stay encrypted on this phone, excluded from backups. No app uploads. Original or aligned photos are not saved by this app; selected photos remain in your Photos library.")
+                Text("Start camera monitoring and complete calibration before camera enrollment. Starting or stopping a camera session cancels unfinished face work. Existing-photo enrollment does not require camera monitoring.")
+                Button(model.running ? "Stop live camera" : "Turn on live camera monitoring") {
+                    if model.running { model.cameraAwareness = false }
+                    else if !model.cameraAwareness { model.cameraAwareness = true }
+                    else { model.start() }
+                }
+            }
+            Section("Voice and gesture controls") {
+                Text("Tap Speak, or use VoiceOver's two-finger double-tap here, to start or finish the existing offline speech input. Say familiar people; enroll person Mom; confirm face action; capture face; import face photos; finish face enrollment; who is this; find person Mom; review person Mom; add face examples for Mom; replace face examples for Mom; delete person Mom; cancel face action; or stop familiar people. Mom and Dad are labels you choose, never inferred relationships. Generic yes or no does not confirm a face action.")
+                Text(model.voice.message)
+                if !model.voice.transcript.isEmpty { Text(model.voice.transcript) }
+            }
+            Section("Build-selected experimental model") {
+                Text("\(FamiliarModelConfiguration.selected.backendKind): cosine floor \(FamiliarModelConfiguration.selected.cosineThreshold), margin \(FamiliarModelConfiguration.selected.minimumMargin). These were selected on separate still-photo calibration, not validated for this multi-example phone workflow.")
+            }
+            Section("Optional second pipeline") {
+                Toggle("Also require Apple image-similarity agreement", isOn: Binding(get: { experiment.dualPipeline }, set: { experiment.setDualPipeline($0) }))
+                    .disabled(!experiment.enabled).accessibilityIdentifier("familiar-dual-pipeline")
+                Text("Off by default. Uses the same aligned face crop, not whole-scene clothing or surroundings. Agreement can only retain the selected face-model candidate; Both can agree on the wrong person. Every example needs compatible prints. Generic image distance 0.3 and margin 0.1 are uncalibrated. No improvement has been measured on Apple hardware. These settings may reject every face.")
+            }
+        }
+        .navigationTitle("Helper setup")
     }
     private func toggleVoice() { if model.voice.listening { model.voice.finish() } else { model.startVoiceQuestion() } }
     private func cancelPhotoLoad() { photoGeneration = UUID(); photoTask?.cancel(); photoTask = nil; photoLoading = false; selectedPhotos = [] }

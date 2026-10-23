@@ -162,6 +162,8 @@ public final class MemoryStore: Sendable {
               at.timeIntervalSince1970.isFinite, sourceIDs.count <= 64,
               sourceIDs.allSatisfy({ !$0.isEmpty && $0.count <= 64 }) else { throw MemoryError.invalid }
         let sources = try JSONEncoder().encode(sourceIDs)
+        // Match the table CHECK so oversized multibyte ID lists surface as MemoryError.invalid.
+        guard sources.count <= 8192 else { throw MemoryError.invalid }
         try database.write { db in
             try db.execute(sql: "INSERT INTO narrationReceipt(profile,id,sessionID,goalRevision,snapshotID,sourceIDs,text,outcome,created) VALUES (?,?,?,?,?,?,?,'pending',?)",
                            arguments: [profile, id, sessionID, goalRevision, snapshotID, sources, text, at.timeIntervalSince1970])

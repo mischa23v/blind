@@ -1,12 +1,30 @@
+## 2026-10-23 — Final coordinated child-assistant candidate
+
+Reviewed and integrated all seven Claude commits without replacing the newer assistant-first primary source. Fixed reader/page/photo stale-work races, mutual tool cancellation, completed-speech accounting and foreground/pose/freshness fencing. Added bounded currency retries and separately authorized Debug-only private-pack device testing; Release remains unapproved. Simplified all tabs and made Home settled reply-only, with genuine live room-scan map/counts for a helper. Preserved hands-free eligible startup, explicit stop/mute/off and OS permission limits.
+
+Integrated existing-model per-face batch matching and once-per-encounter tentative notices through attention and scoped cancellation. Enrollment is photos → name → confirmed save. Added clock evidence and bounded temperature/location/color routing. Withheld unvalidated object-interaction directions rather than presenting abstention as improved recognition accuracy. No private family details or runtime images are included.
+
+Final source verification and open Mac/iPhone gates are in [CLAUDE_INTEGRATION_REVIEW.md](CLAUDE_INTEGRATION_REVIEW.md), [PROGRESS.md](PROGRESS.md), and the canonical [CHILD_ASSISTANT_TEST_TRACKER.md](CHILD_ASSISTANT_TEST_TRACKER.md). Earlier actual-model hallucination/latency failures stay open. Portable tests are not model, VoiceOver, recognition-accuracy or child-use proof.
+
 # Blind Assist session log
 
 This is a concise project history for future development sessions: what was discussed, why decisions changed, what was actually done, and what still needs proof. It is not a verbatim transcript or a substitute for test evidence.
 
 Read [PROJECT_VISION.md](PROJECT_VISION.md) first for current product intent and [ASSISTANT_FEATURE_CHECKLIST.md](ASSISTANT_FEATURE_CHECKLIST.md) for the live companion capability review. Older entries and counts describe their own checkpoints only. A passing source test, Apple build or simulator run is not physical-device acceptance.
 
+## 2026-10-23: Claude integration, accuracy fixes and Saudi currency follow-through
+
+The user asked to review and fix Claude's work before adding it to the primary branch, explicitly emphasizing correctness and useful Saudi-note recognition/retake guidance. The seven-commit branch lacked the newer assistant-first milestone, so the integration preserved both instead of replacing current source with the branch tip.
+
+The reviewed additions are Seeing-AI-style local accessibility features, not the Seeing AI app's proprietary source: live text, framed page OCR, barcode/QR, light feedback, picture exploration, Arabic status text and optional Lock Screen status. Fixes prevent old reader/photo/search results from speaking after Stop, restart, a changed goal, hazard, background transition or moved camera. Page reading is tracked and chunked under the existing word allowance. Photos remain in memory; their outputs are snapshots, never live-room evidence. Actual OCR/object accuracy remains unmeasured on the phone.
+
+Saudi currency reference matching gained rejection-only policy hardening and reproducible development diagnostics, not new neural-model training. Explicit retry uses a newer camera frame, a 30-second window and at most two additional attempts; unavailable builds do not invite endless captures. Measurement-backed guidance distinguishes a small, clipped or multiple-note view from a generic unknown. Production calibration remains unset. A separately configured supervised developer device build is a follow-on, not a claim of production validation or complete Saudi paper/polymer coverage.
+
+Portable integration results and remaining Apple/device tests are recorded in [CLAUDE_INTEGRATION_REVIEW.md](CLAUDE_INTEGRATION_REVIEW.md). Historical normal-app hallucination and latency failures remain open until the exact new app is tested. Primary publication and backup are coordinated separately; this source note itself does not establish a remote commit or deployed build.
+
 ## Current handoff: 2026-10-23
 
-**Product:** a free, on-device conversational companion for adults and children. Natural ongoing conversation is the first building block; visual accessibility and mobility tools extend it, rather than defining a navigation app with chat attached.
+**Current product:** a free, on-device conversational companion for children first; adult support remains a future direction. Natural ongoing conversation is the first building block; visual accessibility and mobility tools extend it, rather than defining a navigation app with chat attached.
 
 **Work authorized:** fix the identified gaps, compare the intended continuous-assistant behavior systematically, and preserve the vision and session history as repository Markdown. The source milestone and portable verification are recorded below; this does not declare the companion complete or the latest combined source Apple/device-tested.
 
@@ -15,6 +33,10 @@ Read [PROJECT_VISION.md](PROJECT_VISION.md) first for current product intent and
 **Preserve:** local-only private data; free core operation; independent sensor hazard handling; existing spatial/consent/freshness gates; Mac/backend work; the existing primary branch name `master`; and concurrent changes. Do not change the selected model simply to avoid diagnosing the app's context and execution pipeline.
 
 **Next acceptance:** evidence-grounded multi-turn behavior in the normal app, then the supported physical-phone voice/tool loop. Record exact source revisions and fresh results. See [MAC_HANDOFF.md](MAC_HANDOFF.md) and [shareable companion evidence](ios/validation/companion-chat/text-chat-status.json).
+
+## 2026-10-23: Child-first simplicity clarification
+
+The user subsequently specified that only children are using the current release: Home should show only the assistant reply for VoiceOver; Rooms should show saved rooms and simple Start/Stop scanning, with the actual map and progress visible to a sighted helper; all other tabs/settings should be simple and screen-reader-friendly. They also requested familiar, direct workflows such as adding a person through multiple photos, a name and Save. This updates the current interface target without removing explicit stop/mute controls, sensor warnings, privacy or consent. Native VoiceOver/recognition acceptance remains open. The user further clarified that this is one continuous assistant using camera/sensor context, not separate tools the child must repeatedly start, and that fresh known-person arrivals should be announced proactively. Foreground sensing now defaults on while respecting saved off choices, permission denial and background limits; the all-face/gallery-arrival implementation is tracked separately from the existing single-face workflow.
 
 ## 2026-10-23: Companion-first clarification and durable project records
 
@@ -139,3 +161,11 @@ Add a dated entry for a meaningful request, decision, implementation checkpoint 
 5. Failures, device-pending work and the next concrete acceptance step.
 
 Do not replace a failure with a later plan, copy old test counts onto new code, or mark a feature complete because its source exists. Preserve unrelated edits and reconcile `master` before an authorized publication; do not force-push or treat a source commit as a release.
+
+### Everyday-goal acceptance example
+
+The user emphasized ongoing help such as preparing for school and finding a backpack through remembered rooms/pictures, rather than isolated feature buttons. They also want a known-person notice once, with more detail on request. Preserve last-seen/current distinctions, a continuing cross-room goal, existing private item/map memory and measured navigation boundaries. This is a required realistic acceptance scenario; room navigation and face recognition are not considered device-validated by source tests.
+
+### General ability and safety clarification
+
+The user emphasized that homework, current time, distance to a destination, people and scene descriptions are examples of a general conversational assistant, not a closed feature menu. The current release defaults to child-support wording without asserting that an adult is present. A missing read-only clock capability was identified for a small tool addition. Mobility-affecting claims must be checked against actual fresh relevant sensor/camera/map data before speech, including queued replies. Unknown or stale data is not permission to guess; source tests cannot establish complete real-world safety.

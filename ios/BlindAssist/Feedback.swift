@@ -258,6 +258,13 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         finishActive(outcome: .interrupted)
     }
 
+    /// Revokes only the short-lived notice with this ID. A camera turn must not
+    /// interrupt an unrelated answer or a higher-priority hazard/mobility alert.
+    func stopRequestedSpeech(_ id: UUID) {
+        guard delivery.active?.destination == .requested(id) else { return }
+        _ = stopInformation(announceCancellation: false)
+    }
+
     @discardableResult func stopInformation(announceCancellation: Bool = true) -> Bool {
         guard ProcessInfo.processInfo.systemUptime >= urgentUntil,
               delivery.active?.priority != .mobility, delivery.active?.priority != .danger else { return false }

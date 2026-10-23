@@ -81,7 +81,7 @@ test('actual local tool registration is bounded and cannot perform actions', asy
   assert.match(adapter, /CompanionToolRuntime\(available: availableTools/);
   assert.doesNotMatch(adapter, /eight-year-old/);
   const model = await read('ios/BlindAssist/NavigationModel.swift');
-  const tools = section(model, 'private func readCompanionTool', 'private func answerConversation');
+  const tools = section(model, 'private func readCompanionTool', 'private func recordCompanionMessage');
   for (const kind of ['savedMemory', 'navigationState', 'currentObservation']) assert.ok(tools.includes(`case .${kind}:`));
   assert.match(tools, /conversationFrameProbe.inspect\(image: frame.capturedImage/);
   assert.match(tools, /perceptionResultAllowed/);
@@ -149,7 +149,8 @@ test('physical inspection cannot fall through to free-form streamed answers', as
 test('audience is an explicit local preference and changing it invalidates a turn', async () => {
   const model = await read('ios/BlindAssist/NavigationModel.swift');
   const preference = section(model, '@Published var assistantAudience', '    private var');
-  assert.match(preference, /AssistantAudience\(persistedValue: UserDefaults/);
+  assert.match(preference, /AssistantAudience\(persistedValue:\s*UserDefaults/);
+  assert.match(preference, /\?\? AssistantAudience.childWithGuardian.rawValue/);
   assert.match(preference, /assistantSession.invalidate\(\); cancelDescription\(\)/);
   assert.match(model, /audience: self.assistantAudience/);
   const view = await read('ios/BlindAssist/DashboardView.swift');

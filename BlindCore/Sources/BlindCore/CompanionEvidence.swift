@@ -29,7 +29,7 @@ public struct CompanionEvidence: Codable, Sendable, Equatable {
 }
 
 public enum CompanionToolKind: String, Codable, CaseIterable, Sendable {
-    case currentObservation, savedMemory, navigationState
+    case currentObservation, savedMemory, navigationState, deviceClock
 }
 public struct CompanionToolRequest: Sendable, Equatable {
     public var kind: CompanionToolKind
@@ -48,6 +48,55 @@ public struct CompanionToolResult: Codable, Sendable, Equatable {
     public var evidence: [CompanionEvidence]
     public init(status: CompanionToolStatus, source: String, summary: String = "", evidence: [CompanionEvidence] = []) {
         self.status = status; self.source = source; self.summary = summary; self.evidence = evidence
+    }
+}
+
+/// A read of the device's configured wall clock, not network time, location or
+/// camera evidence. The caller supplies both date and zone; tests never depend
+/// on the machine's clock, locale or default time zone.
+public enum CompanionClock {
+    public static let lifetime: TimeInterval = 5
+    private static let sourcePrefix = "on-device clock: "
+
+    public static func read(now: Date, timeZone: TimeZone, arabic: Bool) -> CompanionToolResult {
+        guard valid(now) else {
+            return CompanionToolResult(status: .unavailable, source: "on-device clock",
+                summary: "The device clock could not be read. Do not invent the current time.")
+        }
+        let source = sourcePrefix + timeZone.identifier
+        let evidence = CompanionEvidence(kind: .measuredState,
+            text: statement(now: now, timeZone: timeZone, arabic: arabic), source: source,
+            observedAt: now, expiresAt: now.addingTimeInterval(lifetime))
+        return CompanionToolResult(status: .success, source: source,
+            summary: "Device-configured time zone: \(timeZone.identifier). observedAt is the read timestamp. This is clock evidence only, not location, camera or navigation evidence.",
+            evidence: [evidence])
+    }
+
+    /// A measured clock record does not require a camera capture. Validate the
+    /// complete code-written record before exempting it from that requirement;
+    /// a source label alone cannot turn arbitrary measured claims into a clock.
+    public static func isClockEvidence(_ item: CompanionEvidence) -> Bool {
+        guard item.kind == .measuredState, item.source.hasPrefix(sourcePrefix),
+              let observedAt = item.observedAt, valid(observedAt),
+              item.expiresAt == observedAt.addingTimeInterval(lifetime),
+              let zone = TimeZone(identifier: String(item.source.dropFirst(sourcePrefix.count))),
+              item.source == sourcePrefix + zone.identifier else { return false }
+        return item.text == statement(now: observedAt, timeZone: zone, arabic: false)
+            || item.text == statement(now: observedAt, timeZone: zone, arabic: true)
+    }
+
+    private static func valid(_ date: Date) -> Bool {
+        date.timeIntervalSinceReferenceDate.isFinite && date >= .distantPast && date <= .distantFuture
+    }
+    private static func statement(now: Date, timeZone: TimeZone, arabic: Bool) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: arabic ? "ar_SA" : "en_US")
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.timeZone = timeZone
+        formatter.dateStyle = .none; formatter.timeStyle = .short
+        let time = formatter.string(from: now)
+        return arabic ? "ساعة الجهاز: \(time) (\(timeZone.identifier))."
+            : "Device clock: \(time) (\(timeZone.identifier))."
     }
 }
 
@@ -149,6 +198,8 @@ public actor CompanionToolRuntime {
                 return item.kind == .currentObservation && item.isCurrent(at: now)
             case .navigationState:
                 return item.kind == .historicalMemory || (item.kind == .measuredState && item.isCurrent(at: now))
+            case .deviceClock:
+                return CompanionClock.isClockEvidence(item) && item.isCurrent(at: now)
             }
         }
         if !result.evidence.isEmpty && usable.isEmpty { return failure(.stale, kind) }
@@ -249,10 +300,10 @@ public enum CompanionEvidenceGuard {
             }
             // Explicit provenance phrases must not become a loophole when the
             // corresponding observation expires during generation.
-            if matches(#"^\s*(visible text candidate|current observation|measured state|camera observation)\b"#, sentence) { return false }
+            if matches(#"^\s*(visible text candidate|current observation|measured state|camera observation|device clock)\b|^\s*ساعة الجهاز\s*:"#, sentence) { return false }
             let quoted = attributedQuotation(sentence, reports: reports, evidence: evidence)
             let remainder = quoted ?? sentence
-            if isLocalAssertion(remainder) { return false }
+            if isLocalAssertion(remainder) || ConversationClaimGuard.containsUnsupportedClaim(remainder) { return false }
             // In a task/report context, possessive and anaphoric descriptions
             // cannot bypass the guard by changing the state verb ("sitting",
             // "waiting", "right where you left it", etc.). An uncertainty word

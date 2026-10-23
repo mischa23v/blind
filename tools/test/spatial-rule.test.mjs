@@ -10,7 +10,7 @@ const read = path => readFile(new URL(`../../${path}`, import.meta.url), 'utf8')
 
 test('relay checks every model answer and retries once', async () => {
   const app = await read('server/src/app.mjs');
-  assert.match(app, /import \{ containsSpatialClaim \} from '\.\/spatial-guard\.mjs'/);
+  assert.match(app, /import \{ containsSpatialClaim(?:, mentionsHazard)? \} from '\.\/spatial-guard\.mjs'/);
   const first = app.indexOf('let answer = await provider(');
   const check = app.indexOf('if (containsSpatialClaim(answer))', first);
   const reply = app.indexOf("reply(200, { answer", first);

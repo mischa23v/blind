@@ -11,22 +11,39 @@ import reference_match as rm
 
 def rectify(gray, corners, max_side=800):
     rm.need_cv2()
+    if (not isinstance(gray, np.ndarray) or gray.ndim != 2 or gray.dtype != np.uint8
+            or min(gray.shape) < 32 or max(gray.shape) > rm.MAX_IMAGE_SIDE
+            or gray.size > rm.MAX_IMAGE_PIXELS):
+        raise rm.InputError('Reference must be bounded 8-bit grayscale')
     quad = np.asarray(corners, dtype=np.float32)
     if quad.shape != (4, 2) or not np.isfinite(quad).all():
         raise rm.InputError('Four finite source-pixel corners required')
     h, w = gray.shape
     if np.any(quad < 0) or np.any(quad[:, 0] > w - 1) or np.any(quad[:, 1] > h - 1):
         raise rm.InputError('Corners must be inside source; do not invent clipped edges')
-    if not rm.cv2.isContourConvex(quad) or rm.polygon_area(quad) < 256:
-        raise rm.InputError('Ordered convex nondegenerate quadrilateral required')
+    edges = np.roll(quad, -1, axis=0) - quad
+    following = np.roll(edges, -1, axis=0)
+    turns = edges[:, 0] * following[:, 1] - edges[:, 1] * following[:, 0]
+    if np.any(turns <= 0):
+        raise rm.InputError('Corners must follow TL/TR/BR/BL positive-turn order')
+    lengths = np.linalg.norm(edges.astype(np.float64), axis=1)
+    if (not rm.cv2.isContourConvex(quad) or min(lengths) < 32
+            or rm.polygon_area(quad) < .10 * gray.size
+            or max(lengths[0], lengths[2]) / min(lengths[0], lengths[2]) > 3
+            or max(lengths[1], lengths[3]) / min(lengths[1], lengths[3]) > 3):
+        raise rm.InputError('Reference boundary lacks native minimum edge/area/opposite-edge support')
     if type(max_side) is not int or not 32 <= max_side <= 1200:
         raise rm.InputError('Prepared maximum side must be 32 to 1200')
-    width = max(np.linalg.norm(quad[1]-quad[0]), np.linalg.norm(quad[2]-quad[3]))
-    height = max(np.linalg.norm(quad[3]-quad[0]), np.linalg.norm(quad[2]-quad[1]))
+    # Match BACurrencyReferenceMatcher.hpp: mean opposite edges, not their maximum.
+    # max_side=800 is the native setting; custom sizes are diagnostic only.
+    width = (lengths[0] + lengths[2]) / 2
+    height = (lengths[1] + lengths[3]) / 2
     scale = min(1., max_side / max(width, height))
     ow, oh = max(32, round(width * scale)), max(32, round(height * scale))
     target = np.float32([[0,0], [ow-1,0], [ow-1,oh-1], [0,oh-1]])
     transform = rm.cv2.getPerspectiveTransform(quad, target)
+    if not np.isfinite(transform).all() or abs(rm.cv2.determinant(transform)) < 1e-12:
+        raise rm.InputError('Reference transform must be finite and nondegenerate')
     return rm.cv2.warpPerspective(gray, transform, (ow,oh), flags=rm.cv2.INTER_LINEAR), transform
 
 def prepare(source, output, corners, reviewer, review_kind, max_side=800):

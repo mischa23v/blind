@@ -39,7 +39,7 @@ struct KeepOutZonesView: View {
                     }
                 }
             }
-            Text(indoor.message)
+            Text(StatusText.localized(indoor.message, arabic: arabic))
             if !error.isEmpty { Text(error).foregroundStyle(.red) }
         }
         .navigationTitle(t("Keep-out areas", "المناطق المحظورة"))

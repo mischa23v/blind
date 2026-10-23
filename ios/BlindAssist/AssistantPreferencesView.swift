@@ -19,10 +19,10 @@ struct AssistantPreferencesView: View {
                         Text(t("Only when I ask specifically", "فقط عندما أسأل عنه تحديداً")).tag("muted")
                     }
                 }
-                Text(t("These choices guide ordinary descriptions. Danger and mobility alerts remain active. A specific question can request any category.", "توجه هذه الخيارات الأوصاف العادية. تظل تنبيهات الخطر والحركة فعالة. يمكنك السؤال تحديداً عن أي فئة."))
+                Text(t("Danger alerts always stay on. You can still ask about anything.", "تنبيهات الخطر تبقى دائماً. يمكنك السؤال عن أي شيء."))
             }
             Section(t("What would you like to hear about?", "ما الذي ترغب في سماع معلومات عنه؟")) {
-                Text(t("For example: aquariums, room décor, blue clothing or vegetarian food. Your current question and goal take priority; interests do not hide other choices.", "مثلاً: أحواض الأسماك أو ديكور الغرفة أو الملابس الزرقاء أو الطعام النباتي. يتقدم سؤالك وهدفك الحاليان، ولا تُخفي الاهتمامات الخيارات الأخرى."))
+                Text(t("For example: fish tanks, blue clothes or vegetarian food.", "مثلاً: أحواض السمك أو الملابس الزرقاء أو الطعام النباتي."))
                 Picker(t("Category", "الفئة"), selection: $category) {
                     Text(t("Personal interest", "اهتمام شخصي")).tag("interest")
                     Text(t("Shopping", "التسوق")).tag("shopping")
@@ -44,8 +44,11 @@ struct AssistantPreferencesView: View {
                             .accessibilityLabel(t("Remove preference: ", "إزالة التفضيل: ") + interest.value)
                     }
                 }
-                Text(t("Only preferences you add are used here. Online photo requests can share these interests after the send confirmation. Community-map exports do not include them.", "تُستخدم هنا التفضيلات التي تضيفها فقط. قد تشارك طلبات الصور عبر الإنترنت هذه الاهتمامات بعد تأكيد الإرسال. لا تتضمنها صادرات خرائط المجتمع."))
+                Text(t("Stays on this phone. Never shared in community maps.", "يبقى على هذا الهاتف. لا يُشارك في خرائط المجتمع أبداً."))
+                #if BLIND_DEVELOPER_CLOUD
+                Text("Developer build: an online photo request can include these after its send confirmation.")
+                #endif
             }
-        }.navigationTitle(t("Interests and preferences", "الاهتمامات والتفضيلات"))
+        }.navigationTitle(t("Interests", "الاهتمامات"))
     }
 }

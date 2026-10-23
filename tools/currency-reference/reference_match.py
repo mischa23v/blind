@@ -48,6 +48,7 @@ class Policy:
     max_quad_area_fraction: float = 0.90
     min_quad_angle_deg: float = 25.0
     max_quad_angle_deg: float = 155.0
+    min_quad_edge_px: float = 8.0
     max_edge_ratio: float = 6.0
     max_opposite_edge_ratio: float = 3.0
     max_projective_denominator_ratio: float = 3.0
@@ -56,6 +57,9 @@ class Policy:
     min_different_label_score_ratio: float = 1.6
     min_different_label_score_gap: float = 4.0
     distinct_region_overlap: float = 0.25
+    # Explicit portable counterpart of Swift minimumProposalOverlap. Reused only
+    # to veto noncoincident candidate boundaries, not to relax any acceptance gate.
+    min_proposal_overlap: float = 0.80
 
 POLICY = Policy()
 # Numeric OpenCV enum values retained to permit schema/policy tests without cv2.
@@ -81,6 +85,19 @@ def create_detector(algorithm):
         raise InputError('Unsupported algorithm; choose sift, orb, or akaze')
     need_cv2()
     return {'sift': cv2.SIFT_create, 'orb': cv2.ORB_create, 'akaze': cv2.AKAZE_create}[algorithm](**ALGORITHMS[algorithm])
+
+def features(detector, gray):
+    """Mirror native bounded truncation, including SIFT's tied responses."""
+    keypoints, descriptors = detector.detectAndCompute(gray, None)
+    if len(keypoints) > POLICY.max_features:
+        if descriptors is None or len(descriptors) < POLICY.max_features:
+            raise InputError('Descriptor contract mismatch')
+        keypoints = keypoints[:POLICY.max_features]
+        descriptors = descriptors[:POLICY.max_features].copy()
+    if descriptors is not None and descriptors.size:
+        if len(descriptors) != len(keypoints) or not np.isfinite(descriptors).all():
+            raise InputError('Descriptor contract mismatch')
+    return keypoints, descriptors
 
 def bounded_bytes(path: Path, limit: int):
     if not path.is_file():
@@ -211,13 +228,15 @@ def geometry_evidence(h, source, target, reference_shape, query_shape):
     rh, rw = reference_shape; qh, qw = query_shape
     corners = np.array([[0, 0], [rw - 1, 0], [rw - 1, rh - 1], [0, rh - 1]], dtype=float)
     base = {'geometry_pass': False, 'geometry_failures': ['nonfinite_or_pole']}
-    if h.shape != (3, 3) or not np.isfinite(h).all():
+    if h.shape != (3, 3) or h.dtype != np.float64 or not np.isfinite(h).all():
         return base
     homogeneous = np.column_stack([corners, np.ones(4)]) @ h.T
     denom = homogeneous[:, 2]
     if not np.isfinite(homogeneous).all() or min(abs(denom)) < 1e-8 or min(denom) < 0 < max(denom):
         return base
-    quad = homogeneous[:, :2] / denom[:, None]
+    # The native adapter stores projected points/edge differences as Point2f.
+    # Keeping double projections here changes decisions at exact gate boundaries.
+    quad = cv2.perspectiveTransform(np.float32(corners).reshape(-1, 1, 2), h).reshape(-1, 2)
     if not np.isfinite(quad).all():
         return base
     area = polygon_area(quad)
@@ -231,11 +250,16 @@ def geometry_evidence(h, source, target, reference_shape, query_shape):
     fraction = area / (qw * qh)
     if not POLICY.min_quad_area_fraction <= fraction <= POLICY.max_quad_area_fraction:
         failures.append('implausible_quad_area')
-    edges = np.linalg.norm(np.roll(quad, -1, axis=0) - quad, axis=1)
+    edge_vectors = np.roll(quad, -1, axis=0) - quad
+    edges = np.linalg.norm(edge_vectors.astype(np.float64), axis=1)
+    minimum_edge = float(min(edges))
+    if minimum_edge < POLICY.min_quad_edge_px:
+        failures.append('insufficient_projected_edge')
     angles = []
     for i in range(4):
-        a, b = quad[(i - 1) % 4] - quad[i], quad[(i + 1) % 4] - quad[i]
-        angles.append(math.degrees(math.acos(float(np.clip(np.dot(a, b) / max(np.linalg.norm(a) * np.linalg.norm(b), 1e-12), -1, 1)))))
+        a, b = -edge_vectors[(i + 3) % 4], edge_vectors[i]
+        denominator = np.linalg.norm(a.astype(np.float64)) * np.linalg.norm(b.astype(np.float64)) + 1e-8
+        angles.append(math.degrees(math.acos(float(np.clip(np.dot(a, b) / denominator, -1, 1)))))
     if min(angles) < POLICY.min_quad_angle_deg or max(angles) > POLICY.max_quad_angle_deg:
         failures.append('implausible_quad_angles')
     if max(edges) / max(min(edges), 1e-8) > POLICY.max_edge_ratio:
@@ -252,15 +276,16 @@ def geometry_evidence(h, source, target, reference_shape, query_shape):
     if ref_spread < POLICY.min_reference_spread or query_spread < POLICY.min_query_spread or len(cells) < POLICY.min_grid_cells:
         failures.append('insufficient_spatial_support')
     prediction = cv2.perspectiveTransform(np.float32(source).reshape(-1, 1, 2), h).reshape(-1, 2)
-    reprojection = float(np.median(np.linalg.norm(prediction - target, axis=1)))
+    reprojection = float(np.median(np.linalg.norm((prediction - target).astype(np.float64), axis=1)))
     if not math.isfinite(reprojection) or reprojection > POLICY.max_reprojection_median_px:
         failures.append('excessive_reprojection_error')
     return {'geometry_pass': not failures, 'geometry_failures': failures, 'quad': quad.tolist(),
+            'minimum_edge_px': minimum_edge,
             'quad_area_fraction': fraction, 'reference_spread': ref_spread, 'query_spread': query_spread,
             'reference_grid_cells': len(cells), 'reprojection_median_px': reprojection}
 
 def match_reference(record, reference, query, detector, query_keypoints, query_descriptors, algorithm='sift'):
-    ref_keypoints, ref_descriptors = detector.detectAndCompute(reference, None)
+    ref_keypoints, ref_descriptors = features(detector, reference)
     base = {key: record[key] for key in ['label', 'side', 'issue', 'material']}
     base.update(reference_id=record['id'], reference_keypoints=len(ref_keypoints))
     def empty(reason, matches=0, inliers=0):
@@ -314,12 +339,124 @@ def region_overlap(a, b):
     intersection, _ = cv2.intersectConvexConvex(qa, qb)
     return float(intersection) / max(min(polygon_area(qa), polygon_area(qb)), 1e-8)
 
+def partial_support_veto_candidate(c):
+    """Only spatial-support failure may contribute a veto, never an acceptance.
+
+    Geometry failure lists are generated by geometry_evidence above, not an input
+    assertion. All its shape/framing/distortion gates must still pass. Recheck the
+    available numeric bounds and score contract, matching Swift's Candidate gate.
+    """
+    if c.get('accepted') is not False or c.get('geometry_pass') is not False:
+        return False
+    if c.get('failures') != ['insufficient_spatial_support'] or c.get('geometry_failures') != ['insufficient_spatial_support']:
+        return False
+    try:
+        matches, inliers, cells = c['ratio_matches'], c['inliers'], c['reference_grid_cells']
+        ratio, score = c['inlier_ratio'], c['score']
+        ref_spread, query_spread = c['reference_spread'], c['query_spread']
+        area, edge, error = c['quad_area_fraction'], c['minimum_edge_px'], c['reprojection_median_px']
+        values = [ratio, score, ref_spread, query_spread, area, edge, error]
+        if not all(type(x) in (int, float) and math.isfinite(x) and x >= 0 for x in values):
+            return False
+        if not (type(matches) is int and type(inliers) is int and type(cells) is int
+                and POLICY.min_inliers <= inliers <= matches <= POLICY.max_features and 0 <= cells <= 9
+                and POLICY.min_inlier_ratio <= ratio <= 1 and score >= POLICY.min_score
+                and ref_spread <= 1.00001 and POLICY.min_quad_area_fraction <= area <= POLICY.max_quad_area_fraction
+                and edge >= POLICY.min_quad_edge_px and error <= POLICY.max_reprojection_median_px):
+            return False
+        expected = inliers * (inliers / matches) * math.sqrt(min(ref_spread, query_spread, 1))
+        quad = np.asarray(c['quad'], dtype=float)
+        return (abs(ratio - inliers / matches) < 1e-6 and abs(score - expected) <= max(1e-6, expected * 1e-5)
+                and quad.shape == (4, 2) and np.isfinite(quad).all() and polygon_area(quad) > 0)
+    except (KeyError, TypeError, ValueError, ZeroDivisionError):
+        return False
+
+def region_iou(a, b):
+    """Polygon overlap, not overlap of axis-aligned bounding boxes."""
+    need_cv2()
+    qa, qb = np.float32(a['quad']), np.float32(b['quad'])
+    intersection, _ = cv2.intersectConvexConvex(qa, qb)
+    union = polygon_area(qa) + polygon_area(qb) - float(intersection)
+    if not math.isfinite(union) or union <= 0:
+        raise InputError('Invalid supported candidate polygon union')
+    return max(0., min(1., float(intersection) / union))
+
+def validate_candidate_evidence(c):
+    """Reject corrupt evidence, never silently drop it from a scene or ranking.
+
+    Early matcher failures legitimately omit geometry. Check provided evidence
+    and complete computed-geometry records without promoting any candidate.
+    Invalid input is an execution error, not a successful safe abstention.
+    """
+    def require(valid):
+        if not valid:
+            raise InputError('Malformed candidate evidence')
+    require(type(c) is dict and type(c.get('accepted')) is bool
+            and type(c.get('label')) is int and c['label'] in LABELS)
+    text_field(c.get('reference_id'), 'candidate reference_id')
+    require('score' in c)
+    for field in ('score', 'inlier_ratio', 'reference_spread', 'query_spread',
+                  'quad_area_fraction', 'minimum_edge_px', 'reprojection_median_px'):
+        if field in c:
+            value = c[field]
+            require(type(value) in (int, float) and 0 <= value <= sys.float_info.max and math.isfinite(value))
+    for field, limit in (('ratio_matches', POLICY.max_features), ('inliers', POLICY.max_features),
+                         ('reference_keypoints', POLICY.max_features), ('reference_grid_cells', 9), ('region_index', 1)):
+        if field in c:
+            require(type(c[field]) is int and 0 <= c[field] <= limit)
+    if 'inliers' in c and 'ratio_matches' in c:
+        require(c['inliers'] <= c['ratio_matches'])
+    if 'inlier_ratio' in c:
+        require('inliers' in c and 'ratio_matches' in c and c['inlier_ratio'] <= 1)
+        expected_ratio = c['inliers'] / c['ratio_matches'] if c['ratio_matches'] else 0.
+        require(abs(c['inlier_ratio'] - expected_ratio) < 1e-6)
+    if 'reference_spread' in c:
+        require(c['reference_spread'] <= 1.00001)
+    for field in ('failures', 'geometry_failures'):
+        if field in c:
+            require(type(c[field]) is list and all(type(value) is str for value in c[field]))
+    if 'geometry_pass' in c:
+        require(type(c['geometry_pass']) is bool and 'geometry_failures' in c and 'failures' in c)
+        require(c['geometry_pass'] == (not c['geometry_failures']) and c['accepted'] == (not c['failures']))
+        if c['geometry_pass'] or c['geometry_failures'] != ['nonfinite_or_pole']:
+            require({'quad', 'quad_area_fraction', 'reference_spread', 'query_spread', 'reference_grid_cells',
+                     'minimum_edge_px', 'reprojection_median_px', 'inlier_ratio', 'inliers', 'ratio_matches'} <= c.keys())
+    if 'quad' in c:
+        require(type(c['quad']) is list and len(c['quad']) == 4
+                and all(type(point) is list and len(point) == 2
+                        and all(type(value) in (int, float) and -sys.float_info.max <= value <= sys.float_info.max
+                                and math.isfinite(value) for value in point) for point in c['quad']))
+    if {'inliers', 'inlier_ratio', 'reference_spread', 'query_spread'} <= c.keys():
+        expected_score = c['inliers'] * c['inlier_ratio'] * math.sqrt(min(c['reference_spread'], c['query_spread'], 1))
+        require(abs(c['score'] - expected_score) <= max(1e-6, expected_score * 1e-5))
+
 def choose(candidates):
+    for candidate in candidates:
+        validate_candidate_evidence(candidate)
     accepted = [c for c in candidates if c['accepted']]
     for i, a in enumerate(accepted):
         for b in accepted[i + 1:]:
             if region_overlap(a, b) < POLICY.distinct_region_overlap:
                 return {'decision': 'ambiguous', 'reason': 'multiple_disjoint_reference_regions', 'selected_reference_label': None}
+    # Conservative scene veto experiment. Shared printed motifs can cause false
+    # abstentions even on one real note. Coincident cross-label hypotheses still
+    # use the original margin gate; conflicting labels alone do not prove another
+    # note. A candidate with only spatial-support
+    # failure can block a full accepted candidate, but is never promoted. At most
+    # two regions/reference are extracted; matches removed inside the first quad,
+    # invisible notes and unsupported designs remain undetectable by this veto.
+    supported = [c for c in candidates if c['accepted'] or partial_support_veto_candidate(c)]
+    for i, a in enumerate(supported):
+        for b in supported[i + 1:]:
+            if not (a['accepted'] or b['accepted']):
+                continue
+            reason = None
+            if a['reference_id'] == b['reference_id'] and a.get('region_index') != b.get('region_index'):
+                reason = 'multiple_supported_reference_regions'
+            elif region_iou(a, b) < POLICY.min_proposal_overlap:
+                reason = 'noncoincident_supported_note_boundaries'
+            if reason:
+                return {'decision': 'ambiguous', 'reason': reason, 'selected_reference_label': None}
     by_label = {}
     for c in candidates:
         if c['label'] not in by_label or c['score'] > by_label[c['label']]['score']:
@@ -354,7 +491,7 @@ def run(manifest_path, query_path, algorithm='sift'):
     query = image_from_bytes(query_bytes, POLICY.max_query_side)
     result['query_matches_reference_bytes'] = any(hashlib.sha256(query_bytes).hexdigest() == r['sha256'] for r, _ in references)
     result['query_independence_verified'] = False
-    keypoints, descriptors = detector.detectAndCompute(query, None)
+    keypoints, descriptors = features(detector, query)
     candidates = []
     for record, reference in references:
         candidates.extend(match_reference(record, reference, query, detector, keypoints, descriptors, algorithm))

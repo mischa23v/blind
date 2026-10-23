@@ -1,3 +1,5 @@
+Current continuation: [CHILD_ASSISTANT_TEST_TRACKER.md](CHILD_ASSISTANT_TEST_TRACKER.md) is the canonical 24-scenario evidence/status tracker; [PROGRESS.md](PROGRESS.md) records final combined test counts and [MAC_HANDOFF.md](MAC_HANDOFF.md) orders the remaining native checks. Older counts are historical.
+
 # Continuous local voice assistant: feature and acceptance matrix
 
 Baseline reviewed: `mischa23v/blind` commit `d6d4236bf6d54ac0c0d9c6d18696bc743cac1e0e`, verified as the latest GitHub commit on 2026-10-23. This is a read-only source review, not an Apple build or device test. Implementation work after this commit must be checked separately.
@@ -6,7 +8,7 @@ Baseline reviewed: `mischa23v/blind` commit `d6d4236bf6d54ac0c0d9c6d18696bc743ca
 
 Read this section for the new source; the 44-row baseline below intentionally preserves what was missing at `d6d4236`. **No complete Apple/device acceptance is claimed.** Source implementation, deterministic policy tests, source-contract tests, Apple compilation/model behavior, and physical acceptance are separate levels. See [project vision](PROJECT_VISION.md), [session decisions](SESSION_LOG.md) and [Mac verification handoff](MAC_HANDOFF.md).
 
-The primary experience is now conversation, not a camera request per utterance. Camera awareness defaults **off**, with an explicit Home toggle/status; existing saved maps, faces, currency and hazard features are preserved but do not silently start to answer ordinary chat. Background voice is separately opt-in and camera/AR monitoring stops outside the foreground. A supported Apple device, enabled/downloaded Apple Intelligence model and locale resources are required; no paid API is mandatory or silently substituted.
+The primary experience is now conversation, not a camera request per utterance. Active foreground assistance now defaults to permitted camera awareness, preserving an explicit saved-off preference and an accessible control outside reply-only Home; ordinary questions do not require a separate camera start. Existing maps, faces, currency and hazard gates remain independent. Background voice is separately opt-in and camera/AR monitoring stops outside the foreground. A supported Apple device, enabled/downloaded Apple Intelligence model and locale resources are required; no paid API is mandatory or silently substituted.
 
 | IDs | New source / portable evidence | Still required before acceptance |
 | --- | --- | --- |
@@ -195,3 +197,20 @@ These are architectural references, not proposed paid dependencies or claims abo
 ## Completion rule
 
 The implementation milestone is complete only when every in-scope row has an explicit status and the appropriate evidence. “Implemented, awaiting device validation” is an honest intermediate result, not “all gaps fixed.” If a capability is not feasible on the supported platform, record the exact limitation and accepted alternative rather than silently removing the row.
+
+## 2026-10-23 integrated accessibility tools: additional acceptance gates
+
+- [x] Source: reading session identity/task cancellation; currency/colour/reader mutual exclusion; page polygon consistency plus independent pose/freshness checks; completed page phrases advance a bounded queue. [ ] Phone: Stop/restart same tool, long bilingual pages at the minimum word allowance, motion/background/new goal during OCR and speech.
+- [x] Source: cancelled/dismissed/replaced photo loads cannot start or publish a late snapshot; picker data stays in memory. [ ] Phone: delayed Photos loading, replacement, dismissal, VoiceOver touch exploration and Arabic reading order.
+- [x] Source: search/target output uses capture time, fresh depth and bounded movement; no “within reach” assurance; model hints pass the final spatial guard. [ ] Phone: wrong-instance/occlusion/rotation/lost-target accuracy.
+- [x] Source: optional Live Activity serializes updates, represents actual listening/camera state, ends when both stop and expires visibly instead of presenting frozen state as live. [ ] Apple extension build, lock/background/stale-state and VoiceOver acceptance.
+- [x] Source: explicit newer-frame currency retry, bounded time/attempts, measured capture prompts and no unavailable-build retry loop. [ ] Separate authorized device-test pack/build, supported Saudi designs, held-out captured photos, latency/unknown false accepts and on-phone guided capture. Release calibration remains unset.
+
+Full review and portable evidence: [CLAUDE_INTEGRATION_REVIEW.md](CLAUDE_INTEGRATION_REVIEW.md). Checked source boxes are not device or accuracy acceptance.
+
+### General assistant, real evidence
+
+- General conversation and homework help remain model capabilities, not a finite menu of templates; actual answer quality still needs real-model evaluation.
+- Current-time answers must come from the read-only device clock with its actual timezone, not model recollection. Verify it without camera permission and across timezone changes.
+- “How far to my destination?” requires current validated route progress/pose; a checkpoint count or saved map is not a live distance. “Who is in this room?” requires fresh accepted gallery matches and coverage uncertainty, not an inference that unrecognized/unseen people are absent.
+- Before any mobility-affecting claim is spoken, recheck source authority, freshness, pose and relevant camera/sensor evidence. Model confidence/JSON is not verification. Stale, conflicting or missing evidence withholds the actionable claim; a nondetection never establishes a clear path. Exercise this at generation, queued speech and interruption boundaries.

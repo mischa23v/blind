@@ -20,12 +20,46 @@ final class BeltLink: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     private(set) var discovered: [CBPeripheral] = []
     var onUpdate: (() -> Void)?
     private(set) var status = "Disconnected"
-    override init() { super.init(); central = CBCentralManager(delegate: self, queue: .main) }
+    /// Paired wearables are remembered so they reconnect by themselves after a restart, a
+    /// Bluetooth drop or the app returning from the background (always on, 2026-10-22).
+    private static let savedKey = "paired-wearables"
+    private var saved: Set<UUID> {
+        get { Set((UserDefaults.standard.stringArray(forKey: Self.savedKey) ?? []).compactMap(UUID.init(uuidString:))) }
+        set { UserDefaults.standard.set(newValue.map(\.uuidString), forKey: Self.savedKey) }
+    }
+    override init() {
+        super.init()
+        // State restoration lets iOS relaunch the Bluetooth link in the background (bluetooth-central).
+        central = CBCentralManager(delegate: self, queue: .main,
+                                   options: [CBCentralManagerOptionRestoreIdentifierKey: "org.blindassist.wearables"])
+        if !saved.isEmpty { scanning = true }
+    }
     func connect() { scanning = true; scanIfReady() }
     func select(_ peripheral: CBPeripheral) {
         guard selected.count < 2 || selected.contains(peripheral.identifier) else { return }
-        selected.insert(peripheral.identifier)
+        selected.insert(peripheral.identifier); saved.insert(peripheral.identifier)
         attach(peripheral)
+    }
+    /// Forget a wearable on purpose (pairing a different belt). Plain reconnects keep it.
+    func forget(_ id: UUID) {
+        saved.remove(id); selected.remove(id); expectedRoles.removeValue(forKey: id)
+        if let device = devices.removeValue(forKey: id) { central.cancelPeripheralConnection(device.peripheral) }
+        onUpdate?()
+    }
+    func centralManager(_ central: CBCentralManager, willRestoreState dict: [String: Any]) {
+        scanning = true
+        // Restored links are reattached through reattachSaved() once Bluetooth reports powered on.
+        for peripheral in dict[CBCentralManagerRestoredStatePeripheralsKey] as? [CBPeripheral] ?? [] where saved.contains(peripheral.identifier) {
+            selected.insert(peripheral.identifier)
+        }
+    }
+    /// Reattach remembered wearables without waiting for a new scan result.
+    private func reattachSaved() {
+        guard scanning, central.state == .poweredOn else { return }
+        for peripheral in central.retrievePeripherals(withIdentifiers: Array(saved)) {
+            selected.insert(peripheral.identifier)
+            attach(peripheral)
+        }
     }
     private func attach(_ peripheral: CBPeripheral) {
         guard scanning, devices[peripheral.identifier] == nil else { return }
@@ -77,6 +111,7 @@ final class BeltLink: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     }
     private func scanIfReady() {
         guard scanning, central.state == .poweredOn else { return }
+        reattachSaved()
         central.scanForPeripherals(withServices: [CBUUID(string: WearablePacket.serviceUUID)], options: nil)
         status = "Looking for belt and wristband"; onUpdate?()
     }
@@ -156,7 +191,10 @@ final class BeltLink: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
         if let old = device.role, old != packet.role { return }
         if let expected = expectedRoles[peripheral.identifier], expected != packet.role { return }
         if devices.contains(where: { $0.key != peripheral.identifier && $0.value.role == packet.role }) {
-            status = "A device with this role is already connected"; onUpdate?(); return
+            // A second belt (or wristband) would report "uncertain" forever; drop it instead.
+            status = "A device with this role is already connected"
+            selected.remove(peripheral.identifier); saved.remove(peripheral.identifier); devices.removeValue(forKey: peripheral.identifier)
+            central.cancelPeripheralConnection(peripheral); onUpdate?(); return
         }
         device.role = packet.role; device.packet = packet
         expectedRoles[peripheral.identifier] = packet.role

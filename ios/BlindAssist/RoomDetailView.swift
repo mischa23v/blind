@@ -17,21 +17,42 @@ struct RoomDetailView: View {
     @State private var history: [RoomLayout] = []
     @State private var review: RoomReview?
     @State private var editorProposal: (RoomLayout, String)?
+    @State private var confirmShare = false
+    @State private var exportURLs: [(String, URL)] = []
     private let roomTypes = ["bedroom", "kitchen", "bathroom", "livingRoom", "office", "unknown"]
     private func t(_ english: String, _ arabic: String) -> String { model.arabic ? arabic : english }
     private func roomName(_ value: String) -> String {
-        guard model.arabic else { return value }
+        guard model.arabic else {
+            return ["bedroom": "Bedroom", "kitchen": "Kitchen", "bathroom": "Bathroom", "livingRoom": "Living room", "office": "Office", "unknown": "Unknown"][value] ?? "Unknown"
+        }
         return ["bedroom": "غرفة نوم", "kitchen": "مطبخ", "bathroom": "حمام", "livingRoom": "غرفة جلوس", "office": "غرفة عمل", "unknown": "غير معروف"][value] ?? "غير معروف"
     }
+    /// Code-computed words for the hidden drawing: approximate size and what the scan found.
+    private func summary(_ layout: RoomLayout) -> String {
+        let walls = layout.features.filter { $0.kind == "wall" }.flatMap(\.corners)
+        var parts: [String] = []
+        if let minX = walls.map(\.x).min(), let maxX = walls.map(\.x).max(), let minZ = walls.map(\.z).min(), let maxZ = walls.map(\.z).max() {
+            let width = String(format: "%.0f", max(maxX - minX, maxZ - minZ)), depth = String(format: "%.0f", min(maxX - minX, maxZ - minZ))
+            parts.append(t("About \(width) by \(depth) metres", "حوالي \(width) في \(depth) متر"))
+        }
+        let counts = Dictionary(grouping: layout.features.filter { $0.kind != "wall" }, by: { $0.name(arabic: model.arabic) }).mapValues(\.count)
+        parts += counts.keys.sorted().map { name in counts[name] == 1 ? name : "\(name): \(counts[name] ?? 0)" }
+        return parts.isEmpty ? t("The scan found no walls or furniture.", "لم يجد المسح جدراناً أو أثاثاً.") : parts.joined(separator: ", ") + "."
+    }
+
     var body: some View {
         List {
             if let layout {
                 Section(t("Measured room overview", "مخطط الغرفة المقاس")) {
                     FloorPlanPreview(layout: layout).frame(height: 280).accessibilityHidden(true)
-                    Text(t("Approximate scan geometry. This drawing does not establish a walkable route or whether a doorway is open.", "قياسات تقريبية من المسح. لا يثبت الرسم وجود مسار مناسب للمشي أو أن الباب مفتوح."))
-                    if let url = model.places.fileURL(for: place, extension: "svg") { ShareLink(t("Export 2D drawing", "تصدير الرسم الثنائي الأبعاد"), item: url) }
-                    if let url = model.places.fileURL(for: place, extension: "layout.json") { ShareLink(t("Export labelled geometry", "تصدير القياسات والتسميات"), item: url) }
-                    if let url = model.places.fileURL(for: place, extension: "usdz") { ShareLink(t("Export 3D room", "تصدير الغرفة الثلاثية الأبعاد"), item: url) }
+                    // The drawing is hidden from VoiceOver, so code reads the same scan as words.
+                    Text(summary(layout))
+                    Text(t("From the scan, approximate. It does not show a safe path or whether a door is open.", "من المسح وتقريبي. لا يُظهر طريقاً آمناً أو إن كان الباب مفتوحاً."))
+                    // Files are written only when a helper asks to share, never on every redraw.
+                    if exportURLs.isEmpty {
+                        Button(t("Share this room's layout (helper only)", "شارك مخطط هذه الغرفة (للمساعد فقط)")) { confirmShare = true }
+                    }
+                    ForEach(exportURLs.indices, id: \.self) { index in ShareLink(exportURLs[index].0, item: exportURLs[index].1) }
                 }
                 Section(t("Room type", "نوع الغرفة")) {
                     if let type = layout.confirmedRoomType { Text(roomName(type)) }
@@ -60,7 +81,8 @@ struct RoomDetailView: View {
                 if history.count > 1 {
                     Section(t("Revision history", "سجل المراجعات")) {
                         ForEach(history.dropFirst(), id: \.revisionID) { old in
-                            Button(t("Review earlier version", "مراجعة نسخة سابقة") + " " + String((old.revisionID ?? "").prefix(8))) {
+                            let number = (history.firstIndex(where: { $0.revisionID == old.revisionID }) ?? 0)
+                            Button(t("Review earlier version \(number)", "مراجعة النسخة السابقة \(number)")) {
                                 var candidate = layout
                                 candidate.confirmedRoomType = old.confirmedRoomType
                                 candidate.descriptionEnglish = old.descriptionEnglish; candidate.descriptionArabic = old.descriptionArabic
@@ -103,6 +125,12 @@ struct RoomDetailView: View {
             if !message.isEmpty { Text(message) }
         }
         .navigationTitle(place.name)
+        .confirmationDialog(t("Share this room's layout? It shows the shape of a private home. Only share with people you trust.", "مشاركة مخطط هذه الغرفة؟ يُظهر شكل منزل خاص. شاركه مع من تثق بهم فقط."), isPresented: $confirmShare, titleVisibility: .visible) {
+            Button(t("Prepare files to share", "جهّز الملفات للمشاركة")) {
+                exportURLs = [(t("Share 2D drawing", "شارك الرسم الثنائي الأبعاد"), "svg"), (t("Share labelled layout", "شارك المخطط المسمّى"), "layout.json"), (t("Share 3D room", "شارك الغرفة ثلاثية الأبعاد"), "usdz")]
+                    .compactMap { title, ext in model.places.fileURL(for: place, extension: ext).map { (title, $0) } }
+            }
+        }
         .onAppear {
             reload(); photoURL = model.places.fileURL(for: place, extension: "photo.jpg")
             if let pending = editorProposal { editorProposal = nil; propose(pending.0, source: pending.1) }
@@ -254,7 +282,7 @@ private struct RoomFeatureEditor: View {
     }
 }
 
-private struct FloorPlanPreview: View {
+struct FloorPlanPreview: View {
     let layout: RoomLayout
     var body: some View {
         Canvas { context, size in

@@ -1,7 +1,7 @@
 import http from 'node:http';
 import { timingSafeEqual } from 'node:crypto';
-import { systemFor, FOCUSES, cleanContext, userPrompt, keepSafeSentences, fitToBudget } from './scene-policy.mjs';
-import { containsSpatialClaim } from './spatial-guard.mjs';
+import { systemFor, FOCUSES, cleanContext, userPrompt, keepSafeSentences, fitToBudget, droppedHazard, HAZARD_NOTICE } from './scene-policy.mjs';
+import { containsSpatialClaim, mentionsHazard } from './spatial-guard.mjs';
 
 const MAX_BODY = 3_000_000;
 
@@ -104,12 +104,18 @@ export function createApp(config, provider = describe) {
       // Spatial safety rule: hazard position/distance/step count/clearance come only from sensors.
       // Only offending sentences are dropped; a second call happens only when nothing usable is left.
       let kept = keepSafeSentences(answer, scene.language);
+      let hazardDropped = droppedHazard(answer, scene.language);
+      const notice = HAZARD_NOTICE[scene.language === 'ar' ? 'ar' : 'en'];
       if (!kept) {
         answer = await provider({ ...scene, spatialRetry: true }, config, controller.signal);
         if (!valid(answer)) throw new HttpError(502, 'Scene provider returned an invalid answer.');
         kept = keepSafeSentences(answer, scene.language);
+        hazardDropped ||= droppedHazard(answer, scene.language);
+        // A seen hazard is still reported, by a fixed line, when nothing else compliant is left.
+        if (!kept && hazardDropped) kept = notice;
         if (!kept) throw new HttpError(502, 'Scene answer gave hazard geometry, a step count or a clear-path statement; those come only from sensors.');
       }
+      if (hazardDropped && !mentionsHazard(kept)) kept = `${notice} ${kept}`;
       // Whole leading sentences within the reservation; ask once for a shorter answer only if none fits.
       answer = fitToBudget(kept, scene);
       if (!answer) {

@@ -6,16 +6,18 @@ final class SaudiBanknoteReferencePolicyTests: XCTestCase {
     private let proposal = P.FrameProposal(x: 0.2, y: 0.2, width: 0.6, height: 0.5)
     private func candidate(_ label: Int = 100, id: String = "ref-100", region: Int = 0,
                            inliers: Int = 30, matches: Int = 40, spread: Double = 0.5,
+                           querySpread: Double? = nil,
                            grid: Int = 8, area: Double = 0.3, convex: Bool = true,
                            inFrame: Bool = true, median: Double = 0.5, edgeRatio: Double = 2,
+                           oppositeRatio: Double = 1, projectiveRatio: Double = 1, minimumEdge: Double = 80,
                            angles: [Double] = [90,90,90,90], quad: [P.Point]? = nil,
                            forcedScore: Double? = nil, poleFree: Bool = true) -> P.Candidate {
         let ratio = Double(inliers) / Double(matches)
         return .init(referenceID: id, label: label, regionIndex: region, ratioMatches: matches,
             inliers: inliers, gridCells: grid, inlierRatio: ratio,
-            score: forcedScore ?? Double(inliers)*ratio*sqrt(spread), areaFraction: area,
-            referenceSpread: spread, querySpread: spread, edgeRatio: edgeRatio, oppositeEdgeRatio: 1,
-            projectiveRatio: 1, medianError: median, minimumEdge: 80, angles: angles,
+            score: forcedScore ?? Double(inliers)*ratio*sqrt(min(spread,querySpread ?? spread,1)), areaFraction: area,
+            referenceSpread: spread, querySpread: querySpread ?? spread, edgeRatio: edgeRatio, oppositeEdgeRatio: oppositeRatio,
+            projectiveRatio: projectiveRatio, medianError: median, minimumEdge: minimumEdge, angles: angles,
             quad: quad ?? [.init(x: 200,y: 160), .init(x: 800,y: 160), .init(x: 800,y: 560), .init(x: 200,y: 560)],
             finiteHomography: poleFree, convex: convex, fullyInFrame: inFrame)
     }
@@ -44,6 +46,36 @@ final class SaudiBanknoteReferencePolicyTests: XCTestCase {
             wholeFrameAcceptanceReviewed:false, appleDeviceAcceptanceReviewed:true)
         XCTAssertEqual(P.decide(evidence([candidate()]),thresholds:.experimental,approval:incomplete),.unknown)
     }
+    func testDeviceTestAuthorizationIsSeparateFromProductionReleaseApproval() {
+        let permission = P.DeviceTestAuthorization(referencePackSHA256:String(repeating:"a",count:64))
+        XCTAssertTrue(permission.valid)
+        let e = evidence([candidate()])
+        XCTAssertEqual(P.decideForDeviceTest(e,authorization:permission),.denomination(100))
+        XCTAssertEqual(P.decide(e,thresholds:.experimental,approval:nil),.unknown)
+        XCTAssertEqual(P.decideForDeviceTest(e,authorization:nil),.unknown)
+        for hash in ["",String(repeating:"A",count:64),String(repeating:"a",count:63),"$(UNRESOLVED_BUILD_SETTING)"] {
+            let invalid = P.DeviceTestAuthorization(referencePackSHA256:hash)
+            XCTAssertFalse(invalid.valid)
+            XCTAssertEqual(P.decideForDeviceTest(e,authorization:invalid),.unknown)
+        }
+    }
+    func testDeviceTestUsesSameGeometryProposalVetoAndMarginGates() {
+        let permission = P.DeviceTestAuthorization(referencePackSHA256:String(repeating:"a",count:64))
+        let cases:[P.Evidence] = [
+            evidence([candidate()]), evidence([candidate(inliers:4)]),
+            evidence([candidate(spread:0.01)]), evidence([candidate(inFrame:false)]),
+            evidence([candidate(area:0.03)]), evidence([candidate(convex:false)]),
+            evidence([candidate()],proposals:[]), evidence([candidate()],proposals:[proposal,proposal]),
+            evidence([candidate(),candidate(1,id:"other",inliers:29)]),
+            evidence([candidate(),candidate(id:"other",grid:4,quad:shiftedQuad)]),
+            evidence([candidate(),candidate(region:1)]),
+            evidence([candidate()],proposals:[.init(x:0.1,y:0.1,width:0.8,height:0.8)])
+        ]
+        for e in cases {
+            XCTAssertEqual(P.decideForDeviceTest(e,authorization:permission),
+                           P.decide(e,thresholds:.experimental,approval:approval))
+        }
+    }
     func testMissingRectanglesAndExtraUnknownRectangleAbstain() {
         XCTAssertEqual(P.experimentalDecision(evidence([candidate()],proposals:[])),.unknown)
         let extra = P.FrameProposal(x:0.01,y:0.01,width:0.1,height:0.1)
@@ -68,6 +100,86 @@ final class SaudiBanknoteReferencePolicyTests: XCTestCase {
     }
     func testSameLabelSidesDoNotCompeteAsDifferentDenominations() {
         XCTAssertEqual(P.experimentalDecision(evidence([candidate(),candidate(100,id:"back",inliers:29)])),.hypothesis(100))
+    }
+    private var shiftedQuad: [P.Point] {
+        [.init(x:300,y:160),.init(x:900,y:160),.init(x:900,y:560),.init(x:300,y:560)]
+    }
+    func testHighlyOverlappingNoncoincidentSameAndDifferentLabelsVeto() {
+        // intersection/min(area) is about 0.83, so the old 0.25 rule missed this.
+        for label in [100,1] {
+            let e = evidence([candidate(inliers:80,matches:100),candidate(label,id:"other",quad:shiftedQuad)],overlap:5.0/6.0)
+            XCTAssertEqual(P.experimentalDecision(e),.multiple)
+            XCTAssertEqual(P.decide(e,thresholds:.experimental,approval:nil),.unknown)
+        }
+    }
+    func testCoincidentCrossLabelHypothesesStillUseUnchangedMarginGate() {
+        let best = candidate(inliers:80,matches:100)
+        XCTAssertEqual(P.experimentalDecision(evidence([best,candidate(1,id:"one")])),.hypothesis(100))
+        XCTAssertEqual(P.experimentalDecision(evidence([candidate(),candidate(1,id:"one",inliers:29)])),.unknown)
+    }
+    func testDistinctRegionsOfSameReferenceVetoEvenWithCoincidentBoundaries() {
+        XCTAssertEqual(P.experimentalDecision(evidence([candidate(),candidate(region:1)])),.multiple)
+    }
+    func testSecondaryEquivalenceUsesPolygonInsteadOfBoundingBox() {
+        let diamond:[P.Point]=[.init(x:500,y:160),.init(x:800,y:360),.init(x:500,y:560),.init(x:200,y:360)]
+        XCTAssertEqual(P.experimentalDecision(evidence([candidate(),candidate(id:"other",area:0.15,quad:diamond)])),.multiple)
+    }
+    func testSecondaryBoundaryUsesExistingPointEightThreshold() {
+        func inset(_ right: Double) -> [P.Point] {
+            [.init(x:200,y:160),.init(x:right,y:160),.init(x:right,y:560),.init(x:200,y:560)]
+        }
+        XCTAssertEqual(P.Thresholds.experimental.minimumProposalOverlap,0.80)
+        XCTAssertEqual(P.experimentalDecision(evidence([candidate(),candidate(id:"other",inliers:29,area:0.24,quad:inset(680))])),.hypothesis(100))
+        XCTAssertEqual(P.experimentalDecision(evidence([candidate(),candidate(id:"other",inliers:29,area:0.2397,quad:inset(679.4))])),.multiple)
+    }
+    func testEachSpatialSupportFailureMayVetoButNeverAccept() {
+        for partial in [candidate(id:"partial",spread:0.19,quad:shiftedQuad),
+                        candidate(id:"partial",querySpread:0.19,quad:shiftedQuad),
+                        candidate(id:"partial",grid:4,quad:shiftedQuad)] {
+            XCTAssertEqual(P.experimentalDecision(evidence([candidate(),partial])),.multiple)
+            XCTAssertEqual(P.experimentalDecision(evidence([partial])),.unknown)
+            XCTAssertEqual(P.decide(evidence([partial]),thresholds:.experimental,approval:approval),.unknown)
+        }
+    }
+    func testPartialSecondRegionOfSameReferenceVetoes() {
+        XCTAssertEqual(P.experimentalDecision(evidence([candidate(),candidate(region:1,grid:4)])),.multiple)
+    }
+    func testCoincidentPartialAlternateReferenceDoesNotInventSecondNote() {
+        XCTAssertEqual(P.experimentalDecision(evidence([candidate(),candidate(id:"partial",grid:4)])),.hypothesis(100))
+    }
+    func testPartialSupportStillRequiresAllOtherGeometryAndEvidenceGates() {
+        let best = candidate(inliers:80,matches:100)
+        for partial in [candidate(id:"partial",inliers:13,grid:4,quad:shiftedQuad),
+                        candidate(id:"partial",inliers:20,matches:60,grid:4,quad:shiftedQuad),
+                        candidate(id:"partial",spread:0.01,grid:4,quad:shiftedQuad),
+                        candidate(id:"partial",grid:4,area:0.03,quad:shiftedQuad),
+                        candidate(id:"partial",grid:4,area:0.95,quad:shiftedQuad),
+                        candidate(id:"partial",grid:4,convex:false,quad:shiftedQuad),
+                        candidate(id:"partial",grid:4,inFrame:false,quad:shiftedQuad),
+                        candidate(id:"partial",grid:4,median:3,quad:shiftedQuad),
+                        candidate(id:"partial",grid:4,edgeRatio:7,quad:shiftedQuad),
+                        candidate(id:"partial",grid:4,oppositeRatio:4,quad:shiftedQuad),
+                        candidate(id:"partial",grid:4,projectiveRatio:4,quad:shiftedQuad),
+                        candidate(id:"partial",grid:4,minimumEdge:7.99,quad:shiftedQuad),
+                        candidate(id:"partial",grid:4,angles:[10,90,90,170],quad:shiftedQuad),
+                        candidate(id:"partial",grid:4,quad:shiftedQuad,poleFree:false)] {
+            XCTAssertEqual(P.experimentalDecision(evidence([best,partial])),.hypothesis(100))
+        }
+    }
+    func testPartialMalformedNumbersFailClosedWithoutPromotion() {
+        for partial in [candidate(id:"partial",grid:4,forcedScore:.nan),
+                        candidate(id:"partial",grid:4,forcedScore:100),
+                        candidate(id:"partial",grid:10),
+                        candidate(id:"partial",grid:4,quad:[.init(x:.infinity,y:1)])] {
+            XCTAssertEqual(P.experimentalDecision(evidence([candidate(),partial])),.unknown)
+        }
+    }
+    func testStrongestPartialCandidateDoesNotFallBackToAcceptedSameLabel() {
+        let partial = candidate(id:"partial",inliers:80,matches:100,grid:4)
+        XCTAssertEqual(P.experimentalDecision(evidence([candidate(),partial])),.unknown)
+    }
+    func testTwoPartialCandidatesWithoutFullAcceptanceStayUnknown() {
+        XCTAssertEqual(P.experimentalDecision(evidence([candidate(grid:4),candidate(id:"partial",grid:4,quad:shiftedQuad)])),.unknown)
     }
     func testNoNearestWinsWithWeakEvidence() {
         XCTAssertEqual(P.experimentalDecision(evidence([candidate(inliers:4)])),.unknown)
@@ -191,6 +303,45 @@ final class SaudiBanknoteReferencePolicyTests: XCTestCase {
         records.removeAll { $0["label"] as? Int == 5 && $0["material"] as? String == "polymer" }
         object["references"]=records
         XCTAssertFalse(try SaudiBanknoteReferencePack.parse(JSONSerialization.data(withJSONObject:object)).minimumCoverage)
+    }
+    func testLimitedDevicePackDoesNotInventHumanReviewOrProductionCoverage() throws {
+        let data = try deviceTestManifest()
+        let pack = try SaudiBanknoteReferencePack.parse(data)
+        XCTAssertEqual(pack.references.count,16)
+        XCTAssertTrue(pack.deviceTestCoverage)
+        XCTAssertFalse(pack.allHumanReviewed)
+        XCTAssertFalse(pack.minimumCoverage)
+        XCTAssertTrue(pack.references.allSatisfy { $0.verificationKind == "assistant_visual_review" && $0.material == "paper" })
+    }
+    func testDevicePackRequiresExactlyOnePaperFrontAndBackForEveryLabel() throws {
+        let original = try JSONSerialization.jsonObject(with:deviceTestManifest()) as! [String:Any]
+        let references = original["references"] as! [[String:Any]]
+        var missing = references; missing.removeLast()
+        var duplicateSide = references; duplicateSide[1]["side"] = "front"
+        var polymer = references; polymer[2]["material"] = "polymer"
+        var extra = references
+        var extraRow = references[0]; extraRow["id"] = "extra"; extraRow["path"] = "extra.png"
+        extraRow["sha256"] = String(repeating:"f",count:64); extra.append(extraRow)
+        for rows in [missing,duplicateSide,polymer,extra,[]] {
+            var root = original; root["references"] = rows
+            XCTAssertFalse(try SaudiBanknoteReferencePack.parse(JSONSerialization.data(withJSONObject:root)).deviceTestCoverage)
+        }
+    }
+    private func deviceTestManifest() throws -> Data {
+        var root = try JSONSerialization.jsonObject(with:manifest(reviewChange:("verification_kind","assistant_visual_review"))) as! [String:Any]
+        let template = (root["references"] as! [[String:Any]])[0]
+        var records:[[String:Any]] = []
+        for label in P.labels {
+            for side in ["front","back"] {
+                var row = template
+                row["label"] = label; row["side"] = side
+                row["id"] = "device-fixture-\(records.count)"; row["path"] = "device-fixture-\(records.count).png"
+                row["sha256"] = String(format:"%064x",records.count+1)
+                records.append(row)
+            }
+        }
+        root["references"] = records
+        return try JSONSerialization.data(withJSONObject:root,options:.sortedKeys)
     }
     func testRequestedMoneyPoseRejectsPitchOnlyReaimAndTranslation() {
         let zero = Point3(0, 0, 0), forward = Point3(0, 0, -1)

@@ -8,17 +8,31 @@ const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const stamp = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-');
 const destination = join(root, 'artifacts', `blind-assist-${stamp}`);
 const excluded = new Set(['.build', '.pio', '.tools', '.git', 'node_modules', 'artifacts', 'xcuserdata', 'DerivedData']);
-const extensions = new Set(['.swift', '.sql', '.mjs', '.py', '.cpp', '.c', '.h', '.hpp', '.ino', '.ini', '.md', '.json', '.plist', '.pbxproj', '.xcscheme', '.xcconfig', '.sh', '.yml', '.yaml']);
+const extensions = new Set(['.swift', '.sql', '.mjs', '.py', '.cpp', '.c', '.mm', '.h', '.hpp', '.ino', '.ini', '.md', '.json', '.plist', '.pbxproj', '.xcscheme', '.xcconfig', '.xcprivacy', '.resolved', '.toml', '.sh', '.yml', '.yaml']);
+const requiredText = new Set(['BlindCore/Sources/BlindCore/Resources/guide-prompt.txt',
+  'ios/BlindAssist/CurrencyNative/THIRD_PARTY_NOTICES.txt', 'ios/BlindAssist/FamiliarNative/MODEL_NOTICES.txt',
+  'ios/ThirdParty/AGENT_PORTS.txt']);
 const files = [];
 async function collect(directory) {
   for (const item of await readdir(join(root, directory), { withFileTypes: true })) {
     if (excluded.has(item.name) || (item.name.startsWith('.') && item.name !== '.env.example')) continue;
     const path = `${directory}/${item.name}`;
     if (item.isDirectory()) await collect(path);
-    else if (item.isFile() && (extensions.has(extname(item.name)) || item.name === '.env.example' || /^(LICENSE|NOTICE)(\..*)?$/.test(item.name))) files.push(path);
+    else if (item.isFile() && (extensions.has(extname(item.name)) || requiredText.has(path) ||
+      item.name === '.env.example' || /^(LICENSE|License|NOTICE)(\..*)?$/.test(item.name) || /\.LICENSE$/.test(item.name) ||
+      (directory.startsWith('tools/') && /^requirements(?:-[a-z]+)*\.txt$/.test(item.name)))) files.push(path);
   }
 }
 for (const directory of ['BlindCore', 'BlindMemory', 'ios', 'firmware', 'hardware', 'integration', 'maps', 'server', 'tools', 'research']) await collect(directory);
+// Never package what .gitignore keeps private (datasets, currency references, local models): keep
+// only files Git would track, when Git metadata is available.
+const ignoredCheck = spawnSync('git', ['check-ignore', '--stdin', '-z'], { cwd: root, input: files.join('\0') + '\0', encoding: 'utf8' });
+if (ignoredCheck.status === 0 || ignoredCheck.status === 1) {
+  const ignored = new Set(ignoredCheck.stdout.split('\0').filter(Boolean));
+  for (let index = files.length - 1; index >= 0; index--) if (ignored.has(files[index])) files.splice(index, 1);
+} else {
+  throw new Error('Could not check .gitignore; refusing to package possibly private files.');
+}
 files.push('README.md', 'MAC_HANDOFF.md', 'blind.txt', 'package.json', 'package-lock.json', '.gitignore',
   'AGENTS.md', 'PROJECT_PLAN.md', 'TASKS.md', 'TODO.md', 'PROGRESS.md');
 // Include only these known synthetic evaluation artifacts, never personal map databases.

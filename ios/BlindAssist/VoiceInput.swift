@@ -119,6 +119,10 @@ final class VoiceInput: ObservableObject {
     }
 
     func start(arabic: Bool, timeout: Double = 20) {
+        // A manual/answer-window request cannot demote an active hands-free
+        // session or bypass its recovery/interruption. Explicit mute/end still
+        // cancel the lifecycle and never schedule automatic capture afterward.
+        if continuous, lifecycle.requested, self.arabic == arabic { return }
         begin(arabic: arabic, continuous: false, timeout: timeout)
     }
 

@@ -8,12 +8,12 @@ const read = name => readFile(new URL(name, root), 'utf8');
 test('colour command is requested-only and shared cancellation/focus gates include it', async () => {
   const source = await read('ios/BlindAssist/NavigationModel.swift');
   assert.match(source, /if !automatic, routeClothingColorCommand\(question\)/);
-  assert.match(source, /if automatic, currencyActive \|\| colorActive \{ return \}/);
-  assert.match(source, /focusedTaskActive: focusedFaceSearch \|\| currencyActive \|\| colorActive/);
+  assert.match(source, /if automatic, currencyActive \|\| colorActive \|\| readingTool != nil \|\| currencyRetake\.isPending \{ return \}/);
+  assert.match(source, /focusedTaskActive: focusedFaceSearch \|\| currencyActive \|\| currencyRetake\.isPending \|\| colorActive/);
   const cancel = source.slice(source.indexOf('private func cancelDescription()'), source.indexOf('private func publish()'));
   assert.match(cancel, /colorActive = false/);
   assert.match(cancel, /requestID = UUID\(\); questionTask\?\.cancel\(\)/);
-  assert.match(source, /if currencyActive \|\| colorActive \{ cancelDescription\(\) \}/);
+  assert.match(source, /if currencyActive \|\| colorActive \|\| readingTool != nil \|\| currencyRetake\.isPending \{ cancelDescription\(\) \}/);
 });
 
 test('colour delivery rechecks freshness, pose, current request, hazard policy and attention admission', async () => {

@@ -1,10 +1,32 @@
+## Final coordinated source checkpoint — 2026-10-23
+
+This is the current record; older entries and counts below are historical. Integration preserves primary `30999a9` and incorporates the reviewed seven-commit Claude branch through `61001267`, plus the coordinated Saudi device-test and familiar-person work. It is source integration, not a deployment or Apple/device acceptance.
+
+**Canonical acceptance tracker:** [CHILD_ASSISTANT_TEST_TRACKER.md](CHILD_ASSISTANT_TEST_TRACKER.md). It records the goal, provenance rules, 24 child-style scenarios, three response paths (ordinary chat, independent hazards, evidence-gated physical requests), and executed versus still-pending checks. Use [CLAUDE_INTEGRATION_REVIEW.md](CLAUDE_INTEGRATION_REVIEW.md) for fixes and evidence, [PROJECT_VISION.md](PROJECT_VISION.md) for product intent, and [SESSION_LOG.md](SESSION_LOG.md) for decisions.
+
+Final portable checks: **530/530 BlindCore**, **14/14 BlindMemory**, **216/216 Node**, **17/17 synthetic MobilitySimulation**; firmware protocol and sanitized failure tests plus native face-slot C++ tests passed. All iOS Swift source parses in default and combined optional configurations. Aggregate verify passed in a disposable copy; the active project was not regenerated. Parsing/source contracts do not replace Apple SDK typechecking, native linking, actual model behavior, audible latency or VoiceOver testing.
+
+The first tab is settled assistant replies only; helper/settings tabs retain accessible mute/end/setup. Foreground startup starts an idle conversation and permitted sensing after setup, respecting saved camera-off and explicit mute/end on foreground return. Rooms show real RoomPlan layout/counts during start/stop scanning. Family enrollment uses photos, then name, then confirmed save. Consented foreground recognition checks bounded face batches and proposes one tentative saved-person notice per encounter; no position, follow or authentication claim. Actual recognition accuracy remains unmeasured here.
+
+Saudi recognition is functional only in an explicitly configured **Debug device-test build**, with the private 16-reference pack pinned by manifest hash. Default/Release has no approved production profile. See [tools/currency-reference/DEVICE_TEST.md](tools/currency-reference/DEVICE_TEST.md); preserve existing face/model/framework options when generating that test variant. No reference images or weights are committed. Dataset diagnostics are not independent phone accuracy.
+
+Physical object direction/reach/pickup guidance remains withheld because specific-target/depth binding is not validated. Typed find tools can gather fresh nonspatial candidates and attributed historical memory; the LLM cannot self-authorize a physical instruction. Bounded lexical guards are not exhaustive semantic proof. Current temperature/weather requests cannot be answered from camera or model memory: this build has no live weather/thermometer tool. A real fresh device-clock tool is included.
+
+**Next, in order:** build the exact selected configuration on the Mac; run the tracker with real model and recorded provenance; measure first audible reply, interruption and hazard-preemption timing; run native camera/currency/family/reading and VoiceOver cases with a sighted adult. Retain the earlier hallucination and latency failures as open until exact-build retests pass. Broader child trials, native hardware acceptance, all-day operation and independent unsupervised use are not validated by these checks.
+
+## Current integration checkpoint: 2026-10-23
+
+This checkpoint integrates the seven commits ending at `61001267dc0633c6b3cb941038b18dbb380cdc3d` onto primary `master` source `30999a9ed0e921491ff62a1a93e073fe6af092ff`, not onto the older shared ancestor. The assistant-first voice, evidence, executable-tool, memory, audience and cancellation work remains. Older “no off switch”, unconditional background listening, confirmed device behavior and test counts below are historical, **not current requirements or evidence**. Explicit mute/end, independent camera control and opt-in supported background voice remain. The latest child-first direction defaults active foreground camera awareness on, respecting a saved off choice and OS permission/background limits; old camera-off-default notes below are superseded.
+
+See [CLAUDE_INTEGRATION_REVIEW.md](CLAUDE_INTEGRATION_REVIEW.md) for the reviewed scope, fixes, portable checks and exact remaining acceptance scenarios. No Apple SDK build, actual model/phone accuracy test, firmware board build, deployment or device readiness is claimed.
+
 ## Continuous local assistant source milestone — 2026-10-23
 
 Integrated from shared `master` at `d6d4236bf6d54ac0c0d9c6d18696bc743cac1e0e`, preserving the Mac changes and active generated Xcode project. Publication is a source checkpoint, not deployment or acceptance of all 44 capabilities. [PROJECT_VISION.md](PROJECT_VISION.md), [SESSION_LOG.md](SESSION_LOG.md), [ASSISTANT_FEATURE_CHECKLIST.md](ASSISTANT_FEATURE_CHECKLIST.md) and [MAC_HANDOFF.md](MAC_HANDOFF.md) now provide the durable continuation record.
 
 Implemented assistant-first ordinary/visual/control routing; independent camera, microphone mute/end and opt-in background audio; generation-fenced cancellation/recovery; acoustic-energy onset with transcript fallback; bounded streamed TTS and completion-accounted history; private-route-loss pause; bounded original-report retrieval/correction/deletion and task suspension; real read-only Foundation Models tools with provenance/deadlines; fresh on-demand Vision candidates; explicit audience preference; and one reduced-context overflow retry with no tool replay. Natural colour/money inspection cannot fall through to a bare free-form model answer. The historical cup-location/8.385-second actual-app failures remain unclosed until the exact new app is retested.
 
-### Fresh verification on this source
+### Historical verification for the earlier checkpoint
 
 - **455/455 BlindCore XCTest tests passed**, official Swift 6.4.1 Linux toolchain; includes session, dialogue, acoustic onset, capture recovery, speech delivery, evidence/tool runtime, context overflow, audience and scoped domain policies.
 - **14/14 BlindMemory SQLite tests passed** with matching official Debian SQLite headers/libraries.
@@ -21,6 +43,147 @@ Implemented assistant-first ordinary/visual/control routing; independent camera,
 SDK27+ base/text-only builds require the explicit `BLIND_FOUNDATION_MODELS_V2` condition described in MAC_HANDOFF; the checked-in project does not auto-detect it. No Apple SDK build, actual Foundation Models conversation/tool/macro run, physical microphone/AEC/double-talk/route/background/lock/VoiceOver run, battery/thermal endurance, latency retest, or child-use acceptance was possible in this Linux workspace. Acoustic-energy thresholds are prototype policy, not measured phone latency or speaker identity. The role preference is not age verification or a child-safety enforcement system. Lexical grounding/domain guards cannot certify arbitrary model truth. Fresh Vision returns only uncertain OCR and a narrow anonymous category vocabulary; current evidence still expires after 0.5 seconds and must be withheld if generation/delivery is too slow. No general consequential action tools are exposed.
 
 Remaining source/design gaps, distinct from device testing: semantic end-of-turn detection and slower-turn adaptation; word-aligned mid-phrase heard-prefix accounting; a full stopped-answer resume protocol; model-token-aware compaction beyond bounded original-record retrieval/one retry; broader scene/action coverage with authority; and shared-device profile isolation. All 44 rows retain explicit current status and acceptance scenarios. No private dot parity, guaranteed all-day availability, certified currency/colour accuracy or independent child mobility is claimed.
+
+<!-- Historical Claude-branch entries below; current integration status above supersedes old controller and test claims. -->
+## Photo library, Arabic statuses, optional Live Activity, Linux Swift results — 2026-10-22 (follow-up)
+
+- **Describe a photo from my library** (Seeing AI "describe photos"): Explore a picture › "Describe a photo from my library" opens Apple's Photos picker. The photo is read in memory only (never saved or sent). It gets the same touch-explorable Vision regions (text, people, page, detector objects), plus a hedged overview from `VNClassifyImageRequest` categories with confidence ≥ 0.5 ("The photo may show: …"). No language model is involved.
+- **Arabic for the remaining status lines.** `StatusText` translates the wearable, outdoor-route, private 3D map, community-library and first indoor-route status lines where they are shown, so a language switch applies at once. Room-change comparison results are now spoken in Arabic. The experimental adult-only familiar-people lab screen stays English.
+- **Optional Lock Screen / Dynamic Island status** (H11): `node tools/generate-xcode-project.mjs --live-activity` adds a WidgetKit extension (`ios/BlindAssistLiveActivity/`) and `BLIND_LIVE_ACTIVITY`. It shows only "Assistant is listening" and whether the camera is on, with no replies, places or people, because anyone near the Lock Screen can read it. There is no push token. The default build has no extension target. A node test covers both project variants.
+- The checked-in Xcode project was regenerated; it was missing the newer Swift files.
+- **Verified here, in a disposable Linux Swift 6.2 container** (authorised bounded builds):
+  - BlindCore `swift test`: **361/361 pass**.
+  - BlindMemory: **14/14 pass**.
+  - All app, test and extension Swift files pass `swiftc -parse` with the default, `BLIND_DEVELOPER_CLOUD` and `BLIND_LIVE_ACTIVITY`+`BLIND_APPLE_MULTIMODAL` flags.
+  - `npm test`: **131/131 pass**.
+  This supersedes the "no Swift toolchain here" notes in the three entries below for BlindCore and BlindMemory, including `CompanionEvidenceTests`, `TrackedTargetTests` and `ReadingToolsTests`.
+- Two defects these runs found are fixed: a type-checker timeout in the page-area code, and expired hazard warnings still being spoken.
+- **Not verified:** the iOS app build and type-check (the Linux container has no UIKit, ARKit, Vision or SwiftUI), UI tests, device behaviour and the widget extension build all need the Mac.
+
+## Seeing AI-style reading tools — 2026-10-22 (follow-up)
+
+The Seeing AI app source is not public. I compared its documented features and added the missing ones, all on-device and decided by Vision, ARKit and code:
+- live text reading;
+- page reading with framing guidance;
+- barcode and QR scanning with ticks and saved product names;
+- a light detector;
+- explore a picture by touch.
+
+Main screen (user request): the five tools are large buttons above the bottom tab buttons, under the reply, and a running tool's button becomes its Stop button. Voice commands: "Read text", "Read the page", "Scan the barcode", "Call this …", "Is the light on?", "Stop reading". They also appear under Settings › Ask and goals › Reading tools, and as a stop action on the main reply. Details are in research/SEEING_AI_CODE_REFERENCES.md. npm test 130/130. Swift and device behaviour are unverified (no Swift toolchain here).
+
+## Tracked target and instant acknowledgement — 2026-10-22 (follow-up)
+
+- Added `TrackedTarget` (Touvigation pattern): once the sensors find an object, guidance is re-measured from LiDAR every frame, spoken at 3/2/1 m and on turns, "Within reach" at 0.6 m, refreshed by re-detection every 1.5 s, and ended with "lost sight" after 8 s. No model calls.
+- Chat replies that haven't started within 1 s speak "One moment."
+- Added `UnsupportedPremiseTests` (EgoBlind-style categories, our own cases) to the Mac real-model tests.
+- The user's shortlist of related projects is recorded with licence limits in research/HALLUCINATION_REVIEW.md. No code copied.
+- npm test 129/129. `TrackedTargetTests` is written but not run (no Swift toolchain here).
+
+## Always-on companion, sensor-backed search, full code scan fixes — 2026-10-22 (cloud session, continued)
+
+User direction: the companion must work like an always-on agent (OpenAI dots): always listening, never off, because any gap is a danger to the child; keep every function; keep the reply-only main screen with the bottom buttons; sort and make accessible all other screens; sensors and data are the source of truth. Reviewed the second-opinion review (Astra) and ran four parallel code scans (core app, other screens, Swift packages, server/tools/firmware). About 90 findings; verdicts and changes are in [research/HALLUCINATION_REVIEW.md](research/HALLUCINATION_REVIEW.md).
+
+**Always on**
+- Background audio and Bluetooth modes.
+- BLE state restoration and saved pairings.
+- The camera pause is announced and repeated every 30 s.
+- Foreground return restarts everything.
+- Camera failure and frame-loss restart.
+- The microphone retries forever, including after permission or language-model gaps.
+- No off switch: Restart replaces Stop, practice ends after 2 minutes, and the belt has Reconnect instead of Disconnect.
+- A Siri/Action-button App Shortcut opens the app.
+
+**Evidence**
+- Live object search with an explicit result: found and measured from the current pose, seen but not measurable, or not located (never "not here").
+- One constrained image-model hint, freshness-checked.
+- Saved search record.
+- Detector-only identity ("a cup", never "your cup").
+- Absence, identity and unhedged-direction filters.
+- Arabic object grounding.
+- Strict 2-of-3 frame agreement.
+- Wider spatial, chat and utterance coverage, with every scan-found miss added to the shared fixtures.
+- The relay keeps a fixed "possible hazard visible" line.
+
+**App fixes**
+- Conversation not cancelled during calibration or lost monitoring; replies still spoken.
+- Calibration feedback and the "monitoring active" announcement.
+- Greeting before camera start.
+- Conversational goals keep map alignment.
+- Room descriptions no longer cancel requests.
+- Item lookups protected.
+- Echo window 3 s.
+- Arabic restarts listening in the new language.
+- Learned item descriptions grounded.
+- Place deletion removes pictures and state.
+- Room-recall index alignment; object lift capped.
+- Duplicate-role wearable dropped.
+- Scan announcements.
+- Many Arabic messages.
+
+**Screens**
+- Main screen: only the reply, above the bottom tabs; VoiceOver actions for Yes/No, Repeat, Quiet, Restart, End practice and Write.
+- Settings, Places, Routes, Ask, Camera, Saved memory, Interests, History, Community and Room detail are reorganised: headers, most-used first, item names in labels, short sentences, a voice-command help page, and confirmations before deleting or sharing.
+- Private 3D map export removed (it can hold pictures).
+- Home layout, journey and route exports need a helper confirmation.
+- Public map drafts require a venue type and permission.
+- Review links are https only.
+- The precise location is rounded to about 1 km.
+- The photo client is compiled only in developer builds.
+
+**Swift packages**
+- A lone map match against a strong rival clue now asks.
+- Single-saved-item matching is stricter.
+- Hazards are never dropped as invalid.
+- NaN-time fixes, planner rounding, a storage size check and recency ordering.
+- The AppleModelEvaluation `@main` file was renamed.
+
+**Firmware**
+- A weak floor frame is debounced.
+- A lost floor while calibrated is treated as a possible drop with a kept baseline (recalibration after 5 s).
+- "No target in range" is no longer a fault.
+- Watchdogs added, the timer-wrap stop is fixed, and the belt has a 60 s pairing window.
+
+**Server/tools**
+- Recursive privacy test with `#if/#else` tracking.
+- The handoff packager honours `.gitignore`.
+- The relay refuses plain-HTTP LAN binding unless explicitly allowed.
+- The API key is kept out of `ps`.
+- Evaluation labelling fixed.
+
+**Not changed**
+- `GenerationOptions(samplingMode:)` stays: the scan said `sampling:`, but the earlier Mac build compiled with `samplingMode:`. Verify on Mac.
+- Frame-retention pressure is noted only.
+- A Live Activity needs a widget extension.
+- Some remaining English-only strings in CommunityLibrary/BeltLink/OutdoorNavigator, and FamiliarPeopleView labels.
+
+**Tests**
+- `npm test` 129/129.
+- Firmware `protocol_test` and `failure_test` pass (g++ with ASan/UBSan).
+- Swift not compiled in this container: BlindCore/BlindMemory XCTests, the app build, the rewritten UI tests and device behaviour (background audio, BLE restoration, camera interruption, VoiceOver) must be verified on the Mac and iPhone.
+- Firmware has not been built for hardware (PlatformIO not run); the NimBLE pairing callback and watchdog APIs need a hardware build.
+
+## Hallucination fix, reply-only main screen and microphone fixes — 2026-10-22 (cloud session, source only)
+
+The user asked for a review of all handoff problems, focused on the Apple model inventing answers and objects, then approved the recommended fix. Full review, model comparison (Apple on-device vs Gemini Nano vs Gemma vs Private Cloud Compute) and sources: [research/HALLUCINATION_REVIEW.md](research/HALLUCINATION_REVIEW.md).
+
+- **Code owns facts; the model only labels and talks.** New BlindCore `CompanionUtterance` / `CompanionFactBook` parse find requests and location reports (English/Arabic, "it", hedges, multi-sentence). Code answers them instantly and keeps reports historical with their time. Model chat passes the new `ConversationClaimGuard` (no current location, presence, absence or perception claims) plus `SpatialClaimGuard`, with one retry and then "I don't know that." The recorded failure "I last left it on the kitchen table" now produces "Got it. You last had your cup on the kitchen table. I'll remember that."
+- **Image grounding.** `VisualGrounding`: unhedged model sentences naming an object are spoken only when the phone's detectors agreed on it in 2 of 3 frames about 150 ms apart. The image prompt lists confirmed objects.
+- **Speed.**
+  - Sessions are prepared and prewarmed ahead of time; the app prewarms at launch.
+  - Plain-line context replaces the JSON blob and the pretend tool call.
+  - The model-written `CompanionDecision` task state was removed.
+  - The decorative ROSA/SayCan/LangGraph/BehaviorTree ports and `ios/ThirdParty` were removed.
+- **Find requests** use the saved item (by look or saved place), then the child's report, then a live Vision/LiDAR search, before "I don't know".
+- **Main screen** shows only the current reply (no tab bar, no navigation bar) so VoiceOver reads only that. Other screens are reached through VoiceOver actions or a long press on the reply; magic tap repeats. The typing control appears only with `--text-only`. UI tests were rewritten for this layout.
+- **Microphone.**
+  - Answering a yes/no offer no longer switches continuous listening off for good (it used to call the manual `start`, which cancelled continuous mode).
+  - Recovery now retries with back-off instead of stopping after three failures.
+  - Audio-session failures retry.
+- **Tests:**
+  - `npm test` 125/125 after installing the two small Node packages with `npm ci --ignore-scripts`.
+  - New tests: the shared fixture `companion-evidence.json` in Node, and 5 static checks in `tools/test/companion-evidence.test.mjs`.
+  - Two stale assertions were updated: microphone permission wording, and the currency `cancelDescription` regex.
+- **NOT run:** Swift compilation, BlindCore XCTests (including new `CompanionEvidenceTests`), Apple SDK app build, UI tests, real-model conversation tests, phone timing and VoiceOver. There was no Swift toolchain in this container and Docker was not authorised. Nothing here is accepted until the Mac run.
 
 ## Final typed-chat diagnostic and remaining failure — 2026-10-22
 

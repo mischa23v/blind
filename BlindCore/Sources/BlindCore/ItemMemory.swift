@@ -229,8 +229,9 @@ public struct ItemMemory: Codable, Equatable, Sendable {
     /// Under 2 minutes "just now", then whole minutes, hours, days. A save time slightly
     /// ahead of `now` (clock adjustment) is read as "just now".
     static func relativeTime(from saved: Date, to now: Date, arabic: Bool) -> String {
-        let seconds = max(0, now.timeIntervalSince(saved))
-        guard seconds.isFinite else { return arabic ? "في وقت غير معروف" : "at an unknown time" }
+        let raw = now.timeIntervalSince(saved)
+        guard raw.isFinite else { return arabic ? "في وقت غير معروف" : "at an unknown time" }
+        let seconds = max(0, raw)
         if seconds < 120 { return arabic ? "قبل لحظات" : "just now" }
         if seconds < 3600 {
             let n = Int(seconds / 60)

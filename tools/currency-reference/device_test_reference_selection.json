@@ -1,0 +1,713 @@
+{
+  "schema_version": 1,
+  "purpose": "Private authorized iPhone developer evaluation; no training or production approval",
+  "normalization": {
+    "opencv_version": "4.14.0",
+    "decode": "IMREAD_GRAYSCALE | IMREAD_IGNORE_ORIENTATION",
+    "orientation": "0/1 stored pixels; 3 rotate180; 6 rotate90clockwise; 8 rotate90counterclockwise",
+    "max_side": 1600,
+    "resize": "INTER_AREA; min(1,1600/max(width,height)); Python round dimensions",
+    "png_compression": 3,
+    "crop_or_rectify": false
+  },
+  "review": {
+    "verified": true,
+    "verification_kind": "assistant_visual_review",
+    "verified_by": "OpenAI assistant visual pixel review; not a human",
+    "verified_on": "2026-10-23",
+    "method": "Manually identified note corners after actual full-frame pixel review; not VOC bounding boxes. Approximate visual boundaries, not exact corner ground truth."
+  },
+  "attribution": {
+    "title": "Saudi Currency",
+    "authors": [
+      "Nazmul Ahasan Maruf",
+      "Abdullah Basuhail",
+      "AHM Adil"
+    ],
+    "doi": "10.17632/7sys44td9c.1",
+    "dataset_license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "limitations": [
+    "Selected photographs are all paper-design views; polymer 5 riyals missing.",
+    "Physical note identity, front/back pairing, capture-session independence and held-out independence are unverified.",
+    "Review is assistant visual review, never human review. Material and issue details are image-based and unverified where stated.",
+    "SAMA banknote reproduction/redistribution rules remain unresolved. Keep images private; no public distribution.",
+    "No recognition accuracy, authenticity, legal-tender status, device validation or independent-use claim.",
+    "Full normalized frames retain backgrounds. Native matcher performs the only 800-pixel reference rectification."
+  ],
+  "references": [
+    {
+      "id": "sar-1-front-device-test",
+      "label": 1,
+      "side": "front",
+      "material": "paper",
+      "issue": "2012 print, Abdullah portrait paper design",
+      "raw_relative_path": "Saudi Currency/train/IMG20211022091226_BURST014.jpg",
+      "raw_sha256": "58cc335aea59b5f27b05ce501d3370b2c2ad635309175ba12ec8113ba15f94dd",
+      "raw_size": [
+        3120,
+        4160
+      ],
+      "exif_orientation": 0,
+      "normalized_sha256": "909bc96d4e29ba0095e83d71d6ca4a6a16bb174a2534983da197ab205eb0cca9",
+      "normalized_size": [
+        1200,
+        1600
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          739,
+          390
+        ],
+        [
+          722,
+          1318
+        ],
+        [
+          262,
+          1335
+        ],
+        [
+          298,
+          373
+        ]
+      ],
+      "corner_uncertainty_pixels": 4,
+      "material_assessment": "Paper design inferred visually; no physical material test",
+      "reviewed_corner_order": "canonical_print_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    },
+    {
+      "id": "sar-1-back-device-test",
+      "label": 1,
+      "side": "back",
+      "material": "paper",
+      "issue": "2012 print, monetary authority building reverse",
+      "raw_relative_path": "Saudi Currency/train/IMG20211022091238_BURST016.jpg",
+      "raw_sha256": "3e52df9e6987ca4efeda3758850cffb871293ad42ec39ae20f770000adadf4db",
+      "raw_size": [
+        3120,
+        4160
+      ],
+      "exif_orientation": 0,
+      "normalized_sha256": "ee3ceb96627b523bfc2b6a42faa4067f0316595cfefac6d48533ab5f0d22667e",
+      "normalized_size": [
+        1200,
+        1600
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          743,
+          394
+        ],
+        [
+          739,
+          1458
+        ],
+        [
+          215,
+          1480
+        ],
+        [
+          228,
+          365
+        ]
+      ],
+      "corner_uncertainty_pixels": 5,
+      "material_assessment": "Paper design inferred visually; no physical material test",
+      "reviewed_corner_order": "canonical_print_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    },
+    {
+      "id": "sar-5-front-device-test",
+      "label": 5,
+      "side": "front",
+      "material": "paper",
+      "issue": "1433/2012 print, Abdullah portrait paper design",
+      "raw_relative_path": "Saudi Currency/train/IMG20211022090725_BURST000.jpg",
+      "raw_sha256": "565de55fe7723ec722c3e3f6d76d4099d2b43c71ab825769bdb990a04170db3e",
+      "raw_size": [
+        4160,
+        3120
+      ],
+      "exif_orientation": 1,
+      "normalized_sha256": "7fd69d08771a3828000f8d47fcaefac199ce065e17e0548ea34f28d6c43197af",
+      "normalized_size": [
+        1600,
+        1200
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          301,
+          470
+        ],
+        [
+          1326,
+          458
+        ],
+        [
+          1347,
+          920
+        ],
+        [
+          290,
+          951
+        ]
+      ],
+      "corner_uncertainty_pixels": 4,
+      "material_assessment": "Paper design inferred visually; no physical material test",
+      "reviewed_corner_order": "canonical_print_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    },
+    {
+      "id": "sar-5-back-device-test",
+      "label": 5,
+      "side": "back",
+      "material": "paper",
+      "issue": "2012 print, refinery/port reverse paper design",
+      "raw_relative_path": "Saudi Currency/train/IMG20211022090735_BURST000.jpg",
+      "raw_sha256": "75c94728f3460a8da7bb995ac4b2a4676db4129102b3e06e395243b6cf37b370",
+      "raw_size": [
+        4160,
+        3120
+      ],
+      "exif_orientation": 1,
+      "normalized_sha256": "61abf22b257b2c3268fd1b17107ce5cd8b0378915efa24d873f328b9a2216f9b",
+      "normalized_size": [
+        1600,
+        1200
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          228,
+          422
+        ],
+        [
+          1370,
+          418
+        ],
+        [
+          1386,
+          940
+        ],
+        [
+          182,
+          960
+        ]
+      ],
+      "corner_uncertainty_pixels": 4,
+      "material_assessment": "Paper design inferred visually; no physical material test",
+      "reviewed_corner_order": "canonical_print_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    },
+    {
+      "id": "sar-10-front-device-test",
+      "label": 10,
+      "side": "front",
+      "material": "paper",
+      "issue": "Official issue and printed year unverified",
+      "raw_relative_path": "Saudi Currency/train/IMG_20211104_233236.jpg",
+      "raw_sha256": "7b13ed60f22002e9833c8ce6073c5ac2014ba3f5a9792b02d242e1a3aec394ca",
+      "raw_size": [
+        4624,
+        2600
+      ],
+      "exif_orientation": 6,
+      "normalized_sha256": "a280c1f02991b2b4b62bb1f8e435836fb2d05dd8b2d454d4d8f3c7ffd7a37060",
+      "normalized_size": [
+        900,
+        1600
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          138,
+          70
+        ],
+        [
+          747,
+          58
+        ],
+        [
+          747,
+          1404
+        ],
+        [
+          154,
+          1400
+        ]
+      ],
+      "corner_uncertainty_pixels": 3,
+      "material_assessment": "Paper-like appearance; low-to-moderate confidence; no physical verification",
+      "reviewed_corner_order": "displayed_note_quadrilateral_not_printed_reading_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    },
+    {
+      "id": "sar-10-back-device-test",
+      "label": 10,
+      "side": "back",
+      "material": "paper",
+      "issue": "Visible print year 2017; official issue unverified",
+      "raw_relative_path": "Saudi Currency/train/IMG_20211104_233342.jpg",
+      "raw_sha256": "7c2513bb1dad0ccec6397a4a30ece2a585c5718131b92c85997767914dfef7b8",
+      "raw_size": [
+        4624,
+        2600
+      ],
+      "exif_orientation": 3,
+      "normalized_sha256": "3d89cfa2638c6b4d530b029a87a2c88fd8f8a720251292ce51c8458a8a55c567",
+      "normalized_size": [
+        1600,
+        900
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          224,
+          159
+        ],
+        [
+          1408,
+          132
+        ],
+        [
+          1434,
+          674
+        ],
+        [
+          219,
+          695
+        ]
+      ],
+      "corner_uncertainty_pixels": 3,
+      "material_assessment": "Paper-like appearance; low-to-moderate confidence; no physical verification",
+      "reviewed_corner_order": "displayed_note_quadrilateral_not_printed_reading_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    },
+    {
+      "id": "sar-20-front-device-test",
+      "label": 20,
+      "side": "front",
+      "material": "paper",
+      "issue": "G20 Saudi Arabia 2020 commemorative paper design",
+      "raw_relative_path": "Saudi Currency/train/IMG20211224194625_BURST000.jpg",
+      "raw_sha256": "1f80ff7b069a4cf32ef162696db5f371f46b5a81e9a83c6a402344d8fdb600af",
+      "raw_size": [
+        3120,
+        4160
+      ],
+      "exif_orientation": 0,
+      "normalized_sha256": "6af3c30aa7ab948035b74f19370b0143abf106d0cb3440bff7d4f4121fab023a",
+      "normalized_size": [
+        1200,
+        1600
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          877,
+          363
+        ],
+        [
+          861,
+          1517
+        ],
+        [
+          336,
+          1533
+        ],
+        [
+          352,
+          365
+        ]
+      ],
+      "corner_uncertainty_pixels": 5,
+      "material_assessment": "Paper design inferred visually; no physical material test",
+      "reviewed_corner_order": "canonical_print_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    },
+    {
+      "id": "sar-20-back-device-test",
+      "label": 20,
+      "side": "back",
+      "material": "paper",
+      "issue": "2020 G20 world-map reverse",
+      "raw_relative_path": "Saudi Currency/train/IMG20211224194635_BURST000.jpg",
+      "raw_sha256": "e4fb9db2b1342f1cc61688f243cee712509fbfa8531e17d41cc46b7bc1813e87",
+      "raw_size": [
+        3120,
+        4160
+      ],
+      "exif_orientation": 0,
+      "normalized_sha256": "d954f217005c0ec0e869213634e7444363a914a40570bd8c74f5351430f73c9a",
+      "normalized_size": [
+        1200,
+        1600
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          348,
+          1468
+        ],
+        [
+          348,
+          315
+        ],
+        [
+          875,
+          323
+        ],
+        [
+          855,
+          1440
+        ]
+      ],
+      "corner_uncertainty_pixels": 5,
+      "material_assessment": "Paper design inferred visually; no physical material test",
+      "reviewed_corner_order": "canonical_print_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    },
+    {
+      "id": "sar-50-front-device-test",
+      "label": 50,
+      "side": "front",
+      "material": "paper",
+      "issue": "1438/2017 print, Salman portrait and Dome of the Rock paper design",
+      "raw_relative_path": "Saudi Currency/train/IMG20211220070907_BURST005.jpg",
+      "raw_sha256": "97b8d7a7356ee0d8e9e771e71d7b8a603a5133502f2588b44bb70767359eda15",
+      "raw_size": [
+        3120,
+        4160
+      ],
+      "exif_orientation": 0,
+      "normalized_sha256": "5117a634b060df0caaa2241efa610bb28c1fd6325e04977669944377f6661dee",
+      "normalized_size": [
+        1200,
+        1600
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          329,
+          1479
+        ],
+        [
+          320,
+          316
+        ],
+        [
+          833,
+          315
+        ],
+        [
+          864,
+          1475
+        ]
+      ],
+      "corner_uncertainty_pixels": 7,
+      "material_assessment": "Paper design inferred visually; no physical material test",
+      "reviewed_corner_order": "canonical_print_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    },
+    {
+      "id": "sar-50-back-device-test",
+      "label": 50,
+      "side": "back",
+      "material": "paper",
+      "issue": "2017 print, Al-Aqsa Mosque reverse paper design",
+      "raw_relative_path": "Saudi Currency/train/IMG20211220070856_BURST012.jpg",
+      "raw_sha256": "12a30350cef59161755e3dfa07c46d27187073e38e7a495d1a65eaa64d25301a",
+      "raw_size": [
+        3120,
+        4160
+      ],
+      "exif_orientation": 0,
+      "normalized_sha256": "d7457be42dd152e7c018f5e8ed8cea121e8e5c10c1dbd50c095c68b8caa00b76",
+      "normalized_size": [
+        1200,
+        1600
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          816,
+          315
+        ],
+        [
+          855,
+          1365
+        ],
+        [
+          366,
+          1366
+        ],
+        [
+          360,
+          320
+        ]
+      ],
+      "corner_uncertainty_pixels": 7,
+      "material_assessment": "Paper design inferred visually; no physical material test",
+      "reviewed_corner_order": "canonical_print_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    },
+    {
+      "id": "sar-100-front-device-test",
+      "label": 100,
+      "side": "front",
+      "material": "paper",
+      "issue": "Official issue and printed year unverified",
+      "raw_relative_path": "Saudi Currency/train/IMG_20211123_102438.jpg",
+      "raw_sha256": "d6769e5e00b6aa057bc3318aec2bcadf6f235c831a8677a5f91ba209468ea321",
+      "raw_size": [
+        4624,
+        2600
+      ],
+      "exif_orientation": 6,
+      "normalized_sha256": "cdaf96fcf289aebe1914e61cb672956910684a28ce6584936e5f0115a3dad9fb",
+      "normalized_size": [
+        900,
+        1600
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          145,
+          116
+        ],
+        [
+          753,
+          103
+        ],
+        [
+          766,
+          1456
+        ],
+        [
+          159,
+          1451
+        ]
+      ],
+      "corner_uncertainty_pixels": 4,
+      "material_assessment": "Paper-like appearance; low-to-moderate confidence; no physical verification",
+      "reviewed_corner_order": "displayed_note_quadrilateral_not_printed_reading_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    },
+    {
+      "id": "sar-100-back-device-test",
+      "label": 100,
+      "side": "back",
+      "material": "paper",
+      "issue": "Visible print year 2017; official issue unverified",
+      "raw_relative_path": "Saudi Currency/train/IMG_20211123_102531.jpg",
+      "raw_sha256": "5cbf2bf01df3ef692830064c54b912ffb068f39d55eb1bd06d039e37f55fbff8",
+      "raw_size": [
+        4624,
+        2600
+      ],
+      "exif_orientation": 6,
+      "normalized_sha256": "207eba9be4b3f56cda2d4f6a494db452e1ebb8f080fd23a73171699a19e14f42",
+      "normalized_size": [
+        900,
+        1600
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          154,
+          143
+        ],
+        [
+          777,
+          134
+        ],
+        [
+          758,
+          1482
+        ],
+        [
+          172,
+          1487
+        ]
+      ],
+      "corner_uncertainty_pixels": 4,
+      "material_assessment": "Paper-like appearance; low-to-moderate confidence; no physical verification",
+      "reviewed_corner_order": "displayed_note_quadrilateral_not_printed_reading_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    },
+    {
+      "id": "sar-200-front-device-test",
+      "label": 200,
+      "side": "front",
+      "material": "paper",
+      "issue": "Official issue and printed year unverified",
+      "raw_relative_path": "Saudi Currency/train/IMG_20211123_100343.jpg",
+      "raw_sha256": "04a459f84a81f146bdd46b193d19566136eb7ed565637df1b2796ed59e05c8fd",
+      "raw_size": [
+        4624,
+        2600
+      ],
+      "exif_orientation": 6,
+      "normalized_sha256": "a39e5b809b8994864fec503813f3ef0a7ebf6a541f193d2b2fee61f677adebf0",
+      "normalized_size": [
+        900,
+        1600
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          158,
+          182
+        ],
+        [
+          722,
+          179
+        ],
+        [
+          735,
+          1469
+        ],
+        [
+          165,
+          1473
+        ]
+      ],
+      "corner_uncertainty_pixels": 10,
+      "material_assessment": "Paper-like appearance; low-to-moderate confidence; no physical verification",
+      "reviewed_corner_order": "displayed_note_quadrilateral_not_printed_reading_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    },
+    {
+      "id": "sar-200-back-device-test",
+      "label": 200,
+      "side": "back",
+      "material": "paper",
+      "issue": "Visible print year 2021; official issue unverified",
+      "raw_relative_path": "Saudi Currency/train/IMG_20211123_100223.jpg",
+      "raw_sha256": "b6ada7f04ed3d88d213904ae7b71809ebed45795dce90d77d9cddfde5ce30ce5",
+      "raw_size": [
+        4624,
+        2600
+      ],
+      "exif_orientation": 3,
+      "normalized_sha256": "8aa85f5e43b6332ad2ec87738b993bb1cc110f38cc32618f8ce934088b6c1750",
+      "normalized_size": [
+        1600,
+        900
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          108,
+          144
+        ],
+        [
+          1466,
+          114
+        ],
+        [
+          1487,
+          741
+        ],
+        [
+          105,
+          736
+        ]
+      ],
+      "corner_uncertainty_pixels": 4,
+      "material_assessment": "Paper-like appearance; low-to-moderate confidence; no physical verification",
+      "reviewed_corner_order": "displayed_note_quadrilateral_not_printed_reading_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    },
+    {
+      "id": "sar-500-front-device-test",
+      "label": 500,
+      "side": "front",
+      "material": "paper",
+      "issue": "Official issue and printed year unverified",
+      "raw_relative_path": "Saudi Currency/train/IMG_20211028_025309.jpg",
+      "raw_sha256": "e98cc846ad8e8380c5ea5c076343dcf549dd71ad4b7b1db24851ba54272367fd",
+      "raw_size": [
+        4624,
+        2600
+      ],
+      "exif_orientation": 1,
+      "normalized_sha256": "9bf013e495aaafa05ee5af6f1b82926868d419c320b1df9cf58cceb6bac7b9d6",
+      "normalized_size": [
+        1600,
+        900
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          208,
+          242
+        ],
+        [
+          1417,
+          203
+        ],
+        [
+          1418,
+          750
+        ],
+        [
+          225,
+          759
+        ]
+      ],
+      "corner_uncertainty_pixels": 8,
+      "material_assessment": "Paper-like appearance; low-to-moderate confidence; no physical verification",
+      "reviewed_corner_order": "displayed_note_quadrilateral_not_printed_reading_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    },
+    {
+      "id": "sar-500-back-device-test",
+      "label": 500,
+      "side": "back",
+      "material": "paper",
+      "issue": "Visible print year 2017; official issue unverified",
+      "raw_relative_path": "Saudi Currency/train/IMG_20211028_025433.jpg",
+      "raw_sha256": "e87709c287ac5ae085207fc48e3c64ece31212f9791713484cf7b508a2fd904e",
+      "raw_size": [
+        4624,
+        2600
+      ],
+      "exif_orientation": 6,
+      "normalized_sha256": "59715c6754c852896f12f4f593e14774dfd2091b09972670c529e14a3b0a0b61",
+      "normalized_size": [
+        900,
+        1600
+      ],
+      "corners_tl_tr_br_bl": [
+        [
+          123,
+          185
+        ],
+        [
+          665,
+          175
+        ],
+        [
+          681,
+          1425
+        ],
+        [
+          125,
+          1418
+        ]
+      ],
+      "corner_uncertainty_pixels": 3,
+      "material_assessment": "Paper-like appearance; low-to-moderate confidence; no physical verification",
+      "reviewed_corner_order": "displayed_note_quadrilateral_not_printed_reading_orientation",
+      "physical_note_id": null,
+      "capture_session_id": null
+    }
+  ]
+}

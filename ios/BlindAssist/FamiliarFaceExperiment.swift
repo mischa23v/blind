@@ -5,6 +5,7 @@ import CryptoKit
 import Combine
 import BlindCore
 import ImageIO
+import UIKit
 
 struct FamiliarCapture {
     let image: CVPixelBuffer
@@ -22,6 +23,34 @@ private struct FamiliarAnalysis: Sendable {
     let visionDistances: [Double]?
     let quality: Float?
     let alignedRGB: Data
+}
+private struct FamiliarBatchFace: Sendable {
+    let index: Int
+    let bounds: CGRect
+    let attempted: Bool
+    let analysis: FamiliarAnalysis?
+}
+private struct FamiliarBatchAnalysis: Sendable {
+    let faces: [FamiliarBatchFace]
+    let detectedCount: Int
+    let nextOffset: Int
+    let overCapacity: Bool
+}
+/// A frame-local association, never a body-track identity or a current body bearing.
+struct FamiliarLiveFace: Identifiable {
+    let id: String
+    let frameID: UUID
+    let capturedAt: Double
+    let imageBounds: CGRect
+    let attempted: Bool
+    let personID: UUID?
+    let label: String?
+}
+struct FamiliarArrivalHint {
+    let personID: UUID
+    let label: String
+    let encounterID: UUID
+    let capture: FamiliarCapture
 }
 /// One serial owner of OpenCV; no frame history, network, or per-frame naming loop.
 private actor FamiliarInference {
@@ -83,6 +112,45 @@ private actor FamiliarInference {
             alignedRGB: enrolling ? result.alignedRGB : Data())
     }
 
+    /// Every embedding is aligned with its own detector row in the original upright
+    /// image. A result never acquires a name by proximity to an anonymous body track.
+    func inspectFaces(_ image: CVPixelBuffer, gallery: [FamiliarTemplate], dualPipeline: Bool,
+                      startOffset: Int) throws -> FamiliarBatchAnalysis {
+        try Task.checkCancellation()
+        let oriented = CIImage(cvPixelBuffer: image).oriented(.right)
+        guard let cg = context.createCGImage(oriented, from: oriented.extent) else { throw FamiliarFaceStore.StoreError.unavailable }
+        let engine = try load()
+        let batch = try engine.inspectFaces(image: cg, includeAlignedFace: dualPipeline, startOffset: startOffset)
+        try Task.checkCancellation()
+        let referenceFeatures = gallery.map { $0.feature.map { NSNumber(value: $0) } }
+        var faces: [FamiliarBatchFace] = []
+        for result in batch.faces {
+            try Task.checkCancellation()
+            let bounds = result.normalizedBounds
+            let valid = FamiliarFaceBatchPolicy.validBounds(x: Double(bounds.minX), y: Double(bounds.minY),
+                width: Double(bounds.width), height: Double(bounds.height))
+            let feature = result.feature.map(\.floatValue)
+            var analysis: FamiliarAnalysis?
+            if result.attempted, valid, FamiliarFacePolicy.validFeature(feature,
+                expectedDimension: FamiliarModelConfiguration.selected.embeddingDimension) {
+                // A failed auxiliary print is a veto for this face, not another face's name.
+                if let scores = try? engine.scores(feature: result.feature, gallery: referenceFeatures) {
+                    var distances: [Double]?
+                    if dualPipeline, let (probe, _) = try? FamiliarVisionComparison.printFace(alignedRGB: result.alignedRGB) {
+                        distances = try? FamiliarVisionComparison.distances(probe: probe, gallery: gallery)
+                    }
+                    analysis = FamiliarAnalysis(faceCount: 1, centerX: result.centerX, feature: feature,
+                        scores: scores.map(\.doubleValue), visionPrint: nil, visionDistances: distances,
+                        quality: nil, alignedRGB: Data())
+                }
+            }
+            faces.append(FamiliarBatchFace(index: result.detectionIndex, bounds: bounds,
+                attempted: result.attempted, analysis: analysis))
+        }
+        return FamiliarBatchAnalysis(faces: faces, detectedCount: batch.faceCount,
+            nextOffset: batch.nextOffset, overCapacity: batch.overCapacity)
+    }
+
 }
 
 /// Main-thread owned, matching NavigationModel and its .main ARSession delegate queue.
@@ -91,13 +159,13 @@ final class FamiliarFaceExperiment: ObservableObject {
     private struct Draft {
         let id: UUID
         let token = UUID()
-        let label: String
+        var label: String?
         let consentAt: Date
         var examples: [FamiliarExample]
         var previews: [UUID: Data] = [:] // Ephemeral aligned crops for sighted review; never written.
     }
     private enum Pending {
-        case enable, begin(String, UUID?, EnrollmentMode), save
+        case enable, begin(String?, UUID?, EnrollmentMode), save
         case deletePerson(UUID), deleteExample(UUID, UUID)
     }
     @Published private(set) var enabled = false
@@ -111,14 +179,21 @@ final class FamiliarFaceExperiment: ObservableObject {
     @Published private(set) var awaitingConfirmation = false
     @Published private(set) var reviewedPersonID: UUID?
     @Published var showPicker = false
+    @Published private(set) var liveFaces: [FamiliarLiveFace] = []
+    @Published private(set) var liveFaceStatus = ""
     var presentationActive = false
-    var hasActiveWork: Bool { busy || draft != nil || pending != nil || snapshotCapture != nil || resultCapture != nil || showPicker }
+    var hasEnrollmentDraft: Bool { draft != nil }
+    var hasActiveWork: Bool { busy || liveTask != nil || liveCapture != nil || draft != nil || pending != nil || snapshotCapture != nil || resultCapture != nil || showPicker }
     var isSearching: Bool { searching }
     var operationRevision: UUID { generation }
     var onSearchStarted: (() -> Void)?
     var onSnapshotHint: ((String) -> Void)?
     var onStatus: ((String) -> Void)?
     var onCancelSpeech: (() -> Void)?
+    /// Caller admits this social event through the existing attention/hazard gate.
+    /// True means admitted; false permits a later fresh proposal, not stale queuing.
+    var onArrivalHint: ((FamiliarArrivalHint) -> Bool)?
+    var onCancelArrivalHint: ((UUID) -> Void)?
     private let store = FamiliarFaceStore()
     private let inference = FamiliarInference()
     private var generation = UUID()
@@ -134,6 +209,16 @@ final class FamiliarFaceExperiment: ObservableObject {
     private var pending: Pending?
     private var confirmation = FamiliarActionConfirmation()
     private var confirmationToken: UUID?
+    private var liveTask: Task<Void, Never>?
+    private var liveExpiry: Task<Void, Never>?
+    private var liveCapture: FamiliarCapture?
+    private var liveRevision = UUID()
+    private var lastLiveAttempt = -Double.infinity
+    private var nextFaceOffset = 0
+    private var encounters = FamiliarEncounterPolicy()
+    private var arrivalCapture: FamiliarCapture?
+    private var arrivalSpeechID: UUID?
+    private var arrivalExpiry: Task<Void, Never>?
     var remainingExamples: Int { max(0, 6 - draftExamples.count) }
     var captureInstruction: String {
         switch draftExamples.count {
@@ -148,6 +233,7 @@ final class FamiliarFaceExperiment: ObservableObject {
     }
     private func publishDraft() { draftLabel = draft?.label; enrollmentToken = draft?.token; draftExamples = draft?.examples ?? [] }
     private func cancelWork() {
+        invalidateLiveEvidence()
         generation = UUID(); task?.cancel(); task = nil; expiry?.cancel(); expiry = nil; busy = false; searching = false
         resultCapture = nil; snapshotCapture = nil; onCancelSpeech?()
     }
@@ -163,8 +249,98 @@ final class FamiliarFaceExperiment: ObservableObject {
     }
     func setEnabled(_ value: Bool) {
         cancel(); enabled = value
-        if !value { dualPipeline = false }
-        status = value ? "Experimental hints enabled. Say enroll person followed by a label, or who is this. Use your own judgment; hints can be wrong." : "Experimental comparison is off."
+        if !value { dualPipeline = false; encounters.reset() }
+        status = value ? "Familiar-person hints enabled for this visit. While the camera is active, I can give one tentative notice of a saved person. Hints can be wrong." : "Experimental comparison is off."
+    }
+    /// Navigation away is not revocation of a separately consented active-camera session.
+    /// Unfinished enrollment/confirmation work is still discarded, never silently saved.
+    func leaveEnrollmentScreen() {
+        if draft != nil || pending != nil || showPicker { cancel() }
+        presentationActive = false
+    }
+    private func invalidateLiveEvidence() {
+        liveRevision = UUID(); liveTask?.cancel(); liveTask = nil
+        liveExpiry?.cancel(); liveExpiry = nil; liveCapture = nil; liveFaces = []
+        encounters.invalidateEvidence()
+        cancelArrivalHint()
+    }
+    private func cancelArrivalHint() {
+        let id = arrivalSpeechID
+        arrivalSpeechID = nil; arrivalCapture = nil; arrivalExpiry?.cancel(); arrivalExpiry = nil
+        if let id { onCancelArrivalHint?(id) }
+    }
+    func arrivalSpeechFinished(_ id: UUID) {
+        guard arrivalSpeechID == id else { return }
+        arrivalSpeechID = nil; arrivalCapture = nil; arrivalExpiry?.cancel(); arrivalExpiry = nil
+    }
+    /// Called from current foreground camera processing, never a timer that starts a camera.
+    /// One in-flight pass, two embeddings, a rotating cursor and no old-frame queue.
+    func consume(model: NavigationModel) {
+        guard UIApplication.shared.applicationState == .active,
+              enabled, storageReady, !people.isEmpty, !busy, draft == nil, pending == nil,
+              !searching, !showPicker, let capture = model.captureFamiliarFace() else {
+            if liveTask != nil || liveCapture != nil { invalidateLiveEvidence() }
+            return
+        }
+        if let liveCapture, !model.familiarCaptureIsCurrent(liveCapture) { self.liveCapture = nil; liveFaces = [] }
+        let now = ProcessInfo.processInfo.systemUptime
+        guard liveTask == nil, now - lastLiveAttempt >= 0.75 else { return }
+        lastLiveAttempt = now
+        let token = liveRevision, request = generation, gallery = people, useVision = dualPipeline, offset = nextFaceOffset
+        liveTask = Task { @MainActor [weak self, weak model] in
+            guard let self, let model else { return }
+            do {
+                let batch = try await inference.inspectFaces(capture.image, gallery: gallery, dualPipeline: useVision, startOffset: offset)
+                guard token == liveRevision, request == generation, !Task.isCancelled, enabled else { return }
+                liveTask = nil
+                // Advance scheduling even if inference was too slow to publish evidence.
+                // Otherwise one expensive face could starve every later detection.
+                nextFaceOffset = batch.nextOffset
+                guard model.familiarCaptureIsCurrent(capture) else { liveFaces = []; liveCapture = nil; return }
+                let raw = batch.faces.map { face in face.analysis.flatMap { matchingID($0, gallery: gallery, useVision: useVision, requestID: request) } }
+                let names = FamiliarFaceBatchPolicy.uniqueCandidates(raw)
+                let frameID = UUID()
+                liveCapture = capture
+                liveFaces = zip(batch.faces, names).map { face, identity in
+                    FamiliarLiveFace(id: "\(frameID):\(face.index)", frameID: frameID, capturedAt: capture.capturedAt,
+                        imageBounds: face.bounds, attempted: face.attempted, personID: identity,
+                        label: identity.flatMap { id in gallery.first(where: { $0.id == id })?.label })
+                }
+                liveFaceStatus = batch.overCapacity ? "Too many faces for this local check. No names inferred."
+                    : "\(batch.faces.filter(\.attempted).count) of \(batch.detectedCount) faces checked in this camera look. Other faces wait for a fresh look."
+                let arrived = encounters.observe(names.compactMap { $0 }, detectedFaces: batch.detectedCount, now: capture.capturedAt)
+                // At most one short social event per pass. Others remain eligible on a fresh match.
+                for identity in arrived {
+                    guard let person = gallery.first(where: { $0.id == identity }),
+                          let encounterID = encounters.encounterID(for: identity), model.familiarCaptureIsCurrent(capture) else { continue }
+                    if onArrivalHint?(FamiliarArrivalHint(personID: identity, label: person.label,
+                        encounterID: encounterID, capture: capture)) == true {
+                        encounters.markAnnounced(identity)
+                        arrivalCapture = capture; arrivalSpeechID = encounterID
+                        arrivalExpiry?.cancel()
+                        let lifetime = max(0, 1.5 - (ProcessInfo.processInfo.systemUptime - capture.capturedAt))
+                        arrivalExpiry = Task { @MainActor [weak self] in
+                            try? await Task.sleep(nanoseconds: UInt64(lifetime * 1_000_000_000))
+                            guard let self, !Task.isCancelled, arrivalSpeechID == encounterID else { return }
+                            cancelArrivalHint()
+                        }
+                        break
+                    }
+                }
+                liveExpiry?.cancel()
+                let remaining = max(0, 1.5 - (ProcessInfo.processInfo.systemUptime - capture.capturedAt))
+                liveExpiry = Task { @MainActor [weak self] in
+                    try? await Task.sleep(nanoseconds: UInt64(remaining * 1_000_000_000))
+                    guard let self, token == liveRevision, !Task.isCancelled, liveFaces.first?.frameID == frameID || liveFaces.isEmpty else { return }
+                    liveFaces = []; liveCapture = nil
+                }
+            } catch {
+                guard token == liveRevision, !Task.isCancelled else { return }
+                liveTask = nil; liveFaces = []; liveCapture = nil
+                liveFaceStatus = "Local face checking is unavailable. No name inferred."
+                encounters.invalidateEvidence()
+            }
+        }
     }
     func setDualPipeline(_ value: Bool) {
         cancel(); dualPipeline = value
@@ -176,7 +352,7 @@ final class FamiliarFaceExperiment: ObservableObject {
     }
     func requestEnable() {
         cancel()
-        ask(.enable, "This is a first-stage, stationary supervised adult laboratory test, not authentication. It can name the wrong person. No navigation or safe-to-follow advice. Enable experimental hints for this visit?")
+        ask(.enable, "This stationary supervised adult test can name the wrong person. While your foreground camera is active, check saved people and give one tentative notice, including outside this screen? No trust, navigation or safe-to-follow advice. Camera off stops checking. Enable for this visit?")
     }
     func requestEnrollment(label: String, mode: EnrollmentMode = .new) {
         guard enabled, storageReady else { status = "Enable the experiment and reload the private gallery first."; return }
@@ -193,6 +369,29 @@ final class FamiliarFaceExperiment: ObservableObject {
         cancel()
         ask(.begin(existing?.label ?? name, existing?.id, mode), "\(action) label \(existing?.label ?? name)? Confirm this adult permits local face templates, including enabled extra prints, and these photos show only them. Originals are not saved or uploaded.")
     }
+    func requestUnnamedEnrollment() {
+        guard enabled, storageReady, people.count < 20 else { status = "Enable familiar people and ensure the private gallery has space first."; return }
+        cancel()
+        ask(.begin(nil, nil, .new), "Add a person? Confirm the adult you will photograph permits face examples saved only on this phone. Each photo must show that same adult alone. You will choose their name before saving. No photos are saved or uploaded.")
+    }
+    /// Changing the label revokes any old save confirmation. No unnamed or placeholder
+    /// identity can reach the encrypted gallery.
+    @discardableResult func setDraftLabel(_ value: String) -> Bool {
+        guard var draft, !busy else { return false }
+        let name = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty, name.count <= 60,
+              !name.unicodeScalars.contains(where: { CharacterSet.controlCharacters.contains($0) }),
+              !people.contains(where: { $0.id != draft.id && $0.label.caseInsensitiveCompare(name) == .orderedSame }) else {
+            status = "Choose a unique short name, such as Mom. Labels do not verify relationships."; return false
+        }
+        cancelWork(); pending = nil; confirmation.cancel(); confirmationToken = nil; awaitingConfirmation = false
+        draft.label = name; self.draft = draft; publishDraft()
+        return true
+    }
+    func cancelSaveConfirmation() {
+        guard case .save? = pending else { return }
+        pending = nil; confirmation.cancel(); confirmationToken = nil; awaitingConfirmation = false
+    }
     func confirm() {
         guard let pending, let token = confirmationToken, confirmation.consume(token, now: ProcessInfo.processInfo.systemUptime) else {
             self.pending = nil; confirmation.cancel(); confirmationToken = nil; awaitingConfirmation = false; status = "No current confirmation, or it expired. Repeat the action."; return
@@ -206,11 +405,11 @@ final class FamiliarFaceExperiment: ObservableObject {
                 let originals = mode == .add ? people.first(where: { $0.id == id })?.examples ?? [] : []
                 guard originals.count < 6 else { status = "Six examples already saved. Delete one or replace examples first."; return }
                 draft = Draft(id: id ?? UUID(), label: label, consentAt: Date(), examples: originals)
-                publishDraft(); status = "Consent recorded for label \(label). Collect at least three, at most six examples. \(captureInstruction) Say capture face, or import face photos."
+                publishDraft(); status = "Consent recorded\(label.map { " for label \($0)" } ?? ""). Collect at least three, at most six examples. \(captureInstruction) Say capture face, or import face photos."
             case .save:
-                guard enabled, let draft, draft.examples.count >= 3,
+                guard enabled, let draft, let label = draft.label, !label.isEmpty, draft.examples.count >= 3,
                       FamiliarFacePolicy.normalizedMean(draft.examples.map(\.feature), expectedDimension: FamiliarModelConfiguration.selected.embeddingDimension) != nil else { throw FamiliarFaceStore.StoreError.invalid }
-                let person = FamiliarTemplate(id: draft.id, label: draft.label, examples: draft.examples,
+                let person = FamiliarTemplate(id: draft.id, label: label, examples: draft.examples,
                     consent: "self-or-consenting-adult", consentAt: draft.consentAt)
                 var updated = try store.load().filter { $0.id != draft.id }; updated.append(person)
                 try store.save(updated); people = updated; self.draft = nil; publishDraft()
@@ -231,7 +430,8 @@ final class FamiliarFaceExperiment: ObservableObject {
     }
     func finishEnrollment() {
         guard let draft, !busy, draft.examples.count >= 3 else { status = "Collect at least three valid examples before finishing."; return }
-        ask(.save, "Save \(draft.examples.count) examples for label \(draft.label)? Confirm every example shows the same consenting adult, not a bystander. This replaces the saved example set for that label.")
+        guard let label = draft.label, !label.isEmpty else { status = "Choose the person's name before saving."; return }
+        ask(.save, "Save \(draft.examples.count) examples for label \(label)? Confirm every example shows the same consenting adult, not a bystander. This replaces the saved example set for that label.")
     }
     func requestDeletePerson(_ id: UUID) {
         guard let person = people.first(where: { $0.id == id }) else { return }
@@ -328,6 +528,7 @@ final class FamiliarFaceExperiment: ObservableObject {
     }
     private func setSilentStatus(_ text: String) { silenceStatus = true; status = text; silenceStatus = false }
     func revalidate(model: NavigationModel) {
+        if let arrivalCapture, !model.familiarCaptureIsCurrent(arrivalCapture) { cancelArrivalHint() }
         if searching && (!model.running || model.detection.hazard != .observing) {
             cancelWork(); setSilentStatus("Named search canceled because monitoring context changed."); return
         }

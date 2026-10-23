@@ -44,3 +44,7 @@ Before any production use, obtain a rights-reviewed human-audited inventory for 
 Reference matching does not logically require a newly trained classifier. Established local features can identify geometric correspondences, but need visible texture, approximately planar content and representative references. A trained head has different tradeoffs, not an automatic reliability advantage; either route needs real evidence.
 
 Private photos/results must stay outside publication. `.gitignore` excludes `private/`. Upstream APIs come from OpenCV; no alternate custom feature recognizer is substituted. This package contains only adapter/tests/documentation, not upstream binaries or banknote assets.
+
+## New dataset evidence (2026-10-23)
+
+See `DATASET_DIAGNOSTIC_20261023.md` and its JSON for fresh, explicitly non-independent real-photo comparisons and reproduced overlapping-note failures. The profile remains disabled. `EVALUATION_CONTRACT.md` describes the new strict held-out runner; it does not turn this dataset into independent evidence.

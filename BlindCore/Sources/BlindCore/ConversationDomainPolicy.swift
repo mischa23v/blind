@@ -21,7 +21,101 @@ public enum ConversationDomainPolicy {
     /// model answer. A recognized request has no model-answer exception, even
     /// if the dedicated tool is unavailable, fails, or asks for another capture.
     public static func allowsModelResponse(to question: String) -> Bool {
-        requiredInspection(for: question) == nil
+        requiredInspection(for: question) == nil && !requiresPhysicalVerification(for: question)
+            && !requiresLiveTemperature(for: question)
+    }
+
+    /// No weather service or thermometer is implied by a camera or language
+    /// model. These bounded current-temperature requests require a real source.
+    public static func requiresLiveTemperature(for question: String) -> Bool {
+        let text = normalizedPhysicalRequest(question)
+        func has(_ pattern: String) -> Bool { text.range(of: pattern, options: .regularExpression) != nil }
+        let current = has(#"\b(?:current|currently|now|today|here|outside|indoors|outdoors)\b|\bmy (?:body )?(?:temperature|temp)\b|\btemperature (?:of|in) (?:this|that|my)\b|(?:^| )(?:الان|الحين|اليوم|هنا|برا|بره|الخارج|الغرفه|الجو|جسمي|حرارتي)(?: |$)|(?:^| )حراره (?:هذا|هذه)(?: |$)"#)
+        let temperature = has(#"\b(?:temperature|temp|temprature|temperture|tempreture|tempature|degrees)\b|(?:^| )(?:الحراره|حراره|حرارتي|درجه|درجات)(?: |$)"#)
+        if current && temperature { return true }
+        // A named-place lookup (including common speech/spelling variants) needs
+        // an actual weather/thermometer source, not camera or model inference.
+        // Exclude bounded scientific complements, not entire mixed requests.
+        let temperatureWord = #"(?:temperature|temp|temprature|temperture|tempreture|tempature)"#
+        let scientificPlace = #"(?!(?:(?:a|an|the) )?(?:ideal gas|gas law|vacuum|experiment|equation|physics|science|thermodynamics|kelvin|celsius|fahrenheit|math|homework|boiling|freezing)\b)"#
+        if has(#"^(?:(?:what is|what s|whats|tell me|check) (?:the )?)?(?:the )?"# + temperatureWord
+            + #" (?:in|at|for) "# + scientificPlace + #"[a-z]+(?: [a-z]+){0,4}$"#)
+            || has(#"^(?:(?:كم|ما|وش|ايش) )?(?:درجه )?(?:الحراره|حراره) (?:في|ب) (?!(?:الفيزياء|العلوم|الديناميكا|الغاز المثالي|الفراغ|التجربه|المعادله|واجب)\b)\p{L}+(?: \p{L}+){0,4}$"#)
+            || has(#"^(?:(?:كم|ما|وش|ايش) )?(?:درجه )?(?:الحراره|حراره) بالخبر$"#) { return true }
+        if has(#"\b(?:how hot|how cold) is it\b|\b(?:is|are) (?:(?:this|that|my)(?: [a-z]+){0,4}|it) (?:too )?(?:hot|cold|warm|freezing)\b|(?:^| )هل (?:(?:هذا|هذه)(?: \p{L}+){0,3}|هو|هي) (?:حار|حاره|بارد|بارده|ساخن|ساخنه)(?: |$)"#) { return true }
+        return ["what is the temperature", "what s the temperature", "whats the temperature", "what is the temp", "what s the temp",
+                "what temperature is it", "tell me the temperature", "كم الحراره", "كم درجه الحراره", "ما درجه الحراره", "وش درجه الحراره"].contains(text)
+    }
+
+    private static func normalizedPhysicalRequest(_ question: String) -> String {
+        let normalized = SpatialClaimGuard.normalizeArabic(question.lowercased())
+            .replacingOccurrences(of: "ى", with: "ي").replacingOccurrences(of: "’", with: "'")
+        return normalized.components(separatedBy: CharacterSet.alphanumerics.inverted).filter { !$0.isEmpty }.joined(separator: " ")
+    }
+
+    /// Explicit current-world reach/movement questions cannot be answered by a
+    /// model, even with "maybe" or a warning. They require a separately validated
+    /// identity AND position for that specific target. This bounded lexical gate
+    /// does not establish either prerequisite or claim semantic completeness.
+    public static func requiresPhysicalVerification(for question: String) -> Bool {
+        let text = normalizedPhysicalRequest(question)
+        guard !text.isEmpty else { return false }
+        func has(_ pattern: String) -> Bool { text.range(of: pattern, options: .regularExpression) != nil }
+        // Local object/person presence also needs evidence. Keep these concrete
+        // forms bounded; history and general facts about these subjects remain chat.
+        if has(#"^(?:please |can you tell me |tell me )?(?:where (?:is|are)|where s|wheres|wher is) (?:my |the |this |that )?(?:cane|cup|shoes|shose|mom|mum|mother|apples?|milk|it|they|them)(?: now| right now)?$"#)
+            || has(#"^(?:اين|وين|فين) (?:عصاي|العصا|كوبي|الكوب|حذائي|الحذاء|امي|ماما|التفاح|تفاح|الحليب|حليب|اللبن|هو|هي|هم)(?: الان| الحين)?$|^(?:وينه|وينها|فينه|فينها)(?: الان| الحين)?$"#) { return true }
+        let fridge = has(#"\b(?:fridge|refrigerator)\b|(?:^| )(?:الثلاجه|التلاجه|ثلاجتي)(?: |$)"#)
+        let food = has(#"\b(?:apples?|milk)\b|(?:^| )(?:تفاح|التفاح|حليب|الحليب|لبن|اللبن)(?: |$)"#)
+        let presence = has(#"\b(?:is there|are there|there s|do i have|do we have|is the|are the|where is|where are|where s|wheres|wher is)\b|^(?:هل|في|فيه|يوجد|توجد|عندي|اين|وين|فين)(?: |$)"#)
+        if fridge && food && presence { return true }
+        // Exclusions are attached to the particular verb/complement, not a whole
+        // message containing "homework". A later local movement request still wins.
+        let reach = #"reach(?! (?:my |our |your |a |the )?(?:goals?|conclusion|agreement|audience|potential|decision)\b)"#
+        let follow = #"follow(?! (?:my |our |your |a |the |these |those |this )?(?:reasoning|logic|argument|instructions?|recipe|steps? in|story|lesson|accounts?|channel)\b)"#
+        let pickup = #"(?:pick up(?! (?:a |the |some )?(?:language|french|english|arabic|spanish|skill|habit|signal)\b)|pick (?:(?:this|that|the|my) )?[a-z]+ up)"#
+        let action = #"(?:"# + reach + "|" + follow + "|" + pickup + #"|touch(?! on)|grab|lift|approach(?! (?:the |this |a )?(?:problem|equation|topic)\b)|climb(?! (?:the |a )?career ladder)|cross(?! multiply)|step(?! through)|turn(?! (?:this |that |it )?into)|walk(?! me through)|go(?! on\b| over\b)|get (?:to|near|closer|across|up|down)|put (?:my|the) (?:hand|foot)|move(?! (?:the |this |a )?(?:point|decimal|variable|term|number)\b)|proceed)"#
+        let hedge = #"(?:(?:maybe|perhaps|possibly|roughly|approximately|just|safely|carefully|now|try to|try and|start to) )*"#
+        if has(#"\b(?:can|could|may|should|shall|must|would|do) (?:i|we) "# + hedge + action + #"\b"#)
+            || has(#"\b(?:maybe|perhaps|think) (?:i|we) (?:can|could|should|might) "# + hedge + action + #"\b"#)
+            || has(#"\b(?:tell me if|tell me whether|is it okay if|would it be safe if) (?:i|we) (?:can |could |should |may |might )?"# + hedge + action + #"\b"#)
+            || has(#"\b(?:how|where|which way) (?:do|can|could|should|would) (?:i|we) "# + hedge + action + #"\b"#)
+            || has(#"\b(?:is it safe|is this safe|am i close enough|are we close enough) to "# + action + #"\b"#)
+            || has(#"\b(?:help me|help us|show me how to|tell me how to|tell me where to) "# + hedge + action + #"\b"#)
+            || has(#"\b(?:guide|lead|direct|walk) (?:me|us) (?:to|toward|towards|across|past|around)\b"#)
+            || has(#"\b(?:show|tell) me (?:the way|which way|where to go)\b"#) { return true }
+
+        // Bare imperatives and politely/uncertainly framed imperatives. Negated
+        // commands such as "don't guide me" do not ask for physical guidance.
+        var command = text
+        for _ in 0..<6 {
+            if let prefix = ["please ", "maybe ", "perhaps ", "can you ", "could you ", "would you ", "i think ", "i guess ",
+                             "من فضلك ", "لو سمحت ", "ربما ", "يمكن ", "اظن ", "هل يمكنك "].first(where: { command.hasPrefix($0) }) {
+                command.removeFirst(prefix.count)
+            } else { break }
+        }
+        if command.range(of: #"^"# + action + #"\b"#, options: .regularExpression) != nil { return true }
+
+        let arAction = #"(?:امشي|امش|نمشي|اذهب|اروح|نروح|اتحرك|احرك|اقترب|اقرب|المس|امسك|التقط|ارفع|اخذ|اشيل|شيل|اتبع|اصعد|اتسلق|انزل|اعبر|اخطو|اتقدم|اصل(?! (?:الي )?(?:هدفي|اهدافي|نتيجه|استنتاج))|اوصل|الوصول|المشي|الاقتراب|التقاط|لمس|صعود)(?:ه|ها|هم)?"#
+        if has(#"(?:^| )(?:هل|اقدر|نقدر|استطيع|نستطيع|يمكنني|ممكن|ينفع|كيف|وين|اين|هل علي ان|يجب ان) (?:ان )?"# + arAction + #"(?: |$)"#)
+            || has(#"(?:^| )ساعدني (?:في |علي |ان )?"# + arAction + #"(?: |$)"#)
+            || has(#"(?:^| )(?:وجهني|ارشدني|دلني|خذني|وصلني) (?:الي |علي |نحو |ل)?"#)
+            || command.range(of: #"^"# + arAction + #"(?: |$)"#, options: .regularExpression) != nil { return true }
+
+        let local = has(#"\b(?:this|that|these|those|here|me|my|us|our|it|them)\b|(?:^| )(?:هذا|هذه|هذي|ذلك|تلك|هنا|مني|عني|قدامي|امامي|يميني|يساري|يدي|عندي)(?: |$)"#)
+        let target = has(#"\b(?:door|doorway|exit|entrance|kitchen|bathroom|chair|table|cup|glass|bottle|bed|sofa|shelf|wall|stairs?|curb|road|path|dog|person|hand|object|item)\b|(?:^| )(?:ال|لل|ل|بال|ب)?(?:باب|مخرج|كرسي|طاوله|كوب|كاس|زجاجه|سرير|كنبه|رف|جدار|درج|سلم|رصيف|طريق|مسار|كلب|شخص|غرض|شيء)(?: |$)"#)
+        let distance = has(#"\b(?:how far|how close|how many steps|distance|within reach|close enough|near enough|too far|which direction|which way)\b|(?:^| )(?:كم يبعد|كم تبعد|كم خطوه|كم خطوات|المسافه|مسافه|قريب|قريبه|بعيد|بعيده|اقدر اوصل|متناول)(?: |$)"#)
+        // Geometry on paper is not a measurement of the user's surroundings.
+        // This exemption applies only to distance wording, never action matches above.
+        let paperGeometry = has(#"\b(?:math|mathematics|equation|triangle|coordinates?|vertices|points? [a-z]|diagram|graph|word problem|solve)\b|(?:^| )(?:رياضيات|الرياضيات|معادله|المعادله|مثلث|المثلث|نقطتين|النقطتين|نقطه|احداثيات|الرسم|المساله)(?: |$)"#)
+        if !paperGeometry && has(#"\bhow many steps (?:to|from|until|before)\b"#) { return true }
+        if distance && (local || target) && !(paperGeometry && !target) { return true }
+        // A bare "yes" to a position/direction question would otherwise evade an
+        // output-only geometry guard. Keep these requests in the verified route.
+        let directionQuestion = has(#"\b(?:is|are|where|which)\b.*\b(?:left|right|ahead|behind|in front|beside|under|above|below|closer|farther)\b|(?:^| )(?:هل|وين|اين) .*?(?:ال)?(?:يمين|يسار|امام|خلف|تحت|فوق|جنب)(?: |$)"#)
+        if directionQuestion && (local || target) && !(paperGeometry && !target) { return true }
+        if has(#"\b(?:am i|are we) (?:already |now )?(?:at|beside|near|there|here)\b|(?:^| )هل (?:انا|احنا|نحن) (?:عند|جنب|بجانب|وصلنا)(?: |$)"#) { return true }
+        return ["left or right", "should i go this way", "this way", "يمين ولا يسار", "يمين او يسار", "من هنا"].contains(command)
     }
 
     private static func requiresBanknoteInspection(_ text: String) -> Bool {

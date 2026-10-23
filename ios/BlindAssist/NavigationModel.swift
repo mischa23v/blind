@@ -40,7 +40,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             cancelDescription()
         }
     }
-    @Published var cameraAwareness = UserDefaults.standard.object(forKey: "camera-awareness") as? Bool ?? false {
+    // Active assistance uses permitted foreground sensing by default. An explicit saved-off
+    // choice remains off; this preference never bypasses camera permission or background limits.
+    @Published var cameraAwareness = UserDefaults.standard.object(forKey: "camera-awareness") as? Bool ?? true {
         didSet {
             UserDefaults.standard.set(cameraAwareness, forKey: "camera-awareness")
             if cameraAwareness && assistantSession.foregroundActive && !textOnly { start() }
@@ -56,6 +58,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let reports: [String]
         let evidence: [CompanionEvidence]
         let captures: [ConversationCapture]
+        var codeOwned = false
     }
     private struct ConversationCapture {
         let perception: UUID
@@ -67,7 +70,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var activeConversationSpeech: ConversationSpeech?
     private var requestedVisualDialogue: (id: UUID, generation: UInt64)?
     private var streamedConversationText = ""
-    @Published var assistantAudience = AssistantAudience(persistedValue: UserDefaults.standard.string(forKey: "assistant-audience")) {
+    // This release is child-first. A stored explicit preference remains supported for
+    // future adult use; the default never asserts verified age or guardian presence.
+    @Published var assistantAudience = AssistantAudience(persistedValue:
+        UserDefaults.standard.string(forKey: "assistant-audience") ?? AssistantAudience.childWithGuardian.rawValue) {
         didSet {
             guard oldValue != assistantAudience else { return }
             UserDefaults.standard.set(assistantAudience.rawValue, forKey: "assistant-audience")
@@ -76,6 +82,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
 
+    private var practiceTimer: Timer?
+    private var cameraInterrupted = false
+    private var lastCameraRestart = -Double.infinity
+    private var lastLiveActivityUpdate = -Double.infinity
     @Published private(set) var running = false
     @Published private(set) var simulation = false
     @Published private(set) var detection = Detection(.stopped)
@@ -83,6 +93,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published private(set) var message = ""
     @Published private(set) var wearableStatus = "Disconnected"
     @Published private(set) var sceneAnswer = ""
+    /// What the assistant last said or wrote: the only content of the main screen, so VoiceOver
+    /// reads the reply and nothing else.
+    // Child Home shows settled assistant replies only, never status, hazards or stream fragments.
+    @Published private(set) var currentReply = ""
     @Published private(set) var busy = false
     @Published private(set) var attentionMode: AttentionMode = .moving
     @Published private(set) var returnStatus = ""
@@ -214,7 +228,41 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var listenedOfferKey = ""
     private var experienceActive = false
     @Published private(set) var companionGreeting = ""
-    private var locateFallback = false
+    private var objectSearch: ObjectSearch?
+    private var searchInFlight = false
+    /// Seeing AI-style reading tools: one at a time, decided by Vision and code only.
+    @Published private(set) var readingTool: ReadingTool?
+    private var readingInFlight = false
+    private var readingWork = ReadingWorkSession()
+    private var readingTask: Task<Void, Never>?
+    private var documentStability = DocumentStability()
+    private var documentOrigin: (point: Point3, forward: Point3)?
+    private var documentChunks: [String] = []
+    private var documentSpeechID: UUID?
+    private var exploreTask: Task<Void, Never>?
+    private var exploreRequest = UUID()
+    private var lastReadingLook = -Double.infinity
+    private var readingStarted = -Double.infinity
+    private var lastReadingBeep = -Double.infinity
+    private var liveTextReader = LiveTextReader()
+    private var lastDocumentGuidance: DocumentGuidance?
+    private var lastLightLevel: LightLevel?
+    private var products = ProductMemory()
+    private var lastScannedCode: String?
+    /// A picture kept in memory (never saved or sent) with the regions Vision found, to explore by touch.
+    @Published private(set) var exploreSnapshot: ExploreSnapshot?
+    /// A found object kept as one 3D target while the child approaches it (sensor-only guidance).
+    private var trackedTarget: TrackedTarget?
+    // No validated target-instance-to-depth association exists in this build. A category
+    // box or appearance similarity is not proof of the exact safe-to-handle item.
+    // Keep nonspatial search useful, but do not turn these prototypes into reach guidance.
+    private static let objectInteractionGuidanceValidated = false
+    private var trackLookInFlight = false
+    private var lastTrackLook = -Double.infinity
+    /// The running question is a conversation reply, which does not depend on the camera view.
+    private var questionIsChat = false
+    /// "Is this my cup?" / "where is my cup" image comparison in progress.
+    private var lookupInFlight = false
     @Published var listenAfterQuestions = UserDefaults.standard.object(forKey: "listen-after-questions") as? Bool ?? false {
         didSet { UserDefaults.standard.set(listenAfterQuestions, forKey: "listen-after-questions") }
     }
@@ -234,6 +282,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var questionTimeoutTask: Task<Void, Never>?
     private let saudiBanknotes = SaudiBanknoteReferenceRecognition()
     private var currencyActive = false
+    private var currencyRetake = CurrencyRetakeSession()
     private let clothingColors = ClothingColorReader()
     private var colorActive = false
     private var questionIsAutomatic = false
@@ -248,6 +297,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if let data = try? places.memory?.value(namespace: "preferences", id: "preferred-name"),
            let name = try? JSONDecoder().decode(String.self, from: data) {
             preferredName = name
+        }
+        if let data = try? places.memory?.value(namespace: "products", id: "names"),
+           let saved = try? JSONDecoder().decode(ProductMemory.self, from: data) {
+            products = saved
         }
         if let data = try? places.memory?.value(namespace: "companion", id: "working-state"),
            let saved = try? JSONDecoder().decode(CompanionWorkingState.self, from: data) {
@@ -289,7 +342,20 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             self.enqueueNarration { try await $0.finish(id: id, outcome: outcome, at: at) }
         }
         feedback.onRequestedSpeechFinished = { [weak self] id, text, outcome in
-            guard let self, let pending = self.activeConversationSpeech, pending.id == id else { return }
+            guard let self else { return }
+            #if BLIND_FAMILIAR_PEOPLE
+            self.familiarPeople.arrivalSpeechFinished(id)
+            #endif
+            if self.documentSpeechID == id {
+                self.documentSpeechID = nil
+                guard outcome == .completed, self.readingTool == .document else {
+                    self.stopReadingTool(announce: false); return
+                }
+                if !self.documentChunks.isEmpty { self.documentChunks.removeFirst() }
+                if self.documentChunks.isEmpty { self.stopReadingTool(announce: false) }
+                return
+            }
+            guard let pending = self.activeConversationSpeech, pending.id == id else { return }
             self.activeConversationSpeech = nil
             if outcome == .completed, pending.request == self.requestID,
                self.assistantSession.accepts(generation: pending.generation) {
@@ -328,6 +394,19 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         familiarPeople.onSnapshotHint = { [weak self] text in _ = self?.speakRequested(text) }
         familiarPeople.onCancelSpeech = { [weak self] in _ = self?.feedback.stopInformation() }
+        familiarPeople.onCancelArrivalHint = { [weak self] id in self?.feedback.stopRequestedSpeech(id) }
+        familiarPeople.onArrivalHint = { [weak self] hint in
+            guard let self, self.assistantSession.foregroundActive, self.running,
+                  self.detection.hazard == .observing, self.familiarCaptureIsCurrent(hint.capture) else { return false }
+            let text = self.arabic ? "قد أرى \(hint.label)." : "I might see \(hint.label)."
+            // A newly recognized saved person matters during an ongoing goal too.
+            // This does not bypass quiet/muted social settings, budget, active speech or hazards.
+            let candidate = InformationCandidate(key: "familiar-arrival:" + hint.personID.uuidString,
+                kind: .social, text: text, words: Self.wordCount(text), revision: hint.encounterID.uuidString,
+                createdAt: hint.capture.capturedAt, expiresAt: hint.capture.capturedAt + 1.5,
+                category: "social", requested: false, goalRelevant: true)
+            return self.deliverCandidate(candidate, speechID: hint.encounterID)
+        }
         #endif
         wearables.onUpdate = { [weak self] in
             guard let self else { return }
@@ -337,8 +416,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         voice.onUnavailable = { [weak self] text in
             guard let self else { return }
+            // Losing the ability to hear the child is a safety problem, not a routine status.
             self.message = text
-            self.speakOperation(text)
+            self.speakMobility(text)
         }
         voice.shouldIgnore = { [weak self] text in self?.feedback.isLikelyOwnSpeech(text) == true }
         voice.onPrivateRouteLost = { [weak self] in
@@ -354,7 +434,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             guard let self, self.assistantSession.shouldListen else { return }
             // Acoustic-energy onset or transcript fallback: retire stale work
             // before the utterance finishes. Neither signal proves speaker identity.
+            let pendingRetake = self.currencyRetake
             self.cancelDescription()
+            if pendingRetake.isPending { self.currencyRetake = pendingRetake }
             _ = self.feedback.stopInformation(announceCancellation: false)
         }
         voice.onReadyForReply = { [weak self] in
@@ -379,14 +461,17 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 self.session.run(configuration)
                 if self.buildPrivateMap { self.mapping.start() }
             }
-            self.message = "Room scan finished. Recalibrate the floor to resume monitoring."
+            self.message = self.arabic ? "انتهى مسح الغرفة. لتعود تنبيهات الكاميرا، قف على أرض مستوية وقل: أنا واقف على أرض مستوية."
+                : "Room scan finished. To bring camera alerts back, stand on a level floor and say: I'm standing on a level floor."
+            _ = self.speakMobility(self.message)
         }
     }
     var supported: Bool { ARWorldTrackingConfiguration.supportsFrameSemantics(.sceneDepth) }
     func start() {
-        guard !running, !places.scanning else { return }
+        defer { updateLiveActivity() }
+        guard !running, !places.scanning, assistantSession.foregroundActive, cameraAwareness, !textOnly else { return }
         guard supported else {
-            message = arabic ? "لا يستطيع هذا الهاتف فحص المسار. يمكنك تجربة التدريب من المزيد." : "This phone cannot check the path. You can try practice in More."
+            message = arabic ? "لا يستطيع هذا الهاتف فحص المسار. التدريب موجود في الإعدادات." : "This phone cannot check the path. Practice is in Settings."
             speakOperation(message)
             return
         }
@@ -408,6 +493,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         speakOperation(message)
     }
     private func launch(map: ARWorldMap? = nil) {
+        defer { updateLiveActivity() }
         invalidatePerceptionWork()
         peopleTracking.reset()
         fixedBodyMount = false
@@ -446,6 +532,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     /// Camera/sensor lifecycle is independent of an opted-in audio conversation.
     private func stopCameraMonitoring() {
+        defer { updateLiveActivity() }
         cameraStartupID = UUID()
         cancelDescription()
         invalidatePerceptionWork()
@@ -461,13 +548,16 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         detector.reset(); continuity = MonitoringContinuity(); lastObservation = nil; recognizedPlace = nil; awaitingPlace = nil
         placeRecovery.reset(); placeRecoveryQuestion = ""
         indoor.invalidatePosition(); outdoor.stop(); wearables.disconnect()
-        running = false; simulation = false; phoneDetection = Detection(.stopped); detection = phoneDetection
+        practiceTimer?.invalidate(); practiceTimer = nil
         UIApplication.shared.isIdleTimerDisabled = false
+        running = false; simulation = false; phoneDetection = Detection(.stopped); detection = phoneDetection
     }
     func calibrate() {
         guard running, !places.scanning, awaitingPlace == nil else { return }
         detector.beginCalibration(); calibrationProgress = 0; phoneDetection = Detection(.calibrating)
-        message = "Stand still on known level ground. Keep nearby floor in view."
+        // Publish first so the instruction is not held back by the earlier "needs calibration" state.
+        publish()
+        message = arabic ? "اثبت على أرض مستوية معروفة، وأبقِ الأرض القريبة أمام الكاميرا." : "Stand still on known level ground. Keep nearby floor in view."
         speakOperation(arabic ? "اثبت على أرض مستوية معروفة." : "Hold still on known level ground.")
     }
     func connectWearables() { wearables.connect() }
@@ -486,8 +576,17 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 self.message = self.placeRecoveryQuestion
                 self.speakMobility(self.placeRecoveryQuestion)
             }
+            let now = ProcessInfo.processInfo.systemUptime
+            if now - self.lastLiveActivityUpdate > 10 { self.updateLiveActivity() }
             if self.simulation { self.demoFrame() }
-            else if ProcessInfo.processInfo.systemUptime - self.lastFrameWallTime > 0.5 {
+            else if now - self.lastFrameWallTime > 3, now - self.lastCameraRestart > 10,
+                    UIApplication.shared.applicationState == .active, !self.cameraInterrupted {
+                // Frames stopped while the app is open: restart the camera instead of waiting.
+                self.lastCameraRestart = now
+                _ = self.speakMobility(self.arabic ? "توقفت الكاميرا. أعيد تشغيلها." : "The camera stopped. Restarting it.")
+                self.launch()
+            }
+            else if now - self.lastFrameWallTime > 0.5 {
                 // Invalidate calibration and held evidence when callbacks stop.
                 self.invalidatePerceptionWork()
                 self.invalidateRecognizedRoom()
@@ -544,11 +643,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if buildPrivateMap { mapping.consume(frame) }
         attention.observe(camera: observation.camera, at: lastFrameWallTime, tracking: observation.trackingNormal)
         attentionMode = attention.mode(detail: detail)
+        // An unanswered retry prompt expires without starting another capture or blocking ambience.
+        if let deadline = currencyRetake.expiresAt, lastFrameWallTime >= deadline { currencyRetake.clear() }
+        if !attention.stationary, currencyActive || currencyRetake.isPending { cancelDescription() }
         phoneDetection = detector.process(observation)
         survey.observe(observation, floor: detector.floorHeight)
         calibrationProgress = detector.calibrationProgress; publish()
         #if BLIND_FAMILIAR_PEOPLE
         familiarPeople.revalidate(model: self)
+        familiarPeople.consume(model: self)
         #endif
         updateReturn(observation)
         if !returning, fixedBodyMount, indoor.isAligned, detection.hazard == .observing,
@@ -559,7 +662,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         updateCompanionRoom(observation)
         updateRoomRecognition(frame: frame, observation: observation)
         updateItemLearning(frame: frame)
-        if ambientDescriptions, !returning, !voice.awaitingUtterance, lastFrameWallTime - lastAmbientAttempt >= 4,
+        continueSearch()
+        updateTrackedTarget()
+        updateReadingTool(frame: frame)
+        if ambientDescriptions, !returning, objectSearch == nil, trackedTarget == nil, readingTool == nil, !lookupInFlight, !voice.awaitingUtterance, lastFrameWallTime - lastAmbientAttempt >= 4,
            attention.permitsAmbient(detail: detail, urgent: detection.hazard != .observing, now: lastFrameWallTime) {
             lastAmbientAttempt = lastFrameWallTime
             readScene(cloud: false, automatic: true)
@@ -568,7 +674,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     #if BLIND_FAMILIAR_PEOPLE
     @discardableResult func routeFamiliarPeopleCommand(_ text: String) -> Bool {
         guard let command = FamiliarPeopleCommand.parse(text) else { return false }
-        if currencyActive || colorActive { cancelDescription() }
+        if currencyActive || colorActive || readingTool != nil || currencyRetake.isPending { cancelDescription() }
         guard command == .cancel || command == .stop || !running || detection.hazard == .observing else { message = "Current monitoring alerts take priority."; return true }
         if !showFamiliarPeople && !familiarPeople.enabled {
             showFamiliarPeople = true
@@ -577,7 +683,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         familiarPeople.handle(command, model: self)
         return true
     }
-    /// Short-lived rear-camera input for the explicit experimental screen only.
+    /// Short-lived rear-camera input for consent-enabled foreground recognition.
     func captureFamiliarFace() -> FamiliarCapture? {
         guard running, !simulation, !places.scanning, awaitingPlace == nil,
               detection.hazard == .observing, attention.stationary,
@@ -615,7 +721,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #if BLIND_FAMILIAR_PEOPLE
         if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel() }
         #endif
-        if currencyActive || colorActive { cancelDescription() }
+        if currencyActive || colorActive || readingTool != nil || currencyRetake.isPending { cancelDescription() }
         perceptionGeneration = UUID(); recallInFlight = false; learningItem = nil
         latestViewTexts = []; latestViewTextCapturedAt = -.infinity; latestViewTextObservation = nil
         roomRecall.cancelPendingWork(); itemAppearance.cancelPendingWork()
@@ -634,6 +740,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             originForward: observation.forward, currentForward: lastObservation?.forward)
     }
     private func cancelDescription() {
+        currencyRetake.clear()
+        stopReadingTool(announce: false)
+        exploreRequest = UUID(); exploreTask?.cancel(); exploreTask = nil
+        searchInFlight = false; trackLookInFlight = false; lookupInFlight = false
         conversationSpeech.removeAll()
         conversationEvidenceCaptures.removeAll()
         requestedVisualDialogue = nil
@@ -643,23 +753,27 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         streamedConversationText = ""
         questionTimeoutTask?.cancel(); questionTimeoutTask = nil
+        objectSearch?.cancel(); objectSearch = nil; trackedTarget = nil
         currencyActive = false
         colorActive = false
         pendingQuestion = nil
         requestID = UUID(); questionTask?.cancel(); questionTask = nil; busy = false; questionIsAutomatic = false
+        questionIsChat = false
     }
     private func publish() {
         let now = ProcessInfo.processInfo.systemUptime
         let previousHazard = detection.hazard
         let visual = !simulation ? visualStairs.detection(at: now).map { [$0] } ?? [] : []
         detection = continuity.process(AlertPolicy.highest(visual + [phoneDetection] + (simulation ? [] : wearables.detections(at: now))), at: now)
-        if previousHazard == .uncertain && detection.hazard == .observing {
+        if [.uncertain, .calibrating, .needsCalibration].contains(previousHazard) && detection.hazard == .observing {
             // A status update, never an instruction to start walking.
             speakMobility(GuidanceText.hazard(.observing, arabic: arabic))
         }
         if detection.hazard != .observing { feedback.interruptAmbient() }
-        if detection.hazard.requiresImmediateAttention {
-            cancelDescription(); companion.withdrawOffer(); companionOffer = nil
+        if detection.hazard.isUrgent ||
+            (detection.hazard.requiresImmediateAttention && !previousHazard.requiresImmediateAttention) {
+            cancelDescription()
+            companion.withdrawOffer(); companionOffer = nil
             roomOfferCandidate = nil; roomQuestionCandidate = nil
             #if BLIND_FAMILIAR_PEOPLE
             if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel() }
@@ -685,7 +799,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         invalidateReturn()
         mapping.stop(); journeys.breakTracking(); cancelDescription()
         detector.reset(); phoneDetection = Detection(.uncertain, reason: .frameUnavailable); recognizedPlace = nil
-        indoor.invalidatePosition(); message = "Camera session failed: \(error.localizedDescription)"; publish()
+        indoor.invalidatePosition()
+        message = arabic ? "تعطلت الكاميرا. أعيد تشغيلها." : "The camera failed. Restarting it."
+        publish(); _ = speakMobility(message)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            guard let self, self.running, !self.simulation, !self.places.scanning,
+                  self.assistantSession.foregroundActive, self.cameraAwareness else { return }
+            self.lastCameraRestart = ProcessInfo.processInfo.systemUptime
+            self.launch()
+        }
     }
     func sessionWasInterrupted(_ session: ARSession) {
         invalidatePerceptionWork()
@@ -696,11 +818,18 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         invalidateReturn()
         mapping.stop(); journeys.breakTracking(); cancelDescription()
         detector.reset(); phoneDetection = Detection(.uncertain, reason: .frameUnavailable); recognizedPlace = nil
-        indoor.invalidatePosition(); message = "Camera session interrupted."; publish()
+        cameraInterrupted = true
+        indoor.invalidatePosition()
+        message = arabic ? "الكاميرا متوقفة مؤقتاً. تنبيهات الكاميرا لا تعمل الآن." : "The camera is paused. Camera alerts are not working right now."
+        publish()
+        // In the background the background warning speaks instead (one message, not two).
+        if UIApplication.shared.applicationState == .active { _ = speakMobility(message) }
     }
     func sessionInterruptionEnded(_ session: ARSession) {
+        cameraInterrupted = false
         guard running else { return }
-        awaitingPlace = nil; launch(); message = "Session resumed. Recalibrate the floor."
+        awaitingPlace = nil; launch()
+        message = arabic ? "عادت الكاميرا. أعد معايرة الأرض." : "The camera is back. Recalibrate the floor."
     }
     func scanPlace(name: String, compare: Bool = false) {
         guard running, !simulation, !places.scanning else { message = "Start the live camera first."; return }
@@ -710,6 +839,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         visualStairs.reset()
         invalidateReturn(); cancelDescription(); voice.endManualTurn(); detector.reset(); feedback.stop()
         phoneDetection = Detection(.uncertain); detection = phoneDetection
+        // The room scanner needs the camera, so path alerts from the camera pause; say so plainly.
+        _ = speakMobility(arabic ? "مسح الغرفة يعمل. تنبيهات الكاميرا متوقفة حتى ينتهي المسح. ابقَ مع مساعد مبصر." : "Room scan running. Camera path alerts are off until the scan ends. Stay with a sighted helper.")
         places.startScan(session: session, name: name, compare: compare ? recognizedPlace : nil, relocalized: recognizedPlace != nil)
     }
     func recognize(_ place: SavedPlace) {
@@ -758,13 +889,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     /// Explicit single-photo money request. Unknown/unavailable never falls through to an LLM.
-    @discardableResult func routeSaudiBanknoteCommand(_ text: String) -> Bool {
-        guard ConversationDomainPolicy.requiredInspection(for: text) == .banknote else { return false }
+    @discardableResult func routeSaudiBanknoteCommand(_ text: String, retake: CurrencyRetakeSession? = nil) -> Bool {
+        guard retake != nil || ConversationDomainPolicy.requiredInspection(for: text) == .banknote else { return false }
         cancelDescription()
+        if let retake { currencyRetake = retake }
         #if BLIND_FAMILIAR_PEOPLE
         familiarPeople.cancelSearchForNewGoal()
         #endif
         guard SaudiBanknoteReferenceRecognition.isAvailable else {
+            currencyRetake.clear()
             message = arabic ? "التعرف على الأوراق النقدية السعودية غير متاح في هذا الإصدار. لن أخمّن القيمة." : "Saudi banknote recognition is not available in this build. I won't guess the value."
             _ = speakOperation(message)
             return true
@@ -774,7 +907,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
               UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }),
               let observation = lastObservation, observation.trackingNormal,
               let frame = session.currentFrame else {
-            message = arabic ? "توقف وثبّت الهاتف عمودياً وأظهر ورقة واحدة كاملة للكاميرا، ثم حاول مرة أخرى." : "Hold still with the phone upright and show one whole banknote to the camera, then try again."
+            message = arabic ? "توقف وثبّت الهاتف عمودياً وأظهر ورقة واحدة كاملة للكاميرا، ثم اطلب قراءة النقود." : "Hold still with the phone upright and show one whole banknote to the camera, then ask to read money."
             _ = speakOperation(message)
             return true
         }
@@ -782,7 +915,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let mapRevision = indoor.revision, alignmentRevision = indoor.alignmentRevision
         guard SaudiBanknotePolicy.fresh(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime),
               perceptionResultAllowed(request: request, generation: generation, capturedAt: capturedAt,
-                                      observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return true }
+                                      observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else {
+            currencyNeedsFreshView(request: request, generation: generation); return true
+        }
         let image = frame.capturedImage
         let transform = frame.camera.transform
         let currencyOrigin = Point3(Double(transform.columns.3.x), Double(transform.columns.3.y), Double(transform.columns.3.z))
@@ -799,10 +934,29 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                       SaudiBanknotePolicy.fresh(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime),
                       UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }),
                       self.perceptionResultAllowed(request: request, generation: generation, capturedAt: capturedAt,
-                          observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return }
+                          observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else {
+                    self.currencyNeedsFreshView(request: request, generation: generation); return
+                }
                 self.message = result.speech(arabic: self.arabic)
-                // Value answers retain the ordinary attention/budget gate. Never queue stale money.
-                _ = self.speakRequested(self.message, narrationID: request)
+                if case .denomination = result {
+                    self.currencyRetake.clear()
+                    // Only accepted amounts use ordinary answer speech, never a guess.
+                    _ = self.speakRequested(self.message, narrationID: request)
+                } else {
+                    let reason: CurrencyRetakeSession.Reason
+                    switch result {
+                    case .tooSmall: reason = .tooSmall
+                    case .clipped: reason = .clipped
+                    case .multiple: reason = .multiple
+                    default: reason = .unknown
+                    }
+                    let armed = self.currencyRetake.arm(reason: reason, rejectedFrameAt: capturedAt,
+                        now: ProcessInfo.processInfo.systemUptime)
+                    self.message += armed
+                        ? (self.arabic ? " قل حاول مجدداً عندما تكون جاهزاً." : " Say try again when ready.")
+                        : (self.arabic ? " انتهت محاولات هذه الصورة. ابدأ طلب قراءة نقود جديداً لاحقاً." : " This attempt window has ended. Start a new money-reading request later.")
+                    _ = self.speakOperation(self.message)
+                }
             } catch is CancellationError {
                 return
             } catch {
@@ -810,12 +964,58 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                       self.visualCapturePoseAllowed(origin: currencyOrigin, forward: currencyForward),
                       SaudiBanknotePolicy.fresh(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime),
                       self.perceptionResultAllowed(request: request, generation: generation, capturedAt: capturedAt,
-                          observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return }
-                self.message = self.arabic ? "تعذر التعرف على قيمة الورقة. لن أخمّن." : "I couldn't identify the banknote. I won't guess."
+                          observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else {
+                    self.currencyNeedsFreshView(request: request, generation: generation); return
+                }
+                if error is SaudiBanknoteReferenceRecognition.Failure {
+                    self.currencyRetake.clear()
+                    self.message = self.arabic ? "التعرف على النقود غير متاح في هذا الإصدار. لن أخمّن." : "Banknote recognition is unavailable in this build. I won't guess."
+                } else {
+                    let armed = self.currencyRetake.arm(reason: .processingFailure, rejectedFrameAt: capturedAt,
+                        now: ProcessInfo.processInfo.systemUptime)
+                    self.message = armed
+                        ? (self.arabic ? "تعذر فحص الصورة. أظهر ورقة واحدة كاملة وقل حاول مجدداً." : "I couldn't inspect that image. Show one whole note and say try again.")
+                        : (self.arabic ? "تعذر فحص الورقة. انتهت نافذة المحاولات، ولن أخمّن." : "I couldn't inspect the note. The retry window has ended; I won't guess.")
+                }
                 _ = self.speakOperation(self.message)
             }
         }
         return true
+    }
+
+    /// A stale result is never spoken. Only its still-current, safe request may ask once
+    /// for a new capture, without inferring blur, denomination or a direction to move.
+    private func currencyNeedsFreshView(request: UUID, generation: UUID) {
+        guard !Task.isCancelled, requestID == request, perceptionGeneration == generation,
+              assistantSession.foregroundActive, running, !simulation, attention.stationary,
+              detection.hazard == .observing else { return }
+        currencyRetake.clear()
+        message = arabic ? "أحتاج صورة حديثة. أظهر ورقة كاملة واطلب قراءة النقود مجدداً." : "I need a fresh view. Show one whole note and ask to read money again."
+        _ = speakOperation(message)
+    }
+
+    /// Explicit continuation only: never a timer loop and never a rerun of stored pixels.
+    private func retryCurrencyCapture(_ pending: CurrencyRetakeSession) {
+        guard SaudiBanknoteReferenceRecognition.isAvailable else {
+            _ = routeSaudiBanknoteCommand("read money"); return
+        }
+        var retake = pending
+        let now = ProcessInfo.processInfo.systemUptime
+        guard assistantSession.foregroundActive, running, !simulation, attention.stationary,
+              detection.hazard == .observing, session.currentFrame != nil,
+              SaudiBanknotePolicy.fresh(capturedAt: lastFrameWallTime, now: now) else {
+            speakOperation(arabic ? "أحتاج صورة حديثة وأنت ثابت. اطلب قراءة النقود عندما تكون جاهزاً." : "I need a fresh view while you hold still. Ask to read money when ready.")
+            return
+        }
+        guard retake.takeRetry(frameAt: lastFrameWallTime, now: now) else {
+            // A same-frame refusal consumes no attempt. Expired/exhausted state cannot rearm.
+            if retake.isPending { currencyRetake = retake }
+            speakOperation(retake.isPending
+                ? (arabic ? "انتظر صورة جديدة ثم قل حاول مجدداً." : "Wait for a fresh camera view, then say try again.")
+                : (arabic ? "انتهت نافذة المحاولات. اطلب قراءة النقود من جديد." : "The retry window has ended. Ask to read money again."))
+            return
+        }
+        _ = routeSaudiBanknoteCommand("read money", retake: retake)
     }
 
     /// Explicit, one-frame colour request. Never falls back to a language-model colour guess.
@@ -889,9 +1089,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // Privacy rule (AGENTS.md): camera pictures never leave the phone in the app build.
         let cloud = false
         #endif
+        if !automatic { stopReadingTool(announce: false) }
+        if !automatic, routeUnavailableTemperature(question) { return }
+        if !automatic, routeUnverifiedPhysicalRequest(question) { return }
         if !automatic, routeSaudiBanknoteCommand(question) { return }
         if !automatic, routeClothingColorCommand(question) { return }
-        if automatic, currencyActive || colorActive { return }
+        if !automatic, routeReadingToolCommand(question) { return }
+        // Anything else the child says ends a running reading tool, so two things never talk at once.
+        if !automatic, readingTool != nil { stopReadingTool(announce: false) }
+        if automatic, currencyActive || colorActive || readingTool != nil || currencyRetake.isPending { return }
         #if BLIND_FAMILIAR_PEOPLE
         if !automatic, routeFamiliarPeopleCommand(question) { return }
         if !automatic { familiarPeople.cancelSearchForNewGoal() }
@@ -899,8 +1105,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if !automatic, handleAssistantControl(question) { return }
         if !automatic { cancelDescription() }
         // Saved items and live "where is it" answers come from sensors first (E13/E14).
-        let fromLocate = locateFallback; locateFallback = false
-        if !automatic, !fromLocate, handleItemOrLocate(question) { return }
+        if !automatic, let utterance = CompanionUtterance.parse(question) {
+            answerCompanionUtterance(utterance, question: question); return
+        }
+        if !automatic, handleItemOrLocate(question) { return }
         // A precise neutral/uniform question not understood by the command grammar must still
         // never reach a model that could answer "yes" without repeating a colour word.
         if !automatic, ClothingColorCommand.requiresNeutralVerification(question) {
@@ -969,7 +1177,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         initialSituation["visualTracks"] = visualTracks
         let situationCreatedAt = ProcessInfo.processInfo.systemUptime
         let image = frame.capturedImage, capturedAt = lastFrameWallTime
-        busy = true; questionIsAutomatic = automatic
+        busy = true; questionIsAutomatic = automatic; questionIsChat = false
         let currentRequest = UUID(); requestID = currentRequest
         questionTask = Task { @MainActor [weak self] in
             guard let self else { return }
@@ -985,6 +1193,24 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     try VisionService.inspect(image: image, orientation: .right, arabic: arabic, capturedAt: capturedAt)
                 }.value
                 try Task.checkCancellation()
+                // Grounding (2026-10-22): a model may name an object as fact only when the phone's
+                // detectors agreed on it in at least two of three frames a moment apart.
+                var groundingFrames = [result.grounding]
+                var groundingTimestamps: Set<TimeInterval> = [frame.timestamp]
+                for _ in 0..<2 {
+                    try await Task.sleep(for: .milliseconds(150))
+                    guard self.requestID == currentRequest, let laterFrame = self.session.currentFrame,
+                          laterFrame.timestamp > frame.timestamp,
+                          !groundingTimestamps.contains(laterFrame.timestamp),
+                          ProcessInfo.processInfo.systemUptime - self.lastFrameWallTime < 0.5 else { break }
+                    groundingTimestamps.insert(laterFrame.timestamp)
+                    let later = laterFrame.capturedImage
+                    if let extra = try? await Task.detached(priority: .userInitiated, operation: {
+                        try VisionService.groundingFrame(image: later, orientation: .right)
+                    }).value { groundingFrames.append(extra) }
+                }
+                try Task.checkCancellation()
+                let confirmedObjects = VisualGrounding.agreedObjects(groundingFrames)
                 let situation = AssistantSituation.aged(initialSituation, milliseconds: (ProcessInfo.processInfo.systemUptime - situationCreatedAt) * 1000)
                 var evidence = result.observations.filter {
                     focus == "people" ? $0.kind == .people : focus == "text" ? $0.kind == .text : true
@@ -1020,11 +1246,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                         answer = arabic ? "استخدم تبويب المسارات لتحديد وجهة. لا يكفي وصف الصورة لتحديد مسار قابل للمشي." : "Use Routes to select a destination. A scene description does not establish a walkable route."
                     } else {
                         let local = await LocalImageAssistant.describe(image: image, question: question, context: context,
-                                                                       situation: situation, wordAllowance: allowance)
+                                                                       situation: situation, wordAllowance: allowance,
+                                                                       confirmedObjects: Array(confirmedObjects))
                         try Task.checkCancellation()
                         guard self.requestID == currentRequest else { return }
                         self.localImageStatus = local.status
-                        if let description = local.text { answer = description; fromModel = true }
+                        // Unhedged sentences naming objects the detectors did not confirm are dropped.
+                        let grounded = local.text.map { VisualGrounding.groundedDescription($0, confirmed: confirmedObjects) } ?? ""
+                        if !grounded.isEmpty { answer = grounded; fromModel = true }
                         else if context.observations.isEmpty {
                             if automatic { return }
                             answer = arabic ? "لم أتعرف على تفاصيل مؤكدة في هذه الصورة." : "I could not identify confident details in this view."
@@ -1072,8 +1301,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 // Spatial safety rule (AGENTS.md, E13): hazard geometry, step counts, clear-path
                 // statements and unhedged distances from a model are never spoken.
                 if fromModel && SpatialClaimGuard.containsSpatialClaim(answer) {
-                    if !automatic {
-                        self.message = arabic ? "حذفتُ إجابة فيها مسافة أو موقع خطر لم تقسه الحساسات. تنبيهات الحساسات مستمرة." : "I held back an answer that gave a hazard position or distance the sensors had not measured. Sensor alerts continue."
+                    // The rule allows saying a hazard is visible: keep that warning even though the
+                    // model's position or distance for it is not spoken (also for automatic answers).
+                    let hazardSeen = SpatialClaimGuard.mentionsHazard(answer)
+                    if !automatic || hazardSeen {
+                        self.message = hazardSeen
+                            ? (arabic ? "قد تُظهر الكاميرا درجاً أو عائقاً. هذا لا يحدد موقع الخطر أو سلامة الطريق." : "The camera may show stairs, a step or an obstacle. This does not establish its position or a safe path.")
+                            : (arabic ? "حذفتُ إجابة فيها مسافة لم تقسها الحساسات." : "I held back an answer with a distance the sensors had not measured.")
                         _ = self.speakOperation(self.message)
                     }
                     return
@@ -1103,7 +1337,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 self.enqueueNarration { try await $0.start(id: currentRequest, sessionID: sessionID,
                     goalRevision: dialogue.goalRevision, snapshotID: snapshotID, sourceIDs: sourceIDs, text: answer, at: at) }
                 self.narrationBudget.charge(words: words, limit: self.wordsPerMinute, now: now)
-                self.sceneAnswer = answer
+                self.sceneAnswer = answer; self.currentReply = answer
                 self.lastSceneContent = answer; self.lastSceneSpoken = ProcessInfo.processInfo.systemUptime
                 if !automatic {
                     self.requestedVisualDialogue = (currentRequest, self.assistantSession.generation)
@@ -1131,7 +1365,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel() }
             #endif
         } else if candidate.kind != .mobility {
-            guard !voice.awaitingUtterance, !running || !detection.hazard.requiresImmediateAttention else { return false }
+            // Lost monitoring (uncertain / needs calibration) silences ambient descriptions, but the
+            // child's own answers and short operation replies are still spoken; urgent hazards block all.
+            let direct = candidate.kind == .operation || (candidate.kind == .answer && candidate.requested)
+            let blocked = direct ? detection.hazard.isUrgent : detection.hazard.requiresImmediateAttention
+            guard !voice.awaitingUtterance, !running || !blocked else { return false }
         }
         if !alreadyAdmitted {
             guard case .say = companion.decide([candidate], moment: companionMoment(now), settings: companionSettings).first else { return false }
@@ -1139,6 +1377,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let admitted = AdmittedSpeech(candidate)
         let spoken = feedback.deliver(admitted, narrationID: narrationID, speechID: speechID, alert: alert)
         if !spoken { companion.release(candidate.key) }
+        if spoken, candidate.kind == .answer, candidate.requested, speechID == nil, narrationID == nil {
+            currentReply = candidate.text
+        }
         return spoken
     }
     @discardableResult private func dispatchText(_ text: String, kind: InformationCandidate.Kind,
@@ -1184,7 +1425,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                           preferences: assistantPreferences, quiet: !ambientDescriptions, offerWindow: 14)
     }
     private func companionMoment(_ now: Double) -> CompanionMoment {
-        CompanionMoment(now: now, goalActive: !assistantDialogue.goal.isEmpty, focusedTaskActive: focusedFaceSearch || currencyActive || colorActive,
+        CompanionMoment(now: now, goalActive: !assistantDialogue.goal.isEmpty, focusedTaskActive: focusedFaceSearch || currencyActive || currencyRetake.isPending || colorActive || objectSearch != nil || busy || pendingQuestion != nil || lookupInFlight || readingTool != nil,
                         activity: attention.stationary ? .stationary : lastObservation?.trackingNormal == true ? .moving : .unknown,
                         speaking: feedback.speechPriority)
     }
@@ -1267,7 +1508,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         cancelDescription(); feedback.stop(); stopReturn(); indoor.invalidatePosition()
         assistantDialogue = AssistantDialogue(); objectiveDraft = ""; persistDialogue()
         companionWorkingState = CompanionWorkingState(); persistWorkingState()
-        sceneAnswer = ""; assistantQuestion = ""
+        sceneAnswer = ""; currentReply = ""; assistantQuestion = ""
     }
     @discardableResult func correctConversationRecord(id: String, replacement: String) -> Bool {
         guard let original = assistantDialogue.userRecords.first(where: { $0.id == id }),
@@ -1376,8 +1617,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let normalized = text.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters)).lowercased()
         if ["i'm standing on a level floor", "i am standing on a level floor", "أنا واقف على أرض مستوية"].contains(normalized),
            running && detection.hazard == .needsCalibration { calibrate(); return }
+        let pendingRetake = currencyRetake
         cancelDescription()
         _ = feedback.stopInformation(announceCancellation: false)
+        if pendingRetake.isPending, CurrencyRetakeSession.isRetryCommand(text) {
+            retryCurrencyCapture(pendingRetake); return
+        }
         switch ConversationIntent.classify(text) {
         case .sessionControl(let control):
             switch control {
@@ -1391,6 +1636,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             return
         case .conversation, .visualRequest: break
         }
+        if routeUnavailableTemperature(text) { return }
+        if routeUnverifiedPhysicalRequest(text) { return }
         #if BLIND_FAMILIAR_PEOPLE
         if routeFamiliarPeopleCommand(text) { return }
         familiarPeople.cancelSearchForNewGoal()
@@ -1401,7 +1648,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         assistantQuestion = text
         // Existing domain commands keep their code-owned gates. Ordinary conversation
         // no longer becomes image generation merely because the camera is running.
-        if routeSaudiBanknoteCommand(text) || routeClothingColorCommand(text) { return }
+        if routeSaudiBanknoteCommand(text) || routeClothingColorCommand(text) || routeReadingToolCommand(text) { return }
+        if let utterance = CompanionUtterance.parse(text) {
+            answerCompanionUtterance(utterance, question: text); return
+        }
         if handleAssistantControl(text) { return }
         if let goal = ConversationIntent.explicitTaskGoal(text) {
             // Commit only a whole explicit request, before any model/extraction.
@@ -1438,19 +1688,20 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         objectiveDraft = companionWorkingState.goal
         stopReturn(); indoor.invalidatePosition()
         persistWorkingState(); persistDialogue()
+        currentReply = sceneAnswer
         if assistantSession.state == .active { _ = speakRequested(sceneAnswer) }
     }
 
-    private func queueConversationSpeech(_ text: String, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = []) {
+    private func queueConversationSpeech(_ text: String, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = [], codeOwned: Bool = false) {
         guard !textOnly, assistantSession.state == .active,
               assistantSession.accepts(generation: generation), requestID == request,
-              !SpatialClaimGuard.containsSpatialClaim(text), conversationSpeech.count < 4 else { return }
-        let current = evidence.filter { $0.kind == .currentObservation || $0.kind == .measuredState }
+              (codeOwned || !SpatialClaimGuard.containsSpatialClaim(text)), conversationSpeech.count < 4 else { return }
+        let current = evidence.filter { $0.kind == .currentObservation || ($0.kind == .measuredState && !CompanionClock.isClockEvidence($0)) }
         let captures = current.compactMap { conversationEvidenceCaptures[$0.id] }
         guard captures.count == current.count else { return }
         conversationSpeech.append(ConversationSpeech(id: UUID(), text: text, request: request,
             generation: generation, createdAt: ProcessInfo.processInfo.systemUptime,
-            reports: reports, evidence: evidence, captures: captures))
+            reports: reports, evidence: evidence, captures: captures, codeOwned: codeOwned))
         drainConversationSpeech()
     }
 
@@ -1461,7 +1712,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             guard requestID == next.request, assistantSession.state == .active,
                   assistantSession.accepts(generation: next.generation),
                   ProcessInfo.processInfo.systemUptime - next.createdAt < 30,
-                  CompanionEvidenceGuard.allows(next.text, reports: next.reports, evidence: next.evidence, now: Date()) else { continue }
+                  (next.codeOwned || CompanionEvidenceGuard.allows(next.text, reports: next.reports, evidence: next.evidence, now: Date())) else { continue }
             guard next.captures.allSatisfy({ capture in
                 capture.perception == perceptionGeneration && assistantSession.foregroundActive && running && !simulation &&
                 SceneDelivery.allowed(capturedAt: capture.capturedAt, now: ProcessInfo.processInfo.systemUptime,
@@ -1491,6 +1742,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
 
     @MainActor private func readCompanionTool(_ request: CompanionToolRequest) async -> CompanionToolResult {
         switch request.kind {
+        case .deviceClock:
+            return CompanionClock.read(now: Date(), timeZone: .current, arabic: arabic)
         case .savedMemory:
             var evidence = assistantDialogue.relevantUserReports(for: request.query, maxScalars: 1200).map {
                 CompanionEvidence(kind: .userReport, text: $0.text, source: "user conversation record")
@@ -1558,13 +1811,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
 
-    private func answerConversation(_ question: String) {
-        // Inspection requests cannot become free-form answers, even a bare colour,
-        // number or yes/no, when the dedicated camera workflow is unavailable.
-        guard ConversationDomainPolicy.allowsModelResponse(to: question) else {
-            _ = routeSaudiBanknoteCommand(question) || routeClothingColorCommand(question)
-            return
-        }
+    private func recordCompanionMessage(_ question: String) {
         if companionWorkingState.reports.isEmpty {
             for turn in assistantDialogue.turns where turn.role == "user" {
                 companionWorkingState.record(turn.text)
@@ -1574,6 +1821,106 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         persistWorkingState()
         assistantDialogue.record(role: "user", text: question)
         persistDialogue()
+    }
+
+    /// Conversation evidence rule (2026-10-22): find requests and location reports are answered
+    /// by code from the child's own reports, saved items and live sensors, never by the model.
+    private func answerCompanionUtterance(_ utterance: CompanionUtterance, question: String) {
+        recordCompanionMessage(question)
+        applyCompanion(utterance, question: question)
+    }
+
+    private func applyCompanion(_ utterance: CompanionUtterance, question: String) {
+        let oldGoal = companionWorkingState.goal
+        let text = companionWorkingState.respond(to: utterance, message: question, arabic: arabic)
+        let findObject: String?
+        if case .find(let object) = utterance { findObject = object } else { findObject = nil }
+        if oldGoal != companionWorkingState.goal {
+            // A conversational goal ("find my cup") keeps the measured map alignment and return trail:
+            // the person has not moved. Only an explicit new objective resets position.
+            assistantDialogue.setGoal(companionWorkingState.goal); objectiveDraft = assistantDialogue.goal; persistDialogue()
+        }
+        persistWorkingState()
+        // Saved items and live sensors answer a find request before "I don't know".
+        if let findObject, findWithSensors(findObject, question: question) { return }
+        if !text.isEmpty { deliverConversationReply(text) }
+    }
+
+    private func deliverConversationReply(_ text: String) {
+        sceneAnswer = text; currentReply = text
+        if textOnly || assistantSession.state != .active {
+            assistantDialogue.record(role: "assistant", text: text)
+            persistDialogue()
+            return
+        }
+        // Code-owned receipts use the same bounded queue and delivery completion ledger.
+        // Only this controller can set codeOwned; model callbacks always use the guarded default.
+        queueConversationSpeech(text, request: requestID, generation: assistantSession.generation, codeOwned: true)
+    }
+
+    /// A recognized physical-action request cannot fall through to a plausible model
+    /// instruction, a bare yes/no, or a model's own assertion that it verified the target.
+    @discardableResult private func routeUnverifiedPhysicalRequest(_ question: String) -> Bool {
+        guard ConversationDomainPolicy.requiresPhysicalVerification(for: question) else { return false }
+        cancelDescription(); stopReturn()
+        // Typed find tools may gather fresh evidence, but their current output cannot
+        // authorize a direction, distance, approach or pickup. No model fallback.
+        let utterance = CompanionUtterance.parse(question)
+        var target = LocateCommand.target(question)
+        if case .find(let object) = utterance { target = object }
+        #if BLIND_FAMILIAR_PEOPLE
+        if routeFamiliarPeopleCommand(question) { return true }
+        let localQuestion = question.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+        if target == nil {
+            for prefix in ["where is ", "where's ", "where are "] where localQuestion.lowercased().hasPrefix(prefix) {
+                target = String(localQuestion.dropFirst(prefix.count))
+            }
+        }
+        if let target, let person = familiarPeople.people.first(where: {
+            $0.label.caseInsensitiveCompare(target) == .orderedSame
+        }) {
+            recordCompanionMessage(question)
+            familiarPeople.handle(.find(person.label), model: self)
+            return true
+        }
+        #endif
+        if let utterance, case .find = utterance {
+            answerCompanionUtterance(utterance, question: question)
+            return true
+        }
+        recordCompanionMessage(question)
+        if let target, findWithSensors(target, question: question) { return true }
+        indoor.invalidatePosition()
+        deliverConversationReply(arabic
+            ? "لا أملك موقعاً متحققاً منه لهذا الغرض بعينه، لذلك لا أستطيع توجيه حركتك أو مد يدك إليه."
+            : "I don't have a verified position for that exact target, so I can't guide your movement or reach.")
+        return true
+    }
+
+    /// Weather and physical temperature require an actual configured source, not
+    /// camera pixels or a language model's recollection of a city's climate.
+    @discardableResult private func routeUnavailableTemperature(_ question: String) -> Bool {
+        guard ConversationDomainPolicy.requiresLiveTemperature(for: question) else { return false }
+        cancelDescription(); recordCompanionMessage(question)
+        deliverConversationReply(arabic
+            ? "لا تتوفر لدي قراءة مباشرة للطقس أو مقياس حرارة. الكاميرا لا تقيس درجة الحرارة."
+            : "I don't have a live weather or thermometer reading. The camera cannot measure temperature.")
+        return true
+    }
+
+    private func answerConversation(_ question: String) {
+        // Inspection requests cannot become free-form answers, even a bare colour,
+        // number or yes/no, when the dedicated camera workflow is unavailable.
+        guard ConversationDomainPolicy.allowsModelResponse(to: question) else {
+            if routeUnavailableTemperature(question) { return }
+            if routeUnverifiedPhysicalRequest(question) { return }
+            _ = routeSaudiBanknoteCommand(question) || routeClothingColorCommand(question)
+            return
+        }
+        if let utterance = CompanionUtterance.parse(question) {
+            answerCompanionUtterance(utterance, question: question); return
+        }
+        recordCompanionMessage(question)
         let dialogue = assistantDialogue
         let sessionGeneration = assistantSession.generation
         let preview = recognizedPlace
@@ -1587,7 +1934,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             "arrivalConfirmedThisTurn": false
         ]
         let id = UUID()
-        requestID = id; busy = true; sceneAnswer = ""
+        requestID = id; busy = true; sceneAnswer = ""; questionIsChat = true
         questionTimeoutTask?.cancel()
         questionTimeoutTask = Task { @MainActor [weak self] in
             do { try await Task.sleep(for: .seconds(30)) } catch { return }
@@ -1595,7 +1942,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             self.cancelDescription()
             if self.sceneAnswer.isEmpty {
                 self.sceneAnswer = self.arabic ? "استغرق الرد وقتاً طويلاً. حاول مرة أخرى." : "That reply took too long. Please try again."
+                self.currentReply = self.sceneAnswer
             }
+        }
+        // A reply that has not started within a second gets a short spoken acknowledgement, so the
+        // child is never left in silence; code answers (find, where, reports) are already instant.
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(1))
+            guard let self, self.requestID == id, self.busy, self.sceneAnswer.isEmpty else { return }
+            _ = self.speakOperation(self.arabic ? "لحظة." : "One moment.", replace: false)
         }
         questionTask = Task { @MainActor [weak self] in
             guard let self else { return }
@@ -1626,9 +1981,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             ])
             guard admission == .success else { return }
             self.questionTimeoutTask?.cancel(); self.questionTimeoutTask = nil
-            self.busy = false
+            self.busy = false; self.questionIsChat = false
             guard let text = answer.text else {
-                self.sceneAnswer = answer.status
+                self.sceneAnswer = answer.status; self.currentReply = answer.status
                 if self.assistantSession.state == .active { self.speakOperation(answer.status) }
                 return
             }
@@ -1643,7 +1998,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 }
                 self.persistWorkingState()
             }
-            self.sceneAnswer = text
+            self.sceneAnswer = text; self.currentReply = text
             if self.textOnly || self.assistantSession.state != .active {
                 // Visible typed answers are available to the reader, never marked as spoken.
                 self.assistantDialogue.record(role: "assistant", text: text)
@@ -1812,11 +2167,21 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func startSimulation() {
-        stop(); simulation = true; running = true; detector.beginCalibration()
+        stopCameraMonitoring(); feedback.stop(includingAlerts: true)
+        simulation = true; running = true; detector.beginCalibration()
         demonstrationTime = 0; demonstrationHazard = .observing; policy = AlertPolicy(); continuity = MonitoringContinuity()
         for _ in 0..<15 { demoFrame() }
-        startWatchdog(); message = "Simulation uses generated depth. No live sensing is active."
-        speakOperation(arabic ? "وضع المحاكاة. لا توجد قراءات حقيقية." : "Simulation. No live sensors.")
+        startWatchdog(); message = arabic ? "المحاكاة تستخدم عمقاً مولداً. لا يوجد استشعار حقيقي." : "Simulation uses generated depth. No live sensing is active."
+        _ = speakMobility(arabic ? "تدريب. الحساسات الحقيقية متوقفة لمدة دقيقتين." : "Practice. Live sensors are paused for two minutes.")
+        // Practice ends automatically; this does not promise calibrated live sensing.
+        practiceTimer = Timer.scheduledTimer(withTimeInterval: 120, repeats: false) { [weak self] _ in self?.endPractice() }
+    }
+    /// Ends practice and returns to live camera and sensors.
+    func endPractice() {
+        guard simulation else { return }
+        stopCameraMonitoring(); feedback.stop(includingAlerts: true)
+        if cameraAwareness && assistantSession.foregroundActive && !textOnly { start() }
+        _ = speakMobility(arabic ? "انتهى التدريب. تحتاج تنبيهات الكاميرا إلى تشغيلها وإعادة المعايرة." : "Practice ended. Camera alerts require the camera to be on and the floor recalibrated.")
     }
     func simulate(_ hazard: Hazard) { demonstrationHazard = hazard }
     private func demoFrame() {
@@ -1884,7 +2249,9 @@ extension NavigationModel {
         if !textOnly && assistantSession.shouldListen { voice.startContinuous(arabic: arabic) }
     }
 
+    /// Camera work always stops in the background; listening follows explicit opt-in.
     func suspendExperience() {
+        defer { updateLiveActivity() }
         experienceActive = false
         assistantSession.enterBackground()
         cancelDescription()
@@ -1897,15 +2264,18 @@ extension NavigationModel {
     }
 
     func startConversation() {
+        defer { updateLiveActivity() }
         assistantSession.setBackgroundAllowed(backgroundConversation)
         assistantSession.start()
         cancelDescription()
         voice.setBackgroundAllowed(backgroundConversation)
+        if cameraAwareness && assistantSession.foregroundActive && !textOnly && !running { start() }
         if !textOnly && assistantSession.shouldListen { voice.startContinuous(arabic: arabic) }
         message = arabic ? "المحادثة الصوتية مفعلة." : "Voice conversation is on."
     }
 
     func muteConversation() {
+        defer { updateLiveActivity() }
         assistantSession.mute()
         cancelDescription(); voice.cancel()
         _ = feedback.stopInformation(announceCancellation: false)
@@ -1913,6 +2283,7 @@ extension NavigationModel {
     }
 
     func endConversation() {
+        defer { updateLiveActivity() }
         assistantSession.end()
         cancelDescription(); voice.cancel()
         _ = feedback.stopInformation(announceCancellation: false)
@@ -1952,10 +2323,23 @@ extension NavigationModel {
         else { speakOperation(homePrompt) }
     }
 
+    private func updateLiveActivity() {
+        #if BLIND_LIVE_ACTIVITY
+        guard !textOnly else { return }
+        lastLiveActivityUpdate = ProcessInfo.processInfo.systemUptime
+        let cameraOn = running && !simulation && !places.scanning && assistantSession.foregroundActive &&
+            lastObservation?.trackingNormal == true && lastLiveActivityUpdate - lastFrameWallTime < 0.5
+        let listening = assistantSession.shouldListen && voice.listening, arabic = self.arabic
+        Task { @MainActor in
+            CompanionLiveActivity.shared.show(cameraOn: cameraOn, listening: listening, arabic: arabic)
+        }
+        #endif
+    }
+
     func speakHomeHelp() {
         speakOperation(arabic
-            ? "اضغط تحدث لطرح سؤال، ثم توقف قليلاً عندما تنتهي. اضغط كرر لسماع الكلام مجدداً. إيقاف يوقف المساعد. الخرائط والإعدادات في المزيد."
-            : "Tap Talk to ask a question, then pause when you're done. Repeat says it again. Stop turns the assistant off. Maps and Settings are in More.")
+            ? "تحدث معي في أي وقت. على الرد، اسحب للأعلى أو الأسفل لخيارات مثل كرر وأوقف. الأماكن والمسارات والإعدادات في الأزرار السفلية."
+            : "Talk to me any time. On the reply, swipe up or down for options like Repeat and Stop. Places, Routes and Settings are the buttons at the bottom.")
     }
 }
 
@@ -2139,23 +2523,9 @@ extension NavigationModel {
             case .learn(let name):
                 learnItem(name)
             case .find(let name):
-                if let item = items.find(name), itemAppearance.viewCount(item.key) > 0,
-                   running, !simulation, detection.hazard == .observing, let frame = session.currentFrame {
-                    findItemByLook(item, name: name, frame: frame)
-                } else if let item = items.find(name) {
-                    let sameFrame = indoor.isAligned && item.frameID == indoor.alignmentRevision.uuidString
-                    var relation: String?
-                    if sameFrame, let target = item.position, let observation = lastObservation,
-                       let here = indoor.mapPosition(camera: observation.camera),
-                       let facing = currentBodyForward().flatMap({ indoor.mapDirection($0) }),
-                       let measured = SpatialFacts.relation(from: here, facing: facing, to: target) {
-                        relation = SpatialFacts.phrase(label: item.name, relation: measured, arabic: arabic, inView: nil)
-                    }
-                    say(ItemMemory.answer(for: item, asked: name, now: Date(), sameFrame: sameFrame, measuredRelation: relation, arabic: arabic))
-                } else if let target = LocateCommand.target(question) {
-                    return locate(target, question: question)
-                } else {
-                    say(ItemMemory.answer(for: nil, asked: name, now: Date(), sameFrame: false, measuredRelation: nil, arabic: arabic))
+                if !findWithSensors(name, question: question) {
+                    if let fact = companionWorkingState.factBook.latest(for: name) { say(fact.recall(now: Date(), arabic: arabic)) }
+                    else { say(ItemMemory.answer(for: nil, asked: name, now: Date(), sameFrame: false, measuredRelation: nil, arabic: arabic)) }
                 }
             case .forget(let name):
                 let saved = items.find(name)
@@ -2169,31 +2539,174 @@ extension NavigationModel {
         return false
     }
 
-    /// Live search of the current view; distance measured by LiDAR and spoken plainly. When the target
-    /// is not found or not measured, the on-device model answers instead, worded as an estimate.
+    /// Saved item (by look, or its saved place) newer than the child's last report, then a live
+    /// search of the current view. False when neither applies; the caller speaks the report or "unknown".
+    private func findWithSensors(_ name: String, question: String) -> Bool {
+        let fact = companionWorkingState.factBook.latest(for: name)
+        if let item = items.find(name), fact.map({ item.savedAt > $0.at }) ?? true {
+            if itemAppearance.viewCount(item.key) > 0, running, !simulation, detection.hazard == .observing,
+               let frame = session.currentFrame {
+                findItemByLook(item, name: name, frame: frame)
+                return true
+            }
+            let sameFrame = indoor.isAligned && item.frameID == indoor.alignmentRevision.uuidString
+            var relation: String?
+            if Self.objectInteractionGuidanceValidated, sameFrame, let target = item.position, let observation = lastObservation,
+               let here = indoor.mapPosition(camera: observation.camera),
+               let facing = currentBodyForward().flatMap({ indoor.mapDirection($0) }),
+               let measured = SpatialFacts.relation(from: here, facing: facing, to: target) {
+                relation = SpatialFacts.phrase(label: item.name, relation: measured, arabic: arabic, inView: nil)
+            }
+            say(ItemMemory.answer(for: item, asked: name, now: Date(), sameFrame: sameFrame, measuredRelation: relation, arabic: arabic))
+            return true
+        }
+        return locate(LocateCommand.target(question) ?? name, question: question)
+    }
+
+    /// Live search (2026-10-22): the sensors look at fresh frames for up to ObjectSearch.duration
+    /// seconds. The current release reports only a possible nonspatial match, not
+    /// exact identity, distance or pickup authority. Time up means not located, never absent.
     private func locate(_ target: String, question: String) -> Bool {
+        guard running, !simulation, detection.hazard == .observing, lastObservation?.trackingNormal == true else { return false }
+        objectSearch = ObjectSearch(target: target, now: ProcessInfo.processInfo.systemUptime)
+        searchInFlight = false
+        say(ObjectSearch.started(target: target, arabic: arabic))
+        continueSearch()
+        return true
+    }
+
+    private func recordSearch(_ target: String, located: Bool) {
+        companionWorkingState.lastSearch = SearchRecord(target: target, located: located)
+        persistWorkingState()
+    }
+
+    private func continueSearch() {
+        let now = ProcessInfo.processInfo.systemUptime
+        guard let search = objectSearch, search.due(now: now), !searchInFlight else { return }
         guard running, !simulation, detection.hazard == .observing, let frame = session.currentFrame,
-              let observation = lastObservation, observation.trackingNormal else { return false }
-        let image = frame.capturedImage, arabic = self.arabic, facing = currentBodyForward()
+              let origin = lastObservation, origin.trackingNormal else { return }
+        searchInFlight = true
+        let image = frame.capturedImage, arabic = self.arabic, target = search.target
+        // "the exit sign" is spoken as said; the detector matches the words without "the".
+        let visionTarget = target.lowercased().hasPrefix("the ") ? String(target.dropFirst(4)) : target
         let request = requestID, generation = perceptionGeneration, capturedAt = lastFrameWallTime
         let mapRevision = indoor.revision, alignmentRevision = indoor.alignmentRevision
         Task.detached(priority: .userInitiated) { [weak self] in
-            let found = try? VisionService.locate(target: target, image: image, orientation: .right, arabic: arabic)
+            let found = try? VisionService.locate(target: visionTarget, image: image, orientation: .right, arabic: arabic)
             await MainActor.run { [weak self] in
-                guard let self, self.perceptionResultAllowed(request: request, generation: generation,
-                    capturedAt: capturedAt, observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return }
-                if let found, let point = DepthSampler.worldPoint(from: frame, uprightX: found.x, uprightY: found.y),
-                   let measured = SpatialFacts.relation(from: observation.camera, facing: facing ?? observation.forward, to: point) {
-                    let phrase = SpatialFacts.phrase(label: found.label, relation: measured, arabic: arabic, inView: true)
-                    // Without an established body heading, directions are from the camera.
-                    self.say(facing == nil ? (arabic ? "من الكاميرا: " : "From the camera: ") + phrase : phrase)
-                } else {
-                    self.locateFallback = true
-                    self.readScene(cloud: false, question: question, focus: "object")
+                guard let self else { return }
+                guard self.requestID == request, self.perceptionGeneration == generation,
+                      var current = self.objectSearch, current.active, current.target == target,
+                      current.startedAt == search.startedAt else { return }
+                self.searchInFlight = false
+                // The depth point is fixed in the world, so direction and distance are measured from
+                // where the person is now. Old frames, lost tracking or a new request discard the result.
+                let now = ProcessInfo.processInfo.systemUptime
+                var phrase: String?
+                var located: Point3?
+                let captureCurrent = self.running && self.requestID == request && self.perceptionGeneration == generation &&
+                    self.assistantSession.foregroundActive && self.detection.hazard == .observing &&
+                    self.visualCapturePoseAllowed(origin: origin.camera, forward: origin.forward) &&
+                    self.indoor.revision == mapRevision && self.indoor.alignmentRevision == alignmentRevision &&
+                    now >= capturedAt && now - capturedAt < 0.5 && self.lastObservation?.trackingNormal == true
+                if let found, captureCurrent, let here = self.lastObservation {
+                    if !Self.objectInteractionGuidanceValidated {
+                        phrase = ObjectSearch.unconfirmed(label: found.label, arabic: arabic)
+                    } else if let point = DepthSampler.worldPoint(from: frame, uprightX: found.x, uprightY: found.y),
+                       let measured = SpatialFacts.relation(from: here.camera, facing: self.currentBodyForward() ?? here.forward, to: point) {
+                        located = point
+                        let text = SpatialFacts.phrase(label: found.label, relation: measured, arabic: arabic, inView: nil)
+                        // Without an established body heading, directions are from the camera.
+                        phrase = self.currentBodyForward() == nil ? (arabic ? "من الكاميرا: " : "From the camera: ") + text : text
+                    } else {
+                        // Seen but not measurable (too far, glass, black): say so; never invent a distance.
+                        phrase = ObjectSearch.seenWithoutDepth(label: found.label, arabic: arabic)
+                    }
+                }
+                switch current.attempted(now: now, found: phrase == nil ? nil : found?.label) {
+                case .found:
+                    self.objectSearch = nil
+                    self.recordSearch(target, located: Self.objectInteractionGuidanceValidated && located != nil)
+                    if let phrase { self.say(phrase) }
+                    // Keep guiding to the measured point as the child walks, from sensors only.
+                    if Self.objectInteractionGuidanceValidated, let located, let label = found?.label {
+                        self.trackedTarget = TrackedTarget(label: label, query: visionTarget, point: located, now: capturedAt)
+                        self.lastTrackLook = now
+                    }
+                case .notLocated:
+                    self.objectSearch = nil
+                    self.recordSearch(target, located: false)
+                    self.say(ObjectSearch.notLocated(target: target, arabic: arabic))
+                default:
+                    if !current.hintTried && current.attempts >= 2 {
+                        current.hintTried = true
+                        self.offerSearchHint(target: target, startedAt: current.startedAt)
+                    }
+                    self.objectSearch = current
                 }
             }
         }
-        return true
+    }
+
+    /// Re-measures the tracked target from the current pose every frame (instant, sensor-only),
+    /// refreshes its point with a new detection about every 1.5 s, and ends at reach or lost sight.
+    private func updateTrackedTarget() {
+        guard Self.objectInteractionGuidanceValidated else { trackedTarget = nil; return }
+        guard var target = trackedTarget, running, !simulation, detection.hazard == .observing,
+              let here = lastObservation, here.trackingNormal else { return }
+        let now = ProcessInfo.processInfo.systemUptime
+        let facing = currentBodyForward()
+        switch target.update(from: here.camera, facing: facing ?? here.forward, now: now, arabic: arabic, fromCamera: facing == nil) {
+        case .guidance(let text): trackedTarget = target; _ = speakMobility(text)
+        case .reached(let text): trackedTarget = nil; _ = speakMobility(text)
+        case .lost(let text): trackedTarget = nil; _ = speakMobility(text)
+        case .none: trackedTarget = target
+        }
+        guard let tracked = trackedTarget, !trackLookInFlight, now - lastTrackLook >= 1.5, let frame = session.currentFrame else { return }
+        trackLookInFlight = true; lastTrackLook = now
+        let image = frame.capturedImage, arabic = self.arabic, generation = perceptionGeneration, capturedAt = lastFrameWallTime
+        let request = requestID, trackedID = tracked.id
+        Task.detached(priority: .userInitiated) { [weak self] in
+            let found = try? VisionService.locate(target: tracked.query, image: image, orientation: .right, arabic: arabic)
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                guard self.requestID == request, self.perceptionGeneration == generation,
+                      var current = self.trackedTarget, current.id == trackedID else { return }
+                self.trackLookInFlight = false
+                let now = ProcessInfo.processInfo.systemUptime
+                guard self.running, self.assistantSession.foregroundActive, self.detection.hazard == .observing,
+                      self.lastObservation?.trackingNormal == true, let found,
+                      now >= capturedAt, now - capturedAt < 0.5,
+                      let point = DepthSampler.worldPoint(from: frame, uprightX: found.x, uprightY: found.y),
+                      point.distance(to: current.point) <= 0.3 else { return }
+                current.seen(at: point, now: capturedAt)
+                self.trackedTarget = current
+            }
+        }
+    }
+
+    /// One uncertain hint from the on-device image model, as a constrained yes/no and side, worded
+    /// by code. The sensor search keeps running; a sensor result replaces the hint.
+    private func offerSearchHint(target: String, startedAt: Double) {
+        guard let frame = session.currentFrame, let origin = lastObservation else { return }
+        let image = frame.capturedImage, arabic = self.arabic
+        let request = requestID, generation = perceptionGeneration, capturedAt = lastFrameWallTime
+        Task { @MainActor [weak self] in
+            guard let side = await LocalImageAssistant.spot(target: target, image: image, arabic: arabic) else { return }
+            guard let self, let search = self.objectSearch, search.active, search.startedAt == startedAt,
+                  self.requestID == request, self.perceptionGeneration == generation,
+                  self.assistantSession.foregroundActive, self.running, self.detection.hazard == .observing,
+                  ProcessInfo.processInfo.systemUptime - capturedAt < 0.5,
+                  let here = self.lastObservation, here.trackingNormal else { return }
+            // "On the left of the camera view" is only true if the camera has not turned since.
+            let moved = hypot(here.camera.x - origin.camera.x, here.camera.z - origin.camera.z)
+            let turned = acos(max(-1, min(1, (here.forward.x * origin.forward.x + here.forward.z * origin.forward.z) /
+                max(1e-6, hypot(here.forward.x, here.forward.z) * hypot(origin.forward.x, origin.forward.z))))) * 180 / .pi
+            guard moved < 0.3, turned < 10 else { return }
+            let hint = ObjectSearch.hint(target: target, side: side, arabic: arabic)
+            guard !SpatialClaimGuard.containsSpatialClaim(hint) else { return }
+            self.say(hint)
+        }
     }
 }
 
@@ -2253,9 +2766,11 @@ extension NavigationModel {
         let question = arabic ? "صف هذا الغرض باختصار: الشكل والمادة وأي علامات. لا تخمّن اللون." : "Describe this object briefly: shape, material and any markings. Do not guess colour."
         Task { @MainActor [weak self] in
             let answer = await LocalImageAssistant.describe(image: image, question: question, context: context, situation: [:], wordAllowance: 20)
+            // Only the held object (named by the child) may be named; no other objects, no "your".
+            let grounded = answer.text.map { VisualGrounding.groundedDescription($0, confirmed: VisualGrounding.mentionedObjects(learning.name)) } ?? ""
             guard let self, self.perceptionGeneration == generation, self.itemMemoryRevision == revision,
                   self.items.find(learning.name)?.key == learning.key,
-                  let text = answer.text, !SpatialClaimGuard.containsSpatialClaim(text),
+                  !grounded.isEmpty, case let text = grounded, !SpatialClaimGuard.containsSpatialClaim(text),
                   !SaudiBanknotePolicy.containsUnverifiedMoneyValue(text),
                   !ClothingColorCommand.containsUnverifiedColorClaim(text) else { return }
             if self.items.describe(learning.name, as: text) { self.persistItems() }
@@ -2276,10 +2791,23 @@ extension NavigationModel {
         let keys = items.items.map(\.key), facing = currentBodyForward(), arabic = self.arabic
         let request = requestID, generation = perceptionGeneration, capturedAt = lastFrameWallTime
         let mapRevision = indoor.revision, alignmentRevision = indoor.alignmentRevision
+        lookupInFlight = true
         itemAppearance.find(item.key, among: keys, image: frame.capturedImage) { [weak self] result, x, y in
-            guard let self, self.items.find(name)?.key == item.key,
+            guard let self, self.requestID == request, self.perceptionGeneration == generation else { return }
+            self.lookupInFlight = false
+            guard self.items.find(name)?.key == item.key,
+                  ProcessInfo.processInfo.systemUptime >= capturedAt,
+                  ProcessInfo.processInfo.systemUptime - capturedAt < 0.5,
                   self.perceptionResultAllowed(request: request, generation: generation,
                     capturedAt: capturedAt, observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return }
+            if !Self.objectInteractionGuidanceValidated {
+                switch result {
+                case .same, .similar: self.say(ObjectSearch.unconfirmed(label: item.name, arabic: arabic))
+                case .none: self.say(ItemMemory.answer(for: item, asked: name, now: Date(), sameFrame: false,
+                    measuredRelation: nil, arabic: arabic) + self.spokenDescription(item))
+                }
+                return
+            }
             let measured = { (label: String) -> String? in
                 guard let point = DepthSampler.worldPoint(from: frame, uprightX: x, uprightY: y),
                       let relation = SpatialFacts.relation(from: observation.camera, facing: facing ?? observation.forward, to: point) else { return nil }
@@ -2292,7 +2820,7 @@ extension NavigationModel {
             case .similar:
                 let position = measured(arabic ? "الغرض المشابه" : "The similar one").map { " " + $0 } ?? ""
                 self.say((arabic ? "أرى شيئاً يشبه \(item.name) لكنني لست متأكداً أنه لك." : "I see something like your \(item.name), but I can't be sure it's yours.")
-                         + position + (arabic ? " إن استطعت الوصول إليه، ارفعه وأدره لأتحقق." : " If you can reach it, hold it up and turn it so I can check."))
+                         + position + (arabic ? " أحتاج صورة أخرى واضحة قبل تحديده." : " I need another clear view before identifying it."))
             case .none:
                 self.say(ItemMemory.answer(for: item, asked: name, now: Date(), sameFrame: false, measuredRelation: nil, arabic: arabic)
                          + self.spokenDescription(item))
@@ -2312,10 +2840,19 @@ extension NavigationModel {
         guard let observation = lastObservation else { return true }
         let request = requestID, generation = perceptionGeneration, capturedAt = lastFrameWallTime
         let mapRevision = indoor.revision, alignmentRevision = indoor.alignmentRevision
+        lookupInFlight = true
         itemAppearance.find(item.key, among: items.items.map(\.key), image: frame.capturedImage) { [weak self] result, _, _ in
-            guard let self, self.items.find(name)?.key == item.key,
+            guard let self, self.requestID == request, self.perceptionGeneration == generation else { return }
+            self.lookupInFlight = false
+            guard self.items.find(name)?.key == item.key,
+                  ProcessInfo.processInfo.systemUptime >= capturedAt,
+                  ProcessInfo.processInfo.systemUptime - capturedAt < 0.5,
                   self.perceptionResultAllowed(request: request, generation: generation,
                     capturedAt: capturedAt, observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return }
+            guard Self.objectInteractionGuidanceValidated else {
+                self.say(self.arabic ? "لا أستطيع تأكيد أن هذا هو غرضك المحدد من هذه المقارنة." : "I cannot confirm this is your exact item from this comparison.")
+                return
+            }
             switch result {
             case .same: self.say(self.arabic ? "نعم، هذا \(item.name)." : "Yes, this is your \(item.name).")
             case .similar: self.say(self.arabic ? "يشبه \(item.name) لكنني لست متأكداً. أدره ببطء." : "It looks like your \(item.name), but I can't be sure. Turn it slowly.")
@@ -2356,6 +2893,18 @@ extension NavigationModel {
         }
         objectWillChange.send()
     }
+    /// Deletes a saved place and everything derived from it: scans, room pictures, the companion's
+    /// room record, and the current-place state if it was this place.
+    func deletePlace(_ place: SavedPlace) {
+        let roomID = "place:\(place.id.uuidString)"
+        if recognizedPlace?.id == place.id { recognizedPlace = nil; invalidateRecognizedRoom() }
+        if awaitingPlace?.id == place.id { awaitingPlace = nil; placeRecovery.reset(); placeRecoveryQuestion = "" }
+        invalidatePerceptionWork()
+        if companion.memory.rooms[roomID] != nil { forgetRoom(roomID) } else { _ = roomRecall.forget(room: roomID) }
+        places.delete(place)
+        objectWillChange.send()
+    }
+
     /// Removes everything about the room: pictures, visits and its name.
     func forgetRoom(_ id: String) {
         invalidatePerceptionWork()
@@ -2374,4 +2923,311 @@ extension NavigationModel {
     func removeHint(_ id: String) { companion.memory.removeHint(id: id); persistCompanion(); objectWillChange.send() }
 }
 
+// MARK: - Reading tools: live text, a page, codes, light, explore by touch (Seeing AI-style, 2026-10-22)
+// Everything spoken here comes from on-device Vision, ARKit light estimates and code. No model.
+struct ExploreSnapshot {
+    let image: UIImage
+    /// Upright, top-left normalised rectangles with code-written labels.
+    let regions: [(label: String, rect: CGRect)]
+}
 
+extension NavigationModel {
+    @discardableResult func routeReadingToolCommand(_ text: String) -> Bool {
+        guard let command = ReadingToolCommand.parse(text) else { return false }
+        switch command {
+        case .start(let tool): startReadingTool(tool)
+        case .stop: stopReadingTool(announce: true)
+        case .nameProduct(let name):
+            var updated = products
+            guard let code = lastScannedCode, updated.save(name, for: code) else {
+                speakRequested(arabic ? "امسح رمز المنتج أولاً، ثم قل: سمّه، والاسم." : "Scan the product's code first, then say: call this, and its name.")
+                return true
+            }
+            do {
+                guard let memory = places.memory else { throw CocoaError(.fileWriteUnknown) }
+                try memory.saveValue(namespace: "products", id: "names", payload: JSONEncoder().encode(updated))
+                products = updated
+                speakOperation(arabic ? "حفظت هذا المنتج باسم \(name)." : "Saved this product as \(name).")
+            } catch {
+                speakOperation(arabic ? "تعذر حفظ الاسم. حاول مجدداً." : "The name could not be saved. Please try again.")
+            }
+        }
+        return true
+    }
+
+    func startReadingTool(_ tool: ReadingTool) {
+        // Switching tools invalidates model, currency, colour, face and earlier reader work first.
+        cancelDescription()
+        _ = feedback.stopInformation(announceCancellation: false)
+        #if BLIND_FAMILIAR_PEOPLE
+        familiarPeople.cancelSearchForNewGoal()
+        #endif
+        guard running, !simulation, !places.scanning, assistantSession.foregroundActive,
+              detection.hazard == .observing else {
+            speakOperation(arabic ? "أحتاج كاميرا جاهزة وتنبيهات مستقرة لهذا. شغّل الكاميرا أولاً." : "I need a ready camera and stable monitoring for that. Turn the camera on first.")
+            return
+        }
+        readingWork.begin()
+        readingTool = tool; readingInFlight = false; lastReadingLook = -.infinity
+        readingStarted = ProcessInfo.processInfo.systemUptime
+        liveTextReader = LiveTextReader(); lastDocumentGuidance = nil; documentStability.reset(); lastLightLevel = nil
+        let intro: String
+        switch tool {
+        case .liveText: intro = arabic ? "أقرأ النص الذي أراه. قل: أوقف القراءة، للتوقف." : "Reading text as I see it. Say stop reading to stop."
+        case .document: intro = arabic ? "وجّه الهاتف نحو الصفحة. سأساعدك على وضعها كاملة." : "Point the phone at the page. I'll help you fit all of it in."
+        case .barcode: intro = arabic ? "أبحث عن رمز. أدر المنتج ببطء؛ الرموز غالباً في الخلف أو الأسفل." : "Looking for a code. Turn the product slowly; codes are often on the back or bottom."
+        case .light: intro = arabic ? "كاشف الضوء يعمل. الصفير أسرع كلما زاد الضوء." : "Light detector on. Faster beeps mean more light."
+        }
+        speakOperation(intro)
+    }
+
+    func stopReadingTool(announce: Bool) {
+        let hadDocumentSpeech = documentSpeechID != nil
+        readingWork.cancel(); readingTask?.cancel(); readingTask = nil
+        readingTool = nil; readingInFlight = false; documentStability.reset(); documentOrigin = nil
+        documentChunks = []; documentSpeechID = nil
+        // Invalidate ownership before synchronous interruption callbacks can run.
+        if hadDocumentSpeech { _ = feedback.stopInformation(announceCancellation: false) }
+        if announce {
+            _ = feedback.stopInformation(announceCancellation: false)
+            // Speech onset or command dispatch may already have cancelled the reader.
+            speakOperation(arabic ? "توقفت القراءة." : "Stopped reading.")
+        }
+    }
+
+    private struct ReadingCapture {
+        let token: UUID
+        let request: UUID
+        let generation: UUID
+        let sessionGeneration: UInt64
+        let capturedAt: Double
+        let observation: Observation
+        let mapRevision: UUID
+        let alignmentRevision: UUID
+        let origin: Point3
+        let forward: Point3
+    }
+
+    private func readingCapture(frame: ARFrame) -> ReadingCapture? {
+        guard assistantSession.foregroundActive, running, !simulation, !places.scanning,
+              detection.hazard == .observing, let observation = lastObservation, observation.trackingNormal,
+              UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }) else { return nil }
+        let transform = frame.camera.transform
+        return ReadingCapture(token: readingWork.token, request: requestID, generation: perceptionGeneration,
+            sessionGeneration: assistantSession.generation, capturedAt: lastFrameWallTime, observation: observation,
+            mapRevision: indoor.revision, alignmentRevision: indoor.alignmentRevision,
+            origin: Point3(Double(transform.columns.3.x), Double(transform.columns.3.y), Double(transform.columns.3.z)),
+            forward: Point3(-Double(transform.columns.2.x), -Double(transform.columns.2.y), -Double(transform.columns.2.z)))
+    }
+
+    private func readingCaptureAllowed(_ capture: ReadingCapture) -> Bool {
+        assistantSession.foregroundActive && assistantSession.generation == capture.sessionGeneration &&
+        readingWork.accepts(capture.token, capturedAt: capture.capturedAt, now: ProcessInfo.processInfo.systemUptime) &&
+        visualCapturePoseAllowed(origin: capture.origin, forward: capture.forward) &&
+        UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }) &&
+        perceptionResultAllowed(request: capture.request, generation: capture.generation,
+            capturedAt: capture.capturedAt, observation: capture.observation,
+            mapRevision: capture.mapRevision, alignmentRevision: capture.alignmentRevision)
+    }
+
+    private func updateReadingTool(frame: ARFrame) {
+        if readingTool == .document, !documentChunks.isEmpty {
+            speakNextDocumentChunk(); return
+        }
+        guard let tool = readingTool, !readingInFlight,
+              let capture = readingCapture(frame: frame), readingCaptureAllowed(capture) else { return }
+        let now = ProcessInfo.processInfo.systemUptime
+        let interval: Double = tool == .liveText ? 0.7 : tool == .barcode ? 0.3 : 0.5
+        guard now - lastReadingLook >= interval else { return }
+        lastReadingLook = now
+        let arabic = self.arabic
+        if tool == .light {
+            guard let lumens = frame.lightEstimate.map({ Double($0.ambientIntensity) }), let level = LightLevel.from(lumens: lumens) else { return }
+            if level != lastLightLevel, speakRequested(level.speech(arabic: arabic)) { lastLightLevel = level }
+            if !voice.awaitingUtterance, now - lastReadingBeep >= level.beepInterval {
+                lastReadingBeep = now; feedback.beacon(sector: 0, distance: 1)
+            }
+            return
+        }
+        if tool == .barcode, now - readingStarted > 30 {
+            stopReadingTool(announce: false)
+            speakRequested(arabic ? "لم أجد رمزاً بعد. أدر المنتج ببطء وحاول مجدداً." : "No code found yet. Turn the product slowly and try again.")
+            return
+        }
+        if tool == .barcode, !voice.awaitingUtterance, now - lastReadingBeep >= 0.8 {
+            lastReadingBeep = now; feedback.beacon(sector: 0, distance: 1)
+        }
+        readingInFlight = true
+        let image = frame.capturedImage
+        readingTask = Task { @MainActor [weak self] in
+            let result = await Task.detached(priority: .userInitiated) {
+                let lines = tool == .liveText ? ((try? VisionService.textLines(image: image, orientation: .right, arabic: arabic, accurate: false)) ?? []) : []
+                let corners = tool == .document ? ((try? VisionService.documentCorners(image: image, orientation: .right)) ?? nil) : nil
+                let code = tool == .barcode ? ((try? VisionService.code(image: image, orientation: .right)) ?? nil) : nil
+                return (lines, corners, code)
+            }.value
+            guard let self, self.readingWork.owns(capture.token) else { return }
+            // A previous session must never clear the new session's in-flight state.
+            self.readingInFlight = false; self.readingTask = nil
+            guard !Task.isCancelled, self.readingTool == tool, self.readingCaptureAllowed(capture) else {
+                self.documentStability.reset(); return
+            }
+            switch tool {
+            case .liveText:
+                var reader = self.liveTextReader
+                let fresh = reader.newLines(result.0, now: ProcessInfo.processInfo.systemUptime)
+                if !fresh.isEmpty, self.speakRequested(fresh.joined(separator: ". "), replace: false) { self.liveTextReader = reader }
+            case .document:
+                let guidance = DocumentGuidance.evaluate(result.1)
+                if let origin = self.documentOrigin,
+                   !self.visualCapturePoseAllowed(origin: origin.point, forward: origin.forward) {
+                    self.documentStability.reset(); self.documentOrigin = nil
+                }
+                if self.documentOrigin == nil { self.documentOrigin = (capture.origin, capture.forward) }
+                let ready = self.documentStability.observe(result.1)
+                if guidance != self.lastDocumentGuidance, self.speakOperation(guidance.speech(arabic: arabic)) {
+                    self.lastDocumentGuidance = guidance
+                }
+                if ready { self.readWholePage(image: image, capture: capture) }
+            case .barcode:
+                guard let code = result.2 else { return }
+                self.lastScannedCode = code.payload
+                self.stopReadingTool(announce: false)
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
+                self.speakRequested(CodeReading.speech(payload: code.payload, isQR: code.isQR,
+                    savedName: self.products.name(for: code.payload), arabic: arabic))
+            case .light: break
+            }
+        }
+    }
+
+    /// The page request remains active while OCR runs, so Stop/new goal/background can cancel it.
+    private func readWholePage(image: CVPixelBuffer, capture: ReadingCapture) {
+        guard readingCaptureAllowed(capture) else { return }
+        readingInFlight = true
+        let arabic = self.arabic
+        readingTask = Task { @MainActor [weak self] in
+            let lines = await Task.detached(priority: .userInitiated) {
+                (try? VisionService.textLines(image: image, orientation: .right, arabic: arabic, accurate: true)) ?? []
+            }.value
+            guard let self, self.readingWork.owns(capture.token) else { return }
+            self.readingInFlight = false; self.readingTask = nil
+            guard !Task.isCancelled, self.readingTool == .document, self.readingCaptureAllowed(capture) else {
+                self.documentStability.reset(); return
+            }
+            let text = lines.filter { $0.confidence >= 0.5 }.sorted { $0.y == $1.y ? $0.x < $1.x : $0.y < $1.y }.map(\.text).joined(separator: " ")
+            self.sceneAnswer = text
+            self.currentReply = (arabic ? "من الصفحة الملتقطة: " : "From the captured page: ") + text
+            if text.isEmpty {
+                self.stopReadingTool(announce: false)
+                self.speakOperation(arabic ? "لم أستطع قراءة نص في الصفحة." : "I couldn't read any text on the page.")
+                return
+            }
+            // Once admitted, this is frozen OCR text, not a current spatial observation.
+            // Read it in bounded phrases; completion removes each phrase, Stop cancels all.
+            self.documentChunks = Self.documentReadingChunks(text, arabic: arabic)
+            self.speakNextDocumentChunk()
+        }
+    }
+
+    /// Uses the same tokenizer as admission, including room for the snapshot prefix at the
+    /// minimum 30-word setting. Whitespace splitting miscounts hyphenated/OCR text.
+    private static func documentReadingChunks(_ text: String, arabic: Bool) -> [String] {
+        let tokenizer = NLTokenizer(unit: .word); tokenizer.string = text
+        let tokens = tokenizer.tokens(for: text.startIndex..<text.endIndex)
+        guard !tokens.isEmpty else { return [] }
+        var chunks = stride(from: 0, to: tokens.count, by: 24).map { index in
+            let end = index + 24 < tokens.count ? tokens[index + 24].lowerBound : text.endIndex
+            return String(text[tokens[index].lowerBound..<end]).trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        chunks[0] = (arabic ? "من الصفحة الملتقطة: " : "From the captured page: ") + chunks[0]
+        return chunks
+    }
+
+    private func speakNextDocumentChunk() {
+        guard readingTool == .document, documentSpeechID == nil, let chunk = documentChunks.first,
+              readingWork.active, assistantSession.foregroundActive, running, !simulation,
+              detection.hazard == .observing, !voice.awaitingUtterance, feedback.speechPriority == nil else { return }
+        let id = UUID(); documentSpeechID = id
+        if !speakRequested(chunk, replace: false, speechID: id) { documentSpeechID = nil }
+    }
+
+    /// Captured pictures are explicitly snapshots, never evidence of the current room or path.
+    func captureExploreSnapshot() {
+        cancelDescription()
+        guard running, !simulation, !places.scanning, assistantSession.foregroundActive,
+              detection.hazard == .observing, let frame = session.currentFrame,
+              ProcessInfo.processInfo.systemUptime - lastFrameWallTime < 0.5 else {
+            speakOperation(arabic ? "أحتاج كاميرا جاهزة لالتقاط صورة." : "I need a ready camera to take a picture."); return
+        }
+        let pixels = frame.capturedImage, arabic = self.arabic
+        let oriented = CIImage(cvPixelBuffer: pixels).oriented(.right)
+        guard let cg = CIContext().createCGImage(oriented, from: oriented.extent) else { return }
+        let image = UIImage(cgImage: cg), token = exploreRequest, generation = assistantSession.generation
+        exploreTask = Task { @MainActor [weak self] in
+            let regions = await Task.detached(priority: .userInitiated) {
+                (try? VisionService.exploreRegions(image: pixels, orientation: .right, arabic: arabic)) ?? []
+            }.value
+            guard let self, !Task.isCancelled, self.exploreRequest == token,
+                  self.assistantSession.generation == generation, self.assistantSession.foregroundActive else { return }
+            self.exploreTask = nil
+            self.exploreSnapshot = ExploreSnapshot(image: image, regions: regions)
+            self.speakOperation(regions.isEmpty
+                ? (arabic ? "الصورة الملتقطة جاهزة. لم أتعرف على مناطق فيها." : "Captured picture ready. I didn't recognize any regions in it.")
+                : (arabic ? "الصورة الملتقطة جاهزة. استكشف المناطق باللمس. هذه صورة سابقة وليست وصفاً حياً." : "Captured picture ready. Explore the regions by touch. This is a snapshot, not a live view."))
+        }
+    }
+    func clearExploreSnapshot() {
+        exploreRequest = UUID(); exploreTask?.cancel(); exploreTask = nil; exploreSnapshot = nil
+    }
+
+    /// User-selected library photo; processed only on device, kept in memory until dismissed.
+    func explorePhoto(_ image: UIImage) {
+        cancelDescription()
+        guard assistantSession.foregroundActive, let cg = image.cgImage else {
+            speakOperation(arabic ? "تعذر فتح الصورة." : "I couldn't open that photo."); return
+        }
+        let orientation = CGImagePropertyOrientation(image.imageOrientation), arabic = self.arabic
+        let token = exploreRequest, generation = assistantSession.generation
+        exploreTask = Task { @MainActor [weak self] in
+            let result = await Task.detached(priority: .userInitiated) {
+                let regions = (try? VisionService.exploreRegions(photo: cg, orientation: orientation, arabic: arabic)) ?? []
+                let categories = (try? VisionService.photoCategories(photo: cg, orientation: orientation)) ?? []
+                return (regions, categories)
+            }.value
+            guard let self, !Task.isCancelled, self.exploreRequest == token,
+                  self.assistantSession.generation == generation, self.assistantSession.foregroundActive else { return }
+            self.exploreTask = nil
+            let regions = result.0, categories = result.1
+            self.exploreSnapshot = ExploreSnapshot(image: image, regions: regions)
+            var parts: [String] = []
+            if !categories.isEmpty {
+                parts.append((arabic ? "قد تُظهر الصورة: " : "The photo may show: ") + categories.joined(separator: ", ") + ".")
+            }
+            let texts = regions.filter { $0.label.hasPrefix(arabic ? "نص: " : "Text: ") }.prefix(3).map(\.label)
+            if !texts.isEmpty { parts.append(texts.joined(separator: ". ") + ".") }
+            let people = regions.filter { $0.label == (arabic ? "شخص" : "Person") }.count
+            if people > 0 { parts.append(arabic ? "أشخاص: \(people)." : "People: \(people).") }
+            parts.append(arabic ? "هذه صورة وليست وصفاً حياً. استكشفها باللمس." : "This is a photo, not a live view. Explore it by touch.")
+            self.sceneAnswer = parts.joined(separator: " "); self.currentReply = self.sceneAnswer
+            self.speakRequested(self.sceneAnswer)
+        }
+    }
+}
+
+extension CGImagePropertyOrientation {
+    /// Maps UIKit photo orientation to the Vision orientation.
+    init(_ orientation: UIImage.Orientation) {
+        switch orientation {
+        case .up: self = .up
+        case .down: self = .down
+        case .left: self = .left
+        case .right: self = .right
+        case .upMirrored: self = .upMirrored
+        case .downMirrored: self = .downMirrored
+        case .leftMirrored: self = .leftMirrored
+        case .rightMirrored: self = .rightMirrored
+        @unknown default: self = .up
+        }
+    }
+}

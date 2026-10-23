@@ -65,7 +65,7 @@ test('second pipeline is opt-in veto only, invalidates toggles, and never silent
   const controller = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');
   assert.match(controller, /var dualPipeline = false/);
   assert.match(controller, /setDualPipeline[^}]*cancel\(\); dualPipeline = value/);
-  assert.match(controller, /if !value \{ dualPipeline = false \}/);
+  assert.match(controller, /if !value \{ dualPipeline = false; encounters.reset\(\) \}/);
   assert.ok(controller.indexOf('FamiliarFacePolicy.candidateForAttempt(') < controller.indexOf('FamiliarFacePolicy.corroboratedCandidate(sface: id'));
   assert.match(controller, /includeAlignedFace: dualPipeline/);
   assert.match(controller, /if !enrolling \{ visionDistances = try FamiliarVisionComparison.distances/);
@@ -125,5 +125,44 @@ test('past snapshot speech has separate bounded lifetime without extending live 
   assert.match(code, /familiarSnapshotContextIsCurrent/);
   assert.match(code, /shouldSpeakFaceGuidance/);
   assert.match(code, /ask them to look toward you/);
+});
+
+test('recognition batches use each detector row and never weaken single-face enrollment', async () => {
+  const native = await read('ios/BlindAssist/FamiliarNative/BAFaceEngine.mm');
+  const header = await read('ios/BlindAssist/FamiliarNative/BAFaceEngine.h');
+  const single = native.slice(native.indexOf('inspectImage:'), native.indexOf('inspectFacesInImage:'));
+  assert.match(single, /if \(faces.rows != 1\) return result/);
+  for (const text of ['faces.row(row)', 'faces.ptr<float>(row)', 'order[slot]', 'normalizedBounds',
+    'ba_face::slots(faces.rows, offset)', 'batch.nextOffset = (slot + 1) % faces.rows',
+    'std::chrono::steady_clock', '>= 0.8', 'batch.overCapacity = faces.rows > 32']) assert.ok(native.includes(text), text);
+  assert.match(header, /Never an identity or a cross-frame tracking identifier/);
+  assert.doesNotMatch(native, /sort[^\n]*area|largestFace|nearestFace|URLSession/);
+});
+
+test('active-camera recognition is bounded fresh gallery-bound and has no cached track naming', async () => {
+  const code = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');
+  const live = code.slice(code.indexOf('func consume(model:'), code.indexOf('func setDualPipeline'));
+  for (const text of ['model.captureFamiliarFace()', 'liveTask == nil', 'now - lastLiveAttempt >= 0.75',
+    'request == generation', 'token == liveRevision', 'model.familiarCaptureIsCurrent(capture)',
+    'nextFaceOffset = batch.nextOffset', 'FamiliarFaceBatchPolicy.uniqueCandidates(raw)',
+    'frameID: frameID', 'capturedAt: capture.capturedAt', 'encounters.markAnnounced(identity)',
+    'onArrivalHint?', 'onCancelArrivalHint?', '1.5 -']) assert.ok(code.includes(text), text);
+  assert.doesNotMatch(live, /peopleTracking|model.start\(|URLSession|onSnapshotHint\?\(/);
+  assert.match(code, /if let arrivalCapture, !model.familiarCaptureIsCurrent\(arrivalCapture\)/);
+  assert.match(code, /func leaveEnrollmentScreen\(\)[\s\S]*?if draft != nil \|\| pending != nil \|\| showPicker \{ cancel\(\) \}/);
+});
+
+test('photos-first enrollment uses an unnamed consented draft but never saves a placeholder identity', async () => {
+  const code = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');
+  const view = await read('ios/BlindAssist/FamiliarPeopleView.swift');
+  for (const text of ['var label: String?', 'requestUnnamedEnrollment()', 'ask(.begin(nil, nil, .new)',
+    'setDraftLabel(_ value: String)', 'let label = draft.label', 'cancelSaveConfirmation()',
+    'draft.label = name', 'confirmationToken = nil']) assert.ok(code.includes(text), text);
+  assert.match(view, /if experiment.hasEnrollmentDraft/);
+  assert.match(view, /if experiment.draftExamples.count >= 3/);
+  assert.match(view, /if experiment.setDraftLabel\(label\) \{ experiment.finishEnrollment\(\) \}/);
+  assert.match(view, /\.onDisappear \{[^\n]*experiment.leaveEnrollmentScreen\(\)/);
+  assert.doesNotMatch(view, /\.onDisappear \{[^\n]*setEnabled\(false\)/);
+  assert.match(code, /result.faceCount == 1/);
 });
 

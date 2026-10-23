@@ -1,14 +1,16 @@
+Current continuation: [CHILD_ASSISTANT_TEST_TRACKER.md](CHILD_ASSISTANT_TEST_TRACKER.md) is the canonical 24-scenario evidence/status tracker; [PROGRESS.md](PROGRESS.md) records final combined test counts and [MAC_HANDOFF.md](MAC_HANDOFF.md) orders the remaining native checks. Older counts are historical.
+
 # Blind Assist: a free, local conversational companion
 
 Updated 2026-10-23. This document records the product direction and why it matters. It is a target, not a claim that the current app has achieved it. Read [SESSION_LOG.md](SESSION_LOG.md) for the decisions and failed experiments behind it, [ASSISTANT_FEATURE_CHECKLIST.md](ASSISTANT_FEATURE_CHECKLIST.md) for capability-by-capability status, and [MAC_HANDOFF.md](MAC_HANDOFF.md) before continuing Apple development.
 
 ## The first building block
 
-Build a free assistant that adults and children can talk to naturally throughout a voice session, using a built-in on-device language model and local tools. Accessibility sensing extends that companion; this is **not a navigation app with chat added afterward**.
+For the current release, build a free assistant for children to talk to naturally throughout a voice session, using a built-in on-device language model and local tools. Adult use remains a future product direction, not the current interface target. Accessibility sensing extends that companion; this is **not a navigation app with chat added afterward**.
 
 The user's comparison with Ella/dot describes the desired experience: an ongoing conversation, useful memory, changing topics, interrupted answers, retained goals, and tools that actually do useful work. It is not a request to reproduce private internals, a claim of access to them, or a promise that a small local model has the same capabilities or quality as a hosted assistant.
 
-The motivation includes helping a blind child participate in ordinary conversation, make choices and understand the world, without recurring bills or technical account setup. The product must also respect adults' independence. Blindness is not a reason to limit the person to object labels, navigation instructions or simplified interests.
+The motivation includes helping a blind child participate in ordinary conversation, make choices and understand the world, without recurring bills or technical account setup. Future adult support must also respect adults' independence. Blindness is not a reason to limit the person to object labels, navigation instructions or simplified interests.
 
 ## What a good first experience feels like
 
@@ -96,3 +98,21 @@ Some work can proceed in parallel, but later features do not excuse a failed fir
 Start with this vision and the latest session entry. Use [TASKS.md](TASKS.md) for the detailed work backlog, [PROGRESS.md](PROGRESS.md) for historical implementation evidence, and the capability checklist for the companion-first gap review. Older “offline mobility prototype,” private-cloud-backup and press-to-talk descriptions do not override the newer direction recorded here.
 
 For every meaningful change, record what was requested, what changed, what actually ran, what failed, and what remains device-pending. Preserve failed examples. Distinguish source implementation, portable tests, Apple builds, actual app behavior and physical-device acceptance. Integrate with the existing `master` branch without force or overwriting concurrent work; publication is not deployment or release acceptance.
+
+## Reviewed visual tools, not a replacement for the companion
+
+The 2026-10-23 Claude integration adds local reading, document framing, code scanning, light feedback and touch-explorable snapshots while retaining the assistant-first session controls and evidence boundaries. Tool switches are mutually exclusive and stale results cannot outlive their request. These are source implementations; useful real-phone accuracy, accessibility and latency still require measurement. Seeing AI is a design reference, not a claimed copied app or an established performance baseline.
+
+Saudi-note scope means identify a supported visible Saudi note from adequate evidence and ask for a better view when the capture supports that instruction. Do not guess a denomination, infer authenticity, sum the scene or describe currency not supported by the model. A development reference matcher is not a trained/certified production detector. Keep Debug testing distinct from release validation.
+
+## Current child-first interface direction (23 October 2026)
+
+The first tab contains only the settled assistant reply, so VoiceOver does not have to pass status cards, controls or streamed tokens. Tab navigation remains available; session stop/mute, camera controls and typed input stay accessible elsewhere. Actionable hazard audio remains independent. Rooms presents saved rooms and a simple Start/Stop scan with the real evolving map and measured progress for a sighted helper, never an invented completion percentage. Other tabs use clear labels, a simple reading order and separate advanced settings. Familiar-person enrollment should lead through supported capture, naming and saving rather than a technical model dashboard; permission, local privacy and actual model availability still apply.
+
+These changes require native VoiceOver and helper/child usability checks on the exact build. Static accessibility contracts do not establish actual focus behavior, recognition accuracy or suitability for unsupervised use.
+
+Continuous awareness is central to the active assistant, not a collection of disconnected camera tools. In the foreground it uses the permitted camera/sensors and relevant stored context proactively while remaining available for conversation. First-run camera awareness defaults on, a saved explicit off choice remains respected, and permissions/background restrictions are never bypassed. Meaningful fresh familiar-person arrivals should be offered through attention and hazard priority because a blind child may not know to ask; unknown faces and repeated frames are not reasons for constant announcements. That multi-face recognition path is a separate implementation/validation gate, not established by the current single-face enrollment/search code.
+
+A concrete acceptance journey is a child preparing for school: “Help me get my backpack.” Preserve that goal across rooms, use saved room/item observations as explicitly last-seen evidence, gather fresh camera/sensor evidence before saying the backpack is there now, and use only validated mapped/sensor navigation for route guidance. A stored picture does not authorize walking. Mention a freshly recognized familiar person once per encounter, then let the child request more detail; a cooldown timer alone must not repeat the same arrival indefinitely. These are acceptance goals, not claims that the complete journey is already validated.
+
+The assistant remains open-ended: conversation, homework, time, destination progress, people and descriptions are examples, not the limits of a fixed menu. Answers use the appropriate real source: device clock/timezone for now, current validated map/route progress for distance, fresh accepted gallery evidence for identity and relevant sensor/camera evidence for mobility-affecting facts. Model confidence, a saved picture and a lack of detection cannot certify a safe route. When evidence is stale, conflicting or missing, withhold the actionable claim and explain the limit without inventing a path.

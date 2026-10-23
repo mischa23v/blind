@@ -130,6 +130,8 @@ actor CommunityPackageStorage {
             try Task.checkCancellation(); guard networkAllowed else { throw CommunityError.offline }
             if next == 1 { releases = [] }
             let existing = Set(releases.map(\.id)); releases += result.filter { !existing.contains($0.id) }
+            // These are filtered assets, not raw GitHub pages: an empty filtered page
+            // does not prove later pages contain no compatible map.
             page = next; self.repository = target; hasNextPage = next < 50
             status = result.isEmpty ? "No compatible map assets on this release page. You can check the next page." : "Choose a package to download and review. GitHub stars do not verify its map."
         }

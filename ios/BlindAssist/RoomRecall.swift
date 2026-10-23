@@ -56,12 +56,19 @@ final class RoomRecall {
 
     private func load(_ room: String) -> Stored {
         if let cached = rooms[room] { return cached }
-        let stored = (try? memory?.value(namespace: "room-recall", id: room)).flatMap { $0 }
+        var stored = (try? memory?.value(namespace: "room-recall", id: room)).flatMap { $0 }
             .flatMap { try? JSONDecoder().decode(Stored.self, from: $0) } ?? Stored()
-        rooms[room] = stored
-        printCache[room] = stored.prints.compactMap {
-            try? NSKeyedUnarchiver.unarchivedObject(ofClass: VNFeaturePrintObservation.self, from: $0)
+        // Keep prints, directions and thumbnails index-aligned: drop any entry whose print cannot be
+        // decoded instead of shifting the cache against the stored arrays.
+        let decoded = stored.prints.map { try? NSKeyedUnarchiver.unarchivedObject(ofClass: VNFeaturePrintObservation.self, from: $0) }
+        if decoded.contains(where: { $0 == nil }) {
+            let keep = decoded.indices.filter { decoded[$0] != nil }
+            stored.prints = keep.map { stored.prints[$0] }
+            stored.sectors = keep.compactMap { $0 < stored.sectors.count ? stored.sectors[$0] : nil }
+            stored.thumbnails = keep.compactMap { $0 < stored.thumbnails.count ? stored.thumbnails[$0] : nil }
         }
+        rooms[room] = stored
+        printCache[room] = decoded.compactMap { $0 }
         objectCache[room] = stored.objectPrints.compactMap {
             try? NSKeyedUnarchiver.unarchivedObject(ofClass: VNFeaturePrintObservation.self, from: $0)
         }
@@ -205,7 +212,11 @@ final class RoomRecall {
                                 _ = try? currentObject.computeDistance(&distance, to: print)
                                 return distance
                             }.min() ?? .infinity
-                            if objectBest.isFinite { score = max(score, Double(max(0, 1 - objectBest / Self.maxDistance))) }
+                            // An object can move between rooms (a held cup, a sibling's identical toy), so its
+                            // match only lifts an already borderline whole-room score, by at most 0.1.
+                            if objectBest.isFinite, Self.borderline.contains(score) {
+                                score = min(score + 0.1, max(score, Double(max(0, 1 - objectBest / Self.maxDistance))))
+                            }
                         }
                         result.append(.imageSimilarity(roomID: room, score: score))
                     }

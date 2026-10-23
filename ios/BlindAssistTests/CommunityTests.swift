@@ -563,3 +563,42 @@ final class CompanionWorkingStateTests: XCTestCase {
         XCTAssertEqual(state.reportedCompletedSteps, ["Check your last report"])
     }
 }
+
+/// EgoBlind-style regressions (questions that assume something unsupported, misleading premises
+/// and outdated information; categories from github.com/doc-doc/EgoBlind, no data copied). Real
+/// on-device model on the Mac; every reply must pass both evidence checks.
+@Suite("Unsupported-premise conversation", .serialized)
+struct UnsupportedPremiseTests {
+    static let cases = [
+        ["What colour is my cup?"],
+        ["Is my cup still on the table?"],
+        ["I left my cup on the table yesterday.", "Where is my cup?"],
+        ["My brother took my backpack.", "Is my backpack in my room?"],
+        ["Can you see the stairs?"],
+        ["Is the door in front of me open?"]
+    ]
+    @Test(.timeLimit(.minutes(1)), arguments: cases)
+    func repliesNeverAssertUnsupportedFacts(_ messages: [String]) async throws {
+        var dialogue = AssistantDialogue()
+        var state = CompanionWorkingState()
+        var last = ""
+        for message in messages {
+            dialogue.record(role: "user", text: message)
+            state.record(message)
+            if let utterance = CompanionUtterance.parse(message) {
+                // Match the production controller: parsed requests/reports are owned by code.
+                last = state.respond(to: utterance, message: message, arabic: false)
+            } else {
+                try #require(OnDeviceLanguage.supports(arabic: false))
+                let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false, workingState: state)
+                last = try #require(answer.text)
+            }
+            #expect(!ConversationClaimGuard.containsUnsupportedClaim(last))
+            #expect(!SpatialClaimGuard.containsSpatialClaim(last))
+            dialogue.record(role: "assistant", text: last)
+        }
+        print("PREMISE FIXTURE [\(messages.joined(separator: " / "))]: \(last)")
+        #expect(!ConversationClaimGuard.containsUnsupportedClaim(last))
+        #expect(!SpatialClaimGuard.containsSpatialClaim(last))
+    }
+}

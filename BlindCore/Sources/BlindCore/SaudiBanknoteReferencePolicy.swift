@@ -124,6 +124,15 @@ public enum SaudiBanknoteReferencePolicy {
                 && humanReviewed && wholeFrameAcceptanceReviewed && appleDeviceAcceptanceReviewed
         }
     }
+    /// Explicit developer-device testing permission, not a release approval,
+    /// human review, calibration result or claim of recognition reliability.
+    /// The app must additionally restrict selection to its device-test Debug
+    /// build and verify these exact manifest bytes before loading references.
+    public struct DeviceTestAuthorization: Sendable {
+        public let referencePackSHA256: String
+        public init(referencePackSHA256: String) { self.referencePackSHA256 = referencePackSHA256 }
+        public var valid: Bool { validSHA(referencePackSHA256) }
+    }
     public enum ExperimentalDecision: Equatable, Sendable {
         case unknown, multiple, clipped, tooSmall, hypothesis(Int)
     }
@@ -138,7 +147,23 @@ public enum SaudiBanknoteReferencePolicy {
         case .hypothesis(let label): return .denomination(label)
         }
     }
-    /// Exposed for mechanical tests, never for monetary speech or profile calibration.
+    /// Separate, explicitly authorized device-test output using the same frozen
+    /// geometry, secondary-scene veto, proposal and competing-label gates. Never
+    /// manufacture ReleaseApproval to exercise this path. The production decide
+    /// entry point remains unchanged and still requires its full release evidence.
+    public static func decideForDeviceTest(_ evidence: Evidence, thresholds: Thresholds = .experimental,
+                                           authorization: DeviceTestAuthorization?) -> SaudiBanknotePolicy.Result {
+        guard let authorization, authorization.valid, thresholds == .experimental else { return .unknown }
+        switch experimentalDecision(evidence, thresholds: thresholds) {
+        case .unknown: return .unknown
+        case .multiple: return .multiple
+        case .clipped: return .clipped
+        case .tooSmall: return .tooSmall
+        case .hypothesis(let label): return .denomination(label)
+        }
+    }
+    /// Shared deterministic experiment, not release validation or profile calibration.
+    /// App output requires one of the explicit authorization entry points above.
     public static func experimentalDecision(_ e: Evidence, thresholds t: Thresholds = .experimental) -> ExperimentalDecision {
         guard t.valid, e.frameProposals.count <= 32, e.frameProposals.allSatisfy(\.valid) else { return .unknown }
         // Reference matches alone miss unrecognized notes/composite images. Rectangle
@@ -166,6 +191,27 @@ public enum SaudiBanknoteReferencePolicy {
         for (index, i) in accepted.enumerated() {
             for j in accepted.dropFirst(index+1) where e.overlaps[i*n+j] < t.distinctRegionOverlap { return .multiple }
         }
+        // Veto only: a partially occluded candidate may fail spatial spread/grid
+        // coverage, but must retain every other numeric, geometry and framing gate.
+        // This cannot promote that candidate or replace the existing score margin.
+        // Coincident alternate references (including different labels sharing print
+        // patterns) are not proof of a second note. Distinct extracted regions from
+        // one reference, or noncoincident polygon boundaries, block a value instead.
+        let supported = e.candidates.indices.filter {
+            passes(e.candidates[$0], t, framing: true, requireSpatialSupport: false)
+        }
+        for i in accepted {
+            let a = e.candidates[i]
+            for j in supported where i != j {
+                let b = e.candidates[j]
+                if a.referenceID == b.referenceID && a.regionIndex != b.regionIndex { return .multiple }
+                guard let overlap = polygonIoU(a.quad, b.quad) else { return .unknown }
+                if overlap < t.minimumProposalOverlap { return .multiple }
+            }
+        }
+        // Shared motifs can still cause false abstentions. This bounded veto cannot
+        // recover matches discarded inside the first extracted quad or detect an
+        // invisible/unsupported second note. It is not single-note proof.
         // Keep all failed candidates as competitors too. Never pick a weaker accepted
         // result when the highest score failed geometry. Same-label sides don't compete.
         var byLabel: [Int: Candidate] = [:]
@@ -240,11 +286,13 @@ public enum SaudiBanknoteReferencePolicy {
         let expected = Double(c.inliers) * ratio * sqrt(max(0, min(c.referenceSpread, c.querySpread, 1)))
         return abs(c.inlierRatio-ratio) < 1e-6 && abs(c.score-expected) <= max(1e-6, expected * 1e-5)
     }
-    private static func passes(_ c: Candidate, _ t: Thresholds, framing: Bool) -> Bool {
+    private static func passes(_ c: Candidate, _ t: Thresholds, framing: Bool,
+                               requireSpatialSupport: Bool = true) -> Bool {
         c.finiteHomography && c.convex && c.quad.count == 4 && c.angles.count == 4
             && c.inliers >= t.minimumInliers && c.inlierRatio >= t.minimumInlierRatio && c.score >= t.minimumScore
-            && c.referenceSpread >= t.minimumReferenceSpread && c.querySpread >= t.minimumQuerySpread
-            && c.gridCells >= t.minimumGridCells && c.minimumEdge >= 8
+            && (!requireSpatialSupport || (c.referenceSpread >= t.minimumReferenceSpread
+                && c.querySpread >= t.minimumQuerySpread && c.gridCells >= t.minimumGridCells))
+            && c.minimumEdge >= 8
             && c.edgeRatio <= t.maximumEdgeRatio && c.oppositeEdgeRatio <= t.maximumOppositeEdgeRatio
             && c.projectiveRatio <= t.maximumProjectiveRatio && c.medianError <= t.maximumMedianError
             && c.angles.allSatisfy { $0 >= t.minimumAngle && $0 <= t.maximumAngle }
@@ -279,6 +327,18 @@ public struct SaudiBanknoteReferencePack: Sendable {
         }} && ["paper", "polymer"].allSatisfy { material in ["front", "back"].allSatisfy { side in
             references.contains { $0.label == 5 && $0.material == material && $0.side == side }
         }}
+    }
+    /// Limited developer-device test inventory only: exactly one paper front and
+    /// back for each of the eight labels. This does NOT satisfy production coverage
+    /// (notably polymer 5), certify every issue/design, or turn assistant review
+    /// into human review. The ordinary minimumCoverage/allHumanReviewed stay intact.
+    public var deviceTestCoverage: Bool {
+        references.count == SaudiBanknoteReferencePolicy.labels.count * 2
+            && references.allSatisfy { $0.material == "paper" &&
+                ["assistant_visual_review", "human_review"].contains($0.verificationKind) }
+            && SaudiBanknoteReferencePolicy.labels.allSatisfy { label in ["front", "back"].allSatisfy { side in
+                references.filter { $0.label == label && $0.side == side }.count == 1
+            }}
     }
     public static func safeRelativePath(_ path: String) -> Bool {
         SaudiBanknoteReferencePolicy.validText(path) && !path.hasPrefix("/") && !path.contains("\\")

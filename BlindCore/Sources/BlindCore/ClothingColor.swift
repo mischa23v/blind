@@ -137,6 +137,10 @@ public enum ClothingColorCommand {
         let styling: Set<String> = ["match", "matches", "matching", "suit", "suits", "nicer", "better", "best", "fashionable", "يفضل", "يناسب", "تناسب", "اجمل", "افضل"]
         let asksAppearance = ["is ", "are ", "does ", "do ", "check if ", "check whether ", "confirm if ", "confirm whether ", "tell me if ", "tell me whether ", "tell if ", "tell whether ", "هل ", "افحص ", "تاكد "]
             .contains(where: { phrase.hasPrefix($0) })
+        // A narrow present-tense garment choice is an inspection too. Do not
+        // turn styling advice, remembered clothing or item names into a scan.
+        let garmentChoice = phrase.range(of: #"^which (?:of (?:these|those|my|the) )?(?:(?:my|the|this|that|these|those) )?(?:outfits?|shirts?|dress(?:es)?|tops?|blouses?|jackets?|coats?|pants|trousers|jeans|shorts|skirts?|socks?|shoes?|sweaters?|jumpers?|hoodies?|scarves|scarf|hijabs?|hats?|caps?|uniforms?|clothes|clothing) (?:is|are|looks?|seems?) (?:actually |really |mostly )?(?:white|black|gray|grey|cream|ivory|offwhite|red|orange|yellow|green|blue|purple|pink|brown|turquoise|beige|navy|teal|cyan|magenta|silver|gold)(?: (?:or|and) (?:white|black|gray|grey|cream|ivory|offwhite|red|orange|yellow|green|blue|purple|pink|brown|turquoise|beige|navy|teal|cyan|magenta|silver|gold))?$"#, options: .regularExpression) != nil
+        if garmentChoice { return true }
         let arabicChoice = (text.contains("؟") || !tokens.isDisjoint(with: ["ام", "او", "ولا"]))
             && words.contains { $0.unicodeScalars.contains { (0x0600...0x06FF).contains($0.value) } }
         if (asksAppearance || arabicChoice), hasPhysicalSubject(words), containsUnverifiedColorClaim(phrase),

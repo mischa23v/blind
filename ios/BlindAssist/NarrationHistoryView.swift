@@ -7,25 +7,22 @@ struct NarrationHistoryView: View {
     private func t(_ en: String, _ ar: String) -> String { model.arabic ? ar : en }
     private func status(_ value: String) -> String {
         switch value {
-        case "completed": return t("Speech reported complete", "أبلغ النظام عن اكتمال النطق")
-        case "interrupted": return t("Interrupted — may not have been heard", "مقاطع — ربما لم يُسمع")
-        case "pending": return t("Completion not yet confirmed", "لم يُؤكد الاكتمال بعد")
-        default: return t("Completion unknown", "الاكتمال غير معروف")
+        case "completed": return t("Spoken", "قيلت")
+        case "interrupted": return t("Cut off, maybe not heard", "انقطعت، ربما لم تُسمع")
+        case "pending": return t("Not finished yet", "لم تنتهِ بعد")
+        default: return t("Not sure if heard", "غير متأكد إن سُمعت")
         }
     }
     var body: some View {
         List {
             Section {
-                Text(t("The last 20 dispatched descriptions. These are historical statements, not current directions. A completion signal does not prove understanding.", "آخر ٢٠ وصفاً أُرسل للنطق. هذه أقوال سابقة وليست إرشادات حالية. إشارة الاكتمال لا تثبت فهم الكلام."))
+                Text(t("The last 20 descriptions. They describe the past, not where things are now.", "آخر ٢٠ وصفاً. تصف ما مضى، لا أماكن الأشياء الآن."))
                 if !model.narrationHistoryError.isEmpty { Text(model.narrationHistoryError) }
                 Button(t("Clear description history", "مسح سجل الأوصاف"), role: .destructive) { clearing = true }
             }
             ForEach(model.narrationHistory) { record in
-                VStack(alignment: .leading) {
-                    Text(record.created, style: .date); Text(record.created, style: .time)
-                    Text(status(record.outcome)).font(.headline)
-                    Text(record.text)
-                }
+                // One VoiceOver stop per description: time, whether it was heard, and the words.
+                Text(record.created.formatted(date: .abbreviated, time: .shortened) + ". " + status(record.outcome) + ". " + record.text)
             }
         }
         .navigationTitle(t("Recent descriptions", "الأوصاف الأخيرة"))

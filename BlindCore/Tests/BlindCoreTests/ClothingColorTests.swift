@@ -87,6 +87,22 @@ final class ClothingColorTests: XCTestCase {
         }
     }
 
+    func testPresentGarmentColorChoiceUsesDedicatedInspection() {
+        for question in ["Which outfit is white?", "Please which shirt is blue?", "Which of these outfits is white?",
+            "Which of my shirts is cream or white?", "Which dress looks red?", "Which shoes are black?"] {
+            XCTAssertTrue(ClothingColorCommand.matches(question), question)
+            XCTAssertEqual(ConversationDomainPolicy.requiredInspection(for: question), .clothingColor, question)
+            XCTAssertFalse(ConversationDomainPolicy.allowsModelResponse(to: question), question)
+        }
+        for question in ["Which outfit was white yesterday?", "Which outfit is best with white shoes?",
+            "Which outfit is white in the story?", "Which white outfit should I buy?", "Which outfit matches my white shirt?",
+            "Find my white outfit", "Which color symbolizes peace?"] {
+            XCTAssertFalse(ClothingColorCommand.matches(question), question)
+            XCTAssertTrue(ConversationDomainPolicy.allowsModelResponse(to: question), question)
+        }
+        XCTAssertTrue(ClothingColorCommand.requiresNeutralVerification("Which outfit is white?"))
+    }
+
     func testWhiteRequestCannotBeCertifiedUnderColoredLighting() {
         XCTAssertTrue(ClothingColorCommand.requiresNeutralVerification("Is this white?"))
         XCTAssertTrue(ClothingColorCommand.requiresNeutralVerification("What colour is this uniform?"))

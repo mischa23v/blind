@@ -4,6 +4,7 @@ import BlindCore
 
 final class IndoorNavigator: ObservableObject {
     var arabic = false
+    private func t(_ english: String, _ arabic: String) -> String { self.arabic ? arabic : english }
     private func text(_ english: String, _ translated: String) -> String { arabic ? translated : english }
     @Published private(set) var map: IndoorMap?
     @Published private(set) var route: [MapNode] = []
@@ -27,7 +28,7 @@ final class IndoorNavigator: ObservableObject {
     init(storage: URL? = nil) {
         storageOverride = storage
         if let data = try? Data(contentsOf: self.storage), let map = try? JSONDecoder().decode(IndoorMap.self, from: data), (try? map.validate()) != nil {
-            self.map = map; message = "Loaded \(map.name). Confirm your starting landmark."
+            self.map = map; message = t("Loaded \(map.name). Choose your starting landmark.", "حُمّلت \(map.name). اختر نقطة البداية.")
         }
     }
     var exportURL: URL? { map == nil ? nil : storage }
@@ -35,8 +36,8 @@ final class IndoorNavigator: ObservableObject {
     func deleteMap() {
         do {
             if FileManager.default.fileExists(atPath: storage.path) { try FileManager.default.removeItem(at: storage) }
-            map = nil; activePackage = nil; revision = UUID(); suggestedDestination = nil; blocked = []; invalidatePosition(); message = "Indoor route map deleted."
-        } catch { message = "Could not delete indoor route map." }
+            map = nil; activePackage = nil; revision = UUID(); suggestedDestination = nil; blocked = []; invalidatePosition(); message = t("Route map deleted.", "حُذفت خريطة المسار.")
+        } catch { message = t("Could not delete the route map.", "تعذر حذف خريطة المسار.") }
     }
     func load(_ data: Data) throws {
         guard data.count <= 2_000_000 else { throw MapError.invalid }
@@ -47,7 +48,7 @@ final class IndoorNavigator: ObservableObject {
         var values = URLResourceValues(); values.isExcludedFromBackup = true; try directory.setResourceValues(values)
         try data.write(to: storage, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
         self.map = map; activePackage = nil; revision = UUID(); suggestedDestination = nil; blocked = []; invalidatePosition()
-        message = "Loaded \(map.name). Select your known location and face the next waypoint."
+        message = t("Loaded \(map.name). Choose where you are and face the next landmark.", "حُمّلت \(map.name). اختر مكانك وتوجّه نحو المعلم التالي.")
     }
     func loadCommunity(_ package: PlacePackage) throws {
         try package.validate()
@@ -126,11 +127,11 @@ final class IndoorNavigator: ObservableObject {
     func align(camera: Point3, forward: Point3) {
         anchorWorld = nil; anchorMap = nil; alignedLevel = nil; alignmentRevision = UUID()
         guard waypointIndex > 0, waypointIndex < route.count, camera.isFinite, forward.isFinite,
-              abs(hypot(forward.x, forward.z) - 1) < 0.05 else { message = "Choose a route and a live camera direction first."; return }
+              abs(hypot(forward.x, forward.z) - 1) < 0.05 else { message = t("Choose a route, and start the camera, first.", "اختر مساراً وشغّل الكاميرا أولاً."); return }
         let previous = waypointIndex - 1, a = route[previous].position, b = route[waypointIndex].position
         let length = hypot(b.x - a.x, b.z - a.z)
         guard length > 0.01, route[previous].level == route[waypointIndex].level else {
-            message = "Start with two landmarks on the same level."; return
+            message = t("Start with two landmarks on the same floor.", "ابدأ بمعلمين على الطابق نفسه."); return
         }
         anchorWorld = camera; anchorMap = a; worldForward = forward
         alignedLevel = route[previous].level; alignmentRevision = UUID()

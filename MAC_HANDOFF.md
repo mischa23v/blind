@@ -1,4 +1,26 @@
-## CURRENT — local continuous-assistant source checkpoint, 2026-10-23
+## Final coordinated source checkpoint — 2026-10-23
+
+This is the current record; older entries and counts below are historical. Integration preserves primary `30999a9` and incorporates the reviewed seven-commit Claude branch through `61001267`, plus the coordinated Saudi device-test and familiar-person work. It is source integration, not a deployment or Apple/device acceptance.
+
+**Canonical acceptance tracker:** [CHILD_ASSISTANT_TEST_TRACKER.md](CHILD_ASSISTANT_TEST_TRACKER.md). It records the goal, provenance rules, 24 child-style scenarios, three response paths (ordinary chat, independent hazards, evidence-gated physical requests), and executed versus still-pending checks. Use [CLAUDE_INTEGRATION_REVIEW.md](CLAUDE_INTEGRATION_REVIEW.md) for fixes and evidence, [PROJECT_VISION.md](PROJECT_VISION.md) for product intent, and [SESSION_LOG.md](SESSION_LOG.md) for decisions.
+
+Final portable checks: **530/530 BlindCore**, **14/14 BlindMemory**, **216/216 Node**, **17/17 synthetic MobilitySimulation**; firmware protocol and sanitized failure tests plus native face-slot C++ tests passed. All iOS Swift source parses in default and combined optional configurations. Aggregate verify passed in a disposable copy; the active project was not regenerated. Parsing/source contracts do not replace Apple SDK typechecking, native linking, actual model behavior, audible latency or VoiceOver testing.
+
+The first tab is settled assistant replies only; helper/settings tabs retain accessible mute/end/setup. Foreground startup starts an idle conversation and permitted sensing after setup, respecting saved camera-off and explicit mute/end on foreground return. Rooms show real RoomPlan layout/counts during start/stop scanning. Family enrollment uses photos, then name, then confirmed save. Consented foreground recognition checks bounded face batches and proposes one tentative saved-person notice per encounter; no position, follow or authentication claim. Actual recognition accuracy remains unmeasured here.
+
+Saudi recognition is functional only in an explicitly configured **Debug device-test build**, with the private 16-reference pack pinned by manifest hash. Default/Release has no approved production profile. See [tools/currency-reference/DEVICE_TEST.md](tools/currency-reference/DEVICE_TEST.md); preserve existing face/model/framework options when generating that test variant. No reference images or weights are committed. Dataset diagnostics are not independent phone accuracy.
+
+Physical object direction/reach/pickup guidance remains withheld because specific-target/depth binding is not validated. Typed find tools can gather fresh nonspatial candidates and attributed historical memory; the LLM cannot self-authorize a physical instruction. Bounded lexical guards are not exhaustive semantic proof. Current temperature/weather requests cannot be answered from camera or model memory: this build has no live weather/thermometer tool. A real fresh device-clock tool is included.
+
+**Next, in order:** build the exact selected configuration on the Mac; run the tracker with real model and recorded provenance; measure first audible reply, interruption and hazard-preemption timing; run native camera/currency/family/reading and VoiceOver cases with a sighted adult. Retain the earlier hallucination and latency failures as open until exact-build retests pass. Broader child trials, native hardware acceptance, all-day operation and independent unsupervised use are not validated by these checks.
+
+## Current integration checkpoint: 2026-10-23
+
+This checkpoint integrates the seven commits ending at `61001267dc0633c6b3cb941038b18dbb380cdc3d` onto primary `master` source `30999a9ed0e921491ff62a1a93e073fe6af092ff`, not onto the older shared ancestor. The assistant-first voice, evidence, executable-tool, memory, audience and cancellation work remains. Older “no off switch”, unconditional background listening, confirmed device behavior and test counts below are historical, **not current requirements or evidence**. Explicit mute/end, independent camera control and opt-in supported background voice remain. The latest child-first direction defaults active foreground camera awareness on, respecting a saved off choice and OS permission/background limits; old camera-off-default notes below are superseded.
+
+See [CLAUDE_INTEGRATION_REVIEW.md](CLAUDE_INTEGRATION_REVIEW.md) for the reviewed scope, fixes, portable checks and exact remaining acceptance scenarios. No Apple SDK build, actual model/phone accuracy test, firmware board build, deployment or device readiness is claimed.
+
+## HISTORICAL — local continuous-assistant source checkpoint, 2026-10-23
 
 Start with [PROJECT_VISION.md](PROJECT_VISION.md) for what and why, [SESSION_LOG.md](SESSION_LOG.md) for decisions and actual evidence, and [ASSISTANT_FEATURE_CHECKLIST.md](ASSISTANT_FEATURE_CHECKLIST.md) for all 44 capabilities with implementation and acceptance gaps. Older entries below are historical and do not supersede this assistant-first, age-neutral direction.
 
@@ -16,7 +38,48 @@ The checked-in generated project does **not** detect/select V2 automatically. Do
 
 Follow the six first Mac/device checks in the feature checklist. Preserve the known historical evidence-handling and latency failures until actual retesting closes them. Do not regenerate the active project or replace model/backends as a substitute for testing the integrated pipeline.
 
-## CURRENT — pause checkpoint for Claude review, 2026-10-22
+## HISTORICAL — pause checkpoint for Claude review, 2026-10-22
+
+<!-- Historical Claude-branch entries below; current integration status above supersedes old controller and test claims. -->
+## HISTORICAL — always-on build to validate first (2026-10-22, cloud session)
+
+Supersedes the "hallucination fix" section below as the starting point. The companion is now always on: no off switch, listening/speech/belt continue in the background, camera loss announced and restarted automatically. See PROGRESS (top entry), AGENTS.md "Always on", and research/HALLUCINATION_REVIEW.md (dots research and scan verdicts).
+
+**Guardian setup on the phone:**
+- Turn on Guided Access (Settings › Accessibility) so the app stays in front and the side button cannot lock it by accident.
+- Allow microphone, speech, camera, Bluetooth and location.
+- Optionally assign the Action button or Siri: "Open Blind Assist".
+
+**First Mac steps:** follow TODO "Next — Mac and iPhone (always-on build)". Already verified in a Linux Swift 6.2 container: BlindCore 361/361, BlindMemory 14/14, and all app Swift files parse. Also verified: Node 131/131 and the firmware host tests. Unverified: the iOS app build, UI tests, the hardware builds and anything on a device.
+
+**Project:** the checked-in `ios/BlindAssist.xcodeproj` is current. To test the optional Lock Screen status, run `node tools/generate-xcode-project.mjs --live-activity` (it adds the `BlindAssistLiveActivity` widget extension); run the generator without the flag to go back.
+
+## HISTORICAL — hallucination fix to validate first (2026-10-22, cloud session)
+
+This supersedes the "pause checkpoint" below for the next Mac session. Read [research/HALLUCINATION_REVIEW.md](research/HALLUCINATION_REVIEW.md).
+
+**What changed (source only, not compiled here):**
+- Code answers find requests and location reports from the child's own reports (`BlindCore/CompanionFacts.swift`).
+- Model chat is checked by `ConversationClaimGuard` and `SpatialClaimGuard`.
+- Image descriptions keep only objects the detectors agreed on in 2 of 3 frames, or hedged sentences (`VisualGrounding`).
+- Sessions are prewarmed. The old model-written task state and the decorative agent ports were removed, along with `ios/ThirdParty`.
+- The main screen shows only the current reply.
+- Answering an offer no longer switches the microphone off.
+
+**Model decision:** keep Apple's free on-device model. Gemini Nano is Android-only and the same size class. Gemma 3n is a possible side-by-side test, not a fix. Private Cloud Compute breaks the privacy and offline rules.
+
+**Order on the Mac:**
+1. Run `swift test` for BlindCore, including `CompanionEvidenceTests`.
+2. Build the app with and without `--multimodal`, and fix compile errors.
+3. Run the rewritten `LaunchTests` and the real-model `ConversationTests`/`TextChatScenarioTests`.
+4. Retype the recorded failures in `--text-only`.
+5. Do the timing and VoiceOver checks on a LiDAR iPhone.
+
+Node is 125/125. Swift is unverified.
+
+**Main screen access:** with VoiceOver, swipe up/down on the reply for Repeat, Write a message, Places, Routes, (People), Settings, and Yes/No when the assistant asked a question. Sighted helpers long-press the reply for the same menu. Magic tap repeats the reply. Other tabs keep the normal tab bar, so tap Assistant to return.
+
+## Previous pause checkpoint for Claude review, 2026-10-22 (superseded by the section above)
 
 **Combined source checkpoint:** newer master `694eccb499eb3b505386210c7a875abb85448821` was fetched through the GitHub connection and reconciled with the Mac work before pushing. Currency/reference-matching and clothing-colour integration are preserved. Two NavigationModel conflicts were resolved by retaining both the conversation timeout and currency/colour properties/cancellation resets. Existing remote documentation is retained below. The combined source has NOT had a fresh Apple SDK build or full scenario run; the user requested stopping for the night. Tomorrow validate the combined source first. The active generated AuraFace project is preserved, not regenerated; no model/photo/signing/tool-cache upload. The ZIP folder still has no Git metadata.
 
@@ -72,7 +135,7 @@ Do not conclude Apple is simply a bad model: the minimal baseline answered corre
 5. How do we retain a task and useful memory across interruptions/restarts while excluding obsolete instructions? Add repeatable state/result assertions, then manually inspect replies; keyword-only tests previously missed failures.
 6. Profile prefill, first useful sentence, metadata generation and thermal load. The current8.4 seconds is not instant; a Mac-backed simulator result is not an iPhone performance result.
 
-Relevant research: [Inner Monologue](https://innermonologue.github.io/) demonstrates scene/success feedback, changed goals, resumption and stop; [tau2-bench](https://github.com/sierra-research/tau2-bench) evaluates human/agent shared-state coordination; Anthropic [agent patterns](https://www.anthropic.com/engineering/building-effective-agents) and [context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) emphasize simple loops and relevant context. These do not prove our integration. Existing bounded code ports and licenses are listed in `ios/ThirdParty/AGENT_PORTS.txt`; no claim of fully porting those frameworks.
+Relevant research: [Inner Monologue](https://innermonologue.github.io/) demonstrates scene/success feedback, changed goals, resumption and stop; [tau2-bench](https://github.com/sierra-research/tau2-bench) evaluates human/agent shared-state coordination; Anthropic [agent patterns](https://www.anthropic.com/engineering/building-effective-agents) and [context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) emphasize simple loops and relevant context. These do not prove our integration. The bounded ROSA/SayCan/LangGraph/BehaviorTree ports listed at the time were removed later on 2026-10-22 (they did not change behaviour); see research/HALLUCINATION_REVIEW.md.
 
 Detailed local evidence is in `ios/.validation-results/text-chat-status.json`, `interactive-agent-scenarios.json`, and `companion-prompt-research.txt`; shareable snapshots accompany this checkpoint under `ios/validation/companion-chat/`. Preserve failed examples. No further model/setup work tonight.
 
@@ -146,7 +209,7 @@ Device acceptance must include actual enrollment/import/review/deletion, interru
 
 **Where things stand:**
 - **BlindCore** (all decision logic, matching rules, safety checks): builds with Swift 6.2 and **all 235 XCTests pass** in a Linux container (`artifacts/windows-stage/swift-test-3.log`), including 8 walking scenarios on the sourced OAS apartment plan (transcripts in `artifacts/windows-stage/home-walk-transcript-*.txt`).
-- **iOS app files** pass a Swift syntax check only. The app target has **never been compiled**; expect a round of small fixes. An independent review already fixed the clearest issues.
+- **iOS app files** (historical, 2026-10-09) passed a Swift syntax check only at that time; the app has since been built on the Mac (see sections above). An independent review already fixed the clearest issues.
 - **Node relay/tools:** 54/54.
 - Rules to keep (see AGENTS.md): free on-device model only; nothing leaves the phone; spatial safety rule; identity by image comparison, never by the model; speed first; minimum words while moving.
 
