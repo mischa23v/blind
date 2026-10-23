@@ -154,7 +154,7 @@ final class PreDeviceHardeningTests: XCTestCase {
             CompanionToolResult(status: .success, source: "camera", evidence: [invalid])
         }
         let rejectedResult = await rejected.run(.init(kind: .currentObservation))
-        XCTAssertEqual(rejectedResult.status, .stale)
+        XCTAssertEqual(rejectedResult.status, .rejectedEvidence)
         XCTAssertTrue(rejectedResult.evidence.isEmpty)
     }
 

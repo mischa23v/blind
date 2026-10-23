@@ -22,8 +22,8 @@ test('generic observation is attributed captured-view evidence with separately r
   assert.match(observation, /captureObjectView\(frame\)/);
   assert.match(observation, /objectViewIsCurrent\(capture, snapshotPlayback: true\)/);
   assert.match(observation, /CompanionEvidence\(kind: \.capturedView/);
-  assert.match(observation, /CapturedViewEvidence.candidate\(\$0\)/);
-  assert.match(observation, /CapturedViewEvidence.candidate\(\$0, appearance: true\)/);
+  assert.match(observation, /CapturedViewEvidence.candidate\(\$0, arabic: arabic\)/);
+  assert.match(observation, /CapturedViewEvidence.candidate\(\$0, appearance: true, arabic: arabic\)/);
   assert.match(observation, /snapshot: true/);
   assert.doesNotMatch(observation, /lastObservation|hazard == \.observing|perceptionResultAllowed/);
   const playback = declaration(model, 'private func revalidateConversationSpeech(');

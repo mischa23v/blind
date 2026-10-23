@@ -116,7 +116,7 @@ final class CompanionClockTests: XCTestCase {
                     observedAt: now, expiresAt: now.addingTimeInterval(5))])
         }
         let invalid = await forged.run(.init(kind: .deviceClock))
-        XCTAssertEqual(invalid.status, .stale)
+        XCTAssertEqual(invalid.status, .rejectedEvidence)
         XCTAssertTrue(invalid.evidence.isEmpty)
         let old = CompanionToolRuntime(available: [.deviceClock]) { _ in
             CompanionClock.read(now: Date(timeIntervalSince1970: 0), timeZone: TimeZone(secondsFromGMT: 0)!, arabic: false)

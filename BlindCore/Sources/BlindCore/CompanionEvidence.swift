@@ -22,7 +22,7 @@ public struct CompanionEvidence: Codable, Sendable, Equatable {
     /// Attributed RGB snapshot only, never current presence, identity or spatial authority.
     public func isCapturedViewValid(at now: Date) -> Bool {
         guard kind == .capturedView, source == "bounded on-device captured view",
-              text.hasPrefix("Captured view "), !text.isEmpty,
+              CapturedViewEvidence.hasAttributedPrefix(text), !text.isEmpty,
               let observedAt, let expiresAt else { return false }
         return observedAt <= now && now.timeIntervalSince(observedAt) <= 12
             && expiresAt > now && expiresAt.timeIntervalSince(observedAt) <= 12
@@ -41,13 +41,21 @@ public struct CompanionEvidence: Codable, Sendable, Equatable {
 /// Code-owned quotation keeps OCR punctuation inside one attributed record.
 /// Delimiter-bearing or oversized input is withheld instead of truncating a negation.
 public enum CapturedViewEvidence {
-    public static func candidate(_ content: String, appearance: Bool = false) -> String? {
+    public static func hasAttributedPrefix(_ text: String) -> Bool {
+        ["Captured view ", "The image seemed to show: «", "The captured text may read: «",
+         "بدا في الصورة: «", "قد يكون النص في الصورة: «"].contains { text.hasPrefix($0) }
+    }
+    public static func candidate(_ content: String, appearance: Bool = false, arabic: Bool = false) -> String? {
         let content = content.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !content.isEmpty, content.count <= 180,
               !content.contains("«"), !content.contains("»") else { return nil }
-        let kind = appearance ? "appearance candidate (image classification may be mistaken)" : "text candidate (OCR may be mistaken)"
+        // Provenance remains in typed source/age metadata, not technical spoken jargon.
+        // Keep the whole quote and uncertainty; never shorten away a negation.
+        let prefix = arabic
+            ? (appearance ? "بدا في الصورة" : "قد يكون النص في الصورة")
+            : (appearance ? "The image seemed to show" : "The captured text may read")
         let terminator = content.last.map { ".!?؟".contains($0) } == true ? "" : "."
-        return "Captured view \(kind): «\(content)»\(terminator)"
+        return "\(prefix): «\(content)»\(terminator)"
     }
 }
 
@@ -63,7 +71,7 @@ public struct CompanionToolRequest: Sendable, Equatable {
     }
 }
 public enum CompanionToolStatus: String, Codable, Sendable {
-    case success, unavailable, offline, stale, cancelled, timedOut, callLimit
+    case success, unavailable, offline, stale, rejectedEvidence, cancelled, timedOut, callLimit
 }
 public struct CompanionToolResult: Codable, Sendable, Equatable {
     public var status: CompanionToolStatus
@@ -203,32 +211,52 @@ public actor CompanionToolRuntime {
     }
     private func sanitize(_ result: CompanionToolResult, for kind: CompanionToolKind, now: Date) -> CompanionToolResult {
         guard !result.source.isEmpty, result.source.count <= 120, result.summary.count <= 600 else {
-            return failure(.unavailable, kind)
+            return failure(.rejectedEvidence, kind)
         }
         guard result.status == .success else {
             // Failure payloads cannot smuggle observations into a reply.
             return CompanionToolResult(status: result.status, source: result.source, summary: result.summary)
         }
-        var remainingScalars = 800
-        let usable = result.evidence.prefix(4).filter { item in
-            guard !item.id.isEmpty, item.id.count <= 80, !item.text.isEmpty, item.text.count <= 500,
-                  item.text.unicodeScalars.count <= remainingScalars,
-                  !item.source.isEmpty, item.source.count <= 120 else { return false }
-            remainingScalars -= item.text.unicodeScalars.count
+        // Reuse the same acceptance predicates to distinguish expiry from a
+        // policy, provenance or shape rejection. This does not renew a receipt.
+        func accepts(_ item: CompanionEvidence, at date: Date) -> Bool {
             switch kind {
             case .savedMemory:
                 return item.kind == .historicalMemory || item.kind == .userReport
             case .currentObservation:
-                return (item.kind == .currentObservation && item.isCurrent(at: now)) || item.isCapturedViewValid(at: now)
+                return (item.kind == .currentObservation && item.isCurrent(at: date)) || item.isCapturedViewValid(at: date)
             case .navigationState:
-                return item.kind == .historicalMemory || (item.kind == .measuredState && item.isCurrent(at: now))
+                return item.kind == .historicalMemory || (item.kind == .measuredState && item.isCurrent(at: date))
             case .deviceClock:
-                return CompanionClock.isClockEvidence(item) && item.isCurrent(at: now)
+                return CompanionClock.isClockEvidence(item) && item.isCurrent(at: date)
             case .saudiBanknote, .isolatedColor, .familiarPeople, .readText:
-                return CompanionCapabilityEvidence.valid(item, for: kind, now: now)
+                return CompanionCapabilityEvidence.valid(item, for: kind, now: date)
             }
         }
-        if !result.evidence.isEmpty && usable.isEmpty { return failure(.stale, kind) }
+        var remainingScalars = 800
+        var onlyExpiredEvidence = true
+        let usable = result.evidence.prefix(4).filter { item in
+            guard !item.id.isEmpty, item.id.count <= 80, !item.text.isEmpty, item.text.count <= 500,
+                  item.text.unicodeScalars.count <= remainingScalars,
+                  !item.source.isEmpty, item.source.count <= 120 else {
+                onlyExpiredEvidence = false
+                return false
+            }
+            remainingScalars -= item.text.unicodeScalars.count
+            let accepted = accepts(item, at: now)
+            if !accepted {
+                if let observedAt = item.observedAt, let expiresAt = item.expiresAt,
+                   observedAt <= now, expiresAt <= now, accepts(item, at: observedAt) {
+                    // Otherwise valid at capture and now expired; do not keep it.
+                } else {
+                    onlyExpiredEvidence = false
+                }
+            }
+            return accepted
+        }
+        if !result.evidence.isEmpty && usable.isEmpty {
+            return failure(onlyExpiredEvidence ? .stale : .rejectedEvidence, kind)
+        }
         return CompanionToolResult(status: .success, source: result.source, summary: result.summary, evidence: usable)
     }
 }
@@ -332,7 +360,7 @@ public enum CompanionEvidenceGuard {
             }
             // Explicit provenance phrases must not become a loophole when the
             // corresponding observation expires during generation.
-            if matches(#"^(captured view|visible text candidate|current observation|measured state|camera observation|device clock|recognized saudi note|the isolated item in this view|i might see)\b|^(ساعه الجهاز|الورقه السعوديه المقروءه|قد يكون هذا|الغرض المنفصل في اللقطه)"#, clean) { return false }
+            if matches(#"^(the image seemed to show|the captured text may read|captured view|visible text candidate|current observation|measured state|camera observation|device clock|recognized saudi note|the isolated item in this view|i might see)\b|^(بدا في الصوره|قد يكون النص في الصوره|ساعه الجهاز|الورقه السعوديه المقروءه|قد يكون هذا|الغرض المنفصل في اللقطه)"#, clean) { return false }
             let quoted = attributedQuotation(sentence, reports: reports, evidence: evidence)
             let remainder = quoted ?? sentence
             if quoted == nil, evidence.contains(where: { $0.source == CompanionCapabilityEvidence.source(.saudiBanknote) }),

@@ -24,6 +24,7 @@ final class CompanionNativeReplayTests: XCTestCase {
         var text: String?
         var amount: Int?
         var ageSeconds: Double?
+        var payloadKind: String?
     }
     actor Calls {
         var values: [String] = []
@@ -77,7 +78,14 @@ final class CompanionNativeReplayTests: XCTestCase {
                             return CompanionCapabilityEvidence.make(.familiarPerson(value), capturedAt: at, arabic: arabic)
                         case .readText, .currentObservation:
                             guard let value = receipt.text else { return nil }
-                            return CompanionCapabilityEvidence.make(.text(value), capturedAt: at, arabic: arabic)
+                            switch receipt.payloadKind ?? "legacyOCR" {
+                            case "ocr", "legacyOCR":
+                                return CompanionCapabilityEvidence.make(.text(value), capturedAt: at, arabic: arabic)
+                            case "appearance" where request.kind == .currentObservation:
+                                guard let candidate = CapturedViewEvidence.candidate(value, appearance: true, arabic: arabic) else { return nil }
+                                return CompanionEvidence(kind: .capturedView, text: candidate, source: "bounded on-device captured view", observedAt: at, expiresAt: at.addingTimeInterval(12))
+                            default: return nil // Free-form evaluator ground truth is not measured input.
+                            }
                         case .savedMemory, .navigationState:
                             guard let value = receipt.text else { return nil }
                             return CompanionEvidence(kind: .historicalMemory, text: value, source: "scripted replay historical record", observedAt: at)
@@ -91,6 +99,8 @@ final class CompanionNativeReplayTests: XCTestCase {
             results.append(["id": episode.id, "reply": answer.text ?? "", "status": answer.status,
                 "toolCalls": await calls.all(), "goal": state.goal, "proposedStep": state.proposedStep,
                 "reportedCompletedStepsNotVerified": state.reportedCompletedSteps,
+                "receiptInterpretations": receipts.map { ["capability": $0.capability,
+                    "payloadKind": $0.payloadKind ?? (["currentObservation", "readText"].contains($0.capability) ? "legacyOCR" : "typedCapabilityOrHistory")] },
                 "latencyMS": Int(Date().timeIntervalSince(started) * 1000), "pipelineInvoked": true])
         }
         let result: [String: Any] = ["path": "LocalImageAssistant.converse production context and tool runtime",

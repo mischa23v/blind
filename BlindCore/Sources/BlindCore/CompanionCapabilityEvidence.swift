@@ -25,7 +25,7 @@ public enum CompanionCapabilityEvidence {
             kind = .familiarPeople
             text = arabic ? "قد يكون هذا \(label)." : "I might see \(label)."
         case .text(let content):
-            guard let candidate = CapturedViewEvidence.candidate(content) else { return nil }
+            guard let candidate = CapturedViewEvidence.candidate(content, arabic: arabic) else { return nil }
             return CompanionEvidence(kind: .capturedView, text: candidate, source: "bounded on-device captured view",
                 observedAt: capturedAt, expiresAt: capturedAt.addingTimeInterval(12))
         }

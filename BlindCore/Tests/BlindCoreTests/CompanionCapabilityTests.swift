@@ -74,7 +74,7 @@ final class CompanionCapabilityTests: XCTestCase {
             .init(status: .success, source: "reader", evidence: [money])
         }
         let result = await runtime.run(.init(kind: .isolatedColor))
-        XCTAssertEqual(result.status, .stale)
+        XCTAssertEqual(result.status, .rejectedEvidence)
         XCTAssertTrue(result.evidence.isEmpty)
     }
 }

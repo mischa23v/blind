@@ -8,7 +8,7 @@ struct Episode: Decodable {
     var priorUserReports: [String]?; var receipts: [Receipt]?
 }
 struct Receipt: Decodable, Sendable {
-    let capability: String; var text: String?; var amount: Int?; var ageSeconds: Double?
+    let capability: String; var text: String?; var amount: Int?; var ageSeconds: Double?; var payloadKind: String?
 }
 @main struct Replay {
     static func main() async throws {
@@ -44,7 +44,15 @@ struct Receipt: Decodable, Sendable {
                         case .familiarPeople:
                             return value.text.flatMap { CompanionCapabilityEvidence.make(.familiarPerson($0), capturedAt: at, arabic: arabic) }
                         case .readText, .currentObservation:
-                            return value.text.flatMap { CompanionCapabilityEvidence.make(.text($0), capturedAt: at, arabic: arabic) }
+                            guard let text = value.text else { return nil }
+                            switch value.payloadKind ?? "legacyOCR" {
+                            case "ocr", "legacyOCR":
+                                return CompanionCapabilityEvidence.make(.text(text), capturedAt: at, arabic: arabic)
+                            case "appearance" where request.kind == .currentObservation:
+                                guard let candidate = CapturedViewEvidence.candidate(text, appearance: true, arabic: arabic) else { return nil }
+                                return CompanionEvidence(kind: .capturedView, text: candidate, source: "bounded on-device captured view", observedAt: at, expiresAt: at.addingTimeInterval(12))
+                            default: return nil // Descriptive ground truth is not a native sensor receipt.
+                            }
                         case .savedMemory, .navigationState:
                             return value.text.map { CompanionEvidence(kind: .historicalMemory, text: $0, source: "scripted replay historical record", observedAt: at) }
                         case .deviceClock: return nil
@@ -63,7 +71,9 @@ struct Receipt: Decodable, Sendable {
                 results.append(["id": episode.id, "status": "adapter_executed", "prompt": plan.prompt,
                     "instructions": instructions, "scriptedToolReads": reads,
                     "modelResponseAllowed": ConversationDomainPolicy.allowsModelResponse(to: episode.user),
-                    "actionReportAccepted": receipt.acceptedReport != nil])
+                    "actionReportAccepted": receipt.acceptedReport != nil,
+                    "receiptInterpretations": supplied.map { ["capability": $0.capability,
+                        "payloadKind": $0.payloadKind ?? (["currentObservation", "readText"].contains($0.capability) ? "legacyOCR" : "typedCapabilityOrHistory")] }])
             } catch {
                 results.append(["id": episode.id, "status": "input_or_context_rejected", "error": String(describing: error)])
             }

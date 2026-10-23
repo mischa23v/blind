@@ -2740,9 +2740,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             }
             // Uncertain candidates only, never identity, garment certainty or a
             // banknote denomination. Keep whole strings rather than cutting a caveat.
-            var candidates = result.texts.prefix(2).compactMap { CapturedViewEvidence.candidate($0) }
+            var candidates = result.texts.prefix(2).compactMap { CapturedViewEvidence.candidate($0, arabic: arabic) }
             candidates += result.labels.filter { !ClothingColorCommand.containsUnverifiedColorClaim($0) && !SaudiBanknotePolicy.containsUnverifiedMoneyValue($0) }
-                .prefix(2).compactMap { CapturedViewEvidence.candidate($0, appearance: true) }
+                .prefix(2).compactMap { CapturedViewEvidence.candidate($0, appearance: true, arabic: arabic) }
             let evidence = candidates.prefix(4).map { text in
                 CompanionEvidence(kind: .capturedView, text: text, source: "bounded on-device captured view",
                     observedAt: captured, expiresAt: captured.addingTimeInterval(12))

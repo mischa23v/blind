@@ -15,7 +15,7 @@ test('device clock executes as an advertised read-only tool without a camera or 
   assert.match(model, /var result: Set<CompanionToolKind> = \[\.savedMemory, \.navigationState, \.deviceClock\]/);
   const helper = await read('BlindCore/Sources/BlindCore/CompanionEvidence.swift');
   assert.match(helper, /case currentObservation, savedMemory, navigationState, deviceClock/);
-  assert.match(helper, /case \.deviceClock:\s*return CompanionClock\.isClockEvidence\(item\) && item\.isCurrent\(at: now\)/);
+  assert.match(helper, /case \.deviceClock:\s*return CompanionClock\.isClockEvidence\(item\) && item\.isCurrent\(at: date\)/);
 });
 
 test('clock speech skips only validated camera-independent records and retains dispatch guards', async () => {
@@ -33,6 +33,6 @@ test('clock speech skips only validated camera-independent records and retains d
 test('model advertises a fresh clock read rather than a hardcoded date or invented time', async () => {
   const adapter = await read('ios/BlindAssist/LocalImageAssistant.swift');
   assert.match(adapter, /navigationState, deviceClock, saudiBanknote/);
-  assert.match(adapter, /For the current time, call deviceClock and repeat its complete fresh evidence/);
-  assert.match(adapter, /never guess from conversation or training/);
+  assert.match(adapter, /For current time, call deviceClock; repeat its fresh evidence, never guess/);
+  assert.match(adapter, /Tool failures and empty results mean unknown, never absent/);
 });
