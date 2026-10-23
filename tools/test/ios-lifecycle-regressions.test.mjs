@@ -54,8 +54,9 @@ test('unresolved room evidence clears both identity and trusted learning basis',
   assert.doesNotMatch(body, /clues.append\(\.movedThrough/, 'one connected door is not proof of a crossing');
 });
 
-test('microphone permission explains opt-in answer windows', async () => {
+test('microphone permission explains hands-free companion listening', async () => {
   const plist = await read('ios/BlindAssist/Info.plist');
-  assert.match(plist, /brief answer after an assistant question/);
+  assert.match(plist, /Listen for your speech throughout the companion conversation/);
   assert.doesNotMatch(plist, /only when you tap Talk/);
 });
+

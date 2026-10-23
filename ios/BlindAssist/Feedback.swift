@@ -8,62 +8,71 @@ import WatchConnectivity
 
 final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     private let speech = AVSpeechSynthesizer()
-    private var speakingAmbient = false
-    private var accessibilityAnnouncement: String?
-    private var urgentUntil = -Double.infinity
-    private var announcementStartedAt = -Double.infinity
-    private var announcementTimeout: Timer?
-    private var narrationText: String?
-    private var narrationID: UUID?
-    private var seenAnnouncements = Set<String>()
-    private var announcementAmbiguous = false
+    private var delivery = SpeechDeliveryLedger()
     private var currentUtterance: AVSpeechUtterance?
-    private var activePriority: SpeechPriority?
-    private var lastDeliveredText = ""
+    private var outputTimeout: Timer?
+    private var urgentUntil = -Double.infinity
+    private var urgentTimeout: Timer?
     var onNarrationFinished: ((UUID, String, NarrationDelivery) -> Void)?
+    /// A phrase is complete only after its matching platform completion callback.
+    /// Only accepted attempts emit a result; rejected delivery returns false.
+    var onRequestedSpeechFinished: ((UUID, String, NarrationDelivery) -> Void)?
     var onIdle: (() -> Void)?
+    var onControlAnnouncement: ((String) -> Void)?
     private let engine = AVAudioEngine()
     private let environment = AVAudioEnvironmentNode()
     private let player = AVAudioPlayerNode()
     private var tone: AVAudioPCMBuffer?
     private var spatialReady = false
+    private var spatialGraphConfigured = false
     var arabic = false
     var detail: DetailLevel = .balanced
+
     override init() {
         super.init()
         speech.delegate = self
         NotificationCenter.default.addObserver(self, selector: #selector(voiceOverChanged), name: UIAccessibility.voiceOverStatusDidChangeNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(announcementFinished(_:)), name: UIAccessibility.announcementDidFinishNotification, object: nil)
-        if WCSession.isSupported() { WCSession.default.delegate = self; WCSession.default.activate() }
+        NotificationCenter.default.addObserver(self, selector: #selector(audioInterrupted(_:)), name: AVAudioSession.interruptionNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(mediaServicesReset), name: AVAudioSession.mediaServicesWereResetNotification, object: nil)
         if !ProcessInfo.processInfo.arguments.contains("--text-only") &&
             ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
             configureSpatialAudio()
         }
     }
+
     func configureSpatialAudio() {
         do {
             let audio = AVAudioSession.sharedInstance()
-            try audio.setCategory(.playback, mode: .default, options: [.mixWithOthers])
-            try audio.setActive(true)
-            let format = AVAudioFormat(standardFormatWithSampleRate: 44_100, channels: 1)!
-            engine.attach(player); engine.attach(environment)
-            engine.connect(player, to: environment, format: format)
-            engine.connect(environment, to: engine.mainMixerNode, format: nil)
-            player.renderingAlgorithm = .HRTF
-            let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 8_820)!
-            buffer.frameLength = buffer.frameCapacity
-            for i in 0..<Int(buffer.frameLength) {
-                let t = Double(i) / 44_100
-                buffer.floatChannelData![0][i] = Float(sin(2 * .pi * 660 * t) * sin(.pi * t / 0.2) * 0.18)
+            // VoiceInput owns the shared recording category/mode while listening.
+            // A beacon must never change playAndRecord back to playback or disable AEC.
+            if audio.category != .playAndRecord {
+                try audio.setCategory(.playback, mode: .default, options: [.mixWithOthers])
             }
-            tone = buffer; try engine.start(); spatialReady = true
+            try audio.setActive(true)
+            if !spatialGraphConfigured {
+                let format = AVAudioFormat(standardFormatWithSampleRate: 44_100, channels: 1)!
+                engine.attach(player); engine.attach(environment)
+                engine.connect(player, to: environment, format: format)
+                engine.connect(environment, to: engine.mainMixerNode, format: nil)
+                player.renderingAlgorithm = .HRTF
+                let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 8_820)!
+                buffer.frameLength = buffer.frameCapacity
+                for i in 0..<Int(buffer.frameLength) {
+                    let t = Double(i) / 44_100
+                    buffer.floatChannelData![0][i] = Float(sin(2 * .pi * 660 * t) * sin(.pi * t / 0.2) * 0.18)
+                }
+                tone = buffer; spatialGraphConfigured = true
+            }
+            if !engine.isRunning { try engine.start() }
+            spatialReady = true
         } catch { spatialReady = false }
     }
+
     private func alertSignals(_ detection: Detection) {
         let timing = AssistantPerformance.signposter.beginInterval("AlertDispatch", id: AssistantPerformance.signposter.makeSignpostID())
         defer { AssistantPerformance.signposter.endInterval("AlertDispatch", timing) }
         if detection.hazard.requiresImmediateAttention {
-            speech.stopSpeaking(at: .immediate)
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             if detection.hazard.isUrgent && detection.reason != .visualStairs { beacon(sector: detection.sector, distance: detection.distance ?? 1) }
             else { player.stop() } // Missing coverage has no known hazard bearing.
@@ -72,149 +81,208 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
             }
         }
     }
+
     /// No raw text is accepted by the public sink; admission is minted by NavigationModel.
-    @discardableResult func deliver(_ admitted: AdmittedSpeech, narrationID: UUID? = nil, alert: Detection? = nil) -> Bool {
-        lastDeliveredText = admitted.text
-        if let alert { alertSignals(alert) }
-        if let narrationID { return speakAmbient(admitted.text, id: narrationID) }
-        return speak(admitted.text, urgent: admitted.urgent, priority: admitted.priority)
+    /// The controller owns a bounded phrase queue and revalidates every phrase.
+    /// This sink holds one attempt only, including the time before AVFoundation starts.
+    @discardableResult func deliver(_ admitted: AdmittedSpeech, narrationID: UUID? = nil,
+                                    speechID: UUID? = nil, alert: Detection? = nil) -> Bool {
+        guard narrationID == nil || speechID == nil else { return false }
+        let destination: SpeechDeliveryLedger.Destination
+        if let narrationID {
+            guard canSpeakAmbient else { return false }
+            destination = .narration(narrationID)
+        } else if let speechID {
+            destination = .requested(speechID)
+        } else {
+            destination = .untracked
+        }
+        return speak(admitted, destination: destination, alert: alert)
     }
-    /// Acoustic echo cancellation is primary. Also reject exact multi-word echoes
-    /// of our active output; this is not speaker identification.
+
+    /// AEC is primary. Exact active-output prefixes and a one-second residual tail
+    /// also suppress echo. An identical human prefix can be suppressed briefly;
+    /// this is not speaker identification. Rejected output never changes the text.
     func isLikelyOwnSpeech(_ text: String) -> Bool {
-        guard speechPriority != nil else { return false }
-        let words = text.lowercased().split { !$0.isLetter && !$0.isNumber }.map(String.init)
-        guard words.count >= 3 else { return false }
-        let spoken = lastDeliveredText.lowercased().split { !$0.isLetter && !$0.isNumber }.map(String.init)
-        return spoken.joined(separator: " ").contains(words.joined(separator: " "))
+        delivery.isLikelyOwnSpeech(text, now: ProcessInfo.processInfo.systemUptime)
     }
+
     var speechPriority: SpeechPriority? {
         if ProcessInfo.processInfo.systemUptime < urgentUntil { return .danger }
-        return speech.isSpeaking || accessibilityAnnouncement != nil ? activePriority : nil
+        if let active = delivery.active { return active.priority }
+        // A stop can still be settling at the platform. Do not overlap ordinary output.
+        return speech.isSpeaking ? .information : nil
     }
-    var onControlAnnouncement: ((String) -> Void)?
+
+    var canSpeakAmbient: Bool {
+        delivery.active == nil && !speech.isSpeaking && ProcessInfo.processInfo.systemUptime >= urgentUntil
+    }
+
     func requestCancellationAnnouncement() {
         if UIAccessibility.isVoiceOverRunning { onControlAnnouncement?(arabic ? "أُلغي." : "Canceled.") }
     }
-    @discardableResult private func speak(_ text: String, urgent: Bool = false, priority: SpeechPriority = .status) -> Bool {
-        guard !text.isEmpty else { return false }
-        let now = ProcessInfo.processInfo.systemUptime
-        if urgent { urgentUntil = now + 5 }
-        else if now < urgentUntil { return false }
-        let priority: SpeechPriority = urgent ? .danger : priority
-        let active = speech.isSpeaking || accessibilityAnnouncement != nil ? activePriority : nil
-        guard priority.canInterrupt(active) else { return false }
-        if UIAccessibility.isVoiceOverRunning {
-            finishNarration(success: false)
-            speech.stopSpeaking(at: .immediate); speakingAmbient = false
-            currentUtterance = nil; activePriority = priority
-            announce(text)
-            return true
-        }
-        if urgent { finishNarration(success: false); speech.stopSpeaking(at: .immediate) }
-        else if speech.isSpeaking {
-            finishNarration(success: false)
+
+    @discardableResult private func speak(_ admitted: AdmittedSpeech,
+                                         destination: SpeechDeliveryLedger.Destination,
+                                         alert: Detection?) -> Bool {
+        guard !admitted.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
+        let priority: SpeechPriority = admitted.urgent ? .danger : admitted.priority
+        guard priority.canInterrupt(speechPriority) else { return false }
+        if admitted.urgent { reserveUrgentOutput() }
+        if delivery.active != nil {
+            finishActive(outcome: .interrupted, stopSynthesizer: true, notify: false)
+        } else if speech.isSpeaking {
             speech.stopSpeaking(at: .immediate)
         }
-        speakingAmbient = false
-        let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: arabic ? "ar-SA" : "en-US")
-        utterance.rate = urgent ? 0.52 : 0.47
-        utterance.prefersAssistiveTechnologySettings = true
-        currentUtterance = utterance; activePriority = priority; speech.speak(utterance)
+        // UIKit announcement callbacks have no utterance identifier or direct stop
+        // API. Requested streamed replies use cancellable AVSpeechSynthesizer even
+        // with VoiceOver on. Apple's assistive-technology settings preserve its rate:
+        // https://developer.apple.com/videos/play/wwdc2020/10022/
+        let transport = SpeechDeliveryLedger.transport(for: destination, priority: priority,
+                                                       voiceOverRunning: UIAccessibility.isVoiceOverRunning)
+        guard let attempt = delivery.begin(text: admitted.text, priority: priority,
+                                           destination: destination, transport: transport) else { return false }
+        if let alert { alertSignals(alert) }
+        armOutputTimeout(token: attempt.token)
+        if transport == .accessibility {
+            let value = NSAttributedString(string: attempt.text, attributes: [
+                .accessibilitySpeechQueueAnnouncement: false,
+                .accessibilitySpeechLanguage: arabic ? "ar-SA" : "en-US"
+            ])
+            UIAccessibility.post(notification: .announcement, argument: value)
+        } else {
+            let utterance = AVSpeechUtterance(string: attempt.text)
+            utterance.voice = AVSpeechSynthesisVoice(language: arabic ? "ar-SA" : "en-US")
+            utterance.rate = admitted.urgent ? 0.52 : 0.47
+            utterance.prefersAssistiveTechnologySettings = true
+            currentUtterance = utterance
+            speech.speak(utterance)
+        }
         return true
     }
-    var canSpeakAmbient: Bool {
-        !speech.isSpeaking && accessibilityAnnouncement == nil && ProcessInfo.processInfo.systemUptime >= urgentUntil
-    }
-    @discardableResult private func speakAmbient(_ text: String, id: UUID) -> Bool {
-        guard canSpeakAmbient, speak(text, priority: .information) else { return false }
-        speakingAmbient = true; narrationText = text; narrationID = id; return true
-    }
-    func interruptAmbient() {
-        if speakingAmbient {
-            finishNarration(success: false)
-            speech.stopSpeaking(at: .immediate); speakingAmbient = false
-            if UIAccessibility.isVoiceOverRunning, accessibilityAnnouncement != nil {
-                accessibilityAnnouncement = nil; activePriority = nil; currentUtterance = nil; announcementTimeout?.invalidate()
-                requestCancellationAnnouncement()
-            }
-        }
-    }
-    private func announce(_ text: String) {
-        // UIKit identifies completions by text, not our request ID. Reused text is ambiguous.
-        announcementAmbiguous = seenAnnouncements.contains(text) || seenAnnouncements.count >= 512
-        if !announcementAmbiguous { seenAnnouncements.insert(text) }
-        accessibilityAnnouncement = text
-        announcementStartedAt = ProcessInfo.processInfo.systemUptime
-        announcementTimeout?.invalidate()
-        let started = announcementStartedAt
-        // A lost callback must not accumulate an unbounded speech queue.
-        // Hold ordinary speech conservatively; never use elapsed time as proof of delivery.
-        announcementTimeout = Timer.scheduledTimer(withTimeInterval: 120, repeats: false) { [weak self] _ in
-            guard let self, self.announcementStartedAt == started else { return }
-            self.finishNarration(outcome: .unknown)
-            self.accessibilityAnnouncement = nil; self.speakingAmbient = false; self.activePriority = nil
+
+    private func reserveUrgentOutput() {
+        urgentUntil = ProcessInfo.processInfo.systemUptime + 5
+        urgentTimeout?.invalidate()
+        let deadline = urgentUntil
+        let timer = Timer(timeInterval: 5, repeats: false) { [weak self] _ in
+            guard let self, self.urgentUntil == deadline else { return }
+            self.urgentTimeout = nil
+            // This wakes deferred producers; elapsed time is not a delivery signal.
             self.notifyIdle()
         }
-        let value = NSAttributedString(string: text, attributes: [
-            .accessibilitySpeechQueueAnnouncement: false,
-            .accessibilitySpeechLanguage: arabic ? "ar-SA" : "en-US"
-        ])
-        UIAccessibility.post(notification: .announcement, argument: value)
+        urgentTimeout = timer
+        RunLoop.main.add(timer, forMode: .common)
     }
-    @objc private func voiceOverChanged() { finishNarration(outcome: .unknown); speech.stopSpeaking(at: .immediate); speakingAmbient = false; accessibilityAnnouncement = nil; activePriority = nil; currentUtterance = nil; announcementTimeout?.invalidate(); notifyIdle() }
+
+    private func armOutputTimeout(token: UUID) {
+        outputTimeout?.invalidate()
+        let timer = Timer(timeInterval: 120, repeats: false) { [weak self] _ in
+            guard let self, self.delivery.active?.token == token else { return }
+            // A lost callback must not strand the controller or claim text was heard.
+            self.finishActive(outcome: .unknown, stopSynthesizer: true)
+        }
+        outputTimeout = timer
+        RunLoop.main.add(timer, forMode: .common)
+    }
+
+    func interruptAmbient() {
+        guard let active = delivery.active, case .narration = active.destination,
+              active.priority != .mobility, active.priority != .danger else { return }
+        let hadAnnouncement = active.transport == .accessibility
+        finishActive(outcome: .interrupted, stopSynthesizer: true)
+        if hadAnnouncement { requestCancellationAnnouncement() }
+    }
+
+    @objc private func voiceOverChanged() {
+        let hadActive = delivery.active != nil
+        finishActive(outcome: .unknown, stopSynthesizer: true)
+        speech.stopSpeaking(at: .immediate)
+        if !hadActive { notifyIdle() }
+    }
+
+    @objc private func audioInterrupted(_ notification: Notification) {
+        guard let raw = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
+              AVAudioSession.InterruptionType(rawValue: raw) == .began else { return }
+        finishActive(outcome: .interrupted, stopSynthesizer: true)
+        player.stop()
+    }
+
+    @objc private func mediaServicesReset() {
+        finishActive(outcome: .unknown, stopSynthesizer: true)
+        player.stop(); spatialReady = false
+    }
+
     @objc private func announcementFinished(_ notification: Notification) {
-        if let text = notification.userInfo?[UIAccessibility.announcementStringValueUserInfoKey] as? String,
-           text == accessibilityAnnouncement {
-            // A failed/interrupted announcement is not recorded as successfully delivered.
-            let successful = notification.userInfo?[UIAccessibility.announcementWasSuccessfulUserInfoKey] as? Bool == true
-            finishNarration(outcome: announcementAmbiguous ? .unknown : successful ? .completed : .interrupted)
-            accessibilityAnnouncement = nil; speakingAmbient = false; activePriority = nil; announcementTimeout?.invalidate()
-            notifyIdle()
+        guard let active = delivery.active, active.transport == .accessibility,
+              let text = notification.userInfo?[UIAccessibility.announcementStringValueUserInfoKey] as? String,
+              text == active.text else { return }
+        let successful = notification.userInfo?[UIAccessibility.announcementWasSuccessfulUserInfoKey] as? Bool == true
+        finishActive(outcome: successful ? .completed : .interrupted)
+    }
+
+    private func notifyIdle() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self, self.canSpeakAmbient else { return }
+            self.onIdle?()
         }
     }
-    private func finishNarration(success: Bool) {
-        finishNarration(outcome: success ? .completed : .interrupted)
-    }
-    private func notifyIdle() { DispatchQueue.main.async { [weak self] in self?.onIdle?() } }
-    private func finishNarration(outcome: NarrationDelivery) {
-        if let text = narrationText, let id = narrationID {
-            narrationText = nil; narrationID = nil; onNarrationFinished?(id, text, outcome)
+
+    private func finishActive(outcome: NarrationDelivery, stopSynthesizer: Bool = false, notify: Bool = true) {
+        guard let active = delivery.active,
+              let completion = delivery.finish(token: active.token, outcome: outcome,
+                                               now: ProcessInfo.processInfo.systemUptime) else { return }
+        // Invalidate identity before stopping: didCancel can arrive after new output
+        // starts. Clear all old state before invoking controller code, asynchronously.
+        currentUtterance = nil
+        outputTimeout?.invalidate(); outputTimeout = nil
+        if stopSynthesizer { speech.stopSpeaking(at: .immediate) }
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            switch completion.attempt.destination {
+            case .narration(let id): self.onNarrationFinished?(id, completion.attempt.text, completion.outcome)
+            case .requested(let id): self.onRequestedSpeechFinished?(id, completion.attempt.text, completion.outcome)
+            case .untracked: break
+            }
         }
+        if notify { notifyIdle() }
     }
+
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
-        guard utterance === currentUtterance else { return }
-        finishNarration(success: true); speakingAmbient = false; currentUtterance = nil; activePriority = nil
-        notifyIdle()
+        guard utterance === currentUtterance, delivery.active?.transport == .synthesized else { return }
+        finishActive(outcome: .completed)
     }
+
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
-        guard utterance === currentUtterance else { return }
-        finishNarration(success: false); speakingAmbient = false; currentUtterance = nil; activePriority = nil
-        notifyIdle()
+        guard utterance === currentUtterance, delivery.active?.transport == .synthesized else { return }
+        finishActive(outcome: .interrupted)
     }
+
     @discardableResult func stopInformation(announceCancellation: Bool = true) -> Bool {
         guard ProcessInfo.processInfo.systemUptime >= urgentUntil,
-              activePriority != .mobility, activePriority != .danger else { return false }
-        let hadAnnouncement = accessibilityAnnouncement != nil
-        finishNarration(success: false)
-        speakingAmbient = false; speech.stopSpeaking(at: .immediate)
-        currentUtterance = nil; activePriority = nil
-        announcementTimeout?.invalidate(); accessibilityAnnouncement = nil
+              delivery.active?.priority != .mobility, delivery.active?.priority != .danger else { return false }
+        let hadAnnouncement = delivery.active?.transport == .accessibility
+        finishActive(outcome: .interrupted, stopSynthesizer: true)
+        speech.stopSpeaking(at: .immediate)
         if announceCancellation && hadAnnouncement { requestCancellationAnnouncement() }
         return true
     }
+
     func stop(includingAlerts: Bool = false) {
-        guard includingAlerts || ProcessInfo.processInfo.systemUptime >= urgentUntil else { return }
-        if includingAlerts { urgentUntil = -.infinity }
-        finishNarration(success: false)
-        speakingAmbient = false; speech.stopSpeaking(at: .immediate); player.stop()
-        if UIAccessibility.isVoiceOverRunning, accessibilityAnnouncement != nil {
-            accessibilityAnnouncement = nil; activePriority = nil; currentUtterance = nil; announcementTimeout?.invalidate()
-            requestCancellationAnnouncement()
+        guard includingAlerts || (ProcessInfo.processInfo.systemUptime >= urgentUntil && delivery.active?.priority != .danger) else { return }
+        if includingAlerts {
+            urgentUntil = -.infinity; urgentTimeout?.invalidate(); urgentTimeout = nil
         }
+        let hadAnnouncement = delivery.active?.transport == .accessibility
+        finishActive(outcome: .interrupted, stopSynthesizer: true)
+        speech.stopSpeaking(at: .immediate); player.stop()
+        if hadAnnouncement { requestCancellationAnnouncement() }
     }
-    deinit { announcementTimeout?.invalidate(); NotificationCenter.default.removeObserver(self) }
+
+    deinit {
+        outputTimeout?.invalidate(); urgentTimeout?.invalidate()
+        NotificationCenter.default.removeObserver(self)
+    }
     func beacon(sector: Int, distance: Double) {
         guard spatialReady, let tone else { return }
         if !engine.isRunning { try? engine.start() }
@@ -229,3 +297,4 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     func sessionDidBecomeInactive(_ session: WCSession) {}
     func sessionDidDeactivate(_ session: WCSession) { session.activate() }
 }
+

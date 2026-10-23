@@ -101,7 +101,7 @@ test('voice commands route before generic assistant actions and retain urgent sp
   const view = await read('ios/BlindAssist/FamiliarPeopleView.swift');
   for (const literal of ['.accessibilityAction(.magicTap)', 'model.startVoiceQuestion()', 'model.voice.finish()', 'familiar-voice', 'Generic yes or no does not confirm']) assert.ok(view.includes(literal), literal);
   const feedback = await read('ios/BlindAssist/Feedback.swift');
-  assert.match(feedback, /func stopInformation[\s\S]*?activePriority != \.mobility, activePriority != \.danger/);
+  assert.match(feedback, /func stopInformation[\s\S]*?delivery\.active\?\.priority != \.mobility, delivery\.active\?\.priority != \.danger/);
 });
 
 test('named search is exact-label bounded quiet and reuses current candidate and snapshot publication', async () => {
@@ -126,3 +126,4 @@ test('past snapshot speech has separate bounded lifetime without extending live 
   assert.match(code, /shouldSpeakFaceGuidance/);
   assert.match(code, /ask them to look toward you/);
 });
+

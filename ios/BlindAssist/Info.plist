@@ -26,6 +26,10 @@
 	<string>Listen for your speech throughout the companion conversation so you can talk without pressing a button.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Transcribe your question on this phone when offline recognition is available.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -38,3 +42,4 @@
 	</array>
 </dict>
 </plist>
+

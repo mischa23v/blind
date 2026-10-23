@@ -1,3 +1,7 @@
+## Current next gate — 2026-10-23
+
+Build the integrated continuous-assistant source in the preserved Mac project, then run the exact real-model and device scenarios in [ASSISTANT_FEATURE_CHECKLIST.md](ASSISTANT_FEATURE_CHECKLIST.md). Source now separates conversation/camera, adds session controls, partial-onset cancellation, streamed completion-accounted speech, bounded memory/tasks and executable read-only tools. The earlier current-location hallucination and 8.385-second response failure remain **unclosed actual-app failures**, not overwritten by portable test passes.
+
 ## Latest actual result — chat still not accepted
 
 Compact role and separated reply/state extraction compile, but final real UI promotes I last left it on the kitchen table into Your cup is on the kitchen table. First sentence8.385s. Fix evidence interpretation and isolate context contributions before broadening features or comparing another model. Minimal plain diagnostic answered the initial cup request correctly; do not confuse it with full-path success. Exact evidence in ios/.validation-results/text-chat-status.json.
@@ -45,3 +49,4 @@ TASKS.md remains the only checklist; PROGRESS.md records what happened. Older po
 Currency data: download all eight assets from the [private currency transfer](https://github.com/mischa23v/blind/releases/tag/currency-transfer-20261022), verify/reassemble using RESTORE_CURRENCY_ON_MAC.md, then inspect licence/labels on the Mac before training.
 
 Seeing AI learning: read research/SEEING_AI_CODE_REFERENCES.md on the Mac and download hello.zip from the [private reference release](https://github.com/mischa23v/blind/releases/tag/hello-seeing-ai-20261022). Start currency source review with BankNote-Net; keep licence/model/data and offline checks open.
+

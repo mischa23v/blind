@@ -2,6 +2,7 @@ import Foundation
 import Vision
 import CoreVideo
 import CoreImage
+import ImageIO
 import UIKit
 import BlindCore
 import BlindMemory
@@ -230,3 +231,160 @@ final class RoomRecall {
         } catch { return false }
     }
 }
+
+/// A requested, transient Vision read, deliberately separate from room learning.
+/// Reuses Apple's VNRecognizeTextRequest / VNClassifyImageRequest APIs, not an LLM:
+/// See Apple's Vision VNRecognizeTextRequest / VNClassifyImageRequest documentation.
+/// These are candidates, not proof of identity, denomination, colour, location,
+/// clearance or absence. Caller owns permission, request/session, capture age,
+/// pose and speech gates before AND after this read. No frame or result is saved.
+///
+/// Sendability proof: the queue is immutable; the only mutable probe state,
+/// `busy`, is accessed under `lock`. A permit covers queued AND running work,
+/// including work whose awaiting task has already cancelled or timed out.
+final class ConversationFrameProbe: @unchecked Sendable {
+    struct Result: Sendable {
+        let texts: [String]
+        let labels: [String]
+    }
+
+    private let queue = DispatchQueue(label: "org.blindassist.conversation-frame-probe", qos: .userInitiated)
+    private let lock = NSLock()
+    private var busy = false
+
+    /// The supplied captured frame must remain read-only. At most one frame is
+    /// retained for Vision; a concurrent request is rejected rather than queued.
+    /// The tool runtime owns its two-second deadline; synchronous Vision may
+    /// finish later, but cancellation releases the waiter and discards that result.
+    func inspect(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) async -> Result? {
+        guard !Task.isCancelled, claim() else { return nil }
+        let read = Read(image: image, orientation: orientation)
+        let result = await withTaskCancellationHandler {
+            await withCheckedContinuation { continuation in
+                read.install(continuation)
+                queue.async { [self, read] in
+                    let result: Result? = autoreleasepool {
+                        guard !read.isCancelled else { return nil }
+                        return Self.analyze(read)
+                    }
+                    // Cancellation never releases this permit early: otherwise
+                    // repeated timed-out requests could build a frame backlog.
+                    release()
+                    read.finish(result)
+                }
+            }
+        } onCancel: {
+            read.cancel()
+        }
+        return Task.isCancelled ? nil : result
+    }
+
+    private func claim() -> Bool {
+        lock.lock(); defer { lock.unlock() }
+        guard !busy else { return false }
+        busy = true
+        return true
+    }
+    private func release() {
+        lock.lock(); busy = false; lock.unlock()
+    }
+
+    /// All Vision objects and image access stay on the dedicated serial queue.
+    private static func analyze(_ read: Read) -> Result? {
+        guard !read.isCancelled else { return nil }
+        let width = CVPixelBufferGetWidth(read.image), height = CVPixelBufferGetHeight(read.image)
+        guard width > 0, height > 0, width <= 4096, height <= 4096,
+              width * height <= 12_000_000 else { return nil }
+        let text = VNRecognizeTextRequest()
+        text.recognitionLevel = .fast
+        text.usesLanguageCorrection = false
+        let classify = VNClassifyImageRequest()
+        let handler = VNImageRequestHandler(cvPixelBuffer: read.image, orientation: read.orientation)
+        guard !read.isCancelled else { return nil }
+        do { try handler.perform([text, classify]) } catch { return nil }
+        guard !read.isCancelled else { return nil }
+
+        var texts: [String] = [], labels: [String] = []
+        for observation in (text.results ?? []).prefix(32) {
+            guard texts.count < 8, let candidate = observation.topCandidates(1).first,
+                  candidate.confidence >= 0.65,
+                  let value = boundedWholeString(candidate.string, maximumScalars: 160),
+                  !texts.contains(value) else { continue }
+            texts.append(value)
+        }
+        for observation in (classify.results ?? []).prefix(32) {
+            guard labels.count < 6, observation.confidence >= 0.55,
+                  let value = boundedWholeString(observation.identifier.lowercased(), maximumScalars: 64),
+                  genericLabels.contains(value), !labels.contains(value) else { continue }
+            labels.append(value)
+        }
+        guard !read.isCancelled else { return nil }
+        // An empty successful read means no usable candidates, never "not there".
+        return Result(texts: texts, labels: labels)
+    }
+
+    /// Reject oversized records intact; truncation could remove a qualification
+    /// or negation and manufacture a different observation.
+    private static func boundedWholeString(_ text: String, maximumScalars: Int) -> String? {
+        let value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !value.isEmpty, value.unicodeScalars.count <= maximumScalars,
+              !value.unicodeScalars.contains(where: { CharacterSet.controlCharacters.contains($0) }) else { return nil }
+        return value
+    }
+
+    // Narrow, anonymous object/scene vocabulary only. In particular, Vision
+    // classifications never supply people/face names, money values or colours.
+    private static let genericLabels: Set<String> = [
+        "chair", "table", "desk", "door", "window", "sofa", "couch", "bed",
+        "shelf", "bookcase", "lamp", "cup", "mug", "bottle", "book", "backpack",
+        "bag", "refrigerator", "sink", "cabinet", "stove", "oven", "plant", "tree",
+        "flower", "car", "bicycle", "bus", "cat", "dog", "bird", "fish",
+        "television", "computer", "keyboard", "phone", "remote control",
+        "stairs", "staircase", "escalator"
+    ]
+
+    /// Sendability proof: image/orientation are immutable; only the serial queue
+    /// reads image pixels, and neither this helper nor its caller may mutate this
+    /// retained captured frame. The lock protects EVERY access to continuation,
+    /// completed and cancelled. Resumption happens once, outside the lock.
+    private final class Read: @unchecked Sendable {
+        let image: CVPixelBuffer
+        let orientation: CGImagePropertyOrientation
+        private let lock = NSLock()
+        private var continuation: CheckedContinuation<Result?, Never>?
+        private var completed = false
+        private var cancelled = false
+
+        init(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) {
+            self.image = image; self.orientation = orientation
+        }
+        var isCancelled: Bool {
+            lock.lock(); defer { lock.unlock() }
+            return cancelled
+        }
+        func install(_ continuation: CheckedContinuation<Result?, Never>) {
+            lock.lock()
+            if completed { lock.unlock(); continuation.resume(returning: nil); return }
+            self.continuation = continuation
+            lock.unlock()
+        }
+        func cancel() {
+            lock.lock()
+            cancelled = true
+            let continuation = self.continuation
+            self.continuation = nil; completed = true
+            lock.unlock()
+            continuation?.resume(returning: nil)
+        }
+        func finish(_ result: Result?) {
+            lock.lock()
+            guard !completed else { lock.unlock(); return }
+            completed = true
+            let continuation = self.continuation
+            self.continuation = nil
+            lock.unlock()
+            continuation?.resume(returning: result)
+        }
+    }
+}
+

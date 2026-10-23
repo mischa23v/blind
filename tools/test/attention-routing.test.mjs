@@ -131,9 +131,10 @@ test('replacing information preserves safety speech and failed replacement has a
   const model = await read('ios/BlindAssist/NavigationModel.swift');
   const feedback = await read('ios/BlindAssist/Feedback.swift');
   const stop = method(feedback, 'stopInformation');
-  assert.match(stop, /activePriority\s*!=\s*\.mobility,\s*activePriority\s*!=\s*\.danger/);
-  assert.ok(stop.indexOf('activePriority != .danger') < stop.indexOf('speech.stopSpeaking('));
+  assert.match(stop, /delivery\.active\?\.priority\s*!=\s*\.mobility,\s*delivery\.active\?\.priority\s*!=\s*\.danger/);
+  assert.ok(stop.indexOf('delivery.active?.priority != .danger') < stop.indexOf('speech.stopSpeaking('));
   assert.doesNotMatch(stop, /player\.stop\(/, 'ordinary speech cancellation must not silence the hazard beacon');
   assert.match(method(model, 'dispatchText'), /replace\s*&&\s*!delivered[\s\S]*?requestCancellationAnnouncement\(\)/);
   assert.match(model, /feedback\.onControlAnnouncement\s*=\s*\{[^\n]*speakOperation\(text,\s*replace:\s*false\)/);
 });
+

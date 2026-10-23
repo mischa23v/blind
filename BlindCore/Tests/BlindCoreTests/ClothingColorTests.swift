@@ -53,6 +53,40 @@ final class ClothingColorTests: XCTestCase {
         for command in ["What colour is this shirt?", "Check the color", "Is this white?", "ما لون هذا القميص", "هل هذا أبيض", "هل هذه بيضاء؟", "وش لونها؟", "Is this light gray?", "Does this look white?", "Can you please check the colour", "هل هذا أَبْيَض؟", "Is this white enough for school?", "Is this really white for my uniform?", "Can I use this as my white school uniform?"] { XCTAssertTrue(ClothingColorCommand.matches(command), command) }
         for unrelated in ["Find my brother", "Read this banknote", "Stop", "colourful music", "Do not check the color", "Don't check the colour", "The color is red", "My shirt looks white", "هذا القميص أبيض", "لا تفحص اللون", "Find my white shirt", "Read the word color", "Check color settings", "هل هذا ابيضاض العين", "ما لونه المفضل؟"] { XCTAssertFalse(ClothingColorCommand.matches(unrelated), unrelated) }
     }
+    func testPhysicalColorQuestionsCannotFallThroughToOrdinaryConversation() {
+        for question in [
+            "Is my shirt cream or white?", "Is my favourite shirt white?", "Is the shirt cream or white?", "Is this shirt cream or white?",
+            "Are my socks black or navy?", "Does my dress look red?", "Is the jacket green?",
+            "What shade is my top?", "Tell me whether my shirt is blue", "Check if my shirt is white",
+            "Is my shirt not white?", "Is my shirt white or not?", "Is my hair brown?", "Are my nails pink?",
+            "هل قميصي أبيض أم كريمي؟", "هل قميصي المفضل أبيض؟", "هل القميص أبيض أو كريمي؟", "هل لون هذا القميص كريمي أم أبيض؟",
+            "هل فستاني أزرق؟", "هل بشرتي حمراء؟", "قميصي أبيض ولا كريمي؟", "هل قميصي أَبْيَض؟",
+            "هل القميص أبــيض؟"
+        ] {
+            XCTAssertTrue(ClothingColorCommand.matches(question), question)
+            XCTAssertEqual(ConversationDomainPolicy.requiredInspection(for: question), .clothingColor, question)
+            XCTAssertFalse(ConversationDomainPolicy.allowsModelResponse(to: question), question)
+        }
+        // This exact acceptance regression previously entered converse and could
+        // speak "White.". The request gate rejects every model response, not only
+        // verbose claims that happen to repeat the garment name.
+        XCTAssertTrue(ClothingColorCommand.requiresNeutralVerification("Is my shirt cream or white?"))
+    }
+
+    func testOrdinaryColorDiscussionAndItemSearchStayAvailable() {
+        for question in [
+            "Find my white shirt", "Where is my blue jacket?", "I prefer cream to white", "My favorite color is white",
+            "Is my favourite colour blue?", "What is the history of white uniforms?", "What color was my shirt yesterday?",
+            "Do you remember the color of my shirt?", "Explain color theory", "What color is the sky?",
+            "Does my white shirt go with navy trousers?", "Does my cream shirt match my blue skirt?",
+            "Is my red dress nicer than the blue one?", "My shirt looks white", "Is white a warm color?",
+            "ما لونه المفضل؟", "هل لوني المفضل أبيض؟", "اشرح نظرية اللون", "ابحث عن قميصي الأبيض", "هذا القميص أبيض"
+        ] {
+            XCTAssertFalse(ClothingColorCommand.matches(question), question)
+            XCTAssertTrue(ConversationDomainPolicy.allowsModelResponse(to: question), question)
+        }
+    }
+
     func testWhiteRequestCannotBeCertifiedUnderColoredLighting() {
         XCTAssertTrue(ClothingColorCommand.requiresNeutralVerification("Is this white?"))
         XCTAssertTrue(ClothingColorCommand.requiresNeutralVerification("What colour is this uniform?"))
@@ -107,3 +141,4 @@ final class ClothingColorTests: XCTestCase {
     }
 
 }
+

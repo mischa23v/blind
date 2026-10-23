@@ -1,3 +1,21 @@
+## CURRENT — local continuous-assistant source checkpoint, 2026-10-23
+
+Start with [PROJECT_VISION.md](PROJECT_VISION.md) for what and why, [SESSION_LOG.md](SESSION_LOG.md) for decisions and actual evidence, and [ASSISTANT_FEATURE_CHECKLIST.md](ASSISTANT_FEATURE_CHECKLIST.md) for all 44 capabilities with implementation and acceptance gaps. Older entries below are historical and do not supersede this assistant-first, age-neutral direction.
+
+Source is integrated from shared `master` at `d6d4236`, preserving the Mac changes and active optional-backend Xcode project. The new build has **not** been compiled with an Apple SDK or run with the actual Apple model/device here. Portable verification is recorded in the current PROGRESS entry; no deployment or mobility/child/all-day readiness is implied.
+
+Normal launch is now continuous conversation with explicit mute/end controls. Camera awareness defaults off and has a separate Home toggle; background voice is separately opt-in. `--text-only` remains the no-mic/no-camera diagnostic option. Bounded acoustic-energy onset interrupts speech before a transcript, with non-echo transcript fallback; actual AEC/double-talk performance is unverified. Read-only tools include fresh on-demand Vision OCR/category candidates, not complete scene understanding. Explicit audience preference and one context-overflow recovery attempt are source-implemented, not child-safety or model-reliability certification. Spoken history includes completed phrases, not unheard generated text.
+
+### Foundation Models SDK build condition
+
+- SDK26 base conversation build: use the existing default conditions; it catches `LanguageModelSession.GenerationError.exceededContextWindowSize`.
+- **SDK27+ base/text-only conversation build:** add `BLIND_FOUNDATION_MODELS_V2` to `SWIFT_ACTIVE_COMPILATION_CONDITIONS` while preserving `$(inherited)` and all existing flags. Example command-line override: `SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) BLIND_FOUNDATION_MODELS_V2'`. This enables typed `LanguageModelError.contextSizeExceeded` handling without enabling image-model features.
+- Existing SDK27 image builds with `BLIND_APPLE_MULTIMODAL` retain the same V2 error handling for compatibility.
+
+The checked-in generated project does **not** detect/select V2 automatically. Do not set the V2 flag with SDK26: that SDK lacks the new type. All conditional branches were syntax-parsed here, not Apple-typechecked; compile the actual chosen SDK/configuration on the Mac. A compiler version alone is not an SDK-capability check.
+
+Follow the six first Mac/device checks in the feature checklist. Preserve the known historical evidence-handling and latency failures until actual retesting closes them. Do not regenerate the active project or replace model/backends as a substitute for testing the integrated pipeline.
+
 ## CURRENT — pause checkpoint for Claude review, 2026-10-22
 
 **Combined source checkpoint:** newer master `694eccb499eb3b505386210c7a875abb85448821` was fetched through the GitHub connection and reconciled with the Mac work before pushing. Currency/reference-matching and clothing-colour integration are preserved. Two NavigationModel conflicts were resolved by retaining both the conversation timeout and currency/colour properties/cancellation resets. Existing remote documentation is retained below. The combined source has NOT had a fresh Apple SDK build or full scenario run; the user requested stopping for the night. Tomorrow validate the combined source first. The active generated AuraFace project is preserved, not regenerated; no model/photo/signing/tool-cache upload. The ZIP folder still has no Git metadata.
@@ -264,3 +282,4 @@ The archive contains source, tests, example maps, firmware configuration and doc
 See `research/THREE_LAYERS.md` for the architecture and the exact implemented/unfinished connections; `research/ASSISTANT_POLICY.md` for evidence and speech policy. No custom model has been trained. Rich offline visual question answering, automatic venue loading, reliable saved-map localization, live obstacles fused into the venue collision layer, and validated multi-floor navigation remain development work.
 
 Use `maps/SCHOOL_MAPPING.md` for a supervised school mapping workflow. Review `research/LICENSE_REVIEW.md` before a public source/binary release; the dependency review is incomplete and includes a concrete conflicting-notice finding.
+

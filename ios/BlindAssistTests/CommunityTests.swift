@@ -253,7 +253,7 @@ final class AssistantSituationTests: XCTestCase {
         let changed = AssistantSituation.snapshot(dialogue: dialogue, preview: nil, layout: nil)
         let changedConversation = try XCTUnwrap(changed["conversation"] as? [String: Any])
         XCTAssertNotEqual(changedConversation["goalRevision"] as? String, revision)
-        XCTAssertTrue((changedConversation["turns"] as? [Any])?.isEmpty == true)
+        XCTAssertEqual((changedConversation["turns"] as? [[String: String]])?.last?["text"], "Tell me more about it")
     }
 }
 
@@ -450,5 +450,116 @@ struct SavedProfileConversationTests {
         let text = try #require(answer.text).lowercased()
         #expect(text.contains(corrected ? "lina" : "alex"))
         #expect(!text.contains("don't remember"))
+    }
+}
+
+
+/// State logic only. These same source declarations/tests can be extracted for
+/// portable Swift checks; those checks are not Apple SDK or model integration.
+final class CompanionWorkingStateTests: XCTestCase {
+    func testSuspendResumeRequiresExplicitCallAndClearsOldProposal() {
+        var state = CompanionWorkingState()
+        state.changeGoal("Help me find my cup")
+        state.proposedStep = "Check your last report"
+        state.reportedCompletedSteps = ["Asked where it was last seen"]
+        let revision = state.goalRevision
+        XCTAssertTrue(state.suspendGoal())
+        XCTAssertEqual(state.goal, "")
+        XCTAssertNotEqual(state.goalRevision, revision)
+        XCTAssertEqual(state.suspendedGoals.count, 1)
+        state.record("Tell me about dinosaurs")
+        XCTAssertEqual(state.goal, "")
+        XCTAssertTrue(state.resumeGoal())
+        XCTAssertEqual(state.goal, "Help me find my cup")
+        XCTAssertEqual(state.proposedStep, "")
+        XCTAssertEqual(state.reportedCompletedSteps, ["Asked where it was last seen"])
+        XCTAssertFalse(state.resumeGoal())
+    }
+    func testSuspendedAndReportStorageAreBounded() {
+        var state = CompanionWorkingState()
+        for index in 0..<20 {
+            state.changeGoal("Help me find item \(index)")
+            XCTAssertTrue(state.suspendGoal())
+            state.record("Report \(index)")
+        }
+        XCTAssertEqual(state.suspendedGoals.count, 3)
+        XCTAssertEqual(state.reports.count, 12)
+        XCTAssertEqual(state.suspendedGoals.last?.goal, "Help me find item 19")
+    }
+    func testReplacementRetiresOldProposalAndReportedProgress() {
+        var state = CompanionWorkingState()
+        state.changeGoal("Help me find my cup")
+        state.proposedStep = "Ask where it was last seen"
+        state.reportedCompletedSteps = ["Old reported step"]
+        state.apply(.init(goal: "Help me find my keys", nextStep: "", completionReport: ""), latest: "Help me find my keys")
+        XCTAssertEqual(state.goal, "Help me find my keys")
+        XCTAssertEqual(state.proposedStep, "")
+        XCTAssertTrue(state.reportedCompletedSteps.isEmpty)
+    }
+    func testNegatedQuotedAndConditionalCancellationCannotMutateGoal() {
+        for input in ["Do not cancel", "Don't cancel the task", "If I say cancel, what happens?", "\"cancel\""] {
+            var state = CompanionWorkingState(); state.changeGoal("Help me find my cup")
+            state.apply(.init(goal: "", nextStep: "", completionReport: "", cancellationReport: "cancel"), latest: input)
+            XCTAssertEqual(state.goal, "Help me find my cup", input)
+            state.apply(.init(goal: "", nextStep: "", completionReport: "", cancellationReport: input), latest: input)
+            XCTAssertEqual(state.goal, "Help me find my cup", input)
+        }
+        var state = CompanionWorkingState(); state.changeGoal("Help me find my cup")
+        state.apply(.init(goal: "", nextStep: "", completionReport: "", cancellationReport: "Cancel the task"), latest: "Cancel the task")
+        XCTAssertEqual(state.goal, "")
+    }
+    func testCorrectionForgetRemoveExactSourcesNotUnrelatedReports() {
+        var state = CompanionWorkingState()
+        let old = "The cupboard is closed. I last left my cup there."
+        state.record(old); state.record("I enjoy music")
+        state.facts = [.init(subject: "cupboard", value: "closed", quote: "The cupboard is closed.", sourceReport: old)]
+        state.proposedStep = "Check the old report"
+        let revision = state.goalRevision
+        state.removeReport(old)
+        state.record("The cupboard is open now")
+        XCTAssertEqual(state.reports.map(\.text), ["I enjoy music", "The cupboard is open now"])
+        XCTAssertTrue(state.facts.isEmpty)
+        XCTAssertEqual(state.proposedStep, "")
+        XCTAssertNotEqual(state.goalRevision, revision)
+        state.changeGoal("Help me find my cup"); XCTAssertTrue(state.suspendGoal())
+        state.changeGoal("Help me find my keys")
+        state.removeReport("Help me find my cup")
+        XCTAssertTrue(state.suspendedGoals.isEmpty)
+        XCTAssertEqual(state.goal, "Help me find my keys")
+        state.removeReport("Help me find my keys")
+        XCTAssertEqual(state.goal, "")
+    }
+    func testModelFactCannotDropNegationOrExtractFromUncertainty() {
+        var state = CompanionWorkingState()
+        state.apply(.init(goal: "", nextStep: "", completionReport: "", fact: .init(subject: "door", value: "closed", quote: "The door is not closed")), latest: "The door is not closed")
+        XCTAssertEqual(state.facts.first?.value, "The door is not closed")
+        state.apply(.init(goal: "", nextStep: "", completionReport: "", fact: .init(subject: "door", value: "open", quote: "The door is open")), latest: "I don't think The door is open")
+        XCTAssertEqual(state.facts.first?.value, "The door is not closed")
+        state.apply(.init(goal: "", nextStep: "", completionReport: "", fact: .init(subject: "door", value: "open", quote: "The door is open")), latest: "Yesterday The door is open")
+        XCTAssertEqual(state.facts.first?.value, "The door is not closed")
+    }
+    func testOldStateDecodesAndBoundsRestoredCollections() throws {
+        let old = Data(#"{"goal":"Help me find my cup","reports":[],"facts":[]}"#.utf8)
+        let decoded = try JSONDecoder().decode(CompanionWorkingState.self, from: old)
+        XCTAssertEqual(decoded.goal, "Help me find my cup")
+        XCTAssertTrue(decoded.suspendedGoals.isEmpty)
+        var oversized = CompanionWorkingState()
+        oversized.goal = String(repeating: "x", count: 301)
+        oversized.reports = (0..<30).map { .init(text: "Report \($0)", time: Date()) }
+        oversized.suspendedGoals = (0..<10).map { .init(goal: "Goal \($0)", proposedStep: "", reportedCompletedSteps: []) }
+        let restored = try JSONDecoder().decode(CompanionWorkingState.self, from: JSONEncoder().encode(oversized))
+        XCTAssertEqual(restored.goal, "")
+        XCTAssertEqual(restored.reports.count, 12)
+        XCTAssertEqual(restored.suspendedGoals.count, 3)
+    }
+    func testProposedStepsNeverExecuteOrProveCompletion() {
+        var state = CompanionWorkingState(); state.changeGoal("Help me find my cup")
+        state.apply(.init(goal: "", nextStep: "Check your last report", completionReport: ""), latest: "Help me find my cup")
+        XCTAssertEqual(state.proposedStep, "Check your last report")
+        XCTAssertTrue(state.reportedCompletedSteps.isEmpty)
+        state.apply(.init(goal: "", nextStep: "", completionReport: "done"), latest: "I'm not done")
+        XCTAssertTrue(state.reportedCompletedSteps.isEmpty)
+        state.apply(.init(goal: "", nextStep: "", completionReport: "I'm done"), latest: "I'm done")
+        XCTAssertEqual(state.reportedCompletedSteps, ["Check your last report"])
     }
 }

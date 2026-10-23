@@ -1,3 +1,7 @@
+## Current continuous-assistant acceptance — 2026-10-23
+
+The complete 44-capability checklist and concrete scenarios now live in [ASSISTANT_FEATURE_CHECKLIST.md](ASSISTANT_FEATURE_CHECKLIST.md). Source fixes are not acceptance: Apple compilation/model evaluation, physical audio/background/accessibility/latency/endurance, semantic grounding, age-sensitive safety, model-aware context compaction and broader scene/action tool coverage remain open. Product intent and session decisions: [PROJECT_VISION.md](PROJECT_VISION.md), [SESSION_LOG.md](SESSION_LOG.md).
+
 ## Interactive task-agent acceptance — 2026-10-22
 
 - [ ] Natural typed requests start a useful response and persist the requested goal without redundant permission questions.
@@ -222,3 +226,4 @@ Every implementation completion entry must name the adapted upstream/API, exact 
 - [x] Transfer the user-supplied 7sys44td9c-1.zip unchanged to private GitHub assets in four parts, with original/part checksums and Mac instructions. [Download](https://github.com/mischa23v/blind/releases/tag/currency-transfer-20261022). Transfer only; V11 implementation/training/device gates stay open.
 
 - [x] Upload hello.zip privately and record all eleven user-listed Seeing AI/related code repositories with pinned evidence and licence limits. [References](research/SEEING_AI_CODE_REFERENCES.md). Research/transfer only; D03/V11 integration and device checks remain open.
+

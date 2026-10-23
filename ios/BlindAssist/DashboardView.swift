@@ -45,6 +45,23 @@ private struct CompanionHomeView: View {
                               yes: { model.answerCompanionOffer(.yes) },
                               no: { model.answerCompanionOffer(.no) })
                 }
+                if !model.textOnly {
+                    VStack(alignment: .leading, spacing: 12) {
+                        if model.assistantSession.state == .active {
+                            HomeAction(title: t("Mute microphone", "كتم الميكروفون"), symbol: "mic.slash", identifier: "mute-conversation", action: model.muteConversation)
+                            Button(t("End voice conversation", "إنهاء المحادثة الصوتية"), action: model.endConversation)
+                                .buttonStyle(.bordered).accessibilityIdentifier("end-conversation")
+                        } else {
+                            HomeAction(title: model.assistantSession.state == .muted ? t("Unmute microphone", "تشغيل الميكروفون") : t("Start voice conversation", "بدء المحادثة الصوتية"), symbol: "mic", identifier: "start-conversation", prominent: true, action: model.startConversation)
+                        }
+                        Text(model.voice.message).font(.footnote)
+                            .accessibilityIdentifier("voice-session-detail")
+                        Toggle(t("Camera and path monitoring", "الكاميرا ومراقبة المسار"), isOn: $model.cameraAwareness)
+                            .accessibilityIdentifier("camera-awareness")
+                        Text(model.running ? t("Camera on. Follow the current monitoring status above.", "الكاميرا تعمل. راجع حالة المراقبة أعلاه.") : t("Camera off. No visual path monitoring. Conversation still works.", "الكاميرا متوقفة. لا توجد مراقبة بصرية للمسار. المحادثة متاحة."))
+                            .font(.footnote).accessibilityIdentifier("camera-status")
+                    }
+                }
                 // Alternative access remains available when speech cannot be used.
                 Button(t("Write a message", "اكتب رسالة")) { writing = true }
                     .buttonStyle(.bordered).accessibilityIdentifier("write-message")
@@ -474,8 +491,21 @@ struct AssistantToolsView: View {
                 if !model.profileStatus.isEmpty { Text(model.profileStatus) }
             }
             Section(t("Assistant", "المساعد")) {
+                Picker(t("Conversation mode", "نمط المحادثة"), selection: $model.assistantAudience) {
+                    Text(t("General", "عام")).tag(AssistantAudience.general)
+                    Text(t("Adult", "بالغ")).tag(AssistantAudience.adult)
+                    Text(t("Child, with guardian support", "طفل، بدعم ولي الأمر")).tag(AssistantAudience.childWithGuardian)
+                }.accessibilityIdentifier("assistant-audience")
+                Text(t(model.assistantAudience.detail, "هذا اختيار لأسلوب الحوار، وليس تحققاً من العمر أو وجود ولي الأمر أو ضماناً لسلامة الطفل. تبقى حدود السلامة والخصوصية كما هي."))
+                    .font(.footnote)
+                Toggle(t("Keep voice active outside the app", "استمرار الصوت خارج التطبيق"), isOn: $model.backgroundConversation)
+                    .accessibilityIdentifier("background-conversation")
+                Text(t("Optional. A started voice conversation may keep using the microphone when you lock the screen or switch apps. Camera and path monitoring stop. iOS may interrupt audio; force-quitting ends it. No all-day reliability is promised.", "اختياري. قد تستمر المحادثة الصوتية والميكروفون عند قفل الشاشة أو تبديل التطبيقات. تتوقف الكاميرا ومراقبة المسار. قد يوقف النظام الصوت، وإغلاق التطبيق نهائياً ينهيه. لا نضمن التشغيل طوال اليوم."))
+                    .font(.footnote)
                 Button(t("Reconnect microphone", "إعادة توصيل الميكروفون")) { model.reconnectListening() }
                     .accessibilityIdentifier("reconnect-microphone")
+                NavigationLink(t("Conversation memory", "ذاكرة المحادثة")) { ConversationMemoryView(model: model) }
+                    .accessibilityIdentifier("conversation-memory")
                 NavigationLink(t("Reading and questions", "القراءة والأسئلة")) { assistant }
                 NavigationLink(t("Camera and sensor details", "تفاصيل الكاميرا والمستشعرات")) { monitor }
                 Button(t("Try practice", "جرب التدريب")) { model.startSimulation(); selectedTab = "companion" }
@@ -574,5 +604,62 @@ private struct WearableSetupView: View {
                 }
         }
         .navigationTitle(t("Wearable setup", "إعداد الأجهزة القابلة للارتداء"))
+    }
+}
+
+
+/// Original user reports stay reviewable; corrections never invent a fresh observation.
+private struct ConversationMemoryView: View {
+    @ObservedObject var model: NavigationModel
+    @State private var confirmClear = false
+    private func t(_ en: String, _ ar: String) -> String { model.arabic ? ar : en }
+    var body: some View {
+        List {
+            Section {
+                Text(t("Recent user reports are saved only on this phone. They are history, not verified current conditions. Up to 32 reports are retained; older reports expire. Your saved name and preferences are separate.", "تحفظ التقارير الأخيرة على هذا الهاتف فقط. إنها سجل سابق وليست تحققاً من الوضع الحالي. نحتفظ بما يصل إلى ٣٢ تقريراً وتحذف الأقدم. الاسم والتفضيلات محفوظة بشكل منفصل."))
+            }
+            Section(t("Review or correct", "مراجعة أو تصحيح")) {
+                if model.assistantDialogue.userRecords.isEmpty { Text(t("No saved conversation reports.", "لا توجد تقارير محادثة محفوظة.")) }
+                ForEach(model.assistantDialogue.userRecords.reversed()) { record in
+                    NavigationLink(record.text) { ConversationRecordEditor(model: model, record: record) }
+                }
+            }
+            Section {
+                Button(t("Forget conversation and tasks", "حذف المحادثة والمهام"), role: .destructive) { confirmClear = true }
+                    .accessibilityIdentifier("forget-conversation")
+            }
+        }
+        .navigationTitle(t("Conversation memory", "ذاكرة المحادثة"))
+        .confirmationDialog(t("Forget saved conversation and tasks? Your name, preferences and maps stay saved.", "هل تريد حذف المحادثة والمهام؟ يبقى الاسم والتفضيلات والخرائط محفوظة."), isPresented: $confirmClear, titleVisibility: .visible) {
+            Button(t("Forget conversation", "حذف المحادثة"), role: .destructive) { model.clearAssistantConversation() }
+        }
+    }
+}
+
+private struct ConversationRecordEditor: View {
+    @ObservedObject var model: NavigationModel
+    let record: AssistantDialogue.UserRecord
+    @Environment(\.dismiss) private var dismiss
+    @State private var replacement = ""
+    @State private var failed = false
+    @State private var confirmDelete = false
+    private func t(_ en: String, _ ar: String) -> String { model.arabic ? ar : en }
+    var body: some View {
+        Form {
+            TextField(t("Your report", "تقريرك"), text: $replacement, axis: .vertical)
+                .accessibilityIdentifier("conversation-memory-text")
+            Button(t("Save correction", "حفظ التصحيح")) {
+                if model.correctConversationRecord(id: record.id, replacement: replacement) { dismiss() }
+                else { failed = true }
+            }.accessibilityIdentifier("correct-conversation-record")
+            if failed { Text(t("Use a nonempty report of at most 2,000 characters.", "اكتب تقريراً لا يتجاوز ٢٠٠٠ حرف.")) }
+            Button(t("Forget this report", "حذف هذا التقرير"), role: .destructive) { confirmDelete = true }
+                .accessibilityIdentifier("forget-conversation-record")
+        }
+        .navigationTitle(t("Correct memory", "تصحيح الذاكرة"))
+        .onAppear { replacement = record.text }
+        .confirmationDialog(t("Forget this report and dependent suggestions?", "هل تريد حذف هذا التقرير والاقتراحات المرتبطة به؟"), isPresented: $confirmDelete, titleVisibility: .visible) {
+            Button(t("Forget report", "حذف التقرير"), role: .destructive) { model.forgetConversationRecord(id: record.id); dismiss() }
+        }
     }
 }

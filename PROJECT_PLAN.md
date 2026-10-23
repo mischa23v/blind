@@ -1,3 +1,7 @@
+## Assistant-first clarification — 2026-10-23
+
+The primary first building block is a free, built-in local conversational assistant for adults or children, with available tools serving the conversation. It is not restricted to a hardcoded eight-year-old role, camera narration or mobility. Camera/hazard/identity/currency/colour capabilities remain separately gated. Continuous voice means a user-controlled active session and supported opt-in background audio, not listening after force-quit or an all-day guarantee. [PROJECT_VISION.md](PROJECT_VISION.md) is the current purpose, [SESSION_LOG.md](SESSION_LOG.md) preserves decisions, and [ASSISTANT_FEATURE_CHECKLIST.md](ASSISTANT_FEATURE_CHECKLIST.md) tracks all implementation/acceptance boundaries.
+
 # Blind Assist: persistent awareness and personal assistance
 
 **Currency and colour checkpoint, 2026-10-22:** Current money implementation uses no-new-training reference-image matching and conservative whole-frame/geometry/speech gates; the prior classifier route is dormant. No audited reference pack is selected, so currency remains explicitly unavailable. Small developer-photo comparisons are not phone accuracy, and V11 remains open. Requested clothing colour appearance is implemented from local foreground pixels, with near-neutral uncertainty and no certified-white/school-acceptance claim; real fabric/device testing and two-item comparison remain. See [currency](research/CURRENCY_REFERENCE_MATCHING.md) and [colour](research/CLOTHING_COLOR.md).
@@ -100,3 +104,4 @@ Relay and native source now preserve selected detail while moving when fresh con
 This directory currently has no Git repository metadata. Do not pretend a clean `git status` or rollback commit exists. Re-read shared files before editing and preserve another session's work. Earlier source snapshots and archives are preserved; subsequent native implementation changes app, package, tests and generated Xcode files as recorded in PROGRESS. The initial research-only phase is no longer the current source state.
 
 Before implementation, choose a compatible released version and pin the dependency. Research snapshots record inspected commits, not automatic upgrade instructions. Check source and model/data licenses separately, preserve notices, and use upstream tests plus app-specific acceptance scenarios.
+

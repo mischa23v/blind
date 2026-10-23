@@ -99,22 +99,28 @@ public enum ClothingColor {
 public enum ClothingColorCommand {
     private static func normalizedWords(_ text: String) -> [String] {
         let folded = text.lowercased().folding(options: [.diacriticInsensitive], locale: Locale(identifier: "en_US_POSIX")).decomposedStringWithCanonicalMapping
-        let clean = String(String.UnicodeScalarView(folded.unicodeScalars.filter { !CharacterSet.nonBaseCharacters.contains($0) }))
+        let clean = String(String.UnicodeScalarView(folded.unicodeScalars.filter { !CharacterSet.nonBaseCharacters.contains($0) && $0.value != 0x0640 }))
         return clean.components(separatedBy: CharacterSet.alphanumerics.inverted).filter { !$0.isEmpty }
     }
     public static func matches(_ text: String) -> Bool {
         let words = normalizedWords(text)
         let tokens = Set(words)
-        guard tokens.isDisjoint(with: ["not", "don", "dont", "never", "stop", "cancel", "لا", "توقف", "الغ", "إلغاء"]) else { return false }
         var phrase = words.joined(separator: " ")
-        let prefixes = ["please ", "can you ", "could you ", "من فضلك ", "لو سمحت "]
+        let prefixes = ["please ", "can you ", "could you ", "would you ", "من فضلك ", "لو سمحت ", "هل يمكنك "]
         for _ in 0..<4 { if let prefix = prefixes.first(where: { phrase.hasPrefix($0) }) { phrase.removeFirst(prefix.count) } else { break } }
-        guard tokens.isDisjoint(with: ["المفضل", "مفضل", "المفضلة", "مفضلة"]) else { return false }
-        let colourWords = ["color", "colour", "colors", "colours"]
+        // Negating an instruction is not an inspection. Negating a colour in an
+        // inspection question ("Is my shirt not white?") must still use the gate.
+        if ["do not ", "don t ", "dont ", "never ", "stop ", "cancel ", "لا ", "توقف ", "الغ ", "الغاء "]
+            .contains(where: { phrase.hasPrefix($0) }) { return false }
+        let discussion: Set<String> = ["settings", "setting", "word", "words", "history", "historical", "theory", "symbolize", "symbolise", "symbolic", "meaning", "story", "remember", "نظرية", "تاريخ", "معنى", "اتذكر", "تتذكر"]
+        guard tokens.isDisjoint(with: discussion) else { return false }
+        let preferencePhrases = ["favorite color", "favorite colour", "favourite color", "favourite colour", "color preference", "colour preference", "لونه المفضل", "لونها المفضل", "لوني المفضل", "اللون المفضل", "لون مفضل"]
+        if preferencePhrases.contains(where: { phrase.contains($0) }) { return false }
+        let colourWords = ["color", "colour", "colors", "colours", "shade", "hue"]
         if !tokens.isDisjoint(with: colourWords) {
-            guard tokens.isDisjoint(with: ["settings", "setting", "word", "words", "favorite", "favourite", "name"]) else { return false }
-            if ["what color is ", "what colour is ", "what is the color of ", "what is the colour of ", "what s the color of ", "what s the colour of "].contains(where: { phrase.hasPrefix($0) }) { return true }
-            for verb in ["check", "identify", "read", "tell me"] {
+            if ["what color is ", "what colour is ", "what colors are ", "what colours are ", "what shade is ", "what hue is ", "what is the color of ", "what is the colour of ", "what s the color of ", "what s the colour of "]
+                .contains(where: { phrase.hasPrefix($0) }), hasPhysicalSubject(words) { return true }
+            for verb in ["check", "identify", "read", "tell me", "confirm"] {
                 for colour in colourWords {
                     for article in ["", "the "] {
                         let command = verb + " " + article + colour
@@ -123,14 +129,41 @@ public enum ClothingColorCommand {
                 }
             }
         }
-        if requiresNeutralVerification(phrase),
-           ["is this ", "is it ", "does this ", "does it ", "can i use this ", "can i wear this ", "would this ", "will this ", "check ", "confirm "]
+        if requiresNeutralVerification(phrase), hasPhysicalSubject(words),
+           ["can i use ", "can i wear ", "would this ", "will this ", "check ", "confirm "]
             .contains(where: { phrase.hasPrefix($0) }) { return true }
-        let neutralWords = ["white", "gray", "grey", "cream", "ivory", "offwhite"]
-        if ["is this ", "is it ", "does this look ", "does it look ", "check if this is ", "confirm if this is "].contains(where: { phrase.hasPrefix($0) }),
-           neutralWords.contains(where: { phrase.hasSuffix(" " + $0) }) { return true }
-        return ["ما لون ", "ما هو لون ", "ما هو اللون", "ما اللون", "ما لونه", "ما لونها", "وش لونه", "وش لونها", "افحص اللون", "حدد اللون", "اقرا اللون", "اقرأ اللون", "هل هذا ابيض", "هل هذا أبيض", "هل هذه بيضاء", "هل القميص ابيض", "هل القميص أبيض"]
+        // A present-tense physical subject plus an actual colour question, not
+        // merely a colour adjective in "Find my white shirt" or styling advice.
+        let styling: Set<String> = ["match", "matches", "matching", "suit", "suits", "nicer", "better", "best", "fashionable", "يفضل", "يناسب", "تناسب", "اجمل", "افضل"]
+        let asksAppearance = ["is ", "are ", "does ", "do ", "check if ", "check whether ", "confirm if ", "confirm whether ", "tell me if ", "tell me whether ", "tell if ", "tell whether ", "هل ", "افحص ", "تاكد "]
+            .contains(where: { phrase.hasPrefix($0) })
+        let arabicChoice = (text.contains("؟") || !tokens.isDisjoint(with: ["ام", "او", "ولا"]))
+            && words.contains { $0.unicodeScalars.contains { (0x0600...0x06FF).contains($0.value) } }
+        if (asksAppearance || arabicChoice), hasPhysicalSubject(words), containsUnverifiedColorClaim(phrase),
+           tokens.isDisjoint(with: styling), !phrase.contains("go with"), !phrase.contains("goes with") { return true }
+        return ["ما لون ", "ما هو لون ", "ما هو اللون", "ما اللون", "ما لونه", "ما لونها", "وش لونه", "وش لونها", "ايش لون", "وش لون", "افحص اللون", "حدد اللون", "اقرا اللون"]
             .contains { let base = $0.trimmingCharacters(in: .whitespaces); return phrase == base || phrase.hasPrefix(base + " ") }
+    }
+
+    /// Physical grounding for a present inspection, not an exhaustive vocabulary
+    /// or a claim of semantic understanding. Deictic requests refer to the item
+    /// being shown; named body/garment/object requests need no "this" prefix.
+    private static func hasPhysicalSubject(_ words: [String]) -> Bool {
+        let references: Set<String> = ["this", "that", "these", "those", "it", "they", "هذا", "هذه", "هذي", "هاذي", "هذول", "ذلك", "تلك"]
+        if words.contains(where: { references.contains($0) }) { return true }
+        let objects: Set<String> = ["shirt", "shirts", "tshirt", "t", "dress", "dresses", "top", "tops", "blouse", "jacket", "coat", "pants", "trousers", "jeans", "shorts", "skirt", "socks", "sock", "shoes", "shoe", "sweater", "jumper", "hoodie", "scarf", "hijab", "hat", "cap", "uniform", "fabric", "cloth", "clothes", "clothing", "outfit", "sleeve", "sleeves", "skin", "hair", "eyes", "eye", "nails", "nail", "hands", "hand", "face", "lips", "lip", "book", "cup", "mug", "bag", "bottle", "chair", "table", "wall", "car", "item", "object", "قميص", "فستان", "ثوب", "بلوزة", "تنورة", "بنطال", "بنطلون", "سروال", "عباية", "عباءة", "حجاب", "وشاح", "جاكيت", "معطف", "جورب", "جوارب", "حذاء", "احذية", "قبعة", "زي", "قماش", "ملابس", "بشرة", "شعر", "عين", "عينين", "عيون", "اظافر", "يد", "يدين", "وجه", "شفاه", "كتاب", "كوب", "حقيبة", "قارورة", "كرسي", "طاولة", "جدار", "سيارة"]
+        return words.contains { word in
+            if objects.contains(word) { return true }
+            var bare = word
+            if bare.hasPrefix("ال") { bare = String(bare.dropFirst(2)) }
+            if objects.contains(bare) { return true }
+            // Common Arabic possessive forms: قميصي، قميصك، قميصها، ملابسي.
+            for suffix in ["ي", "ك", "ه", "ها", "نا", "كم", "هم"] where bare.hasSuffix(suffix) {
+                let stem = String(bare.dropLast(suffix.count))
+                if objects.contains(stem) || (stem.hasSuffix("ت") && objects.contains(String(stem.dropLast()) + "ة")) { return true }
+            }
+            return false
+        }
     }
     /// Even white cloth can look saturated under coloured light. A precise neutral/white request
     /// always gets an abstention, regardless of which appearance candidate the camera produced.
@@ -165,3 +198,4 @@ public enum ClothingColorCapturePolicy {
     }
 
 }
+

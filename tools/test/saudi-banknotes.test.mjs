@@ -26,7 +26,9 @@ test('money result is fresh, cancellable and uses existing speech gate', async (
   assert.match(body, /self.perceptionResultAllowed/);
   assert.match(body, /self.attention.stationary/);
   assert.match(body, /speakRequested\(self.message, narrationID: request\)/);
-  assert.match(source, /private func cancelDescription\(\) \{\s*currencyActive = false/);
+  const cancellation = source.slice(source.indexOf('private func cancelDescription()'), source.indexOf('private func publish()'));
+  assert.match(cancellation, /currencyActive = false/);
+  assert.match(cancellation, /questionTask\?\.cancel\(\)/);
   assert.match(source, /focusedTaskActive: focusedFaceSearch \|\| currencyActive/);
   assert.doesNotMatch(body, /feedback\.deliver|feedback\.speak|cloud: true/);
 });
@@ -55,3 +57,4 @@ test('currency checks full optical pose before success or error speech', async (
   assert.equal((body.match(/visualCapturePoseAllowed\(origin: currencyOrigin, forward: currencyForward\)/g) || []).length, 2);
   assert.match(source, /return RequestedVisualCapturePose.poseStable/);
 });
+
