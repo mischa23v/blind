@@ -33,6 +33,8 @@ final class IndoorNavigator: ObservableObject {
     }
     var exportURL: URL? { map == nil ? nil : storage }
     var isAligned: Bool { anchorWorld != nil && anchorMap != nil && alignedLevel != nil }
+    /// Alignment can outlive a task; it does not authorize route announcements.
+    var hasActiveRoute: Bool { waypointIndex >= 0 && waypointIndex < route.count }
     func deleteMap() {
         do {
             if FileManager.default.fileExists(atPath: storage.path) { try FileManager.default.removeItem(at: storage) }
@@ -138,10 +140,18 @@ final class IndoorNavigator: ObservableObject {
         mapForward = Point3((b.x - a.x) / length, 0, (b.z - a.z) / length)
         message = text("Position aligned manually. Reconfirm at each landmark.", "تم ضبط الموقع يدوياً. أكده عند كل معلم.")
     }
+    /// A conversation/task change retires the route, not the measured map frame.
+    /// Callers cancel pending route speech first. Existing capture/pose freshness
+    /// checks still govern every use of the retained alignment; this is not arrival.
+    func cancelRoute() {
+        route = []; waypointIndex = 0; suggestedDestination = nil
+        message = text("No active route.", "لا يوجد مسار نشط.")
+    }
+    /// Tracking loss, camera restart or a changed map invalidate geometry as well.
     func invalidatePosition() {
         if anchorWorld != nil || !route.isEmpty { alignmentRevision = UUID() }
         anchorWorld = nil; anchorMap = nil; worldForward = nil; mapForward = nil; alignedLevel = nil
-        route = []; waypointIndex = 0
+        cancelRoute()
     }
     /// `bodyForward` is a separately established body heading in world coordinates (walking
     /// direction or a declared mount with its learned offset); otherwise a declared fixed mount
@@ -182,7 +192,7 @@ final class IndoorNavigator: ObservableObject {
         else { message = GuidanceText.noDestination(arabic: arabic) }
     }
     func next(camera: Point3, forward: Point3) -> (sector: Int, distance: Double, name: String)? {
-        guard waypointIndex < route.count, let aw = anchorWorld, let am = anchorMap,
+        guard hasActiveRoute, let aw = anchorWorld, let am = anchorMap,
               let wf = worldForward, let mf = mapForward else { return nil }
         let target = route[waypointIndex]
         // Level changes require human confirmation; no automatic floor guessing.

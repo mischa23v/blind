@@ -4,6 +4,8 @@ import BlindCore
 import BlindMemory
 import Combine
 import os
+import CryptoKit
+import simd
 
 struct SavedPlace: Codable, Identifiable {
     var id: UUID
@@ -13,6 +15,8 @@ struct SavedPlace: Codable, Identifiable {
     /// Coarse phone location when saved. Only narrows which saved maps to try; never proves a place.
     var latitude: Double? = nil
     var longitude: Double? = nil
+    /// Nil for legacy scans. A place name/UUID alone never restores spatial coordinates.
+    var worldFrame: SavedWorldFrame? = nil
 }
 
 final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
@@ -31,6 +35,7 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     private var comparisonLocalized = false
     private var scanID = UUID()
     private var processing: Task<Void, Never>?
+    private var worldFrameRecovery = SavedWorldFrameRecovery()
     var arabic = false
     private func t(_ english: String, _ arabic: String) -> String { self.arabic ? arabic : english }
     private var lastInstruction = ""
@@ -112,17 +117,94 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
         liveScanLayout = layout
     }
     func worldMap(for place: SavedPlace) throws -> ARWorldMap {
+        try worldMapArtifacts(for: place).map
+    }
+    private func worldMapArtifacts(for place: SavedPlace) throws -> (map: ARWorldMap, room: Data, descriptor: SavedWorldFrame?) {
         guard let memory, try !memory.isDeleted(room: place.id.uuidString) else { throw MemoryError.missing }
         let data = try Data(contentsOf: directory.appendingPathComponent("\(place.id).worldmap"))
         guard let map = try NSKeyedUnarchiver.unarchivedObject(ofClass: ARWorldMap.self, from: data) else {
             throw CocoaError(.fileReadCorruptFile)
         }
-        return map
+        // Legacy scans remain available for preview/semantic recognition. They do not
+        // acquire a coordinate binding retroactively from matching names or filenames.
+        guard let descriptor = place.worldFrame else { return (map, Data(), nil) }
+        let room = try Data(contentsOf: directory.appendingPathComponent("\(place.id).room.json"))
+        guard descriptor.placeID == place.id.uuidString,
+              descriptor.matches(worldMapSHA256: Self.sha256(data), roomCaptureSHA256: Self.sha256(room)),
+              map.anchors.contains(where: { Self.matchesOrigin($0, descriptor: descriptor) }) else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+        return (map, room, descriptor)
+    }
+    /// Call for the exact new session whose configuration receives the returned map.
+    /// The caller must invalidate this state on camera stop/restart, tracking loss,
+    /// backgrounding or map replacement. Legacy maps return without a usable binding.
+    func beginWorldMapRecovery(for place: SavedPlace, sessionID: UUID,
+                               now: Double = ProcessInfo.processInfo.systemUptime) throws -> ARWorldMap {
+        invalidateWorldMapRecovery()
+        let artifacts = try worldMapArtifacts(for: place)
+        if let descriptor = artifacts.descriptor {
+            worldFrameRecovery.begin(frame: descriptor, sessionID: sessionID, now: now)
+        }
+        return artifacts.map
+    }
+    func invalidateWorldMapRecovery() { worldFrameRecovery.reset() }
+    /// Observes ARKit's own relocalizing -> normal transition and the restored named
+    /// anchor. No appearance match, user room-name answer or imported map can call this
+    /// a restored coordinate frame. A returned frame does not authorize physical speech.
+    @discardableResult func observeWorldMapRecovery(for place: SavedPlace, frame: ARFrame,
+        sessionID: UUID, now: Double = ProcessInfo.processInfo.systemUptime) -> SavedWorldFrame? {
+        guard let descriptor = place.worldFrame else { return nil }
+        let tracking: SavedWorldFrameRecovery.Tracking
+        switch frame.camera.trackingState {
+        case .normal: tracking = .normal
+        case .limited(.relocalizing): tracking = .relocalizing
+        default: tracking = .unavailable
+        }
+        let recovered = worldFrameRecovery.observe(sessionID: sessionID, tracking: tracking,
+            mappingAvailable: frame.worldMappingStatus == .mapped || frame.worldMappingStatus == .extending,
+            originAnchorMatches: frame.anchors.contains { Self.matchesOrigin($0, descriptor: descriptor) },
+            frameTime: frame.timestamp, now: now)
+        return recovered == descriptor ? recovered : nil
+    }
+    func currentWorldFrame(sessionID: UUID, now: Double = ProcessInfo.processInfo.systemUptime) -> SavedWorldFrame? {
+        worldFrameRecovery.current(sessionID: sessionID, now: now)
+    }
+    /// Original, hash-bound scan measurements only. They are dated map history, not
+    /// live detections and never ownership/personal-item identity. Do not recompute
+    /// this disk read on every camera frame; callers may cache by descriptor.revision.
+    func measuredFurnitureHistory(for place: SavedPlace) throws -> [SavedFurnitureObservation] {
+        let artifacts = try worldMapArtifacts(for: place)
+        guard let descriptor = artifacts.descriptor else { return [] }
+        let room = try JSONDecoder().decode(CapturedRoom.self, from: artifacts.room)
+        return room.objects.compactMap { object in
+            let p = object.transform.columns.3
+            return SavedFurnitureObservation(id: object.identifier.uuidString,
+                category: String(describing: object.category),
+                position: Point3(Double(p.x), Double(p.y), Double(p.z)), frame: descriptor)
+        }
+    }
+    private static func sha256(_ data: Data) -> String {
+        SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+    }
+    private static func matchesOrigin(_ anchor: ARAnchor, descriptor: SavedWorldFrame) -> Bool {
+        guard anchor.identifier.uuidString == descriptor.originAnchorID,
+              anchor.name == descriptor.originAnchorName else { return false }
+        // The marker was created at identity in the saved world. If setWorldOrigin
+        // changes the basis, do not apply old coordinates as if nothing changed.
+        for column in 0..<4 {
+            for row in 0..<4 {
+                let value = anchor.transform[column][row]
+                guard value.isFinite, abs(value - (column == row ? 1 : 0)) <= 0.0001 else { return false }
+            }
+        }
+        return true
     }
     func delete(_ place: SavedPlace) {
         do {
             guard let memory else { throw MemoryError.missing }
             try memory.deleteRoom(place.id.uuidString)
+            invalidateWorldMapRecovery()
             places.removeAll { $0.id == place.id }
             retryDeletionCleanup()
         } catch { message = t("Deleting the place did not finish. Some private files may remain; try again.", "لم يكتمل حذف المكان. قد تبقى بعض الملفات الخاصة؛ أعد المحاولة.") }
@@ -187,12 +269,24 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
                 }
                 try Task.checkCancellation(); guard scanID == id else { return }
                 let coordinate = self.currentCoordinate?()
-                let place = SavedPlace(id: UUID(), name: savedName, createdAt: Date(), objects: objects,
+                var place = SavedPlace(id: UUID(), name: savedName, createdAt: Date(), objects: objects,
                                        latitude: coordinate?.latitude, longitude: coordinate?.longitude)
                 let prefix = directory.appendingPathComponent(place.id.uuidString)
+                // RoomCaptureSession uses this exact ARSession, and stop(false)
+                // preserves its origin. Apple's RoomPlan MultiRoom documentation
+                // establishes the shared coordinate basis; no fitted SLAM transform.
+                // ARWorldMap.anchors is explicitly mutable before archiving:
+                // https://developer.apple.com/documentation/arkit/arworldmap/anchors
+                let revision = UUID().uuidString
+                let anchor = ARAnchor(name: "blind-assist-world-origin:\(revision)", transform: matrix_identity_float4x4)
+                map.anchors.append(anchor)
+                let roomData = try JSONEncoder().encode(room)
                 let mapData = try NSKeyedArchiver.archivedData(withRootObject: map, requiringSecureCoding: true)
+                place.worldFrame = SavedWorldFrame(placeID: place.id.uuidString, revision: revision,
+                    worldMapSHA256: Self.sha256(mapData), roomCaptureSHA256: Self.sha256(roomData),
+                    originAnchorID: anchor.identifier.uuidString, capturedAt: place.createdAt)
                 try mapData.write(to: prefix.appendingPathExtension("worldmap"), options: .atomic)
-                try JSONEncoder().encode(room).write(to: prefix.appendingPathExtension("room.json"), options: .atomic)
+                try roomData.write(to: prefix.appendingPathExtension("room.json"), options: .atomic)
                 try room.export(to: prefix.appendingPathExtension("usdz"), exportOptions: .parametric)
                 let layout = RoomLayoutAdapter.layout(room, name: place.name)
                 try saveLayout(layout, for: place)

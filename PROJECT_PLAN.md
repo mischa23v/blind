@@ -1,3 +1,9 @@
+## Continuous spatial companion follow-up — 2026-10-23
+
+The clarified goal is passive foreground awareness plus private spatial/object history and goal continuity, not a collection of scanners. See [SPATIAL_COMPANION_ACCEPTANCE.md](SPATIAL_COMPANION_ACCEPTANCE.md) for the existing/implemented/pending matrix and whole-task scenarios. New connections retain detector boxes/capture provenance, saved-appearance candidates, private historical recall, paired RoomPlan/world-map frame provenance and bounded search resumption. Task cancellation no longer erases measured alignment. Camera position is no longer saved as an object's measured point.
+
+No general detector artifact is bundled. Model import is explicit; native output/accuracy and model/license acceptance remain gates. Existing center-depth association is not validated, and physical-object guidance remains disabled rather than treating history as a present location. Apple SDK/device/model/VoiceOver and household-task acceptance are still required. This is not completion of every shopping/cooking/navigation capability.
+
 ## Final coordinated source checkpoint — 2026-10-23
 
 This is the current record; older entries and counts below are historical. Integration preserves primary `30999a9` and incorporates the reviewed seven-commit Claude branch through `61001267`, plus the coordinated Saudi device-test and familiar-person work. It is source integration, not a deployment or Apple/device acceptance.

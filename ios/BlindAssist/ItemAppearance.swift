@@ -134,6 +134,31 @@ final class ItemAppearance {
         }
     }
 
+    /// Passive matching of a bounded gallery against the already-visible foreground objects.
+    /// These are appearance candidates, not validated personal identity or pickup authority.
+    struct Candidate { let key: String; let x: Double; let y: Double }
+    func candidates(among keys: [String], image: CVPixelBuffer, completion: @escaping ([Candidate]) -> Void) {
+        let saved = Dictionary(uniqueKeysWithValues: keys.prefix(64).map { ($0, load($0)) }).filter { !$0.value.isEmpty }
+        guard !saved.isEmpty else { completion([]); return }
+        queue.async {
+            var candidates: [Candidate] = []
+            for object in Self.objects(in: image).prefix(12) {
+                var distances: [String: Float] = [:]
+                for (key, prints) in saved {
+                    distances[key] = prints.map { print -> Float in
+                        var distance: Float = .infinity
+                        _ = try? object.print.computeDistance(&distance, to: print)
+                        return distance
+                    }.min()
+                }
+                if case .same(let key) = ItemAppearanceMatch.decide(distances) {
+                    candidates.append(Candidate(key: key, x: object.x, y: object.y))
+                }
+            }
+            DispatchQueue.main.async { completion(candidates) }
+        }
+    }
+
     @discardableResult func forget(_ key: String) -> Bool {
         workRevision.invalidate(key)
         do {

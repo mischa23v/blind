@@ -454,9 +454,223 @@ struct SavedProfileConversationTests {
 }
 
 
+/// Authored-map fixtures verify state separation, not physical localization.
+/// Run against the actual Apple app target before claiming native integration.
+final class IndoorGoalContinuityTests: XCTestCase {
+    private var directory: URL!
+    override func setUpWithError() throws {
+        directory = FileManager.default.temporaryDirectory.appendingPathComponent("IndoorGoalContinuity-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    }
+    override func tearDownWithError() throws {
+        if let directory { try FileManager.default.removeItem(at: directory) }
+    }
+    private func navigator(aligned: Bool = true) throws -> IndoorNavigator {
+        let navigator = IndoorNavigator(storage: directory.appendingPathComponent("map.json"))
+        let map = IndoorMap(name: "Synthetic continuity fixture", nodes: [
+            MapNode(id: "start", name: "Start", level: "level", position: Point3(0, 0, 0)),
+            MapNode(id: "destination", name: "Destination", level: "level", position: Point3(0, 0, -4))
+        ], edges: [MapEdge(from: "start", to: "destination", distance: 4)])
+        try navigator.load(JSONEncoder().encode(map))
+        try navigator.plan(from: "start", to: "destination")
+        if aligned { navigator.align(camera: Point3(10, 0, 10), forward: Point3(0, 0, -1)) }
+        return navigator
+    }
+    func testTaskCancellationRetiresRouteButPreservesEstablishedMapFrame() throws {
+        let navigator = try navigator()
+        let camera = Point3(11, 0, 9), forward = Point3(0, 0, -1)
+        let revision = navigator.alignmentRevision
+        let position = try XCTUnwrap(navigator.mapPosition(camera: camera))
+        let direction = try XCTUnwrap(navigator.mapDirection(forward))
+        navigator.suggestDestination(id: "destination")
+        XCTAssertTrue(navigator.hasActiveRoute)
+        XCTAssertNotNil(navigator.next(camera: camera, forward: forward))
+        navigator.cancelRoute()
+        XCTAssertFalse(navigator.hasActiveRoute)
+        XCTAssertTrue(navigator.route.isEmpty)
+        XCTAssertEqual(navigator.waypointIndex, 0)
+        XCTAssertNil(navigator.suggestedDestination)
+        XCTAssertNil(navigator.next(camera: camera, forward: forward))
+        XCTAssertTrue(navigator.isAligned)
+        XCTAssertEqual(navigator.alignmentRevision, revision)
+        XCTAssertEqual(navigator.mapPosition(camera: camera), position)
+        XCTAssertEqual(navigator.mapDirection(forward), direction)
+    }
+    func testCancellationAfterPhysicalCueClearsMessageInBothLanguages() throws {
+        for arabic in [false, true] {
+            let navigator = try navigator()
+            navigator.arabic = arabic
+            let camera = Point3(10, 0, 10), forward = Point3(0, 0, -1)
+            let cue = try XCTUnwrap(navigator.next(camera: camera, forward: forward))
+            XCTAssertEqual(cue.distance, 4, accuracy: 0.001)
+            let oldCue = navigator.message
+            navigator.cancelRoute()
+            XCTAssertFalse(navigator.hasActiveRoute)
+            XCTAssertTrue(navigator.isAligned)
+            XCTAssertNotEqual(navigator.message, oldCue)
+            XCTAssertEqual(navigator.message, arabic ? "لا يوجد مسار نشط." : "No active route.")
+            for _ in 0..<3 {
+                XCTAssertNil(navigator.next(camera: camera, forward: forward))
+                XCTAssertEqual(navigator.message, arabic ? "لا يوجد مسار نشط." : "No active route.")
+            }
+        }
+    }
+    func testConfirmedFinalWaypointHasNoActiveRoute() throws {
+        let navigator = try navigator()
+        XCTAssertTrue(navigator.hasActiveRoute)
+        navigator.confirmArrival()
+        XCTAssertFalse(navigator.hasActiveRoute)
+        XCTAssertFalse(navigator.isAligned)
+    }
+    func testTaskCancellationCannotCreateUnknownAlignment() throws {
+        let navigator = try navigator(aligned: false)
+        navigator.cancelRoute()
+        XCTAssertFalse(navigator.isAligned)
+        XCTAssertNil(navigator.mapPosition(camera: Point3(10, 0, 10)))
+        XCTAssertNil(navigator.mapDirection(Point3(0, 0, -1)))
+    }
+    func testTrackingLossStillInvalidatesRetainedMapFrame() throws {
+        let navigator = try navigator()
+        navigator.cancelRoute()
+        let revision = navigator.alignmentRevision
+        navigator.invalidatePosition()
+        XCTAssertFalse(navigator.isAligned)
+        XCTAssertNotEqual(navigator.alignmentRevision, revision)
+        XCTAssertNil(navigator.mapPosition(camera: Point3(10, 0, 10)))
+        XCTAssertNil(navigator.mapDirection(Point3(0, 0, -1)))
+    }
+    func testExplicitReplanDoesNotReuseOldRouteAlignment() throws {
+        let navigator = try navigator()
+        navigator.cancelRoute()
+        try navigator.plan(from: "start", to: "destination")
+        XCTAssertFalse(navigator.isAligned)
+        XCTAssertFalse(navigator.route.isEmpty)
+        XCTAssertTrue(navigator.hasActiveRoute)
+        XCTAssertNil(navigator.next(camera: Point3(10, 0, 10), forward: Point3(0, 0, -1)))
+    }
+}
+
 /// State logic only. These same source declarations/tests can be extracted for
 /// portable Swift checks; those checks are not Apple SDK or model integration.
 final class CompanionWorkingStateTests: XCTestCase {
+    func testSchoolParentSurvivesCoatBackpackSwitchAndOnlyExplicitResumeReturns() throws {
+        var state = CompanionWorkingState()
+        state.changeGoal("school")
+        state.proposedStep = "Discuss what you need for school"
+        state.reportedCompletedSteps = ["Reported packing a book"]
+        let schoolRevision = state.goalRevision
+        _ = state.respond(to: .find(object: "coat"), message: "Help me find my coat", arabic: false)
+        XCTAssertEqual(state.goal, "Help me find my coat")
+        XCTAssertEqual(state.parentGoal?.goal, "school")
+        XCTAssertEqual(state.parentGoal?.reportedCompletedSteps, ["Reported packing a book"])
+        XCTAssertEqual(state.focusObject, "coat")
+        XCTAssertEqual(state.proposedStep, "")
+        XCTAssertNotEqual(state.goalRevision, schoolRevision)
+        let coatRevision = state.goalRevision
+        state.record("Why do leaves change color?")
+        XCTAssertEqual(state.goalRevision, coatRevision)
+        XCTAssertEqual(state.parentGoal?.goal, "school")
+        _ = state.respond(to: .find(object: "backpack"), message: "Help me find my backpack", arabic: false)
+        XCTAssertEqual(state.goal, "Help me find my backpack")
+        XCTAssertEqual(state.focusObject, "backpack")
+        XCTAssertEqual(state.parentGoal?.goal, "school")
+        XCTAssertTrue(state.suspendedGoals.isEmpty)
+        XCTAssertNotEqual(state.goalRevision, coatRevision)
+        state.lastSearch = SearchRecord(target: "backpack", located: true)
+        XCTAssertEqual(state.goal, "Help me find my backpack", "A detection does not complete the task or prove arrival")
+        let backpackRevision = state.goalRevision
+        XCTAssertTrue(state.resumeGoal())
+        XCTAssertEqual(state.goal, "school")
+        XCTAssertNil(state.parentGoal)
+        XCTAssertEqual(state.focusObject, "")
+        XCTAssertEqual(state.proposedStep, "")
+        XCTAssertEqual(state.reportedCompletedSteps, ["Reported packing a book"])
+        XCTAssertNotEqual(state.goalRevision, backpackRevision)
+        XCTAssertFalse(state.resumeGoal())
+    }
+    func testPausedFindRestoresItsParentAcrossPersistenceWithoutOldAction() throws {
+        var state = CompanionWorkingState()
+        state.changeGoal("school")
+        _ = state.respond(to: .find(object: "coat"), message: "Find my coat", arabic: false)
+        state.proposedStep = "Check your earlier report"
+        XCTAssertTrue(state.suspendGoal())
+        XCTAssertEqual(state.goal, "")
+        XCTAssertNil(state.parentGoal)
+        XCTAssertEqual(state.suspendedGoals.last?.parentGoal?.goal, "school")
+        var restored = try JSONDecoder().decode(CompanionWorkingState.self, from: JSONEncoder().encode(state))
+        XCTAssertTrue(restored.resumeGoal())
+        XCTAssertEqual(restored.goal, "Find my coat")
+        XCTAssertEqual(restored.focusObject, "coat")
+        XCTAssertEqual(restored.parentGoal?.goal, "school")
+        XCTAssertEqual(restored.proposedStep, "")
+        XCTAssertTrue(restored.resumeGoal())
+        XCTAssertEqual(restored.goal, "school")
+        XCTAssertNil(restored.parentGoal)
+        let old = Data(#"{"goal":"","suspendedGoals":[{"goal":"Find my coat","proposedStep":"old","reportedCompletedSteps":[]}]}"#.utf8)
+        var legacy = try JSONDecoder().decode(CompanionWorkingState.self, from: old)
+        XCTAssertTrue(legacy.resumeGoal())
+        XCTAssertNil(legacy.parentGoal)
+        XCTAssertEqual(legacy.focusObject, "coat")
+    }
+    func testExplicitReplacementAndCancellationDropParentIncludingSameValue() {
+        for replacement in ["home", "Find my coat", ""] {
+            var state = CompanionWorkingState()
+            state.changeGoal("school")
+            _ = state.respond(to: .find(object: "coat"), message: "Find my coat", arabic: false)
+            let revision = state.goalRevision
+            state.changeGoal(replacement)
+            XCTAssertEqual(state.goal, replacement)
+            XCTAssertNil(state.parentGoal)
+            XCTAssertNotEqual(state.goalRevision, revision)
+            XCTAssertFalse(state.resumeGoal())
+        }
+        var cancelled = CompanionWorkingState()
+        cancelled.changeGoal("school")
+        _ = cancelled.respond(to: .find(object: "coat"), message: "Find my coat", arabic: false)
+        _ = cancelled.cancelTask(arabic: false)
+        XCTAssertNil(cancelled.parentGoal)
+        XCTAssertFalse(cancelled.resumeGoal())
+    }
+    func testRepeatedFindSwitchesKeepOnlyOneParentWithoutGrowingPauseStack() {
+        var state = CompanionWorkingState()
+        state.changeGoal("school")
+        for index in 0..<30 {
+            let object = index.isMultiple(of: 2) ? "coat" : "backpack"
+            _ = state.respond(to: .find(object: object), message: "Find my \(object)", arabic: false)
+            XCTAssertEqual(state.parentGoal?.goal, "school")
+            XCTAssertEqual(state.focusObject, object)
+            XCTAssertTrue(state.suspendedGoals.isEmpty)
+        }
+    }
+    func testForgetParentSourceRemovesItFromActiveAndPausedFind() {
+        for paused in [false, true] {
+            var state = CompanionWorkingState()
+            state.changeGoal("Take me to school")
+            _ = state.respond(to: .find(object: "coat"), message: "Find my coat", arabic: false)
+            if paused { XCTAssertTrue(state.suspendGoal()) }
+            state.removeReport("Take me to school")
+            XCTAssertNil(state.parentGoal)
+            XCTAssertTrue(state.suspendedGoals.allSatisfy { $0.parentGoal == nil })
+            if paused { XCTAssertTrue(state.resumeGoal()) }
+            XCTAssertEqual(state.goal, "Find my coat")
+            XCTAssertFalse(state.resumeGoal())
+        }
+    }
+    func testParentDecodeRejectsInvalidHierarchyAndBoundsProgress() throws {
+        for (goal, parent) in [("school", "home"), ("Find my coat", "Find my backpack"), ("", "school"),
+                               ("Find my coat", String(repeating: "x", count: 301))] {
+            var state = CompanionWorkingState()
+            state.goal = goal
+            state.parentGoal = .init(goal: parent, reportedCompletedSteps: [])
+            let restored = try JSONDecoder().decode(CompanionWorkingState.self, from: JSONEncoder().encode(state))
+            XCTAssertNil(restored.parentGoal)
+        }
+        var state = CompanionWorkingState()
+        state.goal = "Find my coat"
+        state.parentGoal = .init(goal: "school", reportedCompletedSteps: (0..<30).map { "Reported step \($0)" })
+        let restored = try JSONDecoder().decode(CompanionWorkingState.self, from: JSONEncoder().encode(state))
+        XCTAssertEqual(restored.parentGoal?.reportedCompletedSteps.count, 12)
+    }
     func testSuspendResumeRequiresExplicitCallAndClearsOldProposal() {
         var state = CompanionWorkingState()
         state.changeGoal("Help me find my cup")

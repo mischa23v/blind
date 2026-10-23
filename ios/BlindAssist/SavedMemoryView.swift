@@ -7,13 +7,14 @@ struct SavedMemoryView: View {
     @ObservedObject var model: NavigationModel
     /// One pending deletion, confirmed before anything is removed.
     private enum Pending: Identifiable {
-        case item(RememberedItem), roomPictures(id: String, name: String), room(id: String, name: String), hint(id: String, name: String), conversation
+        case item(RememberedItem), roomPictures(id: String, name: String), room(id: String, name: String), hint(id: String, name: String), conversation, observations
         var id: String {
             switch self {
             case .item(let item): return "item:" + item.id
             case .roomPictures(let id, _): return "pictures:" + id
             case .room(let id, _): return "room:" + id
             case .hint(let id, _): return "hint:" + id
+            case .observations: return "observations"
             case .conversation: return "conversation"
             }
         }
@@ -27,6 +28,7 @@ struct SavedMemoryView: View {
         case .roomPictures(_, let name): return t("Delete the pictures of \(name)?", "حذف صور \(name)؟")
         case .room(_, let name): return t("Forget \(name)?", "نسيان \(name)؟")
         case .hint(_, let name): return t("Remove \"\(name)\"?", "إزالة «\(name)»؟")
+        case .observations: return t("Delete automatically remembered sightings?", "حذف المشاهدات المحفوظة تلقائياً؟")
         case .conversation: return t("Clear the goal, the conversation and what you told me about your things?", "مسح الهدف والمحادثة وما أخبرتني به عن أغراضك؟")
         }
     }
@@ -36,6 +38,7 @@ struct SavedMemoryView: View {
         case .roomPictures(let id, _): model.forgetRoomPictures(id)
         case .room(let id, _): model.forgetRoom(id)
         case .hint(let id, _): model.removeHint(id)
+        case .observations: model.clearObservedObjects()
         case .conversation: model.clearAssistantConversation()
         }
     }
@@ -59,6 +62,17 @@ struct SavedMemoryView: View {
                     Text(t("Nothing saved yet. Hold a thing and say: this is my cup.", "لا شيء محفوظ بعد. أمسك الغرض وقل: هذا كوبي."))
                 }
             } header: { Text(t("My things", "أغراضي")) }
+            Section {
+                Text(model.objectAwarenessStatus)
+                Text(t("\(model.rememberedObservationCount) candidate sightings remembered", "تم حفظ \(model.rememberedObservationCount) مشاهدات مرشحة"))
+                ForEach(model.recentObjectObservations) { sighting in
+                    Text([sighting.category, sighting.roomName, sighting.observedAt.formatted(date: .abbreviated, time: .shortened)]
+                        .compactMap { $0 }.joined(separator: ", "))
+                }
+                Button(t("Delete sighting history", "حذف سجل المشاهدات"), role: .destructive) { pending = .observations }
+            } header: { Text(t("Seen before", "شوهد سابقاً")) } footer: {
+                Text(t("These are past observations, not confirmed current locations. With camera awareness on, new sightings may be remembered after clearing.", "هذه مشاهدات سابقة، وليست تأكيداً للمواقع الحالية. عندما تكون الكاميرا مفعلة، قد تُحفظ مشاهدات جديدة بعد المسح."))
+            }
             Section {
                 ForEach(model.savedRooms, id: \.id) { room in
                     VStack(alignment: .leading, spacing: 4) {

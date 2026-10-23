@@ -134,6 +134,7 @@ public final class MemoryStore: Sendable {
         switch namespace {
         case "room-recall": return 8 * 1024 * 1024
         case "item-appearance": return 1024 * 1024
+        case "observed-objects": return 256 * 1024
         case "preferences", "objective", "dialogue", "people", "places", "companion", "items": return 64_000
         default: throw MemoryError.invalid
         }

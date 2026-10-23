@@ -1,3 +1,4 @@
+import Foundation
 import Vision
 import CoreML
 import ImageIO
@@ -9,6 +10,36 @@ struct VisualDescription {
     var grounding: VisualGrounding.Frame
 }
 enum VisionService {
+    // Load once per process; each inference receives its own request. No model download
+    // occurs at runtime. An incompatible raw-tensor model is explicitly unavailable.
+    private static let detectorResourcePresent = Bundle.main.url(forResource: "Detector", withExtension: "mlmodelc") != nil
+    private static let detectorModel: Result<VNCoreMLModel, Error> = Result {
+        guard let url = Bundle.main.url(forResource: "Detector", withExtension: "mlmodelc") else {
+            throw NSError(domain: "BlindAssist.Detector", code: 1)
+        }
+        return try VNCoreMLModel(for: MLModel(contentsOf: url))
+    }
+    private static let detectorStatusLock = NSLock()
+    private static var detectorOutputRejected = false
+    private static func rejectDetectorOutput() {
+        detectorStatusLock.lock(); defer { detectorStatusLock.unlock() }
+        detectorOutputRejected = true
+    }
+    private static func detectorRequest() throws -> VNCoreMLRequest {
+        do {
+            let request = VNCoreMLRequest(model: try detectorModel.get())
+            request.imageCropAndScaleOption = .scaleFit
+            return request
+        } catch { rejectDetectorOutput(); throw error }
+    }
+    private static func recognizedObjects(_ request: VNCoreMLRequest) -> [VNRecognizedObjectObservation] {
+        guard let results = request.results else { return [] }
+        guard let objects = results as? [VNRecognizedObjectObservation] else {
+            rejectDetectorOutput(); return []
+        }
+        return objects
+    }
+
     static func inspect(image: CVPixelBuffer, orientation: CGImagePropertyOrientation, arabic: Bool, capturedAt: Double) throws -> VisualDescription {
         let textRequest = VNRecognizeTextRequest()
         textRequest.recognitionLevel = .accurate
@@ -72,11 +103,10 @@ enum VisionService {
            let person = (peopleRequest.results ?? []).filter({ $0.confidence >= 0.6 }).max(by: { $0.boundingBox.width < $1.boundingBox.width }) {
             let point = centre(person.boundingBox); return (arabic ? "شخص" : "Person", point.0, point.1)
         }
-        guard let url = Bundle.main.url(forResource: "Detector", withExtension: "mlmodelc") else { return nil }
-        let request = VNCoreMLRequest(model: try VNCoreMLModel(for: MLModel(contentsOf: url)))
-        request.imageCropAndScaleOption = .scaleFit
+        guard objectDetectorAvailable else { return nil }
+        let request = try detectorRequest()
         try VNImageRequestHandler(cvPixelBuffer: image, orientation: orientation).perform([request])
-        for object in (request.results as? [VNRecognizedObjectObservation] ?? []) where object.confidence > 0.6 {
+        for object in recognizedObjects(request) where object.confidence > 0.6 {
             if let label = object.labels.first?.identifier, LocateCommand.matches(target: target, label: label) {
                 let point = centre(object.boundingBox); return (label, point.0, point.1)
             }
@@ -146,11 +176,10 @@ enum VisionService {
         if let document = page.results?.first, document.confidence >= 0.5 {
             regions.append((arabic ? "صفحة" : "Page", flip(document.boundingBox)))
         }
-        if let url = Bundle.main.url(forResource: "Detector", withExtension: "mlmodelc") {
-            let request = VNCoreMLRequest(model: try VNCoreMLModel(for: MLModel(contentsOf: url)))
-            request.imageCropAndScaleOption = .scaleFit
+        if objectDetectorAvailable {
+            let request = try detectorRequest()
             try makeHandler().perform([request])
-            for object in (request.results as? [VNRecognizedObjectObservation] ?? []) where object.confidence > 0.6 {
+            for object in recognizedObjects(request) where object.confidence > 0.6 {
                 if let label = object.labels.first?.identifier { regions.append((label, flip(object.boundingBox))) }
             }
         }
@@ -163,15 +192,38 @@ enum VisionService {
         return (request.results ?? []).filter { $0.confidence >= 0.5 }.prefix(5).map { $0.identifier.replacingOccurrences(of: "_", with: " ") }
     }
 
+    /// Localized categories only. Whole-image classification is deliberately excluded:
+    /// it cannot establish which pixels belong to a remembered object.
+    struct ObjectCandidate {
+        let label: String
+        let confidence: Double
+        let box: CGRect // upright, top-left normalized coordinates
+    }
+    static var objectDetectorAvailable: Bool {
+        detectorStatusLock.lock(); defer { detectorStatusLock.unlock() }
+        guard !detectorOutputRejected else { return false }
+        return detectorResourcePresent
+    }
+    static func objectCandidates(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) throws -> [ObjectCandidate] {
+        guard objectDetectorAvailable else { return [] }
+        let request = try detectorRequest()
+        try VNImageRequestHandler(cvPixelBuffer: image, orientation: orientation).perform([request])
+        return recognizedObjects(request).filter { $0.confidence >= 0.7 }
+            .prefix(16).compactMap { object in
+                guard let label = object.labels.first, label.confidence >= 0.7 else { return nil }
+                let box = object.boundingBox
+                return ObjectCandidate(label: label.identifier, confidence: Double(min(object.confidence, label.confidence)),
+                    box: CGRect(x: box.minX, y: 1 - box.maxY, width: box.width, height: box.height))
+            }
+    }
+
     /// Accept any compatible object-detection model supplied as Detector.mlmodelc.
     /// Built-in human detection/classification work without a downloaded model.
     static func detectObjects(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) throws -> [String] {
-        guard let url = Bundle.main.url(forResource: "Detector", withExtension: "mlmodelc") else { return [] }
-        let model = try VNCoreMLModel(for: MLModel(contentsOf: url))
-        let request = VNCoreMLRequest(model: model)
-        request.imageCropAndScaleOption = .scaleFit
+        guard objectDetectorAvailable else { return [] }
+        let request = try detectorRequest()
         try VNImageRequestHandler(cvPixelBuffer: image, orientation: orientation).perform([request])
-        return (request.results as? [VNRecognizedObjectObservation] ?? [])
+        return recognizedObjects(request)
             .filter { $0.confidence > 0.6 }.compactMap { $0.labels.first?.identifier }
     }
 }

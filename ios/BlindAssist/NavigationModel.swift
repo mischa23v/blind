@@ -221,6 +221,62 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var latestViewTextCapturedAt = -Double.infinity
     private var latestViewTextObservation: Observation?
     private var items = ItemMemory()
+    /// Developer-only, empirical receipt. Never enables object identity, paths or reachability.
+    private struct RecordedSpotTestReceipt: Decodable {
+        let schema: Int
+        let frameID: String
+        let pointIDs: [String]
+        let deviceModel: String
+        let deviceVendorID: String
+        let appBuild: String
+        let systemVersion: String
+        let expiresAt: Date
+        let maxPointErrorMetres: Double
+        let maxAlignmentErrorMetres: Double
+        let maxHeadingErrorDegrees: Double
+        let reportID: String
+        let reviewedByAdult: Bool
+    }
+    private func recordedSpotReceipt(frameID: String) -> RecordedSpotTestReceipt? {
+        #if DEBUG
+        guard let raw = ProcessInfo.processInfo.environment["BLIND_RECORDED_SPOT_TEST_RECEIPT"],
+              raw.utf8.count <= 32_768, let data = raw.data(using: .utf8) else { return nil }
+        let decoder = JSONDecoder(); decoder.dateDecodingStrategy = .iso8601
+        guard let value = try? decoder.decode(RecordedSpotTestReceipt.self, from: data),
+              value.schema == 1, value.frameID == frameID, value.reviewedByAdult,
+              !value.reportID.isEmpty, !value.pointIDs.isEmpty, value.pointIDs.count <= 256,
+              value.deviceModel == UIDevice.current.model,
+              value.deviceVendorID == UIDevice.current.identifierForVendor?.uuidString,
+              value.appBuild == Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String,
+              value.systemVersion == UIDevice.current.systemVersion,
+              value.expiresAt > Date(), value.expiresAt.timeIntervalSinceNow <= 86_400,
+              value.maxPointErrorMetres.isFinite, (0...0.1).contains(value.maxPointErrorMetres),
+              value.maxAlignmentErrorMetres.isFinite, (0...0.1).contains(value.maxAlignmentErrorMetres),
+              value.maxHeadingErrorDegrees.isFinite, (0...10).contains(value.maxHeadingErrorDegrees) else { return nil }
+        return value
+        #else
+        return nil
+        #endif
+    }
+    private struct ObservationDeletionCutoffs: Codable {
+        var all: Date = .distantPast
+        var rooms: [String: Date] = [:]
+        var categories: [String: Date] = [:]
+    }
+    private var observationDeletionCutoffs = ObservationDeletionCutoffs()
+    private var observedObjects = ObservedObjectMemory()
+    private var observationFrameID = UUID().uuidString
+    private var importedFurnitureRevisions = Set<String>()
+    private var passiveObservationGeneration = UUID()
+    private var passiveObservationInFlight = false
+    private var lastPassiveObservation = -Double.infinity
+    private var lastObservationPersist = -Double.infinity
+    private var passiveGoalNoticeRevision = ""
+    private var passiveGoalNotices = Set<String>()
+    private var recordedSpotSpeech: (id: UUID, origin: Observation, frameID: String, target: String, sightingID: String, orientation: String)?
+    private var pendingPassiveNotice: (id: UUID, key: String, revision: String)?
+    private var interruptedSearch = InterruptedObjectSearch()
+
     private lazy var itemAppearance = ItemAppearance(memory: places.memory)
     /// Guided saving of how an item looks: "this is my cup", then turning it slowly.
     private var itemMemoryRevision = UUID()
@@ -343,6 +399,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         feedback.onRequestedSpeechFinished = { [weak self] id, text, outcome in
             guard let self else { return }
+            if self.recordedSpotSpeech?.id == id { self.recordedSpotSpeech = nil }
+            if let pending = self.pendingPassiveNotice, pending.id == id {
+                self.pendingPassiveNotice = nil
+                if outcome == .completed, pending.revision == self.companionWorkingState.goalRevision {
+                    self.passiveGoalNotices.insert(pending.key)
+                } else { self.companion.release("object-goal:" + pending.key) }
+            }
             #if BLIND_FAMILIAR_PEOPLE
             self.familiarPeople.arrivalSpeechFinished(id)
             #endif
@@ -373,6 +436,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if let data = try? places.memory?.value(namespace: "items", id: "all"),
            let saved = try? JSONDecoder().decode(ItemMemory.self, from: data), saved.valid {
             items = saved
+        }
+        if let data = try? places.memory?.value(namespace: "observed-objects", id: "all"),
+           let saved = try? JSONDecoder().decode(ObservedObjectMemory.self, from: data), saved.valid {
+            observedObjects = saved
+            observedObjects.invalidateGeometry()
+        }
+        if let data = try? places.memory?.value(namespace: "observed-objects", id: "deletion-cutoffs"),
+           let saved = try? JSONDecoder().decode(ObservationDeletionCutoffs.self, from: data) {
+            observationDeletionCutoffs = saved
         }
         places.currentCoordinate = { [weak self] in
             (self?.outdoor.coarseLocation ?? self?.outdoor.location).map { (latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude) }
@@ -435,6 +507,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             // Acoustic-energy onset or transcript fallback: retire stale work
             // before the utterance finishes. Neither signal proves speaker identity.
             let pendingRetake = self.currencyRetake
+            self.interruptedSearch.capture(search: self.objectSearch, goalRevision: self.companionWorkingState.goalRevision,
+                generation: self.assistantSession.generation, now: ProcessInfo.processInfo.systemUptime)
             self.cancelDescription()
             if pendingRetake.isPending { self.currencyRetake = pendingRetake }
             _ = self.feedback.stopInformation(announceCancellation: false)
@@ -492,7 +566,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         message = arabic ? "أحتاج إذن الكاميرا. اطلب المساعدة في إعدادات الهاتف." : "I need camera permission. Ask for help in the phone's Settings."
         speakOperation(message)
     }
-    private func launch(map: ARWorldMap? = nil) {
+    private func launch(map: ARWorldMap? = nil, worldSessionID: UUID = UUID()) {
+        observationFrameID = worldSessionID.uuidString
+        if map == nil { places.invalidateWorldMapRecovery() }
+        observedObjects.invalidateGeometry()
         defer { updateLiveActivity() }
         invalidatePerceptionWork()
         peopleTracking.reset()
@@ -532,6 +609,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     /// Camera/sensor lifecycle is independent of an opted-in audio conversation.
     private func stopCameraMonitoring() {
+        interruptedSearch.cancel()
+        persistObservedObjects()
+        places.invalidateWorldMapRecovery()
         defer { updateLiveActivity() }
         cameraStartupID = UUID()
         cancelDescription()
@@ -612,28 +692,41 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // RGB classification runs separately; its task never blocks depth processing.
         visualStairs.consume(frame, at: lastFrameWallTime)
         if let place = awaitingPlace {
+            let recoveredFrame = UUID(uuidString: observationFrameID).flatMap {
+                places.observeWorldMapRecovery(for: place, frame: frame, sessionID: $0, now: lastFrameWallTime)
+            }
             let normal: Bool
-            if case .normal = frame.camera.trackingState { normal = true } else { normal = false }
+            if case .normal = frame.camera.trackingState {
+                normal = place.worldFrame == nil || recoveredFrame != nil
+            } else { normal = false }
             if placeRecovery.observe(normal: normal,
                 mapped: frame.worldMappingStatus == .mapped || frame.worldMappingStatus == .extending,
                 now: lastFrameWallTime) == place.id.uuidString {
                     recognizedPlace = place; awaitingPlace = nil
+                    importFurnitureHistory(place)
                     placeRecoveryQuestion = ""
                     message = "Saved map matched: \(place.name). Recalibrate the floor."
                     speakOperation(message)
             }
-            phoneDetection = Detection(.uncertain, reason: .localizing); publish(); return
+            phoneDetection = Detection(.uncertain, reason: .localizing); publish()
+            updateNonspatialObjectMemory(frame: frame)
+            return
+        }
+        if let place = recognizedPlace, let sessionID = UUID(uuidString: observationFrameID) {
+            places.observeWorldMapRecovery(for: place, frame: frame, sessionID: sessionID, now: lastFrameWallTime)
         }
         guard let observation = DepthSampler.observation(from: frame) else {
-            invalidatePerceptionWork(); invalidateRecognizedRoom()
+            invalidatePerceptionWork(preserveRGBHistoryWork: true); invalidateRecognizedRoom()
             survey.invalidate()
             journeys.breakTracking(); attention.resetMotion()
             invalidateReturn()
             detector.invalidateRecentEvidence()
-            phoneDetection = Detection(.uncertain, reason: DepthSampler.unavailableReason(from: frame)); lastObservation = nil; publish(); return
+            phoneDetection = Detection(.uncertain, reason: DepthSampler.unavailableReason(from: frame)); lastObservation = nil; publish()
+            updateNonspatialObjectMemory(frame: frame)
+            return
         }
         if !observation.trackingNormal {
-            invalidatePerceptionWork(); invalidateRecognizedRoom()
+            invalidatePerceptionWork(preserveRGBHistoryWork: true); invalidateRecognizedRoom()
             detector.reset(); recognizedPlace = nil; indoor.invalidatePosition(); fixedBodyMount = false
             invalidateReturn()
         }
@@ -653,15 +746,28 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         familiarPeople.revalidate(model: self)
         familiarPeople.consume(model: self)
         #endif
-        updateReturn(observation)
-        if !returning, fixedBodyMount, indoor.isAligned, detection.hazard == .observing,
-           lastFrameWallTime - lastIndoorAnnouncement >= 8 { indoorBeacon(automatic: true) }
         bodyHeadingEstimator.observe(camera: observation.camera, cameraForward: observation.forward,
                                      at: lastFrameWallTime, tracking: observation.trackingNormal)
+        if let speech = recordedSpotSpeech {
+            var sameSpokenRelation = false
+            if let context = recordedSpotRecallContext(), context.frameID == speech.frameID {
+                observedObjects.revalidateRecordedFrame(using: context, at: Date())
+                let recall = observedObjects.recall(category: speech.target, at: Date(), context: context)
+                sameSpokenRelation = recall.recordedSpotOrientation?.sightingID == speech.sightingID &&
+                    ObservedObjectMemory.recordedSpotAnswer(for: recall, now: Date(), arabic: arabic) == speech.orientation
+            }
+            if !sameSpokenRelation { feedback.stopRequestedSpeech(speech.id); recordedSpotSpeech = nil }
+        }
+        updateReturn(observation)
+        if !returning, fixedBodyMount, indoor.isAligned, indoor.hasActiveRoute, detection.hazard == .observing,
+           lastFrameWallTime - lastIndoorAnnouncement >= 8 { indoorBeacon(automatic: true) }
         checkMountSlip()
         updateCompanionRoom(observation)
         updateRoomRecognition(frame: frame, observation: observation)
         updateItemLearning(frame: frame)
+        if observation.trackingNormal { updatePassiveObjectMemory(frame: frame, observation: observation) }
+        else { updatePassiveObjectMemory(frame: frame, observation: observation, nonspatialOnly: true) }
+        resumeInterruptedSearchIfPossible()
         continueSearch()
         updateTrackedTarget()
         updateReadingTool(frame: frame)
@@ -674,6 +780,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     #if BLIND_FAMILIAR_PEOPLE
     @discardableResult func routeFamiliarPeopleCommand(_ text: String) -> Bool {
         guard let command = FamiliarPeopleCommand.parse(text) else { return false }
+        interruptedSearch.cancel()
         if currencyActive || colorActive || readingTool != nil || currencyRetake.isPending { cancelDescription() }
         guard command == .cancel || command == .stop || !running || detection.hazard == .observing else { message = "Current monitoring alerts take priority."; return true }
         if !showFamiliarPeople && !familiarPeople.enabled {
@@ -717,12 +824,20 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         return dot > cos(.pi / 36)
     }
     #endif
-    private func invalidatePerceptionWork() {
+    private func invalidatePerceptionWork(preserveRGBHistoryWork: Bool = false) {
         #if BLIND_FAMILIAR_PEOPLE
         if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel() }
         #endif
         if currencyActive || colorActive || readingTool != nil || currencyRetake.isPending { cancelDescription() }
         perceptionGeneration = UUID(); recallInFlight = false; learningItem = nil
+        if !preserveRGBHistoryWork { passiveObservationGeneration = UUID(); passiveObservationInFlight = false }
+        if let speech = recordedSpotSpeech { feedback.stopRequestedSpeech(speech.id); recordedSpotSpeech = nil }
+        if let pending = pendingPassiveNotice {
+            companion.release("object-goal:" + pending.key)
+            pendingPassiveNotice = nil
+            _ = feedback.stopInformation(announceCancellation: false)
+        }
+        observedObjects.invalidateGeometry()
         latestViewTexts = []; latestViewTextCapturedAt = -.infinity; latestViewTextObservation = nil
         roomRecall.cancelPendingWork(); itemAppearance.cancelPendingWork()
     }
@@ -848,11 +963,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             message = "Start the live camera before recognizing a place."; return
         }
         do {
-            let map = try places.worldMap(for: place)
+            let sessionID = UUID()
+            let map = try places.beginWorldMapRecovery(for: place, sessionID: sessionID)
+            importFurnitureHistory(place)
             recognizedPlace = nil; awaitingPlace = place
             placeRecovery.begin(candidate: place.id.uuidString, now: ProcessInfo.processInfo.systemUptime)
             placeRecoveryQuestion = ""
-            indoor.invalidatePosition(); launch(map: map)
+            indoor.invalidatePosition(); launch(map: map, worldSessionID: sessionID)
             message = arabic ? "جارٍ التحقق من \(place.name). ابق ثابتاً ووجّه الكاميرا ببطء إلى معالم قريبة إن كان ذلك مريحاً." : "Checking \(place.name). Stay still and slowly point the camera at nearby landmarks if comfortable."
         } catch {
             message = "Saved place could not be loaded."
@@ -873,10 +990,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         lastIndoorCueKey = ""; lastIndoorAnnouncement = -.infinity
     }
     func indoorBeacon(automatic: Bool = false) {
+        guard indoor.hasActiveRoute else { return }
         guard let observation = lastObservation, observation.trackingNormal,
               ProcessInfo.processInfo.systemUptime - lastFrameWallTime < 0.5,
               detection.hazard == .observing else { return }
-        guard let cue = indoor.next(camera: observation.camera, forward: observation.forward) else {
+        guard let bodyForward = currentBodyForward() else { return }
+        guard let cue = indoor.next(camera: observation.camera, forward: bodyForward) else {
             _ = speakMobility(indoor.message)
             lastIndoorAnnouncement = ProcessInfo.processInfo.systemUptime; return
         }
@@ -891,6 +1010,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// Explicit single-photo money request. Unknown/unavailable never falls through to an LLM.
     @discardableResult func routeSaudiBanknoteCommand(_ text: String, retake: CurrencyRetakeSession? = nil) -> Bool {
         guard retake != nil || ConversationDomainPolicy.requiredInspection(for: text) == .banknote else { return false }
+        interruptedSearch.cancel()
         cancelDescription()
         if let retake { currencyRetake = retake }
         #if BLIND_FAMILIAR_PEOPLE
@@ -1021,6 +1141,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// Explicit, one-frame colour request. Never falls back to a language-model colour guess.
     @discardableResult func routeClothingColorCommand(_ text: String) -> Bool {
         guard ClothingColorCommand.matches(text) else { return false }
+        interruptedSearch.cancel()
         cancelDescription()
         #if BLIND_FAMILIAR_PEOPLE
         familiarPeople.cancelSearchForNewGoal()
@@ -1497,7 +1618,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #if BLIND_FAMILIAR_PEOPLE
         familiarPeople.cancelSearchForNewGoal()
         #endif
-        cancelDescription(); feedback.stop(); stopReturn(); indoor.invalidatePosition()
+        cancelDescription(); feedback.stop(); stopReturn(); indoor.cancelRoute()
         assistantDialogue.setGoal(objectiveDraft); objectiveDraft = assistantDialogue.goal; persistDialogue()
         companionWorkingState.changeGoal(assistantDialogue.goal); persistWorkingState()
     }
@@ -1505,7 +1626,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #if BLIND_FAMILIAR_PEOPLE
         familiarPeople.cancelSearchForNewGoal()
         #endif
-        cancelDescription(); feedback.stop(); stopReturn(); indoor.invalidatePosition()
+        cancelDescription(); feedback.stop(); stopReturn(); indoor.cancelRoute()
         assistantDialogue = AssistantDialogue(); objectiveDraft = ""; persistDialogue()
         companionWorkingState = CompanionWorkingState(); persistWorkingState()
         sceneAnswer = ""; currentReply = ""; assistantQuestion = ""
@@ -1516,9 +1637,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         cancelDescription(); _ = feedback.stopInformation(announceCancellation: false)
         companionWorkingState.removeReport(original.text)
         companionWorkingState.record(replacement)
-        companionWorkingState.changeGoal(assistantDialogue.goal)
+        if companionWorkingState.goal != assistantDialogue.goal { companionWorkingState.changeGoal(assistantDialogue.goal) }
         objectiveDraft = assistantDialogue.goal
-        stopReturn(); indoor.invalidatePosition()
+        stopReturn(); indoor.cancelRoute()
         persistDialogue(); persistWorkingState()
         return true
     }
@@ -1528,9 +1649,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
               assistantDialogue.forgetUserRecord(id: id) else { return }
         cancelDescription(); _ = feedback.stopInformation(announceCancellation: false)
         companionWorkingState.removeReport(original.text)
-        companionWorkingState.changeGoal(assistantDialogue.goal)
+        if companionWorkingState.goal != assistantDialogue.goal { companionWorkingState.changeGoal(assistantDialogue.goal) }
         objectiveDraft = assistantDialogue.goal
-        stopReturn(); indoor.invalidatePosition()
+        stopReturn(); indoor.cancelRoute()
         persistDialogue(); persistWorkingState()
     }
 
@@ -1618,6 +1739,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if ["i'm standing on a level floor", "i am standing on a level floor", "أنا واقف على أرض مستوية"].contains(normalized),
            running && detection.hazard == .needsCalibration { calibrate(); return }
         let pendingRetake = currencyRetake
+        if case .conversation = ConversationIntent.classify(text),
+           ConversationIntent.explicitTaskGoal(text) == nil,
+           CompanionUtterance.parse(text) == nil {
+            interruptedSearch.capture(search: objectSearch, goalRevision: companionWorkingState.goalRevision,
+                generation: assistantSession.generation, now: ProcessInfo.processInfo.systemUptime)
+        } else { interruptedSearch.cancel() }
         cancelDescription()
         _ = feedback.stopInformation(announceCancellation: false)
         if pendingRetake.isPending, CurrencyRetakeSession.isRetryCommand(text) {
@@ -1637,6 +1764,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         case .conversation, .visualRequest: break
         }
         if routeUnavailableTemperature(text) { return }
+        if let destination = AssistantControl.explicitGoal(text) {
+            // Retain the expressed destination even when physical guidance must abstain.
+            companionWorkingState.changeGoal(destination)
+            assistantDialogue.setGoal(destination); objectiveDraft = destination
+            stopReturn(); indoor.cancelRoute(); persistWorkingState(); persistDialogue()
+        }
         if routeUnverifiedPhysicalRequest(text) { return }
         #if BLIND_FAMILIAR_PEOPLE
         if routeFamiliarPeopleCommand(text) { return }
@@ -1658,7 +1791,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             // A change of task preserves the conversation and does not start sensors.
             companionWorkingState.changeGoal(goal)
             assistantDialogue.setGoal(goal); objectiveDraft = assistantDialogue.goal
-            stopReturn(); indoor.invalidatePosition()
+            stopReturn(); indoor.cancelRoute()
             persistWorkingState(); persistDialogue()
         }
         if handleItemOrLocate(text) { return }
@@ -1686,7 +1819,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         assistantDialogue.setGoal(companionWorkingState.goal)
         objectiveDraft = companionWorkingState.goal
-        stopReturn(); indoor.invalidatePosition()
+        stopReturn(); indoor.cancelRoute()
         persistWorkingState(); persistDialogue()
         currentReply = sceneAnswer
         if assistantSession.state == .active { _ = speakRequested(sceneAnswer) }
@@ -1993,7 +2126,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 if oldGoal != self.companionWorkingState.goal {
                     self.objectiveDraft = self.companionWorkingState.goal
                     self.assistantDialogue.setGoal(self.companionWorkingState.goal)
-                    self.stopReturn(); self.indoor.invalidatePosition()
+                    self.stopReturn(); self.indoor.cancelRoute()
                     self.persistDialogue()
                 }
                 self.persistWorkingState()
@@ -2277,6 +2410,7 @@ extension NavigationModel {
     func muteConversation() {
         defer { updateLiveActivity() }
         assistantSession.mute()
+        interruptedSearch.cancel()
         cancelDescription(); voice.cancel()
         _ = feedback.stopInformation(announceCancellation: false)
         message = arabic ? "الميكروفون مكتوم. الكتابة متاحة وتنبيهات الخطر لا تتوقف." : "Microphone muted. You can still type; hazard alerts are not disabled."
@@ -2285,6 +2419,7 @@ extension NavigationModel {
     func endConversation() {
         defer { updateLiveActivity() }
         assistantSession.end()
+        interruptedSearch.cancel()
         cancelDescription(); voice.cancel()
         _ = feedback.stopInformation(announceCancellation: false)
         message = arabic ? "انتهت المحادثة الصوتية. الكاميرا وتنبيهاتها منفصلة." : "Voice conversation ended. Camera monitoring has its own control."
@@ -2350,7 +2485,7 @@ extension NavigationModel {
     /// Body heading in world coordinates when established by walking or a declared mount; nil otherwise.
     private func currentBodyForward() -> Point3? {
         let heading = bodyHeadingEstimator.heading(at: lastFrameWallTime, declaredFixedMount: fixedBodyMount)
-        return heading.isKnown ? heading.forward : nil
+        return heading.isKnown && heading.confidence >= 0.8 && heading.age.isFinite && heading.age >= 0 && heading.age <= 0.5 ? heading.forward : nil
     }
 
     private func checkMountSlip() {
@@ -2497,6 +2632,191 @@ extension NavigationModel {
         _ = speakRequested(text)
     }
 
+    /// The foreground loop collects bounded candidates without waiting for a find command.
+    /// It never uses an image-language description as a detection or identity.
+    private func updateNonspatialObjectMemory(frame: ARFrame) {
+        // RGB can still contribute dated, nonspatial candidates. No pose, room or depth authority.
+        let p = frame.camera.transform.columns.3
+        let raw = -frame.camera.transform.columns.2, length = hypot(raw.x, raw.z)
+        let forward = length > 0 ? Point3(Double(raw.x / length), 0, Double(raw.z / length)) : Point3(0, 0, 0)
+        let pose = Observation(timestamp: frame.timestamp, camera: Point3(Double(p.x), Double(p.y), Double(p.z)),
+            forward: forward, samples: [], trackingNormal: false)
+        updatePassiveObjectMemory(frame: frame, observation: pose, nonspatialOnly: true)
+    }
+
+    private func updatePassiveObjectMemory(frame: ARFrame, observation: Observation, nonspatialOnly: Bool = false) {
+        let now = lastFrameWallTime
+        guard now >= observation.timestamp, now - observation.timestamp <= 0.5,
+              running, !simulation, assistantSession.foregroundActive, (nonspatialOnly || observation.trackingNormal),
+              !places.scanning, (nonspatialOnly || detection.hazard == .observing), !passiveObservationInFlight,
+              now - lastPassiveObservation >= 3,
+              UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }) else { return }
+        let keys = items.items.map(\.key).filter { itemAppearance.viewCount($0) > 0 }
+        guard VisionService.objectDetectorAvailable || !keys.isEmpty else { return }
+        lastPassiveObservation = now; passiveObservationInFlight = true
+        let generation = passiveObservationGeneration, spatialGeneration = perceptionGeneration, sessionFrameID = observationFrameID
+        let stableFrame = UUID(uuidString: sessionFrameID).flatMap { places.currentWorldFrame(sessionID: $0, now: now) }
+        let frameID: String? = nonspatialOnly ? nil : (stableFrame?.frameID ?? sessionFrameID)
+        let captureSituation = !nonspatialOnly && indoor.isAligned ? indoor.situation(camera: observation.camera, forward: observation.forward,
+            frameAge: 0, tracking: observation.trackingNormal, fixedBodyMount: fixedBodyMount,
+            bodyForward: currentBodyForward()) : nil
+        let captureRoom = captureSituation?.roomID
+        let establishedRoom = captureRoom ?? recognizedPlace.map { "place:" + $0.id.uuidString } ?? recognizedRoomID
+        // During room-transition debounce the companion still holds the old room.
+        // Never attribute a new capture to that old room or mix its ID with a new name.
+        let roomID = !nonspatialOnly && establishedRoom == companion.currentRoom ? establishedRoom : nil
+        let roomName = roomID.flatMap { companion.memory.rooms[$0]?.name }
+            ?? (roomID == recognizedPlace.map { "place:" + $0.id.uuidString } ? recognizedPlace?.name : nil)
+        let building = captureSituation?.places.first { $0["kind"] as? String == "building" }
+        let floorID = captureSituation?.location["floorID"] as? String
+        let floor = captureSituation?.places.first { $0["id"] as? String == floorID }
+        let placeID = building?["id"] as? String, placeName = building?["name"] as? String
+        let floorName = floor?["name"] as? String
+        let capturedDate = Date().addingTimeInterval(observation.timestamp - now), image = frame.capturedImage
+        Task.detached(priority: .utility) { [weak self] in
+            let categories = (try? VisionService.objectCandidates(image: image, orientation: .right)) ?? []
+            await MainActor.run { [weak self] in
+                guard let self, self.passiveObservationGeneration == generation else { return }
+                guard nonspatialOnly || self.perceptionGeneration == spatialGeneration else { self.passiveObservationInFlight = false; return }
+                self.itemAppearance.candidates(among: keys, image: image) { [weak self] matches in
+                    guard let self, self.passiveObservationGeneration == generation else { return }
+                guard nonspatialOnly || self.perceptionGeneration == spatialGeneration else { self.passiveObservationInFlight = false; return }
+                    self.passiveObservationInFlight = false
+                    let completed = ProcessInfo.processInfo.systemUptime
+                    guard self.running, self.assistantSession.foregroundActive, self.observationFrameID == sessionFrameID,
+                          (nonspatialOnly || self.lastObservation?.trackingNormal == true), completed >= observation.timestamp, completed - observation.timestamp <= 3 else { return }
+                    // Historical captures may finish after the phone moved. Their point belongs
+                    // to the capture frame, never to the new camera pose or a current claim.
+                    for candidate in categories {
+                        _ = self.observedObjects.observe(category: candidate.label, source: .onDeviceDetector,
+                            frameID: frameID, roomID: roomID, roomName: roomName,
+                            placeID: placeID, placeName: placeName,
+                            floorID: floorID, floorName: floorName,
+                            position: nonspatialOnly ? nil : DepthSampler.worldPoint(from: frame, uprightX: candidate.box.midX, uprightY: candidate.box.midY),
+                            associationValidated: false,
+                            box: ObservedObjectBox(x: candidate.box.minX, y: candidate.box.minY,
+                                width: candidate.box.width, height: candidate.box.height), at: capturedDate, now: Date())
+                    }
+                    for match in matches {
+                        guard let item = self.items.items.first(where: { $0.key == match.key }) else { continue }
+                        _ = self.observedObjects.observe(category: item.name, source: .appearanceComparison,
+                            frameID: frameID, roomID: roomID, roomName: roomName,
+                            placeID: placeID, placeName: placeName,
+                            floorID: floorID, floorName: floorName,
+                            position: nonspatialOnly ? nil : DepthSampler.worldPoint(from: frame, uprightX: match.x, uprightY: match.y),
+                            associationValidated: false, at: capturedDate, now: Date())
+                    }
+                    if completed - self.lastObservationPersist >= 10 {
+                        self.persistObservedObjects(); self.lastObservationPersist = completed
+                    }
+                    if !nonspatialOnly { self.offerObservedGoalMatch(capturedAt: observation.timestamp, origin: observation, generation: spatialGeneration) }
+                }
+            }
+        }
+    }
+
+    private func importFurnitureHistory(_ place: SavedPlace) {
+        guard let frame = place.worldFrame,
+              frame.capturedAt > observationDeletionCutoffs.all,
+              let history = try? places.measuredFurnitureHistory(for: place) else { return }
+        let receipt = recordedSpotReceipt(frameID: frame.frameID)
+        if importedFurnitureRevisions.contains(frame.frameID), receipt == nil { return }
+        let roomID = "place:" + place.id.uuidString
+
+        for item in history {
+            guard item.observedAt > (observationDeletionCutoffs.rooms[roomID] ?? .distantPast),
+                  item.observedAt > (observationDeletionCutoffs.categories[ItemMemory.key(for: item.category)] ?? .distantPast) else { continue }
+            let eligible = receipt?.pointIDs.contains(item.id) == true
+            if observedObjects.sightings.contains(where: { $0.source == .roomPlanScan && $0.frameID == frame.frameID && $0.sourceObservationID == item.id }) {
+                if eligible, let receipt {
+                    _ = observedObjects.applyRecordedPointValidation(frameID: frame.frameID,
+                        sourceObservationID: item.id, position: item.position, uncertaintyMetres: receipt.maxPointErrorMetres)
+                }
+                continue
+            }
+            _ = observedObjects.observe(category: item.category, source: .roomPlanScan, sourceObservationID: item.id,
+                frameID: item.frame.frameID, roomID: "place:" + place.id.uuidString,
+                roomName: place.name, position: item.position,
+                uncertaintyMetres: eligible ? receipt?.maxPointErrorMetres : nil,
+                associationValidated: false, recordedSpotValidated: eligible,
+                at: item.observedAt, now: Date())
+        }
+        importedFurnitureRevisions.insert(frame.frameID)
+        persistObservedObjects()
+    }
+
+    /// Fresh saved-world recovery plus a narrowly scoped empirical test receipt, never GPS or room name.
+    private func recordedSpotRecallContext() -> ObservedObjectRecallContext? {
+        let now = ProcessInfo.processInfo.systemUptime
+        guard running, !simulation, assistantSession.foregroundActive, detection.hazard == .observing,
+              let observation = lastObservation, observation.trackingNormal,
+              now >= observation.timestamp, now - observation.timestamp <= 0.5,
+              let sessionID = UUID(uuidString: observationFrameID),
+              let frame = places.currentWorldFrame(sessionID: sessionID, now: now),
+              let receipt = recordedSpotReceipt(frameID: frame.frameID) else { return nil }
+        let heading = bodyHeadingEstimator.heading(at: now, declaredFixedMount: fixedBodyMount)
+        return ObservedObjectRecallContext(frameID: frame.frameID, position: observation.camera,
+            bodyHeading: heading, capturedAt: Date().addingTimeInterval(observation.timestamp - now),
+            uncertaintyMetres: receipt.maxAlignmentErrorMetres, recordedFrameAlignmentValidated: true,
+            allowedRecordedPointIDs: Set(receipt.pointIDs), headingUncertaintyDegrees: receipt.maxHeadingErrorDegrees)
+    }
+
+    private func persistObservedObjects() {
+        guard let memory = places.memory, let data = try? JSONEncoder().encode(observedObjects) else { return }
+        // A failed write leaves the previous durable record intact, never claims success.
+        try? memory.saveValue(namespace: "observed-objects", id: "all", payload: data)
+    }
+
+    private func offerObservedGoalMatch(capturedAt: Double, origin: Observation, generation: UUID) {
+        let revision = companionWorkingState.goalRevision
+        if passiveGoalNoticeRevision != revision { passiveGoalNoticeRevision = revision; passiveGoalNotices.removeAll() }
+        let target = companionWorkingState.focusObject
+        guard assistantSession.state == .active, perceptionGeneration == generation,
+              SceneDelivery.allowed(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime,
+                  origin: origin.camera, current: lastObservation?.camera, currentFrameAt: lastFrameWallTime,
+                  hazard: detection.hazard, tracking: lastObservation?.trackingNormal == true,
+                  originForward: origin.forward, currentForward: lastObservation?.forward),
+              !target.isEmpty, !companionWorkingState.goal.isEmpty,
+              pendingPassiveNotice == nil, objectSearch == nil,
+              !busy, !voice.awaitingUtterance, feedback.canSpeakAmbient,
+              ProcessInfo.processInfo.systemUptime - capturedAt < 0.5 else { return }
+        let key = ItemMemory.key(for: target)
+        guard !passiveGoalNotices.contains(key) else { return }
+        let recall = observedObjects.recall(category: target, at: Date())
+        guard recall.status == .currentCandidate else { return }
+        let text = ObservedObjectMemory.answer(for: recall, asked: target, now: Date(), arabic: arabic)
+        let now = ProcessInfo.processInfo.systemUptime
+        let candidate = InformationCandidate(key: "object-goal:" + key, kind: .goal, text: text,
+            words: Self.wordCount(text), revision: revision, createdAt: now, expiresAt: now + 0.3,
+            goalRelevant: true, room: companion.currentRoom)
+        let speechID = UUID()
+        pendingPassiveNotice = (speechID, key, revision)
+        if deliverCandidate(candidate, speechID: speechID) { currentReply = text }
+        else { pendingPassiveNotice = nil }
+    }
+
+    private func deliverObjectSearchMatch(_ text: String, target: String) {
+        let revision = companionWorkingState.goalRevision
+        if passiveGoalNoticeRevision != revision { passiveGoalNoticeRevision = revision; passiveGoalNotices.removeAll() }
+        let key = ItemMemory.key(for: target), id = UUID(), now = ProcessInfo.processInfo.systemUptime
+        let candidate = InformationCandidate(key: "object-goal:" + key, kind: .answer, text: text,
+            words: Self.wordCount(text), revision: revision, createdAt: now, expiresAt: now + 0.3,
+            requested: true, goalRelevant: true, room: companion.currentRoom)
+        message = text; currentReply = text
+        pendingPassiveNotice = (id, key, revision)
+        if !deliverCandidate(candidate, speechID: id) { pendingPassiveNotice = nil }
+    }
+
+    private func resumeInterruptedSearchIfPossible() {
+        guard assistantSession.state == .active, running, !busy, !voice.awaitingUtterance,
+              feedback.speechPriority == nil, conversationSpeech.isEmpty, objectSearch == nil,
+              readingTool == nil, !currencyActive, !colorActive, detection.hazard == .observing else { return }
+        guard let search = interruptedSearch.restore(goalRevision: companionWorkingState.goalRevision,
+            generation: assistantSession.generation, now: ProcessInfo.processInfo.systemUptime) else { return }
+        objectSearch = search
+        continueSearch()
+    }
+
     private func persistItems() {
         guard let memory = places.memory, let data = try? JSONEncoder().encode(items) else { return }
         try? memory.saveValue(namespace: "items", id: "all", payload: data)
@@ -2514,7 +2834,9 @@ extension NavigationModel {
             switch command {
             case .remember(let name):
                 let room = companion.currentRoom
-                let position = lastObservation.flatMap { indoor.isAligned ? indoor.mapPosition(camera: $0.camera) : nil }
+                // "Here" is a user report, not a measured object point. Do not save
+                // the phone's position as if it were the named object's location.
+                let position: Point3? = nil
                 let saved = items.remember(name: name, roomID: room, roomName: room.flatMap { companion.memory.rooms[$0]?.name },
                                            position: position, frameID: position == nil ? nil : indoor.alignmentRevision.uuidString)
                 if saved != nil { persistItems() }
@@ -2542,7 +2864,43 @@ extension NavigationModel {
     /// Saved item (by look, or its saved place) newer than the child's last report, then a live
     /// search of the current view. False when neither applies; the caller speaks the report or "unknown".
     private func findWithSensors(_ name: String, question: String) -> Bool {
+        let exitTerms: Set<String> = ["exit", "the exit", "way out", "the way out", "مخرج", "المخرج"]
+        if exitTerms.contains(name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()),
+           let package = indoor.activePackage, let map = indoor.map,
+           IndoorNavigator.matches(map: map, package: package) {
+            let exits = package.rooms.filter { $0.kind == "exit" }
+            if !exits.isEmpty {
+                let labels = exits.prefix(3).map { $0.name }.joined(separator: arabic ? "، " : ", ")
+                say(arabic ? "الخريطة المحفوظة تسجل المخارج: \(labels). هذا لا يؤكد أن الطريق إليها خالٍ الآن."
+                    : "The saved map records these exits: \(labels). That does not confirm the route is clear now.")
+                return true
+            }
+        }
         let fact = companionWorkingState.factBook.latest(for: name)
+        let context = recordedSpotRecallContext()
+        if let context { observedObjects.revalidateRecordedFrame(using: context, at: Date()) }
+        let recall = observedObjects.recall(category: name, at: Date(), context: context)
+        let explicitEvidenceAt = max(fact?.at ?? .distantPast, items.find(name)?.savedAt ?? .distantPast)
+        if recall.status != .notFound,
+           recall.sightings.contains(where: { $0.observedAt > explicitEvidenceAt }) {
+            let history = ObservedObjectMemory.answer(for: recall, asked: name, now: Date(), arabic: arabic)
+            // Same-turn context checked again by the core renderer. Never an instruction to walk or reach.
+            let orientation = ObservedObjectMemory.recordedSpotAnswer(for: recall, now: Date(), arabic: arabic)
+            if let orientation, let origin = lastObservation, let context,
+               let spot = recall.recordedSpotOrientation {
+                let id = UUID()
+                message = orientation + " " + history
+                recordedSpotSpeech = (id, origin, context.frameID, name, spot.sightingID, orientation)
+                if !speakRequested(message, speechID: id) { recordedSpotSpeech = nil }
+            } else { say(history) }
+            // Memory leads the search, but an old observation does not suppress a
+            // fresh look. No extra aiming command or repeated start announcement.
+            if running, !simulation, detection.hazard == .observing, lastObservation?.trackingNormal == true {
+                objectSearch = ObjectSearch(target: name, now: ProcessInfo.processInfo.systemUptime)
+                continueSearch()
+            }
+            return true
+        }
         if let item = items.find(name), fact.map({ item.savedAt > $0.at }) ?? true {
             if itemAppearance.viewCount(item.key) > 0, running, !simulation, detection.hazard == .observing,
                let frame = session.currentFrame {
@@ -2609,7 +2967,7 @@ extension NavigationModel {
                     self.visualCapturePoseAllowed(origin: origin.camera, forward: origin.forward) &&
                     self.indoor.revision == mapRevision && self.indoor.alignmentRevision == alignmentRevision &&
                     now >= capturedAt && now - capturedAt < 0.5 && self.lastObservation?.trackingNormal == true
-                if let found, captureCurrent, let here = self.lastObservation {
+                if let found, captureCurrent, now - current.startedAt < ObjectSearch.duration, let here = self.lastObservation {
                     if !Self.objectInteractionGuidanceValidated {
                         phrase = ObjectSearch.unconfirmed(label: found.label, arabic: arabic)
                     } else if let point = DepthSampler.worldPoint(from: frame, uprightX: found.x, uprightY: found.y),
@@ -2627,7 +2985,7 @@ extension NavigationModel {
                 case .found:
                     self.objectSearch = nil
                     self.recordSearch(target, located: Self.objectInteractionGuidanceValidated && located != nil)
-                    if let phrase { self.say(phrase) }
+                    if let phrase { self.deliverObjectSearchMatch(phrase, target: target) }
                     // Keep guiding to the measured point as the child walks, from sensors only.
                     if Self.objectInteractionGuidanceValidated, let located, let label = found?.label {
                         self.trackedTarget = TrackedTarget(label: label, query: visionTarget, point: located, now: capturedAt)
@@ -2865,17 +3223,57 @@ extension NavigationModel {
 
 // MARK: - Saved memory review (privacy: see and delete everything the phone remembers)
 extension NavigationModel {
+    var rememberedObservationCount: Int { observedObjects.sightings.count }
+    var recentObjectObservations: [ObservedObjectSighting] {
+        Array(observedObjects.sightings.sorted { $0.observedAt > $1.observedAt }.prefix(12))
+    }
+    var objectAwarenessStatus: String {
+        if VisionService.objectDetectorAvailable {
+            return arabic ? "كاشف الأغراض متاح. تُحفظ المشاهدات المرشحة محلياً." : "Object detector available. Candidate sightings are kept locally."
+        }
+        return arabic ? "لا يوجد كاشف أغراض عام. المقارنة متاحة للأغراض التي حفظت صورها فقط." : "No general object detector is bundled. Appearance comparison is available for things whose pictures you saved."
+    }
+    func clearObservedObjects() {
+        invalidatePerceptionWork()
+        do {
+            guard let memory = places.memory else { throw MemoryError.missing }
+            var cutoffs = observationDeletionCutoffs; cutoffs.all = Date()
+            try memory.saveValue(namespace: "observed-objects", id: "deletion-cutoffs", payload: JSONEncoder().encode(cutoffs))
+            observationDeletionCutoffs = cutoffs
+            try memory.deleteValue(namespace: "observed-objects", id: "all")
+            observedObjects.clear()
+            importedFurnitureRevisions = Set(places.places.compactMap { $0.worldFrame?.frameID })
+            objectWillChange.send()
+        } catch { say(arabic ? "تعذر حذف سجل المشاهدات." : "Could not delete the sighting history.") }
+    }
+    private func removeObservedHistory(category: String? = nil, room: String? = nil) throws {
+        guard let memory = places.memory else { throw MemoryError.missing }
+        var updated = observedObjects
+        if let category { updated.forget(category: category) }
+        if let room { updated.forgetRoom(room) }
+        var cutoffs = observationDeletionCutoffs
+        if let category { cutoffs.categories[ItemMemory.key(for: category)] = Date() }
+        if let room { cutoffs.rooms[room] = Date() }
+        // Save the tombstone before removal: a failed deletion never resurrects old scans.
+        try memory.saveValue(namespace: "observed-objects", id: "deletion-cutoffs", payload: JSONEncoder().encode(cutoffs))
+        observationDeletionCutoffs = cutoffs
+        try memory.saveValue(namespace: "observed-objects", id: "all", payload: JSONEncoder().encode(updated))
+        observedObjects = updated
+    }
     var savedItems: [RememberedItem] { items.items }
     func itemViewCount(_ item: RememberedItem) -> Int { itemAppearance.viewCount(item.key) }
     @discardableResult func forgetItem(_ item: RememberedItem) -> Bool {
         itemMemoryRevision = UUID()
+        invalidatePerceptionWork()
         cancelDescription()
         if learningItem?.key == item.key { learningItem = nil }
         do {
             guard let memory = places.memory, itemAppearance.forget(item.key) else { throw MemoryError.missing }
             var updated = items; updated.forget(item.name)
             try memory.saveValue(namespace: "items", id: "all", payload: JSONEncoder().encode(updated))
-            items = updated; objectWillChange.send(); return true
+            try removeObservedHistory(category: item.name)
+            items = updated
+            objectWillChange.send(); return true
         } catch {
             say(arabic ? "لم يكتمل الحذف. أعد المحاولة عند توفر التخزين." : "Deletion could not finish. Retry when storage is available.")
             return false
@@ -2900,6 +3298,8 @@ extension NavigationModel {
         if recognizedPlace?.id == place.id { recognizedPlace = nil; invalidateRecognizedRoom() }
         if awaitingPlace?.id == place.id { awaitingPlace = nil; placeRecovery.reset(); placeRecoveryQuestion = "" }
         invalidatePerceptionWork()
+        do { try removeObservedHistory(room: roomID) }
+        catch { say(arabic ? "تعذر حذف سجل الغرفة. أعد المحاولة." : "Could not delete this room's sighting history. Please retry."); return }
         if companion.memory.rooms[roomID] != nil { forgetRoom(roomID) } else { _ = roomRecall.forget(room: roomID) }
         places.delete(place)
         objectWillChange.send()
@@ -2912,6 +3312,7 @@ extension NavigationModel {
             guard let memory = places.memory, roomRecall.forget(room: id) else { throw MemoryError.missing }
             var updated = companion.memory; updated.forgetRoom(id)
             try memory.saveValue(namespace: "companion", id: "memory", payload: JSONEncoder().encode(updated))
+            try removeObservedHistory(room: id)
             companion.memory = updated; changeDetector.forgetRoom(id)
         } catch {
             say(arabic ? "لم يكتمل حذف الغرفة. أعد المحاولة." : "Room deletion could not finish. Please retry."); return
@@ -2934,6 +3335,7 @@ struct ExploreSnapshot {
 extension NavigationModel {
     @discardableResult func routeReadingToolCommand(_ text: String) -> Bool {
         guard let command = ReadingToolCommand.parse(text) else { return false }
+        interruptedSearch.cancel()
         switch command {
         case .start(let tool): startReadingTool(tool)
         case .stop: stopReadingTool(announce: true)

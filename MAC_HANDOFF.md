@@ -346,3 +346,8 @@ See `research/THREE_LAYERS.md` for the architecture and the exact implemented/un
 
 Use `maps/SCHOOL_MAPPING.md` for a supervised school mapping workflow. Review `research/LICENSE_REVIEW.md` before a public source/binary release; the dependency review is incomplete and includes a concrete conflicting-notice finding.
 
+
+## Persistent spatial companion follow-on
+Read SPATIAL_COMPANION_ACCEPTANCE.md and research/RECORDED_SPOT_DEVICE_ACCEPTANCE.md before native validation. New foreground passive observations use the existing detector and saved-item comparison adapters, private bounded history, source timestamps/frame IDs, saved-world-map recovery and interrupted-search continuity. This does not mean all objects are recognized: no general Detector model is bundled by default. See research/OBJECT_DETECTOR_RESOURCE_CONTRACT.md for externally reviewed model input, hashes and output contract; do not silently rename a raw tensor model or download unreviewed weights.
+
+Run the updated full BlindCore/BlindMemory tests, then native hosted tests and full iPhone scenario matrix. Test place deletion and scoped history deletion across restart; wrong-map/pre-begin frames; room-boundary captures; old generic sighting versus newer user-saved item; cancelled route cues; ordinary interruptions and explicit tool/goal changes. Keep objectInteractionGuidanceValidated false. The optional DEBUG historical-spot receipt is narrowly supervised and not production authorization. No Xcode/device pass is claimed by Linux parsing.

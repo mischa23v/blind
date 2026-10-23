@@ -37,7 +37,7 @@ test('experimental controller discards cancellation, obsolete gallery and stale 
   for (const name of ['deleteAll', 'reload']) assert.match(code, new RegExp(`func ${name}[^}]*cancel\\(\\)`));
   assert.doesNotMatch(code, /URLSession|feedback\.speak|AVSpeech|UserDefaults/);
   const model = await read('ios/BlindAssist/NavigationModel.swift');
-  assert.match(model, /invalidatePerceptionWork\(\) \{\s*#if BLIND_FAMILIAR_PEOPLE\s*if familiarPeople.enabled && familiarPeople.hasActiveWork \{ familiarPeople.cancel\(\)/);
+  assert.match(model, /invalidatePerceptionWork\(preserveRGBHistoryWork: Bool = false\) \{\s*#if BLIND_FAMILIAR_PEOPLE\s*if familiarPeople.enabled && familiarPeople.hasActiveWork \{ familiarPeople.cancel\(\)/);
   assert.match(model, /familiarPeople.revalidate\(model: self\)/);
   assert.match(model, /perceptionGeneration == capture.generation/);
 });

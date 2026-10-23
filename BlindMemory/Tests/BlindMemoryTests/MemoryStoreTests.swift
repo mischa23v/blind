@@ -32,6 +32,16 @@ final class MemoryStoreTests: XCTestCase {
         XCTAssertEqual(try store.approve(room: "bedroom", proposalID: undo.id).payload, original.payload)
         XCTAssertEqual(try store.history(room: "bedroom").count, 3)
     }
+    func testObservedObjectsRemainPrivateBoundedAndDeletable() throws {
+        let store = try MemoryStore(path: ":memory:")
+        let history = payload("historical sighting, not current pose")
+        try store.saveValue(namespace: "observed-objects", id: "all", payload: history)
+        XCTAssertEqual(try store.value(namespace: "observed-objects", id: "all"), history)
+        XCTAssertThrowsError(try store.saveValue(namespace: "observed-objects", id: "all", payload: Data(repeating: 0, count: 256 * 1024 + 1)))
+        XCTAssertEqual(try store.value(namespace: "observed-objects", id: "all"), history)
+        try store.deleteValue(namespace: "observed-objects", id: "all")
+        XCTAssertNil(try store.value(namespace: "observed-objects", id: "all"))
+    }
     func testReopenIsolationDeletionAndNoPersistedPose() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

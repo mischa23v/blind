@@ -1,3 +1,9 @@
+## Continuous spatial companion follow-up — 2026-10-23
+
+The clarified goal is passive foreground awareness plus private spatial/object history and goal continuity, not a collection of scanners. See [SPATIAL_COMPANION_ACCEPTANCE.md](SPATIAL_COMPANION_ACCEPTANCE.md) for the existing/implemented/pending matrix and whole-task scenarios. New connections retain detector boxes/capture provenance, saved-appearance candidates, private historical recall, paired RoomPlan/world-map frame provenance and bounded search resumption. Task cancellation no longer erases measured alignment. Camera position is no longer saved as an object's measured point.
+
+No general detector artifact is bundled. Model import is explicit; native output/accuracy and model/license acceptance remain gates. Existing center-depth association is not validated, and physical-object guidance remains disabled rather than treating history as a present location. Apple SDK/device/model/VoiceOver and household-task acceptance are still required. This is not completion of every shopping/cooking/navigation capability.
+
 ## 2026-10-23 — Final coordinated child-assistant candidate
 
 Reviewed and integrated all seven Claude commits without replacing the newer assistant-first primary source. Fixed reader/page/photo stale-work races, mutual tool cancellation, completed-speech accounting and foreground/pose/freshness fencing. Added bounded currency retries and separately authorized Debug-only private-pack device testing; Release remains unapproved. Simplified all tabs and made Home settled reply-only, with genuine live room-scan map/counts for a helper. Preserved hands-free eligible startup, explicit stop/mute/off and OS permission limits.
@@ -169,3 +175,5 @@ The user emphasized ongoing help such as preparing for school and finding a back
 ### General ability and safety clarification
 
 The user emphasized that homework, current time, distance to a destination, people and scene descriptions are examples of a general conversational assistant, not a closed feature menu. The current release defaults to child-support wording without asserting that an adult is present. A missing read-only clock capability was identified for a small tool addition. Mobility-affecting claims must be checked against actual fresh relevant sensor/camera/map data before speech, including queued replies. Unknown or stale data is not permission to guess; source tests cannot establish complete real-world safety.
+
+Portable verification for this follow-on: 592/592 BlindCore (whole suite), 15/15 BlindMemory, 257/257 Node, default and DEBUG/familiar-person Swift parsing, firmware protocol and address/undefined-sanitized failure injection passed. LeakSanitizer could not run under this executor's tracing; leak detection was disabled for the address/undefined sanitizer rerun. Aggregate verification passed in a disposable source copy with existing dependencies; reviewed generated Debug flags were copied into the checked-in project. No Apple SDK build, device test or accuracy result is claimed.

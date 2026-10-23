@@ -106,3 +106,12 @@ Broader acceptance remains in [ASSISTANT_FEATURE_CHECKLIST.md](ASSISTANT_FEATURE
 ## Final combined source-run receipt
 
 The integrated candidate passed 530 BlindCore tests, 14 BlindMemory tests and 216 Node tests, plus 17 synthetic MobilitySimulation scenarios, firmware protocol/failure sanitizer checks and the face native-slot scheduling test. Swift sources parsed in default and combined optional configurations. These counts are automated policy/source/synthetic coverage, not 24 real-model or device scenario passes. Face arrival camera/speech hooks are now integrated; current-temperature lookup remains unavailable without a live provider. Use the per-row pending trials above to close native acceptance, not the aggregate count.
+
+## Persistent spatial companion follow-on (2026-10-23)
+
+See SPATIAL_COMPANION_ACCEPTANCE.md for the new end-to-end matrix and research/RECORDED_SPOT_DEVICE_ACCEPTANCE.md for the optional supervised historical-spot lane. Portable checks do not establish that the full child task works on a phone.
+
+- Implemented: passive foreground category/saved-appearance candidate history; unknown-depth/tracking RGB-only history without geometry; source timestamps and bounded storage; cross-place optional hierarchy; paired scan/world-frame recovery; history-before-search; parent-goal continuity; interruption resumption; private scoped deletion/reimport protection; retired route and spatial-speech cancellation.
+- Tested in portable policies/source contracts: stale/moved/ambiguous sightings, reset/reload, old generic evidence vs newer user save, room debounce, deletion callbacks, pre-begin and delayed frames, historical bearing uncertainty, exact point receipts, school/coat/backpack continuity, mapped exit vs cupboard semantics, independent sensor scheduling.
+- Native pending: actual licensed detector coverage/identity, SDK build, measured relocalization and body heading, VoiceOver/speech onset/latency, thermal/battery sustained operation and useful complete household tasks.
+- Product gaps: automatic reliable multi-room localization/recovery without child mode/room operation, validated movable-object target-depth association, automatic primary-goal/subtask planning beyond explicit bounded parent retention, shopping-list/routine learning, room-to-room navigation from safe current geometry, and all-day operation under iOS lifecycle constraints. Unknown or occluded items are never declared absent.

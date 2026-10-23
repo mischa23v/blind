@@ -1,6 +1,12 @@
-## Final coordinated source checkpoint — 2026-10-23
+## Continuous spatial companion follow-up — 2026-10-23
 
-This is the current record; older entries and counts below are historical. Integration preserves primary `30999a9` and incorporates the reviewed seven-commit Claude branch through `61001267`, plus the coordinated Saudi device-test and familiar-person work. It is source integration, not a deployment or Apple/device acceptance.
+The clarified goal is passive foreground awareness plus private spatial/object history and goal continuity, not a collection of scanners. See [SPATIAL_COMPANION_ACCEPTANCE.md](SPATIAL_COMPANION_ACCEPTANCE.md) for the existing/implemented/pending matrix and whole-task scenarios. New connections retain detector boxes/capture provenance, saved-appearance candidates, private historical recall, paired RoomPlan/world-map frame provenance and bounded search resumption. Task cancellation no longer erases measured alignment. Camera position is no longer saved as an object's measured point.
+
+No general detector artifact is bundled. Model import is explicit; native output/accuracy and model/license acceptance remain gates. Existing center-depth association is not validated, and physical-object guidance remains disabled rather than treating history as a present location. Apple SDK/device/model/VoiceOver and household-task acceptance are still required. This is not completion of every shopping/cooking/navigation capability.
+
+## Earlier coordinated publication checkpoint — 2026-10-23
+
+This is the preceding publication record; the spatial follow-on above is newer. Integration preserves primary `30999a9` and incorporates the reviewed seven-commit Claude branch through `61001267`, plus the coordinated Saudi device-test and familiar-person work. It is source integration, not a deployment or Apple/device acceptance.
 
 **Canonical acceptance tracker:** [CHILD_ASSISTANT_TEST_TRACKER.md](CHILD_ASSISTANT_TEST_TRACKER.md). It records the goal, provenance rules, 24 child-style scenarios, three response paths (ordinary chat, independent hazards, evidence-gated physical requests), and executed versus still-pending checks. Use [CLAUDE_INTEGRATION_REVIEW.md](CLAUDE_INTEGRATION_REVIEW.md) for fixes and evidence, [PROJECT_VISION.md](PROJECT_VISION.md) for product intent, and [SESSION_LOG.md](SESSION_LOG.md) for decisions.
 
@@ -329,3 +335,5 @@ At the user's request, uploaded the existing Downloads/7sys44td9c-1.zip to the [
 
 Uploaded the user-supplied hello.zip unchanged (9,420,989 bytes; three Read/Describe/More UI screenshots) to the [private reference release](https://github.com/mischa23v/blind/releases/tag/hello-seeing-ai-20261022). All five asset SHA-256 digests verified against GitHub. Saved research/SEEING_AI_CODE_REFERENCES.md and research/SEEING_AI_REPOSITORY_EVIDENCE.json covering all eleven repositories supplied by the user, exact source revisions, README/licence hashes and test/build source paths. Licence texts and READMEs retained in the release evidence ZIP. No complete Seeing AI app source verified as public; internal-app reference is not public access. No upstream execution, model download, training, integration or app tests. Source licences, model/data terms and offline suitability remain separate. User screenshots are private developer references only; no production privacy rule changed.
 
+
+Portable verification for this follow-on: 592/592 BlindCore (whole suite), 15/15 BlindMemory, 257/257 Node, default and DEBUG/familiar-person Swift parsing, firmware protocol and address/undefined-sanitized failure injection passed. LeakSanitizer could not run under this executor's tracing; leak detection was disabled for the address/undefined sanitizer rerun. Aggregate verification passed in a disposable source copy with existing dependencies; reviewed generated Debug flags were copied into the checked-in project. No Apple SDK build, device test or accuracy result is claimed.
