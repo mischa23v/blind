@@ -1,4 +1,5 @@
 #if BLIND_FAMILIAR_PEOPLE
+import Foundation
 import ARKit
 import CoreImage
 import CryptoKit
@@ -153,6 +154,20 @@ private actor FamiliarInference {
 
 }
 
+/// Only the user's recognition switch belongs in preferences. Names, consent records,
+/// examples and model-bound templates remain solely in the encrypted private gallery.
+private enum FamiliarRecognitionPreference {
+    static let key = "familiarPeople.recognitionEnabled.v1"
+    static func isEnabled(in preferences: UserDefaults) -> Bool {
+        guard let stored = preferences.object(forKey: key) else { return true }
+        // Missing means the automatic default. A malformed saved choice fails closed.
+        return stored as? Bool ?? false
+    }
+    static func save(_ value: Bool, in preferences: UserDefaults) {
+        preferences.set(value, forKey: key)
+    }
+}
+
 /// Main-thread owned, matching NavigationModel and its .main ARSession delegate queue.
 final class FamiliarFaceExperiment: ObservableObject {
     enum EnrollmentMode { case new, add, replace }
@@ -194,6 +209,7 @@ final class FamiliarFaceExperiment: ObservableObject {
     /// True means admitted; false permits a later fresh proposal, not stale queuing.
     var onArrivalHint: ((FamiliarArrivalHint) -> Bool)?
     var onCancelArrivalHint: ((UUID) -> Void)?
+    private let preferences: UserDefaults
     private let store = FamiliarFaceStore()
     private let inference = FamiliarInference()
     private var generation = UUID()
@@ -219,13 +235,21 @@ final class FamiliarFaceExperiment: ObservableObject {
     private var arrivalCapture: FamiliarCapture?
     private var arrivalSpeechID: UUID?
     private var arrivalExpiry: Task<Void, Never>?
+    init(preferences: UserDefaults = .standard) {
+        self.preferences = preferences
+        enabled = FamiliarRecognitionPreference.isEnabled(in: preferences)
+        // Load before the first camera session, not only after visiting helper controls.
+        // Loading validates explicit person consent and the selected model profile; it
+        // never creates a key, starts a camera or treats photo count as consent.
+        reload(announce: false)
+    }
     var remainingExamples: Int { max(0, 6 - draftExamples.count) }
     var captureInstruction: String {
         switch draftExamples.count {
-        case 0: return "Face the camera straight on, alone and well lit."
-        case 1: return "Turn your head slightly left, keeping both eyes visible."
-        case 2: return "Turn your head slightly right, keeping both eyes visible."
-        default: return "You have at least three examples. Review and finish, or add a different well-lit view."
+        case 0: return "Keep the phone with the child. Adult being added: face the child and their camera, alone and well lit."
+        case 1: return "Adult being added: turn your head slightly left, keeping both eyes visible. The child keeps the phone."
+        case 2: return "Adult being added: turn your head slightly right, keeping both eyes visible. The child keeps the phone."
+        default: return "At least three examples are ready. Review and finish, or ask the adult for another well-lit view. The child keeps the phone."
         }
     }
     func preview(_ id: UUID) -> CGImage? {
@@ -233,24 +257,46 @@ final class FamiliarFaceExperiment: ObservableObject {
     }
     private func publishDraft() { draftLabel = draft?.label; enrollmentToken = draft?.token; draftExamples = draft?.examples ?? [] }
     private func cancelWork() {
+        // Passive arrival speech has its own scoped cancellation below. A camera
+        // tick ending must never interrupt an unrelated requested answer.
+        let hadExplicitFaceWork = busy || searching || snapshotCapture != nil || resultCapture != nil || draft != nil || pending != nil || showPicker
         invalidateLiveEvidence()
         generation = UUID(); task?.cancel(); task = nil; expiry?.cancel(); expiry = nil; busy = false; searching = false
-        resultCapture = nil; snapshotCapture = nil; onCancelSpeech?()
+        resultCapture = nil; snapshotCapture = nil
+        if hadExplicitFaceWork { onCancelSpeech?() }
     }
-    func cancel() {
+    func cancel(announce: Bool = true) {
         dispatchPrecondition(condition: .onQueue(.main))
         cancelWork(); pending = nil; confirmation.cancel(); confirmationToken = nil; awaitingConfirmation = false; draft = nil; publishDraft(); showPicker = false
-        status = "Face action canceled. No unfinished examples were saved."
+        let message = "Face action canceled. No unfinished examples were saved."
+        if announce { status = message } else { setSilentStatus(message) }
     }
-    func reload() {
-        cancel()
-        do { people = try store.load(); storageReady = true; status = "Private gallery ready. \(people.count) saved people." }
+    func reload(announce: Bool = true) {
+        let previousSilence = silenceStatus
+        if !announce { silenceStatus = true }
+        defer { silenceStatus = previousSilence }
+        // Passive startup/unlock has no face work to cancel. Do not stop unrelated
+        // assistant speech just because protected storage becomes available.
+        if announce || hasActiveWork { cancel() }
+        do {
+            people = try store.load(); storageReady = true
+            status = "Private gallery ready. \(people.count) saved people. " + (enabled
+                ? "Saved people are checked automatically when the foreground camera and monitoring are ready. Hints can be wrong."
+                : "Familiar-person hints remain off until you turn them on.")
+        }
         catch { people = []; storageReady = false; status = "Private gallery unavailable or from an older experiment. Unlock and retry, or delete this experimental gallery and re-enroll." }
+    }
+    /// Retry protected-storage access after foreground/unlock, never from the frame loop.
+    /// A saved off choice, ongoing enrollment and pending consent are not changed.
+    func prepareForForegroundSession() {
+        guard UIApplication.shared.applicationState == .active, !storageReady, !hasActiveWork else { return }
+        reload(announce: false)
     }
     func setEnabled(_ value: Bool) {
         cancel(); enabled = value
+        FamiliarRecognitionPreference.save(value, in: preferences)
         if !value { dualPipeline = false; encounters.reset() }
-        status = value ? "Familiar-person hints enabled for this visit. While the camera is active, I can give one tentative notice of a saved person. Hints can be wrong." : "Experimental comparison is off."
+        status = value ? "Automatic familiar-person hints are on. I check consented saved people when the foreground camera and monitoring are ready. Hints can be wrong. This choice is saved." : "Familiar-person hints are off until you turn them on again. This choice is saved."
     }
     /// Navigation away is not revocation of a separately consented active-camera session.
     /// Unfinished enrollment/confirmation work is still discarded, never silently saved.
@@ -351,11 +397,15 @@ final class FamiliarFaceExperiment: ObservableObject {
         status = text + " Say confirm face action, or cancel face action."
     }
     func requestEnable() {
+        guard !enabled else {
+            status = "Automatic familiar-person hints are already on for consented saved people when the foreground camera and monitoring are ready. Stop familiar people turns them off. Hints can be wrong."
+            return
+        }
         cancel()
-        ask(.enable, "This stationary supervised adult test can name the wrong person. While your foreground camera is active, check saved people and give one tentative notice, including outside this screen? No trust, navigation or safe-to-follow advice. Camera off stops checking. Enable for this visit?")
+        ask(.enable, "Turn familiar-person hints back on? This supervised stationary adult test can name the wrong person. Consented saved people will be checked during foreground camera use, including outside this screen. No trust or navigation advice. Your choice stays on until you stop familiar people.")
     }
     func requestEnrollment(label: String, mode: EnrollmentMode = .new) {
-        guard enabled, storageReady else { status = "Enable the experiment and reload the private gallery first."; return }
+        guard enabled, storageReady else { status = "Familiar-person hints must be on and the private gallery available before adding someone."; return }
         let name = label.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !name.isEmpty, name.count <= 60, !name.unicodeScalars.contains(where: { CharacterSet.controlCharacters.contains($0) }) else {
             status = "Choose a short label such as Mom or Dad. Labels do not verify relationships."; return
@@ -367,12 +417,12 @@ final class FamiliarFaceExperiment: ObservableObject {
         }
         let action = mode == .new ? "Enroll" : mode == .add ? "Add examples for" : "Replace all examples for"
         cancel()
-        ask(.begin(existing?.label ?? name, existing?.id, mode), "\(action) label \(existing?.label ?? name)? Confirm this adult permits local face templates, including enabled extra prints, and these photos show only them. Originals are not saved or uploaded.")
+        ask(.begin(existing?.label ?? name, existing?.id, mode), "\(action) label \(existing?.label ?? name)? Confirm this adult permits on-phone face templates, including enabled extra prints, and automatic tentative hints while the foreground camera is active. Each example must show only that adult. Originals are not saved or uploaded.")
     }
     func requestUnnamedEnrollment() {
-        guard enabled, storageReady, people.count < 20 else { status = "Enable familiar people and ensure the private gallery has space first."; return }
+        guard enabled, storageReady, people.count < 20 else { status = "Familiar-person hints must be on and the private gallery available with space before adding someone."; return }
         cancel()
-        ask(.begin(nil, nil, .new), "Add a person? Confirm the adult you will photograph permits face examples saved only on this phone. Each photo must show that same adult alone. You will choose their name before saving. No photos are saved or uploaded.")
+        ask(.begin(nil, nil, .new), "Add a person? Confirm this adult permits on-phone face templates and automatic tentative hints while the foreground camera is active. Each example must show that adult alone. You will choose their name before saving. No photos are saved or uploaded.")
     }
     /// Changing the label revokes any old save confirmation. No unnamed or placeholder
     /// identity can reach the encrypted gallery.
@@ -450,6 +500,8 @@ final class FamiliarFaceExperiment: ObservableObject {
     }
     func deleteAll() {
         cancel(); enabled = false; dualPipeline = false
+        FamiliarRecognitionPreference.save(false, in: preferences)
+        encounters.reset()
         do { try store.deleteAll(); people = []; storageReady = true; status = "All experimental people and the encryption key were deleted." }
         catch { storageReady = false; people = []; status = "Deletion could not finish. Unlock the phone and retry." }
     }
@@ -474,7 +526,7 @@ final class FamiliarFaceExperiment: ObservableObject {
         guard enabled, draft != nil, !busy, remainingExamples > 0 else { status = "Begin consented enrollment first, or finish the current six examples."; return }
         guard let capture = model.captureFamiliarFace() else { status = "Need current portrait camera, calibrated monitoring and three seconds stationary. Then retry face capture."; return }
         cancelWork(); pending = nil; confirmation.cancel(); confirmationToken = nil; awaitingConfirmation = false
-        let token = generation, useVision = dualPipeline; busy = true; status = "Capturing example \(draftExamples.count + 1). Hold still."
+        let token = generation, useVision = dualPipeline; busy = true; status = "Capturing example \(draftExamples.count + 1). The adult holds their pose; the child keeps the phone steady."
         task = Task { @MainActor [weak self] in
             guard let self else { return }
             do {
@@ -485,7 +537,7 @@ final class FamiliarFaceExperiment: ObservableObject {
                 status = "Accepted \(draftExamples.count) of at most six examples for \(draftLabel ?? "this label"). \(captureInstruction)"
             } catch {
                 guard generation == token, !Task.isCancelled else { return }
-                status = "Example not accepted. Need one sufficiently large, sharp, well-lit face. Move closer or improve lighting, then retry; no example was saved."
+                status = "Example not accepted. Need one clear, well-lit adult face. Ask the sighted adult being added to adjust their position or lighting while the child keeps the phone, then retry. No example was saved."
             }
             guard generation == token else { return }; busy = false; task = nil
         }
@@ -541,7 +593,7 @@ final class FamiliarFaceExperiment: ObservableObject {
     func compare(model: NavigationModel) {
         cancelWork() // A fresh request always clears the previous candidate and snapshot speech.
         pending = nil; confirmation.cancel(); confirmationToken = nil; awaitingConfirmation = false
-        guard enabled, !busy, draft == nil, storageReady, !people.isEmpty else { status = "Enable the experiment, finish or cancel enrollment, and ensure a person is saved first."; return }
+        guard enabled, !busy, draft == nil, storageReady, !people.isEmpty else { status = "Familiar-person hints must be on, with a consented person saved and no unfinished enrollment."; return }
         guard let capture = model.captureFamiliarFace() else { status = "Need a current tracked portrait camera and three seconds stationary. Calibrate monitoring and try again."; return }
         cancelWork(); pending = nil; confirmation.cancel(); confirmationToken = nil; awaitingConfirmation = false
         let token = generation, gallery = people, useVision = dualPipeline; busy = true; status = "Comparing locally."

@@ -34,16 +34,23 @@ test('encrypted gallery has device-only key, complete protection, backup exclusi
 test('experimental controller discards cancellation, obsolete gallery and stale camera results', async () => {
   const code = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');
   for (const literal of ['var enabled = false', 'generation == token', '!Task.isCancelled', 'model.familiarCaptureIsCurrent(capture)', 'result.faceCount == 1', 'Task.sleep', 'func revalidate', 'FamiliarFacePolicy.candidateForAttempt(', 'try store.save', 'resultCapture = nil']) assert.ok(code.includes(literal), literal);
-  for (const name of ['deleteAll', 'reload']) assert.match(code, new RegExp(`func ${name}[^}]*cancel\\(\\)`));
-  assert.doesNotMatch(code, /URLSession|feedback\.speak|AVSpeech|UserDefaults/);
+  assert.match(code.slice(code.indexOf('func reload('), code.indexOf('func prepareForForegroundSession')), /cancel\(\)/);
+  assert.match(code.slice(code.indexOf('func deleteAll('), code.indexOf('func review(')), /cancel\(\)/);
+  assert.doesNotMatch(code, /URLSession|feedback\.speak|AVSpeech|NSUbiquitousKeyValueStore/);
+  // Only a Boolean control is persisted in preferences. All names, consent and
+  // biometric records remain in the separately tested encrypted, device-only store.
+  assert.match(code, /static func save\(_ value: Bool, in preferences: UserDefaults\)/);
+  assert.deepEqual(code.match(/preferences\.set\([^\n]+/g), ['preferences.set(value, forKey: key)']);
+  assert.doesNotMatch(code, /UserDefaults\.standard\.(set|register)|preferences\.register/);
   const model = await read('ios/BlindAssist/NavigationModel.swift');
-  assert.match(model, /invalidatePerceptionWork\(preserveRGBHistoryWork: Bool = false\) \{\s*#if BLIND_FAMILIAR_PEOPLE\s*if familiarPeople.enabled && familiarPeople.hasActiveWork \{ familiarPeople.cancel\(\)/);
+  const invalidate = model.slice(model.indexOf('private func invalidatePerceptionWork('), model.indexOf('private func invalidatePerceptionWork(') + 1000);
+  assert.match(invalidate, /#if BLIND_FAMILIAR_PEOPLE\s*if familiarPeople.enabled && familiarPeople.hasActiveWork \{ familiarPeople.cancel\((?:announce: false)?\)/);
   assert.match(model, /familiarPeople.revalidate\(model: self\)/);
   assert.match(model, /perceptionGeneration == capture.generation/);
 });
-test('enrollment is explicit consent, default off, per-attempt and accessible', async () => {
+test('enrollment is explicit consent and recognition can always be switched off accessibly', async () => {
   const view = await read('ios/BlindAssist/FamiliarPeopleView.swift');
-  for (const literal of ['acknowledged = false', 'familiar-consent', '.disabled(!acknowledged)', 'familiar-disclosure', 'experiment.setEnabled(false)', 'phase != .active', 'familiar-delete-all', 'Confirm exact spoken face action']) {
+  for (const literal of ['acknowledged = false', 'familiar-consent', '.disabled(!acknowledged && !experiment.enabled)', 'familiar-disclosure', 'experiment.setEnabled(false)', 'phase != .active', 'familiar-delete-all', 'Confirm exact spoken face action']) {
     assert.ok(view.includes(literal), literal);
   }
   assert.match(view, /Photos or screens may fool it/);

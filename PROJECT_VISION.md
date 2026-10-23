@@ -1,8 +1,10 @@
+See [CONTINUOUS_COMPANION_DESIGN.md](CONTINUOUS_COMPANION_DESIGN.md) for the consolidated product intent and [CONTEXTUAL_CAPABILITIES_ACCEPTANCE.md](CONTEXTUAL_CAPABILITIES_ACCEPTANCE.md) for the latest bounded implementation evidence. Requirements are not completion claims.
+
 ## Current everyday-companion plan — 2026-10-23
 
 The goal is a free, local, continuously available general companion whose memory and tools reduce the work needed to obtain visual information. Navigation is only one tool, not the product definition. Current implementation and remaining gaps are tracked in [EVERYDAY_COMPANION_ACCEPTANCE.md](EVERYDAY_COMPANION_ACCEPTANCE.md), [SPATIAL_COMPANION_ACCEPTANCE.md](SPATIAL_COMPANION_ACCEPTANCE.md), and the reconciled [CHILD_ASSISTANT_TEST_TRACKER.md](CHILD_ASSISTANT_TEST_TRACKER.md). Successful source tests do not establish parity with a sighted helper, all-day reliability or safe unsupervised use.
 
-Current continuation: [CHILD_ASSISTANT_TEST_TRACKER.md](CHILD_ASSISTANT_TEST_TRACKER.md) is the canonical 24-scenario evidence/status tracker; [PROGRESS.md](PROGRESS.md) records final combined test counts and [MAC_HANDOFF.md](MAC_HANDOFF.md) orders the remaining native checks. Older counts are historical.
+Current continuation: [CHILD_ASSISTANT_TEST_TRACKER.md](CHILD_ASSISTANT_TEST_TRACKER.md) is the canonical scenario evidence/status tracker; [PROGRESS.md](PROGRESS.md) records final combined test counts and [MAC_HANDOFF.md](MAC_HANDOFF.md) orders the remaining native checks. Older counts are historical.
 
 # Blind Assist: a free, local conversational companion
 

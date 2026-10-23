@@ -140,6 +140,21 @@ enum VisionService {
         return [page.topLeft, page.topRight, page.bottomRight, page.bottomLeft].map { (x: Double($0.x), y: 1 - Double($0.y)) }
     }
 
+    /// Cheap, bounded proposal only. A rectangle is NOT evidence of currency or value.
+    /// Caller may send the full uncropped frame to the separately gated reference verifier.
+    static func currencyRectangleCandidate(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) throws -> Bool {
+        try Task.checkCancellation()
+        let request = VNDetectRectanglesRequest()
+        request.maximumObservations = 4
+        request.minimumConfidence = 0.6
+        request.minimumSize = 0.12
+        request.minimumAspectRatio = 0.25
+        request.maximumAspectRatio = 0.9
+        try VNImageRequestHandler(cvPixelBuffer: image, orientation: orientation).perform([request])
+        try Task.checkCancellation()
+        return request.results?.count == 1
+    }
+
     /// The first decoded barcode or QR code in view.
     static func code(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) throws -> (payload: String, isQR: Bool)? {
         let request = VNDetectBarcodesRequest()

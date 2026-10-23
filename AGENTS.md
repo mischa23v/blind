@@ -6,6 +6,8 @@ Before answering or acting, reason through the request's constraints and verify 
 
 ## Required context at the start of a session
 
+Read `CONTINUOUS_COMPANION_DESIGN.md` for the consolidated continuous-assistant product requirements and `CONTEXTUAL_CAPABILITIES_ACCEPTANCE.md` for the current automatic-trigger wiring and limits.
+
 Read `PROGRESS.md`, `TODO.md`, `PROJECT_PLAN.md`, and the relevant tasks in `TASKS.md` before changing implementation. Read `research/MEMORY_AND_INFORMATION_ENGINE.md`, `research/ATTENTION_AND_SPEECH.md` and `research/COMMUNITY_MAPS.md` for the accepted architecture. Keep these records current as work is completed or scope changes; do not rely on chat history alone.
 
 ## User's product direction

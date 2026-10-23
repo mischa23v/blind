@@ -19,12 +19,10 @@ struct FamiliarPeopleView: View {
             }
             NavigationLink(t("Add person", "أضف شخصاً")) { FamiliarPeopleToolsView(model: model, experiment: experiment) }
                 .frame(minHeight: 44).accessibilityIdentifier("familiar-add-person")
-            Text(t("Use a sighted helper. A familiar-person hint can be wrong.", "استعن بمساعد مبصر. قد يخطئ التعرف على الشخص المألوف."))
+            Text(t("Use a sighted helper, but keep the phone with the child. Ask the adult being added to face the child and change their own angle. A familiar-person hint can be wrong.", "استعن بمساعد مبصر مع إبقاء الهاتف مع الطفل. اطلب من الشخص البالغ المراد إضافته مواجهة الطفل وتغيير زاويته بنفسه. قد يخطئ التعرف على الشخص المألوف."))
         }
         .navigationTitle(t("People", "الأشخاص"))
-        .onAppear {
-            if !experiment.enabled && !experiment.hasActiveWork { experiment.reload() }
-        }
+        .onAppear { experiment.prepareForForegroundSession() }
     }
 }
 
@@ -44,9 +42,9 @@ private struct FamiliarPeopleToolsView: View {
     var body: some View {
         Form {
             Section("Add a person with a helper") {
-                Text("For now, enroll only a consenting adult with sighted supervision. Familiar-person hints can be wrong; ask the person to speak. Photos and templates stay on this phone.")
+                Text("For now, enroll only a consenting adult with sighted supervision. Keep the phone with the child throughout. The adult being added faces the child and changes their own angle when asked. Familiar-person hints can be wrong; ask the person to speak. Templates stay on this phone.")
                 if !experiment.enabled {
-                    Button("Review limits and enable for this visit") { experiment.requestEnable() }
+                    Button("Turn familiar-person hints back on") { experiment.requestEnable() }
                         .frame(minHeight: 44).accessibilityIdentifier("familiar-guided-enable")
                 }
             }
@@ -93,7 +91,7 @@ private struct FamiliarPeopleToolsView: View {
                             Button("Remove unfinished example \(index + 1)", role: .destructive) { experiment.removeDraftExample(example.id) }
                         }
                     }
-                    Text("Only one person in each photo. If a photo is unclear, try again.")
+                    Text("Only one consenting adult in each photo. The adult adjusts their own position; the child keeps the phone. If a photo is unclear, try again.")
                 }
                 if experiment.draftExamples.count >= 3 {
                     Section("2. Name and save") {
@@ -159,7 +157,7 @@ private struct FamiliarPeopleToolsView: View {
             }
         }
         .onChange(of: experiment.draftLabel) { _, name in if let name { label = name } }
-        .onAppear { experiment.presentationActive = true; if !experiment.enabled && !experiment.awaitingConfirmation { experiment.reload() } }
+        .onAppear { experiment.presentationActive = true; experiment.prepareForForegroundSession() }
         .onDisappear { awaitingCameraForEnrollment = false; cancelPhotoLoad(); experiment.leaveEnrollmentScreen(); model.voice.endManualTurn() }
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { awaitingCameraForEnrollment = false; cancelPhotoLoad(); experiment.leaveEnrollmentScreen(); model.voice.endManualTurn() }
@@ -190,10 +188,10 @@ private struct FamiliarPeopleToolsView: View {
                 Toggle("I understand the limits and have sighted supervision for this first-stage test", isOn: $acknowledged)
                     .accessibilityIdentifier("familiar-disclosure")
                     .onChange(of: acknowledged) { _, value in if !value { experiment.setEnabled(false) } }
-                Toggle("Enable experimental hints for this visit", isOn: Binding(get: { experiment.enabled }, set: { experiment.setEnabled($0) }))
-                    .disabled(!acknowledged).accessibilityIdentifier("familiar-enable")
-                Button("Hear limits and confirm by voice") { experiment.requestEnable() }
-                Text("Off by default. Once enabled, familiar people are checked while your foreground camera is active, including outside this screen. A newly recognized person gets one tentative notice, not repeated chatter. Stop familiar people here or by voice. Templates and labels stay encrypted on this phone, excluded from backups. No app uploads. Original or aligned photos are not saved by this app; selected photos remain in your Photos library.")
+                Toggle("Automatic familiar-person hints", isOn: Binding(get: { experiment.enabled }, set: { experiment.setEnabled($0) }))
+                    .disabled(!acknowledged && !experiment.enabled).accessibilityIdentifier("familiar-enable")
+                Button(experiment.enabled ? "Hear current recognition setting" : "Hear limits and confirm by voice") { experiment.requestEnable() }
+                Text("Consented saved people are checked automatically when your foreground camera and monitoring are ready, including outside this screen. No separate helper enable step is needed. A newly recognized person gets one tentative notice, not repeated chatter. Your explicit on or off choice is saved across visits and restarts. You can always turn hints off here or say stop familiar people. Templates and labels stay encrypted on this phone, excluded from backups. No app uploads. Original or aligned photos are not saved by this app; selected photos remain in your Photos library.")
                 Text("Start camera monitoring and complete calibration before camera enrollment. Starting or stopping a camera session cancels unfinished face work. Existing-photo enrollment does not require camera monitoring.")
                 Button(model.running ? "Stop live camera" : "Turn on live camera monitoring") {
                     if model.running { model.cameraAwareness = false }

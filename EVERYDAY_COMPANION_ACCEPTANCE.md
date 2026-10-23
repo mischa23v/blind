@@ -1,3 +1,5 @@
+This checkpoint is historical. The later [context-driven increment](CONTEXTUAL_CAPABILITIES_ACCEPTANCE.md) adds passive/goal-driven triggers and replaces the default-off familiar-gallery dependency described below.
+
 # Everyday companion: tools, memory and task continuity
 
 ## Scope and purpose, 2026-10-23

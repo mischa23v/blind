@@ -353,6 +353,18 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var questionTask: Task<Void, Never>?
     private var questionTimeoutTask: Task<Void, Never>?
     private let saudiBanknotes = SaudiBanknoteReferenceRecognition()
+    private var contextualCapabilities = ContextualCapabilityScheduler()
+    private var contextualTask: Task<Void, Never>?
+    private var contextualTaskLease: ContextualCapabilityScheduler.Lease?
+    private var contextualOutstanding: [UUID: ContextualCapabilityScheduler.Lease] = [:]
+    private var contextualTimedOut = Set<ContextualCapabilityScheduler.Capability>()
+    private var contextualCurrency = ContextualCurrencyConsensus()
+    private var contextualSpeech: (id: UUID, lease: ContextualCapabilityScheduler.Lease,
+        evidence: ContextualCapabilityScheduler.Evidence, origin: Point3, forward: Point3)?
+    private var contextualLastSpoken: [String: Double] = [:]
+    private var voiceRoomScan = VoiceRoomScanConfirmation()
+    private var preserveScanConfirmationOnce = false
+    private var voiceRoomScanPrompt: (id: UUID, session: UInt64, goal: String, generation: UUID, delivered: Bool)?
     private var currencyActive = false
     private var currencyRetake = CurrencyRetakeSession()
     private let clothingColors = ClothingColorReader()
@@ -416,6 +428,16 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         feedback.onRequestedSpeechFinished = { [weak self] id, text, outcome in
             guard let self else { return }
             if self.recordedSpotSpeech?.id == id { self.recordedSpotSpeech = nil }
+            if self.contextualSpeech?.id == id { self.contextualSpeech = nil }
+            if var prompt = self.voiceRoomScanPrompt, prompt.id == id {
+                if outcome == .completed,
+                   prompt.session == self.assistantSession.generation,
+                   prompt.goal == self.companionWorkingState.goalRevision,
+                   prompt.generation == self.perceptionGeneration,
+                   self.voiceRoomScan.promptDidFinish(now: ProcessInfo.processInfo.systemUptime) {
+                    prompt.delivered = true; self.voiceRoomScanPrompt = prompt
+                } else { self.cancelVoiceRoomScanConfirmation() }
+            }
             if let pending = self.pendingPassiveNotice, pending.id == id {
                 self.pendingPassiveNotice = nil
                 if outcome == .completed, pending.revision == self.companionWorkingState.goalRevision {
@@ -529,6 +551,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             let pendingRetake = self.currencyRetake
             self.interruptedSearch.capture(search: self.objectSearch, goalRevision: self.companionWorkingState.goalRevision,
                 generation: self.assistantSession.generation, now: ProcessInfo.processInfo.systemUptime)
+            self.preserveScanConfirmationOnce = true
             self.cancelDescription()
             if pendingRetake.isPending { self.currencyRetake = pendingRetake }
             _ = self.feedback.stopInformation(announceCancellation: false)
@@ -622,6 +645,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if announceCalibration { speakMobility(message) }
     }
     func stop() {
+        voiceRoomScan.cancel()
         voice.cancel()
         cancelDescription()
         stopCameraMonitoring()
@@ -629,6 +653,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     /// Camera/sensor lifecycle is independent of an opted-in audio conversation.
     private func stopCameraMonitoring() {
+        voiceRoomScan.cancel()
         cancelAutomaticRoomRecovery()
         interruptedSearch.cancel()
         persistObservedObjects()
@@ -814,6 +839,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         continueSearch()
         updateTrackedTarget()
         updateReadingTool(frame: frame)
+        updateContextualCapabilities(frame: frame, observation: observation)
         if ambientDescriptions, !returning, objectSearch == nil, trackedTarget == nil, readingTool == nil, !lookupInFlight, !voice.awaitingUtterance, lastFrameWallTime - lastAmbientAttempt >= 4,
            attention.permitsAmbient(detail: detail, urgent: detection.hazard != .observing, now: lastFrameWallTime) {
             lastAmbientAttempt = lastFrameWallTime
@@ -826,16 +852,16 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         interruptedSearch.cancel()
         if currencyActive || colorActive || readingTool != nil || currencyRetake.isPending { cancelDescription() }
         guard command == .cancel || command == .stop || !running || detection.hazard == .observing else { message = "Current monitoring alerts take priority."; return true }
-        if !showFamiliarPeople && !familiarPeople.enabled {
+        if command == .open {
             showFamiliarPeople = true
-            familiarPeople.reload()
+            familiarPeople.prepareForForegroundSession()
         }
         familiarPeople.handle(command, model: self)
         return true
     }
     /// Short-lived rear-camera input for consent-enabled foreground recognition.
     func captureFamiliarFace() -> FamiliarCapture? {
-        guard running, !simulation, !places.scanning, awaitingPlace == nil,
+        guard assistantSession.shouldRunCamera, cameraAwareness, running, !simulation, !places.scanning, awaitingPlace == nil,
               detection.hazard == .observing, attention.stationary,
               UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }),
               let observation = lastObservation, observation.trackingNormal,
@@ -857,7 +883,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let ageOK = snapshotSpeech
             ? FamiliarFacePolicy.snapshotSpeechFresh(capturedAt: capture.capturedAt, now: now, frameAt: lastFrameWallTime)
             : FamiliarFacePolicy.fresh(capturedAt: capture.capturedAt, now: now, frameAt: lastFrameWallTime)
-        guard running, !simulation, !places.scanning, awaitingPlace == nil,
+        guard assistantSession.shouldRunCamera, cameraAwareness, running, !simulation, !places.scanning, awaitingPlace == nil,
               detection.hazard == .observing, attention.stationary,
               perceptionGeneration == capture.generation, let observation = lastObservation, observation.trackingNormal,
               UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }),
@@ -868,8 +894,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     #endif
     private func invalidatePerceptionWork(preserveRGBHistoryWork: Bool = false) {
+        cancelVoiceRoomScanConfirmation()
+        cancelContextualCapabilities()
         #if BLIND_FAMILIAR_PEOPLE
-        if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel() }
+        if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel(announce: false) }
         #endif
         if currencyActive || colorActive || readingTool != nil || currencyRetake.isPending { cancelDescription() }
         perceptionGeneration = UUID(); recallInFlight = false; learningItem = nil
@@ -898,6 +926,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             originForward: observation.forward, currentForward: lastObservation?.forward)
     }
     private func cancelDescription() {
+        if !preserveScanConfirmationOnce { cancelVoiceRoomScanConfirmation() }
+        preserveScanConfirmationOnce = false
+        cancelContextualCapabilities()
         everydayRetry.cancel(); everydayRetryTicketID = nil; everydayRetryRequestID = nil
         currencyRetake.clear()
         stopReadingTool(announce: false)
@@ -935,7 +966,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             companion.withdrawOffer(); companionOffer = nil
             roomOfferCandidate = nil; roomQuestionCandidate = nil
             #if BLIND_FAMILIAR_PEOPLE
-            if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel() }
+            if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel(announce: false) }
             #endif
             if voice.listening { voice.endManualTurn() }
         }
@@ -996,7 +1027,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         outdoor.requestCoarseLocation()
         mapping.stop(); journeys.breakTracking(); fixedBodyMount = false; indoor.invalidatePosition(); peopleTracking.reset()
         visualStairs.reset()
-        invalidateReturn(); cancelDescription(); voice.endManualTurn(); detector.reset(); feedback.stop()
+        invalidateReturn(); cancelDescription(); detector.reset(); feedback.stop()
         phoneDetection = Detection(.uncertain); detection = phoneDetection
         // The room scanner needs the camera, so path alerts from the camera pause; say so plainly.
         _ = speakMobility(arabic ? "مسح الغرفة يعمل. تنبيهات الكاميرا متوقفة حتى ينتهي المسح. ابقَ مع مساعد مبصر." : "Room scan running. Camera path alerts are off until the scan ends. Stay with a sighted helper.")
@@ -1053,6 +1084,245 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             lastIndoorCueKey = key
         }
     }
+    /// No mode selection: this loop consumes foreground evidence and the user's retained goal.
+    /// Independent hazards already ran above; no LLM participates in these dispatch decisions.
+    private var contextualGoalText: String {
+        [companionWorkingState.goal, companionWorkingState.parentGoal?.goal ?? "", companionWorkingState.focusObject].joined(separator: " ")
+    }
+    private var contextualAvailability: [ContextualCapabilityScheduler.Capability: ContextualCapabilityScheduler.Availability] {
+        let currency: ContextualCapabilityScheduler.Availability = SaudiBanknoteReferenceRecognition.isAvailable ? .available : .unavailable
+        var available: [ContextualCapabilityScheduler.Capability: ContextualCapabilityScheduler.Availability] =
+            [.currencyProbe: currency, .currency: currency, .text: .available, .barcode: .available,
+             .light: .available, .color: .available]
+        for capability in contextualTimedOut { available[capability] = .unavailable }
+        return available
+    }
+    private func contextualMoment() -> ContextualCapabilityScheduler.Moment {
+        .init(now: ProcessInfo.processInfo.systemUptime, requestID: requestID,
+            perceptionGeneration: perceptionGeneration, sessionGeneration: assistantSession.generation,
+            goalGeneration: companionWorkingState.goalRevision, cameraEnabled: cameraAwareness && running && !simulation,
+            sessionActive: assistantSession.mayRespond, foregroundActive: assistantSession.foregroundActive,
+            stationary: attention.stationary, hazardActive: detection.hazard != .observing,
+            listening: voice.awaitingUtterance,
+            busy: busy || contextualOutstanding.keys.contains(where: { $0 != contextualTaskLease?.id }) || passiveObservationInFlight || readingTool != nil || currencyActive || colorActive || lookupInFlight ||
+                places.scanning || awaitingPlace != nil || feedback.speechPriority != nil || focusedFaceSearch)
+    }
+    private func cancelContextualCapabilities() {
+        contextualTask?.cancel(); contextualTask = nil; contextualTaskLease = nil
+        contextualCapabilities.cancel()
+        contextualCurrency.reset()
+        if let speech = contextualSpeech { feedback.stopRequestedSpeech(speech.id); contextualSpeech = nil }
+    }
+    private func updateContextualCapabilities(frame: ARFrame, observation: Observation) {
+        let expired = contextualOutstanding.values.filter {
+            ProcessInfo.processInfo.systemUptime - $0.startedAt > ContextualCapabilityScheduler.leaseLifetime
+        }
+        for active in expired {
+            // Cancellation cannot forcibly terminate Apple's synchronous Vision call.
+            // Disable this producer for this process rather than pile up replacement jobs.
+            contextualTimedOut.insert(active.capability)
+            if active.capability == .currencyProbe { contextualTimedOut.insert(.currency) }
+            contextualOutstanding[active.id] = nil
+            if contextualTaskLease?.id == active.id { cancelContextualCapabilities() }
+        }
+        if let speech = contextualSpeech {
+            // Captured-view wording is historical, but never allow it to bleed into a
+            // different session/task, a hazard, or a changed camera-to-item association.
+            if speech.lease.requestID != requestID || speech.lease.perceptionGeneration != perceptionGeneration ||
+                speech.lease.sessionGeneration != assistantSession.generation ||
+                speech.lease.goalGeneration != companionWorkingState.goalRevision ||
+                !assistantSession.shouldRunCamera || !cameraAwareness || detection.hazard != .observing ||
+                !visualCapturePoseAllowed(origin: speech.origin, forward: speech.forward) {
+                feedback.stopRequestedSpeech(speech.id); contextualSpeech = nil
+            }
+        }
+        guard contextualTask == nil, observation.trackingNormal,
+              UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }) else { return }
+        let goal = ContextualCapabilityScheduler.Goal.infer(from: contextualGoalText)
+        let capturedAt = lastFrameWallTime
+        let light = frame.lightEstimate.flatMap { LightLevel.from(lumens: Double($0.ambientIntensity)) }
+        let evidence = ContextualCapabilityScheduler.Evidence(capturedAt: capturedAt, lightAvailable: light != nil)
+        guard let lease = contextualCapabilities.reserve(goal: goal, evidence: evidence,
+            moment: contextualMoment(), availability: contextualAvailability) else { return }
+        let image = frame.capturedImage, arabic = self.arabic, goalText = contextualGoalText
+        let origin = observation.camera, forward = observation.forward
+        let mapRevision = indoor.revision, alignmentRevision = indoor.alignmentRevision
+        contextualTaskLease = lease; contextualOutstanding[lease.id] = lease
+        contextualTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            var activeLease = lease
+            var observed = evidence
+            var text: String? = nil
+            var semanticKey: String? = nil
+            var outcome: ContextualCapabilityScheduler.Outcome = .noResult
+            defer {
+                self.contextualOutstanding[lease.id] = nil
+                self.contextualCapabilities.finish(activeLease, outcome: outcome, now: ProcessInfo.processInfo.systemUptime)
+                // A cancelled old callback must not clear a replacement's task.
+                if self.contextualTaskLease?.id == lease.id {
+                    self.contextualTask = nil; self.contextualTaskLease = nil
+                }
+            }
+            do {
+                switch lease.capability {
+                case .currencyProbe:
+                    let candidate = try await Task.detached(priority: .utility) {
+                        try VisionService.currencyRectangleCandidate(image: image, orientation: .right)
+                    }.value
+                    try Task.checkCancellation()
+                    guard candidate else {
+                        _ = self.contextualCurrency.observe(verifiedDenomination: nil, capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime, sessionGeneration: lease.sessionGeneration)
+                        return
+                    }
+                    observed = .init(capturedAt: capturedAt, banknoteCandidate: true)
+                    guard let promoted = self.contextualCapabilities.promoteCurrencyCandidate(lease, evidence: observed,
+                        moment: self.contextualMoment(), availability: self.contextualAvailability) else { return }
+                    activeLease = promoted
+                    let result = try await self.saudiBanknotes.inspect(image: image, orientation: .right)
+                    try Task.checkCancellation()
+                    if case .denomination(let value) = result {
+                        outcome = .success
+                        guard self.contextualCurrency.observe(verifiedDenomination: value, capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime, sessionGeneration: lease.sessionGeneration) != nil else { return }
+                        text = result.speech(arabic: arabic); semanticKey = "currency:\(value)"; outcome = .success
+                    } else {
+                        _ = self.contextualCurrency.observe(verifiedDenomination: nil, capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime, sessionGeneration: lease.sessionGeneration)
+                        // A rectangle can be a book, label or screen. Never announce money
+                        // failure/identity from that alone. Guidance requires a payment goal.
+                        if goal.contains(.payment) {
+                            text = arabic ? "لم أتحقق من قيمة في هذه اللقطة بعد." : "I haven't verified a value in this view yet."
+                            semanticKey = text.map { "currency-quality:\($0)" }
+                        }
+                    }
+                case .currency:
+                    // Only same-frame promotion above can enter the reference verifier.
+                    return
+                case .text:
+                    let lines = try await Task.detached(priority: .utility) {
+                        try VisionService.textLines(image: image, orientation: .right, arabic: arabic, accurate: true)
+                    }.value
+                    try Task.checkCancellation()
+                    let excluded: Set<String> = ["want", "need", "find", "help", "with", "this", "that", "where", "some", "please", "shopping", "read", "reading", "buy", "get", "the", "and", "for", "أريد", "اريد", "ساعدني", "أين", "اين"]
+                    let goalWords = Set(goalText.lowercased().split(whereSeparator: { !$0.isLetter && !$0.isNumber }).map(String.init).filter { $0.count >= 3 && !excluded.contains($0) })
+                    let relevant = lines.filter { line in
+                        guard line.confidence >= 0.85, line.text.count <= 100,
+                              !SaudiBanknotePolicy.containsUnverifiedMoneyValue(line.text),
+                              !SpatialClaimGuard.containsSpatialClaim(line.text), !SpatialClaimGuard.mentionsHazard(line.text) else { return false }
+                        return goal.contains(.reading) || goalWords.contains(where: { line.text.lowercased().contains($0) })
+                    }.sorted { $0.y < $1.y }.first
+                    if let relevant {
+                        observed = .init(capturedAt: capturedAt, textCandidate: true)
+                        text = (arabic ? "النص في اللقطة: " : "Text in the captured view: ") + relevant.text
+                        semanticKey = "text:" + relevant.text.lowercased(); outcome = .success
+                    }
+                case .barcode:
+                    let code = try await Task.detached(priority: .utility) {
+                        try VisionService.code(image: image, orientation: .right)
+                    }.value
+                    try Task.checkCancellation()
+                    // No unsolicited raw code, URL, beep, web lookup or claim of Saudi catalogue coverage.
+                    if let code, !code.isQR, let name = self.products.name(for: code.payload) {
+                        observed = .init(capturedAt: capturedAt, barcodeCandidate: true)
+                        text = (arabic ? "الرمز يطابق الاسم المحفوظ: " : "The code matches your saved label: ") + name
+                        semanticKey = "barcode:" + code.payload; outcome = .success
+                    }
+                case .light:
+                    if let light {
+                        // Camera illuminance is not a switch sensor, time-of-day or proof a lamp is on.
+                        text = light.speech(arabic: arabic)
+                        semanticKey = "light:\(light.rawValue)"; outcome = .success
+                    }
+                case .color:
+                    let result = try await self.clothingColors.read(image: image, orientation: .right)
+                    try Task.checkCancellation()
+                    // read() only returns after central-instance masking and person rejection.
+                    // This is not identification of the user's outfit or a person elsewhere.
+                    observed = .init(capturedAt: capturedAt, centralIsolatedItem: true)
+                    if case .appearance(let name) = result {
+                        text = arabic ? "المنطقة الوسطى المنفصلة تبدو \(name.localized(arabic: true)) في هذه الإضاءة." : "The separate centre area looks \(name.rawValue) in this lighting."
+                        semanticKey = "color:" + name.rawValue; outcome = .success
+                    }
+                }
+                try Task.checkCancellation()
+                guard let text, let key = semanticKey,
+                      self.contextualCapabilities.beforeSpeech(activeLease, moment: self.contextualMoment(), evidence: observed,
+                        goal: ContextualCapabilityScheduler.Goal.infer(from: self.contextualGoalText), availability: self.contextualAvailability),
+                      self.visualCapturePoseAllowed(origin: origin, forward: forward),
+                      self.perceptionResultAllowed(request: lease.requestID, generation: lease.perceptionGeneration,
+                        capturedAt: capturedAt, observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return }
+                let now = ProcessInfo.processInfo.systemUptime
+                guard now - (self.contextualLastSpoken[key] ?? -.infinity) >= 60 else { return }
+                let id = UUID()
+                let category = activeLease.capability == .text ? "signs" : "objects"
+                let candidate = InformationCandidate(key: "contextual:" + key, kind: .discovery, text: text,
+                    words: Self.wordCount(text), revision: "\(Int(now / 60))", createdAt: capturedAt,
+                    expiresAt: capturedAt + 2, category: category, requested: false, goalRelevant: !goal.isEmpty)
+                if self.deliverCandidate(candidate, speechID: id) {
+                    self.currentReply = text
+                    self.contextualSpeech = (id, activeLease, observed, origin, forward)
+                    self.contextualLastSpoken[key] = now
+                    if self.contextualLastSpoken.count > 64 { self.contextualLastSpoken = self.contextualLastSpoken.filter { now - $0.value < 60 } }
+                }
+            } catch is CancellationError {
+                return
+            } catch {
+                outcome = .failed // A failed/missing adapter produces no guessed result.
+            }
+        }
+    }
+
+    private func cancelVoiceRoomScanConfirmation() {
+        voiceRoomScan.cancel(); voiceRoomScanPrompt = nil
+    }
+
+    /// Only direct typed/spoken user input reaches here. Models and scene text cannot call it.
+    private func routeVoiceRoomScan(_ text: String) -> Bool {
+        let promptContext = voiceRoomScanPrompt
+        let action = voiceRoomScan.consume(text, source: .directUser, now: ProcessInfo.processInfo.systemUptime)
+        switch action {
+        case .none:
+            if !voiceRoomScan.hasPendingConfirmation { voiceRoomScanPrompt = nil }
+            return false
+        case .requestConfirmation(let name):
+            preserveScanConfirmationOnce = true
+            cancelDescription()
+            guard assistantSession.foregroundActive, cameraAwareness, running, !simulation, !places.scanning else {
+                voiceRoomScan.cancel()
+                _ = speakOperation(arabic ? "أحتاج الكاميرا في التطبيق لبدء المسح." : "I need the camera active in the app to scan a room.")
+                return true
+            }
+            let label = name ?? (arabic ? "هذه الغرفة" : "this room")
+            let prompt = arabic ? "أبدأ مسح \(label)؟ تتوقف تنبيهات مسار الكاميرا أثناء المسح. ابق مع مساعد مبصر وقل نعم ابدأ المسح للتأكيد." : "Start scanning \(label)? Camera path alerts pause during scanning. Stay with a sighted helper. Say start scanning to confirm."
+            let id = UUID()
+            voiceRoomScanPrompt = (id, assistantSession.generation, companionWorkingState.goalRevision, perceptionGeneration, false)
+            if !dispatchText(prompt, kind: .operation, requested: true, replace: true, speechID: id) {
+                cancelVoiceRoomScanConfirmation()
+            }
+            return true
+        case .start(let name):
+            voiceRoomScanPrompt = nil
+            guard let promptContext, promptContext.delivered,
+                  promptContext.session == assistantSession.generation,
+                  promptContext.goal == companionWorkingState.goalRevision,
+                  promptContext.generation == perceptionGeneration else {
+                _ = speakOperation(arabic ? "اطلب المسح مجدداً للاستماع إلى التأكيد." : "Ask to scan again so I can finish the confirmation.")
+                return true
+            }
+            guard assistantSession.foregroundActive, cameraAwareness, running, !simulation, !places.scanning else { return true }
+            scanPlace(name: name ?? (arabic ? "غرفتي" : "My room"))
+            return true
+        case .cancel:
+            voiceRoomScanPrompt = nil
+            if places.scanning { places.cancelScanAndResume() }
+            else { _ = speakOperation(arabic ? "ألغيت طلب المسح." : "Scan request cancelled.") }
+            return true
+        case .stop:
+            voiceRoomScanPrompt = nil
+            if places.scanning { places.finishScan() }
+            else { _ = speakOperation(arabic ? "لا يوجد مسح جارٍ." : "No room scan is running.") }
+            return true
+        }
+    }
+
     /// Explicit single-photo money request. Unknown/unavailable never falls through to an LLM.
     @discardableResult func routeSaudiBanknoteCommand(_ text: String, retake: CurrencyRetakeSession? = nil) -> Bool {
         guard retake != nil || ConversationDomainPolicy.requiredInspection(for: text) == .banknote else { return false }
@@ -1264,6 +1534,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
 
     func readScene(cloud: Bool, question: String = "Describe what is in front of me.", automatic: Bool = false, focus: String = "surroundings") {
+        if automatic, contextualTask != nil || !contextualOutstanding.isEmpty { return }
         #if !BLIND_DEVELOPER_CLOUD
         // Privacy rule (AGENTS.md): camera pictures never leave the phone in the app build.
         let cloud = false
@@ -1541,7 +1812,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             cancelDescription(); companion.withdrawOffer(); companionOffer = nil
             roomOfferCandidate = nil; roomQuestionCandidate = nil
             #if BLIND_FAMILIAR_PEOPLE
-            if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel() }
+            if familiarPeople.enabled && familiarPeople.hasActiveWork { familiarPeople.cancel(announce: false) }
             #endif
         } else if candidate.kind != .mobility {
             // Lost monitoring (uncertain / needs calibration) silences ambient descriptions, but the
@@ -1795,6 +2066,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, text.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars,
               !fromVoice || assistantSession.shouldListen else { return }
+        if routeVoiceRoomScan(text) { return }
         let pendingRetake = currencyRetake
         let completionEligible = everydayTasks.state == .active || everydayTasks.state == .informationReady
         // Retire old adapter callbacks on interruption, without discarding the
@@ -2592,6 +2864,9 @@ extension NavigationModel {
             _ = feedback.stopInformation(announceCancellation: false)
         }
         assistantSession.enterForeground()
+        #if BLIND_FAMILIAR_PEOPLE
+        familiarPeople.prepareForForegroundSession()
+        #endif
         voice.setBackgroundAllowed(backgroundConversation)
         guard !ProcessInfo.processInfo.arguments.contains("--ui-testing") else { return }
         if assistantSession.state == .idle {
@@ -2610,6 +2885,7 @@ extension NavigationModel {
 
     /// Camera work always stops in the background; listening follows explicit opt-in.
     func suspendExperience() {
+        voiceRoomScan.cancel()
         defer { updateLiveActivity() }
         experienceActive = false
         assistantSession.enterBackground()
@@ -2623,6 +2899,9 @@ extension NavigationModel {
     }
 
     func startConversation() {
+        #if BLIND_FAMILIAR_PEOPLE
+        familiarPeople.prepareForForegroundSession()
+        #endif
         defer { updateLiveActivity() }
         assistantSession.setBackgroundAllowed(backgroundConversation)
         assistantSession.start()
@@ -2634,6 +2913,7 @@ extension NavigationModel {
     }
 
     func muteConversation() {
+        voiceRoomScan.cancel()
         defer { updateLiveActivity() }
         everydayTasks.pause(); everydayTicket = nil
         assistantSession.mute()
@@ -2644,6 +2924,7 @@ extension NavigationModel {
     }
 
     func endConversation() {
+        voiceRoomScan.cancel()
         defer { updateLiveActivity() }
         everydayTasks.cancelAll(); everydayTicket = nil; everydayUtterance = ""
         assistantSession.end()
@@ -2976,7 +3257,7 @@ extension NavigationModel {
         let now = lastFrameWallTime
         guard now >= observation.timestamp, now - observation.timestamp <= 0.5,
               running, !simulation, assistantSession.foregroundActive, (nonspatialOnly || observation.trackingNormal),
-              !places.scanning, (nonspatialOnly || detection.hazard == .observing), !passiveObservationInFlight,
+              !places.scanning, (nonspatialOnly || detection.hazard == .observing), !passiveObservationInFlight, contextualTask == nil, contextualOutstanding.isEmpty,
               now - lastPassiveObservation >= 3,
               UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }) else { return }
         let keys = items.items.map(\.key).filter { itemAppearance.viewCount($0) > 0 }
