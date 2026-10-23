@@ -70,5 +70,5 @@ test('People landing is names and Add person while the existing consent workflow
   assert.match(view,/if !model.cameraAwareness \{ model.cameraAwareness = true \} else \{ model.start\(\) \}/);
   assert.match(view,/authorizationStatus\(for: \.video\) == \.denied/);
   assert.match(view,/awaitingCameraForEnrollment = false/);
-  assert.match(view,/guard model.supported, !model.textOnly/);
+  assert.match(view,/guard ARWorldTrackingConfiguration\.isSupported, !model.textOnly/);
  });

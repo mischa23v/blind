@@ -9,18 +9,68 @@ final class SpeechDeliveryLedgerTests: XCTestCase {
         }
     }
 
-    func testAmbientAndSafetyKeepVoiceOverAnnouncements() {
-        XCTAssertEqual(SpeechDeliveryLedger.transport(for: .narration(UUID()), priority: .information,
-                                                     voiceOverRunning: true), .accessibility)
-        for priority in [SpeechPriority.status, .information, .mobility, .danger] {
-            XCTAssertEqual(SpeechDeliveryLedger.transport(for: .untracked, priority: priority,
-                                                         voiceOverRunning: true), .accessibility)
-            XCTAssertEqual(SpeechDeliveryLedger.transport(for: .untracked, priority: priority,
-                                                         voiceOverRunning: false), .synthesized)
+    func testPrivateCapableOutputIsCancellableRegardlessOfPriorityOrDestination() {
+        for destination in [SpeechDeliveryLedger.Destination.untracked, .narration(UUID()), .requested(UUID())] {
+            for priority in [SpeechPriority.status, .information, .mobility, .danger] {
+                for voiceOver in [false, true] {
+                    XCTAssertEqual(SpeechDeliveryLedger.transport(for: destination, priority: priority,
+                        voiceOverRunning: voiceOver), .synthesized)
+                }
+            }
         }
+    }
+
+    func testOnlyIndependentSafetyAlertsKeepVoiceOverAnnouncements() {
         for priority in [SpeechPriority.mobility, .danger] {
             XCTAssertEqual(SpeechDeliveryLedger.transport(for: .requested(UUID()), priority: priority,
-                                                         voiceOverRunning: true), .accessibility)
+                voiceOverRunning: true, independentAlert: true), .accessibility)
+            XCTAssertEqual(SpeechDeliveryLedger.transport(for: .untracked, priority: priority,
+                voiceOverRunning: false, independentAlert: true), .synthesized)
+        }
+        for priority in [SpeechPriority.status, .information] {
+            XCTAssertEqual(SpeechDeliveryLedger.transport(for: .untracked, priority: priority,
+                voiceOverRunning: true, independentAlert: true), .synthesized)
+        }
+    }
+
+    func testPrivateRouteStopUsesProvenanceNotMobilityPriority() throws {
+        for priority in [SpeechPriority.status, .information, .mobility, .danger] {
+            var ledger = SpeechDeliveryLedger()
+            XCTAssertFalse(ledger.mayContinueAfterPrivateRouteLoss)
+            let privateSpeech = try XCTUnwrap(ledger.begin(text: "Saved room label.", priority: priority,
+                transport: .synthesized))
+            XCTAssertFalse(privateSpeech.independentAlert)
+            XCTAssertFalse(ledger.mayContinueAfterPrivateRouteLoss)
+            XCTAssertEqual(ledger.finish(token: privateSpeech.token, outcome: .interrupted, now: 1)?.outcome, .interrupted)
+            XCTAssertFalse(ledger.mayContinueAfterPrivateRouteLoss)
+        }
+    }
+
+    func testPrivateRouteLossPreservesIndependentSensorAlertsAndLateCallbackCannotClearThem() throws {
+        for priority in [SpeechPriority.mobility, .danger] {
+            var ledger = SpeechDeliveryLedger()
+            let old = try XCTUnwrap(ledger.begin(text: "Private destination.", priority: .mobility,
+                transport: .synthesized))
+            _ = ledger.finish(token: old.token, outcome: .interrupted, now: 1)
+            let alert = try XCTUnwrap(ledger.begin(text: "Monitoring warning.", priority: priority,
+                transport: .accessibility, independentAlert: true))
+            XCTAssertTrue(alert.independentAlert)
+            XCTAssertTrue(ledger.mayContinueAfterPrivateRouteLoss)
+            XCTAssertNil(ledger.finish(token: old.token, outcome: .completed, now: 2))
+            XCTAssertEqual(ledger.active?.token, alert.token)
+            XCTAssertTrue(ledger.mayContinueAfterPrivateRouteLoss)
+            _ = ledger.finish(token: alert.token, outcome: .completed, now: 3)
+            XCTAssertFalse(ledger.mayContinueAfterPrivateRouteLoss)
+        }
+    }
+
+    func testOrdinaryOutputCannotClaimIndependentAlertExemption() throws {
+        for priority in [SpeechPriority.status, .information] {
+            var ledger = SpeechDeliveryLedger()
+            let attempt = try XCTUnwrap(ledger.begin(text: "Private information.", priority: priority,
+                transport: .synthesized, independentAlert: true))
+            XCTAssertFalse(attempt.independentAlert)
+            XCTAssertFalse(ledger.mayContinueAfterPrivateRouteLoss)
         }
     }
 

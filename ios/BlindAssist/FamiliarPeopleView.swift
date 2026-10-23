@@ -2,6 +2,7 @@
 import SwiftUI
 import PhotosUI
 import AVFoundation
+import ARKit
 
 /// A short People landing page; experimental controls are only in the helper workflow.
 struct FamiliarPeopleView: View {
@@ -152,7 +153,7 @@ private struct FamiliarPeopleToolsView: View {
             if running && awaitingCameraForEnrollment { awaitingCameraForEnrollment = false; experiment.requestUnnamedEnrollment() }
         }
         .onChange(of: model.message) { _, _ in
-            if !model.running && (AVCaptureDevice.authorizationStatus(for: .video) == .denied || AVCaptureDevice.authorizationStatus(for: .video) == .restricted || !model.supported) {
+            if !model.running && (AVCaptureDevice.authorizationStatus(for: .video) == .denied || AVCaptureDevice.authorizationStatus(for: .video) == .restricted || !ARWorldTrackingConfiguration.isSupported) {
                 awaitingCameraForEnrollment = false
             }
         }
@@ -167,7 +168,7 @@ private struct FamiliarPeopleToolsView: View {
         }
     }
     private func startCameraForEnrollment() {
-        guard model.supported, !model.textOnly else {
+        guard ARWorldTrackingConfiguration.isSupported, !model.textOnly else {
             photoLoadError = "Live camera enrollment is unavailable on this device or in text-only mode. Use existing photos instead."
             return
         }
@@ -192,7 +193,7 @@ private struct FamiliarPeopleToolsView: View {
                     .disabled(!acknowledged && !experiment.enabled).accessibilityIdentifier("familiar-enable")
                 Button(experiment.enabled ? "Hear current recognition setting" : "Hear limits and confirm by voice") { experiment.requestEnable() }
                 Text("Consented saved people are checked automatically when your foreground camera and monitoring are ready, including outside this screen. No separate helper enable step is needed. A newly recognized person gets one tentative notice, not repeated chatter. Your explicit on or off choice is saved across visits and restarts. You can always turn hints off here or say stop familiar people. Templates and labels stay encrypted on this phone, excluded from backups. No app uploads. Original or aligned photos are not saved by this app; selected photos remain in your Photos library.")
-                Text("Start camera monitoring and complete calibration before camera enrollment. Starting or stopping a camera session cancels unfinished face work. Existing-photo enrollment does not require camera monitoring.")
+                Text("Start the live camera and wait for a current tracked portrait view before camera enrollment. Depth and floor calibration are not needed for face comparison. Starting or stopping a camera session cancels unfinished face work. Existing-photo enrollment does not require camera monitoring.")
                 Button(model.running ? "Stop live camera" : "Turn on live camera monitoring") {
                     if model.running { model.cameraAwareness = false }
                     else if !model.cameraAwareness { model.cameraAwareness = true }

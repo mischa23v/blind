@@ -84,10 +84,11 @@ test('actual local tool registration is bounded and cannot perform actions', asy
   const tools = section(model, 'private func readCompanionTool', 'private func recordCompanionMessage');
   for (const kind of ['savedMemory', 'navigationState', 'currentObservation']) assert.ok(tools.includes(`case .${kind}:`));
   assert.match(tools, /conversationFrameProbe.inspect\(image: frame.capturedImage/);
-  assert.match(tools, /perceptionResultAllowed/);
+  assert.match(tools, /captureObjectView\(frame\)/);
+  assert.match(tools, /objectViewIsCurrent\(capture, snapshotPlayback: true\)/);
   assert.match(model, /@MainActor private func readCompanionToolForTurn/);
   assert.match(model, /@MainActor private func readCompanionTool\(/);
-  assert.match(tools, /expiresAt: captured.addingTimeInterval\(0.5\)/);
+  assert.match(tools, /expiresAt: captured.addingTimeInterval\(12\)/);
   assert.doesNotMatch(tools, /session.run|start\(\)|navigate\(|URLSession|saveValue|speakRequested/);
 });
 
@@ -106,8 +107,8 @@ test('queued source evidence is revalidated at dispatch and foreground transitio
   const model = await read('ios/BlindAssist/NavigationModel.swift');
   const drain = section(model, 'private func drainConversationSpeech', 'private func readCompanionTool');
   assert.match(drain, /CompanionEvidenceGuard.allows\(next.text, reports: next.reports, evidence: next.evidence, now: Date\(\)\)/);
-  assert.match(drain, /capture.perception == perceptionGeneration/);
-  assert.match(drain, /SceneDelivery.allowed\(capturedAt: capture.capturedAt/);
+  assert.match(drain, /next.captures.allSatisfy\(\{ objectViewIsCurrent\(\$0.view, snapshotPlayback: \$0.snapshot\) \}\)/);
+  assert.match(drain, /private func revalidateConversationSpeech/);
   const reply = section(model, 'private func answerConversation', 'func startVoiceQuestion');
   assert.match(reply, /onSpeechCandidate: \{/);
   assert.match(reply, /reports: reports, evidence: evidence/);
@@ -129,9 +130,11 @@ test('visual history waits for completed narration and explicit tasks commit bef
 test('private audio route removal mutes normal output without an announcement', async () => {
   const model = await read('ios/BlindAssist/NavigationModel.swift');
   const loss = section(model, 'voice.onPrivateRouteLost =', 'voice.onSpeechBegan =');
-  assert.match(loss, /assistantSession.mute\(\)/);
+  assert.match(loss, /assistantSession.losePrivateAudioRoute\(\)/);
+  assert.match(model, /guard independentAlert \|\| !assistantSession.privateAudioHeld/);
   assert.match(loss, /cancelDescription\(\)/);
-  assert.match(loss, /stopInformation\(announceCancellation: false\)/);
+  assert.match(loss, /feedback.stopForPrivateRouteLoss\(\)/);
+  assert.ok(loss.indexOf('assistantSession.losePrivateAudioRoute()') < loss.indexOf('feedback.stopForPrivateRouteLoss()'));
   assert.doesNotMatch(loss, /speakOperation|speakRequested|stopCameraMonitoring/);
 });
 

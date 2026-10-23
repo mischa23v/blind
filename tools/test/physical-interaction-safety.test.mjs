@@ -17,7 +17,7 @@ test('saved similarity uses current identity before clearing inflight and gives 
  const s=await read('ios/BlindAssist/NavigationModel.swift');
  const start=s.indexOf('private func findItemByLook');const end=s.indexOf('private func verifyHeldItem',start);const b=s.slice(start,end);
  assert.ok(b.indexOf('self.requestID == request')<b.indexOf('self.lookupInFlight = false'));
- assert.match(b,/systemUptime - capturedAt < 0.5/);
+ assert.match(b,/self.objectViewIsCurrent\(capture\)/);
  assert.match(b,/if !Self.objectInteractionGuidanceValidated[\s\S]*case .same, .similar: self.say\(ObjectSearch.unconfirmed/);
  assert.match(b,/measuredRelation: nil/);
  const search=await read('BlindCore/Sources/BlindCore/ObjectSearch.swift');
@@ -37,7 +37,7 @@ test('held-item similarity cannot authorize an exact identity or unsafe pickup',
  assert.match(b,/guard Self.objectInteractionGuidanceValidated else/);
  assert.ok(b.indexOf('guard Self.objectInteractionGuidanceValidated')<b.indexOf('case .same:'));
  assert.match(b,/I cannot confirm this is your exact item from this comparison/);
- assert.match(b,/systemUptime - capturedAt < 0.5/);
+ assert.match(b,/self.objectViewIsCurrent\(capture\)/);
 });
 test('temperature stays source-owned while local finds can inspect without physical guidance',async()=>{
  const s=await read('ios/BlindAssist/NavigationModel.swift');

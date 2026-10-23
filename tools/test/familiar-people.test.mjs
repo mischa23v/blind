@@ -44,9 +44,9 @@ test('experimental controller discards cancellation, obsolete gallery and stale 
   assert.doesNotMatch(code, /UserDefaults\.standard\.(set|register)|preferences\.register/);
   const model = await read('ios/BlindAssist/NavigationModel.swift');
   const invalidate = model.slice(model.indexOf('private func invalidatePerceptionWork('), model.indexOf('private func invalidatePerceptionWork(') + 1000);
-  assert.match(invalidate, /#if BLIND_FAMILIAR_PEOPLE\s*if familiarPeople.enabled && familiarPeople.hasActiveWork \{ familiarPeople.cancel\((?:announce: false)?\)/);
+  assert.match(invalidate, /#if BLIND_FAMILIAR_PEOPLE\s*if !preserveRGBHistoryWork && familiarPeople.enabled && familiarPeople.hasActiveWork \{ familiarPeople.cancel\((?:announce: false)?\)/);
   assert.match(model, /familiarPeople.revalidate\(model: self\)/);
-  assert.match(model, /perceptionGeneration == capture.generation/);
+  assert.match(model, /passiveObservationGeneration == capture.generation/);
 });
 test('enrollment is explicit consent and recognition can always be switched off accessibly', async () => {
   const view = await read('ios/BlindAssist/FamiliarPeopleView.swift');
@@ -123,7 +123,7 @@ test('named search is exact-label bounded quiet and reuses current candidate and
   const model = await read('ios/BlindAssist/NavigationModel.swift');
   assert.match(model, /if !automatic \{ familiarPeople.cancelSearchForNewGoal\(\) \}/);
   for (const method of ['setAssistantObjective', 'clearAssistantConversation']) assert.match(model, new RegExp(`func ${method}\\(\\) \\{\\s*#if BLIND_FAMILIAR_PEOPLE\\s*familiarPeople.cancelSearchForNewGoal`));
-  assert.match(code, /searching && \(!model.running \|\| model.detection.hazard != \.observing\)/);
+  assert.match(code, /searching && \(!model.assistantSession.shouldRunCamera \|\| !model.cameraAwareness \|\| !model.running \|\| model.simulation \|\| model.places.scanning \|\| model.detection.hazard.isUrgent\)/);
 });
 test('past snapshot speech has separate bounded lifetime without extending live display', async () => {
   const code = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');

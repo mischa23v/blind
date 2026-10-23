@@ -9,8 +9,8 @@ public enum AssistantControl: Equatable, Sendable {
             .folding(options: [.caseInsensitive, .diacriticInsensitive], locale: Locale(identifier: "en_US_POSIX"))
             .replacingOccurrences(of: "أ", with: "ا").replacingOccurrences(of: "إ", with: "ا").replacingOccurrences(of: "آ", with: "ا")
         switch value {
-        case "quiet", "pause descriptions", "stop descriptions", "صمت", "اوقف الوصف": return .quiet
-        case "resume", "resume descriptions", "استأنف الوصف", "استأنف", "استانف الوصف", "استانف": return .resume
+        case "quiet", "hold on", "hold descriptions", "pause descriptions", "stop descriptions", "صمت", "اوقف الوصف": return .quiet
+        case "resume", "continue descriptions", "continue talking", "resume descriptions", "استأنف الوصف", "استأنف", "استانف الوصف", "استانف": return .resume
         case "repeat", "repeat description", "repeat the description", "كرر", "كرر الوصف": return .repeatDescription
         case "more detail", "more details", "تفاصيل اكثر": return .moreDetail
         case "less detail", "less details", "تفاصيل اقل": return .lessDetail

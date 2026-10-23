@@ -62,7 +62,7 @@ test('authorized startup wrapper captures once before bounded room recovery, wit
 
 test('ordinary conversation is not forced through camera capture or permission setup', async () => {
   const model = await read('ios/BlindAssist/NavigationModel.swift');
-  const receive = section(model, 'func receiveCompanionUtterance(', 'private func handleConversationTaskControl(');
+  const receive = section(model, 'func receiveCompanionUtterance(', 'private func routeEverydayTask(');
   assert.match(receive, /if case \.visualRequest = ConversationIntent\.classify\(text\)\s*\{\s*readScene\(cloud: false, question: text\)\s*\} else \{\s*answerConversation\(text\)/);
   assert.doesNotMatch(receive, /requestAccess|session\.currentFrame|VisionService|URLSession/);
   const chat = section(model, 'private func answerConversation(', 'func startVoiceQuestion(');
@@ -85,13 +85,13 @@ test('sensor callbacks reach hazard cancellation and dispatch without waiting fo
     assert.ok(compact(cancel).includes(compact(value)), value);
   }
   const announce = section(model, 'private func announceDetection(', 'private func');
-  assert.match(announce, /requiresImmediateAttention \? \.hazard/);
+  assert.match(announce, /isUrgent \? \.hazard/);
 });
 
 test('unvalidated object direction is disabled and physical requests cannot fall through to chat', async () => {
   const model = await read('ios/BlindAssist/NavigationModel.swift');
   assert.match(model, /private static let objectInteractionGuidanceValidated = false/);
-  const receive = section(model, 'func receiveCompanionUtterance(', 'private func handleConversationTaskControl(');
+  const receive = section(model, 'func receiveCompanionUtterance(', 'private func routeEverydayTask(');
   before(receive, 'routeUnverifiedPhysicalRequest(text)', 'answerConversation(text)');
   const chat = section(model, 'private func answerConversation(', 'func startVoiceQuestion(');
   before(chat, 'routeUnverifiedPhysicalRequest(question)', 'LocalImageAssistant.converse(');

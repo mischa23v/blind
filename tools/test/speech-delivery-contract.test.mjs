@@ -30,9 +30,29 @@ test('source contract: requested transport policy is used and synthesis preserve
   const speak = bodyAfter(feedback, 'private func speak(');
   assert.match(speak, /SpeechDeliveryLedger\.transport\(for: destination, priority: priority/);
   assert.match(speak, /transport: transport/);
+  assert.match(speak, /voiceOverRunning: UIAccessibility.isVoiceOverRunning, independentAlert: independentAlert/);
+  assert.match(speak, /transport: transport, independentAlert: independentAlert/);
   assert.match(speak, /if transport == \.accessibility/);
   assert.match(speak, /utterance\.prefersAssistiveTechnologySettings = true/);
   assert.equal((feedback.match(/speech\.speak\(/g) ?? []).length, 1);
+});
+
+test('source contract: private-route loss interrupts private mobility without silencing independent sensor alerts', () => {
+  const dispatch = bodyAfter(navigation, 'private func deliverCandidate(');
+  assert.match(dispatch, /let independentAlert = alert != nil && \(candidate.kind == \.hazard \|\| candidate.kind == \.mobility\)/);
+  assert.match(dispatch, /feedback.deliver\(admitted,[\s\S]*independentAlert: independentAlert/);
+  const deliver = bodyAfter(feedback, 'func deliver(');
+  assert.match(deliver, /independentAlert && alert != nil/);
+  assert.match(deliver, /admitted.priority == \.mobility \|\| admitted.urgent/);
+  assert.match(deliver, /independentAlert: verifiedIndependentAlert/);
+  const loss = bodyAfter(navigation, 'voice.onPrivateRouteLost = ');
+  assert.match(loss, /feedback.stopForPrivateRouteLoss\(\)/);
+  assert.doesNotMatch(loss, /stopInformation\(|speakOperation|speakRequested/);
+  const stop = bodyAfter(feedback, 'func stopForPrivateRouteLoss()');
+  assert.match(stop, /guard !delivery.mayContinueAfterPrivateRouteLoss else \{ return \}/);
+  assert.match(stop, /finishActive\(outcome: \.interrupted, stopSynthesizer: true, notify: false\)/);
+  assert.match(stop, /speech.stopSpeaking\(at: \.immediate\)/);
+  assert.doesNotMatch(stop, /requestCancellationAnnouncement|urgentUntil|player.stop|priority != \.mobility/);
 });
 
 test('source contract: onset, mute and end cancel queued work and stop requested audio', () => {

@@ -24,6 +24,7 @@ public struct ContextualCapabilityScheduler: Sendable {
         public static let dressing = Goal(rawValue: 1 << 3)
         public static let lighting = Goal(rawValue: 1 << 4)
         public static let payment = Goal(rawValue: 1 << 5)
+        public static let targetDiscovery = Goal(rawValue: 1 << 6)
 
         /// A deliberately bounded lexical adapter, not general semantic planning.
         /// Unknown goals stay unknown. These words select probes, never camera facts.
@@ -46,6 +47,7 @@ public struct ContextualCapabilityScheduler: Sendable {
             if contains(["dress", "dressing", "dressed", "clothes", "clothing", "outfit", "wear", "shirt", "uniform", "color", "colour", "ملابس", "البس", "قميص", "ثوب", "زي", "لون"]) { result.insert(.dressing) }
             if contains(["light", "lights", "lighting", "brightness", "dark", "ضوء", "نور", "اضاءه", "ظلام"]) { result.insert(.lighting) }
             if contains(["pay", "paying", "payment", "cash", "money", "banknote", "banknotes", "دفع", "ادفع", "نقود", "فلوس", "عمله"]) { result.insert(.payment) }
+            if ContextualTextPolicy.supportsTargetDiscovery(text) { result.insert(.targetDiscovery) }
             return result
         }
     }
@@ -99,7 +101,7 @@ public struct ContextualCapabilityScheduler: Sendable {
             self.hazardActive = hazardActive; self.listening = listening; self.busy = busy
         }
         fileprivate var quiescent: Bool {
-            cameraEnabled && sessionActive && foregroundActive && stationary &&
+            cameraEnabled && sessionActive && foregroundActive &&
                 !hazardActive && !listening && !busy && !goalGeneration.isEmpty && goalGeneration.count <= 128
         }
     }
@@ -155,13 +157,13 @@ public struct ContextualCapabilityScheduler: Sendable {
               moment.now - lastStart >= Self.minimumJobGap else { return nil }
         // Rotate useful work rather than letting a perpetually visible sign starve barcodes.
         let order: [Capability] = [.text, .barcode, .color, .light, .currencyProbe]
-        if evidence.banknoteCandidate, eligible(.currency, goal: goal, evidence: evidence),
+        if moment.stationary, evidence.banknoteCandidate, eligible(.currency, goal: goal, evidence: evidence),
            ready(.currency, now: moment.now, availability: availability) {
             return begin(.currency, goal: goal, evidence: evidence, moment: moment)
         }
         for offset in 0..<order.count {
             let index = (nextIndex + offset) % order.count, capability = order[index]
-            guard eligible(capability, goal: goal, evidence: evidence),
+            guard (moment.stationary || Self.permitsMovingCapture(capability)), eligible(capability, goal: goal, evidence: evidence),
                   ready(capability, now: moment.now, availability: availability) else { continue }
             nextIndex = (index + 1) % order.count
             return begin(capability, goal: goal, evidence: evidence, moment: moment)
@@ -231,14 +233,19 @@ public struct ContextualCapabilityScheduler: Sendable {
         switch capability {
         case .currencyProbe: return true
         case .currency: return evidence.banknoteCandidate
-        case .text: return !goal.intersection([.shopping, .dining, .reading, .payment]).isEmpty
+        case .text: return !goal.intersection([.shopping, .dining, .reading, .payment, .targetDiscovery]).isEmpty
         case .barcode: return !goal.intersection([.shopping, .dining]).isEmpty
         case .light: return evidence.lightAvailable && !goal.intersection([.lighting, .reading, .dressing]).isEmpty
         case .color: return goal.contains(.dressing)
         }
     }
+    /// Short OCR/barcode/light observations need not wait for a full stationary dwell.
+    /// Their caller still checks capture/pose/freshness and urgent-event preemption.
+    public static func permitsMovingCapture(_ capability: Capability) -> Bool {
+        capability == .text || capability == .barcode || capability == .light
+    }
     private func valid(_ lease: Lease, moment: Moment) -> Bool {
-        moment.quiescent && moment.requestID == lease.requestID &&
+        (moment.stationary || Self.permitsMovingCapture(lease.capability)) && moment.quiescent && moment.requestID == lease.requestID &&
             moment.perceptionGeneration == lease.perceptionGeneration &&
             moment.sessionGeneration == lease.sessionGeneration && moment.goalGeneration == lease.goalGeneration &&
             moment.now >= lease.startedAt && moment.now - lease.startedAt <= Self.leaseLifetime

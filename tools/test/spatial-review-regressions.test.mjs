@@ -100,11 +100,11 @@ test('RGB-only history survives depth and tracking failure without acquiring spa
   assert.match(missingDepth, /updateNonspatialObjectMemory\(frame: frame\)/);
   const rgb = section(source, 'private func updateNonspatialObjectMemory', 'private func updatePassiveObjectMemory');
   assert.match(rgb, /Observation\(timestamp: frame\.timestamp/);
-  assert.match(rgb, /samples: \[\], trackingNormal: false/);
-  assert.match(rgb, /updatePassiveObjectMemory\(frame: frame, observation: pose, nonspatialOnly: true\)/);
+  assert.match(rgb, /samples: \[\], trackingNormal: normal/);
+  assert.match(rgb, /updateBackgroundPerception\(frame: frame, observation: pose, nonspatialOnly: true\)/);
   const localizing = section(frames, 'if let place = awaitingPlace', 'if let place = recognizedPlace');
   assert.match(localizing, /updateNonspatialObjectMemory\(frame: frame\)/);
-  assert.match(frames, /else \{ updatePassiveObjectMemory\(frame: frame, observation: observation, nonspatialOnly: true\) \}/);
+  assert.match(frames, /updateBackgroundPerception\(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal\)/);
   const capture = section(source, 'private func updatePassiveObjectMemory', 'private func importFurnitureHistory');
   assert.match(capture, /let frameID: String\? = nonspatialOnly \? nil :/);
   assert.match(capture, /let captureSituation = !nonspatialOnly && indoor\.isAligned \?/);
@@ -112,21 +112,20 @@ test('RGB-only history survives depth and tracking failure without acquiring spa
   assert.ok((capture.match(/position: nonspatialOnly \? nil : DepthSampler\.worldPoint/g) ?? []).length === 2,
     'Neither detector nor appearance candidates may attach depth in RGB-only mode');
   assert.match(capture, /if !nonspatialOnly \{ self\.offerObservedGoalMatch/);
-  assert.match(capture, /now >= observation\.timestamp, now - observation\.timestamp <= 0\.5/);
+  assert.match(source, /now >= observation\.timestamp && now - observation\.timestamp <= 0\.5/);
   assert.match(capture, /completed >= observation\.timestamp, completed - observation\.timestamp <= 3/);
-  assert.match(capture, /capturedDate = Date\(\)\.addingTimeInterval\(observation\.timestamp - now\)/);
+  assert.match(capture, /capturedDate = Date\(\)\.addingTimeInterval\(observation\.timestamp - ProcessInfo\.processInfo\.systemUptime\)/);
 });
 
 test('tracking recovery cannot resurrect pre-failure spatial work or permanently block RGB collection (source)', async () => {
   const source = await read('ios/BlindAssist/NavigationModel.swift');
   const capture = section(source, 'private func updatePassiveObjectMemory', 'private func importFurnitureHistory');
   assert.match(capture, /generation = passiveObservationGeneration, spatialGeneration = perceptionGeneration/);
-  const stages = capture.split('guard let self, self.passiveObservationGeneration == generation else { return }');
-  assert.equal(stages.length, 3, 'Both async stages must first reject a retired private-memory token');
-  for (const stage of stages.slice(1)) {
-    assert.match(stage, /guard nonspatialOnly \|\| self\.perceptionGeneration == spatialGeneration else \{ self\.passiveObservationInFlight = false; return \}/);
-  }
-  before(capture, 'self.passiveObservationGeneration == generation', 'self.passiveObservationInFlight = false');
+  assert.equal((capture.match(/self\.passiveObservationGeneration == generation/g) ?? []).length, 2);
+  assert.equal((capture.match(/nonspatialOnly \|\| self\.perceptionGeneration == spatialGeneration/g) ?? []).length, 2);
+  assert.match(capture, /self\.backgroundPerception\.accepts\(resourceLease/);
+  assert.match(capture, /self\.expireBackgroundPerception\(now:/);
+  assert.match(capture, /if self\.backgroundPerception\.finish\(resourceLease/);
   assert.match(capture, /self\.observationFrameID == sessionFrameID/);
 });
 
@@ -135,14 +134,15 @@ test('privacy and session resets cancel RGB work while depth-only failure keeps 
   const invalidate = section(source, 'private func invalidatePerceptionWork(', 'private func invalidateRecognizedRoom');
   assert.match(invalidate, /preserveRGBHistoryWork: Bool = false/);
   assert.match(invalidate, /perceptionGeneration = UUID\(\)/);
-  assert.match(invalidate, /if !preserveRGBHistoryWork \{ passiveObservationGeneration = UUID\(\); passiveObservationInFlight = false \}/);
+  assert.match(invalidate, /if !preserveRGBHistoryWork \{ backgroundPerception.invalidate\(\); passiveObservationGeneration = UUID\(\) \}/);
   assert.match(invalidate, /observedObjects\.invalidateGeometry\(\)/);
   const stop = section(source, 'private func stopCameraMonitoring()', 'private func startWatchdog()');
   const launch = section(source, 'private func launch(', 'func stop()');
   assert.match(stop, /invalidatePerceptionWork\(\)/);
   assert.match(launch, /invalidatePerceptionWork\(\)/);
-  // The only preservation callsites are per-frame depth/tracking failure.
-  assert.equal((source.match(/invalidatePerceptionWork\(preserveRGBHistoryWork: true\)/g) ?? []).length, 2);
+  // Preservation is limited to per-frame depth/tracking loss and a newly lost
+  // monitoring state with an independently verified fresh RGB capture.
+  assert.equal((source.match(/invalidatePerceptionWork\(preserveRGBHistoryWork: true\)/g) ?? []).length, 3);
 });
 
 test('item and room forget paths invalidate captured work and perform scoped history deletion (source)', async () => {

@@ -1,5 +1,10 @@
 # Child assistant scenario and evidence tracker
 
+## Pre-device hardening update
+
+See [PRE_DEVICE_HARDENING.md](PRE_DEVICE_HARDENING.md) for the latest source fixes, evidence distinctions and unfinished capability/device/resource backlog. This supersedes older central-colour, depth-only camera startup and passive-first scheduling descriptions. Final portable regression passed: 770/770 BlindCore, 16/16 BlindMemory, 306/306 Node with zero skips, and 16/16 extracted working-state tests. Both default and DEBUG/familiar native sources syntax-parse. Disposable aggregate verification passed and regenerated the identical Xcode project. This source follows primary 63861923f4ff67556e274d284e761ee56f76d901; use the repository revision containing this update, not a synthetic local Git HEAD. No native Apple SDK or device acceptance is claimed.
+
+
 Updated 2026-10-23. This is a bounded acceptance checklist for the integrated source, not proof of child safety, actual model accuracy, native accessibility, or measured responsiveness. No actual child, Apple model, iPhone, VoiceOver or physical hazard trial was executed for this checklist. **100% accuracy is not established.** Use simulated hazards and harmless stand-ins for dangerous objects; do not ask a child to discover a failure.
 
 The product is a general free on-device companion for conversation, memory and everyday tasks, with navigation as one separately gated tool. Use this current matrix alongside [context-driven capability acceptance](CONTEXTUAL_CAPABILITIES_ACCEPTANCE.md), [everyday companion acceptance](EVERYDAY_COMPANION_ACCEPTANCE.md), [spatial companion acceptance](SPATIAL_COMPANION_ACCEPTANCE.md) and the [feature matrix](ASSISTANT_FEATURE_CHECKLIST.md). Older checkpoint counts in those documents are historical, not current device acceptance.

@@ -3,7 +3,7 @@ import Foundation
 /// Conversation evidence is not a world model. In particular, a person's report
 /// and a saved map can never be promoted to a fresh camera/sensor observation.
 public enum CompanionEvidenceKind: String, Codable, Sendable {
-    case userReport, historicalMemory, assistantUtterance, currentObservation, measuredState
+    case userReport, historicalMemory, assistantUtterance, currentObservation, measuredState, capturedView
 }
 
 public struct CompanionEvidence: Codable, Sendable, Equatable {
@@ -19,12 +19,35 @@ public struct CompanionEvidence: Codable, Sendable, Equatable {
         self.id = id; self.kind = kind; self.text = text; self.source = source
         self.observedAt = observedAt; self.expiresAt = expiresAt
     }
+    /// Attributed RGB snapshot only, never current presence, identity or spatial authority.
+    public func isCapturedViewValid(at now: Date) -> Bool {
+        guard kind == .capturedView, source == "bounded on-device captured view",
+              text.hasPrefix("Captured view "), !text.isEmpty,
+              let observedAt, let expiresAt else { return false }
+        return observedAt <= now && now.timeIntervalSince(observedAt) <= 12
+            && expiresAt > now && expiresAt.timeIntervalSince(observedAt) <= 12
+            && !SpatialClaimGuard.containsSpatialClaim(text)
+            && !SaudiBanknotePolicy.containsUnverifiedMoneyValue(text)
+    }
     public func isCurrent(at now: Date) -> Bool {
         guard kind == .currentObservation || kind == .measuredState,
               !source.isEmpty, !text.isEmpty, let observedAt, let expiresAt else { return false }
         // An injected future clock or arbitrarily distant expiry is not freshness.
         return observedAt <= now && now.timeIntervalSince(observedAt) <= 5
             && expiresAt > now && expiresAt.timeIntervalSince(observedAt) <= 5
+    }
+}
+
+/// Code-owned quotation keeps OCR punctuation inside one attributed record.
+/// Delimiter-bearing or oversized input is withheld instead of truncating a negation.
+public enum CapturedViewEvidence {
+    public static func candidate(_ content: String, appearance: Bool = false) -> String? {
+        let content = content.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !content.isEmpty, content.count <= 180,
+              !content.contains("«"), !content.contains("»") else { return nil }
+        let kind = appearance ? "appearance candidate (image classification may be mistaken)" : "text candidate (OCR may be mistaken)"
+        let terminator = content.last.map { ".!?؟".contains($0) } == true ? "" : "."
+        return "Captured view \(kind): «\(content)»\(terminator)"
     }
 }
 
@@ -195,7 +218,7 @@ public actor CompanionToolRuntime {
             case .savedMemory:
                 return item.kind == .historicalMemory || item.kind == .userReport
             case .currentObservation:
-                return item.kind == .currentObservation && item.isCurrent(at: now)
+                return (item.kind == .currentObservation && item.isCurrent(at: now)) || item.isCapturedViewValid(at: now)
             case .navigationState:
                 return item.kind == .historicalMemory || (item.kind == .measuredState && item.isCurrent(at: now))
             case .deviceClock:
@@ -292,6 +315,12 @@ public enum CompanionEvidenceGuard {
             let sentence = part.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !sentence.isEmpty else { continue }
             let clean = normalized(sentence)
+            // A captured-view quote may finish after the live observation lease,
+            // but cannot be silently rewritten as a current fact.
+            if let snapshot = evidence.first(where: { $0.kind == .capturedView && normalized($0.text) == clean }) {
+                guard snapshot.isCapturedViewValid(at: now) else { return false }
+                continue
+            }
             // Current tool claims must match one complete, code-approved record.
             // Token overlap is intentionally insufficient (it loses negation).
             if let exact = evidence.first(where: { ($0.kind == .currentObservation || $0.kind == .measuredState) && normalized($0.text) == clean }) {
@@ -300,7 +329,7 @@ public enum CompanionEvidenceGuard {
             }
             // Explicit provenance phrases must not become a loophole when the
             // corresponding observation expires during generation.
-            if matches(#"^\s*(visible text candidate|current observation|measured state|camera observation|device clock)\b|^\s*ساعة الجهاز\s*:"#, sentence) { return false }
+            if matches(#"^\s*(captured view|visible text candidate|current observation|measured state|camera observation|device clock)\b|^\s*ساعة الجهاز\s*:"#, sentence) { return false }
             let quoted = attributedQuotation(sentence, reports: reports, evidence: evidence)
             let remainder = quoted ?? sentence
             if isLocalAssertion(remainder) || ConversationClaimGuard.containsUnsupportedClaim(remainder) { return false }

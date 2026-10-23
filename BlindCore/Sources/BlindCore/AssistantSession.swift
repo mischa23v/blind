@@ -9,6 +9,10 @@ public struct AssistantSession: Sendable, Equatable {
     public private(set) var generation: UInt64 = 0
     public private(set) var foregroundActive = true
     public private(set) var backgroundAllowed = false
+    /// Route loss is not ordinary microphone mute: private ordinary audio stays held
+    /// until an explicit Start/Unmute, even if camera and typed conversation continue.
+    public private(set) var privateAudioHeld = false
+    public var maySpeakOrdinary: Bool { mayRespond && !privateAudioHeld }
     public init() {}
 
     public var shouldListen: Bool { state == .active && (foregroundActive || backgroundAllowed) }
@@ -17,7 +21,8 @@ public struct AssistantSession: Sendable, Equatable {
     public var shouldRunCamera: Bool { foregroundActive && (state == .active || state == .muted) }
 
     public mutating func start() {
-        guard state != .active else { return }
+        guard state != .active || privateAudioHeld else { return }
+        privateAudioHeld = false
         state = .active; invalidate()
     }
     public mutating func mute() {
@@ -27,7 +32,13 @@ public struct AssistantSession: Sendable, Equatable {
     /// Unmute only an existing session. An ended/never-started session needs Start.
     public mutating func unmute() {
         guard state == .muted else { return }
+        privateAudioHeld = false
         state = .active; invalidate()
+    }
+    public mutating func losePrivateAudioRoute() {
+        privateAudioHeld = true
+        if state == .active { state = .muted }
+        invalidate()
     }
     public mutating func end() {
         guard state != .ended else { return }

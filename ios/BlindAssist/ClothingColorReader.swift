@@ -5,14 +5,29 @@ import CoreVideo
 import ImageIO
 import BlindCore
 
-/// Reconstructed from the reviewed source-writing record after workspace loss.
-/// Requested-only offline sampling of an interior central patch, not an entire outfit.
-/// Caller owns task/session/freshness/hazard cancellation and attention-gated speech.
+/// Offline appearance sampling of one isolated foreground instance, not an entire outfit.
+/// Caller owns request/session/freshness/hazard cancellation and attention-gated speech.
+/// Neither this adapter nor its centre-independent mask selection resolves the user's "this".
 actor ClothingColorReader {
     private let context = CIContext(options: [.cacheIntermediates: false])
     enum Failure: Error { case image, mask, target }
+    enum Inspection: Sendable {
+        /// The anonymous bounds apply only to this captured upright image. They are not
+        /// identity, proof that an item is held, or physical direction/handling authority.
+        case anonymousAppearance(ClothingColor.Result, bounds: ClothingColorTarget.Region)
+        case unresolved(ClothingColorTarget.Unresolved)
+    }
 
+    /// Compatibility facade. A result still means only anonymous sampled-area appearance.
+    /// New contextual callers use inspect() to retain the explicit authority/ambiguity type.
     func read(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) throws -> ClothingColor.Result {
+        switch try inspect(image: image, orientation: orientation) {
+        case .anonymousAppearance(let result, _): return result
+        case .unresolved: throw Failure.target
+        }
+    }
+
+    func inspect(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) throws -> Inspection {
         try Task.checkCancellation()
         // Normalize orientation and colour space before BOTH segmentation and pixel sampling.
         let oriented = CIImage(cvPixelBuffer: image).oriented(orientation)
@@ -33,8 +48,6 @@ actor ClothingColorReader {
         let handler = VNImageRequestHandler(cvPixelBuffer: buffer, orientation: .up)
         try handler.perform([masks, people])
         try Task.checkCancellation()
-        // A person mask includes skin/hair and does not isolate a shirt.
-        if (people.results ?? []).contains(where: { $0.confidence >= 0.5 && $0.boundingBox.contains(CGPoint(x: 0.5, y: 0.5)) }) { throw Failure.target }
         guard let observation = masks.results?.first else { throw Failure.mask }
         let mask = observation.instanceMask
         guard CVPixelBufferGetPixelFormatType(mask) == kCVPixelFormatType_OneComponent8,
@@ -42,32 +55,29 @@ actor ClothingColorReader {
         defer { CVPixelBufferUnlockBaseAddress(mask, .readOnly) }
         guard let maskBase = CVPixelBufferGetBaseAddress(mask) else { throw Failure.mask }
         let mw = CVPixelBufferGetWidth(mask), mh = CVPixelBufferGetHeight(mask), ms = CVPixelBufferGetBytesPerRow(mask)
-        guard mw > 8, mh > 8 else { throw Failure.mask }
-        func label(_ x: Int, _ y: Int) -> Int {
-            Int(maskBase.advanced(by: max(0,min(mh-1,y))*ms).assumingMemoryBound(to: UInt8.self)[max(0,min(mw-1,x))])
+        guard (9...1024).contains(mw), (9...1024).contains(mh), (mw...4096).contains(ms) else { throw Failure.mask }
+        let labels = Array(UnsafeBufferPointer(start: maskBase.assumingMemoryBound(to: UInt8.self), count: ms * mh))
+        let personRegions = (people.results ?? []).filter { $0.confidence >= 0.5 }.map { person in
+            let box = person.boundingBox
+            return ClothingColorTarget.Region(x: Double(box.minX), y: Double(1 - box.maxY),
+                width: Double(box.width), height: Double(box.height))
         }
-        // Select only the centred instance. Never substitute the largest or nearest object.
-        let target = label(mw/2,mh/2)
-        guard target > 0, observation.allInstances.contains(target) else { throw Failure.target }
-        let offsets = [-2,0,2]
-        guard offsets.allSatisfy({ dx in offsets.allSatisfy { dy in label(mw/2+dx,mh/2+dy) == target } }) else { throw Failure.target }
+        let decision = ClothingColorTarget.select(labels: labels, maskWidth: mw, maskHeight: mh, bytesPerRow: ms,
+            validInstances: Set(observation.allInstances), imageWidth: width, imageHeight: height, people: personRegions)
+        guard case .anonymous(let selection) = decision else {
+            if case .unresolved(let reason) = decision { return .unresolved(reason) }
+            throw Failure.target
+        }
+        try Task.checkCancellation()
         guard CVPixelBufferLockBaseAddress(buffer, .readOnly) == kCVReturnSuccess else { throw Failure.image }
         defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
         guard let base = CVPixelBufferGetBaseAddress(buffer) else { throw Failure.image }
         let stride = CVPixelBufferGetBytesPerRow(buffer)
-        var samples: [ClothingColor.RGB] = []; var candidates = 0
-        // Middle 40% only, with mask erosion against boundary/background mixtures.
-        for y in (height*3/10)..<(height*7/10) {
-            for x in (width*3/10)..<(width*7/10) {
-                candidates += 1
-                let mx = x*mw/width, my = y*mh/height
-                guard offsets.allSatisfy({ dx in offsets.allSatisfy { dy in label(mx+dx,my+dy) == target } }) else { continue }
-                let p = base.advanced(by: y*stride+x*4).assumingMemoryBound(to: UInt8.self)
-                samples.append(.init(Double(p[2])/255, Double(p[1])/255, Double(p[0])/255))
-            }
+        let samples = selection.samplePixels.map { sample -> ClothingColor.RGB in
+            let p = base.advanced(by: sample.y * stride + sample.x * 4).assumingMemoryBound(to: UInt8.self)
+            return .init(Double(p[2])/255, Double(p[1])/255, Double(p[0])/255)
         }
         try Task.checkCancellation()
-        guard candidates > 0, Double(samples.count)/Double(candidates) >= 0.8 else { throw Failure.target }
-        return ClothingColor.evaluate(samples)
+        return .anonymousAppearance(ClothingColor.evaluate(samples), bounds: selection.bounds)
     }
 }

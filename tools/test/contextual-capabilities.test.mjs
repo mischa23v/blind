@@ -7,13 +7,13 @@ const section = (start, end) => model.slice(model.indexOf(start), model.indexOf(
 const contextual = section('private var contextualGoalText', '/// Explicit single-photo money request');
 
 test('foreground frame loop schedules contextual capabilities without a mode command', () => {
-  assert.match(model, /updateContextualCapabilities\(frame: frame, observation: observation\)/);
-  assert.ok(model.indexOf('phoneDetection = detector.process(observation)') < model.indexOf('updateContextualCapabilities(frame: frame, observation: observation)'));
+  assert.match(model, /updateBackgroundPerception\(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal\)/);
+  assert.ok(model.indexOf('phoneDetection = detector.process(observation)') < model.indexOf('updateBackgroundPerception(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal)'));
   assert.match(contextual, /ContextualCapabilityScheduler.Goal.infer\(from: contextualGoalText\)/);
   assert.doesNotMatch(section("private var contextualGoalText", "private func cancelVoiceRoomScanConfirmation"), /startReadingTool\(|routeSaudiBanknoteCommand\(|routeClothingColorCommand\(|cancelDescription\(/);
 });
 test('contextual jobs retain capture leases, existing verifier and final target gates', () => {
-  for (const value of ['requestID: requestID', 'perceptionGeneration: perceptionGeneration', 'sessionGeneration: assistantSession.generation', 'goalGeneration: companionWorkingState.goalRevision', 'self.contextualCapabilities.beforeSpeech', 'self.visualCapturePoseAllowed', 'self.perceptionResultAllowed']) assert.ok(contextual.includes(value), value);
+  for (const value of ['requestID: requestID', 'perceptionGeneration: passiveObservationGeneration', 'sessionGeneration: assistantSession.generation', 'goalGeneration: companionWorkingState.goalRevision', 'self.contextualCapabilities.beforeSpeech', 'self.visualCapturePoseAllowed', 'self.contextualCaptureAllowed']) assert.ok(contextual.includes(value), value);
   assert.match(contextual, /SaudiBanknoteReferenceRecognition.isAvailable/);
   assert.match(contextual, /promoteCurrencyCandidate/);
   assert.match(contextual, /saudiBanknotes.inspect\(image: image, orientation: .right\)/);
@@ -31,14 +31,12 @@ test('passive rectangles never speak a value without the reference verifier', ()
 });
 test('relevant OCR/barcode/color use existing native evidence, not unsolicited mode speech', () => {
   assert.match(contextual, /VisionService.textLines/);
-  assert.match(contextual, /goalWords.contains/);
-  assert.match(contextual, /containsUnverifiedMoneyValue/);
-  assert.match(contextual, /SpatialClaimGuard.containsSpatialClaim/);
+  assert.match(contextual, /ContextualTextPolicy.select/);
   assert.match(contextual, /!code.isQR, let name = self.products.name/);
-  assert.match(contextual, /self.clothingColors.read/);
+  assert.match(contextual, /self.clothingColors.inspect/);
   assert.match(contextual, /centralIsolatedItem: true/);
   assert.doesNotMatch(contextual, /feedback.beacon|CodeReading.speech|startReadingTool/);
-  assert.match(contextual, /self.deliverCandidate\(candidate, speechID: id\)/);
+  assert.match(contextual, /self.deliverCandidate\(candidate, speechID: id, nonspatialCapture: activeLease\)/);
 });
 test('room scan requests originate only in direct utterance path and confirm before start', () => {
   assert.match(model, /if routeVoiceRoomScan\(text\) \{ return \}/);

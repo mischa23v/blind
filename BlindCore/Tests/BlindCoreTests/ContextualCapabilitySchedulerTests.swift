@@ -61,7 +61,7 @@ final class ContextualCapabilitySchedulerTests: XCTestCase {
         XCTAssertTrue(Policy.Goal.infer(from: "أريد شراء الطعام").contains(.shopping))
         XCTAssertTrue(Policy.Goal.infer(from: "أريد أن ألبس ملابس المدرسة").contains(.dressing))
         XCTAssertTrue(Policy.Goal.infer(from: "أريد أن أقرأ الواجب").contains(.reading))
-        XCTAssertEqual(Policy.Goal.infer(from: "Find the bathroom"), .none)
+        XCTAssertEqual(Policy.Goal.infer(from: "Find the bathroom"), .targetDiscovery)
         XCTAssertEqual(Policy.Goal.infer(from: "flight friendship highlighting"), .none)
         XCTAssertEqual(Policy.Goal.infer(from: String(repeating: "buy ", count: 301)), .none)
     }
@@ -140,7 +140,7 @@ final class ContextualCapabilitySchedulerTests: XCTestCase {
     func testLifecycleAndAttentionExcludeAdmissionAndPermanentlyInvalidateOutput() throws {
         let exclusions: [(inout Policy.Moment) -> Void] = [
             { $0.cameraEnabled = false }, { $0.sessionActive = false }, { $0.foregroundActive = false },
-            { $0.stationary = false }, { $0.hazardActive = true }, { $0.listening = true }, { $0.busy = true }
+            { $0.hazardActive = true }, { $0.listening = true }, { $0.busy = true }
         ]
         for exclude in exclusions {
             var disabled = moment(10); exclude(&disabled)

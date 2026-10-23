@@ -14,12 +14,17 @@ test('all fast image-answer completions revalidate their request and current sce
     assert.match(body, /perceptionResultAllowed\(/, name);
     assert.match(body, /mapRevision: mapRevision, alignmentRevision: alignmentRevision/, name);
   }
-  // The live object search re-measures the fixed world point from the current pose, so it checks
-  // request, perception generation, map revisions, frame age and tracking instead of an unmoved pose.
+  // RGB discovery uses exact capture ownership; the disabled physical branch
+  // additionally invokes the existing spatial/map validator.
   const search = source.slice(source.indexOf('private func continueSearch('), source.indexOf('private func offerSearchHint('));
-  for (const required of ['self.requestID == request', 'self.perceptionGeneration == generation', 'self.indoor.revision == mapRevision',
-    'self.indoor.alignmentRevision == alignmentRevision', 'now >= capturedAt', 'now - capturedAt < 0.5', 'trackingNormal']) {
+  for (const required of ['self.requestID == request', 'self.objectViewIsCurrent(capture)',
+    'self.perceptionResultAllowed', 'mapRevision: mapRevision, alignmentRevision: alignmentRevision']) {
     assert.ok(search.includes(required), required);
+  }
+  const rgb = source.slice(source.indexOf('private func objectViewIsCurrent('), source.indexOf('/// Live search'));
+  for (const required of ['requestID == capture.request', 'passiveObservationGeneration == capture.generation',
+    'now - capture.capturedAt < (snapshotPlayback ? 12 : 0.5)', 'case .normal = frame.camera.trackingState']) {
+    assert.ok(rgb.includes(required), required);
   }
   const gate = source.slice(source.indexOf('private func perceptionResultAllowed'), source.indexOf('private func cancelDescription'));
   for (const required of ['running', '!simulation', '!places.scanning', 'requestID == request', 'perceptionGeneration == generation', 'SceneDelivery.allowed', 'indoor.revision == mapRevision', 'indoor.alignmentRevision == alignmentRevision']) {

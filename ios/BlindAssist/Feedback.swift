@@ -86,7 +86,8 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     /// The controller owns a bounded phrase queue and revalidates every phrase.
     /// This sink holds one attempt only, including the time before AVFoundation starts.
     @discardableResult func deliver(_ admitted: AdmittedSpeech, narrationID: UUID? = nil,
-                                    speechID: UUID? = nil, alert: Detection? = nil) -> Bool {
+                                    speechID: UUID? = nil, alert: Detection? = nil,
+                                    independentAlert: Bool = false) -> Bool {
         guard narrationID == nil || speechID == nil else { return false }
         let destination: SpeechDeliveryLedger.Destination
         if let narrationID {
@@ -97,7 +98,9 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         } else {
             destination = .untracked
         }
-        return speak(admitted, destination: destination, alert: alert)
+        let verifiedIndependentAlert = independentAlert && alert != nil &&
+            (admitted.priority == .mobility || admitted.urgent)
+        return speak(admitted, destination: destination, alert: alert, independentAlert: verifiedIndependentAlert)
     }
 
     /// AEC is primary. Exact active-output prefixes and a one-second residual tail
@@ -124,7 +127,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
 
     @discardableResult private func speak(_ admitted: AdmittedSpeech,
                                          destination: SpeechDeliveryLedger.Destination,
-                                         alert: Detection?) -> Bool {
+                                         alert: Detection?, independentAlert: Bool) -> Bool {
         guard !admitted.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
         let priority: SpeechPriority = admitted.urgent ? .danger : admitted.priority
         guard priority.canInterrupt(speechPriority) else { return false }
@@ -134,14 +137,15 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         } else if speech.isSpeaking {
             speech.stopSpeaking(at: .immediate)
         }
-        // UIKit announcement callbacks have no utterance identifier or direct stop
-        // API. Requested streamed replies use cancellable AVSpeechSynthesizer even
-        // with VoiceOver on. Apple's assistive-technology settings preserve its rate:
+        // UIKit announcements have no direct stop API. All potentially private
+        // app speech uses cancellable synthesis, including ambient/route cues.
+        // Only independent sensor alerts retain UIKit transport with VoiceOver on.
+        // Apple's assistive-technology settings preserve the chosen rate:
         // https://developer.apple.com/videos/play/wwdc2020/10022/
         let transport = SpeechDeliveryLedger.transport(for: destination, priority: priority,
-                                                       voiceOverRunning: UIAccessibility.isVoiceOverRunning)
+            voiceOverRunning: UIAccessibility.isVoiceOverRunning, independentAlert: independentAlert)
         guard let attempt = delivery.begin(text: admitted.text, priority: priority,
-                                           destination: destination, transport: transport) else { return false }
+            destination: destination, transport: transport, independentAlert: independentAlert) else { return false }
         if let alert { alertSignals(alert) }
         armOutputTimeout(token: attempt.token)
         if transport == .accessibility {
@@ -273,6 +277,16 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         speech.stopSpeaking(at: .immediate)
         if announceCancellation && hadAnnouncement { requestCancellationAnnouncement() }
         return true
+    }
+
+    /// Route privacy is stronger than ordinary information preemption: private
+    /// mobility may contain a saved room or target name. Preserve only provenance-
+    /// checked sensor alerts, never priority alone. Do not announce cancellation.
+    func stopForPrivateRouteLoss() {
+        guard !delivery.mayContinueAfterPrivateRouteLoss else { return }
+        finishActive(outcome: .interrupted, stopSynthesizer: true, notify: false)
+        // Also stop a synthesizer whose old completion is still settling.
+        speech.stopSpeaking(at: .immediate)
     }
 
     func stop(includingAlerts: Bool = false) {

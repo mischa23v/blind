@@ -12,6 +12,7 @@ struct FamiliarCapture {
     let image: CVPixelBuffer
     let capturedAt: Double
     let generation: UUID
+    let sessionGeneration: UInt64
     let camera: Point3
     let forward: Point3
 }
@@ -524,7 +525,7 @@ final class FamiliarFaceExperiment: ObservableObject {
     }
     func captureExample(model: NavigationModel) {
         guard enabled, draft != nil, !busy, remainingExamples > 0 else { status = "Begin consented enrollment first, or finish the current six examples."; return }
-        guard let capture = model.captureFamiliarFace() else { status = "Need current portrait camera, calibrated monitoring and three seconds stationary. Then retry face capture."; return }
+        guard let capture = model.captureFamiliarFace() else { status = "Need a current tracked portrait camera and three seconds stationary. Then retry face capture."; return }
         cancelWork(); pending = nil; confirmation.cancel(); confirmationToken = nil; awaitingConfirmation = false
         let token = generation, useVision = dualPipeline; busy = true; status = "Capturing example \(draftExamples.count + 1). The adult holds their pose; the child keeps the phone steady."
         task = Task { @MainActor [weak self] in
@@ -581,7 +582,7 @@ final class FamiliarFaceExperiment: ObservableObject {
     private func setSilentStatus(_ text: String) { silenceStatus = true; status = text; silenceStatus = false }
     func revalidate(model: NavigationModel) {
         if let arrivalCapture, !model.familiarCaptureIsCurrent(arrivalCapture) { cancelArrivalHint() }
-        if searching && (!model.running || model.detection.hazard != .observing) {
+        if searching && (!model.assistantSession.shouldRunCamera || !model.cameraAwareness || !model.running || model.simulation || model.places.scanning || model.detection.hazard.isUrgent) {
             cancelWork(); setSilentStatus("Named search canceled because monitoring context changed."); return
         }
         if let snapshotCapture, !model.familiarSnapshotContextIsCurrent(snapshotCapture) {
@@ -594,7 +595,7 @@ final class FamiliarFaceExperiment: ObservableObject {
         cancelWork() // A fresh request always clears the previous candidate and snapshot speech.
         pending = nil; confirmation.cancel(); confirmationToken = nil; awaitingConfirmation = false
         guard enabled, !busy, draft == nil, storageReady, !people.isEmpty else { status = "Familiar-person hints must be on, with a consented person saved and no unfinished enrollment."; return }
-        guard let capture = model.captureFamiliarFace() else { status = "Need a current tracked portrait camera and three seconds stationary. Calibrate monitoring and try again."; return }
+        guard let capture = model.captureFamiliarFace() else { status = "Need a current tracked portrait camera and three seconds stationary. Then try again."; return }
         cancelWork(); pending = nil; confirmation.cancel(); confirmationToken = nil; awaitingConfirmation = false
         let token = generation, gallery = people, useVision = dualPipeline; busy = true; status = "Comparing locally."
         task = Task { @MainActor [weak self] in

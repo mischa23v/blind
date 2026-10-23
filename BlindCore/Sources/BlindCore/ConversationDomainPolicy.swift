@@ -58,6 +58,7 @@ public enum ConversationDomainPolicy {
     /// identity AND position for that specific target. This bounded lexical gate
     /// does not establish either prerequisite or claim semantic completeness.
     public static func requiresPhysicalVerification(for question: String) -> Bool {
+        if RoadCrossingPolicy.requiresCodeOwnedReply(question) { return true }
         let text = normalizedPhysicalRequest(question)
         guard !text.isEmpty else { return false }
         func has(_ pattern: String) -> Bool { text.range(of: pattern, options: .regularExpression) != nil }

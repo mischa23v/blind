@@ -21,6 +21,9 @@ public struct SpeechDeliveryLedger: Sendable {
         public let destination: Destination
         public let transport: Transport
         public let completionIsAmbiguous: Bool
+        /// Only the controller's alert-backed sensor output, not arbitrary route
+        /// or room text sharing the mobility priority, may survive private-route loss.
+        public let independentAlert: Bool
     }
 
     public struct Completion: Sendable {
@@ -29,21 +32,20 @@ public struct SpeechDeliveryLedger: Sendable {
     }
 
     public private(set) var active: Attempt?
+    public var mayContinueAfterPrivateRouteLoss: Bool { active?.independentAlert == true }
     private var seenAccessibilityText = Set<String>()
     private var echoTail: (words: [String], expiresAt: Double)?
 
     public init() {}
 
-    /// Requested conversation needs cancellable utterance identity, including with
-    /// VoiceOver enabled. The adapter uses prefersAssistiveTechnologySettings so
-    /// VoiceOver still owns voice/rate/pitch. Ambient/control/safety announcements
-    /// continue through UIKit when VoiceOver is running.
+    /// Any non-independent output can contain private names, history or goals,
+    /// including route cues at mobility priority. It must be cancellable even with
+    /// VoiceOver enabled. The adapter retains prefersAssistiveTechnologySettings.
+    /// Only alert-backed sensor warnings may use UIKit's uncancellable transport.
     public static func transport(for destination: Destination, priority: SpeechPriority,
-                                 voiceOverRunning: Bool) -> Transport {
-        guard voiceOverRunning else { return .synthesized }
-        if case .requested = destination, priority.rawValue < SpeechPriority.mobility.rawValue {
-            return .synthesized
-        }
+                                 voiceOverRunning: Bool, independentAlert: Bool = false) -> Transport {
+        guard voiceOverRunning, independentAlert,
+              priority == .mobility || priority == .danger else { return .synthesized }
         return .accessibility
     }
 
@@ -52,7 +54,7 @@ public struct SpeechDeliveryLedger: Sendable {
     @discardableResult
     public mutating func begin(text: String, priority: SpeechPriority,
                                destination: Destination = .untracked,
-                               transport: Transport) -> Attempt? {
+                               transport: Transport, independentAlert: Bool = false) -> Attempt? {
         guard active == nil, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
         var ambiguous = false
         if transport == .accessibility {
@@ -63,7 +65,8 @@ public struct SpeechDeliveryLedger: Sendable {
         }
         let attempt = Attempt(token: UUID(), text: text, priority: priority,
                               destination: destination, transport: transport,
-                              completionIsAmbiguous: ambiguous)
+                              completionIsAmbiguous: ambiguous,
+                              independentAlert: independentAlert && (priority == .mobility || priority == .danger))
         active = attempt
         return attempt
     }

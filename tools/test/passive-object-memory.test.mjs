@@ -6,7 +6,7 @@ const read = p => readFile(new URL(`../../${p}`, import.meta.url), 'utf8');
 const section = (s, a, b) => s.slice(s.indexOf(a), s.indexOf(b, s.indexOf(a)));
 test('passive observations enter foreground loop independently of a find command', async () => {
   const s = await read('ios/BlindAssist/NavigationModel.swift');
-  assert.match(s, /updatePassiveObjectMemory\(frame: frame, observation: observation\)/);
+  assert.match(s, /updateBackgroundPerception\(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal\)/);
   const p = section(s, 'private func updatePassiveObjectMemory', 'private func importFurnitureHistory');
   assert.match(p, /Task.detached\(priority: .utility\)/);
   assert.match(p, /passiveObservationGeneration == generation/);
@@ -76,7 +76,7 @@ test('continuous pose/hazard cadence is separate from bounded async visual obser
   const source = await readFile(new URL('../../ios/BlindAssist/NavigationModel.swift', import.meta.url), 'utf8');
   const frames = source.slice(source.indexOf('func session(_ session: ARSession, didUpdate frame: ARFrame)'), source.indexOf('// MARK:', source.indexOf('func session(_ session: ARSession, didUpdate frame: ARFrame)')));
   assert.match(frames, /frame.timestamp - lastProcessed >= 1.0 \/ 15/);
-  assert.ok(frames.indexOf('detector.process(observation)') < frames.indexOf('updatePassiveObjectMemory(frame: frame, observation: observation)'));
+  assert.ok(frames.indexOf('detector.process(observation)') < frames.indexOf('updateBackgroundPerception(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal)'));
   const beforeSampling = frames.slice(0, frames.indexOf('DepthSampler.observation(from: frame)'));
   assert.doesNotMatch(beforeSampling, /guard[^\n]*(?:busy|feedback\.speaking|currencyActive|objectSearch)/);
   assert.match(source, /now - lastPassiveObservation >= 3/);
