@@ -125,7 +125,9 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
   const uiTarget = add('ui-target', `isa = PBXNativeTarget; buildConfigurationList = ${uiConfigList}; buildPhases = (${uiSources},); buildRules = (); dependencies = (${dependencyTarget},); name = BlindAssistUITests; productName = BlindAssistUITests; productReference = ${uiProduct}; productType = "com.apple.product-type.bundle.ui-testing";`);
   const unitFile = add('unit-file', 'isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindAssistTests/CommunityTests.swift; sourceTree = SOURCE_ROOT;');
   const unitBuild = add('unit-build', `isa = PBXBuildFile; fileRef = ${unitFile};`);
-  const unitSources = add('unit-sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${unitBuild},); runOnlyForDeploymentPostprocessing = 0;`);
+  const replayFile = add('unit-replay-file', 'isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindAssistTests/CompanionNativeReplayTests.swift; sourceTree = SOURCE_ROOT;');
+  const replayBuild = add('unit-replay-build', `isa = PBXBuildFile; fileRef = ${replayFile};`);
+  const unitSources = add('unit-sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${unitBuild},${replayBuild},); runOnlyForDeploymentPostprocessing = 0;`);
   const unitProduct = add('unit-product', 'isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = BlindAssistTests.xctest; sourceTree = BUILT_PRODUCTS_DIR;');
   const unitCore = add('unit-core', `isa = XCSwiftPackageProductDependency; package = ${pkg}; productName = BlindCore;`);
   const unitCoreBuild = add('unit-core-build', `isa = PBXBuildFile; productRef = ${unitCore};`);

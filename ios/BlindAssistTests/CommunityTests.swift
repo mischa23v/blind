@@ -753,7 +753,7 @@ final class CompanionWorkingStateTests: XCTestCase {
         XCTAssertEqual(state.reports.map(\.text), ["I enjoy music", "The cupboard is open now"])
         XCTAssertTrue(state.facts.isEmpty)
         XCTAssertEqual(state.proposedStep, "")
-        XCTAssertNotEqual(state.goalRevision, revision)
+        XCTAssertEqual(state.goalRevision, revision)
         state.changeGoal("Help me find my cup"); XCTAssertTrue(state.suspendGoal())
         state.changeGoal("Help me find my keys")
         state.removeReport("Help me find my cup")
@@ -785,6 +785,31 @@ final class CompanionWorkingStateTests: XCTestCase {
         XCTAssertEqual(restored.reports.count, 12)
         XCTAssertEqual(restored.suspendedGoals.count, 3)
     }
+    func testReportedIngredientsAdvanceOnlyBoundConversationalStepAndKeepEvidenceSource() throws {
+        for report in ["I got the milk", "I've retrieved the milk", "جبت الحليب", "I got الحليب"] {
+            var state = CompanionWorkingState(); state.changeGoal("Help me make breakfast")
+            state.proposedStep = "Check the milk"
+            state.record(report)
+            state.apply(.init(goal: "", nextStep: "What cereal would you like?", completionReport: report, completionStep: "Check the milk"), latest: report)
+            XCTAssertEqual(state.goal, "Help me make breakfast")
+            XCTAssertEqual(state.reportedCompletedSteps, ["Check the milk"])
+            XCTAssertEqual(state.reportedStepAssociations.last?.report, report)
+            XCTAssertEqual(state.proposedStep, "What cereal would you like?")
+            let restored = try JSONDecoder().decode(CompanionWorkingState.self, from: JSONEncoder().encode(state))
+            XCTAssertEqual(restored.reportedStepAssociations.last?.report, report)
+            state.removeReport(report)
+            XCTAssertTrue(state.reportedStepAssociations.isEmpty)
+            XCTAssertTrue(state.reportedCompletedSteps.isEmpty)
+        }
+    }
+    func testUnrelatedOrQuotedCompletionCannotRetireCurrentStep() {
+        for report in ["done", "I didn't get milk", "Mom said I got milk", "I got milk in the game", "انا لم احضر الحليب"] {
+            var state = CompanionWorkingState(); state.changeGoal("Help me make breakfast"); state.proposedStep = "Check the milk"
+            state.apply(.init(goal: "", nextStep: "", completionReport: report, completionStep: "Check the milk"), latest: report)
+            XCTAssertEqual(state.proposedStep, "Check the milk")
+            XCTAssertTrue(state.reportedCompletedSteps.isEmpty)
+        }
+    }
     func testProposedStepsNeverExecuteOrProveCompletion() {
         var state = CompanionWorkingState(); state.changeGoal("Help me find my cup")
         state.apply(.init(goal: "", nextStep: "Check your last report", completionReport: ""), latest: "Help me find my cup")
@@ -793,6 +818,8 @@ final class CompanionWorkingStateTests: XCTestCase {
         state.apply(.init(goal: "", nextStep: "", completionReport: "done"), latest: "I'm not done")
         XCTAssertTrue(state.reportedCompletedSteps.isEmpty)
         state.apply(.init(goal: "", nextStep: "", completionReport: "I'm done"), latest: "I'm done")
+        XCTAssertTrue(state.reportedCompletedSteps.isEmpty)
+        state.apply(.init(goal: "", nextStep: "", completionReport: "I checked my last report", completionStep: "Check your last report"), latest: "I checked my last report")
         XCTAssertEqual(state.reportedCompletedSteps, ["Check your last report"])
     }
 }

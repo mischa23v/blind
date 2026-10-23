@@ -295,3 +295,8 @@ Every implementation completion entry must name the adapted upstream/API, exact 
 
 - [x] Upload hello.zip privately and record all eleven user-listed Seeing AI/related code repositories with pinned evidence and licence limits. [References](research/SEEING_AI_CODE_REFERENCES.md). Research/transfer only; D03/V11 integration and device checks remain open.
 
+
+## Semantic context and read-only capability checkpoint
+- Implemented typed specialized reads through the existing local tool runtime, mandatory stable profile/task context, source-attributed action progress, bounded memory replay and native batch-test entry point. See research/SEMANTIC_TOOLS_AND_CONTEXT.md.
+- Imported preserved scenario inputs, hidden rubrics, raw results and native checklist under tests/scenarios/companion. Integrity validation is not behavioral/model success; first-pass usefulness misses remain visible.
+- Pending: actual Apple SDK build, native model selection/latency, VoiceOver/device sensor behavior and open-ended held-out adaptation. Do not describe this source checkpoint as all features validated.

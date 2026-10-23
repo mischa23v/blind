@@ -290,6 +290,8 @@ final class ConversationFrameProbe: @unchecked Sendable {
         return Task.isCancelled ? nil : result
     }
 
+    var isAvailable: Bool { lock.lock(); defer { lock.unlock() }; return !busy }
+
     private func claim() -> Bool {
         lock.lock(); defer { lock.unlock() }
         guard !busy else { return false }

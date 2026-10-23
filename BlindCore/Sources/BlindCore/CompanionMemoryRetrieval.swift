@@ -30,6 +30,17 @@ public enum CompanionMemoryRetrieval {
         let evidence: CompanionEvidence
     }
 
+    /// Display labels are not place identity or frame alignment. Two bedrooms
+    /// with the same name may belong to different homes, floors or map sessions.
+    private struct RecordedLocation: Hashable {
+        let placeID, placeName, floorID, floorName, roomID, roomName, frameID: String?
+        init(_ sighting: ObservedObjectSighting) {
+            placeID = sighting.placeID; placeName = sighting.placeName
+            floorID = sighting.floorID; floorName = sighting.floorName
+            roomID = sighting.roomID; roomName = sighting.roomName; frameID = sighting.frameID
+        }
+    }
+
     /// Supply reports in original history order, oldest first. When their dates
     /// are unknown, equal-relevance reports are returned newest first without
     /// inventing a timestamp or treating an arbitrary record ID as chronology.
@@ -83,7 +94,7 @@ public enum CompanionMemoryRetrieval {
             let locations = group.map { sighting in
                 [sighting.placeName, sighting.floorName, sighting.roomName].compactMap { $0 }.joined(separator: " / ")
             }
-            let distinctLocations = Set(locations.filter { !$0.isEmpty })
+            let distinctLocations = Set(group.map(RecordedLocation.init))
             let location = locations[0].isEmpty ? "location unrecorded" : "recorded at " + locations[0]
             let source: String
             switch last.source {

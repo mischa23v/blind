@@ -115,7 +115,9 @@ ED40BD87FBCF2122DC0DA2CB = { isa = PBXTargetDependency; target = 34A04005BCAF206
 4EA0BBFB4641B4E941FBF077 = { isa = PBXNativeTarget; buildConfigurationList = 3DA41B28AE8CC11ED1C9F917; buildPhases = (760DD443C1DF2461277A1FDF,); buildRules = (); dependencies = (ED40BD87FBCF2122DC0DA2CB,); name = BlindAssistUITests; productName = BlindAssistUITests; productReference = 93E46A602338E07A8524AEF6; productType = "com.apple.product-type.bundle.ui-testing"; };
 1DD61F7A3D64032769FF5256 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindAssistTests/CommunityTests.swift; sourceTree = SOURCE_ROOT; };
 AA3B683DF3D8B936F0C9084F = { isa = PBXBuildFile; fileRef = 1DD61F7A3D64032769FF5256; };
-C344CB08D39518A3E73D4CE5 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (AA3B683DF3D8B936F0C9084F,); runOnlyForDeploymentPostprocessing = 0; };
+15A8F135B2B9737A64A5D4CE = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindAssistTests/CompanionNativeReplayTests.swift; sourceTree = SOURCE_ROOT; };
+F0E896A8F2D71CEDB3B1AA15 = { isa = PBXBuildFile; fileRef = 15A8F135B2B9737A64A5D4CE; };
+C344CB08D39518A3E73D4CE5 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (AA3B683DF3D8B936F0C9084F,F0E896A8F2D71CEDB3B1AA15,); runOnlyForDeploymentPostprocessing = 0; };
 263AA7604F720BBE5B796EE5 = { isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = BlindAssistTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 E8F106BDB9F5FBC43CE07E9C = { isa = XCSwiftPackageProductDependency; package = BC4A71180870F7945155FBB0; productName = BlindCore; };
 083B548B378C52F25CD6A530 = { isa = PBXBuildFile; productRef = E8F106BDB9F5FBC43CE07E9C; };

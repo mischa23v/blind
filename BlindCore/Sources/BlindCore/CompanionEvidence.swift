@@ -53,6 +53,7 @@ public enum CapturedViewEvidence {
 
 public enum CompanionToolKind: String, Codable, CaseIterable, Sendable {
     case currentObservation, savedMemory, navigationState, deviceClock
+    case saudiBanknote, isolatedColor, familiarPeople, readText
 }
 public struct CompanionToolRequest: Sendable, Equatable {
     public var kind: CompanionToolKind
@@ -223,6 +224,8 @@ public actor CompanionToolRuntime {
                 return item.kind == .historicalMemory || (item.kind == .measuredState && item.isCurrent(at: now))
             case .deviceClock:
                 return CompanionClock.isClockEvidence(item) && item.isCurrent(at: now)
+            case .saudiBanknote, .isolatedColor, .familiarPeople, .readText:
+                return CompanionCapabilityEvidence.valid(item, for: kind, now: now)
             }
         }
         if !result.evidence.isEmpty && usable.isEmpty { return failure(.stale, kind) }
@@ -329,9 +332,12 @@ public enum CompanionEvidenceGuard {
             }
             // Explicit provenance phrases must not become a loophole when the
             // corresponding observation expires during generation.
-            if matches(#"^\s*(captured view|visible text candidate|current observation|measured state|camera observation|device clock)\b|^\s*ساعة الجهاز\s*:"#, sentence) { return false }
+            if matches(#"^(captured view|visible text candidate|current observation|measured state|camera observation|device clock|recognized saudi note|the isolated item in this view|i might see)\b|^(ساعه الجهاز|الورقه السعوديه المقروءه|قد يكون هذا|الغرض المنفصل في اللقطه)"#, clean) { return false }
             let quoted = attributedQuotation(sentence, reports: reports, evidence: evidence)
             let remainder = quoted ?? sentence
+            if quoted == nil, evidence.contains(where: { $0.source == CompanionCapabilityEvidence.source(.saudiBanknote) }),
+               (SaudiBanknotePolicy.containsUnverifiedMoneyValue(remainder) ||
+                matches(#"\b(total|sum|altogether|value)\b.*[0-9٠-٩۰-۹]|مجموع|الاجمالي"#, remainder)) { return false }
             if isLocalAssertion(remainder) || ConversationClaimGuard.containsUnsupportedClaim(remainder) { return false }
             // In a task/report context, possessive and anaphoric descriptions
             // cannot bypass the guard by changing the state verb ("sitting",
@@ -347,6 +353,22 @@ public enum CompanionEvidenceGuard {
             }
         }
         return true
+    }
+
+    /// Bind only visual receipts used by complete sentences, including the same
+    /// whitespace/punctuation normalization as allows(). Unrelated stale reads
+    /// cannot block free conversation or a fresh clock answer.
+    public static func requiredVisualEvidence(_ text: String, reports: [String], evidence: [CompanionEvidence], now: Date = Date()) -> [CompanionEvidence]? {
+        func visual(_ item: CompanionEvidence) -> Bool {
+            item.kind == .capturedView || item.kind == .currentObservation ||
+                (item.kind == .measuredState && !CompanionClock.isClockEvidence(item))
+        }
+        let nonvisual = evidence.filter { !visual($0) }
+        if allows(text, reports: reports, evidence: nonvisual, now: now) { return [] }
+        let parts = sentenceParts(text).map { normalized($0.text) }
+        let required = evidence.filter { visual($0) && parts.contains(normalized($0.text)) }
+        guard !required.isEmpty, allows(text, reports: reports, evidence: nonvisual + required, now: now) else { return nil }
+        return required
     }
 
     /// Sentence boundaries outside quoted source text. A period inside an exact
@@ -394,6 +416,9 @@ public enum CompanionEvidenceGuard {
 
     private static func isLocalAssertion(_ text: String) -> Bool {
         let text = SpatialClaimGuard.normalizeArabic(text)
+        // Deictic denomination statements require the exact specialized receipt,
+        // not merely a nearby monetary number or a model rewrite of that receipt.
+        if matches(#"\b(it(?:['’]s| is)?|this(?: note| bill)?(?: is)?|that(?: note| bill)?(?: is)?|the (?:note|bill)(?: is)?)\s+(?:worth |value is |value of )?(?:[0-9]+|one|five|ten|twenty|fifty|hundred|thousand)\s*(?:riyal|sar|dollar|euro|pound)|(?:هذه|هذي|هذا|هي|قيمتها|قيمته)\s*.{0,12}[0-9٠-٩]+\s*(?:ريال|دولار|يورو)"#, text) { return true }
         // Conversation has no authority to invent a physical route. Measured
         // navigation instructions remain code-owned, outside this model path.
         if matches(#"\b(turn (left|right|around)|(?:walk|go|head|move|step|proceed|cross|climb|descend) (?:straight |directly |carefully )?(?:ahead|forward|back|left|right|up|down|to|toward|towards|through|past|into|across)|follow (?:the|your|that|this) (?:path|route|hall|corridor|person))\b|اتجه|اذهب|امش|انعطف|اعبر|تقدم نحو"#, text) { return true }

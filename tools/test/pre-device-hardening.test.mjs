@@ -27,7 +27,8 @@ test('generic observation is attributed captured-view evidence with separately r
   assert.match(observation, /snapshot: true/);
   assert.doesNotMatch(observation, /lastObservation|hazard == \.observing|perceptionResultAllowed/);
   const playback = declaration(model, 'private func revalidateConversationSpeech(');
-  assert.match(playback, /snapshotPlayback: \$0.snapshot/);
+  assert.match(playback, /allSatisfy\(conversationCaptureIsCurrent\)/);
+  assert.match(model, /snapshotPlayback: capture.snapshot/);
   assert.match(playback, /feedback.stopRequestedSpeech\(active.id\)/);
   assert.ok((model.match(/revalidateConversationSpeech\(\)/g) ?? []).length >= 3);
 });
@@ -67,7 +68,7 @@ test('actual conversation instructions including snapshot and search repairs fit
     const prompt = declaration(local, 'private static func conversationInstructions(').replace('private static', 'static');
     const sections = declaration(local, 'private struct CompanionSystemPrompts');
     const limit = Number(read('BlindCore/Sources/BlindCore/ContextWindowPolicy.swift').match(/maximumInstructionsUTF8Bytes = ([\d_]+)/)[1].replaceAll('_', ''));
-    const swift = `import Foundation\n${read('BlindCore/Sources/BlindCore/AssistantAudience.swift')}\n${sections}\nenum Prompt { ${prompt} }\nfor audience in AssistantAudience.allCases { for arabic in [false,true] { let text = Prompt.conversationInstructions(arabic: arabic, audience: audience); precondition(text.utf8.count <= ${limit}); precondition(text.contains("Captured-view evidence is a past snapshot")); precondition(text.contains("evidence-grounded next check")) } }\nprint("six production prompt budgets passed")\n`;
+    const swift = `import Foundation\n${read('BlindCore/Sources/BlindCore/AssistantAudience.swift')}\npublic enum ContextWindowPolicy { ${declaration(read('BlindCore/Sources/BlindCore/ContextWindowPolicy.swift'), 'public struct Field')} }\n${read('BlindCore/Sources/BlindCore/CompanionModelContext.swift')}\n${sections}\nenum Prompt { ${prompt} }\nfor audience in AssistantAudience.allCases { for arabic in [false,true] { let text = Prompt.conversationInstructions(arabic: arabic, audience: audience); precondition(text.utf8.count <= ${limit}); precondition(text.contains("Captured-view evidence is a past snapshot")); precondition(text.contains("evidence-grounded next check")) } }\nprint("six production prompt budgets passed")\n`;
     const path = join(directory, 'main.swift'), binary = join(directory, 'run'); writeFileSync(path, swift);
     execFileSync(process.env.BLIND_SWIFTC, ['-module-cache-path', join(directory, 'cache'), path, '-o', binary], { timeout: 60_000 });
     assert.match(execFileSync(binary, { encoding: 'utf8', timeout: 10_000 }), /six production prompt budgets passed/);

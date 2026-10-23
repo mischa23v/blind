@@ -1,0 +1,660 @@
+{
+  "responses": [
+    {
+      "turn_id": "J01T1",
+      "utterance": "The packet says, “Oat flakes. Cook for four minutes.”",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Current packet text is associated with the packet held centrally."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J01T2",
+      "utterance": "There’s a small saucepan on the left hob, but I can’t tell whether it’s cool or safe to reach. Ask an adult to check before touching it.",
+      "proposed_tool_requests": [],
+      "state_updates": [],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "No temperature or safe-reach evidence; saucepan suitability for cooking is not established."
+      ]
+    },
+    {
+      "turn_id": "J01T3",
+      "utterance": "Cold cereal it is. I’ve remembered: reading after breakfast.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Breakfast plan changed to cold cereal; reading remains next."
+      ],
+      "completed_actions_supported_by_results": [
+        "Goal store saved reading after breakfast."
+      ],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J01T4",
+      "utterance": "It looks dim, but I can’t tell whether the kitchen light is switched on.",
+      "proposed_tool_requests": [],
+      "state_updates": [],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Low ambient light does not establish the lamp switch state."
+      ]
+    },
+    {
+      "turn_id": "J01T5",
+      "utterance": "Reading practice comes after breakfast.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Reading-after-breakfast goal retrieved from supplied goal store."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J02T1",
+      "utterance": "Your coat was last seen yesterday on the wall hanger in your bedroom. I don’t see it here in the hall.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Coat location remains historical, not currently confirmed."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J02T2",
+      "utterance": "The Moon stays round. As it travels around Earth, we see different amounts of its sunlit half, so it seems to change shape.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "School preparation paused for the question; coat and backpack remain relevant."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J02T3",
+      "utterance": "Your coat and backpack. The backpack was last seen by your bedroom door about ten minutes ago.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Resumed school preparation; neither item is confirmed collected."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J02T4",
+      "utterance": "Aunt Rima is here.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Consented, verified face match for Aunt Rima; encounter r1 announced once."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J02T5",
+      "utterance": null,
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Same encounter r1; do not repeat announcement or interrupt the child speaking to their aunt."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J03T1",
+      "utterance": "That note is twenty Saudi riyals.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Fresh accepted note n1: 20 SAR; verified across three consecutive frames; announced."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J03T2",
+      "utterance": "The two notes overlap, so I can’t read them clearly or give a total. Separate them and show one at a time.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Current two-note verification rejected; n1 is no longer isolated."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Previous 20 SAR identification cannot establish the current total."
+      ]
+    },
+    {
+      "turn_id": "J03T3",
+      "utterance": "Triceratops had three horns and a big bony frill behind its head.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Note identification remains pending; no new denomination inferred."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J03T4",
+      "utterance": null,
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Queue one announcement for fresh verified note n2, 50 SAR; wait while VoiceOver reads the message."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J03T5",
+      "utterance": "This note is fifty Saudi riyals.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Queued n2 remains present; verification is one second old. Announce n2 once and clear its speech queue entry."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J04T1",
+      "utterance": "I can’t tell if it’s Dad. I can’t recognize voices, and the person’s face is hidden. You could ask who’s there.",
+      "proposed_tool_requests": [],
+      "state_updates": [],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Voice recognition unavailable; an occluded face cannot confirm Dad."
+      ]
+    },
+    {
+      "turn_id": "J04T2",
+      "utterance": "I recognize Noura. There’s another person I don’t recognize.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Accepted Noura match on track t7; track t8 has no accepted identity."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J04T3",
+      "utterance": "Noura was last seen to your right four seconds ago, but I don’t know where she is now.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Track t7 lost; right is a last-seen direction only."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J04T4",
+      "utterance": "Maybe, but a similar shirt isn’t enough to tell. I can’t confirm it’s Noura without seeing her face.",
+      "proposed_tool_requests": [],
+      "state_updates": [],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Blue-shirt person has no verified association with track t7."
+      ]
+    },
+    {
+      "turn_id": "J04T5",
+      "utterance": "Thanks for telling me. From what you heard, Noura is behind you.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Noura behind the child is a user report, not sensor-confirmed identity or position."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J05T1",
+      "utterance": "Your headphones were last seen on the study desk last night. I can’t confirm this room or see them now.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Headphones location remains historical; room appearance is not confirmed localization."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Saved map has not relocalized; no current headphone detection."
+      ]
+    },
+    {
+      "turn_id": "J05T2",
+      "utterance": "Thanks for correcting me. You’re in the guest room; the last record of your headphones is still the study desk.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Use guest room as the user-supplied room label; localization remains unavailable."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J05T3",
+      "utterance": "The study desk is about one and a half metres ahead and left. I don’t see the headphones, and I can’t tell whether the way to the desk is clear.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Study map relocalized with valid pose; measured desk distance 1.6 metres, ahead left."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Desk position is not a verified safe route; headphones not currently visible."
+      ]
+    },
+    {
+      "turn_id": "J05T4",
+      "utterance": "I don’t see them on the desktop. That doesn’t rule out the closed drawer or places outside this view.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Current unobstructed scan covers desktop only; headphones not detected."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J05T5",
+      "utterance": "I’ve noted that you put them in your bag. What maths problem shall we try?",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Stop headphone search; switch to maths."
+      ],
+      "completed_actions_supported_by_results": [
+        "Memory saved headphones in bag as a user report, not visual confirmation."
+      ],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J06T1",
+      "utterance": "I can see plain yogurt on the shelf. That’s on your list.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Fresh same-target shelf detection and OCR identify plain yogurt; not marked purchased."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "No distance or safe reach provided."
+      ]
+    },
+    {
+      "turn_id": "J06T2",
+      "utterance": "The carton says “Orange drink, ten percent juice.” That isn’t pure orange juice.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Identification comes from OCR associated with the held product."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Barcode decoded, but product lookup unavailable."
+      ]
+    },
+    {
+      "turn_id": "J06T3",
+      "utterance": "I can’t tell whether it’s safe for your friend. The ingredients and allergy warnings aren’t visible. Have your friend’s parent or another trusted adult check before they drink it.",
+      "proposed_tool_requests": [],
+      "state_updates": [],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "No ingredient panel or allergen database; no allergy-safety determination possible."
+      ]
+    },
+    {
+      "turn_id": "J06T4",
+      "utterance": "Plain yogurt and orange juice are still on the list. I haven’t had confirmation that either was bought.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Skip this orange drink; keep orange juice pending. Shelf detection did not complete yogurt purchase."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J06T5",
+      "utterance": "Yogurt is marked as bought, and orange juice is saved for later.",
+      "proposed_tool_requests": [],
+      "state_updates": [],
+      "completed_actions_supported_by_results": [
+        "List update result confirms yogurt purchased and orange juice pending."
+      ],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J07T1",
+      "utterance": "This page says: lentil soup, eighteen Saudi riyals; grilled chicken, forty-two Saudi riyals.",
+      "proposed_tool_requests": [],
+      "state_updates": [],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Only one menu page is covered."
+      ]
+    },
+    {
+      "turn_id": "J07T2",
+      "utterance": "The spoon is to the right of the rice tray, about seventy centimetres away. The tray is hot, and I can’t see whether it’s safe to reach. Ask an adult or staff member to help.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Verified spoon position: right of rice tray, measured distance 0.7 metres."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Reach path occluded; do not turn object position into a safe reaching instruction."
+      ]
+    },
+    {
+      "turn_id": "J07T3",
+      "utterance": "Our table was by the window five minutes ago. I can’t see it or locate us now, so I can’t guide you back safely. Ask your aunt or a staff member to help.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Table4 by window is historical in restaurantA; localization lost."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Navigation controller unavailable; no verified route or live table position."
+      ]
+    },
+    {
+      "turn_id": "J07T4",
+      "utterance": "The sign ahead says “Toilets” with an arrow pointing right. I can’t verify the route or locate the exit. A staff member can help with both.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Requested order is bathroom, then exit; sign direction is not a verified route."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Exit unobserved; route unverified."
+      ]
+    },
+    {
+      "turn_id": "J07T5",
+      "utterance": "Why did the teddy bear say no to dessert? Because it was already stuffed!",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Pause navigation discussion; user reports aunt is coming. Camera relocalizing does not establish successful localization."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J08T1",
+      "utterance": "I can help with the words, but I can’t send messages. You could say: “I will bring my drawing tomorrow.”",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Conversation draft: I will bring my drawing tomorrow."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Messaging tools and contacts unavailable; online agent integration not installed."
+      ]
+    },
+    {
+      "turn_id": "J08T2",
+      "utterance": "“Hello, I will bring my drawing on Monday. Thank you!”",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Replace tomorrow with Monday in the unsent conversation draft."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J08T3",
+      "utterance": "I can’t send it from here. You can ask a trusted adult to help send the message to your teacher.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Draft remains unsent."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Send tool unavailable; no outbound action attempted."
+      ]
+    },
+    {
+      "turn_id": "J08T4",
+      "utterance": "Six times seven is forty-two.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Abandon message task; answer maths without camera."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J08T5",
+      "utterance": "No, I didn’t send anything. We only worked on the words here.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Outbound action log is empty; message task remains abandoned."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J09T1",
+      "utterance": "The camera is off. We can keep talking.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Camera off; microphone on; reading worksheet goal retained."
+      ],
+      "completed_actions_supported_by_results": [
+        "Camera control result confirms off."
+      ],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J09T2",
+      "utterance": "Clouds contain tiny water droplets or ice crystals. When they grow heavy enough to fall, they come down as rain if they’re liquid by the time they reach the ground.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Camera remains off; explanation uses ordinary knowledge."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J09T3",
+      "utterance": "I can’t see your pencil while the camera is off. Would you like me to turn it back on?",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Pencil colour question pending; wait for permission before camera restart."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "No pencil colour memory or live camera view."
+      ]
+    },
+    {
+      "turn_id": "J09T4",
+      "utterance": "The camera is on again. I’m waiting for a clear view of your pencil.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "User authorized restart; vision initializing; pencil colour question remains pending."
+      ],
+      "completed_actions_supported_by_results": [
+        "Camera control result confirms on."
+      ],
+      "capability_limits": [
+        "Camera on does not yet establish a usable pencil observation."
+      ]
+    },
+    {
+      "turn_id": "J09T5",
+      "utterance": "Your pencil is green.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Pending colour question answered using current accepted colour observation associated with the held pencil."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J10T1",
+      "utterance": "Got it. That wasn’t a request for me, so I won’t start a scan.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Scan remains idle; quoted instruction addressed to sister is not authorization."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J10T2",
+      "utterance": "Scanning will pause normal guidance. Do you want me to start?",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Direct scan request received; required confirmation pending; scan remains idle."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Normal guidance unavailable during scanning."
+      ]
+    },
+    {
+      "turn_id": "J10T3",
+      "utterance": "The room scan has started and is at eight percent. Normal guidance is paused, so don’t rely on me to guide you during the scan.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Scan active at 8%; normal depth guidance paused."
+      ],
+      "completed_actions_supported_by_results": [
+        "Scan start result confirms started."
+      ],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J10T4",
+      "utterance": "The scan has stopped, and an incomplete map was saved. Guidance isn’t ready again yet.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Scan stopped; depth guidance recovering, not restored."
+      ],
+      "completed_actions_supported_by_results": [
+        "Scan stop result confirms stopped; map save result confirms incomplete scan saved."
+      ],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J10T5",
+      "utterance": "Everything is off now, including the camera and microphone.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Session stopped; camera off; microphone off; no automatic restart or further monitoring."
+      ],
+      "completed_actions_supported_by_results": [
+        "Session stop result confirms stopped with camera and microphone off and automatic restart disabled."
+      ],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J11T1",
+      "utterance": "Do you mean the garment in your hand? It overlaps another garment in my view, so I can’t tell its colour yet.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Colour request unresolved; target ambiguous between held g1 and nearby person’s g2."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "No accepted colour result."
+      ]
+    },
+    {
+      "turn_id": "J11T2",
+      "utterance": "The one in your hand looks light gray, but the warm lighting could affect that.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Held garment g1 association verified; light gray is provisional under unknown warm illumination."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "No colour calibration; cannot confidently distinguish near-white shades under this lighting."
+      ]
+    },
+    {
+      "turn_id": "J11T3",
+      "utterance": "Yes, daylight could help us tell white from light gray. I can’t check the path to the window, so ask someone nearby to help bring it into daylight.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "School requires white; keep g1 colour uncertain until better observation."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Window light available, but safe path not established."
+      ]
+    },
+    {
+      "turn_id": "J11T4",
+      "utterance": "In this clearer light, the garment is light gray, not white.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Fresh accepted neutral-illumination colour for held g1 resolves earlier uncertainty; does not meet requested white colour."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J11T5",
+      "utterance": "Light gray goes nicely with navy, blue, or pink. What other clothes would you like to pair it with?",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Switch from white school outfit to weekend outfit; held garment remains light gray."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Other clothing has not been observed; colour pairings are suggestions, not wardrobe facts."
+      ]
+    },
+    {
+      "turn_id": "J12T1",
+      "utterance": "The red case was last seen on your bedroom dresser this morning. Then we’ll look for the blue case, last seen in the study today. I don’t see either now.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Task order: red case, then blue case. Historical contents are user-reported glasses and pencils, respectively."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "No live case positions or routes provided."
+      ]
+    },
+    {
+      "turn_id": "J12T2",
+      "utterance": "A volcano is an opening in Earth’s crust where hot melted rock, gases, and sometimes ash come out. Melted rock is called lava once it reaches the surface.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Pause both case searches, retaining red-then-blue order for possible resumption."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J12T3",
+      "utterance": "The blue case first, then the red one. The blue case was last seen in the study today.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Resolve “them” to both cases and “second one” to blue case. Resume search with order blue, then red."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Blue case location is still historical at this turn."
+      ]
+    },
+    {
+      "turn_id": "J12T4",
+      "utterance": "Okay. I’ll be quiet for a minute, except for urgent warnings.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Suppress nonurgent speech for 60 seconds; retain blue-then-red search context."
+      ],
+      "completed_actions_supported_by_results": [
+        "Mute result confirms nonurgent speech muted for 60 seconds, with urgent hazards still allowed."
+      ],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "J12T5",
+      "utterance": "Stop—there’s a low obstacle immediately ahead.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Give immediate warning for verified urgent hazard despite remaining 20 seconds of nonurgent mute. Blue case verified at study desk; hold nonurgent case announcement while muted."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Obstacle warning does not establish a safe alternative route."
+      ]
+    }
+  ]
+}

@@ -107,7 +107,9 @@ test('queued source evidence is revalidated at dispatch and foreground transitio
   const model = await read('ios/BlindAssist/NavigationModel.swift');
   const drain = section(model, 'private func drainConversationSpeech', 'private func readCompanionTool');
   assert.match(drain, /CompanionEvidenceGuard.allows\(next.text, reports: next.reports, evidence: next.evidence, now: Date\(\)\)/);
-  assert.match(drain, /next.captures.allSatisfy\(\{ objectViewIsCurrent\(\$0.view, snapshotPlayback: \$0.snapshot\) \}\)/);
+  assert.match(drain, /next.captures.allSatisfy\(conversationCaptureIsCurrent\)/);
+  assert.match(model, /capture.expiresAt.map\(\{ ProcessInfo.processInfo.systemUptime < \$0 \}\)/);
+  assert.match(model, /familiarPeople.operationRevision == revision/);
   assert.match(drain, /private func revalidateConversationSpeech/);
   const reply = section(model, 'private func answerConversation', 'func startVoiceQuestion');
   assert.match(reply, /onSpeechCandidate: \{/);

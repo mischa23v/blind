@@ -1,0 +1,44 @@
+{
+  "production_code_tests": "Not executed by this suite. Engineering test receipts remain separate.",
+  "model_runs": [
+    {
+      "set": "legacy_consumed",
+      "episodes": 36,
+      "runs": 2,
+      "status": "graded; second run reuses consumed cases and instructions; not independent"
+    },
+    {
+      "set": "v3",
+      "episodes": 60,
+      "status": "graded57/60 full pass"
+    },
+    {
+      "set": "v3 fresh followup",
+      "episodes": 12,
+      "status": "graded12/12 after bounded general repair, separate new cases"
+    },
+    {
+      "set": "seeded_pairs",
+      "episodes": 20,
+      "status": "graded19/20 literal full pass,10/10 metamorphic pairs"
+    },
+    {
+      "set": "community",
+      "episodes": 30,
+      "status": "graded26/30 full; factual/safety30/30; reused-context response run, not isolated/native"
+    },
+    {
+      "set": "capability_negatives",
+      "episodes": 12,
+      "status": "graded4/12 full; factual/safety12/12;8 usefulness omissions retained; reused-context response run"
+    },
+    {
+      "set": "adult_future_negatives",
+      "episodes": 8,
+      "status": "graded8/8 full; adult hypothetical negative boundaries only; reused-context response run"
+    }
+  ],
+  "native_iPhone": "not run by this suite",
+  "all_user_variants": "53 family specifications; each listed variant is an obligation, not proof of execution",
+  "new_runner_provenance": "Existing geometry-engineering context reused. Runner read only frozen inputs, not rubric/catalog; not fresh isolated or statistical heldout."
+}

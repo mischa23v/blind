@@ -11,7 +11,8 @@ test('device clock executes as an advertised read-only tool without a camera or 
   assert.ok(body, 'device clock has a tool executor case');
   assert.match(body, /CompanionClock\.read\(now: Date\(\), timeZone: \.current, arabic: arabic\)/);
   assert.doesNotMatch(body, /running|camera|session\.currentFrame|URLSession|requestPermission/);
-  assert.match(model, /availableTools: Set\(CompanionToolKind\.allCases\)/);
+  assert.match(model, /availableTools: self\.availableCompanionTools/);
+  assert.match(model, /var result: Set<CompanionToolKind> = \[\.savedMemory, \.navigationState, \.deviceClock\]/);
   const helper = await read('BlindCore/Sources/BlindCore/CompanionEvidence.swift');
   assert.match(helper, /case currentObservation, savedMemory, navigationState, deviceClock/);
   assert.match(helper, /case \.deviceClock:\s*return CompanionClock\.isClockEvidence\(item\) && item\.isCurrent\(at: now\)/);
@@ -22,7 +23,7 @@ test('clock speech skips only validated camera-independent records and retains d
   const start = model.indexOf('private func queueConversationSpeech');
   const end = model.indexOf('private func readCompanionToolForTurn', start);
   const body = model.slice(start, end);
-  assert.match(body, /\.measuredState && !CompanionClock\.isClockEvidence\(\$0\)/);
+  assert.match(body, /CompanionEvidenceGuard\.requiredVisualEvidence\(text, reports: reports, evidence: evidence\)/);
   assert.match(body, /captures\.count == current\.count/);
   assert.match(body, /CompanionEvidenceGuard\.allows\(next\.text, reports: next\.reports, evidence: next\.evidence, now: Date\(\)\)/);
   assert.match(body, /SpatialClaimGuard\.containsSpatialClaim\(text\)/);
@@ -31,7 +32,7 @@ test('clock speech skips only validated camera-independent records and retains d
 
 test('model advertises a fresh clock read rather than a hardcoded date or invented time', async () => {
   const adapter = await read('ios/BlindAssist/LocalImageAssistant.swift');
-  assert.match(adapter, /navigationState, or deviceClock/);
+  assert.match(adapter, /navigationState, deviceClock, saudiBanknote/);
   assert.match(adapter, /For the current time, call deviceClock and repeat its complete fresh evidence/);
   assert.match(adapter, /never guess from conversation or training/);
 });

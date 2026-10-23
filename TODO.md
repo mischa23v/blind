@@ -120,3 +120,8 @@ Currency data: download all eight assets from the [private currency transfer](ht
 
 Seeing AI learning: read research/SEEING_AI_CODE_REFERENCES.md on the Mac and download hello.zip from the [private reference release](https://github.com/mischa23v/blind/releases/tag/hello-seeing-ai-20261022). Start currency source review with BankNote-Net; keep licence/model/data and offline checks open.
 
+
+### After semantic context checkpoint
+- Run the app-hosted input-only model replay on the Mac with the frozen source revision, then grade saved outputs separately. Keep absent FoundationModels and unsupported language as unavailable, not passing.
+- Execute the iPhone checklist with real sensor/voice conditions; first tab must remain reply-only. Check consent/gallery disable while a familiar hint is queued.
+- Investigate held-out usefulness omissions without fabricating tools or unsafe physical advice. Preserve initial failures before any change.

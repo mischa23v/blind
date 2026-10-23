@@ -199,13 +199,14 @@ final class FamiliarFaceExperiment: ObservableObject {
     @Published private(set) var liveFaceStatus = ""
     var presentationActive = false
     var hasEnrollmentDraft: Bool { draft != nil }
-    var hasActiveWork: Bool { busy || liveTask != nil || liveCapture != nil || draft != nil || pending != nil || snapshotCapture != nil || resultCapture != nil || showPicker }
+    var hasActiveWork: Bool { semanticProbeInFlight || busy || liveTask != nil || liveCapture != nil || draft != nil || pending != nil || snapshotCapture != nil || resultCapture != nil || showPicker }
     var isSearching: Bool { searching }
     var operationRevision: UUID { generation }
     var onSearchStarted: (() -> Void)?
     var onSnapshotHint: ((String) -> Void)?
     var onStatus: ((String) -> Void)?
     var onCancelSpeech: (() -> Void)?
+    var onEvidenceInvalidated: (() -> Void)?
     /// Caller admits this social event through the existing attention/hazard gate.
     /// True means admitted; false permits a later fresh proposal, not stale queuing.
     var onArrivalHint: ((FamiliarArrivalHint) -> Bool)?
@@ -226,6 +227,7 @@ final class FamiliarFaceExperiment: ObservableObject {
     private var pending: Pending?
     private var confirmation = FamiliarActionConfirmation()
     private var confirmationToken: UUID?
+    private var semanticProbeInFlight = false
     private var liveTask: Task<Void, Never>?
     private var liveExpiry: Task<Void, Never>?
     private var liveCapture: FamiliarCapture?
@@ -264,6 +266,7 @@ final class FamiliarFaceExperiment: ObservableObject {
         invalidateLiveEvidence()
         generation = UUID(); task?.cancel(); task = nil; expiry?.cancel(); expiry = nil; busy = false; searching = false
         resultCapture = nil; snapshotCapture = nil
+        onEvidenceInvalidated?()
         if hadExplicitFaceWork { onCancelSpeech?() }
     }
     func cancel(announce: Bool = true) {
@@ -324,7 +327,7 @@ final class FamiliarFaceExperiment: ObservableObject {
     /// One in-flight pass, two embeddings, a rotating cursor and no old-frame queue.
     func consume(model: NavigationModel) {
         guard UIApplication.shared.applicationState == .active,
-              enabled, storageReady, !people.isEmpty, !busy, draft == nil, pending == nil,
+              enabled, storageReady, !people.isEmpty, !busy, !semanticProbeInFlight, draft == nil, pending == nil,
               !searching, !showPicker, let capture = model.captureFamiliarFace() else {
             if liveTask != nil || liveCapture != nil { invalidateLiveEvidence() }
             return
@@ -388,6 +391,27 @@ final class FamiliarFaceExperiment: ObservableObject {
                 encounters.invalidateEvidence()
             }
         }
+    }
+    /// One bounded read through the existing matcher. No enrollment, search-goal,
+    /// encounter announcement, speech, or gallery mutation is authorized here.
+    var conversationReadAvailable: Bool {
+        enabled && storageReady && !people.isEmpty && !busy && !semanticProbeInFlight &&
+        draft == nil && pending == nil && !showPicker && !searching && liveTask == nil
+    }
+    func readForConversation(_ capture: FamiliarCapture, model: NavigationModel) async -> [String]? {
+        guard conversationReadAvailable, model.familiarCaptureIsCurrent(capture) else { return nil }
+        semanticProbeInFlight = true
+        defer { semanticProbeInFlight = false }
+        let revision = generation, gallery = people, useVision = dualPipeline
+        do {
+            let batch = try await inference.inspectFaces(capture.image, gallery: gallery, dualPipeline: useVision, startOffset: 0)
+            guard !Task.isCancelled, generation == revision, enabled,
+                  model.familiarCaptureIsCurrent(capture), !batch.overCapacity else { return nil }
+            let ids = FamiliarFaceBatchPolicy.uniqueCandidates(batch.faces.map { face in
+                face.analysis.flatMap { matchingID($0, gallery: gallery, useVision: useVision, requestID: revision) }
+            }).compactMap { $0 }
+            return ids.compactMap { id in gallery.first { $0.id == id }?.label }
+        } catch { return nil }
     }
     func setDualPipeline(_ value: Bool) {
         cancel(); dualPipeline = value

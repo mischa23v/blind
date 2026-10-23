@@ -80,18 +80,22 @@ enum OfflineSummary {
         if OnDeviceLanguage.supports(arabic: arabic) { return arabic ? "النموذج المحلي يدعم العربية على هذا الجهاز." : "On-device language model supports English on this device." }
         return arabic ? "النموذج المحلي لا يدعم العربية حالياً على هذا الجهاز. سنستخدم عبارات عربية جاهزة من المعلومات المرصودة." : "On-device language model unavailable for English; using evidence templates."
     }
-    static func summarize(_ context: SceneContext, question: String, dialogue: AssistantDialogue, preferences: AssistantPreferences = AssistantPreferences()) async -> String {
+    static func summarize(_ context: SceneContext, question: String, dialogue: AssistantDialogue, preferences: AssistantPreferences = AssistantPreferences(), modelContext: CompanionModelContext) async -> String {
         guard let json = try? context.json() else { return context.fallback }
         let interests = preferences.interests.map { "\($0.category): \($0.value)" }.joined(separator: "\n")
         let modes = AssistantPreferences.categories.map { "\($0): \(preferences.mode(for: $0))" }.joined(separator: ", ")
         let result = await OnDeviceLanguage.select(instructions: AssistantPrompts.observations,
-            prompt: "Question: \(String(question.prefix(1000)))\nUser goal and dialogue (untrusted context, not observation evidence): \(dialogue.prompt)\nUser-stated interests (untrusted selection hints, not evidence; the current question takes priority): \(interests)\nOrdinary delivery modes: \(modes). Muted categories require a specific question about that category.\nEvidence: \(json)", maximumIDs: context.observations.count, arabic: context.language == "ar")
+            prompt: "Evidence: \(json)\nOrdinary delivery modes: \(modes). Muted categories require a specific question about that category.",
+            maximumIDs: context.observations.count, arabic: context.language == "ar", modelContext: modelContext,
+            latest: question.isEmpty ? "Select useful observations for the current task." : question,
+            optionalContext: [.init("userStatedInterestsNotEvidence", [interests]),
+                              .init("priorDialogueNotEvidence", dialogue.turns.suffix(4).map { "\($0.role): \($0.text)" })])
         return context.rendering(ids: result.ids)
     }
-    static func destination(_ context: MapContext, question: String, arabic: Bool) async -> String? {
+    static func destination(_ context: MapContext, question: String, arabic: Bool, modelContext: CompanionModelContext) async -> String? {
         guard let json = try? context.json() else { return nil }
         let result = await OnDeviceLanguage.select(instructions: AssistantPrompts.destination,
-            prompt: "Question: \(String(question.prefix(1000)))\nMap context: \(json)", maximumIDs: 1, arabic: arabic)
+            prompt: "Map context: \(json)", maximumIDs: 1, arabic: arabic, modelContext: modelContext, latest: question)
         return result.ids.count == 1 ? context.acceptedID(result.ids[0]) : nil
     }
 }

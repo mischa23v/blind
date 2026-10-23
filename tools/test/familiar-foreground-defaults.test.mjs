@@ -148,6 +148,7 @@ final class FamiliarFaceExperiment {
     var pending: Int?
     var showPicker = false
     var onCancelSpeech: (() -> Void)?
+    var onEvidenceInvalidated: (() -> Void)?
     var spoken = 0
     var cancellations = 0
     var status = "" { didSet { if !silenceStatus { spoken += 1 } } }

@@ -1,0 +1,154 @@
+{
+  "responses": [
+    {
+      "turn_id": "F1T1",
+      "utterance": "Your lunchbox was last seen on the low shelf in the utility room two hours ago. It may have moved. Can someone help you check there?",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Keep goal: get lunchbox for park.",
+        "Lunchbox location is historical: utility room low shelf, two hours ago; not currently confirmed."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Current pose is not localized; no route guidance is supported."
+      ]
+    },
+    {
+      "turn_id": "F1T2",
+      "utterance": "Yes! Sunshine, sunshine, warm and bright, little birds sing with delight!",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Pause lunchbox search for singing; retain the park goal and historical lunchbox location."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "F1T3",
+      "utterance": "I can see the whole shelf, but not your lunchbox. The lower cabinet is closed. Could someone help you check inside?",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Resume lunchbox search.",
+        "Current clear shelf view does not show the lunchbox; the old shelf location is not current.",
+        "Lower cabinet contents remain unknown."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Cannot see inside the closed cabinet."
+      ]
+    },
+    {
+      "turn_id": "F1T4",
+      "utterance": "Your sister says it is on the dining table now. I haven’t seen it there yet. Could she help you check the table?",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Treat dining table as the latest reported location, attributed to the sister through the user, not visually verified.",
+        "Retain lunchbox search goal until finding is confirmed."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "No live view of the dining table or verified route to it."
+      ]
+    },
+    {
+      "turn_id": "F2T1",
+      "utterance": "I think Samir is here.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Tentatively recognize Samir from the supplied accepted, consented match.",
+        "Mark encounter s2 as announced; do not repeat the greeting in this encounter.",
+        "Retain art activity goal."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "F2T2",
+      "utterance": "How about a rocket or a friendly dragon? You could ask Samir which he likes.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Continue art activity; Samir’s interests are unknown.",
+        "Preserve encounter s2 announcement state."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "F2T3",
+      "utterance": null,
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Encounter s2 was already announced; remain silent while the user is speaking."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": []
+    },
+    {
+      "turn_id": "F2T4",
+      "utterance": "I last spotted someone I thought was Samir on your left eight seconds ago, but I can’t tell if he is still there. Try asking, “Samir, are you next to me?”",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Track s2 is lost; current presence, position and distance are unconfirmed.",
+        "Preserve the once-per-encounter announcement state for s2."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Cannot establish current proximity from the lost track."
+      ]
+    },
+    {
+      "turn_id": "F3T1",
+      "utterance": "That is the basket where your scarf was last seen yesterday, but I can’t see inside well enough to tell. Could someone help you check its contents?",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Keep scarf search active.",
+        "Basket identity is verified; scarf location remains unconfirmed because contents are occluded."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Not seeing the scarf does not establish that it is absent from the basket."
+      ]
+    },
+    {
+      "turn_id": "F3T2",
+      "utterance": "Glad you found it! Basket is spelled B, A, S, K, E, T.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Close scarf search based on the user’s report, not visual confirmation.",
+        "Camera is disabled; do not continue scarf-search prompts."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Camera is disabled."
+      ]
+    },
+    {
+      "turn_id": "F3T3",
+      "utterance": "My camera is off, so I can’t tell who came in. You could ask them to say their name.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Keep scarf search closed.",
+        "Do not infer the entrant’s identity."
+      ],
+      "completed_actions_supported_by_results": [],
+      "capability_limits": [
+        "Camera is disabled and voice recognition is unavailable."
+      ]
+    },
+    {
+      "turn_id": "F3T4",
+      "utterance": "The camera is on. I think it is Ms Leena.",
+      "proposed_tool_requests": [],
+      "state_updates": [
+        "Camera is on according to the supplied control result.",
+        "Tentatively recognize Ms Leena from the supplied accepted, consented match.",
+        "Mark encounter l3 as announced; announce only once in this encounter.",
+        "Keep scarf search closed."
+      ],
+      "completed_actions_supported_by_results": [
+        "Camera enabled, supported by the supplied camera_control_result: on."
+      ],
+      "capability_limits": []
+    }
+  ]
+}
