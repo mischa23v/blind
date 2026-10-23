@@ -1,6 +1,14 @@
-## Final coordinated source checkpoint — 2026-10-23
+## Everyday companion integration — 2026-10-23
 
-This is the current record; older entries and counts below are historical. Integration preserves primary `30999a9` and incorporates the reviewed seven-commit Claude branch through `61001267`, plus the coordinated Saudi device-test and familiar-person work. It is source integration, not a deployment or Apple/device acceptance.
+Portable validation for this increment: **647 BlindCore**, **16 BlindMemory**, **273 Node** tests passed; **16 extracted working-state tests** passed. Default and DEBUG/familiar-person iOS sources parse; firmware protocol and ASan/UBSan failure injection passed (LeakSanitizer excluded under executor tracing). Aggregate verify passed in a disposable source copy and generated a byte-identical Xcode project. These are not Apple SDK, model, physical-device, VoiceOver or latency acceptance.
+
+This checkpoint follows primary `366c31b69d183f39a9736900a1aaf027c1aa6cd1`. See [EVERYDAY_COMPANION_ACCEPTANCE.md](EVERYDAY_COMPANION_ACCEPTANCE.md) for the scope, tests and remaining gaps. The existing read-only memory tool now retrieves dated observed history, saved belongings/places, relevant preferences and explicit checklist records. Bounded task routing reuses existing evidence-gated domain adapters; English/Arabic shopping-list records retain original user provenance. Automatic saved-room recovery tries bounded candidates without treating appearance as pose and defers new resets during requested conversation/reading.
+
+This is general assistant integration, not a navigation-first product or proof of a complete autonomous agent. Actual Apple build/device/model/VoiceOver/latency acceptance, general semantic planning, automatic cross-tool retries, routine learning and safe physical interaction remain pending. No new detector/model artifact or private images are included. Earlier checkpoint counts below remain historical.
+
+## Historical coordinated source checkpoint — 2026-10-23
+
+This section records an earlier source checkpoint; the everyday-companion checkpoint above and canonical scenario tracker supersede its status and counts. Integration preserves primary `30999a9` and incorporates the reviewed seven-commit Claude branch through `61001267`, plus the coordinated Saudi device-test and familiar-person work. It is source integration, not a deployment or Apple/device acceptance.
 
 **Canonical acceptance tracker:** [CHILD_ASSISTANT_TEST_TRACKER.md](CHILD_ASSISTANT_TEST_TRACKER.md). It records the goal, provenance rules, 24 child-style scenarios, three response paths (ordinary chat, independent hazards, evidence-gated physical requests), and executed versus still-pending checks. Use [CLAUDE_INTEGRATION_REVIEW.md](CLAUDE_INTEGRATION_REVIEW.md) for fixes and evidence, [PROJECT_VISION.md](PROJECT_VISION.md) for product intent, and [SESSION_LOG.md](SESSION_LOG.md) for decisions.
 
@@ -217,7 +225,7 @@ Device acceptance must include actual enrollment/import/review/deletion, interru
 1. `node tools/mac-preflight.mjs --multimodal`, then `npm ci --ignore-scripts`, then `npm run mac:setup -- --multimodal --ui` (Xcode 27 / iOS 27 SDK). Fix compile errors until BlindCore, BlindMemory and the app build and their tests pass. Also build without `--multimodal` (Vision fallback).
 2. On the iPhone 18 Pro Max, measure the **built-in model**: time to first words and total, with the compact guide prompt (`BlindCore/Sources/BlindCore/Resources/guide-prompt.txt`), using the existing signposts in Instruments.
 3. Implement **speaking the first sentence early** (left for the Mac because the API needs checking): use the Foundation Models streaming response in `LocalImageAssistant`; as each complete sentence arrives, run `SpatialClaimGuard` on that sentence, keep within the word reservation, check the view is still current, and pass it to `Feedback`; stop the stream if the view, goal or room changes.
-4. **Your eyes-open walk** (you, not your brother): scan two rooms; walk between them; check room recognition and the first-visit offer; "this is my cup" (turn it) then "where is my cup" from a different spot; "where is the exit sign" on a printed sign; a chair placed in the path; restart the app in a room and check it asks before giving directions; open Settings › Saved memory and delete an item and a room.
+4. **Your eyes-open walk** (a sighted adult, not a child): scan two rooms; walk between them; check room recognition and the first-visit offer; "this is my cup" (turn it) then "where is my cup" from a different spot; "where is the exit sign" on a printed sign; a chair placed in the path; restart the app in a room and check it asks before giving directions; open Settings › Saved memory and delete an item and a room.
 5. **Calibrate with your real rooms and objects** (values are placeholders until then):
    - `ios/BlindAssist/RoomRecall.swift`: `maxDistance` (feature-print scale), `borderline`, `verifiedScore`, the registration limits in `registers`, `learnInterval`.
    - `BlindCore/.../ItemAppearanceMatch.swift`: `acceptDistance`, `similarDistance`, `margin` (try two similar cups).
@@ -229,7 +237,7 @@ Device acceptance must include actual enrollment/import/review/deletion, interru
 - Shorten every on-screen help paragraph to a few words (Guide, Ask, Settings).
 - Say "From the camera:" at most once, and not at all once the chest mount is set.
 - Consider dropping "metres" while walking ("Door: ahead, 2"), keeping it when standing.
-- Check offer and question wording with your brother; review the Arabic phrasing.
+- Check offer and question wording with supervised participants; review the Arabic phrasing.
 
 **Decided not to build:** family-phone detection and exact face recognition (dropped 2026-10-09). The consent people registry exists but is not wired. **Needs a decision later:** a bundled object detector for "where is the fork" (today: text and people), and DINOv2-S / ALIKED+LightGlue for stronger matching (on-device, need a download go-ahead).
 
@@ -336,7 +344,7 @@ Add the offline import/corruption/revision/export, preference persistence, real-
 9. Open Places > Walk-through mapping progress. Verify trail and measured floor cells separately, then deliberately cover the camera while stationary and check that lost tracking clears the preview. RoomPlan capture is a separate mode.
 10. In a fictional route map, add a keep-out area around a landmark and confirm the old route/alignment is cleared, planning avoids or rejects that area, and export/import retains it. Check removal confirmation with VoiceOver. Do not use a real stair edge to test this. Physical tape detection and continuous boundary alarms are not implemented.
 
-Work with the brother's or school's orientation-and-mobility specialist on wording, mounting, alert intensity and supervised trial tasks. The tests do not establish suitability for independent travel.
+Work with a qualified orientation-and-mobility specialist on wording, mounting, alert intensity and supervised trial tasks. The tests do not establish suitability for independent travel.
 
 ## Contents and remaining connections
 

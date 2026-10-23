@@ -553,6 +553,25 @@ final class IndoorGoalContinuityTests: XCTestCase {
 /// State logic only. These same source declarations/tests can be extracted for
 /// portable Swift checks; those checks are not Apple SDK or model integration.
 final class CompanionWorkingStateTests: XCTestCase {
+    func testExplicitSubtaskReportRetiresFindFocusWithoutClaimingPossession() {
+        var state = CompanionWorkingState()
+        state.changeGoal("school")
+        _ = state.respond(to: .find(object: "coat"), message: "Help me find my coat", arabic: false)
+        XCTAssertTrue(state.recordCompletedSubtask("Help me find my coat", report: "done"))
+        XCTAssertEqual(state.goal, "school")
+        XCTAssertTrue(state.focusObject.isEmpty)
+        XCTAssertNil(state.parentGoal)
+        XCTAssertEqual(state.reportedCompletedSteps, ["User reported completing Help me find my coat: done"])
+        XCTAssertNil(state.lastSearch)
+    }
+    func testReadingReportDoesNotCompleteSeparateFindGoal() {
+        var state = CompanionWorkingState()
+        _ = state.respond(to: .find(object: "coat"), message: "Help me find my coat", arabic: false)
+        XCTAssertTrue(state.recordCompletedSubtask("Read this label", report: "I did it"))
+        XCTAssertEqual(state.focusObject, "coat")
+        XCTAssertEqual(state.goal, "Help me find my coat")
+        XCTAssertFalse(state.recordCompletedSubtask("Help me find my coat", report: "I have not done it"))
+    }
     func testSchoolParentSurvivesCoatBackpackSwitchAndOnlyExplicitResumeReturns() throws {
         var state = CompanionWorkingState()
         state.changeGoal("school")

@@ -35,13 +35,29 @@ test('permission denial is reported and late camera grants cannot override foreg
   assert.match(permission, /cameraStartupID == id/);
   assert.match(permission, /assistantSession\.foregroundActive/);
   assert.match(permission, /self\.cameraAwareness/);
-  assert.match(permission, /if granted.*launch\(\).*else.*cameraPermissionNeeded\(\)/);
+  assert.match(permission, /if granted\s*\{ self\.outdoor\.requestCoarseLocation\(\); self\.launchWithNearbyPlace\(\) \} else \{ self\.cameraPermissionNeeded\(\) \}/);
+  before(permission, 'guard let self, self.cameraStartupID == id, self.assistantSession.foregroundActive, self.cameraAwareness else { return }',
+    'if granted { self.outdoor.requestCoarseLocation(); self.launchWithNearbyPlace() }');
   assert.match(permission, /default: cameraPermissionNeeded\(\)/);
   assert.match(permission, /I need camera permission/);
   const voice = await read('ios/BlindAssist/VoiceInput.swift');
   assert.match(voice, /guard status == \.authorized else \{ self\.permissionUnavailable\(\)/);
   assert.match(voice, /guard allowed else \{ self\.permissionUnavailable\(\)/);
   assert.match(voice, /I need microphone and speech permission/);
+});
+
+test('authorized startup wrapper captures once before bounded room recovery, without reset loops', async () => {
+  const model = await read('ios/BlindAssist/NavigationModel.swift');
+  const startup = section(model, 'private func launchWithNearbyPlace()', 'private func cancelAutomaticRoomRecovery()');
+  before(startup, 'cancelAutomaticRoomRecovery()', 'automaticRoomRecoveryEnabled = true');
+  before(startup, 'launch()', 'tickAutomaticRoomRecovery(now:');
+  assert.equal((startup.match(/\blaunch\(\)/g) ?? []).length, 1);
+  assert.doesNotMatch(startup, /\bfor\s|\bwhile\s|recognize\(/);
+  const launch = section(model, 'private func launch(map:', '\n    func stop()');
+  assert.doesNotMatch(launch, /automaticRoomRecovery\.reset|launchWithNearbyPlace\(/);
+  const tick = section(model, 'private func tickAutomaticRoomRecovery(now:', 'private func probeAutomaticRoomAppearance(frame:');
+  assert.match(tick, /allowNewAttempt: mayStart/);
+  assert.doesNotMatch(tick, /automaticRoomRecovery\.reset|launchWithNearbyPlace\(/);
 });
 
 test('ordinary conversation is not forced through camera capture or permission setup', async () => {

@@ -201,6 +201,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var lastCompanionTick = -Double.infinity
     // Room recognition from combined clues, body heading, change detection and remembered items.
     private var roomRecognizer = RoomRecognizer()
+    private var automaticRoomRecovery = RoomRecoveryCoordinator()
+    private var automaticRoomAttempt: RoomRecoveryCoordinator.Attempt?
+    private var automaticRoomRecoveryEnabled = false
+    private var recoveryAppearance: [String: (score: Double, at: Double)] = [:]
+    private var previousRecoveryRoomID: String?
+    private var recoveryProbeEpisode = UUID()
+    private var recoveryProbeInFlight = false
+    private var lastRecoveryProbe = -Double.infinity
     private lazy var roomRecall = RoomRecall(memory: places.memory)
     private let conversationFrameProbe = ConversationFrameProbe()
     private var lastRecallCheck = -Double.infinity
@@ -276,6 +284,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var recordedSpotSpeech: (id: UUID, origin: Observation, frameID: String, target: String, sightingID: String, orientation: String)?
     private var pendingPassiveNotice: (id: UUID, key: String, revision: String)?
     private var interruptedSearch = InterruptedObjectSearch()
+    /// Adapter orchestration is not a second sensor loop or permission to act.
+    private var everydayTasks = EverydayTaskCoordinator()
+    private var everydayTicket: EverydayTaskCoordinator.Ticket?
+    private var shoppingList = EverydayShoppingList()
+    private var everydayUtterance = ""
+    private var everydayRetry = EverydayRetryWindow()
+    private var everydayRetryTicketID: UUID?
+    private var everydayRetryRequestID: UUID?
 
     private lazy var itemAppearance = ItemAppearance(memory: places.memory)
     /// Guided saving of how an item looks: "this is my cup", then turning it slowly.
@@ -437,6 +453,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
            let saved = try? JSONDecoder().decode(ItemMemory.self, from: data), saved.valid {
             items = saved
         }
+        if let data = try? places.memory?.value(namespace: "companion", id: "shopping-list"),
+           let saved = try? JSONDecoder().decode(EverydayShoppingList.self, from: data) {
+            shoppingList = saved
+        }
         if let data = try? places.memory?.value(namespace: "observed-objects", id: "all"),
            let saved = try? JSONDecoder().decode(ObservedObjectMemory.self, from: data), saved.valid {
             observedObjects = saved
@@ -556,7 +576,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
                 DispatchQueue.main.async {
                     guard let self, self.cameraStartupID == id, self.assistantSession.foregroundActive, self.cameraAwareness else { return }
-                    if granted { self.launch() } else { self.cameraPermissionNeeded() }
+                    if granted { self.outdoor.requestCoarseLocation(); self.launchWithNearbyPlace() } else { self.cameraPermissionNeeded() }
                 }
             }
         default: cameraPermissionNeeded()
@@ -566,7 +586,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         message = arabic ? "أحتاج إذن الكاميرا. اطلب المساعدة في إعدادات الهاتف." : "I need camera permission. Ask for help in the phone's Settings."
         speakOperation(message)
     }
-    private func launch(map: ARWorldMap? = nil, worldSessionID: UUID = UUID()) {
+    private func launch(map: ARWorldMap? = nil, worldSessionID: UUID = UUID(), announceCalibration: Bool = true) {
         observationFrameID = worldSessionID.uuidString
         if map == nil { places.invalidateWorldMapRecovery() }
         observedObjects.invalidateGeometry()
@@ -599,7 +619,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         UIApplication.shared.isIdleTimerDisabled = true
         startWatchdog()
         message = arabic ? "قف على أرض مستوية. وجّه الكاميرا نحو الأرض أمامك، ثم اضغط أنا واقف على أرض مستوية." : "Stand on a level floor. Point the camera at the ground ahead, then choose I'm standing on a level floor."
-        speakMobility(message)
+        if announceCalibration { speakMobility(message) }
     }
     func stop() {
         voice.cancel()
@@ -609,6 +629,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     /// Camera/sensor lifecycle is independent of an opted-in audio conversation.
     private func stopCameraMonitoring() {
+        cancelAutomaticRoomRecovery()
         interruptedSearch.cancel()
         persistObservedObjects()
         places.invalidateWorldMapRecovery()
@@ -650,7 +671,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         watchdog?.invalidate()
         watchdog = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             guard let self, self.running, !self.places.scanning else { return }
-            if self.placeRecovery.expire(now: ProcessInfo.processInfo.systemUptime) || self.placeRecovery.state == .needsHelp {
+            self.tickEverydayRetry(now: ProcessInfo.processInfo.systemUptime)
+            self.tickAutomaticRoomRecovery(now: ProcessInfo.processInfo.systemUptime)
+            if !self.automaticRoomRecoveryEnabled && (self.placeRecovery.expire(now: ProcessInfo.processInfo.systemUptime) || self.placeRecovery.state == .needsHelp) {
                 self.awaitingPlace = nil; self.launch()
                 self.placeRecoveryQuestion = self.arabic ? "لم أتأكد من المكان. هل أنت في مكان محفوظ أم في مكان آخر؟ اختر المكان للمحاولة مجدداً. يمكنك البقاء ثابتاً وتحريك الكاميرا ببطء إن كان ذلك مريحاً." : "I could not confirm this place. Are you in a saved place or somewhere else? Select a place to retry. You can stay still and slowly turn the camera if comfortable."
                 self.message = self.placeRecoveryQuestion
@@ -664,6 +687,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 // Frames stopped while the app is open: restart the camera instead of waiting.
                 self.lastCameraRestart = now
                 _ = self.speakMobility(self.arabic ? "توقفت الكاميرا. أعيد تشغيلها." : "The camera stopped. Restarting it.")
+                self.beginAutomaticRecoveryAfterLoss()
+                if let attempt = self.automaticRoomAttempt {
+                    self.automaticRoomRecovery.failed(attemptID: attempt.id, now: now)
+                    self.automaticRoomAttempt = nil
+                }
                 self.launch()
             }
             else if now - self.lastFrameWallTime > 0.5 {
@@ -673,6 +701,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 self.detector.reset(); self.phoneDetection = Detection(.uncertain, reason: .frameUnavailable)
                 self.visualStairs.reset()
                 self.peopleTracking.reset()
+                self.beginAutomaticRecoveryAfterLoss()
                 self.recognizedPlace = nil; self.indoor.invalidatePosition(); self.fixedBodyMount = false
                 _ = self.placeRecovery.observe(normal: false, mapped: false, now: ProcessInfo.processInfo.systemUptime)
                 self.attention.resetMotion(); self.cancelDescription()
@@ -691,6 +720,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         lastProcessed = frame.timestamp; lastFrameWallTime = ProcessInfo.processInfo.systemUptime
         // RGB classification runs separately; its task never blocks depth processing.
         visualStairs.consume(frame, at: lastFrameWallTime)
+        probeAutomaticRoomAppearance(frame: frame)
         if let place = awaitingPlace {
             let recoveredFrame = UUID(uuidString: observationFrameID).flatMap {
                 places.observeWorldMapRecovery(for: place, frame: frame, sessionID: $0, now: lastFrameWallTime)
@@ -702,18 +732,30 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             if placeRecovery.observe(normal: normal,
                 mapped: frame.worldMappingStatus == .mapped || frame.worldMappingStatus == .extending,
                 now: lastFrameWallTime) == place.id.uuidString {
+                    if automaticRoomRecoveryEnabled {
+                        guard let attempt = automaticRoomAttempt,
+                              automaticRoomRecovery.recovered(attemptID: attempt.id,
+                                placeID: place.id.uuidString, frameVerified: recoveredFrame != nil,
+                                now: lastFrameWallTime) else { return }
+                        automaticRoomAttempt = nil
+                        previousRecoveryRoomID = "place:\(place.id.uuidString)"
+                    }
                     recognizedPlace = place; awaitingPlace = nil
                     importFurnitureHistory(place)
                     placeRecoveryQuestion = ""
                     message = "Saved map matched: \(place.name). Recalibrate the floor."
-                    speakOperation(message)
+                    if !automaticRoomRecoveryEnabled { speakOperation(message) }
             }
             phoneDetection = Detection(.uncertain, reason: .localizing); publish()
             updateNonspatialObjectMemory(frame: frame)
             return
         }
         if let place = recognizedPlace, let sessionID = UUID(uuidString: observationFrameID) {
-            places.observeWorldMapRecovery(for: place, frame: frame, sessionID: sessionID, now: lastFrameWallTime)
+            let verifiedFrame = places.observeWorldMapRecovery(for: place, frame: frame, sessionID: sessionID, now: lastFrameWallTime)
+            if place.worldFrame != nil, verifiedFrame == nil {
+                beginAutomaticRecoveryAfterLoss()
+                recognizedPlace = nil; indoor.invalidatePosition()
+            }
         }
         guard let observation = DepthSampler.observation(from: frame) else {
             invalidatePerceptionWork(preserveRGBHistoryWork: true); invalidateRecognizedRoom()
@@ -726,6 +768,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             return
         }
         if !observation.trackingNormal {
+            beginAutomaticRecoveryAfterLoss()
             invalidatePerceptionWork(preserveRGBHistoryWork: true); invalidateRecognizedRoom()
             detector.reset(); recognizedPlace = nil; indoor.invalidatePosition(); fixedBodyMount = false
             invalidateReturn()
@@ -855,6 +898,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             originForward: observation.forward, currentForward: lastObservation?.forward)
     }
     private func cancelDescription() {
+        everydayRetry.cancel(); everydayRetryTicketID = nil; everydayRetryRequestID = nil
         currencyRetake.clear()
         stopReadingTool(announce: false)
         exploreRequest = UUID(); exploreTask?.cancel(); exploreTask = nil
@@ -962,6 +1006,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         guard supported, AVCaptureDevice.authorizationStatus(for: .video) == .authorized, !places.scanning else {
             message = "Start the live camera before recognizing a place."; return
         }
+        cancelAutomaticRoomRecovery()
         do {
             let sessionID = UUID()
             let map = try places.beginWorldMapRecovery(for: place, sessionID: sessionID)
@@ -979,6 +1024,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     func continueWithoutPlaceMatch() {
         guard running, !simulation, supported, !places.scanning,
               AVCaptureDevice.authorizationStatus(for: .video) == .authorized else { return }
+        cancelAutomaticRoomRecovery()
         launch(); placeRecoveryQuestion = ""
         message = arabic ? "المكان غير معروف. لن أستخدم الغرفة السابقة لإعطاء اتجاهات. أعد معايرة الأرضية." : "Place is unknown. I will not use the previous room for directions. Recalibrate the floor."
         speakOperation(message)
@@ -1038,6 +1084,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                                       observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else {
             currencyNeedsFreshView(request: request, generation: generation); return true
         }
+        let everydayID = everydayTicket?.id
         let image = frame.capturedImage
         let transform = frame.camera.transform
         let currencyOrigin = Point3(Double(transform.columns.3.x), Double(transform.columns.3.y), Double(transform.columns.3.z))
@@ -1059,11 +1106,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 }
                 self.message = result.speech(arabic: self.arabic)
                 if case .denomination = result {
+                    self.finishEverydayTask(.currency, outcome: .informationReady, ticketID: everydayID)
                     self.currencyRetake.clear()
                     // Only accepted amounts use ordinary answer speech, never a guess.
                     _ = self.speakRequested(self.message, narrationID: request)
                 } else {
                     let reason: CurrencyRetakeSession.Reason
+                    self.finishEverydayTask(.currency, outcome: .retryable(.uncertain), ticketID: everydayID)
                     switch result {
                     case .tooSmall: reason = .tooSmall
                     case .clipped: reason = .clipped
@@ -1072,7 +1121,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     }
                     let armed = self.currencyRetake.arm(reason: reason, rejectedFrameAt: capturedAt,
                         now: ProcessInfo.processInfo.systemUptime)
-                    self.message += armed
+                    self.message += self.everydayRetryTicketID != nil
+                        ? (self.arabic ? " سأفحص لقطة جديدة." : " I'll check a fresh view.")
+                        : armed
                         ? (self.arabic ? " قل حاول مجدداً عندما تكون جاهزاً." : " Say try again when ready.")
                         : (self.arabic ? " انتهت محاولات هذه الصورة. ابدأ طلب قراءة نقود جديداً لاحقاً." : " This attempt window has ended. Start a new money-reading request later.")
                     _ = self.speakOperation(self.message)
@@ -1160,6 +1211,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         guard ClothingColorCapturePolicy.fresh(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime),
               perceptionResultAllowed(request: request, generation: generation, capturedAt: capturedAt,
                   observation: observation, mapRevision: mapRevision, alignmentRevision: alignmentRevision) else { return true }
+        let everydayID = everydayTicket?.id
         let image = frame.capturedImage
         let transform = frame.camera.transform
         let colorOrigin = Point3(Double(transform.columns.3.x), Double(transform.columns.3.y), Double(transform.columns.3.z))
@@ -1181,6 +1233,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 // Coloured illumination can make white fabric appear saturated. Precise neutral
                 // verification always abstains, even when an appearance candidate was available.
                 self.message = (preciseNeutral ? ClothingColor.Result.nearNeutral : result).speech(arabic: self.arabic)
+                if !preciseNeutral, case .appearance = result {
+                    self.finishEverydayTask(.clothingColor, outcome: .informationReady, ticketID: everydayID)
+                } else {
+                    let retryUseful = !preciseNeutral && (result == .mixedOrUncertain || result == .insufficientPixels)
+                    self.finishEverydayTask(.clothingColor, outcome: retryUseful ? .retryable(.uncertain) : .unavailable, ticketID: everydayID)
+                }
                 _ = self.speakRequested(self.message, narrationID: request)
             } catch is CancellationError {
                 return
@@ -1618,6 +1676,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #if BLIND_FAMILIAR_PEOPLE
         familiarPeople.cancelSearchForNewGoal()
         #endif
+        everydayTasks.setGoal(objectiveDraft); everydayTicket = nil; everydayUtterance = ""
         cancelDescription(); feedback.stop(); stopReturn(); indoor.cancelRoute()
         assistantDialogue.setGoal(objectiveDraft); objectiveDraft = assistantDialogue.goal; persistDialogue()
         companionWorkingState.changeGoal(assistantDialogue.goal); persistWorkingState()
@@ -1626,6 +1685,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #if BLIND_FAMILIAR_PEOPLE
         familiarPeople.cancelSearchForNewGoal()
         #endif
+        everydayTasks.cancelAll(); everydayTicket = nil; everydayUtterance = ""
         cancelDescription(); feedback.stop(); stopReturn(); indoor.cancelRoute()
         assistantDialogue = AssistantDialogue(); objectiveDraft = ""; persistDialogue()
         companionWorkingState = CompanionWorkingState(); persistWorkingState()
@@ -1735,10 +1795,31 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, text.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars,
               !fromVoice || assistantSession.shouldListen else { return }
+        let pendingRetake = currencyRetake
+        let completionEligible = everydayTasks.state == .active || everydayTasks.state == .informationReady
+        // Retire old adapter callbacks on interruption, without discarding the
+        // parent goal or interpreting a casual question as a replacement goal.
+        if case .conversation = ConversationIntent.classify(text), EverydayTaskRequest.route(text) == nil {
+            everydayTasks.pause(); everydayTicket = nil
+        }
+        if case .visualRequest = ConversationIntent.classify(text), EverydayTaskRequest.route(text) == nil {
+            everydayTasks.pause(); everydayTicket = nil
+        }
         let normalized = text.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters)).lowercased()
+        if ["done", "i did it", "i'm done", "i am done", "انتهيت", "خلصت"].contains(normalized),
+           completionEligible, everydayTasks.request != nil, CompanionEvidenceGuard.explicitCompletionReport(text, latest: text),
+           everydayTasks.confirmSubtaskComplete() {
+            _ = companionWorkingState.recordCompletedSubtask(everydayUtterance, report: text)
+            assistantDialogue.setGoal(companionWorkingState.goal); objectiveDraft = companionWorkingState.goal
+            persistWorkingState(); persistDialogue()
+            everydayTicket = nil; everydayUtterance = ""
+            cancelDescription(); _ = feedback.stopInformation(announceCancellation: false)
+            recordCompanionMessage(text)
+            deliverConversationReply(arabic ? "حسناً، سجّلت أنك قلت إن الخطوة انتهت." : "Okay, I've noted that you said that step is done.")
+            return
+        }
         if ["i'm standing on a level floor", "i am standing on a level floor", "أنا واقف على أرض مستوية"].contains(normalized),
            running && detection.hazard == .needsCalibration { calibrate(); return }
-        let pendingRetake = currencyRetake
         if case .conversation = ConversationIntent.classify(text),
            ConversationIntent.explicitTaskGoal(text) == nil,
            CompanionUtterance.parse(text) == nil {
@@ -1764,13 +1845,16 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         case .conversation, .visualRequest: break
         }
         if routeUnavailableTemperature(text) { return }
+        if routeShoppingList(text) { return }
         if let destination = AssistantControl.explicitGoal(text) {
+            everydayTasks.setGoal(destination)
             // Retain the expressed destination even when physical guidance must abstain.
             companionWorkingState.changeGoal(destination)
             assistantDialogue.setGoal(destination); objectiveDraft = destination
             stopReturn(); indoor.cancelRoute(); persistWorkingState(); persistDialogue()
         }
         if routeUnverifiedPhysicalRequest(text) { return }
+        if routeEverydayTask(text) { return }
         #if BLIND_FAMILIAR_PEOPLE
         if routeFamiliarPeopleCommand(text) { return }
         familiarPeople.cancelSearchForNewGoal()
@@ -1787,6 +1871,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         if handleAssistantControl(text) { return }
         if let goal = ConversationIntent.explicitTaskGoal(text) {
+            everydayTasks.setGoal(goal); everydayTicket = nil
             // Commit only a whole explicit request, before any model/extraction.
             // A change of task preserves the conversation and does not start sensors.
             companionWorkingState.changeGoal(goal)
@@ -1805,15 +1890,131 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
 
+    /// Select existing adapters, not a second model that invents action results.
+    /// All adapters retain their original capture, identity and output gates.
+    private func routeEverydayTask(_ text: String) -> Bool {
+        guard let request = EverydayTaskRequest.route(text) else { return false }
+        everydayUtterance = text
+        if everydayTasks.goal == nil, !companionWorkingState.goal.isEmpty {
+            everydayTasks.setGoal(companionWorkingState.parentGoal?.goal ?? companionWorkingState.goal)
+        }
+        if !everydayTasks.begin(request) {
+            // The previous camera work was interrupted by the new utterance.
+            // Preserve the retry budget rather than restarting it indefinitely.
+            everydayTasks.pause(); everydayTasks.resume()
+        }
+        let now = ProcessInfo.processInfo.systemUptime
+        var next = everydayTasks.next(available: Set(EverydayCapability.allCases), now: now)
+        if case .run(let ticket) = next, ticket.request.capability == .savedMemory {
+            let memory = readSavedCompanionMemory(query: ticket.request.query)
+            everydayTasks.receive(ticket, outcome: memory.evidence.isEmpty ? .unavailable : .historicalClue, now: now)
+            next = everydayTasks.next(available: Set(EverydayCapability.allCases), now: now)
+        }
+        guard case .run(let ticket) = next else {
+            if everydayTasks.admitPrompt(for: .unavailable) {
+                deliverConversationReply(arabic ? "لم أتمكن من إكمال هذا الفحص بعد. يمكننا تجربة شيء آخر." : "I couldn't finish that check yet. We can try something else.")
+            }
+            return true
+        }
+        everydayTicket = ticket
+        switch request.capability {
+        case .readText: startReadingTool(.liveText); return true
+        case .readDocument: startReadingTool(.document); return true
+        case .barcode: startReadingTool(.barcode); return true
+        case .light: startReadingTool(.light); return true
+        case .currency: return routeSaudiBanknoteCommand(text)
+        case .clothingColor: return routeClothingColorCommand(text)
+        case .familiarPerson:
+            #if BLIND_FAMILIAR_PEOPLE
+            return routeFamiliarPeopleCommand(text)
+            #else
+            finishEverydayTask(.familiarPerson, outcome: .unavailable, ticketID: ticket.id)
+            deliverConversationReply(arabic ? "التعرف على الأشخاص غير متاح في هذه النسخة." : "Familiar-person recognition isn't available in this build.")
+            return true
+            #endif
+        case .deviceClock:
+            let result = CompanionClock.read(now: Date(), timeZone: .current, arabic: arabic)
+            if let value = result.evidence.first {
+                finishEverydayTask(.deviceClock, outcome: .informationReady, ticketID: ticket.id)
+                deliverConversationReply(value.text)
+            }
+            return true
+        case .findItem:
+            // Existing find handlers consult dated history and live detectors.
+            // They alone may deliver an evidence-gated result or orientation hint.
+            return false
+        case .savedMemory: return false
+        }
+    }
+
+    private func finishEverydayTask(_ capability: EverydayCapability, outcome: EverydayTaskCoordinator.AdapterOutcome, ticketID: UUID?) {
+        guard let ticket = everydayTicket, ticket.id == ticketID, ticket.request.capability == capability else { return }
+        if everydayTasks.receive(ticket, outcome: outcome, now: ProcessInfo.processInfo.systemUptime) {
+            everydayTicket = nil
+            if case .retryable = outcome, everydayTasks.state == .active,
+               everydayTasks.attempts < EverydayTaskCoordinator.maximumAttemptsPerAdapter,
+               capability == .currency || capability == .clothingColor {
+                everydayRetryTicketID = ticket.id; everydayRetryRequestID = requestID
+                everydayRetry.schedule(ticketID: ticket.id, now: ProcessInfo.processInfo.systemUptime, frameAt: lastFrameWallTime)
+            }
+        }
+    }
+
+    /// One fresh-frame retry for single-shot adapters. Continuous readers/search
+    /// already own their loops; never restart them or override an interruption.
+    private func tickEverydayRetry(now: Double) {
+        guard everydayRetryTicketID != nil else { return }
+        guard everydayTasks.state == .active, everydayRetryRequestID == requestID else {
+            everydayRetry.cancel(); everydayRetryTicketID = nil; everydayRetryRequestID = nil; return
+        }
+        let ready = running && !simulation && !places.scanning && assistantSession.foregroundActive &&
+            detection.hazard == .observing && attention.stationary && lastObservation?.trackingNormal == true
+        let quiet = !busy && !voice.awaitingUtterance && feedback.canSpeakAmbient && readingTool == nil
+        if everydayRetry.takeIfReady(ticketID: everydayRetryTicketID, now: now, frameAt: lastFrameWallTime,
+                                     quiescent: quiet, available: ready) {
+            everydayRetryTicketID = nil; everydayRetryRequestID = nil
+            _ = routeEverydayTask(everydayUtterance)
+        } else if !everydayRetry.isPending {
+            everydayRetryTicketID = nil; everydayRetryRequestID = nil
+        }
+    }
+
+    private func routeShoppingList(_ text: String) -> Bool {
+        guard let command = EverydayShoppingCommand.parse(text) else { return false }
+        if case .list = command {
+            let names = shoppingList.entries.map(\.item)
+            deliverConversationReply(names.isEmpty ? (arabic ? "قائمة التسوق فارغة." : "Your shopping list is empty.")
+                : (arabic ? "قائمة التسوق: " : "Your shopping list: ") + names.joined(separator: ", "))
+            return true
+        }
+        var updated = shoppingList
+        guard updated.apply(command, userQuote: text, now: Date().timeIntervalSince1970) else {
+            deliverConversationReply(arabic ? "لم تتغير القائمة. قد يكون الغرض موجوداً أو غير مسجل، أو القائمة ممتلئة." : "The list hasn't changed. That item may already be listed, not listed, or the list may be full.")
+            return true
+        }
+        do {
+            guard let memory = places.memory else { throw MemoryError.missing }
+            try memory.saveValue(namespace: "companion", id: "shopping-list", payload: JSONEncoder().encode(updated))
+            shoppingList = updated
+            deliverConversationReply(arabic ? "حدّثت قائمة التسوق." : "Updated your shopping list.")
+        } catch {
+            deliverConversationReply(arabic ? "لم أتمكن من حفظ القائمة. حاول مجدداً." : "I couldn't save the list. Please try again.")
+        }
+        return true
+    }
+
     private func handleConversationTaskControl(_ control: AssistantTaskControl) {
         switch control {
         case .pause:
-            let suspended = companionWorkingState.suspendGoal()
+            everydayTasks.pause(); everydayTicket = nil
+            let suspended = companionWorkingState.suspendGoal() || everydayTasks.state == .paused
             sceneAnswer = suspended ? (arabic ? "أوقفت المهمة مؤقتاً. يمكننا التحدث عن شيء آخر." : "I've paused that task. We can talk about something else.") : (arabic ? "لا توجد مهمة جارية لإيقافها." : "There is no active task to pause.")
         case .resume:
-            let resumed = companionWorkingState.resumeGoal()
+            everydayTasks.resume()
+            let resumed = companionWorkingState.resumeGoal() || everydayTasks.state == .active
             sceneAnswer = resumed ? (arabic ? "استعدت هدفك السابق. سأتحقق من المعلومات الحالية قبل المتابعة." : "I've restored your previous goal. Current conditions still need checking.") : (arabic ? "لا توجد مهمة موقوفة يمكن استعادتها الآن." : "There is no paused task I can resume right now.")
         case .cancel:
+            everydayTasks.cancelAll(); everydayTicket = nil; everydayUtterance = ""
             companionWorkingState.changeGoal("")
             sceneAnswer = arabic ? "ألغيت المهمة الحالية." : "I've cancelled the current task."
         }
@@ -1823,6 +2024,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         persistWorkingState(); persistDialogue()
         currentReply = sceneAnswer
         if assistantSession.state == .active { _ = speakRequested(sceneAnswer) }
+        if case .resume = control, !everydayUtterance.isEmpty, everydayTasks.state == .active {
+            let request = everydayUtterance
+            if !routeEverydayTask(request) { _ = handleItemOrLocate(request) }
+        }
     }
 
     private func queueConversationSpeech(_ text: String, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = [], codeOwned: Bool = false) {
@@ -1873,24 +2078,44 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         return result
     }
 
+    private func readSavedCompanionMemory(query: String) -> CompanionToolResult {
+            let reports = assistantDialogue.relevantUserReports(for: query, maxScalars: 1200).map {
+                CompanionEvidence(id: $0.id, kind: .userReport, text: $0.text, source: "original user conversation record")
+            }
+            var preferences = assistantPreferences.interests.prefix(16).map {
+                CompanionMemoryNote(id: "interest:" + $0.id, subject: $0.category,
+                    text: $0.value, source: "user-edited preferences")
+            }
+            if !preferredName.isEmpty {
+                preferences.append(CompanionMemoryNote(id: "preferred-name", subject: "name اسم",
+                    text: preferredName, source: "user-edited profile"))
+            }
+            let savedPlaces = places.places.map {
+                CompanionPlaceMemory(id: $0.id.uuidString, name: $0.name,
+                    roomNames: [companion.memory.rooms["place:\($0.id.uuidString)"]?.name].compactMap { $0 },
+                    recordedAt: $0.createdAt)
+            }
+            var taskNotes = [companionWorkingState.parentGoal?.goal, companionWorkingState.goal]
+                .compactMap { $0 }.filter { !$0.isEmpty }.enumerated().map {
+                    CompanionMemoryNote(id: "task:\($0.offset)", subject: $0.element,
+                        text: $0.element, source: "user-requested task, not completed action")
+                }
+            taskNotes += shoppingList.entries.enumerated().map {
+                CompanionMemoryNote(id: "shopping:\($0.offset)", subject: "shopping list تسوق " + $0.element.item,
+                    text: $0.element.sourceQuote, source: "explicit shopping-list request, not a purchase",
+                    recordedAt: Date(timeIntervalSince1970: $0.element.recordedAt))
+            }
+            return CompanionMemoryRetrieval.read(query: query, now: Date(), reports: reports,
+                observed: observedObjects, savedItems: items.items, places: savedPlaces,
+                preferences: preferences, taskContext: taskNotes)
+    }
+
     @MainActor private func readCompanionTool(_ request: CompanionToolRequest) async -> CompanionToolResult {
         switch request.kind {
         case .deviceClock:
             return CompanionClock.read(now: Date(), timeZone: .current, arabic: arabic)
         case .savedMemory:
-            var evidence = assistantDialogue.relevantUserReports(for: request.query, maxScalars: 1200).map {
-                CompanionEvidence(kind: .userReport, text: $0.text, source: "user conversation record")
-            }
-            if !preferredName.isEmpty {
-                evidence.append(CompanionEvidence(kind: .historicalMemory,
-                    text: "The user saved their preferred name as \(preferredName).", source: "user-edited profile"))
-            }
-            for interest in assistantPreferences.interests.prefix(4) {
-                evidence.append(CompanionEvidence(kind: .historicalMemory,
-                    text: "\(interest.category): \(interest.value)", source: "user-edited preferences"))
-            }
-            return CompanionToolResult(status: .success, source: "private on-device memory",
-                summary: "Original user reports and saved preferences, not current observations. An empty result means no matching record, not that an object is absent.", evidence: evidence)
+            return readSavedCompanionMemory(query: request.query)
         case .navigationState:
             let summary = indoor.route.isEmpty
                 ? "No active route. Current position and arrival are unverified."
@@ -1995,6 +2220,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// instruction, a bare yes/no, or a model's own assertion that it verified the target.
     @discardableResult private func routeUnverifiedPhysicalRequest(_ question: String) -> Bool {
         guard ConversationDomainPolicy.requiresPhysicalVerification(for: question) else { return false }
+        if EverydayTaskRequest.route(question)?.capability == .findItem, routeEverydayTask(question) { return true }
         cancelDescription(); stopReturn()
         // Typed find tools may gather fresh evidence, but their current output cannot
         // authorize a direction, distance, approach or pickup. No model fallback.
@@ -2409,6 +2635,7 @@ extension NavigationModel {
 
     func muteConversation() {
         defer { updateLiveActivity() }
+        everydayTasks.pause(); everydayTicket = nil
         assistantSession.mute()
         interruptedSearch.cancel()
         cancelDescription(); voice.cancel()
@@ -2418,6 +2645,7 @@ extension NavigationModel {
 
     func endConversation() {
         defer { updateLiveActivity() }
+        everydayTasks.cancelAll(); everydayTicket = nil; everydayUtterance = ""
         assistantSession.end()
         interruptedSearch.cancel()
         cancelDescription(); voice.cancel()
@@ -2496,22 +2724,115 @@ extension NavigationModel {
         _ = speakMobility(message)
     }
 
-    /// Start by trying the saved place nearest to the phone's coarse location (it only narrows which
-    /// map to try). A failed match stays unresolved.
+    /// Start ordinary capture, then try bounded saved-map candidates without a room picker.
     private func launchWithNearbyPlace() {
+        cancelAutomaticRoomRecovery()
+        automaticRoomRecoveryEnabled = true
+        launch()
+        tickAutomaticRoomRecovery(now: ProcessInfo.processInfo.systemUptime)
+    }
+
+    private func cancelAutomaticRoomRecovery() {
+        automaticRoomRecoveryEnabled = false
+        automaticRoomRecovery.reset(); automaticRoomAttempt = nil
+        invalidateAutomaticRoomClues()
+    }
+
+    private func invalidateAutomaticRoomClues() {
+        recoveryAppearance.removeAll()
+        recoveryProbeEpisode = UUID(); recoveryProbeInFlight = false
+        lastRecoveryProbe = -.infinity
+    }
+
+    private func beginAutomaticRecoveryAfterLoss() {
+        guard automaticRoomRecoveryEnabled, case .recovered = automaticRoomRecovery.state else { return }
+        // A stable -> lost transition starts one episode, not a new budget each bad frame.
+        automaticRoomRecovery.reset(); automaticRoomAttempt = nil
+        recoveryAppearance.removeAll()
+        places.invalidateWorldMapRecovery()
+    }
+
+    private func automaticRecoveryCandidates(now: Double) -> [RoomRecoveryCandidate] {
         let here = outdoor.coarseLocation ?? outdoor.location
-        let candidates = places.places.map { place -> PlaceCandidate in
+        let locationFresh = here.map {
+            let age = Date().timeIntervalSince($0.timestamp)
+            return age >= 0 && age <= 60 && $0.horizontalAccuracy >= 0 && $0.horizontalAccuracy <= 150
+        } ?? false
+        let adjacent = previousRecoveryRoomID.map { connectedRooms(from: $0) } ?? []
+        return places.places.filter { $0.worldFrame != nil }.prefix(128).map { place in
+            let room = "place:\(place.id.uuidString)"
             var distance: Double?
-            if let here, let latitude = place.latitude, let longitude = place.longitude {
+            if locationFresh, let here, let latitude = place.latitude, let longitude = place.longitude {
                 distance = here.distance(from: CLLocation(latitude: latitude, longitude: longitude))
             }
-            return PlaceCandidate(placeID: place.id.uuidString, name: place.name, distanceMetres: distance)
+            return RoomRecoveryCandidate(placeID: place.id.uuidString, roomID: room,
+                appearanceScore: recoveryAppearance[room]?.score,
+                appearanceObservedAt: recoveryAppearance[room]?.at, distanceMetres: distance,
+                isPreviousRoom: room == previousRecoveryRoomID, isAdjacentRoom: adjacent.contains(room))
         }
-        let nearby = RoomRecognizer.nearbyPlaces(candidates)
-        // Only a measured nearby place is tried; without a location the room is established by clues instead.
-        let choice = nearby.first(where: { $0.distanceMetres != nil })
-        if let choice, let place = places.places.first(where: { $0.id.uuidString == choice.placeID }) { recognize(place) }
-        else { launch() }
+    }
+
+    private func tickAutomaticRoomRecovery(now: Double) {
+        guard automaticRoomRecoveryEnabled, running, !simulation, !places.scanning,
+              assistantSession.foregroundActive, UIApplication.shared.applicationState == .active,
+              recognizedPlace == nil, alignedRoomID == nil,
+              AVCaptureDevice.authorizationStatus(for: .video) == .authorized else { return }
+        let mayStart = !busy && readingTool == nil && !currencyActive && !colorActive && everydayRetryTicketID == nil &&
+            !voice.awaitingUtterance && feedback.canSpeakAmbient
+        let next = automaticRoomRecovery.next(candidates: automaticRecoveryCandidates(now: now), now: now,
+                                              allowNewAttempt: mayStart)
+        if let current = automaticRoomAttempt,
+           automaticRoomRecovery.state != .trying(current) {
+            automaticRoomAttempt = nil; awaitingPlace = nil; placeRecovery.reset()
+            places.invalidateWorldMapRecovery(); indoor.invalidatePosition()
+        }
+        if let next, let place = places.places.first(where: { $0.id.uuidString == next.placeID }) {
+            do {
+                let sessionID = UUID()
+                let map = try places.beginWorldMapRecovery(for: place, sessionID: sessionID, now: now)
+                automaticRoomAttempt = next; awaitingPlace = place
+                placeRecovery.begin(candidate: next.placeID, now: now)
+                launch(map: map, worldSessionID: sessionID, announceCalibration: false)
+                placeRecoveryQuestion = ""
+            } catch {
+                automaticRoomRecovery.failed(attemptID: next.id, now: now)
+                automaticRoomAttempt = nil; awaitingPlace = nil; placeRecovery.reset()
+            }
+        }
+        if mayStart && automaticRoomRecovery.takeExhaustionNotice() {
+            // Keep live RGB and conversation available. A failed map is not proof of a new room.
+            placeRecoveryQuestion = ""
+            message = arabic ? "لم أتأكد من الغرفة بعد. أستطيع المساعدة بما أراه وأتذكره." : "I haven't confirmed the room yet. I can still help with what I can see and remember."
+            speakOperation(message)
+        }
+    }
+
+    /// Appearance is a short-lived search clue, even without depth/calibration. It is never pose.
+    private func probeAutomaticRoomAppearance(frame: ARFrame) {
+        let capturedAt = lastFrameWallTime
+        guard automaticRoomRecoveryEnabled, awaitingPlace == nil, recognizedPlace == nil,
+              alignedRoomID == nil, !recoveryProbeInFlight, !recallInFlight,
+              !busy, readingTool == nil, !currencyActive, !colorActive, !voice.awaitingUtterance,
+              capturedAt - lastRecoveryProbe >= 2,
+              automaticRoomRecovery.state != .exhausted else { return }
+        let candidates = Array(places.places.filter { $0.worldFrame != nil }.prefix(12).map { "place:\($0.id.uuidString)" })
+        guard !candidates.isEmpty else { return }
+        lastRecoveryProbe = capturedAt; recoveryProbeInFlight = true
+        let episode = recoveryProbeEpisode, frameID = observationFrameID
+        roomRecall.evidence(image: frame.capturedImage, candidates: candidates) { [weak self] evidence, _ in
+            guard let self, self.recoveryProbeEpisode == episode else { return }
+            self.recoveryProbeInFlight = false
+            let now = ProcessInfo.processInfo.systemUptime
+            guard self.running, !self.places.scanning, self.automaticRoomRecoveryEnabled,
+                  self.assistantSession.foregroundActive, self.observationFrameID == frameID,
+                  now >= capturedAt, now - capturedAt <= 3 else { return }
+            for clue in evidence {
+                if case .imageSimilarity(let room, let score) = clue {
+                    self.recoveryAppearance[room] = (score, capturedAt)
+                }
+            }
+            self.tickAutomaticRoomRecovery(now: now)
+        }
     }
 
     /// After a yes/no question finishes speaking, listen briefly only when explicitly enabled.
@@ -2546,7 +2867,7 @@ extension NavigationModel {
     private func updateRoomRecognition(frame: ARFrame, observation: Observation) {
         let now = lastFrameWallTime
         guard observation.trackingNormal, detection.hazard == .observing, !places.scanning,
-              now - lastRecallCheck >= 2, !recallInFlight else { return }
+              now - lastRecallCheck >= 2, !recallInFlight, !recoveryProbeInFlight else { return }
         lastRecallCheck = now
         let image = frame.capturedImage
         let sector = Self.viewSector(currentBodyForward() ?? observation.forward)
@@ -2569,6 +2890,13 @@ extension NavigationModel {
             self.latestViewTexts = Array(texts.prefix(5))
             self.latestViewTextCapturedAt = now
             self.latestViewTextObservation = observation
+            for clue in evidence {
+                if case .imageSimilarity(let room, let score) = clue {
+                    self.recoveryAppearance[room] = (score, now)
+                }
+            }
+            self.tickAutomaticRoomRecovery(now: ProcessInfo.processInfo.systemUptime)
+            guard self.perceptionGeneration == generation else { return }
             var clues = evidence
             if let room = self.alignedRoomID { clues.append(.worldMapMatched(roomID: room)) }
             else if let place = self.recognizedPlace { clues.append(.worldMapMatched(roomID: "place:\(place.id.uuidString)")) }
@@ -2586,10 +2914,10 @@ extension NavigationModel {
                 self.roomQuestionCandidate = nil
             case .ask(let room):
                 self.invalidateRecognizedRoom()
-                self.askRoom([room], now: now)
+                if !self.automaticRoomRecoveryEnabled { self.askRoom([room], now: now) }
             case .askWhich(let rooms):
                 self.invalidateRecognizedRoom()
-                self.askRoom(rooms, now: now)
+                if !self.automaticRoomRecoveryEnabled { self.askRoom(rooms, now: now) }
             case .unknown:
                 self.invalidateRecognizedRoom()
             }
@@ -2795,7 +3123,8 @@ extension NavigationModel {
         else { pendingPassiveNotice = nil }
     }
 
-    private func deliverObjectSearchMatch(_ text: String, target: String) {
+    private func deliverObjectSearchMatch(_ text: String, target: String, ticketID: UUID?) {
+        finishEverydayTask(.findItem, outcome: .informationReady, ticketID: ticketID)
         let revision = companionWorkingState.goalRevision
         if passiveGoalNoticeRevision != revision { passiveGoalNoticeRevision = revision; passiveGoalNotices.removeAll() }
         let key = ItemMemory.key(for: target), id = UUID(), now = ProcessInfo.processInfo.systemUptime
@@ -2949,6 +3278,7 @@ extension NavigationModel {
         let visionTarget = target.lowercased().hasPrefix("the ") ? String(target.dropFirst(4)) : target
         let request = requestID, generation = perceptionGeneration, capturedAt = lastFrameWallTime
         let mapRevision = indoor.revision, alignmentRevision = indoor.alignmentRevision
+        let everydayID = everydayTicket?.id
         Task.detached(priority: .userInitiated) { [weak self] in
             let found = try? VisionService.locate(target: visionTarget, image: image, orientation: .right, arabic: arabic)
             await MainActor.run { [weak self] in
@@ -2985,7 +3315,7 @@ extension NavigationModel {
                 case .found:
                     self.objectSearch = nil
                     self.recordSearch(target, located: Self.objectInteractionGuidanceValidated && located != nil)
-                    if let phrase { self.deliverObjectSearchMatch(phrase, target: target) }
+                    if let phrase { self.deliverObjectSearchMatch(phrase, target: target, ticketID: everydayID) }
                     // Keep guiding to the measured point as the child walks, from sensors only.
                     if Self.objectInteractionGuidanceValidated, let located, let label = found?.label {
                         self.trackedTarget = TrackedTarget(label: label, query: visionTarget, point: located, now: capturedAt)
@@ -3285,6 +3615,7 @@ extension NavigationModel {
     }
     /// Removes the room's saved pictures, fingerprints and furniture labels; the room stays known.
     func forgetRoomPictures(_ id: String) {
+        invalidateAutomaticRoomClues()
         invalidatePerceptionWork()
         guard roomRecall.forget(room: id) else {
             say(arabic ? "تعذر حذف صور الغرفة. أعد المحاولة." : "Room pictures could not be deleted. Please retry."); return
@@ -3294,6 +3625,7 @@ extension NavigationModel {
     /// Deletes a saved place and everything derived from it: scans, room pictures, the companion's
     /// room record, and the current-place state if it was this place.
     func deletePlace(_ place: SavedPlace) {
+        invalidateAutomaticRoomClues()
         let roomID = "place:\(place.id.uuidString)"
         if recognizedPlace?.id == place.id { recognizedPlace = nil; invalidateRecognizedRoom() }
         if awaitingPlace?.id == place.id { awaitingPlace = nil; placeRecovery.reset(); placeRecoveryQuestion = "" }
@@ -3307,6 +3639,7 @@ extension NavigationModel {
 
     /// Removes everything about the room: pictures, visits and its name.
     func forgetRoom(_ id: String) {
+        invalidateAutomaticRoomClues()
         invalidatePerceptionWork()
         do {
             guard let memory = places.memory, roomRecall.forget(room: id) else { throw MemoryError.missing }
@@ -3376,8 +3709,8 @@ extension NavigationModel {
         let intro: String
         switch tool {
         case .liveText: intro = arabic ? "أقرأ النص الذي أراه. قل: أوقف القراءة، للتوقف." : "Reading text as I see it. Say stop reading to stop."
-        case .document: intro = arabic ? "وجّه الهاتف نحو الصفحة. سأساعدك على وضعها كاملة." : "Point the phone at the page. I'll help you fit all of it in."
-        case .barcode: intro = arabic ? "أبحث عن رمز. أدر المنتج ببطء؛ الرموز غالباً في الخلف أو الأسفل." : "Looking for a code. Turn the product slowly; codes are often on the back or bottom."
+        case .document: intro = arabic ? "أتحقق من الصفحة." : "I'm checking the page."
+        case .barcode: intro = arabic ? "أبحث عن رمز المنتج." : "I'm checking for a product code."
         case .light: intro = arabic ? "كاشف الضوء يعمل. الصفير أسرع كلما زاد الضوء." : "Light detector on. Faster beeps mean more light."
         }
         speakOperation(intro)
@@ -3445,7 +3778,9 @@ extension NavigationModel {
         let arabic = self.arabic
         if tool == .light {
             guard let lumens = frame.lightEstimate.map({ Double($0.ambientIntensity) }), let level = LightLevel.from(lumens: lumens) else { return }
-            if level != lastLightLevel, speakRequested(level.speech(arabic: arabic)) { lastLightLevel = level }
+            if level != lastLightLevel, speakRequested(level.speech(arabic: arabic)) {
+                lastLightLevel = level; finishEverydayTask(.light, outcome: .informationReady, ticketID: everydayTicket?.id)
+            }
             if !voice.awaitingUtterance, now - lastReadingBeep >= level.beepInterval {
                 lastReadingBeep = now; feedback.beacon(sector: 0, distance: 1)
             }
@@ -3461,6 +3796,7 @@ extension NavigationModel {
         }
         readingInFlight = true
         let image = frame.capturedImage
+        let everydayID = everydayTicket?.id
         readingTask = Task { @MainActor [weak self] in
             let result = await Task.detached(priority: .userInitiated) {
                 let lines = tool == .liveText ? ((try? VisionService.textLines(image: image, orientation: .right, arabic: arabic, accurate: false)) ?? []) : []
@@ -3478,7 +3814,10 @@ extension NavigationModel {
             case .liveText:
                 var reader = self.liveTextReader
                 let fresh = reader.newLines(result.0, now: ProcessInfo.processInfo.systemUptime)
-                if !fresh.isEmpty, self.speakRequested(fresh.joined(separator: ". "), replace: false) { self.liveTextReader = reader }
+                if !fresh.isEmpty, self.speakRequested(fresh.joined(separator: ". "), replace: false) {
+                    self.liveTextReader = reader
+                    self.finishEverydayTask(.readText, outcome: .informationReady, ticketID: everydayID)
+                }
             case .document:
                 let guidance = DocumentGuidance.evaluate(result.1)
                 if let origin = self.documentOrigin,
@@ -3493,6 +3832,7 @@ extension NavigationModel {
                 if ready { self.readWholePage(image: image, capture: capture) }
             case .barcode:
                 guard let code = result.2 else { return }
+                self.finishEverydayTask(.barcode, outcome: .informationReady, ticketID: everydayID)
                 self.lastScannedCode = code.payload
                 self.stopReadingTool(announce: false)
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
@@ -3508,6 +3848,7 @@ extension NavigationModel {
         guard readingCaptureAllowed(capture) else { return }
         readingInFlight = true
         let arabic = self.arabic
+        let everydayID = everydayTicket?.id
         readingTask = Task { @MainActor [weak self] in
             let lines = await Task.detached(priority: .userInitiated) {
                 (try? VisionService.textLines(image: image, orientation: .right, arabic: arabic, accurate: true)) ?? []
@@ -3521,12 +3862,14 @@ extension NavigationModel {
             self.sceneAnswer = text
             self.currentReply = (arabic ? "من الصفحة الملتقطة: " : "From the captured page: ") + text
             if text.isEmpty {
+                self.finishEverydayTask(.readDocument, outcome: .retryable(.notObserved), ticketID: everydayID)
                 self.stopReadingTool(announce: false)
                 self.speakOperation(arabic ? "لم أستطع قراءة نص في الصفحة." : "I couldn't read any text on the page.")
                 return
             }
             // Once admitted, this is frozen OCR text, not a current spatial observation.
             // Read it in bounded phrases; completion removes each phrase, Stop cancels all.
+            self.finishEverydayTask(.readDocument, outcome: .informationReady, ticketID: everydayID)
             self.documentChunks = Self.documentReadingChunks(text, arabic: arabic)
             self.speakNextDocumentChunk()
         }

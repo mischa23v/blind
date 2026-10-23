@@ -1,12 +1,20 @@
+## Everyday companion integration — 2026-10-23
+
+Portable validation for this increment: **647 BlindCore**, **16 BlindMemory**, **273 Node** tests passed; **16 extracted working-state tests** passed. Default and DEBUG/familiar-person iOS sources parse; firmware protocol and ASan/UBSan failure injection passed (LeakSanitizer excluded under executor tracing). Aggregate verify passed in a disposable source copy and generated a byte-identical Xcode project. These are not Apple SDK, model, physical-device, VoiceOver or latency acceptance.
+
+This checkpoint follows primary `366c31b69d183f39a9736900a1aaf027c1aa6cd1`. See [EVERYDAY_COMPANION_ACCEPTANCE.md](EVERYDAY_COMPANION_ACCEPTANCE.md) for the scope, tests and remaining gaps. The existing read-only memory tool now retrieves dated observed history, saved belongings/places, relevant preferences and explicit checklist records. Bounded task routing reuses existing evidence-gated domain adapters; English/Arabic shopping-list records retain original user provenance. Automatic saved-room recovery tries bounded candidates without treating appearance as pose and defers new resets during requested conversation/reading.
+
+This is general assistant integration, not a navigation-first product or proof of a complete autonomous agent. Actual Apple build/device/model/VoiceOver/latency acceptance, general semantic planning, automatic cross-tool retries, routine learning and safe physical interaction remain pending. No new detector/model artifact or private images are included. Earlier checkpoint counts below remain historical.
+
 ## Continuous spatial companion follow-up — 2026-10-23
 
 The clarified goal is passive foreground awareness plus private spatial/object history and goal continuity, not a collection of scanners. See [SPATIAL_COMPANION_ACCEPTANCE.md](SPATIAL_COMPANION_ACCEPTANCE.md) for the existing/implemented/pending matrix and whole-task scenarios. New connections retain detector boxes/capture provenance, saved-appearance candidates, private historical recall, paired RoomPlan/world-map frame provenance and bounded search resumption. Task cancellation no longer erases measured alignment. Camera position is no longer saved as an object's measured point.
 
 No general detector artifact is bundled. Model import is explicit; native output/accuracy and model/license acceptance remain gates. Existing center-depth association is not validated, and physical-object guidance remains disabled rather than treating history as a present location. Apple SDK/device/model/VoiceOver and household-task acceptance are still required. This is not completion of every shopping/cooking/navigation capability.
 
-## Final coordinated source checkpoint — 2026-10-23
+## Historical coordinated source checkpoint — 2026-10-23
 
-This is the current record; older entries and counts below are historical. Integration preserves primary `30999a9` and incorporates the reviewed seven-commit Claude branch through `61001267`, plus the coordinated Saudi device-test and familiar-person work. It is source integration, not a deployment or Apple/device acceptance.
+This section records an earlier source checkpoint; the everyday-companion checkpoint above and canonical scenario tracker supersede its status and counts. Integration preserves primary `30999a9` and incorporates the reviewed seven-commit Claude branch through `61001267`, plus the coordinated Saudi device-test and familiar-person work. It is source integration, not a deployment or Apple/device acceptance.
 
 **Canonical acceptance tracker:** [CHILD_ASSISTANT_TEST_TRACKER.md](CHILD_ASSISTANT_TEST_TRACKER.md). It records the goal, provenance rules, 24 child-style scenarios, three response paths (ordinary chat, independent hazards, evidence-gated physical requests), and executed versus still-pending checks. Use [CLAUDE_INTEGRATION_REVIEW.md](CLAUDE_INTEGRATION_REVIEW.md) for fixes and evidence, [PROJECT_VISION.md](PROJECT_VISION.md) for product intent, and [SESSION_LOG.md](SESSION_LOG.md) for decisions.
 

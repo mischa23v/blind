@@ -42,6 +42,22 @@ final class MemoryStoreTests: XCTestCase {
         try store.deleteValue(namespace: "observed-objects", id: "all")
         XCTAssertNil(try store.value(namespace: "observed-objects", id: "all"))
     }
+    func testShoppingChecklistUsesExistingPrivateCompanionNamespace() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let path = directory.appendingPathComponent("checklist.sqlite").path
+        let list = Data(#"{"entries":[{"item":"milk","sourceQuote":"add milk to my shopping list","recordedAt":10}]}"#.utf8)
+        var store: MemoryStore? = try MemoryStore(path: path, profile: "owner")
+        try XCTUnwrap(store).saveValue(namespace: "companion", id: "shopping-list", payload: list)
+        store = nil
+        let reopened = try MemoryStore(path: path, profile: "owner")
+        XCTAssertEqual(try reopened.value(namespace: "companion", id: "shopping-list"), list)
+        let other = try MemoryStore(path: path, profile: "other")
+        XCTAssertNil(try other.value(namespace: "companion", id: "shopping-list"))
+        try reopened.deleteValue(namespace: "companion", id: "shopping-list")
+        XCTAssertNil(try reopened.value(namespace: "companion", id: "shopping-list"))
+    }
     func testReopenIsolationDeletionAndNoPersistedPose() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
