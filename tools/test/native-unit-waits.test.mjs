@@ -44,9 +44,9 @@ test('runtime diagnostics preserve original completion conditions and timeout fa
 test('native failure output retains bounded phase diagnostics without hiding assertions', async () => {
   const source = await read('tools/ci/native-apple.sh');
   assert.match(source, /if \[\[ "\$label" = unit \]\]; then/);
-  assert.ok(source.includes("grep -E 'NATIVE_RUNTIME_(IO|WAIT) ' \"$out/$label.log\" | tail -160 || true"));
+  assert.ok(source.includes('python3 tools/ci/extract-native-unit-failures.py "$out/$label.log" || true'));
   assert.match(source, /return "\$status"/);
-  assert.ok(source.indexOf('error:|fatal') < source.indexOf('NATIVE_RUNTIME_(IO|WAIT)'));
+  assert.ok(source.indexOf('error:|fatal') < source.indexOf('python3 tools/ci/extract-native-unit-failures.py'));
 });
 
 test('combined shell diagnostics preserve failed status and isolate bounded practice chronology', async () => {

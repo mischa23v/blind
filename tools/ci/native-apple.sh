@@ -19,9 +19,9 @@ run_logged() {
     # Print real diagnostics before warnings; zero-failure summaries must not consume the cap.
     grep -E -i 'ACCESSIBILITY_AUDIT|error:|fatal|Test (Case|Suite).* failed (at|\()|Executed [0-9]+ tests?, with [1-9][0-9]* failures?|\*\* (BUILD|TEST) FAILED' "$out/$label.log" | head -120 || true
     if [[ "$label" = unit ]]; then
-      # Separate cap so real assertion failures above cannot crowd out phase evidence.
-      # These test-only records contain timing/state metadata, never stored payloads.
-      grep -E 'NATIVE_RUNTIME_(IO|WAIT) ' "$out/$label.log" | tail -160 || true
+      # Keep bounded windows belonging to FAILING tests, not the last successful tests.
+      # Only synthetic test start/end and metadata-only phase records are admitted.
+      python3 tools/ci/extract-native-unit-failures.py "$out/$label.log" || true
     fi
     # The finite practice session can expire while XCTest waits for UI idleness.
     # Preserve its synthetic action chronology without changing the app or assertions.
