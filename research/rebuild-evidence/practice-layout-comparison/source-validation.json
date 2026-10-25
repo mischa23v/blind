@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "baseCommit": "08e27bbaadd872fdee01356f55075716c5d0c480",
+  "copiedDashboardBlob": "d3695f783f5c62b88ea78a746917b7f2d5d2c743",
+  "scope": "Isolated synthetic diagnostic only; original app and full-app audit unchanged.",
+  "matrix": {
+    "variants": [
+      "stock Form",
+      "copied Practice Form",
+      "equivalent ScrollView/VStack"
+    ],
+    "largeAuditCases": 12,
+    "accessibilityXXXLLayoutCases": 3,
+    "retries": 0,
+    "expectedNamedScreenshots": 30
+  },
+  "validation": {
+    "sourceContractsPassed": 7,
+    "nativeCompilation": "pending CI installed SDK build-for-testing gate",
+    "nativeAudits": "not run",
+    "nativeEndpoint": "not run",
+    "exportFixturesPassed": 13,
+    "runnerFixturesPassed": 4,
+    "independentSourceReview": "accepted; native compilation/runtime pending",
+    "runnerWitnesses": [
+      "native failure retained; all 15 cases executed once",
+      "build failure explicitly records 15 nonruns and cleanup",
+      "cleanup failure fails overall result",
+      "large Unicode logs respect serialized artifact budget"
+    ]
+  },
+  "limitations": [
+    "No proof of SDK false positive.",
+    "No production layout repair inferred.",
+    "Visual checks do not establish nonvisual goal usefulness or whole-app blind usability.",
+    "Endpoint is a bounded probe; failure does not prove human unreachability."
+  ],
+  "sha256": {
+    ".github/workflows/practice-layout-comparison.yml": "059594cb99be4ade465599d68c49c77bbf9e9dac94c96c9fa5be9d44b5577528",
+    "tools/diagnostics/PracticeLayoutHost/PracticeLayoutHost.swift": "1145a4e343f63fbef0fc017c3a82259ed40d1f5bad8be3ef943730334bd08578",
+    "tools/diagnostics/PracticeLayoutHost/PracticeLayoutHost.xcodeproj/project.pbxproj": "3879f8bc35ac33200d1a965a7eb3baac06831f279c18939ac7c9f64d70f00f90",
+    "tools/diagnostics/PracticeLayoutHost/PracticeLayoutHost.xcodeproj/xcshareddata/xcschemes/PracticeLayoutHost.xcscheme": "1f2a6e6683684680d0f2b5bd6ec2b765e97a3dd62d53a0901b8a50318d20ab23",
+    "tools/diagnostics/PracticeLayoutHost/PracticeLayoutHostUITests/ComparisonTests.swift": "f322063d9d9613278f64a23dc041a289175cda66481eecca2dc2b6ef817d42ca",
+    "tools/diagnostics/PracticeLayoutHost/README.md": "6c675df3e4d91ecc6755bf0b3d1ccc4ce9c4b2c67dd34e23ce5325ba63411396",
+    "tools/diagnostics/PracticeLayoutHost/export_comparison.py": "500896eed5371c12cc87927c28054ccf433b634034d2162d44fb273c435f0c90",
+    "tools/diagnostics/PracticeLayoutHost/run_comparison.py": "68e4f53eaad942f2cced7f96a23bb39766a69c496c43d9301684331b651030fd",
+    "tools/diagnostics/PracticeLayoutHost/test_export_comparison.py": "1be5f94392fbdb291521b682ea4a2be5d4f5385515a6b991bd6718d7a58ac1da",
+    "tools/diagnostics/PracticeLayoutHost/test_runner_comparison.py": "42c0541561c69df3c66fe7ef01fa1e696e6d65529819727fd8ab38bfe854394a",
+    "tools/test/practice-comparison-source.test.mjs": "e54ec952915de9a3bf4e94a8a19d88fe0bd2c8f87797e7a7dce6667d8383a778"
+  }
+}

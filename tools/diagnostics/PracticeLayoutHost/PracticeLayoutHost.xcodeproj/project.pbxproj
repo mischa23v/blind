@@ -1,0 +1,26 @@
+// !$*UTF8*$!
+{ archiveVersion = 1; classes = {}; objectVersion = 56; objects = {
+000000000000000000000001 = { isa = PBXProject; attributes = { LastUpgradeCheck = 1600; TargetAttributes = { 000000000000000000000014 = { CreatedOnToolsVersion = 16.0; }; 000000000000000000000015 = { CreatedOnToolsVersion = 16.0; TestTargetID = 000000000000000000000014; }; }; }; buildConfigurationList = 000000000000000000000028; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; knownRegions = (en, Base); mainGroup = 000000000000000000000002; productRefGroup = 000000000000000000000003; projectDirPath = ""; projectRoot = ""; targets = (000000000000000000000014, 000000000000000000000015); };
+000000000000000000000002 = { isa = PBXGroup; children = (000000000000000000000004, 000000000000000000000005, 000000000000000000000003); sourceTree = "<group>"; };
+000000000000000000000003 = { isa = PBXGroup; children = (000000000000000000000006, 000000000000000000000007); name = Products; sourceTree = "<group>"; };
+000000000000000000000004 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PracticeLayoutHost.swift"; sourceTree = "<group>"; };
+000000000000000000000005 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PracticeLayoutHostUITests/ComparisonTests.swift"; sourceTree = "<group>"; };
+000000000000000000000006 = { isa = PBXFileReference; explicitFileType = "wrapper.application"; includeInIndex = 0; path = PracticeLayoutHost.app; sourceTree = BUILT_PRODUCTS_DIR; };
+000000000000000000000007 = { isa = PBXFileReference; explicitFileType = "wrapper.cfbundle"; includeInIndex = 0; path = PracticeLayoutHostUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+000000000000000000000008 = { isa = PBXBuildFile; fileRef = 000000000000000000000004; };
+000000000000000000000009 = { isa = PBXBuildFile; fileRef = 000000000000000000000005; };
+00000000000000000000000A = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (000000000000000000000008); runOnlyForDeploymentPostprocessing = 0; };
+00000000000000000000000B = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (000000000000000000000009); runOnlyForDeploymentPostprocessing = 0; };
+00000000000000000000000C = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+00000000000000000000000D = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+000000000000000000000014 = { isa = PBXNativeTarget; buildConfigurationList = 000000000000000000000029; buildPhases = (00000000000000000000000A, 00000000000000000000000C); buildRules = (); dependencies = (); name = PracticeLayoutHost; productName = PracticeLayoutHost; productReference = 000000000000000000000006; productType = "com.apple.product-type.application"; };
+000000000000000000000015 = { isa = PBXNativeTarget; buildConfigurationList = 00000000000000000000002A; buildPhases = (00000000000000000000000B, 00000000000000000000000D); buildRules = (); dependencies = (00000000000000000000001F); name = PracticeLayoutHostUITests; productName = PracticeLayoutHostUITests; productReference = 000000000000000000000007; productType = "com.apple.product-type.bundle.ui-testing"; };
+00000000000000000000001E = { isa = PBXContainerItemProxy; containerPortal = 000000000000000000000001; proxyType = 1; remoteGlobalIDString = 000000000000000000000014; remoteInfo = PracticeLayoutHost; };
+00000000000000000000001F = { isa = PBXTargetDependency; target = 000000000000000000000014; targetProxy = 00000000000000000000001E; };
+000000000000000000000028 = { isa = XCConfigurationList; buildConfigurations = (000000000000000000000032); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug; };
+000000000000000000000029 = { isa = XCConfigurationList; buildConfigurations = (000000000000000000000033); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug; };
+00000000000000000000002A = { isa = XCConfigurationList; buildConfigurations = (000000000000000000000034); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug; };
+000000000000000000000032 = { isa = XCBuildConfiguration; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; CLANG_ENABLE_MODULES = YES; DEBUG_INFORMATION_FORMAT = dwarf; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; ENABLE_TESTABILITY = YES; }; name = Debug; };
+000000000000000000000033 = { isa = XCBuildConfiguration; buildSettings = { PRODUCT_NAME = PracticeLayoutHost; PRODUCT_BUNDLE_IDENTIFIER = "org.blindassist.diagnostics.practice-layout"; GENERATE_INFOPLIST_FILE = YES; TARGETED_DEVICE_FAMILY = 1; CODE_SIGN_STYLE = Automatic; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES; INFOPLIST_KEY_UILaunchScreen_Generation = YES; }; name = Debug; };
+000000000000000000000034 = { isa = XCBuildConfiguration; buildSettings = { PRODUCT_NAME = PracticeLayoutHostUITests; PRODUCT_BUNDLE_IDENTIFIER = "org.blindassist.diagnostics.practice-layout.uitests"; GENERATE_INFOPLIST_FILE = YES; TARGETED_DEVICE_FAMILY = 1; CODE_SIGN_STYLE = Automatic; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; TEST_TARGET_NAME = PracticeLayoutHost; }; name = Debug; };
+}; rootObject = 000000000000000000000001; }

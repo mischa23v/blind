@@ -1,0 +1,43 @@
+name: Isolated practice layout comparison
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/practice-layout-comparison.yml'
+      - 'tools/diagnostics/PracticeLayoutHost/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: practice-layout-comparison-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  compare:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    runs-on: xcode-27
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Validate bounded screenshot selector and synthetic orchestration
+        run: |
+          python3 tools/diagnostics/PracticeLayoutHost/test_export_comparison.py
+          python3 tools/diagnostics/PracticeLayoutHost/test_runner_comparison.py
+      - name: Build once and retain all fifteen independent outcomes
+        run: python3 tools/diagnostics/PracticeLayoutHost/run_comparison.py
+      - name: Preserve only synthetic authored screenshots and outcome summaries
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: practice-layout-comparison
+          path: |
+            ${{ runner.temp }}/blind-practice-comparison/artifacts/screenshots/*.png
+            ${{ runner.temp }}/blind-practice-comparison/artifacts/outcomes.json
+          if-no-files-found: error
+          retention-days: 3
