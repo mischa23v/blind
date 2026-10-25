@@ -1,0 +1,39 @@
+name: Staged voice enrollment Apple SDK probe
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/voice-enrollment-apple.yml'
+      - 'reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: voice-enrollment-apple-probe-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  staged-typecheck:
+    # Same public-only/no-fork runner guard as the existing Apple workflows.
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    runs-on: xcode-27
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Typecheck staged sources against actual iOS SDK
+        timeout-minutes: 5
+        run: bash reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/typecheck.sh
+      - name: Execute isolated synthetic iOS actor tests
+        timeout-minutes: 18
+        run: bash reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/actor-tests.sh
+      # No artifact upload, signing, app wiring, model download or private input.

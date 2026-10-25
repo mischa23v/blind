@@ -1,0 +1,20 @@
+{
+  "status": "prepared-not-Apple-executed",
+  "validation": {
+    "portableStaticTests": "4 passed",
+    "shellSyntax": "passed",
+    "projectedSwiftSyntax": "passed; not typecheck",
+    "workflowTrigger": "exact master/workflow-or-checkpoint paths; public-only; separate no-cancel group verified",
+    "AppleSDKTypecheck": "not run",
+    "actorXCTest": "not run"
+  },
+  "files": {
+    ".github/workflows/voice-enrollment-apple.yml": "b114db5816e2ff7d70053be7b0723c46a3590037ab18c66565c2bd8fcb1c7858",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/ActorTests.swift": "ecde747648157bfba2e22a80173ac5bbc7270aee86411572d98d1db4958eff2f",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/README.md": "5dad66ad757620da84c087666e1d0366b33e9f868b69269889771de791dacc8b",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/actor-tests.sh": "127633c0651e26de6bd0556b9610a0455ae2a3c7dc364ad4ff908d061ec9df53",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/generate-project.mjs": "c700fe6fead72b8742b9365703bbbc336047fb2c3eb350ab95cbcd67f3732a8d",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/test-probe.mjs": "92224c1129284cee348447ccb253309280371ba0e169b063282813b117c0a086",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/typecheck.sh": "5f3b28f881edfb280718eaef796284de2ceafb904cc049a6c73c133daa631382"
+  }
+}
