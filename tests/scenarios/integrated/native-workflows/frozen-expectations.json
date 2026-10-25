@@ -1,0 +1,85 @@
+{
+  "status": "FROZEN_BEFORE_NATIVE_EXECUTION",
+  "inputProvenance": "AUTHORED trusted-interface text and injected detector state; no recorded child, camera, model or audio",
+  "episodes": [
+    {
+      "id": "backpack-correction-restart",
+      "inputs": [
+        "I left my backpack on the shelf.",
+        "I left my backpack on the desk.",
+        "AWAIT REAL MEMORY COMMIT",
+        "RECREATE NATIVE CONTROLLER",
+        "Where did I leave my backpack?"
+      ],
+      "expected": [
+        "reopened reply contains desk and not shelf",
+        "no claim of seeing backpack",
+        "zero model calls"
+      ],
+      "implementation": "NativeWorkflowRegressionTests.testBackpackCorrectionSurvivesCommittedReopen",
+      "execution": "NOT RUN"
+    },
+    {
+      "id": "fridge-completion-before-reply",
+      "inputs": [
+        "Help me find my fridge",
+        "I found my fridge"
+      ],
+      "expected": [
+        "reported completion and coordinator completion exist when actual code reply callback occurs",
+        "reply attributes completion to user report, not verified arrival",
+        "zero model calls",
+        "after confirmed actual commit, a new controller restores reported completion"
+      ],
+      "implementation": "NativeWorkflowRegressionTests.testFridgeCompletionIsRecordedBeforeCodeReply",
+      "execution": "NOT RUN",
+      "observations": [
+        "reply-time requested/committed revisions, pending/error; in-memory noted is not treated as durable saved"
+      ]
+    },
+    {
+      "id": "ocr-source-replacement",
+      "inputs": [
+        "trusted UI: read this",
+        "start source A capture/OCR pending",
+        "trusted UI: read this from replacement source B",
+        "return A OCR late",
+        "return B OCR",
+        "attempt A output callback",
+        "finish exact B output"
+      ],
+      "expected": [
+        "real controller retires A before B native job",
+        "late A never becomes current source or output",
+        "B retains source identity and all qualifiers",
+        "stale A callback cannot complete B",
+        "completion only after matching B receipt"
+      ],
+      "implementation": "BLOCKED; reader27 source present; still needs reviewed native capture/reader callback seam, not direct Core calls",
+      "execution": "NOT RUN"
+    },
+    {
+      "id": "cancel-versus-quiet-hazard",
+      "inputs": [
+        "Help me find my backpack",
+        "INJECT detector state obstacle",
+        "quiet",
+        "Cancel the task"
+      ],
+      "expected": [
+        "quiet retains exact goal, disables ambient narration, preserves obstacle",
+        "cancel clears task and goal, preserves obstacle",
+        "cancel reply is code-owned",
+        "zero model calls"
+      ],
+      "implementation": "NativeWorkflowRegressionTests.testQuietRetainsGoalCancelRemovesItNeitherClearsHazard",
+      "execution": "NOT RUN",
+      "limit": "Preserved detector state is not proof of hazard audio delivery"
+    }
+  ],
+  "fullJourneyPassesAdded": 0,
+  "modelSelectedToolCalls": 0,
+  "actualSpeechCallbacks": 0,
+  "version": 2,
+  "supersedesWithoutErasing": "frozen-expectations-v1.json"
+}

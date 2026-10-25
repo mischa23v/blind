@@ -1,0 +1,46 @@
+name: Authored native workflow regressions
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: authored-native-workflows-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  workflows:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    runs-on: xcode-27
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 452b9ebac628efd5d61290174cac52318f6b7890
+          path: workflow-baseline
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Prepare distinct host and run exactly three native regressions
+        run: bash tests/scenarios/integrated/native-workflows/run-native.sh "$GITHUB_WORKSPACE/workflow-baseline"
+      - name: Preserve authored failure evidence (never device data)
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: authored-native-workflows-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/blind-workflow-native/*.log
+            ${{ runner.temp }}/blind-workflow-native/*.txt
+            ${{ runner.temp }}/blind-workflow-native/*.json
+            ${{ runner.temp }}/blind-workflow-native/workflows.xcresult
+            ${{ runner.temp }}/blind-workflow-native/host/input-source-inventory.json
+            ${{ runner.temp }}/blind-workflow-native/host/workflow-projection.json
+          if-no-files-found: warn
+          retention-days: 7

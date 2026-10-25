@@ -1,0 +1,52 @@
+#if DEBUG && BLIND_WORKFLOW_TESTS
+// App-hosted regression seam: compiled only into the separate workflow-test app.
+// It observes real controller outcomes. No sensor/model result is fabricated here.
+extension NavigationModel {
+    struct WorkflowSnapshot: Codable {
+        let event: String
+        let goal: String
+        let completedReports: [String]
+        let taskState: String
+        let taskCompletions: [String]
+        let reply: String
+        let hazard: String
+        let ambient: Bool
+        let modelInvocationsBlocked: Int
+        let requestedMemoryRevision: UInt64
+        let committedMemoryRevision: UInt64
+        let memoryPending: Bool
+        let memoryError: String
+    }
+    func workflowSnapshot(_ event: String) -> WorkflowSnapshot {
+        let revisions = MainActor.assumeIsolated {
+            (companionMemoryWriter.requestedRevision, companionMemoryWriter.committedRevision)
+        }
+        return .init(event: event, goal: companionWorkingState.goal,
+              completedReports: companionWorkingState.reportedCompletedSteps,
+              taskState: everydayTasks.state.rawValue,
+              taskCompletions: everydayTasks.completedSubtasks, reply: currentReply,
+              hazard: detection.hazard.rawValue, ambient: ambientDescriptions,
+              modelInvocationsBlocked: workflowModelInvocationsBlocked,
+              requestedMemoryRevision: revisions.0, committedMemoryRevision: revisions.1,
+              memoryPending: memorySavePending, memoryError: memorySaveError)
+    }
+    func workflowReset() {
+        precondition(Bundle.main.bundleIdentifier == "org.blindassist.workflowtests")
+        precondition(textOnly)
+        companionWorkingState = CompanionWorkingState()
+        assistantDialogue = AssistantDialogue()
+        everydayTasks = EverydayTaskCoordinator()
+        everydayTicket = nil; everydayUtterance = ""
+        currentReply = ""; sceneAnswer = ""; arabic = false; ambientDescriptions = true
+        workflowReceipts = []; workflowModelInvocationsBlocked = 0
+    }
+    // An injected detector-state fixture, not a physical hazard measurement.
+    func workflowInjectHazard(_ hazard: Hazard) { detection = Detection(hazard) }
+    @MainActor func workflowCommit() async -> Bool {
+        guard let receipt = enqueueCompanionMemorySnapshot() else { return false }
+        return await companionMemoryWriter.waitForCommit(receipt)
+    }
+    // Tests observe the actual code-owned output entry after state mutation.
+    func workflowRecord(_ event: String) { workflowReceipts.append(workflowSnapshot(event)) }
+}
+#endif
