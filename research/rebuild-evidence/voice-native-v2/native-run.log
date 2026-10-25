@@ -1,0 +1,17 @@
+2026-10-25T15:28:43.4747800Z PASS: standalone iOS SDK typecheck only; no actor execution, app integration or device acceptance
+2026-10-25T15:28:44.9684880Z PASS: standalone iOS SDK typecheck only; no actor execution, app integration or device acceptance
+2026-10-25T15:32:50.2646870Z VOICE_PROBE_SECURITY excluded=true typedComplete=false rawComplete=false attributeType=missing
+2026-10-25T15:32:50.2658470Z VOICE_PROBE_SECURITY excluded=true typedComplete=false rawComplete=false attributeType=missing
+2026-10-25T15:32:50.2849320Z VOICE_PROBE_SECURITY excluded=true typedComplete=false rawComplete=false attributeType=missing
+2026-10-25T15:32:50.2857410Z /Users/runner/work/_temp/voice-enrollment-actor.rdsM07/project/ProtectedVoiceEnrollmentStore.swift:69: error: -[VoiceProbeTests.VoiceEnrollmentActorTests testFailedEraseRestartFenceRequiresRetryAndRejectsLateSave] : failed: caught error: "invalidRecord"
+2026-10-25T15:32:50.2865230Z VOICE_PROBE_SECURITY excluded=true typedComplete=false rawComplete=false attributeType=missing
+2026-10-25T15:32:50.2866530Z /Users/runner/work/_temp/voice-enrollment-actor.rdsM07/project/ProtectedVoiceEnrollmentStore.swift:69: error: -[VoiceProbeTests.VoiceEnrollmentActorTests testSaveLoadRecreateDeleteAndOrphanCleanup] : failed: caught error: "invalidRecord"
+2026-10-25T15:32:50.3168920Z VOICE_PROBE_SECURITY excluded=true typedComplete=false rawComplete=false attributeType=missing
+2026-10-25T15:32:50.3170030Z /Users/runner/work/_temp/voice-enrollment-actor.rdsM07/project/ProtectedVoiceEnrollmentStore.swift:69: error: -[VoiceProbeTests.VoiceEnrollmentActorTests testFailedEraseRestartFenceRequiresRetryAndRejectsLateSave] : failed: caught error: "invalidRecord"
+2026-10-25T15:32:50.3175160Z Test Case '-[VoiceProbeTests.VoiceEnrollmentActorTests testProtectionAttributeDecodingRejectsWeakMissingAndUnknown]' passed (0.001 seconds).
+2026-10-25T15:32:50.3177100Z VOICE_PROBE_SECURITY excluded=true typedComplete=false rawComplete=false attributeType=missing
+2026-10-25T15:32:50.3178470Z /Users/runner/work/_temp/voice-enrollment-actor.rdsM07/project/ProtectedVoiceEnrollmentStore.swift:69: error: -[VoiceProbeTests.VoiceEnrollmentActorTests testSaveLoadRecreateDeleteAndOrphanCleanup] : failed: caught error: "invalidRecord"
+2026-10-25T15:32:50.3181170Z 	 Executed 3 tests, with 2 failures (2 unexpected) in 0.402 (0.404) seconds
+2026-10-25T15:32:50.3183000Z 	 Executed 3 tests, with 2 failures (2 unexpected) in 0.402 (0.404) seconds
+2026-10-25T15:32:50.3184080Z 	 Executed 3 tests, with 2 failures (2 unexpected) in 0.402 (0.405) seconds
+2026-10-25T15:32:57.1042940Z ##[error]Process completed with exit code 65.

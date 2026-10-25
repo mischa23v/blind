@@ -1,0 +1,92 @@
+✔ native failure repairs preserve explicit off, nonblocking waits and honest capability/audit gates (9.471354ms)
+✔ camera preference contract rejects old NO conversion and constant defaults (4.746703ms)
+✔ all continuity scenarios await real map IO without blocking the main owner (7.184283ms)
+✔ runtime diagnostics preserve original completion conditions and timeout failures (3.617424ms)
+✔ native failure output retains bounded phase diagnostics without hiding assertions (1.674663ms)
+✔ combined shell diagnostics preserve failed status and isolate bounded practice chronology (23.194485ms)
+✔ passive content identity is independent of model wording and capture IDs (1.46873ms)
+✔ passive admission retains companion gates and delivery-owned completion (0.50575ms)
+✔ scope contains lifecycle and room visit but no frame timestamp (0.213286ms)
+✔ practice duration label grows vertically at larger Dynamic Type without changing its action (10.016817ms)
+✖ focused unsuppressed accessibility audit reruns for affected view and UI test changes (3.897785ms)
+✔ actual diagnosed practice footer scales and wraps without removing safety text (4.007138ms)
+✔ original plain footer is rejected by source contract (0.404241ms)
+✔ Practice heading has an explicit scalable semantic font and unconstrained vertical text (3.919666ms)
+✔ original diagnosed plain heading fails the new contract (0.416614ms)
+✔ camera audit still executes and does not suppress Dynamic Type findings (1.193297ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 15
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 684.127628
+
+✖ failing tests:
+
+test at tools/test/practice-dynamic-type.test.mjs:39:1
+✖ focused unsuppressed accessibility audit reruns for affected view and UI test changes (3.897785ms)
+  AssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /continue-on-error|cancel-in-progress: true/. Input:
+  
+  'name: Focused accessibility diagnostic\n' +
+    'on:\n' +
+    '  push:\n' +
+    '    branches: [master]\n' +
+    '    paths:\n' +
+    "      - '.github/workflows/accessibility-diagnostic.yml'\n" +
+    "      - 'ios/BlindAssist/DashboardView.swift'\n" +
+    "      - 'ios/BlindAssistUITests/LaunchTests.swift'\n" +
+    "      - 'tools/ci/practice-layout-diagnostic.sh'\n" +
+    "      - 'tools/ci/export-practice-layout-screenshots.py'\n" +
+    '  workflow_dispatch:\n' +
+    'permissions:\n' +
+    '  contents: read\n' +
+    'concurrency:\n' +
+    '  group: accessibility-diagnostic-${{ github.ref }}\n' +
+    '  cancel-in-progress: false\n' +
+    'jobs:\n' +
+    '  focused-audit:\n' +
+    "    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false\n" +
+    '    runs-on: xcode-27\n' +
+    '    timeout-minutes: 45\n' +
+    '    env:\n' +
+    '      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer\n' +
+    '    steps:\n' +
+    '      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1\n' +
+    '        with:\n' +
+    '          persist-credentials: false\n' +
+    '          fetch-depth: 1\n' +
+    '          lfs: false\n' +
+    '          submodules: false\n' +
+    '      - name: Verify source and installed simulator\n' +
+    '        run: bash tools/ci/native-apple.sh preflight\n' +
+    '      - name: Record practice layout on a separate disposable simulator\n' +
+    '        id: layout\n' +
+    '        continue-on-error: true\n' +
+    '        run: bash tools/ci/practice-layout-diagnostic.sh\n' +
+    '      - name: Preserve bounded synthetic layout screenshots\n' +
+    '        if: always()\n' +
+    '        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4\n' +
+    '        with:\n' +
+    '          name: practice-layout-screenshots\n' +
+    '          path: ${{ runner.temp }}/blind-practice-layout/screenshots/*.png\n' +
+    '          if-no-files-found: error\n' +
+    '          retention-days: 3\n' +
+    '      - name: Run the unsuppressed camera and ask accessibility audit\n' +
+    '        if: always()\n' +
+    '        run: bash tools/ci/native-apple.sh ui-diagnostic\n' +
+    '      - name: Retain diagnostic failure status\n' +
+    "        if: always() && steps.layout.outcome != 'success'\n" +
+    '        run: exit 1\n'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/90f3f6703064/blind-passive-repeat-repair/validation/tools/test/practice-dynamic-type.test.mjs:45:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: "name: Focused accessibility diagnostic\non:\n  push:\n    branches: [master]\n    paths:\n      - '.github/workflows/accessibility-diagnostic.yml'\n      - 'ios/BlindAssist/DashboardView.swift'\n      - 'ios/BlindAssistUITests/LaunchTests.swift'\n      - 'tools/ci/practice-layout-diagnostic.sh'\n      - 'tools/ci/export-practice-layout-screenshots.py'\n  workflow_dispatch:\npermissions:\n  contents: read\nconcurrency:\n  group: accessibility-diagnostic-${{ github.ref }}\n  cancel-in-progress: false\njobs:\n  focused-audit:\n    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false\n    runs-on: xcode-27\n    timeout-minutes: 45\n    env:\n      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer\n    steps:\n      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1\n        with:\n          persist-credentials: false\n          fetch-depth: 1\n          lfs: false\n          submodules: false\n      - name: Verify source and installed simulator\n        run: bash tools/ci/native-apple.sh preflight\n      - name: Record practice layout on a separate disposable simulator\n        id: layout\n        continue-on-error: true\n        run: bash tools/ci/practice-layout-diagnostic.sh\n      - name: Preserve bounded synthetic layout screenshots\n        if: always()\n        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4\n        with:\n          name: practice-layout-screenshots\n          path: ${{ runner.temp }}/blind-practice-layout/screenshots/*.png\n          if-no-files-found: error\n          retention-days: 3\n      - name: Run the unsuppressed camera and ask accessibility audit\n        if: always()\n        run: bash tools/ci/native-apple.sh ui-diagnostic\n      - name: Retain diagnostic failure status\n        if: always() && steps.layout.outcome != 'success'\n        run: exit 1\n",
+    expected: /continue-on-error|cancel-in-progress: true/,
+    operator: 'doesNotMatch',
+    diff: 'simple'
+  }

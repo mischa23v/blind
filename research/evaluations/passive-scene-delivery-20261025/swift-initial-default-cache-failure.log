@@ -1,0 +1,8 @@
+warning: /home/agent/.config/swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /home/agent/.config/swiftpm/security is not accessible or not writable, disabling user-level cache features.
+warning: /home/agent/.cache/org.swift.swiftpm is not accessible or not writable, disabling user-level cache features.
+warning: 'package': failed loading cached manifest for 'package': encountered an I/O error (code: 30) while reading /home/agent/.cache/org.swift.swiftpm/manifests
+warning: 'package': failed closing manifest db cache: encountered an I/O error (code: 30) while reading /home/agent/.cache/org.swift.swiftpm/manifests
+error: 'package': Invalid manifest (compiled with: ["/workspace/shared/swift-toolchain/install/swift-6.4.1-RELEASE-debian13/usr/bin/swiftc", "-vfsoverlay", "/tmp/TemporaryDirectory.87INuY/vfs.yaml", "-L", "/workspace/shared/swift-toolchain/install/swift-6.4.1-RELEASE-debian13/usr/lib/swift/pm/ManifestAPI", "-lPackageDescription", "-Xlinker", "-rpath", "-Xlinker", "/workspace/shared/swift-toolchain/install/swift-6.4.1-RELEASE-debian13/usr/lib/swift/pm/ManifestAPI", "-swift-version", "5", "-I", "/workspace/shared/swift-toolchain/install/swift-6.4.1-RELEASE-debian13/usr/lib/swift/pm/ManifestAPI", "-package-description-version", "5.9.0", "/workspace/scratch/90f3f6703064/blind-passive-repeat-repair/tests/package/Package.swift", "-o", "/tmp/TemporaryDirectory.y5Cmcp/package-manifest"])
+<unknown>:0: error: unable to open output file '/home/agent/.cache/clang/ModuleCache/3SEFBJG0AOVID/SwiftShims-78N6WVOLNQEQ.pcm': 'Read-only file system'
+<unknown>:0: error: could not build C module 'SwiftShims'

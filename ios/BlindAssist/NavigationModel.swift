@@ -292,6 +292,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var plannedIndoorGoalRevision: String?
     private var journeyConversationGoal = ""
     private var journeyConversationSourceID: String?
+    private var passiveSceneDelivery = PassiveSceneDelivery()
+    /// Lifecycle/visit revisions, never individual frame timestamps or generated text.
+    private var passiveSceneOwner: String {
+        let room = companion.currentRoom ?? "unknown"
+        let visits = companion.memory.rooms[room]?.visits ?? 0
+        return [String(assistantSession.generation), observationFrameID, perceptionGeneration.uuidString,
+                room, String(visits), indoor.revision.uuidString, indoor.alignmentRevision.uuidString,
+                preferencesRevision.uuidString].joined(separator: "|")
+    }
     private var lastSceneContent = ""
     private var lastSceneSpoken = -Double.infinity
     private var detector = HazardDetector()
@@ -637,6 +646,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         feedback.onNarrationFinished = { [weak self] id, text, outcome in
             guard let self else { return }
+            if self.passiveSceneDelivery.finish(id: id, completed: outcome == .completed,
+                                                currentOwner: self.passiveSceneOwner) {
+                self.companion.release("passive-scene:" + id.uuidString)
+            }
             if outcome != .completed && self.lastSceneContent == text { self.lastSceneContent = "" }
             if let pending = self.requestedVisualDialogue, pending.id == id {
                 self.requestedVisualDialogue = nil
@@ -1263,6 +1276,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             originForward: observation.forward, currentForward: lastObservation?.forward)
     }
     private func cancelDescription() {
+        if let id = passiveSceneDelivery.cancelPending() {
+            companion.release("passive-scene:" + id.uuidString)
+        }
         clearBoardingReading()
         unverifiedConversationID = UUID()
         unverifiedConversationTask?.cancel(); unverifiedConversationTask = nil
@@ -2261,6 +2277,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         initialSituation["visualTracks"] = visualTracks
         let situationCreatedAt = ProcessInfo.processInfo.systemUptime
         let image = frame.capturedImage, capturedAt = lastFrameWallTime
+        let passiveOwner = passiveSceneOwner
         busy = true; questionIsAutomatic = automatic; questionIsChat = false
         let currentRequest = UUID(); requestID = currentRequest
         questionTask = Task { @MainActor [weak self] in
@@ -2311,6 +2328,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 let context = SceneContext(observations: evidence, at: ProcessInfo.processInfo.systemUptime,
                     arabic: arabic, detail: self.detail, stationary: self.attentionMode == .stationary,
                     hazard: self.detection.hazard, requested: !automatic)
+                let passiveSignature = PassiveSceneDelivery.signature(observations: context.observations,
+                                                                       confirmedObjects: Array(confirmedObjects))
+                if automatic {
+                    guard self.passiveSceneOwner == passiveOwner, let passiveSignature,
+                          self.passiveSceneDelivery.allows(passiveSignature, owner: passiveOwner) else { return }
+                }
                 if cloud {
                     let ci = CIImage(cvPixelBuffer: image).oriented(.right)
                     let scale = min(1, 1024 / max(ci.extent.width, ci.extent.height))
@@ -2404,15 +2427,24 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                       words <= self.narrationBudget.allowance(limit: self.wordsPerMinute, now: now) else {
                     if !automatic { self.message = "The answer exceeded your word allowance. Request a shorter answer or increase the allowance." }; return
                 }
-                // Automatic descriptions go through the companion engine: what is in view must have
-                // changed (evidence revision), and goal, quiet, offers and frequency all apply.
-                let revision = Set(context.observations.map { "\($0.kind.rawValue):\($0.text)" }).sorted().joined(separator: "|")
-                let candidate = InformationCandidate(key: automatic ? "view:\(self.companion.currentRoom ?? "unknown")" : "answer:\(currentRequest)",
+                // Novelty belongs to independent observations and completed playback, not
+                // model wording or companion admission. All existing budget/priority gates remain.
+                if automatic {
+                    guard self.passiveSceneOwner == passiveOwner, let passiveSignature,
+                          self.passiveSceneDelivery.begin(id: currentRequest, signature: passiveSignature,
+                                                          owner: passiveOwner) else { return }
+                }
+                let candidate = InformationCandidate(key: automatic ? "passive-scene:" + currentRequest.uuidString : "answer:\(currentRequest)",
                     kind: automatic ? .discovery : .answer, text: answer, words: words,
-                    revision: automatic ? (revision.isEmpty ? answer : revision) : currentRequest.uuidString,
+                    revision: currentRequest.uuidString,
                     createdAt: capturedAt, expiresAt: capturedAt + 6, requested: !automatic)
                 let spoken = self.deliverCandidate(candidate, narrationID: currentRequest)
                 guard spoken else {
+                    if automatic {
+                        self.passiveSceneDelivery.finish(id: currentRequest, completed: false,
+                                                         currentOwner: self.passiveSceneOwner)
+                        self.companion.release(candidate.key)
+                    }
                     if !automatic { self.queueQuestion(question, cloud: cloud, focus: focus, camera: origin, forward: originForward) }
                     return
                 }

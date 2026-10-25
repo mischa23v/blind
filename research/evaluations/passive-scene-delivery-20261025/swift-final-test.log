@@ -1,0 +1,40 @@
+Building for debugging...
+[Using on-disk description]
+[3 / 8] BlindCoreTests-product
+[11 / 21] BlindCore
+[12 / 21] BlindCore
+[14 / 21] BlindCore
+[15 / 21] BlindCore
+[19 / 22] BlindCoreTests-product
+[26 / 28] BlindCoreTests-test-runner
+[30 / 30] BlindCoreTests-test-runner
+Build complete! (3.32 secs)
+Test Suite 'All tests' started at 2026-10-25 18:24:16.231
+Test Suite 'Debug-linux-x86_64.xctest' started at 2026-10-25 18:24:16.232
+Test Suite 'PassiveSceneDeliveryTests' started at 2026-10-25 18:24:16.232
+Test Case 'PassiveSceneDeliveryTests.testActualCompanionAndSpeechLedgerCancellationRetryCompletionAndBypasses' started at 2026-10-25 18:24:16.232
+Test Case 'PassiveSceneDeliveryTests.testActualCompanionAndSpeechLedgerCancellationRetryCompletionAndBypasses' passed (0.002 seconds)
+Test Case 'PassiveSceneDeliveryTests.testBoundedInputsRejectRatherThanTruncate' started at 2026-10-25 18:24:16.234
+Test Case 'PassiveSceneDeliveryTests.testBoundedInputsRejectRatherThanTruncate' passed (0.001 seconds)
+Test Case 'PassiveSceneDeliveryTests.testCancelledOldCallbackCannotConsumeSuccessor' started at 2026-10-25 18:24:16.234
+Test Case 'PassiveSceneDeliveryTests.testCancelledOldCallbackCannotConsumeSuccessor' passed (0.0 seconds)
+Test Case 'PassiveSceneDeliveryTests.testChangedEvidenceAndReturnToEarlierContentRemainAdmissible' started at 2026-10-25 18:24:16.235
+Test Case 'PassiveSceneDeliveryTests.testChangedEvidenceAndReturnToEarlierContentRemainAdmissible' passed (0.0 seconds)
+Test Case 'PassiveSceneDeliveryTests.testNoEvidenceOrRangeOnlyCannotMintAutomaticFreshness' started at 2026-10-25 18:24:16.235
+Test Case 'PassiveSceneDeliveryTests.testNoEvidenceOrRangeOnlyCannotMintAutomaticFreshness' passed (0.0 seconds)
+Test Case 'PassiveSceneDeliveryTests.testNormalizedEvidenceIgnoresCaptureIDsOrderingAndAnswerParaphrases' started at 2026-10-25 18:24:16.235
+Test Case 'PassiveSceneDeliveryTests.testNormalizedEvidenceIgnoresCaptureIDsOrderingAndAnswerParaphrases' passed (0.0 seconds)
+Test Case 'PassiveSceneDeliveryTests.testOnlyCompletedExactPlaybackConsumesEvidence' started at 2026-10-25 18:24:16.236
+Test Case 'PassiveSceneDeliveryTests.testOnlyCompletedExactPlaybackConsumesEvidence' passed (0.0 seconds)
+Test Case 'PassiveSceneDeliveryTests.testRoomVisitSessionAndSourceChangeRejectOldCompletion' started at 2026-10-25 18:24:16.236
+Test Case 'PassiveSceneDeliveryTests.testRoomVisitSessionAndSourceChangeRejectOldCompletion' passed (0.0 seconds)
+Test Suite 'PassiveSceneDeliveryTests' passed at 2026-10-25 18:24:16.236
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.004 (0.004) seconds
+Test Suite 'Debug-linux-x86_64.xctest' passed at 2026-10-25 18:24:16.236
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.004 (0.004) seconds
+Test Suite 'All tests' passed at 2026-10-25 18:24:16.236
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.004 (0.004) seconds
+◇ Test run started.
+↳ Testing Library Version: 6.4.1 (804dc4530ef3666)
+↳ Target Platform: x86_64-unknown-linux-gnu
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.

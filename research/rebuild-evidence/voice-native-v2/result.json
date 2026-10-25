@@ -1,0 +1,36 @@
+{
+  "commit": "50d503f03b126c8b6e1533b794dee54c8e35f920",
+  "run": 40207102790,
+  "job": 121210282068,
+  "url": "https://github.com/mischa23v/blind/actions/runs/40207102790",
+  "conclusion": "failure",
+  "sdkTypecheck": "passed",
+  "nativeTests": {
+    "executed": 3,
+    "passed": 1,
+    "failed": 2,
+    "passedCase": "testProtectionAttributeDecodingRejectsWeakMissingAndUnknown",
+    "failedCases": [
+      "testFailedEraseRestartFenceRequiresRetryAndRejectsLateSave",
+      "testSaveLoadRecreateDeleteAndOrphanCleanup"
+    ]
+  },
+  "observedSyntheticMetadata": {
+    "excluded": true,
+    "typedComplete": false,
+    "rawComplete": false,
+    "attributeType": "missing"
+  },
+  "scope": "isolated staged native-v2 source; no application activation",
+  "notEstablished": [
+    "actor save/load/delete scenario completion",
+    "physical-device protection/lock/backup behavior",
+    "speaker authentication",
+    "forensic erasure"
+  ],
+  "sourceSHA256": {
+    "VoiceEnrollment.swift": "7b4991e62d69c7761260d48b2427233749a66823e038597c47c2f475070d3b65",
+    "native-v2/ProtectedVoiceEnrollmentStore.swift": "901f60c371d02c4b0532fc8572d126a2dc76e51dfd778d0061048af4ca9d907e"
+  },
+  "logSHA256": "8c0dc9f1d41ed7c4df1055e783264817aae1e0ff64d007bfa88ab17e7d89b5de"
+}

@@ -41,6 +41,42 @@ test('focused unsuppressed accessibility audit reruns for affected view and UI t
   for (const path of ['.github/workflows/accessibility-diagnostic.yml', 'ios/BlindAssist/DashboardView.swift', 'ios/BlindAssistUITests/LaunchTests.swift']) {
     assert.ok(workflow.includes("      - '" + path + "'"), path);
   }
-  assert.match(workflow, /run: bash tools\/ci\/native-apple.sh ui-diagnostic/);
-  assert.doesNotMatch(workflow, /continue-on-error|cancel-in-progress: true/);
+  assertDiagnosticFailurePropagation(workflow);
+  for (const mutation of [
+    workflow.replace('      - name: Retain diagnostic failure status\n        if: always() && steps.layout.outcome != \'success\'\n        run: exit 1\n', ''),
+    workflow.replace('        run: exit 1', '        run: exit 0'),
+    workflow.replace('    runs-on: xcode-27', '    continue-on-error: true\n    runs-on: xcode-27'),
+    workflow.replace('        run: bash tools/ci/native-apple.sh ui-diagnostic', '        continue-on-error: true\n        run: bash tools/ci/native-apple.sh ui-diagnostic'),
+    workflow.replace('        if: always()\n        run: bash tools/ci/native-apple.sh ui-diagnostic', '        run: bash tools/ci/native-apple.sh ui-diagnostic'),
+    workflow.replace('          if-no-files-found: error', '          if-no-files-found: warn'),
+  ]) {
+    assert.notEqual(mutation, workflow);
+    assert.throws(() => assertDiagnosticFailurePropagation(mutation), {name: 'AssertionError'});
+  }
 });
+
+// The layout recorder may continue solely to let the original audit execute.
+// Its failure is restored at the end; neither job nor audit is allowed to pass it.
+function assertDiagnosticFailurePropagation(workflow) {
+  assert.doesNotMatch(workflow, /cancel-in-progress: true/);
+  const [preamble, ...steps] = workflow.split(/^      - /m);
+  assert.doesNotMatch(preamble, /continue-on-error:/);
+  const layouts = steps.filter(step => /^        id: layout$/m.test(step));
+  assert.equal(layouts.length, 1);
+  const layout = layouts[0];
+  assert.match(layout, /^        continue-on-error: true$/m);
+  assert.match(layout, /^        run: bash tools\/ci\/practice-layout-diagnostic.sh$/m);
+  for (const step of steps) if (step !== layout) assert.doesNotMatch(step, /continue-on-error:/);
+  assert.equal(workflow.match(/continue-on-error:/g)?.length, 1);
+  const audits = steps.filter(step => /^        run: bash tools\/ci\/native-apple.sh ui-diagnostic$/m.test(step));
+  assert.equal(audits.length, 1);
+  assert.match(audits[0], /^        if: always\(\)$/m);
+  const final = steps[steps.length - 1];
+  assert.match(final, /^        if: always\(\) && steps.layout.outcome != 'success'$/m);
+  assert.match(final, /^        run: exit 1$/m);
+  assert.ok(steps.indexOf(audits[0]) < steps.length - 1);
+  const artifact = steps.find(step => step.includes('name: practice-layout-screenshots'));
+  assert.ok(artifact);
+  assert.match(artifact, /^        if: always\(\)$/m);
+  assert.match(artifact, /^          if-no-files-found: error$/m);
+}
