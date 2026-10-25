@@ -1,0 +1,353 @@
+--- a/ios/BlindAssist/LocalImageAssistant.swift
++++ b/ios/BlindAssist/LocalImageAssistant.swift
+@@ -107,10 +107,12 @@
+                   replacement.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars else { return false }
+         }
+         var next = self
++        if next.searchAreaClue.clue?.sourceID == selection.sourceID { next.searchAreaClue.clear() }
+         let originalFact = next.factBook.facts.first { $0.sourceID == selection.sourceID }
+         let active = next.memoryScope == selection.scope
+         let old = selection.report.text
+         if let originalFact {
++            next.retireSearchClue(object: originalFact.object, scope: originalFact.scope)
+             _ = next.factBook.forgetSource(selection.sourceID)
+             next.locationReportSources.removeValue(forKey: originalFact.storageKey)
+         }
+@@ -216,6 +218,9 @@
+     var factBook = CompanionFactBook()
+     var focusObject = ""
+     /// A search receipt is historical; it never supplies a current object position.
++    // Transient conversational ownership: never decoded as a location fact.
++    var searchAreaClue = CompanionSearchClue()
++    var searchAreaClarificationTarget: String? = nil
+     var lastSearch: SearchRecord?
+     /// Exact original reports make derived location memories removable with their source.
+     private var locationReportSources: [String: String] = [:]
+@@ -326,6 +331,7 @@
+         actionProgress = CompanionActionProgressLedger()
+         goalRevision = UUID().uuidString
+         proposedStep = ""; reportedCompletedSteps = []; reportedStepAssociations = []
++        searchAreaClue.clear()
+         facts = []; reports = []; lastSearch = nil; focusObject = ""
+         // Parent/suspended goals retain intent only, not another target's progress.
+         parentGoal?.reportedCompletedSteps = []
+@@ -453,6 +459,25 @@
+             proposedStep = ""
+         }
+     }
++    /// Forget only this named target in the explicitly selected memory scope.
++    /// A provisional clue is not a saved item/location, but must not survive
++    /// an explicit forget of its corresponding object just because no item exists.
++    @discardableResult
++    mutating func retireSearchClue(object: String, scope: CompanionMemoryScope?) -> Bool {
++        let key = ItemMemory.key(for: object)
++        guard !key.isEmpty else { return false }
++        let clearedClue = searchAreaClue.clue.map { $0.binding.key == key && $0.binding.scope == scope } ?? false
++        let bindings = [searchAreaClue.question?.binding, searchAreaClue.clue?.binding].compactMap { $0 }
++        if bindings.contains(where: { $0.key == key && $0.scope == scope }) { searchAreaClue.clear() }
++        return clearedClue
++    }
++
++    /// Deleting an explicitly scoped saved place retires only its derived clue context.
++    mutating func retireSearchClue(placeID: String) {
++        let bindings = [searchAreaClue.question?.binding, searchAreaClue.clue?.binding].compactMap { $0 }
++        if bindings.contains(where: { $0.scope?.placeID == placeID }) { searchAreaClue.clear() }
++    }
++
+     /// Explicit review/correction/deletion only. Remove exact source records,
+     /// not similarly worded unrelated memories. Invalidate pending generation.
+     /// Legacy dialogue IDs are not bound to scoped source IDs. Fail closed
+@@ -460,6 +485,9 @@
+     var allowsLegacyReportMutation: Bool { !hasScopedMemoryHistory }
+     @discardableResult mutating func removeReport(_ exactText: String) -> Bool {
+         guard allowsLegacyReportMutation else { return false }
++        // Legacy text deletion may outlive the bounded report list. Retire the
++        // exact accepted clue too, not an unrelated goal's similarly named place.
++        if searchAreaClue.clue?.originalInput == exactText { searchAreaClue.clear() }
+         for index in scopedTaskHistory.indices {
+             let affected = scopedTaskHistory[index].reports.contains { $0.text == exactText }
+             scopedTaskHistory[index].reports.removeAll { $0.text == exactText }
+@@ -510,6 +538,7 @@
+     @discardableResult mutating func removeLocationReport(sourceID: String) -> Bool {
+         guard let fact = factBook.facts.first(where: { $0.sourceID == sourceID }) else { return false }
+         guard factBook.forgetSource(sourceID) else { return false }
++        retireSearchClue(object: fact.object, scope: fact.scope)
+         let original = locationReportSources.removeValue(forKey: fact.storageKey)
+         func dependsOnSource(_ derived: CompanionReportedFact) -> Bool {
+             derived.sourceID == sourceID || (derived.sourceID == nil && original.map {
+@@ -547,6 +576,7 @@
+             if goalSource == nil { goalSource = source }
+             return
+         }
++        searchAreaClue.clear()
+         actionProgress.retireSuggestions(forGoalRevision: goalRevision)
+         goal = value; goalSource = source; goalRevision = UUID().uuidString
+         proposedStep = ""; reportedCompletedSteps = []
+@@ -579,6 +609,7 @@
+     /// Applies only an explicit parsed request/report; the controller owns live
+     /// sensor search and completion-accounted speech. No model action is involved.
+     mutating func respond(to utterance: CompanionUtterance, message: String, now: Date = Date(), arabic: Bool, sourceID: String? = nil) -> String {
++        searchAreaClarificationTarget = nil
+         guard CompanionUtterance.parse(message) == utterance else {
+             return arabic ? "لم أستطع تأكيد هذا الطلب." : "I couldn't verify that request."
+         }
+@@ -592,10 +623,13 @@
+             beginFindGoal(request, object: object, sourceID: sourceID, at: sourceID.flatMap { id in reports.last { $0.sourceID == id }?.time } ?? now)
+             if let fact = currentContextFact(for: object) { return fact.recall(now: now, arabic: arabic) }
+             if let search = lastSearch, search.matches(object) {
++                if !search.located { searchAreaClarificationTarget = object }
+                 let ask = " " + CompanionFact.searchAreaQuestion(arabic: arabic)
+                 return search.sentence(now: now, arabic: arabic) + (search.located ? "" : ask)
+             }
+-            return ordinaryHistoricalLocationReply(object: object, now: now, arabic: arabic, concise: true) ?? CompanionFact.unknown(object: object, arabic: arabic)
++            if let history = ordinaryHistoricalLocationReply(object: object, now: now, arabic: arabic, concise: true) { return history }
++            searchAreaClarificationTarget = object
++            return CompanionFact.unknown(object: object, arabic: arabic)
+         case .report(let named, let place, let tense, let hedged):
+             guard let object = named ?? (focusObject.isEmpty ? nil : focusObject) else {
+                 return arabic ? "أي غرض تقصد؟ قل اسمه." : "Which thing do you mean? Tell me its name."
+--- a/ios/BlindAssist/NavigationModel.swift
++++ b/ios/BlindAssist/NavigationModel.swift
+@@ -83,6 +83,7 @@
+         var codeOwned = false
+         var clockReceipt: CompanionClockDeliveryReceipt? = nil
+         var origin: CompanionCommandOrigin = .trustedInterface
++        var searchAreaQuestionID: UUID? = nil
+     }
+     private struct ConversationCapture {
+         let view: ObjectViewCapture
+@@ -713,6 +714,8 @@
+             }
+             guard let pending = self.activeConversationSpeech, pending.id == id else { return }
+             self.activeConversationSpeech = nil
++            self.finishSearchAreaQuestion(pending.searchAreaQuestionID, text: text, outcome: outcome,
++                request: pending.request, generation: pending.generation)
+             if outcome == .completed, pending.request == self.requestID,
+                self.assistantSession.accepts(generation: pending.generation) {
+                 if pending.origin == .unverifiedMicrophone {
+@@ -1291,6 +1294,7 @@
+             originForward: observation.forward, currentForward: lastObservation?.forward)
+     }
+     private func cancelDescription() {
++        companionWorkingState.searchAreaClue.retireAnswerWindow()
+         if let id = passiveSceneDelivery.cancelPending() {
+             companion.release("passive-scene:" + id.uuidString)
+         }
+@@ -2962,6 +2966,13 @@
+         // This compatibility entry point is called by explicit UI submission or
+         // the microphone callback. A tap to listen does not authenticate speech.
+         let origin: CompanionCommandOrigin = fromVoice ? .unverifiedMicrophone : .trustedInterface
++        // Move trusted answer-window ownership out before any early command return.
++        // Accepted raw clues remain goal context; an unrelated turn retires only
++        // old answer/amendment admission, never silently renews its deadline.
++        // Unverified microphone words cannot consume or amend the owner's clue.
++        let searchClueInput: CompanionSearchClue? = CommandAuthority.permits(.changeGoal, from: origin)
++            ? companionWorkingState.searchAreaClue : nil
++        if searchClueInput != nil { companionWorkingState.searchAreaClue.retireAnswerWindow() }
+         // A read-only clock question needs conversation authority, not goal authority.
+         // Intercept before cancellation, everyday-task mutation or camera work.
+         if CommandAuthority.permits(.changeGoal, from: origin), selectedPhoto.selection != nil { clearExploreSnapshot() }
+@@ -3050,7 +3061,7 @@
+             assistantDialogue.setGoal(destination); objectiveDraft = destination
+             stopReturn(); indoor.cancelRoute(); persistWorkingState(); persistDialogue()
+         }
+-        if routeUnverifiedPhysicalRequest(text) { return }
++        if routeUnverifiedPhysicalRequest(text, searchClueInput: searchClueInput) { return }
+         if routeEverydayTask(text) { return }
+         #if BLIND_FAMILIAR_PEOPLE
+         if routeFamiliarPeopleCommand(text) { return }
+@@ -3064,6 +3075,9 @@
+         // no longer becomes image generation merely because the camera is running.
+         if routeSaudiBanknoteCommand(text) || routeClothingColorCommand(text) || routeReadingToolCommand(text) { return }
+         if let utterance = CompanionUtterance.parse(text) {
++            // A same-target rephrase may use its still-valid raw clue. The
++            // response branch checks the post-change goal binding before use.
++            if case .find = utterance, let searchClueInput { companionWorkingState.searchAreaClue = searchClueInput }
+             answerCompanionUtterance(utterance, question: text); return
+         }
+         if handleAssistantControl(text) { return }
+@@ -3082,6 +3096,9 @@
+         if AssistantControl.explicitGoal(text) != nil {
+             readScene(cloud: false, question: text); return
+         }
++        // All explicit command, control, report and tool routes above win.
++        if case .conversation = ConversationIntent.classify(text),
++           let searchClueInput, acceptSearchAreaClue(text, input: searchClueInput) { return }
+         if case .visualRequest = ConversationIntent.classify(text) {
+             readScene(cloud: false, question: text)
+         } else {
+@@ -3522,7 +3539,7 @@
+         return true
+     }
+ 
+-    private func queueConversationSpeech(_ text: String, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = [], codeOwned: Bool = false, origin: CompanionCommandOrigin = .trustedInterface, clockReceipt: CompanionClockDeliveryReceipt? = nil) {
++    private func queueConversationSpeech(_ text: String, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = [], codeOwned: Bool = false, origin: CompanionCommandOrigin = .trustedInterface, clockReceipt: CompanionClockDeliveryReceipt? = nil, searchAreaQuestionID: UUID? = nil) {
+         #if DEBUG
+         let trace = DebugNativeSessionTrace(requestID: origin == .unverifiedMicrophone || codeOwned ? nil : request)
+         #endif
+@@ -3567,7 +3584,7 @@
+         #endif
+         conversationSpeech.append(ConversationSpeech(id: speechID, text: text, request: request,
+             generation: generation, createdAt: ProcessInfo.processInfo.systemUptime,
+-            reports: reports, evidence: evidence, captures: captures, codeOwned: codeOwned, clockReceipt: receipt.replyIDs.isEmpty ? nil : receipt, origin: origin))
++            reports: reports, evidence: evidence, captures: captures, codeOwned: codeOwned, clockReceipt: receipt.replyIDs.isEmpty ? nil : receipt, origin: origin, searchAreaQuestionID: searchAreaQuestionID))
+         drainConversationSpeech()
+     }
+ 
+@@ -3893,25 +3910,78 @@
+         }
+         persistWorkingState()
+         // Saved items and live sensors answer a find request before "I don't know".
+-        if let findObject, findWithSensors(findObject, question: question) { return }
++        if let findObject, findWithSensors(findObject, question: question) {
++            companionWorkingState.searchAreaClue.retireAnswerWindow(); return
++        }
++        if let target = companionWorkingState.searchAreaClarificationTarget, let findObject,
++           ItemMemory.key(for: target) == ItemMemory.key(for: findObject) {
++            let binding = searchAreaBinding(target: target)
++            let now = ProcessInfo.processInfo.systemUptime
++            if let clue = companionWorkingState.searchAreaClue.currentClue(binding: binding, now: now) {
++                let reply = clue.reply(arabic: arabic)
++                deliverConversationReply(Self.wordCount(reply) <= 30 ? reply
++                    : (arabic ? "ما زلت أحتفظ بتلميح البحث الذي قدمته." : "I still have your search clue.")); return
++            }
++            if let proposal = companionWorkingState.searchAreaClue.prepare(binding: binding, text: text, now: now) {
++                deliverConversationReply(text, searchAreaQuestionID: proposal.id); return
++            }
++        } else { companionWorkingState.searchAreaClue.retireAnswerWindow() }
+         if !text.isEmpty { deliverConversationReply(text) }
+     }
+ 
+-    private func deliverConversationReply(_ text: String) {
++    private func searchAreaBinding(target: String) -> CompanionSearchClue.Binding {
++        .init(target: target, goalRevision: companionWorkingState.goalRevision,
++              generation: assistantSession.generation, scope: companionWorkingState.memoryScope)
++    }
++
++    private func finishSearchAreaQuestion(_ id: UUID?, text: String, outcome: NarrationDelivery,
++                                         request: UUID, generation: UInt64) {
++        guard let id else { return }
++        let delivered = outcome == .completed && request == requestID &&
++            assistantSession.accepts(generation: generation) && assistantSession.foregroundActive &&
++            !assistantSession.privateAudioHeld && !detection.hazard.isUrgent
++        _ = companionWorkingState.searchAreaClue.deliverSpeech(questionID: id, text: text, completed: delivered,
++            binding: searchAreaBinding(target: companionWorkingState.focusObject), now: ProcessInfo.processInfo.systemUptime)
++    }
++
++    private func acceptSearchAreaClue(_ text: String, input: CompanionSearchClue) -> Bool {
++        guard !companionWorkingState.focusObject.isEmpty, !companionWorkingState.goal.isEmpty,
++              assistantSession.foregroundActive, !assistantSession.privateAudioHeld, !detection.hazard.isUrgent else { return false }
++        var candidate = input
++        guard let source = recordCompanionMessage(text), let sourceID = source.sourceID, let at = source.time,
++              let reply = candidate.accept(text: text, sourceID: sourceID, at: at,
++                binding: searchAreaBinding(target: companionWorkingState.focusObject), origin: .trustedInterface,
++                now: ProcessInfo.processInfo.systemUptime, arabic: arabic),
++              Self.wordCount(reply) <= 30 else { return false }
++        companionWorkingState.searchAreaClue = candidate
++        if everydayTasks.state == .paused, everydayTasks.request?.capability == .findItem { everydayTasks.resume() }
++        // The raw user report already has its ordinary source receipt. The
++        // provisional binding is transient, never a location fact or pose.
++        deliverConversationReply(reply)
++        return true
++    }
++
++    private func deliverConversationReply(_ text: String, searchAreaQuestionID: UUID? = nil) {
+         sceneAnswer = text; currentReply = text
+         if textOnly || assistantSession.state != .active {
++            if textOnly, let id = searchAreaQuestionID {
++                _ = companionWorkingState.searchAreaClue.presentTrustedText(questionID: id, text: text,
++                    binding: searchAreaBinding(target: companionWorkingState.focusObject), origin: .trustedInterface,
++                    now: ProcessInfo.processInfo.systemUptime)
++            }
+             assistantDialogue.record(role: "assistant", text: text)
+             persistDialogue()
+             return
+         }
+         // Code-owned receipts use the same bounded queue and delivery completion ledger.
+         // Only this controller can set codeOwned; model callbacks always use the guarded default.
+-        queueConversationSpeech(text, request: requestID, generation: assistantSession.generation, codeOwned: true)
++        queueConversationSpeech(text, request: requestID, generation: assistantSession.generation,
++            codeOwned: true, searchAreaQuestionID: searchAreaQuestionID)
+     }
+ 
+     /// A recognized physical-action request cannot fall through to a plausible model
+     /// instruction, a bare yes/no, or a model's own assertion that it verified the target.
+-    @discardableResult private func routeUnverifiedPhysicalRequest(_ question: String) -> Bool {
++    @discardableResult private func routeUnverifiedPhysicalRequest(_ question: String, searchClueInput: CompanionSearchClue? = nil) -> Bool {
+         guard ConversationDomainPolicy.requiresPhysicalVerification(for: question) else { return false }
+         if RoadCrossingPolicy.requiresCodeOwnedReply(question) {
+             cancelDescription(); stopReturn(); indoor.invalidatePosition()
+@@ -3942,6 +4012,9 @@
+         }
+         #endif
+         if let utterance, case .find = utterance {
++            // Restore only this trusted turn's existing candidate after the
++            // physical lane cancelled old work; post-goal binding still gates it.
++            if let searchClueInput { companionWorkingState.searchAreaClue = searchClueInput }
+             answerCompanionUtterance(utterance, question: question)
+             return true
+         }
+@@ -4519,6 +4592,7 @@
+     }
+ 
+     func startConversation() {
++        companionWorkingState.searchAreaClue.clear()
+         let cameraNeedsRetry = cameraRecovery.blocked || cameraRecovery.exhausted
+         if cameraAwareness { cameraRecovery.beginExplicitSession(); cameraRecoveryNoticeShown = false }
+         if cameraNeedsRetry && running && cameraAwareness { stopCameraMonitoring() }
+@@ -4537,6 +4611,7 @@
+ 
+     func muteConversation() {
+         voiceRoomScan.cancel()
++        companionWorkingState.searchAreaClue.clear()
+         defer { updateLiveActivity() }
+         everydayTasks.pause(); everydayTicket = nil
+         assistantSession.mute()
+@@ -4548,6 +4623,7 @@
+ 
+     func endConversation() {
+         voiceRoomScan.cancel()
++        companionWorkingState.searchAreaClue.clear()
+         heldSearchIntent.cancel()
+         defer { updateLiveActivity() }
+         everydayTasks.cancelAll(); everydayTicket = nil; everydayUtterance = ""
+@@ -5187,8 +5263,11 @@
+                     else { say(ItemMemory.answer(for: nil, asked: name, now: Date(), sameFrame: false, measuredRelation: nil, arabic: arabic)) }
+                 }
+             case .forget(let name):
++                let clearedClue = companionWorkingState.retireSearchClue(object: name, scope: companionWorkingState.memoryScope)
+                 guard let saved = items.find(name) else {
+-                    say(arabic ? "لا يوجد \(name) محفوظ." : "No saved \(name) to forget."); return true
++                    say(clearedClue
++                        ? (arabic ? "مسحت تلميح البحث. لا يوجد عنصر محفوظ بهذا الاسم." : "I've cleared that search clue. There is no saved item with that name.")
++                        : (arabic ? "لا يوجد \(name) محفوظ." : "No saved \(name) to forget.")); return true
+                 }
+                 let deletionRequest = requestID
+                 forgetItem(saved) { [weak self] success in
+@@ -5741,6 +5820,7 @@
+     func itemViewCount(_ item: RememberedItem) -> Int { item.scope == nil ? itemAppearance.viewCount(item.key) : 0 }
+     func forgetItem(_ item: RememberedItem, completion: @escaping (Bool) -> Void = { _ in }) {
+         guard items.items.contains(item) else { completion(false); return }
++        companionWorkingState.retireSearchClue(object: item.name, scope: item.scope)
+         retireHeldSearchForPrivacyDeletion()
+         #if DEBUG
+         purgeDebugSessionDiagnostics()
+@@ -5803,6 +5883,7 @@
+     /// room record, and the current-place state if it was this place.
+     func deletePlace(_ place: SavedPlace) {
+         places.retireRegistration(for: place)
++        companionWorkingState.retireSearchClue(placeID: place.id.uuidString)
+         retireHeldSearchForPrivacyDeletion()
+         #if DEBUG
+         purgeDebugSessionDiagnostics()
+--- a/tools/test/child-assistant-contracts.test.mjs
++++ b/tools/test/child-assistant-contracts.test.mjs
+@@ -92,7 +92,7 @@
+   const model = await read('ios/BlindAssist/NavigationModel.swift');
+   assert.match(model, /private static let objectInteractionGuidanceValidated = false/);
+   const receive = section(model, 'func receiveCompanionUtterance(', 'private func routeEverydayTask(');
+-  before(receive, 'routeUnverifiedPhysicalRequest(text)', 'answerConversation(text)');
++  before(receive, 'routeUnverifiedPhysicalRequest(text, searchClueInput: searchClueInput)', 'answerConversation(text)');
+   const chat = section(model, 'private func answerConversation(', 'func startVoiceQuestion(');
+   before(chat, 'routeUnverifiedPhysicalRequest(question)', 'LocalImageAssistant.converse(');
+   const tracked = section(model, 'private func updateTrackedTarget()', 'private func');

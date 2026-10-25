@@ -1,0 +1,15 @@
+# Search-area controller replay boundary
+
+`search-area-clue-native.test.mjs` extracts the current production `receiveCompanionUtterance`, source recording, response selection, task-control and physical-request routing, code-reply delivery, and search-area ownership helpers. It also extracts the complete production working-state structs. Only access modifiers and inactive build configurations are removed; function bodies are not reimplemented.
+
+`ReplayPrefix.swift` supplies unavailable platform collaborators: camera/sensor availability, persistence sinks, clock inquiry boundary, specialized tool adapters, and the speech sink. The cancellation seam copies the production clue-retirement statement and renews request identity. The generic model boundary records calls **without returning a fabricated model reply**. Spoken tests explicitly invoke the extracted completion adapter with the queued request/text; they do not execute AVSpeechSynthesizer, VoiceOver or native device callbacks.
+
+The common authored three-turn episode can run against an explicitly selected pre-change source root using `BLIND_SEARCH_CLUE_BASELINE_ROOT`. That optional before-regression run is expected to fail the deterministic-clue assertions; it witnesses ordinary-conversation delegation, **not real-model failure**. The normal aggregate does not set this override and tests only current code. `BLIND_SEARCH_CLUE_REPLAY_WORK` optionally reuses a retained generated package during local diagnosis; leave unset in the full aggregate.
+
+Current episodes separately cover text interaction, Arabic answers, exact spoken completion versus undelivered/interrupted text, rephrases through the physical-request lane, target replacement, raw user source attribution, parent retention, expiry versus retained clues, unrelated conversation, retired correction authority, deletion/edit and restart/background behavior. No clue is asserted as a location fact, current pose, found object or completed goal.
+
+The harness requires an indexed Swift test build: this toolchain uses its index for XCTest discovery. A zero-test run is an error, not a pass; the exact expected test count is asserted.
+
+Privacy cases extract the actual item-command, saved-item deletion, post-purge commit, conversation-reset and quiet/stop adapters. Native history purge completion, persistence and appearance storage remain explicit substituted collaborators. Saved-place deletion is limited to the actual working-state helper plus a source contract for its synchronous exact-ID call, not execution of the native saved-place workflow. Matching, unrelated, differently scoped and unscoped clues are distinguished; a pending question is not acknowledged as an accepted clue.
+
+Speech-budget cases verify exact English and Arabic five-word clue acknowledgments at the queue boundary and pre-install rejection using a forced over-budget result. Linux whitespace counting is a declared substitute for Apple's NLTokenizer; this is not native tokenization or audible-delivery proof. Replayed clues retain their raw text when the adapter uses a fixed brief acknowledgment under a forced budget overflow.

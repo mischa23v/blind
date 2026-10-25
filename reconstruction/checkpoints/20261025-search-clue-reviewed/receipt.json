@@ -1,0 +1,72 @@
+{
+  "status": "REVIEWED WIP BACKUP ONLY \u2014 NOT ACTIVATED; final full aggregate pending",
+  "baseline": "6925e21e4fef039b43ab6f4158aa37fd704b258e",
+  "source_files": [
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionSearchClue.swift",
+      "sha256": "3331166a2c0b5efdd4ee0f1679cf12a8b23fbc0b4c75c89cfe6b03821851e6ce"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/CompanionSearchClueTests.swift",
+      "sha256": "caea8031bf22cef4b001a643b1a502075f2655d18a8df8943d1ad34c84594ceb"
+    },
+    {
+      "path": "ios/BlindAssist/LocalImageAssistant.swift",
+      "sha256": "5e02f5565e494efeeaae3af5926ad3b9107ccb124db9ba57c76cf53cdc921b65"
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "sha256": "60bcb4b411a02ce196c9e63a6441d4a7a0778639d1b146566e034bf723a3c249"
+    },
+    {
+      "path": "tools/test/child-assistant-contracts.test.mjs",
+      "sha256": "68cdf71c512aeedb747d67279e0c5f2464d45df1b3ad06d5ae5de4f92059eba5"
+    },
+    {
+      "path": "tools/test/fixtures/search-area-clue/CommonTests.swift",
+      "sha256": "259a7d0dc169342931a35f21e4a9448a72758c424654cce9d3087d4742ae2315"
+    },
+    {
+      "path": "tools/test/fixtures/search-area-clue/CurrentTests.swift",
+      "sha256": "83bc138146cc4f93026ff7c047da9a7eae59d5fc831508600de45e451dcdc04b"
+    },
+    {
+      "path": "tools/test/fixtures/search-area-clue/PrivacyTests.swift",
+      "sha256": "8c8fe2753c1b17780d72f6c141b5db99785e01a7f84592e8bf230f464f5da9d3"
+    },
+    {
+      "path": "tools/test/fixtures/search-area-clue/README.md",
+      "sha256": "128df38645ab1c10547ed9c5c79b1522df35c0a0243fd88df1834cd31ef25cab"
+    },
+    {
+      "path": "tools/test/fixtures/search-area-clue/ReplayPrefix.swift",
+      "sha256": "4ce203b461abcf77a5e6e604567fee7d71bfa8d3b4ec51ba8e50ec3b125777e3"
+    },
+    {
+      "path": "tools/test/search-area-clue-native.test.mjs",
+      "sha256": "e4b6c738b099bfdb7ccd4df1378c6448f183cb9f36acea8f28fcbe7c99b507f4"
+    }
+  ],
+  "focused_evidence": {
+    "extracted_controller_source_projection_tests": 29,
+    "wrapper_checks": 2,
+    "failures": 0,
+    "skips": 0,
+    "not_native_audio_or_device_journeys": true,
+    "affected_existing_source_contracts": 43
+  },
+  "before_evidence": {
+    "published28_failed_deterministic_flow_assertions": 5,
+    "published28_meaning": "Bare area answers delegated to generic model boundary; not evidence that actual model response failed.",
+    "preprivacy_source_projection_tests": 26,
+    "preprivacy_failed_assertions": 6
+  },
+  "earlier_aggregate": {
+    "core_tests": 1279,
+    "core_failures": 0,
+    "node_tests": 474,
+    "node_failures": 5,
+    "status": "Earlier source cut; failures repaired before this backup, final aggregate pending."
+  },
+  "review": "Physical-lane continuity, unknown-prefix amendment, source deletion, scoped privacy and cancellation ordering repaired; independent source review found no remaining blocker."
+}
