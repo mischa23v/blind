@@ -310,7 +310,7 @@ final class LaunchTests: XCTestCase {
                     "identifier": String(snapshot.identifier.prefix(256)),
                     "label": String(snapshot.label.prefix(256)),
                     "elementType": snapshot.elementType.rawValue,
-                    "frame": NSStringFromCGRect(snapshot.frame), "enabled": snapshot.isEnabled
+                    "frame": NSCoder.string(for: snapshot.frame), "enabled": snapshot.isEnabled
                 ]
             } catch {
                 metadata["snapshotStatus"] = "failed"
@@ -349,7 +349,7 @@ final class LaunchTests: XCTestCase {
         var observedFindings = 0
         try app.performAccessibilityAudit { issue in
             print("ACCESSIBILITY_AUDIT=type:\(issue.auditType),phase:\(phase),compact:\(issue.compactDescription.prefix(2048)),detailed:\(issue.detailedDescription.prefix(4096)),element:\(String((issue.element?.debugDescription ?? "unidentified").prefix(1200)).replacingOccurrences(of: "\n", with: " | "))")
-            recordAuditIssueObservation(issue, phase: phase, observedFindings: &observedFindings)
+            self.recordAuditIssueObservation(issue, phase: phase, observedFindings: &observedFindings)
             // WCAG exempts inactive controls; retain every other audit finding.
             guard issue.auditType == .contrast, let element = issue.element else { return false }
             return element.identifier == "retrace-session" && !element.isEnabled

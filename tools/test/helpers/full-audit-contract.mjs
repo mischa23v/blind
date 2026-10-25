@@ -20,7 +20,7 @@ export function assertFullAuditDestinations(ui) {
   // Only the existing bounded diagnostic print/comment may precede the guard.
   // Any extra return, broader condition or additional exemption fails closed.
   const diagnosticPrint = "print(\"ACCESSIBILITY_AUDIT=type:\\(issue.auditType),phase:\\(phase),compact:\\(issue.compactDescription.prefix(2048)),detailed:\\(issue.detailedDescription.prefix(4096)),element:\\(String((issue.element?.debugDescription ?? \"unidentified\").prefix(1200)).replacingOccurrences(of: \"\\n\", with: \" | \"))\")";
-  const capture = "            recordAuditIssueObservation(issue, phase: phase, observedFindings: &observedFindings)\n";
+  const capture = "            self.recordAuditIssueObservation(issue, phase: phase, observedFindings: &observedFindings)\n";
   assert.ok(callback[1].includes(capture), 'Bounded observation precedes unchanged decision');
   const decision = callback[1].replace(capture, '').split('\n').filter(line => line.trim() !== diagnosticPrint && line.trim() !== '// WCAG exempts inactive controls; retain every other audit finding.').join('\n').trim();
   assert.equal(decision, `guard issue.auditType == .contrast, let element = issue.element else { return false }

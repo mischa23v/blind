@@ -85,11 +85,28 @@ test('bounded callback-time evidence uses one public root snapshot and no audit 
 test('callback cap and observation call cannot replace or bypass original decision', () => {
   assertFullAuditDestinations(ui);
   for (const [before, after] of [
-    ['recordAuditIssueObservation(issue, phase: phase, observedFindings: &observedFindings)', ''],
-    ['recordAuditIssueObservation(issue, phase: phase, observedFindings: &observedFindings)', 'return true'],
+    ['self.recordAuditIssueObservation(issue, phase: phase, observedFindings: &observedFindings)', ''],
+    ['self.recordAuditIssueObservation(issue, phase: phase, observedFindings: &observedFindings)', 'return true'],
   ]) {
     const mutation = ui.replace(before, after);
     assert.notEqual(mutation, ui);
     assert.throws(() => assertFullAuditDestinations(mutation), {name:'AssertionError'});
+  }
+});
+
+test('native compiler regressions use renamed geometry API and explicit callback self', () => {
+  function assertNativeCallbackSyntax(source) {
+    assert.match(source, /"frame": NSCoder\.string\(for: snapshot\.frame\)/);
+    assert.doesNotMatch(source, /NSStringFromCGRect/);
+    assert.match(source, /            self\.recordAuditIssueObservation\(issue, phase: phase, observedFindings: &observedFindings\)/);
+  }
+  assertNativeCallbackSyntax(ui);
+  for (const [before, after] of [
+    ['NSCoder.string(for: snapshot.frame)', 'NSStringFromCGRect(snapshot.frame)'],
+    ['self.recordAuditIssueObservation(issue,', 'recordAuditIssueObservation(issue,'],
+  ]) {
+    const mutated = ui.replace(before, after);
+    assert.notEqual(mutated, ui);
+    assert.throws(() => assertNativeCallbackSyntax(mutated), {name:'AssertionError'});
   }
 });

@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "sourceCommit": "6b522c33e020d93b57bf8908f103f53de9ababd1",
+  "mainRun": 40236668072,
+  "focusedRun": 40236668091,
+  "result": "UI test compilation failed; zero audit executions and no callback observations",
+  "compilerDiagnostics": [
+    "'NSStringFromCGRect' has been replaced by 'NSCoder.string(for:)'",
+    "implicit use of 'self' in closure; use 'self.' to make capture semantics explicit"
+  ],
+  "repair": "Use the SDK-suggested public NSCoder CGRect string overload and explicit self for the observation call in both UI test classes. Original audit decision, capture bounds and production code unchanged.",
+  "focusedArtifact": {
+    "id": 12615536608,
+    "bytes": 435,
+    "sha256": "4adf3cb46c1529ecb39d5e067805d527f8f88ea9c91175a5bc0eda4f245b6e70",
+    "screenshots": 0,
+    "metadata": 0,
+    "evidenceComplete": false
+  },
+  "validation": {
+    "relatedSourceChecks": 21,
+    "failures": 0,
+    "AppleCompilation": "pending",
+    "auditAcceptance": "unresolved"
+  },
+  "api": "https://developer.apple.com/documentation/Foundation/NSCoder/string(for:)-4qz0a"
+}
