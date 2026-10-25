@@ -15,7 +15,7 @@ final class ContextualCapabilitySchedulerTests: XCTestCase {
 
     func testSilentCurrencyProbeNeedsNoFeatureCommandOrGoal() throws {
         var policy = Policy()
-        let lease = try XCTUnwrap(policy.reserve(goal: .none, evidence: .init(capturedAt: 10), moment: moment(10), availability: all))
+        let lease = try XCTUnwrap(policy.reserve(goal: .none, evidence: .init(capturedAt: 10), moment: moment(10), availability: currency))
         XCTAssertEqual(lease.capability, .currencyProbe)
         XCTAssertEqual(lease.capturedAt, 10)
         XCTAssertEqual(lease.startedAt, 10)
@@ -44,10 +44,47 @@ final class ContextualCapabilitySchedulerTests: XCTestCase {
         }
     }
 
-    func testIrrelevantGoalDoesNotStartOrdinaryProbes() {
-        for capability: Policy.Capability in [.text, .barcode, .light, .color] {
+    func testNoTaskDoesNotStartUnselectedColorOrLightProbes() {
+        for capability: Policy.Capability in [.light, .color] {
             var policy = Policy()
             XCTAssertNil(policy.reserve(goal: .none, evidence: .init(capturedAt: 10, textCandidate: true, barcodeCandidate: true, lightAvailable: true, centralIsolatedItem: true), moment: moment(10), availability: [capability: .available]))
+        }
+    }
+
+    func testNoTaskStartsBoundedTextAndSavedProductDiscovery() throws {
+        for capability: Policy.Capability in [.text, .barcode] {
+            var policy = Policy()
+            let availability: [Policy.Capability: Policy.Availability] = [capability: .available]
+            let lease = try XCTUnwrap(policy.reserve(goal: .none, evidence: .init(capturedAt: 10), moment: moment(10), availability: availability))
+            XCTAssertEqual(lease.capability, capability)
+            XCTAssertFalse(policy.beforeSpeech(lease, moment: moment(10), evidence: .init(capturedAt: 10), goal: .none, availability: availability))
+        }
+        XCTAssertEqual(ContextualTextPolicy.select([.init(text: "Library", confidence: 0.95, x: 0.2, y: 0.2)], goalText: "  ", unrestrictedReading: false)?.text, "Library")
+        XCTAssertNil(ContextualTextPolicy.select([.init(text: "Milk", confidence: 0.95, x: 0.2, y: 0.2)], goalText: "Find my book", unrestrictedReading: false))
+    }
+
+    func testUnsupportedRetainedTaskIsNotIdleDiscoveryPermission() {
+        for text in ["Practice spelling", String(repeating: "unknown ", count: 200)] {
+            let goal = Policy.Goal.infer(from: text)
+            XCTAssertEqual(goal, .otherTask)
+            for capability: Policy.Capability in [.text, .barcode] {
+                var policy = Policy()
+                XCTAssertNil(policy.reserve(goal: goal, evidence: .init(capturedAt: 10), moment: moment(10), availability: [capability: .available]))
+            }
+        }
+        XCTAssertEqual(Policy.Goal.infer(from: "  "), .none)
+    }
+
+    func testIdleAllBackendRotationDoesNotStarveCurrencyAfterEmptyOrCancelledProbes() throws {
+        for cancelFirst in [false, true] {
+            var policy = Policy()
+            for (now, expected): (Double, Policy.Capability) in [(10, .text), (12, .barcode), (14, .currencyProbe)] {
+                let lease = try XCTUnwrap(policy.reserve(goal: .none, evidence: .init(capturedAt: now), moment: moment(now), availability: all))
+                XCTAssertEqual(lease.capability, expected)
+                if cancelFirst && now == 10 { policy.cancel() }
+                else { policy.finish(lease, outcome: .noResult, now: now) }
+                XCTAssertNil(policy.reserve(goal: .none, evidence: .init(capturedAt: now + 1), moment: moment(now + 1), availability: all), "Shared two-second gap is not replenished")
+            }
         }
     }
 
@@ -62,8 +99,8 @@ final class ContextualCapabilitySchedulerTests: XCTestCase {
         XCTAssertTrue(Policy.Goal.infer(from: "أريد أن ألبس ملابس المدرسة").contains(.dressing))
         XCTAssertTrue(Policy.Goal.infer(from: "أريد أن أقرأ الواجب").contains(.reading))
         XCTAssertEqual(Policy.Goal.infer(from: "Find the bathroom"), .targetDiscovery)
-        XCTAssertEqual(Policy.Goal.infer(from: "flight friendship highlighting"), .none)
-        XCTAssertEqual(Policy.Goal.infer(from: String(repeating: "buy ", count: 301)), .none)
+        XCTAssertEqual(Policy.Goal.infer(from: "flight friendship highlighting"), .otherTask)
+        XCTAssertEqual(Policy.Goal.infer(from: String(repeating: "buy ", count: 301)), .otherTask)
     }
 
     func testFindingAnObjectNeverGrantsUnrestrictedReading() {

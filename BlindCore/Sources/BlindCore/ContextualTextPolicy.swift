@@ -1,6 +1,7 @@
 import Foundation
 
-/// Selects a short observed line relevant to an already retained user task. This is
+/// Selects a short observed line, task-relevant when a task exists, or a bounded
+/// discovery when no task is retained. Existing attention/quiet/budget gates still apply. This is
 /// text evidence, never proof of a shop's location, availability or safe route.
 public enum ContextualTextPolicy {
     private static let ignored: Set<String> = ["i", "my", "me", "we", "our", "want", "need", "find", "locate", "looking", "help", "with", "this", "that", "where", "some", "please", "shopping", "read", "reading", "buy", "get", "the", "and", "for", "go", "going", "visit", "take", "to", "a", "an", "at", "in", "of", "is", "it", "am", "are", "can", "you", "let", "lets", "اريد", "ساعدني", "اين", "ابحث", "اجد", "الي", "عن", "هذا", "هذه", "في", "من", "اذهب"]
@@ -22,6 +23,9 @@ public enum ContextualTextPolicy {
     public static func select(_ lines: [TextLine], goalText: String,
                               unrestrictedReading: Bool) -> TextLine? {
         let targets = targetWords(goalText)
+        // Only genuinely absent task text allows incidental discovery. An unknown,
+        // unsupported or overly long task is not permission to narrate unrelated text.
+        let incidentalDiscovery = goalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         return lines.filter { line in
             guard line.confidence.isFinite, line.confidence >= 0.85, line.confidence <= 1,
                   line.x.isFinite, line.y.isFinite, (0...1).contains(line.x), (0...1).contains(line.y),
@@ -29,7 +33,7 @@ public enum ContextualTextPolicy {
                   !SaudiBanknotePolicy.containsUnverifiedMoneyValue(line.text),
                   !SpatialClaimGuard.containsSpatialClaim(line.text), !SpatialClaimGuard.mentionsHazard(line.text) else { return false }
             // Token equality avoids “milk” matching “milkshake” and “art” matching “pharmacy”.
-            return unrestrictedReading || !targets.isDisjoint(with: Set(tokens(line.text)))
+            return unrestrictedReading || incidentalDiscovery || !targets.isDisjoint(with: Set(tokens(line.text)))
         }.sorted { $0.y == $1.y ? $0.x < $1.x : $0.y < $1.y }.first
     }
 }

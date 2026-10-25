@@ -2,7 +2,7 @@ import Foundation
 
 /// Bounded admission for nonurgent on-device work, not a recognizer or a speech owner.
 /// Capabilities stay available without a feature command. The current general task chooses
-/// useful probes; a silent currency candidate probe also works without a task. No lease
+/// useful probes; short text, saved-product and silent currency discovery also work without a task. No lease
 /// establishes an object's identity, denomination, geometry, safety or presence.
 public struct ContextualCapabilityScheduler: Sendable {
     public enum Capability: String, CaseIterable, Sendable {
@@ -25,11 +25,13 @@ public struct ContextualCapabilityScheduler: Sendable {
         public static let lighting = Goal(rawValue: 1 << 4)
         public static let payment = Goal(rawValue: 1 << 5)
         public static let targetDiscovery = Goal(rawValue: 1 << 6)
+        /// Retained but unclassified task: not idle and not permission for incidental discovery.
+        public static let otherTask = Goal(rawValue: 1 << 7)
 
         /// A deliberately bounded lexical adapter, not general semantic planning.
         /// Unknown goals stay unknown. These words select probes, never camera facts.
         public static func infer(from text: String) -> Goal {
-            guard text.unicodeScalars.count <= 1_200 else { return .none }
+            guard text.unicodeScalars.count <= 1_200 else { return .otherTask }
             let normalized = SpatialClaimGuard.normalizeArabic(text.lowercased())
             let words = Set(normalized.components(separatedBy: CharacterSet.alphanumerics.inverted)
                 .filter { !$0.isEmpty })
@@ -48,7 +50,7 @@ public struct ContextualCapabilityScheduler: Sendable {
             if contains(["light", "lights", "lighting", "brightness", "dark", "ضوء", "نور", "اضاءه", "ظلام"]) { result.insert(.lighting) }
             if contains(["pay", "paying", "payment", "cash", "money", "banknote", "banknotes", "دفع", "ادفع", "نقود", "فلوس", "عمله"]) { result.insert(.payment) }
             if ContextualTextPolicy.supportsTargetDiscovery(text) { result.insert(.targetDiscovery) }
-            return result
+            return result.isEmpty && !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .otherTask : result
         }
     }
 
@@ -233,8 +235,8 @@ public struct ContextualCapabilityScheduler: Sendable {
         switch capability {
         case .currencyProbe: return true
         case .currency: return evidence.banknoteCandidate
-        case .text: return !goal.intersection([.shopping, .dining, .reading, .payment, .targetDiscovery]).isEmpty
-        case .barcode: return !goal.intersection([.shopping, .dining]).isEmpty
+        case .text: return goal.isEmpty || !goal.intersection([.shopping, .dining, .reading, .payment, .targetDiscovery]).isEmpty
+        case .barcode: return goal.isEmpty || !goal.intersection([.shopping, .dining]).isEmpty
         case .light: return evidence.lightAvailable && !goal.intersection([.lighting, .reading, .dressing]).isEmpty
         case .color: return goal.contains(.dressing)
         }

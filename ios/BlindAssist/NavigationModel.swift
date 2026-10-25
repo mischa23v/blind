@@ -1564,7 +1564,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 let category = activeLease.capability == .text ? "signs" : "objects"
                 let candidate = InformationCandidate(key: "contextual:" + key, kind: .discovery, text: text,
                     words: Self.wordCount(text), revision: "\(Int(now / 60))", createdAt: capturedAt,
-                    expiresAt: capturedAt + 2, category: category, requested: false, goalRelevant: !goal.isEmpty)
+                    expiresAt: capturedAt + 2, category: category, requested: false, goalRelevant: !goal.subtracting(.otherTask).isEmpty)
                 if self.deliverCandidate(candidate, speechID: id, nonspatialCapture: activeLease) {
                     self.currentReply = text
                     self.contextualSpeech = (id, activeLease, observed, origin, forward)
@@ -2380,7 +2380,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                           preferences: assistantPreferences, quiet: !ambientDescriptions, offerWindow: 14)
     }
     private func companionMoment(_ now: Double) -> CompanionMoment {
-        CompanionMoment(now: now, goalActive: !assistantDialogue.goal.isEmpty, focusedTaskActive: focusedFaceSearch || currencyActive || currencyRetake.isPending || colorActive || objectSearch != nil || busy || pendingQuestion != nil || lookupInFlight || readingTool != nil,
+        // Connected destinations/returns own attention even when no dialogue goal
+        // was created by the selection UI. Arrival/cancellation releases that focus.
+        let journeyGoalActive = returning || journeys.withConnectedJourney { runtime in
+            runtime.question != nil || runtime.goal.map { $0.status == .active || $0.status == .paused } == true
+        }
+        return CompanionMoment(now: now, goalActive: !assistantDialogue.goal.isEmpty || journeyGoalActive, focusedTaskActive: focusedFaceSearch || currencyActive || currencyRetake.isPending || colorActive || objectSearch != nil || busy || pendingQuestion != nil || lookupInFlight || readingTool != nil,
                         activity: attention.stationary ? .stationary : lastObservation?.trackingNormal == true ? .moving : .unknown,
                         speaking: feedback.speechPriority)
     }

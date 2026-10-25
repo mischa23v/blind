@@ -1,0 +1,59 @@
+{
+  "baseCommit": "9086ca1f644a96bb0073b3cf89e1a36bbb82c0ef",
+  "baseTree": "7202e83f64f673e576342d25d2a0b4cb6615fed5",
+  "paths": [
+    {
+      "path": "BlindCore/Sources/BlindCore/ContextualCapabilityScheduler.swift",
+      "preimage": "2a7fcf258864e57b666277ffa4718d039550e616b781d6c17d4594ffbff4f746",
+      "postimage": "5b0e86959899cc66e0ed13b9ea249c149f30f91dff3914797b33cf271c531f70",
+      "inversePreserved": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ContextualTextPolicy.swift",
+      "preimage": "9ffdbbfe33dd4a1edc0df0c5f9f3da331dc15fd0097db2d4664a5c6c40df9061",
+      "postimage": "4c8d2c38d869d85b2e401c12cae5aea1e6fe5a40aed262812c8f06469c8714b8",
+      "inversePreserved": true
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/ContextualCapabilitySchedulerTests.swift",
+      "preimage": "07bc15a76f4fe2a953030413cac3e853a7f5825757009fd76c239c7e21aaf7b8",
+      "postimage": "b07a3c137ead3b58900fbc7143c14395f378ed452d502851ad5a2a6c1f58bcc3",
+      "inversePreserved": true
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "preimage": "a492b8e4a68c1f5104df9cfde5696f062276a69b38bda44e9477fdc442e16e8d",
+      "postimage": "f8b80fd4dde59f6cf311a8cc7cdee61d9cae6545121b364baa405ddda8460fbd",
+      "inversePreserved": true
+    }
+  ],
+  "nativeHunks": 2,
+  "fullFileOverlay": false,
+  "tests": {
+    "policy": {
+      "passed": 35,
+      "failed": 0
+    },
+    "nativeExtracted": {
+      "passed": 27,
+      "failed": 0
+    },
+    "node": {
+      "passed": 36,
+      "failed": 0,
+      "skipped": 0
+    },
+    "swiftFocused": {
+      "passed": 96,
+      "failed": 0
+    },
+    "nativeParseExit": 0
+  },
+  "limits": [
+    "Native syntax parse is not Apple SDK build",
+    "Native extraction uses lightweight dependencies, not iOS runtime",
+    "No recognition calibration or asset changes",
+    "Periodic OCR/barcode work may delay currency first probe; no latency or battery neutrality claim"
+  ],
+  "reviewer": "Conditional source-clear confirmed before apply; parent aggregate13 pending"
+}

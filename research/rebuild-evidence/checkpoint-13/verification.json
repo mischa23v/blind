@@ -1,0 +1,20 @@
+{
+  "parent": "9086ca1f644a96bb0073b3cf89e1a36bbb82c0ef",
+  "corePassed": 1156,
+  "nodePassed": 395,
+  "failures": 0,
+  "skipped": 0,
+  "scope": "Idle high-confidence OCR and saved-label barcode discovery without a scanner-mode command; retained task and active/paused connected journey attention remain respected. Unsupported retained tasks do not become idle or promote unrelated currency.",
+  "limits": [
+    "No general detector or unknown-product catalog added",
+    "Normal-build model/flag and calibrated Saudi/neutral-color readiness remain open",
+    "No native Vision/audio/device timing or small-model acceptance",
+    "Face evidence is bounded actual CPU inference and existing policy smoke, not held-out recognition accuracy or child/iPhone validation; one independent photo missed a face and scored below unchanged acceptance threshold"
+  ],
+  "sourceHashes": {
+    "BlindCore/Sources/BlindCore/ContextualCapabilityScheduler.swift": "5b0e86959899cc66e0ed13b9ea249c149f30f91dff3914797b33cf271c531f70",
+    "BlindCore/Sources/BlindCore/ContextualTextPolicy.swift": "4c8d2c38d869d85b2e401c12cae5aea1e6fe5a40aed262812c8f06469c8714b8",
+    "BlindCore/Tests/BlindCoreTests/ContextualCapabilitySchedulerTests.swift": "b07a3c137ead3b58900fbc7143c14395f378ed452d502851ad5a2a6c1f58bcc3",
+    "ios/BlindAssist/NavigationModel.swift": "f8b80fd4dde59f6cf311a8cc7cdee61d9cae6545121b364baa405ddda8460fbd"
+  }
+}
