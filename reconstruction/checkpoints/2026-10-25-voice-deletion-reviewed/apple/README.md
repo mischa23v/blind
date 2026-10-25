@@ -33,3 +33,9 @@ node --test reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/
 ```
 
 The four portable tests are not the two pending native actor tests. Preserve these distinctions in reporting.
+
+## First Apple run and scene-host correction
+
+Run `40204850113` at commit `efa9e8ca87f66e1e28e8639e5fc5a7ea01be27f9` passed untouched-source iOS SDK typechecking on Xcode 27.0 / iOS SDK 27.0. The projected XCTest bundle and host built, but actor assertions did not execute: the old blank UIKit host crashed before XCTest bootstrap because this SDK requires UIScene lifecycle adoption. This is a probe-host failure, not an enrollment test pass or enrollment assertion failure.
+
+The generator now uses a blank SwiftUI `App` / `WindowGroup` scene with generated scene/launch manifests. Portable regression checks require that scene lifecycle. No enrollment code, hooks, protection logic or production source changed. The native result remains failed until this corrected host is rerun; an actual actor result is still pending. The original local-validation receipt documents the first candidate; `evidence/scene-host-repair.json` documents this correction.

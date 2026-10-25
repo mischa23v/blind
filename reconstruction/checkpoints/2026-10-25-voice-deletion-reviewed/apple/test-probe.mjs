@@ -24,8 +24,10 @@ test('generator isolates enrollment in test target and leaves production default
     assert.equal(stripped, original);
     assert.equal(await readFile(join(root,'project/VoiceEnrollment.swift'),'utf8'), await readFile(join(root,'source/VoiceEnrollment.swift'),'utf8'));
     assert.doesNotMatch(await readFile(join(root,'project/Host.swift'),'utf8'),/Enrollment|VoiceAuthority|Microphone|AVAudio/);
+    assert.match(await readFile(join(root,'project/Host.swift'),'utf8'),/some Scene[\s\S]*WindowGroup/);
     const pbx = await readFile(join(root,'project/VoiceProbe.xcodeproj/project.pbxproj'),'utf8');
     assert.equal((pbx.match(/VOICE_ENROLLMENT_TESTING/g)||[]).length,1);
+    assert.match(pbx,/INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES/);
     assert.doesNotMatch(pbx,/BlindAssist\.app|XCLocalSwiftPackage|\.mlmodel|BLIND_/);
     const sources = [...pbx.matchAll(/isa = PBXSourcesBuildPhase;[^\n]*files = \(([^)]*)\)/g)].map(m=>m[1].split(',').filter(Boolean).length);
     assert.deepEqual(sources,[1,3]);

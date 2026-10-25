@@ -52,14 +52,10 @@ const projected = input['ProtectedVoiceEnrollmentStore.swift'].replace(anchor, h
 await writeFile(join(out, 'VoiceEnrollment.swift'), input['VoiceEnrollment.swift']);
 await writeFile(join(out, 'ProtectedVoiceEnrollmentStore.swift'), projected);
 await writeFile(join(out, 'ActorTests.swift'), await readFile(join(here, 'ActorTests.swift')));
-await writeFile(join(out, 'Host.swift'), `import UIKit
-@main final class ProbeAppDelegate: UIResponder, UIApplicationDelegate {
-    var window: UIWindow?
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = UIViewController()
-        window?.makeKeyAndVisible()
-        return true
+await writeFile(join(out, 'Host.swift'), `import SwiftUI
+@main struct ProbeHostApp: App {
+    var body: some Scene {
+        WindowGroup { Color.clear }
     }
 }
 `);
@@ -78,7 +74,7 @@ const config = (name, settings) => {
   const c = add(name+'-debug', `isa = XCBuildConfiguration; name = Debug; buildSettings = { ${settings} };`);
   return add(name+'-configs', `isa = XCConfigurationList; buildConfigurations = (${c},); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug;`);
 };
-const hostConfig = config('host', common + ' PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.voiceprobe.host;');
+const hostConfig = config('host', common + ' PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.voiceprobe.host; INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES; INFOPLIST_KEY_UILaunchScreen_Generation = YES;');
 const testConfig = config('test', common + ' PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.voiceprobe.tests; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) VOICE_ENROLLMENT_TESTING"; TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VoiceProbeHost.app/VoiceProbeHost"; BUNDLE_LOADER = "$(TEST_HOST)";');
 const projectConfig = config('project', '');
 const sources = (name, files) => add(name+'-sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${files.map(f=>builds[f]).join(',')},); runOnlyForDeploymentPostprocessing = 0;`);

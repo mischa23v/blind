@@ -1,0 +1,24 @@
+{
+  "base": "efa9e8ca87f66e1e28e8639e5fc5a7ea01be27f9",
+  "firstAppleRun": {
+    "id": 40204850113,
+    "job": 121203509241,
+    "SDKTypecheck": "passed",
+    "actorExecution": "not executed; host crashed before XCTest bootstrap",
+    "conclusion": "failure",
+    "reason": "UIScene lifecycle required by selected SDK"
+  },
+  "repair": "Only blank host uses SwiftUI scene and generated scene/launch manifests; production sources and actor expectations unchanged",
+  "localValidation": {
+    "portableTests": "4 passed",
+    "projectedSwiftSyntax": "passed, not SDK compilation",
+    "nativeRetest": "pending"
+  },
+  "sha256": {
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/generate-project.mjs": "452c7c0e57b059fcb751adbb7b0649606e789e71ab5c29ce87085ea1d4e8254b",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/test-probe.mjs": "f4387c0c5dac6cd1c2f3495b055c8ac918d1719d3b1d7f4a999d92a890effab0",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/README.md": "af253fcfc0ad8cb1c784dd38175313690ac181894977de4a908d4f2b645cb5f4",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/evidence/first-apple-failure.log": "eb5f5bfd3dcb53f3c589b81cd66d12d23cd4f2a15ba669d96b5ae53024b9c684",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/evidence/scene-host-static-tests.log": "4b3957e8e3f7dfc83f1efacb9fa498ecbf0150f923ff5d28ee520898c3de3e37"
+  }
+}

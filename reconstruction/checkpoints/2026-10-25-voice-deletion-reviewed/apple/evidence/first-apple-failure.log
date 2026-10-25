@@ -1,0 +1,10 @@
+2026-10-25T15:00:25.5057380Z Xcode 27.0
+2026-10-25T15:00:25.5059040Z Build version 27A266a
+2026-10-25T15:00:34.2811380Z PASS: standalone iOS SDK typecheck only; no actor execution, app integration or device acceptance
+2026-10-25T15:00:34.6100480Z Xcode 27.0
+2026-10-25T15:00:34.6101410Z Build version 27A266a
+2026-10-25T15:00:37.0134170Z PASS: standalone iOS SDK typecheck only; no actor execution, app integration or device acceptance
+2026-10-25T15:08:51.6830200Z 	VoiceProbeHost (57466) encountered an error (Early unexpected exit, operation never finished bootstrapping - no restart will be attempted. (Underlying Error: The test runner crashed before establishing connection: VoiceProbeHost))
+2026-10-25T15:08:52.6656870Z 2026-10-25 15:05:19.380197+0000 VoiceProbeHost[57466:136944] failure in void _UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption(void)_block_invoke (UIApplication_RuntimeIssues.m:106) : Application failed to launch: UIScene life cycle is required for apps built with this SDK. See "Transitioning to the UIKit scene-based life cycle" in the UIKit documentation for more information on migration.
+2026-10-25T15:08:52.7742790Z 	VoiceProbeHost (57466) encountered an error (Early unexpected exit, operation never finished bootstrapping - no restart will be attempted. (Underlying Error: The test runner crashed before establishing connection: VoiceProbeHost))
+2026-10-25T15:08:58.3515370Z ##[error]Process completed with exit code 65.
