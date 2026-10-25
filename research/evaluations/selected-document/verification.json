@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "scope": "Selected PDF file page text-layer quotation; not exact-model manual/appliance guidance",
+  "parent": "de0da00424b5dd3cae9e98e67894eddcffc74447",
+  "portable": {
+    "core": {
+      "focused_tests": 28,
+      "full_tests": 1340,
+      "failures": 0,
+      "skips": 0,
+      "core_full_input_hashes": 270,
+      "full_input_hashes_unchanged_before_and_after_runs": true,
+      "prebuild_swift_hashes_unchanged": true,
+      "native_sdk_or_audio_tested": false
+    },
+    "node": {
+      "files": 87,
+      "counts": {
+        "tests": 550,
+        "pass": 550,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "frozenStagedFileCount": 1164,
+      "frozenInputsUnchanged": true
+    },
+    "controllerProjection": {
+      "assertions": 318,
+      "failures": 0,
+      "substitutions": [
+        "PDF acquisition",
+        "audio",
+        "session",
+        "budget"
+      ],
+      "nativeAcceptance": false
+    },
+    "nativeSourceChecks": {
+      "focusedNodeChecks": 18,
+      "failures": 0,
+      "skips": 0
+    },
+    "syntaxParse": "Changed native sources only; not Apple SDK typecheck"
+  },
+  "retainedEarlierCuts": {
+    "prePoliteAggregate": {
+      "core": 1336,
+      "node": 550,
+      "passed": 550,
+      "failed": 0,
+      "notFinalSource": true
+    },
+    "politeParserBefore": {
+      "assertions": 290,
+      "failed": 68
+    },
+    "firstAggregate": {
+      "files": 87,
+      "tests": 542,
+      "passed": 531,
+      "failed": 11,
+      "skipped": 0
+    },
+    "preTakeoverAggregate": {
+      "files": 87,
+      "tests": 549,
+      "passed": 549,
+      "failed": 0,
+      "skipped": 0,
+      "notFinalSource": true
+    },
+    "invalidPageBefore": {
+      "assertions": 99,
+      "failed": 18
+    },
+    "displayBefore": {
+      "assertions": 108,
+      "failed": 4
+    },
+    "sourceTakeoverBefore": {
+      "assertions": 190,
+      "failed": 12
+    },
+    "otherRetainedFailures": [
+      "one invalid-page wording-only fixture expectation",
+      "attention source-contract ordering and narrow projection fixture seams"
+    ]
+  },
+  "unchangedDeadlineWrappers": [
+    {
+      "method": "public static func prepare(",
+      "unchanged": true,
+      "sha256": "365db9ff0bc8837995de5af8a99787f43f9d0cb3990e8c6fbdbc69d020313c31"
+    },
+    {
+      "method": "@discardableResult public mutating func revalidate(",
+      "unchanged": true,
+      "sha256": "fde97bd39816ef925d8fc6202fd33a5d59e8ac428cc53f5e2f76a7928d0a89a1"
+    }
+  ],
+  "sourceReview": "Independent source/privacy/lifetime review approved; original manual and selected-photo deadline wrappers remain unchanged.",
+  "native": {
+    "actualByteFixtureTestsPrepared": 14,
+    "AppleSDKTypecheck": "pending",
+    "PDFKitExecution": "pending",
+    "realSystemPickerSecurityGrant": "pending",
+    "actualSpeechAndVoiceOver": "pending",
+    "participantGoalAcceptance": "pending"
+  },
+  "tracker": {
+    "R39": "partial",
+    "R40": "partial"
+  },
+  "limits": [
+    "No model interpretation or exact appliance model binding",
+    "Text layers can omit diagrams, tables, columns, reading order and qualifiers",
+    "No automatic next page, background persistence, new service or permission bypass"
+  ]
+}

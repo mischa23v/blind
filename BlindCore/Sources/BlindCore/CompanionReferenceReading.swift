@@ -7,7 +7,7 @@ import NaturalLanguage
 /// never identifies a manual. Digest is the adapter's SHA-256 of the selected
 /// source bytes, not a digest guessed or calculated from an answer by the model.
 public struct CompanionReferenceIdentity: Equatable, Sendable {
-    public enum Media: String, Sendable { case manual, capturedText, selectedPhoto }
+    public enum Media: String, Sendable { case manual, capturedText, selectedPhoto, selectedDocument }
     public let sourceID: UUID
     public let revision: UUID
     public let sha256: String
@@ -18,9 +18,10 @@ public struct CompanionReferenceIdentity: Equatable, Sendable {
         self.media = media; self.exactModel = exactModel
     }
     public var evidenceSource: String { "local-reference:\(sourceID.uuidString):\(revision.uuidString)" }
-    fileprivate var isValid: Bool {
+    var isValid: Bool {
         guard sha256.count == 64,
               sha256.unicodeScalars.allSatisfy({ "0123456789abcdef".unicodeScalars.contains($0) }) else { return false }
+        guard media != .selectedDocument || exactModel == nil else { return false }
         if let model = exactModel {
             guard !model.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, model.utf8.count <= 480,
                   !model.unicodeScalars.contains(where: {
@@ -292,7 +293,7 @@ public struct CompanionReferenceReading: Sendable {
             haystack[start..<(start + needle.count)].elementsEqual(needle)
         }
     }
-    private static func slices(_ text: String, wordLimit: Int) -> [String] {
+    fileprivate static func slices(_ text: String, wordLimit: Int) -> [String] {
         let tokens = wordStarts(text)
         guard !tokens.isEmpty else { return [text] }
         var result: [String] = [], start = text.startIndex
@@ -301,6 +302,28 @@ public struct CompanionReferenceReading: Sendable {
             result.append(String(text[start..<end])); start = end
         }
         result.append(String(text[start..<text.endIndex]))
+        return result
+    }
+}
+
+/// Pure bounded text partitioning only: no source, session, request or playback
+/// authority is returned. Existing readers retain their own unchanged deadlines.
+public enum BoundedReferenceChunkPlan {
+    public struct Slice: Equatable, Sendable {
+        public let original: String
+        public let attributed: String
+    }
+    public static func make(text: String, prefix: String, suffix: String = "»",
+                            maximumUTF8Bytes: Int, phraseWordLimit: Int = 30) -> [Slice]? {
+        guard maximumUTF8Bytes > 0, maximumUTF8Bytes <= CompanionReferenceReading.maximumSourceUTF8Bytes,
+              !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              text.utf8.count <= maximumUTF8Bytes, prefix.utf8.count <= 256, suffix.utf8.count <= 32,
+              (10...30).contains(phraseWordLimit) else { return nil }
+        let bodyLimit = phraseWordLimit - CompanionReferenceReading.wordCount(prefix + suffix)
+        guard bodyLimit > 0 else { return nil }
+        let slices = CompanionReferenceReading.slices(text, wordLimit: bodyLimit)
+        let result = slices.map { Slice(original: $0, attributed: prefix + $0 + suffix) }
+        guard !result.isEmpty, result.allSatisfy({ CompanionReferenceReading.wordCount($0.attributed) <= phraseWordLimit }) else { return nil }
         return result
     }
 }

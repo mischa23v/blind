@@ -35,6 +35,8 @@ private struct CompanionControlsView: View {
     @ObservedObject var model: NavigationModel
     @State private var typedMessage = ""
     @State private var writing = false
+    @State private var pendingTypedSubmission: (text: String, generation: UInt64)?
+    @State private var pdfPage = 1
     private func t(_ en: String, _ ar: String) -> String { model.arabic ? ar : en }
 
     var body: some View {
@@ -81,8 +83,25 @@ private struct CompanionControlsView: View {
                     }
                 }
                 // Alternative access remains available when speech cannot be used.
-                Button(t("Write a message", "اكتب رسالة")) { writing = true }
+                Button(t("Write a message", "اكتب رسالة")) { pendingTypedSubmission = nil; writing = true }
                     .buttonStyle(.bordered).accessibilityIdentifier("write-message")
+                VStack(alignment: .leading, spacing: 12) {
+                    Button(t("Choose a PDF", "اختر ملف PDF"), action: model.chooseSelectedDocument)
+                        .buttonStyle(.bordered).accessibilityIdentifier("choose-selected-pdf")
+                    if let count = model.selectedDocumentPageCount {
+                        Stepper(t("PDF file page \(pdfPage) of \(count)", "صفحة ملف PDF \(pdfPage) من \(count)"),
+                                value: $pdfPage, in: 1...count)
+                            .accessibilityIdentifier("selected-pdf-page-number")
+                        Button(t("Read PDF page \(pdfPage)", "اقرأ صفحة PDF \(pdfPage)")) { model.readSelectedDocumentPage(pdfPage) }
+                            .buttonStyle(.bordered).accessibilityIdentifier("read-selected-pdf-page")
+                        Button(t("Forget PDF", "انس ملف PDF"), action: model.forgetSelectedDocument)
+                            .buttonStyle(.bordered).accessibilityIdentifier("forget-selected-pdf")
+                    }
+                    Text(t("Choose a file, then request one page. PDF file page numbers may differ from printed page labels. Text only: diagrams, tables, columns, reading order and qualifiers may be missing.",
+                           "اختر ملفاً ثم اطلب صفحة واحدة. قد تختلف أرقام صفحات الملف عن الأرقام المطبوعة. النص فقط: قد تُفقد الرسوم والجداول والأعمدة وترتيب القراءة والشروط."))
+                        .font(.footnote).fixedSize(horizontal: false, vertical: true)
+                }
+                .onChange(of: model.selectedDocumentPageCount) { _, _ in pdfPage = 1 }
                 HomeToolButtons(model: model)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -90,13 +109,23 @@ private struct CompanionControlsView: View {
         }
         .navigationTitle(t("Conversation controls", "أدوات المحادثة"))
         .accessibilityAction(.magicTap) { model.repeatHomeInformation() }
-        .sheet(isPresented: $writing) {
+        .sheet(isPresented: $writing, onDismiss: {
+            // Trusted typed submission follows the actual typing-sheet dismissal,
+            // so a requested system picker never competes with that presentation.
+            // This is NOT the PDF picker's success/cancellation lifecycle.
+            guard let pending = pendingTypedSubmission else { return }
+            pendingTypedSubmission = nil
+            guard model.assistantSession.foregroundActive,
+                  model.assistantSession.generation == pending.generation else { return }
+            model.receiveCompanionUtterance(pending.text)
+        }) {
             NavigationStack {
                 Form {
                     TextField(t("Your message", "رسالتك"), text: $typedMessage, axis: .vertical)
                         .accessibilityIdentifier("companion-message")
                     Button(t("Send", "إرسال")) {
-                        model.receiveCompanionUtterance(typedMessage)
+                        guard case nil = pendingTypedSubmission else { return }
+                        pendingTypedSubmission = (typedMessage, model.assistantSession.generation)
                         typedMessage = ""; writing = false
                     }
                     .disabled(typedMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -120,7 +149,7 @@ private struct CompanionControlsView: View {
         if model.simulation {
             Button(t("End practice", "أنهِ التدريب")) { model.endPractice() }
         }
-        Button(t("Write a message", "اكتب رسالة")) { writing = true }
+        Button(t("Write a message", "اكتب رسالة")) { pendingTypedSubmission = nil; writing = true }
     }
 
 }
@@ -270,6 +299,12 @@ struct AssistantToolsView: View {
         #endif
         .sheet(isPresented: $model.showPhotoReference) {
             NavigationStack { ExplorePictureView(model: model) }
+        }
+        .sheet(item: $model.selectedDocumentPickerRequest) { owner in
+            SelectedDocumentPicker(ownerID: owner.id,
+                onPicked: { id, url in model.selectedDocumentPickerPicked(id, url: url) },
+                onCancelled: model.selectedDocumentPickerCancelled)
+                .interactiveDismissDisabled()
         }
         .onAppear { relayToken = TokenStore.read() }
     }

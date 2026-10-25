@@ -20,6 +20,6 @@ test('extracted captured-page review controller: lifetime, cancellation, budget,
   assert.equal(build.status,0,build.stdout+build.stderr);
   const run=spawnSync(binary,[],{encoding:'utf8',timeout:30000});
   assert.equal(run.status,0,run.stdout+run.stderr);
-  assert.match(run.stdout,/Executed 9 tests, with 0 failures/);
+  assert.match(run.stdout,/Executed 10 tests, with 0 failures/);
  } finally { rmSync(dir,{recursive:true,force:true}); }
 });

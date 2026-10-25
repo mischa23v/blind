@@ -1,3 +1,11 @@
+## 2026-10-25 — Selected-PDF page reader source increment
+
+Implemented a bounded, private selected-file page quotation lane in existing controls, separate from exact-model manuals and existing photo/camera contracts. Selection, page request, native resource lease and real speech receipt are separately owned. Reviewed direct polite commands and one terminal punctuation mark retain the same trusted/private gates. Invalid requests stop old reading; valid-source corrections need no new picker. See [scope and evidence](research/evaluations/selected-document/README.md).
+
+Remaining: Apple SDK/PDFKit execution of the fourteen real-byte fixture tests; real picker security-grant/cancel races; actual speech/VoiceOver, minimum-budget interruption and supervised useful-reading acceptance. Exact-model manual binding, interpretation, visual completeness and appliance control remain unimplemented/unvalidated. **Do not mark R39 or R40 complete from portable/source checks.**
+
+---
+
 ## Explicit menu-reading alias increment — 2026-10-25
 
 - [x] Exact raw whole-request English/Arabic imperative and ordinary polite aliases reuse existing captured-document acquisition/playback/review; no semantic menu lane or new speech.

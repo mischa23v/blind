@@ -28,6 +28,14 @@ final class Sink {
  func stopInformation(announceCancellation: Bool) -> Bool { true }
 }
 final class Witness {
+ // Document dispatch is outside this captured-page witness. Real Core owner,
+ // narrow picker/display placeholders and a counted guidance seam preserve the
+ // extracted production Repeat priority without claiming PDF/audio execution.
+ var selectedDocument = SelectedDocumentReference()
+ var selectedDocumentImportOwner: UUID?
+ var selectedDocumentDisplay: String?
+ var documentRepeats = 0
+ func repeatSelectedDocumentGuidance() { documentRepeats += 1 }
  var capturedText = CapturedTextReference()
  var capturedTextSpeechIDs = Set<UUID>()
  var capturedTextReviewGuidanceEligible = true
@@ -174,6 +182,21 @@ final class NativeReviewWitnessTests: XCTestCase {
   w.companion.release = 0; w.cancelCapturedTextBudgetWake(); w.revalidateCapturedText()
   XCTAssertNotNil(w.capturedText.pending)
  }
+ func testDocumentRepeatPriorityDoesNotFallThroughToCapturedOrPersistedHistory() {
+  for mode in 0..<3 {
+   let w = Witness(); w.install(); w.narrationHistory = [1]
+   if mode == 0 {
+    let identity = CompanionReferenceIdentity(sourceID:UUID(),revision:UUID(),sha256:String(repeating:"a",count:64),media:.selectedDocument)
+    XCTAssertNotNil(w.selectedDocument.select(identity:identity,pageCount:1,generation:3,now:ProcessInfo.processInfo.systemUptime))
+   } else if mode == 1 { w.selectedDocumentImportOwner = UUID() }
+   else { w.selectedDocumentDisplay = "Fixed PDF guidance" }
+   let capturedOwner = w.capturedText.selection
+   w.repeatHomeInformation()
+   XCTAssertEqual(w.documentRepeats,1); XCTAssertEqual(w.genericRepeats,0)
+   XCTAssertEqual(w.capturedText.selection,capturedOwner); XCTAssertNil(w.capturedText.pending)
+   XCTAssertTrue(w.plainReplies.isEmpty)
+  }
+ }
  func testGuidanceHasOneOpportunityNotOneTipPerReview() {
   let w = Witness(); w.install(); w.completePage()
   XCTAssertNotNil(w.capturedTextReviewNotice); XCTAssertFalse(w.capturedTextReviewGuidanceEligible)
@@ -203,6 +226,7 @@ XCTMain([testCase([
 ("testUntrustedInputCannotReadOrForgetAndUnstartedCannotRepeat",NativeReviewWitnessTests.testUntrustedInputCannotReadOrForgetAndUnstartedCannotRepeat),
 ("testContextualRepeatControlAndGenericFallback",NativeReviewWitnessTests.testContextualRepeatControlAndGenericFallback),
 ("testEarlyRepeatPreservesBudgetWakeWhenStatusDenied",NativeReviewWitnessTests.testEarlyRepeatPreservesBudgetWakeWhenStatusDenied),
+("testDocumentRepeatPriorityDoesNotFallThroughToCapturedOrPersistedHistory",NativeReviewWitnessTests.testDocumentRepeatPriorityDoesNotFallThroughToCapturedOrPersistedHistory),
 ("testGuidanceHasOneOpportunityNotOneTipPerReview",NativeReviewWitnessTests.testGuidanceHasOneOpportunityNotOneTipPerReview)
 ])])
 '''
@@ -216,7 +240,7 @@ evidence=evidence[:a]+evidence[b:]
 reading=(core/'ReadingTools.swift').read_text()
 a=reading.index('public enum ReadingTool:');b=reading.index('public enum ReadingToolCommand:',a)
 parts=[evidence,reading[a:b], 'enum InformationCandidate { enum Kind { case answer } }']
-for file in ['CapturedTextReference.swift','CapturedTextReviewCommand.swift','CompanionReferenceReading.swift',
+for file in ['SelectedDocumentReference.swift','CapturedTextReference.swift','CapturedTextReviewCommand.swift','CompanionReferenceReading.swift',
              'NarrationDelivery.swift','SpeechPriority.swift','SpeechDeliveryLedger.swift','CommandAuthority.swift','SpatialClaimGuard.swift']:
     parts.append((core/file).read_text())
 output.write_text('\n'.join(parts)+header+tests)

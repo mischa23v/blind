@@ -1,3 +1,13 @@
+## 2026-10-25 — Local selected-PDF page quotation
+
+The existing conversation controls now offer Choose a PDF, one-based file-page selection, Read and Forget, with equivalent trusted English/Arabic typed commands. A bounded whole-request grammar also accepts terminal sentence punctuation and reviewed direct polite English/Arabic commands, not general natural-language intent. Selection is separate from reading. One bounded immutable source is hashed from its actual bytes and read locally through PDFKit's accessibility-permitted text layer; no PDF content, filename, path or hash enters models, histories, stores or diagnostics.
+
+A separate always-private owner preserves the original 60-second page acquisition/install deadline, then permits finite installed quotation through ordinary budget waits. Existing manual/photo deadlines remain unchanged. Exact callbacks own completion; lifecycle/privacy/hazard interruption cannot revive old work. Correctable page errors retire only page work while retaining a valid file for an explicit retry. Display revisions protect newer identical-text replies. No exact-model appliance binding, control advice, automatic next page or hands-free authorization is added.
+
+Portable results, original failures, independent review and native limits are recorded in the [selected-PDF receipt](research/evaluations/selected-document/README.md) and [verification](research/evaluations/selected-document/verification.json). Actual Apple PDFKit/system-picker/audio/VoiceOver and participant acceptance remain pending. **R39/R40 remain partial.**
+
+---
+
 ## 2026-10-25 — Explicit menu-reading aliases (portable source increment)
 
 Exact imperative and ordinary polite English/Arabic menu-reading requests now select the existing captured-document lane through trusted task routing. Output retains uncertain captured-text framing and existing same-source review/private/ordinary-budget gates. No menu interpretation, item/price/allergen association, complete coverage or real-world completion claim is added; no new model/dependency/persistence.

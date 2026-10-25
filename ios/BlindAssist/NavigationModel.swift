@@ -52,6 +52,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published private(set) var assistantSession = AssistantSession() {
         didSet {
             if oldValue.generation != assistantSession.generation { lastCapturedTextPlaybackReceipt = nil }
+            if oldValue.generation != assistantSession.generation { clearSelectedDocument() }
         }
     }
     @Published var backgroundConversation = UserDefaults.standard.bool(forKey: "background-conversation") {
@@ -176,6 +177,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         didSet {
             guard oldValue != assistantAudience else { return }
             UserDefaults.standard.set(assistantAudience.rawValue, forKey: "assistant-audience")
+            clearSelectedDocument()
             assistantSession.invalidate(); cancelDescription()
             _ = feedback.stopInformation(announceCancellation: false)
         }
@@ -191,11 +193,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published private(set) var calibrationProgress = 0.0
     @Published private(set) var message = ""
     @Published private(set) var wearableStatus = "Disconnected"
-    @Published private(set) var sceneAnswer = ""
+    @Published private(set) var sceneAnswer = "" { didSet { sceneAnswerRevision = UUID() } }
+    private var sceneAnswerRevision = UUID()
     /// What the assistant last said or wrote: the only content of the main screen, so VoiceOver
     /// reads the reply and nothing else.
     // Child Home shows settled assistant replies only, never status, hazards or stream fragments.
-    @Published private(set) var currentReply = ""
+    @Published private(set) var currentReply = "" { didSet { currentReplyRevision = UUID() } }
+    private var currentReplyRevision = UUID()
     @Published private(set) var busy = false
     @Published private(set) var attentionMode: AttentionMode = .moving
     @Published private(set) var returnStatus = ""
@@ -217,7 +221,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published var wordsPerMinute = max(30, min(1800, UserDefaults.standard.object(forKey: "narration-words-per-minute") as? Int ?? 180)) {
         didSet {
             UserDefaults.standard.set(wordsPerMinute, forKey: "narration-words-per-minute")
-            if (usesCapturedText || capturedText.source != nil) && !currencyActive && !colorActive && !currencyRetake.isPending {
+            if selectedDocument.selection != nil {
+                cancelSelectedDocumentBudgetWake(); speakNextSelectedDocumentPhrase()
+            } else if (usesCapturedText || capturedText.source != nil) && !currencyActive && !colorActive && !currencyRetake.isPending {
                 capturedTextPacingChanged()
             } else { cancelDescription() }
         }
@@ -242,7 +248,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published private(set) var serviceStatus = ""
     @Published private(set) var localImageStatus = ""
     @Published var ambientDescriptions = UserDefaults.standard.object(forKey: "ambient-descriptions") as? Bool ?? true {
-        didSet { UserDefaults.standard.set(ambientDescriptions, forKey: "ambient-descriptions"); if !ambientDescriptions { if questionIsAutomatic { cancelDescription() }; feedback.interruptAmbient() } }
+        didSet { UserDefaults.standard.set(ambientDescriptions, forKey: "ambient-descriptions"); if !ambientDescriptions { clearSelectedDocument(); if questionIsAutomatic { cancelDescription() }; feedback.interruptAmbient() } }
     }
     @Published var buildPrivateMap = UserDefaults.standard.bool(forKey: "private-mapping") {
         didSet { UserDefaults.standard.set(buildPrivateMap, forKey: "private-mapping") }
@@ -515,6 +521,25 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published var photoPickerRequested = false
     private var photoViewID: UUID?
     private var photoQuestion = "Describe the selected photo"
+    struct DocumentPickerPresentation: Identifiable { let id: UUID; let generation: UInt64 }
+    @Published var selectedDocumentPickerRequest: DocumentPickerPresentation?
+    private var selectedDocument = SelectedDocumentReference()
+    private var selectedPDF: SelectedDocumentPDFAdapter.Selection?
+    private var selectedDocumentImportOwner: DocumentPickerPresentation?
+    private var selectedDocumentRequestID: UUID?
+    // Native synchronous PDFKit work owns this lease until it actually returns.
+    // Revoking selection ownership must NEVER release this resource lease.
+    private var selectedDocumentNativeLease: UUID?
+    private var selectedDocumentTask: Task<Void, Never>?
+    private var selectedDocumentExpiry: Task<Void, Never>?
+    private var selectedDocumentBudgetWake: Task<Void, Never>?
+    private var selectedDocumentBudgetWakeAt: Double?
+    private var selectedDocumentSpeechIDs = Set<UUID>()
+    private var selectedDocumentDisplay: String?
+    private var selectedDocumentDisplayRevisions: (reply: UUID, scene: UUID)?
+    private var documentAttentionOwned: Bool {
+        selectedDocumentImportOwner != nil || selectedDocument.ownsAttention
+    }
     private var selectedPhoto = SelectedPhotoReference()
     // Retained until actual transfer/decode/Vision completion, even after UI
     // cancellation. Never clear this lease merely because a result is stale.
@@ -687,15 +712,23 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             let at = Date()
             self.enqueueNarration { try await $0.finish(id: id, outcome: outcome, at: at) }
         }
-        feedback.requestedSpeechPermission = { [weak self] id, text in (self?.selectedPhotoSpeechPermission(id: id, text: text) ?? false) &&
+        feedback.requestedSpeechPermission = { [weak self] id, text in (self?.selectedDocumentSpeechPermission(id: id, text: text) ?? false) && (self?.selectedPhotoSpeechPermission(id: id, text: text) ?? false) &&
             (self?.boardingSpeechPermission(id: id, text: text) ?? false) &&
             (self?.capturedTextSpeechPermission(id: id, text: text) ?? false) }
         feedback.onRequestedSpeechStarted = { [weak self] id, text in
-            guard let self, let context = self.capturedTextContext() else { return }
+            guard let self else { return }
+            if self.selectedDocumentSpeechIDs.contains(id) {
+                if let context = self.selectedDocumentContext(), self.selectedDocument.started(id: id, text: text, context: context) {
+                    self.showSelectedDocumentReply(text)
+                }
+                return
+            }
+            guard let context = self.capturedTextContext() else { return }
             _ = self.capturedText.started(id: id, text: text, context: context)
         }
         feedback.onRequestedSpeechFinished = { [weak self] id, text, outcome in
             guard let self else { return }
+            if self.finishSelectedDocumentSpeech(id: id, text: text, outcome: outcome) { return }
             if self.finishCapturedTextSpeech(id: id, text: text, outcome: outcome) { return }
             if self.finishBoardingSpeech(id: id, text: text, outcome: outcome) { return }
             if self.finishSelectedPhotoSpeech(id: id, text: text, outcome: outcome) { return }
@@ -755,6 +788,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             self.drainConversationSpeech()
         }
         feedback.onIdle = { [weak self] in
+            self?.speakNextSelectedDocumentPhrase()
             self?.drainConversationSpeech()
             self?.speakNextSelectedPhotoPhrase()
             self?.resumePendingQuestion()
@@ -829,6 +863,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             guard let self else { return }
             // Headphone removal must not move a private reply onto the speaker.
             // Explicit Start/Unmute is required; do not announce this transition.
+            self.clearSelectedDocument()
             self.assistantSession.losePrivateAudioRoute()
             self.spatialRouteOutput.retire()
             self.feedback.stopForPrivateRouteLoss()
@@ -843,6 +878,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         voice.onReadyForReply = { [weak self] in
             guard let self, self.assistantSession.shouldListen else { return }
+            self.speakNextSelectedDocumentPhrase()
             self.drainConversationSpeech()
         }
         voice.onFinished = { [weak self] turn in
@@ -960,6 +996,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     func stop() {
         voiceRoomScan.cancel()
+        clearSelectedDocument()
         voice.cancel()
         cancelDescription()
         stopCameraMonitoring()
@@ -1208,7 +1245,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         updateTrackedTarget()
         updateReadingTool(frame: frame)
         updateBackgroundPerception(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal)
-        if ambientDescriptions, !returning, objectSearch == nil, trackedTarget == nil, readingTool == nil, !lookupInFlight, !voice.awaitingUtterance, lastFrameWallTime - lastAmbientAttempt >= 4,
+        if ambientDescriptions, !documentAttentionOwned, !returning, objectSearch == nil, trackedTarget == nil, readingTool == nil, !lookupInFlight, !voice.awaitingUtterance, lastFrameWallTime - lastAmbientAttempt >= 4,
            attention.permitsAmbient(detail: detail, urgent: detection.hazard != .observing, now: lastFrameWallTime) {
             lastAmbientAttempt = lastFrameWallTime
             readScene(cloud: false, automatic: true)
@@ -1364,6 +1401,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         revalidateContextualSpeech()
         revalidateBoardingSpeech()
         revalidateCapturedText()
+        revalidateSelectedDocumentOwnership() // validation only; no frame-based dispatch
         revalidateConversationSpeech()
         revalidateRequestedColorSpeech()
         if detection.hazard != .observing { feedback.interruptAmbient() }
@@ -1593,7 +1631,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             sessionActive: assistantSession.mayRespond, foregroundActive: assistantSession.foregroundActive,
             stationary: attention.stationary, hazardActive: detection.hazard.isUrgent,
             listening: voice.awaitingUtterance,
-            busy: busy || semanticReadID != nil || contextualOutstanding.keys.contains(where: { $0 != contextualTaskLease?.id }) || passiveObservationInFlight || readingTool != nil || currencyActive || colorActive || lookupInFlight ||
+            busy: documentAttentionOwned || busy || semanticReadID != nil || contextualOutstanding.keys.contains(where: { $0 != contextualTaskLease?.id }) || passiveObservationInFlight || readingTool != nil || currencyActive || colorActive || lookupInFlight ||
                 places.scanning || feedback.speechPriority != nil || focusedFaceSearch)
     }
     private func contextualCaptureAllowed(_ lease: ContextualCapabilityScheduler.Lease, playback: Bool = false) -> Bool {
@@ -2233,6 +2271,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // Privacy rule (AGENTS.md): camera pictures never leave the phone in the app build.
         let cloud = false
         #endif
+        if !automatic, routeSelectedDocumentCommand(question, origin: .trustedInterface) { return }
+        if !automatic { clearSelectedDocument() }
         if !automatic, routeCapturedTextReview(question, origin: .trustedInterface) { return }
         if !automatic, capturedText.source != nil { stopReadingTool(announce: false) }
         if !automatic, routeHistoricalLocationInquiry(question, origin: .trustedInterface) { return }
@@ -2245,6 +2285,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if !automatic, routeReadingToolCommand(question) { return }
         // Anything else the child says ends a running reading tool, so two things never talk at once.
         if !automatic, readingTool != nil { stopReadingTool(announce: false) }
+        if automatic, documentAttentionOwned { return }
         if automatic, currencyActive || colorActive || readingTool != nil || capturedText.source != nil || currencyRetake.isPending { return }
         #if BLIND_FAMILIAR_PEOPLE
         if !automatic, routeFamiliarPeopleCommand(question) { return }
@@ -2520,7 +2561,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// already-admitted path so the same words are never charged twice here.
     @discardableResult private func deliverCandidate(_ candidate: InformationCandidate,
         alreadyAdmitted: Bool = false, narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil, nonspatialCapture: ContextualCapabilityScheduler.Lease? = nil, verifiedFamiliarCapture: Bool = false, spatialRouteID: UUID? = nil) -> Bool {
-        let privateReference = speechID.map { selectedPhotoSpeechIDs.contains($0) || boardingSpeechIDs.contains($0) || capturedTextSpeechIDs.contains($0) } ?? false
+        let privateReference = speechID.map { selectedPhotoSpeechIDs.contains($0) || boardingSpeechIDs.contains($0) || capturedTextSpeechIDs.contains($0) || selectedDocumentSpeechIDs.contains($0) } ?? false
         #if DEBUG
         var debugDelivered = false
         defer {
@@ -2537,6 +2578,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let now = ProcessInfo.processInfo.systemUptime
         guard candidate.createdAt <= now, now <= candidate.expiresAt else { return false }
         if candidate.kind == .hazard {
+            clearSelectedDocument()
             cancelDescription(); companion.withdrawOffer(); companionOffer = nil
             roomOfferCandidate = nil; roomQuestionCandidate = nil
             #if BLIND_FAMILIAR_PEOPLE
@@ -2634,7 +2676,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let journeyGoalActive = returning || journeys.withConnectedJourney { runtime in
             runtime.question != nil || runtime.goal.map { $0.status == .active || $0.status == .paused } == true
         }
-        return CompanionMoment(now: now, goalActive: !assistantDialogue.goal.isEmpty || journeyGoalActive, focusedTaskActive: focusedFaceSearch || currencyActive || currencyRetake.isPending || colorActive || objectSearch != nil || busy || pendingQuestion != nil || lookupInFlight || readingTool != nil,
+        return CompanionMoment(now: now, goalActive: !assistantDialogue.goal.isEmpty || journeyGoalActive, focusedTaskActive: focusedFaceSearch || currencyActive || currencyRetake.isPending || colorActive || objectSearch != nil || busy || pendingQuestion != nil || lookupInFlight || readingTool != nil || documentAttentionOwned,
                         activity: attention.stationary ? .stationary : lastObservation?.trackingNormal == true ? .moving : .unknown,
                         speaking: feedback.speechPriority)
     }
@@ -2703,6 +2745,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func setAssistantObjective() {
+        clearSelectedDocument()
         heldSearchIntent.cancel(); interruptedSearch.cancel()
         try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
         #if BLIND_FAMILIAR_PEOPLE
@@ -2714,6 +2757,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         companionWorkingState.changeGoal(assistantDialogue.goal, originalRequest: objectiveDraft); persistWorkingState()
     }
     private func retireHeldSearchForPrivacyDeletion() {
+        clearSelectedDocument()
         purgeCapturedTextPlayback()
         heldSearchIntent.cancel(); interruptedSearch.cancel()
         objectSearch?.cancel(); objectSearch = nil; trackedTarget = nil
@@ -2965,6 +3009,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func clearNarrationHistory() {
+        clearSelectedDocument()
         purgeCapturedTextPlayback()
         #if DEBUG
         purgeDebugSessionDiagnostics()
@@ -3002,6 +3047,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if searchClueInput != nil { companionWorkingState.searchAreaClue.retireAnswerWindow() }
         // A read-only clock question needs conversation authority, not goal authority.
         // Intercept before cancellation, everyday-task mutation or camera work.
+        if origin == .trustedInterface {
+            if routeSelectedDocumentCommand(text, origin: origin) { return }
+            clearSelectedDocument() // before early clock/history/model routes
+        }
         if CommandAuthority.permits(.changeGoal, from: origin), selectedPhoto.selection != nil { clearExploreSnapshot() }
         if CommandAuthority.permits(.changeGoal, from: origin) {
             if routeCapturedTextReview(text, origin: origin) { return }
@@ -3507,7 +3556,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let ready = running && !simulation && !places.scanning && assistantSession.foregroundActive &&
             (colorRequest ? (!detection.hazard.isUrgent && rgbTracked) :
                 (detection.hazard == .observing && attention.stationary && lastObservation?.trackingNormal == true))
-        let quiet = !busy && !voice.awaitingUtterance && feedback.canSpeakAmbient && readingTool == nil
+        let quiet = !documentAttentionOwned && !busy && !voice.awaitingUtterance && feedback.canSpeakAmbient && readingTool == nil
         if everydayRetry.takeIfReady(ticketID: everydayRetryTicketID, now: now, frameAt: lastFrameWallTime,
                                      quiescent: quiet, available: ready) {
             everydayRetryTicketID = nil; everydayRetryRequestID = nil
@@ -4267,6 +4316,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     func stopDescriptions() {
         clearExploreSnapshot()
+        clearSelectedDocument()
         let pending = objectSearch ?? interruptedSearch.restore(goalRevision: companionWorkingState.goalRevision,
             generation: assistantSession.generation, now: ProcessInfo.processInfo.systemUptime)
         heldSearchIntent.hold(target: pending?.target ?? trackedTarget?.query,
@@ -4638,6 +4688,7 @@ extension NavigationModel {
     /// Camera work always stops in the background; listening follows explicit opt-in.
     func suspendExperience() {
         voiceRoomScan.cancel()
+        clearSelectedDocument()
         defer { updateLiveActivity() }
         experienceActive = false
         assistantSession.enterBackground()
@@ -4651,6 +4702,7 @@ extension NavigationModel {
     }
 
     func startConversation() {
+        clearSelectedDocument()
         companionWorkingState.searchAreaClue.clear()
         let cameraNeedsRetry = cameraRecovery.blocked || cameraRecovery.exhausted
         if cameraAwareness { cameraRecovery.beginExplicitSession(); cameraRecoveryNoticeShown = false }
@@ -4670,6 +4722,7 @@ extension NavigationModel {
 
     func muteConversation() {
         voiceRoomScan.cancel()
+        clearSelectedDocument()
         companionWorkingState.searchAreaClue.clear()
         defer { updateLiveActivity() }
         everydayTasks.pause(); everydayTicket = nil
@@ -4682,6 +4735,7 @@ extension NavigationModel {
 
     func endConversation() {
         voiceRoomScan.cancel()
+        clearSelectedDocument()
         companionWorkingState.searchAreaClue.clear()
         heldSearchIntent.cancel()
         defer { updateLiveActivity() }
@@ -4721,6 +4775,9 @@ extension NavigationModel {
     }
 
     func repeatHomeInformation() {
+        if selectedDocument.selection != nil || selectedDocumentImportOwner != nil || selectedDocumentDisplay != nil {
+            repeatSelectedDocumentGuidance(); return
+        }
         if capturedText.source != nil {
             if detection.hazard.isUrgent {
                 purgeCapturedTextPlayback(); repeatMonitoringStatus()
@@ -4827,7 +4884,7 @@ extension NavigationModel {
               assistantSession.foregroundActive, UIApplication.shared.applicationState == .active,
               recognizedPlace == nil, alignedRoomID == nil,
               AVCaptureDevice.authorizationStatus(for: .video) == .authorized else { return }
-        let mayStart = !busy && readingTool == nil && !currencyActive && !colorActive && everydayRetryTicketID == nil &&
+        let mayStart = !busy && readingTool == nil && !currencyActive && !colorActive && everydayRetryTicketID == nil && !documentAttentionOwned &&
             !voice.awaitingUtterance && feedback.canSpeakAmbient
         let next = automaticRoomRecovery.next(candidates: automaticRecoveryCandidates(now: now), now: now,
                                               allowNewAttempt: mayStart)
@@ -6064,6 +6121,7 @@ extension NavigationModel {
     }
 
     func startReadingTool(_ tool: ReadingTool) {
+        clearSelectedDocument()
         // Switching tools invalidates model, currency, colour, face and earlier reader work first.
         cancelDescription()
         _ = feedback.stopInformation(announceCancellation: false)
@@ -6633,6 +6691,7 @@ extension NavigationModel {
 
     /// Captured pictures are explicitly snapshots, never evidence of the current room or path.
     func captureExploreSnapshot() {
+        clearSelectedDocument()
         clearExploreSnapshot()
         cancelDescription()
         guard running, !simulation, !places.scanning, assistantSession.foregroundActive,
@@ -6678,6 +6737,7 @@ extension NavigationModel {
     }
 
     func beginExplorePresentation(_ id: UUID) {
+        clearSelectedDocument()
         if photoViewID != id { clearExploreSnapshot() }
         photoViewID = id
     }
@@ -6836,5 +6896,361 @@ extension CGImagePropertyOrientation {
         case .rightMirrored: self = .rightMirrored
         @unknown default: self = .up
         }
+    }
+}
+
+// MARK: - Explicit, local selected-PDF page quotation (no camera/appliance authority).
+extension NavigationModel {
+    var selectedDocumentPageCount: Int? { selectedDocument.selection?.pageCount }
+    func chooseSelectedDocument() { _ = routeSelectedDocumentCommand("choose a PDF", origin: .trustedInterface) }
+    func readSelectedDocumentPage(_ number: Int) {
+        _ = routeSelectedDocumentCommand("read PDF page \(number)", origin: .trustedInterface)
+    }
+    func forgetSelectedDocument() { _ = routeSelectedDocumentCommand("forget PDF", origin: .trustedInterface) }
+    private var selectedDocumentAllowed: Bool {
+        assistantSession.foregroundActive && assistantSession.mayRespond && ambientDescriptions &&
+            !assistantSession.privateAudioHeld && !detection.hazard.isUrgent && !textOnly
+    }
+    private func showSelectedDocumentReply(_ text: String) {
+        selectedDocumentDisplay = text; currentReply = text; sceneAnswer = text
+        selectedDocumentDisplayRevisions = (currentReplyRevision, sceneAnswerRevision)
+    }
+    private func selectedDocumentNotice(_ text: String) {
+        guard selectedDocumentAllowed else { return }
+        showSelectedDocumentReply(text)
+        // This is fixed code-owned guidance, never PDF text or a PDF-supplied label.
+        // Ordinary budget applies; refusal is not a delivery receipt.
+        if feedback.speechPriority == nil {
+            // An explicit ID prevents the untracked-answer sink from rewriting
+            // this already-owned display revision. This fixed guidance is not a
+            // page phrase and its callback cannot advance document playback.
+            _ = dispatchText(text, kind: .answer, requested: true, replace: false, speechID: UUID())
+        }
+    }
+    private func clearSelectedDocument() {
+        let pending = selectedDocument.pending?.id
+        selectedDocument.clear(); selectedPDF = nil; selectedDocumentRequestID = nil
+        selectedDocumentImportOwner = nil; selectedDocumentPickerRequest = nil
+        selectedDocumentTask?.cancel(); selectedDocumentTask = nil
+        selectedDocumentExpiry?.cancel(); selectedDocumentExpiry = nil
+        cancelSelectedDocumentBudgetWake()
+        clearSelectedDocumentDisplay()
+        // Keep speech tombstones until their actual callbacks; late callbacks
+        // cannot become ordinary conversation or revive a newer document.
+        if let pending { feedback.stopRequestedSpeech(pending) }
+        // Deliberately DO NOT clear selectedDocumentNativeLease here.
+    }
+    private func clearSelectedDocumentDisplay() {
+        if let display = selectedDocumentDisplay, let revisions = selectedDocumentDisplayRevisions {
+            if currentReplyRevision == revisions.reply, currentReply == display { currentReply = "" }
+            if sceneAnswerRevision == revisions.scene, sceneAnswer == display { sceneAnswer = "" }
+        }
+        selectedDocumentDisplay = nil; selectedDocumentDisplayRevisions = nil
+    }
+    /// Retire only the page attempt. A correctable page typo is not loss of the
+    /// explicitly selected immutable file. This never starts or resumes reading.
+    @discardableResult private func retireSelectedDocumentPage() -> Bool {
+        guard selectedDocumentAllowed, let selection = selectedDocument.selection,
+              selection.generation == assistantSession.generation, selectedPDF != nil else {
+            clearSelectedDocument(); return false
+        }
+        let pending = selectedDocument.pending?.id
+        guard selectedDocument.retirePage(now: ProcessInfo.processInfo.systemUptime) else {
+            clearSelectedDocument(); return false
+        }
+        selectedDocumentRequestID = nil
+        selectedDocumentTask?.cancel(); selectedDocumentTask = nil
+        selectedDocumentExpiry?.cancel(); selectedDocumentExpiry = nil
+        cancelSelectedDocumentBudgetWake(); clearSelectedDocumentDisplay()
+        // The retired request is gone BEFORE callbacks from exact speech stop.
+        if let pending { feedback.stopRequestedSpeech(pending) }
+        // Retain selectedPDF/selection, never release the occupied native lease.
+        return true
+    }
+    @discardableResult private func routeSelectedDocumentCommand(_ text: String, origin: CompanionCommandOrigin) -> Bool {
+        guard origin == .trustedInterface else { return false }
+        let normalized = text.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        if (selectedDocument.selection != nil || selectedDocumentImportOwner != nil || selectedDocumentDisplay != nil),
+           ["repeat", "كرر"].contains(normalized) {
+            repeatSelectedDocumentGuidance(); return true
+        }
+        guard let command = SelectedDocumentCommand.parse(text) else { return false }
+        // Even a rejected PDF page request replaces the prior ordinary reader.
+        // Retire those owners before error guidance; never quote the old source
+        // as though the new request succeeded. Repeat/unknown/microphone input
+        // cannot enter this trusted, parsed takeover boundary.
+        interruptOrdinaryConversation(origin: origin)
+        purgeCapturedTextPlayback(); clearExploreSnapshot()
+        guard selectedDocumentAllowed else { clearSelectedDocument(); return true }
+        switch command {
+        case .choose:
+            clearSelectedDocument()
+            guard selectedDocumentNativeLease == nil else {
+                selectedDocumentNotice(arabic ? "ما زالت معالجة الملف السابق تنتهي. اطلب اختيار ملف PDF مرة أخرى بعد قليل." : "The previous PDF operation is still finishing. Request Choose a PDF again shortly.")
+                return true
+            }
+            interruptOrdinaryConversation(origin: origin)
+            purgeCapturedTextPlayback(); clearExploreSnapshot()
+            let ticket = DocumentPickerPresentation(id: UUID(), generation: assistantSession.generation)
+            selectedDocumentImportOwner = ticket; selectedDocumentPickerRequest = ticket
+        case .readPage(let number):
+            beginSelectedDocumentPage(number)
+        case .forget:
+            clearSelectedDocument()
+            selectedDocumentNotice(arabic ? "نسيت ملف PDF المحدد." : "Forgot the selected PDF.")
+        case .invalidPage:
+            if retireSelectedDocumentPage(), let count = selectedDocument.selection?.pageCount {
+                selectedDocumentNotice(arabic ? "توقفت القراءة. رقم الصفحة غير صالح. الملف المحدد يحتوي على \(count) صفحات. اطلب رقماً ضمن هذا النطاق."
+                    : "Reading stopped. Invalid page number. The selected PDF has \(count) pages. Request a number within that range.")
+            } else {
+                selectedDocumentNotice(arabic ? "لا يوجد ملف PDF محدد. اختر ملفاً ثم اطلب رقم صفحة صحيحاً."
+                    : "No PDF is selected. Choose a PDF, then request a valid page number.")
+            }
+        }
+        return true
+    }
+    func selectedDocumentPickerCancelled(_ ownerID: UUID) {
+        guard selectedDocumentImportOwner?.id == ownerID else { return }
+        clearSelectedDocument()
+        selectedDocumentNotice(arabic ? "أُلغي اختيار ملف PDF." : "PDF selection cancelled.")
+    }
+    func selectedDocumentPickerPicked(_ ownerID: UUID, url: URL) {
+        guard let owner = selectedDocumentImportOwner, owner.id == ownerID,
+              owner.generation == assistantSession.generation, selectedDocumentAllowed,
+              selectedDocumentNativeLease == nil else { return }
+        selectedDocumentPickerRequest = nil
+        selectedDocumentNativeLease = ownerID
+        let issuedAt = ProcessInfo.processInfo.systemUptime
+        scheduleSelectedDocumentAcquisitionExpiry(ownerID: ownerID, issuedAt: issuedAt)
+        selectedDocumentTask = Task { @MainActor [weak self] in
+            let result = await Task.detached(priority: .userInitiated) {
+                Result { try SelectedDocumentPDFAdapter.loadSelectedURL(url) }
+            }.value
+            guard let self else { return }
+            // Native return is the only event that releases the noncancellable lease.
+            if self.selectedDocumentNativeLease == ownerID { self.selectedDocumentNativeLease = nil }
+            guard !Task.isCancelled, self.selectedDocumentImportOwner?.id == ownerID,
+                  self.assistantSession.generation == owner.generation, self.selectedDocumentAllowed,
+                  ProcessInfo.processInfo.systemUptime - issuedAt < SelectedDocumentReference.acquisitionLifetime else { return }
+            self.selectedDocumentTask = nil; self.selectedDocumentExpiry?.cancel(); self.selectedDocumentExpiry = nil
+            self.selectedDocumentImportOwner = nil
+            switch result {
+            case .success(let value):
+                let identity = CompanionReferenceIdentity(sourceID: ownerID, revision: UUID(), sha256: value.sha256, media: .selectedDocument)
+                guard self.selectedDocument.select(identity: identity, pageCount: value.pageCount,
+                    generation: owner.generation, now: ProcessInfo.processInfo.systemUptime) != nil else {
+                    self.clearSelectedDocument(); return
+                }
+                self.selectedPDF = value
+                self.selectedDocumentNotice(self.arabic
+                    ? "ملف PDF المحدد يحتوي على \(value.pageCount) صفحات. اكتب: اقرأ صفحة PDF 1. قد تُفقد الرسوم والجداول والأعمدة وترتيب القراءة والشروط."
+                    : "Selected PDF: \(value.pageCount) pages. Type Read PDF page 1. Only text is read; diagrams, tables, columns, reading order and qualifiers may be missing.")
+            case .failure(let error): self.failSelectedDocument(error)
+            }
+        }
+    }
+    private func beginSelectedDocumentPage(_ number: Int) {
+        guard let selection = selectedDocument.selection, let pdf = selectedPDF,
+              selection.generation == assistantSession.generation, selectedDocumentAllowed else {
+            clearSelectedDocument()
+            selectedDocumentNotice(arabic ? "اختر ملف PDF أولاً، ثم اطلب قراءة رقم صفحة." : "Choose a PDF first, then request a page number.")
+            return
+        }
+        guard (1...selection.pageCount).contains(number) else {
+            _ = retireSelectedDocumentPage()
+            selectedDocumentNotice(arabic ? "توقفت القراءة. الملف المحدد يحتوي على \(selection.pageCount) صفحات. اطلب رقماً ضمن هذا النطاق."
+                : "Reading stopped. The selected PDF has \(selection.pageCount) pages. Request a number within that range.")
+            return
+        }
+        guard selectedDocumentNativeLease == nil else {
+            // Retire page ownership, retaining the chosen bytes but never stacking PDFKit jobs.
+            _ = retireSelectedDocumentPage()
+            selectedDocumentNotice(arabic ? "ما زالت معالجة PDF السابقة تنتهي. اطلب قراءة الصفحة مجدداً بعد قليل."
+                : "The previous PDF operation is still finishing. Request the page again shortly.")
+            return
+        }
+        let oldSpeech = selectedDocument.pending?.id
+        let requestID = UUID()
+        guard let request = selectedDocument.beginPage(pageNumber: number, requestID: requestID,
+                now: ProcessInfo.processInfo.systemUptime) else { clearSelectedDocument(); return }
+        selectedDocumentRequestID = requestID
+        cancelSelectedDocumentBudgetWake()
+        // Revoke old request before stopping exactly its speech, not sensor warnings.
+        if let oldSpeech { feedback.stopRequestedSpeech(oldSpeech) }
+        interruptOrdinaryConversation(origin: .trustedInterface)
+        purgeCapturedTextPlayback(); clearExploreSnapshot()
+        selectedDocumentNativeLease = request.id
+        scheduleSelectedDocumentAcquisitionExpiry(ownerID: request.id, issuedAt: request.issuedAt)
+        selectedDocumentTask = Task { @MainActor [weak self] in
+            let result = await Task.detached(priority: .userInitiated) {
+                Result { try SelectedDocumentPDFAdapter.readPage(number, from: pdf) }
+            }.value
+            guard let self else { return }
+            if self.selectedDocumentNativeLease == request.id { self.selectedDocumentNativeLease = nil }
+            guard !Task.isCancelled, self.selectedDocument.request == request else { return }
+            if ProcessInfo.processInfo.systemUptime - request.issuedAt >= SelectedDocumentReference.acquisitionLifetime {
+                self.expireSelectedDocumentAcquisition(ownerID: request.id); return
+            }
+            guard let context = self.selectedDocumentContext(), self.selectedDocument.revalidate(context) else {
+                self.clearSelectedDocument(); return
+            }
+            self.selectedDocumentTask = nil
+            switch result {
+            case .success(let page):
+                guard page.sha256 == selection.identity.sha256,
+                      self.selectedDocument.install(page: .init(identity: selection.identity, pageNumber: page.pageNumber,
+                        pageLabel: page.pageLabel, text: page.text), for: request,
+                        now: ProcessInfo.processInfo.systemUptime, arabic: self.arabic) else {
+                    self.clearSelectedDocument(); return
+                }
+                self.selectedDocumentExpiry?.cancel(); self.selectedDocumentExpiry = nil
+                self.speakNextSelectedDocumentPhrase()
+            case .failure(let error): self.failSelectedDocument(error)
+            }
+        }
+    }
+    private func failSelectedDocument(_ error: Error) {
+        switch error as? SelectedDocumentPDFAdapter.Failure {
+        case .oversizedPage, .invalidPage, .noReadableTextLayer: _ = retireSelectedDocumentPage()
+        default: clearSelectedDocument()
+        }
+        // Never interpolate NSError/provider descriptions: they may include a private path/name.
+        let text: String
+        switch error as? SelectedDocumentPDFAdapter.Failure {
+        case .locked: text = arabic ? "ملف PDF مقفل. لم أقرأ نصه." : "The PDF is locked. I did not read its text."
+        case .accessibilityPermissionDenied: text = arabic ? "لا يسمح ملف PDF باستخراج النص لتسهيلات الاستخدام." : "The PDF does not permit accessibility text extraction."
+        case .filePermissionDenied: text = arabic ? "تعذر الوصول إلى ملف PDF المحدد." : "I could not access the selected PDF."
+        case .oversizedInput: text = arabic ? "ملف PDF أكبر من الحد المدعوم. لم أقرأ جزءاً منه." : "The PDF exceeds the supported size. I did not read a truncated file."
+        case .oversizedPage: text = arabic ? "نص الصفحة أكبر من الحد المدعوم. لم أقرأ جزءاً منه." : "The page text exceeds the supported size. I did not read truncated text."
+        case .invalidPage: text = arabic ? "رقم الصفحة غير متاح في ملف PDF المحدد." : "That page number is not available in the selected PDF."
+        case .noReadableTextLayer: text = arabic ? "لم أجد طبقة نص قابلة للقراءة. هذا لا يعني أن الصفحة فارغة." : "I found no readable text layer. That does not mean the page is blank."
+        default: text = arabic ? "تعذر قراءة بنية ملف PDF. لم أقرأ نصه." : "I could not read the PDF structure. I did not read its text."
+        }
+        selectedDocumentNotice(text)
+    }
+    private func selectedDocumentContext() -> SelectedDocumentReference.Context? {
+        guard let selection = selectedDocument.selection, let request = selectedDocument.request,
+              let requestID = selectedDocumentRequestID else { return nil }
+        return .init(selection: selection, request: request, source: selection.identity,
+            generation: assistantSession.generation, requestID: requestID,
+            now: ProcessInfo.processInfo.systemUptime, foreground: selectedDocumentAllowed,
+            quiet: !ambientDescriptions, hazard: detection.hazard.isUrgent, privateAudioHeld: assistantSession.privateAudioHeld)
+    }
+    private func revalidateSelectedDocumentOwnership() {
+        guard selectedDocument.selection != nil || selectedDocumentImportOwner != nil else { return }
+        guard selectedDocumentAllowed,
+              selectedDocument.selection.map({ $0.generation == assistantSession.generation }) ?? true,
+              selectedDocumentImportOwner.map({ $0.generation == assistantSession.generation }) ?? true else {
+            clearSelectedDocument(); return
+        }
+        if let context = selectedDocumentContext() {
+            if selectedDocument.awaitingAcquisition, context.now - context.request.issuedAt >= SelectedDocumentReference.acquisitionLifetime {
+                expireSelectedDocumentAcquisition(ownerID: context.request.id); return
+            }
+            if !selectedDocument.revalidate(context) { clearSelectedDocument() }
+        }
+    }
+    private func expireSelectedDocumentAcquisition(ownerID: UUID) {
+        if selectedDocumentImportOwner?.id == ownerID {
+            clearSelectedDocument()
+            selectedDocumentNotice(arabic ? "انتهت مهلة اختيار PDF. اختر الملف مرة أخرى." : "PDF selection timed out. Choose the file again.")
+        } else if let request = selectedDocument.request, request.id == ownerID, selectedDocument.awaitingAcquisition {
+            if retireSelectedDocumentPage() {
+                selectedDocumentNotice(arabic ? "انتهت مهلة قراءة الصفحة. اطلب قراءة صفحة PDF \(request.pageNumber) مجدداً عندما تكون مستعداً."
+                    : "The page request timed out. Explicitly request Read PDF page \(request.pageNumber) again when ready.")
+            }
+        }
+    }
+    private func scheduleSelectedDocumentAcquisitionExpiry(ownerID: UUID, issuedAt: Double) {
+        selectedDocumentExpiry?.cancel()
+        selectedDocumentExpiry = Task { @MainActor [weak self] in
+            guard let self, !Task.isCancelled,
+                  self.selectedDocumentImportOwner?.id == ownerID ||
+                    (self.selectedDocument.request?.id == ownerID && self.selectedDocument.awaitingAcquisition) else { return }
+            let remaining = issuedAt + SelectedDocumentReference.acquisitionLifetime - ProcessInfo.processInfo.systemUptime
+            guard remaining > 0 else { self.expireSelectedDocumentAcquisition(ownerID: ownerID); return }
+            do { try await Task.sleep(for: .seconds(remaining)) } catch { return }
+            guard !Task.isCancelled,
+                  self.selectedDocumentImportOwner?.id == ownerID ||
+                    (self.selectedDocument.request?.id == ownerID && self.selectedDocument.awaitingAcquisition) else { return }
+            self.expireSelectedDocumentAcquisition(ownerID: ownerID)
+        }
+    }
+    private func cancelSelectedDocumentBudgetWake() {
+        selectedDocumentBudgetWake?.cancel(); selectedDocumentBudgetWake = nil; selectedDocumentBudgetWakeAt = nil
+    }
+    private func scheduleSelectedDocumentBudgetWake(at deadline: Double, ownerID: UUID) {
+        guard selectedDocumentBudgetWake == nil, deadline.isFinite else { return }
+        selectedDocumentBudgetWakeAt = deadline
+        selectedDocumentBudgetWake = Task { @MainActor [weak self] in
+            let remaining = deadline - ProcessInfo.processInfo.systemUptime
+            if remaining > 0 { do { try await Task.sleep(for: .seconds(remaining)) } catch { return } }
+            guard let self, !Task.isCancelled, self.selectedDocument.request?.id == ownerID,
+                  self.selectedDocumentBudgetWakeAt == deadline else { return }
+            self.selectedDocumentBudgetWake = nil; self.selectedDocumentBudgetWakeAt = nil
+            self.speakNextSelectedDocumentPhrase()
+        }
+    }
+    private func speakNextSelectedDocumentPhrase() {
+        guard selectedDocumentBudgetWakeAt == nil, let context = selectedDocumentContext() else { return }
+        if selectedDocument.awaitingAcquisition, context.now - context.request.issuedAt >= SelectedDocumentReference.acquisitionLifetime {
+            expireSelectedDocumentAcquisition(ownerID: context.request.id); return
+        }
+        guard selectedDocument.revalidate(context) else { clearSelectedDocument(); return }
+        guard feedback.speechPriority == nil, !voice.awaitingUtterance, !textOnly,
+              let phrase = selectedDocument.next(context) else { return }
+        guard let budgetAt = companion.nextInformationBudgetTime(words: Self.wordCount(phrase.text),
+                settings: companionSettings, now: context.now) else { clearSelectedDocument(); return }
+        if budgetAt > context.now {
+            scheduleSelectedDocumentBudgetWake(at: budgetAt, ownerID: context.request.id); return
+        }
+        guard selectedDocument.begin(phrase, context: context) else { return }
+        selectedDocumentSpeechIDs.insert(phrase.id) // BEFORE dispatch/redaction or synchronous callbacks
+        if !dispatchText(phrase.text, kind: .answer, requested: true, replace: false, speechID: phrase.id) {
+            selectedDocumentSpeechIDs.remove(phrase.id); selectedDocument.admissionRejected(phrase.id)
+            let now = ProcessInfo.processInfo.systemUptime
+            if let retry = companion.nextInformationBudgetTime(words: Self.wordCount(phrase.text), settings: companionSettings, now: now), retry > now {
+                scheduleSelectedDocumentBudgetWake(at: retry, ownerID: context.request.id)
+            } else { clearSelectedDocument() }
+        }
+    }
+    private func selectedDocumentSpeechPermission(id: UUID, text: String) -> Bool {
+        guard selectedDocumentSpeechIDs.contains(id) else { return true }
+        guard let pending = selectedDocument.pending, pending.id == id,
+              pending.text.utf8.elementsEqual(text.utf8), let context = selectedDocumentContext() else { return false }
+        return selectedDocument.revalidate(context)
+    }
+    private func finishSelectedDocumentSpeech(id: UUID, text: String, outcome: NarrationDelivery) -> Bool {
+        guard selectedDocumentSpeechIDs.remove(id) != nil else { return false }
+        guard selectedDocument.pending?.id == id else { return true }
+        guard let context = selectedDocumentContext(),
+              selectedDocument.finish(id: id, text: text, outcome: outcome, context: context) else {
+            clearSelectedDocument(); return true
+        }
+        if selectedDocument.playbackCompleted { cancelSelectedDocumentBudgetWake() }
+        else { speakNextSelectedDocumentPhrase() }
+        return true
+    }
+    private func repeatSelectedDocumentGuidance() {
+        revalidateSelectedDocumentOwnership()
+        guard selectedDocument.selection != nil || selectedDocumentImportOwner != nil else {
+            selectedDocumentNotice(arabic ? "لا يوجد ملف PDF محدد للقراءة. اختر ملفاً ثم اطلب رقم صفحة." : "No PDF is selected for reading. Choose a PDF, then request a page number.")
+            return
+        }
+        // A repeat command is not a new page request and never resets acquisition
+        // time or cancels a queued unread phrase. No fallback to persisted narration.
+        let text: String
+        if let request = selectedDocument.request {
+            text = arabic ? "لمراجعة الصفحة، اكتب: اقرأ صفحة PDF \(request.pageNumber). هذا طلب جديد لقراءة الصفحة المحددة فقط."
+                : "To reread this page, type Read PDF page \(request.pageNumber). That explicitly requests this page again, not the next page."
+        } else if selectedDocument.selection != nil {
+            text = arabic ? "ملف PDF محدد. اكتب: اقرأ صفحة PDF 1. اختيار الملف وحده لا يقرأ نصه."
+                : "A PDF is selected. Type Read PDF page 1. Selecting a file alone does not read its text."
+        } else {
+            text = arabic ? "أكمل اختيار ملف PDF، ثم اطلب رقم صفحة لقراءتها."
+                : "Finish choosing a PDF, then request a page number to read."
+        }
+        // Do not replace an active phrase or its displayed private text.
+        if feedback.speechPriority == nil { selectedDocumentNotice(text) }
     }
 }

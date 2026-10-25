@@ -1,3 +1,11 @@
+## Next — selected-PDF native and nonvisual acceptance
+
+Run the exact published selected-PDF source on Apple: fourteen actual-byte PDFKit fixtures, supported system picker selection/cancel/security-scope, explicit file-page versus printed-label behavior, English/Arabic and image-only/permission/oversize errors. Check page correction without reselection, slow budget waits, pacing changes, interruption/private-route/quiet/background retirement, identical-text newer reply preservation and independent hazards. Confirm actual audible/VoiceOver comprehension with supervised participants; projection callbacks are not native speech evidence.
+
+This source lane is not an exact-model manual or appliance-control feature. R39/R40 remain partial. See [selected-PDF scope](research/evaluations/selected-document/README.md).
+
+---
+
 ## Next — menu-reading alias native acceptance
 
 Build the exact candidate and verify trusted English/Arabic imperative and polite menu requests, one-view uncertain OCR, current/previous/next/reread/forget controls, interruptions, source replacement and private audio with actual VoiceOver. Measure whether a supervised nonvisual participant can use the information; do not infer menu structure, price/allergen relationships, complete menu coverage or dining-goal success from portable tests. Unverified microphone input still cannot change tasks.

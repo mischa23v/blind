@@ -93,6 +93,15 @@ final class SearchAreaReplay {
  // have no selected page; actual review methods execute in their own witness.
  var capturedText = CapturedTextReference()
  func routeCapturedTextReview(_ text: String, origin: CompanionCommandOrigin) -> Bool { false }
+ // Isolated history/search ingress seam, not PDF execution: only the real
+ // strict Core command parser may consume trusted document command syntax.
+ var documentCommands: [SelectedDocumentCommand] = []
+ var documentClearCalls = 0
+ func routeSelectedDocumentCommand(_ text: String, origin: CompanionCommandOrigin) -> Bool {
+  guard origin == .trustedInterface, let command = SelectedDocumentCommand.parse(text) else { return false }
+  documentCommands.append(command); return true
+ }
+ func clearSelectedDocument() { documentClearCalls += 1 }
  func stopReadingTool(announce: Bool) { capturedText.clear() }
     func routeClockInquiry(_ text: String, origin: CompanionCommandOrigin) -> Bool {
         if text.lowercased() == "what time is it" { controlInputs.append(text); return true }; return false
