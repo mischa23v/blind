@@ -1,0 +1,237 @@
+--- a/source/VoiceEnrollment.swift
++++ b/source/VoiceEnrollment.swift
+@@ -150,3 +150,55 @@
+         return data
+     }
+ }
++
++/// Write-ahead deletion intent; contains no biometric bytes or identity metadata.
++/// The host secures/excludes its directory before use and verifies marker protection.
++/// One serialized store owns this directory. This is not a multi-process lock.
++public struct VoiceEnrollmentDeletionFence: Sendable {
++    public let marker: URL
++    public init(directory: URL) {
++        marker = directory.appendingPathComponent("deletion-pending-v1", isDirectory: false)
++    }
++    public var isPending: Bool {
++        get throws {
++            do {
++                _ = try FileManager.default.attributesOfItem(atPath: marker.path)
++                return true // Any marker type/content blocks; never decode untrusted contents.
++            } catch {
++                let failure = error as NSError
++                if failure.domain == NSCocoaErrorDomain &&
++                    (failure.code == NSFileNoSuchFileError || failure.code == NSFileReadNoSuchFileError) {
++                    return false
++                }
++                throw error // Inaccessible/unknown is not evidence of absence.
++            }
++        }
++    }
++    /// Erase all dedicated-container contents except the active intent marker.
++    /// Includes hidden atomic-write remnants; enumeration/removal failures propagate.
++    /// Caller serializes this operation with all writers to the dedicated directory.
++    public func removeOtherChildren() throws {
++        let manager = FileManager.default
++        let directory = marker.deletingLastPathComponent()
++        func remainingChildren() throws -> [URL] {
++            try manager.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil,
++                                            options: []).filter { $0.lastPathComponent != marker.lastPathComponent }
++        }
++        for child in try remainingChildren() {
++            try manager.removeItem(at: child)
++        }
++        guard try remainingChildren().isEmpty else { throw VoiceEnrollmentError.invalidRecord }
++    }
++    /// If marker creation/verification fails, deletion was NOT durably admitted.
++    /// If erase or marker cleanup fails, propagate failure and keep reads fenced.
++    public func delete(verifyMarker: (URL) throws -> Void, removing: () throws -> Void) throws {
++        var options: Data.WritingOptions = [.atomic]
++        #if os(iOS)
++        options.insert(.completeFileProtection)
++        #endif
++        try Data([1]).write(to: marker, options: options)
++        try verifyMarker(marker)
++        try removing()
++        try FileManager.default.removeItem(at: marker)
++    }
++}
+--- a/source/ProtectedVoiceEnrollmentStore.swift
++++ b/source/ProtectedVoiceEnrollmentStore.swift
+@@ -10,10 +10,12 @@
+     private var generation = VoiceEnrollmentStoreGeneration()
+     private let directory: URL
+     private let file: URL
++    private let deletionFence: VoiceEnrollmentDeletionFence
+     public init() throws {
+         let support = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask,
+                                                  appropriateFor: nil, create: true)
+         directory = support.appendingPathComponent("PrivateVoiceEnrollment", isDirectory: true)
++        deletionFence = VoiceEnrollmentDeletionFence(directory: directory)
+         file = directory.appendingPathComponent("enrollment-v1.json", isDirectory: false)
+     }
+     private func secure(_ url: URL) throws {
+@@ -39,6 +41,8 @@
+         // This method has no await: deletion cannot interleave after validation and before write.
+         try generation.validateSave(record, ticket: ticket)
+         try record.validate()
++        // A fresh setup cannot bypass an unfinished deletion, including after restart.
++        guard try !deletionFence.isPending else { throw VoiceEnrollmentError.invalidRecord }
+         try fm.createDirectory(at: directory, withIntermediateDirectories: false,
+                                attributes: [.protectionKey: FileProtectionType.complete])
+         // Secure/exclude the container before writing biometric bytes, including atomic temp files.
+@@ -63,8 +67,9 @@
+         }
+     }
+     public func load(matching binding: VoiceEnrollmentBinding) throws -> VoiceEnrollmentRecord? {
+-        // A failed delete may leave bytes behind. Withhold them for this store lifetime.
++        // Check durable intent before reading any profile, including in a new actor.
+         guard generation.canLoad else { return nil }
++        guard try !deletionFence.isPending else { return nil }
+         guard fm.fileExists(atPath: file.path) else { return nil }
+         try secure(directory); try secure(file)
+         // Metadata size is not a read bound: the path can grow or be replaced after stat.
+@@ -88,9 +93,18 @@
+     /// No audio/history/user identity is stored here. Host must clear any RAM copies too.
+     public func delete() throws {
+         // Invalidate even if removal fails. A queued old save must not resurrect the profile.
+-        let manager = fm, target = directory
++        let manager = fm, fence = deletionFence
++        // Retain the protected container: the marker must outlive failed record removal.
++        // Preparation failures still invalidate old saves and in-process reads.
+         try generation.delete {
+-            if manager.fileExists(atPath: target.path) { try manager.removeItem(at: target) }
++            try manager.createDirectory(at: directory, withIntermediateDirectories: false,
++                                        attributes: [.protectionKey: FileProtectionType.complete])
++            try secure(directory)
++            try fence.delete(verifyMarker: { try secure($0) }) {
++                // The dedicated container can hold orphan atomic-write files as well
++                // as the selected record. No surviving sibling may count as deleted.
++                try fence.removeOtherChildren()
++            }
+         }
+     }
+ }
+--- a/tests/main.swift
++++ b/tests/main.swift
+@@ -1,6 +1,6 @@
+ import Foundation
+ var checks = 0
+-func check(_ value: @autoclosure () -> Bool) { precondition(value()); checks += 1 }
++func check(_ value: Bool) { precondition(value); checks += 1 }
+ func rejects(_ work: () throws -> Void) { do { try work(); fatalError("Expected rejection") } catch { checks += 1 } }
+ let binding = try VoiceEnrollmentBinding(modelSHA256: String(repeating: "a", count: 64), embeddingDimensions: 3, captureRoute: "synthetic-route", preprocessingRevision: "synthetic-16k-mono-v1")
+ let other = try VoiceEnrollmentBinding(modelSHA256: String(repeating: "b", count: 64), embeddingDimensions: 3, captureRoute: "synthetic-route", preprocessingRevision: "synthetic-16k-mono-v1")
+@@ -94,4 +94,112 @@
+ let emptyHandle = try FileHandle(forReadingFrom: fixture)
+ let emptyBytes = try VoiceEnrollmentBoundedRead.read(from: emptyHandle, maximumBytes: 64)
+ try emptyHandle.close(); check(emptyBytes.isEmpty)
++// Durable fence tests execute the production Foundation transaction with tiny synthetic
++// files. Re-instantiation models process loss of all RAM state, not Apple device behavior.
++let fenceDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
++try FileManager.default.createDirectory(at: fenceDirectory, withIntermediateDirectories: false)
++defer { try? FileManager.default.removeItem(at: fenceDirectory) }
++let syntheticProfile = fenceDirectory.appendingPathComponent("profile")
++try Data([7]).write(to: syntheticProfile)
++let fence = VoiceEnrollmentDeletionFence(directory: fenceDirectory)
++check(try !fence.isPending)
++var removalCalled = false
++rejects {
++    try fence.delete(verifyMarker: { _ in throw VoiceEnrollmentError.invalidRecord }) {
++        removalCalled = true
++    }
++}
++check(!removalCalled)
++check(try VoiceEnrollmentDeletionFence(directory: fenceDirectory).isPending)
++rejects { try fence.delete(verifyMarker: { _ in }) { throw VoiceEnrollmentError.invalidRecord } }
++check(FileManager.default.fileExists(atPath: syntheticProfile.path))
++let restartedFence = VoiceEnrollmentDeletionFence(directory: fenceDirectory)
++check(try restartedFence.isPending)
++var restartedGeneration = VoiceEnrollmentStoreGeneration()
++_ = restartedGeneration.beginHelperSetup(consent: consent)
++check(try restartedGeneration.canLoad && restartedFence.isPending) // Disk fence overrides RAM.
++try restartedFence.delete(verifyMarker: { _ in }) {
++    check(try restartedFence.isPending) // Intent precedes deletion.
++    try FileManager.default.removeItem(at: syntheticProfile)
++}
++check(!FileManager.default.fileExists(atPath: syntheticProfile.path))
++check(try !VoiceEnrollmentDeletionFence(directory: fenceDirectory).isPending)
++// Repeated delete succeeds with caller-confirmed already absent profile.
++try fence.delete(verifyMarker: { _ in }, removing: {})
++check(try !fence.isPending)
++// Missing parent forces marker-write failure: do NOT call erase or claim durable intent.
++let unavailable = VoiceEnrollmentDeletionFence(directory: fenceDirectory.appendingPathComponent("absent"))
++removalCalled = false
++rejects { try unavailable.delete(verifyMarker: { _ in }) { removalCalled = true } }
++check(!removalCalled)
++// Real filesystem denial during marker cleanup must propagate, then remain pending.
++// Fixture is owned by this unprivileged test process; restore its mode before retry.
++rejects {
++    try fence.delete(verifyMarker: { _ in }) {
++        try FileManager.default.setAttributes([.posixPermissions: 0o500], ofItemAtPath: fenceDirectory.path)
++    }
++}
++try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: fenceDirectory.path)
++check(try VoiceEnrollmentDeletionFence(directory: fenceDirectory).isPending)
++try fence.delete(verifyMarker: { _ in }, removing: {})
++check(try !fence.isPending)
++// Inaccessible lookup must throw, not treat an unknown marker as absent.
++try FileManager.default.setAttributes([.posixPermissions: 0o000], ofItemAtPath: fenceDirectory.path)
++rejects { _ = try fence.isPending }
++try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: fenceDirectory.path)
++// Production whole-container cleanup includes hidden atomic-write remnants and folders.
++let orphan = fenceDirectory.appendingPathComponent(".atomic-orphan")
++let nested = fenceDirectory.appendingPathComponent("orphan-folder")
++try Data([7]).write(to: syntheticProfile)
++try Data([8]).write(to: orphan)
++try FileManager.default.createDirectory(at: nested, withIntermediateDirectories: false)
++try Data([9]).write(to: nested.appendingPathComponent("bytes"))
++try fence.delete(verifyMarker: { _ in }) {
++    try fence.removeOtherChildren()
++    check(try fence.isPending)
++}
++check(try FileManager.default.contentsOfDirectory(atPath: fenceDirectory.path).isEmpty)
++// Cleanup permission denial leaves both marker and synthetic orphan across recreation.
++try Data([8]).write(to: orphan)
++rejects {
++    try fence.delete(verifyMarker: { _ in }) {
++        try FileManager.default.setAttributes([.posixPermissions: 0o500], ofItemAtPath: fenceDirectory.path)
++        try fence.removeOtherChildren()
++    }
++}
++try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: fenceDirectory.path)
++check(FileManager.default.fileExists(atPath: orphan.path))
++check(try VoiceEnrollmentDeletionFence(directory: fenceDirectory).isPending)
++try fence.delete(verifyMarker: { _ in }) { try fence.removeOtherChildren() }
++check(try FileManager.default.contentsOfDirectory(atPath: fenceDirectory.path).isEmpty)
++// Enumeration failure also retains intent, rather than assuming an empty directory.
++rejects {
++    try fence.delete(verifyMarker: { _ in }) {
++        try FileManager.default.setAttributes([.posixPermissions: 0o000], ofItemAtPath: fenceDirectory.path)
++        try fence.removeOtherChildren()
++    }
++}
++try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: fenceDirectory.path)
++check(try VoiceEnrollmentDeletionFence(directory: fenceDirectory).isPending)
++try fence.delete(verifyMarker: { _ in }) { try fence.removeOtherChildren() }
++check(try FileManager.default.contentsOfDirectory(atPath: fenceDirectory.path).isEmpty)
++// Empty and dangling-link markers are still deletion intent, never absence.
++try Data().write(to: fence.marker)
++check(try VoiceEnrollmentDeletionFence(directory: fenceDirectory).isPending)
++try FileManager.default.removeItem(at: fence.marker)
++try FileManager.default.createSymbolicLink(at: fence.marker,
++    withDestinationURL: fenceDirectory.appendingPathComponent("nonexistent-target"))
++check(try VoiceEnrollmentDeletionFence(directory: fenceDirectory).isPending)
++try FileManager.default.removeItem(at: fence.marker)
++// Unexpected marker replacement still blocks a new instance, irrespective of content.
++rejects {
++    try fence.delete(verifyMarker: { _ in }) {
++        try FileManager.default.removeItem(at: fence.marker)
++        try FileManager.default.createDirectory(at: fence.marker, withIntermediateDirectories: false)
++        try Data([1]).write(to: fence.marker.appendingPathComponent("unexpected"))
++        // removeItem recursively removes directories, so throw to preserve unexpected state.
++        throw VoiceEnrollmentError.invalidRecord
++    }
++}
++check(try VoiceEnrollmentDeletionFence(directory: fenceDirectory).isPending)
+ print("PASS \(checks) synthetic enrollment contract checks; no audio, identity accuracy or Apple storage test")

@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-25",
+  "checks": 71,
+  "result": "passed",
+  "sourceBase": "/workspace/shared/blind-voice-enrollment-stage",
+  "appleStatus": "syntax parse only; SDK typecheck and device tests not run",
+  "revision": "whole-container orphan cleanup correction",
+  "sha256": {
+    "source/VoiceEnrollment.swift": "7b4991e62d69c7761260d48b2427233749a66823e038597c47c2f475070d3b65",
+    "source/ProtectedVoiceEnrollmentStore.swift": "5a99a30e4443fac1497721963096cc125e36967675952ed81c33924771c58f41",
+    "tests/main.swift": "02da0c5afb823c92cff7978a60a54461e46b219a03885ffc49ea7ee402e47130",
+    "tests/run.sh": "3f878bd2f406f3349b8a279131b12fd3f296f663c42fdc1222d21f631e15609c",
+    "evidence/build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/result.log": "f487ed2b172d8fccd401329c4e805382fc7634c0d6e23fbcc8c5b0103779a86c",
+    "evidence/apple-syntax.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "repair.patch": "0f57b300516468c5c88a8640d00383c452c2d1fbed7efe3a0414720953ab6261"
+  }
+}
