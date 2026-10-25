@@ -2060,6 +2060,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // Privacy rule (AGENTS.md): camera pictures never leave the phone in the app build.
         let cloud = false
         #endif
+        if !automatic, routeHistoricalLocationInquiry(question, origin: .trustedInterface) { return }
         if !automatic, routeSelectedPhotoInquiry(question, origin: .trustedInterface) { return }
         if !automatic { stopReadingTool(announce: false) }
         if !automatic, routeUnavailableTemperature(question) { return }
@@ -2709,6 +2710,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #endif
         // Private selected-photo access requires explicit trusted UI. The public
         // clock's microphone conversation permission does not authorize this lane.
+        if routeHistoricalLocationInquiry(text, origin: origin) { return }
         if routeSelectedPhotoInquiry(text, origin: origin) { return }
         if routeConnectedJourneyCommand(text, origin: origin) { return }
         if routeVoiceRoomScan(text) { return }
@@ -4768,7 +4770,22 @@ extension NavigationModel {
     }
 
     /// "Remember my braille book here", "where is my braille book", "where is the exit sign".
+    /// Explicit past-location recall is read-only: no goal, search or geometry mutation.
+    @discardableResult private func routeHistoricalLocationInquiry(_ question: String, origin: CompanionCommandOrigin) -> Bool {
+        guard CommandAuthority.permits(.changeGoal, from: origin),
+              let history = companionWorkingState.historicalLocationReply(to: question, arabic: arabic) else { return false }
+        message = history; sceneAnswer = history; currentReply = history
+        let summary = companionWorkingState.historicalLocationReply(to: question, arabic: arabic, concise: true) ?? ""
+        let fallback = arabic ? "التقرير السابق أطول من رد صوتي واحد. التقرير الكامل مع تاريخه معروض. الموقع الحالي غير مؤكد." : "The historical report is too long for one spoken reply. The full dated report is displayed. Current location is unverified."
+        // Do not split a source negation across independently expiring speech
+        // entries. Short complete clues speak; long ones remain explicit history.
+        interruptOrdinaryConversation(origin: origin)
+        _ = speakRequested(Self.wordCount(summary) <= 30 ? summary : fallback)
+        return true
+    }
+
     private func handleItemOrLocate(_ question: String) -> Bool {
+        if routeHistoricalLocationInquiry(question, origin: .trustedInterface) { return true }
         // "Is this my cup?" — checked by image comparison, never by the model.
         let asked = question.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
         for prefix in ["is this my ", "is that my ", "هل هذا ", "هل هذه "] where asked.lowercased().hasPrefix(prefix) {
@@ -4792,7 +4809,7 @@ extension NavigationModel {
                 learnItem(name)
             case .find(let name):
                 if !findWithSensors(name, question: question) {
-                    if let fact = companionWorkingState.factBook.latest(for: name) { say(fact.recall(now: Date(), arabic: arabic)) }
+                    if let fact = companionWorkingState.currentContextFact(for: name) { say(fact.recall(now: Date(), arabic: arabic)) }
                     else { say(ItemMemory.answer(for: nil, asked: name, now: Date(), sameFrame: false, measuredRelation: nil, arabic: arabic)) }
                 }
             case .forget(let name):
@@ -4814,6 +4831,7 @@ extension NavigationModel {
     /// Saved item (by look, or its saved place) newer than the child's last report, then a live
     /// search of the current view. False when neither applies; the caller speaks the report or "unknown".
     private func findWithSensors(_ name: String, question: String) -> Bool {
+        if routeHistoricalLocationInquiry(question, origin: .trustedInterface) { return true }
         heldSearchIntent.cancel()
         let exitTerms: Set<String> = ["exit", "the exit", "way out", "the way out", "مخرج", "المخرج"]
         if exitTerms.contains(name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()),
@@ -4827,11 +4845,11 @@ extension NavigationModel {
                 return true
             }
         }
-        let fact = companionWorkingState.factBook.latest(for: name)
+        let fact = companionWorkingState.currentContextFact(for: name)
         let context = recordedSpotRecallContext()
-        if let context { observedObjects.revalidateRecordedFrame(using: context, at: Date()) }
-        let recall = observedObjects.recall(category: name, at: Date(), context: context)
-        let explicitEvidenceAt = max(fact?.at ?? .distantPast, items.find(name)?.savedAt ?? .distantPast)
+        if !companionWorkingState.hasScopedMemoryHistory, let context { observedObjects.revalidateRecordedFrame(using: context, at: Date()) }
+        let recall = companionWorkingState.taskContextObservations(observedObjects).recall(category: name, at: Date(), context: context)
+        let explicitEvidenceAt = max(fact?.at ?? .distantPast, companionWorkingState.currentContextItem(name, in: items)?.savedAt ?? .distantPast)
         if recall.status != .notFound,
            recall.sightings.contains(where: { $0.observedAt > explicitEvidenceAt }) {
             let history = ObservedObjectMemory.answer(for: recall, asked: name, now: Date(), arabic: arabic)
@@ -4852,14 +4870,14 @@ extension NavigationModel {
             }
             return true
         }
-        if let item = items.find(name), fact.map({ item.savedAt > $0.at }) ?? true {
-            if itemAppearance.viewCount(item.key) > 0, let frame = session.currentFrame, captureObjectView(frame) != nil {
+        if let item = companionWorkingState.currentContextItem(name, in: items), fact.map({ item.savedAt > $0.at }) ?? true {
+            if item.scope == nil, itemAppearance.viewCount(item.key) > 0, let frame = session.currentFrame, captureObjectView(frame) != nil {
                 findItemByLook(item, name: name, frame: frame)
                 return true
             }
             let sameFrame = indoor.isAligned && item.frameID == indoor.alignmentRevision.uuidString
             var relation: String?
-            if Self.objectInteractionGuidanceValidated, sameFrame, let target = item.position, let observation = lastObservation,
+            if item.scope == nil, Self.objectInteractionGuidanceValidated, sameFrame, let target = item.position, let observation = lastObservation,
                let here = indoor.mapPosition(camera: observation.camera),
                let facing = currentBodyForward().flatMap({ indoor.mapDirection($0) }),
                let measured = SpatialFacts.relation(from: here, facing: facing, to: target) {

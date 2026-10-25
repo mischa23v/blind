@@ -164,7 +164,7 @@ struct CompanionWorkingState: Codable, Sendable {
             ($0.sourceReport.map { $0.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars } ?? true) }.suffix(12))
         scopedTaskHistory = Array((try c.decodeIfPresent([ScopedTaskHistory].self, forKey: .scopedTaskHistory) ?? []).filter(\.valid).suffix(12))
         memoryScope = try c.decodeIfPresent(CompanionMemoryScope.self, forKey: .memoryScope)
-        if memoryScope != nil || !scopedTaskHistory.isEmpty { retireScopedContext(to: nil) }
+        if hasScopedMemoryHistory { retireScopedContext(to: nil) }
     }
 
     /// Same established identity preserves progress. Any different place, floor,
@@ -196,7 +196,42 @@ struct CompanionWorkingState: Codable, Sendable {
 
     /// Scoped task prompts cannot backfill from the unscoped dialogue archive.
     /// Old words remain reviewable history, not evidence for the current fridge.
-    var hasScopedMemoryHistory: Bool { memoryScope != nil || !scopedTaskHistory.isEmpty }
+    var hasScopedMemoryHistory: Bool { memoryScope != nil || !scopedTaskHistory.isEmpty || factBook.facts.contains { $0.scope != nil } }
+    func currentContextFact(for object: String) -> CompanionFact? {
+        guard !hasScopedMemoryHistory || memoryScope != nil else { return nil }
+        if let memoryScope { return factBook.latest(for: object, in: memoryScope) }
+        // Only a never-scoped legacy state retains its original lookup behavior.
+        return factBook.latest(for: object).flatMap { $0.scope == nil ? $0 : nil }
+    }
+    /// Explicit historical questions are cross-place recall, never a live search
+    /// or a task/scope transition. Labels below are stored IDs, not guessed names.
+    func historicalLocationReply(to question: String, now: Date = Date(), arabic: Bool, concise: Bool = false) -> String? {
+        guard question.unicodeScalars.count <= 300 else { return nil }
+        let text = question.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+        let pattern = #"^(?:where did i (?:last )?(?:leave|put|have) (?:my|our) |where was my |أين تركت |وين تركت )(.+)$"#
+        guard let expression = try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive]),
+              let match = expression.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
+              let range = Range(match.range(at: 1), in: text) else { return nil }
+        let object = String(text[range])
+        guard !ItemMemory.key(for: object).isEmpty, object.count <= ItemMemory.nameLimit else { return nil }
+        guard let fact = factBook.latest(for: object) else { return CompanionFact.unknown(object: object, arabic: arabic) }
+        let scope: String
+        if let saved = fact.scope {
+            scope = "place ID: \(saved.placeID); floor ID: \(saved.floorID); room ID: \(saved.roomID); object instance ID: \(saved.objectInstanceID ?? "unknown"); map ID: \(saved.map.mapID); frame ID: \(saved.map.frameID); revision: \(saved.map.revision)"
+        } else { scope = arabic ? "هوية المكان غير معروفة" : "place identity unknown" }
+        if concise {
+            let elapsed = ISO8601DateFormatter().string(from: fact.at)
+            let attribution = fact.hedged ? (arabic ? "تقرير سابق غير مؤكد" : "Uncertain historical report") : (arabic ? "تقرير سابق" : "Historical report")
+            return arabic ? "\(attribution)، \(elapsed): \(fact.object) \(fact.place). الموقع الحالي غير معروف."
+                : "\(attribution), \(elapsed): \(fact.object) \(fact.place). Current location unknown."
+        }
+        let date = ISO8601DateFormatter().string(from: fact.at)
+        let prefix = arabic ? "تقرير سابق، \(date). السياق الأصلي المحفوظ: \(scope). " : "Historical report, \(date). Original stored context: \(scope). "
+        return prefix + fact.recall(now: now, arabic: arabic)
+    }
+    func currentContextItem(_ name: String, in items: ItemMemory) -> RememberedItem? {
+        hasScopedMemoryHistory ? items.find(name, in: memoryScope) : items.find(name)
+    }
     func taskContextReports(_ candidates: [String]) -> [String] {
         guard hasScopedMemoryHistory else { return candidates }
         let retained = Set(reports.map(\.text))
@@ -372,6 +407,7 @@ struct CompanionWorkingState: Codable, Sendable {
         guard CompanionUtterance.parse(message) == utterance else {
             return arabic ? "لم أستطع تأكيد هذا الطلب." : "I couldn't verify that request."
         }
+        if let history = historicalLocationReply(to: message, now: now, arabic: arabic) { return history }
         switch utterance {
         case .find(let object):
             let request = message.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -379,10 +415,7 @@ struct CompanionWorkingState: Codable, Sendable {
                 return arabic ? "اختصر طلب البحث من فضلك." : "Please shorten that search request."
             }
             beginFindGoal(request, object: object)
-            if let fact = factBook.latest(for: object, in: memoryScope) { return fact.recall(now: now, arabic: arabic) }
-            if memoryScope == nil, let fact = factBook.latest(for: object), fact.scope == nil {
-                return fact.recall(now: now, arabic: arabic)
-            }
+            if let fact = currentContextFact(for: object) { return fact.recall(now: now, arabic: arabic) }
             if let search = lastSearch, search.matches(object) {
                 let ask = arabic ? " أين كان آخر مرة؟" : " Where did you last have it?"
                 return search.sentence(now: now, arabic: arabic) + (search.located ? "" : ask)

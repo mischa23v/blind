@@ -1,0 +1,70 @@
+{
+  "parent": "eb6972295f3c81009daff79f3c7eb1cf6c7aef88",
+  "corePassed": 1181,
+  "nodePassed": 397,
+  "failures": 0,
+  "skipped": 0,
+  "scope": "Native item and sensor fallback lookups honor current memory scope; explicit historical recall retains source place/time and does not invent current location. No new scoped forget behavior.",
+  "limits": [
+    "No positive native room/container scope issuer",
+    "Historical replies over thirty words remain short spoken fallback with full displayed report; owned speech successor staged",
+    "Apple SDK run for preceding checkpoint15 is ongoing; macOS Core failed and logs are awaited. Linux pass is not Apple acceptance."
+  ],
+  "sourceHashes": [
+    {
+      "path": "ios/BlindAssist/LocalImageAssistant.swift",
+      "before": "2685fb6cb32bd5bd1bf98a5e9e0baf13d642b4487bfd98b1518323fb0860ea5f",
+      "after": "426f56465d5dd7eaea1a3472a47e7191ae4c1de9b90d4a7468ba394168e0d2e9"
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "before": "5623c15a8b5ecd27e6a0b9d5b5a708c0e884d6b40a1e0418f2b5ef9baba76969",
+      "after": "3eb3f64319a81767df42f3bcb1a31bf9a90378d09784b6a5d3c42111c011466c"
+    },
+    {
+      "path": "tools/test/fixtures/scoped-memory-lookup/ExtractedAfterFullItemRecallPrefix.swift",
+      "before": null,
+      "after": "b3c05f952e2ba86bd517d180c3721f50dbf4a6a298f210c4cc63039948191b41"
+    },
+    {
+      "path": "tools/test/fixtures/scoped-memory-lookup/ExtractedAfterItemRecallPrefix.swift",
+      "before": null,
+      "after": "7d4c0b3664540a27b3d40789f4a5ef99895c527e25114bc86cb88ca7d8fe7a56"
+    },
+    {
+      "path": "tools/test/fixtures/scoped-memory-lookup/ExtractedHistoricalIngressPrefix.swift",
+      "before": null,
+      "after": "48ff8acaf8c5005abfbb1d6fc9e7f5cd3ab1aa6dbad8dce8376a30854916b597"
+    },
+    {
+      "path": "tools/test/fixtures/scoped-memory-lookup/NativeContextRecallAfterTests.swift",
+      "before": null,
+      "after": "2d4fcf3f927983dfa2c18573ad2d3abc37a8c3a86c0d3a76b02079c4dd62ba4b"
+    },
+    {
+      "path": "tools/test/fixtures/scoped-memory-lookup/NativeHistoricalRecallTests.swift",
+      "before": null,
+      "after": "9c7d03a312d010a6facd44662f6086c1cf3964a4baf5e8666ec755497510581e"
+    },
+    {
+      "path": "tools/test/fixtures/scoped-memory-lookup/NativeSensorScopeAfterTests.swift",
+      "before": null,
+      "after": "7b10651eb8ad155db8c39abe8594e6919bbd61cc1ce2d425ea8d7207bcb6caf5"
+    },
+    {
+      "path": "tools/test/scoped-memory-lookup.test.mjs",
+      "before": null,
+      "after": "3d01a0696f152c3c644000f2bc1a547253b1604bad44f5f3439a676d386f99df"
+    },
+    {
+      "path": "tools/test/physical-interaction-safety.test.mjs",
+      "before": "4bb33de48b3fbd7f8e91140752e76cfad4ebe9ff046a9a3eb0af42aba0e76150",
+      "after": "f5ef27aac2c97d253591da706b3adc65ac8da43dcba816177d4c1b67718b9874"
+    },
+    {
+      "path": "tools/test/spatial-review-regressions.test.mjs",
+      "before": "1a27008e69bec3bf7917b1a8e8d85efc9198e936229cd509703b040031b3f4ca",
+      "after": "0ef7e56ac53d661b686bb8434b9993b5616d81f01771e5a1c92b899a15d2b047"
+    }
+  ]
+}

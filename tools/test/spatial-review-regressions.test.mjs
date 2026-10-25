@@ -18,6 +18,16 @@ const before = (source, first, second) => {
   assert.ok(a >= 0 && b > a, `Expected ${first} before ${second}`);
 };
 
+function declaration(source, signature) {
+ const start=source.indexOf(signature); assert.ok(start>=0,signature);
+ const open=source.indexOf('{',start); let depth=0;
+ for(let i=open;i<source.length;i++) {
+  if(source[i]==='{') depth++;
+  if(source[i]==='}' && --depth===0) return source.slice(start,i+1);
+ }
+ assert.fail(`Unclosed declaration: ${signature}`);
+}
+
 test('room A to B during debounce cannot attach the previous room to a new capture (source)', async () => {
   const source = await read('ios/BlindAssist/NavigationModel.swift');
   const capture = section(source, 'private func updatePassiveObjectMemory', 'private func importFurnitureHistory');
@@ -33,13 +43,25 @@ test('room A to B during debounce cannot attach the previous room to a new captu
 
 test('yesterday generic cup cannot outrank today explicitly saved cup or user report (source)', async () => {
   const source = await read('ios/BlindAssist/NavigationModel.swift');
-  const find = section(source, 'private func findWithSensors', 'private func locate(');
-  assert.match(find, /let explicitEvidenceAt = max\(fact\?\.at \?\? \.distantPast, items\.find\(name\)\?\.savedAt \?\? \.distantPast\)/);
-  // Strict comparison also keeps equally dated, stronger explicit evidence first.
-  assert.match(find, /recall\.sightings\.contains\(where: \{ \$0\.observedAt > explicitEvidenceAt \}\)/);
-  before(find, 'let explicitEvidenceAt =', 'ObservedObjectMemory.answer(');
-  before(find, '$0.observedAt > explicitEvidenceAt', 'ObservedObjectMemory.answer(');
-  assert.match(find, /if let item = items\.find\(name\), fact\.map\(\{ item\.savedAt > \$0\.at \}\) \?\? true/);
+  const find = declaration(source, 'private func findWithSensors(');
+  const checkPrecedence = body => {
+    assert.match(body, /let explicitEvidenceAt = max\(fact\?\.at \?\? \.distantPast, companionWorkingState\.currentContextItem\(name, in: items\)\?\.savedAt \?\? \.distantPast\)/);
+    // Strict comparison also keeps equally dated, stronger scoped evidence first.
+    assert.match(body, /recall\.sightings\.contains\(where: \{ \$0\.observedAt > explicitEvidenceAt \}\)/);
+    before(body, 'let explicitEvidenceAt =', 'ObservedObjectMemory.answer(');
+    before(body, '$0.observedAt > explicitEvidenceAt', 'ObservedObjectMemory.answer(');
+    assert.match(body, /if let item = companionWorkingState\.currentContextItem\(name, in: items\), fact\.map\(\{ item\.savedAt > \$0\.at \}\) \?\? true/);
+    assert.doesNotMatch(body, /items\.find\(name\)/, 'Global label matching cannot select another scope.');
+  };
+  checkPrecedence(find);
+  for (const [from, to] of [
+    ['companionWorkingState.currentContextItem(name, in: items)', 'items.find(name)'],
+    ['$0.observedAt > explicitEvidenceAt', '$0.observedAt >= explicitEvidenceAt'],
+    ['item.savedAt > $0.at', 'item.savedAt >= $0.at'],
+  ]) {
+    assert.ok(find.includes(from));
+    assert.throws(() => checkPrecedence(find.replaceAll(from, to)), { name: 'AssertionError' }, from);
+  }
 });
 
 test('scoped deletion cutoffs reload from private storage after restart (source)', async () => {

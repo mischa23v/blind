@@ -3,10 +3,36 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const read=p=>readFile(new URL('../../'+p,import.meta.url),'utf8');
+function declaration(source, signature) {
+ const start=source.indexOf(signature); assert.ok(start>=0,signature);
+ const open=source.indexOf('{',start); let depth=0;
+ for(let i=open;i<source.length;i++) {
+  if(source[i]==='{') depth++;
+  if(source[i]==='}' && --depth===0) return source.slice(start,i+1);
+ }
+ assert.fail(`Unclosed declaration: ${signature}`);
+}
 test('unvalidated instance-depth binding cannot speak approach or reach guidance',async()=>{
  const s=await read('ios/BlindAssist/NavigationModel.swift');
  assert.match(s,/private static let objectInteractionGuidanceValidated = false/);
- assert.match(s,/if Self.objectInteractionGuidanceValidated, sameFrame/);
+ const find=declaration(s,'private func findWithSensors(');
+ const checkSavedGeometry=body=>{
+  const start=body.indexOf('if item.scope == nil, Self.objectInteractionGuidanceValidated,');
+  const end=body.indexOf('            say(ItemMemory.answer(',start);
+  assert.ok(start>=0 && end>start,'Exact saved-item geometry conditional before its answer');
+  const spatial=body.slice(start,end);
+  assert.match(spatial,/sameFrame, let target = item\.position, let observation = lastObservation/);
+  assert.match(spatial,/let here = indoor\.mapPosition\(camera: observation\.camera\)/);
+  assert.match(spatial,/let facing = currentBodyForward\(\)\.flatMap\(\{ indoor\.mapDirection\(\$0\) \}\)/);
+  assert.match(spatial,/let measured = SpatialFacts\.relation\(from: here, facing: facing, to: target\)/);
+  assert.match(spatial,/relation = SpatialFacts\.phrase\(label: item\.name, relation: measured/);
+ };
+ checkSavedGeometry(find);
+ const marker='if item.scope == nil, Self.objectInteractionGuidanceValidated, sameFrame,';
+ for(const gate of ['item.scope == nil, ', 'Self.objectInteractionGuidanceValidated, ', 'sameFrame,']) {
+  assert.ok(find.includes(marker));
+  assert.throws(()=>checkSavedGeometry(find.replace(marker,marker.replace(gate,''))),{name:'AssertionError'},`Missing saved-item geometry gate: ${gate}`);
+ }
  assert.match(s,/if !Self.objectInteractionGuidanceValidated \{\s*phrase = ObjectSearch.unconfirmed/);
  assert.match(s,/recordSearch\(target, located: Self.objectInteractionGuidanceValidated && located != nil\)/);
  assert.match(s,/if Self.objectInteractionGuidanceValidated, let located/);
