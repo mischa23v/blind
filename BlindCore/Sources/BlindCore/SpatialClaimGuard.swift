@@ -26,7 +26,7 @@ public enum SpatialClaimGuard {
     // Quotations and negations are not stripped: untrusted physical words remain blocked.
     private static let direction = regex(#"\b((?:top|bottom|upper|lower) (?:corner|edge)|ahead|behind|above|below|underneath|beside|next to|in front of|nearby|overhead|north|south|east|west|northwest|northeast|southwest|southeast|clockwise|counterclockwise|anticlockwise|forward|backwards?|towards?|upstairs|downstairs)\b|\b(?:to|on|at|from|toward|towards)\s+(?:(?:your|my|the|its|their)\s+)?(?:far\s+)?(?:left|right)\b|\b(?:left|right)[ -](?:hand|side|edge|corner)\b|\b(?:is|seems|appears|looks)\s+(?:(?:roughly|probably|slightly|just)\s+)*(?:left|right)\b|^\s*(?:(?:roughly|maybe|probably|slightly|just|go|turn)\s+)*(?:left|right)\s*[.!?,;]*\s*$|\b(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|[0-9]+)\s*o['’]?clock\b"#)
     private static let objectRelation = regex(#"\b(?:on|in|under|over|near|by|against|inside|outside|between|across|past|along)\s+(?:(?:the|a|an|your|my|this|that|its|their)\s+)?(?:(?:small|large|wooden|white|black|red|blue|green|open|closed|nearest|farther|left|right)\s+){0,3}(?:desk|table|sofa|couch|bed|chair|door|window|wall|floor|shelf|cabinet|cupboard|drawer|counter|nightstand|lamp|screen|television|tv|socket|outlet|bench|stove|oven|sink|knife|cup|mug|bottle|plate|bag|box|handle|hand|arm|foot|feet|body|person|people|car|road|street|stairs?|step|curb|kerb|hole|obstacle)\b|\b(?:near|close to|far from|away from|next to|within reach of)\s+(?:you|me|your|my)\b|\b(?:within|in|out of|beyond)\s+(?:(?:your|easy|safe|arm['’]?s)\s+)*(?:reach|fingertips?|hands?)\b|\b(?:reachable|graspable|nearest|closest|closer|nearer|farther|close enough|easy to reach|safe to (?:touch|hold|grab|pick up|reach))\b"#)
-    private static let physicalAction = regex(#"\b(?:walk|go|approach|follow|reach|grab|grasp|touch|climb|descend|crawl|crouch|bend|lean|stretch(?:ing)?|extend(?:ing)?|lift|pull|push|press|squeez(?:e|ing)|swing|jump|run|cross|proceed|advance|retreat|rotate|tilt|turn(?:ing)?|move|step|pick|pick[ -]?up|pick\s+(?:it|that|this|them)\s+up)\b|\b(?:take|hold|handle|cut|open|close|eat|drink|taste|smell|put|place|set|bring|carry)\s+(?:(?:the|a|an|your|this|that|it|them|one|both)\b|[a-z]+\s+(?:knife|cup|mug|bottle|door|drawer|medicine|food)\b)|\b(?:keep|start|begin|continue)\s+(?:walking|moving|reaching|climbing|running|touching|holding|turning)\b"#)
+    private static let physicalAction = regex(#"\b(?:walk|go|approach|follow|reach|grab|grasp|touch|climb|descend|crawl|crouch|bend|lean|stretch(?:ing)?|extend(?:ing)?|lift|pull|push|press|squeez(?:e|ing)|swing|jump|run|cross|proceed|advance|retreat|rotate|tilt|turn(?:ing)?|move|step|pick|pick[ -]?up|pick\s+(?:it|that|this|them)\s+up)\b|\b(?:take|hold|handle|cut|open|close|eat|drink|taste|smell|put|place|set|bring|carry|light|heat)\s+(?:(?:the|a|an|your|this|that|it|them|one|both)\b|[a-z]+\s+(?:knife|cup|mug|bottle|door|drawer|medicine|food)\b)|\b(?:keep|start|begin|continue)\s+(?:walking|moving|reaching|climbing|running|touching|holding|turning)\b"#)
     private static let arDirection = regex(#"(يمين|يسار|شمال|جنوب|شرق|غرب|امام|قدام|خلف|وراء|ورا[يكه]|فوق|تحت|اسفل|اعلي|بجانب|بجوار|جنب|قرب|قريب|اقرب|بعيد|بينك|بين يديك|في متناول|متناول يد|في اتجاه|باتجاه)"#)
     private static let arObjectRelation = regex(#"(?:علي|على|داخل|خارج|عند|بين|حول)\s+(?:ال|هذا |هذه |تلك |ذلك )?(?:مكتب|طاول|سرير|اريك|كنب|كرسي|باب|نافذ|حائط|جدار|ارض|رف|خزان|درج|مصباح|شاش|تلفاز|مقبض|يد|ذراع|قدم|جسم|شخص|سيار|طريق|سكين|كوب|زجاج|حقيب)|(?:يمكنك|تقدر|تستطيع)\s+(?:الوصول|الامساك|التقاط|اخذ|اخذه|اخذها|لمس)"#)
     private static let arPhysicalAction = regex(#"(?:^|[\s،؛.!؟:«»"'()])(?:و|ف)?(?:امش(?:ي)?|روح|سر|اقترب|اقربي|اتبع|اتبعي|تبع|الحق|امسك(?:ه|ها|يه|يها)?|التقط(?:ه|ها)?|التقطي|خذ(?:ه|ها|يه|يها)?|خدي|المس(?:ه|ها)?|المسي|تسلق|اصعد|انزل|اقفز|ازحف|انحن|ميل|مل|مد(?:ي)?|مدد|ارفع(?:ه|ها)?|ارفعى|اسحب(?:ه|ها)?|ادفع(?:ه|ها)?|اضغط|اضغطي|لف|لفي|ادر|دور|دوري|حرك(?:ه|ها)?|تقدم|تراجع|اعبر|اقطع|افتح(?:ه|ها)?|اغلق(?:ه|ها)?|ضع(?:ه|ها)?|حط(?:ه|ها)?|كل|اشرب|ذق|شم)(?:[\s،؛.!؟:«»"'()]|$)|(?:يمكنك|يمكن|تقدر|تستطيع|حاول|جرب)\s+(?:ان\s+)?(?:تمشي|تقترب|تتبع|توصل|تطول(?:ه|ها)?|تلف|تدور|تمسك(?:ه|ها)?|تاخذ(?:ه|ها)?|تلمس(?:ه|ها)?|تتسلق|تصعد|تنزل|تمد|تحرك|تفتح|تغلق|تاكل|تشرب)"#)
@@ -75,14 +75,22 @@ public enum SpatialClaimGuard {
     }
 
     public static func containsSpatialClaim(_ text: String) -> Bool {
+        // Treat hyphenated phrases like their spoken equivalents so separators
+        // cannot hide a relation (e.g. "in-front-of" is still physical geometry).
+        let canonical = text.replacingOccurrences(of: #"[-‐‑‒–—−]+"#, with: " ", options: .regularExpression)
+        // Only a scientific subject AND bounded scientific complement disambiguate
+        // "bend". Replace that verb, not the sentence or quotations: every other
+        // movement, location, distance and current-world claim remains inspected.
+        let science = regex(#"\b((?:(?:different|visible)\s+)?(?:wavelengths|light rays|rays of light)\s+)bend(\s+(?:(?:by|at)\s+different\s+(?:amounts|angles)|when\s+they\s+pass\s+through\s+(?:water|glass|a prism)))(?=\s*(?:[.!?;,]|$)|\s+(?:in|through)\s+(?:water droplets|a prism)\s*(?:[.!?;,]|$))"#)
+            .stringByReplacingMatches(in: canonical, range: NSRange(canonical.startIndex..., in: canonical), withTemplate: "$1refract$2")
         // Remove only fixed conversational idioms, never quoted regions or whole clauses.
         // Any later physical claim in the same response is still checked.
         let prose = regex(#"\b(?:take your time|move on to (?:another|the next) (?:topic|question|subject))\b|(?:^|\s)خذ وقتك(?=[\s.!؟،]|$)"#)
-            .stringByReplacingMatches(in: text, range: NSRange(text.startIndex..., in: text), withTemplate: "")
+            .stringByReplacingMatches(in: science, range: NSRange(science.startIndex..., in: science), withTemplate: "")
         let arabic = normalizeArabic(prose)
         if found(direction, prose) || found(objectRelation, prose) || found(physicalAction, prose) ||
             found(arDirection, arabic) || found(arObjectRelation, arabic) || found(arPhysicalAction, arabic) ||
-            found(clearance, text) || found(stepCount, text) || found(arClearance, arabic) || found(arStepCount, arabic) { return true }
+            found(clearance, canonical) || found(stepCount, canonical) || found(arClearance, arabic) || found(arStepCount, arabic) { return true }
         // Conservative lexical defense, not a semantic safety proof. Preserve hazard
         // context across punctuation; ambiguous pronoun locations fail closed.
         let hasHazard = found(hazard, arabic) || found(arHazard, arabic)

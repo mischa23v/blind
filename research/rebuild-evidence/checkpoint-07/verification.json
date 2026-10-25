@@ -1,0 +1,51 @@
+{
+  "checkpoint": "reconstruction-07-conversation-reference",
+  "baseCommit": "cd368af98dcce0e0b1ab82e8983a5f9d373e753e",
+  "dateUTC": "2026-10-25",
+  "core": {
+    "tests": 1023,
+    "failures": 0,
+    "exitCode": 0
+  },
+  "node": {
+    "tests": 379,
+    "passed": 379,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "ordinaryConversation": {
+    "scope": "authored deterministic guard/stream/relay probes, not real model accuracy",
+    "fixes": [
+      "Scoped rainbow/science explanations",
+      "Whole-request metalinguistic questions",
+      "Abstract acknowledgments without unrelated history contamination",
+      "Stronger handling-verb and hyphenated physical-instruction rejection"
+    ],
+    "alreadyPassedBaseline": [
+      "arithmetic including forty-two",
+      "harmless joke",
+      "backpack acknowledgments"
+    ]
+  },
+  "referenceReading": {
+    "newCoreTests": 23,
+    "officialPDFReplay": 5,
+    "adapterRejectionChecks": 4,
+    "source": "https://media3.bosch-home.com/Documents/9001427628_A.pdf",
+    "sourceSHA256": "dcbd212e6c8f564d3ef02e97b0d261ee547f32e751a46679ed2f0db27fc71d3c",
+    "rawSourcePublished": false,
+    "speechCallbacks": "synthetic ledger completion, not native audio"
+  },
+  "limits": [
+    "Native exact-model manual/PDF adapter and native reference speech bridge remain absent",
+    "No full semantic safety guarantee or actual on-device model validation",
+    "Apple tokenizer branch and device execution unverified",
+    "Not full app restoration"
+  ],
+  "artifactSHA256": {
+    "node-tests.log": "f616b01bc54a0d57e6631a352aea7f8464de51420344f196c3d2f147cfb0ebb4",
+    "core-tests.log": "43ba1f6df13c99c730440ae28227db22efe96a28a942e306e313085dbda6a94f",
+    "source-hashes.json": "301bd29500b0d22d4981398378e0a64c9cdf63c00d940e21966953eb796283e0"
+  }
+}

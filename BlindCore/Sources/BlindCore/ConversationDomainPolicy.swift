@@ -58,6 +58,10 @@ public enum ConversationDomainPolicy {
     /// identity AND position for that specific target. This bounded lexical gate
     /// does not establish either prerequisite or claim semantic completeness.
     public static func requiresPhysicalVerification(for question: String) -> Bool {
+        // An exact language-analysis frame quotes text to discuss, not execute.
+        // This is request-only: model outputs still pass all physical/evidence
+        // guards. Mixed clauses and instructions outside the quote do not qualify.
+        if isQuotedLanguageQuestion(question) { return false }
         if RoadCrossingPolicy.requiresCodeOwnedReply(question) { return true }
         let text = normalizedPhysicalRequest(question)
         guard !text.isEmpty else { return false }
@@ -117,6 +121,23 @@ public enum ConversationDomainPolicy {
         if directionQuestion && (local || target) && !(paperGeometry && !target) { return true }
         if has(#"\b(?:am i|are we) (?:already |now )?(?:at|beside|near|there|here)\b|(?:^| )هل (?:انا|احنا|نحن) (?:عند|جنب|بجانب|وصلنا)(?: |$)"#) { return true }
         return ["left or right", "should i go this way", "this way", "يمين ولا يسار", "يمين او يسار", "من هنا"].contains(command)
+    }
+
+    private static func isQuotedLanguageQuestion(_ question: String) -> Bool {
+        let text = question.trimmingCharacters(in: .whitespacesAndNewlines)
+        // Matched delimiters only. Do not erase all quoted regions or use the
+        // presence of "story"/"meaning" as a whole-message bypass.
+        for (open, close) in [("“", "”"), ("‘", "’"), ("\"", "\""), ("'", "'"), ("«", "»")] {
+            let quoted = NSRegularExpression.escapedPattern(for: open) + #"[^\r\n"“”‘’«»']{1,160}"# + NSRegularExpression.escapedPattern(for: close)
+            let patterns = [
+                #"^what does (?:the (?:word|phrase|sentence) )?"# + quoted + #" mean\s*[?]?$"#,
+                #"^what is the meaning of (?:the (?:word|phrase|sentence) )?"# + quoted + #"\s*[?]?$"#,
+                #"^explain the (?:word|phrase|sentence) "# + quoted + #"\s*[.!?]?$"#,
+                #"^in the story,? why does the character (?:ask|say) "# + quoted + #"\s*[?]?$"#
+            ]
+            if patterns.contains(where: { text.range(of: $0, options: [.regularExpression, .caseInsensitive]) != nil }) { return true }
+        }
+        return false
     }
 
     private static func requiresBanknoteInspection(_ text: String) -> Bool {

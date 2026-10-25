@@ -1,0 +1,52 @@
+{
+  "status": "applied_and_frozen",
+  "recorded_at": "2026-10-25T02:59:14.762165+00:00",
+  "all_applied_paths_were_absent": true,
+  "existing_Core_or_native_files_overwritten": false,
+  "reviewed_production_source_unchanged": true,
+  "assertion_changes": "Source-bearing equality/nil diagnostics changed to boolean checks; speech/reconstruction comparisons also use exact UTF-8 bytes. Reviewed before final freeze.",
+  "source_hashes": {
+    "BlindCore/Sources/BlindCore/CompanionReferenceReading.swift": "5d4ae5c5d13ecb7889e20369b61b971ac645e721fd1396c5a50bf09ebdb4422f",
+    "BlindCore/Tests/BlindCoreTests/CompanionReferenceReadingTests.swift": "351098869555cda9635cd56445bca239c4840d9cf55b6912fe7d16fa022a8afe",
+    "BlindCore/Tests/BlindCoreTests/Fixtures/reference-reading-authored.json": "74cd543716c7f1e5d176e0ae03aa790e37319bb50d1dbad2e8b36cc6b85aba5b"
+  },
+  "toolchain": "Swift6.4.1 Linux, serial jobs1 with dedicated scratch and writable caches",
+  "tests": [
+    {
+      "scope": "merged focused and affected Core",
+      "tests": 75,
+      "failures": 0,
+      "exit": 0,
+      "log": "logs/merged-apply/01-focused-and-affected.log"
+    },
+    {
+      "scope": "preserved real-source generic-path defect",
+      "tests": 1,
+      "failures": 1,
+      "expected_failure": true,
+      "exit": 1,
+      "log": "logs/merged-apply/02-official-pdf-preserved-failure.log"
+    },
+    {
+      "scope": "real PDF extraction through Core with synthetic speech outcomes",
+      "tests": 5,
+      "failures": 0,
+      "exit": 0,
+      "log": "logs/merged-apply/03-official-pdf-core-replay.log"
+    },
+    {
+      "scope": "private-source adapter rejection checks",
+      "tests": 4,
+      "failures": 0,
+      "exit": 0,
+      "log": "logs/merged-apply/04-adapter-rejection-tests.log"
+    }
+  ],
+  "merged_dependency_snapshot": "MERGED_CORE_SNAPSHOT_SHA256SUMS.txt",
+  "official_source_evidence": "official-pdf-redacted-evidence.json",
+  "native_manual_pdf_adapter": "absent",
+  "native_playback_validation": "not run; callbacks and timings are synthetic",
+  "commit": null,
+  "pushed": false,
+  "aggregate_verification": "See research/rebuild-evidence/checkpoint-07/verification.json for the merged current-source run."
+}

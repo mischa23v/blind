@@ -1,0 +1,78 @@
+warning: /home/agent/.config/swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /home/agent/.config/swiftpm/security is not accessible or not writable, disabling user-level cache features.
+warning: /home/agent/.cache/org.swift.swiftpm is not accessible or not writable, disabling user-level cache features.
+warning: 'blindcore': failed loading cached manifest for 'blindcore': encountered an I/O error (code: 30) while reading /home/agent/.cache/org.swift.swiftpm/manifests
+warning: 'blindcore': failed storing manifest for 'blindcore' in cache: encountered an I/O error (code: 30) while reading /home/agent/.cache/org.swift.swiftpm/manifests
+warning: 'blindcore': failed closing manifest db cache: encountered an I/O error (code: 30) while reading /home/agent/.cache/org.swift.swiftpm/manifests
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 328]
+[Planning deferred tasks]
+[31 / 102] BlindCore_BlindCore
+[59 / 103]
+[61 / 113] BlindCore
+[64 / 113] BlindCore
+[69 / 113] BlindCore
+/workspace/shared/blind-reference-test-workspace/BlindCore/Sources/BlindCore/CompanionReportedStep.swift:10:16: warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+ 8 |     public let report: String
+ 9 |     public let goalRevision: String
+10 |     public let source = "model-associated direct user report; not sensor confirmed"
+   |                |- warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+   |                |- note: set the initial value via the initializer or explicitly define a CodingKeys enum including a 'source' case to silence this warning
+   |                `- note: make the property mutable instead
+11 |     public static func proposed(step: String, currentStep: String, quote: String,
+12 |                                 latest: String, goalRevision: String) -> Self? {
+[70 / 113] BlindCore
+[71 / 113] SensorReplay-product
+[72 / 113] SensorReplay-product
+[74 / 113] BlindCore
+/workspace/shared/blind-reference-test-workspace/BlindCore/Sources/BlindCore/DebugSessionLog.swift:89:13: warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+ 87 | 
+ 88 |     private struct Record: Codable, Sendable {
+ 89 |         let schema = 1
+    |             |- warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+    |             |- note: set the initial value via the initializer or explicitly define a CodingKeys enum including a 'schema' case to silence this warning
+    |             `- note: make the property mutable instead
+ 90 |         let session: UUID
+ 91 |         let event: UUID
+[74 / 113] AppleModelEvaluation-product
+[80 / 117] SensorReplay-product
+[85 / 121] RealSceneEvaluation-product
+[86 / 121] SensorReplay-product
+[89 / 121] RealSceneEvaluation-product
+[94 / 125] RealSceneEvaluation-product
+[96 / 125] MobilitySimulation-product
+[100 / 130] ImageModelEvaluation-product
+[101 / 140] BlindCoreTests-product
+[111 / 141] ImageModelEvaluation-product
+[113 / 141] ImageModelEvaluation-product
+[115 / 141] ImageModelEvaluation-product
+[116 / 141] BlindCoreTests-test-runner
+[117 / 141] BlindCoreTests-test-runner
+[119 / 141] BlindCoreTests-product
+[120 / 141] BlindCoreTests-product
+[121 / 141] BlindCoreTests-product
+[121 / 141]
+[126 / 145] BlindCoreTests-product
+[128 / 145] AppleModelEvaluation-product
+[132 / 146] RealSceneEvaluation-product
+[133 / 146] MobilitySimulation-product
+[134 / 146] ImageModelEvaluation-product
+[135 / 146] BlindCoreTests-product
+[137 / 146] BlindCore-product
+[138 / 146]
+[142 / 149] BlindCoreTests-test-runner
+[143 / 149] BlindCoreTests-test-runner
+[150 / 150] AppleModelEvaluation-product
+Build complete! (64.58 secs)
+Test Suite 'Selected tests' started at 2026-10-25 04:32:17.710
+Test Suite 'ReferenceLegacyFailureWitnessTests' started at 2026-10-25 04:32:17.711
+Test Case 'ReferenceLegacyFailureWitnessTests.testOriginalOversizedReferenceBlocksAreNotLostToModelBudget' started at 2026-10-25 04:32:17.711
+/workspace/shared/blind-reference-test-workspace/BlindCore/Tests/BlindCoreTests/ReferenceLegacyFailureWitnessTests.swift:18: error: ReferenceLegacyFailureWitnessTests.testOriginalOversizedReferenceBlocksAreNotLostToModelBudget : XCTAssertEqual failed: ("[BlindCore.CompanionEvidence(id: "authored-0", kind: BlindCore.CompanionEvidenceKind.historicalMemory, text: "Authored source block 0: Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. ", source: "authored local reference", observedAt: nil, expiresAt: nil)]") is not equal to ("[BlindCore.CompanionEvidence(id: "authored-0", kind: BlindCore.CompanionEvidenceKind.historicalMemory, text: "Authored source block 0: Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. ", source: "authored local reference", observedAt: nil, expiresAt: nil), BlindCore.CompanionEvidence(id: "authored-1", kind: BlindCore.CompanionEvidenceKind.historicalMemory, text: "Authored source block 1: Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. ", source: "authored local reference", observedAt: nil, expiresAt: nil), BlindCore.CompanionEvidence(id: "authored-2", kind: BlindCore.CompanionEvidenceKind.historicalMemory, text: "Authored source block 2: Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. ", source: "authored local reference", observedAt: nil, expiresAt: nil), BlindCore.CompanionEvidence(id: "authored-3", kind: BlindCore.CompanionEvidenceKind.historicalMemory, text: "Authored source block 3: Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. Keep this entire condition and its negation. ", source: "authored local reference", observedAt: nil, expiresAt: nil)]") - The generic model-result path must not lose original reference blocks. This is a preserved failure witness, not the new direct-reading API.
+Test Case 'ReferenceLegacyFailureWitnessTests.testOriginalOversizedReferenceBlocksAreNotLostToModelBudget' failed (0.002 seconds)
+Test Suite 'ReferenceLegacyFailureWitnessTests' failed at 2026-10-25 04:32:17.714
+	 Executed 1 test, with 1 failure (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'Selected tests' failed at 2026-10-25 04:32:17.714
+	 Executed 1 test, with 1 failure (0 unexpected) in 0.002 (0.002) seconds
+Note: Some test targets reported failures:
+  - BlindCoreTests (XCTest)

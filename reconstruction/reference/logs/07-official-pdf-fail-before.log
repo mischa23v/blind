@@ -1,0 +1,26 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 328]
+[Planning deferred tasks]
+[5 / 15] BlindCoreTests-product
+[6 / 16] BlindCoreTests-product
+[8 / 19] BlindCoreTests-product
+[9 / 19] BlindCoreTests-product
+[11 / 18] BlindCoreTests-product
+[15 / 19] BlindCoreTests-product
+[16 / 19] BlindCoreTests-product
+[19 / 22] BlindCoreTests-test-runner
+[20 / 22] BlindCoreTests-test-runner
+[24 / 24] BlindCoreTests-test-runner
+Build complete! (7.11 secs)
+Test Suite 'Selected tests' started at 2026-10-25 04:42:34.458
+Test Suite 'OfficialManufacturerLegacyFailureWitnessTests' started at 2026-10-25 04:42:34.459
+Test Case 'OfficialManufacturerLegacyFailureWitnessTests.testActualLongPDFSectionSurvivesGenericModelEvidencePath' started at 2026-10-25 04:42:34.459
+/workspace/shared/blind-reference-test-workspace/BlindCore/Tests/BlindCoreTests/OfficialManufacturerLegacyFailureWitnessTests.swift:16: error: OfficialManufacturerLegacyFailureWitnessTests.testActualLongPDFSectionSurvivesGenericModelEvidencePath : XCTAssertEqual failed: ("0") is not equal to ("1") - Expected-failure witness: complete real source record must not disappear.
+Test Case 'OfficialManufacturerLegacyFailureWitnessTests.testActualLongPDFSectionSurvivesGenericModelEvidencePath' failed (0.002 seconds)
+Test Suite 'OfficialManufacturerLegacyFailureWitnessTests' failed at 2026-10-25 04:42:34.461
+	 Executed 1 test, with 1 failure (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'Selected tests' failed at 2026-10-25 04:42:34.461
+	 Executed 1 test, with 1 failure (0 unexpected) in 0.002 (0.002) seconds
+Note: Some test targets reported failures:
+  - BlindCoreTests (XCTest)

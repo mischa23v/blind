@@ -1,0 +1,84 @@
+{
+  "status": "applied_core_focused_and_real_source_verified",
+  "date": "2026-10-25",
+  "tested_commit": null,
+  "live_source_edited": true,
+  "pushed": false,
+  "toolchain": "Swift 6.4.1 x86_64 Linux",
+  "jobs": 1,
+  "new_reference_test_count": 23,
+  "tests": [
+    {
+      "scope": "preserved generic-path failure witness",
+      "count": 1,
+      "failures": 1,
+      "expected_failure": true,
+      "exit": 1,
+      "log": "logs/01-fail-before.log"
+    },
+    {
+      "scope": "final focused and affected Core",
+      "count": 75,
+      "failures": 0,
+      "exit": 0,
+      "log": "logs/05-final-focused-and-affected.log"
+    },
+    {
+      "scope": "final portable package snapshot, expected-failure witness kept outside passing target",
+      "count": 963,
+      "failures": 0,
+      "exit": 0,
+      "log": "logs/06-final-full-portable-package.log"
+    }
+  ],
+  "fixture_provenance": "authored synthetic, no real manufacturer or historical transcript data",
+  "source_sha256": {
+    "BlindCore/Sources/BlindCore/CompanionReferenceReading.swift": "5d4ae5c5d13ecb7889e20369b61b971ac645e721fd1396c5a50bf09ebdb4422f",
+    "BlindCore/Tests/BlindCoreTests/CompanionReferenceReadingTests.swift": "9474244af75f7118696bc62571efdf2b950b36a7ef0bc4672c60ef8e9ad559eb",
+    "BlindCore/Tests/BlindCoreTests/Fixtures/reference-reading-authored.json": "74cd543716c7f1e5d176e0ae03aa790e37319bb50d1dbad2e8b36cc6b85aba5b"
+  },
+  "native_manual_pdf_adapter": "absent",
+  "native_speech_adapter": "proposal only, not wired",
+  "apple_sdk_or_native_tokenizer": "not run",
+  "real_pdf_or_photo_replay": "One official manufacturer PDF text-layer extraction + Core replay executed; no photo/OCR or native audio run.",
+  "review": "two metadata/model-label findings fixed; final Core review clear; official replay metadata/locator and failure-log leak guards tightened and rerun",
+  "official_pdf_replay": {
+    "count": 5,
+    "failures": 0,
+    "exit": 0,
+    "log": "logs/09-final-official-pdf-core-replay.log",
+    "preserved_failure_count": 1,
+    "preserved_failure_exit": 1,
+    "failure_log": "logs/07-official-pdf-fail-before.log",
+    "redacted_evidence": "official-pdf-redacted-evidence.json",
+    "source_bytes": 699,
+    "typed_result_encoded_bytes": 1135,
+    "model_budget_bytes": 900,
+    "chunks": 5,
+    "playback": "synthetic ledger outcomes/timing",
+    "native_pdf_adapter": "absent"
+  },
+  "official_pdf_adapter_rejections": {
+    "count": 4,
+    "failures": 0,
+    "exit": 0,
+    "log": "logs/11-final-official-adapter-rejection-tests.log"
+  },
+  "application": {
+    "all_target_paths_previously_absent": true,
+    "existing_files_overwritten": [],
+    "new_core_files": 3,
+    "support_files": 25,
+    "assertion_change": "diagnostic-only boolean comparisons/nil checks; original test logic retained",
+    "merged_evidence": "merged-apply-verification.json",
+    "native_manual_pdf_adapter": "absent",
+    "push": "not performed during this earlier staged test run",
+    "frozen": true,
+    "fresh_results": {
+      "focused_Core": 75,
+      "official_PDF_replay": 5,
+      "adapter_rejections": 4,
+      "preserved_real_source_failure": 1
+    }
+  }
+}

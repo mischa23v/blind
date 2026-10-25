@@ -1,0 +1,89 @@
+warning: /home/agent/.config/swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /home/agent/.config/swiftpm/security is not accessible or not writable, disabling user-level cache features.
+warning: /home/agent/.cache/org.swift.swiftpm is not accessible or not writable, disabling user-level cache features.
+warning: 'blindcore': failed loading cached manifest for 'blindcore': encountered an I/O error (code: 30) while reading /home/agent/.cache/org.swift.swiftpm/manifests
+warning: 'blindcore': failed storing manifest for 'blindcore' in cache: encountered an I/O error (code: 30) while reading /home/agent/.cache/org.swift.swiftpm/manifests
+warning: 'blindcore': failed closing manifest db cache: encountered an I/O error (code: 30) while reading /home/agent/.cache/org.swift.swiftpm/manifests
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 328]
+[Planning deferred tasks]
+[3 / 7] BlindCore
+[4 / 8] BlindCore
+[11 / 13] AppleModelEvaluation-product
+[16 / 19] BlindCore
+[19 / 20] BlindCore
+[20 / 20] AppleModelEvaluation-product
+[25 / 55] RealSceneEvaluation-product
+[26 / 55] MobilitySimulation-product
+[28 / 58] MobilitySimulation-product
+[31 / 58] RealSceneEvaluation-product
+[32 / 59] SensorReplay-product
+[36 / 60] SensorReplay-product
+[38 / 61] SensorReplay-product
+[39 / 62] MobilitySimulation-product
+[45 / 65] ImageModelEvaluation-product
+[49 / 66] BlindCore_BlindCoreTests
+[54 / 64] BlindCore_BlindCoreTests
+[56 / 74] BlindCoreTests-product
+[59 / 73] BlindCoreTests-product
+[61 / 73] BlindCoreTests-product
+[63 / 75] BlindCoreTests-product
+[64 / 75] BlindCoreTests-product
+[65 / 75] BlindCoreTests-product
+[66 / 75] BlindCoreTests-product
+[67 / 75] BlindCoreTests-product
+[71 / 76] BlindCoreTests-product
+[75 / 82] BlindCoreTests-test-runner
+[81 / 81] BlindCoreTests-test-runner
+Build complete! (26.90 secs)
+Test Suite 'Selected tests' started at 2026-10-25 04:33:51.391
+Test Suite 'CompanionReferenceReadingTests' started at 2026-10-25 04:33:51.392
+Test Case 'CompanionReferenceReadingTests.testAuthoredFixtureIsExplicitlyNotManufacturerOrHistoricalEvidence' started at 2026-10-25 04:33:51.392
+Test Case 'CompanionReferenceReadingTests.testAuthoredFixtureIsExplicitlyNotManufacturerOrHistoricalEvidence' passed (0.002 seconds)
+Test Case 'CompanionReferenceReadingTests.testBodyMatchingCannotAssemblePhraseAcrossBlocksOrHeadingBoundary' started at 2026-10-25 04:33:51.395
+Test Case 'CompanionReferenceReadingTests.testBodyMatchingCannotAssemblePhraseAcrossBlocksOrHeadingBoundary' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testBodyRangeMustBeValidAndCannotSplitUnicodeScalar' started at 2026-10-25 04:33:51.395
+Test Case 'CompanionReferenceReadingTests.testBodyRangeMustBeValidAndCannotSplitUnicodeScalar' passed (0.0 seconds)
+Test Case 'CompanionReferenceReadingTests.testBusyLedgerDoesNotSkipChunkOrPreemptExistingSpeech' started at 2026-10-25 04:33:51.396
+Test Case 'CompanionReferenceReadingTests.testBusyLedgerDoesNotSkipChunkOrPreemptExistingSpeech' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testCompleteWholeAuthoredSequenceThroughActualLedgerCallbacks' started at 2026-10-25 04:33:51.397
+Test Case 'CompanionReferenceReadingTests.testCompleteWholeAuthoredSequenceThroughActualLedgerCallbacks' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testCompletionAfterHazardDoesNotAdvanceOrCancelIndependentAlert' started at 2026-10-25 04:33:51.398
+Test Case 'CompanionReferenceReadingTests.testCompletionAfterHazardDoesNotAdvanceOrCancelIndependentAlert' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testDeadlineDuringSpeechRequiresWithdrawalRatherThanSuccessfulDelivery' started at 2026-10-25 04:33:51.399
+Test Case 'CompanionReferenceReadingTests.testDeadlineDuringSpeechRequiresWithdrawalRatherThanSuccessfulDelivery' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testEveryEnglishAndArabicChunkIncludesAttributionWithinThirtyFiveWords' started at 2026-10-25 04:33:51.400
+Test Case 'CompanionReferenceReadingTests.testEveryEnglishAndArabicChunkIncludesAttributionWithinThirtyFiveWords' passed (0.002 seconds)
+Test Case 'CompanionReferenceReadingTests.testExactSelectedIdentityRejectsSameTitleDifferentBytesRevisionSourceOrModel' started at 2026-10-25 04:33:51.402
+Test Case 'CompanionReferenceReadingTests.testExactSelectedIdentityRejectsSameTitleDifferentBytesRevisionSourceOrModel' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testForeignValidSpeechCompletionDoesNotAdvanceReference' started at 2026-10-25 04:33:51.402
+Test Case 'CompanionReferenceReadingTests.testForeignValidSpeechCompletionDoesNotAdvanceReference' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testHeadingOnlyMatchFailsRatherThanReturningIrrelevantBody' started at 2026-10-25 04:33:51.403
+Test Case 'CompanionReferenceReadingTests.testHeadingOnlyMatchFailsRatherThanReturningIrrelevantBody' passed (0.0 seconds)
+Test Case 'CompanionReferenceReadingTests.testInvalidAndBackwardMonotonicClocksNeverReviveSequence' started at 2026-10-25 04:33:51.403
+Test Case 'CompanionReferenceReadingTests.testInvalidAndBackwardMonotonicClocksNeverReviveSequence' passed (0.002 seconds)
+Test Case 'CompanionReferenceReadingTests.testLongSourceSurvivesOutsideModelBudgetWithAllQualifiersAndOriginalBytes' started at 2026-10-25 04:33:51.405
+Test Case 'CompanionReferenceReadingTests.testLongSourceSurvivesOutsideModelBudgetWithAllQualifiersAndOriginalBytes' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testMalformedUnmatchedOrCurrentEvidenceCannotBecomeReference' started at 2026-10-25 04:33:51.407
+Test Case 'CompanionReferenceReadingTests.testMalformedUnmatchedOrCurrentEvidenceCannotBecomeReference' passed (0.0 seconds)
+Test Case 'CompanionReferenceReadingTests.testNoModelParaphraseAndNoCurrentOrPhysicalEvidenceAuthority' started at 2026-10-25 04:33:51.407
+Test Case 'CompanionReferenceReadingTests.testNoModelParaphraseAndNoCurrentOrPhysicalEvidenceAuthority' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testOnlyRealMatchingLedgerCompletionAdvancesOneChunkAfterRevalidation' started at 2026-10-25 04:33:51.408
+Test Case 'CompanionReferenceReadingTests.testOnlyRealMatchingLedgerCompletionAdvancesOneChunkAfterRevalidation' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testOriginalDeadlineNotExtractionOrQueueTimeAndNoRenewalOnNextChunk' started at 2026-10-25 04:33:51.409
+Test Case 'CompanionReferenceReadingTests.testOriginalDeadlineNotExtractionOrQueueTimeAndNoRenewalOnNextChunk' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testOversizedRetainedMetadataRejectsWholeSelection' started at 2026-10-25 04:33:51.410
+Test Case 'CompanionReferenceReadingTests.testOversizedRetainedMetadataRejectsWholeSelection' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testPunctuationWhitespaceNegationsHyphensAndArabicRemainByteExact' started at 2026-10-25 04:33:51.411
+Test Case 'CompanionReferenceReadingTests.testPunctuationWhitespaceNegationsHyphensAndArabicRemainByteExact' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testQuietHazardBackgroundNewQuestionAndSourceReplacementNeverResume' started at 2026-10-25 04:33:51.412
+Test Case 'CompanionReferenceReadingTests.testQuietHazardBackgroundNewQuestionAndSourceReplacementNeverResume' passed (0.005 seconds)
+Test Case 'CompanionReferenceReadingTests.testUnknownOrInterruptedCompletionWithdrawsPermanently' started at 2026-10-25 04:33:51.416
+Test Case 'CompanionReferenceReadingTests.testUnknownOrInterruptedCompletionWithdrawsPermanently' passed (0.002 seconds)
+Test Case 'CompanionReferenceReadingTests.testWholeResourceRejectionIsExplicitNotSilentTruncation' started at 2026-10-25 04:33:51.418
+Test Case 'CompanionReferenceReadingTests.testWholeResourceRejectionIsExplicitNotSilentTruncation' passed (0.007 seconds)
+Test Suite 'CompanionReferenceReadingTests' passed at 2026-10-25 04:33:51.425
+	 Executed 22 tests, with 0 failures (0 unexpected) in 0.033 (0.033) seconds
+Test Suite 'Selected tests' passed at 2026-10-25 04:33:51.425
+	 Executed 22 tests, with 0 failures (0 unexpected) in 0.033 (0.033) seconds

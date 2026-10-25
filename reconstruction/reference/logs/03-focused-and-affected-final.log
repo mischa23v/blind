@@ -1,0 +1,191 @@
+warning: /home/agent/.config/swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /home/agent/.config/swiftpm/security is not accessible or not writable, disabling user-level cache features.
+warning: /home/agent/.cache/org.swift.swiftpm is not accessible or not writable, disabling user-level cache features.
+warning: 'blindcore': failed loading cached manifest for 'blindcore': encountered an I/O error (code: 30) while reading /home/agent/.cache/org.swift.swiftpm/manifests
+warning: 'blindcore': failed storing manifest for 'blindcore' in cache: encountered an I/O error (code: 30) while reading /home/agent/.cache/org.swift.swiftpm/manifests
+warning: 'blindcore': failed closing manifest db cache: encountered an I/O error (code: 30) while reading /home/agent/.cache/org.swift.swiftpm/manifests
+Building for debugging...
+[Computing dependencies]
+[1 / 5] BlindCore
+[2 / 6] BlindCore
+[5 / 8] BlindCore
+[8 / 9] BlindCore
+[9 / 9] AppleModelEvaluation-product
+[11 / 22] SensorReplay-product
+[13 / 22] MobilitySimulation-product
+[14 / 22] ImageModelEvaluation-product
+[15 / 22] BlindCoreTests-product
+[17 / 24] BlindCoreTests-product
+[24 / 29] BlindCoreTests-product
+[26 / 33] BlindCoreTests-test-runner
+[28 / 35] BlindCoreTests-test-runner
+[34 / 34] BlindCoreTests-test-runner
+Build complete! (11.72 secs)
+Test Suite 'Selected tests' started at 2026-10-25 04:35:00.987
+Test Suite 'CompanionEvidenceTests' started at 2026-10-25 04:35:00.988
+Test Case 'CompanionEvidenceTests.testArabicPastReportDoesNotBecomeCurrentFact' started at 2026-10-25 04:35:00.988
+Test Case 'CompanionEvidenceTests.testArabicPastReportDoesNotBecomeCurrentFact' passed (0.006 seconds)
+Test Case 'CompanionEvidenceTests.testCancellationStopsWaitingAndDoesNotPublishEvidence' started at 2026-10-25 04:35:00.994
+Test Case 'CompanionEvidenceTests.testCancellationStopsWaitingAndDoesNotPublishEvidence' passed (0.011 seconds)
+Test Case 'CompanionEvidenceTests.testCurrentEvidenceRequiresExactCompleteClaimAndFreshness' started at 2026-10-25 04:35:01.005
+Test Case 'CompanionEvidenceTests.testCurrentEvidenceRequiresExactCompleteClaimAndFreshness' passed (0.002 seconds)
+Test Case 'CompanionEvidenceTests.testDeliveredAssistantWordsAreConversationHistoryNotObservationsOrUserReports' started at 2026-10-25 04:35:01.007
+Test Case 'CompanionEvidenceTests.testDeliveredAssistantWordsAreConversationHistoryNotObservationsOrUserReports' passed (0.002 seconds)
+Test Case 'CompanionEvidenceTests.testExactAttributionPreservesProvenanceAndNegation' started at 2026-10-25 04:35:01.010
+Test Case 'CompanionEvidenceTests.testExactAttributionPreservesProvenanceAndNegation' passed (0.006 seconds)
+Test Case 'CompanionEvidenceTests.testExpiredProvenanceCannotHideBehindNonstandardWording' started at 2026-10-25 04:35:01.016
+Test Case 'CompanionEvidenceTests.testExpiredProvenanceCannotHideBehindNonstandardWording' passed (0.001 seconds)
+Test Case 'CompanionEvidenceTests.testGeneralConversationAndClarificationRemainAvailable' started at 2026-10-25 04:35:01.017
+Test Case 'CompanionEvidenceTests.testGeneralConversationAndClarificationRemainAvailable' passed (0.007 seconds)
+Test Case 'CompanionEvidenceTests.testHistoricalReportNeverConfirmsCurrentLocation' started at 2026-10-25 04:35:01.024
+Test Case 'CompanionEvidenceTests.testHistoricalReportNeverConfirmsCurrentLocation' passed (0.004 seconds)
+Test Case 'CompanionEvidenceTests.testOnlyWholeExplicitCompletionReportsCanChangeProgress' started at 2026-10-25 04:35:01.027
+Test Case 'CompanionEvidenceTests.testOnlyWholeExplicitCompletionReportsCanChangeProgress' passed (0.001 seconds)
+Test Case 'CompanionEvidenceTests.testQueuedObservationIsRejectedAtLaterDispatch' started at 2026-10-25 04:35:01.029
+Test Case 'CompanionEvidenceTests.testQueuedObservationIsRejectedAtLaterDispatch' passed (0.001 seconds)
+Test Case 'CompanionEvidenceTests.testReportScopeDoesNotExtractPastQuestionsPlansOrUncertainty' started at 2026-10-25 04:35:01.029
+Test Case 'CompanionEvidenceTests.testReportScopeDoesNotExtractPastQuestionsPlansOrUncertainty' passed (0.001 seconds)
+Test Case 'CompanionEvidenceTests.testSentenceStreamEmitsOnlyNewCompleteValidatedSentences' started at 2026-10-25 04:35:01.030
+Test Case 'CompanionEvidenceTests.testSentenceStreamEmitsOnlyNewCompleteValidatedSentences' passed (0.003 seconds)
+Test Case 'CompanionEvidenceTests.testSentenceStreamStopsOnUnsupportedClaimAndRevision' started at 2026-10-25 04:35:01.033
+Test Case 'CompanionEvidenceTests.testSentenceStreamStopsOnUnsupportedClaimAndRevision' passed (0.002 seconds)
+Test Case 'CompanionEvidenceTests.testSpatialSafetyCannotBeBypassedByToolOrAttribution' started at 2026-10-25 04:35:01.035
+Test Case 'CompanionEvidenceTests.testSpatialSafetyCannotBeBypassedByToolOrAttribution' passed (0.0 seconds)
+Test Case 'CompanionEvidenceTests.testStreamDoesNotSplitQuotedReportOrRepeatFinalFragment' started at 2026-10-25 04:35:01.036
+Test Case 'CompanionEvidenceTests.testStreamDoesNotSplitQuotedReportOrRepeatFinalFragment' passed (0.004 seconds)
+Test Case 'CompanionEvidenceTests.testToolCallsAreBoundedAndUnavailableCannotInventEvidence' started at 2026-10-25 04:35:01.040
+Test Case 'CompanionEvidenceTests.testToolCallsAreBoundedAndUnavailableCannotInventEvidence' passed (0.001 seconds)
+Test Case 'CompanionEvidenceTests.testToolFailurePayloadAndStaleOrMislabelledEvidenceAreDiscarded' started at 2026-10-25 04:35:01.041
+Test Case 'CompanionEvidenceTests.testToolFailurePayloadAndStaleOrMislabelledEvidenceAreDiscarded' passed (0.001 seconds)
+Test Case 'CompanionEvidenceTests.testToolTimeoutReturnsPromptlyAndDiscardsLateResult' started at 2026-10-25 04:35:01.041
+Test Case 'CompanionEvidenceTests.testToolTimeoutReturnsPromptlyAndDiscardsLateResult' passed (0.201 seconds)
+Test Case 'CompanionEvidenceTests.testUnsupportedActionPerceptionIdentityAndMoneyAreRejected' started at 2026-10-25 04:35:01.242
+Test Case 'CompanionEvidenceTests.testUnsupportedActionPerceptionIdentityAndMoneyAreRejected' passed (0.004 seconds)
+Test Case 'CompanionEvidenceTests.testUserCurrentReportIsStillNotIndependentObservation' started at 2026-10-25 04:35:01.246
+Test Case 'CompanionEvidenceTests.testUserCurrentReportIsStillNotIndependentObservation' passed (0.001 seconds)
+Test Suite 'CompanionEvidenceTests' passed at 2026-10-25 04:35:01.248
+	 Executed 20 tests, with 0 failures (0 unexpected) in 0.259 (0.259) seconds
+Test Suite 'CompanionReferenceReadingTests' started at 2026-10-25 04:35:01.248
+Test Case 'CompanionReferenceReadingTests.testAuthoredFixtureIsExplicitlyNotManufacturerOrHistoricalEvidence' started at 2026-10-25 04:35:01.248
+Test Case 'CompanionReferenceReadingTests.testAuthoredFixtureIsExplicitlyNotManufacturerOrHistoricalEvidence' passed (0.002 seconds)
+Test Case 'CompanionReferenceReadingTests.testBodyMatchingCannotAssemblePhraseAcrossBlocksOrHeadingBoundary' started at 2026-10-25 04:35:01.249
+Test Case 'CompanionReferenceReadingTests.testBodyMatchingCannotAssemblePhraseAcrossBlocksOrHeadingBoundary' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testBodyRangeMustBeValidAndCannotSplitUnicodeScalar' started at 2026-10-25 04:35:01.250
+Test Case 'CompanionReferenceReadingTests.testBodyRangeMustBeValidAndCannotSplitUnicodeScalar' passed (0.0 seconds)
+Test Case 'CompanionReferenceReadingTests.testBusyLedgerDoesNotSkipChunkOrPreemptExistingSpeech' started at 2026-10-25 04:35:01.251
+Test Case 'CompanionReferenceReadingTests.testBusyLedgerDoesNotSkipChunkOrPreemptExistingSpeech' passed (0.102 seconds)
+Test Case 'CompanionReferenceReadingTests.testCompleteWholeAuthoredSequenceThroughActualLedgerCallbacks' started at 2026-10-25 04:35:01.353
+Test Case 'CompanionReferenceReadingTests.testCompleteWholeAuthoredSequenceThroughActualLedgerCallbacks' passed (0.002 seconds)
+Test Case 'CompanionReferenceReadingTests.testCompletionAfterHazardDoesNotAdvanceOrCancelIndependentAlert' started at 2026-10-25 04:35:01.355
+Test Case 'CompanionReferenceReadingTests.testCompletionAfterHazardDoesNotAdvanceOrCancelIndependentAlert' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testDeadlineDuringSpeechRequiresWithdrawalRatherThanSuccessfulDelivery' started at 2026-10-25 04:35:01.356
+Test Case 'CompanionReferenceReadingTests.testDeadlineDuringSpeechRequiresWithdrawalRatherThanSuccessfulDelivery' passed (0.002 seconds)
+Test Case 'CompanionReferenceReadingTests.testEveryEnglishAndArabicChunkIncludesAttributionWithinThirtyFiveWords' started at 2026-10-25 04:35:01.357
+Test Case 'CompanionReferenceReadingTests.testEveryEnglishAndArabicChunkIncludesAttributionWithinThirtyFiveWords' passed (0.002 seconds)
+Test Case 'CompanionReferenceReadingTests.testExactModelMustBeNonemptyPrintableBoundedAndDigestWellFormed' started at 2026-10-25 04:35:01.360
+Test Case 'CompanionReferenceReadingTests.testExactModelMustBeNonemptyPrintableBoundedAndDigestWellFormed' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testExactSelectedIdentityRejectsSameTitleDifferentBytesRevisionSourceOrModel' started at 2026-10-25 04:35:01.361
+Test Case 'CompanionReferenceReadingTests.testExactSelectedIdentityRejectsSameTitleDifferentBytesRevisionSourceOrModel' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testForeignValidSpeechCompletionDoesNotAdvanceReference' started at 2026-10-25 04:35:01.361
+Test Case 'CompanionReferenceReadingTests.testForeignValidSpeechCompletionDoesNotAdvanceReference' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testHeadingOnlyMatchFailsRatherThanReturningIrrelevantBody' started at 2026-10-25 04:35:01.362
+Test Case 'CompanionReferenceReadingTests.testHeadingOnlyMatchFailsRatherThanReturningIrrelevantBody' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testInvalidAndBackwardMonotonicClocksNeverReviveSequence' started at 2026-10-25 04:35:01.363
+Test Case 'CompanionReferenceReadingTests.testInvalidAndBackwardMonotonicClocksNeverReviveSequence' passed (0.003 seconds)
+Test Case 'CompanionReferenceReadingTests.testLongSourceSurvivesOutsideModelBudgetWithAllQualifiersAndOriginalBytes' started at 2026-10-25 04:35:01.366
+Test Case 'CompanionReferenceReadingTests.testLongSourceSurvivesOutsideModelBudgetWithAllQualifiersAndOriginalBytes' passed (0.002 seconds)
+Test Case 'CompanionReferenceReadingTests.testMalformedUnmatchedOrCurrentEvidenceCannotBecomeReference' started at 2026-10-25 04:35:01.367
+Test Case 'CompanionReferenceReadingTests.testMalformedUnmatchedOrCurrentEvidenceCannotBecomeReference' passed (0.101 seconds)
+Test Case 'CompanionReferenceReadingTests.testNoModelParaphraseAndNoCurrentOrPhysicalEvidenceAuthority' started at 2026-10-25 04:35:01.468
+Test Case 'CompanionReferenceReadingTests.testNoModelParaphraseAndNoCurrentOrPhysicalEvidenceAuthority' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testOnlyRealMatchingLedgerCompletionAdvancesOneChunkAfterRevalidation' started at 2026-10-25 04:35:01.469
+Test Case 'CompanionReferenceReadingTests.testOnlyRealMatchingLedgerCompletionAdvancesOneChunkAfterRevalidation' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testOriginalDeadlineNotExtractionOrQueueTimeAndNoRenewalOnNextChunk' started at 2026-10-25 04:35:01.471
+Test Case 'CompanionReferenceReadingTests.testOriginalDeadlineNotExtractionOrQueueTimeAndNoRenewalOnNextChunk' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testOversizedRetainedMetadataRejectsWholeSelection' started at 2026-10-25 04:35:01.472
+Test Case 'CompanionReferenceReadingTests.testOversizedRetainedMetadataRejectsWholeSelection' passed (0.001 seconds)
+Test Case 'CompanionReferenceReadingTests.testPunctuationWhitespaceNegationsHyphensAndArabicRemainByteExact' started at 2026-10-25 04:35:01.473
+Test Case 'CompanionReferenceReadingTests.testPunctuationWhitespaceNegationsHyphensAndArabicRemainByteExact' passed (0.102 seconds)
+Test Case 'CompanionReferenceReadingTests.testQuietHazardBackgroundNewQuestionAndSourceReplacementNeverResume' started at 2026-10-25 04:35:01.575
+Test Case 'CompanionReferenceReadingTests.testQuietHazardBackgroundNewQuestionAndSourceReplacementNeverResume' passed (0.007 seconds)
+Test Case 'CompanionReferenceReadingTests.testUnknownOrInterruptedCompletionWithdrawsPermanently' started at 2026-10-25 04:35:01.581
+Test Case 'CompanionReferenceReadingTests.testUnknownOrInterruptedCompletionWithdrawsPermanently' passed (0.002 seconds)
+Test Case 'CompanionReferenceReadingTests.testWholeResourceRejectionIsExplicitNotSilentTruncation' started at 2026-10-25 04:35:01.584
+Test Case 'CompanionReferenceReadingTests.testWholeResourceRejectionIsExplicitNotSilentTruncation' passed (0.008 seconds)
+Test Suite 'CompanionReferenceReadingTests' passed at 2026-10-25 04:35:01.592
+	 Executed 23 tests, with 0 failures (0 unexpected) in 0.344 (0.344) seconds
+Test Suite 'ReadingToolsTests' started at 2026-10-25 04:35:01.592
+Test Case 'ReadingToolsTests.testCodesAndProducts' started at 2026-10-25 04:35:01.592
+Test Case 'ReadingToolsTests.testCodesAndProducts' passed (0.001 seconds)
+Test Case 'ReadingToolsTests.testCommands' started at 2026-10-25 04:35:01.593
+Test Case 'ReadingToolsTests.testCommands' passed (0.001 seconds)
+Test Case 'ReadingToolsTests.testDocumentGuidance' started at 2026-10-25 04:35:01.594
+Test Case 'ReadingToolsTests.testDocumentGuidance' passed (0.001 seconds)
+Test Case 'ReadingToolsTests.testLightLevels' started at 2026-10-25 04:35:01.594
+Test Case 'ReadingToolsTests.testLightLevels' passed (0.0 seconds)
+Test Case 'ReadingToolsTests.testLiveTextSpeaksNewLinesOnceTopToBottom' started at 2026-10-25 04:35:01.595
+Test Case 'ReadingToolsTests.testLiveTextSpeaksNewLinesOnceTopToBottom' passed (0.0 seconds)
+Test Suite 'ReadingToolsTests' passed at 2026-10-25 04:35:01.595
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'ReadingWorkSessionTests' started at 2026-10-25 04:35:01.595
+Test Case 'ReadingWorkSessionTests.testFramingRequiresSamePolygonNotThreeUnrelatedPages' started at 2026-10-25 04:35:01.595
+Test Case 'ReadingWorkSessionTests.testFramingRequiresSamePolygonNotThreeUnrelatedPages' passed (0.0 seconds)
+Test Case 'ReadingWorkSessionTests.testFreshnessRejectsFutureNonfiniteAndExpiredFrames' started at 2026-10-25 04:35:01.595
+Test Case 'ReadingWorkSessionTests.testFreshnessRejectsFutureNonfiniteAndExpiredFrames' passed (0.0 seconds)
+Test Case 'ReadingWorkSessionTests.testInvalidPolygonCannotBeReady' started at 2026-10-25 04:35:01.596
+Test Case 'ReadingWorkSessionTests.testInvalidPolygonCannotBeReady' passed (0.0 seconds)
+Test Case 'ReadingWorkSessionTests.testLiveReaderDoesNotMarkUnspokenOverflowAsRead' started at 2026-10-25 04:35:01.596
+Test Case 'ReadingWorkSessionTests.testLiveReaderDoesNotMarkUnspokenOverflowAsRead' passed (0.0 seconds)
+Test Case 'ReadingWorkSessionTests.testSameToolRestartRejectsOldCompletion' started at 2026-10-25 04:35:01.596
+Test Case 'ReadingWorkSessionTests.testSameToolRestartRejectsOldCompletion' passed (0.0 seconds)
+Test Case 'ReadingWorkSessionTests.testStopNewGoalAndBackgroundCannotAdmitPageResult' started at 2026-10-25 04:35:01.597
+Test Case 'ReadingWorkSessionTests.testStopNewGoalAndBackgroundCannotAdmitPageResult' passed (0.0 seconds)
+Test Suite 'ReadingWorkSessionTests' passed at 2026-10-25 04:35:01.597
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'SpeechDeliveryLedgerTests' started at 2026-10-25 04:35:01.597
+Test Case 'SpeechDeliveryLedgerTests.testAmbientAndRequestedDestinationsStaySeparate' started at 2026-10-25 04:35:01.597
+Test Case 'SpeechDeliveryLedgerTests.testAmbientAndRequestedDestinationsStaySeparate' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testArabicPrefixesAndPunctuation' started at 2026-10-25 04:35:01.597
+Test Case 'SpeechDeliveryLedgerTests.testArabicPrefixesAndPunctuation' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testCancelledCallbackCannotCompleteReplacementWithSameRequestID' started at 2026-10-25 04:35:01.598
+Test Case 'SpeechDeliveryLedgerTests.testCancelledCallbackCannotCompleteReplacementWithSameRequestID' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testEchoTailExpiresAndStaleCallbacksCannotRenewIt' started at 2026-10-25 04:35:01.598
+Test Case 'SpeechDeliveryLedgerTests.testEchoTailExpiresAndStaleCallbacksCannotRenewIt' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testEmptyAttemptsAreNeverAccepted' started at 2026-10-25 04:35:01.599
+Test Case 'SpeechDeliveryLedgerTests.testEmptyAttemptsAreNeverAccepted' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testOnlyIndependentSafetyAlertsKeepVoiceOverAnnouncements' started at 2026-10-25 04:35:01.599
+Test Case 'SpeechDeliveryLedgerTests.testOnlyIndependentSafetyAlertsKeepVoiceOverAnnouncements' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testOnlyMostRecentOutputRetainsResidualEcho' started at 2026-10-25 04:35:01.599
+Test Case 'SpeechDeliveryLedgerTests.testOnlyMostRecentOutputRetainsResidualEcho' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testOrdinaryOutputCannotClaimIndependentAlertExemption' started at 2026-10-25 04:35:01.599
+Test Case 'SpeechDeliveryLedgerTests.testOrdinaryOutputCannotClaimIndependentAlertExemption' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testPrefixMatchDoesNotSuppressDivergentHumanRequest' started at 2026-10-25 04:35:01.600
+Test Case 'SpeechDeliveryLedgerTests.testPrefixMatchDoesNotSuppressDivergentHumanRequest' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testPriorityPreemptionRequiresExplicitInterruption' started at 2026-10-25 04:35:01.600
+Test Case 'SpeechDeliveryLedgerTests.testPriorityPreemptionRequiresExplicitInterruption' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testPrivateCapableOutputIsCancellableRegardlessOfPriorityOrDestination' started at 2026-10-25 04:35:01.600
+Test Case 'SpeechDeliveryLedgerTests.testPrivateCapableOutputIsCancellableRegardlessOfPriorityOrDestination' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testPrivateRouteLossPreservesIndependentSensorAlertsAndLateCallbackCannotClearThem' started at 2026-10-25 04:35:01.601
+Test Case 'SpeechDeliveryLedgerTests.testPrivateRouteLossPreservesIndependentSensorAlertsAndLateCallbackCannotClearThem' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testPrivateRouteStopUsesProvenanceNotMobilityPriority' started at 2026-10-25 04:35:01.601
+Test Case 'SpeechDeliveryLedgerTests.testPrivateRouteStopUsesProvenanceNotMobilityPriority' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testRejectedTextDoesNotReplaceActiveEcho' started at 2026-10-25 04:35:01.601
+Test Case 'SpeechDeliveryLedgerTests.testRejectedTextDoesNotReplaceActiveEcho' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testRepeatedVoiceOverTextCannotProveCompletion' started at 2026-10-25 04:35:01.602
+Test Case 'SpeechDeliveryLedgerTests.testRepeatedVoiceOverTextCannotProveCompletion' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testRequestedPhrasesMustFinishBeforeAnotherCanStart' started at 2026-10-25 04:35:01.602
+Test Case 'SpeechDeliveryLedgerTests.testRequestedPhrasesMustFinishBeforeAnotherCanStart' passed (0.101 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testRequestedStreamingUsesCancellableSynthesisWithVoiceOverOn' started at 2026-10-25 04:35:01.703
+Test Case 'SpeechDeliveryLedgerTests.testRequestedStreamingUsesCancellableSynthesisWithVoiceOverOn' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testResidualEchoCanSpanAdjacentChunksButNotDivergentHumanWords' started at 2026-10-25 04:35:01.703
+Test Case 'SpeechDeliveryLedgerTests.testResidualEchoCanSpanAdjacentChunksButNotDivergentHumanWords' passed (0.101 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testSynthesisDoesNotInheritVoiceOverTextAmbiguity' started at 2026-10-25 04:35:01.804
+Test Case 'SpeechDeliveryLedgerTests.testSynthesisDoesNotInheritVoiceOverTextAmbiguity' passed (0.001 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testTerminalEventIsExactlyOnce' started at 2026-10-25 04:35:01.804
+Test Case 'SpeechDeliveryLedgerTests.testTerminalEventIsExactlyOnce' passed (0.0 seconds)
+Test Case 'SpeechDeliveryLedgerTests.testVoiceOverTextHistoryIsBoundedAndFailsClosedWhenFull' started at 2026-10-25 04:35:01.805
+Test Case 'SpeechDeliveryLedgerTests.testVoiceOverTextHistoryIsBoundedAndFailsClosedWhenFull' passed (0.005 seconds)
+Test Suite 'SpeechDeliveryLedgerTests' passed at 2026-10-25 04:35:01.809
+	 Executed 21 tests, with 0 failures (0 unexpected) in 0.212 (0.212) seconds
+Test Suite 'Selected tests' passed at 2026-10-25 04:35:01.809
+	 Executed 75 tests, with 0 failures (0 unexpected) in 0.82 (0.82) seconds

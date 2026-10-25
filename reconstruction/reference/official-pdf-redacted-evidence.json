@@ -1,0 +1,81 @@
+{
+  "url": "https://media3.bosch-home.com/Documents/9001427628_A.pdf",
+  "source_kind": "official manufacturer PDF",
+  "model_as_printed": "WAT28400UC",
+  "variant_suffix": "not independently bound; no physical appliance identity claim",
+  "pdf_sha256": "dcbd212e6c8f564d3ef02e97b0d261ee547f32e751a46679ed2f0db27fc71d3c",
+  "pdf_bytes": 4943563,
+  "pdf_page_one_based": 29,
+  "extraction": "pdftotext version 25.03.0 -raw",
+  "page_text_sha256": "253a7c32a2400bd1201f96541ab41985bc08be76a60c5ebf6944efb6a6cb0820",
+  "section_sha256": "570812f1bfd111f9a32c275eae49af3332ee51f81a8482e2571f47db0eefecd9",
+  "section_utf8_bytes": 699,
+  "section_whitespace_words": 123,
+  "heading_only_section_sha256": "3db8a23160f6fbc3caab4166b623f91a4f6d17c3919e42672c941984ac24e1c8",
+  "license": "Copyrighted manufacturer document. No open redistribution license found; no raw PDF or long quotations published.",
+  "license_source_url": "https://www.bosch-home.com/us/en/c/legal/blt068e61b5256d1dc7",
+  "visual_review": "Pinned PDF page 29 was visually reviewed on 2026-10-25 for column order and complete-section extraction; this command does not itself perform visual review.",
+  "scope": "Text-layer extraction, not OCR or a native/manual recognition adapter. No LLM.",
+  "input_fixture_sha256": "637892f19221652ce29ca409d5cbb1b6f5812d5d3ac21bbab2281f960aa388fe",
+  "actual_pipeline": [
+    "pinned PDF SHA-256 check",
+    "pdftotext -raw page extraction",
+    "exact cover model check",
+    "complete section/body range extraction",
+    "CompanionToolResult + CompanionEvidence",
+    "CompanionReferenceReading.prepare",
+    "SpeechDeliveryLedger.begin/finish with simulated outcomes",
+    "byte-for-byte ordered reconstruction"
+  ],
+  "playback": "Synthetic callback outcomes and monotonic time. No audio device, AVSpeechSynthesizer or VoiceOver run.",
+  "core_chunk_count": 5,
+  "core_delivered_chunk_count": 5,
+  "tool_result_encoded_bytes": 1135,
+  "model_result_budget_bytes": 900,
+  "source_bytes_preserved": true,
+  "completed": true,
+  "issued_at_synthetic_monotonic": 100,
+  "deadline_synthetic_monotonic": 160,
+  "chunk_trace": [
+    {
+      "index": 0,
+      "words_including_attribution": 35,
+      "original_slice_bytes": 167,
+      "original_slice_sha256": "187bc6c3f6f47fdf442461f148e8e5d216b0b9dba40af0be0590cb8e0f2398bd",
+      "spoken_text_sha256": "644b4f26e0ed1f98c83ae24a3320220ecc5cfb898191639efa6292cb7744fac7",
+      "locator": "WAT28400UC, PDF page 29, section Finish in"
+    },
+    {
+      "index": 1,
+      "words_including_attribution": 35,
+      "original_slice_bytes": 169,
+      "original_slice_sha256": "caed30a5db40829f17d80a7c23552d812d11d4b0561f782dac8db1f44be467b6",
+      "spoken_text_sha256": "cbc85cd12367787d6e8ecacc276bdb56fe343751b51042a111542371586d7e3a",
+      "locator": "WAT28400UC, PDF page 29, section Finish in"
+    },
+    {
+      "index": 2,
+      "words_including_attribution": 35,
+      "original_slice_bytes": 137,
+      "original_slice_sha256": "e4c7539dedf98e078724afb66726e7729701640df2fbe5b12f569a3955a42468",
+      "spoken_text_sha256": "36ded8bc295cf38a2b7b5426b14aa96c4d9df35919ff9251da0f2438547b3660",
+      "locator": "WAT28400UC, PDF page 29, section Finish in"
+    },
+    {
+      "index": 3,
+      "words_including_attribution": 35,
+      "original_slice_bytes": 192,
+      "original_slice_sha256": "8d9e664d8061d5686e7afb1dd24ff686ae76fd9f6ebf677ac5a05556c97887a0",
+      "spoken_text_sha256": "df6228fcb5d56fa9d067640a4393a57e519777654b0f31c559bf6e1f077841e3",
+      "locator": "WAT28400UC, PDF page 29, section Finish in"
+    },
+    {
+      "index": 4,
+      "words_including_attribution": 9,
+      "original_slice_bytes": 34,
+      "original_slice_sha256": "06a379f50c8b4d47974b65565e2672d2d9f59e43b343ad0ad4813d492d6b51d6",
+      "spoken_text_sha256": "bed6727ff87bd38f94652919779b229b5e89aa695178ad43235a6e2da0e008d9",
+      "locator": "WAT28400UC, PDF page 29, section Finish in"
+    }
+  ]
+}

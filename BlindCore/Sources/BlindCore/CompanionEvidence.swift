@@ -367,12 +367,13 @@ public enum CompanionEvidenceGuard {
                (SaudiBanknotePolicy.containsUnverifiedMoneyValue(remainder) ||
                 matches(#"\b(total|sum|altogether|value)\b.*[0-9٠-٩۰-۹]|مجموع|الاجمالي"#, remainder)) { return false }
             if isLocalAssertion(remainder) || ConversationClaimGuard.containsUnsupportedClaim(remainder) { return false }
+            let conversationalSentence = withoutAbstractEvaluation(sentence)
             // In a task/report context, possessive and anaphoric descriptions
             // cannot bypass the guard by changing the state verb ("sitting",
             // "waiting", "right where you left it", etc.). An uncertainty word
             // does not turn a made-up current location into evidence.
             if quoted == nil, reports.contains(where: { reportScope($0) != .uncertain }),
-               matches(#"\b(your\s+[\p{L}' -]{1,45}|it|they|he|she|that|this)\s+(is|are|was|were|has|have|remains?|seems?|looks?|must|might|may|could|should|will|would)\b|\b(it['’]s|they['’]re)\b"#, sentence),
+               matches(#"\b(your\s+[\p{L}' -]{1,45}|it|they|he|she|that|this)\s+(is|are|was|were|has|have|remains?|seems?|looks?|must|might|may|could|should|will|would)\b|\b(it['’]s|they['’]re)\b"#, conversationalSentence),
                !matches(#"^\s*(can|could|would|will|do|does|did|is|are|where|what|when|why|how)\b"#, sentence),
                !matches(#"^\s*that (could|might) be a (possible )?place to (check|start)[.!]?$"#, sentence) { return false }
             if quoted == nil && matches(#"\b(you (said|reported|mentioned|told)|i said|my earlier words|according to (you|your)|your (report|memory)|last (seen|reported))\b|قلت|ذكرت|حسب كلامك|اخر مره|كان ردي|ردي السابق"#, sentence) {
@@ -442,8 +443,18 @@ public enum CompanionEvidenceGuard {
         return nil
     }
 
+    private static func withoutAbstractEvaluation(_ text: String) -> String {
+        // An abstract evaluation is not an object-identity assertion. Remove
+        // only this bounded idiom, never quoted text or an entire sentence.
+        // The boundary excludes "a good choice of chair" and similar extensions;
+        // any other local assertion in the same sentence is still inspected.
+        text.replacingOccurrences(
+            of: #"\b(?:that(?:['’]s| is)|this is) (?:a|an) (?:(?:good|great|kind|interesting|thoughtful|reasonable) (?:question|idea|choice|joke|story|answer|point)|relief)(?=\s*[.!?,;:\"”’»]|\s*$)"#,
+            with: "", options: [.regularExpression, .caseInsensitive])
+    }
+
     private static func isLocalAssertion(_ text: String) -> Bool {
-        let text = SpatialClaimGuard.normalizeArabic(text)
+        let text = SpatialClaimGuard.normalizeArabic(withoutAbstractEvaluation(text))
         // Deictic denomination statements require the exact specialized receipt,
         // not merely a nearby monetary number or a model rewrite of that receipt.
         if matches(#"\b(it(?:['’]s| is)?|this(?: note| bill)?(?: is)?|that(?: note| bill)?(?: is)?|the (?:note|bill)(?: is)?)\s+(?:worth |value is |value of )?(?:[0-9]+|one|five|ten|twenty|fifty|hundred|thousand)\s*(?:riyal|sar|dollar|euro|pound)|(?:هذه|هذي|هذا|هي|قيمتها|قيمته)\s*.{0,12}[0-9٠-٩]+\s*(?:ريال|دولار|يورو)"#, text) { return true }
@@ -456,7 +467,7 @@ public enum CompanionEvidenceGuard {
         if matches(#"\b((your|this|that|the)\s+[\p{L}' -]{1,45}|it|they|there)\s+(is|are|was|were|looks?|seems?|remains?|must be|might be|may be|could be|should be|can be|will be|'s|'re)\s+((still|probably|possibly|currently|now|not|no longer|definitely|apparently)\s+)*(on|in|at|under|inside|outside|behind|beside|near|by|next to|here|there|missing|lost|found|gone|open|closed|empty|full|locked|unlocked|safe|clear|red|blue|green|white|black|brown)\b"#, text) { return true }
         if matches(#"\b(your|the|this|that)\s+[\p{L}' -]{1,35}\s+(sits?|lies?|stands?|rests?|stays?|contains?|holds?|has|have|opened|closed|moved|is located|can be found)\b|\b(it|they)\s+(sits?|lies?|remains?|belongs?|stays?)\b|\b(it'?s|they'?re)\s+(on|in|at|under|behind|near|there|here|open|closed)\b"#, text) { return true }
         if matches(#"\b(the (label|sign|screen|document|page|note)|it) (says|reads)|\b(that['’]s|this is|that is) (your|a|an)|\b(this|that) (person|man|woman|child) is\b|\b(the (person|man|woman|child)) is your\b"#, text) { return true }
-        if matches(#"\b(current (camera|image|frame|sensor|observation)|live (camera|image)|camera (shows|sees)|sensor (shows|says)|this is (your|a|an)|that is (your|a|an))\b|الكاميرا تظهر|هذه ورقه|هذا اخوك|هذا والدك"#, text) { return true }
+        if matches(#"\b(current (camera|image|frame|sensor|observation)|live (camera|image)|camera (shows|sees|says|reports|confirms)|sensor (shows|says|reports|confirms)|this is (your|a|an)|that is (your|a|an))\b|الكاميرا تظهر|هذه ورقه|هذا اخوك|هذا والدك"#, text) { return true }
         if matches(#"\b(no|nothing|nobody|someone|someone else)\s+(is|was|has|can|there)|\b(there (is|are)|i couldn't find|i could not find|not found)\b"#, text) { return true }
         if matches(#"\b(check|look for|search for|find|fetch|get|pick up|take)\b.{0,50}\b(your|the|it)\b.{0,35}\b(on|under|inside|behind|beside|at)\b"#, text)
             && !matches(#"\b(could|can|might|try|place to check|possible place)\b"#, text) { return true }
