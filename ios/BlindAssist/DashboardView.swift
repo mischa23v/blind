@@ -319,6 +319,7 @@ struct AssistantToolsView: View {
                 .accessibilityIdentifier("retrace-session")
                 if model.hasReturnIntent { Button(t("Repeat direction", "كرر الاتجاه")) { model.indoorBeacon() } }
                 if !model.returnStatus.isEmpty { Text(model.returnStatus) }
+                ConversationMemoryPersistenceView(model: model)
                 ConnectedJourneyPersistenceView(store: model.journeys, arabic: model.arabic)
             } header: { Text(t("Return to start", "العودة إلى البداية")) }
             Section {
@@ -413,6 +414,7 @@ struct AssistantToolsView: View {
                 Button(t("Find my question on the saved map", "ابحث عن سؤالي في الخريطة المحفوظة")) { model.findMapDestination() }
                     .disabled(model.busy || model.indoor.map == nil || model.assistantQuestion.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     .accessibilityIdentifier("map-destination")
+                ConversationMemoryPersistenceView(model: model)
                 ConnectedJourneyPersistenceView(store: model.journeys, arabic: model.arabic)
                 Button(t("Clear goal and conversation", "امسح الهدف والمحادثة"), role: .destructive) { confirmClearConversation = true }
             } header: { Text(t("Goal", "الهدف")) } footer: {
@@ -902,23 +904,56 @@ private struct WearableSetupView: View {
 }
 
 
+/// Shared status for existing clear/review helpers, not a second setup screen.
+struct ConversationMemoryPersistenceView: View {
+    @ObservedObject var model: NavigationModel
+    var body: some View {
+        if model.memorySavePending {
+            Text(model.arabic ? "تغييرات الذاكرة قيد الحفظ. لا تغلق التطبيق بعد." : "Memory changes are being saved. Keep the app open for now.")
+                .accessibilityIdentifier("conversation-memory-save-pending")
+        }
+        if !model.memorySaveError.isEmpty {
+            Text(model.memorySaveError).accessibilityIdentifier("conversation-memory-save-failed")
+            Button(model.arabic ? "إعادة محاولة حفظ الذاكرة" : "Retry memory save") { model.retryCompanionMemorySave() }
+                .disabled(model.memorySavePending)
+        }
+    }
+}
+
 /// Original user reports stay reviewable; corrections never invent a fresh observation.
-private struct ConversationMemoryView: View {
+struct ConversationMemoryView: View {
     @ObservedObject var model: NavigationModel
     @State private var confirmClear = false
     private func t(_ en: String, _ ar: String) -> String { model.arabic ? ar : en }
     var body: some View {
         List {
             Section {
-                Text(t("Recent user reports are saved only on this phone. They are history, not verified current conditions. Up to 32 reports are retained; older reports expire. Your saved name and preferences are separate.", "تحفظ التقارير الأخيرة على هذا الهاتف فقط. إنها سجل سابق وليست تحققاً من الوضع الحالي. نحتفظ بما يصل إلى ٣٢ تقريراً وتحذف الأقدم. الاسم والتفضيلات محفوظة بشكل منفصل."))
+                Text(t("Recent user reports are saved only on this phone. They are history, not verified current conditions. Reports and earlier contexts have bounded retention; older records expire. Your saved name and preferences are separate.", "تحفظ التقارير الأخيرة على هذا الهاتف فقط. إنها سجل سابق وليست تحققاً من الوضع الحالي. نحتفظ بعدد محدود من التقارير والسياقات السابقة وتحذف الأقدم. الاسم والتفضيلات محفوظة بشكل منفصل."))
             }
             Section(t("Review or correct", "مراجعة أو تصحيح")) {
-                if model.assistantDialogue.userRecords.isEmpty { Text(t("No saved conversation reports.", "لا توجد تقارير محادثة محفوظة.")) }
-                ForEach(model.assistantDialogue.userRecords.reversed()) { record in
-                    NavigationLink(record.text) { ConversationRecordEditor(model: model, record: record) }
+                if model.usesScopedConversationReview {
+                    ForEach(model.scopedConversationReviews.reversed()) { selection in
+                        NavigationLink {
+                            ScopedConversationRecordEditor(model: model, selection: selection)
+                        } label: {
+                            VStack(alignment: .leading) {
+                                Text(selection.report.text)
+                                if let time = selection.report.time { Text(time.formatted(date: .abbreviated, time: .shortened)).font(.caption) }
+                                Text(selection.originalContext(arabic: model.arabic)).font(.caption)
+                            }
+                        }
+                    }
+                    if model.scopedConversationReviews.isEmpty { Text(t("No source-bound reports retained.", "لا توجد تقارير محفوظة مرتبطة بمصدر.")) }
+                } else {
+                    if model.assistantDialogue.userRecords.isEmpty { Text(t("No saved conversation reports.", "لا توجد تقارير محادثة محفوظة.")) }
+                    ForEach(model.assistantDialogue.userRecords.reversed()) { record in Text(record.text) }
+                    if !model.assistantDialogue.userRecords.isEmpty {
+                        Text(t("These older reports have no source binding. Use Forget conversation and tasks below to remove them; they cannot safely be reassigned to a place.", "هذه التقارير القديمة غير مرتبطة بمصدر. استخدم حذف المحادثة والمهام أدناه لإزالتها؛ لا يمكن نسبتها إلى مكان بأمان."))
+                    }
                 }
             }
             Section {
+                ConversationMemoryPersistenceView(model: model)
                 ConnectedJourneyPersistenceView(store: model.journeys, arabic: model.arabic)
                 Button(t("Forget conversation and tasks", "حذف المحادثة والمهام"), role: .destructive) { confirmClear = true }
                     .accessibilityIdentifier("forget-conversation")
@@ -954,7 +989,57 @@ private struct ConversationRecordEditor: View {
         .navigationTitle(t("Correct memory", "تصحيح الذاكرة"))
         .onAppear { replacement = record.text }
         .confirmationDialog(t("Forget this report and dependent suggestions?", "هل تريد حذف هذا التقرير والاقتراحات المرتبطة به؟"), isPresented: $confirmDelete, titleVisibility: .visible) {
-            Button(t("Forget report", "حذف التقرير"), role: .destructive) { model.forgetConversationRecord(id: record.id); dismiss() }
+            Button(t("Forget report", "حذف التقرير"), role: .destructive) { if !model.usesScopedConversationReview { model.forgetConversationRecord(id: record.id); dismiss() } else { failed = true } }
+        }
+    }
+}
+
+/// The receipt is captured once when the editor opens, never silently rebound
+/// when a same-word report or current room changes behind the form.
+private struct ScopedConversationRecordEditor: View {
+    @ObservedObject var model: NavigationModel
+    @State private var selection: CompanionWorkingState.ReviewSelection
+    @State private var replacement: String
+    @State private var failed = false
+    @State private var saving = false
+    @State private var confirmDelete = false
+    @Environment(\.dismiss) private var dismiss
+    init(model: NavigationModel, selection: CompanionWorkingState.ReviewSelection) {
+        self.model = model
+        _selection = State(initialValue: selection)
+        _replacement = State(initialValue: selection.report.text)
+    }
+    private func t(_ en: String, _ ar: String) -> String { model.arabic ? ar : en }
+    var body: some View {
+        Form {
+            Text(selection.originalContext(arabic: model.arabic))
+                .accessibilityIdentifier("review-original-scope")
+            Text(t("This edits a historical report in its original context, not a current observation. Saving or deleting also clears older conversation copies whose source was not recorded.", "يعدّل هذا تقريراً سابقاً في سياقه الأصلي، وليس مشاهدة حالية. يحذف الحفظ أو الحذف أيضاً نسخ المحادثة القديمة التي لم يسجل مصدرها."))
+            TextField(t("Your report", "تقريرك"), text: $replacement, axis: .vertical)
+                .accessibilityIdentifier("scoped-conversation-memory-text")
+            Button(t("Save correction", "حفظ التصحيح")) {
+                guard !saving else { return }
+                saving = true
+                Task { @MainActor in
+                    if await model.reviseScopedConversationRecord(selection, replacement: replacement) { dismiss() }
+                    else { failed = true }
+                    saving = false
+                }
+            }.disabled(saving).accessibilityIdentifier("correct-scoped-conversation-record")
+            if failed { Text(model.scopedReviewError) }
+            Button(t("Forget this report", "حذف هذا التقرير"), role: .destructive) { confirmDelete = true }.disabled(saving)
+        }
+        .navigationTitle(t("Correct memory", "تصحيح الذاكرة"))
+        .confirmationDialog(t("Forget this report and dependent suggestions? Older unbound conversation copies will also be cleared.", "حذف هذا التقرير والاقتراحات المرتبطة به؟ ستحذف أيضاً نسخ المحادثة القديمة غير المرتبطة بمصدر."), isPresented: $confirmDelete, titleVisibility: .visible) {
+            Button(t("Forget report", "حذف التقرير"), role: .destructive) {
+                guard !saving else { return }
+                saving = true
+                Task { @MainActor in
+                    if await model.reviseScopedConversationRecord(selection, replacement: nil) { dismiss() }
+                    else { failed = true }
+                    saving = false
+                }
+            }
         }
     }
 }

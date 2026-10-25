@@ -90,6 +90,60 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     private var semanticReadID: UUID?
     private var conversationEvidenceCaptures: [String: ConversationCapture] = [:]
+    @Published var scopedReviewError = ""
+    @Published private(set) var memorySaveError = ""
+    @Published private(set) var memorySavePending = false
+    private var companionMemoryStoreOwner: UUID?
+    private struct PendingScopedReview {
+        let id: UUID
+        let owner: UUID
+        let selection: CompanionWorkingState.ReviewSelection
+        let replacement: String?
+        var receipt: CompanionMemoryWriteQueue.Receipt? = nil
+    }
+    private struct CompletedScopedReview {
+        let id: UUID
+        let owner: UUID
+        let sourceID: String
+        let epoch: String
+        let contextRevision: String
+        let scope: CompanionMemoryScope?
+        let replacement: String?
+        init(_ pending: PendingScopedReview) {
+            id = pending.id; owner = pending.owner; sourceID = pending.selection.sourceID
+            epoch = pending.selection.epoch; contextRevision = pending.selection.contextRevision
+            scope = pending.selection.scope; replacement = pending.replacement
+        }
+        func matches(_ selection: CompanionWorkingState.ReviewSelection, replacement: String?) -> Bool {
+            sourceID == selection.sourceID && epoch == selection.epoch && contextRevision == selection.contextRevision && scope == selection.scope && self.replacement == replacement
+        }
+    }
+    private var completedScopedReview: CompletedScopedReview?
+    private var pendingScopedReview: PendingScopedReview?
+    private lazy var companionMemoryWriter: CompanionMemoryWriteQueue = {
+        let writer = CompanionMemoryWriteQueue()
+        writer.onCompletion = { [weak self] receipt, succeeded in
+            guard let self, receipt.owner == self.companionMemoryStoreOwner else { return }
+            guard receipt.owner == self.places.memory?.writeOwner else {
+                self.memorySavePending = false
+                self.memorySaveError = self.arabic ? "تغير مخزن الذاكرة. أعد فتح التطبيق قبل الحفظ." : "The memory store changed. Reopen the app before saving."
+                if self.pendingScopedReview?.owner == receipt.owner { self.scopedReviewError = self.memorySaveError }
+                return
+            }
+            self.memorySavePending = self.companionMemoryWriter.isWriting || self.companionMemoryWriter.pendingCount > 0
+            if self.companionMemoryWriter.hasFailed {
+                self.memorySaveError = self.arabic ? "لم تُحفظ تغييرات الذاكرة. أعد محاولة الحفظ قبل إغلاق التطبيق." : "Memory changes are not saved. Retry saving before closing the app."
+            } else if succeeded { self.memorySaveError = "" }
+            if succeeded, let pending = self.pendingScopedReview, let expected = pending.receipt,
+               expected.owner == receipt.owner, expected.revision <= receipt.revision {
+                self.completedScopedReview = CompletedScopedReview(pending); self.pendingScopedReview = nil; self.scopedReviewError = ""
+            }
+        }
+        return writer
+    }()
+    private var recordingCompanionTurn = false
+    private var recordedCompanionSourceID: String?
+    private var conversationMemoryRevision = UUID()
     private var conversationSpeech: [ConversationSpeech] = []
     private var activeConversationSpeech: ConversationSpeech?
     // Clock delivery has its own short lease, independent of camera/task lifetime.
@@ -555,6 +609,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
            let saved = try? JSONDecoder().decode(CompanionWorkingState.self, from: data) {
             companionWorkingState = saved
         }
+        companionMemoryStoreOwner = places.memory?.writeOwner
         if let data = try? places.memory?.value(namespace: "dialogue", id: "active"),
            let saved = try? JSONDecoder().decode(AssistantDialogue.self, from: data), saved.valid {
             assistantDialogue = saved; objectiveDraft = saved.goal
@@ -2519,7 +2574,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #endif
         everydayTasks.setGoal(objectiveDraft); everydayTicket = nil; everydayUtterance = ""
         cancelDescription(); _ = feedback.stopInformation(announceCancellation: false); stopReturn(); indoor.cancelRoute()
-        assistantDialogue.setGoal(objectiveDraft); objectiveDraft = assistantDialogue.goal; persistDialogue()
+        assistantDialogue.setGoal(objectiveDraft); objectiveDraft = assistantDialogue.goal
         companionWorkingState.changeGoal(assistantDialogue.goal, originalRequest: objectiveDraft); persistWorkingState()
     }
     private func retireHeldSearchForPrivacyDeletion() {
@@ -2528,6 +2583,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         searchInFlight = false; trackLookInFlight = false
     }
     func clearAssistantConversation() {
+        pendingScopedReview = nil; completedScopedReview = nil; scopedReviewError = ""
         clearExploreSnapshot()
         #if DEBUG
         purgeDebugSessionDiagnostics()
@@ -2540,10 +2596,83 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         everydayTasks.cancelAll(); everydayTicket = nil; everydayUtterance = ""
         cancelDescription(); _ = feedback.stopInformation(announceCancellation: false); stopReturn(); indoor.cancelRoute()
         unverifiedDialogue = AssistantDialogue(); unverifiedDialogueGeneration = nil
-        assistantDialogue = AssistantDialogue(); objectiveDraft = ""; persistDialogue()
+        assistantDialogue = AssistantDialogue(); objectiveDraft = ""
         companionWorkingState = CompanionWorkingState(); persistWorkingState()
         sceneAnswer = ""; currentReply = ""; assistantQuestion = ""
     }
+    var scopedConversationReviews: [CompanionWorkingState.ReviewSelection] { companionWorkingState.reviewSelections }
+    var usesScopedConversationReview: Bool { companionWorkingState.hasScopedMemoryHistory || !companionWorkingState.reviewSelections.isEmpty }
+
+    /// Validate against the displayed receipt before any cancellation, deletion,
+    /// diagnostics purge or success. No text join to a different dialogue record.
+    @discardableResult func reviseScopedConversationRecord(_ selection: CompanionWorkingState.ReviewSelection, replacement: String?) async -> Bool {
+        guard let memory = admittedCompanionMemoryStore() else { scopedReviewError = memorySaveError; return false }
+        if let completed = completedScopedReview, completed.owner == memory.writeOwner,
+           completed.matches(selection, replacement: replacement) { return true }
+        let operation: PendingScopedReview
+        if let pending = pendingScopedReview {
+            guard pending.owner == memory.writeOwner, pending.selection == selection, pending.replacement == replacement else {
+                scopedReviewError = arabic ? "أكمل حفظ التغيير المعلّق أولاً." : "Finish saving the pending change first."
+                return false
+            }
+            operation = pending
+        } else {
+            var revised = companionWorkingState
+            guard revised.reviseReviewedSource(selection, replacement: replacement) else {
+                scopedReviewError = companionWorkingState.hasUnboundTaskDependency(selection)
+                    ? (arabic ? "مرجع المهمة القديمة غير مرتبط بمصدر. استخدم مسح المحادثة والمهام إذا أردت حذفه." : "This older task reference is not source-bound. Use Clear conversation and tasks if you want to remove it.")
+                    : (arabic ? "لم يتغير شيء. أعد فتح التقرير واستخدم نصاً صالحاً." : "Nothing changed. Reopen the report and use valid text.")
+                return false
+            }
+            // Retire source/output now, before any encoding or potentially slow
+            // disk operation. Never restore erased context after a write failure.
+            conversationMemoryRevision = UUID()
+            interruptOrdinaryConversation(origin: .trustedInterface)
+            #if DEBUG
+            purgeDebugSessionDiagnostics()
+            #endif
+            let changedGoal = companionWorkingState.goal != revised.goal
+            companionWorkingState = revised
+            assistantDialogue.forgetBoundSource(selection.sourceID)
+            if changedGoal {
+                retireHeldSearchForPrivacyDeletion()
+                assistantDialogue.setGoal(revised.goal); objectiveDraft = revised.goal
+            }
+            reconcileWorkingStateOwners()
+            sceneAnswer = ""; currentReply = ""; assistantQuestion = ""
+            operation = PendingScopedReview(id: UUID(), owner: memory.writeOwner, selection: selection, replacement: replacement)
+            pendingScopedReview = operation
+        }
+        guard let receipt = enqueueCompanionMemorySnapshot() else { scopedReviewError = memorySaveError; return false }
+        pendingScopedReview?.receipt = receipt
+        let saved = await companionMemoryWriter.waitForCommit(receipt)
+        if completedScopedReview?.id == operation.id, places.memory?.writeOwner == operation.owner { return true }
+        guard places.memory?.writeOwner == operation.owner else {
+            scopedReviewError = memorySaveError.isEmpty
+                ? (arabic ? "تغير مخزن الذاكرة. أعد فتح التطبيق قبل الحفظ." : "The memory store changed. Reopen the app before saving.") : memorySaveError
+            return false
+        }
+        guard pendingScopedReview?.id == operation.id else { return false }
+        guard saved else {
+            scopedReviewError = arabic ? "التغيير موجود في هذه الجلسة فقط ولم يُحفظ. اضغط حفظ مرة أخرى قبل إغلاق التطبيق." : "The change is only in this session and is not saved. Press Save again before closing the app."
+            return false
+        }
+        completedScopedReview = pendingScopedReview.map(CompletedScopedReview.init); pendingScopedReview = nil; scopedReviewError = ""
+        return true
+    }
+
+    /// Loss-only ingress. No map name, requested destination, or candidate
+    /// localization result can establish a place/container identity here.
+    func retireCompanionMemoryScope() {
+        guard companionWorkingState.memoryScope != nil else { return }
+        conversationMemoryRevision = UUID()
+        interruptOrdinaryConversation(origin: .trustedInterface)
+        retireHeldSearchForPrivacyDeletion()
+        companionWorkingState.transitionMemoryScope(nil)
+        establishedJourneyContextChanged()
+        persistWorkingState()
+    }
+
     @discardableResult func correctConversationRecord(id: String, replacement: String) -> Bool {
         // A dialogue record ID cannot identify a scoped source record yet.
         guard companionWorkingState.allowsLegacyReportMutation else { return false }
@@ -2600,7 +2729,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
 
-    private func persistWorkingState() {
+    private func reconcileWorkingStateOwners() {
         if journeyConversationGoal != companionWorkingState.goal || journeyConversationSourceID != companionWorkingState.goalSource?.sourceID {
             try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
             journeyConversationGoal = companionWorkingState.goal; journeyConversationSourceID = companionWorkingState.goalSource?.sourceID
@@ -2611,18 +2740,39 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             indoor.cancelRoute(); self.plannedIndoorGoalRevision = nil
         }
         spatialRouteOutput.revalidate()
-        do {
-            guard let memory = places.memory else { throw CocoaError(.fileWriteUnknown) }
-            try memory.saveValue(namespace: "companion", id: "working-state", payload: JSONEncoder().encode(companionWorkingState))
-        } catch { message = "Task context could not be saved on this phone." }
     }
-
-    private func persistDialogue() {
-        do {
-            guard let memory = places.memory else { throw CocoaError(.fileWriteUnknown) }
-            try memory.saveValue(namespace: "dialogue", id: "active", payload: JSONEncoder().encode(assistantDialogue))
-        } catch { message = "Conversation could not be saved. Current location will still be re-established after restart." }
+    /// All ordinary and reviewed saves share one ordered, bounded writer. A later
+    /// report/clear snapshot already contains earlier source retirements.
+    private func admittedCompanionMemoryStore() -> MemoryStore? {
+        guard let memory = places.memory else {
+            memorySaveError = arabic ? "ذاكرة الهاتف غير متاحة للحفظ." : "Phone memory is unavailable for saving."
+            return nil
+        }
+        companionMemoryWriter.bindOwner(memory.writeOwner)
+        if let owner = companionMemoryStoreOwner, owner != memory.writeOwner {
+            memorySavePending = false
+            memorySaveError = arabic ? "تغير مخزن الذاكرة. أعد فتح التطبيق قبل الحفظ." : "The memory store changed. Reopen the app before saving."
+            return nil
+        }
+        companionMemoryStoreOwner = memory.writeOwner
+        return memory
     }
+    @discardableResult private func enqueueCompanionMemorySnapshot() -> CompanionMemoryWriteQueue.Receipt? {
+        guard let memory = admittedCompanionMemoryStore() else { return nil }
+        let state = companionWorkingState, dialogue = assistantDialogue
+        memorySavePending = true
+        return companionMemoryWriter.submit(owner: memory.writeOwner, encode: {
+            .init(dialogue: try JSONEncoder().encode(dialogue), workingState: try JSONEncoder().encode(state))
+        }, write: { snapshot in
+            try memory.saveConversationReview(dialogue: snapshot.dialogue, workingState: snapshot.workingState)
+        })
+    }
+    func retryCompanionMemorySave() { enqueueCompanionMemorySnapshot() }
+    private func persistWorkingState() {
+        reconcileWorkingStateOwners()
+        enqueueCompanionMemorySnapshot()
+    }
+    private func persistDialogue() { enqueueCompanionMemorySnapshot() }
     @discardableResult func addAssistantInterest(category: String, value: String) -> Bool {
         var updated = assistantPreferences
         guard updated.add(category: category, value: value) else {
@@ -2676,6 +2826,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         enqueueNarration { try await $0.clear() }
     }
     func receiveCompanionUtterance(_ text: String, fromVoice: Bool = false) {
+        recordingCompanionTurn = true; recordedCompanionSourceID = nil
+        defer { recordingCompanionTurn = false; recordedCompanionSourceID = nil }
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, text.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars,
               !fromVoice || assistantSession.shouldListen else {
@@ -2777,7 +2929,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
             everydayTasks.setGoal(destination)
             // Retain the expressed destination even when physical guidance must abstain.
-            companionWorkingState.changeGoal(destination, originalRequest: text)
+            guard let source = recordCompanionMessage(text) else { return }
+            companionWorkingState.changeGoal(destination, originalRequest: text, sourceID: source.sourceID, at: source.time)
             assistantDialogue.setGoal(destination); objectiveDraft = destination
             stopReturn(); indoor.cancelRoute(); persistWorkingState(); persistDialogue()
         }
@@ -2803,7 +2956,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             everydayTasks.setGoal(goal); everydayTicket = nil
             // Commit only a whole explicit request, before any model/extraction.
             // A change of task preserves the conversation and does not start sensors.
-            companionWorkingState.changeGoal(goal, originalRequest: text)
+            guard let source = recordCompanionMessage(text) else { return }
+            companionWorkingState.changeGoal(goal, originalRequest: text, sourceID: source.sourceID, at: source.time)
             assistantDialogue.setGoal(goal); objectiveDraft = assistantDialogue.goal
             stopReturn(); indoor.cancelRoute()
             persistWorkingState(); persistDialogue()
@@ -3565,7 +3719,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         } catch { return unavailable("The local reader did not return usable evidence. Do not guess.") }
     }
 
-    private func recordCompanionMessage(_ question: String) {
+    @discardableResult private func recordCompanionMessage(_ question: String) -> CompanionWorkingState.Report? {
+        guard !question.isEmpty, question.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars else { return nil }
+        if recordingCompanionTurn, let id = recordedCompanionSourceID,
+           let recorded = companionWorkingState.reports.first(where: { $0.sourceID == id && $0.text == question }) { return recorded }
         if companionWorkingState.reports.isEmpty && !companionWorkingState.hasScopedMemoryHistory {
             for turn in assistantDialogue.turns where turn.role == "user" {
                 // AssistantDialogue's legacy turns have no capture date. Keep
@@ -3575,9 +3732,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         companionWorkingState.record(question)
         companionWorkingState.ingestDirectActionReport(question)
+        let source = companionWorkingState.reports.last
+        assistantDialogue.record(role: "user", text: question, sourceID: source?.sourceID)
+        if recordingCompanionTurn { recordedCompanionSourceID = source?.sourceID }
         persistWorkingState()
-        assistantDialogue.record(role: "user", text: question)
-        persistDialogue()
+        return source
     }
 
     /// Conversation evidence rule (2026-10-22): find requests and location reports are answered
@@ -3686,6 +3845,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         recordCompanionMessage(question)
         let dialogue = assistantDialogue
+        let revision = companionWorkingState.goalRevision
+        let memoryRevision = conversationMemoryRevision
         let sessionGeneration = assistantSession.generation
         let preview = recognizedPlace
         var situation = AssistantSituation.snapshot(dialogue: dialogue, preview: preview,
@@ -3717,8 +3878,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             _ = self.speakOperation(self.arabic ? "لحظة." : "One moment.", replace: false)
         }
         questionTask = Task { @MainActor [weak self] in
-            guard let self else { return }
-            let revision = self.companionWorkingState.goalRevision
+            // Fence the captured dialogue before entering the adapter, which
+            // independently checks Task cancellation before model construction.
+            guard let self, !Task.isCancelled, self.requestID == id,
+                  self.assistantSession.generation == sessionGeneration,
+                  self.companionWorkingState.goalRevision == revision,
+                  self.conversationMemoryRevision == memoryRevision else { return }
             let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: self.arabic,
                 preferredName: self.preferredName, audience: self.assistantAudience, situation: situation, workingState: self.companionWorkingState, modelContext: self.companionModelContext,
                 availableTools: self.availableCompanionTools,
@@ -3727,14 +3892,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     return await self.readCompanionToolForTurn(request, id: id, generation: sessionGeneration)
                 }, requestID: id, onSpeechCandidate: { @MainActor [weak self] phrase, reports, evidence in
                     guard let self, ConversationDomainPolicy.allowsModelResponse(to: question),
-                          self.companionWorkingState.goalRevision == revision,
+                          self.companionWorkingState.goalRevision == revision, self.conversationMemoryRevision == memoryRevision,
                           self.companionWorkingState.actionProgress.allowsProposal(phrase, goalRevision: revision), self.requestID == id, !Task.isCancelled,
                           self.assistantSession.generation == sessionGeneration else { return }
                     self.queueModelConversationSpeech(phrase, request: id, generation: sessionGeneration,
                                                       reports: reports, evidence: evidence)
                 }) { @MainActor [weak self] phrase in
                     guard let self, ConversationDomainPolicy.allowsModelResponse(to: question),
-                          self.companionWorkingState.goalRevision == revision,
+                          self.companionWorkingState.goalRevision == revision, self.conversationMemoryRevision == memoryRevision,
                           self.companionWorkingState.actionProgress.allowsProposal(phrase, goalRevision: revision), self.requestID == id, !Task.isCancelled,
                           self.assistantSession.generation == sessionGeneration else { return }
                     guard let rendered = self.modelReplyText(phrase) else { return }
@@ -3748,7 +3913,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             let admission = CompanionReactiveSequence.tick([
                 .init(tick: { Task.isCancelled ? .failure : .success }),
                 .init(tick: { self.requestID == id && self.assistantSession.generation == sessionGeneration ? .success : .failure }),
-                .init(tick: { self.companionWorkingState.goalRevision == revision ? .success : .failure })
+                .init(tick: { self.companionWorkingState.goalRevision == revision && self.conversationMemoryRevision == memoryRevision ? .success : .failure })
             ])
             guard admission == .success else { return }
             self.questionTimeoutTask?.cancel(); self.questionTimeoutTask = nil
@@ -4780,7 +4945,8 @@ extension NavigationModel {
         // Do not split a source negation across independently expiring speech
         // entries. Short complete clues speak; long ones remain explicit history.
         interruptOrdinaryConversation(origin: origin)
-        _ = speakRequested(Self.wordCount(summary) <= 30 ? summary : fallback)
+        queueConversationSpeech(Self.wordCount(summary) <= 30 ? summary : fallback,
+            request: requestID, generation: assistantSession.generation, codeOwned: true)
         return true
     }
 
@@ -5363,8 +5529,9 @@ extension NavigationModel {
         observedObjects = updated
     }
     var savedItems: [RememberedItem] { items.items }
-    func itemViewCount(_ item: RememberedItem) -> Int { itemAppearance.viewCount(item.key) }
+    func itemViewCount(_ item: RememberedItem) -> Int { item.scope == nil ? itemAppearance.viewCount(item.key) : 0 }
     func forgetItem(_ item: RememberedItem, completion: @escaping (Bool) -> Void = { _ in }) {
+        guard items.items.contains(item) else { completion(false); return }
         retireHeldSearchForPrivacyDeletion()
         #if DEBUG
         purgeDebugSessionDiagnostics()
@@ -5385,6 +5552,7 @@ extension NavigationModel {
         }
     }
     private func forgetItemAfterNativePurge(_ item: RememberedItem) -> Bool {
+        guard items.items.contains(item) else { return false }
         #if DEBUG
         purgeDebugSessionDiagnostics()
         #endif
@@ -5394,7 +5562,8 @@ extension NavigationModel {
         if learningItem?.key == item.key { learningItem = nil }
         do {
             guard let memory = places.memory, itemAppearance.forget(item.key) else { throw MemoryError.missing }
-            var updated = items; updated.forget(item.name)
+            var updated = items
+            guard updated.forget(id: item.id) else { return false }
             try memory.saveValue(namespace: "items", id: "all", payload: JSONEncoder().encode(updated))
             try removeObservedHistory(category: item.name)
             items = updated

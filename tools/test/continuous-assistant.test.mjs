@@ -172,9 +172,10 @@ test('visual history waits for completed narration and explicit tasks commit bef
   const receive = section(model, 'func receiveCompanionUtterance', 'private func handleConversationTaskControl');
   const authority = receive.indexOf('guard CommandAuthority.permits(.changeGoal, from: origin) else');
   const parsed = receive.indexOf('if let goal = ConversationIntent.explicitTaskGoal(text)');
-  const commit = receive.indexOf('companionWorkingState.changeGoal(goal, originalRequest: text)');
+  const source = receive.indexOf('guard let source = recordCompanionMessage(text) else { return }', parsed);
+  const commit = receive.indexOf('companionWorkingState.changeGoal(goal, originalRequest: text, sourceID: source.sourceID, at: source.time)');
   const inference = receive.indexOf('answerConversation(text)');
-  assert.ok(authority >= 0 && parsed > authority && commit > parsed && inference > commit,
+  assert.ok(authority >= 0 && parsed > authority && source > parsed && commit > source && inference > commit,
     'Only an authorized explicit request can commit its original text before inference');
   assert.doesNotMatch(receive.slice(parsed, inference), /originalRequest:\s*goal\b/,
     'Do not relabel a canonical goal as the original user request');

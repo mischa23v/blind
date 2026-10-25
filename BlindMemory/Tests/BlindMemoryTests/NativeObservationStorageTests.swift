@@ -396,7 +396,10 @@ final class NativeObservationStorageTests: XCTestCase {
         XCTAssertThrowsError(try store.value(namespace: "native-observations", id: "history"))
         try queue.read { db in
             XCTAssertEqual(try Double.fetchOne(db, sql: "SELECT updated FROM memoryValue WHERE profile='owner'"), 1_000)
-            XCTAssertEqual(try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM grdb_migrations"), 4)
+            // Conversation snapshot bounds add exactly v5; observations still
+            // have no schema or migration in this ordinary-memory database.
+            XCTAssertEqual(try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM grdb_migrations"), 5)
+            XCTAssertEqual(try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM grdb_migrations WHERE identifier='assistant-memory-v5-conversation-review'"), 1)
             XCTAssertFalse(try db.tableExists("nativeObservation"))
         }
     }

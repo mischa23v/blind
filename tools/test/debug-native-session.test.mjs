@@ -13,6 +13,23 @@ const mapping = read('NativeMapping');
 const indoor = read('IndoorNavigator');
 const section = (source, a, b) => source.slice(source.indexOf(a), source.indexOf(b, source.indexOf(a)));
 
+// Skip default-argument closures before balancing the complete method body.
+function method(source, signature) {
+  const start=source.indexOf(signature); assert.ok(start>=0,signature);
+  const parameters=source.indexOf('(',start); let depth=0, end=-1;
+  for(let i=parameters;i<source.length;i++) {
+    if(source[i]==='(') depth++;
+    if(source[i]===')' && --depth===0) { end=i; break; }
+  }
+  assert.ok(end>parameters,`Unclosed parameters: ${signature}`);
+  const open=source.indexOf('{',end); depth=0;
+  for(let i=open;i<source.length;i++) {
+    if(source[i]==='{') depth++;
+    if(source[i]==='}' && --depth===0) return source.slice(open+1,i);
+  }
+  assert.fail(`Unclosed method: ${signature}`);
+}
+
 // Source contracts only. These DO NOT execute Apple callbacks or compile Swift.
 test('native debug integration: every recorder symbol is positively DEBUG guarded', () => {
   for (const [name, source] of Object.entries({ nav, model, voice, feedback, familiar, journey, mapping, indoor })) {
@@ -109,10 +126,25 @@ test('native debug integration: VoiceOver text callbacks do not invent utterance
 });
 
 test('native debug integration: privacy removal invokes purge and reports failure without new controls', () => {
-  for (const signature of ['func clearAssistantConversation()', 'func clearNarrationHistory()', 'func clearObservedObjects()', 'func removeAssistantInterest', 'func forgetItem', 'func forgetRoomPictures', 'func deletePlace', 'func forgetRoom', 'func removeHint']) {
-    const at = nav.indexOf(signature);
-    assert.ok(at >= 0);
-    assert.match(nav.slice(at, at + 220), /purgeDebugSessionDiagnostics\(\)/);
+  for (const [signature, mutation] of [
+    ['func clearAssistantConversation(', 'unverifiedDialogue = AssistantDialogue()'],
+    ['func clearNarrationHistory(', 'enqueueNarration'],
+    ['func clearObservedObjects(', 'nativeObservations.clearHistory('],
+    ['func removeAssistantInterest(', 'updated.remove(id: id)'],
+    ['func forgetItem(', 'nativeObservations.clearHistory('],
+    ['func forgetRoomPictures(', 'roomRecall.forget(room: id)'],
+    ['func deletePlace(', 'nativeObservations.clearHistory('],
+    ['func forgetRoom(', 'nativeObservations.clearHistory('],
+    ['func removeHint(', 'companion.memory.removeHint(id: id)'],
+  ]) {
+    const body=method(nav,signature);
+    const check=source=>{
+      assert.match(source, /#if DEBUG\s+purgeDebugSessionDiagnostics\(\)\s+#endif/);
+      const purge=source.indexOf('purgeDebugSessionDiagnostics()'), change=source.indexOf(mutation);
+      assert.ok(purge>=0 && change>purge,`${signature}: purge precedes privacy mutation`);
+    };
+    check(body);
+    assert.throws(()=>check(body.replace('purgeDebugSessionDiagnostics()','')), {name:'AssertionError'},signature);
   }
   const forget = section(nav, '    func forgetConversationRecord(', '    func savePreferredName(');
   const admission = 'guard companionWorkingState.allowsLegacyReportMutation else { return }';

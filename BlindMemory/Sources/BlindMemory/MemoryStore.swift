@@ -28,6 +28,8 @@ public struct NarrationRecord: Sendable, Identifiable {
 /// Small adapter around GRDB transactions/migrations. No live pose is persisted.
 /// AI callers can draft text; only the app's explicit review action calls approve.
 public final class MemoryStore: Sendable {
+    /// Process-local identity of this exact profile/store instance, never a location.
+    public let writeOwner = UUID()
     private let database: DatabaseQueue
     private let profile: String
     private let path: String
@@ -47,6 +49,7 @@ public final class MemoryStore: Sendable {
         migrator.registerMigration("assistant-memory-v2-deletion") { db in try db.execute(sql: Self.sql("deletion")) }
         migrator.registerMigration("assistant-memory-v3-narration") { db in try db.execute(sql: Self.sql("narration")) }
         migrator.registerMigration("assistant-memory-v4-private-values") { db in try db.execute(sql: Self.sql("private_values")) }
+        migrator.registerMigration("assistant-memory-v5-conversation-review") { db in try db.execute(sql: Self.sql("conversation_review")) }
         try migrator.migrate(database)
     }
     /// Call off the main queue. Observation history has its own SQLite file and writer;
@@ -154,6 +157,20 @@ public final class MemoryStore: Sendable {
         try Self.validateValueKey(namespace: namespace, id: id)
         guard (1...(try Self.maximumPayloadBytes(namespace: namespace))).contains(payload.count) else { throw MemoryError.invalid }
         try database.write { db in try db.execute(sql: "INSERT INTO memoryValue(profile,namespace,id,payload,updated) VALUES (?,?,?,?,?) ON CONFLICT(profile,namespace,id) DO UPDATE SET payload=excluded.payload, updated=excluded.updated", arguments: [profile, namespace, id, payload, Date().timeIntervalSince1970]) }
+    }
+    /// A reviewed report affects both dialogue and task derivatives. Existing
+    /// GRDB write transactions commit both bounded rows or roll back both.
+    public static let maximumDialogueSnapshotBytes = 128 * 1024
+    public static let maximumWorkingStateSnapshotBytes = 8 * 1024 * 1024
+    public func saveConversationReview(dialogue: Data, workingState: Data) throws {
+        guard (1...Self.maximumDialogueSnapshotBytes).contains(dialogue.count),
+              (1...Self.maximumWorkingStateSnapshotBytes).contains(workingState.count) else { throw MemoryError.invalid }
+        try database.write { db in
+            let updated = Date().timeIntervalSince1970
+            for (namespace, id, payload) in [("dialogue", "active", dialogue), ("companion", "working-state", workingState)] {
+                try db.execute(sql: "INSERT INTO memoryValue(profile,namespace,id,payload,updated) VALUES (?,?,?,?,?) ON CONFLICT(profile,namespace,id) DO UPDATE SET payload=excluded.payload, updated=excluded.updated", arguments: [profile, namespace, id, payload, updated])
+            }
+        }
     }
     public func value(namespace: String, id: String) throws -> Data? {
         try Self.validateValueKey(namespace: namespace, id: id)

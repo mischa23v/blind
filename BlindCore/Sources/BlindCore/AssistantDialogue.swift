@@ -12,12 +12,14 @@ public struct AssistantDialogue: Codable, Sendable {
     public struct Turn: Codable, Sendable, Equatable {
         public let role: String
         public let text: String
-        public init(role: String, text: String) { self.role = role; self.text = text }
+        public let sourceID: String?
+        public init(role: String, text: String, sourceID: String? = nil) { self.role = role; self.text = text; self.sourceID = sourceID }
     }
     public struct UserRecord: Codable, Sendable, Equatable, Identifiable {
         public let id: String
         public let text: String
-        public init(id: String = UUID().uuidString, text: String) { self.id = id; self.text = text }
+        public let sourceID: String?
+        public init(id: String = UUID().uuidString, text: String, sourceID: String? = nil) { self.id = id; self.text = text; self.sourceID = sourceID }
     }
     public private(set) var goal = ""
     public private(set) var goalRevision = UUID().uuidString
@@ -37,13 +39,14 @@ public struct AssistantDialogue: Codable, Sendable {
 
     /// For assistant turns, the caller must supply only completed/delivered text.
     /// Generated but cancelled, queued, or interrupted text is not conversation history.
-    public mutating func record(role: String, text: String) {
+    public mutating func record(role: String, text: String, sourceID: String? = nil) {
+        guard sourceID.map({ !$0.isEmpty && $0.utf8.count <= 64 }) ?? true else { return }
         guard Self.validTurn(role: role, text: text) else { return }
-        guard turns.last?.role != role || turns.last?.text != text else { return }
-        turns.append(Turn(role: role, text: text))
+        guard sourceID != nil || turns.last?.role != role || turns.last?.text != text else { return }
+        turns.append(Turn(role: role, text: text, sourceID: sourceID))
         trimRecent()
         if role == "user" {
-            userRecords.append(UserRecord(text: text))
+            userRecords.append(UserRecord(text: text, sourceID: sourceID))
             trimMemory()
         }
     }
@@ -106,15 +109,24 @@ public struct AssistantDialogue: Codable, Sendable {
         return true
     }
 
+    /// Exact source deletion. Legacy dialogue copies have no binding and cannot
+    /// safely be joined by words: discard that unbound archive conservatively,
+    /// while retaining other source-bound reports (even identical text).
+    public mutating func forgetBoundSource(_ sourceID: String) {
+        guard !sourceID.isEmpty, sourceID.utf8.count <= 64 else { return }
+        userRecords.removeAll { $0.sourceID == nil || $0.sourceID == sourceID }
+        turns.removeAll { $0.role == "assistant" || $0.sourceID == nil || $0.sourceID == sourceID }
+    }
+
     /// Clears this conversation/goal only; does not erase separately saved profile.
     public mutating func forgetConversation() { self = AssistantDialogue() }
 
     public var valid: Bool {
-        goal.unicodeScalars.count <= 300 && !goalRevision.isEmpty && goalRevision.count <= 64 &&
-        turns.count <= 6 && turns.allSatisfy { Self.validTurn(role: $0.role, text: $0.text) } &&
+        goal.unicodeScalars.count <= 300 && !goalRevision.isEmpty && goalRevision.utf8.count <= 64 &&
+        turns.count <= 6 && turns.allSatisfy { Self.validTurn(role: $0.role, text: $0.text) && ($0.sourceID.map { !$0.isEmpty && $0.utf8.count <= 64 } ?? true) } &&
         turns.reduce(0) { $0 + $1.text.unicodeScalars.count } <= Self.maximumRecentScalars &&
         userRecords.count <= Self.maximumUserRecords && Set(userRecords.map(\.id)).count == userRecords.count &&
-        userRecords.allSatisfy { !$0.id.isEmpty && $0.id.count <= 64 && Self.validTurn(role: "user", text: $0.text) } &&
+        userRecords.allSatisfy { ($0.sourceID.map { !$0.isEmpty && $0.utf8.count <= 64 } ?? true) &&  !$0.id.isEmpty && $0.id.utf8.count <= 64 && Self.validTurn(role: "user", text: $0.text) } &&
         userRecords.reduce(0) { $0 + $1.text.unicodeScalars.count } <= Self.maximumMemoryScalars
     }
 
@@ -135,10 +147,10 @@ public struct AssistantDialogue: Codable, Sendable {
             ?? turns.filter { $0.role == "user" }.map { UserRecord(text: $0.text) }
         // Old six-turn records could exceed today's aggregate prompt allowance.
         // Preserve their complete user sources in memory, then trim whole turns.
-        guard goal.unicodeScalars.count <= 300, !goalRevision.isEmpty, goalRevision.count <= 64,
-              turns.count <= 6, turns.allSatisfy({ Self.validTurn(role: $0.role, text: $0.text) }),
+        guard goal.unicodeScalars.count <= 300, !goalRevision.isEmpty, goalRevision.utf8.count <= 64,
+              turns.count <= 6, turns.allSatisfy({ Self.validTurn(role: $0.role, text: $0.text) && ($0.sourceID.map { !$0.isEmpty && $0.utf8.count <= 64 } ?? true) }),
               userRecords.count <= Self.maximumUserRecords,
-              userRecords.allSatisfy({ !$0.id.isEmpty && $0.id.count <= 64 && Self.validTurn(role: "user", text: $0.text) }),
+              userRecords.allSatisfy({ ($0.sourceID.map { !$0.isEmpty && $0.utf8.count <= 64 } ?? true) && !$0.id.isEmpty && $0.id.utf8.count <= 64 && Self.validTurn(role: "user", text: $0.text) }),
               Set(userRecords.map(\.id)).count == userRecords.count else {
             throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Invalid bounded conversation"))
         }

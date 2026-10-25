@@ -17,6 +17,7 @@ def declaration(signature):
             if depth == 0: return source[start:i+1]
     raise ValueError(signature)
 methods = [
+    '@discardableResult private func routeHistoricalLocationInquiry(',
     'private func acquireClockReply(', 'private var activeModelClockReplyID:', 'private func modelClockReceipt(',
     'private func modelReplyText(', 'private func queueModelConversationSpeech(', 'private func clockDeliveryReceipt(',
     'private func clockDeliveryIsCurrent(', '@discardableResult private func showConversationReply(',
@@ -49,6 +50,14 @@ import XCTest
     struct Working {
         var goalRevision = "kept-goal"
         var actionProgress = CompanionActionProgressLedger()
+        var historicalText: String?, historicalSummary: String?
+        func historicalLocationReply(to question: String, arabic: Bool, concise: Bool = false) -> String? {
+            concise ? historicalSummary : historicalText
+        }
+        var goal = "", metadataApplications = 0
+        mutating func apply(_ update: ClockFixtureUpdate, latest: String) {
+            metadataApplications += 1; goal = update.goal
+        }
     }
     enum DispatchKind { case answer }
     var assistantSession = Session()
@@ -56,6 +65,19 @@ import XCTest
     var voice = Voice()
     var companionWorkingState = Working()
     var requestID = UUID()
+    var assistantDialogue = AssistantDialogue()
+    var preferredName = "", objectiveDraft = "", message = ""
+    // Platform tokenizer seam only; these fixtures do not execute NLTokenizer.
+    static func wordCount(_ text: String) -> Int { CompanionReferenceReading.wordCount(text) }
+    var assistantAudience = AssistantAudience.general
+    var availableCompanionTools: Set<CompanionToolKind> = []
+    var companionModelContext: String? = nil
+    var dialogueWrites = 0, stateWrites = 0
+    struct Indoor { func cancelRoute() {} }
+    var indoor = Indoor()
+    func stopReturn() {}
+    func persistDialogue() { dialogueWrites += 1 }
+    func persistWorkingState() { stateWrites += 1 }
     var textOnly = false
     var arabic = false
     var busy = false
@@ -97,6 +119,12 @@ import XCTest
     func speakOperation(_ text: String) { spoken.append(text) }
     func deliverConversationReply(_ text: String) { _ = showConversationReply(text, settled: true) }
 '''
+# The revision field and captured local must come from the native source, not
+# matching fixture constants. The old 16 callback scenarios retain this capture.
+answer_method = declaration('private func answerConversation(')
+revision_field = next(line for line in source.splitlines() if line.strip().startswith('private var conversationMemoryRevision ='))
+memory_capture = next(line for line in answer_method.splitlines() if line.strip().startswith('let memoryRevision ='))
+header += '\n' + revision_field + '\n'
 struct = declaration('private struct ConversationSpeech')
 # Native clock tool case, verbatim, with other unrelated adapters omitted.
 tool = declaration('@MainActor private func readCompanionTool(')
@@ -123,6 +151,7 @@ wrapper = '''
     func partialCallback() -> @MainActor (String) -> Void {
         let question = "Tell me an ordinary fact."
         let revision = companionWorkingState.goalRevision
+'''+memory_capture+'''
         let id = requestID, sessionGeneration = assistantSession.generation
         return '''+partial+'''
     }
@@ -302,12 +331,169 @@ final class ClockNativeCallbackTests: XCTestCase {
     @MainActor func testModelTimeGuessNeverBecomesPartialOrFinalDisplay() async throws { try await ClockNativeHarness().exercise(12) }
 }
 '''
+# Exact already-admitted review retirement, not a copied cancellation rule.
+# Selection validation and durable revision remain covered by the full review replay.
+review_source = declaration('@discardableResult func reviseScopedConversationRecord(')
+retirement_start = review_source.index('            conversationMemoryRevision = UUID()')
+assert review_source.index('revised.reviseReviewedSource(selection, replacement: replacement)') < retirement_start
+retirement_end = review_source.index('            #if DEBUG', retirement_start)
+retirement = review_source[retirement_start:retirement_end]
+assert 'interruptOrdinaryConversation(origin: .trustedInterface)' in retirement
+wrapper += '''
+    func retireAdmittedReviewSpeech() {
+'''+retirement+'''
+    }
+    func exerciseHistoricalReviewOwnership(_ pendingBehindMobility: Bool) throws {
+        let history = "Historical report: you said your cup was not in the kitchen. Its current location is unknown."
+        companionWorkingState.historicalText = history
+        companionWorkingState.historicalSummary = pendingBehindMobility
+            ? Array(repeating: "not", count: 60).joined(separator: " ") : history
+        let owner = requestID, memoryRevision = conversationMemoryRevision
+        busy = true; questionIsChat = false
+        if pendingBehindMobility { feedback.speechPriority = 3 }
+        XCTAssertTrue(routeHistoricalLocationInquiry("Where did I leave my cup?", origin: .trustedInterface))
+        XCTAssertEqual(sceneAnswer, history); XCTAssertEqual(currentReply, history)
+        if pendingBehindMobility {
+            XCTAssertEqual(conversationSpeech.count, 1, "Exactly one bounded historical entry waits behind mobility.")
+            let pending = try XCTUnwrap(conversationSpeech.first)
+            XCTAssertTrue(pending.codeOwned); XCTAssertEqual(pending.request, owner)
+            XCTAssertLessThanOrEqual(Self.wordCount(pending.text), 30)
+            XCTAssertTrue(pending.text.contains("The full dated report is displayed."))
+            XCTAssertTrue(spoken.isEmpty); XCTAssertNil(activeConversationSpeech)
+            retireAdmittedReviewSpeech()
+            XCTAssertTrue(conversationSpeech.isEmpty); XCTAssertNil(activeConversationSpeech)
+            XCTAssertEqual(feedback.speechPriority, 3); XCTAssertTrue(feedback.stopped.isEmpty)
+            feedback.speechPriority = nil; drainConversationSpeech()
+            XCTAssertTrue(spoken.isEmpty, "Retired history cannot start after mobility finishes.")
+        } else {
+            let active = try XCTUnwrap(activeConversationSpeech, "Historical speech must have an ordinary-conversation owner.")
+            XCTAssertEqual(active.text, history); XCTAssertTrue(active.codeOwned)
+            XCTAssertEqual(active.request, owner); XCTAssertEqual(spoken, [history])
+            XCTAssertTrue(conversationSpeech.isEmpty)
+            retireAdmittedReviewSpeech()
+            XCTAssertNil(activeConversationSpeech); XCTAssertTrue(conversationSpeech.isEmpty)
+            XCTAssertEqual(feedback.stopped, [active.id], "Only the owned historical speech ID is stopped.")
+        }
+        XCTAssertNotEqual(conversationMemoryRevision, memoryRevision)
+        XCTAssertEqual(requestID, owner); XCTAssertTrue(busy); XCTAssertEqual(readCount, 0)
+    }
+'''
+scenarios = scenarios.replace('final class ClockNativeCallbackTests: XCTestCase {', '''final class ClockNativeCallbackTests: XCTestCase {
+    @MainActor func testHistoricalHelperOwnsSpeechRetiredByAdmittedReview() async throws { try ClockNativeHarness().exerciseHistoricalReviewOwnership(false) }
+    @MainActor func testHistoricalHelperPendingBehindMobilityIsDiscardedWithoutStoppingMobility() async throws { try ClockNativeHarness().exerciseHistoricalReviewOwnership(true) }
+''', 1)
+
+# Extract the entire native scheduled model closure, including initial and
+# post-await admission, task metadata, display and persistence. Its pre-scheduling
+# capture declarations are extracted separately so a late-capture race stays real.
+task_signature = 'questionTask = Task { @MainActor [weak self] in'
+task_offset = answer_method.index(task_signature)
+pre_schedule = answer_method[:task_offset]
+captures = []
+for name in ['dialogue', 'sessionGeneration', 'revision', 'memoryRevision']:
+    matches = [line for line in pre_schedule.splitlines() if line.strip().startswith('let ' + name + ' =')]
+    assert len(matches) <= 1, name
+    captures.extend(matches)
+assert any('let dialogue =' in line for line in captures)
+assert any('let sessionGeneration =' in line for line in captures)
+saved_source = source
+source = answer_method
+scheduled = declaration(task_signature)
+source = saved_source
+scheduled = scheduled[scheduled.index('{'):]
+wrapper += '''
+    func scheduledModelTurn() -> @MainActor () async -> Void {
+        let question = "Tell me an ordinary fact."
+        let id = requestID
+        let situation: [String: Any] = [:]
+'''+ '\n'.join(captures) + '''
+        return '''+scheduled+'''
+    }
+    // Rotation-only deliberately omits review cancellation to isolate the caller
+    // fence. Actual review cancels questionTask; converse retains its own check.
+    func exerciseHeldStart(_ cancel: Bool) async throws {
+        LocalImageAssistant.reset()
+        let pending = scheduledModelTurn()
+        let start = ClockFixtureGate()
+        let entered = ClockFixtureGate()
+        let task = Task { await entered.open(); await start.wait(); await pending() }
+        await entered.wait()
+        if cancel { task.cancel() } else { conversationMemoryRevision = UUID() }
+        await start.open(); await task.value
+        print("Authored held-start cancellation=\\(cancel): adapter entries=\\(LocalImageAssistant.invocations); fixture sessions=\\(LocalImageAssistant.sessions)")
+        XCTAssertEqual(LocalImageAssistant.invocations, 0, "The native caller must reject retired work before invoking the model adapter.")
+        XCTAssertEqual(LocalImageAssistant.sessions, 0, "Callee cancellation is a separate boundary, not proof from counting adapter entry.")
+        XCTAssertTrue(observedDisplays.isEmpty); XCTAssertTrue(spoken.isEmpty)
+        XCTAssertEqual(companionWorkingState.metadataApplications, 0)
+        XCTAssertEqual(dialogueWrites, 0); XCTAssertEqual(stateWrites, 0)
+    }
+    func exerciseReviewDuringInference() async throws {
+        LocalImageAssistant.reset()
+        let entered = ClockFixtureGate(), finish = ClockFixtureGate()
+        LocalImageAssistant.entered = entered; LocalImageAssistant.finish = finish
+        let pending = scheduledModelTurn()
+        let task = Task { await pending() }
+        await entered.wait()
+        XCTAssertEqual(LocalImageAssistant.invocations, 1); XCTAssertEqual(LocalImageAssistant.sessions, 1)
+        conversationMemoryRevision = UUID()
+        await finish.open(); await task.value
+        XCTAssertTrue(observedDisplays.isEmpty); XCTAssertTrue(spoken.isEmpty)
+        XCTAssertEqual(companionWorkingState.metadataApplications, 0, "A retired turn must not apply metadata before final publication.")
+        XCTAssertEqual(dialogueWrites, 0); XCTAssertEqual(stateWrites, 0)
+    }
+'''
+scenarios = scenarios.replace('final class ClockNativeCallbackTests: XCTestCase {', '''final class ClockNativeCallbackTests: XCTestCase {
+    @MainActor func testHeldStartRejectsRetiredMemoryBeforeAdapterInvocation() async throws { try await ClockNativeHarness().exerciseHeldStart(false) }
+    @MainActor func testHeldStartCancellationSeparatesCallerAndCalleeBoundaries() async throws { try await ClockNativeHarness().exerciseHeldStart(true) }
+    @MainActor func testMemoryRotationDuringInferenceWithholdsCallbacksMetadataAndFinalPublication() async throws { try await ClockNativeHarness().exerciseReviewDuringInference() }
+''', 1)
+# These are authored Apple/model seams, not an actual model/backend execution.
+# Preserve the real converse cancellation check before counting fixture sessions.
+local_source = Path(sys.argv[3]).read_text()
+callee_start = local_source.index('    static func converse(')
+callee_checkpoint = next(line for line in local_source[callee_start:].splitlines() if line.strip() == 'try Task.checkCancellation()')
+collaborators = '''
+private actor ClockFixtureGate {
+    private var opened = false
+    private var waits: [CheckedContinuation<Void, Never>] = []
+    func wait() async {
+        if opened { return }
+        await withCheckedContinuation { waits.append($0) }
+    }
+    func open() { opened = true; let current = waits; waits = []; current.forEach { $0.resume() } }
+}
+private struct ClockFixtureUpdate { let goal: String }
+private struct ClockFixtureAnswer { let text: String?; let status: String; let taskUpdate: ClockFixtureUpdate? }
+@MainActor private enum LocalImageAssistant {
+    static var invocations = 0, sessions = 0
+    static var entered: ClockFixtureGate?, finish: ClockFixtureGate?
+    static func reset() { invocations = 0; sessions = 0; entered = nil; finish = nil }
+    static func converse(dialogue: AssistantDialogue, arabic: Bool, preferredName: String,
+        audience: AssistantAudience, situation: [String: Any], workingState: ClockNativeHarness.Working,
+        modelContext: String?, availableTools: Set<CompanionToolKind>, toolExecutor: CompanionToolExecutor?, requestID: UUID?,
+        onSpeechCandidate: (@MainActor @Sendable (String, [String], [CompanionEvidence]) -> Void)? = nil,
+        onReplyComplete: (@MainActor @Sendable (String) -> Void)? = nil,
+        onPartial: (@MainActor @Sendable (String) -> Void)? = nil) async -> ClockFixtureAnswer {
+        invocations += 1
+        do {
+'''+callee_checkpoint+'''
+        } catch { return .init(text: nil, status: "cancelled", taskUpdate: nil) }
+        sessions += 1
+        await entered?.open(); await finish?.wait()
+        let text = "Two plus two is four."
+        onSpeechCandidate?(text, [], []); onPartial?(text)
+        return .init(text: text, status: "complete", taskUpdate: .init(goal: "Keep the existing task"))
+    }
+}
+'''
+
 trace_source = Path(sys.argv[3]).read_text() if len(sys.argv) > 3 else ''
 trace = ''
 if trace_source:
     saved_source = source
     source = trace_source
     trace = '\n#if DEBUG\n' + declaration('struct DebugNativeSessionTrace:') + '\n#endif\n'
+    trace += '\n// Exact native BehaviorTree.CPP adaptation, including its admission behavior.\n' + declaration('enum CompanionReactiveSequence') + '\n'
     source = saved_source
-Path(sys.argv[2]).write_text(header+'\n'+struct+'\n'+'\n\n'.join(declaration(m) for m in methods)+read+wrapper+scenarios+trace)
+Path(sys.argv[2]).write_text(header+'\n'+struct+'\n'+'\n\n'.join(declaration(m) for m in methods)+read+wrapper+scenarios+trace+collaborators)
 print(f'Extracted {len(methods)} native methods, clock tool case, partial callback and final admission guard.')

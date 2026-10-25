@@ -38,7 +38,7 @@ test('every microphone final fails closed before scan, goal, calibration, offer 
   assert.match(receive, /receiveUnverifiedConversation\(text, origin: origin\)\s*return/);
   const gateIndex = receive.indexOf(gate);
   assert.ok(gateIndex >= 0, 'Command-authority gate must be present');
-  for (const action of ['routeVoiceRoomScan(text)', 'calibrate()', 'handleConversationTaskControl(control)', 'companionWorkingState.changeGoal(destination, originalRequest: text)', 'companionWorkingState.changeGoal(goal, originalRequest: text)', 'answerCompanionOffer(answer)', 'routeEverydayTask(text)', 'answerConversation(text)']) {
+  for (const action of ['routeVoiceRoomScan(text)', 'calibrate()', 'handleConversationTaskControl(control)', 'companionWorkingState.changeGoal(destination, originalRequest: text, sourceID: source.sourceID, at: source.time)', 'companionWorkingState.changeGoal(goal, originalRequest: text, sourceID: source.sourceID, at: source.time)', 'answerCompanionOffer(answer)', 'routeEverydayTask(text)', 'answerConversation(text)']) {
     const actionIndex = receive.indexOf(action);
     assert.ok(actionIndex >= 0 && gateIndex < actionIndex, action);
   }
@@ -48,7 +48,9 @@ test('trusted goal mutation keeps canonical labels distinct from the original us
   const receive = body('func receiveCompanionUtterance(');
   for (const [parser, label] of [['AssistantControl.explicitGoal(text)', 'destination'], ['ConversationIntent.explicitTaskGoal(text)', 'goal']]) {
     const branch = declaration(receive, `if let ${label} = ${parser}`);
-    assert.ok(branch.includes(`companionWorkingState.changeGoal(${label}, originalRequest: text)`), label);
+    assert.ok(branch.includes(`companionWorkingState.changeGoal(${label}, originalRequest: text, sourceID: source.sourceID, at: source.time)`), label);
+    const source = branch.indexOf('guard let source = recordCompanionMessage(text) else { return }');
+    assert.ok(source >= 0 && source < branch.indexOf('companionWorkingState.changeGoal('), 'Bind the exact source and original capture time before changing the goal');
     assert.doesNotMatch(branch, /originalRequest:\s*(?:destination|goal)\b/, 'A parsed label is not a user quote');
     assert.ok(branch.indexOf('changeGoal(') < branch.indexOf('persistWorkingState()'), 'Persist the exact bound request with the goal');
   }

@@ -163,7 +163,8 @@ test('source contract: debug privacy purge cannot bypass familiar search cancell
       const mutation = configured.indexOf('everydayTasks.cancelAll()');
       assert.ok(mutation >= 0, 'Existing task cancellation remains reachable');
       const prefix = configured.slice(0, mutation).replace(/\s+/g, ' ').trim();
-      const required = ['clearExploreSnapshot()',
+      const required = ['pendingScopedReview = nil; completedScopedReview = nil; scopedReviewError = ""',
+        'clearExploreSnapshot()',
         ...(debug ? ['purgeDebugSessionDiagnostics()'] : []),
         ...(familiar ? ['familiarPeople.cancelSearchForNewGoal()'] : []),
         'retireHeldSearchForPrivacyDeletion()',
@@ -177,6 +178,9 @@ test('source contract: debug privacy purge cannot bypass familiar search cancell
   };
   check(clear);
   for (const [name, from, to] of [
+    ['pending review survives clear', 'pendingScopedReview = nil;', ''],
+    ['completed review survives clear', 'completedScopedReview = nil;', ''],
+    ['stale review error survives clear', 'scopedReviewError = ""', ''],
     ['missing held-search retirement', 'retireHeldSearchForPrivacyDeletion()', ''],
     ['missing journey retirement', 'try? journeys.withConnectedJourney { try $0.eraseHistory(origin: .trustedInterface) }', ''],
     ['missing photo revocation', 'clearExploreSnapshot()', ''],

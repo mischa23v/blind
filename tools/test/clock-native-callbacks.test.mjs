@@ -31,6 +31,6 @@ test('production clock callbacks keep original lease, operation ownership and pr
   const output = `${result.stdout || ''}\n${result.stderr || ''}`;
   writeFileSync(join(work, 'execution.log'), output);
   assert.equal(result.status, 0, `Clock replay failed; preserved package/log: ${work}\n${output.slice(-12000)}`);
-  assert.match(output, /Executed 16 tests, with 0 failures/);
+  assert.match(output, /Executed 21 tests, with 0 failures/);
   assert.match(readFileSync(join(tests, 'ClockNativeCallbackTests.swift'), 'utf8'), /testRejectedProposalNeverReachesDisplayObservers/);
 });

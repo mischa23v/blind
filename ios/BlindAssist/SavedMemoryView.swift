@@ -24,13 +24,17 @@ struct SavedMemoryView: View {
 
     private func question(_ value: Pending) -> String {
         switch value {
-        case .item(let item): return t("Delete \(item.name) and its pictures?", "حذف \(item.name) وصوره؟")
+        case .item(let item): return t("Delete \(item.name)? This also clears unbound same-name pictures and sightings, and all observed-geometry history. Other saved item records stay.", "حذف \(item.name)؟ سيُحذف أيضاً سجل الصور والمشاهدات غير المرتبط بمصدر لهذا الاسم وكل سجل الهندسة المرصودة. تبقى سجلات الأغراض الأخرى.")
         case .roomPictures(_, let name): return t("Delete the pictures of \(name)?", "حذف صور \(name)؟")
         case .room(_, let name): return t("Forget \(name)?", "نسيان \(name)؟")
         case .hint(_, let name): return t("Remove \"\(name)\"?", "إزالة «\(name)»؟")
         case .observations: return t("Delete automatically remembered sightings?", "حذف المشاهدات المحفوظة تلقائياً؟")
         case .conversation: return t("Clear the goal, the conversation and what you told me about your things?", "مسح الهدف والمحادثة وما أخبرتني به عن أغراضك؟")
         }
+    }
+    private func itemContext(_ item: RememberedItem) -> String {
+        guard let scope = item.scope else { return t("Original place identity unknown.", "هوية المكان الأصلي غير معروفة.") }
+        return t("Original context IDs: ", "معرّفات السياق الأصلي: ") + "place=\(scope.placeID); floor=\(scope.floorID); room=\(scope.roomID); instance=\(scope.objectInstanceID ?? "unknown"); map=\(scope.map.mapID); frame=\(scope.map.frameID); revision=\(scope.map.revision)"
     }
     private func perform(_ value: Pending) {
         switch value {
@@ -48,6 +52,7 @@ struct SavedMemoryView: View {
 
     var body: some View {
         Form {
+            Section { ConversationMemoryPersistenceView(model: model) }
             Section { ConnectedJourneyPersistenceView(store: model.journeys, arabic: model.arabic) }
             Section {
                 ForEach(model.savedItems) { item in
@@ -55,6 +60,8 @@ struct SavedMemoryView: View {
                         Text([item.name, item.roomName.map { t("in ", "في ") + $0 }, t("\(model.itemViewCount(item)) pictures", "\(model.itemViewCount(item)) صور")]
                             .compactMap { $0 }.joined(separator: ", "))
                             .font(.headline)
+                        Text(itemContext(item)).font(.caption)
+                        Text(item.savedAt.formatted(date: .abbreviated, time: .standard)).font(.caption)
                         if let description = item.description { Text(description) }
                         Button(t("Delete \(item.name)", "حذف \(item.name)"), role: .destructive) { pending = .item(item) }
                     }
@@ -92,6 +99,7 @@ struct SavedMemoryView: View {
             } header: { Text(t("Learned habits", "العادات المتعلَّمة")) }
             Section {
                 Button(t("Clear goal and conversation", "امسح الهدف والمحادثة"), role: .destructive) { pending = .conversation }
+                NavigationLink(t("Review conversation reports", "مراجعة تقارير المحادثة")) { ConversationMemoryView(model: model) }
                 NavigationLink(t("Recent descriptions", "الأوصاف الأخيرة")) { NarrationHistoryView(model: model) }
                 NavigationLink(t("Interests", "الاهتمامات")) { AssistantPreferencesView(model: model) }
                 #if BLIND_FAMILIAR_PEOPLE
