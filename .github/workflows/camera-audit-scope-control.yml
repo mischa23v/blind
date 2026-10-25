@@ -1,0 +1,43 @@
+name: Real app camera audit scope control
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/camera-audit-scope-control.yml'
+      - 'ios/BlindAssistUITests/CameraAuditScopeTests.swift'
+      - 'tools/ci/camera-audit-scope-control.py'
+      - 'tools/test/camera-audit-scope-control.test.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: camera-audit-scope-control-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  scope-control:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    runs-on: xcode-27
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Validate two-case orchestration with synthetic commands
+        run: python3 tools/test/camera-audit-scope-control.test.py
+      - name: Run original full audit then camera Dynamic Type only once each
+        run: python3 tools/ci/camera-audit-scope-control.py
+      - name: Preserve bounded synthetic native evidence and both outcomes
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: real-app-camera-audit-scope-control
+          path: |
+            ${{ runner.temp }}/blind-camera-audit-scope-control/artifacts/**/*.png
+            ${{ runner.temp }}/blind-camera-audit-scope-control/artifacts/**/*.json
+          if-no-files-found: error
+          retention-days: 3
