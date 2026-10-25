@@ -46,6 +46,8 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
   if (familiarPeople) {
     const notice = add('face-notice', 'isa = PBXFileReference; lastKnownFileType = text; path = BlindAssist/FamiliarNative/MODEL_NOTICES.txt; sourceTree = "<group>";');
     refs.push(notice); resourceBuilds.push(add('build:face-notice', `isa = PBXBuildFile; fileRef = ${notice};`));
+    const opencvNotice = add('face-opencv-notice', 'isa = PBXFileReference; lastKnownFileType = text; path = BlindAssist/FamiliarNative/OPENCV_NOTICES.txt; sourceTree = "<group>";');
+    refs.push(opencvNotice); resourceBuilds.push(add('build:face-opencv-notice', `isa = PBXBuildFile; fileRef = ${opencvNotice};`));
     const native = add('face-native', 'isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BlindAssist/FamiliarNative/BAFaceEngine.mm; sourceTree = "<group>";');
     refs.push(native); sources.push(add('build:face-native', `isa = PBXBuildFile; fileRef = ${native};`));
     for (const name of Object.keys(familiarHashesForBackend(familiarBackend))) {

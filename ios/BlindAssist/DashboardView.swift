@@ -341,7 +341,13 @@ struct AssistantToolsView: View {
                         Button(t("Practice: ", "تدريب: ") + model.feedback.message(for: hazard)) { model.simulate(hazard) }
                     }
                 }
-            } header: { Text(t("Practice", "التدريب")) } footer: {
+            } header: {
+                Text(t("Practice", "التدريب"))
+                    .font(.body.weight(.semibold))
+                    .lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.leading)
+            } footer: {
                 Text(t("Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.", "التدريب يوقف الحساسات الحقيقية وينتهي وحده بعد دقيقتين. تستأنف المراقبة فقط إذا كانت الكاميرا مفعّلة، وتحتاج إلى المعايرة. واصل استخدام العصا أو كلب الإرشاد."))
             }
         }

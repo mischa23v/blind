@@ -1,0 +1,247 @@
+{
+  "audit_date_utc": "2026-10-25",
+  "scope": "Conservative source/notice inventory for the official OpenCV 4.14.0 iOS framework arm64 slice; not final legal clearance or proof of final-app linkage.",
+  "source_audit_status": "bounded source/header notice inventory complete; no unresolved in-scope source includes or unfetched explicit license references remain",
+  "binary_distribution_authorized_by_this_audit": false,
+  "framework": {
+    "official_framework_url": "https://github.com/opencv/opencv/releases/download/4.14.0/opencv-4.14.0-ios-framework.zip",
+    "framework_zip_bytes": 75208871,
+    "framework_zip_sha256": "f4f428fa9270adf95b3ed4705eb18ba3028ed2c2777a4f1a002739b869986a6a",
+    "reverified_locally": true,
+    "opencv_source_revision": "0654a42e19215ef25b1d367d822f3c630447e7c7",
+    "opencv_tag": "4.14.0",
+    "target": "iOS 9.0 arm64",
+    "archive_member_count": 1305,
+    "nonempty_code_data_members": 1218,
+    "empty_code_data_members": 86,
+    "archive_symbol_table_members": 1,
+    "final_app_link_map_available": false,
+    "binary_distribution_performed": false,
+    "new_binary_download_performed": false
+  },
+  "notice_resource": {
+    "path": "OPENCV_NOTICES.txt",
+    "bytes": 925389,
+    "sha256": "7791d6cf19d0d939bbfb79574c8e7e39720954e0b5668ee267995dd65dacbc4f",
+    "unique_source_comment_notices": 578,
+    "complete_license_sections": 30,
+    "scanned_source_files": 1753
+  },
+  "source_collection": {
+    "network_upstream_files": 1809,
+    "network_upstream_bytes": 39439907,
+    "mapped_source_pass": {
+      "files": 1064,
+      "bytes": 27450531
+    },
+    "header_passes": [
+      {
+        "files": 318,
+        "bytes": 5115556
+      },
+      {
+        "files": 307,
+        "bytes": 5307232
+      },
+      {
+        "files": 32,
+        "bytes": 597226
+      }
+    ],
+    "all_pass_fetch_or_git_blob_failures": 0,
+    "full_source_files_scanned_for_comment_notices": 1753,
+    "local_framework_headers": 538,
+    "local_framework_header_bytes": 9267759,
+    "local_headers_matching_pinned_source_git_blob": 404,
+    "generated_or_umbrella_headers_classified": 134
+  },
+  "archive_mapping": {
+    "total_members": 1305,
+    "symbol_tables": 1,
+    "empty_code_data_objects": 86,
+    "nonempty_code_data_objects": 1218,
+    "generated_wrapper_members": 141,
+    "unmapped_members": 0,
+    "method": "Archive-order/module boundaries and source basename matching. Ambiguous names are covered by retaining all matching source notices rather than claiming a unique compilation unit. Generated wrappers are tied to templates and shipped headers. This is not a final-app link map."
+  },
+  "include_closure": {
+    "pending_in_scope_source_files": [],
+    "external_or_generated_header_names": 354,
+    "classification_counts": {
+      "apple-sdk-header": 15,
+      "optional-backend-interface": 107,
+      "compiler-sdk-header": 21,
+      "platform-or-disabled-platform-interface": 55,
+      "generated-config-or-dispatch": 67,
+      "system-language-runtime-header": 89
+    },
+    "unclassified_external_names": [],
+    "details": "evidence/include-graph.json and evidence/external-include-classification.json; guards retained for all optional-backend references. clBLAS/clFFT direct includes are in empty arm64 OpenCL objects."
+  },
+  "components": [
+    {
+      "component": "OpenCV core and compiled modules",
+      "license_families": [
+        "Apache-2.0",
+        "retained historical BSD variants",
+        "per-file MIT and permissive notices"
+      ],
+      "evidence": "evidence/arm64-build-information.txt; evidence/source-notice-scan.json"
+    },
+    {
+      "component": "libprotobuf 3.19.1",
+      "license_families": [
+        "BSD-3-Clause"
+      ],
+      "evidence": "arm64 third-party dependency list; protobuf archive members"
+    },
+    {
+      "component": "libjpeg-turbo 3.1.2-70",
+      "license_families": [
+        "IJG",
+        "BSD-3-Clause",
+        "zlib-style SIMD source terms"
+      ],
+      "evidence": "arm64 third-party dependency list; JPEG/SIMD members; LICENSE.md and README.ijg"
+    },
+    {
+      "component": "libpng 1.6.57",
+      "license_families": [
+        "libpng-2.0 plus retained historical license/copyright text"
+      ],
+      "evidence": "arm64 dependency list and NEON members"
+    },
+    {
+      "component": "libwebp / SharpYUV",
+      "license_families": [
+        "BSD-3-Clause",
+        "WebM PATENTS grant"
+      ],
+      "evidence": "arm64 dependency list and codec members; vendored encoder/decoder/COPYING byte-identical to upstream v1.6.0"
+    },
+    {
+      "component": "zlib 1.3.2",
+      "license_families": [
+        "Zlib"
+      ],
+      "evidence": "arm64 dependency list and zlib members"
+    },
+    {
+      "component": "ADE 0.1.2e",
+      "license_families": [
+        "Apache-2.0"
+      ],
+      "evidence": "arm64 dependency list; OpenCV DownloadADE.cmake; exact upstream source Git blobs"
+    },
+    {
+      "component": "KleidiCV 26.03 including HAL/thread layer",
+      "license_families": [
+        "Apache-2.0"
+      ],
+      "evidence": "arm64-only dependency list; OpenCV kleidicv.cmake; official tag b1dbf474b8685b97a64d03e828b359fbdc050d1f"
+    },
+    {
+      "component": "FlatBuffers 25.9.23",
+      "license_families": [
+        "Apache-2.0"
+      ],
+      "evidence": "arm64 build summary; header and generated TFLite schema use"
+    },
+    {
+      "component": "SoftFloat / fdlibm-derived math",
+      "license_families": [
+        "BSD-3-Clause",
+        "Sun permissive notices"
+      ],
+      "evidence": "softfloat.o and complete softfloat.cpp"
+    },
+    {
+      "component": "Torch TH",
+      "license_families": [
+        "BSD-3-Clause"
+      ],
+      "evidence": "THDiskFile.o, THFile.o; upstream COPYRIGHT.txt"
+    },
+    {
+      "component": "FLANN",
+      "license_families": [
+        "BSD-3-Clause"
+      ],
+      "evidence": "flann.o, miniflann.o and complete installed/source headers"
+    },
+    {
+      "component": "AKAZE, KAZE, MSCR",
+      "license_families": [
+        "BSD-3-Clause"
+      ],
+      "evidence": "feature detector archive members and corresponding license files"
+    },
+    {
+      "component": "G-API VAS object tracking",
+      "license_families": [
+        "MIT"
+      ],
+      "evidence": "nonempty VAS tracking archive members and MIT LICENSE.txt"
+    },
+    {
+      "component": "libsvm-derived SVM, Berkeley qsort, SIFT and other per-file algorithm notices",
+      "license_families": [
+        "BSD-3-Clause",
+        "retained Berkeley four-clause notice",
+        "SIFT copyright/patent notice"
+      ],
+      "evidence": "complete source bodies, including mid-file notices, and matched archive objects"
+    },
+    {
+      "component": "Darknet-derived reader, ONNX/Caffe/TensorFlow/TFLite schemas, Ficus kernels, Kaldi math",
+      "license_families": [
+        "MIT",
+        "BSD-2-Clause",
+        "Apache-2.0"
+      ],
+      "evidence": "explicit upstream source references; complete generated-source inputs and upstream license/COPYING texts"
+    },
+    {
+      "component": "Objective-C/Swift wrappers and embedded SPIR-V arrays",
+      "license_families": [
+        "OpenCV Apache-2.0 and retained source notices"
+      ],
+      "evidence": "generator/template sources, original shader source, bundled headers and wrapper members"
+    }
+  ],
+  "notice_and_patent_findings": [
+    "OpenCV complete recursive tree has no standalone NOTICE or PATENTS; doc/LICENSE_CHANGE_NOTICE.txt is retained.",
+    "ADE complete tree has LICENSE and no NOTICE/PATENTS. KleidiCV complete 26.03 tree has Apache-2.0 and no NOTICE/PATENTS; per-file Arm copyright notices are retained.",
+    "The vendored libwebp sources explicitly reference PATENTS/AUTHORS absent from the OpenCV subtree. Full official WebM PATENTS and AUTHORS are included; key source files and COPYING match v1.6.0 byte for byte.",
+    "libjpeg-turbo LICENSE.md and complete README.ijg are retained, with the exact Independent JPEG Group acknowledgment separately included.",
+    "Berkeley qsort four-clause notice found inside datastructs.cpp is retained in full, with the acknowledgment included. The FreeBSD-hosted Berkeley rescission is recorded as historical evidence only; no clause is silently deleted and no legal conclusion is made.",
+    "SIFT original patent notice and upstream expiry statement are retained verbatim. This audit is not an independent patent search or freedom-to-operate opinion.",
+    "Ficus AUTHORS/LICENSE and Kaldi COPYING close explicit source references; their pre-OpenCV-release upstream snapshots are pinned. These snapshots corroborate the declared license, not an exact historical origin hash of each modified borrowed algorithm.",
+    "Intel ITT BSD alternative, quirc ISC and OpenCL header license are precautionary and not represented as linked implementations. Trace built-in means HAVE_ITT is false in the official build-summary generator."
+  ],
+  "remaining_release_gates": [
+    {
+      "gate": "Actual shipped app packaging",
+      "required_evidence": "After integration, build the intended configuration and verify the exact OPENCV_NOTICES.txt and MODEL_NOTICES.txt bytes are included in the delivered app. The new notice resource has not been native-built or signed/distributed by this audit."
+    },
+    {
+      "gate": "Release-owner license/publication review",
+      "required_evidence": "Review the retained notices and chosen distribution materials, including the IJG and Berkeley acknowledgments and any advertising implications; do not infer legal clearance from automated coverage or rescission evidence."
+    },
+    {
+      "gate": "Binary source identity / final link boundary",
+      "required_evidence": "The official binary identifies version 4.14.0 and matching dependencies but is not independently reproduced bit-for-bit. A future final-app link map may narrow the conservative inventory; this audit does not silently remove notices based on presumed dead stripping."
+    },
+    {
+      "gate": "Model/training-data and privacy rights",
+      "required_evidence": "YuNet/SFace declared model licenses and LFS digests are verified separately. Training-data, biometrics, consent, privacy and child reliability remain separate decisions; no weight/photo redistribution occurred."
+    },
+    {
+      "gate": "Device and release behavior",
+      "required_evidence": "Unsigned generic-device CI success is not signed-device recognition, consent persistence, reliable identity discrimination or safe-use validation."
+    }
+  ],
+  "no_live_edits": true,
+  "no_binaries_or_weights_downloaded": true,
+  "no_tests_or_native_builds_run": true
+}

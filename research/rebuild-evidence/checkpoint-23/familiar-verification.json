@@ -1,0 +1,99 @@
+{
+  "baseline": "3d6330e064f7e754a5b454f79732f12f532ccb7a",
+  "status": "source candidate verified locally; publication and exact-commit Apple jobs pending",
+  "node": {
+    "tests": 429,
+    "pass": 429,
+    "fail": 0,
+    "skipped": 0
+  },
+  "focusedFamiliar": {
+    "pass": 13,
+    "fail": 0,
+    "skipped": 0
+  },
+  "priorRuns": [
+    {
+      "pass": 419,
+      "fail": 0,
+      "skipped": 10,
+      "reason": "Swift toolchain not selected"
+    },
+    {
+      "pass": 427,
+      "fail": 2,
+      "skipped": 0,
+      "reason": "Two harness module caches defaulted to read-only home; rerun selected writable scratch caches without code changes"
+    }
+  ],
+  "coreFullRerun": "not run for this generator/UI-only increment; do not relabel checkpoint22 Core1249 as fresh",
+  "native": "not run locally; optional familiar packaging and Dynamic Type UI audit require exact-commit Apple CI",
+  "sourceEntries": [
+    {
+      "path": ".github/workflows/familiar-apple.yml",
+      "bytes": 1826,
+      "sha256": "4a4578f1729117136153251aabc6c080ea28a5f2a20d623eed629d474f95fdaf"
+    },
+    {
+      "path": "ios/BlindAssist/FamiliarNative/OPENCV_NOTICES.txt",
+      "bytes": 925389,
+      "sha256": "7791d6cf19d0d939bbfb79574c8e7e39720954e0b5668ee267995dd65dacbc4f"
+    },
+    {
+      "path": "research/FAMILIAR_MAC_HANDOFF.md",
+      "bytes": 6586,
+      "sha256": "7a5ada8724a629a209ded44f7188b514c78a45f9b275a110d73a78a70b9464bf"
+    },
+    {
+      "path": "research/familiar-notice-audit/MODEL_NOTICE_PROVENANCE.json",
+      "bytes": 1969,
+      "sha256": "a5e4e843e68dd488c3c0daecc72b8409c8419d0049dd3f842f7411fccd17d87d"
+    },
+    {
+      "path": "research/familiar-notice-audit/README.md",
+      "bytes": 1576,
+      "sha256": "edc0f5d6f9b8eb014273e47db41e79fcec88a38c6a9f6ebc4a50dff7f2827228"
+    },
+    {
+      "path": "research/familiar-notice-audit/coverage.json",
+      "bytes": 10640,
+      "sha256": "a06c25b6a147dd3f2460ce3178fb4c11883b4c8c2589abda12b0ecd4755ab0e2"
+    },
+    {
+      "path": "research/familiar-notice-audit/sources.json",
+      "bytes": 939047,
+      "sha256": "3198c3d178f7693e47921d1316173d4c2b8e848f2e98cc41beae19ca407c90b6"
+    },
+    {
+      "path": "tools/ci/familiar-device-project.mjs",
+      "bytes": 2074,
+      "sha256": "3c07e01d4c29b59d7e4d0a2b392388c1727172ed8b2383d451b2b7d8506b739c"
+    },
+    {
+      "path": "tools/ci/familiar-device.sh",
+      "bytes": 3532,
+      "sha256": "ba787fcfa37bdceb25852a217f960e9e1b6887f9944d6fa9019f9a39fdeea247"
+    },
+    {
+      "path": "tools/ci/verify-familiar-project.mjs",
+      "bytes": 3293,
+      "sha256": "ebb0c03a867f10392cb3f39193ad35d7fc3343684f192c1520bd13fe6ca4fbb2"
+    },
+    {
+      "path": "tools/generate-xcode-project.mjs",
+      "bytes": 43743,
+      "sha256": "350456c8c34ab22d6d87af61cff456bbe75ab65e8e4eaae8f2721ab0c14a44ba"
+    },
+    {
+      "path": "tools/test/familiar-build-membership.test.mjs",
+      "bytes": 2993,
+      "sha256": "89cc72044832265d7ff1609f962027c1e73d29424af6449565c19fbebf2667bd"
+    }
+  ],
+  "privacy": "Only source/public notices/authored tests/evidence; no images/audio/models/frameworks/databases/credentials",
+  "limits": [
+    "No physical guidance, room/container identity or calibrated wearer authority added",
+    "No signed-device, recognition accuracy or child-trial clearance",
+    "No independent legal/binary redistribution clearance"
+  ]
+}

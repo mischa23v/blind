@@ -1,0 +1,7 @@
+# OpenCV notice coverage and provenance
+
+OPENCV_NOTICES.txt in ios/BlindAssist/FamiliarNative is the bundled resource. Its exact expected size/hash and the bounded completed source audit are in coverage.json. MODEL_NOTICE_PROVENANCE.json records the separately verified existing model notices and pinned LFS/model-license declarations. sources.json is the evidence index: its paths refer to the companion audit evidence workspace/archive, not files promised to be in this source checkout. The notice resource itself retains upstream source URLs and hashes.
+
+The audit maps all 1,305 arm64 archive members conservatively, scans entire matching sources and internal/public headers for notices, retains full text rather than relying on an Apache-only summary, and distinguishes disabled objects, generated headers and optional interfaces. Coverage is not bit-for-bit binary reproduction, a final-app link map, an independent patent opinion, or legal clearance. Referenced full evidence and reproducible audit scripts are preserved in the source-only audit packet; no model, framework, embedding, personal photo or compiled app is included.
+
+No in-scope source include or explicit license reference remains unresolved in this inventory. The exact remaining release gates are listed in coverage.json. In particular, the next actual Apple build must validate the newly added bundled notice resource. The helper's post-build byte comparisons implement that packaging check but have not yet been executed on the updated candidate. A successful older native build does not satisfy it.

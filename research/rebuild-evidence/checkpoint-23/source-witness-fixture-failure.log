@@ -1,0 +1,9 @@
+file:///workspace/shared/blind-rebuild/tools/generate-xcode-project.mjs:12
+  if (nativeEnabled && (!opencvFramework || !isAbsolute(opencvFramework) || basename(opencvFramework) !== 'opencv2.framework')) throw new Error('Native inference requires an explicit absolute opencv2.framework path.');
+                                                                                                                                      ^
+
+Error: Native inference requires an explicit absolute opencv2.framework path.
+    at generateProject (file:///workspace/shared/blind-rebuild/tools/generate-xcode-project.mjs:12:135)
+    at file:///workspace/scratch/90f3f6703064/blind-familiar-ready/evidence/source-witness.mjs:10:104
+
+Node.js v24.22.1

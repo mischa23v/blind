@@ -6,6 +6,7 @@ on:
       - '.github/workflows/familiar-apple.yml'
       - 'tools/ci/familiar-device.sh'
       - 'tools/ci/familiar-device-project.mjs'
+      - 'tools/ci/verify-familiar-project.mjs'
       - 'tools/ci/familiar-notices/**'
       - 'tools/generate-xcode-project.mjs'
       - 'ios/BlindAssist/FamiliarNative/**'

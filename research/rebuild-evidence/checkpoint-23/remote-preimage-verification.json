@@ -1,0 +1,25 @@
+{
+  "base": "3d6330e064f7e754a5b454f79732f12f532ccb7a",
+  "checks": [
+    {
+      "path": "tools/test/simple-accessibility.test.mjs",
+      "sha256": "421cb4a16977ca21ebea23d674b57667b9a0692bffaf2b148ebf7efe2ff36f71",
+      "exactMatchWithSharedPreimage": true
+    },
+    {
+      "path": "tools/test/native-apple-failure-regressions.test.mjs",
+      "sha256": "6318cfb41816964e069ee859c8aad55e53ac39c43e9d311ed3b329080f113e43",
+      "exactMatchWithSharedPreimage": true
+    },
+    {
+      "path": "ios/BlindAssist/DashboardView.swift",
+      "sha256": "173c684149af93a9a277d954c7e07a4c6c377e262cf08a9d5f06c16c72d6e5d6",
+      "exactMatchWithSharedPreimage": true
+    },
+    {
+      "path": "ios/BlindAssistUITests/LaunchTests.swift",
+      "sha256": "0f7c8647e1461f29386e386cefdace76cb9d142a40bf626ebc985f0bf2dd768d",
+      "exactMatchWithSharedPreimage": true
+    }
+  ]
+}
