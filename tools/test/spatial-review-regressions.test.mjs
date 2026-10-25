@@ -330,7 +330,7 @@ test('connected issuer is retired by mount or frame ownership loss before frame 
         }`;
     assert.ok(prefix.endsWith(registrationHook), 'Bounded registration capture is synchronous after all loss retirements and before scan throttle');
     const retirementPrefix = prefix.slice(0, -registrationHook.length).trim();
-    assert.match(retirementPrefix, /^if case \.normal = frame\.camera\.trackingState \{\} else \{ invalidateNativeLocalization\(\.trackingUnavailable\) \}\s*if case \.normal = frame\.camera\.trackingState \{\} else \{\s*journeys\.breakTracking\(\)\s*nativeObservations\.trackingLost\(\)\s*clearBoardingReading\(\)\s*if readingTool != nil \{ stopReadingTool\(announce: false\) \}\s*\}$/,
+    assert.match(retirementPrefix, /^if case \.normal = frame\.camera\.trackingState \{\} else \{ invalidateNativeLocalization\(\.trackingUnavailable\) \}\s*if case \.normal = frame\.camera\.trackingState \{\} else \{\s*journeys\.breakTracking\(\)\s*nativeObservations\.trackingLost\(\)\s*clearBoardingReading\(\)\s*if readingTool != nil && !usesCapturedText \{ stopReadingTool\(announce: false\) \}\s*\}$/,
       'All exact ownership retirements are synchronous and before throttle; normal frames do not retire them');
     before(candidate, 'journeys.breakTracking()', 'frame.timestamp - lastProcessed');
     before(candidate, 'nativeObservations.trackingLost()', 'frame.timestamp - lastProcessed');
@@ -343,6 +343,12 @@ test('connected issuer is retired by mount or frame ownership loss before frame 
     before(missingDepth, 'publish()', 'updateNonspatialObjectMemory(frame: frame)');
   };
   assertRawRetirement(frames);
+  const exactTextTools = /usesCapturedText: Bool \{ readingTool == \.liveText \|\| readingTool == \.document \}/;
+  assert.match(source, exactTextTools);
+  assert.throws(() => assert.match(source.replace('readingTool == .liveText || readingTool == .document',
+    'readingTool == .liveText || readingTool == .document || readingTool == .barcode'), exactTextTools));
+  assert.throws(() => assert.match(source.replace('readingTool == .liveText || readingTool == .document',
+    'readingTool == .liveText || readingTool == .document || readingTool == .light'), exactTextTools));
   const mutations = [
     frames.replace('places.observeRegistrationFrame(frame, sessionID: scanSession, now: ProcessInfo.processInfo.systemUptime)', '/* missing registration capture */'),
     frames.replace('places.observeRegistrationFrame(frame, sessionID: scanSession, now: ProcessInfo.processInfo.systemUptime)', 'Task { places.observeRegistrationFrame(frame, sessionID: scanSession, now: ProcessInfo.processInfo.systemUptime) }'),
@@ -352,8 +358,8 @@ test('connected issuer is retired by mount or frame ownership loss before frame 
     frames.replace('nativeObservations.trackingLost()', '/* missing route-history retirement */'),
     frames.replace('nativeObservations.trackingLost()', 'Task { nativeObservations.trackingLost() }'),
     frames.replace('nativeObservations.trackingLost()', '').replace('let receivedAt =', 'nativeObservations.trackingLost(); let receivedAt ='),
-    frames.replace('if readingTool != nil { stopReadingTool(announce: false) }', '/* missing reader retirement */'),
-    frames.replace('if readingTool != nil { stopReadingTool(announce: false) }', 'return'),
+    frames.replace('if readingTool != nil && !usesCapturedText { stopReadingTool(announce: false) }', '/* missing reader retirement */'),
+    frames.replace('if readingTool != nil && !usesCapturedText { stopReadingTool(announce: false) }', 'return'),
     frames.replace('invalidateNativeLocalization(.trackingUnavailable)', '/* missing selected-owner retirement */'),
     frames.replace('phoneDetection = detector.process(observation)', 'phoneDetection = Detection(.observing)'),
     frames.replace('detector.invalidateRecentEvidence()', '/* missing depth-loss hazard retirement */')

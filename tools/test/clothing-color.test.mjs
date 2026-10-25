@@ -13,7 +13,7 @@ test('colour command is requested-only and shared cancellation/focus gates inclu
   const cancel = source.slice(source.indexOf('private func cancelDescription()'), source.indexOf('private func publish()'));
   assert.match(cancel, /colorActive = false/);
   assert.match(cancel, /requestID = UUID\(\); questionTask\?\.cancel\(\)/);
-  assert.match(source, /if currencyActive \|\| \(!preserveRGBHistoryWork && \(colorActive \|\| readingTool != nil\)\) \|\| currencyRetake\.isPending \{ cancelDescription\(\) \}/);
+  assert.match(source, /if currencyActive \|\| \(!preserveRGBHistoryWork && \(colorActive \|\| \(readingTool != nil && !preserveCapturedText\)\)\) \|\| currencyRetake\.isPending \{ cancelDescription\(\) \}/);
 });
 
 test('requested colour checks fresh RGB capture and typed ambiguity without a depth or manual-centre gate', async () => {
@@ -54,8 +54,23 @@ test('depth-only loss preserves requested RGB colour ownership while full camera
   assert.match(route, /let capturedAt = frame\.timestamp, generation = passiveObservationGeneration, request = requestID/);
   assert.match(route, /requestID == request, passiveObservationGeneration == generation/);
   assert.doesNotMatch(route, /generation = perceptionGeneration|perceptionGeneration == generation/);
-  assert.match(invalidation, /\(!preserveRGBHistoryWork && \(colorActive \|\| readingTool != nil\)\)/);
+  assert.match(invalidation, /\(!preserveRGBHistoryWork && \(colorActive \|\| \(readingTool != nil && !preserveCapturedText\)\)\)/);
   assert.match(invalidation, /if !preserveRGBHistoryWork \{ backgroundPerception\.invalidate\(\); passiveObservationGeneration = UUID\(\) \}/);
+  const assertOtherProducersRetire = body => {
+    assert.match(body, /if currencyActive \|\| \(!preserveRGBHistoryWork && \(colorActive \|\| \(readingTool != nil && !preserveCapturedText\)\)\) \|\| currencyRetake\.isPending \{ cancelDescription\(\) \}/);
+    assert.match(body, /if !preserveRGBHistoryWork \{ cancelContextualCapabilities\(\) \}/);
+    assert.match(body, /if !preserveRGBHistoryWork && familiarPeople\.enabled && familiarPeople\.hasActiveWork \{ familiarPeople\.cancel\(announce: false\) \}/);
+    assert.match(body, /if !preserveRGBHistoryWork \{ backgroundPerception\.invalidate\(\); passiveObservationGeneration = UUID\(\) \}/);
+  };
+  assertOtherProducersRetire(invalidation);
+  for (const mutant of [
+    invalidation.replace('colorActive || (readingTool', '(colorActive && !preserveCapturedText) || (readingTool'),
+    invalidation.replace('if currencyActive ||', 'if (currencyActive && !preserveCapturedText) ||'),
+    invalidation.replace('|| currencyRetake.isPending', '|| (currencyRetake.isPending && !preserveCapturedText)'),
+    invalidation.replace('if !preserveRGBHistoryWork { cancelContextualCapabilities()', 'if !preserveRGBHistoryWork && !preserveCapturedText { cancelContextualCapabilities()'),
+    invalidation.replace('if !preserveRGBHistoryWork && familiarPeople.enabled', 'if !preserveRGBHistoryWork && !preserveCapturedText && familiarPeople.enabled'),
+    invalidation.replace('if !preserveRGBHistoryWork { backgroundPerception.invalidate()', 'if !preserveRGBHistoryWork && !preserveCapturedText { backgroundPerception.invalidate()')
+  ]) assert.throws(() => assertOtherProducersRetire(mutant));
   assert.match(route, /assistantSession\.generation == sessionGeneration/);
   assert.match(route, /!detection\.hazard\.isUrgent/);
   assert.match(route, /FrameTimestampPolicy\.isFresh/);

@@ -3,6 +3,7 @@ import ARKit
 import AVFoundation
 import CoreImage
 import ImageIO
+import CryptoKit
 import Combine
 import BlindCore
 import BlindMemory
@@ -474,6 +475,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var readingInFlight = false
     private var readingWork = ReadingWorkSession()
     private var readingTask: Task<Void, Never>?
+    private var capturedText = CapturedTextReference()
+    private var cameraTextEpoch = UUID()
+    // Native Vision cannot be forcibly cancelled. Retain this lease until its
+    // actual callback returns, including across stop/restart; never stack jobs.
+    private var capturedTextNativeLease: UUID?
+    private var capturedTextSpeechIDs = Set<UUID>()
+    private var usesCapturedText: Bool { readingTool == .liveText || readingTool == .document }
+
     private var documentStability = DocumentStability()
     private var documentOrigin: (point: Point3, forward: Point3)?
     private var documentChunks: [String] = []
@@ -663,9 +672,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             self.enqueueNarration { try await $0.finish(id: id, outcome: outcome, at: at) }
         }
         feedback.requestedSpeechPermission = { [weak self] id, text in (self?.selectedPhotoSpeechPermission(id: id, text: text) ?? false) &&
-            (self?.boardingSpeechPermission(id: id, text: text) ?? false) }
+            (self?.boardingSpeechPermission(id: id, text: text) ?? false) &&
+            (self?.capturedTextSpeechPermission(id: id, text: text) ?? false) }
         feedback.onRequestedSpeechFinished = { [weak self] id, text, outcome in
             guard let self else { return }
+            if self.finishCapturedTextSpeech(id: id, text: text, outcome: outcome) { return }
             if self.finishBoardingSpeech(id: id, text: text, outcome: outcome) { return }
             if self.finishSelectedPhotoSpeech(id: id, text: text, outcome: outcome) { return }
             if self.journeys.withConnectedJourney({ $0.clarificationSpeechFinished(id: id, text: text,
@@ -842,6 +853,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 if let sessionID = UUID(uuidString: self.observationFrameID) {
                     self.nativeObservations.begin(sessionID: sessionID, memory: self.places.memory)
                 }
+                self.retireCapturedTextSource()
                 self.session.run(configuration)
                 if self.buildPrivateMap { self.mapping.start() }
             }
@@ -914,6 +926,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         phoneDetection = Detection(.needsCalibration); simulation = false; running = true
         NativeARObservationAdapter.configureObservedGeometry(configuration)
         nativeObservations.begin(sessionID: worldSessionID, memory: places.memory)
+        retireCapturedTextSource()
         session.delegate = self; session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         if buildPrivateMap { mapping.start() }
         UIApplication.shared.isIdleTimerDisabled = true
@@ -1001,6 +1014,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             self.revalidateRequestedColorSpeech()
             self.revalidateContextualSpeech()
             self.revalidateConversationSpeech()
+            self.revalidateCapturedText()
             if self.cameraRecovery.pendingRetry != nil { self.requestCameraRecovery(now: now) }
             if now - self.lastLiveActivityUpdate > 10 { self.updateLiveActivity() }
             if self.simulation { self.demoFrame() }
@@ -1038,7 +1052,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             clearBoardingReading() // Retire transferred/passive travel even when no reader tool remains.
             // Retire old OCR even if depth was already unavailable and the hazard
             // category does not change. This runs before frame throttling.
-            if readingTool != nil { stopReadingTool(announce: false) }
+            if readingTool != nil && !usesCapturedText { stopReadingTool(announce: false) }
         }
         if places.scanning, let scanSession = UUID(uuidString: observationFrameID) {
             places.observeRegistrationFrame(frame, sessionID: scanSession, now: ProcessInfo.processInfo.systemUptime)
@@ -1237,7 +1251,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             originForward: capture.forward, currentForward: forward)
     }
     #endif
-    private func invalidatePerceptionWork(preserveRGBHistoryWork: Bool = false) {
+    private func invalidatePerceptionWork(preserveRGBHistoryWork: Bool = false, preserveCapturedText: Bool = false) {
+        if !preserveRGBHistoryWork && !preserveCapturedText { retireCapturedTextSource() }
         invalidateNativeLocalization(.trackingUnavailable)
         #if DEBUG
         latestGroundGeometry = nil; lastGroundGeometryAt = -.infinity
@@ -1249,7 +1264,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #endif
         // Depth-only loss retires spatial work, not a still-valid RGB colour request.
         // Full camera/session invalidation still cancels colour and rotates its generation.
-        if currencyActive || (!preserveRGBHistoryWork && (colorActive || readingTool != nil)) || currencyRetake.isPending { cancelDescription() }
+        if currencyActive || (!preserveRGBHistoryWork && (colorActive || (readingTool != nil && !preserveCapturedText))) || currencyRetake.isPending { cancelDescription() }
         perceptionGeneration = UUID(); recallInFlight = false; learningItem = nil
         if !preserveRGBHistoryWork { backgroundPerception.invalidate(); passiveObservationGeneration = UUID() }
         if let speech = recordedSpotSpeech { feedback.stopRequestedSpeech(speech.id); recordedSpotSpeech = nil }
@@ -1325,6 +1340,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         revalidateContextualSpeech()
         revalidateBoardingSpeech()
+        revalidateCapturedText()
         revalidateConversationSpeech()
         revalidateRequestedColorSpeech()
         if detection.hazard != .observing { feedback.interruptAmbient() }
@@ -1335,7 +1351,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             let preserveRGB = !detection.hazard.isUrgent &&
                 session.currentFrame.flatMap { captureObjectView($0) } != nil
             if preserveRGB { invalidatePerceptionWork(preserveRGBHistoryWork: true) }
-            else { cancelDescription() }
+            else if !detection.hazard.isUrgent && usesCapturedText && capturedTextCameraAllowed() {
+                // Preserve only this receipt; all other RGB/spatial producers retire.
+                invalidatePerceptionWork(preserveCapturedText: true)
+            } else { cancelDescription() }
             companion.withdrawOffer(); companionOffer = nil
             roomOfferCandidate = nil; roomQuestionCandidate = nil
             #if BLIND_FAMILIAR_PEOPLE
@@ -2472,7 +2491,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// already-admitted path so the same words are never charged twice here.
     @discardableResult private func deliverCandidate(_ candidate: InformationCandidate,
         alreadyAdmitted: Bool = false, narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil, nonspatialCapture: ContextualCapabilityScheduler.Lease? = nil, verifiedFamiliarCapture: Bool = false, spatialRouteID: UUID? = nil) -> Bool {
-        let privateReference = speechID.map { selectedPhotoSpeechIDs.contains($0) || boardingSpeechIDs.contains($0) } ?? false
+        let privateReference = speechID.map { selectedPhotoSpeechIDs.contains($0) || boardingSpeechIDs.contains($0) || capturedTextSpeechIDs.contains($0) } ?? false
         #if DEBUG
         var debugDelivered = false
         defer {
@@ -5903,7 +5922,7 @@ extension NavigationModel {
         #if BLIND_FAMILIAR_PEOPLE
         familiarPeople.cancelSearchForNewGoal()
         #endif
-        guard readingCameraAllowed() else {
+        guard (tool == .liveText || tool == .document) ? capturedTextCameraAllowed() : readingCameraAllowed() else {
             speakOperation(arabic ? "أحتاج كاميرا جاهزة وتنبيهات مستقرة لهذا. شغّل الكاميرا أولاً." : "I need a ready camera and stable monitoring for that. Turn the camera on first.")
             return
         }
@@ -5913,8 +5932,8 @@ extension NavigationModel {
         liveTextReader = LiveTextReader(); lastDocumentGuidance = nil; documentStability.reset(); lastLightLevel = nil
         let intro: String
         switch tool {
-        case .liveText: intro = arabic ? "أقرأ النص الذي أراه. قل: أوقف القراءة، للتوقف." : "Reading text as I see it. Say stop reading to stop."
-        case .document: intro = arabic ? "أتحقق من الصفحة." : "I'm checking the page."
+        case .liveText: intro = arabic ? "أقرأ النص في صورة ملتقطة واحدة. قل أوقف القراءة للتوقف." : "Reading text in one captured view. Say stop reading to stop."
+        case .document: intro = arabic ? "أقرأ نص الصفحة الملتقطة، وليس تعليمات حركة." : "Reading captured page text, not movement guidance."
         case .barcode: intro = arabic ? "أبحث عن رمز المنتج." : "I'm checking for a product code."
         case .light: intro = arabic ? "كاشف الضوء يعمل. الصفير أسرع كلما زاد الضوء." : "Light detector on. Faster beeps mean more light."
         }
@@ -5922,6 +5941,7 @@ extension NavigationModel {
     }
 
     func stopReadingTool(announce: Bool, preserveBoardingReading: Bool = false) {
+        clearCapturedText()
         if !preserveBoardingReading { clearBoardingReading() }
         let hadDocumentSpeech = documentSpeechID != nil
         readingWork.cancel(); readingTask?.cancel(); readingTask = nil
@@ -6014,6 +6034,132 @@ extension NavigationModel {
         return true
     }
 
+    // MARK: Captured RGB text, deliberately independent of world-pose authority.
+    private func capturedTextCameraAllowed() -> Bool {
+        let now = ProcessInfo.processInfo.systemUptime
+        return assistantSession.shouldRunCamera && assistantSession.mayRespond && cameraAwareness &&
+            assistantSession.foregroundActive && !assistantSession.privateAudioHeld &&
+            running && !simulation && !places.scanning && !cameraInterrupted && !detection.hazard.isUrgent &&
+            session.currentFrame.map { FrameTimestampPolicy.isFresh(capturedAt: $0.timestamp, receivedAt: now) } == true &&
+            UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.contains { $0.interfaceOrientation == .portrait }
+    }
+    private func retireCapturedTextSource() {
+        cameraTextEpoch = UUID()
+        clearCapturedText()
+    }
+    private func clearCapturedText() {
+        let speech = capturedText.pending?.id
+        capturedText.clear() // revoke before synchronous cancellation callbacks
+        if let speech { feedback.stopRequestedSpeech(speech) }
+    }
+    private func capturedTextContext() -> CapturedTextReference.Context? {
+        guard let selection = capturedText.selection else { return nil }
+        return .init(selection: selection, source: capturedText.source?.identity,
+            cameraEpoch: cameraTextEpoch, generation: assistantSession.generation, requestID: requestID,
+            now: ProcessInfo.processInfo.systemUptime, foreground: capturedTextCameraAllowed() && usesCapturedText,
+            quiet: false, hazard: detection.hazard.isUrgent, privateAudioHeld: assistantSession.privateAudioHeld)
+    }
+    private func revalidateCapturedText() {
+        guard capturedText.selection != nil else { return }
+        guard let context = capturedTextContext(), capturedText.revalidate(context) else {
+            stopReadingTool(announce: false); return
+        }
+        speakNextCapturedText()
+    }
+    private func speakNextCapturedText() {
+        guard let context = capturedTextContext(), capturedText.revalidate(context),
+              feedback.speechPriority == nil, !voice.awaitingUtterance, !textOnly,
+              let phrase = capturedText.next(context), capturedText.begin(phrase, context: context) else { return }
+        capturedTextSpeechIDs.insert(phrase.id)
+        if !dispatchText(phrase.text, kind: .answer, requested: true, replace: false, speechID: phrase.id) {
+            capturedTextSpeechIDs.remove(phrase.id); capturedText.admissionRejected(phrase.id)
+        }
+    }
+    private func capturedTextSpeechPermission(id: UUID, text: String) -> Bool {
+        guard capturedTextSpeechIDs.contains(id) else { return true }
+        guard let pending = capturedText.pending, pending.id == id,
+              pending.text.utf8.elementsEqual(text.utf8), let context = capturedTextContext() else { return false }
+        return capturedText.revalidate(context)
+    }
+    private func finishCapturedTextSpeech(id: UUID, text: String, outcome: NarrationDelivery) -> Bool {
+        guard capturedTextSpeechIDs.remove(id) != nil else { return false }
+        guard capturedText.pending?.id == id else { return true }
+        guard let context = capturedTextContext(), capturedText.finish(id: id, text: text, outcome: outcome, context: context) else {
+            stopReadingTool(announce: false); return true
+        }
+        if capturedText.completed == capturedText.phrases.count { stopReadingTool(announce: false) }
+        else { speakNextCapturedText() }
+        return true
+    }
+    private func updateCapturedText(frame: ARFrame) {
+        if ProcessInfo.processInfo.systemUptime - readingStarted >= CompanionReferenceReading.lifetime {
+            stopReadingTool(announce: false); return
+        }
+        if capturedText.selection != nil { revalidateCapturedText(); return }
+        guard usesCapturedText, capturedTextNativeLease == nil, !readingInFlight, capturedTextCameraAllowed(),
+              FrameTimestampPolicy.isFresh(capturedAt: frame.timestamp, receivedAt: ProcessInfo.processInfo.systemUptime),
+              let selection = capturedText.select(cameraEpoch: cameraTextEpoch, generation: assistantSession.generation,
+                requestID: requestID, issuedAt: readingStarted, capturedAt: frame.timestamp,
+                orientation: CGImagePropertyOrientation.right.rawValue, now: ProcessInfo.processInfo.systemUptime) else { return }
+        let token = readingWork.token, image = frame.capturedImage, arabic = self.arabic
+        let everydayID = everydayTicket?.id, tool = readingTool
+        // Travel text retains its existing stricter typed/pose-owned dispatch.
+        let boardingCapture = captureObjectView(frame)
+        let boardingOwner = boardingCapture.map { beginBoardingReading($0) }
+        let boardingDate = Date().addingTimeInterval(selection.capturedAt - ProcessInfo.processInfo.systemUptime)
+        capturedTextNativeLease = selection.id; readingInFlight = true
+        readingTask = Task { @MainActor [weak self] in
+            let result = await Task.detached(priority: .userInitiated) { () -> (String, [TextLine])? in
+                // Freeze actual source pixels before hashing/OCR. Retain only this
+                // bounded in-memory CGImage; no Photos write, upload or model input.
+                let ci = CIImage(cvPixelBuffer: image)
+                guard ci.extent.width > 0, ci.extent.height > 0,
+                      ci.extent.width * ci.extent.height <= 12_000_000,
+                      let frozen = CIContext().createCGImage(ci, from: ci.extent),
+                      let bytes = frozen.dataProvider?.data else { return nil }
+                let digest = SHA256.hash(data: bytes as Data).map { String(format: "%02x", $0) }.joined()
+                guard let lines = try? VisionService.capturedTextLines(photo: frozen, orientation: .right, arabic: arabic) else { return nil }
+                return (digest, lines)
+            }.value
+            guard let self else { return }
+            if self.capturedTextNativeLease == selection.id { self.capturedTextNativeLease = nil }
+            guard self.readingWork.owns(token), self.capturedText.selection == selection else { return }
+            self.readingInFlight = false; self.readingTask = nil
+            guard !Task.isCancelled, self.readingTool == tool,
+                  let context = self.capturedTextContext(), self.capturedText.revalidate(context),
+                  let result, !result.1.isEmpty else {
+                self.stopReadingTool(announce: false); return
+            }
+            if result.1.contains(where: { BoardingPassDispatch.isTravelText($0.text) }) {
+                if let boardingCapture, let boardingOwner {
+                    let travel = BoardingPassDispatch.textRows(result.1.map { ($0.text, $0.confidence) }, owner: boardingOwner,
+                        capturedAt: boardingDate, capturedMonotonic: selection.capturedAt, now: Date(),
+                        monotonicNow: ProcessInfo.processInfo.systemUptime, arabic: arabic)
+                    self.stopReadingTool(announce: false, preserveBoardingReading: true)
+                    _ = self.deliverBoardingReading(travel, owner: boardingOwner, capture: boardingCapture)
+                } else { self.stopReadingTool(announce: false) }
+                return
+            }
+            // Every OCR block/qualifier is preserved. No confidence filtering can
+            // drop a warning/negation; this is an uncertain quote, never authority.
+            let identity = CompanionReferenceIdentity(sourceID: selection.id, revision: UUID(), sha256: result.0, media: .capturedText)
+            let lines = result.1.sorted { $0.y == $1.y ? $0.x < $1.x : $0.y < $1.y }
+            let evidence = lines.enumerated().map { index, line in
+                CompanionEvidence(id: "captured-text-\(index)", kind: .historicalMemory,
+                    text: line.text, source: identity.evidenceSource)
+            }
+            let source = CompanionReferenceSource(identity: identity,
+                toolResult: .init(status: .success, source: identity.evidenceSource, summary: "Uncertain text in captured view only", evidence: evidence),
+                blocks: evidence.enumerated().map { .init(evidence: $0.element,
+                    bodyUTF16Range: NSRange(location: 0, length: $0.element.text.utf16.count), locator: "captured-view:block-\($0.offset)") })
+            guard self.capturedText.install(source, for: selection, now: ProcessInfo.processInfo.systemUptime, arabic: arabic) else {
+                self.stopReadingTool(announce: false); return
+            }
+            self.finishEverydayTask(tool == .document ? .readDocument : .readText, outcome: .informationReady, ticketID: everydayID)
+            self.speakNextCapturedText()
+        }
+    }
+
     private struct ReadingCapture {
         let token: UUID
         let request: UUID
@@ -6042,6 +6188,7 @@ extension NavigationModel {
     }
 
     private func updateReadingTool(frame: ARFrame) {
+        if usesCapturedText { updateCapturedText(frame: frame); return }
         if boardingSpeech != nil { return }
         if readingTool == .document, !documentChunks.isEmpty {
             speakNextDocumentChunk(); return

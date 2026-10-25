@@ -154,7 +154,8 @@ public struct CompanionReferenceReading: Sendable {
     /// issuedAt is the ORIGINAL request time, not extraction/queue/retry time.
     public static func prepare(request: CompanionToolRequest, binding: Binding,
                                selectedSource: CompanionReferenceIdentity, source: CompanionReferenceSource,
-                               issuedAt: Double, monotonicNow: Double, arabic: Bool = false) throws -> Self {
+                               issuedAt: Double, monotonicNow: Double, arabic: Bool = false, phraseWordLimit: Int = maximumWords) throws -> Self {
+        guard (10...maximumWords).contains(phraseWordLimit) else { throw Rejection.resourceLimit }
         guard issuedAt.isFinite, issuedAt >= 0, monotonicNow.isFinite, monotonicNow >= issuedAt else {
             throw Rejection.invalidClock
         }
@@ -194,13 +195,13 @@ public struct CompanionReferenceReading: Sendable {
         }
         guard foundBody else { throw Rejection.noRelevantBody }
         let prefix = arabic ? "يقول المصدر المحدد: «" : "The selected source says: «"
-        let bodyLimit = maximumWords - wordCount(prefix)
+        let bodyLimit = phraseWordLimit - wordCount(prefix)
         var chunks: [Chunk] = []
         for block in source.blocks {
             for slice in slices(block.evidence.text, wordLimit: bodyLimit) {
                 // Language-sensitive platform tokenization may differ after
                 // adding attribution. Never dispatch an over-budget phrase.
-                guard wordCount(prefix + slice + "»") <= maximumWords else { throw Rejection.resourceLimit }
+                guard wordCount(prefix + slice + "»") <= phraseWordLimit else { throw Rejection.resourceLimit }
                 chunks.append(Chunk(id: UUID(), index: chunks.count, blockID: block.evidence.id,
                     locator: block.locator, source: source.identity,
                     originalSlice: slice, spokenText: prefix + slice + "»"))

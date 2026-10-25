@@ -1,0 +1,71 @@
+--- a/tools/test/clothing-color.test.mjs
++++ b/tools/test/clothing-color.test.mjs
+@@ -13,7 +13,7 @@
+   const cancel = source.slice(source.indexOf('private func cancelDescription()'), source.indexOf('private func publish()'));
+   assert.match(cancel, /colorActive = false/);
+   assert.match(cancel, /requestID = UUID\(\); questionTask\?\.cancel\(\)/);
+-  assert.match(source, /if currencyActive \|\| \(!preserveRGBHistoryWork && \(colorActive \|\| readingTool != nil\)\) \|\| currencyRetake\.isPending \{ cancelDescription\(\) \}/);
++  assert.match(source, /if currencyActive \|\| \(!preserveRGBHistoryWork && \(colorActive \|\| \(readingTool != nil && !preserveCapturedText\)\)\) \|\| currencyRetake\.isPending \{ cancelDescription\(\) \}/);
+ });
+ 
+ test('requested colour checks fresh RGB capture and typed ambiguity without a depth or manual-centre gate', async () => {
+@@ -54,8 +54,23 @@
+   assert.match(route, /let capturedAt = frame\.timestamp, generation = passiveObservationGeneration, request = requestID/);
+   assert.match(route, /requestID == request, passiveObservationGeneration == generation/);
+   assert.doesNotMatch(route, /generation = perceptionGeneration|perceptionGeneration == generation/);
+-  assert.match(invalidation, /\(!preserveRGBHistoryWork && \(colorActive \|\| readingTool != nil\)\)/);
++  assert.match(invalidation, /\(!preserveRGBHistoryWork && \(colorActive \|\| \(readingTool != nil && !preserveCapturedText\)\)\)/);
+   assert.match(invalidation, /if !preserveRGBHistoryWork \{ backgroundPerception\.invalidate\(\); passiveObservationGeneration = UUID\(\) \}/);
++  const assertOtherProducersRetire = body => {
++    assert.match(body, /if currencyActive \|\| \(!preserveRGBHistoryWork && \(colorActive \|\| \(readingTool != nil && !preserveCapturedText\)\)\) \|\| currencyRetake\.isPending \{ cancelDescription\(\) \}/);
++    assert.match(body, /if !preserveRGBHistoryWork \{ cancelContextualCapabilities\(\) \}/);
++    assert.match(body, /if !preserveRGBHistoryWork && familiarPeople\.enabled && familiarPeople\.hasActiveWork \{ familiarPeople\.cancel\(announce: false\) \}/);
++    assert.match(body, /if !preserveRGBHistoryWork \{ backgroundPerception\.invalidate\(\); passiveObservationGeneration = UUID\(\) \}/);
++  };
++  assertOtherProducersRetire(invalidation);
++  for (const mutant of [
++    invalidation.replace('colorActive || (readingTool', '(colorActive && !preserveCapturedText) || (readingTool'),
++    invalidation.replace('if currencyActive ||', 'if (currencyActive && !preserveCapturedText) ||'),
++    invalidation.replace('|| currencyRetake.isPending', '|| (currencyRetake.isPending && !preserveCapturedText)'),
++    invalidation.replace('if !preserveRGBHistoryWork { cancelContextualCapabilities()', 'if !preserveRGBHistoryWork && !preserveCapturedText { cancelContextualCapabilities()'),
++    invalidation.replace('if !preserveRGBHistoryWork && familiarPeople.enabled', 'if !preserveRGBHistoryWork && !preserveCapturedText && familiarPeople.enabled'),
++    invalidation.replace('if !preserveRGBHistoryWork { backgroundPerception.invalidate()', 'if !preserveRGBHistoryWork && !preserveCapturedText { backgroundPerception.invalidate()')
++  ]) assert.throws(() => assertOtherProducersRetire(mutant));
+   assert.match(route, /assistantSession\.generation == sessionGeneration/);
+   assert.match(route, /!detection\.hazard\.isUrgent/);
+   assert.match(route, /FrameTimestampPolicy\.isFresh/);
+--- a/tools/test/spatial-review-regressions.test.mjs
++++ b/tools/test/spatial-review-regressions.test.mjs
+@@ -330,7 +330,7 @@
+         }`;
+     assert.ok(prefix.endsWith(registrationHook), 'Bounded registration capture is synchronous after all loss retirements and before scan throttle');
+     const retirementPrefix = prefix.slice(0, -registrationHook.length).trim();
+-    assert.match(retirementPrefix, /^if case \.normal = frame\.camera\.trackingState \{\} else \{ invalidateNativeLocalization\(\.trackingUnavailable\) \}\s*if case \.normal = frame\.camera\.trackingState \{\} else \{\s*journeys\.breakTracking\(\)\s*nativeObservations\.trackingLost\(\)\s*clearBoardingReading\(\)\s*if readingTool != nil \{ stopReadingTool\(announce: false\) \}\s*\}$/,
++    assert.match(retirementPrefix, /^if case \.normal = frame\.camera\.trackingState \{\} else \{ invalidateNativeLocalization\(\.trackingUnavailable\) \}\s*if case \.normal = frame\.camera\.trackingState \{\} else \{\s*journeys\.breakTracking\(\)\s*nativeObservations\.trackingLost\(\)\s*clearBoardingReading\(\)\s*if readingTool != nil && !usesCapturedText \{ stopReadingTool\(announce: false\) \}\s*\}$/,
+       'All exact ownership retirements are synchronous and before throttle; normal frames do not retire them');
+     before(candidate, 'journeys.breakTracking()', 'frame.timestamp - lastProcessed');
+     before(candidate, 'nativeObservations.trackingLost()', 'frame.timestamp - lastProcessed');
+@@ -343,6 +343,12 @@
+     before(missingDepth, 'publish()', 'updateNonspatialObjectMemory(frame: frame)');
+   };
+   assertRawRetirement(frames);
++  const exactTextTools = /usesCapturedText: Bool \{ readingTool == \.liveText \|\| readingTool == \.document \}/;
++  assert.match(source, exactTextTools);
++  assert.throws(() => assert.match(source.replace('readingTool == .liveText || readingTool == .document',
++    'readingTool == .liveText || readingTool == .document || readingTool == .barcode'), exactTextTools));
++  assert.throws(() => assert.match(source.replace('readingTool == .liveText || readingTool == .document',
++    'readingTool == .liveText || readingTool == .document || readingTool == .light'), exactTextTools));
+   const mutations = [
+     frames.replace('places.observeRegistrationFrame(frame, sessionID: scanSession, now: ProcessInfo.processInfo.systemUptime)', '/* missing registration capture */'),
+     frames.replace('places.observeRegistrationFrame(frame, sessionID: scanSession, now: ProcessInfo.processInfo.systemUptime)', 'Task { places.observeRegistrationFrame(frame, sessionID: scanSession, now: ProcessInfo.processInfo.systemUptime) }'),
+@@ -352,8 +358,8 @@
+     frames.replace('nativeObservations.trackingLost()', '/* missing route-history retirement */'),
+     frames.replace('nativeObservations.trackingLost()', 'Task { nativeObservations.trackingLost() }'),
+     frames.replace('nativeObservations.trackingLost()', '').replace('let receivedAt =', 'nativeObservations.trackingLost(); let receivedAt ='),
+-    frames.replace('if readingTool != nil { stopReadingTool(announce: false) }', '/* missing reader retirement */'),
+-    frames.replace('if readingTool != nil { stopReadingTool(announce: false) }', 'return'),
++    frames.replace('if readingTool != nil && !usesCapturedText { stopReadingTool(announce: false) }', '/* missing reader retirement */'),
++    frames.replace('if readingTool != nil && !usesCapturedText { stopReadingTool(announce: false) }', 'return'),
+     frames.replace('invalidateNativeLocalization(.trackingUnavailable)', '/* missing selected-owner retirement */'),
+     frames.replace('phoneDetection = detector.process(observation)', 'phoneDetection = Detection(.observing)'),
+     frames.replace('detector.invalidateRecentEvidence()', '/* missing depth-loss hazard retirement */')

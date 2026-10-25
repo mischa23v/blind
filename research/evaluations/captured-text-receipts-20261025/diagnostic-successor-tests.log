@@ -1,0 +1,17 @@
+✔ early failure retains its IO IDs and false completion despite hundreds of later successes (34.418581ms)
+✔ phase ring and total failure cap are explicit and preserve a displaced false completion (26.28426ms)
+✔ crashed failing wait retains missing-end marker and only allowlisted metadata (27.789417ms)
+✔ passing log emits no failure window (25.883763ms)
+✔ combined unit shell retains original error and exit65 plus early failure window (35.111749ms)
+✔ all continuity scenarios await real map IO without blocking the main owner (6.683956ms)
+✔ runtime diagnostics preserve original completion conditions and timeout failures (2.740662ms)
+✔ native failure output retains bounded phase diagnostics without hiding assertions (1.925748ms)
+✔ combined shell diagnostics preserve failed status and isolate bounded practice chronology (21.554859ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 391.152161

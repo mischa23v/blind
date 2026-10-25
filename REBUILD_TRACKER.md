@@ -1,3 +1,16 @@
+## 2026-10-25 — Captured-view text receipt, portable-tested checkpoint27 candidate
+
+Published executable baseline is checkpoint26 `f9f70ea33faff728bc418aeed3720498614d95f9`; final diagnostic-only parent is `79f1b9d547030474142322856e8513b7fdbbc011`. This staged increment is not yet published at the time of this receipt.
+
+- Explicit text/document reading now freezes one bounded in-memory RGB view, hashes actual image bytes and preserves complete OCR blocks in a `.capturedText` reference receipt. Fresh limited-VIO frames may supply captured text without granting pose, motion, current-location or physical authority. Output stays an uncertain quotation, not page-alignment instructions; no pictures or OCR are uploaded/persisted.
+- Source epoch, timestamp/orientation, request/session and cancellation ownership are rechecked. Source interruption/restart/starvation, stop/new question, background/private-route/urgent events retire work. One noncancellable native OCR lease prevents stacked work; the original 0.5-second result admission and 60-second request deadline remain conservative bounds, not measured latency guarantees. Each command reads one captured view, not an unlimited stream.
+- Exact speech callbacks own completion. English/Arabic slices retain all original text within the minimum 30-word budget. Typed boarding text retains its original stricter pose-owned dispatcher. Barcode/light/color/familiar/currency/spatial gates and passive-repeat ownership remain unchanged.
+- **1,263 Core tests and 457 serial Swift-enabled Node checks pass, zero final failures/skips.** Core production source stayed unchanged through later source-contract/diagnostic fixes. Initial Node 449/452 and the separate reading-contract failure are preserved; narrow test updates retain exact color/spatial retirements and add negative mutations against broad captured-text exceptions. Independent source and merge review found no remaining blocking issue.
+- Seventeen extracted native admission checks and twelve passive callback/ownership projection checks pass; these use stub containers, not actual ARKit/Vision/audio. Native syntax parse passes, not Apple SDK typechecking. The final diagnostic-only layout successor was applied after the full aggregate: seven affected Node checks, ten exporter tests and LaunchTests syntax parse pass separately; those are not a second full aggregate.
+- Apple compilation, actual camera/OCR/audio callbacks, limited-tracking image usability/latency, simultaneous producer interruption, minimum-budget Arabic playback and supervised device acceptance remain open. This does not complete the tracker, establish calibration or approve independent child use.
+
+Evidence: `research/evaluations/captured-text-receipts-20261025/README.md`, exact source manifest and preserved logs. Historical records below remain unchanged.
+
 ## 2026-10-25 — Bounded evidence-owned automatic repeat suppression, portable-tested candidate
 
 Executable baseline: checkpoint25 `a5a76f1802de4720cb774ff1cbad65477529b1d9`; full aggregate source cut checked through `50d503f03b126c8b6e1533b794dee54c8e35f920` (archival voice-probe changes only). This candidate changes four passive source/test paths and one diagnostic-only source-contract test and has not yet been published at the time this receipt was prepared.

@@ -1,0 +1,81 @@
+{
+  "parent": "79f1b9d547030474142322856e8513b7fdbbc011",
+  "checkpoint26": "f9f70ea33faff728bc418aeed3720498614d95f9",
+  "status": "portable-tested candidate, not published",
+  "core": {
+    "tests": 1263,
+    "failed": 0,
+    "productionUnchangedThroughFinalProjection": true
+  },
+  "node": {
+    "tests": 457,
+    "failed": 0,
+    "skipped": 0,
+    "frozenFileHashes": 983
+  },
+  "initialNode": {
+    "tests": 452,
+    "passed": 449,
+    "failed": 3,
+    "preserved": true
+  },
+  "laterDiagnosticOnly": {
+    "nodeChecks": 7,
+    "exporterTests": 10,
+    "nativeParse": true,
+    "fullAggregateRepeated": false
+  },
+  "nativeAdmissionWitness": 17,
+  "nativePassiveProjection": 12,
+  "appleSDKTypecheck": false,
+  "realVisionOrAudio": false,
+  "candidateFiles": [
+    {
+      "path": "BlindCore/Sources/BlindCore/CapturedTextReference.swift",
+      "baseline_sha256": null,
+      "staged_sha256": "440bc459017bf1eb15f989ebf880814c9cbbfe62708361ceebeed0b2f2bf525b"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionReferenceReading.swift",
+      "baseline_sha256": "38da21c3792b2e98e9505054ff2e7e981b214519c3f4080c9077595cb14c1db3",
+      "staged_sha256": "7986a22da5629b2d7f6bcee43a13f36626399f1becb758baba0f182df73a34cc"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/CapturedTextReferenceTests.swift",
+      "baseline_sha256": null,
+      "staged_sha256": "680f15edf8e0366804887ea5cf57dd417368b5b08b3e225489177f70d2ad71ef"
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "baseline_sha256": "56a4c83534e25c2acdc2b3192bb034dd4e465d67047cf9feaf37a58ce8a396b0",
+      "staged_sha256": "f35744a3506485543c88a1c1b0486399f6768e2db5151687ce14eb2d68318a36"
+    },
+    {
+      "path": "ios/BlindAssist/VisionService.swift",
+      "baseline_sha256": "0a97d06cbc5cc39a5bfa716eb3064e069fb3e23073711d704a2c29e335e1e86d",
+      "staged_sha256": "2f655215f8c027159dd4b12beceb86260bf266801e7465be142c82cff83d523c"
+    },
+    {
+      "path": "tools/test/captured-text-reference.test.mjs",
+      "baseline_sha256": null,
+      "staged_sha256": "67e023a2273bc30ac38489016d9c7362eb20c59c269ebf9a5efe9017bd990b4c"
+    },
+    {
+      "path": "tools/test/clothing-color.test.mjs",
+      "baseline_sha256": "f11fb446528759dccf67a4fc76f671bf5708e3fd67bae307c427509c085c1624",
+      "staged_sha256": "dfbfe037554c66c0b23b001c7765e8f7e6c09374c6659e86e3ba748dcaa42342"
+    },
+    {
+      "path": "tools/test/reading-integration.test.mjs",
+      "baseline_sha256": "c166e34cbe6696239461d08a4b8ff0a14fa7c069eaad5b916474e5b022bc99c3",
+      "staged_sha256": "b4e88b1d6a23d000fb1f211ac7bd5d461c07289fb9a979d11a9ffd225a5be73a"
+    },
+    {
+      "path": "tools/test/spatial-review-regressions.test.mjs",
+      "baseline_sha256": "c68564ee528f81532c3f7a7b98df2c683b59799ddf724f93397d63c672cd96b2",
+      "staged_sha256": "81709c4501d164752f26cc66609e4678f4eac46e1bf76059ba5c27b48b9fb718"
+    }
+  ],
+  "publicEvidenceRedacted": true,
+  "redactionScope": "Local infrastructure paths and broad inventories omitted; test results and change-specific repository-relative source hashes retained. Raw evidence private and unchanged."
+}

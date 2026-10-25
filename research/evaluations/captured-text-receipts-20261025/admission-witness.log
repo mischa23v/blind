@@ -1,0 +1,23 @@
+PASS captured text normal admission
+PASS normal positive controls
+PASS captured text same frame admitted under limited VIO
+PASS interruption rejects captured source
+PASS private route rejects captured source
+PASS urgent rejects captured source
+PASS future frame rejects captured source
+PASS orientation rejects captured source
+PASS same authored read-result fixture available before admission
+PASS limited blocks all five actual admission methods
+PASS identical opaque image payload fixture and timestamp (not a decoded real photo)
+WITNESS explicit OCR/barcode/light: normal=true limited=false; read input unchanged
+WITNESS object/barcode receipt: normal=true limited=false; read input unchanged
+WITNESS requested color: normal=true limited=false; read input unchanged
+WITNESS familiar capture: normal=true limited=false; read input unchanged
+WITNESS contextual callback: normal=true limited=false; read input unchanged
+PASS private audio reader/object negative control
+PASS urgent hazard negative control
+PASS stale frame negative control
+PASS stale captured source rejected
+PASS actual attention reaches stationary on controlled normal samples
+PASS actual attention loses stationary on VIO-only flag change with identical position
+CHECKS 17, failures 0; source admission only, no Vision/face inference or real image quality evaluation

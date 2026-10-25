@@ -140,7 +140,7 @@ test('photo transfer and Vision continuations stay fenced to the visible present
   includesAll(photo, ['!Task.isCancelled', 'self.selectedPhoto.selection?.id == token', 'self.assistantSession.generation == generation']);
 });
 
- test('RGB reading owns source and current captures without importing depth/map authority', async () => {
+ test('pose-owned RGB tools retain source/current gates while captured text has separate retirement', async () => {
  const model=await read('ios/BlindAssist/NavigationModel.swift');
  const camera=section(model,'private func readingCameraAllowed()', 'private struct ReadingCapture');
  includesAll(camera,['assistantSession.shouldRunCamera','assistantSession.mayRespond','cameraAwareness','!assistantSession.privateAudioHeld','!detection.hazard.isUrgent','case .normal = frame.camera.trackingState','FrameTimestampPolicy.isFresh']);
@@ -150,12 +150,13 @@ test('photo transfer and Vision continuations stay fenced to the visible present
  const rgb=section(model,'private func updateNonspatialObjectMemory(', 'private func passiveMemoryEligible(');
  includesAll(rgb,['updateReadingTool(frame: frame)']);
  const invalidate=section(model,'private func invalidatePerceptionWork(', 'private func perceptionResultAllowed(');
- includesAll(invalidate,['(!preserveRGBHistoryWork && (colorActive || readingTool != nil))','if !preserveRGBHistoryWork { backgroundPerception.invalidate(); passiveObservationGeneration = UUID() }']);
+ includesAll(invalidate,['(!preserveRGBHistoryWork && (colorActive || (readingTool != nil && !preserveCapturedText)))', 'if !preserveRGBHistoryWork && !preserveCapturedText { retireCapturedTextSource() }','if !preserveRGBHistoryWork { backgroundPerception.invalidate(); passiveObservationGeneration = UUID() }']);
  });
 
-test('raw RGB tracking loss retires reader before throttled return',async()=>{
+test('raw VIO tracking loss retires pose-owned reader before throttle but not captured text',async()=>{
  const m=await read('ios/BlindAssist/NavigationModel.swift');
  const raw=section(m,'func session(_ session: ARSession, didUpdate frame: ARFrame)', 'let receivedAt =');
  before(raw,'stopReadingTool(announce: false)','guard running');
- includesAll(raw,['if case .normal = frame.camera.trackingState {} else','journeys.breakTracking()','if readingTool != nil']);
+ includesAll(m, ['usesCapturedText: Bool { readingTool == .liveText || readingTool == .document }', 'if usesCapturedText { updateCapturedText(frame: frame); return }']);
+ includesAll(raw,['if case .normal = frame.camera.trackingState {} else','journeys.breakTracking()','if readingTool != nil && !usesCapturedText']);
 });

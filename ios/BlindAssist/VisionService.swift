@@ -132,6 +132,22 @@ enum VisionService {
         }
     }
 
+    /// Captured receipt: same platform OCR, no language-model correction or confidence trimming.
+    static func capturedTextLines(photo: CGImage, orientation: CGImagePropertyOrientation, arabic: Bool) throws -> [TextLine] {
+        let request = VNRecognizeTextRequest()
+        request.recognitionLevel = .accurate
+        request.usesLanguageCorrection = false
+        let supported = try request.supportedRecognitionLanguages()
+        request.recognitionLanguages = (arabic ? ["ar-SA", "ar", "en-US"] : ["en-US"]).filter { supported.contains($0) }
+        if request.recognitionLanguages.isEmpty { request.recognitionLanguages = ["en-US"] }
+        try VNImageRequestHandler(cgImage: photo, orientation: orientation).perform([request])
+        return (request.results ?? []).compactMap { box in
+            guard let best = box.topCandidates(1).first else { return nil }
+            return TextLine(text: best.string, confidence: Double(best.confidence),
+                            x: Double(box.boundingBox.midX), y: 1 - Double(box.boundingBox.midY))
+        }
+    }
+
     /// The page's four corners, if Vision finds a document.
     static func documentCorners(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) throws -> [(x: Double, y: Double)]? {
         let request = VNDetectDocumentSegmentationRequest()
