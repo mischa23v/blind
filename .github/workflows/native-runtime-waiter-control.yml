@@ -1,0 +1,39 @@
+name: Fixed publication waiter control pair
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/native-runtime-waiter-control.yml'
+      - 'tools/ci/native-runtime-waiter-control.py'
+      - 'tools/diagnostics/runtime-waiter-control/ConnectedJourneyRuntimeTests.swift'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: native-runtime-waiter-control-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  runtime-waiter-control:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    runs-on: xcode-27
+    timeout-minutes: 65
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Check out exact observed-failure baseline
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: de0da00424b5dd3cae9e98e67894eddcffc74447
+          path: waiter-baseline
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Build one reviewed test copy and run the fixed pair
+        run: python3 tools/ci/native-runtime-waiter-control.py waiter-baseline

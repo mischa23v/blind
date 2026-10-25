@@ -1,0 +1,3 @@
+Independent review approved the candidate and fixed-pair infrastructure. Original helper and all 17 test bodies independently byte-compared unchanged; five source checks and twelve infrastructure checks passed. Locking, cancellation, single settlement and observer restoration were reviewed. Independent latch execution passed boundary, late-publication, pre-install cancellation, 100 fixed single-winner races and late-wake cancellation. Apple hosted compilation remains pending. Native layout assumptions fail closed rather than claim test success.
+
+Hosted-runner guard addition rejects missing, empty, self-hosted and unknown values before source access or Apple commands; independently reviewed and approved, with all twelve infrastructure checks rerun successfully.
