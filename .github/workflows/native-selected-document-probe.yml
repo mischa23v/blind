@@ -1,0 +1,80 @@
+name: Selected PDF native byte adapter probe
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/native-selected-document-probe.yml'
+permissions:
+  contents: read
+concurrency:
+  group: native-selected-document-probe-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  pdf-adapter:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.run_attempt == 1
+    runs-on: xcode-27
+    timeout-minutes: 15
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+      REVIEWED_APP_COMMIT: 6d6954b17b0a35836506a7dead62aa855112cb98
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.REVIEWED_APP_COMMIT }}
+          path: reviewed-app
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+          sparse-checkout: |
+            ios/BlindAssist/SelectedDocumentPDFAdapter.swift
+            ios/BlindAssist/SelectedDocumentPicker.swift
+            ios/BlindAssistTests/SelectedDocumentPDFTests.swift
+          sparse-checkout-cone-mode: false
+      - name: Verify immutable app provenance and exact reviewed snapshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$RUNNER_ENVIRONMENT" == github-hosted ]]
+          [[ "$REVIEWED_APP_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$(git -C reviewed-app rev-parse HEAD)" == "$REVIEWED_APP_COMMIT" ]]
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, json, os
+          packet = Path('tests/scenarios/integrated/selected-document-native-probe')
+          pins = json.loads((packet / 'source-pins.json').read_text())
+          for relative, pin in pins['files'].items():
+              original = Path('reviewed-app') / pin['candidatePath']
+              assert hashlib.sha256(original.read_bytes()).hexdigest() == pin['sha256'], pin['candidatePath']
+              assert hashlib.sha256((packet / relative).read_bytes()).hexdigest() == pin['sha256'], relative
+          receipt = {'reviewedAppCommit': os.environ['REVIEWED_APP_COMMIT'],
+                     'workflowCommit': os.environ['GITHUB_SHA'], 'sourcePins': pins,
+                     'scope': 'PDFKit bytes/direct picker delegate only; not app controller, OS grant, speech or VoiceOver'}
+          (Path(os.environ['RUNNER_TEMP']) / 'selected-pdf-provenance.json').write_text(json.dumps(receipt, indent=2) + '\n')
+          PY
+      - name: Run one bounded PDFKit and direct picker delegate probe
+        shell: bash
+        run: bash tests/scenarios/integrated/selected-document-native-probe/run-native.sh "$GITHUB_WORKSPACE"
+      - name: Preserve bounded synthetic-probe receipts only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: selected-pdf-adapter-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/selected-pdf-provenance.json
+            ${{ runner.temp }}/blind-selected-document-probe/artifacts/receipt.json
+            ${{ runner.temp }}/blind-selected-document-probe/artifacts/toolchain.txt
+            ${{ runner.temp }}/blind-selected-document-probe/artifacts/owned-simulator.txt
+            ${{ runner.temp }}/blind-selected-document-probe/artifacts/test-exit-code.txt
+            ${{ runner.temp }}/blind-selected-document-probe/artifacts/bounded-test.log.txt
+            ${{ runner.temp }}/blind-selected-document-probe/artifacts/bounded-prepare.log.txt
+            ${{ runner.temp }}/blind-selected-document-probe/artifacts/bounded-simulator.log.txt
+          if-no-files-found: warn
+          retention-days: 7
