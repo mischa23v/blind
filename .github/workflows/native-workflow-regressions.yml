@@ -1,5 +1,10 @@
 name: Authored native workflow regressions
 on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/native-workflow-regressions.yml'
+      - 'tests/scenarios/integrated/native-workflows/**'
   workflow_dispatch:
 permissions:
   contents: read
