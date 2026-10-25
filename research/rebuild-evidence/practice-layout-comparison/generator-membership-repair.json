@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "baseCommit": "65a2a97e6886a246e9c0faf11147f6a46f1bdbfb",
+  "generatorPreimageBlob": "58b3dab9d1e2437814e0dfe17ad2e47cde6aaba2",
+  "unchangedProjectBlob": "84de35f233a68ee29ec5bac565cbf9afc4487c4d",
+  "change": "Generator now preserves the already-committed CameraAuditScopeTests reference/build IDs and UI-test source-phase membership.",
+  "validation": {
+    "affectedExistingNodeFiles": 11,
+    "passed": 110,
+    "failed": 0,
+    "skipped": 0,
+    "independentSelectedPhotoChecksPassed": 12,
+    "isolatedCLIGeneratedProject": "byte-exact match with current checked-in project",
+    "isolatedCLIGeneratedScheme": "byte-exact match with current checked-in scheme",
+    "independentReview": "accepted"
+  },
+  "limits": [
+    "No checked-in project or build settings changed.",
+    "Existing exact project equality assertion retained unchanged.",
+    "Diagnostic opt-in skip and original full audit unchanged.",
+    "No new native compilation or audit result claimed."
+  ],
+  "generatorSha256": "59be0a750874e29d4b58c4d6f2ca6866f4b8f61ee8117d4dc84f2fac9a16e287"
+}

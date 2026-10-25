@@ -119,7 +119,12 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
   const target = add('target', `isa = PBXNativeTarget; buildConfigurationList = ${configList}; buildPhases = (${sourcesPhase},${frameworksPhase},${resourcesPhase},${activityEmbed ? `${activityEmbed},` : ''}); buildRules = (); dependencies = (${activityTarget ? `${id('activity-dep')},` : ''}); name = BlindAssist; productName = BlindAssist; productReference = ${product}; productType = "com.apple.product-type.application"; packageProductDependencies = (${dependency},${memoryDependency},);`);
   const uiFile = add('ui-file', 'isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindAssistUITests/LaunchTests.swift; sourceTree = SOURCE_ROOT;');
   const uiBuild = add('ui-build', `isa = PBXBuildFile; fileRef = ${uiFile};`);
-  const uiSources = add('ui-sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${uiBuild},); runOnlyForDeploymentPostprocessing = 0;`);
+  // Preserve the already-committed opt-in diagnostic IDs and UI-test-only membership.
+  // Regeneration must not silently drop the scope control or rekey unrelated objects.
+  const uiScopeFile = '46F2B9EA8552D92DF137AF80', uiScopeBuild = '4906879117E546BCF3C42670';
+  objects.push(`${uiScopeFile} = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindAssistUITests/CameraAuditScopeTests.swift; sourceTree = SOURCE_ROOT; };`);
+  objects.push(`${uiScopeBuild} = { isa = PBXBuildFile; fileRef = ${uiScopeFile}; };`);
+  const uiSources = add('ui-sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${uiBuild},${uiScopeBuild},); runOnlyForDeploymentPostprocessing = 0;`);
   const uiProduct = add('ui-product', 'isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = BlindAssistUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR;');
   const uiConfigs = ['Debug', 'Release'].map(name => add(`ui-${name}`, `isa = XCBuildConfiguration; name = ${name}; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)${name === 'Debug' ? ' DEBUG' : ''}"; TARGETED_DEVICE_FAMILY = 1; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = ""; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_BUNDLE_IDENTIFIER = org.blindassist.mobility.uitests; TEST_TARGET_NAME = BlindAssist; CODE_SIGN_STYLE = Automatic; };`));
   const uiConfigList = add('ui-configs', `isa = XCConfigurationList; buildConfigurations = (${uiConfigs.join(',')},); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;`);
