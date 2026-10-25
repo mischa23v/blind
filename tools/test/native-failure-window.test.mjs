@@ -7,7 +7,7 @@ import { spawnSync } from 'node:child_process';
 const root = new URL('../../', import.meta.url);
 const begin = name => `Test Case '-[BlindAssistTests.ConnectedJourneyRuntimeTests ${name}]' started.`;
 const end = (name, result='failed') => `Test Case '-[BlindAssistTests.ConnectedJourneyRuntimeTests ${name}]' ${result} (3.1 seconds).`;
-const fail = name => [begin(name), `NATIVE_RUNTIME_IO id=${name}-IO phase=read-start`, `NATIVE_RUNTIME_IO id=${name}-IO phase=read-return`, `NATIVE_RUNTIME_WAIT test=${name} phase=returned fulfilled=false loading=true`, end(name)];
+const fail = name => [begin(name), `NATIVE_RUNTIME_IO id=${name}-IO phase=read-start`, `NATIVE_RUNTIME_IO id=${name}-IO phase=read-return`, `NATIVE_RUNTIME_PHASE test=${name} operation=fixture-id phase=restore-detached-begin uptime=123.4`, `NATIVE_RUNTIME_WAIT test=${name} phase=returned fulfilled=false loading=true`, end(name)];
 async function run(lines, shell=false) {
   const dir = await mkdtemp(join(tmpdir(), 'blind-failure-window-'));
   try {
@@ -20,7 +20,7 @@ async function run(lines, shell=false) {
 }
 test('early failure retains its IO IDs and false completion despite hundreds of later successes',async()=>{
  const lines=fail('testEarly');for(let i=0;i<200;i++)lines.push(begin(`testLater${i}`),`NATIVE_RUNTIME_WAIT test=later${i} fulfilled=true`,end(`testLater${i}`,'passed'));
- const r=await run(lines);assert.equal(r.status,0);assert.match(r.stdout,/id=testEarly-IO phase=read-return/);assert.match(r.stdout,/fulfilled=false/);assert.match(r.stdout,/testEarly.*started/);assert.match(r.stdout,/testEarly.*failed/);assert.doesNotMatch(r.stdout,/testLater/);assert.match(r.stdout,/emitted=1 omitted=0/);
+ const r=await run(lines);assert.equal(r.status,0);assert.match(r.stdout,/id=testEarly-IO phase=read-return/);assert.match(r.stdout,/NATIVE_RUNTIME_PHASE test=testEarly operation=fixture-id/);assert.match(r.stdout,/fulfilled=false/);assert.match(r.stdout,/testEarly.*started/);assert.match(r.stdout,/testEarly.*failed/);assert.doesNotMatch(r.stdout,/testLater/);assert.match(r.stdout,/emitted=1 omitted=0/);
 });
 test('phase ring and total failure cap are explicit and preserve a displaced false completion',async()=>{
  const lines=[begin('testLarge'),'NATIVE_RUNTIME_WAIT fulfilled=false'];for(let i=0;i<900;i++)lines.push(`NATIVE_RUNTIME_IO id=large phase=${i}`);lines.push(end('testLarge'),...fail('testTwo'),...fail('testThree'),...fail('testFour'));

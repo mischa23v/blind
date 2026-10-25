@@ -98,6 +98,11 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
 /// or measurements. Without explicit calibrated-adapter configuration it still
 /// saves destinations/history but cannot issue a physical route ticket.
 @MainActor public final class ConnectedJourneyRuntime {
+#if DEBUG
+    // Opt-in hosted-test instrumentation only. Nil for ordinary app instances;
+    // no global logging, user payloads, scheduling changes or release-build API.
+    var diagnosticPhaseRecorder: (@Sendable (String, UUID, TimeInterval) -> Void)?
+#endif
     public private(set) var snapshot = ConnectedJourneySnapshot()
     public private(set) var loading = false
     public private(set) var durable = false
@@ -169,13 +174,28 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
     public func restore() {
         guard loadID == nil, latestWrite == nil, coordinator == nil else { return }
         retire(); loading = true; let id = UUID(); loadID = id
+#if DEBUG
+        let trace = diagnosticPhaseRecorder
+        trace?("restore-task-queued", id, ProcessInfo.processInfo.systemUptime)
+#endif
         Task { [weak self, io, sha256] in
+#if DEBUG
+            trace?("restore-task-entered", id, ProcessInfo.processInfo.systemUptime)
+#endif
             do {
                 let data = try await io.read()
+#if DEBUG
+                trace?("restore-read-resumed", id, ProcessInfo.processInfo.systemUptime)
+                trace?("restore-detached-queued", id, ProcessInfo.processInfo.systemUptime)
+#endif
                 
                 // Decoding/verifying installations is executed away from the main
                 // owner. Only immutable validated values cross back for publication.
                 let restored = try await Task.detached(priority: .utility) { () -> (JourneyRuntimeEnvelope?, ConnectedJourneyCatalog?) in
+#if DEBUG
+                    trace?("restore-detached-begin", id, ProcessInfo.processInfo.systemUptime)
+                    defer { trace?("restore-detached-end", id, ProcessInfo.processInfo.systemUptime) }
+#endif
                     guard let data else { return (nil, nil) }
                     let envelope = try JourneyRuntimeEnvelope(data: data)
                     let maps = try envelope.installations.map { try SpatialMapInstallation(data: $0, sha256: sha256) }
@@ -186,6 +206,9 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
                     }
                     return (envelope, try ConnectedJourneyCatalog(registry: first.registry, installations: maps, portals: envelope.portals))
                 }.value
+#if DEBUG
+                trace?("restore-main-resumed", id, ProcessInfo.processInfo.systemUptime)
+#endif
                 guard let self, self.loadID == id else { return }
                 self.loading = false; self.storageError = false
                 if let envelope = restored.0 { self.snapshot = envelope.journey; self.retiredBindings = Set(envelope.retiredBindings) }
@@ -223,6 +246,9 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
                 }
                 self.loadID = nil; self.onChange?()
             } catch {
+#if DEBUG
+                trace?("restore-main-error-resumed", id, ProcessInfo.processInfo.systemUptime)
+#endif
                 guard let self, self.loadID == id else { return }
                 self.loading = false; self.loadID = nil; self.storageError = true; self.durable = false
                 self.status = "Journey history could not be opened. No guidance is available."
@@ -280,9 +306,21 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
     private func startCatalog(_ input: (UUID, SpatialFrameRegistry, [SpatialMapBinding: SpatialMapInstallation], [JourneyPortal])) {
         mapWorkID = input.0
         let previous = catalog?.registry
+#if DEBUG
+        let trace = diagnosticPhaseRecorder
+        trace?("catalog-task-queued", input.0, ProcessInfo.processInfo.systemUptime)
+#endif
         Task { [weak self] in
+#if DEBUG
+            trace?("catalog-task-entered", input.0, ProcessInfo.processInfo.systemUptime)
+            trace?("catalog-detached-queued", input.0, ProcessInfo.processInfo.systemUptime)
+#endif
             let result = await Task.detached(priority: .utility) { () -> Result<ConnectedJourneyCatalog, Error> in
-                Result {
+#if DEBUG
+                trace?("catalog-detached-begin", input.0, ProcessInfo.processInfo.systemUptime)
+                defer { trace?("catalog-detached-end", input.0, ProcessInfo.processInfo.systemUptime) }
+#endif
+                return Result {
                     if var previous { try previous.update(snapshot: input.1.snapshot) }
                     let maps = try input.2.values.filter { input.1.snapshot.activeBindings.contains($0.binding) }.map { map in
                         try SpatialMapInstallation(envelope: .init(snapshot: input.1.snapshot, binding: map.binding,
@@ -297,6 +335,9 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
                         portals: input.3.filter { available.contains($0.from.binding) && available.contains($0.to.binding) })
                 }
             }.value
+#if DEBUG
+            trace?("catalog-main-resumed", input.0, ProcessInfo.processInfo.systemUptime)
+#endif
             guard let self, self.mapWorkID == input.0 else { return }
             self.mapWorkID = nil
             if let next = self.pendingMapWork { self.pendingMapWork = nil; self.startCatalog(next); return }

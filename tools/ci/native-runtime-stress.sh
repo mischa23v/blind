@@ -13,6 +13,7 @@ base=(-project ios/BlindAssist.xcodeproj -scheme BlindAssist -configuration Debu
       -only-testing:BlindAssistTests/ConnectedJourneyRuntimeTests)
 source_sha="$(git rev-parse HEAD)"
 echo "NATIVE_RUNTIME_STRESS source=$source_sha fixed_attempts=5"
+echo 'NATIVE_RUNTIME_STRESS phase_schema=task-detached-main-v1'
 echo 'Synthetic hosted runtime class only. CI load is uncontrolled; five passes do not establish a repaired root cause or device timing.'
 printf 'attempt\texit_status\n' > "$out/results.tsv"
 

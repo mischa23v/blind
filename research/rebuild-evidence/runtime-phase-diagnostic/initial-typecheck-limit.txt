@@ -1,0 +1,23 @@
+Public excerpt: local compiler paths redacted. Original raw compiler output is preserved locally and is not included in this publication.
+
+[source path redacted]:19:25: error: cannot find type 'ConnectedJourneySnapshot' in scope
+ 17 |     public static let maximumBytes = 8_000_000
+ 18 |     public let schemaVersion: Int
+ 19 |     public let journey: ConnectedJourneySnapshot
+    |                         `- error: cannot find type 'ConnectedJourneySnapshot' in scope
+ 20 |     public let installations: [Data]
+ 21 |     public let portals: [JourneyPortal]
+
+[source path redacted]:21:26: error: cannot find type 'JourneyPortal' in scope
+ 19 |     public let journey: ConnectedJourneySnapshot
+ 20 |     public let installations: [Data]
+ 21 |     public let portals: [JourneyPortal]
+    |                          `- error: cannot find type 'JourneyPortal' in scope
+ 22 |     /// Geometry-free deletion tombstones. Deleted exact revisions cannot be
+ 23 |     /// reactivated after restart with forgotten conservative restrictions.
+
+[source path redacted]:25:26: error: cannot find type 'ConnectedJourneySnapshot' in scope
+ 23 |     /// reactivated after restart with forgotten conservative restrictions.
+ 24 |     public let retiredBindings: [SpatialMapBinding]
+
+Initial imported module was a reduced observation module without ConnectedJourney types. Repeated against already-built full BlindCore; no source changes needed.

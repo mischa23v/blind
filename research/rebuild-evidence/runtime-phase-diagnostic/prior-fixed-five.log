@@ -1,0 +1,47 @@
+2026-10-25T16:21:51.8435420Z NATIVE_RUNTIME_STRESS source=63afd5d960f87ec63a109c1a70fc8bad9b4ec39b fixed_attempts=5
+2026-10-25T16:23:42.4715440Z NATIVE_RUNTIME_STRESS build_exit=0
+2026-10-25T16:29:57.0918120Z NATIVE_RUNTIME_STRESS attempt=1 exit=65
+2026-10-25T16:30:02.6763770Z NATIVE_RUNTIME_FAILURE_SUMMARY emitted=3 omitted=3 phase_limit=400 failure_limit=3
+2026-10-25T16:30:08.9052990Z NATIVE_RUNTIME_STRESS_RESULT attempt=1 {"result": "Failed", "totalTestCount": 17, "passedTests": 11, "failedTests": 6, "skippedTests": 0, "expectedFailures": 0, "startTime": 1792945426.159, "finishTime": 1792945787.759}
+2026-10-25T16:33:30.4954150Z NATIVE_RUNTIME_STRESS attempt=2 exit=0
+2026-10-25T16:33:31.6731470Z NATIVE_RUNTIME_FAILURE_SUMMARY emitted=0 omitted=0 phase_limit=400 failure_limit=3
+2026-10-25T16:33:32.4676060Z NATIVE_RUNTIME_STRESS_RESULT attempt=2 {"result": "Passed", "totalTestCount": 17, "passedTests": 17, "failedTests": 0, "skippedTests": 0, "expectedFailures": 0, "startTime": 1792945812.683, "finishTime": 1792946004.935}
+2026-10-25T16:37:05.3670200Z NATIVE_RUNTIME_STRESS attempt=3 exit=0
+2026-10-25T16:37:05.5898960Z NATIVE_RUNTIME_FAILURE_SUMMARY emitted=0 omitted=0 phase_limit=400 failure_limit=3
+2026-10-25T16:37:06.1407600Z NATIVE_RUNTIME_STRESS_RESULT attempt=3 {"result": "Passed", "totalTestCount": 17, "passedTests": 17, "failedTests": 0, "skippedTests": 0, "expectedFailures": 0, "startTime": 1792946019.411, "finishTime": 1792946215.531}
+2026-10-25T16:40:12.9806430Z NATIVE_RUNTIME_STRESS attempt=4 exit=0
+2026-10-25T16:40:14.9122320Z NATIVE_RUNTIME_FAILURE_SUMMARY emitted=0 omitted=0 phase_limit=400 failure_limit=3
+2026-10-25T16:40:15.7133460Z NATIVE_RUNTIME_STRESS_RESULT attempt=4 {"result": "Passed", "totalTestCount": 17, "passedTests": 17, "failedTests": 0, "skippedTests": 0, "expectedFailures": 0, "startTime": 1792946231.745, "finishTime": 1792946408.099}
+2026-10-25T16:43:30.1400710Z NATIVE_RUNTIME_STRESS attempt=5 exit=0
+2026-10-25T16:43:33.2532330Z NATIVE_RUNTIME_FAILURE_SUMMARY emitted=0 omitted=0 phase_limit=400 failure_limit=3
+2026-10-25T16:43:33.5992800Z NATIVE_RUNTIME_STRESS_RESULT attempt=5 {"result": "Passed", "totalTestCount": 17, "passedTests": 17, "failedTests": 0, "skippedTests": 0, "expectedFailures": 0, "startTime": 1792946424.841, "finishTime": 1792946603.799}
+2026-10-25T16:43:33.6232320Z NATIVE_RUNTIME_STRESS completed=5 failed_attempts=1 diagnostic_errors=0
+
+NATIVE_RUNTIME_FAILURE_BEGIN index=1 retained=6 dropped=0
+2026-10-25T16:30:02.2814480Z Test Case '-[BlindAssistTests.ConnectedJourneyRuntimeTests testDeleteRestartCannotReimportSameRevisionAndForgetRestrictions]' started.
+2026-10-25T16:30:02.2940520Z NATIVE_RUNTIME_WAIT test=-[ConnectedJourneyRuntimeTests testDeleteRestartCannotReimportSameRevisionAndForgetRestrictions] line=77 phase=start uptime=600.7174300833334
+2026-10-25T16:30:02.3041880Z NATIVE_RUNTIME_IO id=A4086614-EAE1-42B3-8482-D11E0768FF7B phase=read-start uptime=600.717710375
+2026-10-25T16:30:02.3148710Z NATIVE_RUNTIME_IO id=A4086614-EAE1-42B3-8482-D11E0768FF7B phase=read-return uptime=600.7177575416667
+2026-10-25T16:30:02.3221760Z NATIVE_RUNTIME_WAIT test=-[ConnectedJourneyRuntimeTests testDeleteRestartCannotReimportSameRevisionAndForgetRestrictions] line=77 phase=returned elapsed=2.7390118333332794 publications=1 fulfilled=true loading=false maps=0 writes=0
+2026-10-25T16:30:02.3314500Z NATIVE_RUNTIME_WAIT test=-[ConnectedJourneyRuntimeTests testDeleteRestartCannotReimportSameRevisionAndForgetRestrictions] line=83 phase=start uptime=603.4640559583333
+2026-10-25T16:30:02.3422640Z NATIVE_RUNTIME_WAIT test=-[ConnectedJourneyRuntimeTests testDeleteRestartCannotReimportSameRevisionAndForgetRestrictions] line=83 phase=returned elapsed=4.214097000000038 publications=0 fulfilled=false loading=false maps=1 writes=0
+2026-10-25T16:30:02.3532670Z Test Case '-[BlindAssistTests.ConnectedJourneyRuntimeTests testDeleteRestartCannotReimportSameRevisionAndForgetRestrictions]' failed (7.093 seconds).
+2026-10-25T16:30:02.3654690Z NATIVE_RUNTIME_FAILURE_END
+2026-10-25T16:30:02.3764780Z NATIVE_RUNTIME_FAILURE_BEGIN index=2 retained=5 dropped=0
+2026-10-25T16:30:02.3867050Z Test Case '-[BlindAssistTests.ConnectedJourneyRuntimeTests testDeleteWhileRestoreIsPendingCannotReinstallQueuedOldMap]' started.
+2026-10-25T16:30:02.3975600Z NATIVE_RUNTIME_IO id=7E72A4ED-02B5-4E7D-8625-F6E461160223 phase=read-start uptime=607.8307642083333
+2026-10-25T16:30:02.4090470Z NATIVE_RUNTIME_IO id=7E72A4ED-02B5-4E7D-8625-F6E461160223 phase=read-held uptime=607.8308155416667
+2026-10-25T16:30:02.4221120Z NATIVE_RUNTIME_IO id=7E72A4ED-02B5-4E7D-8625-F6E461160223 phase=read-return uptime=607.8429822083334
+2026-10-25T16:30:02.4348110Z NATIVE_RUNTIME_WAIT test=-[ConnectedJourneyRuntimeTests testDeleteWhileRestoreIsPendingCannotReinstallQueuedOldMap] line=300 phase=start uptime=607.8429821666667
+2026-10-25T16:30:02.4511620Z NATIVE_RUNTIME_WAIT test=-[ConnectedJourneyRuntimeTests testDeleteWhileRestoreIsPendingCannotReinstallQueuedOldMap] line=300 phase=returned elapsed=3.028188708333346 publications=0 fulfilled=false loading=true maps=0 writes=0
+2026-10-25T16:30:02.4706990Z Test Case '-[BlindAssistTests.ConnectedJourneyRuntimeTests testDeleteWhileRestoreIsPendingCannotReinstallQueuedOldMap]' failed (3.096 seconds).
+2026-10-25T16:30:02.4930290Z NATIVE_RUNTIME_FAILURE_END
+2026-10-25T16:30:02.5136900Z NATIVE_RUNTIME_FAILURE_BEGIN index=3 retained=4 dropped=0
+2026-10-25T16:30:02.5253590Z Test Case '-[BlindAssistTests.ConnectedJourneyRuntimeTests testDormantNativeRuntimePersistsDestinationButCannotInventCalibrationOrPose]' started.
+2026-10-25T16:30:02.5425820Z NATIVE_RUNTIME_WAIT test=-[ConnectedJourneyRuntimeTests testDormantNativeRuntimePersistsDestinationButCannotInventCalibrationOrPose] line=77 phase=start uptime=610.9083254166667
+2026-10-25T16:30:02.5573370Z NATIVE_RUNTIME_IO id=8D2E989E-EA6D-4F31-92C1-0F49D2D04FB0 phase=read-start uptime=610.9086449583334
+2026-10-25T16:30:02.5699150Z NATIVE_RUNTIME_IO id=8D2E989E-EA6D-4F31-92C1-0F49D2D04FB0 phase=read-return uptime=610.908709875
+2026-10-25T16:30:02.5941980Z NATIVE_RUNTIME_WAIT test=-[ConnectedJourneyRuntimeTests testDormantNativeRuntimePersistsDestinationButCannotInventCalibrationOrPose] line=77 phase=returned elapsed=3.004439625000032 publications=0 fulfilled=false loading=true maps=0 writes=0
+2026-10-25T16:30:02.6420500Z Test Case '-[BlindAssistTests.ConnectedJourneyRuntimeTests testDormantNativeRuntimePersistsDestinationButCannotInventCalibrationOrPose]' failed (3.274 seconds).
+2026-10-25T16:30:02.6583960Z NATIVE_RUNTIME_FAILURE_END
+2026-10-25T16:30:02.6763770Z 

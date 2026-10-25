@@ -46,6 +46,16 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
 @MainActor final class ConnectedJourneyRuntimeTests: XCTestCase {
     typealias F = ConnectedFixture
     private enum WaitError: Error { case timedOut }
+    private func makeRuntime(io: RuntimeIO) -> ConnectedJourneyRuntime {
+        let runtime = ConnectedJourneyRuntime(io: io, sha256: F.sha256)
+#if DEBUG
+        let testName = name
+        runtime.diagnosticPhaseRecorder = { phase, operation, uptime in
+            print("NATIVE_RUNTIME_PHASE test=\(testName) operation=\(operation) phase=\(phase) uptime=\(uptime)")
+        }
+#endif
+        return runtime
+    }
     private func until(_ runtime: ConnectedJourneyRuntime, file: StaticString = #filePath, line: UInt = #line,
                        _ condition: @escaping @MainActor () -> Bool) async throws {
         if condition() { return }
@@ -73,7 +83,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         }
     }
     private func installed(_ io: RuntimeIO = RuntimeIO()) async throws -> ConnectedJourneyRuntime {
-        let runtime = ConnectedJourneyRuntime(io: io, sha256: F.sha256)
+        let runtime = makeRuntime(io: io)
         runtime.restore(); try await until(runtime) { !runtime.loading }
         let catalog = try F.catalog()
         // Deliberate burst proves the one-latest catalog task retains ALL accepted
@@ -101,7 +111,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         XCTAssertEqual(runtime.goal?.target.endpoint.nodeID, "p")
         XCTAssertThrowsError(try runtime.beginLocalization(in: F.a))
         XCTAssertThrowsError(try runtime.next(now: 1))
-        let restored = ConnectedJourneyRuntime(io: io, sha256: F.sha256)
+        let restored = makeRuntime(io: io)
         restored.restore(); try await until(restored) { !restored.loading }
         XCTAssertEqual(restored.goal?.revision, runtime.goal?.revision)
         XCTAssertNil(restored.expectedSessionID)
@@ -177,7 +187,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         try runtime.eraseHistory(origin: .trustedInterface)
         XCTAssertNil(runtime.goal); XCTAssertNil(runtime.snapshot.start)
         try await until(runtime) { runtime.pendingWriteCount == 0 }
-        let restored = ConnectedJourneyRuntime(io: io, sha256: F.sha256)
+        let restored = makeRuntime(io: io)
         restored.restore(); try await until(restored) { !restored.loading }
         XCTAssertNil(restored.goal); XCTAssertTrue(restored.snapshot.events.isEmpty)
     }
@@ -290,7 +300,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         var owner = try F.prepared()
         try owner.setDestination(F.endpoint(F.c,"p"),origin:.trustedInterface,recordedAt:F.date,persist:{_ in})
         let seed = try JourneyRuntimeEnvelope(journey:owner.snapshot,installations:catalog.installations.values.map { try $0.encoded() },portals:catalog.portals).encoded()
-        let io = RuntimeIO(seed,holdRead:true), runtime = ConnectedJourneyRuntime(io:io,sha256:F.sha256)
+        let io = RuntimeIO(seed,holdRead:true), runtime = makeRuntime(io: io)
         runtime.restore()
         try runtime.install(XCTUnwrap(catalog.installations[F.c]),portals:catalog.portals)
         runtime.mapOwnershipWithdrawn(); try runtime.mapRemovalSettled(F.c)
@@ -312,7 +322,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
             var previous = try F.prepared()
             try previous.setDestination(F.endpoint(F.c,"p"),origin:.trustedInterface,recordedAt:F.date,persist:{_ in})
             let bytes = try JourneyRuntimeEnvelope(journey:previous.snapshot,installations:command == "no-maps" ? [] : catalog.installations.values.map { try $0.encoded() },portals:command == "no-maps" ? [] : catalog.portals).encoded()
-            let io = RuntimeIO(bytes,holdRead:true), runtime = ConnectedJourneyRuntime(io:io,sha256:F.sha256)
+            let io = RuntimeIO(bytes,holdRead:true), runtime = makeRuntime(io: io)
             runtime.restore()
             if command == "hold" { try runtime.hold(origin:.trustedInterface) }
             else {
@@ -357,7 +367,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         let historyBytes = try snapshot.encoded().count
         XCTAssertGreaterThan(historyBytes,500_000); XCTAssertLessThanOrEqual(historyBytes,512_000)
         let seed = try JourneyRuntimeEnvelope(journey:snapshot,installations:catalog.installations.values.map { try $0.encoded() },portals:catalog.portals).encoded()
-        let io = RuntimeIO(seed), runtime = ConnectedJourneyRuntime(io:io,sha256:F.sha256)
+        let io = RuntimeIO(seed), runtime = makeRuntime(io: io)
         runtime.restore(); try await until(runtime) { !runtime.loading }
         var milliseconds:[Double] = []
         for _ in 0..<12 {
@@ -395,7 +405,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         let bytes = await io.read(), disk = try JourneyRuntimeEnvelope(data:XCTUnwrap(bytes))
         XCTAssertEqual(disk.retiredBindings,[F.a])
         XCTAssertFalse(try disk.installations.map { try SpatialMapInstallation(data:$0,sha256:F.sha256).binding }.contains(F.a))
-        let restored = ConnectedJourneyRuntime(io:io,sha256:F.sha256)
+        let restored = makeRuntime(io: io)
         restored.restore(); try await until(restored) { !restored.loading }
         XCTAssertThrowsError(try restored.install(XCTUnwrap(maps.installations[F.a]),portals:maps.portals))
         try restored.configure(body:F.body,limits:F.limits)
@@ -416,7 +426,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         XCTAssertLessThan(bytes.count,JourneyRuntimeEnvelope.maximumBytes)
         XCTAssertGreaterThan(bytes.count,ConnectedJourneySnapshot.maximumBytes)
         XCTAssertThrowsError(try JourneyRuntimeEnvelope(data:bytes))
-        let runtime = ConnectedJourneyRuntime(io:RuntimeIO(bytes),sha256:F.sha256)
+        let runtime = makeRuntime(io: RuntimeIO(bytes))
         runtime.restore(); try await until(runtime) { !runtime.loading }
         XCTAssertTrue(runtime.storageError); XCTAssertNil(runtime.goal)
         XCTAssertThrowsError(try runtime.next(now:1))
