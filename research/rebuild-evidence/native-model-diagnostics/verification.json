@@ -1,0 +1,43 @@
+{
+  "base_commit": "452b9ebac628efd5d61290174cac52318f6b7890",
+  "scope": "Diagnostic-only: seven real-model text requirements include synthetic fixture identifiers and app-owned answer.status; failed unit output preserves a separate bounded Swift Testing issue excerpt.",
+  "checks": {
+    "focused_and_existing_failure_window_node": {
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0
+    },
+    "bash_syntax": "passed",
+    "assertion_preservation": "Removing seven diagnostic comments restores the byte-identical baseline test file.",
+    "independent_review": "No blocking findings."
+  },
+  "unchanged": [
+    "Assertions and expected answers",
+    "Availability and skip gates",
+    "Safety guards and app behavior",
+    "Existing runtime failure windows",
+    "CI failure exit codes"
+  ],
+  "limits": [
+    "Native compilation and real-model semantic acceptance remain unverified.",
+    "Missing model assets are not converted into passing or skipped model tests.",
+    "This diagnostic-only increment does not establish device or physical-safety acceptance."
+  ],
+  "source_files": [
+    {
+      "path": "ios/BlindAssistTests/CommunityTests.swift",
+      "base_git_blob_sha": "72a3ca895b488112fbfbbbd9a674f99a0a52dfd2",
+      "result_sha256": "fc810af557ad1344bdd6bf53a5c951085f979e5404992c2466538da937cecd94"
+    },
+    {
+      "path": "tools/ci/native-apple.sh",
+      "base_git_blob_sha": "2f5bc23b07a5113c2e9d8227e99e6ca4db3f59c2",
+      "result_sha256": "20207bd7a152836286c99bedaeaf8d6ebbd5c530fb3fd27368221f992a21d48b"
+    },
+    {
+      "path": "tools/test/native-model-diagnostics.test.mjs",
+      "base_git_blob_sha": null,
+      "result_sha256": "676ae28a68c3e943cfe056afe88e92760b8392db17a7f3b53ffb3dbbf7b231ae"
+    }
+  ]
+}

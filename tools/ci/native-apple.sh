@@ -19,6 +19,11 @@ run_logged() {
     # Print real diagnostics before warnings; zero-failure summaries must not consume the cap.
     grep -E -i 'ACCESSIBILITY_AUDIT|error:|fatal|Test (Case|Suite).* failed (at|\()|Executed [0-9]+ tests?, with [1-9][0-9]* failures?|\*\* (BUILD|TEST) FAILED' "$out/$label.log" | head -120 || true
     if [[ "$label" = unit ]]; then
+      # Swift Testing issues otherwise disappear before the final tail. Fixture
+      # comments contain only synthetic IDs and app-owned status, not model text.
+      echo 'SWIFT_TESTING_ISSUES_BEGIN (first 80 matching lines, at most 1200 characters each)'
+      grep -E 'Test .* recorded an issue|MODEL_FIXTURE .* status=' "$out/$label.log" | head -80 | cut -c 1-1200 || true
+      echo 'SWIFT_TESTING_ISSUES_END'
       # Keep bounded windows belonging to FAILING tests, not the last successful tests.
       # Only synthetic test start/end and metadata-only phase records are admitted.
       python3 tools/ci/extract-native-unit-failures.py "$out/$label.log" || true
