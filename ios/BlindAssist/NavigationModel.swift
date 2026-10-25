@@ -218,6 +218,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     let feedback = Feedback()
     let wearables = BeltLink()
     let mapping = NativeMapping()
+    private let nativeObservations = NativeARObservationBridge()
     let journeys = JourneyStore()
     let voice = VoiceInput()
     let survey = SurveyProgress()
@@ -670,6 +671,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         feedback.onControlAnnouncement = { [weak self] text in _ = self?.speakOperation(text, replace: false) }
         places.onMessage = { [weak self] text in _ = self?.speakOperation(text) }
+        mapping.clearObservationHistory = { [weak self] completion in
+            guard let self else { completion(false); return }
+            self.nativeObservations.clearHistory(memory: self.places.memory, completion: completion)
+        }
+        indoor.clearObservationHistory = { [weak self] completion in
+            guard let self else { completion(false); return }
+            self.nativeObservations.clearHistory(memory: self.places.memory, completion: completion)
+        }
         places.onScanFinished = { [weak self] in
             guard let self else { return }
             self.session.delegate = self; self.detector.reset(); self.phoneDetection = Detection(.needsCalibration)
@@ -677,6 +686,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 let configuration = ARWorldTrackingConfiguration()
                 configuration.worldAlignment = .gravity; configuration.frameSemantics = supported ? .sceneDepth : []
                 configuration.planeDetection = [.horizontal]
+                NativeARObservationAdapter.configureObservedGeometry(configuration)
+                if let sessionID = UUID(uuidString: self.observationFrameID) {
+                    self.nativeObservations.begin(sessionID: sessionID, memory: self.places.memory)
+                }
                 self.session.run(configuration)
                 if self.buildPrivateMap { self.mapping.start() }
             }
@@ -746,6 +759,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         detector.reset(); policy = AlertPolicy(); continuity = MonitoringContinuity(); lastProcessed = -.infinity
         lastObservation = nil; lastFrameWallTime = ProcessInfo.processInfo.systemUptime
         phoneDetection = Detection(.needsCalibration); simulation = false; running = true
+        NativeARObservationAdapter.configureObservedGeometry(configuration)
+        nativeObservations.begin(sessionID: worldSessionID, memory: places.memory)
         session.delegate = self; session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         if buildPrivateMap { mapping.start() }
         UIApplication.shared.isIdleTimerDisabled = true
@@ -764,6 +779,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     /// Camera/sensor lifecycle is independent of an opted-in audio conversation.
     private func stopCameraMonitoring() {
+        nativeObservations.stop()
         voiceRoomScan.cancel()
         cameraRecovery.pause()
         cancelAutomaticRoomRecovery()
@@ -860,9 +876,19 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         guard running, !simulation, !places.scanning, frame.timestamp - lastProcessed >= 1.0 / 15 else { return }
         let receivedAt = ProcessInfo.processInfo.systemUptime
+        let receivedDate = Date()
         guard FrameTimestampPolicy.isFresh(capturedAt: frame.timestamp, receivedAt: receivedAt) else { return }
         let timing = AssistantPerformance.signposter.beginInterval("SensorFrame", id: AssistantPerformance.signposter.makeSignpostID())
         defer { AssistantPerformance.signposter.endInterval("SensorFrame", timing) }
+        // Deferred until the existing sensor/hazard callback has completed. This only
+        // admits one utility job; it never samples depth, writes SQL or invokes a model here.
+        defer {
+            if running, !simulation, !places.scanning, assistantSession.foregroundActive, cameraAwareness,
+               let nativeSessionID = UUID(uuidString: observationFrameID) {
+                nativeObservations.offer(frame, sessionID: nativeSessionID,
+                    mapTarget: indoor.registeredObservationMapTarget, receivedAt: receivedAt, receivedDate: receivedDate)
+            }
+        }
         lastProcessed = frame.timestamp; lastFrameWallTime = frame.timestamp
         if case .normal = frame.camera.trackingState { cameraRecovery.observeHealthyFrame(now: receivedAt) }
         // RGB classification runs separately; its task never blocks depth processing.
@@ -1148,6 +1174,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func session(_ session: ARSession, didFailWithError error: Error) {
+        nativeObservations.stop()
         invalidatePerceptionWork()
         peopleTracking.reset()
         fixedBodyMount = false
@@ -1183,6 +1210,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func sessionWasInterrupted(_ session: ARSession) {
+        nativeObservations.stop()
         cameraRecovery.pause()
         invalidatePerceptionWork()
         peopleTracking.reset()
@@ -1215,6 +1243,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         phoneDetection = Detection(.uncertain); detection = phoneDetection
         // The room scanner needs the camera, so path alerts from the camera pause; say so plainly.
         _ = speakMobility(arabic ? "مسح الغرفة يعمل. تنبيهات الكاميرا متوقفة حتى ينتهي المسح. ابقَ مع مساعد مبصر." : "Room scan running. Camera path alerts are off until the scan ends. Stay with a sighted helper.")
+        nativeObservations.stop()
         places.startScan(session: session, name: name, compare: compare ? recognizedPlace : nil, relocalized: recognizedPlace != nil)
     }
     func recognize(_ place: SavedPlace) {
@@ -4495,6 +4524,7 @@ extension NavigationModel {
         if let command = ItemCommand.parse(question) {
             switch command {
             case .remember(let name):
+                itemMemoryRevision = UUID()
                 let room = companion.currentRoom
                 // "Here" is a user report, not a measured object point. Do not save
                 // the phone's position as if it were the named object's location.
@@ -4512,10 +4542,14 @@ extension NavigationModel {
                     else { say(ItemMemory.answer(for: nil, asked: name, now: Date(), sameFrame: false, measuredRelation: nil, arabic: arabic)) }
                 }
             case .forget(let name):
-                let saved = items.find(name)
-                if let saved, !forgetItem(saved) { return true }
-                let removed = saved != nil
-                say(removed ? (arabic ? "نسيت \(name)." : "Forgot your \(name).") : (arabic ? "لا يوجد \(name) محفوظ." : "No saved \(name) to forget."))
+                guard let saved = items.find(name) else {
+                    say(arabic ? "لا يوجد \(name) محفوظ." : "No saved \(name) to forget."); return true
+                }
+                let deletionRequest = requestID
+                forgetItem(saved) { [weak self] success in
+                    guard let self, success, self.requestID == deletionRequest else { return }
+                    self.say(self.arabic ? "نسيت \(name)." : "Forgot your \(name).")
+                }
             }
             return true
         }
@@ -5012,6 +5046,21 @@ extension NavigationModel {
         purgeDebugSessionDiagnostics()
         #endif
         invalidatePerceptionWork()
+
+        nativeObservations.clearHistory(memory: places.memory) { [weak self] success in
+            guard let self else { return }
+            guard success else {
+                self.say(self.arabic ? "لم يكتمل حذف سجل هندسة المشاهدات. أعد المحاولة." : "Observed geometry history could not be deleted. Please retry.")
+                return
+            }
+            self.clearObservedObjectsAfterNativePurge()
+        }
+    }
+    private func clearObservedObjectsAfterNativePurge() {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
+        invalidatePerceptionWork()
         do {
             guard let memory = places.memory else { throw MemoryError.missing }
             var cutoffs = observationDeletionCutoffs; cutoffs.all = Date()
@@ -5039,7 +5088,26 @@ extension NavigationModel {
     }
     var savedItems: [RememberedItem] { items.items }
     func itemViewCount(_ item: RememberedItem) -> Int { itemAppearance.viewCount(item.key) }
-    @discardableResult func forgetItem(_ item: RememberedItem) -> Bool {
+    func forgetItem(_ item: RememberedItem, completion: @escaping (Bool) -> Void = { _ in }) {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
+        itemMemoryRevision = UUID()
+        invalidatePerceptionWork()
+        cancelDescription()
+        if learningItem?.key == item.key { learningItem = nil }
+        let deletionRevision = itemMemoryRevision
+        nativeObservations.clearHistory(memory: places.memory) { [weak self] success in
+            guard let self else { completion(false); return }
+            guard self.itemMemoryRevision == deletionRevision else { completion(false); return }
+            guard success else {
+                self.say(self.arabic ? "لم يكتمل حذف سجل هندسة المشاهدات. أعد المحاولة." : "Observed geometry history could not be deleted. Please retry.")
+                completion(false); return
+            }
+            completion(self.forgetItemAfterNativePurge(item))
+        }
+    }
+    private func forgetItemAfterNativePurge(_ item: RememberedItem) -> Bool {
         #if DEBUG
         purgeDebugSessionDiagnostics()
         #endif
@@ -5081,6 +5149,24 @@ extension NavigationModel {
         #if DEBUG
         purgeDebugSessionDiagnostics()
         #endif
+        invalidatePerceptionWork()
+        invalidateAutomaticRoomClues()
+        if recognizedPlace?.id == place.id { recognizedPlace = nil; invalidateRecognizedRoom() }
+        if awaitingPlace?.id == place.id { awaitingPlace = nil; placeRecovery.reset(); placeRecoveryQuestion = "" }
+
+        nativeObservations.clearHistory(memory: places.memory) { [weak self] success in
+            guard let self else { return }
+            guard success else {
+                self.say(self.arabic ? "لم يكتمل حذف سجل هندسة المشاهدات. أعد المحاولة." : "Observed geometry history could not be deleted. Please retry.")
+                return
+            }
+            self.deletePlaceAfterNativePurge(place)
+        }
+    }
+    private func deletePlaceAfterNativePurge(_ place: SavedPlace) {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
         invalidateAutomaticRoomClues()
         let roomID = "place:\(place.id.uuidString)"
         if recognizedPlace?.id == place.id { recognizedPlace = nil; invalidateRecognizedRoom() }
@@ -5088,13 +5174,29 @@ extension NavigationModel {
         invalidatePerceptionWork()
         do { try removeObservedHistory(room: roomID) }
         catch { say(arabic ? "تعذر حذف سجل الغرفة. أعد المحاولة." : "Could not delete this room's sighting history. Please retry."); return }
-        if companion.memory.rooms[roomID] != nil { forgetRoom(roomID) } else { _ = roomRecall.forget(room: roomID) }
+        if companion.memory.rooms[roomID] != nil { forgetRoomAfterNativePurge(roomID) } else { _ = roomRecall.forget(room: roomID) }
         places.delete(place)
         objectWillChange.send()
     }
 
     /// Removes everything about the room: pictures, visits and its name.
     func forgetRoom(_ id: String) {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
+        invalidatePerceptionWork()
+        invalidateAutomaticRoomClues()
+
+        nativeObservations.clearHistory(memory: places.memory) { [weak self] success in
+            guard let self else { return }
+            guard success else {
+                self.say(self.arabic ? "لم يكتمل حذف سجل هندسة المشاهدات. أعد المحاولة." : "Observed geometry history could not be deleted. Please retry.")
+                return
+            }
+            self.forgetRoomAfterNativePurge(id)
+        }
+    }
+    private func forgetRoomAfterNativePurge(_ id: String) {
         #if DEBUG
         purgeDebugSessionDiagnostics()
         #endif

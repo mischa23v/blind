@@ -30,6 +30,7 @@ public struct NarrationRecord: Sendable, Identifiable {
 public final class MemoryStore: Sendable {
     private let database: DatabaseQueue
     private let profile: String
+    private let path: String
     static func sql(_ name: String) throws -> String {
         guard let url = Bundle.module.url(forResource: name, withExtension: "sql") else { throw MemoryError.missing }
         return try String(contentsOf: url, encoding: .utf8)
@@ -37,6 +38,7 @@ public final class MemoryStore: Sendable {
     public init(path: String, profile: String = "local") throws {
         guard !profile.isEmpty, profile.count <= 100 else { throw MemoryError.invalid }
         self.profile = profile
+        self.path = path
         var configuration = Configuration()
         configuration.foreignKeysEnabled = true
         database = try DatabaseQueue(path: path, configuration: configuration)
@@ -46,6 +48,11 @@ public final class MemoryStore: Sendable {
         migrator.registerMigration("assistant-memory-v3-narration") { db in try db.execute(sql: Self.sql("narration")) }
         migrator.registerMigration("assistant-memory-v4-private-values") { db in try db.execute(sql: Self.sql("private_values")) }
         try migrator.migrate(database)
+    }
+    /// Call off the main queue. Observation history has its own SQLite file and writer;
+    /// slow observation persistence cannot queue ahead of ordinary memory operations.
+    public func makeNativeObservationStore() throws -> NativeObservationStore {
+        try NativeObservationStore(path: path == ":memory:" ? ":memory:" : path + ".native-observations.sqlite", profile: profile)
     }
     private static func revision(_ row: Row) -> RoomRevision {
         RoomRevision(id: row["id"], payload: row["payload"], source: row["source"],

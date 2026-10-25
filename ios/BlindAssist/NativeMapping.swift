@@ -50,6 +50,18 @@ final class NativeMapping: ObservableObject {
         purgeDebugSessionDiagnostics()
         #endif
         guard !active else { return }
+        let expectedRevision = mapLifecycleRevision
+        if let clearObservationHistory {
+            clearObservationHistory { [weak self] success in
+                guard let self else { return }
+                // Check ownership before success OR failure can affect a newer map/UI.
+                guard !self.active, self.mapLifecycleRevision == expectedRevision else { return }
+                guard success else { self.status = "Observed geometry history could not be deleted. Please retry."; return }
+                self.deleteMapFiles()
+            }
+        } else { deleteMapFiles() }
+    }
+    private func deleteMapFiles() {
         do {
             for name in ["personal.db", "personal.db-wal", "personal.db-shm"] {
                 let url = storage.appendingPathComponent(name)
@@ -58,6 +70,8 @@ final class NativeMapping: ObservableObject {
             refreshExport(); status = "Private 3D map deleted."
         } catch { status = "Could not delete the private map." }
     }
+    var clearObservationHistory: ((@escaping (Bool) -> Void) -> Void)?
+    private var mapLifecycleRevision = UUID()
     private var lastFrame = -Double.infinity
     #if BLIND_RTABMAP
     private var engine: RTABMap?
@@ -66,6 +80,7 @@ final class NativeMapping: ObservableObject {
     private var database: URL?
     #endif
     func start() {
+        mapLifecycleRevision = UUID()
         #if BLIND_RTABMAP
         guard !active else { return }
         do {
@@ -105,6 +120,7 @@ final class NativeMapping: ObservableObject {
         #endif
     }
     func stop() {
+        mapLifecycleRevision = UUID()
         #if BLIND_RTABMAP
         guard let engine else { return }
         EAGLContext.setCurrent(context)

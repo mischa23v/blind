@@ -1,0 +1,125 @@
+{
+  "status": "Applied reviewed source increment; live validation pending; no trackers/docs changed",
+  "archiveSHA256": "51f6d32382995b12e6362e5a39c07050b63cccb5c6401d4fc00a293f5445f310",
+  "files": [
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "beforeSHA256": "0e80e0f3a55c6d6121237bd0bbbcf96fb5de3977d658ede7674fbc53ac4b9ffc",
+      "afterSHA256": "5e2d404c19e7da5490391f5471dfcd47d7c3528e1dacfaa6e95dde58367274db",
+      "bytes": 365389,
+      "changed": true
+    },
+    {
+      "path": "ios/BlindAssist/NativeMapping.swift",
+      "beforeSHA256": "5f41d4cedda028a797e45f584594ac3ca0e2148a8c2d7534cf145c4cd69584df",
+      "afterSHA256": "b25877c55e2bab7a79dcdabedb2f2dc406bb2a163f33a4a2634651630f3f6f3f",
+      "bytes": 6282,
+      "changed": true
+    },
+    {
+      "path": "ios/BlindAssist/IndoorNavigator.swift",
+      "beforeSHA256": "49d22518874ead33dc98d25154775f2d5c89152f71b0fb9c88de256a656bd818",
+      "afterSHA256": "f535ad93d0126414346235b2c3894cd03e9ab65311c1e770eb8c24174c0a5b28",
+      "bytes": 24250,
+      "changed": true
+    },
+    {
+      "path": "BlindMemory/Sources/BlindMemory/MemoryStore.swift",
+      "beforeSHA256": "bca6a06d13af65d41a7138d0f9217c95c17188f1eac725af358261b61fd358a4",
+      "afterSHA256": "ea538f8924cb6b5f870e88d3f9c5f0036b872855c5d94fa8858849bfb09dff6b",
+      "bytes": 14471,
+      "changed": true
+    },
+    {
+      "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
+      "beforeSHA256": "c41b8a49ae2efb0974d2d41765c1d5c361b18ef36bf3366016952e809620db29",
+      "afterSHA256": "355d718b23dd4c0fcc89c2c9236403e721e18a0fd9c0b2373882d75ab58e1754",
+      "bytes": 25470,
+      "changed": true
+    },
+    {
+      "path": "ios/BlindAssist.xcodeproj/xcshareddata/xcschemes/BlindAssist.xcscheme",
+      "beforeSHA256": "6b65f27032bc4f2f112e2e71da5483b949e443501b9a0cf2f92ffbc0ca0f65cb",
+      "afterSHA256": "6b65f27032bc4f2f112e2e71da5483b949e443501b9a0cf2f92ffbc0ca0f65cb",
+      "bytes": 2729,
+      "changed": false
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeObservation.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "3ddeb793d9c3fcbadd1de6d1103f182a58c9228dee2c6188ae9a31f42748be45",
+      "bytes": 20157,
+      "changed": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeObservationPipeline.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "8b67496c2e58e4eb3a2cab66ecef714fb3e96fb8d86c9878a18a5a17c7fec913",
+      "bytes": 20192,
+      "changed": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeObservationDurabilityBudget.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "45e02eb347a0d90e0283226b51cfa44dc0430cdbd82abc471c66e35a6b5e549c",
+      "bytes": 8633,
+      "changed": true
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/NativeObservationTests.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "5da299b5bd7a83a529579439d509f45f986ba24069fc60d9063e9c0ee086c292",
+      "bytes": 11047,
+      "changed": true
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/NativeObservationPipelineTests.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "d2edf3569e43993e67142c89b6c80bf3dab83a288b581fdb0d982ff0ced5b4e1",
+      "bytes": 17934,
+      "changed": true
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/NativeObservationDurabilityBudgetTests.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "bcb8c7350c3a0e40b47952535e8dfee866e150720bb831f6add70915cbe63745",
+      "bytes": 15043,
+      "changed": true
+    },
+    {
+      "path": "ios/BlindAssist/NativeARObservationAdapter.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "e662fc637e8e11be0abe989e77f04ab1e8da123bc6ebdf47c5f2f1bba95453a8",
+      "bytes": 13277,
+      "changed": true
+    },
+    {
+      "path": "ios/BlindAssist/NativeARObservationBridge.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "460c6284cedb0728a828c0030453abba51f7ef82da5f6b9cc12a8432b7785260",
+      "bytes": 4872,
+      "changed": true
+    },
+    {
+      "path": "BlindMemory/Sources/BlindMemory/NativeObservationStore.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "78c352db1a167c07d29fad9a26657741464b2f32833f626d9ace1e41c29b804d",
+      "bytes": 12241,
+      "changed": true
+    },
+    {
+      "path": "BlindMemory/Sources/BlindMemory/SQL/native_observations.sql",
+      "beforeSHA256": null,
+      "afterSHA256": "c54c7acc37ac9affa155969db1300e61e58823f83fa2a566fb826da6cb5efbc0",
+      "bytes": 1649,
+      "changed": true
+    },
+    {
+      "path": "BlindMemory/Tests/BlindMemoryTests/NativeObservationStorageTests.swift",
+      "beforeSHA256": null,
+      "afterSHA256": "507bbcf60a99b1575d3a0426dde02e3a71132456005f0ead587b7632a741fd94",
+      "bytes": 25100,
+      "changed": true
+    }
+  ]
+}

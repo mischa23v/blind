@@ -1,0 +1,113 @@
+--- a/tools/test/contextual-capabilities.test.mjs
++++ b/tools/test/contextual-capabilities.test.mjs
+@@ -5,6 +5,48 @@
+ const vision = readFileSync(new URL('../../ios/BlindAssist/VisionService.swift', import.meta.url), 'utf8');
+ const section = (start, end) => model.slice(model.indexOf(start), model.indexOf(end, model.indexOf(start)));
+ const contextual = section('private var contextualGoalText', '/// Explicit single-photo money request');
++
++// Source contracts, not native execution or acoustic identity verification.
++function declaration(source, signature) {
++  const start = source.indexOf(signature);
++  assert.ok(start >= 0, `Missing declaration: ${signature}`);
++  const first = source.indexOf('{', start);
++  assert.ok(first >= 0, `Missing body: ${signature}`);
++  let depth = 0;
++  for (let index = first; index < source.length; index++) {
++    if (source[index] === '{') depth++;
++    if (source[index] === '}' && --depth === 0) return source.slice(start, index + 1);
++  }
++  assert.fail(`Unclosed declaration: ${signature}`);
++}
++const scanCancellationEntries = [
++  ['private func stopCameraMonitoring()', ['nativeObservations.stop()', 'voiceRoomScan.cancel()']],
++  ['func suspendExperience()', ['voiceRoomScan.cancel()']],
++  ['func endConversation()', ['voiceRoomScan.cancel()']]
++];
++function assertScanCancellationPrefixes(source) {
++  for (const [signature, calls] of scanCancellationEntries) {
++    const scoped = declaration(source, signature);
++    const body = scoped.slice(scoped.indexOf('{') + 1);
++    const escaped = calls.map(call => call.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
++    // Only whitespace may precede/between these synchronous calls: no Task,
++    // dispatch, await, early return or unrelated state mutation may intervene.
++    assert.match(body, new RegExp(`^\\s*${escaped.join('\\s*')}\\s*(?:\\n|$)`), signature);
++  }
++}
++function assertTrustedScanEntry(source) {
++  const receive = declaration(source, 'func receiveCompanionUtterance(');
++  const origin = 'let origin: CompanionCommandOrigin = fromVoice ? .unverifiedMicrophone : .trustedInterface';
++  const gate = 'guard CommandAuthority.permits(.changeGoal, from: origin) else';
++  const route = 'if routeVoiceRoomScan(text) { return }';
++  assert.ok(receive.includes(origin));
++  assert.ok(receive.indexOf(origin) < receive.indexOf(gate));
++  const denial = declaration(receive, gate);
++  assert.match(denial, /receiveUnverifiedConversation\(text, origin: origin\)\s*return\s*\}/);
++  assert.doesNotMatch(denial, /routeVoiceRoomScan/);
++  assert.ok(receive.indexOf(gate) + denial.length < receive.indexOf(route));
++  assert.equal((source.match(/routeVoiceRoomScan\(text\)/g) ?? []).length, 1);
++}
+ 
+ test('foreground frame loop schedules contextual capabilities without a mode command', () => {
+   assert.match(model, /updateBackgroundPerception\(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal\)/);
+@@ -38,17 +80,15 @@
+   assert.doesNotMatch(contextual, /feedback.beacon|CodeReading.speech|startReadingTool/);
+   assert.match(contextual, /self.deliverCandidate\(candidate, speechID: id, nonspatialCapture: activeLease\)/);
+ });
+-test('room scan requests originate only in direct utterance path and confirm before start', () => {
+-  assert.match(model, /if routeVoiceRoomScan\(text\) \{ return \}/);
++test('room scan requests require trusted UI rather than microphone authority and confirm before start', () => {
++  assertTrustedScanEntry(model);
+   assert.match(contextual, /voiceRoomScan.consume\(text, source: .directUser/);
+   assert.match(contextual, /case .requestConfirmation/);
+   assert.match(contextual, /if !dispatchText\(prompt, kind: .operation, requested: true, replace: true, speechID: id\)/);
+   assert.match(contextual, /guard let promptContext, promptContext.delivered/);
+   assert.match(contextual, /case .cancel:[\s\S]*?places.cancelScanAndResume/);
+   assert.match(contextual, /case .stop:[\s\S]*?places.finishScan/);
+-  assert.match(model, /private func stopCameraMonitoring\(\) \{\s*voiceRoomScan.cancel\(\)/);
+-  assert.match(model, /func suspendExperience\(\) \{\s*voiceRoomScan.cancel\(\)/);
+-  assert.match(model, /func endConversation\(\) \{\s*voiceRoomScan.cancel\(\)/);
++  assertScanCancellationPrefixes(model);
+ });
+ test('room scanning does not end continuous listening or falsely retain camera path alerts', () => {
+   const scan = section('func scanPlace(name:', 'func recognize(_ place:');
+@@ -76,3 +116,40 @@
+   assert.match(completion, /self.voiceRoomScan.promptDidFinish\(now:/);
+   assert.match(completion, /else \{ self.cancelVoiceRoomScanConfirmation\(\) \}/);
+ });
++
++
++test('room-scan lifecycle prefix contracts reject missing, reordered or asynchronously deferred cancellation', () => {
++  for (const [signature, calls] of scanCancellationEntries) {
++    const original = declaration(model, signature);
++    const replaceBody = changed => model.replace(original, changed);
++    for (const call of calls) {
++      assert.throws(() => assertScanCancellationPrefixes(replaceBody(original.replace(call, ''))), `${signature}: missing ${call}`);
++    }
++    for (const call of calls) {
++      for (const gap of ['Task { await pause() }', 'DispatchQueue.main.async {}', 'await pause()', 'return', 'cameraRecovery.pause()']) {
++        const changed = original.replace(call, `${gap}\n        ${call}`);
++        assert.throws(() => assertScanCancellationPrefixes(replaceBody(changed)), `${signature}: gap ${gap} before ${call}`);
++      }
++    }
++  }
++  const reversed = model.replace('nativeObservations.stop()\n        voiceRoomScan.cancel()',
++    'voiceRoomScan.cancel()\n        nativeObservations.stop()');
++  assert.notEqual(reversed, model);
++  assert.throws(() => assertScanCancellationPrefixes(reversed));
++});
++
++test('room-scan entry contract rejects microphone promotion, missing denial return and routes before the gate', () => {
++  const gate = 'guard CommandAuthority.permits(.changeGoal, from: origin) else';
++  const route = 'if routeVoiceRoomScan(text) { return }';
++  const mutations = [
++    model.replace('fromVoice ? .unverifiedMicrophone : .trustedInterface', 'fromVoice ? .trustedInterface : .trustedInterface'),
++    model.replace(gate, 'guard true else'),
++    model.replace('receiveUnverifiedConversation(text, origin: origin)\n            return', 'receiveUnverifiedConversation(text, origin: origin)'),
++    model.replace(route, '').replace(gate, `${route}\n        ${gate}`),
++    model.replace(route, `${route}\n        ${route}`)
++  ];
++  for (const mutated of mutations) {
++    assert.notEqual(mutated, model);
++    assert.throws(() => assertTrustedScanEntry(mutated));
++  }
++});

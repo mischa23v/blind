@@ -1,0 +1,42 @@
+{
+  "status": "PASS focused validation on exact applied live bytes; parent full aggregate and later spatial merge remain separate",
+  "applyManifestSHA256": "581c87a3d012c8b79808e906c9bf0295ae8e01a16bb5520b8f1c545c56ce6353",
+  "changedFiles": 16,
+  "checkedTargets": 17,
+  "focusedCoreTests": 54,
+  "actualGRDBTests": 35,
+  "projectPhotoSpatialContracts": 20,
+  "nativeSyntax": "PASS Release and DEBUG/BLIND_RTABMAP/BLIND_FAMILIAR_PEOPLE; Apple SDK NOT RUN",
+  "files": [
+    {
+      "path": "apply.log",
+      "bytes": 5309,
+      "sha256": "3a0af033a03ccb0f56c5c8aff1c754b894ef1abb4c3f7cbb2ab067c6be57d590"
+    },
+    {
+      "path": "live-core-focused.log",
+      "bytes": 17677,
+      "sha256": "3bfccc81704b26da1e9d6da3f4f245b029e12de814ee1961c44c06a3b0591c6a"
+    },
+    {
+      "path": "live-memory.log",
+      "bytes": 10478,
+      "sha256": "e804bdcdaead5ea2e19c8f8b486441913a31934c90c9df9ba71745bbc5d2eb75"
+    },
+    {
+      "path": "live-native-parse.log",
+      "bytes": 52,
+      "sha256": "ce18997ab929d5693ba1f60c40f691c87105e9b56f786c1389c4a8ad4090a820"
+    },
+    {
+      "path": "live-project-contracts-subset.log",
+      "bytes": 542,
+      "sha256": "9751b27360fa76144e3d64c58ce76a824a00d63c254b40ab06f35402b2d70635"
+    },
+    {
+      "path": "live-project-contracts.log",
+      "bytes": 1988,
+      "sha256": "8807884378c79c689ad8a67aedd610cd0fdc5682427ed2acbae494b7bab5ab00"
+    }
+  ]
+}

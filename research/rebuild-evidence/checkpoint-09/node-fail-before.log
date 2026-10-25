@@ -1,0 +1,621 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> blind-assist-workspace@0.1.0 test
+> node --test --test-concurrency=1 server/test/*.test.mjs tools/test/*.test.mjs
+
+✔ rejects missing and incorrect access tokens before calling provider (41.843885ms)
+✔ real HTTP endpoint forwards a deliberate image question and marks no clearance (37.50464ms)
+✔ unconfigured service does not fake a cloud response (4.731584ms)
+✔ validates language, image bytes, size, and arbitrary image URLs (0.706405ms)
+✔ sanitizes upstream failures without exposing credentials (4.811152ms)
+✔ rate limits authenticated questions (15.736754ms)
+✔ aborts a slow provider (24.086761ms)
+✔ health and unknown routes work (3.904867ms)
+✔ connection check requires authentication and never calls the image provider (4.165311ms)
+✔ child find requests and location reports are parsed by code (6.018329ms)
+✔ chat replies cannot assert current location, presence, absence or perception (8.191542ms)
+✔ unsupported sentences are dropped and the rest kept (0.21468ms)
+✔ image descriptions keep only hedged or detector-agreed objects (4.47621ms)
+✔ authored ordinary conversation additions preserve the entire shared Swift/Node spatial fixture (19.128835ms)
+✔ all authored spoken-equivalent dash variants preserve physical blocking (0.565512ms)
+✔ cloud context uses an allowlist and rejects stale or weak evidence (2.736062ms)
+✔ movement preserves requested detail and explicit word allowance (0.243173ms)
+✔ wearable ranges have a shorter age limit and cannot identify camera objects (0.355982ms)
+✔ urgent and unavailable context is rejected before provider invocation (0.794979ms)
+✔ scene prompt keeps OCR injection as quoted data and contains mobility rules (0.326918ms)
+✔ actual provider adapter sends image, bounded context and no stored response (3.740871ms)
+✔ ordinary category preferences survive the prompt and cannot disable hazard producers (8.523672ms)
+✔ anonymous camera tracks retain change limits and reject stale, duplicate or invented identity data (1.588766ms)
+✔ manual alignment remains distinct from recognition and requires fresh complete map pose (1.502245ms)
+✔ first launch accepts dialogue without fabricating a saved place or floor (0.589216ms)
+✔ situation retains place hierarchy, source states, people, goals and interests through the actual request path (5.61078ms)
+✔ unknown or stale geometry and dangling/cyclic references cannot reach the model (2.648519ms)
+✔ arrival and dialogue are bounded and consistent with the current room and map (0.986135ms)
+✔ last-seen people and unknown body orientation survive as unknown, not current facts (0.565101ms)
+✔ detailed dialogue retains qualifications and bounds Unicode without truncation (0.75239ms)
+✔ speech attempts retain outcomes and source references without claiming facts were heard (0.981627ms)
+✔ word budget measures Arabic/English words and rejects invalid caller allowances (11.582382ms)
+✔ unresolved location cannot retain a previous room or frame as current (0.355492ms)
+✔ model-authored map edits and approval claims are not situation inputs (0.459154ms)
+✔ real HTTP delivery rejects an oversized answer without chopping its meaning (58.046386ms)
+✔ downloaded authored apartment keeps source doors without adding an ensuite or current pose (8.839549ms)
+✔ sourced map does not excuse retained stale location or an invented room reference (1.065614ms)
+✔ shared fixture: physical geometry and actions are caught even when hedged or quoted (17.803108ms)
+✔ model instructions carry the spatial safety rule (0.380108ms)
+✔ relay retries once, then speaks only a compliant answer (57.421663ms)
+✔ relay keeps only a fixed hazard line when the retry still gives hazard geometry (10.253189ms)
+✔ relay refuses when the retry still claims clearance without naming a hazard (5.359233ms)
+✔ an over-long answer is retried once for a shorter complete answer (4.948628ms)
+✔ only the offending sentence is dropped, with no second model call (5.54544ms)
+✔ leading whole sentences that fit the budget are kept without a retry (4.924674ms)
+✔ hedged ordinary-object geometry is rejected instead of corrected by later frames (4.552912ms)
+✔ clearance paraphrases cannot pass the relay unchanged (14.593917ms)
+✔ sentence filtering preserves original hazard context in both languages (13.003247ms)
+✔ filter drops ordinary-object estimates while retaining nonspatial hazard notice (0.331486ms)
+✔ physical actions, pickup identity and safe reach claims never pass a repeated model answer (22.522702ms)
+✔ a nonspatial description survives but a later pickup instruction does not (2.946453ms)
+✔ neither role prompt allows everyday-object estimates or a model certainty bypass (0.383855ms)
+✔ every app speech producer uses the central admission route, including UI actions (26.033004ms)
+✔ the raw sink requires a capability constructible only beside the attention gate (3.22437ms)
+✔ admission is synchronous and already-admitted information is not charged twice (3.55751ms)
+✔ the existing attention moment uses actual sink priority and explicit stationary task focus (1.731603ms)
+✔ scene answers still validate evidence and model spatial claims before admission (3.141185ms)
+✔ hazards invalidate pending questions and familiar work before admitted alert delivery (1.935752ms)
+✔ identity-only snapshot hints remain requested answers, separate from operational status (2.052288ms)
+✔ operation budget exemption is not used for scene, identity or repeat descriptions (2.362556ms)
+✔ replacing information preserves safety speech and failed replacement has admitted cancellation feedback (2.253784ms)
+✔ AuraFace is explicit and bundles only the selected recognizer with YuNet (3.802665ms)
+✔ native AuraFace preprocessing leaves SFace and aligned RGB untouched (5.613906ms)
+✔ app profiles explicitly name separate dataset-calibrated decision policies (1.269852ms)
+✔ automatic room recovery is wired into foreground camera ticks and appearance probes (1.338851ms)
+✔ automatic selection cannot bypass saved frame verification or repeat manual prompts (0.551196ms)
+✔ map launches do not replenish automatic retry budget (0.40327ms)
+✔ automatic retries defer to explicit reading, listening and requested speech (0.37104ms)
+✔ foreground launch starts only an idle conversation and respects saved-off sensing (16.057931ms)
+✔ permission denial is reported and late camera grants cannot override foreground or off state (2.860753ms)
+✔ authorized startup wrapper captures once before bounded room recovery, without reset loops (2.501295ms)
+✔ ordinary conversation is not forced through camera capture or permission setup (3.297695ms)
+✔ sensor callbacks reach hazard cancellation and dispatch without waiting for model work (1.942154ms)
+✔ unvalidated object direction is disabled and physical requests cannot fall through to chat (2.224399ms)
+✔ clock inquiry crosses conversation authority before any mutating task entry (1.979835ms)
+✔ read-only clock inquiry does not mutate goal search navigation reports camera or shared request identity (0.850202ms)
+✔ queue dispatch playback and repeat preserve original read lease (0.604676ms)
+✔ clock expiry runs with camera off and never remints a read during validation (0.559641ms)
+✔ production clock callbacks keep original lease, operation ownership and proposal publication order (42385.303501ms)
+✔ all native clock reads go through acquisition registration before tool return (2.120017ms)
+✔ legacy everyday clock route precedes all subtask mutation (0.514996ms)
+✔ model admission is before metadata but final publication remains after the proposal gate (0.675715ms)
+✔ camera-independent expiry covers previews settled text active and queued clock speech (0.548168ms)
+✔ repeat retains original receipt and no delivery boundary acquires a fresh clock (0.687287ms)
+✔ policy binds exact original source and record and never silently chooses a newer equal string (0.255835ms)
+✔ model-selected clock operation uses only first acquired code-owned reply, not a language blacklist (0.58195ms)
+✔ failed first clock acquisition still latches the clock operation before any model callback (0.206373ms)
+✔ colour command is requested-only and shared cancellation/focus gates include it (8.099432ms)
+✔ requested colour checks fresh RGB capture and typed ambiguity without a depth or manual-centre gate (2.973432ms)
+✔ depth-only loss preserves requested RGB colour ownership while full camera invalidation retires it (3.303404ms)
+✔ requested color playback clears only its exact ownership on completion and cancellation (2.072359ms)
+✔ contextual captured-view pose retains optical pitch rather than navigation heading (1.838024ms)
+✔ colour reader uses one anonymous isolated instance, not centre or whole-frame averages (1.339738ms)
+✔ model-written and stored appearance descriptions cannot bypass the colour guard (2.547872ms)
+✔ requested and contextual colour share a native lease that timeout and cancellation cannot release (2.389038ms)
+✔ policy grants microphone only conversation and ordinary interruption, not guessed speaker authority (1.626479ms)
+✔ every microphone final fails closed before scan, goal, calibration, offer and action dispatch (0.767636ms)
+✔ trusted goal mutation keeps canonical labels distinct from the original user request (0.936679ms)
+✔ acoustic onset cannot cancel routes, searches, monitoring, confirmations or shared request identity (0.465644ms)
+✔ unverified chat cannot call command adapters, inherit a trusted goal, write user records or apply model task updates (0.397559ms)
+✔ unverified output cannot be laundered into persistent reports or action-progress receipts (0.396727ms)
+✔ unverified reply callbacks expire on session, request, cancellation and the independent turn lease (0.362523ms)
+✔ clear conversation removes transient microphone history before another same-session turn (0.316477ms)
+✔ quiet speech is limited to the reply and independent valid hazard dispatch ignores command trust (0.844047ms)
+✔ trusted UI actions retain their existing independent controls and physical evidence gates (1.00121ms)
+✔ explicit location requests and reports are code-owned before model calls (8.44274ms)
+✔ model conversation keeps exact provenance, claim guard and streamed delivery admission (1.872608ms)
+✔ image descriptions retain detector agreement without weakening spatial rules (2.371734ms)
+✔ reply-only home keeps assistant controls and reading shortcuts on a separate screen (1.144024ms)
+✔ manual turns preserve continuous capture without defeating mute end or bounded recovery (3.267298ms)
+✔ sensor search does not turn missed detections or stale positions into current facts (2.43976ms)
+✔ background and practice respect separate camera and conversation lifecycles (2.395499ms)
+✔ reading is model-free and page work stays owned until cancellable completion (1.589401ms)
+✔ new goals cancel reading before money colour or model routing and stale callbacks cannot unlock a new job (1.640036ms)
+✔ captured photo work is private fenced and cannot return after dismissal (5.413163ms)
+✔ foreground frame loop schedules contextual capabilities without a mode command (1.440635ms)
+✔ contextual jobs retain capture leases, existing verifier and final target gates (0.329142ms)
+✔ passive rectangles never speak a value without the reference verifier (0.270022ms)
+✔ relevant OCR/barcode/color use existing native evidence, not unsolicited mode speech (0.392429ms)
+✖ room scan requests originate only in direct utterance path and confirm before start (2.619404ms)
+✔ room scanning does not end continuous listening or falsely retain camera path alerts (0.247049ms)
+✔ contextual job cleanup and native timeout retain exact lease ownership (0.359097ms)
+✔ contextual outputs honor existing signs and objects settings (0.228184ms)
+✔ scan approval waits for matching completed warning and starts its response clock then (0.389814ms)
+✔ ordinary conversation is routed before camera availability (8.671534ms)
+✔ unverified speech onset interrupts only ordinary conversation without cancelling capture (1.942007ms)
+✔ streamed phrases are bounded, revalidated, separately admitted and not replayed at final (3.520999ms)
+✔ stream callbacks admit owned text before queue or display, never raw clock-model prose (3.080742ms)
+✔ spoken history is recorded only for matching completed requested speech (1.545581ms)
+✔ mute and end fence late work and do not disable hazard monitoring (2.453446ms)
+✔ background voice is opt-in and cannot imply background camera (2.760336ms)
+✔ actual local tool registration is bounded and cannot perform actions (2.960858ms)
+✔ correction and forgetting scrub both original reports and derived task context (2.320018ms)
+✔ queued source evidence is revalidated at dispatch and foreground transitions cancel work (2.558942ms)
+✔ visual history waits for completed narration and explicit tasks commit before inference (2.363439ms)
+✔ private audio route removal mutes normal output without an announcement (1.671484ms)
+✔ physical inspection cannot fall through to free-form streamed answers (2.702991ms)
+✔ audience is an explicit local preference and changing it invalidates a turn (1.84713ms)
+✔ context overflow retry cannot repeat tools or already emitted speech (1.987441ms)
+✔ ordinary configurations have no device-test flag or manifest pin (3.351855ms)
+✔ only opted-in app Debug gets both compile gates and the verified manifest pin (2.085904ms)
+✔ device-test choice preserves combined AuraFace multimodal and Live Activity variants (2.185589ms)
+✔ device-test flags require explicit reference pack and native build, with no unchecked CLI hash (0.752218ms)
+✔ device-test preflight pins verified bytes and rejects empty or changed reference packs (24.380928ms)
+✔ Info metadata binds to the build setting rather than committing a reference hash (1.040272ms)
+✔ CLI generates only an isolated temporary project and derives its pin from verified manifest bytes (164.278892ms)
+✔ device-test selection requires explicit Debug/native flags and a pinned manifest hash (5.256742ms)
+✔ device authorization is not fabricated release approval or human review (2.804237ms)
+✔ device pack allowance is isolated from unchanged production coverage and file gates (1.607876ms)
+✔ device output still requires whole-frame rectangle and native evidence gates (1.608167ms)
+✔ default remains without native currency, framework, pack or activation (10.495792ms)
+✔ currency-only links the engine and shared static OpenCV without face models (1.070418ms)
+✔ face-only retains its old bridge and model resources without currency code (1.061211ms)
+✔ combined SFace and AuraFace variants link OpenCV and each system framework only once (2.571315ms)
+✔ private folder resource preserves its fixed name and is optional (0.838627ms)
+✔ Mac architecture fix remains Debug YES and Release NO in every feature combination (3.711061ms)
+✔ argument parsing supports currency without familiar models and combined backend selection (0.474561ms)
+✔ missing, repeated, unknown and incompatible generator arguments fail closed (0.393621ms)
+✔ currency-only preflight requires framework version/layout but no face assets (12.216718ms)
+✔ empty private inventory is parseable for packaging but does not activate recognition (5.348313ms)
+✔ packaging verifies exact nested file bytes and manifest digest, not image accuracy (8.288672ms)
+✔ pack rejects missing files, wrong folder name, wrong schema and bounded manifest violations (6.444588ms)
+✔ pack rejects traversal, URL escapes, control characters and ambiguous relative paths (12.581516ms)
+✔ pack rejects duplicate image paths/hashes and oversized source files before reading (6.428859ms)
+✔ folder preflight refuses unlisted private members and symlinks (6.121418ms)
+✔ combined bridge imports declarations and notices identify source rights, not reference rights (1.125701ms)
+✔ native debug integration: every recorder symbol is positively DEBUG guarded (7.579747ms)
+✔ native debug integration: trace captures session once and forwards lazy payload (0.337396ms)
+✔ native debug integration: controller preserves input origin and command authority decisions (0.35534ms)
+✔ native debug integration: ASR final text is logged before turn rotation with no new audio access (0.242641ms)
+✔ native debug integration: request IDs are passed from real owners; missing IDs remain optional (0.420381ms)
+✔ native debug integration: actual prompts and context keys are logged, unavailable record IDs stay unbound (0.336094ms)
+✔ native debug integration: tool return log reuses actual returned JSON without running tools twice (0.23717ms)
+✔ native debug integration: raw output, final safety gate and callback failure are separate (0.405142ms)
+✔ native debug integration: synthesized start comes only from matching native didStart (0.255665ms)
+✔ native debug integration: actual finish/cancel, app cancel and timeout are distinguishable (0.314304ms)
+✔ native debug integration: VoiceOver text callbacks do not invent utterance IDs or proven playback (0.232592ms)
+✔ native debug integration: privacy removal invokes purge and reports failure without new controls (2.103606ms)
+✔ native debug integration: removed/replaced names and corrected records purge superseded content (0.286392ms)
+✔ native debug integration: shared microphone validation fence is never invented as request provenance (0.276644ms)
+✔ native debug integration: every clock acquisition logs its actual reply owner without shared request provenance (0.573735ms)
+✔ native debug integration: shopping and direct-store deletion cannot leave retained diagnostics (0.449184ms)
+✔ native debug integration: purge failures never enter child-visible UI fields (0.343869ms)
+✔ native debug integration: developer purge report is off-main and bounded without blocking admission (0.178552ms)
+✔ debug recorder: whole implementation is DEBUG-only (1.239803ms)
+✔ debug recorder: exact explicit developer argument precedes directory/init (0.516239ms)
+✔ debug recorder: disabled, stale and full checks precede lazy payload evaluation (0.19934ms)
+✔ debug recorder: hard session, retained, queue and text bounds are explicit (0.313292ms)
+✔ debug recorder: quotas stop instead of evicting history (0.453753ms)
+✔ debug recorder: missing request/tool/utterance bindings are explicitly unbound (0.287344ms)
+✔ debug recorder: speech attempted, start, completion, rejection and interruption are distinct (0.452661ms)
+✔ debug recorder: metrics expose loss, truncation, redaction and write failure (0.207686ms)
+✔ debug recorder: clean termination drains, synchronizes and removes only current marker (0.269661ms)
+✔ debug recorder: privacy fence precedes asynchronous deletion and cannot re-enable (0.34473ms)
+✔ debug recorder: privacy clear also handles logs from disabled launches (0.163964ms)
+✔ debug recorder: owned private directory, no raw media API, and conservative redaction (0.324713ms)
+✔ debug recorder: prepared native tests cover actual IO and failure cases (0.180055ms)
+✔ device clock executes as an advertised read-only tool without a camera or network (7.952427ms)
+✔ clock speech skips only validated camera-independent records and retains dispatch guards (2.612271ms)
+✔ model advertises a fresh clock read rather than a hardcoded date or invented time (1.817622ms)
+✔ explicit everyday requests route before generic visual conversation (1.477569ms)
+✔ ordinary chat does not dispatch an everyday adapter or require a camera (0.434869ms)
+✔ domain selection reuses identity money and reading adapters rather than generated claims (0.330585ms)
+✔ item tasks consult attributed memory before continuing existing live handlers (0.403631ms)
+✔ saved evidence includes observations gallery places and attributed checklist without mutations (0.406006ms)
+✔ model evidence tool remains read only with no shopping or task mutation capability (0.70959ms)
+✔ shopping mutations persist validated explicit quotes before reporting success (0.292895ms)
+✔ coordinator admission checks exact in-flight ticket and generation before accepting results (0.39829ms)
+✔ clock and list replies update text-only conversation surface (1.265655ms)
+✔ single shot retries require the same task and request and fresh idle capture (0.562276ms)
+✔ physical finds retain the original authority gate and completion is only a user report (0.331446ms)
+✔ compiled familiar-person controller restores preference and validated gallery before first camera session (1.879358ms)
+✔ explicit off and on persist but foreground retry never overrides a choice or active enrollment (0.530677ms)
+✔ automatic eligibility retains validated consent model hashes capture gates and late-result rejection (0.706304ms)
+✔ enrollment addresses the sighted adult and never requires giving away the child phone (0.536668ms)
+✔ passive context cancellation stays silent and cancels only its own arrival speech (0.459244ms)
+✔ extracted Swift preference and foreground lifecycle preserves explicit choices (1748.99028ms)
+✔ default project does not enable or link experimental face inference (6.69274ms)
+✔ explicit experimental project links static upstream and controlled model resources (3.918793ms)
+✔ native pipeline uses actual upstream detection, landmark alignment and cosine matching (10.085023ms)
+✔ encrypted gallery has device-only key, complete protection, backup exclusion and no image persistence (1.618207ms)
+✔ experimental controller discards cancellation, obsolete gallery and stale camera results (8.873482ms)
+✔ enrollment is explicit consent and recognition can always be switched off accessibly (4.143872ms)
+✔ optional Apple comparison consumes only upstream aligned face and versioned secure prints (1.784367ms)
+✔ second pipeline is opt-in veto only, invalidates toggles, and never silently bypasses missing references (3.613064ms)
+✔ multiple examples use bounded per-person means and strict build-selected encrypted profiles (2.34058ms)
+✔ real local PhotosPicker imports bind to enrollment token and never store original images (1.837746ms)
+✔ voice commands route before generic assistant actions and retain urgent speech priority (3.066765ms)
+✔ named search is exact-label bounded quiet and reuses current candidate and snapshot publication (3.264036ms)
+✔ source contract: debug privacy purge cannot bypass familiar search cancellation (4.832342ms)
+✔ past snapshot speech has separate bounded lifetime without extending live display (1.631001ms)
+✔ recognition batches use each detector row and never weaken single-face enrollment (1.383752ms)
+✔ active-camera recognition is bounded fresh gallery-bound and has no cached track naming (1.460634ms)
+✔ photos-first enrollment uses an unnamed consented draft but never saves a placeholder identity (2.101213ms)
+✔ familiar RGB capture is independent of floor depth and map calibration but bound to frame session and optical pose (1.319231ms)
+✔ face notices remain tentative exact-capture checked and enrollment still requires AR world tracking (0.90892ms)
+✔ extracted production familiar capture gates execute RGB lifecycle freshness and full optical rejection (891.054834ms)
+✔ periodic missing-monitoring notices interrupt speech without discarding consented RGB work (0.448093ms)
+✔ extracted monitoring dispatch preserves urgent danger and nonurgent warning priority for all states (384.325326ms)
+✔ fresh frame probe is separate, read-only and does not invoke language or identity models (1.341613ms)
+✔ one-flight admission bounds queued and running work, including cancelled reads (0.329583ms)
+✔ cancel-before-start and cancellation after synchronous Vision discard results (0.429408ms)
+✔ Vision uses caller orientation and fast uncorrected OCR with bounded input and output (0.37142ms)
+✔ whole strings and neutral empty results cannot become truncated claims or absence (0.458543ms)
+✔ route cancellation does not erase or manufacture measured alignment (9.032072ms)
+✔ legacy pose stays preview-only and registered capture owns physical output (18.718445ms)
+✔ goal continuity has native regression fixtures rather than supplied-room proof (4.994593ms)
+✔ ordinary model conversation does not regain arbitrary spatial situation prose (3.012559ms)
+✔ NUL-delimited Git filtering excludes ignored Arabic and newline filenames verbatim (152.38421ms)
+✔ Git check-ignore no-match exit status permits public synthetic source packaging (110.217284ms)
+✔ handoff fails closed before staging when Git cannot determine ignored paths (85.984404ms)
+✔ handoff preserves required native source, bundled prompt and notices (112.432049ms)
+✔ all fast image-answer completions revalidate their request and current scene (8.94603ms)
+✔ voice deletion uses the same appearance cleanup as UI deletion (2.797129ms)
+✔ queued private image writes honor record deletion revisions (1.863815ms)
+✔ OCR cannot convert an ambiguous appearance match to an ownership assertion (0.94174ms)
+✔ unresolved room evidence clears both identity and trusted learning basis (3.269932ms)
+✔ microphone permission explains hands-free companion listening (0.834791ms)
+✔ reply-only home keeps controls available through the Settings destination (1.480872ms)
+✔ photo library transfers cannot restart exploration after dismissal or supersession (1.293905ms)
+✔ hosted premise fixtures follow the code-owned parser before consulting the model (1.050753ms)
+✔ production SQL keeps drafts separate and rejects cross-room and cross-profile references (5.831895ms)
+✔ production compare-and-swap cannot advance a changed room and rollback removes uncommitted revision (2.47548ms)
+✔ database rejects invalid heads at commit and empty or oversized payloads (3.633563ms)
+✔ deletion removes revision chains and proposals but preserves other rooms and deletion marker (3.162398ms)
+✔ production narration schema distinguishes outcomes, bounds text and isolates profile IDs (2.164221ms)
+✔ object detector is off by default and opt-in flags are paired, bounded and exact (4.453976ms)
+✔ only the verified model artifact is linked in its correct Xcode build phase (23.823059ms)
+✔ detector options preserve combined native, image and Live Activity flags (9.599251ms)
+✔ preflight pins actual artifact and external-manifest bytes and detects tampering (6.504709ms)
+✔ raw tensors, missing provenance, invalid labels and image declarations fail closed (25.14242ms)
+✔ compiled folders reject unlisted images, secrets, symlinks and arbitrary metadata (21.747288ms)
+✔ inventory traversal, duplicate members, root symlinks and internal manifests are rejected (14.999247ms)
+✔ CLI verifies before writing only an isolated temporary project and keeps previous project on failure (155.960424ms)
+✔ all Debug targets define DEBUG while Release omits it and retains feature flags (2.145097ms)
+✔ requested object candidates have RGB capture authority while physical branches retain separate spatial gates (3.055409ms)
+✔ no-depth foreground loop continues and resumes the same bounded object search (0.579747ms)
+✔ extracted object discovery and saved-item callbacks accept no-depth RGB and reject stale superseded evidence (1728.616651ms)
+✔ face and currency share one OpenCV runtime configuration (5.124234ms)
+✔ runtime initialization is once across translation units and concurrent callers (552.328475ms)
+✔ passive observations enter foreground loop independently of a find command (8.815397ms)
+✔ historical retrieval precedes another current-view search and never saves camera as object (3.076327ms)
+✔ unverified onset preserves original search, explicit controls cancel and current delivery checks pose (3.773254ms)
+✔ runtime detector rejects incompatible raw tensor results and has no classifier geometry fallback (1.469641ms)
+✔ history is bounded private storage, deletable and old scans do not resurrect after clear (2.79792ms)
+✔ completion is accounted on the actual speech callback and stopped sessions stay quiet (2.003484ms)
+✔ room transitions and privacy changes cannot relabel or resurrect old captures (2.689529ms)
+✔ continuous pose/hazard cadence is separate from bounded async visual observations (2.122755ms)
+✔ unvalidated instance-depth binding cannot speak approach or reach guidance (9.049069ms)
+✔ saved similarity uses current identity before clearing inflight and gives no pickup authority (2.766292ms)
+✔ foreground sensing defaults on without overriding saved choices or permissions (2.818248ms)
+✔ held-item similarity cannot authorize an exact identity or unsafe pickup (3.694426ms)
+✔ temperature stays source-owned while local finds can inspect without physical guidance (1.992994ms)
+✔ fresh familiar arrival uses scoped cancellable attention admission (2.017119ms)
+✔ generic observation is attributed captured-view evidence with separately revalidated playback, not a calibrated depth claim (2.095906ms)
+✔ hold narration precedes task classification and does not end camera or microphone; crossing bypasses model and uses explicit audience (0.95238ms)
+✔ fresh RGB survives nonurgent depth loss while urgent or unavailable monitoring still cancels (0.295068ms)
+✔ private audio loss exempts only code-owned detection alerts, never arbitrary route names (0.459545ms)
+✔ actual conversation instructions including snapshot and search repairs fit all six declared byte budgets (1620.432048ms)
+✔ the app build cannot send a camera picture off the phone (25.314981ms)
+✔ no network upload path exists outside developer-only code, except public map downloads (31.315333ms)
+✔ room memory and items stay in protected on-phone storage (1.514846ms)
+✔ public place packages have no photo or personal-memory fields (0.917355ms)
+✔ reader callbacks own their token before touching shared in-flight state (8.412696ms)
+✔ reader stop invalidates ownership and queued chunks before interrupting active speech (2.425288ms)
+✔ whole-page output uses bounded snapshot chunks and retires only completed matching speech (2.594913ms)
+✔ currency continuation requires an explicit pending command and a fresh newer frame (4.884959ms)
+✔ unavailable or incompatible currency recognizers cannot open retry or guessing paths (2.159173ms)
+✔ photo transfer and Vision continuations stay fenced to the visible presentation and request (3.430376ms)
+✔ missing SAR reference pack is explicit and cannot fall through to scene guesses (9.002141ms)
+✔ dormant legacy adapter remains local full-view inference with checksum, no top-note shortcut (1.726028ms)
+✔ money result is fresh, cancellable and uses existing speech gate (2.738399ms)
+✔ generic scene answers cannot bypass monetary value guard (3.763014ms)
+✔ active money route uses actual local reference matching, never the dormant model (2.411132ms)
+✔ currency checks full optical pose before success or error speech (2.097418ms)
+✔ private photo intent runs after command-origin authorization but before physical mutation (8.763167ms)
+✔ picker assigns source ownership before bounded asynchronous file loading (1.408748ms)
+✔ ImageIO bounds headers and decoded pixels and never persists the transfer (1.220258ms)
+✔ native photo reader preserves complete source records outside model budgets (2.074927ms)
+✔ photo output uses normal gates, actual callbacks, and original source expiry (3.308539ms)
+✔ selected photo Vision retains low-confidence OCR qualifiers without weakening camera threshold (1.328478ms)
+✔ one native photo lease survives UI cancellation until actual decode or Vision completion (2.480691ms)
+✔ camera cancellation is separate; photo interruption and quiet clear the whole snapshot (2.242658ms)
+✔ helper ingress and delayed actual speech start enforce photo ownership (3.32923ms)
+✔ selected-photo source text is omitted from opt-in debug output records (2.441998ms)
+✔ failed Vision extraction is unreadable, never a successful empty reference (3.109369ms)
+✔ the normal generated Xcode source phase includes the bounded photo decoder (6.847677ms)
+✔ specialized reads are bounded non-mutating adapters with gallery-aware playback (2.510899ms)
+✔ native replay invokes production model path without loading grading rubric (0.440629ms)
+✔ child home is one settled reply with no streaming observer or control tree (7.425757ms)
+✔ Rooms has saved names and explicit real scan controls instead of advanced map administration (1.806068ms)
+✔ live scan map comes from current RoomPlan observations and cannot replace saved rooms (1.45208ms)
+✔ People landing is names and Add person while the existing consent workflow remains intact (1.270963ms)
+✔ face camera entry explicitly enables sensing and does not wait forever after denial (1.504837ms)
+✔ spatial source contract: durable snapshot excludes live pose and confidence (1.675325ms)
+✔ spatial source contract: registry reuses geometry and saved-map types without a new planner (0.3012ms)
+✔ spatial source contract: metric scale and unknown-floor checks are explicit (0.283858ms)
+✔ spatial source contract: exact active binding and missing transform fail closed (0.195283ms)
+✔ spatial source contract: GPS, room appearance and camera-only heading cannot admit a pose (0.191326ms)
+✔ spatial source contract: capture age, session, replay and invalidation are checked (0.383914ms)
+✔ spatial source contract: route and collision leases bind purpose, map, revision, floor and capture (0.19379ms)
+✔ spatial source contract: pending XCTest coverage names the required failure cases (0.357915ms)
+✔ room A to B during debounce cannot attach the previous room to a new capture (source) (9.517465ms)
+✔ yesterday generic cup cannot outrank today explicitly saved cup or user report (source) (2.299466ms)
+✔ scoped deletion cutoffs reload from private storage after restart (source) (3.224485ms)
+✔ reopening an old map after scoped deletion checks room and normalized category cutoffs before import (source) (1.944305ms)
+✔ scoped deletion commits durable suppression before replacing history and exposes write failures (source) (1.845922ms)
+✔ full clear commits suppression before removal and cancels already captured callbacks (source) (1.644899ms)
+✔ RGB-only history survives depth and tracking failure without acquiring spatial authority (source) (1.9411ms)
+✔ tracking recovery cannot resurrect pre-failure spatial work or permanently block RGB collection (source) (2.519445ms)
+✔ privacy and session resets cancel RGB work while depth-only failure keeps its bounded token (source) (1.472518ms)
+✔ item and room forget paths invalidate captured work and perform scoped history deletion (source) (1.60256ms)
+✔ cancelled route cannot repeat its retired physical distance while alignment survives (source) (1.750605ms)
+✔ new world-map recovery rejects queued frames captured before its own beginning (source) (0.741499ms)
+✔ recorded-spot empirical receipt is debug-only and never enables object handling (source) (1.53254ms)
+✔ recorded-spot promotion binds exact re-read scan frame point ID and position, not a category label (source) (2.96905ms)
+✔ historical-spot renderer rechecks the receipt and never substitutes present object location (source) (1.105806ms)
+✔ receipt is bound to the current local device and app build rather than only iPhone family (source) (1.543159ms)
+✔ spoken recorded direction is cancelled if target, heading freshness or rendered relation changes (source) (1.086841ms)
+✔ recorded pose age uses sensor capture time rather than delayed main-queue receipt (source) (1.578134ms)
+✔ delayed world-map callbacks cannot extend a captured frame lease (source) (1.025517ms)
+✔ positional bearing interval uses tangent uncertainty and guards both sector boundaries (source) (1.157412ms)
+✔ registered route files and hosted fixtures are actual source-phase members (3.268948ms)
+✔ registered route dispatch retains ticket, exact output IDs and final playback gate (1.763208ms)
+✔ route watchdog, goal controls and JSON importer preserve independent ownership (3.150127ms)
+✔ relay checks every model answer and retries once (4.876086ms)
+✔ app checks model text before speaking it (3.468078ms)
+✔ model instructions and both checks stay in place (2.546585ms)
+✔ source contract: requested speech stays behind AdmittedSpeech and has its own completion ID (1.234175ms)
+✔ source contract: requested transport policy is used and synthesis preserves assistive settings (0.632045ms)
+✔ source contract: private-route loss interrupts private mobility without silencing independent sensor alerts (0.964764ms)
+✔ source contract: unverified onset is reply-only; trusted mute and end cancel queued work (0.558438ms)
+✔ source contract: cancellation invalidates identity before platform stop and timeout cannot claim completion (0.668202ms)
+✔ source contract: timeout remains unknown and diagnostic labels cannot change delivery outcome (0.389595ms)
+✔ source contract: spatial playback never downgrades the recording audio session (0.185605ms)
+✔ production task state retains exact sources, chronology and scoped completion (43538.644886ms)
+✔ IMDF points preserve position without fabricating walkable edges (2.527441ms)
+✔ Mac handoff builds both Apple SDK targets without requiring signing secrets (2.298235ms)
+✔ Xcode source references resolve to objects, with a local Swift package (1.38167ms)
+✔ on-device image APIs require explicit SDK-gated project selection (5.485994ms)
+✔ Lock Screen Live Activity is an explicit opt-in extension target (1.899764ms)
+✔ voice keeps required local recognition and stopped-engine echo cancellation (1.859107ms)
+✔ onset uses non-echo partial evidence and revalidates after its callback (0.311309ms)
+✔ permission, request callbacks and timers reject superseded capture sessions (0.313663ms)
+✔ explicit opt-in gates background audio and mute invalidates retry tokens (0.295069ms)
+✔ interruption, media reset and route changes preserve cancellation boundaries (0.257929ms)
+✔ recovery is bounded, claimed once and never reset by each transcript partial (0.261607ms)
+✔ capture health checks missing buffers rather than claiming acoustic speech detection (0.212735ms)
+✔ stop clears stale hypotheses and only removes a tap that was installed (0.27378ms)
+✔ private route removal cancels before synchronous main-actor notification and cannot auto-recover (0.407398ms)
+✔ energy onset is bounded, synchronous on PCM and fenced across capture and turn renewal (0.583355ms)
+ℹ tests 391
+ℹ suites 0
+ℹ pass 390
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 100679.254164
+
+✖ failing tests:
+
+test at tools/test/contextual-capabilities.test.mjs:41:1
+✖ room scan requests originate only in direct utterance path and confirm before start (2.619404ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /private func stopCameraMonitoring\(\) \{\s*voiceRoomScan.cancel\(\)/. Input:
+  
+  'import SwiftUI\n' +
+    'import ARKit\n' +
+    'import AVFoundation\n' +
+    'import CoreImage\n' +
+    'import ImageIO\n' +
+    'import Combine\n' +
+    'import BlindCore\n' +
+    'import BlindMemory\n' +
+    'import NaturalLanguage\n' +
+    'import CoreLocation\n' +
+    'import os\n' +
+    '\n' +
+    '/// Only this file can mint a speech admission after the companion gate.\n' +
+    'struct AdmittedSpeech {\n' +
+    '    let text: String\n' +
+    '    let priority: SpeechPriority\n' +
+    '    let urgent: Bool\n' +
+    '    let privateReference: Bool\n' +
+    '    fileprivate init(_ candidate: InformationCandidate, privateReference: Bool = false) {\n' +
+    '        self.privateReference = privateReference\n' +
+    '        text = candidate.text; priority = candidate.priority; urgent = candidate.kind == .hazard\n' +
+    '    }\n' +
+    '}\n' +
+    '\n' +
+    'enum AssistantPerformance {\n' +
+    '    // Timing only: never attach scene text, names, map contents or credentials.\n' +
+    '    static let signposter = OSSignposter(subsystem: "org.blindassist.mobility", category: "AssistantPerformance")\n' +
+    '}\n' +
+    '\n' +
+    'final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {\n' +
+    '    /// Developer chat validation does not start microphones, speech or live sensors.\n' +
+    '    let textOnly = ProcessInfo.processInfo.arguments.contains("--text-only") ||\n' +
+    '        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil\n' +
+    '    private var automaticStartupAllowed = true\n' +
+    '    #if DEBUG\n' +
+    '    private let debugTrace = DebugNativeSessionTrace()\n' +
+    '    private var debugPurgePending = false\n' +
+    '    private var debugLastPurgeSucceeded: Bool?\n' +
+    '    private func purgeDebugSessionDiagnostics() {\n' +
+    '        guard !debugPurgePending else { return }\n' +
+    '        debugPurgePending = true\n' +
+    '        DebugSessionLog.purgeForPrivacyClear { [weak self] success in\n' +
+    '            DispatchQueue.main.async { [weak self] in\n' +
+    '                self?.debugPurgePending = false\n' +
+    '                self?.debugLastPurgeSucceeded = success\n' +
+    '                DebugNativeSessionTrace.reportPurgeResult(success)\n' +
+    '            }\n' +
+    '        }\n' +
+    '    }\n' +
+    '    #endif\n' +
+    '    @Published private(set) var assistantSession = AssistantSession()\n' +
+    '    @Published var backgroundConversation = UserDefaults.standard.bool(forKey: "background-conversation") {\n' +
+    '        didSet {\n' +
+    '            UserDefaults.standard.set(backgroundConversation, forKey: "background-conversation")\n' +
+    '            assistantSession.setBackgroundAllowed(backgroundConversation)\n' +
+    '            voice.setBackgroundAllowed(backgroundConversation)\n' +
+    '            if !assistantSession.shouldListen { voice.cancel() }\n' +
+    '            cancelDescription()\n' +
+    '        }\n' +
+    '    }\n' +
+    '    // Active assistance uses permitted foreground sensing by default. An explicit saved-off\n' +
+    '    // choice remains off; this preference never bypasses camera permission or background limits.\n' +
+    '    @Published var cameraAwareness = UserDefaults.standard.object(forKey: "camera-awareness") as? Bool ?? true {\n' +
+    '        didSet {\n' +
+    '            UserDefaults.standard.set(cameraAwareness, forKey: "camera-awareness")\n' +
+    '            if cameraAwareness && assistantSession.foregroundActive && !textOnly {\n' +
+    '                cameraRecovery.beginExplicitSession(); cameraRecoveryNoticeShown = false; start()\n' +
+    '            }\n' +
+    '            else if !cameraAwareness { stopCameraMonitoring() }\n' +
+    '        }\n' +
+    '    }\n' +
+    '    private struct ConversationSpeech {\n' +
+    '        let id: UUID\n' +
+    '        let text: String\n' +
+    '        let request: UUID\n' +
+    '        let generation: UInt64\n' +
+    '        let createdAt: Double\n' +
+    '        let reports: [String]\n' +
+    '        let evidence: [CompanionEvidence]\n' +
+    '        let captures: [ConversationCapture]\n' +
+    '        var codeOwned = false\n' +
+    '        var clockReceipt: CompanionClockDeliveryReceipt? = nil\n' +
+    '        var origin: CompanionCommandOrigin = .trustedInterface\n' +
+    '    }\n' +
+    '    private struct ConversationCapture {\n' +
+    '        let view: ObjectViewCapture\n' +
+    '        let snapshot: Bool\n' +
+    '        var expiresAt: Double? = nil\n' +
+    '        var familiarRevision: UUID? = nil\n' +
+    '    }\n' +
+    '    private var semanticReadID: UUID?\n' +
+    '    private var conversationEvidenceCaptures: [String: ConversationCapture] = [:]\n' +
+    '    private var conversationSpeech: [ConversationSpeech] = []\n' +
+    '    private var activeConversationSpeech: ConversationSpeech?\n' +
+    '    // Clock delivery has its own short lease, independent of camera/task lifetime.\n' +
+    '    private var clockReplies: [UUID: CompanionClockReplyLease] = [:]\n' +
+    '    private var sceneClockReceipt: CompanionClockDeliveryReceipt?\n' +
+    '    private var currentClockReceipt: CompanionClockDeliveryReceipt?\n' +
+    '    private var sceneClockOrigin: CompanionCommandOrigin = .trustedInterface\n' +
+    '    private var currentClockOrigin: CompanionCommandOrigin = .trustedInterface\n' +
+    '    private var clockExpiryTask: Task<Void, Never>?\n' +
+    '    private var modelClockOperation: CompanionClockReplyLease.Binding?\n' +
+    '    private var modelClockSpeechQueuedID: UUID?\n' +
+    '    private var requestedVisualDialogue: (id: UUID, generation: UInt64)?\n' +
+    '    private var streamedConversationText = ""\n' +
+    '    // Unverified microphone conversation is transient and cannot become a saved\n' +
+    '    // user report, goal, action-completion record, or command confirmation.\n' +
+    '    private var unverifiedDialogue = AssistantDialogue()\n' +
+    '    private var unverifiedDialogueGeneration: UInt64?\n' +
+    '    private var unverifiedConversationID = UUID()\n' +
+    '    private var unverifiedConversationTask: Task<Void, Never>?\n' +
+    '    private var unverifiedConversationTimeout: Task<Void, Never>?\n' +
+    '    // This release is child-first. A stored explicit preference remains supported for\n' +
+    '    // future adult use; the default never asserts verified age or guardian presence.\n' +
+    '    @Published var assistantAudience = AssistantAudience(persistedValue:\n' +
+    '        UserDefaults.standard.string(forKey: "assistant-audience") ?? AssistantAudience.childWithGuardian.rawValue) {\n' +
+    '        didSet {\n' +
+    '            guard oldValue != assistantAudience else { return }\n' +
+    '            UserDefaults.standard.set(assistantAudience.rawValue, forKey: "assistant-audience")\n' +
+    '            assistantSession.invalidate(); cancelDescription()\n' +
+    '            _ = feedback.stopInformation(announceCancellation: false)\n' +
+    '        }\n' +
+    '    }\n' +
+    '\n' +
+    '    private var practiceTimer: Timer?\n' +
+    '    private var cameraInterrupted = false\n' +
+    '    private var lastCameraRestart = -Double.infinity\n' +
+    '    private var lastLiveActivityUpdate = -Double.infinity\n' +
+    '    @Published private(set) var running = false\n' +
+    '    @Published private(set) var simulation = false\n' +
+    '    @Published private(set) var detection = Detection(.stopped)\n' +
+    '    @Published private(set) var calibrationProgress = 0.0\n' +
+    '    @Published private(set) var message = ""\n' +
+    '    @Published private(set) var wearableStatus = "Disconnected"\n' +
+    '    @Published private(set) var sceneAnswer = ""\n' +
+    '    /// What the assistant last said or wrote: the only content of the main screen, so VoiceOver\n' +
+    '    /// reads the reply and nothing else.\n' +
+    '    // Child Home shows settled assistant replies only, never status, hazards or stream fragments.\n' +
+    '    @Published private(set) var currentReply = ""\n' +
+    '    @Published private(set) var busy = false\n' +
+    '    @Published private(set) var attentionMode: AttentionMode = .moving\n' +
+    '    @Published private(set) var returnStatus = ""\n' +
+    '    @Published private(set) var returning = false\n' +
+    '    @Published var assistantQuestion = ""\n' +
+    '    @Published var objectiveDraft = ""\n' +
+    '    @Published private(set) var preferredName = ""\n' +
+    '    @Published private(set) var profileStatus = ""\n' +
+    '    private var companionWorkingState = CompanionWorkingState()\n' +
+    '    @Published private(set) var assistantDialogue = AssistantDialogue()\n' +
+    '    @Published private(set) var assistantPreferences = AssistantPreferences()\n' +
+    '    private var preferencesRevision = UUID()\n' +
+    '    @Published private(set) var preferenceError = ""\n' +
+    '    @Published private(set) var narrationHistory: [NarrationRecord] = []\n' +
+    '    @Published private(set) var narrationHistoryError = ""\n' +
+    '    private let narrationSession = UUID()\n' +
+    '    private var narrationJournal: NarrationJournal?\n' +
+    '    private var journalTask: Task<Void, Never>?\n' +
+    '    @Published var wordsPerMinute = max(30, min(1800, UserDefaults.standard.object(forKey: "narration-words-per-minute") as? Int ?? 180)) {\n' +
+    '        didSet { UserDefaults.standard.set(wordsPerMinute, forKey: "narration-words-per-minute"); cancelDescription() }\n' +
+    '    }\n' +
+    '    @Published var narrationInterval = max(5, min(60, UserDefaults.standard.object(forKey: "narration-interval") as? Int ?? 15)) {\n' +
+    '        didSet { UserDefaults.standard.set(narrationInterval, forKey: "narration-interval") }\n' +
+    '    }\n' +
+    '    private var narrationBudget = NarrationBudget()\n' +
+    "    // Session-only declaration. A handheld camera's heading is not body heading.\n" +
+    '    @Published var fixedBodyMount = false {\n' +
+    '        didSet {\n' +
+    '            if oldValue != fixedBodyMount {\n' +
+    '                cancelDescription(); feedback.interruptAmbient()\n' +
+    '                // A changed physical mount retires heading authority, not map history.\n' +
+    '                indoor.invalidatePosition(); spatialRouteOutput.retire()\n' +
+    '            }\n' +
+    '            if fixedBodyMount && !oldValue { mountSlipAnnounced = false; bodyHeadingEstimator.reset() }\n' +
+    '        }\n' +
+    '    }\n' +
+    '    @Published private(set) var serviceStatus = ""\n' +
+    '    @Published private(set) var localImageStatus = ""\n' +
+    '    @Published var ambientDescriptions = UserDefaults.standard.object(forKey: "ambient-descriptions") as? Bool ?? true {\n' +
+    '        didSet { UserDefaults.standard.set(ambientDescriptions, forKey: "ambient-descriptions"); if !ambientDescriptions { if questionIsAutomatic { cancelDescription() }; feedback.interruptAmbient() } }\n' +
+    '    }\n' +
+    '    @Published var buildPrivateMap = UserDefaults.standard.bool(forKey: "private-mapping") {\n' +
+    '        didSet { UserDefaults.standard.set(buildPrivateMap, forKey: "private-mapping") }\n' +
+    '    }\n' +
+    '    @Published var offlineOnly = UserDefaults.standard.object(forKey: "offline-only") as? Bool ?? true {\n' +
+    '        didSet {\n' +
+    '            UserDefaults.standard.set(offlineOnly, forKey: "offline-only")\n' +
+    '            outdoor.networkAllowed = !offlineOnly\n' +
+    '            if offlineOnly { cancelDescription() }\n' +
+    '        }\n' +
+    '    }\n' +
+    '    @Published private(set) var recognizedPlace: SavedPlace?\n' +
+    '    @Published private(set) var placeRecoveryQuestion = ""\n' +
+    '    @Published var arabic = UserDefaults.standard.bool(forKey: "arabic") {\n' +
+    '        didSet {\n' +
+    '            feedback.arabic = arabic; indoor.arabic = arabic; places.arabic = '... 348653 more characters
+  
+      at TestContext.<anonymous> (file:///workspace/shared/blind-rebuild/tools/test/contextual-capabilities.test.mjs:49:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: `import SwiftUI\nimport ARKit\nimport AVFoundation\nimport CoreImage\nimport ImageIO\nimport Combine\nimport BlindCore\nimport BlindMemory\nimport NaturalLanguage\nimport CoreLocation\nimport os\n\n/// Only this file can mint a speech admission after the companion gate.\nstruct AdmittedSpeech {\n    let text: String\n    let priority: SpeechPriority\n    let urgent: Bool\n    let privateReference: Bool\n    fileprivate init(_ candidate: InformationCandidate, privateReference: Bool = false) {\n        self.privateReference = privateReference\n        text = candidate.text; priority = candidate.priority; urgent = candidate.kind == .hazard\n    }\n}\n\nenum AssistantPerformance {\n    // Timing only: never attach scene text, names, map contents or credentials.\n    static let signposter = OSSignposter(subsystem: "org.blindassist.mobility", category: "AssistantPerformance")\n}\n\nfinal class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {\n    /// Developer chat validation does not start microphones, speech or live sensors.\n    let textOnly = ProcessInfo.processInfo.arguments.contains("--text-only") ||\n        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil\n    private var automaticStartupAllowed = true\n    #if DEBUG\n    private let debugTrace = DebugNativeSessionTrace()\n    private var debugPurgePending = false\n    private var debugLastPurgeSucceeded: Bool?\n    private func purgeDebugSessionDiagnostics() {\n        guard !debugPurgePending else { return }\n        debugPurgePending = true\n        DebugSessionLog.purgeForPrivacyClear { [weak self] success in\n            DispatchQueue.main.async { [weak self] in\n                self?.debugPurgePending = false\n                self?.debugLastPurgeSucceeded = success\n                DebugNativeSessionTrace.reportPurgeResult(success)\n            }\n        }\n    }\n    #endif\n    @Published private(set) var assistantSession = AssistantSession()\n    @Published var backgroundConversation = UserDefaults.standard.bool(forKey: "background-conversation") {\n        didSet {\n            UserDefaults.standard.set(backgroundConversation, forKey: "background-conversation")\n            assistantSession.setBackgroundAllowed(backgroundConversation)\n            voice.setBackgroundAllowed(backgroundConversation)\n            if !assistantSession.shouldListen { voice.cancel() }\n            cancelDescription()\n        }\n    }\n    // Active assistance uses permitted foreground sensing by default. An explicit saved-off\n    // choice remains off; this preference never bypasses camera permission or background limits.\n    @Published var cameraAwareness = UserDefaults.standard.object(forKey: "camera-awareness") as? Bool ?? true {\n        didSet {\n            UserDefaults.standard.set(cameraAwareness, forKey: "camera-awareness")\n            if cameraAwareness && assistantSession.foregroundActive && !textOnly {\n                cameraRecovery.beginExplicitSession(); cameraRecoveryNoticeShown = false; start()\n            }\n            else if !cameraAwareness { stopCameraMonitoring() }\n        }\n    }\n    private struct ConversationSpeech {\n        let id: UUID\n        let text: String\n        let request: UUID\n        let generation: UInt64\n        let createdAt: Double\n        let reports: [String]\n        let evidence: [CompanionEvidence]\n        let captures: [ConversationCapture]\n        var codeOwned = false\n        var clockReceipt: CompanionClockDeliveryReceipt? = nil\n        var origin: CompanionCommandOrigin = .trustedInterface\n    }\n    private struct ConversationCapture {\n        let view: ObjectViewCapture\n        let snapshot: Bool\n        var expiresAt: Double? = nil\n        var familiarRevision: UUID? = nil\n    }\n    private var semanticReadID: UUID?\n    private var conversationEvidenceCaptures: [String: ConversationCapture] = [:]\n    private var conversationSpeech: [ConversationSpeech] = []\n    private var activeConversationSpeech: ConversationSpeech?\n    // Clock delivery has its own short lease, independent of camera/task lifetime.\n    private var clockReplies: [UUID: CompanionClockReplyLease] = [:]\n    private var sceneClockReceipt: CompanionClockDeliveryReceipt?\n    private var currentClockReceipt: CompanionClockDeliveryReceipt?\n    private var sceneClockOrigin: CompanionCommandOrigin = .trustedInterface\n    private var currentClockOrigin: CompanionCommandOrigin = .trustedInterface\n    private var clockExpiryTask: Task<Void, Never>?\n    private var modelClockOperation: CompanionClockReplyLease.Binding?\n    private var modelClockSpeechQueuedID: UUID?\n    private var requestedVisualDialogue: (id: UUID, generation: UInt64)?\n    private var streamedConversationText = ""\n    // Unverified microphone conversation is transient and cannot become a saved\n    // user report, goal, action-completion record, or command confirmation.\n    private var unverifiedDialogue = AssistantDialogue()\n    private var unverifiedDialogueGeneration: UInt64?\n    private var unverifiedConversationID = UUID()\n    private var unverifiedConversationTask: Task<Void, Never>?\n    private var unverifiedConversationTimeout: Task<Void, Never>?\n    // This release is child-first. A stored explicit preference remains supported for\n    // future adult use; the default never asserts verified age or guardian presence.\n    @Published var assistantAudience = AssistantAudience(persistedValue:\n        UserDefaults.standard.string(forKey: "assistant-audience") ?? AssistantAudience.childWithGuardian.rawValue) {\n        didSet {\n            guard oldValue != assistantAudience else { return }\n            UserDefaults.standard.set(assistantAudience.rawValue, forKey: "assistant-audience")\n            assistantSession.invalidate(); cancelDescription()\n            _ = feedback.stopInformation(announceCancellation: false)\n        }\n    }\n\n    private var practiceTimer: Timer?\n    private var cameraInterrupted = false\n    private var lastCameraRestart = -Double.infinity\n    private var lastLiveActivityUpdate = -Double.infinity\n    @Published private(set) var running = false\n    @Published private(set) var simulation = false\n    @Published private(set) var detection = Detection(.stopped)\n    @Published private(set) var calibrationProgress = 0.0\n    @Published private(set) var message = ""\n    @Published private(set) var wearableStatus = "Disconnected"\n    @Published private(set) var sceneAnswer = ""\n    /// What the assistant last said or wrote: the only content of the main screen, so VoiceOver\n    /// reads the reply and nothing else.\n    // Child Home shows settled assistant replies only, never status, hazards or stream fragments.\n    @Published private(set) var currentReply = ""\n    @Published private(set) var busy = false\n    @Published private(set) var attentionMode: AttentionMode = .moving\n    @Published private(set) var returnStatus = ""\n    @Published private(set) var returning = false\n    @Published var assistantQuestion = ""\n    @Published var objectiveDraft = ""\n    @Published private(set) var preferredName = ""\n    @Published private(set) var profileStatus = ""\n    private var companionWorkingState = CompanionWorkingState()\n    @Published private(set) var assistantDialogue = AssistantDialogue()\n    @Published private(set) var assistantPreferences = AssistantPreferences()\n    private var preferencesRevision = UUID()\n    @Published private(set) var preferenceError = ""\n    @Published private(set) var narrationHistory: [NarrationRecord] = []\n    @Published private(set) var narrationHistoryError = ""\n    private let narrationSession = UUID()\n    private var narrationJournal: NarrationJournal?\n    private var journalTask: Task<Void, Never>?\n    @Published var wordsPerMinute = max(30, min(1800, UserDefaults.standard.object(forKey: "narration-words-per-minute") as? Int ?? 180)) {\n        didSet { UserDefaults.standard.set(wordsPerMinute, forKey: "narration-words-per-minute"); cancelDescription() }\n    }\n    @Published var narrationInterval = max(5, min(60, UserDefaults.standard.object(forKey: "narration-interval") as? Int ?? 15)) {\n        didSet { UserDefaults.standard.set(narrationInterval, forKey: "narration-interval") }\n    }\n    private var narrationBudget = NarrationBudget()\n    // Session-only declaration. A handheld camera's heading is not body heading.\n    @Published var fixedBodyMount = false {\n        didSet {\n            if oldValue != fixedBodyMount {\n                cancelDescription(); feedback.interruptAmbient()\n                // A changed physical mount retires heading authority, not map history.\n                indoor.invalidatePosition(); spatialRouteOutput.retire()\n            }\n            if fixedBodyMount && !oldValue { mountSlipAnnounced = false; bodyHeadingEstimator.reset() }\n        }\n    }\n    @Published private(set) var serviceStatus = ""\n    @Published private(set) var localImageStatus = ""\n    @Published var ambientDescriptions = UserDefaults.standard.object(forKey: "ambient-descriptions") as? Bool ?? true {\n        didSet { UserDefaults.standard.set(ambientDescriptions, forKey: "ambient-descriptions"); if !ambientDescriptions { if questionIsAutomatic { cancelDescription() }; feedback.interruptAmbient() } }\n    }\n    @Published var buildPrivateMap = UserDefaults.standard.bool(forKey: "private-mapping") {\n        didSet { UserDefaults.standard.set(buildPrivateMap, forKey: "private-mapping") }\n    }\n    @Published var offlineOnly = UserDefaults.standard.object(forKey: "offline-only") as? Bool ?? true {\n        didSet {\n            UserDefaults.standard.set(offlineOnly, forKey: "offline-only")\n            outdoor.networkAllowed = !offlineOnly\n            if offlineOnly { cancelDescription() }\n        }\n    }\n    @Published private(set) var recognizedPlace: SavedPlace?\n    @Published private(set) var placeRecoveryQuestion = ""\n    @Published var arabic = UserDefaults.standard.bool(forKey: "arabic") {\n        didSet {\n            feedback.arabic = arabic; indoor.arabic = arabic; places.arabic = `... 348653 more characters,
+    expected: /private func stopCameraMonitoring\(\) \{\s*voiceRoomScan.cancel\(\)/,
+    operator: 'match',
+    diff: 'simple'
+  }

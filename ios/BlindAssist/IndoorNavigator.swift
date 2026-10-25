@@ -22,6 +22,9 @@ final class IndoorNavigator: ObservableObject {
     private var blocked = Set<MapConnection>()
     private var registered: RegisteredIndoorNavigation?
     var onSpatialOutputRetired: (() -> Void)?
+    var clearObservationHistory: ((@escaping (Bool) -> Void) -> Void)?
+    /// Selected storage target only, never coordinate alignment or current-location evidence.
+    var registeredObservationMapTarget: SpatialMapBinding? { registered?.installation?.binding }
     private var registeredCueCaption: String?
     private func bindRegisteredOutputRetirement() {
         registered?.onOutputRetired = { [weak self] in
@@ -77,6 +80,18 @@ final class IndoorNavigator: ObservableObject {
         #if DEBUG
         purgeDebugSessionDiagnostics()
         #endif
+        invalidatePosition()
+        let expectedRevision = revision
+        if let clearObservationHistory {
+            clearObservationHistory { [weak self] success in
+                guard let self else { return }
+                guard self.revision == expectedRevision else { return }
+                guard success else { self.message = self.t("Observed geometry history could not be deleted. Please retry.", "لم يكتمل حذف سجل هندسة المشاهدات. أعد المحاولة."); return }
+                self.deleteMapFiles()
+            }
+        } else { deleteMapFiles() }
+    }
+    private func deleteMapFiles() {
         do {
             if FileManager.default.fileExists(atPath: storage.path) { try FileManager.default.removeItem(at: storage) }
             registered?.clearForLegacyImport()

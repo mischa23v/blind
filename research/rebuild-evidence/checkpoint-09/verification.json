@@ -1,0 +1,50 @@
+{
+  "parent": "41dd5d93ac1c7bc41e7b3bb8a0c7396b3b3cf640",
+  "corePassed": 1111,
+  "nodePassed": 393,
+  "memoryPassed": 35,
+  "failures": 0,
+  "skipped": 0,
+  "priorNode": {
+    "total": 391,
+    "passed": 390,
+    "failed": 1,
+    "resolution": "Synchronous observation revocation now precedes room-scan cancellation. Replaced obsolete first-statement assertion with exact ordered cancellation and authority checks, including negative mutations. No production change during correction."
+  },
+  "scope": "Bounded on-device raw observation history, dedicated incremental GRDB storage, immediate privacy/session invalidation, bounded volatile admission and provisional durable byte budget. Not world-map memory, localization or physical guidance authority.",
+  "defaultDurability": {
+    "refillBytes": 131072,
+    "refillSeconds": 60,
+    "burstBytes": 131072,
+    "startsEmpty": true,
+    "failedWritesCharged": true,
+    "oversized": "volatile only; never silently truncated",
+    "coldLogical24HourMiB": 180,
+    "physicalIOBatteryMeasured": false
+  },
+  "limits": [
+    "Apple SDK/device sensor and audio runtime not executed",
+    "ARKit mesh collection cost, physical flash IO, battery and latency unmeasured",
+    "Raw history never supplies current pose, map alignment, target identity, corridor clearance or movement authority",
+    "Committed history only survives restart; short cold sessions may remain volatile"
+  ],
+  "sourceHashes": {
+    "ios/BlindAssist/NavigationModel.swift": "5e2d404c19e7da5490391f5471dfcd47d7c3528e1dacfaa6e95dde58367274db",
+    "ios/BlindAssist/NativeMapping.swift": "b25877c55e2bab7a79dcdabedb2f2dc406bb2a163f33a4a2634651630f3f6f3f",
+    "ios/BlindAssist/IndoorNavigator.swift": "f535ad93d0126414346235b2c3894cd03e9ab65311c1e770eb8c24174c0a5b28",
+    "BlindMemory/Sources/BlindMemory/MemoryStore.swift": "ea538f8924cb6b5f870e88d3f9c5f0036b872855c5d94fa8858849bfb09dff6b",
+    "ios/BlindAssist.xcodeproj/project.pbxproj": "355d718b23dd4c0fcc89c2c9236403e721e18a0fd9c0b2373882d75ab58e1754",
+    "BlindCore/Sources/BlindCore/NativeObservation.swift": "3ddeb793d9c3fcbadd1de6d1103f182a58c9228dee2c6188ae9a31f42748be45",
+    "BlindCore/Sources/BlindCore/NativeObservationPipeline.swift": "8b67496c2e58e4eb3a2cab66ecef714fb3e96fb8d86c9878a18a5a17c7fec913",
+    "BlindCore/Sources/BlindCore/NativeObservationDurabilityBudget.swift": "45e02eb347a0d90e0283226b51cfa44dc0430cdbd82abc471c66e35a6b5e549c",
+    "BlindCore/Tests/BlindCoreTests/NativeObservationTests.swift": "5da299b5bd7a83a529579439d509f45f986ba24069fc60d9063e9c0ee086c292",
+    "BlindCore/Tests/BlindCoreTests/NativeObservationPipelineTests.swift": "d2edf3569e43993e67142c89b6c80bf3dab83a288b581fdb0d982ff0ced5b4e1",
+    "BlindCore/Tests/BlindCoreTests/NativeObservationDurabilityBudgetTests.swift": "bcb8c7350c3a0e40b47952535e8dfee866e150720bb831f6add70915cbe63745",
+    "ios/BlindAssist/NativeARObservationAdapter.swift": "e662fc637e8e11be0abe989e77f04ab1e8da123bc6ebdf47c5f2f1bba95453a8",
+    "ios/BlindAssist/NativeARObservationBridge.swift": "460c6284cedb0728a828c0030453abba51f7ef82da5f6b9cc12a8432b7785260",
+    "BlindMemory/Sources/BlindMemory/NativeObservationStore.swift": "78c352db1a167c07d29fad9a26657741464b2f32833f626d9ace1e41c29b804d",
+    "BlindMemory/Sources/BlindMemory/SQL/native_observations.sql": "c54c7acc37ac9affa155969db1300e61e58823f83fa2a566fb826da6cb5efbc0",
+    "BlindMemory/Tests/BlindMemoryTests/NativeObservationStorageTests.swift": "507bbcf60a99b1575d3a0426dde02e3a71132456005f0ead587b7632a741fd94",
+    "tools/test/contextual-capabilities.test.mjs": "6c4fd2d1707d02b68ed6f73a137fb89086840924230b0cf2c5e6ceccd1d6b85a"
+  }
+}
