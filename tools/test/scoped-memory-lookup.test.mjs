@@ -14,7 +14,7 @@ test('all native find consumers honor current scope and historical routing prece
  const nav=read('ios/BlindAssist/NavigationModel.swift'),local=read('ios/BlindAssist/LocalImageAssistant.swift');
  const find=section(nav,'    private func handleItemOrLocate(','    /// Native RGB evidence');
  assert.doesNotMatch(find,/factBook\.latest\(|let recall = observedObjects\.recall/);
- assert.equal((find.match(/items\.find\(/g)||[]).length,1);assert.match(find,/case \.forget\(let name\):\s*guard let saved = items\.find\(name\)/);
+ assert.equal((find.match(/items\.find\(/g)||[]).length,1);assert.match(find,/case \.forget\(let name\):\s*let clearedClue = companionWorkingState\.retireSearchClue\(object: name, scope: companionWorkingState\.memoryScope\)\s*guard let saved = items\.find\(name\)/);
  assert.match(find,/currentContextFact\(for: name\)/);assert.match(find,/currentContextItem\(name, in: items\)/);assert.match(find,/taskContextObservations\(observedObjects\)/);
  assert.match(find,/if item\.scope == nil, itemAppearance\.viewCount/);
  const receive=section(nav,'    func receiveCompanionUtterance(','    private func ');

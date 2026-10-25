@@ -1,0 +1,117 @@
+{
+  "status": "source verified; native/audio/device acceptance remains pending",
+  "parent": "1ed0bc05764fa9f524310d96077502943641131d",
+  "base_tree": "b0fd9df81aa113503de8448d09eb8bc1f80d375b",
+  "production_baseline": "6925e21e4fef039b43ab6f4158aa37fd704b258e",
+  "final_core": {
+    "tests": 1280,
+    "failures": 0,
+    "skips": 0
+  },
+  "final_node": {
+    "tests": 474,
+    "failures": 0,
+    "skips": 0
+  },
+  "source_cut_note": "Core passed before four test-only integration edits. Every Core/app byte remained identical; complete Node suite reran after those edits. Current-parent diagnostic overlay checked separately.",
+  "source_projection": {
+    "flow_tests": 29,
+    "wrapper_checks": 2,
+    "not_native_or_audio_journeys": true
+  },
+  "prior_failure_cuts": [
+    {
+      "node_tests": 474,
+      "node_failures": 5,
+      "cause": "Route shape/cancellation ordering and exact helper signature; repaired before privacy cut."
+    },
+    {
+      "node_tests": 474,
+      "node_failures": 4,
+      "cause": "Two exact privacy ordering source assertions and two extracted-controller fixtures missing actual working-state property; test-only integration fixes."
+    }
+  ],
+  "before_regression": {
+    "published28_assertion_failures": 5,
+    "meaning": "Generic model delegation, not actual model-quality failure.",
+    "preprivacy_flow_tests": 26,
+    "preprivacy_assertion_failures": 6
+  },
+  "latest_parent_overlay": {
+    "node_checks": 26,
+    "python_checks": 6,
+    "swift_syntax_parse": true,
+    "full_sdk_typecheck": false,
+    "historical_native_recipe_pins_preserved": true
+  },
+  "changed_source_files": [
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionSearchClue.swift",
+      "sha256": "3331166a2c0b5efdd4ee0f1679cf12a8b23fbc0b4c75c89cfe6b03821851e6ce"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/CompanionSearchClueTests.swift",
+      "sha256": "caea8031bf22cef4b001a643b1a502075f2655d18a8df8943d1ad34c84594ceb"
+    },
+    {
+      "path": "ios/BlindAssist/LocalImageAssistant.swift",
+      "sha256": "5e02f5565e494efeeaae3af5926ad3b9107ccb124db9ba57c76cf53cdc921b65"
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "sha256": "60bcb4b411a02ce196c9e63a6441d4a7a0778639d1b146566e034bf723a3c249"
+    },
+    {
+      "path": "tools/test/child-assistant-contracts.test.mjs",
+      "sha256": "68cdf71c512aeedb747d67279e0c5f2464d45df1b3ad06d5ae5de4f92059eba5"
+    },
+    {
+      "path": "tools/test/fixtures/room-registration-acquisition/NativeDeletionPrefix.swift",
+      "sha256": "722dee8abb9bc45a545a2d40900cf04e807dba3f036882a895043d2797691d3a"
+    },
+    {
+      "path": "tools/test/fixtures/scoped-memory-review/SavedItemDeletionPrefix.swift",
+      "sha256": "1ec750e42c09716dbdf5e239dc0fdd94498b378590396d4b55b278adab493572"
+    },
+    {
+      "path": "tools/test/fixtures/search-area-clue/CommonTests.swift",
+      "sha256": "259a7d0dc169342931a35f21e4a9448a72758c424654cce9d3087d4742ae2315"
+    },
+    {
+      "path": "tools/test/fixtures/search-area-clue/CurrentTests.swift",
+      "sha256": "83bc138146cc4f93026ff7c047da9a7eae59d5fc831508600de45e451dcdc04b"
+    },
+    {
+      "path": "tools/test/fixtures/search-area-clue/PrivacyTests.swift",
+      "sha256": "8c8fe2753c1b17780d72f6c141b5db99785e01a7f84592e8bf230f464f5da9d3"
+    },
+    {
+      "path": "tools/test/fixtures/search-area-clue/README.md",
+      "sha256": "128df38645ab1c10547ed9c5c79b1522df35c0a0243fd88df1834cd31ef25cab"
+    },
+    {
+      "path": "tools/test/fixtures/search-area-clue/ReplayPrefix.swift",
+      "sha256": "4ce203b461abcf77a5e6e604567fee7d71bfa8d3b4ec51ba8e50ec3b125777e3"
+    },
+    {
+      "path": "tools/test/scoped-memory-lookup.test.mjs",
+      "sha256": "c65bd54fd34c25b0d3909b5dc1ba588a4059bdbc79f558e9ee105feb3c6d1a40"
+    },
+    {
+      "path": "tools/test/scoped-memory-review.test.mjs",
+      "sha256": "6ebc7692de965e349381ddf229d870a4c9df2c5d1e4eee213855fba44cb7c4f9"
+    },
+    {
+      "path": "tools/test/search-area-clue-native.test.mjs",
+      "sha256": "e4b6c738b099bfdb7ccd4df1378c6448f183cb9f36acea8f28fcbe7c99b507f4"
+    }
+  ],
+  "limitations": [
+    "No current stage29 native audio/device run",
+    "Unverified microphone grants no clarification ownership",
+    "Hints and answer authority are transient across restart",
+    "Raw clue does not establish room geometry, object presence, clearance or retrieval",
+    "Separate determiner/ownership naming issue not solved"
+  ],
+  "original_logs": "Original full and failing logs retained privately; this evidence is selected and path-redacted."
+}

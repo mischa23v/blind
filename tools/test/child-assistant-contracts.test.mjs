@@ -92,7 +92,7 @@ test('unvalidated object direction is disabled and physical requests cannot fall
   const model = await read('ios/BlindAssist/NavigationModel.swift');
   assert.match(model, /private static let objectInteractionGuidanceValidated = false/);
   const receive = section(model, 'func receiveCompanionUtterance(', 'private func routeEverydayTask(');
-  before(receive, 'routeUnverifiedPhysicalRequest(text)', 'answerConversation(text)');
+  before(receive, 'routeUnverifiedPhysicalRequest(text, searchClueInput: searchClueInput)', 'answerConversation(text)');
   const chat = section(model, 'private func answerConversation(', 'func startVoiceQuestion(');
   before(chat, 'routeUnverifiedPhysicalRequest(question)', 'LocalImageAssistant.converse(');
   const tracked = section(model, 'private func updateTrackedTarget()', 'private func');

@@ -8,6 +8,7 @@ final class HeldNativePurge {
 final class NativeDeletionController {
  let places: ExtractedRegistrationIngress
  let nativeObservations=HeldNativePurge()
+ var companionWorkingState = CompanionWorkingState()
  var recognizedPlace: SavedPlace?, awaitingPlace: SavedPlace?
  var arabic=false, placeRecoveryQuestion="", said=""
  struct Recovery { mutating func reset() {} };var placeRecovery=Recovery()

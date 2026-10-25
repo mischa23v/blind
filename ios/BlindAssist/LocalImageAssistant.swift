@@ -107,10 +107,12 @@ struct CompanionWorkingState: Codable, Sendable {
                   replacement.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars else { return false }
         }
         var next = self
+        if next.searchAreaClue.clue?.sourceID == selection.sourceID { next.searchAreaClue.clear() }
         let originalFact = next.factBook.facts.first { $0.sourceID == selection.sourceID }
         let active = next.memoryScope == selection.scope
         let old = selection.report.text
         if let originalFact {
+            next.retireSearchClue(object: originalFact.object, scope: originalFact.scope)
             _ = next.factBook.forgetSource(selection.sourceID)
             next.locationReportSources.removeValue(forKey: originalFact.storageKey)
         }
@@ -216,6 +218,9 @@ struct CompanionWorkingState: Codable, Sendable {
     var factBook = CompanionFactBook()
     var focusObject = ""
     /// A search receipt is historical; it never supplies a current object position.
+    // Transient conversational ownership: never decoded as a location fact.
+    var searchAreaClue = CompanionSearchClue()
+    var searchAreaClarificationTarget: String? = nil
     var lastSearch: SearchRecord?
     /// Exact original reports make derived location memories removable with their source.
     private var locationReportSources: [String: String] = [:]
@@ -326,6 +331,7 @@ struct CompanionWorkingState: Codable, Sendable {
         actionProgress = CompanionActionProgressLedger()
         goalRevision = UUID().uuidString
         proposedStep = ""; reportedCompletedSteps = []; reportedStepAssociations = []
+        searchAreaClue.clear()
         facts = []; reports = []; lastSearch = nil; focusObject = ""
         // Parent/suspended goals retain intent only, not another target's progress.
         parentGoal?.reportedCompletedSteps = []
@@ -453,6 +459,25 @@ struct CompanionWorkingState: Codable, Sendable {
             proposedStep = ""
         }
     }
+    /// Forget only this named target in the explicitly selected memory scope.
+    /// A provisional clue is not a saved item/location, but must not survive
+    /// an explicit forget of its corresponding object just because no item exists.
+    @discardableResult
+    mutating func retireSearchClue(object: String, scope: CompanionMemoryScope?) -> Bool {
+        let key = ItemMemory.key(for: object)
+        guard !key.isEmpty else { return false }
+        let clearedClue = searchAreaClue.clue.map { $0.binding.key == key && $0.binding.scope == scope } ?? false
+        let bindings = [searchAreaClue.question?.binding, searchAreaClue.clue?.binding].compactMap { $0 }
+        if bindings.contains(where: { $0.key == key && $0.scope == scope }) { searchAreaClue.clear() }
+        return clearedClue
+    }
+
+    /// Deleting an explicitly scoped saved place retires only its derived clue context.
+    mutating func retireSearchClue(placeID: String) {
+        let bindings = [searchAreaClue.question?.binding, searchAreaClue.clue?.binding].compactMap { $0 }
+        if bindings.contains(where: { $0.scope?.placeID == placeID }) { searchAreaClue.clear() }
+    }
+
     /// Explicit review/correction/deletion only. Remove exact source records,
     /// not similarly worded unrelated memories. Invalidate pending generation.
     /// Legacy dialogue IDs are not bound to scoped source IDs. Fail closed
@@ -460,6 +485,9 @@ struct CompanionWorkingState: Codable, Sendable {
     var allowsLegacyReportMutation: Bool { !hasScopedMemoryHistory }
     @discardableResult mutating func removeReport(_ exactText: String) -> Bool {
         guard allowsLegacyReportMutation else { return false }
+        // Legacy text deletion may outlive the bounded report list. Retire the
+        // exact accepted clue too, not an unrelated goal's similarly named place.
+        if searchAreaClue.clue?.originalInput == exactText { searchAreaClue.clear() }
         for index in scopedTaskHistory.indices {
             let affected = scopedTaskHistory[index].reports.contains { $0.text == exactText }
             scopedTaskHistory[index].reports.removeAll { $0.text == exactText }
@@ -510,6 +538,7 @@ struct CompanionWorkingState: Codable, Sendable {
     @discardableResult mutating func removeLocationReport(sourceID: String) -> Bool {
         guard let fact = factBook.facts.first(where: { $0.sourceID == sourceID }) else { return false }
         guard factBook.forgetSource(sourceID) else { return false }
+        retireSearchClue(object: fact.object, scope: fact.scope)
         let original = locationReportSources.removeValue(forKey: fact.storageKey)
         func dependsOnSource(_ derived: CompanionReportedFact) -> Bool {
             derived.sourceID == sourceID || (derived.sourceID == nil && original.map {
@@ -547,6 +576,7 @@ struct CompanionWorkingState: Codable, Sendable {
             if goalSource == nil { goalSource = source }
             return
         }
+        searchAreaClue.clear()
         actionProgress.retireSuggestions(forGoalRevision: goalRevision)
         goal = value; goalSource = source; goalRevision = UUID().uuidString
         proposedStep = ""; reportedCompletedSteps = []
@@ -579,6 +609,7 @@ struct CompanionWorkingState: Codable, Sendable {
     /// Applies only an explicit parsed request/report; the controller owns live
     /// sensor search and completion-accounted speech. No model action is involved.
     mutating func respond(to utterance: CompanionUtterance, message: String, now: Date = Date(), arabic: Bool, sourceID: String? = nil) -> String {
+        searchAreaClarificationTarget = nil
         guard CompanionUtterance.parse(message) == utterance else {
             return arabic ? "لم أستطع تأكيد هذا الطلب." : "I couldn't verify that request."
         }
@@ -592,10 +623,13 @@ struct CompanionWorkingState: Codable, Sendable {
             beginFindGoal(request, object: object, sourceID: sourceID, at: sourceID.flatMap { id in reports.last { $0.sourceID == id }?.time } ?? now)
             if let fact = currentContextFact(for: object) { return fact.recall(now: now, arabic: arabic) }
             if let search = lastSearch, search.matches(object) {
+                if !search.located { searchAreaClarificationTarget = object }
                 let ask = " " + CompanionFact.searchAreaQuestion(arabic: arabic)
                 return search.sentence(now: now, arabic: arabic) + (search.located ? "" : ask)
             }
-            return ordinaryHistoricalLocationReply(object: object, now: now, arabic: arabic, concise: true) ?? CompanionFact.unknown(object: object, arabic: arabic)
+            if let history = ordinaryHistoricalLocationReply(object: object, now: now, arabic: arabic, concise: true) { return history }
+            searchAreaClarificationTarget = object
+            return CompanionFact.unknown(object: object, arabic: arabic)
         case .report(let named, let place, let tense, let hedged):
             guard let object = named ?? (focusObject.isEmpty ? nil : focusObject) else {
                 return arabic ? "أي غرض تقصد؟ قل اسمه." : "Which thing do you mean? Tell me its name."

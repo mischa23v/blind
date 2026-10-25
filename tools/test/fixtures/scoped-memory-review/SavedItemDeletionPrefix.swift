@@ -26,6 +26,7 @@ import BlindCore
  final class Changes { var count = 0; func send() { count += 1 } }
  var places = Places()
  var items = ItemMemory()
+ var companionWorkingState = CompanionWorkingState()
  let itemAppearance = Appearance()
  let nativeObservations = NativeObservations()
  let objectWillChange = Changes()

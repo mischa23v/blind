@@ -169,7 +169,7 @@ test('selected-item helper discloses shared legacy derivative purge and shows or
  assert.match(view,/case \.item\(let item\): model\.forgetItem\(item\)/);
  assert.match(view,/Button\(t\("Delete", "حذف"\), role: \.destructive\) \{ perform\(value\); pending = nil \}/);
  const handle=section(nav,'    private func handleItemOrLocate(','    /// Saved item (by look');
- assert.match(handle,/case \.forget\(let name\):\s*guard let saved = items\.find\(name\)/);
+ assert.match(handle,/case \.forget\(let name\):\s*let clearedClue = companionWorkingState\.retireSearchClue\(object: name, scope: companionWorkingState\.memoryScope\)\s*guard let saved = items\.find\(name\)/);
 });
 
 test('actual scoped review state controller and async UI actions preserve source ownership',{

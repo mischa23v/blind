@@ -1,3 +1,15 @@
+## Checkpoint29: provisional search-area continuation (source verified)
+
+Trusted short answers to the delivered room/area question now remain attributed provisional search clues, with source-bound corrections, same-goal continuity, scoped privacy retirement, and brief budget-checked acknowledgments. They are not current-location facts, navigation geometry, physical clearance or completed goals.
+
+Verification: 1,280 Core tests and 474 Node checks pass; 29 extracted controller source-projection flows are **not native/audio journeys**. The latest-parent diagnostic-only overlay separately passes 26 Node and 6 Python checks. Earlier failed cuts and test-only integration repairs are retained in the evidence receipt. No new dependency/model is introduced.
+
+Native acceptance remains pending: real question/acknowledgment callbacks, Arabic/correction and privacy flows, minimum speech-budget checks, assistive-audio intelligibility, and separately grounded physical retrieval. Historical native producer pins remain unchanged and require reviewed rebase before stage29 use. Unverified microphone ownership and the separate “the/your fridge” naming issue are not changed.
+
+See [checkpoint29 evidence](research/evaluations/search-area-clue-checkpoint29/README.md). The complete prior public body is preserved below.
+
+---
+
 ## 2026-10-25 — Checkpoint28 candidate: useful search clarification and faithful reported history
 
 Executable baseline is checkpoint27 `452b9ebac628efd5d61290174cac52318f6b7890`; integration parent is `550b845abce842719251017c3e3a09d8e95408d7`. This receipt is prepared before publication; earlier historical candidate notes below are unchanged.
