@@ -28,7 +28,6 @@ jobs:
     timeout-minutes: 40
     env:
       DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
-      FAMILIAR_CI_ASSETS: ${{ runner.temp }}/blind-familiar-pinned-assets
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -43,5 +42,7 @@ jobs:
           xcodebuild -version
           xcrun --sdk iphoneos --show-sdk-version
       - name: Verify pinned assets and compile unsigned generic iOS device
+        env:
+          FAMILIAR_CI_ASSETS: ${{ runner.temp }}/blind-familiar-pinned-assets
         run: bash tools/ci/familiar-device.sh
       # Intentionally no artifact upload: no models, framework, app or DerivedData redistribution.
