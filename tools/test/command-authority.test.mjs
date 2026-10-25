@@ -31,7 +31,10 @@ test('policy grants microphone only conversation and ordinary interruption, not 
 });
 
 test('every microphone final fails closed before scan, goal, calibration, offer and action dispatch', () => {
-  assert.match(body('voice.onFinished ='), /receiveCompanionUtterance\(text, fromVoice: true\)/);
+  const final = body('voice.onFinished =');
+  assert.match(final, /guard let self, self.voice.consumeDelivery\(turn\) else/);
+  assert.match(final, /receiveCompanionUtterance\(turn.text, fromVoice: true\)/);
+  assert.ok(final.indexOf('consumeDelivery(') < final.indexOf('receiveCompanionUtterance('));
   const receive = body('func receiveCompanionUtterance(');
   assert.match(receive, /let origin: CompanionCommandOrigin = fromVoice \? \.unverifiedMicrophone : \.trustedInterface/);
   const gate = 'guard CommandAuthority.permits(.changeGoal, from: origin) else';
@@ -81,7 +84,8 @@ test('unverified chat cannot call command adapters, inherit a trusted goal, writ
   const chat = body('private func receiveUnverifiedConversation(');
   assert.match(chat, /origin == \.unverifiedMicrophone/);
   assert.match(chat, /availableTools: \[\], toolExecutor: nil/);
-  assert.match(chat, /let dialogue = unverifiedDialogue/);
+  assert.match(chat, /let dialogue = VoiceConversationPrivacy.anonymousTurn\(text\)/);
+  assert.doesNotMatch(model, /unverifiedDialogue/);
   assert.match(chat, /guard !busy else/);
   assert.match(chat, /ConversationDomainPolicy.allowsModelResponse\(to: text\)/);
   assert.match(chat, /SpatialClaimGuard.containsSpatialClaim\(reply\)/);
@@ -95,7 +99,7 @@ test('unverified output cannot be laundered into persistent reports or action-pr
   const durable = completion.indexOf('self.assistantDialogue.record(role: "assistant", text: text)');
   assert.ok(gate >= 0 && durable > gate);
   const isolated = completion.slice(gate, durable);
-  assert.match(isolated, /unverifiedDialogue.record\(role: "assistant", text: text\)/);
+  assert.doesNotMatch(isolated, /\.record\(/);
   assert.match(isolated, /return/);
   assert.match(body('private func queueConversationSpeech('), /origin: origin/);
   assert.match(body('private func unverifiedConversationReply('), /origin: \.unverifiedMicrophone/);
@@ -113,12 +117,15 @@ test('unverified reply callbacks expire on session, request, cancellation and th
   assert.match(cancel, /unverifiedConversationTimeout\?\.cancel\(\)/);
 });
 
-test('clear conversation removes transient microphone history before another same-session turn', () => {
+test('anonymous conversation has explicit current-turn isolation and clear cancels pending output', () => {
   const clear = body('func clearAssistantConversation(');
   assert.match(clear, /cancelDescription\(\)/);
-  assert.match(clear, /unverifiedDialogue = AssistantDialogue\(\); unverifiedDialogueGeneration = nil/);
+  assert.doesNotMatch(model, /unverifiedDialogue/);
   const chat = body('private func receiveUnverifiedConversation(');
-  assert.match(chat, /unverifiedDialogueGeneration != assistantSession.generation/);
+  assert.match(chat, /VoiceConversationPrivacy.anonymousTurn\(text\)/);
+  const privacy = declaration(read('BlindCore/Sources/BlindCore/VoiceAuthority.swift'), 'public static func anonymousTurn(');
+  assert.match(privacy, /var dialogue = AssistantDialogue\(\)/);
+  assert.match(privacy, /dialogue.record\(role: "user", text: text\)/);
   assert.doesNotMatch(chat, /situation:/, 'the existing converse implementation ignores situation; do not imply that it enforces authority');
 });
 
@@ -145,4 +152,24 @@ test('trusted UI actions retain their existing independent controls and physical
   assert.match(body('func muteConversation('), /assistantSession.mute\(\)/);
   assert.match(body('func endConversation('), /assistantSession.end\(\)/);
   assert.match(body('private func routeUnverifiedPhysicalRequest('), /ConversationDomainPolicy.requiresPhysicalVerification/);
+});
+
+
+test('microphone cannot clear the selected photo before the command gate', () => {
+  const receive = body('func receiveCompanionUtterance(');
+  assert.match(receive, /if CommandAuthority.permits\(\.changeGoal, from: origin\), selectedPhoto.selection != nil \{ clearExploreSnapshot\(\) \}/);
+});
+
+test('native microphone provenance is exact and one-use without speaker elevation', () => {
+  const voice = read('ios/BlindAssist/VoiceInput.swift');
+  const consume = declaration(voice, 'func consumeDelivery(');
+  assert.match(consume, /guard activeDelivery == turn else/);
+  assert.match(consume, /activeDelivery = nil/);
+  const finish = declaration(voice, 'func finish(');
+  assert.ok(finish.indexOf('CapturedVoiceTurn(') < finish.indexOf('beginTurn()'));
+  assert.match(finish, /activeDelivery = completed/);
+  assert.match(finish, /defer \{ activeDelivery = nil \}/);
+  const contract = read('BlindCore/Sources/BlindCore/VoiceAuthority.swift');
+  assert.match(contract, /var origin: CompanionCommandOrigin \{ \.unverifiedMicrophone \}/);
+  assert.match(contract, /permitsPrivateContext\(evidence: VoiceEvidence\) -> Bool \{ false \}/);
 });

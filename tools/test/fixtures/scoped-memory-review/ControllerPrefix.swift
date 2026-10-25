@@ -20,7 +20,7 @@ final class MemoryStore: @unchecked Sendable {
   lock.lock(); savedDialogue = dialogue; savedState = workingState; count += 1; lock.unlock()
  }
 }
-@MainActor final class ExtractedScopedReviewController {
+final class ExtractedScopedReviewController: NSObject {
  struct Places { var memory: MemoryStore? = MemoryStore() }; var places = Places()
  var arabic = false
  var companionWorkingState = CompanionWorkingState()
@@ -59,7 +59,7 @@ final class MemoryStore: @unchecked Sendable {
  func purgeDebugSessionDiagnostics() { privacyPurges += 1 }
  func retireHeldSearchForPrivacyDeletion() { searchRetirements += 1 }
  func establishedJourneyContextChanged() { journeyRetirements += 1 }
- func waitForAllMemorySaves() async -> Bool {
+ @MainActor func waitForAllMemorySaves() async -> Bool {
   guard let memory = places.memory, let receipt = companionMemoryWriter.retryLatest(owner: memory.writeOwner) else { return false }
   return await companionMemoryWriter.waitForCommit(receipt)
  }

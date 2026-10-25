@@ -1,0 +1,30 @@
+{
+  "frozen_utc": "2026-10-25T06:32:26.912684+00:00",
+  "files": {
+    "frontier-eval-02-frozen.jsonl": "8b7108702b415d5072bb8bef171e23d027ea8736f5be7a0ca62a6afbbb56364a",
+    "run-02-mechanical-audit.json": "8f612c4862f2f00530f2d745d48d844a1b02a3828f6cd692e24bac0b821aa999",
+    "run-02-code-state-audit.json": "e5c9af76f2f89c8637fa9e244dfc2cce36c51aba4351c99742c4340f40e5fe94",
+    "run-02-output-counts.json": "26d6fa0b497dc25e16ea46eaeeabbb70e7446f7d270e7befd7ced404efcbc9a6",
+    "source-sha256.txt": "1c2621a74cbdaf39fd051b6f1df65effbc10b38494bcddd76a2ec10684a61cf6",
+    "run-input-sha256.json": "2fbb551a2e0289b9d14f5cba4a4475cc22cd2f102058c7b751fa933ffec82ace",
+    "NavigationModel-source-inspected-20261025T0631Z.swift": "a492b8e4a68c1f5104df9cfde5696f062276a69b38bda44e9477fdc442e16e8d",
+    "run-02-independent-semantic-review.json": "5425ca16f0244fd9989c3234d7e4c9eef50be099ade7db14bda63d7f6e4ddbb4",
+    "run-02-findings.md": "f9487e6a54a2626dc8571d1f8cadfa90272690113fd6a1aede5695e3af5fa45a"
+  },
+  "complete_text_episodes": 4,
+  "child_turns": 23,
+  "calls_including_one_readiness_probe": 79,
+  "accepted_code_outputs": 9,
+  "accepted_frontier_outputs": 14,
+  "rejected_frontier_candidates": 4,
+  "mechanical_hash_errors": 0,
+  "unchanged_code_state_audit": {
+    "PASS": 14,
+    "FAIL": 1
+  },
+  "semantic_review": "COMPLETED: bounded text episodes; four guard overblocking findings; no unsupported delivered physical claim found; no native validation",
+  "full_native_device_episodes": 0,
+  "production_core_unchanged_from_build_snapshot": true,
+  "native_source_review_note": "NavigationModel snapshot is source inspection only, not part of compiled black-box executable.",
+  "reviewed_utc": "2026-10-25T06:36:52.219371+00:00"
+}

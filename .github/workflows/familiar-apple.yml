@@ -1,0 +1,47 @@
+name: Optional familiar backend device compile
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/familiar-apple.yml'
+      - 'tools/ci/familiar-device.sh'
+      - 'tools/ci/familiar-device-project.mjs'
+      - 'tools/ci/familiar-notices/**'
+      - 'tools/generate-xcode-project.mjs'
+      - 'ios/BlindAssist/FamiliarNative/**'
+      - 'ios/BlindAssist/FamiliarFaceExperiment.swift'
+      - 'ios/BlindAssist/FamiliarFaceStore.swift'
+      - 'ios/BlindAssist/FamiliarPeopleView.swift'
+      - 'ios/BlindAssist/FamiliarModelConfiguration.swift'
+      - 'ios/BlindAssist/FamiliarVisionComparison.swift'
+      - 'BlindCore/Sources/BlindCore/Familiar*.swift'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: familiar-apple-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  familiar-device:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    runs-on: xcode-27
+    timeout-minutes: 40
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+      FAMILIAR_CI_ASSETS: ${{ runner.temp }}/blind-familiar-pinned-assets
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Verify actual Apple host
+        run: |
+          set -euo pipefail
+          test "$(uname -s)" = Darwin
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+      - name: Verify pinned assets and compile unsigned generic iOS device
+        run: bash tools/ci/familiar-device.sh
+      # Intentionally no artifact upload: no models, framework, app or DerivedData redistribution.

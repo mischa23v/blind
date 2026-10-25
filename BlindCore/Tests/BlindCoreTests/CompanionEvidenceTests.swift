@@ -169,20 +169,52 @@ final class CompanionEvidenceTests: XCTestCase {
         XCTAssertTrue(evidence.isEmpty)
     }
     func testToolTimeoutReturnsPromptlyAndDiscardsLateResult() async {
-        // Deliberately ignores cancellation to verify the caller-visible bound.
-        let runtime = CompanionToolRuntime(available: [.savedMemory], timeout: 0.02) { _ in
-            await withCheckedContinuation { continuation in
-                DispatchQueue.global().asyncAfter(deadline: .now() + 0.15) {
-                    continuation.resume(returning: CompanionToolResult(status: .success, source: "late store",
-                        evidence: [.init(kind: .historicalMemory, text: "Old note", source: "late store")]))
-                }
+        // A fixed 120 ms wall-clock assertion measured CI scheduling load as well
+        // as our timeout. Hold an uncooperative reader instead: the timeout must
+        // return while that reader is still blocked, not wait for its completion.
+        actor HeldReader {
+            private var continuation: CheckedContinuation<CompanionToolResult, Never>?
+            private(set) var started = false
+            private(set) var released = false
+            func read() async -> CompanionToolResult {
+                started = true
+                if released { return Self.lateResult }
+                return await withCheckedContinuation { continuation = $0 }
+            }
+            func release() {
+                released = true
+                continuation?.resume(returning: Self.lateResult); continuation = nil
+            }
+            private static var lateResult: CompanionToolResult {
+                CompanionToolResult(status: .success, source: "late store",
+                    evidence: [.init(kind: .historicalMemory, text: "Old note", source: "late store")])
             }
         }
-        let started = Date()
-        let result = await runtime.run(.init(kind: .savedMemory))
+        let reader = HeldReader()
+        let returned = expectation(description: "Timeout returns before reader release")
+        let readerFinished = expectation(description: "Held reader eventually returns its late result")
+        let runtime = CompanionToolRuntime(available: [.savedMemory], timeout: 0.02) { _ in
+            let result = await reader.read() // Deliberately ignores Task cancellation.
+            readerFinished.fulfill()
+            return result
+        }
+        let task = Task {
+            let startedAt = ProcessInfo.processInfo.systemUptime
+            let result = await runtime.run(.init(kind: .savedMemory))
+            let elapsed = ProcessInfo.processInfo.systemUptime - startedAt
+            print("CompanionToolRuntime timeout diagnostic: elapsed_seconds=\(elapsed), configured_timeout_seconds=0.02")
+            returned.fulfill()
+            return result
+        }
+        // Watchdog only: not a claimed device latency bound. A structured wait
+        // on the blocked executor must fail here; release below always cleans up.
+        await fulfillment(of: [returned], timeout: 2)
+        let started = await reader.started, released = await reader.released
+        XCTAssertTrue(started); XCTAssertFalse(released)
+        await reader.release()
+        let result = await task.value
         XCTAssertEqual(result.status, .timedOut)
-        XCTAssertLessThan(Date().timeIntervalSince(started), 0.12)
-        try? await Task.sleep(nanoseconds: 180_000_000)
+        await fulfillment(of: [readerFinished], timeout: 2)
         let evidence = await runtime.currentEvidence()
         XCTAssertTrue(evidence.isEmpty)
     }

@@ -1,0 +1,31 @@
+{
+  "trace_sha256": "8b7108702b415d5072bb8bef171e23d027ea8736f5be7a0ca62a6afbbb56364a",
+  "turns_with_delivered_text": 23,
+  "denied_candidates": [
+    41,
+    59,
+    62,
+    63
+  ],
+  "conclusion": "Bounded text episodes completed, not a clean or full native-app validation.",
+  "resume": {
+    "sequence37": "active; goal and backpack request retained",
+    "sequence38": "unavailable findItem transitions needsHelp",
+    "sequence39_40": "historical backpack clue explicitly read and delivered",
+    "original_audit": "14 PASS / 1 FAIL preserved; terminal active assertion cannot establish failed resume"
+  },
+  "semantics": [
+    "Corrected cup report wins and remains historical; forget removes it before later unknown answer.",
+    "School goal and backpack subtask survive pause/background cancellation/resume; bare done does not complete; explicit backpack found completes only the subtask.",
+    "Downloaded OAS rooms/edges accurately summarized as authored preview, not current measured home or mobility evidence.",
+    "Current clock response is reacquired after eight seconds; arithmetic remains ordinary conversation; no delivered floor-clearance claim."
+  ],
+  "limitations": [
+    "Four genuine production guard false-positive refusals at 41,59,62,63 remain evidence, although later accepted answers exist.",
+    "Harness lacks native code-owned unavailable renderer, so no conclusion about app silence or number of model rewrites.",
+    "No named wrong-item completion turn, attempted stale code token replay, or stale clock lease dispatch in these episodes.",
+    "Native resume/source wiring only inspected, not executed by this runner; historical lookup was delivered by evaluator explicit call.",
+    "No voice identity, audio delivery, images, actual poses, registered mobility, Apple runtime, or device performance tested.",
+    "Background cancellation was ignored by evaluator choice; no unauthorized cancel tool call was attempted, so native or dispatcher denial enforcement is not established by that turn."
+  ]
+}

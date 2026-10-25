@@ -1,0 +1,51 @@
+{
+  "scope": "Three existing Core files only; no native changes, no live application by reviewer.",
+  "files": [
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionReferenceReading.swift",
+      "before": "5d4ae5c5d13ecb7889e20369b61b971ac645e721fd1396c5a50bf09ebdb4422f",
+      "after": "38da21c3792b2e98e9505054ff2e7e981b214519c3f4080c9077595cb14c1db3",
+      "live_preimage_matches": true,
+      "compiled_proposal_matches": true
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/CompanionEvidenceTests.swift",
+      "before": "0ba53954d7ccbe4c15e759cdef0a07490c552fa234ca5fb0b3a784e0a1c898db",
+      "after": "21078a95bd5292be1b5ab6d294885b73de8ef2943d7cbd02450edafde705a92a",
+      "live_preimage_matches": true,
+      "compiled_proposal_matches": true
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/CompanionReferenceReadingTests.swift",
+      "before": "351098869555cda9635cd56445bca239c4840d9cf55b6912fe7d16fa022a8afe",
+      "after": "dd002c90bce100f4ab235a357dfab1c796d9dc73a43666d1bf000b5b8e099818",
+      "live_preimage_matches": true,
+      "compiled_proposal_matches": true
+    }
+  ],
+  "results": {
+    "final_focused_tests": 44,
+    "failed": 0,
+    "timeout_negative_control_tests": 1,
+    "timeout_negative_control_failures": 3
+  },
+  "evidence": {
+    "native-apple-checkpoint15-failed.log": "4759fd83fa733d06cac50dde007befc1f40bacd3697c6237e2a8b2c94384a65d",
+    "focused-first.log": "d75e6ec18dd47bb4a6efe15edbd218e8ae9122e91f5a25a840290836d8ddca51",
+    "focused-second.log": "2909351878e3903c3223dcf4868847004faf875884abbd83f10a249e031530f4",
+    "timeout-waits-reader-mutation.log": "cdf079428770d9e8ff4278c8faadc643aaf74444680de8994e39c4352f3ee565",
+    "focused-final.log": "d25a2744fcf1327b1f81bc5280c2a24b68d57cc5e8f9f4f5cddbcc11385866e4",
+    "focused-final-latency.log": "4942de9f1e9258fa42b1464d6b31a52fa3e15a93906e857d478b5a937bb1b24f"
+  },
+  "limits": [
+    "No local Darwin execution; actual original Apple failure retained.",
+    "The two-second watchdog is test liveness, not device-latency approval. The production timeout remains unchanged at 20ms in this fixture.",
+    "No unsafe threshold increase or malformed-source error assertion relaxation."
+  ],
+  "diagnostic": {
+    "clock": "ProcessInfo.systemUptime",
+    "latest_elapsed_seconds": 0.020225582000421127,
+    "fixture_timeout_seconds": 0.02,
+    "acceptance_threshold": "No fixed wall-time assertion; completion while executor held, finite test watchdog, exact timeout status and no late evidence."
+  }
+}

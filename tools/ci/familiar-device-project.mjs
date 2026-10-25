@@ -1,0 +1,16 @@
+import {readFile,readdir,mkdir,writeFile} from 'node:fs/promises';
+import {resolve,join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
+import {generateProject,generateScheme,verifyFamiliarInputs} from '../generate-xcode-project.mjs';
+const root=resolve(fileURLToPath(new URL('../..',import.meta.url))),assets=process.env.FAMILIAR_CI_ASSETS;
+if(!assets||!assets.startsWith('/')||assets===root||assets.startsWith(root+'/')) throw Error('Private external asset directory required');
+const framework=join(assets,'framework/opencv2.framework'),models=join(assets,'models');
+await verifyFamiliarInputs(framework,models,'sface');
+const defaultPath=join(root,'ios/BlindAssist.xcodeproj/project.pbxproj');
+const before=await readFile(defaultPath);const files=(await readdir(join(root,'ios/BlindAssist'))).filter(f=>f.endsWith('.swift')).sort();
+const out=join(root,'ios/BlindAssistFamiliarBench.xcodeproj');await mkdir(join(out,'xcshareddata/xcschemes'),{recursive:true});
+await writeFile(join(out,'project.pbxproj'),generateProject(files,{familiarPeople:true,familiarBackend:'sface',opencvFramework:framework,familiarModels:models}));
+await writeFile(join(out,'xcshareddata/xcschemes/BlindAssist.xcscheme'),generateScheme().replaceAll('container:BlindAssist.xcodeproj','container:BlindAssistFamiliarBench.xcodeproj'));
+if(!before.equals(await readFile(defaultPath)))throw Error('Default project changed');
+console.log('Separate unsigned generic-device bench configuration generated; default project preserved SHA256 '+createHash('sha256').update(before).digest('hex'));

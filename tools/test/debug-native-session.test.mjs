@@ -127,7 +127,7 @@ test('native debug integration: VoiceOver text callbacks do not invent utterance
 
 test('native debug integration: privacy removal invokes purge and reports failure without new controls', () => {
   for (const [signature, mutation] of [
-    ['func clearAssistantConversation(', 'unverifiedDialogue = AssistantDialogue()'],
+    ['func clearAssistantConversation(', 'assistantDialogue = AssistantDialogue()'],
     ['func clearNarrationHistory(', 'enqueueNarration'],
     ['func clearObservedObjects(', 'nativeObservations.clearHistory('],
     ['func removeAssistantInterest(', 'updated.remove(id: id)'],
@@ -146,6 +146,25 @@ test('native debug integration: privacy removal invokes purge and reports failur
     check(body);
     assert.throws(()=>check(body.replace('purgeDebugSessionDiagnostics()','')), {name:'AssertionError'},signature);
   }
+  const clear = method(nav, 'func clearAssistantConversation(');
+  const checkClear = source => {
+    const ordered = ['purgeDebugSessionDiagnostics()', 'cancelDescription()',
+      'assistantDialogue = AssistantDialogue()', 'companionWorkingState = CompanionWorkingState()', 'persistWorkingState()'];
+    let previous = -1;
+    for (const token of ordered) {
+      const at = source.indexOf(token); assert.ok(at > previous, `Conversation privacy order: ${token}`); previous = at;
+    }
+    assert.doesNotMatch(source, /persistDialogue\(/, 'Clear submits one paired empty snapshot, never old task state.');
+  };
+  checkClear(clear);
+  for (const mutation of [
+    clear.replace('purgeDebugSessionDiagnostics()', ''),
+    clear.replace('assistantDialogue = AssistantDialogue()', ''),
+    clear.replace('companionWorkingState = CompanionWorkingState()', ''),
+    'persistWorkingState();' + clear,
+  ]) assert.throws(() => checkClear(mutation), {name: 'AssertionError'});
+  assert.doesNotMatch(nav, /unverifiedDialogue/, 'Anonymous microphone turns no longer share retained history.');
+  assert.match(method(nav, 'private func receiveUnverifiedConversation('), /let dialogue = VoiceConversationPrivacy\.anonymousTurn\(text\)/);
   const forget = section(nav, '    func forgetConversationRecord(', '    func savePreferredName(');
   const admission = 'guard companionWorkingState.allowsLegacyReportMutation else { return }';
   const admissionAt = forget.indexOf(admission);

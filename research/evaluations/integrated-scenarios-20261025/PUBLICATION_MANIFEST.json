@@ -1,0 +1,340 @@
+{
+  "generated_utc": "2026-10-25T08:42:13.971684+00:00",
+  "purpose": "Public-safe authored executable fixtures and honest execution receipts for repository integration; not a source overlay or safety certification",
+  "partial_code_sequences": 372,
+  "recorded_component_steps": 3078,
+  "frontier_text_episodes_separate": 4,
+  "frontier_child_turns_separate": 23,
+  "full_native_device_episodes": 0,
+  "latest_32_methods": 2,
+  "latest_32_failures": 0,
+  "public_minimal_runner_verified": true,
+  "public_minimal_runner_live_source_differences": [],
+  "full_historical_suite_rerun_on_latest_source": false,
+  "original_failure_count_preserved": 8,
+  "excluded": [
+    "raw ARKitScenes RGB/depth/confidence/mesh/trajectory/intrinsics",
+    "raw Autodesk OAS source package",
+    "real private child/person images or audio",
+    "model weights, Python environments, Swift toolchains",
+    "Swift build caches and all build trees",
+    "baseline source archives and copied full production source",
+    "private credentials, tokens, environment files",
+    "duplicate full frontier conversation bundle already in research/evaluations/frontier-run-02"
+  ],
+  "independence": "Public authored fixtures and deterministic partition only; no independent device/real-world held-out accuracy claim. Fresh frontier agent saw only interface but four fixed text episodes. Published oracle is not evaluator input.",
+  "files": [
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/EXECUTION_SUMMARY.json",
+      "bytes": 89211,
+      "sha256": "1c254f9505a2463456494f4e3ff9655d7675f19c0191bb9791522424ef1c92f7",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/README.md",
+      "bytes": 6161,
+      "sha256": "874e60c0652f81247e5121cd2b996805ba37e01d8f0995e376afaae5eddea5dd",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/RECEIPT_INDEX.json",
+      "bytes": 15515,
+      "sha256": "b9a9b225c8daa263b9ceabe15e52f3792d69e441699fd8f43d16d1f11483506a",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/frontier-review-supplement/original-evaluated-input-hashes.json",
+      "bytes": 1102,
+      "sha256": "2fbb551a2e0289b9d14f5cba4a4475cc22cd2f102058c7b751fa933ffec82ace",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/frontier-review-supplement/run-02-findings.md",
+      "bytes": 5264,
+      "sha256": "f9487e6a54a2626dc8571d1f8cadfa90272690113fd6a1aede5695e3af5fa45a",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/frontier-review-supplement/run-02-independent-semantic-review-v2.json",
+      "bytes": 2041,
+      "sha256": "160592167a1e6528043b87a5c690a59dc892fe4ad36d59ace2a466c8f62fe51f",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/frontier-review-supplement/run-02-reviewed-freeze-receipt.json",
+      "bytes": 1749,
+      "sha256": "a274cbbe563602934835409e032be8315a9545d7c03108e7b1b6c3451d778645",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/historical-component-receipts.zip",
+      "bytes": 545717,
+      "sha256": "afe2e9e4f36b9005be6b58f3149da239b9d56c8e7ddb1cee730c193a3146082f",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/latest-32/exit-code.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/latest-32/run-receipt.json",
+      "bytes": 1684,
+      "sha256": "2b09fed996d1c43bfacbcb43308ac1aa21b02a28ffe3bd3ff51d0e4f2605da9f",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/latest-32/source-manifest.json",
+      "bytes": 29741,
+      "sha256": "2f9fa68cf765f5ceeea1be39cdab049a1063dfc4615a685322aebc135a52a20b",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/latest-32/swift-test.log",
+      "bytes": 3851,
+      "sha256": "79f947fceaeb7e8b63d47c08a6da1030228cf007d550ac827090ccbaf8ffbfea",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/public-runner-verification/exit-code.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/public-runner-verification/input-sha256.txt",
+      "bytes": 13323,
+      "sha256": "5fbd99a06cfd997c93b4290b643cea207181891bee911f84b9f56fd2867f7572",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/public-runner-verification/swift-test.log",
+      "bytes": 5315,
+      "sha256": "a5716491cc57886645b7b0a01626d5530ada8f008e58443298d0861ffef856ae",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/public-runner-verification/swift-version.txt",
+      "bytes": 75,
+      "sha256": "d7df78b37cc23138e1c65ac3cc35f9bd0db2caf1df39880130951b36a7d039f1",
+      "classification": "execution_receipt_or_report"
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedAttentionEpisodeTests.swift",
+      "bytes": 7731,
+      "sha256": "c27f81ad44f21cccb26c0321f2619f4881caf0fbdf601618010805e86f950bda",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedClockControlEpisodeTests.swift",
+      "bytes": 8525,
+      "sha256": "90319f614ddabd78e59c3db8897132c2364162e53cd364926868a89ef84fae6f",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedConversationBoundaryEpisodeTests.swift",
+      "bytes": 5295,
+      "sha256": "5dda9c3cb359db5558b74e342b49e31fcb28d06ad99c7c381c782e249a428b5e",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedEpisodeReplayTests.swift",
+      "bytes": 15224,
+      "sha256": "5ca0ef4aa08b7017f3a4c16abb555864c5811f0435a1d8f39e06971b1907da6c",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedEverydayEpisodeTests.swift",
+      "bytes": 17135,
+      "sha256": "ff98715a0674973a80cc7e87a13c71ef99845f1196b8391b2f680a1f52641f91",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedFamiliarEpisodeTests.swift",
+      "bytes": 8223,
+      "sha256": "8c45a22b68da9de94609e8ae05fa34680bd5e4bce747d80684bc5e041f0eaa30",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedFeatureEpisodeTests.swift",
+      "bytes": 7043,
+      "sha256": "296e533610c1d42f8f96bc5c1a2939df9a7169582740b099c54f2a81490a41bb",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedMemoryEpisodeTests.swift",
+      "bytes": 10384,
+      "sha256": "3adee6a52ffea9881a471f7284f8843075bb4b38b0ebdd7dc0b9fd99dcab30cf",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedPhotoEpisodeTests.swift",
+      "bytes": 9105,
+      "sha256": "1c933afd78eb0277ab272da18a2769d34b952eb146f693fc06fbd269406e0b78",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedReferenceEpisodeTests.swift",
+      "bytes": 10068,
+      "sha256": "f451822e88645057b8085bf76087798310356f192ca8d4dacec659fbd55256c3",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedScopedMemoryEpisodeTests.swift",
+      "bytes": 9091,
+      "sha256": "8270db4b2ec3abed497a33d31c381a8d75044d24371a26fcb61ba90514c0c225",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedShoppingSessionEpisodeTests.swift",
+      "bytes": 9524,
+      "sha256": "d487ef5f0f4a1042581551ac239b7f0e9b8d3e97406b6f94134e844174d5ab40",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedSourcedMapEpisodeTests.swift",
+      "bytes": 3654,
+      "sha256": "b8da2a34da79bf0891ff5272f375d5e8144534356926a4a0c36b75fdec7d19af",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedSpatialAuthorityEpisodeTests.swift",
+      "bytes": 10491,
+      "sha256": "12e9c8890868dc95e736aded4d32936112c216081eda0919980d0aeab63a02ec",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/README.md",
+      "bytes": 9490,
+      "sha256": "1a517bc5cb8c9066df1086bf4ef616fd9502d38839a772e3543ca4272319621f",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/build_coverage.py",
+      "bytes": 6573,
+      "sha256": "0556aaf828d7e410904b73368ef366312d3c395ada14662e697329ad7ca91076",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/build_requirement_coverage.py",
+      "bytes": 9366,
+      "sha256": "239d358d3fb99810c1688a1a56c05ce4b5555e46a68b7c67a0cdcf6692163e12",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/coverage-obligations.json",
+      "bytes": 787503,
+      "sha256": "1766d310f4c5e4b1d5ca2e78463fd7aa2ce0e390f1550783e8360df25bb46959",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/dataset-provenance.json",
+      "bytes": 3534,
+      "sha256": "81324cfd7361bdb53d79e34d0b4239b94840588b1be58f1d7da1a5645b6726c2",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/PORTABILITY_CHANGES.md",
+      "bytes": 544,
+      "sha256": "f66755ff83cb1b8a307d781ef2e2217683af20132a530cac51bffd413a2cdd71",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/README.md",
+      "bytes": 4245,
+      "sha256": "aebc743ded8cb2da7c1b4007f0cde1ae6b152ab290db3ed207895759b835cd5b",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/audit_trace.py",
+      "bytes": 2128,
+      "sha256": "600ffb13f413cae41262b469e4515421408d8b0c43b448029c0b3ba38207fbfb",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/build.sh",
+      "bytes": 1330,
+      "sha256": "35760a23c2931eddb3da3c6961f703d7df69003916e9a2b6f67fe076b62fadbf",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/hidden/grade_code_state.py",
+      "bytes": 3209,
+      "sha256": "7953bc4b20856f98ac0d3088cd0a5a0af7e5e195c68bc31db1215ef8bcfc786a",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/hidden/oracle.json",
+      "bytes": 1054,
+      "sha256": "20df0f93308b518a31b2c3e77d931e4d919a6346effdfe8e15cb725de8e7881d",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/public/EVALUATOR_INSTRUCTIONS.txt",
+      "bytes": 3609,
+      "sha256": "586c527878a258d5537405b5e1918c2cad09100f44d4f91066f69080fee66289",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/public/bridge.py",
+      "bytes": 2676,
+      "sha256": "bd5840ee7f226eac3b2d326ccce5df014c6073556735c18faf42264f25bcf9c7",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/public/episodes.json",
+      "bytes": 6259,
+      "sha256": "a07772ff5837c3c42e77cc830ef4273edbd63e7a44cc4778111d1c12c16f8cac",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/public/main.swift",
+      "bytes": 6882,
+      "sha256": "f74ecb4d38e358dbaa29a5a58061bcb41c025bad8bf7f9909aa641878a1cac76",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/native-recovery-method.swift.txt",
+      "bytes": 4532,
+      "sha256": "23d0d1f238e41ad1adcd0be2bb99be620595bc19d7d738d56cec956936cdc21f",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/project_native.py",
+      "bytes": 1770,
+      "sha256": "affcb02174d2cfe822cd986c46a2c750b72a7d9a7522ca15fa03a888ef737544",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/requirement-coverage.json",
+      "bytes": 290484,
+      "sha256": "c8dba3e7c4bc4c9bb9f33c421c0013f9c8380018ba2a476574fd7a3f51beb1b0",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/run-scoped-attention.sh",
+      "bytes": 1950,
+      "sha256": "59f7e0548ffeec07691162c1358c2236d2be46142e0986cca814df53dbee0904",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/run.sh",
+      "bytes": 4073,
+      "sha256": "39e011a7899a9f1efb0becfa859c72a90b07965be9b4d781f5f10be6a5b344ba",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/summarize_receipts.py",
+      "bytes": 2489,
+      "sha256": "68f722cd54a1b802ef69b97012f56b35c3de896e39f4aea8a70d7ae1073136d1",
+      "classification": "authored_harness_or_fixture"
+    },
+    {
+      "path": "tests/scenarios/integrated/surviving-corpus-inventory.json",
+      "bytes": 10141,
+      "sha256": "9538419b163f93cb069ba4dc131dd37e101dba0538964115dbc77a4cd645b244",
+      "classification": "authored_harness_or_fixture"
+    }
+  ]
+}

@@ -5,8 +5,8 @@ import Foundation
 /// run off the main owner, in order; at most one active and one latest pending
 /// snapshot are retained. New snapshots include already-retired source edits.
 @MainActor public final class CompanionMemoryWriteQueue {
-    public static let maximumDialogueBytes = 128 * 1024
-    public static let maximumWorkingStateBytes = 8 * 1024 * 1024
+    nonisolated public static let maximumDialogueBytes = 128 * 1024
+    nonisolated public static let maximumWorkingStateBytes = 8 * 1024 * 1024
     public struct Snapshot: Sendable {
         public let dialogue: Data
         public let workingState: Data
@@ -32,7 +32,7 @@ import Foundation
     public private(set) var isWriting = false
     public private(set) var hasFailed = false
     public var pendingCount: Int { pending == nil ? 0 : 1 }
-    public var onCompletion: ((Receipt, Bool) -> Void)?
+    public var onCompletion: (@MainActor (Receipt, Bool) -> Void)?
     public init() {}
 
     public func bindOwner(_ proposed: UUID) {

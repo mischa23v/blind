@@ -1,0 +1,35 @@
+{
+  "files": [
+    {
+      "path": "tools/test/debug-native-session.test.mjs",
+      "before": "6bdaaff4c565f912dbf354a9b558567d2f1b32b50ad1d01c4d5053bef1608a05",
+      "after": "0fdede283c4e261872043299f45db80ee1031991147e5dbddc5b98859126916b",
+      "live_preimage_matches": true
+    },
+    {
+      "path": "tools/test/selected-photo-reference.test.mjs",
+      "before": "092783d018412616ef4b9039eeb47f14b910dca5d702cd83525281a73c220279",
+      "after": "bd2d3a30bc725a9ff7b07455365bd30610774ab8de7ddbc8ab3bf6b7842a51ea",
+      "live_preimage_matches": true
+    }
+  ],
+  "native_input_sha256": "ad510ed95a9626c87d8c45b1c4533281fce28719062a7cbb7de8f5dac6209a38",
+  "original_aggregate_log_sha256": "0de3e84ae928fed566951fbfe9813bebdea6c48ff4730f273929107c1b2caa30",
+  "original_contracts": {
+    "tests": 30,
+    "pass": 28,
+    "fail": 2
+  },
+  "fixed_contracts": {
+    "tests": 30,
+    "pass": 30,
+    "fail": 0,
+    "skip": 0
+  },
+  "negative_mutations": 10,
+  "evidence": {
+    "original-contracts-live-failed.log": "e498bcb1c869cd1421924274d331ed9c5c7113dd6e81e1e95f9b8c90fe9d5bc8",
+    "focused-final.log": "6546b1f8259f45a8ab1e45f31e494711ecef6fa67e14cf5f6e124379f133d1cf"
+  },
+  "limits": "Source contracts only, not Swift or device execution. No production edits."
+}

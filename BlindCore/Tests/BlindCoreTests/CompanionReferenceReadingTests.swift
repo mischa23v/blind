@@ -290,12 +290,29 @@ final class CompanionReferenceReadingTests: XCTestCase {
     func testBodyRangeMustBeValidAndCannotSplitUnicodeScalar() throws {
         let text = "😀 delay start body"
         for range in [NSRange(location: NSNotFound, length: 1), NSRange(location: 0, length: 0),
-                      NSRange(location: 1000, length: 10), NSRange(location: 1, length: 2)] {
+                      NSRange(location: 1000, length: 10), NSRange(location: 1, length: 2),
+                      NSRange(location: 0, length: 1),
+                      NSRange(location: 1, length: text.utf16.count - 1),
+                      NSRange(location: 1, length: Int.max)] {
             let item = CompanionEvidence(kind: .historicalMemory, text: text, source: identity.evidenceSource)
             let bad = CompanionReferenceSource(identity: identity, toolResult: CompanionToolResult(status: .success,
                 source: identity.evidenceSource, evidence: [item]), blocks: [CompanionReferenceBlock(evidence: item,
                     bodyUTF16Range: range, locator: "authored")])
             assertRejection(.malformedBlock) { try reading(source: bad) }
+        }
+    }
+
+    func testCompleteUnicodeScalarBodyKeepsOriginalSourceBytes() throws {
+        let text = "😀 delay start e\u{301} body"
+        let item = CompanionEvidence(kind: .historicalMemory, text: text, source: identity.evidenceSource)
+        for range in [NSRange(location: 0, length: text.utf16.count),
+                      NSRange(location: 2, length: text.utf16.count - 2)] {
+            let selected = CompanionReferenceSource(identity: identity, toolResult: CompanionToolResult(status: .success,
+                source: identity.evidenceSource, evidence: [item]), blocks: [CompanionReferenceBlock(evidence: item,
+                    bodyUTF16Range: range, locator: "authored")])
+            let prepared = try reading(source: selected)
+            XCTAssertTrue(prepared.source.blocks[0].evidence.text.utf8.elementsEqual(text.utf8),
+                          "Validated body selection must preserve the complete original record.")
         }
     }
 

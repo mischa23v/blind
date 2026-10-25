@@ -1,0 +1,549 @@
+{
+  "parent": "2ddea7481e4869bf85f4c3713479e0f7a8700fdf",
+  "corePassed": 1194,
+  "nodePassed": 407,
+  "failures": 0,
+  "skipped": 0,
+  "scope": "Immutable one-use voice delivery, anonymous-turn isolation and trusted photo interruption; actual Apple-diagnosed Unicode, adapter and memory-writer isolation fixes. Real compiler failures and original two stale source-contract failures preserved.",
+  "limits": [
+    "No authenticated wearer/addressee/liveness issuer enabled",
+    "Actual Apple build/test rerun remains pending, prior runs failed",
+    "Optional face generic-device CI recipe newly added, not built yet; no binary redistribution",
+    "372 partial scenario sequences remain distinct from four text episodes; not400 complete real-world scenarios",
+    "Long-trip retrace archive is source-only WIP, not active implementation"
+  ],
+  "sourceHashes": [
+    {
+      "path": ".github/workflows/familiar-apple.yml",
+      "sha256": "9b3d803c12fd391ab85eb870a2612a5e3466617468f95058750c084e09980481",
+      "gitsha": "ae98db08e989e38f0a9c6735cf7abdc25dcff94f",
+      "encoding": "utf-8",
+      "bytes": 1762
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionMemoryWriteQueue.swift",
+      "sha256": "44f79fb0abb025051edc8ac442f3728c840b04b79755a72cfe8e4939a94dd13a",
+      "gitsha": "33e5d3d6c1404caf109cd956217a0656a23d723d",
+      "encoding": "utf-8",
+      "bytes": 5346
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionReferenceReading.swift",
+      "sha256": "38da21c3792b2e98e9505054ff2e7e981b214519c3f4080c9077595cb14c1db3",
+      "gitsha": "9a8fac3d7fa43126744f9a4823dd100a06a4574e",
+      "encoding": "utf-8",
+      "bytes": 17038
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/VoiceAuthority.swift",
+      "sha256": "74f08de326fe7267b98ec601f78222807699c8c8c9ee77a7bc2621edf939d8cf",
+      "gitsha": "d453c99738f2d53d045748cc7192755f7969ca0a",
+      "encoding": "utf-8",
+      "bytes": 4627
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/CompanionEvidenceTests.swift",
+      "sha256": "21078a95bd5292be1b5ab6d294885b73de8ef2943d7cbd02450edafde705a92a",
+      "gitsha": "741b935c9661da86477e774e3a748349fc0affd3",
+      "encoding": "utf-8",
+      "bytes": 15814
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/CompanionReferenceReadingTests.swift",
+      "sha256": "dd002c90bce100f4ab235a357dfab1c796d9dc73a43666d1bf000b5b8e099818",
+      "gitsha": "41b7edac542201c3a931cd5dc4639f2e530c9989",
+      "encoding": "utf-8",
+      "bytes": 23530
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/VoiceAuthorityTests.swift",
+      "sha256": "d3c3cd4835153a462a33f66647fdc61a64dddbf1221d051df158a204f8843862",
+      "gitsha": "563d1532df2cde513e5fea52a96cb4294d231dcc",
+      "encoding": "utf-8",
+      "bytes": 4304
+    },
+    {
+      "path": "ios/BlindAssist/NativeARObservationAdapter.swift",
+      "sha256": "75ede11a65d6eebfb09ee589e64802836314a14d9b02924c983d758a520b29ca",
+      "gitsha": "ef93bbfdea4e37003ec5f52e3b9633e894321223",
+      "encoding": "utf-8",
+      "bytes": 13289
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "sha256": "2fe4016954d92cbcb037fe3e0543a930c3e27c9ac9b6707e9c470e579491614b",
+      "gitsha": "c277dd0296645a4c8f3fc438f5cfa20dcd7951b2",
+      "encoding": "utf-8",
+      "bytes": 396096
+    },
+    {
+      "path": "ios/BlindAssist/VoiceInput.swift",
+      "sha256": "25e502117f31c077c94dd744080ffabcf6531421df95bf4934af188f14178a77",
+      "gitsha": "a1d72d2492ef14e4a0dbc73d9efa593cf248aaa2",
+      "encoding": "utf-8",
+      "bytes": 25936
+    },
+    {
+      "path": "reconstruction/checkpoints/2026-10-25-later/route-longtrip-WIP-0847.tar.gz",
+      "sha256": "d70fa1d4f467b152838280532456b793571cab0e36c34f4973290c14db6fbdf3",
+      "gitsha": "b65baf57888050d7d603f0bf29c6c48b253e1e0e",
+      "encoding": "base64",
+      "bytes": 37969
+    },
+    {
+      "path": "research/FAMILIAR_DEVICE_CI.md",
+      "sha256": "7529090c9091af8cbea50e57c66b1bfc7a290132ba353430cdb26c25bce8e0a0",
+      "gitsha": "198ae060828721bef1818a340af8308968f6fdaa",
+      "encoding": "utf-8",
+      "bytes": 1773
+    },
+    {
+      "path": "research/evaluations/frontier-run-02/README.md",
+      "sha256": "a7d2301c95de6547c1f863630583abe9bdf8d7c224856871a10386612c3a574a",
+      "gitsha": "a6dcdadef382b19ab030eddb984ff901daaec10a",
+      "encoding": "utf-8",
+      "bytes": 1501
+    },
+    {
+      "path": "research/evaluations/frontier-run-02/frontier-full-conversations-bundle.zip",
+      "sha256": "ed5991765e6cd6ddd236e88514a366b8125d1aeee260f5ab34075d993cd06db0",
+      "gitsha": "df9c4924614c6455afead8ee4d8886540ff4246d",
+      "encoding": "base64",
+      "bytes": 72232
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/EXECUTION_SUMMARY.json",
+      "sha256": "1c254f9505a2463456494f4e3ff9655d7675f19c0191bb9791522424ef1c92f7",
+      "gitsha": "ee1ae63c2dc6bd5fc2b706c3e6083c7a2ffbf090",
+      "encoding": "utf-8",
+      "bytes": 89211
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/PUBLICATION_MANIFEST.json",
+      "sha256": "8d8c4dbac7b619aea48be1cc8b3ad41e678c13309a3dc9db6f89f0b639acd541",
+      "gitsha": "43e9e1bc08646ad6b717086a325f8be0afd9dad3",
+      "encoding": "utf-8",
+      "bytes": 14753
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/README.md",
+      "sha256": "874e60c0652f81247e5121cd2b996805ba37e01d8f0995e376afaae5eddea5dd",
+      "gitsha": "efc9c6de76706e9ead607166eaaee99e16af4a2e",
+      "encoding": "utf-8",
+      "bytes": 6161
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/RECEIPT_INDEX.json",
+      "sha256": "b9a9b225c8daa263b9ceabe15e52f3792d69e441699fd8f43d16d1f11483506a",
+      "gitsha": "85db4f63e24b369f8e54afdadeae9017aced7564",
+      "encoding": "utf-8",
+      "bytes": 15515
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/frontier-review-supplement/original-evaluated-input-hashes.json",
+      "sha256": "2fbb551a2e0289b9d14f5cba4a4475cc22cd2f102058c7b751fa933ffec82ace",
+      "gitsha": "0345a660f34384238770fa173aa3796bd61708e7",
+      "encoding": "utf-8",
+      "bytes": 1102
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/frontier-review-supplement/run-02-findings.md",
+      "sha256": "f9487e6a54a2626dc8571d1f8cadfa90272690113fd6a1aede5695e3af5fa45a",
+      "gitsha": "c01d181430698c0b4a664790698f35d68361fdf7",
+      "encoding": "utf-8",
+      "bytes": 5264
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/frontier-review-supplement/run-02-independent-semantic-review-v2.json",
+      "sha256": "160592167a1e6528043b87a5c690a59dc892fe4ad36d59ace2a466c8f62fe51f",
+      "gitsha": "e169b955dd23b4ace62d7f4584e009566175d9aa",
+      "encoding": "utf-8",
+      "bytes": 2041
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/frontier-review-supplement/run-02-reviewed-freeze-receipt.json",
+      "sha256": "a274cbbe563602934835409e032be8315a9545d7c03108e7b1b6c3451d778645",
+      "gitsha": "93a83b450d2f59269dde4030bb020354e509f8f4",
+      "encoding": "utf-8",
+      "bytes": 1749
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/historical-component-receipts.zip",
+      "sha256": "afe2e9e4f36b9005be6b58f3149da239b9d56c8e7ddb1cee730c193a3146082f",
+      "gitsha": "f62c30667f28c2cc0db742040d22f1c86e70349d",
+      "encoding": "base64",
+      "bytes": 545717
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/latest-32/exit-code.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitsha": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "encoding": "utf-8",
+      "bytes": 2
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/latest-32/run-receipt.json",
+      "sha256": "2b09fed996d1c43bfacbcb43308ac1aa21b02a28ffe3bd3ff51d0e4f2605da9f",
+      "gitsha": "2f1369a60f3c837247a544ab285039cd6ad4d624",
+      "encoding": "utf-8",
+      "bytes": 1684
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/latest-32/source-manifest.json",
+      "sha256": "2f9fa68cf765f5ceeea1be39cdab049a1063dfc4615a685322aebc135a52a20b",
+      "gitsha": "fdae9c15135efd061a7bb8779366fa4700ebc061",
+      "encoding": "utf-8",
+      "bytes": 29741
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/latest-32/swift-test.log",
+      "sha256": "79f947fceaeb7e8b63d47c08a6da1030228cf007d550ac827090ccbaf8ffbfea",
+      "gitsha": "69cac9565896d7ac0ec3e6c11f1546765a46ffb5",
+      "encoding": "utf-8",
+      "bytes": 3851
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/public-runner-verification/exit-code.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitsha": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "encoding": "utf-8",
+      "bytes": 2
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/public-runner-verification/input-sha256.txt",
+      "sha256": "5fbd99a06cfd997c93b4290b643cea207181891bee911f84b9f56fd2867f7572",
+      "gitsha": "36909bffd682f797ba95bc27cd8853d9b92313a4",
+      "encoding": "utf-8",
+      "bytes": 13323
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/public-runner-verification/swift-test.log",
+      "sha256": "a5716491cc57886645b7b0a01626d5530ada8f008e58443298d0861ffef856ae",
+      "gitsha": "024229a5fa5a5176b05d9131be4aed297d61ee14",
+      "encoding": "utf-8",
+      "bytes": 5315
+    },
+    {
+      "path": "research/evaluations/integrated-scenarios-20261025/public-runner-verification/swift-version.txt",
+      "sha256": "d7df78b37cc23138e1c65ac3cc35f9bd0db2caf1df39880130951b36a7d039f1",
+      "gitsha": "a7241d2d5d289b871db3498c1da06ddd87a2d00d",
+      "encoding": "utf-8",
+      "bytes": 75
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedAttentionEpisodeTests.swift",
+      "sha256": "c27f81ad44f21cccb26c0321f2619f4881caf0fbdf601618010805e86f950bda",
+      "gitsha": "7e957dd740e5b739791d6e963d4895610cc9742c",
+      "encoding": "utf-8",
+      "bytes": 7731
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedClockControlEpisodeTests.swift",
+      "sha256": "90319f614ddabd78e59c3db8897132c2364162e53cd364926868a89ef84fae6f",
+      "gitsha": "b1313950247decac43a19ff99d35276b29d8f3f8",
+      "encoding": "utf-8",
+      "bytes": 8525
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedConversationBoundaryEpisodeTests.swift",
+      "sha256": "5dda9c3cb359db5558b74e342b49e31fcb28d06ad99c7c381c782e249a428b5e",
+      "gitsha": "008e339b4ebceb58a61b3d6f6e19098b5f4345fb",
+      "encoding": "utf-8",
+      "bytes": 5295
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedEpisodeReplayTests.swift",
+      "sha256": "5ca0ef4aa08b7017f3a4c16abb555864c5811f0435a1d8f39e06971b1907da6c",
+      "gitsha": "a26b928962a0a1b267fb8a1a9dfc0b9ffc12dcc9",
+      "encoding": "utf-8",
+      "bytes": 15224
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedEverydayEpisodeTests.swift",
+      "sha256": "ff98715a0674973a80cc7e87a13c71ef99845f1196b8391b2f680a1f52641f91",
+      "gitsha": "00fdd53d72da4b74412e89c5ce12c57457169bf3",
+      "encoding": "utf-8",
+      "bytes": 17135
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedFamiliarEpisodeTests.swift",
+      "sha256": "8c45a22b68da9de94609e8ae05fa34680bd5e4bce747d80684bc5e041f0eaa30",
+      "gitsha": "3a8b14ad757b6c731766b60315bf7e53a5a982d2",
+      "encoding": "utf-8",
+      "bytes": 8223
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedFeatureEpisodeTests.swift",
+      "sha256": "296e533610c1d42f8f96bc5c1a2939df9a7169582740b099c54f2a81490a41bb",
+      "gitsha": "bb2aa40b8c985178b6820425f2fbdf9eb6b2d105",
+      "encoding": "utf-8",
+      "bytes": 7043
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedMemoryEpisodeTests.swift",
+      "sha256": "3adee6a52ffea9881a471f7284f8843075bb4b38b0ebdd7dc0b9fd99dcab30cf",
+      "gitsha": "8e466acfe390b7ac06d5a7419bcbd56d8455d371",
+      "encoding": "utf-8",
+      "bytes": 10384
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedPhotoEpisodeTests.swift",
+      "sha256": "1c933afd78eb0277ab272da18a2769d34b952eb146f693fc06fbd269406e0b78",
+      "gitsha": "d4fac2f2d98ab71896590a735464afced01a55c0",
+      "encoding": "utf-8",
+      "bytes": 9105
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedReferenceEpisodeTests.swift",
+      "sha256": "f451822e88645057b8085bf76087798310356f192ca8d4dacec659fbd55256c3",
+      "gitsha": "b86a813d79dc2c38da23ef6a992e019b1603b380",
+      "encoding": "utf-8",
+      "bytes": 10068
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedScopedMemoryEpisodeTests.swift",
+      "sha256": "8270db4b2ec3abed497a33d31c381a8d75044d24371a26fcb61ba90514c0c225",
+      "gitsha": "b59ec96da9981f9b33f5ebe385e00bee77c35f6d",
+      "encoding": "utf-8",
+      "bytes": 9091
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedShoppingSessionEpisodeTests.swift",
+      "sha256": "d487ef5f0f4a1042581551ac239b7f0e9b8d3e97406b6f94134e844174d5ab40",
+      "gitsha": "988e193ba7c57614065397504d659c66e3f8717d",
+      "encoding": "utf-8",
+      "bytes": 9524
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedSourcedMapEpisodeTests.swift",
+      "sha256": "b8da2a34da79bf0891ff5272f375d5e8144534356926a4a0c36b75fdec7d19af",
+      "gitsha": "8fdbdc70f1850ec0b1ac69e044ad413d3b2c18eb",
+      "encoding": "utf-8",
+      "bytes": 3654
+    },
+    {
+      "path": "tests/scenarios/integrated/IntegratedSpatialAuthorityEpisodeTests.swift",
+      "sha256": "12e9c8890868dc95e736aded4d32936112c216081eda0919980d0aeab63a02ec",
+      "gitsha": "e0abc3f912bea3ca84311e30cc12af4e5cedd9a1",
+      "encoding": "utf-8",
+      "bytes": 10491
+    },
+    {
+      "path": "tests/scenarios/integrated/README.md",
+      "sha256": "1a517bc5cb8c9066df1086bf4ef616fd9502d38839a772e3543ca4272319621f",
+      "gitsha": "a6e4f6268edf14c6cef7b1429c26773cb71f03f4",
+      "encoding": "utf-8",
+      "bytes": 9490
+    },
+    {
+      "path": "tests/scenarios/integrated/build_coverage.py",
+      "sha256": "0556aaf828d7e410904b73368ef366312d3c395ada14662e697329ad7ca91076",
+      "gitsha": "34f5e0e56dcff9ff932ab38bdaf1b726c942b597",
+      "encoding": "utf-8",
+      "bytes": 6573
+    },
+    {
+      "path": "tests/scenarios/integrated/build_requirement_coverage.py",
+      "sha256": "239d358d3fb99810c1688a1a56c05ce4b5555e46a68b7c67a0cdcf6692163e12",
+      "gitsha": "ac3bda195efc65b7737dc9104e824dd13c6e3e1c",
+      "encoding": "utf-8",
+      "bytes": 9366
+    },
+    {
+      "path": "tests/scenarios/integrated/coverage-obligations.json",
+      "sha256": "1766d310f4c5e4b1d5ca2e78463fd7aa2ce0e390f1550783e8360df25bb46959",
+      "gitsha": "602b9801a65f0aba0a1a62f999052ed960182c2f",
+      "encoding": "utf-8",
+      "bytes": 787503
+    },
+    {
+      "path": "tests/scenarios/integrated/dataset-provenance.json",
+      "sha256": "81324cfd7361bdb53d79e34d0b4239b94840588b1be58f1d7da1a5645b6726c2",
+      "gitsha": "3d51bf06fdb32b2ef22d24d37de57b3349f45a79",
+      "encoding": "utf-8",
+      "bytes": 3534
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/PORTABILITY_CHANGES.md",
+      "sha256": "f66755ff83cb1b8a307d781ef2e2217683af20132a530cac51bffd413a2cdd71",
+      "gitsha": "db97f61a9c6e5026ece5dc1f71553d4333198f96",
+      "encoding": "utf-8",
+      "bytes": 544
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/README.md",
+      "sha256": "aebc743ded8cb2da7c1b4007f0cde1ae6b152ab290db3ed207895759b835cd5b",
+      "gitsha": "c9f4d1b6acfb77a7bc21b76b18ffabb75e56f7c4",
+      "encoding": "utf-8",
+      "bytes": 4245
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/audit_trace.py",
+      "sha256": "600ffb13f413cae41262b469e4515421408d8b0c43b448029c0b3ba38207fbfb",
+      "gitsha": "bd4e3d230d214fab7f33479fd423bee9e966ae9f",
+      "encoding": "utf-8",
+      "bytes": 2128
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/build.sh",
+      "sha256": "35760a23c2931eddb3da3c6961f703d7df69003916e9a2b6f67fe076b62fadbf",
+      "gitsha": "11d29ac29d569fed622b98c2995ad7943ef03deb",
+      "encoding": "utf-8",
+      "bytes": 1330
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/hidden/grade_code_state.py",
+      "sha256": "7953bc4b20856f98ac0d3088cd0a5a0af7e5e195c68bc31db1215ef8bcfc786a",
+      "gitsha": "97ba612c873ee6bca88ff88cebc3bbda3b7aea53",
+      "encoding": "utf-8",
+      "bytes": 3209
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/hidden/oracle.json",
+      "sha256": "20df0f93308b518a31b2c3e77d931e4d919a6346effdfe8e15cb725de8e7881d",
+      "gitsha": "2345c23aba47ce18bf0102538f8fc8850149e1c6",
+      "encoding": "utf-8",
+      "bytes": 1054
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/public/EVALUATOR_INSTRUCTIONS.txt",
+      "sha256": "586c527878a258d5537405b5e1918c2cad09100f44d4f91066f69080fee66289",
+      "gitsha": "ca5525b90c1d11fb606d109097f99250e18091b5",
+      "encoding": "utf-8",
+      "bytes": 3609
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/public/bridge.py",
+      "sha256": "bd5840ee7f226eac3b2d326ccce5df014c6073556735c18faf42264f25bcf9c7",
+      "gitsha": "c18011c5f4505480b5d23bbf5600a5fc70f6fb0a",
+      "encoding": "utf-8",
+      "bytes": 2676
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/public/episodes.json",
+      "sha256": "a07772ff5837c3c42e77cc830ef4273edbd63e7a44cc4778111d1c12c16f8cac",
+      "gitsha": "7279a2b3737221911c14b48556bc1a0a16e19149",
+      "encoding": "utf-8",
+      "bytes": 6259
+    },
+    {
+      "path": "tests/scenarios/integrated/frontier/public/main.swift",
+      "sha256": "f74ecb4d38e358dbaa29a5a58061bcb41c025bad8bf7f9909aa641878a1cac76",
+      "gitsha": "a93d7b76fddbea532649b0320e237a7b24ffed08",
+      "encoding": "utf-8",
+      "bytes": 6882
+    },
+    {
+      "path": "tests/scenarios/integrated/native-recovery-method.swift.txt",
+      "sha256": "23d0d1f238e41ad1adcd0be2bb99be620595bc19d7d738d56cec956936cdc21f",
+      "gitsha": "c325e0c26f7ea53eacf45eea7a419dd8010c8907",
+      "encoding": "utf-8",
+      "bytes": 4532
+    },
+    {
+      "path": "tests/scenarios/integrated/project_native.py",
+      "sha256": "affcb02174d2cfe822cd986c46a2c750b72a7d9a7522ca15fa03a888ef737544",
+      "gitsha": "aa9c0b1ecbad29b84fb65b7dd9f5aeca2eb797ce",
+      "encoding": "utf-8",
+      "bytes": 1770
+    },
+    {
+      "path": "tests/scenarios/integrated/requirement-coverage.json",
+      "sha256": "c8dba3e7c4bc4c9bb9f33c421c0013f9c8380018ba2a476574fd7a3f51beb1b0",
+      "gitsha": "860a8c22f5d4c06ae206af9d5ca941bd01a06f27",
+      "encoding": "utf-8",
+      "bytes": 290484
+    },
+    {
+      "path": "tests/scenarios/integrated/run-scoped-attention.sh",
+      "sha256": "59f7e0548ffeec07691162c1358c2236d2be46142e0986cca814df53dbee0904",
+      "gitsha": "be8c5f68a2e7c728f9837c3bae110582ba880820",
+      "encoding": "utf-8",
+      "bytes": 1950
+    },
+    {
+      "path": "tests/scenarios/integrated/run.sh",
+      "sha256": "39e011a7899a9f1efb0becfa859c72a90b07965be9b4d781f5f10be6a5b344ba",
+      "gitsha": "c5eacb165a81e81ec3ec161dac3b730af15ac620",
+      "encoding": "utf-8",
+      "bytes": 4073
+    },
+    {
+      "path": "tests/scenarios/integrated/summarize_receipts.py",
+      "sha256": "68f722cd54a1b802ef69b97012f56b35c3de896e39f4aea8a70d7ae1073136d1",
+      "gitsha": "a8bedbe88521a8fae3ff71e2e11bd7a19561da68",
+      "encoding": "utf-8",
+      "bytes": 2489
+    },
+    {
+      "path": "tests/scenarios/integrated/surviving-corpus-inventory.json",
+      "sha256": "9538419b163f93cb069ba4dc131dd37e101dba0538964115dbc77a4cd645b244",
+      "gitsha": "12941ca0f66d86e7261ea5562cd29e6424588cb8",
+      "encoding": "utf-8",
+      "bytes": 10141
+    },
+    {
+      "path": "tools/ci/familiar-device-project.mjs",
+      "sha256": "9c955ab4677139786aed96cf8b97b0ddd2afc2dbd8585a3e87f2ecd33cba5fe5",
+      "gitsha": "6b9f7e7998090d3cda5a56a2634ef7de8cb78ddd",
+      "encoding": "utf-8",
+      "bytes": 1614
+    },
+    {
+      "path": "tools/ci/familiar-device.sh",
+      "sha256": "55018d7f1818b09105fa6a12883f938d131178ffe97407c35e8ed707a7484e64",
+      "gitsha": "6cde4cc83ef0bb647dbf20e77b0306f5fba2ab20",
+      "encoding": "utf-8",
+      "bytes": 2625
+    },
+    {
+      "path": "tools/ci/familiar-notices/OpenCV-LICENSE.txt",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "gitsha": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+      "encoding": "utf-8",
+      "bytes": 11358
+    },
+    {
+      "path": "tools/ci/native-apple.sh",
+      "sha256": "c87782701447fdb24d63de6545648bc4552d127f74c069c8bb255689db1c7de7",
+      "gitsha": "d963f47c5dd8e859e42474c62a9b195f3a692bee",
+      "encoding": "utf-8",
+      "bytes": 5015
+    },
+    {
+      "path": "tools/test/command-authority.test.mjs",
+      "sha256": "1171bdf21ab9a21f42523eb5a573b90b88fcfc3f319acccc39b65a8bd7e03306",
+      "gitsha": "5b5afef19bf3a83c0741707604751025cfa1b840",
+      "encoding": "utf-8",
+      "bytes": 12054
+    },
+    {
+      "path": "tools/test/debug-native-session.test.mjs",
+      "sha256": "0fdede283c4e261872043299f45db80ee1031991147e5dbddc5b98859126916b",
+      "gitsha": "0ece8c03add7e0efbe2622a6d2f5b56d727991b2",
+      "encoding": "utf-8",
+      "bytes": 15132
+    },
+    {
+      "path": "tools/test/fixtures/scoped-memory-review/ControllerPrefix.swift",
+      "sha256": "70d3c0f2d54b1ee9cf5f44947554193b32b62c8b7e1305fae894cac27aed9194",
+      "gitsha": "2ac7d76e0a0543e0d4de86ab0a390885e5c1db14",
+      "encoding": "utf-8",
+      "bytes": 3932
+    },
+    {
+      "path": "tools/test/scoped-memory-review.test.mjs",
+      "sha256": "c615634ea7d31838c0dc069916f9e13e88ba29e17c678a6a61589baf2027edee",
+      "gitsha": "7677cc80d47b9acdc426bdbd26af63aa06b3fc82",
+      "encoding": "utf-8",
+      "bytes": 18287
+    },
+    {
+      "path": "tools/test/selected-photo-reference.test.mjs",
+      "sha256": "bd2d3a30bc725a9ff7b07455365bd30610774ab8de7ddbc8ab3bf6b7842a51ea",
+      "gitsha": "a168da49b11f0037aa0ed948e6e59cd6221c8d59",
+      "encoding": "utf-8",
+      "bytes": 12002
+    }
+  ]
+}

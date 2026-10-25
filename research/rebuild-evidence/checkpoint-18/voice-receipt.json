@@ -1,0 +1,32 @@
+{
+  "scope": "Only these five files; not whole-source freeze. Acoustic adapter/runtime excluded.",
+  "paths": [
+    {
+      "file": "ios/BlindAssist/NavigationModel.swift",
+      "sha256": "ad510ed95a9626c87d8c45b1c4533281fce28719062a7cbb7de8f5dac6209a38"
+    },
+    {
+      "file": "ios/BlindAssist/VoiceInput.swift",
+      "sha256": "25e502117f31c077c94dd744080ffabcf6531421df95bf4934af188f14178a77"
+    },
+    {
+      "file": "tools/test/command-authority.test.mjs",
+      "sha256": "1171bdf21ab9a21f42523eb5a573b90b88fcfc3f319acccc39b65a8bd7e03306"
+    },
+    {
+      "file": "BlindCore/Sources/BlindCore/VoiceAuthority.swift",
+      "sha256": "74f08de326fe7267b98ec601f78222807699c8c8c9ee77a7bc2621edf939d8cf"
+    },
+    {
+      "file": "BlindCore/Tests/BlindCoreTests/VoiceAuthorityTests.swift",
+      "sha256": "d3c3cd4835153a462a33f66647fdc61a64dddbf1221d051df158a204f8843862"
+    }
+  ],
+  "checks": {
+    "live_node_contracts": "12/12 passed",
+    "live_isolated_xctest": "6/6 passed, actual live core sources, isolated minimal package",
+    "live_core_witness": "4352 assertions passed",
+    "native_swift_parse": "NavigationModel and VoiceInput passed; syntax only, not Apple typecheck/build"
+  },
+  "status": "five voice paths frozen; no further writes by worker; aggregate18/Apple acceptance owned by parent"
+}

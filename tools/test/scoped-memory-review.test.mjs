@@ -51,6 +51,28 @@ test('scoped review captures an immutable receipt and fences late conversation p
  before(review,'assistantDialogue.forgetBoundSource(selection.sourceID)','await companionMemoryWriter.waitForCommit(receipt)');
 });
 
+test('nonactor native controller crosses explicit main-actor writer boundaries',()=>{
+ const nav=read('ios/BlindAssist/NavigationModel.swift'),queue=read('BlindCore/Sources/BlindCore/CompanionMemoryWriteQueue.swift');
+ const prefix=read('tools/test/fixtures/scoped-memory-review/ControllerPrefix.swift');
+ assert.match(prefix,/final class ExtractedScopedReviewController: NSObject/);
+ assert.doesNotMatch(prefix,/@MainActor final class ExtractedScopedReviewController/);
+ assert.match(nav,/private lazy var companionMemoryWriter: CompanionMemoryWriteQueue = MainActor\.assumeIsolated/);
+ assert.match(nav,/@MainActor\s+@discardableResult func reviseScopedConversationRecord/);
+ for(const [start,end] of [['    private func admittedCompanionMemoryStore()', '    @discardableResult private func enqueueCompanionMemorySnapshot()'],['    @discardableResult private func enqueueCompanionMemorySnapshot()', '    func retryCompanionMemorySave()']]) {
+  assert.match(section(nav,start,end),/return MainActor\.assumeIsolated/);
+ }
+ assert.match(queue,/@MainActor public final class CompanionMemoryWriteQueue/);
+ assert.match(queue,/onCompletion: \(@MainActor \(Receipt, Bool\) -> Void\)\?/);
+ assert.match(queue,/nonisolated public static let maximumDialogueBytes/);
+ assert.match(queue,/nonisolated public static let maximumWorkingStateBytes/);
+ assert.match(queue,/Task\.detached\(priority: \.utility\)/);
+ assert.match(nav,/session\.delegateQueue = \.main/);
+ const feedback=read('ios/BlindAssist/Feedback.swift');
+ const completion=section(feedback,'    private func finishActive(', '    func speechSynthesizer(');
+ before(completion,'DispatchQueue.main.async','self.onNarrationFinished?');
+ before(completion,'DispatchQueue.main.async','self.onRequestedSpeechFinished?');
+});
+
 test('native editor awaits durable success and guards both actions against duplicate submission',()=>{
  const editor=editorSource();
  assert.match(editor,/@State private var saving = false/);

@@ -44,7 +44,15 @@ final class VoiceInput: ObservableObject {
     var awaitingUtterance: Bool {
         listening && (!continuous || acousticSpeechActive || (utterance.hasUserSpeech && !utterance.text.isEmpty && !utterance.ignored))
     }
-    var onFinished: ((String) -> Void)?
+    private var activeDelivery: CapturedVoiceTurn?
+    var onFinished: ((CapturedVoiceTurn) -> Void)?
+    /// Only the synchronous callback for this exact capture delivery can enter chat.
+    /// This binds provenance; it does not authenticate the speaker.
+    func consumeDelivery(_ turn: CapturedVoiceTurn) -> Bool {
+        guard activeDelivery == turn else { return false }
+        activeDelivery = nil
+        return true
+    }
     /// Early voice-processed energy onset, with a non-echo partial fallback.
     /// This is not semantic VAD or speaker identity; residual echo can trigger it.
     var onSpeechBegan: (() -> Void)?
@@ -286,6 +294,10 @@ final class VoiceInput: ObservableObject {
     func finish() {
         guard lifecycle.requested, canCapture else { return }
         let text = utterance.deliverable(isEcho: shouldIgnore?(utterance.text) == true)
+        // Bind the final transcript before beginTurn/cancel retires ASR identifiers.
+        let completed = text.map { CapturedVoiceTurn(session: lifecycle.session,
+            capture: captureGeneration, recognitionTurn: turn, text: $0,
+            completedAt: ProcessInfo.processInfo.systemUptime) }
         #if DEBUG
         debugTrace?.event(.userInput, source: .unverifiedMicrophone) {
             .init(text: utterance.text,
@@ -294,8 +306,10 @@ final class VoiceInput: ObservableObject {
         #endif
         if continuous, engine?.isRunning == true, canCapture { beginTurn() }
         else { cancel() }
-        guard let text else { return }
-        onFinished?(text)
+        guard let completed else { return }
+        activeDelivery = completed
+        defer { activeDelivery = nil }
+        onFinished?(completed)
     }
 
     /// Scene operations may end a manual turn without disabling hands-free input.
@@ -307,6 +321,7 @@ final class VoiceInput: ObservableObject {
     }
 
     private func stopCapture() {
+        activeDelivery = nil
         turn = UUID(); captureGeneration = UUID()
         input.cancelCapture()
         speechBeganDelivered = false; acousticSpeechActive = false

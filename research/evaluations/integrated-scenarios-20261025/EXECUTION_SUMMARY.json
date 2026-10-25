@@ -1,0 +1,2706 @@
+{
+  "scope": "Unique traced CODE COMPONENT sequences across multiple source snapshots. NOT full user/model/device episodes, not independent empirical trials, not assertions counted as episodes. Repeated reruns deduplicated by ID; systematic matrices disclosed. Native regression tests with no full episode JSON remain separate.",
+  "unique_partial_code_sequences": 372,
+  "full_user_model_device_episodes_completed": 0,
+  "total_recorded_steps_latest_per_id": 3078,
+  "status_counts": {
+    "FAIL": 8,
+    "PARTIAL_CODE_PASS": 313,
+    "PASS": 48,
+    "SEE_XCTEST_ASSERTIONS": 3
+  },
+  "runs": [
+    {
+      "run": "run-01",
+      "exit_code": 1,
+      "log_sha256": "0b5aa1748558f3dc696fd9f175887a47922d2851f84fb9f34e289dae3770dcbc"
+    },
+    {
+      "run": "run-02",
+      "exit_code": 1,
+      "log_sha256": "3c7c4b4cdaf538a12645e4a26780f3086b925875478e7fd0c40aea6426f472e2"
+    },
+    {
+      "run": "run-03-recovery",
+      "exit_code": 0,
+      "log_sha256": "37cc9d7aa5cbef785e972700ff1ed85e14c643841f15d9fae0a4b3ed3acebf5e"
+    },
+    {
+      "run": "run-04-native-recovery",
+      "exit_code": 1,
+      "log_sha256": "36f735cbae7b1a9dfc384ce58a16bc22e1f33bb2845b9efc5f36104aecf0b029"
+    },
+    {
+      "run": "run-05-features-and-unknown",
+      "exit_code": 0,
+      "log_sha256": "a9d34c580f2fcb4cd09ba53d69c155c936fcaa019d0afd81d9f8d21d7a3e5cfe"
+    },
+    {
+      "run": "run-06-candidate-native-recovery",
+      "exit_code": 0,
+      "log_sha256": "e3b7dc6a8cd402160ee0b9ae0cea4c4a2e40408fe63d6050b24011cfe46204b1"
+    },
+    {
+      "run": "run-07-everyday",
+      "exit_code": 1,
+      "log_sha256": "a6252f9e55e805ae61361e8cdc1e56aa08624b46810d529afc66cbfd0ba96890"
+    },
+    {
+      "run": "run-08-everyday-photo",
+      "exit_code": 0,
+      "log_sha256": "555b54856287ca998d7eabff2c5d37ccd0834aaee5e5d4080be27ea848b56da7"
+    },
+    {
+      "run": "run-09-memory-and-content-oracles",
+      "exit_code": 0,
+      "log_sha256": "227abc6a4250673e90df674fd10835e760b68c54739fec2f126936514d0c00cb"
+    },
+    {
+      "run": "run-10-clock-controls",
+      "exit_code": 0,
+      "log_sha256": "0f3e52b05594680e844d7603bb8e0a811d687eef2685ca0b2b615832998a5cdb"
+    },
+    {
+      "run": "run-11-spatial-authority",
+      "exit_code": 1,
+      "log_sha256": "611ad6375415a38ce526a5f48b05c27fb01af0d0f1d56a11de16a19ff4980549"
+    },
+    {
+      "run": "run-12-spatial-shopping-session",
+      "exit_code": 0,
+      "log_sha256": "c2774131381a1fbfe5c989b7903207325319627586841f37c03f68e4694bbc2c"
+    },
+    {
+      "run": "run-13-reference-sourced-map",
+      "exit_code": 0,
+      "log_sha256": "de2cbf727b48b229b30392d449ed35ea558a04f1c31e543de0dc51b0ae636a44"
+    },
+    {
+      "run": "run-14-familiar",
+      "exit_code": 0,
+      "log_sha256": "af5b2be6333fb75dff59c10c1ac12aaf79b5fe971aea087f22949772321135ef"
+    },
+    {
+      "run": "run-15-conversation-boundary",
+      "exit_code": 0,
+      "log_sha256": "195e75d3f86b307f6544e52a79e6ee21bd43e6e59a380f08ba28e3b36341c72d"
+    },
+    {
+      "run": "run-16-current-scoped-attention",
+      "exit_code": 0,
+      "log_sha256": "79f947fceaeb7e8b63d47c08a6da1030228cf007d550ac827090ccbaf8ffbfea"
+    },
+    {
+      "run": "run-17-public-runner-smoke",
+      "exit_code": 0,
+      "log_sha256": "a5716491cc57886645b7b0a01626d5530ada8f008e58443298d0861ffef856ae"
+    }
+  ],
+  "episodes": [
+    {
+      "id": "NAV-001",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 34,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-002",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 35,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-003",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 37,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-004",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 36,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-005",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 36,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-006",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 38,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-007",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 36,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-008",
+      "status": "FAIL",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-009",
+      "status": "FAIL",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-010",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 21,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-011",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 40,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-012",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 41,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-013",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 43,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-014",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 42,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-015",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 42,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-016",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 44,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-017",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 42,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-018",
+      "status": "FAIL",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-019",
+      "status": "FAIL",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-020",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 24,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-021",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 54,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-022",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 55,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-023",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 57,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-024",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 56,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-025",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 56,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-026",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 58,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-027",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 56,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-028",
+      "status": "FAIL",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-029",
+      "status": "FAIL",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-030",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 31,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-031",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 60,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-032",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 61,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-033",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 63,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-034",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 62,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-035",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 62,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-036",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 64,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-037",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 62,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-038",
+      "status": "FAIL",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-039",
+      "status": "FAIL",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-040",
+      "status": "PASS",
+      "receipt": "evidence/run-02/navigation-episodes.json",
+      "steps": 34,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-041",
+      "status": "PASS",
+      "receipt": "evidence/run-03-recovery/navigation-recovery-episodes.json",
+      "steps": 37,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-042",
+      "status": "PASS",
+      "receipt": "evidence/run-03-recovery/navigation-recovery-episodes.json",
+      "steps": 37,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-043",
+      "status": "PASS",
+      "receipt": "evidence/run-03-recovery/navigation-recovery-episodes.json",
+      "steps": 43,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-044",
+      "status": "PASS",
+      "receipt": "evidence/run-03-recovery/navigation-recovery-episodes.json",
+      "steps": 43,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-045",
+      "status": "PASS",
+      "receipt": "evidence/run-03-recovery/navigation-recovery-episodes.json",
+      "steps": 57,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-046",
+      "status": "PASS",
+      "receipt": "evidence/run-03-recovery/navigation-recovery-episodes.json",
+      "steps": 57,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-047",
+      "status": "PASS",
+      "receipt": "evidence/run-03-recovery/navigation-recovery-episodes.json",
+      "steps": 63,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "NAV-048",
+      "status": "PASS",
+      "receipt": "evidence/run-03-recovery/navigation-recovery-episodes.json",
+      "steps": 63,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FEATURE-familiar-encounter",
+      "status": "SEE_XCTEST_ASSERTIONS",
+      "receipt": "evidence/run-05-features-and-unknown/feature-content-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FEATURE-color-change",
+      "status": "SEE_XCTEST_ASSERTIONS",
+      "receipt": "evidence/run-05-features-and-unknown/feature-content-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FEATURE-ocr-target-change",
+      "status": "SEE_XCTEST_ASSERTIONS",
+      "receipt": "evidence/run-05-features-and-unknown/feature-content-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FEATURE-color-fresh",
+      "status": "PASS",
+      "receipt": "evidence/run-05-features-and-unknown/feature-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FEATURE-color-stale",
+      "status": "PASS",
+      "receipt": "evidence/run-05-features-and-unknown/feature-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FEATURE-text-fresh",
+      "status": "PASS",
+      "receipt": "evidence/run-05-features-and-unknown/feature-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FEATURE-text-stale",
+      "status": "PASS",
+      "receipt": "evidence/run-05-features-and-unknown/feature-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FEATURE-barcode-fresh",
+      "status": "PASS",
+      "receipt": "evidence/run-05-features-and-unknown/feature-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FEATURE-barcode-stale",
+      "status": "PASS",
+      "receipt": "evidence/run-05-features-and-unknown/feature-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FEATURE-currency-fresh",
+      "status": "PASS",
+      "receipt": "evidence/run-05-features-and-unknown/feature-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FEATURE-currency-stale",
+      "status": "PASS",
+      "receipt": "evidence/run-05-features-and-unknown/feature-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-savedMemory-successful_information",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-savedMemory-pause_resume",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-savedMemory-goal_replacement",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-savedMemory-cancel",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-savedMemory-timeout",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-savedMemory-uncertain_retry",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-savedMemory-backend_unavailable",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-savedMemory-duplicate_callback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-savedMemory-repeat_goal",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-savedMemory-clock_regression",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-findItem-successful_information",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 6,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-findItem-pause_resume",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 6,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-findItem-goal_replacement",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-findItem-cancel",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 6,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-findItem-timeout",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 6,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-findItem-uncertain_retry",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 6,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-findItem-backend_unavailable",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-findItem-duplicate_callback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 6,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-findItem-repeat_goal",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 6,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-findItem-clock_regression",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readText-successful_information",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readText-pause_resume",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readText-goal_replacement",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readText-cancel",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readText-timeout",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readText-uncertain_retry",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readText-backend_unavailable",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readText-duplicate_callback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readText-repeat_goal",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readText-clock_regression",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readDocument-successful_information",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readDocument-pause_resume",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readDocument-goal_replacement",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readDocument-cancel",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readDocument-timeout",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readDocument-uncertain_retry",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readDocument-backend_unavailable",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readDocument-duplicate_callback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readDocument-repeat_goal",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-readDocument-clock_regression",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-barcode-successful_information",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-barcode-pause_resume",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-barcode-goal_replacement",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-barcode-cancel",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-barcode-timeout",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-barcode-uncertain_retry",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-barcode-backend_unavailable",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-barcode-duplicate_callback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-barcode-repeat_goal",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-barcode-clock_regression",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-clothingColor-successful_information",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-clothingColor-pause_resume",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-clothingColor-goal_replacement",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-clothingColor-cancel",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-clothingColor-timeout",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-clothingColor-uncertain_retry",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-clothingColor-backend_unavailable",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-clothingColor-duplicate_callback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-clothingColor-repeat_goal",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-clothingColor-clock_regression",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-currency-successful_information",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-currency-pause_resume",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-currency-goal_replacement",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-currency-cancel",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-currency-timeout",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-currency-uncertain_retry",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-currency-backend_unavailable",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-currency-duplicate_callback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-currency-repeat_goal",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-currency-clock_regression",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-familiarPerson-successful_information",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-familiarPerson-pause_resume",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-familiarPerson-goal_replacement",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-familiarPerson-cancel",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-familiarPerson-timeout",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-familiarPerson-uncertain_retry",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-familiarPerson-backend_unavailable",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-familiarPerson-duplicate_callback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-familiarPerson-repeat_goal",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-familiarPerson-clock_regression",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-light-successful_information",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-light-pause_resume",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-light-goal_replacement",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-light-cancel",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-light-timeout",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-light-uncertain_retry",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-light-backend_unavailable",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-light-duplicate_callback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-light-repeat_goal",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-light-clock_regression",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-deviceClock-successful_information",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-deviceClock-pause_resume",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-deviceClock-goal_replacement",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-deviceClock-cancel",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-deviceClock-timeout",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-deviceClock-uncertain_retry",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-deviceClock-backend_unavailable",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-deviceClock-duplicate_callback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-deviceClock-repeat_goal",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "EVERYDAY-deviceClock-clock_regression",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/everyday-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-complete",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-privacy_delete",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-source_replace",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-wrong_source",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-late_load",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-deadline",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-clock_rollback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-wrong_view",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-wrong_session",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-new_question",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-quiet",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-hazard",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-background",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-audio_loss",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-interrupted",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-wrong_finish_id",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-wrong_finish_text",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-duplicate_finish",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-admission_rejected",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "PHOTO-long_qualifier",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-08-everyday-photo/photo-component-episodes.json",
+      "steps": 9,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-dated_correction",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-reordered_reports",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-restart",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-privacy_forget",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-unknown_object",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-unknown_age",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-future_record",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-pronoun_bound",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-pronoun_unbound",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-negated_report",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-cross_place",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-source_history",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-irrelevant_preferences",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-room_inventory",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-long_record",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-current_in_memory",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-generic_done",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-wrong_target_done",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-negated_done",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "MEMORY-named_completion",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-09-memory-and-content-oracles/memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-en-fresh",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-en-deadline",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-en-zone_change",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-en-wall_rollback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-en-monotonic_rollback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-en-request_change",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-en-generation_change",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-en-reply_change",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-en-replayed_after_expiry",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-en-small_skew",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-ar-fresh",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-ar-deadline",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-ar-zone_change",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-ar-wall_rollback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-ar-monotonic_rollback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-ar-request_change",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-ar-generation_change",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-ar-reply_change",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-ar-replayed_after_expiry",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "CLOCK-ar-small_skew",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/clock-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-en-confirmed",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-en-prompt_unheard",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-en-expired",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-en-cancelled",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-en-replaced",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-en-model_request",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-en-observed_confirmation",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-en-unrelated_reply",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-en-duplicate_yes",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-en-background_discussion",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 1,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-ar-confirmed",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-ar-prompt_unheard",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-ar-expired",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-ar-cancelled",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-ar-replaced",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-ar-model_request",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-ar-observed_confirmation",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-ar-unrelated_reply",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-ar-duplicate_yes",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCAN-ar-background_discussion",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-10-clock-controls/scan-control-component-episodes.json",
+      "steps": 1,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SESSION-end_foreground",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/session-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SESSION-mute_foreground",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/session-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SESSION-background_default",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/session-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SESSION-background_opt_in",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/session-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SESSION-withdraw_opt_in",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/session-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SESSION-mute_background",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/session-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SESSION-ended_unmute",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/session-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SESSION-repeat_start",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/session-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SESSION-explicit_invalidate",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/session-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SESSION-idle_permissions",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/session-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SHOPPING-normal",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/shopping-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SHOPPING-arabic",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/shopping-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SHOPPING-duplicate",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/shopping-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SHOPPING-observation",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/shopping-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SHOPPING-quoted_command",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/shopping-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SHOPPING-mismatched_quote",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/shopping-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SHOPPING-unknown_barcode",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/shopping-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SHOPPING-private_label_delete",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/shopping-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SHOPPING-restore",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/shopping-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SHOPPING-forged_restore",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/shopping-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-wrong_map",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-wrong_revision",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-wrong_session",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-wrong_floor",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-wrong_support_capture",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-wrong_support_time",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-camera_height_support",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-camera_heading",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-appearance_only",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-gps_only",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-expired_pose",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-unknown_ground",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-missing_surface",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-new_obstacle",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-closed_edge",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-body_changed",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-new_map_revision",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-lost_tracking",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-stale_goal",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SPATIAL-late_empty_restrictions",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-12-spatial-shopping-session/spatial-authority-component-episodes.json",
+      "steps": 6,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-complete",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-quiet",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-hazard",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-background",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-new_request",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-source_change",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-deadline",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-clock_rollback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-interrupted",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-foreign_callback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-duplicate_callback",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-busy_ledger",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-wrong_model",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-current_evidence",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-heading_only",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-bad_body_range",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-wrong_digest",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-wrong_media",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-empty_query",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "REFERENCE-long_qualifier",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/reference-component-episodes.json",
+      "steps": 8,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SOURCE-OAS-preview",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-13-reference-sourced-map/sourced-map-component-episode.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-candidate_notice",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-missing_consent",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-cancelled_consent",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-expired_consent",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-wrong_token",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-token_replay",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 6,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-lookalike",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-tie",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-unknown_score",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-duplicate_identity",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-missing_vision",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 6,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-vision_disagreement",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 6,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-vision_cannot_promote",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 6,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-empty_gallery",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-invalid_score",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-face_not_visible",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 5,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-duplicate_face_assignment",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 6,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-search_timeout",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-search_spacing",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "FAMILIAR-search_exhaustion",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-14-familiar/familiar-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-rainbow",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-sun",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-multiplication",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-arabic_arithmetic",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-joke",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-kindness",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-energy_language",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-science_glass",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-ordinary_ack",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-found_report",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-cup_reach",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-pickup",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-invented_sighting",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-invented_location",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-hyphen_motion",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-candle",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-milk_heat",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-mixed_science_action",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-fake_identity",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "DIALOGUE-BOUNDARY-fake_safe_path",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-15-conversation-boundary/conversation-boundary-component-episodes.json",
+      "steps": 4,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "ATTENTION-quiet",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/attention-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "ATTENTION-hazard_bypasses_quiet",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/attention-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "ATTENTION-focused_mobility",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/attention-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "ATTENTION-focused_requested",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/attention-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "ATTENTION-focused_unrelated",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/attention-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "ATTENTION-expired_suppressed",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/attention-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "ATTENTION-duplicate_revision",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/attention-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "ATTENTION-changed_revision",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/attention-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "ATTENTION-word_budget",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/attention-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "ATTENTION-frequency",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/attention-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "ATTENTION-unknown_room",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/attention-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "ATTENTION-offer_decline",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/attention-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-same_scope",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-other_place",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-other_map",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-other_frame",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-other_revision",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-other_floor",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-other_room",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-other_instance",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-room_only",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-unknown_scope",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-fresh_observation",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-expired_observation",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-future_observation",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-older_observation",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-spatial_observation",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 3,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-correction",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-source_delete",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-source_move",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-source_redate",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    },
+    {
+      "id": "SCOPED-MEMORY-restore_both",
+      "status": "PARTIAL_CODE_PASS",
+      "receipt": "evidence/run-17-public-runner-smoke/scoped-memory-component-episodes.json",
+      "steps": 2,
+      "is_full_user_episode": false
+    }
+  ],
+  "remaining_requirement": "400 genuine complete integrated episodes across53 families remain incomplete; planned obligations are not executed counts."
+}

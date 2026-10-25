@@ -57,11 +57,35 @@ test('one native photo lease survives UI cancellation until actual decode or Vis
   assert.match(s, /defer \{ self\?\.finishSelectedPhotoNativeWork\(selection\) \}/);
 });
 
-test('camera cancellation is separate; photo interruption and quiet clear the whole snapshot', async () => {
+test('camera cancellation is separate; only trusted photo interruption and explicit quiet clear the snapshot', async () => {
   const s = await read('ios/BlindAssist/NavigationModel.swift');
   const cancel = section(s, 'private func cancelDescription()', 'private func publish()'); assert.doesNotMatch(cancel, /selectedPhotoTask|selectedPhotoNativeLease|selectedPhoto\./);
   const photo = section(s, 'func explorePhoto(', '\nextension CGImagePropertyOrientation'); assert.match(photo, /selectedPhotoTask = Task/); assert.match(photo, /self.selectedPhoto.selection\?\.id == token/); assert.doesNotMatch(photo, /self.exploreRequest/);
-  assert.match(s, /if selectedPhoto.selection != nil \{ clearExploreSnapshot\(\) \}/); assert.match(s, /func stopDescriptions\(\) \{\s*clearExploreSnapshot\(\)/);
+  const receive = section(s, 'func receiveCompanionUtterance(', 'private var clockSample:');
+  const trustedClear = 'if CommandAuthority.permits(.changeGoal, from: origin), selectedPhoto.selection != nil { clearExploreSnapshot() }';
+  const authorityGate = 'guard CommandAuthority.permits(.changeGoal, from: origin) else {';
+  const checkIngress = source => {
+    const origin = source.indexOf('let origin: CompanionCommandOrigin = fromVoice ? .unverifiedMicrophone : .trustedInterface');
+    const clear = source.indexOf(trustedClear), clock = source.indexOf('if routeClockInquiry('), gate = source.indexOf(authorityGate);
+    assert.ok(origin >= 0 && clear > origin && clock > clear && gate > clock,
+      'Trusted interruption clears before clock handling, after actual input-origin selection.');
+    assert.equal((source.slice(0, gate).match(/clearExploreSnapshot\(\)/g) || []).length, 1,
+      'There is no additional unconditional pre-authority photo clear.');
+    const denial = source.slice(gate + authorityGate.length, source.indexOf('receiveUnverifiedConversation(text, origin: origin)', gate));
+    assert.doesNotMatch(denial, /clearExploreSnapshot\(/);
+    assert.match(source.slice(gate), /receiveUnverifiedConversation\(text, origin: origin\)\s+return/);
+  };
+  checkIngress(receive);
+  for (const mutation of [
+    receive.replace(trustedClear, 'if selectedPhoto.selection != nil { clearExploreSnapshot() }'),
+    receive.replace(trustedClear, trustedClear.replace('.changeGoal', '.conversation')),
+    receive.replace(trustedClear, trustedClear.replace('from: origin', 'from: .trustedInterface')),
+    receive.replace(trustedClear, trustedClear.replace('!= nil', '== nil')),
+    receive.replace(trustedClear, ''),
+    receive.replace('receiveUnverifiedConversation(text, origin: origin)', 'clearExploreSnapshot(); receiveUnverifiedConversation(text, origin: origin)'),
+  ]) assert.throws(() => checkIngress(mutation), {name: 'AssertionError'});
+  assert.match(s, /func stopDescriptions\(\) \{\s*clearExploreSnapshot\(\)/);
+
 });
 
 test('helper ingress and delayed actual speech start enforce photo ownership', async () => {

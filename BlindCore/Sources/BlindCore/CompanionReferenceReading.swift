@@ -131,6 +131,21 @@ public struct CompanionReferenceReading: Sendable {
         self.deadline = issuedAt + Self.lifetime; self.lastMonotonic = now; self.chunks = chunks
     }
 
+    /// Foundation's NSRange bridge differs across platforms for an offset inside
+    /// a UTF-16 surrogate pair. Check the original code-unit endpoints first;
+    /// accepting a repaired or rounded substring would change source evidence.
+    private static func scalarBoundedRange(_ range: NSRange, in text: String) -> Range<String.Index>? {
+        let units = text.utf16, count = units.count
+        guard range.location != NSNotFound, range.location >= 0, range.length > 0,
+              range.location <= count, range.length <= count - range.location else { return nil }
+        for offset in [range.location, range.location + range.length] {
+            let index = units.index(units.startIndex, offsetBy: offset)
+            if index != units.endIndex, (0xDC00...0xDFFF).contains(units[index]) { return nil }
+        }
+        guard let result = Range(range, in: text), !result.isEmpty else { return nil }
+        return result
+    }
+
     /// request.query is an exact requested search phrase, not an LLM answer.
     /// Bounded lexical relevance is intentionally conservative: it does not claim
     /// semantic understanding of arbitrary questions. At least one BODY must
@@ -171,7 +186,7 @@ public struct CompanionReferenceReading: Sendable {
             guard !item.id.isEmpty, seenIDs.insert(item.id).inserted,
                   item.kind == .historicalMemory, item.source == selectedSource.evidenceSource,
                   item.expiresAt == nil, !item.text.isEmpty, !block.locator.isEmpty,
-                  let range = Range(block.bodyUTF16Range, in: item.text), !range.isEmpty else {
+                  let range = scalarBoundedRange(block.bodyUTF16Range, in: item.text) else {
                 throw Rejection.malformedBlock
             }
             let bodyWords = words(String(item.text[range]))

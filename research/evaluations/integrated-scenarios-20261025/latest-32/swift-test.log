@@ -1,0 +1,60 @@
+Building for debugging...
+[Computing dependencies]
+[2 / 15] BlindCoreTests-product
+[4 / 19] BlindCore
+[10 / 29] BlindCoreTests-product
+[12 / 29] BlindCore
+[13 / 30] BlindCoreTests-product
+[14 / 35] BlindCore
+[17 / 35] BlindCoreTests-product
+[19 / 35] BlindCore
+[20 / 38] BlindCore
+[21 / 41] BlindCore
+[22 / 41] BlindCore
+[24 / 41] BlindCore
+[25 / 41] BlindCore
+[26 / 41] BlindCore
+[27 / 41] BlindCore
+[28 / 41] BlindCore
+[31 / 41] BlindCore
+[32 / 41] BlindCore
+[33 / 41] BlindCore
+[34 / 41] BlindCore
+[34 / 43] BlindCore
+/workspace/shared/blind-test-tmp/blind-integrated.aEJRDE/BlindCore/Sources/BlindCore/CompanionMemoryWriteQueue.swift:81:37: warning: main actor-isolated static property 'maximumDialogueBytes' cannot be accessed from outside of the actor; this is an error in the Swift 6 language mode
+ 79 |                 do {
+ 80 |                     let snapshot = try job.encode()
+ 81 |                     guard (1...Self.maximumDialogueBytes).contains(snapshot.dialogue.count), (1...Self.maximumWorkingStateBytes).contains(snapshot.workingState.count) else { return false }
+    |                                     `- warning: main actor-isolated static property 'maximumDialogueBytes' cannot be accessed from outside of the actor; this is an error in the Swift 6 language mode
+ 82 |                     try job.write(snapshot); return true
+ 83 |                 } catch { return false }
+
+/workspace/shared/blind-test-tmp/blind-integrated.aEJRDE/BlindCore/Sources/BlindCore/CompanionMemoryWriteQueue.swift:81:104: warning: main actor-isolated static property 'maximumWorkingStateBytes' cannot be accessed from outside of the actor; this is an error in the Swift 6 language mode
+ 79 |                 do {
+ 80 |                     let snapshot = try job.encode()
+ 81 |                     guard (1...Self.maximumDialogueBytes).contains(snapshot.dialogue.count), (1...Self.maximumWorkingStateBytes).contains(snapshot.workingState.count) else { return false }
+    |                                                                                                        `- warning: main actor-isolated static property 'maximumWorkingStateBytes' cannot be accessed from outside of the actor; this is an error in the Swift 6 language mode
+ 82 |                     try job.write(snapshot); return true
+ 83 |                 } catch { return false }
+[35 / 45] BlindCore
+[37 / 45] BlindCore
+[38 / 45] BlindCore
+[40 / 45] BlindCoreTests-product
+[42 / 50] BlindCoreTests-test-runner
+[46 / 49] BlindCoreTests-test-runner
+[47 / 50] BlindCoreTests-test-runner
+[50 / 50] BlindCoreTests-test-runner
+Build complete! (13.77 secs)
+Test Suite 'Selected tests' started at 2026-10-25 11:37:30.911
+Test Suite 'IntegratedAttentionEpisodeTests' started at 2026-10-25 11:37:30.912
+Test Case 'IntegratedAttentionEpisodeTests.testTwelveAttentionContinuityEpisodes' started at 2026-10-25 11:37:30.912
+Test Case 'IntegratedAttentionEpisodeTests.testTwelveAttentionContinuityEpisodes' passed (0.021 seconds)
+Test Suite 'IntegratedAttentionEpisodeTests' passed at 2026-10-25 11:37:30.933
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.021 (0.021) seconds
+Test Suite 'IntegratedScopedMemoryEpisodeTests' started at 2026-10-25 11:37:30.933
+Test Case 'IntegratedScopedMemoryEpisodeTests.testTwentyScopedMemoryEpisodes' started at 2026-10-25 11:37:30.933
+Test Case 'IntegratedScopedMemoryEpisodeTests.testTwentyScopedMemoryEpisodes' passed (0.029 seconds)
+Test Suite 'IntegratedScopedMemoryEpisodeTests' passed at 2026-10-25 11:37:30.962
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.029 (0.029) seconds
+Test Suite 'Selected tests' passed at 2026-10-25 11:37:30.962
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.05 (0.05) seconds

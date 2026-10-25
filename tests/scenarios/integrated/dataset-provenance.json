@@ -1,0 +1,81 @@
+{
+  "dataset_root_parameter": "BLIND_DATASET_ROOT (external, never copied into source repository)",
+  "assets": [
+    {
+      "relative_external_path": "arkitscenes-47333462/provenance.json",
+      "sha256": "27ddae509871ff4dbee6b267f1481057456a8213d5e68b22b28e0ab6529cbd85",
+      "bytes": 6402
+    },
+    {
+      "relative_external_path": "arkitscenes-47333462/matched-frames.json",
+      "sha256": "deca4e6cf1e1757fa3a33045a6a21ffd824ba8727ee5d249c346717318d925cb",
+      "bytes": 102011
+    },
+    {
+      "relative_external_path": "arkitscenes-47333462/validation-report.json",
+      "sha256": "9154279544739d9ce42ee42562be58f2ab4095e77fb3d0698b8aaca56179abc7",
+      "bytes": 42682
+    },
+    {
+      "relative_external_path": "arkitscenes-47333462/SHA256SUMS",
+      "sha256": "10644ec1432c76eb5108dd796ac607c05c3247fb1a37f33256869c56ce79d3c7",
+      "bytes": 46098
+    },
+    {
+      "relative_external_path": "oas-e54861c/geometry-inspection.json",
+      "sha256": "650be849a69f6e11d70c9cb249a863f81208b92450d71b8a0ca15e85937c0623",
+      "bytes": 10838
+    },
+    {
+      "relative_external_path": "oas-e54861c/oas-apartment.blindplace.json",
+      "sha256": "b4ab1db3f38135695720df6ecb17581b972ecedcaa547c64fc5c3950288ac2d3",
+      "bytes": 17060
+    },
+    {
+      "relative_external_path": "oas-e54861c/apartment_50m2.json",
+      "sha256": "6a3356cf5ac9d8c6d7a30f73665961d14ec47c62577fd7b414465e0ebafd3327",
+      "bytes": 7956
+    },
+    {
+      "relative_external_path": "oas-e54861c/multi_room_plan.md",
+      "sha256": "83df123b2287125beb21b8b57b18ae3a6c93f410eed8f754fc4d7882a9baa64d",
+      "bytes": 6762
+    }
+  ],
+  "arkitscenes": {
+    "scene": "47333462",
+    "paired_frames": 100,
+    "first_frame": {
+      "frameTimestampSeconds": 57352.888,
+      "timestampString": "57352.888",
+      "trajectoryTimestampSeconds": 57352.88780654,
+      "timestampDifferenceSeconds": 0.00019346000044606626,
+      "trajectoryLine": "57352.88780654 -2.217554497473789 2.1758070205829703 -0.005041953551818877 0.0589587 0.046871 0.0094436",
+      "trajectorySource": "originals/lowres_wide.traj",
+      "poseStatus": "recorded ARKit input, not independently validated localization accuracy",
+      "rotationAxisAngleRadians": [
+        -2.217554497473789,
+        2.1758070205829703,
+        -0.005041953551818877
+      ],
+      "translationMeters": [
+        0.0589587,
+        0.046871,
+        0.0094436
+      ],
+      "assets": {
+        "lowres_wide.zip": "lowres_wide/47333462_57352.888.png",
+        "lowres_depth.zip": "lowres_depth/47333462_57352.888.png",
+        "confidence.zip": "confidence/47333462_57352.888.png",
+        "lowres_wide_intrinsics.zip": "lowres_wide_intrinsics/47333462_57352.888.pincam"
+      }
+    },
+    "last_frame_timestamp": 57362.784,
+    "usage": "NOT RUN in integrated harness. Scene-paired RGB/depth/intrinsics/recorded camera trajectory exist; calibrated wearer-body pose, uncertainty, floor support and registered native map integration absent. Never assigned to OAS or invented rooms."
+  },
+  "oas": {
+    "revision": "e54861c1099964607efd86b07e858f309e3fe45f",
+    "usage": "Actual PlacePackage decode/preview/privacy-envelope eligibility episode added in IntegratedSourcedMapEpisodeTests; latest result must be read from run-13 or later. Still preview-only, no measured camera/LiDAR/pose and no ARKitScenes pairing."
+  },
+  "executed_navigation": "Uses only explicitly authored ConnectedFixture three-map topology, synthetic transforms/support/pose. No dataset imagery claimed."
+}

@@ -120,7 +120,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     private var completedScopedReview: CompletedScopedReview?
     private var pendingScopedReview: PendingScopedReview?
-    private lazy var companionMemoryWriter: CompanionMemoryWriteQueue = {
+    private lazy var companionMemoryWriter: CompanionMemoryWriteQueue = MainActor.assumeIsolated {
         let writer = CompanionMemoryWriteQueue()
         writer.onCompletion = { [weak self] receipt, succeeded in
             guard let self, receipt.owner == self.companionMemoryStoreOwner else { return }
@@ -140,7 +140,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             }
         }
         return writer
-    }()
+    }
     private var recordingCompanionTurn = false
     private var recordedCompanionSourceID: String?
     private var conversationMemoryRevision = UUID()
@@ -159,8 +159,6 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var streamedConversationText = ""
     // Unverified microphone conversation is transient and cannot become a saved
     // user report, goal, action-completion record, or command confirmation.
-    private var unverifiedDialogue = AssistantDialogue()
-    private var unverifiedDialogueGeneration: UInt64?
     private var unverifiedConversationID = UUID()
     private var unverifiedConversationTask: Task<Void, Never>?
     private var unverifiedConversationTimeout: Task<Void, Never>?
@@ -686,7 +684,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             if outcome == .completed, pending.request == self.requestID,
                self.assistantSession.accepts(generation: pending.generation) {
                 if pending.origin == .unverifiedMicrophone {
-                    self.unverifiedDialogue.record(role: "assistant", text: text)
+                    // Anonymous turns never enter shared or trusted conversation history.
                     self.drainConversationSpeech()
                     return
                 }
@@ -793,7 +791,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             guard let self, self.assistantSession.shouldListen else { return }
             self.drainConversationSpeech()
         }
-        voice.onFinished = { [weak self] text in self?.receiveCompanionUtterance(text, fromVoice: true) }
+        voice.onFinished = { [weak self] turn in
+            guard let self, self.voice.consumeDelivery(turn) else { return }
+            self.receiveCompanionUtterance(turn.text, fromVoice: true)
+        }
         visualStairs.onUpdate = { [weak self] in
             guard let self, self.running, !self.simulation, !self.places.scanning else { return }
             self.publish()
@@ -2595,7 +2596,6 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         try? journeys.withConnectedJourney { try $0.eraseHistory(origin: .trustedInterface) }
         everydayTasks.cancelAll(); everydayTicket = nil; everydayUtterance = ""
         cancelDescription(); _ = feedback.stopInformation(announceCancellation: false); stopReturn(); indoor.cancelRoute()
-        unverifiedDialogue = AssistantDialogue(); unverifiedDialogueGeneration = nil
         assistantDialogue = AssistantDialogue(); objectiveDraft = ""
         companionWorkingState = CompanionWorkingState(); persistWorkingState()
         sceneAnswer = ""; currentReply = ""; assistantQuestion = ""
@@ -2605,6 +2605,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
 
     /// Validate against the displayed receipt before any cancellation, deletion,
     /// diagnostics purge or success. No text join to a different dialogue record.
+    @MainActor
     @discardableResult func reviseScopedConversationRecord(_ selection: CompanionWorkingState.ReviewSelection, replacement: String?) async -> Bool {
         guard let memory = admittedCompanionMemoryStore() else { scopedReviewError = memorySaveError; return false }
         if let completed = completedScopedReview, completed.owner == memory.writeOwner,
@@ -2744,28 +2745,32 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// All ordinary and reviewed saves share one ordered, bounded writer. A later
     /// report/clear snapshot already contains earlier source retirements.
     private func admittedCompanionMemoryStore() -> MemoryStore? {
-        guard let memory = places.memory else {
-            memorySaveError = arabic ? "ذاكرة الهاتف غير متاحة للحفظ." : "Phone memory is unavailable for saving."
-            return nil
+        return MainActor.assumeIsolated {
+            guard let memory = places.memory else {
+                memorySaveError = arabic ? "ذاكرة الهاتف غير متاحة للحفظ." : "Phone memory is unavailable for saving."
+                return nil
+            }
+            companionMemoryWriter.bindOwner(memory.writeOwner)
+            if let owner = companionMemoryStoreOwner, owner != memory.writeOwner {
+                memorySavePending = false
+                memorySaveError = arabic ? "تغير مخزن الذاكرة. أعد فتح التطبيق قبل الحفظ." : "The memory store changed. Reopen the app before saving."
+                return nil
+            }
+            companionMemoryStoreOwner = memory.writeOwner
+            return memory
         }
-        companionMemoryWriter.bindOwner(memory.writeOwner)
-        if let owner = companionMemoryStoreOwner, owner != memory.writeOwner {
-            memorySavePending = false
-            memorySaveError = arabic ? "تغير مخزن الذاكرة. أعد فتح التطبيق قبل الحفظ." : "The memory store changed. Reopen the app before saving."
-            return nil
-        }
-        companionMemoryStoreOwner = memory.writeOwner
-        return memory
     }
     @discardableResult private func enqueueCompanionMemorySnapshot() -> CompanionMemoryWriteQueue.Receipt? {
-        guard let memory = admittedCompanionMemoryStore() else { return nil }
-        let state = companionWorkingState, dialogue = assistantDialogue
-        memorySavePending = true
-        return companionMemoryWriter.submit(owner: memory.writeOwner, encode: {
-            .init(dialogue: try JSONEncoder().encode(dialogue), workingState: try JSONEncoder().encode(state))
-        }, write: { snapshot in
-            try memory.saveConversationReview(dialogue: snapshot.dialogue, workingState: snapshot.workingState)
-        })
+        return MainActor.assumeIsolated {
+            guard let memory = admittedCompanionMemoryStore() else { return nil }
+            let state = companionWorkingState, dialogue = assistantDialogue
+            memorySavePending = true
+            return companionMemoryWriter.submit(owner: memory.writeOwner, encode: {
+                .init(dialogue: try JSONEncoder().encode(dialogue), workingState: try JSONEncoder().encode(state))
+            }, write: { snapshot in
+                try memory.saveConversationReview(dialogue: snapshot.dialogue, workingState: snapshot.workingState)
+            })
+        }
     }
     func retryCompanionMemorySave() { enqueueCompanionMemorySnapshot() }
     private func persistWorkingState() {
@@ -2848,7 +2853,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let origin: CompanionCommandOrigin = fromVoice ? .unverifiedMicrophone : .trustedInterface
         // A read-only clock question needs conversation authority, not goal authority.
         // Intercept before cancellation, everyday-task mutation or camera work.
-        if selectedPhoto.selection != nil { clearExploreSnapshot() }
+        if CommandAuthority.permits(.changeGoal, from: origin), selectedPhoto.selection != nil { clearExploreSnapshot() }
         if routeClockInquiry(text, origin: origin) { return }
         guard CommandAuthority.permits(.changeGoal, from: origin) else {
             #if DEBUG
@@ -3169,15 +3174,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
 
     /// Release fallback, not verified-speaker recognition. Free-form chat has its
-    /// own transient history and cannot call action adapters or commit task updates.
+    /// current-turn-only context and cannot call action adapters or commit task updates.
     private func receiveUnverifiedConversation(_ text: String, origin: CompanionCommandOrigin) {
         guard origin == .unverifiedMicrophone,
               CommandAuthority.permits(.conversation, from: origin), assistantSession.shouldListen else { return }
         interruptOrdinaryConversation(origin: origin)
-        if unverifiedDialogueGeneration != assistantSession.generation {
-            unverifiedDialogue = AssistantDialogue()
-            unverifiedDialogueGeneration = assistantSession.generation
-        }
         if AssistantControl.parse(text) == .quiet {
             // Silence this reply only. No persistent narration/monitoring setting,
             // active goal, route, or pending confirmation changes on ambient speech.
@@ -3209,8 +3210,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             unverifiedConversationReply(arabic ? "أنهي فحصاً آخر الآن. حاول بعد لحظة." : "I'm finishing another check. Try again shortly.")
             return
         }
-        unverifiedDialogue.record(role: "user", text: text)
-        let dialogue = unverifiedDialogue
+        // No speaker binding exists yet: prior microphone speakers are not context.
+        let dialogue = VoiceConversationPrivacy.anonymousTurn(text)
         let id = unverifiedConversationID, generation = assistantSession.generation, request = requestID
         unverifiedConversationTimeout = Task { @MainActor [weak self] in
             do { try await Task.sleep(for: .seconds(30)) } catch { return }

@@ -1,0 +1,69 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 153]
+[Planning deferred tasks]
+[18 / 56] BlindCoreTests-product
+[34 / 57] BlindCore
+[37 / 67] BlindCore
+[39 / 67] BlindCore
+/workspace/shared/blind-test-tmp/scoped-attention.ghQbCV/package/Sources/BlindCore/CompanionReportedStep.swift:10:16: warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+ 8 |     public let report: String
+ 9 |     public let goalRevision: String
+10 |     public let source = "model-associated direct user report; not sensor confirmed"
+   |                |- warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+   |                |- note: set the initial value via the initializer or explicitly define a CodingKeys enum including a 'source' case to silence this warning
+   |                `- note: make the property mutable instead
+11 |     public static func proposed(step: String, currentStep: String, quote: String,
+12 |                                 latest: String, goalRevision: String) -> Self? {
+[44 / 67] BlindCore
+[45 / 67] BlindCoreTests-product
+[46 / 67] BlindCoreTests-product
+/workspace/shared/blind-test-tmp/scoped-attention.ghQbCV/package/Sources/BlindCore/CompanionMemoryWriteQueue.swift:81:37: warning: main actor-isolated static property 'maximumDialogueBytes' cannot be accessed from outside of the actor; this is an error in the Swift 6 language mode
+ 79 |                 do {
+ 80 |                     let snapshot = try job.encode()
+ 81 |                     guard (1...Self.maximumDialogueBytes).contains(snapshot.dialogue.count), (1...Self.maximumWorkingStateBytes).contains(snapshot.workingState.count) else { return false }
+    |                                     `- warning: main actor-isolated static property 'maximumDialogueBytes' cannot be accessed from outside of the actor; this is an error in the Swift 6 language mode
+ 82 |                     try job.write(snapshot); return true
+ 83 |                 } catch { return false }
+
+/workspace/shared/blind-test-tmp/scoped-attention.ghQbCV/package/Sources/BlindCore/CompanionMemoryWriteQueue.swift:81:104: warning: main actor-isolated static property 'maximumWorkingStateBytes' cannot be accessed from outside of the actor; this is an error in the Swift 6 language mode
+ 79 |                 do {
+ 80 |                     let snapshot = try job.encode()
+ 81 |                     guard (1...Self.maximumDialogueBytes).contains(snapshot.dialogue.count), (1...Self.maximumWorkingStateBytes).contains(snapshot.workingState.count) else { return false }
+    |                                                                                                        `- warning: main actor-isolated static property 'maximumWorkingStateBytes' cannot be accessed from outside of the actor; this is an error in the Swift 6 language mode
+ 82 |                     try job.write(snapshot); return true
+ 83 |                 } catch { return false }
+[48 / 67] BlindCore
+[49 / 67] BlindCore
+/workspace/shared/blind-test-tmp/scoped-attention.ghQbCV/package/Sources/BlindCore/DebugSessionLog.swift:89:13: warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+ 87 | 
+ 88 |     private struct Record: Codable, Sendable {
+ 89 |         let schema = 1
+    |             |- warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+    |             |- note: set the initial value via the initializer or explicitly define a CodingKeys enum including a 'schema' case to silence this warning
+    |             `- note: make the property mutable instead
+ 90 |         let session: UUID
+ 91 |         let event: UUID
+[49 / 67]
+[52 / 72] BlindCoreTests-product
+[58 / 72] BlindCoreTests-product
+[61 / 73] BlindCore
+[64 / 74] BlindCore
+[66 / 74] BlindCoreTests-product
+[70 / 77] BlindCoreTests-test-runner
+[74 / 77] BlindCoreTests-test-runner
+[78 / 78] BlindCoreTests-test-runner
+Build complete! (30.18 secs)
+Test Suite 'Selected tests' started at 2026-10-25 11:40:39.248
+Test Suite 'IntegratedAttentionEpisodeTests' started at 2026-10-25 11:40:39.249
+Test Case 'IntegratedAttentionEpisodeTests.testTwelveAttentionContinuityEpisodes' started at 2026-10-25 11:40:39.249
+Test Case 'IntegratedAttentionEpisodeTests.testTwelveAttentionContinuityEpisodes' passed (0.013 seconds)
+Test Suite 'IntegratedAttentionEpisodeTests' passed at 2026-10-25 11:40:39.262
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.013 (0.013) seconds
+Test Suite 'IntegratedScopedMemoryEpisodeTests' started at 2026-10-25 11:40:39.262
+Test Case 'IntegratedScopedMemoryEpisodeTests.testTwentyScopedMemoryEpisodes' started at 2026-10-25 11:40:39.262
+Test Case 'IntegratedScopedMemoryEpisodeTests.testTwentyScopedMemoryEpisodes' passed (0.036 seconds)
+Test Suite 'IntegratedScopedMemoryEpisodeTests' passed at 2026-10-25 11:40:39.298
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.036 (0.036) seconds
+Test Suite 'Selected tests' passed at 2026-10-25 11:40:39.298
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.048 (0.048) seconds

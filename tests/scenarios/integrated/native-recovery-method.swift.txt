@@ -1,0 +1,60 @@
+    func testIntegratedAutomaticRecoveryAfterRejectedEvidence() async throws {
+        for mode in ["wrong-support", "camera-only-heading"] {
+            let runtime = try await installed()
+            try runtime.configure(body: F.body, limits: F.limits)
+            try runtime.setDestination(binding: F.c, nodeID: "p", origin: .trustedInterface)
+            try await until { runtime.pendingWriteCount == 0 }
+            _ = try runtime.beginLocalization(in: F.a)
+            try observe(runtime, F.endpoint(F.a,"s"), time: 1)
+            try await until { runtime.pendingWriteCount == 0 }
+            try observe(runtime, F.endpoint(F.a,"s"), time: 1.1)
+            let old = try runtime.next(now: 1.1), goal = runtime.goal?.revision
+            let base = try capture(runtime, F.endpoint(F.a,"s"), time: 1.2)
+            let invalid = SpatialLocalizationCapture(sessionID: base.sessionID, binding: base.binding,
+                floorID: base.floorID, roomID: base.roomID, position: base.position, bodyYaw: base.bodyYaw,
+                source: .alignedMapPose, headingSource: mode == "camera-only-heading" ? .cameraOnly : .bodyAligned,
+                trackingNormal: true, positionUncertainty: 0.05, headingUncertainty: 0.05, capturedAt: 1.2)
+            let support = SpatialFloorSupport(binding: invalid.binding, floorID: invalid.floorID,
+                sessionID: invalid.sessionID, captureID: mode == "wrong-support" ? UUID() : invalid.id,
+                height: 0, capturedAt: invalid.capturedAt)
+            do { try runtime.accept(invalid,support:support,now:1.2); XCTFail("Invalid evidence should reject") }
+            catch { print("NATIVE_REPLAY_INVALID=mode:\(mode),capture:\(invalid.id),session:\(invalid.sessionID),error:\(error)") }
+            XCTAssertFalse(runtime.permits(old.route,now:1.2))
+            let fresh = try capture(runtime,F.endpoint(F.a,"s"),time:1.3)
+            try runtime.accept(fresh,support:SpatialIntegrationFixture.support(fresh),now:1.3)
+            XCTAssertEqual(runtime.goal?.revision,goal)
+            XCTAssertFalse(runtime.permits(old.route,now:1.3))
+            // Product expectation: fresh valid evidence automatically restores useful
+            // guidance, without another UI command or hidden harness plan operation.
+            do {
+                let recovered = try runtime.next(now:1.3)
+                print("NATIVE_REPLAY_RECOVERY=mode:\(mode),fresh:\(fresh.id),session:\(fresh.sessionID),target:\(recovered.route.target.id),status:PASS")
+            } catch {
+                print("NATIVE_REPLAY_RECOVERY=mode:\(mode),fresh:\(fresh.id),session:\(fresh.sessionID),status:FAIL,error:\(error)")
+                XCTFail("Automatic recovery failed for \(mode): \(error)")
+            }
+        }
+    }
+    func testIntegratedRejectedEvidenceCannotInferMidLegStart() async throws {
+        let runtime = try await installed()
+        try runtime.configure(body:F.body,limits:F.limits)
+        try runtime.setDestination(binding:F.c,nodeID:"p",origin:.trustedInterface)
+        try await until { runtime.pendingWriteCount == 0 }
+        _ = try runtime.beginLocalization(in:F.a)
+        try observe(runtime,F.endpoint(F.a,"s"),time:1)
+        try await until { runtime.pendingWriteCount == 0 }
+        try observe(runtime,F.endpoint(F.a,"s"),time:1.1)
+        let old = try runtime.next(now:1.1), goal = runtime.goal?.revision
+        let bad = try capture(runtime,F.endpoint(F.a,"s"),time:1.2)
+        let wrong = SpatialFloorSupport(binding:bad.binding,floorID:bad.floorID,sessionID:bad.sessionID,captureID:UUID(),height:0,capturedAt:1.2)
+        XCTAssertThrowsError(try runtime.accept(bad,support:wrong,now:1.2))
+        let between = SpatialLocalizationCapture(sessionID:try XCTUnwrap(runtime.expectedSessionID),binding:F.a,
+            floorID:"ground",roomID:"bedroom",position:.init(1.5,1.3,3),bodyYaw:-.pi/2,
+            source:.alignedMapPose,headingSource:.bodyAligned,trackingNormal:true,
+            positionUncertainty:0.05,headingUncertainty:0.05,capturedAt:1.3)
+        try runtime.accept(between,support:SpatialIntegrationFixture.support(between),now:1.3)
+        XCTAssertFalse(runtime.permits(old.route,now:1.3))
+        XCTAssertEqual(runtime.goal?.revision,goal)
+        XCTAssertThrowsError(try runtime.next(now:1.3),"Unknown endpoint must not be snapped to a remembered start")
+        print("NATIVE_UNKNOWN_ENDPOINT=capture:\(between.id),session:\(between.sessionID),position:1.5/1.3/3,expected:withhold,status:PASS_IF_ASSERTIONS_PASS")
+    }

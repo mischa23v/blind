@@ -16,7 +16,9 @@ run_logged() {
   # Inputs are committed public source and synthetic tests only; no secrets are supplied.
   # Avoid an environment dump or full build settings. Keep failure diagnostics bounded.
   if (( status != 0 )); then
-    grep -E -i 'error:|failed|failure|fatal|warning:' "$out/$label.log" | head -100 || true
+    # Print real diagnostics before warnings; zero-failure summaries must not consume the cap.
+    grep -E -i 'error:|fatal|Test (Case|Suite).* failed (at|\()|Executed [0-9]+ tests?, with [1-9][0-9]* failures?|\*\* (BUILD|TEST) FAILED' "$out/$label.log" | head -120 || true
+    grep -E 'warning:' "$out/$label.log" | head -20 || true
     tail -60 "$out/$label.log"
   else
     grep -E 'Executed |Test Suite .*passed|Test run with|\*\* (BUILD|TEST)' "$out/$label.log" | tail -35 || true

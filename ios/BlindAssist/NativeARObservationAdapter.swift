@@ -121,10 +121,11 @@ enum NativeARObservationAdapter {
             sampledPixelCount: sampled, invalidPixelCount: invalid, confidenceAvailable: confidenceBase != nil, pixels: pixels)
     }
     private static func samplePlane(_ anchor: ARPlaneAnchor, maximumVertices: Int) throws -> NativeSurfaceObservation {
-        let geometry = anchor.geometry, count = geometry.boundaryVertexCount
+        let boundary = anchor.geometry.boundaryVertices
+        let count = boundary.count
         guard (0...1_000_000).contains(count) else { throw NativeObservationError.invalidSurface }
         let vertices = (0..<min(count, maximumVertices)).map { index -> Point3 in
-            let p = geometry.boundaryVertices[index]; return Point3(Double(p.x), Double(p.y), Double(p.z))
+            let p = boundary[index]; return Point3(Double(p.x), Double(p.y), Double(p.z))
         }
         // A horizontal/floor-classified plane is observed support candidate geometry only.
         // It has no durable floor identity, contact height, body calibration or coverage proof.
@@ -154,8 +155,8 @@ enum NativeARObservationAdapter {
         for face in 0..<min(faces.count, min(512, maximumVertices / 3)) {
             var triangle: [Int] = []
             for corner in 0..<3 {
-                let pointer = faces.buffer.contents().advanced(by: (face * 3 + corner) * faces.bytesPerIndex)
-                let index = faces.bytesPerIndex == 2 ? Int(pointer.loadUnaligned(as: UInt16.self)) : Int(pointer.loadUnaligned(as: UInt32.self))
+                let indexPointer = faces.buffer.contents().advanced(by: (face * 3 + corner) * faces.bytesPerIndex)
+                let index = faces.bytesPerIndex == 2 ? Int(indexPointer.loadUnaligned(as: UInt16.self)) : Int(indexPointer.loadUnaligned(as: UInt32.self))
                 guard (0..<source.count).contains(index) else { throw NativeObservationError.invalidSurface }
                 if let mapped = remap[index] { triangle.append(mapped); continue }
                 let pointer = source.buffer.contents().advanced(by: source.offset + index * source.stride)
