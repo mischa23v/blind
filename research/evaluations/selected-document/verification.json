@@ -103,11 +103,50 @@
   "sourceReview": "Independent source/privacy/lifetime review approved; original manual and selected-photo deadline wrappers remain unchanged.",
   "native": {
     "actualByteFixtureTestsPrepared": 14,
-    "AppleSDKTypecheck": "pending",
-    "PDFKitExecution": "pending",
+    "AppleSDKTypecheck": "passed for original app 6d6954; corrected fixture syntax-only locally",
+    "PDFKitExecution": "original 14 executed: 9 passed, 5 failed; corrected fixture native run pending",
     "realSystemPickerSecurityGrant": "pending",
     "actualSpeechAndVoiceOver": "pending",
-    "participantGoalAcceptance": "pending"
+    "participantGoalAcceptance": "pending",
+    "firstActualAppRun": {
+      "commit": "6d6954b17b0a35836506a7dead62aa855112cb98",
+      "runID": 40243450535,
+      "jobID": 121319972133,
+      "pdfTests": 14,
+      "passed": 9,
+      "failed": 5,
+      "failedMethods": [
+        "testAccessibilityPermissionNotCopyPermission",
+        "testExplicitPageIndexDoesNotReadNextPage",
+        "testNSMutableDataAliasCannotMutateFrozenPDFBytesHashOrText",
+        "testOversizedPageTextIsRejectedWithoutTruncation",
+        "testSourceReplacementDoesNotMutateSelectedImmutableBytes"
+      ]
+    },
+    "firstStandaloneProbe": {
+      "commit": "032062938b36933cc38cb3eac387479f78dc73a9",
+      "runID": 40244012978,
+      "nativeTestsExecuted": 0,
+      "failure": "simulator bootstatus 120s timeout before native compilation"
+    },
+    "fixtureRepair": {
+      "sha256": "8008898a318e84a73584e870089e65fd38f9664611d9e7bd6015624bfd1e9907",
+      "nativeTests": 14,
+      "nativeExecuted": false,
+      "productionChanged": false,
+      "sourceNodeChecks": 18,
+      "packetNodeChecks": 4,
+      "mockedExporterChecks": 8,
+      "swiftSyntax": "passed, not AppleSDK compilation",
+      "portableFixtureGeometry": {
+        "rows": 900,
+        "charactersPerRow": 100,
+        "pageWidth": 1000,
+        "pageHeight": 10000,
+        "pypdfExtractedBytes": 90899,
+        "PDFKitProof": false
+      }
+    }
   },
   "tracker": {
     "R39": "partial",

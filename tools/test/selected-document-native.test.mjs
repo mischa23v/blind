@@ -87,3 +87,26 @@ test('native fixture tests generate real PDF bytes rather than injecting extract
   assert.match(s, /private enum PDFFixtures/);
   assert.doesNotMatch(s, /SelectedDocumentPDFTests\(\)|CompanionReferenceBlock\(|XCTSkip|\.write\(/);
 });
+
+test('native failure regressions keep direct PDFKit preconditions and real denial/oversize assertions', async () => {
+  const s = await read('ios/BlindAssistTests/SelectedDocumentPDFTests.swift');
+  const pages = section(s, 'func testExplicitPageIndex', 'func testImageOnly');
+  assert.match(pages, /XCTAssertEqual\(first.text, firstOracle\)/);
+  assert.match(pages, /XCTAssertEqual\(second.text, secondOracle\)/);
+  assert.match(pages, /XCTAssertFalse\(second.text.contains\("ALPHA"\)\)/);
+  const denied = section(s, 'let denied =', 'func testColumnsAndTable');
+  assert.match(denied, /permissions: \[\]/);
+  assert.match(denied, /XCTAssertFalse\(deniedDocument.allowsContentAccessibility\)/);
+  assert.match(denied, /assertFailure\(\.accessibilityPermissionDenied\)/);
+  assert.doesNotMatch(denied, /if |XCTSkip/);
+  const oversizedTest = section(s, 'func testOversizedPageText', 'func testLockedPDF');
+  assert.match(oversizedTest, /XCTAssertGreaterThan\(try XCTUnwrap\(document.page\(at: 0\)\?\.string\).utf8.count/);
+  assert.match(oversizedTest, /assertFailure\(\.oversizedPage\)/);
+  const fixture = s.slice(s.indexOf('static func oversizedTextLayer()'));
+  assert.match(fixture, /MediaBox \[0 0 1000 10000\]/);
+  assert.match(fixture, /0\.\.<900/);
+  assert.match(fixture, /9970 - index \* 10/);
+  assert.match(fixture, /precondition\(row.utf8.count == 100\)/);
+  assert.match(fixture, /BT \/F1 8 Tf 1 0 0 1 30/);
+  assert.doesNotMatch(s, /FIRST_SENTINEL|SECOND_SENTINEL|ORIGINAL_SOURCE|MUTABLE_ALIAS_ORIGINAL|XCTSkip/);
+});

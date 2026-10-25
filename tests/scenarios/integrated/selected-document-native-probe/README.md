@@ -101,3 +101,7 @@ speech or VoiceOver callbacks, audible usefulness, participant comprehension,
 manual/model binding, appliance operation or R39/R40 completion. The app/controller
 projection and actual device/participant gates remain separate. The packet does
 not activate the selected-PDF feature in the production app.
+
+## Fixture correction after actual app execution
+
+The original app at commit 6d6954 executed 14 native PDF tests: nine passed and five failed. Updated test snapshot repairs source-token assumptions, the off-page oversized fixture, and the invalid copying-only permission-denial premise, preserving original assertions’ intent and explicit actual-PDFKit preconditions. Production adapter/picker snapshots and 14 test methods are unchanged. The repaired fixtures have not run on Apple. The corrected fixtures must be published, their exact app/test snapshot commit independently verified, and the activation workflow repinned before an authorized native probe; the old 6d6954 workflow pin intentionally cannot validate this new test hash. No workflow or readiness change is included in this correction. The original 0320629 readiness failure remains zero tests, separate from the actual app result.

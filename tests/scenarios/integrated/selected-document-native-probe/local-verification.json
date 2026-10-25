@@ -1,8 +1,19 @@
 {
   "status": "prepared-not-natively-run",
-  "nodeSnapshotGeneratorContracts": { "passed": 4, "failed": 0, "skipped": 0 },
-  "mockedExporterTests": { "passed": 8, "failed": 0 },
-  "syntax": { "javascript": "passed", "shell": "passed", "python": "passed" },
+  "nodeSnapshotGeneratorContracts": {
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0
+  },
+  "mockedExporterTests": {
+    "passed": 8,
+    "failed": 0
+  },
+  "syntax": {
+    "javascript": "passed",
+    "shell": "passed",
+    "python": "passed"
+  },
   "initialFailure": "Test-only negative regex matched explanatory docstring; corrected to executable attachment-export patterns. Original failed log retained by parent.",
   "nativeBuildExecuted": false,
   "nativeTestsExecuted": false,
@@ -10,5 +21,18 @@
   "snapshotsMatchFrozenCandidate": true,
   "noCoreGRDBModelDependencies": true,
   "workflowIncluded": false,
-  "activationAuthority": "Root task; independent packet review and exact hosted runner identity required"
+  "activationAuthority": "Root task; independent packet review and exact hosted runner identity required",
+  "fixtureRepair": {
+    "originalAppPDFTests": {
+      "executed": 14,
+      "passed": 9,
+      "failed": 5
+    },
+    "correctedFixtureSHA256": "8008898a318e84a73584e870089e65fd38f9664611d9e7bd6015624bfd1e9907",
+    "nativeRerun": "pending",
+    "productionAdapterPickerUnchanged": true,
+    "localNativeSwiftSyntax": "passed; not AppleSDK compilation",
+    "sourceContracts": 18,
+    "portableStructure": "pypdf 90,899 text bytes; not PDFKit proof"
+  }
 }

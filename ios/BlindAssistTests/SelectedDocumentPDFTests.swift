@@ -28,12 +28,22 @@ final class SelectedDocumentPDFTests: XCTestCase {
         XCTAssertTrue(page.text.contains("123"))
     }
     func testExplicitPageIndexDoesNotReadNextPage() throws {
-        let selected = try SelectedDocumentPDFAdapter.select(bytes: PDFFixtures.pages(["FIRST_SENTINEL", "SECOND_SENTINEL"]))
+        let bytes = PDFFixtures.pages(["ALPHA", "BETA"])
+        let document = try XCTUnwrap(PDFDocument(data: bytes))
+        let firstOracle = try XCTUnwrap(document.page(at: 0)?.string)
+        let secondOracle = try XCTUnwrap(document.page(at: 1)?.string)
+        XCTAssertTrue(firstOracle.contains("ALPHA")); XCTAssertFalse(firstOracle.contains("BETA"))
+        XCTAssertTrue(secondOracle.contains("BETA")); XCTAssertFalse(secondOracle.contains("ALPHA"))
+        XCTAssertNotEqual(firstOracle, secondOracle)
+        let selected = try SelectedDocumentPDFAdapter.select(bytes: bytes)
         XCTAssertEqual(selected.pageCount, 2)
         let first = try SelectedDocumentPDFAdapter.readPage(1, from: selected)
-        XCTAssertTrue(first.text.contains("FIRST_SENTINEL")); XCTAssertFalse(first.text.contains("SECOND_SENTINEL"))
+        XCTAssertEqual(first.text, firstOracle)
+        XCTAssertTrue(first.text.contains("ALPHA")); XCTAssertFalse(first.text.contains("BETA"))
         let second = try SelectedDocumentPDFAdapter.readPage(2, from: selected)
-        XCTAssertEqual(second.pageNumber, 2); XCTAssertTrue(second.text.contains("SECOND_SENTINEL"))
+        XCTAssertEqual(second.text, secondOracle)
+        XCTAssertFalse(second.text.contains("ALPHA"))
+        XCTAssertEqual(second.pageNumber, 2); XCTAssertTrue(second.text.contains("BETA"))
         assertFailure(.invalidPage) { try SelectedDocumentPDFAdapter.readPage(0, from: selected) }
         assertFailure(.invalidPage) { try SelectedDocumentPDFAdapter.readPage(3, from: selected) }
     }
@@ -70,12 +80,33 @@ final class SelectedDocumentPDFTests: XCTestCase {
         let selected = try SelectedDocumentPDFAdapter.select(bytes: accessible)
         XCTAssertFalse(try SelectedDocumentPDFAdapter.readPage(1, from: selected).text.isEmpty)
 
+        // Preserve coverage of the writer's copying-only request without
+        // assuming the resulting PDF denies accessibility. The native flag is
+        // the oracle; selection must agree with that flag in either case.
         let copyingOnly = try PDFFixtures.encrypted(userPassword: "", permissions: .allowsContentCopying)
         let copyingDocument = try XCTUnwrap(PDFDocument(data: copyingOnly))
+        XCTAssertTrue(copyingDocument.isEncrypted)
         XCTAssertFalse(copyingDocument.isLocked)
         XCTAssertTrue(copyingDocument.allowsCopying)
-        XCTAssertFalse(copyingDocument.allowsContentAccessibility)
-        assertFailure(.accessibilityPermissionDenied) { try SelectedDocumentPDFAdapter.select(bytes: copyingOnly) }
+        if copyingDocument.allowsContentAccessibility {
+            let copyingSelection = try SelectedDocumentPDFAdapter.select(bytes: copyingOnly)
+            XCTAssertEqual(try SelectedDocumentPDFAdapter.readPage(1, from: copyingSelection).text,
+                           try XCTUnwrap(copyingDocument.page(at: 0)?.string))
+        } else {
+            assertFailure(.accessibilityPermissionDenied) {
+                try SelectedDocumentPDFAdapter.select(bytes: copyingOnly)
+            }
+        }
+
+        // Copy permission alone did not produce an accessibility-denied PDF on
+        // the tested SDK. Assert the ACTUAL native denial, never infer it.
+        let denied = try PDFFixtures.encrypted(userPassword: "", permissions: [])
+        let deniedDocument = try XCTUnwrap(PDFDocument(data: denied))
+        XCTAssertTrue(deniedDocument.isEncrypted)
+        XCTAssertFalse(deniedDocument.isLocked)
+        XCTAssertFalse(deniedDocument.allowsCopying)
+        XCTAssertFalse(deniedDocument.allowsContentAccessibility)
+        assertFailure(.accessibilityPermissionDenied) { try SelectedDocumentPDFAdapter.select(bytes: denied) }
     }
     func testColumnsAndTableRemainLiteralTextNotAssociatedMeaning() throws {
         let bytes = PDFFixtures.columns()
@@ -85,21 +116,33 @@ final class SelectedDocumentPDFTests: XCTestCase {
         // No assertion that PDFKit recovered row/column associations or diagrams.
     }
     func testSourceReplacementDoesNotMutateSelectedImmutableBytes() throws {
-        var original = PDFFixtures.pages(["ORIGINAL_SOURCE"])
+        var original = PDFFixtures.pages(["ALPHA"])
+        let originalBytes = original
+        let oracle = try XCTUnwrap(PDFDocument(data: original)?.page(at: 0)?.string)
+        XCTAssertTrue(oracle.contains("ALPHA")); XCTAssertFalse(oracle.contains("BETA"))
         let selected = try SelectedDocumentPDFAdapter.select(bytes: original)
-        original = PDFFixtures.pages(["REPLACEMENT_SOURCE"])
+        original = PDFFixtures.pages(["BETA"])
         let replacement = try SelectedDocumentPDFAdapter.select(bytes: original)
         XCTAssertNotEqual(selected.sha256, replacement.sha256)
-        XCTAssertTrue(try SelectedDocumentPDFAdapter.readPage(1, from: selected).text.contains("ORIGINAL_SOURCE"))
-        XCTAssertFalse(try SelectedDocumentPDFAdapter.readPage(1, from: selected).text.contains("REPLACEMENT_SOURCE"))
+        XCTAssertEqual(selected.bytes, originalBytes)
+        XCTAssertEqual(selected.sha256, SHA256.hash(data: originalBytes).map { String(format: "%02x", $0) }.joined())
+        XCTAssertEqual(try SelectedDocumentPDFAdapter.readPage(1, from: selected).text, oracle)
+        let replacementOracle = try XCTUnwrap(PDFDocument(data: original)?.page(at: 0)?.string)
+        XCTAssertTrue(replacementOracle.contains("BETA")); XCTAssertFalse(replacementOracle.contains("ALPHA"))
+        XCTAssertEqual(try SelectedDocumentPDFAdapter.readPage(1, from: replacement).text, replacementOracle)
+        XCTAssertTrue(try SelectedDocumentPDFAdapter.readPage(1, from: selected).text.contains("ALPHA"))
+        XCTAssertFalse(try SelectedDocumentPDFAdapter.readPage(1, from: selected).text.contains("BETA"))
     }
     func testNSMutableDataAliasCannotMutateFrozenPDFBytesHashOrText() throws {
-        let bytes = PDFFixtures.pages(["MUTABLE_ALIAS_ORIGINAL"])
+        let bytes = PDFFixtures.pages(["ALPHA"])
         let mutable = NSMutableData(data: bytes)
         let alias = Data(referencing: mutable)
         let selected = try SelectedDocumentPDFAdapter.select(bytes: alias)
         let originalHash = SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined()
         let originalText = try SelectedDocumentPDFAdapter.readPage(1, from: selected).text
+        let oracle = try XCTUnwrap(PDFDocument(data: bytes)?.page(at: 0)?.string)
+        XCTAssertTrue(oracle.contains("ALPHA"))
+        XCTAssertEqual(originalText, oracle)
         // Alter the external backing object AFTER selection. Foundation may also
         // protect some bridges, but the adapter must own its explicit snapshot.
         mutable.mutableBytes.initializeMemory(as: UInt8.self, repeating: 0, count: mutable.length)
@@ -107,7 +150,7 @@ final class SelectedDocumentPDFTests: XCTestCase {
         XCTAssertEqual(selected.bytes, bytes)
         XCTAssertEqual(selected.sha256, originalHash)
         XCTAssertEqual(try SelectedDocumentPDFAdapter.readPage(1, from: selected).text, originalText)
-        XCTAssertTrue(originalText.contains("MUTABLE_ALIAS_ORIGINAL"))
+        XCTAssertTrue(originalText.contains("ALPHA"))
     }
     func testNonFileSelectionCannotBecomeNetworkAcquisition() {
         assertFailure(.filePermissionDenied) {
@@ -186,12 +229,17 @@ private enum PDFFixtures {
         ]))
     }
     static func oversizedTextLayer() -> Data {
-        // A real simple PDF text stream; no layout clipping can hide excess text
-        // from the extraction limit. Xref offsets are calculated from actual bytes.
-        let body = String(repeating: "fixture ", count: 10_000)
-        let stream = "BT /F1 10 Tf 10 10 Td (\(body)) Tj ET"
+        // A valid tall page with 900 nonoverlapping, wholly in-bounds rows.
+        // 100 ASCII characters at 8pt fit within 800pt, starting at x=30.
+        // Baselines range 9970...980, at 10pt spacing; page is 1000x10000pt.
+        // The native extraction precondition above must exceed 64KiB.
+        let row = String(repeating: "fixture ", count: 12) + "text"
+        precondition(row.utf8.count == 100)
+        let stream = (0..<900).map { index in
+            "BT /F1 8 Tf 1 0 0 1 30 \(9970 - index * 10) Tm (\(row)) Tj ET"
+        }.joined(separator: "\n")
         let objects = ["<< /Type /Catalog /Pages 2 0 R >>", "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-            "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
+            "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 1000 10000] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
             "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
             "<< /Length \(stream.utf8.count) >>\nstream\n\(stream)\nendstream"]
         var pdf = "%PDF-1.4\n", offsets: [Int] = [0]
