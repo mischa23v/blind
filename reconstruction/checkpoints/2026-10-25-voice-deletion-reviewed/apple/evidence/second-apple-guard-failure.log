@@ -1,0 +1,10 @@
+2026-10-25T15:14:06.0586490Z PASS: standalone iOS SDK typecheck only; no actor execution, app integration or device acceptance
+2026-10-25T15:14:07.6400120Z PASS: standalone iOS SDK typecheck only; no actor execution, app integration or device acceptance
+2026-10-25T15:21:49.2005810Z /Users/runner/work/_temp/voice-enrollment-actor.Bk8866/project/ProtectedVoiceEnrollmentStore.swift:48: error: -[VoiceProbeTests.VoiceEnrollmentActorTests testFailedEraseRestartFenceRequiresRetryAndRejectsLateSave] : failed: caught error: "invalidRecord"
+2026-10-25T15:21:49.5553090Z /Users/runner/work/_temp/voice-enrollment-actor.Bk8866/project/ProtectedVoiceEnrollmentStore.swift:48: error: -[VoiceProbeTests.VoiceEnrollmentActorTests testSaveLoadRecreateDeleteAndOrphanCleanup] : failed: caught error: "invalidRecord"
+2026-10-25T15:21:52.6245010Z /Users/runner/work/_temp/voice-enrollment-actor.Bk8866/project/ProtectedVoiceEnrollmentStore.swift:48: error: -[VoiceProbeTests.VoiceEnrollmentActorTests testFailedEraseRestartFenceRequiresRetryAndRejectsLateSave] : failed: caught error: "invalidRecord"
+2026-10-25T15:21:52.6699670Z /Users/runner/work/_temp/voice-enrollment-actor.Bk8866/project/ProtectedVoiceEnrollmentStore.swift:48: error: -[VoiceProbeTests.VoiceEnrollmentActorTests testSaveLoadRecreateDeleteAndOrphanCleanup] : failed: caught error: "invalidRecord"
+2026-10-25T15:21:52.7077000Z 	 Executed 2 tests, with 2 failures (2 unexpected) in 0.435 (0.437) seconds
+2026-10-25T15:21:52.7354890Z 	 Executed 2 tests, with 2 failures (2 unexpected) in 0.435 (0.516) seconds
+2026-10-25T15:21:52.7458710Z 	 Executed 2 tests, with 2 failures (2 unexpected) in 0.435 (0.520) seconds
+2026-10-25T15:21:57.9120670Z ##[error]Process completed with exit code 65.

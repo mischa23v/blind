@@ -38,8 +38,10 @@ xcodebuild -project "$SCRATCH/project/VoiceProbe.xcodeproj" -scheme VoiceProbe \
   -parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1 \
   -only-testing:VoiceProbeTests -resultBundlePath "$SCRATCH/ActorTests.xcresult" \
   CODE_SIGNING_ALLOWED=NO test > "$SCRATCH/test.log" 2>&1 || STATUS=$?
+# Safe synthetic-only security metadata is useful on success as well as failure.
+grep 'VOICE_PROBE_SECURITY' "$SCRATCH/test.log" | head -30 || true
 if (( STATUS != 0 )); then
-  grep -E -i 'error:|fatal|Test (Case|Suite).* failed|\*\* (BUILD|TEST) FAILED' "$SCRATCH/test.log" | head -100 || true
+  grep -E -i 'VOICE_PROBE_SECURITY|error:|fatal|Test (Case|Suite).* failed|\*\* (BUILD|TEST) FAILED' "$SCRATCH/test.log" | head -100 || true
   tail -50 "$SCRATCH/test.log"
   exit "$STATUS"
 fi
@@ -49,8 +51,8 @@ import json, sys
 s = json.load(open(sys.argv[1]))
 keys = ('result','totalTestCount','passedTests','failedTests','skippedTests')
 print('Actor XCTest result: ' + json.dumps({k:s.get(k) for k in keys}))
-if (s.get('totalTestCount'), s.get('passedTests'), s.get('failedTests'), s.get('skippedTests')) != (2, 2, 0, 0):
-    raise SystemExit('Expected exactly two passing actor tests and no skips; refusing inferred success.')
+if (s.get('totalTestCount'), s.get('passedTests'), s.get('failedTests'), s.get('skippedTests')) != (3, 3, 0, 0):
+    raise SystemExit('Expected exactly three passing native tests and no skips; refusing inferred success.')
 PY
 echo 'PASS: synthetic iOS simulator actor tests only; protection APIs were not bypassed; no physical-device/privacy-lifecycle acceptance'
 # Only bounded compiler/test diagnostics and counts are printed. No result bundle upload.

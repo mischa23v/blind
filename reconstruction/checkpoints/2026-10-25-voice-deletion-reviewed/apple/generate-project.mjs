@@ -9,11 +9,15 @@ const out = resolve(process.argv[2] ?? '');
 if (!process.argv[2] || out === here || !process.argv[2].startsWith('/')) throw Error('Fresh absolute scratch output required');
 const expected = {
   'VoiceEnrollment.swift': '7b4991e62d69c7761260d48b2427233749a66823e038597c47c2f475070d3b65',
-  'ProtectedVoiceEnrollmentStore.swift': '5a99a30e4443fac1497721963096cc125e36967675952ed81c33924771c58f41'
+  'ProtectedVoiceEnrollmentStore.swift': '901f60c371d02c4b0532fc8572d126a2dc76e51dfd778d0061048af4ca9d907e'
+};
+const sourcePaths = {
+  'VoiceEnrollment.swift': '../source/VoiceEnrollment.swift',
+  'ProtectedVoiceEnrollmentStore.swift': '../source-native-v2/ProtectedVoiceEnrollmentStore.swift'
 };
 const input = {};
 for (const [name, hash] of Object.entries(expected)) {
-  const bytes = await readFile(join(here, '../source', name));
+  const bytes = await readFile(join(here, sourcePaths[name]));
   if (createHash('sha256').update(bytes).digest('hex') !== hash) throw Error('Reviewed source hash mismatch: ' + name);
   input[name] = bytes.toString('utf8');
 }
@@ -38,7 +42,8 @@ const hooks = `
 `;
 const anchor = '    private func secure(_ url: URL) throws {';
 const erase = '                try fence.removeOtherChildren()';
-for (const [needle, count] of [[anchor, 1], [erase, 1]]) {
+const security = '        guard checked.isExcludedFromBackup == true,';
+for (const [needle, count] of [[anchor, 1], [erase, 1], [security, 1]]) {
   if (input['ProtectedVoiceEnrollmentStore.swift'].split(needle).length - 1 !== count) throw Error('Unexpected injection anchor');
 }
 const projected = input['ProtectedVoiceEnrollmentStore.swift'].replace(anchor, hooks + anchor)
@@ -48,7 +53,19 @@ const projected = input['ProtectedVoiceEnrollmentStore.swift'].replace(anchor, h
                     throw VoiceEnrollmentError.invalidRecord
                 }
                 #endif
-` + erase);
+` + erase)
+  .replace(security, `        #if VOICE_ENROLLMENT_TESTING
+        // Synthetic fixture metadata only. Never print the URL, record or directory contents.
+        if checked.isExcludedFromBackup != true || attributes[.protectionKey] as? FileProtectionType != .complete {
+            let protection = attributes[.protectionKey]
+            let kind = protection.map { String(reflecting: type(of: $0)) } ?? "missing"
+            print("VOICE_PROBE_SECURITY excluded=" + String(checked.isExcludedFromBackup == true)
+                + " typedComplete=" + String(protection as? FileProtectionType == .complete)
+                + " rawComplete=" + String(protection as? String == FileProtectionType.complete.rawValue)
+                + " attributeType=" + kind)
+        }
+        #endif
+` + security);
 await writeFile(join(out, 'VoiceEnrollment.swift'), input['VoiceEnrollment.swift']);
 await writeFile(join(out, 'ProtectedVoiceEnrollmentStore.swift'), projected);
 await writeFile(join(out, 'ActorTests.swift'), await readFile(join(here, 'ActorTests.swift')));

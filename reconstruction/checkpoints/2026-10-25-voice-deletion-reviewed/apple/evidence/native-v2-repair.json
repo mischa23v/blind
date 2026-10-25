@@ -1,0 +1,35 @@
+{
+  "base": "f09b2689a1e31a0be1becb1b5ef093371ffc918b",
+  "observedRun": {
+    "id": 40205942187,
+    "job": 121206770277,
+    "sdkTypecheck": "passed",
+    "actorTests": {
+      "executed": 2,
+      "failures": 2,
+      "reason": "invalidRecord at complete-protection/backup verification guard"
+    }
+  },
+  "nativeV2": "API raw-value normalization only; no weaker protection or bypass",
+  "originalSourceArchive": "unchanged",
+  "validation": {
+    "portableChecks": 4,
+    "portableResult": "passed",
+    "swiftSyntax": "passed",
+    "nativeV2SDK": "pending",
+    "nativeTestsExpected": 3,
+    "nativeV2ActorExecution": "pending"
+  },
+  "sha256": {
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/source-native-v2/ProtectedVoiceEnrollmentStore.swift": "901f60c371d02c4b0532fc8572d126a2dc76e51dfd778d0061048af4ca9d907e",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/source-native-v2/README.md": "9eb070bf84862120d85ed9e2ac140ba5142006c59dbbb91156f5d9c9f3bbcfbe",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/generate-project.mjs": "29faacd39d8b5874da47731eb56d39a8d02964b0e938b4633d0738e0e03cb71e",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/typecheck.sh": "4e5a6a8347a4e4ff4648b9e448fdaf60158d2c0fe12b8943bef3b641efd85103",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/actor-tests.sh": "cfffcd7c882b2bc85be5e89ab4a87e3f2cf118d558cd1ff4daddf9f560af0cad",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/ActorTests.swift": "594b4ffaa23867f7f1838fc6b3f0fd0e07e353e64d1b638d0e56db8a0819593f",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/test-probe.mjs": "69acb08df3021abcc494c596928fca04dc68656cfe0547b1b06e1b58854f121d",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/README.md": "897805c573e7a6d29347b33cb0ec20791db26c3cb8151eac23a9f27ef4de215f",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/evidence/second-apple-guard-failure.log": "645c70015bc9975503e38bb3ac69a98e382251773245b2099bb1731743b8fd6e",
+    "reconstruction/checkpoints/2026-10-25-voice-deletion-reviewed/apple/evidence/native-v2-static.log": "95123620930c20a22d56be2346295b189cf9adefcce117aa8f34ec36a2520016"
+  }
+}

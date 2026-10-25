@@ -3,6 +3,17 @@ import XCTest
 import Foundation
 
 final class VoiceEnrollmentActorTests: XCTestCase {
+    func testProtectionAttributeDecodingRejectsWeakMissingAndUnknown() {
+        XCTAssertTrue(VoiceEnrollmentFileProtection.isComplete(FileProtectionType.complete))
+        XCTAssertTrue(VoiceEnrollmentFileProtection.isComplete(FileProtectionType.complete.rawValue))
+        XCTAssertTrue(VoiceEnrollmentFileProtection.isComplete(FileProtectionType.complete.rawValue as NSString))
+        XCTAssertFalse(VoiceEnrollmentFileProtection.isComplete(nil))
+        XCTAssertFalse(VoiceEnrollmentFileProtection.isComplete(FileProtectionType.none))
+        XCTAssertFalse(VoiceEnrollmentFileProtection.isComplete(FileProtectionType.completeUnlessOpen))
+        XCTAssertFalse(VoiceEnrollmentFileProtection.isComplete(FileProtectionType.completeUntilFirstUserAuthentication.rawValue))
+        XCTAssertFalse(VoiceEnrollmentFileProtection.isComplete("unknown-protection"))
+        XCTAssertFalse(VoiceEnrollmentFileProtection.isComplete(42))
+    }
     private func fixture() throws -> (URL, VoiceEnrollmentBinding, VoiceEnrollmentConsent, VoiceEnrollmentRecord) {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent("voice-probe-" + UUID().uuidString)
         // The actor creates its dedicated child; this outer fixture is test-owned only.
