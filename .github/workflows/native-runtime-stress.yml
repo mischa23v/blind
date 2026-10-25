@@ -1,0 +1,31 @@
+name: Bounded native runtime stress diagnostic
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/native-runtime-stress.yml'
+      - 'tools/ci/native-runtime-stress.sh'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: native-runtime-stress-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  runtime-stress:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    runs-on: xcode-27
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Verify exact source and installed simulator
+        run: bash tools/ci/native-apple.sh preflight
+      - name: Build once and execute exactly five runtime-class passes
+        run: bash tools/ci/native-runtime-stress.sh
