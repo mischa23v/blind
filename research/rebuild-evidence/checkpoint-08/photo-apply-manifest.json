@@ -1,0 +1,130 @@
+{
+  "status": "applied exactly as reviewed, focused live verification passed, manifest frozen; no commit or push",
+  "base_publication": "cd368af98dcce0e0b1ab82e8983a5f9d373e753e plus current reference/ordinary working tree",
+  "required_reference_source_sha256": "5d4ae5c5d13ecb7889e20369b61b971ac645e721fd1396c5a50bf09ebdb4422f",
+  "authority": "Photo routing is trustedInterface only, after main CommandAuthority barrier; explicit picker selection owns source. Unverified microphone gets no private-photo access.",
+  "groups": {
+    "native": [
+      {
+        "path": "ios/BlindAssist/NavigationModel.swift",
+        "base_sha256": "3c50b238b7c5c8378181da94ee39c4b4fcd0eb6e2f36004a2f666ef394d9d900",
+        "result_sha256": "0e80e0f3a55c6d6121237bd0bbbcf96fb5de3977d658ede7674fbc53ac4b9ffc"
+      },
+      {
+        "path": "ios/BlindAssist/Feedback.swift",
+        "base_sha256": "8a3585e669414b705288acdfc8de0be33638400843757f65887783029b43b219",
+        "result_sha256": "542c3c5d1efc74cbb74e9ca036fff0647f575c3f5151636b8fcf69717e066e04"
+      },
+      {
+        "path": "ios/BlindAssist/ExplorePictureView.swift",
+        "base_sha256": "bf10cd3e5a89915915dfb8ac62a9ede485c48b29c940d1dab04df5b4474c4df3",
+        "result_sha256": "0fc783e2f7af9a7554643849b232277a8faf7f6a05963ff28bc3c4455bccd737"
+      },
+      {
+        "path": "ios/BlindAssist/DashboardView.swift",
+        "base_sha256": "84508f620c40c77a9372c320853147595a9b9bf7aad93f0628423dc30aeb6088",
+        "result_sha256": "bd1e250da4dd3da2630582a139ced9bc41132f6951d707b2bdf253fcbd943473"
+      },
+      {
+        "path": "ios/BlindAssist/VisionService.swift",
+        "base_sha256": "e634e1ae10f17780b8f0e4f68e54688f7604af0b120f22a50ebc44cf19385175",
+        "result_sha256": "9485b2493f7ec7db7934417597f0075290df0d861ae6462469185cacd90b7811"
+      },
+      {
+        "path": "ios/BlindAssist/SelectedPhotoDecoder.swift",
+        "base_sha256": null,
+        "result_sha256": "c298e492982dfedb486557d82d2815b4f24680c952f307812f89e0b8d017a027"
+      },
+      {
+        "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
+        "base_sha256": "c8d3510c41600a139b70b9eab635283ae26c5e8b4348841aa8c3848423b77f09",
+        "result_sha256": "c41b8a49ae2efb0974d2d41765c1d5c361b18ef36bf3366016952e809620db29"
+      }
+    ],
+    "core": [
+      {
+        "path": "BlindCore/Sources/BlindCore/SelectedPhotoReference.swift",
+        "base_sha256": null,
+        "result_sha256": "8b6ad053cdc65e3c3fd0bc9f46c1eec9766e05ebdc8a9603bc197d78891a9659"
+      },
+      {
+        "path": "BlindCore/Tests/BlindCoreTests/SelectedPhotoReferenceTests.swift",
+        "base_sha256": null,
+        "result_sha256": "06974a732fcb81746fbe36baa6278042949b1f57e5b1543105ada3f345a1a0f2"
+      },
+      {
+        "path": "BlindCore/Tests/BlindCoreTests/NativeSelectedPhotoControllerTests.swift",
+        "base_sha256": null,
+        "result_sha256": "02dd8a1101f414ba4dadd32e5da1ee60f523340be2a1a1f0a3d1adfc946aacd4"
+      }
+    ],
+    "contracts": [
+      {
+        "path": "tools/test/reading-integration.test.mjs",
+        "base_sha256": "1025d4c140050de8428091c5eba4645041f6fce99d39ab680def43d94a4c500f",
+        "result_sha256": "52dc022fc18f8131bbd4b9f060877ff14ea447061cb0a26d7e7c60285567cf31"
+      },
+      {
+        "path": "tools/test/ios-lifecycle-regressions.test.mjs",
+        "base_sha256": "af8a3d0879935af1ac058556a5b3246f6989de269a75512653f1f693ea5e0827",
+        "result_sha256": "b834de35d69f068306dd7ac9485acf7d9626814d5956c58118e12a061e5b5e6b"
+      },
+      {
+        "path": "tools/test/selected-photo-reference.test.mjs",
+        "base_sha256": null,
+        "result_sha256": "cde937bf69ed0156a689697daf56c6feafc53c86d14d658c2a563476b755e767"
+      }
+    ],
+    "support": [
+      {
+        "path": "reconstruction/library-photo/generate-controller-tests.py",
+        "base_sha256": null,
+        "result_sha256": "30099fe83d6fa3327365701e8d6ba6d0e9fd6e2d7aaeab3ffe7dc30612158e21"
+      },
+      {
+        "path": "reconstruction/library-photo/reproduce.sh",
+        "base_sha256": null,
+        "result_sha256": "9c7a756d20c2c41d948e23b67fc47d7cc4191ba378b2bf1b5d3b8a73c01c7840"
+      }
+    ]
+  },
+  "applied_at_utc": "2026-10-25T03:22Z",
+  "preserved_reference_dependencies": {
+    "BlindCore/Sources/BlindCore/CompanionReferenceReading.swift": "5d4ae5c5d13ecb7889e20369b61b971ac645e721fd1396c5a50bf09ebdb4422f",
+    "BlindCore/Tests/BlindCoreTests/CompanionReferenceReadingTests.swift": "351098869555cda9635cd56445bca239c4840d9cf55b6912fe7d16fa022a8afe",
+    "BlindCore/Tests/BlindCoreTests/Fixtures/reference-reading-authored.json": "74cd543716c7f1e5d176e0ae03aa790e37319bb50d1dbad2e8b36cc6b85aba5b"
+  },
+  "patches": {
+    "native": "516336d92ebbe9dfe5259b264cd7f207f42d6ef6a8202069273b5572fe1d27c7",
+    "core": "5e98a1834b2c8dc9d6875a63b60d752772800713b15f21f4b6af16a35aa51685",
+    "contracts": "5c6879096cf60099f92d95dfd018008cb87bafc1880ce1e5741167f67e5ae743",
+    "support": "34e1069efa886c65051f52c2abc1a2a1c30c10bb00e5bc5c8b3cda724654f838"
+  },
+  "untouched_prior_source_file_count": 555,
+  "frozen_at_utc": "2026-10-25T03:24:42Z",
+  "reviewed_proposal_zip_sha256": "df923ba03907018a9740915ec954a36488abedd917c263b7a9bd0dbca087728c",
+  "reviewed_proposal_manifest_sha256": "b3b15979ba5c911bc3cc8293c4b5982462bff62f6e4693a3bef86bf61628a744",
+  "verification": {
+    "focused_swift_core_tests": 18,
+    "extracted_production_photo_controller_tests": 16,
+    "repository_tests": 95,
+    "repository_skips": 0,
+    "enabled_clock_swift_callback_tests": 16,
+    "native_syntax_parse_files": 6,
+    "project_membership": "Checked-in normal project exactly matches generator output; only SelectedPhotoDecoder added",
+    "controller_extraction": "12 production method bodies regenerated; generated file hash unchanged",
+    "failures": 0,
+    "apple_sdk_build_device_inference": "not run; unavailable on Linux",
+    "aggregate": "Parent to run after this freeze; prior staged aggregate is not the live apply aggregate"
+  },
+  "evidence_sha256": {
+    "focused-core-controller.log": "a0518fb7a07a5b4f512007da4ed6b9efc5bad0890f42b049294d6590d8c1349e",
+    "focused-contracts-clock.log": "7a075489b1d28038dc6a1c8309d11090d523670dc163884d4b0e4118f1808e7f",
+    "verify-commands.sh": "a5271327b6a35cd5ce9aafc908c91c7db415fd7b25f55e38457b997162a5348f",
+    "controller-parity.log": "d08eccd6e5ec6bb776b0394f6d3797a7d6e082d2d415cc09c9b024c8fd395f58",
+    "pre-apply-source-sha256.json": "9774a6b6f8e7a37a2d75ef6435abc4ff9027a9fccbde29ab1939eefbbdfd9506",
+    "native-parse.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "enabled-clock-swift.log": "2f1b09d9d06fc5424f2afa0749fcf327373aa432612dca0e46a40a067b9f68ba",
+    "apply.log": "17631a261561eba04003568645af11ebed5128c381afc03e46d902423c9502bc"
+  }
+}

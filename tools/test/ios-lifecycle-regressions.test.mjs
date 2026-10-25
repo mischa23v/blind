@@ -111,10 +111,10 @@ test('photo library transfers cannot restart exploration after dismissal or supe
   assert.ok(load.indexOf('model.clearExploreSnapshot()') < load.indexOf('loadTransferable'));
   assert.match(load, /guard !Task.isCancelled, presentationActive, photoLoadGeneration == generation else \{ return \}/);
   assert.match(load, /model.assistantSession.generation == sessionGeneration else \{ return \}/);
-  assert.ok(load.indexOf('photoLoadGeneration == generation') < load.indexOf('model.explorePhoto(image)'));
-  assert.ok(load.indexOf('model.assistantSession.generation == sessionGeneration') < load.indexOf('model.explorePhoto(image)'));
+  assert.ok(load.indexOf('photoLoadGeneration == generation') < load.indexOf('model.explorePhoto(image, selection: selection, sha256: decoded.sha256)'));
+  assert.ok(load.indexOf('model.assistantSession.generation == sessionGeneration') < load.indexOf('model.explorePhoto(image, selection: selection, sha256: decoded.sha256)'));
   const dismiss = source.slice(source.indexOf('.onDisappear'), source.indexOf('private func cancelPhotoLoad'));
-  for (const required of ['presentationActive = false', 'cancelPhotoLoad()', 'photo = nil', 'model.clearExploreSnapshot()']) {
+  for (const required of ['presentationActive = false', 'cancelPhotoLoad()', 'photo = nil', 'model.endExplorePresentation(viewID)']) {
     assert.ok(dismiss.includes(required), required);
   }
   const cancellation = source.slice(source.indexOf('private func cancelPhotoLoad'));

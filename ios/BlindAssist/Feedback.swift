@@ -11,9 +11,12 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     private var delivery = SpeechDeliveryLedger()
     private var currentUtterance: AVSpeechUtterance?
     private var currentSpatialRouteID: UUID?
+    private var currentPrivateReference = false
     private var beaconOwnership = SpatialRouteBeaconOwnership()
     /// Only the exact route owner can revalidate a registered physical cue.
     var spatialRoutePermission: ((UUID) -> Bool)?
+    /// Recheck source-bound requested information at enqueue and actual start.
+    var requestedSpeechPermission: ((UUID, String) -> Bool)?
     #if DEBUG
     private let debugTrace = DebugNativeSessionTrace()
     #endif
@@ -100,7 +103,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         defer {
             if !debugAccepted {
                 debugTrace?.event(.speechRejected, source: .speechEngine, utteranceID: speechID ?? narrationID) {
-                    .init(text: admitted.text, label: "feedback.deliveryRejected")
+                    .init(text: admitted.privateReference ? nil : admitted.text, label: "feedback.deliveryRejected")
                 }
             }
         }
@@ -173,6 +176,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         guard let attempt = delivery.begin(text: admitted.text, priority: priority,
             destination: destination, transport: transport, independentAlert: independentAlert) else { return false }
         currentSpatialRouteID = spatialRouteID
+        currentPrivateReference = admitted.privateReference
         if let alert { alertSignals(alert) }
         #if DEBUG
         debugTrace?.event(.speechRequested, source: .speechEngine,
@@ -182,7 +186,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
             case .requested(let id), .narration(let id): destinationID = id.uuidString
             case .untracked: destinationID = "unbound"
             }
-            return .init(text: attempt.text, label: "engine.admitted; destinationID=" + destinationID + (transport == .accessibility ? "; VoiceOverID=unbound" : ""))
+            return .init(text: admitted.privateReference ? nil : attempt.text, label: "engine.admitted; destinationID=" + destinationID + (transport == .accessibility ? "; VoiceOverID=unbound" : ""))
         }
         #endif
         armOutputTimeout(token: attempt.token)
@@ -201,6 +205,9 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
             // Revalidate after preparation, immediately before handing to the
             // platform queue. didStart below fences a delayed actual start too.
             if let spatialRouteID, spatialRoutePermission?(spatialRouteID) != true {
+                finishActive(outcome: .interrupted, stopSynthesizer: true); return false
+            }
+            if case .requested(let id) = attempt.destination, requestedSpeechPermission?(id, attempt.text) == false {
                 finishActive(outcome: .interrupted, stopSynthesizer: true); return false
             }
             speech.speak(utterance)
@@ -286,14 +293,14 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
             : completion.outcome == .interrupted ? .speechInterrupted : .unavailable
         debugTrace?.event(kind, source: .speechEngine,
                           utteranceID: completion.attempt.transport == .synthesized ? completion.attempt.token : nil) {
-            .init(text: completion.attempt.text,
+            .init(text: currentPrivateReference ? nil : completion.attempt.text,
                   label: diagnosticCause + "; outcome=" + String(describing: completion.outcome)
                     + (completion.attempt.transport == .accessibility ? "; VoiceOverCorrelation=unbound" : ""))
         }
         #endif
         // Invalidate identity before stopping: didCancel can arrive after new output
         // starts. Clear all old state before invoking controller code, asynchronously.
-        currentUtterance = nil; currentSpatialRouteID = nil
+        currentUtterance = nil; currentSpatialRouteID = nil; currentPrivateReference = false
         outputTimeout?.invalidate(); outputTimeout = nil
         if stopSynthesizer { speech.stopSpeaking(at: .immediate) }
         DispatchQueue.main.async { [weak self] in
@@ -311,9 +318,13 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         guard utterance === currentUtterance, let active = delivery.active, active.transport == .synthesized else { return }
         #if DEBUG
         debugTrace?.event(.speechStarted, source: .speechEngine, utteranceID: active.token) {
-            .init(text: active.text, label: "AVSpeech.didStart")
+            .init(text: currentPrivateReference ? nil : active.text, label: "AVSpeech.didStart")
         }
         #endif
+        if case .requested(let id) = active.destination, requestedSpeechPermission?(id, active.text) == false {
+            finishActive(outcome: .interrupted, stopSynthesizer: true,
+                         diagnosticCause: "source.expiredBeforePlayback"); return
+        }
         if let routeID = currentSpatialRouteID, spatialRoutePermission?(routeID) != true {
             finishActive(outcome: .interrupted, stopSynthesizer: true,
                          diagnosticCause: "route.expiredBeforePlayback"); return

@@ -1,0 +1,44 @@
+{
+  "status": "focused checks and independent review cleared; live files frozen for parent aggregate",
+  "frozen_at_utc": "2026-10-25T03:35:32Z",
+  "changes": [
+    {
+      "path": "tools/test/companion-evidence.test.mjs",
+      "before_sha256": "e9c65d9c903522eb4f0045df173d138df9e68b5bbabbf2bbf1702bd4dd14c716",
+      "after_sha256": "48695fb35e67f23b996eb007a197641be9e08a9e717e499d97cc892667ad917f"
+    },
+    {
+      "path": "tools/test/familiar-people.test.mjs",
+      "before_sha256": "3c11d6adcd78f53a157ababaf6d99a16f83651c40f870ad5af5f15a3a6d9b458",
+      "after_sha256": "c5ce433c1cb3f43075462395ce09b5baa2b1f4d23a7d71ce5d1be106546a3857"
+    }
+  ],
+  "production_changed": false,
+  "production_navigation_sha256": "0e80e0f3a55c6d6121237bd0bbbcf96fb5de3977d658ede7674fbc53ac4b9ffc",
+  "original_photo_apply_manifest_sha256": "ec675f0a38acdda7f8ddc69a8c02f236e52ae106ed8ba43800f968cdb0202798",
+  "verification": {
+    "fail_before_reproduced": true,
+    "focused_after_pass": 39,
+    "focused_after_fail": 0,
+    "focused_after_skip": 0,
+    "independent_reviewer_pass": 27,
+    "in_memory_source_mutations_rejected": 19,
+    "full_aggregate": "Parent running separately; not claimed by this manifest",
+    "apple_runtime": "not run"
+  },
+  "evidence_sha256": {
+    "REVIEW.md": "7407294f15160e09020db6fa9804a9d39dc43bd0343800666691f4c85b1ed6a4",
+    "STATUS.md": "854e9828c41fa1d0ba979c5c6577511df26d68ca803ea907510192d334d8aa2e",
+    "after/companion-evidence.test.mjs": "48695fb35e67f23b996eb007a197641be9e08a9e717e499d97cc892667ad917f",
+    "after/familiar-people.test.mjs": "c5ce433c1cb3f43075462395ce09b5baa2b1f4d23a7d71ce5d1be106546a3857",
+    "aggregate-fail-before.log": "3173cd51c0ea05a257a7816e54468a134b3cf0ff98d78735a6db1d3080ea4e5e",
+    "before/companion-evidence.test.mjs": "e9c65d9c903522eb4f0045df173d138df9e68b5bbabbf2bbf1702bd4dd14c716",
+    "before/familiar-people.test.mjs": "3c11d6adcd78f53a157ababaf6d99a16f83651c40f870ad5af5f15a3a6d9b458",
+    "focused-after.log": "3641f4153c9d9e5877779ea59078363442969ab2a068e2994da4a46c1d96631c",
+    "focused-fail-before.log": "ad72b8f1110ef611cfeb04ba27cb3c658793a70284d02565cfaf378210baac3c",
+    "intermediate-mutation-anchor-failure.log": "85b34fe90e6d9e040dc1edb1845a40df7e822e057d7aff8a5daeff03de9d69d9",
+    "preserved-source.log": "905b84f216bd517a4d00191ad42d37f34b0a76495515e8c4e5318530438e5896",
+    "test-hashes.json": "1e9830a8d76636bfe1a431fff6ef3f38d4914a5c3674ce0fd83f38ae6da49552",
+    "tests.patch": "232a82718226092073d3940400a8b7bdfbf78987e3399236fe2220f720ee8a3c"
+  }
+}

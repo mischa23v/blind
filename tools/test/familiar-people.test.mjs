@@ -150,12 +150,42 @@ test('named search is exact-label bounded quiet and reuses current candidate and
 test('source contract: debug privacy purge cannot bypass familiar search cancellation', async () => {
   const model = await read('ios/BlindAssist/NavigationModel.swift');
   const clear = bodyAfter(model, 'func clearAssistantConversation()');
-  // Purge is a standalone side effect, not a success guard or async prerequisite.
-  // Its DEBUG block must close before the independent familiar-feature block.
-  assert.match(clear, /^\s*#if DEBUG\s+purgeDebugSessionDiagnostics\(\)\s+#endif\s+#if BLIND_FAMILIAR_PEOPLE\s+familiarPeople\.cancelSearchForNewGoal\(\)\s+#endif/);
-  assert.ok(clear.indexOf('familiarPeople.cancelSearchForNewGoal()') < clear.indexOf('cancelDescription()'));
-  assert.match(clear, /cancelDescription\(\); _ = feedback\.stopInformation\(announceCancellation: false\); stopReturn\(\); indoor\.cancelRoute\(\)/);
-  assert.doesNotMatch(clear, /feedback\.stop\(/); // Task changes must preserve independent hazard/status output.
+  const check = body => {
+    // Photo revocation is unconditional and synchronous. DEBUG purge and familiar
+    // cancellation remain independent side effects, never success/async guards.
+    assert.match(body, /#if DEBUG\s+purgeDebugSessionDiagnostics\(\)\s+#endif/);
+    assert.match(body, /#if BLIND_FAMILIAR_PEOPLE\s+familiarPeople\.cancelSearchForNewGoal\(\)\s+#endif/);
+    for (const debug of [false, true]) for (const familiar of [false, true]) {
+      const configured = body
+        .replace(/#if DEBUG([\s\S]*?)#endif/g, (_, code) => debug ? code : '')
+        .replace(/#if BLIND_FAMILIAR_PEOPLE([\s\S]*?)#endif/g, (_, code) => familiar ? code : '');
+      assert.doesNotMatch(configured, /#(?:if|else|elseif|endif)\b/);
+      const mutation = configured.indexOf('everydayTasks.cancelAll()');
+      assert.ok(mutation >= 0, 'Existing task cancellation remains reachable');
+      const prefix = configured.slice(0, mutation).replace(/\s+/g, ' ').trim();
+      const required = ['clearExploreSnapshot()',
+        ...(debug ? ['purgeDebugSessionDiagnostics()'] : []),
+        ...(familiar ? ['familiarPeople.cancelSearchForNewGoal()'] : [])];
+      assert.equal(prefix, required.join(' '), `Unconditional ordered privacy prefix, DEBUG=${debug}, familiar=${familiar}`);
+      assert.doesNotMatch(prefix, /\b(?:return|throw|await|guard|if)\b/);
+    }
+    assert.ok(body.indexOf('familiarPeople.cancelSearchForNewGoal()') < body.indexOf('cancelDescription()'));
+    assert.match(body, /cancelDescription\(\); _ = feedback\.stopInformation\(announceCancellation: false\); stopReturn\(\); indoor\.cancelRoute\(\)/);
+    assert.doesNotMatch(body, /feedback\.stop\(/); // Independent hazard/status output survives.
+  };
+  check(clear);
+  for (const [name, from, to] of [
+    ['missing photo revocation', 'clearExploreSnapshot()', ''],
+    ['async photo revocation', 'clearExploreSnapshot()', 'await clearExploreSnapshot()'],
+    ['purge failure bypass', 'purgeDebugSessionDiagnostics()', 'guard purgeDebugSessionDiagnostics() else { return }'],
+    ['missing familiar cancellation', 'familiarPeople.cancelSearchForNewGoal()', ''],
+    ['familiar nested in DEBUG', '#endif\n        #if BLIND_FAMILIAR_PEOPLE', '#if BLIND_FAMILIAR_PEOPLE'],
+    ['early exit', 'clearExploreSnapshot()', 'clearExploreSnapshot(); return'],
+    ['hazard cancellation', 'feedback.stopInformation(announceCancellation: false)', 'feedback.stop()'],
+  ]) {
+    assert.ok(clear.includes(from), `Mutation anchor: ${name}`);
+    assert.throws(() => check(clear.replace(from, to)), { name: 'AssertionError' }, name);
+  }
 });
 test('past snapshot speech has separate bounded lifetime without extending live display', async () => {
   const code = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');

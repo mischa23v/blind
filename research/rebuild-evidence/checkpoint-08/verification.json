@@ -1,0 +1,38 @@
+{
+  "parent": "1937e92e72abd72212c60427e4a5362e13dc678a",
+  "corePassed": 1057,
+  "nodePassed": 391,
+  "failures": 0,
+  "skipped": 0,
+  "priorAggregate": {
+    "nodeTotal": 391,
+    "nodePass": 389,
+    "nodeFail": 2,
+    "resolution": "Two obsolete source-shape assertions replaced with stronger separate source-ownership and conditional-build cancellation-order assertions; no production changes. Independent review and negative mutations retained."
+  },
+  "scope": "Trusted selected-photo native source flow; local evidence and original source qualifiers retained. No private-photo authority for unverified mic. Not live perception or movement authority.",
+  "limitations": [
+    "Apple SDK typechecking and Photos/Vision/AVSpeech runtime not executed",
+    "Real recognition accuracy, VoiceOver and device timing unmeasured",
+    "Core/native extracted tests do not validate actual small model behavior"
+  ],
+  "sourceHashes": {
+    "ios/BlindAssist/NavigationModel.swift": "0e80e0f3a55c6d6121237bd0bbbcf96fb5de3977d658ede7674fbc53ac4b9ffc",
+    "ios/BlindAssist/Feedback.swift": "542c3c5d1efc74cbb74e9ca036fff0647f575c3f5151636b8fcf69717e066e04",
+    "ios/BlindAssist/ExplorePictureView.swift": "0fc783e2f7af9a7554643849b232277a8faf7f6a05963ff28bc3c4455bccd737",
+    "ios/BlindAssist/DashboardView.swift": "bd1e250da4dd3da2630582a139ced9bc41132f6951d707b2bdf253fcbd943473",
+    "ios/BlindAssist/VisionService.swift": "9485b2493f7ec7db7934417597f0075290df0d861ae6462469185cacd90b7811",
+    "ios/BlindAssist/SelectedPhotoDecoder.swift": "c298e492982dfedb486557d82d2815b4f24680c952f307812f89e0b8d017a027",
+    "ios/BlindAssist.xcodeproj/project.pbxproj": "c41b8a49ae2efb0974d2d41765c1d5c361b18ef36bf3366016952e809620db29",
+    "BlindCore/Sources/BlindCore/SelectedPhotoReference.swift": "8b6ad053cdc65e3c3fd0bc9f46c1eec9766e05ebdc8a9603bc197d78891a9659",
+    "BlindCore/Tests/BlindCoreTests/SelectedPhotoReferenceTests.swift": "06974a732fcb81746fbe36baa6278042949b1f57e5b1543105ada3f345a1a0f2",
+    "BlindCore/Tests/BlindCoreTests/NativeSelectedPhotoControllerTests.swift": "02dd8a1101f414ba4dadd32e5da1ee60f523340be2a1a1f0a3d1adfc946aacd4",
+    "tools/test/reading-integration.test.mjs": "52dc022fc18f8131bbd4b9f060877ff14ea447061cb0a26d7e7c60285567cf31",
+    "tools/test/ios-lifecycle-regressions.test.mjs": "b834de35d69f068306dd7ac9485acf7d9626814d5956c58118e12a061e5b5e6b",
+    "tools/test/selected-photo-reference.test.mjs": "cde937bf69ed0156a689697daf56c6feafc53c86d14d658c2a563476b755e767",
+    "reconstruction/library-photo/generate-controller-tests.py": "30099fe83d6fa3327365701e8d6ba6d0e9fd6e2d7aaeab3ffe7dc30612158e21",
+    "reconstruction/library-photo/reproduce.sh": "9c7a756d20c2c41d948e23b67fc47d7cc4191ba378b2bf1b5d3b8a73c01c7840",
+    "tools/test/companion-evidence.test.mjs": "48695fb35e67f23b996eb007a197641be9e08a9e717e499d97cc892667ad917f",
+    "tools/test/familiar-people.test.mjs": "c5ce433c1cb3f43075462395ce09b5baa2b1f4d23a7d71ce5d1be106546a3857"
+  }
+}

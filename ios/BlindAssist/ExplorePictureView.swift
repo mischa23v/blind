@@ -1,5 +1,6 @@
 import SwiftUI
 import PhotosUI
+import BlindCore
 
 /// Explore a picture by touch (Seeing AI-style): with VoiceOver on, moving a finger over the picture
 /// reads what Vision found at that spot (text, people, a page, detector objects) and where it is.
@@ -7,6 +8,8 @@ import PhotosUI
 struct ExplorePictureView: View {
     @ObservedObject var model: NavigationModel
     @State private var photo: PhotosPickerItem?
+    @State private var pickerPresented = false
+    @State private var viewID = UUID()
     @State private var photoLoadTask: Task<Void, Never>?
     @State private var photoLoadGeneration = UUID()
     @State private var presentationActive = false
@@ -29,13 +32,19 @@ struct ExplorePictureView: View {
                 }
                     .accessibilityIdentifier("explore-capture")
                 // A library photo is read on this phone only and never saved by the app.
-                PhotosPicker(selection: $photo, matching: .images) { Text(t("Describe a photo from my library", "صف صورة من مكتبتي")) }
+                Button(t("Describe a photo from my library", "صف صورة من مكتبتي")) {
+                    cancelPhotoLoad()
+                    photo = nil
+                    model.clearExploreSnapshot()
+                    pickerPresented = true
+                }
+                    .photosPicker(isPresented: $pickerPresented, selection: $photo, matching: .images)
                     .accessibilityIdentifier("explore-library")
                 if photoLoadTask != nil {
                     ProgressView(t("Opening photo…", "جارٍ فتح الصورة…"))
                         .accessibilityIdentifier("explore-loading")
                 }
-                if photoLoadFailed {
+                if photoLoadFailed || model.photoReferenceFailed {
                     Text(t("I couldn't open that photo. Please choose it again.", "تعذر فتح الصورة. اخترها مرة أخرى من فضلك."))
                         .accessibilityIdentifier("explore-load-error")
                 }
@@ -48,20 +57,39 @@ struct ExplorePictureView: View {
                 model.clearExploreSnapshot()
                 let generation = photoLoadGeneration
                 let sessionGeneration = model.assistantSession.generation
+                guard let selection = model.beginSelectedPhoto(viewID: viewID) else { photoLoadFailed = true; return }
                 photoLoadTask = Task { @MainActor in
-                    let data = try? await item.loadTransferable(type: Data.self)
+                    var handedToVision = false
+                    defer {
+                        if !handedToVision { model.finishSelectedPhotoNativeWork(selection) }
+                        // A late return cannot clear a newer picker job's UI.
+                        if photoLoadGeneration == generation { photoLoadTask = nil }
+                    }
+                    let transfer = try? await item.loadTransferable(type: SelectedPhotoTransfer.self)
                     // A cancelled Photos transfer can still return. Only this visible presentation's
                     // latest request may start model work or change the selection/loading state.
                     guard !Task.isCancelled, presentationActive, photoLoadGeneration == generation else { return }
-                    photoLoadTask = nil
                     photo = nil
                     guard model.assistantSession.foregroundActive,
                           model.assistantSession.generation == sessionGeneration else { return }
-                    guard let data, let image = UIImage(data: data) else {
+                    guard let transfer else {
+                        photoLoadTask = nil
                         photoLoadFailed = true
+                        model.clearExploreSnapshot()
                         return
                     }
-                    model.explorePhoto(image)
+                    let decoded = await Task.detached(priority: .userInitiated) { SelectedPhotoDecoder.decode(transfer.data) }.value
+                    guard !Task.isCancelled, presentationActive, photoLoadGeneration == generation,
+                          model.selectedPhotoLoadIsCurrent(selection),
+                          model.assistantSession.generation == sessionGeneration else { return }
+                    photoLoadTask = nil
+                    guard let decoded else {
+                        photoLoadFailed = true
+                        model.clearExploreSnapshot()
+                        return
+                    }
+                    let image = decoded.image
+                    handedToVision = model.explorePhoto(image, selection: selection, sha256: decoded.sha256)
                 }
             }
             if let snapshot = model.exploreSnapshot {
@@ -90,7 +118,7 @@ struct ExplorePictureView: View {
                     ForEach(snapshot.regions.indices, id: \.self) { index in
                         Text(snapshot.regions[index].label + ", " + position(snapshot.regions[index].rect))
                     }
-                    if snapshot.regions.isEmpty { Text(t("No text or people found.", "لم يُعثر على نص أو أشخاص.")) }
+                    if snapshot.regions.isEmpty { Text(t("No text or people were recognized. Things may have been missed.", "لم يتم التعرف على نص أو أشخاص. قد يكون التعرف قد فوّت أشياء.")) }
                     Button(t("Forget this picture", "انسَ هذه الصورة"), role: .destructive) {
                         cancelPhotoLoad()
                         photo = nil
@@ -103,12 +131,25 @@ struct ExplorePictureView: View {
         .onAppear {
             cancelPhotoLoad()
             presentationActive = true
+            model.beginExplorePresentation(viewID)
+            if model.photoPickerRequested {
+                model.photoPickerRequested = false
+                pickerPresented = true
+            }
+        }
+        .onChange(of: model.photoPickerRequested) { _, requested in
+            if requested, presentationActive {
+                cancelPhotoLoad()
+                photo = nil
+                model.photoPickerRequested = false
+                pickerPresented = true
+            }
         }
         .onDisappear {
             presentationActive = false
             cancelPhotoLoad()
             photo = nil
-            model.clearExploreSnapshot()
+            model.endExplorePresentation(viewID)
         }
     }
 

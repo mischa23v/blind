@@ -128,15 +128,15 @@ test('photo transfer and Vision continuations stay fenced to the visible present
     'photoLoadGeneration == generation', 'model.assistantSession.generation == sessionGeneration']);
   before(load, 'cancelPhotoLoad()', 'loadTransferable(');
   before(load, 'model.clearExploreSnapshot()', 'loadTransferable(');
-  before(load, 'photoLoadGeneration == generation', 'model.explorePhoto(image)');
-  before(load, 'model.assistantSession.generation == sessionGeneration', 'model.explorePhoto(image)');
+  before(load, 'photoLoadGeneration == generation', 'model.explorePhoto(image, selection: selection, sha256: decoded.sha256)');
+  before(load, 'model.assistantSession.generation == sessionGeneration', 'model.explorePhoto(image, selection: selection, sha256: decoded.sha256)');
   includesAll(section(view, '.onDisappear', 'private func cancelPhotoLoad'),
-    ['presentationActive = false', 'cancelPhotoLoad()', 'model.clearExploreSnapshot()']);
+    ['presentationActive = false', 'cancelPhotoLoad()', 'model.endExplorePresentation(viewID)']);
   includesAll(view.slice(view.indexOf('private func cancelPhotoLoad')),
     ['photoLoadGeneration = UUID()', 'photoLoadTask?.cancel()', 'photoLoadTask = nil']);
   const model = await read('ios/BlindAssist/NavigationModel.swift');
   const clear = section(model, 'func clearExploreSnapshot()', 'func explorePhoto(');
   includesAll(clear, ['exploreRequest = UUID()', 'exploreTask?.cancel()', 'exploreSnapshot = nil']);
   const photo = model.slice(model.indexOf('func explorePhoto('));
-  includesAll(photo, ['!Task.isCancelled', 'self.exploreRequest == token', 'self.assistantSession.generation == generation']);
+  includesAll(photo, ['!Task.isCancelled', 'self.selectedPhoto.selection?.id == token', 'self.assistantSession.generation == generation']);
 });

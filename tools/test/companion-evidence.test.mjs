@@ -116,7 +116,54 @@ test('new goals cancel reading before money colour or model routing and stale ca
 test('captured photo work is private fenced and cannot return after dismissal', async () => {
   const model = await read('ios/BlindAssist/NavigationModel.swift');
   const snapshot = section(model, 'func captureExploreSnapshot()', 'extension CGImagePropertyOrientation');
-  assert.equal((snapshot.match(/self\.exploreRequest == token/g) ?? []).length, 2);
-  assert.match(snapshot, /func clearExploreSnapshot\(\)[\s\S]*exploreRequest = UUID\(\); exploreTask\?\.cancel\(\)/);
-  assert.doesNotMatch(snapshot, /saveValue|write\(to:|URLSession/);
+  const check = source => {
+    // Camera snapshots and library selections deliberately have separate owners.
+    // Require each callback's complete fence before publishing, not a global token count.
+    const camera = section(source, 'func captureExploreSnapshot()', 'func clearExploreSnapshot()');
+    assert.match(camera, /token = exploreRequest, generation = assistantSession\.generation/);
+    const cameraResult = section(camera, '}.value', 'self.exploreSnapshot =');
+    assert.match(cameraResult, /guard let self, !Task\.isCancelled, self\.exploreRequest == token,\s+self\.assistantSession\.generation == generation, self\.assistantSession\.foregroundActive else \{ return \}/);
+
+    const library = source.slice(source.indexOf('func explorePhoto('));
+    assert.ok(source.includes('func explorePhoto('));
+    assert.ok(library.includes('selectedPhotoTask = Task'));
+    const beforeWork = library.slice(0, library.indexOf('selectedPhotoTask = Task'));
+    assert.match(beforeWork, /guard selectedPhotoNativeLease == selection\.id, selectedPhotoLoadIsCurrent\(selection\), let cg = image\.cgImage else \{ return false \}/);
+    assert.match(beforeWork, /token = selection\.id, generation = assistantSession\.generation/);
+    const libraryResult = section(library, '}.value', 'self.selectedPhotoTask = nil');
+    assert.match(libraryResult, /guard let self, !Task\.isCancelled, self\.selectedPhoto\.selection\?\.id == token,\s+self\.assistantSession\.generation == generation, self\.selectedPhotoLoadIsCurrent\(selection\) else \{ return \}/);
+    assert.doesNotMatch(library, /exploreRequest|exploreTask\s*=/);
+    const publication = section(library, 'guard self.selectedPhoto.install(', 'self.exploreSnapshot =');
+    assert.match(publication, /let context = self\.selectedPhotoContext\(\), self\.selectedPhoto\.revalidate\(context\) else \{\s+self\.failSelectedPhotoReference\(\); return\s+\}/);
+    const ownership = section(source, 'func selectedPhotoLoadIsCurrent(', 'private func selectedPhotoContext(');
+    assert.match(ownership, /assistantSession\.foregroundActive && photoQuestion == selection\.question &&\s+selectedPhoto\.owns\(selection, viewID: photoViewID, generation: assistantSession\.generation,\s+now: ProcessInfo\.processInfo\.systemUptime\)/);
+
+    const clear = section(source, 'func clearExploreSnapshot()', '@discardableResult private func routeSelectedPhotoInquiry(');
+    assert.match(clear, /clearSelectedPhotoReference\(\)\s+exploreRequest = UUID\(\); exploreTask\?\.cancel\(\); exploreTask = nil; exploreSnapshot = nil/);
+    const clearLibrary = section(source, 'private func clearSelectedPhotoReference()', 'private func failSelectedPhotoReference()');
+    assert.match(clearLibrary, /selectedPhoto\.clear\(\)\s+selectedPhotoTask\?\.cancel\(\); selectedPhotoTask = nil/);
+    const dismiss = section(source, 'func endExplorePresentation(', 'func beginSelectedPhoto(');
+    assert.match(dismiss, /guard photoViewID == id else \{ return \}\s+clearExploreSnapshot\(\); photoViewID = nil; photoPickerRequested = false/);
+    assert.doesNotMatch(source, /saveValue|write\(to:|URLSession/);
+  };
+  check(snapshot);
+  // Deliberate in-memory regressions prove these contracts reject lost fences.
+  // They do not run UIKit/Vision or claim native callback execution.
+  for (const [name, from, to] of [
+    ['camera token', 'self.exploreRequest == token', 'true'],
+    ['camera session', 'self.assistantSession.generation == generation', 'true'],
+    ['camera foreground', 'self.assistantSession.foregroundActive else', 'true else'],
+    ['library native lease', 'guard selectedPhotoNativeLease == selection.id', 'guard true'],
+    ['library selection', 'self.selectedPhoto.selection?.id == token', 'true'],
+    ['library callback ownership', 'self.selectedPhotoLoadIsCurrent(selection)', 'true'],
+    ['library question', 'photoQuestion == selection.question', 'true'],
+    ['library view', 'viewID: photoViewID, generation:', 'viewID: nil, generation:'],
+    ['delivery revalidation', 'let context = self.selectedPhotoContext(), self.selectedPhoto.revalidate(context) else', 'let context = self.selectedPhotoContext(), true else'],
+    ['library revocation', 'selectedPhoto.clear()', ''],
+    ['view dismissal', 'clearExploreSnapshot(); photoViewID = nil', 'photoViewID = nil'],
+    ['private persistence', 'selectedPhoto.clear()', 'selectedPhoto.clear(); saveValue()'],
+  ]) {
+    assert.ok(snapshot.includes(from), `Mutation anchor: ${name}`);
+    assert.throws(() => check(snapshot.replace(from, to)), { name: 'AssertionError' }, name);
+  }
 });

@@ -15,7 +15,9 @@ struct AdmittedSpeech {
     let text: String
     let priority: SpeechPriority
     let urgent: Bool
-    fileprivate init(_ candidate: InformationCandidate) {
+    let privateReference: Bool
+    fileprivate init(_ candidate: InformationCandidate, privateReference: Bool = false) {
+        self.privateReference = privateReference
         text = candidate.text; priority = candidate.priority; urgent = candidate.kind == .hazard
     }
 }
@@ -364,6 +366,19 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var documentSpeechID: UUID?
     private var exploreTask: Task<Void, Never>?
     private var exploreRequest = UUID()
+    @Published var showPhotoReference = false
+    @Published private(set) var photoReferenceFailed = false
+    @Published var photoPickerRequested = false
+    private var photoViewID: UUID?
+    private var photoQuestion = "Describe the selected photo"
+    private var selectedPhoto = SelectedPhotoReference()
+    // Retained until actual transfer/decode/Vision completion, even after UI
+    // cancellation. Never clear this lease merely because a result is stale.
+    private var selectedPhotoNativeLease: UUID?
+    private var selectedPhotoSpeechIDs = Set<UUID>()
+    private var photoExpiryTask: Task<Void, Never>?
+    private var selectedPhotoTask: Task<Void, Never>?
+    private var photoDisplayText: String?
     private var lastReadingLook = -Double.infinity
     private var readingStarted = -Double.infinity
     private var lastReadingBeep = -Double.infinity
@@ -501,8 +516,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             let at = Date()
             self.enqueueNarration { try await $0.finish(id: id, outcome: outcome, at: at) }
         }
+        feedback.requestedSpeechPermission = { [weak self] id, text in self?.selectedPhotoSpeechPermission(id: id, text: text) ?? false }
         feedback.onRequestedSpeechFinished = { [weak self] id, text, outcome in
             guard let self else { return }
+            if self.finishSelectedPhotoSpeech(id: id, text: text, outcome: outcome) { return }
             if self.recordedSpotSpeech?.id == id { self.recordedSpotSpeech = nil }
             if self.contextualSpeech?.id == id { self.contextualSpeech = nil }
             if self.requestedColorSpeech?.id == id { self.requestedColorSpeech = nil }
@@ -556,6 +573,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         feedback.onIdle = { [weak self] in
             self?.drainConversationSpeech()
+            self?.speakNextSelectedPhotoPhrase()
             self?.resumePendingQuestion()
             self?.listenForOfferAnswer()
         }
@@ -1904,6 +1922,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // Privacy rule (AGENTS.md): camera pictures never leave the phone in the app build.
         let cloud = false
         #endif
+        if !automatic, routeSelectedPhotoInquiry(question, origin: .trustedInterface) { return }
         if !automatic { stopReadingTool(announce: false) }
         if !automatic, routeUnavailableTemperature(question) { return }
         if !automatic, routeUnverifiedPhysicalRequest(question) { return }
@@ -2171,11 +2190,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// already-admitted path so the same words are never charged twice here.
     @discardableResult private func deliverCandidate(_ candidate: InformationCandidate,
         alreadyAdmitted: Bool = false, narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil, nonspatialCapture: ContextualCapabilityScheduler.Lease? = nil, verifiedFamiliarCapture: Bool = false, spatialRouteID: UUID? = nil) -> Bool {
+        let privateReference = speechID.map { selectedPhotoSpeechIDs.contains($0) } ?? false
         #if DEBUG
         var debugDelivered = false
         defer {
             debugTrace?.event(.outputGate, source: .outputGate, utteranceID: speechID ?? narrationID) {
-                .init(text: candidate.text, label: debugDelivered ? "candidate.dispatched.notPlayback" : "candidate.rejected")
+                .init(text: privateReference ? nil : candidate.text, label: debugDelivered ? "candidate.dispatched.notPlayback" : "candidate.rejected")
             }
         }
         #endif
@@ -2209,7 +2229,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             guard candidate.kind == .mobility, alert == nil,
                   spatialRouteOutput.validateForStart(spatialRouteID) else { return false }
         }
-        let admitted = AdmittedSpeech(candidate)
+        let admitted = AdmittedSpeech(candidate, privateReference: privateReference)
         let spoken = feedback.deliver(admitted, narrationID: narrationID, speechID: speechID, alert: alert,
             independentAlert: independentAlert, spatialRouteID: spatialRouteID)
         #if DEBUG
@@ -2357,6 +2377,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         companionWorkingState.changeGoal(assistantDialogue.goal, originalRequest: objectiveDraft); persistWorkingState()
     }
     func clearAssistantConversation() {
+        clearExploreSnapshot()
         #if DEBUG
         purgeDebugSessionDiagnostics()
         #endif
@@ -2512,6 +2533,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let origin: CompanionCommandOrigin = fromVoice ? .unverifiedMicrophone : .trustedInterface
         // A read-only clock question needs conversation authority, not goal authority.
         // Intercept before cancellation, everyday-task mutation or camera work.
+        if selectedPhoto.selection != nil { clearExploreSnapshot() }
         if routeClockInquiry(text, origin: origin) { return }
         guard CommandAuthority.permits(.changeGoal, from: origin) else {
             #if DEBUG
@@ -2523,6 +2545,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #if DEBUG
         debugTrace?.event(.outputGate, source: .outputGate) { .init(label: "commandAuthority.changeGoal.accepted.trustedInterface") }
         #endif
+        // Private selected-photo access requires explicit trusted UI. The public
+        // clock's microphone conversation permission does not authorize this lane.
+        if routeSelectedPhotoInquiry(text, origin: origin) { return }
         if routeVoiceRoomScan(text) { return }
         // Narration hold preserves the conversation and retained goal. It is not
         // microphone mute, camera off, task cancellation, or inferred addressee detection.
@@ -3635,7 +3660,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             if !self.running || self.detection.hazard == .observing { self.speakRequested(self.sceneAnswer) }
         }
     }
-    func stopDescriptions() { cancelDescription(); voice.endManualTurn(); feedback.interruptAmbient(); ambientDescriptions = false }
+    func stopDescriptions() { clearExploreSnapshot(); cancelDescription(); voice.endManualTurn(); feedback.interruptAmbient(); ambientDescriptions = false }
     private func queueQuestion(_ question: String, cloud: Bool, focus: String, camera: Point3, forward: Point3) {
         pendingQuestion = PendingQuestion(question: question, cloud: cloud, focus: focus,
             goalRevision: assistantDialogue.goalRevision, mapRevision: indoor.revision.uuidString,
@@ -5338,6 +5363,7 @@ extension NavigationModel {
 
     /// Captured pictures are explicitly snapshots, never evidence of the current room or path.
     func captureExploreSnapshot() {
+        clearExploreSnapshot()
         cancelDescription()
         guard running, !simulation, !places.scanning, assistantSession.foregroundActive,
               detection.hazard == .observing, let frame = session.currentFrame,
@@ -5362,40 +5388,167 @@ extension NavigationModel {
         }
     }
     func clearExploreSnapshot() {
+        photoReferenceFailed = false
+        clearSelectedPhotoReference()
         exploreRequest = UUID(); exploreTask?.cancel(); exploreTask = nil; exploreSnapshot = nil
     }
 
-    /// User-selected library photo; processed only on device, kept in memory until dismissed.
-    func explorePhoto(_ image: UIImage) {
-        cancelDescription()
-        guard assistantSession.foregroundActive, let cg = image.cgImage else {
-            speakOperation(arabic ? "تعذر فتح الصورة." : "I couldn't open that photo."); return
+    /// The picker action is read-only: do not call cancelDescription, stop a
+    /// search/route, start a camera or write the user's retained task here.
+    @discardableResult private func routeSelectedPhotoInquiry(_ question: String, origin: CompanionCommandOrigin) -> Bool {
+        guard origin == .trustedInterface, SelectedPhotoIntent.matches(question) else { return false }
+        interruptOrdinaryConversation(origin: origin)
+        clearExploreSnapshot()
+        photoQuestion = question
+        // A different screen cannot supply a selected source. Reopen the existing
+        // picker instead of pretending that arbitrary conversation owns an image.
+        photoPickerRequested = true
+        if photoViewID == nil { showPhotoReference = true }
+        return true
+    }
+
+    func beginExplorePresentation(_ id: UUID) {
+        if photoViewID != id { clearExploreSnapshot() }
+        photoViewID = id
+    }
+    func endExplorePresentation(_ id: UUID) {
+        guard photoViewID == id else { return }
+        clearExploreSnapshot(); photoViewID = nil; photoPickerRequested = false
+    }
+    func beginSelectedPhoto(viewID: UUID) -> SelectedPhotoReference.Selection? {
+        guard photoViewID == viewID, assistantSession.foregroundActive, selectedPhotoNativeLease == nil else { return nil }
+        clearSelectedPhotoReference()
+        let selection = selectedPhoto.select(viewID: viewID, generation: assistantSession.generation,
+            question: photoQuestion, now: ProcessInfo.processInfo.systemUptime)
+        selectedPhotoNativeLease = selection?.id
+        startSelectedPhotoExpiry()
+        return selection
+    }
+    func finishSelectedPhotoNativeWork(_ selection: SelectedPhotoReference.Selection) {
+        if selectedPhotoNativeLease == selection.id { selectedPhotoNativeLease = nil }
+    }
+    func selectedPhotoLoadIsCurrent(_ selection: SelectedPhotoReference.Selection) -> Bool {
+        assistantSession.foregroundActive && photoQuestion == selection.question &&
+        selectedPhoto.owns(selection, viewID: photoViewID, generation: assistantSession.generation,
+            now: ProcessInfo.processInfo.systemUptime)
+    }
+    private func selectedPhotoContext() -> SelectedPhotoReference.Context? {
+        guard let selection = selectedPhoto.selection else { return nil }
+        return .init(selection: selection, source: selectedPhoto.source?.identity, viewID: photoViewID,
+            generation: assistantSession.generation, question: photoQuestion, now: ProcessInfo.processInfo.systemUptime,
+            foreground: assistantSession.foregroundActive, quiet: !ambientDescriptions,
+            hazard: running && detection.hazard.isUrgent, privateAudioHeld: assistantSession.privateAudioHeld)
+    }
+    private func clearSelectedPhotoReference() {
+        let speech = selectedPhoto.pending?.id
+        selectedPhoto.clear()
+        selectedPhotoTask?.cancel(); selectedPhotoTask = nil
+        photoExpiryTask?.cancel(); photoExpiryTask = nil
+        if let text = photoDisplayText {
+            if sceneAnswer == text { sceneAnswer = "" }
+            if currentReply == text { currentReply = "" }
         }
+        photoDisplayText = nil
+        if let speech { feedback.stopRequestedSpeech(speech) }
+    }
+    private func failSelectedPhotoReference() {
+        clearExploreSnapshot()
+        photoReferenceFailed = true
+    }
+    private func startSelectedPhotoExpiry() {
+        photoExpiryTask?.cancel()
+        photoExpiryTask = Task { @MainActor [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 250_000_000)
+                guard let self, !Task.isCancelled, let context = self.selectedPhotoContext() else { return }
+                guard self.selectedPhoto.revalidate(context) else {
+                    self.clearExploreSnapshot(); return
+                }
+                self.speakNextSelectedPhotoPhrase()
+            }
+        }
+    }
+    private func speakNextSelectedPhotoPhrase() {
+        guard let context = selectedPhotoContext(), selectedPhoto.revalidate(context) else { return }
+        guard feedback.speechPriority == nil, !voice.awaitingUtterance, !textOnly,
+              let phrase = selectedPhoto.next(context), selectedPhoto.begin(phrase, context: context) else { return }
+        // Ordinary admission, private-audio, hazard and word budgets still apply.
+        // Do not use a language-model/clock classifier on quoted source text.
+        selectedPhotoSpeechIDs.insert(phrase.id)
+        if !dispatchText(phrase.text, kind: .answer, requested: true, replace: false, speechID: phrase.id) {
+            selectedPhotoSpeechIDs.remove(phrase.id)
+            selectedPhoto.admissionRejected(phrase.id)
+        }
+    }
+    private func selectedPhotoSpeechPermission(id: UUID, text: String) -> Bool {
+        guard selectedPhotoSpeechIDs.contains(id) else { return true }
+        guard let pending = selectedPhoto.pending, pending.id == id,
+              pending.text.utf8.elementsEqual(text.utf8), let context = selectedPhotoContext() else { return false }
+        return selectedPhoto.revalidate(context)
+    }
+    private func finishSelectedPhotoSpeech(id: UUID, text: String, outcome: NarrationDelivery) -> Bool {
+        guard selectedPhotoSpeechIDs.remove(id) != nil else { return false }
+        guard selectedPhoto.pending?.id == id else { return true }
+        guard let context = selectedPhotoContext(),
+              selectedPhoto.finish(id: id, text: text, outcome: outcome, context: context) else {
+            clearExploreSnapshot(); return true
+        }
+        speakNextSelectedPhotoPhrase()
+        return true
+    }
+
+    /// User-selected library photo, entirely on-device and separate from current
+    /// camera/room evidence. Ownership was assigned before asynchronous loading.
+    @discardableResult func explorePhoto(_ image: UIImage, selection: SelectedPhotoReference.Selection, sha256: String) -> Bool {
+        guard selectedPhotoNativeLease == selection.id, selectedPhotoLoadIsCurrent(selection), let cg = image.cgImage else { return false }
         let orientation = CGImagePropertyOrientation(image.imageOrientation), arabic = self.arabic
-        let token = exploreRequest, generation = assistantSession.generation
-        exploreTask = Task { @MainActor [weak self] in
+        let token = selection.id, generation = assistantSession.generation
+        selectedPhotoTask = Task { @MainActor [weak self] in
+            defer { self?.finishSelectedPhotoNativeWork(selection) }
             let result = await Task.detached(priority: .userInitiated) {
-                let regions = (try? VisionService.exploreRegions(photo: cg, orientation: orientation, arabic: arabic)) ?? []
+                let regions = try? VisionService.exploreRegions(photo: cg, orientation: orientation, arabic: arabic)
                 let categories = (try? VisionService.photoCategories(photo: cg, orientation: orientation)) ?? []
                 return (regions, categories)
             }.value
-            guard let self, !Task.isCancelled, self.exploreRequest == token,
-                  self.assistantSession.generation == generation, self.assistantSession.foregroundActive else { return }
-            self.exploreTask = nil
-            let regions = result.0, categories = result.1
-            self.exploreSnapshot = ExploreSnapshot(image: image, regions: regions)
-            var parts: [String] = []
-            if !categories.isEmpty {
-                parts.append((arabic ? "قد تُظهر الصورة: " : "The photo may show: ") + categories.joined(separator: ", ") + ".")
+            guard let self, !Task.isCancelled, self.selectedPhoto.selection?.id == token,
+                  self.assistantSession.generation == generation, self.selectedPhotoLoadIsCurrent(selection) else { return }
+            self.selectedPhotoTask = nil
+            guard let recognizedRegions = result.0 else {
+                self.failSelectedPhotoReference(); return
             }
-            let texts = regions.filter { $0.label.hasPrefix(arabic ? "نص: " : "Text: ") }.prefix(3).map(\.label)
-            if !texts.isEmpty { parts.append(texts.joined(separator: ". ") + ".") }
-            let people = regions.filter { $0.label == (arabic ? "شخص" : "Person") }.count
-            if people > 0 { parts.append(arabic ? "أشخاص: \(people)." : "People: \(people).") }
-            parts.append(arabic ? "هذه صورة وليست وصفاً حياً. استكشفها باللمس." : "This is a photo, not a live view. Explore it by touch.")
-            self.sceneAnswer = parts.joined(separator: " "); self.currentReply = self.sceneAnswer
-            self.speakRequested(self.sceneAnswer)
+            let regions = recognizedRegions.filter {
+                $0.label.hasPrefix(arabic ? "نص: " : "Text: ") ||
+                $0.label == (arabic ? "شخص" : "Person") || $0.label == (arabic ? "صفحة" : "Page") ||
+                !SelectedPhotoReference.neutralCategories([$0.label]).isEmpty
+            }
+            let categories = SelectedPhotoReference.neutralCategories(result.1)
+            // Preserve EVERY complete OCR line and qualifier, never prefix(3) or
+            // CompanionToolRuntime's model-context clipping. Whole-source limits
+            // reject the selection rather than deleting a warning or negation.
+            var blocks: [String] = [arabic ? "هذه صورة مرجعية وليست وصفاً حياً. قد يخطئ التعرف أو يفوته شيء." : "This selected photo is reference-only, not a live view. Recognition may be wrong or miss things."]
+            if !categories.isEmpty {
+                blocks.append((arabic ? "تصنيفات محتملة للصورة: " : "Possible image categories: ") + categories.joined(separator: ", "))
+            }
+            let texts = regions.filter { $0.label.hasPrefix(arabic ? "نص: " : "Text: ") }
+                .sorted { $0.rect.minY == $1.rect.minY ? $0.rect.minX < $1.rect.minX : $0.rect.minY < $1.rect.minY }
+            blocks += texts.map { (arabic ? "قراءة نص غير مؤكدة: " : "Uncertain OCR: ") + $0.label }
+            let identity = CompanionReferenceIdentity(sourceID: selection.id, revision: UUID(), sha256: sha256, media: .selectedPhoto)
+            let evidence = blocks.enumerated().map { CompanionEvidence(id: "photo-block-\($0.offset)", kind: .historicalMemory,
+                text: $0.element, source: identity.evidenceSource) }
+            let source = CompanionReferenceSource(identity: identity,
+                toolResult: .init(status: .success, source: identity.evidenceSource, summary: "Selected photo reference only", evidence: evidence),
+                blocks: evidence.enumerated().map { .init(evidence: $0.element,
+                    bodyUTF16Range: NSRange(location: 0, length: $0.element.text.utf16.count), locator: "selected-photo:block-\($0.offset)") })
+            guard self.selectedPhoto.install(source, for: selection, now: ProcessInfo.processInfo.systemUptime, arabic: arabic),
+                  let context = self.selectedPhotoContext(), self.selectedPhoto.revalidate(context) else {
+                self.failSelectedPhotoReference(); return
+            }
+            self.exploreSnapshot = ExploreSnapshot(image: image, regions: regions)
+            let answer = blocks.joined(separator: "\n")
+            self.photoDisplayText = answer; self.sceneAnswer = answer; self.currentReply = answer
+            self.speakNextSelectedPhotoPhrase()
         }
+        return true
     }
 }
 

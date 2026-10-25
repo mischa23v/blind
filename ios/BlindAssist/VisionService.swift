@@ -171,18 +171,24 @@ enum VisionService {
     }
     /// Same for a photo chosen from the library (kept in memory only).
     static func exploreRegions(photo: CGImage, orientation: CGImagePropertyOrientation, arabic: Bool) throws -> [(label: String, rect: CGRect)] {
-        try exploreRegions(handler: { VNImageRequestHandler(cgImage: photo, orientation: orientation) }, arabic: arabic)
+        try exploreRegions(handler: { VNImageRequestHandler(cgImage: photo, orientation: orientation) }, arabic: arabic, retainAllText: true)
     }
-    private static func exploreRegions(handler makeHandler: () -> VNImageRequestHandler, arabic: Bool) throws -> [(label: String, rect: CGRect)] {
+    private static func exploreRegions(handler makeHandler: () -> VNImageRequestHandler, arabic: Bool, retainAllText: Bool = false) throws -> [(label: String, rect: CGRect)] {
         let text = VNRecognizeTextRequest(); text.recognitionLevel = .accurate
+        let supported = try text.supportedRecognitionLanguages()
+        text.recognitionLanguages = (arabic ? ["ar-SA", "ar", "en-US"] : ["en-US"]).filter { supported.contains($0) }
+        if text.recognitionLanguages.isEmpty { text.recognitionLanguages = ["en-US"] }
         let people = VNDetectHumanRectanglesRequest()
         let page = VNDetectDocumentSegmentationRequest()
         try makeHandler().perform([text, people, page])
         let flip = { (box: CGRect) in CGRect(x: box.minX, y: 1 - box.maxY, width: box.width, height: box.height) }
         var regions: [(label: String, rect: CGRect)] = []
         for box in text.results ?? [] {
-            if let line = box.topCandidates(1).first, line.confidence >= 0.5 {
-                regions.append(((arabic ? "نص: " : "Text: ") + line.string, flip(box.boundingBox)))
+            if let line = box.topCandidates(1).first, retainAllText || line.confidence >= 0.5 {
+                // A selected-photo reference retains every returned OCR line. A
+                // low-confidence warning/negation must not disappear silently.
+                let qualifier = line.confidence < 0.5 ? (arabic ? "[ثقة منخفضة] " : "[low confidence] ") : ""
+                regions.append(((arabic ? "نص: " : "Text: ") + qualifier + line.string, flip(box.boundingBox)))
             }
         }
         for person in (people.results ?? []) where person.confidence >= 0.6 {

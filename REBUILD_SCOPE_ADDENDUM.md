@@ -1,3 +1,7 @@
+## Photo reconstruction verification update — 2026-10-25 03:38 UTC
+
+The earlier photo aggregate failure recorded below has now been corrected and rerun: **1,057 Core and 391 Node checks passed**, zero failures/skips. Only two stale test-shape assertions changed during correction; stronger source ownership, cancellation ordering and negative mutation checks replaced them. The original failed run is retained. The 15-file selected-photo source integration plus two corrected contracts is frozen for this executable checkpoint. Photos/Vision/audio/Apple SDK and real device behavior remain unverified. The previous published tracker/source-archive checkpoint is `1937e92e72abd72212c60427e4a5362e13dc678a`. See [checkpoint-08 evidence](research/rebuild-evidence/checkpoint-08/verification.json). This update supersedes earlier photo aggregate status below, not other open feature gaps.
+
 # Blind reconstruction scope addendum
 
 Prepared 2026-10-25. Expanded scope following the initial documentation checkpoint `20af33fe`. Current execution status lives in REBUILD_FEATURE_STATUS.md, TASKS.md, TODO.md and PROGRESS.md; this file retains requirements plus precise partial progress, not whole-feature completion. This document converts additional owner-provided requirements and historical status reports into technical acceptance criteria. It contains no original conversation exports or personal testing details.

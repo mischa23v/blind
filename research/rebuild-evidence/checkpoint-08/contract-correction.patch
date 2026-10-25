@@ -1,0 +1,111 @@
+--- a/tools/test/companion-evidence.test.mjs
++++ b/tools/test/companion-evidence.test.mjs
+@@ -116,7 +116,54 @@
+ test('captured photo work is private fenced and cannot return after dismissal', async () => {
+   const model = await read('ios/BlindAssist/NavigationModel.swift');
+   const snapshot = section(model, 'func captureExploreSnapshot()', 'extension CGImagePropertyOrientation');
+-  assert.equal((snapshot.match(/self\.exploreRequest == token/g) ?? []).length, 2);
+-  assert.match(snapshot, /func clearExploreSnapshot\(\)[\s\S]*exploreRequest = UUID\(\); exploreTask\?\.cancel\(\)/);
+-  assert.doesNotMatch(snapshot, /saveValue|write\(to:|URLSession/);
++  const check = source => {
++    // Camera snapshots and library selections deliberately have separate owners.
++    // Require each callback's complete fence before publishing, not a global token count.
++    const camera = section(source, 'func captureExploreSnapshot()', 'func clearExploreSnapshot()');
++    assert.match(camera, /token = exploreRequest, generation = assistantSession\.generation/);
++    const cameraResult = section(camera, '}.value', 'self.exploreSnapshot =');
++    assert.match(cameraResult, /guard let self, !Task\.isCancelled, self\.exploreRequest == token,\s+self\.assistantSession\.generation == generation, self\.assistantSession\.foregroundActive else \{ return \}/);
++
++    const library = source.slice(source.indexOf('func explorePhoto('));
++    assert.ok(source.includes('func explorePhoto('));
++    assert.ok(library.includes('selectedPhotoTask = Task'));
++    const beforeWork = library.slice(0, library.indexOf('selectedPhotoTask = Task'));
++    assert.match(beforeWork, /guard selectedPhotoNativeLease == selection\.id, selectedPhotoLoadIsCurrent\(selection\), let cg = image\.cgImage else \{ return false \}/);
++    assert.match(beforeWork, /token = selection\.id, generation = assistantSession\.generation/);
++    const libraryResult = section(library, '}.value', 'self.selectedPhotoTask = nil');
++    assert.match(libraryResult, /guard let self, !Task\.isCancelled, self\.selectedPhoto\.selection\?\.id == token,\s+self\.assistantSession\.generation == generation, self\.selectedPhotoLoadIsCurrent\(selection\) else \{ return \}/);
++    assert.doesNotMatch(library, /exploreRequest|exploreTask\s*=/);
++    const publication = section(library, 'guard self.selectedPhoto.install(', 'self.exploreSnapshot =');
++    assert.match(publication, /let context = self\.selectedPhotoContext\(\), self\.selectedPhoto\.revalidate\(context\) else \{\s+self\.failSelectedPhotoReference\(\); return\s+\}/);
++    const ownership = section(source, 'func selectedPhotoLoadIsCurrent(', 'private func selectedPhotoContext(');
++    assert.match(ownership, /assistantSession\.foregroundActive && photoQuestion == selection\.question &&\s+selectedPhoto\.owns\(selection, viewID: photoViewID, generation: assistantSession\.generation,\s+now: ProcessInfo\.processInfo\.systemUptime\)/);
++
++    const clear = section(source, 'func clearExploreSnapshot()', '@discardableResult private func routeSelectedPhotoInquiry(');
++    assert.match(clear, /clearSelectedPhotoReference\(\)\s+exploreRequest = UUID\(\); exploreTask\?\.cancel\(\); exploreTask = nil; exploreSnapshot = nil/);
++    const clearLibrary = section(source, 'private func clearSelectedPhotoReference()', 'private func failSelectedPhotoReference()');
++    assert.match(clearLibrary, /selectedPhoto\.clear\(\)\s+selectedPhotoTask\?\.cancel\(\); selectedPhotoTask = nil/);
++    const dismiss = section(source, 'func endExplorePresentation(', 'func beginSelectedPhoto(');
++    assert.match(dismiss, /guard photoViewID == id else \{ return \}\s+clearExploreSnapshot\(\); photoViewID = nil; photoPickerRequested = false/);
++    assert.doesNotMatch(source, /saveValue|write\(to:|URLSession/);
++  };
++  check(snapshot);
++  // Deliberate in-memory regressions prove these contracts reject lost fences.
++  // They do not run UIKit/Vision or claim native callback execution.
++  for (const [name, from, to] of [
++    ['camera token', 'self.exploreRequest == token', 'true'],
++    ['camera session', 'self.assistantSession.generation == generation', 'true'],
++    ['camera foreground', 'self.assistantSession.foregroundActive else', 'true else'],
++    ['library native lease', 'guard selectedPhotoNativeLease == selection.id', 'guard true'],
++    ['library selection', 'self.selectedPhoto.selection?.id == token', 'true'],
++    ['library callback ownership', 'self.selectedPhotoLoadIsCurrent(selection)', 'true'],
++    ['library question', 'photoQuestion == selection.question', 'true'],
++    ['library view', 'viewID: photoViewID, generation:', 'viewID: nil, generation:'],
++    ['delivery revalidation', 'let context = self.selectedPhotoContext(), self.selectedPhoto.revalidate(context) else', 'let context = self.selectedPhotoContext(), true else'],
++    ['library revocation', 'selectedPhoto.clear()', ''],
++    ['view dismissal', 'clearExploreSnapshot(); photoViewID = nil', 'photoViewID = nil'],
++    ['private persistence', 'selectedPhoto.clear()', 'selectedPhoto.clear(); saveValue()'],
++  ]) {
++    assert.ok(snapshot.includes(from), `Mutation anchor: ${name}`);
++    assert.throws(() => check(snapshot.replace(from, to)), { name: 'AssertionError' }, name);
++  }
+ });
+--- a/tools/test/familiar-people.test.mjs
++++ b/tools/test/familiar-people.test.mjs
+@@ -150,12 +150,42 @@
+ test('source contract: debug privacy purge cannot bypass familiar search cancellation', async () => {
+   const model = await read('ios/BlindAssist/NavigationModel.swift');
+   const clear = bodyAfter(model, 'func clearAssistantConversation()');
+-  // Purge is a standalone side effect, not a success guard or async prerequisite.
+-  // Its DEBUG block must close before the independent familiar-feature block.
+-  assert.match(clear, /^\s*#if DEBUG\s+purgeDebugSessionDiagnostics\(\)\s+#endif\s+#if BLIND_FAMILIAR_PEOPLE\s+familiarPeople\.cancelSearchForNewGoal\(\)\s+#endif/);
+-  assert.ok(clear.indexOf('familiarPeople.cancelSearchForNewGoal()') < clear.indexOf('cancelDescription()'));
+-  assert.match(clear, /cancelDescription\(\); _ = feedback\.stopInformation\(announceCancellation: false\); stopReturn\(\); indoor\.cancelRoute\(\)/);
+-  assert.doesNotMatch(clear, /feedback\.stop\(/); // Task changes must preserve independent hazard/status output.
++  const check = body => {
++    // Photo revocation is unconditional and synchronous. DEBUG purge and familiar
++    // cancellation remain independent side effects, never success/async guards.
++    assert.match(body, /#if DEBUG\s+purgeDebugSessionDiagnostics\(\)\s+#endif/);
++    assert.match(body, /#if BLIND_FAMILIAR_PEOPLE\s+familiarPeople\.cancelSearchForNewGoal\(\)\s+#endif/);
++    for (const debug of [false, true]) for (const familiar of [false, true]) {
++      const configured = body
++        .replace(/#if DEBUG([\s\S]*?)#endif/g, (_, code) => debug ? code : '')
++        .replace(/#if BLIND_FAMILIAR_PEOPLE([\s\S]*?)#endif/g, (_, code) => familiar ? code : '');
++      assert.doesNotMatch(configured, /#(?:if|else|elseif|endif)\b/);
++      const mutation = configured.indexOf('everydayTasks.cancelAll()');
++      assert.ok(mutation >= 0, 'Existing task cancellation remains reachable');
++      const prefix = configured.slice(0, mutation).replace(/\s+/g, ' ').trim();
++      const required = ['clearExploreSnapshot()',
++        ...(debug ? ['purgeDebugSessionDiagnostics()'] : []),
++        ...(familiar ? ['familiarPeople.cancelSearchForNewGoal()'] : [])];
++      assert.equal(prefix, required.join(' '), `Unconditional ordered privacy prefix, DEBUG=${debug}, familiar=${familiar}`);
++      assert.doesNotMatch(prefix, /\b(?:return|throw|await|guard|if)\b/);
++    }
++    assert.ok(body.indexOf('familiarPeople.cancelSearchForNewGoal()') < body.indexOf('cancelDescription()'));
++    assert.match(body, /cancelDescription\(\); _ = feedback\.stopInformation\(announceCancellation: false\); stopReturn\(\); indoor\.cancelRoute\(\)/);
++    assert.doesNotMatch(body, /feedback\.stop\(/); // Independent hazard/status output survives.
++  };
++  check(clear);
++  for (const [name, from, to] of [
++    ['missing photo revocation', 'clearExploreSnapshot()', ''],
++    ['async photo revocation', 'clearExploreSnapshot()', 'await clearExploreSnapshot()'],
++    ['purge failure bypass', 'purgeDebugSessionDiagnostics()', 'guard purgeDebugSessionDiagnostics() else { return }'],
++    ['missing familiar cancellation', 'familiarPeople.cancelSearchForNewGoal()', ''],
++    ['familiar nested in DEBUG', '#endif\n        #if BLIND_FAMILIAR_PEOPLE', '#if BLIND_FAMILIAR_PEOPLE'],
++    ['early exit', 'clearExploreSnapshot()', 'clearExploreSnapshot(); return'],
++    ['hazard cancellation', 'feedback.stopInformation(announceCancellation: false)', 'feedback.stop()'],
++  ]) {
++    assert.ok(clear.includes(from), `Mutation anchor: ${name}`);
++    assert.throws(() => check(clear.replace(from, to)), { name: 'AssertionError' }, name);
++  }
+ });
+ test('past snapshot speech has separate bounded lifetime without extending live display', async () => {
+   const code = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');

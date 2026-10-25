@@ -268,6 +268,9 @@ struct AssistantToolsView: View {
             NavigationStack { FamiliarPeopleView(model: model, experiment: model.familiarPeople) }
         }
         #endif
+        .sheet(isPresented: $model.showPhotoReference) {
+            NavigationStack { ExplorePictureView(model: model) }
+        }
         .onAppear { relayToken = TokenStore.read() }
     }
     // Screens below follow one pattern (2026-10-22): a short header per section, the most-used
