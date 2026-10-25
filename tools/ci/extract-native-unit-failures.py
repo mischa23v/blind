@@ -9,7 +9,7 @@ FAILURE_LIMIT = 3
 LINE_LIMIT = 4096
 START = re.compile(r"Test Case .*ConnectedJourneyRuntimeTests.* started\.")
 END = re.compile(r"Test Case .*ConnectedJourneyRuntimeTests.* (passed|failed) \(")
-PHASE = re.compile(r"NATIVE_RUNTIME_(?:IO|WAIT|PHASE) ")
+PHASE = re.compile(r"NATIVE_RUNTIME_(?:IO|WAIT|PHASE|TRACE) ")
 
 
 def extract(lines, output):

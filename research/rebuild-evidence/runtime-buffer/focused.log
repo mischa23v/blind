@@ -1,0 +1,26 @@
+✔ early failure retains its IO IDs and false completion despite hundreds of later successes (44.795254ms)
+✔ phase ring and total failure cap are explicit and preserve a displaced false completion (39.928282ms)
+✔ crashed failing wait retains missing-end marker and only allowlisted metadata (32.644828ms)
+✔ passing log emits no failure window (34.607051ms)
+✔ combined unit shell retains original error and exit65 plus early failure window (47.610116ms)
+✔ stdout exists only in unlocked teardown snapshot flush (1.84143ms)
+✔ bounded lock-protected test-local recorder has no task or actor hop (0.488347ms)
+✔ every RuntimeIO is constructed by test-owned factory, including default installed path (0.465915ms)
+✔ original fulfillment condition and three-second bound remain unchanged (0.397709ms)
+✔ extractor retains buffer drop and late-event marker (10.2936ms)
+✔ phase recorder is DEBUG only, nil by default and metadata only (10.177684ms)
+✔ default-active, release-visible and payload telemetry counterexamples reject (8.55953ms)
+✔ actual source positions separate detached admission, work and MainActor return (2.433761ms)
+✔ all runtime test instances install immutable callback before return without changing timeout (2.303178ms)
+✔ all continuity scenarios await real map IO without blocking the main owner (8.325946ms)
+✔ runtime diagnostics preserve original completion conditions and timeout failures (4.246718ms)
+✔ native failure output retains bounded phase diagnostics without hiding assertions (1.581068ms)
+✔ combined shell diagnostics preserve failed status and isolate bounded practice chronology (24.657648ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 326.554537

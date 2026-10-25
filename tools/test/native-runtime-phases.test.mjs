@@ -35,7 +35,7 @@ test('all runtime test instances install immutable callback before return withou
  const source=await read('ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift');
  assert.equal((source.match(/ConnectedJourneyRuntime\(io:/g)||[]).length,1);
  assert.equal((source.match(/makeRuntime\(io:/g)||[]).length,9); // helper plus all eight instances
- assert.match(source,/#if DEBUG\s+let testName = name\s+runtime.diagnosticPhaseRecorder = \{ phase, operation, uptime in/);
+ assert.match(source,/#if DEBUG\s+let testName = name\s+let traceBuffer = traceBuffer\s+runtime.diagnosticPhaseRecorder = \{ phase, operation, uptime in/);
  assert.match(source,/NATIVE_RUNTIME_PHASE test=\\\(testName\) operation=\\\(operation\) phase=\\\(phase\) uptime=\\\(uptime\)/);
  assert.match(source,/await fulfillment\(of: \[done\], timeout: 3\)/);assert.match(source,/throw WaitError.timedOut/);
 });

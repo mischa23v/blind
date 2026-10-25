@@ -3,11 +3,42 @@ import XCTest
 @testable import BlindCore
 @testable import BlindAssist
 
+// Per-test metadata only. No stdout in timed callbacks; no global/task-based recorder.
+private final class RuntimeTraceBuffer: @unchecked Sendable {
+    private let lock = NSLock()
+    private let capacity = 512
+    private var records: [String] = []
+    private var cursor = 0
+    private var dropped = 0
+    private var closed = false
+    func record(_ message: String) {
+        let bounded = String(message.prefix(2048))
+        lock.lock()
+        defer { lock.unlock() }
+        guard !closed else { return } // Late work is intentionally uncaptured, never printed in another test.
+        if records.count < capacity { records.append(bounded) }
+        else { records[cursor] = bounded; cursor = (cursor + 1) % capacity; dropped += 1 }
+    }
+    func flushAfterTest() {
+        lock.lock()
+        guard !closed else { lock.unlock(); return }
+        closed = true
+        let snapshot = cursor == 0 ? records : Array(records[cursor...] + records[..<cursor])
+        let omitted = dropped
+        records.removeAll(keepingCapacity: false)
+        lock.unlock()
+        // Snapshot is immutable and the lock is released before any output.
+        for record in snapshot { print(record) }
+        print("NATIVE_RUNTIME_TRACE records=\(snapshot.count) dropped=\(omitted) late_events=uncaptured_after_teardown observer=buffered")
+    }
+}
+
 private actor RuntimeIO: ConnectedJourneyRuntimeIO {
     // Test-only phase trace: no stored map, destination or personal payload is logged.
+    private let traceBuffer: RuntimeTraceBuffer
     private let diagnosticID = UUID().uuidString
     private func trace(_ phase: String) {
-        print("NATIVE_RUNTIME_IO id=\(diagnosticID) phase=\(phase) uptime=\(ProcessInfo.processInfo.systemUptime)")
+        traceBuffer.record("NATIVE_RUNTIME_IO id=\(diagnosticID) phase=\(phase) uptime=\(ProcessInfo.processInfo.systemUptime)")
     }
     var data: Data?
     var writes: [JourneyRuntimeEnvelope] = []
@@ -16,7 +47,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
     var waiters: [CheckedContinuation<Void, Never>] = []
     var holdRead = false
     var readWaiter: CheckedContinuation<Void,Never>?
-    init(_ data: Data? = nil, holdRead:Bool = false) { self.data = data; self.holdRead = holdRead }
+    init(_ data: Data? = nil, holdRead:Bool = false, traceBuffer: RuntimeTraceBuffer) { self.data = data; self.holdRead = holdRead; self.traceBuffer = traceBuffer }
     func read() async -> Data? {
         trace("read-start")
         if holdRead {
@@ -46,12 +77,23 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
 @MainActor final class ConnectedJourneyRuntimeTests: XCTestCase {
     typealias F = ConnectedFixture
     private enum WaitError: Error { case timedOut }
+    private let traceBuffer = RuntimeTraceBuffer()
+    private var registeredTraceTeardown = false
+    private func makeIO(_ data: Data? = nil, holdRead: Bool = false) -> RuntimeIO {
+        if !registeredTraceTeardown {
+            let buffer = traceBuffer
+            addTeardownBlock { buffer.flushAfterTest() }
+            registeredTraceTeardown = true
+        }
+        return RuntimeIO(data, holdRead: holdRead, traceBuffer: traceBuffer)
+    }
     private func makeRuntime(io: RuntimeIO) -> ConnectedJourneyRuntime {
         let runtime = ConnectedJourneyRuntime(io: io, sha256: F.sha256)
 #if DEBUG
         let testName = name
+        let traceBuffer = traceBuffer
         runtime.diagnosticPhaseRecorder = { phase, operation, uptime in
-            print("NATIVE_RUNTIME_PHASE test=\(testName) operation=\(operation) phase=\(phase) uptime=\(uptime)")
+            traceBuffer.record("NATIVE_RUNTIME_PHASE test=\(testName) operation=\(operation) phase=\(phase) uptime=\(uptime)")
         }
 #endif
         return runtime
@@ -62,7 +104,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         // Diagnostic only: preserve the original three-second bound and failure semantics.
         let started = ProcessInfo.processInfo.systemUptime
         var publications = 0
-        print("NATIVE_RUNTIME_WAIT test=\(name) line=\(line) phase=start uptime=\(started)")
+        traceBuffer.record("NATIVE_RUNTIME_WAIT test=\(name) line=\(line) phase=start uptime=\(started)")
         let done = expectation(description: "bounded runtime state publication")
         let previous = runtime.onChange
         var completed = false
@@ -76,13 +118,14 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         // Await publication instead of scheduling 3,000 polling tasks on the main owner.
         // The original nominal three-second bound is unchanged; real Apple timing remains a gate.
         await fulfillment(of: [done], timeout: 3)
-        print("NATIVE_RUNTIME_WAIT test=\(name) line=\(line) phase=returned elapsed=\(ProcessInfo.processInfo.systemUptime - started) publications=\(publications) fulfilled=\(completed) loading=\(runtime.loading) maps=\(runtime.pendingMapWorkCount) writes=\(runtime.pendingWriteCount)")
+        traceBuffer.record("NATIVE_RUNTIME_WAIT test=\(name) line=\(line) phase=returned elapsed=\(ProcessInfo.processInfo.systemUptime - started) publications=\(publications) fulfilled=\(completed) loading=\(runtime.loading) maps=\(runtime.pendingMapWorkCount) writes=\(runtime.pendingWriteCount)")
         guard condition() else {
             XCTFail("Runtime wait expired: loading=\(runtime.loading), maps=\(runtime.pendingMapWorkCount), writes=\(runtime.pendingWriteCount), storageError=\(runtime.storageError), status=\(runtime.status)", file: file, line: line)
             throw WaitError.timedOut // Never continue with incomplete map state and report a misleading missing-map error.
         }
     }
-    private func installed(_ io: RuntimeIO = RuntimeIO()) async throws -> ConnectedJourneyRuntime {
+    private func installed(_ suppliedIO: RuntimeIO? = nil) async throws -> ConnectedJourneyRuntime {
+        let io = suppliedIO ?? makeIO()
         let runtime = makeRuntime(io: io)
         runtime.restore(); try await until(runtime) { !runtime.loading }
         let catalog = try F.catalog()
@@ -105,7 +148,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         try runtime.accept(value, support: SpatialIntegrationFixture.support(value), now: time)
     }
     func testDormantNativeRuntimePersistsDestinationButCannotInventCalibrationOrPose() async throws {
-        let io = RuntimeIO(), runtime = try await installed(io)
+        let io = makeIO(), runtime = try await installed(io)
         try runtime.setDestination(binding: F.c, nodeID: "p", origin: .trustedInterface)
         try await until(runtime) { runtime.pendingWriteCount == 0 }
         XCTAssertEqual(runtime.goal?.target.endpoint.nodeID, "p")
@@ -122,7 +165,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         XCTAssertEqual(saved.portals.count, 2)
     }
     func testCancelIsSynchronousAndLatestOnlyWhileWriterIsBlocked() async throws {
-        let io = RuntimeIO(), runtime = try await installed(io)
+        let io = makeIO(), runtime = try await installed(io)
         try runtime.configure(body: F.body, limits: F.limits)
         try runtime.setDestination(binding: F.c, nodeID: "p", origin: .trustedInterface)
         try await until(runtime) { runtime.pendingWriteCount == 0 }
@@ -146,7 +189,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         let written = await io.read()
         XCTAssertEqual(try JourneyRuntimeEnvelope(data: XCTUnwrap(written)).journey.goal?.status, .cancelled)
         XCTAssertThrowsError(try runtime.next(now: 1.1))
-        print("NATIVE_RUNTIME_SLOW_IO=cancelImmediate:true,pendingWritesAtMost:2,latestDiskGoal:cancelled,oldTicket:false")
+        traceBuffer.record("NATIVE_RUNTIME_SLOW_IO=cancelImmediate:true,pendingWritesAtMost:2,latestDiskGoal:cancelled,oldTicket:false")
     }
     func testPauseRestartAndResumeRetainRealGoalButNeedFreshEvidence() async throws {
         let runtime = try await installed()
@@ -170,7 +213,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         XCTAssertEqual(runtime.goal?.target.endpoint.binding, F.c)
     }
     func testFailedSaveNewCommandAndEraseCannotReviveSupersededGoal() async throws {
-        let io = RuntimeIO(), runtime = try await installed(io)
+        let io = makeIO(), runtime = try await installed(io)
         try runtime.setDestination(binding: F.c, nodeID: "p", origin: .trustedInterface)
         try await until(runtime) { runtime.pendingWriteCount == 0 }
         await io.configure(hold: false, fail: true)
@@ -250,7 +293,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         XCTAssertEqual(runtime.snapshot.events.filter { $0.kind == .portalEndpointsAssociated }.count,4)
         XCTAssertEqual(output,["bedroom-map:m:1.0","bedroom-map:p:1.0","hall-map:m:2.0","hall-map:p:2.0","study-map:m:1.0","study-map:p:1.0","study-map:m:1.0","study-map:s:1.0","hall-map:m:2.0","hall-map:s:2.0","bedroom-map:m:1.0","bedroom-map:s:1.0"])
         XCTAssertEqual(catalog.installations.count,3)
-        print("SYNTHETIC_NATIVE_RUNTIME_FULL_SEQUENCE=" + output.joined(separator:","))
+        traceBuffer.record("SYNTHETIC_NATIVE_RUNTIME_FULL_SEQUENCE=" + output.joined(separator:","))
     }
     func testMapIOWithdrawalInvalidGoalAndDeletionFenceStaleOutput() async throws {
         let runtime = try await installed()
@@ -300,7 +343,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         var owner = try F.prepared()
         try owner.setDestination(F.endpoint(F.c,"p"),origin:.trustedInterface,recordedAt:F.date,persist:{_ in})
         let seed = try JourneyRuntimeEnvelope(journey:owner.snapshot,installations:catalog.installations.values.map { try $0.encoded() },portals:catalog.portals).encoded()
-        let io = RuntimeIO(seed,holdRead:true), runtime = makeRuntime(io: io)
+        let io = makeIO(seed,holdRead:true), runtime = makeRuntime(io: io)
         runtime.restore()
         try runtime.install(XCTUnwrap(catalog.installations[F.c]),portals:catalog.portals)
         runtime.mapOwnershipWithdrawn(); try runtime.mapRemovalSettled(F.c)
@@ -322,7 +365,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
             var previous = try F.prepared()
             try previous.setDestination(F.endpoint(F.c,"p"),origin:.trustedInterface,recordedAt:F.date,persist:{_ in})
             let bytes = try JourneyRuntimeEnvelope(journey:previous.snapshot,installations:command == "no-maps" ? [] : catalog.installations.values.map { try $0.encoded() },portals:command == "no-maps" ? [] : catalog.portals).encoded()
-            let io = RuntimeIO(bytes,holdRead:true), runtime = makeRuntime(io: io)
+            let io = makeIO(bytes,holdRead:true), runtime = makeRuntime(io: io)
             runtime.restore()
             if command == "hold" { try runtime.hold(origin:.trustedInterface) }
             else {
@@ -367,7 +410,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         let historyBytes = try snapshot.encoded().count
         XCTAssertGreaterThan(historyBytes,500_000); XCTAssertLessThanOrEqual(historyBytes,512_000)
         let seed = try JourneyRuntimeEnvelope(journey:snapshot,installations:catalog.installations.values.map { try $0.encoded() },portals:catalog.portals).encoded()
-        let io = RuntimeIO(seed), runtime = makeRuntime(io: io)
+        let io = makeIO(seed), runtime = makeRuntime(io: io)
         runtime.restore(); try await until(runtime) { !runtime.loading }
         var milliseconds:[Double] = []
         for _ in 0..<12 {
@@ -377,7 +420,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         }
         XCTAssertLessThanOrEqual(runtime.pendingWriteCount,2)
         try await until(runtime) { runtime.pendingWriteCount == 0 }
-        print("NATIVE_MAIN_OWNER_RESIDUAL=historyBytes:\(historyBytes),events:256,references:64,samples:12,hostMaxMilliseconds:\(String(format:"%.3f",milliseconds.max()!)),deviceHazardLatency:UNMEASURED")
+        traceBuffer.record("NATIVE_MAIN_OWNER_RESIDUAL=historyBytes:\(historyBytes),events:256,references:64,samples:12,hostMaxMilliseconds:\(String(format:"%.3f",milliseconds.max()!)),deviceHazardLatency:UNMEASURED")
     }
     func testInvalidCalibrationReplacementCannotReuseOldBodyOrRoute() async throws {
         let runtime = try await installed()
@@ -396,7 +439,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
     }
 
     func testDeleteRestartCannotReimportSameRevisionAndForgetRestrictions() async throws {
-        let io = RuntimeIO(), runtime = try await installed(io), maps = try F.catalog()
+        let io = makeIO(), runtime = try await installed(io), maps = try F.catalog()
         let restricted = try XCTUnwrap(maps.installations[F.a]).addingRestrictions(blocked:[MapConnection("s","m")],zones:[])
         try runtime.install(restricted,portals:maps.portals)
         try await until(runtime) { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
@@ -411,7 +454,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         try restored.configure(body:F.body,limits:F.limits)
         XCTAssertThrowsError(try restored.beginLocalization(in:F.a))
         XCTAssertThrowsError(try restored.next(now:1))
-        print("DELETED_REVISION_RESTART=geometryRemoved:true,tombstoneRetained:true,sameRevisionReimport:false,restrictionRollback:false")
+        traceBuffer.record("DELETED_REVISION_RESTART=geometryRemoved:true,tombstoneRetained:true,sameRevisionReimport:false,restrictionRollback:false")
     }
 
     func testOuterEnvelopeCannotBypassNestedHistoryByteLimit() async throws {
@@ -426,7 +469,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         XCTAssertLessThan(bytes.count,JourneyRuntimeEnvelope.maximumBytes)
         XCTAssertGreaterThan(bytes.count,ConnectedJourneySnapshot.maximumBytes)
         XCTAssertThrowsError(try JourneyRuntimeEnvelope(data:bytes))
-        let runtime = makeRuntime(io: RuntimeIO(bytes))
+        let runtime = makeRuntime(io: makeIO(bytes))
         runtime.restore(); try await until(runtime) { !runtime.loading }
         XCTAssertTrue(runtime.storageError); XCTAssertNil(runtime.goal)
         XCTAssertThrowsError(try runtime.next(now:1))
@@ -455,7 +498,7 @@ extension ConnectedJourneyRuntimeTests {
                 sessionID: invalid.sessionID, captureID: mode == "wrong-support" ? UUID() : invalid.id,
                 height: 0, capturedAt: invalid.capturedAt)
             do { try runtime.accept(invalid,support:support,now:1.2); XCTFail("Invalid evidence should reject") }
-            catch { print("NATIVE_REPLAY_INVALID=mode:\(mode),capture:\(invalid.id),session:\(invalid.sessionID),error:\(error)") }
+            catch { traceBuffer.record("NATIVE_REPLAY_INVALID=mode:\(mode),capture:\(invalid.id),session:\(invalid.sessionID),error:\(error)") }
             XCTAssertFalse(runtime.permits(old.route,now:1.2))
             let fresh = try capture(runtime,F.endpoint(F.a,"s"),time:1.3)
             try runtime.accept(fresh,support:SpatialIntegrationFixture.support(fresh),now:1.3)
@@ -465,9 +508,9 @@ extension ConnectedJourneyRuntimeTests {
             // guidance, without another UI command or hidden harness plan operation.
             do {
                 let recovered = try runtime.next(now:1.3)
-                print("NATIVE_REPLAY_RECOVERY=mode:\(mode),fresh:\(fresh.id),session:\(fresh.sessionID),target:\(recovered.route.target.id),status:PASS")
+                traceBuffer.record("NATIVE_REPLAY_RECOVERY=mode:\(mode),fresh:\(fresh.id),session:\(fresh.sessionID),target:\(recovered.route.target.id),status:PASS")
             } catch {
-                print("NATIVE_REPLAY_RECOVERY=mode:\(mode),fresh:\(fresh.id),session:\(fresh.sessionID),status:FAIL,error:\(error)")
+                traceBuffer.record("NATIVE_REPLAY_RECOVERY=mode:\(mode),fresh:\(fresh.id),session:\(fresh.sessionID),status:FAIL,error:\(error)")
                 XCTFail("Automatic recovery failed for \(mode): \(error)")
             }
         }
@@ -493,7 +536,7 @@ extension ConnectedJourneyRuntimeTests {
         XCTAssertFalse(runtime.permits(old.route,now:1.3))
         XCTAssertEqual(runtime.goal?.revision,goal)
         XCTAssertThrowsError(try runtime.next(now:1.3),"Unknown endpoint must not be snapped to a remembered start")
-        print("NATIVE_UNKNOWN_ENDPOINT=capture:\(between.id),session:\(between.sessionID),position:1.5/1.3/3,expected:withhold,status:PASS_IF_ASSERTIONS_PASS")
+        traceBuffer.record("NATIVE_UNKNOWN_ENDPOINT=capture:\(between.id),session:\(between.sessionID),position:1.5/1.3/3,expected:withhold,status:PASS_IF_ASSERTIONS_PASS")
     }
 }
 
@@ -529,7 +572,7 @@ extension ConnectedJourneyRuntimeTests {
         XCTAssertNotEqual(recovered.route.routeID,old.route.routeID)
         XCTAssertFalse(runtime.permits(old.route,now:1.4))
         XCTAssertEqual(try runtime.snapshot.encoded(),saved)
-        print("NATIVE_RECOVERY_ENDPOINT=midLeg:withheld,freshAuthoredNode:m,next:p,oldSessionRejected:true,oldTicket:false,startGoalHistory:unchanged")
+        traceBuffer.record("NATIVE_RECOVERY_ENDPOINT=midLeg:withheld,freshAuthoredNode:m,next:p,oldSessionRejected:true,oldTicket:false,startGoalHistory:unchanged")
     }
     func testAutomaticRecoveryKeepsCurrentConservativeRestrictions() async throws {
         let runtime = try await installed(), map = try XCTUnwrap(F.catalog().installations[F.a])
@@ -556,6 +599,6 @@ extension ConnectedJourneyRuntimeTests {
         // A fresh endpoint on the other side can reuse the retained goal, not the old route.
         try observe(runtime,F.endpoint(F.a,"m"),time:1.4)
         XCTAssertEqual(try runtime.next(now:1.4).route.target.id,"p")
-        print("NATIVE_RECOVERY_RESTRICTION=blocked:s-m,afterRejection:retained,blockedRecovery:withheld,admissibleFreshEndpoint:m,replan:automatic")
+        traceBuffer.record("NATIVE_RECOVERY_RESTRICTION=blocked:s-m,afterRejection:retained,blockedRecovery:withheld,admissibleFreshEndpoint:m,replan:automatic")
     }
 }

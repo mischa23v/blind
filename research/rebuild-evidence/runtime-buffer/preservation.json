@@ -1,0 +1,35 @@
+{
+  "original_test_names": [
+    "testDormantNativeRuntimePersistsDestinationButCannotInventCalibrationOrPose",
+    "testCancelIsSynchronousAndLatestOnlyWhileWriterIsBlocked",
+    "testPauseRestartAndResumeRetainRealGoalButNeedFreshEvidence",
+    "testFailedSaveNewCommandAndEraseCannotReviveSupersededGoal",
+    "testSyntheticFullNativeRuntimeOutAndBackRequiresDeliveredOneUseChoice",
+    "testMapIOWithdrawalInvalidGoalAndDeletionFenceStaleOutput",
+    "testUnverifiedCommandsCannotEvenRetireActiveNativeRoute",
+    "testDeleteWhileRestoreIsPendingCannotReinstallQueuedOldMap",
+    "testReplacementOrHoldDuringDelayedRestoreOwnsLatestIntent",
+    "testMaximumHistorySynchronousResidualIsBoundedAndMeasuredNotDeviceLatency",
+    "testInvalidCalibrationReplacementCannotReuseOldBodyOrRoute",
+    "testDeleteRestartCannotReimportSameRevisionAndForgetRestrictions",
+    "testOuterEnvelopeCannotBypassNestedHistoryByteLimit",
+    "testIntegratedAutomaticRecoveryAfterRejectedEvidence",
+    "testIntegratedRejectedEvidenceCannotInferMidLegStart",
+    "testRejectedEvidenceWaitsAtMidLegThenAutomaticallyReplansFromFreshAuthoredNode",
+    "testAutomaticRecoveryKeepsCurrentConservativeRestrictions"
+  ],
+  "test_count": 17,
+  "assertion_and_fulfillment_lines_identical": true,
+  "assertion_line_count": 122,
+  "production_runtime_changed": false,
+  "original_onChange_stdout": false,
+  "new_stdout": "only unlocked teardown flush",
+  "late_events": "explicitly uncaptured after teardown, no cross-test print",
+  "isolated_buffer_witness": {
+    "records": 512,
+    "dropped": 88,
+    "first": "record=88",
+    "last": "record=599",
+    "post_close_stdout": false
+  }
+}

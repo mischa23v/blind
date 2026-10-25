@@ -29,3 +29,9 @@ Apple's [Xcode command-line tool reference](https://developer.apple.com/document
 ## Local evidence and pending gate
 
 Five bounded synthetic Python tests cover the one-attempt sequence, six final-failure cases, build/boot failures, a real subprocess deadline, exact workflow trigger scope, and no warmup. They are shell/orchestration witnesses, not Apple runtime evidence. Independent review is required before publication; the single actual Apple control remains pending publication and execution.
+
+## First infrastructure attempt retained
+
+Source ddadad1b6807bee9a1d9f148c72989f71a92339f, run 40216444146: installed bootstatus help succeeded; owned simulator pre-state was Shutdown. Build-for-testing exited 70 after 147.261 seconds. **Zero runtime tests and no boot/readiness measurement ran.** Owned-device deletion succeeded. This is an infrastructure failure, not evidence for or against runtime readiness. Raw build output was not emitted, so the exact exit-70 cause is unknown.
+
+The small recovery preserves the validated UUID exactly as returned by simctl (instead of normalizing its spelling), and emits up to 60 bounded, path-redacted build/destination diagnostic lines on failure. UUID spelling is a compatibility precaution, not a proven cause. Build/boot/test order and all bounds are unchanged. One actual runtime control remains owed; this is not repeated functional testing until green. Synthetic redaction tests contain invented example paths only.

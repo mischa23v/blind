@@ -36,9 +36,9 @@ test('runtime diagnostics preserve original completion conditions and timeout fa
     assert.ok(source.includes(`trace("${phase}")`), phase);
   }
   // Trace strings contain phase/timing metadata, never stored data or map payloads.
-  const prints = source.split('\n').filter(line => /print\("NATIVE_RUNTIME_(?:IO|WAIT) /.test(line));
-  assert.equal(prints.length, 3);
-  for (const line of prints) assert.doesNotMatch(line, /\\\((?:data|envelope|payload|runtime.goal|runtime.status)/);
+  const records = source.split('\n').filter(line => /traceBuffer\.record\("NATIVE_RUNTIME_(?:IO|WAIT) /.test(line));
+  assert.equal(records.length, 3);
+  for (const line of records) assert.doesNotMatch(line, /\\\((?:data|envelope|payload|runtime.goal|runtime.status)/);
 });
 
 test('native failure output retains bounded phase diagnostics without hiding assertions', async () => {

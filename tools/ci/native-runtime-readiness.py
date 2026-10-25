@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import signal
+import re
 import time
 import uuid
 
@@ -36,6 +37,23 @@ def run(command, timeout, log):
     return status
 
 
+def failure_excerpt(log):
+    # Build/destination diagnostics only: bounded and explicitly path-redacted.
+    emitted = 0
+    patterns = re.compile(r'error:|fatal|destination|ineligible|unavailable|timed out|BUILD FAILED', re.I)
+    with log.open(errors='replace') as source:
+        for line in source:
+            if not patterns.search(line):
+                continue
+            line = re.sub(r'/(?:Users|home|workspace|tmp|private|var)/[^\s,;\]}]+',
+                          '[local path redacted]', line.rstrip())
+            emit(phase='failure-excerpt', redacted=True, text=line[:1200])
+            emitted += 1
+            if emitted == 60:
+                emit(phase='failure-excerpt', capped=True)
+                break
+
+
 def capture(command):
     return subprocess.check_output(command, text=True, timeout=30)
 
@@ -61,10 +79,12 @@ def main():
     owned = None
     outcome = 1
     try:
-        owned = str(uuid.UUID(capture(['xcrun', 'simctl', 'create',
-                                      'Blind runtime readiness control', DEVICE_TYPE, RUNTIME]).strip()))
+        created = capture(['xcrun', 'simctl', 'create',
+                           'Blind runtime readiness control', DEVICE_TYPE, RUNTIME]).strip()
+        uuid.UUID(created)  # Validate ownership token, but preserve Apple's exact spelling.
+        owned = created
         devices = json.loads(capture(['xcrun', 'simctl', 'list', 'devices', '--json']))
-        device = next(d for d in devices['devices'][RUNTIME] if d['udid'].lower() == owned)
+        device = next(d for d in devices['devices'][RUNTIME] if d['udid'].lower() == owned.lower())
         emit(phase='owned-device', device=owned, pre_state=device['state'])
         if device['state'] != 'Shutdown':
             raise RuntimeError('Fresh owned simulator was not Shutdown; no cold-start claim')
@@ -75,17 +95,19 @@ def main():
                 '-maximum-concurrent-test-simulator-destinations', '1',
                 '-only-testing:BlindAssistTests/ConnectedJourneyRuntimeTests']
         if run(base + ['build-for-testing'], 1200, out / 'build.log'):
+            failure_excerpt(out / 'build.log')
             emit(completed=0, not_run=1, reason='build-failed')
             return 1
         # Readiness measurement is separate, with a fixed infrastructure deadline.
         # No sleep, test warmup, app launch, priority change, or assertion change.
         devices = json.loads(capture(['xcrun', 'simctl', 'list', 'devices', '--json']))
-        before_boot = next(d for d in devices['devices'][RUNTIME] if d['udid'].lower() == owned)
+        before_boot = next(d for d in devices['devices'][RUNTIME] if d['udid'].lower() == owned.lower())
         emit(phase='before-boot', state=before_boot['state'])
         if before_boot['state'] != 'Shutdown':
             raise RuntimeError('Build booted simulator; cold-boot measurement invalid')
         boot_status = run(['xcrun', 'simctl', 'bootstatus', owned, '-b'], 180, out / 'boot.log')
         if boot_status:
+            failure_excerpt(out / 'boot.log')
             emit(completed=0, not_run=1, reason='boot-infrastructure-failed', boot_exit=boot_status)
             return 1
         result = out / 'runtime.xcresult'

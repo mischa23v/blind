@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('readiness', ROOT / 'tools/ci/native-runtime-readiness.py')
 m = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(m)
-OWNED = '11111111-2222-3333-4444-555555555555'
+OWNED = 'AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE'
 
 
 class ReadinessTests(unittest.TestCase):
@@ -86,6 +86,17 @@ class ReadinessTests(unittest.TestCase):
                 self.assertFalse(any('test-without-building' in c for c in calls))
                 self.assertIn('"not_run": 1', output)
                 self.assertEqual(sum('delete' in c for c in calls), 1)
+
+    def test_failure_excerpt_bounded_and_redacted(self):
+        with tempfile.TemporaryDirectory() as temp, redirect_stdout(io.StringIO()) as output:
+            log = Path(temp)/'failure.log'
+            log.write_text('private unrelated payload\n' + ('error: destination /Users/example/secret/path unavailable\n' * 90))
+            m.failure_excerpt(log)
+        text = output.getvalue()
+        self.assertNotIn('/Users/', text)
+        self.assertNotIn('private unrelated payload', text)
+        self.assertEqual(text.count('"redacted": true'), 60)
+        self.assertIn('"capped": true', text)
 
     def test_real_deadline_witness(self):
         import sys
