@@ -177,6 +177,34 @@ final class LaunchTests: XCTestCase {
             print("PRACTICE_LAYOUT afterReveal category=\(expectedCategory.rawValue) role=\(role) frame=\(element.frame) screen=\(screen) visibleIntersection=\(element.frame.intersection(screen)) hittable=\(element.isHittable) label=\(element.label)")
             recordPracticeLayoutAttachment(sizeName + "-" + role)
         }
+        recordPracticeFooterEnd(footerElement, expectedLabel: footer, sizeName: sizeName)
+    }
+    @MainActor private func recordPracticeFooterEnd(_ footer: XCUIElement, expectedLabel: String, sizeName: String) {
+        let navigation = app.navigationBars.firstMatch
+        let tabs = app.tabBars.firstMatch
+        XCTAssertTrue(navigation.exists)
+        XCTAssertTrue(tabs.exists)
+        // Only the bottom of the paragraph must enter the unobscured viewport;
+        // a tall accessible paragraph need not fit on one screen.
+        func endIsVisible() -> Bool {
+            guard footer.exists else { return false }
+            return footer.frame.maxY > navigation.frame.maxY && footer.frame.maxY <= tabs.frame.minY
+        }
+        for _ in 0..<8 {
+            if endIsVisible() { break }
+            app.swipeUp()
+        }
+        for _ in 0..<8 {
+            if endIsVisible() { break }
+            app.swipeDown()
+        }
+        // Preserve the endpoint image even when the bounded reachability check fails.
+        recordPracticeLayoutAttachment(sizeName + "-footer-end")
+        XCTAssertTrue(footer.exists)
+        print("PRACTICE_LAYOUT footerEnd size=\(sizeName) frame=\(footer.frame) unobscuredTop=\(navigation.frame.maxY) unobscuredBottom=\(tabs.frame.minY) endVisible=\(endIsVisible())")
+        XCTAssertTrue(endIsVisible(), "Final practice warning must scroll above the tab bar and below the navigation bar")
+        XCTAssertTrue(footer.isHittable)
+        XCTAssertEqual(footer.label, expectedLabel)
     }
     @MainActor private func revealPracticeDiagnosticElement(_ element: XCUIElement) {
         // Form may materialize a row only after scrolling. Do not request its

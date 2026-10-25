@@ -52,9 +52,13 @@ for size in large accessibility-extra-extra-extra-large; do
     echo "PRACTICE_LAYOUT incomplete: footer evidence missing for $size"
     status=1
   fi
+  if ! grep -q "PRACTICE_LAYOUT footerEnd.*endVisible=true" "$out/$size.log"; then
+    echo "PRACTICE_LAYOUT incomplete: footer end reachability missing for $size"
+    status=1
+  fi
   if [[ -d "$out/$size.xcresult" ]]; then
     if xcrun xcresulttool export attachments --path "$out/$size.xcresult" --output-path "$out/attachments-$size"; then
-      # Fail closed unless all three exact test-authored role screenshots exist.
+      # Fail closed unless all four exact test-authored role screenshots exist.
       if ! python3 tools/ci/export-practice-layout-screenshots.py "$out/attachments-$size" "$out/screenshots" "$size"; then
         status=1
       fi

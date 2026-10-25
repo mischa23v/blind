@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Select only our three role screenshots from xcresulttool's exported manifest.
+"""Select only our four role screenshots from xcresulttool's exported manifest.
 
 Manifest keys follow xcresulttool export attachments, also consumed by Chromium:
 https://chromium.googlesource.com/chromium/src/+/HEAD/ios/build/bots/scripts/xcode_log_parser.py
@@ -22,7 +22,7 @@ def export(source: Path, destination: Path, size: str) -> None:
     entries = json.loads(manifest.read_text())
     if not isinstance(entries, list) or not entries:
         raise ValueError('Missing test attachment entries')
-    expected = ('button', 'header', 'footer')
+    expected = ('button', 'header', 'footer', 'footer-end')
     selected = {}
     prefix = 'practice-layout-' + size + '-'
     for entry in entries:
@@ -34,7 +34,7 @@ def export(source: Path, destination: Path, size: str) -> None:
             name = item.get('suggestedHumanReadableName', '')
             if not isinstance(name, str):
                 raise ValueError('Unexpected attachment name')
-            match = re.match(re.escape(prefix) + r'(button|header|footer)(?=[_. -]|$)', name)
+            match = re.match(re.escape(prefix) + r'(footer-end|button|header|footer)(?=[_. -]|$)', name)
             if not match:
                 continue
             role = match.group(1)
@@ -61,7 +61,7 @@ def export(source: Path, destination: Path, size: str) -> None:
             raise ValueError('Refusing stale/duplicate output: ' + str(target))
     for role in expected:
         shutil.copyfile(selected[role], destination / f'{size}-{role}.png')
-    print(f'PRACTICE_LAYOUT exported exactly3 authored PNG screenshots for {size}')
+    print(f'PRACTICE_LAYOUT exported exactly4 authored PNG screenshots for {size}')
 
 
 if __name__ == '__main__':

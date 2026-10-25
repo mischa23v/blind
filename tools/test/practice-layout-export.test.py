@@ -15,17 +15,17 @@ class ExportTests(unittest.TestCase):
         self.source = self.root / 'source'; self.source.mkdir()
         self.output = self.root / 'output'
         self.items = []
-        for role in ('button', 'header', 'footer'):
+        for role in ('button', 'header', 'footer', 'footer-end'):
             name = role + '.png'
             (self.source / name).write_bytes(b'\x89PNG\r\n\x1a\nfixture')
             self.items.append(dict(suggestedHumanReadableName=f'practice-layout-large-{role}_1_ABCD.png', exportedFileName=name))
     def run_export(self):
         (self.source / 'manifest.json').write_text(json.dumps([dict(attachments=self.items)]))
         module.export(self.source, self.output, 'large')
-    def test_only_authored_three(self):
+    def test_only_authored_four(self):
         self.items.append(dict(suggestedHumanReadableName='AutomaticScreenshot.png', exportedFileName='unread.png'))
         self.run_export()
-        self.assertEqual(sorted(p.name for p in self.output.iterdir()), ['large-button.png','large-footer.png','large-header.png'])
+        self.assertEqual(sorted(p.name for p in self.output.iterdir()), ['large-button.png','large-footer-end.png','large-footer.png','large-header.png'])
     def test_missing_role_fails(self):
         self.items.pop()
         with self.assertRaisesRegex(ValueError, 'Missing authored'): self.run_export()
