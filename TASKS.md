@@ -1,3 +1,25 @@
+## CURRENT FEATURE TASKS — 2026-10-25
+
+Latest verified published source: `978b506283b5ce9d1ea05ea120db8806f47754fe` (tree `750cd35b01a4e662a99797589afbbca53092a308`). This current feature snapshot supersedes earlier checkpoint snapshots retained below, including old sections headed “current.” See [REBUILD_FEATURE_STATUS.md](REBUILD_FEATURE_STATUS.md) for publication state, actual behavior, remaining gaps and dependency order. Original requirements and failures remain in [REBUILD_TRACKER.md](REBUILD_TRACKER.md) and [REBUILD_SCOPE_ADDENDUM.md](REBUILD_SCOPE_ADDENDUM.md).
+
+| Workstream | Actual state | Next required outcome |
+| --- | --- | --- |
+| Command authority | Published native origin gate; portable behavior verified | Real verifier and Apple/live-mic acceptance remain open; do not grant uncertain speech authority. |
+| Task/memory | Published partial correction/progress/completion repairs | Fix same-goal target/place binding; complete original whole conversations. |
+| Clock | Published direct/legacy/selected-tool code-owned delivery | Actual Apple/model/audio and compound-response validation. |
+| DEBUG logs | Published native source hooks and privacy deletion | Device callback/storage-protection/performance validation; no UI/upload. |
+| Registered spatial/collision | Published current-leg controller, exact tickets and synchronous map storage | Calibrated native pose/body-heading/support issuer; automatic maps/relocalization/return. |
+| Ordinary guards + reference Core | Published at 978b506; portable scope verified | Real small-model behavior and native exact-model manual/PDF/speech adapters remain missing or unverified. |
+| Raw observations | Staged budget candidate cleared 81 scoped source tests; archive/application pending | Final candidate archive and privacy/reopen proof; never label raw history learned world memory. |
+| Async map IO | Staged, not applied | Rebase after observation/privacy repair; blocked-writer/CAS/rollback/delete and full aggregate. |
+| Selected-photo flow | Applied, unpublished; focused checks and Core 1057 passed | Node aggregate FAILED (391 total, 389 passed, 2 failed); test-only correction/full rerun and publication pending; actual Apple lifecycle and accuracy remain open. |
+| Journey Core / quiet output | Staged additive Core remains unwired; native quiet patch needs rebase | No automatic cross-map journey or return; integrate only after fresh preimage and issuer/dependency checks. |
+| 400 episodes and device readiness | Incomplete | Actual-stack episodes plus real small-model/Apple/device accuracy, accessibility and latency. |
+
+No broad task is closed by a source snapshot or test count. Keep native source hookup, portable execution, actual Apple runtime, measured physical accuracy and completed user journey as separate acceptance states.
+
+### Earlier task/checkpoint snapshots — retained history
+
 ### Conversation and reference-reading increment — 2026-10-25
 
 Previous source checkpoint `cd368af9` is verified on master. Narrow ordinary-conversation repairs now permit the documented abstract/science/language cases without permitting mixed physical instructions. Reference Core retains complete source blocks outside model budgets, preserves qualifiers and source identity, and advances only on exact completed speech receipts before the original deadline. Fresh merged checks: **1,023/1,023 Core** and **379/379 Node**, zero failures/skips. The official-manual extracted-text replay passes5/5 with synthetic playback; raw manual text is not published. Native manual/PDF and speech adapters remain missing, so this is not a completed native manual-reading feature. Evidence: [checkpoint-07](research/rebuild-evidence/checkpoint-07/verification.json).

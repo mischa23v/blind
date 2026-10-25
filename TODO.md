@@ -1,3 +1,25 @@
+## CURRENT EXECUTION QUEUE — 2026-10-25
+
+Latest verified published source: `978b506283b5ce9d1ea05ea120db8806f47754fe` (tree `750cd35b01a4e662a99797589afbbca53092a308`). This current feature snapshot supersedes earlier checkpoint snapshots retained below, including old sections headed “current.” See [REBUILD_FEATURE_STATUS.md](REBUILD_FEATURE_STATUS.md) for publication state, actual behavior, remaining gaps and dependency order. Original requirements and failures remain in [REBUILD_TRACKER.md](REBUILD_TRACKER.md) and [REBUILD_SCOPE_ADDENDUM.md](REBUILD_SCOPE_ADDENDUM.md).
+
+- [x] Publish bounded ordinary guards/reference Core at 978b506 with full Core 1023 / Node 379 evidence. Native manual/PDF/speech adapters remain missing.
+- [ ] Finish the applied selected-photo candidate: focused verification and Core 1057 passed; Node aggregate FAILED (391 total, 389 passed, 2 failed); test-only correction/full rerun, final review and publication remain pending. Record exact source hashes and preserve failures.
+- [ ] Finalize the staged raw-observation budget archive after its 81 cleared scoped source tests; application/full combined verification remain pending. Preserve the 128 KiB/60 s durability budget with 128 KiB burst, separate from volatile ingestion, privacy deletion, retained-row/reopen behavior, quota/drop semantics and failures.
+- [ ] Rebase the staged async map IO over finalized observation/privacy hooks, then apply its reviewed diff and rerun controlled blocked-writer/main-control, CAS/stale-publication, rollback/delete and full aggregate checks. Published synchronous IO is not yet fixed.
+- [ ] Complete actual Apple Photos/Vision/audio lifecycle checks for the applied trusted-picker flow when available; portable decoding/receipt tests cannot prove native accuracy.
+- [ ] Rebase the staged native quiet/output patch before wiring additive journey Core. Preserve newer photo/clock/memory changes; do not equate an unwired Core candidate with an automatic trip.
+- [ ] Implement a measured native position/body-heading/support issuer. Keep registered physical guidance unavailable without valid calibrated evidence.
+- [ ] Connect automatic map building and uncertainty-aware relocalization, then complete body/collision, restart, world/building/floor/room journeys and obstacle-aware return. Raw observations and current authored-leg routing do not close this.
+- [ ] Implement the native exact-model manual/PDF source adapter and connect source-owned reading delivery. Test intact blocks, at-most-35-word chunks, original 60-second deadline, exact withdrawal and no resumed expired answer.
+- [ ] Close same-goal/different-fridge target-place binding and complete original memory/task/ordinary-language episodes with the actual smaller model.
+- [ ] Verify real speaker/addressee identity or continue rejecting untrusted route/task commands. Do not mistake recognition, audio energy or transcription for authority.
+- [ ] Execute 400 distinct whole episodes with the actual map/pose/route/collision/output stack, real/synthetic labels and original failure evidence. Restored public datasets and paraphrases do not count as completed episodes.
+- [ ] Run Apple SDK/device/audio/VoiceOver, calibration/recognition accuracy, background lifecycle, storage protection and latency/endurance checks; then produce the complete exact-commit review handoff.
+
+After each coherent increment: focused test, final affected aggregate, clear limitations, verified push and restart-note update. Do not bundle every remaining feature into another uncheckpointed package.
+
+### Earlier to-do/checkpoint snapshots — retained history
+
 ### Conversation and reference-reading increment — 2026-10-25
 
 Previous source checkpoint `cd368af9` is verified on master. Narrow ordinary-conversation repairs now permit the documented abstract/science/language cases without permitting mixed physical instructions. Reference Core retains complete source blocks outside model budgets, preserves qualifiers and source identity, and advances only on exact completed speech receipts before the original deadline. Fresh merged checks: **1,023/1,023 Core** and **379/379 Node**, zero failures/skips. The official-manual extracted-text replay passes5/5 with synthetic playback; raw manual text is not published. Native manual/PDF and speech adapters remain missing, so this is not a completed native manual-reading feature. Evidence: [checkpoint-07](research/rebuild-evidence/checkpoint-07/verification.json).

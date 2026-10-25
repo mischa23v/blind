@@ -1,3 +1,24 @@
+# Current reconstruction resume state — 2026-10-25
+
+Latest verified published source: `978b506283b5ce9d1ea05ea120db8806f47754fe` (tree `750cd35b01a4e662a99797589afbbca53092a308`). This current feature snapshot supersedes earlier checkpoint snapshots retained below, including old sections headed “current.” See [REBUILD_FEATURE_STATUS.md](REBUILD_FEATURE_STATUS.md) for publication state, actual behavior, remaining gaps and dependency order. Original requirements and failures remain in [REBUILD_TRACKER.md](REBUILD_TRACKER.md) and [REBUILD_SCOPE_ADDENDUM.md](REBUILD_SCOPE_ADDENDUM.md).
+
+## Resume without confusing source states
+
+1. Confirm the latest remote source before editing; the last verified boundary here is `978b506283b5ce9d1ea05ea120db8806f47754fe`, tree `750cd35b01a4e662a99797589afbbca53092a308`. Preserve applied changes and compare source hashes/preimages before bringing in a staged patch.
+2. Ordinary guards/reference Core are now published at 978b506 (Core 1023 / Node 379). Current source additionally includes the applied selected-photo increment: focused checks and Core 1057 passed; Node aggregate FAILED (391 total, 389 passed, 2 failed); test-only correction/full rerun and publication pending.
+3. The published debug, memory, registered synchronous spatial and operation-owned clock increments are already implemented in source. Do not rebuild them as missing standalone foundations. Their actual Apple/device validation is still open.
+4. Finalize the staged observation-budget archive after 81 cleared scoped source tests; it is not applied. Rebase frozen async map IO over final observation/privacy changes before application. Raw bounded history is not world memory or localization.
+5. Finish applied trusted-picker verification and preserve it remotely. Additive journey Core remains staged/unwired; rebase its native quiet patch over current source before any apply. Native manual/PDF and full reference speech adapters remain missing even though reference Core is published.
+6. The central spatial blocker is a calibrated native pose/body-heading/support issuer, followed by automatic world-map construction, uncertain relocalization, body calibration and complete cross-map return. Keep movement fail-closed until those dependencies produce valid evidence.
+7. The real speaker verifier, original complete memory/ordinary/reference episodes, 400 distinct integrated scenarios and actual small-model/Apple/device accuracy/latency remain open. Do not infer acceptance from restored assets or portable counters.
+8. After each verified source increment, record exact commands/logs/source hashes, remote SHA and remaining gaps in the tracker/progress/queue. Keep raw private recordings out of repository documentation and add no UI or automatic log uploads.
+
+For the detailed feature matrix and evidence links, use [REBUILD_FEATURE_STATUS.md](REBUILD_FEATURE_STATUS.md). The archived initial handoff below records the start of reconstruction, not present implementation status.
+
+## Archived initial reconstruction handoff
+
+Photo aggregate correction: Core 1,057 passed; Node finished with 391 total, 389 passed and 2 failed. Independent diagnosis identified stale source-contract count/prefix assertions. The test-only correction replaces them with stronger per-source ownership and cancellation-order checks; production source is unchanged. The aggregate remains FAILED until the corrected full rerun passes. Preserve the original failure and corrective diff; photo checkpoint 08 remains separate and unpublished.
+
 # Blind reconstruction restart handoff
 
 Prepared 2026-10-25. This document preserves technical requirements and evidence limits. It is not a claim that missing source bytes were restored.
