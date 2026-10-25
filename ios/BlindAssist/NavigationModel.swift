@@ -217,7 +217,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published var wordsPerMinute = max(30, min(1800, UserDefaults.standard.object(forKey: "narration-words-per-minute") as? Int ?? 180)) {
         didSet {
             UserDefaults.standard.set(wordsPerMinute, forKey: "narration-words-per-minute")
-            if usesCapturedText && !currencyActive && !colorActive && !currencyRetake.isPending {
+            if (usesCapturedText || capturedText.source != nil) && !currencyActive && !colorActive && !currencyRetake.isPending {
                 capturedTextPacingChanged()
             } else { cancelDescription() }
         }
@@ -493,6 +493,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     // actual callback returns, including across stop/restart; never stack jobs.
     private var capturedTextNativeLease: UUID?
     private var capturedTextSpeechIDs = Set<UUID>()
+    private var capturedTextReviewGuidanceEligible = true
+    private var capturedTextReviewNotice: (id: UUID, text: String, selection: UUID)?
     private var capturedTextBudgetWake: Task<Void, Never>?
     private var capturedTextBudgetWakeAt: Double?
     private var usesCapturedText: Bool { readingTool == .liveText || readingTool == .document }
@@ -688,6 +690,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         feedback.requestedSpeechPermission = { [weak self] id, text in (self?.selectedPhotoSpeechPermission(id: id, text: text) ?? false) &&
             (self?.boardingSpeechPermission(id: id, text: text) ?? false) &&
             (self?.capturedTextSpeechPermission(id: id, text: text) ?? false) }
+        feedback.onRequestedSpeechStarted = { [weak self] id, text in
+            guard let self, let context = self.capturedTextContext() else { return }
+            _ = self.capturedText.started(id: id, text: text, context: context)
+        }
         feedback.onRequestedSpeechFinished = { [weak self] id, text, outcome in
             guard let self else { return }
             if self.finishCapturedTextSpeech(id: id, text: text, outcome: outcome) { return }
@@ -1368,6 +1374,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             let preserveRGB = !detection.hazard.isUrgent &&
                 session.currentFrame.flatMap { captureObjectView($0) } != nil
             if preserveRGB { invalidatePerceptionWork(preserveRGBHistoryWork: true) }
+            else if !detection.hazard.isUrgent && capturedText.source != nil && capturedTextPlaybackAllowed() {
+                // Frozen historical quotation does not acquire fresh camera authority.
+                invalidatePerceptionWork(preserveCapturedText: true)
+            }
             else if !detection.hazard.isUrgent && usesCapturedText && capturedTextCameraAllowed() {
                 // Preserve only this receipt; all other RGB/spatial producers retire.
                 invalidatePerceptionWork(preserveCapturedText: true)
@@ -2223,6 +2233,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // Privacy rule (AGENTS.md): camera pictures never leave the phone in the app build.
         let cloud = false
         #endif
+        if !automatic, routeCapturedTextReview(question, origin: .trustedInterface) { return }
+        if !automatic, capturedText.source != nil { stopReadingTool(announce: false) }
         if !automatic, routeHistoricalLocationInquiry(question, origin: .trustedInterface) { return }
         if !automatic, routeSelectedPhotoInquiry(question, origin: .trustedInterface) { return }
         if !automatic { stopReadingTool(announce: false) }
@@ -2233,7 +2245,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if !automatic, routeReadingToolCommand(question) { return }
         // Anything else the child says ends a running reading tool, so two things never talk at once.
         if !automatic, readingTool != nil { stopReadingTool(announce: false) }
-        if automatic, currencyActive || colorActive || readingTool != nil || currencyRetake.isPending { return }
+        if automatic, currencyActive || colorActive || readingTool != nil || capturedText.source != nil || currencyRetake.isPending { return }
         #if BLIND_FAMILIAR_PEOPLE
         if !automatic, routeFamiliarPeopleCommand(question) { return }
         if !automatic { familiarPeople.cancelSearchForNewGoal() }
@@ -2991,6 +3003,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // A read-only clock question needs conversation authority, not goal authority.
         // Intercept before cancellation, everyday-task mutation or camera work.
         if CommandAuthority.permits(.changeGoal, from: origin), selectedPhoto.selection != nil { clearExploreSnapshot() }
+        if CommandAuthority.permits(.changeGoal, from: origin) {
+            if routeCapturedTextReview(text, origin: origin) { return }
+            // Even early read-only routes are unrelated new requests.
+            if capturedText.source != nil { stopReadingTool(announce: false) }
+        }
         if routeClockInquiry(text, origin: origin) { return }
         guard CommandAuthority.permits(.changeGoal, from: origin) else {
             #if DEBUG
@@ -3342,6 +3359,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
               !(companion.pendingOffer != nil && AssistantControl.offerAnswer(text) != nil),
               AssistantControl.parse(text) == nil, AssistantControl.explicitGoal(text) == nil,
               ConversationIntent.explicitTaskGoal(text) == nil, CompanionUtterance.parse(text) == nil,
+              CapturedTextReviewCommand.parse(text) == nil,
               ConversationDomainPolicy.allowsModelResponse(to: text) else {
             unverifiedConversationReply(arabic
                 ? "لا يتحقق هذا الإصدار ممن يتحدث. استخدم عناصر التطبيق لتغيير المهمة أو طلب إجراء. ما زلنا نستطيع التحدث."
@@ -4703,6 +4721,12 @@ extension NavigationModel {
     }
 
     func repeatHomeInformation() {
+        if capturedText.source != nil {
+            if detection.hazard.isUrgent {
+                purgeCapturedTextPlayback(); repeatMonitoringStatus()
+            } else { _ = routeCapturedTextReview("repeat", origin: .trustedInterface) }
+            return // private rejection never falls through to unrelated history
+        }
         revalidateClockReplies()
         if running && detection.hazard != .observing { repeatMonitoringStatus() }
         else if let receipt = currentClockReceipt, currentReply == receipt.text {
@@ -6174,12 +6198,16 @@ extension NavigationModel {
     private func clearCapturedText() {
         cancelCapturedTextBudgetWake()
         let speech = capturedText.pending?.id
+        let notice = capturedTextReviewNotice?.id
+        capturedTextReviewNotice = nil
+        capturedTextReviewGuidanceEligible = true
         if let receipt = capturedText.clear(), receipt.sessionGeneration == assistantSession.generation,
            assistantSession.foregroundActive, assistantSession.mayRespond, !assistantSession.privateAudioHeld {
             lastCapturedTextPlaybackReceipt = receipt
         }
         // Ownership is revoked before synchronous cancellation callbacks.
         if let speech { feedback.stopRequestedSpeech(speech) }
+        if let notice { feedback.stopRequestedSpeech(notice) }
     }
     private func purgeCapturedTextPlayback() {
         stopReadingTool(announce: false) // also revoke acquisition/native callback ownership
@@ -6189,7 +6217,7 @@ extension NavigationModel {
         guard let selection = capturedText.selection else { return nil }
         return .init(selection: selection, source: capturedText.source?.identity,
             cameraEpoch: cameraTextEpoch, generation: assistantSession.generation, requestID: requestID,
-            now: ProcessInfo.processInfo.systemUptime, foreground: (capturedText.source == nil ? capturedTextCameraAllowed() : capturedTextPlaybackAllowed()) && usesCapturedText,
+            now: ProcessInfo.processInfo.systemUptime, foreground: (capturedText.source == nil ? capturedTextCameraAllowed() : capturedTextPlaybackAllowed()) && (usesCapturedText || capturedText.source != nil),
             quiet: false, hazard: detection.hazard.isUrgent, privateAudioHeld: assistantSession.privateAudioHeld)
     }
     private func revalidateCapturedText() {
@@ -6255,20 +6283,98 @@ extension NavigationModel {
     }
     private func capturedTextSpeechPermission(id: UUID, text: String) -> Bool {
         guard capturedTextSpeechIDs.contains(id) else { return true }
+        if let notice = capturedTextReviewNotice, notice.id == id {
+            guard notice.text.utf8.elementsEqual(text.utf8), notice.selection == capturedText.selection?.id,
+                  let context = capturedTextContext() else { return false }
+            return capturedText.revalidate(context)
+        }
         guard let pending = capturedText.pending, pending.id == id,
               pending.text.utf8.elementsEqual(text.utf8), let context = capturedTextContext() else { return false }
         return capturedText.revalidate(context)
     }
     private func finishCapturedTextSpeech(id: UUID, text: String, outcome: NarrationDelivery) -> Bool {
         guard capturedTextSpeechIDs.remove(id) != nil else { return false }
+        if capturedTextReviewNotice?.id == id { capturedTextReviewNotice = nil; return true }
         guard capturedText.pending?.id == id else { return true }
         guard let context = capturedTextContext(), capturedText.finish(id: id, text: text, outcome: outcome, context: context) else {
-            stopReadingTool(announce: false); return true
+            if capturedText.paused && !capturedText.withdrawn { pauseCapturedTextPlayback() }
+            else { stopReadingTool(announce: false) }
+            return true
         }
-        if capturedText.playbackCompleted { stopReadingTool(announce: false) }
-        else { speakNextCapturedText() }
+        if capturedText.playbackCompleted {
+            pauseCapturedTextPlayback()
+            offerCapturedTextReviewGuidance()
+        } else { speakNextCapturedText() }
         return true
     }
+    /// Stop acquisition/playback work, not the one explicitly retained source.
+    private func pauseCapturedTextPlayback() {
+        cancelCapturedTextBudgetWake()
+        lastCapturedTextPlaybackReceipt = capturedText.playbackReceipt
+        readingWork.cancel(); readingTask?.cancel(); readingTask = nil
+        readingTool = nil; readingInFlight = false
+    }
+    private func offerCapturedTextReviewGuidance() {
+        guard capturedTextReviewGuidanceEligible,
+              let context = capturedTextContext(), capturedText.revalidate(context) else { return }
+        // One opportunity per source, NOT a delivery receipt. Rejected admission
+        // never retries the long tip or charges every explicit part review.
+        capturedTextReviewGuidanceEligible = false
+        let text = arabic ? "انتهت هذه القراءة. يمكنك طلب: كرر الجزء الأخير، أو اقرأ النص الملتقط مرة أخرى، أو انس هذه الصفحة."
+            : "That reading finished. You can request: repeat the last part, read captured text again, or forget this page."
+        let id = UUID()
+        capturedTextReviewNotice = (id, text, context.selection.id)
+        capturedTextSpeechIDs.insert(id)
+        // Ordinary answer admission, not operation-priority budget bypass. Failed
+        // admission is silent; neither enqueue nor this guidance claims delivery.
+        if !dispatchText(text, kind: .answer, requested: true, replace: false, speechID: id) {
+            capturedTextReviewNotice = nil; capturedTextSpeechIDs.remove(id)
+        }
+    }
+    @discardableResult private func routeCapturedTextReview(_ text: String, origin: CompanionCommandOrigin) -> Bool {
+        guard let command = CapturedTextReviewCommand.parse(text, hasCapturedSource: capturedText.source != nil),
+              CommandAuthority.permits(.changeGoal, from: origin) else { return false }
+        if command == .forget {
+            purgeCapturedTextPlayback()
+            if capturedTextPlaybackAllowed() {
+                _ = speakRequested(arabic ? "نسيت الصفحة الملتقطة." : "Forgot the captured page.")
+            }
+            return true
+        }
+        guard capturedTextPlaybackAllowed() else { purgeCapturedTextPlayback(); return true }
+        guard let context = capturedTextContext(), capturedText.revalidate(context) else {
+            purgeCapturedTextPlayback()
+            _ = speakRequested(arabic ? "لا يوجد نص ملتقط للمراجعة. اطلب قراءة صفحة أولاً." : "No captured text to review. Ask to read a page first.")
+            return true
+        }
+        let oldSpeech = capturedText.pending?.id, oldNotice = capturedTextReviewNotice?.id
+        let priorReceipt = capturedText.playbackReceipt, reviewRequest = UUID()
+        guard capturedText.review(command, requestID: reviewRequest, context: context) else {
+            // No heard-part evidence: retain already-authorized queued reading
+            // and its budget wake. An optional status must not cancel or strand
+            // the page if that status itself cannot be ordinarily admitted.
+            if feedback.speechPriority == nil {
+                let noStartedPart = capturedText.lastSpokenPart == nil
+                _ = speakRequested(noStartedPart
+                    ? (arabic ? "لم يبدأ أي جزء بعد. يمكنك طلب: اقرأ النص الملتقط مرة أخرى."
+                        : "No part has started yet. You can request: read captured text again.")
+                    : (arabic ? "لا يوجد جزء متاح لهذا الطلب. يمكنك طلب قراءة النص الملتقط مرة أخرى."
+                        : "No part is available for that request. You can ask to read captured text again."), replace: false)
+            }
+            return true
+        }
+        cancelCapturedTextBudgetWake()
+        capturedTextReviewNotice = nil
+        capturedTextReviewGuidanceEligible = false // explicit review already discovered
+        lastCapturedTextPlaybackReceipt = priorReceipt
+        requestID = reviewRequest
+        // Revoke old ownership BEFORE potentially synchronous cancellation.
+        if let oldSpeech { feedback.stopRequestedSpeech(oldSpeech) }
+        if let oldNotice { feedback.stopRequestedSpeech(oldNotice) }
+        speakNextCapturedText()
+        return true
+    }
+
     private func updateCapturedText(frame: ARFrame) {
         if capturedText.source != nil { revalidateCapturedText(); return }
         // Keep a bounded acquisition/native-worker wait. Never apply this clock

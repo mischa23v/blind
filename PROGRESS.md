@@ -1,3 +1,12 @@
+## 2026-10-25 — Captured-page review local candidate
+
+One bounded volatile page can now be explicitly repeated, navigated by part, reread or forgotten through exact English/Arabic commands. New playback identities preserve prior receipt semantics; actual start/completion, ordinary budgets and existing trusted/private gates remain authoritative. No interpretation, new camera requirement for historical quotation, persistence or new dependency.
+
+Portable verification: 1,303 Core tests passed with no failures/skips. Extracted controller witnesses and final serial Node aggregate are recorded in the candidate evidence; they are not native audio or participant validation. Native app acceptance remains separate and pending. See [scope and semantics](research/evaluations/captured-page-review/README.md).
+
+
+---
+
 ## Checkpoint 31 — code-only find continuation survives exhausted sensor retries (2026-10-25)
 
 - Preserved real native source-29 failure: run `40220809616` compiled and executed one test, with two failed assertions and zero skips. Five real AVSpeech completion receipts were inspected. The post-forget query said “I couldn't finish that check yet. We can try something else.” rather than asking a new room/area question. Typed forget cleared state; its acknowledgment was outside the isolated harness speech lane, not evidence of production speech failure.

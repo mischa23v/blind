@@ -26,6 +26,8 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     var onNarrationFinished: ((UUID, String, NarrationDelivery) -> Void)?
     /// A phrase is complete only after its matching platform completion callback.
     /// Only accepted attempts emit a result; rejected delivery returns false.
+    /// Exact synthesized start only. Nil is inert; admission is not onset.
+    var onRequestedSpeechStarted: ((UUID, String) -> Void)?
     var onRequestedSpeechFinished: ((UUID, String, NarrationDelivery) -> Void)?
     var onIdle: (() -> Void)?
     var onControlAnnouncement: ((String) -> Void)?
@@ -329,6 +331,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
             finishActive(outcome: .interrupted, stopSynthesizer: true,
                          diagnosticCause: "route.expiredBeforePlayback"); return
         }
+        if case .requested(let id) = active.destination { onRequestedSpeechStarted?(id, active.text) }
     }
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {

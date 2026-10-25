@@ -10,6 +10,11 @@ final class ExtractedHistoricalIngress {
  struct Session { var shouldListen = true; var generation: UInt64 = 1 }; var assistantSession = Session()
  struct Photo { var selection: Int? }; var selectedPhoto = Photo()
  func clearExploreSnapshot() { selectedPhoto.selection = nil }
+ // Unrelated captured-page lane substitute: these history/search fixtures
+ // have no selected page; actual review methods execute in their own witness.
+ var capturedText = CapturedTextReference()
+ func routeCapturedTextReview(_ text: String, origin: CompanionCommandOrigin) -> Bool { false }
+ func stopReadingTool(announce: Bool) { capturedText.clear() }
  func routeClockInquiry(_ text: String, origin: CompanionCommandOrigin) -> Bool { false }
  func receiveUnverifiedConversation(_ text: String, origin: CompanionCommandOrigin) { voiceCalls += 1 }
  static func wordCount(_ text: String) -> Int { CompanionReferenceReading.wordCount(text) }

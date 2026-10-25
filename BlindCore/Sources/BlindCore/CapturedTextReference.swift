@@ -5,7 +5,7 @@ import Foundation
 /// No image, OCR or source identifier is persisted by this controller.
 public struct CapturedTextReference: Sendable {
     /// One terminal playback receipt, not source text, a current observation or
-    /// proof of understanding/real-world task completion. Minted only on clear.
+    /// proof of understanding/real-world task completion. One receipt per playback attempt; retaining source text does not renew it.
     public struct PlaybackReceipt: Equatable, Sendable {
         public enum Outcome: String, Sendable { case completed, cancelled }
         public let sourceID: UUID
@@ -59,7 +59,50 @@ public struct CapturedTextReference: Sendable {
     /// Finite installed reference progress, not freshness or real-world goal completion.
     public var playbackCompleted: Bool { source != nil && !phrases.isEmpty && completed == phrases.count && !withdrawn }
     public var awaitingAcquisition: Bool { selection != nil && source == nil && !withdrawn }
+    // Source inventory is bounded by CompanionReferenceReading.prepare; no persistence.
+    private var sourcePhrases: [Phrase] = []
+    private var partOffset = 0
+    public private(set) var lastSpokenPart: Int?
+    public private(set) var paused = false
     private var lastNow = 0.0
+    public var playbackReceipt: PlaybackReceipt? {
+        guard let selection, let source else { return nil }
+        return PlaybackReceipt(sourceID: source.identity.sourceID, revision: source.identity.revision,
+            requestID: selection.requestID, sessionGeneration: selection.generation,
+            completedPhraseCount: completed, totalPhraseCount: phrases.count,
+            outcome: playbackCompleted ? .completed : .cancelled)
+    }
+
+    /// Actual start evidence only; an admitted/queued phrase is not heard speech.
+    @discardableResult public mutating func started(id: UUID, text: String, context: Context) -> Bool {
+        guard let pending, pending.id == id, pending.text.utf8.elementsEqual(text.utf8),
+              revalidate(context) else { return false }
+        lastSpokenPart = partOffset + completed
+        return true
+    }
+
+    /// New playback, same frozen historical source. Never revives a withdrawn owner.
+    /// A backend without onset evidence falls back to the last completed part.
+    @discardableResult public mutating func review(_ command: CapturedTextReviewCommand,
+        requestID: UUID, context: Context) -> Bool {
+        guard revalidate(context), let selection, source != nil else { return false }
+        let index: Int
+        switch command {
+        case .repeatPart: guard let lastSpokenPart else { return false }; index = lastSpokenPart
+        case .previousPart: guard let lastSpokenPart else { return false }; index = lastSpokenPart - 1
+        case .nextPart: index = lastSpokenPart.map { $0 + 1 } ?? 0
+        case .readAgain: index = 0
+        case .forget: return false // native owner clears all work synchronously
+        }
+        guard sourcePhrases.indices.contains(index) else { return false }
+        let slices = command == .readAgain ? Array(sourcePhrases[index...]) : [sourcePhrases[index]]
+        phrases = slices.map { Phrase(id: UUID(), text: $0.text, originalSlice: $0.originalSlice) }
+        // Selection identity fences old timers; source identity remains unchanged.
+        self.selection = Selection(id: UUID(), cameraEpoch: selection.cameraEpoch, generation: selection.generation,
+            requestID: requestID, issuedAt: selection.issuedAt, capturedAt: selection.capturedAt, orientation: selection.orientation)
+        partOffset = index; completed = 0; pending = nil; paused = false
+        return true
+    }
     public init() {}
 
     /// Call synchronously BEFORE awaiting any native OCR. Replacing even a
@@ -95,7 +138,7 @@ public struct CapturedTextReference: Sendable {
         let prefix = arabic ? "نص الصورة الملتقطة (غير مؤكد): «" : "Captured text (uncertain): «"
         let phrases = reader.chunks.map { Phrase(id: $0.id, text: prefix + $0.originalSlice + "»", originalSlice: $0.originalSlice) }
         guard phrases.allSatisfy({ CompanionReferenceReading.wordCount($0.text) <= 30 }) else { return false }
-        self.source = source; self.phrases = phrases; lastNow = now
+        self.source = source; self.phrases = phrases; self.sourcePhrases = phrases; lastNow = now
         return true
     }
     @discardableResult public mutating func revalidate(_ context: Context) -> Bool {
@@ -108,7 +151,7 @@ public struct CapturedTextReference: Sendable {
         return true
     }
     public mutating func next(_ context: Context) -> Phrase? {
-        guard revalidate(context), source != nil, pending == nil, completed < phrases.count else { return nil }
+        guard revalidate(context), source != nil, !paused, pending == nil, completed < phrases.count else { return nil }
         return phrases[completed]
     }
     /// Reserve before native dispatch (callbacks may be synchronous in tests).
@@ -118,19 +161,14 @@ public struct CapturedTextReference: Sendable {
     }
     public mutating func admissionRejected(_ id: UUID) { if pending?.id == id { pending = nil } }
     @discardableResult public mutating func finish(id: UUID, text: String, outcome: NarrationDelivery, context: Context) -> Bool {
-        guard revalidate(context), let pending, pending.id == id,
-              pending.text.utf8.elementsEqual(text.utf8) else { return false }
-        guard outcome == .completed else { withdrawn = true; self.pending = nil; return false }
+        guard let pending, pending.id == id, pending.text.utf8.elementsEqual(text.utf8),
+              revalidate(context) else { return false }
+        guard outcome == .completed else { paused = true; self.pending = nil; return false }
+        lastSpokenPart = partOffset + completed
         self.pending = nil; completed += 1; return true
     }
     @discardableResult public mutating func clear() -> PlaybackReceipt? {
-        let receipt: PlaybackReceipt?
-        if let selection, let source {
-            receipt = PlaybackReceipt(sourceID: source.identity.sourceID, revision: source.identity.revision,
-                requestID: selection.requestID, sessionGeneration: selection.generation,
-                completedPhraseCount: completed, totalPhraseCount: phrases.count,
-                outcome: playbackCompleted ? .completed : .cancelled)
-        } else { receipt = nil }
+        let receipt = playbackReceipt
         self = Self()
         return receipt
     }

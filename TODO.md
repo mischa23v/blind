@@ -1,3 +1,10 @@
+## Next — captured-page review acceptance
+
+Validate the candidate on the exact native app: current/last-started versus queued-unstarted repeat, previous/next, reread, slow budget waits, English/Arabic and privacy/source replacement. Confirm automatic scene descriptions resume after forget/unrelated request while independent hazards remain active. Do not count portable extracted-method tests as audible/participant acceptance. See [candidate scope](research/evaluations/captured-page-review/README.md).
+
+
+---
+
 ## Next after checkpoint 31
 
 1. Pin and run the unchanged native search-clue speech expectations against the repaired production; inspect the small receipt artifact, not only the CI status. Preserve the source-29 failed native run and first failed portable aggregate.

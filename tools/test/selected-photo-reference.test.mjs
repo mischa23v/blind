@@ -91,7 +91,10 @@ test('camera cancellation is separate; only trusted photo interruption and expli
 test('helper ingress and delayed actual speech start enforce photo ownership', async () => {
   const s = await read('ios/BlindAssist/NavigationModel.swift'), f = await read('ios/BlindAssist/Feedback.swift'), v = await read('ios/BlindAssist/ExplorePictureView.swift');
   const ingress = section(s, 'func readScene(', 'private static func wordCount(');
-  assert.ok(ingress.indexOf('routeSelectedPhotoInquiry(question, origin: .trustedInterface)') < ingress.indexOf('stopReadingTool(announce: false)'));
+  const photoRoute = ingress.indexOf('routeSelectedPhotoInquiry(question, origin: .trustedInterface)');
+  const genericStop = ingress.indexOf('if !automatic { stopReadingTool(announce: false) }');
+  assert.ok(photoRoute >= 0 && genericStop >= 0 && photoRoute < genericStop,
+    'Photo inquiry precedes generic cancellation; captured-only privacy retirement is separate.');
   const start = section(f, 'didStart utterance:', 'func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish');
   assert.match(start, /requestedSpeechPermission\?\(id, active.text\) == false/); assert.match(start, /stopSynthesizer: true/);
   assert.match(v, /if photoLoadGeneration == generation \{ photoLoadTask = nil \}/);

@@ -1,3 +1,14 @@
+## Captured-page review increment (2026-10-25 candidate)
+
+- [x] Local bounded volatile source review, distinct attempts/receipts, exact onset and stale-callback ownership, English/Arabic parser, ordinary-budget/private gates.
+- [x] Core execution and independently reviewed production boundaries; see candidate evidence for extracted-controller limitations.
+- [ ] Exact native build/audio and supervised nonvisual usability acceptance. No menu interpretation or completed real-world goal claim.
+
+[Scope, semantics and verification limits](research/evaluations/captured-page-review/README.md).
+
+
+---
+
 ## Checkpoint 31 acceptance update — search-clue retry boundary
 
 - [x] Repair code-only history/clue/clarification after exhausted find adapter attempts without resetting retries or starting more sensor work; preserve checkpoint-30 reader behavior.

@@ -89,6 +89,11 @@ final class SearchAreaReplay {
     var capturedTextPurgeCalls = 0
     func purgeCapturedTextPlayback() { capturedTextPurgeCalls += 1 }
     func clearExploreSnapshot() { selectedPhoto.selection = nil }
+ // Unrelated captured-page lane substitute: these history/search fixtures
+ // have no selected page; actual review methods execute in their own witness.
+ var capturedText = CapturedTextReference()
+ func routeCapturedTextReview(_ text: String, origin: CompanionCommandOrigin) -> Bool { false }
+ func stopReadingTool(announce: Bool) { capturedText.clear() }
     func routeClockInquiry(_ text: String, origin: CompanionCommandOrigin) -> Bool {
         if text.lowercased() == "what time is it" { controlInputs.append(text); return true }; return false
     }
