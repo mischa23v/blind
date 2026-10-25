@@ -1,0 +1,32 @@
+{
+  "scope": "One test-fixture generator only; no production or test-count change",
+  "files": [
+    {
+      "path": "tools/test/generate-clock-native-harness.py",
+      "before": "f0937565b556e3480fb5a5f070dc1886e4773954bbb491648f4a1dc7362b7ea5",
+      "after": "64f94eb550da669c4d8e1cac9522ab4f10da7900900d17e311abaeb268a74eba"
+    }
+  ],
+  "production_inputs": {
+    "ios/BlindAssist/NavigationModel.swift": "d419af0156127d37b18e991a033856e2337b75d70a0ba9b8d99476723ef0938b",
+    "ios/BlindAssist/LocalImageAssistant.swift": "41acc33e9a88fb643cabe64f7713f1855664b55c86f39d6b06ec77cffd88eebb"
+  },
+  "unchanged_wrapper": {
+    "path": "tools/test/clock-native-callbacks.test.mjs",
+    "sha256": "b8b26199bab89a84f537980e76f556f0f232d64f2926db09718095a6223aec3f"
+  },
+  "tests": {
+    "node_wrapper": 1,
+    "extracted_XCTest_methods": 21,
+    "candidate_failures": 0,
+    "skips": 0,
+    "preserved_original_fixture_failure": true,
+    "raw_full_text_selection_mutation_rejected": true
+  },
+  "qualifications": [
+    "Authored Working historical-text and concise-summary collaborators; exact production helper/queue/drain/interruption bodies executed.",
+    "Current real renderer and first-tab behavior are covered separately by the actual scoped-memory lookup replay.",
+    "No technical-prefix filter claimed; the negative mutation selects full metadata instead of the concise source.",
+    "Apple speech/tokenizer/device execution is not performed."
+  ]
+}

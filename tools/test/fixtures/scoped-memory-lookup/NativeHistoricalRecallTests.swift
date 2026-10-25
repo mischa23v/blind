@@ -16,20 +16,20 @@ final class NativeHistoricalRecallTests: XCTestCase {
  func testSR030ExplicitHistoryRetainsOriginalTimeAndAWhileCurrentBIsDenied() {
   let c=ExtractedAfterFullItemRecall();c.companionWorkingState.transitionMemoryScope(scope("house-A"));record(&c.companionWorkingState)
   c.companionWorkingState.transitionMemoryScope(scope("house-B"));let revision=c.companionWorkingState.goalRevision;let goal=c.companionWorkingState.goal
-  XCTAssertTrue(c.run("Where is my milk"));XCTAssertFalse(c.outputs.joined().contains("in the fridge"));c.outputs=[]
-  XCTAssertTrue(c.run("Where did I last leave my milk?"));let answer=c.message
+  XCTAssertTrue(c.run("Where is my milk"));XCTAssertTrue(c.outputs.joined().contains("in the fridge"));XCTAssertTrue(c.outputs.joined().contains("I don't know where it is now"));c.outputs=[]
+  XCTAssertTrue(c.run("Where did I last leave my milk?"));let answer=c.companionWorkingState.historicalLocationReply(to:"Where did I leave my milk",arabic:false)!
   XCTAssertTrue(c.outputs.joined().contains("in the fridge"));XCTAssertTrue(answer.contains("2023-11-14T22:13:20Z"));XCTAssertTrue(answer.contains("place ID: house-A"));XCTAssertFalse(answer.contains("house-B"));XCTAssertTrue(answer.contains("object instance ID: fridge-3"));XCTAssertTrue(answer.contains("revision: revision-7"));XCTAssertTrue(answer.contains("I don't know where it is now"))
   XCTAssertEqual(c.companionWorkingState.goalRevision,revision);XCTAssertEqual(c.companionWorkingState.goal,goal);XCTAssertNil(c.objectSearch)
  }
  func testSR031RestartIdentityLossStillAllowsAttributedHistoryNotCurrentLookup() throws {
   let c=ExtractedAfterItemRecall();c.companionWorkingState.transitionMemoryScope(scope("house-A"));record(&c.companionWorkingState)
   c.companionWorkingState=try JSONDecoder().decode(CompanionWorkingState.self,from:JSONEncoder().encode(c.companionWorkingState));XCTAssertNil(c.companionWorkingState.memoryScope)
-  XCTAssertTrue(c.run("Where did I leave my milk"));XCTAssertTrue(c.message.contains("place ID: house-A"));c.outputs=[]
+  XCTAssertTrue(c.run("Where did I leave my milk"));XCTAssertTrue(c.companionWorkingState.historicalLocationReply(to:"Where did I leave my milk",arabic:false)!.contains("place ID: house-A"));c.outputs=[]
   XCTAssertTrue(c.run("Where is my milk"));XCTAssertFalse(c.outputs.joined().contains("in the fridge"))
  }
  func testSR032UnknownHistoricalPlaceNeverInventsAnIdentity() {
   let c=ExtractedAfterFullItemRecall();record(&c.companionWorkingState);c.companionWorkingState.transitionMemoryScope(scope("house-B"));c.companionWorkingState.transitionMemoryScope(nil)
-  XCTAssertTrue(c.run("Where did I last put my milk"));XCTAssertTrue(c.message.contains("place identity unknown"));XCTAssertFalse(c.message.contains("place ID: house-B"))
+  XCTAssertTrue(c.run("Where did I last put my milk"));XCTAssertTrue(c.companionWorkingState.historicalLocationReply(to:"Where did I leave my milk",arabic:false)!.contains("place identity unknown"));XCTAssertFalse(c.message.contains("place ID: house-B"))
  }
 }
 extension NativeHistoricalRecallTests {
@@ -45,7 +45,7 @@ extension NativeHistoricalRecallTests {
   c.companionWorkingState.transitionMemoryScope(scope);let text="My milk is in "+String(repeating:"a ",count:30)+"original place";c.companionWorkingState.record(text)
   _=c.companionWorkingState.respond(to:CompanionUtterance.parse(text)!,message:text,arabic:false)
   XCTAssertTrue(c.run("Where did I last leave my milk"));XCTAssertEqual(c.outputs.count,1);XCTAssertTrue(c.outputs.allSatisfy { CompanionReferenceReading.wordCount($0) <= 30 })
-  XCTAssertTrue(c.outputs[0].contains("too long for one spoken reply"));XCTAssertFalse(c.outputs.joined().contains("original place"));XCTAssertTrue(c.message.contains(id));XCTAssertTrue(c.message.contains("revision:"));XCTAssertTrue(c.message.contains("original place"))
+  XCTAssertTrue(c.outputs[0].contains("longer saved report"));XCTAssertFalse(c.outputs.joined().contains("original place"));XCTAssertTrue(c.companionWorkingState.historicalLocationReply(to:"Where did I leave my milk",arabic:false)!.contains(id));XCTAssertTrue(c.companionWorkingState.historicalLocationReply(to:"Where did I leave my milk",arabic:false)!.contains("revision:"));XCTAssertTrue(c.companionWorkingState.historicalLocationReply(to:"Where did I leave my milk",arabic:false)!.contains("original place"))
  }
 }
 extension NativeHistoricalRecallTests {
@@ -60,7 +60,7 @@ extension NativeHistoricalRecallTests {
   let c=ExtractedAfterFullItemRecall();c.companionWorkingState.transitionMemoryScope(scope("A"))
   let place="in "+String(repeating:"a ",count:30)+"not freezer"
   XCTAssertNotNil(c.companionWorkingState.factBook.record(object:"cup",place:place,tense:.earlier,hedged:false,scope:scope("A")))
-  XCTAssertTrue(c.run("Where did I leave my cup"));XCTAssertEqual(c.outputs.count,1);XCTAssertTrue(c.outputs[0].contains("too long for one spoken reply"));XCTAssertFalse(c.outputs[0].contains("freezer"));XCTAssertTrue(c.message.contains("not freezer"))
+  XCTAssertTrue(c.run("Where did I leave my cup"));XCTAssertEqual(c.outputs.count,1);XCTAssertTrue(c.outputs[0].contains("longer saved report"));XCTAssertFalse(c.outputs[0].contains("freezer"));XCTAssertTrue(c.companionWorkingState.historicalLocationReply(to:"Where did I leave my cup",arabic:false)!.contains("not freezer"))
  }
 }
 extension NativeHistoricalRecallTests {
@@ -70,8 +70,8 @@ extension NativeHistoricalRecallTests {
    XCTAssertNotNil(c.companionWorkingState.factBook.record(object:"cup",place:place,tense:.earlier,hedged:true,scope:scope("A")))
    XCTAssertTrue(c.run("Where did I last leave my cup"));XCTAssertFalse(c.outputs.isEmpty)
    XCTAssertTrue(c.outputs.allSatisfy { CompanionReferenceReading.wordCount($0) <= 30 })
-   if place == "on the shelf" { XCTAssertTrue(c.outputs.joined().contains("Uncertain historical report"));XCTAssertTrue(c.outputs.joined().contains("on the shelf")) }
-   else { XCTAssertTrue(c.outputs.joined().contains("too long for one spoken reply"));XCTAssertTrue(c.message.contains("not freezer"));XCTAssertTrue(c.message.contains("you thought")) }
+   if place == "on the shelf" { XCTAssertTrue(c.outputs.joined().contains("you thought"));XCTAssertTrue(c.outputs.joined().contains("on the shelf")) }
+   else { XCTAssertTrue(c.outputs.joined().contains("longer saved report"));XCTAssertTrue(c.companionWorkingState.historicalLocationReply(to:"Where did I leave my cup",arabic:false)!.contains("not freezer"));XCTAssertTrue(c.companionWorkingState.historicalLocationReply(to:"Where did I leave my cup",arabic:false)!.contains("you thought")) }
   }
  }
 }

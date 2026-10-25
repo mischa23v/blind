@@ -21,11 +21,19 @@ test('all native find consumers honor current scope and historical routing prece
  const history=receive.indexOf('routeHistoricalLocationInquiry(text, origin: origin)');assert.ok(history>receive.indexOf('guard CommandAuthority.permits(.changeGoal'));
  assert.ok(history<receive.indexOf('let pendingRetake'));assert.ok(history<receive.indexOf('routeEverydayTask('));
  const scene=section(nav,'    func readScene(','    private func ');assert.ok(scene.indexOf('routeHistoricalLocationInquiry')<scene.indexOf('routeUnverifiedPhysicalRequest'));
- const route=section(nav,'    /// Explicit past-location recall','    private func handleItemOrLocate(');
- assert.match(route,/Self.wordCount\(summary\) <= 30 \? summary : fallback/);assert.match(route,/message = history; sceneAnswer = history; currentReply = history/);
+ const route=section(nav,'    /// Explicit past-location recall','    /// Automatic fallback');
+ assert.match(route,/Self.wordCount\(summary\) <= 30 \? summary : fallback/);assert.match(route,/message = reply; sceneAnswer = reply; currentReply = reply/);
  assert.equal((route.match(/queueConversationSpeech\(/g)||[]).length,1);assert.doesNotMatch(route,/historicalSpeechParts|for part in/);
  assert.match(route,/request: requestID, generation: assistantSession\.generation, codeOwned: true/);
  assert.doesNotMatch(route,/changeGoal\(|beginFindGoal\(|locate\(|cancel\(|transitionMemoryScope\(/);
+ const automatic=section(nav,'    /// Automatic fallback','    private func handleItemOrLocate(');
+ assert.equal((automatic.match(/queueConversationSpeech\(/g)||[]).length,1);
+ assert.match(automatic,/Self.wordCount\(summary\) <= 30 \? summary : fallback/);
+ assert.match(automatic,/case \.report = companionWorkingState.factBook.historicalLookup/);
+ assert.doesNotMatch(automatic,/speakRequested\(|recordedSpotSpeech|mapPosition\(|transitionMemoryScope\(/);
+ const sensor=section(nav,'    private func findWithSensors(','    /// Native RGB evidence');
+ assert.ok(sensor.indexOf('routeOrdinaryHistoricalLocation(name)')>sensor.indexOf('recall.status != .notFound'));
+ assert.ok(sensor.indexOf('routeOrdinaryHistoricalLocation(name)')>sensor.indexOf('currentContextItem(name, in: items)'));
  assert.match(local,/guard !hasScopedMemoryHistory \|\| memoryScope != nil else \{ return nil \}/);
  assert.match(local,/factBook.latest\(for: object\).flatMap \{ \$0.scope == nil \? \$0 : nil \}/);
 });
@@ -38,7 +46,7 @@ test('actual state, complete native lookup methods and historical entry execute 
  writeFileSync(join(sourceDir,'WorkingState.swift'),'import Foundation\nimport BlindCore\n'+section(local,'struct CompanionTaskUpdate:','\n#if canImport(FoundationModels)'));
  const helper=section(nav,'    /// Explicit past-location recall','    private func handleItemOrLocate(');
  for(const [name,end] of [['ExtractedAfterItemRecall','    /// Saved item (by look'],['ExtractedAfterFullItemRecall','    /// Native RGB evidence']]){
-  writeFileSync(join(sourceDir,name+'.swift'),read(fixture+name+'Prefix.swift')+helper+section(nav,'    private func handleItemOrLocate(',end)+'\n}\n');
+  writeFileSync(join(sourceDir,name+'.swift'),read(fixture+name+'Prefix.swift')+(name==='ExtractedAfterFullItemRecall'?helper:helper.slice(0,helper.indexOf('    /// Automatic fallback')))+section(nav,'    private func handleItemOrLocate(',end)+'\n}\n');
  }
  const ingress=section(nav,'    func receiveCompanionUtterance(','        if routeHistoricalLocationInquiry(text, origin: origin) { return }')+'        if routeHistoricalLocationInquiry(text, origin: origin) { return }\n';
  // Extract only the native turn bookkeeping declarations actually referenced by
@@ -49,9 +57,14 @@ test('actual state, complete native lookup methods and historical entry execute 
   if(ingress.includes(name)) assert.equal(fields.length,1,`Missing native ingress field: ${name}`);
   return fields.length ? fields[0]+'\n' : '';
  }).join('');
- writeFileSync(join(sourceDir,'Ingress.swift'),read(fixture+'ExtractedHistoricalIngressPrefix.swift')+turnFields+helper+release(ingress)+' taskCalls += 1\n }\n}\n');
- for(const file of ['NativeContextRecallAfterTests.swift','NativeSensorScopeAfterTests.swift','NativeHistoricalRecallTests.swift','MixedStoreHistoryTests.swift'])writeFileSync(join(tests,file),read(fixture+file));
+ const dashboard=read('ios/BlindAssist/DashboardView.swift');
+ const home=section(dashboard,'private struct CompanionHomeView: View {','    var body: some View {');
+ assert.match(dashboard,/Text\(reply\)[\s\S]*accessibilityIdentifier\("companion-reply"\)/);
+ const getter=home.slice(home.indexOf('    private var reply: String {'));
+ writeFileSync(join(sourceDir,'HomeReply.swift'),'import Foundation\nextension ExtractedAfterFullItemRecall { var companionGreeting: String { "" } }\nstruct ExtractedHomeReply { let model: ExtractedAfterFullItemRecall\n'+getter+' var value: String { reply }\n}\n');
+ writeFileSync(join(sourceDir,'Ingress.swift'),read(fixture+'ExtractedHistoricalIngressPrefix.swift')+turnFields+helper.slice(0,helper.indexOf('    /// Automatic fallback'))+release(ingress)+' taskCalls += 1\n }\n}\n');
+ for(const file of ['NativeContextRecallAfterTests.swift','NativeSensorScopeAfterTests.swift','NativeHistoricalRecallTests.swift','MixedStoreHistoryTests.swift','AutomaticHistoryTests.swift','ReadableHistoryTests.swift'])writeFileSync(join(tests,file),read(fixture+file));
  writeFileSync(join(work,'Package.swift'),`// swift-tools-version: 5.9\nimport PackageDescription\nlet package = Package(name: "NativeLookupReplay", dependencies: [.package(path: ${JSON.stringify(join(root,'BlindCore'))})], targets: [.target(name: "NativeLookupReplay", dependencies: [.product(name: "BlindCore", package: "BlindCore")]), .testTarget(name: "NativeLookupReplayTests", dependencies: ["NativeLookupReplay", .product(name: "BlindCore", package: "BlindCore")])])\n`);
  const result=spawnSync(join(dirname(process.env.BLIND_SWIFTC),'swift'),['test','--package-path',work,'--jobs','2'],{encoding:'utf8',timeout:235_000,maxBuffer:8*1024*1024});
- const output=(result.stdout||'')+'\n'+(result.stderr||'');writeFileSync(join(work,'execution.log'),output);assert.equal(result.status,0,`Replay retained at ${work}\n${output.slice(-12000)}`);assert.match(output,/Executed 15 tests, with 0 failures/);
+ const output=(result.stdout||'')+'\n'+(result.stderr||'');writeFileSync(join(work,'execution.log'),output);assert.equal(result.status,0,`Replay retained at ${work}\n${output.slice(-12000)}`);assert.match(output,/Executed 26 tests, with 0 failures/);
 });

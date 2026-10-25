@@ -272,6 +272,15 @@ final class IndoorSituationTests: XCTestCase {
         wait(for: [done], timeout: 10); try XCTUnwrap(result).get(); return nav
     }
 
+    @MainActor private func restoredNavigatorAsync() async throws -> IndoorNavigator {
+        let done = expectation(description: "actual asynchronous restore without blocking its main owner")
+        var result: Result<Void, Error>?
+        let nav = IndoorNavigator(storage: directory.appendingPathComponent("route.json"), restoreCompletion: { result = $0; done.fulfill() })
+        await fulfillment(of: [done], timeout: 10)
+        try XCTUnwrap(result).get()
+        return nav
+    }
+
     private func map() -> IndoorMap {
         IndoorMap(name: "Authored test home", nodes: [
             MapNode(id: "a", name: "Living room landmark", level: "ground", position: Point3(1, 0, 1)),
@@ -346,11 +355,18 @@ final class IndoorSituationTests: XCTestCase {
         XCTAssertNotEqual(nav.alignmentRevision, before)
         XCTAssertEqual(try snapshot(nav).location["state"] as? String, "unknown")
     }
+    @MainActor func testAsyncMapWaitLeavesMainOwnerAvailable() async throws {
+        try await awaitIndoorIOAsync { done in
+            // Same publication queue as SpatialMapIO. A synchronous wait inside
+            // this actor task prevents its completion from being published.
+            DispatchQueue.main.async { done(.success(())) }
+        }
+    }
     @MainActor func testOfflinePackageMetadataRestoresButPoseDoesNot() async throws {
         let cache = CommunityPackageStorage(directory: directory.appendingPathComponent("packages"))
         let value = try package(); _ = try await cache.install(value)
-        let nav = navigator(); try awaitIndoorIO { done in nav.loadCommunity(value, completion: done) }
-        let restored = try restoredNavigator(); await restored.restoreCommunityContext(storage: cache)
+        let nav = navigator(); try await awaitIndoorIOAsync { done in nav.loadCommunity(value, completion: done) }
+        let restored = try await restoredNavigatorAsync(); await restored.restoreCommunityContext(storage: cache)
         XCTAssertEqual(restored.activePackage?.id, value.id)
         XCTAssertEqual(try snapshot(restored).connections.count, 1)
         XCTAssertEqual(try snapshot(restored).location["state"] as? String, "unknown")
@@ -358,10 +374,10 @@ final class IndoorSituationTests: XCTestCase {
     @MainActor func testForgedRevisionCannotAttachAnotherGeometryOnRestart() async throws {
         let cache = CommunityPackageStorage(directory: directory.appendingPathComponent("packages"))
         let value = try package(); _ = try await cache.install(value)
-        let nav = navigator(); try awaitIndoorIO { done in nav.loadCommunity(value, completion: done) }
+        let nav = navigator(); try await awaitIndoorIOAsync { done in nav.loadCommunity(value, completion: done) }
         var changed = try XCTUnwrap(nav.map); changed.nodes[0].position = Point3(100, 0, 100)
-        try awaitIndoorIO { done in try nav.load(JSONEncoder().encode(changed), completion: done) }
-        let restored = try restoredNavigator(); await restored.restoreCommunityContext(storage: cache)
+        try await awaitIndoorIOAsync { done in try nav.load(JSONEncoder().encode(changed), completion: done) }
+        let restored = try await restoredNavigatorAsync(); await restored.restoreCommunityContext(storage: cache)
         XCTAssertNil(restored.activePackage)
         XCTAssertEqual(try snapshot(restored).connections.count, 0)
     }
@@ -379,7 +395,8 @@ final class IndoorSituationTests: XCTestCase {
 
 import Testing
 
-@Suite("Local conversation regression", .serialized)
+@Suite("Local conversation regression", .serialized, .enabled(if: OnDeviceLanguage.supports(arabic: false),
+    "Requires the real English on-device Foundation Model. Unsupported simulators are not model acceptance evidence."))
 struct ConversationTests {
     @Test(.timeLimit(.minutes(1)))
     func remembersNameWithoutRecitingHistory() async throws {
@@ -400,7 +417,8 @@ struct ConversationTests {
     }
 }
 
-@Suite("Local text chat scenarios", .serialized)
+@Suite("Local text chat scenarios", .serialized, .enabled(if: OnDeviceLanguage.supports(arabic: false),
+    "Requires the real English on-device Foundation Model. Unsupported simulators are not model acceptance evidence."))
 struct TextChatScenarioTests {
     struct Scenario: Sendable {
         let name: String
@@ -450,7 +468,8 @@ struct TextChatScenarioTests {
     }
 }
 
-@Suite("Saved profile conversation", .serialized)
+@Suite("Saved profile conversation", .serialized, .enabled(if: OnDeviceLanguage.supports(arabic: false),
+    "Requires the real English on-device Foundation Model. Unsupported simulators are not model acceptance evidence."))
 struct SavedProfileConversationTests {
     @Test(.timeLimit(.minutes(1)), arguments: [false, true])
     func suppliesNameWithoutOldHistory(corrected: Bool) async throws {
@@ -608,7 +627,23 @@ final class CompanionWorkingStateTests: XCTestCase {
         XCTAssertEqual(lost.respond(to: CompanionUtterance.parse(pronoun)!, message: pronoun, arabic: false), "Which thing do you mean? Tell me its name.")
         let find = "Find my milk"
         let answer = lost.respond(to: CompanionUtterance.parse(find)!, message: find, arabic: false)
-        XCTAssertFalse(answer.contains("in the fridge"))
+        XCTAssertNil(lost.memoryScope)
+        XCTAssertNil(lost.currentContextFact(for: "milk"))
+        XCTAssertEqual(lost.factBook.latest(for: "milk", in: placeScope())?.scope, placeScope())
+        XCTAssertEqual(lost.factBook.latest(for: "milk", in: placeScope())?.sourceID, state.factBook.latest(for: "milk", in: placeScope())?.sourceID)
+        XCTAssertTrue(lost.reportedCompletedSteps.isEmpty)
+        let details = lost.historicalLocationReply(to: "Where did I leave my milk", arabic: false)!
+        XCTAssertTrue(details.contains("Historical report, 1970-01-01T00:16:40Z"))
+        XCTAssertTrue(answer.contains("1970")); XCTAssertFalse(answer.contains("T00:"))
+        XCTAssertFalse(answer.contains("place ID:"))
+        XCTAssertTrue(details.contains("place ID: house-A; floor ID: floor-1; room ID: kitchen; object instance ID: fridge-1"))
+        XCTAssertTrue(answer.contains("You told me"))
+        XCTAssertTrue(answer.contains("was in the fridge"))
+        XCTAssertTrue(answer.contains("I don't know where it is now"))
+        for forbidden in ["is in the fridge now", "metres", "ahead", "reach", "pick up", "walk to"] {
+            XCTAssertFalse(answer.contains(forbidden), forbidden)
+        }
+        XCTAssertEqual(lost.factBook.latest(for: "milk", in: placeScope())?.at, time)
         print("PM-008 PASS | Child after identity loss: It is in the bag. | Assistant: Which thing do you mean? Tell me its name. | Child: Find my milk. | Assistant: \(answer)")
     }
     func testPM013OldDialogueCannotRefillScopedTaskContext() {
@@ -1033,7 +1068,8 @@ struct UnsupportedPremiseTests {
         ["Can you see the stairs?"],
         ["Is the door in front of me open?"]
     ]
-    @Test(.timeLimit(.minutes(1)), arguments: cases)
+    @Test(.timeLimit(.minutes(1)), .enabled(if: OnDeviceLanguage.supports(arabic: false),
+        "Requires the real on-device model; code-owned history is exercised separately on every host."), arguments: cases)
     func repliesNeverAssertUnsupportedFacts(_ messages: [String]) async throws {
         var dialogue = AssistantDialogue()
         var state = CompanionWorkingState()
@@ -1044,22 +1080,63 @@ struct UnsupportedPremiseTests {
             if let utterance = CompanionUtterance.parse(message) {
                 // Match the production controller: parsed requests/reports are owned by code.
                 last = state.respond(to: utterance, message: message, arabic: false)
+                // This is attributed history from the code-owned fact book, not model geometry.
+                // Verify exact expected history instead of weakening the model's spatial guard.
+                let expected = [
+                    "I left my cup on the table yesterday.": "Got it. You last had your cup on the table yesterday. I'll remember that.",
+                    "Where is my cup?": "You told me just now you last had your cup on the table yesterday. I don't know where it is now."
+                ]
+                #expect(last == expected[message])
             } else {
                 try #require(OnDeviceLanguage.supports(arabic: false))
                 let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false, workingState: state)
                 last = try #require(answer.text)
+                #expect(!SpatialClaimGuard.containsSpatialClaim(last))
             }
             #expect(!ConversationClaimGuard.containsUnsupportedClaim(last))
-            #expect(!SpatialClaimGuard.containsSpatialClaim(last))
             dialogue.record(role: "assistant", text: last)
         }
         print("PREMISE FIXTURE [\(messages.joined(separator: " / "))]: \(last)")
         #expect(!ConversationClaimGuard.containsUnsupportedClaim(last))
-        #expect(!SpatialClaimGuard.containsSpatialClaim(last))
+    }
+
+    @Test func codeOwnedHistoricalReportNeverBecomesCurrentGeometry() throws {
+        let now = Date(timeIntervalSince1970: 1_790_000_000)
+        var state = CompanionWorkingState()
+        let report = "I left my cup on the table yesterday."
+        state.record(report, at: now)
+        let parsed = try #require(CompanionUtterance.parse(report))
+        #expect(state.respond(to: parsed, message: report, now: now, arabic: false) ==
+            "Got it. You last had your cup on the table yesterday. I'll remember that.")
+        let question = "Where is my cup?"
+        let requested = try #require(CompanionUtterance.parse(question))
+        #expect(state.respond(to: requested, message: question, now: now, arabic: false) ==
+            "You told me just now you last had your cup on the table yesterday. I don't know where it is now.")
+        // Removing attribution would be a current-location claim and remains rejected.
+        #expect(SpatialClaimGuard.containsSpatialClaim("Your cup is on the table."))
+    }
+
+    @Test(.enabled(if: !OnDeviceLanguage.supports(arabic: false),
+        "Exercises the actual unavailable-provider path, not generated conversation quality."))
+    func unavailableProviderDoesNotInventAReply() async throws {
+        try #require(!OnDeviceLanguage.supports(arabic: false))
+        var dialogue = AssistantDialogue()
+        dialogue.record(role: "user", text: "Can you see the stairs?")
+        let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
+        #expect(answer.text == nil)
+        #expect(answer.taskUpdate == nil)
+        #expect(answer.status == "The on-device conversation model is unavailable on this device. No subscription or API key is needed.")
     }
 }
 
 private extension XCTestCase {
+    @MainActor func awaitIndoorIOAsync(_ action: (@escaping IndoorNavigator.MapCompletion) throws -> Void) async throws {
+        let done = expectation(description: "actual asynchronous indoor map IO without blocking its main owner")
+        var result: Result<Void, Error>?
+        try action { result = $0; done.fulfill() }
+        await fulfillment(of: [done], timeout: 10)
+        try XCTUnwrap(result).get()
+    }
     func awaitIndoorIO(_ action: (@escaping IndoorNavigator.MapCompletion) throws -> Void) throws {
         let done = expectation(description: "actual asynchronous indoor map IO")
         var result: Result<Void, Error>?

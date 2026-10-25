@@ -60,7 +60,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     // Active assistance uses permitted foreground sensing by default. An explicit saved-off
     // choice remains off; this preference never bypasses camera permission or background limits.
-    @Published var cameraAwareness = UserDefaults.standard.object(forKey: "camera-awareness") as? Bool ?? true {
+    @Published var cameraAwareness = UserDefaults.standard.object(forKey: "camera-awareness") == nil
+        ? true : UserDefaults.standard.bool(forKey: "camera-awareness") {
         didSet {
             UserDefaults.standard.set(cameraAwareness, forKey: "camera-awareness")
             if cameraAwareness && assistantSession.foregroundActive && !textOnly {
@@ -4945,15 +4946,35 @@ extension NavigationModel {
     /// Explicit past-location recall is read-only: no goal, search or geometry mutation.
     @discardableResult private func routeHistoricalLocationInquiry(_ question: String, origin: CompanionCommandOrigin) -> Bool {
         guard CommandAuthority.permits(.changeGoal, from: origin),
-              let history = companionWorkingState.historicalLocationReply(to: question, arabic: arabic) else { return false }
-        message = history; sceneAnswer = history; currentReply = history
-        let summary = companionWorkingState.historicalLocationReply(to: question, arabic: arabic, concise: true) ?? ""
-        let fallback = arabic ? "التقرير السابق أطول من رد صوتي واحد. التقرير الكامل مع تاريخه معروض. الموقع الحالي غير مؤكد." : "The historical report is too long for one spoken reply. The full dated report is displayed. Current location is unverified."
+              let summary = companionWorkingState.historicalLocationReply(to: question, arabic: arabic, concise: true) else { return false }
+        let fallback = arabic ? "لدي تقرير محفوظ أطول من رد واحد. لا أستطيع اختصار المعلومة كاملة هنا. لا أعرف أين الغرض الآن." : "I have a longer saved report. I can't fit the whole clue in this reply. I don't know where it is now."
         // Do not split a source negation across independently expiring speech
-        // entries. Short complete clues speak; long ones remain explicit history.
+        // entries. First-tab text and speech use the same complete child-readable reply.
+        let reply = Self.wordCount(summary) <= 30 ? summary : fallback
+        message = reply; sceneAnswer = reply; currentReply = reply
         interruptOrdinaryConversation(origin: origin)
-        queueConversationSpeech(Self.wordCount(summary) <= 30 ? summary : fallback,
+        queueConversationSpeech(reply,
             request: requestID, generation: assistantSession.generation, codeOwned: true)
+        return true
+    }
+
+    /// Automatic fallback for ordinary finds. Original context stays in stored
+    /// helper metadata; the child hears history, never a measured item position.
+    @discardableResult private func routeOrdinaryHistoricalLocation(_ name: String) -> Bool {
+        guard let summary = companionWorkingState.ordinaryHistoricalLocationReply(object: name, arabic: arabic, concise: true) else { return false }
+        let fallback = arabic ? "لدي تقرير محفوظ أطول من رد واحد. لا أستطيع اختصار المعلومة كاملة هنا. لا أعرف أين الغرض الآن." : "I have a longer saved report. I can't fit the whole clue in this reply. I don't know where it is now."
+        let reply = Self.wordCount(summary) <= 30 ? summary : fallback
+        message = reply; sceneAnswer = reply; currentReply = reply
+        interruptOrdinaryConversation(origin: .trustedInterface)
+        queueConversationSpeech(reply,
+            request: requestID, generation: assistantSession.generation, codeOwned: true)
+        // Ambiguous cross-place history asks a question instead of selecting an
+        // instance. A single history clue does not suppress an available fresh look.
+        if case .report = companionWorkingState.factBook.historicalLookup(object: name, currentScope: companionWorkingState.memoryScope),
+           let frame = session.currentFrame, captureObjectView(frame) != nil {
+            objectSearch = ObjectSearch(target: name, now: ProcessInfo.processInfo.systemUptime)
+            continueSearch()
+        }
         return true
     }
 
@@ -5059,6 +5080,7 @@ extension NavigationModel {
             say(ItemMemory.answer(for: item, asked: name, now: Date(), sameFrame: sameFrame, measuredRelation: relation, arabic: arabic))
             return true
         }
+        if routeOrdinaryHistoricalLocation(name) { return true }
         return locate(LocateCommand.target(question) ?? name, question: question)
     }
 

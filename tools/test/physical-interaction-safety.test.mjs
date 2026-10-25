@@ -52,7 +52,7 @@ test('saved similarity uses current identity before clearing inflight and gives 
 });
 test('foreground sensing defaults on without overriding saved choices or permissions',async()=>{
  const s=await read('ios/BlindAssist/NavigationModel.swift');
- assert.match(s,/object\(forKey: "camera-awareness"\) as\? Bool \?\? true/);
+ assert.match(s,/cameraAwareness = UserDefaults.standard.object\(forKey: "camera-awareness"\) == nil\s*\? true : UserDefaults.standard.bool\(forKey: "camera-awareness"\)/);
  assert.match(s,/guard !running, !places.scanning, assistantSession.foregroundActive, cameraAwareness, !textOnly/);
  assert.match(s,/AVCaptureDevice.authorizationStatus\(for: .video\)/);
  assert.match(s,/case .notDetermined:[\s\S]*AVCaptureDevice.requestAccess/);

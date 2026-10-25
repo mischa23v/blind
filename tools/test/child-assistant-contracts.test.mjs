@@ -23,7 +23,7 @@ test('foreground launch starts only an idle conversation and respects saved-off 
   assert.match(resume, /if assistantSession\.state == \.idle\s*\{[^}]*assistantSession\.start\(\)/);
   assert.match(resume, /if cameraAwareness && assistantSession\.foregroundActive && !textOnly\s*\{ start\(\) \}/);
   assert.match(resume, /if !textOnly && assistantSession\.shouldListen\s*\{ voice\.startContinuous/);
-  assert.match(model, /object\(forKey: "camera-awareness"\) as\? Bool \?\? true/);
+  assert.match(model, /cameraAwareness = UserDefaults.standard.object\(forKey: "camera-awareness"\) == nil\s*\? true : UserDefaults.standard.bool\(forKey: "camera-awareness"\)/);
   const state = await read('BlindCore/Sources/BlindCore/AssistantSession.swift');
   const enter = section(state, 'public mutating func enterForeground()', 'public mutating func setBackgroundAllowed(');
   assert.doesNotMatch(enter, /state\s*=|start\(/, 'foreground must not replace muted/ended state');

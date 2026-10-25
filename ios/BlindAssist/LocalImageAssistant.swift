@@ -358,15 +358,45 @@ struct CompanionWorkingState: Codable, Sendable {
         let object = String(text[range])
         guard !ItemMemory.key(for: object).isEmpty, object.unicodeScalars.count <= ItemMemory.nameLimit else { return nil }
         guard let fact = factBook.latest(for: object) else { return CompanionFact.unknown(object: object, arabic: arabic) }
+        return renderHistoricalFact(fact, now: now, arabic: arabic, concise: concise)
+    }
+    /// An ordinary find has no permission to substitute old context for current
+    /// perception. This produces labelled history or a scope clarification only.
+    func ordinaryHistoricalLocationReply(object: String, now: Date = Date(), arabic: Bool, concise: Bool = false) -> String? {
+        switch factBook.historicalLookup(object: object, currentScope: memoryScope) {
+        case .none: return nil
+        case .report(let fact):
+            // Scope IDs are helper metadata, not human place names. Do not read
+            // opaque IDs aloud or infer labels that were never source-bound.
+            return renderHistoricalFact(fact, now: now, arabic: arabic, concise: concise)
+        case .ambiguous(let facts):
+            let question = arabic ? "لدي تقارير من أماكن محفوظة أو سياقات أغراض مختلفة. أي سياق تقصد؟ لا يؤكد أي منها الموقع الحالي." : "I have reports from different saved places or item contexts. Which context do you mean? None confirms where it is now."
+            if concise { return question }
+            return question + "\n" + facts.map { renderHistoricalFact($0, now: now, arabic: arabic, concise: false) }.joined(separator: "\n")
+        }
+    }
+    private func renderHistoricalFact(_ fact: CompanionFact, now: Date, arabic: Bool, concise: Bool) -> String {
         let scope: String
         if let saved = fact.scope {
             scope = "place ID: \(saved.placeID); floor ID: \(saved.floorID); room ID: \(saved.roomID); object instance ID: \(saved.objectInstanceID ?? "unknown"); map ID: \(saved.map.mapID); frame ID: \(saved.map.frameID); revision: \(saved.map.revision)"
         } else { scope = arabic ? "هوية المكان غير معروفة" : "place identity unknown" }
         if concise {
-            let elapsed = ISO8601DateFormatter().string(from: fact.at)
-            let attribution = fact.hedged ? (arabic ? "تقرير سابق غير مؤكد" : "Uncertain historical report") : (arabic ? "تقرير سابق" : "Historical report")
-            return arabic ? "\(attribution)، \(elapsed): \(fact.object) \(fact.place). الموقع الحالي غير معروف."
-                : "\(attribution), \(elapsed): \(fact.object) \(fact.place). Current location unknown."
+            let calendar = Calendar.current
+            let when: String
+            if calendar.isDate(fact.at, inSameDayAs: now) { when = arabic ? "اليوم" : "today" }
+            else if let yesterday = calendar.date(byAdding: .day, value: -1, to: now),
+                    calendar.isDate(fact.at, inSameDayAs: yesterday) { when = arabic ? "أمس" : "yesterday" }
+            else {
+                let formatter = DateFormatter(); formatter.locale = Locale(identifier: arabic ? "ar" : "en")
+                formatter.dateStyle = .medium; formatter.timeStyle = .none
+                when = (arabic ? "في " : "on ") + formatter.string(from: fact.at)
+            }
+            if arabic {
+                let hedge = fact.hedged ? "أنك تظن أن" : "إن"
+                return "قلت لي \(when) \(hedge) \(fact.object) كان \(fact.place). لا أعرف أين هو الآن."
+            }
+            let hedge = fact.hedged ? "you thought " : ""
+            return "You told me \(when) \(hedge)your \(fact.object) was \(fact.place). I don't know where it is now."
         }
         let date = ISO8601DateFormatter().string(from: fact.at)
         let prefix = arabic ? "تقرير سابق، \(date). السياق الأصلي المحفوظ: \(scope). " : "Historical report, \(date). Original stored context: \(scope). "
@@ -552,7 +582,7 @@ struct CompanionWorkingState: Codable, Sendable {
         guard CompanionUtterance.parse(message) == utterance else {
             return arabic ? "لم أستطع تأكيد هذا الطلب." : "I couldn't verify that request."
         }
-        if let history = historicalLocationReply(to: message, now: now, arabic: arabic) { return history }
+        if let history = historicalLocationReply(to: message, now: now, arabic: arabic, concise: true) { return history }
         switch utterance {
         case .find(let object):
             let request = message.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -565,7 +595,7 @@ struct CompanionWorkingState: Codable, Sendable {
                 let ask = arabic ? " أين كان آخر مرة؟" : " Where did you last have it?"
                 return search.sentence(now: now, arabic: arabic) + (search.located ? "" : ask)
             }
-            return CompanionFact.unknown(object: object, arabic: arabic)
+            return ordinaryHistoricalLocationReply(object: object, now: now, arabic: arabic, concise: true) ?? CompanionFact.unknown(object: object, arabic: arabic)
         case .report(let named, let place, let tense, let hedged):
             guard let object = named ?? (focusObject.isEmpty ? nil : focusObject) else {
                 return arabic ? "أي غرض تقصد؟ قل اسمه." : "Which thing do you mean? Tell me its name."

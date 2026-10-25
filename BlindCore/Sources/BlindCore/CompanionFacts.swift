@@ -185,9 +185,32 @@ public struct CompanionFact: Codable, Equatable, Sendable {
 }
 
 /// Small on-phone list of the child's location reports, newest per object.
+/// Historical response selection only, never a current-presence certificate.
+public enum CompanionHistoricalLookup: Equatable, Sendable {
+    case none
+    case report(CompanionFact)
+    case ambiguous([CompanionFact])
+}
+
 public struct CompanionFactBook: Codable, Equatable, Sendable {
     public static let limit = 24
     public private(set) var facts: [CompanionFact] = []
+    /// Ordinary item requests may still use their attributed history when live
+    /// evidence is absent. Current exact ownership outranks newer reports from a
+    /// different home. Without that ownership, conflicting scopes need a question.
+    public func historicalLookup(object: String, currentScope: CompanionMemoryScope?) -> CompanionHistoricalLookup {
+        let key = ItemMemory.key(for: object)
+        guard !key.isEmpty, object.unicodeScalars.count <= ItemMemory.nameLimit else { return .none }
+        let matches = facts.filter { $0.key == key }.sorted {
+            $0.at == $1.at ? $0.storageKey < $1.storageKey : $0.at > $1.at
+        }
+        if let currentScope, currentScope.valid,
+           let owned = matches.first(where: { $0.scope == currentScope }) { return .report(owned) }
+        guard let first = matches.first else { return .none }
+        guard matches.count == 1 else { return .ambiguous(matches) }
+        return .report(first)
+    }
+
     public init() {}
 
     /// Saves a report; the same object replaces its earlier report. Nil when empty or too long.

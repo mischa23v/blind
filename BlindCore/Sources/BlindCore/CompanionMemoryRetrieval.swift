@@ -132,9 +132,20 @@ public enum CompanionMemoryRetrieval {
         for place in places.prefix(32) {
             let match = overlap(terms, words(([place.name] + place.roomNames).joined(separator: " ")))
             guard match > 0 || genericRoomRequest else { continue }
-            let names = place.roomNames.prefix(4).joined(separator: ", ")
+            // Selection must preserve the room that made this place relevant.
+            // Stable source order breaks ties; a broad inventory keeps its original order.
+            let rankedRooms = place.roomNames.enumerated().sorted { left, right in
+                let leftMatch = genericRoomRequest ? 0 : overlap(terms, words(left.element))
+                let rightMatch = genericRoomRequest ? 0 : overlap(terms, words(right.element))
+                return leftMatch == rightMatch ? left.offset < right.offset : leftMatch > rightMatch
+            }
+            let shownRooms = rankedRooms.prefix(4).map(\.element)
+            let names = shownRooms.joined(separator: ", ")
+            let partial = shownRooms.count < place.roomNames.count
+                ? " Showing \(shownRooms.count) of \(place.roomNames.count) recorded rooms; ask about a named room to focus the list."
+                : ""
             let time = place.recordedAt.map(stamp) ?? "date unknown"
-            let text = "Saved place \(place.name); recorded rooms: \(names.isEmpty ? "none listed" : names); \(time). This inventory does not establish current room, position, or clearance."
+            let text = "Saved place \(place.name); recorded rooms: \(names.isEmpty ? "none listed" : names); \(time).\(partial) This inventory does not establish current room, position, or clearance."
             add(CompanionEvidence(id: "place:" + place.id, kind: .historicalMemory, text: text,
                                   source: "private saved place inventory", observedAt: place.recordedAt),
                 rank: 50 + match, date: place.recordedAt)

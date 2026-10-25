@@ -19,6 +19,7 @@ final class NativeContextRecallAfterTests: XCTestCase {
  func testSR026IdentityLossCannotReturnToLegacyGlobalMode() {
   var s=CompanionWorkingState();record(&s);s.transitionMemoryScope(scope("A"));s.transitionMemoryScope(nil)
   let words="Find my milk";let reply=s.respond(to:CompanionUtterance.parse(words)!,message:words,arabic:false)
-  XCTAssertFalse(reply.contains("in the fridge"))
+  XCTAssertNil(s.currentContextFact(for: "milk"));XCTAssertNil(s.memoryScope)
+  XCTAssertTrue(reply.contains("You told me"));XCTAssertFalse(reply.contains("place ID:"));XCTAssertTrue(s.historicalLocationReply(to:"Where did I leave my milk",arabic:false)!.contains("place identity unknown"));XCTAssertTrue(reply.contains("in the fridge"));XCTAssertTrue(reply.contains("I don't know where it is now"))
  }
 }

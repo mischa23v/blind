@@ -343,22 +343,38 @@ wrapper += '''
     func retireAdmittedReviewSpeech() {
 '''+retirement+'''
     }
-    func exerciseHistoricalReviewOwnership(_ pendingBehindMobility: Bool) throws {
-        let history = "Historical report: you said your cup was not in the kitchen. Its current location is unknown."
-        companionWorkingState.historicalText = history
-        companionWorkingState.historicalSummary = pendingBehindMobility
-            ? Array(repeating: "not", count: 60).joined(separator: " ") : history
+    func exerciseHistoricalReviewOwnership(_ pendingBehindMobility: Bool, oversized: Bool = false) throws {
+        // Authored renderer seam, not real source parsing. Full metadata and the
+        // concise child reply are deliberately distinct; lookup replay covers rendering.
+        let history = "You told me yesterday your cup was not in the kitchen. I don't know where it is now."
+        let technical = "Historical report, 2026-10-24T12:00:00Z. Original stored context: place ID: synthetic-private-place; floor ID: synthetic-floor; room ID: synthetic-room; object instance ID: synthetic-container; map ID: synthetic-map; frame ID: synthetic-frame; revision: synthetic-revision. " + history
+        let fallback = "I have a longer saved report. I can't fit the whole clue in this reply. I don't know where it is now."
+        companionWorkingState.historicalText = technical
+        companionWorkingState.historicalSummary = oversized
+            ? "You told me yesterday " + Array(repeating: "a", count: 60).joined(separator: " ") + " not in the kitchen. I don't know where it is now." : history
+        let expected = oversized ? fallback : history
         let owner = requestID, memoryRevision = conversationMemoryRevision
         busy = true; questionIsChat = false
         if pendingBehindMobility { feedback.speechPriority = 3 }
         XCTAssertTrue(routeHistoricalLocationInquiry("Where did I leave my cup?", origin: .trustedInterface))
-        XCTAssertEqual(sceneAnswer, history); XCTAssertEqual(currentReply, history)
+        XCTAssertEqual(sceneAnswer, expected); XCTAssertEqual(currentReply, expected)
+        XCTAssertEqual(message, expected)
+        for text in [sceneAnswer, currentReply, message] {
+            XCTAssertFalse(text.contains("synthetic-private-place")); XCTAssertFalse(text.contains("place ID:"))
+            XCTAssertFalse(text.contains("Historical report")); XCTAssertFalse(text.contains("2026-10-24T"))
+        }
+        if !oversized { XCTAssertTrue(expected.contains("not in the kitchen")) }
         if pendingBehindMobility {
             XCTAssertEqual(conversationSpeech.count, 1, "Exactly one bounded historical entry waits behind mobility.")
             let pending = try XCTUnwrap(conversationSpeech.first)
             XCTAssertTrue(pending.codeOwned); XCTAssertEqual(pending.request, owner)
             XCTAssertLessThanOrEqual(Self.wordCount(pending.text), 30)
-            XCTAssertTrue(pending.text.contains("The full dated report is displayed."))
+            XCTAssertEqual(pending.text, expected)
+            XCTAssertFalse(pending.text.contains("displayed"))
+            if oversized {
+                XCTAssertFalse(pending.text.contains("kitchen"), "Never publish a partial clue with a later negation omitted.")
+                XCTAssertTrue(pending.text.contains("I don't know where it is now."))
+            } else { XCTAssertTrue(pending.text.contains("not in the kitchen")) }
             XCTAssertTrue(spoken.isEmpty); XCTAssertNil(activeConversationSpeech)
             retireAdmittedReviewSpeech()
             XCTAssertTrue(conversationSpeech.isEmpty); XCTAssertNil(activeConversationSpeech)
@@ -367,8 +383,8 @@ wrapper += '''
             XCTAssertTrue(spoken.isEmpty, "Retired history cannot start after mobility finishes.")
         } else {
             let active = try XCTUnwrap(activeConversationSpeech, "Historical speech must have an ordinary-conversation owner.")
-            XCTAssertEqual(active.text, history); XCTAssertTrue(active.codeOwned)
-            XCTAssertEqual(active.request, owner); XCTAssertEqual(spoken, [history])
+            XCTAssertEqual(active.text, expected); XCTAssertTrue(active.codeOwned)
+            XCTAssertEqual(active.request, owner); XCTAssertEqual(spoken, [expected])
             XCTAssertTrue(conversationSpeech.isEmpty)
             retireAdmittedReviewSpeech()
             XCTAssertNil(activeConversationSpeech); XCTAssertTrue(conversationSpeech.isEmpty)
@@ -380,7 +396,10 @@ wrapper += '''
 '''
 scenarios = scenarios.replace('final class ClockNativeCallbackTests: XCTestCase {', '''final class ClockNativeCallbackTests: XCTestCase {
     @MainActor func testHistoricalHelperOwnsSpeechRetiredByAdmittedReview() async throws { try ClockNativeHarness().exerciseHistoricalReviewOwnership(false) }
-    @MainActor func testHistoricalHelperPendingBehindMobilityIsDiscardedWithoutStoppingMobility() async throws { try ClockNativeHarness().exerciseHistoricalReviewOwnership(true) }
+    @MainActor func testHistoricalHelperPendingBehindMobilityIsDiscardedWithoutStoppingMobility() async throws {
+        try ClockNativeHarness().exerciseHistoricalReviewOwnership(true)
+        try ClockNativeHarness().exerciseHistoricalReviewOwnership(true, oversized: true)
+    }
 ''', 1)
 
 # Extract the entire native scheduled model closure, including initial and

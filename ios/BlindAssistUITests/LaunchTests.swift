@@ -93,6 +93,8 @@ final class LaunchTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["companion-reply"].waitForExistence(timeout: 5))
     }
     func testPracticeIsAnnouncedAndCanStop() {
+        openSettingsPage("camera-screen")
+        XCTAssertEqual(app.buttons["monitor-toggle"].label, "Start monitoring", "The explicit camera-off launch preference is respected before practice")
         openSettingsPage("home-practice")
         XCTAssertTrue(app.staticTexts["companion-reply"].waitForExistence(timeout: 5))
         openSettingsPage("camera-screen")
@@ -139,6 +141,8 @@ final class LaunchTests: XCTestCase {
     func testAccessibilityAuditOfCameraAndAsk() throws {
         openSettingsPage("camera-screen")
         try app.performAccessibilityAudit { issue in
+            // Synthetic UI-test state only. Keep the failure and expose the affected control.
+            print("ACCESSIBILITY_AUDIT=type:\(issue.auditType),element:\(String((issue.element?.debugDescription ?? "unidentified").prefix(1200)))")
             // WCAG exempts inactive controls; retain every other audit finding.
             guard issue.auditType == .contrast, let element = issue.element else { return false }
             return element.identifier == "retrace-session" && !element.isEnabled
@@ -147,6 +151,8 @@ final class LaunchTests: XCTestCase {
         let ask = app.buttons["ask-screen"]
         reveal(ask); ask.tap()
         try app.performAccessibilityAudit { issue in
+            // Synthetic UI-test state only. Keep the failure and expose the affected control.
+            print("ACCESSIBILITY_AUDIT=type:\(issue.auditType),element:\(String((issue.element?.debugDescription ?? "unidentified").prefix(1200)))")
             // WCAG exempts inactive controls; retain every other audit finding.
             guard issue.auditType == .contrast, let element = issue.element else { return false }
             return element.identifier == "retrace-session" && !element.isEnabled

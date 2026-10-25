@@ -1,0 +1,24 @@
+# Native checkpoint 18 failure repair
+
+2026-10-25. Original Apple run at source 156882e106271a52135d1264b720cd9391cbe91d: default simulator app build succeeded; hosted tests reported 132 total, 122 passed, 9 failed, 1 skipped; UI tests reported 14 total, 12 passed, 2 failed. Original failures remain evidence, not retrospectively relabelled as passing. These staged repairs require a new real Apple run.
+
+## Established defects and bounded repairs
+
+- Camera preference initialization cast UserDefaults.object to Bool. A launch-argument value of string "NO" fails that cast and silently selected the default true. Initialization now uses presence to distinguish an unset default, then Foundation's bool(forKey:) conversion. A Foundation executable using the exact before/after initializer expressions checked absent, string NO/YES and saved Bool false/true. All five proposed results matched, and the original expression failed the string-NO case. The UI practice test now checks the explicit off preference before starting practice as well as after ending it. Actual practice/UI success remains an Apple rerun gate.
+- The two async MainActor indoor restart tests synchronously waited for map IO whose publication runs on the main queue. Their waits and restore helper now await XCTest fulfillment without changing the ten-second bound or assertions. An always-run native regression dispatches completion through the same main queue. Its extracted exact helper/test passed; restoring the original blocking wait reproduced the ten-second timeout followed by nil-result XCTUnwrap failure. This scheduling witness does not substitute for real Apple file-protection/restart testing.
+- Real Foundation Model acceptance suites cannot require an installed English model on a host where it is unavailable. Explicit capability traits now mark those real-generation cases not executed with a reason. Their expected answers and live model safety guards remain unchanged. A separate always-run exact historical-report regression validates code-owned attribution and unknown-current-location wording; applying the model's broad live-geometry detector to this history was an invalid test contract. Another capability-specific test executes the actual unavailable-converse path and requires nil reply, nil task update and explicit unavailable status. It is not a generated-conversation quality pass.
+
+## Unresolved until real Apple execution
+
+- Two ConnectedJourneyRuntime tests timed out in the original Apple run. The same exact runtime and 17 test bodies passed a Linux synthetic extraction before repair; the underlying Apple timing cause was not reproduced. The test harness now observes onChange publication instead of creating 3,000 one-millisecond poll tasks. Its nominal three-second bound is unchanged. Timeout diagnostics identify the caller and pending state, and throw rather than continuing into a misleading noRegisteredMap failure. All 17 actual test bodies also passed the observer version. No runtime production behavior or persistence gate was changed, and this is not evidence that the original Apple timing failure is resolved.
+- The camera-screen Dynamic Type accessibility audit failed without naming the offending element in the old bounded CI log. Audit closures now print at most 1,200 characters of the affected synthetic UI-test element description and return the original decision. Dynamic Type findings remain failures. The existing narrow inactive-control contrast exception is unchanged. No font, layout or accessibility exception was guessed.
+
+## Verification boundaries
+
+Foundation initializer witness: 5 cases pass, original NO and constant-true/constant-false mutations fail.
+Exact runtime replay: 17 tests pass before and after the test wait change, zero skips.
+Exact actor-wait scheduling witness: 1 test passes; original blocking-wait mutation fails with timeout and nil-result errors.
+Exact Foundation-only conversation-state and unavailable-converse extraction: 2 tests execute and pass. The 5 real-model test declarations are capability-skipped, not model acceptance passes. Current parent-built BlindCore was reused with its library hash checked before and after linking.
+Swift syntax parsing succeeds for changed native files. Twenty-three focused Node integration checks pass. Both retained foreground-sensing contracts reject the old-NO and constant-true/constant-false mutations; all their unrelated guards remain byte-for-byte unchanged. Node integration contracts are supplemental source checks only.
+
+Linux lacks the Apple SDK, simulator, Foundation Models assets and real accessibility runtime. Independent iPhone model acceptance, VoiceOver, live sensors, physical localization and child-safety acceptance remain outstanding. No model output was injected and counted as real-model evidence; no accessibility finding was suppressed.

@@ -30,19 +30,36 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
 
 @MainActor final class ConnectedJourneyRuntimeTests: XCTestCase {
     typealias F = ConnectedFixture
-    private func until(_ condition: @escaping @MainActor () -> Bool) async throws {
-        for _ in 0..<3000 { if condition() { return }; try await Task.sleep(nanoseconds: 1_000_000) }
-        XCTFail("Timed out waiting for bounded runtime work")
+    private enum WaitError: Error { case timedOut }
+    private func until(_ runtime: ConnectedJourneyRuntime, file: StaticString = #filePath, line: UInt = #line,
+                       _ condition: @escaping @MainActor () -> Bool) async throws {
+        if condition() { return }
+        let done = expectation(description: "bounded runtime state publication")
+        let previous = runtime.onChange
+        var completed = false
+        runtime.onChange = {
+            previous?()
+            guard !completed, condition() else { return }
+            completed = true; done.fulfill()
+        }
+        defer { runtime.onChange = previous }
+        // Await publication instead of scheduling 3,000 polling tasks on the main owner.
+        // The original nominal three-second bound is unchanged; real Apple timing remains a gate.
+        await fulfillment(of: [done], timeout: 3)
+        guard condition() else {
+            XCTFail("Runtime wait expired: loading=\(runtime.loading), maps=\(runtime.pendingMapWorkCount), writes=\(runtime.pendingWriteCount), storageError=\(runtime.storageError), status=\(runtime.status)", file: file, line: line)
+            throw WaitError.timedOut // Never continue with incomplete map state and report a misleading missing-map error.
+        }
     }
     private func installed(_ io: RuntimeIO = RuntimeIO()) async throws -> ConnectedJourneyRuntime {
         let runtime = ConnectedJourneyRuntime(io: io, sha256: F.sha256)
-        runtime.restore(); try await until { !runtime.loading }
+        runtime.restore(); try await until(runtime) { !runtime.loading }
         let catalog = try F.catalog()
         // Deliberate burst proves the one-latest catalog task retains ALL accepted
         // installations rather than dropping a map when coalescing work.
         for map in catalog.installations.values { try runtime.install(map, portals: catalog.portals) }
         XCTAssertLessThanOrEqual(runtime.pendingMapWorkCount, 2)
-        try await until { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
         XCTAssertTrue(runtime.durable); return runtime
     }
     private func capture(_ runtime: ConnectedJourneyRuntime, _ endpoint: JourneyEndpoint, time: Double, yaw: Double = -.pi/2) throws -> SpatialLocalizationCapture {
@@ -59,12 +76,12 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
     func testDormantNativeRuntimePersistsDestinationButCannotInventCalibrationOrPose() async throws {
         let io = RuntimeIO(), runtime = try await installed(io)
         try runtime.setDestination(binding: F.c, nodeID: "p", origin: .trustedInterface)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         XCTAssertEqual(runtime.goal?.target.endpoint.nodeID, "p")
         XCTAssertThrowsError(try runtime.beginLocalization(in: F.a))
         XCTAssertThrowsError(try runtime.next(now: 1))
         let restored = ConnectedJourneyRuntime(io: io, sha256: F.sha256)
-        restored.restore(); try await until { !restored.loading }
+        restored.restore(); try await until(restored) { !restored.loading }
         XCTAssertEqual(restored.goal?.revision, runtime.goal?.revision)
         XCTAssertNil(restored.expectedSessionID)
         XCTAssertThrowsError(try restored.next(now: 1))
@@ -77,10 +94,10 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         let io = RuntimeIO(), runtime = try await installed(io)
         try runtime.configure(body: F.body, limits: F.limits)
         try runtime.setDestination(binding: F.c, nodeID: "p", origin: .trustedInterface)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         _ = try runtime.beginLocalization(in: F.a)
         try observe(runtime, F.endpoint(F.a,"s"), time: 1)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         try observe(runtime, F.endpoint(F.a,"s"), time: 1.1)
         let ticket = try runtime.next(now: 1.1)
         XCTAssertTrue(runtime.permits(ticket.route, now: 1.1))
@@ -94,7 +111,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         XCTAssertGreaterThan(retired, 0)
         // Main owner remains responsive; independent hazards are not on this IO path.
         let independentHazardMarker = 42; XCTAssertEqual(independentHazardMarker, 42)
-        await io.release(); try await until { runtime.pendingWriteCount == 0 }
+        await io.release(); try await until(runtime) { runtime.pendingWriteCount == 0 }
         let written = await io.read()
         XCTAssertEqual(try JourneyRuntimeEnvelope(data: XCTUnwrap(written)).journey.goal?.status, .cancelled)
         XCTAssertThrowsError(try runtime.next(now: 1.1))
@@ -104,17 +121,17 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         let runtime = try await installed()
         try runtime.configure(body: F.body, limits: F.limits)
         try runtime.setDestination(binding: F.c, nodeID: "p", origin: .trustedInterface)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         _ = try runtime.beginLocalization(in: F.a)
         try observe(runtime, F.endpoint(F.a,"s"), time: 1)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         try observe(runtime, F.endpoint(F.a,"s"), time: 1.1)
         let ticket = try runtime.next(now: 1.1), revision = runtime.goal?.revision
         try runtime.hold(origin: .trustedInterface)
         XCTAssertEqual(runtime.goal?.status, .paused); XCTAssertFalse(runtime.permits(ticket.route, now: 1.1))
         runtime.cameraRestarted(); XCTAssertEqual(runtime.goal?.revision, revision)
         try runtime.resume(origin: .trustedInterface)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         XCTAssertThrowsError(try runtime.next(now: 1.1))
         _ = try runtime.beginLocalization(in: F.a)
         try observe(runtime, F.endpoint(F.a,"s"), time: 2)
@@ -124,40 +141,40 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
     func testFailedSaveNewCommandAndEraseCannotReviveSupersededGoal() async throws {
         let io = RuntimeIO(), runtime = try await installed(io)
         try runtime.setDestination(binding: F.c, nodeID: "p", origin: .trustedInterface)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         await io.configure(hold: false, fail: true)
         try runtime.setDestination(binding: F.b, nodeID: "m", origin: .trustedInterface)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         XCTAssertTrue(runtime.storageError)
         try runtime.cancel(origin: .trustedInterface)
         XCTAssertEqual(runtime.goal?.status, .cancelled)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         await io.configure(hold: false)
-        try runtime.retryPersistence(); try await until { runtime.pendingWriteCount == 0 }
+        try runtime.retryPersistence(); try await until(runtime) { runtime.pendingWriteCount == 0 }
         let written = await io.read()
         XCTAssertEqual(try JourneyRuntimeEnvelope(data: XCTUnwrap(written)).journey.goal?.status, .cancelled)
         try runtime.eraseHistory(origin: .trustedInterface)
         XCTAssertNil(runtime.goal); XCTAssertNil(runtime.snapshot.start)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         let restored = ConnectedJourneyRuntime(io: io, sha256: F.sha256)
-        restored.restore(); try await until { !restored.loading }
+        restored.restore(); try await until(restored) { !restored.loading }
         XCTAssertNil(restored.goal); XCTAssertTrue(restored.snapshot.events.isEmpty)
     }
     func testSyntheticFullNativeRuntimeOutAndBackRequiresDeliveredOneUseChoice() async throws {
         let runtime = try await installed(), catalog = try F.catalog()
         try runtime.configure(body: F.body, limits: F.limits)
         try runtime.setDestination(binding: F.c, nodeID: "p", origin: .trustedInterface)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         var time = 10.0, output: [String] = []
         _ = try runtime.beginLocalization(in: F.a)
         try observe(runtime, F.endpoint(F.a,"s"), time: time)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         time += 0.1; try observe(runtime, F.endpoint(F.a,"s"), time: time)
         for binding in [F.a,F.b,F.c] {
             if binding != F.a {
                 _ = try runtime.beginLocalization(in: binding)
                 time += 0.1; try observe(runtime, F.endpoint(binding,"s"), time: time)
-                try await until { runtime.pendingWriteCount == 0 }
+                try await until(runtime) { runtime.pendingWriteCount == 0 }
                 time += 0.1; try observe(runtime, F.endpoint(binding,"s"), time: time)
             }
             for node in ["m","p"] {
@@ -165,13 +182,13 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
                 XCTAssertEqual(ticket.route.target.id,node)
                 output.append("\(binding.mapID):\(node):\(String(format: "%.1f",cue.distance))")
                 time += 0.1; try observe(runtime, F.endpoint(binding,node), time: time)
-                try await until { runtime.pendingWriteCount == 0 }
+                try await until(runtime) { runtime.pendingWriteCount == 0 }
                 XCTAssertFalse(runtime.permits(ticket.route,now:time))
             }
         }
         XCTAssertEqual(runtime.goal?.status,.arrived)
         try runtime.saveReference(origin:.trustedInterface,now:time)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         guard case .clarify(let question) = try runtime.requestReturn(origin:.trustedInterface,arabic:false) else { return XCTFail() }
         XCTAssertThrowsError(try runtime.resolveReturn(.journeyStart,origin:.trustedInterface,now:time))
         XCTAssertTrue(runtime.beginClarificationSpeech(question))
@@ -181,13 +198,13 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         time += 0.1; try observe(runtime,F.endpoint(F.c,"p"),time:time,yaw:.pi/2)
         try runtime.resolveReturn(.journeyStart,origin:.trustedInterface,now:time)
         XCTAssertThrowsError(try runtime.resolveReturn(.savedReference,origin:.trustedInterface,now:time))
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         time += 0.1; try observe(runtime,F.endpoint(F.c,"p"),time:time,yaw:.pi/2)
         for binding in [F.c,F.b,F.a] {
             if binding != F.c {
                 _ = try runtime.beginLocalization(in:binding)
                 time += 0.1; try observe(runtime,F.endpoint(binding,"p"),time:time,yaw:.pi/2)
-                try await until { runtime.pendingWriteCount == 0 }
+                try await until(runtime) { runtime.pendingWriteCount == 0 }
                 time += 0.1; try observe(runtime,F.endpoint(binding,"p"),time:time,yaw:.pi/2)
             }
             for node in ["m","s"] {
@@ -195,7 +212,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
                 output.append("\(binding.mapID):\(node):\(String(format:"%.1f",cue.distance))")
                 XCTAssertEqual(ticket.route.target.id,node)
                 time += 0.1; try observe(runtime,F.endpoint(binding,node),time:time,yaw:.pi/2)
-                try await until { runtime.pendingWriteCount == 0 }
+                try await until(runtime) { runtime.pendingWriteCount == 0 }
             }
         }
         XCTAssertEqual(runtime.goal?.status,.arrived)
@@ -208,10 +225,10 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         let runtime = try await installed()
         try runtime.configure(body:F.body,limits:F.limits)
         try runtime.setDestination(binding:F.c,nodeID:"p",origin:.trustedInterface)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         _ = try runtime.beginLocalization(in:F.a)
         try observe(runtime,F.endpoint(F.a,"s"),time:1)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         try observe(runtime,F.endpoint(F.a,"s"),time:1.1)
         let ticket = try runtime.next(now:1.1)
         runtime.mapOwnershipWithdrawn()
@@ -219,10 +236,10 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         XCTAssertThrowsError(try runtime.beginLocalization(in:F.a))
         XCTAssertThrowsError(try runtime.next(now:1.2))
         try runtime.mapRemovalSettled(F.c)
-        try await until { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
         XCTAssertEqual(runtime.goal?.target.endpoint.binding,F.c)
         XCTAssertThrowsError(try runtime.setDestination(binding:F.a,nodeID:"unknown",origin:.trustedInterface))
-        try runtime.retryPersistence(); try await until { runtime.pendingWriteCount == 0 }
+        try runtime.retryPersistence(); try await until(runtime) { runtime.pendingWriteCount == 0 }
         XCTAssertThrowsError(try runtime.next(now:1.2))
     }
 
@@ -230,10 +247,10 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         let runtime = try await installed()
         try runtime.configure(body:F.body,limits:F.limits)
         try runtime.setDestination(binding:F.c,nodeID:"p",origin:.trustedInterface)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         _ = try runtime.beginLocalization(in:F.a)
         try observe(runtime,F.endpoint(F.a,"s"),time:1)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         try observe(runtime,F.endpoint(F.a,"s"),time:1.1)
         let ticket = try runtime.next(now:1.1)
         XCTAssertThrowsError(try runtime.setDestination(binding:F.b,nodeID:"s",origin:.unverifiedMicrophone))
@@ -259,7 +276,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         // Allow the read to enter its continuation before releasing it.
         try await Task.sleep(nanoseconds:10_000_000)
         await io.releaseRead()
-        try await until { !runtime.loading && runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
+        try await until(runtime) { !runtime.loading && runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
         try runtime.configure(body:F.body,limits:F.limits)
         XCTAssertThrowsError(try runtime.beginLocalization(in:F.c))
         XCTAssertEqual(runtime.goal?.target.endpoint.binding,F.c)
@@ -283,7 +300,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
                 if command == "cancel" { try runtime.cancel(origin:.trustedInterface) }
             }
             try await Task.sleep(nanoseconds:10_000_000); await io.releaseRead()
-            try await until { !runtime.loading && runtime.pendingWriteCount == 0 }
+            try await until(runtime) { !runtime.loading && runtime.pendingWriteCount == 0 }
             XCTAssertFalse(runtime.storageError)
             let savedBytes = await io.read(), saved = try JourneyRuntimeEnvelope(data:XCTUnwrap(savedBytes))
             if command == "hold" { XCTAssertEqual(saved.journey.goal?.status,.paused) }
@@ -320,7 +337,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         XCTAssertGreaterThan(historyBytes,500_000); XCTAssertLessThanOrEqual(historyBytes,512_000)
         let seed = try JourneyRuntimeEnvelope(journey:snapshot,installations:catalog.installations.values.map { try $0.encoded() },portals:catalog.portals).encoded()
         let io = RuntimeIO(seed), runtime = ConnectedJourneyRuntime(io:io,sha256:F.sha256)
-        runtime.restore(); try await until { !runtime.loading }
+        runtime.restore(); try await until(runtime) { !runtime.loading }
         var milliseconds:[Double] = []
         for _ in 0..<12 {
             let started = DispatchTime.now().uptimeNanoseconds
@@ -328,17 +345,17 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
             milliseconds.append(Double(DispatchTime.now().uptimeNanoseconds-started)/1_000_000)
         }
         XCTAssertLessThanOrEqual(runtime.pendingWriteCount,2)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         print("NATIVE_MAIN_OWNER_RESIDUAL=historyBytes:\(historyBytes),events:256,references:64,samples:12,hostMaxMilliseconds:\(String(format:"%.3f",milliseconds.max()!)),deviceHazardLatency:UNMEASURED")
     }
     func testInvalidCalibrationReplacementCannotReuseOldBodyOrRoute() async throws {
         let runtime = try await installed()
         try runtime.configure(body:F.body,limits:F.limits)
         try runtime.setDestination(binding:F.c,nodeID:"p",origin:.trustedInterface)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         _ = try runtime.beginLocalization(in:F.a)
         try observe(runtime,F.endpoint(F.a,"s"),time:1)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         try observe(runtime,F.endpoint(F.a,"s"),time:1.1)
         let ticket = try runtime.next(now:1.1)
         XCTAssertThrowsError(try runtime.configure(body:F.body,limits:.init(maximumPositionUncertainty:-1,maximumHeadingUncertainty:0.1)))
@@ -351,14 +368,14 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         let io = RuntimeIO(), runtime = try await installed(io), maps = try F.catalog()
         let restricted = try XCTUnwrap(maps.installations[F.a]).addingRestrictions(blocked:[MapConnection("s","m")],zones:[])
         try runtime.install(restricted,portals:maps.portals)
-        try await until { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
         try runtime.withdrawMap(F.a)
-        try await until { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
         let bytes = await io.read(), disk = try JourneyRuntimeEnvelope(data:XCTUnwrap(bytes))
         XCTAssertEqual(disk.retiredBindings,[F.a])
         XCTAssertFalse(try disk.installations.map { try SpatialMapInstallation(data:$0,sha256:F.sha256).binding }.contains(F.a))
         let restored = ConnectedJourneyRuntime(io:io,sha256:F.sha256)
-        restored.restore(); try await until { !restored.loading }
+        restored.restore(); try await until(restored) { !restored.loading }
         XCTAssertThrowsError(try restored.install(XCTUnwrap(maps.installations[F.a]),portals:maps.portals))
         try restored.configure(body:F.body,limits:F.limits)
         XCTAssertThrowsError(try restored.beginLocalization(in:F.a))
@@ -379,7 +396,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         XCTAssertGreaterThan(bytes.count,ConnectedJourneySnapshot.maximumBytes)
         XCTAssertThrowsError(try JourneyRuntimeEnvelope(data:bytes))
         let runtime = ConnectedJourneyRuntime(io:RuntimeIO(bytes),sha256:F.sha256)
-        runtime.restore(); try await until { !runtime.loading }
+        runtime.restore(); try await until(runtime) { !runtime.loading }
         XCTAssertTrue(runtime.storageError); XCTAssertNil(runtime.goal)
         XCTAssertThrowsError(try runtime.next(now:1))
     }
@@ -392,10 +409,10 @@ extension ConnectedJourneyRuntimeTests {
             let runtime = try await installed()
             try runtime.configure(body: F.body, limits: F.limits)
             try runtime.setDestination(binding: F.c, nodeID: "p", origin: .trustedInterface)
-            try await until { runtime.pendingWriteCount == 0 }
+            try await until(runtime) { runtime.pendingWriteCount == 0 }
             _ = try runtime.beginLocalization(in: F.a)
             try observe(runtime, F.endpoint(F.a,"s"), time: 1)
-            try await until { runtime.pendingWriteCount == 0 }
+            try await until(runtime) { runtime.pendingWriteCount == 0 }
             try observe(runtime, F.endpoint(F.a,"s"), time: 1.1)
             let old = try runtime.next(now: 1.1), goal = runtime.goal?.revision
             let base = try capture(runtime, F.endpoint(F.a,"s"), time: 1.2)
@@ -428,10 +445,10 @@ extension ConnectedJourneyRuntimeTests {
         let runtime = try await installed()
         try runtime.configure(body:F.body,limits:F.limits)
         try runtime.setDestination(binding:F.c,nodeID:"p",origin:.trustedInterface)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         _ = try runtime.beginLocalization(in:F.a)
         try observe(runtime,F.endpoint(F.a,"s"),time:1)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         try observe(runtime,F.endpoint(F.a,"s"),time:1.1)
         let old = try runtime.next(now:1.1), goal = runtime.goal?.revision
         let bad = try capture(runtime,F.endpoint(F.a,"s"),time:1.2)
@@ -454,10 +471,10 @@ extension ConnectedJourneyRuntimeTests {
         let runtime = try await installed()
         try runtime.configure(body:F.body,limits:F.limits)
         try runtime.setDestination(binding:F.c,nodeID:"p",origin:.trustedInterface)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         _ = try runtime.beginLocalization(in:F.a)
         try observe(runtime,F.endpoint(F.a,"s"),time:1)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         try observe(runtime,F.endpoint(F.a,"s"),time:1.1)
         let old = try runtime.next(now:1.1), saved = try runtime.snapshot.encoded()
         let bad = try capture(runtime,F.endpoint(F.a,"s"),time:1.2)
@@ -487,13 +504,13 @@ extension ConnectedJourneyRuntimeTests {
         let runtime = try await installed(), map = try XCTUnwrap(F.catalog().installations[F.a])
         let restricted = try map.addingRestrictions(blocked:[MapConnection("s","m")],zones:[])
         try runtime.install(restricted)
-        try await until { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
         try runtime.configure(body:F.body,limits:F.limits)
         try runtime.setDestination(binding:F.c,nodeID:"p",origin:.trustedInterface)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         _ = try runtime.beginLocalization(in:F.a)
         try observe(runtime,F.endpoint(F.a,"m"),time:1)
-        try await until { runtime.pendingWriteCount == 0 }
+        try await until(runtime) { runtime.pendingWriteCount == 0 }
         try observe(runtime,F.endpoint(F.a,"m"),time:1.1)
         let old = try runtime.next(now:1.1), saved = try runtime.snapshot.encoded()
         let bad = try capture(runtime,F.endpoint(F.a,"m"),time:1.2)
