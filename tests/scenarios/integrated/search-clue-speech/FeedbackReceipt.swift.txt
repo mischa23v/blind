@@ -1,0 +1,29 @@
+#if DEBUG && BLIND_WORKFLOW_TESTS && BLIND_ACCESSIBLE_OUTPUT_TESTS
+extension Feedback {
+    struct AccessibleOutputReceipt: Codable {
+        let event: String
+        let receiptID: String
+        let destinationID: String
+        let transport: String
+        let text: String
+        let monotonic: Double
+        let cause: String
+        let outcome: String?
+        let provenance = "native_callback"
+    }
+    /// Observation only; never calls delegate methods, mutates ledger ownership,
+    /// creates AdmittedSpeech, or converts a timeout into successful delivery.
+    private func observeAccessibleOutput(_ event: String, attempt: SpeechDeliveryLedger.Attempt,
+                                          cause: String, outcome: NarrationDelivery? = nil) {
+        guard Bundle.main.bundleIdentifier == "org.blindassist.searchcluespeechtests",
+              let observe = accessibleOutputObserver,
+              case .requested(let destinationID) = attempt.destination,
+              !attempt.independentAlert, attempt.priority == .information else { return }
+        observe(.init(event: event, receiptID: attempt.token.uuidString,
+            destinationID: destinationID.uuidString,
+            transport: attempt.transport == .synthesized ? "speech" : "voiceover",
+            text: attempt.text, monotonic: ProcessInfo.processInfo.systemUptime,
+            cause: cause, outcome: outcome.map { String(describing: $0) }))
+    }
+}
+#endif

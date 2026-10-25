@@ -1,0 +1,44 @@
+#if DEBUG && BLIND_WORKFLOW_TESTS && BLIND_ACCESSIBLE_OUTPUT_TESTS
+extension NavigationModel {
+    /// Test policy only: sensor/microphone textOnly guards stay enabled everywhere.
+    /// No output text or completion is injected by this method.
+    func beginAccessibleOutputProbe() {
+        precondition(Bundle.main.bundleIdentifier == "org.blindassist.searchcluespeechtests")
+        precondition(textOnly && ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil)
+        workflowReset()
+        cameraAwareness = false; offlineOnly = true; backgroundConversation = false
+        assistantSession.start() // Real policy transition; does not call device startup.
+        accessibleOutputProbeEnabled = true
+    }
+    func endAccessibleOutputProbe() {
+        accessibleOutputProbeEnabled = false
+        assistantSession.end()
+        feedback.stop(includingAlerts: true)
+    }
+    struct SearchClueProbeState: Codable {
+        let goal: String
+        let goalRevision: String
+        let clue: String?
+        let clueSource: String?
+        let supersededSource: String?
+        let deliveredVia: String
+        let factCount: Int
+        let scopeKnown: Bool
+        let poseObserved: Bool
+        let recognizedRoom: Bool
+        let completedSteps: [String]
+    }
+    func searchClueProbeState() -> SearchClueProbeState {
+        let owned = companionWorkingState.searchAreaClue
+        return .init(goal: companionWorkingState.goal, goalRevision: companionWorkingState.goalRevision,
+            clue: owned.clue?.text, clueSource: owned.clue?.sourceID,
+            supersededSource: owned.clue?.supersededSourceID,
+            deliveredVia: owned.deliveredVia.map { $0 == .speech ? "speech" : "trustedText" } ?? "none",
+            factCount: companionWorkingState.factBook.facts.count,
+            scopeKnown: companionWorkingState.memoryScope != nil,
+            poseObserved: lastObservation != nil,
+            recognizedRoom: alignedRoomID != nil || recognizedRoomID != nil || recognizedPlace != nil,
+            completedSteps: companionWorkingState.reportedCompletedSteps)
+    }
+}
+#endif
