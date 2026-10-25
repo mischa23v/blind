@@ -43,7 +43,7 @@ private struct FamiliarPeopleToolsView: View {
     var body: some View {
         Form {
             Section("Add a person with a helper") {
-                Text("For now, enroll only a consenting adult with sighted supervision. Keep the phone with the child throughout. The adult being added faces the child and changes their own angle when asked. Familiar-person hints can be wrong; ask the person to speak. Templates stay on this phone.")
+                Text("Enroll a consenting adult, or use the separate child path with their parent or legal guardian present. Recognition of children remains unvalidated; hints never establish identity for trust, access or following someone. Keep the phone with the child throughout. A sighted helper or guardian supports framing without taking the phone from its wearer. Familiar-person hints can be wrong; ask the person to speak. Templates stay on this phone.")
                 if !experiment.enabled {
                     Button("Turn familiar-person hints back on") { experiment.requestEnable() }
                         .frame(minHeight: 44).accessibilityIdentifier("familiar-guided-enable")
@@ -53,7 +53,13 @@ private struct FamiliarPeopleToolsView: View {
                 Text(experiment.status).accessibilityIdentifier("familiar-status")
                 if !photoLoadError.isEmpty { Text(photoLoadError) }
                 if experiment.awaitingConfirmation {
-                    Button("Confirm exact spoken face action") { experiment.confirm() }.accessibilityIdentifier("familiar-confirm")
+                    if let shownToken = experiment.guardianConfirmationToken {
+                        Button("I am the parent or legal guardian and consent to this exact action") {
+                            experiment.confirm(guardianAttested: true, guardianToken: shownToken)
+                        }.accessibilityIdentifier("familiar-guardian-confirm")
+                    } else {
+                        Button("Confirm exact spoken face action") { experiment.confirm() }.accessibilityIdentifier("familiar-confirm")
+                    }
                     Text("Confirmation expires after 30 seconds. Confirm the exact label, consent and operation you just heard.")
                 }
                 Button("Compare the face now") { experiment.compare(model: model) }
@@ -70,7 +76,10 @@ private struct FamiliarPeopleToolsView: View {
                     .disabled(!experiment.enabled || experiment.busy || photoLoading)
                 if awaitingCameraForEnrollment { Text("Waiting for camera permission or startup. You can cancel at any time.") }
                 if !model.running { Text(model.message) }
-                Text("Child enrollment is unavailable in this build. Enroll only the adult who permits these examples. Imported photos cannot establish consent or a family relationship. All examples must show the same adult alone.")
+                Button("Add a child with their parent or legal guardian") { experiment.requestChildEnrollment() }
+                    .disabled(!experiment.enabled || experiment.busy || photoLoading)
+                    .accessibilityIdentifier("familiar-guardian-enrollment")
+                Text("Adult examples require their consent; child examples require their parent or legal guardian's explicit confirmation. Imported photos cannot establish consent or a family relationship. All examples must show the same person alone.")
             }
             }
             if experiment.hasEnrollmentDraft {
@@ -87,12 +96,12 @@ private struct FamiliarPeopleToolsView: View {
                             Text("Example \(index + 1): \(example.source == "camera" ? "camera capture" : "selected photo")")
                             if let image = experiment.preview(example.id) {
                                 Image(image, scale: 1, label: Text("Temporary aligned face preview")).resizable().scaledToFit().frame(maxHeight: 160)
-                                    .accessibilityLabel("Temporary aligned face preview for example \(index + 1). A sighted helper must verify it shows the intended consenting adult.")
+                                    .accessibilityLabel("Temporary aligned face preview for example \(index + 1). A sighted helper must verify it shows the intended consented person.")
                             }
                             Button("Remove unfinished example \(index + 1)", role: .destructive) { experiment.removeDraftExample(example.id) }
                         }
                     }
-                    Text("Only one consenting adult in each photo. The adult adjusts their own position; the child keeps the phone. If a photo is unclear, try again.")
+                    Text("Only the intended consented person in each photo. The participant or guardian adjusts their own position; the child keeps the phone. If a photo is unclear, try again.")
                 }
                 if experiment.draftExamples.count >= 3 {
                     Section("2. Name and save") {
@@ -184,8 +193,8 @@ private struct FamiliarPeopleToolsView: View {
     private var helperDetails: some View {
         Form {
             Section("Experimental familiar-person hints") {
-                Text("A tentative hint, not authentication. Current enrollment uses consenting adults for supervised stationary lab tests. Mac and phone checks are pending; supervised child-user feasibility comes later. An earlier baseline offline benchmark falsely named 7 of 200 unknown-person photos. Photos or screens may fool it. No safe-to-follow, trust or navigation advice.")
-                Text("Enrollment needs one consenting adult in each photo. Recognition checks up to two detected faces per pass, rotating through up to 32 faces. Larger crowds are unsupported. A detector can miss people. Position means the camera image, never your body's direction or distance.")
+                Text("A tentative hint, not authentication. Comparison has only limited adult-photo evidence; child recognition is unvalidated. Child enrollment requires a parent or legal guardian’s explicit attestation. Mac and phone checks are pending; supervised child-user feasibility comes later. An earlier baseline offline benchmark falsely named 7 of 200 unknown-person photos. Photos or screens may fool it. No safe-to-follow, trust or navigation advice.")
+                Text("Enrollment needs only the intended consented person in each photo. Recognition checks up to two detected faces per pass, rotating through up to 32 faces. Larger crowds are unsupported. A detector can miss people. Position means the camera image, never your body's direction or distance.")
                 Toggle("I understand the limits and have sighted supervision for this first-stage test", isOn: $acknowledged)
                     .accessibilityIdentifier("familiar-disclosure")
                     .onChange(of: acknowledged) { _, value in if !value { experiment.setEnabled(false) } }

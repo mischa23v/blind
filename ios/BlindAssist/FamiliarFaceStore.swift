@@ -107,7 +107,7 @@ final class FamiliarFaceStore {
         people.count <= 20 && Set(people.map(\.id)).count == people.count && people.allSatisfy { person in
             !person.label.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && person.label.count <= 60 &&
             !person.label.unicodeScalars.contains(where: { CharacterSet.controlCharacters.contains($0) }) &&
-            person.consent == "self-or-consenting-adult" && person.consentAt.timeIntervalSince1970.isFinite &&
+            FamiliarEnrollmentConsent(rawValue: person.consent) != nil && person.consentAt.timeIntervalSince1970.isFinite &&
             (1...6).contains(person.examples.count) && Set(person.examples.map(\.id)).count == person.examples.count &&
             FamiliarFacePolicy.validFeature(person.feature, expectedDimension: FamiliarModelConfiguration.selected.embeddingDimension) && person.examples.allSatisfy { example in
                 FamiliarFacePolicy.validFeature(example.feature, expectedDimension: FamiliarModelConfiguration.selected.embeddingDimension) && ["camera", "selected-photo"].contains(example.source) &&

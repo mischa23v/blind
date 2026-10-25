@@ -13,7 +13,7 @@ test('colour command is requested-only and shared cancellation/focus gates inclu
   const cancel = source.slice(source.indexOf('private func cancelDescription()'), source.indexOf('private func publish()'));
   assert.match(cancel, /colorActive = false/);
   assert.match(cancel, /requestID = UUID\(\); questionTask\?\.cancel\(\)/);
-  assert.match(source, /if currencyActive \|\| \(!preserveRGBHistoryWork && colorActive\) \|\| readingTool != nil \|\| currencyRetake\.isPending \{ cancelDescription\(\) \}/);
+  assert.match(source, /if currencyActive \|\| \(!preserveRGBHistoryWork && \(colorActive \|\| readingTool != nil\)\) \|\| currencyRetake\.isPending \{ cancelDescription\(\) \}/);
 });
 
 test('requested colour checks fresh RGB capture and typed ambiguity without a depth or manual-centre gate', async () => {
@@ -54,7 +54,7 @@ test('depth-only loss preserves requested RGB colour ownership while full camera
   assert.match(route, /let capturedAt = frame\.timestamp, generation = passiveObservationGeneration, request = requestID/);
   assert.match(route, /requestID == request, passiveObservationGeneration == generation/);
   assert.doesNotMatch(route, /generation = perceptionGeneration|perceptionGeneration == generation/);
-  assert.match(invalidation, /\(!preserveRGBHistoryWork && colorActive\)/);
+  assert.match(invalidation, /\(!preserveRGBHistoryWork && \(colorActive \|\| readingTool != nil\)\)/);
   assert.match(invalidation, /if !preserveRGBHistoryWork \{ backgroundPerception\.invalidate\(\); passiveObservationGeneration = UUID\(\) \}/);
   assert.match(route, /assistantSession\.generation == sessionGeneration/);
   assert.match(route, /!detection\.hazard\.isUrgent/);

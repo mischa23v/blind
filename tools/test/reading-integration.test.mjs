@@ -35,10 +35,9 @@ test('reader callbacks own their token before touching shared in-flight state', 
     includesAll(callback, ['!Task.isCancelled', 'self.readingCaptureAllowed(capture)']);
   }
   const gate = section(model, 'private func readingCaptureAllowed(', 'private func updateReadingTool(');
-  includesAll(gate, ['assistantSession.foregroundActive', 'assistantSession.generation == capture.sessionGeneration',
+  includesAll(gate, ['readingCameraAllowed()', 'assistantSession.generation == capture.sessionGeneration',
     'readingWork.accepts(capture.token', 'visualCapturePoseAllowed(origin: capture.origin, forward: capture.forward)',
-    'perceptionResultAllowed(request: capture.request, generation: capture.generation',
-    'mapRevision: capture.mapRevision, alignmentRevision: capture.alignmentRevision']);
+    'requestID == capture.request', 'passiveObservationGeneration == capture.generation']);
   const policy = await read('BlindCore/Sources/BlindCore/ReadingWorkSession.swift');
   includesAll(policy, ['token = UUID(); active = true', 'token = UUID(); active = false',
     'active && token == candidate', 'now >= capturedAt', 'now - capturedAt < 0.5']);
@@ -74,7 +73,7 @@ test('whole-page output uses bounded snapshot chunks and retires only completed 
     'Leave room for the snapshot prefix inside the minimum 30-word admission budget');
   const dispatch = section(model, 'private func speakNextDocumentChunk()', 'func captureExploreSnapshot()');
   includesAll(dispatch, ['documentSpeechID == nil', 'documentChunks.first', 'readingWork.active',
-    'assistantSession.foregroundActive', 'detection.hazard == .observing', '!voice.awaitingUtterance',
+    'readingCameraAllowed()', '!voice.awaitingUtterance',
     'feedback.speechPriority == nil', 'speakRequested(chunk, replace: false, speechID: id)']);
   assert.doesNotMatch(dispatch, /removeFirst\s*\(/, 'Admission does not prove completion');
   const finish = section(model, 'feedback.onRequestedSpeechFinished =', 'feedback.onIdle =');
@@ -139,4 +138,24 @@ test('photo transfer and Vision continuations stay fenced to the visible present
   includesAll(clear, ['exploreRequest = UUID()', 'exploreTask?.cancel()', 'exploreSnapshot = nil']);
   const photo = model.slice(model.indexOf('func explorePhoto('));
   includesAll(photo, ['!Task.isCancelled', 'self.selectedPhoto.selection?.id == token', 'self.assistantSession.generation == generation']);
+});
+
+ test('RGB reading owns source and current captures without importing depth/map authority', async () => {
+ const model=await read('ios/BlindAssist/NavigationModel.swift');
+ const camera=section(model,'private func readingCameraAllowed()', 'private struct ReadingCapture');
+ includesAll(camera,['assistantSession.shouldRunCamera','assistantSession.mayRespond','cameraAwareness','!assistantSession.privateAudioHeld','!detection.hazard.isUrgent','case .normal = frame.camera.trackingState','FrameTimestampPolicy.isFresh']);
+ const capture=section(model,'private func readingCapture(frame:', 'private func readingCaptureAllowed(');
+ includesAll(capture,['case .normal = frame.camera.trackingState','FrameTimestampPolicy.isFresh(capturedAt: frame.timestamp','capturedAt: frame.timestamp','generation: passiveObservationGeneration']);
+ assert.doesNotMatch(capture,/lastObservation|mapRevision|alignmentRevision/);
+ const rgb=section(model,'private func updateNonspatialObjectMemory(', 'private func passiveMemoryEligible(');
+ includesAll(rgb,['updateReadingTool(frame: frame)']);
+ const invalidate=section(model,'private func invalidatePerceptionWork(', 'private func perceptionResultAllowed(');
+ includesAll(invalidate,['(!preserveRGBHistoryWork && (colorActive || readingTool != nil))','if !preserveRGBHistoryWork { backgroundPerception.invalidate(); passiveObservationGeneration = UUID() }']);
+ });
+
+test('raw RGB tracking loss retires reader before throttled return',async()=>{
+ const m=await read('ios/BlindAssist/NavigationModel.swift');
+ const raw=section(m,'func session(_ session: ARSession, didUpdate frame: ARFrame)', 'let receivedAt =');
+ before(raw,'stopReadingTool(announce: false)','guard running');
+ includesAll(raw,['if case .normal = frame.camera.trackingState {} else','journeys.breakTracking()','if readingTool != nil']);
 });

@@ -57,7 +57,7 @@ test('explicit off and on persist but foreground retry never overrides a choice 
 test('automatic eligibility retains validated consent model hashes capture gates and late-result rejection', () => {
   const store = read('ios/BlindAssist/FamiliarFaceStore.swift');
   assert.match(store, /archive\.model == Self\.modelID, valid\(archive\.people\)/);
-  assert.match(store, /person\.consent == "self-or-consenting-adult"/);
+  assert.match(store, /FamiliarEnrollmentConsent\(rawValue: person\.consent\) != nil/);
   assert.match(controller, /SHA256\.hash\(data: Data\(contentsOf: url, options: \.mappedIfSafe\)\)/);
   const consume = declaration(controller, 'func consume(');
   for (const text of ['UIApplication.shared.applicationState == .active', 'enabled, storageReady, !people.isEmpty',
@@ -67,7 +67,7 @@ test('automatic eligibility retains validated consent model hashes capture gates
   }
   assert.match(controller, /confirmation\.consume\(token/);
   assert.match(controller, /consentAt: Date\(\)/);
-  assert.match(controller, /consent: "self-or-consenting-adult", consentAt: draft\.consentAt/);
+  assert.match(controller, /consent: draft\.consent\.rawValue, consentAt: draft\.consentAt/);
   assert.match(controller, /Confirm this adult permits on-phone face templates and automatic tentative hints/);
   assert.doesNotMatch(declaration(controller, 'private enum FamiliarRecognitionPreference'), /people\.count|examples\.count|consentAt|FamiliarTemplate/);
 });
@@ -78,7 +78,7 @@ test('enrollment addresses the sighted adult and never requires giving away the 
   assert.match(instructions, /Adult being added: face the child and their camera/);
   assert.match(instructions, /Adult being added: turn your head slightly left/);
   assert.match(instructions, /Adult being added: turn your head slightly right/);
-  assert.match(controller, /Ask the sighted adult being added to adjust their position or lighting while the child keeps the phone/);
+  assert.match(controller, /Ask the participant or guardian to adjust their position or lighting while the child keeps the phone/);
   assert.match(view, /Keep the phone with the child throughout/);
   assert.doesNotMatch(view + controller, /give (?:the|your) phone|hand (?:the|your) phone|Move closer or improve lighting/i);
 });

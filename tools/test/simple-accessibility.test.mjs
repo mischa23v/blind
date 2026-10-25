@@ -61,7 +61,36 @@ test('People landing is names and Add person while the existing consent workflow
   assert.match(view, /experiment.confirm\(\)/);
   assert.match(view, /experiment.finishEnrollment\(\)/);
   assert.match(view, /Helper setup and full limitations/);
-  assert.match(view, /Child enrollment is unavailable/);
+  const controller = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');
+  const assertGuardianAdmission = (candidateView, candidateController) => {
+    const simpleLanding = slice(candidateView, 'struct FamiliarPeopleView:', 'private struct FamiliarPeopleToolsView:');
+    assert.doesNotMatch(simpleLanding, /guardianAttested|requestChildEnrollment|Toggle\(/,
+      'Child consent belongs in the helper, not the simple names landing');
+    assert.match(candidateView, /if let shownToken = experiment\.guardianConfirmationToken\s*\{[\s\S]*?experiment\.confirm\(guardianAttested: true, guardianToken: shownToken\)/);
+    assert.match(candidateView, /child recognition is unvalidated/i);
+    const begin = slice(candidateController, 'func requestChildEnrollment()', 'var requiresGuardianAttestation:');
+    assert.match(begin, /ask\(\.begin\(nil, nil, \.new, \.guardianForChild\)/);
+    const confirm = slice(candidateController, 'func confirm(guardianAttested:', 'func finishEnrollment()');
+    assert.match(confirm, /guardianAttested: Bool = false, guardianToken: UUID\? = nil/);
+    assert.match(confirm, /if guardianAttested \|\| guardianToken != nil\s*\{\s*guard requiresGuardianAttestation, guardianAttested, let guardianToken,\s*guardianToken == confirmationToken else\s*\{[^}]*return\s*\}/);
+    assert.match(confirm, /else if requiresGuardianAttestation\s*\{[^}]*return\s*\}/);
+    assert.ok(confirm.indexOf('guardianToken == confirmationToken') < confirm.indexOf('confirmation.consume(token'),
+      'Exact guardian admission must precede consuming the pending action');
+    const category = slice(candidateController, 'var requiresGuardianAttestation:', 'func setDraftLabel(');
+    assert.match(category, /case \.begin\(_, _, _, \.guardianForChild\)\?: return true/);
+    assert.match(category, /case \.save\?: return draft\?\.consent == \.guardianForChild/);
+  };
+  assertGuardianAdmission(view, controller);
+  const mutations = [
+    [view.replace('guardianToken: shownToken', 'guardianToken: experiment.guardianConfirmationToken'), controller],
+    [view, controller.replace('guardianAttested: Bool = false', 'guardianAttested: Bool = true')],
+    [view, controller.replace('if guardianAttested || guardianToken != nil', 'if requiresGuardianAttestation')],
+    [view, controller.replace('guardianToken == confirmationToken', 'guardianToken != confirmationToken')],
+    [view, controller.replace('else if requiresGuardianAttestation', 'else if false')],
+    [view, controller.replace('case .save?: return draft?.consent == .guardianForChild', 'case .save?: return false')],
+    [view.replace('struct FamiliarPeopleView:', 'struct FamiliarPeopleView: /* requestChildEnrollment */'), controller]
+  ];
+  for (const [mutantView, mutantController] of mutations) assert.throws(() => assertGuardianAdmission(mutantView, mutantController));
 });
 
  test('face camera entry explicitly enables sensing and does not wait forever after denial',async()=>{

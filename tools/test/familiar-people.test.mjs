@@ -69,7 +69,9 @@ test('enrollment is explicit consent and recognition can always be switched off 
   }
   assert.match(view, /Photos or screens may fool it/);
   assert.match(view, /falsely named 7 of 200/);
-  assert.match(view, /Child enrollment is unavailable/);
+  assert.match(view, /familiar-guardian-enrollment/);
+  assert.match(view, /guardianToken: shownToken/);
+  assert.match(view, /child recognition is unvalidated/i);
   assert.doesNotMatch(view, /tag\("guardian-for-child"\)/);
   assert.match(view, /cannot establish consent or a family relationship/);
 });
@@ -232,7 +234,7 @@ test('active-camera recognition is bounded fresh gallery-bound and has no cached
 test('photos-first enrollment uses an unnamed consented draft but never saves a placeholder identity', async () => {
   const code = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');
   const view = await read('ios/BlindAssist/FamiliarPeopleView.swift');
-  for (const text of ['var label: String?', 'requestUnnamedEnrollment()', 'ask(.begin(nil, nil, .new)',
+  for (const text of ['var label: String?', 'requestUnnamedEnrollment()', 'ask(.begin(nil, nil, .new, .consentingAdult)',
     'setDraftLabel(_ value: String)', 'let label = draft.label', 'cancelSaveConfirmation()',
     'draft.label = name', 'confirmationToken = nil']) assert.ok(code.includes(text), text);
   assert.match(view, /if experiment.hasEnrollmentDraft/);

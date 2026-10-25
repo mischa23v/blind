@@ -1,0 +1,73 @@
+{
+  "status": "Applied exact reviewer-cleared nine paths; frozen for parent aggregate19",
+  "paths": [
+    {
+      "path": "tools/test/clothing-color.test.mjs",
+      "base": "cb03799ded5668c55eacf8a56c7fc25231ebf627d2f72485ce38d529342f9c4b",
+      "candidate": "f11fb446528759dccf67a4fc76f671bf5708e3fd67bae307c427509c085c1624"
+    },
+    {
+      "path": "tools/test/reading-integration.test.mjs",
+      "base": "52dc022fc18f8131bbd4b9f060877ff14ea447061cb0a26d7e7c60285567cf31",
+      "candidate": "c166e34cbe6696239461d08a4b8ff0a14fa7c069eaad5b916474e5b022bc99c3"
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "base": "2fe4016954d92cbcb037fe3e0543a930c3e27c9ac9b6707e9c470e579491614b",
+      "candidate": "db0c0ff9573a86c363f9a98ed4d11a1e14e9ad65d873b0943decd082dd317cce"
+    },
+    {
+      "path": "ios/BlindAssist/FamiliarFaceExperiment.swift",
+      "base": "d81ca7cfe10387da7436786ea8806f5b45b1d21c1c025f3c42edef758b126592",
+      "candidate": "6ce2ff18e86233694a49fb42066624b94c90d5478bd64e916d0e90f5c9dd13dc"
+    },
+    {
+      "path": "ios/BlindAssist/FamiliarFaceStore.swift",
+      "base": "862d836d7fdc3e43a1e89f0c8b8635e015dd9204980d8e832b652bfbc12e11f1",
+      "candidate": "d10b58424d470c764506207be2feaa68b97ff921923c3bccdc543295971993b2"
+    },
+    {
+      "path": "ios/BlindAssist/FamiliarPeopleView.swift",
+      "base": "5eedfd39598f03f8540af3ee14e651f7bc3613824888bebbf65318ef3c72a14a",
+      "candidate": "3a1dee9a77fe6058e19032101601e5b32598f380964c255090d585b1fff995d8"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/FamiliarEnrollmentConsent.swift",
+      "base": null,
+      "candidate": "525e90525b6144356b8d17a8aba34eb7c4fe850a58a7d8b1deb99d53cbe047e7"
+    },
+    {
+      "path": "tools/test/familiar-people.test.mjs",
+      "base": "2dc66381a570a33094981e71ff3be7ed116d0220efab79e73fac80d686e889de",
+      "candidate": "472ed333ac3cf7edc73ac11da9f0f9e80f3f80c628f5a8e559366ce6219f568f"
+    },
+    {
+      "path": "tools/test/familiar-foreground-defaults.test.mjs",
+      "base": "92a5863ef3379727b6ce5a0765f237c33c70a9463c55f8d08a05b5bdf2ce9b24",
+      "candidate": "032a989cebb957cd03f8ca5efba7008b67856159900ede54b9dc7b715661aa3b"
+    }
+  ],
+  "tests": {
+    "swiftFocused": 154,
+    "node": 44,
+    "skipped": 0,
+    "readerExtracted": 48,
+    "familyExtracted": 24,
+    "parseConfigurations": 4,
+    "failures": 0
+  },
+  "inverseProof": "All9 reverse patch preimages byte-exact including new-file absence",
+  "preserved": [
+    "memory writer initialization and synchronous assumptions",
+    "voice ownership and native localization hooks",
+    "default Xcode project and backend flags",
+    "parent-added optional face CI files"
+  ],
+  "limits": [
+    "No Apple SDK/device execution from these local tests",
+    "No recognition accuracy claim from synthetic vectors",
+    "Guardian attestation is not verified guardianship",
+    "Old adult-only app versions reject mixed child galleries; no implicit deletion",
+    "Reader cancels on actual tracking loss; normal RGB/depth-only loss remains eligible"
+  ]
+}

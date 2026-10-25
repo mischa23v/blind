@@ -1,0 +1,591 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> blind-assist-workspace@0.1.0 test
+> node --test --test-concurrency=1 server/test/*.test.mjs tools/test/*.test.mjs
+
+✔ rejects missing and incorrect access tokens before calling provider (45.920149ms)
+✔ real HTTP endpoint forwards a deliberate image question and marks no clearance (38.29165ms)
+✔ unconfigured service does not fake a cloud response (6.756112ms)
+✔ validates language, image bytes, size, and arbitrary image URLs (1.298223ms)
+✔ sanitizes upstream failures without exposing credentials (6.134687ms)
+✔ rate limits authenticated questions (18.794114ms)
+✔ aborts a slow provider (23.449259ms)
+✔ health and unknown routes work (5.245422ms)
+✔ connection check requires authentication and never calls the image provider (4.901323ms)
+✔ child find requests and location reports are parsed by code (7.338905ms)
+✔ chat replies cannot assert current location, presence, absence or perception (9.521885ms)
+✔ unsupported sentences are dropped and the rest kept (0.378453ms)
+✔ image descriptions keep only hedged or detector-agreed objects (4.773807ms)
+✔ authored ordinary conversation additions preserve the entire shared Swift/Node spatial fixture (19.008131ms)
+✔ all authored spoken-equivalent dash variants preserve physical blocking (0.452852ms)
+✔ cloud context uses an allowlist and rejects stale or weak evidence (2.184492ms)
+✔ movement preserves requested detail and explicit word allowance (0.284368ms)
+✔ wearable ranges have a shorter age limit and cannot identify camera objects (0.351654ms)
+✔ urgent and unavailable context is rejected before provider invocation (0.550554ms)
+✔ scene prompt keeps OCR injection as quoted data and contains mobility rules (0.349309ms)
+✔ actual provider adapter sends image, bounded context and no stored response (3.653814ms)
+✔ ordinary category preferences survive the prompt and cannot disable hazard producers (8.550223ms)
+✔ anonymous camera tracks retain change limits and reject stale, duplicate or invented identity data (1.513863ms)
+✔ manual alignment remains distinct from recognition and requires fresh complete map pose (1.754599ms)
+✔ first launch accepts dialogue without fabricating a saved place or floor (0.66191ms)
+✔ situation retains place hierarchy, source states, people, goals and interests through the actual request path (6.643989ms)
+✔ unknown or stale geometry and dangling/cyclic references cannot reach the model (2.52445ms)
+✔ arrival and dialogue are bounded and consistent with the current room and map (1.090435ms)
+✔ last-seen people and unknown body orientation survive as unknown, not current facts (0.577022ms)
+✔ detailed dialogue retains qualifications and bounds Unicode without truncation (0.850209ms)
+✔ speech attempts retain outcomes and source references without claiming facts were heard (0.948171ms)
+✔ word budget measures Arabic/English words and rejects invalid caller allowances (11.751279ms)
+✔ unresolved location cannot retain a previous room or frame as current (0.264711ms)
+✔ model-authored map edits and approval claims are not situation inputs (0.800438ms)
+✔ real HTTP delivery rejects an oversized answer without chopping its meaning (58.55703ms)
+✔ downloaded authored apartment keeps source doors without adding an ensuite or current pose (7.536519ms)
+✔ sourced map does not excuse retained stale location or an invented room reference (1.080968ms)
+✔ shared fixture: physical geometry and actions are caught even when hedged or quoted (17.618338ms)
+✔ model instructions carry the spatial safety rule (0.407376ms)
+✔ relay retries once, then speaks only a compliant answer (54.213409ms)
+✔ relay keeps only a fixed hazard line when the retry still gives hazard geometry (9.732619ms)
+✔ relay refuses when the retry still claims clearance without naming a hazard (5.623937ms)
+✔ an over-long answer is retried once for a shorter complete answer (4.980542ms)
+✔ only the offending sentence is dropped, with no second model call (5.528711ms)
+✔ leading whole sentences that fit the budget are kept without a retry (4.525777ms)
+✔ hedged ordinary-object geometry is rejected instead of corrected by later frames (4.62366ms)
+✔ clearance paraphrases cannot pass the relay unchanged (13.773446ms)
+✔ sentence filtering preserves original hazard context in both languages (14.3889ms)
+✔ filter drops ordinary-object estimates while retaining nonspatial hazard notice (0.422053ms)
+✔ physical actions, pickup identity and safe reach claims never pass a repeated model answer (22.78166ms)
+✔ a nonspatial description survives but a later pickup instruction does not (2.92295ms)
+✔ neither role prompt allows everyday-object estimates or a model certainty bypass (0.391096ms)
+✔ every app speech producer uses the central admission route, including UI actions (29.503416ms)
+✔ the raw sink requires a capability constructible only beside the attention gate (3.599306ms)
+✔ admission is synchronous and already-admitted information is not charged twice (3.511563ms)
+✔ the existing attention moment uses actual sink priority and explicit stationary task focus (1.679149ms)
+✔ scene answers still validate evidence and model spatial claims before admission (2.891361ms)
+✔ hazards invalidate pending questions and familiar work before admitted alert delivery (2.267382ms)
+✔ identity-only snapshot hints remain requested answers, separate from operational status (1.864674ms)
+✔ operation budget exemption is not used for scene, identity or repeat descriptions (2.407807ms)
+✔ replacing information preserves safety speech and failed replacement has admitted cancellation feedback (2.499693ms)
+✔ AuraFace is explicit and bundles only the selected recognizer with YuNet (4.038512ms)
+✔ native AuraFace preprocessing leaves SFace and aligned RGB untouched (5.626381ms)
+✔ app profiles explicitly name separate dataset-calibrated decision policies (1.26484ms)
+✔ automatic room recovery is wired into foreground camera ticks and appearance probes (1.853022ms)
+✔ automatic selection cannot bypass saved frame verification or repeat manual prompts (0.83414ms)
+✔ map launches do not replenish automatic retry budget (0.357074ms)
+✔ automatic retries defer to explicit reading, listening and requested speech (0.457159ms)
+✔ foreground launch starts only an idle conversation and respects saved-off sensing (9.230557ms)
+✔ permission denial is reported and late camera grants cannot override foreground or off state (2.965829ms)
+✔ authorized startup wrapper captures once before bounded room recovery, without reset loops (3.021252ms)
+✔ ordinary conversation is not forced through camera capture or permission setup (4.35524ms)
+✔ sensor callbacks reach hazard cancellation and dispatch without waiting for model work (2.1366ms)
+✔ unvalidated object direction is disabled and physical requests cannot fall through to chat (2.374601ms)
+✔ clock inquiry crosses conversation authority before any mutating task entry (2.029329ms)
+✔ read-only clock inquiry does not mutate goal search navigation reports camera or shared request identity (0.865838ms)
+✔ queue dispatch playback and repeat preserve original read lease (0.81277ms)
+✔ clock expiry runs with camera off and never remints a read during validation (0.653674ms)
+✔ production clock callbacks keep original lease, operation ownership and proposal publication order (49179.003734ms)
+✔ all native clock reads go through acquisition registration before tool return (1.891524ms)
+✔ legacy everyday clock route precedes all subtask mutation (0.615514ms)
+✔ model admission is before metadata but final publication remains after the proposal gate (0.969041ms)
+✔ camera-independent expiry covers previews settled text active and queued clock speech (0.569988ms)
+✔ repeat retains original receipt and no delivery boundary acquires a fresh clock (0.520557ms)
+✔ policy binds exact original source and record and never silently chooses a newer equal string (0.329452ms)
+✔ model-selected clock operation uses only first acquired code-owned reply, not a language blacklist (0.518293ms)
+✔ failed first clock acquisition still latches the clock operation before any model callback (0.262517ms)
+✔ colour command is requested-only and shared cancellation/focus gates include it (7.474446ms)
+✔ requested colour checks fresh RGB capture and typed ambiguity without a depth or manual-centre gate (3.399215ms)
+✔ depth-only loss preserves requested RGB colour ownership while full camera invalidation retires it (3.463285ms)
+✔ requested color playback clears only its exact ownership on completion and cancellation (2.052078ms)
+✔ contextual captured-view pose retains optical pitch rather than navigation heading (1.75454ms)
+✔ colour reader uses one anonymous isolated instance, not centre or whole-frame averages (1.459101ms)
+✔ model-written and stored appearance descriptions cannot bypass the colour guard (2.291878ms)
+✔ requested and contextual colour share a native lease that timeout and cancellation cannot release (2.438752ms)
+✔ policy grants microphone only conversation and ordinary interruption, not guessed speaker authority (1.664212ms)
+✔ every microphone final fails closed before scan, goal, calibration, offer and action dispatch (0.840662ms)
+✔ trusted goal mutation keeps canonical labels distinct from the original user request (1.317107ms)
+✔ acoustic onset cannot cancel routes, searches, monitoring, confirmations or shared request identity (0.420582ms)
+✔ unverified chat cannot call command adapters, inherit a trusted goal, write user records or apply model task updates (0.600886ms)
+✔ unverified output cannot be laundered into persistent reports or action-progress receipts (0.354619ms)
+✔ unverified reply callbacks expire on session, request, cancellation and the independent turn lease (0.374286ms)
+✔ anonymous conversation has explicit current-turn isolation and clear cancels pending output (0.635099ms)
+✔ quiet speech is limited to the reply and independent valid hazard dispatch ignores command trust (0.868394ms)
+✔ trusted UI actions retain their existing independent controls and physical evidence gates (0.999357ms)
+✔ microphone cannot clear the selected photo before the command gate (0.324652ms)
+✔ native microphone provenance is exact and one-use without speaker elevation (0.344029ms)
+✔ explicit location requests and reports are code-owned before model calls (8.833725ms)
+✔ model conversation keeps exact provenance, claim guard and streamed delivery admission (1.903777ms)
+✔ image descriptions retain detector agreement without weakening spatial rules (2.020815ms)
+✔ reply-only home keeps assistant controls and reading shortcuts on a separate screen (1.304424ms)
+✔ manual turns preserve continuous capture without defeating mute end or bounded recovery (3.902578ms)
+✔ sensor search does not turn missed detections or stale positions into current facts (2.474318ms)
+✔ background and practice respect separate camera and conversation lifecycles (2.223161ms)
+✔ reading is model-free and page work stays owned until cancellable completion (1.882067ms)
+✔ new goals cancel reading before money colour or model routing and stale callbacks cannot unlock a new job (1.585206ms)
+✔ captured photo work is private fenced and cannot return after dismissal (6.036687ms)
+✔ foreground frame loop schedules contextual capabilities without a mode command (1.778425ms)
+✔ contextual jobs retain capture leases, existing verifier and final target gates (0.553549ms)
+✔ passive rectangles never speak a value without the reference verifier (0.423907ms)
+✔ relevant OCR/barcode/color use existing native evidence, not unsolicited mode speech (0.585137ms)
+✔ room scan requests require trusted UI rather than microphone authority and confirm before start (2.296036ms)
+✔ room scanning does not end continuous listening or falsely retain camera path alerts (0.375198ms)
+✔ contextual job cleanup and native timeout retain exact lease ownership (0.485742ms)
+✔ contextual outputs honor existing signs and objects settings (0.420071ms)
+✔ scan approval waits for matching completed warning and starts its response clock then (0.490341ms)
+✔ room-scan lifecycle prefix contracts reject missing, reordered or asynchronously deferred cancellation (18.267405ms)
+✔ room-scan entry contract rejects microphone promotion, missing denial return and routes before the gate (9.443577ms)
+✔ ordinary conversation is routed before camera availability (9.75168ms)
+✔ unverified speech onset interrupts only ordinary conversation without cancelling capture (3.202871ms)
+✔ streamed phrases are bounded, revalidated, separately admitted and not replayed at final (4.178334ms)
+✔ stream callbacks admit owned text before queue or display, never raw clock-model prose (3.533817ms)
+✔ spoken history is recorded only for matching completed requested speech (1.927713ms)
+✔ mute and end fence late work and do not disable hazard monitoring (2.827745ms)
+✔ background voice is opt-in and cannot imply background camera (3.256671ms)
+✔ actual local tool registration is bounded and cannot perform actions (3.456524ms)
+✔ correction and forgetting scrub both original reports and derived task context (2.789113ms)
+✔ queued source evidence is revalidated at dispatch and foreground transitions cancel work (2.78235ms)
+✔ visual history waits for completed narration and explicit tasks commit before inference (1.827596ms)
+✔ private audio route removal mutes normal output without an announcement (2.298451ms)
+✔ physical inspection cannot fall through to free-form streamed answers (1.724104ms)
+✔ audience is an explicit local preference and changing it invalidates a turn (1.848084ms)
+✔ context overflow retry cannot repeat tools or already emitted speech (1.03876ms)
+✔ ordinary configurations have no device-test flag or manifest pin (3.548615ms)
+✔ only opted-in app Debug gets both compile gates and the verified manifest pin (2.440935ms)
+✔ device-test choice preserves combined AuraFace multimodal and Live Activity variants (4.584589ms)
+✔ device-test flags require explicit reference pack and native build, with no unchecked CLI hash (0.761696ms)
+✔ device-test preflight pins verified bytes and rejects empty or changed reference packs (28.953439ms)
+✔ Info metadata binds to the build setting rather than committing a reference hash (1.27509ms)
+✔ CLI generates only an isolated temporary project and derives its pin from verified manifest bytes (168.89119ms)
+✔ device-test selection requires explicit Debug/native flags and a pinned manifest hash (5.031961ms)
+✔ device authorization is not fabricated release approval or human review (3.149123ms)
+✔ device pack allowance is isolated from unchanged production coverage and file gates (1.514184ms)
+✔ device output still requires whole-frame rectangle and native evidence gates (1.703626ms)
+✔ default remains without native currency, framework, pack or activation (9.35367ms)
+✔ currency-only links the engine and shared static OpenCV without face models (1.177999ms)
+✔ face-only retains its old bridge and model resources without currency code (0.966046ms)
+✔ combined SFace and AuraFace variants link OpenCV and each system framework only once (2.725875ms)
+✔ private folder resource preserves its fixed name and is optional (1.032659ms)
+✔ Mac architecture fix remains Debug YES and Release NO in every feature combination (3.235141ms)
+✔ argument parsing supports currency without familiar models and combined backend selection (0.406135ms)
+✔ missing, repeated, unknown and incompatible generator arguments fail closed (0.265003ms)
+✔ currency-only preflight requires framework version/layout but no face assets (12.142934ms)
+✔ empty private inventory is parseable for packaging but does not activate recognition (5.553619ms)
+✔ packaging verifies exact nested file bytes and manifest digest, not image accuracy (8.15826ms)
+✔ pack rejects missing files, wrong folder name, wrong schema and bounded manifest violations (6.618989ms)
+✔ pack rejects traversal, URL escapes, control characters and ambiguous relative paths (13.552733ms)
+✔ pack rejects duplicate image paths/hashes and oversized source files before reading (5.174154ms)
+✔ folder preflight refuses unlisted private members and symlinks (6.773055ms)
+✔ combined bridge imports declarations and notices identify source rights, not reference rights (1.574005ms)
+✔ native debug integration: every recorder symbol is positively DEBUG guarded (9.411458ms)
+✔ native debug integration: trace captures session once and forwards lazy payload (0.582743ms)
+✔ native debug integration: controller preserves input origin and command authority decisions (0.383052ms)
+✔ native debug integration: ASR final text is logged before turn rotation with no new audio access (0.226762ms)
+✔ native debug integration: request IDs are passed from real owners; missing IDs remain optional (0.396928ms)
+✔ native debug integration: actual prompts and context keys are logged, unavailable record IDs stay unbound (0.399383ms)
+✔ native debug integration: tool return log reuses actual returned JSON without running tools twice (0.2589ms)
+✔ native debug integration: raw output, final safety gate and callback failure are separate (0.476705ms)
+✔ native debug integration: synthesized start comes only from matching native didStart (0.237261ms)
+✔ native debug integration: actual finish/cancel, app cancel and timeout are distinguishable (0.351423ms)
+✔ native debug integration: VoiceOver text callbacks do not invent utterance IDs or proven playback (0.479371ms)
+✔ native debug integration: privacy removal invokes purge and reports failure without new controls (7.308069ms)
+✔ native debug integration: removed/replaced names and corrected records purge superseded content (0.309485ms)
+✔ native debug integration: shared microphone validation fence is never invented as request provenance (0.495692ms)
+✔ native debug integration: every clock acquisition logs its actual reply owner without shared request provenance (0.578936ms)
+✔ native debug integration: shopping and direct-store deletion cannot leave retained diagnostics (0.387119ms)
+✔ native debug integration: purge failures never enter child-visible UI fields (0.345462ms)
+✔ native debug integration: developer purge report is off-main and bounded without blocking admission (0.182829ms)
+✔ debug recorder: whole implementation is DEBUG-only (1.288884ms)
+✔ debug recorder: exact explicit developer argument precedes directory/init (0.384935ms)
+✔ debug recorder: disabled, stale and full checks precede lazy payload evaluation (0.246328ms)
+✔ debug recorder: hard session, retained, queue and text bounds are explicit (0.187659ms)
+✔ debug recorder: quotas stop instead of evicting history (0.260444ms)
+✔ debug recorder: missing request/tool/utterance bindings are explicitly unbound (0.318482ms)
+✔ debug recorder: speech attempted, start, completion, rejection and interruption are distinct (0.411365ms)
+✔ debug recorder: metrics expose loss, truncation, redaction and write failure (0.209579ms)
+✔ debug recorder: clean termination drains, synchronizes and removes only current marker (0.268259ms)
+✔ debug recorder: privacy fence precedes asynchronous deletion and cannot re-enable (0.374275ms)
+✔ debug recorder: privacy clear also handles logs from disabled launches (0.229837ms)
+✔ debug recorder: owned private directory, no raw media API, and conservative redaction (0.203317ms)
+✔ debug recorder: prepared native tests cover actual IO and failure cases (0.182849ms)
+✔ device clock executes as an advertised read-only tool without a camera or network (8.816381ms)
+✔ clock speech skips only validated camera-independent records and retains dispatch guards (3.274344ms)
+✔ model advertises a fresh clock read rather than a hardcoded date or invented time (1.922242ms)
+✔ explicit everyday requests route before generic visual conversation (1.633175ms)
+✔ ordinary chat does not dispatch an everyday adapter or require a camera (0.401065ms)
+✔ domain selection reuses identity money and reading adapters rather than generated claims (0.374776ms)
+✔ item tasks consult attributed memory before continuing existing live handlers (0.375698ms)
+✔ saved evidence includes observations gallery places and attributed checklist without mutations (0.770081ms)
+✔ model evidence tool remains read only with no shopping or task mutation capability (0.879835ms)
+✔ shopping mutations persist validated explicit quotes before reporting success (0.272387ms)
+✔ coordinator admission checks exact in-flight ticket and generation before accepting results (0.407988ms)
+✔ clock and list replies update text-only conversation surface (0.518654ms)
+✔ single shot retries require the same task and request and fresh idle capture (0.458963ms)
+✔ physical finds retain the original authority gate and completion is only a user report (0.289007ms)
+✔ compiled familiar-person controller restores preference and validated gallery before first camera session (1.482906ms)
+✔ explicit off and on persist but foreground retry never overrides a choice or active enrollment (0.480092ms)
+✔ automatic eligibility retains validated consent model hashes capture gates and late-result rejection (0.447261ms)
+✔ enrollment addresses the sighted adult and never requires giving away the child phone (0.518333ms)
+✔ passive context cancellation stays silent and cancels only its own arrival speech (0.295459ms)
+✔ extracted Swift preference and foreground lifecycle preserves explicit choices (1656.124554ms)
+✔ default project does not enable or link experimental face inference (2.918323ms)
+✔ explicit experimental project links static upstream and controlled model resources (3.189948ms)
+✔ native pipeline uses actual upstream detection, landmark alignment and cosine matching (7.112687ms)
+✔ encrypted gallery has device-only key, complete protection, backup exclusion and no image persistence (1.192747ms)
+✔ experimental controller discards cancellation, obsolete gallery and stale camera results (4.610168ms)
+✔ enrollment is explicit consent and recognition can always be switched off accessibly (2.54538ms)
+✔ optional Apple comparison consumes only upstream aligned face and versioned secure prints (1.285199ms)
+✔ second pipeline is opt-in veto only, invalidates toggles, and never silently bypasses missing references (2.273475ms)
+✔ multiple examples use bounded per-person means and strict build-selected encrypted profiles (2.09274ms)
+✔ real local PhotosPicker imports bind to enrollment token and never store original images (1.440697ms)
+✔ voice commands route before generic assistant actions and retain urgent speech priority (2.55629ms)
+✔ named search is exact-label bounded quiet and reuses current candidate and snapshot publication (3.106562ms)
+✔ source contract: debug privacy purge cannot bypass familiar search cancellation (5.898942ms)
+✔ past snapshot speech has separate bounded lifetime without extending live display (1.160116ms)
+✔ recognition batches use each detector row and never weaken single-face enrollment (1.504826ms)
+✔ active-camera recognition is bounded fresh gallery-bound and has no cached track naming (1.114602ms)
+✔ photos-first enrollment uses an unnamed consented draft but never saves a placeholder identity (1.334088ms)
+✔ familiar RGB capture is independent of floor depth and map calibration but bound to frame session and optical pose (1.465673ms)
+✔ face notices remain tentative exact-capture checked and enrollment still requires AR world tracking (0.766505ms)
+✔ extracted production familiar capture gates execute RGB lifecycle freshness and full optical rejection (834.485733ms)
+✔ periodic missing-monitoring notices interrupt speech without discarding consented RGB work (0.534934ms)
+✔ extracted monitoring dispatch preserves urgent danger and nonurgent warning priority for all states (362.138215ms)
+✔ fresh frame probe is separate, read-only and does not invoke language or identity models (1.196313ms)
+✔ one-flight admission bounds queued and running work, including cancelled reads (0.389003ms)
+✔ cancel-before-start and cancellation after synchronous Vision discard results (0.397218ms)
+✔ Vision uses caller orientation and fast uncorrected OCR with bounded input and output (0.421002ms)
+✔ whole strings and neutral empty results cannot become truncated claims or absence (0.316338ms)
+✔ route cancellation does not erase or manufacture measured alignment (5.127899ms)
+✔ legacy pose stays preview-only and registered capture owns physical output (2.935746ms)
+✔ goal continuity has native regression fixtures rather than supplied-room proof (1.617386ms)
+✔ ordinary model conversation does not regain arbitrary spatial situation prose (1.281842ms)
+✔ NUL-delimited Git filtering excludes ignored Arabic and newline filenames verbatim (138.76033ms)
+✔ Git check-ignore no-match exit status permits public synthetic source packaging (114.48143ms)
+✔ handoff fails closed before staging when Git cannot determine ignored paths (85.092045ms)
+✔ handoff preserves required native source, bundled prompt and notices (124.114341ms)
+✔ all fast image-answer completions revalidate their request and current scene (9.471371ms)
+✔ voice deletion uses the same appearance cleanup as UI deletion (3.497329ms)
+✔ queued private image writes honor record deletion revisions (2.3139ms)
+✔ OCR cannot convert an ambiguous appearance match to an ownership assertion (2.767839ms)
+✔ unresolved room evidence clears both identity and trusted learning basis (3.63752ms)
+✔ microphone permission explains hands-free companion listening (0.974019ms)
+✔ reply-only home keeps controls available through the Settings destination (1.745935ms)
+✔ photo library transfers cannot restart exploration after dismissal or supersession (1.044711ms)
+✔ hosted premise fixtures follow the code-owned parser before consulting the model (1.157671ms)
+✔ production SQL keeps drafts separate and rejects cross-room and cross-profile references (4.708199ms)
+✔ production compare-and-swap cannot advance a changed room and rollback removes uncommitted revision (2.42693ms)
+✔ database rejects invalid heads at commit and empty or oversized payloads (3.065416ms)
+✔ deletion removes revision chains and proposals but preserves other rooms and deletion marker (2.589322ms)
+✔ production narration schema distinguishes outcomes, bounds text and isolates profile IDs (1.752968ms)
+✔ object detector is off by default and opt-in flags are paired, bounded and exact (4.127851ms)
+✔ only the verified model artifact is linked in its correct Xcode build phase (24.02705ms)
+✔ detector options preserve combined native, image and Live Activity flags (6.926772ms)
+✔ preflight pins actual artifact and external-manifest bytes and detects tampering (6.858706ms)
+✔ raw tensors, missing provenance, invalid labels and image declarations fail closed (29.721691ms)
+✔ compiled folders reject unlisted images, secrets, symlinks and arbitrary metadata (23.860292ms)
+✔ inventory traversal, duplicate members, root symlinks and internal manifests are rejected (17.316199ms)
+✔ CLI verifies before writing only an isolated temporary project and keeps previous project on failure (170.307251ms)
+✔ all Debug targets define DEBUG while Release omits it and retains feature flags (2.09882ms)
+✔ requested object candidates have RGB capture authority while physical branches retain separate spatial gates (3.3473ms)
+✔ no-depth foreground loop continues and resumes the same bounded object search (0.582563ms)
+✔ extracted object discovery and saved-item callbacks accept no-depth RGB and reject stale superseded evidence (1889.916227ms)
+✔ face and currency share one OpenCV runtime configuration (5.459706ms)
+✔ runtime initialization is once across translation units and concurrent callers (564.425531ms)
+✔ passive observations enter foreground loop independently of a find command (7.89994ms)
+✔ historical retrieval precedes another current-view search and never saves camera as object (3.18016ms)
+✔ unverified onset preserves original search, explicit controls cancel and current delivery checks pose (4.06797ms)
+✔ runtime detector rejects incompatible raw tensor results and has no classifier geometry fallback (1.115463ms)
+✔ history is bounded private storage, deletable and old scans do not resurrect after clear (2.936848ms)
+✔ completion is accounted on the actual speech callback and stopped sessions stay quiet (4.275255ms)
+✔ room transitions and privacy changes cannot relabel or resurrect old captures (2.853192ms)
+✔ continuous pose/hazard cadence is separate from bounded async visual observations (2.256042ms)
+✔ unvalidated instance-depth binding cannot speak approach or reach guidance (10.793898ms)
+✔ saved similarity uses current identity before clearing inflight and gives no pickup authority (3.886993ms)
+✔ foreground sensing defaults on without overriding saved choices or permissions (3.329197ms)
+✔ held-item similarity cannot authorize an exact identity or unsafe pickup (4.781386ms)
+✔ temperature stays source-owned while local finds can inspect without physical guidance (2.247696ms)
+✔ fresh familiar arrival uses scoped cancellable attention admission (2.248599ms)
+✔ generic observation is attributed captured-view evidence with separately revalidated playback, not a calibrated depth claim (2.143784ms)
+✔ hold narration precedes task classification and does not end camera or microphone; crossing bypasses model and uses explicit audience (1.120022ms)
+✔ fresh RGB survives nonurgent depth loss while urgent or unavailable monitoring still cancels (0.354418ms)
+✔ private audio loss exempts only code-owned detection alerts, never arbitrary route names (0.970013ms)
+✔ actual conversation instructions including snapshot and search repairs fit all six declared byte budgets (1719.703437ms)
+✔ the app build cannot send a camera picture off the phone (27.189343ms)
+✔ no network upload path exists outside developer-only code, except public map downloads (33.587714ms)
+✔ room memory and items stay in protected on-phone storage (1.403417ms)
+✔ public place packages have no photo or personal-memory fields (0.889353ms)
+✔ reader callbacks own their token before touching shared in-flight state (9.264058ms)
+✔ reader stop invalidates ownership and queued chunks before interrupting active speech (2.777783ms)
+✔ whole-page output uses bounded snapshot chunks and retires only completed matching speech (3.567249ms)
+✔ currency continuation requires an explicit pending command and a fresh newer frame (3.361918ms)
+✔ unavailable or incompatible currency recognizers cannot open retry or guessing paths (2.30843ms)
+✔ photo transfer and Vision continuations stay fenced to the visible presentation and request (2.50199ms)
+✔ RGB reading owns source and current captures without importing depth/map authority (2.286319ms)
+✔ raw RGB tracking loss retires reader before throttled return (2.687265ms)
+✔ missing SAR reference pack is explicit and cannot fall through to scene guesses (8.483096ms)
+✔ dormant legacy adapter remains local full-view inference with checksum, no top-note shortcut (1.676345ms)
+✔ money result is fresh, cancellable and uses existing speech gate (2.601585ms)
+✔ generic scene answers cannot bypass monetary value guard (3.560357ms)
+✔ active money route uses actual local reference matching, never the dormant model (2.337765ms)
+✔ currency checks full optical pose before success or error speech (2.054819ms)
+✔ all native find consumers honor current scope and historical routing precedes task mutations (3.173107ms)
+✔ actual state, complete native lookup methods and historical entry execute scope regressions (29371.188052ms)
+✔ scoped review captures an immutable receipt and fences late conversation publication (3.359624ms)
+✔ nonactor native controller crosses explicit main-actor writer boundaries (1.846792ms)
+✔ native editor awaits durable success and guards both actions against duplicate submission (0.557206ms)
+✔ ordinary and reviewed persistence share a bounded paired writer with store owner fences (2.697884ms)
+✔ existing bulk-clear and saved-memory routes expose pending failure and bounded retry status (0.719347ms)
+✔ saved-item deletion validates the exact displayed record before retiring work and deletes by stable ID (1.372501ms)
+✔ selected-item helper discloses shared legacy derivative purge and shows original identity (2.309453ms)
+✔ actual scoped review state controller and async UI actions preserve source ownership (33479.622822ms)
+✔ private photo intent runs after command-origin authorization but before physical mutation (9.412852ms)
+✔ picker assigns source ownership before bounded asynchronous file loading (2.365238ms)
+✔ ImageIO bounds headers and decoded pixels and never persists the transfer (1.890265ms)
+✔ native photo reader preserves complete source records outside model budgets (2.722617ms)
+✔ photo output uses normal gates, actual callbacks, and original source expiry (5.130689ms)
+✔ selected photo Vision retains low-confidence OCR qualifiers without weakening camera threshold (1.508224ms)
+✔ one native photo lease survives UI cancellation until actual decode or Vision completion (2.816076ms)
+✔ camera cancellation is separate; only trusted photo interruption and explicit quiet clear the snapshot (5.036163ms)
+✔ helper ingress and delayed actual speech start enforce photo ownership (3.094024ms)
+✔ selected-photo source text is omitted from opt-in debug output records (3.095165ms)
+✔ failed Vision extraction is unreadable, never a successful empty reference (3.584625ms)
+✔ the normal generated Xcode source phase includes the bounded photo decoder (7.406722ms)
+✔ specialized reads are bounded non-mutating adapters with gallery-aware playback (3.369545ms)
+✔ native replay invokes production model path without loading grading rubric (1.113922ms)
+✔ child home is one settled reply with no streaming observer or control tree (6.787433ms)
+✔ Rooms has saved names and explicit real scan controls instead of advanced map administration (3.555181ms)
+✔ live scan map comes from current RoomPlan observations and cannot replace saved rooms (2.082501ms)
+✖ People landing is names and Add person while the existing consent workflow remains intact (3.399982ms)
+✔ face camera entry explicitly enables sensing and does not wait forever after denial (3.437471ms)
+✔ spatial source contract: durable snapshot excludes live pose and confidence (1.866762ms)
+✔ spatial source contract: registry reuses geometry and saved-map types without a new planner (0.411535ms)
+✔ spatial source contract: metric scale and unknown-floor checks are explicit (0.249784ms)
+✔ spatial source contract: exact active binding and missing transform fail closed (0.386819ms)
+✔ spatial source contract: GPS, room appearance and camera-only heading cannot admit a pose (0.576923ms)
+✔ spatial source contract: capture age, session, replay and invalidation are checked (0.534985ms)
+✔ spatial source contract: route and collision leases bind purpose, map, revision, floor and capture (0.301921ms)
+✔ spatial source contract: pending XCTest coverage names the required failure cases (0.410233ms)
+✔ actual asynchronous map owner, file worker and extracted UI reject stale IO (31517.685298ms)
+✔ room A to B during debounce cannot attach the previous room to a new capture (source) (11.229853ms)
+✔ yesterday generic cup cannot outrank today explicitly saved cup or user report (source) (5.451607ms)
+✔ scoped deletion cutoffs reload from private storage after restart (source) (3.21041ms)
+✔ reopening an old map after scoped deletion checks room and normalized category cutoffs before import (source) (1.81953ms)
+✔ scoped deletion commits durable suppression before replacing history and exposes write failures (source) (2.738653ms)
+✔ full clear commits suppression before removal and cancels already captured callbacks (source) (1.597491ms)
+✔ RGB-only history survives depth and tracking failure without acquiring spatial authority (source) (1.908038ms)
+✔ tracking recovery cannot resurrect pre-failure spatial work or permanently block RGB collection (source) (1.951158ms)
+✔ privacy and session resets cancel RGB work while depth-only failure keeps its bounded token (source) (1.839541ms)
+✔ item and room forget paths invalidate captured work and perform scoped history deletion (source) (3.144056ms)
+✔ cancelled route cannot repeat its retired physical distance while alignment survives (source) (2.962188ms)
+✔ new world-map recovery rejects queued frames captured before its own beginning (source) (0.707395ms)
+✔ recorded-spot empirical receipt is debug-only and never enables object handling (source) (1.163805ms)
+✔ recorded-spot promotion binds exact re-read scan frame point ID and position, not a category label (source) (1.958051ms)
+✔ historical-spot renderer rechecks the receipt and never substitutes present object location (source) (0.740407ms)
+✔ receipt is bound to the current local device and app build rather than only iPhone family (source) (1.632766ms)
+✔ spoken recorded direction is cancelled if target, heading freshness or rendered relation changes (source) (2.277475ms)
+✔ recorded pose age uses sensor capture time rather than delayed main-queue receipt (source) (1.307341ms)
+✔ delayed world-map callbacks cannot extend a captured frame lease (source) (1.088224ms)
+✔ positional bearing interval uses tangent uncertainty and guards both sector boundaries (source) (0.961118ms)
+✖ connected issuer is retired by mount or frame ownership loss before frame throttling (source) (1.466186ms)
+✔ registered route files and hosted fixtures are actual source-phase members (3.333087ms)
+✔ registered route dispatch retains ticket, exact output IDs and final playback gate (2.547738ms)
+✔ route watchdog, goal controls and JSON importer preserve independent ownership (2.037619ms)
+✔ relay checks every model answer and retries once (5.191784ms)
+✔ app checks model text before speaking it (3.833048ms)
+✔ model instructions and both checks stay in place (2.57619ms)
+✔ source contract: requested speech stays behind AdmittedSpeech and has its own completion ID (1.16148ms)
+✔ source contract: requested transport policy is used and synthesis preserves assistive settings (0.630863ms)
+✔ source contract: private-route loss interrupts private mobility without silencing independent sensor alerts (1.213807ms)
+✔ source contract: unverified onset is reply-only; trusted mute and end cancel queued work (0.54846ms)
+✔ source contract: cancellation invalidates identity before platform stop and timeout cannot claim completion (1.011191ms)
+✔ source contract: timeout remains unknown and diagnostic labels cannot change delivery outcome (0.421594ms)
+✔ source contract: spatial playback never downgrades the recording audio session (0.229878ms)
+✔ production task state retains exact sources, chronology and scoped completion (52444.22754ms)
+✔ IMDF points preserve position without fabricating walkable edges (2.981183ms)
+✔ Mac handoff builds both Apple SDK targets without requiring signing secrets (2.547788ms)
+✔ Xcode source references resolve to objects, with a local Swift package (1.206784ms)
+✔ on-device image APIs require explicit SDK-gated project selection (2.610575ms)
+✔ Lock Screen Live Activity is an explicit opt-in extension target (1.992194ms)
+✔ voice keeps required local recognition and stopped-engine echo cancellation (1.635982ms)
+✔ onset uses non-echo partial evidence and revalidates after its callback (0.251228ms)
+✔ permission, request callbacks and timers reject superseded capture sessions (0.290811ms)
+✔ explicit opt-in gates background audio and mute invalidates retry tokens (0.267958ms)
+✔ interruption, media reset and route changes preserve cancellation boundaries (0.262979ms)
+✔ recovery is bounded, claimed once and never reset by each transcript partial (0.539022ms)
+✔ capture health checks missing buffers rather than claiming acoustic speech detection (0.229286ms)
+✔ stop clears stale hypotheses and only removes a tap that was installed (0.304196ms)
+✔ private route removal cancels before synchronous main-actor notification and cannot auto-recover (0.458332ms)
+✔ energy onset is bounded, synchronous on PCM and fenced across capture and turn renewal (0.58075ms)
+ℹ tests 409
+ℹ suites 0
+ℹ pass 407
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 211263.736464
+
+✖ failing tests:
+
+test at tools/test/simple-accessibility.test.mjs:51:1
+✖ People landing is names and Add person while the existing consent workflow remains intact (3.399982ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Child enrollment is unavailable/. Input:
+  
+  '#if BLIND_FAMILIAR_PEOPLE\n' +
+    'import SwiftUI\n' +
+    'import PhotosUI\n' +
+    'import AVFoundation\n' +
+    'import ARKit\n' +
+    '\n' +
+    '/// A short People landing page; experimental controls are only in the helper workflow.\n' +
+    'struct FamiliarPeopleView: View {\n' +
+    '    @ObservedObject var model: NavigationModel\n' +
+    '    @ObservedObject var experiment: FamiliarFaceExperiment\n' +
+    '    private func t(_ english: String, _ arabic: String) -> String { model.arabic ? arabic : english }\n' +
+    '    var body: some View {\n' +
+    '        List {\n' +
+    '            Section(t("Saved people", "الأشخاص المحفوظون")) {\n' +
+    '                if experiment.people.isEmpty { Text(t("No people saved yet.", "لا يوجد أشخاص محفوظون بعد.")) }\n' +
+    '                ForEach(experiment.people) { person in\n' +
+    '                    NavigationLink(person.label) { FamiliarPeopleToolsView(model: model, experiment: experiment) }\n' +
+    '                        .frame(minHeight: 44)\n' +
+    '                }\n' +
+    '            }\n' +
+    '            NavigationLink(t("Add person", "أضف شخصاً")) { FamiliarPeopleToolsView(model: model, experiment: experiment) }\n' +
+    '                .frame(minHeight: 44).accessibilityIdentifier("familiar-add-person")\n' +
+    '            Text(t("Use a sighted helper, but keep the phone with the child. Ask the adult being added to face the child and change their own angle. A familiar-person hint can be wrong.", "استعن بمساعد مبصر مع إبقاء الهاتف مع الطفل. اطلب من الشخص البالغ المراد إضافته مواجهة الطفل وتغيير زاويته بنفسه. قد يخطئ التعرف على الشخص المألوف."))\n' +
+    '        }\n' +
+    '        .navigationTitle(t("People", "الأشخاص"))\n' +
+    '        .onAppear { experiment.prepareForForegroundSession() }\n' +
+    '    }\n' +
+    '}\n' +
+    '\n' +
+    'private struct FamiliarPeopleToolsView: View {\n' +
+    '    @ObservedObject var model: NavigationModel\n' +
+    '    @ObservedObject var experiment: FamiliarFaceExperiment\n' +
+    '    @Environment(\\.scenePhase) private var scenePhase\n' +
+    '    @State private var acknowledged = false\n' +
+    '    @State private var label = ""\n' +
+    '    @State private var confirmDeleteAll = false\n' +
+    '    @State private var selectedPhotos: [PhotosPickerItem] = []\n' +
+    '    @State private var photoLoading = false\n' +
+    '    @State private var photoLoadError = ""\n' +
+    '    @State private var photoGeneration = UUID()\n' +
+    '    @State private var photoTask: Task<Void, Never>?\n' +
+    '    @State private var awaitingCameraForEnrollment = false\n' +
+    '    var body: some View {\n' +
+    '        Form {\n' +
+    '            Section("Add a person with a helper") {\n' +
+    '                Text("Enroll a consenting adult, or use the separate child path with their parent or legal guardian present. Recognition of children remains unvalidated; hints never establish identity for trust, access or following someone. Keep the phone with the child throughout. A sighted helper or guardian supports framing without taking the phone from its wearer. Familiar-person hints can be wrong; ask the person to speak. Templates stay on this phone.")\n' +
+    '                if !experiment.enabled {\n' +
+    '                    Button("Turn familiar-person hints back on") { experiment.requestEnable() }\n' +
+    '                        .frame(minHeight: 44).accessibilityIdentifier("familiar-guided-enable")\n' +
+    '                }\n' +
+    '            }\n' +
+    '            Section("Current action") {\n' +
+    '                Text(experiment.status).accessibilityIdentifier("familiar-status")\n' +
+    '                if !photoLoadError.isEmpty { Text(photoLoadError) }\n' +
+    '                if experiment.awaitingConfirmation {\n' +
+    '                    if let shownToken = experiment.guardianConfirmationToken {\n' +
+    '                        Button("I am the parent or legal guardian and consent to this exact action") {\n' +
+    '                            experiment.confirm(guardianAttested: true, guardianToken: shownToken)\n' +
+    '                        }.accessibilityIdentifier("familiar-guardian-confirm")\n' +
+    '                    } else {\n' +
+    '                        Button("Confirm exact spoken face action") { experiment.confirm() }.accessibilityIdentifier("familiar-confirm")\n' +
+    '                    }\n' +
+    '                    Text("Confirmation expires after 30 seconds. Confirm the exact label, consent and operation you just heard.")\n' +
+    '                }\n' +
+    '                Button("Compare the face now") { experiment.compare(model: model) }\n' +
+    '                    .disabled(!experiment.enabled || experiment.busy || photoLoading).accessibilityIdentifier("familiar-compare")\n' +
+    '            }\n' +
+    '            if !experiment.hasEnrollmentDraft {\n' +
+    '            Section("1. Take photos") {\n' +
+    '                Button(model.cameraAwareness ? "Take photos of a person" : "Turn on camera and take photos") {\n' +
+    '                    if model.running { experiment.requestUnnamedEnrollment() }\n' +
+    '                    else { startCameraForEnrollment() }\n' +
+    '                }\n' +
+    '                    .disabled(!experiment.enabled || experiment.busy || photoLoading).accessibilityIdentifier("familiar-consent")\n' +
+    '                Button("Use photos already on this phone") { experiment.requestUnnamedEnrollment() }\n' +
+    '                    .disabled(!experiment.enabled || experiment.busy || photoLoading)\n' +
+    '                if awaitingCameraForEnrollment { Text("Waiting for camera permission or startup. You can cancel at any time.") }\n' +
+    '                if !model.running { Text(model.message) }\n' +
+    '                Button("Add a child with their parent or legal guardian") { experiment.requestChildEnrollment() }\n' +
+    '                    .disabled(!experiment.enabled || experiment.busy || photoLoading)\n' +
+    '                    .accessibilityIdentifier("familiar-guardian-enrollment")\n' +
+    `                Text("Adult examples require their consent; child examples require their parent or legal guardian's explicit confirmation. Imported photos cannot establish consent or a family relationship. All examples must show the same person alone.")\n` +
+    '            }\n' +
+    '            }\n' +
+    '            if experiment.hasEnrollmentDraft {\n' +
+    '                Section("1. Take three clear photos") {\n' +
+    '                    Text("\\(experiment.draftExamples.count) of 6 examples. At least 3 required to finish. \\(experiment.captureInstruction)")\n' +
+    '                    Button("Capture face · next angle") { experiment.captureExample(model: model) }\n' +
+    '                        .disabled(experiment.busy || photoLoading || experiment.remainingExamples == 0).accessibilityIdentifier("familiar-capture")\n' +
+    '                    Button("Import existing photos from this phone") { experiment.requestPhotoImport() }\n' +
+    '                        .disabled(experiment.busy || photoLoading || experiment.remainingExamples == 0).accessibilityIdentifier("familiar-import")\n' +
+    `                    Text("Apple's accessible Photos picker selects up to the remaining six-example limit. Voice can open it but cannot choose its photos. System Photos may need to download an existing iCloud original; unavailable offline selections fail without an app upload. Maximum 20 MB per selected still image.")\n` +
+    '                    if photoLoading { ProgressView("Loading selected photos locally") }\n' +
+    '                    ForEach(Array(experiment.draftExamples.enumerated()), id: \\.element.id) { index, example in\n' +
+    '                        VStack(alignment: .leading) {\n' +
+    '                            Text("Example \\(index + 1): \\(example.source == "camera" ? "camera capture" : "selected photo")")\n' +
+    '                            if let image = experiment.preview(example.id) {\n' +
+    '                                Image(image, scale: 1, label: Text("Temporary aligned face preview")).resizable().scaledToFit().frame(maxHeight: 160)\n' +
+    '                                    .accessibilityLabel("Temporary aligned face preview for example \\(index + 1). A sighted helper must verify it shows the intended consented person.")\n' +
+    '                            }\n' +
+    '                            Button("Remove unfinished example \\(index + 1)", role: .destructive) { experiment.removeDraftExample(example.id) }\n' +
+    '                        }\n' +
+    '                    }\n' +
+    '                    Text("Only the intended consented person in each photo. The participant or guardian adjusts their own position; the child keeps the phone. If a photo is unclear, try again.")\n' +
+    '                }\n' +
+    '                if experiment.draftExamples.count >= 3 {\n' +
+    '                    Section("2. Name and save") {\n' +
+    '                        TextField("Their name, such as Mom or Dad", text: $label).accessibilityIdentifier("familiar-label")\n' +
+    '                            .onChange(of: label) { _, value in\n' +
+    '                                // Editing cannot leave an old named-save confirmation active.\n' +
+    '                                if value.trimmingCharacters(in: .whitespacesAndNewlines) != experiment.draftLabel {\n' +
+    '                                    experiment.cancelSaveConfirmation()\n' +
+    '                                }\n' +
+    '                            }\n' +
+    '                        Button("Save person") {\n' +
+    '                            if experiment.setDraftLabel(label) { experiment.finishEnrollment() }\n' +
+    '                        }\n' +
+    '                        .disabled(experiment.busy || photoLoading || label.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)\n' +
+    '                        .accessibilityIdentifier("familiar-finish-enrollment")\n' +
+    '                        Text("Review the name and photos, then confirm the save above.")\n' +
+    '                    }\n' +
+    '                }\n' +
+    '            }\n' +
+    '            Section {\n' +
+    '                NavigationLink("Helper setup and full limitations") { helperDetails }\n' +
+    '                    .frame(minHeight: 44).accessibilityIdentifier("familiar-helper-setup")\n' +
+    '            }\n' +
+    '            Section("Private gallery") {\n' +
+    '                Button("Reload private gallery") { cancelPhotoLoad(); experiment.reload() }\n' +
+    '                ForEach(experiment.people) { person in\n' +
+    '                    VStack(alignment: .leading) {\n' +
+    '                        Text("\\(person.label): \\(person.examples.count) examples")\n' +
+    '                        Button("Look for \\(person.label) briefly") { experiment.find(person.label, model: model) }\n' +
+    '                        Button("Review \\(person.label)") { experiment.review(person.label) }\n' +
+    '                        Button("Add examples for \\(person.label)") { experiment.requestEnrollment(label: person.label, mode: .add) }\n' +
+    '                        Button("Replace examples for \\(person.la'... 10127 more characters
+  
+      at TestContext.<anonymous> (file:///workspace/shared/blind-rebuild/tools/test/simple-accessibility.test.mjs:64:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: `#if BLIND_FAMILIAR_PEOPLE\nimport SwiftUI\nimport PhotosUI\nimport AVFoundation\nimport ARKit\n\n/// A short People landing page; experimental controls are only in the helper workflow.\nstruct FamiliarPeopleView: View {\n    @ObservedObject var model: NavigationModel\n    @ObservedObject var experiment: FamiliarFaceExperiment\n    private func t(_ english: String, _ arabic: String) -> String { model.arabic ? arabic : english }\n    var body: some View {\n        List {\n            Section(t("Saved people", "الأشخاص المحفوظون")) {\n                if experiment.people.isEmpty { Text(t("No people saved yet.", "لا يوجد أشخاص محفوظون بعد.")) }\n                ForEach(experiment.people) { person in\n                    NavigationLink(person.label) { FamiliarPeopleToolsView(model: model, experiment: experiment) }\n                        .frame(minHeight: 44)\n                }\n            }\n            NavigationLink(t("Add person", "أضف شخصاً")) { FamiliarPeopleToolsView(model: model, experiment: experiment) }\n                .frame(minHeight: 44).accessibilityIdentifier("familiar-add-person")\n            Text(t("Use a sighted helper, but keep the phone with the child. Ask the adult being added to face the child and change their own angle. A familiar-person hint can be wrong.", "استعن بمساعد مبصر مع إبقاء الهاتف مع الطفل. اطلب من الشخص البالغ المراد إضافته مواجهة الطفل وتغيير زاويته بنفسه. قد يخطئ التعرف على الشخص المألوف."))\n        }\n        .navigationTitle(t("People", "الأشخاص"))\n        .onAppear { experiment.prepareForForegroundSession() }\n    }\n}\n\nprivate struct FamiliarPeopleToolsView: View {\n    @ObservedObject var model: NavigationModel\n    @ObservedObject var experiment: FamiliarFaceExperiment\n    @Environment(\\.scenePhase) private var scenePhase\n    @State private var acknowledged = false\n    @State private var label = ""\n    @State private var confirmDeleteAll = false\n    @State private var selectedPhotos: [PhotosPickerItem] = []\n    @State private var photoLoading = false\n    @State private var photoLoadError = ""\n    @State private var photoGeneration = UUID()\n    @State private var photoTask: Task<Void, Never>?\n    @State private var awaitingCameraForEnrollment = false\n    var body: some View {\n        Form {\n            Section("Add a person with a helper") {\n                Text("Enroll a consenting adult, or use the separate child path with their parent or legal guardian present. Recognition of children remains unvalidated; hints never establish identity for trust, access or following someone. Keep the phone with the child throughout. A sighted helper or guardian supports framing without taking the phone from its wearer. Familiar-person hints can be wrong; ask the person to speak. Templates stay on this phone.")\n                if !experiment.enabled {\n                    Button("Turn familiar-person hints back on") { experiment.requestEnable() }\n                        .frame(minHeight: 44).accessibilityIdentifier("familiar-guided-enable")\n                }\n            }\n            Section("Current action") {\n                Text(experiment.status).accessibilityIdentifier("familiar-status")\n                if !photoLoadError.isEmpty { Text(photoLoadError) }\n                if experiment.awaitingConfirmation {\n                    if let shownToken = experiment.guardianConfirmationToken {\n                        Button("I am the parent or legal guardian and consent to this exact action") {\n                            experiment.confirm(guardianAttested: true, guardianToken: shownToken)\n                        }.accessibilityIdentifier("familiar-guardian-confirm")\n                    } else {\n                        Button("Confirm exact spoken face action") { experiment.confirm() }.accessibilityIdentifier("familiar-confirm")\n                    }\n                    Text("Confirmation expires after 30 seconds. Confirm the exact label, consent and operation you just heard.")\n                }\n                Button("Compare the face now") { experiment.compare(model: model) }\n                    .disabled(!experiment.enabled || experiment.busy || photoLoading).accessibilityIdentifier("familiar-compare")\n            }\n            if !experiment.hasEnrollmentDraft {\n            Section("1. Take photos") {\n                Button(model.cameraAwareness ? "Take photos of a person" : "Turn on camera and take photos") {\n                    if model.running { experiment.requestUnnamedEnrollment() }\n                    else { startCameraForEnrollment() }\n                }\n                    .disabled(!experiment.enabled || experiment.busy || photoLoading).accessibilityIdentifier("familiar-consent")\n                Button("Use photos already on this phone") { experiment.requestUnnamedEnrollment() }\n                    .disabled(!experiment.enabled || experiment.busy || photoLoading)\n                if awaitingCameraForEnrollment { Text("Waiting for camera permission or startup. You can cancel at any time.") }\n                if !model.running { Text(model.message) }\n                Button("Add a child with their parent or legal guardian") { experiment.requestChildEnrollment() }\n                    .disabled(!experiment.enabled || experiment.busy || photoLoading)\n                    .accessibilityIdentifier("familiar-guardian-enrollment")\n                Text("Adult examples require their consent; child examples require their parent or legal guardian's explicit confirmation. Imported photos cannot establish consent or a family relationship. All examples must show the same person alone.")\n            }\n            }\n            if experiment.hasEnrollmentDraft {\n                Section("1. Take three clear photos") {\n                    Text("\\(experiment.draftExamples.count) of 6 examples. At least 3 required to finish. \\(experiment.captureInstruction)")\n                    Button("Capture face · next angle") { experiment.captureExample(model: model) }\n                        .disabled(experiment.busy || photoLoading || experiment.remainingExamples == 0).accessibilityIdentifier("familiar-capture")\n                    Button("Import existing photos from this phone") { experiment.requestPhotoImport() }\n                        .disabled(experiment.busy || photoLoading || experiment.remainingExamples == 0).accessibilityIdentifier("familiar-import")\n                    Text("Apple's accessible Photos picker selects up to the remaining six-example limit. Voice can open it but cannot choose its photos. System Photos may need to download an existing iCloud original; unavailable offline selections fail without an app upload. Maximum 20 MB per selected still image.")\n                    if photoLoading { ProgressView("Loading selected photos locally") }\n                    ForEach(Array(experiment.draftExamples.enumerated()), id: \\.element.id) { index, example in\n                        VStack(alignment: .leading) {\n                            Text("Example \\(index + 1): \\(example.source == "camera" ? "camera capture" : "selected photo")")\n                            if let image = experiment.preview(example.id) {\n                                Image(image, scale: 1, label: Text("Temporary aligned face preview")).resizable().scaledToFit().frame(maxHeight: 160)\n                                    .accessibilityLabel("Temporary aligned face preview for example \\(index + 1). A sighted helper must verify it shows the intended consented person.")\n                            }\n                            Button("Remove unfinished example \\(index + 1)", role: .destructive) { experiment.removeDraftExample(example.id) }\n                        }\n                    }\n                    Text("Only the intended consented person in each photo. The participant or guardian adjusts their own position; the child keeps the phone. If a photo is unclear, try again.")\n                }\n                if experiment.draftExamples.count >= 3 {\n                    Section("2. Name and save") {\n                        TextField("Their name, such as Mom or Dad", text: $label).accessibilityIdentifier("familiar-label")\n                            .onChange(of: label) { _, value in\n                                // Editing cannot leave an old named-save confirmation active.\n                                if value.trimmingCharacters(in: .whitespacesAndNewlines) != experiment.draftLabel {\n                                    experiment.cancelSaveConfirmation()\n                                }\n                            }\n                        Button("Save person") {\n                            if experiment.setDraftLabel(label) { experiment.finishEnrollment() }\n                        }\n                        .disabled(experiment.busy || photoLoading || label.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)\n                        .accessibilityIdentifier("familiar-finish-enrollment")\n                        Text("Review the name and photos, then confirm the save above.")\n                    }\n                }\n            }\n            Section {\n                NavigationLink("Helper setup and full limitations") { helperDetails }\n                    .frame(minHeight: 44).accessibilityIdentifier("familiar-helper-setup")\n            }\n            Section("Private gallery") {\n                Button("Reload private gallery") { cancelPhotoLoad(); experiment.reload() }\n                ForEach(experiment.people) { person in\n                    VStack(alignment: .leading) {\n                        Text("\\(person.label): \\(person.examples.count) examples")\n                        Button("Look for \\(person.label) briefly") { experiment.find(person.label, model: model) }\n                        Button("Review \\(person.label)") { experiment.review(person.label) }\n                        Button("Add examples for \\(person.label)") { experiment.requestEnrollment(label: person.label, mode: .add) }\n                        Button("Replace examples for \\(person.la`... 10127 more characters,
+    expected: /Child enrollment is unavailable/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at tools/test/spatial-review-regressions.test.mjs:318:1
+✖ connected issuer is retired by mount or frame ownership loss before frame throttling (source) (1.466186ms)
+  AssertionError [ERR_ASSERTION]: Expected else { journeys.breakTracking() } before guard running
+      at before (file:///workspace/shared/blind-rebuild/tools/test/spatial-review-regressions.test.mjs:18:10)
+      at TestContext.<anonymous> (file:///workspace/shared/blind-rebuild/tools/test/spatial-review-regressions.test.mjs:323:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

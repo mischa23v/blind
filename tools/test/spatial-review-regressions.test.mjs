@@ -320,8 +320,31 @@ test('connected issuer is retired by mount or frame ownership loss before frame 
   const mount = section(source, '@Published var fixedBodyMount', '@Published private(set) var serviceStatus');
   before(mount, 'journeys.breakTracking()', 'cancelDescription()');
   const frames = section(source, 'func session(_ session: ARSession, didUpdate frame:', '#if BLIND_FAMILIAR_PEOPLE\n    @discardableResult');
-  before(frames, 'else { journeys.breakTracking() }', 'guard running');
-  before(frames, 'else { journeys.breakTracking() }', 'frame.timestamp - lastProcessed');
+  const assertRawRetirement = candidate => {
+    const opening = candidate.indexOf('{');
+    const throttle = candidate.indexOf('guard running');
+    assert.ok(opening >= 0 && throttle > opening);
+    const prefix = candidate.slice(opening + 1, throttle).replace(/\/\/[^\n]*/g, '').trim();
+    assert.match(prefix, /^if case \.normal = frame\.camera\.trackingState \{\} else \{ invalidateNativeLocalization\(\.trackingUnavailable\) \}\s*if case \.normal = frame\.camera\.trackingState \{\} else \{\s*journeys\.breakTracking\(\)\s*if readingTool != nil \{ stopReadingTool\(announce: false\) \}\s*\}$/,
+      'Both exact ownership retirements are synchronous and before throttle; normal frames do not retire them');
+    before(candidate, 'journeys.breakTracking()', 'frame.timestamp - lastProcessed');
+    before(candidate, 'stopReadingTool(announce: false)', 'frame.timestamp - lastProcessed');
+    assert.match(candidate, /phoneDetection = detector\.process\(observation\)/);
+    before(candidate, 'phoneDetection = detector.process(observation)', 'updateReadingTool(frame: frame)');
+    const missingDepth = section(candidate, 'guard let observation = DepthSampler.observation(from: frame)', 'if !observation.trackingNormal');
+    before(missingDepth, 'detector.invalidateRecentEvidence()', 'updateNonspatialObjectMemory(frame: frame)');
+    before(missingDepth, 'publish()', 'updateNonspatialObjectMemory(frame: frame)');
+  };
+  assertRawRetirement(frames);
+  const mutations = [
+    frames.replace('journeys.breakTracking()', '/* missing journey retirement */'),
+    frames.replace('if readingTool != nil { stopReadingTool(announce: false) }', '/* missing reader retirement */'),
+    frames.replace('if readingTool != nil { stopReadingTool(announce: false) }', 'return'),
+    frames.replace('invalidateNativeLocalization(.trackingUnavailable)', '/* missing selected-owner retirement */'),
+    frames.replace('phoneDetection = detector.process(observation)', 'phoneDetection = Detection(.observing)'),
+    frames.replace('detector.invalidateRecentEvidence()', '/* missing depth-loss hazard retirement */')
+  ];
+  for (const mutant of mutations) assert.throws(() => assertRawRetirement(mutant));
   assert.match(frames, /if place\.worldFrame != nil, verifiedFrame == nil \{\s*journeys\.breakTracking\(\)/);
   assert.match(frames, /if !observation\.trackingNormal \{\s*journeys\.breakTracking\(\)/);
   const store = await read('ios/BlindAssist/JourneyStore.swift');

@@ -1011,7 +1011,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // Tracking loss retires selected-owner evidence even on throttled frames.
         if case .normal = frame.camera.trackingState {} else { invalidateNativeLocalization(.trackingUnavailable) }
         // Tracking loss retires the issuer even when this frame is throttled below.
-        if case .normal = frame.camera.trackingState {} else { journeys.breakTracking() }
+        if case .normal = frame.camera.trackingState {} else {
+            journeys.breakTracking()
+            // Retire old OCR even if depth was already unavailable and the hazard
+            // category does not change. This runs before frame throttling.
+            if readingTool != nil { stopReadingTool(announce: false) }
+        }
         guard running, !simulation, !places.scanning, frame.timestamp - lastProcessed >= 1.0 / 15 else { return }
         let receivedAt = ProcessInfo.processInfo.systemUptime
         let receivedDate = Date()
@@ -1218,7 +1223,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #endif
         // Depth-only loss retires spatial work, not a still-valid RGB colour request.
         // Full camera/session invalidation still cancels colour and rotates its generation.
-        if currencyActive || (!preserveRGBHistoryWork && colorActive) || readingTool != nil || currencyRetake.isPending { cancelDescription() }
+        if currencyActive || (!preserveRGBHistoryWork && (colorActive || readingTool != nil)) || currencyRetake.isPending { cancelDescription() }
         perceptionGeneration = UUID(); recallInFlight = false; learningItem = nil
         if !preserveRGBHistoryWork { backgroundPerception.invalidate(); passiveObservationGeneration = UUID() }
         if let speech = recordedSpotSpeech { feedback.stopRequestedSpeech(speech.id); recordedSpotSpeech = nil }
@@ -4704,6 +4709,7 @@ extension NavigationModel {
         resumeHeldSearchIfPossible()
         resumeInterruptedSearchIfPossible()
         continueSearch()
+        updateReadingTool(frame: frame)
         updateBackgroundPerception(frame: frame, observation: pose, nonspatialOnly: true)
     }
 
@@ -5713,8 +5719,7 @@ extension NavigationModel {
         #if BLIND_FAMILIAR_PEOPLE
         familiarPeople.cancelSearchForNewGoal()
         #endif
-        guard running, !simulation, !places.scanning, assistantSession.foregroundActive,
-              detection.hazard == .observing else {
+        guard readingCameraAllowed() else {
             speakOperation(arabic ? "أحتاج كاميرا جاهزة وتنبيهات مستقرة لهذا. شغّل الكاميرا أولاً." : "I need a ready camera and stable monitoring for that. Turn the camera on first.")
             return
         }
@@ -5746,39 +5751,45 @@ extension NavigationModel {
         }
     }
 
+    /// Nonspatial reading requires a fresh tracked RGB camera, not depth/floor/map validity.
+    /// Shared session/privacy and urgent sensor warnings still own admission.
+    private func readingCameraAllowed() -> Bool {
+        let now = ProcessInfo.processInfo.systemUptime
+        guard assistantSession.shouldRunCamera, assistantSession.mayRespond, cameraAwareness,
+              assistantSession.foregroundActive, !assistantSession.privateAudioHeld,
+              running, !simulation, !places.scanning, !detection.hazard.isUrgent,
+              let frame = session.currentFrame,
+              FrameTimestampPolicy.isFresh(capturedAt: frame.timestamp, receivedAt: now),
+              UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }) else { return false }
+        if case .normal = frame.camera.trackingState { return true }
+        return false
+    }
+
     private struct ReadingCapture {
         let token: UUID
         let request: UUID
         let generation: UUID
         let sessionGeneration: UInt64
         let capturedAt: Double
-        let observation: Observation
-        let mapRevision: UUID
-        let alignmentRevision: UUID
         let origin: Point3
         let forward: Point3
     }
 
     private func readingCapture(frame: ARFrame) -> ReadingCapture? {
-        guard assistantSession.foregroundActive, running, !simulation, !places.scanning,
-              detection.hazard == .observing, let observation = lastObservation, observation.trackingNormal,
-              UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }) else { return nil }
+        guard readingCameraAllowed(), case .normal = frame.camera.trackingState,
+              FrameTimestampPolicy.isFresh(capturedAt: frame.timestamp, receivedAt: ProcessInfo.processInfo.systemUptime) else { return nil }
         let transform = frame.camera.transform
-        return ReadingCapture(token: readingWork.token, request: requestID, generation: perceptionGeneration,
-            sessionGeneration: assistantSession.generation, capturedAt: lastFrameWallTime, observation: observation,
-            mapRevision: indoor.revision, alignmentRevision: indoor.alignmentRevision,
+        return ReadingCapture(token: readingWork.token, request: requestID, generation: passiveObservationGeneration,
+            sessionGeneration: assistantSession.generation, capturedAt: frame.timestamp,
             origin: Point3(Double(transform.columns.3.x), Double(transform.columns.3.y), Double(transform.columns.3.z)),
             forward: Point3(-Double(transform.columns.2.x), -Double(transform.columns.2.y), -Double(transform.columns.2.z)))
     }
 
     private func readingCaptureAllowed(_ capture: ReadingCapture) -> Bool {
-        assistantSession.foregroundActive && assistantSession.generation == capture.sessionGeneration &&
+        readingCameraAllowed() && assistantSession.generation == capture.sessionGeneration &&
+        requestID == capture.request && passiveObservationGeneration == capture.generation &&
         readingWork.accepts(capture.token, capturedAt: capture.capturedAt, now: ProcessInfo.processInfo.systemUptime) &&
-        visualCapturePoseAllowed(origin: capture.origin, forward: capture.forward) &&
-        UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }) &&
-        perceptionResultAllowed(request: capture.request, generation: capture.generation,
-            capturedAt: capture.capturedAt, observation: capture.observation,
-            mapRevision: capture.mapRevision, alignmentRevision: capture.alignmentRevision)
+        visualCapturePoseAllowed(origin: capture.origin, forward: capture.forward)
     }
 
     private func updateReadingTool(frame: ARFrame) {
@@ -5907,8 +5918,8 @@ extension NavigationModel {
 
     private func speakNextDocumentChunk() {
         guard readingTool == .document, documentSpeechID == nil, let chunk = documentChunks.first,
-              readingWork.active, assistantSession.foregroundActive, running, !simulation,
-              detection.hazard == .observing, !voice.awaitingUtterance, feedback.speechPriority == nil else { return }
+              readingWork.active, readingCameraAllowed(),
+              !voice.awaitingUtterance, feedback.speechPriority == nil else { return }
         let id = UUID(); documentSpeechID = id
         if !speakRequested(chunk, replace: false, speechID: id) { documentSpeechID = nil }
     }

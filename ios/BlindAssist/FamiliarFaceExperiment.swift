@@ -177,11 +177,12 @@ final class FamiliarFaceExperiment: ObservableObject {
         let token = UUID()
         var label: String?
         let consentAt: Date
+        let consent: FamiliarEnrollmentConsent
         var examples: [FamiliarExample]
         var previews: [UUID: Data] = [:] // Ephemeral aligned crops for sighted review; never written.
     }
     private enum Pending {
-        case enable, begin(String?, UUID?, EnrollmentMode), save
+        case enable, begin(String?, UUID?, EnrollmentMode, FamiliarEnrollmentConsent), save
         case deletePerson(UUID), deleteExample(UUID, UUID)
     }
     @Published private(set) var enabled = false
@@ -248,11 +249,14 @@ final class FamiliarFaceExperiment: ObservableObject {
     }
     var remainingExamples: Int { max(0, 6 - draftExamples.count) }
     var captureInstruction: String {
+        if draft?.consent == .guardianForChild {
+            return "Parent or legal guardian: help provide a clear view of only the enrolled child, with their face visible. Keep the phone with its wearer. Do not force participation; cancel if the child is uncomfortable."
+        }
         switch draftExamples.count {
         case 0: return "Keep the phone with the child. Adult being added: face the child and their camera, alone and well lit."
         case 1: return "Adult being added: turn your head slightly left, keeping both eyes visible. The child keeps the phone."
         case 2: return "Adult being added: turn your head slightly right, keeping both eyes visible. The child keeps the phone."
-        default: return "At least three examples are ready. Review and finish, or ask the adult for another well-lit view. The child keeps the phone."
+        default: return "At least three examples are ready. Review and finish, or ask the participant or guardian for another well-lit view. The child keeps the phone."
         }
     }
     func preview(_ id: UUID) -> CGImage? {
@@ -419,7 +423,9 @@ final class FamiliarFaceExperiment: ObservableObject {
     }
     private func ask(_ action: Pending, _ text: String) {
         cancelWork(); pending = action; confirmationToken = confirmation.request(now: ProcessInfo.processInfo.systemUptime); awaitingConfirmation = confirmationToken != nil
-        status = text + " Say confirm face action, or cancel face action."
+        status = text + (requiresGuardianAttestation
+            ? " The parent or legal guardian must use the exact confirmation button in this helper screen. Say cancel face action to cancel."
+            : " Say confirm face action, or cancel face action.")
     }
     func requestEnable() {
         guard !enabled else {
@@ -442,12 +448,27 @@ final class FamiliarFaceExperiment: ObservableObject {
         }
         let action = mode == .new ? "Enroll" : mode == .add ? "Add examples for" : "Replace all examples for"
         cancel()
-        ask(.begin(existing?.label ?? name, existing?.id, mode), "\(action) label \(existing?.label ?? name)? Confirm this adult permits on-phone face templates, including enabled extra prints, and automatic tentative hints while the foreground camera is active. Each example must show only that adult. Originals are not saved or uploaded.")
+        let consent = existing.flatMap { FamiliarEnrollmentConsent(rawValue: $0.consent) } ?? .consentingAdult
+        ask(.begin(existing?.label ?? name, existing?.id, mode, consent), "\(action) label \(existing?.label ?? name)? \(consent.confirmationText) including enabled extra prints, and automatic tentative hints while the foreground camera is active. Each example must show only the intended person. Originals are not saved or uploaded.")
     }
     func requestUnnamedEnrollment() {
         guard enabled, storageReady, people.count < 20 else { status = "Familiar-person hints must be on and the private gallery available with space before adding someone."; return }
         cancel()
-        ask(.begin(nil, nil, .new), "Add a person? Confirm this adult permits on-phone face templates and automatic tentative hints while the foreground camera is active. Each example must show that adult alone. You will choose their name before saving. No photos are saved or uploaded.")
+        ask(.begin(nil, nil, .new, .consentingAdult), "Add a person? Confirm this adult permits on-phone face templates and automatic tentative hints while the foreground camera is active. Each example must show that adult alone. You will choose their name before saving. No photos are saved or uploaded.")
+    }
+    /// Only a guardian's explicit helper-interface attestation can confirm this path.
+    /// A photo, label, face match or voice command never establishes guardianship.
+    func requestChildEnrollment() {
+        guard enabled, storageReady, people.count < 20 else { status = "Private gallery must be available before adding someone."; return }
+        cancel()
+        ask(.begin(nil, nil, .new, .guardianForChild), "Add a child? The child's parent or legal guardian must confirm in this helper screen that they permit local face templates and automatic tentative hints. No images are saved or uploaded. This does not verify guardianship or recognition accuracy; do not use a hint for trust or following someone.")
+    }
+    var requiresGuardianAttestation: Bool {
+        switch pending {
+        case .begin(_, _, _, .guardianForChild)?: return true
+        case .save?: return draft?.consent == .guardianForChild
+        default: return false
+        }
     }
     /// Changing the label revokes any old save confirmation. No unnamed or placeholder
     /// identity can reach the encrypted gallery.
@@ -467,7 +488,18 @@ final class FamiliarFaceExperiment: ObservableObject {
         guard case .save? = pending else { return }
         pending = nil; confirmation.cancel(); confirmationToken = nil; awaitingConfirmation = false
     }
-    func confirm() {
+    var guardianConfirmationToken: UUID? { requiresGuardianAttestation ? confirmationToken : nil }
+    func confirm(guardianAttested: Bool = false, guardianToken: UUID? = nil) {
+        if guardianAttested || guardianToken != nil {
+            guard requiresGuardianAttestation, guardianAttested, let guardianToken,
+                  guardianToken == confirmationToken else {
+                status = "That guardian confirmation no longer matches the pending action. Review the current action before confirming."
+                return
+            }
+        } else if requiresGuardianAttestation {
+            status = "A parent or legal guardian must confirm this exact action in the helper screen. A voice confirmation cannot grant child enrollment consent."
+            return
+        }
         guard let pending, let token = confirmationToken, confirmation.consume(token, now: ProcessInfo.processInfo.systemUptime) else {
             self.pending = nil; confirmation.cancel(); confirmationToken = nil; awaitingConfirmation = false; status = "No current confirmation, or it expired. Repeat the action."; return
         }
@@ -475,17 +507,17 @@ final class FamiliarFaceExperiment: ObservableObject {
         do {
             switch pending {
             case .enable: setEnabled(true)
-            case let .begin(label, id, mode):
+            case let .begin(label, id, mode, consent):
                 guard enabled, storageReady else { throw FamiliarFaceStore.StoreError.unavailable }
                 let originals = mode == .add ? people.first(where: { $0.id == id })?.examples ?? [] : []
                 guard originals.count < 6 else { status = "Six examples already saved. Delete one or replace examples first."; return }
-                draft = Draft(id: id ?? UUID(), label: label, consentAt: Date(), examples: originals)
+                draft = Draft(id: id ?? UUID(), label: label, consentAt: Date(), consent: consent, examples: originals)
                 publishDraft(); status = "Consent recorded\(label.map { " for label \($0)" } ?? ""). Collect at least three, at most six examples. \(captureInstruction) Say capture face, or import face photos."
             case .save:
                 guard enabled, let draft, let label = draft.label, !label.isEmpty, draft.examples.count >= 3,
                       FamiliarFacePolicy.normalizedMean(draft.examples.map(\.feature), expectedDimension: FamiliarModelConfiguration.selected.embeddingDimension) != nil else { throw FamiliarFaceStore.StoreError.invalid }
                 let person = FamiliarTemplate(id: draft.id, label: label, examples: draft.examples,
-                    consent: "self-or-consenting-adult", consentAt: draft.consentAt)
+                    consent: draft.consent.rawValue, consentAt: draft.consentAt)
                 var updated = try store.load().filter { $0.id != draft.id }; updated.append(person)
                 try store.save(updated); people = updated; self.draft = nil; publishDraft()
                 status = "Saved \(person.examples.count) face examples under your label \(person.label). Hints can still be wrong."
@@ -512,7 +544,7 @@ final class FamiliarFaceExperiment: ObservableObject {
     func finishEnrollment() {
         guard let draft, !busy, draft.examples.count >= 3 else { status = "Collect at least three valid examples before finishing."; return }
         guard let label = draft.label, !label.isEmpty else { status = "Choose the person's name before saving."; return }
-        ask(.save, "Save \(draft.examples.count) examples for label \(label)? Confirm every example shows the same consenting adult, not a bystander. This replaces the saved example set for that label.")
+        ask(.save, "Save \(draft.examples.count) examples for label \(label)? \(draft.consent.confirmationText) Confirm every example shows the same intended person, not a bystander. This replaces the saved example set for that label.")
     }
     func requestDeletePerson(_ id: UUID) {
         guard let person = people.first(where: { $0.id == id }) else { return }
@@ -575,7 +607,7 @@ final class FamiliarFaceExperiment: ObservableObject {
         guard enabled, draft != nil, !busy, remainingExamples > 0 else { status = "Begin consented enrollment first, or finish the current six examples."; return }
         guard let capture = model.captureFamiliarFace() else { status = "Need a current tracked portrait camera and three seconds stationary. Then retry face capture."; return }
         cancelWork(); pending = nil; confirmation.cancel(); confirmationToken = nil; awaitingConfirmation = false
-        let token = generation, useVision = dualPipeline; busy = true; status = "Capturing example \(draftExamples.count + 1). The adult holds their pose; the child keeps the phone steady."
+        let token = generation, useVision = dualPipeline; busy = true; status = "Capturing example \(draftExamples.count + 1). The participant or guardian arranges a clear view; the child keeps the phone steady."
         task = Task { @MainActor [weak self] in
             guard let self else { return }
             do {
@@ -586,7 +618,7 @@ final class FamiliarFaceExperiment: ObservableObject {
                 status = "Accepted \(draftExamples.count) of at most six examples for \(draftLabel ?? "this label"). \(captureInstruction)"
             } catch {
                 guard generation == token, !Task.isCancelled else { return }
-                status = "Example not accepted. Need one clear, well-lit adult face. Ask the sighted adult being added to adjust their position or lighting while the child keeps the phone, then retry. No example was saved."
+                status = "Example not accepted. Need one clear, well-lit face. Ask the participant or guardian to adjust their position or lighting while the child keeps the phone, then retry. No example was saved."
             }
             guard generation == token else { return }; busy = false; task = nil
         }
@@ -595,7 +627,7 @@ final class FamiliarFaceExperiment: ObservableObject {
         guard enabled, draft != nil, !busy, remainingExamples > 0 else { status = "Begin consented enrollment before importing photos."; return }
         cancelWork(); pending = nil; confirmation.cancel(); confirmationToken = nil; awaitingConfirmation = false
         showPicker = true
-        status = "Choose up to \(remainingExamples) photos of the same consenting adult alone in Apple's accessible photo picker. Voice commands cannot select its photos; use VoiceOver or the picker controls."
+        status = "Choose up to \(remainingExamples) photos of the same consented person alone in Apple's accessible photo picker. Voice commands cannot select its photos; use VoiceOver or the picker controls."
     }
     /// Called by the local system picker, one bounded image at a time. Not a live recognition route.
     func importPhotos(_ photos: [Data]) {
