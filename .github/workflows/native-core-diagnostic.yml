@@ -1,0 +1,60 @@
+name: One native Core failure diagnostic
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/native-core-diagnostic.yml'
+      - 'tools/ci/extract-native-core-diagnostic.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: native-core-diagnostic-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  core:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    runs-on: xcode-27
+    timeout-minutes: 22
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Check out exact failed source read-only
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: 2776b18227fc9c62bb6c9a6b2f2abe06410d6f06
+          path: failed-source
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Record exact source and installed compiler
+        timeout-minutes: 2
+        working-directory: failed-source
+        run: |
+          test "$(uname -s)" = Darwin
+          test -d "$DEVELOPER_DIR"
+          test "$(git rev-parse HEAD)" = 2776b18227fc9c62bb6c9a6b2f2abe06410d6f06
+          git rev-parse HEAD
+          git rev-parse HEAD:BlindCore
+          xcodebuild -version
+          xcrun swift --version
+      - name: One unchanged Core test invocation
+        timeout-minutes: 18
+        working-directory: failed-source
+        run: bash tools/ci/native-apple.sh core
+      - name: Preserve bounded failure evidence and verify unchanged source
+        if: always()
+        timeout-minutes: 2
+        run: |
+          python3 tools/ci/extract-native-core-diagnostic.py "$RUNNER_TEMP/blind-native-ci/core.log"
+          git -C failed-source diff --exit-code -- BlindCore tools/ci/native-apple.sh
