@@ -54,7 +54,14 @@ test('item tasks consult attributed memory before continuing existing live handl
 
 test('saved evidence includes observations gallery places and attributed checklist without mutations', () => {
   const saved = section(model, 'private func readSavedCompanionMemory(', '@MainActor private func readCompanionTool(');
-  for (const fragment of ['assistantDialogue.relevantUserReports', 'observed: observedObjects', 'savedItems: items.items', 'places: savedPlaces', 'preferences: preferences', 'taskContext: taskNotes', 'shoppingList.entries', '$0.element.sourceQuote', '$0.element.recordedAt']) assert.ok(saved.includes(fragment), fragment);
+  for (const fragment of ['companionWorkingState.memoryToolReports(from: assistantDialogue, query: query)', 'observed: companionWorkingState.taskContextObservations(observedObjects)', 'savedItems: companionWorkingState.taskContextItems(items.items)', 'places: savedPlaces', 'preferences: preferences', 'taskContext: taskNotes', 'shoppingList.entries', '$0.element.sourceQuote', '$0.element.recordedAt']) assert.ok(saved.includes(fragment), fragment);
+  assert.doesNotMatch(saved, /assistantDialogue\.relevantUserReports|observed: observedObjects|savedItems: items\.items/);
+  const scopedReports = section(read('ios/BlindAssist/LocalImageAssistant.swift'), 'func memoryToolReports(', 'func taskContextItems(').split('return dialogue.relevantUserReports')[0];
+  assert.match(scopedReports, /if hasScopedMemoryHistory/);
+  assert.match(scopedReports, /guard let id = report\.sourceID/);
+  assert.match(scopedReports, /id: "report:" \+ id/);
+  assert.match(scopedReports, /observedAt: report\.time/);
+  assert.doesNotMatch(scopedReports, /dialogue\.|Date\(\)/);
   assert.match(saved, /companionWorkingState\.goalSource/);
   assert.match(saved, /locationReports: companionWorkingState\.locationReports/);
   assert.match(read('BlindCore/Sources/BlindCore/CompanionTaskSource.swift'), /original user goal request, not completed action/);

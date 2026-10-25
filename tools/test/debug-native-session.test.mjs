@@ -109,11 +109,22 @@ test('native debug integration: VoiceOver text callbacks do not invent utterance
 });
 
 test('native debug integration: privacy removal invokes purge and reports failure without new controls', () => {
-  for (const signature of ['func clearAssistantConversation()', 'func clearNarrationHistory()', 'func clearObservedObjects()', 'func forgetConversationRecord', 'func removeAssistantInterest', 'func forgetItem', 'func forgetRoomPictures', 'func deletePlace', 'func forgetRoom', 'func removeHint']) {
+  for (const signature of ['func clearAssistantConversation()', 'func clearNarrationHistory()', 'func clearObservedObjects()', 'func removeAssistantInterest', 'func forgetItem', 'func forgetRoomPictures', 'func deletePlace', 'func forgetRoom', 'func removeHint']) {
     const at = nav.indexOf(signature);
     assert.ok(at >= 0);
     assert.match(nav.slice(at, at + 220), /purgeDebugSessionDiagnostics\(\)/);
   }
+  const forget = section(nav, '    func forgetConversationRecord(', '    func savePreferredName(');
+  const admission = 'guard companionWorkingState.allowsLegacyReportMutation else { return }';
+  const admissionAt = forget.indexOf(admission);
+  const purgeAt = forget.indexOf('purgeDebugSessionDiagnostics()');
+  const mutationAt = forget.indexOf('assistantDialogue.forgetUserRecord(id: id)');
+  assert.ok(admissionAt >= 0 && purgeAt > admissionAt && mutationAt > purgeAt);
+  assert.doesNotMatch(forget.slice(0, admissionAt), /retireHeldSearch|purgeDebug|forgetUserRecord|removeReport|persist|return true/);
+  assert.match(forget.slice(admissionAt + admission.length, purgeAt), /^\s*retireHeldSearchForPrivacyDeletion\(\)\s*#if DEBUG\s*$/);
+  assert.match(forget.slice(purgeAt, mutationAt), /^purgeDebugSessionDiagnostics\(\)\s*#endif\s*guard let original = assistantDialogue\.userRecords\.first\(where: \{ \$0\.id == id \}\),\s*$/);
+  assert.ok(forget.indexOf('companionWorkingState.removeReport(original.text)') > mutationAt);
+  assert.ok(forget.indexOf('persistDialogue(); persistWorkingState()') > mutationAt);
   assert.match(nav, /guard !debugPurgePending else/);
   assert.match(nav, /debugLastPurgeSucceeded = success/);
   assert.match(familiar, /case \.deletePerson\(let id\):\s*#if DEBUG\s*purgeDebugSessionDiagnostics/);

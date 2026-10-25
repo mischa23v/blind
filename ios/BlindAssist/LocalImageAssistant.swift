@@ -22,6 +22,7 @@ struct CompanionTaskUpdate: Codable, Sendable {
     var completionStep: String = ""
     var cancellationReport: String = ""
     var fact: CompanionReportedFact? = nil
+    var contextRevision: String? = nil
 }
 struct CompanionReportedFact: Codable, Sendable {
     var subject: String
@@ -30,12 +31,38 @@ struct CompanionReportedFact: Codable, Sendable {
     // Optional for backwards-compatible decoding of older local records.
     // Retain the complete original report for review/correction/deletion.
     var sourceReport: String? = nil
+    var sourceID: String? = nil
 }
 struct CompanionWorkingState: Codable, Sendable {
     struct Report: Codable, Sendable {
         var text: String
         var time: Date?
+        var sourceID: String? = nil
     }
+    /// Set only by the controller's established place/instance adapter. Never by
+    /// a goal string or language model. Nil means identity unknown.
+    private(set) var memoryScope: CompanionMemoryScope?
+    struct ScopedTaskHistory: Codable, Sendable {
+        var scope: CompanionMemoryScope?
+        var goal: String
+        var goalRevision: String
+        var reports: [Report]
+        var facts: [CompanionReportedFact]
+        var completedSteps: [String]
+        var valid: Bool {
+            scope?.valid != false && goal.count <= 300 && !goalRevision.isEmpty && goalRevision.utf8.count <= 64 &&
+            reports.count <= 12 && facts.count <= 12 && completedSteps.count <= 12 &&
+            reports.allSatisfy { !$0.text.isEmpty && $0.text.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars &&
+                ($0.sourceID.map { !$0.isEmpty && $0.utf8.count <= 64 } ?? true) &&
+                ($0.time.map { $0.timeIntervalSinceReferenceDate.isFinite && $0 >= .distantPast && $0 <= .distantFuture } ?? true) } &&
+            facts.allSatisfy { $0.subject.count <= 100 && $0.value.count <= 100 &&
+                ($0.sourceID.map { !$0.isEmpty && $0.utf8.count <= 64 } ?? true) &&
+                $0.quote.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars &&
+                ($0.sourceReport.map { $0.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars } ?? true) } &&
+            completedSteps.allSatisfy { $0.count <= 300 }
+        }
+    }
+    private(set) var scopedTaskHistory: [ScopedTaskHistory] = []
     var goal = ""
     var goalSource: CompanionTaskSource?
     var goalRevision = UUID().uuidString
@@ -70,7 +97,7 @@ struct CompanionWorkingState: Codable, Sendable {
     }
     var suspendedGoals: [SuspendedGoal] = []
 
-    private enum CodingKeys: String, CodingKey { case goal, goalSource, goalRevision, proposedStep, reportedCompletedSteps, reports, facts, suspendedGoals, parentGoal, factBook, focusObject, lastSearch, locationReportSources, actionProgress, reportedStepAssociations }
+    private enum CodingKeys: String, CodingKey { case memoryScope, scopedTaskHistory, goal, goalSource, goalRevision, proposedStep, reportedCompletedSteps, reports, facts, suspendedGoals, parentGoal, factBook, focusObject, lastSearch, locationReportSources, actionProgress, reportedStepAssociations }
     init() {}
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -108,15 +135,15 @@ struct CompanionWorkingState: Codable, Sendable {
             }
         }
         for fact in savedBook.facts.suffix(CompanionFactBook.limit) {
-            guard let source = savedSources[fact.key] ?? recoveredSources[fact.key],
+            guard let source = savedSources[fact.storageKey] ?? (fact.scope == nil ? savedSources[fact.key] ?? recoveredSources[fact.key] : nil),
                   !source.isEmpty, source.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars,
                   case .report(let named, let place, let tense, let hedged)? = CompanionUtterance.parse(source),
                   named.map({ ItemMemory.key(for: $0) == fact.key }) ?? true,
                   place == fact.place, tense == fact.tense, hedged == fact.hedged,
                   fact.key == ItemMemory.key(for: fact.object),
                   factBook.record(object: fact.object, place: fact.place, tense: fact.tense,
-                                  hedged: fact.hedged, at: fact.at) != nil else { continue }
-            locationReportSources[fact.key] = source
+                                  hedged: fact.hedged, at: fact.at, scope: fact.scope, sourceID: fact.sourceID) != nil else { continue }
+            locationReportSources[fact.storageKey] = source
         }
         suspendedGoals = Array((try c.decodeIfPresent([SuspendedGoal].self, forKey: .suspendedGoals) ?? [])
             .filter { !$0.goal.isEmpty && $0.goal.count <= 300 && $0.proposedStep.count <= 300 }.suffix(3)).map { saved in
@@ -130,33 +157,123 @@ struct CompanionWorkingState: Codable, Sendable {
         parentGoal = Self.boundedParent(try c.decodeIfPresent(ParentGoal.self, forKey: .parentGoal), activeGoal: goal)
         if proposedStep.count > 300 { proposedStep = "" }
         reportedCompletedSteps = Array(reportedCompletedSteps.filter { $0.count <= 300 }.suffix(12))
-        reports = Array(reports.filter { !$0.text.isEmpty && $0.text.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars }.suffix(12))
-        facts = Array(facts.filter { $0.subject.count <= 100 && $0.value.count <= 100 && $0.quote.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars }.suffix(12))
+        reports = Array(reports.filter { !$0.text.isEmpty && $0.text.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars &&
+            ($0.sourceID.map { !$0.isEmpty && $0.utf8.count <= 64 } ?? true) }.suffix(12))
+        facts = Array(facts.filter { $0.subject.count <= 100 && $0.value.count <= 100 && $0.quote.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars &&
+            ($0.sourceID.map { !$0.isEmpty && $0.utf8.count <= 64 } ?? true) &&
+            ($0.sourceReport.map { $0.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars } ?? true) }.suffix(12))
+        scopedTaskHistory = Array((try c.decodeIfPresent([ScopedTaskHistory].self, forKey: .scopedTaskHistory) ?? []).filter(\.valid).suffix(12))
+        memoryScope = try c.decodeIfPresent(CompanionMemoryScope.self, forKey: .memoryScope)
+        if memoryScope != nil || !scopedTaskHistory.isEmpty { retireScopedContext(to: nil) }
+    }
+
+    /// Same established identity preserves progress. Any different place, floor,
+    /// map revision, room, target instance or identity loss retires the generation
+    /// but not the user's goal. History is retained separately, never auto-resumed.
+    mutating func transitionMemoryScope(_ proposed: CompanionMemoryScope?) {
+        let next = proposed?.valid == true ? proposed : nil
+        guard next != memoryScope else { return }
+        retireScopedContext(to: next)
+    }
+    private mutating func retireScopedContext(to next: CompanionMemoryScope?) {
+        scopedTaskHistory.append(ScopedTaskHistory(scope: memoryScope, goal: goal,
+            goalRevision: goalRevision, reports: reports, facts: facts, completedSteps: reportedCompletedSteps))
+        scopedTaskHistory = Array(scopedTaskHistory.suffix(12))
+        memoryScope = next
+        actionProgress = CompanionActionProgressLedger()
+        goalRevision = UUID().uuidString
+        proposedStep = ""; reportedCompletedSteps = []; reportedStepAssociations = []
+        facts = []; reports = []; lastSearch = nil; focusObject = ""
+        // Parent/suspended goals retain intent only, not another target's progress.
+        parentGoal?.reportedCompletedSteps = []
+        for index in suspendedGoals.indices {
+            suspendedGoals[index].proposedStep = ""
+            suspendedGoals[index].reportedCompletedSteps = []
+            suspendedGoals[index].focusObject = nil
+            suspendedGoals[index].parentGoal?.reportedCompletedSteps = []
+        }
+    }
+
+    /// Scoped task prompts cannot backfill from the unscoped dialogue archive.
+    /// Old words remain reviewable history, not evidence for the current fridge.
+    var hasScopedMemoryHistory: Bool { memoryScope != nil || !scopedTaskHistory.isEmpty }
+    func taskContextReports(_ candidates: [String]) -> [String] {
+        guard hasScopedMemoryHistory else { return candidates }
+        let retained = Set(reports.map(\.text))
+        return candidates.filter { retained.contains($0) }
+    }
+
+    /// Retrieve source-owned current-context reports directly. Never join an old
+    /// dialogue ID to a newer same-text report or assign it the newer date.
+    func memoryToolReports(from dialogue: AssistantDialogue, query: String) -> [CompanionEvidence] {
+        if hasScopedMemoryHistory {
+            return reports.compactMap { report in
+                guard let id = report.sourceID, !id.isEmpty, id.utf8.count <= 64 else { return nil }
+                return CompanionEvidence(id: "report:" + id, kind: .userReport, text: report.text,
+                    source: "original scoped user report; not an observation", observedAt: report.time)
+            }
+        }
+        return dialogue.relevantUserReports(for: query, maxScalars: 1200).map {
+            CompanionEvidence(id: $0.id, kind: .userReport, text: $0.text, source: "original user conversation record")
+        }
+    }
+
+    func taskContextItems(_ candidates: [RememberedItem]) -> [RememberedItem] {
+        guard hasScopedMemoryHistory else { return candidates.filter { $0.scope == nil } }
+        guard let memoryScope else { return [] }
+        return candidates.filter { $0.scope == memoryScope }
+    }
+    /// The legacy category archive has no exact map revision/target-container
+    /// binding. Do not infer one from room labels or category names.
+    func taskContextObservations(_ history: ObservedObjectMemory) -> ObservedObjectMemory {
+        hasScopedMemoryHistory ? ObservedObjectMemory() : history
     }
 
     mutating func record(_ text: String, at: Date? = Date()) {
         guard !text.isEmpty, text.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars else { return }
         if at == nil, reports.contains(where: { $0.text == text }) { return }
-        reports.append(Report(text: text, time: at))
+        reports.append(Report(text: text, time: at, sourceID: UUID().uuidString))
         reports = Array(reports.suffix(12))
     }
     mutating func ingestDirectActionReport(_ text: String) {
-        let reduction = actionProgress.ingestUserReport(text, sourceID: UUID().uuidString, goalRevision: goalRevision)
+        let source = reports.last(where: { $0.text == text })
+        let reduction = actionProgress.ingestUserReport(text, sourceID: source?.sourceID ?? UUID().uuidString,
+            goalRevision: goalRevision, at: source?.time ?? Date())
         if reduction.acceptedReport != nil, !actionProgress.allowsProposal(proposedStep, goalRevision: goalRevision) {
             proposedStep = ""
         }
     }
     /// Explicit review/correction/deletion only. Remove exact source records,
     /// not similarly worded unrelated memories. Invalidate pending generation.
-    mutating func removeReport(_ exactText: String) {
+    /// Legacy dialogue IDs are not bound to scoped source IDs. Fail closed
+    /// before any mutation rather than deleting same-text reports in two homes.
+    var allowsLegacyReportMutation: Bool { !hasScopedMemoryHistory }
+    @discardableResult mutating func removeReport(_ exactText: String) -> Bool {
+        guard allowsLegacyReportMutation else { return false }
+        for index in scopedTaskHistory.indices {
+            let affected = scopedTaskHistory[index].reports.contains { $0.text == exactText }
+            scopedTaskHistory[index].reports.removeAll { $0.text == exactText }
+            scopedTaskHistory[index].facts.removeAll { $0.sourceReport == exactText || $0.quote == exactText }
+            // Archived completions have no executable authority; retire them
+            // conservatively when correcting one of that archive's sources.
+            if affected { scopedTaskHistory[index].completedSteps = [] }
+        }
         actionProgress.removeReport(exactText: exactText)
         let removedSteps = reportedStepAssociations.filter { $0.report == exactText }.map(\.step)
         reportedStepAssociations.removeAll { $0.report == exactText }
         reportedCompletedSteps.removeAll { removedSteps.contains($0) }
+        parentGoal?.reportedCompletedSteps.removeAll { removedSteps.contains($0) }
+        for index in suspendedGoals.indices {
+            let previous = suspendedGoals[index].reportedCompletedSteps
+            let previousParent = suspendedGoals[index].parentGoal?.reportedCompletedSteps
+            suspendedGoals[index].reportedCompletedSteps.removeAll { removedSteps.contains($0) }
+            suspendedGoals[index].parentGoal?.reportedCompletedSteps.removeAll { removedSteps.contains($0) }
+            if previous != suspendedGoals[index].reportedCompletedSteps || previousParent != suspendedGoals[index].parentGoal?.reportedCompletedSteps { suspendedGoals[index].proposedStep = "" }
+        }
         reports.removeAll { $0.text == exactText }
         let removedLocationKeys = locationReportSources.filter { $0.value == exactText }.map(\.key)
         for key in removedLocationKeys {
-            if let object = factBook.facts.first(where: { $0.key == key })?.object { factBook.forget(object) }
+            factBook.forget(storageKey: key)
             locationReportSources.removeValue(forKey: key)
         }
         facts.removeAll { $0.sourceReport == exactText || $0.quote == exactText ||
@@ -176,6 +293,41 @@ struct CompanionWorkingState: Codable, Sendable {
         // The controller cancels pending generation. Unrelated source deletion
         // must not erase still-valid user reports by silently replacing the goal.
         proposedStep = ""
+        return true
+    }
+    /// Exact location-memory source deletion, usable by a future source-bound
+    /// review UI. Does not erase another scope's same-word report or task.
+    @discardableResult mutating func removeLocationReport(sourceID: String) -> Bool {
+        guard let fact = factBook.facts.first(where: { $0.sourceID == sourceID }) else { return false }
+        guard factBook.forgetSource(sourceID) else { return false }
+        let original = locationReportSources.removeValue(forKey: fact.storageKey)
+        func dependsOnSource(_ derived: CompanionReportedFact) -> Bool {
+            derived.sourceID == sourceID || (derived.sourceID == nil && original.map {
+                derived.sourceReport == $0 || derived.quote == $0
+            } == true)
+        }
+        if memoryScope == fact.scope {
+            facts.removeAll(where: dependsOnSource)
+            actionProgress.removeSource(sourceID)
+            // Older associations lack source IDs. Invalidate dependent evidence
+            // only inside this exact scope, never another home's same words.
+            if let original {
+                actionProgress.removeReport(exactText: original)
+                reportedStepAssociations.removeAll { $0.report == original }
+            }
+            reportedCompletedSteps = []
+            parentGoal?.reportedCompletedSteps = []
+        }
+        reports.removeAll { $0.sourceID == sourceID }
+        for index in scopedTaskHistory.indices where scopedTaskHistory[index].scope == fact.scope {
+            scopedTaskHistory[index].reports.removeAll { $0.sourceID == sourceID }
+            scopedTaskHistory[index].facts.removeAll(where: dependsOnSource)
+            scopedTaskHistory[index].completedSteps = []
+        }
+        actionProgress.retireSuggestions(forGoalRevision: goalRevision)
+        goalRevision = UUID().uuidString
+        proposedStep = ""
+        return true
     }
     mutating func changeGoal(_ value: String, originalRequest: String? = nil, sourceID: String? = nil, at: Date? = Date()) {
         let source = originalRequest.flatMap {
@@ -216,7 +368,7 @@ struct CompanionWorkingState: Codable, Sendable {
     }
     /// Applies only an explicit parsed request/report; the controller owns live
     /// sensor search and completion-accounted speech. No model action is involved.
-    mutating func respond(to utterance: CompanionUtterance, message: String, now: Date = Date(), arabic: Bool) -> String {
+    mutating func respond(to utterance: CompanionUtterance, message: String, now: Date = Date(), arabic: Bool, sourceID: String? = nil) -> String {
         guard CompanionUtterance.parse(message) == utterance else {
             return arabic ? "لم أستطع تأكيد هذا الطلب." : "I couldn't verify that request."
         }
@@ -227,7 +379,10 @@ struct CompanionWorkingState: Codable, Sendable {
                 return arabic ? "اختصر طلب البحث من فضلك." : "Please shorten that search request."
             }
             beginFindGoal(request, object: object)
-            if let fact = factBook.latest(for: object) { return fact.recall(now: now, arabic: arabic) }
+            if let fact = factBook.latest(for: object, in: memoryScope) { return fact.recall(now: now, arabic: arabic) }
+            if memoryScope == nil, let fact = factBook.latest(for: object), fact.scope == nil {
+                return fact.recall(now: now, arabic: arabic)
+            }
             if let search = lastSearch, search.matches(object) {
                 let ask = arabic ? " أين كان آخر مرة؟" : " Where did you last have it?"
                 return search.sentence(now: now, arabic: arabic) + (search.located ? "" : ask)
@@ -237,13 +392,16 @@ struct CompanionWorkingState: Codable, Sendable {
             guard let object = named ?? (focusObject.isEmpty ? nil : focusObject) else {
                 return arabic ? "أي غرض تقصد؟ قل اسمه." : "Which thing do you mean? Tell me its name."
             }
-            guard !message.isEmpty, message.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars,
-                  let fact = factBook.record(object: object, place: place, tense: tense, hedged: hedged, at: now) else {
+            let boundSource = sourceID.flatMap { id in reports.last(where: { $0.sourceID == id && $0.text == message }) }
+            guard sourceID == nil || (boundSource != nil && boundSource?.time != nil),
+                  !message.isEmpty, message.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars,
+                  let fact = factBook.record(object: object, place: place, tense: tense, hedged: hedged,
+                    at: boundSource?.time ?? now, scope: memoryScope, sourceID: sourceID ?? UUID().uuidString) else {
                 return arabic ? "لم أستطع حفظ ذلك." : "I couldn't save that."
             }
             focusObject = object
-            locationReportSources[fact.key] = message
-            let retainedKeys = Set(factBook.facts.map(\.key))
+            locationReportSources[fact.storageKey] = message
+            let retainedKeys = Set(factBook.facts.map(\.storageKey))
             locationReportSources = locationReportSources.filter { retainedKeys.contains($0.key) }
             return fact.acknowledgement(arabic: arabic)
         }
@@ -252,10 +410,10 @@ struct CompanionWorkingState: Codable, Sendable {
     /// The original pronoun report is bound while the full conversation state is
     /// available, never guessed later from a ranked/truncated retrieval subset.
     var locationReports: [CompanionLocationReport] {
-        factBook.facts.compactMap { fact in
-            guard let source = locationReportSources[fact.key] else { return nil }
-            return CompanionLocationReport(id: "location:" + fact.key, object: fact.object,
-                originalReport: source, recordedAt: fact.at)
+        factBook.facts.filter { $0.scope == memoryScope }.compactMap { fact in
+            guard let source = locationReportSources[fact.storageKey] else { return nil }
+            return CompanionLocationReport(id: "location:" + (fact.sourceID ?? fact.key), object: fact.object,
+                originalReport: source, recordedAt: fact.at, scope: fact.scope)
         }
     }
 
@@ -323,6 +481,11 @@ struct CompanionWorkingState: Codable, Sendable {
         return true
     }
     mutating func apply(_ update: CompanionTaskUpdate, latest: String) {
+        // Native model proposals carry the exact generation they read. Legacy
+        // unscoped fixtures remain readable, but never enter a scoped task.
+        if update.contextRevision != nil || memoryScope != nil || !scopedTaskHistory.isEmpty {
+            guard update.contextRevision == goalRevision else { return }
+        }
         if var fact = update.fact,
            CompanionTaskMutationPolicy.currentReport(quote: fact.quote, latest: latest),
            !fact.subject.isEmpty, fact.subject.count <= 100,
@@ -330,6 +493,7 @@ struct CompanionWorkingState: Codable, Sendable {
             // Retain the whole assertion, not a model-extracted value that could
             // omit "not". It still remains a user report, never an observation.
             fact.value = fact.quote; fact.sourceReport = latest
+            fact.sourceID = reports.last(where: { $0.text == latest })?.sourceID
             facts.removeAll { $0.subject.caseInsensitiveCompare(fact.subject) == .orderedSame }
             facts.append(fact); facts = Array(facts.suffix(12))
         }
@@ -585,12 +749,12 @@ enum LocalImageAssistant {
                     currentGoal: currentGoal, goalRevision: workingState.goalRevision, parentGoal: workingState.parentGoal?.goal, proposedStep: workingState.proposedStep)
                 var earlierReports = workingState.reports.map(\.text)
                 if earlierReports.last == latest { earlierReports.removeLast() }
-                if earlierReports.isEmpty {
+                if earlierReports.isEmpty && !workingState.hasScopedMemoryHistory {
                     earlierReports = dialogue.turns.dropLast().filter { $0.role == "user" }.map(\.text)
                 }
                 // Retrieve bounded relevant original reports, not generated
                 // summaries. Keep newest reports too so explicit corrections win.
-                let retrieved = dialogue.relevantUserReports(for: latest, maxScalars: 1200).map(\.text)
+                let retrieved = workingState.taskContextReports(dialogue.relevantUserReports(for: latest, maxScalars: 1200).map(\.text))
                 var reports: [String] = []
                 for report in retrieved + Array(earlierReports.suffix(4)) + [latest] {
                     reports.removeAll { $0 == report }; reports.append(report)
@@ -603,7 +767,7 @@ enum LocalImageAssistant {
                     reportBudget -= report.count; return true
                 }.reversed()
                 var assistantWordBudget = 800
-                let priorAssistantWords = dialogue.turns.filter { $0.role == "assistant" }.suffix(3).reversed().filter { turn in
+                let priorAssistantWords = dialogue.turns.filter { $0.role == "assistant" && !workingState.hasScopedMemoryHistory }.suffix(3).reversed().filter { turn in
                     guard turn.text.count <= assistantWordBudget else { return false }
                     assistantWordBudget -= turn.text.count; return true
                 }.reversed().map(\.text)
@@ -793,7 +957,7 @@ enum LocalImageAssistant {
                 let fact = reportedFact(quote: decision.factQuote, subject: decision.factSubject, value: decision.factValue, latest: latest)
                 return LocalImageAnswer(text: text, status: "On-device conversation; sources checked.", taskUpdate: CompanionTaskUpdate(
                     goal: decision.newGoal, nextStep: decision.nextStep, completionReport: decision.completionReport, completionStep: decision.completionStep,
-                    cancellationReport: decision.cancellationReport, fact: fact))
+                    cancellationReport: decision.cancellationReport, fact: fact, contextRevision: workingState.goalRevision))
             } catch is CancellationError {
                 #if DEBUG
                 debugTrace?.event(.unavailable) { .init(label: "conversation.cancelled") }

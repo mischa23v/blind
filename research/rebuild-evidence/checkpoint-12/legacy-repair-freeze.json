@@ -1,0 +1,36 @@
+{
+  "time": "2026-10-25T06:06:16.063368+00:00",
+  "changes": [
+    {
+      "path": "ios/BlindAssist/LocalImageAssistant.swift",
+      "base": "58a3e757c9b13db20d7016dc29aceae75f7e6e1b4b971b37fb925d9a1b70b717",
+      "candidate": "2685fb6cb32bd5bd1bf98a5e9e0baf13d642b4487bfd98b1518323fb0860ea5f",
+      "staged": "/workspace/shared/blind-scoped-review-stage/live-legacy-fix/LocalImageAssistant.swift"
+    },
+    {
+      "path": "tools/test/fixtures/task-memory-native-state/SuspendedSourceDeletionTests.swift",
+      "base": null,
+      "candidate": "60d58b2f05cea1d00fc16c4e4043fbc428b0edd4605d014155acf8f58b03af58",
+      "staged": "/workspace/shared/blind-scoped-review-stage/live-legacy-fix/SuspendedSourceDeletionTests.swift"
+    },
+    {
+      "path": "tools/test/task-memory-native-state.test.mjs",
+      "base": "1fc323a46cbcde756d01719c62dd5254a303de3ea54ca1b73cd1e17e3ff2563b",
+      "candidate": "cfd47aaa3f585d4557a760bfdb59dae26334ef93bb32e39aee9ec2ee3463ce29",
+      "staged": "/workspace/shared/blind-scoped-review-stage/live-legacy-fix/task-memory-native-state.test.mjs"
+    }
+  ],
+  "focusedBeforeLive": "33/33 passed; independent unchanged native witness now passes",
+  "status": "LIVE_FROZEN_FOR_ROOT_AGGREGATE12",
+  "verifiedAt": "2026-10-25T06:07:55.197117+00:00",
+  "tests": {
+    "focusedExtracted": 33,
+    "liveNode": 19,
+    "actualNativeStateReplayWithinNode": 37,
+    "failures": 0,
+    "skips": 0
+  },
+  "navUnchanged": "a492b8e4a68c1f5104df9cfde5696f062276a69b38bda44e9477fdc442e16e8d",
+  "failureEvidence": "/workspace/shared/blind-scoped-review-stage/evidence/live-legacy-suspended-failed-before.log",
+  "scope": "Legacy unscoped UI deletion only; source-ID correction UI remains separate staged follow-on."
+}

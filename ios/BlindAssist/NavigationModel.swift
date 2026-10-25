@@ -2482,6 +2482,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         sceneAnswer = ""; currentReply = ""; assistantQuestion = ""
     }
     @discardableResult func correctConversationRecord(id: String, replacement: String) -> Bool {
+        // A dialogue record ID cannot identify a scoped source record yet.
+        guard companionWorkingState.allowsLegacyReportMutation else { return false }
         retireHeldSearchForPrivacyDeletion()
         guard let original = assistantDialogue.userRecords.first(where: { $0.id == id }),
               assistantDialogue.correctUserRecord(id: id, replacement: replacement) else { return false }
@@ -2500,6 +2502,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
 
     func forgetConversationRecord(id: String) {
+        // Do not delete same-word records in another home through a text join.
+        guard companionWorkingState.allowsLegacyReportMutation else { return }
         retireHeldSearchForPrivacyDeletion()
         #if DEBUG
         purgeDebugSessionDiagnostics()
@@ -3308,9 +3312,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
 
     private func readSavedCompanionMemory(query: String) -> CompanionToolResult {
-            let reports = assistantDialogue.relevantUserReports(for: query, maxScalars: 1200).map {
-                CompanionEvidence(id: $0.id, kind: .userReport, text: $0.text, source: "original user conversation record")
-            }
+            let reports = companionWorkingState.memoryToolReports(from: assistantDialogue, query: query)
             var preferences = assistantPreferences.interests.prefix(16).map {
                 CompanionMemoryNote(id: "interest:" + $0.id, subject: $0.category,
                     text: $0.value, source: "user-edited preferences")
@@ -3337,7 +3339,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     recordedAt: Date(timeIntervalSince1970: $0.element.recordedAt))
             }
             return CompanionMemoryRetrieval.read(query: query, now: Date(), reports: reports,
-                locationReports: companionWorkingState.locationReports, observed: observedObjects, savedItems: items.items, places: savedPlaces,
+                locationReports: companionWorkingState.locationReports, observed: companionWorkingState.taskContextObservations(observedObjects),
+                savedItems: companionWorkingState.taskContextItems(items.items), places: savedPlaces,
                 preferences: preferences, taskContext: taskNotes)
     }
 
@@ -3499,7 +3502,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
 
     private func recordCompanionMessage(_ question: String) {
-        if companionWorkingState.reports.isEmpty {
+        if companionWorkingState.reports.isEmpty && !companionWorkingState.hasScopedMemoryHistory {
             for turn in assistantDialogue.turns where turn.role == "user" {
                 // AssistantDialogue's legacy turns have no capture date. Keep
                 // useful attributed words, but never make them newly reported.
@@ -3522,7 +3525,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
 
     private func applyCompanion(_ utterance: CompanionUtterance, question: String) {
         let oldGoal = companionWorkingState.goal
-        let text = companionWorkingState.respond(to: utterance, message: question, arabic: arabic)
+        let text = companionWorkingState.respond(to: utterance, message: question, arabic: arabic,
+            sourceID: companionWorkingState.reports.last?.sourceID)
         let findObject: String?
         if case .find(let object) = utterance { findObject = object } else { findObject = nil }
         if oldGoal != companionWorkingState.goal {
@@ -3659,12 +3663,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     return await self.readCompanionToolForTurn(request, id: id, generation: sessionGeneration)
                 }, requestID: id, onSpeechCandidate: { @MainActor [weak self] phrase, reports, evidence in
                     guard let self, ConversationDomainPolicy.allowsModelResponse(to: question),
+                          self.companionWorkingState.goalRevision == revision,
                           self.companionWorkingState.actionProgress.allowsProposal(phrase, goalRevision: revision), self.requestID == id, !Task.isCancelled,
                           self.assistantSession.generation == sessionGeneration else { return }
                     self.queueModelConversationSpeech(phrase, request: id, generation: sessionGeneration,
                                                       reports: reports, evidence: evidence)
                 }) { @MainActor [weak self] phrase in
                     guard let self, ConversationDomainPolicy.allowsModelResponse(to: question),
+                          self.companionWorkingState.goalRevision == revision,
                           self.companionWorkingState.actionProgress.allowsProposal(phrase, goalRevision: revision), self.requestID == id, !Task.isCancelled,
                           self.assistantSession.generation == sessionGeneration else { return }
                     guard let rendered = self.modelReplyText(phrase) else { return }

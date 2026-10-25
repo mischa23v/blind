@@ -72,7 +72,7 @@ public enum CompanionMemoryRetrieval {
         var latestLocations: [String: (Int, CompanionLocationReport)] = [:]
         for (order, report) in locationReports.suffix(CompanionFactBook.limit * 2).enumerated() {
             guard report.recordedAt.map({ validDate($0) && $0 <= now }) ?? true else { continue }
-            let key = ItemMemory.key(for: report.object)
+            let key = (report.scope.map { "scoped:" + $0.storageKey } ?? "unscoped:") + "|" + ItemMemory.key(for: report.object)
             if let previous = latestLocations[key], let oldDate = previous.1.recordedAt,
                let newDate = report.recordedAt, oldDate > newDate { continue }
             latestLocations[key] = (order, report)

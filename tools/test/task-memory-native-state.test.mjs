@@ -38,5 +38,5 @@ test('production task state retains exact sources, chronology and scoped complet
   const output = `${result.stdout || ''}\n${result.stderr || ''}`;
   writeFileSync(join(work, 'execution.log'), output);
   assert.equal(result.status, 0, `Extracted state replay failed; preserved package/log: ${work}\n${output.slice(-12000)}`);
-  assert.match(output, /Executed 25 tests, with 0 failures/);
+  assert.match(output, /Executed 37 tests, with 0 failures/);
 });

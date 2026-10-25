@@ -563,6 +563,187 @@ final class IndoorGoalContinuityTests: XCTestCase {
 /// State logic only. These same source declarations/tests can be extracted for
 /// portable Swift checks; those checks are not Apple SDK or model integration.
 final class CompanionWorkingStateTests: XCTestCase {
+    private func placeScope(_ house: String = "house-A", floor: String = "floor-1", fridge: String = "fridge-1", revision: String = "1") -> CompanionMemoryScope {
+        CompanionMemoryScope(map: .init(mapID: house, frameID: house, revision: revision), placeID: house, floorID: floor, roomID: "kitchen", objectInstanceID: fridge)!
+    }
+    func testPM001SameGoalTransitionRetiresOtherFridgeProgress() {
+        var state = CompanionWorkingState()
+        state.transitionMemoryScope(placeScope())
+        state.changeGoal("Check the fridge", originalRequest: "Please help me check this fridge")
+        let source = state.goalSource
+        let revision = state.goalRevision
+        state.reportedCompletedSteps = ["User reported checking milk"]
+        state.proposedStep = "Tell me what you want to check"
+        state.changeGoal("Check the fridge")
+        state.transitionMemoryScope(placeScope())
+        XCTAssertEqual(state.reportedCompletedSteps.count, 1)
+        XCTAssertEqual(state.goalRevision, revision)
+        state.transitionMemoryScope(placeScope("house-B", floor: "floor-2", fridge: "fridge-2"))
+        XCTAssertEqual(state.goal, "Check the fridge")
+        XCTAssertEqual(state.goalSource, source)
+        XCTAssertTrue(state.reportedCompletedSteps.isEmpty)
+        XCTAssertTrue(state.proposedStep.isEmpty)
+        XCTAssertNotEqual(state.goalRevision, revision)
+        XCTAssertEqual(state.scopedTaskHistory.last?.completedSteps, ["User reported checking milk"])
+        print("PM-001 PASS | Child: Please help me check this fridge. | Authored identity transition A/floor-1/fridge-1 -> B/floor-2/fridge-2 | goal retained; prior progress historical only.")
+    }
+    func testPM008RestartAndIdentityLossDoNotRestoreActivePlaceOrPronoun() throws {
+        var state = CompanionWorkingState()
+        state.transitionMemoryScope(placeScope())
+        state.changeGoal("Check the fridge")
+        let time = Date(timeIntervalSince1970: 1000)
+        let report = "My milk is in the fridge"
+        state.record(report, at: time)
+        _ = state.respond(to: CompanionUtterance.parse(report)!, message: report, now: time, arabic: false)
+        state.reportedCompletedSteps = ["Checked milk"]
+        let restored = try JSONDecoder().decode(CompanionWorkingState.self, from: JSONEncoder().encode(state))
+        XCTAssertNil(restored.memoryScope)
+        XCTAssertEqual(restored.goal, state.goal)
+        XCTAssertTrue(restored.focusObject.isEmpty)
+        XCTAssertTrue(restored.reportedCompletedSteps.isEmpty)
+        XCTAssertEqual(restored.factBook.latest(for: "milk", in: placeScope())?.at, time)
+        var lost = state
+        lost.transitionMemoryScope(nil)
+        let pronoun = "It is in the bag"
+        XCTAssertEqual(lost.respond(to: CompanionUtterance.parse(pronoun)!, message: pronoun, arabic: false), "Which thing do you mean? Tell me its name.")
+        let find = "Find my milk"
+        let answer = lost.respond(to: CompanionUtterance.parse(find)!, message: find, arabic: false)
+        XCTAssertFalse(answer.contains("in the fridge"))
+        print("PM-008 PASS | Child after identity loss: It is in the bag. | Assistant: Which thing do you mean? Tell me its name. | Child: Find my milk. | Assistant: \(answer)")
+    }
+    func testPM013OldDialogueCannotRefillScopedTaskContext() {
+        var state = CompanionWorkingState()
+        state.transitionMemoryScope(placeScope())
+        state.record("The milk is fresh")
+        XCTAssertEqual(state.taskContextReports(["The milk is fresh"]), ["The milk is fresh"])
+        state.transitionMemoryScope(placeScope("house-B"))
+        XCTAssertTrue(state.taskContextReports(["The milk is fresh"]).isEmpty)
+        state.record("The eggs are fresh")
+        XCTAssertEqual(state.taskContextReports(["The milk is fresh", "The eggs are fresh"]), ["The eggs are fresh"])
+        state.transitionMemoryScope(nil)
+        XCTAssertTrue(state.taskContextReports(["The eggs are fresh"]).isEmpty)
+    }
+    func testPM016ScopedReportReachesActualRetrievalWithBoundedID() {
+        for scope in [placeScope(), CompanionMemoryScope(map: .init(mapID: String(repeating: "m", count: 128), frameID: String(repeating: "f", count: 128), revision: String(repeating: "v", count: 128)), placeID: String(repeating: "p", count: 128), floorID: String(repeating: "l", count: 128), roomID: String(repeating: "r", count: 128), objectInstanceID: String(repeating: "o", count: 128))!] {
+            var state = CompanionWorkingState()
+            state.transitionMemoryScope(scope)
+            let t = Date(timeIntervalSince1970: 1000)
+            let text = "My milk is in the fridge"
+            _ = state.respond(to: CompanionUtterance.parse(text)!, message: text, now: t, arabic: false)
+            XCTAssertEqual(state.locationReports.count, 1)
+            let result = CompanionMemoryRetrieval.read(query: "milk", now: t, locationReports: state.locationReports)
+            XCTAssertEqual(result.evidence.count, 1)
+            XCTAssertEqual(result.evidence.first?.observedAt, t)
+            XCTAssertEqual(result.evidence.first?.text, text)
+        }
+    }
+    func testPM017MalformedArchivedContextIsDroppedWithoutTruncation() throws {
+        var state = CompanionWorkingState()
+        state.transitionMemoryScope(placeScope())
+        state.record("The milk is fresh")
+        state.transitionMemoryScope(nil)
+        let data = try JSONEncoder().encode(state)
+        var json = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        var history = try XCTUnwrap(json["scopedTaskHistory"] as? [[String: Any]])
+        XCTAssertFalse(history.isEmpty)
+        history[0]["goal"] = String(repeating: "x", count: 301)
+        history[1]["reports"] = Array(repeating: ["text": "The milk is fresh"], count: 13)
+        json["scopedTaskHistory"] = history
+        let decoded = try JSONDecoder().decode(CompanionWorkingState.self, from: JSONSerialization.data(withJSONObject: json))
+        XCTAssertTrue(decoded.scopedTaskHistory.isEmpty)
+        XCTAssertNil(decoded.memoryScope)
+    }
+    func testPM020AmbiguousLegacyMutationWithholdsAndExactSourceDeletionStaysLocal() {
+        var state = CompanionWorkingState()
+        let text = "My milk is in the fridge"
+        let time = Date(timeIntervalSince1970: 1000)
+        let a = placeScope(), b = placeScope("house-B")
+        state.transitionMemoryScope(a)
+        _ = state.respond(to: CompanionUtterance.parse(text)!, message: text, now: time, arabic: false)
+        let sourceA = state.factBook.latest(for: "milk", in: a)!.sourceID!
+        state.transitionMemoryScope(b)
+        _ = state.respond(to: CompanionUtterance.parse(text)!, message: text, now: time.addingTimeInterval(1), arabic: false)
+        XCTAssertFalse(state.allowsLegacyReportMutation)
+        XCTAssertFalse(state.removeReport(text))
+        XCTAssertEqual(state.factBook.facts.count, 2)
+        XCTAssertTrue(state.removeLocationReport(sourceID: sourceA))
+        XCTAssertNil(state.factBook.latest(for: "milk", in: a))
+        XCTAssertNotNil(state.factBook.latest(for: "milk", in: b))
+        XCTAssertFalse(state.removeLocationReport(sourceID: sourceA))
+    }
+    func testPM023BoundLocationSourceRetainsTimestampAndDeletesItsOriginalReport() {
+        var state = CompanionWorkingState()
+        state.transitionMemoryScope(placeScope())
+        let text = "My milk is in the fridge", t = Date(timeIntervalSince1970: 1000)
+        state.record(text, at: t)
+        let sourceID = state.reports.last!.sourceID!
+        _ = state.respond(to: CompanionUtterance.parse(text)!, message: text, now: t.addingTimeInterval(20), arabic: false, sourceID: sourceID)
+        XCTAssertEqual(state.factBook.facts.first?.at, t)
+        XCTAssertEqual(state.factBook.facts.first?.sourceID, sourceID)
+        XCTAssertTrue(state.removeLocationReport(sourceID: sourceID))
+        XCTAssertTrue(state.factBook.facts.isEmpty)
+        XCTAssertTrue(state.reports.isEmpty)
+        XCTAssertTrue(state.memoryToolReports(from: .init(), query: "milk").isEmpty)
+        let invalid = state.respond(to: CompanionUtterance.parse(text)!, message: text, arabic: false, sourceID: "unknown-id")
+        XCTAssertEqual(invalid, "I couldn't save that.")
+        XCTAssertTrue(state.factBook.facts.isEmpty)
+    }
+    func testPM027MalformedDerivedSourceFieldsAreNotRetained() throws {
+        let base: [String: Any] = ["subject": "milk", "value": "My milk is fresh", "quote": "My milk is fresh", "sourceReport": "My milk is fresh", "sourceID": "source"]
+        for (field, value) in [("sourceID", ""), ("sourceID", String(repeating: "x", count: 65)), ("sourceReport", String(repeating: "x", count: AssistantDialogue.maximumTurnScalars + 1))] {
+            var invalid = base; invalid[field] = value
+            let unscoped = try JSONDecoder().decode(CompanionWorkingState.self, from: JSONSerialization.data(withJSONObject: ["facts": [invalid]]))
+            XCTAssertTrue(unscoped.facts.isEmpty)
+            var state = CompanionWorkingState()
+            state.transitionMemoryScope(placeScope())
+            state.transitionMemoryScope(placeScope("house-B"))
+            var json = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(state)) as? [String: Any])
+            var history = try XCTUnwrap(json["scopedTaskHistory"] as? [[String: Any]])
+            history[1]["facts"] = [invalid]
+            json["scopedTaskHistory"] = history
+            let restored = try JSONDecoder().decode(CompanionWorkingState.self, from: JSONSerialization.data(withJSONObject: json))
+            XCTAssertTrue(restored.scopedTaskHistory.flatMap(\.facts).isEmpty)
+        }
+    }
+    func testPM009DelayedModelUpdateCannotCommitAcrossScopeTransition() {
+        var state = CompanionWorkingState()
+        state.transitionMemoryScope(placeScope())
+        state.changeGoal("Check the fridge")
+        let revision = state.goalRevision
+        let update = CompanionTaskUpdate(goal: "", nextStep: "", completionReport: "", fact: .init(subject: "milk", value: "old", quote: "The milk is fresh"), contextRevision: revision)
+        state.transitionMemoryScope(placeScope(fridge: "fridge-2"))
+        state.apply(update, latest: "The milk is fresh")
+        XCTAssertTrue(state.facts.isEmpty)
+        state.transitionMemoryScope(nil)
+        state.apply(update, latest: "The milk is fresh")
+        XCTAssertTrue(state.facts.isEmpty)
+    }
+    func testPM010ScopedCorrectionDeletionAndReturnHistory() throws {
+        var state = CompanionWorkingState()
+        let a = placeScope(), b = placeScope("house-B")
+        let t = Date(timeIntervalSince1970: 1000)
+        let first = "My milk is in the fridge"
+        let second = "My milk is in the bag"
+        state.transitionMemoryScope(a)
+        state.record(first, at: t)
+        _ = state.respond(to: CompanionUtterance.parse(first)!, message: first, now: t, arabic: false)
+        state.transitionMemoryScope(b)
+        state.record(second, at: t.addingTimeInterval(1))
+        _ = state.respond(to: CompanionUtterance.parse(second)!, message: second, now: t.addingTimeInterval(1), arabic: false)
+        state = try JSONDecoder().decode(CompanionWorkingState.self, from: JSONEncoder().encode(state))
+        XCTAssertEqual(state.factBook.facts.count, 2)
+        state.transitionMemoryScope(a)
+        let find = "Find my milk"
+        let answer = state.respond(to: CompanionUtterance.parse(find)!, message: find, now: t.addingTimeInterval(100), arabic: false)
+        XCTAssertTrue(answer.contains("in the fridge"))
+        XCTAssertTrue(answer.contains("I don't know where it is now"))
+        let sourceID = state.factBook.latest(for: "milk", in: a)!.sourceID!
+        XCTAssertTrue(state.removeLocationReport(sourceID: sourceID))
+        XCTAssertNil(state.factBook.latest(for: "milk", in: a))
+        XCTAssertNotNil(state.factBook.latest(for: "milk", in: b))
+        print("PM-010 PASS | Child returns to A: Find my milk. | Assistant: \(answer) | Correction deletion removes A only, B remains.")
+    }
+
     func testExplicitSubtaskReportRetiresFindFocusWithoutClaimingPossession() {
         var state = CompanionWorkingState()
         state.changeGoal("school")

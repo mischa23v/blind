@@ -52,23 +52,25 @@ public struct CompanionLocationReport: Codable, Equatable, Sendable {
     public let object: String
     public let originalReport: String
     public let recordedAt: Date?
+    public let scope: CompanionMemoryScope?
 
-    public init?(id: String, object: String, originalReport: String, recordedAt: Date? = nil) {
-        guard !id.isEmpty, id.count <= 80, !object.isEmpty, object.count <= ItemMemory.nameLimit,
+    public init?(id: String, object: String, originalReport: String, recordedAt: Date? = nil, scope: CompanionMemoryScope? = nil) {
+        guard scope?.valid != false, !id.isEmpty, id.count <= 80, !object.isEmpty, object.count <= ItemMemory.nameLimit,
               !originalReport.isEmpty, originalReport.count <= 500,
               recordedAt.map({ $0.timeIntervalSinceReferenceDate.isFinite && $0 >= .distantPast && $0 <= .distantFuture }) ?? true,
               case .report(let named, _, _, _)? = CompanionUtterance.parse(originalReport),
               named.map({ ItemMemory.key(for: $0) == ItemMemory.key(for: object) }) ?? true else { return nil }
-        self.id = id; self.object = object; self.originalReport = originalReport; self.recordedAt = recordedAt
+        self.id = id; self.object = object; self.originalReport = originalReport; self.recordedAt = recordedAt; self.scope = scope
     }
 
-    private enum CodingKeys: String, CodingKey { case id, object, originalReport, recordedAt }
+    private enum CodingKeys: String, CodingKey { case id, object, originalReport, recordedAt, scope }
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         guard let valid = Self(id: try values.decode(String.self, forKey: .id),
             object: try values.decode(String.self, forKey: .object),
             originalReport: try values.decode(String.self, forKey: .originalReport),
-            recordedAt: try values.decodeIfPresent(Date.self, forKey: .recordedAt)) else {
+            recordedAt: try values.decodeIfPresent(Date.self, forKey: .recordedAt),
+            scope: try values.decodeIfPresent(CompanionMemoryScope.self, forKey: .scope)) else {
             throw DecodingError.dataCorrupted(.init(codingPath: decoder.codingPath, debugDescription: "Invalid location report"))
         }
         self = valid

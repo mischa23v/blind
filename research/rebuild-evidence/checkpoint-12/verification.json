@@ -1,0 +1,30 @@
+{
+  "parent": "775feaca221e21f51411fc48b9aa6674535797c0",
+  "corePassed": 1153,
+  "nodePassed": 395,
+  "failures": 0,
+  "skipped": 0,
+  "scope": "Typed place/item/report scope, source-bound retrieval and original timestamps, isolation of unknown scope, exact scoped derivative cleanup, and legacy paused-goal deletion repair.",
+  "failurePreservation": "Obsolete source-shape checks were strengthened. Independent native deletion witness found removed completion resurrected on resumed suspended goal; minimal cleanup fixes suspended goals and parent proposals. Original failures retained.",
+  "limitations": [
+    "Positive native room/container scope issuer absent",
+    "Scoped correction UI and complete transition cancellation remain separate staged work",
+    "Legacy persistence remains best-effort; atomic asynchronous durable correction/erase and disk-failure acceptance are not claimed",
+    "Apple SDK/device/small-model behavior unvalidated"
+  ],
+  "sourceHashes": {
+    "BlindCore/Sources/BlindCore/CompanionFacts.swift": "e795187572a07df7d879ecd4ce646e6505b36d0d4299dd80780bf6288e6cd37b",
+    "BlindCore/Sources/BlindCore/ItemMemory.swift": "4b883c8230193043e8285fa1b4e7f9491e0e4b2d17d570fc622168dd8c306191",
+    "BlindCore/Sources/BlindCore/CompanionTaskSource.swift": "c932948d79e184c6059a963a788f30f04979e4fa9d1c12961d0e4ec8eb649285",
+    "BlindCore/Sources/BlindCore/CompanionMemoryRetrieval.swift": "d18b2c341da04517222814dde90189e9d54141437aa97f69d5390c4f5b9f2fae",
+    "BlindCore/Sources/BlindCore/CompanionMemoryScope.swift": "3ccdb2013403f2fedc4dfe0d9644e7f30f022c230b598eb82a62fbb87a92ba09",
+    "BlindCore/Tests/BlindCoreTests/CompanionMemoryScopeTests.swift": "1ef699b57c3b973ca51029c89dc18a2986c74176c0c5878f8b792746865215d4",
+    "ios/BlindAssist/LocalImageAssistant.swift": "2685fb6cb32bd5bd1bf98a5e9e0baf13d642b4487bfd98b1518323fb0860ea5f",
+    "ios/BlindAssistTests/CommunityTests.swift": "54bc0e492c3aa5244b7b0eea8641c90c561bbd9ec6d5571c81c1dc094535b87f",
+    "ios/BlindAssist/NavigationModel.swift": "a492b8e4a68c1f5104df9cfde5696f062276a69b38bda44e9477fdc442e16e8d",
+    "tools/test/everyday-companion-wiring.test.mjs": "d9709ec38cd5dfac297a67ffc2214e6474f38aebf7a1c5fa3f7a43f52f6db2ac",
+    "tools/test/task-memory-native-state.test.mjs": "cfd47aaa3f585d4557a760bfdb59dae26334ef93bb32e39aee9ec2ee3463ce29",
+    "tools/test/debug-native-session.test.mjs": "1fdf3b66f4099a22872743314659f2a354dd359d662bcb9d6c148eec64d52f6e",
+    "tools/test/fixtures/task-memory-native-state/SuspendedSourceDeletionTests.swift": "60d58b2f05cea1d00fc16c4e4043fbc428b0edd4605d014155acf8f58b03af58"
+  }
+}

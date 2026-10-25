@@ -1,0 +1,28 @@
+warning: /home/agent/.config/swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /home/agent/.config/swiftpm/security is not accessible or not writable, disabling user-level cache features.
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 328]
+[Planning deferred tasks]
+[3 / 6] BlindCoreTests-product
+[4 / 6] BlindCoreTests-product
+[5 / 7] BlindCoreTests-product
+[11 / 14] BlindCoreTests-product
+[14 / 15] BlindCoreTests-product
+[15 / 15] BlindCoreTests-product
+[16 / 18] BlindCoreTests-test-runner
+[18 / 20] BlindCoreTests-test-runner
+[21 / 23] BlindCoreTests-test-runner
+[25 / 25] BlindCoreTests-test-runner
+Build complete! (7.29 secs)
+Test Suite 'Selected tests' started at 2026-10-25 09:03:29.026
+Test Suite 'LegacySuspendedDeletionReproductionTests' started at 2026-10-25 09:03:29.027
+Test Case 'LegacySuspendedDeletionReproductionTests.testLiveUnscopedEditorDeletionCannotResurrectSuspendedCompletion' started at 2026-10-25 09:03:29.027
+/workspace/shared/blind-place-memory-stage/replay/Tests/BlindCoreTests/LegacySuspendedDeletionReproductionTests.swift:10: error: LegacySuspendedDeletionReproductionTests.testLiveUnscopedEditorDeletionCannotResurrectSuspendedCompletion : XCTAssertTrue failed - Live UI deletion resurrected deleted completion through suspended goal
+Test Case 'LegacySuspendedDeletionReproductionTests.testLiveUnscopedEditorDeletionCannotResurrectSuspendedCompletion' failed (0.004 seconds)
+Test Suite 'LegacySuspendedDeletionReproductionTests' failed at 2026-10-25 09:03:29.031
+	 Executed 1 test, with 1 failure (0 unexpected) in 0.004 (0.004) seconds
+Test Suite 'Selected tests' failed at 2026-10-25 09:03:29.031
+	 Executed 1 test, with 1 failure (0 unexpected) in 0.004 (0.004) seconds
+Note: Some test targets reported failures:
+  - BlindCoreTests (XCTest)

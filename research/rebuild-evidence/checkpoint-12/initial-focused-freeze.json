@@ -1,0 +1,87 @@
+{
+  "status": "MEMORY_LIVE_SOURCE_FROZEN_PENDING_ROOT_AGGREGATE12",
+  "time": "2026-10-25T05:47:36.094731+00:00",
+  "files": [
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionFacts.swift",
+      "sha256": "e795187572a07df7d879ecd4ce646e6505b36d0d4299dd80780bf6288e6cd37b"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ItemMemory.swift",
+      "sha256": "4b883c8230193043e8285fa1b4e7f9491e0e4b2d17d570fc622168dd8c306191"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionTaskSource.swift",
+      "sha256": "c932948d79e184c6059a963a788f30f04979e4fa9d1c12961d0e4ec8eb649285"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionMemoryRetrieval.swift",
+      "sha256": "d18b2c341da04517222814dde90189e9d54141437aa97f69d5390c4f5b9f2fae"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionMemoryScope.swift",
+      "sha256": "3ccdb2013403f2fedc4dfe0d9644e7f30f022c230b598eb82a62fbb87a92ba09"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/CompanionMemoryScopeTests.swift",
+      "sha256": "1ef699b57c3b973ca51029c89dc18a2986c74176c0c5878f8b792746865215d4"
+    },
+    {
+      "path": "ios/BlindAssist/LocalImageAssistant.swift",
+      "sha256": "58a3e757c9b13db20d7016dc29aceae75f7e6e1b4b971b37fb925d9a1b70b717"
+    },
+    {
+      "path": "ios/BlindAssistTests/CommunityTests.swift",
+      "sha256": "54bc0e492c3aa5244b7b0eea8641c90c561bbd9ec6d5571c81c1dc094535b87f"
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "sha256": "a492b8e4a68c1f5104df9cfde5696f062276a69b38bda44e9477fdc442e16e8d"
+    },
+    {
+      "path": "tools/test/everyday-companion-wiring.test.mjs",
+      "sha256": "d9709ec38cd5dfac297a67ffc2214e6474f38aebf7a1c5fa3f7a43f52f6db2ac"
+    },
+    {
+      "path": "tools/test/task-memory-native-state.test.mjs",
+      "sha256": "1fc323a46cbcde756d01719c62dd5254a303de3ea54ca1b73cd1e17e3ff2563b"
+    },
+    {
+      "path": "tools/test/debug-native-session.test.mjs",
+      "sha256": "1fdf3b66f4099a22872743314659f2a354dd359d662bcb9d6c148eec64d52f6e"
+    }
+  ],
+  "tests": {
+    "live_derived_swift": 45,
+    "live_node": 39,
+    "node_skips": 0,
+    "actual_working_state_replay_within_node": 35,
+    "native_parse_configurations": 4,
+    "debug_node": 18
+  },
+  "protected_unchanged": [
+    {
+      "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
+      "expected_sha256": "dd0aaca95133ec5e024c248769755cdc4f72937757e5e1972274b8ca08cae381",
+      "operation": "unchanged"
+    },
+    {
+      "path": "tools/generate-xcode-project.mjs",
+      "expected_sha256": "938917147f67345c55c87621b1467ef2ea2e94fd1ac020bbf93b7a5173fa8f50",
+      "operation": "unchanged"
+    },
+    {
+      "path": "BlindCore/Package.swift",
+      "expected_sha256": "9db07d1d72ac8d224f873aaf47e51f63bf7e508355a1355426daf599d8f64b0f",
+      "operation": "unchanged"
+    }
+  ],
+  "membership": "Live package describe confirms new Core source/test; in-memory project generator output byte-identical.",
+  "evidence": "Authored fixture traces only, no private chat/images/audio/debug sessions in live edits. No Apple SDK/device validation.",
+  "remaining": [
+    "Native scope identity issuer",
+    "Source-ID-bound scoped correction UI",
+    "Complete native transition/queue cancellation wiring",
+    "Apple SDK/device validation"
+  ]
+}

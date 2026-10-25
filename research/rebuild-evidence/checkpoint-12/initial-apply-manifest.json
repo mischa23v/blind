@@ -1,0 +1,122 @@
+{
+  "status": "APPLIED_EXACTLY_NINE_PATHS_PENDING_LIVE_FOCUSED_VALIDATION",
+  "checkpoint_archive": "/workspace/shared/blind-place-memory-stage/source-checkpoint-07.tar.gz",
+  "checkpoint_archive_sha256": "315bbf338c5b42bae62070e90c2fb31ca19edd115d80428f8d9a7bfbb2f44af7",
+  "changes": [
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionFacts.swift",
+      "operation": "update",
+      "expected_preimage_sha256": "9cc3f5b3ed08e927899cd2a86d640c421d175d1a9bb3113902560fe0c298ac27",
+      "candidate_sha256": "e795187572a07df7d879ecd4ce646e6505b36d0d4299dd80780bf6288e6cd37b",
+      "staged_candidate": "/workspace/shared/blind-place-memory-stage/proposal/BlindCore/Sources/BlindCore/CompanionFacts.swift",
+      "preimage_recheck": "MATCH"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ItemMemory.swift",
+      "operation": "update",
+      "expected_preimage_sha256": "66807f7aa3a14967a8795cf9ad9b245c364ee20f4415cd454c7c6c6081e9e732",
+      "candidate_sha256": "4b883c8230193043e8285fa1b4e7f9491e0e4b2d17d570fc622168dd8c306191",
+      "staged_candidate": "/workspace/shared/blind-place-memory-stage/proposal/BlindCore/Sources/BlindCore/ItemMemory.swift",
+      "preimage_recheck": "MATCH"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionTaskSource.swift",
+      "operation": "update",
+      "expected_preimage_sha256": "0a81a241f4dd145f0baa7761644ed0ab0276265f487697ee60593b995f12274b",
+      "candidate_sha256": "c932948d79e184c6059a963a788f30f04979e4fa9d1c12961d0e4ec8eb649285",
+      "staged_candidate": "/workspace/shared/blind-place-memory-stage/proposal/BlindCore/Sources/BlindCore/CompanionTaskSource.swift",
+      "preimage_recheck": "MATCH"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionMemoryRetrieval.swift",
+      "operation": "update",
+      "expected_preimage_sha256": "624186ce500f0a5e75cc0051a6c1aebd434c99cada5b2d96979a2588b4159bec",
+      "candidate_sha256": "d18b2c341da04517222814dde90189e9d54141437aa97f69d5390c4f5b9f2fae",
+      "staged_candidate": "/workspace/shared/blind-place-memory-stage/proposal/BlindCore/Sources/BlindCore/CompanionMemoryRetrieval.swift",
+      "preimage_recheck": "MATCH"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionMemoryScope.swift",
+      "operation": "create",
+      "expected_preimage_sha256": null,
+      "candidate_sha256": "3ccdb2013403f2fedc4dfe0d9644e7f30f022c230b598eb82a62fbb87a92ba09",
+      "staged_candidate": "/workspace/shared/blind-place-memory-stage/proposal/BlindCore/Sources/BlindCore/CompanionMemoryScope.swift",
+      "preimage_recheck": "ABSENT_AS_EXPECTED"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/CompanionMemoryScopeTests.swift",
+      "operation": "create",
+      "expected_preimage_sha256": null,
+      "candidate_sha256": "1ef699b57c3b973ca51029c89dc18a2986c74176c0c5878f8b792746865215d4",
+      "staged_candidate": "/workspace/shared/blind-place-memory-stage/proposal/BlindCore/Tests/BlindCoreTests/CompanionMemoryScopeTests.swift",
+      "preimage_recheck": "ABSENT_AS_EXPECTED"
+    },
+    {
+      "path": "ios/BlindAssist/LocalImageAssistant.swift",
+      "operation": "update",
+      "expected_preimage_sha256": "3f5d8f2b095887bf50c74364dadd1e1f384d5fb47657a2e53585cb808138124f",
+      "candidate_sha256": "58a3e757c9b13db20d7016dc29aceae75f7e6e1b4b971b37fb925d9a1b70b717",
+      "staged_candidate": "/workspace/shared/blind-place-memory-stage/proposal/ios/BlindAssist/LocalImageAssistant.swift",
+      "preimage_recheck": "MATCH"
+    },
+    {
+      "path": "ios/BlindAssistTests/CommunityTests.swift",
+      "operation": "update",
+      "expected_preimage_sha256": "4eb8536999b59dd46791a08fd0c4f3e4fdee82a875ed1da93f3e8ef9ff64da6f",
+      "candidate_sha256": "54bc0e492c3aa5244b7b0eea8641c90c561bbd9ec6d5571c81c1dc094535b87f",
+      "staged_candidate": "/workspace/shared/blind-place-memory-stage/proposal/ios/BlindAssistTests/CommunityTests.swift",
+      "preimage_recheck": "MATCH"
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "operation": "update",
+      "expected_preimage_sha256": "87f98c5511cab317e3d3e4f858ac689f049af5dd41fcbb0eec0d2f4cc76c64d7",
+      "candidate_sha256": "a492b8e4a68c1f5104df9cfde5696f062276a69b38bda44e9477fdc442e16e8d",
+      "staged_candidate": "/workspace/shared/blind-place-memory-stage/native-proposal/NavigationModel.swift",
+      "preimage_recheck": "MATCH"
+    }
+  ],
+  "protected_project_inputs": [
+    {
+      "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
+      "expected_sha256": "dd0aaca95133ec5e024c248769755cdc4f72937757e5e1972274b8ca08cae381",
+      "operation": "unchanged"
+    },
+    {
+      "path": "tools/generate-xcode-project.mjs",
+      "expected_sha256": "938917147f67345c55c87621b1467ef2ea2e94fd1ac020bbf93b7a5173fa8f50",
+      "operation": "unchanged"
+    },
+    {
+      "path": "BlindCore/Package.swift",
+      "expected_sha256": "9db07d1d72ac8d224f873aaf47e51f63bf7e508355a1355426daf599d8f64b0f",
+      "operation": "unchanged"
+    }
+  ],
+  "community_tests": {
+    "file": "ios/BlindAssistTests/CommunityTests.swift",
+    "change": "single insertion only",
+    "inserted_lines": 181,
+    "deleted_or_replaced_lines": 0,
+    "removing_inserted_block_restores_current_file_byte_exact": true,
+    "preserved_current_suffix_sha256": "33c0c3ab27a68c2fce4a3918c94ca10c066a5d00659d9551eaf6ac52a784cb2c",
+    "preserved_suffix_bytes": 19198,
+    "current_file_sha256": "4eb8536999b59dd46791a08fd0c4f3e4fdee82a875ed1da93f3e8ef9ff64da6f"
+  },
+  "missing": [
+    "Native scope identity issuer",
+    "Source-ID-bound scoped correction UI",
+    "Complete native transition/queue cancellation wiring",
+    "Apple SDK/device validation"
+  ],
+  "next_step": "Recheck every preimage immediately before an explicitly authorized narrow apply; stop on any mismatch.",
+  "membership_evidence": {
+    "project": "project-membership.json",
+    "swift_package": "package-membership.json",
+    "source_and_test_auto_discovery_verified": true,
+    "project_edit_required": false,
+    "project_regeneration_required": false
+  },
+  "second_preimage_recheck": "All nine proposed paths and all three protected inputs still match after membership checks.",
+  "applied_at": "2026-10-25T05:44:33.869654+00:00"
+}

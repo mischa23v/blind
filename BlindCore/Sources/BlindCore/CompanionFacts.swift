@@ -139,6 +139,9 @@ public struct CompanionFact: Codable, Equatable, Sendable {
     public let tense: Tense
     public let hedged: Bool
     public let at: Date
+    public var scope: CompanionMemoryScope? = nil
+    public var sourceID: String? = nil
+    public var storageKey: String { (scope.map { "scoped:" + $0.storageKey } ?? "unscoped:") + "|\(key.utf8.count):\(key)" }
 
     /// "were" for "shoes" or "cup and plate"; "was" for "glass" or "cup".
     private var verb: String {
@@ -189,15 +192,19 @@ public struct CompanionFactBook: Codable, Equatable, Sendable {
 
     /// Saves a report; the same object replaces its earlier report. Nil when empty or too long.
     @discardableResult
-    public mutating func record(object: String, place: String, tense: CompanionFact.Tense, hedged: Bool, at: Date = Date()) -> CompanionFact? {
+    public mutating func record(object: String, place: String, tense: CompanionFact.Tense, hedged: Bool, at: Date = Date(), scope: CompanionMemoryScope? = nil, sourceID: String? = nil) -> CompanionFact? {
         let object = object.trimmingCharacters(in: .whitespacesAndNewlines)
         let place = place.trimmingCharacters(in: .whitespacesAndNewlines)
         let key = ItemMemory.key(for: object)
         guard !key.isEmpty, object.count <= ItemMemory.nameLimit, !place.isEmpty, place.count <= 80,
               at.timeIntervalSinceReferenceDate.isFinite, at >= .distantPast, at <= .distantFuture,
-              !facts.contains(where: { $0.key == key && $0.at > at }) else { return nil }
-        let fact = CompanionFact(object: object, key: key, place: place, tense: tense, hedged: hedged, at: at)
-        facts.removeAll { $0.key == key }
+              scope?.valid != false, sourceID.map({ !$0.isEmpty && $0.utf8.count <= 64 }) ?? true,
+              !facts.contains(where: { $0.key == key && $0.scope == scope && $0.at > at }) else { return nil }
+        let fact = CompanionFact(object: object, key: key, place: place, tense: tense, hedged: hedged, at: at, scope: scope, sourceID: sourceID)
+        // A source ID names one original report, not a reusable current-state
+        // slot. Corrections get a new source; replay cannot relocate or re-date it.
+        if let sourceID, let prior = facts.first(where: { $0.sourceID == sourceID }), prior != fact { return nil }
+        facts.removeAll { $0.key == key && $0.scope == scope }
         facts.append(fact)
         facts = Array(facts.suffix(Self.limit))
         return fact
@@ -210,8 +217,23 @@ public struct CompanionFactBook: Codable, Equatable, Sendable {
         // Original dates survive restart. Invalid/old duplicate entries cannot
         // receive a new date or supersede a newer location report.
         for fact in saved.suffix(Self.limit * 2) where fact.key == ItemMemory.key(for: fact.object) {
-            _ = record(object: fact.object, place: fact.place, tense: fact.tense, hedged: fact.hedged, at: fact.at)
+            _ = record(object: fact.object, place: fact.place, tense: fact.tense, hedged: fact.hedged, at: fact.at, scope: fact.scope, sourceID: fact.sourceID)
         }
+    }
+
+    /// Exact object AND physical ownership. No fuzzy matching across instances,
+    /// and nil identity never means "all places". Use `latest(for:)` only as
+    /// explicitly attributed cross-place history, never current-task context.
+    public func latest(for object: String, in scope: CompanionMemoryScope?) -> CompanionFact? {
+        guard let scope, scope.valid else { return nil }
+        return facts.filter { $0.key == ItemMemory.key(for: object) && $0.scope == scope }.max { $0.at < $1.at }
+    }
+
+    @discardableResult
+    public mutating func forgetSource(_ sourceID: String) -> Bool {
+        let before = facts.count
+        facts.removeAll { $0.sourceID == sourceID }
+        return facts.count != before
     }
 
     /// Exact normalized match first, then a whole-word match either way, newest first.
@@ -224,6 +246,13 @@ public struct CompanionFactBook: Codable, Equatable, Sendable {
             let factWords = fact.key.split(separator: " ").map(String.init)
             return ItemMemory.containsRun(factWords, words) || ItemMemory.containsRun(words, factWords)
         })
+    }
+
+    @discardableResult
+    public mutating func forget(storageKey: String) -> Bool {
+        let before = facts.count
+        facts.removeAll { $0.storageKey == storageKey }
+        return facts.count != before
     }
 
     @discardableResult

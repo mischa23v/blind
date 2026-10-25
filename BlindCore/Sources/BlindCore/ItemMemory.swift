@@ -17,17 +17,20 @@ public struct RememberedItem: Codable, Equatable, Identifiable, Sendable {
     public let frameID: String?
     public let savedAt: Date
     public let source: String
+    /// Historical source ownership, not current identity or aligned geometry.
+    public var scope: CompanionMemoryScope? = nil
+    public var storageKey: String { (scope.map { "scoped:" + $0.storageKey } ?? "unscoped:") + "|\(key.utf8.count):\(key)" }
     /// Spoken description of the item's look (colour, shape, markings), drafted on the phone.
     /// Used only for speaking; whether a seen object IS this item is decided by image comparison.
     public var description: String? = nil
     public init(id: String = UUID().uuidString, name: String, roomID: String? = nil, roomName: String? = nil,
-                position: Point3? = nil, frameID: String? = nil, savedAt: Date, source: String = "user") {
+                position: Point3? = nil, frameID: String? = nil, savedAt: Date, source: String = "user", scope: CompanionMemoryScope? = nil) {
         self.id = id
         self.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         key = ItemMemory.key(for: name)
         self.roomID = roomID; self.roomName = roomName
         self.position = position; self.frameID = frameID
-        self.savedAt = savedAt; self.source = source
+        self.savedAt = savedAt; self.source = source; self.scope = scope
     }
 }
 
@@ -50,14 +53,16 @@ public struct ItemMemory: Codable, Equatable, Sendable {
     @discardableResult
     public mutating func remember(name: String, roomID: String? = nil, roomName: String? = nil,
                                   position: Point3? = nil, frameID: String? = nil,
-                                  at savedAt: Date = Date()) -> RememberedItem? {
+                                  at savedAt: Date = Date(), scope: CompanionMemoryScope? = nil) -> RememberedItem? {
         let key = Self.key(for: name)
         guard !key.isEmpty else { return nil }
-        let existing = items.firstIndex { $0.key == key }
-        guard existing != nil || items.count < Self.limit else { return nil }
+        let existing = items.firstIndex { $0.key == key && $0.scope == scope }
+        guard existing != nil || items.count < Self.limit,
+              scope?.valid != false,
+              existing.map({ items[$0].savedAt <= savedAt }) ?? true else { return nil }
         let id = existing.map { items[$0].id } ?? UUID().uuidString
         var item = RememberedItem(id: id, name: name, roomID: Self.clean(roomID), roomName: Self.clean(roomName),
-                                  position: position, frameID: Self.clean(frameID), savedAt: savedAt)
+                                  position: position, frameID: Self.clean(frameID), savedAt: savedAt, scope: scope)
         // Saving a new place keeps the item's spoken description.
         if let existing { item.description = items[existing].description }
         guard Self.isValid(item) else { return nil }
@@ -65,12 +70,27 @@ public struct ItemMemory: Codable, Equatable, Sendable {
         return item
     }
 
+    /// Scoped recall is exact, never a category or fuzzy instance match. Nil
+    /// identity is not permission to search another place's current context.
+    public func find(_ name: String, in scope: CompanionMemoryScope?) -> RememberedItem? {
+        guard let scope, scope.valid else { return nil }
+        return items.first { $0.key == Self.key(for: name) && $0.scope == scope }
+    }
+
+    /// Review/delete by stable saved record ID, not a globally ambiguous label.
+    @discardableResult
+    public mutating func forget(id: String) -> Bool {
+        let before = items.count
+        items.removeAll { $0.id == id }
+        return items.count != before
+    }
+
     /// Sets the spoken description of a saved item (at most 300 characters). False when not saved.
     @discardableResult
     public mutating func describe(_ name: String, as description: String) -> Bool {
         let key = Self.key(for: name)
         let text = description.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let index = items.firstIndex(where: { $0.key == key }), !text.isEmpty, text.count <= 300 else { return false }
+        guard items.filter({ $0.key == key }).count == 1, let index = items.firstIndex(where: { $0.key == key }), !text.isEmpty, text.count <= 300 else { return false }
         items[index].description = text
         return true
     }
@@ -81,9 +101,10 @@ public struct ItemMemory: Codable, Equatable, Sendable {
     public func find(_ name: String) -> RememberedItem? {
         let key = Self.key(for: name)
         guard !key.isEmpty else { return nil }
-        if let exact = items.first(where: { $0.key == key }) { return exact }
+        let legacy = items.filter { $0.scope == nil }
+        if let exact = legacy.first(where: { $0.key == key }) { return exact }
         let words = key.split(separator: " ").map(String.init)
-        let matches = items.filter { item in
+        let matches = legacy.filter { item in
             let itemWords = item.key.split(separator: " ").map(String.init)
             return Self.containsRun(itemWords, words) || Self.containsRun(words, itemWords)
         }
@@ -94,7 +115,7 @@ public struct ItemMemory: Codable, Equatable, Sendable {
     @discardableResult
     public mutating func forget(_ name: String) -> Bool {
         let key = Self.key(for: name)
-        guard !key.isEmpty, let index = items.firstIndex(where: { $0.key == key }) else { return false }
+        guard !key.isEmpty, items.filter({ $0.key == key }).count == 1, let index = items.firstIndex(where: { $0.key == key }) else { return false }
         items.remove(at: index)
         return true
     }
@@ -102,7 +123,7 @@ public struct ItemMemory: Codable, Equatable, Sendable {
     public var valid: Bool {
         guard items.count <= Self.limit,
               Set(items.map { $0.id }).count == items.count,
-              Set(items.map { $0.key }).count == items.count else { return false }
+              Set(items.map { $0.storageKey }).count == items.count else { return false }
         return items.allSatisfy { Self.isValid($0) }
     }
 
@@ -118,7 +139,7 @@ public struct ItemMemory: Codable, Equatable, Sendable {
         let itemName = displayName(item.name, arabic: arabic)
         let elapsed = relativeTime(from: item.savedAt, to: now, arabic: arabic)
         let relation = measuredRelation?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        let measured = sameFrame && !relation.isEmpty && item.position != nil && item.frameID != nil
+        let measured = item.scope == nil && sameFrame && !relation.isEmpty && item.position != nil && item.frameID != nil
         var text: String
         if arabic {
             text = "تم حفظ \(itemName)"
@@ -193,11 +214,15 @@ public struct ItemMemory: Codable, Equatable, Sendable {
 
     static func isValid(_ item: RememberedItem) -> Bool {
         let trimmed = item.name.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !item.id.isEmpty, item.id.count <= 64, item.source == "user" else { return false }
+        guard !item.id.isEmpty, item.id.count <= 64, item.source == "user", item.scope?.valid != false else { return false }
         guard !trimmed.isEmpty, trimmed == item.name, item.name.count <= nameLimit else { return false }
         guard !item.key.isEmpty, item.key == key(for: item.name) else { return false }
         guard item.savedAt.timeIntervalSince1970.isFinite else { return false }
         guard fieldValid(item.roomID), fieldValid(item.roomName), fieldValid(item.frameID) else { return false }
+        if let scope = item.scope {
+            guard item.roomID == nil || item.roomID == scope.roomID,
+                  item.frameID == nil || item.frameID == scope.map.frameID else { return false }
+        }
         // A position is only usable together with the map frame it was measured in.
         if let position = item.position { return position.isFinite && item.frameID != nil }
         return true
