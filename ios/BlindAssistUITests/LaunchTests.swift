@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 
 final class LaunchTests: XCTestCase {
     private var app: XCUIApplication!
@@ -133,6 +134,54 @@ final class LaunchTests: XCTestCase {
         let cloudAnswer = app.buttons["cloud-answer"]
         XCTAssertFalse(cloudAnswer.exists && cloudAnswer.isEnabled)
         XCTAssertTrue(app.buttons["stop-descriptions"].exists)
+    }
+    // Test-only layout evidence. The dedicated CI helper sets the simulator category
+    // before a fresh runner/app launch; production has no content-size override.
+    @MainActor func testPracticeLayoutAtDefaultSize() throws {
+        try recordPracticeLayout(expectedCategory: .large)
+    }
+    @MainActor func testPracticeLayoutAtLargestAccessibilitySize() throws {
+        try recordPracticeLayout(expectedCategory: .accessibilityExtraExtraExtraLarge)
+    }
+    @MainActor private func recordPracticeLayout(expectedCategory: UIContentSizeCategory) throws {
+        try XCTSkipUnless(ProcessInfo.processInfo.environment["BLIND_LAYOUT_DIAGNOSTIC"] == "1",
+            "Dedicated layout probe only; use practice-layout-diagnostic.sh to configure its isolated simulator")
+        let category = UIApplication.shared.preferredContentSizeCategory
+        print("PRACTICE_LAYOUT category=\(category.rawValue) expected=\(expectedCategory.rawValue) runnerBodyPoints=\(UIFont.preferredFont(forTextStyle: .body).pointSize)")
+        XCTAssertEqual(category, expectedCategory, "The fresh test runner must observe the requested system category")
+        openSettingsPage("camera-screen")
+        let sizeName = expectedCategory == .large ? "large" : "accessibility-extra-extra-extra-large"
+        defer { recordPracticeLayoutAttachment("final-" + sizeName) }
+        let footer = "Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog."
+        let controls: [(String, XCUIElement)] = [
+            ("button", app.buttons["start-simulation"]),
+            ("header", app.staticTexts["Practice"]),
+            ("footer", app.staticTexts[footer])
+        ]
+        for (role, element) in controls {
+            XCTAssertTrue(element.waitForExistence(timeout: 10), role)
+            print("PRACTICE_LAYOUT beforeReveal category=\(expectedCategory.rawValue) role=\(role) frame=\(element.frame) hittable=\(element.isHittable) label=\(element.label)")
+            reveal(element)
+            let screen = app.windows.firstMatch.frame
+            print("PRACTICE_LAYOUT afterReveal category=\(expectedCategory.rawValue) role=\(role) frame=\(element.frame) screen=\(screen) visibleIntersection=\(element.frame.intersection(screen)) hittable=\(element.isHittable) label=\(element.label)")
+            recordPracticeLayoutAttachment(sizeName + "-" + role)
+        }
+        XCTAssertEqual(app.buttons["start-simulation"].label, "Try practice (2 minutes)")
+        XCTAssertEqual(app.staticTexts["Practice"].label, "Practice")
+        XCTAssertEqual(app.staticTexts[footer].label, footer)
+    }
+    @MainActor private func recordPracticeLayoutAttachment(_ name: String) {
+        // Only --ui-testing synthetic state, no user library or camera frames.
+        let screenshot = XCTAttachment(screenshot: app.screenshot())
+        screenshot.name = "practice-layout-" + name
+        screenshot.lifetime = .keepAlways
+        add(screenshot)
+        let boundedHierarchy = String(app.debugDescription.prefix(16000))
+        print("PRACTICE_LAYOUT hierarchy=\(name) \(boundedHierarchy.replacingOccurrences(of: "\n", with: " | "))")
+        let hierarchy = XCTAttachment(string: boundedHierarchy)
+        hierarchy.name = "practice-hierarchy-" + name
+        hierarchy.lifetime = .keepAlways
+        add(hierarchy)
     }
     func testAccessibilityAuditOfMainScreen() throws {
         XCTAssertTrue(app.staticTexts["companion-reply"].waitForExistence(timeout: 10))
