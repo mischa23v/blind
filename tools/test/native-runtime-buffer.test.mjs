@@ -29,7 +29,8 @@ test('original fulfillment condition and three-second bound remain unchanged',()
  const callback=source.slice(source.indexOf('runtime.onChange = {'),source.indexOf('defer { runtime.onChange'));
  assert.match(callback,/guard !completed, condition\(\) else \{ return \}/);
  assert.match(callback,/completed = true; done.fulfill\(\)/);
- assert.doesNotMatch(callback,/print|record\(|Task|sleep/);
+ assert.doesNotMatch(callback,/print|Task\s*[.{(]|sleep/);
+ assert.ok(callback.indexOf('done.fulfill()')<callback.indexOf('traceBuffer.record('));
 });
 test('extractor retains buffer drop and late-event marker',async()=>{
  const text=await readFile(new URL('tools/ci/extract-native-unit-failures.py',root),'utf8');

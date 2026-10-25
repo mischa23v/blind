@@ -37,7 +37,7 @@ test('runtime diagnostics preserve original completion conditions and timeout fa
   }
   // Trace strings contain phase/timing metadata, never stored data or map payloads.
   const records = source.split('\n').filter(line => /traceBuffer\.record\("NATIVE_RUNTIME_(?:IO|WAIT) /.test(line));
-  assert.equal(records.length, 3);
+  assert.equal(records.length, 4);
   for (const line of records) assert.doesNotMatch(line, /\\\((?:data|envelope|payload|runtime.goal|runtime.status)/);
 });
 

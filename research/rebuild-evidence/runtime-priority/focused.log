@@ -1,0 +1,29 @@
+✔ early failure retains its IO IDs and false completion despite hundreds of later successes (55.344611ms)
+✔ phase ring and total failure cap are explicit and preserve a displaced false completion (33.374676ms)
+✔ crashed failing wait retains missing-end marker and only allowlisted metadata (27.257445ms)
+✔ passing log emits no failure window (26.261617ms)
+✔ combined unit shell retains original error and exit65 plus early failure window (40.311539ms)
+✔ stdout exists only in unlocked teardown snapshot flush (1.814737ms)
+✔ bounded lock-protected test-local recorder has no task or actor hop (0.442553ms)
+✔ every RuntimeIO is constructed by test-owned factory, including default installed path (0.55408ms)
+✔ original fulfillment condition and three-second bound remain unchanged (0.430512ms)
+✔ extractor retains buffer drop and late-event marker (9.882517ms)
+✔ phase recorder is DEBUG only, nil by default and metadata only (9.325741ms)
+✔ default-active, release-visible and payload telemetry counterexamples reject (8.442578ms)
+✔ actual source positions separate detached admission, work and MainActor return (3.749223ms)
+✔ all runtime test instances install immutable callback before return without changing timeout (1.867004ms)
+✔ priority observation remains synchronous, task-presence explicit, no unsafe handle escape (1.281965ms)
+✔ IO, phase and wait records include current task context without callback I/O (0.707295ms)
+✔ fulfillment timestamp follows unchanged condition and fulfill, no time-bound change (0.385717ms)
+✔ all continuity scenarios await real map IO without blocking the main owner (6.647288ms)
+✔ runtime diagnostics preserve original completion conditions and timeout failures (3.005473ms)
+✔ native failure output retains bounded phase diagnostics without hiding assertions (1.915715ms)
+✔ combined shell diagnostics preserve failed status and isolate bounded practice chronology (21.572225ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 301.303608

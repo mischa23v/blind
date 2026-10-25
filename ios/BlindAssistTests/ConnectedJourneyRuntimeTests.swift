@@ -3,6 +3,12 @@ import XCTest
 @testable import BlindCore
 @testable import BlindAssist
 
+// Synchronous task metadata only; the unsafe handle never leaves this closure.
+private func runtimeTaskContext() -> String {
+    let hasTask = withUnsafeCurrentTask { $0 != nil }
+    return "taskPriority=\(Task.currentPriority.rawValue) hasTask=\(hasTask)"
+}
+
 // Per-test metadata only. No stdout in timed callbacks; no global/task-based recorder.
 private final class RuntimeTraceBuffer: @unchecked Sendable {
     private let lock = NSLock()
@@ -38,7 +44,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
     private let traceBuffer: RuntimeTraceBuffer
     private let diagnosticID = UUID().uuidString
     private func trace(_ phase: String) {
-        traceBuffer.record("NATIVE_RUNTIME_IO id=\(diagnosticID) phase=\(phase) uptime=\(ProcessInfo.processInfo.systemUptime)")
+        traceBuffer.record("NATIVE_RUNTIME_IO id=\(diagnosticID) phase=\(phase) uptime=\(ProcessInfo.processInfo.systemUptime) \(runtimeTaskContext())")
     }
     var data: Data?
     var writes: [JourneyRuntimeEnvelope] = []
@@ -93,7 +99,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         let testName = name
         let traceBuffer = traceBuffer
         runtime.diagnosticPhaseRecorder = { phase, operation, uptime in
-            traceBuffer.record("NATIVE_RUNTIME_PHASE test=\(testName) operation=\(operation) phase=\(phase) uptime=\(uptime)")
+            traceBuffer.record("NATIVE_RUNTIME_PHASE test=\(testName) operation=\(operation) phase=\(phase) uptime=\(uptime) \(runtimeTaskContext())")
         }
 #endif
         return runtime
@@ -104,7 +110,9 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         // Diagnostic only: preserve the original three-second bound and failure semantics.
         let started = ProcessInfo.processInfo.systemUptime
         var publications = 0
-        traceBuffer.record("NATIVE_RUNTIME_WAIT test=\(name) line=\(line) phase=start uptime=\(started)")
+        let traceBuffer = traceBuffer
+        let testName = name
+        traceBuffer.record("NATIVE_RUNTIME_WAIT test=\(name) line=\(line) phase=start uptime=\(started) \(runtimeTaskContext())")
         let done = expectation(description: "bounded runtime state publication")
         let previous = runtime.onChange
         var completed = false
@@ -113,12 +121,13 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
             previous?()
             guard !completed, condition() else { return }
             completed = true; done.fulfill()
+            traceBuffer.record("NATIVE_RUNTIME_WAIT test=\(testName) line=\(line) phase=fulfilled uptime=\(ProcessInfo.processInfo.systemUptime) \(runtimeTaskContext())")
         }
         defer { runtime.onChange = previous }
         // Await publication instead of scheduling 3,000 polling tasks on the main owner.
         // The original nominal three-second bound is unchanged; real Apple timing remains a gate.
         await fulfillment(of: [done], timeout: 3)
-        traceBuffer.record("NATIVE_RUNTIME_WAIT test=\(name) line=\(line) phase=returned elapsed=\(ProcessInfo.processInfo.systemUptime - started) publications=\(publications) fulfilled=\(completed) loading=\(runtime.loading) maps=\(runtime.pendingMapWorkCount) writes=\(runtime.pendingWriteCount)")
+        traceBuffer.record("NATIVE_RUNTIME_WAIT test=\(name) line=\(line) phase=returned elapsed=\(ProcessInfo.processInfo.systemUptime - started) publications=\(publications) fulfilled=\(completed) loading=\(runtime.loading) maps=\(runtime.pendingMapWorkCount) writes=\(runtime.pendingWriteCount) \(runtimeTaskContext())")
         guard condition() else {
             XCTFail("Runtime wait expired: loading=\(runtime.loading), maps=\(runtime.pendingMapWorkCount), writes=\(runtime.pendingWriteCount), storageError=\(runtime.storageError), status=\(runtime.status)", file: file, line: line)
             throw WaitError.timedOut // Never continue with incomplete map state and report a misleading missing-map error.
