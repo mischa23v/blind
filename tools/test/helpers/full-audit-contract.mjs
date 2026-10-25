@@ -14,13 +14,15 @@ export function assertFullAuditDestinations(ui) {
         reveal(ask); ask.tap()
         try auditFullDestination("ask", title: "Ask and goals", requiredControl: "local-answer")`);
   // Reject early returns, throws or conditional bypasses before the real audit.
-  assert.equal(helper[1].split('        try app.performAccessibilityAudit { issue in')[0].trim(), "defer { recordFullAuditEvidence(phase, \"after\") }\n        // Required destination UI, not a sleep, scroll, altered state or audit exemption.\n        let titleReady = app.navigationBars[title].waitForExistence(timeout: 10)\n        let controlReady = app.buttons[requiredControl].waitForExistence(timeout: 10)\n        print(\"ACCESSIBILITY_AUDIT_READINESS phase=\\(phase) titleReady=\\(titleReady) controlReady=\\(controlReady)\")\n        recordFullAuditEvidence(phase, \"before\")\n        XCTAssertTrue(titleReady, \"Expected destination navigation title\")\n        XCTAssertTrue(controlReady, \"Expected destination control\")");
+  assert.equal(helper[1].split('        try app.performAccessibilityAudit { issue in')[0].trim(), "defer { recordFullAuditEvidence(phase, \"after\") }\n        // Required destination UI, not a sleep, scroll, altered state or audit exemption.\n        let titleReady = app.navigationBars[title].waitForExistence(timeout: 10)\n        let controlReady = app.buttons[requiredControl].waitForExistence(timeout: 10)\n        print(\"ACCESSIBILITY_AUDIT_READINESS phase=\\(phase) titleReady=\\(titleReady) controlReady=\\(controlReady)\")\n        recordFullAuditEvidence(phase, \"before\")\n        XCTAssertTrue(titleReady, \"Expected destination navigation title\")\n        XCTAssertTrue(controlReady, \"Expected destination control\")\n        var observedFindings = 0");
   const callback = helper[1].match(/        try app\.performAccessibilityAudit \{ issue in\n([\s\S]*?)        \}\s*$/);
   assert.ok(callback, 'Both destinations use the unchanged default-all audit');
   // Only the existing bounded diagnostic print/comment may precede the guard.
   // Any extra return, broader condition or additional exemption fails closed.
   const diagnosticPrint = "print(\"ACCESSIBILITY_AUDIT=type:\\(issue.auditType),phase:\\(phase),compact:\\(issue.compactDescription.prefix(2048)),detailed:\\(issue.detailedDescription.prefix(4096)),element:\\(String((issue.element?.debugDescription ?? \"unidentified\").prefix(1200)).replacingOccurrences(of: \"\\n\", with: \" | \"))\")";
-  const decision = callback[1].split('\n').filter(line => line.trim() !== diagnosticPrint && line.trim() !== '// WCAG exempts inactive controls; retain every other audit finding.').join('\n').trim();
+  const capture = "            recordAuditIssueObservation(issue, phase: phase, observedFindings: &observedFindings)\n";
+  assert.ok(callback[1].includes(capture), 'Bounded observation precedes unchanged decision');
+  const decision = callback[1].replace(capture, '').split('\n').filter(line => line.trim() !== diagnosticPrint && line.trim() !== '// WCAG exempts inactive controls; retain every other audit finding.').join('\n').trim();
   assert.equal(decision, `guard issue.auditType == .contrast, let element = issue.element else { return false }
             return element.identifier == "retrace-session" && !element.isEnabled`);
   assert.equal(ui.match(/guard issue.auditType == \.contrast, let element = issue.element else \{ return false \}/g)?.length, 1);

@@ -87,5 +87,93 @@ class ExportTests(unittest.TestCase):
         result = module.collect(self.source, self.destination, 'Missing xcresult')
         self.assertFalse(result['evidenceComplete']); self.assertEqual(result['errors'], ['Missing xcresult'])
 
+    def add_issue_metadata(self, phase='camera', index=1, **changes):
+        role = f'{phase}-issue-{index}-metadata'
+        value = dict(schema=1, timing='callback_observation_not_historical_failure_state', phase=phase, index=index,
+                     auditType=1, compact='synthetic', detailed='synthetic detail', elementPresent=False, snapshotStatus='not_available')
+        value.update(changes)
+        filename = role + '.json'; (self.source / filename).write_text(json.dumps(value))
+        self.items.append({'suggestedHumanReadableName': 'full-audit-' + role + '_1_ABCD.json', 'exportedFileName': filename})
+
+    def test_all_eight_images_four_metadata(self):
+        for role in module.ROLES: self.add(role)
+        for phase in ('camera', 'ask'):
+            for index in (1, 2):
+                self.add(f'{phase}-issue-{index}-screen'); self.add_issue_metadata(phase, index)
+        result = self.run_export()
+        self.assertTrue(result['evidenceComplete'])
+        self.assertEqual(len(result['screenshots']), 8); self.assertEqual(len(result['metadata']), 4)
+
+    def test_callback_pair_does_not_hide_missing_after(self):
+        self.add('camera-before'); self.add('camera-issue-1-screen'); self.add_issue_metadata()
+        result = self.run_export()
+        self.assertFalse(result['evidenceComplete'])
+        self.assertEqual(result['phases']['camera']['missingRoles'], ['camera-after'])
+        self.assertEqual(result['issues']['camera-issue-1']['status'], 'complete')
+        self.assertEqual(len(result['screenshots']), 2); self.assertEqual(len(result['metadata']), 1)
+
+    def test_partial_issue_fails_retains_image(self):
+        for role in module.ROLES[:2]: self.add(role)
+        self.add('camera-issue-1-screen')
+        result = self.run_export(); self.assertFalse(result['evidenceComplete'])
+        self.assertEqual(len(result['screenshots']), 3)
+
+    def test_extra_issue_rejected(self):
+        for role in module.ROLES[:2]: self.add(role)
+        self.add('camera-issue-3-screen')
+        result = self.run_export(); self.assertFalse(result['evidenceComplete'])
+        self.assertEqual(len(result['screenshots']), 2)
+
+    def test_metadata_identity_rejected(self):
+        for role in module.ROLES[:2]: self.add(role)
+        self.add('camera-issue-1-screen'); self.add_issue_metadata()
+        path = self.source / 'camera-issue-1-metadata.json'
+        value = json.loads(path.read_text()); value['phase'] = 'ask'; path.write_text(json.dumps(value))
+        result = self.run_export(); self.assertFalse(result['evidenceComplete']); self.assertEqual(result['metadata'], [])
+
+    def test_unknown_metadata_field_rejected(self):
+        for role in module.ROLES[:2]: self.add(role)
+        self.add('camera-issue-1-screen'); self.add_issue_metadata(userFiles='not allowed')
+        self.assertFalse(self.run_export()['evidenceComplete'])
+
+    def test_metadata_bytes_bound(self):
+        for role in module.ROLES[:2]: self.add(role)
+        self.add('camera-issue-1-screen'); self.add_issue_metadata(detailed='x' * 16384)
+        result = self.run_export(); self.assertFalse(result['evidenceComplete']); self.assertEqual(result['metadata'], [])
+
+    def test_metadata_path_escape(self):
+        for role in module.ROLES[:2]: self.add(role)
+        self.add('camera-issue-1-screen'); self.add_issue_metadata()
+        self.items[-1]['exportedFileName'] = '../bad.json'
+        self.assertFalse(self.run_export()['evidenceComplete'])
+
+    def test_explicit_truncated_metadata_preserves_captured_status(self):
+        for role in module.ROLES[:2]: self.add(role)
+        self.add('camera-issue-1-screen'); self.add_issue_metadata(elementPresent=True, snapshotStatus='captured', metadataTruncated=True)
+        path = self.source / 'camera-issue-1-metadata.json'
+        value = json.loads(path.read_text()); value.pop('compact'); value.pop('detailed'); path.write_text(json.dumps(value))
+        result = self.run_export(); self.assertTrue(result['evidenceComplete'])
+        self.assertEqual(len(result['metadata']), 1)
+
+    def test_output_directory_contains_only_allowed_json_and_png(self):
+        for role in module.ROLES[:2]: self.add(role)
+        self.add('camera-issue-1-screen'); self.add_issue_metadata()
+        (self.source / 'private.json').write_text('{"private":"not for export"}')
+        self.items.append({'suggestedHumanReadableName': 'random.json', 'exportedFileName': 'private.json'})
+        self.run_export()
+        self.assertEqual(sorted(p.name for p in self.destination.iterdir()),
+                         ['evidence.json', 'full-audit-camera-after.png', 'full-audit-camera-before.png',
+                          'full-audit-camera-issue-1-metadata.json', 'full-audit-camera-issue-1-screen.png'])
+
+
+    def test_missing_file_errors_do_not_disclose_local_paths(self):
+        for role in module.ROLES[:2]: self.add(role)
+        (self.source / 'camera-before.png').unlink()
+        result = self.run_export()
+        self.assertFalse(result['evidenceComplete'])
+        self.assertIn('FileNotFoundError', json.dumps(result['errors']))
+        self.assertNotIn(str(self.root), json.dumps(result))
+        self.assertEqual(result['screenshots'], ['full-audit-camera-after.png'])
+
 
 if __name__ == '__main__': unittest.main()

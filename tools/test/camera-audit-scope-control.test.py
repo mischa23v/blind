@@ -1,5 +1,6 @@
 """Synthetic orchestration witnesses, not native audit acceptance."""
 import json
+import importlib.util
 import os
 from pathlib import Path
 import shutil
@@ -7,6 +8,10 @@ import subprocess
 import sys
 import tempfile
 import unittest
+
+runner_path = Path(__file__).parents[1] / 'ci/camera-audit-scope-control.py'
+spec = importlib.util.spec_from_file_location('scope_runner', runner_path)
+module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
 
 FAKE = r'''
 import json,os
@@ -16,7 +21,11 @@ a=sys.argv[1:]; root=Path(os.environ['FAKE_ROOT'])
 with (root/'commands.jsonl').open('a') as f: f.write(json.dumps([Path(sys.argv[0]).name]+a)+'\n')
 if Path(sys.argv[0]).name=='xcodebuild':
     if a==['-version']: print('Xcode synthetic'); sys.exit(0)
-    if 'build-for-testing' in a: sys.exit(int(os.environ.get('FAKE_BUILD_FAIL','0')))
+    if 'build-for-testing' in a:
+        print('SwiftCompile normal arm64 /Users/private/work/File.swift token=secret https://user:password@example.test/package', flush=True)
+        if os.environ.get('FAKE_TIMEOUT_BUILD'):
+            import time; time.sleep(60)
+        sys.exit(int(os.environ.get('FAKE_BUILD_FAIL','0')))
     assert os.environ.get('TEST_RUNNER_BLIND_AUDIT_SCOPE_CONTROL')=='1'
     result=Path(a[a.index('-resultBundlePath')+1]); result.mkdir()
     print('ACCESSIBILITY_AUDIT=synthetic retained outcome')
@@ -41,6 +50,15 @@ elif a[:3]==['xcresulttool','export','attachments']:
     for role in roles:
         p=dest/(role+'.png'); p.write_bytes(b'\x89PNG\r\n\x1a\nfixture')
         records.append({'suggestedHumanReadableName':'full-audit-'+role+'_1_FAKE.png','exportedFileName':p.name})
+    if os.environ.get('FAKE_CALLBACKS'):
+        for phase in (['camera','ask'] if name=='original-all' else ['camera']):
+            for index in (1,2):
+                prefix='full-audit-'+phase+'-issue-'+str(index)
+                image=dest/(prefix+'-screen.png'); image.write_bytes(b'\x89PNG\r\n\x1a\nfixture')
+                records.append({'suggestedHumanReadableName':prefix+'-screen_1_FAKE.png','exportedFileName':image.name})
+                metadata=dest/(prefix+'-metadata.json')
+                metadata.write_text(json.dumps(dict(schema=1,timing='callback_observation_not_historical_failure_state',phase=phase,index=index,auditType=1,compact='synthetic',detailed='synthetic',elementPresent=False,snapshotStatus='not_available')))
+                records.append({'suggestedHumanReadableName':prefix+'-metadata_1_FAKE.json','exportedFileName':metadata.name})
     (dest/'manifest.json').write_text(json.dumps([{'attachments':records}]))
 elif a[:2]==['simctl','delete']: sys.exit(int(os.environ.get('FAKE_DELETE_FAIL','0')))
 '''
@@ -58,7 +76,27 @@ class ScopeTests(unittest.TestCase):
             p = bin_dir / name; p.write_text('#!' + sys.executable + '\n' + FAKE); p.chmod(0o755)
         env = dict(os.environ, PATH=str(bin_dir) + os.pathsep + os.environ['PATH'],
                    RUNNER_TEMP=str(root), FAKE_ROOT=str(root), **overrides)
-        run = subprocess.run([sys.executable, str(ci / 'camera-audit-scope-control.py')],
+        command = [sys.executable, str(ci / 'camera-audit-scope-control.py')]
+        if overrides.get('FAKE_TIMEOUT_BUILD'):
+            # Test shim only: force a real subprocess timeout promptly while the
+            # production runner still records its unchanged 600-second build cap.
+            shim = root / 'timeout-shim.py'
+            shim.write_text('''import importlib.util,sys
+spec=importlib.util.spec_from_file_location('runner',sys.argv[1]);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+original=m.subprocess.Popen
+class Proxy:
+ def __init__(self,args,**kw): self.p=original(args,**kw);self.build='build-for-testing' in args;self.first=True
+ def __getattr__(self,name): return getattr(self.p,name)
+ def wait(self,timeout=None):
+  if self.build and self.first:
+   self.first=False
+   return self.p.wait(timeout=0.1)
+  return self.p.wait(timeout=timeout)
+m.subprocess.Popen=Proxy
+sys.exit(m.main())
+''')
+            command = [sys.executable, str(shim), str(ci / 'camera-audit-scope-control.py')]
+        run = subprocess.run(command,
                              env=env, capture_output=True, text=True, timeout=30)
         summary = json.loads((root / 'blind-camera-audit-scope-control/artifacts/outcomes.json').read_text())
         commands = [json.loads(line) for line in (root / 'commands.jsonl').read_text().splitlines()]
@@ -128,6 +166,45 @@ class ScopeTests(unittest.TestCase):
         self.assertEqual(summary['cleanup'], 'no_owned_simulator')
         self.assertFalse(any('build-for-testing' in c for c in commands))
         self.assertFalse(any(c[:3] == ['xcrun','simctl','create'] for c in commands))
+
+    def test_build_timeout_retains_sanitized_tail_and_termination_metrics(self):
+        run, summary, commands = self.run_fake(FAKE_TIMEOUT_BUILD='1')
+        self.assertEqual(run.returncode, 1)
+        metrics = summary['commands']['build']
+        self.assertEqual(metrics['budgetSeconds'], 600)
+        self.assertTrue(metrics['timedOut']); self.assertTrue(metrics['sentSIGTERM'])
+        self.assertGreater(metrics['elapsedSeconds'], 0)
+        self.assertEqual(summary['cleanup'], 'passed')
+        tail = json.dumps(summary['buildProgressTail'])
+        self.assertIn('SwiftCompile', tail)
+        for private in ('private/work', 'token=secret', 'user:password', 'example.test'):
+            self.assertNotIn(private, tail)
+        self.assertFalse(any('test-without-building' in c for c in commands))
+
+    def test_progress_tail_is_bounded_and_excludes_arbitrary_environment_lines(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'build.log'
+            path.write_text('ENV_SECRET=never retained\n' + '\n'.join('SwiftCompile '+str(i)+' '+'x'*2000 for i in range(100)))
+            tail = module.build_progress_tail(path)
+            self.assertEqual(len(tail['lines']), 60)
+            self.assertEqual(tail['omittedMatchedLines'], 40)
+            self.assertEqual(tail['truncatedLines'], 100)
+            self.assertLessEqual(len(json.dumps(tail, indent=2).encode()), 64 * 1024)
+            self.assertNotIn('ENV_SECRET', json.dumps(tail))
+            self.assertEqual(tail['logByteCount'], path.stat().st_size)
+            path.write_text('CompileAssetCatalog /Users/private/Assets.xcassets\n')
+            tail = module.build_progress_tail(path)
+            self.assertIn('CompileAssetCatalog', tail['lines'][0])
+            self.assertNotIn('/Users/private', tail['lines'][0])
+
+    def test_callback_images_and_metadata_retained_without_retry(self):
+        run, summary, commands = self.run_fake(FAKE_CALLBACKS='1')
+        self.assertEqual(run.returncode, 1)
+        self.assertEqual(summary['screenshotCount'], 12)
+        self.assertEqual([len(case['issueMetadata']) for case in summary['cases']], [4, 2])
+        self.assertTrue(all(case['evidence'] == 'complete' for case in summary['cases']))
+        self.assertEqual(sum('build-for-testing' in c for c in commands), 1)
+        self.assertEqual(sum('test-without-building' in c for c in commands), 2)
 
 
 if __name__ == '__main__': unittest.main()

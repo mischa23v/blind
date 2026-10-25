@@ -1,3 +1,11 @@
+## 2026-10-25 — Explicit menu-reading aliases (portable source increment)
+
+Exact imperative and ordinary polite English/Arabic menu-reading requests now select the existing captured-document lane through trusted task routing. Output retains uncertain captured-text framing and existing same-source review/private/ordinary-budget gates. No menu interpretation, item/price/allergen association, complete coverage or real-world completion claim is added; no new model/dependency/persistence.
+
+**1,312 Core tests and 531 serial Node checks passed, zero failures/skips; 790 relevant input hashes unchanged during final Node.** Final source reconciles with the published test/tool repairs rather than claiming the older local scaffold included all later inputs. Portable results and native limits: [menu alias receipt](research/evaluations/menu-reading-aliases/README.md). Native OCR/audio, hands-free authority and supervised nonvisual usefulness remain separate and unverified. Existing generic visual fallback for non-alias requests and terminal coordinator restart semantics are unchanged.
+
+---
+
 ## 2026-10-25 — Captured-page review local candidate
 
 One bounded volatile page can now be explicitly repeated, navigated by part, reread or forgotten through exact English/Arabic commands. New playback identities preserve prior receipt semantics; actual start/completion, ordinary budgets and existing trusted/private gates remain authoritative. No interpretation, new camera requirement for historical quotation, persistence or new dependency.

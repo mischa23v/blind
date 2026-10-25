@@ -60,7 +60,7 @@ jobs:
           name: full-audit-phase-evidence
           path: |
             ${{ runner.temp }}/blind-full-audit-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/*.png
-            ${{ runner.temp }}/blind-full-audit-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/evidence.json
+            ${{ runner.temp }}/blind-full-audit-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/*.json
           if-no-files-found: error
           retention-days: 3
       - name: Retain diagnostic failure status

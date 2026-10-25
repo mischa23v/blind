@@ -1,3 +1,13 @@
+## Explicit menu-reading alias increment — 2026-10-25
+
+- [x] Exact raw whole-request English/Arabic imperative and ordinary polite aliases reuse existing captured-document acquisition/playback/review; no semantic menu lane or new speech.
+- [x] Fail-before parser regressions, trusted-route contracts, source privacy/review and unchanged attempt semantics; independent source review.
+- [ ] Exact native app/OCR/audio and supervised nonvisual usefulness; not hands-free task authority, complete menu reading or goal completion.
+
+[Verification receipt](research/evaluations/menu-reading-aliases/README.md).
+
+---
+
 ## Captured-page review increment (2026-10-25 candidate)
 
 - [x] Local bounded volatile source review, distinct attempts/receipts, exact onset and stale-callback ownership, English/Arabic parser, ordinary-budget/private gates.

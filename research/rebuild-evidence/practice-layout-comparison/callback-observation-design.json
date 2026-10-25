@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "scope": "Synthetic UI-test evidence only; no production or audit-policy change",
+  "observation": {
+    "timing": "Callback-time screen and optional single public element snapshot; not historical failing-size evidence or an atomic image/frame pair",
+    "limit": "At most two findings per Camera/Ask phase, before the unchanged exemption decision",
+    "element": "Optional; root attributes only. Missing element, failed snapshot, truncated metadata and missing attachments remain explicit",
+    "metadataLimitBytes": 16384,
+    "actionsExcluded": [
+      "gestures",
+      "waits",
+      "category changes",
+      "private APIs",
+      "retries",
+      "audit suppression"
+    ],
+    "existingExemption": "Exact disabled-retrace contrast findings are not captured and consume no observation budget; original callback return decision remains unchanged",
+    "timingLimit": "Screenshots and snapshots of unhandled findings can still affect subsequent observation timing. Matching pre-audit geometry does not remove this observer effect."
+  },
+  "export": {
+    "normalMain": "Uses the existing ui.xcresult; no additional audit invocation",
+    "selection": "Exact authored before/after and callback screen/metadata names only; raw bundle and other attachments stay local",
+    "singleResultPNGBytes": 16777216,
+    "pairedScopePNGBytes": 25165824,
+    "pairedScopeMetadataBytesLessThan": 4194304,
+    "nativeOutcome": "Separate from evidence completeness; missing after-capture is not an audit pass"
+  },
+  "preservedHistory": {
+    "scopeControlRun": 40229457228,
+    "scopeControlCommit": "2776b18227fc9c62bb6c9a6b2f2abe06410d6f06",
+    "result": "Build-for-testing timed out at 600 seconds; zero audit executions, zero screenshots; owned simulator deletion passed",
+    "change": "Add bounded sanitized normal-build progress and elapsed/termination metadata, without raising the 600-second cap or retrying selectors",
+    "fullAppAudits": "Earlier Camera header/button Dynamic Type findings and unidentified hit-region failure remain unresolved"
+  },
+  "validationLimit": "Source and synthetic exporter/orchestration checks do not establish Apple compilation, callback reentrancy, screenshot timing or accessibility acceptance",
+  "publicAPIs": [
+    "https://developer.apple.com/documentation/xcuiautomation/xcuiaccessibilityauditissue",
+    "https://developer.apple.com/documentation/xcuiautomation/xcuiscreenshotproviding",
+    "https://developer.apple.com/documentation/xcuiautomation/xcuielementsnapshotproviding",
+    "https://developer.apple.com/documentation/xctest/adding-attachments-to-tests-activities-and-issues",
+    "https://developer.apple.com/documentation/xcode-release-notes/xcode-16_3-release-notes"
+  ],
+  "sourceValidation": {
+    "relatedNodeChecks": 20,
+    "exporterFixtures": 22,
+    "runnerFixtures": 11,
+    "failures": 0,
+    "nativeCompilation": "pending",
+    "nativeAuditExecution": "pending"
+  }
+}

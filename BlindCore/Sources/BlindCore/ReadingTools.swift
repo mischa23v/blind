@@ -20,7 +20,35 @@ public enum ReadingToolCommand: Equatable, Sendable {
             .replacingOccurrences(of: "please ", with: "").replacingOccurrences(of: "can you ", with: "")
     }
 
+    /// Menu requests reuse the captured-document lane, not menu interpretation.
+    /// Keep raw whole-request matching separate from legacy punctuation/politeness
+    /// removal so quoted discussion and extra clauses cannot become new aliases.
+    private static func matchesMenuRequest(_ raw: String) -> Bool {
+        var text = raw.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard text.unicodeScalars.count <= 200,
+              !text.unicodeScalars.contains(where: {
+                  CharacterSet.controlCharacters.contains($0) || $0.properties.generalCategory == .format
+              }) else { return false }
+        // Only trailing sentence punctuation; quotes/leading punctuation remain.
+        while let last = text.last, ".!?؟".contains(last) { text.removeLast() }
+        text = text.split(whereSeparator: { $0.isWhitespace }).joined(separator: " ")
+        let english = ["read menu", "read the menu", "read this menu", "read the menu to me", "read me the menu"]
+        // Complete ordinary polite requests, not replace-anywhere normalization.
+        // These literal combinations cannot consume discussion, negatives or clauses.
+        let politeEnglish = ["can you ", "can you please ", "could you ", "could you please "]
+        if politeEnglish.contains(where: { prefix in english.contains(where: { text == prefix + $0 }) }) { return true }
+        let politeArabic = ["هل يمكنك قراءه قائمه الطعام", "هل يمكنك قراءه قائمه الطعام لي",
+                            "هل يمكنك قراءه قائمه الطعام من فضلك", "هل يمكنك قراءه قائمه الطعام لي من فضلك"]
+        if politeArabic.contains(SpatialClaimGuard.normalizeArabic(text)) { return true }
+        // Preserve the existing single-prefix imperative aliases below.
+        if text.hasPrefix("please ") { text = String(text.dropFirst("please ".count)) }
+        else if text.hasPrefix("من فضلك ") { text = String(text.dropFirst("من فضلك ".count)) }
+        let arabic = ["اقرا قائمه الطعام", "اقرا لي قائمه الطعام", "اقرا قائمه الطعام لي"]
+        return english.contains(text) || arabic.contains(SpatialClaimGuard.normalizeArabic(text))
+    }
+
     public static func parse(_ raw: String) -> ReadingToolCommand? {
+        if matchesMenuRequest(raw) { return .start(.document) }
         let text = normalized(raw)
         let arabic = SpatialClaimGuard.normalizeArabic(text).replacingOccurrences(of: "ى", with: "ي")
         let stops = ["stop reading", "stop scanning", "stop the light detector", "stop light detector", "stop the reading tool",

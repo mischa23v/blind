@@ -1,0 +1,126 @@
+{
+  "status": "portable checked; native menu acceptance pending",
+  "parent": "e3efd3350e8ec2c2cdfd73d5aa84d4b7db324056",
+  "productionBaseline": "0caea7dc8b529724545de7affb9bb65006175304",
+  "scope": "Whole-request imperative and ordinary polite English/Arabic menu aliases select existing captured-document reading; no interpretation, semantic associations, broad prefix replacement or new speech.",
+  "final": {
+    "core": {
+      "tests": 1312,
+      "failed": 0,
+      "skipped": 0,
+      "platform": "Swift 6.4.1 Linux; includes portable shared fixture"
+    },
+    "node": {
+      "tests": 531,
+      "pass": 531,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "files": 84
+    },
+    "sourceIntegrity": {
+      "hashedInputs": 790,
+      "changedDuringFinalNode": 0,
+      "baseRemoteTrackedInputs": 787,
+      "ownedProductionChange": "BlindCore/Sources/BlindCore/ReadingTools.swift",
+      "ownedNewTests": [
+        "BlindCore/Tests/BlindCoreTests/MenuReadingAliasTests.swift",
+        "tools/test/menu-reading-aliases.test.mjs"
+      ],
+      "separateReviewedOverlay": "11-file callback/export diagnostic overlay, manifest SHA256 51359b5ae4188936a0a16462d91e7c2e9280b36d7e6ccbd3123882d8040ee01a"
+    },
+    "additionalChecks": {
+      "fullAuditPython": 22,
+      "cameraAuditPython": 11,
+      "packagingWrapper": "2 passing aggregate checks execute 14 unchanged nested source contracts"
+    },
+    "independentReview": "approved initial and revised polite matcher; Arabic phrases reviewed; separate test/tool/diagnostic overlays independently approved",
+    "postRunSupplement": {
+      "path": ".github/workflows/native-core-diagnostic.yml",
+      "changedAfterFullNode": true,
+      "verification": "Exact byte equality after only two label replacements and two source-ref replacements; all other bytes unchanged",
+      "priorPin": "2776b18227fc9c62bb6c9a6b2f2abe06410d6f06",
+      "newPin": "98cb52bcd69f7d1a4352f19c4e10fac7060e77a4",
+      "sha256": "90603451c0100f1306f8cf3c670b7f2273ff609ceff5696a16e7d6bc0b062b55",
+      "notClaimed": "This supplemental static check does not rerun the workflow or Node aggregate."
+    }
+  },
+  "retainedEarlierCuts": [
+    {
+      "cut": "initial alias regression",
+      "tests": 5,
+      "assertionFailures": 34,
+      "reason": "missing aliases on unchanged production"
+    },
+    {
+      "cut": "first Node cut before full remote reconciliation",
+      "tests": 519,
+      "passed": 516,
+      "failed": 3,
+      "skipped": 0,
+      "files": 81,
+      "reason": "two stale LaunchTests contract failures and current generator/project mismatch"
+    },
+    {
+      "cut": "reconciled Node before audit contract adaptation",
+      "tests": 526,
+      "passed": 523,
+      "failed": 3,
+      "skipped": 0,
+      "files": 83,
+      "reason": "three old literal-count audit contracts; actual shared Camera/Ask paths preserved by reviewed replacement"
+    },
+    {
+      "cut": "standalone component packet invocation",
+      "tests": 14,
+      "passed": 12,
+      "failed": 2,
+      "reason": "workflow expected beside packet; unchanged contracts now run through verified temporary-layout wrapper"
+    },
+    {
+      "cut": "accepted imperative-only cut",
+      "corePassed": 1311,
+      "nodePassed": 529,
+      "nodeFiles": 84,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "Predates polite requests; retained separately, not relabeled as revised source."
+    },
+    {
+      "cut": "polite-request fail-before",
+      "tests": 9,
+      "assertionFailures": 70,
+      "reason": "ordinary polite request aliases missing on prior production candidate"
+    },
+    {
+      "cut": "revised polite focused checks",
+      "nodePassed": 56,
+      "files": 9,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "Affected reading/routing/authority/privacy consumers, followed by final full aggregate."
+    }
+  ],
+  "verificationNotes": [
+    "Original fail-before Node cut also contained a test-locator error; corrected before production editing, retaining one genuine missing-matcher failure.",
+    "Final Core was rerun after replacing Linux-only XCTestCase fixture constructions with a plain shared helper; no assertions removed.",
+    "Earlier 508-check evidence describes its recorded local cut, not every later published repository input.",
+    "Generic visual fallback for rejected aliases and existing exact-query/terminal coordinator request semantics are unchanged.",
+    "Can-you/could-you and can-you-please are supported literal complete requests, not treated as unsafe merely because they are polite. Speculative/reported, quoted, negative, conditional and extra-clause inputs remain outside the new deterministic alias lane.",
+    "Root separately verified native baseline98cb52 Core:1303 executed,1302passed,1optional skip,0fail. That is fixture-portability evidence for the baseline, not native menu or participant acceptance."
+  ],
+  "notEstablished": [
+    "native app/OCR/audio execution for menu aliases",
+    "hands-free task authority from unverified microphone",
+    "menu completeness or item/price/allergen associations",
+    "participant usefulness or real-world goal completion",
+    "independent child use"
+  ],
+  "ownedSourceSHA256": {
+    "BlindCore/Sources/BlindCore/ReadingTools.swift": "6e0ec17b2c6b280cc143897b60b3cdfaf474907c2efda43fe7922c5ab3a47ad3",
+    "BlindCore/Tests/BlindCoreTests/MenuReadingAliasTests.swift": "909861a05d254b1ce2337bedfc4055df79d53ea0f23a46bc9c579e70174ccc85",
+    "tools/test/menu-reading-aliases.test.mjs": "871e19827b332c06215564212019f39b155f8b6806813dc35a80eaccbe3468b9",
+    "research/evaluations/menu-reading-aliases/README.md": "dcf214ad8f52a3b3909c1b7c561d3dfc89734cab8604f6065e1dc18d80b7a100"
+  },
+  "validationCutBase": "98cb52bcd69f7d1a4352f19c4e10fac7060e77a4"
+}

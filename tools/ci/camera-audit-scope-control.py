@@ -11,8 +11,34 @@ import sys
 import time
 
 ROOT = Path(__file__).resolve().parents[2]
-CASES = [('original-all', 'BlindAssistUITests/LaunchTests/testAccessibilityAuditOfCameraAndAsk', 4),
-         ('camera-dynamic-type', 'BlindAssistUITests/CameraAuditScopeTests/testCameraDynamicTypeOnly', 2)]
+CASES = [('original-all', 'BlindAssistUITests/LaunchTests/testAccessibilityAuditOfCameraAndAsk', 8),
+         ('camera-dynamic-type', 'BlindAssistUITests/CameraAuditScopeTests/testCameraDynamicTypeOnly', 4)]
+
+
+def sanitize_progress(line, replacements=()):
+    for value, replacement in sorted(replacements, key=lambda item: -len(item[0])):
+        if value: line = line.replace(value, replacement)
+    line = re.sub(r'https?://[^\s]+', '<url>', line)
+    line = re.sub(r'/Users/[^/\s]+', '<home>', line)
+    line = re.sub(r'(?i)\b(token|password|authorization|api[_-]?key)\s*[:=]\s*\S+', r'\1=<redacted>', line)
+    return ''.join(char for char in line if char == '\t' or ord(char) >= 32)
+
+
+def build_progress_tail(path, replacements=()):
+    lines, matched, truncated = [], 0, 0
+    pattern = re.compile(r'^\s*(?:SwiftCompile|SwiftEmitModule|SwiftDriver|CompileSwift|CompileC|CompileAssetCatalog|Ld |Link |CodeSign|ProcessInfoPlistFile|Touch |Copy |CpResource|Resolve Package Graph|Resolved source packages|Fetching from|Checking out|Prepare packages|ComputeTargetDependencyGraph|Build description|note:|warning:|error:|\*\* BUILD)')
+    if path.exists():
+        with path.open(errors='replace') as stream:
+            for line in stream:
+                if pattern.search(line):
+                    value = sanitize_progress(line.rstrip(), replacements)
+                    matched += 1; truncated += int(len(value) > 800)
+                    lines.append(value[:800]); lines = lines[-60:]
+    result = {'lines': lines, 'omittedMatchedLines': matched - len(lines), 'truncatedLines': truncated,
+              'logByteCount': path.stat().st_size if path.exists() else 0}
+    while len(json.dumps(result, indent=2).encode()) > 64 * 1024:
+        lines.pop(0); result['omittedMatchedLines'] += 1
+    return result
 
 
 def before_camera_geometry(path):
@@ -55,9 +81,13 @@ def main():
     summary = {'schema': 1, 'source': os.environ.get('GITHUB_SHA', 'local')[:256],
                'requestedRuntime': 'com.apple.CoreSimulator.SimRuntime.iOS-27-0',
                'requestedDevice': 'iPhone 18 Pro Max', 'runnerBudgetSeconds': 2400,
-               'build': 'not_run', 'cleanup': 'not_run',
+               'build': 'not_run', 'cleanup': 'not_run', 'commands': {},
                'cases': [{'name': name, 'selector': selector, 'maxScreenshots': count,
                           'status': 'not_run', 'evidence': 'not_run'} for name, selector, count in CASES]}
+
+    def safe_error(error):
+        if isinstance(error, OSError): return type(error).__name__
+        return sanitize_progress(str(error), [(str(ROOT), '<workspace>'), (str(out), '<runner-temp>'), (str(Path.home()), '<home>')])[:1000]
 
     def save():
         payload = json.dumps(summary, indent=2) + '\n'
@@ -77,18 +107,30 @@ def main():
         if available <= 0: raise TimeoutError('Runner deadline exhausted')
         env = dict(os.environ)
         if test: env['TEST_RUNNER_BLIND_AUDIT_SCOPE_CONTROL'] = '1'
+        started = time.monotonic()
+        record = {'budgetSeconds': round(available, 2), 'timedOut': False, 'sentSIGTERM': False, 'sentSIGKILL': False}
+        summary['commands'][label] = record
         with (logs / (label + '.log')).open('w') as stream:
             process = subprocess.Popen(args, cwd=ROOT, env=env, stdout=stream,
                                        stderr=subprocess.STDOUT, start_new_session=True)
             try:
                 return process.wait(timeout=available)
             except BaseException as error:
-                if process.poll() is None: os.killpg(process.pid, signal.SIGTERM)
+                record['timedOut'] = isinstance(error, subprocess.TimeoutExpired)
+                record['interrupted'] = not record['timedOut']
+                if process.poll() is None:
+                    record['sentSIGTERM'] = True
+                    os.killpg(process.pid, signal.SIGTERM)
                 try: process.wait(timeout=5)
                 except subprocess.TimeoutExpired:
+                    record['sentSIGKILL'] = True
                     os.killpg(process.pid, signal.SIGKILL); process.wait(timeout=5)
                 if isinstance(error, subprocess.TimeoutExpired): raise TimeoutError('Timed out: ' + label) from error
                 raise
+            finally:
+                record['elapsedSeconds'] = round(time.monotonic() - started, 3)
+                record['exitCode'] = process.returncode
+                save()
 
     def checked(args, label, limit):
         code = run(args, label, limit)
@@ -103,7 +145,7 @@ def main():
                 for line in stream:
                     if any(marker in line for marker in ('ACCESSIBILITY_AUDIT', 'Test Case ', 'error:', 'TEST FAILED', 'TEST SUCCEEDED')):
                         matched += 1; truncated += int(len(line.rstrip()) > 12288)
-                        lines.append(line.rstrip()[:12288]); lines = lines[-80:]
+                        lines.append(sanitize_progress(line.rstrip(), [(str(ROOT), '<workspace>'), (str(out), '<runner-temp>')])[:12288]); lines = lines[-80:]
         result = {'lines': lines, 'omittedMatchedLines': matched - len(lines), 'truncatedLines': truncated}
         while len(json.dumps(result, indent=2).encode()) > 192 * 1024:
             index = next((i for i, line in enumerate(lines) if 'ACCESSIBILITY_AUDIT=' not in line), 0)
@@ -147,7 +189,7 @@ def main():
                                    'test-without-building'], name, 300, test=True)
                 case['nativeExitCode'] = code; case['status'] = 'passed' if code == 0 else 'native_failed'; failed |= code != 0
             except Exception as error:
-                case['status'] = 'infrastructure_failed'; case['error'] = str(error)[:1000]; failed = True
+                case['status'] = 'infrastructure_failed'; case['error'] = safe_error(error); failed = True
             finally:
                 case['logSummary'] = bounded_log(name)
                 try:
@@ -161,36 +203,44 @@ def main():
                     if name == 'camera-dynamic-type' and any('full-audit-ask-' in p.name for p in paths):
                         raise RuntimeError('Unexpected ask evidence in camera-only case')
                     existing = list(artifacts.glob('*/*.png'))
-                    if len(paths) + len(existing) > 6 or sum(p.stat().st_size for p in paths + existing) > 16 * 1024 * 1024:
-                        raise RuntimeError('Combined screenshot artifact exceeds 6 PNG / 16 MiB')
+                    if len(paths) + len(existing) > 12 or sum(p.stat().st_size for p in paths + existing) > 24 * 1024 * 1024:
+                        raise RuntimeError('Combined screenshot artifact exceeds 12 PNG / 24 MiB')
                     destination = artifacts / name; destination.mkdir()
                     for path in paths: shutil.copyfile(path, destination / path.name)
                     evidence = source / 'evidence.json'
                     if evidence.stat().st_size > 16 * 1024: raise RuntimeError('Phase evidence JSON exceeds 16 KiB')
                     shutil.copyfile(evidence, destination / 'evidence.json')
+                    metadata = list(source.glob('full-audit-*-issue-*-metadata.json'))
+                    if len(metadata) > (4 if name == 'original-all' else 2): raise RuntimeError('Unexpected issue metadata count')
+                    for path in metadata:
+                        if path.stat().st_size > 16 * 1024: raise RuntimeError('Issue metadata exceeds 16 KiB')
+                        shutil.copyfile(path, destination / path.name)
+                    case['issueMetadata'] = [p.name for p in sorted(metadata)]
                     case['screenshots'] = [p.name for p in sorted(paths)]
                     case['evidence'] = 'complete' if export_code == 0 else 'failed'
                     failed |= export_code != 0
                 except Exception as error:
-                    case['evidence'] = 'failed'; case['evidenceError'] = str(error)[:1000]; failed = True
+                    case['evidence'] = 'failed'; case['evidenceError'] = safe_error(error); failed = True
                 save()
     except Exception as error:
-        summary['infrastructureError'] = str(error)[:1000]; failed = True
+        summary['infrastructureError'] = safe_error(error); failed = True
         if summary['build'] == 'not_run': summary['build'] = 'infrastructure_failed'
         for case in summary['cases']:
             if case['status'] == 'not_run': case['status'] = 'infrastructure_not_run'
     finally:
         summary['buildSummary'] = bounded_log('build')
+        summary['buildProgressTail'] = build_progress_tail(logs / 'build.log',
+            [(str(ROOT), '<workspace>'), (str(out), '<runner-temp>'), (str(Path.home()), '<home>')])
         summary['beforeCameraComparison'] = compare_before_geometry(logs)
         if summary['beforeCameraComparison']['status'] != 'matched': failed = True
         if device:
             try: summary['shutdownExitCode'] = run(['xcrun', 'simctl', 'shutdown', device], 'shutdown', 30, cleanup=True)
-            except Exception as error: summary['shutdownError'] = str(error)[:1000]
+            except Exception as error: summary['shutdownError'] = safe_error(error)
             try:
                 code = run(['xcrun', 'simctl', 'delete', device], 'delete', 45, cleanup=True)
                 summary['cleanup'] = 'passed' if code == 0 else 'failed'; failed |= code != 0
             except Exception as error:
-                summary['cleanup'] = 'failed'; summary['cleanupError'] = str(error)[:1000]; failed = True
+                summary['cleanup'] = 'failed'; summary['cleanupError'] = safe_error(error); failed = True
         else: summary['cleanup'] = 'no_owned_simulator'
         summary['screenshotCount'] = len(list(artifacts.glob('*/*.png')))
         summary['result'] = 'failed' if failed else 'passed'; save()

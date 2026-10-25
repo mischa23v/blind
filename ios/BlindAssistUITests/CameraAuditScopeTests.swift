@@ -70,6 +70,69 @@ final class CameraAuditScopeTests: XCTestCase {
     }
 
     @MainActor
+    private func recordAuditIssueObservation(_ issue: XCUIAccessibilityAuditIssue, phase: String, observedFindings: inout Int) {
+        // Only synthetic test content. This is callback-time UI, not the audit's
+        // historical failing-size state; image and snapshot are not atomic.
+        guard app.launchArguments.contains("--ui-testing"),
+              phase == "camera" || phase == "ask" else { return }
+        // Do not observe or spend the capture budget on the existing exemption.
+        // The callback below still owns its original, unchanged return decision.
+        if issue.auditType == .contrast, let element = issue.element,
+           element.identifier == "retrace-session", !element.isEnabled { return }
+        observedFindings += 1
+        guard observedFindings <= 2 else {
+            print("ACCESSIBILITY_AUDIT_CAPTURE_OMITTED phase=\(phase) index=\(observedFindings) limit=2")
+            return
+        }
+        let index = observedFindings
+        let name = "full-audit-\(phase)-issue-\(index)"
+        let screenshot = XCTAttachment(screenshot: app.screenshot())
+        screenshot.name = name + "-screen"
+        screenshot.lifetime = .keepAlways
+        add(screenshot)
+        var metadata: [String: Any] = [
+            "schema": 1, "timing": "callback_observation_not_historical_failure_state",
+            "phase": phase, "index": index, "auditType": issue.auditType.rawValue,
+            "compact": String(issue.compactDescription.prefix(512)),
+            "detailed": String(issue.detailedDescription.prefix(1024)),
+            "elementPresent": issue.element != nil, "snapshotStatus": "not_available"
+        ]
+        if let element = issue.element {
+            do {
+                // One public snapshot; serialize root attributes only, never descendants.
+                let snapshot = try element.snapshot()
+                metadata["snapshotStatus"] = "captured"
+                metadata["element"] = [
+                    "identifier": String(snapshot.identifier.prefix(256)),
+                    "label": String(snapshot.label.prefix(256)),
+                    "elementType": snapshot.elementType.rawValue,
+                    "frame": NSStringFromCGRect(snapshot.frame), "enabled": snapshot.isEnabled
+                ]
+            } catch {
+                metadata["snapshotStatus"] = "failed"
+                metadata["snapshotErrorType"] = String(describing: type(of: error)).prefix(128).description
+            }
+        }
+        do {
+            var data = try JSONSerialization.data(withJSONObject: metadata, options: [.sortedKeys])
+            if data.count > 16 * 1024 {
+                metadata.removeValue(forKey: "compact")
+                metadata.removeValue(forKey: "detailed")
+                metadata.removeValue(forKey: "element")
+                metadata["metadataTruncated"] = true
+                data = try JSONSerialization.data(withJSONObject: metadata, options: [.sortedKeys])
+            }
+            let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+            attachment.name = name + "-metadata"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+        } catch {
+            // Preserve the original audit decision even if diagnostic encoding fails.
+            print("ACCESSIBILITY_AUDIT_CAPTURE_ERROR phase=\(phase) index=\(index) kind=metadata_encoding")
+        }
+    }
+
+    @MainActor
     private func auditDynamicTypeDestination(_ phase: String, title: String, requiredControl: String) throws {
         defer { recordFullAuditEvidence(phase, "after") }
         // Required destination UI, not a sleep, scroll, altered state or audit exemption.
@@ -79,8 +142,10 @@ final class CameraAuditScopeTests: XCTestCase {
         recordFullAuditEvidence(phase, "before")
         XCTAssertTrue(titleReady, "Expected destination navigation title")
         XCTAssertTrue(controlReady, "Expected destination control")
+        var observedFindings = 0
         try app.performAccessibilityAudit(for: .dynamicType) { issue in
             print("ACCESSIBILITY_AUDIT=type:\(issue.auditType),phase:\(phase),compact:\(issue.compactDescription.prefix(2048)),detailed:\(issue.detailedDescription.prefix(4096)),element:\(String((issue.element?.debugDescription ?? "unidentified").prefix(1200)).replacingOccurrences(of: "\n", with: " | "))")
+            recordAuditIssueObservation(issue, phase: phase, observedFindings: &observedFindings)
             // WCAG exempts inactive controls; retain every other audit finding.
             guard issue.auditType == .contrast, let element = issue.element else { return false }
             return element.identifier == "retrace-session" && !element.isEnabled

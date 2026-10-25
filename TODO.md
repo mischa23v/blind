@@ -1,3 +1,11 @@
+## Next — menu-reading alias native acceptance
+
+Build the exact candidate and verify trusted English/Arabic imperative and polite menu requests, one-view uncertain OCR, current/previous/next/reread/forget controls, interruptions, source replacement and private audio with actual VoiceOver. Measure whether a supervised nonvisual participant can use the information; do not infer menu structure, price/allergen relationships, complete menu coverage or dining-goal success from portable tests. Unverified microphone input still cannot change tasks.
+
+[Scope and evidence](research/evaluations/menu-reading-aliases/README.md).
+
+---
+
 ## Next — captured-page review acceptance
 
 Validate the candidate on the exact native app: current/last-started versus queued-unstarted repeat, previous/next, reread, slow budget waits, English/Arabic and privacy/source replacement. Confirm automatic scene descriptions resume after forget/unrelated request while independent hazards remain active. Do not count portable extracted-method tests as audible/participant acceptance. See [candidate scope](research/evaluations/captured-page-review/README.md).
