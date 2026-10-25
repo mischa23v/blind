@@ -56,7 +56,13 @@ test('private audio loss exempts only code-owned detection alerts, never arbitra
   assert.match(delivery, /let independentAlert = alert != nil && \(candidate.kind == \.hazard \|\| candidate.kind == \.mobility\)/);
   assert.match(delivery, /guard independentAlert \|\| !assistantSession.privateAudioHeld/);
   const beacon = declaration(model, 'func indoorBeacon(');
-  assert.match(beacon, /speakMobility\(indoor.message\)/);
+  assert.match(beacon, /spatialRouteOutput\.deliver\(ticket: cue\.ticket/);
+  assert.match(beacon, /InformationCandidate\(key: "spatial-route:"[\s\S]*kind: \.mobility/);
+  assert.match(beacon, /deliverCandidate\(candidate, speechID: id, spatialRouteID: id\)/);
+  assert.doesNotMatch(beacon, /speakMobility\(indoor\.message\)|alert:/);
+  const routePermission = declaration(model, 'private func spatialRouteOutputAllowed(');
+  assert.match(routePermission, /!assistantSession\.privateAudioHeld/);
+  assert.match(routePermission, /indoor\.permitsSpatialOutput\(ticket, now: now\)/);
   const mobility = declaration(model, 'private func speakMobility(');
   assert.doesNotMatch(mobility, /alert:/);
 });

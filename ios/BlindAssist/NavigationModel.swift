@@ -159,7 +159,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     // Session-only declaration. A handheld camera's heading is not body heading.
     @Published var fixedBodyMount = false {
         didSet {
-            if oldValue != fixedBodyMount { cancelDescription(); feedback.interruptAmbient() }
+            if oldValue != fixedBodyMount {
+                cancelDescription(); feedback.interruptAmbient()
+                // A changed physical mount retires heading authority, not map history.
+                indoor.invalidatePosition(); spatialRouteOutput.retire()
+            }
             if fixedBodyMount && !oldValue { mountSlipAnnounced = false; bodyHeadingEstimator.reset() }
         }
     }
@@ -222,6 +226,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var lastReturnAnnouncement = -Double.infinity
     private var lastIndoorAnnouncement = -Double.infinity
     private var lastIndoorCueKey = ""
+    private let spatialRouteOutput = SpatialRouteOutputController()
+    private var plannedIndoorGoalRevision: String?
     private var lastSceneContent = ""
     private var lastSceneSpoken = -Double.infinity
     private var detector = HazardDetector()
@@ -430,6 +436,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var demonstrationHazard: Hazard = .observing
     override init() {
         super.init(); session.delegate = self; session.delegateQueue = .main
+        spatialRouteOutput.permits = { [weak self] ticket, goal in
+            self?.spatialRouteOutputAllowed(ticket, goalRevision: goal) == true
+        }
+        spatialRouteOutput.stopSpeech = { [weak self] id in self?.feedback.stopSpatialRouteSpeech(id) }
+        spatialRouteOutput.stopBeacon = { [weak self] id in self?.feedback.stopSpatialRouteBeacon(id) }
+        indoor.onSpatialOutputRetired = { [weak self] in self?.spatialRouteOutput.retire() }
+        feedback.spatialRoutePermission = { [weak self] id in
+            self?.spatialRouteOutput.validateForStart(id) == true
+        }
         #if DEBUG
         NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)
             .sink { [debugTrace] _ in debugTrace?.finish() }.store(in: &subscriptions)
@@ -610,6 +625,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             // Headphone removal must not move a private reply onto the speaker.
             // Explicit Start/Unmute is required; do not announce this transition.
             self.assistantSession.losePrivateAudioRoute()
+            self.spatialRouteOutput.retire()
             self.feedback.stopForPrivateRouteLoss()
             self.cancelDescription()
             self.message = self.arabic ? "انقطع جهاز الصوت. استأنف المحادثة عندما تكون مستعداً." : "Audio device disconnected. Resume conversation when you are ready."
@@ -771,8 +787,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     func identifyBelt() { wearables.send(WearableCommand.identify) }
     private func startWatchdog() {
         watchdog?.invalidate()
-        watchdog = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
-            guard let self, self.running, !self.places.scanning else { return }
+        watchdog = Timer(timeInterval: 0.1, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            // Held route output expires even if no sensor callback arrives.
+            self.indoor.revalidateSpatialOutput(now: ProcessInfo.processInfo.systemUptime)
+            self.spatialRouteOutput.revalidate()
+            guard self.running, !self.places.scanning else { return }
             self.tickEverydayRetry(now: ProcessInfo.processInfo.systemUptime)
             self.tickAutomaticRoomRecovery(now: ProcessInfo.processInfo.systemUptime)
             if !self.automaticRoomRecoveryEnabled && (self.placeRecovery.expire(now: ProcessInfo.processInfo.systemUptime) || self.placeRecovery.state == .needsHelp) {
@@ -813,6 +833,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             self.publish()
             self.resumePendingQuestion()
         }
+        if let watchdog { RunLoop.main.add(watchdog, forMode: .common) }
     }
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         guard running, !simulation, !places.scanning, frame.timestamp - lastProcessed >= 1.0 / 15 else { return }
@@ -1068,6 +1089,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let previousHazard = detection.hazard
         let visual = !simulation ? visualStairs.detection(at: now).map { [$0] } ?? [] : []
         detection = continuity.process(AlertPolicy.highest(visual + [phoneDetection] + (simulation ? [] : wearables.detections(at: now))), at: now)
+        // Retire route IDs before independent hazard/status sinks run. Never stop
+        // a newer sensor alert when an old route callback arrives later.
+        spatialRouteOutput.revalidate()
         if [.uncertain, .calibrating, .needsCalibration].contains(previousHazard) && detection.hazard == .observing {
             // A status update, never an instruction to start walking.
             speakMobility(GuidanceText.hazard(.observing, arabic: arabic))
@@ -1204,22 +1228,51 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         indoor.align(camera: observation.camera, forward: observation.forward)
         lastIndoorCueKey = ""; lastIndoorAnnouncement = -.infinity
     }
+    func planIndoor(from: String, to: String) throws {
+        guard let goal = UUID(uuidString: companionWorkingState.goalRevision) else { throw SpatialRouteError.staleGoal }
+        spatialRouteOutput.retire()
+        try indoor.plan(from: from, to: to, goalRevision: goal)
+        plannedIndoorGoalRevision = companionWorkingState.goalRevision
+        lastIndoorCueKey = ""; lastIndoorAnnouncement = -.infinity
+    }
+    private func spatialRouteOutputAllowed(_ ticket: SpatialRouteTicket, goalRevision: String) -> Bool {
+        let now = ProcessInfo.processInfo.systemUptime
+        guard !textOnly, running, !simulation, !places.scanning, !returning,
+              !assistantSession.privateAudioHeld, fixedBodyMount,
+              goalRevision == companionWorkingState.goalRevision,
+              UUID(uuidString: goalRevision) == ticket.goalRevision,
+              let observation = lastObservation, observation.trackingNormal,
+              now >= lastFrameWallTime, now - lastFrameWallTime < 0.5,
+              detection.hazard == .observing else { return false }
+        return indoor.permitsSpatialOutput(ticket, now: now)
+    }
     func indoorBeacon(automatic: Bool = false) {
-        guard indoor.hasActiveRoute else { return }
-        guard let observation = lastObservation, observation.trackingNormal,
+        spatialRouteOutput.revalidate()
+        guard indoor.hasActiveRoute, !returning,
+              let observation = lastObservation, observation.trackingNormal,
               ProcessInfo.processInfo.systemUptime - lastFrameWallTime < 0.5,
               detection.hazard == .observing else { return }
-        guard let bodyForward = currentBodyForward() else { return }
-        guard let cue = indoor.next(camera: observation.camera, forward: bodyForward) else {
-            _ = speakMobility(indoor.message)
+        // The raw arguments remain preview inputs only. The returned ticket must
+        // carry separately measured map/body/support evidence; none is invented here.
+        guard let cue = indoor.next(camera: observation.camera, forward: observation.forward) else {
+            if !automatic { _ = speakOperation(indoor.message, replace: false) }
             lastIndoorAnnouncement = ProcessInfo.processInfo.systemUptime; return
         }
-        let key = "\(indoor.alignmentRevision):\(indoor.waypointIndex):\(cue.sector):\(cue.distance <= 1)"
+        let key = "\(cue.ticket.routeID):\(indoor.waypointIndex):\(cue.sector):\(cue.distance <= 1)"
         if automatic, key == lastIndoorCueKey { return }
-        if speakMobility(indoor.message) {
-            if fixedBodyMount { feedback.beacon(sector: cue.sector, distance: min(10, cue.distance)) }
-            lastIndoorAnnouncement = ProcessInfo.processInfo.systemUptime
-            lastIndoorCueKey = key
+        let text = indoor.message
+        let delivered = spatialRouteOutput.deliver(ticket: cue.ticket, goalRevision: companionWorkingState.goalRevision,
+            speech: { id in
+                let now = ProcessInfo.processInfo.systemUptime
+                let candidate = InformationCandidate(key: "spatial-route:" + id.uuidString, kind: .mobility,
+                    text: text, words: Self.wordCount(text), revision: id.uuidString,
+                    createdAt: now, expiresAt: now + SavedWorldFrameRecovery.maximumFrameAge)
+                return self.deliverCandidate(candidate, speechID: id, spatialRouteID: id)
+            }, beacon: { id in
+                self.feedback.spatialRouteBeacon(sector: cue.sector, distance: min(10, cue.distance), id: id)
+            })
+        if delivered {
+            lastIndoorAnnouncement = ProcessInfo.processInfo.systemUptime; lastIndoorCueKey = key
         }
     }
     /// No mode selection: this loop consumes foreground evidence and the user's retained goal.
@@ -2113,7 +2166,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// One admission point for new candidates; approved producers use the private
     /// already-admitted path so the same words are never charged twice here.
     @discardableResult private func deliverCandidate(_ candidate: InformationCandidate,
-        alreadyAdmitted: Bool = false, narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil, nonspatialCapture: ContextualCapabilityScheduler.Lease? = nil, verifiedFamiliarCapture: Bool = false) -> Bool {
+        alreadyAdmitted: Bool = false, narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil, nonspatialCapture: ContextualCapabilityScheduler.Lease? = nil, verifiedFamiliarCapture: Bool = false, spatialRouteID: UUID? = nil) -> Bool {
         #if DEBUG
         var debugDelivered = false
         defer {
@@ -2148,9 +2201,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if !alreadyAdmitted {
             guard case .say = companion.decide([candidate], moment: companionMoment(now), settings: companionSettings).first else { return false }
         }
+        if let spatialRouteID {
+            guard candidate.kind == .mobility, alert == nil,
+                  spatialRouteOutput.validateForStart(spatialRouteID) else { return false }
+        }
         let admitted = AdmittedSpeech(candidate)
         let spoken = feedback.deliver(admitted, narrationID: narrationID, speechID: speechID, alert: alert,
-            independentAlert: independentAlert)
+            independentAlert: independentAlert, spatialRouteID: spatialRouteID)
         #if DEBUG
         debugDelivered = spoken
         #endif
@@ -2291,7 +2348,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         familiarPeople.cancelSearchForNewGoal()
         #endif
         everydayTasks.setGoal(objectiveDraft); everydayTicket = nil; everydayUtterance = ""
-        cancelDescription(); feedback.stop(); stopReturn(); indoor.cancelRoute()
+        cancelDescription(); _ = feedback.stopInformation(announceCancellation: false); stopReturn(); indoor.cancelRoute()
         assistantDialogue.setGoal(objectiveDraft); objectiveDraft = assistantDialogue.goal; persistDialogue()
         companionWorkingState.changeGoal(assistantDialogue.goal, originalRequest: objectiveDraft); persistWorkingState()
     }
@@ -2303,7 +2360,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         familiarPeople.cancelSearchForNewGoal()
         #endif
         everydayTasks.cancelAll(); everydayTicket = nil; everydayUtterance = ""
-        cancelDescription(); feedback.stop(); stopReturn(); indoor.cancelRoute()
+        cancelDescription(); _ = feedback.stopInformation(announceCancellation: false); stopReturn(); indoor.cancelRoute()
         unverifiedDialogue = AssistantDialogue(); unverifiedDialogueGeneration = nil
         assistantDialogue = AssistantDialogue(); objectiveDraft = ""; persistDialogue()
         companionWorkingState = CompanionWorkingState(); persistWorkingState()
@@ -2360,6 +2417,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
 
     private func persistWorkingState() {
+        // Every persisted goal/subtask revision fences held route output; this does
+        // not reset the localization session or independent sensor monitoring.
+        if let plannedIndoorGoalRevision, plannedIndoorGoalRevision != companionWorkingState.goalRevision {
+            indoor.cancelRoute(); self.plannedIndoorGoalRevision = nil
+        }
+        spatialRouteOutput.revalidate()
         do {
             guard let memory = places.memory else { throw CocoaError(.fileWriteUnknown) }
             try memory.saveValue(namespace: "companion", id: "working-state", payload: JSONEncoder().encode(companionWorkingState))

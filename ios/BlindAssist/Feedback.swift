@@ -10,6 +10,10 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     private let speech = AVSpeechSynthesizer()
     private var delivery = SpeechDeliveryLedger()
     private var currentUtterance: AVSpeechUtterance?
+    private var currentSpatialRouteID: UUID?
+    private var beaconOwnership = SpatialRouteBeaconOwnership()
+    /// Only the exact route owner can revalidate a registered physical cue.
+    var spatialRoutePermission: ((UUID) -> Bool)?
     #if DEBUG
     private let debugTrace = DebugNativeSessionTrace()
     #endif
@@ -78,7 +82,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         if detection.hazard.requiresImmediateAttention {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             if detection.hazard.isUrgent && detection.reason != .visualStairs { beacon(sector: detection.sector, distance: detection.distance ?? 1) }
-            else { player.stop() } // Missing coverage has no known hazard bearing.
+            else { beaconOwnership.replace(routeID: nil); player.stop() } // Missing coverage has no known hazard bearing.
             if WCSession.default.isReachable {
                 WCSession.default.sendMessage(["hazard": detection.hazard.rawValue], replyHandler: nil)
             }
@@ -90,7 +94,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     /// This sink holds one attempt only, including the time before AVFoundation starts.
     @discardableResult func deliver(_ admitted: AdmittedSpeech, narrationID: UUID? = nil,
                                     speechID: UUID? = nil, alert: Detection? = nil,
-                                    independentAlert: Bool = false) -> Bool {
+                                    independentAlert: Bool = false, spatialRouteID: UUID? = nil) -> Bool {
         #if DEBUG
         var debugAccepted = false
         defer {
@@ -102,6 +106,11 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         }
         #endif
         guard narrationID == nil || speechID == nil else { return false }
+        if let spatialRouteID {
+            guard spatialRouteID == speechID, admitted.priority == .mobility,
+                  !independentAlert, alert == nil,
+                  spatialRoutePermission?(spatialRouteID) == true else { return false }
+        }
         let destination: SpeechDeliveryLedger.Destination
         if let narrationID {
             guard canSpeakAmbient else { return false }
@@ -113,7 +122,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         }
         let verifiedIndependentAlert = independentAlert && alert != nil &&
             (admitted.priority == .mobility || admitted.urgent)
-        let accepted = speak(admitted, destination: destination, alert: alert, independentAlert: verifiedIndependentAlert)
+        let accepted = speak(admitted, destination: destination, alert: alert, independentAlert: verifiedIndependentAlert, spatialRouteID: spatialRouteID)
         #if DEBUG
         debugAccepted = accepted
         #endif
@@ -144,7 +153,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
 
     @discardableResult private func speak(_ admitted: AdmittedSpeech,
                                          destination: SpeechDeliveryLedger.Destination,
-                                         alert: Detection?, independentAlert: Bool) -> Bool {
+                                         alert: Detection?, independentAlert: Bool, spatialRouteID: UUID?) -> Bool {
         guard !admitted.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
         let priority: SpeechPriority = admitted.urgent ? .danger : admitted.priority
         guard priority.canInterrupt(speechPriority) else { return false }
@@ -163,6 +172,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
             voiceOverRunning: UIAccessibility.isVoiceOverRunning, independentAlert: independentAlert)
         guard let attempt = delivery.begin(text: admitted.text, priority: priority,
             destination: destination, transport: transport, independentAlert: independentAlert) else { return false }
+        currentSpatialRouteID = spatialRouteID
         if let alert { alertSignals(alert) }
         #if DEBUG
         debugTrace?.event(.speechRequested, source: .speechEngine,
@@ -188,6 +198,11 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
             utterance.rate = admitted.urgent ? 0.52 : 0.47
             utterance.prefersAssistiveTechnologySettings = true
             currentUtterance = utterance
+            // Revalidate after preparation, immediately before handing to the
+            // platform queue. didStart below fences a delayed actual start too.
+            if let spatialRouteID, spatialRoutePermission?(spatialRouteID) != true {
+                finishActive(outcome: .interrupted, stopSynthesizer: true); return false
+            }
             speech.speak(utterance)
         }
         return true
@@ -237,12 +252,12 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         guard let raw = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
               AVAudioSession.InterruptionType(rawValue: raw) == .began else { return }
         finishActive(outcome: .interrupted, stopSynthesizer: true)
-        player.stop()
+        beaconOwnership.replace(routeID: nil); player.stop()
     }
 
     @objc private func mediaServicesReset() {
         finishActive(outcome: .unknown, stopSynthesizer: true)
-        player.stop(); spatialReady = false
+        beaconOwnership.replace(routeID: nil); player.stop(); spatialReady = false
     }
 
     @objc private func announcementFinished(_ notification: Notification) {
@@ -278,7 +293,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         #endif
         // Invalidate identity before stopping: didCancel can arrive after new output
         // starts. Clear all old state before invoking controller code, asynchronously.
-        currentUtterance = nil
+        currentUtterance = nil; currentSpatialRouteID = nil
         outputTimeout?.invalidate(); outputTimeout = nil
         if stopSynthesizer { speech.stopSpeaking(at: .immediate) }
         DispatchQueue.main.async { [weak self] in
@@ -292,14 +307,18 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         if notify { notifyIdle() }
     }
 
-    #if DEBUG
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
         guard utterance === currentUtterance, let active = delivery.active, active.transport == .synthesized else { return }
+        #if DEBUG
         debugTrace?.event(.speechStarted, source: .speechEngine, utteranceID: active.token) {
             .init(text: active.text, label: "AVSpeech.didStart")
         }
+        #endif
+        if let routeID = currentSpatialRouteID, spatialRoutePermission?(routeID) != true {
+            finishActive(outcome: .interrupted, stopSynthesizer: true,
+                         diagnosticCause: "route.expiredBeforePlayback"); return
+        }
     }
-    #endif
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         guard utterance === currentUtterance, delivery.active?.transport == .synthesized else { return }
@@ -316,6 +335,15 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     func stopRequestedSpeech(_ id: UUID) {
         guard delivery.active?.destination == .requested(id) else { return }
         _ = stopInformation(announceCancellation: false)
+    }
+
+    /// Unlike ordinary information cancellation, this may revoke mobility speech,
+    /// but only its exact registered route ID. Independent sensor alerts survive.
+    func stopSpatialRouteSpeech(_ id: UUID) {
+        guard currentSpatialRouteID == id, let active = delivery.active,
+              active.destination == .requested(id), !active.independentAlert else { return }
+        finishActive(outcome: .interrupted, stopSynthesizer: true,
+                     diagnosticCause: "route.ticketRetired")
     }
 
     @discardableResult func stopInformation(announceCancellation: Bool = true) -> Bool {
@@ -345,7 +373,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         }
         let hadAnnouncement = delivery.active?.transport == .accessibility
         finishActive(outcome: .interrupted, stopSynthesizer: true)
-        speech.stopSpeaking(at: .immediate); player.stop()
+        speech.stopSpeaking(at: .immediate); beaconOwnership.replace(routeID: nil); player.stop()
         if hadAnnouncement { requestCancellationAnnouncement() }
     }
 
@@ -354,11 +382,24 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         NotificationCenter.default.removeObserver(self)
     }
     func beacon(sector: Int, distance: Double) {
-        guard spatialReady, let tone else { return }
+        _ = playBeacon(sector: sector, distance: distance, routeID: nil)
+    }
+    @discardableResult func spatialRouteBeacon(sector: Int, distance: Double, id: UUID) -> Bool {
+        guard spatialRoutePermission?(id) == true else { return false }
+        return playBeacon(sector: sector, distance: distance, routeID: id)
+    }
+    func stopSpatialRouteBeacon(_ id: UUID) {
+        guard beaconOwnership.retire(id) else { return }
+        player.stop()
+    }
+    private func playBeacon(sector: Int, distance: Double, routeID: UUID?) -> Bool {
+        guard spatialReady, let tone, (0..<8).contains(sector), distance.isFinite, distance >= 0 else { return false }
         if !engine.isRunning { try? engine.start() }
+        if let routeID, spatialRoutePermission?(routeID) != true { return false }
+        beaconOwnership.replace(routeID: routeID)
         let angle = Double(sector) * .pi / 4
         player.position = AVAudio3DPoint(x: Float(sin(angle) * distance), y: 0, z: Float(-cos(angle) * distance))
-        player.stop(); player.scheduleBuffer(tone); player.play()
+        player.stop(); player.scheduleBuffer(tone); player.play(); return true
     }
     func message(for hazard: Hazard) -> String {
         GuidanceText.hazard(hazard, arabic: arabic)

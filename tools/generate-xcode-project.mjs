@@ -19,6 +19,7 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
     if (!isAbsolute(objectDetector) || /[\p{Cc}$]/u.test(objectDetector) || !['Detector.mlmodel', 'Detector.mlmodelc'].includes(basename(objectDetector))) throw new Error('Use an absolute Detector.mlmodel or Detector.mlmodelc path.');
     if (![objectDetectorSHA256, objectDetectorManifestSHA256].every(value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value))) throw new Error('Object detector requires verified artifact and manifest hashes.');
   } else if (objectDetectorSHA256 !== undefined || objectDetectorManifestSHA256 !== undefined) throw new Error('Detector hashes require --object-detector.');
+  const spatialTestFiles = ['SpatialIntegrationFixture.swift', 'RegisteredIndoorNavigationTests.swift', 'SpatialRouteOutputControllerTests.swift'];
   const objects = [], add = (name, body) => { objects.push(`${id(name)} = { ${body} };`); return id(name); };
   const refs = [], sources = [];
   for (const file of files) {
@@ -101,7 +102,7 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
     const embedBuild = add('build:activity-embed', `isa = PBXBuildFile; fileRef = ${activityProduct}; settings = { ATTRIBUTES = (RemoveHeadersOnCopy,); };`);
     activityEmbed = add('activity-embed', `isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 13; files = (${embedBuild},); name = "Embed Foundation Extensions"; runOnlyForDeploymentPostprocessing = 0;`);
   }
-  const group = add('group', `isa = PBXGroup; children = (${refs.join(',')},${product},${id('ui-file')},${id('ui-product')},${id('unit-file')},${id('unit-product')},); sourceTree = "<group>";`);
+  const group = add('group', `isa = PBXGroup; children = (${refs.join(',')},${product},${id('ui-file')},${id('ui-product')},${id('unit-file')},${id('unit-replay-file')},${spatialTestFiles.map(file => id(`unit-spatial:${file}`)).join(',')},${id('unit-product')},); sourceTree = "<group>";`);
   const configs = [];
   for (const name of ['Debug', 'Release']) {
     // Adult-configured private device trial only. Release receives neither the
@@ -127,7 +128,11 @@ export function generateProject(files, { multimodal = false, familiarPeople = fa
   const unitBuild = add('unit-build', `isa = PBXBuildFile; fileRef = ${unitFile};`);
   const replayFile = add('unit-replay-file', 'isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindAssistTests/CompanionNativeReplayTests.swift; sourceTree = SOURCE_ROOT;');
   const replayBuild = add('unit-replay-build', `isa = PBXBuildFile; fileRef = ${replayFile};`);
-  const unitSources = add('unit-sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${unitBuild},${replayBuild},); runOnlyForDeploymentPostprocessing = 0;`);
+  const spatialTestBuilds = spatialTestFiles.map(file => {
+    const ref = add(`unit-spatial:${file}`, `isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ${JSON.stringify(`BlindAssistTests/${file}`)}; sourceTree = SOURCE_ROOT;`);
+    return add(`unit-spatial-build:${file}`, `isa = PBXBuildFile; fileRef = ${ref};`);
+  });
+  const unitSources = add('unit-sources', `isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (${unitBuild},${replayBuild},${spatialTestBuilds.join(',')},); runOnlyForDeploymentPostprocessing = 0;`);
   const unitProduct = add('unit-product', 'isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = BlindAssistTests.xctest; sourceTree = BUILT_PRODUCTS_DIR;');
   const unitCore = add('unit-core', `isa = XCSwiftPackageProductDependency; package = ${pkg}; productName = BlindCore;`);
   const unitCoreBuild = add('unit-core-build', `isa = PBXBuildFile; productRef = ${unitCore};`);

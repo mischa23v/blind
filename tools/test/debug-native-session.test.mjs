@@ -10,11 +10,12 @@ const feedback = read('Feedback');
 const familiar = read('FamiliarFaceExperiment');
 const journey = read('JourneyStore');
 const mapping = read('NativeMapping');
+const indoor = read('IndoorNavigator');
 const section = (source, a, b) => source.slice(source.indexOf(a), source.indexOf(b, source.indexOf(a)));
 
 // Source contracts only. These DO NOT execute Apple callbacks or compile Swift.
 test('native debug integration: every recorder symbol is positively DEBUG guarded', () => {
-  for (const [name, source] of Object.entries({ nav, model, voice, feedback, familiar, journey, mapping })) {
+  for (const [name, source] of Object.entries({ nav, model, voice, feedback, familiar, journey, mapping, indoor })) {
     const conditions = [];
     for (const [index, line] of source.split('\n').entries()) {
       const text = line.trim();
@@ -148,14 +149,15 @@ test('native debug integration: shopping and direct-store deletion cannot leave 
   assert.match(nav, /if case \.remove = command \{ purgeDebugSessionDiagnostics\(\) \}/);
   assert.match(journey, /func delete\(_ journey: Journey\) \{\s*#if DEBUG\s*purgeDebugSessionDiagnostics/);
   assert.match(mapping, /func deleteMap\(\) \{\s*#if DEBUG\s*purgeDebugSessionDiagnostics/);
-  for (const store of [journey, mapping]) {
+  assert.match(indoor, /func deleteMap\(\) \{\s*#if DEBUG\s*purgeDebugSessionDiagnostics/);
+  for (const store of [journey, mapping, indoor]) {
     assert.match(store, /guard !debugPurgePending else/);
     assert.match(store, /debugLastPurgeSucceeded = success/);
   }
 });
 
 test('native debug integration: purge failures never enter child-visible UI fields', () => {
-  for (const source of [nav, familiar, journey, mapping]) {
+  for (const source of [nav, familiar, journey, mapping, indoor]) {
     const helper = section(source, '    private func purgeDebugSessionDiagnostics()', '    #endif');
     assert.doesNotMatch(helper, /self\?\.(message|status|profileStatus|currentReply|sceneAnswer)\s*=/);
     assert.match(helper, /debugLastPurgeSucceeded = success/);

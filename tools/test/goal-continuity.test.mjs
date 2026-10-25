@@ -26,10 +26,14 @@ test('route cancellation does not erase or manufacture measured alignment', asyn
   assert.match(invalidate, /cancelRoute\(\)/);
 });
 
-test('retained alignment still has freshness gates and replan invalidates it', async () => {
+test('legacy pose stays preview-only and registered capture owns physical output', async () => {
   const source = await read('ios/BlindAssist/IndoorNavigator.swift');
   const situation = body(source, 'func situation(', 'func mapDirection(');
-  assert.match(situation, /if tracking, frameAge.isFinite, \(0\.\.\.0\.5\).contains\(frameAge\)/);
+  assert.match(situation, /level: nil, position: nil, cameraForward: nil/);
+  assert.match(situation, /bodyForward: nil/);
+  assert.match(source, /var isAligned: Bool \{ registered\?\.currentPose/);
+  assert.match(source, /func mapPosition\(camera: Point3\) -> Point3\? \{ nil \}/);
+  assert.match(source, /func mapDirection\(_ forward: Point3\) -> Point3\? \{ nil \}/);
   const plan = body(source, 'func plan(', 'func addKeepOutZone(');
   assert.match(plan, /invalidatePosition\(\)/);
   const next = body(source, 'func next(', 'func confirmArrival()');
@@ -41,8 +45,8 @@ test('goal continuity has native regression fixtures rather than supplied-room p
   const source = await read('ios/BlindAssistTests/CommunityTests.swift');
   assert.match(source, /final class IndoorGoalContinuityTests: XCTestCase/);
   for (const name of [
-    'testTaskCancellationRetiresRouteButPreservesEstablishedMapFrame',
-    'testCancellationAfterPhysicalCueClearsMessageInBothLanguages',
+    'testTaskCancellationRetiresRouteButPreservesPreviewFrame',
+    'testCancellationAfterWithheldLegacyCueClearsMessageInBothLanguages',
     'testConfirmedFinalWaypointHasNoActiveRoute',
     'testTaskCancellationCannotCreateUnknownAlignment',
     'testTrackingLossStillInvalidatesRetainedMapFrame',

@@ -26,16 +26,17 @@ struct KeepOutZonesView: View {
                     do { try indoor.addKeepOutZone(landmarkID: landmarkID, halfSize: halfSize); error = "" }
                     catch { self.error = t("Could not save this area.", "تعذر حفظ المنطقة.") }
                 }.disabled(landmarkID.isEmpty)
-                Text(t("Routes include body clearance around these areas. Saving or removing one cancels the current route and alignment. This screen does not detect physical tape or provide continuous boundary alarms.", "تراعي المسارات مساحة للجسم حول هذه المناطق. يؤدي الحفظ أو الحذف إلى إلغاء المسار والمحاذاة الحاليين. لا تكشف هذه الشاشة الشريط الأرضي ولا توفر إنذارات حدود مستمرة."))
+                Text(t("Stored routes avoid these areas with body clearance. Adding a restriction cancels the current route, not a measured pose. Registered restrictions cannot be reopened without fresh observed-clearance evidence. This screen does not detect physical tape or provide continuous boundary alarms.", "تتجنب المسارات المخزنة هذه المناطق مع مساحة للجسم. تُلغي إضافة منطقة محظورة المسار الحالي، لا الموقع المقاس. لا يمكن إعادة فتح المناطق المسجلة دون دليل حديث على خلوها. لا تكشف هذه الشاشة الشريط الأرضي ولا توفر إنذارات حدود مستمرة."))
             }
             Section(t("Saved areas", "المناطق المحفوظة")) {
-                if (indoor.map?.keepOutZones ?? []).isEmpty { Text(t("No keep-out areas saved.", "لا توجد مناطق محظورة محفوظة.")) }
-                ForEach(indoor.map?.keepOutZones ?? []) { zone in
+                if indoor.storedKeepOutZones.isEmpty { Text(t("No keep-out areas saved.", "لا توجد مناطق محظورة محفوظة.")) }
+                ForEach(indoor.storedKeepOutZones) { zone in
                     VStack(alignment: .leading, spacing: 8) {
                         Text(zone.localizedName(arabic: arabic)).font(.headline)
                         Text(t("Level", "الطابق") + ": " + zone.level)
                         Text("X: \(zone.minX.formatted()) … \(zone.maxX.formatted()), Z: \(zone.minZ.formatted()) … \(zone.maxZ.formatted()) m")
                         Button(t("Remove", "حذف") + " " + zone.localizedName(arabic: arabic), role: .destructive) { pendingRemoval = zone }
+                            .disabled(!indoor.canRemoveStoredKeepOutZones)
                     }
                 }
             }

@@ -290,7 +290,7 @@ final class IndoorSituationTests: XCTestCase {
         let nav = navigator(); try nav.loadCommunity(package()); try nav.plan(from: "a", to: "b")
         XCTAssertEqual(try snapshot(nav).location["state"] as? String, "unknown")
         nav.align(camera: Point3(0, 1, 0), forward: Point3(1, 0, 0))
-        XCTAssertEqual(try snapshot(nav).location["state"] as? String, "manuallyAligned")
+        XCTAssertEqual(try snapshot(nav).location["state"] as? String, "unknown")
         let restored = navigator()
         XCTAssertEqual(try snapshot(restored).location["state"] as? String, "unknown")
         XCTAssertFalse(restored.isAligned)
@@ -300,31 +300,35 @@ final class IndoorSituationTests: XCTestCase {
         nav.align(camera: Point3(0, 1, 0), forward: Point3(1, 0, 0))
         let handheld = try snapshot(nav, forward: Point3(0, 0, -1))
         XCTAssertTrue(handheld.location["bodyForward"] is NSNull)
-        XCTAssertNotNil(handheld.location["cameraForward"] as? [String: Double])
+        XCTAssertTrue(handheld.location["cameraForward"] is NSNull)
         let fixed = try snapshot(nav, mounted: true)
-        XCTAssertEqual(fixed.location["bodyForward"] as? [String: Double], fixed.location["cameraForward"] as? [String: Double])
+        XCTAssertTrue(fixed.location["bodyForward"] is NSNull)
+        XCTAssertTrue(fixed.location["cameraForward"] is NSNull)
     }
-    func testMappedRoomsTransitionWithoutResettingBathroomGoalOrInventingArrival() throws {
+    func testLegacyMapContextKeepsGoalWithoutInventingRoomArrival() throws {
         let nav = navigator(); try nav.loadCommunity(package()); try nav.plan(from: "a", to: "b")
         nav.align(camera: Point3(0, 1, 0), forward: Point3(1, 0, 0))
         var dialogue = AssistantDialogue(); dialogue.setGoal("Reach the bathroom inside the bedroom")
         let first = try snapshot(nav), next = try snapshot(nav, camera: Point3(2, 1, 0))
-        XCTAssertNotEqual(first.location["placeID"] as? String, next.location["placeID"] as? String)
+        XCTAssertTrue(first.location["placeID"] is NSNull)
+        XCTAssertTrue(next.location["placeID"] is NSNull)
         let context = AssistantSituation.snapshot(dialogue: dialogue, preview: nil, layout: nil, navigation: next)
         XCTAssertEqual((context["goal"] as? [String: Any])?["description"] as? String, dialogue.goal)
         XCTAssertNil(context["arrival"])
         XCTAssertEqual(next.connections.count, 1) // No inferred bathroom connection.
         XCTAssertTrue(JSONSerialization.isValidJSONObject(context))
     }
-    func testBoundaryAndOverlappingRoomsRemainAtFloorLevel() throws {
+    func testBoundaryAndOverlappingRoomsRemainUnknownWithoutRegisteredPose() throws {
         let nav = navigator(); try nav.loadCommunity(package()); try nav.plan(from: "a", to: "b")
         nav.align(camera: Point3(0, 1, 0), forward: Point3(1, 0, 0))
         let boundary = try snapshot(nav, camera: Point3(1, 1, 0))
-        XCTAssertEqual(boundary.location["placeID"] as? String, boundary.location["floorID"] as? String)
+        XCTAssertTrue(boundary.location["placeID"] is NSNull)
+        XCTAssertTrue(boundary.location["floorID"] is NSNull)
         try nav.loadCommunity(package(overlap: true)); try nav.plan(from: "a", to: "b")
         nav.align(camera: Point3(0, 1, 0), forward: Point3(1, 0, 0))
         let overlap = try snapshot(nav)
-        XCTAssertEqual(overlap.location["placeID"] as? String, overlap.location["floorID"] as? String)
+        XCTAssertTrue(overlap.location["placeID"] is NSNull)
+        XCTAssertTrue(overlap.location["floorID"] is NSNull)
     }
     func testTrackingAgeAndAlignmentChangesInvalidateClaims() throws {
         let nav = navigator(); try nav.loadCommunity(package()); try nav.plan(from: "a", to: "b")
@@ -476,37 +480,36 @@ final class IndoorGoalContinuityTests: XCTestCase {
         if aligned { navigator.align(camera: Point3(10, 0, 10), forward: Point3(0, 0, -1)) }
         return navigator
     }
-    func testTaskCancellationRetiresRouteButPreservesEstablishedMapFrame() throws {
+    func testTaskCancellationRetiresRouteButPreservesPreviewFrame() throws {
         let navigator = try navigator()
         let camera = Point3(11, 0, 9), forward = Point3(0, 0, -1)
         let revision = navigator.alignmentRevision
-        let position = try XCTUnwrap(navigator.mapPosition(camera: camera))
-        let direction = try XCTUnwrap(navigator.mapDirection(forward))
+        XCTAssertNil(navigator.mapPosition(camera: camera))
+        XCTAssertNil(navigator.mapDirection(forward))
         navigator.suggestDestination(id: "destination")
         XCTAssertTrue(navigator.hasActiveRoute)
-        XCTAssertNotNil(navigator.next(camera: camera, forward: forward))
+        XCTAssertNil(navigator.next(camera: camera, forward: forward)) // Preview is not registered pose authority.
         navigator.cancelRoute()
         XCTAssertFalse(navigator.hasActiveRoute)
         XCTAssertTrue(navigator.route.isEmpty)
         XCTAssertEqual(navigator.waypointIndex, 0)
         XCTAssertNil(navigator.suggestedDestination)
         XCTAssertNil(navigator.next(camera: camera, forward: forward))
-        XCTAssertTrue(navigator.isAligned)
+        XCTAssertFalse(navigator.isAligned)
         XCTAssertEqual(navigator.alignmentRevision, revision)
-        XCTAssertEqual(navigator.mapPosition(camera: camera), position)
-        XCTAssertEqual(navigator.mapDirection(forward), direction)
+        XCTAssertNil(navigator.mapPosition(camera: camera))
+        XCTAssertNil(navigator.mapDirection(forward))
     }
-    func testCancellationAfterPhysicalCueClearsMessageInBothLanguages() throws {
+    func testCancellationAfterWithheldLegacyCueClearsMessageInBothLanguages() throws {
         for arabic in [false, true] {
             let navigator = try navigator()
             navigator.arabic = arabic
             let camera = Point3(10, 0, 10), forward = Point3(0, 0, -1)
-            let cue = try XCTUnwrap(navigator.next(camera: camera, forward: forward))
-            XCTAssertEqual(cue.distance, 4, accuracy: 0.001)
+            XCTAssertNil(navigator.next(camera: camera, forward: forward))
             let oldCue = navigator.message
             navigator.cancelRoute()
             XCTAssertFalse(navigator.hasActiveRoute)
-            XCTAssertTrue(navigator.isAligned)
+            XCTAssertFalse(navigator.isAligned)
             XCTAssertNotEqual(navigator.message, oldCue)
             XCTAssertEqual(navigator.message, arabic ? "لا يوجد مسار نشط." : "No active route.")
             for _ in 0..<3 {

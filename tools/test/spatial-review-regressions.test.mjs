@@ -163,7 +163,10 @@ test('cancelled route cannot repeat its retired physical distance while alignmen
   assert.match(cancel, /message = text\("No active route\."/);
   assert.doesNotMatch(cancel, /(?:anchorWorld|anchorMap|worldForward|mapForward|alignedLevel)\s*=/);
   const beacon = section(source, 'func indoorBeacon(', 'func routeSaudiBanknoteCommand(');
-  before(beacon, 'guard indoor.hasActiveRoute else { return }', 'indoor.next(');
+  const activeRouteGuard = beacon.match(/guard indoor\.hasActiveRoute,[\s\S]*?else \{ return \}/)?.[0];
+  assert.ok(activeRouteGuard, 'A compound route/sensor guard must return before minting a ticket');
+  before(beacon, activeRouteGuard, 'indoor.next(');
+  assert.match(beacon, /spatialRouteOutput\.deliver\(ticket: cue\.ticket/);
   assert.match(source, /if !returning, fixedBodyMount, indoor\.isAligned, indoor\.hasActiveRoute/);
 });
 

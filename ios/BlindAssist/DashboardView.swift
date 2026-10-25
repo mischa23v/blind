@@ -594,7 +594,7 @@ struct AssistantToolsView: View {
                         ForEach(map.nodes, id: \.id) { Text($0.localizedName(arabic: model.arabic)).tag($0.id) }
                     }
                     Button(t("Plan route", "خطط المسار")) {
-                        do { try model.indoor.plan(from: startNode, to: destinationNode); importError = "" }
+                        do { try model.planIndoor(from: startNode, to: destinationNode); importError = "" }
                         catch { importError = t("No accessible route found.", "لم يتم العثور على مسار مناسب.") }
                     }
                     .font(.headline)
@@ -681,8 +681,8 @@ struct AssistantToolsView: View {
                 let url = try result.get(), granted = url.startAccessingSecurityScopedResource()
                 defer { if granted { url.stopAccessingSecurityScopedResource() } }
                 let values = try url.resourceValues(forKeys: [.fileSizeKey])
-                guard (values.fileSize ?? 0) <= 2_000_000 else { throw MapError.invalid }
-                try model.indoor.load(Data(contentsOf: url)); importError = ""
+                guard let size = values.fileSize, size >= 0, size <= SpatialMapInstallation.maximumEnvelopeBytes else { throw MapError.invalid }
+                try model.indoor.loadImportedMap(Data(contentsOf: url)); importError = ""
             } catch { importError = t("Could not import this route map.", "تعذر استيراد خريطة المسار.") }
         }
     }

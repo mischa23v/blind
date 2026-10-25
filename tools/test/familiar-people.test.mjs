@@ -154,7 +154,8 @@ test('source contract: debug privacy purge cannot bypass familiar search cancell
   // Its DEBUG block must close before the independent familiar-feature block.
   assert.match(clear, /^\s*#if DEBUG\s+purgeDebugSessionDiagnostics\(\)\s+#endif\s+#if BLIND_FAMILIAR_PEOPLE\s+familiarPeople\.cancelSearchForNewGoal\(\)\s+#endif/);
   assert.ok(clear.indexOf('familiarPeople.cancelSearchForNewGoal()') < clear.indexOf('cancelDescription()'));
-  assert.match(clear, /cancelDescription\(\); feedback\.stop\(\); stopReturn\(\); indoor\.cancelRoute\(\)/);
+  assert.match(clear, /cancelDescription\(\); _ = feedback\.stopInformation\(announceCancellation: false\); stopReturn\(\); indoor\.cancelRoute\(\)/);
+  assert.doesNotMatch(clear, /feedback\.stop\(/); // Task changes must preserve independent hazard/status output.
 });
 test('past snapshot speech has separate bounded lifetime without extending live display', async () => {
   const code = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');

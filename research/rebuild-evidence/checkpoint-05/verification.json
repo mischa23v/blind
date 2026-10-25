@@ -1,0 +1,52 @@
+{
+  "checkpoint": "reconstruction-05-registered-spatial-integration",
+  "baseCommit": "768208660a41a3189beb95dad21926b61d800b5e",
+  "dateUTC": "2026-10-25",
+  "core": {
+    "tests": 973,
+    "failures": 0,
+    "exitCode": 0
+  },
+  "node": {
+    "tests": 367,
+    "passed": 367,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "isolatedSpatialRuntime": {
+    "tests": 58,
+    "passed": 58,
+    "inputs": "synthetic maps, real Foundation adapter/controller; platform speech stub explicitly not Apple playback"
+  },
+  "nativeSyntax": {
+    "release": 0,
+    "debug": 0,
+    "AppleSDKTypechecked": false
+  },
+  "projectMembership": "Applied project equals generator output",
+  "changes": [
+    "Atomic registered map envelope with exact geometry and revision identity",
+    "Existing planner and swept-body collision used for current authored leg",
+    "Route tickets bound to map/session/goal/body/obstacle state",
+    "Exact route speech and beacon ownership preserve independent hazards",
+    "Legacy unregistered geometry remains preview-only"
+  ],
+  "limits": [
+    "No calibrated native pose/body-heading/floor-support issuer; live registered guidance unavailable without valid evidence",
+    "Map import/validation/persistence remains synchronous and can delay main-thread hazards; next async/CAS increment required",
+    "Dynamic restriction removal remains unavailable without newer observed-clear protocol",
+    "Apple SDK/device/audio latency and two hosted caption tests unrun",
+    "Full connected world learning and 400 scenarios incomplete"
+  ],
+  "originalFailures": "original-merged-failures.log",
+  "correction": "Restored three published memory test changes inadvertently reverted by the staged full-file patch; narrowed two obsolete route source contracts. Production source unchanged during this correction.",
+  "artifactSHA256": {
+    "node-tests.log": "b80d80db278fd8b6374d576ddac0522615dc171c3dd093427c1c3ed790d7267c",
+    "original-merged-failures.log": "4b7067353941df15daac2189763b6009b90f97e98c22a33f6883d7ec354d23fb",
+    "core-tests.log": "7ab567d86575f02aba735bfc8ddabd2743f0f58ead93f28ea252e4a2fe06dfd4",
+    "source-hashes.json": "55b41f893d02ca1d5a4247308d55a39adec63edd1907a9aa9790367ee3cfc875",
+    "test-preservation-fix.patch": "311b5a8e5af7711a41c7f663ea6d47cc2618aa19618e126a359cc20141d3ce11",
+    "spatial-runtime-tests.log": "12d18dfa9f08f399ad497edfdd112a5bc3fd28fda6b10286b5fba873c73f9b2d"
+  }
+}

@@ -20,6 +20,21 @@ final class IndoorNavigator: ObservableObject {
     private var mapForward: Point3?
     private var worldForward: Point3?
     private var blocked = Set<MapConnection>()
+    private var registered: RegisteredIndoorNavigation?
+    var onSpatialOutputRetired: (() -> Void)?
+    private var registeredCueCaption: String?
+    private func bindRegisteredOutputRetirement() {
+        registered?.onOutputRetired = { [weak self] in
+            guard let self else { return }
+            // The visible/accessibility caption must not outlive its route cue.
+            if let caption = self.registeredCueCaption, self.message == caption {
+                self.message = self.t("Previous route cue withdrawn. Request fresh guidance.",
+                                      "سُحب إرشاد المسار السابق. اطلب إرشاداً حديثاً.")
+            }
+            self.registeredCueCaption = nil
+            self.onSpatialOutputRetired?()
+        }
+    }
     private let storageOverride: URL?
     private var storage: URL {
         if let storageOverride { return storageOverride }
@@ -27,19 +42,55 @@ final class IndoorNavigator: ObservableObject {
     }
     init(storage: URL? = nil) {
         storageOverride = storage
+        let registered = RegisteredIndoorNavigation(storage: self.storage)
+        self.registered = registered
+        bindRegisteredOutputRetirement()
+        if (try? registered.restore()) != nil, let installed = registered.installation {
+            self.map = installed.map
+            message = t("Registered map loaded. Live position is unknown.", "حُمّلت الخريطة المسجلة. الموقع الحالي غير معروف.")
+            return
+        }
         if let data = try? Data(contentsOf: self.storage), let map = try? JSONDecoder().decode(IndoorMap.self, from: data), (try? map.validate()) != nil {
-            self.map = map; message = t("Loaded \(map.name). Choose your starting landmark.", "حُمّلت \(map.name). اختر نقطة البداية.")
+            self.map = map; message = t("Loaded \(map.name) for preview. Live position is unknown.", "حُمّلت \(map.name) للمعاينة. الموقع الحالي غير معروف.")
         }
     }
     var exportURL: URL? { map == nil ? nil : storage }
-    var isAligned: Bool { anchorWorld != nil && anchorMap != nil && alignedLevel != nil }
+    var isAligned: Bool { registered?.currentPose(now: ProcessInfo.processInfo.systemUptime) != nil }
     /// Alignment can outlive a task; it does not authorize route announcements.
     var hasActiveRoute: Bool { waypointIndex >= 0 && waypointIndex < route.count }
+    #if DEBUG
+    private var debugPurgePending = false
+    private var debugLastPurgeSucceeded: Bool?
+    private func purgeDebugSessionDiagnostics() {
+        guard !debugPurgePending else { return }
+        debugPurgePending = true
+        DebugSessionLog.purgeForPrivacyClear { [weak self] success in
+            DispatchQueue.main.async { [weak self] in
+                self?.debugPurgePending = false
+                self?.debugLastPurgeSucceeded = success
+                DebugNativeSessionTrace.reportPurgeResult(success)
+            }
+        }
+    }
+    #endif
     func deleteMap() {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
         do {
             if FileManager.default.fileExists(atPath: storage.path) { try FileManager.default.removeItem(at: storage) }
+            registered?.clearForLegacyImport()
             map = nil; activePackage = nil; revision = UUID(); suggestedDestination = nil; blocked = []; invalidatePosition(); message = t("Route map deleted.", "حُذفت خريطة المسار.")
         } catch { message = t("Could not delete the route map.", "تعذر حذف خريطة المسار.") }
+    }
+    /// The existing JSON import UI accepts a registered atomic envelope or a
+    /// legacy preview graph. A malformed envelope is never downgraded to a graph.
+    func loadImportedMap(_ data: Data) throws {
+        guard !data.isEmpty, data.count <= SpatialMapInstallation.maximumEnvelopeBytes,
+              let object = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { throw MapError.invalid }
+        if object["mapBytes"] != nil || object["snapshot"] != nil || object["artifactHistory"] != nil {
+            try loadRegisteredInstallation(data)
+        } else { try load(data) }
     }
     func load(_ data: Data) throws {
         guard data.count <= 2_000_000 else { throw MapError.invalid }
@@ -49,8 +100,9 @@ final class IndoorNavigator: ObservableObject {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         var values = URLResourceValues(); values.isExcludedFromBackup = true; try directory.setResourceValues(values)
         try data.write(to: storage, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+        registered?.clearForLegacyImport()
         self.map = map; activePackage = nil; revision = UUID(); suggestedDestination = nil; blocked = []; invalidatePosition()
-        message = t("Loaded \(map.name). Choose where you are and face the next landmark.", "حُمّلت \(map.name). اختر مكانك وتوجّه نحو المعلم التالي.")
+        message = t("Loaded \(map.name) for preview only. Live guidance is unavailable.", "حُمّلت \(map.name) للمعاينة فقط. الإرشاد الحالي غير متاح.")
     }
     func loadCommunity(_ package: PlacePackage) throws {
         try package.validate()
@@ -58,7 +110,7 @@ final class IndoorNavigator: ObservableObject {
         map.packageID = package.id; map.packageRevision = package.revision
         try load(JSONEncoder().encode(map))
         activePackage = package
-        message = text("Loaded \(package.name), revision \(package.revision). Location is unknown; confirm the starting landmark and facing direction.", "تم تحميل \(package.name)، المراجعة \(package.revision). الموقع غير معروف؛ أكد معلم البداية واتجاهك.")
+        message = text("Loaded \(package.name), revision \(package.revision). Preview only; current location and facing direction are unknown.", "تم تحميل \(package.name)، المراجعة \(package.revision). للمعاينة فقط؛ الموقع الحالي والاتجاه غير معروفين.")
     }
     /// Restore metadata only from an immutable installed package matching the loaded graph.
     /// No route or pose is restored by this operation, and no network request is made.
@@ -87,12 +139,22 @@ final class IndoorNavigator: ObservableObject {
     private static func stripCopyMetadata(_ map: inout IndoorMap) {
         map.packageID = nil; map.packageRevision = nil; map.packageModified = nil; map.keepOutZones = nil
     }
-    func plan(from: String, to: String) throws {
+    func plan(from: String, to: String, goalRevision: UUID = UUID()) throws {
         guard let map else { throw MapError.invalid }
+        if let registered, registered.configured {
+            do { try registered.plan(from: from, to: to, goal: goalRevision) }
+            catch {
+                route = registered.route; waypointIndex = registered.waypointIndex
+                message = GuidanceText.noRoute(arabic: arabic); throw error
+            }
+            route = registered.route; waypointIndex = registered.waypointIndex
+            message = t("Route planned. Current measured localization is still required.", "خُطط المسار. يلزم تحديد الموقع بقياسات حالية.")
+            return
+        }
         invalidatePosition()
         route = try map.route(from: from, to: to, blocked: blocked); waypointIndex = min(1, route.count)
-        anchorWorld = nil; message = text("Confirm your starting landmark and face the next waypoint.", "أكد نقطة البداية واتجه نحو المعلم التالي.")
-        if from == to { message = text("Starting landmark and destination are the same.", "نقطة البداية هي الوجهة نفسها.") }
+        anchorWorld = nil; message = text("Route preview only. Current location and direction are unverified.", "معاينة المسار فقط. الموقع الحالي والاتجاه غير متحقق منهما.")
+        if from == to { message = text("Preview start and destination are the same.", "بداية المعاينة والوجهة هما النقطة نفسها.") }
     }
     func addKeepOutZone(landmarkID: String, halfSize: Double) throws {
         guard var updated = map, let node = updated.nodes.first(where: { $0.id == landmarkID }),
@@ -101,27 +163,53 @@ final class IndoorNavigator: ObservableObject {
                                minX: node.position.x - halfSize, maxX: node.position.x + halfSize,
                                minZ: node.position.z - halfSize, maxZ: node.position.z + halfSize,
                                nameArabic: node.nameArabic)
+        if let registered, let installation = registered.installation {
+            do { try registered.addRestrictions(binding: installation.binding, blocked: [], zones: [zone]) }
+            catch {
+                route = registered.route; waypointIndex = registered.waypointIndex
+                message = t("Restriction could not be saved. Registered guidance is unavailable until it is saved.",
+                            "تعذر حفظ المنطقة المحظورة. الإرشاد المسجل غير متاح حتى تُحفظ.")
+                throw error
+            }
+            route = registered.route; waypointIndex = registered.waypointIndex
+            message = t("Conservative restriction saved. Current physical clearance remains unknown.",
+                        "حُفظت المنطقة المحظورة احتياطياً. خلو الطريق الفعلي الحالي غير معروف.")
+            return
+        }
         updated.keepOutZones = (updated.keepOutZones ?? []) + [zone]
         updated.markLocalEdit()
         let package = activePackage
         try load(JSONEncoder().encode(updated))
         if let package, Self.matches(map: updated, package: package) { activePackage = package }
-        message = text("Keep-out area saved. Plan and align again.", "حُفظت المنطقة المحظورة. أعد التخطيط والمحاذاة.")
+        message = text("Keep-out area saved in the preview. Live guidance is unavailable.", "حُفظت المنطقة المحظورة في المعاينة. الإرشاد الحالي غير متاح.")
+    }
+    var canRemoveStoredKeepOutZones: Bool { registered?.installation == nil }
+    var storedKeepOutZones: [KeepOutZone] {
+        (map?.keepOutZones ?? []) + (registered?.installation?.currentRestrictions.zones ?? [])
     }
     func removeKeepOutZone(id: String) throws {
+        // Reopening requires a fresh source-owned observed-clearance protocol.
+        // Never erase the registered envelope or downgrade it to a legacy graph.
+        guard registered?.installation == nil else { throw SpatialInstallationError.historyRewrite }
         guard var updated = map else { throw MapError.invalid }
         updated.keepOutZones = updated.keepOutZones?.filter { $0.id != id }
         updated.markLocalEdit()
         let package = activePackage
         try load(JSONEncoder().encode(updated))
         if let package, Self.matches(map: updated, package: package) { activePackage = package }
-        message = text("Keep-out area removed. Plan and align again.", "حُذفت المنطقة المحظورة. أعد التخطيط والمحاذاة.")
+        message = text("Keep-out area removed from the preview. This does not prove current clearance.", "حُذفت المنطقة المحظورة من المعاينة. هذا لا يثبت خلو الطريق الحالي.")
     }
     func blockNextLeg() {
+        if let registered, registered.configured {
+            do { try registered.blockNextLegAndReplan() }
+            catch { message = GuidanceText.noRoute(arabic: arabic) }
+            route = registered.route; waypointIndex = registered.waypointIndex
+            return
+        }
         guard waypointIndex > 0, waypointIndex < route.count, let destination = route.last?.id else { return }
         let from = route[waypointIndex - 1].id, to = route[waypointIndex].id
         blocked.insert(MapConnection(from, to))
-        do { try plan(from: from, to: destination); message = text("Alternative route loaded. Confirm your position at the last known landmark before alignment.", "تم تحميل مسار بديل. أكد موقعك عند آخر معلم معروف قبل المحاذاة.") }
+        do { try plan(from: from, to: destination); message = text("Alternative route preview loaded. Live position remains unknown.", "حُمّلت معاينة مسار بديل. يبقى الموقع الحالي غير معروف.") }
         catch { message = GuidanceText.noRoute(arabic: arabic) }
     }
     /// Manual two-point alignment: a known start and a known facing direction.
@@ -129,26 +217,28 @@ final class IndoorNavigator: ObservableObject {
     func align(camera: Point3, forward: Point3) {
         anchorWorld = nil; anchorMap = nil; alignedLevel = nil; alignmentRevision = UUID()
         guard waypointIndex > 0, waypointIndex < route.count, camera.isFinite, forward.isFinite,
-              abs(hypot(forward.x, forward.z) - 1) < 0.05 else { message = t("Choose a route, and start the camera, first.", "اختر مساراً وشغّل الكاميرا أولاً."); return }
+              abs(hypot(forward.x, forward.z) - 1) < 0.05 else { message = t("Choose a route preview and a tracked camera input first. This does not establish location.", "اختر معاينة مسار وبيانات كاميرا متتبعة أولاً. هذا لا يثبت الموقع."); return }
         let previous = waypointIndex - 1, a = route[previous].position, b = route[waypointIndex].position
         let length = hypot(b.x - a.x, b.z - a.z)
         guard length > 0.01, route[previous].level == route[waypointIndex].level else {
-            message = t("Start with two landmarks on the same floor.", "ابدأ بمعلمين على الطابق نفسه."); return
+            message = t("Preview alignment requires two authored landmarks on the same floor.", "تحتاج محاذاة المعاينة إلى معلمين موصوفين على الطابق نفسه."); return
         }
         anchorWorld = camera; anchorMap = a; worldForward = forward
         alignedLevel = route[previous].level; alignmentRevision = UUID()
         mapForward = Point3((b.x - a.x) / length, 0, (b.z - a.z) / length)
-        message = text("Position aligned manually. Reconfirm at each landmark.", "تم ضبط الموقع يدوياً. أكده عند كل معلم.")
+        message = text("Preview alignment set. Live location remains unverified.", "ضُبطت محاذاة المعاينة. الموقع الحالي غير متحقق منه.")
     }
     /// A conversation/task change retires the route, not the measured map frame.
     /// Callers cancel pending route speech first. Existing capture/pose freshness
     /// checks still govern every use of the retained alignment; this is not arrival.
     func cancelRoute() {
+        registered?.cancelRoute()
         route = []; waypointIndex = 0; suggestedDestination = nil
         message = text("No active route.", "لا يوجد مسار نشط.")
     }
     /// Tracking loss, camera restart or a changed map invalidate geometry as well.
     func invalidatePosition() {
+        registered?.loseTracking()
         if anchorWorld != nil || !route.isEmpty { alignmentRevision = UUID() }
         anchorWorld = nil; anchorMap = nil; worldForward = nil; mapForward = nil; alignedLevel = nil
         cancelRoute()
@@ -159,27 +249,27 @@ final class IndoorNavigator: ObservableObject {
     func situation(camera: Point3?, forward: Point3?, frameAge: Double, tracking: Bool, fixedBodyMount: Bool,
                    bodyForward: Point3? = nil) -> IndoorSituation? {
         guard let map else { return nil }
-        var position: Point3?, direction: Point3?, bodyDirection: Point3?
-        if tracking, frameAge.isFinite, (0...0.5).contains(frameAge),
-           let camera, let forward, forward.isFinite, abs(hypot(forward.x, forward.z) - 1) < 0.01,
-           worldForward != nil, mapForward != nil, anchorWorld != nil {
-            position = mapPosition(camera: camera)
-            direction = mapDirection(forward)
-            if let bodyForward, bodyForward.isFinite, abs(hypot(bodyForward.x, bodyForward.z) - 1) < 0.01 {
-                bodyDirection = mapDirection(bodyForward)
-            }
-        }
+        // This legacy snapshot API has no exact capture/map association for its raw
+        // world-space arguments. Keep semantics/layout, never publish manual pose.
+        // Registered consumers must use the typed capture below; camera orientation
+        // cannot be guessed from body heading or a saved map.
         return IndoorSituation(map: map, package: activePackage, revision: revision.uuidString,
-            alignment: alignmentRevision.uuidString, level: alignedLevel, position: position, cameraForward: direction,
-            bodyForward: bodyDirection ?? (fixedBodyMount ? direction : nil), age: frameAge)
+            alignment: alignmentRevision.uuidString, level: nil, position: nil, cameraForward: nil,
+            bodyForward: nil, age: frameAge)
     }
+    /// A native issuer must capture this session before beginning asynchronous work.
+    var registeredSessionID: UUID? { registered?.sessionID }
+    func currentRegisteredPose(now: Double) -> SpatialLocalizationCapture? { registered?.currentPose(now: now) }
+    /// Raw world-space arguments cannot be re-labelled into the registered map.
+    func mapDirection(_ forward: Point3) -> Point3? { nil }
+    func mapPosition(camera: Point3) -> Point3? { nil }
     /// A horizontal world direction expressed in the aligned map frame; nil without alignment.
-    func mapDirection(_ forward: Point3) -> Point3? {
+    private func previewMapDirection(_ forward: Point3) -> Point3? {
         guard forward.isFinite, let wf = worldForward, let mf = mapForward else { return nil }
         let along = forward.x * wf.x + forward.z * wf.z, side = -forward.x * wf.z + forward.z * wf.x
         return Point3(along * mf.x - side * mf.z, 0, along * mf.z + side * mf.x)
     }
-    func mapPosition(camera: Point3) -> Point3? {
+    private func previewMapPosition(camera: Point3) -> Point3? {
         guard camera.isFinite, let aw = anchorWorld, let am = anchorMap,
               let wf = worldForward, let mf = mapForward else { return nil }
         let dx = camera.x - aw.x, dz = camera.z - aw.z
@@ -188,41 +278,61 @@ final class IndoorNavigator: ObservableObject {
     }
     func suggestDestination(id: String?) {
         suggestedDestination = map?.nodes.first { $0.id == id }
-        if let node = suggestedDestination { message = text("Destination suggestion: \(node.name), level \(node.level). Confirm your start and destination before planning.", "الوجهة المقترحة: \(node.localizedName(arabic: true))، الطابق \(node.level). أكد البداية والوجهة قبل التخطيط.") }
+        if let node = suggestedDestination { message = text("Destination suggestion: \(node.name), level \(node.level). Select a preview start and destination; this does not establish current location.", "الوجهة المقترحة: \(node.localizedName(arabic: true))، الطابق \(node.level). اختر بداية المعاينة والوجهة؛ هذا لا يثبت الموقع الحالي.") }
         else { message = GuidanceText.noDestination(arabic: arabic) }
     }
-    func next(camera: Point3, forward: Point3) -> (sector: Int, distance: Double, name: String)? {
-        guard hasActiveRoute, let aw = anchorWorld, let am = anchorMap,
-              let wf = worldForward, let mf = mapForward else { return nil }
-        let target = route[waypointIndex]
-        // Level changes require human confirmation; no automatic floor guessing.
-        guard target.level == route[max(0, waypointIndex - 1)].level else {
-            message = text("Level transition. Confirm the next landmark manually.", "انتقال بين الطوابق. أكد المعلم التالي يدوياً."); return nil
-        }
-        guard let current = mapPosition(camera: camera) else { return nil }
-        if let zone = map?.restriction(from: current, to: target.position, level: target.level) {
-            message = text("Direction paused: the line to the next landmark meets the marked keep-out area \(zone.name). Ask your helper to check your position and route.",
-                           "تم إيقاف الاتجاه: الخط إلى المعلم التالي يمر بالمنطقة المحظورة \(zone.localizedName(arabic: true)). اطلب من المرافق التحقق من موقعك ومسارك.")
+    /// Legacy manual alignment remains a preview. It cannot bypass measured-pose,
+    /// support-height and current-leg collision checks to produce physical output.
+    func next(camera: Point3, forward: Point3) -> (sector: Int, distance: Double, name: String, ticket: SpatialRouteTicket)? {
+        guard hasActiveRoute, let registered else { return nil }
+        do {
+            let ticket = try registered.next(now: ProcessInfo.processInfo.systemUptime)
+            guard let cue = ticket.directionalCue() else { throw SpatialRouteError.ambiguousDirection }
+            let sector = cue.sector, distance = cue.distance
+            message = text("\(ticket.target.name), approximately \(String(format: "%.1f", distance)) meters.",
+                           "\(ticket.target.localizedName(arabic: true))، على بعد نحو \(String(format: "%.1f", distance)) متر.")
+            registeredCueCaption = message
+            return (sector, distance, ticket.target.localizedName(arabic: arabic), ticket)
+        } catch {
+            message = t("Map guidance is unavailable without current measured position, body heading and floor support.",
+                        "إرشاد الخريطة غير متاح دون قياسات حالية للموقع واتجاه الجسم ودعم الأرضية.")
             return nil
         }
-        let dx = target.position.x - am.x, dz = target.position.z - am.z
-        let along = dx * mf.x + dz * mf.z, side = -dx * mf.z + dz * mf.x
-        let targetWorld = Point3(aw.x + along * wf.x - side * wf.z, camera.y,
-                                 aw.z + along * wf.z + side * wf.x)
-        let vx = targetWorld.x - camera.x, vz = targetWorld.z - camera.z
-        let distance = hypot(vx, vz)
-        let ahead = vx * forward.x + vz * forward.z, right = -vx * forward.z + vz * forward.x
-        let angle = atan2(right, ahead)
-        let sector = (Int((angle / (.pi / 4)).rounded()) + 8) % 8
-        message = text("\(target.name), approximately \(String(format: "%.1f", distance)) meters.", "\(target.localizedName(arabic: true))، على بعد نحو \(String(format: "%.1f", distance)) متر.")
-        return (sector, distance, target.localizedName(arabic: arabic))
+    }
+    func permitsSpatialOutput(_ ticket: SpatialRouteTicket, now: Double) -> Bool {
+        registered?.permits(ticket, now: now) == true
+    }
+    func revalidateSpatialOutput(now: Double) { registered?.revalidate(now: now) }
+    func loadRegisteredInstallation(_ data: Data) throws {
+        guard let registered else { throw SpatialInstallationError.noInstalledMap }
+        try registered.install(data)
+        activePackage = nil; revision = UUID(); suggestedDestination = nil; blocked = []
+        invalidatePosition()
+        map = registered.installation?.map
+        message = t("Registered map installed. Live position is unknown.", "ثُبتت الخريطة المسجلة. الموقع الحالي غير معروف.")
+    }
+    func configureRegisteredNavigation(body: BodyEnvelope, limits: SpatialLocalizationLimits) throws {
+        guard let registered else { throw SpatialInstallationError.noInstalledMap }
+        try registered.configure(body: body, limits: limits)
+    }
+    /// No production caller is supplied yet: do not synthesize uncertainty values
+    /// from tracking == normal, a room label, or BodyHeading.confidence.
+    func acceptRegisteredCapture(_ capture: SpatialLocalizationCapture, support: SpatialFloorSupport, now: Double) throws {
+        guard let registered else { throw SpatialRegistryError.noCurrentPose }
+        try registered.accept(capture, floorSupport: support, now: now)
     }
     func confirmArrival() {
+        if let registered, registered.configured {
+            registered.confirmWaypoint(); route = registered.route; waypointIndex = registered.waypointIndex
+            message = t("Route progress updated. Physical arrival is not inferred; current measured position is still required.",
+                        "حُدّث تقدم المسار. لا يُستنتج الوصول الفعلي؛ ما زالت قياسات الموقع الحالية مطلوبة.")
+            return
+        }
         guard waypointIndex < route.count else { return }
         waypointIndex += 1
         alignmentRevision = UUID(); alignedLevel = nil; worldForward = nil; mapForward = nil
         anchorWorld = nil; anchorMap = nil
-        if waypointIndex >= route.count { message = text("Destination landmark confirmed.", "تم تأكيد الوصول إلى الوجهة.") }
-        else { message = text("Next: \(route[waypointIndex].name). Face that landmark and align again.", "التالي: \(route[waypointIndex].localizedName(arabic: true)). اتجه نحو المعلم واضبط المحاذاة.") }
+        if waypointIndex >= route.count { message = text("Preview destination marked. Physical arrival is unverified.", "عُلّمت وجهة المعاينة. الوصول الفعلي غير متحقق منه.") }
+        else { message = text("Next preview landmark: \(route[waypointIndex].name). No live direction is established.", "معلم المعاينة التالي: \(route[waypointIndex].localizedName(arabic: true)). لم يُثبت اتجاه حالي.") }
     }
 }
