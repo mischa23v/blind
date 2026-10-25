@@ -1,3 +1,4 @@
+import {assertFullAuditDestinations} from './helpers/full-audit-contract.mjs';
 // Source regression only: real Apple accessibility auditing remains authoritative.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -34,7 +35,7 @@ test('practice duration label grows vertically at larger Dynamic Type without ch
   }
   const audit = await read('ios/BlindAssistUITests/LaunchTests.swift');
   assert.doesNotMatch(audit, /issue.auditType == \.dynamicType/);
-  assert.equal(audit.match(/guard issue.auditType == \.contrast, let element = issue.element else \{ return false \}/g)?.length, 2);
+  assertFullAuditDestinations(audit);
 });
 test('focused unsuppressed accessibility audit reruns for affected view and UI test changes', async () => {
   const workflow = await read('.github/workflows/accessibility-diagnostic.yml');

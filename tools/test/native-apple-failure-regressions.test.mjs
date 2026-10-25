@@ -1,3 +1,4 @@
+import {assertFullAuditDestinations} from './helpers/full-audit-contract.mjs';
 // Integration/source contracts only. Actual Foundation and actor scheduling witnesses
 // are recorded in NATIVE_APPLE_FAILURE_REPAIR.md; Apple UI execution remains required.
 import test from 'node:test';
@@ -30,7 +31,7 @@ test('native failure repairs preserve explicit off, nonblocking waits and honest
   const ui = await read('ios/BlindAssistUITests/LaunchTests.swift');
   assert.match(ui, /camera-off launch preference is respected before practice/);
   assert.match(ui, /ACCESSIBILITY_AUDIT=type:/);
-  assert.equal(ui.match(/guard issue.auditType == \.contrast, let element = issue.element else \{ return false \}/g)?.length, 2);
+  assertFullAuditDestinations(ui);
   assert.doesNotMatch(ui, /issue.auditType == \.dynamicType/);
 });
 

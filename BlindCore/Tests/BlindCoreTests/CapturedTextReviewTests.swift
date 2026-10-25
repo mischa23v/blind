@@ -2,7 +2,7 @@ import XCTest
 @testable import BlindCore
 
 final class CapturedTextReviewTests: XCTestCase {
-    let fixtures = CapturedTextReferenceTests(name: "fixtures") { _ in }
+    let fixtures = CapturedTextReferenceFixtures()
     func installed(arabic: Bool = false) -> CapturedTextReference {
         var v = CapturedTextReference(); let selected = fixtures.selection(&v)
         let text = (1...70).map { arabic ? "كلمة\($0)" : "word\($0)" }.joined(separator: " ")

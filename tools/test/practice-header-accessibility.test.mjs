@@ -1,3 +1,4 @@
+import {assertFullAuditDestinations} from './helpers/full-audit-contract.mjs';
 // Source regression only; does not execute SwiftUI layout or certify Dynamic Type.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -28,6 +29,31 @@ test('camera audit still executes and does not suppress Dynamic Type findings', 
   const ui = readFileSync(new URL('../../ios/BlindAssistUITests/LaunchTests.swift', import.meta.url), 'utf8');
   assert.match(ui, /func testAccessibilityAuditOfCameraAndAsk\(\) throws/);
   assert.match(ui, /try app\.performAccessibilityAudit/);
-  assert.equal(ui.match(/guard issue.auditType == \.contrast, let element = issue.element else \{ return false \}/g)?.length, 2);
+  assertFullAuditDestinations(ui);
   assert.doesNotMatch(ui, /issue.auditType == \.dynamicType/);
+});
+
+test('shared full-audit contract rejects missing destinations and broader exemptions', () => {
+  const ui = readFileSync(new URL('../../ios/BlindAssistUITests/LaunchTests.swift', import.meta.url), 'utf8');
+  assertFullAuditDestinations(ui);
+  const diagnosticPrint = ui.split('\n').find(line => line.includes('print("ACCESSIBILITY_AUDIT=type:'));
+  assert.ok(diagnosticPrint);
+  for (const [before, after] of [
+    ['private func auditFullDestination(_ phase: String, title: String, requiredControl: String) throws {\n', 'private func auditFullDestination(_ phase: String, title: String, requiredControl: String) throws {\n        return\n'],
+    [diagnosticPrint, diagnosticPrint + '; return true'],
+    ['try auditFullDestination("camera", title: "Camera and safety", requiredControl: "monitor-toggle")', ''],
+    ['try auditFullDestination("ask", title: "Ask and goals", requiredControl: "local-answer")', ''],
+    ['try auditFullDestination("ask",', '// try auditFullDestination("ask",'],
+    ['try app.performAccessibilityAudit { issue in', 'try app.performAccessibilityAudit(for: .contrast) { issue in'],
+    ['guard issue.auditType == .contrast, let element = issue.element else { return false }', 'guard let element = issue.element else { return false }'],
+    ['return element.identifier == "retrace-session" && !element.isEnabled', 'return element.identifier == "retrace-session"'],
+    ['return element.identifier == "retrace-session" && !element.isEnabled', 'return !element.isEnabled'],
+    ['return element.identifier == "retrace-session" && !element.isEnabled', 'return element.identifier == "retrace-session" || !element.isEnabled'],
+    ['return element.identifier == "retrace-session" && !element.isEnabled', 'return true'],
+    ['continueAfterFailure = false', 'continueAfterFailure = true'],
+  ]) {
+    const mutated = ui.replace(before, after);
+    assert.notEqual(mutated, ui, before);
+    assert.throws(() => assertFullAuditDestinations(mutated), {name: 'AssertionError'}, before);
+  }
 });
