@@ -1,3 +1,44 @@
+## CURRENT RECONSTRUCTION — 2026-10-25
+
+This is the current ordered queue. Earlier entries below are preserved historical records, not evidence that today's build passes. Full scope and acceptance IDs: [REBUILD_TRACKER.md](REBUILD_TRACKER.md) and [REBUILD_SCOPE_ADDENDUM.md](REBUILD_SCOPE_ADDENDUM.md). Results: [PROGRESS.md](PROGRESS.md).
+
+### Preserve and verify the current increment
+
+- [x] Restore the 717-file baseline exactly and preserve the first reconstruction documentation checkpoint on GitHub (`20af33fe`). This does not restore the missing later source.
+- [x] Install signature-verified official Swift 6.4.1 and execute the full Core suite: 910/910 passed, including all 45 new cases; 0 failed. This is portable Core verification, not Apple/device acceptance.
+- [x] Complete the Swift-enabled aggregate Node run: 338/338 passed, 0 failed, 0 skipped, exit 0; extracted native-method checks executed. Source-review fixes are included and frozen code inputs have not drifted.
+- [x] Syntax-parse all iOS Swift in default and DEBUG + BLIND_FAMILIAR_PEOPLE configurations; both exited 0. This does not establish Apple SDK typechecking/linking.
+- [ ] Publish the verified current code and updated task/progress/scope documents in small checkpoints. Read back the exact remote commit before reporting push success; report skipped or blocked tests explicitly.
+
+### Safety and spatial integration next
+
+- [ ] Prove every task/route mutation rejects untrusted speech before state changes; keep real hands-free speaker identification explicitly unavailable until implemented and validated.
+- [ ] Separate perception evidence authority from task/route revision. Quiet/cancel/new goals preserve fresh hazards while obsolete queued/started route cues are withdrawn by exact cue ID.
+- [ ] Integrate the Swift-tested standalone spatial registry and localization lease with actual maps/sessions, world/building/floor/room transitions and uncertainty. GPS/appearance alone cannot grant pose authority.
+- [ ] Connect native mapping observations/localization/occupancy; retain unknown areas, reject old map/floor/session data and preserve atomic state on rejected updates, write failures and restarts.
+- [ ] Integrate live/static geometry with conservative swept-body collision, sensor-to-body calibration, changing dimensions, blocked returns and map/camera restart continuity.
+- [ ] Complete actual-stack outbound/return and conversational return journeys, including English/Arabic clarification, read-only previews and actual narration completion records.
+
+### Conversation, debug and everyday workflows
+
+- [ ] Wire DEBUG recording into native model/tool/evidence/narration events without UI or uploads; verify 8 MiB/session, 32 MiB retention, fail-stop/no silent eviction and privacy purge plus disable.
+- [ ] Reproduce and repair memory provenance, cup/keys/pronouns, correction chronology, original timestamps, repeated-request progress and completion-before-reply ordering.
+- [ ] Preserve code-owned clock's original monotonic five-second freshness and wall/time-zone checks without task cancellation; preserve reference source blocks in at-most-35-word chunks with the original 60-second deadline and no invalid resume/renewal.
+- [ ] Re-run real photo/label/manual sequences and harmless arithmetic/story/rainbow/joke answers without weakening physical safeguards.
+- [ ] Reconcile existing visual/depth separation, identity/profile/roleplay, current-reply-only VoiceOver and denomination integrity before duplicating preserved hardening.
+- [ ] Reproduce recorded stair-up/drop, belt-height and slope cases. Keep unknown blind spots, child/adult hazard rules and surface/object risks explicit; no unvalidated universal safe-height cutoff.
+
+### Finish with evidence, not counts
+
+- [ ] Expand distinct whole-episode everyday scenarios using the actual map/pose/route/collision/output stack. All future 400-scenario coverage remains incomplete; turns/rephrasings do not inflate scenario count.
+- [ ] Re-run the longer experimental mapper and keep its recorded accuracy failure open until measured evidence meets a declared threshold.
+- [ ] Inventory and implement missing native adapters before calling them only device-testing work; then run Apple build, on-device small-model, microphone, VoiceOver, timing and supervised sensor validation.
+- [ ] Produce a clean-copy package and independent-review handoff with exact commits, commands, fixtures, provenance, failures and remaining gaps. Cloud/source-contract checks cannot certify safe independent use.
+
+Evidence: [verification summary](research/rebuild-evidence/checkpoint-01/verification.json), [Core log](research/rebuild-evidence/checkpoint-01/core-tests.log), [Node log](research/rebuild-evidence/checkpoint-01/node-tests.log), [tested source hashes](research/rebuild-evidence/checkpoint-01/source-hashes.json).
+
+### Historical to-do records
+
 ## Context-driven capability integration — 2026-10-23
 
 ## Pre-device hardening update

@@ -1,0 +1,16 @@
+warning: /home/agent/.config/swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /home/agent/.config/swiftpm/security is not accessible or not writable, disabling user-level cache features.
+Building for production...
+[Planning deferred tasks]
+/workspace/shared/blind-rebuild/BlindCore/Sources/BlindCore/CompanionReportedStep.swift:10:16: warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+ 8 |     public let report: String
+ 9 |     public let goalRevision: String
+10 |     public let source = "model-associated direct user report; not sensor confirmed"
+   |                |- warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+   |                |- note: set the initial value via the initializer or explicitly define a CodingKeys enum including a 'source' case to silence this warning
+   |                `- note: make the property mutable instead
+11 |     public static func proposed(step: String, currentStep: String, quote: String,
+12 |                                 latest: String, goalRevision: String) -> Self? {
+[18 / 23] BlindCore
+[23 / 23] BlindCore
+Build complete! (58.52 secs)

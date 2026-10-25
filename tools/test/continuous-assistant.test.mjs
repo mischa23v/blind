@@ -17,12 +17,12 @@ test('ordinary conversation is routed before camera availability', async () => {
   assert.match(receive, /routeFamiliarPeopleCommand\(text\)/);
 });
 
-test('speech onset cancels generation and ordinary output without cancelling capture', async () => {
+test('unverified speech onset interrupts only ordinary conversation without cancelling capture', async () => {
   const model = await read('ios/BlindAssist/NavigationModel.swift');
   const onset = section(model, 'voice.onSpeechBegan =', 'voice.onFinished =');
   assert.match(onset, /assistantSession.shouldListen/);
-  assert.match(onset, /cancelDescription\(\)/);
-  assert.match(onset, /stopInformation\(announceCancellation: false\)/);
+  assert.match(onset, /interruptOrdinaryConversation\(origin: \.unverifiedMicrophone\)/);
+  assert.doesNotMatch(onset, /cancelDescription\(|stopReturn\(|cancelRoute\(|interruptedSearch\.capture/);
   assert.doesNotMatch(onset, /voice.cancel|includingAlerts: true/);
 });
 

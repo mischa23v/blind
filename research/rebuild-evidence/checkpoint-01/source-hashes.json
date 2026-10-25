@@ -1,0 +1,2450 @@
+[
+  {
+    "path": ".claude/settings.json",
+    "sha256": "0b4737be00f636545b5075350fb8fdfcb2fd34dd7149cc85415c885da62ddfb0"
+  },
+  {
+    "path": ".gitignore",
+    "sha256": "d90912183974f3585e1857aa72aa38dce6c3bce0bc52c031f30849b74126ef06"
+  },
+  {
+    "path": "BlindCore/Package.swift",
+    "sha256": "9db07d1d72ac8d224f873aaf47e51f63bf7e508355a1355426daf599d8f64b0f"
+  },
+  {
+    "path": "BlindCore/Sources/AppleModelEvaluation/AppleModelEvaluation.swift",
+    "sha256": "737c1831b92dd07a82c57818b3ea6cd4bc406452f2fa20b47affb38741791bce"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/AcousticSpeechOnset.swift",
+    "sha256": "0ec66e7ffb2c72217503c32fad1471696f6f241ec18415acb40cc3251ee40b63"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/AlertPolicy.swift",
+    "sha256": "6015f5f03a8ec42b81392a3dda62b60608f9e9bad498fea855a6c9f43a6e8994"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/AssistantAudience.swift",
+    "sha256": "65b79b87134553f1f90cb67b151846c5a2b72b4a8591eb5b4e62d90ed4464b95"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/AssistantControl.swift",
+    "sha256": "05e83b84a9a4c936dcb3010590bc7ec79892a4921dc4673ff2c6c118efd55bbe"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/AssistantDialogue.swift",
+    "sha256": "0e4d6f5139ff50b6be6be8a787ba10da6994d65bebf1f343c962efee3c8b7779"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/AssistantPreferences.swift",
+    "sha256": "7aafb91760b773d96ffb31fc5d95b5e386deadb04bed2f65d85d950e06d81a7c"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/AssistantSession.swift",
+    "sha256": "874c356efda3bc6dfd0d984e4b1cfe29f1cf225be20d243f5befda46c2b37cfd"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/AttentionPolicy.swift",
+    "sha256": "bc7713a7faead5c10974390b7479132b6b250cde71dd2025b791626bb230668d"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/BLEProtocol.swift",
+    "sha256": "f1c504a987ccf627e4ca5aec4541846f2229573fedd218c45d6e92feed0cbc18"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/BackgroundPerceptionAdmission.swift",
+    "sha256": "3857addb06b8347d7be14866c07e58d336b77d3a0cae5b375b362fc371d048f4"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/BodyHeading.swift",
+    "sha256": "903f0889c4ccf98631036887f4d5588a3039bef1efa5b7363e72ecba557e3b3c"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/CameraRecoveryPolicy.swift",
+    "sha256": "1d2ac475c27b5036ba60791291296a3bd5002fff85be9d8a5ac3c03d5dd7ad7e"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ClothingColor.swift",
+    "sha256": "a674a780698f796b23bb512a798435b2f3460a8c73ddaf062c577d24824ca46d"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ClothingColorTarget.swift",
+    "sha256": "b257311e19b25f0e6e089ac5a962b641a2932b6b2933945b79ea8338c6c09382"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ColorInspectionWork.swift",
+    "sha256": "f41d31498eb68695737db8aa1febe78aa94e372edeefca817ccd251d258ac60c"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/CommandAuthority.swift",
+    "sha256": "6d2e5913d894cfd0a85f94950cb19969911e14a7bc931bdee6091079055f52ef"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/CompanionActionProgress.swift",
+    "sha256": "aa2a979d179b2976e1b5aa26c04f3f6b07683be622527292b7e86edc48c1e27b"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/CompanionAttention.swift",
+    "sha256": "33f024f6d139df890ede55c009a06a0c6742ecf5d7a38fc015071d2f1a0aedb3"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/CompanionCapabilityEvidence.swift",
+    "sha256": "a1c99594651230dbbc2755b821895b7430ceecaa58e9d12eabdc2fbc9ce6fbdd"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/CompanionEvidence.swift",
+    "sha256": "aab7e0847811c82afa2f666c148421a785ade716b12175aae365dd255aa4275c"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/CompanionFacts.swift",
+    "sha256": "c412e44b601c1ef5fa5bec7984a525750c4bb874a5f3acf09d084af00a82182b"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/CompanionMemoryRetrieval.swift",
+    "sha256": "21659d731aa8d7cb3b235b140cbec74a6d116f07e47d9ef14b23805b9961c244"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/CompanionModelContext.swift",
+    "sha256": "5046a8e100b21184a9264aa856d091bbf80e69db452730f0417d280d6e9e394f"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/CompanionReportedStep.swift",
+    "sha256": "32af287dbf17bd4ea2f92509a3ed451b5a336a7cb1b1d81231179c4f90816765"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ContextWindowPolicy.swift",
+    "sha256": "85374875f34f874ba7a8b6c328b4bc68e45dd17a41fed27049bc2fd5e91fa2a1"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ContextualCapabilityScheduler.swift",
+    "sha256": "2a7fcf258864e57b666277ffa4718d039550e616b781d6c17d4594ffbff4f746"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ContextualTextPolicy.swift",
+    "sha256": "9ffdbbfe33dd4a1edc0df0c5f9f3da331dc15fd0097db2d4664a5c6c40df9061"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ConversationClaimGuard.swift",
+    "sha256": "bb996c393ec727808ef6d930d1161f8da933a6bafd3dbee769fc80d544681e22"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ConversationDomainPolicy.swift",
+    "sha256": "409df2258fb9d862190198f1c477f9f69d5bdf602ff64a17a166dd219dc4f863"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ConversationIntent.swift",
+    "sha256": "9133d1557215ee40da8a2b2934eb41be956a6d21448e528d88d6a75fc11b5b0b"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/CurrencyRetakeSession.swift",
+    "sha256": "63cc32d399085cfc311d43e79a50857a8f2324d0d19a6d6436ec56a3e471b2c7"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/DebugSessionLog.swift",
+    "sha256": "a115c0f271c30130ce55d91d7afcd8b4d8e3a744dc1d81957fd8d7e9a6125be8"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/EverydayRetryWindow.swift",
+    "sha256": "cdd4a3d42be4adc261bef104d92cac74168e54fcd711ae018e1ff178c2550022"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/EverydayShoppingList.swift",
+    "sha256": "cfe40569c7c3f809118517cd1ea4395c2c0c67c177b75db84238cea925ed1ca4"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/EverydayTaskCoordinator.swift",
+    "sha256": "685c359339b954adbd694e1b21d9732310770fe6ab60a2c99e0bb35b2490892b"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/FamiliarActionConfirmation.swift",
+    "sha256": "049351dc610a9172731e998e0c31af9b3473e0752707c3bfe3943def8d33865d"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/FamiliarEncounterPolicy.swift",
+    "sha256": "50b83e6f4490b450003b3675ce7fcae0b73bcec6fcc3dd2f074788e5818d4e84"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/FamiliarFacePolicy.swift",
+    "sha256": "0248c7c3dd298a71b8c9e4a9e321440c85a609363821de9c2d62f286ee9baebf"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/FamiliarPeopleCommand.swift",
+    "sha256": "99dbefbdc3a695f7e088102c15857e5247f42dd3824f6dc24fbefe697e82ebba"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/FamiliarSearchBudget.swift",
+    "sha256": "f50064a266090783dd1f5260b904ea773bf3fcdf92d29f67d3d96e1b056332c0"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/Geometry.swift",
+    "sha256": "f7a27aff67ed97dda0550463e70ee9df9c85381024ce02f2f091a2b35f353eb5"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/GroundGeometryEvidence.swift",
+    "sha256": "45f089a9c8f6852f41ede3eedbadf5537de7b8c12ff300ac1f9d3cdf8f2e4cf7"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/GuidanceCadence.swift",
+    "sha256": "b9c93fdda0216862ad06f1c0a46755894e07fc2ddaea4b1976edca68965baf2f"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/GuidanceText.swift",
+    "sha256": "d304884917db0e0518ec006f8f7fd9e6cf4672287b9d3e0cca731a28268966ca"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/GuidePrompt.swift",
+    "sha256": "ab5d4a9dcb3ab143eb2ffc556d79d5cb3d1014a3f1cc51c9de251bf43a99b508"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/HazardDetector.swift",
+    "sha256": "9bbcdae56f58ed76d8a06f0b03651af24a023c48c0a23111187ec2a511c1d615"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/IndoorMap.swift",
+    "sha256": "143907bb8733793b91cdf17916002e5888943049c3ff2c7fc5ae725be4419529"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/InterruptedObjectSearch.swift",
+    "sha256": "878a116d64eebd58e63f9644df579c841495971dc98f83e72d35ac1e9ba99fb0"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ItemAppearanceMatch.swift",
+    "sha256": "f288fd3f0188f8e6a8c126c35efd1160a4727269473bc6f28d1d25c79a0fd5bc"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ItemMemory.swift",
+    "sha256": "66807f7aa3a14967a8795cf9ad9b245c364ee20f4415cd454c7c6c6081e9e732"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/Journey.swift",
+    "sha256": "011a296b2a685fee6fbb61b0ca1c347f75c3fa0453e4a1ce85d18cd4467e3918"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/KeepOutZone.swift",
+    "sha256": "eddf790cac4ca97596b42631af7e86501f7089024443a5d30c19570469035968"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/LandmarkPose.swift",
+    "sha256": "b32693ebe91cd2ce94d15b00e0b3303d02b6a027ed33e94505b424f33e6f8df0"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/LocalPlanner.swift",
+    "sha256": "04da3a8ca35f4bfa3dd98aa4b4c9c11ae90a291504adf77f8420d51a41deedd8"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/LocateCommand.swift",
+    "sha256": "3e0f193f2c38ec2c3c58ec66c5fc6edefaa4d36e10a70638cb2c2e9f3c9c3435"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/MapContext.swift",
+    "sha256": "ded465f5cfd5eb494714bfef17bbcb41bf1b11f600445e3bfd951842eadaa919"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/MonitoringRecovery.swift",
+    "sha256": "8e0d5d1a97ac0a930f172327c590a26db85e09dc1d812d48acf4a2ccc1e237c6"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/NarrationBudget.swift",
+    "sha256": "46e1a5a0a6ea0d9b95334ec3e561d1fb5b6ceeafd62dd15c5149ca9323e6732c"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/NarrationDelivery.swift",
+    "sha256": "f52b67b4669481a8caa4105ed4340f67c46703cb47d16b6f56143e71a88351c0"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/NavigationSurface.swift",
+    "sha256": "d4a399ce7dd809cd519617f1e2e3fd2b22394c1cff2a3297c3d5247ce7dd26bc"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ObjectSearch.swift",
+    "sha256": "8d33959da91fc8d8dd042871f9e6d4704b5a60a135efea52d623e7d636977841"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ObservedObjectMemory.swift",
+    "sha256": "bb187e70f5fb50a5597d43cd0e1735a0a6ef18df20927dadf53ab66291fd49dd"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/OnDeviceLanguage.swift",
+    "sha256": "332fc111730a5871c2ec0e6fd8d423bff3eecd68243a3c83c50d24b5b6366783"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/PendingQuestion.swift",
+    "sha256": "7f02732073497cb3de35ea306dbe141bbc1dc315c33ebfbb5cc93816af2b174f"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/PeopleRegistry.swift",
+    "sha256": "02bd7ca790c20d30859dbeb3af6f5551779e8e0485b57a8a2ee1ea22639de9e0"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/PlaceChanges.swift",
+    "sha256": "596952430dde9e945bed8b4e516256088a85cfe25bf58d35228a45f80e6b74a9"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/PlacePackage.swift",
+    "sha256": "6c23c635ed8fc9fbb62608f1475e0aa28f2a9762d32e4700a5a0e84d395dacaa"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/PlaceRecovery.swift",
+    "sha256": "657aada7ea65e19120de922f8fe4080c0fdf9cfd1bb00621513997845e7e89ba"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ReadingTools.swift",
+    "sha256": "fa3d892f69e50d285397ff8dbcee8be1fa8eb43302b9f0d9fddd39624fc37efb"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ReadingWorkSession.swift",
+    "sha256": "144af929aa2d2062ae318fc91b6715783a1c4e631c4ff51ff7863b2df3d018cd"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/RequestedVisualCapturePose.swift",
+    "sha256": "50735b9849c437c770f1dae63b7f8f70f1993a5bce6689901dce585d6e6350c8"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/Resources/guide-prompt.txt",
+    "sha256": "39edfdaf9f7acfe75e3cf0a1fc604ac23d763dcc576355ae8f263d669954bbc0"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/ReturnTrail.swift",
+    "sha256": "1d6d6e5b7d517c954b20a8200ee5a37779c62220fdd2cbaf69602e95a96e21ff"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/RoadCrossingPolicy.swift",
+    "sha256": "dc1b2aad5975f1d1cb3742bfbb83d3c5664e732a4526719c82e87e3b4f159245"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/RoomLayout.swift",
+    "sha256": "3e7609313a1d781e5b6c0c40071439442df88fddfe2005e86078e54ae6d0af18"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/RoomRecognizer.swift",
+    "sha256": "06fec42162b8a5d41626aa5b353ac6da4af26a792518a070330699990efde5dd"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/RoomRecoveryCoordinator.swift",
+    "sha256": "d2e71b9ff24958814c89ef02eaafac7654b35bc8d310ae59a295698dc51975ce"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/SaudiBanknotePolicy.swift",
+    "sha256": "65f27a6e3754e1f26471bb17fa613f8704614827862779aedcb5c63d533bfc44"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/SaudiBanknoteReferencePolicy.swift",
+    "sha256": "e908269cf206d8f83ebd9c56ab5b564313d1cb9428ed9157301527e4358de512"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/SavedWorldFrame.swift",
+    "sha256": "c81551da30f5c778dd8202cf2572a4cd4c347a9fa5a05884fc54a43a0416653e"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/SceneChangeDetector.swift",
+    "sha256": "a88a7f88a6b2fe6b615fea3c44338bfc2f8ed69f3b7bfcf9a94a1cdd750b9e37"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/SceneContext.swift",
+    "sha256": "35c3e0933a4c6b47556b2550b0fbf8d610d00f286b2dd6faa812a20ad9d52252"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/SensorMeasurements.swift",
+    "sha256": "4d6c2f105a502f8797d4490c24bfc01494a88523c0f63c3ef5ab4824885f6f99"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/SpatialClaimGuard.swift",
+    "sha256": "549f791f1924c6c4ff499b0554aa489416780c517500fc21770c68f311ce161c"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/SpatialFacts.swift",
+    "sha256": "c99d1ffa433ca6b6688c09c7e995667b04a44b80fb8ed62a6b5f94d7e25e96c3"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/SpatialFrameRegistry.swift",
+    "sha256": "856d97523516429b2e655bc1c3e36dd5331728f40e4d15a6f5817c925e545541"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/SpatialLocalizationLease.swift",
+    "sha256": "d198ad905bf5001a27be226d0063bf0e46173194c495875104657950efcd7c81"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/SpeechDeliveryLedger.swift",
+    "sha256": "dd5b5f8ee2438bfe8c09447a779fb8320e5ef8dec376e149a7a0fb5389aab83c"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/SpeechPriority.swift",
+    "sha256": "d8006b537aee905dd5f8d71fb2b7a3e85864463f486f0cf76dd7a20d98b03c6d"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/SurveyCoverage.swift",
+    "sha256": "eea489cd0dfbd90c08af2b1b9dec1918946e114cf192d26d4d31d8b954133c13"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/TrackedTarget.swift",
+    "sha256": "64747f7e78a39e2cefb3293eb1a04f061b0cc0d404d692f4e7f0b23830b872dc"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/VenueCatalog.swift",
+    "sha256": "5beb16e23a6f170aad588fd4e021edf52a09b062c723c303e8e338b3095fe932"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/VisualGrounding.swift",
+    "sha256": "807d6e547c5bed2fafb307a3aaf08ce22c8088316c14ee226356fd2568ff6443"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/VisualHazard.swift",
+    "sha256": "3620a4605d309d1ed11f1a6d5cd6e9cd0c73b2e87ad02a97937592ca3cd341c3"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/VoiceCaptureRecoveryPolicy.swift",
+    "sha256": "028e306601df1764cf80ea40e10676a61756b10624d9860c2c044d7a0f953717"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/VoiceRoomScanConfirmation.swift",
+    "sha256": "64547bb0ac1e72b9c7627563c0bc44624c0e690211392624078cee286c9340f5"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/WearableEvidence.swift",
+    "sha256": "c5801540e03385ef902c904a48ee365f1f2114715ad42f1be9cf0eccb5b939b1"
+  },
+  {
+    "path": "BlindCore/Sources/BlindCore/WorkRevision.swift",
+    "sha256": "63b67123799b2db4f46f7e4b594f692337939c573d7c74997f155d8f2f0101d5"
+  },
+  {
+    "path": "BlindCore/Sources/ImageModelEvaluation/main.swift",
+    "sha256": "a04f83796e41aa3f613b0c5584b372f494401b45c9a0a131595d4b95975be580"
+  },
+  {
+    "path": "BlindCore/Sources/MobilitySimulation/main.swift",
+    "sha256": "1f7cb877114d4188282a5d004b5e6b6f5b745b2dcfec2be876d4778439a02e17"
+  },
+  {
+    "path": "BlindCore/Sources/RealSceneEvaluation/main.swift",
+    "sha256": "52b6711c29a9f98cbc3119bed1d0b54afb7ae2325ae1ea4c3099d9882de45129"
+  },
+  {
+    "path": "BlindCore/Sources/SensorReplay/main.swift",
+    "sha256": "d93e49b96fca6208433bb940479e3f229af3319473a70263e18f4751720a6cf4"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/AcousticSpeechOnsetTests.swift",
+    "sha256": "6ef1e8b2922a795cbf99c7f29302f5f27910f63837f807f6e3ec49139db75198"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/AssistantAudienceTests.swift",
+    "sha256": "79ccc6c5e63367e838b3c1b08dffadda463b8b8a4b94dcd85a7ef6f734f6beac"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/AssistantControlTests.swift",
+    "sha256": "39172d6cc8abd7e396ff5179450c66f9a0a2affab69d133a433208b625bc558b"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/AssistantDialogueTests.swift",
+    "sha256": "3d55ad58d833dd0b26772422086ecc4eb065212305261c85bec0e3caa60490d1"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/AssistantPreferencesTests.swift",
+    "sha256": "3d5bc1765edbbf6074c9be2869ebcb52311898d78a94d48d3ca6f0a6aff62c5a"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/AssistantSessionTests.swift",
+    "sha256": "f75a1dd62eeed3a35d9a413bc7b0d5dcb0f2b650e7a4a823df7d75429e2b0382"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/BackgroundPerceptionAdmissionTests.swift",
+    "sha256": "c6e79090c8065c0ed1cefb2d864bcd2a265df045601b0adefe95d77b093f0847"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/BlindCoreTests.swift",
+    "sha256": "0521ae2735990bc5af14364ffa14654de91aacfea17cc57298c991263b244cee"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/BodyHeadingTests.swift",
+    "sha256": "974e9237a8a6b3395b97fae9d21aa8bb4da8b05f487d3c76fb05d0274ac31ed5"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/CameraRecoveryPolicyTests.swift",
+    "sha256": "5bb4eac0c66cc42f4bca719aebb1ade8cf61c3b347c7c64113850cfbed291ec4"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/CapturedViewPresentationTests.swift",
+    "sha256": "a63404b1258c8b50d374800fbe3469634bffbb96622fa51a3a7e06b469623c5f"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/ClothingColorTargetTests.swift",
+    "sha256": "7476860a861c0d9f9926f40f4c76485298607e071821d390f3e390eab94079ee"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/ClothingColorTests.swift",
+    "sha256": "651700ee8629bf73cb417727ce4bda5ee06a2f0a0e37dd2c16883ae06d75c9ae"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/ColorInspectionWorkTests.swift",
+    "sha256": "b1e04f24ca29854066e671b2422bca13d3ec548068704d9f6fb04d9bb66bbc80"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/CommandAuthorityTests.swift",
+    "sha256": "e5d75ae8dfafd62d4f34ec305ba19f8c069aebe999d4de683082ba2acb9b0b6a"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/CompanionActionProgressTests.swift",
+    "sha256": "b573f0ffcacd42dd9ef7fd3cb5895f36328d12006c10e4c7ad456f6b677a65d9"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/CompanionAttentionTests.swift",
+    "sha256": "b58d986060843ef6bcdbd2e21497d4c96971fa0576d82b6ac55e9203fabc8338"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/CompanionCapabilityTests.swift",
+    "sha256": "d4f433fa0a14dc41f28c12c09bf4a8588d9fcfbec8da7076b626af4fcd61f917"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/CompanionClockTests.swift",
+    "sha256": "31d9275b56ac4815b81c24f8083225a5a408ba95f527de79583834b001e1f898"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/CompanionEvidenceRejectionStatusTests.swift",
+    "sha256": "63699bf0243c08688a42450397564f1e5ab477fe3133fd2a4a363be5fdbf4ca8"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/CompanionEvidenceTests.swift",
+    "sha256": "0ba53954d7ccbe4c15e759cdef0a07490c552fa234ca5fb0b3a784e0a1c898db"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/CompanionFactEvidenceTests.swift",
+    "sha256": "cfe907017b8b616e45bf7ce320d5c3e32dd58e007e2f0794f382dcaa6d26d37d"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/CompanionJourneyAcceptanceTests.swift",
+    "sha256": "9f2c034471737a55744b7d1569823abb9ed018ef0fded33956bd0e62bd311a6d"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/CompanionMemoryRetrievalTests.swift",
+    "sha256": "13da84e1353cee59fd711c7e2ca56b2371c51b02eed03a85b96913aabe9cdf86"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/CompanionModelContextTests.swift",
+    "sha256": "10d495e7155498ad7c62e810531701a601f22c95dc22aed77b853ba0c9a15645"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/CompanionReportedStepTests.swift",
+    "sha256": "64930416f15fe4f912e007a899160c5aa2ad0ebdd146974a7b47b18e1972c436"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/ContextWindowPolicyTests.swift",
+    "sha256": "9f8488973771e61232c50ba8d63094cd53b622d1c3c9b4ff37ffaa3ca9526164"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/ContextualCapabilitySchedulerTests.swift",
+    "sha256": "07bc15a76f4fe2a953030413cac3e853a7f5825757009fd76c239c7e21aaf7b8"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/ConversationDomainPolicyTests.swift",
+    "sha256": "2b262f4878d02eb5b7f6e5c05e9b07816f63a86da98e44927f35fb301a24d3eb"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/ConversationIntentTests.swift",
+    "sha256": "fffa8b7ba15eb9e2b7d8b515980c033b03b770ea3fff50c7f8eb07fedce52e53"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/CurrencyRetakeSessionTests.swift",
+    "sha256": "c1244dd9d6c566e7588ad04f5e63e12f1c4c2ff0189a48593db7b5fdf5bf760e"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/DebugSessionLogTests.swift",
+    "sha256": "16d6433b69dcfec36d2b829b619cdc68db4181fa39712981c9b705b7bf313d2e"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/ElevationRegressionTests.swift",
+    "sha256": "126dac6126ce2365a49483511c0452936d979702a5cff0dee5ae17a0f1772e90"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/EverydayRetryWindowTests.swift",
+    "sha256": "6351d02610cbf56cf635c9167da1678daa45e844f3446220b2b060a3e0a61699"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/EverydayShoppingListTests.swift",
+    "sha256": "a17eccd2b209ea8f41a13294fa51d93306a63fa520e750706039a751dfc1f1da"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/EverydayTaskCoordinatorTests.swift",
+    "sha256": "db0f6026dfc60e8ae05ab9e066f67597502e755d77d05abc735d57d2c3978db3"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/FamiliarActionConfirmationTests.swift",
+    "sha256": "a1b91e7df087433b183d698245fa58a5fdb28272785ccdde16704e4a89d4e886"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/FamiliarEncounterPolicyTests.swift",
+    "sha256": "a178bdbf5b1da85f7b590ea35fd423850f0f8da049e25d798ac00787ecc22407"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/FamiliarFacePolicyTests.swift",
+    "sha256": "793d04822ef0afe3c1a5033372d37cc1c5eaf8596b8daa0870e6450e55b08346"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/FamiliarPeopleCommandTests.swift",
+    "sha256": "d464385f4d70f30e6369f36b783a36b0b3f130532581970736c219f48e6a47b9"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/FamiliarSearchBudgetTests.swift",
+    "sha256": "7ad5a88cbdbc12b46205bc5b5576c6104b914e4024a155c018afedeb75a062f4"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/Fixtures/companion-evidence.json",
+    "sha256": "5ebe2d2cd4c1a637997ce935059bda682ed0324ff6fad0a6e24a03b4b35dbc0a"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/Fixtures/oas-apartment.blindplace.json",
+    "sha256": "b4ab1db3f38135695720df6ecb17581b972ecedcaa547c64fc5c3950288ac2d3"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/Fixtures/spatial-claims.json",
+    "sha256": "be4ccf86de5cd018e957b49cb5be35a199463e83ebf55b02111faafac7b556d3"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/GroundGeometryEvidenceTests.swift",
+    "sha256": "c79bd2ef7f135b1b9aa925de7a1a52e721536d67fb0c3d072254dd19ca562301"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/GuidanceCadenceTests.swift",
+    "sha256": "9512ea7783a4e775b14e014d55b356c666479e9cbaa124794b35f097c1c3828b"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/GuidePromptTests.swift",
+    "sha256": "f88d9389afef3e9030eaf1bb5d2aed7ae65e8eb4189ecddc9363f8fe4c67bee5"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/HomeWalkScenarioTests.swift",
+    "sha256": "223669f2812f3503575e4a2a1ac10f24d88a7b8da2a069da48dc3f3df516e66b"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/InterruptedObjectSearchTests.swift",
+    "sha256": "a09743e4a0ddeb95a4088ed2e0c89c9aafde96b3ab3971fcc173898ff81f5ae7"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/ItemAppearanceMatchTests.swift",
+    "sha256": "dab76276be5834db10315e7f941c7122f2ae68ac2e57fdf9bc40359f7f404705"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/ItemMemoryTests.swift",
+    "sha256": "2cb1bf571e39580853f37acba33290764fccf8955091e9b8bc591ebbb7fb86b5"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/KeepOutZoneTests.swift",
+    "sha256": "d9e758efe6ebd062e964173f20814815b1adb3518c2d5f56fa060ad1af07ad13"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/LandmarkPoseTests.swift",
+    "sha256": "55fac376145befb7e28cf510d1351617b27f09a553950ca6cc9cb1095eb90224"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/LocateCommandTests.swift",
+    "sha256": "e367eff69c44e68b3b48ffec20a1f6ea4709a595e4d2ac28665f12bc2ecc16fc"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/MapContextTests.swift",
+    "sha256": "924b076a49b1c9949346ecd05fda1335869cdd7b2c5ebd041650f203e3e95c80"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/MonitoringFailureTests.swift",
+    "sha256": "83e3e991043d24d55948bb03f01a43b3f0fa3a9dea6beeb0402ae623fdce87ce"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/NarrationBudgetTests.swift",
+    "sha256": "69ab4663b8881e626b091a0183512b0e50dd04ffb393ca72d7a3a8431e34bca0"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/NavigationSurfaceTests.swift",
+    "sha256": "07ca0cfbbc697595ddb4dbb8c9667183d1c24d05964b466fcaadfc09c03820a1"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/NavigationTests.swift",
+    "sha256": "12ac2d042ed1a72cc6283c33699dbbb0b78e9de60cf431282d5ee1e7d7954d72"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/ObservedObjectMemoryTests.swift",
+    "sha256": "c52ef16d0e95a2f889f01cf4d52805c23105d975f0c9b502206978bd02b87e0f"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/PendingQuestionTests.swift",
+    "sha256": "472bfaf57977df34f0ad6fa75ead35fbc53ee2c0a29b8d42bf061cccf5a03891"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/PeopleRegistryTests.swift",
+    "sha256": "6f6d3d037cde5bb12e9427682fada1f38a41e54c312c99fdaeb5881805b48e4a"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/PlacePackageTests.swift",
+    "sha256": "5f5163cd7d586d26ff754541680281b3efa4ab22071715c6700579b5f06ddd96"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/PlaceRecoveryTests.swift",
+    "sha256": "19da2e0db5245342e920595836bd101ff78eda5fe5ff9b7c5ab73c5c4545f728"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/PreDeviceHardeningTests.swift",
+    "sha256": "7b2605d1399f469b56fa276b5393f02f72744336d977d29e09dcb4bf2ebdba9a"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/PreDeviceJourneyReplayTests.swift",
+    "sha256": "4b215f4403923a914c5c89e370993c79b5ac218feb68662829f951d4efdcbcb2"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/ReadingToolsTests.swift",
+    "sha256": "ba693b98fbc23612899dc5d0dddf856bb053598a7222145dee957044a1f95eba"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/ReadingWorkSessionTests.swift",
+    "sha256": "ee5a60112eab028319a118e02149e87e5884eea1ace1f715f73562f9e02f647b"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/RecoveryAndVisualTests.swift",
+    "sha256": "c080ab825a7bdd0f56328ffb48ea0297ce5f4ab07e92d314fb544c9e36d9b42a"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/ReturnTrailTests.swift",
+    "sha256": "e7082386f1cbff29f38d855868c0b82f0b4a342cfd54dc1521aa85eb80b04359"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/RoomLayoutTests.swift",
+    "sha256": "fe9335205c30fdf204ef5ee6f7adc200b0d38f10058ae173a2f26cfff244bb73"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/RoomRecognizerTests.swift",
+    "sha256": "5110638c78410b7dd0fdd0183d3d7596710755aa122b6593f36fbb2354a8f7e2"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/RoomRecoveryCoordinatorTests.swift",
+    "sha256": "f6c3cf8a63d535cb53d7a233ab3008192b841fcfceb20e76b8b0ed9dfb9d5ce3"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/SaudiBanknotePolicyTests.swift",
+    "sha256": "d30ffaec36d196d20a61df47b4bbc02d10a16bc74a5e8953a0caa42a89fb537f"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/SaudiBanknoteReferencePolicyTests.swift",
+    "sha256": "3ab002ac97a268f533f8c0127486d32e00a9e51d6b02e79d1de437ef6e851872"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/SavedWorldFrameTests.swift",
+    "sha256": "34a126eb1407c5f010217f21efc38892107334fcd3f36f835d659db79f7d8fe0"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/SceneChangeDetectorTests.swift",
+    "sha256": "eeea01d2688cc5ec1ea7f701402997309c42503f02ca528330202e9d06e4ba21"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/SceneContextTests.swift",
+    "sha256": "4c9ee6c6988ac5762df4d6467752fb32d939ac05ea6a5454c1d99c07f7accd2c"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/SemanticMemoryReplayFixture.swift",
+    "sha256": "204eb70547f5eaa0033084afa6834a23367aa7c0d5c917971a944dc6885f3f96"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/SemanticMemoryReplayTests.swift",
+    "sha256": "35193dc4c1609c73e4e8f2d525545163842796fed25782e8f33fce3b3e3358be"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/SensorMeasurementTests.swift",
+    "sha256": "33dd9f8064d35cf70172e1cb1b082c0b33c54544c5ad224d32c7bd437e35a4df"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/SpatialClaimGuardTests.swift",
+    "sha256": "093ef577ae11983d739bbdbd9659e32035c97a2d11eb1db8ebdd0fe3c83450ee"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/SpatialFactsTests.swift",
+    "sha256": "c3b354a8b59e5b8f42e37829dd2a7cce51c474043cfe2828a388b6a5aad7fc67"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/SpatialFrameRegistryTests.swift",
+    "sha256": "d6123811cbb9ddcff95a529b0f16aed1e8e1623cc84405a63ef3dfa5c83b4200"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/SpeechDeliveryLedgerTests.swift",
+    "sha256": "7d85318a2aec4a00d73c48c7065bce269b635a9f5de5418382dcef1b23fa1b25"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/SpeechPriorityTests.swift",
+    "sha256": "a4fefed770d468d026e0aad9446f3d40093527b2f607cdae56eda8d40b30eed9"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/SurveyCoverageTests.swift",
+    "sha256": "492a857dd5392a889a0b821b2a28e3312e5ab06600a6633eb252de2294e4d432"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/TrackedTargetTests.swift",
+    "sha256": "7cee84a00dd425f1f506415efd9c8478c92dc2fe100bbd4585e60a7a1c4761a0"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/VoiceCaptureRecoveryPolicyTests.swift",
+    "sha256": "ed6ad82daef06f0b46c3cba3975f3bd57442c268c756f8b088d56e76c4b4c5f0"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/VoiceRoomScanConfirmationTests.swift",
+    "sha256": "cf28a866dceaef80878e9c2904f581121e4c4428aae17271b5677e8958756975"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/WearableEvidenceTests.swift",
+    "sha256": "44cfed396e114a7294e52a305bced50aab1fa11412da78117a873c5d5aba699e"
+  },
+  {
+    "path": "BlindCore/Tests/BlindCoreTests/WorkRevisionTests.swift",
+    "sha256": "4d3ce24057ae257a5ca16d341a45a5e8c5fb9e4c3bf447f42705973475de8913"
+  },
+  {
+    "path": "BlindMemory/Package.swift",
+    "sha256": "119060ea110b7cd06a2c6b4f68c125b51489bc2d9a4385e1b1af53df30ef3115"
+  },
+  {
+    "path": "BlindMemory/Sources/BlindMemory/LICENSE",
+    "sha256": "9853f9dce81365fcc1d9b46004633354450164b8d17904e92e80c444545f7e87"
+  },
+  {
+    "path": "BlindMemory/Sources/BlindMemory/MemoryStore.swift",
+    "sha256": "bca6a06d13af65d41a7138d0f9217c95c17188f1eac725af358261b61fd358a4"
+  },
+  {
+    "path": "BlindMemory/Sources/BlindMemory/SQL/advance_room.sql",
+    "sha256": "cc529c3b7fb21eb38a4b5ed2212b0e2e1e83139881e9440f2f23e20b17739c99"
+  },
+  {
+    "path": "BlindMemory/Sources/BlindMemory/SQL/deletion.sql",
+    "sha256": "0341d648c59e4d180063c781450c93e44f5304880a08a000767b07ede894f6d7"
+  },
+  {
+    "path": "BlindMemory/Sources/BlindMemory/SQL/insert_revision.sql",
+    "sha256": "b76b82032ec414c65a1981f5109a86f342c83d3ebd8ab9972c17ab73e55cca21"
+  },
+  {
+    "path": "BlindMemory/Sources/BlindMemory/SQL/narration.sql",
+    "sha256": "ab696c15064f2e55b9785ce4a6b1a78b0f2efeabdaed642eda282a921ae3486d"
+  },
+  {
+    "path": "BlindMemory/Sources/BlindMemory/SQL/private_values.sql",
+    "sha256": "fcf11aad03181cbc756259c698c42c22b01705df97a576f1c83f09e4b965845d"
+  },
+  {
+    "path": "BlindMemory/Sources/BlindMemory/SQL/schema.sql",
+    "sha256": "2c1bec6ac7cbaf7a65c7d400c40f3f5bc26dc45a01e5e0c8f1811fe738c6b6de"
+  },
+  {
+    "path": "BlindMemory/Tests/BlindMemoryTests/MemoryStoreTests.swift",
+    "sha256": "f4cfb4476fe78a66cea36c0df2b496a3944619af305e2ad6cb38027b89f21dbe"
+  },
+  {
+    "path": "BlindMemory/Tests/BlindMemoryTests/NarrationHistoryTests.swift",
+    "sha256": "a8d71d0f9fd10ecab1063825023e19a40b8014dcb9532780ee32faff570680b9"
+  },
+  {
+    "path": "blind.txt",
+    "sha256": "f9ecb1841b44e746b88f34328e7753482e7883488106729ba1576ffd76fd7c8b"
+  },
+  {
+    "path": "firmware/belt/platformio.ini",
+    "sha256": "beb71c09f3fa6d0a4f4d378c24eaa0f9edfcbdeea399ddace5833d3bcbbac77b"
+  },
+  {
+    "path": "firmware/belt/src/main.cpp",
+    "sha256": "96c79ff67204f0bb3bb209653442521ae38e96769aa8c20befc1f370e2c22166"
+  },
+  {
+    "path": "firmware/shared/MobilityProtocol.h",
+    "sha256": "1bd4808aa0865356cd5907f636cf99ffd10ed60b320f86f0e62dbe318d491ef0"
+  },
+  {
+    "path": "firmware/shared/library.properties",
+    "sha256": "84b03ade0a6d5edc7d90d1e0ca08b567de79f5a794074ee843fd00cf4119a3c5"
+  },
+  {
+    "path": "firmware/test/elevation_score.cpp",
+    "sha256": "6d99e1029876822c06bb47d3f29548ba6ddee30bb7e89d785bb00d2f3e13bcba"
+  },
+  {
+    "path": "firmware/test/failure_test.cpp",
+    "sha256": "b79d876e95365598d244cf6fab622bc314775f67e2646cc352bc180c3a91999b"
+  },
+  {
+    "path": "firmware/test/protocol_test.cpp",
+    "sha256": "3a5f6333a2abbe0d399b6a58d493ed41d0e70ed0402b299e3a6f9295dceb93f0"
+  },
+  {
+    "path": "firmware/wrist/platformio.ini",
+    "sha256": "4d0b1f7848e2bbffda15cc8d7a3bae98aef11501bdeaa1c91d2cbc451a539992"
+  },
+  {
+    "path": "firmware/wrist/wrist.ino",
+    "sha256": "17d8af154dd9d93b63a8db7da98bdca7880f232ff9cf38ed0cefde4befd43194"
+  },
+  {
+    "path": "integration/MobilitySceneDelegate.swift",
+    "sha256": "61881bb18dc0105923407ceeab6fb4ceb424e85b4a1a1d3a6258458dec0fda80"
+  },
+  {
+    "path": "integration/rtabmap.lock.json",
+    "sha256": "cdb9e0067159b79b5612aca55f27df8540b432944e72c2ea581a8896d47d2ff6"
+  },
+  {
+    "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
+    "sha256": "8841b4d12d4d5209e69195902f2001b3d54b33071506ef56025ed4fd19e7b5ff"
+  },
+  {
+    "path": "ios/BlindAssist.xcodeproj/xcshareddata/xcschemes/BlindAssist.xcscheme",
+    "sha256": "6b65f27032bc4f2f112e2e71da5483b949e443501b9a0cf2f92ffbc0ca0f65cb"
+  },
+  {
+    "path": "ios/BlindAssist/AlwaysOnShortcuts.swift",
+    "sha256": "e838f511113eb9124f471545e72037d6237db460ab9a3bc91231d66087ccf431"
+  },
+  {
+    "path": "ios/BlindAssist/AssistantPreferencesView.swift",
+    "sha256": "3ce5d97e157e3523f8f078aa1fa99528e4dd794aaee6d62997abbb0a3660c012"
+  },
+  {
+    "path": "ios/BlindAssist/AssistantSituation.swift",
+    "sha256": "3d53dadaebb58ff82709556f1e836e87caae992c7227f43e2011317a233793e5"
+  },
+  {
+    "path": "ios/BlindAssist/BeltLink.swift",
+    "sha256": "7aa2a63b51ddbb4763b4b9fd1b08d9e5c0590bc6b4ad27aca07629e30cbc27de"
+  },
+  {
+    "path": "ios/BlindAssist/BlindAssistApp.swift",
+    "sha256": "c0b0981718c86bb592589295c8647e310254a311634c3107e235b1d4dc81ad97"
+  },
+  {
+    "path": "ios/BlindAssist/ClothingColorReader.swift",
+    "sha256": "509bae6100fba20798e9b56036bcafa86259aeb1c1f1e1cba3fc60f8ae1789a0"
+  },
+  {
+    "path": "ios/BlindAssist/CommunityLibrary.swift",
+    "sha256": "78dccb16732b22bffc50f4778f0ce2b2f6682a84f05b4f4ac60d2dd2ed1872f3"
+  },
+  {
+    "path": "ios/BlindAssist/CommunityMapsView.swift",
+    "sha256": "1443e8fb6149f42237f720bf9494ef34c329321707b0cc2162b8a2091127ad7f"
+  },
+  {
+    "path": "ios/BlindAssist/CompanionLiveActivity.swift",
+    "sha256": "3acd04800b62635d76a89e2f29a1663651668c243be6a4da744a69621ff00e41"
+  },
+  {
+    "path": "ios/BlindAssist/CurrencyNative/BACurrencyReferenceEngine.h",
+    "sha256": "30c8d2b807318f11d6d538d773f606bf9fe92c0767fc4b5522b9ddc27e55af2e"
+  },
+  {
+    "path": "ios/BlindAssist/CurrencyNative/BACurrencyReferenceEngine.mm",
+    "sha256": "efd0337e85f648e5ea2b9631500a26576e6e094458f1b9cdd8de5bac6be0ee9f"
+  },
+  {
+    "path": "ios/BlindAssist/CurrencyNative/BACurrencyReferenceMatcher.hpp",
+    "sha256": "d4ac9a1a4af5473b7ffb5507e312d15531b9b477003130200c08d42046abf809"
+  },
+  {
+    "path": "ios/BlindAssist/CurrencyNative/BlindAssist-Currency-Bridging-Header.h",
+    "sha256": "900fd4e8bc648a2015b8b2b69cb5caa549d668a35f02cff6f39ec34f42336f07"
+  },
+  {
+    "path": "ios/BlindAssist/CurrencyNative/THIRD_PARTY_NOTICES.txt",
+    "sha256": "31772f5f1a74a93a19e77df845877bd9b60583ec69f14815c0c63af7b45b0bde"
+  },
+  {
+    "path": "ios/BlindAssist/CurrencyNative/manifest.empty.json",
+    "sha256": "5f76510620fb7da149c839b73c242907171cc562426d3b4c188f00cf708713ec"
+  },
+  {
+    "path": "ios/BlindAssist/DashboardView.swift",
+    "sha256": "21a4f110de2b488e01c8996c6212b5f8b1233ba9e2d3c7a5308b91e9f0cdd46d"
+  },
+  {
+    "path": "ios/BlindAssist/DepthSampler.swift",
+    "sha256": "8d26c0eb7e41f86d88d2aa26d32adf7c14350acc13d52be2fbe977cf49cf0188"
+  },
+  {
+    "path": "ios/BlindAssist/ExplorePictureView.swift",
+    "sha256": "bf10cd3e5a89915915dfb8ac62a9ede485c48b29c940d1dab04df5b4474c4df3"
+  },
+  {
+    "path": "ios/BlindAssist/FamiliarFaceExperiment.swift",
+    "sha256": "63999591a3e62780a0307fa08e100470b66a7156a5b226eed877e0aa28b9127f"
+  },
+  {
+    "path": "ios/BlindAssist/FamiliarFaceStore.swift",
+    "sha256": "862d836d7fdc3e43a1e89f0c8b8635e015dd9204980d8e832b652bfbc12e11f1"
+  },
+  {
+    "path": "ios/BlindAssist/FamiliarModelConfiguration.swift",
+    "sha256": "de7b59dca7b0ed7bd0032c818dcf47b3bab3827230b48ac86b93c79a521d20b8"
+  },
+  {
+    "path": "ios/BlindAssist/FamiliarNative/BAFaceBatchSchedule.hpp",
+    "sha256": "b941c1db58f420220cb051d1f05ee665cf73a025e29cc695a0f1d5a894dfe440"
+  },
+  {
+    "path": "ios/BlindAssist/FamiliarNative/BAFaceEngine.h",
+    "sha256": "9614aa62cadebdd059f2e87521e33e9a07a4516d18c90053e5eeaa3f88140fcc"
+  },
+  {
+    "path": "ios/BlindAssist/FamiliarNative/BAFaceEngine.mm",
+    "sha256": "4479897823f930183afb4a2b090a36e21554c71e9b99701ad63105cc82da3a3b"
+  },
+  {
+    "path": "ios/BlindAssist/FamiliarNative/BlindAssist-Bridging-Header.h",
+    "sha256": "faf168ba7759918230955a17f4f280ec8bd049f1b1afb74d1fb6c82cc6b274a3"
+  },
+  {
+    "path": "ios/BlindAssist/FamiliarNative/MODEL_NOTICES.txt",
+    "sha256": "fe9e722a3fa0ef284f0ab88e264477663652a49a40b9a87f1cfd428b62602976"
+  },
+  {
+    "path": "ios/BlindAssist/FamiliarPeopleView.swift",
+    "sha256": "5eedfd39598f03f8540af3ee14e651f7bc3613824888bebbf65318ef3c72a14a"
+  },
+  {
+    "path": "ios/BlindAssist/FamiliarVisionComparison.swift",
+    "sha256": "53f7bff0f418c6a50a61e90742a64bfa8e69aa797c84209711d99d12af4dde69"
+  },
+  {
+    "path": "ios/BlindAssist/Feedback.swift",
+    "sha256": "31d70c3a6fd659bdbd9c112dcb145b036f39b0782da37fdc5ea98d0b80502456"
+  },
+  {
+    "path": "ios/BlindAssist/IndoorNavigator.swift",
+    "sha256": "eed3b380f1bbd70ae506d460fa7782332a305a3d3c7cd99ac51229bfc3907ffc"
+  },
+  {
+    "path": "ios/BlindAssist/IndoorSituation.swift",
+    "sha256": "35774fb9778c8ae5c3b05a37b07590b3a0438b269abae35cbc359c24735f4e8f"
+  },
+  {
+    "path": "ios/BlindAssist/Info.plist",
+    "sha256": "12e7d09d1db8bfeb97cdb52d609f8c8ce893df683bc94f078002723277e757d9"
+  },
+  {
+    "path": "ios/BlindAssist/ItemAppearance.swift",
+    "sha256": "75837105370746c426505fc852b104e5bdf515bc8cae78a44e281e3abb3ab080"
+  },
+  {
+    "path": "ios/BlindAssist/JourneyStore.swift",
+    "sha256": "c850d6d04a0bcd49710b9118463669c3e7cdb9a694e53c67d0a353dd9a176728"
+  },
+  {
+    "path": "ios/BlindAssist/KeepOutZonesView.swift",
+    "sha256": "877680f2e697e9c21e5c5c8d6d9b790fbf8c72448cfc32309b4a071df788bf12"
+  },
+  {
+    "path": "ios/BlindAssist/LocalImageAssistant.swift",
+    "sha256": "a21763ed795aeb15ef7497528a1b9694c64bed7e044795cdd3f1dc5bf8394fcd"
+  },
+  {
+    "path": "ios/BlindAssist/NarrationHistoryView.swift",
+    "sha256": "190f1d341fc94ac58acf77571eba2fd230d6a4c0e99057314d1b3a8737f938ec"
+  },
+  {
+    "path": "ios/BlindAssist/NarrationJournal.swift",
+    "sha256": "accb540432e0d0d877bf2f4572935cc59e4c1a3e90c2d93e81e8d590ade3b17c"
+  },
+  {
+    "path": "ios/BlindAssist/NativeMapping.swift",
+    "sha256": "0b45837a830b9578cef6ebc0d97a133f1b2deb2b32452773ad8d6655de8608c4"
+  },
+  {
+    "path": "ios/BlindAssist/NavigationModel.swift",
+    "sha256": "ca35b55c9d1c5990e2b93074bdabf06e5d6dc9312cbced0ff7612744a33cf0bd"
+  },
+  {
+    "path": "ios/BlindAssist/OpenCVRuntime.hpp",
+    "sha256": "a47b6ffad7f08a9ed3674200dbce8b40e4e26737d22744ebd47f9502069786e5"
+  },
+  {
+    "path": "ios/BlindAssist/OutdoorNavigator.swift",
+    "sha256": "30642ec92c6f2deeb32c59f4375b0687b26a2aa57a209a5ba3a9b8f37803e624"
+  },
+  {
+    "path": "ios/BlindAssist/PersonTrackingMonitor.swift",
+    "sha256": "4cdb5b5c5d6c9251453056b287a5b7143870b2719a0806f5cc8c8edc349de3be"
+  },
+  {
+    "path": "ios/BlindAssist/PlaceStore.swift",
+    "sha256": "09bb2a7e22fd2ecdf8045779d0ef1d9bb59b08979b7ddc942a3b37a52c267f0d"
+  },
+  {
+    "path": "ios/BlindAssist/PublicMapClient.swift",
+    "sha256": "88f879bced4522406abd6b2b452e8ed7d1d94751267948d56d02d60c8222e961"
+  },
+  {
+    "path": "ios/BlindAssist/RoomDetailView.swift",
+    "sha256": "2db8ea14491c61457bc0b718443bcec0471b5b02007f10fbb06571d15b23559f"
+  },
+  {
+    "path": "ios/BlindAssist/RoomLayoutAdapter.swift",
+    "sha256": "21f2e84faab1a869a2acc21ac6a868f4c1411d09b1df6a81e13fbfc2491e89f1"
+  },
+  {
+    "path": "ios/BlindAssist/RoomRecall.swift",
+    "sha256": "01052343596506c320528c5c913ca66c526e7d14f6b4b03352edff27ff24d838"
+  },
+  {
+    "path": "ios/BlindAssist/SaudiBanknoteRecognition.swift",
+    "sha256": "9b13cef8a57f477a438b0a4aac67d877e6c548b4f6a7b049d06ca8bc48116129"
+  },
+  {
+    "path": "ios/BlindAssist/SaudiBanknoteReferenceRecognition.swift",
+    "sha256": "155af21ac6613516f76b0cd2bda110953c51b7c64898a5b6808dd36fe6bda491"
+  },
+  {
+    "path": "ios/BlindAssist/SavedMemoryView.swift",
+    "sha256": "f50569841212ab2029912b869d271447eebde523623de51d25f5dd2e7725e388"
+  },
+  {
+    "path": "ios/BlindAssist/SceneQuestionClient.swift",
+    "sha256": "595f7571c36e57e9f3565473cb19a9ea7320bfa15e0bd22c0c1da86f14df1be2"
+  },
+  {
+    "path": "ios/BlindAssist/StatusText.swift",
+    "sha256": "796e1221530a4b87170e80d5045d7e3fd0f3c3fd55245a8598efda07f848d455"
+  },
+  {
+    "path": "ios/BlindAssist/SurveyProgress.swift",
+    "sha256": "c6f20e96787b0bab25882d7342c80ec7611d732c2a91c607fb348c27eba7479b"
+  },
+  {
+    "path": "ios/BlindAssist/VisionService.swift",
+    "sha256": "e634e1ae10f17780b8f0e4f68e54688f7604af0b120f22a50ebc44cf19385175"
+  },
+  {
+    "path": "ios/BlindAssist/VisualStairMonitor.swift",
+    "sha256": "d93adb37e1c225ffbe5c877260414fc4785a8c2d2b17233163c0a3204ee91b53"
+  },
+  {
+    "path": "ios/BlindAssist/VoiceInput.swift",
+    "sha256": "fbdcf645fb29d28e0d9c0fd73b0cc5617fb89e0e93b8aef0204c4642cce132ea"
+  },
+  {
+    "path": "ios/BlindAssistLiveActivity/CompanionActivityAttributes.swift",
+    "sha256": "54cec8026ce5c3ae157ed6e7827b794bdc94fa6ced3d878161a55fad3e4ab4f6"
+  },
+  {
+    "path": "ios/BlindAssistLiveActivity/CompanionLiveActivityWidget.swift",
+    "sha256": "0301bf45615875f303aec309f8ce17422a3c8e56090f0c378caf49926174705a"
+  },
+  {
+    "path": "ios/BlindAssistLiveActivity/Info.plist",
+    "sha256": "3a946d75131ec9df3eeae28c470578f07ef27230a85763961ea490b2c20435d4"
+  },
+  {
+    "path": "ios/BlindAssistTests/CommunityTests.swift",
+    "sha256": "c31cc9e60caeeb576f838a08afec3d91497c0b2b8d76fd3f45d9f403d9dfcf64"
+  },
+  {
+    "path": "ios/BlindAssistTests/CompanionNativeReplayTests.swift",
+    "sha256": "5f309395d76867a402eb866deef374c7431db82770db3fa3b3c9a86dc4b04b97"
+  },
+  {
+    "path": "ios/BlindAssistUITests/LaunchTests.swift",
+    "sha256": "ef857c8ba6d9ba5ef0b8cf56600827c82a09b607ec10f9f37c22f344eac52d48"
+  },
+  {
+    "path": "ios/ThirdParty/AGENT_PORTS.txt",
+    "sha256": "7238d6314d98d47ba62dbf00d1ec4d6da769bbad00e67f662e662ec33c71e742"
+  },
+  {
+    "path": "ios/ThirdParty/BehaviorTreeCPP/LICENSE",
+    "sha256": "73619551b110524235fd4272e7236a6b6e2e162770b1d79cb929022d165e8706"
+  },
+  {
+    "path": "ios/ThirdParty/BehaviorTreeCPP/NOTICE",
+    "sha256": "fc4dfc09aaab39b85ccc7218be24e5debd140d8ce4af1721a176e6963b92bcdd"
+  },
+  {
+    "path": "ios/ThirdParty/LangGraph/LICENSE",
+    "sha256": "d9bb52f2e3540d60ff50d8f0f5b6ba649b7fd346948c4c3d086c8afb120763c7"
+  },
+  {
+    "path": "ios/ThirdParty/LangGraph/NOTICE",
+    "sha256": "fa46dbad5b06a9ab6ea95b019766d739926f0bfffafde0dedcdb22027e994c2f"
+  },
+  {
+    "path": "ios/ThirdParty/ROSA/LICENSE",
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+  },
+  {
+    "path": "ios/ThirdParty/ROSA/NOTICE",
+    "sha256": "8467237722f38ff76df44b6b011f89a7c9fb0d2e226d321c32e0cfa675cd46d8"
+  },
+  {
+    "path": "ios/ThirdParty/SayCan/LICENSE",
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  {
+    "path": "ios/ThirdParty/SayCan/NOTICE",
+    "sha256": "40586dccb25d2f59b44441760406695c857217db3b6ea57f03b60718819385d5"
+  },
+  {
+    "path": "ios/validation/companion-chat/companion-prompt-research.txt",
+    "sha256": "d395cb3c06d5a1d5d40f0e3ad97958c286f3f2ae0c115d2dd907bcb788b602c5"
+  },
+  {
+    "path": "ios/validation/companion-chat/interactive-agent-scenarios.json",
+    "sha256": "1e423e5d62fde9c97961f66396b142cf3b83ce7c6413338ffe9b71646e6bbaf8"
+  },
+  {
+    "path": "ios/validation/companion-chat/text-chat-status.json",
+    "sha256": "af92f703ac13908f93234b03c867e5715cb987e1d4394b9e46e3ad0aeeaa830b"
+  },
+  {
+    "path": "maps/center.example.json",
+    "sha256": "a111585b2bdb6d2bb8a8f6d63ac75fbb70124a4ea3c2eb105dd963d3d5c24723"
+  },
+  {
+    "path": "maps/community/oas-apartment.blindplace.json",
+    "sha256": "b4ab1db3f38135695720df6ecb17581b972ecedcaa547c64fc5c3950288ac2d3"
+  },
+  {
+    "path": "maps/school.example.json",
+    "sha256": "0d1a96787ebd65a76a2ba0fe1c9ad86589b384ab0357eccf09842d82151609e1"
+  },
+  {
+    "path": "package-lock.json",
+    "sha256": "9405538a1c3924099b8dd51e3edb7374206407d6911e5af564f8444e03e489b6"
+  },
+  {
+    "path": "package.json",
+    "sha256": "022a3a5e741991de47391b006be9eda80e83d5bfc8b947cebabac8d350a79381"
+  },
+  {
+    "path": "research/SEEING_AI_REPOSITORY_EVIDENCE.json",
+    "sha256": "b780620f3a65a27c9c2ade830abe539174158d2c03219e3cd61f4295ccc70dbe"
+  },
+  {
+    "path": "research/assistant-selected/ajv-8.20.0/ajv.LICENSE",
+    "sha256": "a05350a88e318e4f5f2c2a1ff1e2e88daa4dd38e6e78b71cccae422bdc762cc3"
+  },
+  {
+    "path": "research/assistant-selected/ajv-8.20.0/fast-deep-equal.LICENSE",
+    "sha256": "7bf9b2de73a6b356761c948d0e9eeb4be6c1270bd04c79cd489c1e400ffdfc1a"
+  },
+  {
+    "path": "research/assistant-selected/ajv-8.20.0/fast-uri.LICENSE",
+    "sha256": "b010b0dfdfdb23d7396e03b82cd4621fc9bb8f95d6b0aea70b9c24e12074c786"
+  },
+  {
+    "path": "research/assistant-selected/ajv-8.20.0/json-schema-traverse.LICENSE",
+    "sha256": "7bf9b2de73a6b356761c948d0e9eeb4be6c1270bd04c79cd489c1e400ffdfc1a"
+  },
+  {
+    "path": "research/assistant-selected/ajv-8.20.0/package-lock.json",
+    "sha256": "e8e831e8e8ab417c2a10aae70bcf83f3617ea0dc1538e84de5d2bb859b894967"
+  },
+  {
+    "path": "research/assistant-selected/ajv-8.20.0/require-from-string.LICENSE",
+    "sha256": "6ee0feb1f6ef996ff5a68600f8cf98909cf412d39ef3cdceaefd87d636fa1b7f"
+  },
+  {
+    "path": "research/assistant-selected/grdb-7.11.1/GRDB__Core__Configuration.swift",
+    "sha256": "54f3718e50734c0df02132c8c40bd148679b6781c7d3cc7ca512202e88230a5b"
+  },
+  {
+    "path": "research/assistant-selected/grdb-7.11.1/GRDB__Core__DatabaseQueue.swift",
+    "sha256": "b040081ac04c4894f5094046dadd74b8cccb0c25d46f77d2bdeb6736413d7e09"
+  },
+  {
+    "path": "research/assistant-selected/grdb-7.11.1/GRDB__Migration__DatabaseMigrator.swift",
+    "sha256": "a695c246031d432e947d81052bda32d8f974462ebb04b32b1b89e10b7f27d2bc"
+  },
+  {
+    "path": "research/assistant-selected/grdb-7.11.1/LICENSE",
+    "sha256": "9853f9dce81365fcc1d9b46004633354450164b8d17904e92e80c444545f7e87"
+  },
+  {
+    "path": "research/assistant-selected/grdb-7.11.1/Package.swift",
+    "sha256": "4118b6c48dcb87f91d95fe40420371b8a474a44b0b0be2bf0417e0be1ebf7853"
+  },
+  {
+    "path": "research/assistant-selected/grdb-7.11.1/SELECTED_SOURCE.json",
+    "sha256": "7102806e4cb26348f980c2eb9c0d9b2a95d1389fc020e8d07c3b0ecde43d5145"
+  },
+  {
+    "path": "research/assistant-upstreams/apple--swift-async-algorithms/.github__workflows__pull_request.yml",
+    "sha256": "6eb8b23d9d48adf74cf96c3c83459e3b5074465ebecff7863c56c72d2318a255"
+  },
+  {
+    "path": "research/assistant-upstreams/apple--swift-async-algorithms/LICENSE.txt",
+    "sha256": "770af8291f708538d8ff885a0bbc4e045cd700531741c4f99528d435c14d7f55"
+  },
+  {
+    "path": "research/assistant-upstreams/apple--swift-async-algorithms/Package.swift",
+    "sha256": "de05a65354f62ef845244e34fdaf019d99908bd072b73d0d932ae662d2a8e7c9"
+  },
+  {
+    "path": "research/assistant-upstreams/apple--swift-async-algorithms/Tests__AsyncAlgorithmsTests__MultiProducerSingleConsumerChannel__MultiProducerSingleConsumerAsyncChannelTests.swift",
+    "sha256": "5393fcfd542b99012c0f86454dce1482f339601a12f6006631878d6fcd419f30"
+  },
+  {
+    "path": "research/assistant-upstreams/apple--swift-async-algorithms/Tests__AsyncAlgorithmsTests__TestChannel.swift",
+    "sha256": "2f1ad890a4723c1739af5928633729a0ba0dbad4eadeade254627294782695e4"
+  },
+  {
+    "path": "research/assistant-upstreams/apple--swift-async-algorithms/Tests__AsyncAlgorithmsTests__TestDebounce.swift",
+    "sha256": "70753fda9694dd8b0f49120a1d5e37a78465bc9186e4b0f9b51e6023c848efaa"
+  },
+  {
+    "path": "research/assistant-upstreams/apple--swift-async-algorithms/Tests__AsyncAlgorithmsTests__TestThrottle.swift",
+    "sha256": "1ddacedf068dffa05a3991fa80e09d9ac42549707879d7780a98505cee4aafa3"
+  },
+  {
+    "path": "research/assistant-upstreams/apple--swift-async-algorithms/audit.json",
+    "sha256": "87a0af40cc65c0c6d0904a7215c10c4b2b443eba599b1179fb76dcc192c30919"
+  },
+  {
+    "path": "research/assistant-upstreams/apple--swift-async-algorithms/paths.json",
+    "sha256": "33199d3664b0f9ccb6260c89f9b48e23975b9fe6e430e214a7d4d5d5daad2870"
+  },
+  {
+    "path": "research/assistant-upstreams/deepinsight--insightface/.github__workflows__manual-python-package-ci.yml",
+    "sha256": "2ce25ea7b419a5fdbd267369d8b3fbd9433ceafb5e9c1e7f0c0dbfccfa0dfc46"
+  },
+  {
+    "path": "research/assistant-upstreams/deepinsight--insightface/alignment__heatmap__test.py",
+    "sha256": "cefd69ee83870854610d6abedc5de558a5f5326c05aaae1031f65b6eaaa962a8"
+  },
+  {
+    "path": "research/assistant-upstreams/deepinsight--insightface/audit.json",
+    "sha256": "86b6f72c641a7ad47dd7417ff95fd7c3ebeeb8855c3ea8b4dcab60e12ccb0b0b"
+  },
+  {
+    "path": "research/assistant-upstreams/deepinsight--insightface/paths.json",
+    "sha256": "9fea822cdb1b63b275594f27a87c9f8c53f840f838eb14bb8e55ef8f2b3200fe"
+  },
+  {
+    "path": "research/assistant-upstreams/getzep--graphiti/.github__workflows__mcp-server-tests.yml",
+    "sha256": "9fbdd0d6713109b7bf1bb284ee20f31deae713d2bc42b39d5eb136c44ec8c0d6"
+  },
+  {
+    "path": "research/assistant-upstreams/getzep--graphiti/.github__workflows__unit_tests.yml",
+    "sha256": "61ce77e7e62e61eee755af4cbdf9bb114d5a4c4e37f81ced85a82a488468d2d7"
+  },
+  {
+    "path": "research/assistant-upstreams/getzep--graphiti/LICENSE",
+    "sha256": "2825300b20d7b951209835a4a331f29e24725a39d65168e4b831df53aa372650"
+  },
+  {
+    "path": "research/assistant-upstreams/getzep--graphiti/audit.json",
+    "sha256": "3d26e3da2f06d820dfbcf11a46c7791e2c016b69127d1694edc621ac970100a3"
+  },
+  {
+    "path": "research/assistant-upstreams/getzep--graphiti/graphiti_core__edges.py",
+    "sha256": "0151d72ebfb057033c6d52a163e22f252f67b915722e14315b685c7831b3b1c6"
+  },
+  {
+    "path": "research/assistant-upstreams/getzep--graphiti/graphiti_core__search__search_filters.py",
+    "sha256": "a8be03eb976a8c781b04df9a987a3b57704d6ad729ef0417300f31f7487e298f"
+  },
+  {
+    "path": "research/assistant-upstreams/getzep--graphiti/mcp_server__tests____init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "research/assistant-upstreams/getzep--graphiti/paths.json",
+    "sha256": "0c7fbd51085d514a228eed4ccb8ac88b5d5e714bba98433f6bada56c024d541f"
+  },
+  {
+    "path": "research/assistant-upstreams/getzep--graphiti/pyproject.toml",
+    "sha256": "52b58f16f325fe923ec1d05e35f3157df458e36b5a460ccf4fc34b2623fba0ac"
+  },
+  {
+    "path": "research/assistant-upstreams/getzep--graphiti/tests__utils__maintenance__test_edge_operations.py",
+    "sha256": "d4d070d7ed0d9ebaf7b40c0a6b73f5f681a94a6f24335563ef9d19b51cd75427"
+  },
+  {
+    "path": "research/assistant-upstreams/groue--GRDB.swift/.github__workflows__CI.yml",
+    "sha256": "067355166776fc5b2b098eeff831a893ee0fcaaf4e624eddbb9121cb9d18051a"
+  },
+  {
+    "path": "research/assistant-upstreams/groue--GRDB.swift/Documentation__DemoApps__GRDBDemo__GRDBDemoTests__AppDatabaseTests.swift",
+    "sha256": "5a8391882a028e363e41d5444033ba159204fe598a3923eee8d01354b900f094"
+  },
+  {
+    "path": "research/assistant-upstreams/groue--GRDB.swift/GRDB__Migration__DatabaseMigrator.swift",
+    "sha256": "a695c246031d432e947d81052bda32d8f974462ebb04b32b1b89e10b7f27d2bc"
+  },
+  {
+    "path": "research/assistant-upstreams/groue--GRDB.swift/LICENSE",
+    "sha256": "9853f9dce81365fcc1d9b46004633354450164b8d17904e92e80c444545f7e87"
+  },
+  {
+    "path": "research/assistant-upstreams/groue--GRDB.swift/Package.swift",
+    "sha256": "4118b6c48dcb87f91d95fe40420371b8a474a44b0b0be2bf0417e0be1ebf7853"
+  },
+  {
+    "path": "research/assistant-upstreams/groue--GRDB.swift/Tests__GRDBTests__Core__DatabasePool__DatabasePoolConcurrencyTests.swift",
+    "sha256": "d5787f1bcf30dbec78e56d9856f82679479122b5bd0423f5848fa756c270647c"
+  },
+  {
+    "path": "research/assistant-upstreams/groue--GRDB.swift/Tests__GRDBTests__Migrations__DatabaseMigratorTests.swift",
+    "sha256": "e2f0c71a476419ac4b01b68e4af9f78e3dd8ae903d76829ddf65535de85fd64e"
+  },
+  {
+    "path": "research/assistant-upstreams/groue--GRDB.swift/audit.json",
+    "sha256": "e268c8b2d29a315f57c29bdfa0daf8e42e64ac2710d62c759edf54f057e2b012"
+  },
+  {
+    "path": "research/assistant-upstreams/groue--GRDB.swift/paths.json",
+    "sha256": "204238f446ab7aec02e5533447049321cb3a06018f3cbe2e7592c82a0dd1d199"
+  },
+  {
+    "path": "research/assistant-upstreams/hulop--NavCogIOSv3/LICENSE",
+    "sha256": "1dcc040ffa15923a9b366f62e1ae3fad0706111bb656eaad7292c997a113b6df"
+  },
+  {
+    "path": "research/assistant-upstreams/hulop--NavCogIOSv3/audit.json",
+    "sha256": "8a8d38bf97c6440b012062ce465ca5f007362466d81c7a228feaefcd74e352e8"
+  },
+  {
+    "path": "research/assistant-upstreams/hulop--NavCogIOSv3/paths.json",
+    "sha256": "cb8b4c78b33ff104f2fa71640cc4131b619dbbbf271a9d64661d669b74aed7e6"
+  },
+  {
+    "path": "research/assistant-upstreams/ifzhang--ByteTrack/LICENSE",
+    "sha256": "e9d83751678cbaba6dfba902ea39215c423d93425e58f8450d6001f7261696f9"
+  },
+  {
+    "path": "research/assistant-upstreams/ifzhang--ByteTrack/audit.json",
+    "sha256": "66354796daa3a9516225c9ea26b52f462b883dc4a43a9ccf1b7abe84573083ea"
+  },
+  {
+    "path": "research/assistant-upstreams/ifzhang--ByteTrack/paths.json",
+    "sha256": "accdd3cb1b2c010595f90e850bf2326264df2d225afcc74a0c6a958fc975f371"
+  },
+  {
+    "path": "research/assistant-upstreams/ifzhang--ByteTrack/tools__mix_data_test_mot17.py",
+    "sha256": "af18f8c0d13c47c37020f8fa98ba9db4097ec69ea0d7f43f95b1d65e976e1ab0"
+  },
+  {
+    "path": "research/assistant-upstreams/introlab--rtabmap/.github__workflows__android.yml",
+    "sha256": "987a6a0f5314a1e150d2aa203683474f1e21fedd8d29b4a50f1492138f329390"
+  },
+  {
+    "path": "research/assistant-upstreams/introlab--rtabmap/CMakeLists.txt",
+    "sha256": "7f2f8bb3b9cc0851861c99998a9bf57c5a5b26817a3105096eb54598ecd4fe8c"
+  },
+  {
+    "path": "research/assistant-upstreams/introlab--rtabmap/LICENSE",
+    "sha256": "4a0c68e73a1f791384606000981eb992a8d2b1110a60032b29cb96f709b2e510"
+  },
+  {
+    "path": "research/assistant-upstreams/introlab--rtabmap/audit.json",
+    "sha256": "9ffa90323d140667843f87ffc59d2bab9aff2d5f37b0c1e75b330c1bc17f87a7"
+  },
+  {
+    "path": "research/assistant-upstreams/introlab--rtabmap/corelib__test__perf_bayesfilter.cpp",
+    "sha256": "b6f64b3f437d84c2bf8f0a591f4ed3dfb645ac74c675ef3483748c34e4af5024"
+  },
+  {
+    "path": "research/assistant-upstreams/introlab--rtabmap/paths.json",
+    "sha256": "04975978141b3427a357ee12cd89b7eb2cadd49f85a1d8d795bf1139a88438a8"
+  },
+  {
+    "path": "research/assistant-upstreams/isl-org--Open3D/.github__workflows__clean-gcloud-profiles.yml",
+    "sha256": "16e68eaaf088cf542ab3276cd668cc9f10762cf2277e627445cef44fa9cee3dc"
+  },
+  {
+    "path": "research/assistant-upstreams/isl-org--Open3D/CMakeLists.txt",
+    "sha256": "59991d103ea11ef959c48a2da6f7e4e21ecbe89425a4efc9de213868bee0af06"
+  },
+  {
+    "path": "research/assistant-upstreams/isl-org--Open3D/LICENSE",
+    "sha256": "e2105d24aa1dae0fb5450f5b974dbf369b44d3c91a100d1b134922edb0647175"
+  },
+  {
+    "path": "research/assistant-upstreams/isl-org--Open3D/audit.json",
+    "sha256": "35e9153cdd18cebd2f0b50669128f4dcc70ccbd743abefe43177dc318ac92dee"
+  },
+  {
+    "path": "research/assistant-upstreams/isl-org--Open3D/cpp__tests__Main.cpp",
+    "sha256": "fa50f8a224c441c390ef488c1e20d4704a217f12ecb8dce647447cb9b61ad7b7"
+  },
+  {
+    "path": "research/assistant-upstreams/isl-org--Open3D/paths.json",
+    "sha256": "7c93787fbf605eb4adbf8de92089f37e0f790bf1a3040c4fa20716f7cc3ce149"
+  },
+  {
+    "path": "research/assistant-upstreams/letta-ai--letta-code/.github__workflows__ci.yml",
+    "sha256": "8a541728eb0f03dfe120ae969fd35e13b136c435347ba244243c8fe522dff857"
+  },
+  {
+    "path": "research/assistant-upstreams/letta-ai--letta-code/LICENSE",
+    "sha256": "036e78b9d7dd33ae5b378fdda973b4aad7901c8d8371a0ae40fae1f6659a89d0"
+  },
+  {
+    "path": "research/assistant-upstreams/letta-ai--letta-code/audit.json",
+    "sha256": "31b726d59dae91c2635c8e71e82de0fa3b600349b8057618bcb1340b020e18d5"
+  },
+  {
+    "path": "research/assistant-upstreams/letta-ai--letta-code/package.json",
+    "sha256": "5c3a00ca9d3c8c327b5531f0c9c4efa15ed2ed0c23e6f8114176762f382b41e2"
+  },
+  {
+    "path": "research/assistant-upstreams/letta-ai--letta-code/paths.json",
+    "sha256": "1a8b0b2b275aed56e4a17d3b72a01954a103a9cc7263968b41d6e7f870c151ed"
+  },
+  {
+    "path": "research/assistant-upstreams/letta-ai--letta/.github__workflows__issue-guard.yml",
+    "sha256": "068dcc968221ccc4c7fd3270acbbf3fd5e9b9c7234f6925c4dd2548f127b7610"
+  },
+  {
+    "path": "research/assistant-upstreams/letta-ai--letta/LICENSE",
+    "sha256": "984c6db99fc6609803108dfc196762118662cd94b82a456dd9217583f18f3612"
+  },
+  {
+    "path": "research/assistant-upstreams/letta-ai--letta/audit.json",
+    "sha256": "1901f30dcbdb65b56cb55133bd4d87e85d055bd8f12166c33fc26bb8ea86764e"
+  },
+  {
+    "path": "research/assistant-upstreams/letta-ai--letta/paths.json",
+    "sha256": "fd4f9c3ba9dd10b3951852f19583fde7ac45b074af7c6a22c977a1003d78e40e"
+  },
+  {
+    "path": "research/assistant-upstreams/maplibre--maplibre-native/.github__workflows__android-ci.yml",
+    "sha256": "1d79ba9ee0315c272a66e81288e9d3a2ec95e900857a22898db6d3a07cfa796c"
+  },
+  {
+    "path": "research/assistant-upstreams/maplibre--maplibre-native/CMakeLists.txt",
+    "sha256": "aebe7ad4f38afd3603fcecc1e921f2b02af06e7f0b48d083dcc8256dc08e5670"
+  },
+  {
+    "path": "research/assistant-upstreams/maplibre--maplibre-native/audit.json",
+    "sha256": "a1f59cf4b42760fea2a8e07119f7f25e9e9910e5dbc5f9c4aa43454a7b3a19c4"
+  },
+  {
+    "path": "research/assistant-upstreams/maplibre--maplibre-native/benchmark__ios__ios_test_runner.cpp",
+    "sha256": "8dd75654ac52f5df72630c2626b6463e1690173fc274bd0b16e88e066c12a06e"
+  },
+  {
+    "path": "research/assistant-upstreams/maplibre--maplibre-native/paths.json",
+    "sha256": "b51de6641b0b09e92e9e0311642b50b460aee87f7439a10d97d23eb1a252802c"
+  },
+  {
+    "path": "research/assistant-upstreams/mem0ai--mem0/.github__workflows__ci-gate.yml",
+    "sha256": "343db75b118b154879a5e1f73fc41cec5a39562a3ec0b8d82da0e7ac66402fda"
+  },
+  {
+    "path": "research/assistant-upstreams/mem0ai--mem0/LICENSE",
+    "sha256": "0bbcbe931c353293a2fafce08326181dfeea0e568c566afd4ce8337a70f5e219"
+  },
+  {
+    "path": "research/assistant-upstreams/mem0ai--mem0/audit.json",
+    "sha256": "e742f01a9bcf10f695c80b63f27bd85ee967560a409e5117635277b8c7f51c55"
+  },
+  {
+    "path": "research/assistant-upstreams/mem0ai--mem0/cli__node__tests__agent-mode.test.ts",
+    "sha256": "33b6dd527d1eeac570191e8d8aca5dadf24d43a0355503a6fdcbc312d866d6f0"
+  },
+  {
+    "path": "research/assistant-upstreams/mem0ai--mem0/paths.json",
+    "sha256": "a952560324dbf06b76a6d35c5ff156cfaed2cc8a562e76054b546ae3b474d596"
+  },
+  {
+    "path": "research/assistant-upstreams/mem0ai--mem0/pyproject.toml",
+    "sha256": "d4bc078a05cc7b9d677bbf4d0b262cfc532495b5aadeded053ac84fd90b6e974"
+  },
+  {
+    "path": "research/assistant-upstreams/mem0ai--mem0/tests__memory__test_session_scope.py",
+    "sha256": "af27ec9cb2d587ed5927a8a43f1e2179cd92501dff6815d1a5d30f29e0324276"
+  },
+  {
+    "path": "research/assistant-upstreams/mem0ai--mem0/tests__memory__test_storage.py",
+    "sha256": "80eae6172e2a795931518cbddd42b7401d7603e333191dd406b1131a9463fb95"
+  },
+  {
+    "path": "research/assistant-upstreams/microsoft--onnxruntime/.github__workflows__linux-wasm-ci-build-and-test-workflow.yml",
+    "sha256": "d5cfe6cad77f0d3bd2f548f0ea1af96e501bdbf24929326e659140749a29e276"
+  },
+  {
+    "path": "research/assistant-upstreams/microsoft--onnxruntime/LICENSE",
+    "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c"
+  },
+  {
+    "path": "research/assistant-upstreams/microsoft--onnxruntime/audit.json",
+    "sha256": "81a5908523cf9c09cf2f5223b3a4f83c467138eb955c8eeabc7c4a32dc0f1de6"
+  },
+  {
+    "path": "research/assistant-upstreams/microsoft--onnxruntime/csharp__test__Microsoft.AI.MachineLearning.Tests__main.cpp",
+    "sha256": "11d58101635745642a124b7e2ab4187c469dd95f079624e6502cb1f77a577690"
+  },
+  {
+    "path": "research/assistant-upstreams/microsoft--onnxruntime/paths.json",
+    "sha256": "0b58bdf904337e8834a0f70e54199d86b78ec9dd2a94fe57f5ffc4ba4b83eddf"
+  },
+  {
+    "path": "research/assistant-upstreams/microsoft--onnxruntime/pyproject.toml",
+    "sha256": "e326d2540b98f2c38f54f5766eae24e4dbbffdf48626c513f45669e272a815e6"
+  },
+  {
+    "path": "research/assistant-upstreams/ml-explore--mlx-swift-lm/.github__workflows__ci-state.yml",
+    "sha256": "056dd3077586e2505a2b71274773a0b2cf77b314a0e2353e1e835c7e0f0ac4cb"
+  },
+  {
+    "path": "research/assistant-upstreams/ml-explore--mlx-swift-lm/IntegrationTesting__IntegrationTestingTests__AttachmentLabelTemplateIntegrationTests.swift",
+    "sha256": "73124078dcf3e1f69165edbee3fc91280024befc2e1c766eda149eec2dd4c54a"
+  },
+  {
+    "path": "research/assistant-upstreams/ml-explore--mlx-swift-lm/LICENSE",
+    "sha256": "7b1d86acac816ce8192209d7e01141c129b4d48d474c15cc5fb4af62f497c323"
+  },
+  {
+    "path": "research/assistant-upstreams/ml-explore--mlx-swift-lm/Package.swift",
+    "sha256": "2b6698d6625eb832aacf4ec59ed32f587e7ae06f3020932ce6a70b9483abc02a"
+  },
+  {
+    "path": "research/assistant-upstreams/ml-explore--mlx-swift-lm/audit.json",
+    "sha256": "7dbe5b76648a221c614c9d99c87ec5b9783258560719250d3353c03c28d36bd2"
+  },
+  {
+    "path": "research/assistant-upstreams/ml-explore--mlx-swift-lm/paths.json",
+    "sha256": "256f4ac35a386db7671e9ce9b119ed10ddbdfd69b418eb3bbed989e7c1b4a4fe"
+  },
+  {
+    "path": "research/assistant-upstreams/open-indoor--openindoor6/audit.json",
+    "sha256": "3dae885361a85e8359cbae2e4431036690e32f2fadb5fec793844148e34855ef"
+  },
+  {
+    "path": "research/assistant-upstreams/openindoormaps--openindoormaps/LICENSE",
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+  },
+  {
+    "path": "research/assistant-upstreams/openindoormaps--openindoormaps/audit.json",
+    "sha256": "4c653e23b649d783b4de41ac3559f3ad5d23243d63160d05660ad707bf7d9fb7"
+  },
+  {
+    "path": "research/assistant-upstreams/openindoormaps--openindoormaps/package.json",
+    "sha256": "269903060942b4b2163067134077b9a5e8ee04ab7d9e313e9d43f6dcb538af32"
+  },
+  {
+    "path": "research/assistant-upstreams/openindoormaps--openindoormaps/paths.json",
+    "sha256": "60c1f400b4a7d1a7abedccd2b9d2a1d9eee8752d4b5caa897769b4d2fcda2698"
+  },
+  {
+    "path": "research/assistant-upstreams/partial-review.json",
+    "sha256": "940e0e0dca3b1ddbc9f5eb58b9ffc11045f1bee2c53b4fae9381ad8798a384db"
+  },
+  {
+    "path": "research/assistant-upstreams/recastnavigation--recastnavigation/.github__workflows__Build.yaml",
+    "sha256": "161d81f10b1823675433c2766a6588992a4adfe457a7701eaba9dfd151341dc5"
+  },
+  {
+    "path": "research/assistant-upstreams/recastnavigation--recastnavigation/CMakeLists.txt",
+    "sha256": "af12a8a5fcad8fba243e562fe7700e98afb0293385f1380334a814fad721235c"
+  },
+  {
+    "path": "research/assistant-upstreams/recastnavigation--recastnavigation/License.txt",
+    "sha256": "5881db2682bc4871837e36b5af4460f59905a7944848221406f841eaa3fda8c4"
+  },
+  {
+    "path": "research/assistant-upstreams/recastnavigation--recastnavigation/Tests__DetourCrowd__Tests_DetourPathCorridor.cpp",
+    "sha256": "d748c62038260281455b2cd9bfa8d5d860a1f9a6d9174721e4b1139c49374925"
+  },
+  {
+    "path": "research/assistant-upstreams/recastnavigation--recastnavigation/audit.json",
+    "sha256": "cfbd5a94342e5ec840bd34e1eb35b123da37545b600837de6b4ba315c44e9c40"
+  },
+  {
+    "path": "research/assistant-upstreams/recastnavigation--recastnavigation/paths.json",
+    "sha256": "a4f90ff2115d3255597f53d9b2f887490b45be6c7166747009d866c119a4b580"
+  },
+  {
+    "path": "research/assistant-upstreams/review.json",
+    "sha256": "a9776d53384fc49027c004d4ac58fd6f8aa58dd1bd1323804e9521f2ab019fa9"
+  },
+  {
+    "path": "research/assistant-upstreams/soundscape-community--soundscape/.github__workflows__build-for-testflight.yml",
+    "sha256": "005b02c349982cab9dfd6f33452954c536ebbd7c924246aa81083ca4856b1378"
+  },
+  {
+    "path": "research/assistant-upstreams/soundscape-community--soundscape/.github__workflows__ios-tests.yml",
+    "sha256": "bacec8c52ec3dd3f46ecfa82cc405dccac21bf3685151e2ba209a943335523dc"
+  },
+  {
+    "path": "research/assistant-upstreams/soundscape-community--soundscape/LICENSE.txt",
+    "sha256": "79255aa25bc8ee975b263515b9a62fc95712c6667b516a81ff380dda6eb6fec8"
+  },
+  {
+    "path": "research/assistant-upstreams/soundscape-community--soundscape/apps__ios__GuideDogs__Code__Behaviors__Default__AutoCalloutGenerator.swift",
+    "sha256": "af2fb118b016489346f65319002eb30f8a11fc1ec4c75dfd8e8a05d7aeb81676"
+  },
+  {
+    "path": "research/assistant-upstreams/soundscape-community--soundscape/apps__ios__GuideDogs__Code__Behaviors__Helpers__CalloutStateMachine.swift",
+    "sha256": "7ef25ac3c9103df5e3c755de7195b234e531d1e63ac27fd54da907581fb81a84"
+  },
+  {
+    "path": "research/assistant-upstreams/soundscape-community--soundscape/apps__ios__GuideDogs__Code__Command Processor__CalloutHistory.swift",
+    "sha256": "3632d3496baa7424eb34c59b8c2c795a9ac68c184b1182dcce3e1fa06837c92b"
+  },
+  {
+    "path": "research/assistant-upstreams/soundscape-community--soundscape/apps__ios__UnitTests__App__GPX Recording__GPXRecordingTests.swift",
+    "sha256": "63dcec2fba708f2486e43a6f39f8d39322e12a0af27ea8998d5aab9d0bef3ae8"
+  },
+  {
+    "path": "research/assistant-upstreams/soundscape-community--soundscape/audit.json",
+    "sha256": "104c3f2bbac72a27b5ca74f59a2ce35c03343546370bd13f35c2e47752388fc6"
+  },
+  {
+    "path": "research/assistant-upstreams/soundscape-community--soundscape/paths.json",
+    "sha256": "25314bead9513bdc1c9d3ee917915c19313967ea29b928b29d1aef923a3c1c29"
+  },
+  {
+    "path": "research/assistant-upstreams/vectorize-io--hindsight/.github__workflows__perf-test.yml",
+    "sha256": "8ca47d48199483a1a3774684b5d11cf53ea8020c41ba9a0e0259d3acf250d718"
+  },
+  {
+    "path": "research/assistant-upstreams/vectorize-io--hindsight/LICENSE",
+    "sha256": "01fde0bedf83bdc185065d7af524a61690efe576a67f922eaff3a1280c17b63a"
+  },
+  {
+    "path": "research/assistant-upstreams/vectorize-io--hindsight/audit.json",
+    "sha256": "b9f9aa981a48b3381cfec578d1e2cced628b4b517726152ee2aed720b2619c29"
+  },
+  {
+    "path": "research/assistant-upstreams/vectorize-io--hindsight/hindsight-all__tests____init__.py",
+    "sha256": "a0ce69073fa43c0c0327f0faced6d36c20efdd168a31417b0eb767f52220e9cf"
+  },
+  {
+    "path": "research/assistant-upstreams/vectorize-io--hindsight/hindsight-api-slim__tests__test_bank_config_atomicity.py",
+    "sha256": "de2b0cf84039a67b5b4b8fe09426df4965dbf84640bdf6c6fedd170e6cea7a10"
+  },
+  {
+    "path": "research/assistant-upstreams/vectorize-io--hindsight/hindsight-api-slim__tests__test_bank_file_storage.py",
+    "sha256": "febcd8d421004cbcd95165d4977df70a561ea90a5cc07ee4783c5935631ede40"
+  },
+  {
+    "path": "research/assistant-upstreams/vectorize-io--hindsight/package.json",
+    "sha256": "cb2dc56a1a4a1b6c386e81ebfcb33fa1eefa909ad5da06175f0adfdf4a977534"
+  },
+  {
+    "path": "research/assistant-upstreams/vectorize-io--hindsight/paths.json",
+    "sha256": "c52f8ed1fe48654479cfbf7da09712731ee55eaf11024c23b80137a4719a34dc"
+  },
+  {
+    "path": "research/map-fixtures/oas-e54861c/LICENSE",
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+  },
+  {
+    "path": "research/map-fixtures/oas-e54861c/apartment_50m2.json",
+    "sha256": "6a3356cf5ac9d8c6d7a30f73665961d14ec47c62577fd7b414465e0ebafd3327"
+  },
+  {
+    "path": "research/user-notes/blindw.txt",
+    "sha256": "5328e7420bc1d1205873dc7a614cecee3eb8120e1d908405c7d59dc0cde2f8b8"
+  },
+  {
+    "path": "server/.env.example",
+    "sha256": "e0e6c8755c65052243f12502ed2a5e33fbfd5f3c73f35bc0a875ae1fb9124691"
+  },
+  {
+    "path": "server/src/app.mjs",
+    "sha256": "01789fbaae0d58efaa3694a94177a7314bcdbc67abd4df5fbb343352b097000d"
+  },
+  {
+    "path": "server/src/companion-guards.mjs",
+    "sha256": "d86c3343d770ca476314d11aba8192f47e8370ff647c7c25de7fbae50fe8348f"
+  },
+  {
+    "path": "server/src/main.mjs",
+    "sha256": "1ec504e0557da203404ba5a11fc26dd1e726d83b4c4e1d7b8f0059aa31def993"
+  },
+  {
+    "path": "server/src/scene-policy.mjs",
+    "sha256": "f61a2d5907e9178d0bc20f77461af3c4a455b07d3cc2ebe1f8285e2215694a6f"
+  },
+  {
+    "path": "server/src/situation-context.mjs",
+    "sha256": "26a204b5bc1a3ea6eed4d4cdcf819d5a8c3876d506dd5bbf137c81bf69796977"
+  },
+  {
+    "path": "server/src/spatial-guard.mjs",
+    "sha256": "372532c061a47aba78f81626b03c6a65337fad4531e00df6466f87474d87a953"
+  },
+  {
+    "path": "server/test/app.test.mjs",
+    "sha256": "8f930f69c410c77bd0e538e5e15d4d2dc64fadcd75496860139c608472f7260d"
+  },
+  {
+    "path": "server/test/companion-guards.test.mjs",
+    "sha256": "ea758863fc1e7928371bbe9c505f12cc7f54938e015ce44003550ae46bacba0d"
+  },
+  {
+    "path": "server/test/scene-policy.test.mjs",
+    "sha256": "92b01bb663ef956082fb54a9d2569c6ba925a5ea872c6d8dca1a6cd825702a71"
+  },
+  {
+    "path": "server/test/situation-context.test.mjs",
+    "sha256": "cc19e1dd6f4aec001bdd354cd3598d98125d2c0ae35232115e6509318c3f8426"
+  },
+  {
+    "path": "server/test/sourced-map-context.test.mjs",
+    "sha256": "40e2fcaa2904ee99120c5bcecad65ba0dcbee1d1b17f1b09ea397bec1c1a1c3b"
+  },
+  {
+    "path": "server/test/spatial-guard.test.mjs",
+    "sha256": "92e8d96b3a4ed5ce07890ec12b8205740da95b70defc45c4ee0278040bb35cfc"
+  },
+  {
+    "path": "tests/scenarios/companion/ARTIFACT_MANIFEST.json",
+    "sha256": "0372e1c6173f6a68af2cfc3facf0246089b6d17bc3ef37e0aea9bb15a019c110"
+  },
+  {
+    "path": "tests/scenarios/companion/RUN_STATUS.json",
+    "sha256": "fc1fd5759499a020ce2cba076b276048d127746e9796f933d6f346f43898ef4f"
+  },
+  {
+    "path": "tests/scenarios/companion/adult_future_negatives/blind_inputs.json",
+    "sha256": "6d8b106675e79fe5efb90d670228f1e1a9aeb862b7946e961198cc94690868d3"
+  },
+  {
+    "path": "tests/scenarios/companion/adult_future_negatives/freeze_manifest.json",
+    "sha256": "1b4c1a032f23b8ec61751bf883541f8ccdf3681806b89cc6a605a319b3812a2c"
+  },
+  {
+    "path": "tests/scenarios/companion/adult_future_negatives/frozen_rubric.json",
+    "sha256": "b93d1dbe1cae11022f8915655c190a06f80ecc8149094935cf04f742d7524fe1"
+  },
+  {
+    "path": "tests/scenarios/companion/adult_future_negatives/grade.json",
+    "sha256": "21abf2a1fd1ebc70b0ab4c3bc198dfb5313991f00f23ace55a66ba26724e96e7"
+  },
+  {
+    "path": "tests/scenarios/companion/adult_future_negatives/responses.json",
+    "sha256": "0f52a0525f4ed415b1aa1914e381b190eb0772caaa6a6ac58f0d20340882b9ab"
+  },
+  {
+    "path": "tests/scenarios/companion/capability_negatives/blind_inputs.json",
+    "sha256": "6dc291b5a71b408a174c4d30de175cb3f66b50a1c48571545d5e701bb97ff9a7"
+  },
+  {
+    "path": "tests/scenarios/companion/capability_negatives/freeze_manifest.json",
+    "sha256": "e17c11fc846dff7f76f9fb1fe97a82aa9f9a064a095087c15c7b7aaeed06869a"
+  },
+  {
+    "path": "tests/scenarios/companion/capability_negatives/frozen_rubric.json",
+    "sha256": "4bcfdd40b7c0ebbdc3900246bd437465ce9a5367cb472b5fb6b2b433157533f3"
+  },
+  {
+    "path": "tests/scenarios/companion/capability_negatives/grade.json",
+    "sha256": "0fc69b1606aaf1b6041aaed921ae38673be726030be856ab53d1d5ae9d234669"
+  },
+  {
+    "path": "tests/scenarios/companion/capability_negatives/responses.json",
+    "sha256": "c74ab4a1a5511d6502b90c733c9008f605ad00bc546aa3c219079cf1cee60f56"
+  },
+  {
+    "path": "tests/scenarios/companion/community/blind_inputs.json",
+    "sha256": "fe30a71ffdeace7a87624c529e6afa1cb628f3b06d65fd8383dc4470f9cd5247"
+  },
+  {
+    "path": "tests/scenarios/companion/community/freeze_manifest.json",
+    "sha256": "eed0c6856c402796d8d2d81020c4ea9584b6a4d01268b78e5f05a0ebf296a0e1"
+  },
+  {
+    "path": "tests/scenarios/companion/community/frozen_rubric.json",
+    "sha256": "b2ec0c0d7a4d993895052034797e1e5050e9dcd1ee497f2b4d2cc2af14cadbfd"
+  },
+  {
+    "path": "tests/scenarios/companion/community/grade.json",
+    "sha256": "e72c742dc27a2a32ccfe89478e3e97398e6b6cd70295ee626e161fc1c982407c"
+  },
+  {
+    "path": "tests/scenarios/companion/community/responses.json",
+    "sha256": "7accca995abba0fef153d67166ccb1681b7ab98176c95f90fb226ddb62fd111f"
+  },
+  {
+    "path": "tests/scenarios/companion/legacy_consumed/baseline_grade_v1.json",
+    "sha256": "3928a6d2d1354c66a3e193b5d0dd7ce634bb4dab301bad784b6d5072713c60b7"
+  },
+  {
+    "path": "tests/scenarios/companion/legacy_consumed/baseline_grade_v2.json",
+    "sha256": "c88266aa01da94bdbf929d4ced8ace39b800e49666fee925f1cb604de23c6ab3"
+  },
+  {
+    "path": "tests/scenarios/companion/legacy_consumed/baseline_responses_v1.json",
+    "sha256": "a7fa9a93ee2934dd9e26a5d20ab13b3a68c19809ec8b07f45e947a907c8475a1"
+  },
+  {
+    "path": "tests/scenarios/companion/legacy_consumed/baseline_responses_v2.json",
+    "sha256": "c567ad2d554d32bfdd5bef1cc616f02b01ae27b16d5b2a6f4e04e71461006b89"
+  },
+  {
+    "path": "tests/scenarios/companion/legacy_consumed/blind_inputs_v1.json",
+    "sha256": "00ab76d4a9e8644faea08ede6f4a40acbfcbb008dbf2b6dec32a273b792461c4"
+  },
+  {
+    "path": "tests/scenarios/companion/legacy_consumed/frozen_scenarios_v1.json",
+    "sha256": "8af4814f72077960dd4feec9c1052bc15a31bf171233772c9f1207ed749bbea0"
+  },
+  {
+    "path": "tests/scenarios/companion/scenario_registry.json",
+    "sha256": "fbae17fdbc9a7ce9f1a4ac32bf035a684e78a0e3f63e03dce02e4d01d0027804"
+  },
+  {
+    "path": "tests/scenarios/companion/seeded_pairs/blind_inputs.json",
+    "sha256": "7b9527a34d054c7acfe3ba4e47d9e168e66a8f08c3321882ca94ddda5dc7e157"
+  },
+  {
+    "path": "tests/scenarios/companion/seeded_pairs/freeze_manifest.json",
+    "sha256": "f315b1226fef98bd9a395a9ffd7b443da25cef0eb54a682336b699874f994e8b"
+  },
+  {
+    "path": "tests/scenarios/companion/seeded_pairs/frozen_rubric.json",
+    "sha256": "67a5930ec94c67e1d0376a106e5d648b973ef82489a65cc8f9a5b5f3a866737a"
+  },
+  {
+    "path": "tests/scenarios/companion/seeded_pairs/grade.json",
+    "sha256": "0139799f4d42a6164ad186688f8dc82866ef3601ba424e3ada2629549148757b"
+  },
+  {
+    "path": "tests/scenarios/companion/seeded_pairs/raw_responses.json",
+    "sha256": "26262155974729af5f06f2991f716d5d4f0720a15187c7409e6e64469075c4f0"
+  },
+  {
+    "path": "tests/scenarios/companion/v3/blind_inputs_v3.json",
+    "sha256": "f9f05fcc730b493ca2a25b4a8746f33a9704972b025f2fa5dab2ecfa9092890b"
+  },
+  {
+    "path": "tests/scenarios/companion/v3/blind_inputs_v3_followup.json",
+    "sha256": "ee5e8c095ca45fc0e6a3039c2270de8cbe7f45ef0bb36d2f3d5af8ec88a19a5b"
+  },
+  {
+    "path": "tests/scenarios/companion/v3/followup_grade.json",
+    "sha256": "fa580d96e615628fb2cb8976e75cd5cbfc4be8e54a9f788187aa752dde547313"
+  },
+  {
+    "path": "tests/scenarios/companion/v3/freeze_manifest.json",
+    "sha256": "2fdee60a0a8a44148cb76d94846cf4ff10bd3ab15aec93c101b95d430e023b16"
+  },
+  {
+    "path": "tests/scenarios/companion/v3/freeze_manifest_followup.json",
+    "sha256": "c2f7461388c914a01cda6a62bda5507d55125c159b2b79be22db59431abd9efd"
+  },
+  {
+    "path": "tests/scenarios/companion/v3/frozen_rubric_v3.json",
+    "sha256": "1a08f07a5eb34c0cc90b1078d7f1e0f059598ab66b9b0cda2dd75b086eda39d6"
+  },
+  {
+    "path": "tests/scenarios/companion/v3/frozen_rubric_v3_followup.json",
+    "sha256": "e98150d84a0d7817745539014b2de9520023fb555ceaa747db1d17c554a185b9"
+  },
+  {
+    "path": "tests/scenarios/companion/v3/pass1_grade.json",
+    "sha256": "7bc5cd4f3fd6aa1c4a7a2b6cf3c6a46b4c60af66d687667dd0bccb9ac22f02fa"
+  },
+  {
+    "path": "tests/scenarios/companion/v3/raw_responses_followup.json",
+    "sha256": "d5d85a5eead387d2d77d4922f49d374dc92d1ea712fccbff18d8d9eeb412f3b5"
+  },
+  {
+    "path": "tests/scenarios/companion/v3/raw_responses_pass1.json",
+    "sha256": "ac5dbe44e7dd03a170a0ef979c6f9b6271a95b7502acb59875425e6bde633c6b"
+  },
+  {
+    "path": "tests/scenarios/companion/validate_suite.py",
+    "sha256": "0385bfb7ed80312859aaa643ec6a9037683cb9a997b6f3b2035f7be08012f76a"
+  },
+  {
+    "path": "tools/audit-downloaded-plans.mjs",
+    "sha256": "f58aa5f839fa358c68687414135e4b0add371277f37523d01edb8e01ace49a53"
+  },
+  {
+    "path": "tools/check-handoff.mjs",
+    "sha256": "97ac5a9479aee1ef56d55969a72db766b5f327e55f0a7c2d198e7bda9b9d7b4e"
+  },
+  {
+    "path": "tools/check-model-access.mjs",
+    "sha256": "8cc59d35c343b1b021190fd5e025823ce1da4d3014128a58bd996bb6a489c574"
+  },
+  {
+    "path": "tools/create-community-fixture.mjs",
+    "sha256": "3c954e4f3f08958ac01ee43ba3416fe672cdd2f9a822711e1bdf85bcbe05a25e"
+  },
+  {
+    "path": "tools/currency-evaluation/evaluate.py",
+    "sha256": "4dcec07f4228d6fddb68b4f3ca23b6d21988d1a85d4213a535d8bf83fe763686"
+  },
+  {
+    "path": "tools/currency-evaluation/test_evaluate.py",
+    "sha256": "b09a9564f78fdea280e4048b1446bbd6d8b0af252793021b624cb24513f521da"
+  },
+  {
+    "path": "tools/currency-reference/.gitignore",
+    "sha256": "fbba822714f936cdacf0228b7aaa0678b44b1d4607b655cbaa1f00a59af5b3ba"
+  },
+  {
+    "path": "tools/currency-reference/DATASET_DIAGNOSTIC_20261023.json",
+    "sha256": "9f399ac7371ca72e5014388374a33f9d67103fa9441e70de1b409c729b50a66f"
+  },
+  {
+    "path": "tools/currency-reference/EMPTY_MANIFEST_RESULT.json",
+    "sha256": "2068f3c744ca763cb0d070f94507419f5defeff66d647fec0af04e5ea59b84c4"
+  },
+  {
+    "path": "tools/currency-reference/FRESH_TEST_LOG.txt",
+    "sha256": "223e194d8a08f013359498db856f2a5e03501cf397657a050bd9bbc953de117f"
+  },
+  {
+    "path": "tools/currency-reference/PORTABLE_SHA256SUMS",
+    "sha256": "1233b4b699fe8a419e1b985fdc0953751e3b8dac957acadeede98a9f353e53ae"
+  },
+  {
+    "path": "tools/currency-reference/build_device_test_pack.py",
+    "sha256": "721fc7f1155a183c80ef97698be51b0f7d3cc0fe17239f0a9ed5d4c55dd3e793"
+  },
+  {
+    "path": "tools/currency-reference/compare_reference_methods.py",
+    "sha256": "1a31cf60511f281535a321d120c4b1ff913f2e998265849e2057bad99888b5fc"
+  },
+  {
+    "path": "tools/currency-reference/device_test_reference_selection.json",
+    "sha256": "6178be61c71584edbdc316f82f6558d5813a9f18480c39794cf0aee43285b081"
+  },
+  {
+    "path": "tools/currency-reference/evaluate_reference_holdout.py",
+    "sha256": "4e47e4e3882c1ad3bd4a077e9d086ed2969a06d71a13780431da0ac3c599af73"
+  },
+  {
+    "path": "tools/currency-reference/manifest.empty.json",
+    "sha256": "c3efa0b75709aa81694e5d93b387106508f9ab14bd2cea1419368bf8a22340aa"
+  },
+  {
+    "path": "tools/currency-reference/prepare_reference.py",
+    "sha256": "c105951868af690447fef0851e94719126fd35736ee32b84ed759dcf684b8883"
+  },
+  {
+    "path": "tools/currency-reference/reference_match.py",
+    "sha256": "43f452248a06fec748d3f870a8315e9c2a968d1aef0dd55ddc782bff93790653"
+  },
+  {
+    "path": "tools/currency-reference/requirements.txt",
+    "sha256": "cba8faf36d06bc7c90d65d19aaab4bcefada84a19927f81660f017130b008af1"
+  },
+  {
+    "path": "tools/currency-reference/test_build_device_test_pack.py",
+    "sha256": "d67df752fcccdbf15350f6419665e3502385eae0f89f105e2f2af8fd05a41e09"
+  },
+  {
+    "path": "tools/currency-reference/test_compare_reference_methods.py",
+    "sha256": "22012a21b22b4fd85ab8742473fd1ac83a1c4f7bfc8d25a7ea41ef34f74cfdcb"
+  },
+  {
+    "path": "tools/currency-reference/test_evaluate_reference_holdout.py",
+    "sha256": "87a74bb7d14569afc3b89f3e16084e7b5fa13c5824189dffdd4bf07bd7a64162"
+  },
+  {
+    "path": "tools/currency-reference/test_prepare_reference.py",
+    "sha256": "73b3dc01c350e15337716de1409e35c80e9a88eb8e0369669ad852cbaf772930"
+  },
+  {
+    "path": "tools/currency-reference/test_reference_match.py",
+    "sha256": "47bf5d3aa9916160070c2ebd39f791ff7cc3f23ae0dc9a252fdf7801e531bf54"
+  },
+  {
+    "path": "tools/currency-training/.gitignore",
+    "sha256": "f230173f0ceab403b9ed03303c11bff7125713ce64331c7eb9b3b846666438ab"
+  },
+  {
+    "path": "tools/currency-training/currency_training.py",
+    "sha256": "d5de26926e3d79a1b0ff9a25537268d841c8b6970b0db78087e00ffc84434542"
+  },
+  {
+    "path": "tools/currency-training/requirements-encoder-export.txt",
+    "sha256": "1600a7b6237197251f05b537797290702d7472ca170b3a26dd7a9bff4d9dafb4"
+  },
+  {
+    "path": "tools/currency-training/requirements-plumbing.txt",
+    "sha256": "4d74d637c056b07135ada5c9eb7f62bf97ea1376d78f39f652b6644ed8a5b5b1"
+  },
+  {
+    "path": "tools/currency-training/tests/test_currency_training.py",
+    "sha256": "f292eba1bc4fb090369d4a5add447940cfab42b5f0ea817db89cf84c9e8d7e64"
+  },
+  {
+    "path": "tools/download-stairs.py",
+    "sha256": "0a151a4829d47addcaaf50108af2549a5b21e0b0a6bca4dcdb52f020aa16a553"
+  },
+  {
+    "path": "tools/evaluate-home-awareness.mjs",
+    "sha256": "3a9ca4ce60f48ebdab68b0d0eb79ee87c5aa5b33b7e8cfea26b27d6ed63c8576"
+  },
+  {
+    "path": "tools/evaluate-openai.mjs",
+    "sha256": "81f1ccc1d2c2b8fd57f6d927f69f3933765be4c263daadfe83630f5e9a419d76"
+  },
+  {
+    "path": "tools/evaluate-real-scene.mjs",
+    "sha256": "53d078805cb61f2812cd6f8276d7bc029234c48089bda85baaf8ebc66f058e8b"
+  },
+  {
+    "path": "tools/export-companion-replay-template.py",
+    "sha256": "ab9a9d49b4d2b92b7b832da488f9cfefd79f0ec106533a18a5624f4df26afa71"
+  },
+  {
+    "path": "tools/face-evaluation/.gitignore",
+    "sha256": "e4ba7681d50c3c18264245516dbefeb2f67739d7df0c1acecaed5d28bfb6c96f"
+  },
+  {
+    "path": "tools/face-evaluation/aberdeen.aggregate-results.csv",
+    "sha256": "c147d8d3d11997a1ab0f83844f9d56c077d1d1890156a8e58b2afac114d2a6d2"
+  },
+  {
+    "path": "tools/face-evaluation/aberdeen.frozen-protocol.json",
+    "sha256": "5ec165aa47a3ad93c2f6dc268608af01e848b1be2ddf172d9f5125c3b85fd096"
+  },
+  {
+    "path": "tools/face-evaluation/aberdeen.provenance.json",
+    "sha256": "50cf4ca30df323b0e41bc96f50987ce027ef6346492480075107411e273b71ac"
+  },
+  {
+    "path": "tools/face-evaluation/aberdeen.result-snapshot.json",
+    "sha256": "f170c73cb87da405400da862e196dfe4d281823bc2dc3be9530375dd0630cb3e"
+  },
+  {
+    "path": "tools/face-evaluation/aggregation_experiment.py",
+    "sha256": "d0a7b8d983190bf1c476795cf0fe93d95e3ac325a0f26659b57b403faf109f95"
+  },
+  {
+    "path": "tools/face-evaluation/alternate_model.py",
+    "sha256": "84455777d8ac65bfbff0a5f5430b27d8e1b34cf022f408e007f25ab8868a391a"
+  },
+  {
+    "path": "tools/face-evaluation/auraface.provenance.json",
+    "sha256": "ed28f46d23b5eae51be761532d88516d5cd7c7e92faae78f9a3de5ae3eaffcb3"
+  },
+  {
+    "path": "tools/face-evaluation/batch_schedule_test.cpp",
+    "sha256": "8436ff4d3bd5c82f0fa5b9e0989cf4bea43836ed4315cadc64144599f1a0a943"
+  },
+  {
+    "path": "tools/face-evaluation/benchmark.py",
+    "sha256": "0c21b17a4b747a375b8943efbd46aedddb95e8f24a514a173c71dd62826af1fc"
+  },
+  {
+    "path": "tools/face-evaluation/check_native_auraface_parity.py",
+    "sha256": "c299b19077999d7e4d83ff27d6ecdb83e4959a8e115b89fcfe71bb3daecfa78c"
+  },
+  {
+    "path": "tools/face-evaluation/diagnose_orl.py",
+    "sha256": "aeee40489dbef75f0d6bb2e86ab76f1a3199cf1582e20af04c7ee1afc5833853"
+  },
+  {
+    "path": "tools/face-evaluation/evaluate.mjs",
+    "sha256": "7acea6a8b6edf8fbf384c9c3d2675b53c0b5742f4d10698791309118970bb7fa"
+  },
+  {
+    "path": "tools/face-evaluation/evaluate.test.mjs",
+    "sha256": "7d158c2ac8471cb0e3784521677d8c56253711c3cfdd2872edf08dfd45eb86a7"
+  },
+  {
+    "path": "tools/face-evaluation/fresh_benchmark.py",
+    "sha256": "44ac4ce402c4aa0ce254de31ee75feb4d6011dc5856e6d8eb9f978dfb0502e49"
+  },
+  {
+    "path": "tools/face-evaluation/image_smoke.py",
+    "sha256": "57803be973f033f9882aac32251070dcd5c4d3fee0c994996269c53443b330e2"
+  },
+  {
+    "path": "tools/face-evaluation/orl.provenance.json",
+    "sha256": "3c4088d8353c3f2a532db7d0f6166f074abfd141ecef675c0ae80cfe2aed9afe"
+  },
+  {
+    "path": "tools/face-evaluation/portraits.manifest.json",
+    "sha256": "2b721b8b2994ea75f754eedb32ea1494fe53803a000a9b3d689d3aebb237fb43"
+  },
+  {
+    "path": "tools/face-evaluation/stress_smoke.py",
+    "sha256": "1d5aba8c86cfb47aef5ada10db9e3413d18826df2bdbf5e60bdfe1e02695c8aa"
+  },
+  {
+    "path": "tools/face-evaluation/test_aggregation_experiment.py",
+    "sha256": "1e2877c7e633405a5a612ed03d5aa36a242981b9555d9be3c1a34aaa85aff82d"
+  },
+  {
+    "path": "tools/face-evaluation/test_alternate_model.py",
+    "sha256": "a71f7d66f1e0e76f791a54e01616fdc5ba432304035c2e438f3e08201868e00c"
+  },
+  {
+    "path": "tools/face-evaluation/test_benchmark.py",
+    "sha256": "3d8426857a4d33ba78477745cef3e8c24e90a02e1811050738f17c67726807b5"
+  },
+  {
+    "path": "tools/face-evaluation/test_fresh_benchmark.py",
+    "sha256": "ec7d272f321f28a8394fcfd6238f2377efe8b5be840127c3a7a76de03c69579f"
+  },
+  {
+    "path": "tools/fixtures/home-awareness.mjs",
+    "sha256": "10cddccd1993dda139a6b008bb06dbe8094ec8d50a6dcc9118261d59c2830474"
+  },
+  {
+    "path": "tools/generate-semantic-memory-replay.mjs",
+    "sha256": "18927c786cd9c2bcf24778b8eb314a6871d29f65f703768c7aaca3feab4c74b9"
+  },
+  {
+    "path": "tools/generate-xcode-project.mjs",
+    "sha256": "498b0c489b81d17d94fadd0add09c68f1cf4a573277db9b4850d30ef9160c48a"
+  },
+  {
+    "path": "tools/ground-geometry-replay.swift",
+    "sha256": "73ae5a43061a9dcec83c94b0dabed0e50bdc9a484b537abb756beddd9ecde447"
+  },
+  {
+    "path": "tools/hooks/spatial-rule-hook.mjs",
+    "sha256": "6b6df3c9ac9f57b2a3009a156a134d507e331eb72700beb44b862a1d47f9f9f8"
+  },
+  {
+    "path": "tools/import-imdf.mjs",
+    "sha256": "9dc1890a3febbef3d66caf4bf652f742d2c40095a8e7aa0905e47c06c082dbd8"
+  },
+  {
+    "path": "tools/mac-preflight.mjs",
+    "sha256": "4d7fd05ba41fce60e8fd0fb3e66feb8af777337ab2e12dfcd474f0694fdee9cd"
+  },
+  {
+    "path": "tools/mac-setup.mjs",
+    "sha256": "45d67bcae118c06349d5911bf128fc592866b49e045687d00b62f0c3f50944c5"
+  },
+  {
+    "path": "tools/make-room-replay.py",
+    "sha256": "f5bf22e380f30ef6dc8c6cc15f3c0101c841bb8eff6ac10275c9e473ec74d878"
+  },
+  {
+    "path": "tools/make-sensor-replay.py",
+    "sha256": "ce4a2d5a69e63e76fed4e5c46a4ed14fc6da65e037ecaa36224b33f39a67efc4"
+  },
+  {
+    "path": "tools/measure-claude-latency.mjs",
+    "sha256": "5f80ed1e8b309264936b7fde167c1f709e345eb33f934a16504f3788a39b9dd1"
+  },
+  {
+    "path": "tools/measure-latency.mjs",
+    "sha256": "c93d0e3e1afd5b589c16b9fcf346b4278c3edd2b09c784192d4e5fe572307298"
+  },
+  {
+    "path": "tools/package-handoff.mjs",
+    "sha256": "66370b4c07f34f91a9b73fe9cb445982d7c398e314ecb25719259ce9db51450d"
+  },
+  {
+    "path": "tools/png-to-jpeg.py",
+    "sha256": "11cb8476b20c4381b346a9bd94c7b97390a3f9a9f206d8945c6b6950deb1cd98"
+  },
+  {
+    "path": "tools/prepare-rtabmap.mjs",
+    "sha256": "1d41fc13e68c075b25979aaf2ead16333050200de0e9977c2f11e00f86c98c62"
+  },
+  {
+    "path": "tools/prepare-working-state-replay.py",
+    "sha256": "3a3565ffe9d4a94e5b4f3d3978de863ae9ec84da2ad4d5a07a16386d01d960a8"
+  },
+  {
+    "path": "tools/real_scene.py",
+    "sha256": "69d8ade0a7cac6d5bb063a6cf8b714e46e28806abf6cf0c9eb2ca61606640691"
+  },
+  {
+    "path": "tools/render-home-awareness.mjs",
+    "sha256": "467468200645adf4cc5e919782972626a4ace444518717c6f09c3fd9d054b283"
+  },
+  {
+    "path": "tools/render-replay-preview.py",
+    "sha256": "590c1fb5ca08c32c2992896dd63fc20904ad225c9a6e21e50a0f651dcabe17e7"
+  },
+  {
+    "path": "tools/replay-semantic-memory-ca1m.mjs",
+    "sha256": "266d1b7c1be10e6205455830adec953687b3eaec2dcdca0242e7a91ca6119457"
+  },
+  {
+    "path": "tools/research-assistant-details.mjs",
+    "sha256": "4cf9e4d6b47f2b77c13de8fb8213b04ce5f5b5ff757a6fbec5425f1dcdb41c51"
+  },
+  {
+    "path": "tools/research-assistant-upstreams.mjs",
+    "sha256": "3b23356bcb2e2fe4314641b7c16abcba59b5dbf38cf092504208911b99600022"
+  },
+  {
+    "path": "tools/score-sensor-replay.py",
+    "sha256": "075ff7f135de9bec8407191ae8f8ddf500101f1c45959123ed79b3a653e85525"
+  },
+  {
+    "path": "tools/semantic-input-replay/Package.swift",
+    "sha256": "910cd0a777edbd55362955fe0e76c25326d67cf595404d66e86b97e9b3a6f566"
+  },
+  {
+    "path": "tools/semantic-input-replay/Sources/CompanionInputReplay/ProductionConversationPrompt.swift",
+    "sha256": "c9f4cbd291055f658ab95fafcb104afe18138ad20f8bafd22a1e0d9e33df0275"
+  },
+  {
+    "path": "tools/semantic-input-replay/Sources/CompanionInputReplay/Replay.swift",
+    "sha256": "e023f2486c17d57d0a8419c8b146fcf5b83939f1ecfda8ce9504fc990410d8f2"
+  },
+  {
+    "path": "tools/simulate.mjs",
+    "sha256": "dbe4687142617f687614e3a4972510462a25eaa445c48356d972f4819ef7efb7"
+  },
+  {
+    "path": "tools/test/attention-routing.test.mjs",
+    "sha256": "a67239a7591f39adf2b94fb8a73c22b5580a47fbc6bf298fbd1410e696e85c1a"
+  },
+  {
+    "path": "tools/test/auraface-backend.test.mjs",
+    "sha256": "90e28b449a37e983f0107e9f8af5636ed508492e76a8c521d10731fc2d4c1506"
+  },
+  {
+    "path": "tools/test/automatic-room-recovery.test.mjs",
+    "sha256": "04cf5bdc1ab75f108dcb631ac50797fd883723ad7113728332099e26e4e60283"
+  },
+  {
+    "path": "tools/test/child-assistant-contracts.test.mjs",
+    "sha256": "ac15095c1231a7935a63f3adc33584961f8b373b9f17ebbbade2d9a623113170"
+  },
+  {
+    "path": "tools/test/clothing-color.test.mjs",
+    "sha256": "cb03799ded5668c55eacf8a56c7fc25231ebf627d2f72485ce38d529342f9c4b"
+  },
+  {
+    "path": "tools/test/command-authority.test.mjs",
+    "sha256": "abd1dc94be9c15838307e97d591d2b2de52a155a3f96a016cd7eccbbc8a2d000"
+  },
+  {
+    "path": "tools/test/companion-evidence.test.mjs",
+    "sha256": "e9c65d9c903522eb4f0045df173d138df9e68b5bbabbf2bbf1702bd4dd14c716"
+  },
+  {
+    "path": "tools/test/contextual-capabilities.test.mjs",
+    "sha256": "c3370d253098a57cab89c615ebc69f70d6f84c12759bafde566f6c1cbce346b6"
+  },
+  {
+    "path": "tools/test/continuous-assistant.test.mjs",
+    "sha256": "de17d65c00ab3ffb8e9847fd1c3513fa0214d868b348e122d5c390a3686ca395"
+  },
+  {
+    "path": "tools/test/currency-device-test-project.test.mjs",
+    "sha256": "932bfa535d52355798ce3a4b651bede14e7859ee10932ad4d5b40e5cff1c6ded"
+  },
+  {
+    "path": "tools/test/currency-device-test.test.mjs",
+    "sha256": "78aa394f7ba9662c419ff28fff5c3360b8850eec4dd07195440efa1fa02b69a6"
+  },
+  {
+    "path": "tools/test/currency-reference-project.test.mjs",
+    "sha256": "988931c90885d0ab2cdfc0609a196771ebd83fcf50431069b9f1c17cdaa37198"
+  },
+  {
+    "path": "tools/test/debug-session-log.test.mjs",
+    "sha256": "f1116745549faa6b61f81c016e3a733305fd3e4789824e5b80af0016c503cd7e"
+  },
+  {
+    "path": "tools/test/device-clock.test.mjs",
+    "sha256": "57e7af1d50bb0de34a702b5255b65458f676a1d87505a7987299f553402dab0d"
+  },
+  {
+    "path": "tools/test/everyday-companion-wiring.test.mjs",
+    "sha256": "a6257a2760a399f5707d5483282657d31340647cec641707e03244afcf09164a"
+  },
+  {
+    "path": "tools/test/familiar-foreground-defaults.test.mjs",
+    "sha256": "92a5863ef3379727b6ce5a0765f237c33c70a9463c55f8d08a05b5bdf2ce9b24"
+  },
+  {
+    "path": "tools/test/familiar-people.test.mjs",
+    "sha256": "b84039fb9e99bd2670c07ffa6cacc8530a2d28800a5a8abce5aa9be42e8703b0"
+  },
+  {
+    "path": "tools/test/familiar-rgb-capture.test.mjs",
+    "sha256": "631d5661a458644663f006a33530fd6ffa7701f35282cae86cf7a511af8a5763"
+  },
+  {
+    "path": "tools/test/fresh-vision-probe.test.mjs",
+    "sha256": "34cb9cfcb7451f7ac87f71d767655e8012cb8d59b4526f5de913bb7a92caef84"
+  },
+  {
+    "path": "tools/test/goal-continuity.test.mjs",
+    "sha256": "4fbb55d4593021fe53a9090d31dafc7cd453cb19eff207d0d272181377cdd11d"
+  },
+  {
+    "path": "tools/test/handoff-privacy.test.mjs",
+    "sha256": "c764ee4b5edf1eae2630b8891100afd213ea9e3f617626a6d90b3672cf364c45"
+  },
+  {
+    "path": "tools/test/ios-lifecycle-regressions.test.mjs",
+    "sha256": "af8a3d0879935af1ac058556a5b3246f6989de269a75512653f1f693ea5e0827"
+  },
+  {
+    "path": "tools/test/memory-sql.test.mjs",
+    "sha256": "618361375d50d8fedb6b02ea8b513e497bb4dd835e7f45b5663a2af9a7b73bcd"
+  },
+  {
+    "path": "tools/test/object-detector-project.test.mjs",
+    "sha256": "6f314fafc8660e858168e4333de68b91358361b2a62de4d7c29c0ed0dbd5d339"
+  },
+  {
+    "path": "tools/test/object-rgb-discovery.test.mjs",
+    "sha256": "bd9e892865ceffd405a06a9f9c451d829e7e6bf1640227f800b33396522536fc"
+  },
+  {
+    "path": "tools/test/opencv-runtime.test.mjs",
+    "sha256": "da076df3c90d7d708afa1b0c4aeca14f0387fc892b4ae5f966c939edfa7a3329"
+  },
+  {
+    "path": "tools/test/passive-object-memory.test.mjs",
+    "sha256": "ac344aeb430c6d55d5b11434fcc1b9dbd8987458bb22301b0b600838b2ac8624"
+  },
+  {
+    "path": "tools/test/physical-interaction-safety.test.mjs",
+    "sha256": "4bb33de48b3fbd7f8e91140752e76cfad4ebe9ff046a9a3eb0af42aba0e76150"
+  },
+  {
+    "path": "tools/test/pre-device-hardening.test.mjs",
+    "sha256": "34049b8e4ddc618935d73e2e0a6244972ea8e6eaf53496a90e31b7fdf24b45ec"
+  },
+  {
+    "path": "tools/test/privacy-rule.test.mjs",
+    "sha256": "8d96ef1193dc24fcca6bf5916bf591dcf66e02055d6ca0c964f4b9596b598493"
+  },
+  {
+    "path": "tools/test/reading-integration.test.mjs",
+    "sha256": "1025d4c140050de8428091c5eba4645041f6fce99d39ab680def43d94a4c500f"
+  },
+  {
+    "path": "tools/test/saudi-banknotes.test.mjs",
+    "sha256": "a1b30530f73f2716e2f391ed9fa5a0a9e6698b210795f44e5fab92218cb5d35f"
+  },
+  {
+    "path": "tools/test/semantic-context-wiring.test.mjs",
+    "sha256": "e9a4eabb9354ebb12a5c830721193d89d25fcb7030b666d03c9884f053e0c104"
+  },
+  {
+    "path": "tools/test/simple-accessibility.test.mjs",
+    "sha256": "0ae86ae82135d89f84b36088fedb87fc59ad9a12693dc763b676de32fb43aaa3"
+  },
+  {
+    "path": "tools/test/spatial-frame-registry.test.mjs",
+    "sha256": "948d8258feedde1e3d2b64aea44d8acc905333fad4ba541d5d80a3d10e3143ef"
+  },
+  {
+    "path": "tools/test/spatial-review-regressions.test.mjs",
+    "sha256": "2f1194e4a550d1a2b5454310b45dd3ccfd23dfde5b9c2de02bf27755d00e16c1"
+  },
+  {
+    "path": "tools/test/spatial-rule.test.mjs",
+    "sha256": "ac946153940c0bf59e852025efe0de60c516e1cf3dde7357404bfd5960a945e0"
+  },
+  {
+    "path": "tools/test/speech-delivery-contract.test.mjs",
+    "sha256": "ca0e76f0f5765a72712da46762abb5e87a4f8dc207694da33d85a449eb13e4d1"
+  },
+  {
+    "path": "tools/test/tools.test.mjs",
+    "sha256": "c61aa2d4d53e108b2d90956e7b35d9dbeea7161d6bbbe50b0e561a7bc8ea0119"
+  },
+  {
+    "path": "tools/test/voice-capture-lifecycle.test.mjs",
+    "sha256": "f678dcfeaa9d9d57805594b51a8e078adac0ff1d96a537a9a63b779edc466626"
+  },
+  {
+    "path": "tools/verify.mjs",
+    "sha256": "9f89eb6946ced13b5a7892aaa4f5770f102d91e3da60df2cea01096a900e1dd9"
+  }
+]

@@ -1,0 +1,63 @@
+{
+  "checkpoint": "reconstruction-01",
+  "baseCommit": "20af33fe4200f11f92a0fab3364c5bf609dcf2d3",
+  "baselineSourceCommit": "4b00872f1bbc4ea92dca55f47f008f33460c4e71",
+  "dateUTC": "2026-10-25",
+  "environment": "Debian 13 x86_64, official signature-verified Swift 6.4.1, Node 24.22.1",
+  "core": {
+    "command": "swift test --package-path BlindCore --scratch-path <scratch> --cache-path <cache> --jobs 2",
+    "exitCode": 0,
+    "tests": 910,
+    "failures": 0,
+    "newTestsExecuted": 45,
+    "log": "core-tests.log"
+  },
+  "node": {
+    "command": "BLIND_SWIFTC=<swiftc> npm test",
+    "exitCode": 0,
+    "tests": 338,
+    "passed": 338,
+    "failed": 0,
+    "skipped": 0,
+    "log": "node-tests.log"
+  },
+  "nativeSyntax": {
+    "default": 0,
+    "debugFamiliar": 0,
+    "command": "swiftc -frontend -parse [-D DEBUG -D BLIND_FAMILIAR_PEOPLE] ios/BlindAssist/*.swift",
+    "notAppleSDKTypechecking": true
+  },
+  "sourceCodeDrift": [],
+  "originalFailures": "original-contract-failures.log",
+  "implemented": [
+    "Command-origin guard with native entry hookup",
+    "Standalone spatial hierarchy, transforms and live-output lease",
+    "Standalone DEBUG local bounded recorder"
+  ],
+  "notCompleted": [
+    "Native spatial registry and calibrated uncertainty adapter",
+    "Native debug event/privacy hookup",
+    "Cross-map journeys and return integration",
+    "Clock/reference and other later regressions",
+    "400 integrated scenarios",
+    "Apple SDK/device/audio/recognition accuracy/physical safety validation"
+  ],
+  "releaseCoreBuild": {
+    "command": "swift build --package-path BlindCore --configuration release --target BlindCore --jobs 2",
+    "exitCode": 0,
+    "log": "release-core-build.log",
+    "AppleSDK": false
+  },
+  "notes": [
+    "Synthetic Core geometry tests do not establish live localization.",
+    "Microphone input is conversation-only until a validated speaker/addressee path exists.",
+    "No private raw conversation exports, camera data or actual debug session logs included."
+  ],
+  "artifactSHA256": {
+    "core-tests.log": "e33073b6ed696e7569aa7cb5ce6ba6ef14d8c49983afe2cf01190827bc302782",
+    "node-tests.log": "64693c22692200c1f82bcb430c8318edfa36e798538129a3dd94a35cca56a1df",
+    "original-contract-failures.log": "65c3ecabf9c472464d7aca90d9eceb755d05e8a57359038414a2dbca7606ac82",
+    "source-hashes.json": "29d41e33779a4bdf9a8baa799a2dd3b6e2366e2a5130639740df0e34b8e5a6c7",
+    "release-core-build.log": "dd36dff093a844cbb6721730342373c53624de34e2c1564542cb3e1f506c0e46"
+  }
+}

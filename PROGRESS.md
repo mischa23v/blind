@@ -1,3 +1,37 @@
+## CURRENT RECONSTRUCTION — 2026-10-25
+
+This section is the current reconstruction snapshot and supersedes older status below. Historical counts remain attached to their historical checkpoints; they are not rerun evidence for this build. Scope: [REBUILD_TRACKER.md](REBUILD_TRACKER.md), [REBUILD_SCOPE_ADDENDUM.md](REBUILD_SCOPE_ADDENDUM.md). Work queue: [TASKS.md](TASKS.md), [TODO.md](TODO.md).
+
+### Verified preservation and current source scope
+
+- **Baseline:** 717 files restored and checked for exact agreement with the preserved repository baseline `4b00872f1bbc4ea92dca55f47f008f33460c4e71`. This is not recovery of the missing later unpushed increment.
+- **Published:** initial reconstruction documentation is verified on GitHub at `20af33fe`. This is a documentation checkpoint, not a new integrated-app result.
+- **Implemented locally:** command-authority boundary with native entry hookup. Standalone spatial-frame/localization-authority and DEBUG-recorder foundations also exist, but are **not wired into the app**.
+- **Review:** identified defects in these new source increments were corrected. Frozen source inputs show no code drift; only the current documentation sections changed. Review does not replace platform/device validation.
+- **This documentation update:** current task list, immediate to-do queue and expanded scope prepared for the next reviewed checkpoint. Its publication is pending until a new remote SHA is recorded.
+
+### Actual current verification
+
+| Check | Current result | Meaning and limit |
+| --- | --- | --- |
+| Aggregate Node tests | **338/338 passed; 0 failed, 0 skipped; exit 0** | Swift-enabled rerun completed in 14.656 seconds, including extracted native-method execution. This is not a complete Apple runtime, native app or phone acceptance test. |
+| Full portable Core suite | **910/910 passed; 0 failed; exit 0** | Includes 865 baseline cases and all 45 new reconstruction cases. New tests actually executed; synthetic foundation checks are not native app integration or real-world localization evidence. |
+| Official Swift toolchain | **Swift 6.4.1 installed; official signature verified** | Used for the successful Core execution. No Apple SDK is supplied by this Linux toolchain. |
+| iOS Swift syntax parsing | **Default and DEBUG + BLIND_FAMILIAR_PEOPLE configurations both exited 0** | Parsing only, not Apple SDK typechecking, macro expansion, linking or execution. Command entry hookup exists; spatial/debug event integration and Apple/device validation remain incomplete. |
+| 400 whole-episode scenarios | **Incomplete; no new complete coverage result recorded here** | Historical catalog binding counts and prior claims are not current passes. |
+
+### Open gaps and next checkpoint
+
+Next: publish the verified code, current documentation and test logs in the first small source checkpoint, then read back its exact GitHub SHA. The first code checkpoint is not yet recorded as pushed in this snapshot. Continue native spatial/debug integration and the remaining tracker work after preserving it. Updated task/scope documents can be checkpointed separately rather than waiting for the entire rebuild.
+
+Still open: perception-versus-task evidence lifetime; full connected-map/native mapper/collision/return integration; native debug-event wiring; memory, clock, reference and photo repairs; expanded identity/accessibility/everyday/hazard cases; long-mapper accuracy; real speaker verification; missing native adapters; complete 400-scenario execution and live iPhone validation. No completed product, safe-navigation, recovered-latest-source or full native integration claim is made.
+
+**Do not carry forward as current:** the historical 1,629 Core / 500 repository checkpoint is missing-source/test-history context only. Prepared tests, source review, synthetic replays, native integration and device acceptance are distinct states. No UI, automatic debug uploads or room-permission additions are part of this reconstruction.
+
+Evidence: [verification summary](research/rebuild-evidence/checkpoint-01/verification.json), [Core log](research/rebuild-evidence/checkpoint-01/core-tests.log), [Node log](research/rebuild-evidence/checkpoint-01/node-tests.log), [tested source hashes](research/rebuild-evidence/checkpoint-01/source-hashes.json).
+
+### Historical progress records
+
 ## Context-driven capability integration — 2026-10-23
 
 ## Pre-device hardening update

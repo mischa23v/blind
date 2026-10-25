@@ -1,3 +1,30 @@
+## CURRENT RECONSTRUCTION — 2026-10-25
+
+This section supersedes historical status below. It records the current rebuild, not the missing later checkpoint or a claim of complete recovery. Preserve all earlier entries as history.
+
+**Durable scope:** [REBUILD_TRACKER.md](REBUILD_TRACKER.md) contains the checkpoint plan and preserved/rebuild/missing-evidence ledger. [REBUILD_SCOPE_ADDENDUM.md](REBUILD_SCOPE_ADDENDUM.md) adds earlier visual, accessibility, identity, hazard and everyday-workflow requirements. [TODO.md](TODO.md) is the immediate execution queue; [PROGRESS.md](PROGRESS.md) records actual results; [SESSION_RECOVERY.md](SESSION_RECOVERY.md) is the restart handoff.
+
+| Workstream | Current status | Completion evidence still required |
+| --- | --- | --- |
+| Baseline and durable requirements | Baseline restored: 717 files matched exactly. Initial documentation pushed as `20af33fe`. | Save subsequent verified source/document checkpoints promptly and verify each remote SHA. Later unpushed source is not recovered by restoring the baseline. |
+| Command-authority boundary | PARTIAL: default-untrusted command gate implemented with native entry hookup; source-review defects corrected. | All new Swift cases now pass. Apple SDK compilation and actual microphone/typed authority-path testing remain pending. Real speaker verification remains unfinished. |
+| Independent safety state | OPEN: preserve code-only guidance and fresh hazards across quiet, cancellation and new goals. | Distinct perception/task revisions, exact cue withdrawal and hazard-channel continuity through actual integration. |
+| Spatial registry and localization authority | PARTIAL: standalone frame-registry and pose-lease foundation exists. Not wired into the app. | Synthetic Swift foundation tests pass; measured relocalization, map adapters and continuous world/building/floor/room app integration remain pending. |
+| Mapping, collision and return | OPEN: baseline components survive; later combined integration remains to rebuild. | Transactional map updates, dynamic/full-body swept collision, stale-map rejection, restart continuity and complete outbound/return journeys. |
+| Local DEBUG recorder | PARTIAL: standalone foundation exists. Not wired into native session/events. | Foundation Swift tests pass. Native event/evidence integration and device validation of retention/privacy behavior remain pending; no UI or uploads. |
+| Conversation, memory, clock and references | OPEN: original failures and exact safety contracts are in the tracker. | Provenance/corrections, task completion, fresh code-owned clock, full reference blocks, harmless-answer regressions and real photo/manual sequences. |
+| Expanded everyday/accessibility/hazard scope | OPEN: addendum R54–R81 captures requirements. | Inspect preserved hardening before rebuilding; verify profile/roleplay/VoiceOver, depth-independent visual help, numeric integrity and stair/slope failures. |
+| Executable verification and review | PARTIAL acceptance: full Core 910/910 and aggregate Node 338/338 passed, both 0 failed; Node 0 skipped. All 45 new Core cases executed. | Default and DEBUG + BLIND_FAMILIAR_PEOPLE iOS syntax parsing both exited 0, not Apple SDK compilation. Node also executed extracted native-method checks through Swift; native Apple/device acceptance and full spatial/debug integration remain pending. |
+| 400 scenarios, native/device acceptance and handoff | OPEN, incomplete. | Whole-episode actual-stack evidence, measured/synthetic separation, missing native adapters, live iPhone checks and complete reproducible handoff. No safe-use/readiness claim. |
+
+**Checkpoint rule:** implement a small coherent increment, reproduce the relevant failure, run focused and affected regression checks, review the final diff, commit and verify it on GitHub. A local change, source-contract pass, prepared test or historical count is not completed native functionality. Do not wait for all 400 scenarios before preserving verified work.
+
+**Product constraints:** code owns all physical guidance; untrusted speech cannot redirect/cancel tasks; quiet preserves valid hazards; no new UI, automatic debug upload or room-permission system. Unknown/stale evidence never becomes clearance. The longer mapping replay, real speaker verification, native gaps and all unexecuted scenarios remain open.
+
+Evidence: [verification summary](research/rebuild-evidence/checkpoint-01/verification.json), [Core log](research/rebuild-evidence/checkpoint-01/core-tests.log), [Node log](research/rebuild-evidence/checkpoint-01/node-tests.log), [tested source hashes](research/rebuild-evidence/checkpoint-01/source-hashes.json).
+
+### Historical task records
+
 ## Context-driven capability integration — 2026-10-23
 
 ## Pre-device hardening update

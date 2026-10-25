@@ -1,0 +1,100 @@
+✔ ordinary conversation is routed before camera availability (10.249079ms)
+✖ speech onset cancels generation and ordinary output without cancelling capture (2.932376ms)
+✔ streamed phrases are bounded, revalidated, separately admitted and not replayed at final (3.057078ms)
+✔ spoken history is recorded only for matching completed requested speech (3.257311ms)
+✔ mute and end fence late work and do not disable hazard monitoring (2.324916ms)
+✔ background voice is opt-in and cannot imply background camera (3.468038ms)
+✔ actual local tool registration is bounded and cannot perform actions (4.337359ms)
+✔ correction and forgetting scrub both original reports and derived task context (2.728186ms)
+✔ queued source evidence is revalidated at dispatch and foreground transitions cancel work (3.273772ms)
+✔ visual history waits for completed narration and explicit tasks commit before inference (2.555965ms)
+✔ private audio route removal mutes normal output without an announcement (1.430071ms)
+✔ physical inspection cannot fall through to free-form streamed answers (2.137607ms)
+✔ audience is an explicit local preference and changing it invalidates a turn (2.691301ms)
+✔ context overflow retry cannot repeat tools or already emitted speech (0.928428ms)
+✔ passive observations enter foreground loop independently of a find command (9.467235ms)
+✔ historical retrieval precedes another current-view search and never saves camera as object (2.846026ms)
+✖ voice onset captures original search, explicit controls cancel and current delivery checks pose (8.52922ms)
+✔ runtime detector rejects incompatible raw tensor results and has no classifier geometry fallback (2.571415ms)
+✔ history is bounded private storage, deletable and old scans do not resurrect after clear (5.078069ms)
+✔ completion is accounted on the actual speech callback and stopped sessions stay quiet (2.062769ms)
+✔ room transitions and privacy changes cannot relabel or resurrect old captures (2.824192ms)
+✔ continuous pose/hazard cadence is separate from bounded async visual observations (3.322382ms)
+✔ source contract: requested speech stays behind AdmittedSpeech and has its own completion ID (1.364909ms)
+✔ source contract: requested transport policy is used and synthesis preserves assistive settings (0.571704ms)
+✔ source contract: private-route loss interrupts private mobility without silencing independent sensor alerts (0.858969ms)
+✖ source contract: onset, mute and end cancel queued work and stop requested audio (0.880488ms)
+✔ source contract: cancellation invalidates identity before platform stop and timeout cannot claim completion (0.678743ms)
+✔ source contract: spatial playback never downgrades the recording audio session (0.254684ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 25
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 381.713799
+
+✖ failing tests:
+
+test at tools/test/continuous-assistant.test.mjs:20:1
+✖ speech onset cancels generation and ordinary output without cancelling capture (2.932376ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /cancelDescription\(\)/. Input:
+  
+  'voice.onSpeechBegan = { [weak self] in\n' +
+    '            guard let self, self.assistantSession.shouldListen else { return }\n' +
+    '            // Energy and recognized words do not establish who spoke. Do not\n' +
+    '            // cancel a search, route, scan confirmation, return or hazard here.\n' +
+    '            self.interruptOrdinaryConversation(origin: .unverifiedMicrophone)\n' +
+    '        }\n' +
+    '        voice.onReadyForReply = { [weak self] in\n' +
+    '            guard let self, self.assistantSession.shouldListen else { return }\n' +
+    '            self.drainConversationSpeech()\n' +
+    '        }\n' +
+    '        '
+  
+      at TestContext.<anonymous> (file:///workspace/shared/blind-rebuild/tools/test/continuous-assistant.test.mjs:24:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'voice.onSpeechBegan = { [weak self] in\n            guard let self, self.assistantSession.shouldListen else { return }\n            // Energy and recognized words do not establish who spoke. Do not\n            // cancel a search, route, scan confirmation, return or hazard here.\n            self.interruptOrdinaryConversation(origin: .unverifiedMicrophone)\n        }\n        voice.onReadyForReply = { [weak self] in\n            guard let self, self.assistantSession.shouldListen else { return }\n            self.drainConversationSpeech()\n        }\n        ',
+    expected: /cancelDescription\(\)/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at tools/test/passive-object-memory.test.mjs:25:1
+✖ voice onset captures original search, explicit controls cancel and current delivery checks pose (8.52922ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(onset.indexOf('interruptedSearch.capture') < onset.indexOf('cancelDescription'))
+  
+      at TestContext.<anonymous> (file:///workspace/shared/blind-rebuild/tools/test/passive-object-memory.test.mjs:28:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tools/test/speech-delivery-contract.test.mjs:58:1
+✖ source contract: onset, mute and end cancel queued work and stop requested audio (0.880488ms)
+  AssertionError [ERR_ASSERTION]: voice.onSpeechBegan = 
+      at TestContext.<anonymous> (file:///workspace/shared/blind-rebuild/tools/test/speech-delivery-contract.test.mjs:61:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: ' [weak self] in\n            guard let self, self.assistantSession.shouldListen else { return }\n            // Energy and recognized words do not establish who spoke. Do not\n            // cancel a search, route, scan confirmation, return or hazard here.\n            self.interruptOrdinaryConversation(origin: .unverifiedMicrophone)\n        ',
+    expected: /cancelDescription\(\)/,
+    operator: 'match',
+    diff: 'simple'
+  }

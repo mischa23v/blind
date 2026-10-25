@@ -61,6 +61,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let evidence: [CompanionEvidence]
         let captures: [ConversationCapture]
         var codeOwned = false
+        var origin: CompanionCommandOrigin = .trustedInterface
     }
     private struct ConversationCapture {
         let view: ObjectViewCapture
@@ -74,6 +75,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var activeConversationSpeech: ConversationSpeech?
     private var requestedVisualDialogue: (id: UUID, generation: UInt64)?
     private var streamedConversationText = ""
+    // Unverified microphone conversation is transient and cannot become a saved
+    // user report, goal, action-completion record, or command confirmation.
+    private var unverifiedDialogue = AssistantDialogue()
+    private var unverifiedDialogueGeneration: UInt64?
+    private var unverifiedConversationID = UUID()
+    private var unverifiedConversationTask: Task<Void, Never>?
+    private var unverifiedConversationTimeout: Task<Void, Never>?
     // This release is child-first. A stored explicit preference remains supported for
     // future adult use; the default never asserts verified age or guardian presence.
     @Published var assistantAudience = AssistantAudience(persistedValue:
@@ -484,6 +492,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             self.activeConversationSpeech = nil
             if outcome == .completed, pending.request == self.requestID,
                self.assistantSession.accepts(generation: pending.generation) {
+                if pending.origin == .unverifiedMicrophone {
+                    self.unverifiedDialogue.record(role: "assistant", text: text)
+                    self.drainConversationSpeech()
+                    return
+                }
                 // Only complete delivered phrases enter spoken conversational history.
                 self.assistantDialogue.record(role: "assistant", text: text)
                 if let suggestion = self.companionWorkingState.actionProgress.recordProposedSuggestion(text,
@@ -577,15 +590,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         voice.onSpeechBegan = { [weak self] in
             guard let self, self.assistantSession.shouldListen else { return }
-            // Acoustic-energy onset or transcript fallback: retire stale work
-            // before the utterance finishes. Neither signal proves speaker identity.
-            let pendingRetake = self.currencyRetake
-            self.interruptedSearch.capture(search: self.objectSearch, goalRevision: self.companionWorkingState.goalRevision,
-                generation: self.assistantSession.generation, now: ProcessInfo.processInfo.systemUptime)
-            self.preserveScanConfirmationOnce = true
-            self.cancelDescription()
-            if pendingRetake.isPending { self.currencyRetake = pendingRetake }
-            _ = self.feedback.stopInformation(announceCancellation: false)
+            // Energy and recognized words do not establish who spoke. Do not
+            // cancel a search, route, scan confirmation, return or hazard here.
+            self.interruptOrdinaryConversation(origin: .unverifiedMicrophone)
         }
         voice.onReadyForReply = { [weak self] in
             guard let self, self.assistantSession.shouldListen else { return }
@@ -609,8 +616,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 self.session.run(configuration)
                 if self.buildPrivateMap { self.mapping.start() }
             }
-            self.message = self.arabic ? "انتهى مسح الغرفة. لتعود تنبيهات الكاميرا، قف على أرض مستوية وقل: أنا واقف على أرض مستوية."
-                : "Room scan finished. To bring camera alerts back, stand on a level floor and say: I'm standing on a level floor."
+            self.message = self.arabic ? "انتهى مسح الغرفة. لتعود تنبيهات الكاميرا، استخدم زر المعايرة على أرض مستوية في التطبيق بمساعدة شخص مبصر."
+                : "Room scan finished. To bring camera alerts back, use Calibrate on level ground in the app with a sighted helper."
             _ = self.speakMobility(self.message)
         }
     }
@@ -680,7 +687,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         UIApplication.shared.isIdleTimerDisabled = true
         startWatchdog()
         message = supported
-            ? (arabic ? "قف على أرض مستوية. ثم قل: أنا واقف على أرض مستوية." : "Stand on a level floor. Then say: I'm standing on a level floor.")
+            ? (arabic ? "استخدم زر المعايرة على أرض مستوية في التطبيق بمساعدة شخص مبصر." : "Use Calibrate on level ground in the app with a sighted helper.")
             : (arabic ? "الكاميرا تعمل للمعلومات البصرية. هذا الهاتف لا يقيس عمق المسار." : "Camera information is available. This phone cannot measure path depth.")
         if announceCalibration { speakMobility(message) }
     }
@@ -999,6 +1006,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             originForward: observation.forward, currentForward: lastObservation?.forward)
     }
     private func cancelDescription() {
+        unverifiedConversationID = UUID()
+        unverifiedConversationTask?.cancel(); unverifiedConversationTask = nil
+        unverifiedConversationTimeout?.cancel(); unverifiedConversationTimeout = nil
         if !preserveScanConfirmationOnce { cancelVoiceRoomScanConfirmation() }
         preserveScanConfirmationOnce = false
         cancelContextualCapabilities()
@@ -1391,7 +1401,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         voiceRoomScan.cancel(); voiceRoomScanPrompt = nil
     }
 
-    /// Only direct typed/spoken user input reaches here. Models and scene text cannot call it.
+    /// Only trusted interface input reaches here. Microphone transcripts, models
+    /// and scene text cannot confirm, start, stop or discard a room scan.
     private func routeVoiceRoomScan(_ text: String) -> Bool {
         let promptContext = voiceRoomScanPrompt
         let action = voiceRoomScan.consume(text, source: .directUser, now: ProcessInfo.processInfo.systemUptime)
@@ -1408,7 +1419,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 return true
             }
             let label = name ?? (arabic ? "هذه الغرفة" : "this room")
-            let prompt = arabic ? "أبدأ مسح \(label)؟ تتوقف تنبيهات مسار الكاميرا أثناء المسح. ابق مع مساعد مبصر وقل نعم ابدأ المسح للتأكيد." : "Start scanning \(label)? Camera path alerts pause during scanning. Stay with a sighted helper. Say start scanning to confirm."
+            let prompt = arabic ? "أبدأ مسح \(label)؟ تتوقف تنبيهات مسار الكاميرا أثناء المسح. ابق مع مساعد مبصر واكتب ابدأ المسح في التطبيق للتأكيد." : "Start scanning \(label)? Camera path alerts pause during scanning. Stay with a sighted helper. Type start scanning in the app to confirm."
             let id = UUID()
             voiceRoomScanPrompt = (id, assistantSession.generation, companionWorkingState.goalRevision, perceptionGeneration, false)
             if !dispatchText(prompt, kind: .operation, requested: true, replace: true, speechID: id) {
@@ -2212,7 +2223,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             }
         }
     }
-    /// Spoken yes/no, or the on-screen buttons. A yes runs the offer as the person's own request.
+    /// Trusted typed yes/no or the on-screen buttons. Microphone speech cannot accept an offer.
     func answerCompanionOffer(_ answer: OfferAnswer) {
         let accepted = companion.answerOffer(answer)
         companionOffer = nil; persistCompanion()
@@ -2242,6 +2253,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #endif
         everydayTasks.cancelAll(); everydayTicket = nil; everydayUtterance = ""
         cancelDescription(); feedback.stop(); stopReturn(); indoor.cancelRoute()
+        unverifiedDialogue = AssistantDialogue(); unverifiedDialogueGeneration = nil
         assistantDialogue = AssistantDialogue(); objectiveDraft = ""; persistDialogue()
         companionWorkingState = CompanionWorkingState(); persistWorkingState()
         sceneAnswer = ""; currentReply = ""; assistantQuestion = ""
@@ -2350,6 +2362,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, text.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars,
               !fromVoice || assistantSession.shouldListen else { return }
+        // This compatibility entry point is called by explicit UI submission or
+        // the microphone callback. A tap to listen does not authenticate speech.
+        let origin: CompanionCommandOrigin = fromVoice ? .unverifiedMicrophone : .trustedInterface
+        guard CommandAuthority.permits(.changeGoal, from: origin) else {
+            receiveUnverifiedConversation(text, origin: origin)
+            return
+        }
         if routeVoiceRoomScan(text) { return }
         // Narration hold preserves the conversation and retained goal. It is not
         // microphone mute, camera off, task cancellation, or inferred addressee detection.
@@ -2451,6 +2470,107 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             readScene(cloud: false, question: text)
         } else {
             answerConversation(text)
+        }
+    }
+
+    /// Noise/other speakers may interrupt an ordinary reply, never authoritative
+    /// navigation, searches, monitoring or confirmations. Keep the shared request
+    /// and perception identities unchanged so ongoing sensor work is not retired.
+    private func interruptOrdinaryConversation(origin: CompanionCommandOrigin) {
+        guard CommandAuthority.permits(.interruptOrdinarySpeech, from: origin) else { return }
+        unverifiedConversationID = UUID()
+        unverifiedConversationTask?.cancel(); unverifiedConversationTask = nil
+        unverifiedConversationTimeout?.cancel(); unverifiedConversationTimeout = nil
+        if questionIsChat {
+            questionTask?.cancel(); questionTask = nil
+            questionTimeoutTask?.cancel(); questionTimeoutTask = nil
+            busy = false; questionIsChat = false
+            streamedConversationText = ""
+        }
+        conversationSpeech.removeAll()
+        if let active = activeConversationSpeech {
+            activeConversationSpeech = nil
+            feedback.stopRequestedSpeech(active.id)
+        }
+    }
+
+    private func unverifiedConversationReply(_ text: String) {
+        sceneAnswer = text; currentReply = text
+        queueConversationSpeech(text, request: requestID, generation: assistantSession.generation,
+            codeOwned: true, origin: .unverifiedMicrophone)
+    }
+
+    /// Release fallback, not verified-speaker recognition. Free-form chat has its
+    /// own transient history and cannot call action adapters or commit task updates.
+    private func receiveUnverifiedConversation(_ text: String, origin: CompanionCommandOrigin) {
+        guard origin == .unverifiedMicrophone,
+              CommandAuthority.permits(.conversation, from: origin), assistantSession.shouldListen else { return }
+        interruptOrdinaryConversation(origin: origin)
+        if unverifiedDialogueGeneration != assistantSession.generation {
+            unverifiedDialogue = AssistantDialogue()
+            unverifiedDialogueGeneration = assistantSession.generation
+        }
+        if AssistantControl.parse(text) == .quiet {
+            // Silence this reply only. No persistent narration/monitoring setting,
+            // active goal, route, or pending confirmation changes on ambient speech.
+            currentReply = arabic ? "توقف الرد الحالي. لم تتغير تنبيهات الخطر." : "Stopped this reply. Hazard alerts are unchanged."
+            sceneAnswer = currentReply
+            return
+        }
+        let intent = ConversationIntent.classify(text)
+        let requiresInterface: Bool
+        switch intent {
+        case .sessionControl, .taskControl, .visualRequest: requiresInterface = true
+        case .conversation: requiresInterface = false
+        }
+        let calibration = ["i'm standing on a level floor", "i am standing on a level floor", "أنا واقف على أرض مستوية"]
+            .contains(text.trimmingCharacters(in: .punctuationCharacters).lowercased())
+        guard !requiresInterface, !calibration, !voiceRoomScan.hasPendingConfirmation,
+              !(companion.pendingOffer != nil && AssistantControl.offerAnswer(text) != nil),
+              AssistantControl.parse(text) == nil, AssistantControl.explicitGoal(text) == nil,
+              ConversationIntent.explicitTaskGoal(text) == nil, CompanionUtterance.parse(text) == nil,
+              ConversationDomainPolicy.allowsModelResponse(to: text) else {
+            unverifiedConversationReply(arabic
+                ? "لا يتحقق هذا الإصدار ممن يتحدث. استخدم عناصر التطبيق لتغيير المهمة أو طلب إجراء. ما زلنا نستطيع التحدث."
+                : "This build can't verify who is speaking. Use the app controls to change a task or request an action. We can still chat.")
+            return
+        }
+        // Do not supersede an in-flight trusted camera/map request or run a second
+        // model alongside it. Ongoing navigation and hazard loops remain independent.
+        guard !busy else {
+            unverifiedConversationReply(arabic ? "أنهي فحصاً آخر الآن. حاول بعد لحظة." : "I'm finishing another check. Try again shortly.")
+            return
+        }
+        unverifiedDialogue.record(role: "user", text: text)
+        let dialogue = unverifiedDialogue
+        let id = unverifiedConversationID, generation = assistantSession.generation, request = requestID
+        unverifiedConversationTimeout = Task { @MainActor [weak self] in
+            do { try await Task.sleep(for: .seconds(30)) } catch { return }
+            guard let self, self.unverifiedConversationID == id else { return }
+            self.interruptOrdinaryConversation(origin: origin)
+            self.unverifiedConversationReply(self.arabic ? "استغرق الرد وقتاً طويلاً. حاول مرة أخرى." : "That reply took too long. Please try again.")
+        }
+        unverifiedConversationTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            // No trusted goal/profile context, action tools, report ingestion or
+            // task-update commit is exposed on this unverified conversation path.
+            let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: self.arabic,
+                audience: self.assistantAudience,
+                availableTools: [], toolExecutor: nil)
+            guard !Task.isCancelled, self.unverifiedConversationID == id,
+                  self.assistantSession.accepts(generation: generation), self.assistantSession.shouldListen,
+                  self.requestID == request, ConversationDomainPolicy.allowsModelResponse(to: text) else { return }
+            self.unverifiedConversationTimeout?.cancel(); self.unverifiedConversationTimeout = nil
+            self.unverifiedConversationTask = nil
+            guard let reply = answer.text,
+                  !SpatialClaimGuard.containsSpatialClaim(reply),
+                  CompanionEvidenceGuard.allows(reply, reports: dialogue.userRecords.map(\.text), evidence: [], now: Date()) else {
+                self.unverifiedConversationReply(self.arabic ? "لم أتمكن من إعداد رد موثوق. حاول بطريقة أخرى." : "I couldn't prepare a supported reply. Try asking another way.")
+                return
+            }
+            self.sceneAnswer = reply; self.currentReply = reply
+            self.queueConversationSpeech(reply, request: request, generation: generation,
+                reports: dialogue.userRecords.map(\.text), origin: origin)
         }
     }
 
@@ -2613,7 +2733,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         return true
     }
 
-    private func queueConversationSpeech(_ text: String, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = [], codeOwned: Bool = false) {
+    private func queueConversationSpeech(_ text: String, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = [], codeOwned: Bool = false, origin: CompanionCommandOrigin = .trustedInterface) {
         guard !textOnly, assistantSession.state == .active,
               assistantSession.accepts(generation: generation), requestID == request,
               (codeOwned || !SpatialClaimGuard.containsSpatialClaim(text)), conversationSpeech.count < 4 else { return }
@@ -2628,7 +2748,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         guard captures.count == current.count else { return }
         conversationSpeech.append(ConversationSpeech(id: UUID(), text: text, request: request,
             generation: generation, createdAt: ProcessInfo.processInfo.systemUptime,
-            reports: reports, evidence: evidence, captures: captures, codeOwned: codeOwned))
+            reports: reports, evidence: evidence, captures: captures, codeOwned: codeOwned, origin: origin))
         drainConversationSpeech()
     }
 

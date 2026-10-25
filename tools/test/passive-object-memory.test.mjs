@@ -22,10 +22,11 @@ test('historical retrieval precedes another current-view search and never saves 
   assert.match(s, /let position: Point3\? = nil/);
   assert.match(s, /private static let objectInteractionGuidanceValidated = false/);
 });
-test('voice onset captures original search, explicit controls cancel and current delivery checks pose', async () => {
+test('unverified onset preserves original search, explicit controls cancel and current delivery checks pose', async () => {
   const s = await read('ios/BlindAssist/NavigationModel.swift');
   const onset = section(s, 'voice.onSpeechBegan', 'voice.onReadyForReply');
-  assert.ok(onset.indexOf('interruptedSearch.capture') < onset.indexOf('cancelDescription'));
+  assert.match(onset, /interruptOrdinaryConversation\(origin: \.unverifiedMicrophone\)/);
+  assert.doesNotMatch(onset, /interruptedSearch\.capture|cancelDescription\(/);
   const resume = section(s, 'private func resumeInterruptedSearchIfPossible', 'private func persistItems');
   assert.match(resume, /interruptedSearch.restore/);
   assert.doesNotMatch(resume, /ObjectSearch\(target:/);

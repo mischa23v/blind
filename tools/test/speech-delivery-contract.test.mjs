@@ -55,8 +55,11 @@ test('source contract: private-route loss interrupts private mobility without si
   assert.doesNotMatch(stop, /requestCancellationAnnouncement|urgentUntil|player.stop|priority != \.mobility/);
 });
 
-test('source contract: onset, mute and end cancel queued work and stop requested audio', () => {
-  for (const marker of ['voice.onSpeechBegan = ', 'func muteConversation()', 'func endConversation()']) {
+test('source contract: unverified onset is reply-only; trusted mute and end cancel queued work', () => {
+  const onset = bodyAfter(navigation, 'voice.onSpeechBegan = ');
+  assert.match(onset, /interruptOrdinaryConversation\(origin: \.unverifiedMicrophone\)/);
+  assert.doesNotMatch(onset, /cancelDescription\(|stopReturn\(|cancelRoute\(/);
+  for (const marker of ['func muteConversation()', 'func endConversation()']) {
     const body = bodyAfter(navigation, marker);
     assert.match(body, /cancelDescription\(\)/, marker);
     assert.match(body, /feedback\.stopInformation\(announceCancellation: false\)/, marker);
