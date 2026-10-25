@@ -1,0 +1,35 @@
+Building for debugging...
+[Computing dependencies]
+[1 / 5] BlindCore
+[2 / 6] BlindCore
+[5 / 8] BlindCore
+[8 / 9] BlindCore
+[9 / 9] AppleModelEvaluation-product
+[13 / 22] MobilitySimulation-product
+[13 / 22] RealSceneEvaluation-product
+[15 / 22] BlindCoreTests-product
+[15 / 22] ImageModelEvaluation-product
+[15 / 22] BlindCoreTests-product
+[17 / 24] BlindCoreTests-product
+[19 / 26] BlindCoreTests-product
+[22 / 28] BlindCoreTests-product
+[23 / 28] BlindCoreTests-product
+[27 / 34] BlindCoreTests-test-runner
+[29 / 32] BlindCoreTests-test-runner
+[32 / 32] BlindCoreTests-test-runner
+Build complete! (11.62 secs)
+Test Suite 'Selected tests' started at 2026-10-25 08:32:12.234
+Test Suite 'ConnectedJourneyRuntimeTests' started at 2026-10-25 08:32:12.235
+Test Case 'ConnectedJourneyRuntimeTests.testIntegratedAutomaticRecoveryAfterRejectedEvidence' started at 2026-10-25 08:32:12.235
+NATIVE_REPLAY_INVALID=mode:wrong-support,capture:899DDCC8-4134-4BF4-86ED-BD9416332DA8,session:1732AF98-25F4-4902-B6FA-152E2859D0D1,error:missingSupport
+NATIVE_REPLAY_RECOVERY=mode:wrong-support,fresh:89485EFE-F756-4A47-9AE3-ECA60709BAD5,session:24EF1C2D-017C-4E7E-9E98-237D029838D5,target:m,status:PASS
+NATIVE_REPLAY_INVALID=mode:camera-only-heading,capture:D1D61A5B-D112-47FA-9620-29D9833F8D08,session:BE477826-AC25-4432-BC85-2AAF33B00297,error:invalidCapture
+NATIVE_REPLAY_RECOVERY=mode:camera-only-heading,fresh:BB771256-9D63-48FE-B8D6-1360879E1A2A,session:17415DB7-B291-4CAC-8C88-2518DE4FCC99,target:m,status:PASS
+Test Case 'ConnectedJourneyRuntimeTests.testIntegratedAutomaticRecoveryAfterRejectedEvidence' passed (0.396 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testIntegratedRejectedEvidenceCannotInferMidLegStart' started at 2026-10-25 08:32:12.631
+NATIVE_UNKNOWN_ENDPOINT=capture:2CA7D115-81E4-4EBD-A583-D7FA3C7AECC2,session:C4E092E6-8B19-4C85-A6A2-375F7A3BD4E3,position:1.5/1.3/3,expected:withhold,status:PASS_IF_ASSERTIONS_PASS
+Test Case 'ConnectedJourneyRuntimeTests.testIntegratedRejectedEvidenceCannotInferMidLegStart' passed (0.151 seconds)
+Test Suite 'ConnectedJourneyRuntimeTests' passed at 2026-10-25 08:32:12.781
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.546 (0.546) seconds
+Test Suite 'Selected tests' passed at 2026-10-25 08:32:12.782
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.546 (0.546) seconds

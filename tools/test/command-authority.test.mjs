@@ -133,8 +133,13 @@ test('quiet speech is limited to the reply and independent valid hazard dispatch
 
 test('trusted UI actions retain their existing independent controls and physical evidence gates', () => {
   assert.match(body('func setAssistantObjective('), /assistantDialogue.setGoal\(objectiveDraft\)/);
-  assert.match(body('func startReturn('), /observation.trackingNormal/);
-  assert.match(body('func startReturn('), /lastFrameWallTime < 0.5/);
+  const start = body('func startReturn('), sink = body('private func spatialRouteOutputAllowed(');
+  assert.match(start, /requestReturn\(origin: \.trustedInterface/);
+  assert.doesNotMatch(start, /returnTrail\.begin|journeys\.current/);
+  assert.match(sink, /observation\.trackingNormal/);
+  assert.match(sink, /lastFrameWallTime < 0.5/);
+  assert.match(sink, /\$0\.permits\(ticket, now: now\)/);
+  assert.match(body('private func routeConnectedJourneyCommand('), /CommandAuthority\.permits\(\.changeGoal, from: origin\)/);
   assert.match(body('func muteConversation('), /assistantSession.mute\(\)/);
   assert.match(body('func endConversation('), /assistantSession.end\(\)/);
   assert.match(body('private func routeUnverifiedPhysicalRequest('), /ConversationDomainPolicy.requiresPhysicalVerification/);

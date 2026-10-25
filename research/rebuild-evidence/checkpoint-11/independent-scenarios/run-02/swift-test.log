@@ -1,0 +1,81 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 328]
+[Planning deferred tasks]
+[22 / 102] MobilitySimulation-product
+[60 / 104] BlindCore
+[63 / 113] BlindCore
+[65 / 113] BlindCore
+[70 / 113] BlindCore
+[71 / 113] SensorReplay-product
+[72 / 113] SensorReplay-product
+[74 / 113] BlindCore
+/tmp/blind-integrated.6MO6bm/BlindCore/Sources/BlindCore/DebugSessionLog.swift:89:13: warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+ 87 | 
+ 88 |     private struct Record: Codable, Sendable {
+ 89 |         let schema = 1
+    |             |- warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+    |             |- note: set the initial value via the initializer or explicitly define a CodingKeys enum including a 'schema' case to silence this warning
+    |             `- note: make the property mutable instead
+ 90 |         let session: UUID
+ 91 |         let event: UUID
+[75 / 113] BlindCore
+[75 / 113] AppleModelEvaluation-product
+[78 / 117] RealSceneEvaluation-product
+[81 / 119] RealSceneEvaluation-product
+[82 / 120] SensorReplay-product
+/tmp/blind-integrated.6MO6bm/BlindCore/Sources/BlindCore/CompanionReportedStep.swift:10:16: warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+ 8 |     public let report: String
+ 9 |     public let goalRevision: String
+10 |     public let source = "model-associated direct user report; not sensor confirmed"
+   |                |- warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+   |                |- note: set the initial value via the initializer or explicitly define a CodingKeys enum including a 'source' case to silence this warning
+   |                `- note: make the property mutable instead
+11 |     public static func proposed(step: String, currentStep: String, quote: String,
+12 |                                 latest: String, goalRevision: String) -> Self? {
+[86 / 120]
+[92 / 127] MobilitySimulation-product
+[93 / 127] ImageModelEvaluation-product
+[96 / 129] BlindCoreTests-product
+[100 / 139] ImageModelEvaluation-product
+[103 / 140] MobilitySimulation-product
+[109 / 141] BlindCoreTests-product
+[110 / 141] BlindCoreTests-product
+[111 / 141] BlindCoreTests-product
+[113 / 141] BlindCoreTests-product
+[116 / 141] BlindCoreTests-product
+[117 / 141] BlindCoreTests-test-runner
+[118 / 141] BlindCoreTests-test-runner
+[120 / 141] BlindCoreTests-product
+[121 / 141] BlindCoreTests-product
+[121 / 141] BlindCore
+[125 / 144] AppleModelEvaluation-product
+[129 / 145] RealSceneEvaluation-product
+[130 / 145] MobilitySimulation-product
+[133 / 146] ImageModelEvaluation-product
+[133 / 146] MobilitySimulation-product
+[135 / 146] RealSceneEvaluation-product
+[138 / 146]
+[138 / 146] BlindCoreTests-product
+[142 / 149] BlindCoreTests-test-runner
+[146 / 149] BlindCoreTests-test-runner
+[150 / 150] BlindCoreTests-test-runner
+Build complete! (47.10 secs)
+Test Suite 'Selected tests' started at 2026-10-25 08:25:26.564
+Test Suite 'IntegratedEpisodeReplayTests' started at 2026-10-25 08:25:26.567
+Test Case 'IntegratedEpisodeReplayTests.testFortyDistinctNavigationReplayEpisodes' started at 2026-10-25 08:25:26.567
+/tmp/blind-integrated.6MO6bm/BlindCore/Tests/BlindCoreTests/IntegratedEpisodeReplayTests.swift:163: error: IntegratedEpisodeReplayTests.testFortyDistinctNavigationReplayEpisodes : failed - NAV-008 wrong_support: noRoute
+/tmp/blind-integrated.6MO6bm/BlindCore/Tests/BlindCoreTests/IntegratedEpisodeReplayTests.swift:163: error: IntegratedEpisodeReplayTests.testFortyDistinctNavigationReplayEpisodes : failed - NAV-009 wrong_heading: noRoute
+/tmp/blind-integrated.6MO6bm/BlindCore/Tests/BlindCoreTests/IntegratedEpisodeReplayTests.swift:163: error: IntegratedEpisodeReplayTests.testFortyDistinctNavigationReplayEpisodes : failed - NAV-018 wrong_support: noRoute
+/tmp/blind-integrated.6MO6bm/BlindCore/Tests/BlindCoreTests/IntegratedEpisodeReplayTests.swift:163: error: IntegratedEpisodeReplayTests.testFortyDistinctNavigationReplayEpisodes : failed - NAV-019 wrong_heading: noRoute
+/tmp/blind-integrated.6MO6bm/BlindCore/Tests/BlindCoreTests/IntegratedEpisodeReplayTests.swift:163: error: IntegratedEpisodeReplayTests.testFortyDistinctNavigationReplayEpisodes : failed - NAV-028 wrong_support: noRoute
+/tmp/blind-integrated.6MO6bm/BlindCore/Tests/BlindCoreTests/IntegratedEpisodeReplayTests.swift:163: error: IntegratedEpisodeReplayTests.testFortyDistinctNavigationReplayEpisodes : failed - NAV-029 wrong_heading: noRoute
+/tmp/blind-integrated.6MO6bm/BlindCore/Tests/BlindCoreTests/IntegratedEpisodeReplayTests.swift:163: error: IntegratedEpisodeReplayTests.testFortyDistinctNavigationReplayEpisodes : failed - NAV-038 wrong_support: noRoute
+/tmp/blind-integrated.6MO6bm/BlindCore/Tests/BlindCoreTests/IntegratedEpisodeReplayTests.swift:163: error: IntegratedEpisodeReplayTests.testFortyDistinctNavigationReplayEpisodes : failed - NAV-039 wrong_heading: noRoute
+Test Case 'IntegratedEpisodeReplayTests.testFortyDistinctNavigationReplayEpisodes' failed (18.901 seconds)
+Test Suite 'IntegratedEpisodeReplayTests' failed at 2026-10-25 08:25:45.467
+	 Executed 1 test, with 8 failures (0 unexpected) in 18.901 (18.901) seconds
+Test Suite 'Selected tests' failed at 2026-10-25 08:25:45.467
+	 Executed 1 test, with 8 failures (0 unexpected) in 18.901 (18.901) seconds
+Note: Some test targets reported failures:
+  - BlindCoreTests (XCTest)

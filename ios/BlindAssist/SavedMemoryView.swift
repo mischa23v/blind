@@ -48,6 +48,7 @@ struct SavedMemoryView: View {
 
     var body: some View {
         Form {
+            Section { ConnectedJourneyPersistenceView(store: model.journeys, arabic: model.arabic) }
             Section {
                 ForEach(model.savedItems) { item in
                     VStack(alignment: .leading, spacing: 4) {

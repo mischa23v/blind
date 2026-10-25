@@ -165,7 +165,9 @@ test('source contract: debug privacy purge cannot bypass familiar search cancell
       const prefix = configured.slice(0, mutation).replace(/\s+/g, ' ').trim();
       const required = ['clearExploreSnapshot()',
         ...(debug ? ['purgeDebugSessionDiagnostics()'] : []),
-        ...(familiar ? ['familiarPeople.cancelSearchForNewGoal()'] : [])];
+        ...(familiar ? ['familiarPeople.cancelSearchForNewGoal()'] : []),
+        'retireHeldSearchForPrivacyDeletion()',
+        'try? journeys.withConnectedJourney { try $0.eraseHistory(origin: .trustedInterface) }'];
       assert.equal(prefix, required.join(' '), `Unconditional ordered privacy prefix, DEBUG=${debug}, familiar=${familiar}`);
       assert.doesNotMatch(prefix, /\b(?:return|throw|await|guard|if)\b/);
     }
@@ -175,6 +177,8 @@ test('source contract: debug privacy purge cannot bypass familiar search cancell
   };
   check(clear);
   for (const [name, from, to] of [
+    ['missing held-search retirement', 'retireHeldSearchForPrivacyDeletion()', ''],
+    ['missing journey retirement', 'try? journeys.withConnectedJourney { try $0.eraseHistory(origin: .trustedInterface) }', ''],
     ['missing photo revocation', 'clearExploreSnapshot()', ''],
     ['async photo revocation', 'clearExploreSnapshot()', 'await clearExploreSnapshot()'],
     ['purge failure bypass', 'purgeDebugSessionDiagnostics()', 'guard purgeDebugSessionDiagnostics() else { return }'],

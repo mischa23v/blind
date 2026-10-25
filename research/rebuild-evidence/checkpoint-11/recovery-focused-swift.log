@@ -1,0 +1,215 @@
+warning: /home/agent/.config/swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /home/agent/.config/swiftpm/security is not accessible or not writable, disabling user-level cache features.
+Building for debugging...
+[Computing dependencies]
+Build complete! (0.73 secs)
+Test Suite 'All tests' started at 2026-10-25 08:34:35.547
+Test Suite 'Debug-linux-x86_64.xctest' started at 2026-10-25 08:34:35.548
+Test Suite 'NativeQuietReplayTests' started at 2026-10-25 08:34:35.548
+Test Case 'NativeQuietReplayTests.testConversationAndRoomPictureDeletionClearRetainedSearchText' started at 2026-10-25 08:34:35.548
+Test Case 'NativeQuietReplayTests.testConversationAndRoomPictureDeletionClearRetainedSearchText' passed (0.001 seconds)
+Test Case 'NativeQuietReplayTests.testForgetItemFailedStorageStillRetiresHeldRequestAndNativeLeaseStaysOwned' started at 2026-10-25 08:34:35.549
+Test Case 'NativeQuietReplayTests.testForgetItemFailedStorageStillRetiresHeldRequestAndNativeLeaseStaysOwned' passed (0.0 seconds)
+Test Case 'NativeQuietReplayTests.testHomeToggleUsesSameFreshResumePath' started at 2026-10-25 08:34:35.550
+Test Case 'NativeQuietReplayTests.testHomeToggleUsesSameFreshResumePath' passed (0.0 seconds)
+Test Case 'NativeQuietReplayTests.testLegacyNativePauseBaselineDoesNotPretendGoalTextRestoresRoute' started at 2026-10-25 08:34:35.550
+LEGACY_NATIVE_PAUSE_BASELINE=goalTextRetained:true,routeRestored:false,returnRestored:false,status:OPEN
+Test Case 'NativeQuietReplayTests.testLegacyNativePauseBaselineDoesNotPretendGoalTextRestoresRoute' passed (0.0 seconds)
+Test Case 'NativeQuietReplayTests.testQuietRetainsSearchIntentAndResumesOnlyWithFreshEvidence' started at 2026-10-25 08:34:35.550
+Test Case 'NativeQuietReplayTests.testQuietRetainsSearchIntentAndResumesOnlyWithFreshEvidence' passed (0.0 seconds)
+Test Case 'NativeQuietReplayTests.testQuietWaitsForOldNativeLeaseAndNewGoalCannotReviveSearch' started at 2026-10-25 08:34:35.550
+Test Case 'NativeQuietReplayTests.testQuietWaitsForOldNativeLeaseAndNewGoalCannotReviveSearch' passed (0.0 seconds)
+Test Case 'NativeQuietReplayTests.testRoomPictureDeletionDoesNotOrphanBusyUnrelatedModelTurn' started at 2026-10-25 08:34:35.551
+Test Case 'NativeQuietReplayTests.testRoomPictureDeletionDoesNotOrphanBusyUnrelatedModelTurn' passed (0.0 seconds)
+Test Suite 'NativeQuietReplayTests' passed at 2026-10-25 08:34:35.551
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'Debug-linux-x86_64.xctest' passed at 2026-10-25 08:34:35.551
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'All tests' passed at 2026-10-25 08:34:35.551
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'All tests' started at 2026-10-25 08:34:35.560
+Test Suite 'Debug-linux-x86_64.xctest' started at 2026-10-25 08:34:35.562
+Test Suite 'NativeLifecycleIntegrationTests' started at 2026-10-25 08:34:35.562
+Test Case 'NativeLifecycleIntegrationTests.testActualClearWrapperReportsFailedEraseAndExactOwnerRetry' started at 2026-10-25 08:34:35.562
+NATIVE_PRIVACY_ERASE=failedWrite:oldDiskHistoryPresent,pendingVisible:true,failureVisible:true,staleRetryRejected:true,exactRetry:erased,restartGoal:nil
+Test Case 'NativeLifecycleIntegrationTests.testActualClearWrapperReportsFailedEraseAndExactOwnerRetry' passed (0.094 seconds)
+Test Case 'NativeLifecycleIntegrationTests.testActualCommandRouterRejectsUnverifiedReturnAndHarmlessQuestionPreservesGoal' started at 2026-10-25 08:34:35.656
+Test Case 'NativeLifecycleIntegrationTests.testActualCommandRouterRejectsUnverifiedReturnAndHarmlessQuestionPreservesGoal' passed (0.045 seconds)
+Test Case 'NativeLifecycleIntegrationTests.testActualJourneyStoreCameraLifecycleDoesNotResetDurableDestination' started at 2026-10-25 08:34:35.701
+Test Case 'NativeLifecycleIntegrationTests.testActualJourneyStoreCameraLifecycleDoesNotResetDurableDestination' passed (0.043 seconds)
+Test Case 'NativeLifecycleIntegrationTests.testActualPauseQuietResumeBodiesRetainUnderlyingJourneyAndSearchWork' started at 2026-10-25 08:34:35.744
+EXTRACTED_NATIVE_PAUSE_RESTORATION=realGoalRetained:true,oldTicket:false,resumeNeedsFresh:true,freshRouteRestored:true,quietSearchRestored:true
+Test Case 'NativeLifecycleIntegrationTests.testActualPauseQuietResumeBodiesRetainUnderlyingJourneyAndSearchWork' passed (0.048 seconds)
+Test Case 'NativeLifecycleIntegrationTests.testArrivedConnectedOwnerDoesNotExposeOldLegacyRoute' started at 2026-10-25 08:34:35.791
+Test Case 'NativeLifecycleIntegrationTests.testArrivedConnectedOwnerDoesNotExposeOldLegacyRoute' passed (0.048 seconds)
+Test Case 'NativeLifecycleIntegrationTests.testExactNativeMountAndFrameLossRetireIssuerSessionBeforeRecovery' started at 2026-10-25 08:34:35.839
+NATIVE_POSE_LIFECYCLE=mountLoss:retired,throttledTrackingLoss:retired,savedWorldLoss:retired,depthTrackingLoss:retired,oldSessionReissue:false,goalRetained:true,hazardsRetained:true
+Test Case 'NativeLifecycleIntegrationTests.testExactNativeMountAndFrameLossRetireIssuerSessionBeforeRecovery' passed (0.189 seconds)
+Test Case 'NativeLifecycleIntegrationTests.testScopeOnlyRevisionRetainsGoalButExplicitChangedIntentCancels' started at 2026-10-25 08:34:36.028
+Test Case 'NativeLifecycleIntegrationTests.testScopeOnlyRevisionRetainsGoalButExplicitChangedIntentCancels' passed (0.05 seconds)
+Test Case 'NativeLifecycleIntegrationTests.testSelectedConnectedOwnerCannotMutateLegacyRouteOrFallBackAfterCancel' started at 2026-10-25 08:34:36.078
+NATIVE_SELECTED_OWNER=connectedLeg:hall-map,legacyRoute:old-map-A,wrongBlockMutations:0,wrongArrivalMutations:0,cancelFallback:false,explicitPreviewOnly:true,obstructionReportAccepted:false
+Test Case 'NativeLifecycleIntegrationTests.testSelectedConnectedOwnerCannotMutateLegacyRouteOrFallBackAfterCancel' passed (0.051 seconds)
+Test Suite 'NativeLifecycleIntegrationTests' passed at 2026-10-25 08:34:36.129
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.567 (0.567) seconds
+Test Suite 'Debug-linux-x86_64.xctest' passed at 2026-10-25 08:34:36.129
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.567 (0.567) seconds
+Test Suite 'All tests' passed at 2026-10-25 08:34:36.129
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.567 (0.567) seconds
+Test Suite 'All tests' started at 2026-10-25 08:34:36.140
+Test Suite 'Debug-linux-x86_64.xctest' started at 2026-10-25 08:34:36.141
+Test Suite 'ConnectedJourneyFailureTests' started at 2026-10-25 08:34:36.141
+Test Case 'ConnectedJourneyFailureTests.testAlreadyAtGoalCompletesFromFreshEvidenceWithoutInventedLeg' started at 2026-10-25 08:34:36.141
+Test Case 'ConnectedJourneyFailureTests.testAlreadyAtGoalCompletesFromFreshEvidenceWithoutInventedLeg' passed (0.344 seconds)
+Test Case 'ConnectedJourneyFailureTests.testArabicQuestionExactDeliveryAndExpiry' started at 2026-10-25 08:34:36.485
+Test Case 'ConnectedJourneyFailureTests.testArabicQuestionExactDeliveryAndExpiry' passed (0.34 seconds)
+Test Case 'ConnectedJourneyFailureTests.testCatalogReinstallCannotDiscardKnownRestrictionAfterRemoval' started at 2026-10-25 08:34:36.824
+Test Case 'ConnectedJourneyFailureTests.testCatalogReinstallCannotDiscardKnownRestrictionAfterRemoval' passed (0.911 seconds)
+Test Case 'ConnectedJourneyFailureTests.testClarificationIsOneUseAndRejectsUnverifiedSpeechAndStaleNewGoal' started at 2026-10-25 08:34:37.736
+Test Case 'ConnectedJourneyFailureTests.testClarificationIsOneUseAndRejectsUnverifiedSpeechAndStaleNewGoal' passed (0.344 seconds)
+Test Case 'ConnectedJourneyFailureTests.testCurrentCaptureExpiryWithdrawsRouteWithoutNewFrame' started at 2026-10-25 08:34:38.080
+Test Case 'ConnectedJourneyFailureTests.testCurrentCaptureExpiryWithdrawsRouteWithoutNewFrame' passed (0.344 seconds)
+Test Case 'ConnectedJourneyFailureTests.testFailedCancelThenFlushCannotReviveSupersededGoal' started at 2026-10-25 08:34:38.424
+Test Case 'ConnectedJourneyFailureTests.testFailedCancelThenFlushCannotReviveSupersededGoal' passed (0.345 seconds)
+Test Case 'ConnectedJourneyFailureTests.testFailedGoalSaveWithdrawsOldOutputAndPreservesPreviousDurableBytes' started at 2026-10-25 08:34:38.769
+Test Case 'ConnectedJourneyFailureTests.testFailedGoalSaveWithdrawsOldOutputAndPreservesPreviousDurableBytes' passed (0.343 seconds)
+Test Case 'ConnectedJourneyFailureTests.testFailedMapWriteCannotStrandOwnerBySwitchingMapOrCatalog' started at 2026-10-25 08:34:39.112
+Test Case 'ConnectedJourneyFailureTests.testFailedMapWriteCannotStrandOwnerBySwitchingMapOrCatalog' passed (0.678 seconds)
+Test Case 'ConnectedJourneyFailureTests.testFailedRestrictionWriteBlocksAndCannotBeClearedByJourneyFlush' started at 2026-10-25 08:34:39.790
+Test Case 'ConnectedJourneyFailureTests.testFailedRestrictionWriteBlocksAndCannotBeClearedByJourneyFlush' passed (0.347 seconds)
+Test Case 'ConnectedJourneyFailureTests.testHistoryBoundsAndMalformedRestoration' started at 2026-10-25 08:34:40.137
+Test Case 'ConnectedJourneyFailureTests.testHistoryBoundsAndMalformedRestoration' passed (1.207 seconds)
+Test Case 'ConnectedJourneyFailureTests.testInterruptedUnknownWrongPromptAndWrongDestinationCannotAuthorizeClarification' started at 2026-10-25 08:34:41.344
+Test Case 'ConnectedJourneyFailureTests.testInterruptedUnknownWrongPromptAndWrongDestinationCannotAuthorizeClarification' passed (1.371 seconds)
+Test Case 'ConnectedJourneyFailureTests.testInvalidCommandCannotBeClearedByUnrelatedReferenceWriteOrFlush' started at 2026-10-25 08:34:42.715
+Test Case 'ConnectedJourneyFailureTests.testInvalidCommandCannotBeClearedByUnrelatedReferenceWriteOrFlush' passed (0.343 seconds)
+Test Case 'ConnectedJourneyFailureTests.testOldPortalDepartureCannotSurviveGoalCatalogOrCameraChange' started at 2026-10-25 08:34:43.058
+Test Case 'ConnectedJourneyFailureTests.testOldPortalDepartureCannotSurviveGoalCatalogOrCameraChange' passed (1.338 seconds)
+Test Case 'ConnectedJourneyFailureTests.testOneWayPortalDoesNotCreateReturnPermission' started at 2026-10-25 08:34:44.396
+Test Case 'ConnectedJourneyFailureTests.testOneWayPortalDoesNotCreateReturnPermission' passed (0.348 seconds)
+Test Case 'ConnectedJourneyFailureTests.testPortalAssociationExpiresEvenWithFreshDestinationEvidence' started at 2026-10-25 08:34:44.744
+Test Case 'ConnectedJourneyFailureTests.testPortalAssociationExpiresEvenWithFreshDestinationEvidence' passed (0.353 seconds)
+Test Case 'ConnectedJourneyFailureTests.testPortalCannotBeCompletedWithoutDepartureEvidenceOrAfterRestart' started at 2026-10-25 08:34:45.097
+Test Case 'ConnectedJourneyFailureTests.testPortalCannotBeCompletedWithoutDepartureEvidenceOrAfterRestart' passed (0.344 seconds)
+Test Case 'ConnectedJourneyFailureTests.testQuietHarmlessQuestionHoldAndResumePreserveIntentButDoNotReplayPose' started at 2026-10-25 08:34:45.442
+Test Case 'ConnectedJourneyFailureTests.testQuietHarmlessQuestionHoldAndResumePreserveIntentButDoNotReplayPose' passed (0.352 seconds)
+Test Case 'ConnectedJourneyFailureTests.testRejectedCaptureRetiresPortalDepartureWithoutChangingHistoryOrDestination' started at 2026-10-25 08:34:45.794
+Test Case 'ConnectedJourneyFailureTests.testRejectedCaptureRetiresPortalDepartureWithoutChangingHistoryOrDestination' passed (0.347 seconds)
+Test Suite 'ConnectedJourneyFailureTests' passed at 2026-10-25 08:34:46.141
+	 Executed 18 tests, with 0 failures (0 unexpected) in 9.999 (9.999) seconds
+Test Suite 'ConnectedJourneyNativeOutputTests' started at 2026-10-25 08:34:46.141
+Test Case 'ConnectedJourneyNativeOutputTests.testNewGoalAndIndependentHazardRetireExactOldSpeechOnly' started at 2026-10-25 08:34:46.141
+Test Case 'ConnectedJourneyNativeOutputTests.testNewGoalAndIndependentHazardRetireExactOldSpeechOnly' passed (0.301 seconds)
+Test Case 'ConnectedJourneyNativeOutputTests.testSyntheticFullSequenceCompletesNativeOutputCallbacksOutAndBack' started at 2026-10-25 08:34:46.442
+SYNTHETIC_NATIVE_ROUTE_CALLBACK_OUTPUT=["m, approximately 1.0 meters.","p, approximately 1.0 meters.","m, approximately 2.0 meters.","p, approximately 2.0 meters.","m, approximately 1.0 meters.","p, approximately 1.0 meters.","m, approximately 1.0 meters.","s, approximately 1.0 meters.","m, approximately 2.0 meters.","s, approximately 2.0 meters.","m, approximately 1.0 meters.","s, approximately 1.0 meters."]
+Test Case 'ConnectedJourneyNativeOutputTests.testSyntheticFullSequenceCompletesNativeOutputCallbacksOutAndBack' passed (0.357 seconds)
+Test Suite 'ConnectedJourneyNativeOutputTests' passed at 2026-10-25 08:34:46.798
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.657 (0.657) seconds
+Test Suite 'ConnectedJourneyRuntimeTests' started at 2026-10-25 08:34:46.798
+Test Case 'ConnectedJourneyRuntimeTests.testAutomaticRecoveryKeepsCurrentConservativeRestrictions' started at 2026-10-25 08:34:46.798
+NATIVE_RECOVERY_RESTRICTION=blocked:s-m,afterRejection:retained,blockedRecovery:withheld,admissibleFreshEndpoint:m,replan:automatic
+Test Case 'ConnectedJourneyRuntimeTests.testAutomaticRecoveryKeepsCurrentConservativeRestrictions' passed (0.257 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testCancelIsSynchronousAndLatestOnlyWhileWriterIsBlocked' started at 2026-10-25 08:34:47.056
+NATIVE_RUNTIME_SLOW_IO=cancelImmediate:true,pendingWritesAtMost:2,latestDiskGoal:cancelled,oldTicket:false
+Test Case 'ConnectedJourneyRuntimeTests.testCancelIsSynchronousAndLatestOnlyWhileWriterIsBlocked' passed (0.163 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testDeleteRestartCannotReimportSameRevisionAndForgetRestrictions' started at 2026-10-25 08:34:47.218
+DELETED_REVISION_RESTART=geometryRemoved:true,tombstoneRetained:true,sameRevisionReimport:false,restrictionRollback:false
+Test Case 'ConnectedJourneyRuntimeTests.testDeleteRestartCannotReimportSameRevisionAndForgetRestrictions' passed (0.13 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testDeleteWhileRestoreIsPendingCannotReinstallQueuedOldMap' started at 2026-10-25 08:34:47.349
+Test Case 'ConnectedJourneyRuntimeTests.testDeleteWhileRestoreIsPendingCannotReinstallQueuedOldMap' passed (0.133 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testDormantNativeRuntimePersistsDestinationButCannotInventCalibrationOrPose' started at 2026-10-25 08:34:47.481
+Test Case 'ConnectedJourneyRuntimeTests.testDormantNativeRuntimePersistsDestinationButCannotInventCalibrationOrPose' passed (0.08 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testFailedSaveNewCommandAndEraseCannotReviveSupersededGoal' started at 2026-10-25 08:34:47.561
+Test Case 'ConnectedJourneyRuntimeTests.testFailedSaveNewCommandAndEraseCannotReviveSupersededGoal' passed (0.081 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testIntegratedAutomaticRecoveryAfterRejectedEvidence' started at 2026-10-25 08:34:47.642
+NATIVE_REPLAY_INVALID=mode:wrong-support,capture:AD1B5BF6-46C8-4AA1-998E-4D204F645E17,session:6D553001-2955-4CC3-AFB0-DE09EA550C66,error:missingSupport
+NATIVE_REPLAY_RECOVERY=mode:wrong-support,fresh:11272BF2-1CD9-43F8-94BF-89FA26834B30,session:AF2916C5-8692-43E3-9BC0-2E9C8CE2F761,target:m,status:PASS
+NATIVE_REPLAY_INVALID=mode:camera-only-heading,capture:E530F559-CA7B-4DD9-9A21-9AE4E67951B8,session:EEBD6776-C584-4F55-B81E-FA089B8D7DE2,error:invalidCapture
+NATIVE_REPLAY_RECOVERY=mode:camera-only-heading,fresh:6EF08DE7-EB97-4E57-BFBF-A417A0EBF600,session:DCF28D27-0E6D-4D3E-B36F-FCA9FC884806,target:m,status:PASS
+Test Case 'ConnectedJourneyRuntimeTests.testIntegratedAutomaticRecoveryAfterRejectedEvidence' passed (0.473 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testIntegratedRejectedEvidenceCannotInferMidLegStart' started at 2026-10-25 08:34:48.115
+NATIVE_UNKNOWN_ENDPOINT=capture:553EF0DE-AC65-481A-ABBC-B560EDFF4646,session:1828245C-DC70-4EC2-8D37-7D3A161E6A2F,position:1.5/1.3/3,expected:withhold,status:PASS_IF_ASSERTIONS_PASS
+Test Case 'ConnectedJourneyRuntimeTests.testIntegratedRejectedEvidenceCannotInferMidLegStart' passed (0.192 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testInvalidCalibrationReplacementCannotReuseOldBodyOrRoute' started at 2026-10-25 08:34:48.308
+Test Case 'ConnectedJourneyRuntimeTests.testInvalidCalibrationReplacementCannotReuseOldBodyOrRoute' passed (0.155 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testMapIOWithdrawalInvalidGoalAndDeletionFenceStaleOutput' started at 2026-10-25 08:34:48.463
+Test Case 'ConnectedJourneyRuntimeTests.testMapIOWithdrawalInvalidGoalAndDeletionFenceStaleOutput' passed (0.16 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testMaximumHistorySynchronousResidualIsBoundedAndMeasuredNotDeviceLatency' started at 2026-10-25 08:34:48.623
+NATIVE_MAIN_OWNER_RESIDUAL=historyBytes:510000,events:256,references:64,samples:12,hostMaxMilliseconds:21.031,deviceHazardLatency:UNMEASURED
+Test Case 'ConnectedJourneyRuntimeTests.testMaximumHistorySynchronousResidualIsBoundedAndMeasuredNotDeviceLatency' passed (0.337 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testOuterEnvelopeCannotBypassNestedHistoryByteLimit' started at 2026-10-25 08:34:48.960
+Test Case 'ConnectedJourneyRuntimeTests.testOuterEnvelopeCannotBypassNestedHistoryByteLimit' passed (0.025 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testPauseRestartAndResumeRetainRealGoalButNeedFreshEvidence' started at 2026-10-25 08:34:48.986
+Test Case 'ConnectedJourneyRuntimeTests.testPauseRestartAndResumeRetainRealGoalButNeedFreshEvidence' passed (0.173 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testRejectedEvidenceWaitsAtMidLegThenAutomaticallyReplansFromFreshAuthoredNode' started at 2026-10-25 08:34:49.159
+NATIVE_RECOVERY_ENDPOINT=midLeg:withheld,freshAuthoredNode:m,next:p,oldSessionRejected:true,oldTicket:false,startGoalHistory:unchanged
+Test Case 'ConnectedJourneyRuntimeTests.testRejectedEvidenceWaitsAtMidLegThenAutomaticallyReplansFromFreshAuthoredNode' passed (0.265 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testReplacementOrHoldDuringDelayedRestoreOwnsLatestIntent' started at 2026-10-25 08:34:49.424
+Test Case 'ConnectedJourneyRuntimeTests.testReplacementOrHoldDuringDelayedRestoreOwnsLatestIntent' passed (0.847 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testSyntheticFullNativeRuntimeOutAndBackRequiresDeliveredOneUseChoice' started at 2026-10-25 08:34:50.271
+SYNTHETIC_NATIVE_RUNTIME_FULL_SEQUENCE=bedroom-map:m:1.0,bedroom-map:p:1.0,hall-map:m:2.0,hall-map:p:2.0,study-map:m:1.0,study-map:p:1.0,study-map:m:1.0,study-map:s:1.0,hall-map:m:2.0,hall-map:s:2.0,bedroom-map:m:1.0,bedroom-map:s:1.0
+Test Case 'ConnectedJourneyRuntimeTests.testSyntheticFullNativeRuntimeOutAndBackRequiresDeliveredOneUseChoice' passed (1.147 seconds)
+Test Case 'ConnectedJourneyRuntimeTests.testUnverifiedCommandsCannotEvenRetireActiveNativeRoute' started at 2026-10-25 08:34:51.418
+Test Case 'ConnectedJourneyRuntimeTests.testUnverifiedCommandsCannotEvenRetireActiveNativeRoute' passed (0.14 seconds)
+Test Suite 'ConnectedJourneyRuntimeTests' passed at 2026-10-25 08:34:51.558
+	 Executed 17 tests, with 0 failures (0 unexpected) in 4.759 (4.759) seconds
+Test Suite 'ConnectedJourneyStoreTests' started at 2026-10-25 08:34:51.558
+Test Case 'ConnectedJourneyStoreTests.testAtomicPersistenceRestoresLatestGoalWithUnknownPoseAndDeletion' started at 2026-10-25 08:34:51.558
+Test Case 'ConnectedJourneyStoreTests.testAtomicPersistenceRestoresLatestGoalWithUnknownPoseAndDeletion' passed (0.064 seconds)
+Test Case 'ConnectedJourneyStoreTests.testMalformedFileFailsWithoutSilentlyReplacingHistory' started at 2026-10-25 08:34:51.622
+Test Case 'ConnectedJourneyStoreTests.testMalformedFileFailsWithoutSilentlyReplacingHistory' passed (0.043 seconds)
+Test Case 'ConnectedJourneyStoreTests.testRestoreCannotRollBackAnAlreadyStartedFailedNewCommand' started at 2026-10-25 08:34:51.666
+Test Case 'ConnectedJourneyStoreTests.testRestoreCannotRollBackAnAlreadyStartedFailedNewCommand' passed (0.035 seconds)
+Test Case 'ConnectedJourneyStoreTests.testSlowWriterDoesNotBlockIndependentExecutorAndLatestCancelWins' started at 2026-10-25 08:34:51.701
+Test Case 'ConnectedJourneyStoreTests.testSlowWriterDoesNotBlockIndependentExecutorAndLatestCancelWins' passed (0.046 seconds)
+Test Suite 'ConnectedJourneyStoreTests' passed at 2026-10-25 08:34:51.747
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.189 (0.189) seconds
+Test Suite 'ConnectedJourneyTests' started at 2026-10-25 08:34:51.747
+Test Case 'ConnectedJourneyTests.testAppearanceGPSUserLabelAndCameraHeadingCannotEstablishCurrentPose' started at 2026-10-25 08:34:51.747
+Test Case 'ConnectedJourneyTests.testAppearanceGPSUserLabelAndCameraHeadingCannotEstablishCurrentPose' passed (1.038 seconds)
+Test Case 'ConnectedJourneyTests.testBlockedReturnUsesCurrentRestrictionsNotTraversedHistory' started at 2026-10-25 08:34:52.785
+Test Case 'ConnectedJourneyTests.testBlockedReturnUsesCurrentRestrictionsNotTraversedHistory' passed (0.354 seconds)
+Test Case 'ConnectedJourneyTests.testCameraRestartRetainsGoalAndRequiresFreshSessionEvidence' started at 2026-10-25 08:34:53.139
+Test Case 'ConnectedJourneyTests.testCameraRestartRetainsGoalAndRequiresFreshSessionEvidence' passed (0.352 seconds)
+Test Case 'ConnectedJourneyTests.testDeletionAndReplacementKeepHistoryButWithholdStaleTarget' started at 2026-10-25 08:34:53.491
+Test Case 'ConnectedJourneyTests.testDeletionAndReplacementKeepHistoryButWithholdStaleTarget' passed (0.955 seconds)
+Test Case 'ConnectedJourneyTests.testIncompleteWrongRevisionWrongEndpointAndMetricInconsistentPortalReject' started at 2026-10-25 08:34:54.447
+Test Case 'ConnectedJourneyTests.testIncompleteWrongRevisionWrongEndpointAndMetricInconsistentPortalReject' passed (0.345 seconds)
+Test Case 'ConnectedJourneyTests.testNewGoalRejectsOldRouteAndDoesNotResetPose' started at 2026-10-25 08:34:54.792
+Test Case 'ConnectedJourneyTests.testNewGoalRejectsOldRouteAndDoesNotResetPose' passed (0.344 seconds)
+Test Case 'ConnectedJourneyTests.testNoPortalNoTransformUnknownMapOrFloorCannotInventConnection' started at 2026-10-25 08:34:55.136
+Test Case 'ConnectedJourneyTests.testNoPortalNoTransformUnknownMapOrFloorCannotInventConnection' passed (1.272 seconds)
+Test Case 'ConnectedJourneyTests.testRestartRestoresIntentAndHistoryButNeverPoseRouteOrReceipt' started at 2026-10-25 08:34:56.408
+Test Case 'ConnectedJourneyTests.testRestartRestoresIntentAndHistoryButNeverPoseRouteOrReceipt' passed (0.636 seconds)
+Test Case 'ConnectedJourneyTests.testSyntheticFullOutboundAndReturnUsesActualPlannerCollisionAndNarrationLedger' started at 2026-10-25 08:34:57.044
+SYNTHETIC_FULL_JOURNEY_OUTPUT=["map=bedroom-map floor=ground target=m sector=0 distance=1.00","map=bedroom-map floor=ground target=p sector=0 distance=1.00","portal=bedroom-door from=ground to=ground output=withheld","map=hall-map floor=ground target=m sector=0 distance=2.00","map=hall-map floor=ground target=p sector=0 distance=2.00","portal=lift from=ground to=upper output=withheld","map=study-map floor=upper target=m sector=0 distance=1.00","map=study-map floor=upper target=p sector=0 distance=1.00","goal=destination status=arrived","Return to the saved reference or the journey start?","map=study-map floor=upper target=m sector=0 distance=1.00","map=study-map floor=upper target=s sector=0 distance=1.00","portal=lift from=upper to=ground output=withheld","map=hall-map floor=ground target=m sector=0 distance=2.00","map=hall-map floor=ground target=s sector=0 distance=2.00","portal=bedroom-door from=ground to=ground output=withheld","map=bedroom-map floor=ground target=m sector=0 distance=1.00","map=bedroom-map floor=ground target=s sector=0 distance=1.00","goal=returnToStart status=arrived"]
+Test Case 'ConnectedJourneyTests.testSyntheticFullOutboundAndReturnUsesActualPlannerCollisionAndNarrationLedger' passed (0.351 seconds)
+Test Case 'ConnectedJourneyTests.testUnverifiedSpeechCannotChangeGoalReturnCancelOrReference' started at 2026-10-25 08:34:57.395
+Test Case 'ConnectedJourneyTests.testUnverifiedSpeechCannotChangeGoalReturnCancelOrReference' passed (1.324 seconds)
+Test Suite 'ConnectedJourneyTests' passed at 2026-10-25 08:34:58.719
+	 Executed 10 tests, with 0 failures (0 unexpected) in 6.971 (6.971) seconds
+Test Suite 'HeldSearchIntentTests' started at 2026-10-25 08:34:58.719
+Test Case 'HeldSearchIntentTests.testExplicitQuietResumeRetainsTargetButNeverCachedResult' started at 2026-10-25 08:34:58.719
+Test Case 'HeldSearchIntentTests.testExplicitQuietResumeRetainsTargetButNeverCachedResult' passed (0.0 seconds)
+Test Case 'HeldSearchIntentTests.testNewGoalAndUnverifiedSpeechCannotReviveHeldSearch' started at 2026-10-25 08:34:58.719
+Test Case 'HeldSearchIntentTests.testNewGoalAndUnverifiedSpeechCannotReviveHeldSearch' passed (0.0 seconds)
+Test Case 'HeldSearchIntentTests.testRepeatedQuietWithoutNewSearchPreservesIntentAndDoesNotStartSensors' started at 2026-10-25 08:34:58.719
+Test Case 'HeldSearchIntentTests.testRepeatedQuietWithoutNewSearchPreservesIntentAndDoesNotStartSensors' passed (0.0 seconds)
+Test Suite 'HeldSearchIntentTests' passed at 2026-10-25 08:34:58.719
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'Debug-linux-x86_64.xctest' passed at 2026-10-25 08:34:58.719
+	 Executed 54 tests, with 0 failures (0 unexpected) in 22.576 (22.576) seconds
+Test Suite 'All tests' passed at 2026-10-25 08:34:58.719
+	 Executed 54 tests, with 0 failures (0 unexpected) in 22.576 (22.576) seconds
+◇ Test run started.
+↳ Testing Library Version: 6.4.1 (804dc4530ef3666)
+↳ Target Platform: x86_64-unknown-linux-gnu
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+◇ Test run started.
+↳ Testing Library Version: 6.4.1 (804dc4530ef3666)
+↳ Target Platform: x86_64-unknown-linux-gnu
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+◇ Test run started.
+↳ Testing Library Version: 6.4.1 (804dc4530ef3666)
+↳ Target Platform: x86_64-unknown-linux-gnu
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.

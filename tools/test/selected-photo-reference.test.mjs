@@ -61,7 +61,7 @@ test('camera cancellation is separate; photo interruption and quiet clear the wh
   const s = await read('ios/BlindAssist/NavigationModel.swift');
   const cancel = section(s, 'private func cancelDescription()', 'private func publish()'); assert.doesNotMatch(cancel, /selectedPhotoTask|selectedPhotoNativeLease|selectedPhoto\./);
   const photo = section(s, 'func explorePhoto(', '\nextension CGImagePropertyOrientation'); assert.match(photo, /selectedPhotoTask = Task/); assert.match(photo, /self.selectedPhoto.selection\?\.id == token/); assert.doesNotMatch(photo, /self.exploreRequest/);
-  assert.match(s, /if selectedPhoto.selection != nil \{ clearExploreSnapshot\(\) \}/); assert.match(s, /func stopDescriptions\(\) \{ clearExploreSnapshot\(\)/);
+  assert.match(s, /if selectedPhoto.selection != nil \{ clearExploreSnapshot\(\) \}/); assert.match(s, /func stopDescriptions\(\) \{\s*clearExploreSnapshot\(\)/);
 });
 
 test('helper ingress and delayed actual speech start enforce photo ownership', async () => {

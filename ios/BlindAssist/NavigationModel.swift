@@ -166,6 +166,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published var fixedBodyMount = false {
         didSet {
             if oldValue != fixedBodyMount {
+                journeys.breakTracking()
                 cancelDescription(); feedback.interruptAmbient()
                 // A changed physical mount retires heading authority, not map history.
                 indoor.invalidatePosition(); spatialRouteOutput.retire()
@@ -235,6 +236,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var lastIndoorCueKey = ""
     private let spatialRouteOutput = SpatialRouteOutputController()
     private var plannedIndoorGoalRevision: String?
+    private var journeyConversationGoal = ""
+    private var journeyConversationSourceID: String?
     private var lastSceneContent = ""
     private var lastSceneSpoken = -Double.infinity
     private var detector = HazardDetector()
@@ -334,6 +337,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var recordedSpotSpeech: (id: UUID, origin: Observation, frameID: String, target: String, sightingID: String, orientation: String)?
     private var pendingPassiveNotice: (id: UUID, key: String, revision: String)?
     private var interruptedSearch = InterruptedObjectSearch()
+    private var heldSearchIntent = HeldSearchIntent()
     /// Adapter orchestration is not a second sensor loop or permission to act.
     private var everydayTasks = EverydayTaskCoordinator()
     private var everydayTicket: EverydayTaskCoordinator.Ticket?
@@ -462,6 +466,28 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         spatialRouteOutput.stopSpeech = { [weak self] id in self?.feedback.stopSpatialRouteSpeech(id) }
         spatialRouteOutput.stopBeacon = { [weak self] id in self?.feedback.stopSpatialRouteBeacon(id) }
         indoor.onSpatialOutputRetired = { [weak self] in self?.spatialRouteOutput.retire() }
+        journeys.withConnectedJourney { runtime in
+            runtime.onOutputRetired = { [weak self] in self?.spatialRouteOutput.retire() }
+            runtime.onClarificationRetired = { [weak self] id in self?.feedback.stopRequestedSpeech(id) }
+        }
+        indoor.onJourneyMapOwnershipWithdrawn = { [weak self] revision in
+            guard let self, self.indoor.revision == revision else { return }
+            self.journeys.withConnectedJourney { $0.mapOwnershipWithdrawn() }
+        }
+        indoor.onJourneyMapPublished = { [weak self] revision, installation, removed, deleted in
+            guard let self, self.indoor.revision == revision else { return }
+            do {
+                try self.journeys.withConnectedJourney {
+                    if let installation { try $0.install(installation) }
+                    else if deleted { try $0.mapRemovalSettled(removed) }
+                    else { $0.mapPreviewPublished() }
+                }
+            } catch { self.message = "Journey map context is unavailable. Guidance remains paused." }
+        }
+        if indoor.mapIOPending { journeys.withConnectedJourney { $0.mapOwnershipWithdrawn() } }
+        else if let installation = indoor.registeredJourneyInstallation {
+            try? journeys.withConnectedJourney { try $0.install(installation) }
+        }
         feedback.spatialRoutePermission = { [weak self] id in
             self?.spatialRouteOutput.validateForStart(id) == true
         }
@@ -521,6 +547,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         feedback.onRequestedSpeechFinished = { [weak self] id, text, outcome in
             guard let self else { return }
             if self.finishSelectedPhotoSpeech(id: id, text: text, outcome: outcome) { return }
+            if self.journeys.withConnectedJourney({ $0.clarificationSpeechFinished(id: id, text: text,
+                outcome: outcome, now: ProcessInfo.processInfo.systemUptime) }) { return }
             if self.recordedSpotSpeech?.id == id { self.recordedSpotSpeech = nil }
             if self.contextualSpeech?.id == id { self.contextualSpeech = nil }
             if self.requestedColorSpeech?.id == id { self.requestedColorSpeech = nil }
@@ -697,6 +725,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 : "Room scan finished. To bring camera alerts back, use Calibrate on level ground in the app with a sighted helper."
             _ = self.speakMobility(self.message)
         }
+        journeyConversationGoal = companionWorkingState.goal; journeyConversationSourceID = companionWorkingState.goalSource?.sourceID
     }
     var supported: Bool { ARWorldTrackingConfiguration.supportsFrameSemantics(.sceneDepth) }
     func start() {
@@ -829,6 +858,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             guard let self else { return }
             // Held route output expires even if no sensor callback arrives.
             self.indoor.revalidateSpatialOutput(now: ProcessInfo.processInfo.systemUptime)
+            self.journeys.withConnectedJourney { $0.revalidate(now: ProcessInfo.processInfo.systemUptime) }
             self.spatialRouteOutput.revalidate()
             guard self.running, !self.places.scanning else { return }
             self.tickEverydayRetry(now: ProcessInfo.processInfo.systemUptime)
@@ -874,6 +904,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if let watchdog { RunLoop.main.add(watchdog, forMode: .common) }
     }
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        // Tracking loss retires the issuer even when this frame is throttled below.
+        if case .normal = frame.camera.trackingState {} else { journeys.breakTracking() }
         guard running, !simulation, !places.scanning, frame.timestamp - lastProcessed >= 1.0 / 15 else { return }
         let receivedAt = ProcessInfo.processInfo.systemUptime
         let receivedDate = Date()
@@ -926,6 +958,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if let place = recognizedPlace, let sessionID = UUID(uuidString: observationFrameID) {
             let verifiedFrame = places.observeWorldMapRecovery(for: place, frame: frame, sessionID: sessionID, now: lastFrameWallTime)
             if place.worldFrame != nil, verifiedFrame == nil {
+                journeys.breakTracking()
                 beginAutomaticRecoveryAfterLoss()
                 recognizedPlace = nil; indoor.invalidatePosition()
             }
@@ -944,6 +977,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             return
         }
         if !observation.trackingNormal {
+            journeys.breakTracking()
             beginAutomaticRecoveryAfterLoss()
             invalidatePerceptionWork(preserveRGBHistoryWork: true); invalidateRecognizedRoom()
             detector.reset(); recognizedPlace = nil; indoor.invalidatePosition(); fixedBodyMount = false
@@ -986,13 +1020,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             if !sameSpokenRelation { feedback.stopRequestedSpeech(speech.id); recordedSpotSpeech = nil }
         }
         updateReturn(observation)
-        if !returning, fixedBodyMount, indoor.isAligned, indoor.hasActiveRoute, detection.hazard == .observing,
+        if !returning, fixedBodyMount, connectedJourneyOwnsNavigation, journeys.withConnectedJourney({ $0.goal?.status == .active }), detection.hazard == .observing,
            lastFrameWallTime - lastIndoorAnnouncement >= 8 { indoorBeacon(automatic: true) }
         checkMountSlip()
         updateCompanionRoom(observation)
         updateRoomRecognition(frame: frame, observation: observation)
         updateItemLearning(frame: frame)
 
+        resumeHeldSearchIfPossible()
         resumeInterruptedSearchIfPossible()
         continueSearch()
         updateTrackedTarget()
@@ -1274,6 +1309,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         speakOperation(message)
     }
     func alignIndoor() {
+        guard indoorPreviewControlsAvailable else { message = "Manual preview alignment is unavailable for the selected journey."; return }
         guard let observation = lastObservation, observation.trackingNormal, !simulation,
               ProcessInfo.processInfo.systemUptime - lastFrameWallTime < 0.5 else { message = "A live tracked camera is required."; return }
         indoor.align(camera: observation.camera, forward: observation.forward)
@@ -1282,6 +1318,16 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     func planIndoor(from: String, to: String) throws {
         guard let goal = UUID(uuidString: companionWorkingState.goalRevision) else { throw SpatialRouteError.staleGoal }
         spatialRouteOutput.retire()
+        heldSearchIntent.cancel(); interruptedSearch.cancel()
+        cancelDescription(); _ = feedback.stopInformation(announceCancellation: false)
+        if let installation = indoor.registeredJourneyInstallation {
+            indoorGuidanceOwner = .connectedJourney
+            // The selected endpoint is intent, never evidence that `from` is our pose.
+            try journeys.withConnectedJourney { try $0.setDestination(binding: installation.binding, nodeID: to, origin: .trustedInterface) }
+        } else {
+            indoorGuidanceOwner = .legacyPreview
+            try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
+        }
         try indoor.plan(from: from, to: to, goalRevision: goal)
         plannedIndoorGoalRevision = companionWorkingState.goalRevision
         lastIndoorCueKey = ""; lastIndoorAnnouncement = -.infinity
@@ -1290,41 +1336,47 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let now = ProcessInfo.processInfo.systemUptime
         guard !textOnly, running, !simulation, !places.scanning, !returning,
               !assistantSession.privateAudioHeld, fixedBodyMount,
-              goalRevision == companionWorkingState.goalRevision,
               UUID(uuidString: goalRevision) == ticket.goalRevision,
               let observation = lastObservation, observation.trackingNormal,
               now >= lastFrameWallTime, now - lastFrameWallTime < 0.5,
               detection.hazard == .observing else { return false }
-        return indoor.permitsSpatialOutput(ticket, now: now)
+        guard connectedJourneyOwnsNavigation else { return false }
+        return journeys.withConnectedJourney { $0.goal?.revision == ticket.goalRevision && $0.permits(ticket, now: now) }
+    }
+    /// A selected connected owner remains selected after arrival/cancellation.
+    /// Only a new explicit preview selection can expose legacy preview controls.
+    private enum IndoorGuidanceOwner { case none, connectedJourney, legacyPreview }
+    private var indoorGuidanceOwner: IndoorGuidanceOwner = .none
+    var connectedJourneyOwnsNavigation: Bool {
+        if indoorGuidanceOwner == .connectedJourney { return true }
+        guard indoorGuidanceOwner == .none else { return false }
+        return journeys.withConnectedJourney { $0.goal != nil || $0.question != nil }
+    }
+    var indoorPreviewControlsAvailable: Bool {
+        indoorGuidanceOwner == .legacyPreview && indoor.journeyPreviewIsCurrent
+    }
+    func reportIndoorWayBlocked() {
+        guard indoorPreviewControlsAvailable else {
+            message = arabic ? "الإبلاغ عن طريق مغلق غير متاح لهذه الرحلة. لم يُسجل أي عائق." : "Blocked-way reporting is unavailable for this journey. No obstruction was recorded."
+            return
+        }
+        indoor.blockNextLeg()
+    }
+    func confirmIndoorPreviewArrival() {
+        guard indoorPreviewControlsAvailable else {
+            message = arabic ? "تأكيد الوصول اليدوي غير متاح لهذه الرحلة. يلزم موقع مقاس حديث." : "Manual arrival is unavailable for this journey. Fresh measured location is required."
+            return
+        }
+        indoor.confirmArrival()
     }
     func indoorBeacon(automatic: Bool = false) {
         spatialRouteOutput.revalidate()
-        guard indoor.hasActiveRoute, !returning,
-              let observation = lastObservation, observation.trackingNormal,
-              ProcessInfo.processInfo.systemUptime - lastFrameWallTime < 0.5,
-              detection.hazard == .observing else { return }
-        // The raw arguments remain preview inputs only. The returned ticket must
-        // carry separately measured map/body/support evidence; none is invented here.
-        guard let cue = indoor.next(camera: observation.camera, forward: observation.forward) else {
-            if !automatic { _ = speakOperation(indoor.message, replace: false) }
-            lastIndoorAnnouncement = ProcessInfo.processInfo.systemUptime; return
-        }
-        let key = "\(cue.ticket.routeID):\(indoor.waypointIndex):\(cue.sector):\(cue.distance <= 1)"
-        if automatic, key == lastIndoorCueKey { return }
-        let text = indoor.message
-        let delivered = spatialRouteOutput.deliver(ticket: cue.ticket, goalRevision: companionWorkingState.goalRevision,
-            speech: { id in
-                let now = ProcessInfo.processInfo.systemUptime
-                let candidate = InformationCandidate(key: "spatial-route:" + id.uuidString, kind: .mobility,
-                    text: text, words: Self.wordCount(text), revision: id.uuidString,
-                    createdAt: now, expiresAt: now + SavedWorldFrameRecovery.maximumFrameAge)
-                return self.deliverCandidate(candidate, speechID: id, spatialRouteID: id)
-            }, beacon: { id in
-                self.feedback.spatialRouteBeacon(sector: cue.sector, distance: min(10, cue.distance), id: id)
-            })
-        if delivered {
-            lastIndoorAnnouncement = ProcessInfo.processInfo.systemUptime; lastIndoorCueKey = key
-        }
+        if connectedJourneyOwnsNavigation { connectedJourneyBeacon(automatic: automatic); return }
+        guard !automatic else { return }
+        if indoorPreviewControlsAvailable && indoor.hasActiveRoute {
+            message = arabic ? "تم اختيار معاينة مسار فقط. لا يوجد إرشاد حركي دون موقع مقاس حديث." : "An indoor route preview is selected. Fresh measured location is required for physical guidance."
+        } else { message = arabic ? "لا يوجد مسار نشط." : "No active route." }
+        _ = speakOperation(message, replace: false)
     }
     /// No mode selection: this loop consumes foreground evidence and the user's retained goal.
     /// Independent hazards already ran above; no LLM participates in these dispatch decisions.
@@ -2397,6 +2449,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func setAssistantObjective() {
+        heldSearchIntent.cancel(); interruptedSearch.cancel()
+        try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
         #if BLIND_FAMILIAR_PEOPLE
         familiarPeople.cancelSearchForNewGoal()
         #endif
@@ -2404,6 +2458,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         cancelDescription(); _ = feedback.stopInformation(announceCancellation: false); stopReturn(); indoor.cancelRoute()
         assistantDialogue.setGoal(objectiveDraft); objectiveDraft = assistantDialogue.goal; persistDialogue()
         companionWorkingState.changeGoal(assistantDialogue.goal, originalRequest: objectiveDraft); persistWorkingState()
+    }
+    private func retireHeldSearchForPrivacyDeletion() {
+        heldSearchIntent.cancel(); interruptedSearch.cancel()
+        objectSearch?.cancel(); objectSearch = nil; trackedTarget = nil
+        searchInFlight = false; trackLookInFlight = false
     }
     func clearAssistantConversation() {
         clearExploreSnapshot()
@@ -2413,6 +2472,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #if BLIND_FAMILIAR_PEOPLE
         familiarPeople.cancelSearchForNewGoal()
         #endif
+        retireHeldSearchForPrivacyDeletion()
+        try? journeys.withConnectedJourney { try $0.eraseHistory(origin: .trustedInterface) }
         everydayTasks.cancelAll(); everydayTicket = nil; everydayUtterance = ""
         cancelDescription(); _ = feedback.stopInformation(announceCancellation: false); stopReturn(); indoor.cancelRoute()
         unverifiedDialogue = AssistantDialogue(); unverifiedDialogueGeneration = nil
@@ -2421,6 +2482,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         sceneAnswer = ""; currentReply = ""; assistantQuestion = ""
     }
     @discardableResult func correctConversationRecord(id: String, replacement: String) -> Bool {
+        retireHeldSearchForPrivacyDeletion()
         guard let original = assistantDialogue.userRecords.first(where: { $0.id == id }),
               assistantDialogue.correctUserRecord(id: id, replacement: replacement) else { return false }
         #if DEBUG
@@ -2438,6 +2500,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
 
     func forgetConversationRecord(id: String) {
+        retireHeldSearchForPrivacyDeletion()
         #if DEBUG
         purgeDebugSessionDiagnostics()
         #endif
@@ -2471,6 +2534,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
 
     private func persistWorkingState() {
+        if journeyConversationGoal != companionWorkingState.goal || journeyConversationSourceID != companionWorkingState.goalSource?.sourceID {
+            try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
+            journeyConversationGoal = companionWorkingState.goal; journeyConversationSourceID = companionWorkingState.goalSource?.sourceID
+        }
         // Every persisted goal/subtask revision fences held route output; this does
         // not reset the localization session or independent sensor monitoring.
         if let plannedIndoorGoalRevision, plannedIndoorGoalRevision != companionWorkingState.goalRevision {
@@ -2577,6 +2644,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // Private selected-photo access requires explicit trusted UI. The public
         // clock's microphone conversation permission does not authorize this lane.
         if routeSelectedPhotoInquiry(text, origin: origin) { return }
+        if routeConnectedJourneyCommand(text, origin: origin) { return }
         if routeVoiceRoomScan(text) { return }
         // Narration hold preserves the conversation and retained goal. It is not
         // microphone mute, camera off, task cancellation, or inferred addressee detection.
@@ -2638,6 +2706,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if routeUnavailableTemperature(text) { return }
         if routeShoppingList(text) { return }
         if let destination = AssistantControl.explicitGoal(text) {
+            try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
             everydayTasks.setGoal(destination)
             // Retain the expressed destination even when physical guidance must abstain.
             companionWorkingState.changeGoal(destination, originalRequest: text)
@@ -2662,6 +2731,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         if handleAssistantControl(text) { return }
         if let goal = ConversationIntent.explicitTaskGoal(text) {
+            try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
             everydayTasks.setGoal(goal); everydayTicket = nil
             // Commit only a whole explicit request, before any model/extraction.
             // A change of task preserves the conversation and does not start sensors.
@@ -3075,14 +3145,18 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private func handleConversationTaskControl(_ control: AssistantTaskControl) {
         switch control {
         case .pause:
+            try? journeys.withConnectedJourney { try $0.hold(origin: .trustedInterface) }
             everydayTasks.pause(); everydayTicket = nil
             let suspended = companionWorkingState.suspendGoal() || everydayTasks.state == .paused
             sceneAnswer = suspended ? (arabic ? "أوقفت المهمة مؤقتاً. يمكننا التحدث عن شيء آخر." : "I've paused that task. We can talk about something else.") : (arabic ? "لا توجد مهمة جارية لإيقافها." : "There is no active task to pause.")
         case .resume:
+            try? journeys.withConnectedJourney { try $0.resume(origin: .trustedInterface) }
             everydayTasks.resume()
             let resumed = companionWorkingState.resumeGoal() || everydayTasks.state == .active
             sceneAnswer = resumed ? (arabic ? "استعدت هدفك السابق. سأتحقق من المعلومات الحالية قبل المتابعة." : "I've restored your previous goal. Current conditions still need checking.") : (arabic ? "لا توجد مهمة موقوفة يمكن استعادتها الآن." : "There is no paused task I can resume right now.")
         case .cancel:
+            try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
+            heldSearchIntent.cancel()
             everydayTasks.cancelAll(); everydayTicket = nil; everydayUtterance = ""
             companionWorkingState.changeGoal("")
             sceneAnswer = arabic ? "ألغيت المهمة الحالية." : "I've cancelled the current task."
@@ -3090,6 +3164,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         assistantDialogue.setGoal(companionWorkingState.goal)
         objectiveDraft = companionWorkingState.goal
         stopReturn(); indoor.cancelRoute()
+        journeyConversationGoal = companionWorkingState.goal; journeyConversationSourceID = companionWorkingState.goalSource?.sourceID
         persistWorkingState(); persistDialogue()
         currentReply = sceneAnswer
         if assistantSession.state == .active { _ = speakRequested(sceneAnswer) }
@@ -3689,7 +3764,31 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             if !self.running || self.detection.hazard == .observing { self.speakRequested(self.sceneAnswer) }
         }
     }
-    func stopDescriptions() { clearExploreSnapshot(); cancelDescription(); voice.endManualTurn(); feedback.interruptAmbient(); ambientDescriptions = false }
+    func stopDescriptions() {
+        clearExploreSnapshot()
+        let pending = objectSearch ?? interruptedSearch.restore(goalRevision: companionWorkingState.goalRevision,
+            generation: assistantSession.generation, now: ProcessInfo.processInfo.systemUptime)
+        heldSearchIntent.hold(target: pending?.target ?? trackedTarget?.query,
+            goalRevision: companionWorkingState.goalRevision, origin: .trustedInterface)
+        interruptedSearch.cancel()
+        cancelDescription(); voice.endManualTurn(); feedback.interruptAmbient(); ambientDescriptions = false
+    }
+    func resumeDescriptions() {
+        ambientDescriptions = true
+        heldSearchIntent.resume(origin: .trustedInterface)
+        resumeHeldSearchIfPossible()
+    }
+    private func resumeHeldSearchIfPossible() {
+        guard assistantSession.state == .active, running, !busy, !voice.awaitingUtterance,
+              !assistantSession.privateAudioHeld, feedback.speechPriority == nil,
+              conversationSpeech.isEmpty, objectSearch == nil, readingTool == nil,
+              !currencyActive, !colorActive, let frame = session.currentFrame else { return }
+        guard let target = heldSearchIntent.takeForFreshSearch(goalRevision: companionWorkingState.goalRevision,
+            freshViewAvailable: captureObjectView(frame) != nil,
+            nativeResourceIdle: objectSearchNativeLease == nil) else { return }
+        objectSearch = ObjectSearch(target: target, now: ProcessInfo.processInfo.systemUptime)
+        continueSearch()
+    }
     private func queueQuestion(_ question: String, cloud: Bool, focus: String, camera: Point3, forward: Point3) {
         pendingQuestion = PendingQuestion(question: question, cloud: cloud, focus: focus,
             goalRevision: assistantDialogue.goalRevision, mapRevision: indoor.revision.uuidString,
@@ -3714,7 +3813,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         guard let control = AssistantControl.parse(text) else { return false }
         switch control {
         case .quiet: stopDescriptions()
-        case .resume: ambientDescriptions = true
+        case .resume: resumeDescriptions()
         case .moreDetail: detail = detail == .minimal ? .balanced : .detailed
         case .lessDetail: detail = detail == .detailed ? .balanced : .minimal
         case .moreInformation: wordsPerMinute = min(1800, wordsPerMinute + 60)
@@ -3768,15 +3867,100 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     func checkSceneConnection() { serviceStatus = "Descriptions run on this phone." }
     #endif
     func startReturn() {
-        guard running, !simulation, detection.hazard == .observing,
-              let current = journeys.current, let observation = lastObservation, observation.trackingNormal,
-              ProcessInfo.processInfo.systemUptime - lastFrameWallTime < 0.5 else {
-            returnStatus = "Start and calibrate live monitoring before returning."; return
+        clearExploreSnapshot()
+        heldSearchIntent.cancel(); interruptedSearch.cancel()
+        cancelDescription(); _ = feedback.stopInformation(announceCancellation: false)
+        indoorGuidanceOwner = .connectedJourney
+        // Raw AR session breadcrumbs are history, never current return clearance.
+        do {
+            let request = try journeys.withConnectedJourney { try $0.requestReturn(origin: .trustedInterface, arabic: arabic) }
+            switch request {
+            case .selected:
+                returnStatus = arabic ? "حُفظ هدف العودة. يلزم تحديد الموقع الحالي قبل الإرشاد." : "Return target retained. Fresh location is required before guidance."
+                _ = speakOperation(returnStatus)
+            case .clarify(let question):
+                returnStatus = question.text
+                if journeys.withConnectedJourney({ $0.beginClarificationSpeech(question) }) {
+                    if !speakRequested(question.text, speechID: question.id) {
+                        _ = journeys.withConnectedJourney { $0.clarificationSpeechFinished(id: question.id, text: question.text,
+                            outcome: .interrupted, now: ProcessInfo.processInfo.systemUptime) }
+                    }
+                }
+            }
+        } catch {
+            returnStatus = arabic ? "لا توجد نقطة عودة متحققة متاحة. لن أستنتج الاتجاه من المسار القديم." : "No verified return reference is available. I won't infer directions from the old trail."
+            _ = speakOperation(returnStatus)
         }
-        returning = returnTrail.begin(journey: current, camera: observation.camera, at: observation.timestamp)
-        returnStatus = returning ? "Retracing this session. Recorded positions do not establish clearance." : returnTrail.reason
-        lastReturnAnnouncement = -.infinity; cancelDescription()
     }
+    /// Called only by established scope/camera lifecycle, never by room-name guesses.
+    /// Scope-only conversation revisions are not new journey destinations.
+    func establishedJourneyContextChanged() { journeys.withConnectedJourney { $0.cameraRestarted() } }
+    var hasReturnIntent: Bool {
+        returning || journeys.withConnectedJourney { runtime in
+            guard let goal = runtime.goal else { return false }
+            return goal.purpose != .destination && (goal.status == .active || goal.status == .paused)
+        }
+    }
+    func cancelReturnIntent() {
+        try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
+        stopReturn()
+    }
+    /// Explicit calibrated-adapter seam. No current camera/room-recognition path
+    /// calls this, and retained history is never promoted to a localization capture.
+    func configureConnectedJourney(body: BodyEnvelope, limits: SpatialLocalizationLimits,
+                                   binding: SpatialMapBinding) throws -> UUID {
+        try journeys.withConnectedJourney {
+            try $0.configure(body: body, limits: limits)
+            return try $0.beginLocalization(in: binding)
+        }
+    }
+    func acceptConnectedJourneyCapture(_ capture: SpatialLocalizationCapture, support: SpatialFloorSupport) throws {
+        try journeys.withConnectedJourney { try $0.accept(capture, support: support, now: ProcessInfo.processInfo.systemUptime) }
+    }
+    private func routeConnectedJourneyCommand(_ text: String, origin: CompanionCommandOrigin) -> Bool {
+        guard CommandAuthority.permits(.changeGoal, from: origin) else { return false }
+        if JourneyReturnCommand.matches(text) { startReturn(); return true }
+        let value = text.lowercased().trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+        if ["save this reference", "احفظ هذه النقطة"].contains(value) {
+            do {
+                try journeys.withConnectedJourney { try $0.saveReference(origin: origin, now: ProcessInfo.processInfo.systemUptime) }
+                _ = speakOperation(arabic ? "جارٍ حفظ النقطة المتحققة على الهاتف." : "Saving the verified reference on this phone.")
+            } catch { _ = speakOperation(arabic ? "يلزم تحديد الموقع الحالي لحفظ نقطة مرجعية." : "Current measured location is required to save a reference.") }
+            return true
+        }
+        guard journeys.withConnectedJourney({ $0.question != nil }) else { return false }
+        let choice: JourneyReturnQuestion.Choice
+        if ["saved reference", "the saved reference", "النقطة المحفوظة"].contains(value) { choice = .savedReference }
+        else if ["journey start", "the journey start", "بداية الرحلة"].contains(value) { choice = .journeyStart }
+        else { return false } // Neither generic yes nor an LLM interpretation can select.
+        do {
+            try journeys.withConnectedJourney { try $0.resolveReturn(choice, origin: origin, now: ProcessInfo.processInfo.systemUptime) }
+            _ = speakOperation(arabic ? "حُدد هدف العودة. سأتطلب موقعاً حديثاً قبل الإرشاد." : "Return target selected. Fresh location is required before guidance.")
+        } catch { _ = speakOperation(arabic ? "اطلب العودة مجدداً وانتظر اكتمال سؤال الاختيار." : "Ask to return again and wait for the choice question to finish.") }
+        return true
+    }
+    private func connectedJourneyBeacon(automatic: Bool) {
+        let now = ProcessInfo.processInfo.systemUptime
+        journeys.withConnectedJourney { $0.revalidate(now: now) }
+        guard let held = try? journeys.withConnectedJourney({ try $0.next(now: now) }),
+              let cue = held.route.directionalCue() else { return }
+        let ticket = held.route, revision = ticket.goalRevision.uuidString
+        let key = "\(ticket.routeID):\(ticket.target.id):\(cue.sector):\(cue.distance <= 1)"
+        if automatic, key == lastIndoorCueKey { return }
+        let text = arabic ? "\(ticket.target.localizedName(arabic: true))، على بعد نحو \(String(format: "%.1f", cue.distance)) متر."
+            : "\(ticket.target.name), approximately \(String(format: "%.1f", cue.distance)) meters."
+        if spatialRouteOutput.deliver(ticket: ticket, goalRevision: revision, speech: { id in
+            let candidate = InformationCandidate(key: "spatial-route:" + id.uuidString, kind: .mobility,
+                text: text, words: Self.wordCount(text), revision: id.uuidString,
+                createdAt: now, expiresAt: now + SavedWorldFrameRecovery.maximumFrameAge)
+            return self.deliverCandidate(candidate, speechID: id, spatialRouteID: id)
+        }, beacon: { id in
+            self.feedback.spatialRouteBeacon(sector: cue.sector, distance: min(10, cue.distance), id: id)
+        }) {
+            lastIndoorAnnouncement = now; lastIndoorCueKey = key
+        }
+    }
+
     func stopReturn() { returning = false; returnTrail = ReturnTrail(); returnCue = nil; returnStatus = "" }
     private func invalidateReturn() {
         guard returning else { return }
@@ -3943,6 +4127,7 @@ extension NavigationModel {
 
     func endConversation() {
         voiceRoomScan.cancel()
+        heldSearchIntent.cancel()
         defer { updateLiveActivity() }
         everydayTasks.cancelAll(); everydayTicket = nil; everydayUtterance = ""
         assistantSession.end()
@@ -3974,7 +4159,7 @@ extension NavigationModel {
             stopDescriptions()
             speakOperation(arabic ? "سأتوقف عن الوصف. تبقى تنبيهات المسار مفعلة." : "I'll be quiet. Path alerts stay on.")
         } else {
-            ambientDescriptions = true
+            resumeDescriptions()
             speakOperation(arabic ? "سأصف ما يتغير حولك." : "I'll describe changes around you.")
         }
     }
@@ -4280,6 +4465,7 @@ extension NavigationModel {
         familiarPeople.revalidate(model: self)
         familiarPeople.consume(model: self)
         #endif
+        resumeHeldSearchIfPossible()
         resumeInterruptedSearchIfPossible()
         continueSearch()
         updateBackgroundPerception(frame: frame, observation: pose, nonspatialOnly: true)
@@ -4498,7 +4684,7 @@ extension NavigationModel {
     }
 
     private func resumeInterruptedSearchIfPossible() {
-        guard assistantSession.state == .active, running, !busy, !voice.awaitingUtterance,
+        guard !heldSearchIntent.held, assistantSession.state == .active, running, !busy, !voice.awaitingUtterance,
               feedback.speechPriority == nil, conversationSpeech.isEmpty, objectSearch == nil,
               readingTool == nil, !currencyActive, !colorActive,
               let frame = session.currentFrame, captureObjectView(frame) != nil else { return }
@@ -4560,6 +4746,7 @@ extension NavigationModel {
     /// Saved item (by look, or its saved place) newer than the child's last report, then a live
     /// search of the current view. False when neither applies; the caller speaks the report or "unknown".
     private func findWithSensors(_ name: String, question: String) -> Bool {
+        heldSearchIntent.cancel()
         let exitTerms: Set<String> = ["exit", "the exit", "way out", "the way out", "مخرج", "المخرج"]
         if exitTerms.contains(name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()),
            let package = indoor.activePackage, let map = indoor.map,
@@ -4658,6 +4845,7 @@ extension NavigationModel {
     /// seconds. The current release reports only a possible nonspatial match, not
     /// exact identity, distance or pickup authority. Time up means not located, never absent.
     private func locate(_ target: String, question: String) -> Bool {
+        heldSearchIntent.cancel()
         guard let frame = session.currentFrame, captureObjectView(frame) != nil else { return false }
         guard objectSearchNativeLease == nil else {
             say(arabic ? "فحص الكاميرا السابق لم ينته بعد. لا أستطيع بدء فحص آخر الآن."
@@ -5042,6 +5230,7 @@ extension NavigationModel {
         return arabic ? "لا يوجد كاشف أغراض عام. المقارنة متاحة للأغراض التي حفظت صورها فقط." : "No general object detector is bundled. Appearance comparison is available for things whose pictures you saved."
     }
     func clearObservedObjects() {
+        retireHeldSearchForPrivacyDeletion()
         #if DEBUG
         purgeDebugSessionDiagnostics()
         #endif
@@ -5073,6 +5262,7 @@ extension NavigationModel {
         } catch { say(arabic ? "تعذر حذف سجل المشاهدات." : "Could not delete the sighting history.") }
     }
     private func removeObservedHistory(category: String? = nil, room: String? = nil) throws {
+        retireHeldSearchForPrivacyDeletion()
         guard let memory = places.memory else { throw MemoryError.missing }
         var updated = observedObjects
         if let category { updated.forget(category: category) }
@@ -5089,6 +5279,7 @@ extension NavigationModel {
     var savedItems: [RememberedItem] { items.items }
     func itemViewCount(_ item: RememberedItem) -> Int { itemAppearance.viewCount(item.key) }
     func forgetItem(_ item: RememberedItem, completion: @escaping (Bool) -> Void = { _ in }) {
+        retireHeldSearchForPrivacyDeletion()
         #if DEBUG
         purgeDebugSessionDiagnostics()
         #endif
@@ -5133,6 +5324,7 @@ extension NavigationModel {
     }
     /// Removes the room's saved pictures, fingerprints and furniture labels; the room stays known.
     func forgetRoomPictures(_ id: String) {
+        retireHeldSearchForPrivacyDeletion()
         #if DEBUG
         purgeDebugSessionDiagnostics()
         #endif
@@ -5146,6 +5338,7 @@ extension NavigationModel {
     /// Deletes a saved place and everything derived from it: scans, room pictures, the companion's
     /// room record, and the current-place state if it was this place.
     func deletePlace(_ place: SavedPlace) {
+        retireHeldSearchForPrivacyDeletion()
         #if DEBUG
         purgeDebugSessionDiagnostics()
         #endif
@@ -5181,6 +5374,7 @@ extension NavigationModel {
 
     /// Removes everything about the room: pictures, visits and its name.
     func forgetRoom(_ id: String) {
+        retireHeldSearchForPrivacyDeletion()
         #if DEBUG
         purgeDebugSessionDiagnostics()
         #endif

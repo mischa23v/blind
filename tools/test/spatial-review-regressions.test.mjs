@@ -163,11 +163,25 @@ test('cancelled route cannot repeat its retired physical distance while alignmen
   assert.match(cancel, /message = text\("No active route\."/);
   assert.doesNotMatch(cancel, /(?:anchorWorld|anchorMap|worldForward|mapForward|alignedLevel)\s*=/);
   const beacon = section(source, 'func indoorBeacon(', 'func routeSaudiBanknoteCommand(');
-  const activeRouteGuard = beacon.match(/guard indoor\.hasActiveRoute,[\s\S]*?else \{ return \}/)?.[0];
-  assert.ok(activeRouteGuard, 'A compound route/sensor guard must return before minting a ticket');
-  before(beacon, activeRouteGuard, 'indoor.next(');
-  assert.match(beacon, /spatialRouteOutput\.deliver\(ticket: cue\.ticket/);
-  assert.match(source, /if !returning, fixedBodyMount, indoor\.isAligned, indoor\.hasActiveRoute/);
+  assert.match(beacon, /if connectedJourneyOwnsNavigation \{ connectedJourneyBeacon\(automatic: automatic\); return \}/);
+  assert.doesNotMatch(section(source, 'func indoorBeacon(', '/// No mode selection:'), /indoor\.next\(|spatialRouteOutput\.deliver/);
+  assert.ok(source.includes('if !returning, fixedBodyMount, connectedJourneyOwnsNavigation, journeys.withConnectedJourney({ $0.goal?.status == .active }), detection.hazard == .observing,'));
+  const ownership = section(source, 'private enum IndoorGuidanceOwner', 'func indoorBeacon(');
+  assert.match(ownership, /if indoorGuidanceOwner == \.connectedJourney \{ return true \}/);
+  assert.match(ownership, /indoorGuidanceOwner == \.legacyPreview && indoor\.journeyPreviewIsCurrent/);
+  assert.match(ownership, /No obstruction was recorded/);
+  assert.equal((ownership.match(/guard indoorPreviewControlsAvailable else/g) ?? []).length, 2);
+  const ui = await read('ios/BlindAssist/DashboardView.swift');
+  assert.doesNotMatch(ui, /model\.indoor\.(?:blockNextLeg|confirmArrival)\(/);
+  assert.match(ui, /model\.reportIndoorWayBlocked\(\) \}\.disabled\(!model\.indoorPreviewControlsAvailable\)/);
+  assert.match(ui, /model\.confirmIndoorPreviewArrival\(\) \}\.disabled\(!model\.indoorPreviewControlsAvailable\)/);
+  const connected = section(source, 'private func connectedJourneyBeacon(', 'func stopReturn()');
+  assert.match(connected, /try \$0\.next\(now: now\)/);
+  assert.match(connected, /held\.route\.directionalCue\(\)/);
+  assert.match(connected, /spatialRouteOutput\.deliver\(ticket: ticket, goalRevision: revision/);
+  const runtime = await read('ios/BlindAssist/ConnectedJourneyRuntime.swift');
+  assert.match(runtime, /guard canOutput, let coordinator/);
+  assert.match(runtime, /!loading && !externalMapPending && !mapValidationBlocked && mapWorkID == nil && durable && !storageError && !commandBlocked/);
 });
 
 test('new world-map recovery rejects queued frames captured before its own beginning (source)', async () => {
@@ -276,4 +290,20 @@ test('positional bearing interval uses tangent uncertainty and guards both secto
   const nominalDegrees = 19.6, distance = 1.1, error = 0.2;
   assert.ok(nominalDegrees + Math.atan2(error, distance) * 180 / Math.PI < 30);
   assert.ok(nominalDegrees + Math.asin(error / distance) * 180 / Math.PI > 30);
+});
+
+
+test('connected issuer is retired by mount or frame ownership loss before frame throttling (source)', async () => {
+  const source = await read('ios/BlindAssist/NavigationModel.swift');
+  const mount = section(source, '@Published var fixedBodyMount', '@Published private(set) var serviceStatus');
+  before(mount, 'journeys.breakTracking()', 'cancelDescription()');
+  const frames = section(source, 'func session(_ session: ARSession, didUpdate frame:', '#if BLIND_FAMILIAR_PEOPLE\n    @discardableResult');
+  before(frames, 'else { journeys.breakTracking() }', 'guard running');
+  before(frames, 'else { journeys.breakTracking() }', 'frame.timestamp - lastProcessed');
+  assert.match(frames, /if place\.worldFrame != nil, verifiedFrame == nil \{\s*journeys\.breakTracking\(\)/);
+  assert.match(frames, /if !observation\.trackingNormal \{\s*journeys\.breakTracking\(\)/);
+  const store = await read('ios/BlindAssist/JourneyStore.swift');
+  assert.match(store, /func breakTracking\(\) \{ withConnectedJourney \{ \$0\.cameraRestarted\(\) \}/);
+  const runtime = await read('ios/BlindAssist/ConnectedJourneyRuntime.swift');
+  assert.match(runtime, /func cameraRestarted\(\) \{ retire\(\); lastEndpoint = nil; coordinator\?\.loseTracking\(\)/);
 });

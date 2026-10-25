@@ -1,0 +1,56 @@
+{
+  "status": "Reviewer-cleared and parent-authorized narrow four-path live correction applied; focused live validation pending.",
+  "authorized_manifest_sha256": "185578964b57a448a5c8d491ca1b55fd1de7647d5a6f8d6e4a530497929e9f85",
+  "changes": [
+    {
+      "path": "BlindCore/Sources/BlindCore/ConnectedJourneyCoordinator.swift",
+      "base": "99134fb175f17b85f4b0b35098ae1f99b77b3eaba870ee37c84fd955c2e3ac40",
+      "proposed": "6f10a018eb6793c4ae6f31267f6c2a16b9ca6809e45c34c7f580e8a715de653c"
+    },
+    {
+      "path": "ios/BlindAssist/ConnectedJourneyRuntime.swift",
+      "base": "71bef9cbb1d81805ff06cbf8a8501cde512c97dee7befe7e6ee3e78ad36de62d",
+      "proposed": "d167040775a87fe8fe8d836b0501eccbcb311581864afb379f5da6991655ea5a"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/ConnectedJourneyFailureTests.swift",
+      "base": "4de9c52ea2fe69fcdab9606f40e1ad22110114fb6526e7f8cebc93b25af0493a",
+      "proposed": "a17f063604a251dfc8a76347e407a81db385dd8e6a6f067c1445320b4506497c"
+    },
+    {
+      "path": "ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift",
+      "base": "1ad0a528449e0989b51a85c17a9783bb4e7285951f0d5d6a7552b4c03270a696",
+      "proposed": "14e882fa82f4395a40665d04ed570777e31b0779043dbc640a503bae20515290"
+    }
+  ],
+  "unchanged_navigation_model_sha256": "87f98c5511cab317e3d3e4f858ac689f049af5dd41fcbb0eec0d2f4cc76c64d7",
+  "unchanged_project_sha256": "dd0aaca95133ec5e024c248769755cdc4f72937757e5e1972274b8ca08cae381",
+  "untouched_docs": {
+    "ASSISTANT_FEATURE_CHECKLIST.md": "25e4a3e4f542d147b317ad23350a01e3abade284273174d01b876ba73ed551e2",
+    "CLAUDE_INTEGRATION_REVIEW.md": "1cfd8c1cb61b7f030d6b1077244a16f8088c4e056984e121fd837edbab54a53a",
+    "README.md": "8da9dd8692db2c174adeee468338a13d3c62eb1f82dc91caf47d2ad169f42615",
+    "PROJECT_PLAN.md": "e71b65ed46203d57d40264fa477e873b638114a83bac7c77135f65bb2b6294a4",
+    "MAC_HANDOFF.md": "26c2b362307be60c49551a62d26421a91162e1237bf94db28b26884a47de2e7b",
+    "REBUILD_SCOPE_ADDENDUM.md": "bfe1923a65214d5b0af47aec30d245fb36f38669286eda7ee2129ec18816b4e2",
+    "TASKS.md": "ddcf18911e24983c5709c984e999d78c23847fb6aa4ff457fb97b9bc262d64ec",
+    "REBUILD_TRACKER.md": "851293cb2d0574d9c94e5d9fb227809c482cbdbd3069a0edbe5c0cacd43095bd",
+    "EVERYDAY_COMPANION_ACCEPTANCE.md": "854ff1a81296959d408918de6891c62d91d9f809a3003bbd77b837affc0799d8",
+    "TODO.md": "4631378d027f35a5e888063ebf5f041234a3f482885fd4f66dc4c8f79a49d59f",
+    "SPATIAL_COMPANION_ACCEPTANCE.md": "a94636c8d3b371a6ba28e9fea29db1862ba4840b8ae17c6c1f9bf4e29681e06d",
+    "REBUILD_FEATURE_STATUS.md": "9bd8d21a49747c2c8da371f42f14f48a0d99c1fa39399855a21894679239b704",
+    "AGENTS.md": "c8bcc31f2d6676b9ce3071e8cca8cc3a9e9edad894b3973cedb41460f80739b3",
+    "CLAUDE_REBUILD_REVIEW_HANDOFF.md": "d4b0ddba17f510357ae4c028ff95aa31be7aa8f334ea3afc40309d775a0e06cb",
+    "CONTEXTUAL_CAPABILITIES_ACCEPTANCE.md": "ef931e90caec6b1ad928cd3a65151913cf04166d0b9605df4994b101301c0020",
+    "FAMILY_RECOGNITION_HANDOFF.md": "d7cd9f164769c953bd16246be22a671853af850c14b17f2d37bfe7c62991bd6a",
+    "PRE_DEVICE_HARDENING.md": "dd51d5bcca5ea2b49882435470ca87f3388710b5ac189d89819caae6ec1630fe",
+    "DEBUG_SESSION_DIAGNOSTICS.md": "cd9f9b597ec55c5f65fa46953f5b0d2898ab1857cf324a632e9399dded82f7a5",
+    "SESSION_LOG.md": "ea6573af1bc1e4c10676191a64684a13f2c300a5587aaa04c49684ebfed56abe",
+    "CONTINUOUS_COMPANION_DESIGN.md": "8212b1ca43a40a78a01d07a883cc94ada7192e8cb78f86cfd1d3952f1e7d1ddc",
+    "PROJECT_VISION.md": "2fef52a8632c8ae98905f24b06abbd115a7acba1283abd0da7466ea3415d97fa",
+    "SESSION_RECOVERY.md": "1578e514fc72495955cb57577f87e039c1e02b2eb84a4e3f62f379f1e42f11f4",
+    "SCENARIO_TRACEABILITY.md": "400e6dd0b6df401a54dbb0df15098e49c999edb3dd3a0797c0a31bbc9cef5123",
+    "PROGRESS.md": "1046187bf9d881c9a2a81fe02650c8883f09ae9644079826956e659d98da8b37",
+    "CHILD_ASSISTANT_TEST_TRACKER.md": "a4e9e956a87ac531105e6b573154e511ff921eafa45051ac9056455b5d8a7894"
+  },
+  "original_failures": "Independent run-02 eight Core failures and run-04 two native failures remain preserved, not relabeled."
+}

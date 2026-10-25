@@ -197,3 +197,44 @@ final class IndoorNavigatorAsyncTests: XCTestCase {
     }
 
 }
+
+extension IndoorNavigatorAsyncTests {
+    func testJourneyHooksWithdrawSynchronouslyAndPublishAfterCurrentCAS() throws {
+        let storage = ControlledSpatialStorage(), nav = try ready(storage), original = try F.installation()
+        let next = try F.installation(map:F.map(revision:"r2"),prior:original)
+        let entered = expectation(description:"journey replacement blocked"), release = storage.blockNextWrite(entered)
+        let done = expectation(description:"journey replacement done")
+        var withdrawals:[UUID] = [], publications:[(UUID,SpatialMapInstallation?,SpatialMapBinding?,Bool)] = []
+        nav.onJourneyMapOwnershipWithdrawn = { withdrawals.append($0) }
+        nav.onJourneyMapPublished = { publications.append(($0,$1,$2,$3)) }
+        nav.loadImportedMap(try next.encoded()) { result in if case .failure(let error) = result { XCTFail("\(error)") }; done.fulfill() }
+        XCTAssertEqual(withdrawals,[nav.revision]); XCTAssertNil(nav.registeredJourneyInstallation); XCTAssertTrue(publications.isEmpty)
+        wait(for:[entered],timeout:5); release.signal(); wait(for:[done],timeout:5)
+        XCTAssertEqual(publications.count,1); XCTAssertEqual(publications.first?.0,nav.revision)
+        XCTAssertEqual(publications.first?.1?.binding,next.binding); XCTAssertNil(publications.first?.2); XCTAssertEqual(publications.first?.3,false)
+        XCTAssertEqual(nav.registeredJourneyInstallation?.binding,next.binding)
+    }
+    func testJourneyHooksDoNotConfuseLegacyPreviewWithDeletedMapOrPublishStaleDelete() throws {
+        let storage = ControlledSpatialStorage(), nav = try ready(storage)
+        var purge:((Bool)->Void)?; nav.clearObservationHistory = { purge = $0 }
+        var publications:[(UUID,SpatialMapInstallation?,SpatialMapBinding?,Bool)] = []
+        nav.onJourneyMapPublished = { publications.append(($0,$1,$2,$3)) }
+        let stale = expectation(description:"superseded delete")
+        nav.deleteMap { result in if case .success = result { XCTFail("stale delete succeeded") }; stale.fulfill() }
+        var preview = F.map(); preview.packageID = nil; preview.packageRevision = nil
+        try complete { nav.loadImportedMap(try JSONEncoder().encode(preview),completion:$0) }
+        XCTAssertEqual(publications.count,1); XCTAssertNil(publications[0].1); XCTAssertNil(publications[0].2); XCTAssertFalse(publications[0].3)
+        XCTAssertNil(nav.registeredJourneyInstallation)
+        purge?(true); wait(for:[stale],timeout:5)
+        XCTAssertEqual(publications.count,1)
+    }
+    func testJourneyDeletionPublishesOnlyRemovedBindingWithoutGeometry() throws {
+        let storage = ControlledSpatialStorage(), nav = try ready(storage), binding = try F.installation().binding
+        var publication:(UUID,SpatialMapInstallation?,SpatialMapBinding?,Bool)?
+        nav.onJourneyMapPublished = { publication = ($0,$1,$2,$3) }
+        try complete { nav.deleteMap(completion:$0) }
+        XCTAssertEqual(publication?.0,nav.revision); XCTAssertNil(publication?.1)
+        XCTAssertEqual(publication?.2,binding); XCTAssertEqual(publication?.3,true)
+        XCTAssertNil(nav.registeredJourneyInstallation)
+    }
+}

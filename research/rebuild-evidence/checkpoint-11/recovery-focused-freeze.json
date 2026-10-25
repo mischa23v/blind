@@ -1,0 +1,51 @@
+{
+  "status": "CORRECTED LIVE SOURCE FROZEN AFTER REVIEWER-CLEARED FOUR-PATH APPLY AND TERMINAL FOCUSED VALIDATION. Root owns rerun full aggregate/corrected freeze11/publication.",
+  "authorized_manifest_sha256": "185578964b57a448a5c8d491ca1b55fd1de7647d5a6f8d6e4a530497929e9f85",
+  "frozen_source": {
+    "BlindCore/Sources/BlindCore/ConnectedJourneyCoordinator.swift": "6f10a018eb6793c4ae6f31267f6c2a16b9ca6809e45c34c7f580e8a715de653c",
+    "ios/BlindAssist/ConnectedJourneyRuntime.swift": "d167040775a87fe8fe8d836b0501eccbcb311581864afb379f5da6991655ea5a",
+    "BlindCore/Tests/BlindCoreTests/ConnectedJourneyFailureTests.swift": "a17f063604a251dfc8a76347e407a81db385dd8e6a6f067c1445320b4506497c",
+    "ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift": "14e882fa82f4395a40665d04ed570777e31b0779043dbc640a503bae20515290",
+    "ios/BlindAssist/NavigationModel.swift": "87f98c5511cab317e3d3e4f858ac689f049af5dd41fcbb0eec0d2f4cc76c64d7",
+    "ios/BlindAssist.xcodeproj/project.pbxproj": "dd0aaca95133ec5e024c248769755cdc4f72937757e5e1972274b8ca08cae381"
+  },
+  "results": {
+    "focused_swift": {
+      "core_runtime_output": 54,
+      "actual_native_lifecycle": 8,
+      "historical_quiet": 7,
+      "failed": 0
+    },
+    "focused_live_node": {
+      "passed": 72,
+      "failed": 0,
+      "skipped": 0
+    },
+    "actual_live_map_callback_replay": {
+      "passed": 44,
+      "failed": 0
+    },
+    "independent_exact_native_recovery_witness": {
+      "passed": 2,
+      "failed": 0
+    },
+    "native_parse": {
+      "configurations": 4,
+      "failed": 0,
+      "apple_sdk_typecheck": false
+    }
+  },
+  "historical_failures_preserved": "independent-scenario-evidence/run-02 and run-04-native-recovery remain failed historical evidence; run-06 demonstrates corrected native acceptance without manual replanning.",
+  "evidence_sha256": {
+    "applied-manifest.json": "0eb46c4f162b580d1bf92d1a8e6943b12f96901bedcb48aa492c84e4c027181f",
+    "focused-live-source-bindings.json": "9f959086681c241127fa0a9dd18c07ac8978a0b3915c0e673fa06592c764d913",
+    "focused-live-swift.log": "d2f1729251fefc339b4881835da8c7ecb0c68c51a79930b96868f0ac1ac8a161",
+    "focused-live-node.log": "550dbc52e771e89b6f64f48317cbed9604cbeab13737acd8f1a4dda88745b3be",
+    "four-configuration-live-parse.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "actual-live-map-replay-inputs.json": "ec0a5f0c5b616a9f76f97454b3ea1321bb94a106f14c1838824c5921e0a3fc6f",
+    "actual-live-map-replay.log": "33854156e57f24f0883c3be46bba958751ff6e5fb92ff68f7de6e86ffb089419",
+    "independent-scenario-trace-manifest.json": "2b486f8d4b3ac0e7955e9db9e68e4e27700182430165987319eb909e28ed1161"
+  },
+  "navigation_and_project_unchanged": true,
+  "tracker_edits_by_worker": false
+}

@@ -21,6 +21,15 @@ final class IndoorNavigator: ObservableObject {
     private var worldForward: Point3?
     private var blocked = Set<MapConnection>()
     private var registered: RegisteredIndoorNavigation?
+    var onJourneyMapOwnershipWithdrawn: ((UUID) -> Void)?
+    var onJourneyMapPublished: ((UUID, SpatialMapInstallation?, SpatialMapBinding?, Bool) -> Void)?
+    var journeyPreviewIsCurrent: Bool {
+        map != nil && !mapIOPending && registered?.ioBlocked == false && registered?.installation == nil
+    }
+    var registeredJourneyInstallation: SpatialMapInstallation? {
+        guard let registered, !mapIOPending, !registered.ioPending, !registered.ioBlocked else { return nil }
+        return registered.installation
+    }
     var onSpatialOutputRetired: (() -> Void)?
     var clearObservationHistory: ((@escaping (Bool) -> Void) -> Void)?
     /// Selected storage target only, never coordinate alignment or current-location evidence.
@@ -68,7 +77,9 @@ final class IndoorNavigator: ObservableObject {
                               completion: @escaping MapCompletion = { _ in },
                               start: (@escaping RegisteredIndoorNavigation.Completion) -> Void) {
         precondition(Thread.isMainThread)
+        let previousJourneyBinding = registered?.installation?.binding
         revision = UUID(); let expected = revision
+        onJourneyMapOwnershipWithdrawn?(expected)
         alignmentRevision = UUID(); anchorWorld = nil; anchorMap = nil
         worldForward = nil; mapForward = nil; alignedLevel = nil
         route = []; waypointIndex = 0; suggestedDestination = nil; registeredCueCaption = nil
@@ -90,6 +101,7 @@ final class IndoorNavigator: ObservableObject {
                     self.message = self.t("Route map loaded for preview only. Live guidance is unavailable.", "حُمّلت خريطة المسار للمعاينة فقط. الإرشاد الحالي غير متاح.")
                 }
                 }
+                self.onJourneyMapPublished?(expected, loaded?.installation, loaded == nil ? previousJourneyBinding : nil, loaded == nil)
                 completion(.success(()))
             case .failure(let error):
                 if self.message == pendingMessage, error as? SpatialMapIOError != .superseded {
@@ -173,6 +185,7 @@ final class IndoorNavigator: ObservableObject {
     /// Later cache callbacks cannot override a delete, import or newer selection.
     func beginCommunityImport(_ package: PlacePackage) -> CommunityImportIntent {
         invalidatePosition(); revision = UUID(); mapIOPending = true
+        onJourneyMapOwnershipWithdrawn?(revision)
         registered?.suspendForExternalPreparation()
         message = t("Preparing community map. Guidance withdrawn.", "جارٍ تجهيز خريطة المجتمع. سُحب الإرشاد.")
         return .init(revision: revision, packageID: package.id, packageRevision: package.revision)

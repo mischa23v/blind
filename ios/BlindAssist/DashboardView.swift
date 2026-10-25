@@ -312,13 +312,14 @@ struct AssistantToolsView: View {
                 if model.running && !model.simulation { Text(model.visualStairs.status(arabic: model.arabic)) }
             } header: { Text(t("Safety alerts", "تنبيهات السلامة")) }
             Section {
-                Button(model.returning ? t("Stop return guidance", "إيقاف إرشاد العودة") : t("Guide me back to where I started", "أرشدني إلى نقطة البداية")) {
-                    if model.returning { model.stopReturn() } else { model.startReturn() }
+                Button(model.hasReturnIntent ? t("Stop return guidance", "إيقاف إرشاد العودة") : t("Guide me back to where I started", "أرشدني إلى نقطة البداية")) {
+                    if model.hasReturnIntent { model.cancelReturnIntent() } else { model.startReturn() }
                 }
-                .disabled(!model.running || model.simulation)
+                .disabled(model.simulation)
                 .accessibilityIdentifier("retrace-session")
-                if model.returning { Button(t("Repeat direction", "كرر الاتجاه")) { model.speakReturnCue() } }
+                if model.hasReturnIntent { Button(t("Repeat direction", "كرر الاتجاه")) { model.indoorBeacon() } }
                 if !model.returnStatus.isEmpty { Text(model.returnStatus) }
+                ConnectedJourneyPersistenceView(store: model.journeys, arabic: model.arabic)
             } header: { Text(t("Return to start", "العودة إلى البداية")) }
             Section {
                 if model.simulation {
@@ -412,6 +413,7 @@ struct AssistantToolsView: View {
                 Button(t("Find my question on the saved map", "ابحث عن سؤالي في الخريطة المحفوظة")) { model.findMapDestination() }
                     .disabled(model.busy || model.indoor.map == nil || model.assistantQuestion.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     .accessibilityIdentifier("map-destination")
+                ConnectedJourneyPersistenceView(store: model.journeys, arabic: model.arabic)
                 Button(t("Clear goal and conversation", "امسح الهدف والمحادثة"), role: .destructive) { confirmClearConversation = true }
             } header: { Text(t("Goal", "الهدف")) } footer: {
                 Text(t("Answers cover what the camera sees now. For directions, use Routes.", "الإجابات عما تراه الكاميرا الآن. للاتجاهات استخدم المسارات."))
@@ -603,9 +605,10 @@ struct AssistantToolsView: View {
                     .font(.headline)
                     .disabled(startNode.isEmpty || destinationNode.isEmpty)
                     Button(t("Hear next landmark", "اسمع المعلم التالي")) { model.indoorBeacon() }
-                    Button(t("I'm at the landmark", "وصلت إلى المعلم")) { model.indoor.confirmArrival() }
-                    Button(t("At the landmark, facing the next one: line up", "عند المعلم وباتجاه التالي: محاذاة")) { model.alignIndoor() }
-                    Button(t("Way blocked, find another route", "الطريق مغلق، ابحث عن مسار آخر")) { model.indoor.blockNextLeg() }
+                    Button(t("I'm at the landmark", "وصلت إلى المعلم")) { model.confirmIndoorPreviewArrival() }.disabled(!model.indoorPreviewControlsAvailable)
+                    Button(t("At the landmark, facing the next one: line up", "عند المعلم وباتجاه التالي: محاذاة")) { model.alignIndoor() }.disabled(!model.indoorPreviewControlsAvailable)
+                    Button(t("Way blocked, find another route", "الطريق مغلق، ابحث عن مسار آخر")) { model.reportIndoorWayBlocked() }.disabled(!model.indoorPreviewControlsAvailable)
+                    if model.connectedJourneyOwnsNavigation { Text(t("Manual arrival and blocked-way reporting are unavailable for this journey. No obstruction is recorded by these controls.", "تأكيد الوصول والإبلاغ عن طريق مغلق غير متاحين لهذه الرحلة. لا تسجل هذه الأدوات عائقاً.")) }
                 } else {
                     Text(t("No route map yet.", "لا توجد خريطة مسار بعد."))
                 }
@@ -907,6 +910,7 @@ private struct ConversationMemoryView: View {
                 }
             }
             Section {
+                ConnectedJourneyPersistenceView(store: model.journeys, arabic: model.arabic)
                 Button(t("Forget conversation and tasks", "حذف المحادثة والمهام"), role: .destructive) { confirmClear = true }
                     .accessibilityIdentifier("forget-conversation")
             }

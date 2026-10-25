@@ -1,0 +1,31 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 328]
+[Planning deferred tasks]
+[1 / 5] BlindCoreTests-product
+[6 / 16] BlindCoreTests-product
+[9 / 19] BlindCoreTests-product
+[10 / 19] BlindCoreTests-product
+[13 / 19] BlindCoreTests-product
+[16 / 20] BlindCoreTests-product
+[17 / 20] BlindCoreTests-product
+[19 / 21] BlindCoreTests-test-runner
+[21 / 23] BlindCoreTests-test-runner
+[25 / 25] BlindCoreTests-test-runner
+Build complete! (9.15 secs)
+Test Suite 'Selected tests' started at 2026-10-25 08:28:28.118
+Test Suite 'ConnectedJourneyRuntimeTests' started at 2026-10-25 08:28:28.119
+Test Case 'ConnectedJourneyRuntimeTests.testIntegratedAutomaticRecoveryAfterRejectedEvidence' started at 2026-10-25 08:28:28.119
+NATIVE_REPLAY_INVALID=mode:wrong-support,capture:1CFD9736-876E-4DD5-85F0-54525C5EB725,session:1A9A4508-AA24-498F-AD2A-9EF12BC61D97,error:missingSupport
+NATIVE_REPLAY_RECOVERY=mode:wrong-support,fresh:8CD1E7EC-5D35-4379-8804-0EBB7439FB1C,session:164E0FFB-3C9E-4888-B4F5-AD1CE4FD3C3C,status:FAIL,error:noRoute
+/tmp/blind-integrated.6MO6bm/BlindCore/Tests/BlindCoreTests/NativeIntegratedRuntimeTests.swift:419: error: ConnectedJourneyRuntimeTests.testIntegratedAutomaticRecoveryAfterRejectedEvidence : failed - Automatic recovery failed for wrong-support: noRoute
+NATIVE_REPLAY_INVALID=mode:camera-only-heading,capture:2F930A7C-0F82-489B-9D3A-BE5D697E6557,session:E61B9F17-09D6-4D92-93D9-225CF5AC0694,error:invalidCapture
+NATIVE_REPLAY_RECOVERY=mode:camera-only-heading,fresh:8D397B0A-40D9-4CF8-8104-DB05D79858BF,session:42867389-8D5F-46CE-BF77-5DD63858DB31,status:FAIL,error:noRoute
+/tmp/blind-integrated.6MO6bm/BlindCore/Tests/BlindCoreTests/NativeIntegratedRuntimeTests.swift:419: error: ConnectedJourneyRuntimeTests.testIntegratedAutomaticRecoveryAfterRejectedEvidence : failed - Automatic recovery failed for camera-only-heading: noRoute
+Test Case 'ConnectedJourneyRuntimeTests.testIntegratedAutomaticRecoveryAfterRejectedEvidence' failed (0.391 seconds)
+Test Suite 'ConnectedJourneyRuntimeTests' failed at 2026-10-25 08:28:28.510
+	 Executed 1 test, with 2 failures (0 unexpected) in 0.391 (0.391) seconds
+Test Suite 'Selected tests' failed at 2026-10-25 08:28:28.510
+	 Executed 1 test, with 2 failures (0 unexpected) in 0.391 (0.391) seconds
+Note: Some test targets reported failures:
+  - BlindCoreTests (XCTest)

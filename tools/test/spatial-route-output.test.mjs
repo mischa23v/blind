@@ -22,8 +22,11 @@ test('registered route files and hosted fixtures are actual source-phase members
 });
 test('registered route dispatch retains ticket, exact output IDs and final playback gate', () => {
   const model = read('NavigationModel'), feedback = read('Feedback');
-  const route = section(model, 'func indoorBeacon(', '/// No mode selection:');
-  assert.match(route, /spatialRouteOutput\.deliver\(ticket: cue\.ticket/);
+  const owner = section(model, 'func indoorBeacon(', '/// No mode selection:');
+  assert.match(owner, /if connectedJourneyOwnsNavigation \{ connectedJourneyBeacon\(automatic: automatic\); return \}/);
+  assert.doesNotMatch(owner, /indoor\.next\(|spatialRouteOutput\.deliver/);
+  const route = section(model, 'private func connectedJourneyBeacon(', 'func stopReturn()');
+  assert.match(route, /spatialRouteOutput\.deliver\(ticket: ticket, goalRevision: revision/);
   assert.match(route, /speechID: id, spatialRouteID: id/);
   assert.match(route, /feedback\.spatialRouteBeacon\([\s\S]*id: id/);
   assert.doesNotMatch(route, /speakMobility\(|feedback\.beacon\(/);

@@ -86,6 +86,8 @@ test('extracted object discovery and saved-item callbacks accept no-depth RGB an
 ${declaration(read('BlindCore/Sources/BlindCore/Geometry.swift'), 'public struct Point3:')}
 ${read('BlindCore/Sources/BlindCore/RequestedVisualCapturePose.swift')}
 ${read('BlindCore/Sources/BlindCore/AssistantSession.swift')}
+${read('BlindCore/Sources/BlindCore/CommandAuthority.swift')}
+${read('BlindCore/Sources/BlindCore/HeldSearchIntent.swift')}
 ${declaration(read('BlindCore/Sources/BlindCore/ContextualTextPolicy.swift'), 'public enum FrameTimestampPolicy')}
 ${declaration(read('BlindCore/Sources/BlindCore/HazardDetector.swift'), 'public enum Hazard:')}
 enum CompanionNaming {
@@ -156,6 +158,7 @@ struct TrackedTarget { init(label: String, query: String, point: Point3, now: Do
     var lastObservation: Observation? = nil
     var indoor = Indoor(), everydayTicket: Ticket? = nil
     var objectSearch: ObjectSearch?, trackedTarget: TrackedTarget?
+    var heldSearchIntent = HeldSearchIntent()
     var searchInFlight = false, lookupInFlight = false
     var objectSearchNativeLease: UUID?
     var itemAppearanceLookup: (lease: UUID, capture: ObjectViewCapture, expiresAt: Double)?
@@ -231,7 +234,9 @@ struct TrackedTarget { init(label: String, query: String, point: Point3, now: Do
     TestClock.now = 102; m.lastFrameWallTime = 102; m.session.currentFrame!.timestamp = 102
     m.session.currentFrame!.camera.transform.columns.2 = .init(0,sin(Float.pi/18),cos(Float.pi/18),0)
     check(!m.objectViewIsCurrent(snapshot, snapshotPlayback: true), "Snapshot permission does not relax optical association")
-    m = ready(); check(m.locate("cup", question: "find cup"), "No-depth search begins")
+    m = ready(); m.heldSearchIntent.hold(target: "old target", goalRevision: "old", origin: .trustedInterface)
+    check(m.locate("cup", question: "find cup"), "No-depth search begins")
+    check(!m.heldSearchIntent.hasIntent, "New explicit search retires a held previous search")
     await waitForSearch(m)
     check(m.matches.count == 1 && m.matches[0].contains("cannot confirm"), "Real callback path delivers only unconfirmed candidate")
     check(m.trackedTarget == nil && m.records == [false], "No physical tracking or located assertion")
@@ -358,6 +363,6 @@ struct TrackedTarget { init(label: String, query: String, point: Point3, now: Do
     writeFileSync(input, swift);
     execFileSync(process.env.BLIND_SWIFTC, ['-parse-as-library', '-module-cache-path', process.env.CLANG_MODULE_CACHE_PATH || join(directory, 'module-cache'), input, '-o', output], { encoding: 'utf8', timeout: 60_000 });
     const result = execFileSync(output, [], { encoding: 'utf8', timeout: 10_000 });
-    assert.match(result, /object RGB discovery: 65 checks passed/);
+    assert.match(result, /object RGB discovery: 66 checks passed/);
   } finally { rmSync(directory, { recursive: true, force: true }); }
 });

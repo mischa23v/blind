@@ -29,5 +29,5 @@ test('actual asynchronous map owner, file worker and extracted UI reject stale I
   const result=spawnSync(swift,['test','--package-path',work,'--scratch-path',join(work,'build'),'--cache-path',join(work,'cache'),'--jobs','1'],{encoding:'utf8',timeout:175_000,maxBuffer:8*1024*1024,env:{...process.env,HOME:join(work,'home'),XDG_CACHE_HOME:join(work,'cache'),SWIFTPM_MODULECACHE_OVERRIDE:join(work,'modules'),CLANG_MODULE_CACHE_PATH:join(work,'clang-cache')}});
   const output=`${result.stdout||''}\n${result.stderr||''}`;writeFileSync(join(work,'execution.log'),output);
   assert.equal(result.status,0,`Spatial IO replay failed; preserved source/inputs/log: ${work}\n${output.slice(-12000)}`);
-  assert.match(output,/Executed 41 tests, with 0 failures/);
+  assert.match(output,/Executed 44 tests, with 0 failures/);
 });
