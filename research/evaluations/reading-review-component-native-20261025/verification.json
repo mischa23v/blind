@@ -1,0 +1,174 @@
+{
+  "runID": 40228398355,
+  "runURL": "https://github.com/mischa23v/blind/actions/runs/40228398355",
+  "producerCommit": "e57799d237c78d97f1ecb39db712022d5e4fedc4",
+  "coreSourceCommit": "0caea7dc8b529724545de7affb9bb65006175304",
+  "result": "PASSED_COMPONENT_INTEGRATION_ONLY",
+  "tests": 1,
+  "passed": 1,
+  "failed": 0,
+  "skipped": 0,
+  "xctestDurationSeconds": 248.923,
+  "sequenceDurationSeconds": 248.49125274999994,
+  "authoredWords": 40,
+  "originalSourceParts": 2,
+  "ordinaryWordsPerMinute": 30,
+  "actualStarts": 5,
+  "actualSuccessfulCompletions": 4,
+  "actualCancelledOldUtterances": 1,
+  "realBudgetWakes": 4,
+  "distinctPlaybackRequests": 4,
+  "distinctSelections": 4,
+  "distinctPhraseIDs": 5,
+  "sourceRevisionEpochGenerationAndOriginalTimestampsPreserved": true,
+  "entireOriginalFixtureReconstructed": true,
+  "exactCallbackIDAndTextOrderVerified": true,
+  "oldCancellationRejectedWithoutNewOwnerMutation": true,
+  "queuedUnstartedRepeatRejected": true,
+  "everyWakeAtOrAfterRecordedLedgerDeadline": true,
+  "finalSourceAndCursorClearVerified": true,
+  "fixtureUTF8SHA256": "9cc082adafd8cd802df8481679e953bf2a1e3ee7b415a7c6fcac64b0d35e94ca",
+  "fixtureIsNotImageOrOCREvidence": true,
+  "attempts": [
+    {
+      "command": "initial",
+      "requestID": "035474B7-3DA8-4739-B074-243B66B3A427",
+      "selectionID": "E28047A8-4F2E-4768-93CE-F9A553425DC9",
+      "sourceID": "E28047A8-4F2E-4768-93CE-F9A553425DC9",
+      "revision": "73D84474-57F2-41CA-ADD1-2A7198FA25B3",
+      "phrases": [
+        {
+          "id": "C28FF92E-BCD2-4DB5-9F01-FDFE69CBD5DD",
+          "originalSliceWords": 21,
+          "textSHA256": "1abffe60e0b1068434634271d0a36debf62d80fe5bae2b8ffc1d0e439fb49c98"
+        },
+        {
+          "id": "C23DD1E5-210E-4FE8-85B9-A2E98B998DF9",
+          "originalSliceWords": 19,
+          "textSHA256": "bf6789d5ab4f616c29833c66e3e82a3eba75bb6750bc16abd5f8ebdfd6beeb8d"
+        }
+      ]
+    },
+    {
+      "command": "previous",
+      "requestID": "D18DCA17-1A95-41F8-9191-35282F56DDF5",
+      "selectionID": "F2A2A2B3-7F00-4214-A537-CF7113ECC29E",
+      "sourceID": "E28047A8-4F2E-4768-93CE-F9A553425DC9",
+      "revision": "73D84474-57F2-41CA-ADD1-2A7198FA25B3",
+      "phrases": [
+        {
+          "id": "24D965BB-DF9D-47FA-A659-3F3388437343",
+          "originalSliceWords": 21,
+          "textSHA256": "1abffe60e0b1068434634271d0a36debf62d80fe5bae2b8ffc1d0e439fb49c98"
+        }
+      ]
+    },
+    {
+      "command": "repeated",
+      "requestID": "1DAE83B9-B7A4-43B2-A992-45455C8CEE07",
+      "selectionID": "7463F444-575D-4E03-BC00-6EC45644E062",
+      "sourceID": "E28047A8-4F2E-4768-93CE-F9A553425DC9",
+      "revision": "73D84474-57F2-41CA-ADD1-2A7198FA25B3",
+      "phrases": [
+        {
+          "id": "92F0FAFC-F424-4348-BCB0-FF3D19BB186E",
+          "originalSliceWords": 21,
+          "textSHA256": "1abffe60e0b1068434634271d0a36debf62d80fe5bae2b8ffc1d0e439fb49c98"
+        }
+      ]
+    },
+    {
+      "command": "next",
+      "requestID": "8FB566FF-2F00-44B1-8763-4A5E0E93CAE7",
+      "selectionID": "0849EFFE-336B-42A1-9362-6B03476F21DE",
+      "sourceID": "E28047A8-4F2E-4768-93CE-F9A553425DC9",
+      "revision": "73D84474-57F2-41CA-ADD1-2A7198FA25B3",
+      "phrases": [
+        {
+          "id": "FD01F9F9-8855-431A-A941-FC57364836CE",
+          "originalSliceWords": 19,
+          "textSHA256": "bf6789d5ab4f616c29833c66e3e82a3eba75bb6750bc16abd5f8ebdfd6beeb8d"
+        }
+      ]
+    }
+  ],
+  "oldCancellation": {
+    "phraseID": "24D965BB-DF9D-47FA-A659-3F3388437343",
+    "callbackSelectionID": "F2A2A2B3-7F00-4214-A537-CF7113ECC29E",
+    "callbackRequestID": "D18DCA17-1A95-41F8-9191-35282F56DDF5",
+    "callbackCameraEpoch": "761D0BE2-EC26-420E-8EB9-2D688187359F",
+    "callbackGeneration": "1",
+    "currentSelectionID": "7463F444-575D-4E03-BC00-6EC45644E062",
+    "currentRequestID": "1DAE83B9-B7A4-43B2-A992-45455C8CEE07",
+    "sourceID": "E28047A8-4F2E-4768-93CE-F9A553425DC9",
+    "revision": "73D84474-57F2-41CA-ADD1-2A7198FA25B3"
+  },
+  "receipts": {
+    "originalReceipt": {
+      "completed": 2,
+      "outcome": "completed",
+      "requestID": "035474B7-3DA8-4739-B074-243B66B3A427",
+      "revision": "73D84474-57F2-41CA-ADD1-2A7198FA25B3",
+      "sourceID": "E28047A8-4F2E-4768-93CE-F9A553425DC9",
+      "total": 2
+    },
+    "replacedAttemptReceipt": {
+      "completed": 0,
+      "outcome": "cancelled",
+      "requestID": "D18DCA17-1A95-41F8-9191-35282F56DDF5",
+      "revision": "73D84474-57F2-41CA-ADD1-2A7198FA25B3",
+      "sourceID": "E28047A8-4F2E-4768-93CE-F9A553425DC9",
+      "total": 1
+    },
+    "repeatReceipt": {
+      "completed": 1,
+      "outcome": "completed",
+      "requestID": "1DAE83B9-B7A4-43B2-A992-45455C8CEE07",
+      "revision": "73D84474-57F2-41CA-ADD1-2A7198FA25B3",
+      "sourceID": "E28047A8-4F2E-4768-93CE-F9A553425DC9",
+      "total": 1
+    },
+    "finalReceipt": {
+      "completed": 1,
+      "outcome": "completed",
+      "requestID": "8FB566FF-2F00-44B1-8763-4A5E0E93CAE7",
+      "revision": "73D84474-57F2-41CA-ADD1-2A7198FA25B3",
+      "sourceID": "E28047A8-4F2E-4768-93CE-F9A553425DC9",
+      "total": 1
+    }
+  },
+  "replacedReceiptMeaning": "Incomplete snapshot recorded before cancellation; actual didCancel event, not that snapshot, proves native cancellation.",
+  "runtime": {
+    "platform": "iOS Simulator",
+    "version": "27.0",
+    "build": "24A434",
+    "architecture": "arm64",
+    "model": "iPhone 18 Pro Max"
+  },
+  "voice": {
+    "identifier": "com.apple.voice.super-compact.en-US.Samantha",
+    "language": "en-US",
+    "assetInstallationVerified": false,
+    "acousticOutputVerified": false
+  },
+  "runtimeWarning": "Synchronous main-thread AVAudioSession activation/deactivation may cause UI unresponsiveness. The test-only warning remains disclosed; no production fix is claimed.",
+  "rawEvidence": {
+    "receiptArtifactID": 12611823192,
+    "receiptZipSHA256": "c98816972bd5cdcdbc3c5863e5937a8aaf501aafbfbbf3d6fec14c17962dd024",
+    "attachmentSHA256": "b0b3c2d8758bfbb205ccfc536dc40fb7a19164d5463ab6b0f23f75bc59de6b92",
+    "summarySHA256": "ce69efae7636e0f5eb428a5be6b97b0cefe3681faebc70245ec9072b808882e4",
+    "jobConsoleSHA256": "65a1dfbb7b52c2872e887585b5acc3974c089b0a2ab74c72a4261f11fbe54501",
+    "fullHostedArtifactID": 12611982708
+  },
+  "previousProbePreserved": {
+    "successRun": 40224675506,
+    "earlierCompileFailureRun": 40223835661
+  },
+  "limits": [
+    "Unchanged Core plus test-owned bridge and scheduler, not production NavigationModel or Feedback",
+    "Authored acquisition, not camera/Vision or current physical authority",
+    "No acoustic intelligibility, menu understanding, blind-user trial or real-world goal completion",
+    "No production privacy, hazard or foreground lifecycle acceptance"
+  ],
+  "evidenceTransformation": "Selected authored result summary; internal runner paths omitted, unchanged private receipt hashes retained. XCTest duration is from actual console test-case line, not action duration. No broad workspace inventory."
+}
