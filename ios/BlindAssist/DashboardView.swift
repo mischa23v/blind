@@ -681,11 +681,16 @@ struct AssistantToolsView: View {
         }
         .fileImporter(isPresented: $importing, allowedContentTypes: [.json]) { result in
             do {
-                let url = try result.get(), granted = url.startAccessingSecurityScopedResource()
-                defer { if granted { url.stopAccessingSecurityScopedResource() } }
-                let values = try url.resourceValues(forKeys: [.fileSizeKey])
-                guard let size = values.fileSize, size >= 0, size <= SpatialMapInstallation.maximumEnvelopeBytes else { throw MapError.invalid }
-                try model.indoor.loadImportedMap(Data(contentsOf: url)); importError = ""
+                let url = try result.get()
+                model.indoor.importMapFile(url) { outcome in
+                    switch outcome {
+                    case .success: importError = ""
+                    case .failure(let error):
+                        if error as? SpatialMapIOError != .superseded {
+                            importError = t("Could not import this route map.", "تعذر استيراد خريطة المسار.")
+                        }
+                    }
+                }
             } catch { importError = t("Could not import this route map.", "تعذر استيراد خريطة المسار.") }
         }
     }

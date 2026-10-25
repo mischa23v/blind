@@ -6,11 +6,12 @@ import { generateProject } from '../generate-xcode-project.mjs';
 const read = name => readFileSync(new URL(`../../ios/BlindAssist/${name}.swift`, import.meta.url), 'utf8');
 const section = (text, start, end) => text.slice(text.indexOf(start), text.indexOf(end, text.indexOf(start)));
 test('registered route files and hosted fixtures are actual source-phase members', () => {
-  const project = generateProject(['RegisteredIndoorNavigation.swift', 'SpatialRouteOutputController.swift']);
+  const project = generateProject(['RegisteredIndoorNavigation.swift', 'SpatialRouteOutputController.swift', 'SpatialMapIO.swift']);
   const objects = new Map([...project.matchAll(/^([A-F0-9]{24}) = \{ (.*) \};$/gm)].map(x => [x[1], x[2]]));
-  for (const file of ['BlindAssist/RegisteredIndoorNavigation.swift', 'BlindAssist/SpatialRouteOutputController.swift',
+  for (const file of ['BlindAssist/RegisteredIndoorNavigation.swift', 'BlindAssist/SpatialRouteOutputController.swift', 'BlindAssist/SpatialMapIO.swift',
     'BlindAssistTests/SpatialIntegrationFixture.swift', 'BlindAssistTests/RegisteredIndoorNavigationTests.swift',
-    'BlindAssistTests/SpatialRouteOutputControllerTests.swift']) {
+    'BlindAssistTests/SpatialRouteOutputControllerTests.swift', 'BlindAssistTests/SpatialMapIOTests.swift',
+    'BlindAssistTests/IndoorNavigatorAsyncTests.swift']) {
     const ref = [...objects].find(([,body]) => body.includes(`path = "${file}";`))?.[0];
     assert.ok(ref, file);
     const build = [...objects].find(([,body]) => body.includes(`fileRef = ${ref};`))?.[0];
@@ -45,9 +46,19 @@ test('route watchdog, goal controls and JSON importer preserve independent owner
     assert.doesNotMatch(body, /feedback\.stop\(|indoor\.invalidatePosition\(|detector\.reset\(/);
   }
   assert.match(ui, /model\.planIndoor\(from:/);
-  assert.match(ui, /model\.indoor\.loadImportedMap\(/);
-  assert.match(ui, /guard let size = values\.fileSize, size >= 0, size <= SpatialMapInstallation\.maximumEnvelopeBytes/);
+  assert.match(ui, /model\.indoor\.importMapFile\(url\)/);
+  const importer = section(ui, '.fileImporter(isPresented: $importing', '/// Settings, most-used');
+  assert.doesNotMatch(importer, /Data\(contentsOf:|resourceValues\(/);
+  const io = read('SpatialMapIO');
+  assert.match(io, /guard size <= UInt64\(maximumBytes\)/);
+  assert.match(io, /read\(upToCount: count\)/);
+  assert.match(io, /guard bytes\.count <= maximumBytes/);
+
   assert.match(indoor, /if let caption = self\.registeredCueCaption, self\.message == caption/);
-  assert.match(indoor, /try loadRegisteredInstallation\(data\)/);
-  assert.match(indoor, /guard registered\?\.installation == nil else \{ throw SpatialInstallationError\.historyRewrite \}/);
+  assert.match(indoor, /registered\.install\(data, completion: \$0\)/);
+  const adapter = read('RegisteredIndoorNavigation');
+  assert.match(adapter, /object\["mapBytes"\] != nil \|\| object\["snapshot"\] != nil/);
+  const remove = section(indoor, 'func removeKeepOutZone(', 'func blockNextLeg(');
+  assert.match(remove, /guard !mapIOPending, let registered, !registered\.ioBlocked,\s*registered\.installation == nil/);
+  assert.match(remove, /completion\(\.failure\(SpatialInstallationError\.historyRewrite\)\)/);
 });

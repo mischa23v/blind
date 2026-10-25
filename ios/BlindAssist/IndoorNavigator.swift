@@ -24,7 +24,11 @@ final class IndoorNavigator: ObservableObject {
     var onSpatialOutputRetired: (() -> Void)?
     var clearObservationHistory: ((@escaping (Bool) -> Void) -> Void)?
     /// Selected storage target only, never coordinate alignment or current-location evidence.
-    var registeredObservationMapTarget: SpatialMapBinding? { registered?.installation?.binding }
+    var registeredObservationMapTarget: SpatialMapBinding? {
+        guard let registered, !registered.ioPending, !registered.ioBlocked else { return nil }
+        return registered.installation?.binding
+    }
+    @Published private(set) var mapIOPending = false
     private var registeredCueCaption: String?
     private func bindRegisteredOutputRetirement() {
         registered?.onOutputRetired = { [weak self] in
@@ -43,21 +47,64 @@ final class IndoorNavigator: ObservableObject {
         if let storageOverride { return storageOverride }
         return FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("IndoorRoutes/map.json")
     }
-    init(storage: URL? = nil) {
+    init(storage: URL? = nil, storageIO: (any SpatialMapStorageIO)? = nil,
+         sha256: @escaping SpatialMapSHA256 = RegisteredIndoorNavigation.platformSHA256,
+         restoreCompletion: @escaping MapCompletion = { _ in }) {
         storageOverride = storage
-        let registered = RegisteredIndoorNavigation(storage: self.storage)
+        let registered = RegisteredIndoorNavigation(storage: self.storage, sha256: sha256, storageIO: storageIO)
         self.registered = registered
         bindRegisteredOutputRetirement()
-        if (try? registered.restore()) != nil, let installed = registered.installation {
-            self.map = installed.map
-            message = t("Registered map loaded. Live position is unknown.", "حُمّلت الخريطة المسجلة. الموقع الحالي غير معروف.")
-            return
-        }
-        if let data = try? Data(contentsOf: self.storage), let map = try? JSONDecoder().decode(IndoorMap.self, from: data), (try? map.validate()) != nil {
-            self.map = map; message = t("Loaded \(map.name) for preview. Live position is unknown.", "حُمّلت \(map.name) للمعاينة. الموقع الحالي غير معروف.")
+        performMapIO(message: "Restoring route map. Live position is unknown.", missingMapIsEmpty: true, completion: { [weak self] result in
+            guard let self else { return }
+            if case .success = result { Task { @MainActor [weak self] in await self?.restoreCommunityContext() } }
+            restoreCompletion(result)
+        }) { done in registered.restore(completion: done) }
+    }
+    var exportURL: URL? { map == nil || mapIOPending || registered?.ioBlocked == true ? nil : storage }
+    typealias MapCompletion = (Result<Void, Error>) -> Void
+    /// UI state is published on its original owner only after the worker's CAS.
+    /// This helper never decodes, hashes, writes, or waits for the IO queue.
+    private func performMapIO(message pendingMessage: String, missingMapIsEmpty: Bool = false,
+                              completion: @escaping MapCompletion = { _ in },
+                              start: (@escaping RegisteredIndoorNavigation.Completion) -> Void) {
+        precondition(Thread.isMainThread)
+        revision = UUID(); let expected = revision
+        alignmentRevision = UUID(); anchorWorld = nil; anchorMap = nil
+        worldForward = nil; mapForward = nil; alignedLevel = nil
+        route = []; waypointIndex = 0; suggestedDestination = nil; registeredCueCaption = nil
+        mapIOPending = true; message = pendingMessage
+        start { [weak self] result in
+            guard let self, self.revision == expected else {
+                completion(.failure(SpatialMapIOError.superseded)); return
+            }
+            self.mapIOPending = false
+            switch result {
+            case .success(let loaded):
+                self.map = loaded?.map; self.activePackage = loaded?.package; self.blocked = []
+                self.route = self.registered?.route ?? []; self.waypointIndex = self.registered?.waypointIndex ?? 0
+                if self.message == pendingMessage {
+                if loaded == nil { self.message = self.t("Route map deleted.", "حُذفت خريطة المسار.") }
+                else if loaded?.installation != nil {
+                    self.message = self.t("Registered map saved. Live position is unknown.", "حُفظت الخريطة المسجلة. الموقع الحالي غير معروف.")
+                } else {
+                    self.message = self.t("Route map loaded for preview only. Live guidance is unavailable.", "حُمّلت خريطة المسار للمعاينة فقط. الإرشاد الحالي غير متاح.")
+                }
+                }
+                completion(.success(()))
+            case .failure(let error):
+                if self.message == pendingMessage, error as? SpatialMapIOError != .superseded {
+                    if missingMapIsEmpty, let fileError = error as? CocoaError,
+                       fileError.code == .fileReadNoSuchFile || fileError.code == .fileNoSuchFile {
+                        self.message = self.t("Import an authored indoor route map.", "استورد خريطة مسار داخلي موصوفة.")
+                    } else {
+                        self.message = self.t("Map operation could not finish. Registered guidance is unavailable. Please retry.",
+                                              "تعذر إكمال عملية الخريطة. الإرشاد المسجل غير متاح. أعد المحاولة.")
+                    }
+                }
+                completion(.failure(error))
+            }
         }
     }
-    var exportURL: URL? { map == nil ? nil : storage }
     var isAligned: Bool { registered?.currentPose(now: ProcessInfo.processInfo.systemUptime) != nil }
     /// Alignment can outlive a task; it does not authorize route announcements.
     var hasActiveRoute: Bool { waypointIndex >= 0 && waypointIndex < route.count }
@@ -76,69 +123,89 @@ final class IndoorNavigator: ObservableObject {
         }
     }
     #endif
-    func deleteMap() {
+    func deleteMap(completion: @escaping MapCompletion = { _ in }) {
         #if DEBUG
         purgeDebugSessionDiagnostics()
         #endif
-        invalidatePosition()
-        let expectedRevision = revision
-        if let clearObservationHistory {
-            clearObservationHistory { [weak self] success in
-                guard let self else { return }
-                guard self.revision == expectedRevision else { return }
-                guard success else { self.message = self.t("Observed geometry history could not be deleted. Please retry.", "لم يكتمل حذف سجل هندسة المشاهدات. أعد المحاولة."); return }
-                self.deleteMapFiles()
-            }
-        } else { deleteMapFiles() }
+        guard let registered else { completion(.failure(SpatialMapIOError.unavailable)); return }
+        performMapIO(message: t("Deleting route map. Guidance withdrawn.", "جارٍ حذف خريطة المسار. سُحب الإرشاد."), completion: completion) { done in
+            registered.invalidateForDeletion()
+            let expected = revision
+            if let clearObservationHistory {
+                clearObservationHistory { [weak self] success in
+                    guard let self, self.revision == expected else { done(.failure(SpatialMapIOError.superseded)); return }
+                    guard success else {
+                        registered.externalPreparationFailed() // settled failure stays blocked, not forever pending
+                        done(.failure(SpatialMapIOError.unavailable)); return
+                    }
+                    registered.delete(completion: done)
+                }
+            } else { registered.delete(completion: done) }
+        }
     }
-    private func deleteMapFiles() {
-        do {
-            if FileManager.default.fileExists(atPath: storage.path) { try FileManager.default.removeItem(at: storage) }
-            registered?.clearForLegacyImport()
-            map = nil; activePackage = nil; revision = UUID(); suggestedDestination = nil; blocked = []; invalidatePosition(); message = t("Route map deleted.", "حُذفت خريطة المسار.")
-        } catch { message = t("Could not delete the route map.", "تعذر حذف خريطة المسار.") }
+    func importMapFile(_ url: URL, completion: @escaping MapCompletion = { _ in }) {
+        guard let registered else { completion(.failure(SpatialMapIOError.unavailable)); return }
+        performMapIO(message: t("Importing route map. Guidance withdrawn.", "جارٍ استيراد خريطة المسار. سُحب الإرشاد."), completion: completion) {
+            registered.importFile(url, completion: $0)
+        }
     }
-    /// The existing JSON import UI accepts a registered atomic envelope or a
-    /// legacy preview graph. A malformed envelope is never downgraded to a graph.
-    func loadImportedMap(_ data: Data) throws {
-        guard !data.isEmpty, data.count <= SpatialMapInstallation.maximumEnvelopeBytes,
-              let object = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { throw MapError.invalid }
-        if object["mapBytes"] != nil || object["snapshot"] != nil || object["artifactHistory"] != nil {
-            try loadRegisteredInstallation(data)
-        } else { try load(data) }
+    /// Parsing, bounded file IO, validation and persistence run on the serial worker.
+    /// Malformed registered envelopes cannot fall back to legacy preview geometry.
+    func loadImportedMap(_ data: Data, completion: @escaping MapCompletion = { _ in }) {
+        guard let registered else { completion(.failure(SpatialMapIOError.unavailable)); return }
+        performMapIO(message: t("Importing route map. Guidance withdrawn.", "جارٍ استيراد خريطة المسار. سُحب الإرشاد."), completion: completion) {
+            registered.install(data, completion: $0)
+        }
     }
-    func load(_ data: Data) throws {
-        guard data.count <= 2_000_000 else { throw MapError.invalid }
-        let map = try JSONDecoder().decode(IndoorMap.self, from: data)
-        try map.validate()
-        var directory = storage.deletingLastPathComponent()
-        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        var values = URLResourceValues(); values.isExcludedFromBackup = true; try directory.setResourceValues(values)
-        try data.write(to: storage, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
-        registered?.clearForLegacyImport()
-        self.map = map; activePackage = nil; revision = UUID(); suggestedDestination = nil; blocked = []; invalidatePosition()
-        message = t("Loaded \(map.name) for preview only. Live guidance is unavailable.", "حُمّلت \(map.name) للمعاينة فقط. الإرشاد الحالي غير متاح.")
+    func load(_ data: Data, completion: @escaping MapCompletion = { _ in }) { loadImportedMap(data, completion: completion) }
+    func loadCommunity(_ package: PlacePackage, completion: @escaping MapCompletion = { _ in }) {
+        guard let registered else { completion(.failure(SpatialMapIOError.unavailable)); return }
+        performMapIO(message: t("Loading community map preview.", "جارٍ تحميل معاينة خريطة المجتمع."), completion: completion) {
+            registered.installCommunity(package, completion: $0)
+        }
     }
-    func loadCommunity(_ package: PlacePackage) throws {
-        try package.validate()
-        guard package.localization == "manual-landmarks", var map = package.routeMap else { throw MapError.invalid }
-        map.packageID = package.id; map.packageRevision = package.revision
-        try load(JSONEncoder().encode(map))
-        activePackage = package
-        message = text("Loaded \(package.name), revision \(package.revision). Preview only; current location and facing direction are unknown.", "تم تحميل \(package.name)، المراجعة \(package.revision). للمعاينة فقط؛ الموقع الحالي والاتجاه غير معروفين.")
+    struct CommunityImportIntent: Equatable, Sendable {
+        fileprivate let revision: UUID
+        fileprivate let packageID: String
+        fileprivate let packageRevision: String
+    }
+    /// Admit the user's replacement intent before the community cache awaits IO.
+    /// Later cache callbacks cannot override a delete, import or newer selection.
+    func beginCommunityImport(_ package: PlacePackage) -> CommunityImportIntent {
+        invalidatePosition(); revision = UUID(); mapIOPending = true
+        registered?.suspendForExternalPreparation()
+        message = t("Preparing community map. Guidance withdrawn.", "جارٍ تجهيز خريطة المجتمع. سُحب الإرشاد.")
+        return .init(revision: revision, packageID: package.id, packageRevision: package.revision)
+    }
+    func ownsCommunityImport(_ intent: CommunityImportIntent) -> Bool { revision == intent.revision }
+    func completeCommunityImport(_ package: PlacePackage, intent: CommunityImportIntent,
+                                 completion: @escaping MapCompletion = { _ in }) {
+        guard ownsCommunityImport(intent), package.id == intent.packageID, package.revision == intent.packageRevision else {
+            completion(.failure(SpatialMapIOError.superseded)); return
+        }
+        loadCommunity(package, completion: completion)
+    }
+    func failCommunityImport(_ intent: CommunityImportIntent) {
+        guard ownsCommunityImport(intent) else { return }
+        registered?.externalPreparationFailed(); mapIOPending = false
+        message = t("Community map preparation failed. Guidance remains unavailable.", "تعذر تجهيز خريطة المجتمع. الإرشاد غير متاح.")
     }
     /// Restore metadata only from an immutable installed package matching the loaded graph.
     /// No route or pose is restored by this operation, and no network request is made.
     @MainActor func restoreCommunityContext(storage: CommunityPackageStorage = CommunityPackageStorage()) async {
         guard let map, let packageID = map.packageID, let packageRevision = map.packageRevision else { return }
-        let expected = revision
+        let expected = revision, expectedMessage = message
         do {
             let inventory = try await storage.list()
             guard revision == expected,
-                  let package = inventory.installed.first(where: { $0.package.id == packageID && $0.package.revision == packageRevision })?.package,
-                  Self.matches(map: map, package: package) else { return }
+                  let package = inventory.installed.first(where: { $0.package.id == packageID && $0.package.revision == packageRevision })?.package else { return }
+            let matches = await Task.detached(priority: .utility) { Self.matches(map: map, package: package) }.value
+            guard revision == expected, matches else { return }
             activePackage = package; revision = UUID(); invalidatePosition()
-        } catch { message = text("Route metadata could not be restored. Location remains unconfirmed.", "تعذر استعادة معلومات المسار. يبقى الموقع غير مؤكد.") }
+        } catch {
+            guard revision == expected, message == expectedMessage else { return }
+            message = text("Route metadata could not be restored. Location remains unconfirmed.", "تعذر استعادة معلومات المسار. يبقى الموقع غير مؤكد.")
+        }
     }
     static func matches(map: IndoorMap, package: PlacePackage) -> Bool {
         guard map.packageID == package.id, map.packageRevision == package.revision,
@@ -155,7 +222,10 @@ final class IndoorNavigator: ObservableObject {
         map.packageID = nil; map.packageRevision = nil; map.packageModified = nil; map.keepOutZones = nil
     }
     func plan(from: String, to: String, goalRevision: UUID = UUID()) throws {
-        guard let map else { throw MapError.invalid }
+        // A public new-plan attempt retires the older async replan continuation
+        // even if storage is still busy and this new request must be rejected.
+        registered?.cancelRoute(); route = []; waypointIndex = 0
+        guard !mapIOPending, let map else { throw MapError.invalid }
         if let registered, registered.configured {
             do { try registered.plan(from: from, to: to, goal: goalRevision) }
             catch {
@@ -171,57 +241,52 @@ final class IndoorNavigator: ObservableObject {
         anchorWorld = nil; message = text("Route preview only. Current location and direction are unverified.", "معاينة المسار فقط. الموقع الحالي والاتجاه غير متحقق منهما.")
         if from == to { message = text("Preview start and destination are the same.", "بداية المعاينة والوجهة هما النقطة نفسها.") }
     }
-    func addKeepOutZone(landmarkID: String, halfSize: Double) throws {
-        guard var updated = map, let node = updated.nodes.first(where: { $0.id == landmarkID }),
-              halfSize.isFinite, halfSize >= 0.5, halfSize <= 10 else { throw MapError.invalid }
+    func addKeepOutZone(landmarkID: String, halfSize: Double, completion: @escaping MapCompletion = { _ in }) {
+        guard let registered, var updated = map, let node = updated.nodes.first(where: { $0.id == landmarkID }),
+              halfSize.isFinite, halfSize >= 0.5, halfSize <= 10 else { completion(.failure(MapError.invalid)); return }
         let zone = KeepOutZone(id: UUID().uuidString, name: node.name, level: node.level,
                                minX: node.position.x - halfSize, maxX: node.position.x + halfSize,
                                minZ: node.position.z - halfSize, maxZ: node.position.z + halfSize,
                                nameArabic: node.nameArabic)
-        if let registered, let installation = registered.installation {
-            do { try registered.addRestrictions(binding: installation.binding, blocked: [], zones: [zone]) }
-            catch {
-                route = registered.route; waypointIndex = registered.waypointIndex
-                message = t("Restriction could not be saved. Registered guidance is unavailable until it is saved.",
-                            "تعذر حفظ المنطقة المحظورة. الإرشاد المسجل غير متاح حتى تُحفظ.")
-                throw error
+        if let installation = registered.installation {
+            performMapIO(message: t("Saving restriction. Guidance withdrawn until saved.", "جارٍ حفظ المنطقة المحظورة. سُحب الإرشاد حتى تُحفظ."), completion: completion) {
+                registered.addRestrictions(binding: installation.binding, blocked: [], zones: [zone], completion: $0)
             }
-            route = registered.route; waypointIndex = registered.waypointIndex
-            message = t("Conservative restriction saved. Current physical clearance remains unknown.",
-                        "حُفظت المنطقة المحظورة احتياطياً. خلو الطريق الفعلي الحالي غير معروف.")
-            return
+        } else {
+            guard !mapIOPending, !registered.ioBlocked else { completion(.failure(SpatialMapIOError.busy)); return }
+            updated.keepOutZones = (updated.keepOutZones ?? []) + [zone]; updated.markLocalEdit()
+            let package = activePackage
+            performMapIO(message: t("Saving preview restriction.", "جارٍ حفظ المنطقة المحظورة في المعاينة."), completion: completion) {
+                registered.installPreviewEdit(updated, package: package, completion: $0)
+            }
         }
-        updated.keepOutZones = (updated.keepOutZones ?? []) + [zone]
-        updated.markLocalEdit()
-        let package = activePackage
-        try load(JSONEncoder().encode(updated))
-        if let package, Self.matches(map: updated, package: package) { activePackage = package }
-        message = text("Keep-out area saved in the preview. Live guidance is unavailable.", "حُفظت المنطقة المحظورة في المعاينة. الإرشاد الحالي غير متاح.")
     }
-    var canRemoveStoredKeepOutZones: Bool { registered?.installation == nil }
+    var canRemoveStoredKeepOutZones: Bool {
+        !mapIOPending && registered?.ioBlocked == false && registered?.installation == nil
+    }
     var storedKeepOutZones: [KeepOutZone] {
         (map?.keepOutZones ?? []) + (registered?.installation?.currentRestrictions.zones ?? [])
     }
-    func removeKeepOutZone(id: String) throws {
-        // Reopening requires a fresh source-owned observed-clearance protocol.
-        // Never erase the registered envelope or downgrade it to a legacy graph.
-        guard registered?.installation == nil else { throw SpatialInstallationError.historyRewrite }
-        guard var updated = map else { throw MapError.invalid }
-        updated.keepOutZones = updated.keepOutZones?.filter { $0.id != id }
-        updated.markLocalEdit()
+    func removeKeepOutZone(id: String, completion: @escaping MapCompletion = { _ in }) {
+        // Reopening registered restrictions needs fresh source-owned evidence.
+        guard !mapIOPending, let registered, !registered.ioBlocked,
+              registered.installation == nil, var updated = map else {
+            completion(.failure(SpatialInstallationError.historyRewrite)); return
+        }
+        updated.keepOutZones = updated.keepOutZones?.filter { $0.id != id }; updated.markLocalEdit()
         let package = activePackage
-        try load(JSONEncoder().encode(updated))
-        if let package, Self.matches(map: updated, package: package) { activePackage = package }
-        message = text("Keep-out area removed from the preview. This does not prove current clearance.", "حُذفت المنطقة المحظورة من المعاينة. هذا لا يثبت خلو الطريق الحالي.")
+        performMapIO(message: t("Saving preview change. Current clearance remains unknown.", "جارٍ حفظ تعديل المعاينة. خلو الطريق الحالي غير معروف."), completion: completion) {
+            registered.installPreviewEdit(updated, package: package, completion: $0)
+        }
     }
-    func blockNextLeg() {
+    func blockNextLeg(completion: @escaping MapCompletion = { _ in }) {
         if let registered, registered.configured {
-            do { try registered.blockNextLegAndReplan() }
-            catch { message = GuidanceText.noRoute(arabic: arabic) }
-            route = registered.route; waypointIndex = registered.waypointIndex
+            performMapIO(message: t("Saving blocked leg. Guidance withdrawn.", "جارٍ حفظ الجزء المحظور من المسار. سُحب الإرشاد."), completion: completion) {
+                registered.blockNextLegAndReplan(completion: $0)
+            }
             return
         }
-        guard waypointIndex > 0, waypointIndex < route.count, let destination = route.last?.id else { return }
+        guard !mapIOPending, waypointIndex > 0, waypointIndex < route.count, let destination = route.last?.id else { return }
         let from = route[waypointIndex - 1].id, to = route[waypointIndex].id
         blocked.insert(MapConnection(from, to))
         do { try plan(from: from, to: destination); message = text("Alternative route preview loaded. Live position remains unknown.", "حُمّلت معاينة مسار بديل. يبقى الموقع الحالي غير معروف.") }
@@ -318,13 +383,8 @@ final class IndoorNavigator: ObservableObject {
         registered?.permits(ticket, now: now) == true
     }
     func revalidateSpatialOutput(now: Double) { registered?.revalidate(now: now) }
-    func loadRegisteredInstallation(_ data: Data) throws {
-        guard let registered else { throw SpatialInstallationError.noInstalledMap }
-        try registered.install(data)
-        activePackage = nil; revision = UUID(); suggestedDestination = nil; blocked = []
-        invalidatePosition()
-        map = registered.installation?.map
-        message = t("Registered map installed. Live position is unknown.", "ثُبتت الخريطة المسجلة. الموقع الحالي غير معروف.")
+    func loadRegisteredInstallation(_ data: Data, completion: @escaping MapCompletion = { _ in }) {
+        loadImportedMap(data, completion: completion)
     }
     func configureRegisteredNavigation(body: BodyEnvelope, limits: SpatialLocalizationLimits) throws {
         guard let registered else { throw SpatialInstallationError.noInstalledMap }

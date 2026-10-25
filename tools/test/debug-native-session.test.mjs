@@ -151,7 +151,7 @@ test('native debug integration: shopping and direct-store deletion cannot leave 
   assert.match(nav, /if case \.remove = command \{ purgeDebugSessionDiagnostics\(\) \}/);
   assert.match(journey, /func delete\(_ journey: Journey\) \{\s*#if DEBUG\s*purgeDebugSessionDiagnostics/);
   assert.match(mapping, /func deleteMap\(\) \{\s*#if DEBUG\s*purgeDebugSessionDiagnostics/);
-  assert.match(indoor, /func deleteMap\(\) \{\s*#if DEBUG\s*purgeDebugSessionDiagnostics/);
+  assert.match(indoor, /func deleteMap\(completion: @escaping MapCompletion = \{ _ in \}\) \{\s*#if DEBUG\s*purgeDebugSessionDiagnostics/);
   for (const store of [journey, mapping, indoor]) {
     assert.match(store, /guard !debugPurgePending else/);
     assert.match(store, /debugLastPurgeSucceeded = success/);

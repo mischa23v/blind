@@ -11,7 +11,8 @@ import BlindCore
     @State private var author = ""
     @State private var license = ""
     @State private var exportURL: URL?
-    @State private var preparingExport = false
+    @State private var preparationID: UUID?
+    private var preparingExport: Bool { preparationID != nil }
     @State private var exportReview = false
     @State private var publicReview = false
     @State private var deleteCandidate: InstalledPlacePackage?
@@ -22,6 +23,41 @@ import BlindCore
     @State private var confirmRouteReplace = false
     private let venueTypes = ["mall", "restaurant", "coffee shop", "park", "zoo", "museum", "family entertainment venue", "other public place"]
     private func t(_ en: String, _ ar: String) -> String { model.arabic ? ar : en }
+    private func beginPreparation() -> UUID {
+        let id = UUID(); preparationID = id; return id
+    }
+    @discardableResult private func finishPreparation(_ id: UUID) -> Bool {
+        guard preparationID == id else { return false }
+        preparationID = nil; return true
+    }
+    private func prepareCommunityRoute(_ package: PlacePackage) {
+        let preparation = beginPreparation()
+        model.stopReturn()
+        let intent = model.indoor.beginCommunityImport(package)
+        Task { @MainActor in
+            var handedOff = false
+            defer { if !handedOff { finishPreparation(preparation) } }
+            do {
+                _ = try await CommunityPackageStorage().install(package)
+                guard preparationID == preparation, model.indoor.ownsCommunityImport(intent) else { return }
+                guard library.preview?.id == package.id, library.preview?.revision == package.revision else {
+                    model.indoor.failCommunityImport(intent); return
+                }
+                library.reload(); handedOff = true
+                model.indoor.completeCommunityImport(package, intent: intent) { result in
+                    guard self.finishPreparation(preparation) else { return }
+                    switch result {
+                    case .success: self.error = ""
+                    case .failure(let failure):
+                        if failure as? SpatialMapIOError != .superseded { self.error = failure.localizedDescription }
+                    }
+                }
+            } catch {
+                guard preparationID == preparation, model.indoor.ownsCommunityImport(intent) else { return }
+                model.indoor.failCommunityImport(intent); self.error = error.localizedDescription
+            }
+        }
+    }
     var body: some View {
         List {
             Section {
@@ -164,34 +200,25 @@ import BlindCore
         }
         .confirmationDialog(t("Share the entire reviewed package, including room names and geometry? Only share places you have permission to disclose.", "هل تريد مشاركة الحزمة المراجعة كاملة، بما فيها أسماء الغرف وقياساتها؟ شارك الأماكن التي لديك إذن بالكشف عنها فقط."), isPresented: $exportReview, titleVisibility: .visible) {
             Button(t("Prepare reviewed export", "إعداد التصدير المراجع")) {
-                preparingExport = true
+                let preparation = beginPreparation()
                 let id = library.preview?.id, revision = library.preview?.revision
                 Task { @MainActor in
-                    defer { preparingExport = false }
+                    defer { finishPreparation(preparation) }
                     do {
                         let url = try await library.exportedPreview()
-                        guard library.preview?.id == id, library.preview?.revision == revision else { return }
+                        guard preparationID == preparation, library.preview?.id == id, library.preview?.revision == revision else { return }
                         exportURL = url
-                    } catch { self.error = error.localizedDescription }
+                    } catch { if preparationID == preparation { self.error = error.localizedDescription } }
                 }
             }
         }
         .confirmationDialog(t("Create a public-sharing draft? Confirm permission to disclose every name, description and coordinate in this package. Nothing is published automatically.", "إنشاء مسودة مشاركة عامة؟ أكد إذنك بالكشف عن جميع الأسماء والأوصاف والإحداثيات. لا يُنشر شيء تلقائياً."), isPresented: $publicReview, titleVisibility: .visible) {
             Button(t("Create public draft for review", "إنشاء مسودة عامة للمراجعة")) { exportURL = nil; library.preparePublicCopy() }
         }
-        .confirmationDialog(t("Replace the route map? You will need to line up at a landmark again.", "استبدال خريطة المسار؟ ستحتاج إلى المحاذاة عند معلم مجدداً."), isPresented: $confirmRouteReplace, titleVisibility: .visible) {
+        .confirmationDialog(t("Replace the route map preview? Live location will remain unknown.", "استبدال معاينة خريطة المسار؟ سيبقى الموقع الحالي غير معروف."), isPresented: $confirmRouteReplace, titleVisibility: .visible) {
             Button(t("Replace route map", "استبدل خريطة المسار")) {
                 guard let package = library.preview else { return }
-                preparingExport = true
-                Task { @MainActor in
-                    defer { preparingExport = false }
-                    do {
-                        _ = try await CommunityPackageStorage().install(package)
-                        library.reload()
-                        model.stopReturn(); model.indoor.invalidatePosition()
-                        try model.indoor.loadCommunity(package); error = ""
-                    } catch { self.error = error.localizedDescription }
-                }
+                prepareCommunityRoute(package)
             }
         }
         .confirmationDialog(t("Remove this downloaded revision?", "إزالة هذه المراجعة المحملة؟"), isPresented: Binding(get: { deleteCandidate != nil }, set: { if !$0 { deleteCandidate = nil } })) {

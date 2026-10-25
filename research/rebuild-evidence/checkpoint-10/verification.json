@@ -1,0 +1,37 @@
+{
+  "parent": "33f43635ed2411d3e85906e2ed808b447442500a",
+  "corePassed": 1111,
+  "nodePassed": 394,
+  "failures": 0,
+  "skipped": 0,
+  "focusedStandaloneSwift": 89,
+  "focusedNode": 58,
+  "countsOverlap": true,
+  "scope": "Bounded off-main map IO with revision/epoch compare-and-swap, rollback/delete ordering, exact active route cancellation and safe pending/failed IO ownership. Preserves independent hazards and source ownership.",
+  "limitations": [
+    "No calibrated native localization/heading/support issuer",
+    "Apple SDK/device runtime, latency, power and thermal validation absent",
+    "Staged journey/place-memory archives are not applied source; earlier snapshots include known superseded defects"
+  ],
+  "sourceHashes": {
+    "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift": "3ebcfa2d2b7d94f9cb7d72a39a01faa18ac5606ae1245b3d3488e423b1d66b52",
+    "ios/BlindAssist/CommunityMapsView.swift": "45d80a50fb0c776fb012ce53d8e3a24f16f99e7462a0fa070fd0fc6c03cd57f6",
+    "ios/BlindAssist/DashboardView.swift": "77471ca051048c30b582fe211560db0f123e7e25316433f9bf00e98e035974d8",
+    "ios/BlindAssist/IndoorNavigator.swift": "bcd9d8d9e8fc86986189cec757aea1f1688f3382b45892c08b8584c0c00c86b7",
+    "ios/BlindAssist/KeepOutZonesView.swift": "aa3941c12bf900dc1900bd7e21f9dfb2b2d75d8af54303efef8e941faf04e8f0",
+    "ios/BlindAssist/RegisteredIndoorNavigation.swift": "320696ba7bd729293e187762aac25528c1ebb9076687b2961ead10729939272f",
+    "ios/BlindAssist/SpatialMapIO.swift": "7db70037087b1421d6b0188dc061f3d5f2e4b320f43d14c36f9aed6a00fda8be",
+    "ios/BlindAssist.xcodeproj/project.pbxproj": "25ad6a84a39fa4751d88547f9526db71a58b69ccc7ba69e36be6adc31cc6f19d",
+    "ios/BlindAssistTests/CommunityTests.swift": "4eb8536999b59dd46791a08fd0c4f3e4fdee82a875ed1da93f3e8ef9ff64da6f",
+    "ios/BlindAssistTests/IndoorNavigatorAsyncTests.swift": "fe0e5ea0b83f5301f8f7eec097efaa0d7f5404d5f2497e4aabed1fd250f0f98e",
+    "ios/BlindAssistTests/RegisteredIndoorNavigationTests.swift": "2fc0f69e957a0b80b58f4172fc85ef44eeffd0d02da786d91cf2673a1ec9a9b0",
+    "ios/BlindAssistTests/SpatialMapIOTests.swift": "3857a27307187336a16ca7875a210a9f39d3cad5657f2611bf6ca2c995217e83",
+    "tools/extract-spatial-map-io.mjs": "f6572697523f18032a30ad12075c1e645729359ff0d6020f740964304d28c113",
+    "tools/generate-xcode-project.mjs": "64759ef22fc2d3f0253ab0c3575ccaefa5a10643f857fda56a5370734eb7b70b",
+    "tools/test/debug-native-session.test.mjs": "a47b9a6f099b689cf277e5ae2a0e4ec1e0c0effb73d7ebf3cb5856878958a100",
+    "tools/test/fixtures/spatial-map-io/ExtractedCommunityPreparationTests.swift": "e9c6ba68dd5a678449847da25320d92a615a7cad5d8ea1e8c294dcb2a52843b0",
+    "tools/test/fixtures/spatial-map-io/PlatformTestStubs.swift": "dc01754ee823ca51e7c2db26061e8070b0b269a8b8a4b2839a613a0741b8a93d",
+    "tools/test/spatial-map-io-native-state.test.mjs": "9e874f2b2a5c6abba39015644fd9dfd523f82e21480a4b491bd9782530febaa7",
+    "tools/test/spatial-route-output.test.mjs": "1d40afff00d3a1ad041235989117643e1f7f33a13b302605dc575c7f7a7de1db"
+  }
+}

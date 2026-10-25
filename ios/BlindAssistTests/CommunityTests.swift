@@ -265,6 +265,13 @@ final class IndoorSituationTests: XCTestCase {
     }
     override func tearDownWithError() throws { if let directory { try FileManager.default.removeItem(at: directory) } }
     private func navigator() -> IndoorNavigator { IndoorNavigator(storage: directory.appendingPathComponent("route.json")) }
+    private func restoredNavigator() throws -> IndoorNavigator {
+        let done = expectation(description: "actual asynchronous restore")
+        var result: Result<Void, Error>?
+        let nav = IndoorNavigator(storage: directory.appendingPathComponent("route.json"), restoreCompletion: { result = $0; done.fulfill() })
+        wait(for: [done], timeout: 10); try XCTUnwrap(result).get(); return nav
+    }
+
     private func map() -> IndoorMap {
         IndoorMap(name: "Authored test home", nodes: [
             MapNode(id: "a", name: "Living room landmark", level: "ground", position: Point3(1, 0, 1)),
@@ -287,16 +294,16 @@ final class IndoorSituationTests: XCTestCase {
         try XCTUnwrap(nav.situation(camera: camera, forward: forward, frameAge: age, tracking: tracking, fixedBodyMount: mounted))
     }
     func testDownloadPlanAndRestartNeverRestoreLivePose() throws {
-        let nav = navigator(); try nav.loadCommunity(package()); try nav.plan(from: "a", to: "b")
+        let nav = navigator(); try awaitIndoorIO { done in try nav.loadCommunity(package(), completion: done) }; try nav.plan(from: "a", to: "b")
         XCTAssertEqual(try snapshot(nav).location["state"] as? String, "unknown")
         nav.align(camera: Point3(0, 1, 0), forward: Point3(1, 0, 0))
         XCTAssertEqual(try snapshot(nav).location["state"] as? String, "unknown")
-        let restored = navigator()
+        let restored = try restoredNavigator()
         XCTAssertEqual(try snapshot(restored).location["state"] as? String, "unknown")
         XCTAssertFalse(restored.isAligned)
     }
     func testManualPoseKeepsCameraAndBodySeparate() throws {
-        let nav = navigator(); try nav.loadCommunity(package()); try nav.plan(from: "a", to: "b")
+        let nav = navigator(); try awaitIndoorIO { done in try nav.loadCommunity(package(), completion: done) }; try nav.plan(from: "a", to: "b")
         nav.align(camera: Point3(0, 1, 0), forward: Point3(1, 0, 0))
         let handheld = try snapshot(nav, forward: Point3(0, 0, -1))
         XCTAssertTrue(handheld.location["bodyForward"] is NSNull)
@@ -306,7 +313,7 @@ final class IndoorSituationTests: XCTestCase {
         XCTAssertTrue(fixed.location["cameraForward"] is NSNull)
     }
     func testLegacyMapContextKeepsGoalWithoutInventingRoomArrival() throws {
-        let nav = navigator(); try nav.loadCommunity(package()); try nav.plan(from: "a", to: "b")
+        let nav = navigator(); try awaitIndoorIO { done in try nav.loadCommunity(package(), completion: done) }; try nav.plan(from: "a", to: "b")
         nav.align(camera: Point3(0, 1, 0), forward: Point3(1, 0, 0))
         var dialogue = AssistantDialogue(); dialogue.setGoal("Reach the bathroom inside the bedroom")
         let first = try snapshot(nav), next = try snapshot(nav, camera: Point3(2, 1, 0))
@@ -319,19 +326,19 @@ final class IndoorSituationTests: XCTestCase {
         XCTAssertTrue(JSONSerialization.isValidJSONObject(context))
     }
     func testBoundaryAndOverlappingRoomsRemainUnknownWithoutRegisteredPose() throws {
-        let nav = navigator(); try nav.loadCommunity(package()); try nav.plan(from: "a", to: "b")
+        let nav = navigator(); try awaitIndoorIO { done in try nav.loadCommunity(package(), completion: done) }; try nav.plan(from: "a", to: "b")
         nav.align(camera: Point3(0, 1, 0), forward: Point3(1, 0, 0))
         let boundary = try snapshot(nav, camera: Point3(1, 1, 0))
         XCTAssertTrue(boundary.location["placeID"] is NSNull)
         XCTAssertTrue(boundary.location["floorID"] is NSNull)
-        try nav.loadCommunity(package(overlap: true)); try nav.plan(from: "a", to: "b")
+        try awaitIndoorIO { done in try nav.loadCommunity(package(overlap: true), completion: done) }; try nav.plan(from: "a", to: "b")
         nav.align(camera: Point3(0, 1, 0), forward: Point3(1, 0, 0))
         let overlap = try snapshot(nav)
         XCTAssertTrue(overlap.location["placeID"] is NSNull)
         XCTAssertTrue(overlap.location["floorID"] is NSNull)
     }
     func testTrackingAgeAndAlignmentChangesInvalidateClaims() throws {
-        let nav = navigator(); try nav.loadCommunity(package()); try nav.plan(from: "a", to: "b")
+        let nav = navigator(); try awaitIndoorIO { done in try nav.loadCommunity(package(), completion: done) }; try nav.plan(from: "a", to: "b")
         nav.align(camera: Point3(0, 1, 0), forward: Point3(1, 0, 0))
         XCTAssertEqual(try snapshot(nav, age: 0.501).location["state"] as? String, "unknown")
         XCTAssertEqual(try snapshot(nav, tracking: false).location["state"] as? String, "unknown")
@@ -342,8 +349,8 @@ final class IndoorSituationTests: XCTestCase {
     @MainActor func testOfflinePackageMetadataRestoresButPoseDoesNot() async throws {
         let cache = CommunityPackageStorage(directory: directory.appendingPathComponent("packages"))
         let value = try package(); _ = try await cache.install(value)
-        let nav = navigator(); try nav.loadCommunity(value)
-        let restored = navigator(); await restored.restoreCommunityContext(storage: cache)
+        let nav = navigator(); try awaitIndoorIO { done in nav.loadCommunity(value, completion: done) }
+        let restored = try restoredNavigator(); await restored.restoreCommunityContext(storage: cache)
         XCTAssertEqual(restored.activePackage?.id, value.id)
         XCTAssertEqual(try snapshot(restored).connections.count, 1)
         XCTAssertEqual(try snapshot(restored).location["state"] as? String, "unknown")
@@ -351,15 +358,15 @@ final class IndoorSituationTests: XCTestCase {
     @MainActor func testForgedRevisionCannotAttachAnotherGeometryOnRestart() async throws {
         let cache = CommunityPackageStorage(directory: directory.appendingPathComponent("packages"))
         let value = try package(); _ = try await cache.install(value)
-        let nav = navigator(); try nav.loadCommunity(value)
+        let nav = navigator(); try awaitIndoorIO { done in nav.loadCommunity(value, completion: done) }
         var changed = try XCTUnwrap(nav.map); changed.nodes[0].position = Point3(100, 0, 100)
-        try nav.load(JSONEncoder().encode(changed))
-        let restored = navigator(); await restored.restoreCommunityContext(storage: cache)
+        try awaitIndoorIO { done in try nav.load(JSONEncoder().encode(changed), completion: done) }
+        let restored = try restoredNavigator(); await restored.restoreCommunityContext(storage: cache)
         XCTAssertNil(restored.activePackage)
         XCTAssertEqual(try snapshot(restored).connections.count, 0)
     }
     func testPreparationTimeExpiresPoseAndTracksBeforeModelDispatch() throws {
-        let nav = navigator(); try nav.loadCommunity(package()); try nav.plan(from: "a", to: "b")
+        let nav = navigator(); try awaitIndoorIO { done in try nav.loadCommunity(package(), completion: done) }; try nav.plan(from: "a", to: "b")
         nav.align(camera: Point3(0, 1, 0), forward: Point3(1, 0, 0))
         var context = AssistantSituation.snapshot(dialogue: AssistantDialogue(), preview: nil, layout: nil, navigation: try snapshot(nav))
         context["visualTracks"] = [["id": "old", "ageMS": 1000.0]]
@@ -475,7 +482,7 @@ final class IndoorGoalContinuityTests: XCTestCase {
             MapNode(id: "start", name: "Start", level: "level", position: Point3(0, 0, 0)),
             MapNode(id: "destination", name: "Destination", level: "level", position: Point3(0, 0, -4))
         ], edges: [MapEdge(from: "start", to: "destination", distance: 4)])
-        try navigator.load(JSONEncoder().encode(map))
+        try awaitIndoorIO { done in try navigator.load(JSONEncoder().encode(map), completion: done) }
         try navigator.plan(from: "start", to: "destination")
         if aligned { navigator.align(camera: Point3(10, 0, 10), forward: Point3(0, 0, -1)) }
         return navigator
@@ -868,5 +875,14 @@ struct UnsupportedPremiseTests {
         print("PREMISE FIXTURE [\(messages.joined(separator: " / "))]: \(last)")
         #expect(!ConversationClaimGuard.containsUnsupportedClaim(last))
         #expect(!SpatialClaimGuard.containsSpatialClaim(last))
+    }
+}
+
+private extension XCTestCase {
+    func awaitIndoorIO(_ action: (@escaping IndoorNavigator.MapCompletion) throws -> Void) throws {
+        let done = expectation(description: "actual asynchronous indoor map IO")
+        var result: Result<Void, Error>?
+        try action { result = $0; done.fulfill() }
+        wait(for: [done], timeout: 10); try XCTUnwrap(result).get()
     }
 }

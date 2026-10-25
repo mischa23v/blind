@@ -17,12 +17,12 @@ final class RegisteredIndoorNavigationTests: XCTestCase {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
     }
     override func tearDownWithError() throws { try FileManager.default.removeItem(at: directory) }
-    func adapter() -> RegisteredIndoorNavigation {
-        .init(storage: directory.appendingPathComponent("registered.json"), sha256: F.sha256)
+    func adapter(name: String = "registered.json") -> RegisteredIndoorNavigation {
+        .init(storage: directory.appendingPathComponent(name), sha256: F.sha256)
     }
-    func ready() throws -> RegisteredIndoorNavigation {
-        let adapter = adapter()
-        try adapter.install(F.installation().encoded())
+    func ready(name: String = "registered.json") throws -> RegisteredIndoorNavigation {
+        let adapter = adapter(name: name)
+        try awaitSpatialIO { done in try adapter.install(F.installation().encoded(), completion: done) }
         try adapter.configure(body: F.body, limits: F.limits)
         try adapter.plan(from: "start", to: "end", goal: UUID())
         let capture = SpatialLocalizationCapture(sessionID: try XCTUnwrap(adapter.sessionID),
@@ -35,7 +35,7 @@ final class RegisteredIndoorNavigationTests: XCTestCase {
     func testActualAdapterPersistsEnvelopeAndRestoresNoAuthority() throws {
         let first = try ready(); let ticket = try first.next(now: 10)
         XCTAssertTrue(first.permits(ticket, now: 10))
-        let restored = adapter(); try restored.restore()
+        let restored = adapter(); try awaitSpatialIO { done in restored.restore(completion: done) }
         XCTAssertEqual(restored.installation?.artifact, first.installation?.artifact)
         XCTAssertNil(restored.currentPose(now: 10))
         XCTAssertFalse(restored.permits(ticket, now: 10))
@@ -62,33 +62,33 @@ final class RegisteredIndoorNavigationTests: XCTestCase {
         let adapter = try ready(); var retirements = 0
         adapter.onOutputRetired = { retirements += 1 }
         let old = try adapter.next(now: 10)
-        try adapter.install(F.installation(map: F.map(revision: "r2"), prior: adapter.installation).encoded())
+        try awaitSpatialIO { done in try adapter.install(F.installation(map: F.map(revision: "r2"), prior: adapter.installation).encoded(), completion: done) }
         XCTAssertEqual(retirements, 1); XCTAssertFalse(adapter.permits(old, now: 10))
         XCTAssertNil(adapter.currentPose(now: 10))
-        let second = try ready(); var lost = 0
+        let second = try ready(name: "second-session.json"); var lost = 0
         second.onOutputRetired = { lost += 1 }; _ = try second.next(now: 10)
         second.loseTracking()
         XCTAssertEqual(lost, 1); XCTAssertNil(second.currentPose(now: 10))
     }
     func testLegacyImportCannotKeepRegisteredAuthority() throws {
         let adapter = try ready(); let old = try adapter.next(now: 10)
-        adapter.clearForLegacyImport()
+        try awaitSpatialIO { done in adapter.install(try SpatialMapInstallation.canonicalMapBytes(F.map()), completion: done) }
         XCTAssertNil(adapter.installation); XCTAssertFalse(adapter.permits(old, now: 10))
         XCTAssertThrowsError(try adapter.next(now: 10))
     }
     func testReconfigureOrRestoreCannotEraseRestrictionsInActiveOwner() throws {
         let adapter = try ready()
-        try adapter.addRestrictions(binding: XCTUnwrap(adapter.installation).binding,
-                                    blocked: [MapConnection("start", "middle")], zones: [])
+        try awaitSpatialIO { done in try adapter.addRestrictions(binding: XCTUnwrap(adapter.installation).binding,
+                                    blocked: [MapConnection("start", "middle")], zones: [], completion: done) }
         XCTAssertThrowsError(try adapter.configure(body: F.body, limits: F.limits))
-        XCTAssertThrowsError(try adapter.restore())
+        XCTAssertThrowsError(try awaitSpatialIO { done in adapter.restore(completion: done) })
         XCTAssertThrowsError(try adapter.plan(from: "start", to: "end", goal: UUID()))
     }
     func testReportedBlockedNextLegIsAppliedToRegisteredPlanner() throws {
         let adapter = try ready(); var retirements = 0
         adapter.onOutputRetired = { retirements += 1 }
         let ticket = try adapter.next(now: 10)
-        XCTAssertThrowsError(try adapter.blockNextLegAndReplan()) // This authored fixture has no alternative.
+        XCTAssertThrowsError(try awaitSpatialIO { done in adapter.blockNextLegAndReplan(completion: done) }) // This authored fixture has no alternative.
         XCTAssertEqual(retirements, 1)
         XCTAssertTrue(adapter.route.isEmpty)
         XCTAssertFalse(adapter.permits(ticket, now: 10))
@@ -97,9 +97,9 @@ final class RegisteredIndoorNavigationTests: XCTestCase {
 
     func testReportedClosureSurvivesRestoreAndReconfiguration() throws {
         let first = try ready()
-        try first.addRestrictions(binding: XCTUnwrap(first.installation).binding,
-                                  blocked: [MapConnection("middle", "end")], zones: [])
-        let restored = adapter(); try restored.restore()
+        try awaitSpatialIO { done in try first.addRestrictions(binding: XCTUnwrap(first.installation).binding,
+                                  blocked: [MapConnection("middle", "end")], zones: [], completion: done) }
+        let restored = adapter(); try awaitSpatialIO { done in restored.restore(completion: done) }
         try restored.configure(body: F.body, limits: F.limits)
         XCTAssertThrowsError(try restored.plan(from: "start", to: "end", goal: UUID()))
         XCTAssertNil(restored.currentPose(now: 10))
@@ -107,28 +107,28 @@ final class RegisteredIndoorNavigationTests: XCTestCase {
     }
 
     func testUnconfiguredImportedMapCanPersistAvoidanceWithoutInventingPosePolicy() throws {
-        let first = adapter(); try first.install(F.installation().encoded())
+        let first = adapter(); try awaitSpatialIO { done in try first.install(F.installation().encoded(), completion: done) }
         XCTAssertFalse(first.configured)
-        try first.addRestrictions(binding: XCTUnwrap(first.installation).binding,
-                                  blocked: [MapConnection("middle", "end")], zones: [])
+        try awaitSpatialIO { done in try first.addRestrictions(binding: XCTUnwrap(first.installation).binding,
+                                  blocked: [MapConnection("middle", "end")], zones: [], completion: done) }
         XCTAssertFalse(first.configured); XCTAssertNil(first.currentPose(now: 10))
-        let restored = adapter(); try restored.restore()
+        let restored = adapter(); try awaitSpatialIO { done in restored.restore(completion: done) }
         try restored.configure(body: F.body, limits: F.limits)
         XCTAssertThrowsError(try restored.plan(from: "start", to: "end", goal: UUID()))
     }
     func testUnconfiguredFailedRestrictionSaveCannotGainAuthorityByConfigure() throws {
         let parent = directory.appendingPathComponent("active"), backup = directory.appendingPathComponent("backup")
         let first = RegisteredIndoorNavigation(storage: parent.appendingPathComponent("map.json"), sha256: F.sha256)
-        try first.install(F.installation().encoded())
+        try awaitSpatialIO { done in try first.install(F.installation().encoded(), completion: done) }
         try FileManager.default.moveItem(at: parent, to: backup)
         try Data("Synthetic storage failure fixture".utf8).write(to: parent)
         let binding = try XCTUnwrap(first.installation).binding
-        XCTAssertThrowsError(try first.addRestrictions(binding: binding, blocked: [MapConnection("middle", "end")], zones: []))
+        XCTAssertThrowsError(try awaitSpatialIO { done in first.addRestrictions(binding: binding, blocked: [MapConnection("middle", "end")], zones: [], completion: done) })
         XCTAssertThrowsError(try first.configure(body: F.body, limits: F.limits))
         XCTAssertFalse(first.configured)
         try FileManager.default.removeItem(at: parent)
         try FileManager.default.moveItem(at: backup, to: parent)
-        try first.addRestrictions(binding: binding, blocked: [], zones: []) // Retry keeps positive restriction.
+        try awaitSpatialIO { done in first.addRestrictions(binding: binding, blocked: [], zones: [], completion: done) } // Retry keeps positive restriction.
         try first.configure(body: F.body, limits: F.limits)
         XCTAssertThrowsError(try first.plan(from: "start", to: "end", goal: UUID()))
     }
@@ -146,8 +146,8 @@ final class RegisteredIndoorNavigationTests: XCTestCase {
         let encoded = try installation.encoded()
         XCTAssertGreaterThan(encoded.count, SpatialMapInstallation.maximumMapBytes)
         XCTAssertLessThan(encoded.count, SpatialMapInstallation.maximumEnvelopeBytes)
-        let first = adapter(); try first.install(encoded)
-        let restored = adapter(); try restored.restore()
+        let first = adapter(); try awaitSpatialIO { done in first.install(encoded, completion: done) }
+        let restored = adapter(); try awaitSpatialIO { done in restored.restore(completion: done) }
         XCTAssertEqual(restored.installation?.envelope.mapBytes, bytes)
         XCTAssertNil(restored.currentPose(now: 10))
     }
@@ -160,7 +160,7 @@ final class RegisteredIndoorNavigationTests: XCTestCase {
 final class RegisteredIndoorNavigatorCaptionTests: XCTestCase {
     func ready(_ file: URL) throws -> IndoorNavigator {
         let nav = IndoorNavigator(storage: file), map = try SpatialIntegrationFixture.installation()
-        try nav.loadImportedMap(map.encoded())
+        try awaitMapIO { done in nav.loadImportedMap(try map.encoded(), completion: done) }
         try nav.configureRegisteredNavigation(body: SpatialIntegrationFixture.body, limits: SpatialIntegrationFixture.limits)
         try nav.plan(from: "start", to: "end", goalRevision: UUID())
         let now = ProcessInfo.processInfo.systemUptime
@@ -191,3 +191,22 @@ final class RegisteredIndoorNavigatorCaptionTests: XCTestCase {
     }
 }
 #endif
+
+private extension XCTestCase {
+    @discardableResult func awaitSpatialIO(_ action: (@escaping RegisteredIndoorNavigation.Completion) throws -> Void) throws -> RegisteredIndoorNavigation.Loaded? {
+        let done = expectation(description: "actual asynchronous map storage")
+        var result: Result<RegisteredIndoorNavigation.Loaded?, Error>?
+        try action { result = $0; done.fulfill() }
+        wait(for: [done], timeout: 15)
+        return try XCTUnwrap(result).get()
+    }
+    #if canImport(BlindAssist)
+    func awaitMapIO(_ action: (@escaping IndoorNavigator.MapCompletion) throws -> Void) throws {
+        let done = expectation(description: "actual asynchronous native map storage")
+        var result: Result<Void, Error>?
+        try action { result = $0; done.fulfill() }
+        wait(for: [done], timeout: 15)
+        try XCTUnwrap(result).get()
+    }
+    #endif
+}

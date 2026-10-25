@@ -108,6 +108,13 @@ public struct SpatialRouteOwner: Sendable {
     public mutating func restore(_ data: Data, sha256: SpatialMapSHA256) throws {
         guard installation == nil else { throw SpatialInstallationError.historyRewrite }
         let restored = try SpatialMapInstallation(data: data, sha256: sha256)
+        try restoreValidated(restored)
+    }
+    /// Adopt an immutable installation already validated by its initializer on a
+    /// serial IO worker. No decode, encode, hashing or file IO on the control owner.
+    /// This never restores live pose, a route, or a previous localization session.
+    public mutating func restoreValidated(_ restored: SpatialMapInstallation) throws {
+        guard installation == nil else { throw SpatialInstallationError.historyRewrite }
         installation = restored
         blocked = Set(restored.currentRestrictions.blocked.map(\.connection)); obstacleZones = restored.currentRestrictions.zones
         restrictionsDurable = true; obstacleRevision = UUID()

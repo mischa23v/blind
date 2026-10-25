@@ -1,0 +1,27 @@
+{
+  "inputs": {
+    "BlindCore/Sources/BlindCore/Geometry.swift": "f7a27aff67ed97dda0550463e70ee9df9c85381024ce02f2f091a2b35f353eb5",
+    "BlindCore/Sources/BlindCore/IndoorMap.swift": "143907bb8733793b91cdf17916002e5888943049c3ff2c7fc5ae725be4419529",
+    "BlindCore/Sources/BlindCore/KeepOutZone.swift": "eddf790cac4ca97596b42631af7e86501f7089024443a5d30c19570469035968",
+    "BlindCore/Sources/BlindCore/NarrationDelivery.swift": "f52b67b4669481a8caa4105ed4340f67c46703cb47d16b6f56143e71a88351c0",
+    "BlindCore/Sources/BlindCore/NavigationSurface.swift": "d4a399ce7dd809cd519617f1e2e3fd2b22394c1cff2a3297c3d5247ce7dd26bc",
+    "BlindCore/Sources/BlindCore/PlacePackage.swift": "6c23c635ed8fc9fbb62608f1475e0aa28f2a9762d32e4700a5a0e84d395dacaa",
+    "BlindCore/Sources/BlindCore/RoomLayout.swift": "3e7609313a1d781e5b6c0c40071439442df88fddfe2005e86078e54ae6d0af18",
+    "BlindCore/Sources/BlindCore/SavedWorldFrame.swift": "c81551da30f5c778dd8202cf2572a4cd4c347a9fa5a05884fc54a43a0416653e",
+    "BlindCore/Sources/BlindCore/SpatialFrameRegistry.swift": "856d97523516429b2e655bc1c3e36dd5331728f40e4d15a6f5817c925e545541",
+    "BlindCore/Sources/BlindCore/SpatialLocalizationLease.swift": "d198ad905bf5001a27be226d0063bf0e46173194c495875104657950efcd7c81",
+    "BlindCore/Sources/BlindCore/SpatialMapInstallation.swift": "600fb45acdcf5d4b7dbb2b0e6f6a4e35b847479824147ba0bbbb3ffed2532b55",
+    "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift": "3ebcfa2d2b7d94f9cb7d72a39a01faa18ac5606ae1245b3d3488e423b1d66b52",
+    "BlindCore/Sources/BlindCore/SpeechDeliveryLedger.swift": "dd5b5f8ee2438bfe8c09447a779fb8320e5ef8dec376e149a7a0fb5389aab83c",
+    "BlindCore/Sources/BlindCore/SpeechPriority.swift": "d8006b537aee905dd5f8d71fb2b7a3e85864463f486f0cf76dd7a20d98b03c6d",
+    "ios/BlindAssist/RegisteredIndoorNavigation.swift": "320696ba7bd729293e187762aac25528c1ebb9076687b2961ead10729939272f",
+    "ios/BlindAssist/SpatialMapIO.swift": "7db70037087b1421d6b0188dc061f3d5f2e4b320f43d14c36f9aed6a00fda8be",
+    "ios/BlindAssist/SpatialRouteOutputController.swift": "3583323ef7d59ba39d2a5e7db4657b3cc7be9e08e21ff89f33673b0478d4387c",
+    "ios/BlindAssist/IndoorNavigator.swift": "bcd9d8d9e8fc86986189cec757aea1f1688f3382b45892c08b8584c0c00c86b7",
+    "ios/BlindAssist/CommunityMapsView.swift": "45d80a50fb0c776fb012ce53d8e3a24f16f99e7462a0fa070fd0fc6c03cd57f6"
+  },
+  "sourceEquality": "All fourteen Core files, three native source files and both full/extracted controller harness bodies match applied live source.",
+  "allowedHarnessDifference": "Only the leading HARNESS ONLY provenance comment differs between the two community extraction scripts; executable bodies are exact.",
+  "testEquality": "All five native fixture/test files match current live source.",
+  "limits": "Explicit platform/cache stubs; no Apple SDK or calibrated physical capture provider."
+}

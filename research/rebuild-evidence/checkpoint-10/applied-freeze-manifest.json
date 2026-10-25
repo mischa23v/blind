@@ -1,0 +1,196 @@
+{
+  "status": "Applied and source-frozen after reviewer clearance and parent authorization. Focused actual-source replay, standalone tests, syntax and membership checks passed. Parent aggregate/publication remains separate; no push by this owner.",
+  "archiveSHA256": "51cdb729ac1c91a0678dff9af91f03fe785df5c01902325b72d6b5295c9360e1",
+  "applyManifestSHA256": "7a5f361453b4e8434113bc90d9416251adb504d95b6a57e15ae05a3b5873c883",
+  "files": [
+    {
+      "target": "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift",
+      "source": "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift",
+      "baseSHA256": "0a9f2cbb63372119efa0b11cf187d112153c48f2cb4276046346ca4b0911528f",
+      "proposedSHA256": "3ebcfa2d2b7d94f9cb7d72a39a01faa18ac5606ae1245b3d3488e423b1d66b52"
+    },
+    {
+      "target": "ios/BlindAssist/CommunityMapsView.swift",
+      "source": "ios/BlindAssist/CommunityMapsView.swift",
+      "baseSHA256": "1443e8fb6149f42237f720bf9494ef34c329321707b0cc2162b8a2091127ad7f",
+      "proposedSHA256": "45d80a50fb0c776fb012ce53d8e3a24f16f99e7462a0fa070fd0fc6c03cd57f6"
+    },
+    {
+      "target": "ios/BlindAssist/DashboardView.swift",
+      "source": "ios/BlindAssist/DashboardView.swift",
+      "baseSHA256": "bd1e250da4dd3da2630582a139ced9bc41132f6951d707b2bdf253fcbd943473",
+      "proposedSHA256": "77471ca051048c30b582fe211560db0f123e7e25316433f9bf00e98e035974d8"
+    },
+    {
+      "target": "ios/BlindAssist/IndoorNavigator.swift",
+      "source": "ios/BlindAssist/IndoorNavigator.swift",
+      "baseSHA256": "f535ad93d0126414346235b2c3894cd03e9ab65311c1e770eb8c24174c0a5b28",
+      "proposedSHA256": "bcd9d8d9e8fc86986189cec757aea1f1688f3382b45892c08b8584c0c00c86b7"
+    },
+    {
+      "target": "ios/BlindAssist/KeepOutZonesView.swift",
+      "source": "ios/BlindAssist/KeepOutZonesView.swift",
+      "baseSHA256": "75d5e84c6ababb6a9fa146591054c1d94260205bfa4b83d5d63687391ccc2ae7",
+      "proposedSHA256": "aa3941c12bf900dc1900bd7e21f9dfb2b2d75d8af54303efef8e941faf04e8f0"
+    },
+    {
+      "target": "ios/BlindAssist/RegisteredIndoorNavigation.swift",
+      "source": "ios/BlindAssist/RegisteredIndoorNavigation.swift",
+      "baseSHA256": "039628e49a0a61df00f43e1eeca495d80d0ad1fd7d8999fa3e91667f92e1bba0",
+      "proposedSHA256": "320696ba7bd729293e187762aac25528c1ebb9076687b2961ead10729939272f"
+    },
+    {
+      "target": "ios/BlindAssist/SpatialMapIO.swift",
+      "source": "ios/BlindAssist/SpatialMapIO.swift",
+      "baseSHA256": null,
+      "proposedSHA256": "7db70037087b1421d6b0188dc061f3d5f2e4b320f43d14c36f9aed6a00fda8be"
+    },
+    {
+      "target": "ios/BlindAssist.xcodeproj/project.pbxproj",
+      "source": "ios/BlindAssist.xcodeproj/project.pbxproj",
+      "baseSHA256": "355d718b23dd4c0fcc89c2c9236403e721e18a0fd9c0b2373882d75ab58e1754",
+      "proposedSHA256": "25ad6a84a39fa4751d88547f9526db71a58b69ccc7ba69e36be6adc31cc6f19d"
+    },
+    {
+      "target": "ios/BlindAssistTests/CommunityTests.swift",
+      "source": "ios/BlindAssistTests/CommunityTests.swift",
+      "baseSHA256": "8198f866948a808d0810825bc0de2cd44dce6bbc69d5f632616a136d586fc80b",
+      "proposedSHA256": "4eb8536999b59dd46791a08fd0c4f3e4fdee82a875ed1da93f3e8ef9ff64da6f"
+    },
+    {
+      "target": "ios/BlindAssistTests/IndoorNavigatorAsyncTests.swift",
+      "source": "ios/BlindAssistTests/IndoorNavigatorAsyncTests.swift",
+      "baseSHA256": null,
+      "proposedSHA256": "fe0e5ea0b83f5301f8f7eec097efaa0d7f5404d5f2497e4aabed1fd250f0f98e"
+    },
+    {
+      "target": "ios/BlindAssistTests/RegisteredIndoorNavigationTests.swift",
+      "source": "ios/BlindAssistTests/RegisteredIndoorNavigationTests.swift",
+      "baseSHA256": "7763fc2ca8ffbad92a0a58005e123e3acd54d8ee8b30390d0a86181f25189eda",
+      "proposedSHA256": "2fc0f69e957a0b80b58f4172fc85ef44eeffd0d02da786d91cf2673a1ec9a9b0"
+    },
+    {
+      "target": "ios/BlindAssistTests/SpatialMapIOTests.swift",
+      "source": "ios/BlindAssistTests/SpatialMapIOTests.swift",
+      "baseSHA256": null,
+      "proposedSHA256": "3857a27307187336a16ca7875a210a9f39d3cad5657f2611bf6ca2c995217e83"
+    },
+    {
+      "target": "tools/extract-spatial-map-io.mjs",
+      "source": "tools/extract-spatial-map-io.mjs",
+      "baseSHA256": null,
+      "proposedSHA256": "f6572697523f18032a30ad12075c1e645729359ff0d6020f740964304d28c113"
+    },
+    {
+      "target": "tools/generate-xcode-project.mjs",
+      "source": "tools/generate-xcode-project.mjs",
+      "baseSHA256": "8209e390a5095d4e594cee3d92e9e4d29c0c00c161f413f6fb3dfed8702e9d03",
+      "proposedSHA256": "64759ef22fc2d3f0253ab0c3575ccaefa5a10643f857fda56a5370734eb7b70b"
+    },
+    {
+      "target": "tools/test/debug-native-session.test.mjs",
+      "source": "tools/test/debug-native-session.test.mjs",
+      "baseSHA256": "2dcc0cf91f567dee88cfcab3943f35656d5459e2f82b3440754f16d63a00dc71",
+      "proposedSHA256": "a47b9a6f099b689cf277e5ae2a0e4ec1e0c0effb73d7ebf3cb5856878958a100"
+    },
+    {
+      "target": "tools/test/fixtures/spatial-map-io/ExtractedCommunityPreparationTests.swift",
+      "source": "tools/test/fixtures/spatial-map-io/ExtractedCommunityPreparationTests.swift",
+      "baseSHA256": null,
+      "proposedSHA256": "e9c6ba68dd5a678449847da25320d92a615a7cad5d8ea1e8c294dcb2a52843b0"
+    },
+    {
+      "target": "tools/test/fixtures/spatial-map-io/PlatformTestStubs.swift",
+      "source": "tools/test/fixtures/spatial-map-io/PlatformTestStubs.swift",
+      "baseSHA256": null,
+      "proposedSHA256": "dc01754ee823ca51e7c2db26061e8070b0b269a8b8a4b2839a613a0741b8a93d"
+    },
+    {
+      "target": "tools/test/spatial-map-io-native-state.test.mjs",
+      "source": "tools/test/spatial-map-io-native-state.test.mjs",
+      "baseSHA256": null,
+      "proposedSHA256": "9e874f2b2a5c6abba39015644fd9dfd523f82e21480a4b491bd9782530febaa7"
+    },
+    {
+      "target": "tools/test/spatial-route-output.test.mjs",
+      "source": "tools/test/spatial-route-output.test.mjs",
+      "baseSHA256": "64e50acb4106f138af6a7cde0e870f2f2e8c28bb78b95f05ce6978eb72ea28d3",
+      "proposedSHA256": "1d40afff00d3a1ad041235989117643e1f7f33a13b302605dc575c7f7a7de1db"
+    }
+  ],
+  "untouchedProtected": {
+    "ios/BlindAssist/NavigationModel.swift": "5e2d404c19e7da5490391f5471dfcd47d7c3528e1dacfaa6e95dde58367274db",
+    "ios/BlindAssist/NativeMapping.swift": "b25877c55e2bab7a79dcdabedb2f2dc406bb2a163f33a4a2634651630f3f6f3f",
+    "ios/BlindAssist/Feedback.swift": "542c3c5d1efc74cbb74e9ca036fff0647f575c3f5151636b8fcf69717e066e04",
+    "ios/BlindAssist/NativeARObservationBridge.swift": "460c6284cedb0728a828c0030453abba51f7ef82da5f6b9cc12a8432b7785260",
+    "ios/BlindAssist/NativeARObservationAdapter.swift": "e662fc637e8e11be0abe989e77f04ab1e8da123bc6ebdf47c5f2f1bba95453a8",
+    "PROGRESS.md": "6e872ae4243fe0ab7c5c6e8bf5a18376ff25b8aa1b127bcc067389462fb35a72",
+    "TODO.md": "0aba71207413fc48078d92628ed87dac8f5432346d14110cc22e6306b4afd12a",
+    "PROJECT_PLAN.md": "e71b65ed46203d57d40264fa477e873b638114a83bac7c77135f65bb2b6294a4",
+    "TASKS.md": "f4d9d2dfa6f568c2148d953b725027fd496af01c7127b0b89f6a73cb4641e555"
+  },
+  "tests": {
+    "standaloneSwift": {
+      "passed": 89,
+      "failed": 0,
+      "skipped": 0,
+      "inputs": "14 exact live Core files plus exact native controller/adapter and explicit platform shells;5 exact extracted Feedback tests"
+    },
+    "focusedNode": {
+      "passed": 58,
+      "failed": 0,
+      "skipped": 0,
+      "replaySwiftScenariosOverlapStandalone": true
+    },
+    "actualSourceSwiftReplays": [
+      {
+        "path": "/workspace/shared/blind-spatial-async-live-apply-20261025T0355Z/replays/blind-task-memory-8C4aYM",
+        "passed": 25,
+        "executionLogSHA256": "439d4805a50c41f0b77f3f744a687c2c76532c8912fdd3b3297387fcae42eb1b",
+        "inputManifest": {}
+      },
+      {
+        "path": "/workspace/shared/blind-spatial-async-live-apply-20261025T0355Z/replays/blind-spatial-map-io-7KP2Zy",
+        "passed": 41,
+        "executionLogSHA256": "0448c149a318b7bc90770b7ff5224d17af4ffed4636d3d4e5b5213d4dfa118ac",
+        "inputManifest": {
+          "inputs.json": "adc877b2aa4a1901eb0462885386d05e51e7f22fbcc279df18e7bcbbd942203c"
+        }
+      }
+    ],
+    "nativeSyntax": [
+      "default",
+      "DEBUG"
+    ],
+    "generatedProject": "byte-exact to generator with all50 current native Swift source members"
+  },
+  "evidence": {
+    "live-focused-node.log": "aaab4b8fad76a29ebc0fa3b33fd4da96723c884ed198b77a5d5ee886b9aba49e",
+    "live-equivalent-standalone-swift.log": "34ac67c398c0ae9a81ab279c45fece9077da1c5f0dc276c6ceb37f8cd531cf2a",
+    "live-native-syntax.log": "e92ab1fe3ee9fca6fd8c30016eaa4a43c4fc938d900dea493491433475e948ee",
+    "live-project-check.log": "5893bef13b306b13e453516078443332ce4108a0e4729688a463d78a5b9c35d4",
+    "live-standalone-input-equivalence.json": "397399677f14c7e85bd640e78cae185e7f2f8254425908058dd2e63ae76177c8",
+    "live-feedback-extraction-proof.json": "75e30bff2d04ef0c651c1974cd3dcf284d8c7b1063b71d4cde79009a8bb41a12"
+  },
+  "preservedEarlierAttemptLogs": {
+    "/workspace/shared/blind-spatial-async-stage/test-fifth.log": "c66616bf4af2b7050bf1535017061f5575a851f513484c1b789bf85d44124eb9",
+    "/workspace/shared/blind-spatial-async-stage/test-tenth.log": "d0885cc7a1c2e526fd7375b69e834c275b36a33fde273677079571ae3ad60438",
+    "/workspace/shared/blind-spatial-async-stage/test-eighth.log": "1ff9334d514c9009bfb4d937c6763656ca8a831f126e4655741918aa4e9e369f",
+    "/workspace/shared/blind-spatial-async-stage/test-sixth.log": "d672759a7d3cc56e5d31b957f6042e5a1cc6cd96002a1a116667262c838569e7",
+    "/workspace/shared/blind-spatial-async-stage/build-initial.log": "a2273cc587da91c16e0fb4780716a4fd2f412bdad6c958549b29ab145185c08e",
+    "/workspace/shared/blind-spatial-async-stage/test-eleventh.log": "121481d6e1702463368a22c3dcd8d6b184331c06750f822702395c59909b457b",
+    "/workspace/shared/blind-spatial-async-stage/test-twelfth.log": "33d0db50af1b92cabc693d8edf2d97bf26c81df9d0b172cb2ba1e3944e6c5c34",
+    "/workspace/shared/blind-spatial-async-stage/test-fourth.log": "d7d26a018db4f70b103d3397e62b96a0798d2244e6e274f1f68bd0239a0e06b9",
+    "/workspace/shared/blind-spatial-async-stage/test-seventh.log": "0d7f6dc3612f8ed391d281ddfc37f6febfad8d2ab09df575b7601330f409d79e",
+    "/workspace/shared/blind-spatial-async-stage/test-third.log": "acf50685841cb91b16eee28487fea1850673a78b37e504fb68a0559f3456a8c7",
+    "/workspace/shared/blind-spatial-async-stage/test-initial.log": "942c9ea3c8f8d504810a07a304d546bde11eaa52818c837a664504bd2e832a20",
+    "/workspace/shared/blind-spatial-async-stage/test-second.log": "4940bc87fde3f13a087482e17fd7a575e9f02775fec18cb5fd32565f4b10e9e3",
+    "/workspace/shared/blind-spatial-async-stage/test-ninth.log": "654ca8f51ea0ec08aa7bb602591302fbc4f6a88f5f65ab39c0feca8dabcd8da7"
+  },
+  "limitations": [
+    "All spatial fixtures are synthetic, not measured localization.",
+    "No calibrated native capture issuer, device geometry/uncertainty or live physical guidance claim.",
+    "No Apple SDK typecheck, device/audio/VoiceOver latency, cross-process arbitration or power-loss durability acceptance.",
+    "Default and DEBUG parsing are syntax-only, not Apple runtime tests."
+  ]
+}

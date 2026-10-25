@@ -23,10 +23,15 @@ struct KeepOutZonesView: View {
                     Text(t("Distance from centre to each side", "المسافة من المركز إلى كل جانب") + ": \(halfSize.formatted()) " + t("metres", "متر"))
                 }
                 Button(t("Save keep-out area", "حفظ المنطقة المحظورة")) {
-                    do { try indoor.addKeepOutZone(landmarkID: landmarkID, halfSize: halfSize); error = "" }
-                    catch { self.error = t("Could not save this area.", "تعذر حفظ المنطقة.") }
-                }.disabled(landmarkID.isEmpty)
-                Text(t("Stored routes avoid these areas with body clearance. Adding a restriction cancels the current route, not a measured pose. Registered restrictions cannot be reopened without fresh observed-clearance evidence. This screen does not detect physical tape or provide continuous boundary alarms.", "تتجنب المسارات المخزنة هذه المناطق مع مساحة للجسم. تُلغي إضافة منطقة محظورة المسار الحالي، لا الموقع المقاس. لا يمكن إعادة فتح المناطق المسجلة دون دليل حديث على خلوها. لا تكشف هذه الشاشة الشريط الأرضي ولا توفر إنذارات حدود مستمرة."))
+                    indoor.addKeepOutZone(landmarkID: landmarkID, halfSize: halfSize) { result in
+                        switch result {
+                        case .success: error = ""
+                        case .failure(let failure):
+                            if failure as? SpatialMapIOError != .superseded { error = t("Could not save this area.", "تعذر حفظ المنطقة.") }
+                        }
+                    }
+                }.disabled(landmarkID.isEmpty || indoor.mapIOPending)
+                Text(t("Stored routes avoid these areas with body clearance. Adding a restriction withdraws route guidance while its save is pending; fresh localization is required afterwards. Registered restrictions cannot be reopened without fresh observed-clearance evidence. This screen does not detect physical tape or provide continuous boundary alarms.", "تتجنب المسارات المخزنة هذه المناطق مع مساحة للجسم. تسحب إضافة منطقة محظورة إرشاد المسار أثناء الحفظ؛ ويلزم تحديد الموقع مجدداً بعده. لا يمكن إعادة فتح المناطق المسجلة دون دليل حديث على خلوها. لا تكشف هذه الشاشة الشريط الأرضي ولا توفر إنذارات حدود مستمرة."))
             }
             Section(t("Saved areas", "المناطق المحفوظة")) {
                 if indoor.storedKeepOutZones.isEmpty { Text(t("No keep-out areas saved.", "لا توجد مناطق محظورة محفوظة.")) }
@@ -36,7 +41,7 @@ struct KeepOutZonesView: View {
                         Text(t("Level", "الطابق") + ": " + zone.level)
                         Text("X: \(zone.minX.formatted()) … \(zone.maxX.formatted()), Z: \(zone.minZ.formatted()) … \(zone.maxZ.formatted()) m")
                         Button(t("Remove", "حذف") + " " + zone.localizedName(arabic: arabic), role: .destructive) { pendingRemoval = zone }
-                            .disabled(!indoor.canRemoveStoredKeepOutZones)
+                            .disabled(!indoor.canRemoveStoredKeepOutZones || indoor.mapIOPending)
                     }
                 }
             }
@@ -47,8 +52,13 @@ struct KeepOutZonesView: View {
         .confirmationDialog(t("Remove this keep-out area?", "حذف هذه المنطقة المحظورة؟"), isPresented: Binding(get: { pendingRemoval != nil }, set: { if !$0 { pendingRemoval = nil } })) {
             Button(t("Remove area", "حذف المنطقة"), role: .destructive) {
                 guard let zone = pendingRemoval else { return }
-                do { try indoor.removeKeepOutZone(id: zone.id); error = "" }
-                catch { self.error = t("Could not remove this area.", "تعذر حذف المنطقة.") }
+                indoor.removeKeepOutZone(id: zone.id) { result in
+                    switch result {
+                    case .success: error = ""
+                    case .failure(let failure):
+                        if failure as? SpatialMapIOError != .superseded { error = t("Could not remove this area.", "تعذر حذف المنطقة.") }
+                    }
+                }
                 pendingRemoval = nil
             }
         }
