@@ -1,0 +1,30 @@
+{
+  "sourceCommit": "0caea7dc8b529724545de7affb9bb65006175304",
+  "status": "SOURCE_PREPARED_NATIVE_NOT_RUN",
+  "localStaticChecks": 8,
+  "localStaticFailures": 0,
+  "syntax": [
+    "JavaScript",
+    "bash",
+    "Swift parse only; not Apple SDK typecheck"
+  ],
+  "scope": "Unchanged Core plus test-owned AVSpeech bridge; authored acquisition. Not production NavigationModel, Feedback, camera or acoustic acceptance.",
+  "expectedNativeSequence": {
+    "authoredWords": 40,
+    "installedSourceParts": 2,
+    "actualStarts": 5,
+    "actualSuccessfulCompletions": 4,
+    "actualCancelledOldUtterances": 1,
+    "sourceBoundPlaybackAttempts": 4,
+    "finalSourceClear": true
+  },
+  "fixedNativeInvocations": 1,
+  "testTimeoutSeconds": 480,
+  "racePolicy": "Actual finish racing requested cancellation fails; no fabricated callback or retry-until-green.",
+  "priorProbePreserved": {
+    "successRun": 40224675506,
+    "compileFailureRun": 40223835661
+  },
+  "runtimeWarningBoundary": "Prior synchronous main-thread AVAudioSession warning is not suppressed or claimed fixed.",
+  "review": "Independent source and final pin reviews cleared exact onset/cancellation ordering, ownership, unchanged budget, component-only scope and metadata-only callback context fields."
+}
