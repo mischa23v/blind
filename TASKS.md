@@ -2,7 +2,7 @@
 
 Implemented a bounded, private selected-file page quotation lane in existing controls, separate from exact-model manuals and existing photo/camera contracts. Selection, page request, native resource lease and real speech receipt are separately owned. Reviewed direct polite commands and one terminal punctuation mark retain the same trusted/private gates. Invalid requests stop old reading; valid-source corrections need no new picker. See [scope and evidence](research/evaluations/selected-document/README.md).
 
-Remaining: Apple SDK/PDFKit execution of the fourteen real-byte fixture tests; real picker security-grant/cancel races; actual speech/VoiceOver, minimum-budget interruption and supervised useful-reading acceptance. Exact-model manual binding, interpretation, visual completeness and appliance control remain unimplemented/unvalidated. **Do not mark R39 or R40 complete from portable/source checks.**
+Actual [Apple run for `6d6954b`](https://github.com/mischa23v/blind/actions/runs/40243450535/job/121319972133) executed the fourteen PDF fixture methods: **9 passed, 5 failed**. Repair the failed source/page sentinel, oversized extraction and permission fixtures without weakening production limits or permission gates, then rerun the exact corrected source. Real picker security-grant/cancel races, actual speech/VoiceOver, minimum-budget interruption and supervised useful-reading acceptance remain open. Exact-model manual binding, interpretation, visual completeness and appliance control remain unimplemented/unvalidated. **Do not mark R39 or R40 complete from portable/source checks.** The same native job remains red, including the Practice Dynamic Type audit. Physical-device/real blind-participant acceptance and 400 distinct complete journeys remain open.
 
 ---
 
@@ -182,9 +182,9 @@ The bounded native observation-history increment is now applied and frozen for t
 
 The earlier photo aggregate failure recorded below has now been corrected and rerun: **1,057 Core and 391 Node checks passed**, zero failures/skips. Only two stale test-shape assertions changed during correction; stronger source ownership, cancellation ordering and negative mutation checks replaced them. The original failed run is retained. The 15-file selected-photo source integration plus two corrected contracts is frozen for this executable checkpoint. Photos/Vision/audio/Apple SDK and real device behavior remain unverified. The previous published tracker/source-archive checkpoint is `1937e92e72abd72212c60427e4a5362e13dc678a`. See [checkpoint-08 evidence](research/rebuild-evidence/checkpoint-08/verification.json). This update supersedes earlier photo aggregate status below, not other open feature gaps.
 
-## CURRENT FEATURE TASKS — 2026-10-25
+## Historical checkpoint-07 feature snapshot — 2026-10-25
 
-Latest verified published source: `978b506283b5ce9d1ea05ea120db8806f47754fe` (tree `750cd35b01a4e662a99797589afbbca53092a308`). This current feature snapshot supersedes earlier checkpoint snapshots retained below, including old sections headed “current.” See [REBUILD_FEATURE_STATUS.md](REBUILD_FEATURE_STATUS.md) for publication state, actual behavior, remaining gaps and dependency order. Original requirements and failures remain in [REBUILD_TRACKER.md](REBUILD_TRACKER.md) and [REBUILD_SCOPE_ADDENDUM.md](REBUILD_SCOPE_ADDENDUM.md).
+Snapshot source: `978b506283b5ce9d1ea05ea120db8806f47754fe` (tree `750cd35b01a4e662a99797589afbbca53092a308`). The table below is retained history, not a live queue: its staged/unpublished labels were superseded by later receipts. The bounded [current reconciliation](REBUILD_TRACKER.md#current-feature-progress) pins public `36f57456`, published app `6d6954b`, and actual native failures. The older [REBUILD_FEATURE_STATUS.md](REBUILD_FEATURE_STATUS.md) is also a historical snapshot. Original requirements and failures remain in [REBUILD_TRACKER.md](REBUILD_TRACKER.md) and [REBUILD_SCOPE_ADDENDUM.md](REBUILD_SCOPE_ADDENDUM.md).
 
 | Workstream | Actual state | Next required outcome |
 | --- | --- | --- |

@@ -1,14 +1,14 @@
 ## Next — selected-PDF native and nonvisual acceptance
 
-Run the exact published selected-PDF source on Apple: fourteen actual-byte PDFKit fixtures, supported system picker selection/cancel/security-scope, explicit file-page versus printed-label behavior, English/Arabic and image-only/permission/oversize errors. Check page correction without reselection, slow budget waits, pacing changes, interruption/private-route/quiet/background retirement, identical-text newer reply preservation and independent hazards. Confirm actual audible/VoiceOver comprehension with supervised participants; projection callbacks are not native speech evidence.
+First repair and rerun the five PDF fixture failures from [published app `6d6954b`, native run 40243450535](https://github.com/mischa23v/blind/actions/runs/40243450535/job/121319972133): **14 methods executed, 9 passed, 5 failed**. Preserve failed source/page sentinel checks, native extracted-size preconditions and actual accessibility-permission assertions; do not weaken production limits or permission gates. A planned fixture repair is not a pass. Then verify supported system picker selection/cancel/security-scope, explicit file-page versus printed-label behavior, English/Arabic and image-only/permission/oversize errors. Check page correction without reselection, slow budget waits, pacing changes, interruption/private-route/quiet/background retirement, identical-text newer reply preservation and independent hazards. Confirm actual audible/VoiceOver comprehension with supervised participants; projection callbacks are not native speech evidence.
 
-This source lane is not an exact-model manual or appliance-control feature. R39/R40 remain partial. See [selected-PDF scope](research/evaluations/selected-document/README.md).
+This source lane is not an exact-model manual or appliance-control feature. R39/R40 remain partial. The Practice Dynamic Type audit, actual device/participant acceptance and 400 distinct whole journeys remain open; do not convert component passes into goal completion. See [selected-PDF scope](research/evaluations/selected-document/README.md).
 
 ---
 
 ## Next — menu-reading alias native acceptance
 
-Build the exact candidate and verify trusted English/Arabic imperative and polite menu requests, one-view uncertain OCR, current/previous/next/reread/forget controls, interruptions, source replacement and private audio with actual VoiceOver. Measure whether a supervised nonvisual participant can use the information; do not infer menu structure, price/allergen relationships, complete menu coverage or dining-goal success from portable tests. Unverified microphone input still cannot change tasks.
+Verify the published menu increment in [app `6d6954b`](https://github.com/mischa23v/blind/commit/6d6954b17b0a35836506a7dead62aa855112cb98) with trusted English/Arabic imperative and polite menu requests, one-view uncertain OCR, current/previous/next/reread/forget controls, interruptions, source replacement and private audio with actual VoiceOver. Measure whether a supervised nonvisual participant can use the information; do not infer menu structure, price/allergen relationships, complete menu coverage or dining-goal success from portable tests. Unverified microphone input still cannot change tasks.
 
 [Scope and evidence](research/evaluations/menu-reading-aliases/README.md).
 
@@ -16,7 +16,7 @@ Build the exact candidate and verify trusted English/Arabic imperative and polit
 
 ## Next — captured-page review acceptance
 
-Validate the candidate on the exact native app: current/last-started versus queued-unstarted repeat, previous/next, reread, slow budget waits, English/Arabic and privacy/source replacement. Confirm automatic scene descriptions resume after forget/unrelated request while independent hazards remain active. Do not count portable extracted-method tests as audible/participant acceptance. See [candidate scope](research/evaluations/captured-page-review/README.md).
+Validate the published captured-page review in [app `6d6954b`](https://github.com/mischa23v/blind/commit/6d6954b17b0a35836506a7dead62aa855112cb98) on the exact native app: current/last-started versus queued-unstarted repeat, previous/next, reread, slow budget waits, English/Arabic and privacy/source replacement. Confirm automatic scene descriptions resume after forget/unrelated request while independent hazards remain active. Do not count portable extracted-method tests as audible/participant acceptance. See [candidate scope](research/evaluations/captured-page-review/README.md).
 
 
 ---
