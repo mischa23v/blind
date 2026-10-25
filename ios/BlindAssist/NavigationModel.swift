@@ -469,6 +469,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var documentOrigin: (point: Point3, forward: Point3)?
     private var documentChunks: [String] = []
     private var documentSpeechID: UUID?
+    private var boardingSelection: BoardingReadingOwner?
+    private var boardingResultConsumed = true
+    private var boardingSpeech: (id: UUID, answer: BoardingPassDispatch.Answer, capture: ObjectViewCapture)?
+    private var boardingSpeechIDs = Set<UUID>()
+
     private var exploreTask: Task<Void, Never>?
     private var exploreRequest = UUID()
     @Published var showPhotoReference = false
@@ -644,9 +649,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             let at = Date()
             self.enqueueNarration { try await $0.finish(id: id, outcome: outcome, at: at) }
         }
-        feedback.requestedSpeechPermission = { [weak self] id, text in self?.selectedPhotoSpeechPermission(id: id, text: text) ?? false }
+        feedback.requestedSpeechPermission = { [weak self] id, text in (self?.selectedPhotoSpeechPermission(id: id, text: text) ?? false) &&
+            (self?.boardingSpeechPermission(id: id, text: text) ?? false) }
         feedback.onRequestedSpeechFinished = { [weak self] id, text, outcome in
             guard let self else { return }
+            if self.finishBoardingSpeech(id: id, text: text, outcome: outcome) { return }
             if self.finishSelectedPhotoSpeech(id: id, text: text, outcome: outcome) { return }
             if self.journeys.withConnectedJourney({ $0.clarificationSpeechFinished(id: id, text: text,
                 outcome: outcome, now: ProcessInfo.processInfo.systemUptime) }) { return }
@@ -1015,6 +1022,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if case .normal = frame.camera.trackingState {} else {
             journeys.breakTracking()
             nativeObservations.trackingLost()
+            clearBoardingReading() // Retire transferred/passive travel even when no reader tool remains.
             // Retire old OCR even if depth was already unavailable and the hazard
             // category does not change. This runs before frame throttling.
             if readingTool != nil { stopReadingTool(announce: false) }
@@ -1252,6 +1260,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             originForward: observation.forward, currentForward: lastObservation?.forward)
     }
     private func cancelDescription() {
+        clearBoardingReading()
         unverifiedConversationID = UUID()
         unverifiedConversationTask?.cancel(); unverifiedConversationTask = nil
         unverifiedConversationTimeout?.cancel(); unverifiedConversationTimeout = nil
@@ -1296,6 +1305,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             speakMobility(GuidanceText.hazard(.observing, arabic: arabic))
         }
         revalidateContextualSpeech()
+        revalidateBoardingSpeech()
         revalidateConversationSpeech()
         revalidateRequestedColorSpeech()
         if detection.hazard != .observing { feedback.interruptAmbient() }
@@ -1571,6 +1581,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         guard let lease = contextualCapabilities.reserve(goal: goal, evidence: evidence,
             moment: contextualMoment(), availability: contextualAvailability) else { return }
         let image = frame.capturedImage, arabic = self.arabic, goalText = contextualGoalText
+        let boardingCapture = captureObjectView(frame)
+        let boardingOwner = (lease.capability == .text || lease.capability == .barcode)
+            ? boardingCapture.map { beginBoardingReading($0) } : nil
+        let boardingDate = Date().addingTimeInterval(capturedAt - ProcessInfo.processInfo.systemUptime)
         // Captured-view stability uses the optical axis, including pitch. The
         // navigation observation's flattened heading cannot validate a chest camera.
         let transform = frame.camera.transform
@@ -1629,9 +1643,24 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     return
                 case .text:
                     let lines = try await Task.detached(priority: .utility) {
-                        try VisionService.textLines(image: image, orientation: .right, arabic: arabic, accurate: true)
+                        try VisionService.textLines(image: image, orientation: .right, arabic: arabic, accurate: true, languageCorrection: false)
                     }.value
                     try Task.checkCancellation()
+                    if let boardingOwner, let boardingCapture {
+                        let result = BoardingPassDispatch.textRows(lines.map { ($0.text, $0.confidence) }, owner: boardingOwner,
+                            capturedAt: boardingDate, capturedMonotonic: capturedAt, now: Date(), monotonicNow: ProcessInfo.processInfo.systemUptime,
+                            selectedFlight: nil, arabic: arabic)
+                        if result != .unrelated {
+                            observed = .init(capturedAt: capturedAt, textCandidate: true)
+                            guard self.backgroundPerception.accepts(resourceLease, generation: self.passiveObservationGeneration, now: ProcessInfo.processInfo.systemUptime),
+                                  self.contextualCapabilities.beforeSpeech(activeLease, moment: self.contextualMoment(), evidence: observed,
+                                    goal: ContextualCapabilityScheduler.Goal.infer(from: self.contextualGoalText), availability: self.contextualAvailability),
+                                  self.contextualCaptureAllowed(lease) else { return }
+                            if self.deliverBoardingReading(result, owner: boardingOwner, capture: boardingCapture, passiveLease: lease) { outcome = .success }
+                            return // private travel text never falls through to general OCR/model/logging
+                        }
+                    }
+                    guard !lines.contains(where: { BoardingPassDispatch.isTravelText($0.text) }) else { return }
                     let relevant = ContextualTextPolicy.select(lines, goalText: goalText,
                         unrestrictedReading: goal.contains(.reading))
                     if let relevant {
@@ -1640,10 +1669,26 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                         semanticKey = "text:" + relevant.text.lowercased(); outcome = .success
                     }
                 case .barcode:
-                    let code = try await Task.detached(priority: .utility) {
-                        try VisionService.code(image: image, orientation: .right)
+                    let codes = try await Task.detached(priority: .utility) {
+                        try VisionService.codes(image: image, orientation: .right)
                     }.value
                     try Task.checkCancellation()
+                    if let boardingOwner, let boardingCapture {
+                        let result = BoardingPassDispatch.codes(codes.map(\.payload), owner: boardingOwner,
+                            capturedAt: boardingDate, capturedMonotonic: capturedAt, now: Date(), monotonicNow: ProcessInfo.processInfo.systemUptime,
+                            selectedFlight: nil, arabic: arabic)
+                        if result != .unrelated {
+                            observed = .init(capturedAt: capturedAt, barcodeCandidate: true)
+                            guard self.backgroundPerception.accepts(resourceLease, generation: self.passiveObservationGeneration, now: ProcessInfo.processInfo.systemUptime),
+                                  self.contextualCapabilities.beforeSpeech(activeLease, moment: self.contextualMoment(), evidence: observed,
+                                    goal: ContextualCapabilityScheduler.Goal.infer(from: self.contextualGoalText), availability: self.contextualAvailability),
+                                  self.contextualCaptureAllowed(lease) else { return }
+                            if self.deliverBoardingReading(result, owner: boardingOwner, capture: boardingCapture, passiveLease: lease) { outcome = .success }
+                            return
+                        }
+                    }
+                    guard !codes.contains(where: { BoardingPassDispatch.isBoardingPayload($0.payload) }) else { return }
+                    let code = codes.count == 1 ? codes.first : nil
                     // No unsolicited raw code, URL, beep, web lookup or claim of Saudi catalogue coverage.
                     if let code, !code.isQR, let name = self.products.name(for: code.payload) {
                         observed = .init(capturedAt: capturedAt, barcodeCandidate: true)
@@ -2392,7 +2437,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// already-admitted path so the same words are never charged twice here.
     @discardableResult private func deliverCandidate(_ candidate: InformationCandidate,
         alreadyAdmitted: Bool = false, narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil, nonspatialCapture: ContextualCapabilityScheduler.Lease? = nil, verifiedFamiliarCapture: Bool = false, spatialRouteID: UUID? = nil) -> Bool {
-        let privateReference = speechID.map { selectedPhotoSpeechIDs.contains($0) } ?? false
+        let privateReference = speechID.map { selectedPhotoSpeechIDs.contains($0) || boardingSpeechIDs.contains($0) } ?? false
         #if DEBUG
         var debugDelivered = false
         defer {
@@ -3158,6 +3203,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// and perception identities unchanged so ongoing sensor work is not retired.
     private func interruptOrdinaryConversation(origin: CompanionCommandOrigin) {
         guard CommandAuthority.permits(.interruptOrdinarySpeech, from: origin) else { return }
+        if CommandAuthority.permits(.changeGoal, from: origin) { clearBoardingReading() }
         unverifiedConversationID = UUID()
         unverifiedConversationTask?.cancel(); unverifiedConversationTask = nil
         unverifiedConversationTimeout?.cancel(); unverifiedConversationTimeout = nil
@@ -3518,11 +3564,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
 
     /// Executable, read-only tools. Every result is bounded and identifies its source;
     /// none starts a camera, navigates, enrolls a face or changes a user's records.
-    @MainActor private func readCompanionToolForTurn(_ request: CompanionToolRequest, id: UUID, generation: UInt64) async -> CompanionToolResult {
+    @MainActor private func readCompanionToolForTurn(_ request: CompanionToolRequest, id: UUID, generation: UInt64, originalUserQuery: String) async -> CompanionToolResult {
         guard !Task.isCancelled, requestID == id, assistantSession.generation == generation else {
             return CompanionToolResult(status: .cancelled, source: "session controller")
         }
-        let result = await readCompanionTool(request)
+        let result = await readCompanionTool(request, originalUserQuery: originalUserQuery)
         guard !Task.isCancelled, requestID == id, assistantSession.generation == generation else {
             return CompanionToolResult(status: .cancelled, source: "session controller")
         }
@@ -3570,7 +3616,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 preferences: preferences, taskContext: taskNotes)
     }
 
-    @MainActor private func readCompanionTool(_ request: CompanionToolRequest) async -> CompanionToolResult {
+    @MainActor private func readCompanionTool(_ request: CompanionToolRequest, originalUserQuery: String) async -> CompanionToolResult {
         switch request.kind {
         case .deviceClock:
             let firstClockSelection = activeModelClockReplyID == nil
@@ -3596,7 +3642,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             return CompanionToolResult(status: .success, source: "app navigation state",
                 summary: summary)
         case .saudiBanknote, .isolatedColor, .familiarPeople, .readText:
-            return await readSpecializedCompanionTool(request)
+            return await readSpecializedCompanionTool(request, originalUserQuery: originalUserQuery)
         case .currentObservation:
             guard semanticReadID == nil, conversationFrameProbe.isAvailable, backgroundPerception.activeLease == nil, contextualOutstanding.isEmpty else { return CompanionToolResult(status: .unavailable, source: "local reader", summary: "Another local read is still running.") }
             // Capture on tool invocation, never manufacture a current result from
@@ -3619,7 +3665,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             }
             // Uncertain candidates only, never identity, garment certainty or a
             // banknote denomination. Keep whole strings rather than cutting a caveat.
-            var candidates = result.texts.prefix(2).compactMap { CapturedViewEvidence.candidate($0, arabic: arabic) }
+            let nonTravelTexts = result.texts.contains(where: { BoardingPassDispatch.isTravelText($0) }) ? [] : result.texts
+            var candidates = nonTravelTexts.prefix(2).compactMap { CapturedViewEvidence.candidate($0, arabic: arabic) }
             candidates += result.labels.filter { !ClothingColorCommand.containsUnverifiedColorClaim($0) && !SaudiBanknotePolicy.containsUnverifiedMoneyValue($0) }
                 .prefix(2).compactMap { CapturedViewEvidence.candidate($0, appearance: true, arabic: arabic) }
             let evidence = candidates.prefix(4).map { text in
@@ -3658,7 +3705,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
 
     /// A model requests a typed read, never a feature-mode mutation. The existing
     /// native adapters and their release/capture gates remain authoritative.
-    @MainActor private func readSpecializedCompanionTool(_ request: CompanionToolRequest) async -> CompanionToolResult {
+    @MainActor private func readSpecializedCompanionTool(_ request: CompanionToolRequest, originalUserQuery: String) async -> CompanionToolResult {
         func unavailable(_ summary: String, _ status: CompanionToolStatus = .unavailable) -> CompanionToolResult {
             CompanionToolResult(status: status, source: request.kind.rawValue, summary: summary)
         }
@@ -3691,9 +3738,29 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 if case .anonymousAppearance(.appearance(let color), _) = result { values = [.isolatedColor(color)] }
             case .readText:
                 let image = frame.capturedImage, useArabic = arabic
-                let lines = try await Task.detached(priority: .utility) {
-                    try VisionService.textLines(image: image, orientation: .right, arabic: useArabic, accurate: true)
+                let boardingOwner = beginBoardingReading(capture)
+                let result = try await Task.detached(priority: .utility) {
+                    let codes = try VisionService.codes(image: image, orientation: .right)
+                    let lines = try VisionService.textLines(image: image, orientation: .right, arabic: useArabic, accurate: true, languageCorrection: false)
+                    return (codes, lines)
                 }.value
+                guard !Task.isCancelled, objectViewIsCurrent(capture, snapshotPlayback: true), boardingSelection == boardingOwner else {
+                    return unavailable("Read expired.", .stale)
+                }
+                let selectedFlight = BoardingPassDispatch.selectedFlight(in: originalUserQuery)
+                var travel = BoardingPassDispatch.codes(result.0.map(\.payload), owner: boardingOwner,
+                    capturedAt: captured, capturedMonotonic: capture.capturedAt, now: Date(), monotonicNow: ProcessInfo.processInfo.systemUptime,
+                    selectedFlight: selectedFlight, arabic: useArabic)
+                if travel == .unrelated {
+                    travel = BoardingPassDispatch.textRows(result.1.map { ($0.text, $0.confidence) }, owner: boardingOwner,
+                        capturedAt: captured, capturedMonotonic: capture.capturedAt, now: Date(), monotonicNow: ProcessInfo.processInfo.systemUptime,
+                        selectedFlight: selectedFlight, arabic: useArabic)
+                }
+                if travel != .unrelated {
+                    _ = deliverBoardingReading(travel, owner: boardingOwner, capture: capture)
+                    return unavailable("Private travel reading uses direct source-owned speech. No flight, seat, gate, date or validity is supplied to the model; do not infer or paraphrase it.")
+                }
+                let lines = result.1
                 values = lines.filter { $0.confidence >= 0.85 }.prefix(2).map { .text($0.text) }
             case .familiarPeople:
                 #if BLIND_FAMILIAR_PEOPLE
@@ -3897,7 +3964,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 availableTools: self.availableCompanionTools,
                 toolExecutor: { @Sendable [weak self] request in
                     guard let self else { return CompanionToolResult(status: .cancelled, source: "session controller") }
-                    return await self.readCompanionToolForTurn(request, id: id, generation: sessionGeneration)
+                    return await self.readCompanionToolForTurn(request, id: id, generation: sessionGeneration, originalUserQuery: question)
                 }, requestID: id, onSpeechCandidate: { @MainActor [weak self] phrase, reports, evidence in
                     guard let self, ConversationDomainPolicy.allowsModelResponse(to: question),
                           self.companionWorkingState.goalRevision == revision, self.conversationMemoryRevision == memoryRevision,
@@ -4781,6 +4848,7 @@ extension NavigationModel {
         let now = ProcessInfo.processInfo.systemUptime
         expireBackgroundPerception(now: now)
         revalidateContextualSpeech()
+        revalidateBoardingSpeech()
         var eligible = Set<BackgroundPerceptionAdmission.Producer>()
         if passiveMemoryEligible(frame: frame, observation: observation, nonspatialOnly: nonspatialOnly) { eligible.insert(.passiveMemory) }
         if contextualTask == nil, observation.trackingNormal,
@@ -5812,7 +5880,8 @@ extension NavigationModel {
         speakOperation(intro)
     }
 
-    func stopReadingTool(announce: Bool) {
+    func stopReadingTool(announce: Bool, preserveBoardingReading: Bool = false) {
+        if !preserveBoardingReading { clearBoardingReading() }
         let hadDocumentSpeech = documentSpeechID != nil
         readingWork.cancel(); readingTask?.cancel(); readingTask = nil
         readingTool = nil; readingInFlight = false; documentStability.reset(); documentOrigin = nil
@@ -5838,6 +5907,70 @@ extension NavigationModel {
               UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).contains(where: { $0.interfaceOrientation == .portrait }) else { return false }
         if case .normal = frame.camera.trackingState { return true }
         return false
+    }
+
+    // MARK: Bounded private travel reading; Feedback remains the sole speech sink.
+    private func beginBoardingReading(_ capture: ObjectViewCapture) -> BoardingReadingOwner {
+        clearBoardingReading()
+        let owner = BoardingReadingOwner(session: UUID(), request: capture.request,
+            perception: capture.generation, source: UUID(), revision: UUID())
+        boardingSelection = owner; boardingResultConsumed = false
+        return owner
+    }
+    private func clearBoardingReading() {
+        let old = boardingSpeech
+        boardingSelection = nil; boardingSpeech = nil; boardingResultConsumed = true
+        if let old { feedback.stopRequestedSpeech(old.id) }
+    }
+    @discardableResult private func deliverBoardingReading(_ result: BoardingPassDispatch.Result,
+        owner: BoardingReadingOwner, capture: ObjectViewCapture,
+        passiveLease: ContextualCapabilityScheduler.Lease? = nil) -> Bool {
+        guard boardingSelection == owner, !boardingResultConsumed, objectViewIsCurrent(capture, snapshotPlayback: true),
+              !Task.isCancelled else { return false }
+        switch result {
+        case .unrelated: return false
+        case .withheld:
+            boardingResultConsumed = true
+            if passiveLease == nil {
+                _ = speakOperation(arabic ? "لم أتحقق من بيانات سفر واضحة. عند وجود عدة رحلات، حدد رقم الرحلة." : "I couldn't verify unambiguous travel details. For multiple legs, specify the flight number.")
+            }
+            return passiveLease == nil
+        case .answer(let answer):
+            guard answer.receipt.owner == owner, Self.wordCount(answer.text) <= 30,
+                  boardingSpeech == nil, feedback.speechPriority == nil, !voice.awaitingUtterance else { return false }
+            boardingResultConsumed = true
+            let id = UUID()
+            boardingSpeech = (id, answer, capture); boardingSpeechIDs.insert(id)
+            let now = ProcessInfo.processInfo.systemUptime
+            let candidate = InformationCandidate(key: "private-travel:" + owner.source.uuidString,
+                kind: passiveLease == nil ? .answer : .discovery, text: answer.text,
+                words: Self.wordCount(answer.text), revision: owner.revision.uuidString,
+                createdAt: capture.capturedAt, expiresAt: min(capture.capturedAt + 12, now + 2),
+                category: "signs", requested: passiveLease == nil, goalRelevant: passiveLease == nil)
+            if deliverCandidate(candidate, speechID: id, nonspatialCapture: passiveLease) {
+                return true // no dialogue persistence, public debug text, or model evidence
+            }
+            if boardingSpeech?.id == id { boardingSpeech = nil }
+            boardingSpeechIDs.remove(id)
+            return false
+        }
+    }
+    private func boardingSpeechPermission(id: UUID, text: String) -> Bool {
+        guard boardingSpeechIDs.contains(id) else { return true }
+        guard let speech = boardingSpeech, speech.id == id,
+              speech.answer.text.utf8.elementsEqual(text.utf8), boardingSelection == speech.answer.receipt.owner,
+              objectViewIsCurrent(speech.capture, snapshotPlayback: true) else { return false }
+        return true
+    }
+    private func revalidateBoardingSpeech() {
+        guard let speech = boardingSpeech else { return }
+        if !boardingSpeechPermission(id: speech.id, text: speech.answer.text) { clearBoardingReading() }
+    }
+    private func finishBoardingSpeech(id: UUID, text: String, outcome: NarrationDelivery) -> Bool {
+        guard boardingSpeechIDs.remove(id) != nil else { return false }
+        guard boardingSpeech?.id == id else { return true }
+        boardingSpeech = nil // one short complete reply; no unowned continuation queue
+        return true
     }
 
     private struct ReadingCapture {
@@ -5868,6 +6001,7 @@ extension NavigationModel {
     }
 
     private func updateReadingTool(frame: ARFrame) {
+        if boardingSpeech != nil { return }
         if readingTool == .document, !documentChunks.isEmpty {
             speakNextDocumentChunk(); return
         }
@@ -5899,11 +6033,14 @@ extension NavigationModel {
         readingInFlight = true
         let image = frame.capturedImage
         let everydayID = everydayTicket?.id
+        let boardingCapture = captureObjectView(frame)
+        let boardingOwner = boardingCapture.map { beginBoardingReading($0) }
+        let boardingDate = Date().addingTimeInterval(capture.capturedAt - ProcessInfo.processInfo.systemUptime)
         readingTask = Task { @MainActor [weak self] in
             let result = await Task.detached(priority: .userInitiated) {
-                let lines = tool == .liveText ? ((try? VisionService.textLines(image: image, orientation: .right, arabic: arabic, accurate: false)) ?? []) : []
+                let lines = tool == .liveText ? ((try? VisionService.textLines(image: image, orientation: .right, arabic: arabic, accurate: true, languageCorrection: false)) ?? []) : []
                 let corners = tool == .document ? ((try? VisionService.documentCorners(image: image, orientation: .right)) ?? nil) : nil
-                let code = tool == .barcode ? ((try? VisionService.code(image: image, orientation: .right)) ?? nil) : nil
+                let code = tool == .barcode ? ((try? VisionService.codes(image: image, orientation: .right)) ?? []) : []
                 return (lines, corners, code)
             }.value
             guard let self, self.readingWork.owns(capture.token) else { return }
@@ -5914,6 +6051,15 @@ extension NavigationModel {
             }
             switch tool {
             case .liveText:
+                if let boardingOwner, let boardingCapture {
+                    let travel = BoardingPassDispatch.textRows(result.0.map { ($0.text, $0.confidence) }, owner: boardingOwner,
+                        capturedAt: boardingDate, capturedMonotonic: capture.capturedAt, now: Date(), monotonicNow: ProcessInfo.processInfo.systemUptime, arabic: arabic)
+                    if travel != .unrelated {
+                        _ = self.deliverBoardingReading(travel, owner: boardingOwner, capture: boardingCapture)
+                        return
+                    }
+                }
+                guard !result.0.contains(where: { BoardingPassDispatch.isTravelText($0.text) }) else { return }
                 var reader = self.liveTextReader
                 let fresh = reader.newLines(result.0, now: ProcessInfo.processInfo.systemUptime)
                 if !fresh.isEmpty, self.speakRequested(fresh.joined(separator: ". "), replace: false) {
@@ -5933,7 +6079,18 @@ extension NavigationModel {
                 }
                 if ready { self.readWholePage(image: image, capture: capture) }
             case .barcode:
-                guard let code = result.2 else { return }
+                if let boardingOwner, let boardingCapture {
+                    let travel = BoardingPassDispatch.codes(result.2.map(\.payload), owner: boardingOwner,
+                        capturedAt: boardingDate, capturedMonotonic: capture.capturedAt, now: Date(), monotonicNow: ProcessInfo.processInfo.systemUptime, arabic: arabic)
+                    if travel != .unrelated {
+                        self.lastScannedCode = nil
+                        self.stopReadingTool(announce: false, preserveBoardingReading: true)
+                        _ = self.deliverBoardingReading(travel, owner: boardingOwner, capture: boardingCapture)
+                        return // no raw pass speech, product save or URL fallback
+                    }
+                }
+                guard !result.2.contains(where: { BoardingPassDispatch.isBoardingPayload($0.payload) }), result.2.count == 1,
+                      let code = result.2.first else { return }
                 self.finishEverydayTask(.barcode, outcome: .informationReady, ticketID: everydayID)
                 self.lastScannedCode = code.payload
                 self.stopReadingTool(announce: false)

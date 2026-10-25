@@ -45,6 +45,8 @@ public struct ContextualCapabilityScheduler: Sendable {
             // Only a reading action receives unrestricted OCR relevance. Other goals
             // retain their separate, target-matching text filters in the caller.
             let findingObject = contains(["find", "locate", "looking", "ابحث", "اجد"])
+            // Travel nouns can describe navigation, waiting or an object to find.
+            // They do not by themselves grant unrestricted document reading.
             if contains(["read", "اقرا"]) || (!findingObject && contains(["reading", "قراءه"])) { result.insert(.reading) }
             if contains(["dress", "dressing", "dressed", "clothes", "clothing", "outfit", "wear", "shirt", "uniform", "color", "colour", "ملابس", "البس", "قميص", "ثوب", "زي", "لون"]) { result.insert(.dressing) }
             if contains(["light", "lights", "lighting", "brightness", "dark", "ضوء", "نور", "اضاءه", "ظلام"]) { result.insert(.lighting) }
@@ -236,7 +238,7 @@ public struct ContextualCapabilityScheduler: Sendable {
         case .currencyProbe: return true
         case .currency: return evidence.banknoteCandidate
         case .text: return goal.isEmpty || !goal.intersection([.shopping, .dining, .reading, .payment, .targetDiscovery]).isEmpty
-        case .barcode: return goal.isEmpty || !goal.intersection([.shopping, .dining]).isEmpty
+        case .barcode: return goal.isEmpty || !goal.intersection([.shopping, .dining, .reading]).isEmpty
         case .light: return evidence.lightAvailable && !goal.intersection([.lighting, .reading, .dressing]).isEmpty
         case .color: return goal.contains(.dressing)
         }

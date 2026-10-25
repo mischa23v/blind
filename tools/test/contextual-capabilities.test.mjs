@@ -64,12 +64,30 @@ test('contextual jobs retain capture leases, existing verifier and final target 
   assert.doesNotMatch(contextual, /languageModel|FoundationModels|URLSession|cloud: true/);
 });
 test('passive rectangles never speak a value without the reference verifier', () => {
-  const probe = vision.slice(vision.indexOf('static func currencyRectangleCandidate'), vision.indexOf('/// The first decoded barcode'));
-  assert.match(probe, /VNDetectRectanglesRequest/);
-  assert.match(probe, /maximumObservations = 4/);
-  assert.doesNotMatch(probe, /denomination|speech\(|label|OCR/);
+  const assertRectangleCandidate = source => {
+    // The actual balanced method, not a later prose-comment sentinel. Adjacent
+    // barcode/exploration methods may legitimately contain labels or OCR.
+    const probe = declaration(source, 'static func currencyRectangleCandidate(');
+    assert.match(probe, /throws -> Bool \{/);
+    assert.match(probe, /VNDetectRectanglesRequest/);
+    assert.match(probe, /maximumObservations = 4/);
+    assert.match(probe, /return request\.results\?\.count == 1\s*\}$/);
+    assert.doesNotMatch(probe, /denomination|speech\(|label|OCR/);
+    return probe;
+  };
+  const probe = assertRectangleCandidate(vision);
+  // Every original reference-verifier/payment gate remains required.
   assert.match(contextual, /if case .denomination\(let value\) = result/);
   assert.match(contextual, /if goal.contains\(.payment\)/);
+  for (const forbidden of ['let denomination = 100', 'speech("100 riyals")', 'let label = "100"', 'OCR()']) {
+    const changed = probe.replace('return request.results?.count == 1',
+      `if true { ${forbidden} }\n        return request.results?.count == 1`);
+    assert.notEqual(changed, probe);
+    assert.throws(() => assertRectangleCandidate(vision.replace(probe, changed)), { name: 'AssertionError' });
+  }
+  const neighbor = '\n    static func unrelatedNeighbor() { let denomination = 100; speech("label OCR") }';
+  assert.equal(assertRectangleCandidate(vision.replace(probe, probe + neighbor)), probe,
+    'Unrelated next-method text must not expand the rectangle candidate boundary');
 });
 test('relevant OCR/barcode/color use existing native evidence, not unsolicited mode speech', () => {
   assert.match(contextual, /VisionService.textLines/);

@@ -22,7 +22,9 @@ test('all native clock reads go through acquisition registration before tool ret
   assert.ok(acquire.indexOf('clockReplies[binding.replyID] = lease') < acquire.indexOf('return lease'));
   assert.match(acquire, /startClockExpiry\(\)/);
   const turn = body('@MainActor private func readCompanionToolForTurn(');
-  assert.ok(turn.indexOf('await readCompanionTool(request)') < turn.indexOf('CompanionClockDelivery.validatesToolResult'));
+  const readIndex = turn.indexOf('await readCompanionTool(request, originalUserQuery: originalUserQuery)');
+  assert.ok(readIndex >= 0, 'Original request-owned user query reaches the adapter');
+  assert.ok(readIndex < turn.indexOf('CompanionClockDelivery.validatesToolResult'));
   assert.match(turn, /status: \.stale/);
 });
 test('legacy everyday clock route precedes all subtask mutation', () => {

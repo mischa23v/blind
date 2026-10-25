@@ -117,10 +117,10 @@ enum VisionService {
     // at the bottom left of the upright image; these return top-left coordinates.
 
     /// Recognised text lines with their centres, for live reading or a whole page.
-    static func textLines(image: CVPixelBuffer, orientation: CGImagePropertyOrientation, arabic: Bool, accurate: Bool) throws -> [TextLine] {
+    static func textLines(image: CVPixelBuffer, orientation: CGImagePropertyOrientation, arabic: Bool, accurate: Bool, languageCorrection: Bool? = nil) throws -> [TextLine] {
         let request = VNRecognizeTextRequest()
         request.recognitionLevel = accurate ? .accurate : .fast
-        request.usesLanguageCorrection = accurate
+        request.usesLanguageCorrection = languageCorrection ?? accurate
         let supported = try request.supportedRecognitionLanguages()
         request.recognitionLanguages = (arabic ? ["ar-SA", "ar", "en-US"] : ["en-US"]).filter { supported.contains($0) }
         if request.recognitionLanguages.isEmpty { request.recognitionLanguages = ["en-US"] }
@@ -155,13 +155,22 @@ enum VisionService {
         return request.results?.count == 1
     }
 
-    /// The first decoded barcode or QR code in view.
-    static func code(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) throws -> (payload: String, isQR: Bool)? {
+    /// Bounded full-result selection. Reject overflow instead of hiding a second pass.
+    static func codes(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) throws -> [(payload: String, isQR: Bool)] {
         let request = VNDetectBarcodesRequest()
         try VNImageRequestHandler(cvPixelBuffer: image, orientation: orientation).perform([request])
-        guard let found = (request.results ?? []).first(where: { !($0.payloadStringValue ?? "").isEmpty }),
-              let payload = found.payloadStringValue else { return nil }
-        return (payload, found.symbology == .qr)
+        let found = request.results ?? []
+        guard found.count <= 8 else { throw NSError(domain: "BoundedBarcodeRead", code: 1) }
+        return try found.compactMap { item in
+            guard let payload = item.payloadStringValue, !payload.isEmpty else { return nil }
+            guard payload.utf8.count <= BoardingPassParser.maximumBytes else { throw NSError(domain: "BoundedBarcodeRead", code: 2) }
+            return (payload, item.symbology == .qr)
+        }
+    }
+    /// Legacy callers receive a result only if the whole bounded view is unambiguous.
+    static func code(image: CVPixelBuffer, orientation: CGImagePropertyOrientation) throws -> (payload: String, isQR: Bool)? {
+        let found = try codes(image: image, orientation: orientation)
+        return found.count == 1 ? found.first : nil
     }
 
     /// Detected regions for exploring a picture by touch: text, people, a page and detector objects.

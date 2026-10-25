@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "status": "applied-focused-live-passed-frozen",
+  "parent_reported_base_commit": "af7cd9404992be5cb8aeeaf0e0b3f9cd64cb936f",
+  "reviewed_native_archive_sha256": "4a378a83bc8764e65dc930939984f3521e94d9aa4b4391904620e03d825bccdc",
+  "pure_archive_sha256": "8073a50138bb23aac964452ceaf5620b8be0871206da48b12a61d77760b5308c",
+  "paths": {
+    "BlindCore/Sources/BlindCore/BoardingPassReading.swift": "a519e50b09648db8f5ec2207de69316f9dcc779c53f30f6140a061284e1b6d32",
+    "BlindCore/Tests/BlindCoreTests/BoardingPassReadingTests.swift": "8a750256f0f92c1437ae9431692ab90fb8bfd69797153a75dd8d3ef309a6dd21",
+    "research/BOARDING_PASS_REUSE.md": "900e9c10e756e747a77f4c8d46e18f7ca7162fb166c42d7c7ef18cd405da6168",
+    "research/BoardingPassKit-LICENSE.txt": "6fd2e2078786649d3fce358ca60e37d14bcb0f2d4876475994f537b10a33951c",
+    "research/UPSTREAM_PUBLICATION_BOUNDARY.md": "2fd0492b84a39c17a6b582dfe9bfed7104b967efd416aff6e35287a62044e0e5",
+    "BlindCore/Sources/BlindCore/BoardingPassDispatch.swift": "095ab816f817d4f6f3c3db28611eb9f577a40f040cf0c8f4a27ef2519c108794",
+    "BlindCore/Tests/BlindCoreTests/BoardingPassDispatchTests.swift": "51d6f7f5997151e1ef82b000218a5ed982c06ffaf14ed1b70dd22e25986477cf",
+    "research/BOARDING_NATIVE_DISPATCH.md": "a624128cf882b8edddd8addafc41520132a4f6be3eeead92066bdc2a287cbb00",
+    "ios/BlindAssist/NavigationModel.swift": "a13af8831297b638063822405fc886acc4635816c3ad1a8aea33fbdc9c6dcf9e",
+    "ios/BlindAssist/VisionService.swift": "0a97d06cbc5cc39a5bfa716eb3064e069fb3e23073711d704a2c29e335e1e86d",
+    "BlindCore/Sources/BlindCore/ContextualCapabilityScheduler.swift": "ae3ea7cd7cabdaeca6378f842556a68fca030eef87d6602b9a5400f3ad24489c",
+    "tools/test/generate-clock-native-harness.py": "0c1922f644d7c293957ee29acaf1924926ca3f12fec60f9e992856e4c9abfeee",
+    "tools/test/clock-tool-delivery.test.mjs": "94700afb595eb2619d4fcd8a33ff7e1a4cf46f2b4d997d6c20e6dccd596730f9",
+    "tools/test/fixtures/scoped-memory-review/ControllerPrefix.swift": "a8cb422b5f1e70ad2b0544fffab892ad230401bdbf72c8ce3ff3e69efc0f3820",
+    "tools/test/spatial-review-regressions.test.mjs": "5a670b33a02dc86c40b4c3936ee5ae30fbbd6dc864cdc05651cc40d1b4acba11"
+  },
+  "unchanged_dependencies": {
+    "ios/BlindAssist/LocalImageAssistant.swift": "41acc33e9a88fb643cabe64f7713f1855664b55c86f39d6b06ec77cffd88eebb",
+    "tools/extract-spatial-map-io.mjs": "33c8fc3b701938a6123e2a44efd5ce97683542506435c2f20b891f77b3a95ca1",
+    "tools/test/scoped-memory-lookup.test.mjs": "f0a492101059325320907e28be69db3c276e5ca790f2a5041e0250731a1d7c09"
+  },
+  "package_not_in_apply_manifest_current_hash": "9db07d1d72ac8d224f873aaf47e51f63bf7e508355a1355426daf599d8f64b0f",
+  "live_tests": {
+    "core": 30,
+    "node": 50,
+    "failures": 0,
+    "skips": 0,
+    "syntax_parse": true
+  },
+  "staged_witness": {
+    "swift": 41,
+    "source_contracts": 46,
+    "node": 50
+  },
+  "log_sha256": {
+    "live-core.log": "66a53dc587ffd8a43aadef0541d0182222952cc48bbcad49e15d82912f1726fa",
+    "live-node.log": "0726fd9018eb4822f77c419f1e990ad77d021b64e4f147513bc4051e470f0499",
+    "live-parse.log": "2eef12bff1f08216eb26520ee1b17c10fd7472fd313c710d6479cc0d71ac9668"
+  },
+  "remaining": [
+    "Parent aggregate22 and publication",
+    "Apple SDK and device/Vision/VoiceOver performance validation",
+    "Bounded known-label classifier does not recognize every travel document",
+    "Passive semantic repetition not independently deduplicated by source",
+    "No physical airport guidance or online flight validity claim"
+  ]
+}

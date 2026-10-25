@@ -54,6 +54,7 @@ final class ExtractedScopedReviewController: NSObject {
  var journeyConversationGoal = "", journeyConversationSourceID: String?, plannedIndoorGoalRevision: String?
  func appendCurrentReport(_ text: String) { recordCompanionMessage(text) }
  func clearExploreSnapshot() {}
+ func clearBoardingReading() {} // No boarding source in this scoped-memory platform fixture.
  func stopReturn() {}
  func cancelDescription() { interruptOrdinaryConversation(origin: .trustedInterface); requestID = UUID(); questionTask?.cancel(); questionTask = nil; busy = false }
  func purgeDebugSessionDiagnostics() { privacyPurges += 1 }

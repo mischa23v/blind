@@ -2,7 +2,10 @@ name: Focused accessibility diagnostic
 on:
   push:
     branches: [master]
-    paths: ['.github/workflows/accessibility-diagnostic.yml']
+    paths:
+      - '.github/workflows/accessibility-diagnostic.yml'
+      - 'ios/BlindAssist/DashboardView.swift'
+      - 'ios/BlindAssistUITests/LaunchTests.swift'
   workflow_dispatch:
 permissions:
   contents: read

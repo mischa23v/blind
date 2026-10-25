@@ -76,6 +76,7 @@ import XCTest
     struct Indoor { func cancelRoute() {} }
     var indoor = Indoor()
     func stopReturn() {}
+    func clearBoardingReading() {} // No boarding source in the clock platform fixture.
     func persistDialogue() { dialogueWrites += 1 }
     func persistWorkingState() { stateWrites += 1 }
     var textOnly = false
@@ -132,7 +133,7 @@ a = tool.index('        case .deviceClock:')
 b = tool.index('        case .savedMemory:', a)
 clock_case = tool[a:b]
 read = '''
-    @MainActor private func readCompanionTool(_ request: CompanionToolRequest) async -> CompanionToolResult {
+    @MainActor private func readCompanionTool(_ request: CompanionToolRequest, originalUserQuery: String) async -> CompanionToolResult {
         readCount += 1
         let result: CompanionToolResult = {
             switch request.kind {
@@ -174,13 +175,13 @@ scenarios = '''
         switch number {
         case 1:
             afterRead = { [weak self] in self?.move(8, wall: 4) }
-            let result = await readCompanionToolForTurn(.init(kind: .deviceClock), id: requestID, generation: assistantSession.generation)
+            let result = await readCompanionToolForTurn(.init(kind: .deviceClock), id: requestID, generation: assistantSession.generation, originalUserQuery: "What time is it?")
             XCTAssertEqual(result.status, .stale)
             XCTAssertEqual(readCount, 1)
             XCTAssertEqual(clockReplies.values.first?.issuedAt, 100)
         case 2:
             afterRead = { [weak self] in self?.sampleZone = TimeZone(identifier: "Asia/Riyadh")! }
-            let result = await readCompanionToolForTurn(.init(kind: .deviceClock), id: requestID, generation: assistantSession.generation)
+            let result = await readCompanionToolForTurn(.init(kind: .deviceClock), id: requestID, generation: assistantSession.generation, originalUserQuery: "What time is it?")
             XCTAssertEqual(result.status, .stale)
         case 3:
             let lease = try XCTUnwrap(acquireClockReply())
@@ -256,7 +257,7 @@ scenarios = '''
             XCTAssertNotEqual(currentReply, "It's 3:00.")
             XCTAssertFalse(currentReply.isEmpty)
         case 13:
-            let result = await readCompanionToolForTurn(.init(kind: .deviceClock), id: requestID, generation: assistantSession.generation)
+            let result = await readCompanionToolForTurn(.init(kind: .deviceClock), id: requestID, generation: assistantSession.generation, originalUserQuery: "What time is it?")
             XCTAssertEqual(result.status, .success)
             let canonical = try XCTUnwrap(result.evidence.first?.text)
             let callback = partialCallback()
@@ -271,10 +272,10 @@ scenarios = '''
             finishAfterMetadata("The local time is definitely a different number.")
             XCTAssertEqual(currentReply, canonical)
         case 14:
-            let result = await readCompanionToolForTurn(.init(kind: .deviceClock), id: requestID, generation: assistantSession.generation)
+            let result = await readCompanionToolForTurn(.init(kind: .deviceClock), id: requestID, generation: assistantSession.generation, originalUserQuery: "What time is it?")
             let first = try XCTUnwrap(activeModelClockReplyID)
             move(4)
-            _ = await readCompanionToolForTurn(.init(kind: .deviceClock), id: requestID, generation: assistantSession.generation)
+            _ = await readCompanionToolForTurn(.init(kind: .deviceClock), id: requestID, generation: assistantSession.generation, originalUserQuery: "What time is it?")
             XCTAssertEqual(activeModelClockReplyID, first)
             move(6, wall: 4)
             partialCallback()("The local time is a newer model guess.")
@@ -284,7 +285,7 @@ scenarios = '''
             XCTAssertEqual(clockReplies[first]?.issuedAt, 100)
         case 15:
             sampleAge = .nan
-            let result = await readCompanionToolForTurn(.init(kind: .deviceClock), id: requestID, generation: assistantSession.generation)
+            let result = await readCompanionToolForTurn(.init(kind: .deviceClock), id: requestID, generation: assistantSession.generation, originalUserQuery: "What time is it?")
             XCTAssertEqual(result.status, .unavailable)
             XCTAssertNotNil(activeModelClockReplyID, "Selecting the operation remains fenced even without evidence")
             XCTAssertTrue(clockReplies.isEmpty)

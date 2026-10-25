@@ -103,6 +103,35 @@ final class ContextualCapabilitySchedulerTests: XCTestCase {
         XCTAssertEqual(Policy.Goal.infer(from: String(repeating: "buy ", count: 301)), .otherTask)
     }
 
+    func testTravelNounsAndNavigationNeverGrantDocumentReading() {
+        let goals = ["flight friendship highlighting", "flight", "boarding pass", "gate", "رحلة", "بوابة", "صعود",
+            "go to gate B12", "find my boarding pass", "locate my flight gate", "waiting to board my flight",
+            "ابحث عن بوابة الرحلة", "اذهب إلى البوابة", "أجد بطاقة صعود الطائرة", "انتظار رحلتي"]
+        for text in goals {
+            let goal = Policy.Goal.infer(from: text)
+            XCTAssertFalse(goal.contains(.reading), text)
+            XCTAssertNotEqual(goal, .none, text)
+            var scheduler = Policy()
+            XCTAssertNil(scheduler.reserve(goal: goal, evidence: .init(capturedAt: 10),
+                moment: moment(10), availability: [.barcode: .available]), text)
+        }
+        for text in ["go to gate B12", "find my boarding pass", "ابحث عن بوابة الرحلة", "اذهب إلى البوابة"] {
+            XCTAssertEqual(Policy.Goal.infer(from: text), .targetDiscovery, text)
+        }
+    }
+
+    func testExplicitTravelReadingStillAdmitsBoundedBarcodeProbe() throws {
+        for text in ["Read my boarding pass", "Please read the gate on this sign", "I am reading my flight details",
+                     "أريد أن أقرأ بطاقة الصعود", "اقرأ رقم البوابة على اللوحة", "قراءة تفاصيل الرحلة"] {
+            let goal = Policy.Goal.infer(from: text)
+            XCTAssertTrue(goal.contains(.reading), text)
+            var scheduler = Policy()
+            let lease = try XCTUnwrap(scheduler.reserve(goal: goal, evidence: .init(capturedAt: 10),
+                moment: moment(10), availability: [.barcode: .available]), text)
+            XCTAssertEqual(lease.capability, .barcode, text)
+        }
+    }
+
     func testFindingAnObjectNeverGrantsUnrestrictedReading() {
         for goal in ["find my book", "find the document", "find the page", "find my reading glasses", "find the label", "finish my homework", "ابحث عن الكتاب", "أجد ورقة الواجب"] {
             XCTAssertFalse(Policy.Goal.infer(from: goal).contains(.reading), goal)

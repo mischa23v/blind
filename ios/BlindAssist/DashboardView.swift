@@ -327,8 +327,14 @@ struct AssistantToolsView: View {
                     Button(t("End practice", "أنهِ التدريب")) { model.endPractice() }
                         .accessibilityIdentifier("end-practice")
                 } else {
-                    Button(t("Try practice (2 minutes)", "جرب التدريب (دقيقتان)")) { model.startSimulation() }
-                        .accessibilityIdentifier("start-simulation")
+                    Button { model.startSimulation() } label: {
+                        Text(t("Try practice (2 minutes)", "جرب التدريب (دقيقتان)"))
+                            .font(.body)
+                            .lineLimit(nil)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .multilineTextAlignment(.leading)
+                    }
+                    .accessibilityIdentifier("start-simulation")
                 }
                 if model.simulation {
                     ForEach([Hazard.observing, .drop, .obstacle, .overhead, .uncertain], id: \.self) { hazard in
