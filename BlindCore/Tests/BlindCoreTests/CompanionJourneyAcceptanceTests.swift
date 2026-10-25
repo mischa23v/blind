@@ -23,7 +23,7 @@ final class CompanionJourneyAcceptanceTests: XCTestCase {
         XCTAssertEqual(object, "coat")
         XCTAssertEqual(place, "on the hanger in my bedroom")
         let fact = try XCTUnwrap(facts.record(object: object, place: place, tense: tense, hedged: hedged, at: date))
-        XCTAssertTrue(fact.acknowledgement(arabic: false).contains("You last had your coat"))
+        XCTAssertTrue(fact.acknowledgement(arabic: false).contains("You said your coat was"))
 
         // A separate explicit saved-item action supplies the room. No parser is
         // assumed to infer a room ID, a hanger relationship, position or colour.
@@ -72,7 +72,7 @@ final class CompanionJourneyAcceptanceTests: XCTestCase {
         let later = date.addingTimeInterval(600)
         let recalledFact = try XCTUnwrap(restoredFacts.latest(for: "my coat"))
         XCTAssertEqual(recalledFact.recall(now: later, arabic: false),
-            "You told me 10 minutes ago you last had your coat on the hanger in my bedroom. I don't know where it is now.")
+            "You told me 10 minutes ago your coat was on the hanger in my bedroom. I don't know where it is now.")
         let item = try XCTUnwrap(restoredSaved.find("coat"))
         XCTAssertEqual(item.roomName, "bedroom")
         XCTAssertNil(item.position)

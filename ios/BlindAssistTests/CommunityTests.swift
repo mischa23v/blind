@@ -1083,8 +1083,8 @@ struct UnsupportedPremiseTests {
                 // This is attributed history from the code-owned fact book, not model geometry.
                 // Verify exact expected history instead of weakening the model's spatial guard.
                 let expected = [
-                    "I left my cup on the table yesterday.": "Got it. You last had your cup on the table yesterday. I'll remember that.",
-                    "Where is my cup?": "You told me just now you last had your cup on the table yesterday. I don't know where it is now."
+                    "I left my cup on the table yesterday.": "Got it. You said your cup was on the table yesterday. I'll remember that.",
+                    "Where is my cup?": "You told me just now your cup was on the table yesterday. I don't know where it is now."
                 ]
                 #expect(last == expected[message])
             } else {
@@ -1107,11 +1107,11 @@ struct UnsupportedPremiseTests {
         state.record(report, at: now)
         let parsed = try #require(CompanionUtterance.parse(report))
         #expect(state.respond(to: parsed, message: report, now: now, arabic: false) ==
-            "Got it. You last had your cup on the table yesterday. I'll remember that.")
+            "Got it. You said your cup was on the table yesterday. I'll remember that.")
         let question = "Where is my cup?"
         let requested = try #require(CompanionUtterance.parse(question))
         #expect(state.respond(to: requested, message: question, now: now, arabic: false) ==
-            "You told me just now you last had your cup on the table yesterday. I don't know where it is now.")
+            "You told me just now your cup was on the table yesterday. I don't know where it is now.")
         // Removing attribution would be a current-location claim and remains rejected.
         #expect(SpatialClaimGuard.containsSpatialClaim("Your cup is on the table."))
     }

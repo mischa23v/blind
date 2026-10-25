@@ -59,9 +59,9 @@ final class CompanionFactEvidenceTests: XCTestCase {
             return XCTFail("Report not parsed")
         }
         let fact = try XCTUnwrap(book.record(object: "cup", place: place, tense: tense, hedged: hedged, at: saidAt))
-        XCTAssertEqual(fact.acknowledgement(arabic: false), "Got it. You last had your cup on the kitchen table. I'll remember that.")
+        XCTAssertEqual(fact.acknowledgement(arabic: false), "Got it. You said your cup was on the kitchen table. I'll remember that.")
         let later = fact.recall(now: saidAt.addingTimeInterval(600), arabic: false)
-        XCTAssertEqual(later, "You told me 10 minutes ago you last had your cup on the kitchen table. I don't know where it is now.")
+        XCTAssertEqual(later, "You told me 10 minutes ago your cup was on the kitchen table. I don't know where it is now.")
         for text in [fact.acknowledgement(arabic: false), later, fact.acknowledgement(arabic: true), fact.recall(now: saidAt, arabic: true)] {
             XCTAssertFalse(ConversationClaimGuard.containsUnsupportedClaim(text), text)
             // Code-owned source-attributed history is separate from model output.
@@ -69,7 +69,30 @@ final class CompanionFactEvidenceTests: XCTestCase {
         }
         XCTAssertEqual(book.latest(for: "my cup")?.place, "on the kitchen table")
         XCTAssertNil(book.latest(for: "backpack"))
-        XCTAssertEqual(CompanionFact.unknown(object: "backpack", arabic: false), "I don't know where your backpack is yet. Where did you last have it?")
+        XCTAssertEqual(CompanionFact.unknown(object: "backpack", arabic: false), "I don't know where your backpack is yet. Do you know which room or area to look in?")
+    }
+
+    func testLocationHistoryNeverInventsPossessionFromReportedSeeingOrState() throws {
+        let at = Date(timeIntervalSince1970: 1_000_000)
+        for report in ["I saw the fridge in the kitchen", "The fridge was in the kitchen", "I think the fridge was in the kitchen"] {
+            guard case .report(let object?, let place, let tense, let hedged)? = CompanionUtterance.parse(report) else {
+                return XCTFail("Report not parsed: \(report)")
+            }
+            var book = CompanionFactBook()
+            let fact = try XCTUnwrap(book.record(object: object, place: place, tense: tense, hedged: hedged, at: at))
+            let reply = fact.recall(now: at.addingTimeInterval(600), arabic: false)
+            XCTAssertTrue(reply.contains("You told me 10 minutes ago"), reply)
+            XCTAssertTrue(reply.contains("fridge was in the kitchen"), reply)
+            XCTAssertEqual(reply.contains("you thought"), hedged, reply)
+            let arabic = fact.recall(now: at.addingTimeInterval(600), arabic: true)
+            XCTAssertEqual(arabic.contains("تظن"), hedged, arabic)
+            XCTAssertTrue(arabic.hasSuffix("لا أعرف مكانه الآن."), arabic)
+            XCTAssertFalse(reply.contains("last had"), reply)
+            XCTAssertFalse(fact.acknowledgement(arabic: false).contains("last had"))
+            XCTAssertTrue(reply.hasSuffix("I don't know where it is now."), reply)
+            XCTAssertEqual(fact.at, at)
+            XCTAssertEqual(fact.tense, .earlier)
+        }
     }
 
     func testFactBookReplacesAndForgets() {

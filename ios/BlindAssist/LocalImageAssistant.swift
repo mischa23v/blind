@@ -592,7 +592,7 @@ struct CompanionWorkingState: Codable, Sendable {
             beginFindGoal(request, object: object, sourceID: sourceID, at: sourceID.flatMap { id in reports.last { $0.sourceID == id }?.time } ?? now)
             if let fact = currentContextFact(for: object) { return fact.recall(now: now, arabic: arabic) }
             if let search = lastSearch, search.matches(object) {
-                let ask = arabic ? " أين كان آخر مرة؟" : " Where did you last have it?"
+                let ask = " " + CompanionFact.searchAreaQuestion(arabic: arabic)
                 return search.sentence(now: now, arabic: arabic) + (search.located ? "" : ask)
             }
             return ordinaryHistoricalLocationReply(object: object, now: now, arabic: arabic, concise: true) ?? CompanionFact.unknown(object: object, arabic: arabic)

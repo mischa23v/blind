@@ -1,0 +1,80 @@
+{
+  "status": "portable-tested; pending publication at receipt preparation",
+  "executable_baseline": "452b9ebac628efd5d61290174cac52318f6b7890",
+  "integration_parent": "550b845abce842719251017c3e3a09d8e95408d7",
+  "integration_parent_tree": "7320bc3303ae38f76ffe9f389fcfa5d7a6b3757c",
+  "source_files": [
+    {
+      "path": "tools/test/task-memory-native-state.test.mjs",
+      "sha256": "c2cd343e68204e2f77b49a148b82b6ab6241ce8fc1fdf4124cc48d7dd706b528",
+      "baseline_sha256": "cfd47aaa3f585d4557a760bfdb59dae26334ef93bb32e39aee9ec2ee3463ce29",
+      "latest_parent_git_blob_sha": "5da6d764e5d2abd10fdbae8c771cda60011cc63d"
+    },
+    {
+      "path": "tools/test/fixtures/task-memory-native-state/FindClarificationTests.swift",
+      "sha256": "b8687c1d19a5d5bb2034d29dd9dd022db722376e7ddda8d69d95ec844818b428",
+      "baseline_sha256": null,
+      "latest_parent_git_blob_sha": null
+    },
+    {
+      "path": "ios/BlindAssist/LocalImageAssistant.swift",
+      "sha256": "b48bc03e532a9fa16fe7f08090390813077dcf98c992c1e8cde5cf5ae6b09027",
+      "baseline_sha256": "41acc33e9a88fb643cabe64f7713f1855664b55c86f39d6b06ec77cffd88eebb",
+      "latest_parent_git_blob_sha": "2b9132e653540f52430932b01ffc1df61b271d29"
+    },
+    {
+      "path": "ios/BlindAssistTests/CommunityTests.swift",
+      "sha256": "623c0596dc31d56f0123eef25249ea94c9661cfd90415312b50c1cd11993264f",
+      "baseline_sha256": "b331078168a058fed84d2efd25bb5e1ec86e1410d9be6ed0d70954e226e23497",
+      "latest_parent_git_blob_sha": "1b88fab948d9b595f76cce76ed79d4587546ea35"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/CompanionJourneyAcceptanceTests.swift",
+      "sha256": "64116fadabb927078d08acbaf117e9daf36de4699b956d88f4b3e8a00442489c",
+      "baseline_sha256": "9f2c034471737a55744b7d1569823abb9ed018ef0fded33956bd0e62bd311a6d",
+      "latest_parent_git_blob_sha": "192f38443ca5151cb76613a9d269924dae3a178c"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/CompanionFactEvidenceTests.swift",
+      "sha256": "23b150be22f3416dc7d35fec895b6ad02a9cfa065f64c11a0aa0f87eb8ae08ec",
+      "baseline_sha256": "cfe907017b8b616e45bf7ce320d5c3e32dd58e007e2f0794f382dcaa6d26d37d",
+      "latest_parent_git_blob_sha": "47246c7a97ba7f7868451fce155d0cd751722cbb"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CompanionFacts.swift",
+      "sha256": "11ece72d6003b4f17856ae4ea274f447acd82fae0e355c784afc33dd0fb8946d",
+      "baseline_sha256": "b93b1bccc1c4f77199640f635444fda2e041739e272d17a226ed27688560bdea",
+      "latest_parent_git_blob_sha": "b160c4501163320c6182cb32b3951472480ae1a2"
+    }
+  ],
+  "baseline_regression": {
+    "tests": 42,
+    "assertion_failures": 18,
+    "existing_tests_passed": 37
+  },
+  "final_aggregate": {
+    "core_tests": 1264,
+    "node_tests": 457,
+    "failures": 0,
+    "skips": 0,
+    "unchanged_source_hashes": 987,
+    "source_cut": "checkpoint27 plus this seven-file candidate, before later diagnostic-only overlay"
+  },
+  "post_overlay": {
+    "node_checks": 30,
+    "exporter_tests": 10,
+    "swift_syntax_parse": "passed; CommunityTests, LaunchTests and NativeWorkflowRegressionTests; not SDK typechecking",
+    "production_source_bytes": "identical to full-aggregate candidate",
+    "merge": "four CommunityTests expected-reply changes retained alongside seven existing model-status diagnostic changes"
+  },
+  "prior_attempts": {
+    "initial_core_run": "1264 tests, zero failures, one dataset-environment skip; complete final rerun included the existing recorded trajectory"
+  },
+  "limits": [
+    "No native or audible repaired-flow run",
+    "No physical target finding or goal-completion proof",
+    "Bare area answer falls back to model conversation; owned provisional-clue binder not implemented",
+    "Existing the-versus-my report naming fidelity remains separate"
+  ],
+  "log_redaction": "Only authored regression failure lines and terminal summaries included. Absolute local paths replaced with source-relative filename; complete original logs remain private."
+}

@@ -1,0 +1,50 @@
+# Selected authored regression and final test output. Absolute local paths redacted; complete originals retained privately.
+## Before repair: final expected wording
+Tests/FindClarificationTests.swift:49: error: FindClarificationTests.testAnswerAndCorrectionBecomeAttributedHistoryNotCurrentLocation : XCTAssertFalse failed - You told me just now you last had your fridge in the garage. I don't know where it is now.
+Tests/FindClarificationTests.swift:24: error: FindClarificationTests.testArabicAndRephraseKeepGoalWithoutInventedLocation : XCTAssertEqual failed: ("لا أعرف مكان «الثلاجة» بعد. أين كان آخر مرة؟") is not equal to ("لا أعرف مكان «الثلاجة» بعد. هل تعرف في أي غرفة أو مكان نبحث؟") - 
+Tests/FindClarificationTests.swift:36: error: FindClarificationTests.testFailedSearchUsesSameQuestionButNeverTurnsMissIntoAbsence : XCTAssertTrue failed - I looked just now and didn't locate your fridge. Where did you last have it?
+Tests/FindClarificationTests.swift:59: error: FindClarificationTests.testNewBelongingGoalDoesNotReuseFridgeHistoryOrCompleteParent : XCTAssertEqual failed: ("I don't know where your cup is yet. Where did you last have it?") is not equal to ("I don't know where your cup is yet. Do you know which room or area to look in?") - 
+Tests/FindClarificationTests.swift:65: error: FindClarificationTests.testNewBelongingGoalDoesNotReuseFridgeHistoryOrCompleteParent : XCTAssertEqual failed: ("Got it. You last had your cup on the table. I'll remember that.") is not equal to ("Got it. You said your cup was on the table. I'll remember that.") - 
+Tests/FindClarificationTests.swift:67: error: FindClarificationTests.testNewBelongingGoalDoesNotReuseFridgeHistoryOrCompleteParent : XCTAssertTrue failed - You told me just now you last had your cup on the table. I don't know where it is now.
+Tests/FindClarificationTests.swift:15: error: FindClarificationTests.testUnknownFixedPlacesAndBelongingsAskUsefulNonPossessiveHistory : XCTAssertTrue failed - I don't know where your fridge is yet. Where did you last have it?
+Tests/FindClarificationTests.swift:16: error: FindClarificationTests.testUnknownFixedPlacesAndBelongingsAskUsefulNonPossessiveHistory : XCTAssertFalse failed - I don't know where your fridge is yet. Where did you last have it?
+Tests/FindClarificationTests.swift:15: error: FindClarificationTests.testUnknownFixedPlacesAndBelongingsAskUsefulNonPossessiveHistory : XCTAssertTrue failed - I don't know where the refrigerator is yet. Where did you last have it?
+Tests/FindClarificationTests.swift:16: error: FindClarificationTests.testUnknownFixedPlacesAndBelongingsAskUsefulNonPossessiveHistory : XCTAssertFalse failed - I don't know where the refrigerator is yet. Where did you last have it?
+Tests/FindClarificationTests.swift:15: error: FindClarificationTests.testUnknownFixedPlacesAndBelongingsAskUsefulNonPossessiveHistory : XCTAssertTrue failed - I don't know where the bathroom is yet. Where did you last have it?
+Tests/FindClarificationTests.swift:16: error: FindClarificationTests.testUnknownFixedPlacesAndBelongingsAskUsefulNonPossessiveHistory : XCTAssertFalse failed - I don't know where the bathroom is yet. Where did you last have it?
+Tests/FindClarificationTests.swift:15: error: FindClarificationTests.testUnknownFixedPlacesAndBelongingsAskUsefulNonPossessiveHistory : XCTAssertTrue failed - I don't know where the front door is yet. Where did you last have it?
+Tests/FindClarificationTests.swift:16: error: FindClarificationTests.testUnknownFixedPlacesAndBelongingsAskUsefulNonPossessiveHistory : XCTAssertFalse failed - I don't know where the front door is yet. Where did you last have it?
+Tests/FindClarificationTests.swift:15: error: FindClarificationTests.testUnknownFixedPlacesAndBelongingsAskUsefulNonPossessiveHistory : XCTAssertTrue failed - I don't know where your cup is yet. Where did you last have it?
+Tests/FindClarificationTests.swift:16: error: FindClarificationTests.testUnknownFixedPlacesAndBelongingsAskUsefulNonPossessiveHistory : XCTAssertFalse failed - I don't know where your cup is yet. Where did you last have it?
+Tests/FindClarificationTests.swift:15: error: FindClarificationTests.testUnknownFixedPlacesAndBelongingsAskUsefulNonPossessiveHistory : XCTAssertTrue failed - I don't know where your backpack is yet. Where did you last have it?
+Tests/FindClarificationTests.swift:16: error: FindClarificationTests.testUnknownFixedPlacesAndBelongingsAskUsefulNonPossessiveHistory : XCTAssertFalse failed - I don't know where your backpack is yet. Where did you last have it?
+	 Executed 42 tests, with 18 failures (0 unexpected) in 0.396 (0.396) seconds
+	 Executed 42 tests, with 18 failures (0 unexpected) in 0.396 (0.396) seconds
+
+## Final Core
+	 Executed 1264 tests, with 0 failures (0 unexpected) in 38.129 (38.129) seconds
+	 Executed 1264 tests, with 0 failures (0 unexpected) in 38.129 (38.129) seconds
+
+## Final Node
+ℹ tests 457
+ℹ suites 0
+ℹ pass 457
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 293930.023741
+
+## Post-overlay Node
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2735.045646
+
+## Post-overlay exporter
+Ran 10 tests in 0.015s
+OK

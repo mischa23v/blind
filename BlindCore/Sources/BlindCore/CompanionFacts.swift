@@ -128,7 +128,7 @@ public enum CompanionNaming {
 /// One location the child reported. Not a sensor observation and not proof of where the object is.
 public struct CompanionFact: Codable, Equatable, Sendable {
     public enum Tense: String, Codable, Sendable {
-        /// "I last left it on the table": where it was when they last had it.
+        /// A reported earlier location (left, saw, had, or was), not proof of possession.
         case earlier
         /// "My cup is on the table": what the child believed at the time they said it.
         case current
@@ -156,12 +156,10 @@ public struct CompanionFact: Codable, Equatable, Sendable {
             let said = hedged ? "تظن أن" : "قلت إن"
             return "حسناً. \(said) \(name) كان \(place). سأتذكر ذلك."
         }
-        switch (tense, hedged) {
-        case (.earlier, false): return "Got it. You last had \(name) \(place). I'll remember that."
-        case (.earlier, true): return "Got it. You think you last had \(name) \(place). I'll remember that."
-        case (.current, false): return "Got it. You said \(name) \(verb) \(place). I'll remember that."
-        case (.current, true): return "Got it. You thought \(name) \(verb) \(place). I'll remember that."
-        }
+        // The parser intentionally keeps location and tense, not the original
+        // report verb. "Saw" or "was" must never become possession ("last had").
+        let said = hedged ? "thought" : "said"
+        return "Got it. You \(said) \(name) \(verb) \(place). I'll remember that."
     }
 
     /// Spoken when the child asks again later. Always past tense with the time it was said.
@@ -169,18 +167,26 @@ public struct CompanionFact: Codable, Equatable, Sendable {
         let name = CompanionNaming.phrase(object, arabic: arabic)
         let elapsed = ItemMemory.relativeTime(from: at, to: now, arabic: arabic)
         if arabic {
-            return "قلت لي \(elapsed) إن \(name) كان \(place). لا أعرف مكانه الآن."
+            let belief = hedged ? "إنك كنت تظن أن" : "إن"
+            return "قلت لي \(elapsed) \(belief) \(name) كان \(place). لا أعرف مكانه الآن."
         }
         let thought = hedged ? "you thought " : ""
-        let report = tense == .earlier ? "\(thought)you last had \(name) \(place)" : "\(thought)\(name) \(verb) \(place)"
+        let report = "\(thought)\(name) \(verb) \(place)"
         return "You told me \(elapsed) \(report). I don't know where it is now."
+    }
+
+    /// Ask for a search area without assuming the target was carried, moved,
+    /// previously located, or currently in a particular room. Target categories
+    /// are not reliable evidence of those facts. Used only after known clues.
+    public static func searchAreaQuestion(arabic: Bool) -> String {
+        arabic ? "هل تعرف في أي غرفة أو مكان نبحث؟" : "Do you know which room or area to look in?"
     }
 
     /// Spoken when nothing is known about the object.
     public static func unknown(object: String, arabic: Bool) -> String {
         let name = CompanionNaming.phrase(object, arabic: arabic)
-        return arabic ? "لا أعرف مكان \(name) بعد. أين كان آخر مرة؟"
-            : "I don't know where \(name) is yet. Where did you last have it?"
+        let unknown = arabic ? "لا أعرف مكان \(name) بعد." : "I don't know where \(name) is yet."
+        return unknown + " " + searchAreaQuestion(arabic: arabic)
     }
 }
 

@@ -1,3 +1,13 @@
+## 2026-10-25 — Checkpoint28 candidate: useful search clarification and faithful reported history
+
+Executable baseline is checkpoint27 `452b9ebac628efd5d61290174cac52318f6b7890`; integration parent is `550b845abce842719251017c3e3a09d8e95408d7`. This receipt is prepared before publication; earlier historical candidate notes below are unchanged.
+
+- Unknown and unsuccessful searches now ask for a room/area clue, not where the person last possessed the fridge. Existing memory evidence remains first. English history no longer turns “saw”/“was” into “last had”; Arabic retains reported uncertainty. No room guess, camera result, clearance or task completion is invented.
+- **1,264 Core tests and 457 Swift-enabled serial Node checks pass, zero final failures/skips; 987 source hashes unchanged.** The original 18-assertion-failure regression and first dataset-env skip remain disclosed. After overlaying later diagnostic-only changes, **30 affected Node checks and 10 exporter tests pass**; three native test files pass syntax parse, not SDK typechecking. Production bytes did not change between these cuts; this is not a second full aggregate.
+- **Next:** verify the actual native three-turn answer and audible/nonvisual outcome; implement and review a separately owned provisional raw search-clue continuation for natural short answers. That binder is not implemented here. Safe abstention, a state test and a useful question do not establish a completed find goal. Existing determiner/ownership naming remains a separate gap.
+
+Evidence: `research/evaluations/find-clarification-checkpoint28/README.md`, seven-file hash manifest and explicitly redacted selected test output. No complete workspace inventory or private raw transcript is included.
+
 ## 2026-10-25 — Captured-view text receipt, portable-tested checkpoint27 candidate
 
 Published executable baseline is checkpoint26 `f9f70ea33faff728bc418aeed3720498614d95f9`; final diagnostic-only parent is `79f1b9d547030474142322856e8513b7fdbbc011`. This staged increment is not yet published at the time of this receipt.
