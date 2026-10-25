@@ -1,0 +1,140 @@
+warning: /home/agent/.config/swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /home/agent/.config/swiftpm/security is not accessible or not writable, disabling user-level cache features.
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 213]
+[Planning deferred tasks]
+[3 / 7] BlindMemory
+[4 / 8] BlindMemory
+[11 / 15] BlindMemoryTests-product
+[12 / 16] BlindMemoryTests-product
+[23 / 35] BlindMemoryTests-product
+[24 / 35] BlindMemoryTests-product
+[26 / 35] BlindMemory
+[26 / 35]
+[29 / 35] BlindMemory
+[33 / 36] BlindMemoryTests-product
+[37 / 39] BlindMemoryTests-test-runner
+[41 / 41] BlindMemoryTests-test-runner
+Build complete! (4.86 secs)
+Test Suite 'All tests' started at 2026-10-25 13:23:55.241
+Test Suite 'Debug-linux-x86_64.xctest' started at 2026-10-25 13:23:55.242
+Test Suite 'ConversationReviewTransactionTests' started at 2026-10-25 13:23:55.242
+Test Case 'ConversationReviewTransactionTests.testOversizeReviewRejectsBeforeEitherRowChanges' started at 2026-10-25 13:23:55.242
+Test Case 'ConversationReviewTransactionTests.testOversizeReviewRejectsBeforeEitherRowChanges' passed (0.016 seconds)
+Test Case 'ConversationReviewTransactionTests.testReviewCommitIsAtomicAcrossSecondWriteFailureAndReopen' started at 2026-10-25 13:23:55.258
+Test Case 'ConversationReviewTransactionTests.testReviewCommitIsAtomicAcrossSecondWriteFailureAndReopen' passed (0.039 seconds)
+Test Case 'ConversationReviewTransactionTests.testV5PreservesV4RowsAndExpandsOnlyExactConversationKeys' started at 2026-10-25 13:23:55.297
+Test Case 'ConversationReviewTransactionTests.testV5PreservesV4RowsAndExpandsOnlyExactConversationKeys' passed (0.056 seconds)
+Test Suite 'ConversationReviewTransactionTests' passed at 2026-10-25 13:23:55.353
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.111 (0.111) seconds
+Test Suite 'MemoryStoreTests' started at 2026-10-25 13:23:55.353
+Test Case 'MemoryStoreTests.testActualPrivateNamespacesSurviveReopenAndStayIsolated' started at 2026-10-25 13:23:55.353
+Test Case 'MemoryStoreTests.testActualPrivateNamespacesSurviveReopenAndStayIsolated' passed (0.078 seconds)
+Test Case 'MemoryStoreTests.testApprovalUsesStoredDraftAndKeepsHistory' started at 2026-10-25 13:23:55.430
+Test Case 'MemoryStoreTests.testApprovalUsesStoredDraftAndKeepsHistory' passed (0.01 seconds)
+Test Case 'MemoryStoreTests.testDeletedRoomCannotBeRestoredFromPendingProposal' started at 2026-10-25 13:23:55.440
+Test Case 'MemoryStoreTests.testDeletedRoomCannotBeRestoredFromPendingProposal' passed (0.008 seconds)
+Test Case 'MemoryStoreTests.testFailedPreferenceWriteKeepsPreviousValue' started at 2026-10-25 13:23:55.448
+Test Case 'MemoryStoreTests.testFailedPreferenceWriteKeepsPreviousValue' passed (0.008 seconds)
+Test Case 'MemoryStoreTests.testFailedRoomImportRollsBackBeforeRetry' started at 2026-10-25 13:23:55.456
+Test Case 'MemoryStoreTests.testFailedRoomImportRollsBackBeforeRetry' passed (0.009 seconds)
+Test Case 'MemoryStoreTests.testObservedObjectsRemainPrivateBoundedAndDeletable' started at 2026-10-25 13:23:55.464
+Test Case 'MemoryStoreTests.testObservedObjectsRemainPrivateBoundedAndDeletable' passed (0.006 seconds)
+Test Case 'MemoryStoreTests.testPrivatePayloadLimitsAndRejectedWritesPreservePreviousValue' started at 2026-10-25 13:23:55.471
+Test Case 'MemoryStoreTests.testPrivatePayloadLimitsAndRejectedWritesPreservePreviousValue' passed (0.023 seconds)
+Test Case 'MemoryStoreTests.testReopenIsolationDeletionAndNoPersistedPose' started at 2026-10-25 13:23:55.493
+Test Case 'MemoryStoreTests.testReopenIsolationDeletionAndNoPersistedPose' passed (0.037 seconds)
+Test Case 'MemoryStoreTests.testShoppingChecklistUsesExistingPrivateCompanionNamespace' started at 2026-10-25 13:23:55.530
+Test Case 'MemoryStoreTests.testShoppingChecklistUsesExistingPrivateCompanionNamespace' passed (0.027 seconds)
+Test Case 'MemoryStoreTests.testStaleRejectedAndCrossRoomApprovalsNeverChangeHead' started at 2026-10-25 13:23:55.558
+Test Case 'MemoryStoreTests.testStaleRejectedAndCrossRoomApprovalsNeverChangeHead' passed (0.012 seconds)
+Test Case 'MemoryStoreTests.testTwoConnectionsCannotApproveDifferentDraftsFromTheSameBase' started at 2026-10-25 13:23:55.570
+Test Case 'MemoryStoreTests.testTwoConnectionsCannotApproveDifferentDraftsFromTheSameBase' passed (0.038 seconds)
+Test Case 'MemoryStoreTests.testV3MigrationPreservesExistingRowsAndEnforcesSQLBudgets' started at 2026-10-25 13:23:55.607
+Test Case 'MemoryStoreTests.testV3MigrationPreservesExistingRowsAndEnforcesSQLBudgets' passed (0.136 seconds)
+Test Suite 'MemoryStoreTests' passed at 2026-10-25 13:23:55.744
+	 Executed 12 tests, with 0 failures (0 unexpected) in 0.39 (0.39) seconds
+Test Suite 'NarrationHistoryTests' started at 2026-10-25 13:23:55.744
+Test Case 'NarrationHistoryTests.testBoundedHistoryClearAndDelayedCompletionDoNotResurrectText' started at 2026-10-25 13:23:55.744
+Test Case 'NarrationHistoryTests.testBoundedHistoryClearAndDelayedCompletionDoNotResurrectText' passed (0.016 seconds)
+Test Case 'NarrationHistoryTests.testDispatchIsNotCompletionAndLateCallbacksCannotRewriteOutcome' started at 2026-10-25 13:23:55.760
+Test Case 'NarrationHistoryTests.testDispatchIsNotCompletionAndLateCallbacksCannotRewriteOutcome' passed (0.009 seconds)
+Test Case 'NarrationHistoryTests.testInvalidOrDuplicateStartDoesNotReplaceSavedRecord' started at 2026-10-25 13:23:55.769
+Test Case 'NarrationHistoryTests.testInvalidOrDuplicateStartDoesNotReplaceSavedRecord' passed (0.006 seconds)
+Test Case 'NarrationHistoryTests.testRestartMakesPendingUnknownAndProfileRemainsIsolated' started at 2026-10-25 13:23:55.776
+Test Case 'NarrationHistoryTests.testRestartMakesPendingUnknownAndProfileRemainsIsolated' passed (0.03 seconds)
+Test Suite 'NarrationHistoryTests' passed at 2026-10-25 13:23:55.806
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.062 (0.062) seconds
+Test Suite 'NativeObservationStorageTests' started at 2026-10-25 13:23:55.806
+Test Case 'NativeObservationStorageTests.testAppendsWriteOnlyNewPayloadBytesInOneTransactionPerBatch' started at 2026-10-25 13:23:55.806
+Test Case 'NativeObservationStorageTests.testAppendsWriteOnlyNewPayloadBytesInOneTransactionPerBatch' passed (0.15 seconds)
+Test Case 'NativeObservationStorageTests.testBlockedActualObservationWriterDoesNotBlockMainThreadMemory' started at 2026-10-25 13:23:55.955
+Test Case 'NativeObservationStorageTests.testBlockedActualObservationWriterDoesNotBlockMainThreadMemory' passed (0.033 seconds)
+Test Case 'NativeObservationStorageTests.testByteQuotaEvictsOldestRowsAndCountsExactly' started at 2026-10-25 13:23:55.988
+Test Case 'NativeObservationStorageTests.testByteQuotaEvictsOldestRowsAndCountsExactly' passed (0.011 seconds)
+Test Case 'NativeObservationStorageTests.testChangedMetadataAndInBatchDuplicateMismatchRollBack' started at 2026-10-25 13:23:55.999
+Test Case 'NativeObservationStorageTests.testChangedMetadataAndInBatchDuplicateMismatchRollBack' passed (0.008 seconds)
+Test Case 'NativeObservationStorageTests.testClearIsIdempotentProfileScopedAndResetsCounter' started at 2026-10-25 13:23:56.007
+Test Case 'NativeObservationStorageTests.testClearIsIdempotentProfileScopedAndResetsCounter' passed (0.056 seconds)
+Test Case 'NativeObservationStorageTests.testEmptyAppendDoesNotOpenWriteTransaction' started at 2026-10-25 13:23:56.064
+Test Case 'NativeObservationStorageTests.testEmptyAppendDoesNotOpenWriteTransaction' passed (0.013 seconds)
+Test Case 'NativeObservationStorageTests.testExactEvictionCounterRejectsOverflowAndRollsBack' started at 2026-10-25 13:23:56.077
+Test Case 'NativeObservationStorageTests.testExactEvictionCounterRejectsOverflowAndRollsBack' passed (0.055 seconds)
+Test Case 'NativeObservationStorageTests.testExternallyOverfilledAggregateBytesRejectBeforePayloadReadOrInsert' started at 2026-10-25 13:23:56.132
+Test Case 'NativeObservationStorageTests.testExternallyOverfilledAggregateBytesRejectBeforePayloadReadOrInsert' passed (0.018 seconds)
+Test Case 'NativeObservationStorageTests.testExternallyOverfilledRowCountRejectsBeforePayloadReadOrInsert' started at 2026-10-25 13:23:56.149
+Test Case 'NativeObservationStorageTests.testExternallyOverfilledRowCountRejectsBeforePayloadReadOrInsert' passed (0.124 seconds)
+Test Case 'NativeObservationStorageTests.testFIFOUsesInsertionOrderAcrossSessionClockRebases' started at 2026-10-25 13:23:56.273
+Test Case 'NativeObservationStorageTests.testFIFOUsesInsertionOrderAcrossSessionClockRebases' passed (0.029 seconds)
+Test Case 'NativeObservationStorageTests.testIdenticalDuplicatesAreNotRewrittenOrReordered' started at 2026-10-25 13:23:56.302
+Test Case 'NativeObservationStorageTests.testIdenticalDuplicatesAreNotRewrittenOrReordered' passed (0.019 seconds)
+Test Case 'NativeObservationStorageTests.testMalformedCachedLengthRejectsBeforePayloadReadOrInsert' started at 2026-10-25 13:23:56.321
+Test Case 'NativeObservationStorageTests.testMalformedCachedLengthRejectsBeforePayloadReadOrInsert' passed (0.032 seconds)
+Test Case 'NativeObservationStorageTests.testMalformedEvictionStateRejectsBeforePayloadReadOrInsert' started at 2026-10-25 13:23:56.353
+Test Case 'NativeObservationStorageTests.testMalformedEvictionStateRejectsBeforePayloadReadOrInsert' passed (0.034 seconds)
+Test Case 'NativeObservationStorageTests.testMetadataValidationAndStrictPerSessionCaptureTimes' started at 2026-10-25 13:23:56.387
+Test Case 'NativeObservationStorageTests.testMetadataValidationAndStrictPerSessionCaptureTimes' passed (0.009 seconds)
+Test Case 'NativeObservationStorageTests.testMismatchAfterNewInsertRollsBackPayloadAndCounter' started at 2026-10-25 13:23:56.396
+Test Case 'NativeObservationStorageTests.testMismatchAfterNewInsertRollsBackPayloadAndCounter' passed (0.02 seconds)
+Test Case 'NativeObservationStorageTests.testOversizeRecordBatchCountAndAggregateBytesDoNotBeginWrite' started at 2026-10-25 13:23:56.416
+Test Case 'NativeObservationStorageTests.testOversizeRecordBatchCountAndAggregateBytesDoNotBeginWrite' passed (0.017 seconds)
+Test Case 'NativeObservationStorageTests.testRestartKeepsRowsOrderCounterAndTimestampEnforcement' started at 2026-10-25 13:23:56.434
+Test Case 'NativeObservationStorageTests.testRestartKeepsRowsOrderCounterAndTimestampEnforcement' passed (0.06 seconds)
+Test Case 'NativeObservationStorageTests.testSQLFailureAfterEvictionRestoresDeletedRowsAndNewInsert' started at 2026-10-25 13:23:56.493
+Test Case 'NativeObservationStorageTests.testSQLFailureAfterEvictionRestoresDeletedRowsAndNewInsert' passed (0.052 seconds)
+Test Case 'NativeObservationStorageTests.testV4MemoryStaysUntouchedAndObservationsUseSeparateFile' started at 2026-10-25 13:23:56.546
+Test Case 'NativeObservationStorageTests.testV4MemoryStaysUntouchedAndObservationsUseSeparateFile' passed (0.039 seconds)
+Test Suite 'NativeObservationStorageTests' passed at 2026-10-25 13:23:56.585
+	 Executed 19 tests, with 0 failures (0 unexpected) in 0.779 (0.779) seconds
+Test Suite 'RecordedRouteRepositoryTests' started at 2026-10-25 13:23:56.585
+Test Case 'RecordedRouteRepositoryTests.testBlankTripStartNamedAnchorsPaginationAndReopen' started at 2026-10-25 13:23:56.585
+Test Case 'RecordedRouteRepositoryTests.testBlankTripStartNamedAnchorsPaginationAndReopen' passed (0.181 seconds)
+Test Case 'RecordedRouteRepositoryTests.testClearRetiresOldTripAppendAnchorAndPageOwnership' started at 2026-10-25 13:23:56.766
+Test Case 'RecordedRouteRepositoryTests.testClearRetiresOldTripAppendAnchorAndPageOwnership' passed (0.011 seconds)
+Test Case 'RecordedRouteRepositoryTests.testCursorCarriesReferenceAndEarlierGapAcrossPages' started at 2026-10-25 13:23:56.777
+Test Case 'RecordedRouteRepositoryTests.testCursorCarriesReferenceAndEarlierGapAcrossPages' passed (0.035 seconds)
+Test Case 'RecordedRouteRepositoryTests.testMalformedMetadataAndStaleClearCannotDeleteNewTrip' started at 2026-10-25 13:23:56.812
+Test Case 'RecordedRouteRepositoryTests.testMalformedMetadataAndStaleClearCannotDeleteNewTrip' passed (0.049 seconds)
+Test Case 'RecordedRouteRepositoryTests.testMalformedNumericMetadataIsRejectedByBoundedSQLProjection' started at 2026-10-25 13:23:56.861
+Test Case 'RecordedRouteRepositoryTests.testMalformedNumericMetadataIsRejectedByBoundedSQLProjection' passed (0.082 seconds)
+Test Case 'RecordedRouteRepositoryTests.testOversizedSQLiteBlobRejectsBeforeMaterializingPayload' started at 2026-10-25 13:23:56.943
+Test Case 'RecordedRouteRepositoryTests.testOversizedSQLiteBlobRejectsBeforeMaterializingPayload' passed (0.05 seconds)
+Test Case 'RecordedRouteRepositoryTests.testQuotaKeepsPinnedStartAndMeetingWhileRecordingContinuesWithExplicitGaps' started at 2026-10-25 13:23:56.993
+Test Case 'RecordedRouteRepositoryTests.testQuotaKeepsPinnedStartAndMeetingWhileRecordingContinuesWithExplicitGaps' passed (0.464 seconds)
+Test Case 'RecordedRouteRepositoryTests.testSeventyTwoHourSparseEpisodeUsesBoundedPagesAndRetentionNotTerminalRing' started at 2026-10-25 13:23:57.457
+Test Case 'RecordedRouteRepositoryTests.testSeventyTwoHourSparseEpisodeUsesBoundedPagesAndRetentionNotTerminalRing' passed (21.649 seconds)
+Test Case 'RecordedRouteRepositoryTests.testSnapshotCursorExcludesLaterAppendAndDuplicateRetryIsIdempotent' started at 2026-10-25 13:24:19.106
+Test Case 'RecordedRouteRepositoryTests.testSnapshotCursorExcludesLaterAppendAndDuplicateRetryIsIdempotent' passed (0.122 seconds)
+Test Case 'RecordedRouteRepositoryTests.testTinyPayloadsHaveBoundedAccountedRowsAndBatchEviction' started at 2026-10-25 13:24:19.228
+Test Case 'RecordedRouteRepositoryTests.testTinyPayloadsHaveBoundedAccountedRowsAndBatchEviction' passed (0.097 seconds)
+Test Suite 'RecordedRouteRepositoryTests' passed at 2026-10-25 13:24:19.325
+	 Executed 10 tests, with 0 failures (0 unexpected) in 22.739 (22.739) seconds
+Test Suite 'Debug-linux-x86_64.xctest' passed at 2026-10-25 13:24:19.325
+	 Executed 48 tests, with 0 failures (0 unexpected) in 24.081 (24.081) seconds
+Test Suite 'All tests' passed at 2026-10-25 13:24:19.325
+	 Executed 48 tests, with 0 failures (0 unexpected) in 24.081 (24.081) seconds
+◇ Test run started.
+↳ Testing Library Version: 6.4.1 (804dc4530ef3666)
+↳ Target Platform: x86_64-unknown-linux-gnu
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.

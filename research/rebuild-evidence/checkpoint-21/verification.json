@@ -1,0 +1,111 @@
+{
+  "parent": "0fd72c1573d066da628bdab93d6764cf8456a145",
+  "corePassed": 1217,
+  "memoryPassed": 48,
+  "nodePassed": 411,
+  "failures": 0,
+  "skippedFinalLocal": 0,
+  "scope": "Persistent active-trip identity, paginated GRDB path history, rolling bounded retention, pinned observed references and explicit missing ranges; constant-size sampler and stale/lost/limited-source fencing.",
+  "realRecordedTest": {
+    "dataset": "Apple ARKitScenes47333462",
+    "file": "lowres_wide.traj",
+    "sha256": "353a743efa50c613117b43941aa63d100fe8c2b6d2f18ac59dd8ba4afe5a0ecd",
+    "poseRowsUsed": 100,
+    "checks": "Invert recorded extrinsics, preserve chronology and reverse history; never authorize physical guidance from recorded input",
+    "rawDataPublished": false
+  },
+  "failurePreservation": "Initial optional dataset skip retained; rerun used existing actual trajectory. Exact spatial replay initially missed new production dependencies; copied actual RecordedRouteHistory and NativeObservation, no stubs or omitted method.",
+  "limits": [
+    "Raw camera path/labels are history and preview, not calibrated physical retrace",
+    "Independent registration, body/support/terrain/portal issuers and cross-map physical return remain incomplete",
+    "Rolling retention can leave explicit gaps; dense all-day phone cost not measured",
+    "Latest native20Core/Memory/app/hosted stages passed; UI audit still pending when recorded; this newer source needs its own Apple build"
+  ],
+  "sourceHashes": [
+    {
+      "path": "BlindCore/Sources/BlindCore/RecordedRouteHistory.swift",
+      "before": null,
+      "after": "11ff46516cd534aa6da5da6b6bce713c2c7eff6a9015b0c8f5102eae9b87a9a3"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/RecordedRoutePlayback.swift",
+      "before": null,
+      "after": "9c07d1b5fa0fb9cee74d222db4cb76e3b85a1ecdba945b03aeccd6c0e43adcec"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift",
+      "before": "666972c2423b459b3c0f90cac9fdc1847bbbcea086227c6484b5137d7db6c326",
+      "after": "cdd10af53179e7f56b3ae575145f56222edae2382177ade0e68d89e72c90a76f"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/RecordedRouteHistoryTests.swift",
+      "before": null,
+      "after": "78f9a1c895893ceb11671075e04057eedd934b21db8b0ea022e5f20989a1d83a"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/RecordedRoutePlaybackTests.swift",
+      "before": null,
+      "after": "0ed6198fa33c4fc02e7b5700c7a34f068d412e25c35710fee2ca9379ba3dbbe7"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/RecordedRouteSamplerTests.swift",
+      "before": null,
+      "after": "7dff63c0e18d83fb29f0e3adada5664659a871ecff6a1144c2cce0f85acef572"
+    },
+    {
+      "path": "BlindMemory/Sources/BlindMemory/RecordedRouteRepository.swift",
+      "before": null,
+      "after": "9ed9df8f916c48fcc05affcd284823f2137ac0d73bbd0d9b1152ff9d23ebfe81"
+    },
+    {
+      "path": "BlindMemory/Sources/BlindMemory/SQL/recorded_routes.sql",
+      "before": null,
+      "after": "0382b78d550e99fb6b9e3f11836abe28ccc19908d7112e43fe56b60a91291e20"
+    },
+    {
+      "path": "BlindMemory/Tests/BlindMemoryTests/RecordedRouteRepositoryTests.swift",
+      "before": null,
+      "after": "abb28f77bbd464e67e64975057873d007e571d9ca644297a2aa4db16242b39c0"
+    },
+    {
+      "path": "ios/BlindAssist/NativeARObservationAdapter.swift",
+      "before": "75ede11a65d6eebfb09ee589e64802836314a14d9b02924c983d758a520b29ca",
+      "after": "73d88b764ec0b3ed4f7672ac1c88ca86afc997d6c25f6cec3dc45d7d6c8a58cb"
+    },
+    {
+      "path": "ios/BlindAssist/NativeARObservationBridge.swift",
+      "before": "460c6284cedb0728a828c0030453abba51f7ef82da5f6b9cc12a8432b7785260",
+      "after": "3ba633317286ba5b36c532311a13dfb235f98887ea9930f51b8b22a671e74b4e"
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "before": "d419af0156127d37b18e991a033856e2337b75d70a0ba9b8d99476723ef0938b",
+      "after": "499deac264af7cec2c9a508f7527f247facc45217722e414cdb34d83e26eedd6"
+    },
+    {
+      "path": "ios/BlindAssist/RecordedRouteStore.swift",
+      "before": null,
+      "after": "7e9ca574050eb3e5c07aa27eed3cb46cf94405f813f6762f3b5817180a821a54"
+    },
+    {
+      "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
+      "before": "5b8495ea82a1dd4cdd5996ca9de4e90171fad47a913792f29125c08b4ee84e48",
+      "after": "483eb186da1a2b08b0f5fc70256bba034b23da6e3f3b9a759a3be647062bf4f4"
+    },
+    {
+      "path": "ios/BlindAssistTests/RecordedRouteStoreTests.swift",
+      "before": null,
+      "after": "3507ed2888925b34a3914aadc12d55f5c24d10da701080f7902ce62b4ffface9"
+    },
+    {
+      "path": "tools/test/recorded-route-clear-race.py",
+      "before": null,
+      "after": "5885a77818f6481f1906b57ca5351daf01dc9f1ef9da336a62ae35084612e7fc"
+    },
+    {
+      "path": "tools/test/spatial-review-regressions.test.mjs",
+      "before": "a67d6b32c67edb9f3f9a67478a139aa4bbeae1dd2950c0dfc5c5cc8de7d4d0de",
+      "after": "dc504426c2866575cf5d28cabb295229b9cfbbaf55c46b412b5e99cfbeaa2bba"
+    }
+  ]
+}

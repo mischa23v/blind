@@ -26,6 +26,26 @@ enum NativeARObservationAdapter {
     static func transform(_ matrix: simd_float4x4) -> NativeCameraTransform {
         NativeCameraTransform(columns: (0..<4).flatMap { column in (0..<4).map { row in Double(matrix[column][row]) } })
     }
+    /// Pose-only camera breadcrumb. No raster/mesh copy and no body/map alignment claim.
+    static func captureRoutePose(_ frame: ARFrame, context: Context) throws -> NativeObservationRecord {
+        let tracking: NativeObservationRecord.Tracking
+        switch frame.camera.trackingState {
+        case .normal: tracking = .normal
+        case .notAvailable: tracking = .unavailable
+        case .limited: tracking = .limited
+        }
+        let k = frame.camera.intrinsics, size = frame.camera.imageResolution
+        let record = NativeObservationRecord(sessionID: context.sessionID, coordinateFrameID: context.frameID,
+            producer: .arkit, sourceID: "ARFrame:\(context.sessionID.uuidString):\(frame.timestamp)",
+            mapTarget: context.mapTarget, capturedAt: frame.timestamp, receivedAt: context.receivedAt,
+            observedAt: context.receivedDate.addingTimeInterval(frame.timestamp - context.receivedAt),
+            tracking: tracking, cameraConvention: .arKitRightUpBack,
+            cameraToSessionWorld: transform(frame.camera.transform),
+            intrinsics: .init(width: Int(size.width), height: Int(size.height), fx: Double(k.columns.0.x),
+                fy: Double(k.columns.1.y), cx: Double(k.columns.2.x), cy: Double(k.columns.2.y)), depth: nil,
+            omitted: ["poseOnlyRouteHistory"])
+        try record.validate(); return record
+    }
     static func capture(_ frame: ARFrame, context: Context) throws -> NativeObservationRecord {
         let tracking: NativeObservationRecord.Tracking
         let reason: String?

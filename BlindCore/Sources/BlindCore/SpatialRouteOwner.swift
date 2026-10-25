@@ -185,6 +185,26 @@ public struct SpatialRouteOwner: Sendable {
         route = try constrained.route(from: from, to: to, accessibleOnly: accessibleOnly, blocked: blocked, body: body)
         waypointIndex = min(1, route.count)
     }
+    /// Fixed observed-node order only. Existing planner/collision restrictions validate
+    /// each adjacent edge; a blocked edge must NOT silently detour or shortcut history.
+    /// Call only after measured source-frame/body/node association validation.
+    public mutating func planRecordedNodes(_ nodes: [String], binding: SpatialMapBinding,
+                                           goal: UUID, accessibleOnly: Bool = true) throws {
+        guard goalRevision == goal else { throw SpatialRouteError.staleGoal }
+        guard let installation, installation.binding == binding else { throw SpatialInstallationError.noInstalledMap }
+        cancelRoute()
+        guard nodes.count >= 2, nodes.count <= RecordedRouteHistory.maximumSamples else { throw SpatialRouteError.noRoute }
+        var constrained = installation.map
+        constrained.keepOutZones = (constrained.keepOutZones ?? []) + obstacleZones
+        var exact: [MapNode] = []
+        for (from, to) in zip(nodes, nodes.dropFirst()) {
+            guard from != to else { throw SpatialRouteError.offRoute }
+            let leg = try constrained.route(from: from, to: to, accessibleOnly: accessibleOnly, blocked: blocked, body: body)
+            guard leg.map(\.id) == [from, to], leg[0].level == leg[1].level else { throw SpatialRouteError.unsupportedTransition }
+            if exact.isEmpty { exact.append(leg[0]) }; exact.append(leg[1])
+        }
+        route = exact; waypointIndex = 1
+    }
     /// Manual arrival changes only route progress; it is not fresh pose evidence.
     public mutating func confirmWaypoint() {
         guard waypointIndex < route.count else { return }

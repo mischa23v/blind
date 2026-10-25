@@ -325,9 +325,10 @@ test('connected issuer is retired by mount or frame ownership loss before frame 
     const throttle = candidate.indexOf('guard running');
     assert.ok(opening >= 0 && throttle > opening);
     const prefix = candidate.slice(opening + 1, throttle).replace(/\/\/[^\n]*/g, '').trim();
-    assert.match(prefix, /^if case \.normal = frame\.camera\.trackingState \{\} else \{ invalidateNativeLocalization\(\.trackingUnavailable\) \}\s*if case \.normal = frame\.camera\.trackingState \{\} else \{\s*journeys\.breakTracking\(\)\s*if readingTool != nil \{ stopReadingTool\(announce: false\) \}\s*\}$/,
+    assert.match(prefix, /^if case \.normal = frame\.camera\.trackingState \{\} else \{ invalidateNativeLocalization\(\.trackingUnavailable\) \}\s*if case \.normal = frame\.camera\.trackingState \{\} else \{\s*journeys\.breakTracking\(\)\s*nativeObservations\.trackingLost\(\)\s*if readingTool != nil \{ stopReadingTool\(announce: false\) \}\s*\}$/,
       'Both exact ownership retirements are synchronous and before throttle; normal frames do not retire them');
     before(candidate, 'journeys.breakTracking()', 'frame.timestamp - lastProcessed');
+    before(candidate, 'nativeObservations.trackingLost()', 'frame.timestamp - lastProcessed');
     before(candidate, 'stopReadingTool(announce: false)', 'frame.timestamp - lastProcessed');
     assert.match(candidate, /phoneDetection = detector\.process\(observation\)/);
     before(candidate, 'phoneDetection = detector.process(observation)', 'updateReadingTool(frame: frame)');
@@ -338,6 +339,9 @@ test('connected issuer is retired by mount or frame ownership loss before frame 
   assertRawRetirement(frames);
   const mutations = [
     frames.replace('journeys.breakTracking()', '/* missing journey retirement */'),
+    frames.replace('nativeObservations.trackingLost()', '/* missing route-history retirement */'),
+    frames.replace('nativeObservations.trackingLost()', 'Task { nativeObservations.trackingLost() }'),
+    frames.replace('nativeObservations.trackingLost()', '').replace('let receivedAt =', 'nativeObservations.trackingLost(); let receivedAt ='),
     frames.replace('if readingTool != nil { stopReadingTool(announce: false) }', '/* missing reader retirement */'),
     frames.replace('if readingTool != nil { stopReadingTool(announce: false) }', 'return'),
     frames.replace('invalidateNativeLocalization(.trackingUnavailable)', '/* missing selected-owner retirement */'),

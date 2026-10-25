@@ -1014,6 +1014,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // Tracking loss retires the issuer even when this frame is throttled below.
         if case .normal = frame.camera.trackingState {} else {
             journeys.breakTracking()
+            nativeObservations.trackingLost()
             // Retire old OCR even if depth was already unavailable and the hazard
             // category does not change. This runs before frame throttling.
             if readingTool != nil { stopReadingTool(announce: false) }
@@ -4108,6 +4109,52 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     #else
     func checkSceneConnection() { serviceStatus = "Descriptions run on this phone." }
     #endif
+    /// Exact-way request is distinct from endpoint replanning. Native calibrated
+    /// registration/transport evidence is not yet available, so expose history only.
+    func startRecordedReturn(referenceKind: RecordedRouteAnchor.Kind? = nil) {
+        clearExploreSnapshot(); heldSearchIntent.cancel(); interruptedSearch.cancel()
+        cancelDescription(); _ = feedback.stopInformation(announceCancellation: false)
+        stopReturn(); spatialRouteOutput.retire(); indoorGuidanceOwner = .connectedJourney
+        try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
+        let request = requestID, session = assistantSession.generation
+        let goal = companionWorkingState.goalRevision, perception = perceptionGeneration
+        nativeObservations.readRecordedRoute(referenceKind: referenceKind) { [weak self] snapshot in
+            guard let self, self.requestID == request, self.assistantSession.generation == session,
+                  self.companionWorkingState.goalRevision == goal, self.perceptionGeneration == perception else { return }
+            if snapshot.busy {
+                self.returnStatus = self.arabic ? "سجل الطريق مشغول حاليًا. لم يبدأ إرشاد العودة." : "The recorded path is busy right now. Return guidance has not started."
+                _ = self.speakOperation(self.returnStatus); return
+            }
+            if snapshot.referenceUnavailable {
+                self.returnStatus = self.arabic ? "لا توجد نقطة واحدة محفوظة لهذا الطلب. حدد نقطة العودة." : "There isn't one saved reference for that request. Please choose the return reference."
+            } else if snapshot.loadFailed {
+                self.returnStatus = self.arabic ? "تعذر فتح سجل الطريق. لن أختار طريقًا بديلًا." : "The recorded path could not be opened. I won't substitute another route."
+            } else if let preview = snapshot.preview, !preview.reverseSamples.isEmpty {
+                self.returnStatus = self.arabic ? "سجل الطريق متاح، لكنه ليس إرشادًا حاليًا متحققًا للعودة بنفس الطريق." : "Your recorded camera path is available as history, but current guidance along that same path is not verified."
+                if !preview.gaps.isEmpty {
+                    self.returnStatus += self.arabic ? " توجد فجوات لم تُسجل." : "There are gaps in the recording."
+                }
+                if snapshot.volatileSampleCount > 0 || snapshot.persistenceFailed {
+                    self.returnStatus += self.arabic ? " لم يُحفظ جزء من السجل بعد." : "Part of the history is not saved yet."
+                }
+            } else {
+                self.returnStatus = self.arabic ? "لا يتوفر سجل للطريق بعد. لن أخمن طريق العودة." : "No recorded path is available yet. I won't guess the way back."
+            }
+            _ = self.speakOperation(self.returnStatus)
+        }
+    }
+    private func markRecordedReference(_ kind: RecordedRouteAnchor.Kind, origin: CompanionCommandOrigin) {
+        let request = requestID, session = assistantSession.generation
+        let goal = companionWorkingState.goalRevision
+        let label = kind == .entrance ? "Entrance reference" : "Meeting point"
+        nativeObservations.pinRecordedReference(kind: kind, label: label, origin: origin) { [weak self] saved in
+            guard let self, self.requestID == request, self.assistantSession.generation == session,
+                  self.companionWorkingState.goalRevision == goal else { return }
+            _ = self.speakOperation(saved
+                ? (self.arabic ? "حُفظت النقطة المرصودة بالاسم الذي اخترته." : "The observed point is saved with your chosen reference label.")
+                : (self.arabic ? "لم أتمكن من حفظ نقطة مرصودة حديثة بعد." : "I couldn't save a fresh observed point yet."))
+        }
+    }
     func startReturn() {
         clearExploreSnapshot()
         heldSearchIntent.cancel(); interruptedSearch.cancel()
@@ -4161,6 +4208,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     private func routeConnectedJourneyCommand(_ text: String, origin: CompanionCommandOrigin) -> Bool {
         guard CommandAuthority.permits(.changeGoal, from: origin) else { return false }
+        let recordedCommand = text.contains(where: { "\"“”«»".contains($0) }) ? "" : text.lowercased().trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+        if recordedCommand == "save this entrance" || recordedCommand == "احفظ هذا المدخل" { markRecordedReference(.entrance, origin: origin); return true }
+        if recordedCommand == "save this meeting point" || recordedCommand == "احفظ نقطة اللقاء" { markRecordedReference(.meetingPoint, origin: origin); return true }
+        if recordedCommand == "retrace to my entrance" || recordedCommand == "ارجعني من نفس الطريق للمدخل" { startRecordedReturn(referenceKind: .entrance); return true }
+        if recordedCommand == "retrace to my meeting point" || recordedCommand == "ارجعني من نفس الطريق لنقطة اللقاء" { startRecordedReturn(referenceKind: .meetingPoint); return true }
+        if RecordedRouteReturnCommand.matches(text) { startRecordedReturn(); return true }
         if JourneyReturnCommand.matches(text) { startReturn(); return true }
         let value = text.lowercased().trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
         if ["save this reference", "احفظ هذه النقطة"].contains(value) {

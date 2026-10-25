@@ -7,6 +7,17 @@ import Foundation
 /// invoke models, modify RTAB-Map, authorize routes or expose raw coordinates to language models.
 final class NativeARObservationBridge {
     private let pipeline = NativeObservationPipeline()
+    private let recordedRoute = RecordedRouteStore()
+    func trackingLost() { recordedRoute.breakContinuity() }
+    func readRecordedRoute(referenceKind: RecordedRouteAnchor.Kind? = nil, _ completion: @escaping (RecordedRouteStore.Snapshot) -> Void) {
+        recordedRoute.preview(referenceKind: referenceKind, completion)
+    }
+    func readRecordedRoutePage(cursor: RecordedRouteCursor, reference: String?, completion: @escaping (RecordedRouteStore.Snapshot) -> Void) {
+        recordedRoute.page(cursor: cursor, reference: reference, completion: completion)
+    }
+    func pinRecordedReference(kind: RecordedRouteAnchor.Kind, label: String, origin: CompanionCommandOrigin, completion: @escaping (Bool) -> Void) {
+        recordedRoute.pinLatest(kind: kind, label: label, origin: origin, completion: completion)
+    }
     private var sessionID: UUID?
     private var memory: MemoryStore?
     private(set) var lastOutcome: NativeObservationPipeline.Outcome?
@@ -52,6 +63,7 @@ final class NativeARObservationBridge {
     func begin(sessionID: UUID, memory: MemoryStore?) {
         stop(); guard let memory else { return }
         self.sessionID = sessionID; self.memory = memory
+        recordedRoute.begin(sessionID: sessionID)
         let generation = outcomeGeneration
         pipeline.begin(sessionID: sessionID, storage: Self.storage(memory)) { [weak self] outcome in
             DispatchQueue.main.async { [weak self] in
@@ -65,6 +77,10 @@ final class NativeARObservationBridge {
         let context = NativeARObservationAdapter.Context(sessionID: sessionID,
             frameID: "arkit-session:\(sessionID.uuidString)", mapTarget: mapTarget,
             receivedAt: receivedAt, receivedDate: receivedDate)
+        if case .normal = frame.camera.trackingState {} else { recordedRoute.breakContinuity() }
+        recordedRoute.offer(sessionID: sessionID, at: frame.timestamp) {
+            try NativeARObservationAdapter.captureRoutePose(frame, context: context)
+        }
         let generation = outcomeGeneration
         pipeline.offer(sessionID: sessionID, capturedAt: frame.timestamp, extract: {
             try NativeARObservationAdapter.capture(frame, context: context)
@@ -75,14 +91,27 @@ final class NativeARObservationBridge {
         }
     }
     func stop() {
+        recordedRoute.stop()
         pipeline.stop(); sessionID = nil; outcomeGeneration = UUID()
     }
     /// Connect to the existing private spatial/map-history deletion path; no new UI needed.
     func clearHistory(memory: MemoryStore?, completion: @escaping (Bool) -> Void) {
         stop()
-        guard let memory = memory ?? self.memory else { completion(false); return }
+        guard let memory = memory ?? self.memory else {
+            recordedRoute.clear { _ in completion(false) } // Best effort trail purge; raw-store erasure remains unverified.
+            return
+        }
+        // Fence BOTH stores synchronously. Never delay pipeline.clear until a
+        // trailing main callback that may belong to an older camera session.
+        var trailResult: Bool?, observationsResult: Bool?
+        let finish: () -> Void = {
+            if let trailResult, let observationsResult { completion(trailResult && observationsResult) }
+        }
+        recordedRoute.clear { result in trailResult = result; finish() }
         pipeline.clear(storage: Self.storage(memory)) { [weak self] outcome in
-            DispatchQueue.main.async { [weak self] in self?.lastOutcome = outcome; completion(outcome == .cleared) }
+            DispatchQueue.main.async { [weak self] in
+                self?.lastOutcome = outcome; observationsResult = outcome == .cleared; finish()
+            }
         }
     }
 }
