@@ -1,0 +1,94 @@
+{
+  "baseCommit": "65a2a97e6886a246e9c0faf11147f6a46f1bdbfb",
+  "scope": "Node contract packaging only; no native execution",
+  "node": "v24.22.1",
+  "directBefore": {
+    "tests": 14,
+    "passed": 12,
+    "failed": 2,
+    "reason": "ENOENT adjacent workflows"
+  },
+  "final": {
+    "wrapperTests": 2,
+    "passed": 2,
+    "nestedChecks": 14,
+    "nestedPassed": 14
+  },
+  "negativeMutations": [
+    "missing workflow rejected",
+    "removed exact callback guard rejected"
+  ],
+  "initialWrapperFailure": "Inherited NODE_TEST_CONTEXT hid nested guard mutation failure; corrected before freeze",
+  "inputs": [
+    {
+      "path": ".github/workflows/native-reading-component.yml",
+      "gitBlob": "cbf85bddc68e41b991d1e26efe4b1ab90604f6a6"
+    },
+    {
+      "path": ".github/workflows/native-reading-review-component.yml",
+      "gitBlob": "99e5c4cfa5e08bec826e4ca3742579081e95c8a0"
+    },
+    {
+      "path": "tests/scenarios/integrated/reading-component/CapturedTextNativeComponentTests.swift",
+      "gitBlob": "c614989923e307955f1fc1080c998e20cde166ab"
+    },
+    {
+      "path": "tests/scenarios/integrated/reading-component/README.md",
+      "gitBlob": "4d3b21eb73e8397b632d47c045bbe6011f23c93f"
+    },
+    {
+      "path": "tests/scenarios/integrated/reading-component/contract.test.mjs",
+      "gitBlob": "ec946583a2b599ce1dcc26821f58856ba08fc44b"
+    },
+    {
+      "path": "tests/scenarios/integrated/reading-component/generate-project.mjs",
+      "gitBlob": "0f134480cef4fc817836abe6df85b13bd88df9f1"
+    },
+    {
+      "path": "tests/scenarios/integrated/reading-component/run-native.sh",
+      "gitBlob": "80d8a8068bcb813858e56b58258c772756f2668a"
+    },
+    {
+      "path": "tests/scenarios/integrated/reading-component/source-pins.json",
+      "gitBlob": "1651f753bbe8702038162915850cfb299b5f8787"
+    },
+    {
+      "path": "tests/scenarios/integrated/reading-component/verification.json",
+      "gitBlob": "f5c0d0bfb863afa9ff87480e9a3814815ae4fde8"
+    },
+    {
+      "path": "tests/scenarios/integrated/reading-review-component/CapturedTextReviewNativeComponentTests.swift",
+      "gitBlob": "e6426a8f9b2a4a598c5a015153026f6ef2d8ab6e"
+    },
+    {
+      "path": "tests/scenarios/integrated/reading-review-component/README.md",
+      "gitBlob": "c44bba438f5d166db9610b98420201d33b94b242"
+    },
+    {
+      "path": "tests/scenarios/integrated/reading-review-component/contract.test.mjs",
+      "gitBlob": "6e5562bedc62331c3c57076dfa63820670b56fa3"
+    },
+    {
+      "path": "tests/scenarios/integrated/reading-review-component/generate-project.mjs",
+      "gitBlob": "c678c4ff7d094011adf742897c42c9f8b7ee45f6"
+    },
+    {
+      "path": "tests/scenarios/integrated/reading-review-component/run-native.sh",
+      "gitBlob": "1f13a823b3b81d832fb85cd3cb36327fa18b0dd0"
+    },
+    {
+      "path": "tests/scenarios/integrated/reading-review-component/source-pins.json",
+      "gitBlob": "c4b18d38c08679c1601e86cd36c08e428065eb1b"
+    },
+    {
+      "path": "tests/scenarios/integrated/reading-review-component/verification.json",
+      "gitBlob": "f0216a20c1bd0c55c1ffa2307d3abac962c8a93b"
+    }
+  ],
+  "localRawEvidenceSHA256": {
+    "reading-review-component-nested.tap": "9286385e101f5786694ab3d771d0335a7b6f41b14712bda70ba5f4eed1af6b57",
+    "direct-before.tap": "46c66ae7d3539f93f1187b6d4ce0681ab9336eed770d378919e9cdc50b9674e6",
+    "wrapper-after.tap": "a857bc3b3afe34019b2c2dca69c1fe9b4b7c1000ac2876c69d7fb3b0fe2317c6",
+    "reading-component-nested.tap": "a1c8868a9540fe9ff8ff35ffb744308a11aed5d3b283fec17d9931ecca4c77c6"
+  }
+}
