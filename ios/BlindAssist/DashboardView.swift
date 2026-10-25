@@ -349,6 +349,10 @@ struct AssistantToolsView: View {
                     .multilineTextAlignment(.leading)
             } footer: {
                 Text(t("Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.", "التدريب يوقف الحساسات الحقيقية وينتهي وحده بعد دقيقتين. تستأنف المراقبة فقط إذا كانت الكاميرا مفعّلة، وتحتاج إلى المعايرة. واصل استخدام العصا أو كلب الإرشاد."))
+                    .font(.body)
+                    .lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.leading)
             }
         }
         .navigationTitle(t("Camera and safety", "الكاميرا والسلامة"))

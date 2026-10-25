@@ -1,0 +1,46 @@
+✔ raw feature/corner bounds precede all conversion and no matching authority is invented (1.823343ms)
+✔ held read selection rotates ownership and existing helper offers explicit bounded retry (1.167422ms)
+✔ stale save completion cannot publish another selection status (0.34955ms)
+✔ scan preparation reuses bounded verified bytes off main and deletion retires before SQL (1.695274ms)
+✖ actual registration acquisition and native ownership replay use real pinned GRDB (811.12566ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 934.966504
+
+✖ failing tests:
+
+test at blind-registration-reviewed/validation/tools/test/room-registration-acquisition.test.mjs:51:1
+✖ actual registration acquisition and native ownership replay use real pinned GRDB (811.12566ms)
+  AssertionError [ERR_ASSERTION]: Replay retained at /workspace/scratch/90f3f6703064/blind-registration-reviewed/replay
+  
+  warning: /home/agent/.config/swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+  warning: /home/agent/.config/swiftpm/security is not accessible or not writable, disabling user-level cache features.
+  warning: /home/agent/.cache/org.swift.swiftpm is not accessible or not writable, disabling user-level cache features.
+  warning: 'replay': failed loading cached manifest for 'replay': encountered an I/O error (code: 30) while reading /home/agent/.cache/org.swift.swiftpm/manifests
+  warning: 'replay': failed closing manifest db cache: encountered an I/O error (code: 30) while reading /home/agent/.cache/org.swift.swiftpm/manifests
+  error: 'replay': Invalid manifest (compiled with: ["/workspace/shared/swift-toolchain/install/swift-6.4.1-RELEASE-debian13/usr/bin/swiftc", "-vfsoverlay", "/tmp/TemporaryDirectory.vWtA0B/vfs.yaml", "-L", "/workspace/shared/swift-toolchain/install/swift-6.4.1-RELEASE-debian13/usr/lib/swift/pm/ManifestAPI", "-lPackageDescription", "-Xlinker", "-rpath", "-Xlinker", "/workspace/shared/swift-toolchain/install/swift-6.4.1-RELEASE-debian13/usr/lib/swift/pm/ManifestAPI", "-swift-version", "5", "-I", "/workspace/shared/swift-toolchain/install/swift-6.4.1-RELEASE-debian13/usr/lib/swift/pm/ManifestAPI", "-package-description-version", "5.9.0", "/workspace/scratch/90f3f6703064/blind-registration-reviewed/replay/Package.swift", "-o", "/tmp/TemporaryDirectory.CwuSdz/replay-manifest"])
+  <unknown>:0: error: unable to open output file '/home/agent/.cache/clang/ModuleCache/3SEFBJG0AOVID/SwiftShims-78N6WVOLNQEQ.pcm': 'Read-only file system'
+  <unknown>:0: error: could not build C module 'SwiftShims'
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/90f3f6703064/blind-registration-reviewed/validation/tools/test/room-registration-acquisition.test.mjs:82:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -36,6 +36,33 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     private var scanID = UUID()
     private var processing: Task<Void, Never>?
     private var worldFrameRecovery = SavedWorldFrameRecovery()
+    @Published private(set) var registration: RoomRegistrationAcquisition?
+    @Published private(set) var registrationStatus = ""
+    @Published private(set) var registrationSaving = false
+    @Published private(set) var registrationLoading = false
+    @Published private(set) var registrationLoadNeedsRetry = false
+    private var registrationCapture = RoomRegistrationCapture()
+    private struct RegistrationBaseline: Sendable {
+        let identifier: UUID
+        let story: Int
+        let features: [RoomRegistrationAcquisition.Feature]
+    }
+    private struct RegistrationBytes: Sendable {
+        let frame: SavedWorldFrame
+        let owner: UUID
+        let data: Data
+    }
+    private static let maximumRegistrationRoomBytes = 8 * 1024 * 1024
+    private var registrationBytes: RegistrationBytes?
+    // A cancelled selection retires publication, not the physical utility task.
+    // Keep this lease until completion so rapid rescan cannot fan out decoders.
+    private var registrationPreparation: UUID?
+    private var registrationBaseline: RegistrationBaseline?
+    private var registrationSessionID: UUID?
+    private var registrationRequestID = UUID()
+    private var registrationSelectionPlaceID: UUID?
+    private var registrationStoreOwner: UUID?
+
     var arabic = false
     private func t(_ english: String, _ arabic: String) -> String { self.arabic ? arabic : english }
     private var lastInstruction = ""
@@ -71,7 +98,7 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
             }.sorted { $0.createdAt > $1.createdAt }
         } catch { message = t("Could not load saved places.", "تعذر تحميل الأماكن المحفوظة.") }
     }
-    func startScan(session: ARSession, name: String, compare: SavedPlace? = nil, relocalized: Bool = false) {
+    func startScan(session: ARSession, name: String, compare: SavedPlace? = nil, relocalized: Bool = false, registrationSessionID: UUID? = nil) {
         guard !scanning else { return }
         finishing = false
         liveScanLayout = nil
@@ -80,11 +107,55 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
         scanID = UUID()
         lastInstruction = ""; lastInstructionTime = -.infinity
         comparison = compare; comparisonLocalized = relocalized
+        registrationCapture.invalidate(); registrationBaseline = nil
+        self.registrationSessionID = registrationSessionID
+        registrationRequestID = UUID(); registrationSelectionPlaceID = compare?.id
+        registration = nil; registrationStoreOwner = memory?.writeOwner
+        if let compare, let registrationSessionID,
+           let descriptor = currentWorldFrame(sessionID: registrationSessionID), descriptor == compare.worldFrame {
+            registrationCapture.begin(frame: descriptor, sessionID: registrationSessionID, scanID: scanID,
+                                      now: ProcessInfo.processInfo.systemUptime)
+            prepareRegistrationBaseline(frame: descriptor, sessionID: registrationSessionID)
+        }
+
         let capture = RoomCaptureSession(arSession: session)
         capture.delegate = self; self.capture = capture; scanning = true
         message = arabic ? "حرّك الكاميرا ببطء لمسح الغرفة. رصد المخاطر بالهاتف متوقف أثناء المسح؛ ابدأ مع شخص يساعدك." : "Slowly scan the room, then finish. Phone hazard monitoring is paused during scanning; begin with a helper."
         onMessage?(message)
         capture.run(configuration: RoomCaptureSession.Configuration())
+    }
+    /// Preparation reuses bytes already hash-verified by saved-world recovery.
+    /// No new disk read/unarchive/decode is performed on the scan owner.
+    private func prepareRegistrationBaseline(frame: SavedWorldFrame, sessionID: UUID) {
+        guard registrationPreparation == nil else {
+            registrationStatus = t("Previous scan preparation is finishing. Cancel and retry this comparison shortly.", "جارٍ إنهاء تجهيز المسح السابق. ألغِ المقارنة وأعد المحاولة بعد قليل."); return
+        }
+        guard let bytes = registrationBytes, bytes.frame == frame,
+              bytes.owner == memory?.writeOwner, !bytes.data.isEmpty,
+              bytes.data.count <= Self.maximumRegistrationRoomBytes else {
+            registrationStatus = t("Verified saved scan measurements are unavailable. Recognize this saved place again before comparing.", "قياسات المسح المحفوظ المتحقق منها غير متاحة. تعرّف على المكان المحفوظ مجددًا قبل المقارنة."); return
+        }
+        let lease = UUID(), request = registrationRequestID, scan = scanID, owner = bytes.owner
+        registrationPreparation = lease
+        registrationStatus = t("Preparing original scan measurements for helper review.", "جارٍ تجهيز قياسات المسح الأصلي لمراجعتها مع المساعد.")
+        Task { @MainActor [weak self] in
+            let baseline = await Task.detached(priority: .utility) { () -> RegistrationBaseline? in
+                guard let room = try? JSONDecoder().decode(CapturedRoom.self, from: bytes.data),
+                      let features = RoomLayoutAdapter.registrationFeatures(room) else { return nil }
+                return RegistrationBaseline(identifier: room.identifier, story: room.story, features: features)
+            }.value
+            guard let self, self.registrationPreparation == lease else { return }
+            self.registrationPreparation = nil
+            guard self.registrationRequestID == request, self.scanID == scan,
+                  self.scanning, !self.finishing, self.registrationSessionID == sessionID,
+                  self.memory?.writeOwner == owner, self.registrationBytes?.frame == frame,
+                  self.registrationBytes?.owner == owner, self.comparison?.worldFrame == frame,
+                  self.places.contains(where: { $0.id.uuidString == frame.placeID && $0.worldFrame == frame }) else { return }
+            self.registrationBaseline = baseline
+            self.registrationStatus = baseline == nil
+                ? self.t("Saved scan measurements could not be decoded within the supported bounds.", "تعذر قراءة قياسات المسح المحفوظ ضمن الحدود المدعومة.")
+                : self.t("Collecting comparison measurements for helper review, not verifying location.", "جمع قياسات المقارنة لمراجعتها مع المساعد، وليس للتحقق من الموقع.")
+        }
     }
     func finishScan() {
         guard scanning, !finishing else { return }
@@ -94,6 +165,7 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     }
     func cancelScan() {
         scanID = UUID(); processing?.cancel(); processing = nil
+        registrationCapture.invalidate(); registrationBaseline = nil; registrationSessionID = nil
         capture?.delegate = nil; capture?.stop(pauseARSession: false)
         liveScanLayout = nil
         capture = nil; scanning = false; finishing = false; message = arabic ? "أُلغي المسح." : "Scan cancelled."
@@ -116,6 +188,85 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
         guard (try? layout.validate()) != nil else { return }
         liveScanLayout = layout
     }
+    /// Raw scanning frame hook. It copies bounded metadata only; no disk/model work.
+    func observeRegistrationFrame(_ frame: ARFrame, sessionID: UUID, now: Double) {
+        guard scanning, comparison != nil, registrationCapture.frame != nil else { return }
+        let normal: Bool
+        if case .normal = frame.camera.trackingState { normal = true } else { normal = false }
+        let m = frame.camera.transform
+        registrationCapture.observe(sessionID: sessionID, scanID: scanID, capturedAt: frame.timestamp,
+            cameraToWorld: (0..<4).flatMap { c in (0..<4).map { r in Double(m[c][r]) } },
+            trackingNormal: normal, now: now)
+    }
+    func selectRegistrationPairs(_ pairs: [RoomRegistrationAcquisition.Correspondence], acquisitionID: UUID) -> Bool {
+        guard !registrationSaving, registrationStoreOwner == memory?.writeOwner, var current = registration,
+              current.select(pairs, acquisitionID: acquisitionID) else {
+            registrationStatus = t("The selection changed or the correspondence is invalid. Reopen the measurement record.", "تغير الاختيار أو المطابقة غير صالحة. أعد فتح سجل القياسات."); return false
+        }
+        registration = current; return true
+    }
+    /// One bounded explicit helper write. No implicit success and no automatic retry.
+    @MainActor func saveRegistration(acquisitionID: UUID) async -> Bool {
+        guard !registrationSaving, !registrationLoading else { return false }
+        guard let value = registration, value.id == acquisitionID, value.valid,
+              let memory, registrationStoreOwner == memory.writeOwner,
+              places.contains(where: { $0.id.uuidString == value.frame.placeID && $0.worldFrame == value.frame }) else {
+            registrationStatus = t("The measurement or memory context changed. Reopen the record before saving.", "تغير سجل القياسات أو مخزن الذاكرة. أعد فتح السجل قبل الحفظ."); return false
+        }
+        let owner = memory.writeOwner, request = registrationRequestID
+        registrationSaving = true
+        defer { registrationSaving = false }
+        do {
+            try await Task.detached(priority: .utility) {
+                let data = try JSONEncoder().encode(value)
+                try memory.saveRoomRegistration(room: value.frame.placeID, payload: data)
+            }.value
+            guard self.memory?.writeOwner == owner, registrationRequestID == request,
+                  registration?.id == acquisitionID,
+                  places.contains(where: { $0.id.uuidString == value.frame.placeID && $0.worldFrame == value.frame }) else {
+                return false
+            }
+            registrationStatus = t("Measurement record saved locally. It does not verify current location or object identity.", "حُفظ سجل القياسات على الهاتف. لا يتحقق من الموقع الحالي أو هوية الغرض.")
+            return true
+        } catch {
+            guard self.memory?.writeOwner == owner, registrationRequestID == request,
+                  registration?.id == acquisitionID,
+                  places.contains(where: { $0.id.uuidString == value.frame.placeID && $0.worldFrame == value.frame }) else { return false }
+            registrationStatus = t("Measurements were not saved. Keep this screen open and try again.", "لم تُحفظ القياسات. أبقِ هذه الشاشة مفتوحة وحاول مجدداً.")
+            return false
+        }
+    }
+    @MainActor func loadRegistration(for place: SavedPlace) async {
+        // Selecting B retires publication from a held A read/write immediately.
+        let request = UUID(); registrationRequestID = request
+        registrationSelectionPlaceID = place.id
+        guard !registrationSaving, !registrationLoading, let memory else {
+            registrationLoadNeedsRetry = true
+            registrationStatus = t("Measurements for this selection are not loaded. Retry when the current operation finishes.", "لم تُحمّل قياسات هذا الاختيار. أعد المحاولة بعد انتهاء العملية الحالية.")
+            return
+        }
+        registrationLoadNeedsRetry = false; registrationLoading = true
+        registrationStatus = t("Loading measurements for this selection.", "تحميل قياسات هذا الاختيار.")
+        defer { registrationLoading = false }
+        let owner = memory.writeOwner
+        let targetID = place.id.uuidString, targetFrame = place.worldFrame
+        let value = await Task.detached(priority: .utility) { () -> RoomRegistrationAcquisition? in
+            guard let data = try? memory.value(namespace: "places", id: "registration:" + targetID),
+                  let decoded = try? JSONDecoder().decode(RoomRegistrationAcquisition.self, from: data), decoded.valid,
+                  decoded.frame == targetFrame else { return nil }
+            return decoded
+        }.value
+        guard registrationRequestID == request, self.memory?.writeOwner == owner,
+              places.contains(where: { $0.id == place.id && $0.worldFrame == place.worldFrame }) else { return }
+        // Prefer an unsaved newly acquired record over old saved measurements.
+        if registration?.frame != place.worldFrame || registrationStoreOwner != owner {
+            registration = value; registrationStoreOwner = owner
+        }
+        registrationStatus = registration == nil
+            ? t("No saved measurement record for this selection.", "لا يوجد سجل قياسات محفوظ لهذا الاختيار.")
+            : t("Measurement record available for this selection. It does not verify current location.", "سجل القياسات متاح لهذا الاختيار. لا يتحقق من الموقع الحالي.")
+    }
+
     func worldMap(for place: SavedPlace) throws -> ARWorldMap {
         try worldMapArtifacts(for: place).map
     }
@@ -144,11 +295,21 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
         invalidateWorldMapRecovery()
         let artifacts = try worldMapArtifacts(for: place)
         if let descriptor = artifacts.descriptor {
+            if let owner = memory?.writeOwner, !artifacts.room.isEmpty,
+               artifacts.room.count <= Self.maximumRegistrationRoomBytes {
+                registrationBytes = RegistrationBytes(frame: descriptor, owner: owner, data: artifacts.room)
+            }
             worldFrameRecovery.begin(frame: descriptor, sessionID: sessionID, now: now)
         }
         return artifacts.map
     }
-    func invalidateWorldMapRecovery() { worldFrameRecovery.reset() }
+    func invalidateWorldMapRecovery() {
+        worldFrameRecovery.reset()
+        registrationBytes = nil
+        registrationBaseline = nil
+        registrationRequestID = UUID()
+        registrationCapture.invalidate()
+    }
     /// Observes ARKit's own relocalizing -> normal transition and the restored named
     /// anchor. No appearance match, user room-name answer or imported map can call this
     /// a restored coordinate frame. A returned frame does not authorize physical speech.
@@ -200,11 +361,31 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
         }
         return true
     }
+    func retireRegistration(for place: SavedPlace) {
+        // Retire helper publication at admission even if durable erasure fails.
+        // Failure can leave private disk bytes, never an eligible late measurement.
+        let selected = registrationSelectionPlaceID ?? comparison?.id
+            ?? registration.flatMap { UUID(uuidString: $0.frame.placeID) }
+        if selected == place.id {
+            registrationRequestID = UUID(); registrationSelectionPlaceID = nil
+            registration = nil; registrationStoreOwner = nil
+        }
+        // Loaded A may remain while a newly selected B is loading. Erase A's
+        // bytes without touching B's independent request, owner or status.
+        if registration?.frame.placeID == place.id.uuidString { registration = nil }
+        if registrationBytes?.frame.placeID == place.id.uuidString || comparison?.id == place.id {
+            registrationBaseline = nil; registrationBytes = nil; registrationCapture.invalidate()
+        }
+    }
     func delete(_ place: SavedPlace) {
+        retireRegistration(for: place)
         do {
             guard let memory else { throw MemoryError.missing }
             try memory.deleteRoom(place.id.uuidString)
-            invalidateWorldMapRecovery()
+            // Physical recovery is invalidated, but an unrelated helper selection B
+            // retains its own request receipt and may finish loading normally.
+            worldFrameRecovery.reset()
+            if registration?.frame.placeID == place.id.uuidString { registration = nil; registrationStoreOwner = nil }
             places.removeAll { $0.id == place.id }
             retryDeletionCleanup()
         } catch { message = t("Deleting the place did not finish. Some private files may remain; try again.", "لم يكتمل حذف المكان. قد تبقى بعض الملفات الخاصة؛ أعد المحاولة.") }
@@ -230,6 +411,14 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
         guard Thread.isMainThread else { DispatchQueue.main.async { self.captureSession(session, didEndWith: data, error: error) }; return }
         guard capture === session, scanning else { return }
         let id = scanID, savedName = name, baseline = comparison, localized = comparisonLocalized
+        // Capture immutable original evidence before asynchronous RoomBuilder work.
+        let measurementSession = registrationSessionID
+        let measurementFrame = registrationCapture.frame
+        let measurementStart = registrationCapture.startedAt
+        let measurement = measurementSession.flatMap { registrationCapture.sample(sessionID: $0, scanID: scanID, now: ProcessInfo.processInfo.systemUptime) }
+        let measurementDate = Date(), baselineRoom = registrationBaseline
+        let measurementRequest = registrationRequestID
+
         processing = Task { @MainActor in
             defer { if scanID == id { scanning = false; finishing = false; liveScanLayout = nil; capture = nil; processing = nil; onScanFinished?() } }
             do {
@@ -242,6 +431,23 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
                                         center: Point3(Double(center.x), Double(center.y), Double(center.z)))
                 }
                 if let baseline {
+                    if registrationRequestID == measurementRequest, memory?.writeOwner == registrationStoreOwner,
+                       places.contains(where: { $0.id == baseline.id && $0.worldFrame == baseline.worldFrame }),
+                       let measurementSession, let measurementFrame, let measurementStart, let measurement,
+                       let baselineRoom, measurementFrame == baseline.worldFrame,
+                       let newFeatures = RoomLayoutAdapter.registrationFeatures(room),
+                       let acquired = RoomRegistrationAcquisition(frame: measurementFrame,
+                          sessionID: measurementSession, scanID: id,
+                          baselineRoomID: baselineRoom.identifier, measuredRoomID: room.identifier,
+                          startedAt: measurementStart, capturedAt: measurement.capturedAt,
+                          recordedAt: measurementDate, cameraToWorld: measurement.cameraToWorld,
+                          baseline: baselineRoom.features, measured: newFeatures,
+                          baselineStory: baselineRoom.story, measuredStory: room.story) {
+                        registration = acquired
+                        registrationStatus = t("Measurements collected. A helper must select corresponding physical features; no room or object identity is established.", "جُمعت القياسات. يجب أن يختار المساعد المعالم المادية المتقابلة؛ لم يتم التحقق من هوية الغرفة أو الغرض.")
+                    } else if registrationRequestID == measurementRequest {
+                        registrationStatus = t("No registration record: tracking, source ownership, timing or bounded measurements were unavailable.", "لا يوجد سجل مطابقة: التتبع أو مصدر القياسات أو توقيتها غير متاح.")
+                    }
                     let changes = PlaceComparison.changes(baseline: baseline.objects, current: objects,
                                                          relocalized: localized)
                     let arabic = self.arabic

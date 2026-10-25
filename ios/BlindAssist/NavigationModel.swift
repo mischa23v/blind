@@ -1027,6 +1027,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             // category does not change. This runs before frame throttling.
             if readingTool != nil { stopReadingTool(announce: false) }
         }
+        if places.scanning, let scanSession = UUID(uuidString: observationFrameID) {
+            places.observeRegistrationFrame(frame, sessionID: scanSession, now: ProcessInfo.processInfo.systemUptime)
+        }
         guard running, !simulation, !places.scanning, frame.timestamp - lastProcessed >= 1.0 / 15 else { return }
         let receivedAt = ProcessInfo.processInfo.systemUptime
         let receivedDate = Date()
@@ -1405,7 +1408,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // The room scanner needs the camera, so path alerts from the camera pause; say so plainly.
         _ = speakMobility(arabic ? "مسح الغرفة يعمل. تنبيهات الكاميرا متوقفة حتى ينتهي المسح. ابقَ مع مساعد مبصر." : "Room scan running. Camera path alerts are off until the scan ends. Stay with a sighted helper.")
         nativeObservations.stop()
-        places.startScan(session: session, name: name, compare: compare ? recognizedPlace : nil, relocalized: recognizedPlace != nil)
+        places.startScan(session: session, name: name, compare: compare ? recognizedPlace : nil, relocalized: recognizedPlace != nil, registrationSessionID: UUID(uuidString: observationFrameID))
     }
     func recognize(_ place: SavedPlace) {
         guard supported, AVCaptureDevice.authorizationStatus(for: .video) == .authorized, !places.scanning else {
@@ -2652,6 +2655,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         companionWorkingState = CompanionWorkingState(); persistWorkingState()
         sceneAnswer = ""; currentReply = ""; assistantQuestion = ""
     }
+    /// Explicit saved-place selection opens dated reports, not current identity.
+    func historicalReports(for place: SavedPlace) -> [CompanionFact] {
+        companionWorkingState.factBook.reportedHistory(placeID: place.id.uuidString)
+    }
+
     var scopedConversationReviews: [CompanionWorkingState.ReviewSelection] { companionWorkingState.reviewSelections }
     var usesScopedConversationReview: Bool { companionWorkingState.hasScopedMemoryHistory || !companionWorkingState.reviewSelections.isEmpty }
 
@@ -5743,6 +5751,7 @@ extension NavigationModel {
     /// Deletes a saved place and everything derived from it: scans, room pictures, the companion's
     /// room record, and the current-place state if it was this place.
     func deletePlace(_ place: SavedPlace) {
+        places.retireRegistration(for: place)
         retireHeldSearchForPrivacyDeletion()
         #if DEBUG
         purgeDebugSessionDiagnostics()

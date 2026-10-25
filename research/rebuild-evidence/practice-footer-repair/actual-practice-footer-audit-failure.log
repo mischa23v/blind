@@ -1,0 +1,283 @@
+﻿2026-10-25T14:44:07.8082500Z Current runner version: '2.338.0'
+2026-10-25T14:44:07.8099520Z ##[group]Runner Image Provisioner
+2026-10-25T14:44:07.8100110Z Hosted Compute Agent
+2026-10-25T14:44:07.8100480Z Version: 20261021.618
+2026-10-25T14:44:07.8100870Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-25T14:44:07.8101320Z Build Date: 2026-10-21T00:45:21Z
+2026-10-25T14:44:07.8101980Z Worker ID: {cbf7fe61-21ae-4a03-913c-66f591cee353}
+2026-10-25T14:44:07.8102430Z Region: westus
+2026-10-25T14:44:07.8102760Z Cloud: MacCloud
+2026-10-25T14:44:07.8103110Z ##[endgroup]
+2026-10-25T14:44:07.8103990Z ##[group]Operating System
+2026-10-25T14:44:07.8104370Z macOS
+2026-10-25T14:44:07.8104680Z 27.0.1
+2026-10-25T14:44:07.8104990Z 26A434
+2026-10-25T14:44:07.8105320Z ##[endgroup]
+2026-10-25T14:44:07.8106200Z ##[group]Runner Image
+2026-10-25T14:44:07.8106610Z Image: xcode-27-arm64
+2026-10-25T14:44:07.8107640Z Version: 20261023.0307.1
+2026-10-25T14:44:07.8108520Z Included Software: https://github.com/actions/runner-images/blob/xcode-27-arm64/20261023.0307/images/macos/xcode-27-arm64-Readme.md
+2026-10-25T14:44:07.8109880Z Image Release: https://github.com/actions/runner-images/releases/tag/xcode-27-arm64%2F20261023.0307
+2026-10-25T14:44:07.8110560Z ##[endgroup]
+2026-10-25T14:44:07.8111360Z ##[group]GITHUB_TOKEN Permissions
+2026-10-25T14:44:07.8114080Z Contents: read
+2026-10-25T14:44:07.8114470Z Metadata: read
+2026-10-25T14:44:07.8114830Z ##[endgroup]
+2026-10-25T14:44:07.8116490Z Secret source: Actions
+2026-10-25T14:44:07.8117080Z Cache mode: write
+2026-10-25T14:44:07.8117550Z Prepare workflow directory
+2026-10-25T14:44:07.8419810Z Prepare all required actions
+2026-10-25T14:44:07.8461840Z Getting action download info
+2026-10-25T14:44:08.2491810Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-25T14:44:08.7151080Z Complete job name: focused-audit
+2026-10-25T14:44:08.7842110Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-25T14:44:08.7842890Z with:
+2026-10-25T14:44:08.7843240Z   persist-credentials: false
+2026-10-25T14:44:08.7843650Z   fetch-depth: 1
+2026-10-25T14:44:08.7843970Z   lfs: false
+2026-10-25T14:44:08.7844280Z   submodules: false
+2026-10-25T14:44:08.7844630Z   repository: mischa23v/blind
+2026-10-25T14:44:08.7847370Z   token: ***
+2026-10-25T14:44:08.7847690Z   ssh-strict: true
+2026-10-25T14:44:08.7848020Z   ssh-user: git
+2026-10-25T14:44:08.7848330Z   clean: true
+2026-10-25T14:44:08.7848670Z   sparse-checkout-cone-mode: true
+2026-10-25T14:44:08.7849050Z   fetch-tags: false
+2026-10-25T14:44:08.7849390Z   show-progress: true
+2026-10-25T14:44:08.7849740Z   set-safe-directory: true
+2026-10-25T14:44:08.7850170Z   allow-unsafe-pr-checkout: false
+2026-10-25T14:44:08.7850690Z env:
+2026-10-25T14:44:08.7851180Z   DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+2026-10-25T14:44:08.7851680Z ##[endgroup]
+2026-10-25T14:44:09.2543320Z Syncing repository: mischa23v/blind
+2026-10-25T14:44:09.2544770Z ##[group]Getting Git version info
+2026-10-25T14:44:09.2545300Z Working directory is '/Users/runner/work/blind/blind'
+2026-10-25T14:44:09.2546080Z [command]/opt/homebrew/bin/git version
+2026-10-25T14:44:09.2781310Z git version 2.56.0
+2026-10-25T14:44:09.2792430Z ##[endgroup]
+2026-10-25T14:44:09.2797070Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/e53a66b4-fcbf-4e83-9d00-113bf375ffc5/.gitconfig'
+2026-10-25T14:44:09.2802790Z Temporarily overriding HOME='/Users/runner/work/_temp/e53a66b4-fcbf-4e83-9d00-113bf375ffc5' before making global git config changes
+2026-10-25T14:44:09.2803820Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-25T14:44:09.2805960Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/blind/blind
+2026-10-25T14:44:09.2910050Z Deleting the contents of '/Users/runner/work/blind/blind'
+2026-10-25T14:44:09.2912490Z ##[group]Determining repository object format
+2026-10-25T14:44:09.2913330Z ##[endgroup]
+2026-10-25T14:44:09.2913900Z ##[group]Initializing the repository
+2026-10-25T14:44:09.2916920Z [command]/opt/homebrew/bin/git init /Users/runner/work/blind/blind
+2026-10-25T14:44:09.3114340Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-25T14:44:09.3115390Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-25T14:44:09.3116250Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-25T14:44:09.3116840Z hint: call:
+2026-10-25T14:44:09.3117260Z hint:
+2026-10-25T14:44:09.3117760Z hint: 	git config --global init.defaultBranch <name>
+2026-10-25T14:44:09.3118320Z hint:
+2026-10-25T14:44:09.3118790Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-25T14:44:09.3119580Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-25T14:44:09.3120270Z hint:
+2026-10-25T14:44:09.3120710Z hint: 	git branch -m <name>
+2026-10-25T14:44:09.3121140Z hint:
+2026-10-25T14:44:09.3121700Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-25T14:44:09.3122640Z Initialized empty Git repository in /Users/runner/work/blind/blind/.git/
+2026-10-25T14:44:09.3130470Z [command]/opt/homebrew/bin/git remote add origin https://github.com/mischa23v/blind
+2026-10-25T14:44:09.3211680Z ##[endgroup]
+2026-10-25T14:44:09.3212390Z ##[group]Disabling automatic garbage collection
+2026-10-25T14:44:09.3215160Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-10-25T14:44:09.3283010Z ##[endgroup]
+2026-10-25T14:44:09.3283640Z ##[group]Setting up auth
+2026-10-25T14:44:09.3284090Z Removing SSH command configuration
+2026-10-25T14:44:09.3286910Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-25T14:44:09.3349360Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-25T14:44:09.4475860Z Removing HTTP extra header
+2026-10-25T14:44:09.4477940Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-25T14:44:09.4682960Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-25T14:44:09.5649630Z Removing includeIf entries pointing to credentials config files
+2026-10-25T14:44:09.5653250Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-25T14:44:09.5719410Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-25T14:44:09.7019050Z [command]/opt/homebrew/bin/git config --file /Users/runner/work/_temp/git-credentials-20ccbcfd-0f33-4041-bbb8-a9f2f5fe0251.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-25T14:44:09.7116850Z [command]/opt/homebrew/bin/git config --local includeIf.gitdir:/Users/runner/work/blind/blind/.git.path /Users/runner/work/_temp/git-credentials-20ccbcfd-0f33-4041-bbb8-a9f2f5fe0251.config
+2026-10-25T14:44:09.7193280Z [command]/opt/homebrew/bin/git config --local includeIf.gitdir:/Users/runner/work/blind/blind/.git/worktrees/*.path /Users/runner/work/_temp/git-credentials-20ccbcfd-0f33-4041-bbb8-a9f2f5fe0251.config
+2026-10-25T14:44:09.7289950Z [command]/opt/homebrew/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-20ccbcfd-0f33-4041-bbb8-a9f2f5fe0251.config
+2026-10-25T14:44:09.7383150Z [command]/opt/homebrew/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-20ccbcfd-0f33-4041-bbb8-a9f2f5fe0251.config
+2026-10-25T14:44:09.7468890Z ##[endgroup]
+2026-10-25T14:44:09.7469710Z ##[group]Fetching the repository
+2026-10-25T14:44:09.7473190Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +3d22925028463000f203d2b02adac506fb6152fb:refs/remotes/origin/master
+2026-10-25T14:44:11.0072750Z From https://github.com/mischa23v/blind
+2026-10-25T14:44:11.0073790Z  * [new ref]         3d22925028463000f203d2b02adac506fb6152fb -> origin/master
+2026-10-25T14:44:11.0078490Z [command]/opt/homebrew/bin/git branch --list --remote origin/master
+2026-10-25T14:44:11.0173280Z   origin/master
+2026-10-25T14:44:11.0178600Z [command]/opt/homebrew/bin/git rev-parse refs/remotes/origin/master
+2026-10-25T14:44:11.0244050Z 3d22925028463000f203d2b02adac506fb6152fb
+2026-10-25T14:44:11.0262240Z ##[endgroup]
+2026-10-25T14:44:11.0263150Z ##[group]Determining the checkout info
+2026-10-25T14:44:11.0264060Z ##[endgroup]
+2026-10-25T14:44:11.0264690Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-10-25T14:44:11.0372370Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-25T14:44:11.0453770Z ##[group]Checking out the ref
+2026-10-25T14:44:11.0456030Z [command]/opt/homebrew/bin/git checkout --progress --force -B master refs/remotes/origin/master
+2026-10-25T14:44:11.2549400Z Reset branch 'master'
+2026-10-25T14:44:11.2554070Z branch 'master' set up to track 'origin/master'.
+2026-10-25T14:44:11.2560370Z ##[endgroup]
+2026-10-25T14:44:11.2681580Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-10-25T14:44:11.2758250Z 3d22925028463000f203d2b02adac506fb6152fb
+2026-10-25T14:44:11.2764440Z ##[group]Removing auth
+2026-10-25T14:44:11.2765210Z Removing SSH command configuration
+2026-10-25T14:44:11.2767680Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-25T14:44:11.2840740Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-25T14:44:11.3790250Z Removing HTTP extra header
+2026-10-25T14:44:11.3792060Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-25T14:44:11.3862160Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-25T14:44:11.4692560Z Removing includeIf entries pointing to credentials config files
+2026-10-25T14:44:11.4694460Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-25T14:44:11.4753150Z includeif.gitdir:/Users/runner/work/blind/blind/.git.path
+2026-10-25T14:44:11.4754800Z includeif.gitdir:/Users/runner/work/blind/blind/.git/worktrees/*.path
+2026-10-25T14:44:11.4756160Z includeif.gitdir:/github/workspace/.git.path
+2026-10-25T14:44:11.4757350Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-25T14:44:11.4760460Z [command]/opt/homebrew/bin/git config --local --get-all includeif.gitdir:/Users/runner/work/blind/blind/.git.path
+2026-10-25T14:44:11.4817410Z /Users/runner/work/_temp/git-credentials-20ccbcfd-0f33-4041-bbb8-a9f2f5fe0251.config
+2026-10-25T14:44:11.4824320Z [command]/opt/homebrew/bin/git config --local --unset includeif.gitdir:/Users/runner/work/blind/blind/.git.path \/Users\/runner\/work\/_temp\/git\-credentials\-20ccbcfd\-0f33\-4041\-bbb8\-a9f2f5fe0251\.config
+2026-10-25T14:44:11.4893310Z [command]/opt/homebrew/bin/git config --local --get-all includeif.gitdir:/Users/runner/work/blind/blind/.git/worktrees/*.path
+2026-10-25T14:44:11.4952660Z /Users/runner/work/_temp/git-credentials-20ccbcfd-0f33-4041-bbb8-a9f2f5fe0251.config
+2026-10-25T14:44:11.4958920Z [command]/opt/homebrew/bin/git config --local --unset includeif.gitdir:/Users/runner/work/blind/blind/.git/worktrees/*.path \/Users\/runner\/work\/_temp\/git\-credentials\-20ccbcfd\-0f33\-4041\-bbb8\-a9f2f5fe0251\.config
+2026-10-25T14:44:11.5026350Z [command]/opt/homebrew/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-25T14:44:11.5086130Z /github/runner_temp/git-credentials-20ccbcfd-0f33-4041-bbb8-a9f2f5fe0251.config
+2026-10-25T14:44:11.5091170Z [command]/opt/homebrew/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-20ccbcfd\-0f33\-4041\-bbb8\-a9f2f5fe0251\.config
+2026-10-25T14:44:11.5158120Z [command]/opt/homebrew/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-25T14:44:11.5217540Z /github/runner_temp/git-credentials-20ccbcfd-0f33-4041-bbb8-a9f2f5fe0251.config
+2026-10-25T14:44:11.5223690Z [command]/opt/homebrew/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-20ccbcfd\-0f33\-4041\-bbb8\-a9f2f5fe0251\.config
+2026-10-25T14:44:11.5290130Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-25T14:44:11.6088120Z Removing credentials config '/Users/runner/work/_temp/git-credentials-20ccbcfd-0f33-4041-bbb8-a9f2f5fe0251.config'
+2026-10-25T14:44:11.6092220Z ##[endgroup]
+2026-10-25T14:44:11.6243360Z ##[group]Run bash tools/ci/native-apple.sh preflight
+2026-10-25T14:44:11.6244490Z [36;1mbash tools/ci/native-apple.sh preflight[0m
+2026-10-25T14:44:11.6291800Z shell: /bin/bash -e {0}
+2026-10-25T14:44:11.6292500Z env:
+2026-10-25T14:44:11.6293250Z   DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+2026-10-25T14:44:11.6294220Z ##[endgroup]
+2026-10-25T14:44:11.6767440Z 3d22925028463000f203d2b02adac506fb6152fb
+2026-10-25T14:44:11.7624170Z 483eb186da1a2b08b0f5fc70256bba034b23da6e3f3b9a759a3be647062bf4f4  ios/BlindAssist.xcodeproj/project.pbxproj
+2026-10-25T14:44:11.7626870Z 6b65f27032bc4f2f112e2e71da5483b949e443501b9a0cf2f92ffbc0ca0f65cb  ios/BlindAssist.xcodeproj/xcshareddata/xcschemes/BlindAssist.xcscheme
+2026-10-25T14:44:11.7629120Z 9db07d1d72ac8d224f873aaf47e51f63bf7e508355a1355426daf599d8f64b0f  BlindCore/Package.swift
+2026-10-25T14:44:11.7630960Z 119060ea110b7cd06a2c6b4f68c125b51489bc2d9a4385e1b1af53df30ef3115  BlindMemory/Package.swift
+2026-10-25T14:44:14.3614660Z Xcode 27.0
+2026-10-25T14:44:14.3615230Z Build version 27A266a
+2026-10-25T14:44:16.2984080Z Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)
+2026-10-25T14:44:16.2984510Z Target: arm64-apple-macosx27.0.0
+2026-10-25T14:44:17.5310100Z Simulator SDK: 27.0
+2026-10-25T14:44:20.4418940Z Simulator: iPhone 18 Pro Max / iOS 27.0
+2026-10-25T14:44:20.4448300Z swift-driver version: 1.168.6 
+2026-10-25T14:44:20.4507290Z ##[group]Run bash tools/ci/native-apple.sh ui-diagnostic
+2026-10-25T14:44:20.4508010Z [36;1mbash tools/ci/native-apple.sh ui-diagnostic[0m
+2026-10-25T14:44:20.4545410Z shell: /bin/bash -e {0}
+2026-10-25T14:44:20.4545680Z env:
+2026-10-25T14:44:20.4545950Z   DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+2026-10-25T14:44:20.4546290Z ##[endgroup]
+2026-10-25T14:53:35.7620430Z ui-diagnostic exit status: 65
+2026-10-25T14:53:38.6173580Z 2026-10-25 14:46:03.416 appintentsnltrainingprocessor[46646:111301] error: Could not archive SSU artifacts. Check build log.
+2026-10-25T14:53:38.6413640Z ACCESSIBILITY_AUDIT=type:XCUIAccessibilityAuditType(rawValue: 65536),element:Attributes: StaticText, 0x111809e00, {{20.0, 660.7}, {400.0, 77.7}}, label: 'Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.' | Element subtree: |  →StaticText, 0x111809e00, {{20.0, 660.7}, {400.0, 77.7}}, label: 'Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.' | Path to element: |  →Application, 0x108455f40, pid: 48748, label: 'Blind Assist' |   ↳Window (Main), 0x108456080, {{0.0, 0.0}, {440.0, 956.0}} |    ↳Other, 0x1084561c0, {{0.0, 0.0}, {440.0, 956.0}} |     ↳Other, 0x108456580, {{0.0, 0.0}, {440.0, 956.0}} |      ↳Other, 0x1084566c0, {{0.0, 0.0}, {440.0, 956.0}} |       ↳Other, 0x108456300, {{0.0, 0.0}, {440.0, 956.0}} |        ↳Other, 0x108456800, {{0.0, 0.0}, {440.0, 956.0}} |         ↳Other, 0x108456a80, {{0.0, 0.0}, {440.0, 956.0}} |          ↳Other, 0x108456bc0, {{0.0, 0.0}, {440.0, 956.0}} |           ↳Other, 0x108456440, {{0.0, 0.0}, {440.0, 956.0}} |            ↳Other, 0x1084548c0, {{0.0, 0.0}, {440.0, 956.0}} |             ↳
+2026-10-25T14:53:38.7644660Z /Users/runner/work/blind/blind/ios/BlindAssistUITests/LaunchTests.swift:143: error: -[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk] : Dynamic Type font sizes are partially unsupported
+2026-10-25T14:53:38.7646260Z Test Case '-[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk]' failed (73.506 seconds).
+2026-10-25T14:53:38.7647000Z Test Suite 'LaunchTests' failed at 2026-10-25 14:52:48.365.
+2026-10-25T14:53:38.7647650Z 	 Executed 1 test, with 1 failure (0 unexpected) in 73.506 (73.519) seconds
+2026-10-25T14:53:38.7648350Z Test Suite 'BlindAssistUITests.xctest' failed at 2026-10-25 14:52:48.370.
+2026-10-25T14:53:38.7652670Z 	 Executed 1 test, with 1 failure (0 unexpected) in 73.506 (73.524) seconds
+2026-10-25T14:53:38.7654090Z Test Suite 'Selected tests' failed at 2026-10-25 14:52:48.371.
+2026-10-25T14:53:38.7659110Z 	 Executed 1 test, with 1 failure (0 unexpected) in 73.506 (73.526) seconds
+2026-10-25T14:53:38.7660230Z ** TEST FAILED **
+2026-10-25T14:53:38.7666360Z /Users/runner/work/blind/blind/BlindCore/Sources/BlindCore/CompanionReportedStep.swift:10:16: warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+2026-10-25T14:53:38.7669890Z    |                |- warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+2026-10-25T14:53:38.7671670Z /Users/runner/work/blind/blind/BlindCore/Sources/BlindCore/DebugSessionLog.swift:89:13: warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+2026-10-25T14:53:38.7673810Z     |             |- warning: immutable property will not be decoded because it is declared with an initial value which cannot be overwritten
+2026-10-25T14:53:38.7676490Z /Users/runner/work/blind/blind/ios/BlindAssist/Feedback.swift:10:17: warning: stored property 'speech' of 'Sendable'-conforming class 'Feedback' has non-Sendable type 'AVSpeechSynthesizer'
+2026-10-25T14:53:38.7681790Z     |                 `- warning: stored property 'speech' of 'Sendable'-conforming class 'Feedback' has non-Sendable type 'AVSpeechSynthesizer'
+2026-10-25T14:53:38.7683450Z /Users/runner/work/blind/blind/ios/BlindAssist/VoiceInput.swift:162:49: warning: 'requestRecordPermission' was deprecated in iOS 17.0: Please use AVAudioApplication requestRecordPermissionWithCompletionHandler [#DeprecatedDeclaration]
+2026-10-25T14:53:38.7685430Z     |                                                 `- warning: 'requestRecordPermission' was deprecated in iOS 17.0: Please use AVAudioApplication requestRecordPermissionWithCompletionHandler [#DeprecatedDeclaration]
+2026-10-25T14:53:38.7690610Z /Users/runner/work/blind/blind/ios/BlindAssist/VoiceInput.swift:182:47: warning: 'recordPermission' was deprecated in iOS 17.0: Please use AVAudioApplication recordPermission [#DeprecatedDeclaration]
+2026-10-25T14:53:38.7691870Z     |                                               `- warning: 'recordPermission' was deprecated in iOS 17.0: Please use AVAudioApplication recordPermission [#DeprecatedDeclaration]
+2026-10-25T14:53:38.7693190Z /Users/runner/work/blind/blind/ios/BlindAssist/VoiceInput.swift:182:68: warning: 'granted' was deprecated in iOS 17.0: renamed to 'AVAudioApplication.recordPermission.granted' [#DeprecatedDeclaration]
+2026-10-25T14:53:38.7694320Z     |                                                                    |- warning: 'granted' was deprecated in iOS 17.0: renamed to 'AVAudioApplication.recordPermission.granted' [#DeprecatedDeclaration]
+2026-10-25T14:53:38.7699350Z /Users/runner/work/blind/blind/ios/BlindAssist/VoiceInput.swift:198:99: warning: 'allowBluetooth' was deprecated in iOS 8.0: renamed to 'AVAudioSession.CategoryOptions.allowBluetoothHFP' [#DeprecatedDeclaration]
+2026-10-25T14:53:38.7700900Z     |                                                                                                   |- warning: 'allowBluetooth' was deprecated in iOS 8.0: renamed to 'AVAudioSession.CategoryOptions.allowBluetoothHFP' [#DeprecatedDeclaration]
+2026-10-25T14:53:38.7702550Z /Users/runner/work/blind/blind/ios/BlindAssist/Feedback.swift:10:17: warning: stored property 'speech' of 'Sendable'-conforming class 'Feedback' has non-Sendable type 'AVSpeechSynthesizer'
+2026-10-25T14:53:38.7707380Z     |                 `- warning: stored property 'speech' of 'Sendable'-conforming class 'Feedback' has non-Sendable type 'AVSpeechSynthesizer'
+2026-10-25T14:53:38.7708590Z /Users/runner/work/blind/blind/ios/BlindAssist/IndoorNavigator.swift:131:17: warning: capture of 'self' with non-Sendable type 'IndoorNavigator?' in a '@Sendable' closure [#SendableClosureCaptures]
+2026-10-25T14:53:38.7710000Z     |                 `- warning: capture of 'self' with non-Sendable type 'IndoorNavigator?' in a '@Sendable' closure [#SendableClosureCaptures]
+2026-10-25T14:53:38.7711230Z /Users/runner/work/blind/blind/ios/BlindAssist/JourneyStore.swift:95:17: warning: capture of 'self' with non-Sendable type 'JourneyStore?' in a '@Sendable' closure [#SendableClosureCaptures]
+2026-10-25T14:53:38.7712420Z     |                 `- warning: capture of 'self' with non-Sendable type 'JourneyStore?' in a '@Sendable' closure [#SendableClosureCaptures]
+2026-10-25T14:53:38.7716760Z     t =    55.79s     Wait for org.blindassist.mobility to idle
+2026-10-25T14:53:38.7717320Z     t =    55.81s     Find the "settings-details" Button
+2026-10-25T14:53:38.7717930Z     t =    56.04s     Check for interrupting elements affecting "settings-details" Button
+2026-10-25T14:53:38.7718370Z     t =    56.25s     Synthesize event
+2026-10-25T14:53:38.7721940Z     t =    56.69s     Wait for org.blindassist.mobility to idle
+2026-10-25T14:53:38.7725960Z     t =    57.89s Find the "camera-screen" Button
+2026-10-25T14:53:38.7729030Z     t =    59.08s Find the "camera-screen" Button
+2026-10-25T14:53:38.7729610Z     t =    59.43s Find the "camera-screen" Button
+2026-10-25T14:53:38.7735930Z     t =    59.81s Find the "camera-screen" Button
+2026-10-25T14:53:38.7739760Z     t =    60.31s Find the "camera-screen" Button
+2026-10-25T14:53:38.7740850Z     t =    60.60s Find the "camera-screen" Button
+2026-10-25T14:53:38.7747060Z     t =    60.84s Find the "camera-screen" Button
+2026-10-25T14:53:38.7749860Z     t =    61.13s Find the "camera-screen" Button
+2026-10-25T14:53:38.7750610Z     t =    61.30s Find the "camera-screen" Button
+2026-10-25T14:53:38.7751300Z     t =    61.73s Find the "camera-screen" Button
+2026-10-25T14:53:38.7751900Z     t =    62.03s Find the "camera-screen" Button
+2026-10-25T14:53:38.7752300Z     t =    62.31s Find the "camera-screen" Button
+2026-10-25T14:53:38.7752880Z     t =    62.59s Find the "camera-screen" Button
+2026-10-25T14:53:38.7753390Z     t =    62.88s Find the "camera-screen" Button
+2026-10-25T14:53:38.7760240Z     t =    63.28s Find the "camera-screen" Button
+2026-10-25T14:53:38.7760710Z     t =    63.76s Find the "camera-screen" Button
+2026-10-25T14:53:38.7761040Z     t =    64.02s Find the "camera-screen" Button
+2026-10-25T14:53:38.7764390Z     t =    64.27s Tap "camera-screen" Button
+2026-10-25T14:53:38.7765700Z     t =    64.27s     Wait for org.blindassist.mobility to idle
+2026-10-25T14:53:38.7769690Z     t =    64.28s     Find the "camera-screen" Button
+2026-10-25T14:53:38.7771310Z     t =    64.47s     Check for interrupting elements affecting "camera-screen" Button
+2026-10-25T14:53:38.7773620Z     t =    64.64s     Synthesize event
+2026-10-25T14:53:38.7774330Z     t =    64.97s     Wait for org.blindassist.mobility to idle
+2026-10-25T14:53:38.7775610Z     t =    70.74s Find the Any (Descendant with identity binding to AX element pid: 48748, elementOrHash.elementID: 4649221120.297)
+2026-10-25T14:53:38.7777630Z     t =    70.87s Requesting snapshot of accessibility hierarchy for app with pid 48748
+2026-10-25T14:53:38.7782330Z     t =    70.99s Find: Descendant with identity binding to AX element pid: 48748, elementOrHash.elementID: 4649221120.297
+2026-10-25T14:53:38.7783450Z     t =    71.30s Requesting snapshot of accessibility hierarchy for app with pid 48748
+2026-10-25T14:53:38.7784440Z     t =    71.40s Find: Descendant with identity binding to AX element pid: 48748, elementOrHash.elementID: 4649221120.297
+2026-10-25T14:53:38.7787870Z     t =    71.40s Requesting snapshot of accessibility hierarchy for app with pid 48748
+2026-10-25T14:53:38.7793570Z ACCESSIBILITY_AUDIT=type:XCUIAccessibilityAuditType(rawValue: 65536),element:Attributes: StaticText, 0x111809e00, {{20.0, 660.7}, {400.0, 77.7}}, label: 'Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.' | Element subtree: |  →StaticText, 0x111809e00, {{20.0, 660.7}, {400.0, 77.7}}, label: 'Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.' | Path to element: |  →Application, 0x108455f40, pid: 48748, label: 'Blind Assist' |   ↳Window (Main), 0x108456080, {{0.0, 0.0}, {440.0, 956.0}} |    ↳Other, 0x1084561c0, {{0.0, 0.0}, {440.0, 956.0}} |     ↳Other, 0x108456580, {{0.0, 0.0}, {440.0, 956.0}} |      ↳Other, 0x1084566c0, {{0.0, 0.0}, {440.0, 956.0}} |       ↳Other, 0x108456300, {{0.0, 0.0}, {440.0, 956.0}} |        ↳Other, 0x108456800, {{0.0, 0.0}, {440.0, 956.0}} |         ↳Other, 0x108456a80, {{0.0, 0.0}, {440.0, 956.0}} |          ↳Other, 0x108456bc0, {{0.0, 0.0}, {440.0, 956.0}} |           ↳Other, 0x108456440, {{0.0, 0.0}, {440.0, 956.0}} |            ↳Other, 0x1084548c0, {{0.0, 0.0}, {440.0, 956.0}} |             ↳
+2026-10-25T14:53:38.7798250Z     t =    71.54s Find the Any (Descendant with identity binding to AX element pid: 48748, elementOrHash.elementID: 4649221120.297)
+2026-10-25T14:53:38.7800470Z     t =    71.76s Checking existence of `"Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog." StaticText`
+2026-10-25T14:53:38.7803750Z     t =    71.86s Find the "Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog." StaticText
+2026-10-25T14:53:38.7807800Z /Users/runner/work/blind/blind/ios/BlindAssistUITests/LaunchTests.swift:143: error: -[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk] : Dynamic Type font sizes are partially unsupported
+2026-10-25T14:53:38.7808960Z     t =    72.54s Tear Down
+2026-10-25T14:53:38.7810430Z Test Case '-[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk]' failed (73.506 seconds).
+2026-10-25T14:53:38.7811770Z Test Suite 'LaunchTests' failed at 2026-10-25 14:52:48.365.
+2026-10-25T14:53:38.7812750Z 	 Executed 1 test, with 1 failure (0 unexpected) in 73.506 (73.519) seconds
+2026-10-25T14:53:38.7813510Z Test Suite 'BlindAssistUITests.xctest' failed at 2026-10-25 14:52:48.370.
+2026-10-25T14:53:38.7815500Z 	 Executed 1 test, with 1 failure (0 unexpected) in 73.506 (73.524) seconds
+2026-10-25T14:53:38.7818110Z Test Suite 'Selected tests' failed at 2026-10-25 14:52:48.371.
+2026-10-25T14:53:38.7819350Z 	 Executed 1 test, with 1 failure (0 unexpected) in 73.506 (73.526) seconds
+2026-10-25T14:53:38.7820190Z 2026-10-25 14:53:29.569 xcodebuild[42772:100860] [MT] IDETestOperationsObserverDebug: 444.308 elapsed -- Testing started completed.
+2026-10-25T14:53:38.7823620Z 2026-10-25 14:53:29.569 xcodebuild[42772:100860] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-25T14:53:38.7825580Z 2026-10-25 14:53:29.569 xcodebuild[42772:100860] [MT] IDETestOperationsObserverDebug: 444.308 sec, +444.308 sec -- end
+2026-10-25T14:53:38.7826130Z 
+2026-10-25T14:53:38.7826640Z Test session results, code coverage, and logs:
+2026-10-25T14:53:38.7828480Z 	/Users/runner/work/_temp/blind-native-ci/ui-diagnostic.xcresult
+2026-10-25T14:53:38.7828950Z 
+2026-10-25T14:53:38.7829250Z Failing tests:
+2026-10-25T14:53:38.7829910Z 	LaunchTests.testAccessibilityAuditOfCameraAndAsk()
+2026-10-25T14:53:38.7831250Z 
+2026-10-25T14:53:38.7831400Z ** TEST FAILED **
+2026-10-25T14:53:38.7832220Z 
+2026-10-25T14:53:38.7832400Z Testing started
+2026-10-25T14:53:41.8475020Z ##[error]Process completed with exit code 65.
+2026-10-25T14:53:43.3645930Z Post job cleanup.
+2026-10-25T14:53:46.3431290Z [command]/opt/homebrew/bin/git version
+2026-10-25T14:53:46.6599940Z git version 2.56.0
+2026-10-25T14:53:46.7275360Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/8e00c601-675c-4daf-9df1-0bce9551a89e/.gitconfig'
+2026-10-25T14:53:46.7380820Z Temporarily overriding HOME='/Users/runner/work/_temp/8e00c601-675c-4daf-9df1-0bce9551a89e' before making global git config changes
+2026-10-25T14:53:46.7488600Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-25T14:53:46.7640170Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/blind/blind
+2026-10-25T14:53:46.7899220Z Removing SSH command configuration
+2026-10-25T14:53:46.8006630Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-25T14:53:46.8369340Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-25T14:53:47.5839820Z Removing HTTP extra header
+2026-10-25T14:53:47.6085290Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-25T14:53:47.6446670Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-25T14:53:48.0597400Z Removing includeIf entries pointing to credentials config files
+2026-10-25T14:53:48.0704880Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-25T14:53:48.1034530Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-25T14:53:48.5086060Z Cleaning up orphan processes

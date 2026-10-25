@@ -1,0 +1,33 @@
+✔ raw feature/corner bounds precede all conversion and no matching authority is invented (1.475685ms)
+✔ held read selection rotates ownership and existing helper offers explicit bounded retry (0.625293ms)
+✔ stale save completion cannot publish another selection status (0.509919ms)
+✔ scan preparation reuses bounded verified bytes off main and deletion retires before SQL (1.840474ms)
+✖ actual registration acquisition and native ownership replay use real pinned GRDB (0.938315ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 132.261243
+
+✖ failing tests:
+
+test at blind-registration-reviewed/validation/tools/test/room-registration-acquisition.test.mjs:51:1
+✖ actual registration acquisition and native ownership replay use real pinned GRDB (0.938315ms)
+  Error: ENOENT: no such file or directory, open '/workspace/scratch/90f3f6703064/blind-registration-reviewed/validation/BlindMemory/Package.resolved'
+      at readFileSync (node:fs:483:20)
+      at read (file:///workspace/scratch/90f3f6703064/blind-registration-reviewed/validation/tools/test/room-registration-acquisition.test.mjs:5:15)
+      at TestContext.<anonymous> (file:///workspace/scratch/90f3f6703064/blind-registration-reviewed/validation/tools/test/room-registration-acquisition.test.mjs:56:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/workspace/scratch/90f3f6703064/blind-registration-reviewed/validation/BlindMemory/Package.resolved'
+  }

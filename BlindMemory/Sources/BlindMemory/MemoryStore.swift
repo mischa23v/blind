@@ -122,6 +122,7 @@ public final class MemoryStore: Sendable {
             // Remove the head before cascading immutable revisions/proposals.
             try db.execute(sql: "UPDATE room SET currentRevision=NULL WHERE profile=? AND id=?", arguments: [profile, room])
             try db.execute(sql: "DELETE FROM room WHERE profile=? AND id=?", arguments: [profile, room])
+            try db.execute(sql: "DELETE FROM memoryValue WHERE profile=? AND namespace='places' AND id=?", arguments: [profile, "registration:" + room])
         }
     }
     private static func isDeleted(_ db: Database, profile: String, room: String) throws -> Bool {
@@ -158,6 +159,17 @@ public final class MemoryStore: Sendable {
         guard (1...(try Self.maximumPayloadBytes(namespace: namespace))).contains(payload.count) else { throw MemoryError.invalid }
         try database.write { db in try db.execute(sql: "INSERT INTO memoryValue(profile,namespace,id,payload,updated) VALUES (?,?,?,?,?) ON CONFLICT(profile,namespace,id) DO UPDATE SET payload=excluded.payload, updated=excluded.updated", arguments: [profile, namespace, id, payload, Date().timeIntervalSince1970]) }
     }
+    /// Bounded diagnostic acquisition under the existing room tombstone. A slow
+    /// off-main write can never recreate measurements after room privacy deletion.
+    public func saveRoomRegistration(room: String, payload: Data) throws {
+        guard UUID(uuidString: room)?.uuidString == room, (1...64_000).contains(payload.count) else { throw MemoryError.invalid }
+        try database.write { db in
+            guard try !Self.isDeleted(db, profile: profile, room: room) else { throw MemoryError.missing }
+            try db.execute(sql: "INSERT INTO memoryValue(profile,namespace,id,payload,updated) VALUES (?,'places',?,?,?) ON CONFLICT(profile,namespace,id) DO UPDATE SET payload=excluded.payload, updated=excluded.updated",
+                           arguments: [profile, "registration:" + room, payload, Date().timeIntervalSince1970])
+        }
+    }
+
     /// A reviewed report affects both dialogue and task derivatives. Existing
     /// GRDB write transactions commit both bounded rows or roll back both.
     public static let maximumDialogueSnapshotBytes = 128 * 1024

@@ -1,6 +1,8 @@
 // Authored platform/storage stubs only; production review and persistence bodies are extracted at execution.
 import Foundation
 import BlindCore
+// Saved-place metadata seam for the adjacent extracted historicalReports method.
+struct SavedPlace { let id: UUID }
 final class MemoryStore: @unchecked Sendable {
  let writeOwner = UUID()
  private let lock = NSLock()

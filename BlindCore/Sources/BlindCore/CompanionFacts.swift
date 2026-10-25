@@ -211,6 +211,13 @@ public struct CompanionFactBook: Codable, Equatable, Sendable {
         return .report(first)
     }
 
+    /// Attributed history for an explicit stored place, never live localization.
+    public func reportedHistory(placeID: String) -> [CompanionFact] {
+        guard !placeID.isEmpty, placeID.utf8.count <= 128 else { return [] }
+        return facts.filter { $0.scope?.valid == true && $0.scope?.placeID == placeID }
+            .sorted { $0.at > $1.at }
+    }
+
     public init() {}
 
     /// Saves a report; the same object replaces its earlier report. Nil when empty or too long.

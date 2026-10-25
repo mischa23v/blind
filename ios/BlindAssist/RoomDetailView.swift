@@ -54,6 +54,18 @@ struct RoomDetailView: View {
                     }
                     ForEach(exportURLs.indices, id: \.self) { index in ShareLink(exportURLs[index].0, item: exportURLs[index].1) }
                 }
+                Section(t("Reports saved for this place", "تقارير محفوظة لهذا المكان")) {
+                    Text(t("Historical reports only. Selecting this room does not say you or the item are here now.", "تقارير سابقة فقط. اختيار الغرفة لا يعني أنك أو الغرض هنا الآن."))
+                    ForEach(model.historicalReports(for: place), id: \.storageKey) { fact in
+                        if fact.hedged { Text(t("Uncertain original report", "التقرير الأصلي غير مؤكد")) }
+                        Text(fact.recall(now: Date(), arabic: model.arabic))
+                        Text(fact.at.formatted()).font(.caption)
+                        if let scope = fact.scope {
+                            Text("\(scope.placeID) / \(scope.floorID) / \(scope.roomID) / \(scope.objectInstanceID ?? t("container identity unknown", "هوية الحاوية غير معروفة")) / \(scope.map.revision)").font(.caption)
+                        }
+                    }
+                }
+                RoomRegistrationReview(places: model.places, place: place, arabic: model.arabic)
                 Section(t("Room type", "نوع الغرفة")) {
                     if let type = layout.confirmedRoomType { Text(roomName(type)) }
                     Button(t("Suggest room type on this phone", "اقتراح نوع الغرفة على هذا الهاتف")) { suggest(layout) }.disabled(suggesting)
@@ -307,5 +319,63 @@ struct FloorPlanPreview: View {
                 context.fill(path, with: .color(color.opacity(0.65))); context.stroke(path, with: .color(color), lineWidth: 1)
             }
         }
+    }
+}
+
+
+/// Existing helper room detail, not a new automatic localization setting.
+private struct RoomRegistrationReview: View {
+    @ObservedObject var places: PlaceStore
+    let place: SavedPlace
+    let arabic: Bool
+    @State private var baselineID = ""
+    @State private var measuredID = ""
+    private func t(_ english: String, _ arabic: String) -> String { self.arabic ? arabic : english }
+    var body: some View {
+        Section(t("Registration measurements (helper)", "قياسات المطابقة (للمساعد)")) {
+            Text(t("Collect a comparison scan in the recovered saved map. Select corresponding physical features yourself. Category labels or similar rooms do not establish identity.", "اجمع مسح مقارنة في الخريطة المحفوظة المستعادة. اختر المعالم المادية المتقابلة بنفسك. التشابه أو التصنيف لا يتحقق من الهوية."))
+            if let record = places.registration, record.frame == place.worldFrame {
+                Text(t("Original scan", "المسح الأصلي") + ": " + record.frame.capturedAt.formatted())
+                Text(t("Comparison capture", "مسح المقارنة") + ": " + record.recordedAt.formatted())
+                Text("\(record.frame.placeID) / \(record.frame.revision)").font(.caption)
+                Text(t("Floor and exact container identity remain unknown. No walking or handling guidance is enabled.", "يبقى الطابق وهوية الحاوية الدقيقة غير معروفين. لا تُفعّل إرشادات المشي أو التعامل مع الأغراض."))
+                Text(t("Scan story indices (not verified floors): ", "مؤشرات الطابق في المسح (غير متحقق منها): ") + (record.baselineStory.map(String.init) ?? "?") + " / " + (record.measuredStory.map(String.init) ?? "?"))
+                Text(t("Captured floor polygons: ", "مضلعات الأرضية الملتقطة: ") + String(record.measured.filter { $0.kind == "floor" && !$0.polygonCorners.isEmpty }.count))
+                Picker(t("Saved physical feature", "المعلم المادي المحفوظ"), selection: $baselineID) {
+                    Text(t("Choose", "اختر")).tag("")
+                    ForEach(record.baseline, id: \.id) { feature in Text(feature.kind + " · " + feature.id).tag(feature.id) }
+                }
+                Picker(t("Corresponding measured feature", "المعلم المقاس المقابل"), selection: $measuredID) {
+                    Text(t("Choose", "اختر")).tag("")
+                    ForEach(record.measured, id: \.id) { feature in Text(feature.kind + " · " + feature.id).tag(feature.id) }
+                }
+                Button(t("Record this correspondence", "سجّل هذه المطابقة")) {
+                    let pair = RoomRegistrationAcquisition.Correspondence(baselineID: baselineID, measuredID: measuredID)
+                    if places.selectRegistrationPairs(record.correspondences + [pair], acquisitionID: record.id) {
+                        baselineID = ""; measuredID = ""
+                    }
+                }.disabled(baselineID.isEmpty || measuredID.isEmpty || places.registrationSaving)
+                ForEach(Array(record.correspondences.enumerated()), id: \.offset) { index, pair in
+                    Text("\(pair.baselineID) → \(pair.measuredID)").font(.caption)
+                    Button(t("Remove correspondence", "احذف المطابقة")) {
+                        var pairs = record.correspondences; pairs.remove(at: index)
+                        _ = places.selectRegistrationPairs(pairs, acquisitionID: record.id)
+                    }.disabled(places.registrationSaving)
+                }
+                if let residual = record.maximumCenterResidualMetres {
+                    Text(t("Maximum center difference in metres: ", "أكبر فرق بين المراكز بالمتر: ") + String(format: "%.3f", residual))
+                    Text(t("This is measured consistency, not total error, successful registration or identity proof. Partial scans can move a feature's estimated center.", "هذا قياس للاتساق وليس للخطأ الكلي أو إثبات المطابقة أو الهوية. قد يتغير المركز المقدر مع المسح الجزئي."))
+                }
+                Button(t("Save measurement record on this phone", "احفظ سجل القياسات على الهاتف")) {
+                    Task { @MainActor in _ = await places.saveRegistration(acquisitionID: record.id) }
+                }.disabled(places.registrationSaving || places.registrationLoading)
+            }
+            if places.registrationLoadNeedsRetry {
+                Button(t("Retry loading this selection", "أعد تحميل هذا الاختيار")) {
+                    Task { @MainActor in await places.loadRegistration(for: place) }
+                }.disabled(places.registrationLoading || places.registrationSaving)
+            }
+            if !places.registrationStatus.isEmpty { Text(places.registrationStatus) }
+        }.task(id: place.worldFrame?.revision) { await places.loadRegistration(for: place) }
     }
 }

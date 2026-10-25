@@ -1,0 +1,7 @@
+# Practice footer candidate repair
+
+Base source fetched directly from GitHub master d941a4a72bbfefaee0844fa4432eb971e0db6aca. Checkpoint23 focused accessibility run https://github.com/mischa23v/blind/actions/runs/40203619948, job121199804823, failed with exit65 at LaunchTests.swift:143. Actual raw audit65536 identifies StaticText containing the complete practice safety footer, frame{{20.0,660.7},{400.0,77.7}}: Dynamic Type font sizes partially unsupported. Unlike preceding diagnostics it does not name the practice button or heading. This supports repairing the newly identified footer, not claiming that every preceding element now passes.
+
+Minimal candidate adds explicit semantic body font, unlimited lines, vertical intrinsic sizing and leading multiline alignment to this footer only. English and Arabic safety warnings remain byte-identical. Prior button/header changes and audit gates remain untouched. No hiding, shrinking, Dynamic Type clamp, audit suppression or workflow change. Root cause within platform section-footer defaults has not been established by native inspection; this remains a candidate requiring a real unsuppressed rerun.
+
+Five targeted Node source contracts passed, zero failures/skips. Includes original heading contracts and two new footer contracts with modifier-removal mutations. These are source checks, not SwiftUI layout, native build, VoiceOver or device acceptance. No full aggregate run here; coordinate it on the final combined checkpoint. The exact native failure log is preserved.

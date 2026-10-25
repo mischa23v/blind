@@ -1,0 +1,142 @@
+✔ raw feature/corner bounds precede all conversion and no matching authority is invented (1.469916ms)
+✔ held read selection rotates ownership and existing helper offers explicit bounded retry (0.74691ms)
+✔ stale save completion cannot publish another selection status (0.410022ms)
+✔ scan preparation reuses bounded verified bytes off main and deletion retires before SQL (1.63358ms)
+✖ actual registration acquisition and native ownership replay use real pinned GRDB (11732.996783ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11858.341001
+
+✖ failing tests:
+
+test at blind-registration-reviewed/validation/tools/test/room-registration-acquisition.test.mjs:51:1
+✖ actual registration acquisition and native ownership replay use real pinned GRDB (11732.996783ms)
+  AssertionError [ERR_ASSERTION]: Replay retained at /workspace/scratch/90f3f6703064/blind-registration-reviewed/replay
+  Test Suite 'All tests' started at 2026-10-25 17:48:31.865
+  Test Suite 'Debug-linux-x86_64.xctest' started at 2026-10-25 17:48:31.866
+  Test Suite 'AcquisitionTests' started at 2026-10-25 17:48:31.866
+  Test Case 'AcquisitionTests.testA001SimilarFridgesNeverAutoPair' started at 2026-10-25 17:48:31.866
+  Test Case 'AcquisitionTests.testA001SimilarFridgesNeverAutoPair' passed (0.002 seconds)
+  Test Case 'AcquisitionTests.testA002ExplicitIndependentPairsMeasureOriginalCoordinates' started at 2026-10-25 17:48:31.869
+  Test Case 'AcquisitionTests.testA002ExplicitIndependentPairsMeasureOriginalCoordinates' passed (0.001 seconds)
+  Test Case 'AcquisitionTests.testA003OtherHomeOrScanReceiptCannotCommit' started at 2026-10-25 17:48:31.870
+  Test Case 'AcquisitionTests.testA003OtherHomeOrScanReceiptCannotCommit' passed (0.001 seconds)
+  Test Case 'AcquisitionTests.testA004NativeCaptureLossAndSessionChangeCannotRecoverByNormalFrameAlone' started at 2026-10-25 17:48:31.871
+  Test Case 'AcquisitionTests.testA004NativeCaptureLossAndSessionChangeCannotRecoverByNormalFrameAlone' passed (0.0 seconds)
+  Test Case 'AcquisitionTests.testA005StaleReplayAndWrongScanAreRejected' started at 2026-10-25 17:48:31.871
+  Test Case 'AcquisitionTests.testA005StaleReplayAndWrongScanAreRejected' passed (0.101 seconds)
+  Test Case 'AcquisitionTests.testA006RestartPreservesHistoricalProvenanceNotLiveCapture' started at 2026-10-25 17:48:31.972
+  Test Case 'AcquisitionTests.testA006RestartPreservesHistoricalProvenanceNotLiveCapture' passed (0.001 seconds)
+  Test Case 'AcquisitionTests.testA007MalformedAndOversizedMeasurementsRejectWhole' started at 2026-10-25 17:48:31.973
+  Test Case 'AcquisitionTests.testA007MalformedAndOversizedMeasurementsRejectWhole' passed (0.0 seconds)
+  Test Case 'AcquisitionTests.testA008MaximumRecordFitsExistingStoreBudget' started at 2026-10-25 17:48:31.974
+  Test Case 'AcquisitionTests.testA008MaximumRecordFitsExistingStoreBudget' passed (0.003 seconds)
+  Test Case 'AcquisitionTests.testA009NativeStartRequiresExactRecoveredSessionAndArtifact' started at 2026-10-25 17:48:31.977
+  Test Case 'AcquisitionTests.testA009NativeStartRequiresExactRecoveredSessionAndArtifact' passed (0.0 seconds)
+  Test Case 'AcquisitionTests.testA010ActualNativeFrameConsumerWithdrawsOnTrackingLoss' started at 2026-10-25 17:48:31.977
+  Test Case 'AcquisitionTests.testA010ActualNativeFrameConsumerWithdrawsOnTrackingLoss' passed (0.0 seconds)
+  Test Case 'AcquisitionTests.testA011ActualRoomPlanAdapterPreservesFloorPolygonAndDistinctFridgeIDs' started at 2026-10-25 17:48:31.978
+  Test Case 'AcquisitionTests.testA011ActualRoomPlanAdapterPreservesFloorPolygonAndDistinctFridgeIDs' passed (0.001 seconds)
+  Test Case 'AcquisitionTests.testA012RoomOnlyHistoryAvailableAfterIdentityLossWithoutFridgeGuess' started at 2026-10-25 17:48:31.978
+  Test Case 'AcquisitionTests.testA012RoomOnlyHistoryAvailableAfterIdentityLossWithoutFridgeGuess' passed (0.006 seconds)
+  Test Case 'AcquisitionTests.testA013FreshObservationWinsCurrentScopeButHistoricalReportSurvives' started at 2026-10-25 17:48:31.984
+  Test Case 'AcquisitionTests.testA013FreshObservationWinsCurrentScopeButHistoricalReportSurvives' passed (0.002 seconds)
+  Test Case 'AcquisitionTests.testA014ActualNativeReviewSaveAndReloadKeepOriginalAcquisition' started at 2026-10-25 17:48:31.987
+  Test Case 'AcquisitionTests.testA014ActualNativeReviewSaveAndReloadKeepOriginalAcquisition' passed (0.014 seconds)
+  Test Case 'AcquisitionTests.testA015ActualNativeSaveRejectedAfterPrivacyDeletion' started at 2026-10-25 17:48:32.001
+  Test Case 'AcquisitionTests.testA015ActualNativeSaveRejectedAfterPrivacyDeletion' passed (0.009 seconds)
+  Test Case 'AcquisitionTests.testA016StoreReplacementCannotRebindOldAcquisition' started at 2026-10-25 17:48:32.010
+  Test Case 'AcquisitionTests.testA016StoreReplacementCannotRebindOldAcquisition' passed (0.012 seconds)
+  Test Case 'AcquisitionTests.testA017WrongFloorIsRawMismatchNotInferredIdentity' started at 2026-10-25 17:48:32.022
+  Test Case 'AcquisitionTests.testA017WrongFloorIsRawMismatchNotInferredIdentity' passed (0.001 seconds)
+  Test Case 'AcquisitionTests.testA018LateOldOwnerCannotEraseNewCapture' started at 2026-10-25 17:48:32.023
+  Test Case 'AcquisitionTests.testA018LateOldOwnerCannotEraseNewCapture' passed (0.0 seconds)
+  Test Case 'AcquisitionTests.testA019ActualNativeLatePreStartAndReplayCannotEraseCurrentAcquisition' started at 2026-10-25 17:48:32.023
+  Test Case 'AcquisitionTests.testA019ActualNativeLatePreStartAndReplayCannotEraseCurrentAcquisition' passed (0.0 seconds)
+  Test Case 'AcquisitionTests.testA020OversizedRawArraysRejectBeforeMatrixExpansion' started at 2026-10-25 17:48:32.023
+  Test Case 'AcquisitionTests.testA020OversizedRawArraysRejectBeforeMatrixExpansion' passed (0.0 seconds)
+  Test Case 'AcquisitionTests.testA021HeldLoadASelectionBRetiresAAndOffersExplicitBoundedRetry' started at 2026-10-25 17:48:32.024
+  Test Case 'AcquisitionTests.testA021HeldLoadASelectionBRetiresAAndOffersExplicitBoundedRetry' passed (0.012 seconds)
+  Test Case 'AcquisitionTests.testA022HeldSaveACompletionCannotReplaceBStatusOnSuccessOrFailure' started at 2026-10-25 17:48:32.036
+  Test Case 'AcquisitionTests.testA022HeldSaveACompletionCannotReplaceBStatusOnSuccessOrFailure' passed (0.015 seconds)
+  Test Case 'AcquisitionTests.testA023HeldPreparationDoesNotBlockOwnerAndCancelRescanDoesNotFanOut' started at 2026-10-25 17:48:32.050
+  Test Case 'AcquisitionTests.testA023HeldPreparationDoesNotBlockOwnerAndCancelRescanDoesNotFanOut' passed (0.009 seconds)
+  Test Case 'AcquisitionTests.testA024HeldPreparationRejectsReplacedStoreOrDescriptor' started at 2026-10-25 17:48:32.059
+  Test Case 'AcquisitionTests.testA024HeldPreparationRejectsReplacedStoreOrDescriptor' passed (0.025 seconds)
+  Test Case 'AcquisitionTests.testA025DeletionAdmissionRetiresHeldPreparationEvenWhenSQLFails' started at 2026-10-25 17:48:32.084
+  Test Case 'AcquisitionTests.testA025DeletionAdmissionRetiresHeldPreparationEvenWhenSQLFails' passed (0.018 seconds)
+  Test Case 'AcquisitionTests.testA026BoundedOriginalBytesDecodeOffMainAndOversizeRejectsWhole' started at 2026-10-25 17:48:32.102
+  Test Case 'AcquisitionTests.testA026BoundedOriginalBytesDecodeOffMainAndOversizeRejectsWhole' passed (0.014 seconds)
+  Test Case 'AcquisitionTests.testA027RestartHeldLoadCannotPublishAfterFailedDeleteAdmission' started at 2026-10-25 17:48:32.116
+  Test Case 'AcquisitionTests.testA027RestartHeldLoadCannotPublishAfterFailedDeleteAdmission' passed (0.01 seconds)
+  Test Case 'AcquisitionTests.testA028UnrelatedRoomDeletionDoesNotRetireHeldSelectionB' started at 2026-10-25 17:48:32.126
+  Test Case 'AcquisitionTests.testA028UnrelatedRoomDeletionDoesNotRetireHeldSelectionB' passed (0.019 seconds)
+  Test Case 'AcquisitionTests.testA029DeletingLoadedAWhileBPendingRetiresOnlyABytesEvenOnFailure' started at 2026-10-25 17:48:32.145
+  Test Case 'AcquisitionTests.testA029DeletingLoadedAWhileBPendingRetiresOnlyABytesEvenOnFailure' passed (0.009 seconds)
+  Test Case 'AcquisitionTests.testA030NativeDeletionRetiresDiagnosticBeforeHeldOrFailedPurge' started at 2026-10-25 17:48:32.154
+  Test Case 'AcquisitionTests.testA030NativeDeletionRetiresDiagnosticBeforeHeldOrFailedPurge' passed (0.019 seconds)
+  Test Case 'AcquisitionTests.testA031HeldReadCannotAdmitSaveOrOverwriteSelectionStatus' started at 2026-10-25 17:48:32.173
+  /workspace/scratch/90f3f6703064/blind-registration-reviewed/replay/Tests/AcquisitionReplayTests/AcquisitionTests.swift:334: error: AcquisitionTests.testA031HeldReadCannotAdmitSaveOrOverwriteSelectionStatus : XCTAssertFalse failed - 
+  /workspace/scratch/90f3f6703064/blind-registration-reviewed/replay/Tests/AcquisitionReplayTests/AcquisitionTests.swift:335: error: AcquisitionTests.testA031HeldReadCannotAdmitSaveOrOverwriteSelectionStatus : XCTAssertEqual failed: ("Measurement record saved locally. It does not verify current location or object identity.") is not equal to ("Loading measurements for this selection.") - 
+  /workspace/scratch/90f3f6703064/blind-registration-reviewed/replay/Tests/AcquisitionReplayTests/AcquisitionTests.swift:336: error: AcquisitionTests.testA031HeldReadCannotAdmitSaveOrOverwriteSelectionStatus : XCTAssertNil failed: "1555 bytes" - 
+  /workspace/scratch/90f3f6703064/blind-registration-reviewed/replay/Tests/AcquisitionReplayTests/AcquisitionTests.swift:334: error: AcquisitionTests.testA031HeldReadCannotAdmitSaveOrOverwriteSelectionStatus : XCTAssertFalse failed - 
+  /workspace/scratch/90f3f6703064/blind-registration-reviewed/replay/Tests/AcquisitionReplayTests/AcquisitionTests.swift:335: error: AcquisitionTests.testA031HeldReadCannotAdmitSaveOrOverwriteSelectionStatus : XCTAssertEqual failed: ("Measurement record saved locally. It does not verify current location or object identity.") is not equal to ("Loading measurements for this selection.") - 
+  /workspace/scratch/90f3f6703064/blind-registration-reviewed/replay/Tests/AcquisitionReplayTests/AcquisitionTests.swift:336: error: AcquisitionTests.testA031HeldReadCannotAdmitSaveOrOverwriteSelectionStatus : XCTAssertNil failed: "1555 bytes" - 
+  Test Case 'AcquisitionTests.testA031HeldReadCannotAdmitSaveOrOverwriteSelectionStatus' failed (0.018 seconds)
+  Test Suite 'AcquisitionTests' failed at 2026-10-25 17:48:32.190
+  	 Executed 31 tests, with 6 failures (0 unexpected) in 0.323 (0.323) seconds
+  Test Suite 'Debug-linux-x86_64.xctest' failed at 2026-10-25 17:48:32.190
+  	 Executed 31 tests, with 6 failures (0 unexpected) in 0.323 (0.323) seconds
+  Test Suite 'All tests' failed at 2026-10-25 17:48:32.190
+  	 Executed 31 tests, with 6 failures (0 unexpected) in 0.323 (0.323) seconds
+  ◇ Test run started.
+  ↳ Testing Library Version: 6.4.1 (804dc4530ef3666)
+  ↳ Target Platform: x86_64-unknown-linux-gnu
+  ✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+  Note: Some test targets reported failures:
+    - AcquisitionReplayTests (XCTest)
+  
+  warning: /home/agent/.config/swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+  warning: /home/agent/.config/swiftpm/security is not accessible or not writable, disabling user-level cache features.
+  Building for debugging...
+  [Computing dependencies]
+  [Provisioning 9 / 14]
+  [1 / 8] BlindMemory
+  [2 / 9] BlindMemory
+  [5 / 12] AcquisitionReplay
+  [6 / 13] AcquisitionReplay
+  [9 / 14] AcquisitionReplayTests-product
+  [11 / 16] AcquisitionReplayTests-product
+  [18 / 41] BlindMemory_BlindMemory
+  [28 / 41] AcquisitionReplay
+  [30 / 42] BlindMemory
+  [31 / 42] AcquisitionReplay
+  [34 / 42]
+  [35 / 41] AcquisitionReplay
+  [39 / 42] AcquisitionReplayTests-product
+  [46 / 48] AcquisitionReplayTests-test-runner
+  [50 / 50] AcquisitionReplayTests-test-runner
+  Build complete! (8.13 secs)
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/90f3f6703064/blind-registration-reviewed/validation/tools/test/room-registration-acquisition.test.mjs:82:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
