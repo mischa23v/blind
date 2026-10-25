@@ -1,0 +1,49 @@
+{
+  "status": "NATIVE_CALLBACK_PRODUCER_PROBE_PASSED",
+  "runID": 40215518344,
+  "jobID": 121235698267,
+  "workflowCommit": "8609fd2789d0ea70b87c68a12bfaaa5be146eda4",
+  "testedAppSource": "6925e21e4fef039b43ab6f4158aa37fd704b258e",
+  "nativeTestCount": 1,
+  "passed": 1,
+  "failed": 0,
+  "skipped": 0,
+  "expectedFailures": 0,
+  "actualCompletedUtterances": 3,
+  "matchedNativeEvents": 9,
+  "artifactID": 12607362501,
+  "artifactSHA256": "2659c14717062c0a5fc4eadd15e4147442028eff7e68a4fb9d4cc6073291c7af",
+  "actorOnlyOutputSHA256": "a662238a579e3cd8a2ba38b40a252343b36eaab12e060564d4d2ccdc8463495b",
+  "callbackTimings": [
+    {
+      "receiptID": "C685C87B-1217-4AFE-A2E9-2824298398B2",
+      "enqueueToStartMilliseconds": 61.151,
+      "startToFinishSeconds": 5.674
+    },
+    {
+      "receiptID": "41168D4F-A792-476E-981C-416C2FD29406",
+      "enqueueToStartMilliseconds": 11.148,
+      "startToFinishSeconds": 4.019
+    },
+    {
+      "receiptID": "80695856-D661-4351-8E4F-061A648F6FA5",
+      "enqueueToStartMilliseconds": 0.995,
+      "startToFinishSeconds": 4.36
+    }
+  ],
+  "inputToOutputLatency": "NOT MEASURED; enqueue timestamp is not user-input timestamp",
+  "systemAdvertisedVoice": "com.apple.voice.super-compact.en-US.Samantha",
+  "voiceCount": 68,
+  "playbackRouteType": "Speaker",
+  "appURLLoadingAttempts": 0,
+  "OSAssetNetworkBehavior": "UNOBSERVED; no app download/install API invoked",
+  "warnings": [
+    "AVAudioSession synchronous activation on main thread warning in test-only preflight"
+  ],
+  "evidenceBoundary": "Actual app controller/code-owned memory reply to Feedback ledger and matching AVSpeech callbacks on isolated iOS Simulator; authored inputs; actor export excludes state/oracle",
+  "actorTrial": "NOT RUN",
+  "audibilityOrListenerComprehension": "NOT VERIFIED",
+  "VoiceOverAnnouncementDelivery": "NOT RUN",
+  "physicalBackpackRetrieval": "NOT VERIFIED",
+  "newFullJourneysClaimed": 0
+}

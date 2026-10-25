@@ -1,0 +1,18 @@
+{
+  "kind": "POST_RUN_SIMULATED_COMPREHENSION_REVIEW",
+  "actual_reply": "You told me today your backpack was on the desk. I do not know where it is now.",
+  "reply_quote_note": "Punctuation normalized only; exact output is retained separately.",
+  "understood": "The desk is a user-reported historical location, not a current sighting.",
+  "unknown": [
+    "Whether the backpack remains there",
+    "Which desk",
+    "Desk location relative to the user"
+  ],
+  "usefulness": "A useful search lead, not sufficient physical guidance.",
+  "possible_next_user_turn": "Did I tell you which desk?",
+  "actor_actions_executed": 0,
+  "closed_loop_actor_trial": false,
+  "physical_retrieval_verified": false,
+  "real_listener_comprehension_verified": false,
+  "new_full_journeys": 0
+}
