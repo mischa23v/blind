@@ -1,0 +1,20 @@
+PASS disabled optional trace never evaluates payload
+PASS disabled actual recorder rejects helper before payload and IO
+PASS helper preserves producer output and one invocation
+PASS enabled actual recorder evaluates admitted payload once
+PASS disabled helper leaves producer invocation and output unchanged
+PASS helper leaves synthetic producer error identity and invocation count unchanged
+PASS actual recorded request and utterance stay explicit; unavailable SDK tool ID stays unbound
+PASS actual file retains exact bounded returned output
+PASS actual helper logs actual Core-produced prompt unchanged
+PASS context source keys are real and original record IDs explicitly unbound
+PASS nil request is not replaced with a current global request
+PASS native helper retains actual recorder text bound and visible truncation
+PASS helper clean finish drains actual recorded events
+PASS finished recorder rejects helper without evaluating payload
+PASS actual privacy clear returns successful developer receipt
+PASS old and newly constructed helpers cannot resurrect purged recorder
+PASS actual write failure remains observable and helper stops evaluating payload
+PASS developer failure reporting callable without UIKit or visible model state
+RESULT 18/18 helper assertions passed; no Apple callback execution claimed
+Fixed developer stderr receipt captured; no child-visible UI was used.

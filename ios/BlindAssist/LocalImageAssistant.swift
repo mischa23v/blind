@@ -423,6 +423,9 @@ private struct ReadLocalEvidence: Tool {
     let name = "readLocalEvidence"
     let description: String
     let runtime: CompanionToolRuntime
+    #if DEBUG
+    var debugTrace: DebugNativeSessionTrace? = nil
+    #endif
 
     @Generable struct Arguments {
         @Guide(description: "One advertised read-only capability: currentObservation, savedMemory, navigationState, deviceClock, saudiBanknote, isolatedColor, familiarPeople, or readText.")
@@ -433,13 +436,35 @@ private struct ReadLocalEvidence: Tool {
     enum Failure: Error { case unsupportedCapability, callLimitReached }
     func call(arguments: Arguments) async throws -> String {
         try Task.checkCancellation()
-        guard let kind = CompanionToolKind(rawValue: arguments.capability) else { throw Failure.unsupportedCapability }
+        #if DEBUG
+        debugTrace?.event(.toolCall, source: .toolRuntime) {
+            .init(text: arguments.query, label: "readLocalEvidence." + arguments.capability + "; SDKCallID=unbound")
+        }
+        #endif
+        guard let kind = CompanionToolKind(rawValue: arguments.capability) else {
+            #if DEBUG
+            debugTrace?.event(.toolResult, source: .toolRuntime) { .init(label: "unsupportedCapability") }
+            #endif
+            throw Failure.unsupportedCapability
+        }
         let result = await runtime.run(CompanionToolRequest(kind: kind, query: arguments.query))
         try Task.checkCancellation()
         // Throwing stops Foundation Models' loop instead of feeding an unlimited
         // stream of "limit reached" messages back to the model.
-        guard result.status != .callLimit else { throw Failure.callLimitReached }
-        return String(decoding: try JSONEncoder().encode(result), as: UTF8.self)
+        guard result.status != .callLimit else {
+            #if DEBUG
+            debugTrace?.event(.toolResult, source: .toolRuntime) { .init(label: "callLimitReached") }
+            #endif
+            throw Failure.callLimitReached
+        }
+        let payload = String(decoding: try JSONEncoder().encode(result), as: UTF8.self)
+        #if DEBUG
+        // Log the exact already-created return string, not a second tool execution.
+        debugTrace?.event(.toolResult, source: .toolRuntime) {
+            .init(text: payload, label: "readLocalEvidence.returnedJSON; SDKCallID=unbound")
+        }
+        #endif
+        return payload
     }
 }
 #endif
@@ -509,9 +534,13 @@ enum LocalImageAssistant {
     static func converse(dialogue: AssistantDialogue, arabic: Bool, preferredName: String = "", audience: AssistantAudience = .general,
                          situation: [String: Any] = [:], workingState: CompanionWorkingState = CompanionWorkingState(), modelContext suppliedContext: CompanionModelContext? = nil,
                          availableTools: Set<CompanionToolKind> = [], toolExecutor: CompanionToolExecutor? = nil,
+                         requestID: UUID? = nil,
                          onSpeechCandidate: (@MainActor @Sendable (String, [String], [CompanionEvidence]) -> Void)? = nil,
                          onReplyComplete: (@MainActor @Sendable (String) -> Void)? = nil,
                          onPartial: (@MainActor @Sendable (String) -> Void)? = nil) async -> LocalImageAnswer {
+        #if DEBUG
+        let debugTrace = DebugNativeSessionTrace(requestID: requestID)
+        #endif
         #if canImport(FoundationModels)
         if #available(iOS 26.0, *), OnDeviceLanguage.supports(arabic: arabic) {
             do {
@@ -572,7 +601,11 @@ enum LocalImageAssistant {
                 if let toolExecutor, !availableTools.isEmpty {
                     let local = CompanionToolRuntime(available: availableTools, executor: toolExecutor)
                     runtime = local
-                    tools = [ReadLocalEvidence(description: "Read local evidence only. Available: \(availableTools.map(\.rawValue).sorted().joined(separator: ", ")). At most three reads. Use saudiBanknote for money, isolatedColor for anonymous appearance, familiarPeople for tentative enrolled matches, readText for OCR. Missing tools/results mean unknown. No side effects.", runtime: local)]
+                    var tool = ReadLocalEvidence(description: "Read local evidence only. Available: \(availableTools.map(\.rawValue).sorted().joined(separator: ", ")). At most three reads. Use saudiBanknote for money, isolatedColor for anonymous appearance, familiarPeople for tentative enrolled matches, readText for OCR. Missing tools/results mean unknown. No side effects.", runtime: local)
+                    #if DEBUG
+                    tool.debugTrace = debugTrace
+                    #endif
+                    tools = [tool]
                 } else { runtime = nil; tools = [] }
                 let started = ProcessInfo.processInfo.systemUptime
                 let logger = Logger(subsystem: "org.blindassist.mobility", category: "CompanionAgent")
@@ -594,6 +627,9 @@ enum LocalImageAssistant {
                         task: reduced ? "Answer the latest message. No tools are available in this reduced attempt; ask if necessary context is missing." : "Answer the latest message.")
                     // A new session is mandatory after overflow. A retry has no
                     // tools and therefore cannot repeat reads or reset call limits.
+                    #if DEBUG
+                    debugTrace?.prompt(plan, instructions: instructions, scope: reduced ? "conversation.reducedRetry" : "conversation")
+                    #endif
                     let session = LanguageModelSession(tools: reduced ? [] : tools, instructions: instructions)
                     do {
                         let stream = session.streamResponse(to: plan.prompt,
@@ -601,6 +637,9 @@ enum LocalImageAssistant {
                         for try await snapshot in stream {
                             try Task.checkCancellation()
                             text = snapshot.content
+                            #if DEBUG
+                            debugTrace?.event(.modelResponseChunk) { .init(text: snapshot.content, label: "conversation.cumulativeUnvalidatedSnapshot") }
+                            #endif
                             let evidence = assistantEvidence + (await runtime?.currentEvidence() ?? [])
                             for chunk in chunks.append(text, reports: reports, evidence: evidence) {
                                 try Task.checkCancellation()
@@ -612,7 +651,12 @@ enum LocalImageAssistant {
                                 try Task.checkCancellation()
                                 await onSpeechCandidate?(chunk, reports, evidence)
                             }
-                            if chunks.rejected { break }
+                            if chunks.rejected {
+                                #if DEBUG
+                                debugTrace?.event(.outputGate, source: .outputGate) { .init(label: "sentenceEvidenceGuard.rejected") }
+                                #endif
+                                break
+                            }
                         }
                         break generation
                     } catch {
@@ -650,7 +694,14 @@ enum LocalImageAssistant {
                     await onSpeechCandidate?(chunk, reports, evidence)
                 }
                 text = text.trimmingCharacters(in: .whitespacesAndNewlines)
-                if chunks.rejected || !usableChatReply(text) || !CompanionEvidenceGuard.allows(text, reports: reports, evidence: evidence) {
+                let finalRejected = chunks.rejected || !usableChatReply(text) || !CompanionEvidenceGuard.allows(text, reports: reports, evidence: evidence)
+                #if DEBUG
+                debugTrace?.event(.modelResponse) { .init(text: text, label: "conversation.finalTrimmedUnvalidatedText") }
+                debugTrace?.event(.outputGate, source: .outputGate) {
+                    .init(text: text, label: finalRejected ? "conversation.finalGuard.rejected" : "conversation.finalGuard.accepted")
+                }
+                #endif
+                if finalRejected {
                     // Never repair a model's claim by dropping its uncertainty or
                     // by turning a past report into a present fact. Deterministic
                     // unknown wording is not another expensive model round-trip.
@@ -683,21 +734,44 @@ enum LocalImageAssistant {
                     task: "Record task metadata, using only the exact complete user statement as source.") else {
                     return LocalImageAnswer(text: text, status: "Reply available; task update exceeded local context budget.")
                 }
+                #if DEBUG
+                debugTrace?.prompt(bookkeepingPlan, instructions: bookkeepingInstructions, scope: "bookkeeping")
+                #endif
                 let result = try? await bookkeeping.respond(to: bookkeepingPlan.prompt, generating: CompanionDecision.self,
                     options: GenerationOptions(samplingMode: .greedy, maximumResponseTokens: ContextWindowPolicy.bookkeepingResponseTokenLimit))
                 try Task.checkCancellation()
                 guard let decision = result?.content else {
                     return LocalImageAnswer(text: text, status: "Reply available; task update unavailable.")
                 }
+                #if DEBUG
+                debugTrace?.event(.modelResponse) {
+                    // Only returned structured fields, never model internals/reasoning.
+                    let fields = ["factQuote": decision.factQuote, "factSubject": decision.factSubject,
+                        "factValue": decision.factValue, "newGoal": decision.newGoal,
+                        "cancellationReport": decision.cancellationReport, "completionReport": decision.completionReport,
+                        "completionStep": decision.completionStep, "nextStep": decision.nextStep]
+                    let bytes = try? JSONEncoder().encode(fields)
+                    return .init(text: bytes.map { String(decoding: $0, as: UTF8.self) }, label: "bookkeeping.returnedFields.unvalidated")
+                }
+                #endif
                 let fact = reportedFact(quote: decision.factQuote, subject: decision.factSubject, value: decision.factValue, latest: latest)
                 return LocalImageAnswer(text: text, status: "On-device conversation; sources checked.", taskUpdate: CompanionTaskUpdate(
                     goal: decision.newGoal, nextStep: decision.nextStep, completionReport: decision.completionReport, completionStep: decision.completionStep,
                     cancellationReport: decision.cancellationReport, fact: fact))
             } catch is CancellationError {
+                #if DEBUG
+                debugTrace?.event(.unavailable) { .init(label: "conversation.cancelled") }
+                #endif
                 return LocalImageAnswer(text: nil, status: "Conversation interrupted.")
             } catch is ContextWindowPolicy.BudgetError {
+                #if DEBUG
+                debugTrace?.event(.unavailable) { .init(label: "conversation.contextBudgetError") }
+                #endif
                 return LocalImageAnswer(text: nil, status: arabic ? "هذا الطلب أطول من حد السياق المحلي. جرّب سؤالاً أقصر." : "That request exceeds the local context budget. Try a shorter question.")
             } catch {
+                #if DEBUG
+                debugTrace?.event(.unavailable) { .init(label: "conversation.failed; errorDetailsOmitted") }
+                #endif
                 return LocalImageAnswer(text: nil, status: arabic ? "تعذر إكمال الرد على الجهاز. لم يتم تنفيذ أي إجراء خارجي." : "The on-device reply could not finish. No external action was taken.")
             }
         }
@@ -706,7 +780,10 @@ enum LocalImageAssistant {
     }
     /// A constrained uncertain hint, never a sensor search result or identity.
     /// The controller must revalidate the frame and guard the code-written hint.
-    static func spot(target: String, image: CVPixelBuffer, arabic: Bool, modelContext: CompanionModelContext) async -> String? {
+    static func spot(target: String, image: CVPixelBuffer, arabic: Bool, modelContext: CompanionModelContext, requestID: UUID? = nil) async -> String? {
+        #if DEBUG
+        let debugTrace = DebugNativeSessionTrace(requestID: requestID)
+        #endif
         guard !Task.isCancelled, !target.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
               target.count <= 40 else { return nil }
         #if BLIND_APPLE_MULTIMODAL && canImport(FoundationModels)
@@ -717,12 +794,20 @@ enum LocalImageAssistant {
                 try Task.checkCancellation()
                 let plan = try ContextWindowPolicy.makePrompt(latest: "Check the named target in this captured view.", instructions: instructions,
                     mandatoryFields: modelContext.mandatoryFields + [.init("target", [target])], fields: [], reduced: false)
+                #if DEBUG
+                debugTrace?.prompt(plan, instructions: instructions, scope: "spot.imageOmitted")
+                #endif
                 let result = try await session.respond(generating: SpotResult.self,
                     options: GenerationOptions(samplingMode: .greedy, maximumResponseTokens: 30)) {
                     plan.prompt
                     Attachment(image, orientation: .right)
                 }.content
                 try Task.checkCancellation()
+                #if DEBUG
+                debugTrace?.event(.modelResponse) {
+                    .init(text: "visible=\(result.visible); side=\(result.side)", label: "spot.returnedFields.notSensorEvidence")
+                }
+                #endif
                 guard result.visible == .yes else { return nil }
                 switch result.side {
                 case .left: return "left"
@@ -747,7 +832,10 @@ enum LocalImageAssistant {
         #endif
     }
     static func describe(image: CVPixelBuffer, question: String, context: SceneContext,
-                         situation: [String: Any], wordAllowance: Int, confirmedObjects: [String] = [], modelContext: CompanionModelContext) async -> LocalImageAnswer {
+                         situation: [String: Any], wordAllowance: Int, confirmedObjects: [String] = [], modelContext: CompanionModelContext, requestID: UUID? = nil) async -> LocalImageAnswer {
+        #if DEBUG
+        let debugTrace = DebugNativeSessionTrace(requestID: requestID)
+        #endif
         guard (1...300).contains(wordAllowance), context.monitoring == "observing" else {
             return LocalImageAnswer(text: nil, status: "Current monitoring does not permit a scene description.")
         }
@@ -774,11 +862,17 @@ enum LocalImageAssistant {
                     fields: [.init("capturedEvidence", [evidence]), .init("detectorObjectCandidatesNotIdentity", confirmedObjects.sorted())] + situationFields,
                     reduced: false)
                 guard plan.context["capturedEvidence"] != nil else { return LocalImageAnswer(text: nil, status: "Captured evidence exceeds local budget.") }
+                #if DEBUG
+                debugTrace?.prompt(plan, instructions: instructions, scope: "describe.imageOmitted")
+                #endif
                 let response = try await session.respond {
                     plan.prompt
                     Attachment(image, orientation: .right)
                 }
                 try Task.checkCancellation()
+                #if DEBUG
+                debugTrace?.event(.modelResponse) { .init(text: response.content, label: "describe.rawReturnedText.unvalidated") }
+                #endif
                 let text = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
                 guard !text.isEmpty, text.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars else { return LocalImageAnswer(text: nil, status: "Image model returned an unsupported answer.") }
                 return LocalImageAnswer(text: text, status: "Described this camera image using the on-device model.")
@@ -793,3 +887,44 @@ enum LocalImageAssistant {
     }
 }
 
+
+#if DEBUG
+/// Captured diagnostic ownership, not model authority or a new sensor observer.
+/// Nil without explicit launch opt-in. No callback fetches a newer recording token.
+struct DebugNativeSessionTrace: Sendable {
+    private let log: DebugSessionLog
+    private let token: DebugSessionLog.SessionToken
+    private let requestID: UUID?
+    init?(recorder: DebugSessionLog? = DebugSessionLog.shared, requestID: UUID? = nil) {
+        guard let log = recorder else { return nil }
+        self.log = log; self.token = log.sessionToken; self.requestID = requestID
+    }
+    func event(_ kind: DebugSessionLog.Kind, source: DebugSessionLog.Source = .onDeviceModel,
+               utteranceID: UUID? = nil, detail: () -> DebugSessionLog.Detail = { .init() }) {
+        log.record(kind, source: source, session: token,
+                   correlation: .init(requestID: requestID, utteranceID: utteranceID), detail: detail)
+    }
+    func prompt(_ plan: ContextWindowPolicy.PromptPlan, instructions: String, scope: String) {
+        event(.modelRequest) { .init(text: instructions, label: scope + ".instructions") }
+        event(.modelRequest) { .init(text: plan.prompt, label: scope + ".actualPrompt") }
+        event(.modelRequest) {
+            .init(text: plan.context.keys.sorted().joined(separator: ","),
+                  label: scope + ".includedContextKeys; underlyingRecordIDs=unbound")
+        }
+    }
+    func finish() { log.finish(session: token) }
+    private static let purgeReportQueue = DispatchQueue(label: "BlindAssist.DebugPurgeReceipt", qos: .utility)
+    private static let purgeReportSlot = DispatchSemaphore(value: 1)
+    static func reportPurgeResult(_ success: Bool) {
+        guard !success, purgeReportSlot.wait(timeout: .now()) == .success else { return }
+        purgeReportQueue.async {
+            defer { purgeReportSlot.signal() }
+            // Fixed diagnostic only: no text, names, paths, secrets or user data.
+            let message = "BlindAssist DEBUG: diagnostic purge failed or is unconfirmed; inspect private storage and retry.\n"
+            try? FileHandle.standardError.write(contentsOf: Data(message.utf8))
+        }
+    }
+    // Only the isolated helper harness may wait for this queue, never native callbacks.
+    static func drainDeveloperReportsForTesting() { purgeReportQueue.sync {} }
+}
+#endif

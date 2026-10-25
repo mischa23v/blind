@@ -26,6 +26,9 @@ final class VoiceInput: ObservableObject {
     private var lifecycle = VoiceCaptureRecoveryPolicy()
     private var utterance = VoiceUtteranceTracker()
     private var turn = UUID()
+    #if DEBUG
+    private let debugTrace = DebugNativeSessionTrace()
+    #endif
     private var captureGeneration = UUID()
     private var speechBeganDelivered = false
     private var timer: Timer?
@@ -283,6 +286,12 @@ final class VoiceInput: ObservableObject {
     func finish() {
         guard lifecycle.requested, canCapture else { return }
         let text = utterance.deliverable(isEcho: shouldIgnore?(utterance.text) == true)
+        #if DEBUG
+        debugTrace?.event(.userInput, source: .unverifiedMicrophone) {
+            .init(text: utterance.text,
+                  label: "asr.final." + (text == nil ? "notDeliverable" : "deliverableUnverified") + "; captureTurn=" + turn.uuidString)
+        }
+        #endif
         if continuous, engine?.isRunning == true, canCapture { beginTurn() }
         else { cancel() }
         guard let text else { return }

@@ -490,9 +490,15 @@ final class FamiliarFaceExperiment: ObservableObject {
                 try store.save(updated); people = updated; self.draft = nil; publishDraft()
                 status = "Saved \(person.examples.count) face examples under your label \(person.label). Hints can still be wrong."
             case .deletePerson(let id):
+                #if DEBUG
+                purgeDebugSessionDiagnostics()
+                #endif
                 let updated = try store.load().filter { $0.id != id }; try store.save(updated); people = updated
                 status = "Person and all their examples deleted."
             case let .deleteExample(personID, exampleID):
+                #if DEBUG
+                purgeDebugSessionDiagnostics()
+                #endif
                 let loaded = try store.load()
                 guard let person = loaded.first(where: { $0.id == personID }), person.examples.count > 1,
                       person.examples.contains(where: { $0.id == exampleID }) else { throw FamiliarFaceStore.StoreError.invalid }
@@ -523,7 +529,25 @@ final class FamiliarFaceExperiment: ObservableObject {
         draft?.examples.removeAll { $0.id == id }; draft?.previews[id] = nil; publishDraft()
         status = "Unfinished example removed. \(draftExamples.count) examples remain."
     }
+    #if DEBUG
+    private var debugPurgePending = false
+    private var debugLastPurgeSucceeded: Bool?
+    private func purgeDebugSessionDiagnostics() {
+        guard !debugPurgePending else { return }
+        debugPurgePending = true
+        DebugSessionLog.purgeForPrivacyClear { [weak self] success in
+            DispatchQueue.main.async { [weak self] in
+                self?.debugPurgePending = false
+                self?.debugLastPurgeSucceeded = success
+                DebugNativeSessionTrace.reportPurgeResult(success)
+            }
+        }
+    }
+    #endif
     func deleteAll() {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
         cancel(); enabled = false; dualPipeline = false
         FamiliarRecognitionPreference.save(false, in: preferences)
         encounters.reset()

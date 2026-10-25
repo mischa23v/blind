@@ -1,3 +1,7 @@
+### Native debug integration increment — 2026-10-25
+
+Previous source checkpoint `6945dc7` and unfinished source snapshots `0aaa637` are verified on master. DEBUG-only local diagnostics are now connected to native input, model, tool, evidence/gate and speech paths, with privacy purge hooks and no diagnostic UI or uploads. Fresh verification: **927/927 Core**, **362/362 Node**, and **18/18 executable assertions** on the exact extracted Foundation helper. Two brittle source assertions were narrowed after preserving their failures; behavior and cancellation checks remain. Native syntax parsing is not Apple SDK/runtime validation. Spatial integration, full clock-tool coverage and broader reconstruction remain open. Evidence: [checkpoint-03](research/rebuild-evidence/checkpoint-03/verification.json).
+
 ### Direct-clock increment — 2026-10-25
 
 Previous source checkpoint `9af6e77` is verified on master. The direct read-only clock lane is now integrated before task mutation, with original monotonic five-second freshness and exact reply/session/time-zone binding. Fresh full verification: **927/927 Core** and **342/342 Node**, zero failures or skips. Default and DEBUG/familiar native syntax parse passed; Apple SDK/device behavior is unverified. Legacy/model-selected clock delivery remains open. Evidence: [checkpoint-02](research/rebuild-evidence/checkpoint-02/verification.json). This incremental source awaits the commit containing this entry; it does not close the whole reconstruction.

@@ -1,6 +1,6 @@
 # Debug-only session diagnostics rebuild
 
-2026-10-25. Reconstructed recorder foundation, not recovered original source and not a completed native integration. This increment adds no app UI, history tab, recording button, export, upload or production telemetry.
+2026-10-25. Reconstructed recorder plus native instrumentation source, not recovered original source or completed Apple/device acceptance. This increment adds no app UI, history tab, recording button, export, upload or production telemetry.
 
 ## What is implemented
 
@@ -22,47 +22,39 @@ Conservative known-secret/media markers replace the whole bounded field and reco
 
 The source requests owner-only POSIX permissions, backup exclusion on Apple platforms and complete file protection on iOS. Existing-folder protection inheritance, locked/unlocked writes, device backup exclusion, simulator/device container retrieval and performance have NOT been verified. These are acceptance gates, not a claim of tested encryption or backup behavior. Protected-storage write failure stops logging rather than weakening protection. The private directory rejects symlink entries and unexpected subdirectories; removal only targets UUID-named `.jsonl`/`.open` files.
 
-`DebugSessionLog.purgeForPrivacyClear` must be called by the existing privacy-clear flow, including launches where recording was not enabled. It immediately fences the active recorder, closes the handle and deletes owned logs asynchronously. Its completion must be checked; a failed deletion is reported, not announced as success. An explicit repeat can retry a failed purge without re-enabling recording; a duplicate while deletion is pending reports unconfirmed success as false rather than adding unbounded work. After clear there is no resume/start API. Only a new process with a fresh explicit launch opt-in may record again. Late callbacks cannot repopulate cleared files. No logs should be retained as a workaround for failed purge.
+`DebugSessionLog.purgeForPrivacyClear` is now hooked into existing privacy-clear/deletion flows, including launches where recording was not enabled. It immediately fences the active recorder, closes the handle and deletes owned logs asynchronously. Its completion is checked into DEBUG-only developer receipts. Failure produces a fixed developer stderr diagnostic on a utility queue with one nonblocking admission slot, never a child-visible message/status, UI control or success claim. An explicit repeat can retry a failed purge without re-enabling recording; a duplicate while deletion is pending reports unconfirmed success as false rather than adding unbounded work. After clear there is no resume/start API. Only a new process with a fresh explicit launch opt-in may record again. Late callbacks cannot repopulate cleared files. No logs should be retained as a workaround for failed purge.
 
-## Native integration plan, deliberately not claimed implemented
+## Native source integration, Apple execution pending
 
-No existing production file was edited in this recorder increment. `NavigationModel`, local model wrappers, tools and speech callbacks currently do NOT call this recorder. App-level privacy clear is therefore also pending. Do not call this foundation a working end-to-end capture feature.
+Source hooks are applied to `NavigationModel.swift`, `VoiceInput.swift`, `LocalImageAssistant.swift`, `Feedback.swift`, `FamiliarFaceExperiment.swift`, `JourneyStore.swift` and `NativeMapping.swift`. No UI file, history tab, recording control or upload path was added. All recorder state/symbols/payload construction are DEBUG-only. Optional request UUID and diagnostic-cause scalar parameters remain in the ordinary native signatures; Release does not invoke any recorder logic.
 
-1. Add DEBUG-only startup ownership of `DebugSessionLog.shared` and its `sessionToken`. Keep all references under `#if DEBUG`; do not add user-facing settings or controls. A recorder session is one opted-in launch/capture, not speaker verification or a persistent conversation profile.
-2. At accepted typed input and the microphone boundary, emit `userInput` with the actual source. Unverified microphone text must remain `unverifiedMicrophone`, not a verified user instruction. Capture the session token at callback creation, never fetch a new token in an old completion.
-3. At each real model request, record only the bounded actual safe textual prompt/messages and actual request UUID. Record returned chunks and final content separately. Never invent unavailable internal context/tool IDs or ask the model to explain its hidden reasoning.
-4. In real tool dispatch/results and output gates, record safe textual arguments/results and actual gate outcome/reason, preserving request/tool IDs. A tool result is not a successful physical action, and a passed gate is not speech completion. Mark missing capture/binding explicitly `unavailable`/`unbound` rather than backfilling.
-5. At the actual speech engine/VoiceOver admission and completion/interruption callbacks, record the exact attempted text and supplied utterance ID. Do not infer `speechCompleted` from enqueueing, model completion, an empty queue or a guessed substring. Native callback paths without reliable IDs remain unbound. Completion does not prove the user heard or understood it.
-6. Call `finish(session:)` for the explicit capture end. Wire the existing privacy clear to the static purge helper and propagate deletion failure, without new UI controls. Reject old callback sessions; do not silently start a second recorder within the cleared launch.
+- Navigation construction captures immutable recording ownership and requests a best-effort terminal flush on an actual termination notification. Ending voice alone does not close the launch capture while typed/camera activity can continue. Abrupt termination remains unclean unless the write/sync/close finishes.
+- Actual typed and final ASR text retain their source. ASR deliverable/rejected text is logged before turn rotation as unverified microphone input, not speaker authentication. Existing command-authority decisions are logged without rerunning the policy.
+- Ordinary, reduced-retry, bookkeeping, spot and image-description adapters record the actual bounded textual prompts/instructions, selected context keys and actual returned snapshots/fields. Image attachments are omitted. No hidden model reasoning or additional model call is requested. PromptPlan does not expose all original record IDs; these remain explicitly unbound.
+- ReadLocalEvidence logs the actual query/capability and reuses its already-created exact JSON return string. No second tool execution or disabled-path serialization is added. SDK tool-call IDs are unavailable at this interface and remain unbound. Calls cancelled or thrown before return may lack a return event, not an inferred successful result. The direct clock lane separately records its one actual read/result and existing distinct reply ID.
+- Sentence/final evidence checks, queue admission, capture binding, delivery revalidation, active-capture invalidation and candidate dispatch produce distinct gate events. Queued/dispatched does not mean playback. Unverified and code-owned replies may preserve a shared request ID only as a cancellation fence; their diagnostic request binding remains unbound instead of being misattributed to an unrelated trusted request.
+- Feedback records delivery rejection and engine admission separately. Matching AVSpeech didStart/didFinish/didCancel callbacks retain actual engine-attempt binding. App cancellation and timeout have distinct labels. A controller destination ID is explicit metadata, never assumed to be the engine token. UIKit/VoiceOver text-only callbacks remain unavailable/unbound correlation, not fabricated utterance completion or proof of hearing.
+- Existing conversation, narration, observation, record, item, room, place, interest, hint and shopping removals purge all diagnostic history. Removed/replaced saved names and corrected user reports also purge superseded text. Confirmed familiar-person/example/gallery deletion and direct journey/private-map deletion are covered at their owning methods. Nested deletion requests are coalesced; receipts/errors stay developer-only. Late callbacks cannot repopulate cleared files.
 
-Minimal API shape after a deliberately selected safe text boundary:
+The Foundation-only `DebugNativeSessionTrace` helper lives in the existing targeted LocalImageAssistant file, so no new Xcode source membership is required. It captures the recorder/session once and forwards lazy detail closures. Disabled/stopped/purged recorders reject before payload construction; modest DEBUG branch/locking overhead still exists and is not claimed to be zero.
 
-```swift
-#if DEBUG
-if let log = DebugSessionLog.shared {
-    let token = log.sessionToken // retain with this operation, not a later callback
-    log.record(.outputGate, source: .outputGate, session: token,
-               correlation: .init(requestID: actualRequestID)) {
-        .init(text: existingSafeOutput, label: actualGateCode)
-    }
-}
-#endif
-```
+## Reuse and review boundary
 
-The snippet is guidance, not a claim the placeholders exist or that all native sites are wired. Privacy integration uses `DebugSessionLog.purgeForPrivacyClear { success in ... }`; production callbacks must marshal any UI/state updates onto the correct actor.
+The native hooks adapt the existing FoundationModels, Speech, AVFoundation and UIKit boundaries; no recognizer, model, database or speech engine was replaced. Diagnostics observe already-produced values and never become a source of action/speech authority. Any source changes after this checkpoint need the provenance/privacy contracts rerun, especially if a validation fence is reused across independent requests.
 
 ## Verification and remaining gates
 
-Executed here on Node v24.22.1:
+Executed after applying the exact reviewed native patch:
 
-`node --test --test-concurrency=1 tools/test/debug-session-log.test.mjs`
+- `node --test --test-concurrency=1 tools/test/debug-session-log.test.mjs tools/test/debug-native-session.test.mjs`: **31/31 passed**, zero skipped (13 recorder source contracts plus 18 native source contracts). Source contracts are not execution of Apple callbacks.
+- The **12 DebugSessionLog XCTest cases passed** in the Core runtime verification. They exercise real Foundation IO and bounded concurrency/failure paths, not iPhone protection or the native audio/model adapters.
+- The exact Foundation-only DebugNativeSessionTrace helper, extracted from the actual applied native source and linked against the actual prebuilt Debug BlindCore, passed **18/18 executable assertions**. This covers disabled nil and disabled-instance laziness, unchanged synthetic producer output/call count/thrown error identity, actual prompt/text/ID records, truncation, finish rejection, purge fencing of old/new helpers and write failure. Synthetic producers are explicitly test inputs, not mock evidence that real Apple models/tools/audio work.
+- Default and DEBUG/familiar/multimodal syntax parsing passed for the seven changed native files using the official Swift toolchain. Parsing does not perform Apple SDK typechecking, macro expansion, linking or device execution.
 
-Result: 13/13 bounded source-contract checks passed, zero skipped. They check compile guards/launch gating, lazy admission, declared bounds, stop policy, unbound provenance, distinct speech stages, metrics, terminal/purge ordering and prepared native test coverage. They do not execute Swift IO/concurrency, compile the app or prove callback correctness.
+Reproduce the helper checks without installing dependencies or rebuilding Core:
 
-Prepared but NOT run: 12 tests in `BlindCore/Tests/BlindCoreTests/DebugSessionLogTests.swift`, covering disabled fast path, exact UTF-8/provenance, stale token, truncation/redaction, blocked-writer queue overflow, session/retained caps, write-error/unclean markers, privacy purge, finish with a reserved but unenqueued event, and purge racing that same event.
+`python3 tools/run-debug-native-helper.py --products /path/to/prebuilt/Debug-products --output /tmp/debug-native-helper-results`
 
-Required next on an authorized Mac/toolchain:
+The supplied product directory must contain the real `BlindCore.swiftmodule` and `libBlindCore.a`. The runner extracts the current helper, hashes source/helper/harness/library, compiles with the available Swift compiler and verifies the library was stable during the run. Only synthetic text is used; compiled products and test result files stay outside the repository.
 
-`swift test --package-path BlindCore --filter DebugSessionLogTests --jobs 2`
-
-Then compile Debug with and without launch opt-in, compile Release, wire and test actual native model/tool/gate/speech/privacy boundaries, add failure injection for synchronization/close/deletion and disk-full/device-lock, verify backup protection, measure recorder-disabled and enabled latency/thermal/memory overhead, and run a synthetic interruption/end/privacy-clear walkthrough. Subsequent checkpoint verification installed the official signature-verified Swift 6.4.1 toolchain and ran all 910 Core XCTest cases successfully, including the 12 recorder tests. The complete Node run passed 338/338 with zero skips. These Linux results exercise recorder IO and concurrency tests but do not establish Apple SDK compatibility, native callback wiring, device protection or performance. No model call or device test was run. See research/rebuild-evidence/checkpoint-01/verification.json for exact current evidence and remaining limits.
+Still required: full Apple SDK Debug/Release and optional-feature builds; actual microphone/model/tool/gate/speech/privacy walkthroughs; reliable callback correlation; file-protection/backup-exclusion and locked/disk-full behavior; synchronization/close/deletion failure injection; and measured disabled/enabled latency, contention, working set, battery/thermal and sustained capture limits. No native runtime, device privacy or child-use acceptance gate is closed by source syntax, Core tests or the isolated helper results.

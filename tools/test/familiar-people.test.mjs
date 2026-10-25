@@ -3,6 +3,20 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { generateProject, familiarModelHashes } from '../generate-xcode-project.mjs';
 const read = path => readFile(new URL(`../../${path}`, import.meta.url), 'utf8');
+
+// Native source contracts, not execution of Apple callbacks.
+function bodyAfter(source, marker) {
+  const start = source.indexOf(marker);
+  assert.notEqual(start, -1, `Missing source contract: ${marker}`);
+  const open = source.indexOf('{', start);
+  let depth = 1;
+  for (let i = open + 1; i < source.length; i += 1) {
+    if (source[i] === '{') depth += 1;
+    if (source[i] === '}' && --depth === 0) return source.slice(open + 1, i);
+  }
+  assert.fail(`Unclosed source contract: ${marker}`);
+}
+
 test('default project does not enable or link experimental face inference', () => {
   const value = generateProject(['FamiliarFaceExperiment.swift']);
   assert.doesNotMatch(value, /BLIND_FAMILIAR_PEOPLE|BAFaceEngine\.mm|wrapper\.framework|face_detection_yunet/);
@@ -122,8 +136,25 @@ test('named search is exact-label bounded quiet and reuses current candidate and
   assert.match(search, /onSearchStarted\?\(\)/);
   const model = await read('ios/BlindAssist/NavigationModel.swift');
   assert.match(model, /if !automatic \{ familiarPeople.cancelSearchForNewGoal\(\) \}/);
-  for (const method of ['setAssistantObjective', 'clearAssistantConversation']) assert.match(model, new RegExp(`func ${method}\\(\\) \\{\\s*#if BLIND_FAMILIAR_PEOPLE\\s*familiarPeople.cancelSearchForNewGoal`));
+  for (const method of ['setAssistantObjective', 'clearAssistantConversation']) {
+    const body = bodyAfter(model, `func ${method}()`);
+    assert.match(body, /#if BLIND_FAMILIAR_PEOPLE\s+familiarPeople\.cancelSearchForNewGoal\(\)\s+#endif/);
+    const cancellation = body.indexOf('familiarPeople.cancelSearchForNewGoal()');
+    const taskMutation = body.indexOf('everydayTasks.');
+    assert.ok(taskMutation > cancellation, `${method} cancels familiar search before task mutation`);
+    assert.doesNotMatch(body.slice(0, cancellation), /\b(?:return|throw|await)\b/);
+  }
   assert.match(code, /searching && \(!model.assistantSession.shouldRunCamera \|\| !model.cameraAwareness \|\| !model.running \|\| model.simulation \|\| model.places.scanning \|\| model.detection.hazard.isUrgent\)/);
+});
+
+test('source contract: debug privacy purge cannot bypass familiar search cancellation', async () => {
+  const model = await read('ios/BlindAssist/NavigationModel.swift');
+  const clear = bodyAfter(model, 'func clearAssistantConversation()');
+  // Purge is a standalone side effect, not a success guard or async prerequisite.
+  // Its DEBUG block must close before the independent familiar-feature block.
+  assert.match(clear, /^\s*#if DEBUG\s+purgeDebugSessionDiagnostics\(\)\s+#endif\s+#if BLIND_FAMILIAR_PEOPLE\s+familiarPeople\.cancelSearchForNewGoal\(\)\s+#endif/);
+  assert.ok(clear.indexOf('familiarPeople.cancelSearchForNewGoal()') < clear.indexOf('cancelDescription()'));
+  assert.match(clear, /cancelDescription\(\); feedback\.stop\(\); stopReturn\(\); indoor\.cancelRoute\(\)/);
 });
 test('past snapshot speech has separate bounded lifetime without extending live display', async () => {
   const code = await read('ios/BlindAssist/FamiliarFaceExperiment.swift');

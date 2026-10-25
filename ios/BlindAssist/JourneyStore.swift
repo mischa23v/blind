@@ -40,7 +40,25 @@ final class JourneyStore: ObservableObject {
         } catch { message = "Journey could not be saved." }
     }
     func url(for journey: Journey) -> URL { directory.appendingPathComponent("\(journey.id).json") }
+    #if DEBUG
+    private var debugPurgePending = false
+    private var debugLastPurgeSucceeded: Bool?
+    private func purgeDebugSessionDiagnostics() {
+        guard !debugPurgePending else { return }
+        debugPurgePending = true
+        DebugSessionLog.purgeForPrivacyClear { [weak self] success in
+            DispatchQueue.main.async { [weak self] in
+                self?.debugPurgePending = false
+                self?.debugLastPurgeSucceeded = success
+                DebugNativeSessionTrace.reportPurgeResult(success)
+            }
+        }
+    }
+    #endif
     func delete(_ journey: Journey) {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
         do { try FileManager.default.removeItem(at: url(for: journey)); saved.removeAll { $0.id == journey.id } }
         catch { message = "Journey could not be deleted." }
     }

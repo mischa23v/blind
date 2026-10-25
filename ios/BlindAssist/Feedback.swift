@@ -10,6 +10,9 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     private let speech = AVSpeechSynthesizer()
     private var delivery = SpeechDeliveryLedger()
     private var currentUtterance: AVSpeechUtterance?
+    #if DEBUG
+    private let debugTrace = DebugNativeSessionTrace()
+    #endif
     private var outputTimeout: Timer?
     private var urgentUntil = -Double.infinity
     private var urgentTimeout: Timer?
@@ -88,6 +91,16 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
     @discardableResult func deliver(_ admitted: AdmittedSpeech, narrationID: UUID? = nil,
                                     speechID: UUID? = nil, alert: Detection? = nil,
                                     independentAlert: Bool = false) -> Bool {
+        #if DEBUG
+        var debugAccepted = false
+        defer {
+            if !debugAccepted {
+                debugTrace?.event(.speechRejected, source: .speechEngine, utteranceID: speechID ?? narrationID) {
+                    .init(text: admitted.text, label: "feedback.deliveryRejected")
+                }
+            }
+        }
+        #endif
         guard narrationID == nil || speechID == nil else { return false }
         let destination: SpeechDeliveryLedger.Destination
         if let narrationID {
@@ -100,7 +113,11 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         }
         let verifiedIndependentAlert = independentAlert && alert != nil &&
             (admitted.priority == .mobility || admitted.urgent)
-        return speak(admitted, destination: destination, alert: alert, independentAlert: verifiedIndependentAlert)
+        let accepted = speak(admitted, destination: destination, alert: alert, independentAlert: verifiedIndependentAlert)
+        #if DEBUG
+        debugAccepted = accepted
+        #endif
+        return accepted
     }
 
     /// AEC is primary. Exact active-output prefixes and a one-second residual tail
@@ -147,6 +164,17 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         guard let attempt = delivery.begin(text: admitted.text, priority: priority,
             destination: destination, transport: transport, independentAlert: independentAlert) else { return false }
         if let alert { alertSignals(alert) }
+        #if DEBUG
+        debugTrace?.event(.speechRequested, source: .speechEngine,
+                          utteranceID: transport == .synthesized ? attempt.token : nil) {
+            let destinationID: String
+            switch destination {
+            case .requested(let id), .narration(let id): destinationID = id.uuidString
+            case .untracked: destinationID = "unbound"
+            }
+            return .init(text: attempt.text, label: "engine.admitted; destinationID=" + destinationID + (transport == .accessibility ? "; VoiceOverID=unbound" : ""))
+        }
+        #endif
         armOutputTimeout(token: attempt.token)
         if transport == .accessibility {
             let value = NSAttributedString(string: attempt.text, attributes: [
@@ -184,7 +212,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         let timer = Timer(timeInterval: 120, repeats: false) { [weak self] _ in
             guard let self, self.delivery.active?.token == token else { return }
             // A lost callback must not strand the controller or claim text was heard.
-            self.finishActive(outcome: .unknown, stopSynthesizer: true)
+            self.finishActive(outcome: .unknown, stopSynthesizer: true, diagnosticCause: "speech.timeout.notCompletion")
         }
         outputTimeout = timer
         RunLoop.main.add(timer, forMode: .common)
@@ -222,7 +250,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
               let text = notification.userInfo?[UIAccessibility.announcementStringValueUserInfoKey] as? String,
               text == active.text else { return }
         let successful = notification.userInfo?[UIAccessibility.announcementWasSuccessfulUserInfoKey] as? Bool == true
-        finishActive(outcome: successful ? .completed : .interrupted)
+        finishActive(outcome: successful ? .completed : .interrupted, diagnosticCause: "VoiceOver.textOnlyCallback")
     }
 
     private func notifyIdle() {
@@ -232,10 +260,22 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         }
     }
 
-    private func finishActive(outcome: NarrationDelivery, stopSynthesizer: Bool = false, notify: Bool = true) {
+    private func finishActive(outcome: NarrationDelivery, stopSynthesizer: Bool = false, notify: Bool = true,
+                              diagnosticCause: String = "app.cancelOrLifecycle") {
         guard let active = delivery.active,
               let completion = delivery.finish(token: active.token, outcome: outcome,
                                                now: ProcessInfo.processInfo.systemUptime) else { return }
+        #if DEBUG
+        let kind: DebugSessionLog.Kind = completion.attempt.transport == .accessibility ? .unavailable
+            : completion.outcome == .completed ? .speechCompleted
+            : completion.outcome == .interrupted ? .speechInterrupted : .unavailable
+        debugTrace?.event(kind, source: .speechEngine,
+                          utteranceID: completion.attempt.transport == .synthesized ? completion.attempt.token : nil) {
+            .init(text: completion.attempt.text,
+                  label: diagnosticCause + "; outcome=" + String(describing: completion.outcome)
+                    + (completion.attempt.transport == .accessibility ? "; VoiceOverCorrelation=unbound" : ""))
+        }
+        #endif
         // Invalidate identity before stopping: didCancel can arrive after new output
         // starts. Clear all old state before invoking controller code, asynchronously.
         currentUtterance = nil
@@ -252,14 +292,23 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         if notify { notifyIdle() }
     }
 
+    #if DEBUG
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
+        guard utterance === currentUtterance, let active = delivery.active, active.transport == .synthesized else { return }
+        debugTrace?.event(.speechStarted, source: .speechEngine, utteranceID: active.token) {
+            .init(text: active.text, label: "AVSpeech.didStart")
+        }
+    }
+    #endif
+
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         guard utterance === currentUtterance, delivery.active?.transport == .synthesized else { return }
-        finishActive(outcome: .completed)
+        finishActive(outcome: .completed, diagnosticCause: "AVSpeech.didFinish")
     }
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
         guard utterance === currentUtterance, delivery.active?.transport == .synthesized else { return }
-        finishActive(outcome: .interrupted)
+        finishActive(outcome: .interrupted, diagnosticCause: "AVSpeech.didCancel")
     }
 
     /// Revokes only the short-lived notice with this ID. A camera turn must not

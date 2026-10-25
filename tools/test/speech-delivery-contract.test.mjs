@@ -77,8 +77,25 @@ test('source contract: cancellation invalidates identity before platform stop an
   assert.match(feedback, /guard utterance === currentUtterance, delivery\.active\?\.transport == \.synthesized/);
   const timeout = bodyAfter(feedback, 'private func armOutputTimeout(');
   assert.match(timeout, /delivery\.active\?\.token == token/);
-  assert.match(timeout, /finishActive\(outcome: \.unknown, stopSynthesizer: true\)/);
-  assert.doesNotMatch(timeout, /\.completed/);
+  assert.match(timeout, /finishActive\(outcome: \.unknown, stopSynthesizer: true(?:,\s*diagnosticCause: "[^"]*")?\)/);
+  const timeoutBehavior = timeout.replace(/diagnosticCause:\s*"[^"]*"/g, 'diagnosticCause: "<label>"');
+  assert.doesNotMatch(timeoutBehavior, /\.completed/);
+});
+
+test('source contract: timeout remains unknown and diagnostic labels cannot change delivery outcome', () => {
+  const timeout = bodyAfter(feedback, 'private func armOutputTimeout(');
+  assert.equal((timeout.match(/finishActive\(/g) ?? []).length, 1);
+  assert.match(timeout, /finishActive\(outcome: \.unknown, stopSynthesizer: true,\s*diagnosticCause: "[^"]*"\)/);
+  const finish = bodyAfter(feedback, 'private func finishActive(');
+  // The actual outcome enters the ledger before optional diagnostics. A label
+  // containing "completed" must not reinterpret a timeout as audible delivery.
+  const ledger = finish.indexOf('delivery.finish(token: active.token, outcome: outcome,');
+  assert.ok(ledger >= 0 && ledger < finish.indexOf('#if DEBUG'));
+  const withoutDiagnostics = finish.replace(/#if DEBUG\b[\s\S]*?#endif/g, '');
+  assert.doesNotMatch(withoutDiagnostics, /\bdiagnosticCause\b|\.completed/);
+  for (const callback of ['onNarrationFinished', 'onRequestedSpeechFinished']) {
+    assert.ok(withoutDiagnostics.includes(`${callback}?(id, completion.attempt.text, completion.outcome)`));
+  }
 });
 
 test('source contract: spatial playback never downgrades the recording audio session', () => {

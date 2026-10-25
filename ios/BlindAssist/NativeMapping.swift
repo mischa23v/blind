@@ -1,6 +1,9 @@
 import Foundation
 import ARKit
 import Combine
+#if DEBUG
+import BlindCore
+#endif
 #if BLIND_RTABMAP
 import GLKit
 #endif
@@ -27,7 +30,25 @@ final class NativeMapping: ObservableObject {
         let url = storage.appendingPathComponent("personal.db")
         exportURL = !active && FileManager.default.fileExists(atPath: url.path) ? url : nil
     }
+    #if DEBUG
+    private var debugPurgePending = false
+    private var debugLastPurgeSucceeded: Bool?
+    private func purgeDebugSessionDiagnostics() {
+        guard !debugPurgePending else { return }
+        debugPurgePending = true
+        DebugSessionLog.purgeForPrivacyClear { [weak self] success in
+            DispatchQueue.main.async { [weak self] in
+                self?.debugPurgePending = false
+                self?.debugLastPurgeSucceeded = success
+                DebugNativeSessionTrace.reportPurgeResult(success)
+            }
+        }
+    }
+    #endif
     func deleteMap() {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
         guard !active else { return }
         do {
             for name in ["personal.db", "personal.db-wal", "personal.db-shm"] {

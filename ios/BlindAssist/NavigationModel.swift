@@ -30,6 +30,22 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     let textOnly = ProcessInfo.processInfo.arguments.contains("--text-only") ||
         ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     private var automaticStartupAllowed = true
+    #if DEBUG
+    private let debugTrace = DebugNativeSessionTrace()
+    private var debugPurgePending = false
+    private var debugLastPurgeSucceeded: Bool?
+    private func purgeDebugSessionDiagnostics() {
+        guard !debugPurgePending else { return }
+        debugPurgePending = true
+        DebugSessionLog.purgeForPrivacyClear { [weak self] success in
+            DispatchQueue.main.async { [weak self] in
+                self?.debugPurgePending = false
+                self?.debugLastPurgeSucceeded = success
+                DebugNativeSessionTrace.reportPurgeResult(success)
+            }
+        }
+    }
+    #endif
     @Published private(set) var assistantSession = AssistantSession()
     @Published var backgroundConversation = UserDefaults.standard.bool(forKey: "background-conversation") {
         didSet {
@@ -414,6 +430,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var demonstrationHazard: Hazard = .observing
     override init() {
         super.init(); session.delegate = self; session.delegateQueue = .main
+        #if DEBUG
+        NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)
+            .sink { [debugTrace] _ in debugTrace?.finish() }.store(in: &subscriptions)
+        #endif
         if let data = try? places.memory?.value(namespace: "preferences", id: "preferred-name"),
            let stored = try? JSONDecoder().decode(String.self, from: data),
            let name = try? CompanionModelContext.validatedPreferredName(stored) {
@@ -1986,7 +2006,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                         guard let modelContext = self.companionModelContext else { return }
                         let local = await LocalImageAssistant.describe(image: image, question: question, context: context,
                                                                        situation: situation, wordAllowance: allowance,
-                                                                       confirmedObjects: Array(confirmedObjects), modelContext: modelContext)
+                                                                       confirmedObjects: Array(confirmedObjects), modelContext: modelContext, requestID: currentRequest)
                         try Task.checkCancellation()
                         guard self.requestID == currentRequest else { return }
                         self.localImageStatus = local.status
@@ -2094,6 +2114,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// already-admitted path so the same words are never charged twice here.
     @discardableResult private func deliverCandidate(_ candidate: InformationCandidate,
         alreadyAdmitted: Bool = false, narrationID: UUID? = nil, speechID: UUID? = nil, alert: Detection? = nil, nonspatialCapture: ContextualCapabilityScheduler.Lease? = nil, verifiedFamiliarCapture: Bool = false) -> Bool {
+        #if DEBUG
+        var debugDelivered = false
+        defer {
+            debugTrace?.event(.outputGate, source: .outputGate, utteranceID: speechID ?? narrationID) {
+                .init(text: candidate.text, label: debugDelivered ? "candidate.dispatched.notPlayback" : "candidate.rejected")
+            }
+        }
+        #endif
         guard !textOnly else { return false }
         // A disconnected private audio route cannot leak names, goals or replies
         // through the speaker. Independent hazard/mobility cues remain available.
@@ -2123,6 +2151,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let admitted = AdmittedSpeech(candidate)
         let spoken = feedback.deliver(admitted, narrationID: narrationID, speechID: speechID, alert: alert,
             independentAlert: independentAlert)
+        #if DEBUG
+        debugDelivered = spoken
+        #endif
         if !spoken { companion.release(candidate.key) }
         if spoken, candidate.kind == .answer, candidate.requested, speechID == nil, narrationID == nil {
             currentReply = candidate.text
@@ -2265,6 +2296,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         companionWorkingState.changeGoal(assistantDialogue.goal); persistWorkingState()
     }
     func clearAssistantConversation() {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
         #if BLIND_FAMILIAR_PEOPLE
         familiarPeople.cancelSearchForNewGoal()
         #endif
@@ -2278,6 +2312,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @discardableResult func correctConversationRecord(id: String, replacement: String) -> Bool {
         guard let original = assistantDialogue.userRecords.first(where: { $0.id == id }),
               assistantDialogue.correctUserRecord(id: id, replacement: replacement) else { return false }
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
         cancelDescription(); _ = feedback.stopInformation(announceCancellation: false)
         companionWorkingState.removeReport(original.text)
         companionWorkingState.record(replacement)
@@ -2290,6 +2327,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
 
     func forgetConversationRecord(id: String) {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
         guard let original = assistantDialogue.userRecords.first(where: { $0.id == id }),
               assistantDialogue.forgetUserRecord(id: id) else { return }
         cancelDescription(); _ = feedback.stopInformation(announceCancellation: false)
@@ -2308,6 +2348,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         do {
             guard let memory = places.memory else { throw CocoaError(.fileWriteUnknown) }
             try memory.saveValue(namespace: "preferences", id: "preferred-name", payload: JSONEncoder().encode(name))
+            #if DEBUG
+            if name.isEmpty || (!preferredName.isEmpty && name != preferredName) { purgeDebugSessionDiagnostics() }
+            #endif
             cancelDescription()
             preferredName = name
             profileStatus = name.isEmpty ? (arabic ? "حُذف الاسم المحفوظ." : "Saved name removed.") : (arabic ? "حُفظ الاسم على هذا الهاتف." : "Name saved on this phone.")
@@ -2338,6 +2381,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         return saveAssistantPreferences(updated)
     }
     func removeAssistantInterest(id: String) {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
         var updated = assistantPreferences; updated.remove(id: id); _ = saveAssistantPreferences(updated)
     }
     func setAssistantCategory(_ category: String, mode: String) {
@@ -2372,13 +2418,28 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func clearNarrationHistory() {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
         cancelDescription(); feedback.interruptAmbient()
         enqueueNarration { try await $0.clear() }
     }
     func receiveCompanionUtterance(_ text: String, fromVoice: Bool = false) {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, text.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars,
-              !fromVoice || assistantSession.shouldListen else { return }
+              !fromVoice || assistantSession.shouldListen else {
+            #if DEBUG
+            debugTrace?.event(.userInput, source: fromVoice ? .unverifiedMicrophone : .userTyped) {
+                .init(text: text, label: "controller.inputRejected.emptyOversizeOrNotListening")
+            }
+            #endif
+            return
+        }
+        #if DEBUG
+        debugTrace?.event(.userInput, source: fromVoice ? .unverifiedMicrophone : .userTyped) {
+            .init(text: text, label: "controller.inputReceived; requestID=unbound")
+        }
+        #endif
         // This compatibility entry point is called by explicit UI submission or
         // the microphone callback. A tap to listen does not authenticate speech.
         let origin: CompanionCommandOrigin = fromVoice ? .unverifiedMicrophone : .trustedInterface
@@ -2386,9 +2447,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // Intercept before cancellation, everyday-task mutation or camera work.
         if routeClockInquiry(text, origin: origin) { return }
         guard CommandAuthority.permits(.changeGoal, from: origin) else {
+            #if DEBUG
+            debugTrace?.event(.outputGate, source: .outputGate) { .init(label: "commandAuthority.changeGoal.rejected.unverifiedMicrophone") }
+            #endif
             receiveUnverifiedConversation(text, origin: origin)
             return
         }
+        #if DEBUG
+        debugTrace?.event(.outputGate, source: .outputGate) { .init(label: "commandAuthority.changeGoal.accepted.trustedInterface") }
+        #endif
         if routeVoiceRoomScan(text) { return }
         // Narration hold preserves the conversation and retained goal. It is not
         // microphone mute, camera off, task cancellation, or inferred addressee detection.
@@ -2503,14 +2570,28 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         clockReplies.removeAll(); displayedClockReplyID = nil
         let binding = CompanionClockReplyLease.Binding(requestID: requestID,
             generation: assistantSession.generation, replyID: UUID())
+        #if DEBUG
+        let clockTrace = DebugNativeSessionTrace()
+        clockTrace?.event(.toolCall, source: .toolRuntime) {
+            .init(text: question, label: "deviceClock.directRead; replyID=" + binding.replyID.uuidString)
+        }
+        #endif
         guard let lease = CompanionClockReplyLease.read(binding: binding, now: Date(),
                 monotonicNow: ProcessInfo.processInfo.systemUptime, timeZone: .current, arabic: arabic) else {
+            #if DEBUG
+            clockTrace?.event(.toolResult, source: .toolRuntime) { .init(label: "deviceClock.directRead.unavailable") }
+            #endif
             let unavailable = arabic ? "تعذر قراءة ساعة الجهاز. حاول مرة أخرى." : "I couldn't read the device clock. Please ask again."
             sceneAnswer = unavailable; currentReply = unavailable
             queueConversationSpeech(unavailable, request: requestID, generation: assistantSession.generation,
                 codeOwned: true, origin: origin)
             return true
         }
+        #if DEBUG
+        clockTrace?.event(.toolResult, source: .toolRuntime) {
+            .init(text: lease.reply, label: "deviceClock.directRead.returned; replyID=" + binding.replyID.uuidString)
+        }
+        #endif
         clockReplies[binding.replyID] = lease
         guard clockReplyIsCurrent(binding.replyID, text: lease.reply) else { return true }
         displayedClockReplyID = binding.replyID; displayedClockOrigin = origin
@@ -2643,7 +2724,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             // task-update commit is exposed on this unverified conversation path.
             let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: self.arabic,
                 audience: self.assistantAudience,
-                availableTools: [], toolExecutor: nil)
+                availableTools: [], toolExecutor: nil, requestID: id)
             guard !Task.isCancelled, self.unverifiedConversationID == id,
                   self.assistantSession.accepts(generation: generation), self.assistantSession.shouldListen,
                   self.requestID == request, ConversationDomainPolicy.allowsModelResponse(to: text) else { return }
@@ -2764,6 +2845,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 : (arabic ? "قائمة التسوق: " : "Your shopping list: ") + names.joined(separator: ", "))
             return true
         }
+        #if DEBUG
+        if case .remove = command { purgeDebugSessionDiagnostics() }
+        #endif
         var updated = shoppingList
         guard updated.apply(command, userQuote: text, now: Date().timeIntervalSince1970) else {
             deliverConversationReply(arabic ? "لم تتغير القائمة. قد يكون الغرض موجوداً أو غير مسجل، أو القائمة ممتلئة." : "The list hasn't changed. That item may already be listed, not listed, or the list may be full.")
@@ -2821,20 +2905,44 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
 
     private func queueConversationSpeech(_ text: String, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = [], codeOwned: Bool = false, origin: CompanionCommandOrigin = .trustedInterface, clockReplyID: UUID? = nil) {
+        #if DEBUG
+        let trace = DebugNativeSessionTrace(requestID: origin == .unverifiedMicrophone || codeOwned ? nil : request)
+        #endif
         guard !textOnly, assistantSession.state == .active,
               assistantSession.accepts(generation: generation), requestID == request,
-              (codeOwned || !SpatialClaimGuard.containsSpatialClaim(text)), conversationSpeech.count < 4 else { return }
+              (codeOwned || !SpatialClaimGuard.containsSpatialClaim(text)), conversationSpeech.count < 4 else {
+            #if DEBUG
+            trace?.event(.outputGate, source: .outputGate) { .init(text: text, label: "conversationSpeech.admissionRejected") }
+            #endif
+            return
+        }
         if let clockReplyID, !clockReplyIsCurrent(clockReplyID, text: text) { return }
         // Only receipts actually used by this sentence retain a visual lease.
         let current: [CompanionEvidence]
         if codeOwned { current = [] }
         else {
-            guard let required = CompanionEvidenceGuard.requiredVisualEvidence(text, reports: reports, evidence: evidence) else { return }
+            guard let required = CompanionEvidenceGuard.requiredVisualEvidence(text, reports: reports, evidence: evidence) else {
+                #if DEBUG
+                trace?.event(.outputGate, source: .outputGate) { .init(text: text, label: "conversationSpeech.evidenceRejected") }
+                #endif
+                return
+            }
             current = required
         }
         let captures = current.compactMap { conversationEvidenceCaptures[$0.id] }
-        guard captures.count == current.count else { return }
-        conversationSpeech.append(ConversationSpeech(id: UUID(), text: text, request: request,
+        guard captures.count == current.count else {
+            #if DEBUG
+            trace?.event(.outputGate, source: .outputGate) { .init(label: "conversationSpeech.captureBindingMissing") }
+            #endif
+            return
+        }
+        let speechID = UUID()
+        #if DEBUG
+        trace?.event(.outputGate, source: .outputGate, utteranceID: speechID) {
+            .init(text: text, label: "conversationSpeech.queued; notPlayback; clockReplyID=" + (clockReplyID?.uuidString ?? "unbound"))
+        }
+        #endif
+        conversationSpeech.append(ConversationSpeech(id: speechID, text: text, request: request,
             generation: generation, createdAt: ProcessInfo.processInfo.systemUptime,
             reports: reports, evidence: evidence, captures: captures, codeOwned: codeOwned, clockReplyID: clockReplyID, origin: origin))
         drainConversationSpeech()
@@ -2844,6 +2952,17 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         guard activeConversationSpeech == nil, feedback.speechPriority == nil, !voice.awaitingUtterance else { return }
         while !conversationSpeech.isEmpty {
             let next = conversationSpeech.removeFirst()
+            #if DEBUG
+            let trace = DebugNativeSessionTrace(requestID: next.origin == .unverifiedMicrophone || next.codeOwned ? nil : next.request)
+            var debugDispatched = false
+            defer {
+                if !debugDispatched {
+                    trace?.event(.outputGate, source: .outputGate, utteranceID: next.id) {
+                        .init(text: next.text, label: "conversationSpeech.deliveryRevalidationOrSink.rejected")
+                    }
+                }
+            }
+            #endif
             guard requestID == next.request, assistantSession.state == .active,
                   assistantSession.accepts(generation: next.generation),
                   ProcessInfo.processInfo.systemUptime - next.createdAt < 30,
@@ -2851,7 +2970,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             if let clockID = next.clockReplyID, !clockReplyIsCurrent(clockID, text: next.text) { continue }
             guard next.captures.allSatisfy(conversationCaptureIsCurrent) else { continue }
             activeConversationSpeech = next
-            if speakRequested(next.text, replace: false, speechID: next.id) { return }
+            if speakRequested(next.text, replace: false, speechID: next.id) {
+                #if DEBUG
+                debugDispatched = true
+                #endif
+                return
+            }
             activeConversationSpeech = nil
             // A rejected/budgeted phrase is not delivered history and is not retried forever.
         }
@@ -2863,6 +2987,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         revalidateClockReplies()
         guard let active = activeConversationSpeech, !active.captures.isEmpty else { return }
         guard active.captures.allSatisfy(conversationCaptureIsCurrent) else {
+            #if DEBUG
+            DebugNativeSessionTrace(requestID: active.origin == .unverifiedMicrophone || active.codeOwned ? nil : active.request)?.event(.outputGate, source: .outputGate, utteranceID: active.id) {
+                .init(label: "conversationSpeech.activeCaptureInvalidated")
+            }
+            #endif
             activeConversationSpeech = nil
             feedback.stopRequestedSpeech(active.id)
             return
@@ -3215,7 +3344,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 toolExecutor: { @Sendable [weak self] request in
                     guard let self else { return CompanionToolResult(status: .cancelled, source: "session controller") }
                     return await self.readCompanionToolForTurn(request, id: id, generation: sessionGeneration)
-                }, onSpeechCandidate: { @MainActor [weak self] phrase, reports, evidence in
+                }, requestID: id, onSpeechCandidate: { @MainActor [weak self] phrase, reports, evidence in
                     guard let self, ConversationDomainPolicy.allowsModelResponse(to: question),
                           self.companionWorkingState.actionProgress.allowsProposal(phrase, goalRevision: revision), self.requestID == id, !Task.isCancelled,
                           self.assistantSession.generation == sessionGeneration else { return }
@@ -4414,7 +4543,7 @@ extension NavigationModel {
         let request = requestID, generation = perceptionGeneration, capturedAt = lastFrameWallTime
         Task { @MainActor [weak self] in
             guard let modelContext = self?.companionModelContext,
-                  let side = await LocalImageAssistant.spot(target: target, image: image, arabic: arabic, modelContext: modelContext) else { return }
+                  let side = await LocalImageAssistant.spot(target: target, image: image, arabic: arabic, modelContext: modelContext, requestID: request) else { return }
             guard let self, let search = self.objectSearch, search.active, search.startedAt == startedAt,
                   self.requestID == request, self.perceptionGeneration == generation,
                   self.assistantSession.foregroundActive, self.running, self.detection.hazard == .observing,
@@ -4654,6 +4783,9 @@ extension NavigationModel {
         return arabic ? "لا يوجد كاشف أغراض عام. المقارنة متاحة للأغراض التي حفظت صورها فقط." : "No general object detector is bundled. Appearance comparison is available for things whose pictures you saved."
     }
     func clearObservedObjects() {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
         invalidatePerceptionWork()
         do {
             guard let memory = places.memory else { throw MemoryError.missing }
@@ -4683,6 +4815,9 @@ extension NavigationModel {
     var savedItems: [RememberedItem] { items.items }
     func itemViewCount(_ item: RememberedItem) -> Int { itemAppearance.viewCount(item.key) }
     @discardableResult func forgetItem(_ item: RememberedItem) -> Bool {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
         itemMemoryRevision = UUID()
         invalidatePerceptionWork()
         cancelDescription()
@@ -4705,6 +4840,9 @@ extension NavigationModel {
     }
     /// Removes the room's saved pictures, fingerprints and furniture labels; the room stays known.
     func forgetRoomPictures(_ id: String) {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
         invalidateAutomaticRoomClues()
         invalidatePerceptionWork()
         guard roomRecall.forget(room: id) else {
@@ -4715,6 +4853,9 @@ extension NavigationModel {
     /// Deletes a saved place and everything derived from it: scans, room pictures, the companion's
     /// room record, and the current-place state if it was this place.
     func deletePlace(_ place: SavedPlace) {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
         invalidateAutomaticRoomClues()
         let roomID = "place:\(place.id.uuidString)"
         if recognizedPlace?.id == place.id { recognizedPlace = nil; invalidateRecognizedRoom() }
@@ -4729,6 +4870,9 @@ extension NavigationModel {
 
     /// Removes everything about the room: pictures, visits and its name.
     func forgetRoom(_ id: String) {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
         invalidateAutomaticRoomClues()
         invalidatePerceptionWork()
         do {
@@ -4744,7 +4888,12 @@ extension NavigationModel {
         objectWillChange.send()
     }
     var learnedHints: [LearnedHint] { companion.memory.hints }
-    func removeHint(_ id: String) { companion.memory.removeHint(id: id); persistCompanion(); objectWillChange.send() }
+    func removeHint(_ id: String) {
+        #if DEBUG
+        purgeDebugSessionDiagnostics()
+        #endif
+        companion.memory.removeHint(id: id); persistCompanion(); objectWillChange.send()
+    }
 }
 
 // MARK: - Reading tools: live text, a page, codes, light, explore by touch (Seeing AI-style, 2026-10-22)

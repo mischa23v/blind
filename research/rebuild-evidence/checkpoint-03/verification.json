@@ -1,0 +1,61 @@
+{
+  "checkpoint": "reconstruction-03-native-debug",
+  "baseCommit": "0aaa637afe9b3b22ecacebf7e1b99452358d9947",
+  "dateUTC": "2026-10-25",
+  "core": {
+    "tests": 927,
+    "failures": 0,
+    "exitCode": 0,
+    "log": "core-tests.log"
+  },
+  "node": {
+    "tests": 362,
+    "passed": 362,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0,
+    "log": "node-tests.log"
+  },
+  "nativeHelper": {
+    "assertions": 18,
+    "passed": 18,
+    "exitCode": 0,
+    "source": "exact extracted DebugNativeSessionTrace from applied LocalImageAssistant.swift linked with real Debug BlindCore",
+    "inputs": "synthetic only",
+    "log": "native-helper.log"
+  },
+  "nativeSyntax": {
+    "default": 0,
+    "debugFamiliarMultimodal": 0,
+    "AppleSDKTypechecked": false
+  },
+  "changes": [
+    "DEBUG launch-opt-in diagnostics wired to native model/tool/input/gate/speech paths",
+    "Privacy deletion hooks purge and disable recording",
+    "No diagnostic UI; bounded asynchronous developer failure receipts",
+    "Unverified/code-owned/VoiceOver correlation remains explicitly unbound when IDs unavailable"
+  ],
+  "originalFailures": "original-contract-failures.log",
+  "testAdjustments": [
+    "Scoped familiar-search cancellation assertions tolerate preceding DEBUG purge while preserving cancellation order",
+    "Speech timeout assertion accepts diagnosticCause but still requires unknown outcome, never completion"
+  ],
+  "limits": [
+    "No actual Apple model/audio/VoiceOver callback execution or SDK linking",
+    "Device storage protection, disk lock, performance and endurance remain unverified",
+    "No raw private data included",
+    "Full restoration and 400 integrated scenarios remain incomplete"
+  ],
+  "commands": [
+    "swift test --package-path BlindCore --jobs 2",
+    "BLIND_SWIFTC=<swiftc> npm test",
+    "python3 tools/run-debug-native-helper.py --products <real Debug products> --output <scratch>"
+  ],
+  "artifactSHA256": {
+    "node-tests.log": "013fa3398ce5a84b02150b0c422ea3b703ec28b0a40f7f321c96b6f5137cf715",
+    "original-contract-failures.log": "72394326554c5397174089b1b2b4818e8cc7470ab5cdc5f107bddea56e2ae079",
+    "core-tests.log": "b5774f3f73df599566d1f2d6027ab4ed3f347a713373636d03e9b85db0bee9eb",
+    "source-hashes.json": "a07b91732c58f1ee39976bf3d8a9d43b4aea463efd0f7ac5429fd4b26ad5972a",
+    "native-helper.log": "2a3f83adccfd1ed26e3efdff54ea3eb62b2f1cdfacb812852513125713f330ff"
+  }
+}
