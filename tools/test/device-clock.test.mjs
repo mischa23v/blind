@@ -7,9 +7,12 @@ const read = path => readFile(new URL(`../../${path}`, import.meta.url), 'utf8')
 
 test('device clock executes as an advertised read-only tool without a camera or network', async () => {
   const model = await read('ios/BlindAssist/NavigationModel.swift');
-  const body = model.match(/case \.deviceClock:\s*([\s\S]*?)(?=\n\s*case \.)/)?.[1];
+  const executor = model.slice(model.indexOf('@MainActor private func readCompanionTool('));
+  const body = executor.match(/case \.deviceClock:\s*([\s\S]*?)(?=\n\s*case \.)/)?.[1];
   assert.ok(body, 'device clock has a tool executor case');
-  assert.match(body, /CompanionClock\.read\(now: Date\(\), timeZone: \.current, arabic: arabic\)/);
+  assert.match(body, /acquireClockReply\(\)/);
+  assert.match(body, /return lease.result/);
+  assert.match(model, /Date\(\), ProcessInfo.processInfo.systemUptime, \.current/);
   assert.doesNotMatch(body, /running|camera|session\.currentFrame|URLSession|requestPermission/);
   assert.match(model, /availableTools: self\.availableCompanionTools/);
   assert.match(model, /var result: Set<CompanionToolKind> = \[\.savedMemory, \.navigationState, \.deviceClock\]/);

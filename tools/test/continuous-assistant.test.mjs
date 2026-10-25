@@ -39,9 +39,54 @@ test('streamed phrases are bounded, revalidated, separately admitted and not rep
   assert.match(ready, /assistantSession.shouldListen/);
   assert.match(ready, /drainConversationSpeech\(\)/);
   const reply = section(model, 'private func answerConversation', 'func startVoiceQuestion');
-  assert.match(reply, /queueConversationSpeech\(phrase/);
+  assert.match(reply, /queueModelConversationSpeech\(phrase/);
   assert.match(reply, /else if self.streamedConversationText.isEmpty/);
   assert.doesNotMatch(reply, /self.textOnly \|\| self.speakRequested\(text\)/);
+});
+
+test('stream callbacks admit owned text before queue or display, never raw clock-model prose', async () => {
+  const model = await read('ios/BlindAssist/NavigationModel.swift');
+  const before = (source, earlier, later) => {
+    const a = source.indexOf(earlier), b = source.indexOf(later);
+    assert.ok(a >= 0 && b > a, `${earlier} must precede ${later}`);
+  };
+  const owned = section(model, 'private func queueModelConversationSpeech(', 'private func clockDeliveryReceipt(');
+  const clockBranch = owned.slice(0, owned.indexOf('} else {'));
+  const validatesOwnedText = source => {
+    assert.match(source, /if let id = activeModelClockReplyID/);
+    assert.match(source, /modelClockSpeechQueuedID != id, let receipt = modelClockReceipt\(\)/);
+    assert.match(source, /let lease = clockReplies\[id\]/);
+    before(source, 'let receipt = modelClockReceipt()', 'queueConversationSpeech(receipt.text');
+    assert.match(source, /evidence: \[lease.evidence\], codeOwned: true, clockReceipt: receipt/);
+    assert.doesNotMatch(source, /queueConversationSpeech\(phrase/);
+  };
+  validatesOwnedText(clockBranch);
+  assert.throws(() => validatesOwnedText(clockBranch.replace('queueConversationSpeech(receipt.text', 'queueConversationSpeech(phrase')),
+    'Regression witness: substituting raw model text must fail the owned-output contract');
+  assert.match(owned.slice(owned.indexOf('} else {')), /queueConversationSpeech\(phrase,[\s\S]*reports: reports, evidence: evidence/);
+  assert.match(section(model, 'private func modelClockReceipt(', 'private func modelReplyText('), /CompanionClockDelivery.replyForClockOperation/);
+
+  const queue = section(model, 'private func queueConversationSpeech(', 'private func drainConversationSpeech(');
+  before(queue, 'clockDeliveryIsCurrent(receipt, text: text)', 'conversationSpeech.append(');
+  before(queue, 'CompanionEvidenceGuard.requiredVisualEvidence', 'conversationSpeech.append(');
+  assert.match(queue, /reports: reports, evidence: evidence, captures: captures,[\s\S]*origin: origin/);
+  const reply = section(model, 'private func answerConversation', 'func startVoiceQuestion');
+  const speech = section(reply, 'onSpeechCandidate: {', '}) { @MainActor');
+  const preview = section(reply, '}) { @MainActor', '// Re-evaluate');
+  for (const callback of [speech, preview]) {
+    assert.match(callback, /allowsModelResponse\(to: question\)/);
+    assert.match(callback, /allowsProposal\(phrase, goalRevision: revision\)/);
+    assert.match(callback, /self.requestID == id, !Task.isCancelled/);
+    assert.match(callback, /self.assistantSession.generation == sessionGeneration else \{ return \}/);
+  }
+  before(speech, 'sessionGeneration else { return }', 'self.queueModelConversationSpeech(');
+  before(preview, 'sessionGeneration else { return }', 'self.modelReplyText(phrase)');
+  before(preview, 'self.modelReplyText(phrase)', 'self.showConversationReply(displayed, settled: false)');
+  before(preview, 'self.showConversationReply(displayed, settled: false)', 'self.streamedConversationText = displayed');
+  assert.doesNotMatch(preview, /queueConversationSpeech\(|queueModelConversationSpeech\(/);
+  before(reply, 'self.clockDeliveryReceipt(text) != nil', 'let update = answer.taskUpdate');
+  before(reply, 'allowsProposal(text, goalRevision: revision)', 'self.showConversationReply(text, settled: true)');
+  assert.match(reply, /else if self.streamedConversationText.isEmpty \{\s*self.queueConversationSpeech\(text/);
 });
 
 test('spoken history is recorded only for matching completed requested speech', async () => {

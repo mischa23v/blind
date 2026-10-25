@@ -34,34 +34,36 @@ test('read-only clock inquiry does not mutate goal search navigation reports cam
   const route = body('private func routeClockInquiry(');
   assert.match(route, /interruptOrdinaryConversation\(origin: origin\)/);
   assert.doesNotMatch(route, /cancelDescription\(|stopReturn\(|cancelRoute\(|everydayTasks\.|objectSearch|familiarPeople|recordCompanionMessage\(|companionWorkingState\.|persistWorkingState\(|requestID\s*=|perceptionGeneration\s*=|readScene\(|LocalImageAssistant|session\.currentFrame|cameraAwareness\s*=/);
-  assert.match(route, /CompanionClockReplyLease.read\(binding: binding, now: Date\(\),\s*monotonicNow: ProcessInfo.processInfo.systemUptime, timeZone: \.current/);
-  assert.match(route, /codeOwned: true, origin: origin, clockReplyID: binding.replyID/);
+  assert.match(route, /acquireClockReply\(question: question\)/);
+  assert.match(body('private func acquireClockReply('), /CompanionClockReplyLease.read\(binding: binding, now: sample.wall/);
+  assert.match(body('private var clockSample:'), /Date\(\), ProcessInfo.processInfo.systemUptime, \.current/);
+  assert.match(route, /codeOwned: true, origin: origin, clockReceipt: receipt/);
 });
 
 test('queue dispatch playback and repeat preserve original read lease', () => {
-  assert.match(body('private func queueConversationSpeech('), /clockReplyIsCurrent\(clockReplyID, text: text\)/);
-  assert.match(body('private func drainConversationSpeech('), /clockReplyIsCurrent\(clockID, text: next.text\)/);
+  assert.match(body('private func queueConversationSpeech('), /clockDeliveryIsCurrent\(receipt, text: text\)/);
+  assert.match(body('private func drainConversationSpeech('), /clockDeliveryIsCurrent\(receipt, text: next.text\)/);
   assert.match(body('private func revalidateConversationSpeech('), /revalidateClockReplies\(\)/);
   const revalidate = body('private func revalidateClockReplies(');
   assert.match(revalidate, /feedback.stopRequestedSpeech\(active.id\)/);
-  assert.match(revalidate, /conversationSpeech.removeAll \{ \$0.clockReplyID == id \}/);
-  assert.match(revalidate, /if currentReply == lease.reply \{ currentReply = expired \}/);
+  assert.match(revalidate, /conversationSpeech.removeAll .*clockReceipt\?\.replyIDs/);
+  assert.match(revalidate, /if currentReply == receipt.text \{ currentReply = message \}/);
   assert.doesNotMatch(revalidate, /stopReturn\(|cancelRoute\(|stopCamera|\.read\(/);
   const repeat = body('@discardableResult func speakRequested(');
-  assert.match(repeat, /clockReplyIsCurrent\(id, text: text\)/);
-  assert.match(repeat, /clockReplyID: id/);
+  assert.match(repeat, /clockDeliveryIsCurrent\(receipt, text: text\)/);
+  assert.match(repeat, /clockReceipt: receipt/);
   assert.doesNotMatch(repeat, /CompanionClock(?:ReplyLease)?\.read/);
 });
 
 test('clock expiry runs with camera off and never remints a read during validation', () => {
-  const route = body('private func routeClockInquiry(');
+  const route = body('private func startClockExpiry(');
   assert.match(route, /Task \{ @MainActor \[weak self\]/);
   assert.match(route, /self.revalidateClockReplies\(\)/);
   assert.match(route, /Task.sleep\(for: \.milliseconds\(100\)\)/);
   assert.doesNotMatch(route, /guard .*running|guard .*camera|startWatchdog/);
-  const validate = body('private func clockReplyIsCurrent(');
-  assert.match(validate, /requestID: requestID,\s*generation: assistantSession.generation, replyID: id/);
-  assert.match(validate, /lease.validates\(reply: text/);
+  const validate = body('private func clockDeliveryIsCurrent(');
+  assert.match(validate, /requestID: requestID, generation: assistantSession.generation/);
+  assert.match(validate, /CompanionClockDelivery.validates\(receipt, text: text/);
   assert.doesNotMatch(validate, /CompanionClock(?:ReplyLease)?\.read/);
   assert.match(core, /age < CompanionClock.lifetime/);
   assert.match(core, /wallAge < CompanionClock.lifetime/);

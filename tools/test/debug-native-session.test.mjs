@@ -135,13 +135,15 @@ test('native debug integration: shared microphone validation fence is never inve
   assert.match(nav, /requestID: active\.origin == \.unverifiedMicrophone \|\| active\.codeOwned \? nil : active\.request/);
 });
 
-test('native debug integration: rebased clock read logs actual reply owner without changing its fence', () => {
-  const route = section(nav, '    @discardableResult private func routeClockInquiry', '    private func clockReplyIsCurrent');
-  assert.match(route, /let clockTrace = DebugNativeSessionTrace\(\)/);
-  assert.match(route, /deviceClock\.directRead\.returned; replyID=/);
-  assert.equal((route.match(/CompanionClockReplyLease\.read\(/g) || []).length, 1);
-  assert.match(nav, /clockReplyID: clockReplyID, origin: origin/);
-  assert.match(nav, /if let clockID = next\.clockReplyID, !clockReplyIsCurrent/);
+test('native debug integration: every clock acquisition logs its actual reply owner without shared request provenance', () => {
+  const acquire = section(nav, '    private func acquireClockReply(', '    private var activeModelClockReplyID:');
+  assert.match(acquire, /let clockTrace = DebugNativeSessionTrace\(\)/);
+  assert.match(acquire, /question == nil \? "deviceClock.modelRead" : "deviceClock.directRead"/);
+  assert.match(acquire, /clockLabel \+ "\.returned; replyID=" \+ binding.replyID.uuidString/);
+  assert.equal((acquire.match(/CompanionClockReplyLease\.read\(/g) || []).length, 1);
+  assert.match(nav, /acquireClockReply\(question: question\)/);
+  assert.match(nav, /clockReceipt: receipt.replyIDs.isEmpty \? nil : receipt/);
+  assert.match(nav, /if let receipt = next\.clockReceipt, !clockDeliveryIsCurrent/);
   assert.match(nav, /revalidateClockReplies\(\)/);
 });
 

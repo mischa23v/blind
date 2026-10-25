@@ -33,10 +33,12 @@ test('ordinary chat does not dispatch an everyday adapter or require a camera', 
 
 test('domain selection reuses identity money and reading adapters rather than generated claims', () => {
   const route = section(model, 'private func routeEverydayTask(', 'private func finishEverydayTask(');
-  for (const call of ['startReadingTool(.liveText)', 'startReadingTool(.document)', 'startReadingTool(.barcode)', 'startReadingTool(.light)', 'routeSaudiBanknoteCommand(text)', 'routeClothingColorCommand(text)', 'routeFamiliarPeopleCommand(text)', 'CompanionClock.read(']) {
+  for (const call of ['startReadingTool(.liveText)', 'startReadingTool(.document)', 'startReadingTool(.barcode)', 'startReadingTool(.light)', 'routeSaudiBanknoteCommand(text)', 'routeClothingColorCommand(text)', 'routeFamiliarPeopleCommand(text)', 'routeClockInquiry(text, origin: .trustedInterface)']) {
     assert.ok(route.includes(call), call);
   }
   assert.match(route, /#if BLIND_FAMILIAR_PEOPLE/);
+  assert.ok(route.indexOf('request.capability == .deviceClock') < route.indexOf('everydayTasks.begin(request)'));
+  assert.doesNotMatch(route, /CompanionClock\.read\(/);
   assert.doesNotMatch(route, /\.enroll\(|\.remember\(|navigate\(|answer\.action|worldPoint\(/);
 });
 
@@ -95,7 +97,13 @@ test('coordinator admission checks exact in-flight ticket and generation before 
 
 test('clock and list replies update text-only conversation surface', () => {
   const route = section(model, 'private func routeEverydayTask(', 'private func finishEverydayTask(');
-  assert.match(route, /deliverConversationReply\(value\.text\)/);
+  assert.match(route, /routeClockInquiry\(text, origin: \.trustedInterface\)/);
+  const clock = section(model, 'private func routeClockInquiry(', 'private func startClockExpiry(');
+  assert.match(clock, /showConversationReply\(lease.reply, settled: true, origin: origin\)/);
+  const display = section(model, 'private func showConversationReply(', 'private func routeClockInquiry(');
+  assert.match(display, /sceneAnswer = text/);
+  assert.match(display, /currentReply = text/);
+  assert.doesNotMatch(display, /guard !textOnly/);
   const shopping = section(model, 'private func routeShoppingList(', 'private func handleConversationTaskControl(');
   assert.match(shopping, /deliverConversationReply\(names\.isEmpty/);
 });

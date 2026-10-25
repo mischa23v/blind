@@ -1,0 +1,47 @@
+{
+  "checkpoint": "reconstruction-06-operation-owned-clock",
+  "baseCommit": "1ae0b8066df58915436f002a84b0dadb145d382b",
+  "dateUTC": "2026-10-25",
+  "core": {
+    "tests": 988,
+    "failures": 0,
+    "exitCode": 0
+  },
+  "node": {
+    "tests": 377,
+    "passed": 377,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "focused": {
+    "core": 40,
+    "extractedNativeCallbacks": 16,
+    "overlapsAggregate": true
+  },
+  "nativeSyntax": {
+    "default": 0,
+    "debugFamiliar": 0,
+    "AppleSDKTypechecked": false
+  },
+  "changes": [
+    "Legacy and model-selected clock reads retain first acquisition ownership and original monotonic expiry",
+    "Selected clock operations render exact code-owned evidence rather than model prose",
+    "Failed first read stays fail-closed; late rereads cannot renew earlier lease",
+    "Final text publication remains behind existing proposal gate",
+    "Queue/display/repeat use source-bound clock delivery"
+  ],
+  "limits": [
+    "No-tool language detection remains bounded defense-in-depth",
+    "Compound responses and actual Apple/model/audio/VoiceOver runtime remain unverified",
+    "Not full app restoration"
+  ],
+  "originalFailure": "original-contract-failure.log",
+  "testCorrection": "Updated one obsolete raw phrase queue assertion, retaining owned-output, original receipt, separate admission and proposal-before-publication requirements",
+  "artifactSHA256": {
+    "node-tests.log": "31b5559b0aa6a9eba1f952d1cbe2d9a0c6fcdc06735cdabbd2b2b129786ee29c",
+    "original-contract-failure.log": "1c20504faebfb8a3c868f78c457c4b1f511ee97bdbd899aa4cba7044d5a1824a",
+    "core-tests.log": "226ee50be58cca38542a8d2c86e74e66648e2b4dd74e64f67f53113b276a72e5",
+    "source-hashes.json": "2541d20e75c71aebe33a72540f6c579bde86769312337758556d710326ae33bc"
+  }
+}
