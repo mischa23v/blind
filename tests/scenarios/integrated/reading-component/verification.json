@@ -1,0 +1,16 @@
+{
+  "sourceCommit": "96fd2d4048b010594a40f54bd533f2bcf8dbfaa8",
+  "status": "SOURCE_PREPARED_NATIVE_NOT_RUN",
+  "localStaticChecks": 5,
+  "localStaticFailures": 0,
+  "syntax": [
+    "JavaScript",
+    "bash",
+    "Swift parse only; no Apple SDK typecheck"
+  ],
+  "review": "Independent source review cleared component ownership and scope; untracked source rejection hardening incorporated.",
+  "scope": "Unchanged Core plus test-owned native AVSpeech bridge; explicitly authored acquisition. Not NavigationModel/Feedback/camera proof.",
+  "fixedNativeInvocations": 1,
+  "testTimeoutSeconds": 480,
+  "timeoutMeaning": "Test termination only; never completion or extended runtime budget."
+}

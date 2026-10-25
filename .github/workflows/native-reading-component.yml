@@ -1,0 +1,60 @@
+name: Captured text Core and native speech component probe
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/native-reading-component.yml'
+      - 'tests/scenarios/integrated/reading-component/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: native-reading-component-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  workflows:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    runs-on: xcode-27
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 96fd2d4048b010594a40f54bd533f2bcf8dbfaa8
+          path: workflow-baseline
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Prepare isolated host and require actual native speech callbacks
+        run: bash tests/scenarios/integrated/reading-component/run-native.sh "$GITHUB_WORKSPACE/workflow-baseline"
+      - name: Preserve authored failure evidence (never device data)
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-reading-component-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/blind-reading-component/*.log
+            ${{ runner.temp }}/blind-reading-component/*.txt
+            ${{ runner.temp }}/blind-reading-component/*.json
+            ${{ runner.temp }}/blind-reading-component/component.xcresult
+            ${{ runner.temp }}/blind-reading-component/attachments
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Preserve small receipt-only evidence separately
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: reading-component-receipts-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/blind-reading-component/summary.json
+            ${{ runner.temp }}/blind-reading-component/attachments/*.json
+          if-no-files-found: warn
+          retention-days: 7
