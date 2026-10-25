@@ -244,25 +244,61 @@ final class LaunchTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["companion-reply"].waitForExistence(timeout: 10))
         try app.performAccessibilityAudit()
     }
-    func testAccessibilityAuditOfCameraAndAsk() throws {
-        openSettingsPage("camera-screen")
+    @MainActor
+    private func recordFullAuditEvidence(_ phase: String, _ point: String) {
+        // Only the existing synthetic --ui-testing launch, never production user content.
+        XCTAssertTrue(app.launchArguments.contains("--ui-testing"))
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = "full-audit-\(phase)-\(point)"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        print("ACCESSIBILITY_AUDIT_EVIDENCE phase=\(phase) point=\(point) category=\(UIApplication.shared.preferredContentSizeCategory.rawValue) window=\(app.windows.firstMatch.frame)")
+        let controls: [(String, XCUIElement)] = [
+            ("navigation", app.navigationBars.firstMatch),
+            ("tabs", app.tabBars.firstMatch),
+            ("monitor", app.buttons["monitor-toggle"]),
+            ("return", app.buttons["retrace-session"]),
+            ("practice", app.buttons["start-simulation"]),
+            ("practice-header", app.staticTexts.matching(NSPredicate(format: "label == %@", "Practice")).firstMatch),
+            ("practice-footer", app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Practice pauses live sensors and ends by itself after two minutes.")).firstMatch),
+            ("local-answer", app.buttons["local-answer"]),
+            ("voice-question", app.buttons["voice-question"])
+        ]
+        for (role, element) in controls {
+            if element.exists {
+                print("ACCESSIBILITY_AUDIT_FRAME phase=\(phase) point=\(point) role=\(role) exists=true frame=\(element.frame) hittable=\(element.isHittable) enabled=\(element.isEnabled) label=\(element.label.prefix(512))")
+            } else {
+                print("ACCESSIBILITY_AUDIT_FRAME phase=\(phase) point=\(point) role=\(role) exists=false")
+            }
+        }
+    }
+
+    @MainActor
+    private func auditFullDestination(_ phase: String, title: String, requiredControl: String) throws {
+        defer { recordFullAuditEvidence(phase, "after") }
+        // Required destination UI, not a sleep, scroll, altered state or audit exemption.
+        let titleReady = app.navigationBars[title].waitForExistence(timeout: 10)
+        let controlReady = app.buttons[requiredControl].waitForExistence(timeout: 10)
+        print("ACCESSIBILITY_AUDIT_READINESS phase=\(phase) titleReady=\(titleReady) controlReady=\(controlReady)")
+        recordFullAuditEvidence(phase, "before")
+        XCTAssertTrue(titleReady, "Expected destination navigation title")
+        XCTAssertTrue(controlReady, "Expected destination control")
         try app.performAccessibilityAudit { issue in
-            // Synthetic UI-test state only. Keep the failure and expose the affected control.
-            print("ACCESSIBILITY_AUDIT=type:\(issue.auditType),element:\(String((issue.element?.debugDescription ?? "unidentified").prefix(1200)).replacingOccurrences(of: "\n", with: " | "))")
+            print("ACCESSIBILITY_AUDIT=type:\(issue.auditType),phase:\(phase),compact:\(issue.compactDescription.prefix(2048)),detailed:\(issue.detailedDescription.prefix(4096)),element:\(String((issue.element?.debugDescription ?? "unidentified").prefix(1200)).replacingOccurrences(of: "\n", with: " | "))")
             // WCAG exempts inactive controls; retain every other audit finding.
             guard issue.auditType == .contrast, let element = issue.element else { return false }
             return element.identifier == "retrace-session" && !element.isEnabled
         }
+    }
+
+    @MainActor
+    func testAccessibilityAuditOfCameraAndAsk() throws {
+        openSettingsPage("camera-screen")
+        try auditFullDestination("camera", title: "Camera and safety", requiredControl: "monitor-toggle")
         app.navigationBars.buttons.element(boundBy: 0).tap()
         let ask = app.buttons["ask-screen"]
         reveal(ask); ask.tap()
-        try app.performAccessibilityAudit { issue in
-            // Synthetic UI-test state only. Keep the failure and expose the affected control.
-            print("ACCESSIBILITY_AUDIT=type:\(issue.auditType),element:\(String((issue.element?.debugDescription ?? "unidentified").prefix(1200)).replacingOccurrences(of: "\n", with: " | "))")
-            // WCAG exempts inactive controls; retain every other audit finding.
-            guard issue.auditType == .contrast, let element = issue.element else { return false }
-            return element.identifier == "retrace-session" && !element.isEnabled
-        }
+        try auditFullDestination("ask", title: "Ask and goals", requiredControl: "local-answer")
     }
     func testOfflineCommunityLibraryKeepsLocalImportAvailable() {
         openSettingsPage("settings-map-tools")
@@ -282,3 +318,4 @@ final class LaunchTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Use a unique, nonempty preference of at most 300 characters. Up to 16 can be saved."].exists)
     }
 }
+

@@ -8,6 +8,8 @@ on:
       - 'ios/BlindAssistUITests/LaunchTests.swift'
       - 'tools/ci/practice-layout-diagnostic.sh'
       - 'tools/ci/export-practice-layout-screenshots.py'
+      - 'tools/ci/export-full-audit-evidence.py'
+      - 'tools/test/full-audit-evidence.test.py'
   workflow_dispatch:
 permissions:
   contents: read
@@ -45,6 +47,23 @@ jobs:
       - name: Run the unsuppressed camera and ask accessibility audit
         if: always()
         run: bash tools/ci/native-apple.sh ui-diagnostic
+      - name: Validate full-audit evidence selector
+        if: always()
+        run: python3 tools/test/full-audit-evidence.test.py
+      - name: Extract bounded full-audit phase evidence
+        if: always()
+        run: python3 tools/ci/export-full-audit-evidence.py "$RUNNER_TEMP/blind-native-ci/ui-diagnostic.xcresult" "$RUNNER_TEMP/blind-full-audit-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+      - name: Preserve synthetic camera and ask audit evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: full-audit-phase-evidence
+          path: |
+            ${{ runner.temp }}/blind-full-audit-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/*.png
+            ${{ runner.temp }}/blind-full-audit-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/evidence.json
+          if-no-files-found: error
+          retention-days: 3
       - name: Retain diagnostic failure status
         if: always() && steps.layout.outcome != 'success'
         run: exit 1
+

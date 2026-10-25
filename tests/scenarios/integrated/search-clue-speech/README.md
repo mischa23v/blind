@@ -1,6 +1,8 @@
-# Search-area clue: actual native speech callback probe (source 29)
+# Search-area clue: actual native speech callback probe (source 31; frozen source-29 expectations)
 
-Status: SOURCE PREPARED, NATIVE NOT RUN. This separate probe does not replace the historical source-28 backpack callback evidence.
+Status: repaired source-31 NATIVE RERUN PENDING. The original source-29 run40220809616 compiled but failed two assertions: its actual post-forget completed output was “I couldn't finish that check yet. We can try something else.” and question delivery stayed none. All five actual completion receipts and the failed result are retained under `research/rebuild-evidence/search-clue-retry/`. The published repair853fe13e9d00880f29b0920b901e02f7007e1d56 now has 34 passing portable controller cases and a final combined serial499/499 Node aggregate; those are not repaired native speech acceptance.
+
+This rerun changes source pins/checkout and this explanation only. The Swift test, production projection seams, actual Feedback observer, isolation gates and frozen room/area plus speech-delivered assertions are byte-identical to the failed native probe. No assertion or speech permission is widened. Historical source-28 backpack proof is unaffected.
 
 Fresh dedicated simulator and distinct `org.blindassist.searchcluespeechtests` test host, no sharing entitlements. Same reviewed textOnly sensor/microphone isolation, BLE suppression, model fail-closed entry guards and participating-app URL-loading tripwire as the earlier callback probe. Existing pinned GRDB dependency only. No asset install/download APIs. OS speech daemon networking is unobserved; zero app-tripwire events is not a global no-network proof. System-listed voice is not proof of installed assets or acoustic output; actual callbacks remain mandatory.
 
@@ -25,4 +27,4 @@ Arabic variant: NOT RUN. No installed Arabic asset evidence is available; enumer
 
 ## Provenance and failure preservation
 
-The projector verifies source-29 commit and 14 relevant source blob pins plus the unchanged original four-file native-host recipe. It derives a private current-pin recipe, never changes historical tests. Projection attempt 01 failed locally on a renamed test filename; fixed filename in attempt 02, which generated successfully. Python syntax, shell syntax and generated JavaScript syntax checks are lightweight checks, not Swift compilation or native execution. Run only through the guarded public disposable CI workflow after independent review.
+The projector verifies source-31 commit and 14 relevant source blob pins plus the unchanged original four-file native-host recipe. It derives a private current-pin recipe, never changes historical tests. Projection attempt 01 failed locally on a renamed test filename; fixed filename in attempt 02, which generated successfully. Python syntax, shell syntax and generated JavaScript syntax checks are lightweight checks, not Swift compilation or native execution. Run only through the guarded public disposable CI workflow after independent review.

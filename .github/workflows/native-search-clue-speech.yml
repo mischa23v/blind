@@ -27,7 +27,7 @@ jobs:
           submodules: false
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: cc3b5f77f98e40735bfafee949c5a118110bd0c5
+          ref: 853fe13e9d00880f29b0920b901e02f7007e1d56
           path: workflow-baseline
           persist-credentials: false
           fetch-depth: 1
