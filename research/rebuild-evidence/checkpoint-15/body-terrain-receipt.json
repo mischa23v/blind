@@ -1,0 +1,87 @@
+{
+  "status": "applied_and_frozen_for_root_aggregate15",
+  "frozenAtUTC": "2026-10-25T07:23:14Z",
+  "approvedArchiveSHA256": "c56e43269b0bbf62e84d891dde42614c247d586f00ff7a366c60160ae2531de4",
+  "approvedManifestSHA256": "d7d01c1989a8904bd5480236528dedd1eca8f4d8dbb480ac58ba03bcdc849d92",
+  "appliedPaths": {
+    "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift": {
+      "preimageSHA256": "7066b5b6d5a113ebd14cfa6cbcf1c8dd5ec2e1c334443ca57e958340071e5f65",
+      "proposedSHA256": "666972c2423b459b3c0f90cac9fdc1847bbbcea086227c6484b5137d7db6c326",
+      "staged": "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift",
+      "patch": "verification/SpatialRouteOwner.swift.patch"
+    },
+    "ios/BlindAssist/DashboardView.swift": {
+      "preimageSHA256": "e6fb2238becf39c3603cd5c51d041e6ae444bb917af5964176c6bb854ce9a51d",
+      "proposedSHA256": "7f33b03de4d721078f6e403be727eed320ba8f17482a3d238305896ea8e00f67",
+      "staged": "ios/BlindAssist/DashboardView.swift",
+      "patch": "verification/DashboardView.swift.patch"
+    },
+    "BlindCore/Sources/BlindCore/BodyProfile.swift": {
+      "preimageSHA256": null,
+      "proposedSHA256": "21b0bd2b5173254504724696764c02b68096be8fba340c4210e390186694802d",
+      "staged": "BlindCore/Sources/BlindCore/BodyProfile.swift"
+    },
+    "BlindCore/Tests/BlindCoreTests/BodyProfileTests.swift": {
+      "preimageSHA256": null,
+      "proposedSHA256": "98e123696dab729d7e6fcf84ee037366979ab7cb83b778a8c8c2f43db6161d9a",
+      "staged": "BlindCore/Tests/BlindCoreTests/BodyProfileTests.swift"
+    },
+    "ios/BlindAssist/BodyProfileStore.swift": {
+      "preimageSHA256": null,
+      "proposedSHA256": "f7fabeff39bc7a62ac225ab4da71d6f2550fec98faca2dc357c5134cd6410cb4",
+      "staged": "ios/BlindAssist/BodyProfileStore.swift"
+    },
+    "ios/BlindAssist/BodyProfileSettingsView.swift": {
+      "preimageSHA256": null,
+      "proposedSHA256": "eba467048dbd333c92ede3a50d4a68d2cd4c7f5b4aa9b27d87cc6ca59b559686",
+      "staged": "ios/BlindAssist/BodyProfileSettingsView.swift"
+    },
+    "BlindCore/Sources/BlindCore/NavigationSurface.swift": {
+      "preimageSHA256": "d4a399ce7dd809cd519617f1e2e3fd2b22394c1cff2a3297c3d5247ce7dd26bc",
+      "proposedSHA256": "d0dc93843ce65d43f0199edbd3d9a08e4b83f783839c17522b2b60484b6d13fb",
+      "staged": "BlindCore/Sources/BlindCore/NavigationSurface.swift",
+      "patch": "verification/NavigationSurface.swift.patch"
+    },
+    "BlindCore/Sources/BlindCore/StoredTerrainAssessment.swift": {
+      "preimageSHA256": null,
+      "proposedSHA256": "53a0cf8756ed4ce9c445f889f31eac88b8333f6b8d8ed471b5c08d923817b3a8",
+      "staged": "BlindCore/Sources/BlindCore/StoredTerrainAssessment.swift"
+    },
+    "BlindCore/Tests/BlindCoreTests/TerrainFootingRegressionTests.swift": {
+      "preimageSHA256": null,
+      "proposedSHA256": "fa2176f76360bd8cd85abfb194dffd0fca6b43ecc69418b19906ab3cb2af9ae7",
+      "staged": "BlindCore/Tests/BlindCoreTests/TerrainFootingRegressionTests.swift"
+    },
+    "BlindCore/Tests/BlindCoreTests/StoredTerrainAssessmentTests.swift": {
+      "preimageSHA256": null,
+      "proposedSHA256": "e78ba08abf4352056462e35b6369a0e3b8ff989ca7b284d4fc0fda9365996dcb",
+      "staged": "BlindCore/Tests/BlindCoreTests/StoredTerrainAssessmentTests.swift"
+    },
+    "ios/BlindAssist.xcodeproj/project.pbxproj": {
+      "preimageSHA256": "bf3ea09dfa44e4c5e4d10a48d20a497239b780f0a2882501f86b2c26e97f3063",
+      "proposedSHA256": "5b8495ea82a1dd4cdd5996ca9de4e90171fad47a913792f29125c08b4ee84e48",
+      "staged": "ios/BlindAssist.xcodeproj/project.pbxproj",
+      "patch": "verification/project.pbxproj.patch"
+    }
+  },
+  "focusedTests": {
+    "core": 54,
+    "nativeStore": 7,
+    "failures": 0,
+    "nativeSyntaxParse": "passed"
+  },
+  "contractReconfirmationTests": {
+    "count": 2,
+    "failures": 0,
+    "scope": "Separate verification-only tests, not added to live production/test tree"
+  },
+  "invariants": [
+    "Missing measurement uncertainty remains nil, not a measured zero.",
+    "Preview and stored terrain do not grant physical clearance.",
+    "Temporal rollback rejects older reported dimensions against newer measured bounds.",
+    "Actual native store off-main IO, blocked-write/reopen/CAS and ordered deletion tests pass."
+  ],
+  "trackerDocsEdited": false,
+  "rootAggregate15": "pending",
+  "appleSDKOrDeviceValidation": "not performed"
+}

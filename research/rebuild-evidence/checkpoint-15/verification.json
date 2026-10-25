@@ -1,0 +1,31 @@
+{
+  "parent": "8dbc7dfd26f47b6df9493990485a620f65945be6",
+  "corePassed": 1181,
+  "nodePassed": 395,
+  "failures": 0,
+  "skipped": 0,
+  "focusedActualLive": 61,
+  "scope": "Optional local age/gender/weight/height profile, reported/measured dimension provenance, chest-phone offset metadata, helper UI, bounded off-main storage and revision invalidation. Typed stored-terrain fit removes old9cm and adjacent16cm level tolerance.",
+  "failurePreservation": "Actual spatial replay initially lacked two production Core dependencies. Exact BodyProfile and StoredTerrainAssessment files were added to input-hashed extraction; methods and tests remain unchanged.",
+  "limits": [
+    "No demographic formula establishes individual body width or clearance",
+    "Profile previews cannot grant physical clearance; no calibrated pose/body/support provider",
+    "Missing uncertainty remains nil; legacy flat geometry is not fresh measured corridor clearance",
+    "Apple SDK/VoiceOver/device storage protection and latency not executed",
+    "Native CI was skipped because private repository triggers public-only free-runner guard"
+  ],
+  "sourceHashes": {
+    "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift": "666972c2423b459b3c0f90cac9fdc1847bbbcea086227c6484b5137d7db6c326",
+    "ios/BlindAssist/DashboardView.swift": "7f33b03de4d721078f6e403be727eed320ba8f17482a3d238305896ea8e00f67",
+    "BlindCore/Sources/BlindCore/BodyProfile.swift": "21b0bd2b5173254504724696764c02b68096be8fba340c4210e390186694802d",
+    "BlindCore/Tests/BlindCoreTests/BodyProfileTests.swift": "98e123696dab729d7e6fcf84ee037366979ab7cb83b778a8c8c2f43db6161d9a",
+    "ios/BlindAssist/BodyProfileStore.swift": "f7fabeff39bc7a62ac225ab4da71d6f2550fec98faca2dc357c5134cd6410cb4",
+    "ios/BlindAssist/BodyProfileSettingsView.swift": "eba467048dbd333c92ede3a50d4a68d2cd4c7f5b4aa9b27d87cc6ca59b559686",
+    "BlindCore/Sources/BlindCore/NavigationSurface.swift": "d0dc93843ce65d43f0199edbd3d9a08e4b83f783839c17522b2b60484b6d13fb",
+    "BlindCore/Sources/BlindCore/StoredTerrainAssessment.swift": "53a0cf8756ed4ce9c445f889f31eac88b8333f6b8d8ed471b5c08d923817b3a8",
+    "BlindCore/Tests/BlindCoreTests/TerrainFootingRegressionTests.swift": "fa2176f76360bd8cd85abfb194dffd0fca6b43ecc69418b19906ab3cb2af9ae7",
+    "BlindCore/Tests/BlindCoreTests/StoredTerrainAssessmentTests.swift": "e78ba08abf4352056462e35b6369a0e3b8ff989ca7b284d4fc0fda9365996dcb",
+    "ios/BlindAssist.xcodeproj/project.pbxproj": "5b8495ea82a1dd4cdd5996ca9de4e90171fad47a913792f29125c08b4ee84e48",
+    "tools/extract-spatial-map-io.mjs": "9e256d5c7650304c272b029052d698601c976024a14ea9cd4306bda03bb9b459"
+  }
+}

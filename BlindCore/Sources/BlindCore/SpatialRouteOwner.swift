@@ -79,6 +79,7 @@ public struct SpatialRouteOwner: Sendable {
     public private(set) var body: BodyEnvelope
     public private(set) var routeID = UUID()
     public private(set) var bodyRevision = UUID()
+    private var bodyProfileGeometryRevision: UUID?
     public private(set) var obstacleRevision = UUID()
     public private(set) var restrictionsDurable = true
     private var localization: SpatialLocalizationLease
@@ -146,6 +147,18 @@ public struct SpatialRouteOwner: Sendable {
         guard next.valid else { throw SpatialRouteError.invalidBody }
         guard next != body else { return }
         body = next; bodyRevision = UUID(); cancelRoute()
+    }
+    /// A private profile can only invalidate authority and constrain a preview.
+    /// It must never configure native pose/heading or certify collision clearance.
+    /// Gender/name-only edits do not rotate geometry ownership.
+    public mutating func invalidateBodyProfile(_ profile: LocalBodyProfile) throws {
+        guard profile.valid else {
+            localization.restart(); bodyRevision = UUID(); cancelRoute()
+            throw SpatialRouteError.invalidBody
+        }
+        guard bodyProfileGeometryRevision != profile.geometryRevision else { return }
+        bodyProfileGeometryRevision = profile.geometryRevision
+        bodyRevision = UUID(); localization.restart(); cancelRoute()
     }
     /// Restriction-only updates: delayed empty observations cannot reopen a closed
     /// path. Zone IDs are immutable within this installation; removal/replacement

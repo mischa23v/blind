@@ -769,6 +769,15 @@ struct AssistantToolsView: View {
                     .accessibilityIdentifier("conversation-memory")
             }
             Section {
+                NavigationLink(t("Body and chest holder", "الجسم وحامل الصدر")) {
+                    BodyProfileSettingsView {
+                        // No preview geometry is promoted to a native calibration.
+                        model.invalidateNativeLocalizationMount(slipped: false)
+                        model.fixedBodyMount = false
+                        model.journeys.breakTracking()
+                        model.indoor.invalidatePosition()
+                    }
+                }.accessibilityIdentifier("body-profile-settings")
                 NavigationLink(t("Interests and preferences", "الاهتمامات والتفضيلات")) { AssistantPreferencesView(model: model) }
                     .accessibilityIdentifier("assistant-preferences")
                 #if BLIND_FAMILIAR_PEOPLE

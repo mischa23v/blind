@@ -6,8 +6,12 @@ public struct SurfaceCell: Codable, Equatable, Sendable {
     public var floor: Double?
     public var clearance: Double?
     public var blocked: Bool
-    public init(floor: Double? = nil, clearance: Double? = nil, blocked: Bool = false) {
+    public var terrain: SurfaceTerrainAnnotation?
+    public var floorUncertainty: Double?
+    public init(floor: Double? = nil, clearance: Double? = nil, blocked: Bool = false,
+                terrain: SurfaceTerrainAnnotation? = nil, floorUncertainty: Double? = nil) {
         self.floor = floor; self.clearance = clearance; self.blocked = blocked
+        self.terrain = terrain; self.floorUncertainty = floorUncertainty
     }
 }
 
@@ -41,18 +45,20 @@ public struct NavigationSurface: Codable, Sendable {
               width > 0, depth > 0, width <= 2000, depth <= 2000, width * depth <= 250_000,
               cells.count == width * depth,
               cells.allSatisfy({ ($0.floor == nil || $0.floor!.isFinite) &&
-                  ($0.clearance == nil || ($0.clearance!.isFinite && $0.clearance! >= 0)) }) else { throw MapError.invalid }
+                  ($0.clearance == nil || ($0.clearance!.isFinite && $0.clearance! >= 0)) &&
+                  ($0.floorUncertainty == nil || ($0.floorUncertainty!.isFinite && $0.floorUncertainty! >= 0)) }) else { throw MapError.invalid }
     }
     /// Sweeps the body cylinder along a straight authored route leg. Sampling adds half
     /// a sample interval to the radius, conservatively covering the space between samples.
-    /// Unknown cells, bounds, head obstacles, rises and drops all reject the leg.
+    /// Unknown cells, bounds, head obstacles and non-level/uncertain footing reject.
+    /// A true result is stored-geometry fit only, never current physical clearance.
     public func permitsLeg(from a: Point3, to b: Point3, body: BodyEnvelope = BodyEnvelope()) -> Bool {
         guard (try? validate()) != nil else { return false }
         return permitsValidatedLeg(from: a, to: b, body: body)
     }
     internal func permitsValidatedLeg(from a: Point3, to b: Point3, body: BodyEnvelope) -> Bool {
         guard body.valid, a.isFinite, b.isFinite,
-              abs(a.y - b.y) <= 0.09 else { return false }
+              StoredTerrainPolicy.assess(sourceHeight: a.y, destinationHeight: b.y, floorHeight: a.y).permitsStoredLevelRoute else { return false }
         let length = hypot(b.x - a.x, b.z - a.z)
         guard length.isFinite, length <= 100 else { return false }
         let steps = max(1, Int(ceil(length / (resolution * 0.5))))
@@ -73,8 +79,10 @@ public struct NavigationSurface: Codable, Sendable {
                     let nearestZ = max(Double(cz) * resolution, min(z, Double(cz + 1) * resolution))
                     guard hypot(x - nearestX, z - nearestZ) <= radius else { continue }
                     let cell = cells[cz * width + cx]
-                    guard !cell.blocked, let floor = cell.floor, let clearance = cell.clearance,
-                          abs(floor - a.y) <= 0.09, clearance >= body.height + body.margin else { return false }
+                    guard !cell.blocked, let clearance = cell.clearance,
+                          StoredTerrainPolicy.assess(sourceHeight: a.y, destinationHeight: b.y, floorHeight: cell.floor,
+                              floorUncertainty: cell.floorUncertainty, annotation: cell.terrain).permitsStoredLevelRoute,
+                          clearance >= body.height + body.margin else { return false }
                 }
             }
         }
