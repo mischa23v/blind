@@ -112,6 +112,22 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
     public var goal: JourneyGoal? { snapshot.goal }
     public var question: JourneyReturnQuestion? { coordinator?.currentQuestion }
     public var expectedSessionID: UUID? { coordinator?.expectedSessionID }
+    public var nativeLocalizationContext: NativeLocalizationRouteContext? {
+        guard !loading, !externalMapPending, !mapValidationBlocked, mapWorkID == nil, !commandBlocked else { return nil }
+        return coordinator?.nativeLocalizationContext
+    }
+    /// Compare session, exact geometry digest and goal BEFORE changing any state.
+    /// Repeated absent-evidence frames do not generate retirement/change storms.
+    @discardableResult public func withholdNativeEvidence(session: UUID,
+        artifact: SpatialMapArtifactIdentity, goalRevision: UUID) -> Bool {
+        guard let context = nativeLocalizationContext, context.sessionID == session,
+              context.artifact == artifact, context.goalRevision == goalRevision,
+              var owner = coordinator else { return false }
+        let changed = owner.withholdNativeEvidence(session: session, artifact: artifact, goalRevision: goalRevision)
+        guard changed || held != nil || lastEndpoint != nil else { return false }
+        coordinator = owner; lastEndpoint = nil
+        retireOutput(); onChange?(); return true
+    }
     public var pendingWriteCount: Int { (writing == nil ? 0 : 1) + (pending == nil ? 0 : 1) }
     private let io: any ConnectedJourneyRuntimeIO
     private let sha256: SpatialMapSHA256
@@ -439,11 +455,19 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
                 } else if case .local(_, let to)? = coordinator?.currentLeg, sameLocation(endpoint, to) {
                     try mutate(retireClarification: false) { try $0.completeLocalLeg(now: now, recordedAt: Date(), persist: { _ in }) }
                     if case .portal? = coordinator?.currentLeg { try coordinator?.armPortal(now: now, recordedAt: Date()) }
+                } else if case .portal(_, let from, _)? = coordinator?.currentLeg, sameLocation(endpoint, from) {
+                    // Evidence withdrawal discards the old departure receipt but
+                    // retains intent. Only this fresh measured source endpoint
+                    // can rearm it; the old departure is never restored.
+                    try coordinator?.armPortal(now: now, recordedAt: Date())
                 } else if case .portal(_, _, let to)? = coordinator?.currentLeg, sameLocation(endpoint, to) {
                     try mutate(retireClarification: false) { try $0.completePortal(now: now, recordedAt: Date(), persist: { _ in }) }
                     try coordinator?.prepareLocalLeg(now: now)
                 } else if coordinator?.currentLeg == nil {
                     try coordinator?.plan(from: endpoint, now: now)
+                    // An itinerary can begin directly at an authored portal
+                    // source. Associate the fresh source, never crossing guidance.
+                    if case .portal? = coordinator?.currentLeg { try coordinator?.armPortal(now: now, recordedAt: Date()) }
                 } else {
                     // The existing owner verifies proximity before advancing. A
                     // non-waypoint sample is not arrival and leaves the plan alone.

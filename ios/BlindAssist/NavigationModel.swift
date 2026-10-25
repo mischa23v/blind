@@ -166,6 +166,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published var fixedBodyMount = false {
         didSet {
             if oldValue != fixedBodyMount {
+                invalidateNativeLocalizationMount(slipped: mountSlipAnnounced)
                 journeys.breakTracking()
                 cancelDescription(); feedback.interruptAmbient()
                 // A changed physical mount retires heading authority, not map history.
@@ -324,6 +325,52 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var observationDeletionCutoffs = ObservationDeletionCutoffs()
     private var observedObjects = ObservedObjectMemory()
     private var observationFrameID = UUID().uuidString
+    private var nativeLocalizationMount = UUID()
+    // Diagnostic marker only: no measured calibration/error/support provider exists.
+    private let nativeLocalizationCalibrationRevision = "unconfigured"
+    private lazy var nativeLocalizationRouter = journeys.withConnectedJourney { runtime in
+        NativeLocalizationRouter(journey: runtime,
+            previewContext: { [weak self] in self?.indoor.nativePreviewLocalizationContext },
+            withholdPreview: { [weak self] session, artifact in
+                self?.indoor.withholdNativePreviewEvidence(session: session, artifact: artifact)
+            })
+    }
+    private func withNativeLocalization<T>(_ operation: @MainActor (NativeLocalizationRouter) throws -> T) rethrows -> T {
+        try MainActor.assumeIsolated {
+            let selected: NativeLocalizationRouter.Selection = connectedJourneyOwnsNavigation ? .connectedJourney :
+                (indoorGuidanceOwner == .legacyPreview ? .registeredPreview : .none)
+            nativeLocalizationRouter.select(selected)
+            return try operation(nativeLocalizationRouter)
+        }
+    }
+    private func invalidateNativeLocalization(_ reason: NativeLocalizationNotReady) {
+        withNativeLocalization { $0.invalidate(reason) }
+    }
+    private func offerNativeLocalization(_ frame: ARFrame, now: Double) {
+        guard running, cameraAwareness, assistantSession.foregroundActive, !simulation, !places.scanning,
+              let arSession = UUID(uuidString: observationFrameID) else {
+            invalidateNativeLocalization(.trackingUnavailable); return
+        }
+        let normal: Bool
+        if case .normal = frame.camera.trackingState { normal = true } else { normal = false }
+        let transform = frame.camera.transform
+        let matrix = (0..<4).flatMap { column in (0..<4).map { row in Double(transform[column][row]) } }
+        withNativeLocalization { router in
+            router.offer(arSession: arSession, calibrationRevision: nativeLocalizationCalibrationRevision,
+                mountRevision: nativeLocalizationMount, capturedAt: frame.timestamp, cameraToWorld: matrix,
+                trackingNormal: normal, recovered: places.currentWorldFrame(sessionID: arSession, now: now), now: now)
+        }
+    }
+    private func revalidateNativeLocalization(now: Double) {
+        guard let arSession = UUID(uuidString: observationFrameID) else { invalidateNativeLocalization(.ownerChanged); return }
+        withNativeLocalization { $0.watchdog(arSession: arSession,
+            calibrationRevision: nativeLocalizationCalibrationRevision, mountRevision: nativeLocalizationMount, now: now) }
+    }
+    func invalidateNativeLocalizationMount(slipped: Bool) {
+        nativeLocalizationMount = UUID()
+        invalidateNativeLocalization(slipped ? .mountSlip : .mountChanged)
+    }
+
     private var importedFurnitureRevisions = Set<String>()
     private var passiveObservationGeneration = UUID()
     private var passiveObservationInFlight = false
@@ -859,6 +906,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             // Held route output expires even if no sensor callback arrives.
             self.indoor.revalidateSpatialOutput(now: ProcessInfo.processInfo.systemUptime)
             self.journeys.withConnectedJourney { $0.revalidate(now: ProcessInfo.processInfo.systemUptime) }
+            self.revalidateNativeLocalization(now: ProcessInfo.processInfo.systemUptime)
             self.spatialRouteOutput.revalidate()
             guard self.running, !self.places.scanning else { return }
             self.tickEverydayRetry(now: ProcessInfo.processInfo.systemUptime)
@@ -904,11 +952,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if let watchdog { RunLoop.main.add(watchdog, forMode: .common) }
     }
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        // Tracking loss retires selected-owner evidence even on throttled frames.
+        if case .normal = frame.camera.trackingState {} else { invalidateNativeLocalization(.trackingUnavailable) }
         // Tracking loss retires the issuer even when this frame is throttled below.
         if case .normal = frame.camera.trackingState {} else { journeys.breakTracking() }
         guard running, !simulation, !places.scanning, frame.timestamp - lastProcessed >= 1.0 / 15 else { return }
         let receivedAt = ProcessInfo.processInfo.systemUptime
         let receivedDate = Date()
+        // Candidate capture follows urgent sensors; no history writer/LLM dependency.
+        defer { offerNativeLocalization(frame, now: ProcessInfo.processInfo.systemUptime) }
         guard FrameTimestampPolicy.isFresh(capturedAt: frame.timestamp, receivedAt: receivedAt) else { return }
         let timing = AssistantPerformance.signposter.beginInterval("SensorFrame", id: AssistantPerformance.signposter.makeSignpostID())
         defer { AssistantPerformance.signposter.endInterval("SensorFrame", timing) }
@@ -1099,6 +1151,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     #endif
     private func invalidatePerceptionWork(preserveRGBHistoryWork: Bool = false) {
+        invalidateNativeLocalization(.trackingUnavailable)
         #if DEBUG
         latestGroundGeometry = nil; lastGroundGeometryAt = -.infinity
         #endif
@@ -1346,7 +1399,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// A selected connected owner remains selected after arrival/cancellation.
     /// Only a new explicit preview selection can expose legacy preview controls.
     private enum IndoorGuidanceOwner { case none, connectedJourney, legacyPreview }
-    private var indoorGuidanceOwner: IndoorGuidanceOwner = .none
+    private var indoorGuidanceOwner: IndoorGuidanceOwner = .none {
+        didSet {
+            if oldValue != indoorGuidanceOwner { withNativeLocalization { _ in } }
+        }
+    }
     var connectedJourneyOwnsNavigation: Bool {
         if indoorGuidanceOwner == .connectedJourney { return true }
         guard indoorGuidanceOwner == .none else { return false }

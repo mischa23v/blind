@@ -352,6 +352,17 @@ final class IndoorNavigator: ObservableObject {
     }
     /// A native issuer must capture this session before beginning asynchronous work.
     var registeredSessionID: UUID? { registered?.sessionID }
+    /// Preview ownership only. Never substitute this session for a connected journey.
+    var nativePreviewLocalizationContext: NativeLocalizationRouteContext? {
+        guard let registered, !registered.ioPending, !registered.ioBlocked,
+              let session = registered.sessionID, let installation = registered.installation,
+              let revision = try? installation.registry.map(for: installation.binding) else { return nil }
+        return .init(sessionID: session, artifact: installation.artifact, revision: revision, goalRevision: nil)
+    }
+    func withholdNativePreviewEvidence(session: UUID, artifact: SpatialMapArtifactIdentity) {
+        registered?.withholdNativeEvidence(session: session, artifact: artifact)
+    }
+
     func currentRegisteredPose(now: Double) -> SpatialLocalizationCapture? { registered?.currentPose(now: now) }
     /// Raw world-space arguments cannot be re-labelled into the registered map.
     func mapDirection(_ forward: Point3) -> Point3? { nil }

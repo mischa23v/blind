@@ -82,6 +82,12 @@ public struct SpatialLocalizationLease: Sendable {
     public init(limits: SpatialLocalizationLimits) {
         self.limits = limits; sessionID = UUID()
     }
+    /// Withdraw evidence without changing capture ownership or resetting the replay ledger.
+    /// Lifecycle restart/real tracking loss still use restart/loseTracking.
+    public var hasEvidence: Bool { accepted != nil }
+    public mutating func withholdEvidence() {
+        accepted = nil; acceptanceID = nil; acceptedInstallationID = nil
+    }
     public mutating func restart() {
         sessionID = UUID(); accepted = nil; acceptanceID = nil; acceptedInstallationID = nil; lastFrameTime = nil; seenCaptureIDs.removeAll()
     }

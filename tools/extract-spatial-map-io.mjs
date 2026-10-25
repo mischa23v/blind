@@ -1,6 +1,6 @@
 // Exact-source portability extraction only. No map/IO/cancellation body is copied
 // into a substitute implementation. Platform stubs are explicitly test-only.
-export const coreFiles = ['Geometry', 'IndoorMap', 'KeepOutZone', 'NarrationDelivery', 'NavigationSurface', 'PlacePackage', 'RoomLayout', 'SavedWorldFrame', 'SpatialFrameRegistry', 'SpatialLocalizationLease', 'SpatialMapInstallation', 'SpatialRouteOwner', 'SpeechDeliveryLedger', 'SpeechPriority'];
+export const coreFiles = ['Geometry', 'IndoorMap', 'KeepOutZone', 'NarrationDelivery', 'NativeLocalizationSelection', 'NavigationSurface', 'PlacePackage', 'RoomLayout', 'SavedWorldFrame', 'SpatialFrameRegistry', 'SpatialLocalizationLease', 'SpatialMapInstallation', 'SpatialRouteOwner', 'SpeechDeliveryLedger', 'SpeechPriority'];
 export function extractIndoorNavigator(source) {
   if (!source.includes('import Combine\n')) throw Error('Expected actual native Combine import');
   return source.replace(/^import Combine\n/m, '');

@@ -1,0 +1,86 @@
+{
+  "frozenAtUTC": "2026-10-25T06:55:12.331268+00:00",
+  "parentCheckpoint": "0601e9fe26482f2ffa493d501cf9b9bdd821a8a2",
+  "approvedSourceArchiveSHA256": "2f5b607c47b0142f095ddc44f027a5c4ed209e6a113253ef3e2eb056fe540208",
+  "appliedPaths": {
+    "ios/BlindAssist/IndoorNavigator.swift": {
+      "preimageSHA256": "e49ab43e4556d3562ec4e471fad9646b4dc9bf01991e65534f4a8e8b979698d5",
+      "proposedSHA256": "6790f5cfb8976dbc3616490c35ae05442277ca9e6cb419e6d1fa12fc8c252789",
+      "staged": "proposals/IndoorNavigator.swift.proposed"
+    },
+    "ios/BlindAssist/NavigationModel.swift": {
+      "preimageSHA256": "f8b80fd4dde59f6cf311a8cc7cdee61d9cae6545121b364baa405ddda8460fbd",
+      "proposedSHA256": "5623c15a8b5ecd27e6a0b9d5b5a708c0e884d6b40a1e0418f2b5ef9baba76969",
+      "staged": "proposals/NavigationModel.swift.proposed"
+    },
+    "BlindCore/Sources/BlindCore/SpatialLocalizationLease.swift": {
+      "preimageSHA256": "d198ad905bf5001a27be226d0063bf0e46173194c495875104657950efcd7c81",
+      "proposedSHA256": "88a9e9f888a1c23b0e27a3da270008c6dbc6d88fff61f016cef5344280c60193",
+      "staged": "proposals/SpatialLocalizationLease.swift.proposed"
+    },
+    "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift": {
+      "preimageSHA256": "3ebcfa2d2b7d94f9cb7d72a39a01faa18ac5606ae1245b3d3488e423b1d66b52",
+      "proposedSHA256": "7066b5b6d5a113ebd14cfa6cbcf1c8dd5ec2e1c334443ca57e958340071e5f65",
+      "staged": "proposals/SpatialRouteOwner.swift.proposed"
+    },
+    "ios/BlindAssist/RegisteredIndoorNavigation.swift": {
+      "preimageSHA256": "320696ba7bd729293e187762aac25528c1ebb9076687b2961ead10729939272f",
+      "proposedSHA256": "e60e60dd80d791a0e2a8b1a147e671f72052e6b678a5cdd0ca8ce8d0c3467656",
+      "staged": "proposals/RegisteredIndoorNavigation.swift.proposed"
+    },
+    "BlindCore/Sources/BlindCore/ConnectedJourneyCoordinator.swift": {
+      "preimageSHA256": "6f10a018eb6793c4ae6f31267f6c2a16b9ca6809e45c34c7f580e8a715de653c",
+      "proposedSHA256": "2b239d433dfe2650d717a2165571c037e5ec50023abc018594ae28289841dcfd",
+      "staged": "proposals/ConnectedJourneyCoordinator.swift.proposed"
+    },
+    "ios/BlindAssist/ConnectedJourneyRuntime.swift": {
+      "preimageSHA256": "d167040775a87fe8fe8d836b0501eccbcb311581864afb379f5da6991655ea5a",
+      "proposedSHA256": "0ecdfbae3abb23fbd6cf4aeedfa4b08c15b8366ec408faaee544c81691fb30a5",
+      "staged": "proposals/ConnectedJourneyRuntime.swift.proposed"
+    },
+    "ios/BlindAssist.xcodeproj/project.pbxproj": {
+      "preimageSHA256": "dd0aaca95133ec5e024c248769755cdc4f72937757e5e1972274b8ca08cae381",
+      "proposedSHA256": "bf3ea09dfa44e4c5e4d10a48d20a497239b780f0a2882501f86b2c26e97f3063",
+      "staged": "proposals/project.pbxproj.proposed"
+    },
+    "BlindCore/Sources/BlindCore/NativeLocalizationEvidence.swift": {
+      "preimageSHA256": null,
+      "proposedSHA256": "c015f273cc415c42fa55bb775471492cd90de6b485b60b12c03db860424a2dce",
+      "staged": "BlindCore/Sources/BlindCore/NativeLocalizationEvidence.swift"
+    },
+    "BlindCore/Sources/BlindCore/NativeLocalizationSelection.swift": {
+      "preimageSHA256": null,
+      "proposedSHA256": "1db64be15df89cf8319096fe639f970f2b99ab495deaa6768c266a8cc3d5326f",
+      "staged": "BlindCore/Sources/BlindCore/NativeLocalizationSelection.swift"
+    },
+    "ios/BlindAssist/NativeLocalizationIssuer.swift": {
+      "preimageSHA256": null,
+      "proposedSHA256": "eccde9f2b901830a45760491aaefa4db603c59fe5bc3f05d647256e7cbf003d6",
+      "staged": "ios/BlindAssist/NativeLocalizationIssuer.swift"
+    },
+    "ios/BlindAssist/NativeLocalizationRouter.swift": {
+      "preimageSHA256": null,
+      "proposedSHA256": "a4c4d1a91eb6d1343104aefbc68db9f92b21a832772caba514935840c3a66c14",
+      "staged": "ios/BlindAssist/NativeLocalizationRouter.swift"
+    }
+  },
+  "focusedTests": {
+    "passed": 47,
+    "failures": 0,
+    "input": "120 byte-exact actual live production sources plus two extracted native method harnesses"
+  },
+  "nativeSyntaxConfigurations": 4,
+  "xcodeProject": "regenerated from actual current source, exact reviewed expected hash",
+  "scope": "candidate-only; no calibrated issuance, positive memory scope or physical release; no Apple SDK/device proof",
+  "aggregate": "parent-owned, pending",
+  "evidenceSHA256": {
+    "rebase-proof.json": "59bcc74868fd276542a80cc450878affd673c28848ba81ba65262a3070271476",
+    "focused-live-tests.log": "73ed1eda507b41dd1deb19b79231825deb0b8943450e37a71cf1cd89e557e102",
+    "native-parse.log": "fb935c3a0287526a5121afb3a9de3d3ffa5a22765f4364f55e0515873c4b06b4",
+    "live-compiled-correspondence.json": "ba9491feb6340c67dec75a446e59e2d7835fc76748628d976b6fd4024230ed76",
+    "stage/verification/source-input-manifest.json": "a022906d1c94f94e55314adf94a404fada93c8b56e638acbb9504646cd28b48b",
+    "stage/verification/compiled-source-sha256.json": "7dc698fb13822b58d5f5e511413e3d9c45b5863ba551054b6c9d1412a3272df3",
+    "stage/verification/extraction.json": "55de8214ec0f6fb158c0d6613825a6a22de8bcae4a2bbcd01d6403c4054d69ef",
+    "stage/verification/selection-extraction.json": "54396361b4f9619d2014e136b47f1dbaeb17b353a99d43ed83813258a7823479"
+  }
+}

@@ -103,6 +103,24 @@ public struct ConnectedJourneyCoordinator: Sendable {
         if let armedPortal, armedPortal.to.binding != binding { retirePlan() }
         return next.sessionID
     }
+    /// Context comes from this journey's active owner, not IndoorNavigator's preview.
+    public var nativeLocalizationContext: NativeLocalizationRouteContext? {
+        guard let owner, let installation = owner.installation,
+              activeBinding == installation.binding, let goal = snapshot.goal, goal.status == .active,
+              let revision = try? installation.registry.map(for: installation.binding) else { return nil }
+        return .init(sessionID: owner.sessionID, artifact: installation.artifact,
+            revision: revision, goalRevision: goal.revision)
+    }
+    /// Exact-owner evidence withdrawal: preserve route intent, itinerary, restrictions,
+    /// localization session and replay ledger. Actual tracking loss is separate.
+    @discardableResult public mutating func withholdNativeEvidence(session: UUID,
+        artifact: SpatialMapArtifactIdentity, goalRevision: UUID) -> Bool {
+        guard let context = nativeLocalizationContext, context.sessionID == session,
+              context.artifact == artifact, context.goalRevision == goalRevision else { return false }
+        guard owner?.hasLocalizationEvidence == true || support != nil || armedPortal != nil else { return false }
+        owner?.withholdLocalizationEvidence(); support = nil; armedPortal = nil
+        rotateOutput(); return true
+    }
     public var expectedSessionID: UUID? { owner?.sessionID }
     public func currentPose(now: Double) -> SpatialLocalizationCapture? { owner?.currentPose(now: now) }
     public mutating func accept(_ capture: SpatialLocalizationCapture, support: SpatialFloorSupport, now: Double) throws {

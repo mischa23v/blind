@@ -1,0 +1,31 @@
+{
+  "parent": "c28f0c77d66f9985451758fda9760869262b524f",
+  "corePassed": 1156,
+  "nodePassed": 395,
+  "failures": 0,
+  "skipped": 0,
+  "focusedActualNativeInputs": 47,
+  "scope": "Candidate-only native evidence bridge selects the exact active connected journey owner; stale completions and preview owners cannot clear a newer owner. Missing recovery evidence withdraws only the current selected context, preserves intent/replay history, and portal departure can rearm only from fresh validated endpoint evidence.",
+  "failurePreservation": "Aggregate failed because extraction whitelist omitted the exact production NativeLocalizationSelection type. Added production dependency and input hashing; no production method excluded or replaced by a fake type. Original failed build retained.",
+  "limits": [
+    "Production does not issue a localization capture or motion permission",
+    "Body calibration, validated uncertainty, floor/support coverage and imported-map registration providers absent",
+    "Positive native memory scope remains unavailable",
+    "Apple SDK/device/calibration acceptance not established by portable/extracted tests"
+  ],
+  "sourceHashes": {
+    "ios/BlindAssist/IndoorNavigator.swift": "6790f5cfb8976dbc3616490c35ae05442277ca9e6cb419e6d1fa12fc8c252789",
+    "ios/BlindAssist/NavigationModel.swift": "5623c15a8b5ecd27e6a0b9d5b5a708c0e884d6b40a1e0418f2b5ef9baba76969",
+    "BlindCore/Sources/BlindCore/SpatialLocalizationLease.swift": "88a9e9f888a1c23b0e27a3da270008c6dbc6d88fff61f016cef5344280c60193",
+    "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift": "7066b5b6d5a113ebd14cfa6cbcf1c8dd5ec2e1c334443ca57e958340071e5f65",
+    "ios/BlindAssist/RegisteredIndoorNavigation.swift": "e60e60dd80d791a0e2a8b1a147e671f72052e6b678a5cdd0ca8ce8d0c3467656",
+    "BlindCore/Sources/BlindCore/ConnectedJourneyCoordinator.swift": "2b239d433dfe2650d717a2165571c037e5ec50023abc018594ae28289841dcfd",
+    "ios/BlindAssist/ConnectedJourneyRuntime.swift": "0ecdfbae3abb23fbd6cf4aeedfa4b08c15b8366ec408faaee544c81691fb30a5",
+    "ios/BlindAssist.xcodeproj/project.pbxproj": "bf3ea09dfa44e4c5e4d10a48d20a497239b780f0a2882501f86b2c26e97f3063",
+    "BlindCore/Sources/BlindCore/NativeLocalizationEvidence.swift": "c015f273cc415c42fa55bb775471492cd90de6b485b60b12c03db860424a2dce",
+    "BlindCore/Sources/BlindCore/NativeLocalizationSelection.swift": "1db64be15df89cf8319096fe639f970f2b99ab495deaa6768c266a8cc3d5326f",
+    "ios/BlindAssist/NativeLocalizationIssuer.swift": "eccde9f2b901830a45760491aaefa4db603c59fe5bc3f05d647256e7cbf003d6",
+    "ios/BlindAssist/NativeLocalizationRouter.swift": "a4c4d1a91eb6d1343104aefbc68db9f92b21a832772caba514935840c3a66c14",
+    "tools/extract-spatial-map-io.mjs": "2e15ab7f906dba1dbfd9449b37521c0a8e7f69a208a768d62481166c1122e0ac"
+  }
+}

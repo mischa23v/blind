@@ -238,6 +238,13 @@ final class RegisteredIndoorNavigation {
         }
     }
     func cancelRoute() { routeOperation = UUID(); retireOutput(); owner?.cancelRoute() }
+    /// Compare before mutation: a delayed candidate from A cannot retire newer B.
+    /// Preserve session and replay ledger so withdrawing output does not stale the
+    /// candidate being measured. True lifecycle loss still uses loseTracking.
+    func withholdNativeEvidence(session: UUID, artifact: SpatialMapArtifactIdentity) {
+        guard sessionID == session, installation?.artifact == artifact else { return }
+        retireOutput(); owner?.withholdLocalizationEvidence(); support = nil
+    }
     func loseTracking() { routeOperation = UUID(); retireOutput(); owner?.loseTracking(); support = nil }
     func setBody(_ body: BodyEnvelope) throws {
         routeOperation = UUID()

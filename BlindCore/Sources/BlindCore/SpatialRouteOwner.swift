@@ -133,6 +133,9 @@ public struct SpatialRouteOwner: Sendable {
         guard let installation else { return nil }
         return localization.current(registry: installation.registry, now: now)
     }
+    /// Evidence absence withdraws physical authority, not route/goal intent.
+    public var hasLocalizationEvidence: Bool { localization.hasEvidence }
+    public mutating func withholdLocalizationEvidence() { localization.withholdEvidence() }
     public mutating func loseTracking() { localization.loseTracking(); cancelRoute() }
     public mutating func setGoal(revision: UUID) {
         guard goalRevision != revision else { return }
