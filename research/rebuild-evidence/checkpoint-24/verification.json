@@ -1,0 +1,87 @@
+{
+  "baseline_commit": "3d22925028463000f203d2b02adac506fb6152fb",
+  "repository": "mischa23v/blind",
+  "status": "reviewed local checkpoint24 candidate; not yet uploaded or pushed",
+  "scope": "Test/CI changes only, plus evidence and status notes. Six continuity test methods now async; runtime and practice diagnostics only.",
+  "node": {
+    "tests": 10,
+    "pass": 10,
+    "fail": 0,
+    "skipped": 0
+  },
+  "preservation": "All original assertions/test names retained; no timeout increase or skip added. See preservation-results.json.",
+  "shell": "bash -n passed; actual synthetic run_logged unit/UI witnesses preserve exit65, original failure and bounded excerpts.",
+  "native": "NOT RUN for this candidate. Full existing Apple workflow required after exact-commit publication.",
+  "core": "No unrelated Core rebuild for this test/CI-only increment. Historical Core results are not fresh validation.",
+  "prior_failure": {
+    "commit": "3d6330e064f7e754a5b454f79732f12f532ccb7a",
+    "run_id": 40191454924,
+    "job_id": 121163136313,
+    "unit": {
+      "passed": 112,
+      "failed": 17,
+      "skipped": 6
+    },
+    "ui": {
+      "passed": 12,
+      "failed": 2
+    }
+  },
+  "remaining": [
+    "14 runtime failures have no proven root cause yet",
+    "Practice label timing cause unproven; no production120s timer/app/assertion changed",
+    "Apple SDK compilation, scheduling and UI rerun remain required",
+    "No device/child-safety acceptance claimed"
+  ],
+  "privacy": "Only authored source, synthetic tests, bounded public CI evidence and status notes. No photos, recordings, models, databases or credentials.",
+  "files": [
+    {
+      "path": "PROGRESS.md",
+      "base_git_blob_sha": "5f12073e2b44e942a3f367a93f877969375b7d64",
+      "result_sha256": "5079d0f57f6c48b20d7fa7dc42d272714c0cffd7134b8a0cd18f7343e54bd1d5",
+      "bytes": 96153
+    },
+    {
+      "path": "REBUILD_TRACKER.md",
+      "base_git_blob_sha": "7c90301bdb9113f711421489f985f78f602233d0",
+      "result_sha256": "2bea6efce1a0e6a91e691e74ec92e3745c6cef26fc9db9e3043e4b13bb34ead3",
+      "bytes": 62588
+    },
+    {
+      "path": "TASKS.md",
+      "base_git_blob_sha": "afeb582274d66b7bee14d6fcd02ca0c5ff535f95",
+      "result_sha256": "ea77e9ea714f3df9e3da96988b8e9055bd0b63130be047da83b822b6d5ec2965",
+      "bytes": 87750
+    },
+    {
+      "path": "TODO.md",
+      "base_git_blob_sha": "d61c3b096fdb262239ad77f8c8a6929583349b29",
+      "result_sha256": "68f3b66297e84c7cc3aff542bab2d498b08e23fc935d07466a532d8c1d66dbf2",
+      "bytes": 49498
+    },
+    {
+      "path": "ios/BlindAssistTests/CommunityTests.swift",
+      "base_git_blob_sha": "8c483bcea3d23f001322a6d6796a7edc215d1224",
+      "result_sha256": "b331078168a058fed84d2efd25bb5e1ec86e1410d9be6ed0d70954e226e23497",
+      "bytes": 75300
+    },
+    {
+      "path": "ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift",
+      "base_git_blob_sha": "dd92c58e75d47cf7599af2b288cc3ec00b2a40f1",
+      "result_sha256": "a8547f73d40ef7c189f70554720e1733cd762371137e8008729eb5d8cdef6d8c",
+      "bytes": 37601
+    },
+    {
+      "path": "tools/ci/native-apple.sh",
+      "base_git_blob_sha": "82040097f84557038173d80577319816a42713d0",
+      "result_sha256": "960f75f7d10afb747cb18921c52a6c0a2be7589809c2386a214c6e7a1f10eb7c",
+      "bytes": 6048
+    },
+    {
+      "path": "tools/test/native-unit-waits.test.mjs",
+      "base_git_blob_sha": null,
+      "result_sha256": "bdcbece39ca43871fcb7538e28bf6135e2c48c23b8c5f4b31288152e0022f6d4",
+      "bytes": 5082
+    }
+  ]
+}

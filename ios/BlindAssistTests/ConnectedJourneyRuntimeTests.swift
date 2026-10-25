@@ -4,6 +4,11 @@ import XCTest
 @testable import BlindAssist
 
 private actor RuntimeIO: ConnectedJourneyRuntimeIO {
+    // Test-only phase trace: no stored map, destination or personal payload is logged.
+    private let diagnosticID = UUID().uuidString
+    private func trace(_ phase: String) {
+        print("NATIVE_RUNTIME_IO id=\(diagnosticID) phase=\(phase) uptime=\(ProcessInfo.processInfo.systemUptime)")
+    }
     var data: Data?
     var writes: [JourneyRuntimeEnvelope] = []
     var holdWrites = false
@@ -13,15 +18,25 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
     var readWaiter: CheckedContinuation<Void,Never>?
     init(_ data: Data? = nil, holdRead:Bool = false) { self.data = data; self.holdRead = holdRead }
     func read() async -> Data? {
-        if holdRead { await withCheckedContinuation { readWaiter = $0 } }
+        trace("read-start")
+        if holdRead {
+            trace("read-held")
+            await withCheckedContinuation { readWaiter = $0 }
+        }
+        trace("read-return")
         return data
     }
     func releaseRead() { holdRead = false; readWaiter?.resume(); readWaiter = nil }
     func write(_ payload: JourneyRuntimeWrite) async throws {
-        if holdWrites { await withCheckedContinuation { waiters.append($0) } }
-        if failWrites { throw JourneyRuntimeError.storageUnavailable }
+        trace("write-start")
+        if holdWrites {
+            trace("write-held")
+            await withCheckedContinuation { waiters.append($0) }
+        }
+        if failWrites { trace("write-injected-failure"); throw JourneyRuntimeError.storageUnavailable }
         let envelope = try payload.envelope()
         data = try envelope.encoded(); writes.append(envelope)
+        trace("write-return")
     }
     func configure(hold: Bool, fail: Bool = false) { holdWrites = hold; failWrites = fail }
     func release() { holdWrites = false; waiters.forEach { $0.resume() }; waiters = [] }
@@ -34,10 +49,15 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
     private func until(_ runtime: ConnectedJourneyRuntime, file: StaticString = #filePath, line: UInt = #line,
                        _ condition: @escaping @MainActor () -> Bool) async throws {
         if condition() { return }
+        // Diagnostic only: preserve the original three-second bound and failure semantics.
+        let started = ProcessInfo.processInfo.systemUptime
+        var publications = 0
+        print("NATIVE_RUNTIME_WAIT test=\(name) line=\(line) phase=start uptime=\(started)")
         let done = expectation(description: "bounded runtime state publication")
         let previous = runtime.onChange
         var completed = false
         runtime.onChange = {
+            publications += 1
             previous?()
             guard !completed, condition() else { return }
             completed = true; done.fulfill()
@@ -46,6 +66,7 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         // Await publication instead of scheduling 3,000 polling tasks on the main owner.
         // The original nominal three-second bound is unchanged; real Apple timing remains a gate.
         await fulfillment(of: [done], timeout: 3)
+        print("NATIVE_RUNTIME_WAIT test=\(name) line=\(line) phase=returned elapsed=\(ProcessInfo.processInfo.systemUptime - started) publications=\(publications) fulfilled=\(completed) loading=\(runtime.loading) maps=\(runtime.pendingMapWorkCount) writes=\(runtime.pendingWriteCount)")
         guard condition() else {
             XCTFail("Runtime wait expired: loading=\(runtime.loading), maps=\(runtime.pendingMapWorkCount), writes=\(runtime.pendingWriteCount), storageError=\(runtime.storageError), status=\(runtime.status)", file: file, line: line)
             throw WaitError.timedOut // Never continue with incomplete map state and report a misleading missing-map error.

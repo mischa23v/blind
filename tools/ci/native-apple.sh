@@ -18,6 +18,20 @@ run_logged() {
   if (( status != 0 )); then
     # Print real diagnostics before warnings; zero-failure summaries must not consume the cap.
     grep -E -i 'ACCESSIBILITY_AUDIT|error:|fatal|Test (Case|Suite).* failed (at|\()|Executed [0-9]+ tests?, with [1-9][0-9]* failures?|\*\* (BUILD|TEST) FAILED' "$out/$label.log" | head -120 || true
+    if [[ "$label" = unit ]]; then
+      # Separate cap so real assertion failures above cannot crowd out phase evidence.
+      # These test-only records contain timing/state metadata, never stored payloads.
+      grep -E 'NATIVE_RUNTIME_(IO|WAIT) ' "$out/$label.log" | tail -160 || true
+    fi
+    # The finite practice session can expire while XCTest waits for UI idleness.
+    # Preserve its synthetic action chronology without changing the app or assertions.
+    if [[ "$label" = ui ]]; then
+      echo 'PRACTICE_TRACE_BEGIN (last 240 lines of this synthetic UI test only)'
+      awk '/Test Case .*testPracticeIsAnnouncedAndCanStop.*started/ { practice = 1 }
+           practice { print }
+           /Test Case .*testPracticeIsAnnouncedAndCanStop.*(passed|failed)/ { practice = 0 }' "$out/$label.log" | tail -240
+      echo 'PRACTICE_TRACE_END'
+    fi
     grep -E 'warning:' "$out/$label.log" | head -20 || true
     tail -60 "$out/$label.log"
   else

@@ -495,19 +495,19 @@ final class IndoorGoalContinuityTests: XCTestCase {
     override func tearDownWithError() throws {
         if let directory { try FileManager.default.removeItem(at: directory) }
     }
-    private func navigator(aligned: Bool = true) throws -> IndoorNavigator {
+    @MainActor private func navigator(aligned: Bool = true) async throws -> IndoorNavigator {
         let navigator = IndoorNavigator(storage: directory.appendingPathComponent("map.json"))
         let map = IndoorMap(name: "Synthetic continuity fixture", nodes: [
             MapNode(id: "start", name: "Start", level: "level", position: Point3(0, 0, 0)),
             MapNode(id: "destination", name: "Destination", level: "level", position: Point3(0, 0, -4))
         ], edges: [MapEdge(from: "start", to: "destination", distance: 4)])
-        try awaitIndoorIO { done in try navigator.load(JSONEncoder().encode(map), completion: done) }
+        try await awaitIndoorIOAsync { done in try navigator.load(JSONEncoder().encode(map), completion: done) }
         try navigator.plan(from: "start", to: "destination")
         if aligned { navigator.align(camera: Point3(10, 0, 10), forward: Point3(0, 0, -1)) }
         return navigator
     }
-    func testTaskCancellationRetiresRouteButPreservesPreviewFrame() throws {
-        let navigator = try navigator()
+    @MainActor func testTaskCancellationRetiresRouteButPreservesPreviewFrame() async throws {
+        let navigator = try await navigator()
         let camera = Point3(11, 0, 9), forward = Point3(0, 0, -1)
         let revision = navigator.alignmentRevision
         XCTAssertNil(navigator.mapPosition(camera: camera))
@@ -526,9 +526,9 @@ final class IndoorGoalContinuityTests: XCTestCase {
         XCTAssertNil(navigator.mapPosition(camera: camera))
         XCTAssertNil(navigator.mapDirection(forward))
     }
-    func testCancellationAfterWithheldLegacyCueClearsMessageInBothLanguages() throws {
+    @MainActor func testCancellationAfterWithheldLegacyCueClearsMessageInBothLanguages() async throws {
         for arabic in [false, true] {
-            let navigator = try navigator()
+            let navigator = try await navigator()
             navigator.arabic = arabic
             let camera = Point3(10, 0, 10), forward = Point3(0, 0, -1)
             XCTAssertNil(navigator.next(camera: camera, forward: forward))
@@ -544,22 +544,22 @@ final class IndoorGoalContinuityTests: XCTestCase {
             }
         }
     }
-    func testConfirmedFinalWaypointHasNoActiveRoute() throws {
-        let navigator = try navigator()
+    @MainActor func testConfirmedFinalWaypointHasNoActiveRoute() async throws {
+        let navigator = try await navigator()
         XCTAssertTrue(navigator.hasActiveRoute)
         navigator.confirmArrival()
         XCTAssertFalse(navigator.hasActiveRoute)
         XCTAssertFalse(navigator.isAligned)
     }
-    func testTaskCancellationCannotCreateUnknownAlignment() throws {
-        let navigator = try navigator(aligned: false)
+    @MainActor func testTaskCancellationCannotCreateUnknownAlignment() async throws {
+        let navigator = try await navigator(aligned: false)
         navigator.cancelRoute()
         XCTAssertFalse(navigator.isAligned)
         XCTAssertNil(navigator.mapPosition(camera: Point3(10, 0, 10)))
         XCTAssertNil(navigator.mapDirection(Point3(0, 0, -1)))
     }
-    func testTrackingLossStillInvalidatesRetainedMapFrame() throws {
-        let navigator = try navigator()
+    @MainActor func testTrackingLossStillInvalidatesRetainedMapFrame() async throws {
+        let navigator = try await navigator()
         navigator.cancelRoute()
         let revision = navigator.alignmentRevision
         navigator.invalidatePosition()
@@ -568,8 +568,8 @@ final class IndoorGoalContinuityTests: XCTestCase {
         XCTAssertNil(navigator.mapPosition(camera: Point3(10, 0, 10)))
         XCTAssertNil(navigator.mapDirection(Point3(0, 0, -1)))
     }
-    func testExplicitReplanDoesNotReuseOldRouteAlignment() throws {
-        let navigator = try navigator()
+    @MainActor func testExplicitReplanDoesNotReuseOldRouteAlignment() async throws {
+        let navigator = try await navigator()
         navigator.cancelRoute()
         try navigator.plan(from: "start", to: "destination")
         XCTAssertFalse(navigator.isAligned)
