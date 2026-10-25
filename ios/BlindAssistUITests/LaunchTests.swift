@@ -4,8 +4,14 @@ import UIKit
 final class LaunchTests: XCTestCase {
     private var app: XCUIApplication!
     private func reveal(_ element: XCUIElement) {
-        for _ in 0..<8 where !element.isHittable { app.swipeUp() }
-        for _ in 0..<8 where !element.isHittable { app.swipeDown() }
+        for _ in 0..<8 {
+            if element.isHittable { break }
+            app.swipeUp()
+        }
+        for _ in 0..<8 {
+            if element.isHittable { break }
+            app.swipeDown()
+        }
         XCTAssertTrue(element.isHittable)
     }
     override func setUpWithError() throws {
@@ -21,7 +27,8 @@ final class LaunchTests: XCTestCase {
     }
     private func openSettingsPage(_ identifier: String) {
         openTab("Settings")
-        for _ in 0..<8 where !app.buttons["settings-details"].exists {
+        for _ in 0..<8 {
+            if app.buttons["settings-details"].exists { break }
             app.navigationBars.buttons.element(boundBy: 0).tap()
         }
         let landing = ["conversation-controls", "settings-reading", "settings-details", "settings-map-tools"]
