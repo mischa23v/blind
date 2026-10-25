@@ -193,12 +193,25 @@ public struct CompanionFactBook: Codable, Equatable, Sendable {
         let object = object.trimmingCharacters(in: .whitespacesAndNewlines)
         let place = place.trimmingCharacters(in: .whitespacesAndNewlines)
         let key = ItemMemory.key(for: object)
-        guard !key.isEmpty, object.count <= ItemMemory.nameLimit, !place.isEmpty, place.count <= 80 else { return nil }
+        guard !key.isEmpty, object.count <= ItemMemory.nameLimit, !place.isEmpty, place.count <= 80,
+              at.timeIntervalSinceReferenceDate.isFinite, at >= .distantPast, at <= .distantFuture,
+              !facts.contains(where: { $0.key == key && $0.at > at }) else { return nil }
         let fact = CompanionFact(object: object, key: key, place: place, tense: tense, hedged: hedged, at: at)
         facts.removeAll { $0.key == key }
         facts.append(fact)
         facts = Array(facts.suffix(Self.limit))
         return fact
+    }
+
+    private enum CodingKeys: String, CodingKey { case facts }
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        let saved = try values.decodeIfPresent([CompanionFact].self, forKey: .facts) ?? []
+        // Original dates survive restart. Invalid/old duplicate entries cannot
+        // receive a new date or supersede a newer location report.
+        for fact in saved.suffix(Self.limit * 2) where fact.key == ItemMemory.key(for: fact.object) {
+            _ = record(object: fact.object, place: fact.place, tense: fact.tense, hedged: fact.hedged, at: fact.at)
+        }
     }
 
     /// Exact normalized match first, then a whole-word match either way, newest first.

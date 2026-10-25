@@ -53,7 +53,9 @@ test('item tasks consult attributed memory before continuing existing live handl
 test('saved evidence includes observations gallery places and attributed checklist without mutations', () => {
   const saved = section(model, 'private func readSavedCompanionMemory(', '@MainActor private func readCompanionTool(');
   for (const fragment of ['assistantDialogue.relevantUserReports', 'observed: observedObjects', 'savedItems: items.items', 'places: savedPlaces', 'preferences: preferences', 'taskContext: taskNotes', 'shoppingList.entries', '$0.element.sourceQuote', '$0.element.recordedAt']) assert.ok(saved.includes(fragment), fragment);
-  assert.match(saved, /user-requested task, not completed action/);
+  assert.match(saved, /companionWorkingState\.goalSource/);
+  assert.match(saved, /locationReports: companionWorkingState\.locationReports/);
+  assert.match(read('BlindCore/Sources/BlindCore/CompanionTaskSource.swift'), /original user goal request, not completed action/);
   assert.match(saved, /explicit shopping-list request, not a purchase/);
   assert.doesNotMatch(saved, /saveValue\(|startReadingTool\(|\.enroll\(|changeGoal\(|navigate\(/);
 });
@@ -117,7 +119,7 @@ test('physical finds retain the original authority gate and completion is only a
   assert.match(physical, /EverydayTaskRequest\.route\(question\)\?\.capability == \.findItem, routeEverydayTask\(question\)/);
   assert.match(physical, /findWithSensors\(target, question: question\)/);
   const receive = section(model, 'func receiveCompanionUtterance(', 'private func routeEverydayTask(');
-  assert.match(receive, /CompanionEvidenceGuard\.explicitCompletionReport\(text, latest: text\)/);
+  assert.match(receive, /CompanionTaskCompletion\.matches\(text, request: request\)/);
   assert.match(receive, /everydayTasks\.confirmSubtaskComplete\(\)/);
   assert.match(receive, /you said that step is done/);
 });

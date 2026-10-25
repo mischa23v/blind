@@ -1,0 +1,83 @@
+Another instance of SwiftPM is already running using '/workspace/shared/blind-memory-rebuild-stage/build', waiting until that process has finished execution...warning: /home/agent/.config/swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /home/agent/.config/swiftpm/security is not accessible or not writable, disabling user-level cache features.
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 328]
+[Planning deferred tasks]
+[3 / 7] BlindCore
+[4 / 8] BlindCore
+[11 / 13] AppleModelEvaluation-product
+[16 / 20] BlindCore
+[17 / 20] BlindCore
+[20 / 21] BlindCore
+[21 / 21] AppleModelEvaluation-product
+[25 / 48] RealSceneEvaluation-product
+[26 / 48] MobilitySimulation-product
+[29 / 51] BlindCoreTests-product
+[30 / 51] BlindCore-product
+[31 / 61] BlindCoreTests-product
+[35 / 62] RealSceneEvaluation-product
+[36 / 63] SensorReplay-product
+[41 / 64] RealSceneEvaluation-product
+[41 / 65] RealSceneEvaluation-product
+[43 / 66] MobilitySimulation-product
+[50 / 67] MobilitySimulation-product
+[50 / 68] MobilitySimulation-product
+[55 / 70] BlindCoreTests-product
+[56 / 70] BlindCoreTests-product
+[57 / 70] BlindCoreTests-product
+[58 / 70] BlindCoreTests-product
+[59 / 70] BlindCoreTests-product
+[60 / 70] BlindCoreTests-product
+[61 / 70] BlindCoreTests-product
+[62 / 70] BlindCoreTests-product
+[65 / 70] BlindCoreTests-product
+[69 / 76] BlindCoreTests-test-runner
+[74 / 74] BlindCoreTests-test-runner
+Build complete! (24.17 secs)
+Test Suite 'Selected tests' started at 2026-10-25 04:06:35.620
+Test Suite 'TaskMemoryRebuildRegressionTests' started at 2026-10-25 04:06:35.621
+Test Case 'TaskMemoryRebuildRegressionTests.testOldLocationReplayCannotReplaceNewerReport' started at 2026-10-25 04:06:35.621
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:13: error: TaskMemoryRebuildRegressionTests.testOldLocationReplayCannotReplaceNewerReport : XCTAssertNil failed: "CompanionFact(object: "cup", key: "cup", place: "on the shelf", tense: BlindCore.CompanionFact.Tense.earlier, hedged: false, at: 2023-11-14 22:11:40 +0000)" - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:14: error: TaskMemoryRebuildRegressionTests.testOldLocationReplayCannotReplaceNewerReport : XCTAssertEqual failed: ("Optional("on the shelf")") is not equal to ("Optional("on the desk")") - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:15: error: TaskMemoryRebuildRegressionTests.testOldLocationReplayCannotReplaceNewerReport : XCTAssertEqual failed: ("Optional(2023-11-14 22:11:40 +0000)") is not equal to ("Optional(2023-11-14 22:13:20 +0000)") - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:17: error: TaskMemoryRebuildRegressionTests.testOldLocationReplayCannotReplaceNewerReport : XCTAssertEqual failed: ("Optional("on the shelf")") is not equal to ("Optional("on the desk")") - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:13: error: TaskMemoryRebuildRegressionTests.testOldLocationReplayCannotReplaceNewerReport : XCTAssertNil failed: "CompanionFact(object: "كوبي", key: "كوبي", place: "on the shelf", tense: BlindCore.CompanionFact.Tense.earlier, hedged: false, at: 2023-11-14 22:11:40 +0000)" - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:14: error: TaskMemoryRebuildRegressionTests.testOldLocationReplayCannotReplaceNewerReport : XCTAssertEqual failed: ("Optional("on the shelf")") is not equal to ("Optional("on the desk")") - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:15: error: TaskMemoryRebuildRegressionTests.testOldLocationReplayCannotReplaceNewerReport : XCTAssertEqual failed: ("Optional(2023-11-14 22:11:40 +0000)") is not equal to ("Optional(2023-11-14 22:13:20 +0000)") - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:17: error: TaskMemoryRebuildRegressionTests.testOldLocationReplayCannotReplaceNewerReport : XCTAssertEqual failed: ("Optional("on the shelf")") is not equal to ("Optional("on the desk")") - 
+Test Case 'TaskMemoryRebuildRegressionTests.testOldLocationReplayCannotReplaceNewerReport' failed (0.003 seconds)
+Test Case 'TaskMemoryRebuildRegressionTests.testRepeatedDialogueGoalDoesNotInvalidateCurrentRevision' started at 2026-10-25 04:06:35.624
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:46: error: TaskMemoryRebuildRegressionTests.testRepeatedDialogueGoalDoesNotInvalidateCurrentRevision : XCTAssertEqual failed: ("5F705105-35F2-4878-895C-6D22B97440B7") is not equal to ("90EE8A7A-81EB-4F78-ADB6-E7600FDBB58C") - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:46: error: TaskMemoryRebuildRegressionTests.testRepeatedDialogueGoalDoesNotInvalidateCurrentRevision : XCTAssertEqual failed: ("57259380-35BB-4204-9900-D9466632C6FD") is not equal to ("0849DA4B-D375-4DC0-83DF-9ECCEFA3218D") - 
+Test Case 'TaskMemoryRebuildRegressionTests.testRepeatedDialogueGoalDoesNotInvalidateCurrentRevision' failed (0.0 seconds)
+Test Case 'TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter' started at 2026-10-25 04:06:35.624
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:31: error: TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter : XCTAssertFalse failed - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:32: error: TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter : XCTAssertEqual failed: ("Optional(BlindCore.EverydayTaskCoordinator.Goal(id: 9DBF0A3B-6026-489F-9EB5-25CDC9D3B5A3, description: "Get ready for school"))") is not equal to ("Optional(BlindCore.EverydayTaskCoordinator.Goal(id: DBD7F2D1-8F96-4CD3-A3E9-14A86D79BEB0, description: "Get ready for school"))") - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:33: error: TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter : XCTAssertEqual failed: ("[]") is not equal to ("["backpack"]") - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:34: error: TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter : XCTAssertTrue failed - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:31: error: TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter : XCTAssertFalse failed - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:32: error: TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter : XCTAssertEqual failed: ("Optional(BlindCore.EverydayTaskCoordinator.Goal(id: E14E94FE-27D6-4FF6-8971-E2FF98E94EDD, description: "جهزني للمدرسة"))") is not equal to ("Optional(BlindCore.EverydayTaskCoordinator.Goal(id: AC6CFB9E-393F-4C68-8B87-F8FBF6ED262E, description: "جهزني للمدرسة"))") - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:33: error: TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter : XCTAssertEqual failed: ("[]") is not equal to ("["backpack"]") - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:34: error: TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter : XCTAssertTrue failed - 
+Test Case 'TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter' failed (0.001 seconds)
+Test Suite 'TaskMemoryRebuildRegressionTests' failed at 2026-10-25 04:06:35.625
+	 Executed 3 tests, with 18 failures (0 unexpected) in 0.004 (0.004) seconds
+Test Suite 'Selected tests' failed at 2026-10-25 04:06:35.625
+	 Executed 3 tests, with 18 failures (0 unexpected) in 0.004 (0.004) seconds
+Note: Some test targets reported failures:
+  - BlindCoreTests (XCTest)
+ "Get ready for school"))") is not equal to ("Optional(BlindCore.EverydayTaskCoordinator.Goal(id: AB68EE9E-61D6-4E22-8F99-BB9EB8CDE60D, description: "Get ready for school"))") - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:33: error: TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter : XCTAssertEqual failed: ("[]") is not equal to ("["backpack"]") - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:34: error: TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter : XCTAssertTrue failed - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:31: error: TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter : XCTAssertFalse failed - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:32: error: TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter : XCTAssertEqual failed: ("Optional(BlindCore.EverydayTaskCoordinator.Goal(id: EBD92076-83E0-4EDA-89AB-476C7B3DB5A1, description: "جهزني للمدرسة"))") is not equal to ("Optional(BlindCore.EverydayTaskCoordinator.Goal(id: 8B9CA514-DCE1-4D0F-8273-AA07930D8F64, description: "جهزني للمدرسة"))") - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:33: error: TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter : XCTAssertEqual failed: ("[]") is not equal to ("["backpack"]") - 
+/workspace/shared/blind-memory-rebuild-stage/BlindCore/Tests/BlindCoreTests/TaskMemoryRebuildRegressionTests.swift:34: error: TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter : XCTAssertTrue failed - 
+Test Case 'TaskMemoryRebuildRegressionTests.testRepeatedGoalPreservesProgressAndInflightAdapter' failed (0.001 seconds)
+Test Suite 'TaskMemoryRebuildRegressionTests' failed at 2026-10-25 04:06:10.542
+	 Executed 3 tests, with 18 failures (0 unexpected) in 0.004 (0.004) seconds
+Test Suite 'Selected tests' failed at 2026-10-25 04:06:10.542
+	 Executed 3 tests, with 18 failures (0 unexpected) in 0.004 (0.004) seconds
+Note: Some test targets reported failures:
+  - BlindCoreTests (XCTest)

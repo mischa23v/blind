@@ -29,7 +29,7 @@ public struct AssistantDialogue: Codable, Sendable {
     public mutating func setGoal(_ text: String) {
         let proposed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         // Never truncate away a qualification/negation to fit a goal.
-        guard proposed.unicodeScalars.count <= 300 else { return }
+        guard proposed.unicodeScalars.count <= 300, proposed != goal else { return }
         goal = proposed
         goalRevision = UUID().uuidString
         // A new task invalidates pending work, not the person's conversation.

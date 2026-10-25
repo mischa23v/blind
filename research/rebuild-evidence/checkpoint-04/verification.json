@@ -1,0 +1,59 @@
+{
+  "checkpoint": "reconstruction-04-task-memory",
+  "baseCommit": "0c38d674db399c67c880e7557e468693d14d84f7",
+  "dateUTC": "2026-10-25",
+  "core": {
+    "tests": 940,
+    "failures": 0,
+    "exitCode": 0,
+    "log": "core-tests.log"
+  },
+  "node": {
+    "tests": 364,
+    "passed": 364,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0,
+    "log": "node-tests.log"
+  },
+  "extractedNativeState": {
+    "tests": 25,
+    "passed": 25,
+    "uses": "actual production state extracted into portable Swift tests",
+    "inputs": "synthetic English/Arabic reports",
+    "AppleSDK": false
+  },
+  "nativeSyntax": {
+    "release": 0,
+    "debug": 0,
+    "AppleSDKTypechecked": false
+  },
+  "changes": [
+    "Repeated identical goals retain progress and revision",
+    "Out-of-order older location reports cannot overwrite newer corrections",
+    "Original user request is distinct from canonical task label",
+    "Target-named completion rejects generic done and unrelated location statements",
+    "Untimed historical replay remains unknown-age instead of becoming fresh"
+  ],
+  "limits": [
+    "Same-goal moves between distinct physical fridges still need target/place-scoped invalidation",
+    "No arbitrary natural-language completeness claim",
+    "No actual model, Apple SDK or live sensor validation"
+  ],
+  "commands": [
+    "swift test --package-path BlindCore --jobs 2",
+    "BLIND_SWIFTC=<swiftc> npm test"
+  ],
+  "originalFailures": [
+    "baseline-core-failures.log",
+    "original-contract-failures.log"
+  ],
+  "artifactSHA256": {
+    "node-tests.log": "b14ea63a11e6f11bc2d3742586fe8c06d2c20628733685d9214737cd3e7819c5",
+    "original-contract-failures.log": "30cbe8bef333b9b453605e327d34e3f20992282734dfb4ffdc82f89c2052d1db",
+    "core-tests.log": "a5952cdc94f9b846bf55a6e89c4bdffedba406e12bb61013d8514dcd0e9c30f6",
+    "source-hashes.json": "f54c0cf1072e86192da5b7133b59d2d7367f32ad610c93e6b8032ee29075436f",
+    "native-state-tests.log": "8ea6ad289cc9dd876c648d8aae8a3890a1f2b4a6ec7c44a257f21527eb78bb7f",
+    "baseline-core-failures.log": "9cd7806c9572f606d3db20c1dea330b6b8aa9ea98c53154ef3e4b06910a5998f"
+  }
+}

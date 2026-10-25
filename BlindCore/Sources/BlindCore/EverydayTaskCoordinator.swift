@@ -108,7 +108,8 @@ public struct EverydayTaskCoordinator: Sendable {
 
     @discardableResult
     public mutating func setGoal(_ text: String) -> Bool {
-        guard let bounded = EverydayTaskRequest(capability: .savedMemory, query: text) else { return false }
+        guard let bounded = EverydayTaskRequest(capability: .savedMemory, query: text),
+              goal?.description != bounded.query else { return false }
         invalidate(); goal = Goal(id: UUID(), description: bounded.query)
         request = nil; state = .idle; completedSubtasks = []; plan = []; index = 0
         attempts = 0; lastFailure = nil; historicalClueAvailable = false

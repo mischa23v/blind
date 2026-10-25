@@ -46,6 +46,7 @@ public enum CompanionMemoryRetrieval {
     /// inventing a timestamp or treating an arbitrary record ID as chronology.
     public static func read(query: String, now: Date,
                             reports: [CompanionEvidence] = [],
+                            locationReports: [CompanionLocationReport] = [],
                             observed: ObservedObjectMemory = ObservedObjectMemory(),
                             savedItems: [RememberedItem] = [],
                             places: [CompanionPlaceMemory] = [],
@@ -64,6 +65,24 @@ public enum CompanionMemoryRetrieval {
                   !item.source.isEmpty, item.source.count <= 120,
                   date.map({ validDate($0) && $0 <= now }) ?? true else { return }
             candidates.append(Ranked(rank: rank, date: date, reportOrder: reportOrder, evidence: item))
+        }
+        // Pronoun binding belongs to the code-owned source store, not lexical
+        // retrieval or a model. Exact whole user words remain .userReport, and
+        // original dates are retained rather than refreshed on a read/restart.
+        var latestLocations: [String: (Int, CompanionLocationReport)] = [:]
+        for (order, report) in locationReports.suffix(CompanionFactBook.limit * 2).enumerated() {
+            guard report.recordedAt.map({ validDate($0) && $0 <= now }) ?? true else { continue }
+            let key = ItemMemory.key(for: report.object)
+            if let previous = latestLocations[key], let oldDate = previous.1.recordedAt,
+               let newDate = report.recordedAt, oldDate > newDate { continue }
+            latestLocations[key] = (order, report)
+        }
+        for (order, report) in latestLocations.values {
+            let match = overlap(terms, words(report.object))
+            guard match > 0 else { continue }
+            add(CompanionEvidence(id: report.id, kind: .userReport, text: report.originalReport,
+                source: "user-reported location for " + report.object + "; unverified",
+                observedAt: report.recordedAt), rank: 200 + match, date: report.recordedAt, reportOrder: order)
         }
         // Reports remain verbatim attributed reports. Do not splice away a negation.
         for (order, report) in reports.suffix(64).enumerated() where report.kind == .userReport || report.kind == .historicalMemory {

@@ -557,17 +557,17 @@ final class CompanionWorkingStateTests: XCTestCase {
         var state = CompanionWorkingState()
         state.changeGoal("school")
         _ = state.respond(to: .find(object: "coat"), message: "Help me find my coat", arabic: false)
-        XCTAssertTrue(state.recordCompletedSubtask("Help me find my coat", report: "done"))
+        XCTAssertTrue(state.recordCompletedSubtask("Help me find my coat", report: "I found my coat"))
         XCTAssertEqual(state.goal, "school")
         XCTAssertTrue(state.focusObject.isEmpty)
         XCTAssertNil(state.parentGoal)
-        XCTAssertEqual(state.reportedCompletedSteps, ["User reported completing Help me find my coat: done"])
+        XCTAssertEqual(state.reportedCompletedSteps, ["User reported completing Help me find my coat: I found my coat"])
         XCTAssertNil(state.lastSearch)
     }
     func testReadingReportDoesNotCompleteSeparateFindGoal() {
         var state = CompanionWorkingState()
         _ = state.respond(to: .find(object: "coat"), message: "Help me find my coat", arabic: false)
-        XCTAssertTrue(state.recordCompletedSubtask("Read this label", report: "I did it"))
+        XCTAssertFalse(state.recordCompletedSubtask("Read this label", report: "I did it"))
         XCTAssertEqual(state.focusObject, "coat")
         XCTAssertEqual(state.goal, "Help me find my coat")
         XCTAssertFalse(state.recordCompletedSubtask("Help me find my coat", report: "I have not done it"))
@@ -631,7 +631,7 @@ final class CompanionWorkingStateTests: XCTestCase {
         XCTAssertNil(legacy.parentGoal)
         XCTAssertEqual(legacy.focusObject, "coat")
     }
-    func testExplicitReplacementAndCancellationDropParentIncludingSameValue() {
+    func testExplicitReplacementDropsParentWhileSameValuePreservesProgress() {
         for replacement in ["home", "Find my coat", ""] {
             var state = CompanionWorkingState()
             state.changeGoal("school")
@@ -639,9 +639,14 @@ final class CompanionWorkingStateTests: XCTestCase {
             let revision = state.goalRevision
             state.changeGoal(replacement)
             XCTAssertEqual(state.goal, replacement)
-            XCTAssertNil(state.parentGoal)
-            XCTAssertNotEqual(state.goalRevision, revision)
-            XCTAssertFalse(state.resumeGoal())
+            if replacement == "Find my coat" {
+                XCTAssertEqual(state.parentGoal?.goal, "school")
+                XCTAssertEqual(state.goalRevision, revision)
+            } else {
+                XCTAssertNil(state.parentGoal)
+                XCTAssertNotEqual(state.goalRevision, revision)
+                XCTAssertFalse(state.resumeGoal())
+            }
         }
         var cancelled = CompanionWorkingState()
         cancelled.changeGoal("school")

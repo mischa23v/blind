@@ -2293,7 +2293,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         everydayTasks.setGoal(objectiveDraft); everydayTicket = nil; everydayUtterance = ""
         cancelDescription(); feedback.stop(); stopReturn(); indoor.cancelRoute()
         assistantDialogue.setGoal(objectiveDraft); objectiveDraft = assistantDialogue.goal; persistDialogue()
-        companionWorkingState.changeGoal(assistantDialogue.goal); persistWorkingState()
+        companionWorkingState.changeGoal(assistantDialogue.goal, originalRequest: objectiveDraft); persistWorkingState()
     }
     func clearAssistantConversation() {
         #if DEBUG
@@ -2476,10 +2476,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             everydayTasks.pause(); everydayTicket = nil
         }
         let normalized = text.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters)).lowercased()
-        if ["done", "i did it", "i'm done", "i am done", "انتهيت", "خلصت"].contains(normalized),
-           completionEligible, everydayTasks.request != nil, CompanionEvidenceGuard.explicitCompletionReport(text, latest: text),
+        if completionEligible, let request = everydayTasks.request,
+           CompanionTaskCompletion.matches(text, request: request),
+           companionWorkingState.recordCompletedSubtask(everydayUtterance, report: text),
            everydayTasks.confirmSubtaskComplete() {
-            _ = companionWorkingState.recordCompletedSubtask(everydayUtterance, report: text)
             assistantDialogue.setGoal(companionWorkingState.goal); objectiveDraft = companionWorkingState.goal
             persistWorkingState(); persistDialogue()
             everydayTicket = nil; everydayUtterance = ""
@@ -2519,7 +2519,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if let destination = AssistantControl.explicitGoal(text) {
             everydayTasks.setGoal(destination)
             // Retain the expressed destination even when physical guidance must abstain.
-            companionWorkingState.changeGoal(destination)
+            companionWorkingState.changeGoal(destination, originalRequest: text)
             assistantDialogue.setGoal(destination); objectiveDraft = destination
             stopReturn(); indoor.cancelRoute(); persistWorkingState(); persistDialogue()
         }
@@ -2544,7 +2544,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             everydayTasks.setGoal(goal); everydayTicket = nil
             // Commit only a whole explicit request, before any model/extraction.
             // A change of task preserves the conversation and does not start sensors.
-            companionWorkingState.changeGoal(goal)
+            companionWorkingState.changeGoal(goal, originalRequest: text)
             assistantDialogue.setGoal(goal); objectiveDraft = assistantDialogue.goal
             stopReturn(); indoor.cancelRoute()
             persistWorkingState(); persistDialogue()
@@ -3028,18 +3028,20 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     roomNames: [companion.memory.rooms["place:\($0.id.uuidString)"]?.name].compactMap { $0 },
                     recordedAt: $0.createdAt)
             }
-            var taskNotes = [companionWorkingState.parentGoal?.goal, companionWorkingState.goal]
-                .compactMap { $0 }.filter { !$0.isEmpty }.enumerated().map {
-                    CompanionMemoryNote(id: "task:\($0.offset)", subject: $0.element,
-                        text: $0.element, source: "user-requested task, not completed action")
-                }
+            var taskNotes = [companionWorkingState.parentGoal?.source, companionWorkingState.goalSource]
+                .compactMap { $0?.memoryNote }
+            // Legacy canonical labels are not invented verbatim user quotes.
+            if companionWorkingState.goalSource == nil, !companionWorkingState.goal.isEmpty {
+                taskNotes.append(CompanionMemoryNote(id: "legacy-task", subject: companionWorkingState.goal,
+                    text: companionWorkingState.goal, source: "saved task label; original user wording unavailable"))
+            }
             taskNotes += shoppingList.entries.enumerated().map {
                 CompanionMemoryNote(id: "shopping:\($0.offset)", subject: "shopping list تسوق " + $0.element.item,
                     text: $0.element.sourceQuote, source: "explicit shopping-list request, not a purchase",
                     recordedAt: Date(timeIntervalSince1970: $0.element.recordedAt))
             }
             return CompanionMemoryRetrieval.read(query: query, now: Date(), reports: reports,
-                observed: observedObjects, savedItems: items.items, places: savedPlaces,
+                locationReports: companionWorkingState.locationReports, observed: observedObjects, savedItems: items.items, places: savedPlaces,
                 preferences: preferences, taskContext: taskNotes)
     }
 
@@ -3190,7 +3192,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private func recordCompanionMessage(_ question: String) {
         if companionWorkingState.reports.isEmpty {
             for turn in assistantDialogue.turns where turn.role == "user" {
-                companionWorkingState.record(turn.text)
+                // AssistantDialogue's legacy turns have no capture date. Keep
+                // useful attributed words, but never make them newly reported.
+                companionWorkingState.record(turn.text, at: nil)
             }
         }
         companionWorkingState.record(question)

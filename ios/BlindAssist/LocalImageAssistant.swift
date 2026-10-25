@@ -34,9 +34,10 @@ struct CompanionReportedFact: Codable, Sendable {
 struct CompanionWorkingState: Codable, Sendable {
     struct Report: Codable, Sendable {
         var text: String
-        var time: Date
+        var time: Date?
     }
     var goal = ""
+    var goalSource: CompanionTaskSource?
     var goalRevision = UUID().uuidString
     var proposedStep = ""
     var reportedCompletedSteps: [String] = []
@@ -56,6 +57,7 @@ struct CompanionWorkingState: Codable, Sendable {
     struct ParentGoal: Codable, Sendable {
         var goal: String
         var reportedCompletedSteps: [String]
+        var source: CompanionTaskSource? = nil
     }
     var parentGoal: ParentGoal?
     struct SuspendedGoal: Codable, Sendable {
@@ -64,14 +66,17 @@ struct CompanionWorkingState: Codable, Sendable {
         var reportedCompletedSteps: [String]
         var focusObject: String? = nil
         var parentGoal: ParentGoal? = nil
+        var source: CompanionTaskSource? = nil
     }
     var suspendedGoals: [SuspendedGoal] = []
 
-    private enum CodingKeys: String, CodingKey { case goal, goalRevision, proposedStep, reportedCompletedSteps, reports, facts, suspendedGoals, parentGoal, factBook, focusObject, lastSearch, locationReportSources, actionProgress, reportedStepAssociations }
+    private enum CodingKeys: String, CodingKey { case goal, goalSource, goalRevision, proposedStep, reportedCompletedSteps, reports, facts, suspendedGoals, parentGoal, factBook, focusObject, lastSearch, locationReportSources, actionProgress, reportedStepAssociations }
     init() {}
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         goal = try c.decodeIfPresent(String.self, forKey: .goal) ?? ""
+        goalSource = try c.decodeIfPresent(CompanionTaskSource.self, forKey: .goalSource)
+        if goalSource?.canonicalLabel != goal { goalSource = nil }
         goalRevision = try c.decodeIfPresent(String.self, forKey: .goalRevision) ?? UUID().uuidString
         proposedStep = try c.decodeIfPresent(String.self, forKey: .proposedStep) ?? ""
         reportedCompletedSteps = try c.decodeIfPresent([String].self, forKey: .reportedCompletedSteps) ?? []
@@ -118,9 +123,10 @@ struct CompanionWorkingState: Codable, Sendable {
                 var bounded = saved
                 bounded.reportedCompletedSteps = Array(saved.reportedCompletedSteps.filter { $0.count <= 300 }.suffix(12))
                 bounded.parentGoal = Self.boundedParent(saved.parentGoal, activeGoal: saved.goal)
+                if bounded.source?.canonicalLabel != saved.goal { bounded.source = nil }
                 return bounded
             }
-        if goal.count > 300 { goal = "" }
+        if goal.count > 300 { goal = ""; goalSource = nil }
         parentGoal = Self.boundedParent(try c.decodeIfPresent(ParentGoal.self, forKey: .parentGoal), activeGoal: goal)
         if proposedStep.count > 300 { proposedStep = "" }
         reportedCompletedSteps = Array(reportedCompletedSteps.filter { $0.count <= 300 }.suffix(12))
@@ -128,9 +134,10 @@ struct CompanionWorkingState: Codable, Sendable {
         facts = Array(facts.filter { $0.subject.count <= 100 && $0.value.count <= 100 && $0.quote.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars }.suffix(12))
     }
 
-    mutating func record(_ text: String) {
+    mutating func record(_ text: String, at: Date? = Date()) {
         guard !text.isEmpty, text.unicodeScalars.count <= AssistantDialogue.maximumTurnScalars else { return }
-        reports.append(Report(text: text, time: Date()))
+        if at == nil, reports.contains(where: { $0.text == text }) { return }
+        reports.append(Report(text: text, time: at))
         reports = Array(reports.suffix(12))
     }
     mutating func ingestDirectActionReport(_ text: String) {
@@ -155,13 +162,14 @@ struct CompanionWorkingState: Codable, Sendable {
         facts.removeAll { $0.sourceReport == exactText || $0.quote == exactText ||
             ($0.sourceReport == nil && !$0.quote.isEmpty && exactText.contains($0.quote)) }
         let matchingGoal = exactText.trimmingCharacters(in: .whitespacesAndNewlines)
-        suspendedGoals.removeAll { $0.goal == matchingGoal }
-        for index in suspendedGoals.indices where suspendedGoals[index].parentGoal?.goal == matchingGoal {
+        suspendedGoals.removeAll { $0.goal == matchingGoal || $0.source?.originalRequest == exactText }
+        for index in suspendedGoals.indices where suspendedGoals[index].parentGoal?.goal == matchingGoal || suspendedGoals[index].parentGoal?.source?.originalRequest == exactText {
             suspendedGoals[index].parentGoal = nil
         }
-        if parentGoal?.goal == matchingGoal { parentGoal = nil }
+        if parentGoal?.goal == matchingGoal || parentGoal?.source?.originalRequest == exactText { parentGoal = nil }
         actionProgress.retireSuggestions(forGoalRevision: goalRevision)
-        if goal == matchingGoal {
+        if goal == matchingGoal || goalSource?.originalRequest == exactText {
+            goalSource = nil
             goal = ""; reportedCompletedSteps = []; focusObject = ""; parentGoal = nil
             goalRevision = UUID().uuidString
         }
@@ -169,10 +177,16 @@ struct CompanionWorkingState: Codable, Sendable {
         // must not erase still-valid user reports by silently replacing the goal.
         proposedStep = ""
     }
-    mutating func changeGoal(_ value: String) {
-        guard goal != value || parentGoal != nil else { return }
+    mutating func changeGoal(_ value: String, originalRequest: String? = nil, sourceID: String? = nil, at: Date? = Date()) {
+        let source = originalRequest.flatMap {
+            CompanionTaskSource(originalRequest: $0, canonicalLabel: value, sourceID: sourceID ?? UUID().uuidString, recordedAt: at)
+        }
+        guard goal != value else {
+            if goalSource == nil { goalSource = source }
+            return
+        }
         actionProgress.retireSuggestions(forGoalRevision: goalRevision)
-        goal = value; goalRevision = UUID().uuidString
+        goal = value; goalSource = source; goalRevision = UUID().uuidString
         proposedStep = ""; reportedCompletedSteps = []
         focusObject = ""; parentGoal = nil
     }
@@ -184,14 +198,19 @@ struct CompanionWorkingState: Codable, Sendable {
         guard let saved, isFindGoal(activeGoal), !saved.goal.isEmpty,
               saved.goal.count <= 300, !isFindGoal(saved.goal) else { return nil }
         return ParentGoal(goal: saved.goal,
-            reportedCompletedSteps: Array(saved.reportedCompletedSteps.filter { $0.count <= 300 }.suffix(12)))
+            reportedCompletedSteps: Array(saved.reportedCompletedSteps.filter { $0.count <= 300 }.suffix(12)),
+            source: saved.source?.canonicalLabel == saved.goal ? saved.source : nil)
     }
     /// Find is a bounded subtask of a non-find goal. Switching objects replaces
     /// that subtask, never stacks another destination or silently resumes one.
     private mutating func beginFindGoal(_ request: String, object: String) {
+        // A paraphrase of the same current object search is not a new goal.
+        // Keep its original source, parent and already-reported progress.
+        if Self.isFindGoal(goal), !focusObject.isEmpty,
+           ItemMemory.key(for: focusObject) == ItemMemory.key(for: object) { return }
         let retained = parentGoal ?? (!goal.isEmpty && goal.count <= 300 && !Self.isFindGoal(goal)
-            ? ParentGoal(goal: goal, reportedCompletedSteps: reportedCompletedSteps) : nil)
-        changeGoal(request)
+            ? ParentGoal(goal: goal, reportedCompletedSteps: reportedCompletedSteps, source: goalSource) : nil)
+        changeGoal(request, originalRequest: request)
         parentGoal = Self.boundedParent(retained, activeGoal: request)
         focusObject = object
     }
@@ -230,6 +249,16 @@ struct CompanionWorkingState: Codable, Sendable {
         }
     }
 
+    /// The original pronoun report is bound while the full conversation state is
+    /// available, never guessed later from a ranked/truncated retrieval subset.
+    var locationReports: [CompanionLocationReport] {
+        factBook.facts.compactMap { fact in
+            guard let source = locationReportSources[fact.key] else { return nil }
+            return CompanionLocationReport(id: "location:" + fact.key, object: fact.object,
+                originalReport: source, recordedAt: fact.at)
+        }
+    }
+
     mutating func cancelTask(arabic: Bool) -> String {
         changeGoal(""); focusObject = ""
         return arabic ? "حسناً، أوقفت هذه المهمة." : "Okay, I've stopped that task."
@@ -239,13 +268,16 @@ struct CompanionWorkingState: Codable, Sendable {
     /// not assert possession, arrival, identity, or start a parent action.
     @discardableResult mutating func recordCompletedSubtask(_ task: String, report: String) -> Bool {
         guard !task.isEmpty, task.count <= 300,
-              CompanionEvidenceGuard.explicitCompletionReport(report, latest: report) else { return false }
+              let request = EverydayTaskRequest.route(task),
+              CompanionTaskCompletion.matches(report, request: request) else { return false }
         let receipt = "User reported completing \(task): \(report)"
         let endsFind = Self.isFindGoal(goal) &&
-            (goal == task || EverydayTaskRequest.route(task)?.query == focusObject)
+            (goal == task || ItemMemory.key(for: request.query) == ItemMemory.key(for: focusObject))
+        guard endsFind else { return false }
         if endsFind {
             let parent = parentGoal
             changeGoal(parent?.goal ?? "")
+            goalSource = parent?.source
             reportedCompletedSteps = parent?.reportedCompletedSteps ?? []
         }
         if !reportedCompletedSteps.contains(receipt) {
@@ -262,7 +294,7 @@ struct CompanionWorkingState: Codable, Sendable {
         guard !goal.isEmpty else { return false }
         suspendedGoals.append(SuspendedGoal(goal: goal, proposedStep: proposedStep,
                                            reportedCompletedSteps: reportedCompletedSteps, focusObject: focusObject,
-                                           parentGoal: parentGoal))
+                                           parentGoal: parentGoal, source: goalSource))
         suspendedGoals = Array(suspendedGoals.suffix(3))
         changeGoal("")
         return true
@@ -272,11 +304,13 @@ struct CompanionWorkingState: Codable, Sendable {
         // A detector match, room entry or reported completion never calls this.
         if !goal.isEmpty, let parent = parentGoal {
             changeGoal(parent.goal)
+            goalSource = parent.source
             reportedCompletedSteps = parent.reportedCompletedSteps
             return true
         }
         guard goal.isEmpty, let previous = suspendedGoals.popLast() else { return false }
         changeGoal(previous.goal)
+        goalSource = previous.source
         parentGoal = Self.boundedParent(previous.parentGoal, activeGoal: previous.goal)
         // A remembered suggestion is not a currently valid action. Preserve the
         // reports, but require a new grounded next step after resuming.
@@ -304,7 +338,7 @@ struct CompanionWorkingState: Codable, Sendable {
             changeGoal("")
             proposedStep = ""
             return
-        } else if CompanionTaskMutationPolicy.newGoal(proposal: update.goal, latest: latest) { changeGoal(update.goal) }
+        } else if CompanionTaskMutationPolicy.newGoal(proposal: update.goal, latest: latest) { changeGoal(update.goal, originalRequest: latest) }
         // A user report is not sensor confirmation or proof of physical arrival.
         if let progress = CompanionReportedStep.proposed(step: update.completionStep,
             currentStep: proposedStep, quote: update.completionReport, latest: latest, goalRevision: goalRevision) {
@@ -578,6 +612,8 @@ enum LocalImageAssistant {
                 }
                 let normalFields: [ContextWindowPolicy.Field] = [
                     .init("currentGoal", [currentGoal]),
+                    .init("originalUserGoalRequestNotCanonicalLabel", workingState.goalSource.map { [$0.originalRequest] } ?? []),
+                    .init("parentGoalOriginalUserRequest", workingState.parentGoal.flatMap(\.source).map { [$0.originalRequest] } ?? []),
                     .init("originalUserReportsNotObservationsOldestFirst", boundedReports.map {
                         "Source: user report; scope: \(CompanionEvidenceGuard.reportScope($0).rawValue). Original words: \($0)"
                     }),

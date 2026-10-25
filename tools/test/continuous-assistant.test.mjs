@@ -125,8 +125,14 @@ test('visual history waits for completed narration and explicit tasks commit bef
   const visual = section(model, 'func readScene', 'private func');
   assert.doesNotMatch(visual, /if !automatic \{ self.assistantDialogue.record\(role: "assistant"/);
   const receive = section(model, 'func receiveCompanionUtterance', 'private func handleConversationTaskControl');
-  assert.ok(receive.indexOf('ConversationIntent.explicitTaskGoal(text)') < receive.indexOf('answerConversation(text)'));
-  assert.match(receive, /companionWorkingState.changeGoal\(goal\)/);
+  const authority = receive.indexOf('guard CommandAuthority.permits(.changeGoal, from: origin) else');
+  const parsed = receive.indexOf('if let goal = ConversationIntent.explicitTaskGoal(text)');
+  const commit = receive.indexOf('companionWorkingState.changeGoal(goal, originalRequest: text)');
+  const inference = receive.indexOf('answerConversation(text)');
+  assert.ok(authority >= 0 && parsed > authority && commit > parsed && inference > commit,
+    'Only an authorized explicit request can commit its original text before inference');
+  assert.doesNotMatch(receive.slice(parsed, inference), /originalRequest:\s*goal\b/,
+    'Do not relabel a canonical goal as the original user request');
 });
 
 test('private audio route removal mutes normal output without an announcement', async () => {

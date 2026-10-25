@@ -36,9 +36,32 @@ test('every microphone final fails closed before scan, goal, calibration, offer 
   assert.match(receive, /let origin: CompanionCommandOrigin = fromVoice \? \.unverifiedMicrophone : \.trustedInterface/);
   const gate = 'guard CommandAuthority.permits(.changeGoal, from: origin) else';
   assert.match(receive, /receiveUnverifiedConversation\(text, origin: origin\)\s*return/);
-  for (const action of ['routeVoiceRoomScan(text)', 'calibrate()', 'handleConversationTaskControl(control)', 'changeGoal(destination)', 'answerCompanionOffer(answer)', 'routeEverydayTask(text)', 'answerConversation(text)']) {
-    assert.ok(receive.indexOf(gate) >= 0 && receive.indexOf(gate) < receive.indexOf(action), action);
+  const gateIndex = receive.indexOf(gate);
+  assert.ok(gateIndex >= 0, 'Command-authority gate must be present');
+  for (const action of ['routeVoiceRoomScan(text)', 'calibrate()', 'handleConversationTaskControl(control)', 'companionWorkingState.changeGoal(destination, originalRequest: text)', 'companionWorkingState.changeGoal(goal, originalRequest: text)', 'answerCompanionOffer(answer)', 'routeEverydayTask(text)', 'answerConversation(text)']) {
+    const actionIndex = receive.indexOf(action);
+    assert.ok(actionIndex >= 0 && gateIndex < actionIndex, action);
   }
+});
+
+test('trusted goal mutation keeps canonical labels distinct from the original user request', () => {
+  const receive = body('func receiveCompanionUtterance(');
+  for (const [parser, label] of [['AssistantControl.explicitGoal(text)', 'destination'], ['ConversationIntent.explicitTaskGoal(text)', 'goal']]) {
+    const branch = declaration(receive, `if let ${label} = ${parser}`);
+    assert.ok(branch.includes(`companionWorkingState.changeGoal(${label}, originalRequest: text)`), label);
+    assert.doesNotMatch(branch, /originalRequest:\s*(?:destination|goal)\b/, 'A parsed label is not a user quote');
+    assert.ok(branch.indexOf('changeGoal(') < branch.indexOf('persistWorkingState()'), 'Persist the exact bound request with the goal');
+  }
+  const local = read('ios/BlindAssist/LocalImageAssistant.swift');
+  const change = declaration(local, 'mutating func changeGoal(');
+  assert.match(change, /originalRequest\.flatMap/);
+  assert.match(change, /CompanionTaskSource\(originalRequest: \$0, canonicalLabel: value,/);
+  assert.match(change, /goal = value; goalSource = source;/);
+  assert.doesNotMatch(change, /CompanionTaskSource\(originalRequest: value/);
+  const source = read('BlindCore/Sources/BlindCore/CompanionTaskSource.swift');
+  const note = declaration(source, 'public var memoryNote:');
+  assert.match(note, /subject: canonicalLabel, text: originalRequest/);
+  assert.doesNotMatch(note, /text: canonicalLabel/);
 });
 
 test('acoustic onset cannot cancel routes, searches, monitoring, confirmations or shared request identity', () => {
