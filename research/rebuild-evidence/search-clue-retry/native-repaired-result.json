@@ -1,0 +1,117 @@
+{
+  "status": "PASSED_BOUNDED_NATIVE_CALLBACK_REGRESSION",
+  "workflowCommit": "d75ec3b8a7a9f2e6bfce19f5756d111c208ffcd8",
+  "appSourceCommit": "853fe13e9d00880f29b0920b901e02f7007e1d56",
+  "run": 40225192783,
+  "job": 121264951113,
+  "test": "NativeSearchClueSpeechTests.testSearchAreaCorrectionUsesActualNativeSpeechCallbacks",
+  "counts": {
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "expectedFailures": 0
+  },
+  "durationSeconds": 19.079,
+  "inputTransport": "Authored typed trusted-interface inputs, not microphone/voice recognition",
+  "outputEvidence": "Actual production controller queue to Feedback/AVSpeech callbacks in isolated test host",
+  "receiptAudit": {
+    "events": 15,
+    "completed": 5,
+    "allMatchedAdmissionStartFinish": true,
+    "cancellationConvertedToCompletion": false,
+    "timings": [
+      {
+        "receiptID": "FAE825DA-6070-4993-A2BB-FC2AB651C29F",
+        "destinationID": "B9988262-9C37-44D9-B0AB-A37EAF53F9BA",
+        "enqueueToStartMS": 64.501,
+        "startToFinishSeconds": 6.196
+      },
+      {
+        "receiptID": "D7C74F00-0A2B-4362-B800-ECEE11BBA75F",
+        "destinationID": "CE239763-C761-4FB2-91C3-5A53429895CD",
+        "enqueueToStartMS": 7.916,
+        "startToFinishSeconds": 2.211
+      },
+      {
+        "receiptID": "AF78EEC6-6A49-4B81-8D5F-F88DB92425FD",
+        "destinationID": "EFFA0A37-2F12-490B-9EE1-0F8F43EABE59",
+        "enqueueToStartMS": 0.841,
+        "startToFinishSeconds": 2.255
+      },
+      {
+        "receiptID": "71B803A5-CF52-429E-8921-A6F08091BCAC",
+        "destinationID": "79B57A9C-FC97-441F-A42B-2CCC80A3C76A",
+        "enqueueToStartMS": 0.709,
+        "startToFinishSeconds": 2.246
+      },
+      {
+        "receiptID": "09DF8923-4DF0-42BB-8F82-30A55DBFA54E",
+        "destinationID": "87B4AB7C-2924-4F23-8861-B89BCA28C521",
+        "enqueueToStartMS": 1.246,
+        "startToFinishSeconds": 4.451
+      }
+    ],
+    "timingLimit": "Enqueue-to-start is not user-input-to-output latency"
+  },
+  "finalPostForgetOutput": "I don't know where your fridge is yet. Do you know which room or area to look in?",
+  "ownershipObservations": {
+    "initialAndFinalQuestionDeliveredVia": "speech",
+    "admissionAndStartCannotArmQuestion": "Frozen assertions passed",
+    "goalAndRevisionUnchanged": true,
+    "correctionLinkedToPriorSource": true,
+    "sameTargetRephraseKeptCorrectedSource": true,
+    "forgetClearedClue": true,
+    "finalQuestionHasNoRetainedOldClue": true,
+    "factCountAllStates": 0,
+    "knownScopeAllStates": false,
+    "cameraPoseObservedAllStates": false,
+    "recognizedRoomAllStates": false,
+    "reportedCompletionCountAllStates": 0
+  },
+  "unchangedExecutableAndTestBlobs": {
+    "prepare_accessible.py": "9a7ca7cf3df23089a6355efeba1dca605ae8ec19",
+    "AccessibleOutputSeam.swift.txt": "5b4d191a2cf35b03f2c13d6f59550efdcc9c3dd9",
+    "FeedbackReceipt.swift.txt": "e56b99c3cb62f6fc8851e9d06e1da844655ae5f4",
+    "NativeSearchClueSpeechTests.swift": "52c5966b8c375abdd26a8c5f86fe3c8059ae04e4",
+    "run-accessible.sh": "466e2407b9bea23b1ee2211c93f9f81c806de355"
+  },
+  "beforeAfter": {
+    "failedSource29Run": 40220809616,
+    "beforeOutput": "I couldn't finish that check yet. We can try something else.",
+    "beforeQuestionDelivery": "none",
+    "afterOutput": "I don't know where your fridge is yet. Do you know which room or area to look in?",
+    "afterQuestionDelivery": "speech",
+    "originalFailurePreserved": true,
+    "assertionsOrGatesWeakened": false
+  },
+  "artifact": {
+    "id": 12610803388,
+    "bytes": 5365,
+    "sha256": "bff7b325264523cad1d578626b3a158263d66478ee28f8def5a68127b00f5e04"
+  },
+  "actorOutputSHA256": "7db804a285340733f811551e9c48a7b3c0a8ff45781bd640836a0482d0c6edcc",
+  "isolation": {
+    "blockedParticipatingAppURLLoadingAttempts": 0,
+    "modelPathAssertionsPassed": true,
+    "cameraOrMicrophoneStarted": false,
+    "BLEStartup": "Suppressed by isolated compile flags",
+    "OSSpeechDaemonNetwork": "UNOBSERVED"
+  },
+  "warnings": [
+    "System voice database reported fallback voices",
+    "AudioQueue reported five underflows with injected silence",
+    "Synchronous main-thread AVAudioSession activation warning"
+  ],
+  "limits": {
+    "forgetAcknowledgment": "STATE_ONLY_HARNESS_BOUNDARY_NOT_PRODUCTION_ACK_FAILURE",
+    "allSixAudibleLegs": false,
+    "voiceRecognition": "NOT_TESTED_TYPED_INPUTS",
+    "authenticatedSpeaker": "NOT_TESTED",
+    "listenerHeardOrUnderstood": "NOT_VERIFIED",
+    "actorTrial": "NOT_RUN_AUTHORED_INPUTS",
+    "Arabic": "NOT_RUN_NO_INSTALLED_ASSET_PROOF",
+    "physicalFindOutcome": "UNPROVEN",
+    "newFullJourneysClaimed": 0
+  }
+}

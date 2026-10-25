@@ -394,6 +394,33 @@ final class IndoorSituationTests: XCTestCase {
 }
 
 import Testing
+#if canImport(FoundationModels)
+import FoundationModels
+#endif
+
+// Test-only observation, not a readiness gate and not a generation hook.
+private func recordModelAvailabilityBeforeAdapter(_ fixture: StaticString) {
+    let state: String
+#if canImport(FoundationModels)
+    if #available(iOS 26.0, *) {
+        switch SystemLanguageModel.default.availability {
+        case .available: state = "available"
+        case .unavailable(let reason):
+            switch reason {
+            case .deviceNotEligible: state = "deviceNotEligible"
+            case .appleIntelligenceNotEnabled: state = "appleIntelligenceNotEnabled"
+            case .modelNotReady: state = "modelNotReady"
+            @unknown default: state = "unknownUnavailable"
+            }
+        @unknown default: state = "unknownAvailability"
+        }
+    } else { state = "apiUnavailable" }
+#else
+    state = "frameworkUnavailable"
+#endif
+    let version = ProcessInfo.processInfo.operatingSystemVersion
+    print("MODEL_AVAILABILITY fixture=\(fixture) observation=before adapter invocation model=SystemLanguageModel.default state=\(state) runtimeOS=\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)")
+}
 
 @Suite("Local conversation regression", .serialized, .enabled(if: OnDeviceLanguage.supports(arabic: false),
     "Requires the real English on-device Foundation Model. Unsupported simulators are not model acceptance evidence."))
@@ -404,10 +431,12 @@ struct ConversationTests {
         guard OnDeviceLanguage.supports(arabic: false) else { return }
         var dialogue = AssistantDialogue()
         dialogue.record(role: "user", text: "Hello. My name is Alex.")
+        recordModelAvailabilityBeforeAdapter("conversation.greeting")
         let greeting = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
         let first = try #require(greeting.text, "MODEL_FIXTURE conversation.greeting status=\(greeting.status)")
         dialogue.record(role: "assistant", text: first)
         dialogue.record(role: "user", text: "What is my name?")
+        recordModelAvailabilityBeforeAdapter("conversation.nameRecall")
         let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
         let text = try #require(answer.text, "MODEL_FIXTURE conversation.nameRecall status=\(answer.status)").lowercased()
         #expect(text.contains("alex"))
@@ -438,9 +467,11 @@ struct TextChatScenarioTests {
         try #require(OnDeviceLanguage.supports(arabic: false))
         var dialogue = AssistantDialogue()
         dialogue.record(role: "user", text: scenario.firstMessage)
+        recordModelAvailabilityBeforeAdapter("textChat.first")
         let first = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
         dialogue.record(role: "assistant", text: try #require(first.text, "MODEL_FIXTURE textChat.\(scenario.name).first status=\(first.status)"))
         dialogue.record(role: "user", text: scenario.nextMessage)
+        recordModelAvailabilityBeforeAdapter("textChat.followup")
         let response = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
         let text = try #require(response.text, "MODEL_FIXTURE textChat.\(scenario.name).followup status=\(response.status)")
         // These are deliberately synthetic fixtures, never personal conversation logs.
@@ -459,6 +490,7 @@ struct TextChatScenarioTests {
         try #require(OnDeviceLanguage.supports(arabic: false))
         var dialogue = AssistantDialogue()
         dialogue.record(role: "user", text: "Is the floor ahead safe for me to walk on?")
+        recordModelAvailabilityBeforeAdapter("textChat.unknownFloor")
         let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
         let text = try #require(answer.text, "MODEL_FIXTURE textChat.unknownFloor status=\(answer.status)")
         print("CHAT FIXTURE [unknown floor]: \(text)")
@@ -476,6 +508,7 @@ struct SavedProfileConversationTests {
         try #require(OnDeviceLanguage.supports(arabic: false))
         var dialogue = AssistantDialogue()
         dialogue.record(role: "user", text: corrected ? "Actually, call me Lina. What is my name?" : "What is my name?")
+        recordModelAvailabilityBeforeAdapter("savedProfile")
         let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false, preferredName: "Alex")
         let text = try #require(answer.text, "MODEL_FIXTURE savedProfile.corrected=\(corrected) status=\(answer.status)").lowercased()
         #expect(text.contains(corrected ? "lina" : "alex"))
@@ -1089,6 +1122,7 @@ struct UnsupportedPremiseTests {
                 #expect(last == expected[message])
             } else {
                 try #require(OnDeviceLanguage.supports(arabic: false))
+                recordModelAvailabilityBeforeAdapter("unsupportedPremise")
                 let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false, workingState: state)
                 last = try #require(answer.text, "MODEL_FIXTURE unsupportedPremise.case=\(Self.cases.firstIndex(of: messages) ?? -1) status=\(answer.status)")
                 #expect(!SpatialClaimGuard.containsSpatialClaim(last))
@@ -1122,6 +1156,7 @@ struct UnsupportedPremiseTests {
         try #require(!OnDeviceLanguage.supports(arabic: false))
         var dialogue = AssistantDialogue()
         dialogue.record(role: "user", text: "Can you see the stairs?")
+        recordModelAvailabilityBeforeAdapter("unavailableContract")
         let answer = await LocalImageAssistant.converse(dialogue: dialogue, arabic: false)
         #expect(answer.text == nil)
         #expect(answer.taskUpdate == nil)

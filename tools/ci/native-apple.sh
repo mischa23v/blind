@@ -13,6 +13,12 @@ run_logged() {
   local status=0
   "$@" > "$out/$label.log" 2>&1 || status=$?
   echo "$label exit status: $status"
+  if [[ "$label" = unit ]]; then
+    # Fixed test labels, allowlisted public availability and numeric runtime only.
+    echo 'MODEL_AVAILABILITY_BEGIN (first 80 lines; 600 characters each)'
+    grep -E '^MODEL_AVAILABILITY fixture=' "$out/$label.log" | head -80 | cut -c 1-600 || true
+    echo 'MODEL_AVAILABILITY_END'
+  fi
   # Inputs are committed public source and synthetic tests only; no secrets are supplied.
   # Avoid an environment dump or full build settings. Keep failure diagnostics bounded.
   if (( status != 0 )); then
@@ -51,6 +57,12 @@ case "$mode" in
     test -d "$DEVELOPER_DIR"
     git rev-parse HEAD
     shasum -a 256 "$project/project.pbxproj" "$project/xcshareddata/xcschemes/BlindAssist.xcscheme" BlindCore/Package.swift BlindMemory/Package.swift
+    # Explicit OS provenance only; never dump environment or machine identity.
+    host_version="$(sw_vers -productVersion 2>/dev/null || true)"
+    host_build="$(sw_vers -buildVersion 2>/dev/null || true)"
+    [[ "$host_version" =~ ^[0-9]+(\.[0-9]+){1,2}$ ]] || host_version=unknown
+    [[ "$host_build" =~ ^[0-9]+[A-Z][0-9]+[a-z]?$ ]] || host_build=unknown
+    echo "MODEL_HOST_PROVENANCE macOS=$host_version build=$host_build"
     xcodebuild -version
     xcrun swift --version
     sdk="$(xcrun --sdk iphonesimulator --show-sdk-version)"

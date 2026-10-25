@@ -1,0 +1,93 @@
+{
+  "runID": 40224675506,
+  "runURL": "https://github.com/mischa23v/blind/actions/runs/40224675506",
+  "producerCommit": "e541ea1be3670a8b2f11f3d98072fdd3937a0697",
+  "coreSourceCommit": "96fd2d4048b010594a40f54bd533f2bcf8dbfaa8",
+  "result": "PASSED_COMPONENT_INTEGRATION_ONLY",
+  "tests": 1,
+  "passed": 1,
+  "failed": 0,
+  "skipped": 0,
+  "testDurationSeconds": 248.387,
+  "sourcePlaybackDurationSeconds": 247.4580875416667,
+  "authoredWords": 100,
+  "budgetWordsPerMinute": 30,
+  "completedPhrases": 5,
+  "totalPhrases": 5,
+  "realBudgetWakes": 4,
+  "exactInstalledPhraseIDAndTextOrderVerified": true,
+  "originalSlicesReconstructEntireAuthoredFixture": true,
+  "completedOnlyAfterFinalNativeCallback": true,
+  "everyWakeAtOrAfterRecordedLedgerDeadline": true,
+  "fixtureUTF8SHA256": "df9e6fa103e9f33e92f9ab663c394948d2895e8ec949f5f32d0ba41c30f8a77b",
+  "fixtureIsNotCameraImageOrOCR": true,
+  "sourceID": "C4D4F22A-93D5-4CF5-8CEA-ED110D79BFC8",
+  "revision": "E164E42E-758E-4643-A150-707C5B6434E6",
+  "phraseCoverage": [
+    {
+      "id": "2A873E9E-2142-4007-A2CB-4C685C233179",
+      "originalSliceWords": 21,
+      "textSHA256": "1abffe60e0b1068434634271d0a36debf62d80fe5bae2b8ffc1d0e439fb49c98"
+    },
+    {
+      "id": "E9DFF459-D6DE-43B2-8BB5-68C3AA5AB513",
+      "originalSliceWords": 21,
+      "textSHA256": "186677a01cf8f1dddf5b2db0b334230c04e197748d223b538361e02f32e924c3"
+    },
+    {
+      "id": "7DF67F80-178E-43BF-80C8-EF3AB0BB2DA8",
+      "originalSliceWords": 21,
+      "textSHA256": "d28d8e6b0ed9ac316434f683122a5ca9f422c50eb3f0a06d303ebc6696df1c9f"
+    },
+    {
+      "id": "28FF95AC-3C76-47D7-B0C0-7DBACD16BFCA",
+      "originalSliceWords": 21,
+      "textSHA256": "e4004d7e15228f8ebda92b8edbd434759b29c0b626773012f7c9fc0b5738e16d"
+    },
+    {
+      "id": "75C330AE-3AF8-4E28-A2A6-AAD78AA23406",
+      "originalSliceWords": 16,
+      "textSHA256": "5227aec5d9ea81cfd04e34c90576d6deddd034ae39cae5aa063303a05215c2b0"
+    }
+  ],
+  "runtime": {
+    "platform": "iOS Simulator",
+    "version": "27.0",
+    "build": "24A434",
+    "architecture": "arm64",
+    "model": "iPhone 18 Pro Max"
+  },
+  "voice": {
+    "identifier": "com.apple.voice.super-compact.en-US.Samantha",
+    "language": "en-US",
+    "name": "Samantha",
+    "quality": "AVSpeechSynthesisVoiceQuality(rawValue: 1)",
+    "assetInstallationVerified": false,
+    "acousticOutputVerified": false
+  },
+  "runtimeWarning": "AVAudioSession synchronous main-thread activation/deactivation can cause UI unresponsiveness. This test-only warning is retained; no production correction or acoustic proof is inferred.",
+  "rawEvidence": {
+    "receiptArtifactID": 12610589284,
+    "receiptZipSHA256": "b7637fb1a7eaf35b82aef3090385315b3b242e1599bf63667619b2128e086c6a",
+    "attachmentSHA256": "4b51b40b97adf2024e8b7a23c825ce20c7b60f9489c055a3904c4ec845691a1c",
+    "summarySHA256": "699f2d99548c429cf1ef5d1ce968bdcca96aed919792596b80588684b47debfa",
+    "fullHostedArtifactID": 12610454599,
+    "fullHostedArtifactBytes": 54767604
+  },
+  "priorFailure": {
+    "runID": 40223835661,
+    "producerCommit": "44148cf13b1fde197e2ae01733c54bed486775d3",
+    "exitCode": 65,
+    "testsExecuted": 0,
+    "reason": "Generated x86_64 test target could not import destination arm64 Core module. Corrected only shared Debug ONLY_ACTIVE_ARCH setting."
+  },
+  "limits": [
+    "Test-owned AVSpeech bridge, not NavigationModel or Feedback",
+    "Authored acquisition, not camera or Vision",
+    "No physical-safety authority or goal completion",
+    "No acoustic intelligibility, comprehension or user trial",
+    "No native individual callback longer than 60 seconds claim",
+    "No native production foreground/privacy/hazard lifecycle acceptance"
+  ],
+  "evidenceTransformation": "Authored compact summary of exact downloaded native receipt and result. Internal runner paths omitted; raw hashes refer to unchanged privately retained evidence. No broad inventory is published."
+}
