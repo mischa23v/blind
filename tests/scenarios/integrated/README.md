@@ -73,3 +73,8 @@ Raw ARKitScenes/OAS assets stay external. `dataset-provenance.json` pins their s
 `evidence/run-06-candidate-native-recovery` overlays only the reviewed worker's staged coordinator/runtime into the isolated original projection. Exact native acceptance expectations are unchanged. Both recovery branches pass, and the unknown-midleg negative remains withheld: 2 XCTest methods, 0 failures. This is not a final-live-source rerun or a change to the eight preserved Core outcomes. Candidate hashes are recorded in that run's input-hashes.txt. Await root-selected final integrated source for the next independent rerun.
 
 `evidence/run-05-features-and-unknown` records the eight lease sequences and three content/encounter adapter sequences, plus unknown endpoint withholding, all passing actual code checks. Source age where no captured image exists is not applicable, not assumed fresh. Pixel/text/identity values are authored input only.
+
+
+## Nonvisual goal-directed scenario specifications
+
+[Five authored nonvisual goal journeys](nonvisual-goals/README.md) preserve independent actor/evaluator inputs and separate usefulness, safety and actual goal outcome. These are source-only fixtures: zero application, model or device executions. A safe abstention is not a completed task.
