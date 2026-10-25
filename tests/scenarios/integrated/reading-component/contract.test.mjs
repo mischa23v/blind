@@ -42,3 +42,11 @@ test('evidence explicitly excludes app integration and installed-asset proof',()
  const docs=read('README.md');
  for(const x of ['not an app/controller/Feedback/camera test','not the production controller','does not prove installed assets','individual speech callback lasting over 60 seconds']) assert.ok(docs.includes(x),x);
 });
+
+test('Debug host and test target follow the actual destination architecture',()=>{
+ const project=read('generate-project.mjs');
+ assert.match(project,/const common = '[^\n]*ONLY_ACTIVE_ARCH = YES/);
+ assert.match(project,/config\('host', common/);
+ assert.match(project,/config\('test', common/);
+ assert.doesNotMatch(project,/ARCHS = arm64|EXCLUDED_ARCHS/);
+});

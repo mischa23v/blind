@@ -1,7 +1,7 @@
 {
   "sourceCommit": "96fd2d4048b010594a40f54bd533f2bcf8dbfaa8",
-  "status": "SOURCE_PREPARED_NATIVE_NOT_RUN",
-  "localStaticChecks": 5,
+  "status": "ARCHITECTURE_FIX_SOURCE_PREPARED_NATIVE_NOT_RUN",
+  "localStaticChecks": 6,
   "localStaticFailures": 0,
   "syntax": [
     "JavaScript",
@@ -12,5 +12,17 @@
   "scope": "Unchanged Core plus test-owned native AVSpeech bridge; explicitly authored acquisition. Not NavigationModel/Feedback/camera proof.",
   "fixedNativeInvocations": 1,
   "testTimeoutSeconds": 480,
-  "timeoutMeaning": "Test termination only; never completion or extended runtime budget."
+  "timeoutMeaning": "Test termination only; never completion or extended runtime budget.",
+  "firstNativeRun": {
+    "runID": 40223835661,
+    "producerCommit": "44148cf13b1fde197e2ae01733c54bed486775d3",
+    "xcode": "27.0 (27A266a)",
+    "exitCode": 65,
+    "testsExecuted": 0,
+    "nativeCallbacks": 0,
+    "failure": "Generated test target x86_64 import could not use destination arm64 Core module",
+    "rawTestLogSHA256": "924db0732428161f9fdcab8123c7bbd5c7790eebc884c7856e0d0be67ccb6c95",
+    "rawArtifactSHA256": "0336c25faae1e5beb6889278a1f28bc4a0b01e465c8001164c6c2380639f90e5"
+  },
+  "correction": "ONLY_ACTIVE_ARCH=YES in shared generated host/test Debug settings; no production/Core/bridge changes"
 }

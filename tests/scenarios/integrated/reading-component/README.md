@@ -1,6 +1,6 @@
 # Captured text: Core + actual AVSpeech component probe
 
-Status: source prepared and independently reviewed. Five local static contracts, JavaScript/shell syntax and Swift syntax parsing pass. Native SDK compilation/execution is not yet established.
+Status: source prepared and independently reviewed. Six local static contracts, JavaScript/shell syntax and Swift syntax parsing pass. Native SDK compilation/execution is not yet established.
 
 This is **not an app/controller/Feedback/camera test**. It imports unchanged pinned BlindCore, installs an explicitly authored 100-word source, admits phrases through the unchanged CompanionAttention/NarrationBudget policies at 30 words per minute, and uses a test-owned AVSpeechSynthesizer delegate bridge. No NavigationModel is instantiated, no private AdmittedSpeech constructor is exposed and no application gate is modified.
 
@@ -19,3 +19,7 @@ One fixed test invocation runs on a fresh disposable preinstalled iOS 27.0 simul
 Actual NavigationModel/Feedback admission and wakes, real camera/Vision acquisition, foreground/private-route lifecycle, hazard interruption, an individual speech callback lasting over 60 seconds, assistive-audio intelligibility, source-bound follow-up and menu understanding remain unproven by this component probe. The component's total playback exceeds 60 seconds through real budget waiting; that does not claim every utterance or wait lasts 60 seconds.
 
 Physical camera/Vision acceptance still requires the normal app on real hardware with an authored page and unchanged gates. Component callback evidence is not that acceptance.
+
+## Preserved first native failure
+
+Run [40223835661](https://github.com/mischa23v/blind/actions/runs/40223835661) reached the Xcode 27.0 / SDK 27.0 compiler but failed before tests: the generated test target attempted x86_64 while the local Core package was built for the actual arm64 simulator destination. Xcode exited65; the result contains zero executed tests, zero callbacks and no phrase-coverage evidence. The corrected diagnostic host sets ONLY_ACTIVE_ARCH=YES for both shared Debug target configurations, following the chosen destination without hardcoding an architecture. Core, bridge, fixture, gates and timeout are unchanged. The new native execution remains pending; the prior failure is not relabeled success.

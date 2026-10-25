@@ -27,7 +27,7 @@ for (const name of ['Host.swift', 'CapturedTextNativeComponentTests.swift']) {
 const hostProduct = add('host-product', 'isa = PBXFileReference; explicitFileType = wrapper.application; path = ReadingComponentHost.app; sourceTree = BUILT_PRODUCTS_DIR;');
 const testProduct = add('test-product', 'isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = ReadingComponentTests.xctest; sourceTree = BUILT_PRODUCTS_DIR;');
 const group = add('group', `isa = PBXGroup; children = (${[...refs,hostProduct,testProduct].join(',')},); sourceTree = "<group>";`);
-const common = 'SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = 1; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; GENERATE_INFOPLIST_FILE = YES; PRODUCT_NAME = "$(TARGET_NAME)"; CODE_SIGNING_ALLOWED = NO; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; ENABLE_TESTABILITY = YES;';
+const common = 'SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 17.0; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = 1; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; GENERATE_INFOPLIST_FILE = YES; PRODUCT_NAME = "$(TARGET_NAME)"; CODE_SIGNING_ALLOWED = NO; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; ENABLE_TESTABILITY = YES; ONLY_ACTIVE_ARCH = YES;';
 const config = (name, settings) => {
   const c = add(name+'-debug', `isa = XCBuildConfiguration; name = Debug; buildSettings = { ${settings} };`);
   return add(name+'-configs', `isa = XCConfigurationList; buildConfigurations = (${c},); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug;`);
