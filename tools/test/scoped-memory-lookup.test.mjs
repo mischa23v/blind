@@ -16,7 +16,7 @@ test('all native find consumers honor current scope and historical routing prece
  assert.doesNotMatch(find,/factBook\.latest\(|let recall = observedObjects\.recall/);
  assert.equal((find.match(/items\.find\(/g)||[]).length,1);assert.match(find,/case \.forget\(let name\):\s*let clearedClue = companionWorkingState\.retireSearchClue\(object: name, scope: companionWorkingState\.memoryScope\)\s*guard let saved = items\.find\(name\)/);
  assert.match(find,/currentContextFact\(for: name\)/);assert.match(find,/currentContextItem\(name, in: items\)/);assert.match(find,/taskContextObservations\(observedObjects\)/);
- assert.match(find,/if item\.scope == nil, itemAppearance\.viewCount/);
+ assert.match(find,/if allowNewSensorWork, item\.scope == nil, itemAppearance\.viewCount/);
  const receive=section(nav,'    func receiveCompanionUtterance(','    private func ');
  const history=receive.indexOf('routeHistoricalLocationInquiry(text, origin: origin)');assert.ok(history>receive.indexOf('guard CommandAuthority.permits(.changeGoal'));
  assert.ok(history<receive.indexOf('let pendingRetake'));assert.ok(history<receive.indexOf('routeEverydayTask('));
@@ -32,8 +32,9 @@ test('all native find consumers honor current scope and historical routing prece
  assert.match(automatic,/case \.report = companionWorkingState.factBook.historicalLookup/);
  assert.doesNotMatch(automatic,/speakRequested\(|recordedSpotSpeech|mapPosition\(|transitionMemoryScope\(/);
  const sensor=section(nav,'    private func findWithSensors(','    /// Native RGB evidence');
- assert.ok(sensor.indexOf('routeOrdinaryHistoricalLocation(name)')>sensor.indexOf('recall.status != .notFound'));
- assert.ok(sensor.indexOf('routeOrdinaryHistoricalLocation(name)')>sensor.indexOf('currentContextItem(name, in: items)'));
+ assert.ok(sensor.includes('routeOrdinaryHistoricalLocation(name, allowNewSensorWork: allowNewSensorWork)'));
+ assert.ok(sensor.indexOf('routeOrdinaryHistoricalLocation(name, allowNewSensorWork: allowNewSensorWork)')>sensor.indexOf('recall.status != .notFound'));
+ assert.ok(sensor.indexOf('routeOrdinaryHistoricalLocation(name, allowNewSensorWork: allowNewSensorWork)')>sensor.indexOf('currentContextItem(name, in: items)'));
  assert.match(local,/guard !hasScopedMemoryHistory \|\| memoryScope != nil else \{ return nil \}/);
  assert.match(local,/factBook.latest\(for: object\).flatMap \{ \$0.scope == nil \? \$0 : nil \}/);
 });

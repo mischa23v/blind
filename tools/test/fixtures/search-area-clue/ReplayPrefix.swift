@@ -118,14 +118,12 @@ final class SearchAreaReplay {
     func invalidatePerceptionWork() {}
     func removeObservedHistory(category: String) throws { removedObservationCategories.append(category) }
     func persistDialogue() {}
-    func routeEverydayTask(_ text: String) -> Bool {
-        guard let request = EverydayTaskRequest.route(text) else { return false }
-        if request.capability == .findItem {
-            if everydayTasks.goal == nil { everydayTasks.setGoal(companionWorkingState.goal) }
-            _ = everydayTasks.begin(request); everydayUtterance = text; return false
-        }
-        toolInputs.append(text); return true
-    }
+    // The coordinator route itself is extracted verbatim below. These remain
+    // explicit platform/memory boundaries, not invented hardware results.
+    struct RetainedMemory { var evidence: [String] = [] }
+    func readSavedCompanionMemory(query: String) -> RetainedMemory { RetainedMemory() }
+    func startReadingTool(_ tool: ReadingTool) { toolInputs.append(tool.rawValue) }
+    func finishEverydayTask(_ capability: EverydayCapability, outcome: EverydayTaskCoordinator.AdapterOutcome, ticketID: UUID?) {}
     func answerCompanionOffer(_ answer: OfferAnswer) {}
     func routeSaudiBanknoteCommand(_ text: String) -> Bool { false }
     func routeClothingColorCommand(_ text: String) -> Bool { false }
@@ -134,7 +132,11 @@ final class SearchAreaReplay {
     // Deliberately no invented model reply. This witnesses a boundary invocation,
     // not model-enabled failure or an Apple Foundation Models result.
     func answerConversation(_ text: String) { modelInputs.append(text) }
-    func findWithSensors(_ target: String, question: String) -> Bool { sensorAnswers }
+    var sensorPermissions: [Bool] = []
+    func findWithSensors(_ target: String, question: String, allowNewSensorWork: Bool = true) -> Bool {
+        sensorPermissions.append(allowNewSensorWork)
+        return allowNewSensorWork && sensorAnswers
+    }
     func queueConversationSpeech(_ text: String, request: UUID, generation: UInt64, codeOwned: Bool, searchAreaQuestionID: UUID? = nil) {
         pendingSpeech = Speech(text: text, request: request, generation: generation, questionID: searchAreaQuestionID)
     }

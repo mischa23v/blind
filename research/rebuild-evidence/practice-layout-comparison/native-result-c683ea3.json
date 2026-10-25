@@ -1,0 +1,178 @@
+{
+  "schema": 1,
+  "commit": "c683ea3840cbbb2b96b68e30370e3be04b1c8d96",
+  "runId": 40223169463,
+  "jobId": 121258931343,
+  "artifactId": 12610472423,
+  "artifactZipSha256": "06c58daddf4bc72fc3b36cd2bc02df6d8b26b69e22c3d8cdca284c067ba89e20",
+  "artifactBytes": 4083602,
+  "nativeBuild": "passed",
+  "cleanup": "passed",
+  "xcode": "Xcode 27.0\nBuild version 27A266a",
+  "sdk": "27.0",
+  "caseCount": 15,
+  "passed": 15,
+  "retries": 0,
+  "auditCases": 12,
+  "endpointCases": 3,
+  "issueCallbacks": 0,
+  "screenshots": 30,
+  "omittedLogLines": 0,
+  "truncatedLogLines": 0,
+  "screenshotInspection": "All 14 byte-distinct PNGs inspected; remaining 16 identical by SHA256. All three endpoint-after images show the complete final cane/guide-dog warning.",
+  "cases": [
+    {
+      "test": "testA_DynamicType_1",
+      "status": "passed",
+      "nativeExitCode": 0,
+      "evidence": "complete",
+      "observedCategory": "large",
+      "elapsedSeconds": 102.29
+    },
+    {
+      "test": "testA_DynamicType_2",
+      "status": "passed",
+      "nativeExitCode": 0,
+      "evidence": "complete",
+      "observedCategory": "large",
+      "elapsedSeconds": 31.83
+    },
+    {
+      "test": "testA_HitRegion_1",
+      "status": "passed",
+      "nativeExitCode": 0,
+      "evidence": "complete",
+      "observedCategory": "large",
+      "elapsedSeconds": 24.64
+    },
+    {
+      "test": "testA_HitRegion_2",
+      "status": "passed",
+      "nativeExitCode": 0,
+      "evidence": "complete",
+      "observedCategory": "large",
+      "elapsedSeconds": 28.96
+    },
+    {
+      "test": "testB_DynamicType_1",
+      "status": "passed",
+      "nativeExitCode": 0,
+      "evidence": "complete",
+      "observedCategory": "large",
+      "elapsedSeconds": 29.27
+    },
+    {
+      "test": "testB_DynamicType_2",
+      "status": "passed",
+      "nativeExitCode": 0,
+      "evidence": "complete",
+      "observedCategory": "large",
+      "elapsedSeconds": 30.95
+    },
+    {
+      "test": "testB_HitRegion_1",
+      "status": "passed",
+      "nativeExitCode": 0,
+      "evidence": "complete",
+      "observedCategory": "large",
+      "elapsedSeconds": 32.66
+    },
+    {
+      "test": "testB_HitRegion_2",
+      "status": "passed",
+      "nativeExitCode": 0,
+      "evidence": "complete",
+      "observedCategory": "large",
+      "elapsedSeconds": 28.41
+    },
+    {
+      "test": "testC_DynamicType_1",
+      "status": "passed",
+      "nativeExitCode": 0,
+      "evidence": "complete",
+      "observedCategory": "large",
+      "elapsedSeconds": 27.11
+    },
+    {
+      "test": "testC_DynamicType_2",
+      "status": "passed",
+      "nativeExitCode": 0,
+      "evidence": "complete",
+      "observedCategory": "large",
+      "elapsedSeconds": 22.45
+    },
+    {
+      "test": "testC_HitRegion_1",
+      "status": "passed",
+      "nativeExitCode": 0,
+      "evidence": "complete",
+      "observedCategory": "large",
+      "elapsedSeconds": 22.63
+    },
+    {
+      "test": "testC_HitRegion_2",
+      "status": "passed",
+      "nativeExitCode": 0,
+      "evidence": "complete",
+      "observedCategory": "large",
+      "elapsedSeconds": 19.51
+    },
+    {
+      "test": "testA_Endpoint",
+      "status": "passed",
+      "nativeExitCode": 0,
+      "evidence": "complete",
+      "observedCategory": "accessibility-extra-extra-extra-large",
+      "elapsedSeconds": 23.02
+    },
+    {
+      "test": "testB_Endpoint",
+      "status": "passed",
+      "nativeExitCode": 0,
+      "evidence": "complete",
+      "observedCategory": "accessibility-extra-extra-extra-large",
+      "elapsedSeconds": 22.55
+    },
+    {
+      "test": "testC_Endpoint",
+      "status": "passed",
+      "nativeExitCode": 0,
+      "evidence": "complete",
+      "observedCategory": "accessibility-extra-extra-extra-large",
+      "elapsedSeconds": 21.88
+    }
+  ],
+  "interpretation": "The exact static Practice modifiers pass in isolation. Full-app audit failures remain unresolved; surrounding layout/state/audit scope differ. No SDK false-positive or whole-app accessibility conclusion is established.",
+  "pngSha256": {
+    "comparison-A-dynamicType-1-after.png": "112b9556c2547e3735bce595fd66bff8ac596b9308bfab4b69cc9e1cf982cf15",
+    "comparison-A-dynamicType-1-before.png": "112b9556c2547e3735bce595fd66bff8ac596b9308bfab4b69cc9e1cf982cf15",
+    "comparison-A-dynamicType-2-after.png": "71ab0f24d08dd6ccdb2395482b22d10de5f1a47b6a9933ae17b2f91bdb55e0ce",
+    "comparison-A-dynamicType-2-before.png": "71ab0f24d08dd6ccdb2395482b22d10de5f1a47b6a9933ae17b2f91bdb55e0ce",
+    "comparison-A-endpoint-after.png": "35d2abd7506155f107c65dd0b2f54b2cb2cbf64d2705731731134039eaa0f564",
+    "comparison-A-endpoint-before.png": "b1b9b286678c3b430638b5e365d5028247fcaec069a76222604e10043d66ddc7",
+    "comparison-A-hitRegion-1-after.png": "71ab0f24d08dd6ccdb2395482b22d10de5f1a47b6a9933ae17b2f91bdb55e0ce",
+    "comparison-A-hitRegion-1-before.png": "71ab0f24d08dd6ccdb2395482b22d10de5f1a47b6a9933ae17b2f91bdb55e0ce",
+    "comparison-A-hitRegion-2-after.png": "390543e7c223c1db64ba506ccc40e33e72116f17e9a1cc5058e2a131c085f242",
+    "comparison-A-hitRegion-2-before.png": "390543e7c223c1db64ba506ccc40e33e72116f17e9a1cc5058e2a131c085f242",
+    "comparison-B-dynamicType-1-after.png": "6dce8b1e7c4aa70a892b15c1f85d05e6db9c5e6f828fdcfa5a8d2b193496e83f",
+    "comparison-B-dynamicType-1-before.png": "6dce8b1e7c4aa70a892b15c1f85d05e6db9c5e6f828fdcfa5a8d2b193496e83f",
+    "comparison-B-dynamicType-2-after.png": "708b00a0a42dd8ae82a9f0ae2c95c47720964ec29949c0bdff6c91c60b8833dd",
+    "comparison-B-dynamicType-2-before.png": "708b00a0a42dd8ae82a9f0ae2c95c47720964ec29949c0bdff6c91c60b8833dd",
+    "comparison-B-endpoint-after.png": "6a587213f671d09885957892beb6dc2c15cc3a71ecbd9da0b644ac54666f38c1",
+    "comparison-B-endpoint-before.png": "8c9cc9fb970123b16a8defa2bda80b8aed89ad44140906961edfeb5b3cbd2d17",
+    "comparison-B-hitRegion-1-after.png": "708b00a0a42dd8ae82a9f0ae2c95c47720964ec29949c0bdff6c91c60b8833dd",
+    "comparison-B-hitRegion-1-before.png": "708b00a0a42dd8ae82a9f0ae2c95c47720964ec29949c0bdff6c91c60b8833dd",
+    "comparison-B-hitRegion-2-after.png": "e2294c2504b22797028328297515875661673a21485262ba1518ef4ff20d27b5",
+    "comparison-B-hitRegion-2-before.png": "e2294c2504b22797028328297515875661673a21485262ba1518ef4ff20d27b5",
+    "comparison-C-dynamicType-1-after.png": "eb6b1084a0fdcf6fdbfadcd8e65d816f9ee20c200b05de8338b407c687d895ee",
+    "comparison-C-dynamicType-1-before.png": "eb6b1084a0fdcf6fdbfadcd8e65d816f9ee20c200b05de8338b407c687d895ee",
+    "comparison-C-dynamicType-2-after.png": "fb18d251b45135abd12ce98f7e5a257f63e516747fe31c9da7fe98b562864827",
+    "comparison-C-dynamicType-2-before.png": "fb18d251b45135abd12ce98f7e5a257f63e516747fe31c9da7fe98b562864827",
+    "comparison-C-endpoint-after.png": "5759d3c0cc5a4fe483f9e016a24d8ef0d236a957c1e503078efa601dc90c21e2",
+    "comparison-C-endpoint-before.png": "fc389419e2e74722d2091e31c50e2d76bc15ab85f51b02354a9477992d91a1ee",
+    "comparison-C-hitRegion-1-after.png": "fb18d251b45135abd12ce98f7e5a257f63e516747fe31c9da7fe98b562864827",
+    "comparison-C-hitRegion-1-before.png": "fb18d251b45135abd12ce98f7e5a257f63e516747fe31c9da7fe98b562864827",
+    "comparison-C-hitRegion-2-after.png": "fb18d251b45135abd12ce98f7e5a257f63e516747fe31c9da7fe98b562864827",
+    "comparison-C-hitRegion-2-before.png": "fb18d251b45135abd12ce98f7e5a257f63e516747fe31c9da7fe98b562864827"
+  }
+}

@@ -1,3 +1,14 @@
+## Checkpoint 31 acceptance update — search-clue retry boundary
+
+- [x] Repair code-only history/clue/clarification after exhausted find adapter attempts without resetting retries or starting more sensor work; preserve checkpoint-30 reader behavior.
+- [x] Execute real coordinator-route portable regression: 34/34 repaired cases; retain source-29 failed-before replay and native failure evidence.
+- [x] Complete final combined serial 75-file Node aggregate: 499/499, zero skips/failures, unchanged source hashes; retain separate first aggregate's 497/499 result and reviewed source-contract corrections.
+- [ ] Rerun unchanged native source-29 speech probe assertions against published repaired production. Do not accept a generic unavailable reply or question state `none` instead of the frozen room/area question and real speech completion.
+- [ ] Validate actual forget acknowledgment in a separately reviewed operation-owned speech probe; current isolated harness observes state clearing only. Nonvisual actor comprehension and actual physical find success remain unproven; no complete-journey count added.
+
+
+---
+
 ## Checkpoint30 — bounded captured-text completion
 
 - [x] Keep installed immutable text alive through ordinary budget waits and slow exact callbacks, without extending capture/acquisition or other reference deadlines.

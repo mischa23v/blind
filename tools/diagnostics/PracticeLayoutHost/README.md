@@ -60,3 +60,23 @@ outcome JSON, keeping the download below the connector's 32 MiB limit. Individua
 log summaries are capped at 192 KiB serialized; audit descriptions are prioritized
 and omissions/truncation are explicit. Oversized/missing screenshots fail evidence
 validation rather than being silently accepted.
+
+## Native result: c683ea3
+
+[Run 40223169463](https://github.com/mischa23v/blind/actions/runs/40223169463)
+compiled with Xcode 27.0 (27A266a), iOS simulator SDK 27.0, and passed all 15 fixed
+cases without retries: 12 unsuppressed audits and three accessibility-XXXL endpoint
+checks. All 30 named PNGs were retained, with zero omitted or truncated diagnostic
+log lines; owned-simulator shutdown/deletion passed. The artifact ZIP SHA256 is
+`06c58daddf4bc72fc3b36cd2bc02df6d8b26b69e22c3d8cdca284c067ba89e20`.
+
+All 14 byte-distinct screenshots were visually inspected (the other 16 are
+byte-identical). Every endpoint-after image shows the final cane/guide-dog warning.
+For B, the copied footer grows from 100.33 to 883.33 points high and its endpoint
+becomes visible after two bounded upward gestures. This supports scaling and
+endpoint reachability **in the isolated host only**. The full-app audit remains a
+separate unresolved result: its surrounding sections, TabView, state, navigation
+and full audit scope differ. The experiment does not establish an SDK false
+positive or justify changing production styles, suppressing the audit, or claiming
+whole-app accessibility. Exact outcomes and all 30 PNG hashes are recorded in
+`research/rebuild-evidence/practice-layout-comparison/native-result-c683ea3.json`.

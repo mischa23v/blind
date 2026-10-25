@@ -1,3 +1,14 @@
+## Checkpoint 31 — code-only find continuation survives exhausted sensor retries (2026-10-25)
+
+- Preserved real native source-29 failure: run `40220809616` compiled and executed one test, with two failed assertions and zero skips. Five real AVSpeech completion receipts were inspected. The post-forget query said “I couldn't finish that check yet. We can try something else.” rather than asking a new room/area question. Typed forget cleared state; its acknowledgment was outside the isolated harness speech lane, not evidence of production speech failure.
+- Repaired the actual controller without reopening sensor attempts: exhausted same-target finds may use attributed history, retained raw clues or a code-owned clarification; no new capture, appearance lookup, locate/continueSearch or measured-geometry output is admitted. Longer item names declined by the clarification parser cannot reset the exhausted budget. Reader checkpoint-30 changes are preserved.
+- Upgraded the portable replay to execute the actual coordinator route instead of its earlier simplified stub. Published-29 baseline executes 34 cases with 32 assertion failures across five cases; repaired/reader-rebased replay passes 34/34. The failed reader-fixture merge compile was preserved and the existing reader boundary stub restored.
+- First complete combined serial per-file aggregate: 75 files, 499 tests, 497 passed and two failed exact-source expectations. Reviewed updates retain all original scope/geometry/ordering constraints and additionally require the new sensor-work guard. Separate final-source aggregate: 75 files, 499/499 passed, zero failures/skips/cancellations/todos; source hashes unchanged throughout each run. These are combined serial aggregates, not a single Node invocation.
+- Evidence: `research/rebuild-evidence/search-clue-retry/verification.json`, with failed-native output receipts and failed-first-aggregate history retained. Native speech acceptance on the repaired production is still PENDING: rerun the unchanged room/area and actual-speech question-delivery assertions after publication. No claim of all-six audible turns, audibility/comprehension, physical fridge retrieval, model-selected actions or a completed connected journey.
+
+
+---
+
 ## Checkpoint30: finish one bounded captured-text source
 
 Validated captured text no longer expires while waiting for the ordinary word budget or a slow exact speech callback. A single source-owned budget wake preserves the unread cursor, including across user pacing changes. Capture admission and unfulfilled acquisition deadlines remain unchanged; installed reference text grants no live-camera or physical authority.

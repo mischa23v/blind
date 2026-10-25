@@ -1,0 +1,1080 @@
+{
+  "checkpoint": 31,
+  "baseCommit": "e541ea1be3670a8b2f11f3d98072fdd3937a0697",
+  "baseTree": "327d08353e9196824d3f9e4ebe24998cd7071843",
+  "productionBaseCommit": "96fd2d4048b010594a40f54bd533f2bcf8dbfaa8",
+  "status": "PORTABLE_CHECKED_NATIVE_SPEECH_RERUN_PENDING",
+  "beforeNative": {
+    "run": 40220809616,
+    "probeCommit": "08e27bbaadd872fdee01356f55075716c5d0c480",
+    "appSource": "cc3b5f77f98e40735bfafee949c5a118110bd0c5",
+    "tests": 1,
+    "failedTests": 1,
+    "assertionFailures": 2,
+    "skipped": 0,
+    "actualCompletedSpeechReceipts": 5,
+    "failedOutput": "I couldn't finish that check yet. We can try something else.",
+    "forgetAcknowledgment": "NOT_EVALUATED_HARNESS_UNTRACKED_OUTPUT_BOUNDARY"
+  },
+  "beforePortable": {
+    "testsExecuted": 34,
+    "failedTestCases": 5,
+    "assertionFailures": 32,
+    "postForgetFailureReproduced": true,
+    "coordinatorRoute": "Actual extracted route; prior simplified stub missed exhaustion"
+  },
+  "fixedPortable": {
+    "tests": 34,
+    "passed": 34,
+    "failed": 0,
+    "skip": 0,
+    "meaning": "Authored extracted controller replay with explicit platform boundaries; not native audio"
+  },
+  "firstAggregate": {
+    "kind": "combined_serial_per_file_aggregate",
+    "files": 75,
+    "counts": {
+      "tests": 499,
+      "pass": 497,
+      "fail": 2,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "failedFiles": [
+      "tools/test/physical-interaction-safety.test.mjs",
+      "tools/test/scoped-memory-lookup.test.mjs"
+    ],
+    "missingCountFiles": [],
+    "sourceChanges": []
+  },
+  "firstAggregateDiagnosis": "Two exact-source expectations needed stricter allowNewSensorWork gate and updated exact historical call signature; no production guard weakened",
+  "finalAggregate": {
+    "kind": "combined_serial_per_file_aggregate",
+    "files": 75,
+    "counts": {
+      "tests": 499,
+      "pass": 499,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "failedFiles": [],
+    "missingCountFiles": [],
+    "sourceChanges": [],
+    "allFiles": [
+      {
+        "file": "server/test/app.test.mjs",
+        "exit": 0,
+        "seconds": 0.505,
+        "counts": {
+          "tests": 9,
+          "pass": 9,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "server/test/companion-guards.test.mjs",
+        "exit": 0,
+        "seconds": 0.243,
+        "counts": {
+          "tests": 4,
+          "pass": 4,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "server/test/ordinary-conversation-rebuild.test.mjs",
+        "exit": 0,
+        "seconds": 0.214,
+        "counts": {
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "server/test/scene-policy.test.mjs",
+        "exit": 0,
+        "seconds": 0.324,
+        "counts": {
+          "tests": 6,
+          "pass": 6,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "server/test/situation-context.test.mjs",
+        "exit": 0,
+        "seconds": 0.382,
+        "counts": {
+          "tests": 14,
+          "pass": 14,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "server/test/sourced-map-context.test.mjs",
+        "exit": 0,
+        "seconds": 0.345,
+        "counts": {
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "server/test/spatial-guard.test.mjs",
+        "exit": 0,
+        "seconds": 0.485,
+        "counts": {
+          "tests": 15,
+          "pass": 15,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/attention-routing.test.mjs",
+        "exit": 0,
+        "seconds": 0.253,
+        "counts": {
+          "tests": 9,
+          "pass": 9,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/auraface-backend.test.mjs",
+        "exit": 0,
+        "seconds": 0.205,
+        "counts": {
+          "tests": 3,
+          "pass": 3,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/automatic-room-recovery.test.mjs",
+        "exit": 0,
+        "seconds": 0.208,
+        "counts": {
+          "tests": 4,
+          "pass": 4,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/captured-text-completion.test.mjs",
+        "exit": 0,
+        "seconds": 0.202,
+        "counts": {
+          "tests": 4,
+          "pass": 4,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/captured-text-reference.test.mjs",
+        "exit": 0,
+        "seconds": 0.207,
+        "counts": {
+          "tests": 8,
+          "pass": 8,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/child-assistant-contracts.test.mjs",
+        "exit": 0,
+        "seconds": 0.208,
+        "counts": {
+          "tests": 6,
+          "pass": 6,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/clock-inquiry.test.mjs",
+        "exit": 0,
+        "seconds": 0.2,
+        "counts": {
+          "tests": 4,
+          "pass": 4,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/clock-native-callbacks.test.mjs",
+        "exit": 0,
+        "seconds": 55.021,
+        "counts": {
+          "tests": 1,
+          "pass": 1,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/clock-tool-delivery.test.mjs",
+        "exit": 0,
+        "seconds": 0.221,
+        "counts": {
+          "tests": 8,
+          "pass": 8,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/clothing-color.test.mjs",
+        "exit": 0,
+        "seconds": 0.217,
+        "counts": {
+          "tests": 8,
+          "pass": 8,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/command-authority.test.mjs",
+        "exit": 0,
+        "seconds": 0.208,
+        "counts": {
+          "tests": 12,
+          "pass": 12,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/companion-evidence.test.mjs",
+        "exit": 0,
+        "seconds": 0.214,
+        "counts": {
+          "tests": 10,
+          "pass": 10,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/contextual-capabilities.test.mjs",
+        "exit": 0,
+        "seconds": 0.239,
+        "counts": {
+          "tests": 11,
+          "pass": 11,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/continuous-assistant.test.mjs",
+        "exit": 0,
+        "seconds": 0.226,
+        "counts": {
+          "tests": 15,
+          "pass": 15,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/currency-device-test-project.test.mjs",
+        "exit": 0,
+        "seconds": 0.413,
+        "counts": {
+          "tests": 7,
+          "pass": 7,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/currency-device-test.test.mjs",
+        "exit": 0,
+        "seconds": 0.2,
+        "counts": {
+          "tests": 4,
+          "pass": 4,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/currency-reference-project.test.mjs",
+        "exit": 0,
+        "seconds": 0.292,
+        "counts": {
+          "tests": 16,
+          "pass": 16,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/debug-native-session.test.mjs",
+        "exit": 0,
+        "seconds": 0.225,
+        "counts": {
+          "tests": 18,
+          "pass": 18,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/debug-session-log.test.mjs",
+        "exit": 0,
+        "seconds": 0.195,
+        "counts": {
+          "tests": 13,
+          "pass": 13,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/device-clock.test.mjs",
+        "exit": 0,
+        "seconds": 0.214,
+        "counts": {
+          "tests": 3,
+          "pass": 3,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/everyday-companion-wiring.test.mjs",
+        "exit": 0,
+        "seconds": 0.208,
+        "counts": {
+          "tests": 11,
+          "pass": 11,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/familiar-build-membership.test.mjs",
+        "exit": 0,
+        "seconds": 0.217,
+        "counts": {
+          "tests": 13,
+          "pass": 13,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/familiar-foreground-defaults.test.mjs",
+        "exit": 0,
+        "seconds": 1.95,
+        "counts": {
+          "tests": 6,
+          "pass": 6,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/familiar-people.test.mjs",
+        "exit": 0,
+        "seconds": 0.255,
+        "counts": {
+          "tests": 17,
+          "pass": 17,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/familiar-rgb-capture.test.mjs",
+        "exit": 0,
+        "seconds": 2.768,
+        "counts": {
+          "tests": 5,
+          "pass": 5,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/fresh-vision-probe.test.mjs",
+        "exit": 0,
+        "seconds": 0.182,
+        "counts": {
+          "tests": 5,
+          "pass": 5,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/goal-continuity.test.mjs",
+        "exit": 0,
+        "seconds": 0.201,
+        "counts": {
+          "tests": 4,
+          "pass": 4,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/handoff-privacy.test.mjs",
+        "exit": 0,
+        "seconds": 0.723,
+        "counts": {
+          "tests": 4,
+          "pass": 4,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/ios-lifecycle-regressions.test.mjs",
+        "exit": 0,
+        "seconds": 0.219,
+        "counts": {
+          "tests": 9,
+          "pass": 9,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/memory-sql.test.mjs",
+        "exit": 0,
+        "seconds": 0.233,
+        "counts": {
+          "tests": 5,
+          "pass": 5,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/native-apple-failure-regressions.test.mjs",
+        "exit": 0,
+        "seconds": 0.209,
+        "counts": {
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/native-failure-window.test.mjs",
+        "exit": 0,
+        "seconds": 0.344,
+        "counts": {
+          "tests": 5,
+          "pass": 5,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/native-model-diagnostics.test.mjs",
+        "exit": 0,
+        "seconds": 0.296,
+        "counts": {
+          "tests": 4,
+          "pass": 4,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/native-runtime-buffer.test.mjs",
+        "exit": 0,
+        "seconds": 0.191,
+        "counts": {
+          "tests": 5,
+          "pass": 5,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/native-runtime-phases.test.mjs",
+        "exit": 0,
+        "seconds": 0.209,
+        "counts": {
+          "tests": 4,
+          "pass": 4,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/native-runtime-stress.test.mjs",
+        "exit": 0,
+        "seconds": 1.578,
+        "counts": {
+          "tests": 7,
+          "pass": 7,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/native-unit-waits.test.mjs",
+        "exit": 0,
+        "seconds": 0.223,
+        "counts": {
+          "tests": 4,
+          "pass": 4,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/object-detector-project.test.mjs",
+        "exit": 0,
+        "seconds": 0.5,
+        "counts": {
+          "tests": 9,
+          "pass": 9,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/object-rgb-discovery.test.mjs",
+        "exit": 0,
+        "seconds": 3.24,
+        "counts": {
+          "tests": 3,
+          "pass": 3,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/opencv-runtime.test.mjs",
+        "exit": 0,
+        "seconds": 0.787,
+        "counts": {
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/passive-object-memory.test.mjs",
+        "exit": 0,
+        "seconds": 0.221,
+        "counts": {
+          "tests": 8,
+          "pass": 8,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/passive-scene-delivery.test.mjs",
+        "exit": 0,
+        "seconds": 0.197,
+        "counts": {
+          "tests": 3,
+          "pass": 3,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/physical-interaction-safety.test.mjs",
+        "exit": 0,
+        "seconds": 0.215,
+        "counts": {
+          "tests": 6,
+          "pass": 6,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/practice-comparison-source.test.mjs",
+        "exit": 0,
+        "seconds": 0.204,
+        "counts": {
+          "tests": 7,
+          "pass": 7,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/practice-dynamic-type.test.mjs",
+        "exit": 0,
+        "seconds": 0.216,
+        "counts": {
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/practice-footer-accessibility.test.mjs",
+        "exit": 0,
+        "seconds": 0.194,
+        "counts": {
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/practice-header-accessibility.test.mjs",
+        "exit": 0,
+        "seconds": 0.202,
+        "counts": {
+          "tests": 3,
+          "pass": 3,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/pre-device-hardening.test.mjs",
+        "exit": 0,
+        "seconds": 2.122,
+        "counts": {
+          "tests": 5,
+          "pass": 5,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/privacy-rule.test.mjs",
+        "exit": 0,
+        "seconds": 0.284,
+        "counts": {
+          "tests": 4,
+          "pass": 4,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/reading-integration.test.mjs",
+        "exit": 0,
+        "seconds": 0.219,
+        "counts": {
+          "tests": 8,
+          "pass": 8,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/room-registration-acquisition.test.mjs",
+        "exit": 0,
+        "seconds": 59.401,
+        "counts": {
+          "tests": 6,
+          "pass": 6,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/saudi-banknotes.test.mjs",
+        "exit": 0,
+        "seconds": 0.229,
+        "counts": {
+          "tests": 6,
+          "pass": 6,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/scoped-memory-lookup.test.mjs",
+        "exit": 0,
+        "seconds": 41.409,
+        "counts": {
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/scoped-memory-review.test.mjs",
+        "exit": 0,
+        "seconds": 34.63,
+        "counts": {
+          "tests": 8,
+          "pass": 8,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/search-area-clue-native.test.mjs",
+        "exit": 0,
+        "seconds": 59.622,
+        "counts": {
+          "tests": 3,
+          "pass": 3,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/selected-photo-reference.test.mjs",
+        "exit": 0,
+        "seconds": 0.23,
+        "counts": {
+          "tests": 12,
+          "pass": 12,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/semantic-context-wiring.test.mjs",
+        "exit": 0,
+        "seconds": 0.184,
+        "counts": {
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/simple-accessibility.test.mjs",
+        "exit": 0,
+        "seconds": 0.212,
+        "counts": {
+          "tests": 5,
+          "pass": 5,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/spatial-frame-registry.test.mjs",
+        "exit": 0,
+        "seconds": 0.223,
+        "counts": {
+          "tests": 8,
+          "pass": 8,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/spatial-map-io-native-state.test.mjs",
+        "exit": 0,
+        "seconds": 34.702,
+        "counts": {
+          "tests": 1,
+          "pass": 1,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/spatial-review-regressions.test.mjs",
+        "exit": 0,
+        "seconds": 0.274,
+        "counts": {
+          "tests": 21,
+          "pass": 21,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/spatial-route-output.test.mjs",
+        "exit": 0,
+        "seconds": 0.213,
+        "counts": {
+          "tests": 3,
+          "pass": 3,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/spatial-rule.test.mjs",
+        "exit": 0,
+        "seconds": 0.24,
+        "counts": {
+          "tests": 3,
+          "pass": 3,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/speech-delivery-contract.test.mjs",
+        "exit": 0,
+        "seconds": 0.232,
+        "counts": {
+          "tests": 7,
+          "pass": 7,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/task-memory-native-state.test.mjs",
+        "exit": 0,
+        "seconds": 58.404,
+        "counts": {
+          "tests": 1,
+          "pass": 1,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/tools.test.mjs",
+        "exit": 0,
+        "seconds": 0.19,
+        "counts": {
+          "tests": 5,
+          "pass": 5,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/ui-helper-query-count.test.mjs",
+        "exit": 0,
+        "seconds": 0.187,
+        "counts": {
+          "tests": 8,
+          "pass": 8,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "file": "tools/test/voice-capture-lifecycle.test.mjs",
+        "exit": 0,
+        "seconds": 0.191,
+        "counts": {
+          "tests": 10,
+          "pass": 10,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      }
+    ]
+  },
+  "sourceChangesDuringEitherAggregate": [],
+  "sourceContractRepair": "Original scope/geometry/ordering checks retained; new sensor-work guard mandatory and removal mutation rejected",
+  "independentReview": "Accepted code-only budget path and long-name parser-decline guard; accepted two exact-source contract updates",
+  "nativeAcceptance": "Pending rerun of frozen room/area and speech-delivered question assertions on published repaired production",
+  "notClaimed": [
+    "All six audible legs",
+    "Acoustic audibility or listener comprehension",
+    "Arabic installed voice validation",
+    "Physical fridge retrieval",
+    "Model-selected actions",
+    "Complete connected journey"
+  ],
+  "newFullJourneysClaimed": 0,
+  "baseBlobs": {
+    "ios/BlindAssist/NavigationModel.swift": "7c144261d3c68d55964c8c093925a4ec1f799be6",
+    "tools/test/search-area-clue-native.test.mjs": "4577658cc64aa29b245cc80b1b0dd935df956400",
+    "tools/test/fixtures/search-area-clue/ReplayPrefix.swift": "87e5a02a7afd186aa3944871ba42c15ded4da39f",
+    "tools/test/physical-interaction-safety.test.mjs": "65d7767ff16225c66ac745db6cc568cb0d7860e5",
+    "tools/test/scoped-memory-lookup.test.mjs": "fa2a42bab4e6836e26541b9c04470d54fa5021c8"
+  },
+  "changedFileSHA256": {
+    "ios/BlindAssist/NavigationModel.swift": "b7a321a56edf91b06b796b624da1f6ecd12cdaebe5d7e31fde7ab48828686d4e",
+    "tools/test/search-area-clue-native.test.mjs": "2ca33c5c01280bdfb106695b8a4740c580dacd1f83d58a7e30b4b939ffc881a7",
+    "tools/test/fixtures/search-area-clue/ReplayPrefix.swift": "e5289f04e214cc3fb5cfaef7682449eab2e9491c85b59aa86249edb6ba0f20bb",
+    "tools/test/fixtures/search-area-clue/RetryBudgetTests.swift": "c268028df1c71be2f7ed610450b285b4c8577e1c9d1f1aa37628e7ae0db144c4",
+    "tools/test/physical-interaction-safety.test.mjs": "5a76d9c32399dc48079a429241acf80f14cca4264f1ade62e901d384df2e5225",
+    "tools/test/scoped-memory-lookup.test.mjs": "fa8ba8f2f9d08ffe07cee86dea745bbc122f1845318e6e77a637d95dd3a5ff94"
+  },
+  "evidenceLogSHA256": {
+    "baselinePortable": "be6c68448df8d7df194ee969fdc006e54110d892d7ecafbd8e441ac912d57a11",
+    "fixedPortable": "9db5b92e6acc5afeff5b35643d6ab969bc1005103317ea351085bfd7fab96c3e",
+    "mergedReaderFixtureCompileFailure": "dc496315ddfdd03fbc172cacd05fcef9e9e63b11732661cff297d8c080fb79ab",
+    "mergedPortable": "bd38857503ccd9c5d25a5dc234798ee2a635ec9d783560fec5aadaa3a4de0122",
+    "firstAggregate": "3007cd8666d46d65ff663ce9f581cf8d343394f89acf09923466a484e2df58c2",
+    "finalAggregate": "ba69f3510cfec7a3f5ddcd81b90a8e845f65ce578a51f99615fddcaa633826e8"
+  }
+}

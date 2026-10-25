@@ -3397,6 +3397,21 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // Legacy direct callers also remain read-only, before subtask mutation.
         if request.capability == .deviceClock { return routeClockInquiry(text, origin: .trustedInterface) }
         everydayUtterance = text
+        // A repeated find may still ask for useful code-owned history/clues
+        // after its physical adapter budget is exhausted. Do not reopen that
+        // budget by calling begin() on the same needs-help request.
+        if request.capability == .findItem, let previous = everydayTasks.request,
+           previous.capability == .findItem,
+           ItemMemory.key(for: previous.query) == ItemMemory.key(for: request.query),
+           everydayTasks.state == .needsHelp {
+            everydayTicket = nil
+            // ItemCommand accepts longer names than CompanionUtterance. A
+            // parser mismatch may decline clarification, never reset retries.
+            if !answerFindWithoutNewSensorWork(text), everydayTasks.admitPrompt(for: .unavailable) {
+                deliverConversationReply(arabic ? "لم أتمكن من إكمال هذا الفحص بعد. يمكننا تجربة شيء آخر." : "I couldn't finish that check yet. We can try something else.")
+            }
+            return true
+        }
         if everydayTasks.goal == nil, !companionWorkingState.goal.isEmpty {
             everydayTasks.setGoal(companionWorkingState.parentGoal?.goal ?? companionWorkingState.goal)
         }
@@ -3413,6 +3428,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             next = everydayTasks.next(available: Set(EverydayCapability.allCases), now: now)
         }
         guard case .run(let ticket) = next else {
+            everydayTicket = nil
+            if request.capability == .findItem, answerFindWithoutNewSensorWork(text) { return true }
             if everydayTasks.admitPrompt(for: .unavailable) {
                 deliverConversationReply(arabic ? "لم أتمكن من إكمال هذا الفحص بعد. يمكننا تجربة شيء آخر." : "I couldn't finish that check yet. We can try something else.")
             }
@@ -3907,12 +3924,21 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
 
     /// Conversation evidence rule (2026-10-22): find requests and location reports are answered
     /// by code from the child's own reports, saved items and live sensors, never by the model.
-    private func answerCompanionUtterance(_ utterance: CompanionUtterance, question: String) {
+    private func answerCompanionUtterance(_ utterance: CompanionUtterance, question: String, allowNewSensorWork: Bool = true) {
         recordCompanionMessage(question)
-        applyCompanion(utterance, question: question)
+        applyCompanion(utterance, question: question, allowNewSensorWork: allowNewSensorWork)
     }
 
-    private func applyCompanion(_ utterance: CompanionUtterance, question: String) {
+    /// Physical retry accounting cannot silence a code-owned clarification.
+    /// No adapter ticket, goal completion, location or sensor success is minted.
+    @discardableResult private func answerFindWithoutNewSensorWork(_ question: String) -> Bool {
+        guard let utterance = CompanionUtterance.parse(question), case .find = utterance else { return false }
+        everydayTicket = nil
+        answerCompanionUtterance(utterance, question: question, allowNewSensorWork: false)
+        return true
+    }
+
+    private func applyCompanion(_ utterance: CompanionUtterance, question: String, allowNewSensorWork: Bool = true) {
         let oldGoal = companionWorkingState.goal
         let text = companionWorkingState.respond(to: utterance, message: question, arabic: arabic,
             sourceID: companionWorkingState.reports.last?.sourceID)
@@ -3925,7 +3951,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         persistWorkingState()
         // Saved items and live sensors answer a find request before "I don't know".
-        if let findObject, findWithSensors(findObject, question: question) {
+        if let findObject, findWithSensors(findObject, question: question, allowNewSensorWork: allowNewSensorWork) {
             companionWorkingState.searchAreaClue.retireAnswerWindow(); return
         }
         if let target = companionWorkingState.searchAreaClarificationTarget, let findObject,
@@ -5231,7 +5257,7 @@ extension NavigationModel {
 
     /// Automatic fallback for ordinary finds. Original context stays in stored
     /// helper metadata; the child hears history, never a measured item position.
-    @discardableResult private func routeOrdinaryHistoricalLocation(_ name: String) -> Bool {
+    @discardableResult private func routeOrdinaryHistoricalLocation(_ name: String, allowNewSensorWork: Bool = true) -> Bool {
         guard let summary = companionWorkingState.ordinaryHistoricalLocationReply(object: name, arabic: arabic, concise: true) else { return false }
         let fallback = arabic ? "لدي تقرير محفوظ أطول من رد واحد. لا أستطيع اختصار المعلومة كاملة هنا. لا أعرف أين الغرض الآن." : "I have a longer saved report. I can't fit the whole clue in this reply. I don't know where it is now."
         let reply = Self.wordCount(summary) <= 30 ? summary : fallback
@@ -5241,7 +5267,8 @@ extension NavigationModel {
             request: requestID, generation: assistantSession.generation, codeOwned: true)
         // Ambiguous cross-place history asks a question instead of selecting an
         // instance. A single history clue does not suppress an available fresh look.
-        if case .report = companionWorkingState.factBook.historicalLookup(object: name, currentScope: companionWorkingState.memoryScope),
+        if allowNewSensorWork,
+           case .report = companionWorkingState.factBook.historicalLookup(object: name, currentScope: companionWorkingState.memoryScope),
            let frame = session.currentFrame, captureObjectView(frame) != nil {
             objectSearch = ObjectSearch(target: name, now: ProcessInfo.processInfo.systemUptime)
             continueSearch()
@@ -5298,7 +5325,7 @@ extension NavigationModel {
 
     /// Saved item (by look, or its saved place) newer than the child's last report, then a live
     /// search of the current view. False when neither applies; the caller speaks the report or "unknown".
-    private func findWithSensors(_ name: String, question: String) -> Bool {
+    private func findWithSensors(_ name: String, question: String, allowNewSensorWork: Bool = true) -> Bool {
         if routeHistoricalLocationInquiry(question, origin: .trustedInterface) { return true }
         heldSearchIntent.cancel()
         let exitTerms: Set<String> = ["exit", "the exit", "way out", "the way out", "مخرج", "المخرج"]
@@ -5314,7 +5341,7 @@ extension NavigationModel {
             }
         }
         let fact = companionWorkingState.currentContextFact(for: name)
-        let context = recordedSpotRecallContext()
+        let context = allowNewSensorWork ? recordedSpotRecallContext() : nil
         if !companionWorkingState.hasScopedMemoryHistory, let context { observedObjects.revalidateRecordedFrame(using: context, at: Date()) }
         let recall = companionWorkingState.taskContextObservations(observedObjects).recall(category: name, at: Date(), context: context)
         let explicitEvidenceAt = max(fact?.at ?? .distantPast, companionWorkingState.currentContextItem(name, in: items)?.savedAt ?? .distantPast)
@@ -5332,20 +5359,20 @@ extension NavigationModel {
             } else { say(history) }
             // Memory leads the search, but an old observation does not suppress a
             // fresh look. No extra aiming command or repeated start announcement.
-            if let frame = session.currentFrame, captureObjectView(frame) != nil {
+            if allowNewSensorWork, let frame = session.currentFrame, captureObjectView(frame) != nil {
                 objectSearch = ObjectSearch(target: name, now: ProcessInfo.processInfo.systemUptime)
                 continueSearch()
             }
             return true
         }
         if let item = companionWorkingState.currentContextItem(name, in: items), fact.map({ item.savedAt > $0.at }) ?? true {
-            if item.scope == nil, itemAppearance.viewCount(item.key) > 0, let frame = session.currentFrame, captureObjectView(frame) != nil {
+            if allowNewSensorWork, item.scope == nil, itemAppearance.viewCount(item.key) > 0, let frame = session.currentFrame, captureObjectView(frame) != nil {
                 findItemByLook(item, name: name, frame: frame)
                 return true
             }
             let sameFrame = indoor.isAligned && item.frameID == indoor.alignmentRevision.uuidString
             var relation: String?
-            if item.scope == nil, Self.objectInteractionGuidanceValidated, sameFrame, let target = item.position, let observation = lastObservation,
+            if allowNewSensorWork, item.scope == nil, Self.objectInteractionGuidanceValidated, sameFrame, let target = item.position, let observation = lastObservation,
                let here = indoor.mapPosition(camera: observation.camera),
                let facing = currentBodyForward().flatMap({ indoor.mapDirection($0) }),
                let measured = SpatialFacts.relation(from: here, facing: facing, to: target) {
@@ -5354,7 +5381,8 @@ extension NavigationModel {
             say(ItemMemory.answer(for: item, asked: name, now: Date(), sameFrame: sameFrame, measuredRelation: relation, arabic: arabic))
             return true
         }
-        if routeOrdinaryHistoricalLocation(name) { return true }
+        if routeOrdinaryHistoricalLocation(name, allowNewSensorWork: allowNewSensorWork) { return true }
+        guard allowNewSensorWork else { return false }
         return locate(LocateCommand.target(question) ?? name, question: question)
     }
 

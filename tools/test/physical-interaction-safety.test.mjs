@@ -17,7 +17,7 @@ test('unvalidated instance-depth binding cannot speak approach or reach guidance
  assert.match(s,/private static let objectInteractionGuidanceValidated = false/);
  const find=declaration(s,'private func findWithSensors(');
  const checkSavedGeometry=body=>{
-  const start=body.indexOf('if item.scope == nil, Self.objectInteractionGuidanceValidated,');
+  const start=body.indexOf('if allowNewSensorWork, item.scope == nil, Self.objectInteractionGuidanceValidated,');
   const end=body.indexOf('            say(ItemMemory.answer(',start);
   assert.ok(start>=0 && end>start,'Exact saved-item geometry conditional before its answer');
   const spatial=body.slice(start,end);
@@ -28,8 +28,8 @@ test('unvalidated instance-depth binding cannot speak approach or reach guidance
   assert.match(spatial,/relation = SpatialFacts\.phrase\(label: item\.name, relation: measured/);
  };
  checkSavedGeometry(find);
- const marker='if item.scope == nil, Self.objectInteractionGuidanceValidated, sameFrame,';
- for(const gate of ['item.scope == nil, ', 'Self.objectInteractionGuidanceValidated, ', 'sameFrame,']) {
+ const marker='if allowNewSensorWork, item.scope == nil, Self.objectInteractionGuidanceValidated, sameFrame,';
+ for(const gate of ['allowNewSensorWork, ', 'item.scope == nil, ', 'Self.objectInteractionGuidanceValidated, ', 'sameFrame,']) {
   assert.ok(find.includes(marker));
   assert.throws(()=>checkSavedGeometry(find.replace(marker,marker.replace(gate,''))),{name:'AssertionError'},`Missing saved-item geometry gate: ${gate}`);
  }

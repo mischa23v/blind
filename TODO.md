@@ -1,3 +1,11 @@
+## Next after checkpoint 31
+
+1. Pin and run the unchanged native search-clue speech expectations against the repaired production; inspect the small receipt artifact, not only the CI status. Preserve the source-29 failed native run and first failed portable aggregate.
+2. Keep safety, useful spoken continuation and real goal achievement separate. Current repair has 34 passing portable controller cases and a final 499/499 combined serial Node aggregate, but repaired native speech acceptance remains pending. Typed forget is not an audible leg; physical fridge retrieval and listener comprehension are not established.
+
+
+---
+
 ## Next after checkpoint30
 
 Verify complete ordered captured-page playback on a device at the minimum ordinary word budget, including a callback beyond 60 seconds, user pacing changes, cancellation/replacement and privacy/session retirement. Portable results do not establish native audio completion or user intelligibility.

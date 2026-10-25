@@ -87,11 +87,12 @@ test('exact native ingress and reply adapters retain provisional user clues with
   writeFileSync(join(sources, 'WorkingState.swift'), 'import Foundation\nimport BlindCore\n' + local.slice(stateStart, stateEnd));
   const signatures = ['func receiveCompanionUtterance(', 'private func recordCompanionMessage(',
     'private func answerCompanionUtterance(', 'private func applyCompanion(', 'private func deliverConversationReply(',
-    'private func routeUnverifiedPhysicalRequest(', 'private func handleConversationTaskControl(',
+    'private func routeUnverifiedPhysicalRequest(', 'private func routeEverydayTask(', 'private func handleConversationTaskControl(',
     'private func handleItemOrLocate(', 'func forgetItem(', 'private func forgetItemAfterNativePurge(',
     'private func retireHeldSearchForPrivacyDeletion(', 'func clearAssistantConversation(',
     'func stopDescriptions(', 'func resumeDescriptions(', 'private func handleAssistantControl('];
   if (current) signatures.push('private func searchAreaBinding(', 'private func finishSearchAreaQuestion(', 'private func acceptSearchAreaClue(');
+  if (nav.includes('private func answerFindWithoutNewSensorWork(')) signatures.push('private func answerFindWithoutNewSensorWork(');
   const methods = signatures.map(s => release(declaration(nav, s)).replace(/^private func/, 'func'));
   const retirement = declaration(nav, 'private func cancelDescription(').split('\n').filter(line => /companionWorkingState\.searchAreaClue\.(clear|retireAnswerWindow)\(\)/.test(line));
   assert.equal(retirement.length, current ? 1 : 0);
@@ -101,6 +102,7 @@ test('exact native ingress and reply adapters retain provisional user clues with
   if (current) {
     writeFileSync(join(tests, 'CurrentTests.swift'), read('tools/test/fixtures/search-area-clue/CurrentTests.swift'));
     writeFileSync(join(tests, 'PrivacyTests.swift'), read('tools/test/fixtures/search-area-clue/PrivacyTests.swift'));
+    writeFileSync(join(tests, 'RetryBudgetTests.swift'), read('tools/test/fixtures/search-area-clue/RetryBudgetTests.swift'));
   }
   writeFileSync(join(work, 'Package.swift'), `// swift-tools-version: 5.9\nimport PackageDescription\nlet package = Package(name: "SearchAreaReplay", dependencies: [.package(path: ${JSON.stringify(join(inputRoot,'BlindCore'))})], targets: [.target(name: "SearchAreaReplay", dependencies: [.product(name: "BlindCore", package: "BlindCore")]), .testTarget(name: "SearchAreaReplayTests", dependencies: ["SearchAreaReplay", .product(name: "BlindCore", package: "BlindCore")])])\n`);
   const result = spawnSync(join(dirname(process.env.BLIND_SWIFTC), 'swift'), ['test', '--package-path', work, '--scratch-path', join(work,'build'), '--cache-path', join(work,'cache'), '--jobs', '1'], {
@@ -109,5 +111,25 @@ test('exact native ingress and reply adapters retain provisional user clues with
   });
   const output = (result.stdout || '') + '\n' + (result.stderr || ''); writeFileSync(join(work,'execution.log'),output);
   assert.equal(result.status, 0, `Extracted controller replay retained at ${work}\n${output.slice(-18000)}`);
-  assert.match(output, /Executed 29 tests, with 0 failures/);
+  assert.match(output, /Executed 34 tests, with 0 failures/);
+});
+
+// Source guards complement the explicit sensor boundary spy in portable replay.
+// Actual native callback regression remains separately required.
+test('exhausted find clarification cannot start extra sensor work or reset attempts', () => {
+  const nav = read('ios/BlindAssist/NavigationModel.swift');
+  const route = declaration(nav, 'private func routeEverydayTask(');
+  assert.ok(route.indexOf('everydayTasks.state == .needsHelp') < route.indexOf('everydayTasks.begin(request)'));
+  assert.match(route, /guard case \.run\(let ticket\) = next else \{\s*everydayTicket = nil\s*if request.capability == \.findItem, answerFindWithoutNewSensorWork\(text\)/);
+  const fallback = declaration(nav, 'private func answerFindWithoutNewSensorWork(');
+  assert.match(fallback, /allowNewSensorWork: false/);
+  assert.doesNotMatch(fallback, /setGoal|begin\(|resume\(|next\(|confirmSubtaskComplete|attempts\s*=/);
+  const find = declaration(nav, 'private func findWithSensors(');
+  assert.match(find, /allowNewSensorWork \? recordedSpotRecallContext\(\) : nil/);
+  assert.match(find, /if allowNewSensorWork, let frame = session.currentFrame/);
+  assert.match(find, /if allowNewSensorWork, item.scope == nil, itemAppearance.viewCount/);
+  assert.match(find, /if allowNewSensorWork, item.scope == nil, Self.objectInteractionGuidanceValidated/);
+  assert.match(find, /guard allowNewSensorWork else \{ return false \}\s*return locate/);
+  assert.match(find, /routeOrdinaryHistoricalLocation\(name, allowNewSensorWork: allowNewSensorWork\)/);
+  assert.match(declaration(nav, 'private func routeOrdinaryHistoricalLocation('), /if allowNewSensorWork,\s*case \.report/);
 });
