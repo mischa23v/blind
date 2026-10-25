@@ -1,0 +1,52 @@
+name: Actual native accessible-output callback probe
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/native-accessible-output.yml'
+      - 'tests/scenarios/integrated/accessible-output/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: native-accessible-output-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  workflows:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    runs-on: xcode-27
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 6925e21e4fef039b43ab6f4158aa37fd704b258e
+          path: workflow-baseline
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Prepare isolated host and require actual native speech callbacks
+        run: bash tests/scenarios/integrated/accessible-output/run-accessible.sh "$GITHUB_WORKSPACE/workflow-baseline"
+      - name: Preserve authored failure evidence (never device data)
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-accessible-output-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/blind-accessible-native/*.log
+            ${{ runner.temp }}/blind-accessible-native/*.txt
+            ${{ runner.temp }}/blind-accessible-native/*.json
+            ${{ runner.temp }}/blind-accessible-native/accessible.xcresult
+            ${{ runner.temp }}/blind-accessible-native/attachments
+            ${{ runner.temp }}/blind-accessible-native/host/accessible-projection.json
+            ${{ runner.temp }}/blind-accessible-native/host/workflow-projection.json
+          if-no-files-found: warn
+          retention-days: 7
