@@ -1,0 +1,42 @@
+{
+  "checkpoint": "reconstruction-02-direct-clock",
+  "baseCommit": "9af6e77c64383412561f108955fea34f4cbb8642",
+  "dateUTC": "2026-10-25",
+  "core": {
+    "tests": 927,
+    "failures": 0,
+    "exitCode": 0,
+    "newClockTests": 17
+  },
+  "node": {
+    "tests": 342,
+    "passed": 342,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "nativeSyntax": {
+    "default": 0,
+    "debugFamiliar": 0,
+    "AppleSDKTypechecked": false
+  },
+  "changes": [
+    "Direct whole-question clock routing before task cancellation",
+    "Actual device clock with original monotonic five-second deadline, wall/timezone/reply/session binding",
+    "Camera-independent output path without changing goal/search/navigation"
+  ],
+  "limits": [
+    "Legacy and model-selected clock-tool paths still need monotonic delivery integration",
+    "No Apple SDK/device/VoiceOver validation",
+    "No full spatial/debug native integration claim"
+  ],
+  "commands": [
+    "swift test --package-path BlindCore --scratch-path <scratch> --cache-path <cache> --jobs 2",
+    "BLIND_SWIFTC=<swiftc> npm test"
+  ],
+  "artifactSHA256": {
+    "core-tests.log": "ab32f8b6a644d0d66ef6dfcdaafa29508ef798392698bfac0c79a9fa20ece5e0",
+    "node-tests.log": "40baf75bce79da797fb0b427a0a85984b19a08b24ba5fd02b4f7cefd8f5e5752",
+    "source-hashes.json": "63e62733bfe59d59a68469ecabccfc7a576a79879e51ff86c8dad9e92384ee63"
+  }
+}

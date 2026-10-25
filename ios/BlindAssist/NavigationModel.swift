@@ -61,6 +61,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let evidence: [CompanionEvidence]
         let captures: [ConversationCapture]
         var codeOwned = false
+        var clockReplyID: UUID? = nil
         var origin: CompanionCommandOrigin = .trustedInterface
     }
     private struct ConversationCapture {
@@ -73,6 +74,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var conversationEvidenceCaptures: [String: ConversationCapture] = [:]
     private var conversationSpeech: [ConversationSpeech] = []
     private var activeConversationSpeech: ConversationSpeech?
+    // Clock delivery has its own short lease, independent of camera/task lifetime.
+    private var clockReplies: [UUID: CompanionClockReplyLease] = [:]
+    private var displayedClockReplyID: UUID?
+    private var displayedClockOrigin: CompanionCommandOrigin = .trustedInterface
+    private var clockExpiryTask: Task<Void, Never>?
     private var requestedVisualDialogue: (id: UUID, generation: UInt64)?
     private var streamedConversationText = ""
     // Unverified microphone conversation is transient and cannot become a saved
@@ -2137,7 +2143,18 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     /// Descriptive answers and repeats retain normal information budgets.
     @discardableResult func speakRequested(_ text: String, replace: Bool = true, narrationID: UUID? = nil, speechID: UUID? = nil) -> Bool {
-        dispatchText(text, kind: .answer, requested: true, replace: replace, narrationID: narrationID, speechID: speechID)
+        if let id = displayedClockReplyID, clockReplies[id]?.reply == text {
+            guard clockReplyIsCurrent(id, text: text) else { revalidateClockReplies(); return false }
+            // Route UI repeats through the same exact speech-ID expiry owner.
+            // Do not reacquire or renew the original read when repeating it.
+            if speechID == nil {
+                guard let lease = clockReplies[id] else { return false }
+                queueConversationSpeech(text, request: requestID, generation: assistantSession.generation,
+                    evidence: [lease.evidence], codeOwned: true, origin: displayedClockOrigin, clockReplyID: id)
+                return false // queue admission is not proof of audible delivery
+            }
+        }
+        return dispatchText(text, kind: .answer, requested: true, replace: replace, narrationID: narrationID, speechID: speechID)
     }
     /// Only short current-action consent/progress/confirmation/error, never scene descriptions.
     @discardableResult func speakOperation(_ text: String, replace: Bool = true, revision: String = UUID().uuidString) -> Bool {
@@ -2365,6 +2382,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // This compatibility entry point is called by explicit UI submission or
         // the microphone callback. A tap to listen does not authenticate speech.
         let origin: CompanionCommandOrigin = fromVoice ? .unverifiedMicrophone : .trustedInterface
+        // A read-only clock question needs conversation authority, not goal authority.
+        // Intercept before cancellation, everyday-task mutation or camera work.
+        if routeClockInquiry(text, origin: origin) { return }
         guard CommandAuthority.permits(.changeGoal, from: origin) else {
             receiveUnverifiedConversation(text, origin: origin)
             return
@@ -2470,6 +2490,73 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             readScene(cloud: false, question: text)
         } else {
             answerConversation(text)
+        }
+    }
+
+    /// Pure information lane: no user-report ingestion, goal/task changes, camera
+    /// acquisition, navigation cancellation or model generation. The existing
+    /// ordinary-speech interruption leaves those independent activities alive.
+    @discardableResult private func routeClockInquiry(_ question: String, origin: CompanionCommandOrigin) -> Bool {
+        guard CompanionClockInquiry.accepts(question, origin: origin) else { return false }
+        interruptOrdinaryConversation(origin: origin)
+        clockExpiryTask?.cancel(); clockExpiryTask = nil
+        clockReplies.removeAll(); displayedClockReplyID = nil
+        let binding = CompanionClockReplyLease.Binding(requestID: requestID,
+            generation: assistantSession.generation, replyID: UUID())
+        guard let lease = CompanionClockReplyLease.read(binding: binding, now: Date(),
+                monotonicNow: ProcessInfo.processInfo.systemUptime, timeZone: .current, arabic: arabic) else {
+            let unavailable = arabic ? "تعذر قراءة ساعة الجهاز. حاول مرة أخرى." : "I couldn't read the device clock. Please ask again."
+            sceneAnswer = unavailable; currentReply = unavailable
+            queueConversationSpeech(unavailable, request: requestID, generation: assistantSession.generation,
+                codeOwned: true, origin: origin)
+            return true
+        }
+        clockReplies[binding.replyID] = lease
+        guard clockReplyIsCurrent(binding.replyID, text: lease.reply) else { return true }
+        displayedClockReplyID = binding.replyID; displayedClockOrigin = origin
+        sceneAnswer = lease.reply; currentReply = lease.reply
+        queueConversationSpeech(lease.reply, request: requestID, generation: assistantSession.generation,
+            evidence: [lease.evidence], codeOwned: true, origin: origin, clockReplyID: binding.replyID)
+        // Camera can be off: its watchdog is not the clock's expiry owner.
+        clockExpiryTask = Task { @MainActor [weak self] in
+            while !Task.isCancelled {
+                guard let self else { return }
+                self.revalidateClockReplies()
+                guard !self.clockReplies.isEmpty else { return }
+                do { try await Task.sleep(for: .milliseconds(100)) } catch { return }
+            }
+        }
+        return true
+    }
+
+    private func clockReplyIsCurrent(_ id: UUID, text: String) -> Bool {
+        guard var lease = clockReplies[id] else { return false }
+        let binding = CompanionClockReplyLease.Binding(requestID: requestID,
+            generation: assistantSession.generation, replyID: id)
+        let valid = lease.validates(reply: text, binding: binding, now: Date(),
+            monotonicNow: ProcessInfo.processInfo.systemUptime, timeZone: .current)
+        clockReplies[id] = lease
+        return valid
+    }
+
+    /// A stale clock never becomes a timeless code-owned receipt. Recheck the
+    /// existing screen text and stop only the exact expired clock speech ID.
+    private func revalidateClockReplies() {
+        for id in Array(clockReplies.keys) {
+            guard let lease = clockReplies[id] else { continue }
+            guard !clockReplyIsCurrent(id, text: lease.reply) else { continue }
+            if let active = activeConversationSpeech, active.clockReplyID == id {
+                activeConversationSpeech = nil
+                feedback.stopRequestedSpeech(active.id)
+            }
+            conversationSpeech.removeAll { $0.clockReplyID == id }
+            if displayedClockReplyID == id {
+                displayedClockReplyID = nil
+                let expired = arabic ? "انتهت صلاحية قراءة الوقت. اسأل مرة أخرى لقراءة حديثة." : "That time reading expired. Ask again for the current time."
+                if currentReply == lease.reply { currentReply = expired }
+                if sceneAnswer == lease.reply { sceneAnswer = expired }
+            }
+            clockReplies.removeValue(forKey: id)
         }
     }
 
@@ -2733,10 +2820,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         return true
     }
 
-    private func queueConversationSpeech(_ text: String, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = [], codeOwned: Bool = false, origin: CompanionCommandOrigin = .trustedInterface) {
+    private func queueConversationSpeech(_ text: String, request: UUID, generation: UInt64, reports: [String] = [], evidence: [CompanionEvidence] = [], codeOwned: Bool = false, origin: CompanionCommandOrigin = .trustedInterface, clockReplyID: UUID? = nil) {
         guard !textOnly, assistantSession.state == .active,
               assistantSession.accepts(generation: generation), requestID == request,
               (codeOwned || !SpatialClaimGuard.containsSpatialClaim(text)), conversationSpeech.count < 4 else { return }
+        if let clockReplyID, !clockReplyIsCurrent(clockReplyID, text: text) { return }
         // Only receipts actually used by this sentence retain a visual lease.
         let current: [CompanionEvidence]
         if codeOwned { current = [] }
@@ -2748,7 +2836,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         guard captures.count == current.count else { return }
         conversationSpeech.append(ConversationSpeech(id: UUID(), text: text, request: request,
             generation: generation, createdAt: ProcessInfo.processInfo.systemUptime,
-            reports: reports, evidence: evidence, captures: captures, codeOwned: codeOwned, origin: origin))
+            reports: reports, evidence: evidence, captures: captures, codeOwned: codeOwned, clockReplyID: clockReplyID, origin: origin))
         drainConversationSpeech()
     }
 
@@ -2760,6 +2848,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                   assistantSession.accepts(generation: next.generation),
                   ProcessInfo.processInfo.systemUptime - next.createdAt < 30,
                   (next.codeOwned || CompanionEvidenceGuard.allows(next.text, reports: next.reports, evidence: next.evidence, now: Date())) else { continue }
+            if let clockID = next.clockReplyID, !clockReplyIsCurrent(clockID, text: next.text) { continue }
             guard next.captures.allSatisfy(conversationCaptureIsCurrent) else { continue }
             activeConversationSpeech = next
             if speakRequested(next.text, replace: false, speechID: next.id) { return }
@@ -2771,6 +2860,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// A current visual claim loses authority during playback as well as before it.
     /// Ordinary conversation without visual evidence is independent of this gate.
     private func revalidateConversationSpeech() {
+        revalidateClockReplies()
         guard let active = activeConversationSpeech, !active.captures.isEmpty else { return }
         guard active.captures.allSatisfy(conversationCaptureIsCurrent) else {
             activeConversationSpeech = nil
@@ -3507,7 +3597,11 @@ extension NavigationModel {
     }
 
     func repeatHomeInformation() {
+        revalidateClockReplies()
         if running && detection.hazard != .observing { repeatMonitoringStatus() }
+        else if let id = displayedClockReplyID, let lease = clockReplies[id], currentReply == lease.reply {
+            _ = speakRequested(lease.reply)
+        }
         else if !narrationHistory.isEmpty { repeatDescription() }
         else { speakOperation(homePrompt) }
     }

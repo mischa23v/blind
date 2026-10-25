@@ -1,3 +1,7 @@
+### Direct-clock increment — 2026-10-25
+
+Previous source checkpoint `9af6e77` is verified on master. The direct read-only clock lane is now integrated before task mutation, with original monotonic five-second freshness and exact reply/session/time-zone binding. Fresh full verification: **927/927 Core** and **342/342 Node**, zero failures or skips. Default and DEBUG/familiar native syntax parse passed; Apple SDK/device behavior is unverified. Legacy/model-selected clock delivery remains open. Evidence: [checkpoint-02](research/rebuild-evidence/checkpoint-02/verification.json). This incremental source awaits the commit containing this entry; it does not close the whole reconstruction.
+
 ## CURRENT RECONSTRUCTION — 2026-10-25
 
 This section is the current reconstruction snapshot and supersedes older status below. Historical counts remain attached to their historical checkpoints; they are not rerun evidence for this build. Scope: [REBUILD_TRACKER.md](REBUILD_TRACKER.md), [REBUILD_SCOPE_ADDENDUM.md](REBUILD_SCOPE_ADDENDUM.md). Work queue: [TASKS.md](TASKS.md), [TODO.md](TODO.md).
