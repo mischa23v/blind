@@ -17,7 +17,7 @@ run_logged() {
   # Avoid an environment dump or full build settings. Keep failure diagnostics bounded.
   if (( status != 0 )); then
     # Print real diagnostics before warnings; zero-failure summaries must not consume the cap.
-    grep -E -i 'error:|fatal|Test (Case|Suite).* failed (at|\()|Executed [0-9]+ tests?, with [1-9][0-9]* failures?|\*\* (BUILD|TEST) FAILED' "$out/$label.log" | head -120 || true
+    grep -E -i 'ACCESSIBILITY_AUDIT|error:|fatal|Test (Case|Suite).* failed (at|\()|Executed [0-9]+ tests?, with [1-9][0-9]* failures?|\*\* (BUILD|TEST) FAILED' "$out/$label.log" | head -120 || true
     grep -E 'warning:' "$out/$label.log" | head -20 || true
     tail -60 "$out/$label.log"
   else
@@ -65,13 +65,15 @@ PY
   build)
     run_logged build xcodebuild "${base[@]}" -destination 'generic/platform=iOS Simulator' build
     ;;
-  unit|ui)
+  unit|ui|ui-diagnostic)
     device="$(cat "$out/simulator-id")"
     target=BlindAssistTests
-    if [[ "$mode" = ui ]]; then target=BlindAssistUITests; fi
+    if [[ "$mode" != unit ]]; then target=BlindAssistUITests; fi
+    selector="$target"
+    if [[ "$mode" = ui-diagnostic ]]; then selector="$target/LaunchTests/testAccessibilityAuditOfCameraAndAsk"; fi
     run_logged "$mode" xcodebuild "${base[@]}" -destination "platform=iOS Simulator,id=$device" \
       -destination-timeout 120 -parallel-testing-enabled NO \
-      -maximum-concurrent-test-simulator-destinations 1 -only-testing:"$target" \
+      -maximum-concurrent-test-simulator-destinations 1 -only-testing:"$selector" \
       -resultBundlePath "$out/$mode.xcresult" test
     ;;
   summary)

@@ -1,0 +1,29 @@
+name: Focused accessibility diagnostic
+on:
+  push:
+    branches: [master]
+    paths: ['.github/workflows/accessibility-diagnostic.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: accessibility-diagnostic-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  focused-audit:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    runs-on: xcode-27
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Verify source and installed simulator
+        run: bash tools/ci/native-apple.sh preflight
+      - name: Run the unsuppressed camera and ask accessibility audit
+        run: bash tools/ci/native-apple.sh ui-diagnostic

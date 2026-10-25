@@ -142,7 +142,7 @@ final class LaunchTests: XCTestCase {
         openSettingsPage("camera-screen")
         try app.performAccessibilityAudit { issue in
             // Synthetic UI-test state only. Keep the failure and expose the affected control.
-            print("ACCESSIBILITY_AUDIT=type:\(issue.auditType),element:\(String((issue.element?.debugDescription ?? "unidentified").prefix(1200)))")
+            print("ACCESSIBILITY_AUDIT=type:\(issue.auditType),element:\(String((issue.element?.debugDescription ?? "unidentified").prefix(1200)).replacingOccurrences(of: "\n", with: " | "))")
             // WCAG exempts inactive controls; retain every other audit finding.
             guard issue.auditType == .contrast, let element = issue.element else { return false }
             return element.identifier == "retrace-session" && !element.isEnabled
@@ -152,7 +152,7 @@ final class LaunchTests: XCTestCase {
         reveal(ask); ask.tap()
         try app.performAccessibilityAudit { issue in
             // Synthetic UI-test state only. Keep the failure and expose the affected control.
-            print("ACCESSIBILITY_AUDIT=type:\(issue.auditType),element:\(String((issue.element?.debugDescription ?? "unidentified").prefix(1200)))")
+            print("ACCESSIBILITY_AUDIT=type:\(issue.auditType),element:\(String((issue.element?.debugDescription ?? "unidentified").prefix(1200)).replacingOccurrences(of: "\n", with: " | "))")
             // WCAG exempts inactive controls; retain every other audit finding.
             guard issue.auditType == .contrast, let element = issue.element else { return false }
             return element.identifier == "retrace-session" && !element.isEnabled
