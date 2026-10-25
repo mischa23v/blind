@@ -1,0 +1,31 @@
+name: Single boot-ready cold-app runtime control
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/native-runtime-readiness.yml'
+      - 'tools/ci/native-runtime-readiness.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: native-runtime-readiness-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  runtime-readiness:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    runs-on: xcode-27
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Verify exact source and installed simulator
+        run: bash tools/ci/native-apple.sh preflight
+      - name: Measure owned simulator boot and execute runtime class once
+        run: python3 tools/ci/native-runtime-readiness.py
