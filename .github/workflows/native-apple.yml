@@ -1,0 +1,76 @@
+name: Native Apple SDK checks
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'BlindCore/**'
+      - 'BlindMemory/**'
+      - 'ios/**'
+      - 'tools/ci/**'
+      - '.github/workflows/native-apple.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-apple-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  native:
+    # Fail closed before allocating a runner if visibility changes or this is a fork.
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    runs-on: xcode-27
+    timeout-minutes: 65
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Verify source and installed Apple toolchain
+        id: preflight
+        timeout-minutes: 3
+        run: bash tools/ci/native-apple.sh preflight
+      - name: BlindCore package tests on macOS
+        id: core
+        timeout-minutes: 18
+        run: bash tools/ci/native-apple.sh core
+      - name: BlindMemory package tests on macOS
+        id: memory
+        if: ${{ !cancelled() && steps.preflight.outcome == 'success' }}
+        timeout-minutes: 12
+        run: bash tools/ci/native-apple.sh memory
+      - name: Unsigned default iOS Simulator build
+        id: build
+        if: ${{ !cancelled() && steps.preflight.outcome == 'success' }}
+        timeout-minutes: 20
+        run: bash tools/ci/native-apple.sh build
+      - name: Hosted iOS unit tests
+        id: unit
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 15
+        run: bash tools/ci/native-apple.sh unit
+      - name: iOS UI and accessibility audit tests
+        id: ui
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 20
+        run: bash tools/ci/native-apple.sh ui
+      - name: Summarize native evidence and preserve source
+        if: always() && steps.preflight.outcome == 'success'
+        timeout-minutes: 3
+        env:
+          CORE_OUTCOME: ${{ steps.core.outcome }}
+          MEMORY_OUTCOME: ${{ steps.memory.outcome }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          UNIT_OUTCOME: ${{ steps.unit.outcome }}
+          UI_OUTCOME: ${{ steps.ui.outcome }}
+        run: bash tools/ci/native-apple.sh summary
