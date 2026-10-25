@@ -1,0 +1,503 @@
+{
+  "status": "source-only preservation; NOT active application code",
+  "artifacts": [
+    {
+      "file": "voice-pcm-source-staged.tar.gz",
+      "sha256": "a56598b662c1b95018174e6426e0f8971c969161e10b94aca7573a6de122c5d3",
+      "bytes": 37046,
+      "members": [
+        {
+          "path": "source/ios/BlindAssist/VoiceInput+EvidenceSource.swift",
+          "sha256": "215d8a087789f5b6e4cf1f05e875c20da66732ba6a977277817e74e124ed24df",
+          "bytes": 63
+        },
+        {
+          "path": "source/ios/BlindAssist/PackagedSpeakerModel.swift",
+          "sha256": "ec7a3a015fab264a398858935d02c1e9d3c521a4fafb008e2788eb1667db1efa",
+          "bytes": 1402
+        },
+        {
+          "path": "source/ios/BlindAssist/VoiceEvidenceSession.swift",
+          "sha256": "6fee8a1562f03492286733725584b4171f37fed14a43e6794d7f2e397abdc9e7",
+          "bytes": 3272
+        },
+        {
+          "path": "source/ios/BlindAssist/VoiceInput.swift",
+          "sha256": "982083cfffb858b244851cf8182e1614d12e88a65377324b5644c6f4ff745ef6",
+          "bytes": 30844
+        },
+        {
+          "path": "source/ios/BlindAssist/VoicePCMProcessor.swift",
+          "sha256": "39f15f769c6f9658efd31919c7836698fa2cf7b5fbb305ff000edd28f416623a",
+          "bytes": 3182
+        },
+        {
+          "path": "source/BlindCore/Sources/BlindCore/VoicePCMWindow.swift",
+          "sha256": "acf74ef77f4f8bf24e6e42260a00987321a373830114b6d0bb98cfb6a8705170",
+          "bytes": 4037
+        },
+        {
+          "path": "source/BlindCore/Sources/BlindCore/VoicePCMJobQueue.swift",
+          "sha256": "d756e51f3a86870b8b1562bf196e5470839a4f6c92c5c575254d46bacb88aad3",
+          "bytes": 4426
+        },
+        {
+          "path": "tests/queue-main.swift",
+          "sha256": "b387d7e7c9b4a3916d4ceae8725f753f63b0f8b40171e91020493ab16ec3345e",
+          "bytes": 4193
+        },
+        {
+          "path": "tests/finish-main.swift",
+          "sha256": "31f5c7bf2385396e9e45d6135fe8a220ff3bba6fb9fd69d56d9a55e8be4872d9",
+          "bytes": 7249
+        },
+        {
+          "path": "tests/native-source-contracts.test.mjs",
+          "sha256": "61c3136d97810a037dfefef711e5be5cdb9feb4d4d7e318bef4a6d89af17b21c",
+          "bytes": 3023
+        },
+        {
+          "path": "tests/session-main.swift",
+          "sha256": "49760fb409e3159216da479f627c2b1f1a40a0e1586f49056b5ab8dd3e815bca",
+          "bytes": 4959
+        },
+        {
+          "path": "tests/make_finish_witness.py",
+          "sha256": "ee6e1e69074ea48857a2e204ec9904411729cd506b35a77dcd79e9bfa016c918",
+          "bytes": 5868
+        },
+        {
+          "path": "tests/main.swift",
+          "sha256": "5cf69897c0f232e23321c531ad81aaa41e3511c9d0a260fd739002f15e7c1e2d",
+          "bytes": 3261
+        },
+        {
+          "path": "tests/run-focused.sh",
+          "sha256": "11b579736ff8c35e8cc69bdcf714d611d0ed1d2198b32fe83951f734e4153069",
+          "bytes": 2854
+        },
+        {
+          "path": "tests/native-pipeline-main.swift",
+          "sha256": "bbfd2a47e2f8e6d73c67e27c387358863941772bfd7dc424d0a91ceed0bb46d5",
+          "bytes": 2564
+        },
+        {
+          "path": "evidence/native-pipeline-result.log",
+          "sha256": "e5f3a38b17109f6043bba07756b9f2bacacfbd9b4d1ada3a4de60f81c8f4a27d",
+          "bytes": 145
+        },
+        {
+          "path": "evidence/native-source-contracts.log",
+          "sha256": "ae0040e3ab76217bb2c3d020fc63a9bb06868e2ebb67961b480790d90b0d384f",
+          "bytes": 528
+        },
+        {
+          "path": "evidence/pcm-result.log",
+          "sha256": "12e54f87ddee403b54326d3ab75a8ff84fd0efb7c161e9bf069af6bdd14e5c4a",
+          "bytes": 96
+        },
+        {
+          "path": "evidence/native-pipeline-build.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "evidence/native-source-result.log",
+          "sha256": "4e4895e60094fcbe07df889b07d377c5a882090b9606bb39b91c3cc347bf20f8",
+          "bytes": 529
+        },
+        {
+          "path": "evidence/queue-build.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "evidence/finish-result.log",
+          "sha256": "caa3c89773924d2d5e6d6fa81eb865951cbcf79eb026432d3d987f0b35f74ba1",
+          "bytes": 97
+        },
+        {
+          "path": "evidence/finish-build.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "evidence/queue-result.log",
+          "sha256": "21af6704a80938e70adb91c4dbc4eaf4efa40fdbef43117f1899e108f02c9800",
+          "bytes": 115
+        },
+        {
+          "path": "evidence/finish-source.json",
+          "sha256": "85a32c2b2964b52e031ad7bd48a2673104e528880ce435dabaa894d5608b42b6",
+          "bytes": 2321
+        },
+        {
+          "path": "evidence/session-result.log",
+          "sha256": "791f0f8cc5abccd607d5784feb74f90a0864dc718c100bd554efe0765114c9b9",
+          "bytes": 74
+        },
+        {
+          "path": "evidence/reproduce.log",
+          "sha256": "bd334b303af5c14504d7a2a38d84bc1a67c3ee307c1f523c9c04a0144e09f3d4",
+          "bytes": 717
+        },
+        {
+          "path": "evidence/ring-result.log",
+          "sha256": "12e54f87ddee403b54326d3ab75a8ff84fd0efb7c161e9bf069af6bdd14e5c4a",
+          "bytes": 96
+        },
+        {
+          "path": "evidence/cleanup.json",
+          "sha256": "6efa9c99db98d9f257b77f91c71fe3f788744c7f1881146c8e543ac502b62bbe",
+          "bytes": 188
+        },
+        {
+          "path": "evidence/native-transform.json",
+          "sha256": "048376e6b09bfe7dff7a9c490027d3e54ccf2df0d1b6b3412485381effb6143d",
+          "bytes": 8624
+        },
+        {
+          "path": "evidence/fail-before/VoiceEvidenceSession.before.swift.txt",
+          "sha256": "1bedf6c5e9ec8e74cafd7f5ad17b2192f8c417fb9b8665fe2576ebcc941a4e1c",
+          "bytes": 2436
+        },
+        {
+          "path": "evidence/fail-before/result.log",
+          "sha256": "3e74b6ebf39286a2f9863f87424476de1790038927ddf4bcf995ebd3566ce0be",
+          "bytes": 191
+        },
+        {
+          "path": "evidence/fail-before/main.swift",
+          "sha256": "2017f45aa2b3336c9cb9024751afa1bea3ffd33ac3d775ad7355544c889824fb",
+          "bytes": 2371
+        },
+        {
+          "path": "evidence/fail-before/session-result.log",
+          "sha256": "7f1bc21b2e55302b384c864c42cee6913028afbe1b74dcbd62beb03c551f83e6",
+          "bytes": 52
+        },
+        {
+          "path": "evidence/fail-before/VoicePCMWindow.swift",
+          "sha256": "fbafb79e9c493708c7ed2ad32dd8d1cf255aced6c8183d0caf5431350eb5ce14",
+          "bytes": 3755
+        },
+        {
+          "path": "evidence/fail-before/VoicePCMJobQueue.swift",
+          "sha256": "50a158b7949b34efc4089d6248442585e37374d6398678dd343c4ed41b5a0be4",
+          "bytes": 3047
+        },
+        {
+          "path": "README.md",
+          "sha256": "b25a3aef60511c720e4f16b9e7c1a85369040ae9a461eb6854f7da4e269eeecc",
+          "bytes": 4906
+        },
+        {
+          "path": "prepare_native.py",
+          "sha256": "9d1e19f413d4aa190705b82b6483e6069fa911710ca2e41c612bcad43451e492",
+          "bytes": 8720
+        },
+        {
+          "path": "VoiceInput.swift.patch",
+          "sha256": "86d0cacbf802af47c325cc9b36f90086dcfb8f440c26da7168ecd6840babcac1",
+          "bytes": 11123
+        },
+        {
+          "path": "manifest.json",
+          "sha256": "dd6ccc58a33ed712d2b70780e8aecce4bec37335a78eaa1f35a801f9bbe182df",
+          "bytes": 4352
+        }
+      ],
+      "classification": "Source code, licenses, authored tests and verification receipts only. Staged, not activated."
+    },
+    {
+      "file": "voice-enrollment-source-staged.tar.gz",
+      "sha256": "d1012a5f69973e7d25496a577e46015cd95091eebcaee3a1e9cf2a40e54d88d6",
+      "bytes": 11203,
+      "members": [
+        {
+          "path": "README.md",
+          "sha256": "25e584178f1f484e1b01567824ebf78177fd910a7db7ad72c57c4564b4582b96",
+          "bytes": 10098
+        },
+        {
+          "path": "manifest.json",
+          "sha256": "34ec2df93a1569215b4aa574269cdb67b3dea157ed3aff9e31f68078d50c4bbf",
+          "bytes": 1325
+        },
+        {
+          "path": "source/VoiceEnrollment.swift",
+          "sha256": "277f192328f88336745b9e9126968c9328add452330de6d13cd4a2fd6c0aec59",
+          "bytes": 8427
+        },
+        {
+          "path": "source/ProtectedVoiceEnrollmentStore.swift",
+          "sha256": "101926d97e93d66d93cde034d2d84fe4ee03c974e4965b8d7860b01287833e46",
+          "bytes": 5996
+        },
+        {
+          "path": "tests/main.swift",
+          "sha256": "e3c8ee96e00788c932a5bb3b4056017bebe462a4ee7d82ae24f758708a2a2236",
+          "bytes": 7301
+        },
+        {
+          "path": "tests/run.sh",
+          "sha256": "3f878bd2f406f3349b8a279131b12fd3f296f663c42fdc1222d21f631e15609c",
+          "bytes": 446
+        },
+        {
+          "path": "evidence/build.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "evidence/result.log",
+          "sha256": "e4922378ec310d3cad22b05ad2ab2066e53cba3da6d01912b42f31fd7aa5c103",
+          "bytes": 96
+        },
+        {
+          "path": "evidence/execution-receipt.json",
+          "sha256": "8ae30f8edfdea0f01cc915cbc2c38053d59ca72416e466958c700ccb055aa8bb",
+          "bytes": 1192
+        },
+        {
+          "path": "evidence/compiler-version.log",
+          "sha256": "d7df78b37cc23138e1c65ac3cc35f9bd0db2caf1df39880130951b36a7d039f1",
+          "bytes": 75
+        }
+      ],
+      "classification": "Source code, licenses, authored tests and verification receipts only. Staged, not activated."
+    },
+    {
+      "file": "familiar-mac-readiness-staged.zip",
+      "sha256": "ad0bd903b35c7c6d89f9f3210498e0172486f621a5167768f52cb55bb6bfdd70",
+      "bytes": 550816,
+      "members": [
+        {
+          "path": "source/.github/workflows/familiar-apple.yml",
+          "sha256": "4a4578f1729117136153251aabc6c080ea28a5f2a20d623eed629d474f95fdaf",
+          "bytes": 1826
+        },
+        {
+          "path": "source/ios/BlindAssist/FamiliarNative/OPENCV_NOTICES.txt",
+          "sha256": "7791d6cf19d0d939bbfb79574c8e7e39720954e0b5668ee267995dd65dacbc4f",
+          "bytes": 925389
+        },
+        {
+          "path": "source/research/FAMILIAR_MAC_HANDOFF.md",
+          "sha256": "7a5ada8724a629a209ded44f7188b514c78a45f9b275a110d73a78a70b9464bf",
+          "bytes": 6586
+        },
+        {
+          "path": "source/research/familiar-notice-audit/MODEL_NOTICE_PROVENANCE.json",
+          "sha256": "a5e4e843e68dd488c3c0daecc72b8409c8419d0049dd3f842f7411fccd17d87d",
+          "bytes": 1969
+        },
+        {
+          "path": "source/research/familiar-notice-audit/README.md",
+          "sha256": "edc0f5d6f9b8eb014273e47db41e79fcec88a38c6a9f6ebc4a50dff7f2827228",
+          "bytes": 1576
+        },
+        {
+          "path": "source/research/familiar-notice-audit/coverage.json",
+          "sha256": "a06c25b6a147dd3f2460ce3178fb4c11883b4c8c2589abda12b0ecd4755ab0e2",
+          "bytes": 10640
+        },
+        {
+          "path": "source/research/familiar-notice-audit/sources.json",
+          "sha256": "3198c3d178f7693e47921d1316173d4c2b8e848f2e98cc41beae19ca407c90b6",
+          "bytes": 939047
+        },
+        {
+          "path": "source/tools/ci/familiar-device-project.mjs",
+          "sha256": "3c07e01d4c29b59d7e4d0a2b392388c1727172ed8b2383d451b2b7d8506b739c",
+          "bytes": 2074
+        },
+        {
+          "path": "source/tools/ci/familiar-device.sh",
+          "sha256": "ba787fcfa37bdceb25852a217f960e9e1b6887f9944d6fa9019f9a39fdeea247",
+          "bytes": 3532
+        },
+        {
+          "path": "source/tools/ci/verify-familiar-project.mjs",
+          "sha256": "ebb0c03a867f10392cb3f39193ad35d7fc3343684f192c1520bd13fe6ca4fbb2",
+          "bytes": 3293
+        },
+        {
+          "path": "source/tools/generate-xcode-project.mjs",
+          "sha256": "350456c8c34ab22d6d87af61cff456bbe75ab65e8e4eaae8f2721ab0c14a44ba",
+          "bytes": 43743
+        },
+        {
+          "path": "source/tools/test/familiar-build-membership.test.mjs",
+          "sha256": "89cc72044832265d7ff1609f962027c1e73d29424af6449565c19fbebf2667bd",
+          "bytes": 2993
+        },
+        {
+          "path": "receipt.json",
+          "sha256": "02272d4ba9f30533a497b0682cd78d6c77967727f0d04b40e70001ceba2f705c",
+          "bytes": 2870
+        },
+        {
+          "path": "readiness.patch",
+          "sha256": "d3bafe2fa2998f7ac9121d690e5e3cd9f87e201c0b78dc1ec86cd167f11cdad2",
+          "bytes": 1931767
+        },
+        {
+          "path": "membership-tests.log",
+          "sha256": "ceb6555633c4f8e7c2c324a8affb63fa36d0f83d7ddf7d4a1a9b4ed09ac14a7e",
+          "bytes": 885
+        },
+        {
+          "path": "source-witness.mjs",
+          "sha256": "dc27802ac193bff2560623f5467d47f98688b9c0539176b6337765a7aa724a64",
+          "bytes": 1673
+        },
+        {
+          "path": "source-witness.log",
+          "sha256": "5624495c93a6660b428672630db9611d843edfd2a99c36fa89dd71c2e275e772",
+          "bytes": 205
+        },
+        {
+          "path": "default-preservation.log",
+          "sha256": "63890a20aae876390db29dafd4799e973429d24082a4c18fdd87f4ebadf0b91a",
+          "bytes": 349
+        },
+        {
+          "path": "inverse.log",
+          "sha256": "53141bee52d90a02d418c48d21b029eecf92125f1255464af6945409bf7308f1",
+          "bytes": 659
+        },
+        {
+          "path": "apple-build-proof.json",
+          "sha256": "b2a4db05f3cbad3b24854e206371421971444c6fa18e3296900af39e76f2e641",
+          "bytes": 577
+        },
+        {
+          "path": "apple-success-excerpt.log",
+          "sha256": "f17917b347f842054a94f0d532842d2eed6d136b314ac964e3b7bcb5f35d440a",
+          "bytes": 82492
+        },
+        {
+          "path": "apple19-build-proof.json",
+          "sha256": "60e2e583e352e93801ba7d01cfe83f977339b7fa465ea92446ba00b76e611f49",
+          "bytes": 1434
+        },
+        {
+          "path": "apple19-success-excerpt.log",
+          "sha256": "3b88e6bac9d528e27354562272b4a905b3c6fd46f5ad62fa05fb6dbaf37cf0e1",
+          "bytes": 8785
+        },
+        {
+          "path": "SHA256SUMS",
+          "sha256": "1a992464e16f52fd04c640a6737de568f5fefa274092f38e518d2c064621beed",
+          "bytes": 2320
+        }
+      ],
+      "classification": "Source code, licenses, authored tests and verification receipts only. Staged, not activated."
+    },
+    {
+      "file": "registration-diagnostic-source-staged.tar.gz",
+      "sha256": "c4bac787a6f2b66e18cd5e628e4316251f77ac15428c9878497c3debceb3741d",
+      "bytes": 141791,
+      "members": [
+        {
+          "path": "proposal/BlindCore/Sources/BlindCore/CompanionFacts.swift",
+          "sha256": "b93b1bccc1c4f77199640f635444fda2e041739e272d17a226ed27688560bdea",
+          "bytes": 17285
+        },
+        {
+          "path": "proposal/BlindCore/Sources/BlindCore/RoomRegistrationAcquisition.swift",
+          "sha256": "4bb59e8572eae9a3d79724650231fcb06a53dd29bc3c0727741e1f4025b6528c",
+          "bytes": 8477
+        },
+        {
+          "path": "proposal/BlindMemory/Sources/BlindMemory/MemoryStore.swift",
+          "sha256": "0fd7ce8b6b7fa3cb90498cd660803efbc9deef22c14e8fc02949c25076cd74ed",
+          "bytes": 16849
+        },
+        {
+          "path": "proposal/BlindMemory/Tests/BlindMemoryTests/RoomRegistrationStorageTests.swift",
+          "sha256": "1d726fe8c7644d01c826f4a8231311905ab74d564a70517cf1e288868b9ec3a4",
+          "bytes": 2293
+        },
+        {
+          "path": "proposal/ios/BlindAssist/NavigationModel.swift",
+          "sha256": "4a84dc527c55aa787ecb4c7ef0f3d2ba404dc2361db90e740ac91d34df3901e2",
+          "bytes": 398678
+        },
+        {
+          "path": "proposal/ios/BlindAssist/PlaceStore.swift",
+          "sha256": "68d0a2ab106242ad48c5f574756e03cae0c21626fd599e795601fd23dddad462",
+          "bytes": 43397
+        },
+        {
+          "path": "proposal/ios/BlindAssist/RoomDetailView.swift",
+          "sha256": "957c3a88c3bcc1b05655d9c88e010095657f6f060acf9d3a208d0073f3955232",
+          "bytes": 29639
+        },
+        {
+          "path": "proposal/ios/BlindAssist/RoomLayoutAdapter.swift",
+          "sha256": "98bdc0bda9c9929f044f132cddfb0e634f21d5e776b948e35b63c40cec46e8a1",
+          "bytes": 3406
+        },
+        {
+          "path": "proposal/tools/test/fixtures/room-registration-acquisition/AcquisitionTests.swift",
+          "sha256": "baa8ad3a1f6b20da7d3484f7e49c45f99ffddb9b708d91c54283b5599a712e9d",
+          "bytes": 26907
+        },
+        {
+          "path": "proposal/tools/test/fixtures/room-registration-acquisition/ControlledStore.swift",
+          "sha256": "b8982ff13324dabf91b82484ae0cd4cbf613358dfaabd25e4e605e29f28f1d97",
+          "bytes": 2380
+        },
+        {
+          "path": "proposal/tools/test/fixtures/room-registration-acquisition/ControllerPrefix.swift",
+          "sha256": "21ccf537f57fa48d83632f9d45f4bdf939674e49da822a482a133b71db1b47d7",
+          "bytes": 3728
+        },
+        {
+          "path": "proposal/tools/test/room-registration-acquisition.test.mjs",
+          "sha256": "a325a496c209a11627e352839b1d6e7a541aec6dc869c360c5680e7bc232dae7",
+          "bytes": 9127
+        },
+        {
+          "path": "proposal/tools/test/fixtures/room-registration-acquisition/NativeDeletionPrefix.swift",
+          "sha256": "f6f5d59fc1c615ee4c9d270fb0da9a8a6cad5063334ac838923139310bdee00c",
+          "bytes": 1000
+        },
+        {
+          "path": "acquisition-checkpoint09-manifest.json",
+          "sha256": "25ba2fcffb824dca6f8961623e780ca60232f636c76ee103aff7f00c705f7e17",
+          "bytes": 2711
+        },
+        {
+          "path": "PROVIDER_BOUNDARIES.md",
+          "sha256": "c3efea35b710d244926b91bbe7134d14ea060ce3b2e1abb65ef4c7f5a2efca21",
+          "bytes": 10324
+        },
+        {
+          "path": "rebase-current.py",
+          "sha256": "0a86bd93bab70e63427112327ed43453ba757080d17a753d47c01e8cc4e9d658",
+          "bytes": 2146
+        },
+        {
+          "path": "evidence/native-delete-before.log",
+          "sha256": "b2041053b6b7ee4734d18d2c1deff654033d2fb5de1f1232cdc6252899a6a2d0",
+          "bytes": 13035
+        },
+        {
+          "path": "evidence/native-delete-after.log",
+          "sha256": "07aa829c173d4c978f7a6d5be7d66f69f8dabd645f369660a50f79499b26e7f8",
+          "bytes": 609
+        },
+        {
+          "path": "evidence/native-delete-swift-after.log",
+          "sha256": "d46950f08d03cbdb7ffcc5e8118a4ad7c259cc208ade50e8e838c3a2b582bbef",
+          "bytes": 8653
+        }
+      ],
+      "classification": "Source code, licenses, authored tests and verification receipts only. Staged, not activated."
+    }
+  ],
+  "privacy": "No voice recordings, biometric templates, model binaries, actual user conversations, private images or databases are included. Synthetic test mechanisms are not wearer/child accuracy proof."
+}
