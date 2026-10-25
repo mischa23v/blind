@@ -85,6 +85,9 @@ final class SearchAreaReplay {
     }
     var sensorAnswers = false
     init() { assistantSession.start() }
+    // Explicit captured-reader boundary substitute; actual purge is separately tested.
+    var capturedTextPurgeCalls = 0
+    func purgeCapturedTextPlayback() { capturedTextPurgeCalls += 1 }
     func clearExploreSnapshot() { selectedPhoto.selection = nil }
     func routeClockInquiry(_ text: String, origin: CompanionCommandOrigin) -> Bool {
         if text.lowercased() == "what time is it" { controlInputs.append(text); return true }; return false

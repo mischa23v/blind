@@ -4,6 +4,18 @@ import Foundation
 /// adapter owns actual Vision work and Feedback owns actual speech callbacks.
 /// No image, OCR or source identifier is persisted by this controller.
 public struct CapturedTextReference: Sendable {
+    /// One terminal playback receipt, not source text, a current observation or
+    /// proof of understanding/real-world task completion. Minted only on clear.
+    public struct PlaybackReceipt: Equatable, Sendable {
+        public enum Outcome: String, Sendable { case completed, cancelled }
+        public let sourceID: UUID
+        public let revision: UUID
+        public let requestID: UUID
+        public let sessionGeneration: UInt64
+        public let completedPhraseCount: Int
+        public let totalPhraseCount: Int
+        public let outcome: Outcome
+    }
     public struct Selection: Equatable, Sendable {
         public let id: UUID
         public let cameraEpoch: UUID
@@ -44,6 +56,9 @@ public struct CapturedTextReference: Sendable {
     public private(set) var pending: Phrase?
     public private(set) var completed = 0
     public private(set) var withdrawn = false
+    /// Finite installed reference progress, not freshness or real-world goal completion.
+    public var playbackCompleted: Bool { source != nil && !phrases.isEmpty && completed == phrases.count && !withdrawn }
+    public var awaitingAcquisition: Bool { selection != nil && source == nil && !withdrawn }
     private var lastNow = 0.0
     public init() {}
 
@@ -60,7 +75,10 @@ public struct CapturedTextReference: Sendable {
     }
     public func owns(_ value: Selection, cameraEpoch: UUID?, generation: UInt64, now: Double) -> Bool {
         selection == value && !withdrawn && cameraEpoch == value.cameraEpoch && generation == value.generation &&
-            now.isFinite && now >= lastNow && now >= value.issuedAt && now - value.issuedAt < CompanionReferenceReading.lifetime
+            now.isFinite && now >= lastNow && now >= value.issuedAt &&
+            // The acquisition lease cannot renew. Once validated and frozen, the
+            // finite source/cursor owns playback through budget waits and slow speech.
+            (source != nil || now - value.issuedAt < CompanionReferenceReading.lifetime)
     }
     public mutating func install(_ source: CompanionReferenceSource, for value: Selection, now: Double, arabic: Bool = false) -> Bool {
         guard owns(value, cameraEpoch: value.cameraEpoch, generation: value.generation, now: now),
@@ -105,6 +123,16 @@ public struct CapturedTextReference: Sendable {
         guard outcome == .completed else { withdrawn = true; self.pending = nil; return false }
         self.pending = nil; completed += 1; return true
     }
-    public mutating func clear() { self = Self() }
+    @discardableResult public mutating func clear() -> PlaybackReceipt? {
+        let receipt: PlaybackReceipt?
+        if let selection, let source {
+            receipt = PlaybackReceipt(sourceID: source.identity.sourceID, revision: source.identity.revision,
+                requestID: selection.requestID, sessionGeneration: selection.generation,
+                completedPhraseCount: completed, totalPhraseCount: phrases.count,
+                outcome: playbackCompleted ? .completed : .cancelled)
+        } else { receipt = nil }
+        self = Self()
+        return receipt
+    }
 
 }

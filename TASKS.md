@@ -1,3 +1,14 @@
+## Checkpoint30 — bounded captured-text completion
+
+- [x] Keep installed immutable text alive through ordinary budget waits and slow exact callbacks, without extending capture/acquisition or other reference deadlines.
+- [x] Reschedule one source-owned budget wake on pacing changes; preserve existing cancellation, foreground, privacy and hazard controls.
+- [x] Retain a bounded metadata-only completed/cancelled playback receipt; purge it on explicit privacy/history deletion and session retirement. Do not auto-complete real-world goals.
+- [ ] Verify real device speech/timer/Vision callbacks, minimum-budget full-page coverage, pacing changes and late-callback privacy retirement.
+- [ ] Implement separately reviewed source-bound repeat/clarification and menu understanding; neither is provided by this repair.
+
+Evidence: [checkpoint30](research/evaluations/reading-completion-checkpoint30/README.md). Historical checklist follows unchanged.
+
+---
 ## Checkpoint29: provisional search-area continuation (source verified)
 
 Trusted short answers to the delivered room/area question now remain attributed provisional search clues, with source-bound corrections, same-goal continuity, scoped privacy retirement, and brief budget-checked acknowledgments. They are not current-location facts, navigation geometry, physical clearance or completed goals.

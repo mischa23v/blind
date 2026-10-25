@@ -49,7 +49,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     #endif
-    @Published private(set) var assistantSession = AssistantSession()
+    @Published private(set) var assistantSession = AssistantSession() {
+        didSet {
+            if oldValue.generation != assistantSession.generation { lastCapturedTextPlaybackReceipt = nil }
+        }
+    }
     @Published var backgroundConversation = UserDefaults.standard.bool(forKey: "background-conversation") {
         didSet {
             UserDefaults.standard.set(backgroundConversation, forKey: "background-conversation")
@@ -211,7 +215,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var narrationJournal: NarrationJournal?
     private var journalTask: Task<Void, Never>?
     @Published var wordsPerMinute = max(30, min(1800, UserDefaults.standard.object(forKey: "narration-words-per-minute") as? Int ?? 180)) {
-        didSet { UserDefaults.standard.set(wordsPerMinute, forKey: "narration-words-per-minute"); cancelDescription() }
+        didSet {
+            UserDefaults.standard.set(wordsPerMinute, forKey: "narration-words-per-minute")
+            if usesCapturedText && !currencyActive && !colorActive && !currencyRetake.isPending {
+                capturedTextPacingChanged()
+            } else { cancelDescription() }
+        }
     }
     @Published var narrationInterval = max(5, min(60, UserDefaults.standard.object(forKey: "narration-interval") as? Int ?? 15)) {
         didSet { UserDefaults.standard.set(narrationInterval, forKey: "narration-interval") }
@@ -477,11 +486,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var readingWork = ReadingWorkSession()
     private var readingTask: Task<Void, Never>?
     private var capturedText = CapturedTextReference()
+    /// Bounded in-memory terminal bookkeeping, never narration history or OCR.
+    private(set) var lastCapturedTextPlaybackReceipt: CapturedTextReference.PlaybackReceipt?
     private var cameraTextEpoch = UUID()
     // Native Vision cannot be forcibly cancelled. Retain this lease until its
     // actual callback returns, including across stop/restart; never stack jobs.
     private var capturedTextNativeLease: UUID?
     private var capturedTextSpeechIDs = Set<UUID>()
+    private var capturedTextBudgetWake: Task<Void, Never>?
+    private var capturedTextBudgetWakeAt: Double?
     private var usesCapturedText: Bool { readingTool == .liveText || readingTool == .document }
 
     private var documentStability = DocumentStability()
@@ -2689,6 +2702,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         companionWorkingState.changeGoal(assistantDialogue.goal, originalRequest: objectiveDraft); persistWorkingState()
     }
     private func retireHeldSearchForPrivacyDeletion() {
+        purgeCapturedTextPlayback()
         heldSearchIntent.cancel(); interruptedSearch.cancel()
         objectSearch?.cancel(); objectSearch = nil; trackedTarget = nil
         searchInFlight = false; trackLookInFlight = false
@@ -2939,6 +2953,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func clearNarrationHistory() {
+        purgeCapturedTextPlayback()
         #if DEBUG
         purgeDebugSessionDiagnostics()
         #endif
@@ -6129,15 +6144,24 @@ extension NavigationModel {
         clearCapturedText()
     }
     private func clearCapturedText() {
+        cancelCapturedTextBudgetWake()
         let speech = capturedText.pending?.id
-        capturedText.clear() // revoke before synchronous cancellation callbacks
+        if let receipt = capturedText.clear(), receipt.sessionGeneration == assistantSession.generation,
+           assistantSession.foregroundActive, assistantSession.mayRespond, !assistantSession.privateAudioHeld {
+            lastCapturedTextPlaybackReceipt = receipt
+        }
+        // Ownership is revoked before synchronous cancellation callbacks.
         if let speech { feedback.stopRequestedSpeech(speech) }
+    }
+    private func purgeCapturedTextPlayback() {
+        stopReadingTool(announce: false) // also revoke acquisition/native callback ownership
+        lastCapturedTextPlaybackReceipt = nil
     }
     private func capturedTextContext() -> CapturedTextReference.Context? {
         guard let selection = capturedText.selection else { return nil }
         return .init(selection: selection, source: capturedText.source?.identity,
             cameraEpoch: cameraTextEpoch, generation: assistantSession.generation, requestID: requestID,
-            now: ProcessInfo.processInfo.systemUptime, foreground: capturedTextCameraAllowed() && usesCapturedText,
+            now: ProcessInfo.processInfo.systemUptime, foreground: (capturedText.source == nil ? capturedTextCameraAllowed() : capturedTextPlaybackAllowed()) && usesCapturedText,
             quiet: false, hazard: detection.hazard.isUrgent, privateAudioHeld: assistantSession.privateAudioHeld)
     }
     private func revalidateCapturedText() {
@@ -6147,13 +6171,58 @@ extension NavigationModel {
         }
         speakNextCapturedText()
     }
+    /// Installed text is a quotation from an immutable source, never a current
+    /// camera fact. Explicit source-epoch/lifecycle retirement still clears it.
+    private func capturedTextPlaybackAllowed() -> Bool {
+        assistantSession.mayRespond && assistantSession.foregroundActive &&
+            !assistantSession.privateAudioHeld && !textOnly && !detection.hazard.isUrgent
+    }
+    private func cancelCapturedTextBudgetWake() {
+        capturedTextBudgetWake?.cancel(); capturedTextBudgetWake = nil
+        capturedTextBudgetWakeAt = nil
+    }
+    private func capturedTextPacingChanged() {
+        cancelCapturedTextBudgetWake()
+        revalidateCapturedText()
+    }
+    private func scheduleCapturedTextBudgetWake(at deadline: Double, selectionID: UUID) {
+        guard capturedTextBudgetWake == nil, deadline.isFinite else { return }
+        let now = ProcessInfo.processInfo.systemUptime
+        guard deadline > now else { return }
+        capturedTextBudgetWakeAt = deadline
+        capturedTextBudgetWake = Task { @MainActor [weak self] in
+            do { try await Task.sleep(for: .seconds(deadline - now)) } catch { return }
+            guard let self, !Task.isCancelled, self.capturedText.selection?.id == selectionID,
+                  self.capturedTextBudgetWakeAt == deadline else { return }
+            self.capturedTextBudgetWake = nil; self.capturedTextBudgetWakeAt = nil
+            self.revalidateCapturedText() // recheck source/privacy/budget, never complete speech
+        }
+    }
     private func speakNextCapturedText() {
-        guard let context = capturedTextContext(), capturedText.revalidate(context),
+        // While budget-blocked only one owner-bound wake may retry. Frame and
+        // watchdog callbacks still revalidate cancellation, but never redispatch.
+        guard capturedTextBudgetWakeAt == nil,
+              let context = capturedTextContext(), capturedText.revalidate(context),
               feedback.speechPriority == nil, !voice.awaitingUtterance, !textOnly,
-              let phrase = capturedText.next(context), capturedText.begin(phrase, context: context) else { return }
+              let phrase = capturedText.next(context) else { return }
+        guard let budgetAt = companion.nextInformationBudgetTime(words: Self.wordCount(phrase.text),
+                settings: companionSettings, now: context.now) else {
+            stopReadingTool(announce: false); return
+        }
+        if budgetAt > context.now {
+            scheduleCapturedTextBudgetWake(at: budgetAt, selectionID: context.selection.id); return
+        }
+        guard capturedText.begin(phrase, context: context) else { return }
         capturedTextSpeechIDs.insert(phrase.id)
         if !dispatchText(phrase.text, kind: .answer, requested: true, replace: false, speechID: phrase.id) {
             capturedTextSpeechIDs.remove(phrase.id); capturedText.admissionRejected(phrase.id)
+            // Admission may have charged the shared ledger before a backend
+            // refusal. Retry only at its real release, not every camera frame.
+            let now = ProcessInfo.processInfo.systemUptime
+            if let retry = companion.nextInformationBudgetTime(words: Self.wordCount(phrase.text),
+                    settings: companionSettings, now: now), retry > now {
+                scheduleCapturedTextBudgetWake(at: retry, selectionID: context.selection.id)
+            } else { stopReadingTool(announce: false) }
         }
     }
     private func capturedTextSpeechPermission(id: UUID, text: String) -> Bool {
@@ -6168,11 +6237,14 @@ extension NavigationModel {
         guard let context = capturedTextContext(), capturedText.finish(id: id, text: text, outcome: outcome, context: context) else {
             stopReadingTool(announce: false); return true
         }
-        if capturedText.completed == capturedText.phrases.count { stopReadingTool(announce: false) }
+        if capturedText.playbackCompleted { stopReadingTool(announce: false) }
         else { speakNextCapturedText() }
         return true
     }
     private func updateCapturedText(frame: ARFrame) {
+        if capturedText.source != nil { revalidateCapturedText(); return }
+        // Keep a bounded acquisition/native-worker wait. Never apply this clock
+        // to already frozen text while the user's budget or speech takes time.
         if ProcessInfo.processInfo.systemUptime - readingStarted >= CompanionReferenceReading.lifetime {
             stopReadingTool(announce: false); return
         }

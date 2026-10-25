@@ -203,6 +203,13 @@ public struct CompanionAttention: Sendable {
     /// Clears an offer that could not be spoken; not a decline.
     public mutating func withdrawOffer() { pendingOffer = nil }
 
+    /// Schedule a bounded owned information producer without spinning at frame
+    /// rate while the shared ordinary budget is exhausted. This grants no speech
+    /// admission and does not bypass any gate or reserve future capacity.
+    public mutating func nextInformationBudgetTime(words: Int, settings: CompanionSettings, now: Double) -> Double? {
+        budget.nextAvailableAt(words: words, limit: settings.wordsPerMinute, now: now)
+    }
+
     /// Runs the gates without committing, so callers can skip generation that would not be spoken.
     public mutating func check(_ item: InformationCandidate, moment: CompanionMoment, settings: CompanionSettings) -> CompanionDecision {
         gate(item, moment: moment, settings: settings, speaking: moment.speaking)

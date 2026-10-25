@@ -83,6 +83,7 @@ final class SearchAreaPrivacyTests: XCTestCase {
     }
     func testAllConversationResetClearsClueAndGoal() {
         let c = seeded(); c.clearAssistantConversation()
+        XCTAssertEqual(c.capturedTextPurgeCalls, 1, "Conversation privacy deletion invokes captured-reader retirement")
         XCTAssertNil(c.companionWorkingState.searchAreaClue.clue)
         XCTAssertNil(c.companionWorkingState.searchAreaClue.question)
         XCTAssertTrue(c.companionWorkingState.goal.isEmpty)

@@ -1,0 +1,57 @@
+{
+  "parent": "cc3b5f77f98e40735bfafee949c5a118110bd0c5",
+  "scope": "Portable tests and extracted production-method checks; not native device/audio acceptance.",
+  "core": {
+    "tests": 1291,
+    "passed": 1291,
+    "failures": 0,
+    "rawLogSHA256": "8ec724c36ad6a78d731109c27d551531c6ca2eeb473109a4c65c872fc2ce2c49"
+  },
+  "firstNode": {
+    "tests": 491,
+    "passed": 490,
+    "failures": 1,
+    "skipped": 0,
+    "cause": "Search-clue extracted fixture omitted the new captured-reader purge boundary. No production assertion failed.",
+    "rawLogSHA256": "93bdf6d5a638afa9254d8662836cce735bbece76c8064e225660369cc1bc06c6"
+  },
+  "finalNode": {
+    "tests": 491,
+    "passed": 491,
+    "failures": 0,
+    "skipped": 0,
+    "rawLogSHA256": "60fde4ed27d6513ab138dbf7c20438a944c107b8756e2bc1cbe5bb3c19134771"
+  },
+  "sourceCuts": {
+    "productionBytesUnchangedBetweenCoreAndFinalNode": true,
+    "onlyInterveningChanges": [
+      "tools/test/fixtures/search-area-clue/PrivacyTests.swift",
+      "tools/test/fixtures/search-area-clue/ReplayPrefix.swift"
+    ],
+    "allAggregateInputsUnchangedDuringEachRun": true
+  },
+  "frozenRegression": {
+    "testSHA256": "004add884fe5dc379bd83399be21a9aad5d2b01da2db2fcb497e2cc8ae802862",
+    "sourceParent": "cc3b5f77f98e40735bfafee949c5a118110bd0c5",
+    "executableTests": 4,
+    "failedAssertions": 8,
+    "expectedFailure": true,
+    "rawLogSHA256": "d648ce5924ae53121b50dd41d3f6de4fdbfc128e65e61cc524584c48014910fc"
+  },
+  "focused": {
+    "swiftTests": 44,
+    "failures": 0,
+    "wakeOwnershipAssertions": 11,
+    "nodeChecks": 4,
+    "nativeSyntaxParse": "passed; not SDK typechecking",
+    "rawSwiftLogSHA256": "a25fed6186e42ffe08f008c73f99d535b3679ed01005c3d635540911fcc71a49"
+  },
+  "review": "Independent source review of acquisition/playback separation, budget wake ownership and terminal privacy semantics; parent reviewed the two-fixture integration repair.",
+  "evidencePolicy": "This file is an authored result summary. Raw logs retained privately; no raw log, internal infrastructure path, broad inventory or private user transcript is published.",
+  "pending": [
+    "Actual native speech/timer/Vision callback acceptance",
+    "Assistive-audio intelligibility and user pacing",
+    "Source-bound repeat/clarification",
+    "Menu understanding"
+  ]
+}

@@ -1,3 +1,12 @@
+## Checkpoint30: finish one bounded captured-text source
+
+Validated captured text no longer expires while waiting for the ordinary word budget or a slow exact speech callback. A single source-owned budget wake preserves the unread cursor, including across user pacing changes. Capture admission and unfulfilled acquisition deadlines remain unchanged; installed reference text grants no live-camera or physical authority.
+
+A metadata-only session receipt now distinguishes completed playback from cancellation. Only exact successful callbacks can complete nonempty installed text; privacy/history deletion and session retirement clear the receipt. Acquisition informationReady is not delivered completion or real-world goal completion.
+
+**1,291 Core tests and 491 final serial Node checks pass**, with zero final failures/skips. The first Node fixture-compile failure and focused fail-before evidence remain disclosed. Portable verification and known failed cuts are documented in [checkpoint30 evidence](research/evaluations/reading-completion-checkpoint30/README.md). Actual native audio/timer/Vision acceptance remains pending. Source-bound repeat, clarification and menu understanding are separate work, not solved by this reading repair.
+
+---
 ## Checkpoint29: provisional search-area continuation (source verified)
 
 Trusted short answers to the delivered room/area question now remain attributed provisional search clues, with source-bound corrections, same-goal continuity, scoped privacy retirement, and brief budget-checked acknowledgments. They are not current-location facts, navigation geometry, physical clearance or completed goals.

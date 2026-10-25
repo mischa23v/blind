@@ -53,14 +53,27 @@ final class CapturedTextReferenceTests: XCTestCase {
         XCTAssertFalse(value.install(source(current), for: current, now: 100.2))
     }
     func testLifecycleRevocationIsTerminal() {
-        for mode in 0..<9 {
+        for mode in 1..<9 {
             var value = CapturedTextReference(); let selected = selection(&value)
             XCTAssertTrue(value.install(source(selected), for: selected, now: 100.1))
-            let bad = context(value, now: mode == 0 ? 160 : mode == 1 ? 99 : 100.2,
+            let bad = context(value, now: mode == 1 ? 99 : 100.2,
                 epoch: mode == 2 ? UUID() : nil, request: mode == 3 ? UUID() : nil, generation: mode == 4 ? 4 : 3,
                 foreground: mode != 5, quiet: mode == 6, hazard: mode == 7, privateAudio: mode == 8)
             XCTAssertFalse(value.revalidate(bad)); XCTAssertFalse(value.revalidate(context(value, now: 100.3)))
         }
+    }
+    func testAcquisitionExpiryRemainsTerminalButInstalledSourceIsNotLiveAuthority() {
+        var acquiring = CapturedTextReference(); let pending = selection(&acquiring)
+        XCTAssertTrue(acquiring.awaitingAcquisition)
+        XCTAssertFalse(acquiring.owns(pending, cameraEpoch: epoch, generation: 3, now: 160))
+        XCTAssertFalse(acquiring.install(source(pending), for: pending, now: 160))
+        var installed = CapturedTextReference(); let selected = selection(&installed)
+        XCTAssertTrue(installed.install(source(selected), for: selected, now: 100.1))
+        XCTAssertFalse(installed.awaitingAcquisition)
+        XCTAssertTrue(installed.revalidate(context(installed, now: 300)))
+        XCTAssertFalse(installed.playbackCompleted)
+        XCTAssertEqual(installed.source?.identity.media, .capturedText)
+        XCTAssertTrue(installed.source!.blocks.allSatisfy { $0.evidence.kind == .historicalMemory })
     }
     func testInterruptionAndClearNeverCompleteNewSpeech() {
         var value = CapturedTextReference(); let selected = selection(&value)

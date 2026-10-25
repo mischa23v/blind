@@ -1,3 +1,12 @@
+## Next after checkpoint30
+
+Verify complete ordered captured-page playback on a device at the minimum ordinary word budget, including a callback beyond 60 seconds, user pacing changes, cancellation/replacement and privacy/session retirement. Portable results do not establish native audio completion or user intelligibility.
+
+Then address source-bound repeat/clarification and menu understanding as separate, reference-only continuations. Do not replay unrelated narration history or treat retained text as the current view.
+
+See [checkpoint30 evidence](research/evaluations/reading-completion-checkpoint30/README.md). Prior notes follow unchanged.
+
+---
 ## Checkpoint29: provisional search-area continuation (source verified)
 
 Trusted short answers to the delivered room/area question now remain attributed provisional search clues, with source-bound corrections, same-goal continuity, scoped privacy retirement, and brief budget-checked acknowledgments. They are not current-location facts, navigation geometry, physical clearance or completed goals.
