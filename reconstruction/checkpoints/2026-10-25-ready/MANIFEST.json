@@ -1,0 +1,56 @@
+{
+  "status": "Preserved staged source only; not app integration or release acceptance",
+  "baseExecutableCommit": "0601e9fe26482f2ffa493d501cf9b9bdd821a8a2",
+  "archives": [
+    {
+      "file": "blind-native-journey-issuer-stage-final.tar.gz",
+      "bytes": 213295,
+      "sha256": "2f5b607c47b0142f095ddc44f027a5c4ed209e6a113253ef3e2eb056fe540208",
+      "members": 95,
+      "status": "Source-only staged checkpoint; not part of executable app; later fixes and ordered rebase may be required"
+    },
+    {
+      "file": "voice-authority-source-tested.tar.gz",
+      "bytes": 131123,
+      "sha256": "126e0eb38104faace7084e0c2dd212372c8d1244bfc4b8c211b43621968c4c24",
+      "members": 38,
+      "status": "Source-only staged checkpoint; not part of executable app; later fixes and ordered rebase may be required"
+    },
+    {
+      "file": "blind-body-profile-stage-reopen-fixed.tar.gz",
+      "bytes": 97309,
+      "sha256": "68307725eaf43753a1921662565b50ddde86ac1c213b60c664fd0b859323b376",
+      "members": 41,
+      "status": "Source-only staged checkpoint; not part of executable app; later fixes and ordered rebase may be required"
+    },
+    {
+      "file": "blind-terrain-policy-stage-combined-final.tar.gz",
+      "bytes": 68389,
+      "sha256": "32ec6ec91ea9cf3a74e0987072d1bac48f75c651b35b002ba6de64935dbc9fd0",
+      "members": 24,
+      "status": "Source-only staged checkpoint; not part of executable app; later fixes and ordered rebase may be required"
+    },
+    {
+      "file": "blind-route-retrace-stage-final-20261025.tar.gz",
+      "bytes": 223330,
+      "sha256": "285098375a3d79c2c97fd1c3d8b9751a16aa1218cbbc50eb93c00c58e316e949",
+      "members": 42,
+      "status": "Source-only staged checkpoint; not part of executable app; later fixes and ordered rebase may be required"
+    },
+    {
+      "file": "blind-reader-source-candidate-20261025T0650Z.zip",
+      "bytes": 558020,
+      "sha256": "c6eb0f3efe3f3108d343f5f1e3392fe32df0b5a574d02573491d932614d52693",
+      "members": 25,
+      "status": "Source-only staged checkpoint; not part of executable app; later fixes and ordered rebase may be required"
+    },
+    {
+      "file": "source-checkpoint-03-async-review-pending.tar.gz",
+      "bytes": 216155,
+      "sha256": "b836f5f166b6356b96032fa0a120bdf85d29cbcba0238f4c383a7aa0ace9a342",
+      "members": 60,
+      "status": "Source-only staged checkpoint; not part of executable app; later fixes and ordered rebase may be required"
+    }
+  ],
+  "limits": "Apply only reviewed diffs after current preimage checks. The scoped-review writer archive is explicitly review-pending. Physical issuance, calibration, acoustic identity, all-day retrace, Apple/device validation and broader feature completion remain open. No raw user data, private images, recordings, model weights or databases included."
+}
