@@ -1,4 +1,4 @@
-name: One native Core failure diagnostic
+name: One native Core fixed-source verification
 on:
   push:
     branches: [master]
@@ -28,10 +28,10 @@ jobs:
           fetch-depth: 1
           lfs: false
           submodules: false
-      - name: Check out exact failed source read-only
+      - name: Check out exact fixed source read-only
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: 2776b18227fc9c62bb6c9a6b2f2abe06410d6f06
+          ref: 98cb52bcd69f7d1a4352f19c4e10fac7060e77a4
           path: failed-source
           persist-credentials: false
           fetch-depth: 1
@@ -43,7 +43,7 @@ jobs:
         run: |
           test "$(uname -s)" = Darwin
           test -d "$DEVELOPER_DIR"
-          test "$(git rev-parse HEAD)" = 2776b18227fc9c62bb6c9a6b2f2abe06410d6f06
+          test "$(git rev-parse HEAD)" = 98cb52bcd69f7d1a4352f19c4e10fac7060e77a4
           git rev-parse HEAD
           git rev-parse HEAD:BlindCore
           xcodebuild -version
