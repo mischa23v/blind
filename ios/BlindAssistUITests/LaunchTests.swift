@@ -153,22 +153,44 @@ final class LaunchTests: XCTestCase {
         let sizeName = expectedCategory == .large ? "large" : "accessibility-extra-extra-extra-large"
         defer { recordPracticeLayoutAttachment("final-" + sizeName) }
         let footer = "Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog."
+        let footerMatches = app.staticTexts.matching(NSPredicate(format: "label == %@", footer))
+        let footerElement = footerMatches.firstMatch
         let controls: [(String, XCUIElement)] = [
             ("button", app.buttons["start-simulation"]),
             ("header", app.staticTexts["Practice"]),
-            ("footer", app.staticTexts[footer])
+            ("footer", footerElement)
         ]
         for (role, element) in controls {
-            XCTAssertTrue(element.waitForExistence(timeout: 10), role)
-            print("PRACTICE_LAYOUT beforeReveal category=\(expectedCategory.rawValue) role=\(role) frame=\(element.frame) hittable=\(element.isHittable) label=\(element.label)")
-            reveal(element)
+            let existedBeforeReveal = element.exists
+            print("PRACTICE_LAYOUT beforeReveal category=\(expectedCategory.rawValue) role=\(role) exists=\(existedBeforeReveal)")
+            if existedBeforeReveal {
+                print("PRACTICE_LAYOUT materialized category=\(expectedCategory.rawValue) role=\(role) frame=\(element.frame) hittable=\(element.isHittable) label=\(element.label)")
+            }
+            revealPracticeDiagnosticElement(element)
+            if role == "footer" {
+                XCTAssertEqual(footerMatches.count, 1, "The exact practice safety footer must be unique")
+                XCTAssertEqual(element.label, footer)
+            } else {
+                XCTAssertEqual(element.label, role == "button" ? "Try practice (2 minutes)" : "Practice")
+            }
             let screen = app.windows.firstMatch.frame
             print("PRACTICE_LAYOUT afterReveal category=\(expectedCategory.rawValue) role=\(role) frame=\(element.frame) screen=\(screen) visibleIntersection=\(element.frame.intersection(screen)) hittable=\(element.isHittable) label=\(element.label)")
             recordPracticeLayoutAttachment(sizeName + "-" + role)
         }
-        XCTAssertEqual(app.buttons["start-simulation"].label, "Try practice (2 minutes)")
-        XCTAssertEqual(app.staticTexts["Practice"].label, "Practice")
-        XCTAssertEqual(app.staticTexts[footer].label, footer)
+    }
+    @MainActor private func revealPracticeDiagnosticElement(_ element: XCUIElement) {
+        // Form may materialize a row only after scrolling. Do not request its
+        // frame or label before it exists, and stop immediately when reachable.
+        for _ in 0..<8 {
+            if element.exists && element.isHittable { break }
+            app.swipeUp()
+        }
+        for _ in 0..<8 {
+            if element.exists && element.isHittable { break }
+            app.swipeDown()
+        }
+        XCTAssertTrue(element.waitForExistence(timeout: 10))
+        XCTAssertTrue(element.isHittable)
     }
     @MainActor private func recordPracticeLayoutAttachment(_ name: String) {
         // Only --ui-testing synthetic state, no user library or camera frames.
