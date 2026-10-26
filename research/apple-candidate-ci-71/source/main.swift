@@ -62,9 +62,19 @@ var original=[NativeRoute](),replayed=[NativeRoute]()
 do{let native=try Native(input.vertices,input.triangles);for i in 0..<input.anchors.count-1{original.append(try native.route(input.anchors[i],input.anchors[i+1]))}}
 do{let native=try Native(v,f);for i in 0..<input.anchors.count-1{replayed.append(try native.route(input.anchors[i],input.anchors[i+1]))}}
 try check("five routes",original.count==5 && replayed.count==5 && input.reference.count==5)
-for i in original.indices{try check("native pair \(i)",parity(original[i],replayed[i]));try check("Python58 pair \(i)",parity(original[i],input.reference[i]))}
+
 let snapshot=try SnapshotOwner(input.exclusion);var excluded=[NativeRoute]();var marked=0
  do{let native=try snapshot.native(v,f);marked=native.markedSpans;for i in 0..<input.anchors.count-1{excluded.append(try native.route(input.anchors[i],input.anchors[i+1]))}}
+// Persist measured Apple/native routes before parity can throw. No acceptance change.
+func difference(_ a:NativeRoute,_ b:NativeRoute)->[String:Any] {
+ let x=a.points.flatMap{$0}+a.projected_start+a.projected_goal,y=b.points.flatMap{$0}+b.projected_start+b.projected_goal
+ return ["passesUnchangedParity":parity(a,b),"actualPointCount":a.points.count,"expectedPointCount":b.points.count,"sameStatus":a.status==b.status,"sameCompletion":a.complete==b.complete,"sameError":a.error==b.error,"alignedMaxAbsoluteDelta":zip(x,y).map{abs(Double($0)-Double($1))}.max() ?? 0,"alignedDeltaMeaningful":x.count==y.count]
+}
+let diagnosticEncoder=JSONEncoder()
+let routeDiagnostic:[String:Any]=["schema":1,"physicalAuthority":false,"toleranceUnchanged":1e-5,"markedSpans":marked,"expectedMarkedSpans":input.expectedMarkedSpans,"actualOriginal":try JSONSerialization.jsonObject(with:diagnosticEncoder.encode(original)),"actualReplayed":try JSONSerialization.jsonObject(with:diagnosticEncoder.encode(replayed)),"expectedPython58":try JSONSerialization.jsonObject(with:diagnosticEncoder.encode(input.reference)),"actualExcluded":try JSONSerialization.jsonObject(with:diagnosticEncoder.encode(excluded)),"expectedPython66":try JSONSerialization.jsonObject(with:diagnosticEncoder.encode(input.exclusionReference)),"originalVsReplayed":zip(original,replayed).map{difference($0,$1)},"originalVsPython58":zip(original,input.reference).map{difference($0,$1)},"excludedVsPython66":zip(excluded,input.exclusionReference).map{difference($0,$1)},"checksBeforeComparison":checks]
+let diagnosticURL=URL(fileURLWithPath:CommandLine.arguments[2]).deletingLastPathComponent().appendingPathComponent("ROUTE_DIAGNOSTIC.json")
+try JSONSerialization.data(withJSONObject:routeDiagnostic,options:[.prettyPrinted,.sortedKeys]).write(to:diagnosticURL)
+for i in original.indices{try check("native pair \(i)",parity(original[i],replayed[i]));try check("Python58 pair \(i)",parity(original[i],input.reference[i]))}
  try check("real marked spans Python66 parity",marked==input.expectedMarkedSpans && marked>0)
  try check("five excluded reference pairs",excluded.count==5 && input.exclusionReference.count==5)
  for i in excluded.indices{try check("Python66 excluded pair \(i)",parity(excluded[i],input.exclusionReference[i]))}

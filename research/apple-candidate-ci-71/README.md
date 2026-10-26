@@ -102,3 +102,23 @@ small rejection cases against the existing pinned Linux native66 library,
 including huge finite coordinates, excessive extents and a 200×200 m grid.
 `NATIVE_BOUNDS_CHECK.json` records all seven rejected correctly. No scored mesh,
 frozen66/70 source, or Apple build code changed; this is not an Apple execution.
+
+### First Apple run and diagnostic revision
+Run [40415243899](https://github.com/mischa23v/blind/actions/runs/40415243899)
+at commit `3097e67bb59f30e067b97ebd26c4460331821458` compiled the native library
+and Swift executable on macOS, then failed the unchanged `Python58 pair 1`
+route comparison. The simulator compile was not reached. Same-build
+original-versus-replayed pair 1 passed before this failure. Its numerical cause
+is not yet measured; compiler floating-point/tie behavior is only a hypothesis.
+
+This diagnostic revision changes `source/main.swift` instrumentation only:
+it computes all five baseline and excluded routes and writes actual/expected
+coordinates, completion/status/error comparisons and aligned deltas to
+`ROUTE_DIAGNOSTIC.json` before strict parity checks can throw. The workflow
+uploads that file even on failure. All 55 checks, 1e-5 threshold, native code,
+geometry and physical-authority policy remain unchanged. Modified main.swift
+is **not** byte-identical to70; original source/pins/workflow are preserved in
+`attempt-1/`. Earlier Linux validation and independent package review describe
+the original revision, not a successful Apple replay. New local validation
+passes all55checks; an intentionally altered expected route still causes a
+nonzero exit while preserving all actual/expected diagnostic route sets.

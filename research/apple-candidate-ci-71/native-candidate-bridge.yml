@@ -38,6 +38,7 @@ jobs:
           name: candidate-apple-71-receipts
           path: |
             ${{ runner.temp }}/blind-candidate-bridge-71/*-receipt.json
+            ${{ runner.temp }}/blind-candidate-bridge-71/ROUTE_DIAGNOSTIC.json
             ${{ runner.temp }}/blind-candidate-bridge-71/RESULT.json
             ${{ runner.temp }}/blind-candidate-bridge-71/SUMMARY.json
           if-no-files-found: warn
