@@ -1,0 +1,516 @@
+{
+  "scope": "Public MuSHRoom geometry plus synthetic numerical bodies only; no participant data, private scans, deployment or branch merges.",
+  "source": "Xuqian Ren et al., MuSHRoom: iPhone https://zenodo.org/records/10230733 and reference https://zenodo.org/records/10222321, CC BY4.0 https://creativecommons.org/licenses/by/4.0/. Derived geometry and figures; modifications documented.",
+  "files": [
+    {
+      "path": "blind-assisted-support-envelope-45/FROZEN.json",
+      "bytes": 65135,
+      "sha256": "75f757dc3a553372922f0101850552035909f0f3ad00806c1e01f4cbb564a2e1"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/PROTOCOL.md",
+      "bytes": 2275,
+      "sha256": "c5f98737601aa626f05a1407a65e5ac14368494b04891eeefe98d061f0738d51"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/README.md",
+      "bytes": 1129,
+      "sha256": "1ccff9d52d9a4bebf63d778cc20ba082be41a8ba30a5eb8b512445256e1e6bea"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/REVIEW_CLIP_LP.json",
+      "bytes": 216,
+      "sha256": "fe489d7e285699b1126a842f6733240afbc61cc4625de8970ce49d17e5d86f34"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/fixtures-01.log",
+      "bytes": 5731,
+      "sha256": "ce68ea2f001849d69c5e4e44544e20712bbda3051f0d6ee0785b99c99a577675"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/fixtures-02.log",
+      "bytes": 4738,
+      "sha256": "fb2971f1c5695e27b4a0b6d84c0d5e3f93b085e9f1350fae2d8c41e22c597ead"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/fixtures-03.log",
+      "bytes": 4738,
+      "sha256": "d107f83170a2ff0c787748a462feec34e1e7de5265e5cc6afefc4766b00d4c0b"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/postrun/ACTUAL_TRACE.csv",
+      "bytes": 36496,
+      "sha256": "72e67ac31b45c8c8103857af280639a03396e6dc25d05d5a52ee821df25a0e19"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/postrun/RECOUNT.json",
+      "bytes": 1275,
+      "sha256": "9facb9a311919030b38de28d6de3b538857ebe8332e27497a0fa92700a64ad63"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/review_clip_lp.py",
+      "bytes": 1553,
+      "sha256": "9ff65048e71b4578ce7325875b69e3d6146bc87e8e27bf7aaa3f49c3122a2f69"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/run-01/RAM_PREFLIGHT.json",
+      "bytes": 102,
+      "sha256": "6ff2ee92513578282ddc131fb4215cadcf4cfe5854a873b85f873d48efd3ac0f"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/run-01/RUN_RECEIPT.json",
+      "bytes": 523,
+      "sha256": "ce303695583c34ffc692e2657f4db892dc2956d9134d892c057229f67ebdf255"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/run-01/heartbeat.jsonl",
+      "bytes": 30332,
+      "sha256": "427094276f1bb183bbacd814ec3efd005be58916b7afb1801dc4249f5a0524a4"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/run-01/result/ACTOR_TRACE.npz",
+      "bytes": 4286,
+      "sha256": "d7e1bad4d93b31f44f3d4aefbe4df61a03583006d9c028abf7d26c8bc132cf96"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/run-01/result/BODY_QUERY_OPTIMIZATION.json.gz",
+      "bytes": 30740,
+      "sha256": "57afdbab63a5dd725eb84c6c1899f4f64c16770fcfd02e590e9bf7ed2f5fe64f"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/run-01/result/PHONE_FOOTPRINT_EXPOSURES.json.gz",
+      "bytes": 4943,
+      "sha256": "08d62c09c7354da40cad368d1355d0c796b7a54318f9757f6d82cb9c7e26d72f"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/run-01/result/RESULT.json",
+      "bytes": 39847,
+      "sha256": "eee689753df3bd913722222e67cd65aa7d467f8dc0e03d0a8a0d840cf5eb4315"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/run-01/result/STEP_MACROS.json.gz",
+      "bytes": 88270,
+      "sha256": "a631f0dcc5913990ba4655607130bc342e42996636ac8747186e2590a32b5d2b"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/run-01/result/UNDERBODY_QUERY_OPTIMIZATION.json.gz",
+      "bytes": 62,
+      "sha256": "13f91b1549f5d57ebd58bd7022833b0aa944d7c6f3eef15b28afb337a64fe298"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/run-01/result/controller.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/run-01/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/run-01/stdout.log",
+      "bytes": 1521,
+      "sha256": "24216723a35f27124ed98e17be738e7a07c3edc39de5865399f3b5dd88a4fd29"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/run_bounded.py",
+      "bytes": 4070,
+      "sha256": "10308891ddadc5bc7dae8a56ae15cff52674dd994aad85f2c578d61e92130920"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/run_step.py",
+      "bytes": 4923,
+      "sha256": "4ec88840a264975d3b8e4eb8741d7ba1660368ff4770c7971c380b7758436da3"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/step_controller.py",
+      "bytes": 885,
+      "sha256": "845e499655e11ad3347f3dfc8090e8feffd5305f6ccb6d2efcf7500aad7e1501"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/step_kernel.py",
+      "bytes": 4048,
+      "sha256": "6d7f9183b7b363134afdc2fecc0394326de9e053be79c4d88f14bfda685f28fc"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/step_world.py",
+      "bytes": 15903,
+      "sha256": "1c9e125accdc0bec9a5af5915f9b95a122680e99cb019595103ea7d2dd45fbbe"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/support_envelope.py",
+      "bytes": 3471,
+      "sha256": "eb256722eda1ce71caec1eeb507c9707a3520bf93f4044ca37d823e67d9e7aca"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/test_step_integration.py",
+      "bytes": 6175,
+      "sha256": "a0dcae5d1bbe9087f85a3a79891bf01d2e09fb682b721730cb5597c30153db77"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/test_step_kernel.py",
+      "bytes": 5406,
+      "sha256": "b63159d8e79b95bbea7ea6df6eb24326d00a17ed9378005a2577ff493f0457f6"
+    },
+    {
+      "path": "blind-assisted-support-envelope-45/test_support_envelope.py",
+      "bytes": 2617,
+      "sha256": "d02f9a1e3988a6e6274ad3c0b0e6f76226e238766f689427c6a15f6d128fac52"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/FROZEN.json",
+      "bytes": 66467,
+      "sha256": "9d8a418027d026c7159e134d9bcb68147b1091602f2544304ded844689ecd925"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/PROTOCOL.md",
+      "bytes": 1710,
+      "sha256": "82b0d4787b94d0451df0709c3137c543e517082231825bf1f079b6a6ddf6b7ca"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/README.md",
+      "bytes": 1421,
+      "sha256": "3aff68525979dfa0f37cc5c466012b932f518ac442f9ed4d6fe39ebf62da4a95"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/fixtures-01.log",
+      "bytes": 4738,
+      "sha256": "adb4c0d4c267f29db7ca074d970cdf0275852a6f0d5900ee0cba05ebe34abddc"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/postrun/ACTUAL_TRACE.csv",
+      "bytes": 51259,
+      "sha256": "c7823db1497640854dc554a7f21355bc22a2f1c6d24dc06fc61ca2968d246586"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/postrun/RECOUNT.json",
+      "bytes": 1281,
+      "sha256": "8898e1e3d234ee99f6dddb7466a8e42c383463e20ec66986e2dfd27afd23865a"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/run-01/RAM_PREFLIGHT.json",
+      "bytes": 102,
+      "sha256": "8bc0c1175f863e0fce35ad5aefefe8d0daa38a7a3a19a807800e098ce4ccfa55"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/run-01/RUN_RECEIPT.json",
+      "bytes": 524,
+      "sha256": "3b31023da90cfac765d4affe6a0af9c5287432dbc9d135db41cb16d04fd31740"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/run-01/heartbeat.jsonl",
+      "bytes": 48799,
+      "sha256": "c55a448766a37e99dc9999460b10ef21157a71a9683f93e4ac27c901e99a7cea"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/run-01/result/ACTOR_TRACE.npz",
+      "bytes": 5232,
+      "sha256": "0c316cbf47f8c6fa30e2f1bafe1dc8dc8e8b82c5e8c6a0a0c795a9db517b8218"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/run-01/result/BODY_QUERY_OPTIMIZATION.json.gz",
+      "bytes": 41535,
+      "sha256": "0a6eb9e0e6d0b01b00531ff5f34a1c77f0bff89b8a2001087aeeb452746bc4a1"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/run-01/result/PHONE_FOOTPRINT_EXPOSURES.json.gz",
+      "bytes": 5969,
+      "sha256": "b7c022d2b1802a909098db358e0e6ec8277450e9d5e15c721ad9df7c1f63ea41"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/run-01/result/RESULT.json",
+      "bytes": 40069,
+      "sha256": "29543b5bd1745f61d20c9040472e07c79c90f3047b09edbc248a5d3c718f33b2"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/run-01/result/STEP_MACROS.json.gz",
+      "bytes": 117358,
+      "sha256": "6290ae6bac9200224fe51940bb56e04f41e7809ebab960d98eed6bcde2911f90"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/run-01/result/UNDERBODY_QUERY_OPTIMIZATION.json.gz",
+      "bytes": 5047,
+      "sha256": "a15d9bb48beb8ae1ba43f419290fc94fd994002d30b6c2dcea82a9ec732645fd"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/run-01/result/controller.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/run-01/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/run-01/stdout.log",
+      "bytes": 1833,
+      "sha256": "53a8c5f605c7b7ad50f6033c1c027260724333c696ae384a6731c2390486f9d7"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/run_bounded.py",
+      "bytes": 4070,
+      "sha256": "10308891ddadc5bc7dae8a56ae15cff52674dd994aad85f2c578d61e92130920"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/run_step.py",
+      "bytes": 5323,
+      "sha256": "648afb0f3beb7682bb6d9b20b90b0200bbc2482adaf4448cbc9a87814e32f98c"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/step_controller.py",
+      "bytes": 885,
+      "sha256": "845e499655e11ad3347f3dfc8090e8feffd5305f6ccb6d2efcf7500aad7e1501"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/step_kernel.py",
+      "bytes": 4048,
+      "sha256": "6d7f9183b7b363134afdc2fecc0394326de9e053be79c4d88f14bfda685f28fc"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/step_world.py",
+      "bytes": 15903,
+      "sha256": "1c9e125accdc0bec9a5af5915f9b95a122680e99cb019595103ea7d2dd45fbbe"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/support_envelope.py",
+      "bytes": 3471,
+      "sha256": "eb256722eda1ce71caec1eeb507c9707a3520bf93f4044ca37d823e67d9e7aca"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/test_step_integration.py",
+      "bytes": 6175,
+      "sha256": "a0dcae5d1bbe9087f85a3a79891bf01d2e09fb682b721730cb5597c30153db77"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/test_step_kernel.py",
+      "bytes": 5406,
+      "sha256": "b63159d8e79b95bbea7ea6df6eb24326d00a17ed9378005a2577ff493f0457f6"
+    },
+    {
+      "path": "blind-consistent-local-floor-47/test_support_envelope.py",
+      "bytes": 2617,
+      "sha256": "d02f9a1e3988a6e6274ad3c0b0e6f76226e238766f689427c6a15f6d128fac52"
+    },
+    {
+      "path": "blind-polycam-table-loop-proposals-44/FROZEN.json",
+      "bytes": 3712,
+      "sha256": "bccc0bb1742fd15a6dc80776698f00365cd526cb67f6f90364d31061baeee424"
+    },
+    {
+      "path": "blind-polycam-table-loop-proposals-44/MANIFEST.json",
+      "bytes": 1271,
+      "sha256": "b6b5e5c77cef5f7badfb989a9845a7fd811e98f2a684cfdb60f383b4aff08a08"
+    },
+    {
+      "path": "blind-polycam-table-loop-proposals-44/PROPOSED_PHYSICS_BOUNDS.json",
+      "bytes": 5725,
+      "sha256": "7476d9a4ef4ae1f0d94febfe0e5468b54cc2463dfe57bf1741047398ea3fb97c"
+    },
+    {
+      "path": "blind-polycam-table-loop-proposals-44/PROTOCOL.md",
+      "bytes": 2907,
+      "sha256": "ebfa32c888219ab388b7b1e93ed1379af705c865f99ce7e470f1765ad869df35"
+    },
+    {
+      "path": "blind-polycam-table-loop-proposals-44/README.md",
+      "bytes": 5925,
+      "sha256": "4781a5e2377cab8cea1b0580dc5b751e7ce822fa27821955f3e36df3577cc554"
+    },
+    {
+      "path": "blind-polycam-table-loop-proposals-44/RESULT.json",
+      "bytes": 74243,
+      "sha256": "a5b3581f7efdb6f1fe9e55be07d58cf23469bb5541fa9e24a956cf271a6e6744"
+    },
+    {
+      "path": "blind-polycam-table-loop-proposals-44/SELF_RECOUNT.json",
+      "bytes": 3646,
+      "sha256": "d39544dc505b604e7c440eaf085888e1acc33233ba4a8fc3c0405d7560fddb85"
+    },
+    {
+      "path": "blind-polycam-table-loop-proposals-44/SOURCE_ONLY_LOOP_PROPOSALS.png",
+      "bytes": 99166,
+      "sha256": "58d5e3586edd9ab6d1f1cd40267d51fbebe2e97deeaedcc0f4686f479ea6a295"
+    },
+    {
+      "path": "blind-polycam-table-loop-proposals-44/draw_proposals.py",
+      "bytes": 2707,
+      "sha256": "1eff7a308d69a5f9abbb41e180d7d21d263f61b05fd2253eb329b6211b5ab4da"
+    },
+    {
+      "path": "blind-polycam-table-loop-proposals-44/query.py",
+      "bytes": 6360,
+      "sha256": "dea8872ebf364c1530a06f5ce8e17c6a7e0fd5d73b066c15901f1776e9ef8282"
+    },
+    {
+      "path": "blind-polycam-table-loop-proposals-44/recount.py",
+      "bytes": 3113,
+      "sha256": "7ea3f7ef07612f0c5c54bd9553c5fb5cf4903e5784cc8609dbe4dad6f7fe5ee6"
+    },
+    {
+      "path": "blind-polycam-table-loop-proposals-44/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-polycam-table-loop-proposals-44/stdout.log",
+      "bytes": 1584,
+      "sha256": "af2258f4e5ad6323f0b9e6aa806ca049d55192593763994ae6fbe1da79ebe6f5"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/FROZEN.json",
+      "bytes": 68381,
+      "sha256": "17bf0e46aef2672ec556193883150cd3c6bb942e4461210278db09dd713cdf26"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/PROTOCOL.md",
+      "bytes": 1863,
+      "sha256": "1f91067936623e02d16efee0c75896756fd550915a5b0d743886d9b5087719f5"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/RAMP_OWNERSHIP.json",
+      "bytes": 1271,
+      "sha256": "222c7b2f8b5b23e8f5d22f55cbadd16bcef7ef5c3b54115a3bbb45c7b7a1f99c"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/RAMP_OWNER_IDS.npz",
+      "bytes": 4934,
+      "sha256": "a60132a141ad4304fb119c44b5fd5fd19d7bb6cdb67d82f9bf4e44f133e80304"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/README.md",
+      "bytes": 1596,
+      "sha256": "0f94dd11f2daef00c26e99e92c9795f2efb6c5e40975e734b7954425fe448510"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/derive_ramp_ownership.py",
+      "bytes": 2453,
+      "sha256": "3973c524da383cd7e9c1b17e5c2fbba53d10e5a967adfb5d16d69ffac2fbe013"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/fixtures-01.log",
+      "bytes": 5085,
+      "sha256": "633c9f0d5e787042c7dc51a88a52e5fe3e3b31a28c8410e34fe5025619039b59"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/fixtures-02.log",
+      "bytes": 5212,
+      "sha256": "4830526e275b2e12f28e5f9f2067023671724185bad35170d5a6fcee01c42d62"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/postrun/ACTUAL_TRACE.csv",
+      "bytes": 56497,
+      "sha256": "c81a888b7cdb13006ce48efdc81121c58a81a911f80eabf6860451dd38030762"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/postrun/RECOUNT.json",
+      "bytes": 1382,
+      "sha256": "7b355403262694b68554a515e0a1c9269d272e3c52186dd6285b87887bfc40eb"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/run-01/RAM_PREFLIGHT.json",
+      "bytes": 102,
+      "sha256": "e924029a730926395e08c95637f4f038c6501eee6498e919b6db8f6b76ee3df1"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/run-01/RUN_RECEIPT.json",
+      "bytes": 522,
+      "sha256": "3500925de177354589e243ac3269e397733f2cbc7ed1539034fb7785ee8c04f0"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/run-01/heartbeat.jsonl",
+      "bytes": 60396,
+      "sha256": "0f47fbb5dcbdf1c849b4a817912deb3cf8e96fab36bbe8f38bf3d2a993a186d2"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/run-01/result/ACTOR_TRACE.npz",
+      "bytes": 5565,
+      "sha256": "d1d642ed1a28a3861ba70b3b670efbcefe310a4b0a0923d3928345dbaee15b7e"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/run-01/result/BODY_QUERY_OPTIMIZATION.json.gz",
+      "bytes": 45413,
+      "sha256": "75dcec99030a123cf60a9ea454a655c5d4c93d075a145506386b521db6e1ba33"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/run-01/result/PHONE_FOOTPRINT_EXPOSURES.json.gz",
+      "bytes": 6278,
+      "sha256": "45ba2c3fbaf853fafaa8695ce32623b2aa935812ee4dc063099e2c0418c634fb"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/run-01/result/RESULT.json",
+      "bytes": 40244,
+      "sha256": "046307eba1bbfe1937a723c71c9a5d67e04a17d840f5500ed03d6d4cb38d4cdf"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/run-01/result/STEP_MACROS.json.gz",
+      "bytes": 128161,
+      "sha256": "7ce816ad445c567e68dbd6a2e6e5fa2999244c05269ce873ccd38c33c5e7162b"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/run-01/result/UNDERBODY_QUERY_OPTIMIZATION.json.gz",
+      "bytes": 6514,
+      "sha256": "aca0039bf6a7d9cfef7af852bcdaae45adcd376090d34fc1317eba6be441fa9d"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/run-01/result/controller.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/run-01/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/run-01/stdout.log",
+      "bytes": 1832,
+      "sha256": "cea0bfd12d7b027cd1ca1b903fce323a49b50f534bd1bebeaf0ea7521ae36115"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/run_bounded.py",
+      "bytes": 4070,
+      "sha256": "10308891ddadc5bc7dae8a56ae15cff52674dd994aad85f2c578d61e92130920"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/run_step.py",
+      "bytes": 5794,
+      "sha256": "5415c0db3770a004c1c9ef71d89051f8e9e642b30260e58e015164dc87962689"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/step_controller.py",
+      "bytes": 885,
+      "sha256": "845e499655e11ad3347f3dfc8090e8feffd5305f6ccb6d2efcf7500aad7e1501"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/step_kernel.py",
+      "bytes": 4048,
+      "sha256": "6d7f9183b7b363134afdc2fecc0394326de9e053be79c4d88f14bfda685f28fc"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/step_world.py",
+      "bytes": 16385,
+      "sha256": "2268f01b4e45397bfe1eeabea9c33077190b539604eaa2a2805b1e03a4616432"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/support_envelope.py",
+      "bytes": 4029,
+      "sha256": "445b16016fe5055d0cd655c795519b714a7ebfc873934521c9b314bf8e4efbf0"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/test_step_integration.py",
+      "bytes": 6609,
+      "sha256": "34437118835b83ceff0d921c7bcd40582fb62ce57d9e6e930e75da3bfc713a67"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/test_step_kernel.py",
+      "bytes": 5406,
+      "sha256": "b63159d8e79b95bbea7ea6df6eb24326d00a17ed9378005a2577ff493f0457f6"
+    },
+    {
+      "path": "blind-topological-ramp-support-48/test_support_envelope.py",
+      "bytes": 3449,
+      "sha256": "bb25cd01c4c3ef5060fff71e26afa8b4d6f80de3f646eb813d4ef5cd948de252"
+    }
+  ]
+}
