@@ -128,6 +128,25 @@ empty motion trace, compact map and registration outputs are preserved under `re
 
 ## Remaining work
 
+### Concurrent master checkpoint
+
+After this experiment was frozen and executed, master advanced to
+`259b6ee0e10dfa0c04bb5d48c86667efd92a0cea`. Its camera-approach README and saved
+`RESULT_READBACK.json` report three correlated southern arrivals: the same 1.800 m
+trajectory under three numerical profiles, with three northern association failures.
+Every executed tick retains low-unresolved exposure under that checkpoint's permissive
+policy; ground-contact metrics remain unmeasured. This reviewer read those records and
+the profile-map factory but did not rerun or independently rescore those episodes.
+Those results do not traverse the disputed passage or complete a table loop, and do
+not use this experimental local-support correction. Our zero-motion result must not
+be generalized to mean the project has never produced simulated movement.
+
+The same checkpoint's fixed-section addendum reports 0.686 m in the phone mask versus
+1.222 m in a saved reference vertex-column proxy at a frozen frame-39 section. These
+are different model intervals, not validated physical gap widths; the reference
+interval contains the camera anchor and the phone interval does not. No reference
+geometry or section measurement was used to alter our map or frozen trials.
+
 The original movement objective is unfinished. Replace the permanent residual veto
 with an evidence-calibrated treatment of repeated observations using the established
 fusion engine, while retaining coherent raised surfaces, steps and unresolved coverage.
