@@ -1,0 +1,68 @@
+reference ready 12.5 s
+{"phase": "ground_ready", "route": 0, "seconds": 667.2, "state": "ok"}
+{"phase": "tick", "run": "route-00-baseline", "tick": 0, "dist": 0.02, "err": 2.047}
+{"runID": "route-00-baseline", "status": "unknownReferenceSupportDuringMotion", "ticks": 49, "actualDistanceMetres": 0.26, "goalErrorMetres": 1.869}
+{"phase": "tick", "run": "route-00-delay", "tick": 0, "dist": 0.0, "err": 2.062}
+{"runID": "route-00-delay", "status": "unknownReferenceSupportDuringMotion", "ticks": 58, "actualDistanceMetres": 0.36, "goalErrorMetres": 1.79}
+{"phase": "tick", "run": "route-00-motion-scale", "tick": 0, "dist": 0.016, "err": 2.05}
+{"runID": "route-00-motion-scale", "status": "unknownReferenceSupportDuringMotion", "ticks": 48, "actualDistanceMetres": 0.254, "goalErrorMetres": 1.873}
+{"phase": "tick", "run": "route-00-wrong-turn", "tick": 0, "dist": 0.02, "err": 2.047}
+{"runID": "route-00-wrong-turn", "status": "unknownReferenceSupportDuringMotion", "ticks": 49, "actualDistanceMetres": 0.26, "goalErrorMetres": 1.869}
+{"phase": "tick", "run": "route-00-combined", "tick": 0, "dist": 0.0, "err": 2.062}
+{"runID": "route-00-combined", "status": "unknownReferenceSupportDuringMotion", "ticks": 65, "actualDistanceMetres": 0.38, "goalErrorMetres": 1.778}
+{"phase": "ground_ready", "route": 1, "seconds": 776.5, "state": "ok"}
+{"phase": "tick", "run": "route-01-baseline", "tick": 0, "dist": 0.02, "err": 2.352}
+{"runID": "route-01-baseline", "status": "firstContactTriangleNearFootAmbiguous", "ticks": 52, "actualDistanceMetres": 1.02, "goalErrorMetres": 1.407}
+{"phase": "tick", "run": "route-01-delay", "tick": 0, "dist": 0.0, "err": 2.372}
+{"runID": "route-01-delay", "status": "firstContactTriangleNearFootAmbiguous", "ticks": 58, "actualDistanceMetres": 1.02, "goalErrorMetres": 1.407}
+{"phase": "tick", "run": "route-01-motion-scale", "tick": 0, "dist": 0.0, "err": 2.372}
+{"runID": "route-01-motion-scale", "status": "groundFollowMovementCap", "ticks": 1, "actualDistanceMetres": 0.0, "goalErrorMetres": 2.372}
+{"phase": "tick", "run": "route-01-wrong-turn", "tick": 0, "dist": 0.02, "err": 2.352}
+{"runID": "route-01-wrong-turn", "status": "firstContactTriangleNearFootAmbiguous", "ticks": 52, "actualDistanceMetres": 1.02, "goalErrorMetres": 1.407}
+{"phase": "tick", "run": "route-01-combined", "tick": 0, "dist": 0.0, "err": 2.372}
+{"runID": "route-01-combined", "status": "groundFollowMovementCap", "ticks": 8, "actualDistanceMetres": 0.0, "goalErrorMetres": 2.372}
+{"phase": "ground_ready", "route": 2, "seconds": 559.2, "state": "ok"}
+{"phase": "tick", "run": "route-02-baseline", "tick": 0, "dist": 0.02, "err": 2.042}
+{"runID": "route-02-baseline", "status": "firstContactTriangleNearFootAmbiguous", "ticks": 52, "actualDistanceMetres": 1.02, "goalErrorMetres": 1.072}
+{"phase": "tick", "run": "route-02-delay", "tick": 0, "dist": 0.0, "err": 2.062}
+{"runID": "route-02-delay", "status": "firstContactTriangleNearFootAmbiguous", "ticks": 58, "actualDistanceMetres": 1.02, "goalErrorMetres": 1.072}
+{"phase": "tick", "run": "route-02-motion-scale", "tick": 0, "dist": 0.016, "err": 2.046}
+{"runID": "route-02-motion-scale", "status": "firstContactTriangleNearFootAmbiguous", "ticks": 65, "actualDistanceMetres": 1.024, "goalErrorMetres": 1.068}
+{"phase": "tick", "run": "route-02-wrong-turn", "tick": 0, "dist": 0.02, "err": 2.042}
+{"runID": "route-02-wrong-turn", "status": "firstContactTriangleNearFootAmbiguous", "ticks": 52, "actualDistanceMetres": 1.02, "goalErrorMetres": 1.072}
+{"phase": "tick", "run": "route-02-combined", "tick": 0, "dist": 0.0, "err": 2.062}
+{"runID": "route-02-combined", "status": "firstContactTriangleNearFootAmbiguous", "ticks": 73, "actualDistanceMetres": 1.024, "goalErrorMetres": 1.068}
+{"phase": "ground_ready", "route": 3, "seconds": 775.5, "state": "ok"}
+{"phase": "tick", "run": "route-03-baseline", "tick": 0, "dist": 0.02, "err": 2.287}
+{"runID": "route-03-baseline", "status": "firstContactTriangleNearFootAmbiguous", "ticks": 48, "actualDistanceMetres": 0.737, "goalErrorMetres": 1.678}
+{"phase": "tick", "run": "route-03-delay", "tick": 0, "dist": 0.0, "err": 2.305}
+{"runID": "route-03-delay", "status": "firstContactTriangleNearFootAmbiguous", "ticks": 60, "actualDistanceMetres": 0.817, "goalErrorMetres": 1.62}
+{"phase": "tick", "run": "route-03-motion-scale", "tick": 0, "dist": 0.0, "err": 2.305}
+{"runID": "route-03-motion-scale", "status": "groundFollowMovementCap", "ticks": 1, "actualDistanceMetres": 0.0, "goalErrorMetres": 2.305}
+{"phase": "tick", "run": "route-03-wrong-turn", "tick": 0, "dist": 0.02, "err": 2.287}
+{"runID": "route-03-wrong-turn", "status": "firstContactTriangleNearFootAmbiguous", "ticks": 48, "actualDistanceMetres": 0.737, "goalErrorMetres": 1.678}
+{"phase": "tick", "run": "route-03-combined", "tick": 0, "dist": 0.0, "err": 2.305}
+{"runID": "route-03-combined", "status": "groundFollowMovementCap", "ticks": 8, "actualDistanceMetres": 0.0, "goalErrorMetres": 2.305}
+{"phase": "ground_ready", "route": 4, "seconds": 785.7, "state": "ok"}
+{"phase": "tick", "run": "route-04-baseline", "tick": 0, "dist": 0.02, "err": 2.352}
+{"runID": "route-04-baseline", "status": "unknownReferenceSupportDuringMotion", "ticks": 26, "actualDistanceMetres": 0.5, "goalErrorMetres": 1.883}
+{"phase": "tick", "run": "route-04-delay", "tick": 0, "dist": 0.0, "err": 2.372}
+{"runID": "route-04-delay", "status": "unknownReferenceSupportDuringMotion", "ticks": 32, "actualDistanceMetres": 0.5, "goalErrorMetres": 1.883}
+{"phase": "tick", "run": "route-04-motion-scale", "tick": 0, "dist": 0.016, "err": 2.356}
+{"runID": "route-04-motion-scale", "status": "unknownReferenceSupportDuringMotion", "ticks": 32, "actualDistanceMetres": 0.496, "goalErrorMetres": 1.886}
+{"phase": "tick", "run": "route-04-wrong-turn", "tick": 0, "dist": 0.02, "err": 2.352}
+{"runID": "route-04-wrong-turn", "status": "unknownReferenceSupportDuringMotion", "ticks": 26, "actualDistanceMetres": 0.5, "goalErrorMetres": 1.883}
+{"phase": "tick", "run": "route-04-combined", "tick": 0, "dist": 0.0, "err": 2.372}
+{"runID": "route-04-combined", "status": "unknownReferenceSupportDuringMotion", "ticks": 36, "actualDistanceMetres": 0.496, "goalErrorMetres": 1.886}
+{"phase": "ground_ready", "route": 5, "seconds": 599.2, "state": "ok"}
+{"phase": "tick", "run": "route-05-baseline", "tick": 0, "dist": 0.02, "err": 2.117}
+{"runID": "route-05-baseline", "status": "firstContactTriangleNearFootAmbiguous", "ticks": 10, "actualDistanceMetres": 0.18, "goalErrorMetres": 1.963}
+{"phase": "tick", "run": "route-05-delay", "tick": 0, "dist": 0.0, "err": 2.136}
+{"runID": "route-05-delay", "status": "firstContactTriangleNearFootAmbiguous", "ticks": 16, "actualDistanceMetres": 0.18, "goalErrorMetres": 1.963}
+{"phase": "tick", "run": "route-05-motion-scale", "tick": 0, "dist": 0.0, "err": 2.136}
+{"runID": "route-05-motion-scale", "status": "groundFollowMovementCap", "ticks": 1, "actualDistanceMetres": 0.0, "goalErrorMetres": 2.136}
+{"phase": "tick", "run": "route-05-wrong-turn", "tick": 0, "dist": 0.02, "err": 2.117}
+{"runID": "route-05-wrong-turn", "status": "firstContactTriangleNearFootAmbiguous", "ticks": 10, "actualDistanceMetres": 0.18, "goalErrorMetres": 1.963}
+{"phase": "tick", "run": "route-05-combined", "tick": 0, "dist": 0.0, "err": 2.136}
+{"runID": "route-05-combined", "status": "groundFollowMovementCap", "ticks": 6, "actualDistanceMetres": 0.0, "goalErrorMetres": 2.136}
+SUMMARY {"summary": {"unknownReferenceSupportDuringMotion": 10, "firstContactTriangleNearFootAmbiguous": 14, "groundFollowMovementCap": 6, "routeUnavailable": 70}, "arrivals": 0, "bodyContacts": 0, "marginContacts": 14, "wallSeconds": 7101.9}

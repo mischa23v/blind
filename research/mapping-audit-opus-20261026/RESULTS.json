@@ -268,13 +268,15 @@
     "recastErosion_cs0.1": 0.6
   },
   "notRun": [
-    "100 game episodes",
-    "FARO scoring of any corrected map",
-    "Open3D TSDF baseline",
-    "Swift SurfaceGameWorker",
+    "Open3D TSDF baseline as the main map (tested only as a variant)",
+    "Swift SurfaceGameWorker (Python substitute used)",
     "any live device"
   ],
-  "gameEpisodesExecuted": 0,
+  "gameEpisodesExecuted": {
+    "koivu": 100,
+    "coffee_room": 100,
+    "note": "coffee_room: 70 of 100 route-unavailable (phone map found 6/20 routes); first pass had 0"
+  },
   "FAROUsedByPlanner": false,
   "physicalAuthority": false,
   "secondPass": {
@@ -612,5 +614,58 @@
       }
     },
     "gameEpisodesExecuted": 0
+  },
+  "notRunAtFirstPass": [
+    "100 game episodes",
+    "FARO scoring of any corrected map",
+    "Open3D TSDF baseline",
+    "Swift SurfaceGameWorker",
+    "any live device"
+  ],
+  "movementGame": {
+    "see": "FINAL_REPORT.md section 3; v3/game/",
+    "map": "occthres_statsplit0.7.npz (colour-ICP poses)",
+    "world": "master 7506ad9 v3 connected-ground world, unchanged; contact via decision-equivalent fast path on VTK 9.7.1",
+    "controller": "Python substitute for Swift SurfaceGameWorker; never sees reference",
+    "koivu": {
+      "cleanArrival": 29,
+      "actualBodyContact": 0,
+      "marginContactNearFoot3mmTo3cm": 36,
+      "marginContactFloorClipLe3mm": 6,
+      "marginContactObstacleGt3cm": 1,
+      "harnessStepCapConflict": 18,
+      "invalidStart": 10,
+      "arrivalsByCondition": {
+        "baseline": 7,
+        "delay": 6,
+        "motion-scale": 5,
+        "wrong-turn": 7,
+        "combined": 4
+      },
+      "movedEpisodes": 72,
+      "meanDistanceMovedM": 1.503
+    },
+    "coffee_room": {
+      "routeUnavailable": 70,
+      "cleanArrival": 0,
+      "actualBodyContact": 0,
+      "marginContactFloorClipLe3mm": 14,
+      "referenceSupportUnconfirmed": 10,
+      "harnessStepCapConflict": 6,
+      "movedEpisodes": 24,
+      "meanDistanceMovedM": 0.625
+    },
+    "contactTriangles": "v3/game/CONTACT_TRIANGLES.txt: Koivu 15 facets 5-11 mm above floor tilted 21-63 deg + one 38.5 mm vertical face; coffee_room 4 near-horizontal floor facets 5-7.5 mm below the phone plane",
+    "scorerEquivalence": {
+      "tiledBroadPhaseIdenticalSets": "120/120 (VTK 9.7.1)",
+      "fastVsSlowRandomPoses": "12/12",
+      "note": "any tiled positive replays the native-order call"
+    },
+    "deviations": [
+      "route lattice 0.25 m instead of draft 0.5 m, fixed before episodes",
+      "VTK 9.7.1 instead of 9.3.1",
+      "controller bug (steer to path[0]) fixed and all episodes rerun; bug runs kept, not counted"
+    ],
+    "physicalAuthority": false
   }
 }

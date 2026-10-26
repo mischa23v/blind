@@ -47,10 +47,31 @@ class FastGroundedContainer(GroundedReferenceContainer):
         for i,p in enumerate(q):self.box.GetPoints().SetPoint(i,p)
         self.box.GetPoints().Modified()
         bounds=np.column_stack((q.min(axis=0),q.max(axis=0))).reshape(-1)
+        if not getattr(self,'_replay',False):
+            # Tiled pre-pass (<=0.25 unit tiles, union of IDs; set-identical to one call on VTK 9.7.1 for all 120 checked
+            # boxes, TILE_EQUIVALENCE_VTK971.json). Sorted order: ANY non-ground positive replays the original native order.
+            ids=self._tiled(bounds);self.box_queries+=1;self.check()
+            if len(ids)>self.maximum_candidate_cells:raise GeometryFailure('reference broad-phase candidate cap; not scored clear')
+            pre=self._decide(ids,q,len(ids))
+            if not pre['contact']:self.tiledNegative=getattr(self,'tiledNegative',0)+1;return pre
+            self.tiledReplay=getattr(self,'tiledReplay',0)+1;self._replay=True
+            try:return self.contact_corners(corners)
+            finally:self._replay=False
         self.ids.Reset();self.surface.locator.FindCellsWithinBounds(bounds,self.ids);self.box_queries+=1;self.check()
         count=self.ids.GetNumberOfIds()
         if count>self.maximum_candidate_cells:raise GeometryFailure('reference broad-phase candidate cap; not scored clear')
         ids=np.fromiter((self.ids.GetId(i) for i in range(count)),dtype=np.int64,count=count)
+        return self._decide(ids,q,count)
+    def _tiled(self,b,ts=.25):
+        import math
+        n=[max(1,math.ceil((b[2*a+1]-b[2*a])/ts)) for a in range(3)];E=[np.linspace(b[2*a],b[2*a+1],n[a]+1) for a in range(3)];out=[]
+        for i in range(n[0]):
+            for j in range(n[1]):
+                for k in range(n[2]):
+                    self.ids.Reset();self.surface.locator.FindCellsWithinBounds([E[0][i],E[0][i+1],E[1][j],E[1][j+1],E[2][k],E[2][k+1]],self.ids)
+                    c=self.ids.GetNumberOfIds();out.append(np.fromiter((self.ids.GetId(x) for x in range(c)),np.int64,c))
+        self.check();return np.unique(np.concatenate(out)) if out else np.zeros(0,np.int64)
+    def _decide(self,ids,q,count):
         g=self._ground.ground_cell_ids;pos=np.searchsorted(g,ids);isg=(pos<len(g))&(g[np.minimum(pos,len(g)-1)]==ids)
         closest,pcoords,weights=[0.]*3,[0.]*3,[0.]*8;sub_id,distance2=vtk.reference(0),vtk.reference(0.)
         first=None;cand=ids[~isg]

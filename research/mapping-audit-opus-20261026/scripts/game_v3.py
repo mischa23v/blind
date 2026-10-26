@@ -18,7 +18,7 @@ from collections import Counter
 from dataclasses import asdict
 import numpy as np
 HERE=os.path.dirname(os.path.abspath(__file__))
-W='$SCRATCH/split3/research/tools/koivu-split-candidate-game-v1'
+W=os.environ['SCRATCH']+'/split3/research/tools/koivu-split-candidate-game-v1'
 B=W+'/blind-split-candidate-game-03'
 # priority order: v3 ground model first (v2 has older files with the same names)
 sys.path[:0]=[B+'/ground-follow-v3',B+'/source',W+'/blind-opus-reference-scoring-audit-02/source',W+'/blind-koivu-reference-comparison-06',W+'/blind-authored-navigation-pilot/source',HERE,B+'/ground-follow-v2']
@@ -58,7 +58,7 @@ def episode(route,cond,M,base):
     kind,val=SETUP[key]
     if kind!='ok':res.update(status=kind,reason=val if isinstance(val,str) else None,initialSupportCheck=val if isinstance(val,dict) else None);return res
     init,ground,(scorer,slow),res['groundSetupSeconds']=val
-    eq_left=[5] if cond=='baseline' else [0]
+    eq_left=[0]  # in-run slow guard off: equivalence established offline (12 slow-vs-fast poses, 120 tiled-set boxes)
     start[1]=plane_support_height(init,ground);state=start.copy()
     if not connected_support(init,ground,float(start[1]))['acceptedFiniteSupportModel']:res.update(status='invalidStartPlaneSupportAssociation');return res
     c0=scorer.swept_contacts(start,start,yaw,0.);s0=contact_status(c0)

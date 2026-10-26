@@ -1,0 +1,26 @@
+# Output of scripts/contact_tris.py (2026-10-26). Every first-contact reference triangle from GAME_MERGED.json, transformed into
+# the phone level frame (author registration inverse, then pipeline2 R,t). tilt = facet normal angle from vertical (0 = horizontal facet,
+# 90 = vertical face). height = facet centroid above the phone level floor plane. Second number in a run tuple = triangle top above the
+# actor's start-foot range (mm), as reported by the world model.
+== koivu distinct contact triangles 16
+  cell 16348585: facet tilt from horizontal  29.1 deg, area   23.5 mm2, height above plane +5.0 mm | 4 runs e.g. ('route-01-baseline', 3.1)
+  cell 16350921: facet tilt from horizontal  42.4 deg, area    9.5 mm2, height above plane +6.3 mm | 1 runs e.g. ('route-01-delay', 4.4)
+  cell 163630: facet tilt from horizontal  46.4 deg, area   10.4 mm2, height above plane +5.1 mm | 1 runs e.g. ('route-02-combined', 4.4)
+  cell 166086: facet tilt from horizontal  88.3 deg, area    9.8 mm2, height above plane +38.5 mm | 1 runs e.g. ('route-02-delay', 37.8)
+  cell 16459248: facet tilt from horizontal  46.9 deg, area   12.9 mm2, height above plane +6.7 mm | 1 runs e.g. ('route-03-baseline', 4.1)
+  cell 16433158: facet tilt from horizontal  54.2 deg, area    4.7 mm2, height above plane +8.7 mm | 1 runs e.g. ('route-03-delay', 4.3)
+  cell 16433171: facet tilt from horizontal  63.2 deg, area   10.6 mm2, height above plane +8.4 mm | 1 runs e.g. ('route-03-wrong-turn', 5.3)
+  cell 16351972: facet tilt from horizontal  47.8 deg, area   27.0 mm2, height above plane +9.1 mm | 5 runs e.g. ('route-04-baseline', 6.4)
+  cell 16349549: facet tilt from horizontal  56.2 deg, area   13.1 mm2, height above plane +6.4 mm | 2 runs e.g. ('route-07-baseline', 3.9)
+  cell 16349887: facet tilt from horizontal  44.9 deg, area   19.5 mm2, height above plane +5.7 mm | 1 runs e.g. ('route-07-delay', 3.7)
+  cell 16361112: facet tilt from horizontal  47.0 deg, area   18.3 mm2, height above plane +8.4 mm | 5 runs e.g. ('route-10-baseline', 4.8)
+  cell 16307641: facet tilt from horizontal  20.7 deg, area   15.6 mm2, height above plane +6.9 mm | 3 runs e.g. ('route-11-baseline', 2.8)
+  cell 16349658: facet tilt from horizontal  38.3 deg, area   19.8 mm2, height above plane +10.9 mm | 4 runs e.g. ('route-13-baseline', 9.3)
+  cell 16434894: facet tilt from horizontal  57.4 deg, area   11.1 mm2, height above plane +8.8 mm | 5 runs e.g. ('route-14-baseline', 5.9)
+  cell 16435685: facet tilt from horizontal  41.1 deg, area   11.4 mm2, height above plane +6.6 mm | 3 runs e.g. ('route-15-baseline', 2.9)
+  cell 16349634: facet tilt from horizontal  53.0 deg, area   20.8 mm2, height above plane +7.8 mm | 5 runs e.g. ('route-16-baseline', 6.8)
+== coffee distinct contact triangles 4
+  cell 1504082: facet tilt from horizontal   3.4 deg, area    8.8 mm2, height above plane -7.1 mm | 4 runs e.g. ('route-01-baseline', 2.2)
+  cell 1503921: facet tilt from horizontal  13.1 deg, area    9.2 mm2, height above plane -7.2 mm | 5 runs e.g. ('route-02-baseline', 2.0)
+  cell 1500369: facet tilt from horizontal  23.4 deg, area    5.8 mm2, height above plane -7.5 mm | 2 runs e.g. ('route-03-baseline', 2.2)
+  cell 1244028: facet tilt from horizontal   2.8 deg, area   12.1 mm2, height above plane -5.3 mm | 3 runs e.g. ('route-05-baseline', 2.0)

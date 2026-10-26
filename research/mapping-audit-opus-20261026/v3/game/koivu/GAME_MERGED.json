@@ -1,0 +1,4216 @@
+{
+ "summary": {
+  "label": "koivu",
+  "episodesScheduled": 100,
+  "categories": {
+   "cleanArrival": 29,
+   "marginContact_nearFoot3mm-3cm": 36,
+   "harnessStepCapConflict": 18,
+   "marginContact_obstacle>3cm": 1,
+   "invalidStart": 10,
+   "marginContact_floorClip<=3mm": 6
+  },
+  "byCondition": {
+   "baseline": {
+    "cleanArrival": 7,
+    "marginContact_nearFoot3mm-3cm": 9,
+    "invalidStart": 2,
+    "marginContact_floorClip<=3mm": 2
+   },
+   "combined": {
+    "cleanArrival": 4,
+    "harnessStepCapConflict": 9,
+    "marginContact_nearFoot3mm-3cm": 5,
+    "invalidStart": 2
+   },
+   "delay": {
+    "cleanArrival": 6,
+    "marginContact_nearFoot3mm-3cm": 9,
+    "marginContact_obstacle>3cm": 1,
+    "invalidStart": 2,
+    "marginContact_floorClip<=3mm": 2
+   },
+   "motion-scale": {
+    "cleanArrival": 5,
+    "harnessStepCapConflict": 9,
+    "marginContact_nearFoot3mm-3cm": 4,
+    "invalidStart": 2
+   },
+   "wrong-turn": {
+    "cleanArrival": 7,
+    "marginContact_nearFoot3mm-3cm": 9,
+    "invalidStart": 2,
+    "marginContact_floorClip<=3mm": 2
+   }
+  },
+  "arrivals": [
+   {
+    "runID": "route-00-baseline",
+    "distance": 2.28,
+    "goalError": 0.33,
+    "ticks": 115
+   },
+   {
+    "runID": "route-00-combined",
+    "distance": 2.352,
+    "goalError": 0.262,
+    "ticks": 175
+   },
+   {
+    "runID": "route-00-delay",
+    "distance": 2.4,
+    "goalError": 0.212,
+    "ticks": 133
+   },
+   {
+    "runID": "route-00-motion-scale",
+    "distance": 2.272,
+    "goalError": 0.338,
+    "ticks": 143
+   },
+   {
+    "runID": "route-00-wrong-turn",
+    "distance": 2.28,
+    "goalError": 0.33,
+    "ticks": 116
+   },
+   {
+    "runID": "route-02-baseline",
+    "distance": 1.84,
+    "goalError": 0.331,
+    "ticks": 127
+   },
+   {
+    "runID": "route-02-motion-scale",
+    "distance": 1.838,
+    "goalError": 0.333,
+    "ticks": 154
+   },
+   {
+    "runID": "route-02-wrong-turn",
+    "distance": 1.84,
+    "goalError": 0.331,
+    "ticks": 127
+   },
+   {
+    "runID": "route-05-baseline",
+    "distance": 1.68,
+    "goalError": 0.336,
+    "ticks": 85
+   },
+   {
+    "runID": "route-05-delay",
+    "distance": 1.8,
+    "goalError": 0.216,
+    "ticks": 97
+   },
+   {
+    "runID": "route-05-wrong-turn",
+    "distance": 1.68,
+    "goalError": 0.336,
+    "ticks": 86
+   },
+   {
+    "runID": "route-08-baseline",
+    "distance": 2.84,
+    "goalError": 0.322,
+    "ticks": 143
+   },
+   {
+    "runID": "route-08-combined",
+    "distance": 2.896,
+    "goalError": 0.272,
+    "ticks": 232
+   },
+   {
+    "runID": "route-08-delay",
+    "distance": 2.86,
+    "goalError": 0.305,
+    "ticks": 168
+   },
+   {
+    "runID": "route-08-motion-scale",
+    "distance": 2.832,
+    "goalError": 0.33,
+    "ticks": 178
+   },
+   {
+    "runID": "route-08-wrong-turn",
+    "distance": 2.84,
+    "goalError": 0.323,
+    "ticks": 144
+   },
+   {
+    "runID": "route-09-baseline",
+    "distance": 2.8,
+    "goalError": 0.333,
+    "ticks": 141
+   },
+   {
+    "runID": "route-09-delay",
+    "distance": 2.88,
+    "goalError": 0.257,
+    "ticks": 172
+   },
+   {
+    "runID": "route-09-wrong-turn",
+    "distance": 2.8,
+    "goalError": 0.333,
+    "ticks": 160
+   },
+   {
+    "runID": "route-12-baseline",
+    "distance": 2.24,
+    "goalError": 0.334,
+    "ticks": 113
+   },
+   {
+    "runID": "route-12-combined",
+    "distance": 2.352,
+    "goalError": 0.227,
+    "ticks": 178
+   },
+   {
+    "runID": "route-12-delay",
+    "distance": 2.28,
+    "goalError": 0.296,
+    "ticks": 129
+   },
+   {
+    "runID": "route-12-motion-scale",
+    "distance": 2.24,
+    "goalError": 0.334,
+    "ticks": 141
+   },
+   {
+    "runID": "route-12-wrong-turn",
+    "distance": 2.24,
+    "goalError": 0.334,
+    "ticks": 114
+   },
+   {
+    "runID": "route-18-baseline",
+    "distance": 2.7,
+    "goalError": 0.321,
+    "ticks": 136
+   },
+   {
+    "runID": "route-18-combined",
+    "distance": 2.752,
+    "goalError": 0.275,
+    "ticks": 215
+   },
+   {
+    "runID": "route-18-delay",
+    "distance": 2.82,
+    "goalError": 0.204,
+    "ticks": 165
+   },
+   {
+    "runID": "route-18-motion-scale",
+    "distance": 2.688,
+    "goalError": 0.333,
+    "ticks": 169
+   },
+   {
+    "runID": "route-18-wrong-turn",
+    "distance": 2.7,
+    "goalError": 0.321,
+    "ticks": 137
+   }
+  ],
+  "movedEpisodes": 72,
+  "meanDistanceOfMovedEpisodes": 1.503,
+  "invalidStartReasons": {
+   "invalidStart:firstContactTriangleNearFootAmbiguous": 5,
+   "invalidStartGroundComponent": 5
+  },
+  "contactHeights_m": [
+   0.0028,
+   0.0028,
+   0.0028,
+   0.0029,
+   0.0029,
+   0.0029,
+   0.0031,
+   0.0031,
+   0.0037,
+   0.0037,
+   0.0037,
+   0.0039,
+   0.0039,
+   0.0041,
+   0.0043,
+   0.0044,
+   0.0044,
+   0.0048,
+   0.0048,
+   0.0048,
+   0.0048,
+   0.0048,
+   0.0053,
+   0.0059,
+   0.0059,
+   0.0059,
+   0.0059,
+   0.0059,
+   0.0064,
+   0.0064,
+   0.0064,
+   0.0064,
+   0.0064,
+   0.0068,
+   0.0068,
+   0.0068,
+   0.0068,
+   0.0068,
+   0.0093,
+   0.0093,
+   0.0093,
+   0.0098,
+   0.0378
+  ],
+  "mapSHA256": "39df103794510b29a9f1bfa515ea4b7eea7ab616a3e74741019b1a7ea15165c3",
+  "routesSHA256": "042f33b7117d19b0337fa4f17f43a79f27717c8ab9d63ec8a7f657f2d61cb05d",
+  "worldModel": "master 7506ad9 v3 connected-ground world; contact via decision-equivalent fast path (fast_container.py) with in-run equivalence guard",
+  "controller": "Python in-process substitute for Swift SurfaceGameWorker; Detour on frozen phone mask; never sees reference"
+ },
+ "results": [
+  {
+   "runID": "route-00-baseline",
+   "routeID": 0,
+   "condition": "baseline",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.28,
+   "ticks": 115,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271828,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 375.9,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.33,
+   "routeLengthMetres": 2.6100767214276153,
+   "counts": {
+    "reason:following": 114,
+    "motionTicks": 114,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-00-combined",
+   "routeID": 0,
+   "condition": "combined",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.352,
+   "ticks": 175,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271828,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 375.9,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.262,
+   "routeLengthMetres": 2.6100767214276153,
+   "counts": {
+    "reason:noPose": 2,
+    "reason:following": 169,
+    "motionTicks": 169,
+    "reason:goalReachedByDeliveredPose": 4
+   }
+  },
+  {
+   "runID": "route-00-delay",
+   "routeID": 0,
+   "condition": "delay",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.4,
+   "ticks": 133,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271828,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 375.9,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.212,
+   "routeLengthMetres": 2.6100767214276153,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 126,
+    "motionTicks": 126,
+    "reason:goalReachedByDeliveredPose": 4
+   }
+  },
+  {
+   "runID": "route-00-motion-scale",
+   "routeID": 0,
+   "condition": "motion-scale",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.272,
+   "ticks": 143,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271828,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 375.9,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.338,
+   "routeLengthMetres": 2.6100767214276153,
+   "counts": {
+    "reason:following": 142,
+    "motionTicks": 142,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-00-wrong-turn",
+   "routeID": 0,
+   "condition": "wrong-turn",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.28,
+   "ticks": 116,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271828,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 375.9,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.33,
+   "routeLengthMetres": 2.6100767214276153,
+   "counts": {
+    "reason:following": 115,
+    "motionTicks": 115,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-01-baseline",
+   "routeID": 1,
+   "condition": "baseline",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.42,
+   "ticks": 46,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271829,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 257.6,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16348585,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     -0.00022671364899595065,
+     0.0030603872042026413
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.736,
+   "routeLengthMetres": 2.1665481705645036,
+   "counts": {
+    "reason:following": 46,
+    "motionTicks": 45
+   }
+  },
+  {
+   "runID": "route-01-combined",
+   "routeID": 1,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 8,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271829,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 257.6,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 2.136,
+   "routeLengthMetres": 2.1665481705645036,
+   "counts": {
+    "reason:noPose": 4,
+    "reason:following": 4
+   }
+  },
+  {
+   "runID": "route-01-delay",
+   "routeID": 1,
+   "condition": "delay",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.46,
+   "ticks": 33,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271829,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 257.6,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16350921,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0008120459117994059,
+     0.004385741286066354
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.699,
+   "routeLengthMetres": 2.1665481705645036,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 30,
+    "motionTicks": 26
+   }
+  },
+  {
+   "runID": "route-01-motion-scale",
+   "routeID": 1,
+   "condition": "motion-scale",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 1,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271829,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 257.6,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 2.136,
+   "routeLengthMetres": 2.1665481705645036,
+   "counts": {
+    "reason:following": 1
+   }
+  },
+  {
+   "runID": "route-01-wrong-turn",
+   "routeID": 1,
+   "condition": "wrong-turn",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.42,
+   "ticks": 46,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271829,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 257.6,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16348585,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     -0.00022671364899595065,
+     0.0030603872042026413
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.736,
+   "routeLengthMetres": 2.1665481705645036,
+   "counts": {
+    "reason:following": 46,
+    "motionTicks": 45
+   }
+  },
+  {
+   "runID": "route-02-baseline",
+   "routeID": 2,
+   "condition": "baseline",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 1.84,
+   "ticks": 127,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271830,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 296.6,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.331,
+   "routeLengthMetres": 2.170928644032639,
+   "counts": {
+    "reason:following": 126,
+    "motionTicks": 126,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-02-combined",
+   "routeID": 2,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 1.275,
+   "ticks": 177,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271830,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 296.6,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 163630,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.00040541716571244023,
+     0.004351753826459319
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 0.9,
+   "routeLengthMetres": 2.170928644032639,
+   "counts": {
+    "reason:noPose": 5,
+    "reason:following": 172,
+    "motionTicks": 168
+   }
+  },
+  {
+   "runID": "route-02-delay",
+   "routeID": 2,
+   "condition": "delay",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 1.18,
+   "ticks": 90,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271830,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 296.6,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 166086,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0329089297130462,
+     0.0378233912763689
+    ]
+   },
+   "status": "referenceMarginContact",
+   "goalErrorMetres": 0.991,
+   "routeLengthMetres": 2.170928644032639,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 87,
+    "motionTicks": 83
+   }
+  },
+  {
+   "runID": "route-02-motion-scale",
+   "routeID": 2,
+   "condition": "motion-scale",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 1.838,
+   "ticks": 154,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271830,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 296.6,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.333,
+   "routeLengthMetres": 2.170928644032639,
+   "counts": {
+    "reason:following": 153,
+    "motionTicks": 153,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-02-wrong-turn",
+   "routeID": 2,
+   "condition": "wrong-turn",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 1.84,
+   "ticks": 127,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271830,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 296.6,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.331,
+   "routeLengthMetres": 2.170928644032639,
+   "counts": {
+    "reason:following": 126,
+    "motionTicks": 126,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-03-baseline",
+   "routeID": 3,
+   "condition": "baseline",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 1.76,
+   "ticks": 89,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271831,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 586.7,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16459248,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     -0.0009592337361864775,
+     0.00414831930830322
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 0.952,
+   "routeLengthMetres": 2.8105694308402427,
+   "counts": {
+    "reason:following": 89,
+    "motionTicks": 88
+   }
+  },
+  {
+   "runID": "route-03-combined",
+   "routeID": 3,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 8,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271831,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 586.7,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 2.658,
+   "routeLengthMetres": 2.8105694308402427,
+   "counts": {
+    "reason:noPose": 4,
+    "reason:following": 4
+   }
+  },
+  {
+   "runID": "route-03-delay",
+   "routeID": 3,
+   "condition": "delay",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 1.76,
+   "ticks": 95,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271831,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 586.7,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16433158,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0021499081433677012,
+     0.004254191108843858
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 0.952,
+   "routeLengthMetres": 2.8105694308402427,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 92,
+    "motionTicks": 88
+   }
+  },
+  {
+   "runID": "route-03-motion-scale",
+   "routeID": 3,
+   "condition": "motion-scale",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 1,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271831,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 586.7,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 2.658,
+   "routeLengthMetres": 2.8105694308402427,
+   "counts": {
+    "reason:following": 1
+   }
+  },
+  {
+   "runID": "route-03-wrong-turn",
+   "routeID": 3,
+   "condition": "wrong-turn",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 1.76,
+   "ticks": 90,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271831,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 586.7,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16433171,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0007916971115141756,
+     0.005316682998008535
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 0.955,
+   "routeLengthMetres": 2.8105694308402427,
+   "counts": {
+    "reason:following": 90,
+    "motionTicks": 89
+   }
+  },
+  {
+   "runID": "route-04-baseline",
+   "routeID": 4,
+   "condition": "baseline",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.72,
+   "ticks": 37,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271832,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 193.1,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16351972,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0009235412680846889,
+     0.0064459306348457444
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.296,
+   "routeLengthMetres": 2.0182475792779,
+   "counts": {
+    "reason:following": 37,
+    "motionTicks": 36
+   }
+  },
+  {
+   "runID": "route-04-combined",
+   "routeID": 4,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.72,
+   "ticks": 50,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271832,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 193.1,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16351972,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0009175429856821586,
+     0.006439932352443214
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.296,
+   "routeLengthMetres": 2.0182475792779,
+   "counts": {
+    "reason:noPose": 1,
+    "reason:following": 49,
+    "motionTicks": 45
+   }
+  },
+  {
+   "runID": "route-04-delay",
+   "routeID": 4,
+   "condition": "delay",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.72,
+   "ticks": 43,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271832,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 193.1,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16351972,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0009235307575214402,
+     0.006445920124282496
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.296,
+   "routeLengthMetres": 2.0182475792779,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 40,
+    "motionTicks": 36
+   }
+  },
+  {
+   "runID": "route-04-motion-scale",
+   "routeID": 4,
+   "condition": "motion-scale",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.72,
+   "ticks": 46,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271832,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 193.1,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16351972,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0009175200353312854,
+     0.006439909402092341
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.296,
+   "routeLengthMetres": 2.0182475792779,
+   "counts": {
+    "reason:following": 46,
+    "motionTicks": 45
+   }
+  },
+  {
+   "runID": "route-04-wrong-turn",
+   "routeID": 4,
+   "condition": "wrong-turn",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.72,
+   "ticks": 37,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271832,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 193.1,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16351972,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0009235412680846889,
+     0.0064459306348457444
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.296,
+   "routeLengthMetres": 2.0182475792779,
+   "counts": {
+    "reason:following": 37,
+    "motionTicks": 36
+   }
+  },
+  {
+   "runID": "route-05-baseline",
+   "routeID": 5,
+   "condition": "baseline",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 1.68,
+   "ticks": 85,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271833,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 301.0,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.336,
+   "routeLengthMetres": 2.015564430836755,
+   "counts": {
+    "reason:following": 84,
+    "motionTicks": 84,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-05-combined",
+   "routeID": 5,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 6,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271833,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 301.0,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 2.016,
+   "routeLengthMetres": 2.015564430836755,
+   "counts": {
+    "reason:noPose": 2,
+    "reason:following": 4
+   }
+  },
+  {
+   "runID": "route-05-delay",
+   "routeID": 5,
+   "condition": "delay",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 1.8,
+   "ticks": 97,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271833,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 301.0,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.216,
+   "routeLengthMetres": 2.015564430836755,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 90,
+    "motionTicks": 90,
+    "reason:goalReachedByDeliveredPose": 4
+   }
+  },
+  {
+   "runID": "route-05-motion-scale",
+   "routeID": 5,
+   "condition": "motion-scale",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 1,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271833,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 301.0,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 2.016,
+   "routeLengthMetres": 2.015564430836755,
+   "counts": {
+    "reason:following": 1
+   }
+  },
+  {
+   "runID": "route-05-wrong-turn",
+   "routeID": 5,
+   "condition": "wrong-turn",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 1.68,
+   "ticks": 86,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271833,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 301.0,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.336,
+   "routeLengthMetres": 2.015564430836755,
+   "counts": {
+    "reason:following": 85,
+    "motionTicks": 85,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-06-baseline",
+   "routeID": 6,
+   "condition": "baseline",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 0,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271834,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 314.8,
+   "status": "invalidStart:firstContactTriangleNearFootAmbiguous"
+  },
+  {
+   "runID": "route-06-combined",
+   "routeID": 6,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 0,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271834,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 314.8,
+   "status": "invalidStart:firstContactTriangleNearFootAmbiguous"
+  },
+  {
+   "runID": "route-06-delay",
+   "routeID": 6,
+   "condition": "delay",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 0,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271834,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 314.8,
+   "status": "invalidStart:firstContactTriangleNearFootAmbiguous"
+  },
+  {
+   "runID": "route-06-motion-scale",
+   "routeID": 6,
+   "condition": "motion-scale",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 0,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271834,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 314.8,
+   "status": "invalidStart:firstContactTriangleNearFootAmbiguous"
+  },
+  {
+   "runID": "route-06-wrong-turn",
+   "routeID": 6,
+   "condition": "wrong-turn",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 0,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271834,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 314.8,
+   "status": "invalidStart:firstContactTriangleNearFootAmbiguous"
+  },
+  {
+   "runID": "route-07-baseline",
+   "routeID": 7,
+   "condition": "baseline",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 1.48,
+   "ticks": 75,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271835,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 263.6,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16349549,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     -0.00043000903254398776,
+     0.0038837745969643386
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 0.536,
+   "routeLengthMetres": 1.9939149952800523,
+   "counts": {
+    "reason:following": 75,
+    "motionTicks": 74
+   }
+  },
+  {
+   "runID": "route-07-combined",
+   "routeID": 7,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 6,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271835,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 263.6,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 2.016,
+   "routeLengthMetres": 1.9939149952800523,
+   "counts": {
+    "reason:noPose": 2,
+    "reason:following": 4
+   }
+  },
+  {
+   "runID": "route-07-delay",
+   "routeID": 7,
+   "condition": "delay",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 1.52,
+   "ticks": 107,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271835,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 263.6,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16349887,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     -0.0007404484261337831,
+     0.003662506147936888
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 0.5,
+   "routeLengthMetres": 1.9939149952800523,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 104,
+    "motionTicks": 100
+   }
+  },
+  {
+   "runID": "route-07-motion-scale",
+   "routeID": 7,
+   "condition": "motion-scale",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 1,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271835,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 263.6,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 2.016,
+   "routeLengthMetres": 1.9939149952800523,
+   "counts": {
+    "reason:following": 1
+   }
+  },
+  {
+   "runID": "route-07-wrong-turn",
+   "routeID": 7,
+   "condition": "wrong-turn",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 1.48,
+   "ticks": 75,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271835,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 263.6,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16349549,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     -0.00043000903254398776,
+     0.0038837745969643386
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 0.536,
+   "routeLengthMetres": 1.9939149952800523,
+   "counts": {
+    "reason:following": 75,
+    "motionTicks": 74
+   }
+  },
+  {
+   "runID": "route-08-baseline",
+   "routeID": 8,
+   "condition": "baseline",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.84,
+   "ticks": 143,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271836,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 579.7,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.322,
+   "routeLengthMetres": 3.162277754411597,
+   "counts": {
+    "reason:following": 142,
+    "motionTicks": 142,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-08-combined",
+   "routeID": 8,
+   "condition": "combined",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.896,
+   "ticks": 232,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271836,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 579.7,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.272,
+   "routeLengthMetres": 3.162277754411597,
+   "counts": {
+    "reason:noPose": 1,
+    "reason:following": 227,
+    "motionTicks": 227,
+    "reason:goalReachedByDeliveredPose": 4
+   }
+  },
+  {
+   "runID": "route-08-delay",
+   "routeID": 8,
+   "condition": "delay",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.86,
+   "ticks": 168,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271836,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 579.7,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.305,
+   "routeLengthMetres": 3.162277754411597,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 161,
+    "motionTicks": 161,
+    "reason:goalReachedByDeliveredPose": 4
+   }
+  },
+  {
+   "runID": "route-08-motion-scale",
+   "routeID": 8,
+   "condition": "motion-scale",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.832,
+   "ticks": 178,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271836,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 579.7,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.33,
+   "routeLengthMetres": 3.162277754411597,
+   "counts": {
+    "reason:following": 177,
+    "motionTicks": 177,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-08-wrong-turn",
+   "routeID": 8,
+   "condition": "wrong-turn",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.84,
+   "ticks": 144,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271836,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 579.7,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.323,
+   "routeLengthMetres": 3.162277754411597,
+   "counts": {
+    "reason:following": 143,
+    "motionTicks": 143,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-09-baseline",
+   "routeID": 9,
+   "condition": "baseline",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.8,
+   "ticks": 141,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271837,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 583.3,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.333,
+   "routeLengthMetres": 3.1326201190980694,
+   "counts": {
+    "reason:following": 140,
+    "motionTicks": 140,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-09-combined",
+   "routeID": 9,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 6,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271837,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 583.3,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 3.132,
+   "routeLengthMetres": 3.1326201190980694,
+   "counts": {
+    "reason:noPose": 2,
+    "reason:following": 4
+   }
+  },
+  {
+   "runID": "route-09-delay",
+   "routeID": 9,
+   "condition": "delay",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.88,
+   "ticks": 172,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271837,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 583.3,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.257,
+   "routeLengthMetres": 3.1326201190980694,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 165,
+    "motionTicks": 165,
+    "reason:goalReachedByDeliveredPose": 4
+   }
+  },
+  {
+   "runID": "route-09-motion-scale",
+   "routeID": 9,
+   "condition": "motion-scale",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 1,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271837,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 583.3,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 3.132,
+   "routeLengthMetres": 3.1326201190980694,
+   "counts": {
+    "reason:following": 1
+   }
+  },
+  {
+   "runID": "route-09-wrong-turn",
+   "routeID": 9,
+   "condition": "wrong-turn",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.8,
+   "ticks": 160,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271837,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 583.3,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.333,
+   "routeLengthMetres": 3.1326201190980694,
+   "counts": {
+    "reason:following": 159,
+    "motionTicks": 159,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-10-baseline",
+   "routeID": 10,
+   "condition": "baseline",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.88,
+   "ticks": 45,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271838,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 367.1,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16361112,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0021100662045050794,
+     0.004820225081148444
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.73,
+   "routeLengthMetres": 2.6106106233476334,
+   "counts": {
+    "reason:following": 45,
+    "motionTicks": 44
+   }
+  },
+  {
+   "runID": "route-10-combined",
+   "routeID": 10,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.88,
+   "ticks": 60,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271838,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 367.1,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16361112,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0021053026858045163,
+     0.004815461562447881
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.73,
+   "routeLengthMetres": 2.6106106233476334,
+   "counts": {
+    "reason:noPose": 1,
+    "reason:following": 59,
+    "motionTicks": 55
+   }
+  },
+  {
+   "runID": "route-10-delay",
+   "routeID": 10,
+   "condition": "delay",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.88,
+   "ticks": 51,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271838,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 367.1,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16361112,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.002110063544837504,
+     0.004820222421480868
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.73,
+   "routeLengthMetres": 2.6106106233476334,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 48,
+    "motionTicks": 44
+   }
+  },
+  {
+   "runID": "route-10-motion-scale",
+   "routeID": 10,
+   "condition": "motion-scale",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.88,
+   "ticks": 56,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271838,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 367.1,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16361112,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0021052947372191336,
+     0.004815453613862498
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.73,
+   "routeLengthMetres": 2.6106106233476334,
+   "counts": {
+    "reason:following": 56,
+    "motionTicks": 55
+   }
+  },
+  {
+   "runID": "route-10-wrong-turn",
+   "routeID": 10,
+   "condition": "wrong-turn",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.88,
+   "ticks": 45,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271838,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 367.1,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16361112,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0021100662045050794,
+     0.004820225081148444
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.73,
+   "routeLengthMetres": 2.6106106233476334,
+   "counts": {
+    "reason:following": 45,
+    "motionTicks": 44
+   }
+  },
+  {
+   "runID": "route-11-baseline",
+   "routeID": 11,
+   "condition": "baseline",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 1.08,
+   "ticks": 55,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271839,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 369.1,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16307641,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0012005576532367118,
+     0.0027603755454959347
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.382,
+   "routeLengthMetres": 2.462214549360335,
+   "counts": {
+    "reason:following": 55,
+    "motionTicks": 54
+   }
+  },
+  {
+   "runID": "route-11-combined",
+   "routeID": 11,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 6,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271839,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 369.1,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 2.462,
+   "routeLengthMetres": 2.462214549360335,
+   "counts": {
+    "reason:noPose": 2,
+    "reason:following": 4
+   }
+  },
+  {
+   "runID": "route-11-delay",
+   "routeID": 11,
+   "condition": "delay",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 1.08,
+   "ticks": 61,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271839,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 369.1,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16307641,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0012005503120783804,
+     0.0027603682043376033
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.382,
+   "routeLengthMetres": 2.462214549360335,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 58,
+    "motionTicks": 54
+   }
+  },
+  {
+   "runID": "route-11-motion-scale",
+   "routeID": 11,
+   "condition": "motion-scale",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 1,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271839,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 369.1,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 2.462,
+   "routeLengthMetres": 2.462214549360335,
+   "counts": {
+    "reason:following": 1
+   }
+  },
+  {
+   "runID": "route-11-wrong-turn",
+   "routeID": 11,
+   "condition": "wrong-turn",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 1.08,
+   "ticks": 55,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271839,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 369.1,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16307641,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0012005576532367118,
+     0.0027603755454959347
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.382,
+   "routeLengthMetres": 2.462214549360335,
+   "counts": {
+    "reason:following": 55,
+    "motionTicks": 54
+   }
+  },
+  {
+   "runID": "route-12-baseline",
+   "routeID": 12,
+   "condition": "baseline",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.24,
+   "ticks": 113,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271840,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 417.1,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.334,
+   "routeLengthMetres": 2.5739075209543794,
+   "counts": {
+    "reason:following": 112,
+    "motionTicks": 112,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-12-combined",
+   "routeID": 12,
+   "condition": "combined",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.352,
+   "ticks": 178,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271840,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 417.1,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.227,
+   "routeLengthMetres": 2.5739075209543794,
+   "counts": {
+    "reason:noPose": 5,
+    "reason:following": 169,
+    "motionTicks": 169,
+    "reason:goalReachedByDeliveredPose": 4
+   }
+  },
+  {
+   "runID": "route-12-delay",
+   "routeID": 12,
+   "condition": "delay",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.28,
+   "ticks": 129,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271840,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 417.1,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.296,
+   "routeLengthMetres": 2.5739075209543794,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 122,
+    "motionTicks": 122,
+    "reason:goalReachedByDeliveredPose": 4
+   }
+  },
+  {
+   "runID": "route-12-motion-scale",
+   "routeID": 12,
+   "condition": "motion-scale",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.24,
+   "ticks": 141,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271840,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 417.1,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.334,
+   "routeLengthMetres": 2.5739075209543794,
+   "counts": {
+    "reason:following": 140,
+    "motionTicks": 140,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-12-wrong-turn",
+   "routeID": 12,
+   "condition": "wrong-turn",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.24,
+   "ticks": 114,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271840,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 417.1,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.334,
+   "routeLengthMetres": 2.5739075209543794,
+   "counts": {
+    "reason:following": 113,
+    "motionTicks": 113,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-13-baseline",
+   "routeID": 13,
+   "condition": "baseline",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.56,
+   "ticks": 29,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271841,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 314.3,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16349658,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.004620133925585004,
+     0.00930409770010519
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.676,
+   "routeLengthMetres": 2.236200971625446,
+   "counts": {
+    "reason:following": 29,
+    "motionTicks": 28
+   }
+  },
+  {
+   "runID": "route-13-combined",
+   "routeID": 13,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 5,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271841,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 314.3,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 2.236,
+   "routeLengthMetres": 2.236200971625446,
+   "counts": {
+    "reason:noPose": 1,
+    "reason:following": 4
+   }
+  },
+  {
+   "runID": "route-13-delay",
+   "routeID": 13,
+   "condition": "delay",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.56,
+   "ticks": 35,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271841,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 314.3,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16349658,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.004620133566933832,
+     0.009304097341454017
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.676,
+   "routeLengthMetres": 2.236200971625446,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 32,
+    "motionTicks": 28
+   }
+  },
+  {
+   "runID": "route-13-motion-scale",
+   "routeID": 13,
+   "condition": "motion-scale",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 1,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271841,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 314.3,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 2.236,
+   "routeLengthMetres": 2.236200971625446,
+   "counts": {
+    "reason:following": 1
+   }
+  },
+  {
+   "runID": "route-13-wrong-turn",
+   "routeID": 13,
+   "condition": "wrong-turn",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.56,
+   "ticks": 29,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271841,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 314.3,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16349658,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.004620133925585004,
+     0.00930409770010519
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.676,
+   "routeLengthMetres": 2.236200971625446,
+   "counts": {
+    "reason:following": 29,
+    "motionTicks": 28
+   }
+  },
+  {
+   "runID": "route-14-baseline",
+   "routeID": 14,
+   "condition": "baseline",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.2,
+   "ticks": 11,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271842,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 395.6,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16434894,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0021657707681391617,
+     0.005855652975309038
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 2.268,
+   "routeLengthMetres": 2.5116891572010562,
+   "counts": {
+    "reason:following": 11,
+    "motionTicks": 10
+   }
+  },
+  {
+   "runID": "route-14-combined",
+   "routeID": 14,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.192,
+   "ticks": 18,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271842,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 395.6,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16434894,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.00216577095660474,
+     0.005855653163774616
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 2.276,
+   "routeLengthMetres": 2.5116891572010562,
+   "counts": {
+    "reason:noPose": 2,
+    "reason:following": 16,
+    "motionTicks": 12
+   }
+  },
+  {
+   "runID": "route-14-delay",
+   "routeID": 14,
+   "condition": "delay",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.2,
+   "ticks": 17,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271842,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 395.6,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16434894,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.002165770475094025,
+     0.005855652682263901
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 2.268,
+   "routeLengthMetres": 2.5116891572010562,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 14,
+    "motionTicks": 10
+   }
+  },
+  {
+   "runID": "route-14-motion-scale",
+   "routeID": 14,
+   "condition": "motion-scale",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.192,
+   "ticks": 13,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271842,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 395.6,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16434894,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0021657707681391617,
+     0.005855652975309038
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 2.276,
+   "routeLengthMetres": 2.5116891572010562,
+   "counts": {
+    "reason:following": 13,
+    "motionTicks": 12
+   }
+  },
+  {
+   "runID": "route-14-wrong-turn",
+   "routeID": 14,
+   "condition": "wrong-turn",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.2,
+   "ticks": 11,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271842,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 395.6,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16434894,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0021657707681391617,
+     0.005855652975309038
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 2.268,
+   "routeLengthMetres": 2.5116891572010562,
+   "counts": {
+    "reason:following": 11,
+    "motionTicks": 10
+   }
+  },
+  {
+   "runID": "route-15-baseline",
+   "routeID": 15,
+   "condition": "baseline",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.86,
+   "ticks": 44,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271843,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 356.2,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16435685,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     -9.566465763227901e-05,
+     0.002923249501791846
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.758,
+   "routeLengthMetres": 2.6426455418758366,
+   "counts": {
+    "reason:following": 44,
+    "motionTicks": 43
+   }
+  },
+  {
+   "runID": "route-15-combined",
+   "routeID": 15,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 8,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271843,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 356.2,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 2.61,
+   "routeLengthMetres": 2.6426455418758366,
+   "counts": {
+    "reason:noPose": 4,
+    "reason:following": 4
+   }
+  },
+  {
+   "runID": "route-15-delay",
+   "routeID": 15,
+   "condition": "delay",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.86,
+   "ticks": 50,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271843,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 356.2,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16435685,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     -9.566025325195241e-05,
+     0.0029232539061721727
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.758,
+   "routeLengthMetres": 2.6426455418758366,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 47,
+    "motionTicks": 43
+   }
+  },
+  {
+   "runID": "route-15-motion-scale",
+   "routeID": 15,
+   "condition": "motion-scale",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 1,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271843,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 356.2,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 2.61,
+   "routeLengthMetres": 2.6426455418758366,
+   "counts": {
+    "reason:following": 1
+   }
+  },
+  {
+   "runID": "route-15-wrong-turn",
+   "routeID": 15,
+   "condition": "wrong-turn",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.86,
+   "ticks": 44,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271843,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 356.2,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16435685,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     -9.566465763227901e-05,
+     0.002923249501791846
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.758,
+   "routeLengthMetres": 2.6426455418758366,
+   "counts": {
+    "reason:following": 44,
+    "motionTicks": 43
+   }
+  },
+  {
+   "runID": "route-16-baseline",
+   "routeID": 16,
+   "condition": "baseline",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.74,
+   "ticks": 38,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271844,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 549.4,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16349634,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0012307547136161502,
+     0.006753404934236898
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 2.063,
+   "routeLengthMetres": 2.8126092991158993,
+   "counts": {
+    "reason:following": 38,
+    "motionTicks": 37
+   }
+  },
+  {
+   "runID": "route-16-combined",
+   "routeID": 16,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.752,
+   "ticks": 54,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271844,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 549.4,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16349634,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0012277133731537484,
+     0.006750363593774496
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 2.051,
+   "routeLengthMetres": 2.8126092991158993,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 51,
+    "motionTicks": 47
+   }
+  },
+  {
+   "runID": "route-16-delay",
+   "routeID": 16,
+   "condition": "delay",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.74,
+   "ticks": 44,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271844,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 549.4,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16349634,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0012307565469436834,
+     0.006753406767564431
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 2.063,
+   "routeLengthMetres": 2.8126092991158993,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 41,
+    "motionTicks": 37
+   }
+  },
+  {
+   "runID": "route-16-motion-scale",
+   "routeID": 16,
+   "condition": "motion-scale",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.752,
+   "ticks": 48,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271844,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 549.4,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16349634,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0012277155521389434,
+     0.006750365772759691
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 2.051,
+   "routeLengthMetres": 2.8126092991158993,
+   "counts": {
+    "reason:following": 48,
+    "motionTicks": 47
+   }
+  },
+  {
+   "runID": "route-16-wrong-turn",
+   "routeID": 16,
+   "condition": "wrong-turn",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 0.74,
+   "ticks": 38,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271844,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 549.4,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16349634,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0012307547136161502,
+     0.006753404934236898
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 2.063,
+   "routeLengthMetres": 2.8126092991158993,
+   "counts": {
+    "reason:following": 38,
+    "motionTicks": 37
+   }
+  },
+  {
+   "runID": "route-17-baseline",
+   "routeID": 17,
+   "condition": "baseline",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 1.48,
+   "ticks": 75,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271845,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 701.5,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16348585,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0004113669827999363,
+     0.003698467835998528
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.785,
+   "routeLengthMetres": 3.2774541188671025,
+   "counts": {
+    "reason:following": 75,
+    "motionTicks": 74
+   }
+  },
+  {
+   "runID": "route-17-combined",
+   "routeID": 17,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 7,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271845,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 701.5,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 3.26,
+   "routeLengthMetres": 3.2774541188671025,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 4
+   }
+  },
+  {
+   "runID": "route-17-delay",
+   "routeID": 17,
+   "condition": "delay",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 1.52,
+   "ticks": 104,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271845,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 701.5,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16349658,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.005078476324792858,
+     0.009762440099313043
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.749,
+   "routeLengthMetres": 3.2774541188671025,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 101,
+    "motionTicks": 97
+   }
+  },
+  {
+   "runID": "route-17-motion-scale",
+   "routeID": 17,
+   "condition": "motion-scale",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 1,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271845,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 701.5,
+   "status": "groundFollowMovementCap",
+   "goalErrorMetres": 3.26,
+   "routeLengthMetres": 3.2774541188671025,
+   "counts": {
+    "reason:following": 1
+   }
+  },
+  {
+   "runID": "route-17-wrong-turn",
+   "routeID": 17,
+   "condition": "wrong-turn",
+   "arrival": false,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 1,
+   "nearFootAmbiguousContactEvents": 1,
+   "actualDistanceMetres": 1.48,
+   "ticks": 75,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271845,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 701.5,
+   "firstContact": {
+    "reason": "boundaryIntersection",
+    "firstReferenceCellID": 16348585,
+    "firstTriangleHeightRelativeToStartFootRange": [
+     0.0004113669827999363,
+     0.003698467835998528
+    ]
+   },
+   "status": "firstContactTriangleNearFootAmbiguous",
+   "goalErrorMetres": 1.785,
+   "routeLengthMetres": 3.2774541188671025,
+   "counts": {
+    "reason:following": 75,
+    "motionTicks": 74
+   }
+  },
+  {
+   "runID": "route-18-baseline",
+   "routeID": 18,
+   "condition": "baseline",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.7,
+   "ticks": 136,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271846,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 580.7,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.321,
+   "routeLengthMetres": 3.0207615871240376,
+   "counts": {
+    "reason:following": 135,
+    "motionTicks": 135,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-18-combined",
+   "routeID": 18,
+   "condition": "combined",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.752,
+   "ticks": 215,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271846,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 580.7,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.275,
+   "routeLengthMetres": 3.0207615871240376,
+   "counts": {
+    "reason:noPose": 4,
+    "reason:following": 207,
+    "motionTicks": 207,
+    "reason:goalReachedByDeliveredPose": 4
+   }
+  },
+  {
+   "runID": "route-18-delay",
+   "routeID": 18,
+   "condition": "delay",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.82,
+   "ticks": 165,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271846,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 580.7,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.204,
+   "routeLengthMetres": 3.0207615871240376,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 158,
+    "motionTicks": 158,
+    "reason:goalReachedByDeliveredPose": 4
+   }
+  },
+  {
+   "runID": "route-18-motion-scale",
+   "routeID": 18,
+   "condition": "motion-scale",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.688,
+   "ticks": 169,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271846,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 580.7,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.333,
+   "routeLengthMetres": 3.0207615871240376,
+   "counts": {
+    "reason:following": 168,
+    "motionTicks": 168,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-18-wrong-turn",
+   "routeID": 18,
+   "condition": "wrong-turn",
+   "arrival": true,
+   "motionExecuted": true,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 2.7,
+   "ticks": 137,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271846,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "groundSetupSeconds": 580.7,
+   "status": "arrivalReferenceModelOnly",
+   "goalErrorMetres": 0.321,
+   "routeLengthMetres": 3.0207615871240376,
+   "counts": {
+    "reason:following": 136,
+    "motionTicks": 136,
+    "reason:goalReachedByDeliveredPose": 1
+   }
+  },
+  {
+   "runID": "route-19-baseline",
+   "routeID": 19,
+   "condition": "baseline",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 0,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271847,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "status": "invalidStartGroundComponent",
+   "reason": "one of nine initial support faces is ineligible",
+   "initialSupportCheck": null
+  },
+  {
+   "runID": "route-19-combined",
+   "routeID": 19,
+   "condition": "combined",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 0,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271847,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "status": "invalidStartGroundComponent",
+   "reason": "one of nine initial support faces is ineligible",
+   "initialSupportCheck": null
+  },
+  {
+   "runID": "route-19-delay",
+   "routeID": 19,
+   "condition": "delay",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 0,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271847,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "status": "invalidStartGroundComponent",
+   "reason": "one of nine initial support faces is ineligible",
+   "initialSupportCheck": null
+  },
+  {
+   "runID": "route-19-motion-scale",
+   "routeID": 19,
+   "condition": "motion-scale",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 0,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.25,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271847,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "status": "invalidStartGroundComponent",
+   "reason": "one of nine initial support faces is ineligible",
+   "initialSupportCheck": null
+  },
+  {
+   "runID": "route-19-wrong-turn",
+   "routeID": 19,
+   "condition": "wrong-turn",
+   "arrival": false,
+   "motionExecuted": false,
+   "actualBodyContactEvents": 0,
+   "marginContactEvents": 0,
+   "nearFootAmbiguousContactEvents": 0,
+   "actualDistanceMetres": 0.0,
+   "ticks": 0,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": 0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271847,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "physicalAuthority": false,
+   "status": "invalidStartGroundComponent",
+   "reason": "one of nine initial support faces is ineligible",
+   "initialSupportCheck": null
+  }
+ ]
+}

@@ -103,7 +103,9 @@ class Controller:
             pts=self.M.route(p,self.goal);self.last_plan=tick
             if pts is None:self.path=None;return 0.,0.,'noPhoneMapRouteFromDeliveredPose',self.pose['capturedAt']
             self.path=[p.tolist()]+[list(q) for q in pts[1:]]
-        target=next((np.asarray(q) for q in self.path if np.linalg.norm(np.asarray(q)-p)>.01),None)
+        # path[0] is the planning position (kept only for the off-corridor test); targets are the corridor corners after it,
+        # as in game_model.follow_candidate (which follows result.points[1:]). Fix of attempt-5 bug that steered back to path[0].
+        target=next((np.asarray(q) for q in self.path[1:] if np.linalg.norm(np.asarray(q)-p)>.01),None)
         if target is None:return 0.,0.,'noDistinctCandidatePoint',self.pose['capturedAt']
         dv=target-p;err=math.atan2(math.sin(math.atan2(dv[1],dv[0])-yaw),math.cos(math.atan2(dv[1],dv[0])-yaw))
         turn=max(-math.radians(P['maxYawDeg']),min(math.radians(P['maxYawDeg']),err))
