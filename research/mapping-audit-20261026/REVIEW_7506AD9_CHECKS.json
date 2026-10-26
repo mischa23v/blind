@@ -1,0 +1,154 @@
+{
+  "checkpoint": "7506ad9",
+  "comparator": "57fdf25",
+  "packetFiles": 120,
+  "manifestPayloadFiles": 118,
+  "allPacketHashesMatch": true,
+  "sourceEqualityTo57fdf25": {
+    "pipeline.py": true,
+    "pipeline2.py": true,
+    "occthres.py": true,
+    "routes_rect.py": true
+  },
+  "trajectory": {
+    "frames": 294,
+    "blockedRecords": 39,
+    "westRecords": 71,
+    "westBlockedRecords": 33,
+    "westUniqueCells": 57,
+    "westBlockedUniqueCells": 25,
+    "westLowBlockedCells": 15,
+    "westMissingSupportBlockedCells": 10,
+    "frame214ReturnXYMetres": 0.3396452767777999,
+    "frame214Return3DMetres": 0.36151848032403966,
+    "frame214AngularSweepTurns": 1.003913215826133,
+    "all71SavedROIAssociationsMatch": true
+  },
+  "coordinateChecks": {
+    "levelDeterminant": 1.0,
+    "levelOrthogonalityMaxError": 2.220446049250313e-16,
+    "poseRotationSingularValueRange": [
+      0.9999999562342178,
+      1.0000000428397995
+    ]
+  },
+  "savedResiduals": {
+    "endpoints": 8567,
+    "associationFieldsExact": true,
+    "maxResidualEquationErrorMetres": 0.0,
+    "validFits": 236,
+    "invalidFits": 58
+  },
+  "blockedEvidenceGroups": {
+    "lowObstacle": {
+      "cells": 15,
+      "endpoints": 2919,
+      "cellsWithNearEndpoints": 14,
+      "cellsWithNearLowBandEndpoints": 12
+    },
+    "missingSupport": {
+      "cells": 10,
+      "endpoints": 812,
+      "cellsWithNearEndpoints": 0,
+      "cellsWithNearLowBandEndpoints": 0
+    }
+  },
+  "exampleCell44_171": {
+    "conditionalHeightWindowMetres": [
+      -0.1,
+      0.1
+    ],
+    "nearCount": 20,
+    "farCount": 58,
+    "nearMedianMetres": 0.07644188866318424,
+    "farMedianMetres": 0.005011192175252366,
+    "nearMinusFarMedianMetres": 0.07143069648793188,
+    "note": "Same nominal XY cell, not established exact surface correspondences."
+  },
+  "threeFrameChecks": [
+    {
+      "poseIndex": 61,
+      "frameID": "frame_00062",
+      "sourceHashVerified": true,
+      "allSourceSamplesMatchOriginalAST": true,
+      "savedEndpointsExact": 466,
+      "globalMedianMetres": 0.0613998282180267,
+      "fitMedianResidualMetres": 0.0007540390432821814,
+      "planeTiltDegrees": 1.753741573688444,
+      "planeHeightAtSelectedCentroidMetres": 0.057942751791992,
+      "planeABCD": [
+        0.02355535658957454,
+        0.019538087440765316,
+        0.9995315944556705,
+        -0.03236374197515431
+      ],
+      "inliers": 13558,
+      "candidates": 16554,
+      "halfPixelAlternativeMaxHeightChangeMM": 1.3001231704730574
+    },
+    {
+      "poseIndex": 62,
+      "frameID": "frame_00063",
+      "sourceHashVerified": true,
+      "allSourceSamplesMatchOriginalAST": true,
+      "savedEndpointsExact": 485,
+      "globalMedianMetres": 0.06649750567938151,
+      "fitMedianResidualMetres": 0.001150863325616057,
+      "planeTiltDegrees": 2.1459752840045065,
+      "planeHeightAtSelectedCentroidMetres": 0.06329090372468708,
+      "planeABCD": [
+        0.024569776406164562,
+        0.028257696272403335,
+        0.9992986684113653,
+        -0.05909087455424392
+      ],
+      "inliers": 12050,
+      "candidates": 14126,
+      "halfPixelAlternativeMaxHeightChangeMM": 1.2884887367364029
+    },
+    {
+      "poseIndex": 63,
+      "frameID": "frame_00064",
+      "sourceHashVerified": true,
+      "allSourceSamplesMatchOriginalAST": true,
+      "savedEndpointsExact": 469,
+      "globalMedianMetres": 0.061844777154215436,
+      "fitMedianResidualMetres": 0.0014368787200859517,
+      "planeTiltDegrees": 1.7810576341950817,
+      "planeHeightAtSelectedCentroidMetres": 0.05853868770992228,
+      "planeABCD": [
+        0.021441092789686058,
+        0.02250034330922243,
+        0.9995168903480077,
+        -0.04947557997007968
+      ],
+      "inliers": 11856,
+      "candidates": 13735,
+      "halfPixelAlternativeMaxHeightChangeMM": 1.275936689464017
+    }
+  ],
+  "signedKey": {
+    "rows": 1384,
+    "changedRows": 796,
+    "westernMaxAbsHeightShiftMM": 0.02037937263299483
+  },
+  "referenceJoinRecount": {
+    "blockedCells": 25,
+    "triangleChecked": 13,
+    "triangleCheckedLowFlags": 13,
+    "allSavedContactsZero": true,
+    "allFiveSavedSupportProbesHit": true,
+    "savedFloorHeightRangeMetres": [
+      -0.004712330546665065,
+      -0.0027243163337865896
+    ],
+    "originalTriangleArraysIndependentlyReloaded": false,
+    "newReferenceQueries": 0
+  },
+  "limits": [
+    "No native fit rerun, no full fusion, no reference mesh queries, no new route/movement.",
+    "Three source frames reprojected; other frames checked through saved arrays only.",
+    "Exact arithmetic and hashes do not establish physical accuracy."
+  ],
+  "wallSeconds": 16.17200000002049
+}

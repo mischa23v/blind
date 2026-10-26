@@ -472,3 +472,5 @@ Seeing AI learning: read research/SEEING_AI_CODE_REFERENCES.md on the Mac and do
 - Execute the iPhone checklist with real sensor/voice conditions; first tab must remain reply-only. Check consent/gallery disable while a familiar hint is queued.
 - Investigate held-out usefulness omissions without fabricating tools or unsafe physical advice. Preserve initial failures before any change.
 
+Floor-routing follow-up: read research/mapping-audit-20261026/README.md. Implement and freeze locally observed support with retained small objects, step edges, invalid/conflicting fits and unknown coverage; do not widen the global floor band or carve the camera path. Validate cross-view geometry and the actual loop target before retrying movement. This review adds no movement result.
+

@@ -623,3 +623,7 @@ Uploaded the user-supplied hello.zip unchanged (9,420,989 bytes; three Read/Desc
 
 
 Portable verification for this follow-on: 592/592 BlindCore (whole suite), 15/15 BlindMemory, 257/257 Node, default and DEBUG/familiar-person Swift parsing, firmware protocol and address/undefined-sanitized failure injection passed. LeakSanitizer could not run under this executor's tracing; leak detection was disabled for the address/undefined sanitizer rerun. Aggregate verification passed in a disposable source copy with existing dependencies; reviewed generated Debug flags were copied into the checked-in project. No Apple SDK build, device test or accuracy result is claimed.
+
+## Independent floor-routing review - 2026-10-26
+
+Reviewed diagnostic 7506ad9 against mapper 57fdf25. Packet verification, three original-depth reprojections, saved-array/pose joins and signed-key row refits confirm a global-floor classification defect and the reported western blockage. Per-view plane residuals do not establish physical accuracy; pose/depth/local-surface causes remain unresolved. Fixed compass loop failures are not exhaustive physical infeasibility. Published focused findings, numeric results and small reproduction scripts in research/mapping-audit-20261026/. No app/map changes, new native fits, fusion, reference queries, routes or movement episodes. See that directory's README and PUBLICATION_VALIDATION.json; unfinished movement tests remain unfinished.

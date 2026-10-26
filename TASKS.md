@@ -653,3 +653,9 @@ Every implementation completion entry must name the adapted upstream/API, exact 
 - Imported preserved scenario inputs, hidden rubrics, raw results and native checklist under tests/scenarios/companion. Integrity validation is not behavioral/model success; first-pass usefulness misses remain visible.
 - Pending: actual Apple SDK build, native model selection/latency, VoiceOver/device sensor behavior and open-ended held-out adaptation. Do not describe this source checkpoint as all features validated.
 
+## Independent floor-routing review - 2026-10-26
+
+- [x] Review 7506ad9 against 57fdf25 using exact packet/source identities, three original-depth reprojections and saved-array/pose/floor-row checks. Evidence: research/mapping-audit-20261026/README.md and REVIEW_7506AD9_CHECKS.json. Diagnostic verification only.
+- [ ] Implement and validate local observed-support classification with low objects, steps and unknown support retained; distinguish pose/depth inconsistency using held-out surface checks.
+- [ ] Complete actual movement evaluation with independently scored outcomes. This review ran zero movement episodes; existing unfinished approach tests are not marked complete.
+

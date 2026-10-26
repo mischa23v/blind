@@ -1,0 +1,45 @@
+{
+  "baseCommit": "7506ad9cd2fa171bf53cb2e1ec66628f20d4f61d",
+  "comparatorCommit": "57fdf25f2c17b3f1cf6c5aba1156756c1e808eee",
+  "cleanInputPreparationExecuted": true,
+  "allScientificResultFieldsExactlyEqualToRecordedResult": true,
+  "excludedComparisonField": "wallSeconds",
+  "sourceChangesFromOriginalExecutedReview": "Only argparse output destination and parent directory creation; numerical calculations unchanged.",
+  "versions": {
+    "Python": "3.10.11",
+    "NumPy": "1.26.4",
+    "Pillow": "11.3.0"
+  },
+  "boundedExecution": {
+    "prepare": {
+      "exitCode": 0,
+      "failure": null,
+      "wallSeconds": 10.702999999979511,
+      "peakSampledTreeRSSBytes": 204091392,
+      "wallCapSeconds": 60.0,
+      "RSSCapMiB": 512.0,
+      "serialThreadEnvironment": true
+    },
+    "checks": {
+      "exitCode": 0,
+      "failure": null,
+      "wallSeconds": 13.422000000020489,
+      "peakSampledTreeRSSBytes": 73437184,
+      "wallCapSeconds": 60.0,
+      "RSSCapMiB": 512.0,
+      "serialThreadEnvironment": true
+    }
+  },
+  "filesSHA256": {
+    "prepare_review.py": "d715bec8112043933ec4b613f21add4dfba55782adfe2da24912ec269cdb62bb",
+    "README.md": "62bab719e8b97c657174a4889f75faa9272669bc1aed04e774c18331d914eed6",
+    "review_7506ad9.py": "202f9a2c9212d8f85b8d451530a95dc5ac4c2f38dfe744d6a8453d1162993e6b",
+    "REVIEW_7506AD9_CHECKS.json": "6bd4d50467337c4f70a9f8413fe3166a15ceb642797d4df87eff0e6b63882fec"
+  },
+  "noNewFusionReferenceOrMovement": true,
+  "initialLocalFailureRetained": "First archive verification failed due to Windows CRLF conversion; Git blobs matched; exact export with core.autocrlf=false then passed.",
+  "recordedResultSerialization": {
+    "originalLocalSHA256": "e4c5f8845128296a946a6c6f13bb9a7468e71be60fe5918d3c88c58118c9b1f4",
+    "publicationChange": "CRLF converted to LF; parsed JSON and all numeric fields unchanged."
+  }
+}
