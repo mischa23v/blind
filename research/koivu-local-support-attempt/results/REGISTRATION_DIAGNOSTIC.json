@@ -1,0 +1,169 @@
+{
+  "Open3D": "0.19.0",
+  "rows": [
+    {
+      "source": 61,
+      "target": 6,
+      "cameraDistance": 2.8609899015560445,
+      "viewAngleDegrees": 32.97228252448554,
+      "sourceDepthSHA256": "9c73acc6cecf9269ef3b28bc0f18a0b03c838df26e6d37e459b34c96a8a7e1d5",
+      "targetDepthSHA256": "a4b0afd66ac042761d63ddf8f06b9f46d1f79820e25e36b41bd6ebbca3f0f0fd",
+      "sourceFitPoints": 2599,
+      "targetFitPoints": 5341,
+      "nonfloorBeforeFitness": 0.09965371296652559,
+      "nonfloorBeforeRMSE": 0.10965730806259975,
+      "nonfloorAfterFitness": 0.45940746440938823,
+      "nonfloorAfterRMSE": 0.0733236411899007,
+      "rigidCorrection": [
+        [
+          0.9970335016547476,
+          -0.033313190270369684,
+          -0.06938607880621474,
+          1.0588930587645866
+        ],
+        [
+          0.03406843586529672,
+          0.9993721413431522,
+          0.009729582977149832,
+          0.3780532815427487
+        ],
+        [
+          0.06901839070700462,
+          -0.012064595361101422,
+          0.997542433825751,
+          0.2428622731271978
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotationDegrees": 4.458398763721502,
+      "translationNormMetres": 1.1502873020656939,
+      "rotationSingularValues": [
+        1.0000000000000102,
+        1.0000000000000073,
+        1.0000000000000069
+      ],
+      "reverseCycleTranslationMetres": 0.8702581933607019,
+      "floorMedianSignedResidualBeforeMetres": 0.06446917667935013,
+      "floorMedianSignedResidualAfterMetres": 0.07013283508465723,
+      "floorMedianAbsoluteResidualBeforeMetres": 0.06446917667935013,
+      "floorMedianAbsoluteResidualAfterMetres": 0.07013283508465723,
+      "limitation": "Per-view candidate floor was excluded from registration but target plane is a saved broad fit, not physical truth; ICP local minima, overlap and plane extrapolation remain possible."
+    },
+    {
+      "source": 62,
+      "target": 8,
+      "cameraDistance": 2.7732225245906155,
+      "viewAngleDegrees": 21.462103745164736,
+      "sourceDepthSHA256": "361a99be0fe022406f36d90b76539cf8c5dc6c030561e8ece47aaad0c44dc482",
+      "targetDepthSHA256": "77645bcfa59aceded5c3e18f838bbae7fd8cc19aed640e2ae1a31aaed52c42e0",
+      "sourceFitPoints": 3494,
+      "targetFitPoints": 4218,
+      "nonfloorBeforeFitness": 0.09530623926731539,
+      "nonfloorBeforeRMSE": 0.10745327010027303,
+      "nonfloorAfterFitness": 0.41242129364625074,
+      "nonfloorAfterRMSE": 0.08430969355205141,
+      "rigidCorrection": [
+        [
+          0.9984610493380234,
+          0.05497494471592433,
+          0.007299890978934016,
+          0.6175794850935608
+        ],
+        [
+          -0.054642119719734504,
+          0.9977098560401964,
+          -0.03986579878538326,
+          0.22648756266347797
+        ],
+        [
+          -0.00947479326198345,
+          0.03940556577113819,
+          0.9991783773075282,
+          -0.21696522645967115
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotationDegrees": 3.908110161575906,
+      "translationNormMetres": 0.6926578852091174,
+      "rotationSingularValues": [
+        1.0000000000000049,
+        1.0000000000000047,
+        1.0000000000000042
+      ],
+      "reverseCycleTranslationMetres": 0.10962754794903455,
+      "floorMedianSignedResidualBeforeMetres": 0.08707694338790564,
+      "floorMedianSignedResidualAfterMetres": 0.013437205893525775,
+      "floorMedianAbsoluteResidualBeforeMetres": 0.08707694338790564,
+      "floorMedianAbsoluteResidualAfterMetres": 0.013793238696299212,
+      "limitation": "Per-view candidate floor was excluded from registration but target plane is a saved broad fit, not physical truth; ICP local minima, overlap and plane extrapolation remain possible."
+    },
+    {
+      "source": 63,
+      "target": 8,
+      "cameraDistance": 2.74962584153752,
+      "viewAngleDegrees": 19.34630685061387,
+      "sourceDepthSHA256": "c28077dc993b5a3cb2641370c3789541d933bd8399084efb315169ac385fa58a",
+      "targetDepthSHA256": "77645bcfa59aceded5c3e18f838bbae7fd8cc19aed640e2ae1a31aaed52c42e0",
+      "sourceFitPoints": 3602,
+      "targetFitPoints": 4218,
+      "nonfloorBeforeFitness": 0.09466962798445308,
+      "nonfloorBeforeRMSE": 0.10878976578394242,
+      "nonfloorAfterFitness": 0.41921154913936703,
+      "nonfloorAfterRMSE": 0.078284359930697,
+      "rigidCorrection": [
+        [
+          0.9912367997463923,
+          0.05636300200543665,
+          -0.11946890320695944,
+          0.7909447332212448
+        ],
+        [
+          -0.064385828407463,
+          0.9958454807931186,
+          -0.06439133081567973,
+          0.24299781234691262
+        ],
+        [
+          0.11534327864606478,
+          0.07151916099105389,
+          0.9907476659989191,
+          -0.05669451859968214
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotationDegrees": 8.539019412922807,
+      "translationNormMetres": 0.8293707109942219,
+      "rotationSingularValues": [
+        1.0000000000000042,
+        1.0000000000000036,
+        0.9999999999999966
+      ],
+      "reverseCycleTranslationMetres": 0.3578011292252029,
+      "floorMedianSignedResidualBeforeMetres": 0.08124610024052846,
+      "floorMedianSignedResidualAfterMetres": -0.1390165251822892,
+      "floorMedianAbsoluteResidualBeforeMetres": 0.08124610024052846,
+      "floorMedianAbsoluteResidualAfterMetres": 0.13911464724618514,
+      "limitation": "Per-view candidate floor was excluded from registration but target plane is a saved broad fit, not physical truth; ICP local minima, overlap and plane extrapolation remain possible."
+    }
+  ],
+  "wallSeconds": 1.5160000000614673,
+  "scaleChanged": false,
+  "posesChanged": false,
+  "FAROUsed": false,
+  "adoptedForMapping": false
+}

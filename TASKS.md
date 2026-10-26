@@ -659,3 +659,6 @@ Every implementation completion entry must name the adapted upstream/API, exact 
 - [ ] Implement and validate local observed-support classification with low objects, steps and unknown support retained; distinguish pose/depth inconsistency using held-out surface checks.
 - [ ] Complete actual movement evaluation with independently scored outcomes. This review ran zero movement episodes; existing unfinished approach tests are not marked complete.
 
+- [x] Execute and preserve the first local-support implementation experiment: all 294 frames processed, 13 adapter fixtures passed, 100 frozen admission attempts executed. Result failed: 100 invalid starts, zero motion. Evidence: research/koivu-local-support-attempt/README.md. This does not close the local-support or movement tasks above.
+- [x] Run and preserve three fixed-scale non-floor Open3D ICP diagnostics. Poor initial overlap and unreliable corrections; no transforms adopted, no pose-quality claim.
+

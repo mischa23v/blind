@@ -474,3 +474,5 @@ Seeing AI learning: read research/SEEING_AI_CODE_REFERENCES.md on the Mac and do
 
 Floor-routing follow-up: read research/mapping-audit-20261026/README.md. Implement and freeze locally observed support with retained small objects, step edges, invalid/conflicting fits and unknown coverage; do not widen the global floor band or carve the camera path. Validate cross-view geometry and the actual loop target before retrying movement. This review adds no movement result.
 
+First implementation attempt failed: research/koivu-local-support-attempt/README.md. Its any-view residual veto recreates irreversible blockage; do not adopt it or loosen toy/unknown rules just to pass. Preserve 100 invalid-start admissions as zero movement episodes. Next needs calibrated fusion of repeated observations and measured overlap before registration, then genuine reference-scored movement.
+

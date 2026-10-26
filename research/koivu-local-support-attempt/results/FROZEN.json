@@ -1,0 +1,468 @@
+{
+  "protocol": {
+    "version": "local-support-attempt-1",
+    "diagnosticCommit": "7506ad9cd2fa171bf53cb2e1ec66628f20d4f61d",
+    "mapperCommit": "57fdf25f2c17b3f1cf6c5aba1156756c1e808eee",
+    "purpose": "First conservative local-support classification experiment and 100 deterministic offline trial attempts, not a validated mobility system",
+    "rawData": "294 original pose-matched processed Koivu depth frames; no confidence/tracking invented",
+    "gridMetres": 0.05,
+    "bodyWidthMetres": 0.45,
+    "bodyDepthMetres": 0.3,
+    "bodyHeightMetres": 1.6,
+    "horizontalMarginMetres": 0.15,
+    "verticalMarginMetres": 0.15,
+    "nearSurfaceCandidateAbsGlobalHeightMetres": 0.15,
+    "maximumSupportObservationRangeMetres": 4.0,
+    "floorResidualBandMetres": 0.002,
+    "positiveResidualObstacleThresholdMetres": 0.005,
+    "minimumSupportViews": 3,
+    "minimumPositiveResidualViews": 2,
+    "maximumSupportViewHeightSpreadMetres": 0.02,
+    "maximumNeighbourSlopeDegrees": 5.0,
+    "rules": [
+      "Retain global coordinates and all original observations. Saved valid Open3D planes are estimators only; invalid fits supply no floor explanation.",
+      "Floor support exists only in a cell with actual near-surface endpoints within 2 mm of a valid per-view plane in at least three views.",
+      "Support height is the median observed supporting endpoint height, not extrapolated plane height. More than 2 cm inter-view height spread is unresolved.",
+      "An elevated residual above 5 mm in at least two views blocks; any other positive residual above 2 mm remains unresolved, never floor-cleared.",
+      "A negative residual below -2 mm remains unresolved support/drop evidence. A fit cannot erase a toy, step or hole.",
+      "Compare actual per-cell support heights across observed neighbours; retain discontinuities exceeding 5 degrees plus 2 mm quantization allowance per endpoint as step edges.",
+      "Upper-body/head occupied and unknown cells remain checked in original world-coordinate OctoMap states at threshold 0.5, relative to local support. Existing split-0.7 high obstacles/unknowns are also retained.",
+      "Observed-free, occupied and unknown remain separate. Raw observations with invalid fits or beyond 4 m do not create new floor support. Existing raw/fused hazards remain unless individually explained as observed floor.",
+      "These strict residual thresholds are experimental resolution requirements, not measured accuracy claims. Failure does not justify widening them after seeing routes.",
+      "No camera-path carving, new similarity scale, FARO correction, body shrinking or margin reduction. A compact column collision map is an adapter, not a new SLAM or search algorithm."
+    ],
+    "trialSelection": {
+      "seed": 271828,
+      "pairs": 20,
+      "repeats": 5,
+      "method": "Select starts deterministically from baseline split-0.7 cells that fit the unchanged body+margin, before reading corrected classification. Pair with sufficiently separated baseline-fit goals around the fixed geometric centre where possible. Do not select from reference geometry or camera trajectory.",
+      "distanceRangeMetres": [
+        2,
+        6
+      ],
+      "planner": "Pinned Recast/Detour 9f4ce64458dfae86e1239c525ddc219c4e9e06f1; conservative single circumscribed body circle plus unchanged 0.15 m margin; actual rectangle checked for movement",
+      "simulation": "Deterministic nominal pose/body integration, not live localization or a claim of realistic human compliance",
+      "outcomes": [
+        "arrival",
+        "collision",
+        "stop",
+        "invalid_start",
+        "failure"
+      ],
+      "stationaryArrivalForbidden": true,
+      "reference": "Separate evaluator only after planner artifacts are frozen; no reference-derived planning input. If no valid start survives, score admission failures without inventing reference movement outcomes."
+    }
+  },
+  "protocolSHA256": "e00f2247f7bd74a879b70dca36d26990f05d6bcb672b8edb12fc4557818c6a4f",
+  "mapperSourceSHA256": "8f727c5f533965bce11d478b4ac2ebeb6cafd0ae0bf93f4539d5807744c890be",
+  "baselineMaskSHA256": "b294d92cfd9136d00de510239c2b85a9d68d878dcf7dac1a64b144d8880cb076",
+  "baselineMetadataSHA256": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d",
+  "pairs": [
+    {
+      "pair": 0,
+      "startXY": [
+        -2.975,
+        0.47500000000000003
+      ],
+      "goalXY": [
+        -0.525,
+        1.7750000000000001
+      ],
+      "startIJ": [
+        56,
+        130
+      ],
+      "goalIJ": [
+        105,
+        156
+      ],
+      "initialYaw": 0.48783643865964244
+    },
+    {
+      "pair": 1,
+      "startXY": [
+        0.325,
+        0.07500000000000001
+      ],
+      "goalXY": [
+        -2.5250000000000004,
+        -0.225
+      ],
+      "startIJ": [
+        122,
+        122
+      ],
+      "goalIJ": [
+        65,
+        116
+      ],
+      "initialYaw": -3.036715714859559
+    },
+    {
+      "pair": 2,
+      "startXY": [
+        -0.875,
+        3.475
+      ],
+      "goalXY": [
+        -2.125,
+        -1.175
+      ],
+      "startIJ": [
+        98,
+        190
+      ],
+      "goalIJ": [
+        73,
+        97
+      ],
+      "initialYaw": -1.8334054048119426
+    },
+    {
+      "pair": 3,
+      "startXY": [
+        0.42500000000000004,
+        0.47500000000000003
+      ],
+      "goalXY": [
+        -2.6750000000000003,
+        0.42500000000000004
+      ],
+      "startIJ": [
+        124,
+        130
+      ],
+      "goalIJ": [
+        62,
+        129
+      ],
+      "initialYaw": -3.125465019746157
+    },
+    {
+      "pair": 4,
+      "startXY": [
+        0.17500000000000002,
+        -0.025
+      ],
+      "goalXY": [
+        -2.825,
+        0.5750000000000001
+      ],
+      "startIJ": [
+        119,
+        120
+      ],
+      "goalIJ": [
+        59,
+        132
+      ],
+      "initialYaw": 2.9441970937399122
+    },
+    {
+      "pair": 5,
+      "startXY": [
+        1.175,
+        -1.975
+      ],
+      "goalXY": [
+        -0.525,
+        1.7750000000000001
+      ],
+      "startIJ": [
+        139,
+        81
+      ],
+      "goalIJ": [
+        105,
+        156
+      ],
+      "initialYaw": 1.9964187951345282
+    },
+    {
+      "pair": 6,
+      "startXY": [
+        0.875,
+        -1.0250000000000001
+      ],
+      "goalXY": [
+        -2.975,
+        0.775
+      ],
+      "startIJ": [
+        133,
+        100
+      ],
+      "goalIJ": [
+        56,
+        136
+      ],
+      "initialYaw": 2.7042547618419093
+    },
+    {
+      "pair": 7,
+      "startXY": [
+        0.625,
+        0.225
+      ],
+      "goalXY": [
+        -2.7750000000000004,
+        0.42500000000000004
+      ],
+      "startIJ": [
+        128,
+        125
+      ],
+      "goalIJ": [
+        60,
+        129
+      ],
+      "initialYaw": 3.0828368308740703
+    },
+    {
+      "pair": 8,
+      "startXY": [
+        1.175,
+        -1.8250000000000002
+      ],
+      "goalXY": [
+        -2.4250000000000003,
+        -0.17500000000000002
+      ],
+      "startIJ": [
+        139,
+        84
+      ],
+      "goalIJ": [
+        67,
+        117
+      ],
+      "initialYaw": 2.711830374493105
+    },
+    {
+      "pair": 9,
+      "startXY": [
+        0.025,
+        0.5750000000000001
+      ],
+      "goalXY": [
+        -3.2750000000000004,
+        0.875
+      ],
+      "startIJ": [
+        116,
+        132
+      ],
+      "goalIJ": [
+        50,
+        138
+      ],
+      "initialYaw": 3.050932766389048
+    },
+    {
+      "pair": 10,
+      "startXY": [
+        -2.575,
+        0.07500000000000001
+      ],
+      "goalXY": [
+        0.8250000000000001,
+        -0.875
+      ],
+      "startIJ": [
+        64,
+        122
+      ],
+      "goalIJ": [
+        132,
+        103
+      ],
+      "initialYaw": -0.2724631494037916
+    },
+    {
+      "pair": 11,
+      "startXY": [
+        -2.375,
+        -0.42500000000000004
+      ],
+      "goalXY": [
+        -0.525,
+        1.875
+      ],
+      "startIJ": [
+        68,
+        112
+      ],
+      "goalIJ": [
+        105,
+        158
+      ],
+      "initialYaw": 0.8934098880974946
+    },
+    {
+      "pair": 12,
+      "startXY": [
+        -2.225,
+        -1.225
+      ],
+      "goalXY": [
+        1.0250000000000001,
+        -1.5750000000000002
+      ],
+      "startIJ": [
+        71,
+        96
+      ],
+      "goalIJ": [
+        136,
+        89
+      ],
+      "initialYaw": -0.10727885564840278
+    },
+    {
+      "pair": 13,
+      "startXY": [
+        0.625,
+        -0.275
+      ],
+      "goalXY": [
+        -3.075,
+        0.7250000000000001
+      ],
+      "startIJ": [
+        128,
+        115
+      ],
+      "goalIJ": [
+        54,
+        135
+      ],
+      "initialYaw": 2.8776289299640885
+    },
+    {
+      "pair": 14,
+      "startXY": [
+        -2.725,
+        0.17500000000000002
+      ],
+      "goalXY": [
+        1.3250000000000002,
+        -2.575
+      ],
+      "startIJ": [
+        61,
+        124
+      ],
+      "goalIJ": [
+        142,
+        69
+      ],
+      "initialYaw": -0.5965009825198255
+    },
+    {
+      "pair": 15,
+      "startXY": [
+        -1.625,
+        3.6750000000000003
+      ],
+      "goalXY": [
+        0.925,
+        -1.225
+      ],
+      "startIJ": [
+        83,
+        194
+      ],
+      "goalIJ": [
+        134,
+        96
+      ],
+      "initialYaw": -1.0909558012765688
+    },
+    {
+      "pair": 16,
+      "startXY": [
+        0.7250000000000001,
+        -1.225
+      ],
+      "goalXY": [
+        -1.125,
+        3.2750000000000004
+      ],
+      "startIJ": [
+        130,
+        96
+      ],
+      "goalIJ": [
+        93,
+        186
+      ],
+      "initialYaw": 1.9608443990583462
+    },
+    {
+      "pair": 17,
+      "startXY": [
+        1.375,
+        -2.275
+      ],
+      "goalXY": [
+        -2.9250000000000003,
+        0.925
+      ],
+      "startIJ": [
+        143,
+        75
+      ],
+      "goalIJ": [
+        57,
+        139
+      ],
+      "initialYaw": 2.5018228707631676
+    },
+    {
+      "pair": 18,
+      "startXY": [
+        1.225,
+        -1.675
+      ],
+      "goalXY": [
+        -0.9750000000000001,
+        3.575
+      ],
+      "startIJ": [
+        140,
+        87
+      ],
+      "goalIJ": [
+        96,
+        192
+      ],
+      "initialYaw": 1.9676144707454497
+    },
+    {
+      "pair": 19,
+      "startXY": [
+        -1.425,
+        3.5250000000000004
+      ],
+      "goalXY": [
+        1.175,
+        -1.5750000000000002
+      ],
+      "startIJ": [
+        87,
+        191
+      ],
+      "goalIJ": [
+        139,
+        89
+      ],
+      "initialYaw": -1.0993363767339894
+    }
+  ],
+  "baselineCircumscribedCircleCandidates": 1309,
+  "radiusMetres": 0.42041634565979924,
+  "selectionReadsCorrectedMap": false,
+  "selectionReadsReference": false,
+  "selectionReadsCameraPath": false,
+  "targetMeaning": "Fixed geometric centre from prior diagnostic, not verified semantic table; opposite-side pairs are not complete loops"
+}

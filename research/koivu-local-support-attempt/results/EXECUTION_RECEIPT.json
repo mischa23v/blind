@@ -1,0 +1,66 @@
+{
+  "scope": "Executed first attempt, failed to admit movement",
+  "fixtures": {
+    "floorAdapter": 8,
+    "bodyAndSweep": 5,
+    "passed": 13,
+    "failed": 0,
+    "evidence": "Direct serial unittest tool output; not native sensor accuracy"
+  },
+  "boundedRuns": {
+    "map": {
+      "exitCode": 0,
+      "failure": null,
+      "wallSeconds": 22.04700000002049,
+      "peakSampledTreeRSSBytes": 466108416,
+      "wallCapSeconds": 240.0,
+      "RSSCapMiB": 1024.0,
+      "serialThreadEnvironment": true,
+      "runnerSHA256": "554d968d6ea3ea7f1e21e9db64ec858b44cdaf9f7b8622064e15e6e7ca0a0ecf"
+    },
+    "admissions": {
+      "exitCode": 0,
+      "failure": null,
+      "wallSeconds": 6.734000000171363,
+      "peakSampledTreeRSSBytes": 68276224,
+      "wallCapSeconds": 120.0,
+      "RSSCapMiB": 512.0,
+      "serialThreadEnvironment": true,
+      "runnerSHA256": "554d968d6ea3ea7f1e21e9db64ec858b44cdaf9f7b8622064e15e6e7ca0a0ecf"
+    },
+    "registration": {
+      "exitCode": 0,
+      "failure": null,
+      "wallSeconds": 11.641000000061467,
+      "peakSampledTreeRSSBytes": 145133568,
+      "wallCapSeconds": 90.0,
+      "RSSCapMiB": 1024.0,
+      "serialThreadEnvironment": true,
+      "runnerSHA256": "554d968d6ea3ea7f1e21e9db64ec858b44cdaf9f7b8622064e15e6e7ca0a0ecf"
+    }
+  },
+  "sourceAndResultHashes": {
+    "local_support.py": "8f727c5f533965bce11d478b4ac2ebeb6cafd0ae0bf93f4539d5807744c890be",
+    "plot_results.py": "926d3e4ec0b2519dae1ec695e4af18fcea10e363ef4314378c655e4ec9403552",
+    "PROTOCOL.json": "e00f2247f7bd74a879b70dca36d26990f05d6bcb672b8edb12fc4557818c6a4f",
+    "README.md": "2c4226abed00f82829add790357711190f1fb85730de57f534c501b7291dbb09",
+    "registration_diagnostic.py": "7247a2c205780cde2dfc290872ba3ca50d3e48f09fb2523585d395da8a069d81",
+    "test_local_support.py": "bfb65a5c299d52a0bc10c933b5b301cff71b26292ca366a4f814f3d71635bbbc",
+    "test_trial_attempts.py": "297cd3baa57e8328195b3e07fbbe7aa148d11ff601c6633a40fdea64b40dfa0e",
+    "trial_attempts.py": "b050d36d7584d5972dcd23792763460e0964d14d08dcca179dd989329c3add23",
+    "results/ATTEMPT_RESULTS.json": "3f529c967e7ce00b54e4d49ac9d1d795e155c972888cfb4d7e26889e93ec134e",
+    "results/FROZEN.json": "1b965f22529fc6c610e44fcd1413ece40202164411bed2613b9eefe5589940f6",
+    "results/MAP_COMPARISON.png": "d04214db17bde03e903a8c155f26a90678ebe398437d7ad2474628afa7c41d9f",
+    "results/MAP_RESULT.json": "8951346175e3860a489216cb079cbd4c9d189bbad7fda0776eec76aa2e76781f",
+    "results/PHONE_MAP.npz": "be07d400cae5988d2e3c5e4f27f5572b8816bbf302f26402ab84db3f5db0036a",
+    "results/PLANNER_TRACES.npz": "524e200a5f4ca4300de4723da0c0248c9df2c556e95c9a56dbcc848d6e0b19fc",
+    "results/REGISTRATION_DIAGNOSTIC.json": "ba0b3e778192f5b4f2e30677c594916cd12a5bf796b449338724fa2daa22ad1e",
+    "results/REGISTRATION_FROZEN.json": "5d5f05a9602b43e77d99ebdc5dbac4b9f753c90418ab4fd5dd882c3043f4bb50",
+    "results/REJECTION_DIAGNOSIS.json": "eb53167349504507ec665a1ac5b5d621a868c8c7cee1e6bc3d3ed9eb92ffd11c",
+    "results/TRIAL_SOURCE_FREEZE.json": "4ae5e0f658e7868d5da663072927d3e9fd708eece8e6cd09d8828418658e65d1"
+  },
+  "physicalCollisionScored": false,
+  "movementEpisodes": 0,
+  "invalidStartAdmissions": 100,
+  "algorithmAdopted": false
+}

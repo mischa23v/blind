@@ -1,0 +1,36 @@
+{
+  "sourceSHA256": "7247a2c205780cde2dfc290872ba3ca50d3e48f09fb2523585d395da8a069d81",
+  "pairs": [
+    {
+      "source": 61,
+      "target": 6,
+      "cameraDistance": 2.8609899015560445,
+      "viewAngleDegrees": 32.97228252448554
+    },
+    {
+      "source": 62,
+      "target": 8,
+      "cameraDistance": 2.7732225245906155,
+      "viewAngleDegrees": 21.462103745164736
+    },
+    {
+      "source": 63,
+      "target": 8,
+      "cameraDistance": 2.74962584153752,
+      "viewAngleDegrees": 19.34630685061387
+    }
+  ],
+  "sourceFrames": [
+    61,
+    62,
+    63
+  ],
+  "targetRule": "nearest camera among valid-floor frames at least 30 indices apart and optical axes within 60 degrees",
+  "maximumCorrespondenceDistanceMetres": 0.2,
+  "iterations": 50,
+  "voxelMetres": 0.05,
+  "withScaling": false,
+  "fitPointSelection": "original global level height >0.2 m and camera range <=4 m",
+  "floorUsedForFitting": false,
+  "mapOrPoseUpdatesAllowed": false
+}
