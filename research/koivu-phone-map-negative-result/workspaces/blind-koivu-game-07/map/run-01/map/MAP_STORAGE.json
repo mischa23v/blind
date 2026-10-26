@@ -1,0 +1,24 @@
+{
+  "reason": "The GitHub connector has a 16 MiB request limit; base64 exceeded it. Ordinary GitHub file size is not the blocker. Restore the exact original map from two byte-exact parts.",
+  "originalName": "MAP.npz",
+  "originalBytes": 14921426,
+  "originalSHA256": "1961eef94bc98f5d89d4986c8b62d7352d0e2046e1dbfa3e6baf767a54e7646d",
+  "parts": [
+    {
+      "name": "MAP.npz.part00",
+      "bytes": 8388608,
+      "sha256": "7074cd1c2b2f9f51c4b743016e2fd0c8a876a4b2a50ba4fde79fba33414b2cb7"
+    },
+    {
+      "name": "MAP.npz.part01",
+      "bytes": 6532818,
+      "sha256": "eaba6c7b40ad881b9ad4033a65ef8fbacc532df405f5692f503121238b96a121"
+    }
+  ],
+  "restore": "Run python3 restore_map.py in this directory. Existing matching output is verified; conflicting output is never overwritten.",
+  "verifiedChecks": [
+    "exact original SHA256 after reassembly",
+    "idempotent matching output",
+    "conflicting output preserved and rejected"
+  ]
+}

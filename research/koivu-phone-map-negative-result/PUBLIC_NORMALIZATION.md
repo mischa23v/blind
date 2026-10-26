@@ -1,0 +1,13 @@
+# Scope and original/public hash semantics
+
+This additive snapshot is limited to the frozen first map, its multiview diagnosis and their exact source/manifest dependencies. All sibling game/controller/evaluator/Swift-worker files, including their machine-specific build shell and binary, are excluded. No corresponding game integration or journey result is implied. The first-map originals remain unchanged, including their failed-usefulness outcome.
+
+`PUBLIC_NORMALIZATION.json` maps every copied original path/hash/byte count to its public counterpart. Copied receipts/docs/logs may replace execution prefixes with `$WORKSPACE`, `$SHARED` or `$RUNTIME`, and replace coordination wording with maintainer terminology. Every historical embedded hash retains its original-byte referent. It is not silently changed to refer to normalized copies. Unmodified Python source and the original NPZ, surface JSON and image bytes are preserved; the full publication manifest covers newly written notes too.
+
+Normalized protocol/config displays are not a replacement for the original exact bytes required by frozen hashes. Reproduction requires the exact approved inputs and a separately reviewed local path/configuration cut. No full clean-machine reproduction is claimed. Existing NumPy/Pillow/SciPy dependencies are not redistributed or installed. Packaging performs only byte/hash, syntax, JSON, whitelist and image metadata checks; it reruns no fixture, map, diagnosis, geometry or game.
+
+The original `MAP.npz` (14,921,426 bytes) and `SURFACE.json` (1,449,098 bytes) are included, not replaced by links. If a publishing route cannot transport them, it must explicitly record an omission and attach the exact originals elsewhere; do not silently publish an incomplete manifest. The 294 raw depth PNGs and full original pose metadata remain outside Git and are identified in `SOURCE_ASSET_REQUIREMENTS.json`.
+
+The top-down PNG's original invocation/source was not saved: it is labelled diagnostic display only, not reproducible numerical evidence. The three original RGBs are byte-identical public-dataset exemplars reviewed for obvious privacy/text issues; the middle frame includes an institutional evacuation diagram. Attribution: Xuqian Ren / MuSHRoom, DOI https://doi.org/10.5281/zenodo.10230733 , CC BY 4.0 https://creativecommons.org/licenses/by/4.0/ . The original attribution and official metadata snapshot are included. No new application-source license or dataset-author endorsement is implied.
+
+Zero real-room games were executed. Seventeen fixture checks and 557 correlated diagnostic frame pairs are not 100 journey trials, obstacle recalls or navigation successes. No remote write occurred during packaging.

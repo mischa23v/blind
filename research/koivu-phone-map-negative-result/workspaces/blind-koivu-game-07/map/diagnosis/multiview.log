@@ -1,0 +1,19 @@
+{"phase": "patches", "frame": 0, "seconds": 0.03441705300065223}
+{"phase": "patches", "frame": 50, "seconds": 0.6280026040039957}
+{"phase": "patches", "frame": 100, "seconds": 1.11379389600188}
+{"phase": "patches", "frame": 150, "seconds": 1.5979885779961478}
+{"phase": "patches", "frame": 200, "seconds": 2.0805293949961197}
+{"phase": "patches", "frame": 250, "seconds": 2.5710487799951807}
+{"phase": "pairs", "lag": 1, "source": 0, "seconds": 3.016372593003325}
+{"phase": "pairs", "lag": 1, "source": 50, "seconds": 4.053934333001962}
+{"phase": "pairs", "lag": 1, "source": 100, "seconds": 5.079547016997822}
+{"phase": "pairs", "lag": 1, "source": 150, "seconds": 6.112445517006563}
+{"phase": "pairs", "lag": 1, "source": 200, "seconds": 7.165333915007068}
+{"phase": "pairs", "lag": 1, "source": 250, "seconds": 8.155673134999233}
+{"phase": "pairs", "lag": 30, "source": 0, "seconds": 8.966650457005017}
+{"phase": "pairs", "lag": 30, "source": 50, "seconds": 9.893501590006053}
+{"phase": "pairs", "lag": 30, "source": 100, "seconds": 10.922120634000748}
+{"phase": "pairs", "lag": 30, "source": 150, "seconds": 11.880168210002012}
+{"phase": "pairs", "lag": 30, "source": 200, "seconds": 12.781818725998164}
+{"phase": "pairs", "lag": 30, "source": 250, "seconds": 13.713539680000395}
+{"status": "phone-only consistency diagnosis; no map changes or navigation", "summary": {"1": {"pairs": 293, "counts": {"scheduled": 3406125, "missingSource": 0, "projectionUnavailable": 1076366, "targetNeighbourhoodUnavailable": 0, "observedFreeContradiction": 207735, "fullyOccluded": 195947, "centralAgreement": 1882098, "edgeOrOther": 43979}, "signedResidualQuantiles": {"0": -6.179930302104439, "0.05": -0.24447462380637427, "0.5": -0.003224715017926316, "0.95": 0.23324287604552116, "1": 4.7660506185152105}, "absoluteResidualQuantiles": {"0": 3.1641285147543385e-08, "0.05": 0.0013471169485989255, "0.5": 0.019665908239570484, "0.95": 0.45315340041876206, "1": 6.179930302104439}, "bodyBandAvailable": 1356369, "bodyBandObservedFreeContradictions": 135435}, "30": {"pairs": 264, "counts": {"scheduled": 3069000, "missingSource": 0, "projectionUnavailable": 2925694, "targetNeighbourhoodUnavailable": 0, "observedFreeContradiction": 42722, "fullyOccluded": 39123, "centralAgreement": 58027, "edgeOrOther": 3434}, "signedResidualQuantiles": {"0": -6.419387921078261, "0.05": -1.2398978697784564, "0.5": 0.004308892311223, "0.95": 0.7832497245687908, "1": 5.949375204539929}, "absoluteResidualQuantiles": {"0": 6.367723286437865e-07, "0.05": 0.008294962482773782, "0.5": 0.1566950582165757, "0.95": 1.5600888868990646, "1": 6.419387921078261}, "bodyBandAvailable": 90513, "bodyBandObservedFreeContradictions": 28882}}, "sourceProtocolHashes": {"diagnose_multiview.py": "7a7e5c6d76113c0bd9eaa5ac994558b8a482541b563cfa691be583a067922dc4", "DIAGNOSTIC_PROTOCOL.md": "cb0ae46dc3421c9b6c9d4981b4c5276457392c205415deeeb94a9df6678faaae"}, "inputFrozenSHA256": "d69e2c1bd61ebb61d307056e53f5c8b653e06eb9ae8189667fa425500461b350", "wallSeconds": 14.237774055000045, "CPUSeconds": 14.569112069, "peakRSSBytes": 240181248, "FAROUsed": false, "accuracyOrNavigationPass": false}
