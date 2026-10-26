@@ -1,0 +1,231 @@
+{
+ "rules": {
+  "tsdf_volume_note": "Uniform volume; Scalable returned empty in open3d-cpu 0.20.0",
+  "floor_band": [
+   -0.0125,
+   0.0125
+  ],
+  "low_band": [
+   0.025,
+   0.075
+  ],
+  "body_band": [
+   0.075,
+   1.775
+  ],
+  "dip_band": [
+   -0.075,
+   -0.025
+  ],
+  "deep_below": -0.075,
+  "ungrounded_max_voxels_at5cm": 24,
+  "grounded_structure_voxels_at5cm": 200,
+  "ground_touch_top": 0.075,
+  "tsdf_voxel": 0.025,
+  "tsdf_trunc": 0.08,
+  "tsdf_depth_trunc": 4.0,
+  "strictfloorNote": "floor band = centre layer only; low band starts at the first layer above it"
+ },
+ "thresholds": {
+  "voxel": 0.05,
+  "near_m": 2.0,
+  "floor_cell": 0.2,
+  "floor_search": [
+   -2.6,
+   -0.4
+  ],
+  "band_top": 1.75,
+  "stat_min_n": 30,
+  "stat_min_frames": 3,
+  "clear_mean_plus3se": 0.025,
+  "clear_tail": 0.07,
+  "obj_mean_minus3se": 0.01,
+  "obj_tail": 0.15,
+  "sigma_edges": [
+   0,
+   1.0,
+   1.5,
+   2.0,
+   2.5,
+   3.0,
+   3.5,
+   4.5,
+   8.0
+  ],
+  "body": [
+   0.45,
+   0.3
+  ],
+  "margin": 0.15,
+  "disc": 0.375,
+  "ref_low_band": [
+   0.015,
+   0.3
+  ],
+  "ref_body_band": [
+   0.3,
+   1.8
+  ]
+ },
+ "res": 0.025,
+ "tsdf": false,
+ "log": [
+  {
+   "stage": "samples",
+   "frames": 294,
+   "samples": 13415808,
+   "res": 0.025,
+   "t": 5.5
+  },
+  {
+   "stage": "floor",
+   "cells": 1384,
+   "tilt_deg": 0.050076037401709524,
+   "floor_z": -1.2710427551959032,
+   "resid_std": 0.016428588967267076,
+   "t": 6.6
+  },
+  {
+   "stage": "fusion",
+   "occAll": 872713,
+   "freeAll": 10022716,
+   "occNear": 253379,
+   "freeNear": 6334556,
+   "t": 418.4
+  },
+  {
+   "stage": "stat",
+   "sigma_cm": [
+    0.23,
+    0.58,
+    0.63,
+    0.93,
+    0.82,
+    0.72,
+    1.0,
+    3.4
+   ],
+   "t": 447.6
+  },
+  {
+   "stage": "ungrounded",
+   "blobs": 5465,
+   "ungroundedBlobs": 5226,
+   "ungroundedVoxels": 14194,
+   "t": 448.0
+  },
+  {
+   "stage": "ref",
+   "vertices": 8940320,
+   "scale": 1.020790844238779,
+   "ref_floor_vs_plane_cm_p5_50_95": [
+    -0.79,
+    -0.07,
+    1.51
+   ],
+   "t": 451.8
+  },
+  {
+   "stage": "variant",
+   "name": "D1",
+   "permissive": {
+    "n": 36911,
+    "noRefCov": 352,
+    "refLow25": 382,
+    "refLow40": 326,
+    "refBody": 880,
+    "refWalkPhoneBlocked": 15284,
+    "refWalk": 45271,
+    "missRatePct": 1.035
+   },
+   "statClear": {
+    "n": 12317,
+    "noRefCov": 4,
+    "refLow25": 38,
+    "refLow40": 32,
+    "refBody": 143,
+    "refWalkPhoneBlocked": 33547,
+    "refWalk": 45271,
+    "missRatePct": 0.309
+   },
+   "t": 451.8
+  },
+  {
+   "stage": "variant",
+   "name": "D1_noUngrounded",
+   "permissive": {
+    "n": 40105,
+    "noRefCov": 389,
+    "refLow25": 741,
+    "refLow40": 638,
+    "refBody": 2515,
+    "refWalkPhoneBlocked": 14054,
+    "refWalk": 45271,
+    "missRatePct": 1.848
+   },
+   "statClear": {
+    "n": 12812,
+    "noRefCov": 4,
+    "refLow25": 74,
+    "refLow40": 66,
+    "refBody": 449,
+    "refWalkPhoneBlocked": 33391,
+    "refWalk": 45271,
+    "missRatePct": 0.578
+   },
+   "unblockedVsD1": 3723,
+   "unblockedVsD1_refGeom": 1822,
+   "unblockedVsD1_refLow25": 371,
+   "t": 451.8
+  }
+ ],
+ "results": {
+  "D1": {
+   "permissive": {
+    "n": 36911,
+    "noRefCov": 352,
+    "refLow25": 382,
+    "refLow40": 326,
+    "refBody": 880,
+    "refWalkPhoneBlocked": 15284,
+    "refWalk": 45271,
+    "missRatePct": 1.035
+   },
+   "statClear": {
+    "n": 12317,
+    "noRefCov": 4,
+    "refLow25": 38,
+    "refLow40": 32,
+    "refBody": 143,
+    "refWalkPhoneBlocked": 33547,
+    "refWalk": 45271,
+    "missRatePct": 0.309
+   }
+  },
+  "D1_noUngrounded": {
+   "permissive": {
+    "n": 40105,
+    "noRefCov": 389,
+    "refLow25": 741,
+    "refLow40": 638,
+    "refBody": 2515,
+    "refWalkPhoneBlocked": 14054,
+    "refWalk": 45271,
+    "missRatePct": 1.848
+   },
+   "statClear": {
+    "n": 12812,
+    "noRefCov": 4,
+    "refLow25": 74,
+    "refLow40": 66,
+    "refBody": 449,
+    "refWalkPhoneBlocked": 33391,
+    "refWalk": 45271,
+    "missRatePct": 0.578
+   },
+   "unblockedVsD1": 3723,
+   "unblockedVsD1_refGeom": 1822,
+   "unblockedVsD1_refLow25": 371
+  }
+ }
+}

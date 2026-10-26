@@ -5,11 +5,11 @@ Criterion: open-floor misses must not increase vs baseline; edge misses are repo
 import sys,numpy as np
 from scipy import ndimage
 d=sys.argv[1]
-o=np.load(d+'/pipeline2_out.npz');cov=o['ref_n']>0;low=o['ref_low_max'];body=o['ref_body_max'];lo=o['lo']
+o=np.load(d+'/pipeline2_out.npz');cov=o['ref_n']>0;low=o['ref_low_max'];body=o['ref_body_max'];lo=o['lo'];RES=float(o['res']) if 'res' in o.files else .05
 def report(name,w):
-  dblk=ndimage.distance_transform_edt(w)*.05;m=w&cov&((low>=.025)|(body>-np.inf))   # low objects OR overhead/body-band geometry (overhangs)
+  dblk=ndimage.distance_transform_edt(w)*RES;m=w&cov&((low>=.025)|(body>-np.inf))   # low objects OR overhead/body-band geometry (overhangs)
   edge=m&(dblk<=.15);openf=m&(dblk>.15)
-  rows=[(int(i),int(j),round(float((i+lo[0])*.05),2),round(float((j+lo[1])*.05),2),round(float(low[i,j]*100),1),round(float(body[i,j]*100),1) if body[i,j]>-np.inf else None,round(float(dblk[i,j]),2)) for i,j in np.argwhere(openf)]
+  rows=[(int(i),int(j),round(float((i+lo[0])*RES),2),round(float((j+lo[1])*RES),2),round(float(low[i,j]*100),1),round(float(body[i,j]*100),1) if body[i,j]>-np.inf else None,round(float(dblk[i,j]),2)) for i,j in np.argwhere(openf)]
   print(f'{name:28s} walkable {int(w.sum()):6d}  edge misses {int(edge.sum()):4d}  OPEN-FLOOR misses {int(openf.sum()):3d}  ',rows[:8])
 import glob,os
 for f in sorted(glob.glob(d+'/occthres_*.npz')):report(os.path.basename(f),np.load(f)['walk'])

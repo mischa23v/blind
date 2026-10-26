@@ -493,5 +493,39 @@
     },
     "gameEpisodesExecuted": 0,
     "FAROUsedByPlanner": false
+  },
+  "variantTests": {
+    "see": "VARIANT_TESTS.md",
+    "safetyMetric": "open-floor misses (walkable column with reference low>=2.5cm or body-band geometry, >0.15 m from any blocked column) must not increase; edge misses reported separately",
+    "baselineOpenFloorMisses": {
+      "koivu": 4,
+      "coffee_room": 0
+    },
+    "rejected": {
+      "ungroundedBlobRemoval": "208/816 freed columns real (Koivu), 83/450 (coffee)",
+      "TSDFasOccupancy": "open-floor misses 124 (Koivu) / 29 (coffee)",
+      "occupancyThreshold0.8": "3 new open-floor misses on Koivu",
+      "voxel2.5cm_floorBand\u00b13.75cm": "widened blind spot; 7 open-floor misses"
+    },
+    "passesSafetyNoRoutesOnHoldout": {
+      "occupancyThreshold0.7": {
+        "koivuRoutes": 82,
+        "coffeeRoutes": 0
+      },
+      "splitSupport0.5_obstacles0.7": {
+        "koivuRoutes": 97,
+        "coffeeRoutes": "pending"
+      }
+    },
+    "voxel2.5cm_strictFloor": {
+      "openFloorMisses": 0,
+      "realFloorBlockedPct": 34,
+      "routes": 0
+    },
+    "referenceOnlyRoutes": {
+      "koivu": 387,
+      "coffee_room": 537
+    },
+    "gameEpisodesExecuted": 0
   }
 }
