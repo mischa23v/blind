@@ -1,0 +1,241 @@
+{
+  "scope": "Public MuSHRoom geometry plus synthetic numerical bodies only; no participant data, private scans, deployment or branch merges.",
+  "source": "Xuqian Ren et al., MuSHRoom: iPhone https://zenodo.org/records/10230733 and reference https://zenodo.org/records/10222321, CC BY4.0 https://creativecommons.org/licenses/by/4.0/. Derived geometry and figures; modifications documented.",
+  "files": [
+    {
+      "path": "blind-actual-arrival-return-replan-54/FROZEN.json",
+      "bytes": 73912,
+      "sha256": "89a9f5550c21b8cc34263206b53f7455dee8aa5dd01a6e691867aa4324858d9c"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/INDEPENDENT_RESULT_REVIEW.json",
+      "bytes": 2367,
+      "sha256": "43070c42c63c9a82f32c9fd3a8cf28052fdc88787f509d5cb55c1b9a638728c1"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/PROTOCOL.md",
+      "bytes": 3810,
+      "sha256": "c3b365d3d872a44625e9f32d92665a6cc72836b34b2dac1eb12f25610bf59170"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/README.md",
+      "bytes": 4136,
+      "sha256": "096990c6b18aa3ace754eb84bd0191d3774b2bb4d8131592f4c837ab499bc7b4"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/STATUS.json",
+      "bytes": 650,
+      "sha256": "ff6b913250ce04369813d7528a349779080e092397dd903c3dcf8313910299ab"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/actual_return_controller.py",
+      "bytes": 6840,
+      "sha256": "b8229df36f1c17eba2b9a16543c3c1c8c4de8bdf81f7580e0c0afe172077c43d"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/actual_return_map.py",
+      "bytes": 2915,
+      "sha256": "500812c4f067df01f5c62346d9f622311de40d029bf1aea6b62fd7cf48eeabe6"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/fixtures-01.log",
+      "bytes": 7167,
+      "sha256": "9fc7332ef7d98005f6fde54d84e6172996e8baa56ec01df0cf355aa8358e73f9"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/fixtures-02.log",
+      "bytes": 7297,
+      "sha256": "ec194ec8e2f607bbf2ea212d7eeca4beca55f5aa344111ba862db33bc0f87760"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/postrun/ACTUAL_SOURCE_MODEL_PATH.png",
+      "bytes": 526762,
+      "sha256": "e1601bba2bb73404616bbd9be07f23a01dbd54fb44a016cec4368fabf17f822f"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/postrun/ACTUAL_TRACE.csv",
+      "bytes": 98745,
+      "sha256": "48510347072af3a339103d581cf0ca8f1f92c709e25855f4c65e6ba7a2ff5bb6"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/postrun/EXPORT_RECEIPT.json",
+      "bytes": 549,
+      "sha256": "15c72a82ea6d3c83de34c4937b9b90f5f4d37273916d832002d8a8635c087791"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/postrun/RECOUNT.json",
+      "bytes": 1221,
+      "sha256": "c4dc4ec68546dcbf3de4b6467a2420ed5075e295946a94075a59210eb78880f7"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/postrun/export_actual.py",
+      "bytes": 4870,
+      "sha256": "fab9c60e6e3fb157cf7d1c3a0e0be50e853df9db334663913f2aae04b3ef4866"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/postrun/recount.py",
+      "bytes": 3844,
+      "sha256": "59bbd88f25f25c426a6fafde2139dd7c10167d039f9c54181d017d0e0f3b111d"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run-01/RAM_PREFLIGHT.json",
+      "bytes": 102,
+      "sha256": "8f9d15eb8833dea96b633f712a99a10a004c3fd322c448987ca3752616d0e2c6"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run-01/RUN_RECEIPT.json",
+      "bytes": 537,
+      "sha256": "e2fb7f003558eb0709660c382c71c29b56419d978ad7496865596e1ea2fc6708"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run-01/heartbeat.jsonl",
+      "bytes": 508992,
+      "sha256": "6dc20cffe4c86d682b120f6629b830d76e63514c5fe02094c38b246debe82a69"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run-01/result/ACTOR_TRACE.npz",
+      "bytes": 29964,
+      "sha256": "33de6d2db890301f7fcc9cfdb86726cb7d41df8e76856b42848937505efcfffb"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run-01/result/ACTUAL_TRACE_STREAM.csv",
+      "bytes": 141055,
+      "sha256": "a81c7c7db44b1da66c94924977b8a46321b7731cac76efccc2cd32f464a722df"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run-01/result/BODY_QUERY_OPTIMIZATION.json.gz",
+      "bytes": 262534,
+      "sha256": "5e176a717ee0062c7bc045b4621142e80ff146b74d6f4a4b4cb493d961b26621"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run-01/result/INITIAL_SETTLEMENT.json",
+      "bytes": 292,
+      "sha256": "d60a9df9d89dbb7218ee33f7fc543fec03db917b4b45436052ee60584460393b"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run-01/result/PHONE_FOOTPRINT_EXPOSURES.json.gz",
+      "bytes": 31645,
+      "sha256": "c011c2c9af80e5b6e2f27712c3e68b030be71d606ca2866f181413f2f8881b14"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run-01/result/RESULT.json",
+      "bytes": 27156,
+      "sha256": "3ea35e3a12ee3c3ae627199af10a6878ec97253271f125d6a48d2cc792ecfaae"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run-01/result/SOURCE_ONLY_RETURN_QUERY.json",
+      "bytes": 2436,
+      "sha256": "2aed73c7385836d7548b1ae394a556cba09ad1fe8cb033be18ce35b281ed43e9"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run-01/result/STEP_MACROS.json.gz",
+      "bytes": 762126,
+      "sha256": "a2d1ae546bb315411180c5665e3a6b546042aa79dfab71f3b4beb1772d3eef93"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run-01/result/UNDERBODY_QUERY_OPTIMIZATION.json.gz",
+      "bytes": 20993,
+      "sha256": "8687e059ac63e04d8f1ca1b5041ad973c71d8a0788b9ca0bb7a2559c648ce021"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run-01/result/controller.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run-01/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run-01/stdout.log",
+      "bytes": 8411,
+      "sha256": "a53b71f12d73e68352003004ce1d1c6b4a0073ec7c49456ac742456934d0dc4f"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run_bounded.py",
+      "bytes": 4070,
+      "sha256": "2bd4aaf2f079972deb406605e559bd700598f1dd03126f6fa613969e89d4c581"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/run_step.py",
+      "bytes": 6591,
+      "sha256": "c0e31331c2df23ef540a784a81f78dd277366d24c6ed3267ce272e6630d0c800"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/step_controller.py",
+      "bytes": 909,
+      "sha256": "0b626bfd77ac7c0f3ab53f2620848d8f35a21d4815bfc07df41cfc2cf4c5d388"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/step_kernel.py",
+      "bytes": 4048,
+      "sha256": "6d7f9183b7b363134afdc2fecc0394326de9e053be79c4d88f14bfda685f28fc"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/step_world.py",
+      "bytes": 19126,
+      "sha256": "61e1f46b409db9095e2c4f2e4dd3cb4eccdd5eb0c954ffe838b60c4385d61cef"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/support_envelope.py",
+      "bytes": 4559,
+      "sha256": "821eade0bab7a23ecbddbaff42a39a97c369c5e43f14c8d74165a2fd7d909fbc"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/test_actual_return.py",
+      "bytes": 2854,
+      "sha256": "260e977c4e5f9311bc3ea8689ca894e66d56dc425b0992398a35a83f4d033ada"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/test_step_integration.py",
+      "bytes": 9804,
+      "sha256": "12a5b4e22aa7b5ff8e7ce47a49ca7024decede0e2934fe99b5def545a5f054d5"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/test_step_kernel.py",
+      "bytes": 5788,
+      "sha256": "d31bf62dc3c2bf65773422ed381669492ce961b8296a21b611beec2502d69881"
+    },
+    {
+      "path": "blind-actual-arrival-return-replan-54/test_support_envelope.py",
+      "bytes": 3723,
+      "sha256": "3e5c4fbc3eaf7937d5c310e73fc98a43829584f97a2e7fa5013439446a47997c"
+    },
+    {
+      "path": "blind-return-support-diagnosis-52/README.md",
+      "bytes": 2395,
+      "sha256": "d8c5066c1b90b38a6740fc8024d11dc0a3a89bb80d1e813e22bd7d4f5f843b98"
+    },
+    {
+      "path": "blind-return-support-diagnosis-52/SOURCE_VIEW_ASSOCIATION.json",
+      "bytes": 12693,
+      "sha256": "0770a46c988b51e0e9c1692d99e2fc2aae4ce404926db2e784cb41237e09482f"
+    },
+    {
+      "path": "blind-return-support-diagnosis-52/SUPPORT_FACE_DIAGNOSIS.json",
+      "bytes": 3043,
+      "sha256": "5730c7dd09d180c90feccd98d611b1e84b4d34cfb79cff0bf6b3c4bf97b6a5e5"
+    },
+    {
+      "path": "blind-return-support-diagnosis-52/diagnose_support_face.py",
+      "bytes": 4260,
+      "sha256": "4fbc156dceae0ce464e3713741d9f6f7bf3251b886eeaeb4851676f353d56e3f"
+    },
+    {
+      "path": "blind-return-support-diagnosis-52/frame_00126_face_overlay.jpg",
+      "bytes": 361789,
+      "sha256": "f6b4525109612076472ca334433643c8745c3dbaf362a70c8f1fec27e30202b7"
+    },
+    {
+      "path": "blind-return-support-diagnosis-52/frame_00145_face_overlay.jpg",
+      "bytes": 219777,
+      "sha256": "4b844289a9fcbfbb7070c636c1dd23eb1dc27bf8ea91f32f26d8bd9ca14d3da4"
+    },
+    {
+      "path": "blind-return-support-diagnosis-52/project_face_views.py",
+      "bytes": 4110,
+      "sha256": "7d54aac76fcd83db5915161014589e336b142b9e251dd633c33171e7f02bdb44"
+    }
+  ]
+}
