@@ -1,0 +1,753 @@
+{
+  "clipID": "EM1-0387",
+  "archiveSHA256": "aa200931b3769084043b4cd45ae76aef52151971194b079735756aca186749d4",
+  "deviceProvenance": "Publisher pinned index: 12pro; exact device/app/OS fields reported below if present",
+  "metadataKeys": [
+    "K",
+    "cameraType",
+    "dh",
+    "dw",
+    "fps",
+    "frameTimestamps",
+    "h",
+    "initPose",
+    "perFrameIntrinsicCoeffs",
+    "poses",
+    "w"
+  ],
+  "deviceOrSoftwareFields": {},
+  "cameraType": 1,
+  "configuredFPS": 30,
+  "dimensions": {
+    "depth": [
+      256,
+      192
+    ],
+    "rgb": [
+      1920,
+      1440
+    ]
+  },
+  "originalFrameCount": 89,
+  "frozenFrameIDs": [
+    0,
+    12,
+    25,
+    37,
+    50,
+    62,
+    75,
+    88
+  ],
+  "timestampSpan": 5.867291457994725,
+  "timestampIntervalsMinMedianMax": [
+    0.06667362499865703,
+    0.06667374999960884,
+    0.06667395900876727
+  ],
+  "effectiveFrameTimestampRate": 14.99840269228349,
+  "poseQuaternionNormMinMax": [
+    0.9999999095158922,
+    1.0000000953452202
+  ],
+  "intrinsicsMin": [
+    1476.1424560546875,
+    1476.1424560546875,
+    953.0910034179688,
+    747.4664916992188
+  ],
+  "intrinsicsMax": [
+    1488.6868896484375,
+    1488.6868896484375,
+    957.5903930664062,
+    751.5174560546875
+  ],
+  "metadataKColumnMajor": [
+    1477.268798828125,
+    0,
+    0,
+    0,
+    1477.268798828125,
+    0,
+    956.9019775390625,
+    751.5174560546875,
+    1
+  ],
+  "originalInitPose": [
+    0,
+    0,
+    0.7071067690849304,
+    0.7071067690849304,
+    0,
+    0,
+    0
+  ],
+  "confidenceCounts012": [
+    110981,
+    144772,
+    137463
+  ],
+  "confidenceFractions012": [
+    0.28223927815755206,
+    0.3681742350260417,
+    0.34958648681640625
+  ],
+  "positiveDepthQuantilesM": [
+    0.105712890625,
+    0.1982421875,
+    0.45654296875,
+    0.89208984375,
+    1.189453125
+  ],
+  "selectedBytes": 1290320,
+  "decodedBytes": 1966080,
+  "archiveMemberCount": 269,
+  "archiveLogicalBytes": 13943549,
+  "unselectedCRCVerified": false,
+  "selectedMembers": [
+    {
+      "name": "metadata",
+      "bytes": 21729,
+      "sha256": "fa1cab04539609735af5282726a453ce8e8da1b63e45e372bd3a70e03303f1fa"
+    },
+    {
+      "name": "rgbd/0.jpg",
+      "bytes": 110931,
+      "sha256": "e8a656844249fe52c33ac38edcde7bf35764dacb98371b17e580f64076e631bd"
+    },
+    {
+      "name": "rgbd/0.depth",
+      "bytes": 49300,
+      "sha256": "ce8b7bcb15724d61e2a5535e2391b13ef1a2377c757a3343f53458f432f75f83"
+    },
+    {
+      "name": "rgbd/0.conf",
+      "bytes": 1600,
+      "sha256": "874ef0f9c58d77bb6bb4cd09dc5bb2ab57fc97974d62f4324d2d689e170854ab"
+    },
+    {
+      "name": "rgbd/12.jpg",
+      "bytes": 108910,
+      "sha256": "5f733d26d9225f7e88055e3c5688d4cb78d53be9517b22ed070aeffe423d8ee2"
+    },
+    {
+      "name": "rgbd/12.depth",
+      "bytes": 50269,
+      "sha256": "927ff67c4df4b03e7190ea92d481e0e47c4aac6136c6990e792f13c1e6c5c2ce"
+    },
+    {
+      "name": "rgbd/12.conf",
+      "bytes": 1568,
+      "sha256": "093249c9b44bbf3d61103e358e96d44661d2c6448aca9223ff9b228a98988fcf"
+    },
+    {
+      "name": "rgbd/25.jpg",
+      "bytes": 105715,
+      "sha256": "bd49727178174a51408d82efe350752628a936990d11a1f634114e9cd13be2d3"
+    },
+    {
+      "name": "rgbd/25.depth",
+      "bytes": 56146,
+      "sha256": "7a1dd5d5ae03f8cf6bf671b2421672655f3f50e995b99b932c9f829289e8cb1f"
+    },
+    {
+      "name": "rgbd/25.conf",
+      "bytes": 1844,
+      "sha256": "714a918027bd471517f3704e278b60e8a91a97b798a964e9ee68da17cadeaf6f"
+    },
+    {
+      "name": "rgbd/37.jpg",
+      "bytes": 99388,
+      "sha256": "12c9264efeb98415d3591f66c5f1c9379995a69dbfa3d8dafe680fb0ba1b3067"
+    },
+    {
+      "name": "rgbd/37.depth",
+      "bytes": 57022,
+      "sha256": "35f93fa07d4ad9a30db3f9a88cdee986966c9218a4001f1317600465ca0f99b7"
+    },
+    {
+      "name": "rgbd/37.conf",
+      "bytes": 1768,
+      "sha256": "0f35e93365014e8778261c2bc754c5655ea9e255433a608640e7fd51807f4e9b"
+    },
+    {
+      "name": "rgbd/50.jpg",
+      "bytes": 97997,
+      "sha256": "210aa6cae7ebb335e9a1889dff13c735c2a64b6d82c8328514e122b7580f5ef2"
+    },
+    {
+      "name": "rgbd/50.depth",
+      "bytes": 59859,
+      "sha256": "bdd1a550af379b7cf5355d83fa2158bc322cdbef7f4e17232fb96ab8c5d063ec"
+    },
+    {
+      "name": "rgbd/50.conf",
+      "bytes": 1817,
+      "sha256": "c74214b78966a64cf9fda903431fc218def3b0c0b08118d5be9bb89de68858d3"
+    },
+    {
+      "name": "rgbd/62.jpg",
+      "bytes": 96309,
+      "sha256": "fab88af667ae7d806737774362374636c48e1982f4f3d05070ca9e516b0958ed"
+    },
+    {
+      "name": "rgbd/62.depth",
+      "bytes": 58910,
+      "sha256": "f731f6d57a1a635fa9a530ab1e08351893cf951d295c5bfd081c476e6f6d064f"
+    },
+    {
+      "name": "rgbd/62.conf",
+      "bytes": 1699,
+      "sha256": "eb6189f285f7f380d16a2a9fca1c085c1bd565cb783704370e340812868af854"
+    },
+    {
+      "name": "rgbd/75.jpg",
+      "bytes": 86271,
+      "sha256": "5c9b7d59bba91975ac5832783d541853df35293ac3ecb7bba3fa248eee2d947f"
+    },
+    {
+      "name": "rgbd/75.depth",
+      "bytes": 59070,
+      "sha256": "473492ba4fb22ee1633f6ac1ac14c4a2ee160123dd886258739645e7c9ddc6d6"
+    },
+    {
+      "name": "rgbd/75.conf",
+      "bytes": 1973,
+      "sha256": "011f6789c1cad11924e23a957896da74c1a25236c60d6ac806ff92763023e596"
+    },
+    {
+      "name": "rgbd/88.jpg",
+      "bytes": 106599,
+      "sha256": "c3a2fd560224d258734de4e86a359ecd8ba6147d2997f7d537bd9bb943b68aaf"
+    },
+    {
+      "name": "rgbd/88.depth",
+      "bytes": 51978,
+      "sha256": "92f9fa0e7309235988c87ac46be8015713254ca6989411cfa77e113259db8d12"
+    },
+    {
+      "name": "rgbd/88.conf",
+      "bytes": 1648,
+      "sha256": "2d1361665ae793d6e77c206afa6e55fc2dba6ea971dfe2c21169cdb472c9e5af"
+    }
+  ],
+  "frames": [
+    {
+      "frameID": 0,
+      "timestamp": 0.0,
+      "originalConfidenceCounts012": [
+        13644,
+        18253,
+        17255
+      ],
+      "finitePixels": 49152,
+      "nonpositiveFinitePixels": 0,
+      "positiveDepthQuantilesM": [
+        0.253662109375,
+        0.293701171875,
+        0.473876953125,
+        0.90087890625,
+        0.92626953125
+      ],
+      "byConfidence": {
+        "0": {
+          "count": 13644,
+          "positiveDepthQuantilesM": [
+            0.253662109375,
+            0.290771484375,
+            0.462158203125,
+            0.7479736328124993,
+            0.91845703125
+          ]
+        },
+        "1": {
+          "count": 18253,
+          "positiveDepthQuantilesM": [
+            0.2724609375,
+            0.29248046875,
+            0.583984375,
+            0.9130859375,
+            0.92626953125
+          ]
+        },
+        "2": {
+          "count": 17255,
+          "positiveDepthQuantilesM": [
+            0.27978515625,
+            0.296630859375,
+            0.4248046875,
+            0.8994140625,
+            0.92138671875
+          ]
+        }
+      },
+      "intrinsics": [
+        1477.268798828125,
+        1477.268798828125,
+        956.9019775390625,
+        751.5174560546875
+      ],
+      "depthSHA256": "970d2bdc2de2c938409ab12c5979224d2672e63b82095c51018757077462de5c",
+      "confidenceSHA256": "678999e0c1c32fe42b5aae8ffe9a24e0e92f5ebd99539c4d6179c4c8798c91e4",
+      "validRange015To5AllPixels": 49152,
+      "stride2CandidateConfidenceCounts012": [
+        3363,
+        4647,
+        4278
+      ]
+    },
+    {
+      "frameID": 12,
+      "timestamp": 0.8000865000067279,
+      "originalConfidenceCounts012": [
+        16122,
+        17542,
+        15488
+      ],
+      "finitePixels": 49152,
+      "nonpositiveFinitePixels": 0,
+      "positiveDepthQuantilesM": [
+        0.264404296875,
+        0.284423828125,
+        0.478515625,
+        0.89697265625,
+        0.93212890625
+      ],
+      "byConfidence": {
+        "0": {
+          "count": 16122,
+          "positiveDepthQuantilesM": [
+            0.264404296875,
+            0.28271484375,
+            0.4990234375,
+            0.89453125,
+            0.92578125
+          ]
+        },
+        "1": {
+          "count": 17542,
+          "positiveDepthQuantilesM": [
+            0.273193359375,
+            0.29688720703125004,
+            0.62353515625,
+            0.9033203125,
+            0.93212890625
+          ]
+        },
+        "2": {
+          "count": 15488,
+          "positiveDepthQuantilesM": [
+            0.27294921875,
+            0.285400390625,
+            0.38037109375,
+            0.86865234375,
+            0.916015625
+          ]
+        }
+      },
+      "intrinsics": [
+        1477.7308349609375,
+        1477.7308349609375,
+        956.8749389648438,
+        751.2225341796875
+      ],
+      "depthSHA256": "3616962bca5aadb0c8ea455e2562883fa541d38c188a7118af2485e6d4e8a1c9",
+      "confidenceSHA256": "e084f57add9db45e56184ca05afbecfd4d513c1a084f41862906cbbde1754ca0",
+      "validRange015To5AllPixels": 49152,
+      "stride2CandidateConfidenceCounts012": [
+        3985,
+        4439,
+        3864
+      ]
+    },
+    {
+      "frameID": 25,
+      "timestamp": 1.6668461660010507,
+      "originalConfidenceCounts012": [
+        13095,
+        16056,
+        20001
+      ],
+      "finitePixels": 49152,
+      "nonpositiveFinitePixels": 0,
+      "positiveDepthQuantilesM": [
+        0.146728515625,
+        0.163818359375,
+        0.393310546875,
+        0.89892578125,
+        0.92919921875
+      ],
+      "byConfidence": {
+        "0": {
+          "count": 13095,
+          "positiveDepthQuantilesM": [
+            0.170166015625,
+            0.234619140625,
+            0.472900390625,
+            0.8131347656249996,
+            0.92138671875
+          ]
+        },
+        "1": {
+          "count": 16056,
+          "positiveDepthQuantilesM": [
+            0.14794921875,
+            0.212127685546875,
+            0.619384765625,
+            0.912109375,
+            0.92919921875
+          ]
+        },
+        "2": {
+          "count": 20001,
+          "positiveDepthQuantilesM": [
+            0.146728515625,
+            0.1558837890625,
+            0.304931640625,
+            0.8798828125,
+            0.91796875
+          ]
+        }
+      },
+      "intrinsics": [
+        1484.96044921875,
+        1484.96044921875,
+        956.8863525390625,
+        751.158935546875
+      ],
+      "depthSHA256": "b5f1a201ee5a160b74c10ea8ab1fd9f2ad4787f961c2e6e378c6d2ce33e017f6",
+      "confidenceSHA256": "9292ab0749568f69216d9be9b6cd71521a84dc30dd08a2c4f61dce8b13988bfb",
+      "validRange015To5AllPixels": 49120,
+      "stride2CandidateConfidenceCounts012": [
+        3224,
+        4078,
+        4986
+      ]
+    },
+    {
+      "frameID": 37,
+      "timestamp": 2.4669310830067843,
+      "originalConfidenceCounts012": [
+        13133,
+        15709,
+        20310
+      ],
+      "finitePixels": 49152,
+      "nonpositiveFinitePixels": 0,
+      "positiveDepthQuantilesM": [
+        0.156005859375,
+        0.1851806640625,
+        0.453369140625,
+        0.89453125,
+        0.93212890625
+      ],
+      "byConfidence": {
+        "0": {
+          "count": 13133,
+          "positiveDepthQuantilesM": [
+            0.1778564453125,
+            0.274169921875,
+            0.468017578125,
+            0.8839843749999998,
+            0.93017578125
+          ]
+        },
+        "1": {
+          "count": 15709,
+          "positiveDepthQuantilesM": [
+            0.156005859375,
+            0.22412109375,
+            0.58154296875,
+            0.90673828125,
+            0.93212890625
+          ]
+        },
+        "2": {
+          "count": 20310,
+          "positiveDepthQuantilesM": [
+            0.1640625,
+            0.17919921875,
+            0.365234375,
+            0.88037109375,
+            0.91748046875
+          ]
+        }
+      },
+      "intrinsics": [
+        1487.36865234375,
+        1487.36865234375,
+        956.597900390625,
+        750.9417114257812
+      ],
+      "depthSHA256": "09d112ca1c6a6c418db4529f0ba0ba6bf288bad15649b68a401c1e87cc0017b6",
+      "confidenceSHA256": "3024b3f18a4abf845f127aaf54206ca7045c424390555a9053281383db90d999",
+      "validRange015To5AllPixels": 49152,
+      "stride2CandidateConfidenceCounts012": [
+        3258,
+        3970,
+        5060
+      ]
+    },
+    {
+      "frameID": 50,
+      "timestamp": 3.333689457998844,
+      "originalConfidenceCounts012": [
+        12500,
+        19642,
+        17010
+      ],
+      "finitePixels": 49152,
+      "nonpositiveFinitePixels": 0,
+      "positiveDepthQuantilesM": [
+        0.11663818359375,
+        0.1903076171875,
+        0.46337890625,
+        0.89208984375,
+        1.072265625
+      ],
+      "byConfidence": {
+        "0": {
+          "count": 12500,
+          "positiveDepthQuantilesM": [
+            0.14892578125,
+            0.230828857421875,
+            0.5234375,
+            0.86279296875,
+            1.072265625
+          ]
+        },
+        "1": {
+          "count": 19642,
+          "positiveDepthQuantilesM": [
+            0.11663818359375,
+            0.17333984375,
+            0.5859375,
+            0.90478515625,
+            1.0283203125
+          ]
+        },
+        "2": {
+          "count": 17010,
+          "positiveDepthQuantilesM": [
+            0.1722412109375,
+            0.1942138671875,
+            0.410888671875,
+            0.88232421875,
+            0.9072265625
+          ]
+        }
+      },
+      "intrinsics": [
+        1487.347900390625,
+        1487.347900390625,
+        956.6177368164062,
+        750.6892700195312
+      ],
+      "depthSHA256": "a1c2f0099600924ebc4d020a966019223d5bcc2e0164b3ca26591e58b7023de3",
+      "confidenceSHA256": "21e8648c43e15f755111a5614f3155c14179e3e2d8bf06617e2f9d4f6869f195",
+      "validRange015To5AllPixels": 49044,
+      "stride2CandidateConfidenceCounts012": [
+        3101,
+        4947,
+        4240
+      ]
+    },
+    {
+      "frameID": 62,
+      "timestamp": 4.133774208006798,
+      "originalConfidenceCounts012": [
+        12186,
+        18001,
+        18965
+      ],
+      "finitePixels": 49152,
+      "nonpositiveFinitePixels": 0,
+      "positiveDepthQuantilesM": [
+        0.139892578125,
+        0.2181396484375,
+        0.467041015625,
+        0.88671875,
+        0.99658203125
+      ],
+      "byConfidence": {
+        "0": {
+          "count": 12186,
+          "positiveDepthQuantilesM": [
+            0.172607421875,
+            0.278076171875,
+            0.52734375,
+            0.8798828125,
+            0.99658203125
+          ]
+        },
+        "1": {
+          "count": 18001,
+          "positiveDepthQuantilesM": [
+            0.139892578125,
+            0.2117919921875,
+            0.62646484375,
+            0.89697265625,
+            0.91357421875
+          ]
+        },
+        "2": {
+          "count": 18965,
+          "positiveDepthQuantilesM": [
+            0.20556640625,
+            0.2174072265625,
+            0.36083984375,
+            0.86669921875,
+            0.89453125
+          ]
+        }
+      },
+      "intrinsics": [
+        1485.8997802734375,
+        1485.8997802734375,
+        956.7019653320312,
+        750.5960693359375
+      ],
+      "depthSHA256": "6367a318b64ed2eb5fb858b0687a8688a829ce1e78d98643e3e9d3fda6eb6511",
+      "confidenceSHA256": "8dfbdd4e30af285160beeb863d65601597201f88cbf1331efaf9542ca74980b4",
+      "validRange015To5AllPixels": 49150,
+      "stride2CandidateConfidenceCounts012": [
+        3047,
+        4501,
+        4740
+      ]
+    },
+    {
+      "frameID": 75,
+      "timestamp": 5.000532749996637,
+      "originalConfidenceCounts012": [
+        12446,
+        19897,
+        16809
+      ],
+      "finitePixels": 49152,
+      "nonpositiveFinitePixels": 0,
+      "positiveDepthQuantilesM": [
+        0.105712890625,
+        0.1888427734375,
+        0.423828125,
+        0.8466796875,
+        1.189453125
+      ],
+      "byConfidence": {
+        "0": {
+          "count": 12446,
+          "positiveDepthQuantilesM": [
+            0.139404296875,
+            0.259033203125,
+            0.5048828125,
+            0.8572998046875,
+            1.142578125
+          ]
+        },
+        "1": {
+          "count": 19897,
+          "positiveDepthQuantilesM": [
+            0.105712890625,
+            0.2364501953125,
+            0.60595703125,
+            0.8564453125,
+            1.189453125
+          ]
+        },
+        "2": {
+          "count": 16809,
+          "positiveDepthQuantilesM": [
+            0.1412353515625,
+            0.180908203125,
+            0.28173828125,
+            0.460205078125,
+            1.07421875
+          ]
+        }
+      },
+      "intrinsics": [
+        1483.4761962890625,
+        1483.4761962890625,
+        955.7145385742188,
+        750.4922485351562
+      ],
+      "depthSHA256": "775d8ac756a37c684d4a02e6c1a26470de61918b3863bb611575ffa7994dd5f9",
+      "confidenceSHA256": "bda191aaa57de6d4170d883fce2e62cfb3e7263357bbab4eb4ed81b63e64e6ae",
+      "validRange015To5AllPixels": 48989,
+      "stride2CandidateConfidenceCounts012": [
+        3093,
+        4996,
+        4199
+      ]
+    },
+    {
+      "frameID": 88,
+      "timestamp": 5.867291457994725,
+      "originalConfidenceCounts012": [
+        17855,
+        19672,
+        11625
+      ],
+      "finitePixels": 49152,
+      "nonpositiveFinitePixels": 0,
+      "positiveDepthQuantilesM": [
+        0.268798828125,
+        0.28662109375,
+        0.461669921875,
+        0.88720703125,
+        1.0087890625
+      ],
+      "byConfidence": {
+        "0": {
+          "count": 17855,
+          "positiveDepthQuantilesM": [
+            0.271728515625,
+            0.2998046875,
+            0.435302734375,
+            0.6547363281249989,
+            1.0087890625
+          ]
+        },
+        "1": {
+          "count": 19672,
+          "positiveDepthQuantilesM": [
+            0.26953125,
+            0.287841796875,
+            0.59912109375,
+            0.90185546875,
+            0.93017578125
+          ]
+        },
+        "2": {
+          "count": 11625,
+          "positiveDepthQuantilesM": [
+            0.268798828125,
+            0.27880859375,
+            0.373291015625,
+            0.87158203125,
+            0.91259765625
+          ]
+        }
+      },
+      "intrinsics": [
+        1476.1424560546875,
+        1476.1424560546875,
+        956.7190551757812,
+        750.0142211914062
+      ],
+      "depthSHA256": "b33b4419ef9bd7b003a25284b1c40bacb14a67b29595907bf33e08c4732d2cc9",
+      "confidenceSHA256": "58bc2a4acba6c057d16877ade58da551545580e66751c2da55bb6b4562748bb9",
+      "validRange015To5AllPixels": 49152,
+      "stride2CandidateConfidenceCounts012": [
+        4419,
+        4992,
+        2877
+      ]
+    }
+  ],
+  "trackingState": "unknown; not synthesized",
+  "bodyMountCalibration": null,
+  "independentGeometryReference": null,
+  "navigationRun": false,
+  "hardwareAccuracyComparison": false
+}

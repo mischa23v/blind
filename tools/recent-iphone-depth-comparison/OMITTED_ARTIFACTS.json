@@ -1,0 +1,26 @@
+{
+  "rawArchivesIncluded": false,
+  "archives": [
+    {
+      "clipID": "EM1-1093",
+      "bytes": 55082489,
+      "sha256": "5cd8b4d03fd7e1ed2ec28d005d4e01209dddd9583029787f85e5b5f65376e6cb",
+      "sourceURL": "https://huggingface.co/datasets/CaryxAI/everyday-manipulation-3d-raw/resolve/a285cd1249fe9762085713a1c796ab68b1810ac2/clips/D3/EM1-1093.r3d?download=true"
+    },
+    {
+      "clipID": "EM1-0387",
+      "bytes": 13973317,
+      "sha256": "aa200931b3769084043b4cd45ae76aef52151971194b079735756aca186749d4",
+      "sourceURL": "https://huggingface.co/datasets/CaryxAI/everyday-manipulation-3d-raw/resolve/a285cd1249fe9762085713a1c796ab68b1810ac2/clips/D2/EM1-0387.r3d?download=true"
+    }
+  ],
+  "releaseMirror": "Not created by this packet. Original archives remain available from pinned publisher URLs; any repository release mirror requires a separate publication step.",
+  "omitted": [
+    "Unselected recording frames and archive containers",
+    "Compiled LZFSE decoder binary (SHA recorded in decoder/BUILD_RECEIPT.json)",
+    "Swift compiler/runtime/modules/object files/shared libraries and native executable",
+    "Native compiler caches and duplicate terminal stdout",
+    "Whole corpus index.csv and D3_TREE.json (source URLs and index hash retained in SELECTED_INDEX_ROWS.json)"
+  ],
+  "smallFixtures": "All sixteen selected original JPEG/depth/confidence triples, both original metadata files, and exactly decoded Float32LE/U8 arrays are included unchanged. Their hashes appear in field audits and public normalization mapping."
+}

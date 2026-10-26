@@ -1,0 +1,187 @@
+{
+  "artifacts": [
+    {
+      "bytes": 27232,
+      "path": "EM1-0387.json",
+      "sha256": "e95a76bbf3356f4001dba46ee0aaa9fced3bc024c08bb915980bf269019e8c7d"
+    },
+    {
+      "bytes": 0,
+      "path": "EM1-0387.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 27564,
+      "path": "EM1-1093.json",
+      "sha256": "d2ab7b0de8143b017f6899dedf842dd6b944ca60fa2415a35a6b8211ee40f7fd"
+    },
+    {
+      "bytes": 0,
+      "path": "EM1-1093.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 9240,
+      "path": "SOURCE_DATA_PINS.json",
+      "sha256": "55966395203a11973329569c86c59b3e6dffca8047ba6bb680179fdf9a52c3de"
+    },
+    {
+      "bytes": 245272,
+      "path": "build/native-camera-audit",
+      "sha256": "4ff9fa6b6882ea55eb1af32885ed08bf9abd9859012ca3b1215f8fb7d5d77092"
+    },
+    {
+      "bytes": 0,
+      "path": "compile.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "compile.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "ldd.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3284,
+      "path": "resolved-libraries.log",
+      "sha256": "47f319d056bc0e38b799a0204080998c80160ca9bd8bd479e4de56f4043ac2d1"
+    }
+  ],
+  "binarySHA256": "4ff9fa6b6882ea55eb1af32885ed08bf9abd9859012ca3b1215f8fb7d5d77092",
+  "caps": {
+    "cpuSeconds": 60.0,
+    "freeReserveBytes": 805306368,
+    "newBytes": 33554432,
+    "sampledRSSBytes": 536870912,
+    "wallSeconds": 90.0
+  },
+  "clips": [
+    {
+      "admittedFractionOfAttempted": 0.8772379557291666,
+      "clipID": "EM1-1093",
+      "counts": {
+        "attemptedStridePixels": 98304,
+        "fullRasterPixels": 393216,
+        "projectedPoints": 86236,
+        "rejectedConfidence0": 3125,
+        "rejectedConfidence1": 8943,
+        "rejectedDepthAboveRange": 0,
+        "rejectedDepthBelowRange": 0,
+        "rejectedDepthNonfinite": 0,
+        "rejectedOtherConfidence": 0,
+        "scalarAdmitted": 86236
+      },
+      "maxRoundTripDepthResidual": 0,
+      "maxRoundTripPixelResidual": 2.842170943040401e-14,
+      "originalFrameIDs": [
+        0,
+        56,
+        112,
+        168,
+        224,
+        280,
+        336,
+        393
+      ]
+    },
+    {
+      "admittedFractionOfAttempted": 0.3483072916666667,
+      "clipID": "EM1-0387",
+      "counts": {
+        "attemptedStridePixels": 98304,
+        "fullRasterPixels": 393216,
+        "projectedPoints": 34240,
+        "rejectedConfidence0": 27490,
+        "rejectedConfidence1": 36570,
+        "rejectedDepthAboveRange": 0,
+        "rejectedDepthBelowRange": 4,
+        "rejectedDepthNonfinite": 0,
+        "rejectedOtherConfidence": 0,
+        "scalarAdmitted": 34240
+      },
+      "maxRoundTripDepthResidual": 0,
+      "maxRoundTripPixelResidual": 2.842170943040401e-14,
+      "originalFrameIDs": [
+        0,
+        12,
+        25,
+        37,
+        50,
+        62,
+        75,
+        88
+      ]
+    }
+  ],
+  "cpuSeconds": 2.5700000000000003,
+  "freeAfterBytes": 975462400,
+  "hardwareAccuracyComparison": false,
+  "newOutputBytesBeforeReceipt": 17868144,
+  "newOutputBytesIncludingReceipt": 17874112,
+  "phases": [
+    {
+      "command": [
+        "$SHARED/swift-toolchain/install/swift-6.4.1-RELEASE-debian13/usr/bin/swiftc",
+        "-parse-as-library",
+        "-module-cache-path",
+        "$WORKSPACE/blind-recent-iphone-comparison-09/native/run.partial/build/cache",
+        "-I",
+        "$SHARED/blind-body-warning-build/.build/debug",
+        "-I",
+        "$WORKSPACE/blind-navigation-recorded/build-06",
+        "-I",
+        "$WORKSPACE/blind-native-depth-policy/build-01",
+        "-L",
+        "$WORKSPACE/blind-navigation-recorded/build-06",
+        "-L",
+        "$WORKSPACE/blind-native-depth-policy/build-01",
+        "-lRecordedNavigationSupport",
+        "-lNativeDepthPolicySupport",
+        "$WORKSPACE/blind-recent-iphone-comparison-09/native/NativeCameraAudit.swift",
+        "-o",
+        "$WORKSPACE/blind-recent-iphone-comparison-09/native/run.partial/build/native-camera-audit"
+      ],
+      "cpuSeconds": 2.4,
+      "exitCode": 0,
+      "wallSeconds": 2.4701267249911325
+    },
+    {
+      "command": [
+        "ldd",
+        "$WORKSPACE/blind-recent-iphone-comparison-09/native/run.partial/build/native-camera-audit"
+      ],
+      "cpuSeconds": 0.020000000000000018,
+      "exitCode": 0,
+      "wallSeconds": 0.04378005399485119
+    },
+    {
+      "command": [
+        "$WORKSPACE/blind-recent-iphone-comparison-09/native/run.partial/build/native-camera-audit",
+        "$WORKSPACE/blind-recent-iphone-comparison-09/audited/EM1-1093/NATIVE_MANIFEST.json"
+      ],
+      "cpuSeconds": 0.04999999999999982,
+      "exitCode": 0,
+      "wallSeconds": 0.0851596020074794
+    },
+    {
+      "command": [
+        "$WORKSPACE/blind-recent-iphone-comparison-09/native/run.partial/build/native-camera-audit",
+        "$WORKSPACE/blind-recent-iphone-comparison-09/audited/EM1-0387/NATIVE_MANIFEST.json"
+      ],
+      "cpuSeconds": 0.050000000000000266,
+      "exitCode": 0,
+      "wallSeconds": 0.04381989600369707
+    }
+  ],
+  "sampledPeakProcessTreeRSSBytes": 353189888,
+  "scope": "Actual unchanged production scalar admission and camera-relative projection only",
+  "sourceDataRehashedAfter": true,
+  "status": "completed",
+  "unmatchedScenes": true,
+  "wallSeconds": 2.6966002990084235,
+  "worldOrBodyOrNavigation": false
+}

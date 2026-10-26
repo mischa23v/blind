@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/usr/bin/gcc",
+    "-O2",
+    "-std=c99",
+    "-fPIC",
+    "-shared",
+    "-Wall",
+    "-Wextra",
+    "-pedantic",
+    "$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_decode.c",
+    "$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_decode_base.c",
+    "$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_fse.c",
+    "$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c",
+    "-o",
+    "$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/liblzfse_decode.so.pending"
+  ],
+  "exitCode": 0,
+  "wallSeconds": 0.5358051170042017,
+  "peakChildRSSKiB": 25216,
+  "compiler": "gcc (Debian 14.2.0-19) 14.2.0",
+  "upstreamRevision": "e634ca58b4821d9f3d560cdc6df5dec02ffc93fd",
+  "sourcesUnmodified": true,
+  "scope": "decoder only, no navigation/sensor evaluation",
+  "binaryBytes": 33328,
+  "binarySHA256": "75e52786bd0cfc5ede9e1f08f87dc752778fffe2f6c3957e318c534e5f457d61",
+  "workingFileBytes": 308007
+}

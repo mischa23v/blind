@@ -1,0 +1,15 @@
+# Native camera-relative audit of two unmatched iPhone clips
+
+Frozen selections: EM1-1093 (publisher index: iPhone 17 Pro), frame IDs 0, 56, 112, 168, 224, 280, 336, 393; EM1-0387 (publisher index: iPhone 12 Pro), IDs 0, 12, 25, 37, 50, 62, 75, 88. These are uniformly distributed index selections, not confidence-selected frames. Scenes, action, distance, device settings and acquisition rates differ. This is NOT a matched hardware accuracy or performance comparison.
+
+Use original decoded little-endian Float32 metres and U8 native confidence. Run the existing pinned production NativeDepthObservationPolicy.acceptedDepth at stride two, beginning at pixel zero. Its return alone owns admission. Count disjoint rejections: confidence 0, confidence 1, other non-2 confidence, then nonfinite/under-range/over-range depth. No threshold changes, depth quantization or invented confidence.
+
+Use each original frame's [fx, fy, cx, cy] with the same production Float-to-Double scaling from actual RGB to depth dimensions. Record3D author's coefficient order and official Unity sample use integer pixel centres, x=(u-cx)d/fx, y=-(v-cy)d/fy, z=-d. Preserve varying intrinsics; global K is not reused across frames. Prior primary-source provenance is in the stage-02 intrinsics review; source reuse does not make device metadata or tracking known.
+
+The shared DepthProjection.cameraPoint projects each admitted pixel in camera coordinates only. Five previously reviewed analytic projection probes and nine scalar boundary probes run first. Reproject to the original integer pixel and axial depth; maximum error caps are 1e-8 pixel and 1e-12 metre (arithmetic consistency, not physical accuracy). Report all frame IDs, counts, full-image pixel-centre ray spans, admitted angular envelopes, and an 8 by 6 tile count grid. Empty tiles remain empty; envelopes do not imply filled coverage. No point CSV or image output is needed.
+
+No pose, gravity, tracking state, body, mount, map, detector, route, controller or world projection is passed into the runner. Missing independent geometry/labels prevents physical error, small-object recall, hazard miss-rate, clearance or navigation claims. Native confidence is a source category, not calibrated accuracy.
+
+Before execution: validate both acquisition manifests against their original metadata and field-audit hashes, fixed frame IDs, exact decoded-file hashes and sizes. Pin the runner, driver, protocol, metadata, manifests, decoded arrays, production sources, modules and shared libraries. Compile only the tiny runner using the existing compiler and dependencies; no rebuild/install. Check actual dynamic-library resolution and rehash all dependencies after execution.
+
+Serial resource bounds: 60 aggregate CPU seconds, 90 wall seconds, 512 MiB sampled process-tree RSS, 32 MiB new local native outputs including module cache, and 768 MiB free-space reserve. One runner invocation per clip, all eight frames retained. Failure outputs are retained; no favorable subset or silent rerun. Original raw data and previous audit results remain unchanged.

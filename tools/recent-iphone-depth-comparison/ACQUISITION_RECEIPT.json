@@ -1,0 +1,38 @@
+{
+  "datasetRevision": "a285cd1249fe9762085713a1c796ab68b1810ac2",
+  "sourceURL": "https://huggingface.co/datasets/CaryxAI/everyday-manipulation-3d-raw/resolve/a285cd1249fe9762085713a1c796ab68b1810ac2/clips/D3/EM1-1093.r3d?download=true",
+  "redirectHost": "us.aws.cdn.hf.co",
+  "path": "EM1-1093.r3d",
+  "bytes": 55082489,
+  "sha256": "5cd8b4d03fd7e1ed2ec28d005d4e01209dddd9583029787f85e5b5f65376e6cb",
+  "wallSeconds": 10.169442533006077,
+  "freeBeforeBytes": 1055363072,
+  "freeAfterBytes": 1000275968,
+  "reserveBytes": 805306368,
+  "protocolSHA256": "2db50750120c82c57c3b77b0c925ae3d429f849aa2979d0a4b06e0e4dce55cb6",
+  "frozenSelection": {
+    "selected17FrameIDs": [
+      0,
+      56,
+      112,
+      168,
+      224,
+      280,
+      336,
+      393
+    ],
+    "selected12FrameIDs": [
+      0,
+      12,
+      25,
+      37,
+      50,
+      62,
+      75,
+      88
+    ],
+    "method": "floor(k*(N-1)/7); N from pinned index; actual metadata must match index; no observed-value selection",
+    "policy": "unchanged confidence2 inclusive0.15..5m stride2",
+    "scope": "unmatched scenes, no hardware accuracy or navigation verdict"
+  }
+}
