@@ -1,0 +1,11 @@
+# Public-normalized stage-03 packet
+
+Only source, protocol/reviews, aggregate numerical evidence and local artifact hashes are included. Original and analytical images, per-pixel point CSVs, full original metadata/poses, raw rasters, compiled binaries/modules and caches remain local. `INPUT_MANIFEST.json` is also excluded; it remains identified by its original artifact hash where recorded. No new data run occurred during packaging.
+
+The private original source, protocol and execution receipts remain unchanged. `ORIGINAL_PUBLICATION_INPUTS.json` identifies every eligible original text file. `PUBLIC_NORMALIZATION.json` maps original hashes to these public copies. `$WORKSPACE` replaces the private audit/dependency workspace prefix; `$SHARED` replaces the private compiler/core-prerequisite root. They are literal display placeholders in copied receipts/logs, not new observed runtime paths.
+
+Every historical source/data/protocol/module/binary/artifact hash retains its ORIGINAL-byte referent, even where its publicly displayed receipt or prose has a different normalized hash. Do not validate a normalized file using a historical hash that describes the original; use the mapping. The enclosing publication manifest hashes the complete public payload. Internal coordination prose is changed to maintainer/protocol-review wording, while historical proposal status remains historically dated by the execution receipt rather than silently rewritten.
+
+Swift/Python code and exact Geometry/policy source cuts are byte-identical to the executed source cut. Packaging performs only hash, syntax, JSON, whitelist and path/privacy checks. It does not rerun compilation, projection, plotting, detector logic or navigation. Numeric roundtrip measures arithmetic consistency, not physical sensor accuracy, obstacle recall, body clearance or route completion.
+
+For a separately approved reproduction, restore the audit scripts and original preregistered protocol to the workspace layout required by the unchanged driver, with the exact pinned local raw-data/native prerequisites. The normalized proposal text will have a different hash; it is not a substitute for the original protocol bytes required by the driver. This public snapshot is not a stand-alone clean-machine reproduction or a license to invent missing inputs.

@@ -1,0 +1,328 @@
+{
+  "allInputAndSourceHashesUnchanged": true,
+  "artifacts": [
+    {
+      "bytes": 629,
+      "path": "IMAGE_ATTRIBUTION.md",
+      "sha256": "fd1f51b3804669bb70d9c40a9906ecbd76fef3b660e6a71520d019337d0d59d9"
+    },
+    {
+      "bytes": 4196,
+      "path": "INPUT_MANIFEST.json",
+      "sha256": "fc85872ac18fe6f49b3378ffd0e548da0e7372147c687c3807e6410fdbd7b63c"
+    },
+    {
+      "bytes": 7115,
+      "path": "SOURCE_DATA_PINS.json",
+      "sha256": "88f2c0c8368a1c29a984fcd11dfcf0807452233f61ece3f97ef4ad57392a5f8e"
+    },
+    {
+      "bytes": 235784,
+      "path": "build/geometry-audit",
+      "sha256": "601611159e11962e25646104566b5681da5bf851f7095fa80bc8fca0a4d36e0d"
+    },
+    {
+      "bytes": 173564,
+      "path": "build/mpl-cache/fontlist-v390.json",
+      "sha256": "0f8fdf3f7a82a13bbc074c47da971d5f85b821dbef63a20cdd6d4271e6401b72"
+    },
+    {
+      "bytes": 0,
+      "path": "compile.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "compile.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 134189,
+      "path": "diagnostics/eight-frame-summary.png",
+      "sha256": "73396eee74f8585746f9a7964ff9caa58d17936f946d15ca001bf1647d197f17"
+    },
+    {
+      "bytes": 160721,
+      "path": "diagnostics/frame-0-camera-point-scatter.png",
+      "sha256": "20336b2c8bf203917ca45d718f762b36b832d70e01d439529bcac8427c7b83ec"
+    },
+    {
+      "bytes": 163625,
+      "path": "diagnostics/frame-0-depth-confidence-admission.png",
+      "sha256": "979adc351e522f30810ada251c2714e7f455849438bca0c06585cfa2dff94c77"
+    },
+    {
+      "bytes": 157360,
+      "path": "diagnostics/frame-1-camera-point-scatter.png",
+      "sha256": "97d29a78b9142fa8670d431fe6f0b1d6b997816c649fc71000e9ed54cec24f9f"
+    },
+    {
+      "bytes": 164440,
+      "path": "diagnostics/frame-1-depth-confidence-admission.png",
+      "sha256": "3b727e36bdf90713de8a92d877c33dd7afeaf8501a01340b44adcd10ee3994c7"
+    },
+    {
+      "bytes": 156463,
+      "path": "diagnostics/frame-2-camera-point-scatter.png",
+      "sha256": "2454a09ce4cbc62be65ad6a95aaff43442e1ad8e8ee00e0e2891f46d32495db7"
+    },
+    {
+      "bytes": 165663,
+      "path": "diagnostics/frame-2-depth-confidence-admission.png",
+      "sha256": "a0ab7c206dac4538f094946f448111a0d967f1e2a7029c0811321c973ea69ca1"
+    },
+    {
+      "bytes": 153919,
+      "path": "diagnostics/frame-3-camera-point-scatter.png",
+      "sha256": "e8b450f86ea7d1afd70db9583a80a7276dd01f5262dac72f2d72a77b96e6d137"
+    },
+    {
+      "bytes": 165297,
+      "path": "diagnostics/frame-3-depth-confidence-admission.png",
+      "sha256": "de8406e5cca7f2b93be45d828e6cf70b687f8927e81ba3ad6c07a658c713f12f"
+    },
+    {
+      "bytes": 152720,
+      "path": "diagnostics/frame-4-camera-point-scatter.png",
+      "sha256": "db4bce96b28d99da671908ed8ed2848958152a25116cb12123bbfdabbe8d58e4"
+    },
+    {
+      "bytes": 165471,
+      "path": "diagnostics/frame-4-depth-confidence-admission.png",
+      "sha256": "81a8898ac11efe5eb869872e69e91a1ae130ba1bca80f054a1bb0e80ac202fb5"
+    },
+    {
+      "bytes": 156732,
+      "path": "diagnostics/frame-5-camera-point-scatter.png",
+      "sha256": "332b83fed3acac94d2e931b03e934329ac62b20ce474293c00a199dbbfdee528"
+    },
+    {
+      "bytes": 166660,
+      "path": "diagnostics/frame-5-depth-confidence-admission.png",
+      "sha256": "9b6dbadef0679ee7adb21bc5bcd3aaaedf8fa7ec6078b3e7b38a648e5edff68f"
+    },
+    {
+      "bytes": 151593,
+      "path": "diagnostics/frame-6-camera-point-scatter.png",
+      "sha256": "5e485d36b16c2bf7670d75e85550075ad3ac007efdb4912af7831888abf52c2d"
+    },
+    {
+      "bytes": 166413,
+      "path": "diagnostics/frame-6-depth-confidence-admission.png",
+      "sha256": "9b898c2a332cdbe8e7e411292ee241481622d308e5a7b633523a486de56c8d8f"
+    },
+    {
+      "bytes": 155885,
+      "path": "diagnostics/frame-7-camera-point-scatter.png",
+      "sha256": "93b5b42fda3f4e165013efc367e218c5d5c0f77f974cbfcc676775ba83a44cad"
+    },
+    {
+      "bytes": 164891,
+      "path": "diagnostics/frame-7-depth-confidence-admission.png",
+      "sha256": "cf515f84e1581d7cc3408b39e3d31535ea312108004bd27ae9614920f4e179cf"
+    },
+    {
+      "bytes": 197444,
+      "path": "distribution-diagnostics.json",
+      "sha256": "a885a786469c303faa5a319087ef417505aee05ecdfe3a29f1fdd05def4f67d2"
+    },
+    {
+      "bytes": 344717,
+      "path": "frame-0-camera-points.csv",
+      "sha256": "675124f4f5b70e5ccdb62c9205db4ae6840b66b1eb409fcd8385f9504ca35cc9"
+    },
+    {
+      "bytes": 346740,
+      "path": "frame-1-camera-points.csv",
+      "sha256": "eeb805a32216abb89493a4240df3f7b0a918d6e362fbe74cd026d5773d365548"
+    },
+    {
+      "bytes": 325630,
+      "path": "frame-2-camera-points.csv",
+      "sha256": "0feb36a94df1539555d0f9a00f53382ef324c173882a893665c4a7b30b37df58"
+    },
+    {
+      "bytes": 298243,
+      "path": "frame-3-camera-points.csv",
+      "sha256": "50186c94df1591da3544c834df7b3dde8dcc6006f8bc6a131f9ded580ae0b8bc"
+    },
+    {
+      "bytes": 288570,
+      "path": "frame-4-camera-points.csv",
+      "sha256": "2c151a63fd0015255be901beb0434ce7d3ab4f13bfe489b341234934fa982341"
+    },
+    {
+      "bytes": 313542,
+      "path": "frame-5-camera-points.csv",
+      "sha256": "73757906d9b7591e30eb2012df72fbd98cf989b991086bfb571122c3a34d7efc"
+    },
+    {
+      "bytes": 310020,
+      "path": "frame-6-camera-points.csv",
+      "sha256": "ae099475c58f25388bd9adf91bc8bbad12403b0d6ed1f5dbba2b46c4915a14e4"
+    },
+    {
+      "bytes": 329536,
+      "path": "frame-7-camera-points.csv",
+      "sha256": "d307bf368f6753024339c3db9320c18a4c61cf54640296b69443083b33b5799f"
+    },
+    {
+      "bytes": 16675,
+      "path": "geometry-result.json",
+      "sha256": "713874c29475a19e1924d248d0952adc0db6f9dd9cab90d023576c5bd5067ea6"
+    },
+    {
+      "bytes": 0,
+      "path": "ldd.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 110931,
+      "path": "original-frame-0000.jpg",
+      "sha256": "e8a656844249fe52c33ac38edcde7bf35764dacb98371b17e580f64076e631bd"
+    },
+    {
+      "bytes": 1440,
+      "path": "plot.stderr.log",
+      "sha256": "489f6ae5af977ee999a1a1e02633315542f247d82bd5efb6822b744f8feec7c3"
+    },
+    {
+      "bytes": 79,
+      "path": "plot.stdout.log",
+      "sha256": "6de4dff01fd566441ab613a8d9092e22e82c07f90d89d0551f5c7fc76d805674"
+    },
+    {
+      "bytes": 3284,
+      "path": "resolved-libraries.log",
+      "sha256": "832cc39df63dc9e83c78e46b4914ad42d7a8c7bc3c8ae17d5de126ef044a0c97"
+    },
+    {
+      "bytes": 0,
+      "path": "runtime.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "attempted": 98304,
+  "bounds": {
+    "cpuCapSeconds": 60.0,
+    "outputCapBytes": 25165824,
+    "reserveBytes": 805306368,
+    "sampledTreeRSSCapBytes": 536870912,
+    "wallCapSeconds": 90.0
+  },
+  "detectorOrNavigationCalled": false,
+  "goldenProbes": [
+    {
+      "maxCoordinateError": 0,
+      "maxIntrinsicError": 0,
+      "name": "reference"
+    },
+    {
+      "maxCoordinateError": 0,
+      "maxIntrinsicError": 0,
+      "name": "asymmetric_offcentre"
+    },
+    {
+      "maxCoordinateError": 0,
+      "maxIntrinsicError": 0,
+      "name": "unequal_resolution_scales"
+    },
+    {
+      "maxCoordinateError": 0,
+      "maxIntrinsicError": 0,
+      "name": "principal_ray"
+    },
+    {
+      "maxCoordinateError": 0,
+      "maxIntrinsicError": 0,
+      "name": "left_and_up"
+    }
+  ],
+  "maxRoundTripDepthResidual": 0,
+  "maxRoundTripPixelResidual": 2.842170943040401e-14,
+  "originalRGBUntouched": true,
+  "phases": [
+    {
+      "command": [
+        "$SHARED/swift-toolchain/install/swift-6.4.1-RELEASE-debian13/usr/bin/swiftc",
+        "-parse-as-library",
+        "-module-cache-path",
+        "$WORKSPACE/blind-navigation-recorded/build-06/cache",
+        "-I",
+        "$SHARED/blind-body-warning-build/.build/debug",
+        "-I",
+        "$WORKSPACE/blind-navigation-recorded/build-06",
+        "-I",
+        "$WORKSPACE/blind-native-depth-policy/build-01",
+        "-L",
+        "$WORKSPACE/blind-navigation-recorded/build-06",
+        "-L",
+        "$WORKSPACE/blind-native-depth-policy/build-01",
+        "-lRecordedNavigationSupport",
+        "-lNativeDepthPolicySupport",
+        "$WORKSPACE/blind-raw-iphone-geometry-audit-03/CameraGeometryAudit.swift",
+        "-o",
+        "$WORKSPACE/blind-raw-iphone-geometry-audit-03/run.partial/build/geometry-audit"
+      ],
+      "cpuSeconds": 0.83,
+      "exitCode": 0,
+      "wallSeconds": 0.8240399069909472
+    },
+    {
+      "command": [
+        "ldd",
+        "$WORKSPACE/blind-raw-iphone-geometry-audit-03/run.partial/build/geometry-audit"
+      ],
+      "cpuSeconds": 0.010000000000000009,
+      "exitCode": 0,
+      "wallSeconds": 0.04452301099081524
+    },
+    {
+      "command": [
+        "$WORKSPACE/blind-raw-iphone-geometry-audit-03/run.partial/build/geometry-audit",
+        "$WORKSPACE/blind-raw-iphone-geometry-audit-03/run.partial/INPUT_MANIFEST.json",
+        "$WORKSPACE/blind-raw-iphone-geometry-audit-03/run.partial"
+      ],
+      "cpuSeconds": 0.08000000000000007,
+      "exitCode": 0,
+      "wallSeconds": 0.12694853599532507
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "$WORKSPACE/blind-raw-iphone-geometry-audit-03/plot_camera_diagnostics.py",
+        "$WORKSPACE/blind-raw-iphone-geometry-audit-03/run.partial/INPUT_MANIFEST.json",
+        "$WORKSPACE/blind-raw-iphone-geometry-audit-03/run.partial"
+      ],
+      "cpuSeconds": 11.11,
+      "exitCode": 0,
+      "wallSeconds": 10.759798294995562
+    }
+  ],
+  "physicalAuthority": false,
+  "projectedPoints": 31648,
+  "protocolSHA256": "c464922f1fa4799d83f9eef5da6fb0158a62df134777ff7218181aa6f196cfaf",
+  "resources": {
+    "cacheGrowthBytes": 0,
+    "cpuMeasurement": "Sampled Linux live-tree utime/stime plus waited-descendant cutime/cstime; tick resolution, not a hard cgroup quota",
+    "cpuSeconds": 12.110000000000001,
+    "freeBytes": 1074839552,
+    "newOutputBytesBeforeReceipt": 6010181,
+    "peakChildRSSKiB": 176880,
+    "sampledPeakTreeRSSBytes": 287064064,
+    "wallSeconds": 11.834455666001304
+  },
+  "sameEightFrameIDs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "scope": "Camera-relative numerical consistency and recorded-ray distributions ONLY; not physical accuracy, detection, clearance or navigation",
+  "status": "completed",
+  "worldPoseTrackingGravityBodyUsed": false
+}

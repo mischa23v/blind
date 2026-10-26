@@ -1,0 +1,16 @@
+# Independent references required for later hazard/clearance evaluation
+
+The same calibration/depth model cannot independently grade its own physical accuracy. A successful numeric pixel↔camera round trip proves algebraic consistency, not that a glass surface, chair leg or drop edge was measured correctly.
+
+Before evaluating actual obstacle misses, obtain or explicitly construct a separate bounded benchmark with:
+
+1. **Measured scene truth:** independently measured 3D surfaces/object extents, scale and reference-camera/rig alignment, with uncertainty. A separately calibrated reference scan, surveyed fixtures or independent measurement can qualify; a reconstruction from the same tested phone depth is not independent truth. If only human image masks exist, claim 2D visible-object annotations, not verified 3D clearance.
+2. **Per-frame observable-region labels:** object/surface visibility, occlusion, image boundaries, expected depth-range coverage and the distinction between no usable measurement and a detector miss. Label unsupported near-feet/head/behind-body regions unknown; do not treat unseen geometry as empty.
+3. **Hazard definition and event matching:** predeclared relevant object heights/protrusions, minimum geometry/uncertainty criteria, warning deadline, matching distance/time tolerances and fixed object/event denominators. Keep confidence rejection, invalid depth, out-of-view cases, wrong geometry, missed warning and late warning separate. No VLM-generated labels as ground truth.
+4. **For body clearance:** independently measured body envelope/equipment, body trajectory/heading and phone/belt/gimbal extrinsics with revisions and uncertainty. Camera-relative geometry alone cannot decide whether the body, foot or head will hit it. Source tracking/gravity and cross-sensor clocks must be established, not filled with normal/identity values.
+5. **For latency and movement:** original acquisition time, clock mapping/error, receipt/processing/actual haptic or speech delivery time, motion and response uncertainty. Configured FPS, Linux runtime and a write acknowledgment are not end-to-end timing or physical actuation proof.
+6. **For generalization:** frozen development choices and held-out layouts/objects/materials/lighting/attitudes, including low/thin/protruding/overhanging objects, transparent/reflective/dark surfaces, dynamic occlusion and mount/gimbal changes. Count independent hazard events and journeys, not correlated pixels as independent successes.
+
+Phone-baseline and the intended phone-plus-belt/additional-sensor configurations should be compared against the same independently labelled requirements. Existing BeltLink/protocol/WearableEvidence/local belt urgency remain reusable boundaries; world fusion needs actual calibrated timing/rays/extrinsics, not a new LLM geometry authority. Sensor additions may address measured gaps; this camera audit cannot determine which final rig is sufficient.
+
+No independent scene labels or body/collision truth exist for the present tabletop clip. This protocol therefore stops at real camera-relative input geometry and coverage diagnostics. A later true A→B test must use independently integrated/measured body motion, preserve collisions and unknown support, and require goal completion; standing still safely is not success.
