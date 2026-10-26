@@ -1,0 +1,10 @@
+{
+  "scope": "compute-only repair; same selected approaches and exact ground model rules",
+  "replacesIncompleteStage": "camera-approach-executor-12",
+  "boundsQuery": "same reference AABB, closed native-query tiles, sorted ID union",
+  "classifierOnlySourceChange": "CANDIDATE_CAP = 2_000_000 -> 3_000_000",
+  "RSSGuardUnchangedBytes": 3221225472,
+  "noGeometryDeletion": true,
+  "noAvatarSpecificGroundFit": true,
+  "physicalAuthority": false
+}

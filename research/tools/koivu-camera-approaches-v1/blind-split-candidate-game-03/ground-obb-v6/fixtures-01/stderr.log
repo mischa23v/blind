@@ -1,0 +1,35 @@
+test_all_surviving_predicates_and_non_ground_count_retained (test_oriented_ground_obb_container.BoundsTests.test_all_surviving_predicates_and_non_ground_count_retained) ... ok
+test_array_revision_retires_scorer (test_oriented_ground_obb_container.BoundsTests.test_array_revision_retires_scorer) ... ok
+test_chunk_boundary_stable_order (test_oriented_ground_obb_container.BoundsTests.test_chunk_boundary_stable_order) ... ok
+test_closed_boundaries_retained_on_all_six_faces (test_oriented_ground_obb_container.BoundsTests.test_closed_boundaries_retained_on_all_six_faces) ... ok
+test_empty_filter (test_oriented_ground_obb_container.BoundsTests.test_empty_filter) ... ok
+test_filter_preserves_survivor_order_and_duplicates (test_oriented_ground_obb_container.BoundsTests.test_filter_preserves_survivor_order_and_duplicates) ... ok
+test_large_reference_translation (test_oriented_ground_obb_container.BoundsTests.test_large_reference_translation) ... ok
+test_one_vertex_inside_prevents_rejection (test_oriented_ground_obb_container.BoundsTests.test_one_vertex_inside_prevents_rejection) ... ok
+test_outside_rotated_box_but_inside_world_aabb_rejected (test_oriented_ground_obb_container.BoundsTests.test_outside_rotated_box_but_inside_world_aabb_rejected) ... ok
+test_padding_retains_near_miss_for_exact_predicate (test_oriented_ground_obb_container.BoundsTests.test_padding_retains_near_miss_for_exact_predicate) ... ok
+test_skinny_box_falls_back_to_all_exact (test_oriented_ground_obb_container.BoundsTests.test_skinny_box_falls_back_to_all_exact) ... ok
+test_tolerance_admitted_vertices_retained_on_all_six_faces (test_oriented_ground_obb_container.BoundsTests.test_tolerance_admitted_vertices_retained_on_all_six_faces) ... ok
+test_zero_copy_views_share_vtk_memory_and_are_readonly (test_oriented_ground_obb_container.BoundsTests.test_zero_copy_views_share_vtk_memory_and_are_readonly) ... ok
+test_candidate_cap_includes_skipped_ground (test_oriented_ground_obb_container.EquivalenceTests.test_candidate_cap_includes_skipped_ground) ... ok
+test_detached_one_cm_top_remains_exact_contact (test_oriented_ground_obb_container.EquivalenceTests.test_detached_one_cm_top_remains_exact_contact) ... ok
+test_ground_broadphase_candidates_are_not_contacts (test_oriented_ground_obb_container.EquivalenceTests.test_ground_broadphase_candidates_are_not_contacts) ... ok
+test_ground_only_overlap_unmeasured_not_zero (test_oriented_ground_obb_container.EquivalenceTests.test_ground_only_overlap_unmeasured_not_zero) ... ok
+test_head_contact (test_oriented_ground_obb_container.EquivalenceTests.test_head_contact) ... ok
+test_invalid_box_rejected (test_oriented_ground_obb_container.EquivalenceTests.test_invalid_box_rejected) ... ok
+test_margin_only_contact (test_oriented_ground_obb_container.EquivalenceTests.test_margin_only_contact) ... ok
+test_mesh_mutation_and_errors_retire (test_oriented_ground_obb_container.EquivalenceTests.test_mesh_mutation_and_errors_retire) ... ok
+test_multiple_obstacles_first_id_order_and_complete_count (test_oriented_ground_obb_container.EquivalenceTests.test_multiple_obstacles_first_id_order_and_complete_count) ... ok
+test_owner_and_transform_guard (test_oriented_ground_obb_container.EquivalenceTests.test_owner_and_transform_guard) ... ok
+test_positive_similarity (test_oriented_ground_obb_container.EquivalenceTests.test_positive_similarity) ... ok
+test_skip_is_before_getcell_source_order (test_oriented_ground_obb_container.EquivalenceTests.test_skip_is_before_getcell_source_order) ... ok
+test_support_rays_unchanged (test_oriented_ground_obb_container.EquivalenceTests.test_support_rays_unchanged) ... ok
+test_thin_vertical_riser (test_oriented_ground_obb_container.EquivalenceTests.test_thin_vertical_riser) ... ok
+test_wall_crossing_sweep (test_oriented_ground_obb_container.EquivalenceTests.test_wall_crossing_sweep) ... ok
+test_wholly_contained_triangle (test_oriented_ground_obb_container.EquivalenceTests.test_wholly_contained_triangle) ... ok
+test_yaw_and_translation_enclosure_unchanged (test_oriented_ground_obb_container.EquivalenceTests.test_yaw_and_translation_enclosure_unchanged) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 0.284s
+
+OK

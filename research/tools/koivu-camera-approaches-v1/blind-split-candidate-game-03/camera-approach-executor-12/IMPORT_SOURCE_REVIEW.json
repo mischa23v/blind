@@ -1,0 +1,25 @@
+{
+  "scope": "Independent source-only close of additive stage12 import correction and saved22-fixture readback; no geometry/episode executed by reviewer",
+  "passed": true,
+  "sourcePins": {
+    "approach_episode.py": "9cd599b33b2548b6d5624f15d7df5e9f291d9bc8af9ac2fa2edd00d662428a3f",
+    "run_approaches.py": "265560e0dc1bdbf3724a6ab3aa5e4930aa2394a5495e33052e60802ef73640c5",
+    "run_bounded.py": "9cdf63e309436e61972a870d55c3b9c3575a02a3659483fedd0b5c9f18ad787c",
+    "test_driver_import.py": "04859a7aef2b87faa774c985de58b71fe950249b74e0f1da28a4180e6887095b",
+    "test_ground_owner.py": "6b6afe295269595f483559366f1b94d3d67a9c4cfd27132bb7e3dca5a7eca448",
+    "fixtures-02/RECEIPT.json": "c16d0a110cbb8ddd6ff04c2fbae98f7dc628915454027c6ece14afae9c7f238a",
+    "IMPORT_CORRECTION.json": "045e14c8043f5d553d111cafff0760d4f2bc4b59ac95682f8dff20c11054cffc"
+  },
+  "checks": [
+    "Diff from frozen stage11 executor code contains only exact-file v3 ground-motion module binding.",
+    "All three physics function code-file owners resolve to original frozen v3 run_ground_pilot.py in full-runner import smoke.",
+    "Actual imported GroundSupport module file resolves to v3 ground_support.py.",
+    "Batch episode owner resolves to this additive stage12 file.",
+    "Saved22 tests pass; source pins still match exact tested cut.",
+    "Stage11 failed before geometry and remains preserved with explicit correction provenance.",
+    "No route/profile/geometry/controller/tick budget/movement gate changes."
+  ],
+  "reviewerCorrection": "Prior stage11 source-close missed a transitive sys.path collision; its19-controller-only tests did not import the full runner. This correction explicitly tests the previously uncovered import boundary.",
+  "gameEpisodesExecutedByReviewer": 0,
+  "physicalAuthority": false
+}

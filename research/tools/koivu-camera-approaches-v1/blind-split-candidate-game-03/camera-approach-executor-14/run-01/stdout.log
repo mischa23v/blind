@@ -1,0 +1,33 @@
+{"phase": "full_reference_load_start"}
+{"phase": "locator_build_start", "locator": "vtkStaticCellLocator", "cells": 17801112}
+{"phase": "locator_build_completed", "locator": "vtkStaticCellLocator", "buildWallSeconds": 2.9135720409976784}
+{"phase": "ground_setup_preflight", "candidateCells": 1987262, "candidateCap": 3000000, "gameBounds": [-3.833969880955596, 0.17500000000000004, -0.25, 0.25, -1.7531449742175331, 4.7250000000000005], "nativeQuery": {"kind": "same VTK broad-phase bin union via closed contiguous AABB tiles", "VTKVersion": "9.3.1", "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx", "sourceLines": [486, 530], "referenceBounds": [-2.790706523048858, 4.449116931048177, -4.929628034247117, 0.28270241082811054, -0.33205769209994374, 0.47881835442658316], "tileSizeReferenceUnits": 0.25, "tilesPerAxis": [29, 21, 4], "tileQueries": 2436, "rawReturnedIDs": 4503760, "uniqueOriginalIDs": 1987262, "largestTileReturnedIDs": 15448, "resourceCaps": {"tiles": 10000, "rawIDs": 32000000, "uniqueIDs": 3000000}, "queryWallSeconds": 8.682264293005574, "originalGeometryChanged": false, "sameSortedGroundCandidateSemantics": true, "perTickCollisionOrderChanged": false, "outsideQueryClampingPreserved": true, "physicalAuthority": false}, "capIsComputeGuardNotPhysicalConstraint": true, "sameReferenceBoundsAndSortedIDs": true}
+{"phase": "shared_scene_ground_ready", "groundCells": 1001935}
+{"phase": "initial_contact_check_begin"}
+{"phase": "actor_tick", "tick": 0, "distance": 0.02, "goalError": 2.108042007981836, "status": "timeout"}
+{"phase": "actor_tick", "tick": 15, "distance": 0.32, "goalError": 1.8080420079818362, "status": "timeout"}
+{"phase": "actor_tick", "tick": 30, "distance": 0.6200000000000002, "goalError": 1.5080420079818366, "status": "timeout"}
+{"phase": "actor_tick", "tick": 45, "distance": 0.9200000000000005, "goalError": 1.2080420079818361, "status": "timeout"}
+{"phase": "actor_tick", "tick": 60, "distance": 1.2200000000000006, "goalError": 0.9080420079818359, "status": "timeout"}
+{"phase": "actor_tick", "tick": 75, "distance": 1.520000000000001, "goalError": 0.6080420079818355, "status": "timeout"}
+{"phase": "actor_tick", "tick": 90, "distance": 1.8000000000000012, "goalError": 0.32804200798183486, "status": "arrivalReferenceModelOnly"}
+{"phase": "approach_terminal", "profile": "body45cmMargin0", "approachID": "southSide", "status": "arrivalReferenceModelOnly", "arrival": true, "distance": 1.8000000000000012, "bodyContacts": 0, "marginContacts": 0}
+{"phase": "initial_contact_check_begin"}
+{"phase": "actor_tick", "tick": 0, "distance": 0.02, "goalError": 2.108042007981836, "status": "timeout"}
+{"phase": "actor_tick", "tick": 15, "distance": 0.32, "goalError": 1.8080420079818362, "status": "timeout"}
+{"phase": "actor_tick", "tick": 30, "distance": 0.6200000000000002, "goalError": 1.5080420079818366, "status": "timeout"}
+{"phase": "actor_tick", "tick": 45, "distance": 0.9200000000000005, "goalError": 1.2080420079818361, "status": "timeout"}
+{"phase": "actor_tick", "tick": 60, "distance": 1.2200000000000006, "goalError": 0.9080420079818359, "status": "timeout"}
+{"phase": "actor_tick", "tick": 75, "distance": 1.520000000000001, "goalError": 0.6080420079818355, "status": "timeout"}
+{"phase": "actor_tick", "tick": 90, "distance": 1.8000000000000012, "goalError": 0.32804200798183486, "status": "arrivalReferenceModelOnly"}
+{"phase": "approach_terminal", "profile": "body45cmMargin5cm", "approachID": "southSide", "status": "arrivalReferenceModelOnly", "arrival": true, "distance": 1.8000000000000012, "bodyContacts": 0, "marginContacts": 0}
+{"phase": "initial_contact_check_begin"}
+{"phase": "actor_tick", "tick": 0, "distance": 0.02, "goalError": 2.108042007981836, "status": "timeout"}
+{"phase": "actor_tick", "tick": 15, "distance": 0.32, "goalError": 1.8080420079818362, "status": "timeout"}
+{"phase": "actor_tick", "tick": 30, "distance": 0.6200000000000002, "goalError": 1.5080420079818366, "status": "timeout"}
+{"phase": "actor_tick", "tick": 45, "distance": 0.9200000000000005, "goalError": 1.2080420079818361, "status": "timeout"}
+{"phase": "actor_tick", "tick": 60, "distance": 1.2200000000000006, "goalError": 0.9080420079818359, "status": "timeout"}
+{"phase": "actor_tick", "tick": 75, "distance": 1.520000000000001, "goalError": 0.6080420079818355, "status": "timeout"}
+{"phase": "actor_tick", "tick": 90, "distance": 1.8000000000000012, "goalError": 0.32804200798183486, "status": "arrivalReferenceModelOnly"}
+{"phase": "approach_terminal", "profile": "abstract28cmProfile", "approachID": "southSide", "status": "arrivalReferenceModelOnly", "arrival": true, "distance": 1.8000000000000012, "bodyContacts": 0, "marginContacts": 0}
+{"phase": "terminal", "phoneSelectedSlots": 3, "arrivals": 3, "slotsWithAnyContact": 0}

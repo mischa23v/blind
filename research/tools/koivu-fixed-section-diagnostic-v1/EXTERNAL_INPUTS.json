@@ -1,0 +1,24 @@
+{
+  "bundled": false,
+  "pathBase": "workspaces/",
+  "inputs": {
+    "metadata": {
+      "path": "blind-split-candidate-game-03/inputs/koivu_5cm_v2_pipeline2_out.npz",
+      "sha256": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d"
+    },
+    "phoneMask": {
+      "path": "blind-split-candidate-game-03/inputs/koivu_5cm_occthres_split0.7.npz",
+      "sha256": "b294d92cfd9136d00de510239c2b85a9d68d878dcf7dac1a64b144d8880cb076"
+    },
+    "poses": {
+      "path": "blind-mushroom-koivu-acquisition-01/selected/room_datasets/koivu/iphone/long_capture/transformations.json",
+      "sha256": "c496c8dc6474679766db8abd92da9c756104a752bb9e4519fd462fe294af90c3"
+    }
+  },
+  "requiredPackages": [
+    "numpy",
+    "matplotlib"
+  ],
+  "measurementSourceHashPinnedBySavedResult": "03a192bf20f5f179c2cb1024f316c5e92181e33aaba1044e928ca07c464d9f86",
+  "originalLayoutRequired": true
+}

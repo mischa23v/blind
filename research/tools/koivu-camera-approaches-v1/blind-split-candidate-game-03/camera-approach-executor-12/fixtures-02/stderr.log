@@ -1,0 +1,27 @@
+test_cannot_change_goal_or_begin_twice (test_approach_controller.ApproachControllerTests.test_cannot_change_goal_or_begin_twice) ... ok
+test_delivered_pose_goal_stop_is_not_world_arrival (test_approach_controller.ApproachControllerTests.test_delivered_pose_goal_stop_is_not_world_arrival) ... ok
+test_fallback_radius_only_bound_to_frozen_abstract_profile (test_approach_controller.ApproachControllerTests.test_fallback_radius_only_bound_to_frozen_abstract_profile) ... ok
+test_initialize_contract_rejects_extra_fields_and_repeat (test_approach_controller.ApproachControllerTests.test_initialize_contract_rejects_extra_fields_and_repeat) ... ok
+test_invalid_plan_never_opens_map (test_approach_controller.ApproachControllerTests.test_invalid_plan_never_opens_map) ... ok
+test_native_identity_mismatch_never_opens_map (test_approach_controller.ApproachControllerTests.test_native_identity_mismatch_never_opens_map) ... ok
+test_no_complete_route_stops (test_approach_controller.ApproachControllerTests.test_no_complete_route_stops) ... ok
+test_only_predeclared_goal_is_accepted (test_approach_controller.ApproachControllerTests.test_only_predeclared_goal_is_accepted) ... ok
+test_profile_revision_mismatch_closes_model (test_approach_controller.ApproachControllerTests.test_profile_revision_mismatch_closes_model) ... ok
+test_reuses_unchanged_tick_with_bounded_candidate (test_approach_controller.ApproachControllerTests.test_reuses_unchanged_tick_with_bounded_candidate) ... ok
+test_sampled_footprint_withholds_even_at_goal (test_approach_controller.ApproachControllerTests.test_sampled_footprint_withholds_even_at_goal) ... ok
+test_skipped_tick_and_wrong_pose_revision_rejected (test_approach_controller.ApproachControllerTests.test_skipped_tick_and_wrong_pose_revision_rejected) ... ok
+test_stale_pose_and_missing_pose_stop (test_approach_controller.ApproachControllerTests.test_stale_pose_and_missing_pose_stop) ... ok
+test_exact_frozen_authored_plan_loads (test_approach_controller.FrozenPlanTests.test_exact_frozen_authored_plan_loads) ... ok
+test_geometry_mismatch_rejected (test_approach_controller.FrozenPlanTests.test_geometry_mismatch_rejected) ... ok
+test_incomplete_or_wrong_map_route_rejected (test_approach_controller.FrozenPlanTests.test_incomplete_or_wrong_map_route_rejected) ... ok
+test_nonfinite_goal_and_yaw_rejected (test_approach_controller.FrozenPlanTests.test_nonfinite_goal_and_yaw_rejected) ... ok
+test_truth_or_authority_or_unselected_plan_rejected (test_approach_controller.FrozenPlanTests.test_truth_or_authority_or_unselected_plan_rejected) ... ok
+test_wrong_hash_rejected (test_approach_controller.FrozenPlanTests.test_wrong_hash_rejected) ... ok
+test_batch_owns_this_additive_episode_cut (test_driver_import.DriverImportTests.test_batch_owns_this_additive_episode_cut) ... ok
+test_ground_motion_bound_to_exact_frozen_v3_file (test_driver_import.DriverImportTests.test_ground_motion_bound_to_exact_frozen_v3_file) ... ok
+test_ground_helper_is_frozen_v3 (test_ground_owner.GroundOwnerTests.test_ground_helper_is_frozen_v3) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 0.007s
+
+OK

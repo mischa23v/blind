@@ -1,0 +1,14 @@
+{
+  "reason": "pre-geometry import failure from historical v2 sys.path precedence",
+  "failedStage": "camera-approach-executor-11",
+  "failedFrozenSHA256": "732f2bb4d6b3a6632cccd49c983d7336aaa707b1a926fcc190d4fa9b77058d08",
+  "failedRunReceiptSHA256": "f418aa29287694311d4bc5e6f5fcafdb9af16ee718de66ecfb4cea18e081104e",
+  "change": "exact file-bound import of original frozen v3 ground-motion helper; no geometry, route, profile, timing or policy changes",
+  "oldFilesUnchanged": true,
+  "newValidationRequired": [
+    "whole-driver import smoke",
+    "same19controllerfixtures",
+    "independent source-close"
+  ],
+  "physicalAuthority": false
+}

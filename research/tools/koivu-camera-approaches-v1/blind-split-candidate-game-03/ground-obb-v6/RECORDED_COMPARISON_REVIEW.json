@@ -1,0 +1,47 @@
+{
+  "scope": "Independent tiny JSON/log/source-pin arithmetic readback only; no geometry or navigation execution",
+  "reviewDateUTC": "2026-10-26",
+  "reviewerTask": "/root/implement_closed_loop_navigation/review_game_collision",
+  "verified": true,
+  "resultSHA256": "0a57dc0d317150bf1b784c94b483b824283948471381fb4d771b4067535f3729",
+  "runReceiptSHA256": "2f64b6a203bc562c58ba9dae0b73f073a26dc4ef67fac010c6e7ea08144a66a8",
+  "frozenManifestSHA256": "50fbcfeb3366ca2721dfd27f7b4e90dcff1227d214197a009d9e60acf5ca14a0",
+  "sourcePinsChecked": {
+    "blind-split-candidate-game-03/ground-obb-v6/oriented_ground_obb_container.py": "7005ab752d855edfdb1295b401ea8ad9d66516a5813f716f1a7818677bb1c222",
+    "blind-split-candidate-game-03/ground-obb-v6/test_oriented_ground_obb_container.py": "2fef0f942b9f89b358445aa79582071af5d3818943c0b7629a6e51f89d2d6ae6",
+    "blind-split-candidate-game-03/ground-obb-v6/compare_reference.py": "b0ab53174297daaa42d875e532a4fd4ab87c701b859a02c5375f121e055886e3",
+    "blind-split-candidate-game-03/ground-obb-v6/run_comparison_bounded.py": "f60e7792e8f052cd6b9d034c78e62db263582b3addb4931a3f9893ce6e984fa2",
+    "blind-split-candidate-game-03/ground-vector-v5/oriented_ground_vector_container.py": "939e4dc678d7f410675ffc461bb7ff3c01bd39490c97bfa48bc4747eb9e1bb56",
+    "blind-split-candidate-game-03/ground-skip-v4/oriented_ground_skip_container.py": "25131c4057ebca9afcbde025da672d1d75a7c5083d45cb2a0b6b5ce522189387",
+    "blind-split-candidate-game-03/ground-follow-v2/oriented_ground_container.py": "728860fa18f762f90b13f581e4b3cae474f4d8bf4223854252778802e405ea89",
+    "blind-split-candidate-game-03/ground-follow-v3/ground_support.py": "cf4745cae6ac3392346cc2e43cf507f42b4513af349b016ce466cdc04d04c06b"
+  },
+  "checks": [
+    "All ten frozen ticks, both halves and 40 comparisons reconcile",
+    "All recorded comparison rows match non-ground results and are no-contact windows",
+    "Row timing sums, terminal log, speedup ratio and resource receipt reconcile",
+    "All 2,287,073 original exact queries account for 1,780,895 immutable-ground skips plus 506,178 conservative bounds rejects, leaving zero exact survivors",
+    "Fast ground-contact fields remain unmeasured, not zero",
+    "Selected current source pins match frozen manifest; no large input rehash"
+  ],
+  "arithmetic": {
+    "slowTriangleQueries": 2287073,
+    "fastTriangleQueries": 0,
+    "skippedGroundCandidates": 1780895,
+    "rejectedNonGroundBoundsCandidates": 506178,
+    "slowWallSeconds": 71.59810100503091,
+    "fastWallSeconds": 43.00009682895325,
+    "speedupRatio": 1.6650683669349735,
+    "queryWallTimeReductionPercent": 39.94240597815325
+  },
+  "limits": [
+    "Paired run is original v2 exact scorer versus v6; comparisons against v4/v5 timings are cross-run only.",
+    "Slow precedes fast on shared warm locator/cache, Linux CPU diagnostic, not unbiased benchmark or iPhone latency.",
+    "All recorded windows are no-contact cases; zero surviving exact queries does not establish equivalence for positive collisions. Positive contacts remain covered by separate authored fixtures.",
+    "Residual runtime includes unprofiled query/filter/owner overhead; this receipt does not identify its bottleneck.",
+    "No new journey, three-lap result, current clearance or physical safety claim."
+  ],
+  "newNavigationEpisodes": 0,
+  "physicalAuthority": false,
+  "readbackWallSeconds": 0.0012356389925116673
+}

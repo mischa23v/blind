@@ -1,0 +1,11 @@
+# Frozen v6 saved-pose comparison
+
+This is not a new movement episode. Preserve the exact successful v3 source, scene-ground membership, body dimensions, margins, original reference geometry and saved trace. Compare the original v2 exact ground/non-ground scorer with additive v6 on the same predeclared ticks 0, 9, 15, 28, 30, 45, 60, 75, 90, 106, both support-following half sweeps and both raw-body/margin boxes: 40 comparisons.
+
+V6 skips immutable ground IDs, then rejects a non-ground triangle only when every original vertex lies outside one conservatively padded affine box axis. Original double-precision VTK box points, original zero-copy mesh points/connectivity and stable candidate order are preserved. All survivors use the unchanged VTK 9.3.1 triangle intersection and vertex containment predicates. Padding accounts for the pinned VTK parametric outside tolerance and Newton convergence; it only retains candidates, never alters final contact decisions. Ill-conditioned affine boxes retain every exact query.
+
+Require identical contact boolean, original broad-phase candidate count, first non-ground face, reason, complete non-ground contact count, contact height ranges and sweep envelope. Require eliminated exact queries to equal ground-ID skips plus non-ground bounds rejects. Ground contact counts from the optimized scorer remain unmeasured, not zero. Thirty authored tests include positive contacts, six closed/tolerance-admitted faces, crossing/contained triangles, transformed/rotated/swept boxes, array ownership retirement and fallback. These recorded arrival poses are negative-contact cases and do not independently cover positive collisions.
+
+One full reference load, exact frozen ground rebuilt once and matched to the original receipt except process-local mesh MTime. Caps: 600 CPU seconds, 900 wall seconds, 3 GiB sampled process-tree RSS, 64 MiB outputs, 768 MiB disk reserve. Source/input hashes verified before and after. Original results and binaries untouched.
+
+Timing is a Linux CPU diagnostic: the original scorer always precedes v6 using the shared warm locator/cache. Report paired measured query times, not an unbiased benchmark, not iPhone latency, and not cross-version speedup from unrelated runs. No route selection, body change, world episode or physical authority.

@@ -1,0 +1,2087 @@
+{
+  "scope": "Same fixed segment, model proxies only; not measured physical passage clearance",
+  "selectionRule": "Original frame39 in previously fixed disputed western ROI; original frame38\u219240 camera displacement defines local aisle tangent. Chosen before reference-column results; not optimized for width. Exact photo gap identity unverified.",
+  "anchorFrameIndex1Based": 39,
+  "tangentFrames1Based": [
+    38,
+    40
+  ],
+  "sourceAnchorXY": [
+    -3.455316891223968,
+    2.836569193569362
+  ],
+  "sourceUnitTangent": [
+    -0.18746799713446072,
+    -0.9822707111842405
+  ],
+  "sourceUnitCrossSectionNormal": [
+    0.9822707111842405,
+    -0.18746799713446072
+  ],
+  "segmentOffsetBoundsMetres": [
+    -2,
+    2
+  ],
+  "sourceGridResolutionMetres": 0.05,
+  "nativePlannerRasterNotUsed": true,
+  "crossSectionCellTraversal": "exact intersections with source raster edges; interval midpoint identifies cell; no interpolated geometry",
+  "clearRunsByModelProxy": {
+    "phonePermissiveWalk": [
+      {
+        "offsetStartMetres": -1.5216610774987076,
+        "offsetEndMetres": -1.3180512195208829,
+        "widthMetres": 0.20360985797782472,
+        "containsAnchor": false,
+        "clippedAtSectionEndpoint": false,
+        "sourceStartXY": [
+          -4.950000000000001,
+          3.1218319480855103
+        ],
+        "sourceEndXY": [
+          -4.750000000000001,
+          3.0836616158135755
+        ]
+      },
+      {
+        "offsetStartMetres": -0.9617339680596892,
+        "offsetEndMetres": -0.8717797646998792,
+        "widthMetres": 0.08995420335981008,
+        "containsAnchor": false,
+        "clippedAtSectionEndpoint": false,
+        "sourceStartXY": [
+          -4.4,
+          3.0168635343376895
+        ],
+        "sourceEndXY": [
+          -4.3116406206917475,
+          3.0
+        ]
+      },
+      {
+        "offsetStartMetres": -0.7581241100818653,
+        "offsetEndMetres": -0.07164319583040211,
+        "widthMetres": 0.6864809142514632,
+        "containsAnchor": false,
+        "clippedAtSectionEndpoint": false,
+        "sourceStartXY": [
+          -4.200000000000001,
+          2.978693202065755
+        ],
+        "sourceEndXY": [
+          -3.5256899041438086,
+          2.8499999999999996
+        ]
+      }
+    ],
+    "referenceVertexColumnProxy": [
+      {
+        "offsetStartMetres": -1.5725635419931636,
+        "offsetEndMetres": -1.368953684015339,
+        "widthMetres": 0.20360985797782472,
+        "containsAnchor": false,
+        "clippedAtSectionEndpoint": false,
+        "sourceStartXY": [
+          -5.000000000000001,
+          3.131374531153494
+        ],
+        "sourceEndXY": [
+          -4.800000000000001,
+          3.0932041988815593
+        ]
+      },
+      {
+        "offsetStartMetres": -0.8090265745763213,
+        "offsetEndMetres": 0.41263257329062664,
+        "widthMetres": 1.2216591478669478,
+        "containsAnchor": true,
+        "clippedAtSectionEndpoint": false,
+        "sourceStartXY": [
+          -4.250000000000001,
+          2.9882357851337384
+        ],
+        "sourceEndXY": [
+          -3.0500000000000007,
+          2.75921379150213
+        ]
+      },
+      {
+        "offsetStartMetres": 1.9397065081243114,
+        "offsetEndMetres": 2.0,
+        "widthMetres": 0.060293491875688554,
+        "containsAnchor": false,
+        "clippedAtSectionEndpoint": true,
+        "sourceStartXY": [
+          -1.5500000000000007,
+          2.472936299462619
+        ],
+        "sourceEndXY": [
+          -1.4907754688554868,
+          2.461633199300441
+        ]
+      }
+    ],
+    "referenceSavedLargestComponentWalk": [
+      {
+        "offsetStartMetres": -1.5725635419931636,
+        "offsetEndMetres": -1.368953684015339,
+        "widthMetres": 0.20360985797782472,
+        "containsAnchor": false,
+        "clippedAtSectionEndpoint": false,
+        "sourceStartXY": [
+          -5.000000000000001,
+          3.131374531153494
+        ],
+        "sourceEndXY": [
+          -4.800000000000001,
+          3.0932041988815593
+        ]
+      },
+      {
+        "offsetStartMetres": -0.8090265745763213,
+        "offsetEndMetres": 0.41263257329062664,
+        "widthMetres": 1.2216591478669478,
+        "containsAnchor": true,
+        "clippedAtSectionEndpoint": false,
+        "sourceStartXY": [
+          -4.250000000000001,
+          2.9882357851337384
+        ],
+        "sourceEndXY": [
+          -3.0500000000000007,
+          2.75921379150213
+        ]
+      },
+      {
+        "offsetStartMetres": 1.9397065081243114,
+        "offsetEndMetres": 2.0,
+        "widthMetres": 0.060293491875688554,
+        "containsAnchor": false,
+        "clippedAtSectionEndpoint": true,
+        "sourceStartXY": [
+          -1.5500000000000007,
+          2.472936299462619
+        ],
+        "sourceEndXY": [
+          -1.4907754688554868,
+          2.461633199300441
+        ]
+      }
+    ],
+    "referenceFloorPresentNoBodyVertices_DIAGNOSTIC_NOT_CLEAR": [
+      {
+        "offsetStartMetres": -1.5725635419931636,
+        "offsetEndMetres": -1.368953684015339,
+        "widthMetres": 0.20360985797782472,
+        "containsAnchor": false,
+        "clippedAtSectionEndpoint": false,
+        "sourceStartXY": [
+          -5.000000000000001,
+          3.131374531153494
+        ],
+        "sourceEndXY": [
+          -4.800000000000001,
+          3.0932041988815593
+        ]
+      },
+      {
+        "offsetStartMetres": -0.8599290390707773,
+        "offsetEndMetres": 0.41263257329062664,
+        "widthMetres": 1.2725616123614039,
+        "containsAnchor": true,
+        "clippedAtSectionEndpoint": false,
+        "sourceStartXY": [
+          -4.300000000000001,
+          2.9977783682017223
+        ],
+        "sourceEndXY": [
+          -3.0500000000000007,
+          2.75921379150213
+        ]
+      },
+      {
+        "offsetStartMetres": 1.9397065081243114,
+        "offsetEndMetres": 2.0,
+        "widthMetres": 0.060293491875688554,
+        "containsAnchor": false,
+        "clippedAtSectionEndpoint": true,
+        "sourceStartXY": [
+          -1.5500000000000007,
+          2.472936299462619
+        ],
+        "sourceEndXY": [
+          -1.4907754688554868,
+          2.461633199300441
+        ]
+      }
+    ]
+  },
+  "referenceVertexCoverageLengthMetres": 3.6743684709820754,
+  "referenceFloorSampleLengthMetres": 3.6743684709820754,
+  "cells": [
+    {
+      "offsetIntervalMetres": [
+        -2.0,
+        -1.9797832579488124
+      ],
+      "sourceIJ": [
+        7,
+        185
+      ],
+      "phoneWalk": false,
+      "phoneSupport": false,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 0,
+      "referenceFloorSamplePresent": false,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.9797832579488124,
+        -1.938628523192509
+      ],
+      "sourceIJ": [
+        8,
+        185
+      ],
+      "phoneWalk": false,
+      "phoneSupport": false,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 0,
+      "referenceFloorSamplePresent": false,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.938628523192509,
+        -1.9288807934543564
+      ],
+      "sourceIJ": [
+        8,
+        184
+      ],
+      "phoneWalk": false,
+      "phoneSupport": false,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 0,
+      "referenceFloorSamplePresent": false,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.9288807934543564,
+        -1.8779783289599004
+      ],
+      "sourceIJ": [
+        9,
+        184
+      ],
+      "phoneWalk": false,
+      "phoneSupport": false,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 0,
+      "referenceFloorSamplePresent": false,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.8779783289599004,
+        -1.8270758644654446
+      ],
+      "sourceIJ": [
+        10,
+        184
+      ],
+      "phoneWalk": false,
+      "phoneSupport": false,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 0,
+      "referenceFloorSamplePresent": false,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.8270758644654446,
+        -1.7761733999709886
+      ],
+      "sourceIJ": [
+        11,
+        184
+      ],
+      "phoneWalk": false,
+      "phoneSupport": false,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 0,
+      "referenceFloorSamplePresent": false,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.7761733999709886,
+        -1.7252709354765317
+      ],
+      "sourceIJ": [
+        12,
+        184
+      ],
+      "phoneWalk": false,
+      "phoneSupport": false,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 0,
+      "referenceFloorSamplePresent": false,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.7252709354765317,
+        -1.6743684709820756
+      ],
+      "sourceIJ": [
+        13,
+        184
+      ],
+      "phoneWalk": false,
+      "phoneSupport": false,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 0,
+      "referenceFloorSamplePresent": false,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.6743684709820756,
+        -1.6719163335693563
+      ],
+      "sourceIJ": [
+        14,
+        184
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 5160,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.6719163335693563,
+        -1.6234660064876196
+      ],
+      "sourceIJ": [
+        14,
+        183
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 1967,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.6234660064876196,
+        -1.5725635419931636
+      ],
+      "sourceIJ": [
+        15,
+        183
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 3387,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.5725635419931636,
+        -1.5216610774987076
+      ],
+      "sourceIJ": [
+        16,
+        183
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 7,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.5216610774987076,
+        -1.470758613004251
+      ],
+      "sourceIJ": [
+        17,
+        183
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 4,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.470758613004251,
+        -1.419856148509795
+      ],
+      "sourceIJ": [
+        18,
+        183
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 5,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.419856148509795,
+        -1.405204143946194
+      ],
+      "sourceIJ": [
+        19,
+        183
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 20,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.405204143946194,
+        -1.368953684015339
+      ],
+      "sourceIJ": [
+        19,
+        182
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 7,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.368953684015339,
+        -1.3180512195208829
+      ],
+      "sourceIJ": [
+        20,
+        182
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 20,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.3180512195208829,
+        -1.2671487550264269
+      ],
+      "sourceIJ": [
+        21,
+        182
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 125,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.2671487550264269,
+        -1.21624629053197
+      ],
+      "sourceIJ": [
+        22,
+        182
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 146,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.21624629053197,
+        -1.165343826037514
+      ],
+      "sourceIJ": [
+        23,
+        182
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 216,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.165343826037514,
+        -1.1384919543230319
+      ],
+      "sourceIJ": [
+        24,
+        182
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 242,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.1384919543230319,
+        -1.1144413615430582
+      ],
+      "sourceIJ": [
+        24,
+        181
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 213,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.1144413615430582,
+        -1.0635388970486022
+      ],
+      "sourceIJ": [
+        25,
+        181
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 220,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.0635388970486022,
+        -1.0126364325541461
+      ],
+      "sourceIJ": [
+        26,
+        181
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 235,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        -1.0126364325541461,
+        -0.9617339680596892
+      ],
+      "sourceIJ": [
+        27,
+        181
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 299,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.9617339680596892,
+        -0.9108315035652332
+      ],
+      "sourceIJ": [
+        28,
+        181
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 405,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.9108315035652332,
+        -0.8717797646998792
+      ],
+      "sourceIJ": [
+        29,
+        181
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 128,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.8717797646998792,
+        -0.8599290390707773
+      ],
+      "sourceIJ": [
+        29,
+        180
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 438,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.8599290390707773,
+        -0.8090265745763213
+      ],
+      "sourceIJ": [
+        30,
+        180
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 185,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.8090265745763213,
+        -0.7581241100818653
+      ],
+      "sourceIJ": [
+        31,
+        180
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 35,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.7581241100818653,
+        -0.7072216455874084
+      ],
+      "sourceIJ": [
+        32,
+        180
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 36,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.7072216455874084,
+        -0.6563191810929525
+      ],
+      "sourceIJ": [
+        33,
+        180
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 36,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.6563191810929525,
+        -0.6054167165984965
+      ],
+      "sourceIJ": [
+        34,
+        180
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 35,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.6054167165984965,
+        -0.605067575076717
+      ],
+      "sourceIJ": [
+        35,
+        180
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 38,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.605067575076717,
+        -0.5545142521040405
+      ],
+      "sourceIJ": [
+        35,
+        179
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 41,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.5545142521040405,
+        -0.5036117876095841
+      ],
+      "sourceIJ": [
+        36,
+        179
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 43,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.5036117876095841,
+        -0.4527093231151277
+      ],
+      "sourceIJ": [
+        37,
+        179
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 44,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.4527093231151277,
+        -0.40180685862067167
+      ],
+      "sourceIJ": [
+        38,
+        179
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 45,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.40180685862067167,
+        -0.3509043941262157
+      ],
+      "sourceIJ": [
+        39,
+        179
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 43,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.3509043941262157,
+        -0.3383553854535643
+      ],
+      "sourceIJ": [
+        40,
+        179
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 49,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.3383553854535643,
+        -0.30000192963175926
+      ],
+      "sourceIJ": [
+        40,
+        178
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 51,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.30000192963175926,
+        -0.2490994651373033
+      ],
+      "sourceIJ": [
+        41,
+        178
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 52,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.2490994651373033,
+        -0.19819700064284732
+      ],
+      "sourceIJ": [
+        42,
+        178
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 44,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.19819700064284732,
+        -0.1472945361483909
+      ],
+      "sourceIJ": [
+        43,
+        178
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 39,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.1472945361483909,
+        -0.09639207165393492
+      ],
+      "sourceIJ": [
+        44,
+        178
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 42,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.09639207165393492,
+        -0.07164319583040211
+      ],
+      "sourceIJ": [
+        45,
+        178
+      ],
+      "phoneWalk": true,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 54,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.07164319583040211,
+        -0.04548960715947849
+      ],
+      "sourceIJ": [
+        45,
+        177
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 44,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        -0.04548960715947849,
+        0.0
+      ],
+      "sourceIJ": [
+        46,
+        177
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 59,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        0.0,
+        0.005412857334977487
+      ],
+      "sourceIJ": [
+        46,
+        177
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 59,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        0.005412857334977487,
+        0.05631532182943392
+      ],
+      "sourceIJ": [
+        47,
+        177
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 57,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        0.05631532182943392,
+        0.1072177863238899
+      ],
+      "sourceIJ": [
+        48,
+        177
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 63,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        0.1072177863238899,
+        0.15812025081834588
+      ],
+      "sourceIJ": [
+        49,
+        177
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 57,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        0.15812025081834588,
+        0.19506899379276005
+      ],
+      "sourceIJ": [
+        50,
+        177
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 56,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        0.19506899379276005,
+        0.2090227153128023
+      ],
+      "sourceIJ": [
+        50,
+        176
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 30,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        0.2090227153128023,
+        0.25992517980725827
+      ],
+      "sourceIJ": [
+        51,
+        176
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 29,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        0.25992517980725827,
+        0.3108276443017147
+      ],
+      "sourceIJ": [
+        52,
+        176
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 30,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        0.3108276443017147,
+        0.3617301087961707
+      ],
+      "sourceIJ": [
+        53,
+        176
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 30,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        0.3617301087961707,
+        0.41263257329062664
+      ],
+      "sourceIJ": [
+        54,
+        176
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 31,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        0.41263257329062664,
+        0.4617811834159128
+      ],
+      "sourceIJ": [
+        55,
+        176
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 53,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        0.4617811834159128,
+        0.4635350377850831
+      ],
+      "sourceIJ": [
+        55,
+        175
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 446,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        0.4635350377850831,
+        0.5144375022795391
+      ],
+      "sourceIJ": [
+        56,
+        175
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": false,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 315,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        0.5144375022795391,
+        0.5653399667739955
+      ],
+      "sourceIJ": [
+        57,
+        175
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 273,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        0.5653399667739955,
+        0.6162424312684515
+      ],
+      "sourceIJ": [
+        58,
+        175
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 243,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        0.6162424312684515,
+        0.6671448957629075
+      ],
+      "sourceIJ": [
+        59,
+        175
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 217,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        0.6671448957629075,
+        0.7180473602573639
+      ],
+      "sourceIJ": [
+        60,
+        175
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 235,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        0.7180473602573639,
+        0.7284933730390749
+      ],
+      "sourceIJ": [
+        61,
+        175
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 503,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        0.7284933730390749,
+        0.7689498247518198
+      ],
+      "sourceIJ": [
+        61,
+        174
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 277,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        0.7689498247518198,
+        0.8198522892462763
+      ],
+      "sourceIJ": [
+        62,
+        174
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 230,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        0.8198522892462763,
+        0.8707547537407323
+      ],
+      "sourceIJ": [
+        63,
+        174
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 359,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        0.8707547537407323,
+        0.9216572182351882
+      ],
+      "sourceIJ": [
+        64,
+        174
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 207,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        0.9216572182351882,
+        0.9725596827296447
+      ],
+      "sourceIJ": [
+        65,
+        174
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 224,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        0.9725596827296447,
+        0.9952055626622276
+      ],
+      "sourceIJ": [
+        66,
+        174
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 240,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        0.9952055626622276,
+        1.0234621472241006
+      ],
+      "sourceIJ": [
+        66,
+        173
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 181,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.0234621472241006,
+        1.074364611718557
+      ],
+      "sourceIJ": [
+        67,
+        173
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 208,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.074364611718557,
+        1.125267076213013
+      ],
+      "sourceIJ": [
+        68,
+        173
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 176,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.125267076213013,
+        1.176169540707469
+      ],
+      "sourceIJ": [
+        69,
+        173
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 187,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.176169540707469,
+        1.2270720052019255
+      ],
+      "sourceIJ": [
+        70,
+        173
+      ],
+      "phoneWalk": false,
+      "phoneSupport": false,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 170,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.2270720052019255,
+        1.2619177522853897
+      ],
+      "sourceIJ": [
+        71,
+        173
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 178,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.2619177522853897,
+        1.2779744696963815
+      ],
+      "sourceIJ": [
+        71,
+        172
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 246,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.2779744696963815,
+        1.328876934190838
+      ],
+      "sourceIJ": [
+        72,
+        172
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 295,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.328876934190838,
+        1.3797793986852938
+      ],
+      "sourceIJ": [
+        73,
+        172
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 196,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.3797793986852938,
+        1.4306818631797498
+      ],
+      "sourceIJ": [
+        74,
+        172
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 175,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.4306818631797498,
+        1.4815843276742062
+      ],
+      "sourceIJ": [
+        75,
+        172
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 144,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.4815843276742062,
+        1.528629941908552
+      ],
+      "sourceIJ": [
+        76,
+        172
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 136,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.528629941908552,
+        1.5324867921686622
+      ],
+      "sourceIJ": [
+        76,
+        171
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 117,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.5324867921686622,
+        1.5833892566631187
+      ],
+      "sourceIJ": [
+        77,
+        171
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 208,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.5833892566631187,
+        1.6342917211575747
+      ],
+      "sourceIJ": [
+        78,
+        171
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": true,
+      "referenceAnyVertexCount": 194,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.6342917211575747,
+        1.6851941856520305
+      ],
+      "sourceIJ": [
+        79,
+        171
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 142,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": true,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.6851941856520305,
+        1.7360966501464865
+      ],
+      "sourceIJ": [
+        80,
+        171
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 104,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.7360966501464865,
+        1.7869991146409434
+      ],
+      "sourceIJ": [
+        81,
+        171
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 116,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.7869991146409434,
+        1.7953421315317046
+      ],
+      "sourceIJ": [
+        82,
+        171
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 344,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.7953421315317046,
+        1.8379015791353994
+      ],
+      "sourceIJ": [
+        82,
+        170
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 202,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.8379015791353994,
+        1.8888040436298554
+      ],
+      "sourceIJ": [
+        83,
+        170
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 590,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.8888040436298554,
+        1.9397065081243114
+      ],
+      "sourceIJ": [
+        84,
+        170
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": true,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 125,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": true
+    },
+    {
+      "offsetIntervalMetres": [
+        1.9397065081243114,
+        1.9906089726187675
+      ],
+      "sourceIJ": [
+        85,
+        170
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 70,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    },
+    {
+      "offsetIntervalMetres": [
+        1.9906089726187675,
+        2.0
+      ],
+      "sourceIJ": [
+        86,
+        170
+      ],
+      "phoneWalk": false,
+      "phoneSupport": true,
+      "phoneLow1": false,
+      "phoneHighObstacle": true,
+      "phoneHighUnknown": false,
+      "referenceAnyVertexCount": 72,
+      "referenceFloorSamplePresent": true,
+      "referenceLowBandVertexPresent": false,
+      "referenceBodyBandVertexPresent": false
+    }
+  ],
+  "referenceBandDefinitionsMetres": {
+    "low_halfOpen": [
+      0.015,
+      0.3
+    ],
+    "body_halfOpen": [
+      0.3,
+      1.8
+    ],
+    "floor_open": [
+      -0.06,
+      0.06
+    ]
+  },
+  "limits": [
+    "Reference values are vertex-column summaries, not triangle intersection or continuous-volume clearance.",
+    "No vertices does not establish observed free space; reference cleaned/completed and different capture time.",
+    "Global floor registration can put floor vertices in low obstacle band.",
+    "No chair/table/wall surfaces are semantically identified.",
+    "Camera centre and short chronological tangent need not equal body centre or aisle axis.",
+    "A single fixed cross-section does not establish a traversable corridor or loop.",
+    "Section clipped run lengths are lower bounds within the fixed segment, not complete gap widths."
+  ],
+  "inputPins": {
+    "metadata": {
+      "path": "blind-split-candidate-game-03/inputs/koivu_5cm_v2_pipeline2_out.npz",
+      "sha256": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d"
+    },
+    "phoneMask": {
+      "path": "blind-split-candidate-game-03/inputs/koivu_5cm_occthres_split0.7.npz",
+      "sha256": "b294d92cfd9136d00de510239c2b85a9d68d878dcf7dac1a64b144d8880cb076"
+    },
+    "poses": {
+      "path": "blind-mushroom-koivu-acquisition-01/selected/room_datasets/koivu/iphone/long_capture/transformations.json",
+      "sha256": "c496c8dc6474679766db8abd92da9c756104a752bb9e4519fd462fe294af90c3"
+    }
+  },
+  "scriptSHA256": "03a192bf20f5f179c2cb1024f316c5e92181e33aaba1044e928ca07c464d9f86",
+  "newReferenceQueries": 0,
+  "mapEdits": 0,
+  "routeQueries": 0
+}

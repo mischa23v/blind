@@ -1,0 +1,38 @@
+{
+  "scope": "Additive ground-setup candidate query scheduling only; no geometry/scorer/physics/planning changes",
+  "status": "17 authored fixtures pass; no recorded geometry run or measured speedup",
+  "api": "find_cells_tiled(locator, reference_bounds, check=scorer.check, unique_cap=...) -> (readonly sorted original int64 IDs, receipt)",
+  "sourcePins": {
+    "tiled_bounds.py": "9a7015950867f095e2990c117918423496f9d659ca50c5e7f6a0f765e4d18188",
+    "test_tiled_bounds.py": "82b698367390fc708a4677cc1818945235b22e5af55930370cae23cbde23b388",
+    "fixtures-01/RECEIPT.json": "60abd360b24a28127a8d16d0eeeb678d4aec328b5e55db960a721a6bd32559ac"
+  },
+  "upstreamSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+  "upstreamLines": [
+    486,
+    530
+  ],
+  "equivalenceArgument": [
+    "The existing VTK method maps lower/upper query coordinates to clamped bin indices and visits every bin in their Cartesian product.",
+    "Each axis is partitioned by one shared monotone np.linspace endpoint array, preserving original outer endpoints; neighboring closed tiles share exactly the same numeric boundary.",
+    "For monotone endpoint-to-bin mapping, the union of adjacent inclusive bin ranges equals the original inclusive bin range. All Cartesian-product tiles therefore have the same visited-bin union.",
+    "The only per-bin operation in this VTK method is collecting original cell IDs. Final sorted np.unique produces the same set and order as the existing ground helper.",
+    "No triangle geometry is filtered by the tiler. Outside-dataset clamped-bin behavior is intentionally preserved."
+  ],
+  "assumptions": [
+    "Upstream VTK9.3.1 vtkStaticCellLocator, built immutable single-owner dataset/locator, unchanged numeric query AABB.",
+    "Ground setup consumes sorted unique IDs, not the original query visitation order. This helper must not replace per-tick first-contact ordering.",
+    "Finite bounds and declared tile/ID caps must pass; any guard failure is setup unavailable, not free space."
+  ],
+  "guards": {
+    "maximumTileExtentReferenceUnits": 0.25,
+    "maximumTileQueries": 10000,
+    "maximumRawReturnedIDs": 32000000,
+    "uniqueOriginalIDCap": "explicit caller-declared cap; no truncation",
+    "ownerChecks": "existing scorer check plus dataset/locator MTime and owner before/after every native query"
+  },
+  "authoredTestsPassed": 17,
+  "recordedMeshLoaded": false,
+  "gameEpisodes": 0,
+  "physicalAuthority": false
+}

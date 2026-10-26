@@ -1,0 +1,106 @@
+{
+  "scope": "Independent saved result/trace/hash arithmetic readback only; no reference geometry load or rescore",
+  "passed": true,
+  "checks": {
+    "wrapperSuccessfulAndManifestIdentityMatches": true,
+    "allSixFixedPlansBoundToSelectionHashes": true,
+    "threeRejectedNorthernSlotsRemainUnexecuted": true,
+    "allThreeExecutedTracesReconcileWithCommittedMovementAndArrival": true,
+    "zeroSavedBodyAndMarginContactEvents": true,
+    "terminalAppliedZeroAndFIFOEmpty": true,
+    "allThreeXZAndYawTracesIdentical": true,
+    "groundMetricsRemainUnmeasured": true,
+    "tiledQueryCountsReconcile": true,
+    "raisedUniqueIDCapWasNotBinding": true
+  },
+  "pins": {
+    "blind-split-candidate-game-03/camera-approach-executor-14/FROZEN.json": "7d6251186a20aeddcaac8172724b63a73496a382a369bedd3b5711a6e9bf9548",
+    "blind-split-candidate-game-03/camera-approach-executor-14/run-01/RUN_RECEIPT.json": "62b81bdb086272fcc0675399d7744877b3462356195f0272c532f362fbcddad9",
+    "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/SUMMARY.json": "f0f9863708d65008ba89cc268c3d46d7071be19615bf78c8ee733a3fcc882c5f",
+    "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/body45cmMargin0-southSide/RESULT.json": "504ef1cf5bbd2c2bfac33a12ea91885e5cdc78fdf2ac1b25c1d8753c619f33ee",
+    "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/body45cmMargin0-southSide/ACTOR_TRACE.npz": "e9132179cbada7c9fde3749c64b7768c0602b8e6a7cac673d7754eb2905126ce",
+    "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/body45cmMargin5cm-southSide/RESULT.json": "432a3cb422acae52d3a71deb8840192f0ffbef355e3f1ff2bd891d27e04ee48a",
+    "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/body45cmMargin5cm-southSide/ACTOR_TRACE.npz": "f9290e6e8c75e6cbac2dab63a9a0e9f596d37d261cb2175dc7228da1305baa89",
+    "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/abstract28cmProfile-southSide/RESULT.json": "60e4e4e424e4642df83b53d0900d4bb35de96280bda9d7b13a6e5c5b18f03e34",
+    "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/abstract28cmProfile-southSide/ACTOR_TRACE.npz": "776cb443e5d63a7b112a114b8ae380d4f096c36507b52a778d676f49c2fcb6d8"
+  },
+  "rows": [
+    {
+      "profile": "body45cmMargin0",
+      "approachID": "northSide",
+      "executed": false,
+      "reason": "cameraAnchorAssociationRejected"
+    },
+    {
+      "profile": "body45cmMargin0",
+      "approachID": "southSide",
+      "executed": true,
+      "arrival": true,
+      "ticks": 91,
+      "actualDistanceMetres": 1.8000000000000012,
+      "goalErrorMetres": 0.32804200798183486,
+      "actualBodyContactEvents": 0,
+      "marginContactEvents": 0
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "approachID": "northSide",
+      "executed": false,
+      "reason": "cameraAnchorAssociationRejected"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "approachID": "southSide",
+      "executed": true,
+      "arrival": true,
+      "ticks": 91,
+      "actualDistanceMetres": 1.8000000000000012,
+      "goalErrorMetres": 0.32804200798183486,
+      "actualBodyContactEvents": 0,
+      "marginContactEvents": 0
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "approachID": "northSide",
+      "executed": false,
+      "reason": "cameraAnchorAssociationRejected"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "approachID": "southSide",
+      "executed": true,
+      "arrival": true,
+      "ticks": 91,
+      "actualDistanceMetres": 1.8000000000000012,
+      "goalErrorMetres": 0.32804200798183486,
+      "actualBodyContactEvents": 0,
+      "marginContactEvents": 0
+    }
+  ],
+  "scheduledSlots": 6,
+  "executedSouthernApproaches": 3,
+  "unexecutedNorthernAssociationFailures": 3,
+  "arrivals": 3,
+  "runsWithAnyBodyOrMarginContact": 0,
+  "actualBodyContactEvents": 0,
+  "marginContactEvents": 0,
+  "tiledQuery": {
+    "uniqueIDs": 1987262,
+    "rawIDs": 4503760,
+    "tiles": 2436,
+    "queryWallSeconds": 8.682264293005574,
+    "old2MCapWouldAdmitTheseIDs": true
+  },
+  "limits": [
+    "Three numerical profiles used the same recorded-phone-map start/goal and identical XZ/yaw trajectory; these are correlated profile checks, not three independent routes/rooms.",
+    "Three rejected northern slots are not collision-free arrivals and are not included in executed approach count.",
+    "No lag/jitter/wrong-turn condition or live sensing was evaluated in this batch.",
+    "Actual sensor confidence/tracking are unavailable, not fabricated; current lowUnresolved phone flags remain admitted under the declared permissive candidate model.",
+    "Cleaned/completed FARO relative scoring and finite ground probes do not establish physical clearance or complete support.",
+    "Original single-query setup was terminated before completion; no precise paired speedup ratio is claimed."
+  ],
+  "wallSeconds": 0.1495153909927467,
+  "gameEpisodesExecutedByReviewer": 0,
+  "FAROLoaded": false,
+  "physicalAuthority": false
+}

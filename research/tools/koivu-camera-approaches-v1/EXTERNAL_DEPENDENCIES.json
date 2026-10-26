@@ -1,0 +1,185 @@
+{
+  "excluded": [
+    "full FARO/phone raw archives, meshes and RGB/depth",
+    "native shared library and installed environment",
+    "unexecuted lap implementation except exact runtime profile_map.py dependency",
+    "unexecuted contiguous-arc selector draft",
+    "older repeated full reference outputs/trace inputs retained by prior checkpoints"
+  ],
+  "files": [
+    {
+      "expectedSHA256": "560567438e5c88aaa8e20d3ac92ce4db6fe8803018f537b82819b47ed7cc05b8",
+      "historicalPath": "blind-authored-navigation-pilot/native/libblind_detour.so"
+    },
+    {
+      "expectedSHA256": "e18db651c694046de7994237e276d88138ecef9071351281a418de9c9a279b5e",
+      "historicalPath": "blind-koivu-faro-acquisition-04/selected-reference/gt_mesh.ply"
+    },
+    {
+      "expectedSHA256": "95b4e26d6d260bd9b06cff801648fc38c030a510cf4055af2294490cf49938d4",
+      "historicalPath": "blind-koivu-faro-acquisition-04/selected-reference/icp_iphone.json"
+    },
+    {
+      "expectedSHA256": "74fedfcf46249f293a5e86fb90f0204a0d6bbcb22a2ccb2cc5c472794e2e9eac",
+      "historicalPath": "blind-split-candidate-game-03/FROZEN_PILOT.json"
+    },
+    {
+      "expectedSHA256": "f2e09ac5605a810116c36be5a900edda44a703065876820251106df028680aed",
+      "historicalPath": "blind-split-candidate-game-03/SELECTION_FROZEN-02.json"
+    },
+    {
+      "expectedSHA256": "afaea2ca06facf6b7407e77261cd9695fdeec3d80b310ad0d4c326e752efd228",
+      "historicalPath": "blind-split-candidate-game-03/body-margin-variants-07/native025/ACQUISITION_AND_DELTA.json"
+    },
+    {
+      "expectedSHA256": "f4f5aca911340bfdbf699a10343abf757a496c77d05021daada1720a7ce8f000",
+      "historicalPath": "blind-split-candidate-game-03/body-margin-variants-07/native025/build.stderr.log"
+    },
+    {
+      "expectedSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "historicalPath": "blind-split-candidate-game-03/body-margin-variants-07/native025/build.stdout.log"
+    },
+    {
+      "expectedSHA256": "b6cd7e2ac35d738337e80597bcbdafd62e6884f5100867d7afbe1b77105709b0",
+      "historicalPath": "blind-split-candidate-game-03/body-margin-variants-07/native025/libblind_detour.so"
+    },
+    {
+      "expectedSHA256": "082f32679301733481d4ddbad92736c3b0c2009891fe450acca00e4c0f36c08f",
+      "historicalPath": "blind-split-candidate-game-03/body-margin-variants-07/native025/tests.stderr.log"
+    },
+    {
+      "expectedSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "historicalPath": "blind-split-candidate-game-03/body-margin-variants-07/native025/tests.stdout.log"
+    },
+    {
+      "expectedSHA256": "0a56884c88108deafb96fe01b702e17b437001a0dda7c34593c198e68a0ece68",
+      "historicalPath": "blind-split-candidate-game-03/contact-diagnostic-01/TRIANGLE_PATCH.json"
+    },
+    {
+      "expectedSHA256": "e44fe5963b0ab6c370a5467c678d09d90ae6cca9b0275a85ccc3e0af8e59fe0a",
+      "historicalPath": "blind-split-candidate-game-03/controller-fixtures-02/RECEIPT.json"
+    },
+    {
+      "expectedSHA256": "60f582788760d7efb0f7b1535deac5733876c44c2b6ee460d822ed30c53f168c",
+      "historicalPath": "blind-split-candidate-game-03/controller-fixtures-02/stderr.log"
+    },
+    {
+      "expectedSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "historicalPath": "blind-split-candidate-game-03/controller-fixtures-02/stdout.log"
+    },
+    {
+      "expectedSHA256": "b92636a6233a90ec7ddefa7379c612947bc5c1662151b6f6edf6fa3c93c1f04a",
+      "historicalPath": "blind-split-candidate-game-03/ground-follow-v2/FROZEN.json"
+    },
+    {
+      "expectedSHA256": "7164eff684fb4771bc21e752b2c9697bedd1e6463637270e2fc5c1e948f3071d",
+      "historicalPath": "blind-split-candidate-game-03/ground-follow-v2/PROTOCOL.md"
+    },
+    {
+      "expectedSHA256": "82d4123a145c3050da01877229daa9ccf72faeb2b56176363958d09ecf86e5a0",
+      "historicalPath": "blind-split-candidate-game-03/ground-follow-v2/combined-checks-01/RECEIPT.json"
+    },
+    {
+      "expectedSHA256": "fad7b10111e229a34fd8896d066b1c5d8f05daebd3d749f0dd3b2e97762dbdc8",
+      "historicalPath": "blind-split-candidate-game-03/ground-follow-v2/combined-checks-01/stderr.log"
+    },
+    {
+      "expectedSHA256": "7b3fd46eef7a30be82b7afe3b0695eb996ad6bf1b1dea3327190b8d923bf5326",
+      "historicalPath": "blind-split-candidate-game-03/ground-follow-v2/run-01/result/RESULT.json"
+    },
+    {
+      "expectedSHA256": "1161bd07dab97752f245151294c762a5e8e4f04ed224774316a2e3a6f0f921ef",
+      "historicalPath": "blind-split-candidate-game-03/ground-follow-v3/FROZEN.json"
+    },
+    {
+      "expectedSHA256": "0fcf6fb9071800cbc3a03029768819a822b1a3afa299907a6d7f95902f70bdb6",
+      "historicalPath": "blind-split-candidate-game-03/ground-follow-v3/combined-checks-03/RECEIPT.json"
+    },
+    {
+      "expectedSHA256": "cc05dace3508ebc38ad3807cbcb2e67ee4a535713b49e673a4ccd83233fa944d",
+      "historicalPath": "blind-split-candidate-game-03/ground-follow-v3/combined-checks-03/stderr.log"
+    },
+    {
+      "expectedSHA256": "926c2f8324ffd8e03bc151572300f2cc2ef55dfc77e35530beb27de473bf5950",
+      "historicalPath": "blind-split-candidate-game-03/ground-follow-v3/run-01/result/ACTOR_TRACE.npz"
+    },
+    {
+      "expectedSHA256": "48521e87fcc6fc670dde77d6c8cf70b199a231f1015b20bec03e18334f4647af",
+      "historicalPath": "blind-split-candidate-game-03/ground-follow-v3/run-01/result/RESULT.json"
+    },
+    {
+      "expectedSHA256": "b712cde599dd94d1cbfe66844a32f9005fd8cc32efe20785d39f4ecebf06b454",
+      "historicalPath": "blind-split-candidate-game-03/ground-skip-v4/COMPARISON_PROTOCOL.md"
+    },
+    {
+      "expectedSHA256": "f4747521c560c17ab7edf4b7a6571af68ea0f76b4d6c7919aa654e8826c67bfe",
+      "historicalPath": "blind-split-candidate-game-03/ground-skip-v4/FROZEN_COMPARISON.json"
+    },
+    {
+      "expectedSHA256": "c1e1b22514e788170da997f1901453d9565ad9f5c9dc4ac4edce04627635436c",
+      "historicalPath": "blind-split-candidate-game-03/ground-skip-v4/RECORDED_COMPARISON_REVIEW.json"
+    },
+    {
+      "expectedSHA256": "39dda81270807e529327d467ede2c0998c70bc55304e51de4805f42aea217b80",
+      "historicalPath": "blind-split-candidate-game-03/ground-skip-v4/compare-01/result/EQUIVALENCE.json"
+    },
+    {
+      "expectedSHA256": "a92970aa4f769674840b8c5569cbf239cb0c9555631f2f3306e1501415db3547",
+      "historicalPath": "blind-split-candidate-game-03/ground-skip-v4/fixtures-01/RECEIPT.json"
+    },
+    {
+      "expectedSHA256": "c46356dc73bba8e013958cac2ff6b89666b342215b15706185e60afd86c2e6b2",
+      "historicalPath": "blind-split-candidate-game-03/ground-vector-v5/COMPARISON_PROTOCOL.md"
+    },
+    {
+      "expectedSHA256": "c20803e7358ccd21bc9f28998392bb3bc72036a1bce9daf3ddd1b96b67225136",
+      "historicalPath": "blind-split-candidate-game-03/ground-vector-v5/FROZEN_COMPARISON.json"
+    },
+    {
+      "expectedSHA256": "005d6ef9788f5ad1f3ec450e773aa5245a117352e0853a42ef4f429e7f610589",
+      "historicalPath": "blind-split-candidate-game-03/ground-vector-v5/RECORDED_COMPARISON_REVIEW.json"
+    },
+    {
+      "expectedSHA256": "a5113ce9206ee16eed9f2ddfcf4226b2b3ff203828110d93095a984f9e59bc67",
+      "historicalPath": "blind-split-candidate-game-03/ground-vector-v5/compare-01/result/EQUIVALENCE.json"
+    },
+    {
+      "expectedSHA256": "c655725c09944a6edf2c7b97cdd4481bf4c123782e25c9cd5700338e24d7344b",
+      "historicalPath": "blind-split-candidate-game-03/ground-vector-v5/fixtures-01/RECEIPT.json"
+    },
+    {
+      "expectedSHA256": "b294d92cfd9136d00de510239c2b85a9d68d878dcf7dac1a64b144d8880cb076",
+      "historicalPath": "blind-split-candidate-game-03/inputs/koivu_5cm_occthres_split0.7.npz"
+    },
+    {
+      "expectedSHA256": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d",
+      "historicalPath": "blind-split-candidate-game-03/inputs/koivu_5cm_v2_pipeline2_out.npz"
+    },
+    {
+      "expectedSHA256": "b859a5d9ea69e19c361e772dbde835be884fe4f72421aa3e608cf982ee88bc4e",
+      "historicalPath": "blind-split-candidate-game-03/oriented-fixtures-01/RECEIPT.json"
+    },
+    {
+      "expectedSHA256": "5e3154756f891f8b5967ae02b1f767e828be86a4859d9f2f3e9e6d1f5d343405",
+      "historicalPath": "blind-split-candidate-game-03/oriented-fixtures-01/tests.log"
+    },
+    {
+      "expectedSHA256": "095f3193652119c3292de29fd54fa119334340ff7db7720936aec77e81190530",
+      "historicalPath": "blind-split-candidate-game-03/pilot-01/result/RESULT.json"
+    },
+    {
+      "expectedSHA256": "1a61a0c7418eb2baf8da316719736608775f0dd49aa3a5bab91e55dc1522b69d",
+      "historicalPath": "blind-split-candidate-game-03/selection-02/RUN_RECEIPT.json"
+    },
+    {
+      "expectedSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "historicalPath": "blind-split-candidate-game-03/selection-02/stderr.log"
+    },
+    {
+      "expectedSHA256": "283026b76f8c626a50dc7b4c8dfe73417405d91a7acad89f8ddbda16fc5ee7eb",
+      "historicalPath": "blind-split-candidate-game-03/selection-02/stdout.log"
+    }
+  ],
+  "noNewRawInputVerification": true,
+  "scope": "Historical omitted prerequisites, not a standalone clean-machine execution package. Prior published source/data stages must retain expected identities."
+}

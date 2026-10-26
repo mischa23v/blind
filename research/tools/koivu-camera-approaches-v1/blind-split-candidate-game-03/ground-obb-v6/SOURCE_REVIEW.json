@@ -1,0 +1,22 @@
+{
+  "scope": "Independent source-close of v6 implementation and its authored fixture coverage before recorded comparison",
+  "reviewedSourceSHA256": "7005ab752d855edfdb1295b401ea8ad9d66516a5813f716f1a7818677bb1c222",
+  "status": "no blocker to bounded saved-pose comparison",
+  "checks": [
+    "zero-copy original triangle arrays and exact ID association",
+    "candidate cap precedes extraction",
+    "immutable ground skip before stable oriented-axis bounds rejection",
+    "conservative all-three-vertices separation cannot remove geometric box intersection",
+    "padded axes retain native parametric containment tolerance; original box points are double",
+    "exact original VTK predicates and first-contact order retained for all survivors",
+    "single-owner mesh/array revisions validated before and after",
+    "ill-conditioned boxes use exact fallback",
+    "30 authored fixtures include positive, rotated and tolerance boundary contacts"
+  ],
+  "limits": [
+    "fixtures and finite saved poses are not a formal numerical proof for all meshes",
+    "zero-copy data ownership assumes ordered single-owner use with Modified notifications; no concurrent raw-memory writes authorized",
+    "ground contact counts unmeasured; recorded saved poses do not contain positive non-ground contacts"
+  ],
+  "noRecordedComparisonYet": true
+}

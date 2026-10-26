@@ -1,0 +1,269 @@
+{
+  "status": "cameraAnchorAssociationRejected",
+  "approachID": "northSide",
+  "profile": "body45cmMargin0",
+  "geometry": {
+    "width": 0.45,
+    "depth": 0.3,
+    "height": 1.6,
+    "margin": 0.0,
+    "nativeProposalRadius": 0.225,
+    "publicProfile": "body45cmMargin0",
+    "proposalOnlyFallback": false,
+    "horizontalEnvelopeWidth": 0.45,
+    "horizontalEnvelopeDepth": 0.3,
+    "halfLateral": 0.225,
+    "halfForward": 0.15,
+    "nativeRadiusIntended": 0.225,
+    "nativeRadiusFloat32": 0.22499999403953552,
+    "nativeRadiusPolicy": "explicit proposal-only radius; unchanged full rectangle must validate every candidate",
+    "maxHalfBodyEnvelopeRadiusDiagnostic": 0.225,
+    "nativeCellSize": 0.025,
+    "nativeCellSizeFloat32": 0.02500000037252903,
+    "nativeFloat32RadiusCellQuotient": 9.0,
+    "nativeWalkableRadiusCells": 9,
+    "nativeEffectiveErosionRadiusMetres": 0.22500000335276127,
+    "nativeRadiusFormula": "(int)std::ceil(c->radius/config.cs); operands are Float32",
+    "nativeHeight": 1.75,
+    "sourceMaskCellSize": 0.05,
+    "newSensorDetailCreated": false,
+    "discIsNotFullRectangleClearance": true,
+    "circleFailureIsNotPhysicalFitImpossibility": true,
+    "abstractGeometrySensitivityOnly": false
+  },
+  "mapRevision": "a23925c8bb1c087d476e4ebc7ebaa8474a1d17f864fb5bf91f203670afe9e17e",
+  "nativeLibrarySHA256": "b6cd7e2ac35d738337e80597bcbdafd62e6884f5100867d7afbe1b77105709b0",
+  "start": [
+    -0.8626609865374657,
+    0.0,
+    -2.8415575153518127
+  ],
+  "goal": null,
+  "initialYawRadians": null,
+  "nativeInitialRoute": null,
+  "sourceAnchors": {
+    "selection": {
+      "approachID": "northSide",
+      "startPoseIndex": 10,
+      "goalPoseIndex": 27,
+      "outsidePoseIndicesExaminedGoalOutward": [
+        27,
+        26,
+        25,
+        24,
+        23,
+        22,
+        21,
+        20,
+        19,
+        18,
+        17,
+        16,
+        15,
+        14,
+        13,
+        12,
+        11,
+        10
+      ],
+      "skippedROIPoseIndices": [],
+      "requestedDirectSeparationMetres": 2.0,
+      "shortAvailableSequence": false,
+      "directAnchorSeparationMetres": 2.0170344938537403
+    },
+    "start": {
+      "poseIndex": 10,
+      "frameID": "frame_00011",
+      "originalCameraLevelXY": [
+        -0.8626609865374657,
+        2.8415575153518127
+      ],
+      "requestedGamePoint": [
+        -0.8626609865374657,
+        0.0,
+        -2.8415575153518127
+      ],
+      "sourceIJ": [
+        98,
+        177
+      ],
+      "cellCentreXY": [
+        -0.875,
+        2.8249999999999993
+      ],
+      "insideRaster": true,
+      "outsideDisputedROI": true,
+      "originalPhoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraIsNotMeasuredBodyPose": true,
+      "anchorRelocated": false
+    },
+    "goal": {
+      "poseIndex": 27,
+      "frameID": "frame_00028",
+      "originalCameraLevelXY": [
+        -2.8487096487644004,
+        3.1937490266953104
+      ],
+      "requestedGamePoint": [
+        -2.8487096487644004,
+        0.0,
+        -3.1937490266953104
+      ],
+      "sourceIJ": [
+        59,
+        184
+      ],
+      "cellCentreXY": [
+        -2.8250000000000006,
+        3.174999999999999
+      ],
+      "insideRaster": true,
+      "outsideDisputedROI": true,
+      "originalPhoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraIsNotMeasuredBodyPose": true,
+      "anchorRelocated": false
+    }
+  },
+  "anchorAssociation": {
+    "start": {
+      "selected": true,
+      "selectedKind": "rawCameraAnchor",
+      "horizontalDisplacementMetres": 0.0,
+      "trials": [
+        {
+          "kind": "rawCameraAnchor",
+          "point": [
+            -0.8626609865374657,
+            0.0,
+            -2.8415575153518127
+          ],
+          "distanceFromCameraMetres": 0.0,
+          "someSampledHeadingFits": true,
+          "fittingSourceHeadingIndices5Degrees": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71
+          ],
+          "headingChecks": 72,
+          "sampleSpacingMetres": 0.025
+        }
+      ]
+    },
+    "goal": {
+      "selected": false,
+      "reason": "noRawOrValidCellWithin0p10m",
+      "trials": [
+        {
+          "kind": "rawCameraAnchor",
+          "point": [
+            -2.8487096487644004,
+            0.0,
+            -3.1937490266953104
+          ],
+          "distanceFromCameraMetres": 0.0,
+          "someSampledHeadingFits": false,
+          "fittingSourceHeadingIndices5Degrees": [],
+          "headingChecks": 72,
+          "sampleSpacingMetres": 0.025
+        }
+      ],
+      "eligibleCandidateCellsWithinCap": 0
+    }
+  },
+  "referenceInputsUsed": false,
+  "physicalAuthority": false,
+  "mapWasAltered": false,
+  "candidateAssociationMetresMaximum": 0.1,
+  "actorSnapped": false,
+  "associationIsPreEpisodeSelectionNotPoseCorrection": true,
+  "failedAnchors": [
+    "goal"
+  ]
+}

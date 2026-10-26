@@ -1,0 +1,169 @@
+{
+  "scope": "Fixed first-visit two-approach PHONE-ONLY selection; camera anchors are not measured body poses",
+  "fixturesPassed": 5,
+  "anchors": {
+    "firstROIPoseIndex": 28,
+    "lastROIPoseIndex": 49,
+    "approaches": [
+      {
+        "approachID": "northSide",
+        "startPoseIndex": 10,
+        "goalPoseIndex": 27,
+        "outsidePoseIndicesExaminedGoalOutward": [
+          27,
+          26,
+          25,
+          24,
+          23,
+          22,
+          21,
+          20,
+          19,
+          18,
+          17,
+          16,
+          15,
+          14,
+          13,
+          12,
+          11,
+          10
+        ],
+        "skippedROIPoseIndices": [],
+        "requestedDirectSeparationMetres": 2.0,
+        "shortAvailableSequence": false,
+        "directAnchorSeparationMetres": 2.0170344938537403
+      },
+      {
+        "approachID": "southSide",
+        "startPoseIndex": 92,
+        "goalPoseIndex": 50,
+        "outsidePoseIndicesExaminedGoalOutward": [
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92
+        ],
+        "skippedROIPoseIndices": [
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85
+        ],
+        "requestedDirectSeparationMetres": 2.0,
+        "shortAvailableSequence": false,
+        "directAnchorSeparationMetres": 2.128042007981836
+      }
+    ]
+  },
+  "results": [
+    {
+      "profile": "body45cmMargin0",
+      "approachID": "northSide",
+      "status": "cameraAnchorAssociationRejected",
+      "reason": null,
+      "failedAnchors": [
+        "goal"
+      ],
+      "pathLengthMetres": null,
+      "artifact": "body45cmMargin0-northSide.json",
+      "sha256": "47100b598b9bd4ba4b096b808b032f98c34e6693d638e10823ec5df2246f5c47"
+    },
+    {
+      "profile": "body45cmMargin0",
+      "approachID": "southSide",
+      "status": "selectedPhoneOnlyApproach",
+      "reason": null,
+      "failedAnchors": null,
+      "pathLengthMetres": 2.128042007981836,
+      "artifact": "body45cmMargin0-southSide.json",
+      "sha256": "e1e3588cc084f6e180e84b37757a0db9dbc5844680d20291f0e77c8c098e861f"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "approachID": "northSide",
+      "status": "cameraAnchorAssociationRejected",
+      "reason": null,
+      "failedAnchors": [
+        "goal"
+      ],
+      "pathLengthMetres": null,
+      "artifact": "body45cmMargin5cm-northSide.json",
+      "sha256": "7f17151b6a138fbc3a6bb720b0b2324203cc5db510cbdc3fb368b2680d14109f"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "approachID": "southSide",
+      "status": "selectedPhoneOnlyApproach",
+      "reason": null,
+      "failedAnchors": null,
+      "pathLengthMetres": 2.128042007981836,
+      "artifact": "body45cmMargin5cm-southSide.json",
+      "sha256": "7c5f6b841be6af63d3c6b2d5e3f9055db421176852962eef0990693969cc5b38"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "approachID": "northSide",
+      "status": "cameraAnchorAssociationRejected",
+      "reason": null,
+      "failedAnchors": [
+        "goal"
+      ],
+      "pathLengthMetres": null,
+      "artifact": "abstract28cmProfile-northSide.json",
+      "sha256": "eccc49a8343cf33b382756ee7bf67eb93c3c2b49e33085570815daf144089024"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "approachID": "southSide",
+      "status": "selectedPhoneOnlyApproach",
+      "reason": null,
+      "failedAnchors": null,
+      "pathLengthMetres": 2.128042007981836,
+      "artifact": "abstract28cmProfile-southSide.json",
+      "sha256": "091220be442cb81b17b99e64e5543b3f029d80d0f9bc0106dd7c417d376fbd8e"
+    }
+  ],
+  "sourceHashesVerifiedBeforeAfter": true,
+  "nativeQueries": 3,
+  "referenceInputsUsed": false,
+  "movementEpisodesExecuted": 0,
+  "physicalAuthority": false,
+  "noPostQueryAlternativeAnchorRetry": true,
+  "chronologicalStartSelectionMaySkipROIPoseRecords": true
+}

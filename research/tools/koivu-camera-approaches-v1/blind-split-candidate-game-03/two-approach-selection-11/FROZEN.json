@@ -1,0 +1,27 @@
+{
+  "files": {
+    "blind-split-candidate-game-03/two-approach-selection-11/select_approaches.py": "d743ab6aeee50a0bf6041aed90418e5c6b1d6dbf5e6e125d5987d4cc580680fa",
+    "blind-split-candidate-game-03/two-approach-selection-11/run_bounded.py": "a164a48e10046b8d881316982f2fd5131552e0a2dd1e6bbce8f8d93729df4008",
+    "blind-split-candidate-game-03/two-approach-selection-11/PROTOCOL.md": "4e9ecb720fd454db15e234ad5c66d980c118712562894df7fa8544ef9d6148d7",
+    "blind-split-candidate-game-03/three-lap-executor-09/profile_map.py": "b8c8f56ce7b9488cf1641e11677920f29794b9e201f7da94d8470f8e5de4b39d",
+    "blind-split-candidate-game-03/body-margin-variants-07/margin_variants.py": "661ae8cd72390da3d931dc9b1437be033cfcfe11079d63a708a58afc5a98a9f8",
+    "blind-split-candidate-game-03/source/candidate_map.py": "5e0132f4711200bca1b7ae90eb27b5666ce0707b1573e815e40e622caff98c09",
+    "blind-split-candidate-game-03/upstream/scripts/routes_rect.py": "c96f1cb4e87e1f283645f4dbe7e8ee76f51b1d701ddf6a0965be4e1a1bd5c980",
+    "blind-split-candidate-game-03/upstream/scripts/routes.py": "20723183941e16968eaacfd227972448385255dc5f3ff86bc39c7de8edb1f2d8",
+    "blind-authored-navigation-pilot/native/detour_engine.py": "8ab51b8fe7ac2585cfbe797615dd9ac78956e6cb14277deb092aca19df38787d",
+    "blind-authored-navigation-pilot/native/libblind_detour.so": "560567438e5c88aaa8e20d3ac92ce4db6fe8803018f537b82819b47ed7cc05b8",
+    "blind-split-candidate-game-03/body-margin-variants-07/native025/detour_engine.py": "8ab51b8fe7ac2585cfbe797615dd9ac78956e6cb14277deb092aca19df38787d",
+    "blind-split-candidate-game-03/body-margin-variants-07/native025/libblind_detour.so": "b6cd7e2ac35d738337e80597bcbdafd62e6884f5100867d7afbe1b77105709b0",
+    "blind-split-candidate-game-03/inputs/koivu_5cm_occthres_split0.7.npz": "b294d92cfd9136d00de510239c2b85a9d68d878dcf7dac1a64b144d8880cb076",
+    "blind-split-candidate-game-03/inputs/koivu_5cm_v2_pipeline2_out.npz": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d",
+    "blind-mushroom-koivu-acquisition-01/selected/room_datasets/koivu/iphone/long_capture/transformations.json": "c496c8dc6474679766db8abd92da9c756104a752bb9e4519fd462fe294af90c3",
+    "blind-koivu-game-07/run_bounded.py": "1f695e6c927fba3cb20ee157e2f04cc74a71c1051937fc061ad2e956b6db7735"
+  },
+  "scope": "Six fixed phone-model approaches at most; no reference, native query retries, map edits or movement.",
+  "profiles": [
+    "body45cmMargin0",
+    "body45cmMargin5cm",
+    "abstract28cmProfile"
+  ],
+  "maximumNativeQueries": 6
+}

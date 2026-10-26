@@ -1,0 +1,24 @@
+{
+  "plot": "south-approach-three-profiles.png",
+  "sha256": "13af08067a0252a080c23e10adf98ed3dceb01d4ac797ab31f3f3ad31953836e",
+  "sourceSHA256": "b4bc69250e18351b5ab79232bef9d4d2b71120a2254d61186a00a32f875f57bb",
+  "inputs": {
+    "inputs/koivu_5cm_occthres_split0.7.npz": "b294d92cfd9136d00de510239c2b85a9d68d878dcf7dac1a64b144d8880cb076",
+    "inputs/koivu_5cm_v2_pipeline2_out.npz": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d",
+    "camera-approach-executor-14/run-01/result/body45cmMargin0-southSide/RESULT.json": "504ef1cf5bbd2c2bfac33a12ea91885e5cdc78fdf2ac1b25c1d8753c619f33ee",
+    "camera-approach-executor-14/run-01/result/body45cmMargin0-southSide/ACTOR_TRACE.npz": "e9132179cbada7c9fde3749c64b7768c0602b8e6a7cac673d7754eb2905126ce",
+    "camera-approach-executor-14/run-01/result/body45cmMargin5cm-southSide/RESULT.json": "432a3cb422acae52d3a71deb8840192f0ffbef355e3f1ff2bd891d27e04ee48a",
+    "camera-approach-executor-14/run-01/result/body45cmMargin5cm-southSide/ACTOR_TRACE.npz": "f9290e6e8c75e6cbac2dab63a9a0e9f596d37d261cb2175dc7228da1305baa89",
+    "camera-approach-executor-14/run-01/result/abstract28cmProfile-southSide/RESULT.json": "60e4e4e424e4642df83b53d0900d4bb35de96280bda9d7b13a6e5c5b18f03e34",
+    "camera-approach-executor-14/run-01/result/abstract28cmProfile-southSide/ACTOR_TRACE.npz": "776cb443e5d63a7b112a114b8ae380d4f096c36507b52a778d676f49c2fcb6d8",
+    "two-approach-selection-11/run-01/result/body45cmMargin0-southSide.json": "e1e3588cc084f6e180e84b37757a0db9dbc5844680d20291f0e77c8c098e861f",
+    "two-approach-selection-11/run-01/result/body45cmMargin0-northSide.json": "47100b598b9bd4ba4b096b808b032f98c34e6693d638e10823ec5df2246f5c47"
+  },
+  "newGeometryQueries": false,
+  "referenceOverlay": false,
+  "differentRoutes": 1,
+  "executedProfiles": 3,
+  "unexecutedNorthSlots": 3,
+  "allXZAndYawTracesIdentical": true,
+  "physicalAuthority": false
+}

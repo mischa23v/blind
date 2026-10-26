@@ -1,0 +1,951 @@
+{
+  "controlFilesExcluded": [
+    "MANIFEST.json",
+    "VALIDATION.json"
+  ],
+  "files": [
+    {
+      "bytes": 2630,
+      "path": "COMPRESSED_RESULTS.json",
+      "sha256": "3d3b5a08b51e5411211d88a00e5841dce8b66659dcc5a658a396571c8af9985d"
+    },
+    {
+      "bytes": 9200,
+      "path": "EXTERNAL_DEPENDENCIES.json",
+      "sha256": "292a3133ff986878b6c255777320a5d1be143b9b06de0ab97c33c405b6e09197"
+    },
+    {
+      "bytes": 100970,
+      "path": "NORMALIZATION_MAP.json",
+      "sha256": "2773742f80d63d2ed3fe9219f9b51743c1b6516437226a998969a08c4dc2ecf4"
+    },
+    {
+      "bytes": 7879,
+      "path": "README.md",
+      "sha256": "5de2df975fd52b003e22f12c8a2751e2d39a3b763db54649a90f47e476a19be1"
+    },
+    {
+      "bytes": 576,
+      "path": "RESTORE_TESTS.log",
+      "sha256": "97e1ec854e8ceeb5d825d777062fe6830dc6a9b1cf10dbb64894f4621f978ab3"
+    },
+    {
+      "bytes": 117867,
+      "path": "SOURCE_IDENTITY_RECHECK.json",
+      "sha256": "0e3d77846ac9a2a8f42a06648448a469b87595d1381697c1d5236e68373428b5"
+    },
+    {
+      "bytes": 4720,
+      "path": "blind-authored-navigation-pilot/native/detour_engine.py",
+      "sha256": "8ab51b8fe7ac2585cfbe797615dd9ac78956e6cb14277deb092aca19df38787d"
+    },
+    {
+      "bytes": 8048,
+      "path": "blind-authored-navigation-pilot/source/impairments.py",
+      "sha256": "44e5383e19b42a5b524ae5305125e4fb8e992127f785a6e0010ca12334f63fd2"
+    },
+    {
+      "bytes": 7023,
+      "path": "blind-koivu-game-07/game_model.py",
+      "sha256": "3e38e76fd2cd05e19a41dd906748ccbb9fee6bc6e4086c117944965e6ddfc3ee"
+    },
+    {
+      "bytes": 13575,
+      "path": "blind-koivu-game-07/run_bounded.py",
+      "sha256": "1f695e6c927fba3cb20ee157e2f04cc74a71c1051937fc061ad2e956b6db7735"
+    },
+    {
+      "bytes": 10435,
+      "path": "blind-koivu-reference-comparison-06/reference_geometry.py",
+      "sha256": "266026051a781f122a59187f599688e8c5eb38807984b7e607401e7b4356386d"
+    },
+    {
+      "bytes": 1972,
+      "path": "blind-mushroom-koivu-acquisition-01/ATTRIBUTION.md",
+      "sha256": "3d01dde51d375689a1c19c2c793a5bac095ac63d63758aca182ec8b38b060c08"
+    },
+    {
+      "bytes": 5426,
+      "path": "blind-opus-reference-scoring-audit-02/source/label_contract.py",
+      "sha256": "e9107b10238fff7ead7f8d60733b0439771d592a9a6f1bece2ddf547c44c4db3"
+    },
+    {
+      "bytes": 9740,
+      "path": "blind-opus-reference-scoring-audit-02/source/reference_band_box.py",
+      "sha256": "18fdf528f5eb4c017ed0d94476babed57f94807323798984064679d419831ef1"
+    },
+    {
+      "bytes": 13294,
+      "path": "blind-opus-reference-scoring-audit-02/source/score_reference.py",
+      "sha256": "ccb8b730cde932e191571cebd1c0b09ffbce8429e67de21455268eff5c6d53d7"
+    },
+    {
+      "bytes": 3369,
+      "path": "blind-split-candidate-game-03/ACQUISITION_RECEIPT.json",
+      "sha256": "279b4ab03053ad79f64d0eae5eeb79cb02a6b3148f66f298f84add09796cb145"
+    },
+    {
+      "bytes": 55686,
+      "path": "blind-split-candidate-game-03/FIRST_ROUTE.json",
+      "sha256": "b24413d7fa43f79232b227088a235e85ef3a9c5d45bbe5f5f5e2fa415752f02b"
+    },
+    {
+      "bytes": 4978,
+      "path": "blind-split-candidate-game-03/PILOT_PROTOCOL.md",
+      "sha256": "0eed4edfc0d4e1953b391fae96f97b2e2a0a0b5f68452cb4b72b5fc287e1ca8c"
+    },
+    {
+      "bytes": 406,
+      "path": "blind-split-candidate-game-03/ROUTES_SOURCE_RECEIPT.json",
+      "sha256": "823865b5adf273cf34822ad5740bde7f19ebe3b39c13ddc665dae854596d2886"
+    },
+    {
+      "bytes": 5219,
+      "path": "blind-split-candidate-game-03/body-margin-variants-07/PROTOCOL.md",
+      "sha256": "7e9c43c863afb6e4c19fc0a166d3c1ca5249f16fae81956048766be794e3842a"
+    },
+    {
+      "bytes": 9589,
+      "path": "blind-split-candidate-game-03/body-margin-variants-07/margin_variants.py",
+      "sha256": "661ae8cd72390da3d931dc9b1437be033cfcfe11079d63a708a58afc5a98a9f8"
+    },
+    {
+      "bytes": 9259,
+      "path": "blind-split-candidate-game-03/body-margin-variants-07/native025/BUILD_RECEIPT.json",
+      "sha256": "51d8ae3d8cde987151760eeaccf045bb4f5fc64ddec7e136a6cd6408c30d278d"
+    },
+    {
+      "bytes": 2063,
+      "path": "blind-split-candidate-game-03/body-margin-variants-07/native025/FINAL_VERIFICATION.json",
+      "sha256": "5689ec5989b1b67caef105e372347a753257af9bb8c707b3f42c8f0484f3522a"
+    },
+    {
+      "bytes": 10684,
+      "path": "blind-split-candidate-game-03/body-margin-variants-07/native025/UPSTREAM_MANIFEST.json",
+      "sha256": "d42b9fc56473bf8b8afe278e862acb6bb96e8ed3d228c192765203572d14d9e7"
+    },
+    {
+      "bytes": 10682,
+      "path": "blind-split-candidate-game-03/body-margin-variants-07/native025/blind_detour.cpp",
+      "sha256": "1ebef6424ad2846e7fe9a2f7cda2fa0beee9ddedcdfc30f60923d3f312ca2713"
+    },
+    {
+      "bytes": 1365,
+      "path": "blind-split-candidate-game-03/body-margin-variants-07/native025/blind_detour.h",
+      "sha256": "c6270b968024d0703800160d45d4110f04f73ad3ecca50ceb0fd0de3b002dbb4"
+    },
+    {
+      "bytes": 2852,
+      "path": "blind-split-candidate-game-03/body-margin-variants-07/native025/build_native.py",
+      "sha256": "0cb621d585b6a23b27b7220a1baed22e2e9c76dfeefd964f5cf285c6cdbfb044"
+    },
+    {
+      "bytes": 4720,
+      "path": "blind-split-candidate-game-03/body-margin-variants-07/native025/detour_engine.py",
+      "sha256": "8ab51b8fe7ac2585cfbe797615dd9ac78956e6cb14277deb092aca19df38787d"
+    },
+    {
+      "bytes": 4123,
+      "path": "blind-split-candidate-game-03/body-margin-variants-07/native025/test_detour_engine.py",
+      "sha256": "98fb502aa1973c7884428867fedbc4f1475d3a76ff1caf2d2bf441aecf42aaab"
+    },
+    {
+      "bytes": 970,
+      "path": "blind-split-candidate-game-03/body-margin-variants-07/native025/test_native025.py",
+      "sha256": "c0bf6caa55e4e313e9f8d6fecf1f3ca1200ed9161540ca985d756891995b54e6"
+    },
+    {
+      "bytes": 877,
+      "path": "blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/License.txt",
+      "sha256": "ffad87821cce7cfd3be00b63ffadd01b04e83a4c6a0bcc68f06362ffd42d705e"
+    },
+    {
+      "bytes": 21041,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/FROZEN.json",
+      "sha256": "732f2bb4d6b3a6632cccd49c983d7336aaa707b1a926fcc190d4fa9b77058d08"
+    },
+    {
+      "bytes": 4230,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/PROTOCOL.md",
+      "sha256": "7e84568143bc6ce7a55d2d8b8c86f06e81718778f1ac8ea557415646a4c236cc"
+    },
+    {
+      "bytes": 1730,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/RUN_INPUTS.json",
+      "sha256": "63d87c231f62c87aa1dab34f7b3efc053a90ad7c551c2d87ce9c5af45985c04b"
+    },
+    {
+      "bytes": 2870,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/SOURCE_REVIEW.json",
+      "sha256": "021908bee15bf2c581096f9511385a572e838954990b4537f9744b13e418355f"
+    },
+    {
+      "bytes": 3128,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/approach_controller.py",
+      "sha256": "553c585c479e7c9e251efe6c82dab3b8c1d9172f2e247a1f7af293f92724a143"
+    },
+    {
+      "bytes": 10075,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/approach_episode.py",
+      "sha256": "ddd21f68fdc96e56ea4eaeb60e98c5406fa269a61fe46471634cb1954d23cb1c"
+    },
+    {
+      "bytes": 997,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/approach_process.py",
+      "sha256": "37a15efd35dff9ef2e36c32971895f979fc31067428526b5eff55d8b36a4a224"
+    },
+    {
+      "bytes": 1332,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/controller-fixtures-01/RECEIPT.json",
+      "sha256": "64a8a21d38891d943800eb3d2a9c6eaf2ac12d22891b035520b91ad7b6ff93fc"
+    },
+    {
+      "bytes": 2775,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/controller-fixtures-01/tests.log",
+      "sha256": "e6b493e19c8de7e0c78ee5db709cc98f351b24391fb2844175df87cd425d763e"
+    },
+    {
+      "bytes": 581,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/run-01/RUN_RECEIPT.json",
+      "sha256": "f418aa29287694311d4bc5e6f5fcafdb9af16ee718de66ecfb4cea18e081104e"
+    },
+    {
+      "bytes": 1286,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/run-01/heartbeat.jsonl",
+      "sha256": "a9050e6d26ccf199409c1c8170fc7a08f7adef1a080d57d06c68662f10753be1"
+    },
+    {
+      "bytes": 645,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/run-01/stderr.log",
+      "sha256": "120b81ef178c63e9527cb100504890132d15ea9e918ec184416fc037ea42ca12"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/run-01/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 7109,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/run_approaches.py",
+      "sha256": "265560e0dc1bdbf3724a6ab3aa5e4930aa2394a5495e33052e60802ef73640c5"
+    },
+    {
+      "bytes": 3582,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/run_bounded.py",
+      "sha256": "9cdf63e309436e61972a870d55c3b9c3575a02a3659483fedd0b5c9f18ad787c"
+    },
+    {
+      "bytes": 8937,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-11/test_approach_controller.py",
+      "sha256": "debf71e415ab3b43510c7fff9b4ee4dd021d4729035949e052b637ff3e354fa3"
+    },
+    {
+      "bytes": 24534,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/FROZEN.json",
+      "sha256": "96cd3790d3a9c71d68ed59736efdbb95b653c7e6cc6ef52c5526eec1a9ee5647"
+    },
+    {
+      "bytes": 647,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/IMPORT_CORRECTION.json",
+      "sha256": "045e14c8043f5d553d111cafff0760d4f2bc4b59ac95682f8dff20c11054cffc"
+    },
+    {
+      "bytes": 1810,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/IMPORT_SOURCE_REVIEW.json",
+      "sha256": "2a5a1cf75d02221ee220edaa8439bd5da4c735c1850d9326006678e67efc4bc7"
+    },
+    {
+      "bytes": 4230,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/PROTOCOL.md",
+      "sha256": "7e84568143bc6ce7a55d2d8b8c86f06e81718778f1ac8ea557415646a4c236cc"
+    },
+    {
+      "bytes": 1730,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/RUN_INPUTS.json",
+      "sha256": "63d87c231f62c87aa1dab34f7b3efc053a90ad7c551c2d87ce9c5af45985c04b"
+    },
+    {
+      "bytes": 3128,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/approach_controller.py",
+      "sha256": "553c585c479e7c9e251efe6c82dab3b8c1d9172f2e247a1f7af293f92724a143"
+    },
+    {
+      "bytes": 10755,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/approach_episode.py",
+      "sha256": "9cd599b33b2548b6d5624f15d7df5e9f291d9bc8af9ac2fa2edd00d662428a3f"
+    },
+    {
+      "bytes": 997,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/approach_process.py",
+      "sha256": "37a15efd35dff9ef2e36c32971895f979fc31067428526b5eff55d8b36a4a224"
+    },
+    {
+      "bytes": 1405,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/fixtures-01/RECEIPT.json",
+      "sha256": "70e7675cf8f2bcfdada29450cc2c31e520aec69ff0b960dc49582b62ca5592b1"
+    },
+    {
+      "bytes": 3049,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/fixtures-01/stderr.log",
+      "sha256": "e14855aa9c854378c2de74a4d7a016c8b9b62211c8b504e737a0a38c25f76e43"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/fixtures-01/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1507,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/fixtures-02/RECEIPT.json",
+      "sha256": "c16d0a110cbb8ddd6ff04c2fbae98f7dc628915454027c6ece14afae9c7f238a"
+    },
+    {
+      "bytes": 3157,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/fixtures-02/stderr.log",
+      "sha256": "c7f7100a2ae0e60bba7ccd2e1aa882b16d27c4bdefe55ff80baaca6aeb8cfd56"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/fixtures-02/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1155,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/run-01/TERMINATED_SETUP.json",
+      "sha256": "167c0136917ad735659eac1d4c2812e09d9303180359006dd9a6cf0171e7a3b3"
+    },
+    {
+      "bytes": 611689,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/run-01/heartbeat.jsonl",
+      "sha256": "6d6dfa9dfa8ed0da5eb951aaa863daf35a35962b687d6c4ca07b23e424e2eda1"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/run-01/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 238,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/run-01/stdout.log",
+      "sha256": "0f4edd751f057f6c29e80ef1ab750851e084d1ec9cab95bbf72041abd99809c6"
+    },
+    {
+      "bytes": 7109,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/run_approaches.py",
+      "sha256": "265560e0dc1bdbf3724a6ab3aa5e4930aa2394a5495e33052e60802ef73640c5"
+    },
+    {
+      "bytes": 3582,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/run_bounded.py",
+      "sha256": "9cdf63e309436e61972a870d55c3b9c3575a02a3659483fedd0b5c9f18ad787c"
+    },
+    {
+      "bytes": 8937,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/test_approach_controller.py",
+      "sha256": "debf71e415ab3b43510c7fff9b4ee4dd021d4729035949e052b637ff3e354fa3"
+    },
+    {
+      "bytes": 849,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/test_driver_import.py",
+      "sha256": "04859a7aef2b87faa774c985de58b71fe950249b74e0f1da28a4180e6887095b"
+    },
+    {
+      "bytes": 364,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-12/test_ground_owner.py",
+      "sha256": "6b6afe295269595f483559366f1b94d3d67a9c4cfd27132bb7e3dca5a7eca448"
+    },
+    {
+      "bytes": 28394,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/FROZEN.json",
+      "sha256": "7d6251186a20aeddcaac8172724b63a73496a382a369bedd3b5711a6e9bf9548"
+    },
+    {
+      "bytes": 2348,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/GROUND_SETUP_SOURCE_REVIEW.json",
+      "sha256": "2f5ecee6d033172519eb3fe77f66f48119371e00353775b14eb1e4ec3501be79"
+    },
+    {
+      "bytes": 5484,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/PROTOCOL.md",
+      "sha256": "017486b75fb8f3d027673a9ab5ded0d92c88cf7a24f139f641930a91db697c1e"
+    },
+    {
+      "bytes": 447,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/QUERY_CORRECTION.json",
+      "sha256": "f6e8ac41cbd702f70fd6eed27d4b2cbbecee6d6c245a461cf90391da4c6e698b"
+    },
+    {
+      "bytes": 5043,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/RESULT_READBACK.json",
+      "sha256": "19b0d0bc1f914e73692ef5cb5a6b74600273a4c4eb8a0cd903deef2a160d4ed9"
+    },
+    {
+      "bytes": 1730,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/RUN_INPUTS.json",
+      "sha256": "63d87c231f62c87aa1dab34f7b3efc053a90ad7c551c2d87ce9c5af45985c04b"
+    },
+    {
+      "bytes": 3128,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/approach_controller.py",
+      "sha256": "553c585c479e7c9e251efe6c82dab3b8c1d9172f2e247a1f7af293f92724a143"
+    },
+    {
+      "bytes": 10755,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/approach_episode.py",
+      "sha256": "9cd599b33b2548b6d5624f15d7df5e9f291d9bc8af9ac2fa2edd00d662428a3f"
+    },
+    {
+      "bytes": 997,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/approach_process.py",
+      "sha256": "37a15efd35dff9ef2e36c32971895f979fc31067428526b5eff55d8b36a4a224"
+    },
+    {
+      "bytes": 1957,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/fixtures-01/RECEIPT.json",
+      "sha256": "44378e78a1bb7d037eced4f8aac32a2ae56318728c4516d63ba6f526381ef577"
+    },
+    {
+      "bytes": 3639,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/fixtures-01/stderr.log",
+      "sha256": "6d1fcb07c1569270dfc89e64a277a881e70d44538a3ed1518357deaa7d34f27a"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/fixtures-01/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 15011,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/ground_classifier_resource.py",
+      "sha256": "a8b44fd33d5f635cc0c5aec0b7607d34517a399879785a2017a9ef6aba82845b"
+    },
+    {
+      "bytes": 3555,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/ground_setup.py",
+      "sha256": "f2af07bba5967719c2d43a37214794546cc66a0938ca39d6497c130066192130"
+    },
+    {
+      "bytes": 527,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run-01/RUN_RECEIPT.json",
+      "sha256": "62b81bdb086272fcc0675399d7744877b3462356195f0272c532f362fbcddad9"
+    },
+    {
+      "bytes": 228223,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run-01/heartbeat.jsonl",
+      "sha256": "da75225d1931baea65a048b4209989dec1a7bc92f02ac62b3e031f6c8f54d112"
+    },
+    {
+      "bytes": 1347,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/GROUND_SETUP_PREFLIGHT.json",
+      "sha256": "251e5d916833919853be8bfbf436fa81e351c02e46c5b7cb026531206a8fe331"
+    },
+    {
+      "bytes": 1191132,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/SUMMARY.json.gz",
+      "sha256": "a79e25a4c515a7ccdeb6ae73ee82f0961c605d7fa9f43dcb032fcd5d6677628c"
+    },
+    {
+      "bytes": 4917,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/abstract28cmProfile-southSide/ACTOR_TRACE.npz",
+      "sha256": "776cb443e5d63a7b112a114b8ae380d4f096c36507b52a778d676f49c2fcb6d8"
+    },
+    {
+      "bytes": 264553,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/abstract28cmProfile-southSide/RESULT.json.gz",
+      "sha256": "d5279a43cf6c9193f5cb3cf082213a61c9eaa2691eed0b8de7485823f5802f4f"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/abstract28cmProfile-southSide/controller.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 4924,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/body45cmMargin0-southSide/ACTOR_TRACE.npz",
+      "sha256": "e9132179cbada7c9fde3749c64b7768c0602b8e6a7cac673d7754eb2905126ce"
+    },
+    {
+      "bytes": 264589,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/body45cmMargin0-southSide/RESULT.json.gz",
+      "sha256": "ed541c0bd360ba0f7a9eefbc7cb552e4e943613a693cd4d5f3b37b71dec64d7d"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/body45cmMargin0-southSide/controller.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 4955,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/body45cmMargin5cm-southSide/ACTOR_TRACE.npz",
+      "sha256": "f9290e6e8c75e6cbac2dab63a9a0e9f596d37d261cb2175dc7228da1305baa89"
+    },
+    {
+      "bytes": 264711,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/body45cmMargin5cm-southSide/RESULT.json.gz",
+      "sha256": "41c5f7a145de14632c2d1b3672deb17610471339b6e1e81bd4315ac0489ca096"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run-01/result/body45cmMargin5cm-southSide/controller.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run-01/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 4848,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run-01/stdout.log",
+      "sha256": "2726190923e37a9023330753e15d47c7413b49d1682d35de3e7f724879c0b939"
+    },
+    {
+      "bytes": 6272,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run_approaches.py",
+      "sha256": "249ed4b33c9f5c88ec5af26b12493e91c08afdc540f2e789adff7f68290b0046"
+    },
+    {
+      "bytes": 3582,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/run_bounded.py",
+      "sha256": "9cdf63e309436e61972a870d55c3b9c3575a02a3659483fedd0b5c9f18ad787c"
+    },
+    {
+      "bytes": 8937,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/test_approach_controller.py",
+      "sha256": "debf71e415ab3b43510c7fff9b4ee4dd021d4729035949e052b637ff3e354fa3"
+    },
+    {
+      "bytes": 849,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/test_driver_import.py",
+      "sha256": "04859a7aef2b87faa774c985de58b71fe950249b74e0f1da28a4180e6887095b"
+    },
+    {
+      "bytes": 364,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/test_ground_owner.py",
+      "sha256": "6b6afe295269595f483559366f1b94d3d67a9c4cfd27132bb7e3dca5a7eca448"
+    },
+    {
+      "bytes": 2904,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/test_tiled_ground_setup.py",
+      "sha256": "859e94881f237c81d2c727339bea4fcf77c0107ad30f21fd6bf2c90e81893f90"
+    },
+    {
+      "bytes": 1913,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/visualization-01/PLOT_RECEIPT.json",
+      "sha256": "1d09caa996e85c8e655e5cf803045a2e96c4dd54aa0d353d1eb71dc2d30a62db"
+    },
+    {
+      "bytes": 5804,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/visualization-01/plot_approaches.py",
+      "sha256": "b4bc69250e18351b5ab79232bef9d4d2b71120a2254d61186a00a32f875f57bb"
+    },
+    {
+      "bytes": 204385,
+      "path": "blind-split-candidate-game-03/camera-approach-executor-14/visualization-01/south-approach-three-profiles.png",
+      "sha256": "13af08067a0252a080c23e10adf98ed3dceb01d4ac797ab31f3f3ad31953836e"
+    },
+    {
+      "bytes": 8369,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/ground_support.py",
+      "sha256": "095906c4cda9972e46751b511f46d41e2e541e2ebc44ebbb7da6dbe8240acfaf"
+    },
+    {
+      "bytes": 5367,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/oriented_ground_container.py",
+      "sha256": "728860fa18f762f90b13f581e4b3cae474f4d8bf4223854252778802e405ea89"
+    },
+    {
+      "bytes": 3584,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/run_bounded.py",
+      "sha256": "0683dd1622933e25b3a6c96dbe2e2a9861e07b25d5a7954ca61d4e65bd97424a"
+    },
+    {
+      "bytes": 12396,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/run_ground_pilot.py",
+      "sha256": "679851a99466803d8390b38433a165ec409d52a4df266ff7e3651855370793de"
+    },
+    {
+      "bytes": 2480,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/test_ground_physics.py",
+      "sha256": "c61ec01610561e90b42ce7bb5e7e8a490ea1ee2b75005368e19c4139629ae357"
+    },
+    {
+      "bytes": 4018,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/test_ground_support.py",
+      "sha256": "1ed4e4e9c7d2415f741cad376693c0632e469972c4e7526a32014490f0fcd397"
+    },
+    {
+      "bytes": 5030,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/test_oriented_ground_container.py",
+      "sha256": "faf152deff73ecacc1ab03ca042954d9c533f69a9b193654175f4eb96a1d050d"
+    },
+    {
+      "bytes": 2889,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/HELPER_PROTOCOL.md",
+      "sha256": "4915e53e6b9e4c4399839656241b196281639357d068464815d65c0e63c2e31f"
+    },
+    {
+      "bytes": 4553,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/PROTOCOL.md",
+      "sha256": "9f63642600930d9f91972aadb38d119275907e06d031731c839041a30881d44f"
+    },
+    {
+      "bytes": 15011,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/ground_support.py",
+      "sha256": "cf4745cae6ac3392346cc2e43cf507f42b4513af349b016ce466cdc04d04c06b"
+    },
+    {
+      "bytes": 12344,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/initial-plane-proposal.not-executed.py",
+      "sha256": "e8a7e50d9ce284f686aa1c66b5b90eacc1775e09940b4c030ff2281331b30145"
+    },
+    {
+      "bytes": 3584,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/run_bounded.py",
+      "sha256": "0683dd1622933e25b3a6c96dbe2e2a9861e07b25d5a7954ca61d4e65bd97424a"
+    },
+    {
+      "bytes": 14542,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/run_ground_pilot.py",
+      "sha256": "0ec5a20679569ac9710520ac46ce11019517bf8afd08d174d6d95ee4fc9e9784"
+    },
+    {
+      "bytes": 2810,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/test_ground_physics.py",
+      "sha256": "70898c38c9af27b719d3e7aca9ce770a92c36a4c63c38869f8d489cb39565e00"
+    },
+    {
+      "bytes": 5655,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/test_ground_support.py",
+      "sha256": "9fd79a25bf033602ee080a9ca6bbc36ab17592183d4242d883ac5d0327bd7549"
+    },
+    {
+      "bytes": 5222,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/test_oriented_ground_container.py",
+      "sha256": "47eb6a52293459f0363dab8db55c177728780a18c68263f4294620289e16cd1e"
+    },
+    {
+      "bytes": 2313,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/COMPARISON_PROTOCOL.md",
+      "sha256": "fa55944d1bb4936f0c302f6f5ca69b59f7d0b46a7f00c37fdac4e249372df8d4"
+    },
+    {
+      "bytes": 13752,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/FROZEN_COMPARISON.json",
+      "sha256": "50fbcfeb3366ca2721dfd27f7b4e90dcff1227d214197a009d9e60acf5ca14a0"
+    },
+    {
+      "bytes": 3852,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/IMPLEMENTATION_RECEIPT.json",
+      "sha256": "3b379b396dcb11dfcc90dfe8dcc56621502b6aa481c246480764f29e64e42d5d"
+    },
+    {
+      "bytes": 3427,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/RECORDED_COMPARISON_REVIEW.json",
+      "sha256": "3c4bc62e1daff38b60d55f01fe1bf0470937104a5bd4da7ca6995854f3b600b1"
+    },
+    {
+      "bytes": 1339,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/SOURCE_REVIEW.json",
+      "sha256": "aaaabe1d201c648992954ca2babdcc57c821dee6f37560d66e086fe2578dbe40"
+    },
+    {
+      "bytes": 527,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/compare-01/RUN_RECEIPT.json",
+      "sha256": "2f64b6a203bc562c58ba9dae0b73f073a26dc4ef67fac010c6e7ea08144a66a8"
+    },
+    {
+      "bytes": 306236,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/compare-01/heartbeat.jsonl",
+      "sha256": "dd6f5b3554a767ccf7f0457acf7b29b2272f1b98b13821832074810a4690c750"
+    },
+    {
+      "bytes": 6898,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/compare-01/result/EQUIVALENCE.json",
+      "sha256": "0a57dc0d317150bf1b784c94b483b824283948471381fb4d771b4067535f3729"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/compare-01/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1491,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/compare-01/stdout.log",
+      "sha256": "fa5de9e459bfe81beecb000c48a1663f51675f5c9fd3d2a66c57ce63a23876aa"
+    },
+    {
+      "bytes": 6575,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/compare_reference.py",
+      "sha256": "b0ab53174297daaa42d875e532a4fd4ab87c701b859a02c5375f121e055886e3"
+    },
+    {
+      "bytes": 1337,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/fixtures-01/RECEIPT.json",
+      "sha256": "71ca67be02517db02dbeb2c5c5fe2eaa7332579deacb91588f6d1fba238465e0"
+    },
+    {
+      "bytes": 4232,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/fixtures-01/stderr.log",
+      "sha256": "172ffc2c6252d59f7a96d725aa73a5269380bed9d51f4f6648e0350cd1864f3b"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/fixtures-01/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 10653,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/oriented_ground_obb_container.py",
+      "sha256": "7005ab752d855edfdb1295b401ea8ad9d66516a5813f716f1a7818677bb1c222"
+    },
+    {
+      "bytes": 3614,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/run_comparison_bounded.py",
+      "sha256": "f60e7792e8f052cd6b9d034c78e62db263582b3addb4931a3f9893ce6e984fa2"
+    },
+    {
+      "bytes": 13222,
+      "path": "blind-split-candidate-game-03/ground-obb-v6/test_oriented_ground_obb_container.py",
+      "sha256": "2fef0f942b9f89b358445aa79582071af5d3818943c0b7629a6e51f89d2d6ae6"
+    },
+    {
+      "bytes": 2504,
+      "path": "blind-split-candidate-game-03/ground-query-tile-13/IMPLEMENTATION_RECEIPT.json",
+      "sha256": "0000fa2f3e86f461f2d8dc98b5df14464013312ccba9d6507ae5ae5c0eaf2357"
+    },
+    {
+      "bytes": 706,
+      "path": "blind-split-candidate-game-03/ground-query-tile-13/fixtures-01/RECEIPT.json",
+      "sha256": "60abd360b24a28127a8d16d0eeeb678d4aec328b5e55db960a721a6bd32559ac"
+    },
+    {
+      "bytes": 2385,
+      "path": "blind-split-candidate-game-03/ground-query-tile-13/fixtures-01/tests.log",
+      "sha256": "88377502fcecf46deebd98d2b4389c7d8ede499e583594360ed5aa62059d3835"
+    },
+    {
+      "bytes": 7671,
+      "path": "blind-split-candidate-game-03/ground-query-tile-13/test_tiled_bounds.py",
+      "sha256": "82b698367390fc708a4677cc1818945235b22e5af55930370cae23cbde23b388"
+    },
+    {
+      "bytes": 6803,
+      "path": "blind-split-candidate-game-03/ground-query-tile-13/tiled_bounds.py",
+      "sha256": "9a7015950867f095e2990c117918423496f9d659ca50c5e7f6a0f765e4d18188"
+    },
+    {
+      "bytes": 6109,
+      "path": "blind-split-candidate-game-03/ground-skip-v4/compare_reference.py",
+      "sha256": "ddb1a011eb343baed005fc9916db87f5fca73f311f902dc00e9bbb87f954dcf3"
+    },
+    {
+      "bytes": 5215,
+      "path": "blind-split-candidate-game-03/ground-skip-v4/oriented_ground_skip_container.py",
+      "sha256": "25131c4057ebca9afcbde025da672d1d75a7c5083d45cb2a0b6b5ce522189387"
+    },
+    {
+      "bytes": 3614,
+      "path": "blind-split-candidate-game-03/ground-skip-v4/run_comparison_bounded.py",
+      "sha256": "f60e7792e8f052cd6b9d034c78e62db263582b3addb4931a3f9893ce6e984fa2"
+    },
+    {
+      "bytes": 7367,
+      "path": "blind-split-candidate-game-03/ground-skip-v4/test_oriented_ground_skip_container.py",
+      "sha256": "f4b3a2ac949884adb90b1a1d760480900703d5a1058bfe7ac22697ad68bc56f6"
+    },
+    {
+      "bytes": 6118,
+      "path": "blind-split-candidate-game-03/ground-vector-v5/compare_reference.py",
+      "sha256": "8a60e3d411a303f6df2a3717da3fc9a3178f03b045ea160efe370869868d996f"
+    },
+    {
+      "bytes": 7211,
+      "path": "blind-split-candidate-game-03/ground-vector-v5/oriented_ground_vector_container.py",
+      "sha256": "939e4dc678d7f410675ffc461bb7ff3c01bd39490c97bfa48bc4747eb9e1bb56"
+    },
+    {
+      "bytes": 3614,
+      "path": "blind-split-candidate-game-03/ground-vector-v5/run_comparison_bounded.py",
+      "sha256": "f60e7792e8f052cd6b9d034c78e62db263582b3addb4931a3f9893ce6e984fa2"
+    },
+    {
+      "bytes": 11781,
+      "path": "blind-split-candidate-game-03/ground-vector-v5/test_oriented_ground_vector_container.py",
+      "sha256": "a427267d7395ef6b44d5707d3938e9552cf72835ecff2e33dc01e23d1561bdc9"
+    },
+    {
+      "bytes": 534,
+      "path": "blind-split-candidate-game-03/inputs/ACQUISITION.json",
+      "sha256": "0e4789c9c18a7c5a32670bffe74486dd971b7612c609f3de5d5788e609d47b27"
+    },
+    {
+      "bytes": 7240,
+      "path": "blind-split-candidate-game-03/source/candidate_map.py",
+      "sha256": "5e0132f4711200bca1b7ae90eb27b5666ce0707b1573e815e40e622caff98c09"
+    },
+    {
+      "bytes": 12118,
+      "path": "blind-split-candidate-game-03/source/oriented_container.py",
+      "sha256": "f6c66faa66a30922b48833194814119c555c62b50ee308042483fbad08dfcda8"
+    },
+    {
+      "bytes": 4755,
+      "path": "blind-split-candidate-game-03/source/pilot_controller.py",
+      "sha256": "95aad3f7de031286ba75c08dff45e97b0d2b998d5f9a23334cc194c82a9a69d8"
+    },
+    {
+      "bytes": 11372,
+      "path": "blind-split-candidate-game-03/source/run_pilot.py",
+      "sha256": "8dba7dedf09e74dda80a035c3b7d404ebafeea09e953fcb968d75a8a2396ff64"
+    },
+    {
+      "bytes": 3585,
+      "path": "blind-split-candidate-game-03/source/run_pilot_bounded.py",
+      "sha256": "1f28d225d497dbbe87522ea5c84be5a5a7556bd972800fe24d535fa88533339f"
+    },
+    {
+      "bytes": 3208,
+      "path": "blind-split-candidate-game-03/source/run_selector_bounded.py",
+      "sha256": "f55f5b21e5be279cd9e83eb0216192740335c50cc56c16a600bf14fb3774554a"
+    },
+    {
+      "bytes": 3211,
+      "path": "blind-split-candidate-game-03/source/run_selector_bounded_02.py",
+      "sha256": "e4f0524722e98553d0e2ba56b24b55b4765b0f3ad0810122cda67db864f542a2"
+    },
+    {
+      "bytes": 4333,
+      "path": "blind-split-candidate-game-03/source/select_first_route.py",
+      "sha256": "3851450d969d1d9d9850bed502501ef4101256855d95135e594159520ebd17f9"
+    },
+    {
+      "bytes": 3519,
+      "path": "blind-split-candidate-game-03/source/test_candidate_map.py",
+      "sha256": "5b1dd791d78ce4898067fe99a49fde7e531a79a9368a3a956d83600e04918e37"
+    },
+    {
+      "bytes": 10456,
+      "path": "blind-split-candidate-game-03/source/test_oriented_container.py",
+      "sha256": "8db6c95cc7ef08dbe0521c76b39b03596d373329bb99cf4abc5e30a5cd81fb26"
+    },
+    {
+      "bytes": 2382,
+      "path": "blind-split-candidate-game-03/source/test_pilot_controller.py",
+      "sha256": "e4ee34a5430a94414274eab9d2b8402b1eaf292876ab49d3b835f49d8c3e33d1"
+    },
+    {
+      "bytes": 1644,
+      "path": "blind-split-candidate-game-03/three-lap-executor-09/profile_map.py",
+      "sha256": "b8c8f56ce7b9488cf1641e11677920f29794b9e201f7da94d8470f8e5de4b39d"
+    },
+    {
+      "bytes": 2544,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/FROZEN.json",
+      "sha256": "b885657c34478fd34098d137a3ca423c8958df83c1ed9782e9a2114f63098192"
+    },
+    {
+      "bytes": 2718,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/PROTOCOL.md",
+      "sha256": "4e9ecb720fd454db15e234ad5c66d980c118712562894df7fa8544ef9d6148d7"
+    },
+    {
+      "bytes": 11261,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/UNEXECUTED_contiguous_arc_draft.py",
+      "sha256": "41b19c9785c4f22d19cb0cf56fe31623fa37e1d7da25bd611079d4f80ca2aebb"
+    },
+    {
+      "bytes": 705,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/run-01/RUN_RECEIPT.json",
+      "sha256": "830f4b0e32d148ba5c1066a4c8a9f191998068d870f3e66b33447e48e95602aa"
+    },
+    {
+      "bytes": 437,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/run-01/SOURCE_PINS.json",
+      "sha256": "c33f409ba7c7138bab4a658bb1264fa5a27800f8727d074c84d75547f477415b"
+    },
+    {
+      "bytes": 4308,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/run-01/result/RESULTS.json",
+      "sha256": "8fd3b93331e69c277770586d112c33dfc66b8b74d20058e953d578d8e3c01021"
+    },
+    {
+      "bytes": 6305,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/run-01/result/abstract28cmProfile-northSide.json",
+      "sha256": "eccc49a8343cf33b382756ee7bf67eb93c3c2b49e33085570815daf144089024"
+    },
+    {
+      "bytes": 9923,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/run-01/result/abstract28cmProfile-southSide.json",
+      "sha256": "091220be442cb81b17b99e64e5543b3f029d80d0f9bc0106dd7c417d376fbd8e"
+    },
+    {
+      "bytes": 6302,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/run-01/result/body45cmMargin0-northSide.json",
+      "sha256": "47100b598b9bd4ba4b096b808b032f98c34e6693d638e10823ec5df2246f5c47"
+    },
+    {
+      "bytes": 9920,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/run-01/result/body45cmMargin0-southSide.json",
+      "sha256": "e1e3588cc084f6e180e84b37757a0db9dbc5844680d20291f0e77c8c098e861f"
+    },
+    {
+      "bytes": 6307,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/run-01/result/body45cmMargin5cm-northSide.json",
+      "sha256": "7f17151b6a138fbc3a6bb720b0b2324203cc5db510cbdc3fb368b2680d14109f"
+    },
+    {
+      "bytes": 9926,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/run-01/result/body45cmMargin5cm-southSide.json",
+      "sha256": "7c5f6b841be6af63d3c6b2d5e3f9055db421176852962eef0990693969cc5b38"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/run-01/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1809,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/run-01/stdout.log",
+      "sha256": "b437ed754a271eae08f1f7719eaf24346b2a8ee2ca48ce78e36e34667dc7564e"
+    },
+    {
+      "bytes": 3873,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/run_bounded.py",
+      "sha256": "a164a48e10046b8d881316982f2fd5131552e0a2dd1e6bbce8f8d93729df4008"
+    },
+    {
+      "bytes": 12893,
+      "path": "blind-split-candidate-game-03/two-approach-selection-11/select_approaches.py",
+      "sha256": "d743ab6aeee50a0bf6041aed90418e5c6b1d6dbf5e6e125d5987d4cc580680fa"
+    },
+    {
+      "bytes": 2790,
+      "path": "blind-split-candidate-game-03/upstream/scripts/routes.py",
+      "sha256": "20723183941e16968eaacfd227972448385255dc5f3ff86bc39c7de8edb1f2d8"
+    },
+    {
+      "bytes": 3954,
+      "path": "blind-split-candidate-game-03/upstream/scripts/routes_rect.py",
+      "sha256": "c96f1cb4e87e1f283645f4dbe7e8ee76f51b1d701ddf6a0965be4e1a1bd5c980"
+    },
+    {
+      "bytes": 3024,
+      "path": "restore_results.py",
+      "sha256": "a49553a416a42a6ddd75f5acb2405dd4c4a105c8507ad3941232e5c31bdf97f5"
+    },
+    {
+      "bytes": 2044,
+      "path": "test_restore_results.py",
+      "sha256": "9b544a96e6f1c0382a661a21441623a5a1ba1e50900285f0671608d014ffe5af"
+    },
+    {
+      "bytes": 3387,
+      "path": "validate_packet.py",
+      "sha256": "ceee9e4d933c80929c4bf208a09d9a6bca71e7a531e426f50b44a3c614569b79"
+    }
+  ],
+  "payloadBytes": 4484818,
+  "payloadFiles": 188,
+  "scope": "terminal same-route three-profile approaches with three unexecuted north associations; preserved setup failures"
+}

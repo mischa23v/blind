@@ -1,0 +1,35 @@
+{
+  "scope": "Independent focused source review and authored controller fixture result; no recorded map/reference loaded or world episode executed by reviewer",
+  "noConcreteLaunchBlockerFound": true,
+  "sourcePins": {
+    "approach_controller.py": "553c585c479e7c9e251efe6c82dab3b8c1d9172f2e247a1f7af293f92724a143",
+    "approach_process.py": "37a15efd35dff9ef2e36c32971895f979fc31067428526b5eff55d8b36a4a224",
+    "approach_episode.py": "ddd21f68fdc96e56ea4eaeb60e98c5406fa269a61fe46471634cb1954d23cb1c",
+    "run_approaches.py": "265560e0dc1bdbf3724a6ab3aa5e4930aa2394a5495e33052e60802ef73640c5",
+    "run_bounded.py": "9cdf63e309436e61972a870d55c3b9c3575a02a3659483fedd0b5c9f18ad787c",
+    "test_approach_controller.py": "debf71e415ab3b43510c7fff9b4ee4dd021d4729035949e052b637ff3e354fa3",
+    "controller-fixtures-01/RECEIPT.json": "64a8a21d38891d943800eb3d2a9c6eaf2ac12d22891b035520b91ad7b6ff93fc"
+  },
+  "authoredControllerTests": 19,
+  "authoredTestsPassed": 19,
+  "checks": [
+    "Frozen phone selection/hash/profile/native identity and exact A-to-B goal binding precede inherited unchanged tick logic.",
+    "Rejected northern selection slots remain unexecuted, not replaced or interpreted as arrivals.",
+    "Reference geometry/ground enters world setup and terminal scoring only, not controller route selection or XZ/yaw correction.",
+    "One shared ground classification uses original scene seeds and extended route bounds across profiles; original/new fit receipts remain separate.",
+    "Whole-body and margin continuous two-half sweeps preserve first non-ground collision failure; finite support uncertainty terminates separately.",
+    "Arrival requires actual nonzero travel, delivered goal stop, actual zero applied movement and drained pending commands, within original tolerance.",
+    "Unmeasured ground contact fields are None, trace sentinel -1; skipped ground candidates are not zero-contact evidence.",
+    "Resource setup cap is explicitly resourceSetupPending rather than no route or collision; old helper threshold unchanged.",
+    "Process-tree watchdog bounds 1800 CPU seconds,2700 wall seconds,3GiB RSS,64MiB output,768MiB reserve; pre/post frozen-file checks and cleanup retained."
+  ],
+  "reportingNote": "Batch skipped slots use movementExecuted while episode uses motionExecuted; parent was advised to unify or add explicit executed/moved totals. This is accounting hygiene, not movement authority.",
+  "limits": [
+    "Authored fixtures use FakeMap and synthetic frozen plans, not real map or reference geometry.",
+    "This source-close is not a phone safety, full-support or continuous observed-clearance proof.",
+    "FARO cleaned/completed reference scoring is not live sensor truth.",
+    "Recorded approach outcomes were not available at review time."
+  ],
+  "gameEpisodesExecutedByReviewer": 0,
+  "physicalAuthority": false
+}

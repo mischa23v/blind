@@ -1,0 +1,255 @@
+{
+  "scope": "Conservative affine box-bounds rejection plus exact non-ground scorer equivalence on frozen real-reference saved poses, not navigation episodes",
+  "pass": true,
+  "ticks": [
+    0,
+    9,
+    15,
+    28,
+    30,
+    45,
+    60,
+    75,
+    90,
+    106
+  ],
+  "halfSweeps": 20,
+  "bodyMarginComparisons": 40,
+  "contactIdentityFields": [
+    "contact",
+    "candidate count",
+    "first original non-ground ID",
+    "reason",
+    "non-ground count",
+    "height range",
+    "sweep"
+  ],
+  "timingScope": "Linux CPU diagnostic; slow always precedes fast on shared warm locator/cache, not unbiased benchmarking or iPhone latency",
+  "slowWallSeconds": 71.59810100503091,
+  "fastWallSeconds": 43.00009682895325,
+  "speedupRatio": 1.6650683669349735,
+  "slowTriangleQueries": 2287073,
+  "fastTriangleQueries": 0,
+  "originalGroundTriangleContactReports": 13834,
+  "fastGroundContactReports": null,
+  "skippedGroundCandidates": 1780895,
+  "rejectedNonGroundBoundsCandidates": 506178,
+  "allEliminatedTriangleQueriesAccounted": true,
+  "groundContactsMeasuredByFastScorer": false,
+  "groundCellCount": 427785,
+  "groundClassifierUnchanged": true,
+  "rawObstacleGeometryUnchanged": true,
+  "physicalAuthority": false,
+  "newNavigationEpisodes": 0,
+  "rows": [
+    {
+      "tick": 0,
+      "half": 0,
+      "slowWallSeconds": 1.6442101029970217,
+      "fastWallSeconds": 0.8953345289919525,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 0,
+      "half": 1,
+      "slowWallSeconds": 1.9598926759936148,
+      "fastWallSeconds": 0.9043253279960481,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 9,
+      "half": 0,
+      "slowWallSeconds": 1.812677039008122,
+      "fastWallSeconds": 0.7365789789910195,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 9,
+      "half": 1,
+      "slowWallSeconds": 1.8831202010042034,
+      "fastWallSeconds": 0.8084537760005333,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 15,
+      "half": 0,
+      "slowWallSeconds": 1.969126394003979,
+      "fastWallSeconds": 1.0118261850002455,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 15,
+      "half": 1,
+      "slowWallSeconds": 2.3278800070111174,
+      "fastWallSeconds": 1.1798951999953715,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 28,
+      "half": 0,
+      "slowWallSeconds": 2.2144678559998283,
+      "fastWallSeconds": 1.1874780379876029,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 28,
+      "half": 1,
+      "slowWallSeconds": 2.380688563003787,
+      "fastWallSeconds": 1.3198483320011292,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 30,
+      "half": 0,
+      "slowWallSeconds": 2.4210143119998975,
+      "fastWallSeconds": 1.187520082006813,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 30,
+      "half": 1,
+      "slowWallSeconds": 2.4895742619992234,
+      "fastWallSeconds": 1.3497119920066325,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 45,
+      "half": 0,
+      "slowWallSeconds": 5.540594358011731,
+      "fastWallSeconds": 3.971798143000342,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 45,
+      "half": 1,
+      "slowWallSeconds": 5.756846421994851,
+      "fastWallSeconds": 3.7760919360007392,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 60,
+      "half": 0,
+      "slowWallSeconds": 4.757843380008126,
+      "fastWallSeconds": 3.215104335991782,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 60,
+      "half": 1,
+      "slowWallSeconds": 5.648268477001693,
+      "fastWallSeconds": 3.54333724398748,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 75,
+      "half": 0,
+      "slowWallSeconds": 4.63269275300263,
+      "fastWallSeconds": 2.570373088994529,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 75,
+      "half": 1,
+      "slowWallSeconds": 4.347862265000003,
+      "fastWallSeconds": 2.4712053409893997,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 90,
+      "half": 0,
+      "slowWallSeconds": 5.338781889993697,
+      "fastWallSeconds": 3.5199616589961806,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 90,
+      "half": 1,
+      "slowWallSeconds": 5.0600260619976325,
+      "fastWallSeconds": 3.2884846860106336,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 106,
+      "half": 0,
+      "slowWallSeconds": 4.595981652993942,
+      "fastWallSeconds": 3.178324104010244,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    },
+    {
+      "tick": 106,
+      "half": 1,
+      "slowWallSeconds": 4.816552332005813,
+      "fastWallSeconds": 2.884443849994568,
+      "identicalNonGroundContacts": true,
+      "actualBodyContact": false,
+      "marginContact": false
+    }
+  ],
+  "runtime": {
+    "version": "9.3.1",
+    "SMPBackend": "Sequential",
+    "threads": 1,
+    "executionMachine": {
+      "system": "Linux",
+      "release": "6.18.55",
+      "machine": "x86_64",
+      "cpuReportedModel": "AMD EPYC 7763 64-Core Processor",
+      "logicalCPUAffinityCount": 1,
+      "memorySnapshotBytes": {
+        "MemTotal": 10451439616,
+        "MemAvailable": 4597366784
+      },
+      "CPUQuotaNotEstablished": true,
+      "iPhoneRuntimeTest": false,
+      "GPUUsed": false
+    }
+  },
+  "referenceMesh": {
+    "vertices": 8940320,
+    "triangles": 17801112,
+    "originalPLYType": "float64",
+    "VTKPointScalarType": "float",
+    "geometryDecimated": false,
+    "meshTransformed": false,
+    "unusedAttributesReleased": true
+  },
+  "wallSeconds": 254.93667108099908
+}
