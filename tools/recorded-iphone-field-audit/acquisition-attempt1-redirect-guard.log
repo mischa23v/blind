@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "$WORKSPACE/blind-raw-iphone-feasibility-01/acquire_exact_inputs.py", line 66, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "$WORKSPACE/blind-raw-iphone-feasibility-01/acquire_exact_inputs.py", line 38, in main
+    if not (final_host=='huggingface.co' or final_host.endswith('.huggingface.co') or final_host.endswith('.xethub.hf.co')):raise RuntimeError('unexpected official download redirect')
+                                                                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: unexpected official download redirect

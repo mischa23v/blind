@@ -1,0 +1,455 @@
+{
+  "scope": "Eight actual depth/confidence pairs decoded; eight RGB headers checked. No native perception, projection, localization or navigation pass.",
+  "datasetRevision": "a285cd1249fe9762085713a1c796ab68b1810ac2",
+  "clipSHA256": "aa200931b3769084043b4cd45ae76aef52151971194b079735756aca186749d4",
+  "deviceProvenance": "Publisher pinned index identifies iPhone 12 Pro; device model is not present in this clip metadata",
+  "metadataSHA256": "fa1cab04539609735af5282726a453ce8e8da1b63e45e372bd3a70e03303f1fa",
+  "originalMetadataKeys": [
+    "K",
+    "cameraType",
+    "dh",
+    "dw",
+    "fps",
+    "frameTimestamps",
+    "h",
+    "initPose",
+    "perFrameIntrinsicCoeffs",
+    "poses",
+    "w"
+  ],
+  "cameraTypeOriginal": 1,
+  "configuredFPS": 30,
+  "originalTimestampCount": 89,
+  "originalPoseCount": 89,
+  "originalPerFrameIntrinsicCount": 89,
+  "timestampSpanSeconds": 5.867291457994725,
+  "timestampIntervalMinMedianMaxSeconds": [
+    0.06667362499865703,
+    0.06667374999960884,
+    0.06667395900876727
+  ],
+  "effectiveIntervalsPerSecond": 14.99840269228349,
+  "selectedFrameIDs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "selectedDecodedBytes": 1966080,
+  "originalConfidenceCounts012": [
+    114597,
+    151464,
+    127155
+  ],
+  "originalInitPose": [
+    0,
+    0,
+    0.7071067690849304,
+    0.7071067690849304,
+    0,
+    0,
+    0
+  ],
+  "gravityAssociationResolved": false,
+  "worldPoseProjectionExecuted": false,
+  "originalTrackingStateAvailable": false,
+  "bodyToPhoneExtrinsicsAvailable": false,
+  "independentObstacleOrCollisionTruthAvailable": false,
+  "nativeRecordedTransportUsed": false,
+  "physicalNavigationAuthority": false,
+  "decoderBinarySHA256": "75e52786bd0cfc5ede9e1f08f87dc752778fffe2f6c3957e318c534e5f457d61",
+  "decoderScratchBytes": 47368,
+  "wallSeconds": 0.032287073001498356,
+  "peakRSSKiB": 28124,
+  "freeAfterBytes": 1082986496,
+  "frames": [
+    {
+      "frameID": 0,
+      "originalRelativeTimestamp": 0.0,
+      "rgbSize": [
+        1920,
+        1440
+      ],
+      "rgbMode": "RGB",
+      "depthWidth": 256,
+      "depthHeight": 192,
+      "depthFormat": "float32 little-endian metres, original decoded values unchanged",
+      "depthFinitePixels": 49152,
+      "depthZeroPixels": 0,
+      "depthNegativePixels": 0,
+      "depthPositiveRangeMetres": [
+        0.253662109375,
+        0.92626953125
+      ],
+      "originalConfidenceCounts012": [
+        13644,
+        18253,
+        17255
+      ],
+      "confidenceReplaced": false,
+      "originalIntrinsicCoefficients": [
+        1477.268798828125,
+        1477.268798828125,
+        956.9019775390625,
+        751.5174560546875
+      ],
+      "intrinsicCoefficientOrder": "Four original coefficients retained; ordering not independently verified; no projection executed",
+      "quaternionNorm": 0.9999999768369302,
+      "trackingState": "unknown",
+      "bodyMountCalibrated": false,
+      "physicalNavigationAuthority": false,
+      "decodedFiles": [
+        {
+          "path": "0.depth.f32le",
+          "bytes": 196608,
+          "sha256": "970d2bdc2de2c938409ab12c5979224d2672e63b82095c51018757077462de5c"
+        },
+        {
+          "path": "0.confidence.u8",
+          "bytes": 49152,
+          "sha256": "678999e0c1c32fe42b5aae8ffe9a24e0e92f5ebd99539c4d6179c4c8798c91e4"
+        }
+      ]
+    },
+    {
+      "frameID": 1,
+      "originalRelativeTimestamp": 0.06667383300373328,
+      "rgbSize": [
+        1920,
+        1440
+      ],
+      "rgbMode": "RGB",
+      "depthWidth": 256,
+      "depthHeight": 192,
+      "depthFormat": "float32 little-endian metres, original decoded values unchanged",
+      "depthFinitePixels": 49152,
+      "depthZeroPixels": 0,
+      "depthNegativePixels": 0,
+      "depthPositiveRangeMetres": [
+        0.2685546875,
+        0.92431640625
+      ],
+      "originalConfidenceCounts012": [
+        12539,
+        19367,
+        17246
+      ],
+      "confidenceReplaced": false,
+      "originalIntrinsicCoefficients": [
+        1477.2012939453125,
+        1477.2012939453125,
+        956.7471313476562,
+        751.26416015625
+      ],
+      "intrinsicCoefficientOrder": "Four original coefficients retained; ordering not independently verified; no projection executed",
+      "quaternionNorm": 0.9999999599319109,
+      "trackingState": "unknown",
+      "bodyMountCalibrated": false,
+      "physicalNavigationAuthority": false,
+      "decodedFiles": [
+        {
+          "path": "1.depth.f32le",
+          "bytes": 196608,
+          "sha256": "a083b4d227fc0e40e205e0d165e123dde4b50d9d951f1831f90cbdddd9c6122d"
+        },
+        {
+          "path": "1.confidence.u8",
+          "bytes": 49152,
+          "sha256": "4911a7bf4c7b3b718acf1095cc2bb936a87e3a16a9eb212a32c6bec68a8fee68"
+        }
+      ]
+    },
+    {
+      "frameID": 2,
+      "originalRelativeTimestamp": 0.1333477500011213,
+      "rgbSize": [
+        1920,
+        1440
+      ],
+      "rgbMode": "RGB",
+      "depthWidth": 256,
+      "depthHeight": 192,
+      "depthFormat": "float32 little-endian metres, original decoded values unchanged",
+      "depthFinitePixels": 49152,
+      "depthZeroPixels": 0,
+      "depthNegativePixels": 0,
+      "depthPositiveRangeMetres": [
+        0.25439453125,
+        0.94482421875
+      ],
+      "originalConfidenceCounts012": [
+        13054,
+        19890,
+        16208
+      ],
+      "confidenceReplaced": false,
+      "originalIntrinsicCoefficients": [
+        1477.7152099609375,
+        1477.7152099609375,
+        956.8390502929688,
+        751.3587646484375
+      ],
+      "intrinsicCoefficientOrder": "Four original coefficients retained; ordering not independently verified; no projection executed",
+      "quaternionNorm": 0.9999999969549098,
+      "trackingState": "unknown",
+      "bodyMountCalibrated": false,
+      "physicalNavigationAuthority": false,
+      "decodedFiles": [
+        {
+          "path": "2.depth.f32le",
+          "bytes": 196608,
+          "sha256": "2a65ed81d5559e975657fa9ff1a34a6a1e66a726993a7099ac1f92bc5a74ec1e"
+        },
+        {
+          "path": "2.confidence.u8",
+          "bytes": 49152,
+          "sha256": "a072f008111e696aef3899e741c7414eebef8b3f75ce9b96271f237b2188657e"
+        }
+      ]
+    },
+    {
+      "frameID": 3,
+      "originalRelativeTimestamp": 0.20002162500168197,
+      "rgbSize": [
+        1920,
+        1440
+      ],
+      "rgbMode": "RGB",
+      "depthWidth": 256,
+      "depthHeight": 192,
+      "depthFormat": "float32 little-endian metres, original decoded values unchanged",
+      "depthFinitePixels": 49152,
+      "depthZeroPixels": 0,
+      "depthNegativePixels": 0,
+      "depthPositiveRangeMetres": [
+        0.284912109375,
+        0.92626953125
+      ],
+      "originalConfidenceCounts012": [
+        14729,
+        19610,
+        14813
+      ],
+      "confidenceReplaced": false,
+      "originalIntrinsicCoefficients": [
+        1477.2325439453125,
+        1477.2325439453125,
+        956.8594360351562,
+        751.2792358398438
+      ],
+      "intrinsicCoefficientOrder": "Four original coefficients retained; ordering not independently verified; no projection executed",
+      "quaternionNorm": 0.9999999163226546,
+      "trackingState": "unknown",
+      "bodyMountCalibrated": false,
+      "physicalNavigationAuthority": false,
+      "decodedFiles": [
+        {
+          "path": "3.depth.f32le",
+          "bytes": 196608,
+          "sha256": "ccc4a91a5779ef5db45f0ba7f3e0bcb396ccb31085c4096e492a8d506a85274c"
+        },
+        {
+          "path": "3.confidence.u8",
+          "bytes": 49152,
+          "sha256": "0ee30c2455a87db530eade8480335adb648af21f8de146aedf9631fa296a16be"
+        }
+      ]
+    },
+    {
+      "frameID": 4,
+      "originalRelativeTimestamp": 0.2666952910076361,
+      "rgbSize": [
+        1920,
+        1440
+      ],
+      "rgbMode": "RGB",
+      "depthWidth": 256,
+      "depthHeight": 192,
+      "depthFormat": "float32 little-endian metres, original decoded values unchanged",
+      "depthFinitePixels": 49152,
+      "depthZeroPixels": 0,
+      "depthNegativePixels": 0,
+      "depthPositiveRangeMetres": [
+        0.270751953125,
+        0.92431640625
+      ],
+      "originalConfidenceCounts012": [
+        15638,
+        19159,
+        14355
+      ],
+      "confidenceReplaced": false,
+      "originalIntrinsicCoefficients": [
+        1476.806884765625,
+        1476.806884765625,
+        956.7808837890625,
+        751.3456420898438
+      ],
+      "intrinsicCoefficientOrder": "Four original coefficients retained; ordering not independently verified; no projection executed",
+      "quaternionNorm": 1.000000044897611,
+      "trackingState": "unknown",
+      "bodyMountCalibrated": false,
+      "physicalNavigationAuthority": false,
+      "decodedFiles": [
+        {
+          "path": "4.depth.f32le",
+          "bytes": 196608,
+          "sha256": "4590fed39d0c6197bb0b6143aa277082726ba8ec23283115ff22f4d728d34dd3"
+        },
+        {
+          "path": "4.confidence.u8",
+          "bytes": 49152,
+          "sha256": "89121a8e9fc89d90cbc5c5fa10982d143d86eca0cd4bb6e212f71384e9aa5f74"
+        }
+      ]
+    },
+    {
+      "frameID": 5,
+      "originalRelativeTimestamp": 0.33336925000185147,
+      "rgbSize": [
+        1920,
+        1440
+      ],
+      "rgbMode": "RGB",
+      "depthWidth": 256,
+      "depthHeight": 192,
+      "depthFormat": "float32 little-endian metres, original decoded values unchanged",
+      "depthFinitePixels": 49152,
+      "depthZeroPixels": 0,
+      "depthNegativePixels": 0,
+      "depthPositiveRangeMetres": [
+        0.277587890625,
+        0.93896484375
+      ],
+      "originalConfidenceCounts012": [
+        16288,
+        17272,
+        15592
+      ],
+      "confidenceReplaced": false,
+      "originalIntrinsicCoefficients": [
+        1476.822509765625,
+        1476.822509765625,
+        956.7908325195312,
+        751.3321533203125
+      ],
+      "intrinsicCoefficientOrder": "Four original coefficients retained; ordering not independently verified; no projection executed",
+      "quaternionNorm": 0.9999999493630384,
+      "trackingState": "unknown",
+      "bodyMountCalibrated": false,
+      "physicalNavigationAuthority": false,
+      "decodedFiles": [
+        {
+          "path": "5.depth.f32le",
+          "bytes": 196608,
+          "sha256": "7def937beb12b9624c9133f8f2f1c8ed18880859f94ad6224d07053c0a548ea4"
+        },
+        {
+          "path": "5.confidence.u8",
+          "bytes": 49152,
+          "sha256": "c526cbbaaedbb1c27a89e73bf2d2cd48fb2b7ef652ec1cc2a2a219e0b725f33a"
+        }
+      ]
+    },
+    {
+      "frameID": 6,
+      "originalRelativeTimestamp": 0.4000431250024121,
+      "rgbSize": [
+        1920,
+        1440
+      ],
+      "rgbMode": "RGB",
+      "depthWidth": 256,
+      "depthHeight": 192,
+      "depthFormat": "float32 little-endian metres, original decoded values unchanged",
+      "depthFinitePixels": 49152,
+      "depthZeroPixels": 0,
+      "depthNegativePixels": 0,
+      "depthPositiveRangeMetres": [
+        0.263427734375,
+        0.95654296875
+      ],
+      "originalConfidenceCounts012": [
+        15120,
+        18668,
+        15364
+      ],
+      "confidenceReplaced": false,
+      "originalIntrinsicCoefficients": [
+        1476.8380126953125,
+        1476.8380126953125,
+        956.846435546875,
+        751.3153686523438
+      ],
+      "intrinsicCoefficientOrder": "Four original coefficients retained; ordering not independently verified; no projection executed",
+      "quaternionNorm": 0.999999988743181,
+      "trackingState": "unknown",
+      "bodyMountCalibrated": false,
+      "physicalNavigationAuthority": false,
+      "decodedFiles": [
+        {
+          "path": "6.depth.f32le",
+          "bytes": 196608,
+          "sha256": "54751e76d62836b106bc3b7dfe4cbcace4394647ca9dfb578253ff7b76c2b54a"
+        },
+        {
+          "path": "6.confidence.u8",
+          "bytes": 49152,
+          "sha256": "09236adacb9361d520524b7a940f8fbb7fc17a30d04c7609acdae62bfc00fa14"
+        }
+      ]
+    },
+    {
+      "frameID": 7,
+      "originalRelativeTimestamp": 0.46671691599476617,
+      "rgbSize": [
+        1920,
+        1440
+      ],
+      "rgbMode": "RGB",
+      "depthWidth": 256,
+      "depthHeight": 192,
+      "depthFormat": "float32 little-endian metres, original decoded values unchanged",
+      "depthFinitePixels": 49152,
+      "depthZeroPixels": 0,
+      "depthNegativePixels": 0,
+      "depthPositiveRangeMetres": [
+        0.269775390625,
+        0.939453125
+      ],
+      "originalConfidenceCounts012": [
+        13585,
+        19245,
+        16322
+      ],
+      "confidenceReplaced": false,
+      "originalIntrinsicCoefficients": [
+        1476.848388671875,
+        1476.848388671875,
+        956.8026733398438,
+        751.320068359375
+      ],
+      "intrinsicCoefficientOrder": "Four original coefficients retained; ordering not independently verified; no projection executed",
+      "quaternionNorm": 0.9999999994945352,
+      "trackingState": "unknown",
+      "bodyMountCalibrated": false,
+      "physicalNavigationAuthority": false,
+      "decodedFiles": [
+        {
+          "path": "7.depth.f32le",
+          "bytes": 196608,
+          "sha256": "a20f87412b8c41db4d083df4bf775afd849fa01ed05114ed1f2469305c8456bb"
+        },
+        {
+          "path": "7.confidence.u8",
+          "bytes": 49152,
+          "sha256": "8f9b3adfaa5ba24cec21aad6761dab542c57792a52b88aa0e34f27fe6123a83f"
+        }
+      ]
+    }
+  ]
+}

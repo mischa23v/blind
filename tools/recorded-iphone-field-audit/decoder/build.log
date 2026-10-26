@@ -1,0 +1,377 @@
+In file included from $WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_internal.h:30,
+                 from $WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_decode.c:25:
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_fse.h: In function ‘fse_check_freq’:
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_fse.h:564:21: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  564 |   for (int i = 0; i < table_size; i++) {
+      |                     ^
+In file included from $WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_internal.h:30,
+                 from $WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_decode_base.c:22:
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_fse.h: In function ‘fse_check_freq’:
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_fse.h:564:21: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  564 |   for (int i = 0; i < table_size; i++) {
+      |                     ^
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_decode_base.c: In function ‘lzfse_decode_lmd’:
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_decode_base.c:240:30: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int32_t’ {aka ‘int’} [-Wsign-compare]
+  240 |         for (size_t i = 0; i < M; i++)
+      |                              ^
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_decode_base.c:256:30: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int32_t’ {aka ‘int’} [-Wsign-compare]
+  256 |         for (size_t i = 0; i < L; i++)
+      |                              ^
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_decode_base.c:268:30: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘ptrdiff_t’ {aka ‘long int’} [-Wsign-compare]
+  268 |         for (size_t i = 0; i < remaining_bytes; i++)
+      |                              ^
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_decode_base.c:280:30: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int32_t’ {aka ‘int’} [-Wsign-compare]
+  280 |         for (size_t i = 0; i < M; i++)
+      |                              ^
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_decode_base.c:294:30: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘ptrdiff_t’ {aka ‘long int’} [-Wsign-compare]
+  294 |         for (size_t i = 0; i < remaining_bytes; i++)
+      |                              ^
+In file included from $WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_internal.h:30,
+                 from $WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_fse.c:22:
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_fse.h: In function ‘fse_check_freq’:
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_fse.h:564:21: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  564 |   for (int i = 0; i < table_size; i++) {
+      |                     ^
+In file included from $WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_internal.h:30,
+                 from $WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.h:29,
+                 from $WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:24:
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_fse.h: In function ‘fse_check_freq’:
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzfse_fse.h:564:21: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  564 |   for (int i = 0; i < table_size; i++) {
+      |                     ^
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c: In function ‘lzvn_decode’:
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:51:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   51 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&eos,   &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:51:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:51:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:51:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:51:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:51:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:51:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:51:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:52:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   52 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&nop,   &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:52:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:52:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:52:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:52:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:52:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:52:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:52:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:53:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   53 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&nop,   &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:53:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:53:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:53:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:53:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:53:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:53:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:53:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:54:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   54 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&udef,  &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:54:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:54:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:54:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:54:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:54:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:54:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:54:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:55:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   55 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&udef,  &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:55:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:55:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:55:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:55:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:55:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:55:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:55:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:56:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   56 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&udef,  &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:56:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:56:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:56:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:56:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:56:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:56:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:56:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:57:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   57 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&udef,  &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:57:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:57:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:57:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:57:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:57:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:57:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:57:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:58:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   58 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&udef,  &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:58:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:58:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:58:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:58:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:58:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:58:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:58:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:59:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   59 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&pre_d, &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:59:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:59:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:59:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:59:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:59:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:59:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:59:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:60:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   60 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&pre_d, &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:60:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:60:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:60:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:60:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:60:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:60:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:60:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:61:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   61 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&pre_d, &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:61:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:61:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:61:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:61:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:61:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:61:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:61:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:62:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   62 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&pre_d, &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:62:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:62:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:62:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:62:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:62:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:62:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:62:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:63:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   63 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&pre_d, &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:63:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:63:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:63:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:63:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:63:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:63:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:63:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:64:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   64 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&pre_d, &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:64:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:64:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:64:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:64:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:64:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:64:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:64:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:65:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   65 |       &&udef,  &&udef,  &&udef,  &&udef,  &&udef,  &&udef,  &&udef,  &&udef,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:65:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:65:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:65:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:65:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:65:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:65:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:65:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:66:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   66 |       &&udef,  &&udef,  &&udef,  &&udef,  &&udef,  &&udef,  &&udef,  &&udef,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:66:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:66:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:66:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:66:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:66:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:66:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:66:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:67:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   67 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&pre_d, &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:67:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:67:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:67:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:67:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:67:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:67:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:67:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:68:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   68 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&pre_d, &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:68:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:68:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:68:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:68:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:68:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:68:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:68:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:69:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   69 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&pre_d, &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:69:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:69:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:69:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:69:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:69:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:69:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:69:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:70:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   70 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&pre_d, &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:70:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:70:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:70:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:70:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:70:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:70:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:70:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:71:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   71 |       &&med_d, &&med_d, &&med_d, &&med_d, &&med_d, &&med_d, &&med_d, &&med_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:71:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:71:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:71:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:71:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:71:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:71:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:71:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:72:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   72 |       &&med_d, &&med_d, &&med_d, &&med_d, &&med_d, &&med_d, &&med_d, &&med_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:72:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:72:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:72:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:72:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:72:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:72:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:72:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:73:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   73 |       &&med_d, &&med_d, &&med_d, &&med_d, &&med_d, &&med_d, &&med_d, &&med_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:73:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:73:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:73:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:73:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:73:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:73:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:73:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:74:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   74 |       &&med_d, &&med_d, &&med_d, &&med_d, &&med_d, &&med_d, &&med_d, &&med_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:74:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:74:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:74:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:74:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:74:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:74:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:74:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:75:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   75 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&pre_d, &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:75:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:75:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:75:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:75:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:75:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:75:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:75:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:76:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   76 |       &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&sml_d, &&pre_d, &&lrg_d,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:76:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:76:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:76:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:76:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:76:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:76:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:76:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:77:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   77 |       &&udef,  &&udef,  &&udef,  &&udef,  &&udef,  &&udef,  &&udef,  &&udef,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:77:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:77:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:77:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:77:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:77:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:77:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:77:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:78:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   78 |       &&udef,  &&udef,  &&udef,  &&udef,  &&udef,  &&udef,  &&udef,  &&udef,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:78:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:78:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:78:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:78:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:78:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:78:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:78:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:79:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   79 |       &&lrg_l, &&sml_l, &&sml_l, &&sml_l, &&sml_l, &&sml_l, &&sml_l, &&sml_l,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:79:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:79:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:79:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:79:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:79:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:79:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:79:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:80:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   80 |       &&sml_l, &&sml_l, &&sml_l, &&sml_l, &&sml_l, &&sml_l, &&sml_l, &&sml_l,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:80:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:80:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:80:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:80:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:80:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:80:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:80:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:81:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   81 |       &&lrg_m, &&sml_m, &&sml_m, &&sml_m, &&sml_m, &&sml_m, &&sml_m, &&sml_m,
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:81:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:81:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:81:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:81:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:81:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:81:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:81:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:82:7: warning: taking the address of a label is non-standard [-Wpedantic]
+   82 |       &&sml_m, &&sml_m, &&sml_m, &&sml_m, &&sml_m, &&sml_m, &&sml_m, &&sml_m};
+      |       ^~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:82:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:82:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:82:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:82:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:82:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:82:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:82:7: warning: taking the address of a label is non-standard [-Wpedantic]
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:113:3: warning: ISO C forbids ‘goto *expr;’ [-Wpedantic]
+  113 |   goto *opc_tbl[opc];
+      |   ^~~~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:431:9: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘long int’ [-Wsign-compare]
+  431 |   if (D > dst_ptr - state->dst_begin || D == 0)
+      |         ^
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:479:3: warning: ISO C forbids ‘goto *expr;’ [-Wpedantic]
+  479 |   goto *opc_tbl[opc];
+      |   ^~~~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:625:3: warning: ISO C forbids ‘goto *expr;’ [-Wpedantic]
+  625 |   goto *opc_tbl[opc];
+      |   ^~~~
+$WORKSPACE/blind-raw-iphone-feasibility-01/decoder/upstream/src/lzvn_decode_base.c:644:3: warning: ISO C forbids ‘goto *expr;’ [-Wpedantic]
+  644 |   goto *opc_tbl[opc];
+      |   ^~~~

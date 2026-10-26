@@ -1,0 +1,22 @@
+{
+  "scope": "Final admission-hardened codec/field audit of same eight original frame IDs0..7, not16 independent frames; no perception/navigation run",
+  "decoderContractTests": {
+    "run": 8,
+    "passed": 8,
+    "failed": 0
+  },
+  "sameEightDecodedBytesMatchPriorAudit": true,
+  "finalReadOnlyReviewPending": false,
+  "retainedPreviousArtifacts": "annotation-v1",
+  "aggregateSelectedCurrentAndRetainedDecodedBytes": 5257412,
+  "files": {
+    "acquire_exact_inputs.py": "5e0ba36e83c79c6d7d2690080d06c314afbb324a446899119039d937db423980",
+    "select_recorded_frames.py": "4c140735dc8934c04fcb79937a3b69bcf7c5ed5417151bf14bc1417f00f46590",
+    "audit_decoded_fields.py": "005dddedf32c5707fba3c3a1e922fdfed22e015e3b47be88c9bccd808f76871a",
+    "test_decoder_contract.py": "dd8d12ceeddb07e894130747978500eb1bfeac67a5343611ac526ec881368439",
+    "DATA_AUDIT_PROTOCOL.md": "52dd344f303402d6e15aa1caf99c7a13a5d66af9dc6c916076ecb8281e93553e",
+    "FIELD_DECODE_AUDIT.json": "d788e4cdcf5de5331680876bf5dfc91f38e8497c3f8aa92e9204a34200bf10fa",
+    "decoder/liblzfse_decode.so": "75e52786bd0cfc5ede9e1f08f87dc752778fffe2f6c3957e318c534e5f457d61"
+  },
+  "independentReview": "No blocking defect for this exact bounded non-projecting field/decode audit; no perception or navigation claim."
+}
