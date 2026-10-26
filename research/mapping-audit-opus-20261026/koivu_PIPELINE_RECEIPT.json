@@ -1,0 +1,190 @@
+{
+ "thresholds": {
+  "voxel": 0.05,
+  "near_m": 2.0,
+  "floor_cell": 0.2,
+  "floor_search": [
+   -2.6,
+   -0.4
+  ],
+  "band_top": 1.75,
+  "stat_min_n": 30,
+  "stat_min_frames": 3,
+  "clear_mean_plus3se": 0.025,
+  "clear_tail": 0.07,
+  "obj_mean_minus3se": 0.01,
+  "obj_tail": 0.15,
+  "sigma_edges": [
+   0,
+   1.0,
+   1.5,
+   2.0,
+   2.5,
+   3.0,
+   3.5,
+   4.5,
+   8.0
+  ],
+  "body": [
+   0.45,
+   0.3
+  ],
+  "margin": 0.15,
+  "disc": 0.375,
+  "ref_low_band": [
+   0.015,
+   0.3
+  ],
+  "ref_body_band": [
+   0.3,
+   1.8
+  ]
+ },
+ "log": [
+  {
+   "stage": "samples",
+   "frames": 294,
+   "samples": 13415808,
+   "discontinuityFraction": 0.02685965690624076,
+   "t": 11.3
+  },
+  {
+   "stage": "floor",
+   "cells": 1384,
+   "tilt_deg": 0.050076037401709524,
+   "floor_z": -1.2710427551959032,
+   "resid_std": 0.016428588967267076,
+   "t": 12.5
+  },
+  {
+   "stage": "fusion",
+   "occAll": 280821,
+   "freeAll": 1125101,
+   "occNear": 72053,
+   "freeNear": 784780,
+   "t": 91.1
+  },
+  {
+   "stage": "D1",
+   "support": 22330,
+   "deepBelow": 231,
+   "nearDip": 450,
+   "low1": 6840,
+   "lowUnresolvedFlag": 7063,
+   "highObstacle": 16443,
+   "highUnknown": 39004,
+   "walk": 10695,
+   "t": 91.8
+  },
+  {
+   "stage": "frameOffsets_cm",
+   "p5_50_95": [
+    -0.94,
+    0.0,
+    1.1
+   ],
+   "maxAbs": 3.4875422716140747,
+   "t": 93.9
+  },
+  {
+   "stage": "stat",
+   "sigma_cm": [
+    0.29,
+    0.73,
+    0.84,
+    0.93,
+    0.7,
+    0.68,
+    1.07,
+    3.04
+   ],
+   "t": 99.2
+  },
+  {
+   "stage": "walk",
+   "d1Permissive": 10695,
+   "d1Strict": 3632,
+   "statClearOnly": 8463,
+   "statObjectBlocked": 9970,
+   "statStates_walk": {
+    "clear": 8463,
+    "object": 725,
+    "unresolved": 1507
+   },
+   "statStates_flagged": {
+    "clear": 5317,
+    "object": 513,
+    "unresolved": 1233
+   },
+   "t": 99.2
+  },
+  {
+   "stage": "ref",
+   "vertices": 8940320,
+   "scale": 1.020790844238779,
+   "ref_floor_vs_plane_cm_p5_50_95": [
+    -0.78,
+    -0.03,
+    1.97
+   ],
+   "t": 100.7
+  },
+  {
+   "stage": "score",
+   "d1Permissive": {
+    "n": 10657,
+    "noRefCov": 38,
+    "refLow25": 94,
+    "refLow40": 83,
+    "refBody": 175
+   },
+   "d1Strict": {
+    "n": 3595,
+    "noRefCov": 37,
+    "refLow25": 25,
+    "refLow40": 21,
+    "refBody": 63
+   },
+   "statClearOnly": {
+    "n": 8426,
+    "noRefCov": 37,
+    "refLow25": 54,
+    "refLow40": 51,
+    "refBody": 98
+   },
+   "statObjectBlocked": {
+    "n": 9932,
+    "noRefCov": 38,
+    "refLow25": 67,
+    "refLow40": 59,
+    "refBody": 129
+   },
+   "statObject": {
+    "n": 1035,
+    "noRefCov": 0,
+    "refLow25": 44,
+    "refLow40": 41,
+    "refBody": 85
+   },
+   "d1HighObstacleSupported": {
+    "n": 10070,
+    "noRefCov": 580,
+    "refLow25": 2849,
+    "refLow40": 2636,
+    "refBody": 7936
+   },
+   "isolatedSpecks": {
+    "n": 129,
+    "noRefCov": 0,
+    "refLow25": 0,
+    "refLow40": 0,
+    "refBody": 0
+   },
+   "falseHighObstacleColumns": 1722,
+   "refWalk": 10805,
+   "refWalkPhoneBlocked": 1791,
+   "phoneWalkRefNot": 1643,
+   "t": 100.7
+  }
+ ]
+}
