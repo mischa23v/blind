@@ -1,3 +1,92 @@
+# Navigation first: purpose, architecture and acceptance
+
+**Priority 1 — current project order, 2026-10-26.** The foundation is useful indoor navigation: help a person get from A to B, including the kitchen, another room, an exit and a return to the starting place. Build and test the complete map–localization–body–collision–route–control loop before expanding reading or other secondary features. Signs and labels can help identify or orient within a place; reading them is not a substitute for getting there.
+
+This section is the current navigation contract. The records below remain historical evidence, not a competing priority order or proof that all navigation requirements are implemented. [First actionable checklist](TASKS.md#navigation-first-delivery-checklist) · [Immediate next steps](TODO.md#next-navigation-foundation-before-secondary-features).
+
+## 1. Success means reaching the goal, not merely avoiding movement
+
+- A valid trial begins at a declared start and ends at a separately evaluated goal region, using a specified body/equipment profile and a preregistered time limit. An exit or room transition must be physically reached; recognizing its name, seeing a doorway, producing a path or announcing arrival is not arrival.
+- Require **zero collisions and actual goal completion within the bounded time**. Record path quality, time, interventions and failure causes as well. A run that never moves, only says stop, deadlocks, times out or stops short is not successful, even if its collision count is zero. A useful recovery must lead back to progress, not indefinite abstention.
+- A collision attempt is a failure and costs evaluator health even when the physics engine blocks penetration. Do not hide unsafe commands by reporting only the actor's final nonpenetrating position. Define contact tolerances, goal tolerances, timeout and intervention rules before inspecting outcomes; do not widen them to turn a shortfall into a pass.
+- Progress from one-room movement through furnished rooms, doorways, multi-room A-to-B routes and return. Retain the destination across intermediate rooms. A complete journey includes understandable, actionable guidance, actual motion, correction when needed and independently checked arrival—not an accumulation of passing components.
+
+## 2. Historical maps never authorize current movement safety
+
+**Hard requirement:** every saved scan, stored floor and navmesh is historical. It may help select a destination or propose a route, but it must never supply current clearance or current floor support. Even a familiar, previously clear room can contain moved furniture, a newly closed door, a person, a toy or another small floor object. A known route is not permission to move.
+
+Current movement release must come from fresh live evidence covering the person's reachable movement and swept body/equipment volume, including the ground and footprint, near the feet, sideways motion and head clearance. Account for command delay, delayed human reactions and stopping motion in that reachable volume. Do not assume a cane has already swept it or that a missed cane sweep removes the app's uncertainty. There is no cane-dependent safety mode: the app must independently sense/check the floor-to-head reachable body volume and must never reduce warnings or coverage, or authorize clearance, because a cane, another person or a dog is present. Equipment protrusions remain collision geometry, not an external source of clearance authority. If required fresh coverage is absent, occluded, stale or insufficiently resolved, code must withhold the unsupported movement; it may offer a supported stationary orientation/scan or replan, but cannot call unknown space safe.
+
+Continuously reconcile the **available and authorized** live cameras and sensors with the historical reference. Changes must invalidate affected clearance, route segments and map/pose revisions before old queued movement can be delivered. Reopening a door, removing furniture or clearing a blocked path requires fresh positive observed-clear coverage of the relevant volume and ground; a disappeared detection, stale feed or new occlusion is not evidence of removal. This is a requirement to use live evidence, not a promise that hardware works continuously in every mode: sensor loss, backgrounding or privacy withdrawal must stop unsupported guidance rather than fall back to cached clearance.
+
+Explicitly test historical-map contradictions: newly placed toys and thin/low objects near feet; slopes and drops; moved furniture; closed or reopened doors; people crossing or lingering; sideways steps outside the forward camera view; missed cane sweeps; delayed reactions; insufficient ground/head/body coverage; occlusion, stale frames and sensor/privacy interruptions. Compare against the historical route without allowing it to override live uncertainty. A provided-map simulator arrival tests routing/controller behavior only; it does **not** satisfy this fresh-safety requirement.
+
+Include a nearby safe-destination journey when the usual mobility aid is unavailable or broken (for example, a bathroom or rest point). The app uses the same independent sensing and collision requirements, not a relaxed emergency or cane-dependent mode. Test the app without credit for a cane or escort preventing its missed collisions. Insufficient current coverage requires withholding unsupported directions and supporting an explicit request for assistance; that is not goal completion or proof of replacement protection.
+
+## 3. The world and navigation authority are code-owned
+
+Maintain an explicit hierarchy of **place → building → floor → room/zone → object/container**, including portals and connections between spaces. Containers and their contents need separate identity, geometry, observed state and ownership; a label does not supply dimensions or reveal hidden contents. Stable identifiers and revisions must let the code distinguish an object update from a different object or a changed place.
+
+Every geometric observation and derived state must retain its coordinate frame, transform chain, units, capture timestamp, source/provenance, uncertainty and validity interval. Keep camera, body, room, map and building frames distinct. A corrected pose or map revision must invalidate or reproject dependent geometry and queued commands under the correct owner; matching numbers alone do not establish frame continuity.
+
+Separate static structure, movable objects, currently observed surfaces, dynamic actors, stale history and unknown/unobserved space. Incremental visibility is a **fog-of-war** problem: only current and previously observed evidence may enter the appropriate layers. A wall hidden behind furniture is not an observed opening; absence of a depth return is not free floor; stale observed clearance is not current clearance. Never let an LLM fill unseen space, invent containers, repair a missing wall or turn a room name into a map.
+
+Reuse tested existing upstream mapping, localization, occupancy and planning code where appropriate. Integrate its real APIs and outputs, with provenance and failure states; do not replace it with guessed SLAM, fixed covariance, mocked local grids or an LLM-authored trajectory. A build of a library or bridge is a dependency checkpoint, not evidence that the app has localized or completed a journey.
+
+## 4. Body, phone and collision geometry must agree
+
+The collision model must account for the full body, including head, torso, limbs and relevant stance or posture, plus carried objects, backpack, clothing, cane or other equipment. Keep measured, reported and estimated dimensions distinguishable, with conservative uncertainty and incomplete-coverage states. Age, weight or a generic height estimate is not proof of an individual's body envelope; unsupported large dimensions must not silently become a smaller default body.
+
+Model the phone's offset and orientation relative to the body, including changes in mount, hand position, tilt and slip. Optical camera direction is not walking direction or body heading. Track stance/heading separately, and preserve uncertainty when the relation is not established. Low phone placement and short users must be tested explicitly; do not assume every camera is at one adult chest height or inject a convenient floor to satisfy calibration.
+
+Collision checks must cover **swept volumes and intermediate motion**, not just the start/end positions or a point on a navmesh. Check head clearance, side clearance, protrusions, limbs/equipment and changing obstacles along each segment, including turns and stopping motion. Floor support, stairs, drop-offs and overhead clearance are separate evidence requirements. A collision-free point route is not a collision-free route for the person. Historical collision geometry can test a baseline, but the live safety decision must use the fresh coverage contract above.
+
+Keep responsibilities explicit: perception detects and tracks observations; mapping/localization establishes frames and uncertainty; the planner proposes feasible routes for the current body/support model; the controller turns them into bounded actions; the independent urgent detector can interrupt any action. No layer may turn another layer's missing evidence into permission to move.
+
+## 5. Navigation is a closed control loop
+
+Retain the user's goal and route ownership while updating localization, obstacles and support. Replan when the world or goal changes. Exercise queued commands, cancellation, delayed delivery, timing jitter, overshoot, undershoot, wrong turns, refusal or missed instructions, dynamic obstacles, tracking loss, mount changes and restart. Retire obsolete actions before newer ownership can issue conflicting guidance. Restart must not revive an old pose, map alignment, body-to-phone relation or return path without the required fresh evidence.
+
+Action length and speed must be bounded by stopping distance, latency, current uncertainty, visible/support horizon and the remaining route to the goal. A blind fixed look-ahead distance must not ask the planner to prove terrain beyond the destination or cause a permanent stop just short of it. Preserve urgent stopping capability while testing how the controller actually resumes, corrects and arrives.
+
+Distinguish supplied recorded sensor odometry, an evaluator's ideal pose, and localization estimated by the app. The first two are valid labelled experimental inputs, not proof of the third. Return must use owned observed/recorded path evidence and current checks, not teleportation, a straight line to an old origin or future trajectory samples.
+
+## 6. Test the provided-map and progressive-sensing problems separately
+
+1. **Provided-map baseline:** give the code an explicit validated map and declared pose assumptions to isolate route planning, body collision and controller behavior. This must work before a failed journey is blamed on SLAM. Label any supplied map or ideal-pose input; it is not incremental map discovery, own-localization evidence or current movement-safety acceptance. A historical map cannot replace the fresh coverage required for release of real movement.
+2. **Progressive sensing/mapping:** start with an empty or appropriately unknown map and feed only chronological current sensor observations into the actual production mapper/localizer/planner/runtime. Accumulate visible evidence causally, manage occlusion and stale layers, and establish pose/support without a hidden complete-map shortcut. Preserve the same controller and collision expectations as the baseline.
+3. **Recorded real sensors:** use actual paired images/depth/poses with verified associations and source conventions. Recorded odometry remains a supplied input. A short or incompatible sequence that cannot satisfy calibration or finish a route must fail honestly, not become a complete journey by repeating frames or moving its camera to planner targets.
+4. **Closed-loop 3D execution:** a CPU renderer and independent evaluator may own the hidden complete mesh. The navigation code receives only its declared input mode and current simulated sensors, never the hidden collision mesh or future motion. The actor follows commands through actual physics/kinematics; do not snap it onto a navmesh, teleport it to waypoints or force it through collisions. Rendered sensor/actor trials remain simulation evidence, even when the room mesh came from a real scan.
+
+Use valid authored rooms/houses for controlled positive and adversarial cases, alongside real furnished Apple-device scans. Acquire actual iPhone captures where available, but verify the capture device, source, license, metric units, coordinate conventions, completeness, usable floor/walls, furniture coverage and missing geometry for each source. **Do not relabel ARKitScenes as iPhone captures.** A visually plausible mesh may still be unusable as a collision world; reject or explicitly qualify it rather than quietly patching ground truth to help the navigator.
+
+An actual-iPhone candidate is MuSHRoom (iPhone 12 Pro Max, open CC BY 4.0); it is not yet acquired or tested here. Its phone-generated mesh and recorded poses are not interchangeable without alignment checks. See [verified iPhone-room provenance and bounded acquisition options](research/IPHONE_ROOM_DATASET_PROVENANCE.md). ARKitScenes remains a separately labelled iPad-based proxy.
+
+Preregister holdout layouts, topology, furnishing changes and noise/delay seeds. Keep evaluator ground truth separate from planner inputs. Report collision attempts/contacts and severity, arrival, elapsed time, distance/path efficiency, interventions, wrong turns, recovery, false stops and deadlock—not only aggregate test counts. Preserve failed runs and exact source/input hashes so a repair can be evaluated against the same problem without tuning to a single room.
+
+## 7. Conversation helps the person; it does not own the map
+
+LLMs may support conversation, comfort, explanations and high-level request interpretation. Structured code owns world hierarchy, detections and containers, geometry, transforms, localization, collision/clearance decisions, navigation state, route progress and arrival. The replay must exercise those same real code paths; model-generated scenes or directions cannot substitute for them.
+
+**Open boundary gap:** finish auditing and enforcing every raw-prose output path so model text cannot bypass structured navigation authority or become unsupported movement, clearance or arrival guidance. The architecture requirement is not a claim that this boundary is already complete. OCR signs and labels may support code-owned identity/orientation with provenance and uncertainty; they do not prove traversability or replace the route/controller.
+
+Eventually validate supervised real-device journeys with blind participants: can they understand, follow, correct and use the instructions to achieve their own goals with acceptable effort and trust, and would they choose to keep using the app (continued adoption)? Device, body and participant acceptance are separate from simulation, library builds and component tests. Safety abstention is a necessary behavior in some situations, not the navigation goal itself.
+
+## 8. Current evidence and the next acceptance gate
+
+- Published source through [`c8aa872748aded3bd6672c7d2e299eec5361cb94`](https://github.com/mischa23v/blind/commit/c8aa872748aded3bd6672c7d2e299eec5361cb94) includes the code-owned observed-scene/body/return components and RTAB local-grid bridge work. The [bridge receipt](research/evaluations/rtab-local-grid/README.md) is not an actual-device engine build or complete navigation result; those gates remain pending.
+- The provided-map Recast library has an actual build and 12 passing library tests. This is a useful upstream dependency result, not app integration, own localization or journey acceptance.
+- The initial raw real-mesh starter was not a valid usable navigation world. Preserve that source/fixture failure; do not claim a real-room route passed.
+- The authored 300-tick pilot moved **2.725 m with zero collisions but stopped 0.787 m short**. The Recast comparator moved **3 m with zero collisions but stopped 0.5 m short** under the fixed-horizon behavior. **Both are failed goal-completion trials, not navigation successes.** Repair and test the goal-aware route horizon/controller boundary without loosening collision, calibration or arrival rules to pass the fixtures.
+- A separate favorable, fixed-mount known-map experiment reached the declared goal in 159 rendered ticks: 3.20 m travel, 0.30 m error within its unchanged 0.35 m tolerance, zero collision/unknown-support attempts. This was a new broad-room/no-noise layout, not a repair of the near-wall failure, progressive discovery, current full-body clearance, or physical acceptance. Reproduce it under the reviewed mount-validity adapter before extending claims.
+- Next: reproduce and broaden the limited closed-loop provided-map A-to-B baseline with independent swept collision and arrival evaluation; retain the failing controls, then extend the same code loop to progressive sensing/localization, furnished real scans, return, disruptions and restart. Reading and other secondary expansion must not displace this work. The complete-journey and physical-participant requirements remain open; component counts cannot close them.
+
+---
+
+## Earlier tracker records — preserved evidence
+
+The entries below retain their original chronology and claims. Read their checkpoint/status wording in that historical context; the navigation-first section above sets the current order and acceptance contract.
+
 ## 2026-10-25 — Captured-view text receipt, portable-tested checkpoint27 candidate
 
 Published executable baseline is checkpoint26 `f9f70ea33faff728bc418aeed3720498614d95f9`; final diagnostic-only parent is `79f1b9d547030474142322856e8513b7fdbbc011`. This staged increment is not yet published at the time of this receipt.
