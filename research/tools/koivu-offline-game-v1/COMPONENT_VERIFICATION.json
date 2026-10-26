@@ -1,0 +1,86 @@
+{
+  "status": "32 authored component checks pass; no Koivu game execution",
+  "tests": 32,
+  "failed": 0,
+  "wallSecondsReportedByUnittest": 0.427,
+  "log": "component-fixtures-04.log",
+  "sourceCut": {
+    "reference_container.py": "11f69b8d0ccb9d066f55ee2e0e40f1a68259f218509bb773471726846413d40e",
+    "game_model.py": "3e38e76fd2cd05e19a41dd906748ccbb9fee6bc6e4086c117944965e6ddfc3ee",
+    "game_controller.py": "9e9903d8f946da676cff85372b3edf57a725f058972ff31cba5b22fc4d4d714f",
+    "select_routes.py": "c761ad02e52cbfdcdf0ae46c82b0adcc4793f724d4ab2fc34e870a422d833d70",
+    "run_game.py": "628a16cac9c01e6766fea8a408960a0fb701a0b556a972c852296cdcd9f49d6d",
+    "run_bounded.py": "1f695e6c927fba3cb20ee157e2f04cc74a71c1051937fc061ad2e956b6db7735",
+    "SurfaceGameWorker.swift": "acc43dd1aa5f192c9b47f35c722933f283b55a2706884e634a1548330f67ce27",
+    "test_reference_container.py": "fac11aeb42d5e726afeaae6510f9662d5367b12fbaab53951f8519fe322a056d",
+    "test_surface_worker.py": "d4fdd6ea9afa2bc52239d6ca23a3e2c716a9edcabe276166642398d5e85a5ac0",
+    "test_game_controller.py": "1e671ad2b1634ae2b0b4bca3b24a4bd51bc1aa6ebbdf00e5739b00dd83e3b864"
+  },
+  "reusedSources": {
+    "reference_geometry.py": "266026051a781f122a59187f599688e8c5eb38807984b7e607401e7b4356386d",
+    "impairments.py": "44e5383e19b42a5b524ae5305125e4fb8e992127f785a6e0010ca12334f63fd2"
+  },
+  "compiledWorkerSHA256": "05bdc253736f6a957b5247700636b128f4feb041d239937ee7666bd744d2b024",
+  "executedBuildScriptSHA256": "a9e79b8b8bd67065445e892cf90bac5f71c2f53a285b644a38057f5a02ab163b",
+  "compiledSourceDependencyPins": [
+    {
+      "sha256": "d0dc93843ce65d43f0199edbd3d9a08e4b83f783839c17522b2b60484b6d13fb",
+      "sourceIdentity": "exact compiled Core source",
+      "logicalSourceOrDependency": "BlindCore/Sources/BlindCore/NavigationSurface.swift"
+    },
+    {
+      "sha256": "53a0cf8756ed4ce9c445f889f31eac88b8333f6b8d8ed471b5c08d923817b3a8",
+      "sourceIdentity": "exact compiled Core source",
+      "logicalSourceOrDependency": "BlindCore/Sources/BlindCore/StoredTerrainAssessment.swift"
+    },
+    {
+      "sha256": "f7a27aff67ed97dda0550463e70ee9df9c85381024ce02f2f091a2b35f353eb5",
+      "sourceIdentity": "exact compiled Core source",
+      "logicalSourceOrDependency": "BlindCore/Sources/BlindCore/Geometry.swift"
+    },
+    {
+      "sha256": "cdd10af53179e7f56b3ae575145f56222edae2382177ade0e68d89e72c90a76f",
+      "sourceIdentity": "exact compiled Core source",
+      "logicalSourceOrDependency": "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift"
+    },
+    {
+      "sha256": "f358f20627bb535cef83783061af827cf5784148409e98edc9e3aeec3f836d52",
+      "logicalSourceOrDependency": "BlindCore.o"
+    },
+    {
+      "sha256": "259d738498f385fb8753755dd2e54554d7f1d13df800a77d872aae5504586531",
+      "logicalSourceOrDependency": "libRecordedNavigationSupport.so"
+    },
+    {
+      "sha256": "acc43dd1aa5f192c9b47f35c722933f283b55a2706884e634a1548330f67ce27",
+      "logicalSourceOrDependency": "SurfaceGameWorker.swift"
+    }
+  ],
+  "nativeDetourLibrarySHA256": "560567438e5c88aaa8e20d3ac92ce4db6fe8803018f537b82819b47ed7cc05b8",
+  "nativeDetourPythonAdapterSHA256": "8ab51b8fe7ac2585cfbe797615dd9ac78956e6cb14277deb092aca19df38787d",
+  "checkHistory": [
+    {
+      "stage": "initial Swift runner compile",
+      "outcome": "failed; output variable redeclared bytes; original diagnostic retained"
+    },
+    {
+      "stage": "corrected Swift runner compile",
+      "outcome": "passed; output variable renamed only"
+    },
+    {
+      "stage": "component-fixtures-03",
+      "outcome": "32 assertions passed; unclosed stdout ResourceWarning observed; original local log preserved",
+      "originalLogSHA256": "33ed76d619a6e9c0c81a4f07af3f22cd368c8a57ea15a3402e3b88089a36d4f4"
+    },
+    {
+      "stage": "component-fixtures-04",
+      "outcome": "stdout cleanup fixed; all32 pass with ResourceWarning treated as error"
+    }
+  ],
+  "initialVTKProbe": "IntersectWithCell alone missed a wholly enclosed triangle; explicit VTK containment added, tested and retained.",
+  "KoivuGameEpisodesExecuted": 0,
+  "requestedKoivuGameSchedules": 100,
+  "physicalAuthority": false,
+  "portableBuildVerified": false,
+  "liveAppChanged": false
+}

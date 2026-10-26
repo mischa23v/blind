@@ -1,0 +1,11 @@
+#!/bin/bash
+# Path-normalized handoff only; not separately executed as a portable build.
+set -euo pipefail
+: "${BLIND_CORE_INCLUDE_DIR:?Point to the verified compiled BlindCore module directory}"
+: "${BLIND_RECORDED_SUPPORT_DIR:?Point to verified RecordedNavigationSupport module/library directory}"
+: "${SWIFT_MODULE_CACHE_DIR:?Select a local scratch module-cache directory}"
+mkdir -p build
+swiftc -parse-as-library -module-cache-path "$SWIFT_MODULE_CACHE_DIR" \
+  -I "$BLIND_CORE_INCLUDE_DIR" -I "$BLIND_RECORDED_SUPPORT_DIR" \
+  -L "$BLIND_RECORDED_SUPPORT_DIR" -lRecordedNavigationSupport \
+  SurfaceGameWorker.swift -o build/surface-worker

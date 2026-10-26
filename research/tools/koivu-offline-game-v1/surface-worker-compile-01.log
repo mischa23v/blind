@@ -1,0 +1,14 @@
+blind-koivu-game-07/SurfaceGameWorker.swift:55:17: error: invalid redeclaration of 'bytes'
+26 |         while let line = readLine() {
+27 |             guard line.utf8.count <= 32 * 1024 * 1024,
+28 |                   let bytes = line.data(using: .utf8),
+   |                       `- note: 'bytes' previously declared here
+29 |                   let object = try JSONSerialization.jsonObject(with: bytes) as? [String: Any],
+30 |                   Set(object.keys).isSubset(of: allowed) else { throw Failure.extraFields }
+   :
+53 |             output["physicalOwnerHasLocalizationEvidence"] = physicalOwner?.hasLocalizationEvidence ?? false
+54 |             output["physicalOwnerHasCurrentPose"] = physicalOwner?.currentPose(now: 0) != nil
+55 |             let bytes = try JSONSerialization.data(withJSONObject: output, options: [.sortedKeys])
+   |                 `- error: invalid redeclaration of 'bytes'
+56 |             try FileHandle.standardOutput.write(contentsOf: bytes + Data([10]))
+57 |         }

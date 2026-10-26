@@ -1,0 +1,196 @@
+{
+  "status": "DRAFT; map/data coverage and evaluator details pending; not launch authority",
+  "experiment": "offline-phone-observation-map-game-100-v1",
+  "scene": "MuSHRoom Koivu; same one recorded room; no iPhone18 equivalence claim",
+  "count": {
+    "routes": 20,
+    "conditions": 5,
+    "scheduledRuns": 100,
+    "independentRooms": 1,
+    "routeUnavailableOrInvalidRunsRemainInDenominator": true
+  },
+  "inputBoundary": {
+    "phoneOnly": "processed recorded depth + fixed exported poses/intrinsics; confidence/tracking/time absent retained as unknown",
+    "controller": "frozen phone-derived compact map + simulated body pose packets; no FARO geometry/distances/hits",
+    "evaluator": "unchanged detailed FARO mesh + author registration + true simulated body pose; scoring only",
+    "livePolicy": "Not called with fabricated native confidence/tracking; no Observation or physical authority minted",
+    "counterfactualSensing": "None in first baseline; provided-map game, not recorded trajectory replay or responsive live sensing"
+  },
+  "proposedMotion": {
+    "hz": 15,
+    "ticks": 1200,
+    "nominalMetresPerTick": 0.02,
+    "maximumMetresPerTick": 0.025,
+    "maximumYawDegreesPerTick": 1,
+    "alignForTranslationWithinDegrees": 5,
+    "goalToleranceMetres": 0.35,
+    "controllerGoalStopInsetMetres": 0.01,
+    "poseMaximumAgeSeconds": 0.5,
+    "noActorSnapping": true,
+    "goalRequiresAppliedAndPendingMotionZero": true,
+    "nominalSpeedMetresPerSecond": 0.3,
+    "maximumSpeedMetresPerSecond": 0.375,
+    "deadlockConsecutiveNoMotionTicks": 150
+  },
+  "body": {
+    "meaning": "Experimental player container, not recorded wearer dimensions or body mount",
+    "heightMetres": 1.6,
+    "widthMetres": 0.45,
+    "depthMetres": 0.3,
+    "equipmentRadialMetres": 0,
+    "equipmentOverheadMetres": 0,
+    "yawIndependentHorizontalContainerHalfExtentMetres": 0.2704163456597992,
+    "planningMarginMetres": 0.15,
+    "cameraMount": "unused; simulated body pose delivered explicitly, no fake phone extrinsics",
+    "nativeCylinderRadiusEnclosingPlayerSquareMetres": 0.3824264635194589
+  },
+  "proposedConditions": [
+    {
+      "id": "baseline",
+      "poseDelayTicks": 0,
+      "reactionDelayTicks": 0,
+      "translationScale": 1.0
+    },
+    {
+      "id": "delay",
+      "poseDelayTicks": 3,
+      "reactionDelayTicks": 3,
+      "translationScale": 1.0
+    },
+    {
+      "id": "motion-scale",
+      "poseDelayTicks": 0,
+      "reactionDelayTicks": 0,
+      "translationScaleByRouteParity": [
+        0.8,
+        1.25
+      ]
+    },
+    {
+      "id": "wrong-turn",
+      "poseDelayTicks": 0,
+      "reactionDelayTicks": 0,
+      "translationScale": 1.0,
+      "forcedYawPulseTickInterval": [
+        75,
+        80
+      ],
+      "forcedYawDegreesPerTickBySeed": [
+        -1,
+        1
+      ]
+    },
+    {
+      "id": "combined",
+      "poseDelayTicks": 3,
+      "poseJitterTicks": 2,
+      "poseDropProbability": 0.05,
+      "reactionDelayTicks": 3,
+      "translationScaleByRouteParity": [
+        0.8,
+        1.25
+      ],
+      "forcedYawPulseTickInterval": [
+        75,
+        80
+      ],
+      "forcedYawDegreesPerTickBySeed": [
+        -1,
+        1
+      ]
+    }
+  ],
+  "routeSelection": {
+    "status": "phone-map-only fixed algorithm, candidate footprint and frozen exact pairs pending map schema",
+    "seedBase": 271828,
+    "principle": "Map freeze before route selection; route freeze before FARO queries; no replacement after invalid start/no path/contact/unknown support",
+    "proposedSeparationMetres": [
+      2,
+      6
+    ],
+    "startYaw": "first Detour path segment bearing from phone map only; not FARO or recorded camera trajectory",
+    "fixedLatticeMetres": 0.5,
+    "nativeRouteFailureSelection": "Do not filter/resample selected pairs by native path completeness; incomplete selected paths retained."
+  },
+  "scoring": {
+    "success": "Arrival inside fixed tolerance, terminal applied/pending zero, zero container contacts, zero unsupported reference attempts, within tick budget",
+    "report": [
+      "scheduled/completed run count",
+      "runs with at least one reference container contact",
+      "total contact events (first-contact termination means at most one per run)",
+      "goal arrivals",
+      "clean arrivals",
+      "invalid starts",
+      "no-phone-map-route",
+      "unknown-phone-support or vertical coverage",
+      "unknown-reference-support",
+      "deadlock/timeouts",
+      "resource aborts",
+      "distance",
+      "final error",
+      "motion after stop",
+      "pose age/stale commands"
+    ],
+    "referenceLimit": "Cleaned/completed FARO surface without measured support mask; reference-relative scoring only, no physical proof",
+    "standingStillSuccess": false,
+    "initialOverlapsCountInTotalEvents": true,
+    "movingContactsReportedSeparately": true,
+    "terminalPrecedence": [
+      "route slot unavailable",
+      "initial reference support or overlap invalidity",
+      "no native phone route",
+      "moving reference contact",
+      "moving unknown support",
+      "stationary goal",
+      "deadlock or timeout"
+    ],
+    "contactClassification": "Reference overlaps within3cm near-foot triangle band flagged floor-registration/tiny-geometry ambiguous; not removed or called proven physical obstacles.",
+    "referenceSupport": "All finite swept-square probes must be within2cm foot plane and total spread<=2cm; missing samples, descending steps and unequal-support violations are not flattened; finite gaps remain unproved."
+  },
+  "reusableSourcePins": [
+    {
+      "path": "blind-authored-navigation-pilot/native/detour_engine.py",
+      "sha256": "8ab51b8fe7ac2585cfbe797615dd9ac78956e6cb14277deb092aca19df38787d"
+    },
+    {
+      "path": "blind-authored-navigation-pilot/native/libblind_detour.so",
+      "sha256": "560567438e5c88aaa8e20d3ac92ce4db6fe8803018f537b82819b47ed7cc05b8"
+    },
+    {
+      "path": "blind-authored-navigation-pilot/native/blind_detour.cpp",
+      "sha256": "4673cf5c1912ea62ac811218f96cbecbf03955070162942de764249b38276773"
+    },
+    {
+      "path": "blind-authored-navigation-pilot/source/impairments.py",
+      "sha256": "44e5383e19b42a5b524ae5305125e4fb8e992127f785a6e0010ca12334f63fd2"
+    },
+    {
+      "path": "blind-closed-loop-pilot/source/make-room-replay-vtk.py",
+      "sha256": "d6d912c125d79c500512a583123d2dedeffa4f7018e9a7d288470b7ca0bb483e"
+    },
+    {
+      "path": "blind-navigation-combined/full-source/BlindCore/Sources/BlindCore/NavigationSurface.swift",
+      "sha256": "d0dc93843ce65d43f0199edbd3d9a08e4b83f783839c17522b2b60484b6d13fb"
+    },
+    {
+      "path": "blind-navigation-combined/full-source/BlindCore/Sources/BlindCore/ObservedScene.swift",
+      "sha256": "664d334664a5633b1d3f414b55fac32d83883970ba8340c62c2b7fb3b786f285"
+    },
+    {
+      "path": "blind-rtab-grid-stage/source/BlindCore/Sources/BlindCore/NativeLocalGrid.swift",
+      "sha256": "333f3521ede9eb8c6af68f5ad87b1f595ed35343c6409ccb00f01620b14629c5"
+    },
+    {
+      "path": "blind-koivu-reference-comparison-06/reference_geometry.py",
+      "sha256": "266026051a781f122a59187f599688e8c5eb38807984b7e607401e7b4356386d"
+    }
+  ],
+  "pending": [
+    "phone-only frame list/up/floor/coverage and conservative compact geometry",
+    "exact NavigationSurface import boundary and no unknown-overhead route promotion",
+    "reference support/contact classification preserving near-feet geometry",
+    "bounded similarity-aware swept-container evaluator and fixture checks",
+    "resource caps and source/data/route pins before launch"
+  ],
+  "mapState": "First all-hit map retained as failed model; only13candidatecells. No100no-path trial inflation. Revised established occupancy fusion under research."
+}
