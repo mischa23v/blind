@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "groups": [
+    {
+      "group": "code-and-swift",
+      "bytes": 260928,
+      "crcPass": true,
+      "memberHashesPass": true,
+      "twoBuildsByteIdentical": true
+    },
+    {
+      "group": "other-execution",
+      "bytes": 3287642,
+      "crcPass": true,
+      "memberHashesPass": true,
+      "twoBuildsByteIdentical": true
+    },
+    {
+      "group": "tick-evidence",
+      "bytes": 5147563,
+      "crcPass": true,
+      "memberHashesPass": true,
+      "twoBuildsByteIdentical": true
+    }
+  ],
+  "allowlistChecks": {
+    "blind-continuous-three-lap-loop-69": {
+      "exactAllowlistPlusManifest": true,
+      "files": 59,
+      "bytes": 10058952
+    },
+    "blind-swift-exclusion-snapshot-70": {
+      "exactAllowlistPlusManifest": true,
+      "files": 26,
+      "bytes": 86825
+    }
+  },
+  "sourcePublicationManifestHashes": {
+    "blind-continuous-three-lap-loop-69/PUBLICATION_MANIFEST.json": "ce485496f6042e7a95438656694ae84a9001fbbd9d9f920e505e753b80614b24",
+    "blind-swift-exclusion-snapshot-70/MANIFEST.json": "10d2b85bf61c9e5a1fec52c9a7f318edbeb0c45b5dba6bfece4e40671b9c69fa"
+  },
+  "manifestSHA256": "73914c289cd2aa04613a0e060986651f2a5e282f6afb2fed7c8e81300bf31144",
+  "noSourceEdits": true,
+  "noDiskArchiveDuplication": true,
+  "largeTickXZMemberIntact": true
+}

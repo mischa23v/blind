@@ -1,0 +1,626 @@
+{
+  "scope": "Public MuSHRoom-derived assisted table lap, source exclusion and candidate-only Swift/native bridge; no private data.",
+  "source": "Xuqian Ren et al., MuSHRoom: https://zenodo.org/records/10230733 and https://zenodo.org/records/10222321; CC BY4.0 https://creativecommons.org/licenses/by/4.0/. Modifications documented; Recast license included.",
+  "inputPublicationManifestSHA256": {
+    "blind-continuous-three-lap-loop-69/PUBLICATION_MANIFEST.json": "ce485496f6042e7a95438656694ae84a9001fbbd9d9f920e505e753b80614b24",
+    "blind-swift-exclusion-snapshot-70/MANIFEST.json": "10d2b85bf61c9e5a1fec52c9a7f318edbeb0c45b5dba6bfece4e40671b9c69fa"
+  },
+  "files": [
+    {
+      "path": "blind-continuous-three-lap-loop-69/ACTUAL_THREE_LAPS.png",
+      "source": "blind-continuous-three-lap-loop-69/ACTUAL_THREE_LAPS.png",
+      "group": "code-and-swift",
+      "bytes": 83711,
+      "sha256": "775c9756565eddc6ded66ade52ab862f3f6e7ea725a1792fdbb0d70d91efa5a4"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/DUAL_SOURCE_FIXED_PATH_AUDIT.json",
+      "source": "blind-continuous-three-lap-loop-69/DUAL_SOURCE_FIXED_PATH_AUDIT.json",
+      "group": "code-and-swift",
+      "bytes": 1642,
+      "sha256": "2dc172eac917e55fde618db31a56e37e90dd356741ae2bb3820e2fdcfbefa7cf"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/DUAL_SOURCE_FIXED_SEGMENTS.json.gz",
+      "source": "blind-continuous-three-lap-loop-69/DUAL_SOURCE_FIXED_SEGMENTS.json.gz",
+      "group": "code-and-swift",
+      "bytes": 53011,
+      "sha256": "164646efcaeefa1a14c8fef69ce7fdb08cb9ccc930f220b1e73b2d674ae43c09"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/EVIDENCE_CODEC.json",
+      "source": "blind-continuous-three-lap-loop-69/EVIDENCE_CODEC.json",
+      "group": "code-and-swift",
+      "bytes": 970,
+      "sha256": "a3c621e4f398b796b06dc8330d2c796de243630e1a10af9e03e11c84cef7ac0f"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/FROZEN.json",
+      "source": "blind-continuous-three-lap-loop-69/FROZEN.json",
+      "group": "code-and-swift",
+      "bytes": 80310,
+      "sha256": "f9c95f9ec2c273fbb8ca541fd9b51fac26f7e9cf2338c9f6b8ee00c6b1d4692f"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/INDEPENDENT_FINAL_REVIEW.json",
+      "source": "blind-continuous-three-lap-loop-69/INDEPENDENT_FINAL_REVIEW.json",
+      "group": "code-and-swift",
+      "bytes": 2008,
+      "sha256": "3a3d96e6ed7593869d6b43c0f9ac31e8c352d8483db364a14ce59609e695d581"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/INDEPENDENT_TERMINAL_REVIEW.json",
+      "source": "blind-continuous-three-lap-loop-69/INDEPENDENT_TERMINAL_REVIEW.json",
+      "group": "code-and-swift",
+      "bytes": 14226,
+      "sha256": "a1225a2f99461ab821790f86d15da8edb7414625ca35bf9eb05182f865822e13"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/MOVEMENT_PROTOCOL.md",
+      "source": "blind-continuous-three-lap-loop-69/MOVEMENT_PROTOCOL.md",
+      "group": "code-and-swift",
+      "bytes": 3325,
+      "sha256": "e0097635d2817ee11e0c79cb7c9382d6b64143b26da8063615c4897aaebb940d"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/README.md",
+      "source": "blind-continuous-three-lap-loop-69/README.md",
+      "group": "code-and-swift",
+      "bytes": 5749,
+      "sha256": "2ef691ab22daab3eb59be4f76f3fdf713639b36864d7d4f7c04bf66f1f3a22c8"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/SELECTED_PLAN.json",
+      "source": "blind-continuous-three-lap-loop-69/SELECTED_PLAN.json",
+      "group": "code-and-swift",
+      "bytes": 54989,
+      "sha256": "26aa84502688dd66b0116b125a1045a47399371f64eba1a6a43cae50906a7f39"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/audit_fixed_source_segments.py",
+      "source": "blind-continuous-three-lap-loop-69/audit_fixed_source_segments.py",
+      "group": "code-and-swift",
+      "bytes": 1217,
+      "sha256": "c5110de33da48aa4c6908e5ca5fa8d94f8124c2799c3d5c2f9f62dd3dd5222d5"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/draw_three_laps.py",
+      "source": "blind-continuous-three-lap-loop-69/draw_three_laps.py",
+      "group": "code-and-swift",
+      "bytes": 3173,
+      "sha256": "88ec57c7a54353b1307f6f64d0133a0f71e94a72ece7151cd32723102779315b"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/evidence_codec.py",
+      "source": "blind-continuous-three-lap-loop-69/evidence_codec.py",
+      "group": "code-and-swift",
+      "bytes": 1019,
+      "sha256": "36a8497ce591d7010f399a4b83e975d94952c97c0917c304d63e92bd00bd9145"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/fixtures-01.log",
+      "source": "blind-continuous-three-lap-loop-69/fixtures-01.log",
+      "group": "code-and-swift",
+      "bytes": 8941,
+      "sha256": "1ac3b9d3906ce65bfa4b8c309bb2cd9f7bef987190f4a1db80c71971dd28be02"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/fixtures-02.log",
+      "source": "blind-continuous-three-lap-loop-69/fixtures-02.log",
+      "group": "code-and-swift",
+      "bytes": 9100,
+      "sha256": "f15688ce79c1a24b5d278bfe236aa21c11170bb786df0daacfcc4939c58dafc5"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/freeze.py",
+      "source": "blind-continuous-three-lap-loop-69/freeze.py",
+      "group": "code-and-swift",
+      "bytes": 1861,
+      "sha256": "98b9c252d8fd7369fa50520c02be65bb855166c8b1b31db8747eb7537c6dfd82"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/local_support.py",
+      "source": "blind-continuous-three-lap-loop-69/local_support.py",
+      "group": "code-and-swift",
+      "bytes": 7406,
+      "sha256": "87fb064d47a695aa6656ba1753cabfec58f7ce6cadfef5094f4922fb14e19e9c"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/loop_controller.py",
+      "source": "blind-continuous-three-lap-loop-69/loop_controller.py",
+      "group": "code-and-swift",
+      "bytes": 6164,
+      "sha256": "35a28a7f99063ce9b32b05ef5e6afbbec85f44781faae78b7902807c3cbaf876"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/loop_episode.py",
+      "source": "blind-continuous-three-lap-loop-69/loop_episode.py",
+      "group": "code-and-swift",
+      "bytes": 15606,
+      "sha256": "52e7ea857fe7c7900910c4b450fb46b2ed434a9129d20138093315c414903b3e"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/loop_map.py",
+      "source": "blind-continuous-three-lap-loop-69/loop_map.py",
+      "group": "code-and-swift",
+      "bytes": 3421,
+      "sha256": "253a79eda887b50a70def2930e18c2c400322c42d4d019cba4b92fe8268b9e1d"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/review_terminal_recount.py",
+      "source": "blind-continuous-three-lap-loop-69/review_terminal_recount.py",
+      "group": "code-and-swift",
+      "bytes": 6836,
+      "sha256": "cb96ac96c67886a42f63dd5b29a4ba9d4c1f9147c40a6af0bcd7debd5ccad478"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/RAM_PREFLIGHT.json",
+      "source": "blind-continuous-three-lap-loop-69/run-01/RAM_PREFLIGHT.json",
+      "group": "other-execution",
+      "bytes": 102,
+      "sha256": "def063c13759f43a8a8814cdc54c5a6c34b605275237836a0fb74013e299c3ea"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/RUN_RECEIPT.json",
+      "source": "blind-continuous-three-lap-loop-69/run-01/RUN_RECEIPT.json",
+      "group": "other-execution",
+      "bytes": 528,
+      "sha256": "64e830569d4ef55fabadfcd5fe4f19d66773f640d0a9714160e0ad9371d6e622"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/heartbeat.jsonl.gz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/heartbeat.jsonl.gz",
+      "group": "other-execution",
+      "bytes": 428100,
+      "sha256": "a7c22ade07eecd61f918929490a6c49ced2c6dfbfa1a9e7c2e7fedcebbced455"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/ACTOR_TRACE.npz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/ACTOR_TRACE.npz",
+      "group": "other-execution",
+      "bytes": 210494,
+      "sha256": "78e782a4e263ab205d31f9305cb74c6a623b874887c064a2643849bb25ef1f60"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/ACTUAL_TRACE_PARTIAL.csv",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/ACTUAL_TRACE_PARTIAL.csv",
+      "group": "other-execution",
+      "bytes": 1087497,
+      "sha256": "d4b8513923926b58f1978c87e8e97530889c5bb910be0c5eccb601cbd7cfe3c3"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/LIVE_PROGRESS.json",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/LIVE_PROGRESS.json",
+      "group": "other-execution",
+      "bytes": 395,
+      "sha256": "4a7117923e26bd8cafd55befdffb5f76a525bae2e9345d1abac2e016ca40447d"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/QUERY_OPTIMIZATION.json.xz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/QUERY_OPTIMIZATION.json.xz",
+      "group": "other-execution",
+      "bytes": 2124168,
+      "sha256": "c023524943f52c76cb5b227c1b470858c27930c07fd677789b10eedf78466eba"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/RESULT.json",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/RESULT.json",
+      "group": "other-execution",
+      "bytes": 245370,
+      "sha256": "331dbd83ee1d047569e9ef1943615eacb1e9e0e8d42a9a4c815782c5171d2672"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG1.json.gz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG1.json.gz",
+      "group": "other-execution",
+      "bytes": 38472,
+      "sha256": "de0f5f40235a50ad7a693ea44d5d8ae15e1b0c9604e3b073b73b521f5c023f44"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG10.json.gz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG10.json.gz",
+      "group": "other-execution",
+      "bytes": 20799,
+      "sha256": "598997cf01fe2c0a9dee3bd70f16568aa09aaf90a48e76775eb290cfcb8f96c1"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG11.json.gz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG11.json.gz",
+      "group": "other-execution",
+      "bytes": 38320,
+      "sha256": "3ee995bd1fc289828b525cbfc5a2093faa2beea0ac61005460d8d84f8075c5c4"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG12.json.gz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG12.json.gz",
+      "group": "other-execution",
+      "bytes": 9743,
+      "sha256": "c2ea972fdbe1dd545a1d61b2b0dab199c3b2108d17f668c6cb2aa3136f924ab2"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG13.json.gz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG13.json.gz",
+      "group": "other-execution",
+      "bytes": 25286,
+      "sha256": "94bbe5c66955045392f6decdf9f38a60eda03e49be9bbf62d8b0e125d6708898"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG14.json.gz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG14.json.gz",
+      "group": "other-execution",
+      "bytes": 42525,
+      "sha256": "0b6c649b8b6d45c3ea2de17ecacc82017e43fa2bd4d910047577766f41dd4f94"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG2.json.gz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG2.json.gz",
+      "group": "other-execution",
+      "bytes": 9741,
+      "sha256": "e6a5f7bcdec842af1ca1d5a98c37144f454e5e03bde1a7142bd3e76fa79f07ef"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG3.json.gz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG3.json.gz",
+      "group": "other-execution",
+      "bytes": 25285,
+      "sha256": "0710058025bcc29714ee138e52b01633a8b136f7037cf9b5887bd0c4b0714e08"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG4.json.gz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG4.json.gz",
+      "group": "other-execution",
+      "bytes": 42520,
+      "sha256": "c39ab4a22c29c7817e1ab070995d76034adc4cd4b0a89f12287141ab40d9d4e3"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG5.json.gz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG5.json.gz",
+      "group": "other-execution",
+      "bytes": 20795,
+      "sha256": "f005a9776724aab6098305bafe4b642cddca4146b1929e670a5458154cb67c90"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG6.json.gz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG6.json.gz",
+      "group": "other-execution",
+      "bytes": 38317,
+      "sha256": "925c9322513f9587e3735339a942462a436af40f3c46e4d3625019a3f161054f"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG7.json.gz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG7.json.gz",
+      "group": "other-execution",
+      "bytes": 9744,
+      "sha256": "21d86544b75eae14d3da4de028de4dfb8a90b2e0c3df4cdda3ee53f7b48ea2d3"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG8.json.gz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG8.json.gz",
+      "group": "other-execution",
+      "bytes": 25286,
+      "sha256": "ec022f259e4bf38deeae8a873572d7351615605573b9ad8e0f27feaefc2bfcfc"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG9.json.gz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/SOURCE_REPLAN_LEG9.json.gz",
+      "group": "other-execution",
+      "bytes": 42525,
+      "sha256": "e3fb4ef0d215007b4056635241a2ed48baad85c7c40d362baeda121aed6ba8a6"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/TICK_EVIDENCE.jsonl.xz",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/TICK_EVIDENCE.jsonl.xz",
+      "group": "tick-evidence",
+      "bytes": 5139820,
+      "sha256": "8d215e6779bc08e90f4b0ae2bb00f899e31027a608249583733a4c6ba9d0f638"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/result/controller.stderr.log",
+      "source": "blind-continuous-three-lap-loop-69/run-01/result/controller.stderr.log",
+      "group": "other-execution",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/stderr.log",
+      "source": "blind-continuous-three-lap-loop-69/run-01/stderr.log",
+      "group": "other-execution",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run-01/stdout.log",
+      "source": "blind-continuous-three-lap-loop-69/run-01/stdout.log",
+      "group": "other-execution",
+      "bytes": 16691,
+      "sha256": "f5ceab3247754849051aafd09083ce91fd83e29c86f5938d4296d60c2b7e0f9c"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run_bounded.py",
+      "source": "blind-continuous-three-lap-loop-69/run_bounded.py",
+      "group": "code-and-swift",
+      "bytes": 4084,
+      "sha256": "28c8da3e557b2ce9913b939cbdef02e303aaad576a53e62419a45c9975e5b87d"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/run_loop.py",
+      "source": "blind-continuous-three-lap-loop-69/run_loop.py",
+      "group": "code-and-swift",
+      "bytes": 3030,
+      "sha256": "9c86869cbb7e1c77d15d774bb25a9fb02c8a8f656dab4676c4620148bfb2b628"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/source-audit.log",
+      "source": "blind-continuous-three-lap-loop-69/source-audit.log",
+      "group": "code-and-swift",
+      "bytes": 1400,
+      "sha256": "e369dcc709ff256a9aba207a5f883865bbec3769fdcb8d5b0ed6fcefe1a60aef"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/source_runtime.py",
+      "source": "blind-continuous-three-lap-loop-69/source_runtime.py",
+      "group": "code-and-swift",
+      "bytes": 6942,
+      "sha256": "9c7f2ddc5d912cc692db903ca7f91bc3388d52491bad06cf048e2144b4289086"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/test_actual_replan.py",
+      "source": "blind-continuous-three-lap-loop-69/test_actual_replan.py",
+      "group": "code-and-swift",
+      "bytes": 3477,
+      "sha256": "5336767f69335a2fadbe1bdbfedfe8fb907a21d53ba29cba50d91ef8dd5a3941"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/test_evidence_codec.py",
+      "source": "blind-continuous-three-lap-loop-69/test_evidence_codec.py",
+      "group": "code-and-swift",
+      "bytes": 972,
+      "sha256": "c14e06513aaae6b7799d1798d4aaa63e7a5f6d0cb38311ab20be81a2d9290619"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/test_local_support.py",
+      "source": "blind-continuous-three-lap-loop-69/test_local_support.py",
+      "group": "code-and-swift",
+      "bytes": 5263,
+      "sha256": "217a22633a18bf4361e4ee939d019dbbc3da9eeb5e139a17bf86b8190fdadc35"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/test_loop_contract.py",
+      "source": "blind-continuous-three-lap-loop-69/test_loop_contract.py",
+      "group": "code-and-swift",
+      "bytes": 7212,
+      "sha256": "7e8f647111138f9ffaec82f70544f5b3c3b13c97997de26138618cd154701b1a"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/test_low_objects.py",
+      "source": "blind-continuous-three-lap-loop-69/test_low_objects.py",
+      "group": "code-and-swift",
+      "bytes": 2735,
+      "sha256": "a9c8993816f18cae54256e3d5ca0c29c8acc860245b00f55a7ec7292a743eb44"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/test_runtime_exclusion.py",
+      "source": "blind-continuous-three-lap-loop-69/test_runtime_exclusion.py",
+      "group": "code-and-swift",
+      "bytes": 3177,
+      "sha256": "076675f0f178f3d04c2721129ccb3ed9bafb8065590933fcd8052e2f66b78106"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/test_three_laps.py",
+      "source": "blind-continuous-three-lap-loop-69/test_three_laps.py",
+      "group": "code-and-swift",
+      "bytes": 4728,
+      "sha256": "67703cdf57b6f5cdd49e1afd8d36d4124ba563053e77b4ea0d2329e41cc6d561"
+    },
+    {
+      "path": "blind-continuous-three-lap-loop-69/PUBLICATION_MANIFEST.json",
+      "source": "blind-continuous-three-lap-loop-69/PUBLICATION_MANIFEST.json",
+      "group": "code-and-swift",
+      "bytes": 8724,
+      "sha256": "ce485496f6042e7a95438656694ae84a9001fbbd9d9f920e505e753b80614b24"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/Bridge.swift",
+      "source": "blind-swift-exclusion-snapshot-70/Bridge.swift",
+      "group": "code-and-swift",
+      "bytes": 7959,
+      "sha256": "548ec9398c8112256653e6f3128414a2c373742aa1c16e330ea393f8dd6b5c8d"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/COMPILE.log",
+      "source": "blind-swift-exclusion-snapshot-70/COMPILE.log",
+      "group": "code-and-swift",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/COMPILE_RECEIPT.json",
+      "source": "blind-swift-exclusion-snapshot-70/COMPILE_RECEIPT.json",
+      "group": "code-and-swift",
+      "bytes": 1078,
+      "sha256": "dafc29511f3f249748b24cdc903654c5d8ea5935a84376d0308a4fd2c5aa243e"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/EXECUTION.log",
+      "source": "blind-swift-exclusion-snapshot-70/EXECUTION.log",
+      "group": "code-and-swift",
+      "bytes": 66,
+      "sha256": "a8a2a3f652c5bb34abc8b96a0ec29565c9064af3a6373da74f30a6565bef2cec"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/EXECUTION_RECEIPT.json",
+      "source": "blind-swift-exclusion-snapshot-70/EXECUTION_RECEIPT.json",
+      "group": "code-and-swift",
+      "bytes": 110,
+      "sha256": "0caacbb57a0ea2c54f328f50c1a29b9e52c77c5df8a3cd4dd71d3ceb79177176"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/Exclusion.swift",
+      "source": "blind-swift-exclusion-snapshot-70/Exclusion.swift",
+      "group": "code-and-swift",
+      "bytes": 3867,
+      "sha256": "625e4458430ff8852a5772603c0fa1eaed35f0114edc411dfcc3dd47a3fc388a"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/FROZEN.json",
+      "source": "blind-swift-exclusion-snapshot-70/FROZEN.json",
+      "group": "code-and-swift",
+      "bytes": 2363,
+      "sha256": "c0c9cd4b38f1bb087ab97b617433e9c9d6ce68ed8d272a315fac98a94e6b2cb9"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/INDEPENDENT_REVIEW.json",
+      "source": "blind-swift-exclusion-snapshot-70/INDEPENDENT_REVIEW.json",
+      "group": "code-and-swift",
+      "bytes": 1043,
+      "sha256": "ec131c6d3583854320b04ebb24419fda75d8de544eac76c0db29280079b201c1"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/PREEXEC_FROZEN.json",
+      "source": "blind-swift-exclusion-snapshot-70/PREEXEC_FROZEN.json",
+      "group": "code-and-swift",
+      "bytes": 1970,
+      "sha256": "41c180bbbeffcc7e3ee3d9ec25a2da744731c776ebe38b1c5fdcf1aee61ac5d4"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/PROTOCOL.md",
+      "source": "blind-swift-exclusion-snapshot-70/PROTOCOL.md",
+      "group": "code-and-swift",
+      "bytes": 2267,
+      "sha256": "aa874b4ee512be457ff1885cfe1c85d090b7fda18805ea6c046bcc7d4deb8eda"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/PYTHON66_REFERENCE_RECEIPT.json",
+      "source": "blind-swift-exclusion-snapshot-70/PYTHON66_REFERENCE_RECEIPT.json",
+      "group": "code-and-swift",
+      "bytes": 4973,
+      "sha256": "edab7688cb7578baa76b4b8006c4549373fe876a4b2032061a7f2be14a5b6b05"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/README.md",
+      "source": "blind-swift-exclusion-snapshot-70/README.md",
+      "group": "code-and-swift",
+      "bytes": 5803,
+      "sha256": "f792e4078fe1b3635466593c35c0b7e3fa3a693582d317458adceb6f5bdad045"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/RESULT.json",
+      "source": "blind-swift-exclusion-snapshot-70/RESULT.json",
+      "group": "code-and-swift",
+      "bytes": 15816,
+      "sha256": "d19ae85a4340cd5e483b03b4af82ed59fe8203745c58670ad1d2a66921a36062"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/build.py",
+      "source": "blind-swift-exclusion-snapshot-70/build.py",
+      "group": "code-and-swift",
+      "bytes": 1249,
+      "sha256": "8b211ef7251011b2130bee6f96580e76a1c22b95e5c64069e562b85b987c9326"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/cmodule/blind_detour.h",
+      "source": "blind-swift-exclusion-snapshot-70/cmodule/blind_detour.h",
+      "group": "code-and-swift",
+      "bytes": 1608,
+      "sha256": "0fc921f5064ef8e14ed4518d554a9f6c79b9a1757b8ca5ae708b3f006a838162"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/cmodule/module.modulemap",
+      "source": "blind-swift-exclusion-snapshot-70/cmodule/module.modulemap",
+      "group": "code-and-swift",
+      "bytes": 52,
+      "sha256": "ca0948e7abf144baf7af21b209d23cb9f761e967ba97a81185ea9f678ed07460"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/compile_bounded.py",
+      "source": "blind-swift-exclusion-snapshot-70/compile_bounded.py",
+      "group": "code-and-swift",
+      "bytes": 1953,
+      "sha256": "7526d1c304b118c8b21630c5812506f87c457abd2f9d269129fec99ce8d98f63"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/main.swift",
+      "source": "blind-swift-exclusion-snapshot-70/main.swift",
+      "group": "code-and-swift",
+      "bytes": 8847,
+      "sha256": "42da666adc4b9c38f41a5c584041d2bfd44f13634adf23ed903e26eb8f32e17c"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/make_fixture.py",
+      "source": "blind-swift-exclusion-snapshot-70/make_fixture.py",
+      "group": "code-and-swift",
+      "bytes": 1810,
+      "sha256": "e362f943f4f17ad9d1ce99da6f80579f8510f10a505c09d77ae15f2c773cea3c"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/precompile-review-v1/Exclusion.swift",
+      "source": "blind-swift-exclusion-snapshot-70/precompile-review-v1/Exclusion.swift",
+      "group": "code-and-swift",
+      "bytes": 3289,
+      "sha256": "29f9162f02440265f136edf97ec37d7903d6f3cf1e0b721de97b35aac06a1b19"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/precompile-review-v1/PREEXEC_FROZEN.json",
+      "source": "blind-swift-exclusion-snapshot-70/precompile-review-v1/PREEXEC_FROZEN.json",
+      "group": "code-and-swift",
+      "bytes": 1825,
+      "sha256": "1b99ca1e5689eaa9decbf12843974922899dc8e438ccb16677d566045bab288f"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/precompile-review-v1/PROTOCOL.md",
+      "source": "blind-swift-exclusion-snapshot-70/precompile-review-v1/PROTOCOL.md",
+      "group": "code-and-swift",
+      "bytes": 1749,
+      "sha256": "6c92916fcd6d8a3a1c9cd8dfdd256338459542c7c5d00d48dd232e9e05ff6891"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/precompile-review-v1/PYTHON66_REFERENCE_RECEIPT.json",
+      "source": "blind-swift-exclusion-snapshot-70/precompile-review-v1/PYTHON66_REFERENCE_RECEIPT.json",
+      "group": "code-and-swift",
+      "bytes": 4973,
+      "sha256": "edab7688cb7578baa76b4b8006c4549373fe876a4b2032061a7f2be14a5b6b05"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/precompile-review-v1/main.swift",
+      "source": "blind-swift-exclusion-snapshot-70/precompile-review-v1/main.swift",
+      "group": "code-and-swift",
+      "bytes": 8564,
+      "sha256": "ecda2d0d04817b0c600f4e94750ae45dc055114c0f4bac9b83e6320cb9b529bb"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/run.py",
+      "source": "blind-swift-exclusion-snapshot-70/run.py",
+      "group": "code-and-swift",
+      "bytes": 1236,
+      "sha256": "15de0752c525bda3530a04cf8225058cf9e633ae4b69d4eb7681e31e2ad3137b"
+    },
+    {
+      "path": "blind-swift-exclusion-snapshot-70/MANIFEST.json",
+      "source": "blind-swift-exclusion-snapshot-70/MANIFEST.json",
+      "group": "code-and-swift",
+      "bytes": 2355,
+      "sha256": "10d2b85bf61c9e5a1fec52c9a7f318edbeb0c45b5dba6bfece4e40671b9c69fa"
+    },
+    {
+      "path": "PUBLICATION/README.md",
+      "source": "blind-three-lap-publication/README.md",
+      "group": "code-and-swift",
+      "bytes": 4328,
+      "sha256": "d9317f0610f7f3707a9942d8e855fdcc57561d38db0750bb3192a80b81a915c4"
+    },
+    {
+      "path": "PUBLICATION/CURRENT_CHECKPOINT_PREFIX.md",
+      "source": "blind-three-lap-publication/CURRENT_CHECKPOINT_PREFIX.md",
+      "group": "code-and-swift",
+      "bytes": 2073,
+      "sha256": "15fddde3a376af728a016c95e633bb3604d4187ba494737406a0a3b70f855424"
+    },
+    {
+      "path": "THIRD_PARTY/RECAST_LICENSE.txt",
+      "source": "blind-tabletop-exclusion-planner-66/License.txt",
+      "group": "code-and-swift",
+      "bytes": 877,
+      "sha256": "ffad87821cce7cfd3be00b63ffadd01b04e83a4c6a0bcc68f06362ffd42d705e"
+    }
+  ]
+}

@@ -1,4 +1,19 @@
-## Current checkpoint — one verified assisted table lap
+## Current checkpoint — three continuous assisted laps verified
+
+**Stage69:61.791889m horizontal /61.903697m actual3D travel;15 of15 original goals;three continuous clockwise laps;one actor and one initial settlement;no resets. Zero actual OR predicted non-floor body/underbody contacts.** Independent saved-evidence review passed.
+
+[Three-lap code, traces and checked results](research/tools/verified-continuous-three-laps-v1/README.md). Prior [67 one-lap checkpoint](research/tools/verified-assisted-table-loop-v1/README.md) and [54 separate8.432m doorway round trip](research/tools/verified-assisted-roundtrip-v1/README.md) remain distinct preserved results.
+
+The original35cm full-3D goal tolerance remains. Final gap to nominal start:33.052936cm. Lap1's33.052121cm mathematical closing chord was **not walked**; laps2/3 start at preceding actual endpoints and repeat deterministically. All winding closing chords are disclosed as unexecuted, excluded from distance. These are continuous repetitions, not independent robustness trials.
+
+**Still assisted:** one static recorded scene;45×30×160cm zero-margin body;zero-delay nominal actuator;simulated delivered poses;reference/evaluator floor labels;manually selected tabletop RGB ROI and unknown-confidence source exclusion. Exempted floor-contact events are unmeasured. Finite probes, sub2mm ambiguity and uncalibrated ±3px stress remain. The three-lap run reused the previously frozen one-lap body, obstacles and support rules; none changed during this run.
+
+**70 integration proof:**55 Linux Swift/native checks pass for a frozen static unknown-exclusion snapshot,636 source spans and five same-API route pairs. This is a candidate-only bridge, not live ARKit capture, complete hazard detection, app deployment or physical guidance.
+
+**Next open gates:** measured noise/jitter/reaction-delay and margin sweeps; independently selected holdout scenes;source confidence/coverage;live sensor/ARKit integration and supervised device validation. No100journey suite or live-phone safety pass is claimed. All prior failures remain historical evidence.
+
+---
+## Earlier checkpoint — one verified assisted table lap
 
 **Stage67 completed ONE assisted table lap:20.393912m horizontal travel, all five original goals, clockwise winding−1, zero actual non-floor contacts and zero predicted collision rejections.** The final pose is33.05cm from the original start, inside the unchanged35cm goal region. The winding calculation's mathematical closing segment was **not walked**.
 
