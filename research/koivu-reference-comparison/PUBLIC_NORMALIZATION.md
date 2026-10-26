@@ -1,0 +1,11 @@
+# Public normalization and reproducibility boundary
+
+This is a separately identified source/result/diagnostic snapshot. Original private workspace files, frozen code, protocols, failed attempt, successful outputs and exact asset bytes remain unchanged. `PUBLIC_NORMALIZATION.json` maps every copied original to its original/public SHA-256 and byte count. The enclosing publication manifest hashes the entire public payload, including newly written summaries and all 24 small binary diagnostics/exemplars.
+
+Copied documentation/JSON/log prefixes are replaced with literal `$WORKSPACE` (audit/data root), `$SHARED` (shared prerequisites) and `$RUNTIME` (installed runtime root). Internal coordination prose is changed to maintainer wording only where it describes coordination, not technical root/parent-directory operations. Historical status/protocol versions remain historical. No Python source or NPZ/PNG/JPEG bytes are changed.
+
+All embedded historical source, data, config, protocol, binary and receipt hash values retain their ORIGINAL-byte referents. A normalized display copy can have a different hash. Do not silently use an original receipt hash to validate the normalized copy; use the exact original/public mapping. Existing source scripts can intentionally reject a normalized config/protocol because the original pins remain in force.
+
+A future execution must use exact verified input assets and a separately declared local config/protocol cut with its own matching hashes. Preserving code here is not a claim that the normalized presentation packet runs unmodified, or that a clean-machine build has been reproduced. Existing local paths/builds and the VTK 9.3.1/Python environment are prerequisites. No software installation, geometry run, original depth decode, numerical rerun, release upload or remote write occurred during packaging.
+
+Large archives and the mesh remain outside ordinary Git. `RELEASE_ASSET_MANIFEST.json` lists their actual locally present files, sizes and historical verified hashes for a separately authorized GitHub Release upload. Release URLs are null until publication is actually performed. The small saved numerical arrays, analytical PNGs and inspected original JPEG exemplars are physically included, not substituted with links.

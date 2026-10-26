@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "protocol": {
+    "path": "$WORKSPACE/blind-koivu-reference-comparison-proposal-05/PROTOCOL.md",
+    "sha256": "44d72636e6b7636983767d643b0cc0e1c1025425767c8f7184dca4f398695664"
+  },
+  "sources": [
+    {
+      "path": "comparison.py",
+      "sha256": "af5f7d052a394ab7c5a8024af3467664cc69f591aa042eed685697daee4182db"
+    },
+    {
+      "path": "reference_geometry.py",
+      "sha256": "2e9454fb5282bb8c7cdba0eb4a6e7da35820098579352800f953c8795503d5f8"
+    },
+    {
+      "path": "run_bounded.py",
+      "sha256": "40959517326554063349481e79e57ffd839c7499643efa7942ae109cb735adbe"
+    },
+    {
+      "path": "DATA_CONFIG.json",
+      "sha256": "e3c2e58971bcad597a6887df173fc83f92c50d8ec6c8c5a304c0cccc9ae8bb59"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "$WORKSPACE/blind-koivu-faro-acquisition-04/selected-reference/gt_mesh.ply",
+      "bytes": 660550085,
+      "sha256": "e18db651c694046de7994237e276d88138ecef9071351281a418de9c9a279b5e",
+      "modes": [
+        "evaluate"
+      ],
+      "largeMesh": true
+    },
+    {
+      "path": "$WORKSPACE/blind-koivu-faro-acquisition-04/selected-reference/icp_iphone.json",
+      "bytes": 449,
+      "sha256": "95b4e26d6d260bd9b06cff801648fc38c030a510cf4055af2294490cf49938d4",
+      "modes": [
+        "evaluate"
+      ]
+    },
+    {
+      "path": "$WORKSPACE/blind-koivu-faro-acquisition-04/selected-reference/transformations_colmap.json",
+      "bytes": 239934,
+      "sha256": "6f523cef70f1f97d4be4ef4d15650c3d242b9c70613b94ca13970951bc13ebdc",
+      "modes": [
+        "evaluate"
+      ]
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/selected/room_datasets/koivu/iphone/long_capture/transformations.json",
+      "bytes": 239937,
+      "sha256": "c496c8dc6474679766db8abd92da9c756104a752bb9e4519fd462fe294af90c3",
+      "modes": [
+        "evaluate"
+      ]
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00001.png",
+      "bytes": 214195,
+      "sha256": "13c6f1d0dbf8ba4779db8457eb2285e8766503f2e473a68153e1cd62c4e1052e",
+      "modes": [
+        "evaluate"
+      ]
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00005.png",
+      "bytes": 216826,
+      "sha256": "9c9c3156df6633d813d487352ce6c391fd185f4a80d3facfd4a54a49d7a50081",
+      "modes": [
+        "evaluate"
+      ]
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00009.png",
+      "bytes": 254884,
+      "sha256": "77645bcfa59aceded5c3e18f838bbae7fd8cc19aed640e2ae1a31aaed52c42e0",
+      "modes": [
+        "evaluate"
+      ]
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00013.png",
+      "bytes": 228718,
+      "sha256": "63427b218efb1ebae2be34c068ef88e0df15a5fce32636d6030d82a36913d314",
+      "modes": [
+        "evaluate"
+      ]
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00017.png",
+      "bytes": 227848,
+      "sha256": "d892d3abe246c93c1eeeea7e8c547938eaa52ea3754c126b739908ca2742ea7a",
+      "modes": [
+        "evaluate"
+      ]
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00021.png",
+      "bytes": 243972,
+      "sha256": "4aa18a6102948815c77d89de5b8584727e459e9c094c32898b9fe37ddf6a8da5",
+      "modes": [
+        "evaluate"
+      ]
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00025.png",
+      "bytes": 196791,
+      "sha256": "a871b8afc892eecd22c0ab874a862f289afd8fda7029a6eb72cb7aee73b0fe37",
+      "modes": [
+        "evaluate"
+      ]
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00029.png",
+      "bytes": 221874,
+      "sha256": "120650222b20949da80238ce808226b7b9e9879944b60680e686ffd886502ca5",
+      "modes": [
+        "evaluate"
+      ]
+    },
+    {
+      "path": "$RUNTIME/dependencies/python/lib/python3.12/site-packages/vtkmodules/vtkFiltersGeneral.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 2349536,
+      "sha256": "572cc6e18ccf5b27bac3670800dfd82251246274e9424419e74b00348f1ddba3",
+      "modes": [
+        "conventions",
+        "evaluate"
+      ]
+    },
+    {
+      "path": "$RUNTIME/dependencies/python/lib/python3.12/site-packages/vtkmodules/vtkIOPLY.cpython-312-x86_64-linux-gnu.so",
+      "bytes": 114744,
+      "sha256": "a49b20223bc3e30bfbab2f490ac8c3ffdfed2d8d8cd45e49a1936dfddcbc1315",
+      "modes": [
+        "conventions",
+        "evaluate"
+      ]
+    }
+  ]
+}

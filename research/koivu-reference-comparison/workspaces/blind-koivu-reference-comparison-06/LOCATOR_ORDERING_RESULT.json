@@ -1,0 +1,37 @@
+{
+  "scope": "Analytic engine ordering diagnostic only; no recorded frames/mesh/sensor data",
+  "runtime": {
+    "version": "9.3.1",
+    "SMPBackend": "Sequential",
+    "threads": 1
+  },
+  "sourceSHA256": "05f595255ccd0bf391a678347cbf40e8c8194eab536e337d026911f4976a6485",
+  "results": [
+    {
+      "locator": "vtkCellTreeLocator",
+      "inputPlaneAxialOrder": [
+        2.0,
+        4.0,
+        1.0
+      ],
+      "expectedNearestAxial": 1.0,
+      "hit": 1,
+      "returnedAxial": 2.0,
+      "cellID": 0,
+      "matchesNearest": false
+    },
+    {
+      "locator": "vtkStaticCellLocator",
+      "inputPlaneAxialOrder": [
+        2.0,
+        4.0,
+        1.0
+      ],
+      "expectedNearestAxial": 1.0,
+      "hit": 1,
+      "returnedAxial": 1.0,
+      "cellID": 4,
+      "matchesNearest": true
+    }
+  ]
+}

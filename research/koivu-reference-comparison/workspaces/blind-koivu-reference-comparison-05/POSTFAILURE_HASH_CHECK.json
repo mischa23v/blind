@@ -1,0 +1,163 @@
+{
+  "scope": "Separate bounded read-only integrity check after failed evaluation; no geometry/raycast/metrics rerun",
+  "failureReceiptSHA256": "c870be498977f54c180366fd67858bb911b0d63e1dabad59b1c1806fc1858d8c",
+  "allMatch": true,
+  "files": [
+    {
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-proposal-05/PROTOCOL.md",
+      "expectedSHA256": "44d72636e6b7636983767d643b0cc0e1c1025425767c8f7184dca4f398695664",
+      "actualSHA256": "44d72636e6b7636983767d643b0cc0e1c1025425767c8f7184dca4f398695664",
+      "bytes": 17874,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-05/comparison.py",
+      "expectedSHA256": "af5f7d052a394ab7c5a8024af3467664cc69f591aa042eed685697daee4182db",
+      "actualSHA256": "af5f7d052a394ab7c5a8024af3467664cc69f591aa042eed685697daee4182db",
+      "bytes": 12689,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-05/reference_geometry.py",
+      "expectedSHA256": "2e9454fb5282bb8c7cdba0eb4a6e7da35820098579352800f953c8795503d5f8",
+      "actualSHA256": "2e9454fb5282bb8c7cdba0eb4a6e7da35820098579352800f953c8795503d5f8",
+      "bytes": 8277,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-05/run_bounded.py",
+      "expectedSHA256": "40959517326554063349481e79e57ffd839c7499643efa7942ae109cb735adbe",
+      "actualSHA256": "40959517326554063349481e79e57ffd839c7499643efa7942ae109cb735adbe",
+      "bytes": 12109,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-05/DATA_CONFIG.json",
+      "expectedSHA256": "e3c2e58971bcad597a6887df173fc83f92c50d8ec6c8c5a304c0cccc9ae8bb59",
+      "actualSHA256": "e3c2e58971bcad597a6887df173fc83f92c50d8ec6c8c5a304c0cccc9ae8bb59",
+      "bytes": 760,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-koivu-faro-acquisition-04/selected-reference/gt_mesh.ply",
+      "expectedSHA256": "e18db651c694046de7994237e276d88138ecef9071351281a418de9c9a279b5e",
+      "actualSHA256": "e18db651c694046de7994237e276d88138ecef9071351281a418de9c9a279b5e",
+      "bytes": 660550085,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-koivu-faro-acquisition-04/selected-reference/icp_iphone.json",
+      "expectedSHA256": "95b4e26d6d260bd9b06cff801648fc38c030a510cf4055af2294490cf49938d4",
+      "actualSHA256": "95b4e26d6d260bd9b06cff801648fc38c030a510cf4055af2294490cf49938d4",
+      "bytes": 449,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-koivu-faro-acquisition-04/selected-reference/transformations_colmap.json",
+      "expectedSHA256": "6f523cef70f1f97d4be4ef4d15650c3d242b9c70613b94ca13970951bc13ebdc",
+      "actualSHA256": "6f523cef70f1f97d4be4ef4d15650c3d242b9c70613b94ca13970951bc13ebdc",
+      "bytes": 239934,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/selected/room_datasets/koivu/iphone/long_capture/transformations.json",
+      "expectedSHA256": "c496c8dc6474679766db8abd92da9c756104a752bb9e4519fd462fe294af90c3",
+      "actualSHA256": "c496c8dc6474679766db8abd92da9c756104a752bb9e4519fd462fe294af90c3",
+      "bytes": 239937,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00001.png",
+      "expectedSHA256": "13c6f1d0dbf8ba4779db8457eb2285e8766503f2e473a68153e1cd62c4e1052e",
+      "actualSHA256": "13c6f1d0dbf8ba4779db8457eb2285e8766503f2e473a68153e1cd62c4e1052e",
+      "bytes": 214195,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00005.png",
+      "expectedSHA256": "9c9c3156df6633d813d487352ce6c391fd185f4a80d3facfd4a54a49d7a50081",
+      "actualSHA256": "9c9c3156df6633d813d487352ce6c391fd185f4a80d3facfd4a54a49d7a50081",
+      "bytes": 216826,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00009.png",
+      "expectedSHA256": "77645bcfa59aceded5c3e18f838bbae7fd8cc19aed640e2ae1a31aaed52c42e0",
+      "actualSHA256": "77645bcfa59aceded5c3e18f838bbae7fd8cc19aed640e2ae1a31aaed52c42e0",
+      "bytes": 254884,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00013.png",
+      "expectedSHA256": "63427b218efb1ebae2be34c068ef88e0df15a5fce32636d6030d82a36913d314",
+      "actualSHA256": "63427b218efb1ebae2be34c068ef88e0df15a5fce32636d6030d82a36913d314",
+      "bytes": 228718,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00017.png",
+      "expectedSHA256": "d892d3abe246c93c1eeeea7e8c547938eaa52ea3754c126b739908ca2742ea7a",
+      "actualSHA256": "d892d3abe246c93c1eeeea7e8c547938eaa52ea3754c126b739908ca2742ea7a",
+      "bytes": 227848,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00021.png",
+      "expectedSHA256": "4aa18a6102948815c77d89de5b8584727e459e9c094c32898b9fe37ddf6a8da5",
+      "actualSHA256": "4aa18a6102948815c77d89de5b8584727e459e9c094c32898b9fe37ddf6a8da5",
+      "bytes": 243972,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00025.png",
+      "expectedSHA256": "a871b8afc892eecd22c0ab874a862f289afd8fda7029a6eb72cb7aee73b0fe37",
+      "actualSHA256": "a871b8afc892eecd22c0ab874a862f289afd8fda7029a6eb72cb7aee73b0fe37",
+      "bytes": 196791,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00029.png",
+      "expectedSHA256": "120650222b20949da80238ce808226b7b9e9879944b60680e686ffd886502ca5",
+      "actualSHA256": "120650222b20949da80238ce808226b7b9e9879944b60680e686ffd886502ca5",
+      "bytes": 221874,
+      "matches": true
+    },
+    {
+      "path": "$RUNTIME/dependencies/python/lib/python3.12/site-packages/vtkmodules/vtkFiltersGeneral.cpython-312-x86_64-linux-gnu.so",
+      "expectedSHA256": "572cc6e18ccf5b27bac3670800dfd82251246274e9424419e74b00348f1ddba3",
+      "actualSHA256": "572cc6e18ccf5b27bac3670800dfd82251246274e9424419e74b00348f1ddba3",
+      "bytes": 2349536,
+      "matches": true
+    },
+    {
+      "path": "$RUNTIME/dependencies/python/lib/python3.12/site-packages/vtkmodules/vtkIOPLY.cpython-312-x86_64-linux-gnu.so",
+      "expectedSHA256": "a49b20223bc3e30bfbab2f490ac8c3ffdfed2d8d8cd45e49a1936dfddcbc1315",
+      "actualSHA256": "a49b20223bc3e30bfbab2f490ac8c3ffdfed2d8d8cd45e49a1936dfddcbc1315",
+      "bytes": 114744,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-05/run-conventions/RUN_RECEIPT.json",
+      "expectedSHA256": "5b99c4d0db1b1eec66125069850beb47847a7c022f5eb0b46cf85b25172c94a1",
+      "actualSHA256": "5b99c4d0db1b1eec66125069850beb47847a7c022f5eb0b46cf85b25172c94a1",
+      "bytes": 6662,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-05/run-conventions/comparison/CONVENTION_RESULTS.json",
+      "expectedSHA256": "4f4c1fe067ebf4fb1be50f29b3e8bfed6084d3c70b949e7105ded0bdea54b286",
+      "actualSHA256": "4f4c1fe067ebf4fb1be50f29b3e8bfed6084d3c70b949e7105ded0bdea54b286",
+      "bytes": 728,
+      "matches": true
+    },
+    {
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-05/CONFIG.json",
+      "expectedSHA256": "d90e11a4dd09f31d9caf7c5c0999a2899dc2f2aedc2342d81ef502f7130cb7de",
+      "actualSHA256": "d90e11a4dd09f31d9caf7c5c0999a2899dc2f2aedc2342d81ef502f7130cb7de",
+      "bytes": 5741,
+      "matches": true
+    }
+  ],
+  "wallSeconds": 0.5254562780028209,
+  "peakRSSKiB": 12552
+}

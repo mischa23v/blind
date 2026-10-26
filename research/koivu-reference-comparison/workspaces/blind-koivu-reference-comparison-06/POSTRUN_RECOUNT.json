@@ -1,0 +1,179 @@
+{
+  "reviewScope": "Independent recount of saved derived NPZ/JSON only. No VTK, ray tracing, original-frame decode, refit or navigation.",
+  "passed": true,
+  "checksPassed": 1846,
+  "maxStatisticAbsoluteResidual": 0.0,
+  "totals": {
+    "scheduled": 368520,
+    "paired": 334334,
+    "sensorOnly": 34186,
+    "referenceOnly": 0,
+    "neither": 0
+  },
+  "pairedFraction": 0.9072343427765115,
+  "sensorOnlyFraction": 0.09276565722348855,
+  "pooledStatistics": {
+    "count": 334334,
+    "meanSigned": 0.008382775946004156,
+    "medianSigned": 0.021452268588336265,
+    "MAE": 0.09638230827299468,
+    "medianAbsolute": 0.05055016131461165,
+    "p90Absolute": 0.190911742592541,
+    "p95Absolute": 0.35615925392335046
+  },
+  "frames": [
+    {
+      "basename": "frame_00001",
+      "scheduled": 46065,
+      "paired": 36043,
+      "sensorOnly": 10022,
+      "referenceOnly": 0,
+      "neither": 0,
+      "MAE": 0.15970767016033172,
+      "p95Absolute": 0.5268469718868644
+    },
+    {
+      "basename": "frame_00005",
+      "scheduled": 46065,
+      "paired": 40808,
+      "sensorOnly": 5257,
+      "referenceOnly": 0,
+      "neither": 0,
+      "MAE": 0.08336038417434627,
+      "p95Absolute": 0.2600327228868127
+    },
+    {
+      "basename": "frame_00009",
+      "scheduled": 46065,
+      "paired": 43364,
+      "sensorOnly": 2701,
+      "referenceOnly": 0,
+      "neither": 0,
+      "MAE": 0.09205333194625505,
+      "p95Absolute": 0.36845092685126657
+    },
+    {
+      "basename": "frame_00013",
+      "scheduled": 46065,
+      "paired": 44747,
+      "sensorOnly": 1318,
+      "referenceOnly": 0,
+      "neither": 0,
+      "MAE": 0.0979160697616536,
+      "p95Absolute": 0.4550154344751245
+    },
+    {
+      "basename": "frame_00017",
+      "scheduled": 46065,
+      "paired": 44646,
+      "sensorOnly": 1419,
+      "referenceOnly": 0,
+      "neither": 0,
+      "MAE": 0.0730934022494065,
+      "p95Absolute": 0.30039730688636457
+    },
+    {
+      "basename": "frame_00021",
+      "scheduled": 46065,
+      "paired": 40901,
+      "sensorOnly": 5164,
+      "referenceOnly": 0,
+      "neither": 0,
+      "MAE": 0.10213157893747646,
+      "p95Absolute": 0.37760106318904096
+    },
+    {
+      "basename": "frame_00025",
+      "scheduled": 46065,
+      "paired": 39989,
+      "sensorOnly": 6076,
+      "referenceOnly": 0,
+      "neither": 0,
+      "MAE": 0.11871153202266596,
+      "p95Absolute": 0.3310987504884003
+    },
+    {
+      "basename": "frame_00029",
+      "scheduled": 46065,
+      "paired": 43836,
+      "sensorOnly": 2229,
+      "referenceOnly": 0,
+      "neither": 0,
+      "MAE": 0.057139115795752565,
+      "p95Absolute": 0.12433770605493699
+    }
+  ],
+  "referenceDepthBinCounts": [
+    0,
+    714,
+    83288,
+    178310,
+    57957,
+    14065
+  ],
+  "referenceEdgeBinCounts": [
+    5404,
+    2331,
+    238996,
+    65815,
+    21788
+  ],
+  "resourceReceipt": {
+    "peakChildRSSKiB": 2084028,
+    "peakOutputBytesBeforeReceipt": 4093337,
+    "sampledPeakTreeRSSBytes": 2144088064,
+    "sampledTreeCPUSeconds": 49.56,
+    "wallSeconds": 48.50946443300927
+  },
+  "locatorBuildWallSeconds": 2.807116418989608,
+  "heartbeatCount": 25,
+  "inputReportPins": {
+    "resultsSHA256": "3dd8431ea152ac1019fc52e70cdeb49c2dfa8065917d92d546cf8a33f47f48cd",
+    "receiptSHA256": "fd36b71d05aff5b149b70affb3e8caa100f668fa27911fee5707854c114440f4",
+    "reviewScriptSHA256": "d85f1300421e0a8779643560c1c131a31b40125dea832da6ff1428a0994e3cdd"
+  },
+  "derivedArrayPinsVerified": [
+    {
+      "bytes": 432127,
+      "path": "frame_00001-scheduled-rays.npz",
+      "sha256": "a70edf131ae109854530d9a1102aa15c6aa4249ff181696c8c385211d7f93e4c"
+    },
+    {
+      "bytes": 465661,
+      "path": "frame_00005-scheduled-rays.npz",
+      "sha256": "f4c03bea01bcc9a2a6c73d3d3b5d397ae4624318d00ee6d249b8e9c9851dae6c"
+    },
+    {
+      "bytes": 504221,
+      "path": "frame_00009-scheduled-rays.npz",
+      "sha256": "3bd8c91426a601968e048b2d90b0f97e87c792b3a10ac78f9526e2bb4168d321"
+    },
+    {
+      "bytes": 495895,
+      "path": "frame_00013-scheduled-rays.npz",
+      "sha256": "6c75c9c50ac30b7348cc2cc3a9a16fb9239857a790f03bc34b8d8b57e568b20c"
+    },
+    {
+      "bytes": 496836,
+      "path": "frame_00017-scheduled-rays.npz",
+      "sha256": "e241759c94334fe7c3d2c5c3330fd4b0cd347c7be3258f10630d1d045177999c"
+    },
+    {
+      "bytes": 473463,
+      "path": "frame_00021-scheduled-rays.npz",
+      "sha256": "7074d6da51ab6eafc2d6d4074ef7ff04bc2d92bd9886ef3d90783ca5c05ef5ca"
+    },
+    {
+      "bytes": 440400,
+      "path": "frame_00025-scheduled-rays.npz",
+      "sha256": "9f4808bfc1b6dc15c1966ba4f9739d6e4babba6bb9749573b95681078ba1b3ce"
+    },
+    {
+      "bytes": 496013,
+      "path": "frame_00029-scheduled-rays.npz",
+      "sha256": "1b2a846146496499ac176a45f7cc782bdf079e2dd9054b63592bff20b8362b45"
+    }
+  ],
+  "doesNotIndependentlyValidateRayGeometry": true,
+  "doesNotEstablishPhysicalAccuracy": true
+}

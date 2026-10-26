@@ -1,0 +1,53 @@
+{
+  "runtime": {
+    "version": "9.3.1",
+    "SMPBackend": "Sequential",
+    "threads": 1,
+    "executionMachine": {
+      "system": "Linux",
+      "release": "6.18.55",
+      "machine": "x86_64",
+      "cpuReportedModel": "AMD EPYC 7763 64-Core Processor",
+      "logicalCPUAffinityCount": 9,
+      "memorySnapshotBytes": {
+        "MemTotal": 10451439616,
+        "MemAvailable": 4648894464
+      },
+      "CPUQuotaNotEstablished": true,
+      "iPhoneRuntimeTest": false,
+      "GPUUsed": false
+    }
+  },
+  "tests": [
+    {
+      "name": "half_pixel_asymmetric_ray_golden",
+      "maxError": 0.0
+    },
+    {
+      "name": "first_surface_reverse_winding_False",
+      "axialDepth": 2.0,
+      "cellID": 0
+    },
+    {
+      "name": "first_surface_reverse_winding_True",
+      "axialDepth": 2.0,
+      "cellID": 0
+    },
+    {
+      "name": "similarity_translated_rotated_ray_vs_mesh_equivalence",
+      "axialDepth": 1.9999999999999993,
+      "difference": 6.661338147750939e-16
+    },
+    {
+      "name": "unsorted_plane_order_2_4_1",
+      "axialDepth": 1.0,
+      "cellID": 4
+    },
+    {
+      "name": "no_hit_retained_missing",
+      "passed": true
+    }
+  ],
+  "recordedFramesEvaluated": 0,
+  "physicalAccuracyEstablished": false
+}

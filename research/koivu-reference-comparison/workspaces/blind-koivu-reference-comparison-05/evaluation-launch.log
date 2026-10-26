@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "$WORKSPACE/blind-koivu-reference-comparison-05/run_bounded.py", line 191, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "$WORKSPACE/blind-koivu-reference-comparison-05/run_bounded.py", line 168, in main
+    while child.poll() is None:bounds.check();time.sleep(.04)
+                               ^^^^^^^^^^^^^^
+  File "$WORKSPACE/blind-koivu-reference-comparison-05/run_bounded.py", line 62, in check
+    if self.last_cpu>self.cpu_cap:raise RuntimeError('total sampled process-tree CPU cap')
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: total sampled process-tree CPU cap

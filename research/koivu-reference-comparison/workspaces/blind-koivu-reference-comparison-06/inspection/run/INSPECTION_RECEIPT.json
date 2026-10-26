@@ -1,0 +1,419 @@
+{
+  "detectorOrNavigationCalled": false,
+  "fixedDisplayRanges": {
+    "absoluteDiscrepancy": [
+      0,
+      1
+    ],
+    "depthNominalMetres": [
+      0.15,
+      8
+    ],
+    "signedDiscrepancy": [
+      -1,
+      1
+    ]
+  },
+  "frames": [
+    {
+      "counts": {
+        "neither": 0,
+        "paired": 36043,
+        "referenceOnly": 0,
+        "scheduled": 46065,
+        "sensorOnly": 10022
+      },
+      "displayClippedCounts": {
+        "absoluteAbove1": 601,
+        "referenceAbove8": 0,
+        "referenceBelow015": 0,
+        "sensorAbove8": 0,
+        "sensorBelow015": 0,
+        "signedAbovePlus1": 192,
+        "signedBelowMinus1": 409
+      },
+      "frame": "frame_00001",
+      "scheduledGridShape": [
+        249,
+        185
+      ]
+    },
+    {
+      "counts": {
+        "neither": 0,
+        "paired": 40808,
+        "referenceOnly": 0,
+        "scheduled": 46065,
+        "sensorOnly": 5257
+      },
+      "displayClippedCounts": {
+        "absoluteAbove1": 198,
+        "referenceAbove8": 0,
+        "referenceBelow015": 0,
+        "sensorAbove8": 0,
+        "sensorBelow015": 0,
+        "signedAbovePlus1": 114,
+        "signedBelowMinus1": 84
+      },
+      "frame": "frame_00005",
+      "scheduledGridShape": [
+        249,
+        185
+      ]
+    },
+    {
+      "counts": {
+        "neither": 0,
+        "paired": 43364,
+        "referenceOnly": 0,
+        "scheduled": 46065,
+        "sensorOnly": 2701
+      },
+      "displayClippedCounts": {
+        "absoluteAbove1": 0,
+        "referenceAbove8": 0,
+        "referenceBelow015": 0,
+        "sensorAbove8": 0,
+        "sensorBelow015": 0,
+        "signedAbovePlus1": 0,
+        "signedBelowMinus1": 0
+      },
+      "frame": "frame_00009",
+      "scheduledGridShape": [
+        249,
+        185
+      ]
+    },
+    {
+      "counts": {
+        "neither": 0,
+        "paired": 44747,
+        "referenceOnly": 0,
+        "scheduled": 46065,
+        "sensorOnly": 1318
+      },
+      "displayClippedCounts": {
+        "absoluteAbove1": 0,
+        "referenceAbove8": 0,
+        "referenceBelow015": 0,
+        "sensorAbove8": 0,
+        "sensorBelow015": 0,
+        "signedAbovePlus1": 0,
+        "signedBelowMinus1": 0
+      },
+      "frame": "frame_00013",
+      "scheduledGridShape": [
+        249,
+        185
+      ]
+    },
+    {
+      "counts": {
+        "neither": 0,
+        "paired": 44646,
+        "referenceOnly": 0,
+        "scheduled": 46065,
+        "sensorOnly": 1419
+      },
+      "displayClippedCounts": {
+        "absoluteAbove1": 0,
+        "referenceAbove8": 0,
+        "referenceBelow015": 0,
+        "sensorAbove8": 0,
+        "sensorBelow015": 0,
+        "signedAbovePlus1": 0,
+        "signedBelowMinus1": 0
+      },
+      "frame": "frame_00017",
+      "scheduledGridShape": [
+        249,
+        185
+      ]
+    },
+    {
+      "counts": {
+        "neither": 0,
+        "paired": 40901,
+        "referenceOnly": 0,
+        "scheduled": 46065,
+        "sensorOnly": 5164
+      },
+      "displayClippedCounts": {
+        "absoluteAbove1": 637,
+        "referenceAbove8": 0,
+        "referenceBelow015": 0,
+        "sensorAbove8": 0,
+        "sensorBelow015": 0,
+        "signedAbovePlus1": 248,
+        "signedBelowMinus1": 389
+      },
+      "frame": "frame_00021",
+      "scheduledGridShape": [
+        249,
+        185
+      ]
+    },
+    {
+      "counts": {
+        "neither": 0,
+        "paired": 39989,
+        "referenceOnly": 0,
+        "scheduled": 46065,
+        "sensorOnly": 6076
+      },
+      "displayClippedCounts": {
+        "absoluteAbove1": 1017,
+        "referenceAbove8": 0,
+        "referenceBelow015": 0,
+        "sensorAbove8": 0,
+        "sensorBelow015": 0,
+        "signedAbovePlus1": 587,
+        "signedBelowMinus1": 430
+      },
+      "frame": "frame_00025",
+      "scheduledGridShape": [
+        249,
+        185
+      ]
+    },
+    {
+      "counts": {
+        "neither": 0,
+        "paired": 43836,
+        "referenceOnly": 0,
+        "scheduled": 46065,
+        "sensorOnly": 2229
+      },
+      "displayClippedCounts": {
+        "absoluteAbove1": 0,
+        "referenceAbove8": 0,
+        "referenceBelow015": 0,
+        "sensorAbove8": 0,
+        "sensorBelow015": 0,
+        "signedAbovePlus1": 0,
+        "signedBelowMinus1": 0
+      },
+      "frame": "frame_00029",
+      "scheduledGridShape": [
+        249,
+        185
+      ]
+    }
+  ],
+  "interpolation": "nearest; no filled holes",
+  "newVTKOrRaycastOrDepthDecode": false,
+  "originalRGBByteIdentical": true,
+  "outputs": [
+    {
+      "bytes": 343839,
+      "kind": "analytical saved-array display",
+      "path": "panels/frame_00001-analytic-panel.png",
+      "sha256": "13fb94dc737575a828659985b96b19b7b7491bf7e21ee88d4b4a710eb2bd0c5d"
+    },
+    {
+      "bytes": 224684,
+      "kind": "untouched original RGB JPEG",
+      "path": "original-rgb/frame_00001.jpg",
+      "sha256": "12afdaf4170a05a8c9e177b14ab6dc0dd35bbf552d824dcb6063713b26131fb4"
+    },
+    {
+      "bytes": 315465,
+      "kind": "analytical saved-array display",
+      "path": "panels/frame_00005-analytic-panel.png",
+      "sha256": "1e1565f414786d5c1e5c7e1be6ebbb396584b9e9cd70b3051e12ecba17fdc619"
+    },
+    {
+      "bytes": 183286,
+      "kind": "untouched original RGB JPEG",
+      "path": "original-rgb/frame_00005.jpg",
+      "sha256": "b18976ca4e7c494d184cf40ac820c3dc81c118cc5e6235ccf015450e17862e41"
+    },
+    {
+      "bytes": 305377,
+      "kind": "analytical saved-array display",
+      "path": "panels/frame_00009-analytic-panel.png",
+      "sha256": "3310486daa285cf31163197b92e5d3665201ee494b2bc7babead692a773c44e1"
+    },
+    {
+      "bytes": 179796,
+      "kind": "untouched original RGB JPEG",
+      "path": "original-rgb/frame_00009.jpg",
+      "sha256": "b246ad8508532f4186472d757a6f1e3e3cc16266ed1c0c487fe9cf33b3776c01"
+    },
+    {
+      "bytes": 320885,
+      "kind": "analytical saved-array display",
+      "path": "panels/frame_00013-analytic-panel.png",
+      "sha256": "e04005250e31b73218b8b18f36d9c64619c8d3463caa2181e1f1e93bc52ad7fc"
+    },
+    {
+      "bytes": 192741,
+      "kind": "untouched original RGB JPEG",
+      "path": "original-rgb/frame_00013.jpg",
+      "sha256": "d5005aec96fa62afaaa7f0a5144bd86f063b6ba0d51d886b30e7b2c553a9a94a"
+    },
+    {
+      "bytes": 300833,
+      "kind": "analytical saved-array display",
+      "path": "panels/frame_00017-analytic-panel.png",
+      "sha256": "b8043bc4f7eb071eeb024750dcd80e728362551438b4eff7ccdc09a7080ace4b"
+    },
+    {
+      "bytes": 237710,
+      "kind": "untouched original RGB JPEG",
+      "path": "original-rgb/frame_00017.jpg",
+      "sha256": "863d615b15c4a0aa3fe96e1b45f07960fae9b8ce3184dddd04517db38000d87e"
+    },
+    {
+      "bytes": 315504,
+      "kind": "analytical saved-array display",
+      "path": "panels/frame_00021-analytic-panel.png",
+      "sha256": "a26bf26766a002c5c41837576d5a53222e5467e53eafb8bd4d53aa231bb640e3"
+    },
+    {
+      "bytes": 185530,
+      "kind": "untouched original RGB JPEG",
+      "path": "original-rgb/frame_00021.jpg",
+      "sha256": "7d1b13f4153ee56a07b4702772a4d6a58f9502746d4a55657f5b8bcd58e77be3"
+    },
+    {
+      "bytes": 288853,
+      "kind": "analytical saved-array display",
+      "path": "panels/frame_00025-analytic-panel.png",
+      "sha256": "17d5cfa189a0cab663c78668748d03fdcf230fd421b457c0cce0dd4aa6119bdb"
+    },
+    {
+      "bytes": 135648,
+      "kind": "untouched original RGB JPEG",
+      "path": "original-rgb/frame_00025.jpg",
+      "sha256": "d6c9ca8622e0469e33e06c6ff19d031cd63707d555ec44c1e15628e9471b189e"
+    },
+    {
+      "bytes": 275094,
+      "kind": "analytical saved-array display",
+      "path": "panels/frame_00029-analytic-panel.png",
+      "sha256": "2048d241943def44e74a4d5d53b45197e55bdd518888a13e1c494409a2546b04"
+    },
+    {
+      "bytes": 117314,
+      "kind": "untouched original RGB JPEG",
+      "path": "original-rgb/frame_00029.jpg",
+      "sha256": "c38a87684e0dd0d04d33b47ca5ccf5d1f8883ad84dcb3593264ec9d69960c3f4"
+    }
+  ],
+  "registrationFitted": false,
+  "resourceBounds": {
+    "allStage06Bytes": 67108864,
+    "cpuSeconds": 30.0,
+    "freeReserveBytes": 805306368,
+    "observedPeakRSSBytes": 268435456,
+    "wallSeconds": 45.0
+  },
+  "resourcesBeforeReceipt": {
+    "allStage06Bytes": 8310931,
+    "cpuSeconds": 11.683536982,
+    "freeBytes": 1235542016,
+    "observedPeakRSSBytes": 101572608,
+    "wallSeconds": 11.845856100000674
+  },
+  "sourceAndNPZHashesVerifiedBeforeAndAfter": true,
+  "sourceInputs": [
+    {
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/run-evaluate/comparison/COMPARISON_RESULTS.json",
+      "sha256": "3dd8431ea152ac1019fc52e70cdeb49c2dfa8065917d92d546cf8a33f47f48cd"
+    },
+    {
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/RECORDED_SUBSET_EXTRACTION_RECEIPT.json",
+      "sha256": "0bada1c6775e8c5b21d4c6cbd259008621620d4849483daadb9c7887df5a22f7"
+    },
+    {
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/inspection/plot_saved_comparison.py",
+      "sha256": "a72ae33cabc1a452c56ea6a1b54c28cf2707eb7bcebad77fe4307c860afbf5de"
+    },
+    {
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/inspection/DISPLAY_PROTOCOL.md",
+      "sha256": "a2b31e6e423e836d9f119fe4d563fedac7177e40e9ff55380061e390afe0af04"
+    },
+    {
+      "bytes": 432127,
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/run-evaluate/comparison/frame_00001-scheduled-rays.npz",
+      "sha256": "a70edf131ae109854530d9a1102aa15c6aa4249ff181696c8c385211d7f93e4c"
+    },
+    {
+      "bytes": 224684,
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/images/frame_00001.jpg",
+      "sha256": "12afdaf4170a05a8c9e177b14ab6dc0dd35bbf552d824dcb6063713b26131fb4"
+    },
+    {
+      "bytes": 465661,
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/run-evaluate/comparison/frame_00005-scheduled-rays.npz",
+      "sha256": "f4c03bea01bcc9a2a6c73d3d3b5d397ae4624318d00ee6d249b8e9c9851dae6c"
+    },
+    {
+      "bytes": 183286,
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/images/frame_00005.jpg",
+      "sha256": "b18976ca4e7c494d184cf40ac820c3dc81c118cc5e6235ccf015450e17862e41"
+    },
+    {
+      "bytes": 504221,
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/run-evaluate/comparison/frame_00009-scheduled-rays.npz",
+      "sha256": "3bd8c91426a601968e048b2d90b0f97e87c792b3a10ac78f9526e2bb4168d321"
+    },
+    {
+      "bytes": 179796,
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/images/frame_00009.jpg",
+      "sha256": "b246ad8508532f4186472d757a6f1e3e3cc16266ed1c0c487fe9cf33b3776c01"
+    },
+    {
+      "bytes": 495895,
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/run-evaluate/comparison/frame_00013-scheduled-rays.npz",
+      "sha256": "6c75c9c50ac30b7348cc2cc3a9a16fb9239857a790f03bc34b8d8b57e568b20c"
+    },
+    {
+      "bytes": 192741,
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/images/frame_00013.jpg",
+      "sha256": "d5005aec96fa62afaaa7f0a5144bd86f063b6ba0d51d886b30e7b2c553a9a94a"
+    },
+    {
+      "bytes": 496836,
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/run-evaluate/comparison/frame_00017-scheduled-rays.npz",
+      "sha256": "e241759c94334fe7c3d2c5c3330fd4b0cd347c7be3258f10630d1d045177999c"
+    },
+    {
+      "bytes": 237710,
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/images/frame_00017.jpg",
+      "sha256": "863d615b15c4a0aa3fe96e1b45f07960fae9b8ce3184dddd04517db38000d87e"
+    },
+    {
+      "bytes": 473463,
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/run-evaluate/comparison/frame_00021-scheduled-rays.npz",
+      "sha256": "7074d6da51ab6eafc2d6d4074ef7ff04bc2d92bd9886ef3d90783ca5c05ef5ca"
+    },
+    {
+      "bytes": 185530,
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/images/frame_00021.jpg",
+      "sha256": "7d1b13f4153ee56a07b4702772a4d6a58f9502746d4a55657f5b8bcd58e77be3"
+    },
+    {
+      "bytes": 440400,
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/run-evaluate/comparison/frame_00025-scheduled-rays.npz",
+      "sha256": "9f4808bfc1b6dc15c1966ba4f9739d6e4babba6bb9749573b95681078ba1b3ce"
+    },
+    {
+      "bytes": 135648,
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/images/frame_00025.jpg",
+      "sha256": "d6c9ca8622e0469e33e06c6ff19d031cd63707d555ec44c1e15628e9471b189e"
+    },
+    {
+      "bytes": 496013,
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/run-evaluate/comparison/frame_00029-scheduled-rays.npz",
+      "sha256": "1b2a846146496499ac176a45f7cc782bdf079e2dd9054b63592bff20b8362b45"
+    },
+    {
+      "bytes": 117314,
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/images/frame_00029.jpg",
+      "sha256": "c38a87684e0dd0d04d33b47ca5ccf5d1f8883ad84dcb3593264ec9d69960c3f4"
+    }
+  ],
+  "status": "completed derived display only"
+}

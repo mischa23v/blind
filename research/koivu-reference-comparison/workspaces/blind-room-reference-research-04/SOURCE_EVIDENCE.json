@@ -1,0 +1,92 @@
+{
+  "status": "Read-only metadata/source research; no new dataset asset bytes or byte ranges acquired; no tests executed",
+  "checkedUTC": "2026-10-26",
+  "sourceRevision": "97588b4290128ce7ba6fdbfaac3020b42b17de4c",
+  "records": {
+    "10222321": {
+      "url": "https://zenodo.org/api/records/10222321",
+      "license": "cc-by-4.0",
+      "files": [
+        {
+          "name": "koivu_mesh_pd.tar.gz",
+          "bytes": 455583916,
+          "md5": "1fc9598ff73fc833b6e4db90af604062"
+        },
+        {
+          "name": "honka_mesh_pd.tar.gz",
+          "bytes": 239649902,
+          "md5": "75091793bf13919cb61e346300e3f828"
+        },
+        {
+          "name": "vr_room_mesh_pd.tar.gz",
+          "bytes": 218765772,
+          "md5": "7a56daf91c3c610cb126c54ba9216f79"
+        }
+      ]
+    },
+    "10230733": {
+      "url": "https://zenodo.org/api/records/10230733",
+      "license": "cc-by-4.0",
+      "files": [
+        {
+          "name": "koivu_iphone.tar.gz",
+          "bytes": 146575749,
+          "md5": "a359dba714e7829be11747ce5dee141c"
+        },
+        {
+          "name": "honka_iphone.tar.gz",
+          "bytes": 170700232,
+          "md5": "f1ef5f46cd19ad0219f68d74758acf17"
+        },
+        {
+          "name": "vr_room_iphone.tar.gz",
+          "bytes": 244279042,
+          "md5": "6c411b7bad82041e2fb5eb8d6a46fbf9"
+        }
+      ]
+    },
+    "10808829": {
+      "url": "https://zenodo.org/api/records/10808829",
+      "license": "cc-by-4.0",
+      "files": [
+        {
+          "name": "reference_depth.tar.gz",
+          "bytes": 3851929062,
+          "md5": "accdf6f79aa21b668039ca705b855d2a"
+        }
+      ]
+    }
+  },
+  "officialSourceTextInspected": [
+    {
+      "path": "dn_splatter/data/mushroom_utils/render_gt_depth.py",
+      "bytes": 5114,
+      "sha256": "967a96018eeb659bfa35813594f38347e720ca4fa64cfc5710121901fb6a5f35"
+    },
+    {
+      "path": "dn_splatter/data/mushroom_utils/eval_faro.py",
+      "bytes": 5981,
+      "sha256": "c6adeb81844f45349766773174585d9f9dba7c45b460848498db28f83d7257dd"
+    },
+    {
+      "path": "dn_splatter/eval/eval_mesh_mushroom_vis_cull.py",
+      "gitBlobSHA": "83e6cfe816e6f54efca52a389a2a9072996e028d"
+    }
+  ],
+  "unknowns": [
+    "reference archive uncompressed member inventory and selected mesh size",
+    "actual local author-transform and pose-file agreement",
+    "reference repaired-surface masks and per-frame registration uncertainty"
+  ],
+  "metricExecutionAuthorized": false,
+  "acquisitionExecutedByThisResearch": false,
+  "separateAcquisitionAuthorizationAtHandoff": "Exact Koivu archive fetch + bounded inventory only; extraction and metric execution await review",
+  "officialMetadataSnapshot": {
+    "path": "zenodo-record-10222321.json",
+    "bytes": 6131,
+    "sha256": "147ea028701494eeb1e267bf2ec575c683a87bfab606fafe306ca8d603dc803b"
+  },
+  "sourceCommitVerified": "97588b4290128ce7ba6fdbfaac3020b42b17de4c",
+  "sourceTreeVerified": "6466859641842d5efd10002ab2a20e4f05e061b4",
+  "sourceCommitDateUTC": "2025-07-05T15:51:05Z"
+}

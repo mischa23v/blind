@@ -1,0 +1,96 @@
+{
+  "status": "completed exact selective extraction and bounded metadata/header inspection only",
+  "files": [
+    {
+      "archiveSHA256": "e16605f237f0850fd069fb9aca39d300eb1aa3a3b1f5f3f660cb64230a91dd26",
+      "originalMemberName": "room_datasets/koivu/gt_mesh.ply",
+      "normalizedMemberName": "room_datasets/koivu/gt_mesh.ply",
+      "output": "gt_mesh.ply",
+      "bytes": 660550085,
+      "sha256": "e18db651c694046de7994237e276d88138ecef9071351281a418de9c9a279b5e"
+    },
+    {
+      "archiveSHA256": "e16605f237f0850fd069fb9aca39d300eb1aa3a3b1f5f3f660cb64230a91dd26",
+      "originalMemberName": "room_datasets/koivu/icp_iphone.json",
+      "normalizedMemberName": "room_datasets/koivu/icp_iphone.json",
+      "output": "icp_iphone.json",
+      "bytes": 449,
+      "sha256": "95b4e26d6d260bd9b06cff801648fc38c030a510cf4055af2294490cf49938d4"
+    },
+    {
+      "archiveSHA256": "68735cfa0758e1288a006c30dc8b95ffb4caa3392bc9c68c0c3ea6c111966518",
+      "originalMemberName": "room_datasets/koivu/iphone/long_capture/transformations_colmap.json",
+      "normalizedMemberName": "room_datasets/koivu/iphone/long_capture/transformations_colmap.json",
+      "output": "transformations_colmap.json",
+      "bytes": 239934,
+      "sha256": "6f523cef70f1f97d4be4ef4d15650c3d242b9c70613b94ca13970951bc13ebdc"
+    }
+  ],
+  "archives": [
+    {
+      "archive": "koivu_mesh_pd.tar.gz",
+      "archiveSHA256": "e16605f237f0850fd069fb9aca39d300eb1aa3a3b1f5f3f660cb64230a91dd26",
+      "inventorySHA256": "bc0a82327bafb6906c431afba0a76c179108ccc5dc2124880c46fee7f32afa09",
+      "allInventoryMembersMatched": true,
+      "sameFDHashBeforeAndAfter": true,
+      "sourceIdentityUnchanged": true,
+      "rawHeaderCount": 8,
+      "decompressedBytesScanned": 926326784,
+      "selectedMembers": [
+        {
+          "archiveSHA256": "e16605f237f0850fd069fb9aca39d300eb1aa3a3b1f5f3f660cb64230a91dd26",
+          "originalMemberName": "room_datasets/koivu/gt_mesh.ply",
+          "normalizedMemberName": "room_datasets/koivu/gt_mesh.ply",
+          "output": "gt_mesh.ply",
+          "bytes": 660550085,
+          "sha256": "e18db651c694046de7994237e276d88138ecef9071351281a418de9c9a279b5e"
+        },
+        {
+          "archiveSHA256": "e16605f237f0850fd069fb9aca39d300eb1aa3a3b1f5f3f660cb64230a91dd26",
+          "originalMemberName": "room_datasets/koivu/icp_iphone.json",
+          "normalizedMemberName": "room_datasets/koivu/icp_iphone.json",
+          "output": "icp_iphone.json",
+          "bytes": 449,
+          "sha256": "95b4e26d6d260bd9b06cff801648fc38c030a510cf4055af2294490cf49938d4"
+        }
+      ]
+    },
+    {
+      "archive": "koivu_iphone.tar.gz",
+      "archiveSHA256": "68735cfa0758e1288a006c30dc8b95ffb4caa3392bc9c68c0c3ea6c111966518",
+      "inventorySHA256": "ec0f005863f74b75276593cc2dbbe54057c2d29a2a591a8cde3aa4a847f09037",
+      "allInventoryMembersMatched": true,
+      "sameFDHashBeforeAndAfter": true,
+      "sourceIdentityUnchanged": true,
+      "rawHeaderCount": 1748,
+      "decompressedBytesScanned": 191404544,
+      "selectedMembers": [
+        {
+          "archiveSHA256": "68735cfa0758e1288a006c30dc8b95ffb4caa3392bc9c68c0c3ea6c111966518",
+          "originalMemberName": "room_datasets/koivu/iphone/long_capture/transformations_colmap.json",
+          "normalizedMemberName": "room_datasets/koivu/iphone/long_capture/transformations_colmap.json",
+          "output": "transformations_colmap.json",
+          "bytes": 239934,
+          "sha256": "6f523cef70f1f97d4be4ef4d15650c3d242b9c70613b94ca13970951bc13ebdc"
+        }
+      ]
+    }
+  ],
+  "selectedBytes": 660790468,
+  "extractionCapBytes": 671088640,
+  "reservedFreeBytes": 805306368,
+  "wallCapSeconds": 300,
+  "cpuCapSeconds": 300,
+  "addressSpaceCapBytes": 402653184,
+  "wallSeconds": 8.713545981998323,
+  "cpuSeconds": 8.6692784,
+  "peakRSSKiB": 22048,
+  "helperSHA256": "83a8b9f25c9ec777df74bcfc50cc6581dd1290bf2aca1975dee62d7d11d1b9b9",
+  "archiveGuardSHA256": "ee2e095bfd35f864d509ede0ec2404362825edff79af38c18f19f8e5e7ea1e37",
+  "tarfileSourceSHA256": "41a9f1930e5285455b4b0db2b9394247cce312c3fa1ef586a58e66c0100668d5",
+  "pointCloudExtracted": false,
+  "meshLoaded": false,
+  "raycastExecuted": false,
+  "comparisonExecuted": false,
+  "navigationExecuted": false
+}

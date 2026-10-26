@@ -1,0 +1,9 @@
+# Authorized independent room-reference acquisition — inventory only
+
+Acquire exactly official Koivu FARO archive from open CC BY 4.0 Zenodo record 10222321, expected 455,583,916 bytes and MD5 `1fc9598ff73fc833b6e4db90af604062`. Compressed cap 460 MiB; retain at least 768 MiB free throughout. Verify published MD5 and record local SHA-256; retain failures/partial files, never overwrite prior evidence. Restrict redirects to HTTPS zenodo.org, no authentication, terms acceptance or dependency install.
+
+After acquisition, verify the archive SHA through the same file descriptor used for streaming inventory. Inventory only: at most 2 GiB decompressed and declared content, 10,000 members, 300-second wall/CPU process bounds, 384 MiB address-space cap. Reject traversal, absolute paths, duplicate normalized names, links/special entries. Drain gzip under the same byte cap to validate its trailer. No extraction command exists in this script. Report exact members and sizes before any selective extraction.
+
+Intended later computational subset is cleaned `gt_mesh.ply` and `icp_iphone.json`; independently measured-support analysis may need reference `gt_pd.ply` or a supplied mask, which is not authorized for extraction now. A cleaned/hole-completed mesh is not a perfect measured surface. Existing phone archive metadata needs exact filename association; Koivu's `transformations_colmap.json` filename does not prove successful COLMAP, which the paper says failed for this scene. Registration includes global scale and device-derived alignment; no causal pose, normal tracking, native confidence, body truth or absolute accuracy is invented.
+
+No scene rendering, depth comparison, detector or navigation is authorized by this acquisition step. A frozen, independently reviewed offline comparison protocol is the next gate.

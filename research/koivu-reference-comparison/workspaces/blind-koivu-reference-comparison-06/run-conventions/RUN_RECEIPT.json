@@ -1,0 +1,182 @@
+{
+  "bounds": {
+    "aggregateOutputBytes": 67108864,
+    "childRLIMIT_AS": null,
+    "childRLIMIT_CPUSeconds": 29,
+    "childRLIMIT_FSIZEBytes": 67108864,
+    "cpuSeconds": 30.0,
+    "reservedFreeBytes": 805306368,
+    "sampledTreeRSSBytes": 3221225472,
+    "wallSeconds": 45.0
+  },
+  "command": [
+    "$RUNTIME/dependencies/python/bin/python",
+    "$WORKSPACE/blind-koivu-reference-comparison-06/comparison.py",
+    "--mode",
+    "conventions",
+    "--output",
+    "$WORKSPACE/blind-koivu-reference-comparison-06/run-conventions.partial/comparison"
+  ],
+  "configSHA256": "720227d5a1010763b033a58d3ae9515f01de13549971b579ae51fb18fbb655ba",
+  "enforcementLimits": "Sampled /proc tree RSS/CPU and aggregate file sizes, plus child per-process CPU and per-file size limits; NOT a cgroup, sandbox or hard aggregate quota. Sampling may overshoot and miss short-lived process peaks.",
+  "environmentOverrides": {
+    "BLIS_NUM_THREADS": "1",
+    "CUDA_VISIBLE_DEVICES": "",
+    "HIP_VISIBLE_DEVICES": "",
+    "MKL_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "VTK_SMP_IMPLEMENTATION_TYPE": "Sequential",
+    "VTK_SMP_MAX_THREADS": "1"
+  },
+  "exitCode": 0,
+  "heartbeat": {
+    "appendOnly": true,
+    "file": "heartbeat.jsonl",
+    "nominalWallIntervalSeconds": 2,
+    "timing": "Written by sampled watchdog checks, not a separate real-time timer; no comparison/geometry authority"
+  },
+  "installOrDownloadPerformed": false,
+  "mode": "conventions",
+  "modeExcludedInputs": [
+    {
+      "hashedInThisRun": false,
+      "modes": [
+        "evaluate"
+      ],
+      "path": "$WORKSPACE/blind-koivu-faro-acquisition-04/selected-reference/gt_mesh.ply"
+    },
+    {
+      "hashedInThisRun": false,
+      "modes": [
+        "evaluate"
+      ],
+      "path": "$WORKSPACE/blind-koivu-faro-acquisition-04/selected-reference/icp_iphone.json"
+    },
+    {
+      "hashedInThisRun": false,
+      "modes": [
+        "evaluate"
+      ],
+      "path": "$WORKSPACE/blind-koivu-faro-acquisition-04/selected-reference/transformations_colmap.json"
+    },
+    {
+      "hashedInThisRun": false,
+      "modes": [
+        "evaluate"
+      ],
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/selected/room_datasets/koivu/iphone/long_capture/transformations.json"
+    },
+    {
+      "hashedInThisRun": false,
+      "modes": [
+        "evaluate"
+      ],
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00001.png"
+    },
+    {
+      "hashedInThisRun": false,
+      "modes": [
+        "evaluate"
+      ],
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00005.png"
+    },
+    {
+      "hashedInThisRun": false,
+      "modes": [
+        "evaluate"
+      ],
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00009.png"
+    },
+    {
+      "hashedInThisRun": false,
+      "modes": [
+        "evaluate"
+      ],
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00013.png"
+    },
+    {
+      "hashedInThisRun": false,
+      "modes": [
+        "evaluate"
+      ],
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00017.png"
+    },
+    {
+      "hashedInThisRun": false,
+      "modes": [
+        "evaluate"
+      ],
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00021.png"
+    },
+    {
+      "hashedInThisRun": false,
+      "modes": [
+        "evaluate"
+      ],
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00025.png"
+    },
+    {
+      "hashedInThisRun": false,
+      "modes": [
+        "evaluate"
+      ],
+      "path": "$WORKSPACE/blind-mushroom-koivu-acquisition-01/recorded_subset/room_datasets/koivu/iphone/long_capture/depth/frame_00029.png"
+    }
+  ],
+  "pins": [
+    {
+      "bytes": 20390,
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-proposal-06/PROTOCOL.md",
+      "sha256": "02d14c36dfd7225c7e920314ae40eb9d1af51d98772f708867d85e80adb533a6"
+    },
+    {
+      "bytes": 12861,
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/comparison.py",
+      "sha256": "3915ee3db74f8dfdbe925cac9713e5958326163e6b0be8172036aa6aa96f664f"
+    },
+    {
+      "bytes": 10435,
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/reference_geometry.py",
+      "sha256": "266026051a781f122a59187f599688e8c5eb38807984b7e607401e7b4356386d"
+    },
+    {
+      "bytes": 13691,
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/run_bounded.py",
+      "sha256": "c74bbbd8757a2eac52fe5d4a7ecef632971974092a2af12cacbb70a1b3c9ba38"
+    },
+    {
+      "bytes": 760,
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/DATA_CONFIG.json",
+      "sha256": "e3c2e58971bcad597a6887df173fc83f92c50d8ec6c8c5a304c0cccc9ae8bb59"
+    },
+    {
+      "bytes": 7289096,
+      "path": "$RUNTIME/dependencies/python/lib/python3.12/site-packages/vtkmodules/vtkCommonDataModel.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "7f8b99063eb15cec4ac6115440bede2b53e45c96d5408dbe29f0675053dd0c9e"
+    },
+    {
+      "bytes": 114744,
+      "path": "$RUNTIME/dependencies/python/lib/python3.12/site-packages/vtkmodules/vtkIOPLY.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "a49b20223bc3e30bfbab2f490ac8c3ffdfed2d8d8cd45e49a1936dfddcbc1315"
+    },
+    {
+      "bytes": 5301,
+      "path": "$WORKSPACE/blind-koivu-reference-comparison-06/CONFIG.json",
+      "sha256": "720227d5a1010763b033a58d3ae9515f01de13549971b579ae51fb18fbb655ba"
+    }
+  ],
+  "resources": {
+    "peakChildRSSKiB": 115740,
+    "peakOutputBytesBeforeReceipt": 7800,
+    "sampledPeakTreeRSSBytes": 130940928,
+    "sampledTreeCPUSeconds": 0.42999999999999994,
+    "wallSeconds": 0.43984861799981445
+  },
+  "sourceAndInputHashesVerifiedBeforeAndAfter": true,
+  "status": "child completed within observed limits; comparison conclusions belong to its own report",
+  "wrapperGeometryOrNavigationAuthority": false
+}
