@@ -1,0 +1,285 @@
+{
+  "schema": 1,
+  "dataset": "official ARKitScenes v1 Training47333462",
+  "frames": 596,
+  "durationSeconds": 59.492,
+  "result": "negative conditional recorded navigation evidence; no completed journey",
+  "sourceGravity": "fixed proper S(x,y,z)=(x,z,-y), inferred source convention, not independently measured gravity",
+  "cameraConvention": "S * sourceCameraToWorld * diag(1,-1,-1), Float32 native transform",
+  "odometry": "supplied recorded camera poses, not localization estimated by this system",
+  "fullFrameIntegrityReceiptSHA256": "c872df2fdeb837f5ce31eb2fbc8c7af4897b8f6e17c124b83ce4e0b3719015c4",
+  "inputSHA256": "bee2e3478188477d297430b4524facb96385328890e4399ebd3c9ba45c70a53f",
+  "rasterSHA256": "0e113c070507c79aab1ad2a1e13a8e0ea9ab3304f8e3912b7c0a1aed78f2b498",
+  "samples": "stride2, confidence2, native Float32 depth closed0.15...5m, horizontal>0.25 else nil",
+  "clock": "sequential recorded clock; actual runtime queue/callback executed, not real-time device latency",
+  "nativeCadence": "1/15sec ingress; actual runtime>=0.1sec; no interpolation or extra captures",
+  "initialAction": "explicit beginCalibration before first real capture",
+  "returnActionSeconds": 30,
+  "restartVariantSeconds": 45,
+  "variants": {
+    "baseline": {
+      "bodyWarningEpisodeDurations": [],
+      "bodyWarningEpisodes": 0,
+      "bodyWarningFraction": 0,
+      "bodyWarningLegacyUrgentOverlapTicks": 0,
+      "bodyWarningTicks": 0,
+      "calibratedFloorTicks": 0,
+      "clock": "recorded timestamps advanced causally; not native scheduling latency",
+      "finalReturnState": "invalidated",
+      "frames": 596,
+      "hazards": {
+        "calibrating": 536,
+        "uncertain": 60
+      },
+      "maximumObservedCells": 4096,
+      "meaning": "Native-density/cadence real-depth conditional replay with supplied recorded odometry; actual code outcomes may fail; not a model-controlled or wearer-validated journey",
+      "mode": "baseline",
+      "physicalOrCompleteJourneyAcceptance": false,
+      "plans": {
+        "no-body-envelope": 596
+      },
+      "returnCandidatePlanTicks": 0,
+      "returnRequestElapsedSeconds": 30,
+      "returnStates": {
+        "idle": 250,
+        "invalidated": 113,
+        "paused": 182,
+        "unavailable": 51
+      },
+      "rgbUse": "verified association only; no RGB recognition or VIO estimation in this driver",
+      "runtimeAcceptedFrames": 315,
+      "transport": {
+        "cameraOrientationUnavailable": 60,
+        "observationAvailable": 536
+      }
+    },
+    "body-sensitivity": {
+      "assumedBodyProfile": {
+        "depth": 0.3,
+        "dimensionError": "unquantified",
+        "equipmentBounds": "incomplete",
+        "height": 1.6,
+        "meaning": "hypothetical fixed mount; not the recorded wearer. If camera-to-observed-floor differs, ground can intersect reported body volume; alert fraction is not accuracy.",
+        "mountForward": 0.1,
+        "mountRight": 0,
+        "mountUp": 1.2,
+        "width": 0.45
+      },
+      "bodyWarningEpisodeDurations": [
+        7.597000000001572,
+        9.39600000000064,
+        0,
+        4.4979999999995925,
+        3.4990000000034343,
+        3.797999999995227,
+        0,
+        0,
+        7.197000000000116,
+        10.09599999999773
+      ],
+      "bodyWarningEpisodes": 10,
+      "bodyWarningFraction": 0.790268456375839,
+      "bodyWarningLegacyUrgentOverlapTicks": 0,
+      "bodyWarningTicks": 471,
+      "calibratedFloorTicks": 0,
+      "clock": "recorded timestamps advanced causally; not native scheduling latency",
+      "finalReturnState": "invalidated",
+      "frames": 596,
+      "hazards": {
+        "calibrating": 65,
+        "obstacle": 471,
+        "uncertain": 60
+      },
+      "maximumObservedCells": 4096,
+      "meaning": "Native-density/cadence real-depth conditional replay with supplied recorded odometry; actual code outcomes may fail; not a model-controlled or wearer-validated journey",
+      "mode": "body-sensitivity",
+      "physicalOrCompleteJourneyAcceptance": false,
+      "plans": {
+        "needsCalibration": 250,
+        "no-live-owned-plan": 346
+      },
+      "returnCandidatePlanTicks": 0,
+      "returnRequestElapsedSeconds": 30,
+      "returnStates": {
+        "idle": 250,
+        "invalidated": 113,
+        "paused": 182,
+        "unavailable": 51
+      },
+      "rgbUse": "verified association only; no RGB recognition or VIO estimation in this driver",
+      "runtimeAcceptedFrames": 315,
+      "transport": {
+        "cameraOrientationUnavailable": 60,
+        "observationAvailable": 536
+      }
+    },
+    "body-wide-sensitivity": {
+      "assumedBodyProfile": {
+        "depth": 0.3,
+        "dimensionError": "unquantified",
+        "equipmentBounds": "incomplete",
+        "height": 1.9,
+        "meaning": "hypothetical fixed mount; not the recorded wearer. If camera-to-observed-floor differs, ground can intersect reported body volume; alert fraction is not accuracy.",
+        "mountForward": 0.1,
+        "mountRight": 0,
+        "mountUp": 1.2,
+        "width": 0.7
+      },
+      "bodyWarningEpisodeDurations": [
+        7.697000000000116,
+        9.89600000000064,
+        1.2989999999990687,
+        8.497000000003027,
+        11.894999999996799,
+        10.39600000000064
+      ],
+      "bodyWarningEpisodes": 6,
+      "bodyWarningFraction": 0.8439597315436241,
+      "bodyWarningLegacyUrgentOverlapTicks": 0,
+      "bodyWarningTicks": 503,
+      "calibratedFloorTicks": 0,
+      "clock": "recorded timestamps advanced causally; not native scheduling latency",
+      "finalReturnState": "invalidated",
+      "frames": 596,
+      "hazards": {
+        "calibrating": 33,
+        "obstacle": 503,
+        "uncertain": 60
+      },
+      "maximumObservedCells": 4096,
+      "meaning": "Native-density/cadence real-depth conditional replay with supplied recorded odometry; actual code outcomes may fail; not a model-controlled or wearer-validated journey",
+      "mode": "body-wide-sensitivity",
+      "physicalOrCompleteJourneyAcceptance": false,
+      "plans": {
+        "needsCalibration": 250,
+        "no-live-owned-plan": 346
+      },
+      "returnCandidatePlanTicks": 0,
+      "returnRequestElapsedSeconds": 30,
+      "returnStates": {
+        "idle": 250,
+        "invalidated": 113,
+        "paused": 182,
+        "unavailable": 51
+      },
+      "rgbUse": "verified association only; no RGB recognition or VIO estimation in this driver",
+      "runtimeAcceptedFrames": 315,
+      "transport": {
+        "cameraOrientationUnavailable": 60,
+        "observationAvailable": 536
+      }
+    },
+    "restart": {
+      "bodyWarningEpisodeDurations": [],
+      "bodyWarningEpisodes": 0,
+      "bodyWarningFraction": 0,
+      "bodyWarningLegacyUrgentOverlapTicks": 0,
+      "bodyWarningTicks": 0,
+      "calibratedFloorTicks": 0,
+      "clock": "recorded timestamps advanced causally; not native scheduling latency",
+      "finalReturnState": "idle",
+      "frames": 596,
+      "hazards": {
+        "calibrating": 400,
+        "needsCalibration": 136,
+        "uncertain": 60
+      },
+      "maximumObservedCells": 4096,
+      "meaning": "Native-density/cadence real-depth conditional replay with supplied recorded odometry; actual code outcomes may fail; not a model-controlled or wearer-validated journey",
+      "mode": "restart",
+      "physicalOrCompleteJourneyAcceptance": false,
+      "plans": {
+        "no-body-envelope": 596
+      },
+      "returnCandidatePlanTicks": 0,
+      "returnRequestElapsedSeconds": 30,
+      "returnStates": {
+        "idle": 394,
+        "paused": 150,
+        "unavailable": 52
+      },
+      "rgbUse": "verified association only; no RGB recognition or VIO estimation in this driver",
+      "runtimeAcceptedFrames": 314,
+      "transport": {
+        "cameraOrientationUnavailable": 60,
+        "observationAvailable": 536
+      }
+    }
+  },
+  "diagnostic": {
+    "actualDetectorReasons": {
+      "none": 536
+    },
+    "allFrozenDetectorOutputsMatch": true,
+    "corridorAtLeast30ButHeightEligibleBelow30": 153,
+    "floorShiftResets": 0,
+    "frames": 596,
+    "gates": {
+      "inlierFractionOrBins": 267,
+      "nearCountBelow30": 202,
+      "stableSamplesAccumulating": 67,
+      "transportOrientationUnavailable": 60
+    },
+    "limits": "Exact actual detector control flow, diagnostic assignments only; 536 process outputs plus60 nil transport outcomes match. No floor insertion, gravity validation, stationary frames or changed thresholds. No descriptive plane fit computed in this matched-transport cut.",
+    "maximumConsecutiveCalibrationFrames": 8,
+    "movementResets": 123,
+    "movementResetsDiscardingPositiveRun": 18
+  },
+  "precisionCutAggregateUnchanged": {
+    "baseline": true,
+    "body-sensitivity": true,
+    "body-wide-sensitivity": true,
+    "restart": true
+  },
+  "tests": {
+    "authoredTransportAssertions": 8,
+    "sourceAndNegativeMutationChecks": 50
+  },
+  "limitations": [
+    "No RGB recognition/VIO/model executed.",
+    "No connected registered journey runtime or physical release.",
+    "Hypothetical body dimensions/mount are not dataset wearer truth; alert fraction is not accuracy.",
+    "Profile-bearing restart and native mount-slip retirement are not modeled; current restart has no profile and profile runs show no mount-unavailable status.",
+    "Earlier stride8 history-adapter failures retained, not claimed native calibration failures.",
+    "Production BodyHeading/ReturnTrail/LocalPlanner/ObservedScene, body warning and shared recordedBoundsPreview helper used; actual Foundation runtime executed."
+  ],
+  "publicDataPolicy": "Aggregate counts/source pins only; no raw RGB/depth/trajectory/derived per-frame coordinates published.",
+  "baseCommit": "86992184020d877c26295db8fc6ec903eb21a9f9",
+  "sharedPolicyReplayComparison": {
+    "baseline": {
+      "exactTraceUnchanged": true,
+      "frames": 596,
+      "summaryUnchanged": true
+    },
+    "body-sensitivity": {
+      "exactTraceUnchanged": true,
+      "frames": 596,
+      "summaryUnchanged": true
+    },
+    "body-wide-sensitivity": {
+      "exactTraceUnchanged": true,
+      "frames": 596,
+      "summaryUnchanged": true
+    },
+    "restart": {
+      "exactTraceUnchanged": true,
+      "frames": 596,
+      "summaryUnchanged": true
+    }
+  },
+  "sharedPolicyTests": {
+    "portableCoreMethods": 4,
+    "nodeSourceContracts": 3,
+    "authoredTransportAssertions": 8,
+    "nativeSyntaxParse": "passed",
+    "appleSIMDTest": "prepared, not run",
+    "fullAppleSDKBuild": "pending"
+  },
+  "initialTestCompilerFailure": "Test expressions used Double-literal nextUp/nextDown in a Float array; changed only test literals to explicit Float. Original compiler log retained.",
+  "sourceSHA256": {
+    "BlindCore/Sources/BlindCore/NativeDepthObservationPolicy.swift": "0e6e55ddc3321b6b89998ca43c9fcd3711ec8e54d7395ea99b6edeb52e2b6e7c",
+    "BlindCore/Tests/BlindCoreTests/NativeDepthObservationPolicyTests.swift": "f4e4890838275f62c64549d64654ba132e8e1e7c32649972743031e278b5f952",
+    "ios/BlindAssist/DepthSampler.swift": "e659262705258516fed4db98b333743c1342b5397087bf0f13ec7941a55f8171",
+    "tools/test/native-depth-policy.test.mjs": "60dafb7a7398af04b0700046759ac7e020f04ee329402f744c8b9897eead2671"
+  }
+}

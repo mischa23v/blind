@@ -12,7 +12,7 @@ enum DepthSampler {
     static func unavailableReason(from frame: ARFrame) -> MonitoringReason {
         guard case .normal = frame.camera.trackingState else { return .trackingUnavailable }
         let forward = -frame.camera.transform.columns.2
-        if hypot(forward.x, forward.z) <= 0.25 { return .cameraOrientation }
+        if hypot(forward.x, forward.z) <= NativeDepthObservationPolicy.minimumHorizontalOpticalLength { return .cameraOrientation }
         return .depthUnavailable
     }
     /// World position of the surface at a point of the upright (portrait, .right) camera image,
@@ -63,26 +63,25 @@ enum DepthSampler {
         guard let base = CVPixelBufferGetBaseAddress(buffer), let confidenceBase = CVPixelBufferGetBaseAddress(confidence) else { return nil }
         let size = frame.camera.imageResolution
         let intrinsics = frame.camera.intrinsics
-        let sx = Double(width) / size.width, sy = Double(height) / size.height
-        let projection = DepthProjection(fx: Double(intrinsics.columns.0.x) * sx,
-                                         fy: Double(intrinsics.columns.1.y) * sy,
-                                         cx: Double(intrinsics.columns.2.x) * sx,
-                                         cy: Double(intrinsics.columns.2.y) * sy)
+        let projection = NativeDepthObservationPolicy.projection(
+            fx: intrinsics.columns.0.x, fy: intrinsics.columns.1.y,
+            cx: intrinsics.columns.2.x, cy: intrinsics.columns.2.y,
+            depthWidth: width, depthHeight: height,
+            imageWidth: size.width, imageHeight: size.height)
         let transform = frame.camera.transform
         let opticalForward = -transform.columns.2
-        let horizontalLength = hypot(opticalForward.x, opticalForward.z)
-        guard horizontalLength > 0.25 else { return nil }
+        guard let forward = NativeDepthObservationPolicy.horizontalForward(
+            opticalX: opticalForward.x, opticalZ: opticalForward.z) else { return nil }
         let origin = transform.columns.3
-        let forward = Point3(Double(opticalForward.x / horizontalLength), 0, Double(opticalForward.z / horizontalLength))
         // Four times the previous sample density, retaining confidence checks.
         // Device latency/thermal measurements are still required at 15 Hz.
         var samples: [DepthSample] = []; samples.reserveCapacity(width * height / 4)
-        for row in stride(from: 0, to: height, by: 2) {
+        for row in stride(from: 0, to: height, by: NativeDepthObservationPolicy.pixelStride) {
             let depths = base.advanced(by: row * CVPixelBufferGetBytesPerRow(buffer)).assumingMemoryBound(to: Float.self)
             let confidences = confidenceBase.advanced(by: row * CVPixelBufferGetBytesPerRow(confidence)).assumingMemoryBound(to: UInt8.self)
-            for column in stride(from: 0, to: width, by: 2) {
-                let value = Double(depths[column])
-                guard confidences[column] == 2, (0.15...5).contains(value),
+            for column in stride(from: 0, to: width, by: NativeDepthObservationPolicy.pixelStride) {
+                guard let value = NativeDepthObservationPolicy.acceptedDepth(
+                    depths[column], confidence: confidences[column]),
                       let camera = projection.cameraPoint(column: Double(column), row: Double(row), depth: value) else { continue }
                 let world = transform * SIMD4<Float>(Float(camera.x), Float(camera.y), Float(camera.z), 1)
                 samples.append(DepthSample(Point3(Double(world.x), Double(world.y), Double(world.z))))
