@@ -581,6 +581,7 @@ struct AssistantToolsView: View {
             } header: { Text(t("Public places", "الأماكن العامة")) }
             Section {
                 Text(StatusText.localized(model.mapping.status, arabic: model.arabic))
+                Text(model.observedSceneStatus).accessibilityIdentifier("observed-scene-planner-status")
                 NavigationLink(t("Mapping progress", "تقدم رسم الخريطة")) { SurveyProgressView(model: model) }
                 // No export: the 3D map database can hold camera pictures of the home (privacy rule).
                 if model.mapping.exportURL != nil {

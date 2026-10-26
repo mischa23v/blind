@@ -1,3 +1,11 @@
+## Next — real map outputs and recorded navigation failures
+
+Connect the existing RTAB-Map local ground/obstacle/empty-cell outputs and corrected node poses through capture/session/revision-owned native callbacks. Do not substitute renderer camera positions or fixed covariance for measured localization error. Finish causal recorded navigation and diagnose actual calibration, support and route failures without injecting an ideal floor or future map.
+
+The integrated scene/body/return stage is published code, not full navigation acceptance. Preserve physical-device, map transition, tracking recovery and 400 complete-journey gates. [Current integration evidence](research/evaluations/observed-scene/README.md).
+
+---
+
 ## Next — integrated maps, body geometry and navigation
 
 Continue the native observation→map→localization→route loop. The new body-aware warning path uses saved maximum height/width/depth, equipment and chest offsets, but does not establish body heading, current floor support, complete obstacle coverage or safe passage. Confirm the shared session mount control in Body and chest holder; it resets after camera restart.

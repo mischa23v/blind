@@ -22,6 +22,60 @@ final class BodyProfileTests: XCTestCase {
         XCTAssertThrowsError(try LocalBodyProfile(mount: .init(up: -1)))
         XCTAssertThrowsError(try LocalBodyProfile(equipment: .init(radialExtension: .nan)))
     }
+    func testRecordedBoundsRejectLoadedEmptyAndEstimatedOnlyProfiles() throws {
+        let empty = try LocalBodyProfile.decodeLocal(JSONEncoder().encode(LocalBodyProfile()))
+        XCTAssertNotNil(empty.preview().envelope) // Settings visualization keeps its existing defaults.
+        XCTAssertNil(empty.recordedBoundsPreview()) // Loading no saved measurements cannot create a planning body.
+        var estimated = try LocalBodyProfile(input: .init(ageYears: 8, weightKilograms: 25, heightMetres: 1.2))
+        XCTAssertNil(estimated.recordedBoundsPreview())
+        try record(&estimated, .estimated)
+        XCTAssertNotNil(estimated.preview().envelope)
+        XCTAssertNil(estimated.recordedBoundsPreview())
+    }
+    func testRecordedBoundsAcceptReportsAndMeasurementsWithoutHidingMissingEvidence() throws {
+        for source in [BodyDimensionSource.reported, .measured] {
+            var p = try LocalBodyProfile()
+            try p.record(.init(height: 1.7, width: 0.6, depth: 0.4, uncertainty: nil,
+                source: source, provenance: "synthetic conditional input", recordedAt: 10,
+                profileRevision: p.measurementBasisRevision), replacingGeometryRevision: p.geometryRevision)
+            let preview = try XCTUnwrap(p.recordedBoundsPreview()), existing = p.preview()
+            XCTAssertEqual(preview.envelope, existing.envelope)
+            XCTAssertEqual(preview.dimensionSource, source)
+            XCTAssertEqual(preview.missingEvidence, existing.missingEvidence)
+            XCTAssertTrue(preview.missingEvidence.contains("quantified dimension uncertainty"))
+            XCTAssertTrue(preview.missingEvidence.contains("chest mount offset"))
+            XCTAssertTrue(preview.missingEvidence.contains("carried objects, backpack, clothing and cane bounds"))
+            XCTAssertEqual(preview.profileRevision, p.geometryRevision)
+            XCTAssertEqual(preview.mountRevision, p.mountRevision)
+        }
+    }
+    func testRecordedBoundsRetainConservativeUnionAndRetireAfterGeometryChanges() throws {
+        var p = try LocalBodyProfile(); try record(&p, .measured, h: 1.8, w: 0.4, d: 0.2)
+        try record(&p, .reported, h: 1.5, w: 0.9, d: 0.5)
+        let preview = try XCTUnwrap(p.recordedBoundsPreview())
+        XCTAssertEqual(preview.envelope, p.preview().envelope)
+        XCTAssertEqual(preview.dimensionSource, .reported)
+        XCTAssertTrue(preview.missingEvidence.contains("new report compared with retained measurement; conservative union"))
+        try p.update(input: .init(heightMetres: 1.9), mount: p.mount, equipment: p.equipment)
+        XCTAssertTrue(p.dimensions.isEmpty)
+        XCTAssertNil(p.recordedBoundsPreview())
+    }
+    func testRecordedBoundsRejectInvalidStaleAndUnsupportedWithoutSmallerFallback() throws {
+        var p = try LocalBodyProfile(equipment: .init(radialExtension: 3, overheadExtension: 3))
+        try record(&p, .reported)
+        XCTAssertNotNil(p.recordedBoundsPreview())
+        XCTAssertNil(p.recordedBoundsPreview()?.envelope) // Unsupported size is never clamped/defaulted.
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(p)) as? [String: Any])
+        object["measurementBasisRevision"] = UUID().uuidString
+        let stale = try JSONDecoder().decode(LocalBodyProfile.self, from: JSONSerialization.data(withJSONObject: object))
+        XCTAssertFalse(stale.valid)
+        XCTAssertNil(stale.recordedBoundsPreview())
+        object["measurementBasisRevision"] = p.measurementBasisRevision.uuidString
+        var input = try XCTUnwrap(object["input"] as? [String: Any]); input["heightMetres"] = -1; object["input"] = input
+        let invalid = try JSONDecoder().decode(LocalBodyProfile.self, from: JSONSerialization.data(withJSONObject: object))
+        XCTAssertFalse(invalid.valid)
+        XCTAssertNil(invalid.recordedBoundsPreview())
+    }
     func testDemographicsDoNotInventWidthOrGuardianAuthority() throws {
         let a = try LocalBodyProfile(input: .init(ageYears: 5, gender: "girl", weightKilograms: 20, heightMetres: 1))
         let b = try LocalBodyProfile(input: .init(ageYears: 50, gender: "man", weightKilograms: 120, heightMetres: 2))

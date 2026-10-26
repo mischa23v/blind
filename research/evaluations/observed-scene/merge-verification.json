@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "parent": "9fd57e915da3abd83a0c3e87d648ccd8a57c8661",
+  "mergedSourceContracts": {
+    "passed": 47,
+    "failed": 0,
+    "skipped": 0
+  },
+  "sceneCoreAndFoundationTests": {
+    "passed": 16,
+    "failed": 0
+  },
+  "focusedBodyAndStoreTests": {
+    "passed": 55,
+    "failed": 0
+  },
+  "suiteCountsOverlap": true,
+  "wholeRepositoryAggregate": false,
+  "originalMergedContracts": {
+    "passed": 44,
+    "failed": 2
+  },
+  "fixes": [
+    "Restored original synchronous scan cancellation prefix before body retirement",
+    "Preserved actual legacy/supplement detector branches and negative mutation assertions",
+    "Missing source-order tokens cannot pass via index -1",
+    "Loaded empty or estimated-only body profiles cannot supply generic candidate bounds"
+  ],
+  "projectRegenerationByteIdentical": true,
+  "nativeSyntaxParse": "passed; not SDK typecheck",
+  "mergedAppleSDKBuild": "pending",
+  "physicalGuidanceReleased": false,
+  "recordedReplay": {
+    "framesPerVariant": 596,
+    "variants": 4,
+    "durationSeconds": 59.492,
+    "maximumObservedCells": 4096,
+    "calibratedFrames": 0,
+    "candidatePaths": 0,
+    "completedJourneys": 0,
+    "validProfilePlanStates": {
+      "needsCalibration": 250,
+      "needsPosition": 52,
+      "noOwnedTarget": 294
+    },
+    "hypotheticalSmallWarningFrames": 521,
+    "hypotheticalSmallWarningEpisodes": 8,
+    "hypotheticalWideWarningFrames": 562,
+    "hypotheticalWideWarningEpisodes": 6,
+    "classification": "Sparse history-adapter failure; not established native calibration/navigation failure or wearer accuracy",
+    "odometry": "recorded supplied input, not own estimate",
+    "groundTruthMeshConsumed": false,
+    "calibrationGateDiagnosis": "pending",
+    "cutLimitation": "Portable adapter horizontal gate0.3 differs from native0.25; one frame between values. Native unavailable-observation semantics also under correction. Counts are retained cut-specific failures, not exact native pipeline equivalence. Reused history stride8 vs native stride2; native confidence/depth-range/frame-cadence gates also being matched. Minimum calibration counts may be affected.",
+    "correctedNativeGateReplay": "pending"
+  },
+  "fullCoreTypecheck": {
+    "productionSources": 132,
+    "passed": true,
+    "warning": "preexisting CompanionReportedStep immutable Codable property"
+  }
+}

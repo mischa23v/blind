@@ -1,0 +1,92 @@
+{
+  "baselineCommit": "8705ffe7cab719e4ff47bb04d48fc5100bf951d5",
+  "dateUTC": "2026-10-26",
+  "checks": {
+    "portableSwift": {
+      "passed": 16,
+      "failed": 0
+    },
+    "observedSceneSourceContracts": {
+      "passed": 9,
+      "failed": 0
+    },
+    "existingSourceContracts": {
+      "passed": 32,
+      "failed": 0
+    },
+    "nativeSyntaxParse": "passed",
+    "appleSemanticBuild": "not run",
+    "physicalLocalizationValidation": "not run",
+    "fullRecordedJourney": "not included"
+  },
+  "frozenSource": [
+    {
+      "path": "BlindCore/Sources/BlindCore/ObservedScene.swift",
+      "preimageSHA256": null,
+      "postimageSHA256": "664d334664a5633b1d3f414b55fac32d83883970ba8340c62c2b7fb3b786f285"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/ReturnTrail.swift",
+      "preimageSHA256": "1d6d6e5b7d517c954b20a8200ee5a37779c62220fdd2cbaf69602e95a96e21ff",
+      "postimageSHA256": "7ff7d8612ff62b516d8bc0939f17b1204cd00b53f2e23ea9aecd9fdc93601c57"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/ObservedSceneTests.swift",
+      "preimageSHA256": null,
+      "postimageSHA256": "80bf465378d1c44bf064599a78f76e006003accf4a53516183a850159f134e46"
+    },
+    {
+      "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
+      "preimageSHA256": "57c46b319f3efc285d572a2f9e0e395dbf0a1da5add324b8354dbbd8e785ee4a",
+      "postimageSHA256": "ae6019c332ab26081523defd8d97f0d728163171026cf70dcb00cdf4ad80ae67"
+    },
+    {
+      "path": "ios/BlindAssist/DashboardView.swift",
+      "preimageSHA256": "846d3579d739047382b380db5b29cd1f708dd673303e724008f1d29460005223",
+      "postimageSHA256": "c12999ee3feae6697a5341b125c84c4bb66b5a576f0c5d443dbe2370468c8145"
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "preimageSHA256": "5e0461b127dd3f8f46db6c3c16e76f65e7d4a5c75e628efa261e004c736bbebf",
+      "postimageSHA256": "3f7b5caa765da9006d0ed93c990ff97d4996fd7b1c2da39459483b6f431ee2d5"
+    },
+    {
+      "path": "ios/BlindAssist/ObservedSceneRuntime.swift",
+      "preimageSHA256": null,
+      "postimageSHA256": "c19ad8a4fdedfe1bde1b74618a32ed9208d639c7958aa1c1b54ef4c336a70a0d"
+    },
+    {
+      "path": "ios/BlindAssistTests/ObservedSceneRuntimeTests.swift",
+      "preimageSHA256": null,
+      "postimageSHA256": "938c28724d5ab20ca5a731ef06dfdac1cfbd178c23980754eb01e05883a509b8"
+    },
+    {
+      "path": "tools/generate-xcode-project.mjs",
+      "preimageSHA256": "aecf86fa73b5f23ed766e3952265e6d32e674d58b40322e79319d4b73ff8be86",
+      "postimageSHA256": "e8e1b83e993663ef86e2bde1a71da65cafb07802c78eda539aa5b6c5df03b65e"
+    },
+    {
+      "path": "tools/test/observed-scene.test.mjs",
+      "preimageSHA256": null,
+      "postimageSHA256": "99d1c6951f961a5fea9de7a5199388460ab75922345501c542d82ca375ddad5f"
+    },
+    {
+      "path": "tools/test/spatial-review-regressions.test.mjs",
+      "preimageSHA256": "81709c4501d164752f26cc66609e4678f4eac46e1bf76059ba5c27b48b9fb718",
+      "postimageSHA256": "cee64c7c1e923c5d4feae36581ba02e2ae00c08028a836acfebf9553d0755d45"
+    }
+  ],
+  "upstream": {
+    "repository": "https://github.com/introlab/rtabmap",
+    "revision": "a4e7f13522722878dea3f07e8fd082291e72eb49",
+    "license": "BSD-3-Clause",
+    "nativeIntegrationBuild": "not run"
+  },
+  "limits": [
+    "candidate-only outputs",
+    "surface hits are not free-space/support clearance",
+    "profile preview retains unknown bounds",
+    "no physical issuer or speech/beacon acceptance",
+    "no independent localization accuracy claim"
+  ]
+}

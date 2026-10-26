@@ -17,6 +17,12 @@ public struct ReturnTrail: Sendable {
     private var edgeStart = Point3(0, 0, 0)
     private var previous: (position: Point3, time: Double)?
     public init() {}
+    /// Read-only historical target for an observed-scene candidate planner. This
+    /// does not certify the recorded edge, body pose or current walking clearance.
+    public var candidateTarget: Point3? {
+        guard state == .following, index < targets.count else { return nil }
+        return targets[index]
+    }
     public mutating func begin(journey: Journey, camera: Point3, at time: Double) -> Bool {
         self = ReturnTrail()
         guard camera.isFinite, time.isFinite, journey.points.count >= 2,

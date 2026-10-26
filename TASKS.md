@@ -1,3 +1,14 @@
+## Causal scene, body-bound planner and return integration — 2026-10-26
+
+- [x] Connect actual frame observations to a bounded scene worker and the existing LocalPlanner; retain unknown/occluded terrain rather than treating hit history as free space.
+- [x] Use actual JourneyRecorder/ReturnTrail breadcrumbs for same-session candidate return, never teleport camera poses to route targets. Fence candidates by session, capture, goal and recorded body bounds.
+- [x] Preserve original urgent sensors and exact scan cancellation ordering. Empty/estimated-only body profiles no longer create implicit generic planner bounds.
+- [ ] Complete the real upstream RTAB local-grid/corrected-pose bridge, measured localization/body/support validation and actual useful outbound/return journeys. Full recorded replay is evidence to diagnose, not automatic navigation acceptance.
+
+[Implemented scope and checks](research/evaluations/observed-scene/README.md). This stage supplies observed geometry and candidate planning, not released physical walking guidance.
+
+---
+
 ## Body-aware sensor-warning integration — 2026-10-26
 
 - [x] Connect local full-body/equipment bounds and chest offsets to supplemental nearby depth warnings. Use full camera transforms and an orientation-independent envelope, never camera heading as walking/body direction; retain reported/unknown measurement provenance. Preserve every existing urgent detector result.

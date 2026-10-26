@@ -330,14 +330,16 @@ test('connected issuer is retired by mount or frame ownership loss before frame 
         }`;
     assert.ok(prefix.endsWith(registrationHook), 'Bounded registration capture is synchronous after all loss retirements and before scan throttle');
     const retirementPrefix = prefix.slice(0, -registrationHook.length).trim();
-    assert.match(retirementPrefix, /^if case \.normal = frame\.camera\.trackingState \{\} else \{ invalidateNativeLocalization\(\.trackingUnavailable\) \}\s*if case \.normal = frame\.camera\.trackingState \{\} else \{\s*journeys\.breakTracking\(\)\s*nativeObservations\.trackingLost\(\)\s*clearBoardingReading\(\)\s*if readingTool != nil && !usesCapturedText \{ stopReadingTool\(announce: false\) \}\s*\}$/,
+    assert.match(retirementPrefix, /^if case \.normal = frame\.camera\.trackingState \{\} else \{ invalidateNativeLocalization\(\.trackingUnavailable\) \}\s*if case \.normal = frame\.camera\.trackingState \{\} else \{\s*journeys\.breakTracking\(\)\s*nativeObservations\.trackingLost\(\)\s*withObservedScene \{ \$0\.trackingLost\(at: frame\.timestamp\) \}\s*clearBoardingReading\(\)\s*if readingTool != nil && !usesCapturedText \{ stopReadingTool\(announce: false\) \}\s*\}$/,
       'All exact ownership retirements are synchronous and before throttle; normal frames do not retire them');
     before(candidate, 'journeys.breakTracking()', 'frame.timestamp - lastProcessed');
     before(candidate, 'nativeObservations.trackingLost()', 'frame.timestamp - lastProcessed');
     before(candidate, 'stopReadingTool(announce: false)', 'frame.timestamp - lastProcessed');
     before(candidate, 'clearBoardingReading()', 'frame.timestamp - lastProcessed');
-    assert.match(candidate, /phoneDetection = detector\.process\(observation\)/);
-    before(candidate, 'phoneDetection = detector.process(observation)', 'updateReadingTool(frame: frame)');
+    assert.match(candidate, /let legacyDetection = detector\.process\(observation\)/);
+    before(candidate, 'let legacyDetection = detector.process(observation)', 'updateReadingTool(frame: frame)');
+    before(candidate, 'phoneDetection = legacyDetection', 'updateReadingTool(frame: frame)');
+    before(candidate, 'phoneDetection = BodyCollisionWarning.combining(legacyDetection, with: bodyAssessment)', 'updateReadingTool(frame: frame)');
     const missingDepth = section(candidate, 'guard let observation = DepthSampler.observation(from: frame)', 'if !observation.trackingNormal');
     before(missingDepth, 'detector.invalidateRecentEvidence()', 'updateNonspatialObjectMemory(frame: frame)');
     before(missingDepth, 'publish()', 'updateNonspatialObjectMemory(frame: frame)');
@@ -356,15 +358,19 @@ test('connected issuer is retired by mount or frame ownership loss before frame 
     frames.replace('clearBoardingReading()', 'Task { clearBoardingReading() }'),
     frames.replace('journeys.breakTracking()', '/* missing journey retirement */'),
     frames.replace('nativeObservations.trackingLost()', '/* missing route-history retirement */'),
+    frames.replace('withObservedScene { $0.trackingLost(at: frame.timestamp) }', '/* missing scene retirement */'),
+    frames.replace('withObservedScene { $0.trackingLost(at: frame.timestamp) }', 'Task { withObservedScene { $0.trackingLost(at: frame.timestamp) } }'),
     frames.replace('nativeObservations.trackingLost()', 'Task { nativeObservations.trackingLost() }'),
     frames.replace('nativeObservations.trackingLost()', '').replace('let receivedAt =', 'nativeObservations.trackingLost(); let receivedAt ='),
     frames.replace('if readingTool != nil && !usesCapturedText { stopReadingTool(announce: false) }', '/* missing reader retirement */'),
     frames.replace('if readingTool != nil && !usesCapturedText { stopReadingTool(announce: false) }', 'return'),
     frames.replace('invalidateNativeLocalization(.trackingUnavailable)', '/* missing selected-owner retirement */'),
-    frames.replace('phoneDetection = detector.process(observation)', 'phoneDetection = Detection(.observing)'),
+    frames.replace('let legacyDetection = detector.process(observation)', 'let legacyDetection = Detection(.observing)'),
+    frames.replace('phoneDetection = legacyDetection', '/* lost urgent legacy assignment */'),
+    frames.replace('phoneDetection = BodyCollisionWarning.combining(legacyDetection, with: bodyAssessment)', '/* lost combination */'),
     frames.replace('detector.invalidateRecentEvidence()', '/* missing depth-loss hazard retirement */')
   ];
-  for (const mutant of mutations) assert.throws(() => assertRawRetirement(mutant));
+  for (const mutant of mutations) { assert.notEqual(mutant, frames); assert.throws(() => assertRawRetirement(mutant)); }
   assert.match(frames, /if place\.worldFrame != nil, verifiedFrame == nil \{\s*journeys\.breakTracking\(\)/);
   assert.match(frames, /if !observation\.trackingNormal \{\s*journeys\.breakTracking\(\)/);
   const store = await read('ios/BlindAssist/JourneyStore.swift');

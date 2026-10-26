@@ -152,6 +152,17 @@ public struct LocalBodyProfile: Codable, Equatable, Sendable {
         guard value.valid else { throw BodyProfileError.invalidInput }
         return value
     }
+    /// Candidate planning must not treat the settings preview's generic defaults
+    /// as the wearer's recorded dimensions. Reported/measured full bounds remain
+    /// conditional inputs, not validated coverage, pose or clearance evidence.
+    /// Preserve all preview gaps and a nil envelope for unsupported/oversized bounds.
+    public func recordedBoundsPreview() -> BodyEnvelopePreview? {
+        guard valid, dimensions.contains(where: {
+            $0.profileRevision == measurementBasisRevision &&
+                ($0.source == .reported || $0.source == .measured)
+        }) else { return nil }
+        return preview()
+    }
     public func preview() -> BodyEnvelopePreview {
         var gaps = ["validated full-body and equipment coverage", "current measured chest-to-body transform", "fresh map-aligned pose and floor support"]
         guard valid else { return .init(envelope: nil, dimensionSource: .estimated, missingEvidence: gaps + ["valid profile"], profileRevision: geometryRevision, mountRevision: mountRevision) }

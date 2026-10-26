@@ -208,7 +208,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published var objectiveDraft = ""
     @Published private(set) var preferredName = ""
     @Published private(set) var profileStatus = ""
-    private var companionWorkingState = CompanionWorkingState()
+    private var companionWorkingState = CompanionWorkingState() {
+        didSet {
+            if oldValue.goalRevision != companionWorkingState.goalRevision {
+                withObservedScene { $0.bindGoalRevision(companionWorkingState.goalRevision) }
+            }
+        }
+    }
     @Published private(set) var assistantDialogue = AssistantDialogue()
     @Published private(set) var assistantPreferences = AssistantPreferences()
     private var preferencesRevision = UUID()
@@ -291,6 +297,28 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     let wearables = BeltLink()
     let mapping = NativeMapping()
     private let nativeObservations = NativeARObservationBridge()
+    private lazy var observedSceneRuntime = MainActor.assumeIsolated {
+        let runtime = ObservedSceneRuntime()
+        runtime.bindGoalRevision(companionWorkingState.goalRevision)
+        return runtime
+    }
+    private func withObservedScene<T>(_ operation: @MainActor (ObservedSceneRuntime) throws -> T) rethrows -> T {
+        try MainActor.assumeIsolated { try operation(observedSceneRuntime) }
+    }
+    var observedSceneSnapshot: ObservedSceneSnapshot? { withObservedScene { $0.snapshot } }
+    var observedScenePlan: ObservedScenePlan? { withObservedScene { $0.plan } }
+    var observedSceneStatus: String {
+        guard let snapshot = observedSceneSnapshot else {
+            return arabic ? "لم تتوفر مشاهدات هندسية حالية بعد." : "No current observed scene yet."
+        }
+        let state = withObservedScene { $0.liveStatus }
+        let bodyPreview = bodyWarningProfile?.recordedBoundsPreview()
+        let bodyBasis = bodyPreview.map { "\($0.dimensionSource.rawValue), \($0.missingEvidence.count) unknown bounds" }
+            ?? "body profile unavailable"
+        return arabic
+            ? "خريطة تجريبية: \(snapshot.cells.count) خلايا سطح مرصودة. الحالة: \(state). الجسم: \(bodyBasis). ليست إرشاداً للمشي."
+            : "Scene preview: \(snapshot.cells.count) observed surface cells. Planner: \(state). Body: \(bodyBasis). Not walking guidance."
+    }
     let journeys = JourneyStore()
     let voice = VoiceInput()
     let survey = SurveyProgress()
@@ -460,6 +488,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     func invalidateNativeLocalizationMount(slipped: Bool) {
         nativeLocalizationMount = UUID()
         retireBodyWarning()
+        withObservedScene { $0.invalidateBody() }
         invalidateNativeLocalization(slipped ? .mountSlip : .mountChanged)
     }
 
@@ -641,7 +670,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             guard let self else { return }
             BodyProfileStore.shared.onProfileChanged = { [weak self] profile in
                 guard let self else { return }
-                self.bodyWarningProfile = profile; self.retireBodyWarning()
+                self.bodyWarningProfile = profile
+                self.withObservedScene { $0.invalidateBody() }
+                self.retireBodyWarning()
             }
             BodyProfileStore.shared.load { _ in } // Startup, not dependent on visiting settings.
         }
@@ -911,14 +942,17 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             self.publish()
             self.resumePendingQuestion()
         }
+        withObservedScene { runtime in runtime.onChange = { [weak self] in self?.objectWillChange.send() } }
         feedback.onControlAnnouncement = { [weak self] text in _ = self?.speakOperation(text, replace: false) }
         places.onMessage = { [weak self] text in _ = self?.speakOperation(text) }
         mapping.clearObservationHistory = { [weak self] completion in
             guard let self else { completion(false); return }
+            self.withObservedScene { $0.stop() }
             self.nativeObservations.clearHistory(memory: self.places.memory, completion: completion)
         }
         indoor.clearObservationHistory = { [weak self] completion in
             guard let self else { completion(false); return }
+            self.withObservedScene { $0.stop() }
             self.nativeObservations.clearHistory(memory: self.places.memory, completion: completion)
         }
         places.onScanFinished = { [weak self] in
@@ -931,6 +965,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 NativeARObservationAdapter.configureObservedGeometry(configuration)
                 if let sessionID = UUID(uuidString: self.observationFrameID) {
                     self.nativeObservations.begin(sessionID: sessionID, memory: self.places.memory)
+                    self.withObservedScene { $0.begin(session: sessionID, capturedAfter: ProcessInfo.processInfo.systemUptime) }
                 }
                 self.retireCapturedTextSource()
                 self.session.run(configuration)
@@ -1006,6 +1041,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         phoneDetection = Detection(.needsCalibration); simulation = false; running = true
         NativeARObservationAdapter.configureObservedGeometry(configuration)
         nativeObservations.begin(sessionID: worldSessionID, memory: places.memory)
+        withObservedScene { $0.begin(session: worldSessionID, capturedAfter: ProcessInfo.processInfo.systemUptime) }
         retireCapturedTextSource()
         session.delegate = self; session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         if buildPrivateMap { mapping.start() }
@@ -1026,9 +1062,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     /// Camera/sensor lifecycle is independent of an opted-in audio conversation.
     private func stopCameraMonitoring() {
-        retireBodyWarning(publishChange: false)
         nativeObservations.stop()
         voiceRoomScan.cancel()
+        retireBodyWarning(publishChange: false)
+        withObservedScene { $0.stop() }
         cameraRecovery.pause()
         cancelAutomaticRoomRecovery()
         interruptedSearch.cancel()
@@ -1078,6 +1115,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             // Held route output expires even if no sensor callback arrives.
             self.indoor.revalidateSpatialOutput(now: ProcessInfo.processInfo.systemUptime)
             self.journeys.withConnectedJourney { $0.revalidate(now: ProcessInfo.processInfo.systemUptime) }
+            self.withObservedScene { $0.revalidate(now: ProcessInfo.processInfo.systemUptime) }
             self.revalidateNativeLocalization(now: ProcessInfo.processInfo.systemUptime)
             self.spatialRouteOutput.revalidate()
             guard self.running, !self.places.scanning else { return }
@@ -1131,6 +1169,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if case .normal = frame.camera.trackingState {} else {
             journeys.breakTracking()
             nativeObservations.trackingLost()
+            withObservedScene { $0.trackingLost(at: frame.timestamp) }
             clearBoardingReading() // Retire transferred/passive travel even when no reader tool remains.
             // Retire old OCR even if depth was already unavailable and the hazard
             // category does not change. This runs before frame throttling.
@@ -1199,6 +1238,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             }
         }
         guard let observation = DepthSampler.observation(from: frame) else {
+            withObservedScene { $0.suspendLive(at: frame.timestamp) }
             // Retire spatial work once on loss. Repeating cancellation every RGB frame
             // would starve native nonspatial callbacks even while tracking stays valid.
             if lastObservation != nil { invalidatePerceptionWork(preserveRGBHistoryWork: true) }
@@ -1238,6 +1278,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 now: receivedAt, floorHeight: detector.floorHeight)
             bodyWarningAssessment = bodyAssessment
             phoneDetection = BodyCollisionWarning.combining(legacyDetection, with: bodyAssessment)
+        }
+        // Nonurgent scene adaptation follows immediate hazard processing. The
+        // profile preview retains unknown bounds; missing/withdrawn/invalid profiles
+        // accumulate geometry without a plan, never fall back to a smaller body.
+        if let sceneSession = UUID(uuidString: observationFrameID) {
+            withObservedScene { $0.offer(observation, session: sceneSession, floor: detector.floorHeight,
+                body: bodyWarningProfile?.recordedBoundsPreview()?.envelope, now: ProcessInfo.processInfo.systemUptime, hazard: phoneDetection.hazard) }
         }
         survey.observe(observation, floor: detector.floorHeight)
         calibrationProgress = detector.calibrationProgress; publish()
@@ -1474,6 +1521,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     func session(_ session: ARSession, didFailWithError error: Error) {
         retireBodyWarning(publishChange: false)
         nativeObservations.stop()
+        withObservedScene { $0.stop() }
         invalidatePerceptionWork()
         peopleTracking.reset()
         fixedBodyMount = false
@@ -1511,6 +1559,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     func sessionWasInterrupted(_ session: ARSession) {
         retireBodyWarning(publishChange: false)
         nativeObservations.stop()
+        withObservedScene { $0.stop() }
         cameraRecovery.pause()
         invalidatePerceptionWork()
         peopleTracking.reset()
@@ -1544,6 +1593,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // The room scanner needs the camera, so path alerts from the camera pause; say so plainly.
         _ = speakMobility(arabic ? "مسح الغرفة يعمل. تنبيهات الكاميرا متوقفة حتى ينتهي المسح. ابقَ مع مساعد مبصر." : "Room scan running. Camera path alerts are off until the scan ends. Stay with a sighted helper.")
         nativeObservations.stop()
+        withObservedScene { $0.stop() }
         places.startScan(session: session, name: name, compare: compare ? recognizedPlace : nil, relocalized: recognizedPlace != nil, registrationSessionID: UUID(uuidString: observationFrameID))
     }
     func recognize(_ place: SavedPlace) {
@@ -1581,6 +1631,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         lastIndoorCueKey = ""; lastIndoorAnnouncement = -.infinity
     }
     func planIndoor(from: String, to: String) throws {
+        withObservedScene { $0.setIntent(.lookAhead) } // imported goal needs measured native-frame registration
         guard let goal = UUID(uuidString: companionWorkingState.goalRevision) else { throw SpatialRouteError.staleGoal }
         spatialRouteOutput.retire()
         heldSearchIntent.cancel(); interruptedSearch.cancel()
@@ -4456,9 +4507,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     /// Exact-way request is distinct from endpoint replanning. Native calibrated
     /// registration/transport evidence is not yet available, so expose history only.
     func startRecordedReturn(referenceKind: RecordedRouteAnchor.Kind? = nil) {
+        // Unnamed same-session return also drives the observed-scene candidate.
+        // Named/cross-map references require their separate registration owner.
         clearExploreSnapshot(); heldSearchIntent.cancel(); interruptedSearch.cancel()
         cancelDescription(); _ = feedback.stopInformation(announceCancellation: false)
         stopReturn(); spatialRouteOutput.retire(); indoorGuidanceOwner = .connectedJourney
+        if referenceKind == nil { withObservedScene { $0.setIntent(.returnToStart) } }
         try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
         let request = requestID, session = assistantSession.generation
         let goal = companionWorkingState.goalRevision, perception = perceptionGeneration
@@ -4500,6 +4554,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func startReturn() {
+        withObservedScene { $0.setIntent(.lookAhead) } // connected reference may differ from native camera trail
         clearExploreSnapshot()
         heldSearchIntent.cancel(); interruptedSearch.cancel()
         cancelDescription(); _ = feedback.stopInformation(announceCancellation: false)
@@ -4535,6 +4590,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func cancelReturnIntent() {
+        withObservedScene { $0.setIntent(.lookAhead) }
         try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
         stopReturn()
     }
@@ -4600,7 +4656,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
 
-    func stopReturn() { returning = false; returnTrail = ReturnTrail(); returnCue = nil; returnStatus = "" }
+    func stopReturn() { withObservedScene { $0.setIntent(.lookAhead) }; returning = false; returnTrail = ReturnTrail(); returnCue = nil; returnStatus = "" }
     private func invalidateReturn() {
         guard returning else { return }
         returnTrail.invalidate(); returning = false; returnCue = nil

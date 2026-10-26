@@ -50,7 +50,9 @@ function assertTrustedScanEntry(source) {
 
 test('foreground frame loop schedules contextual capabilities without a mode command', () => {
   assert.match(model, /updateBackgroundPerception\(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal\)/);
-  assert.ok(model.indexOf('phoneDetection = detector.process(observation)') < model.indexOf('updateBackgroundPerception(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal)'));
+  const detector = model.indexOf('let legacyDetection = detector.process(observation)');
+  const background = model.indexOf('updateBackgroundPerception(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal)');
+  assert.ok(detector >= 0 && background > detector);
   assert.match(contextual, /ContextualCapabilityScheduler.Goal.infer\(from: contextualGoalText\)/);
   assert.doesNotMatch(section("private var contextualGoalText", "private func cancelVoiceRoomScanConfirmation"), /startReadingTool\(|routeSaudiBanknoteCommand\(|routeClothingColorCommand\(|cancelDescription\(/);
 });
