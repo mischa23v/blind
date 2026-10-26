@@ -1,0 +1,523 @@
+{
+  "confirmed": true,
+  "sixArtifactHashesReconciled": true,
+  "all36FixedOutcomesReconciled": true,
+  "oldLoopNativeHistoricalParityAll12Legs": true,
+  "samePhoneSpaceObjectiveMappingMaxAbsErrorMetres": 8.881784197001252e-16,
+  "coordinateRoundtripMaxAbsErrorMetres": 8.881784197001252e-16,
+  "requestedGameYRangeMetres": [
+    -0.0003200206555618035,
+    0.0022191940945279764
+  ],
+  "projectedMinusRequestedYRangeMetres": [
+    0.022780806278001053,
+    0.025320021028090833
+  ],
+  "acceptedLegs": 8,
+  "fullLoopsAccepted": 0,
+  "pairedAcceptanceChanges": [
+    {
+      "profile": "body45cmMargin0",
+      "objectiveID": "loop_north_to_east",
+      "oldStatus": "fixedNativeOrRectangleRejected",
+      "newStatus": "fixedNativeOrRectangleRejected",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "body45cmMargin0",
+      "objectiveID": "loop_east_to_south",
+      "oldStatus": "fixedNativeOrRectangleRejected",
+      "newStatus": "fixedNativeOrRectangleRejected",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "body45cmMargin0",
+      "objectiveID": "loop_south_to_west",
+      "oldStatus": "fixedNativeOrRectangleRejected",
+      "newStatus": "fixedNativeOrRectangleRejected",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "body45cmMargin0",
+      "objectiveID": "loop_west_to_north",
+      "oldStatus": "fixedNativeOrRectangleRejected",
+      "newStatus": "fixedNativeOrRectangleRejected",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "body45cmMargin0",
+      "objectiveID": "approach_northSide",
+      "oldStatus": "fixedNativeOrRectangleRejected",
+      "newStatus": "fixedNativeOrRectangleRejected",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "body45cmMargin0",
+      "objectiveID": "approach_southSide",
+      "oldStatus": "fixedPhoneModelLegAccepted",
+      "newStatus": "fixedPhoneModelLegAccepted",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "objectiveID": "loop_north_to_east",
+      "oldStatus": "fixedNativeOrRectangleRejected",
+      "newStatus": "fixedNativeOrRectangleRejected",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "objectiveID": "loop_east_to_south",
+      "oldStatus": "fixedNativeOrRectangleRejected",
+      "newStatus": "fixedNativeOrRectangleRejected",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "objectiveID": "loop_south_to_west",
+      "oldStatus": "fixedNativeOrRectangleRejected",
+      "newStatus": "fixedNativeOrRectangleRejected",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "objectiveID": "loop_west_to_north",
+      "oldStatus": "fixedNativeOrRectangleRejected",
+      "newStatus": "fixedNativeOrRectangleRejected",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "objectiveID": "approach_northSide",
+      "oldStatus": "fixedNativeOrRectangleRejected",
+      "newStatus": "fixedNativeOrRectangleRejected",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "objectiveID": "approach_southSide",
+      "oldStatus": "fixedPhoneModelLegAccepted",
+      "newStatus": "fixedPhoneModelLegAccepted",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "objectiveID": "loop_north_to_east",
+      "oldStatus": "fixedNativeOrRectangleRejected",
+      "newStatus": "fixedNativeOrRectangleRejected",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "objectiveID": "loop_east_to_south",
+      "oldStatus": "fixedNativeOrRectangleRejected",
+      "newStatus": "fixedNativeOrRectangleRejected",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "objectiveID": "loop_south_to_west",
+      "oldStatus": "fixedPhoneModelLegAccepted",
+      "newStatus": "fixedPhoneModelLegAccepted",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "objectiveID": "loop_west_to_north",
+      "oldStatus": "fixedNativeOrRectangleRejected",
+      "newStatus": "fixedNativeOrRectangleRejected",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "objectiveID": "approach_northSide",
+      "oldStatus": "fixedNativeOrRectangleRejected",
+      "newStatus": "fixedNativeOrRectangleRejected",
+      "acceptanceChanged": false
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "objectiveID": "approach_southSide",
+      "oldStatus": "fixedPhoneModelLegAccepted",
+      "newStatus": "fixedPhoneModelLegAccepted",
+      "acceptanceChanged": false
+    }
+  ],
+  "savedLegOutcomes": [
+    {
+      "profile": "body45cmMargin0",
+      "map": "old",
+      "objectiveID": "loop_north_to_east",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin0",
+      "map": "old",
+      "objectiveID": "loop_east_to_south",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin0",
+      "map": "old",
+      "objectiveID": "loop_south_to_west",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin0",
+      "map": "old",
+      "objectiveID": "loop_west_to_north",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin0",
+      "map": "old",
+      "objectiveID": "approach_northSide",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "no start or goal polygon within explicit association bounds"
+    },
+    {
+      "profile": "body45cmMargin0",
+      "map": "old",
+      "objectiveID": "approach_southSide",
+      "status": "fixedPhoneModelLegAccepted",
+      "nativeReason": "ok"
+    },
+    {
+      "profile": "body45cmMargin0",
+      "map": "new",
+      "objectiveID": "loop_north_to_east",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin0",
+      "map": "new",
+      "objectiveID": "loop_east_to_south",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin0",
+      "map": "new",
+      "objectiveID": "loop_south_to_west",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin0",
+      "map": "new",
+      "objectiveID": "loop_west_to_north",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin0",
+      "map": "new",
+      "objectiveID": "approach_northSide",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "query_association"
+    },
+    {
+      "profile": "body45cmMargin0",
+      "map": "new",
+      "objectiveID": "approach_southSide",
+      "status": "fixedPhoneModelLegAccepted",
+      "nativeReason": "ok"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "map": "old",
+      "objectiveID": "loop_north_to_east",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "map": "old",
+      "objectiveID": "loop_east_to_south",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "map": "old",
+      "objectiveID": "loop_south_to_west",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "map": "old",
+      "objectiveID": "loop_west_to_north",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "map": "old",
+      "objectiveID": "approach_northSide",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "no start or goal polygon within explicit association bounds"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "map": "old",
+      "objectiveID": "approach_southSide",
+      "status": "fixedPhoneModelLegAccepted",
+      "nativeReason": "ok"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "map": "new",
+      "objectiveID": "loop_north_to_east",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "map": "new",
+      "objectiveID": "loop_east_to_south",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "map": "new",
+      "objectiveID": "loop_south_to_west",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "map": "new",
+      "objectiveID": "loop_west_to_north",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "map": "new",
+      "objectiveID": "approach_northSide",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "query_association"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "map": "new",
+      "objectiveID": "approach_southSide",
+      "status": "fixedPhoneModelLegAccepted",
+      "nativeReason": "ok"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "old",
+      "objectiveID": "loop_north_to_east",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "sampled_segment"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "old",
+      "objectiveID": "loop_east_to_south",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "old",
+      "objectiveID": "loop_south_to_west",
+      "status": "fixedPhoneModelLegAccepted",
+      "nativeReason": "ok"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "old",
+      "objectiveID": "loop_west_to_north",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "old",
+      "objectiveID": "approach_northSide",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "no start or goal polygon within explicit association bounds"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "old",
+      "objectiveID": "approach_southSide",
+      "status": "fixedPhoneModelLegAccepted",
+      "nativeReason": "ok"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "new",
+      "objectiveID": "loop_north_to_east",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "sampled_segment"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "new",
+      "objectiveID": "loop_east_to_south",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "new",
+      "objectiveID": "loop_south_to_west",
+      "status": "fixedPhoneModelLegAccepted",
+      "nativeReason": "ok"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "new",
+      "objectiveID": "loop_west_to_north",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "incomplete"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "new",
+      "objectiveID": "approach_northSide",
+      "status": "fixedNativeOrRectangleRejected",
+      "nativeReason": "query_association"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "new",
+      "objectiveID": "approach_southSide",
+      "status": "fixedPhoneModelLegAccepted",
+      "nativeReason": "ok"
+    }
+  ],
+  "acceptedLegSampledFlags": [
+    {
+      "profile": "body45cmMargin0",
+      "map": "old",
+      "objectiveID": "approach_southSide",
+      "allOriginalFlagReceiptsSampledFit": true,
+      "scope": "planned sampled route, not executed actor exposure",
+      "sampledPoseCount": 87,
+      "lowUnresolvedCellVisits": 3544,
+      "uniqueLowUnresolvedCells": 304,
+      "posesWithLowUnresolved": 87,
+      "outsideMaskRectangleSamples": 0,
+      "visitDefinition": "one visit per unique flag cell per sampled pose; duplicate seam/end samples retained",
+      "farOnlyDipConflict": "unavailable in supplied split artifact"
+    },
+    {
+      "profile": "body45cmMargin0",
+      "map": "new",
+      "objectiveID": "approach_southSide",
+      "allOriginalFlagReceiptsSampledFit": true,
+      "scope": "planned sampled route, not executed actor exposure",
+      "sampledPoseCount": 87,
+      "lowUnresolvedCellVisits": 3552,
+      "uniqueLowUnresolvedCells": 305,
+      "posesWithLowUnresolved": 87,
+      "outsideMaskRectangleSamples": 0,
+      "visitDefinition": "one visit per unique flag cell per sampled pose; duplicate seam/end samples retained",
+      "farOnlyDipConflict": "unavailable in supplied split artifact"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "map": "old",
+      "objectiveID": "approach_southSide",
+      "allOriginalFlagReceiptsSampledFit": true,
+      "scope": "planned sampled route, not executed actor exposure",
+      "sampledPoseCount": 87,
+      "lowUnresolvedCellVisits": 5468,
+      "uniqueLowUnresolvedCells": 383,
+      "posesWithLowUnresolved": 87,
+      "outsideMaskRectangleSamples": 0,
+      "visitDefinition": "one visit per unique flag cell per sampled pose; duplicate seam/end samples retained",
+      "farOnlyDipConflict": "unavailable in supplied split artifact"
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "map": "new",
+      "objectiveID": "approach_southSide",
+      "allOriginalFlagReceiptsSampledFit": true,
+      "scope": "planned sampled route, not executed actor exposure",
+      "sampledPoseCount": 87,
+      "lowUnresolvedCellVisits": 5478,
+      "uniqueLowUnresolvedCells": 384,
+      "posesWithLowUnresolved": 87,
+      "outsideMaskRectangleSamples": 0,
+      "visitDefinition": "one visit per unique flag cell per sampled pose; duplicate seam/end samples retained",
+      "farOnlyDipConflict": "unavailable in supplied split artifact"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "old",
+      "objectiveID": "loop_south_to_west",
+      "allOriginalFlagReceiptsSampledFit": true,
+      "scope": "planned sampled route, not executed actor exposure",
+      "sampledPoseCount": 281,
+      "lowUnresolvedCellVisits": 11795,
+      "uniqueLowUnresolvedCells": 804,
+      "posesWithLowUnresolved": 271,
+      "outsideMaskRectangleSamples": 0,
+      "visitDefinition": "one visit per unique flag cell per sampled pose; duplicate seam/end samples retained",
+      "farOnlyDipConflict": "unavailable in supplied split artifact"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "old",
+      "objectiveID": "approach_southSide",
+      "allOriginalFlagReceiptsSampledFit": true,
+      "scope": "planned sampled route, not executed actor exposure",
+      "sampledPoseCount": 87,
+      "lowUnresolvedCellVisits": 2278,
+      "uniqueLowUnresolvedCells": 196,
+      "posesWithLowUnresolved": 87,
+      "outsideMaskRectangleSamples": 0,
+      "visitDefinition": "one visit per unique flag cell per sampled pose; duplicate seam/end samples retained",
+      "farOnlyDipConflict": "unavailable in supplied split artifact"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "new",
+      "objectiveID": "loop_south_to_west",
+      "allOriginalFlagReceiptsSampledFit": true,
+      "scope": "planned sampled route, not executed actor exposure",
+      "sampledPoseCount": 274,
+      "lowUnresolvedCellVisits": 11552,
+      "uniqueLowUnresolvedCells": 808,
+      "posesWithLowUnresolved": 264,
+      "outsideMaskRectangleSamples": 0,
+      "visitDefinition": "one visit per unique flag cell per sampled pose; duplicate seam/end samples retained",
+      "farOnlyDipConflict": "unavailable in supplied split artifact"
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "map": "new",
+      "objectiveID": "approach_southSide",
+      "allOriginalFlagReceiptsSampledFit": true,
+      "scope": "planned sampled route, not executed actor exposure",
+      "sampledPoseCount": 87,
+      "lowUnresolvedCellVisits": 2286,
+      "uniqueLowUnresolvedCells": 197,
+      "posesWithLowUnresolved": 87,
+      "outsideMaskRectangleSamples": 0,
+      "visitDefinition": "one visit per unique flag cell per sampled pose; duplicate seam/end samples retained",
+      "farOnlyDipConflict": "unavailable in supplied split artifact"
+    }
+  ],
+  "flagMethod": "Original CandidateMap.flag_receipt for every sampled pose plus unchanged table_loop.route_flags for unique-cell/visit reconciliation. No Engine constructor or route invocation.",
+  "currentNativeQueries": 0,
+  "referenceInputsUsed": false,
+  "movementEpisodesExecuted": 0,
+  "physicalAuthority": false,
+  "allFrozenFilesVerifiedBeforeAfter": true,
+  "frozenSHA256": "9056e43f8ae3dde28ebf3176a76c8577502db0bec9eedafb35f9bdb13f5fea2e",
+  "wallSeconds": 1.1180205330019817,
+  "peakRSSBytes": 57303040
+}

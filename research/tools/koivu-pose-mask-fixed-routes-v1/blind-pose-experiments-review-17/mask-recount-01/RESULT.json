@@ -1,0 +1,315 @@
+{
+  "scope": "Saved-array reproduction of supplied vertex-column/EDT proxy, not physical safety, collision or route testing",
+  "cases": [
+    {
+      "label": "koivuOriginal",
+      "metaSHA256": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d",
+      "maskSHA256": "b294d92cfd9136d00de510239c2b85a9d68d878dcf7dac1a64b144d8880cb076",
+      "shape": [
+        241,
+        250
+      ],
+      "lo": [
+        -116,
+        -121,
+        -4
+      ],
+      "R": [
+        [
+          0.9999997478479299,
+          -3.617953234245336e-07,
+          -0.0007101436091545331
+        ],
+        [
+          0.0,
+          0.9999998702212904,
+          -0.0005094677637132319
+        ],
+        [
+          0.0007101437013160663,
+          0.0005094676352498807,
+          0.9999996180692532
+        ]
+      ],
+      "t": [
+        -0.0009026228895645404,
+        -0.0006475553100735616,
+        1.2710422697455945
+      ],
+      "res": 0.05,
+      "walkableCells": 11559,
+      "noReferenceCoverageWalkable": 58,
+      "edgeMissProxy": 359,
+      "openFloorMissProxy": 4,
+      "openRows": [
+        {
+          "IJ": [
+            104,
+            177
+          ],
+          "levelColumnCentreAtZ0": [
+            -0.5750000000000001,
+            2.825,
+            0.0
+          ],
+          "phoneColumnCentreAtLevelZ0": [
+            -0.5749998550125597,
+            2.824999841407457,
+            -1.2720736690531294
+          ],
+          "referenceLowMax": null,
+          "referenceBodyMax": 1.4493081611198693,
+          "EDTMetres": 0.25
+        },
+        {
+          "IJ": [
+            104,
+            178
+          ],
+          "levelColumnCentreAtZ0": [
+            -0.5750000000000001,
+            2.875,
+            0.0
+          ],
+          "phoneColumnCentreAtLevelZ0": [
+            -0.5749998550125597,
+            2.8749998349185213,
+            -1.272099142441315
+          ],
+          "referenceLowMax": null,
+          "referenceBodyMax": 1.45820765602397,
+          "EDTMetres": 0.25
+        },
+        {
+          "IJ": [
+            105,
+            177
+          ],
+          "levelColumnCentreAtZ0": [
+            -0.525,
+            2.825,
+            0.0
+          ],
+          "phoneColumnCentreAtLevelZ0": [
+            -0.5249998676201632,
+            2.824999823317691,
+            -1.2721091762335872
+          ],
+          "referenceLowMax": null,
+          "referenceBodyMax": 1.4801040217470112,
+          "EDTMetres": 0.2
+        },
+        {
+          "IJ": [
+            105,
+            178
+          ],
+          "levelColumnCentreAtZ0": [
+            -0.525,
+            2.875,
+            0.0
+          ],
+          "phoneColumnCentreAtLevelZ0": [
+            -0.5249998676201632,
+            2.874999816828755,
+            -1.272134649621773
+          ],
+          "referenceLowMax": null,
+          "referenceBodyMax": 1.4764427336840624,
+          "EDTMetres": 0.2
+        }
+      ],
+      "referenceWalkColumns": 10805,
+      "referenceWalkPhoneBlocked": 1287,
+      "upstreamPrintedResult": "koivuOriginal                walkable  11559  edge misses  359  OPEN-FLOOR misses   4   [(104, 177, -0.6, 2.8, -inf, 144.9, 0.25), (104, 178, -0.6, 2.85, -inf, 145.8, 0.25), (105, 177, -0.55, 2.8, -inf, 148.0, 0.2), (105, 178, -0.55, 2.85, -inf, 147.6, 0.2)]"
+    },
+    {
+      "label": "koivuFloorfix",
+      "metaSHA256": "ac63b5219a61094d754b6303d40b7f9dc0905a2abe446b6070bab94458c592d7",
+      "maskSHA256": "41f26bb3bd7d364982978b8d9b3cfe7ab64e49a67de66c100f58a795e65af011",
+      "shape": [
+        241,
+        250
+      ],
+      "lo": [
+        -116,
+        -121,
+        -4
+      ],
+      "R": [
+        [
+          0.9999999262114333,
+          -2.665658641950278e-07,
+          -0.0003841575940510365
+        ],
+        [
+          0.0,
+          0.9999997592534514,
+          -0.0006938969947443028
+        ],
+        [
+          0.0003841576865356736,
+          0.000693896943542638,
+          0.9999996854649024
+        ]
+      ],
+      "t": [
+        -0.0004884175943341308,
+        -0.0008822199694526149,
+        1.271398635021562
+      ],
+      "res": 0.05,
+      "walkableCells": 11827,
+      "noReferenceCoverageWalkable": 61,
+      "edgeMissProxy": 363,
+      "openFloorMissProxy": 4,
+      "openRows": [
+        {
+          "IJ": [
+            104,
+            177
+          ],
+          "levelColumnCentreAtZ0": [
+            -0.5750000000000001,
+            2.825,
+            0.0
+          ],
+          "phoneColumnCentreAtLevelZ0": [
+            -0.5749999575715742,
+            2.8249994731663723,
+            -1.273138403314755
+          ],
+          "referenceLowMax": null,
+          "referenceBodyMax": 1.4503693795918238,
+          "EDTMetres": 0.25
+        },
+        {
+          "IJ": [
+            104,
+            178
+          ],
+          "levelColumnCentreAtZ0": [
+            -0.5750000000000001,
+            2.875,
+            0.0
+          ],
+          "phoneColumnCentreAtLevelZ0": [
+            -0.5749999575715742,
+            2.8749994611290446,
+            -1.2731730981644922
+          ],
+          "referenceLowMax": null,
+          "referenceBodyMax": 1.4576615132750983,
+          "EDTMetres": 0.25
+        },
+        {
+          "IJ": [
+            105,
+            177
+          ],
+          "levelColumnCentreAtZ0": [
+            -0.525,
+            2.825,
+            0.0
+          ],
+          "phoneColumnCentreAtLevelZ0": [
+            -0.5249999612610026,
+            2.824999459838079,
+            -1.2731576111944576
+          ],
+          "referenceLowMax": null,
+          "referenceBodyMax": 1.481155107918539,
+          "EDTMetres": 0.2
+        },
+        {
+          "IJ": [
+            105,
+            178
+          ],
+          "levelColumnCentreAtZ0": [
+            -0.525,
+            2.875,
+            0.0
+          ],
+          "phoneColumnCentreAtLevelZ0": [
+            -0.5249999612610026,
+            2.8749994478007515,
+            -1.2731923060441948
+          ],
+          "referenceLowMax": null,
+          "referenceBodyMax": 1.4775026672202536,
+          "EDTMetres": 0.2
+        }
+      ],
+      "referenceWalkColumns": 10828,
+      "referenceWalkPhoneBlocked": 1030,
+      "upstreamPrintedResult": "koivuFloorfix                walkable  11827  edge misses  363  OPEN-FLOOR misses   4   [(104, 177, -0.6, 2.8, -inf, 145.0, 0.25), (104, 178, -0.6, 2.85, -inf, 145.8, 0.25), (105, 177, -0.55, 2.8, -inf, 148.1, 0.2), (105, 178, -0.55, 2.85, -inf, 147.8, 0.2)]"
+    },
+    {
+      "label": "coffeeFloorfix",
+      "metaSHA256": "57c8552dbd98c966f26625dc1440bd77ff4cfb4257966b4cf6af76bfcd95963b",
+      "maskSHA256": "8cf54a1d2e9f4e6a01f212975cc985a9bcbb88ffb243b36106db78be58006efa",
+      "shape": [
+        151,
+        179
+      ],
+      "lo": [
+        -118,
+        -69,
+        -4
+      ],
+      "R": [
+        [
+          0.9999999926878483,
+          1.1392232492761012e-08,
+          -0.00012093098558494263
+        ],
+        [
+          0.0,
+          0.9999999955627644,
+          9.420441243496706e-05
+        ],
+        [
+          0.00012093098612154191,
+          -9.420441174613009e-05,
+          0.9999999882506126
+        ]
+      ],
+      "t": [
+        -0.00016347360148545516,
+        0.00012734481987454122,
+        1.3517925019300836
+      ],
+      "res": 0.05,
+      "walkableCells": 6790,
+      "noReferenceCoverageWalkable": 11,
+      "edgeMissProxy": 154,
+      "openFloorMissProxy": 0,
+      "openRows": [],
+      "referenceWalkColumns": 7823,
+      "referenceWalkPhoneBlocked": 1220,
+      "upstreamPrintedResult": "coffeeFloorfix               walkable   6790  edge misses  154  OPEN-FLOOR misses   0   []"
+    }
+  ],
+  "koivuMissAssociation": {
+    "sameDiscreteDomain": true,
+    "sameLevelTransform": false,
+    "sameIndexOpenMisses": 4,
+    "newIndexOpenMisses": 0,
+    "removedIndexOpenMisses": 0,
+    "sameIndexColumnCentreShiftMetres": [
+      0.0010647343302436641,
+      0.0010739557931227282,
+      0.0010484350280591018,
+      0.0010576564909461081
+    ]
+  },
+  "limitations": [
+    "Reference is a vertex-column proxy; uncovered/unsampled surfaces are not safe.",
+    "A miss within15cm of ANY blocked cell is called edge by this metric; that is not an exact body-margin collision proof.",
+    "The metric ignores lower-than2.5cm reference low geometry and does not prove toy clearance.",
+    "Coffee original arrays were not acquired in this recount; only corrected count is independently recomputed.",
+    "Global floor is refitted in each mask; equal cell indices need transformed-frame interpretation.",
+    "No raw-depth, native fusion, ICP, reference-mesh load, pose adoption or navigation was performed."
+  ]
+}

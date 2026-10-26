@@ -1,0 +1,230 @@
+{
+ "rules": {
+  "tsdf_volume_note": "Uniform volume; Scalable returned empty in open3d-cpu 0.20.0",
+  "floor_band": [
+   -0.025,
+   0.025
+  ],
+  "low_band": [
+   0.025,
+   0.075
+  ],
+  "body_band": [
+   0.075,
+   1.775
+  ],
+  "dip_band": [
+   -0.075,
+   -0.025
+  ],
+  "deep_below": -0.075,
+  "ungrounded_max_voxels_at5cm": 24,
+  "grounded_structure_voxels_at5cm": 200,
+  "ground_touch_top": 0.075,
+  "tsdf_voxel": 0.025,
+  "tsdf_trunc": 0.08,
+  "tsdf_depth_trunc": 4.0
+ },
+ "thresholds": {
+  "voxel": 0.05,
+  "near_m": 2.0,
+  "floor_cell": 0.2,
+  "floor_search": [
+   -2.6,
+   -0.4
+  ],
+  "band_top": 1.75,
+  "stat_min_n": 30,
+  "stat_min_frames": 3,
+  "clear_mean_plus3se": 0.025,
+  "clear_tail": 0.07,
+  "obj_mean_minus3se": 0.01,
+  "obj_tail": 0.15,
+  "sigma_edges": [
+   0,
+   1.0,
+   1.5,
+   2.0,
+   2.5,
+   3.0,
+   3.5,
+   4.5,
+   8.0
+  ],
+  "body": [
+   0.45,
+   0.3
+  ],
+  "margin": 0.15,
+  "disc": 0.375,
+  "ref_low_band": [
+   0.015,
+   0.3
+  ],
+  "ref_body_band": [
+   0.3,
+   1.8
+  ]
+ },
+ "res": 0.05,
+ "tsdf": false,
+ "log": [
+  {
+   "stage": "samples",
+   "frames": 226,
+   "samples": 10312832,
+   "res": 0.05,
+   "t": 4.7
+  },
+  {
+   "stage": "floor",
+   "cells": 1339,
+   "tilt_deg": 0.04958292461211041,
+   "floor_z": -1.272276121632419,
+   "resid_std": 0.0144758073968821,
+   "t": 5.4
+  },
+  {
+   "stage": "fusion",
+   "occAll": 263601,
+   "freeAll": 1119814,
+   "occNear": 65852,
+   "freeNear": 744073,
+   "t": 79.7
+  },
+  {
+   "stage": "stat",
+   "sigma_cm": [
+    0.22,
+    0.71,
+    0.75,
+    0.8,
+    0.59,
+    0.58,
+    0.95,
+    3.07
+   ],
+   "t": 88.0
+  },
+  {
+   "stage": "ungrounded",
+   "blobs": 287,
+   "ungroundedBlobs": 282,
+   "ungroundedVoxels": 521,
+   "t": 88.1
+  },
+  {
+   "stage": "ref",
+   "vertices": 8940320,
+   "scale": 1.020790844238779,
+   "ref_floor_vs_plane_cm_p5_50_95": [
+    -0.58,
+    0.05,
+    2.01
+   ],
+   "t": 115.4
+  },
+  {
+   "stage": "variant",
+   "name": "D1",
+   "permissive": {
+    "n": 11137,
+    "noRefCov": 41,
+    "refLow25": 104,
+    "refLow40": 93,
+    "refBody": 240,
+    "refWalkPhoneBlocked": 1432,
+    "refWalk": 10797,
+    "missRatePct": 0.934
+   },
+   "statClear": {
+    "n": 8865,
+    "noRefCov": 38,
+    "refLow25": 67,
+    "refLow40": 62,
+    "refBody": 140,
+    "refWalkPhoneBlocked": 2822,
+    "refWalk": 10797,
+    "missRatePct": 0.756
+   },
+   "t": 115.4
+  },
+  {
+   "stage": "variant",
+   "name": "D1_noUngrounded",
+   "permissive": {
+    "n": 11714,
+    "noRefCov": 44,
+    "refLow25": 145,
+    "refLow40": 130,
+    "refBody": 451,
+    "refWalkPhoneBlocked": 1079,
+    "refWalk": 10797,
+    "missRatePct": 1.238
+   },
+   "statClear": {
+    "n": 9236,
+    "noRefCov": 39,
+    "refLow25": 79,
+    "refLow40": 74,
+    "refBody": 256,
+    "refWalkPhoneBlocked": 2570,
+    "refWalk": 10797,
+    "missRatePct": 0.855
+   },
+   "unblockedVsD1": 661,
+   "unblockedVsD1_refGeom": 232,
+   "unblockedVsD1_refLow25": 45,
+   "t": 115.5
+  }
+ ],
+ "results": {
+  "D1": {
+   "permissive": {
+    "n": 11137,
+    "noRefCov": 41,
+    "refLow25": 104,
+    "refLow40": 93,
+    "refBody": 240,
+    "refWalkPhoneBlocked": 1432,
+    "refWalk": 10797,
+    "missRatePct": 0.934
+   },
+   "statClear": {
+    "n": 8865,
+    "noRefCov": 38,
+    "refLow25": 67,
+    "refLow40": 62,
+    "refBody": 140,
+    "refWalkPhoneBlocked": 2822,
+    "refWalk": 10797,
+    "missRatePct": 0.756
+   }
+  },
+  "D1_noUngrounded": {
+   "permissive": {
+    "n": 11714,
+    "noRefCov": 44,
+    "refLow25": 145,
+    "refLow40": 130,
+    "refBody": 451,
+    "refWalkPhoneBlocked": 1079,
+    "refWalk": 10797,
+    "missRatePct": 1.238
+   },
+   "statClear": {
+    "n": 9236,
+    "noRefCov": 39,
+    "refLow25": 79,
+    "refLow40": 74,
+    "refBody": 256,
+    "refWalkPhoneBlocked": 2570,
+    "refWalk": 10797,
+    "missRatePct": 0.855
+   },
+   "unblockedVsD1": 661,
+   "unblockedVsD1_refGeom": 232,
+   "unblockedVsD1_refLow25": 45
+  }
+ }
+}

@@ -1,0 +1,13 @@
+{"stage": "samples", "frames": 294, "samples": 13415808, "res": 0.05, "t": 6.9}
+{"stage": "floor", "cells": 1390, "tilt_deg": 0.04544354453649505, "floor_z": -1.2713990349211817, "resid_std": 0.016292277786377977, "t": 8.4}
+{"stage": "fusion", "occAll": 279924, "freeAll": 1125956, "occNear": 72694, "freeNear": 785686, "t": 97.5}
+{"stage": "stat", "sigma_cm": [0.25, 0.71, 0.75, 0.88, 0.66, 0.63, 1.02, 2.99], "t": 107.4}
+{"stage": "ungrounded", "blobs": 310, "ungroundedBlobs": 301, "ungroundedVoxels": 563, "t": 107.5}
+{"stage": "ref", "vertices": 8940320, "scale": 1.020790844238779, "ref_floor_vs_plane_cm_p5_50_95": [-0.69, -0.04, 1.97], "t": 115.4}
+{"stage": "variant", "name": "D1", "permissive": {"n": 10923, "noRefCov": 39, "refLow25": 89, "refLow40": 80, "refBody": 179, "refWalkPhoneBlocked": 1538, "refWalk": 10828, "missRatePct": 0.815}, "statClear": {"n": 8592, "noRefCov": 38, "refLow25": 51, "refLow40": 49, "refBody": 100, "refWalkPhoneBlocked": 3115, "refWalk": 10828, "missRatePct": 0.594}, "t": 115.4}
+{"stage": "variant", "name": "D1_noUngrounded", "permissive": {"n": 11583, "noRefCov": 42, "refLow25": 141, "refLow40": 127, "refBody": 371, "refWalkPhoneBlocked": 1086, "refWalk": 10828, "missRatePct": 1.217}, "statClear": {"n": 8950, "noRefCov": 39, "refLow25": 62, "refLow40": 59, "refBody": 191, "refWalkPhoneBlocked": 2846, "refWalk": 10828, "missRatePct": 0.693}, "unblockedVsD1": 779, "unblockedVsD1_refGeom": 213, "unblockedVsD1_refLow25": 55, "t": 115.4}
+{"label": "D1/permissive", "discCentres": 673, "endpoints": 60, "pairs": 1770, "complete": 358, "len2to6": 0, "rectOK": 0, "failTurn": 0, "failSeg": 0} | rect-OK lengths: n=0 median 0.00 max 0.00
+{"label": "D1/statClear", "discCentres": 394, "endpoints": 60, "pairs": 1770, "complete": 652, "len2to6": 0, "rectOK": 0, "failTurn": 0, "failSeg": 0} | rect-OK lengths: n=0 median 0.00 max 0.00
+{"label": "D1_noUngrounded/permissive", "discCentres": 1588, "endpoints": 59, "pairs": 1711, "complete": 247, "len2to6": 3, "rectOK": 0, "failTurn": 0, "failSeg": 3} | rect-OK lengths: n=0 median 0.00 max 0.00
+{"label": "D1_noUngrounded/statClear", "discCentres": 539, "endpoints": 60, "pairs": 1770, "complete": 526, "len2to6": 0, "rectOK": 0, "failTurn": 0, "failSeg": 0} | rect-OK lengths: n=0 median 0.00 max 0.00
+{"label": "REFERENCE-ONLY", "discCentres": 2890, "endpoints": 60, "pairs": 1770, "complete": 1147, "len2to6": 548, "rectOK": 386, "failTurn": 22, "failSeg": 140} | rect-OK lengths: n=386 median 3.62 max 6.00

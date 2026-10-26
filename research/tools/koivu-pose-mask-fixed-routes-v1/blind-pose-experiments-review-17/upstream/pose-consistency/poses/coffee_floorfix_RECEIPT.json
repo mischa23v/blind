@@ -1,0 +1,726 @@
+{
+ "rules": {
+  "flag_offset": 0.025,
+  "flag_tilt": 1.2,
+  "nonfloor": [
+   0.2,
+   2.2
+  ],
+  "max_range": 4.0,
+  "min_gap": 25,
+  "accept_rel": 0.1,
+  "accept_abs": 0.002,
+  "voxel": 0.02
+ },
+ "log": [
+  {
+   "stage": "floor",
+   "cells": 748,
+   "tilt_deg": 0.017263120917516493,
+   "floor_z": -1.3522673520354243,
+   "resid_std": 0.019555887443781457,
+   "t": 14.6
+  },
+  {
+   "stage": "floorfix",
+   "framesWithFloorFit": 190,
+   "flagged": 76,
+   "corrected": 1,
+   "keptPoseInconsistent": 75,
+   "noFloorFit": 198,
+   "t": 116.2
+  }
+ ],
+ "flagged": [
+  0,
+  1,
+  42,
+  43,
+  44,
+  46,
+  52,
+  53,
+  54,
+  55,
+  56,
+  64,
+  65,
+  66,
+  67,
+  70,
+  71,
+  72,
+  74,
+  79,
+  100,
+  102,
+  103,
+  111,
+  114,
+  115,
+  123,
+  136,
+  160,
+  163,
+  169,
+  188,
+  189,
+  190,
+  191,
+  192,
+  212,
+  223,
+  246,
+  247,
+  248,
+  249,
+  251,
+  252,
+  253,
+  264,
+  265,
+  276,
+  277,
+  278,
+  284,
+  288,
+  301,
+  302,
+  303,
+  307,
+  331,
+  332,
+  333,
+  334,
+  335,
+  346,
+  350,
+  351,
+  352,
+  353,
+  366,
+  367,
+  368,
+  369,
+  378,
+  379,
+  380,
+  381,
+  383,
+  386
+ ],
+ "corrected": [
+  303
+ ],
+ "poseInconsistent": [
+  0,
+  1,
+  42,
+  43,
+  44,
+  46,
+  52,
+  53,
+  54,
+  55,
+  56,
+  64,
+  65,
+  66,
+  67,
+  70,
+  71,
+  72,
+  74,
+  79,
+  100,
+  102,
+  103,
+  111,
+  114,
+  115,
+  123,
+  136,
+  160,
+  163,
+  169,
+  188,
+  189,
+  190,
+  191,
+  192,
+  212,
+  223,
+  246,
+  247,
+  248,
+  249,
+  251,
+  252,
+  253,
+  264,
+  265,
+  276,
+  277,
+  278,
+  284,
+  288,
+  301,
+  302,
+  307,
+  331,
+  332,
+  333,
+  334,
+  335,
+  346,
+  350,
+  351,
+  352,
+  353,
+  366,
+  367,
+  368,
+  369,
+  378,
+  379,
+  380,
+  381,
+  383,
+  386
+ ],
+ "decisions": {
+  "0": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 2.77,
+   "tilt_deg": 5.71,
+   "nonfloorNN_mm_before": 7.8,
+   "nonfloorNN_mm_after": 37.6
+  },
+  "1": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.28,
+   "tilt_deg": 1.89,
+   "nonfloorNN_mm_before": 6.9,
+   "nonfloorNN_mm_after": 9.6
+  },
+  "42": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.14,
+   "tilt_deg": 1.48,
+   "nonfloorNN_mm_before": 9.0,
+   "nonfloorNN_mm_after": 11.7
+  },
+  "43": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.49,
+   "tilt_deg": 1.33,
+   "nonfloorNN_mm_before": 10.1,
+   "nonfloorNN_mm_after": 12.6
+  },
+  "44": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.26,
+   "tilt_deg": 2.03,
+   "nonfloorNN_mm_before": 9.3,
+   "nonfloorNN_mm_after": 12.9
+  },
+  "46": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.31,
+   "tilt_deg": 1.74,
+   "nonfloorNN_mm_before": 11.0,
+   "nonfloorNN_mm_after": 15.5
+  },
+  "52": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 2.85,
+   "tilt_deg": 3.55,
+   "nonfloorNN_mm_before": 8.2,
+   "nonfloorNN_mm_after": 11.8
+  },
+  "53": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 3.31,
+   "tilt_deg": 2.06,
+   "nonfloorNN_mm_before": 9.3,
+   "nonfloorNN_mm_after": 10.0
+  },
+  "54": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 2.66,
+   "tilt_deg": 1.22,
+   "nonfloorNN_mm_before": 10.4,
+   "nonfloorNN_mm_after": 9.5
+  },
+  "55": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 2.74,
+   "tilt_deg": 0.67,
+   "nonfloorNN_mm_before": 13.3,
+   "nonfloorNN_mm_after": 11.5
+  },
+  "56": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 3.64,
+   "tilt_deg": 0.48,
+   "nonfloorNN_mm_before": 15.8,
+   "nonfloorNN_mm_after": 19.9
+  },
+  "64": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 3.79,
+   "tilt_deg": 6.73,
+   "nonfloorNN_mm_before": 5.5,
+   "nonfloorNN_mm_after": 40.8
+  },
+  "65": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 3.23,
+   "tilt_deg": 0.33,
+   "nonfloorNN_mm_before": 5.5,
+   "nonfloorNN_mm_after": 7.9
+  },
+  "66": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": -0.4,
+   "tilt_deg": 1.41,
+   "nonfloorNN_mm_before": 5.8,
+   "nonfloorNN_mm_after": 9.2
+  },
+  "67": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 2.6,
+   "tilt_deg": 6.78,
+   "nonfloorNN_mm_before": 6.5,
+   "nonfloorNN_mm_after": 41.0
+  },
+  "70": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.44,
+   "tilt_deg": 3.91,
+   "nonfloorNN_mm_before": 6.3,
+   "nonfloorNN_mm_after": 18.2
+  },
+  "71": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 2.74,
+   "tilt_deg": 3.59,
+   "nonfloorNN_mm_before": 7.0,
+   "nonfloorNN_mm_after": 28.6
+  },
+  "72": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 1.79,
+   "tilt_deg": 4.29,
+   "nonfloorNN_mm_before": 7.2,
+   "nonfloorNN_mm_after": 13.2
+  },
+  "74": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.72,
+   "tilt_deg": 3.02,
+   "nonfloorNN_mm_before": 10.0,
+   "nonfloorNN_mm_after": 19.8
+  },
+  "79": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": -1.1,
+   "tilt_deg": 1.56,
+   "nonfloorNN_mm_before": 6.2,
+   "nonfloorNN_mm_after": 11.4
+  },
+  "100": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 4.26,
+   "tilt_deg": 1.97,
+   "nonfloorNN_mm_before": 6.9,
+   "nonfloorNN_mm_after": 9.0
+  },
+  "102": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 3.03,
+   "tilt_deg": 0.61,
+   "nonfloorNN_mm_before": 6.1,
+   "nonfloorNN_mm_after": 7.7
+  },
+  "103": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 2.63,
+   "tilt_deg": 0.68,
+   "nonfloorNN_mm_before": 6.0,
+   "nonfloorNN_mm_after": 7.8
+  },
+  "111": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.51,
+   "tilt_deg": 1.84,
+   "nonfloorNN_mm_before": 23.5,
+   "nonfloorNN_mm_after": 27.7
+  },
+  "114": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 2.52,
+   "tilt_deg": 0.87,
+   "nonfloorNN_mm_before": 7.4,
+   "nonfloorNN_mm_after": 7.8
+  },
+  "115": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 2.39,
+   "tilt_deg": 1.85,
+   "nonfloorNN_mm_before": 7.0,
+   "nonfloorNN_mm_after": 10.1
+  },
+  "123": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 4.71,
+   "tilt_deg": 22.94,
+   "nonfloorNN_mm_before": 18.4,
+   "nonfloorNN_mm_after": 384.9
+  },
+  "136": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 1.03,
+   "tilt_deg": 1.5,
+   "nonfloorNN_mm_before": 6.5,
+   "nonfloorNN_mm_after": 9.8
+  },
+  "160": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 1.69,
+   "tilt_deg": 6.21,
+   "nonfloorNN_mm_before": 12.9,
+   "nonfloorNN_mm_after": 59.3
+  },
+  "163": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.96,
+   "tilt_deg": 3.31,
+   "nonfloorNN_mm_before": 14.6,
+   "nonfloorNN_mm_after": 15.1
+  },
+  "169": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 2.79,
+   "tilt_deg": 3.54,
+   "nonfloorNN_mm_before": 13.4,
+   "nonfloorNN_mm_after": 33.0
+  },
+  "188": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": -1.25,
+   "tilt_deg": 5.29,
+   "nonfloorNN_mm_before": 11.1,
+   "nonfloorNN_mm_after": 66.7
+  },
+  "189": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": -2.78,
+   "tilt_deg": 0.11,
+   "nonfloorNN_mm_before": 9.3,
+   "nonfloorNN_mm_after": 9.6
+  },
+  "190": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": -3.0,
+   "tilt_deg": 0.34,
+   "nonfloorNN_mm_before": 12.0,
+   "nonfloorNN_mm_after": 13.3
+  },
+  "191": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": -3.44,
+   "tilt_deg": 0.13,
+   "nonfloorNN_mm_before": 13.2,
+   "nonfloorNN_mm_after": 13.7
+  },
+  "192": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": -4.19,
+   "tilt_deg": 0.55,
+   "nonfloorNN_mm_before": 18.3,
+   "nonfloorNN_mm_after": 16.6
+  },
+  "212": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": -0.59,
+   "tilt_deg": 1.3,
+   "nonfloorNN_mm_before": 10.9,
+   "nonfloorNN_mm_after": 11.5
+  },
+  "223": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 1.12,
+   "tilt_deg": 1.2,
+   "nonfloorNN_mm_before": 7.7,
+   "nonfloorNN_mm_after": 10.9
+  },
+  "246": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 3.37,
+   "tilt_deg": 5.98,
+   "nonfloorNN_mm_before": 8.9,
+   "nonfloorNN_mm_after": 30.7
+  },
+  "247": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 5.64,
+   "tilt_deg": 2.65,
+   "nonfloorNN_mm_before": 8.5,
+   "nonfloorNN_mm_after": 10.8
+  },
+  "248": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 5.25,
+   "tilt_deg": 0.54,
+   "nonfloorNN_mm_before": 8.7,
+   "nonfloorNN_mm_after": 9.1
+  },
+  "249": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 3.58,
+   "tilt_deg": 1.29,
+   "nonfloorNN_mm_before": 7.8,
+   "nonfloorNN_mm_after": 11.4
+  },
+  "251": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 1.22,
+   "tilt_deg": 1.27,
+   "nonfloorNN_mm_before": 7.1,
+   "nonfloorNN_mm_after": 9.6
+  },
+  "252": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.26,
+   "tilt_deg": 1.31,
+   "nonfloorNN_mm_before": 7.5,
+   "nonfloorNN_mm_after": 10.8
+  },
+  "253": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": -0.36,
+   "tilt_deg": 2.33,
+   "nonfloorNN_mm_before": 8.3,
+   "nonfloorNN_mm_after": 12.6
+  },
+  "264": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 4.05,
+   "tilt_deg": 3.14,
+   "nonfloorNN_mm_before": 7.7,
+   "nonfloorNN_mm_after": 14.3
+  },
+  "265": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 4.32,
+   "tilt_deg": 1.85,
+   "nonfloorNN_mm_before": 6.9,
+   "nonfloorNN_mm_after": 10.0
+  },
+  "276": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.11,
+   "tilt_deg": 1.46,
+   "nonfloorNN_mm_before": 5.6,
+   "nonfloorNN_mm_after": 8.6
+  },
+  "277": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.97,
+   "tilt_deg": 5.09,
+   "nonfloorNN_mm_before": 5.5,
+   "nonfloorNN_mm_after": 41.5
+  },
+  "278": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 1.71,
+   "tilt_deg": 8.1,
+   "nonfloorNN_mm_before": 5.4,
+   "nonfloorNN_mm_after": 93.2
+  },
+  "284": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 2.15,
+   "tilt_deg": 1.65,
+   "nonfloorNN_mm_before": 6.4,
+   "nonfloorNN_mm_after": 11.6
+  },
+  "288": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 4.5,
+   "tilt_deg": 3.92,
+   "nonfloorNN_mm_before": 9.5,
+   "nonfloorNN_mm_after": 12.4
+  },
+  "301": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.38,
+   "tilt_deg": 4.2,
+   "nonfloorNN_mm_before": 10.4,
+   "nonfloorNN_mm_after": 16.9
+  },
+  "302": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 1.23,
+   "tilt_deg": 5.4,
+   "nonfloorNN_mm_before": 11.7,
+   "nonfloorNN_mm_after": 23.2
+  },
+  "303": {
+   "decision": "corrected",
+   "offset_cm": 0.6,
+   "tilt_deg": 4.66,
+   "nonfloorNN_mm_before": 15.4,
+   "nonfloorNN_mm_after": 12.9
+  },
+  "307": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.33,
+   "tilt_deg": 3.08,
+   "nonfloorNN_mm_before": 9.4,
+   "nonfloorNN_mm_after": 13.5
+  },
+  "331": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 7.45,
+   "tilt_deg": 6.82,
+   "nonfloorNN_mm_before": 6.5,
+   "nonfloorNN_mm_after": 30.7
+  },
+  "332": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 6.5,
+   "tilt_deg": 7.67,
+   "nonfloorNN_mm_before": 7.8,
+   "nonfloorNN_mm_after": 39.9
+  },
+  "333": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 3.08,
+   "tilt_deg": 4.31,
+   "nonfloorNN_mm_before": 7.5,
+   "nonfloorNN_mm_after": 43.8
+  },
+  "334": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 1.3,
+   "tilt_deg": 3.79,
+   "nonfloorNN_mm_before": 8.4,
+   "nonfloorNN_mm_after": 17.3
+  },
+  "335": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.85,
+   "tilt_deg": 2.51,
+   "nonfloorNN_mm_before": 8.0,
+   "nonfloorNN_mm_after": 16.9
+  },
+  "346": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": -0.9,
+   "tilt_deg": 2.1,
+   "nonfloorNN_mm_before": 6.2,
+   "nonfloorNN_mm_after": 10.8
+  },
+  "350": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.75,
+   "tilt_deg": 1.28,
+   "nonfloorNN_mm_before": 8.0,
+   "nonfloorNN_mm_after": 9.7
+  },
+  "351": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 1.03,
+   "tilt_deg": 1.76,
+   "nonfloorNN_mm_before": 7.1,
+   "nonfloorNN_mm_after": 10.0
+  },
+  "352": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 1.76,
+   "tilt_deg": 1.83,
+   "nonfloorNN_mm_before": 7.1,
+   "nonfloorNN_mm_after": 13.9
+  },
+  "353": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 1.96,
+   "tilt_deg": 2.75,
+   "nonfloorNN_mm_before": 7.9,
+   "nonfloorNN_mm_after": 20.7
+  },
+  "366": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 1.24,
+   "tilt_deg": 1.39,
+   "nonfloorNN_mm_before": 6.9,
+   "nonfloorNN_mm_after": 9.1
+  },
+  "367": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 1.2,
+   "tilt_deg": 1.54,
+   "nonfloorNN_mm_before": 7.7,
+   "nonfloorNN_mm_after": 10.5
+  },
+  "368": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 1.61,
+   "tilt_deg": 1.88,
+   "nonfloorNN_mm_before": 9.4,
+   "nonfloorNN_mm_after": 13.8
+  },
+  "369": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.86,
+   "tilt_deg": 1.68,
+   "nonfloorNN_mm_before": 8.0,
+   "nonfloorNN_mm_after": 10.7
+  },
+  "378": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.37,
+   "tilt_deg": 2.34,
+   "nonfloorNN_mm_before": 4.2,
+   "nonfloorNN_mm_after": 22.3
+  },
+  "379": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 2.96,
+   "tilt_deg": 2.59,
+   "nonfloorNN_mm_before": 5.0,
+   "nonfloorNN_mm_after": 37.8
+  },
+  "380": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 4.08,
+   "tilt_deg": 0.54,
+   "nonfloorNN_mm_before": 6.6,
+   "nonfloorNN_mm_after": 6.2
+  },
+  "381": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.03,
+   "tilt_deg": 1.22,
+   "nonfloorNN_mm_before": 6.3,
+   "nonfloorNN_mm_after": 7.0
+  },
+  "383": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": 0.17,
+   "tilt_deg": 1.27,
+   "nonfloorNN_mm_before": 6.5,
+   "nonfloorNN_mm_after": 10.3
+  },
+  "386": {
+   "decision": "kept-recorded:pose-inconsistent",
+   "offset_cm": -0.17,
+   "tilt_deg": 2.26,
+   "nonfloorNN_mm_before": 6.3,
+   "nonfloorNN_mm_after": 25.8
+  }
+ }
+}

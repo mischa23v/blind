@@ -1,0 +1,4574 @@
+{
+  "scope": "Independent saved-pose/receipt audit only; no depth/ICP/fusion/map run",
+  "commit": "b0be8628b159e0fc0446a7af8c57c13c99553a77",
+  "verifiedSourceFiles": [
+    {
+      "path": "pose-consistency/POSE_EXPERIMENTS.md",
+      "sha256": "dc40de6d739d6eeccc2b20c0e462c5d4ac50298a42a1e5af73fa6b6539c57e87",
+      "gitBlob": "35e540fcfdcb4ac6fbbf783a93ec11594d280228",
+      "bytes": 7389
+    },
+    {
+      "path": "scripts/floorfix.py",
+      "sha256": "2ecac02d6a82f7dd7efb253f058fcd71279799863104d1b0569921a055794dc5",
+      "gitBlob": "0b93b2f3eaf7cfa05552931285d42a440101e31f",
+      "bytes": 5664
+    },
+    {
+      "path": "scripts/posegraph.py",
+      "sha256": "a2ed01165d0b4d17f4301b666212d7379af48c5aa10f6ebd8a10526bb84578e3",
+      "gitBlob": "9d0b840f1a742be9bfba296e81f2472ba5b92c90",
+      "bytes": 6640
+    },
+    {
+      "path": "scripts/posegraph_v1_rejected.py",
+      "sha256": "edcf19fe4eea955310b95a31801ddbd7bbffddefe73ef74f5f647339422a0a75",
+      "gitBlob": "b187bd79955a147a0c133ce57212d1563c999d80",
+      "bytes": 6078
+    },
+    {
+      "path": "scripts/range_vs_time.py",
+      "sha256": "cf934792933499212e18364d4428463ad6e9c4009f7811380c8be97e239c22d4",
+      "gitBlob": "3cbf8df1c9e36656a9b326c82c831c2634b22dba",
+      "bytes": 1698
+    },
+    {
+      "path": "scripts/validate_poses.py",
+      "sha256": "4187bfc74e3ccac8bf607361e0be03d8bb48109db92f6aa2e07151f7c8883e64",
+      "gitBlob": "a32e7e171d0e683c30e71753109d6dc690d3d34b",
+      "bytes": 3512
+    },
+    {
+      "path": "pose-consistency/SHA256SUMS.txt",
+      "sha256": "6dc403faaa597511c4f0d7bc00aa460ba31479c27f4f2f64d7763c521eacce29",
+      "gitBlob": "c998a7530ab3aa98bb5a4382dd493125959eb47d",
+      "bytes": 3094
+    },
+    {
+      "path": "pose-consistency/poses/coffee_floorfix_RECEIPT.json",
+      "sha256": "474faf27d85b0883227792aedf3b4e156ca3f8cddbb78fe0b191bc5630d62810",
+      "gitBlob": "5500ed6c15db4aeccab66cb8aef6c7ce0ac19434",
+      "bytes": 14672
+    },
+    {
+      "path": "pose-consistency/poses/coffee_floorfix_transformations.json",
+      "sha256": "00da30738be10e341c5c8642eb48f67507f3ff985300fa4480b91f1aa87f5501",
+      "gitBlob": "ed297b05a5f49b8d18fd4a5ac65c9a2e82b1c820",
+      "bytes": 199756
+    },
+    {
+      "path": "pose-consistency/poses/koivu_floorfix_RECEIPT.json",
+      "sha256": "06bc89eaa3bebacbff812bf3280d5c77d13ce80aeba69ed2127e99c2f38e112c",
+      "gitBlob": "d9f81775d7e378082a7398819433fa375659d918",
+      "bytes": 14751
+    },
+    {
+      "path": "pose-consistency/poses/koivu_floorfix_consistent_REJECTED_transformations.json",
+      "sha256": "e3c8cf546bea7ec374c2158722cb5450ee552bd8f2485edc165fbf8955707c0e",
+      "gitBlob": "702342bae646d6992fd53bd14659327424e24441",
+      "bytes": 116474
+    },
+    {
+      "path": "pose-consistency/poses/koivu_floorfix_transformations.json",
+      "sha256": "f1373e025aa4cdd7c6b89b786b1e315ce7b68a5817d2655353331ffe13334621",
+      "gitBlob": "2326ffccd513ea663e430115528f796908e50d41",
+      "bytes": 150824
+    },
+    {
+      "path": "pose-consistency/poses/koivu_posegraph_v2_REJECTED_RECEIPT.json",
+      "sha256": "77ec7096524f5d792b3ec11128199e1c3788c1aac49c67e7b98f4c1b988a7337",
+      "gitBlob": "d1cbed60ed6a059cb6b08060e676d2bfabac8780",
+      "bytes": 27017
+    },
+    {
+      "path": "pose-consistency/poses/koivu_posegraph_v2_REJECTED_VALIDATION.json",
+      "sha256": "3ba231930442e953fe8d00230fbf3cfdff30e6da5906a822c17ccea3f2292fe9",
+      "gitBlob": "719aed2b61b9484d05aa9006913f96cb0b6c9612",
+      "bytes": 562
+    },
+    {
+      "path": "pose-consistency/poses/koivu_posegraph_v2_REJECTED_transformations.json",
+      "sha256": "32b02c8fa1f5724726e58779041fd772a007d75eb74092bbdaef66ce64bfc413",
+      "gitBlob": "1eec61095355f5b21a48ea4969fcd48e2d512d16",
+      "bytes": 150922
+    },
+    {
+      "path": "pose-consistency/runs/coffee_floorfix/PIPELINE2_RECEIPT.json",
+      "sha256": "373e2367cdb845e1d3b3553437bb04b10a4ca489a93e2f470cfe16b52f09ac15",
+      "gitBlob": "dde4b6e224e972bd1d002fefb3ebd9587698eb97",
+      "bytes": 3827
+    },
+    {
+      "path": "pose-consistency/runs/coffee_floorfix/occthres_split.log",
+      "sha256": "5b0812194e643793ab3e6e140e9fe3f2f97b14859b8c41756865efd14070201c",
+      "gitBlob": "35f95f130828c9671ff279282fc1c1e3e24d6184",
+      "bytes": 3500
+    },
+    {
+      "path": "pose-consistency/runs/coffee_floorfix/pipeline2.log",
+      "sha256": "edafcaf2ac31576454ed0b69a00c5475da6878d83dd7e1c03c3ae33bbee5943c",
+      "gitBlob": "ed1e486f2a719c5833d3ecf4e46174c427cf1719",
+      "bytes": 2487
+    },
+    {
+      "path": "pose-consistency/runs/koivu_floorfix/PIPELINE2_RECEIPT.json",
+      "sha256": "69865bbba9eac93cbed1ab4def3ce8a1127d91ad816a829b2b946bc83adacca1",
+      "gitBlob": "6985559367b95aa3ff5cc50ce1f81b69c4879553",
+      "bytes": 3868
+    },
+    {
+      "path": "pose-consistency/runs/koivu_floorfix/occthres_split.log",
+      "sha256": "e76f83eebc1659f5bf6c770300cd1e2a958d3d8ffde40ee84b7c376b48806d62",
+      "gitBlob": "27489add9494aa38f62591e738405b986ef036de",
+      "bytes": 3520
+    },
+    {
+      "path": "pose-consistency/runs/koivu_floorfix/pipeline2.log",
+      "sha256": "a3e7892d0ebb47a4314c57c2c4fa2a83d70df47a28b60646f42bd80a92d538f1",
+      "gitBlob": "17e43bf121b8f396c608ed19a5acb8bce1a73f0d",
+      "bytes": 2504
+    },
+    {
+      "path": "pose-consistency/runs/koivu_floorfix_consistent/PIPELINE2_RECEIPT.json",
+      "sha256": "e8ac84e72a5b17634f9d53f8fd1267e4bfdd110c833eea5f4a389755b84a6d9d",
+      "gitBlob": "c9c317935535bf136c454663fda86ad883bd088b",
+      "bytes": 3863
+    },
+    {
+      "path": "pose-consistency/runs/koivu_floorfix_consistent/occthres_split.log",
+      "sha256": "2bdece9bcce589df5229a0a5be9ce6e926120b6899bf20bc1be92215e147eb0f",
+      "gitBlob": "034515515f3f6f56d2e813d73cb8f5d35bd60fa8",
+      "bytes": 3609
+    },
+    {
+      "path": "pose-consistency/runs/koivu_floorfix_consistent/pipeline2.log",
+      "sha256": "4f1f5586a32a5864d3f9487134a608d2556ab44ba01409889d3f7bf576a52c79",
+      "gitBlob": "55d054aed87e0faf47bb3b3bcf3d88d4883bfaab",
+      "bytes": 2499
+    }
+  ],
+  "sourcePinsSHA256": "16a5693f632f31736d774c4e076ad26a3042bfd4a1555020427d8420a101c9cb",
+  "originalKoivuPoseSHA256": "c496c8dc6474679766db8abd92da9c756104a752bb9e4519fd462fe294af90c3",
+  "originalSuppliedLevelMetadataSHA256": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d",
+  "koivuFrames": 294,
+  "koivuChangedMatrices": [
+    23,
+    24,
+    61,
+    62,
+    63,
+    119,
+    132,
+    229,
+    230
+  ],
+  "koivuExactlyUnchangedMatrices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126,
+    127,
+    128,
+    129,
+    130,
+    131,
+    133,
+    134,
+    135,
+    136,
+    137,
+    138,
+    139,
+    140,
+    141,
+    142,
+    143,
+    144,
+    145,
+    146,
+    147,
+    148,
+    149,
+    150,
+    151,
+    152,
+    153,
+    154,
+    155,
+    156,
+    157,
+    158,
+    159,
+    160,
+    161,
+    162,
+    163,
+    164,
+    165,
+    166,
+    167,
+    168,
+    169,
+    170,
+    171,
+    172,
+    173,
+    174,
+    175,
+    176,
+    177,
+    178,
+    179,
+    180,
+    181,
+    182,
+    183,
+    184,
+    185,
+    186,
+    187,
+    188,
+    189,
+    190,
+    191,
+    192,
+    193,
+    194,
+    195,
+    196,
+    197,
+    198,
+    199,
+    200,
+    201,
+    202,
+    203,
+    204,
+    205,
+    206,
+    207,
+    208,
+    209,
+    210,
+    211,
+    212,
+    213,
+    214,
+    215,
+    216,
+    217,
+    218,
+    219,
+    220,
+    221,
+    222,
+    223,
+    224,
+    225,
+    226,
+    227,
+    228,
+    231,
+    232,
+    233,
+    234,
+    235,
+    236,
+    237,
+    238,
+    239,
+    240,
+    241,
+    242,
+    243,
+    244,
+    245,
+    246,
+    247,
+    248,
+    249,
+    250,
+    251,
+    252,
+    253,
+    254,
+    255,
+    256,
+    257,
+    258,
+    259,
+    260,
+    261,
+    262,
+    263,
+    264,
+    265,
+    266,
+    267,
+    268,
+    269,
+    270,
+    271,
+    272,
+    273,
+    274,
+    275,
+    276,
+    277,
+    278,
+    279,
+    280,
+    281,
+    282,
+    283,
+    284,
+    285,
+    286,
+    287,
+    288,
+    289,
+    290,
+    291,
+    292,
+    293
+  ],
+  "all294PerFrameNonPoseFieldsExactlyEqual": true,
+  "allOriginalTopLevelNonFrameFieldsExactlyEqual": true,
+  "addedTopLevelField": "pose_refinement",
+  "relativeCorrectionsRigidNoScale": true,
+  "inheritedOriginalPoseMaxRotationOrthogonalityError": 7.463406526131422e-08,
+  "refinedPoseMaxRotationOrthogonalityError": 7.463406526131422e-08,
+  "derivedLevelCorrections": [
+    {
+      "poseIndexZeroBased": 23,
+      "originalRGBFrameID": "frame_00024",
+      "originalDepthFrameID": "frame_00024",
+      "levelCorrectionM": [
+        [
+          0.9994848720557096,
+          0.0003573788097426622,
+          0.03209147569320699,
+          -0.003048420329127624
+        ],
+        [
+          0.00035737880974290515,
+          0.999752062346707,
+          -0.022264009384951027,
+          0.002114893670387384
+        ],
+        [
+          -0.032091475693207,
+          0.022264009384951062,
+          0.9992369344024161,
+          -0.18629171152141466
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotationDegrees": 2.23844376007892,
+      "rotationAxis": [
+        0.5700202786877673,
+        0.8216306237504662,
+        3.110348581401921e-15
+      ],
+      "rotationAxisZMagnitude": 3.110348581401921e-15,
+      "EulerZYXMatrixYawDegrees": 0.020486849961942825,
+      "determinant": 0.9999999999999998,
+      "singularValues": [
+        1.0000000000000002,
+        0.9999999999999998,
+        0.9999999999999997
+      ],
+      "rotationOrthogonalityMaxAbsError": 8.881784197001252e-16,
+      "affineBottomRowMaxAbsError": 0.0,
+      "oldCameraLevelXYZ": [
+        -1.864940069239962,
+        3.749457762828056,
+        1.5178885043161565
+      ],
+      "newCameraLevelXYZ": [
+        -1.816976548031276,
+        3.716182250772015,
+        1.4737651860175136
+      ],
+      "actualCameraLevelDisplacementMetres": [
+        0.047963521208685966,
+        -0.033275512056040846,
+        -0.04412331829864291
+      ],
+      "actualCameraHorizontalDisplacementMetres": 0.05837601450362801,
+      "globalLevelTransformTranslationMetres": [
+        -0.003048420329127624,
+        0.002114893670387384,
+        -0.18629171152141466
+      ],
+      "cameraDisplacementEquationMaxAbsError": 1.033895191682177e-15,
+      "sourceNNDecision": {
+        "decision": "corrected",
+        "offset_cm": 0.36,
+        "tilt_deg": 2.24,
+        "nonfloorNN_mm_before": 25.8,
+        "nonfloorNN_mm_after": 12.6
+      }
+    },
+    {
+      "poseIndexZeroBased": 24,
+      "originalRGBFrameID": "frame_00025",
+      "originalDepthFrameID": "frame_00025",
+      "levelCorrectionM": [
+        [
+          0.9991665799641225,
+          -0.0002382924875659078,
+          0.04081774980922816,
+          -0.0028651072853066242
+        ],
+        [
+          -0.00023829248756600285,
+          0.9999318671171972,
+          0.011670661515407068,
+          -0.0008191950190410378
+        ],
+        [
+          -0.04081774980922817,
+          -0.011670661515407086,
+          0.9990984470813192,
+          -0.1402393261607584
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotationDegrees": 2.4331331500014644,
+      "rotationAxis": [
+        -0.2749050833830236,
+        0.9614713698961966,
+        -1.1195496262675852e-15
+      ],
+      "rotationAxisZMagnitude": 1.1195496262675852e-15,
+      "EulerZYXMatrixYawDegrees": -0.013664541871327226,
+      "determinant": 1.0,
+      "singularValues": [
+        1.0000000000000002,
+        0.9999999999999998,
+        0.9999999999999997
+      ],
+      "rotationOrthogonalityMaxAbsError": 8.881784197001252e-16,
+      "affineBottomRowMaxAbsError": 0.0,
+      "oldCameraLevelXYZ": [
+        -2.15524215734852,
+        3.5328854775213023,
+        1.5653619162710588
+      ],
+      "newCameraLevelXYZ": [
+        -2.0932583516472034,
+        3.5506079639189556,
+        1.4704523580819995
+      ],
+      "actualCameraLevelDisplacementMetres": [
+        0.06198380570131645,
+        0.01772248639765328,
+        -0.09490955818905933
+      ],
+      "actualCameraHorizontalDisplacementMetres": 0.06446765617992914,
+      "globalLevelTransformTranslationMetres": [
+        -0.0028651072853066242,
+        -0.0008191950190410378,
+        -0.1402393261607584
+      ],
+      "cameraDisplacementEquationMaxAbsError": 1.033895191682177e-15,
+      "sourceNNDecision": {
+        "decision": "corrected",
+        "offset_cm": 0.01,
+        "tilt_deg": 2.43,
+        "nonfloorNN_mm_before": 25.4,
+        "nonfloorNN_mm_after": 13.1
+      }
+    },
+    {
+      "poseIndexZeroBased": 61,
+      "originalRGBFrameID": "frame_00062",
+      "originalDepthFrameID": "frame_00062",
+      "levelCorrectionM": [
+        [
+          0.9997051425075246,
+          -0.000243147051622875,
+          -0.024281040412655813,
+          0.001044086852619322
+        ],
+        [
+          -0.0002431470516229382,
+          0.999799494704318,
+          -0.020022768752153114,
+          0.0008609808003223231
+        ],
+        [
+          0.024281040412655736,
+          0.02002276875215301,
+          0.9995046372118421,
+          -0.031614368615794364
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotationDegrees": 1.8035045785617605,
+      "rotationAxis": [
+        0.6362110886232198,
+        -0.7715150359601994,
+        -1.003782598015829e-15
+      ],
+      "rotationAxisZMagnitude": 1.003782598015829e-15,
+      "EulerZYXMatrixYawDegrees": -0.013935408543960089,
+      "determinant": 0.9999999999999999,
+      "singularValues": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotationOrthogonalityMaxAbsError": 6.661338147750939e-16,
+      "affineBottomRowMaxAbsError": 0.0,
+      "oldCameraLevelXYZ": [
+        -3.469222646165989,
+        1.2596614107683233,
+        1.3707142412774682
+      ],
+      "newCameraLevelXYZ": [
+        -3.5007442838678156,
+        1.233667859764477,
+        1.2794064456951149
+      ],
+      "actualCameraLevelDisplacementMetres": [
+        -0.03152163770182659,
+        -0.02599355100384626,
+        -0.09130779558235336
+      ],
+      "actualCameraHorizontalDisplacementMetres": 0.04085680282639321,
+      "globalLevelTransformTranslationMetres": [
+        0.001044086852619322,
+        0.0008609808003223231,
+        -0.031614368615794364
+      ],
+      "cameraDisplacementEquationMaxAbsError": 7.147060721024445e-16,
+      "sourceNNDecision": {
+        "decision": "corrected",
+        "offset_cm": 5.44,
+        "tilt_deg": 1.8,
+        "nonfloorNN_mm_before": 36.1,
+        "nonfloorNN_mm_after": 27.1
+      }
+    },
+    {
+      "poseIndexZeroBased": 62,
+      "originalRGBFrameID": "frame_00063",
+      "originalDepthFrameID": "frame_00063",
+      "levelCorrectionM": [
+        [
+          0.9997262245094488,
+          -0.0003285453353133698,
+          -0.02339589891509436,
+          0.0013995168347622905
+        ],
+        [
+          -0.00032854533531333365,
+          0.9996057279008473,
+          -0.02807633889560034,
+          0.001679495585335443
+        ],
+        [
+          0.023395898915094384,
+          0.028076338895600284,
+          0.9993319524102959,
+          -0.06291152060925032
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotationDegrees": 2.094428367065097,
+      "rotationAxis": [
+        0.7682354113777566,
+        -0.6401674411476233,
+        4.946863895762688e-16
+      ],
+      "rotationAxisZMagnitude": 4.946863895762688e-16,
+      "EulerZYXMatrixYawDegrees": -0.01882941544693457,
+      "determinant": 1.0000000000000002,
+      "singularValues": [
+        1.0,
+        1.0,
+        0.9999999999999999
+      ],
+      "rotationOrthogonalityMaxAbsError": 8.881784197001252e-16,
+      "affineBottomRowMaxAbsError": 0.0,
+      "oldCameraLevelXYZ": [
+        -3.4166266166566843,
+        1.3981672547892539,
+        1.4654978973119437
+      ],
+      "newCameraLevelXYZ": [
+        -3.4490377131892602,
+        1.3592721931577674,
+        1.3609277210889512
+      ],
+      "actualCameraLevelDisplacementMetres": [
+        -0.0324110965325759,
+        -0.03889506163148648,
+        -0.10457017622299247
+      ],
+      "actualCameraHorizontalDisplacementMetres": 0.05062909240506969,
+      "globalLevelTransformTranslationMetres": [
+        0.0013995168347622905,
+        0.001679495585335443,
+        -0.06291152060925032
+      ],
+      "cameraDisplacementEquationMaxAbsError": 1.1379786002407855e-15,
+      "sourceNNDecision": {
+        "decision": "corrected",
+        "offset_cm": 5.67,
+        "tilt_deg": 2.09,
+        "nonfloorNN_mm_before": 49.3,
+        "nonfloorNN_mm_after": 30.4
+      }
+    },
+    {
+      "poseIndexZeroBased": 63,
+      "originalRGBFrameID": "frame_00064",
+      "originalDepthFrameID": "frame_00064",
+      "levelCorrectionM": [
+        [
+          0.9997941808853613,
+          -0.00021594451003547775,
+          -0.02028667631076232,
+          0.0010401947811550585
+        ],
+        [
+          -0.00021594451003550372,
+          0.9997734319696383,
+          -0.0212846915791582,
+          0.0010913677903649326
+        ],
+        [
+          0.020286676310762305,
+          0.021284691579158268,
+          0.9995676128549995,
+          -0.050138155021863806
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotationDegrees": 1.6849602776153105,
+      "rotationAxis": [
+        0.723873916211308,
+        -0.689932281770157,
+        -4.4155149695151554e-16
+      ],
+      "rotationAxisZMagnitude": 4.4155149695151554e-16,
+      "EulerZYXMatrixYawDegrees": -0.012375255905868082,
+      "determinant": 0.9999999999999998,
+      "singularValues": [
+        1.0,
+        1.0,
+        0.9999999999999998
+      ],
+      "rotationOrthogonalityMaxAbsError": 3.3306690738754696e-16,
+      "affineBottomRowMaxAbsError": 0.0,
+      "oldCameraLevelXYZ": [
+        -3.400499896937347,
+        1.4241804126858222,
+        1.4710885310321142
+      ],
+      "newCameraLevelXYZ": [
+        -3.428910855073019,
+        1.3943717603406698,
+        1.3816426963734219
+      ],
+      "actualCameraLevelDisplacementMetres": [
+        -0.028410958135672182,
+        -0.029808652345152398,
+        -0.08944583465869238
+      ],
+      "actualCameraHorizontalDisplacementMetres": 0.04117934308389434,
+      "globalLevelTransformTranslationMetres": [
+        0.0010401947811550585,
+        0.0010913677903649326,
+        -0.050138155021863806
+      ],
+      "cameraDisplacementEquationMaxAbsError": 9.26342336171615e-16,
+      "sourceNNDecision": {
+        "decision": "corrected",
+        "offset_cm": 5.24,
+        "tilt_deg": 1.68,
+        "nonfloorNN_mm_before": 52.3,
+        "nonfloorNN_mm_after": 39.3
+      }
+    },
+    {
+      "poseIndexZeroBased": 119,
+      "originalRGBFrameID": "frame_00120",
+      "originalDepthFrameID": "frame_00120",
+      "levelCorrectionM": [
+        [
+          0.9999158295079091,
+          -3.384769967941847e-05,
+          0.012974311305161138,
+          0.0001779821166877464
+        ],
+        [
+          -3.38476996793769e-05,
+          0.9999863887361815,
+          0.0052173936696325186,
+          7.157241313654819e-05
+        ],
+        [
+          -0.012974311305161136,
+          -0.00521739366963245,
+          0.9999022182440904,
+          -0.00093192922051899
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotationDegrees": 0.801253768355931,
+      "rotationAxis": [
+        -0.3730957568835712,
+        0.9277928412066994,
+        1.4864200847695049e-15
+      ],
+      "rotationAxisZMagnitude": 1.4864200847695049e-15,
+      "EulerZYXMatrixYawDegrees": -0.0019394935852433497,
+      "determinant": 1.0,
+      "singularValues": [
+        1.0000000000000002,
+        1.0,
+        0.9999999999999999
+      ],
+      "rotationOrthogonalityMaxAbsError": 2.220446049250313e-16,
+      "affineBottomRowMaxAbsError": 0.0,
+      "oldCameraLevelXYZ": [
+        -0.9230944917990381,
+        -3.7806565567773864,
+        1.3297348279684063
+      ],
+      "newCameraLevelXYZ": [
+        -0.9054584522256276,
+        -3.773564530151581,
+        1.3603745638285794
+      ],
+      "actualCameraLevelDisplacementMetres": [
+        0.017636039573410534,
+        0.0070920266258052145,
+        0.0306397358601731
+      ],
+      "actualCameraHorizontalDisplacementMetres": 0.019008596305251802,
+      "globalLevelTransformTranslationMetres": [
+        0.0001779821166877464,
+        7.157241313654819e-05,
+        -0.00093192922051899
+      ],
+      "cameraDisplacementEquationMaxAbsError": 9.098624631498353e-16,
+      "sourceNNDecision": {
+        "decision": "corrected",
+        "offset_cm": -2.84,
+        "tilt_deg": 0.8,
+        "nonfloorNN_mm_before": 13.7,
+        "nonfloorNN_mm_after": 10.4
+      }
+    },
+    {
+      "poseIndexZeroBased": 132,
+      "originalRGBFrameID": "frame_00133",
+      "originalDepthFrameID": "frame_00133",
+      "levelCorrectionM": [
+        [
+          0.9987497261887014,
+          1.544440034529579e-05,
+          0.04998984096258464,
+          0.0006171843236389835
+        ],
+        [
+          1.5444400345307242e-05,
+          0.9999998092181892,
+          -0.00061751522750288,
+          -7.623963403730278e-06
+        ],
+        [
+          -0.049989840962584624,
+          0.0006175152275028833,
+          0.9987495354068902,
+          0.04137802819528358
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotationDegrees": 2.8656199766250046,
+      "rotationAxis": [
+        0.012351872041503823,
+        0.9999237127186312,
+        1.1453338911641538e-16
+      ],
+      "rotationAxisZMagnitude": 1.1453338911641538e-16,
+      "EulerZYXMatrixYawDegrees": 0.0008860067078093708,
+      "determinant": 1.0000000000000002,
+      "singularValues": [
+        1.0,
+        0.9999999999999998,
+        0.9999999999999997
+      ],
+      "rotationOrthogonalityMaxAbsError": 6.661338147750939e-16,
+      "affineBottomRowMaxAbsError": 0.0,
+      "oldCameraLevelXYZ": [
+        1.5105667389032278,
+        -3.5917586301141196,
+        1.4572425663812063
+      ],
+      "newCameraLevelXYZ": [
+        1.5820871527720752,
+        -3.5926421085127487,
+        1.4190674076549048
+      ],
+      "actualCameraLevelDisplacementMetres": [
+        0.07152041386884744,
+        -0.0008834783986291228,
+        -0.038175158726301506
+      ],
+      "actualCameraHorizontalDisplacementMetres": 0.07152587038304441,
+      "globalLevelTransformTranslationMetres": [
+        0.0006171843236389835,
+        -7.623963403730278e-06,
+        0.04137802819528358
+      ],
+      "cameraDisplacementEquationMaxAbsError": 1.064794953598014e-15,
+      "sourceNNDecision": {
+        "decision": "corrected",
+        "offset_cm": 1.67,
+        "tilt_deg": 2.87,
+        "nonfloorNN_mm_before": 109.0,
+        "nonfloorNN_mm_after": 88.1
+      }
+    },
+    {
+      "poseIndexZeroBased": 229,
+      "originalRGBFrameID": "frame_00245",
+      "originalDepthFrameID": "frame_00245",
+      "levelCorrectionM": [
+        [
+          0.9994641418170856,
+          -0.0006742841159276795,
+          0.03272574770372011,
+          0.0019157578461674943
+        ],
+        [
+          -0.0006742841159277178,
+          0.9991515309768725,
+          0.04117964894827842,
+          0.002410647307108889
+        ],
+        [
+          -0.03272574770372009,
+          -0.041179648948278476,
+          0.9986156727939575,
+          0.1314216388817535
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotationDegrees": 3.015137488466132,
+      "rotationAxis": [
+        -0.7828861653219475,
+        0.6221649718101846,
+        -3.638069249423439e-16
+      ],
+      "rotationAxisZMagnitude": 3.638069249423439e-16,
+      "EulerZYXMatrixYawDegrees": -0.03865434141920038,
+      "determinant": 0.9999999999999999,
+      "singularValues": [
+        1.0000000000000004,
+        1.0,
+        0.9999999999999999
+      ],
+      "rotationOrthogonalityMaxAbsError": 6.661338147750939e-16,
+      "affineBottomRowMaxAbsError": 0.0,
+      "oldCameraLevelXYZ": [
+        -0.9029158044853927,
+        3.279533884712535,
+        1.2253126498082936
+      ],
+      "newCameraLevelXYZ": [
+        -0.8626282767872141,
+        3.330228715664143,
+        1.2495365957818538
+      ],
+      "actualCameraLevelDisplacementMetres": [
+        0.04028752769817856,
+        0.05069483095160798,
+        0.024223945973560257
+      ],
+      "actualCameraHorizontalDisplacementMetres": 0.06475377033998572,
+      "globalLevelTransformTranslationMetres": [
+        0.0019157578461674943,
+        0.002410647307108889,
+        0.1314216388817535
+      ],
+      "cameraDisplacementEquationMaxAbsError": 2.0122792321330962e-16,
+      "sourceNNDecision": {
+        "decision": "corrected",
+        "offset_cm": 1.44,
+        "tilt_deg": 3.02,
+        "nonfloorNN_mm_before": 16.2,
+        "nonfloorNN_mm_after": 13.2
+      }
+    },
+    {
+      "poseIndexZeroBased": 230,
+      "originalRGBFrameID": "frame_00246",
+      "originalDepthFrameID": "frame_00246",
+      "levelCorrectionM": [
+        [
+          0.99984419368162,
+          0.0004692993904210254,
+          -0.017645626065194705,
+          -0.0024492487742969506
+        ],
+        [
+          0.00046929939042098353,
+          0.9985864378278118,
+          0.05314984425606906,
+          0.007377306445079487
+        ],
+        [
+          0.017645626065194684,
+          -0.053149844256069036,
+          0.9984306315094318,
+          0.2745124317536707
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "rotationDegrees": 3.2103834529295994,
+      "rotationAxis": [
+        -0.949062892011506,
+        -0.31508669760354024,
+        -3.736462078169939e-16
+      ],
+      "rotationAxisZMagnitude": 3.736462078169939e-16,
+      "EulerZYXMatrixYawDegrees": 0.026893062533613833,
+      "determinant": 0.9999999999999998,
+      "singularValues": [
+        1.0000000000000004,
+        1.0,
+        0.9999999999999997
+      ],
+      "rotationOrthogonalityMaxAbsError": 5.551115123125783e-16,
+      "affineBottomRowMaxAbsError": 0.0,
+      "oldCameraLevelXYZ": [
+        -0.9627852893173479,
+        3.451779194275805,
+        0.959414366565939
+      ],
+      "newCameraLevelXYZ": [
+        -0.9803940793425826,
+        3.504818085835742,
+        1.03197064786486
+      ],
+      "actualCameraLevelDisplacementMetres": [
+        -0.017608790025234744,
+        0.05303889155993691,
+        0.072556281298921
+      ],
+      "actualCameraHorizontalDisplacementMetres": 0.0558855393108052,
+      "globalLevelTransformTranslationMetres": [
+        -0.0024492487742969506,
+        0.007377306445079487,
+        0.2745124317536707
+      ],
+      "cameraDisplacementEquationMaxAbsError": 2.1510571102112408e-16,
+      "sourceNNDecision": {
+        "decision": "corrected",
+        "offset_cm": -0.29,
+        "tilt_deg": 3.21,
+        "nonfloorNN_mm_before": 19.4,
+        "nonfloorNN_mm_after": 12.9
+      }
+    }
+  ],
+  "cameraHorizontalDisplacementRangeMetres": [
+    0.019008596305251802,
+    0.07152587038304441
+  ],
+  "maximumCorrectionRotationScaleError": 4.440892098500626e-16,
+  "receipts": {
+    "koivu": {
+      "scope": "Saved receipt plus exact original-pose comparison",
+      "totalExportedFrames": 294,
+      "fittedFramesReported": 251,
+      "noFitFramesReported": 43,
+      "flagged": 77,
+      "corrected": 9,
+      "rejected": 68,
+      "allDecisionsRecounted": [
+        {
+          "poseIndexZeroBased": 8,
+          "exportedRGBFrameID": "frame_00009",
+          "exportedDepthFrameID": "frame_00009",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -1.1,
+            "tilt_deg": 1.63,
+            "nonfloorNN_mm_before": 10.7,
+            "nonfloorNN_mm_after": 14.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -4.200000000000001,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -6.3000000000000025,
+            -6.1
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 9,
+          "exportedRGBFrameID": "frame_00010",
+          "exportedDepthFrameID": "frame_00010",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.28,
+            "tilt_deg": 8.57,
+            "nonfloorNN_mm_before": 9.4,
+            "nonfloorNN_mm_after": 76.2
+          },
+          "accepted": false,
+          "roundedImprovementMM": -66.8,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -68.9,
+            -68.7
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 12,
+          "exportedRGBFrameID": "frame_00013",
+          "exportedDepthFrameID": "frame_00013",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.67,
+            "tilt_deg": 2.17,
+            "nonfloorNN_mm_before": 11.0,
+            "nonfloorNN_mm_after": 12.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -1.8000000000000007,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -3.900000000000002,
+            -3.6999999999999993
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 13,
+          "exportedRGBFrameID": "frame_00014",
+          "exportedDepthFrameID": "frame_00014",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.85,
+            "tilt_deg": 4.79,
+            "nonfloorNN_mm_before": 12.5,
+            "nonfloorNN_mm_after": 47.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -35.4,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -37.5,
+            -37.3
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 14,
+          "exportedRGBFrameID": "frame_00015",
+          "exportedDepthFrameID": "frame_00015",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.42,
+            "tilt_deg": 3.28,
+            "nonfloorNN_mm_before": 16.3,
+            "nonfloorNN_mm_after": 28.5
+          },
+          "accepted": false,
+          "roundedImprovementMM": -12.2,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -14.3,
+            -14.099999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 15,
+          "exportedRGBFrameID": "frame_00016",
+          "exportedDepthFrameID": "frame_00016",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.75,
+            "tilt_deg": 2.13,
+            "nonfloorNN_mm_before": 19.1,
+            "nonfloorNN_mm_after": 19.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -0.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -2.6000000000000014,
+            -2.3999999999999986
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 23,
+          "exportedRGBFrameID": "frame_00024",
+          "exportedDepthFrameID": "frame_00024",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "corrected",
+            "offset_cm": 0.36,
+            "tilt_deg": 2.24,
+            "nonfloorNN_mm_before": 25.8,
+            "nonfloorNN_mm_after": 12.6
+          },
+          "accepted": true,
+          "roundedImprovementMM": 13.200000000000001,
+          "roundedRequiredImprovementMM": 2.58,
+          "roundedCriterionPassed": true,
+          "roundingIntervalCriterionMarginMM": [
+            10.525,
+            10.715000000000002
+          ],
+          "roundingIntervalClassification": "guaranteedPass"
+        },
+        {
+          "poseIndexZeroBased": 24,
+          "exportedRGBFrameID": "frame_00025",
+          "exportedDepthFrameID": "frame_00025",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "corrected",
+            "offset_cm": 0.01,
+            "tilt_deg": 2.43,
+            "nonfloorNN_mm_before": 25.4,
+            "nonfloorNN_mm_after": 13.1
+          },
+          "accepted": true,
+          "roundedImprovementMM": 12.299999999999999,
+          "roundedRequiredImprovementMM": 2.54,
+          "roundedCriterionPassed": true,
+          "roundingIntervalCriterionMarginMM": [
+            9.664999999999997,
+            9.855000000000002
+          ],
+          "roundingIntervalClassification": "guaranteedPass"
+        },
+        {
+          "poseIndexZeroBased": 27,
+          "exportedRGBFrameID": "frame_00028",
+          "exportedDepthFrameID": "frame_00028",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.6,
+            "tilt_deg": 7.8,
+            "nonfloorNN_mm_before": 10.3,
+            "nonfloorNN_mm_after": 123.4
+          },
+          "accepted": false,
+          "roundedImprovementMM": -113.10000000000001,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -115.2,
+            -115.0
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 28,
+          "exportedRGBFrameID": "frame_00029",
+          "exportedDepthFrameID": "frame_00029",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.59,
+            "tilt_deg": 3.5,
+            "nonfloorNN_mm_before": 12.2,
+            "nonfloorNN_mm_after": 57.3
+          },
+          "accepted": false,
+          "roundedImprovementMM": -45.099999999999994,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -47.199999999999996,
+            -47.0
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 35,
+          "exportedRGBFrameID": "frame_00036",
+          "exportedDepthFrameID": "frame_00036",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.67,
+            "tilt_deg": 1.2,
+            "nonfloorNN_mm_before": 7.0,
+            "nonfloorNN_mm_after": 10.7
+          },
+          "accepted": false,
+          "roundedImprovementMM": -3.6999999999999993,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.8,
+            -5.599999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 36,
+          "exportedRGBFrameID": "frame_00037",
+          "exportedDepthFrameID": "frame_00037",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.13,
+            "tilt_deg": 2.99,
+            "nonfloorNN_mm_before": 7.5,
+            "nonfloorNN_mm_after": 20.7
+          },
+          "accepted": false,
+          "roundedImprovementMM": -13.2,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -15.3,
+            -15.099999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 37,
+          "exportedRGBFrameID": "frame_00038",
+          "exportedDepthFrameID": "frame_00038",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 3.47,
+            "tilt_deg": 2.16,
+            "nonfloorNN_mm_before": 10.1,
+            "nonfloorNN_mm_after": 22.0
+          },
+          "accepted": false,
+          "roundedImprovementMM": -11.9,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -14.000000000000002,
+            -13.799999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 38,
+          "exportedRGBFrameID": "frame_00039",
+          "exportedDepthFrameID": "frame_00039",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.84,
+            "tilt_deg": 7.54,
+            "nonfloorNN_mm_before": 10.7,
+            "nonfloorNN_mm_after": 52.2
+          },
+          "accepted": false,
+          "roundedImprovementMM": -41.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -43.6,
+            -43.400000000000006
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 39,
+          "exportedRGBFrameID": "frame_00040",
+          "exportedDepthFrameID": "frame_00040",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.17,
+            "tilt_deg": 2.93,
+            "nonfloorNN_mm_before": 6.8,
+            "nonfloorNN_mm_after": 18.5
+          },
+          "accepted": false,
+          "roundedImprovementMM": -11.7,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -13.8,
+            -13.6
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 40,
+          "exportedRGBFrameID": "frame_00041",
+          "exportedDepthFrameID": "frame_00041",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.39,
+            "tilt_deg": 3.35,
+            "nonfloorNN_mm_before": 6.9,
+            "nonfloorNN_mm_after": 17.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -10.999999999999998,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -13.099999999999998,
+            -12.899999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 41,
+          "exportedRGBFrameID": "frame_00042",
+          "exportedDepthFrameID": "frame_00042",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.21,
+            "tilt_deg": 3.88,
+            "nonfloorNN_mm_before": 7.3,
+            "nonfloorNN_mm_after": 18.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -11.599999999999998,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -13.7,
+            -13.499999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 55,
+          "exportedRGBFrameID": "frame_00056",
+          "exportedDepthFrameID": "frame_00056",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.01,
+            "tilt_deg": 1.83,
+            "nonfloorNN_mm_before": 7.3,
+            "nonfloorNN_mm_after": 11.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -4.3,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -6.4,
+            -6.199999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 56,
+          "exportedRGBFrameID": "frame_00057",
+          "exportedDepthFrameID": "frame_00057",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.0,
+            "tilt_deg": 2.13,
+            "nonfloorNN_mm_before": 9.3,
+            "nonfloorNN_mm_after": 14.5
+          },
+          "accepted": false,
+          "roundedImprovementMM": -5.199999999999999,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -7.300000000000001,
+            -7.099999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 60,
+          "exportedRGBFrameID": "frame_00061",
+          "exportedDepthFrameID": "frame_00061",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 5.74,
+            "tilt_deg": 1.77,
+            "nonfloorNN_mm_before": 19.4,
+            "nonfloorNN_mm_after": 19.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -0.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -2.6000000000000014,
+            -2.3999999999999986
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 61,
+          "exportedRGBFrameID": "frame_00062",
+          "exportedDepthFrameID": "frame_00062",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "corrected",
+            "offset_cm": 5.44,
+            "tilt_deg": 1.8,
+            "nonfloorNN_mm_before": 36.1,
+            "nonfloorNN_mm_after": 27.1
+          },
+          "accepted": true,
+          "roundedImprovementMM": 9.0,
+          "roundedRequiredImprovementMM": 3.6100000000000003,
+          "roundedCriterionPassed": true,
+          "roundingIntervalCriterionMarginMM": [
+            5.295000000000005,
+            5.484999999999996
+          ],
+          "roundingIntervalClassification": "guaranteedPass"
+        },
+        {
+          "poseIndexZeroBased": 62,
+          "exportedRGBFrameID": "frame_00063",
+          "exportedDepthFrameID": "frame_00063",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "corrected",
+            "offset_cm": 5.67,
+            "tilt_deg": 2.09,
+            "nonfloorNN_mm_before": 49.3,
+            "nonfloorNN_mm_after": 30.4
+          },
+          "accepted": true,
+          "roundedImprovementMM": 18.9,
+          "roundedRequiredImprovementMM": 4.93,
+          "roundedCriterionPassed": true,
+          "roundingIntervalCriterionMarginMM": [
+            13.875000000000004,
+            14.065000000000001
+          ],
+          "roundingIntervalClassification": "guaranteedPass"
+        },
+        {
+          "poseIndexZeroBased": 63,
+          "exportedRGBFrameID": "frame_00064",
+          "exportedDepthFrameID": "frame_00064",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "corrected",
+            "offset_cm": 5.24,
+            "tilt_deg": 1.68,
+            "nonfloorNN_mm_before": 52.3,
+            "nonfloorNN_mm_after": 39.3
+          },
+          "accepted": true,
+          "roundedImprovementMM": 13.0,
+          "roundedRequiredImprovementMM": 5.23,
+          "roundedCriterionPassed": true,
+          "roundingIntervalCriterionMarginMM": [
+            7.675000000000004,
+            7.864999999999995
+          ],
+          "roundingIntervalClassification": "guaranteedPass"
+        },
+        {
+          "poseIndexZeroBased": 64,
+          "exportedRGBFrameID": "frame_00065",
+          "exportedDepthFrameID": "frame_00065",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 3.32,
+            "tilt_deg": 0.32,
+            "nonfloorNN_mm_before": 51.3,
+            "nonfloorNN_mm_after": 51.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -0.30000000000000426,
+          "roundedRequiredImprovementMM": 5.13,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.524999999999999,
+            -5.335000000000008
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 65,
+          "exportedRGBFrameID": "frame_00066",
+          "exportedDepthFrameID": "frame_00066",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 4.5,
+            "tilt_deg": 3.24,
+            "nonfloorNN_mm_before": 23.6,
+            "nonfloorNN_mm_after": 24.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -1.1999999999999993,
+          "roundedRequiredImprovementMM": 2.3600000000000003,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -3.655000000000001,
+            -3.4649999999999963
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 66,
+          "exportedRGBFrameID": "frame_00067",
+          "exportedDepthFrameID": "frame_00067",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 4.56,
+            "tilt_deg": 2.49,
+            "nonfloorNN_mm_before": 26.9,
+            "nonfloorNN_mm_after": 43.5
+          },
+          "accepted": false,
+          "roundedImprovementMM": -16.6,
+          "roundedRequiredImprovementMM": 2.69,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -19.384999999999998,
+            -19.195000000000004
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 67,
+          "exportedRGBFrameID": "frame_00068",
+          "exportedDepthFrameID": "frame_00068",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.07,
+            "tilt_deg": 4.64,
+            "nonfloorNN_mm_before": 18.2,
+            "nonfloorNN_mm_after": 40.2
+          },
+          "accepted": false,
+          "roundedImprovementMM": -22.000000000000004,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -24.1,
+            -23.900000000000006
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 68,
+          "exportedRGBFrameID": "frame_00069",
+          "exportedDepthFrameID": "frame_00069",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.33,
+            "tilt_deg": 3.88,
+            "nonfloorNN_mm_before": 21.5,
+            "nonfloorNN_mm_after": 47.2
+          },
+          "accepted": false,
+          "roundedImprovementMM": -25.700000000000003,
+          "roundedRequiredImprovementMM": 2.15,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -27.945,
+            -27.755000000000006
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 100,
+          "exportedRGBFrameID": "frame_00101",
+          "exportedDepthFrameID": "frame_00101",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.31,
+            "tilt_deg": 1.94,
+            "nonfloorNN_mm_before": 11.6,
+            "nonfloorNN_mm_after": 19.1
+          },
+          "accepted": false,
+          "roundedImprovementMM": -7.500000000000002,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -9.600000000000003,
+            -9.4
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 101,
+          "exportedRGBFrameID": "frame_00102",
+          "exportedDepthFrameID": "frame_00102",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.54,
+            "tilt_deg": 4.12,
+            "nonfloorNN_mm_before": 11.4,
+            "nonfloorNN_mm_after": 42.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -31.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -33.599999999999994,
+            -33.4
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 102,
+          "exportedRGBFrameID": "frame_00103",
+          "exportedDepthFrameID": "frame_00103",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 3.26,
+            "tilt_deg": 5.65,
+            "nonfloorNN_mm_before": 10.9,
+            "nonfloorNN_mm_after": 61.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -50.7,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -52.8,
+            -52.6
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 103,
+          "exportedRGBFrameID": "frame_00104",
+          "exportedDepthFrameID": "frame_00104",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 4.45,
+            "tilt_deg": 15.97,
+            "nonfloorNN_mm_before": 9.1,
+            "nonfloorNN_mm_after": 256.3
+          },
+          "accepted": false,
+          "roundedImprovementMM": -247.20000000000002,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -249.3,
+            -249.1
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 104,
+          "exportedRGBFrameID": "frame_00105",
+          "exportedDepthFrameID": "frame_00105",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 4.09,
+            "tilt_deg": 10.75,
+            "nonfloorNN_mm_before": 7.5,
+            "nonfloorNN_mm_after": 169.0
+          },
+          "accepted": false,
+          "roundedImprovementMM": -161.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -163.60000000000002,
+            -163.39999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 105,
+          "exportedRGBFrameID": "frame_00106",
+          "exportedDepthFrameID": "frame_00106",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 3.51,
+            "tilt_deg": 10.01,
+            "nonfloorNN_mm_before": 7.2,
+            "nonfloorNN_mm_after": 162.1
+          },
+          "accepted": false,
+          "roundedImprovementMM": -154.9,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -157.0,
+            -156.79999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 106,
+          "exportedRGBFrameID": "frame_00107",
+          "exportedDepthFrameID": "frame_00107",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 3.1,
+            "tilt_deg": 6.79,
+            "nonfloorNN_mm_before": 7.2,
+            "nonfloorNN_mm_after": 92.3
+          },
+          "accepted": false,
+          "roundedImprovementMM": -85.1,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -87.19999999999999,
+            -87.0
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 107,
+          "exportedRGBFrameID": "frame_00108",
+          "exportedDepthFrameID": "frame_00108",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.92,
+            "tilt_deg": 7.07,
+            "nonfloorNN_mm_before": 7.3,
+            "nonfloorNN_mm_after": 90.0
+          },
+          "accepted": false,
+          "roundedImprovementMM": -82.7,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -84.8,
+            -84.60000000000001
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 108,
+          "exportedRGBFrameID": "frame_00109",
+          "exportedDepthFrameID": "frame_00109",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.11,
+            "tilt_deg": 3.1,
+            "nonfloorNN_mm_before": 9.4,
+            "nonfloorNN_mm_after": 25.2
+          },
+          "accepted": false,
+          "roundedImprovementMM": -15.799999999999999,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -17.9,
+            -17.699999999999996
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 109,
+          "exportedRGBFrameID": "frame_00110",
+          "exportedDepthFrameID": "frame_00110",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.22,
+            "tilt_deg": 2.12,
+            "nonfloorNN_mm_before": 13.3,
+            "nonfloorNN_mm_after": 18.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -5.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -7.600000000000001,
+            -7.399999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 110,
+          "exportedRGBFrameID": "frame_00111",
+          "exportedDepthFrameID": "frame_00111",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.33,
+            "tilt_deg": 1.53,
+            "nonfloorNN_mm_before": 14.2,
+            "nonfloorNN_mm_after": 14.3
+          },
+          "accepted": false,
+          "roundedImprovementMM": -0.10000000000000142,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -2.200000000000003,
+            -2.0
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 111,
+          "exportedRGBFrameID": "frame_00112",
+          "exportedDepthFrameID": "frame_00112",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.21,
+            "tilt_deg": 2.4,
+            "nonfloorNN_mm_before": 13.0,
+            "nonfloorNN_mm_after": 36.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -23.9,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -25.999999999999996,
+            -25.8
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 112,
+          "exportedRGBFrameID": "frame_00113",
+          "exportedDepthFrameID": "frame_00113",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.05,
+            "tilt_deg": 8.42,
+            "nonfloorNN_mm_before": 10.4,
+            "nonfloorNN_mm_after": 119.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -109.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -111.60000000000001,
+            -111.4
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 116,
+          "exportedRGBFrameID": "frame_00117",
+          "exportedDepthFrameID": "frame_00117",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -2.26,
+            "tilt_deg": 5.07,
+            "nonfloorNN_mm_before": 14.4,
+            "nonfloorNN_mm_after": 24.2
+          },
+          "accepted": false,
+          "roundedImprovementMM": -9.799999999999999,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -11.9,
+            -11.699999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 117,
+          "exportedRGBFrameID": "frame_00118",
+          "exportedDepthFrameID": "frame_00118",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -2.7,
+            "tilt_deg": 1.64,
+            "nonfloorNN_mm_before": 15.5,
+            "nonfloorNN_mm_after": 14.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": 0.6999999999999993,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -1.4000000000000021,
+            -1.1999999999999993
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 118,
+          "exportedRGBFrameID": "frame_00119",
+          "exportedDepthFrameID": "frame_00119",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -3.54,
+            "tilt_deg": 0.52,
+            "nonfloorNN_mm_before": 19.6,
+            "nonfloorNN_mm_after": 20.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -1.0,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -3.1000000000000014,
+            -2.8999999999999986
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 119,
+          "exportedRGBFrameID": "frame_00120",
+          "exportedDepthFrameID": "frame_00120",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "corrected",
+            "offset_cm": -2.84,
+            "tilt_deg": 0.8,
+            "nonfloorNN_mm_before": 13.7,
+            "nonfloorNN_mm_after": 10.4
+          },
+          "accepted": true,
+          "roundedImprovementMM": 3.299999999999999,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": true,
+          "roundingIntervalCriterionMarginMM": [
+            1.1999999999999975,
+            1.4000000000000004
+          ],
+          "roundingIntervalClassification": "guaranteedPass"
+        },
+        {
+          "poseIndexZeroBased": 120,
+          "exportedRGBFrameID": "frame_00121",
+          "exportedDepthFrameID": "frame_00121",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -2.01,
+            "tilt_deg": 3.5,
+            "nonfloorNN_mm_before": 12.2,
+            "nonfloorNN_mm_after": 19.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -7.600000000000001,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -9.700000000000003,
+            -9.5
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 122,
+          "exportedRGBFrameID": "frame_00123",
+          "exportedDepthFrameID": "frame_00123",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.64,
+            "tilt_deg": 3.38,
+            "nonfloorNN_mm_before": 10.7,
+            "nonfloorNN_mm_after": 26.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -16.2,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -18.3,
+            -18.099999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 127,
+          "exportedRGBFrameID": "frame_00128",
+          "exportedDepthFrameID": "frame_00128",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.89,
+            "tilt_deg": 1.47,
+            "nonfloorNN_mm_before": 30.1,
+            "nonfloorNN_mm_after": 31.3
+          },
+          "accepted": false,
+          "roundedImprovementMM": -1.1999999999999993,
+          "roundedRequiredImprovementMM": 3.0100000000000002,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -4.305,
+            -4.114999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 128,
+          "exportedRGBFrameID": "frame_00129",
+          "exportedDepthFrameID": "frame_00129",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.3,
+            "tilt_deg": 1.59,
+            "nonfloorNN_mm_before": 45.8,
+            "nonfloorNN_mm_after": 46.7
+          },
+          "accepted": false,
+          "roundedImprovementMM": -0.9000000000000057,
+          "roundedRequiredImprovementMM": 4.58,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.574999999999996,
+            -5.385000000000012
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 129,
+          "exportedRGBFrameID": "frame_00130",
+          "exportedDepthFrameID": "frame_00130",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.48,
+            "tilt_deg": 6.46,
+            "nonfloorNN_mm_before": 201.1,
+            "nonfloorNN_mm_after": 261.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -60.70000000000002,
+          "roundedRequiredImprovementMM": 20.11,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -80.90500000000003,
+            -80.715
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 130,
+          "exportedRGBFrameID": "frame_00131",
+          "exportedDepthFrameID": "frame_00131",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.37,
+            "tilt_deg": 13.39,
+            "nonfloorNN_mm_before": 119.4,
+            "nonfloorNN_mm_after": 206.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -87.4,
+          "roundedRequiredImprovementMM": 11.940000000000001,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -99.43500000000002,
+            -99.24499999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 131,
+          "exportedRGBFrameID": "frame_00132",
+          "exportedDepthFrameID": "frame_00132",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.92,
+            "tilt_deg": 2.02,
+            "nonfloorNN_mm_before": 113.3,
+            "nonfloorNN_mm_after": 121.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -8.299999999999997,
+          "roundedRequiredImprovementMM": 11.33,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -19.724999999999994,
+            -19.534999999999997
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 132,
+          "exportedRGBFrameID": "frame_00133",
+          "exportedDepthFrameID": "frame_00133",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "corrected",
+            "offset_cm": 1.67,
+            "tilt_deg": 2.87,
+            "nonfloorNN_mm_before": 109.0,
+            "nonfloorNN_mm_after": 88.1
+          },
+          "accepted": true,
+          "roundedImprovementMM": 20.900000000000006,
+          "roundedRequiredImprovementMM": 10.9,
+          "roundedCriterionPassed": true,
+          "roundingIntervalCriterionMarginMM": [
+            9.905000000000015,
+            10.094999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedPass"
+        },
+        {
+          "poseIndexZeroBased": 143,
+          "exportedRGBFrameID": "frame_00144",
+          "exportedDepthFrameID": "frame_00144",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.05,
+            "tilt_deg": 5.17,
+            "nonfloorNN_mm_before": 1340.9,
+            "nonfloorNN_mm_after": 1421.7
+          },
+          "accepted": false,
+          "roundedImprovementMM": -80.79999999999995,
+          "roundedRequiredImprovementMM": 134.09,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -214.9849999999999,
+            -214.79500000000007
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 144,
+          "exportedRGBFrameID": "frame_00145",
+          "exportedDepthFrameID": "frame_00145",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.63,
+            "tilt_deg": 15.51,
+            "nonfloorNN_mm_before": 1381.6,
+            "nonfloorNN_mm_after": 1560.3
+          },
+          "accepted": false,
+          "roundedImprovementMM": -178.70000000000005,
+          "roundedRequiredImprovementMM": 138.16,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -316.9549999999999,
+            -316.7650000000001
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 185,
+          "exportedRGBFrameID": "frame_00201",
+          "exportedDepthFrameID": "frame_00201",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.16,
+            "tilt_deg": 2.09,
+            "nonfloorNN_mm_before": 8.6,
+            "nonfloorNN_mm_after": 22.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -14.200000000000001,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -16.300000000000004,
+            -16.1
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 186,
+          "exportedRGBFrameID": "frame_00202",
+          "exportedDepthFrameID": "frame_00202",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.17,
+            "tilt_deg": 1.23,
+            "nonfloorNN_mm_before": 8.8,
+            "nonfloorNN_mm_after": 14.0
+          },
+          "accepted": false,
+          "roundedImprovementMM": -5.199999999999999,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -7.300000000000001,
+            -7.099999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 189,
+          "exportedRGBFrameID": "frame_00205",
+          "exportedDepthFrameID": "frame_00205",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.75,
+            "tilt_deg": 2.53,
+            "nonfloorNN_mm_before": 10.0,
+            "nonfloorNN_mm_after": 29.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -19.9,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -22.0,
+            -21.799999999999997
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 191,
+          "exportedRGBFrameID": "frame_00207",
+          "exportedDepthFrameID": "frame_00207",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 3.23,
+            "tilt_deg": 2.29,
+            "nonfloorNN_mm_before": 41.5,
+            "nonfloorNN_mm_after": 66.3
+          },
+          "accepted": false,
+          "roundedImprovementMM": -24.799999999999997,
+          "roundedRequiredImprovementMM": 4.15,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -29.044999999999987,
+            -28.855000000000004
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 192,
+          "exportedRGBFrameID": "frame_00208",
+          "exportedDepthFrameID": "frame_00208",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 4.63,
+            "tilt_deg": 4.15,
+            "nonfloorNN_mm_before": 60.9,
+            "nonfloorNN_mm_after": 99.5
+          },
+          "accepted": false,
+          "roundedImprovementMM": -38.6,
+          "roundedRequiredImprovementMM": 6.09,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -44.785,
+            -44.595000000000006
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 195,
+          "exportedRGBFrameID": "frame_00211",
+          "exportedDepthFrameID": "frame_00211",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.66,
+            "tilt_deg": 6.66,
+            "nonfloorNN_mm_before": 12.0,
+            "nonfloorNN_mm_after": 35.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -23.9,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -25.999999999999996,
+            -25.8
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 209,
+          "exportedRGBFrameID": "frame_00225",
+          "exportedDepthFrameID": "frame_00225",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.75,
+            "tilt_deg": 2.43,
+            "nonfloorNN_mm_before": 11.6,
+            "nonfloorNN_mm_after": 17.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -6.000000000000002,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -8.100000000000003,
+            -7.9
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 213,
+          "exportedRGBFrameID": "frame_00229",
+          "exportedDepthFrameID": "frame_00229",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -1.68,
+            "tilt_deg": 1.48,
+            "nonfloorNN_mm_before": 24.7,
+            "nonfloorNN_mm_after": 39.4
+          },
+          "accepted": false,
+          "roundedImprovementMM": -14.7,
+          "roundedRequiredImprovementMM": 2.47,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -17.264999999999997,
+            -17.075
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 215,
+          "exportedRGBFrameID": "frame_00231",
+          "exportedDepthFrameID": "frame_00231",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -1.39,
+            "tilt_deg": 1.3,
+            "nonfloorNN_mm_before": 22.8,
+            "nonfloorNN_mm_after": 32.2
+          },
+          "accepted": false,
+          "roundedImprovementMM": -9.400000000000002,
+          "roundedRequiredImprovementMM": 2.2800000000000002,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -11.774999999999999,
+            -11.585000000000004
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 228,
+          "exportedRGBFrameID": "frame_00244",
+          "exportedDepthFrameID": "frame_00244",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -1.43,
+            "tilt_deg": 2.55,
+            "nonfloorNN_mm_before": 10.0,
+            "nonfloorNN_mm_after": 15.5
+          },
+          "accepted": false,
+          "roundedImprovementMM": -5.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -7.600000000000001,
+            -7.399999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 229,
+          "exportedRGBFrameID": "frame_00245",
+          "exportedDepthFrameID": "frame_00245",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "corrected",
+            "offset_cm": 1.44,
+            "tilt_deg": 3.02,
+            "nonfloorNN_mm_before": 16.2,
+            "nonfloorNN_mm_after": 13.2
+          },
+          "accepted": true,
+          "roundedImprovementMM": 3.0,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": true,
+          "roundingIntervalCriterionMarginMM": [
+            0.8999999999999986,
+            1.1000000000000014
+          ],
+          "roundingIntervalClassification": "guaranteedPass"
+        },
+        {
+          "poseIndexZeroBased": 230,
+          "exportedRGBFrameID": "frame_00246",
+          "exportedDepthFrameID": "frame_00246",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "corrected",
+            "offset_cm": -0.29,
+            "tilt_deg": 3.21,
+            "nonfloorNN_mm_before": 19.4,
+            "nonfloorNN_mm_after": 12.9
+          },
+          "accepted": true,
+          "roundedImprovementMM": 6.499999999999998,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": true,
+          "roundingIntervalCriterionMarginMM": [
+            4.399999999999997,
+            4.6
+          ],
+          "roundingIntervalClassification": "guaranteedPass"
+        },
+        {
+          "poseIndexZeroBased": 238,
+          "exportedRGBFrameID": "frame_00254",
+          "exportedDepthFrameID": "frame_00254",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.77,
+            "tilt_deg": 1.71,
+            "nonfloorNN_mm_before": 12.5,
+            "nonfloorNN_mm_after": 24.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -12.3,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -14.400000000000002,
+            -14.2
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 239,
+          "exportedRGBFrameID": "frame_00255",
+          "exportedDepthFrameID": "frame_00255",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.54,
+            "tilt_deg": 1.5,
+            "nonfloorNN_mm_before": 13.9,
+            "nonfloorNN_mm_after": 29.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -15.700000000000001,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -17.800000000000004,
+            -17.6
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 240,
+          "exportedRGBFrameID": "frame_00256",
+          "exportedDepthFrameID": "frame_00256",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -1.08,
+            "tilt_deg": 1.46,
+            "nonfloorNN_mm_before": 13.5,
+            "nonfloorNN_mm_after": 23.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -10.399999999999999,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -12.5,
+            -12.299999999999997
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 241,
+          "exportedRGBFrameID": "frame_00257",
+          "exportedDepthFrameID": "frame_00257",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.89,
+            "tilt_deg": 1.23,
+            "nonfloorNN_mm_before": 9.1,
+            "nonfloorNN_mm_after": 18.2
+          },
+          "accepted": false,
+          "roundedImprovementMM": -9.1,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -11.200000000000001,
+            -10.999999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 244,
+          "exportedRGBFrameID": "frame_00260",
+          "exportedDepthFrameID": "frame_00260",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.45,
+            "tilt_deg": 1.23,
+            "nonfloorNN_mm_before": 12.9,
+            "nonfloorNN_mm_after": 14.0
+          },
+          "accepted": false,
+          "roundedImprovementMM": -1.0999999999999996,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -3.200000000000001,
+            -2.9999999999999982
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 253,
+          "exportedRGBFrameID": "frame_00269",
+          "exportedDepthFrameID": "frame_00269",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -1.57,
+            "tilt_deg": 1.25,
+            "nonfloorNN_mm_before": 10.6,
+            "nonfloorNN_mm_after": 11.0
+          },
+          "accepted": false,
+          "roundedImprovementMM": -0.40000000000000036,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -2.5000000000000018,
+            -2.299999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 254,
+          "exportedRGBFrameID": "frame_00270",
+          "exportedDepthFrameID": "frame_00270",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -1.0,
+            "tilt_deg": 2.32,
+            "nonfloorNN_mm_before": 10.7,
+            "nonfloorNN_mm_after": 16.5
+          },
+          "accepted": false,
+          "roundedImprovementMM": -5.800000000000001,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -7.900000000000002,
+            -7.699999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 255,
+          "exportedRGBFrameID": "frame_00271",
+          "exportedDepthFrameID": "frame_00271",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -2.44,
+            "tilt_deg": 2.24,
+            "nonfloorNN_mm_before": 11.1,
+            "nonfloorNN_mm_after": 16.1
+          },
+          "accepted": false,
+          "roundedImprovementMM": -5.000000000000002,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -7.100000000000003,
+            -6.9
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 269,
+          "exportedRGBFrameID": "frame_00285",
+          "exportedDepthFrameID": "frame_00285",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.07,
+            "tilt_deg": 2.0,
+            "nonfloorNN_mm_before": 8.3,
+            "nonfloorNN_mm_after": 15.3
+          },
+          "accepted": false,
+          "roundedImprovementMM": -7.0,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -9.100000000000001,
+            -8.899999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 291,
+          "exportedRGBFrameID": "frame_00307",
+          "exportedDepthFrameID": "frame_00307",
+          "IDComparedWithOriginalCapture": true,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.26,
+            "tilt_deg": 2.49,
+            "nonfloorNN_mm_before": 12.0,
+            "nonfloorNN_mm_after": 22.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -10.8,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -12.900000000000002,
+            -12.7
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        }
+      ],
+      "unflaggedTargetEligiblePoolCount": 217,
+      "fittedUnflaggedInTargetPoolCount": 174,
+      "noFitIncludedInUnflaggedTargetPoolCount": 43,
+      "targetPoolCountsAreBeforeTemporalGapAndPointAvailability": true,
+      "noFitPerFrameIDsUnavailableInReceipt": true,
+      "originalMatricesCompared": true
+    },
+    "coffee": {
+      "scope": "Saved receipt/export fields; no original-pose comparison",
+      "totalExportedFrames": 388,
+      "fittedFramesReported": 190,
+      "noFitFramesReported": 198,
+      "flagged": 76,
+      "corrected": 1,
+      "rejected": 75,
+      "allDecisionsRecounted": [
+        {
+          "poseIndexZeroBased": 0,
+          "exportedRGBFrameID": "frame_00001",
+          "exportedDepthFrameID": "frame_00001",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.77,
+            "tilt_deg": 5.71,
+            "nonfloorNN_mm_before": 7.8,
+            "nonfloorNN_mm_after": 37.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -29.8,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -31.9,
+            -31.700000000000003
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 1,
+          "exportedRGBFrameID": "frame_00002",
+          "exportedDepthFrameID": "frame_00002",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.28,
+            "tilt_deg": 1.89,
+            "nonfloorNN_mm_before": 6.9,
+            "nonfloorNN_mm_after": 9.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -2.6999999999999993,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -4.8,
+            -4.599999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 42,
+          "exportedRGBFrameID": "frame_00043",
+          "exportedDepthFrameID": "frame_00043",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.14,
+            "tilt_deg": 1.48,
+            "nonfloorNN_mm_before": 9.0,
+            "nonfloorNN_mm_after": 11.7
+          },
+          "accepted": false,
+          "roundedImprovementMM": -2.6999999999999993,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -4.800000000000001,
+            -4.599999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 43,
+          "exportedRGBFrameID": "frame_00044",
+          "exportedDepthFrameID": "frame_00044",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.49,
+            "tilt_deg": 1.33,
+            "nonfloorNN_mm_before": 10.1,
+            "nonfloorNN_mm_after": 12.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -2.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -4.600000000000001,
+            -4.399999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 44,
+          "exportedRGBFrameID": "frame_00045",
+          "exportedDepthFrameID": "frame_00045",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.26,
+            "tilt_deg": 2.03,
+            "nonfloorNN_mm_before": 9.3,
+            "nonfloorNN_mm_after": 12.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -3.5999999999999996,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.700000000000001,
+            -5.499999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 46,
+          "exportedRGBFrameID": "frame_00047",
+          "exportedDepthFrameID": "frame_00047",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.31,
+            "tilt_deg": 1.74,
+            "nonfloorNN_mm_before": 11.0,
+            "nonfloorNN_mm_after": 15.5
+          },
+          "accepted": false,
+          "roundedImprovementMM": -4.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -6.600000000000001,
+            -6.399999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 52,
+          "exportedRGBFrameID": "frame_00053",
+          "exportedDepthFrameID": "frame_00053",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.85,
+            "tilt_deg": 3.55,
+            "nonfloorNN_mm_before": 8.2,
+            "nonfloorNN_mm_after": 11.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -3.6000000000000014,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.700000000000003,
+            -5.5
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 53,
+          "exportedRGBFrameID": "frame_00054",
+          "exportedDepthFrameID": "frame_00054",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 3.31,
+            "tilt_deg": 2.06,
+            "nonfloorNN_mm_before": 9.3,
+            "nonfloorNN_mm_after": 10.0
+          },
+          "accepted": false,
+          "roundedImprovementMM": -0.6999999999999993,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -2.8000000000000007,
+            -2.599999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 54,
+          "exportedRGBFrameID": "frame_00055",
+          "exportedDepthFrameID": "frame_00055",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.66,
+            "tilt_deg": 1.22,
+            "nonfloorNN_mm_before": 10.4,
+            "nonfloorNN_mm_after": 9.5
+          },
+          "accepted": false,
+          "roundedImprovementMM": 0.9000000000000004,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -1.200000000000001,
+            -0.9999999999999982
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 55,
+          "exportedRGBFrameID": "frame_00056",
+          "exportedDepthFrameID": "frame_00056",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.74,
+            "tilt_deg": 0.67,
+            "nonfloorNN_mm_before": 13.3,
+            "nonfloorNN_mm_after": 11.5
+          },
+          "accepted": false,
+          "roundedImprovementMM": 1.8000000000000007,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -0.3000000000000007,
+            -0.09999999999999787
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 56,
+          "exportedRGBFrameID": "frame_00057",
+          "exportedDepthFrameID": "frame_00057",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 3.64,
+            "tilt_deg": 0.48,
+            "nonfloorNN_mm_before": 15.8,
+            "nonfloorNN_mm_after": 19.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -4.099999999999998,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -6.199999999999999,
+            -5.9999999999999964
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 64,
+          "exportedRGBFrameID": "frame_00065",
+          "exportedDepthFrameID": "frame_00065",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 3.79,
+            "tilt_deg": 6.73,
+            "nonfloorNN_mm_before": 5.5,
+            "nonfloorNN_mm_after": 40.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -35.3,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -37.39999999999999,
+            -37.2
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 65,
+          "exportedRGBFrameID": "frame_00066",
+          "exportedDepthFrameID": "frame_00066",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 3.23,
+            "tilt_deg": 0.33,
+            "nonfloorNN_mm_before": 5.5,
+            "nonfloorNN_mm_after": 7.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -2.4000000000000004,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -4.5,
+            -4.300000000000001
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 66,
+          "exportedRGBFrameID": "frame_00067",
+          "exportedDepthFrameID": "frame_00067",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.4,
+            "tilt_deg": 1.41,
+            "nonfloorNN_mm_before": 5.8,
+            "nonfloorNN_mm_after": 9.2
+          },
+          "accepted": false,
+          "roundedImprovementMM": -3.3999999999999995,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.5,
+            -5.299999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 67,
+          "exportedRGBFrameID": "frame_00068",
+          "exportedDepthFrameID": "frame_00068",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.6,
+            "tilt_deg": 6.78,
+            "nonfloorNN_mm_before": 6.5,
+            "nonfloorNN_mm_after": 41.0
+          },
+          "accepted": false,
+          "roundedImprovementMM": -34.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -36.599999999999994,
+            -36.400000000000006
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 70,
+          "exportedRGBFrameID": "frame_00071",
+          "exportedDepthFrameID": "frame_00071",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.44,
+            "tilt_deg": 3.91,
+            "nonfloorNN_mm_before": 6.3,
+            "nonfloorNN_mm_after": 18.2
+          },
+          "accepted": false,
+          "roundedImprovementMM": -11.899999999999999,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -14.0,
+            -13.799999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 71,
+          "exportedRGBFrameID": "frame_00072",
+          "exportedDepthFrameID": "frame_00072",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.74,
+            "tilt_deg": 3.59,
+            "nonfloorNN_mm_before": 7.0,
+            "nonfloorNN_mm_after": 28.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -21.6,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -23.700000000000003,
+            -23.5
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 72,
+          "exportedRGBFrameID": "frame_00073",
+          "exportedDepthFrameID": "frame_00073",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.79,
+            "tilt_deg": 4.29,
+            "nonfloorNN_mm_before": 7.2,
+            "nonfloorNN_mm_after": 13.2
+          },
+          "accepted": false,
+          "roundedImprovementMM": -5.999999999999999,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -8.1,
+            -7.899999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 74,
+          "exportedRGBFrameID": "frame_00075",
+          "exportedDepthFrameID": "frame_00075",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.72,
+            "tilt_deg": 3.02,
+            "nonfloorNN_mm_before": 10.0,
+            "nonfloorNN_mm_after": 19.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -9.8,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -11.900000000000002,
+            -11.7
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 79,
+          "exportedRGBFrameID": "frame_00080",
+          "exportedDepthFrameID": "frame_00080",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -1.1,
+            "tilt_deg": 1.56,
+            "nonfloorNN_mm_before": 6.2,
+            "nonfloorNN_mm_after": 11.4
+          },
+          "accepted": false,
+          "roundedImprovementMM": -5.2,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -7.300000000000001,
+            -7.1
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 100,
+          "exportedRGBFrameID": "frame_00101",
+          "exportedDepthFrameID": "frame_00101",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 4.26,
+            "tilt_deg": 1.97,
+            "nonfloorNN_mm_before": 6.9,
+            "nonfloorNN_mm_after": 9.0
+          },
+          "accepted": false,
+          "roundedImprovementMM": -2.0999999999999996,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -4.2,
+            -3.999999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 102,
+          "exportedRGBFrameID": "frame_00103",
+          "exportedDepthFrameID": "frame_00103",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 3.03,
+            "tilt_deg": 0.61,
+            "nonfloorNN_mm_before": 6.1,
+            "nonfloorNN_mm_after": 7.7
+          },
+          "accepted": false,
+          "roundedImprovementMM": -1.6000000000000005,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -3.7,
+            -3.500000000000001
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 103,
+          "exportedRGBFrameID": "frame_00104",
+          "exportedDepthFrameID": "frame_00104",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.63,
+            "tilt_deg": 0.68,
+            "nonfloorNN_mm_before": 6.0,
+            "nonfloorNN_mm_after": 7.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -1.7999999999999998,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -3.8999999999999995,
+            -3.7
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 111,
+          "exportedRGBFrameID": "frame_00112",
+          "exportedDepthFrameID": "frame_00112",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.51,
+            "tilt_deg": 1.84,
+            "nonfloorNN_mm_before": 23.5,
+            "nonfloorNN_mm_after": 27.7
+          },
+          "accepted": false,
+          "roundedImprovementMM": -4.199999999999999,
+          "roundedRequiredImprovementMM": 2.35,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -6.645,
+            -6.454999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 114,
+          "exportedRGBFrameID": "frame_00115",
+          "exportedDepthFrameID": "frame_00115",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.52,
+            "tilt_deg": 0.87,
+            "nonfloorNN_mm_before": 7.4,
+            "nonfloorNN_mm_after": 7.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -0.39999999999999947,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -2.499999999999999,
+            -2.3
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 115,
+          "exportedRGBFrameID": "frame_00116",
+          "exportedDepthFrameID": "frame_00116",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.39,
+            "tilt_deg": 1.85,
+            "nonfloorNN_mm_before": 7.0,
+            "nonfloorNN_mm_after": 10.1
+          },
+          "accepted": false,
+          "roundedImprovementMM": -3.0999999999999996,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.2,
+            -4.999999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 123,
+          "exportedRGBFrameID": "frame_00125",
+          "exportedDepthFrameID": "frame_00125",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 4.71,
+            "tilt_deg": 22.94,
+            "nonfloorNN_mm_before": 18.4,
+            "nonfloorNN_mm_after": 384.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -366.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -368.59999999999997,
+            -368.4
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 136,
+          "exportedRGBFrameID": "frame_00140",
+          "exportedDepthFrameID": "frame_00140",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.03,
+            "tilt_deg": 1.5,
+            "nonfloorNN_mm_before": 6.5,
+            "nonfloorNN_mm_after": 9.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -3.3000000000000007,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.400000000000001,
+            -5.2
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 160,
+          "exportedRGBFrameID": "frame_00164",
+          "exportedDepthFrameID": "frame_00164",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.69,
+            "tilt_deg": 6.21,
+            "nonfloorNN_mm_before": 12.9,
+            "nonfloorNN_mm_after": 59.3
+          },
+          "accepted": false,
+          "roundedImprovementMM": -46.4,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -48.49999999999999,
+            -48.3
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 163,
+          "exportedRGBFrameID": "frame_00167",
+          "exportedDepthFrameID": "frame_00167",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.96,
+            "tilt_deg": 3.31,
+            "nonfloorNN_mm_before": 14.6,
+            "nonfloorNN_mm_after": 15.1
+          },
+          "accepted": false,
+          "roundedImprovementMM": -0.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -2.6000000000000014,
+            -2.3999999999999986
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 169,
+          "exportedRGBFrameID": "frame_00173",
+          "exportedDepthFrameID": "frame_00173",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.79,
+            "tilt_deg": 3.54,
+            "nonfloorNN_mm_before": 13.4,
+            "nonfloorNN_mm_after": 33.0
+          },
+          "accepted": false,
+          "roundedImprovementMM": -19.6,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -21.699999999999996,
+            -21.5
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 188,
+          "exportedRGBFrameID": "frame_00192",
+          "exportedDepthFrameID": "frame_00192",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -1.25,
+            "tilt_deg": 5.29,
+            "nonfloorNN_mm_before": 11.1,
+            "nonfloorNN_mm_after": 66.7
+          },
+          "accepted": false,
+          "roundedImprovementMM": -55.6,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -57.7,
+            -57.50000000000001
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 189,
+          "exportedRGBFrameID": "frame_00193",
+          "exportedDepthFrameID": "frame_00193",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -2.78,
+            "tilt_deg": 0.11,
+            "nonfloorNN_mm_before": 9.3,
+            "nonfloorNN_mm_after": 9.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -0.29999999999999893,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -2.4000000000000004,
+            -2.1999999999999975
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 190,
+          "exportedRGBFrameID": "frame_00194",
+          "exportedDepthFrameID": "frame_00194",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -3.0,
+            "tilt_deg": 0.34,
+            "nonfloorNN_mm_before": 12.0,
+            "nonfloorNN_mm_after": 13.3
+          },
+          "accepted": false,
+          "roundedImprovementMM": -1.3000000000000007,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -3.400000000000002,
+            -3.1999999999999993
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 191,
+          "exportedRGBFrameID": "frame_00195",
+          "exportedDepthFrameID": "frame_00195",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -3.44,
+            "tilt_deg": 0.13,
+            "nonfloorNN_mm_before": 13.2,
+            "nonfloorNN_mm_after": 13.7
+          },
+          "accepted": false,
+          "roundedImprovementMM": -0.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -2.6000000000000014,
+            -2.3999999999999986
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 192,
+          "exportedRGBFrameID": "frame_00196",
+          "exportedDepthFrameID": "frame_00196",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -4.19,
+            "tilt_deg": 0.55,
+            "nonfloorNN_mm_before": 18.3,
+            "nonfloorNN_mm_after": 16.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": 1.6999999999999993,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -0.40000000000000213,
+            -0.1999999999999993
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 212,
+          "exportedRGBFrameID": "frame_00216",
+          "exportedDepthFrameID": "frame_00216",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.59,
+            "tilt_deg": 1.3,
+            "nonfloorNN_mm_before": 10.9,
+            "nonfloorNN_mm_after": 11.5
+          },
+          "accepted": false,
+          "roundedImprovementMM": -0.5999999999999996,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -2.700000000000001,
+            -2.4999999999999982
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 223,
+          "exportedRGBFrameID": "frame_00227",
+          "exportedDepthFrameID": "frame_00227",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.12,
+            "tilt_deg": 1.2,
+            "nonfloorNN_mm_before": 7.7,
+            "nonfloorNN_mm_after": 10.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -3.2,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.300000000000001,
+            -5.1
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 246,
+          "exportedRGBFrameID": "frame_00250",
+          "exportedDepthFrameID": "frame_00250",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 3.37,
+            "tilt_deg": 5.98,
+            "nonfloorNN_mm_before": 8.9,
+            "nonfloorNN_mm_after": 30.7
+          },
+          "accepted": false,
+          "roundedImprovementMM": -21.799999999999997,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -23.9,
+            -23.699999999999996
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 247,
+          "exportedRGBFrameID": "frame_00251",
+          "exportedDepthFrameID": "frame_00251",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 5.64,
+            "tilt_deg": 2.65,
+            "nonfloorNN_mm_before": 8.5,
+            "nonfloorNN_mm_after": 10.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -2.3000000000000007,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -4.400000000000002,
+            -4.199999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 248,
+          "exportedRGBFrameID": "frame_00252",
+          "exportedDepthFrameID": "frame_00252",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 5.25,
+            "tilt_deg": 0.54,
+            "nonfloorNN_mm_before": 8.7,
+            "nonfloorNN_mm_after": 9.1
+          },
+          "accepted": false,
+          "roundedImprovementMM": -0.40000000000000036,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -2.5000000000000018,
+            -2.299999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 249,
+          "exportedRGBFrameID": "frame_00253",
+          "exportedDepthFrameID": "frame_00253",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 3.58,
+            "tilt_deg": 1.29,
+            "nonfloorNN_mm_before": 7.8,
+            "nonfloorNN_mm_after": 11.4
+          },
+          "accepted": false,
+          "roundedImprovementMM": -3.6000000000000005,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.700000000000001,
+            -5.5
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 251,
+          "exportedRGBFrameID": "frame_00255",
+          "exportedDepthFrameID": "frame_00255",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.22,
+            "tilt_deg": 1.27,
+            "nonfloorNN_mm_before": 7.1,
+            "nonfloorNN_mm_after": 9.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -2.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -4.6000000000000005,
+            -4.3999999999999995
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 252,
+          "exportedRGBFrameID": "frame_00256",
+          "exportedDepthFrameID": "frame_00256",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.26,
+            "tilt_deg": 1.31,
+            "nonfloorNN_mm_before": 7.5,
+            "nonfloorNN_mm_after": 10.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -3.3000000000000007,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.400000000000001,
+            -5.2
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 253,
+          "exportedRGBFrameID": "frame_00257",
+          "exportedDepthFrameID": "frame_00257",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.36,
+            "tilt_deg": 2.33,
+            "nonfloorNN_mm_before": 8.3,
+            "nonfloorNN_mm_after": 12.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -4.299999999999999,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -6.4,
+            -6.1999999999999975
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 264,
+          "exportedRGBFrameID": "frame_00268",
+          "exportedDepthFrameID": "frame_00268",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 4.05,
+            "tilt_deg": 3.14,
+            "nonfloorNN_mm_before": 7.7,
+            "nonfloorNN_mm_after": 14.3
+          },
+          "accepted": false,
+          "roundedImprovementMM": -6.6000000000000005,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -8.700000000000001,
+            -8.5
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 265,
+          "exportedRGBFrameID": "frame_00269",
+          "exportedDepthFrameID": "frame_00269",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 4.32,
+            "tilt_deg": 1.85,
+            "nonfloorNN_mm_before": 6.9,
+            "nonfloorNN_mm_after": 10.0
+          },
+          "accepted": false,
+          "roundedImprovementMM": -3.0999999999999996,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.2,
+            -4.999999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 276,
+          "exportedRGBFrameID": "frame_00280",
+          "exportedDepthFrameID": "frame_00280",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.11,
+            "tilt_deg": 1.46,
+            "nonfloorNN_mm_before": 5.6,
+            "nonfloorNN_mm_after": 8.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -3.0,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.1000000000000005,
+            -4.8999999999999995
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 277,
+          "exportedRGBFrameID": "frame_00281",
+          "exportedDepthFrameID": "frame_00281",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.97,
+            "tilt_deg": 5.09,
+            "nonfloorNN_mm_before": 5.5,
+            "nonfloorNN_mm_after": 41.5
+          },
+          "accepted": false,
+          "roundedImprovementMM": -36.0,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -38.099999999999994,
+            -37.900000000000006
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 278,
+          "exportedRGBFrameID": "frame_00282",
+          "exportedDepthFrameID": "frame_00282",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.71,
+            "tilt_deg": 8.1,
+            "nonfloorNN_mm_before": 5.4,
+            "nonfloorNN_mm_after": 93.2
+          },
+          "accepted": false,
+          "roundedImprovementMM": -87.8,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -89.9,
+            -89.7
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 284,
+          "exportedRGBFrameID": "frame_00288",
+          "exportedDepthFrameID": "frame_00288",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.15,
+            "tilt_deg": 1.65,
+            "nonfloorNN_mm_before": 6.4,
+            "nonfloorNN_mm_after": 11.6
+          },
+          "accepted": false,
+          "roundedImprovementMM": -5.199999999999999,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -7.3,
+            -7.099999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 288,
+          "exportedRGBFrameID": "frame_00292",
+          "exportedDepthFrameID": "frame_00292",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 4.5,
+            "tilt_deg": 3.92,
+            "nonfloorNN_mm_before": 9.5,
+            "nonfloorNN_mm_after": 12.4
+          },
+          "accepted": false,
+          "roundedImprovementMM": -2.9000000000000004,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.000000000000002,
+            -4.799999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 301,
+          "exportedRGBFrameID": "frame_00305",
+          "exportedDepthFrameID": "frame_00305",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.38,
+            "tilt_deg": 4.2,
+            "nonfloorNN_mm_before": 10.4,
+            "nonfloorNN_mm_after": 16.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -6.499999999999998,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -8.6,
+            -8.399999999999997
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 302,
+          "exportedRGBFrameID": "frame_00306",
+          "exportedDepthFrameID": "frame_00306",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.23,
+            "tilt_deg": 5.4,
+            "nonfloorNN_mm_before": 11.7,
+            "nonfloorNN_mm_after": 23.2
+          },
+          "accepted": false,
+          "roundedImprovementMM": -11.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -13.600000000000001,
+            -13.399999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 303,
+          "exportedRGBFrameID": "frame_00307",
+          "exportedDepthFrameID": "frame_00307",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "corrected",
+            "offset_cm": 0.6,
+            "tilt_deg": 4.66,
+            "nonfloorNN_mm_before": 15.4,
+            "nonfloorNN_mm_after": 12.9
+          },
+          "accepted": true,
+          "roundedImprovementMM": 2.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": true,
+          "roundingIntervalCriterionMarginMM": [
+            0.3999999999999986,
+            0.6000000000000014
+          ],
+          "roundingIntervalClassification": "guaranteedPass"
+        },
+        {
+          "poseIndexZeroBased": 307,
+          "exportedRGBFrameID": "frame_00311",
+          "exportedDepthFrameID": "frame_00311",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.33,
+            "tilt_deg": 3.08,
+            "nonfloorNN_mm_before": 9.4,
+            "nonfloorNN_mm_after": 13.5
+          },
+          "accepted": false,
+          "roundedImprovementMM": -4.1,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -6.200000000000001,
+            -5.999999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 331,
+          "exportedRGBFrameID": "frame_00335",
+          "exportedDepthFrameID": "frame_00335",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 7.45,
+            "tilt_deg": 6.82,
+            "nonfloorNN_mm_before": 6.5,
+            "nonfloorNN_mm_after": 30.7
+          },
+          "accepted": false,
+          "roundedImprovementMM": -24.2,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -26.3,
+            -26.099999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 332,
+          "exportedRGBFrameID": "frame_00336",
+          "exportedDepthFrameID": "frame_00336",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 6.5,
+            "tilt_deg": 7.67,
+            "nonfloorNN_mm_before": 7.8,
+            "nonfloorNN_mm_after": 39.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -32.1,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -34.199999999999996,
+            -34.0
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 333,
+          "exportedRGBFrameID": "frame_00337",
+          "exportedDepthFrameID": "frame_00337",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 3.08,
+            "tilt_deg": 4.31,
+            "nonfloorNN_mm_before": 7.5,
+            "nonfloorNN_mm_after": 43.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -36.3,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -38.39999999999999,
+            -38.2
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 334,
+          "exportedRGBFrameID": "frame_00338",
+          "exportedDepthFrameID": "frame_00338",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.3,
+            "tilt_deg": 3.79,
+            "nonfloorNN_mm_before": 8.4,
+            "nonfloorNN_mm_after": 17.3
+          },
+          "accepted": false,
+          "roundedImprovementMM": -8.9,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -11.000000000000002,
+            -10.799999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 335,
+          "exportedRGBFrameID": "frame_00339",
+          "exportedDepthFrameID": "frame_00339",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.85,
+            "tilt_deg": 2.51,
+            "nonfloorNN_mm_before": 8.0,
+            "nonfloorNN_mm_after": 16.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -8.899999999999999,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -11.0,
+            -10.799999999999997
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 346,
+          "exportedRGBFrameID": "frame_00350",
+          "exportedDepthFrameID": "frame_00350",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.9,
+            "tilt_deg": 2.1,
+            "nonfloorNN_mm_before": 6.2,
+            "nonfloorNN_mm_after": 10.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -4.6000000000000005,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -6.700000000000001,
+            -6.5
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 350,
+          "exportedRGBFrameID": "frame_00354",
+          "exportedDepthFrameID": "frame_00354",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.75,
+            "tilt_deg": 1.28,
+            "nonfloorNN_mm_before": 8.0,
+            "nonfloorNN_mm_after": 9.7
+          },
+          "accepted": false,
+          "roundedImprovementMM": -1.6999999999999993,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -3.8,
+            -3.599999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 351,
+          "exportedRGBFrameID": "frame_00355",
+          "exportedDepthFrameID": "frame_00355",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.03,
+            "tilt_deg": 1.76,
+            "nonfloorNN_mm_before": 7.1,
+            "nonfloorNN_mm_after": 10.0
+          },
+          "accepted": false,
+          "roundedImprovementMM": -2.9000000000000004,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.000000000000001,
+            -4.8
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 352,
+          "exportedRGBFrameID": "frame_00356",
+          "exportedDepthFrameID": "frame_00356",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.76,
+            "tilt_deg": 1.83,
+            "nonfloorNN_mm_before": 7.1,
+            "nonfloorNN_mm_after": 13.9
+          },
+          "accepted": false,
+          "roundedImprovementMM": -6.800000000000001,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -8.900000000000002,
+            -8.7
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 353,
+          "exportedRGBFrameID": "frame_00357",
+          "exportedDepthFrameID": "frame_00357",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.96,
+            "tilt_deg": 2.75,
+            "nonfloorNN_mm_before": 7.9,
+            "nonfloorNN_mm_after": 20.7
+          },
+          "accepted": false,
+          "roundedImprovementMM": -12.799999999999999,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -14.899999999999999,
+            -14.7
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 366,
+          "exportedRGBFrameID": "frame_00370",
+          "exportedDepthFrameID": "frame_00370",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.24,
+            "tilt_deg": 1.39,
+            "nonfloorNN_mm_before": 6.9,
+            "nonfloorNN_mm_after": 9.1
+          },
+          "accepted": false,
+          "roundedImprovementMM": -2.1999999999999993,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -4.3,
+            -4.099999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 367,
+          "exportedRGBFrameID": "frame_00371",
+          "exportedDepthFrameID": "frame_00371",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.2,
+            "tilt_deg": 1.54,
+            "nonfloorNN_mm_before": 7.7,
+            "nonfloorNN_mm_after": 10.5
+          },
+          "accepted": false,
+          "roundedImprovementMM": -2.8,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -4.9,
+            -4.699999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 368,
+          "exportedRGBFrameID": "frame_00372",
+          "exportedDepthFrameID": "frame_00372",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 1.61,
+            "tilt_deg": 1.88,
+            "nonfloorNN_mm_before": 9.4,
+            "nonfloorNN_mm_after": 13.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -4.4,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -6.500000000000002,
+            -6.299999999999999
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 369,
+          "exportedRGBFrameID": "frame_00373",
+          "exportedDepthFrameID": "frame_00373",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.86,
+            "tilt_deg": 1.68,
+            "nonfloorNN_mm_before": 8.0,
+            "nonfloorNN_mm_after": 10.7
+          },
+          "accepted": false,
+          "roundedImprovementMM": -2.6999999999999993,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -4.8,
+            -4.599999999999998
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 378,
+          "exportedRGBFrameID": "frame_00382",
+          "exportedDepthFrameID": "frame_00382",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.37,
+            "tilt_deg": 2.34,
+            "nonfloorNN_mm_before": 4.2,
+            "nonfloorNN_mm_after": 22.3
+          },
+          "accepted": false,
+          "roundedImprovementMM": -18.1,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -20.200000000000003,
+            -20.0
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 379,
+          "exportedRGBFrameID": "frame_00383",
+          "exportedDepthFrameID": "frame_00383",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 2.96,
+            "tilt_deg": 2.59,
+            "nonfloorNN_mm_before": 5.0,
+            "nonfloorNN_mm_after": 37.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -32.8,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -34.89999999999999,
+            -34.7
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 380,
+          "exportedRGBFrameID": "frame_00384",
+          "exportedDepthFrameID": "frame_00384",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 4.08,
+            "tilt_deg": 0.54,
+            "nonfloorNN_mm_before": 6.6,
+            "nonfloorNN_mm_after": 6.2
+          },
+          "accepted": false,
+          "roundedImprovementMM": 0.39999999999999947,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -1.7000000000000002,
+            -1.5000000000000009
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 381,
+          "exportedRGBFrameID": "frame_00385",
+          "exportedDepthFrameID": "frame_00385",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.03,
+            "tilt_deg": 1.22,
+            "nonfloorNN_mm_before": 6.3,
+            "nonfloorNN_mm_after": 7.0
+          },
+          "accepted": false,
+          "roundedImprovementMM": -0.7000000000000002,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -2.8,
+            -2.6000000000000005
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 383,
+          "exportedRGBFrameID": "frame_00387",
+          "exportedDepthFrameID": "frame_00387",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": 0.17,
+            "tilt_deg": 1.27,
+            "nonfloorNN_mm_before": 6.5,
+            "nonfloorNN_mm_after": 10.3
+          },
+          "accepted": false,
+          "roundedImprovementMM": -3.8000000000000007,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -5.900000000000001,
+            -5.7
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        },
+        {
+          "poseIndexZeroBased": 386,
+          "exportedRGBFrameID": "frame_00390",
+          "exportedDepthFrameID": "frame_00390",
+          "IDComparedWithOriginalCapture": false,
+          "savedDecision": {
+            "decision": "kept-recorded:pose-inconsistent",
+            "offset_cm": -0.17,
+            "tilt_deg": 2.26,
+            "nonfloorNN_mm_before": 6.3,
+            "nonfloorNN_mm_after": 25.8
+          },
+          "accepted": false,
+          "roundedImprovementMM": -19.5,
+          "roundedRequiredImprovementMM": 2.0,
+          "roundedCriterionPassed": false,
+          "roundingIntervalCriterionMarginMM": [
+            -21.6,
+            -21.4
+          ],
+          "roundingIntervalClassification": "guaranteedFail"
+        }
+      ],
+      "unflaggedTargetEligiblePoolCount": 312,
+      "fittedUnflaggedInTargetPoolCount": 114,
+      "noFitIncludedInUnflaggedTargetPoolCount": 198,
+      "targetPoolCountsAreBeforeTemporalGapAndPointAvailability": true,
+      "noFitPerFrameIDsUnavailableInReceipt": true,
+      "originalMatricesCompared": false
+    }
+  },
+  "oldFloat64Axial2p5cmFlagCount": 78,
+  "newFloat32Euclidean2p5cmFlagCount": 77,
+  "newOnlyFlagIndices": [
+    35,
+    127,
+    186
+  ],
+  "oldOnlyFlagIndices": [
+    22,
+    69,
+    290,
+    292
+  ],
+  "differencesAreNotJustOld3cmThreshold": true,
+  "targetNoFitInclusionSource": "unflagged=[i for i in range(n) if i not in flag]; no-fit never enters flag, so no-fit is included before abs(j-i)>=25",
+  "nonfloorValidationIsFinalHoldout": false,
+  "reason": "The same non-floor NN data chooses which corrections to accept. It is validation for a floor-only candidate, not an untouched final test.",
+  "noIndependentHorizontalOrYawParameterDoesNotMeanZeroCameraHorizontalMotion": true,
+  "coffeeOriginalCaptureMatricesAvailable": false,
+  "noPhysicalSafetyClaim": true,
+  "inputHashesVerifiedBeforeAfter": true,
+  "wallSeconds": 0.11902015999658033,
+  "peakRSSBytes": 34172928
+}

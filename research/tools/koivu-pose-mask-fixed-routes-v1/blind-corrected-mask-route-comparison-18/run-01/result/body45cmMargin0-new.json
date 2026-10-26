@@ -1,0 +1,2791 @@
+{
+  "map": "new",
+  "profile": "body45cmMargin0",
+  "geometry": {
+    "width": 0.45,
+    "depth": 0.3,
+    "height": 1.6,
+    "margin": 0.0,
+    "nativeProposalRadius": 0.225,
+    "publicProfile": "body45cmMargin0",
+    "proposalOnlyFallback": false,
+    "horizontalEnvelopeWidth": 0.45,
+    "horizontalEnvelopeDepth": 0.3,
+    "halfLateral": 0.225,
+    "halfForward": 0.15,
+    "nativeRadiusIntended": 0.225,
+    "nativeRadiusFloat32": 0.22499999403953552,
+    "nativeRadiusPolicy": "explicit proposal-only radius; unchanged full rectangle must validate every candidate",
+    "maxHalfBodyEnvelopeRadiusDiagnostic": 0.225,
+    "nativeCellSize": 0.025,
+    "nativeCellSizeFloat32": 0.02500000037252903,
+    "nativeFloat32RadiusCellQuotient": 9.0,
+    "nativeWalkableRadiusCells": 9,
+    "nativeEffectiveErosionRadiusMetres": 0.22500000335276127,
+    "nativeRadiusFormula": "(int)std::ceil(c->radius/config.cs); operands are Float32",
+    "nativeHeight": 1.75,
+    "sourceMaskCellSize": 0.05,
+    "newSensorDetailCreated": false,
+    "discIsNotFullRectangleClearance": true,
+    "circleFailureIsNotPhysicalFitImpossibility": true,
+    "abstractGeometrySensitivityOnly": false
+  },
+  "mapRevision": "fff2780f75159f280b25f14d590fadc97411f32c7f3a496bd2327e6f8fc63a03",
+  "inputMaskSHA256": "41f26bb3bd7d364982978b8d9b3cfe7ab64e49a67de66c100f58a795e65af011",
+  "inputMetadataSHA256": "ac63b5219a61094d754b6303d40b7f9dc0905a2abe446b6070bab94458c592d7",
+  "fixedObjectiveSpecification": [
+    {
+      "objectiveID": "loop_north_to_east",
+      "kind": "loopLeg",
+      "startOldGame": [
+        -1.3250000000000002,
+        0.0,
+        -3.875
+      ],
+      "goalOldGame": [
+        1.3249999999999993,
+        0.0,
+        1.2750000000000004
+      ],
+      "priorNativeResult": {
+        "complete": false,
+        "points": [
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.5749998092651367
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -1.3250000476837158,
+          0.02500000037252903,
+          -3.875
+        ],
+        "projectedGoal": [
+          1.3250000476837158,
+          0.02500000037252903,
+          1.274999976158142
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "a23925c8bb1c087d476e4ebc7ebaa8474a1d17f864fb5bf91f203670afe9e17e",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      }
+    },
+    {
+      "objectiveID": "loop_east_to_south",
+      "kind": "loopLeg",
+      "startOldGame": [
+        1.3249999999999993,
+        0.0,
+        1.2750000000000004
+      ],
+      "goalOldGame": [
+        -0.875,
+        0.0,
+        4.175000000000001
+      ],
+      "priorNativeResult": {
+        "complete": false,
+        "points": [
+          [
+            0.9500002861022949,
+            0.02500000037252903,
+            2.6750001907348633
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          1.3250000476837158,
+          0.02500000037252903,
+          1.274999976158142
+        ],
+        "projectedGoal": [
+          -0.875,
+          0.02500000037252903,
+          4.175000190734863
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "a23925c8bb1c087d476e4ebc7ebaa8474a1d17f864fb5bf91f203670afe9e17e",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      }
+    },
+    {
+      "objectiveID": "loop_south_to_west",
+      "kind": "loopLeg",
+      "startOldGame": [
+        -0.875,
+        0.0,
+        4.175000000000001
+      ],
+      "goalOldGame": [
+        -3.9750000000000005,
+        0.0,
+        -3.0749999999999993
+      ],
+      "priorNativeResult": {
+        "complete": false,
+        "points": [
+          [
+            -1.4749996662139893,
+            0.02500000037252903,
+            2.875
+          ],
+          [
+            -2.8499996662139893,
+            0.02500000037252903,
+            0.125
+          ],
+          [
+            -2.8999998569488525,
+            0.02500000037252903,
+            0.02500009536743164
+          ],
+          [
+            -3.2249999046325684,
+            0.02500000037252903,
+            -0.5249996185302734
+          ],
+          [
+            -3.6999998092651367,
+            0.02500000037252903,
+            -1.2749998569488525
+          ],
+          [
+            -3.749999761581421,
+            0.02500000037252903,
+            -1.374999761581421
+          ],
+          [
+            -3.8499999046325684,
+            0.02500000037252903,
+            -1.624999761581421
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -0.875,
+          0.02500000037252903,
+          4.175000190734863
+        ],
+        "projectedGoal": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -3.075000047683716
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "a23925c8bb1c087d476e4ebc7ebaa8474a1d17f864fb5bf91f203670afe9e17e",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      }
+    },
+    {
+      "objectiveID": "loop_west_to_north",
+      "kind": "loopLeg",
+      "startOldGame": [
+        -3.9750000000000005,
+        0.0,
+        -3.0749999999999993
+      ],
+      "goalOldGame": [
+        -1.3250000000000002,
+        0.0,
+        -3.875
+      ],
+      "priorNativeResult": {
+        "complete": false,
+        "points": [
+          [
+            -3.3999996185302734,
+            0.02500000037252903,
+            -3.2249999046325684
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -3.075000047683716
+        ],
+        "projectedGoal": [
+          -1.3250000476837158,
+          0.02500000037252903,
+          -3.875
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "a23925c8bb1c087d476e4ebc7ebaa8474a1d17f864fb5bf91f203670afe9e17e",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      }
+    },
+    {
+      "objectiveID": "approach_northSide",
+      "kind": "rawCameraApproach",
+      "startOldGame": [
+        -0.8626609865374657,
+        0.0,
+        -2.8415575153518127
+      ],
+      "goalOldGame": [
+        -2.8487096487644004,
+        0.0,
+        -3.1937490266953104
+      ],
+      "originalAnchorProvenance": {
+        "selection": {
+          "approachID": "northSide",
+          "startPoseIndex": 10,
+          "goalPoseIndex": 27,
+          "outsidePoseIndicesExaminedGoalOutward": [
+            27,
+            26,
+            25,
+            24,
+            23,
+            22,
+            21,
+            20,
+            19,
+            18,
+            17,
+            16,
+            15,
+            14,
+            13,
+            12,
+            11,
+            10
+          ],
+          "skippedROIPoseIndices": [],
+          "requestedDirectSeparationMetres": 2.0,
+          "shortAvailableSequence": false,
+          "directAnchorSeparationMetres": 2.0170344938537403
+        },
+        "start": {
+          "poseIndex": 10,
+          "frameID": "frame_00011",
+          "originalCameraLevelXY": [
+            -0.8626609865374657,
+            2.8415575153518127
+          ],
+          "requestedGamePoint": [
+            -0.8626609865374657,
+            0.0,
+            -2.8415575153518127
+          ],
+          "sourceIJ": [
+            98,
+            177
+          ],
+          "cellCentreXY": [
+            -0.875,
+            2.8249999999999993
+          ],
+          "insideRaster": true,
+          "outsideDisputedROI": true,
+          "originalPhoneFlags": {
+            "support": true,
+            "deepBelow": false,
+            "nearDip": false,
+            "low1": false,
+            "lowUnresolvedFlag": true,
+            "highObstacle": false,
+            "highUnknown": false,
+            "walk": true
+          },
+          "cameraIsNotMeasuredBodyPose": true,
+          "anchorRelocated": false
+        },
+        "goal": {
+          "poseIndex": 27,
+          "frameID": "frame_00028",
+          "originalCameraLevelXY": [
+            -2.8487096487644004,
+            3.1937490266953104
+          ],
+          "requestedGamePoint": [
+            -2.8487096487644004,
+            0.0,
+            -3.1937490266953104
+          ],
+          "sourceIJ": [
+            59,
+            184
+          ],
+          "cellCentreXY": [
+            -2.8250000000000006,
+            3.174999999999999
+          ],
+          "insideRaster": true,
+          "outsideDisputedROI": true,
+          "originalPhoneFlags": {
+            "support": true,
+            "deepBelow": false,
+            "nearDip": false,
+            "low1": false,
+            "lowUnresolvedFlag": false,
+            "highObstacle": true,
+            "highUnknown": false,
+            "walk": false
+          },
+          "cameraIsNotMeasuredBodyPose": true,
+          "anchorRelocated": false
+        }
+      },
+      "priorStatus": "cameraAnchorAssociationRejected",
+      "noPriorCandidateAssociationRelocationUsed": true
+    },
+    {
+      "objectiveID": "approach_southSide",
+      "kind": "rawCameraApproach",
+      "startOldGame": [
+        -2.281401302639457,
+        0.0,
+        1.0373834286611066
+      ],
+      "goalOldGame": [
+        -3.0339698809555964,
+        0.0,
+        -0.953144974217533
+      ],
+      "originalAnchorProvenance": {
+        "selection": {
+          "approachID": "southSide",
+          "startPoseIndex": 92,
+          "goalPoseIndex": 50,
+          "outsidePoseIndicesExaminedGoalOutward": [
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92
+          ],
+          "skippedROIPoseIndices": [
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85
+          ],
+          "requestedDirectSeparationMetres": 2.0,
+          "shortAvailableSequence": false,
+          "directAnchorSeparationMetres": 2.128042007981836
+        },
+        "start": {
+          "poseIndex": 92,
+          "frameID": "frame_00093",
+          "originalCameraLevelXY": [
+            -2.281401302639457,
+            -1.0373834286611066
+          ],
+          "requestedGamePoint": [
+            -2.281401302639457,
+            0.0,
+            1.0373834286611066
+          ],
+          "sourceIJ": [
+            70,
+            100
+          ],
+          "cellCentreXY": [
+            -2.2750000000000004,
+            -1.0250000000000004
+          ],
+          "insideRaster": true,
+          "outsideDisputedROI": true,
+          "originalPhoneFlags": {
+            "support": true,
+            "deepBelow": false,
+            "nearDip": false,
+            "low1": false,
+            "lowUnresolvedFlag": false,
+            "highObstacle": false,
+            "highUnknown": false,
+            "walk": true
+          },
+          "cameraIsNotMeasuredBodyPose": true,
+          "anchorRelocated": false
+        },
+        "goal": {
+          "poseIndex": 50,
+          "frameID": "frame_00051",
+          "originalCameraLevelXY": [
+            -3.0339698809555964,
+            0.953144974217533
+          ],
+          "requestedGamePoint": [
+            -3.0339698809555964,
+            0.0,
+            -0.953144974217533
+          ],
+          "sourceIJ": [
+            55,
+            140
+          ],
+          "cellCentreXY": [
+            -3.0250000000000004,
+            0.9749999999999996
+          ],
+          "insideRaster": true,
+          "outsideDisputedROI": true,
+          "originalPhoneFlags": {
+            "support": true,
+            "deepBelow": false,
+            "nearDip": false,
+            "low1": false,
+            "lowUnresolvedFlag": true,
+            "highObstacle": false,
+            "highUnknown": false,
+            "walk": true
+          },
+          "cameraIsNotMeasuredBodyPose": true,
+          "anchorRelocated": false
+        }
+      },
+      "priorStatus": "selectedPhoneOnlyApproach",
+      "noPriorCandidateAssociationRelocationUsed": true
+    }
+  ],
+  "legs": [
+    {
+      "requestedStartXYZ": [
+        -1.3250003410091629,
+        0.001502874469548665,
+        -3.8749995133392012
+      ],
+      "requestedGoalXYZ": [
+        1.3249998830642478,
+        -0.0003107991930606513,
+        1.2750000520004625
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.5750000476837158
+          ],
+          [
+            -0.17499971389770508,
+            0.02500000037252903,
+            -1.5500001907348633
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -1.325000286102295,
+          0.02500000037252903,
+          -3.874999523162842
+        ],
+        "projectedGoal": [
+          1.3249999284744263,
+          0.02500000037252903,
+          1.2750000953674316
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "fff2780f75159f280b25f14d590fadc97411f32c7f3a496bd2327e6f8fc63a03",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -1.3250003410091629,
+          0.001502874469548665,
+          -3.8749995133392012
+        ],
+        "projectedXYZ": [
+          -1.325000286102295,
+          0.02500000037252903,
+          -3.874999523162842
+        ],
+        "deltaXYZMetres": [
+          5.49068679411846e-08,
+          0.023497125902980365,
+          -9.823640567674374e-09
+        ],
+        "horizontalDisplacementMetres": 5.577874201802639e-08,
+        "verticalDisplacementMetres": 0.023497125902980365,
+        "full3DDisplacementMetres": 0.02349712590304657,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          1.3249998830642478,
+          -0.0003107991930606513,
+          1.2750000520004625
+        ],
+        "projectedXYZ": [
+          1.3249999284744263,
+          0.02500000037252903,
+          1.2750000953674316
+        ],
+        "deltaXYZMetres": [
+          4.541017850634432e-08,
+          0.02531079956558968,
+          4.3366969126878985e-08
+        ],
+        "horizontalDisplacementMetres": 6.279154659052229e-08,
+        "verticalDisplacementMetres": 0.02531079956558968,
+        "full3DDisplacementMetres": 0.025310799565667567,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.5750000476837158
+        ],
+        [
+          -0.17499971389770508,
+          0.02500000037252903,
+          -1.5500001907348633
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "objectiveID": "loop_north_to_east",
+      "kind": "loopLeg",
+      "startCoordinateProvenance": {
+        "originalGameXYZ": [
+          -1.3250000000000002,
+          0.0,
+          -3.875
+        ],
+        "originalLevelXYZ": [
+          -1.3250000000000002,
+          3.875,
+          0.0
+        ],
+        "unchangedPhoneXYZ": [
+          -1.3249996658985073,
+          3.874999976486304,
+          -1.2720760024981626
+        ],
+        "mappedLevelXYZ": [
+          -1.3250003410091629,
+          3.8749995133392012,
+          0.001502874469548665
+        ],
+        "mappedGameXYZ": [
+          -1.3250003410091629,
+          0.001502874469548665,
+          -3.8749995133392012
+        ],
+        "roundtripMaximumAbsErrorMetres": 4.440892098500626e-16,
+        "mappedHeightWasFlattened": false
+      },
+      "goalCoordinateProvenance": {
+        "originalGameXYZ": [
+          1.3249999999999993,
+          0.0,
+          1.2750000000000004
+        ],
+        "originalLevelXYZ": [
+          1.3249999999999993,
+          -1.2750000000000004,
+          0.0
+        ],
+        "unchangedPhoneXYZ": [
+          1.3249996658985064,
+          -1.2750003139109494,
+          -1.271334124079299
+        ],
+        "mappedLevelXYZ": [
+          1.3249998830642478,
+          -1.2750000520004625,
+          -0.0003107991930606513
+        ],
+        "mappedGameXYZ": [
+          1.3249998830642478,
+          -0.0003107991930606513,
+          1.2750000520004625
+        ],
+        "roundtripMaximumAbsErrorMetres": 4.440892098500626e-16,
+        "mappedHeightWasFlattened": false
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        1.3249998830642478,
+        -0.0003107991930606513,
+        1.2750000520004625
+      ],
+      "requestedGoalXYZ": [
+        -0.8749997945773704,
+        -0.00012847471435306623,
+        4.175000290816756
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            0.9000000953674316,
+            0.02500000037252903,
+            2.5999999046325684
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          1.3249999284744263,
+          0.02500000037252903,
+          1.2750000953674316
+        ],
+        "projectedGoal": [
+          -0.8749998211860657,
+          0.02500000037252903,
+          4.175000190734863
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "fff2780f75159f280b25f14d590fadc97411f32c7f3a496bd2327e6f8fc63a03",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          1.3249998830642478,
+          -0.0003107991930606513,
+          1.2750000520004625
+        ],
+        "projectedXYZ": [
+          1.3249999284744263,
+          0.02500000037252903,
+          1.2750000953674316
+        ],
+        "deltaXYZMetres": [
+          4.541017850634432e-08,
+          0.02531079956558968,
+          4.3366969126878985e-08
+        ],
+        "horizontalDisplacementMetres": 6.279154659052229e-08,
+        "verticalDisplacementMetres": 0.02531079956558968,
+        "full3DDisplacementMetres": 0.025310799565667567,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.8749997945773704,
+          -0.00012847471435306623,
+          4.175000290816756
+        ],
+        "projectedXYZ": [
+          -0.8749998211860657,
+          0.02500000037252903,
+          4.175000190734863
+        ],
+        "deltaXYZMetres": [
+          -2.6608695247176684e-08,
+          0.025128475086882096,
+          -1.0008189299526293e-07
+        ],
+        "horizontalDisplacementMetres": 1.0355871749047678e-07,
+        "verticalDisplacementMetres": 0.025128475086882096,
+        "full3DDisplacementMetres": 0.025128475087095488,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          0.9000000953674316,
+          0.02500000037252903,
+          2.5999999046325684
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "objectiveID": "loop_east_to_south",
+      "kind": "loopLeg",
+      "startCoordinateProvenance": {
+        "originalGameXYZ": [
+          1.3249999999999993,
+          0.0,
+          1.2750000000000004
+        ],
+        "originalLevelXYZ": [
+          1.3249999999999993,
+          -1.2750000000000004,
+          0.0
+        ],
+        "unchangedPhoneXYZ": [
+          1.3249996658985064,
+          -1.2750003139109494,
+          -1.271334124079299
+        ],
+        "mappedLevelXYZ": [
+          1.3249998830642478,
+          -1.2750000520004625,
+          -0.0003107991930606513
+        ],
+        "mappedGameXYZ": [
+          1.3249998830642478,
+          -0.0003107991930606513,
+          1.2750000520004625
+        ],
+        "roundtripMaximumAbsErrorMetres": 4.440892098500626e-16,
+        "mappedHeightWasFlattened": false
+      },
+      "goalCoordinateProvenance": {
+        "originalGameXYZ": [
+          -0.875,
+          0.0,
+          4.175000000000001
+        ],
+        "originalLevelXYZ": [
+          -0.875,
+          -4.175000000000001,
+          0.0
+        ],
+        "unchangedPhoneXYZ": [
+          -0.8749997793669386,
+          -4.174999141602981,
+          -1.2682943516243905
+        ],
+        "mappedLevelXYZ": [
+          -0.8749997945773704,
+          -4.175000290816756,
+          -0.00012847471435306623
+        ],
+        "mappedGameXYZ": [
+          -0.8749997945773704,
+          -0.00012847471435306623,
+          4.175000290816756
+        ],
+        "roundtripMaximumAbsErrorMetres": 8.881784197001252e-16,
+        "mappedHeightWasFlattened": false
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        -0.8749997945773704,
+        -0.00012847471435306623,
+        4.175000290816756
+      ],
+      "requestedGoalXYZ": [
+        -3.975000143525555,
+        0.0022191940945279764,
+        -3.07499917987097
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -1.4749996662139893,
+            0.02500000037252903,
+            2.875
+          ],
+          [
+            -2.874999761581421,
+            0.02500000037252903,
+            0.07499980926513672
+          ],
+          [
+            -2.8999998569488525,
+            0.02500000037252903,
+            0.02500009536743164
+          ],
+          [
+            -3.2249999046325684,
+            0.02500000037252903,
+            -0.5
+          ],
+          [
+            -3.924999713897705,
+            0.02500000037252903,
+            -1.6000001430511475
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -0.8749998211860657,
+          0.02500000037252903,
+          4.175000190734863
+        ],
+        "projectedGoal": [
+          -3.9750001430511475,
+          0.02500000037252903,
+          -3.0749990940093994
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "fff2780f75159f280b25f14d590fadc97411f32c7f3a496bd2327e6f8fc63a03",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.8749997945773704,
+          -0.00012847471435306623,
+          4.175000290816756
+        ],
+        "projectedXYZ": [
+          -0.8749998211860657,
+          0.02500000037252903,
+          4.175000190734863
+        ],
+        "deltaXYZMetres": [
+          -2.6608695247176684e-08,
+          0.025128475086882096,
+          -1.0008189299526293e-07
+        ],
+        "horizontalDisplacementMetres": 1.0355871749047678e-07,
+        "verticalDisplacementMetres": 0.025128475086882096,
+        "full3DDisplacementMetres": 0.025128475087095488,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -3.975000143525555,
+          0.0022191940945279764,
+          -3.07499917987097
+        ],
+        "projectedXYZ": [
+          -3.9750001430511475,
+          0.02500000037252903,
+          -3.0749990940093994
+        ],
+        "deltaXYZMetres": [
+          4.744076242957362e-10,
+          0.022780806278001053,
+          8.586157074219614e-08
+        ],
+        "horizontalDisplacementMetres": 8.586288134526549e-08,
+        "verticalDisplacementMetres": 0.022780806278001053,
+        "full3DDisplacementMetres": 0.022780806278162865,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -1.4749996662139893,
+          0.02500000037252903,
+          2.875
+        ],
+        [
+          -2.874999761581421,
+          0.02500000037252903,
+          0.07499980926513672
+        ],
+        [
+          -2.8999998569488525,
+          0.02500000037252903,
+          0.02500009536743164
+        ],
+        [
+          -3.2249999046325684,
+          0.02500000037252903,
+          -0.5
+        ],
+        [
+          -3.924999713897705,
+          0.02500000037252903,
+          -1.6000001430511475
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "objectiveID": "loop_south_to_west",
+      "kind": "loopLeg",
+      "startCoordinateProvenance": {
+        "originalGameXYZ": [
+          -0.875,
+          0.0,
+          4.175000000000001
+        ],
+        "originalLevelXYZ": [
+          -0.875,
+          -4.175000000000001,
+          0.0
+        ],
+        "unchangedPhoneXYZ": [
+          -0.8749997793669386,
+          -4.174999141602981,
+          -1.2682943516243905
+        ],
+        "mappedLevelXYZ": [
+          -0.8749997945773704,
+          -4.175000290816756,
+          -0.00012847471435306623
+        ],
+        "mappedGameXYZ": [
+          -0.8749997945773704,
+          -0.00012847471435306623,
+          4.175000290816756
+        ],
+        "roundtripMaximumAbsErrorMetres": 8.881784197001252e-16,
+        "mappedHeightWasFlattened": false
+      },
+      "goalCoordinateProvenance": {
+        "originalGameXYZ": [
+          -3.9750000000000005,
+          0.0,
+          -3.0749999999999993
+        ],
+        "originalLevelXYZ": [
+          -3.9750000000000005,
+          3.0749999999999993,
+          0.0
+        ],
+        "unchangedPhoneXYZ": [
+          -3.974998997695522,
+          3.0750010390668785,
+          -1.2697865477229324
+        ],
+        "mappedLevelXYZ": [
+          -3.975000143525555,
+          3.07499917987097,
+          0.0022191940945279764
+        ],
+        "mappedGameXYZ": [
+          -3.975000143525555,
+          0.0022191940945279764,
+          -3.07499917987097
+        ],
+        "roundtripMaximumAbsErrorMetres": 2.220446049250313e-16,
+        "mappedHeightWasFlattened": false
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        -3.975000143525555,
+        0.0022191940945279764,
+        -3.07499917987097
+      ],
+      "requestedGoalXYZ": [
+        -1.3250003410091629,
+        0.001502874469548665,
+        -3.8749995133392012
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -3.4499998092651367,
+            0.02500000037252903,
+            -3.200000286102295
+          ],
+          [
+            -3.3999996185302734,
+            0.02500000037252903,
+            -3.2250001430511475
+          ],
+          [
+            -3.299999713897705,
+            0.02500000037252903,
+            -3.2750000953674316
+          ],
+          [
+            -3.249999761581421,
+            0.02500000037252903,
+            -3.3000001907348633
+          ],
+          [
+            -2.7749998569488525,
+            0.02500000037252903,
+            -3.6000001430511475
+          ],
+          [
+            -2.674999713897705,
+            0.02500000037252903,
+            -3.6500000953674316
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -3.9750001430511475,
+          0.02500000037252903,
+          -3.0749990940093994
+        ],
+        "projectedGoal": [
+          -1.325000286102295,
+          0.02500000037252903,
+          -3.874999523162842
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "fff2780f75159f280b25f14d590fadc97411f32c7f3a496bd2327e6f8fc63a03",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -3.975000143525555,
+          0.0022191940945279764,
+          -3.07499917987097
+        ],
+        "projectedXYZ": [
+          -3.9750001430511475,
+          0.02500000037252903,
+          -3.0749990940093994
+        ],
+        "deltaXYZMetres": [
+          4.744076242957362e-10,
+          0.022780806278001053,
+          8.586157074219614e-08
+        ],
+        "horizontalDisplacementMetres": 8.586288134526549e-08,
+        "verticalDisplacementMetres": 0.022780806278001053,
+        "full3DDisplacementMetres": 0.022780806278162865,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -1.3250003410091629,
+          0.001502874469548665,
+          -3.8749995133392012
+        ],
+        "projectedXYZ": [
+          -1.325000286102295,
+          0.02500000037252903,
+          -3.874999523162842
+        ],
+        "deltaXYZMetres": [
+          5.49068679411846e-08,
+          0.023497125902980365,
+          -9.823640567674374e-09
+        ],
+        "horizontalDisplacementMetres": 5.577874201802639e-08,
+        "verticalDisplacementMetres": 0.023497125902980365,
+        "full3DDisplacementMetres": 0.02349712590304657,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -3.4499998092651367,
+          0.02500000037252903,
+          -3.200000286102295
+        ],
+        [
+          -3.3999996185302734,
+          0.02500000037252903,
+          -3.2250001430511475
+        ],
+        [
+          -3.299999713897705,
+          0.02500000037252903,
+          -3.2750000953674316
+        ],
+        [
+          -3.249999761581421,
+          0.02500000037252903,
+          -3.3000001907348633
+        ],
+        [
+          -2.7749998569488525,
+          0.02500000037252903,
+          -3.6000001430511475
+        ],
+        [
+          -2.674999713897705,
+          0.02500000037252903,
+          -3.6500000953674316
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "objectiveID": "loop_west_to_north",
+      "kind": "loopLeg",
+      "startCoordinateProvenance": {
+        "originalGameXYZ": [
+          -3.9750000000000005,
+          0.0,
+          -3.0749999999999993
+        ],
+        "originalLevelXYZ": [
+          -3.9750000000000005,
+          3.0749999999999993,
+          0.0
+        ],
+        "unchangedPhoneXYZ": [
+          -3.974998997695522,
+          3.0750010390668785,
+          -1.2697865477229324
+        ],
+        "mappedLevelXYZ": [
+          -3.975000143525555,
+          3.07499917987097,
+          0.0022191940945279764
+        ],
+        "mappedGameXYZ": [
+          -3.975000143525555,
+          0.0022191940945279764,
+          -3.07499917987097
+        ],
+        "roundtripMaximumAbsErrorMetres": 2.220446049250313e-16,
+        "mappedHeightWasFlattened": false
+      },
+      "goalCoordinateProvenance": {
+        "originalGameXYZ": [
+          -1.3250000000000002,
+          0.0,
+          -3.875
+        ],
+        "originalLevelXYZ": [
+          -1.3250000000000002,
+          3.875,
+          0.0
+        ],
+        "unchangedPhoneXYZ": [
+          -1.3249996658985073,
+          3.874999976486304,
+          -1.2720760024981626
+        ],
+        "mappedLevelXYZ": [
+          -1.3250003410091629,
+          3.8749995133392012,
+          0.001502874469548665
+        ],
+        "mappedGameXYZ": [
+          -1.3250003410091629,
+          0.001502874469548665,
+          -3.8749995133392012
+        ],
+        "roundtripMaximumAbsErrorMetres": 4.440892098500626e-16,
+        "mappedHeightWasFlattened": false
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        -0.8626612788929839,
+        0.0011615613797137936,
+        -2.841557106819982
+      ],
+      "requestedGoalXYZ": [
+        -2.848709860547019,
+        0.0018739399488987285,
+        -3.193748352058397
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -1.6499998569488525,
+            0.02500000037252903,
+            -3.6000001430511475
+          ],
+          [
+            -1.749999761581421,
+            0.02500000037252903,
+            -3.6500000953674316
+          ],
+          [
+            -2.6499998569488525,
+            0.02500000037252903,
+            -3.6500000953674316
+          ]
+        ],
+        "reason": "query_association",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -0.8626613020896912,
+          0.02500000037252903,
+          -2.841557025909424
+        ],
+        "projectedGoal": [
+          -2.924999713897705,
+          0.02500000037252903,
+          -3.3500001430511475
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "fff2780f75159f280b25f14d590fadc97411f32c7f3a496bd2327e6f8fc63a03",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.8626612788929839,
+          0.0011615613797137936,
+          -2.841557106819982
+        ],
+        "projectedXYZ": [
+          -0.8626613020896912,
+          0.02500000037252903,
+          -2.841557025909424
+        ],
+        "deltaXYZMetres": [
+          -2.319670722172873e-08,
+          0.023838438992815236,
+          8.091055825332205e-08
+        ],
+        "horizontalDisplacementMetres": 8.417009957695679e-08,
+        "verticalDisplacementMetres": 0.023838438992815236,
+        "full3DDisplacementMetres": 0.023838438992963833,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -2.848709860547019,
+          0.0018739399488987285,
+          -3.193748352058397
+        ],
+        "projectedXYZ": [
+          -2.924999713897705,
+          0.02500000037252903,
+          -3.3500001430511475
+        ],
+        "deltaXYZMetres": [
+          -0.07628985335068617,
+          0.0231260604236303,
+          -0.15625179099275055
+        ],
+        "horizontalDisplacementMetres": 0.17388146512124691,
+        "verticalDisplacementMetres": 0.0231260604236303,
+        "full3DDisplacementMetres": 0.17541259528160685,
+        "existingHorizontalAssociationAtMost0p10m": false,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -1.6499998569488525,
+          0.02500000037252903,
+          -3.6000001430511475
+        ],
+        [
+          -1.749999761581421,
+          0.02500000037252903,
+          -3.6500000953674316
+        ],
+        [
+          -2.6499998569488525,
+          0.02500000037252903,
+          -3.6500000953674316
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "objectiveID": "approach_northSide",
+      "kind": "rawCameraApproach",
+      "startCoordinateProvenance": {
+        "originalGameXYZ": [
+          -0.8626609865374657,
+          0.0,
+          -2.8415575153518127
+        ],
+        "originalLevelXYZ": [
+          -0.8626609865374657,
+          2.8415575153518127,
+          0.0
+        ],
+        "unchangedPhoneXYZ": [
+          -0.8626607690157121,
+          2.841557458684856,
+          -1.271877823962256
+        ],
+        "mappedLevelXYZ": [
+          -0.8626612788929839,
+          2.841557106819982,
+          0.0011615613797137936
+        ],
+        "mappedGameXYZ": [
+          -0.8626612788929839,
+          0.0011615613797137936,
+          -2.841557106819982
+        ],
+        "roundtripMaximumAbsErrorMetres": 4.440892098500626e-16,
+        "mappedHeightWasFlattened": false
+      },
+      "goalCoordinateProvenance": {
+        "originalGameXYZ": [
+          -2.8487096487644004,
+          0.0,
+          -3.1937490266953104
+        ],
+        "originalLevelXYZ": [
+          -2.8487096487644004,
+          3.1937490266953104,
+          0.0
+        ],
+        "unchangedPhoneXYZ": [
+          -2.8487089304563655,
+          3.1937496428645122,
+          -1.2706468744189885
+        ],
+        "mappedLevelXYZ": [
+          -2.848709860547019,
+          3.193748352058397,
+          0.0018739399488987285
+        ],
+        "mappedGameXYZ": [
+          -2.848709860547019,
+          0.0018739399488987285,
+          -3.193748352058397
+        ],
+        "roundtripMaximumAbsErrorMetres": 8.881784197001252e-16,
+        "mappedHeightWasFlattened": false
+      },
+      "originalAnchorProvenance": {
+        "selection": {
+          "approachID": "northSide",
+          "startPoseIndex": 10,
+          "goalPoseIndex": 27,
+          "outsidePoseIndicesExaminedGoalOutward": [
+            27,
+            26,
+            25,
+            24,
+            23,
+            22,
+            21,
+            20,
+            19,
+            18,
+            17,
+            16,
+            15,
+            14,
+            13,
+            12,
+            11,
+            10
+          ],
+          "skippedROIPoseIndices": [],
+          "requestedDirectSeparationMetres": 2.0,
+          "shortAvailableSequence": false,
+          "directAnchorSeparationMetres": 2.0170344938537403
+        },
+        "start": {
+          "poseIndex": 10,
+          "frameID": "frame_00011",
+          "originalCameraLevelXY": [
+            -0.8626609865374657,
+            2.8415575153518127
+          ],
+          "requestedGamePoint": [
+            -0.8626609865374657,
+            0.0,
+            -2.8415575153518127
+          ],
+          "sourceIJ": [
+            98,
+            177
+          ],
+          "cellCentreXY": [
+            -0.875,
+            2.8249999999999993
+          ],
+          "insideRaster": true,
+          "outsideDisputedROI": true,
+          "originalPhoneFlags": {
+            "support": true,
+            "deepBelow": false,
+            "nearDip": false,
+            "low1": false,
+            "lowUnresolvedFlag": true,
+            "highObstacle": false,
+            "highUnknown": false,
+            "walk": true
+          },
+          "cameraIsNotMeasuredBodyPose": true,
+          "anchorRelocated": false
+        },
+        "goal": {
+          "poseIndex": 27,
+          "frameID": "frame_00028",
+          "originalCameraLevelXY": [
+            -2.8487096487644004,
+            3.1937490266953104
+          ],
+          "requestedGamePoint": [
+            -2.8487096487644004,
+            0.0,
+            -3.1937490266953104
+          ],
+          "sourceIJ": [
+            59,
+            184
+          ],
+          "cellCentreXY": [
+            -2.8250000000000006,
+            3.174999999999999
+          ],
+          "insideRaster": true,
+          "outsideDisputedROI": true,
+          "originalPhoneFlags": {
+            "support": true,
+            "deepBelow": false,
+            "nearDip": false,
+            "low1": false,
+            "lowUnresolvedFlag": false,
+            "highObstacle": true,
+            "highUnknown": false,
+            "walk": false
+          },
+          "cameraIsNotMeasuredBodyPose": true,
+          "anchorRelocated": false
+        }
+      },
+      "priorApproachStatus": "cameraAnchorAssociationRejected"
+    },
+    {
+      "requestedStartXYZ": [
+        -2.281401244789739,
+        0.0009086607581352268,
+        1.0373839570377266
+      ],
+      "requestedGoalXYZ": [
+        -3.0339699241480815,
+        0.0015210992746939045,
+        -0.9531443134229741
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            -3.0339698791503906,
+            0.02500000037252903,
+            -0.9531443119049072
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          -2.2814011573791504,
+          0.02500000037252903,
+          1.0373839139938354
+        ],
+        "projectedGoal": [
+          -3.0339698791503906,
+          0.02500000037252903,
+          -0.9531443119049072
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "fff2780f75159f280b25f14d590fadc97411f32c7f3a496bd2327e6f8fc63a03",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -2.281401244789739,
+          0.0009086607581352268,
+          1.0373839570377266
+        ],
+        "projectedXYZ": [
+          -2.2814011573791504,
+          0.02500000037252903,
+          1.0373839139938354
+        ],
+        "deltaXYZMetres": [
+          8.741058854511152e-08,
+          0.024091339614393803,
+          -4.3043891118088595e-08
+        ],
+        "horizontalDisplacementMetres": 9.743401640283873e-08,
+        "verticalDisplacementMetres": 0.024091339614393803,
+        "full3DDisplacementMetres": 0.02409133961459083,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -3.0339699241480815,
+          0.0015210992746939045,
+          -0.9531443134229741
+        ],
+        "projectedXYZ": [
+          -3.0339698791503906,
+          0.02500000037252903,
+          -0.9531443119049072
+        ],
+        "deltaXYZMetres": [
+          4.4997690906711796e-08,
+          0.023478901097835125,
+          1.5180668944125841e-09
+        ],
+        "horizontalDisplacementMetres": 4.5023290795230476e-08,
+        "verticalDisplacementMetres": 0.023478901097835125,
+        "full3DDisplacementMetres": 0.023478901097878292,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -3.0339698791503906,
+          0.02500000037252903,
+          -0.9531443119049072
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          -2.281401244789739,
+          0.0009086607581352268,
+          1.0373839570377266
+        ],
+        [
+          -3.0339698791503906,
+          0.02500000037252903,
+          -0.9531443119049072
+        ],
+        [
+          -3.0339699241480815,
+          0.0015210992746939045,
+          -0.9531443134229741
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          -2.281401244789739,
+          0.0,
+          1.0373839570377266
+        ],
+        [
+          -3.0339699241480815,
+          0.0,
+          -0.9531443134229741
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 4.5023290795230476e-08,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 2.1280419198536547,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "objectiveID": "approach_southSide",
+      "kind": "rawCameraApproach",
+      "startCoordinateProvenance": {
+        "originalGameXYZ": [
+          -2.281401302639457,
+          0.0,
+          1.0373834286611066
+        ],
+        "originalLevelXYZ": [
+          -2.281401302639457,
+          -1.0373834286611066,
+          0.0
+        ],
+        "unchangedPhoneXYZ": [
+          -2.281400727379396,
+          -1.037382468630502,
+          -1.2688941192254042
+        ],
+        "mappedLevelXYZ": [
+          -2.281401244789739,
+          -1.0373839570377266,
+          0.0009086607581352268
+        ],
+        "mappedGameXYZ": [
+          -2.281401244789739,
+          0.0009086607581352268,
+          1.0373839570377266
+        ],
+        "roundtripMaximumAbsErrorMetres": 4.440892098500626e-16,
+        "mappedHeightWasFlattened": false
+      },
+      "goalCoordinateProvenance": {
+        "originalGameXYZ": [
+          -3.0339698809555964,
+          0.0,
+          -0.953144974217533
+        ],
+        "originalLevelXYZ": [
+          -3.0339698809555964,
+          0.953144974217533,
+          0.0
+        ],
+        "unchangedPhoneXYZ": [
+          -3.0339691159338105,
+          0.9531459481957225,
+          -1.2693737975130848
+        ],
+        "mappedLevelXYZ": [
+          -3.0339699241480815,
+          0.9531443134229741,
+          0.0015210992746939045
+        ],
+        "mappedGameXYZ": [
+          -3.0339699241480815,
+          0.0015210992746939045,
+          -0.9531443134229741
+        ],
+        "roundtripMaximumAbsErrorMetres": 4.440892098500626e-16,
+        "mappedHeightWasFlattened": false
+      },
+      "originalAnchorProvenance": {
+        "selection": {
+          "approachID": "southSide",
+          "startPoseIndex": 92,
+          "goalPoseIndex": 50,
+          "outsidePoseIndicesExaminedGoalOutward": [
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92
+          ],
+          "skippedROIPoseIndices": [
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85
+          ],
+          "requestedDirectSeparationMetres": 2.0,
+          "shortAvailableSequence": false,
+          "directAnchorSeparationMetres": 2.128042007981836
+        },
+        "start": {
+          "poseIndex": 92,
+          "frameID": "frame_00093",
+          "originalCameraLevelXY": [
+            -2.281401302639457,
+            -1.0373834286611066
+          ],
+          "requestedGamePoint": [
+            -2.281401302639457,
+            0.0,
+            1.0373834286611066
+          ],
+          "sourceIJ": [
+            70,
+            100
+          ],
+          "cellCentreXY": [
+            -2.2750000000000004,
+            -1.0250000000000004
+          ],
+          "insideRaster": true,
+          "outsideDisputedROI": true,
+          "originalPhoneFlags": {
+            "support": true,
+            "deepBelow": false,
+            "nearDip": false,
+            "low1": false,
+            "lowUnresolvedFlag": false,
+            "highObstacle": false,
+            "highUnknown": false,
+            "walk": true
+          },
+          "cameraIsNotMeasuredBodyPose": true,
+          "anchorRelocated": false
+        },
+        "goal": {
+          "poseIndex": 50,
+          "frameID": "frame_00051",
+          "originalCameraLevelXY": [
+            -3.0339698809555964,
+            0.953144974217533
+          ],
+          "requestedGamePoint": [
+            -3.0339698809555964,
+            0.0,
+            -0.953144974217533
+          ],
+          "sourceIJ": [
+            55,
+            140
+          ],
+          "cellCentreXY": [
+            -3.0250000000000004,
+            0.9749999999999996
+          ],
+          "insideRaster": true,
+          "outsideDisputedROI": true,
+          "originalPhoneFlags": {
+            "support": true,
+            "deepBelow": false,
+            "nearDip": false,
+            "low1": false,
+            "lowUnresolvedFlag": true,
+            "highObstacle": false,
+            "highUnknown": false,
+            "walk": true
+          },
+          "cameraIsNotMeasuredBodyPose": true,
+          "anchorRelocated": false
+        }
+      },
+      "priorApproachStatus": "selectedPhoneOnlyApproach"
+    }
+  ],
+  "cycle": {
+    "evaluated": false,
+    "reason": "oneOrMoreFixedLegsRejected",
+    "movementExecuted": false
+  },
+  "sameOriginalPhoneSpaceProxyTopology": {
+    "available": true,
+    "originalPhoneSpaceTargetCentres": 4667,
+    "uniqueMappedTargetGridCells": 4667,
+    "targetCentreCountOutsideMap": 0,
+    "fixedOriginalProxySourceIJ": [
+      91,
+      119
+    ],
+    "mappedProxyXYZ": [
+      -1.2250000664653278,
+      0.0007417803272455892,
+      0.07500040638571781
+    ],
+    "mappedTargetHeightRangeMetres": [
+      -0.000644915465743745,
+      0.0021312667148045694
+    ],
+    "semanticTableVerified": false,
+    "gridHoleDiagnosticIsNotPhysicalRouteProof": true,
+    "rawWalk": {
+      "foreground4Components": 74,
+      "componentsWithAnyBoundedRegion": 1,
+      "anyRegionEnclosesAllTarget": false,
+      "anyRegionEnclosesFixedProbe": true,
+      "components": [
+        {
+          "foreground4Component": 1,
+          "eligibleCentreCells": 11639,
+          "boundedComplement8Regions": [
+            {
+              "background8Region": 2,
+              "regionCells": 12,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 3,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 4,
+              "regionCells": 66,
+              "targetCellsEnclosed": 60,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 5,
+              "regionCells": 3,
+              "targetCellsEnclosed": 2,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 6,
+              "regionCells": 6,
+              "targetCellsEnclosed": 6,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 7,
+              "regionCells": 1,
+              "targetCellsEnclosed": 1,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 8,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 9,
+              "regionCells": 1,
+              "targetCellsEnclosed": 1,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 10,
+              "regionCells": 1,
+              "targetCellsEnclosed": 1,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 11,
+              "regionCells": 1,
+              "targetCellsEnclosed": 1,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 12,
+              "regionCells": 2,
+              "targetCellsEnclosed": 2,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 13,
+              "regionCells": 4345,
+              "targetCellsEnclosed": 4321,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": true
+            },
+            {
+              "background8Region": 14,
+              "regionCells": 1,
+              "targetCellsEnclosed": 1,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 15,
+              "regionCells": 2,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 16,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 17,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 18,
+              "regionCells": 3,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 19,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 20,
+              "regionCells": 15,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 21,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 22,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 23,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 24,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 25,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 26,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 27,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 28,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 29,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 30,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 31,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 32,
+              "regionCells": 2,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 33,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 34,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 35,
+              "regionCells": 2,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 36,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 37,
+              "regionCells": 7,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 38,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 39,
+              "regionCells": 6,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 40,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 41,
+              "regionCells": 2,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 42,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 43,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 44,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 45,
+              "regionCells": 4,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 46,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 47,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 48,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 49,
+              "regionCells": 5,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 50,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 51,
+              "regionCells": 147,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 52,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 53,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 54,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 55,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 56,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 57,
+              "regionCells": 2,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 58,
+              "regionCells": 11,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 59,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 60,
+              "regionCells": 3,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 61,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 62,
+              "regionCells": 3,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 63,
+              "regionCells": 2,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 64,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 65,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 66,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            },
+            {
+              "background8Region": 67,
+              "regionCells": 1,
+              "targetCellsEnclosed": 0,
+              "allTargetCellsEnclosed": false,
+              "fixedTargetProbeEnclosed": false
+            }
+          ]
+        },
+        {
+          "foreground4Component": 2,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 3,
+          "eligibleCentreCells": 6,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 4,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 5,
+          "eligibleCentreCells": 2,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 6,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 7,
+          "eligibleCentreCells": 3,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 8,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 9,
+          "eligibleCentreCells": 5,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 10,
+          "eligibleCentreCells": 3,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 11,
+          "eligibleCentreCells": 4,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 12,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 13,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 14,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 15,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 16,
+          "eligibleCentreCells": 2,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 17,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 18,
+          "eligibleCentreCells": 3,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 19,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 20,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 21,
+          "eligibleCentreCells": 2,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 22,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 23,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 24,
+          "eligibleCentreCells": 2,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 25,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 26,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 27,
+          "eligibleCentreCells": 7,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 28,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 29,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 30,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 31,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 32,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 33,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 34,
+          "eligibleCentreCells": 2,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 35,
+          "eligibleCentreCells": 3,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 36,
+          "eligibleCentreCells": 2,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 37,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 38,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 39,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 40,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 41,
+          "eligibleCentreCells": 6,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 42,
+          "eligibleCentreCells": 4,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 43,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 44,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 45,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 46,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 47,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 48,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 49,
+          "eligibleCentreCells": 4,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 50,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 51,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 52,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 53,
+          "eligibleCentreCells": 32,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 54,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 55,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 56,
+          "eligibleCentreCells": 15,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 57,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 58,
+          "eligibleCentreCells": 2,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 59,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 60,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 61,
+          "eligibleCentreCells": 3,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 62,
+          "eligibleCentreCells": 9,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 63,
+          "eligibleCentreCells": 2,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 64,
+          "eligibleCentreCells": 8,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 65,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 66,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 67,
+          "eligibleCentreCells": 4,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 68,
+          "eligibleCentreCells": 2,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 69,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 70,
+          "eligibleCentreCells": 3,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 71,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 72,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 73,
+          "eligibleCentreCells": 3,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 74,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        }
+      ]
+    },
+    "discCentres": {
+      "foreground4Components": 12,
+      "componentsWithAnyBoundedRegion": 0,
+      "anyRegionEnclosesAllTarget": false,
+      "anyRegionEnclosesFixedProbe": false,
+      "components": [
+        {
+          "foreground4Component": 1,
+          "eligibleCentreCells": 168,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 2,
+          "eligibleCentreCells": 1558,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 3,
+          "eligibleCentreCells": 29,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 4,
+          "eligibleCentreCells": 843,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 5,
+          "eligibleCentreCells": 1459,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 6,
+          "eligibleCentreCells": 59,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 7,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 8,
+          "eligibleCentreCells": 30,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 9,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 10,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 11,
+          "eligibleCentreCells": 4,
+          "boundedComplement8Regions": []
+        },
+        {
+          "foreground4Component": 12,
+          "eligibleCentreCells": 1,
+          "boundedComplement8Regions": []
+        }
+      ]
+    }
+  },
+  "oldNativeHistoryParityAllFields": null,
+  "nativeQueries": 6,
+  "referenceInputsUsed": false,
+  "physicalAuthority": false,
+  "newWaypointOrProxySelection": false,
+  "newNearestValidCellSearch": false,
+  "fullXYZObjectivesPreserved": true,
+  "verticalProjectionIsReportedNotActorSnapped": true
+}
