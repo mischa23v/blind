@@ -86,6 +86,10 @@ A capture fact to record: 66 % of D1's walkable columns were never viewed within
 
 Where I would do the same: keep every failed map; keep the margin until an error budget exists; keep unresolved cells visible as a separate class; never let a flag become clearance silently; report movement outcomes separately; no FARO in the planner.
 
+## 6b. Addendum — reference scoring and holdout (run after this report)
+
+The FARO evaluator was then run on Koivu and, with identical code and pre-fixed thresholds, on a holdout room (coffee_room). Results in [`REFERENCE_SCORING.md`](REFERENCE_SCORING.md): the ~1,000 `object` calls are 96 % not real geometry and the specks 100 % not, in both rooms; walkable calls touch real low geometry in 0.2–0.9 % of columns, all at obstacle edges; the rooms admit 387 / 537 rectangle routes of 2–6 m at the full margin from reference geometry, but only with ≤5 cm obstacle inflation, and the phone maps inflate by 5–10 cm plus scattered false blocks. Movement episodes still 0 / 100.
+
 ## 7. Status
 
 | Item | Status |

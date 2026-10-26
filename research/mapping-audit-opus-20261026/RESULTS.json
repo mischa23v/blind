@@ -375,5 +375,123 @@
     "gameEpisodesExecuted": 0,
     "FAROUsedByPlanner": false,
     "FAROScoringRun": false
+  },
+  "referenceScoring": {
+    "note": "evaluator only; see REFERENCE_SCORING.md; thresholds fixed before holdout; holdout chosen by stated criterion (coffee shop venue type)",
+    "inputs": {
+      "koivu_mesh_pd.tar.gz": "e16605f237f0850fd069fb9aca39d300eb1aa3a3b1f5f3f660cb64230a91dd26",
+      "coffee_room_iphone.tar.gz": "591672a1c4afa50e5109fc78ff08d8f608d05756a9181cfdd7cef38a57a1623d (md5 cb467b3ad18d8f2c83dbf97a486d378b matches Zenodo 10230733)",
+      "coffee_room_mesh_pd.tar.gz": "a566e964822365958e8160a1fcb08b7d196e5437aa467dc65bd9993316d4c217 (md5 d051bb90179d53374c1bb0c6ec4b0745 matches Zenodo 10222321)"
+    },
+    "koivu": {
+      "refFloorVsPlane_cm_p5_50_95": [
+        -0.78,
+        -0.03,
+        1.97
+      ],
+      "walkRefLow25": {
+        "d1Permissive": [
+          94,
+          10657
+        ],
+        "d1Strict": [
+          25,
+          3595
+        ],
+        "statClear": [
+          54,
+          8426
+        ],
+        "statObjectBlocked": [
+          67,
+          9932
+        ]
+      },
+      "statObjectReal": [
+        44,
+        1035
+      ],
+      "specksReal": [
+        0,
+        129
+      ],
+      "highObstacleConfirmed": [
+        7936,
+        10070
+      ],
+      "refWalk": 10805,
+      "refWalkPhoneBlocked": 1791,
+      "blockedDistToRealGeom_m_p50_p90": [
+        0.11,
+        0.43
+      ],
+      "routes2to6FullMargin": {
+        "phoneMaps": 0,
+        "referenceOnly": 387,
+        "refEroded5cm": 305,
+        "refEroded10cm": 1,
+        "refEroded15cm": 0
+      },
+      "missesWithin6cmOfBlocked": "87/87 (first pass)",
+      "falseHighObstacleFlyingPixelDominated": [
+        288,
+        1722
+      ]
+    },
+    "coffee_room": {
+      "frames": 388,
+      "samples": 17705216,
+      "floorTilt_deg": 0.017,
+      "refFloorVsPlane_cm_p5_50_95": [
+        -1.6,
+        -1.11,
+        1.54
+      ],
+      "walkRefLow25": {
+        "d1Permissive": [
+          25,
+          6246
+        ],
+        "d1Strict": [
+          8,
+          2400
+        ],
+        "statClear": [
+          8,
+          4785
+        ],
+        "statObjectBlocked": [
+          11,
+          5824
+        ]
+      },
+      "statObjectReal": [
+        21,
+        500
+      ],
+      "specksReal": [
+        0,
+        83
+      ],
+      "highObstacleConfirmed": [
+        3155,
+        4469
+      ],
+      "refWalk": 7821,
+      "refWalkPhoneBlocked": 1695,
+      "blockedDistToRealGeom_m_p50_p90": [
+        0.11,
+        0.4
+      ],
+      "routes2to6FullMargin": {
+        "phoneMaps": 0,
+        "referenceOnly": 537,
+        "refEroded5cm": 49,
+        "refEroded10cm": 33,
+        "refEroded15cm": 23
+      }
+    },
+    "gameEpisodesExecuted": 0,
+    "FAROUsedByPlanner": false
   }
 }
