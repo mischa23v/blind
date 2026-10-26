@@ -1,6 +1,9 @@
 name: Native RTAB grid unsigned device compile
-# Preparation is not activation: a maintainer must explicitly dispatch this one-attempt experiment.
+# One reviewed exact-source compile activation; no implicit source update or retry.
 on:
+  push:
+    branches: [master]
+    paths: ['.github/workflows/native-rtab-grid.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -9,7 +12,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   compile:
-    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/master' && github.run_attempt == 1
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/master' && github.run_attempt == 1 && (github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[native-rtab-c8aa872-once]')))
     runs-on: xcode-27
     timeout-minutes: 45
     env:
@@ -22,9 +25,22 @@ jobs:
           fetch-depth: 1
           lfs: false
           submodules: false
+      - name: Check out the independently verified app source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: c8aa872748aded3bd6672c7d2e299eec5361cb94
+          path: fixed-source
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
       - name: One bounded exact-source device compile (no install, tests or signing)
         timeout-minutes: 42
-        run: python3 tools/ci/native-rtab-grid.py
+        run: >-
+          python3 tools/ci/native-rtab-grid.py
+          --source "$GITHUB_WORKSPACE/fixed-source"
+          --expected-source c8aa872748aded3bd6672c7d2e299eec5361cb94
+          --allow-pinned-push
       - name: Enforce metadata upload allowlist and byte cap
         id: receipt_guard
         if: always()
