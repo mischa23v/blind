@@ -95,7 +95,10 @@ test('native failure regressions keep direct PDFKit preconditions and real denia
   assert.match(pages, /XCTAssertEqual\(second.text, secondOracle\)/);
   assert.match(pages, /XCTAssertFalse\(second.text.contains\("ALPHA"\)\)/);
   const denied = section(s, 'let denied =', 'func testColumnsAndTable');
-  assert.match(denied, /permissions: \[\]/);
+  assert.match(denied, /rawPermissions: 0/);
+  assert.match(s, /rawPermissions: UInt/);
+  assert.match(s, /rawPermissions: permissions\.rawValue/);
+  assert.match(s, /PDFDocumentWriteOption\.accessPermissionsOption: rawPermissions/);
   assert.match(denied, /XCTAssertFalse\(deniedDocument.allowsContentAccessibility\)/);
   assert.match(denied, /assertFailure\(\.accessibilityPermissionDenied\)/);
   assert.doesNotMatch(denied, /if |XCTSkip/);

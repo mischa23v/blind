@@ -353,6 +353,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var recognizedBasis: [String] = []
     private var roomQuestionCandidate: InformationCandidate?
     private var bodyHeadingEstimator = BodyHeadingEstimator()
+    private var bodyWarningProfile: LocalBodyProfile?
+    private(set) var bodyWarningAssessment: BodyCollisionWarning.Assessment?
     private var mountSlipAnnounced = false
     private var changeDetector = SceneChangeDetector()
     private var latestViewTexts: [String] = []
@@ -445,8 +447,19 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         withNativeLocalization { $0.watchdog(arSession: arSession,
             calibrationRevision: nativeLocalizationCalibrationRevision, mountRevision: nativeLocalizationMount, now: now) }
     }
+    private func retireBodyWarning(publishChange: Bool = true) {
+        bodyWarningAssessment = nil
+        // An asynchronous profile save/delete or mount change may occur without a
+        // new AR frame. Retire only this supplemental detection, never a legacy or
+        // wearable hazard, and do not replace it with a stale positive status.
+        if phoneDetection.reason == .bodyEnvelope {
+            phoneDetection = Detection(.uncertain, reason: .frameUnavailable)
+            if publishChange { publish() }
+        }
+    }
     func invalidateNativeLocalizationMount(slipped: Bool) {
         nativeLocalizationMount = UUID()
+        retireBodyWarning()
         invalidateNativeLocalization(slipped ? .mountSlip : .mountChanged)
     }
 
@@ -624,6 +637,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     private var demonstrationHazard: Hazard = .observing
     override init() {
         super.init(); session.delegate = self; session.delegateQueue = .main
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            BodyProfileStore.shared.onProfileChanged = { [weak self] profile in
+                guard let self else { return }
+                self.bodyWarningProfile = profile; self.retireBodyWarning()
+            }
+            BodyProfileStore.shared.load { _ in } // Startup, not dependent on visiting settings.
+        }
         spatialRouteOutput.permits = { [weak self] ticket, goal in
             self?.spatialRouteOutputAllowed(ticket, goalRevision: goal) == true
         }
@@ -951,6 +972,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         speakOperation(message)
     }
     private func launch(map: ARWorldMap? = nil, worldSessionID: UUID = UUID(), announceCalibration: Bool = true, recoveryAttempt: Bool = false) {
+        retireBodyWarning(publishChange: false)
         guard assistantSession.foregroundActive, cameraAwareness, !textOnly,
               AVCaptureDevice.authorizationStatus(for: .video) == .authorized,
               ARWorldTrackingConfiguration.isSupported, !cameraRecovery.blocked,
@@ -1004,6 +1026,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     /// Camera/sensor lifecycle is independent of an opted-in audio conversation.
     private func stopCameraMonitoring() {
+        retireBodyWarning(publishChange: false)
         nativeObservations.stop()
         voiceRoomScan.cancel()
         cameraRecovery.pause()
@@ -1204,7 +1227,18 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // An unanswered retry prompt expires without starting another capture or blocking ambience.
         if let deadline = currencyRetake.expiresAt, lastFrameWallTime >= deadline { currencyRetake.clear() }
         if !attention.stationary, currencyActive || currencyRetake.isPending { cancelDescription() }
-        phoneDetection = detector.process(observation)
+        let legacyDetection = detector.process(observation)
+        if legacyDetection.hazard.isUrgent {
+            // Never delay an existing urgent alert for supplemental geometry work.
+            bodyWarningAssessment = nil; phoneDetection = legacyDetection
+        } else {
+            let bodyAssessment = BodyCollisionWarning.assess(observation,
+                cameraToWorld: DepthSampler.cameraToWorld(from: frame), profile: bodyWarningProfile,
+                fixedMount: fixedBodyMount && !mountSlipAnnounced && !bodyHeadingEstimator.mountSlipSuspected,
+                now: receivedAt, floorHeight: detector.floorHeight)
+            bodyWarningAssessment = bodyAssessment
+            phoneDetection = BodyCollisionWarning.combining(legacyDetection, with: bodyAssessment)
+        }
         survey.observe(observation, floor: detector.floorHeight)
         calibrationProgress = detector.calibrationProgress; publish()
         #if DEBUG
@@ -1430,7 +1464,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if policy.shouldAnnounce(detection, at: now) {
             if detection.hazard.isUrgent {
                 questionTask?.cancel(); questionTask = nil; busy = false
-                if detection.reason != .visualStairs {
+                if detection.reason != .visualStairs && detection.reason != .bodyEnvelope {
                     wearables.send(WearableCommand.haptic(sector: detection.sector, intensity: 220, durationMS: 300))
                 }
             }
@@ -1438,6 +1472,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func session(_ session: ARSession, didFailWithError error: Error) {
+        retireBodyWarning(publishChange: false)
         nativeObservations.stop()
         invalidatePerceptionWork()
         peopleTracking.reset()
@@ -1474,6 +1509,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func sessionWasInterrupted(_ session: ARSession) {
+        retireBodyWarning(publishChange: false)
         nativeObservations.stop()
         cameraRecovery.pause()
         invalidatePerceptionWork()

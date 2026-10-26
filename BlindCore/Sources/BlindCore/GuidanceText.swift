@@ -6,6 +6,9 @@ public enum GuidanceText {
         if detection.hazard.isUrgent && detection.reason == .visualStairs {
             return arabic ? "توقف. قد توجد درجات في صورة الكاميرا. لم تتأكد المسافة." : "Stop. Possible stairs in the camera view. Distance is unconfirmed."
         }
+        if detection.hazard.isUrgent && detection.reason == .bodyEnvelope {
+            return arabic ? "توقف. رصدت الكاميرا عائقاً محتملاً قريباً من جسمك أو أغراضك." : "Stop. The camera detected a possible obstacle near your body or equipment."
+        }
         guard detection.hazard == .uncertain, let reason = detection.reason else {
             return hazard(detection.hazard, arabic: arabic)
         }
@@ -22,7 +25,7 @@ public enum GuidanceText {
             return arabic ? "توقف. أحتاج إلى فحص الأرض مرة أخرى. ابقَ ثابتاً." : "Stop. I need to check the ground again. Keep still."
         case .groundCoverage:
             return arabic ? "توقف. لا أرى ما يكفي من الأرض. ابقَ ثابتاً." : "Stop. I cannot see enough ground. Keep still."
-        case .frameUnavailable, .invalidGeometry, .visualStairs:
+        case .frameUnavailable, .invalidGeometry, .visualStairs, .bodyEnvelope:
             return arabic ? "توقف. رصد الكاميرا غير متاح. ابقَ ثابتاً واطلب المساعدة." : "Stop. Camera monitoring is unavailable. Keep still and ask for help."
         }
     }

@@ -2,6 +2,13 @@ import ARKit
 import BlindCore
 
 enum DepthSampler {
+    /// Exact full ARFrame transform; no flattened camera/body-heading substitute.
+    static func cameraToWorld(from frame: ARFrame) -> NativeCameraTransform {
+        let matrix = frame.camera.transform
+        return NativeCameraTransform(columns: (0..<4).flatMap { column in
+            (0..<4).map { row in Double(matrix[column][row]) }
+        })
+    }
     static func unavailableReason(from frame: ARFrame) -> MonitoringReason {
         guard case .normal = frame.camera.trackingState else { return .trackingUnavailable }
         let forward = -frame.camera.transform.columns.2

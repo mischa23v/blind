@@ -1,3 +1,11 @@
+## Next — integrated maps, body geometry and navigation
+
+Continue the native observation→map→localization→route loop. The new body-aware warning path uses saved maximum height/width/depth, equipment and chest offsets, but does not establish body heading, current floor support, complete obstacle coverage or safe passage. Confirm the shared session mount control in Body and chest holder; it resets after camera restart.
+
+Before release claims, review conditional recorded-depth warning fractions/episodes (not wearer accuracy), then validate actual chest-mounted short/tall/wide/equipment cases, camera tilt, mount slip, false alerts, latency and interruptions on device with supervision. Retain legacy detector failures and missing calibration; do not tune them away or infer dimensions from age/weight. See [body-warning receipt](research/evaluations/body-aware-warning/README.md).
+
+---
+
 ## Next — selected-PDF native and nonvisual acceptance
 
 First repair and rerun the five PDF fixture failures from [published app `6d6954b`, native run 40243450535](https://github.com/mischa23v/blind/actions/runs/40243450535/job/121319972133): **14 methods executed, 9 passed, 5 failed**. Preserve failed source/page sentinel checks, native extracted-size preconditions and actual accessibility-permission assertions; do not weaken production limits or permission gates. A planned fixture repair is not a pass. Then verify supported system picker selection/cancel/security-scope, explicit file-page versus printed-label behavior, English/Arabic and image-only/permission/oversize errors. Check page correction without reselection, slow budget waits, pacing changes, interruption/private-route/quiet/background retirement, identical-text newer reply preservation and independent hazards. Confirm actual audible/VoiceOver comprehension with supervised participants; projection callbacks are not native speech evidence.

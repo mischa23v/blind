@@ -1,0 +1,99 @@
+{
+  "scope": "Supplemental body-aware nearby warning, not navigation completion or physical validation",
+  "verifiedAtUTC": "2026-10-26T00:23:30Z",
+  "focused": {
+    "total": 51,
+    "passed": 51,
+    "failed": 0,
+    "bodyWarning": 11,
+    "bodyProfile": 15,
+    "legacyDetector": 16,
+    "nativeStore": 9
+  },
+  "sourceContracts": {
+    "passed": 6,
+    "failed": 0
+  },
+  "coreTypecheck": {
+    "productionSources": 131,
+    "passed": true,
+    "resourceAccessor": "Existing SwiftPM-generated compiler context; no runtime resource claim",
+    "warnings": [
+      "Preexisting CompanionReportedStep immutable Codable property"
+    ]
+  },
+  "nativeSourceSyntaxParse": {
+    "passed": true,
+    "files": [
+      "BodyProfileStore.swift",
+      "BodyProfileSettingsView.swift",
+      "DepthSampler.swift",
+      "NavigationModel.swift",
+      "Feedback.swift",
+      "DashboardView.swift"
+    ]
+  },
+  "notExecuted": [
+    "Whole repository Node/Swift aggregate",
+    "Apple SDK typecheck/link",
+    "SwiftUI/VoiceOver/device behavior",
+    "Independent real body pose/calibration/collision validation"
+  ],
+  "compiledInputs": {
+    "BlindCore/Sources/BlindCore/BodyProfile.swift": "21b0bd2b5173254504724696764c02b68096be8fba340c4210e390186694802d",
+    "BlindCore/Sources/BlindCore/Geometry.swift": "f7a27aff67ed97dda0550463e70ee9df9c85381024ce02f2f091a2b35f353eb5",
+    "BlindCore/Sources/BlindCore/IndoorMap.swift": "143907bb8733793b91cdf17916002e5888943049c3ff2c7fc5ae725be4419529",
+    "BlindCore/Sources/BlindCore/KeepOutZone.swift": "eddf790cac4ca97596b42631af7e86501f7089024443a5d30c19570469035968",
+    "BlindCore/Sources/BlindCore/NativeObservation.swift": "3ddeb793d9c3fcbadd1de6d1103f182a58c9228dee2c6188ae9a31f42748be45",
+    "BlindCore/Sources/BlindCore/NavigationSurface.swift": "d0dc93843ce65d43f0199edbd3d9a08e4b83f783839c17522b2b60484b6d13fb",
+    "BlindCore/Sources/BlindCore/PlacePackage.swift": "6c23c635ed8fc9fbb62608f1475e0aa28f2a9762d32e4700a5a0e84d395dacaa",
+    "BlindCore/Sources/BlindCore/RecordedRouteHistory.swift": "11ff46516cd534aa6da5da6b6bce713c2c7eff6a9015b0c8f5102eae9b87a9a3",
+    "BlindCore/Sources/BlindCore/RoomLayout.swift": "3e7609313a1d781e5b6c0c40071439442df88fddfe2005e86078e54ae6d0af18",
+    "BlindCore/Sources/BlindCore/SavedWorldFrame.swift": "c81551da30f5c778dd8202cf2572a4cd4c347a9fa5a05884fc54a43a0416653e",
+    "BlindCore/Sources/BlindCore/SpatialFrameRegistry.swift": "856d97523516429b2e655bc1c3e36dd5331728f40e4d15a6f5817c925e545541",
+    "BlindCore/Sources/BlindCore/SpatialLocalizationLease.swift": "88a9e9f888a1c23b0e27a3da270008c6dbc6d88fff61f016cef5344280c60193",
+    "BlindCore/Sources/BlindCore/SpatialMapInstallation.swift": "600fb45acdcf5d4b7dbb2b0e6f6a4e35b847479824147ba0bbbb3ffed2532b55",
+    "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift": "cdd10af53179e7f56b3ae575145f56222edae2382177ade0e68d89e72c90a76f",
+    "BlindCore/Sources/BlindCore/StoredTerrainAssessment.swift": "53a0cf8756ed4ce9c445f889f31eac88b8333f6b8d8ed471b5c08d923817b3a8",
+    "BlindCore/Sources/BlindCore/HazardDetector.swift": "9bbcdae56f58ed76d8a06f0b03651af24a023c48c0a23111187ec2a511c1d615",
+    "BlindCore/Sources/BlindCore/MonitoringRecovery.swift": "7f031367494fae7cc47720560b83cfea72ff6283e051c6be892102b41d069fae",
+    "BlindCore/Sources/BlindCore/GuidanceText.swift": "b1f29eeef4a94d9ad1cbc17032bc68c52cdcd4216ea84ff42d94e8d9824c5836",
+    "BlindCore/Sources/BlindCore/AlertPolicy.swift": "b13f4fd8075c6055d604a13fbe027f10b60b55b4dc4b07abbba7d15b0ce489a0",
+    "BlindCore/Sources/BlindCore/BodyCollisionWarning.swift": "c06d47fe8e8c49abfb60acaa396cb046fa1b3fc193a50410ae51e257fe21c49c",
+    "ios/BlindAssist/BodyProfileStore.swift": "64b795deea263d3ef0baf80f283e1d620a78b903b6a3a53fef22895c717fc84c",
+    "ios/BlindAssist/SpatialMapIO.swift": "7db70037087b1421d6b0188dc061f3d5f2e4b320f43d14c36f9aed6a00fda8be",
+    "BlindCore/Tests/BlindCoreTests/BodyCollisionWarningTests.swift": "2c462a70fd8c31fe5d5257f955fd80f2177b5e3d5c209cb5e1fa9747a893d265",
+    "BlindCore/Tests/BlindCoreTests/BodyProfileTests.swift": "98e123696dab729d7e6fcf84ee037366979ab7cb83b778a8c8c2f43db6161d9a",
+    "BlindCore/Tests/BlindCoreTests/SpatialIntegrationFixture.swift": "a8bd9d2235b20d997438374473ed38fe3eceae5939f200776069eb24e3016ea3",
+    "BlindCore/Tests/BlindCoreTests/BlindCoreTests.swift#exact-leading-DetectorTests": "0e360c501f789e36d87d91746ba512a8817a015c4a5f8478db74ce61750f8979",
+    "research/evaluations/body-aware-warning/verification/Tests/BodyProfileStoreTests.swift": "f59df1f08c25e512d382babd80084d342bb6ac09fec7c0b4001c428e54416236"
+  },
+  "recordedReplay": "Coordinated separately: actual depth, hypothetical wearer profiles, no ideal floor; requires warning fraction/episode analysis, not extra-alert success claims",
+  "logs": {
+    "first-tests.log": "e936b48aba5e6e1bc046dac6a62b4e42683a92d1ee8382749826634d3fa3c690",
+    "final-tests.log": "2fc39c2c32d8dfe59a1a4af8915e6ac1ca148f688baa648ce27d918a389097f5",
+    "final-ui-tests.log": "ecf5835bc83a51d8512c27e6e5ce51f3cec675fe68bdc92e496a39a19fd488ed",
+    "integration-contracts.log": "298d7c9bea4da1023afbbd963698e3e911fa9ac2313e6468ba46ec94e5004d36",
+    "full-core-typecheck.log": "691bf44f56cc0a71c414264ed22dae96f1188e669072d8afcf5f464296af255c",
+    "arbitration-fail-before.log": "19662c21828b055fa08646ef84b7ea11727bba770ce04f76772c2b1e94ed1b2a",
+    "arbitration-fixed-tests.log": "07f237c7bc350ad57b4744f785de29e929f163efd98f6f2bd5857b818623c2f1"
+  },
+  "arbitrationRegression": {
+    "before": {
+      "total": 50,
+      "passed": 49,
+      "failed": 1,
+      "test": "testSupplementalCannotMaskIndependentSameSeverityAlertInEitherOrder",
+      "diagnostic": "XCTAssertEqual failed: (\"Detection(hazard: BlindCore.Hazard.obstacle, distance: nil, sector: 0, coverage: 0.0, reason: Optional(BlindCore.MonitoringReason.bodyEnvelope))\") is not equal to (\"Detection(hazard: BlindCore.Hazard.obstacle, distance: Optional(0.4), sector: 3, coverage: 0.5, reason: nil)\") - ",
+      "AlertPolicySHA256": "6015f5f03a8ec42b81392a3dda62b60608f9e9bad498fea855a6c9f43a6e8994"
+    },
+    "after": {
+      "total": 51,
+      "passed": 51,
+      "failed": 0,
+      "unchangedLegacyTies": true,
+      "bothOrdersAndHazardSeverities": true
+    },
+    "originalFailingInputInventorySHA256": "1cdea1fc2d74aa25453e855ef4ee22a6ef4fad523dba3b224c529b5bd2413a8d"
+  }
+}

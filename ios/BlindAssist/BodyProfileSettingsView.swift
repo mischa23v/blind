@@ -3,6 +3,8 @@ import BlindCore
 
 /// Optional helper destination, never a first-screen task mode or onboarding gate.
 @MainActor struct BodyProfileSettingsView: View {
+    @Binding var fixedMount: Bool
+    let mountControlAvailable: Bool
     let onGeometryChange: () -> Void
     @State private var profile: LocalBodyProfile?
     @State private var age = ""
@@ -34,13 +36,18 @@ import BlindCore
             Section("Reported full-body bounds") {
                 number("Maximum body width in centimetres", text: $width)
                 number("Maximum body depth in centimetres", text: $depth)
-                Text("Include the widest and deepest parts of the whole body, not only the chest. Leave unknown values blank. Helper-entered dimensions are reported, not a validated scan.").font(.footnote)
+                Text("Include the widest and deepest parts of the whole body, not only the chest. Leave unknown values blank. A helper can measure the maximum bounds. Do not infer them from age or weight. Helper-entered dimensions are reported, not a validated scan.").font(.footnote)
             }
             Section("Chest-mounted phone offset") {
                 number("Camera right of body centre, centimetres", text: $right)
                 number("Camera above floor, centimetres", text: $up)
                 number("Camera forward of body centre, centimetres", text: $forward)
                 Text("Left and behind are negative. A chest holder is intended; entering offsets does not calibrate the camera or confirm the mount is secure.").font(.footnote)
+                Toggle("Phone is attached to my body for this session", isOn: $fixedMount)
+                    .disabled(!mountControlAvailable || busy)
+                    .accessibilityIdentifier("body-profile-session-mount")
+                    .accessibilityHint("Confirms how you are wearing the phone now, not calibrated position or safe clearance.")
+                Text("Turn this off before holding the phone. Confirmation resets when camera monitoring restarts. This is the same session setting used in Route tools, not a permanent calibration.").font(.footnote)
             }
             Section("Clothing and carried equipment") {
                 number("Extra radial extent, centimetres", text: $radial)
@@ -53,7 +60,7 @@ import BlindCore
                 Button("Delete body profile", role: .destructive) { confirmErase = true }
                     .accessibilityIdentifier("body-profile-delete")
                 if !status.isEmpty { Text(status).accessibilityIdentifier("body-profile-status") }
-                Text("Approximate preview only. No entry here proves that a doorway or overhead space is clear. Validated scanning, chest calibration, floor support and current obstacle coverage remain unavailable. Geometry changes pause guidance for fresh evidence; name and conversation memory are unchanged.").font(.footnote)
+                Text("Reported bounds also expand nearby obstacle warnings when the phone is fixed to your body. Unknown measurements stay unknown. No entry here proves that a doorway or overhead space is clear. Validated scanning, chest calibration, floor support and current obstacle coverage remain unavailable. Geometry changes pause guidance for fresh evidence; name and conversation memory are unchanged.").font(.footnote)
             }
         }.navigationTitle("Body and chest holder")
             .task { load() }
@@ -131,7 +138,7 @@ import BlindCore
                 switch result {
                 case .success(let saved):
                     profile = saved
-                    status = "Saved locally. Preview only; measured collision clearance is unavailable."
+                    status = "Saved locally. Reported bounds can expand nearby obstacle warnings while mounted; clearance remains unverified."
                 case .failure:
                     status = "Save could not be confirmed. Reopen the profile and retry. Guidance remains paused."
                 }

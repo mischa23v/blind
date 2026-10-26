@@ -100,7 +100,7 @@ final class SelectedDocumentPDFTests: XCTestCase {
 
         // Copy permission alone did not produce an accessibility-denied PDF on
         // the tested SDK. Assert the ACTUAL native denial, never infer it.
-        let denied = try PDFFixtures.encrypted(userPassword: "", permissions: [])
+        let denied = try PDFFixtures.encrypted(userPassword: "", rawPermissions: 0)
         let deniedDocument = try XCTUnwrap(PDFDocument(data: denied))
         XCTAssertTrue(deniedDocument.isEncrypted)
         XCTAssertFalse(deniedDocument.isLocked)
@@ -221,11 +221,16 @@ private enum PDFFixtures {
         }
     }
     static func encrypted(userPassword: String, permissions: PDFAccessPermissions) throws -> Data {
+        try encrypted(userPassword: userPassword, rawPermissions: permissions.rawValue)
+    }
+    // PDFAccessPermissions is an imported enum, not an OptionSet. Zero is the
+    // numeric no-permissions value written to the same PDFKit options entry.
+    static func encrypted(userPassword: String, rawPermissions: UInt) throws -> Data {
         let document = try XCTUnwrap(PDFDocument(data: pages(["Permission fixture only."])))
         return try XCTUnwrap(document.dataRepresentation(options: [
             PDFDocumentWriteOption.ownerPasswordOption: "fixture-owner",
             PDFDocumentWriteOption.userPasswordOption: userPassword,
-            PDFDocumentWriteOption.accessPermissionsOption: permissions.rawValue
+            PDFDocumentWriteOption.accessPermissionsOption: rawPermissions
         ]))
     }
     static func oversizedTextLayer() -> Data {

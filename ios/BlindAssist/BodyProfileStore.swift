@@ -7,6 +7,9 @@ import BlindCore
     static let shared = BodyProfileStore() // One process-wide writer across reopened helper views.
     typealias Completion = (Result<LocalBodyProfile?, Error>) -> Void
     private let io: SpatialMapIO<LocalBodyProfile>
+    /// One process-wide runtime consumer. Nil retires geometry before a mutation;
+    /// only the current successful transaction can publish a replacement.
+    var onProfileChanged: ((LocalBodyProfile?) -> Void)?
     private var currentRevision: UUID?
     private var pendingMutation: UUID?
     private var deferredRead: Completion?
@@ -37,6 +40,7 @@ import BlindCore
         guard value.valid, currentRevision == expected else {
             completion(.failure(SpatialMapIOError.revisionChanged)); return
         }
+        onProfileChanged?(nil)
         let operation = UUID(); pendingMutation = operation
         io.submit(expected: .init(revision: expected, artifact: nil), prepare: { _ in
             let bytes = try JSONEncoder().encode(value)
@@ -47,6 +51,7 @@ import BlindCore
     /// A deletion is an ordered non-droppable barrier; an older blocked write
     /// cannot resurrect the profile after a successful deletion receipt.
     func erase(completion: @escaping Completion) {
+        onProfileChanged?(nil)
         let operation = UUID(); pendingMutation = operation
         io.submit(expected: context, delete: true) { [weak self] token, result in
             self?.finishMutation(operation, token, result, completion)
@@ -59,7 +64,9 @@ import BlindCore
     }
     private func finish(_ token: SpatialMapIOToken, _ result: Result<LocalBodyProfile?, Error>, _ completion: Completion) {
         guard io.isCurrent(token) else { completion(.failure(SpatialMapIOError.superseded)); return }
-        if case .success(let value) = result { currentRevision = value?.revision }
+        if case .success(let value) = result {
+            currentRevision = value?.revision; onProfileChanged?(value)
+        } else { onProfileChanged?(nil) }
         completion(result)
     }
 }

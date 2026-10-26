@@ -29,6 +29,11 @@ public struct AlertPolicy: Sendable {
         return detections.max {
             let a = priorities[$0.hazard, default: 0], b = priorities[$1.hazard, default: 0]
             if a != b { return a < b }
+            // A report-based body warning must not replace an equally urgent
+            // independent sensor alert (and suppress its range/directional cue).
+            // Hazard severity still wins first; all prior non-body ties are unchanged.
+            if $0.reason == .bodyEnvelope { return $1.reason != .bodyEnvelope }
+            if $1.reason == .bodyEnvelope { return false }
             return $0.reason == .visualStairs && $1.reason != .visualStairs
         }
             ?? Detection(.stopped)

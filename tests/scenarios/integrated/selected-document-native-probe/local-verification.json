@@ -28,11 +28,23 @@
       "passed": 9,
       "failed": 5
     },
-    "correctedFixtureSHA256": "8008898a318e84a73584e870089e65fd38f9664611d9e7bd6015624bfd1e9907",
+    "correctedFixtureSHA256": "8a43e02add76bef4d2784dbdeaf4ba8dfb725e8cb1be806febd95fad373755b8",
     "nativeRerun": "pending",
     "productionAdapterPickerUnchanged": true,
     "localNativeSwiftSyntax": "passed; not AppleSDK compilation",
     "sourceContracts": 18,
     "portableStructure": "pypdf 90,899 text bytes; not PDFKit proof"
+  },
+  "compilerRepair": {
+    "blockedCommit": "8705ffe7cab719e4ff47bb04d48fc5100bf951d5",
+    "runID": 40246346906,
+    "nativeTestsExecuted": 0,
+    "error": "Array literal [] cannot initialize PDFAccessPermissions imported enum",
+    "change": "Use UInt rawPermissions: 0 in the same PDFDocumentWriteOption entry; typed nonzero cases forward their existing rawValue",
+    "guardsAndAssertionsChanged": false,
+    "nativeTestMethods": 14,
+    "sourceNodeChecksPassed": 7,
+    "swiftSyntax": "passed; Apple SDK typecheck pending",
+    "officialAPI": "https://developer.apple.com/documentation/pdfkit/pdfaccesspermissions"
   }
 }

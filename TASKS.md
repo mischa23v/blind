@@ -1,3 +1,13 @@
+## Body-aware sensor-warning integration — 2026-10-26
+
+- [x] Connect local full-body/equipment bounds and chest offsets to supplemental nearby depth warnings. Use full camera transforms and an orientation-independent envelope, never camera heading as walking/body direction; retain reported/unknown measurement provenance. Preserve every existing urgent detector result.
+- [x] Load current private profile on startup; withdraw stale geometry before save/delete and on mount/lifecycle changes. Expose the same session-only mount setting inside Body and chest holder. No new calibration authority, body dimensions inferred from demographics, directional cue, or clearance result.
+- [ ] Measure warning burden, misses and useful detection under actual chest mounting; current recorded replay uses conditional hypothetical wearers, not body ground truth. Complete calibrated pose/support/collision integration and independent supervised device acceptance before physical guidance.
+
+Portable focused results and boundaries: [body-warning receipt](research/evaluations/body-aware-warning/README.md). This is a supplemental warning increment, **not completion of navigation**.
+
+---
+
 ## 2026-10-25 — Selected-PDF page reader source increment
 
 Implemented a bounded, private selected-file page quotation lane in existing controls, separate from exact-model manuals and existing photo/camera contracts. Selection, page request, native resource lease and real speech receipt are separately owned. Reviewed direct polite commands and one terminal punctuation mark retain the same trusted/private gates. Invalid requests stop old reading; valid-source corrections need no new picker. See [scope and evidence](research/evaluations/selected-document/README.md).

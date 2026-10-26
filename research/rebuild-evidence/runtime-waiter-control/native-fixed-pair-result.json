@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "producer": "36f57456a3c3ef5efc514bcc3fd0acb0e14a1ad4",
+  "pinned_source": "de0da00424b5dd3cae9e98e67894eddcffc74447",
+  "run_id": 40245895908,
+  "job_id": 121327258404,
+  "attempts": "one fixed pair; no retries",
+  "runner": "github-hosted; xcode-27",
+  "order": [
+    "publication-v1",
+    "original-v1"
+  ],
+  "same_built_app": true,
+  "only_reviewed_test_substitution": true,
+  "arms": [
+    {
+      "mode": "publication-v1",
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0,
+      "unique_mode_records": 17,
+      "boot_seconds": 63.380649834000025,
+      "test_command_seconds": 153.47766962500003
+    },
+    {
+      "mode": "original-v1",
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0,
+      "unique_mode_records": 17,
+      "boot_seconds": 58.153261375,
+      "test_command_seconds": 333.6440841670001
+    }
+  ],
+  "cleanup": "both owned simulators shutdown/deleted successfully",
+  "candidate_waits": {
+    "returned": 88,
+    "all_outcomes": "timely",
+    "maximum_elapsed_seconds": 0.19252108333336082,
+    "late_observations": 0,
+    "deadline_wakes": 0,
+    "excerpt_omitted": 0,
+    "excerpt_clipped": 0
+  },
+  "original_wait_latency_distribution": "not captured by existing failure-only excerpt on success",
+  "interpretation": "No differential failure. Does not establish XCTest caused prior failures, justify default-helper adoption, or demonstrate production latency. Host/load/order/caches remain confounders. Prior native runtime failures remain recorded.",
+  "default_helper_changed": false,
+  "new_runs_requested": false
+}

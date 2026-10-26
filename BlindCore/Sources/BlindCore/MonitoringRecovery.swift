@@ -3,7 +3,7 @@ import Foundation
 public enum MonitoringReason: String, Codable, Sendable {
     case trackingUnavailable, depthUnavailable, cameraOrientation, cameraHeight
     case frameUnavailable, invalidGeometry, groundCoverage, groundNeedsRecheck, localizing
-    case visualStairs
+    case visualStairs, bodyEnvelope
 }
 
 /// Holds UNAVAILABILITY during recovery, never postpones a new hazard.

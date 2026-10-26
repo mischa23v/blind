@@ -823,7 +823,8 @@ struct AssistantToolsView: View {
             }
             Section {
                 NavigationLink(t("Body and chest holder", "الجسم وحامل الصدر")) {
-                    BodyProfileSettingsView {
+                    BodyProfileSettingsView(fixedMount: $model.fixedBodyMount,
+                        mountControlAvailable: model.running && !model.simulation) {
                         // No preview geometry is promoted to a native calibration.
                         model.invalidateNativeLocalizationMount(slipped: false)
                         model.fixedBodyMount = false

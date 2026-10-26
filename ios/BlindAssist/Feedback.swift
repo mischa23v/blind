@@ -86,7 +86,7 @@ final class Feedback: NSObject, WCSessionDelegate, AVSpeechSynthesizerDelegate {
         defer { AssistantPerformance.signposter.endInterval("AlertDispatch", timing) }
         if detection.hazard.requiresImmediateAttention {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
-            if detection.hazard.isUrgent && detection.reason != .visualStairs { beacon(sector: detection.sector, distance: detection.distance ?? 1) }
+            if detection.hazard.isUrgent && detection.reason != .visualStairs && detection.reason != .bodyEnvelope { beacon(sector: detection.sector, distance: detection.distance ?? 1) }
             else { beaconOwnership.replace(routeID: nil); player.stop() } // Missing coverage has no known hazard bearing.
             if WCSession.default.isReachable {
                 WCSession.default.sendMessage(["hazard": detection.hazard.rawValue], replyHandler: nil)
