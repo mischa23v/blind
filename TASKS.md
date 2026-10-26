@@ -1,3 +1,22 @@
+## Current checkpoint: real-phone map and 100-run development test
+
+**2026-10-26 — navigation remains first; live sensing/obstacle-avoidance acceptance remains UNPROVEN.** The latest requested development step is a compact map, object/container and collision game built from genuine recorded iPhone geometry, followed by **100 reproducible schedules (20 fixed routes × 5 movement conditions)**. This explicitly resumes that bounded real-scene simulation work; it does not reopen unrelated features or close the live-safety gate below.
+
+### Completed evidence
+- [Real-room comparison, code, fixtures and preserved failures](research/koivu-reference-comparison/README.md): eight MuSHRoom Koivu iPhone 12 Pro Max processed-depth frames, 368,520 scheduled rays; 334,334 paired with the separate author-processed FARO reference and 34,186 reference-no-hit rays retained as unknown. Paired median absolute disagreement 5.055 cm, MAE 9.638 cm, 95th percentile 35.616 cm. These combine exported depth, fixed author registration and edited reference effects; they are not raw sensor accuracy or obstacle recall.
+- Full reference geometry was not simplified. The first evaluator exhausted its 600 CPU-second budget without frame metrics; the corrected existing-library query backend completed all eight frames in 48.51 seconds wall / 49.56 CPU seconds. Both source cuts and outcomes are retained.
+- [Original licensed archives mirrored and checksum-verified on GitHub](https://github.com/mischa23v/blind/releases/tag/navigation-test-data-20261026). This experimental data release is not an app or safety release.
+
+### Current blocker and next work
+- The first frozen phone-only mapper used all 294 pose-matched depth frames: 215,670,168 positive pixels produced 811,806 occupied 5 cm voxels. Of 2,637 modeled support cells, 2,623 also contained body-height hits; only 13 qualified as unblocked candidates and one met the finite sampled-clearance rule. **This map is not usable for the requested routes; the 100 runs have not launched.**
+- Diagnose pose/depth association and multi-view accumulation using phone inputs only. Keep this failed map and its criteria. Do not erase potential low hazards by widening the floor band, discard inconsistent points as safe, use FARO to tune the mapper, or replace difficult routes merely to improve results.
+- The offline level-floor model and ±3 cm floor ambiguity do not establish low-object/toy detection. Preserve residual protrusions, unknown support, thresholds, slopes and drops. A 1 cm collision fixture tests the scorer after geometry exists, not whether a phone senses a real 1 cm object. Stair detection remains unproven.
+- Freeze corrected map/source hashes, route list, seeds, body envelope and movement conditions before reference scoring. The phone-derived model is planner input; FARO is a separate, cleaned-reference-relative collision/support evaluator, never privileged planner geometry. Recorded poses and processed depth lack source confidence/tracking and do not become live sensor authority.
+- Report collision-run count, contact events, clean arrivals, stops, no-path/timeouts, invalid starts and support uncertainty separately. A first swept-body contact ends that schedule as a failure. No motion, no route or a rejected start is not successful avoidance. Current proposed nominal game speed is 0.30 m/s, not ordinary-walking validation.
+- Integrate useful tested pieces into the map engine only with their evidence boundary preserved. Physical guidance remains withheld; saved maps cannot replace fresh floor-to-head and reachable-body coverage.
+
+---
+
 ## Gate 0: evidence and sensing feasibility first
 
 **FIRST — UNPROVEN.** [Gate 0 contract and source references](REBUILD_TRACKER.md#gate-0-real-sensor-evidence-before-navigation-completion) supersede the implementation order below: research → preregistered genuine phone sensing/obstacle-avoidance feasibility → pathing/maps/unknown mapping/return completion → other features. Preserve the detailed navigation and independent fresh-safety requirements.
