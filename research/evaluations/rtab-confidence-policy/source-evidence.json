@@ -1,0 +1,212 @@
+{
+  "dateUTC": "2026-10-26",
+  "scope": "Independently reviewed source-policy audit only; not measured device failure, native execution or live clearance. Native compile follow-on remains paused.",
+  "upstream": [
+    {
+      "path": "app/android/jni/CameraMobile.cpp",
+      "gitBlob": "ac93e370836a9d6bad122409dd2086871d8e3189",
+      "bytes": 22472,
+      "revision": "a4e7f13522722878dea3f07e8fd082291e72eb49",
+      "url": "https://github.com/introlab/rtabmap/blob/a4e7f13522722878dea3f07e8fd082291e72eb49/app/android/jni/CameraMobile.cpp"
+    },
+    {
+      "path": "app/android/jni/RTABMapApp.cpp",
+      "gitBlob": "3fca1e0f27ddf6a1387c6fcf54db15e6b40c0975",
+      "bytes": 190655,
+      "revision": "a4e7f13522722878dea3f07e8fd082291e72eb49",
+      "url": "https://github.com/introlab/rtabmap/blob/a4e7f13522722878dea3f07e8fd082291e72eb49/app/android/jni/RTABMapApp.cpp"
+    },
+    {
+      "path": "app/ios/RTABMapApp/RTABMap.swift",
+      "gitBlob": "0a4e78571787b464369ddb4bb08195730fe28970",
+      "bytes": 26105,
+      "revision": "a4e7f13522722878dea3f07e8fd082291e72eb49",
+      "url": "https://github.com/introlab/rtabmap/blob/a4e7f13522722878dea3f07e8fd082291e72eb49/app/ios/RTABMapApp/RTABMap.swift"
+    },
+    {
+      "path": "corelib/include/rtabmap/core/Parameters.h",
+      "gitBlob": "622f58ecf52acee80cea4ab8ca3c7dc69f1cf4de",
+      "bytes": 130494,
+      "revision": "a4e7f13522722878dea3f07e8fd082291e72eb49",
+      "url": "https://github.com/introlab/rtabmap/blob/a4e7f13522722878dea3f07e8fd082291e72eb49/corelib/include/rtabmap/core/Parameters.h"
+    },
+    {
+      "path": "corelib/include/rtabmap/core/impl/LocalMapMaker.hpp",
+      "gitBlob": "cfe9c1a12b9afca42604cb54f6a037d8f35cd934",
+      "bytes": 8768,
+      "revision": "a4e7f13522722878dea3f07e8fd082291e72eb49",
+      "url": "https://github.com/introlab/rtabmap/blob/a4e7f13522722878dea3f07e8fd082291e72eb49/corelib/include/rtabmap/core/impl/LocalMapMaker.hpp"
+    },
+    {
+      "path": "corelib/include/rtabmap/core/util3d.h",
+      "gitBlob": "70264a66875ea7cc278376c3ed2f4aac03a23bde",
+      "bytes": 76001,
+      "revision": "a4e7f13522722878dea3f07e8fd082291e72eb49",
+      "url": "https://github.com/introlab/rtabmap/blob/a4e7f13522722878dea3f07e8fd082291e72eb49/corelib/include/rtabmap/core/util3d.h"
+    },
+    {
+      "path": "corelib/src/LocalGridMaker.cpp",
+      "gitBlob": "14525bb5f246d29f2282139f5c440268c634690a",
+      "bytes": 24415,
+      "revision": "a4e7f13522722878dea3f07e8fd082291e72eb49",
+      "url": "https://github.com/introlab/rtabmap/blob/a4e7f13522722878dea3f07e8fd082291e72eb49/corelib/src/LocalGridMaker.cpp"
+    },
+    {
+      "path": "corelib/src/Memory.cpp",
+      "gitBlob": "4bef1a52b7babaabc395a8d499402e02676f93cb",
+      "bytes": 257184,
+      "revision": "a4e7f13522722878dea3f07e8fd082291e72eb49",
+      "url": "https://github.com/introlab/rtabmap/blob/a4e7f13522722878dea3f07e8fd082291e72eb49/corelib/src/Memory.cpp"
+    },
+    {
+      "path": "corelib/src/SensorCaptureThread.cpp",
+      "gitBlob": "ab284816352abad8d7b480f32c862918abef1565",
+      "bytes": 35288,
+      "revision": "a4e7f13522722878dea3f07e8fd082291e72eb49",
+      "url": "https://github.com/introlab/rtabmap/blob/a4e7f13522722878dea3f07e8fd082291e72eb49/corelib/src/SensorCaptureThread.cpp"
+    },
+    {
+      "path": "corelib/src/util3d.cpp",
+      "gitBlob": "895e158a2d96bbcd90af1b6af18b2e795cca2d5b",
+      "bytes": 116567,
+      "revision": "a4e7f13522722878dea3f07e8fd082291e72eb49",
+      "url": "https://github.com/introlab/rtabmap/blob/a4e7f13522722878dea3f07e8fd082291e72eb49/corelib/src/util3d.cpp"
+    },
+    {
+      "path": "app/ios/RTABMapApp/NativeWrapper.cpp",
+      "gitBlob": "e1c3230a37495deae12606e4cc69eefc190178bb",
+      "bytes": 17769,
+      "revision": "a4e7f13522722878dea3f07e8fd082291e72eb49",
+      "url": "https://github.com/introlab/rtabmap/blob/a4e7f13522722878dea3f07e8fd082291e72eb49/app/ios/RTABMapApp/NativeWrapper.cpp"
+    }
+  ],
+  "app": [
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeDepthObservationPolicy.swift",
+      "gitBlob": "18002d84b578e0f74bb1899136c664e6814641f6",
+      "bytes": 2076,
+      "revision": "c8aa872748aded3bd6672c7d2e299eec5361cb94",
+      "url": "https://github.com/mischa23v/blind/blob/c8aa872748aded3bd6672c7d2e299eec5361cb94/BlindCore/Sources/BlindCore/NativeDepthObservationPolicy.swift"
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeLocalGrid.swift",
+      "gitBlob": "1fac884aee599350b2c7a6c05dbdc8aa38b589d9",
+      "bytes": 13585,
+      "revision": "c8aa872748aded3bd6672c7d2e299eec5361cb94",
+      "url": "https://github.com/mischa23v/blind/blob/c8aa872748aded3bd6672c7d2e299eec5361cb94/BlindCore/Sources/BlindCore/NativeLocalGrid.swift"
+    },
+    {
+      "path": "integration/rtabmap/BlindLocalGridBridge.hpp",
+      "gitBlob": "232453a57cd32f2d54f85e83f4644d74c4e7170e",
+      "bytes": 7972,
+      "revision": "c8aa872748aded3bd6672c7d2e299eec5361cb94",
+      "url": "https://github.com/mischa23v/blind/blob/c8aa872748aded3bd6672c7d2e299eec5361cb94/integration/rtabmap/BlindLocalGridBridge.hpp"
+    },
+    {
+      "path": "ios/BlindAssist/DepthSampler.swift",
+      "gitBlob": "fea8afb5369055907402877b38632396e1085fa2",
+      "bytes": 7047,
+      "revision": "c8aa872748aded3bd6672c7d2e299eec5361cb94",
+      "url": "https://github.com/mischa23v/blind/blob/c8aa872748aded3bd6672c7d2e299eec5361cb94/ios/BlindAssist/DepthSampler.swift"
+    },
+    {
+      "path": "ios/BlindAssist/NativeMapping.swift",
+      "gitBlob": "51ebd75065f421adfafb6fe63064f09e3c47f713",
+      "bytes": 10915,
+      "revision": "c8aa872748aded3bd6672c7d2e299eec5361cb94",
+      "url": "https://github.com/mischa23v/blind/blob/c8aa872748aded3bd6672c7d2e299eec5361cb94/ios/BlindAssist/NativeMapping.swift"
+    }
+  ],
+  "findings": {
+    "hazardObservation": {
+      "originalConfidence": 2,
+      "missingConfidence": "reject observation",
+      "depthMetres": [
+        0.15,
+        5
+      ],
+      "stride": 2
+    },
+    "rtabIngestion": {
+      "confidencePreserved": true,
+      "rescaling": [
+        0,
+        50,
+        100
+      ],
+      "confidenceRequired": false,
+      "zeroMasksDepthByConfidence": false
+    },
+    "rtabDisplay": {
+      "defaultConfidenceThreshold": 100,
+      "missingConfidence": "utility accepts depth when confidence matrix absent",
+      "scope": "Reviewed live display-cloud call at RTABMapApp.cpp2300; export branches not uniform."
+    },
+    "rtabLocalGrid": {
+      "confidenceThreshold": 0,
+      "confidenceImageUsed": false,
+      "depthMetres": [
+        0.2,
+        6
+      ],
+      "stride": 4,
+      "cellSizeMetres": 0.1,
+      "ground": "normal/cluster classification",
+      "empty": "upstream OctoMap rays only if capability available",
+      "missingDepth": "Feature-point scan can remain, but configured Grid/Sensor1 path requires depth image."
+    },
+    "bridge": {
+      "perCellConfidence": false,
+      "depthVariance": false,
+      "calibratedLocalizationBound": false,
+      "physicalAuthority": false
+    }
+  },
+  "sourceChecks": {
+    "decisiveCall": "LocalGridMaker.cpp:296-310 omits final confidenceThr",
+    "default": "util3d.h:601-609 defaults confidenceThr=0",
+    "consumer": "util3d.cpp:1163-1165 uses confidence only for threshold>0;485 discards confidence when zero;579-583 admits empty-confidence depth",
+    "memory": "Memory.cpp:6885-6887 retains confidence;6933-6944 produces local grids",
+    "covariance": "CameraMobile.cpp:550-567 fixed heuristic multipliers, not measured error"
+  },
+  "publicationBase": {
+    "commit": "13c15814adffc881875fcbf1028503e5dfc46352",
+    "tree": "ae248c4b6e43dcd191264c8225be8e2b79fc7cf6",
+    "auditedAppSourceComparisons": [
+      {
+        "path": "BlindCore/Sources/BlindCore/NativeDepthObservationPolicy.swift",
+        "auditedGitBlob": "18002d84b578e0f74bb1899136c664e6814641f6",
+        "publicationBaseGitBlob": "18002d84b578e0f74bb1899136c664e6814641f6"
+      },
+      {
+        "path": "BlindCore/Sources/BlindCore/NativeLocalGrid.swift",
+        "auditedGitBlob": "1fac884aee599350b2c7a6c05dbdc8aa38b589d9",
+        "publicationBaseGitBlob": "1fac884aee599350b2c7a6c05dbdc8aa38b589d9"
+      },
+      {
+        "path": "integration/rtabmap/BlindLocalGridBridge.hpp",
+        "auditedGitBlob": "232453a57cd32f2d54f85e83f4644d74c4e7170e",
+        "publicationBaseGitBlob": "232453a57cd32f2d54f85e83f4644d74c4e7170e"
+      },
+      {
+        "path": "ios/BlindAssist/DepthSampler.swift",
+        "auditedGitBlob": "fea8afb5369055907402877b38632396e1085fa2",
+        "publicationBaseGitBlob": "fea8afb5369055907402877b38632396e1085fa2"
+      },
+      {
+        "path": "ios/BlindAssist/NativeMapping.swift",
+        "auditedGitBlob": "51ebd75065f421adfafb6fe63064f09e3c47f713",
+        "publicationBaseGitBlob": "51ebd75065f421adfafb6fe63064f09e3c47f713"
+      }
+    ]
+  },
+  "review": {
+    "independentSourceReview": "complete; no remaining material issue",
+    "implementationChanged": false,
+    "newTestsOrBuilds": false,
+    "nativeRetry": false,
+    "measuredDeviceFailureClaim": false,
+    "mapSemantics": "historical reference, not live clearance",
+    "wordingCorrection": "Display-cloud finding restricted to cited live call; no export-wide confidence guarantee."
+  }
+}
