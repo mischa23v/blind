@@ -1,0 +1,44 @@
+{
+  "scope": "Independent saved-JSON phase/counter/order/pin arithmetic only; no geometry or profile rerun",
+  "passed": true,
+  "profileSHA256": "5a8dab7590ba8baff659f40e8ae97b1d5885a6adfc0f8326ce00e5c0f8060140",
+  "runReceiptSHA256": "19578748aeb86c6f514a594ec9ebf29eb03dcdab764033d09bcce030ca426636",
+  "frozenSHA256": "fd0fffa468b4c4398689f5ef040ab34b22ebfdc68e869895255f85707406ee7b",
+  "rows": 40,
+  "pairs": 20,
+  "nativeQuerySeconds": 41.354240554981516,
+  "wholeInstrumentedSweepSeconds": 42.411346512963064,
+  "nativeShareOfWhole": 0.9750749258182962,
+  "allExclusivePhasesSeconds": 42.403238871032954,
+  "outsideContactAndWrapperSeconds": 0.008107641930109821,
+  "nestedOwnerCheckSeconds": 0.02066607198503334,
+  "nestedOwnerCheckCount": 280,
+  "nestedResultHelperSeconds": 0.0007240559789352119,
+  "nestedResultHelperCount": 40,
+  "nestedDiagnosticsAddedToTotals": false,
+  "candidateAccounting": {
+    "all": 2287073,
+    "groundSkipped": 1780895,
+    "OBBBoundsRejected": 506178,
+    "exactTriangleTests": 0
+  },
+  "completeOutputEqualityRecorded": true,
+  "alternatingPairOrderVerified": true,
+  "nativeDominanceCriterionSatisfied": true,
+  "checks": [
+    "All40 saved cases map exactly to fixed10ticks/20halves/body+margin.",
+    "Every row phase sum reconciles; nested diagnostics reconcile independently without double adding.",
+    "Pair wall times and whole-versus-inner remainder reconcile.",
+    "Both selected phase and whole-sweep majority criterion independently recomputed.",
+    "Wrapper exit0 and frozen identity match."
+  ],
+  "limits": [
+    "Saved recorded cases all have zero exact survivors/contact; positive correctness relies on authored fixtures.",
+    "Shared loaded locator/cache and instrumentation overhead remain; not iPhone timing or statistical benchmark.",
+    "No geometry/perception/navigation success is created by profiling."
+  ],
+  "wallSeconds": 0.001571625005453825,
+  "referenceLoadedByReviewer": false,
+  "worldEpisodes": 0,
+  "physicalAuthority": false
+}

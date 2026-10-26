@@ -1,0 +1,23 @@
+{
+  "originalSHA256": "7005ab752d855edfdb1295b401ea8ad9d66516a5813f716f1a7818677bb1c222",
+  "generatedSHA256": "3154b8e1262e8d1cc431091116accf40f2d28b17400bad2f06d3dc32d076f6bb",
+  "originalMethodASTsEqualAfterRemovingTimingOnly": {
+    "__init__": true,
+    "check": true,
+    "_filter_box_bounds": true,
+    "contact_corners": true
+  },
+  "phaseNames": [
+    "validationTransformBoxSetup",
+    "nativeFindCellsWithinBounds",
+    "getIdArrayExtraction",
+    "vectorizedGroundSplit",
+    "zeroCopyOBBFilter",
+    "exactPredicateLoopAndSetup",
+    "resultAssemblyTail"
+  ],
+  "optimizerAdded": false,
+  "originalSourceChanged": false,
+  "nestedDiagnosticsAdditiveToExclusivePhases": false,
+  "physicalAuthority": false
+}

@@ -1,0 +1,52 @@
+{
+  "candidateCells": 756453,
+  "candidateCap": 3000000,
+  "gameBounds": [
+    -2.5250000000000004,
+    0.17500000000000004,
+    -0.25,
+    0.25,
+    1.4250000000000005,
+    4.7250000000000005
+  ],
+  "nativeQuery": {
+    "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+    "VTKVersion": "9.3.1",
+    "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+    "sourceLines": [
+      486,
+      530
+    ],
+    "referenceBounds": [
+      0.4018700929726283,
+      4.21243968252412,
+      -3.0433104610292414,
+      0.28270241082811054,
+      -0.33205769209994374,
+      0.3570576591366354
+    ],
+    "tileSizeReferenceUnits": 0.25,
+    "tilesPerAxis": [
+      16,
+      14,
+      3
+    ],
+    "tileQueries": 672,
+    "rawReturnedIDs": 1427905,
+    "uniqueOriginalIDs": 756453,
+    "largestTileReturnedIDs": 11077,
+    "resourceCaps": {
+      "tiles": 10000,
+      "rawIDs": 32000000,
+      "uniqueIDs": 3000000
+    },
+    "queryWallSeconds": 2.6799371619999874,
+    "originalGeometryChanged": false,
+    "sameSortedGroundCandidateSemantics": true,
+    "perTickCollisionOrderChanged": false,
+    "outsideQueryClampingPreserved": true,
+    "physicalAuthority": false
+  },
+  "capIsComputeGuardNotPhysicalConstraint": true,
+  "sameReferenceBoundsAndSortedIDs": true
+}

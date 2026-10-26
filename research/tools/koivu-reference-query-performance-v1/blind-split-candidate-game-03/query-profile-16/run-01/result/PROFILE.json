@@ -1,0 +1,2764 @@
+{
+  "scope": "Instrumentation-only attribution of frozen V6 on the same saved poses; no navigation episode",
+  "pass": true,
+  "ticks": [
+    0,
+    9,
+    15,
+    28,
+    30,
+    45,
+    60,
+    75,
+    90,
+    106
+  ],
+  "halfSweeps": 20,
+  "boxQueries": 40,
+  "completeOutputEquality": true,
+  "originalWallSeconds": 42.252672521950444,
+  "instrumentedWallSeconds": 42.411346512963064,
+  "elapsedDifferenceInstrumentedMinusOriginalSeconds": 0.1586739910126198,
+  "timingCaveat": "Alternating pair order on a shared loaded locator; single process Linux timing, no iPhone latency or statistical benchmark claim",
+  "candidateTriangles": 2287073,
+  "groundCandidates": 1780895,
+  "nonGroundBoundsRejected": 506178,
+  "exactTriangleTests": 0,
+  "ownerTimingIsNestedNotAdditive": true,
+  "groundSetupSeconds": 7.828330663003726,
+  "attribution": {
+    "phaseSeconds": {
+      "validationTransformBoxSetup": 0.025472345907473937,
+      "nativeFindCellsWithinBounds": 41.354240554981516,
+      "getIdArrayExtraction": 0.46044023204012774,
+      "vectorizedGroundSplit": 0.238980306967278,
+      "zeroCopyOBBFilter": 0.32155050108849537,
+      "exactPredicateLoopAndSetup": 0.001422476998413913,
+      "resultAssemblyTail": 0.0011324530496494845
+    },
+    "summedContactTimedSeconds": 42.403238871032954,
+    "exclusivePhaseSumSeconds": 42.403238871032954,
+    "timedMinusPhaseSumSeconds": 0.0,
+    "phaseShareOfContactTime": {
+      "validationTransformBoxSetup": 0.0006007169873260539,
+      "nativeFindCellsWithinBounds": 0.9752613634245746,
+      "getIdArrayExtraction": 0.010858609962331666,
+      "vectorizedGroundSplit": 0.005635897476938568,
+      "zeroCopyOBBFilter": 0.007583158967324948,
+      "exactPredicateLoopAndSetup": 3.354642325177791e-05,
+      "resultAssemblyTail": 2.670675825244803e-05
+    },
+    "phaseShareOfWholeInstrumentedSweeps": {
+      "validationTransformBoxSetup": 0.000600602150174324,
+      "nativeFindCellsWithinBounds": 0.9750749258182962,
+      "getIdArrayExtraction": 0.010856534156476116,
+      "vectorizedGroundSplit": 0.0056348200803818735,
+      "zeroCopyOBBFilter": 0.007581709318995877,
+      "exactPredicateLoopAndSetup": 3.354001028897141e-05,
+      "resultAssemblyTail": 2.6701652806598563e-05
+    },
+    "outsideContactTimingAndWrapperSeconds": 0.008107641930109821,
+    "largestPhase": "nativeFindCellsWithinBounds",
+    "nativeQueryExceedsHalfWholeInstrumentedCost": true,
+    "nestedOwnerCheckSeconds": 0.02066607198503334,
+    "nestedOwnerCheckCount": 280,
+    "nestedTimingsMustNotBeAddedAgain": true
+  },
+  "queryRows": [
+    {
+      "index": 0,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0007797099970048293,
+        "nativeFindCellsWithinBounds": 0.04937877200427465,
+        "getIdArrayExtraction": 0.0045903380087111145,
+        "vectorizedGroundSplit": 0.0030326809937832877,
+        "zeroCopyOBBFilter": 0.00063332800345961,
+        "exactPredicateLoopAndSetup": 3.513599222060293e-05,
+        "resultAssemblyTail": 3.0296010663732886e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0004587130097206682,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0002311200078111142
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.0002004730049520731
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.4806995750404894e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.2313001207076013e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.8845006707124412e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.8845006707124412e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.05848026101011783,
+      "exclusivePhaseSumSeconds": 0.05848026101011783,
+      "completed": true,
+      "savedCase": {
+        "tick": 0,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 1,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0005363179952837527,
+        "nativeFindCellsWithinBounds": 0.8283829179999884,
+        "getIdArrayExtraction": 0.010668271992472,
+        "vectorizedGroundSplit": 0.005385096010286361,
+        "zeroCopyOBBFilter": 0.0036572829994838685,
+        "exactPredicateLoopAndSetup": 3.234999894630164e-05,
+        "resultAssemblyTail": 2.65889975707978e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.000432917004218325,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00023692099784966558
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.0001725109905237332
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.3035009033046663e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0450006811879575e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.6008998500183225e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.6008998500183225e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.8486888259940315,
+      "exclusivePhaseSumSeconds": 0.8486888259940315,
+      "completed": true,
+      "savedCase": {
+        "tick": 0,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 2,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.001126545001170598,
+        "nativeFindCellsWithinBounds": 0.050343990995315835,
+        "getIdArrayExtraction": 0.004919515995425172,
+        "vectorizedGroundSplit": 0.002054452008451335,
+        "zeroCopyOBBFilter": 0.0005109699995955452,
+        "exactPredicateLoopAndSetup": 3.904200275428593e-05,
+        "resultAssemblyTail": 2.5146990083158016e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0010005899966927245,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0008327169925905764
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00014000199735164642
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.692101068329066e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0949996067211032e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.628001336939633e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.628001336939633e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.05901966299279593,
+      "exclusivePhaseSumSeconds": 0.05901966299279593,
+      "completed": true,
+      "savedCase": {
+        "tick": 0,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 3,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0004783000040333718,
+        "nativeFindCellsWithinBounds": 0.9278676309913862,
+        "getIdArrayExtraction": 0.011161510003148578,
+        "vectorizedGroundSplit": 0.005944606993580237,
+        "zeroCopyOBBFilter": 0.003382230002898723,
+        "exactPredicateLoopAndSetup": 3.376300446689129e-05,
+        "resultAssemblyTail": 2.6469992008060217e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0004430639964994043,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00019936999888159335
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00021943800675217062
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.3094992027617991e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.1160998838022351e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.675100065767765e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.675100065767765e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.9488945109915221,
+      "exclusivePhaseSumSeconds": 0.9488945109915221,
+      "completed": true,
+      "savedCase": {
+        "tick": 0,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 4,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0009005049942061305,
+        "nativeFindCellsWithinBounds": 0.1072130139946239,
+        "getIdArrayExtraction": 0.005132985999807715,
+        "vectorizedGroundSplit": 0.00216919400554616,
+        "zeroCopyOBBFilter": 0.0005615340051008388,
+        "exactPredicateLoopAndSetup": 3.341199771966785e-05,
+        "resultAssemblyTail": 2.396400668658316e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0007171229808591306,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0005675259890267625
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00012602299102582037
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.3274999218992889e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0299001587554812e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.5248995623551309e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.5248995623551309e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.116034609003691,
+      "exclusivePhaseSumSeconds": 0.116034609003691,
+      "completed": true,
+      "savedCase": {
+        "tick": 9,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 5,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.00047059498319868,
+        "nativeFindCellsWithinBounds": 0.7711379750107881,
+        "getIdArrayExtraction": 0.010627541007124819,
+        "vectorizedGroundSplit": 0.005830612994031981,
+        "zeroCopyOBBFilter": 0.0028835030097980052,
+        "exactPredicateLoopAndSetup": 3.100799222011119e-05,
+        "resultAssemblyTail": 2.5307002943009138e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0005295449955156073,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00019502198847476393
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.0003101379988947883
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.3415003195405006e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0970004950650036e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.6379999578930438e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.6379999578930438e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.7910065420001047,
+      "exclusivePhaseSumSeconds": 0.7910065420001047,
+      "completed": true,
+      "savedCase": {
+        "tick": 9,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 6,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0005671649996656924,
+        "nativeFindCellsWithinBounds": 0.08214409300126135,
+        "getIdArrayExtraction": 0.004856552011915483,
+        "vectorizedGroundSplit": 0.002420160992187448,
+        "zeroCopyOBBFilter": 0.0004886690003331751,
+        "exactPredicateLoopAndSetup": 3.182899672538042e-05,
+        "resultAssemblyTail": 2.534700615797192e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.00043739301327150315,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00030776200583204627
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00010577699868008494
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.258301199413836e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.1270996765233576e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.6830992535687983e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.6830992535687983e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.0905338160082465,
+      "exclusivePhaseSumSeconds": 0.0905338160082465,
+      "completed": true,
+      "savedCase": {
+        "tick": 9,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 7,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.000905323977349326,
+        "nativeFindCellsWithinBounds": 0.7977780250075739,
+        "getIdArrayExtraction": 0.014848557999357581,
+        "vectorizedGroundSplit": 0.01010369200957939,
+        "zeroCopyOBBFilter": 0.007170666998717934,
+        "exactPredicateLoopAndSetup": 3.285100683569908e-05,
+        "resultAssemblyTail": 7.487898983526975e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0004884690279141068,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0002088390028802678
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00021023100998718292
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.408600655850023e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 5.53130084881559e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 6.269699952099472e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 6.269699952099472e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.8309139959892491,
+      "exclusivePhaseSumSeconds": 0.8309139959892491,
+      "completed": true,
+      "savedCase": {
+        "tick": 9,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 8,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0005801599909318611,
+        "nativeFindCellsWithinBounds": 0.10794800800795201,
+        "getIdArrayExtraction": 0.004160789001616649,
+        "vectorizedGroundSplit": 0.0024759049993008375,
+        "zeroCopyOBBFilter": 0.0005591299996012822,
+        "exactPredicateLoopAndSetup": 4.472299769986421e-05,
+        "resultAssemblyTail": 2.491600753273815e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0004067869740538299,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0002465699944877997
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00012165599036961794
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 2.6819994673132896e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.1740994523279369e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.644100120756775e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.644100120756775e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.11579363100463524,
+      "exclusivePhaseSumSeconds": 0.11579363100463524,
+      "completed": true,
+      "savedCase": {
+        "tick": 15,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 9,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0004704460152424872,
+        "nativeFindCellsWithinBounds": 0.8962531089928234,
+        "getIdArrayExtraction": 0.011809053001343273,
+        "vectorizedGroundSplit": 0.005406985990703106,
+        "zeroCopyOBBFilter": 0.00891024200245738,
+        "exactPredicateLoopAndSetup": 3.6618002923205495e-05,
+        "resultAssemblyTail": 2.6950001483783126e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0004319929867051542,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0002070640039164573
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00020002199744340032
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.430699194315821e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0599993402138352e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.6780992154963315e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.6780992154963315e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.9229134040069766,
+      "exclusivePhaseSumSeconds": 0.9229134040069766,
+      "completed": true,
+      "savedCase": {
+        "tick": 15,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 10,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0007695499953115359,
+        "nativeFindCellsWithinBounds": 0.1858148600003915,
+        "getIdArrayExtraction": 0.00474084798770491,
+        "vectorizedGroundSplit": 0.0025470870023127645,
+        "zeroCopyOBBFilter": 0.0005695700092473999,
+        "exactPredicateLoopAndSetup": 3.3984004403464496e-05,
+        "resultAssemblyTail": 2.4595006834715605e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0006657279882347211,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0004701149882748723
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.000170646992046386
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.4186007319949567e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.078000059351325e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.6270001651719213e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.6270001651719213e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.19450049400620628,
+      "exclusivePhaseSumSeconds": 0.19450049400620628,
+      "completed": true,
+      "savedCase": {
+        "tick": 15,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 11,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0004705150058725849,
+        "nativeFindCellsWithinBounds": 1.258223401993746,
+        "getIdArrayExtraction": 0.014920500994776376,
+        "vectorizedGroundSplit": 0.006511791012599133,
+        "zeroCopyOBBFilter": 0.012398828999721445,
+        "exactPredicateLoopAndSetup": 3.354200453031808e-05,
+        "resultAssemblyTail": 2.7901987778022885e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0005483310087583959,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00020066300930920988
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.000324143999023363
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.2953998520970345e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0570001904852688e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.7172002117149532e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.7172002117149532e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 1.2925864819990238,
+      "exclusivePhaseSumSeconds": 1.2925864819990238,
+      "completed": true,
+      "savedCase": {
+        "tick": 15,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 12,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0010278110130457208,
+        "nativeFindCellsWithinBounds": 0.1272937589965295,
+        "getIdArrayExtraction": 0.00381075800396502,
+        "vectorizedGroundSplit": 0.005637994996504858,
+        "zeroCopyOBBFilter": 0.0009406500030308962,
+        "exactPredicateLoopAndSetup": 3.165898669976741e-05,
+        "resultAssemblyTail": 2.6730005629360676e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0005062349955551326,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00024487699556630105
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00023682099708821625
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.3716009561903775e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.082099333871156e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.6429999959655106e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.6429999959655106e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.13876936200540513,
+      "exclusivePhaseSumSeconds": 0.13876936200540513,
+      "completed": true,
+      "savedCase": {
+        "tick": 28,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 13,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0006559299945365638,
+        "nativeFindCellsWithinBounds": 0.9983745280042058,
+        "getIdArrayExtraction": 0.011742859001969919,
+        "vectorizedGroundSplit": 0.005185844987863675,
+        "zeroCopyOBBFilter": 0.011524644010933116,
+        "exactPredicateLoopAndSetup": 3.6268000258132815e-05,
+        "resultAssemblyTail": 2.808200952131301e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.00046763900900259614,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00022941599308978766
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00021578199812211096
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.2222008081153035e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.021900970954448e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.774299016688019e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.774299016688019e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 1.0275481560092885,
+      "exclusivePhaseSumSeconds": 1.0275481560092885,
+      "completed": true,
+      "savedCase": {
+        "tick": 28,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 14,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0004946499975631014,
+        "nativeFindCellsWithinBounds": 0.09071892099746037,
+        "getIdArrayExtraction": 0.00380117999156937,
+        "vectorizedGroundSplit": 0.002251317011541687,
+        "zeroCopyOBBFilter": 0.0005339329945854843,
+        "exactPredicateLoopAndSetup": 2.9604998417198658e-05,
+        "resultAssemblyTail": 2.272200072184205e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0003166390088154003,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0001851050037657842
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00011070500477217138
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.143099507316947e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 9.39800520427525e-06
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.4908000594004989e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.4908000594004989e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.09785232799185906,
+      "exclusivePhaseSumSeconds": 0.09785232799185906,
+      "completed": true,
+      "savedCase": {
+        "tick": 28,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 15,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.00044133898336440325,
+        "nativeFindCellsWithinBounds": 0.8895053660089616,
+        "getIdArrayExtraction": 0.013934075002907775,
+        "vectorizedGroundSplit": 0.005498295999132097,
+        "zeroCopyOBBFilter": 0.012368844007141888,
+        "exactPredicateLoopAndSetup": 3.8452009903267026e-05,
+        "resultAssemblyTail": 3.220999496988952e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0005220599996391684,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00019965198589488864
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.0002950979978777468
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.4346005627885461e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.2964010238647461e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 2.0206993212923408e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 2.0206993212923408e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.9218185820063809,
+      "exclusivePhaseSumSeconds": 0.9218185820063809,
+      "completed": true,
+      "savedCase": {
+        "tick": 28,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 16,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0006603580113733187,
+        "nativeFindCellsWithinBounds": 0.0901715840009274,
+        "getIdArrayExtraction": 0.0037930749967927113,
+        "vectorizedGroundSplit": 0.0022567069972865283,
+        "zeroCopyOBBFilter": 0.0005057709931861609,
+        "exactPredicateLoopAndSetup": 3.157799073960632e-05,
+        "resultAssemblyTail": 2.4626002414152026e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.000356983975507319,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00022382599127013236
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00011057598749175668
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.2403004802763462e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0178991942666471e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.5950005035847425e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.5950005035847425e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.09744369899271987,
+      "exclusivePhaseSumSeconds": 0.09744369899271987,
+      "completed": true,
+      "savedCase": {
+        "tick": 30,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 17,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0004498970083659515,
+        "nativeFindCellsWithinBounds": 0.9973622859979514,
+        "getIdArrayExtraction": 0.012744573003146797,
+        "vectorizedGroundSplit": 0.006228422993444838,
+        "zeroCopyOBBFilter": 0.014597137997043319,
+        "exactPredicateLoopAndSetup": 3.7259000237099826e-05,
+        "resultAssemblyTail": 2.993500675074756e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0008273519779322669,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00019959198834840208
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.0006014600076014176
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.477799378335476e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.1521988199092448e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.8453996744938195e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.8453996744938195e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 1.0314495110069402,
+      "exclusivePhaseSumSeconds": 1.0314495110069402,
+      "completed": true,
+      "savedCase": {
+        "tick": 30,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 18,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0006050250085536391,
+        "nativeFindCellsWithinBounds": 0.13162173399177846,
+        "getIdArrayExtraction": 0.005508825008291751,
+        "vectorizedGroundSplit": 0.002746788988588378,
+        "zeroCopyOBBFilter": 0.0009199100022669882,
+        "exactPredicateLoopAndSetup": 3.2310999813489616e-05,
+        "resultAssemblyTail": 2.4545006453990936e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0005249460227787495,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00018847000319510698
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.0003114190185442567
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.3755998224951327e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.1301002814434469e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.6469988622702658e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.6469988622702658e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.1414591390057467,
+      "exclusivePhaseSumSeconds": 0.1414591390057467,
+      "completed": true,
+      "savedCase": {
+        "tick": 30,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 19,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0005074249929748476,
+        "nativeFindCellsWithinBounds": 1.270042044998263,
+        "getIdArrayExtraction": 0.014950224998756312,
+        "vectorizedGroundSplit": 0.006828069002949633,
+        "zeroCopyOBBFilter": 0.012904750008601695,
+        "exactPredicateLoopAndSetup": 7.860599725972861e-05,
+        "resultAssemblyTail": 4.0535000152885914e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.00046306000149343163,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00020275800488889217
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00022662000264972448
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 2.173999382648617e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.19420001283288e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.8304999684914947e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.8304999684914947e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 1.305351654998958,
+      "exclusivePhaseSumSeconds": 1.305351654998958,
+      "completed": true,
+      "savedCase": {
+        "tick": 30,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 20,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0005488000169862062,
+        "nativeFindCellsWithinBounds": 0.12930630099435803,
+        "getIdArrayExtraction": 0.0045153279934311286,
+        "vectorizedGroundSplit": 0.0026879189972532913,
+        "zeroCopyOBBFilter": 0.0007824250060366467,
+        "exactPredicateLoopAndSetup": 3.14880016958341e-05,
+        "resultAssemblyTail": 2.4895998649299145e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.00036642201303038746,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0002417290088487789
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00010081799700856209
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.3245007721707225e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0629999451339245e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.6089994460344315e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.6089994460344315e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.13789715700841043,
+      "exclusivePhaseSumSeconds": 0.13789715700841043,
+      "completed": true,
+      "savedCase": {
+        "tick": 45,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 21,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0004478040063986555,
+        "nativeFindCellsWithinBounds": 3.2966244709969033,
+        "getIdArrayExtraction": 0.027244247001362965,
+        "vectorizedGroundSplit": 0.009806164001929574,
+        "zeroCopyOBBFilter": 0.03584429599868599,
+        "exactPredicateLoopAndSetup": 3.6097000702284276e-05,
+        "resultAssemblyTail": 2.8322989237494767e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0005409280129242688,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00018710800213739276
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.0003286120045231655
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.3595999917015433e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.1612006346695125e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.7732993001118302e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.7732993001118302e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 3.37003140199522,
+      "exclusivePhaseSumSeconds": 3.37003140199522,
+      "completed": true,
+      "savedCase": {
+        "tick": 45,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 22,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0004896720056422055,
+        "nativeFindCellsWithinBounds": 0.11143009999068454,
+        "getIdArrayExtraction": 0.004901449996395968,
+        "vectorizedGroundSplit": 0.003107530006673187,
+        "zeroCopyOBBFilter": 0.00043441899470053613,
+        "exactPredicateLoopAndSetup": 3.2840995118021965e-05,
+        "resultAssemblyTail": 2.4115011910907924e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0003399139968678355,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00018514499242883176
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00013191600737627596
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.2643999070860445e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0208997991867363e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.5309007721953094e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.5309007721953094e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.12042012700112537,
+      "exclusivePhaseSumSeconds": 0.12042012700112537,
+      "completed": true,
+      "savedCase": {
+        "tick": 45,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 23,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0005184550100238994,
+        "nativeFindCellsWithinBounds": 3.3866195769951446,
+        "getIdArrayExtraction": 0.022927794998395257,
+        "vectorizedGroundSplit": 0.00829379100468941,
+        "zeroCopyOBBFilter": 0.03593155900307465,
+        "exactPredicateLoopAndSetup": 3.532499249558896e-05,
+        "resultAssemblyTail": 2.7021000278182328e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0005479590035974979,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0002106930041918531
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.000314203993184492
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.2753007467836142e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.03089987533167e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.645099837332964e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.645099837332964e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 3.4543535230041016,
+      "exclusivePhaseSumSeconds": 3.4543535230041016,
+      "completed": true,
+      "savedCase": {
+        "tick": 45,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 24,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.000804476992925629,
+        "nativeFindCellsWithinBounds": 0.22654786000202876,
+        "getIdArrayExtraction": 0.006165041006170213,
+        "vectorizedGroundSplit": 0.003947248987969942,
+        "zeroCopyOBBFilter": 0.0008870490128174424,
+        "exactPredicateLoopAndSetup": 3.10989998979494e-05,
+        "resultAssemblyTail": 2.3743996280245483e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0009515700076008216,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0003863880119752139
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.0005418580112745985
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.2533986591733992e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0789997759275138e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.5559009625576437e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.5559009625576437e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.23840651899809018,
+      "exclusivePhaseSumSeconds": 0.23840651899809018,
+      "completed": true,
+      "savedCase": {
+        "tick": 60,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 25,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0006288509903242812,
+        "nativeFindCellsWithinBounds": 2.8144876410078723,
+        "getIdArrayExtraction": 0.021417787997052073,
+        "vectorizedGroundSplit": 0.019267249997938052,
+        "zeroCopyOBBFilter": 0.02314614100032486,
+        "exactPredicateLoopAndSetup": 4.3150008423253894e-05,
+        "resultAssemblyTail": 3.044700133614242e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0005847379943588749,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0003009699867106974
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.0002496450033504516
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 2.173999382648617e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.2383010471239686e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.9216007785871625e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.9216007785871625e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 2.879021268003271,
+      "exclusivePhaseSumSeconds": 2.879021268003271,
+      "completed": true,
+      "savedCase": {
+        "tick": 60,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 26,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0007491619908250868,
+        "nativeFindCellsWithinBounds": 0.24218531799851917,
+        "getIdArrayExtraction": 0.00622250500600785,
+        "vectorizedGroundSplit": 0.004336965997936204,
+        "zeroCopyOBBFilter": 0.00047699800052214414,
+        "exactPredicateLoopAndSetup": 3.530600224621594e-05,
+        "resultAssemblyTail": 2.8463007765822113e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0004948820132995024,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0003235920157749206
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00014439898950513452
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.309500657953322e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.3796001439914107e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.9547005649656057e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.9547005649656057e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.2540347180038225,
+      "exclusivePhaseSumSeconds": 0.2540347180038225,
+      "completed": true,
+      "savedCase": {
+        "tick": 60,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 27,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.000655408002785407,
+        "nativeFindCellsWithinBounds": 3.3282976640039124,
+        "getIdArrayExtraction": 0.027170410990947857,
+        "vectorizedGroundSplit": 0.010906247000093572,
+        "zeroCopyOBBFilter": 0.019792738006799482,
+        "exactPredicateLoopAndSetup": 3.961399488616735e-05,
+        "resultAssemblyTail": 2.9305010684765875e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.000552018012967892,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00026084500132128596
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.0002633600088302046
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.4969002222642303e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.284400059375912e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.9136001355946064e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.9136001355946064e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 3.3868913870101096,
+      "exclusivePhaseSumSeconds": 3.3868913870101096,
+      "completed": true,
+      "savedCase": {
+        "tick": 60,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 28,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.000516179992700927,
+        "nativeFindCellsWithinBounds": 0.2594017430092208,
+        "getIdArrayExtraction": 0.006130182999186218,
+        "vectorizedGroundSplit": 0.0036605589993996546,
+        "zeroCopyOBBFilter": 0.000490723003167659,
+        "exactPredicateLoopAndSetup": 3.2310999813489616e-05,
+        "resultAssemblyTail": 2.4825989385135472e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0003791150083998218,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0002032979973591864
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00015133200213313103
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.3996002962812781e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0489005944691598e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.593999331817031e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.593999331817031e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.2702565249928739,
+      "exclusivePhaseSumSeconds": 0.2702565249928739,
+      "completed": true,
+      "savedCase": {
+        "tick": 75,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 29,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0005088569887448102,
+        "nativeFindCellsWithinBounds": 2.40050344800693,
+        "getIdArrayExtraction": 0.016897751003853045,
+        "vectorizedGroundSplit": 0.008465375998639502,
+        "zeroCopyOBBFilter": 0.00871428000391461,
+        "exactPredicateLoopAndSetup": 3.587600076571107e-05,
+        "resultAssemblyTail": 2.745099482126534e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0004715690156444907,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00022219400852918625
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.0002254900027764961
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.3465003576129675e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0420000762678683e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.676099782343954e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.676099782343954e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 2.4351530389976688,
+      "exclusivePhaseSumSeconds": 2.4351530389976688,
+      "completed": true,
+      "savedCase": {
+        "tick": 75,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 30,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0005538999976124614,
+        "nativeFindCellsWithinBounds": 0.21047587599605322,
+        "getIdArrayExtraction": 0.0058580470067681745,
+        "vectorizedGroundSplit": 0.003556034993380308,
+        "zeroCopyOBBFilter": 0.00041105400305241346,
+        "exactPredicateLoopAndSetup": 3.3352000173181295e-05,
+        "resultAssemblyTail": 2.5227011064998806e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.000351604976458475,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00019658599921967834
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.0001297719863941893
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.3504992239177227e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.1741998605430126e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.726299524307251e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.726299524307251e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.22091349100810476,
+      "exclusivePhaseSumSeconds": 0.22091349100810476,
+      "completed": true,
+      "savedCase": {
+        "tick": 75,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 31,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0006279480148805305,
+        "nativeFindCellsWithinBounds": 2.079992096987553,
+        "getIdArrayExtraction": 0.02042344000074081,
+        "vectorizedGroundSplit": 0.009996925000450574,
+        "zeroCopyOBBFilter": 0.011387521997676231,
+        "exactPredicateLoopAndSetup": 3.423300222493708e-05,
+        "resultAssemblyTail": 2.805200347211212e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0005273489514365792,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00028877699514850974
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00021223397925496101
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.4105986338108778e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.2231990694999695e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.8353995983488858e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.8353995983488858e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 2.122490217006998,
+      "exclusivePhaseSumSeconds": 2.122490217006998,
+      "completed": true,
+      "savedCase": {
+        "tick": 75,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 32,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0005651709798257798,
+        "nativeFindCellsWithinBounds": 0.25396841000474524,
+        "getIdArrayExtraction": 0.006264348005061038,
+        "vectorizedGroundSplit": 0.004175734997261316,
+        "zeroCopyOBBFilter": 0.0014802020014030859,
+        "exactPredicateLoopAndSetup": 3.7510006222873926e-05,
+        "resultAssemblyTail": 2.718099858611822e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0005567550106206909,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00020961000700481236
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00031795100949238986
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.6730991774238646e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.2463002349250019e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.7942991689778864e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.7942991689778864e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.26651855699310545,
+      "exclusivePhaseSumSeconds": 0.26651855699310545,
+      "completed": true,
+      "savedCase": {
+        "tick": 90,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 33,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0005614639958366752,
+        "nativeFindCellsWithinBounds": 2.988327090002713,
+        "getIdArrayExtraction": 0.031824649006011896,
+        "vectorizedGroundSplit": 0.0170458590000635,
+        "zeroCopyOBBFilter": 0.02361827999993693,
+        "exactPredicateLoopAndSetup": 3.459399158600718e-05,
+        "resultAssemblyTail": 2.7542002499103546e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.00046114901488181204,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00020155598758719862
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.0002358290075790137
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.2914009857922792e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0850009857676923e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.71009887708351e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.71009887708351e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 3.061439477998647,
+      "exclusivePhaseSumSeconds": 3.061439477998647,
+      "completed": true,
+      "savedCase": {
+        "tick": 90,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 34,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0012654039746848866,
+        "nativeFindCellsWithinBounds": 0.22872202200233005,
+        "getIdArrayExtraction": 0.006016834013280459,
+        "vectorizedGroundSplit": 0.0038279500004136935,
+        "zeroCopyOBBFilter": 0.0004955309996148571,
+        "exactPredicateLoopAndSetup": 3.161901258863509e-05,
+        "resultAssemblyTail": 2.453499473631382e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0006453000096371397,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.000489369995193556
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00013196600775700063
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.2934004189446568e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.1030002497136593e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.6631005564704537e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.6631005564704537e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.2403838949976489,
+      "exclusivePhaseSumSeconds": 0.2403838949976489,
+      "completed": true,
+      "savedCase": {
+        "tick": 90,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 35,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0005118909903103486,
+        "nativeFindCellsWithinBounds": 2.9193094270012807,
+        "getIdArrayExtraction": 0.021824345996719785,
+        "vectorizedGroundSplit": 0.010445779000292532,
+        "zeroCopyOBBFilter": 0.019162704003974795,
+        "exactPredicateLoopAndSetup": 3.4896002034656703e-05,
+        "resultAssemblyTail": 3.928199294023216e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.00044457698822952807,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00020321799092926085
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00021698299678973854
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.3796001439914107e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0579999070614576e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.6350008081644773e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.6350008081644773e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 2.971328324987553,
+      "exclusivePhaseSumSeconds": 2.971328324987553,
+      "completed": true,
+      "savedCase": {
+        "tick": 90,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 36,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.000808794007753022,
+        "nativeFindCellsWithinBounds": 0.15490391799539793,
+        "getIdArrayExtraction": 0.005253481998806819,
+        "vectorizedGroundSplit": 0.0031739139958517626,
+        "zeroCopyOBBFilter": 0.0005860800010850653,
+        "exactPredicateLoopAndSetup": 2.9995993827469647e-05,
+        "resultAssemblyTail": 2.3433007299900055e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0006707469729008153,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0003332399937789887
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.000314614997478202
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.2652992154471576e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0238989489153028e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.5418001567013562e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.5418001567013562e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.16477961700002197,
+      "exclusivePhaseSumSeconds": 0.16477961700002197,
+      "completed": true,
+      "savedCase": {
+        "tick": 106,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 37,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0005357749905670062,
+        "nativeFindCellsWithinBounds": 2.822809867997421,
+        "getIdArrayExtraction": 0.02012271000421606,
+        "vectorizedGroundSplit": 0.008777818002272397,
+        "zeroCopyOBBFilter": 0.01960481799324043,
+        "exactPredicateLoopAndSetup": 3.345200093463063e-05,
+        "resultAssemblyTail": 2.7341011445969343e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0004248400073265657,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00018273999739903957
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00021771500178147107
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.3434007996693254e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.095100014936179e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.72220024978742e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.72220024978742e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 2.8719117820000974,
+      "exclusivePhaseSumSeconds": 2.8719117820000974,
+      "completed": true,
+      "savedCase": {
+        "tick": 106,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 38,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0005131439975230023,
+        "nativeFindCellsWithinBounds": 0.1449507819925202,
+        "getIdArrayExtraction": 0.005360390001442283,
+        "vectorizedGroundSplit": 0.002830755998729728,
+        "zeroCopyOBBFilter": 0.0004785000055562705,
+        "exactPredicateLoopAndSetup": 3.134900180157274e-05,
+        "resultAssemblyTail": 2.28120043175295e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0003591190034057945,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.0002227749937446788
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00011282999184913933
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.3135009794496e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0379008017480373e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.537799835205078e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.537799835205078e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 0.1541877330018906,
+      "exclusivePhaseSumSeconds": 0.1541877330018906,
+      "completed": true,
+      "savedCase": {
+        "tick": 106,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 39,
+      "exceptionType": null,
+      "phaseSeconds": {
+        "validationTransformBoxSetup": 0.0007636209920747206,
+        "nativeFindCellsWithinBounds": 2.6978009209997253,
+        "getIdArrayExtraction": 0.02117745300347451,
+        "vectorizedGroundSplit": 0.010154778996366076,
+        "zeroCopyOBBFilter": 0.021803587005706504,
+        "exactPredicateLoopAndSetup": 3.43730062013492e-05,
+        "resultAssemblyTail": 2.670999674592167e-05
+      },
+      "ownerCheck": {
+        "count": 7,
+        "seconds": 0.0004499479982769117,
+        "byPhase": {
+          "validationTransformBoxSetup": {
+            "count": 3,
+            "seconds": 0.00020451098680496216
+          },
+          "zeroCopyOBBFilter": {
+            "count": 2,
+            "seconds": 0.00022173199977260083
+          },
+          "exactPredicateLoopAndSetup": {
+            "count": 1,
+            "seconds": 1.3215001672506332e-05
+          },
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.0490010026842356e-05
+          }
+        }
+      },
+      "resultHelper": {
+        "count": 1,
+        "seconds": 1.6481004422530532e-05,
+        "byPhase": {
+          "resultAssemblyTail": {
+            "count": 1,
+            "seconds": 1.6481004422530532e-05
+          }
+        }
+      },
+      "nestedTimesAreAdditiveToPhases": false,
+      "ownerCheckIncludesInheritedOwnerChecks": true,
+      "resultHelperIncludesItsOwnerCheck": true,
+      "OBBFilterIncludesOwnerChecks": true,
+      "exactLoopIncludesFirstHitResultHelper": true,
+      "scope": "one contact_corners body; external swept_contacts checks excluded",
+      "timingOverheadIncluded": true,
+      "geometryOrPredicateChanged": false,
+      "contactTimedWallSeconds": 2.7517614440002944,
+      "exclusivePhaseSumSeconds": 2.7517614440002944,
+      "completed": true,
+      "savedCase": {
+        "tick": 106,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "tick": 0,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "profiled"
+      ],
+      "originalWallSeconds": 0.9015509090095293,
+      "profiledWallSeconds": 0.9076393129944336,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 0,
+      "half": 1,
+      "executionOrder": [
+        "profiled",
+        "original"
+      ],
+      "originalWallSeconds": 0.8656634850049159,
+      "profiledWallSeconds": 1.0081821019994095,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 9,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "profiled"
+      ],
+      "originalWallSeconds": 0.892242156987777,
+      "profiledWallSeconds": 0.907738349007559,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 9,
+      "half": 1,
+      "executionOrder": [
+        "profiled",
+        "original"
+      ],
+      "originalWallSeconds": 1.0258787959901383,
+      "profiledWallSeconds": 0.9217514769989066,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 15,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "profiled"
+      ],
+      "originalWallSeconds": 1.166738036001334,
+      "profiledWallSeconds": 1.0390598219964886,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 15,
+      "half": 1,
+      "executionOrder": [
+        "profiled",
+        "original"
+      ],
+      "originalWallSeconds": 1.3539372429950163,
+      "profiledWallSeconds": 1.4873432129970752,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 28,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "profiled"
+      ],
+      "originalWallSeconds": 1.5049740560061764,
+      "profiledWallSeconds": 1.1670691359904595,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 28,
+      "half": 1,
+      "executionOrder": [
+        "profiled",
+        "original"
+      ],
+      "originalWallSeconds": 1.0160783089959295,
+      "profiledWallSeconds": 1.0199346509907627,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 30,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "profiled"
+      ],
+      "originalWallSeconds": 1.0190498860029038,
+      "profiledWallSeconds": 1.1292317189945607,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 30,
+      "half": 1,
+      "executionOrder": [
+        "profiled",
+        "original"
+      ],
+      "originalWallSeconds": 1.3964364289859077,
+      "profiledWallSeconds": 1.4470794840017334,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 45,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "profiled"
+      ],
+      "originalWallSeconds": 3.9760661869950127,
+      "profiledWallSeconds": 3.5082013360079145,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 45,
+      "half": 1,
+      "executionOrder": [
+        "profiled",
+        "original"
+      ],
+      "originalWallSeconds": 3.766702641994925,
+      "profiledWallSeconds": 3.5751381880108966,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 60,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "profiled"
+      ],
+      "originalWallSeconds": 3.003476106998278,
+      "profiledWallSeconds": 3.118541286996333,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 60,
+      "half": 1,
+      "executionOrder": [
+        "profiled",
+        "original"
+      ],
+      "originalWallSeconds": 3.017509783996502,
+      "profiledWallSeconds": 3.6412049530044897,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 75,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "profiled"
+      ],
+      "originalWallSeconds": 2.631101695005782,
+      "profiledWallSeconds": 2.7057490149891237,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 75,
+      "half": 1,
+      "executionOrder": [
+        "profiled",
+        "original"
+      ],
+      "originalWallSeconds": 2.408555363988853,
+      "profiledWallSeconds": 2.34366250000312,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 90,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "profiled"
+      ],
+      "originalWallSeconds": 3.1999209289933788,
+      "profiledWallSeconds": 3.3282286769972416,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 90,
+      "half": 1,
+      "executionOrder": [
+        "profiled",
+        "original"
+      ],
+      "originalWallSeconds": 3.134597854994354,
+      "profiledWallSeconds": 3.212378580006771,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 106,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "profiled"
+      ],
+      "originalWallSeconds": 2.9697672210022574,
+      "profiledWallSeconds": 3.0370029489859007,
+      "completeOutputEquality": true
+    },
+    {
+      "tick": 106,
+      "half": 1,
+      "executionOrder": [
+        "profiled",
+        "original"
+      ],
+      "originalWallSeconds": 3.0024254320014734,
+      "profiledWallSeconds": 2.906209761989885,
+      "completeOutputEquality": true
+    }
+  ],
+  "runtime": {
+    "version": "9.3.1",
+    "SMPBackend": "Sequential",
+    "threads": 1,
+    "executionMachine": {
+      "system": "Linux",
+      "release": "6.18.55",
+      "machine": "x86_64",
+      "cpuReportedModel": "AMD EPYC 7763 64-Core Processor",
+      "logicalCPUAffinityCount": 1,
+      "memorySnapshotBytes": {
+        "MemTotal": 10451439616,
+        "MemAvailable": 4587757568
+      },
+      "CPUQuotaNotEstablished": true,
+      "iPhoneRuntimeTest": false,
+      "GPUUsed": false
+    }
+  },
+  "referenceMesh": {
+    "vertices": 8940320,
+    "triangles": 17801112,
+    "originalPLYType": "float64",
+    "VTKPointScalarType": "float",
+    "geometryDecimated": false,
+    "meshTransformed": false,
+    "unusedAttributesReleased": true
+  },
+  "totalWallSeconds": 102.07599765800114,
+  "oldResultsChanged": false,
+  "newOptimizationImplemented": false,
+  "navigationEpisodes": 0,
+  "physicalAuthority": false
+}

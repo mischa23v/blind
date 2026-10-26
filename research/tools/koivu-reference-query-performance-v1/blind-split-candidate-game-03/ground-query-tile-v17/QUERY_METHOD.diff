@@ -1,0 +1,22 @@
+--- frozen-v6-contact
++++ tiled-prepass-contact
+@@ -1,4 +1,4 @@
+-    def contact_corners(self,corners):
++    def _tiled_contact_corners(self,corners):
+         """One validated candidate array, one immutable-ground membership mask.
+ 
+         Candidate cap precedes extraction/filtering; non-ground ordering and
+@@ -22,11 +22,10 @@
+         for i,p in enumerate(q):self.box.GetPoints().SetPoint(i,p)
+         self.box.GetPoints().Modified()
+         bounds=np.column_stack((q.min(axis=0),q.max(axis=0))).reshape(-1)
+-        self.ids.Reset();self.surface.locator.FindCellsWithinBounds(bounds,self.ids)
++        self.ids.Reset();candidate_ids=self._tiled_candidates(bounds)
+         self.box_queries+=1;self.check()
+-        count=self.ids.GetNumberOfIds()
++        count=len(candidate_ids)
+         if count>self.maximum_candidate_cells:raise GeometryFailure('reference broad-phase candidate cap; not scored clear')
+-        candidate_ids=np.fromiter((self.ids.GetId(i)for i in range(count)),dtype=np.int64,count=count)
+         non_ground_ids,skipped_ids_array=self._split_candidate_ids(candidate_ids)
+         exact_ids,bounds_receipt=self._filter_box_bounds(non_ground_ids,q)
+         self.check()

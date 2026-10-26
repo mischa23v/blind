@@ -1,0 +1,17 @@
+{
+  "scope": "Independent read-only close before bounded saved-pose equivalence",
+  "scorerSHA256": "ee71c67d68692d1da2dc56a9a3f970836e158303f7d3e90cdf048e52885371d7",
+  "driverSHA256": "8bd0a458973a9fdbafd54dd3e017b620cf3f026de3cd588840b68cd4470b5d5e",
+  "noBlockingFinding": true,
+  "checks": [
+    "Existing tiled native bin union reused with unchanged original candidate caps and geometry.",
+    "Positive prepass always replays original v6 ordered contact query; disagreement fails closed.",
+    "Returned physical contact and near-foot status must match; only negative skipped-ground preview order may differ.",
+    "Original identity capture is after unchanged original method, separately timed; exact sorted candidate-set hashes required.",
+    "Prepass/fallback actual counters and native calls are asserted; no hidden duplicated work.",
+    "Same40 saved boxes and prior profile aggregate counts required; no navigation episode."
+  ],
+  "fixtures": "17 authored exact-physical/positive-order checks plus fresh driver/identity smoke",
+  "internalDocstringClarification": "Copied internal method docstring describes original ordering; its sorted prepass is explicitly superseded by outer wrapper/header and positive fallback policy.",
+  "physicalAuthority": false
+}

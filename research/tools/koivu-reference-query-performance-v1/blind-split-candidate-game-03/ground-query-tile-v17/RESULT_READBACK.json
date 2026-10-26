@@ -1,0 +1,43 @@
+{
+  "scope": "Independent saved-JSON/hash/timing/candidate/work arithmetic only; no geometry or comparison rerun",
+  "passed": true,
+  "resultSHA256": "5201c853f61dc73f422aeb9c70ee19f4bfa33b4909266df9b93dab783ca055b5",
+  "runReceiptSHA256": "2cfa926bc531d7163858df238fb8059db7e802a21e5afca91b84cb9ecdeac1be",
+  "frozenManifestSHA256": "571a206d59d448dc2412127c08b3173bd17aa60dbdc8a4cf1378924280bbd0da",
+  "fixedBoxComparisons": 40,
+  "alternatingHalfSweepPairs": 20,
+  "candidateSetHashesAllEqual": true,
+  "physicalFieldsAndEpisodeClassificationEqualityRecorded": true,
+  "negativePreviewOrderDifferences": 40,
+  "originalSecondsExcludingMeasuredCapture": 42.448273977206554,
+  "originalMeasuredIdentityCaptureSeconds": 0.5264905678632203,
+  "originalSecondsIncludingCapture": 42.974764545069775,
+  "optimizedSecondsIncludingOwnMetadata": 7.513936747040134,
+  "ratioExcludingMeasuredOriginalCapture": 5.649272199946006,
+  "actualTiledNativeBoundsCalls": 4480,
+  "logicalPrepassBoxCalls": 40,
+  "positiveFallbacksInSavedCases": 0,
+  "actualExactTriangleTests": 0,
+  "sameUniqueCandidateTotal": 2287073,
+  "groundSkipped": 1780895,
+  "boundsRejected": 506178,
+  "optimizedCandidateDigestSecondsIncluded": 0.017415673966752365,
+  "checks": [
+    "All40 exact sorted-ID hashes and unique counts match the native captures.",
+    "All20 pair orders and capture subtraction reconcile; primary/inclusive ratios recomputed.",
+    "All40 permitted result differences are exactly negative skipped-ground preview order.",
+    "Every completed optimization row reconciles prepass/fallback actual work and native tile calls.",
+    "All saved cases remain negative, with no fallback and no exact-test survivors.",
+    "Candidate/ground/rejection totals match prior profiling; wrapper and manifest identity match."
+  ],
+  "limits": [
+    "5.649x is this fixed shared-locator Linux comparison, not iPhone/runtime guarantee or universal equivalence.",
+    "Saved cases exercise negative fast path only; positive native-order and near-foot classification evidence remains separately authored.",
+    "Baseline measured identity-capture interval is excluded; optimized metadata/digest remains included.",
+    "No geometry, body, map, route, tolerance or navigation episode changed."
+  ],
+  "wallSeconds": 0.004395045019919053,
+  "referenceLoadedByReviewer": false,
+  "worldEpisodes": 0,
+  "physicalAuthority": false
+}

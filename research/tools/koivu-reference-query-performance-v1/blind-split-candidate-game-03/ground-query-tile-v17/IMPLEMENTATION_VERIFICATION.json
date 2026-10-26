@@ -1,0 +1,51 @@
+{
+  "scope": "Additive tiled negative prepass with original ordered positive replay; authored/source readiness only",
+  "passed": true,
+  "sourcePins": {
+    "oriented_ground_tiled_container.py": "ee71c67d68692d1da2dc56a9a3f970836e158303f7d3e90cdf048e52885371d7",
+    "build_tiled_source.py": "9b263d8858ec2efb7232252e9efdaca1f99ab3905c1398375f4aa7e6ba9e77d9",
+    "test_oriented_ground_tiled_container.py": "44a81926a59f243793fff38181f8f921ec19a30c341d860ccb7eb660560e5d4d",
+    "QUERY_METHOD.diff": "931b0650c6738718dfd5b1b4fccf03bd8ef4cd2524867aa543c650eea95e0d63",
+    "GENERATION_RECEIPT.json": "d97dfe46ce481d8732b66add01f1c595347ee3912e8ba3ebdc4aff6646509002",
+    "fixtures-01/RECEIPT.json": "ff3a4446dfdcf58cc7232ccb57ea9025e866e17f9f9af3fe1e0688898841c244",
+    "compare_reference.py": "8bd0a458973a9fdbafd54dd3e017b620cf3f026de3cd588840b68cd4470b5d5e",
+    "run_bounded.py": "bbb5b77975a2e4872153c57168bbc57771b906b08a04249efd02f96d2dc7e1dd",
+    "COMPARISON_PROTOCOL.md": "17eaf25e7e36578d0748d15ac272d5e9135cdea24c707e2df85fb26eec23fd29",
+    "import-smoke-01/RECEIPT.json": "3e23b43ffde117641e0e2f8452a19d2d99051709f4a7e0dc945f430058f0b05e"
+  },
+  "authoredFixtureTestsPassed": 17,
+  "additionalFreshDriverIdentitySmokePassed": true,
+  "mechanicalProof": "Copied prepass contact method restores byte-exact original v6 method by replacing only native-query/extraction block and method name.",
+  "orderedPositiveSemantics": [
+    "Any positive tiled prepass invokes unchanged original v6 contact_corners on the same box.",
+    "Original contact/firstID/height/reason/count result is returned; candidate/non-ground/skip/rejection/exact-test counts must agree.",
+    "Positive-to-negative mismatch, count disagreement and fallback exceptions fail closed, never return clear.",
+    "Authored differing-order case has sorted prepass firstID2 at body height but native/final firstID3 near foot; exact original near-foot classification retained."
+  ],
+  "negativeDifference": "Only skippedGroundCandidateIDsFirst16 preview may use sorted original-ID order; this is not a contact measurement.",
+  "inheritedDocstringClarification": "The copied internal method retains the original text saying non-ground ordering is unchanged solely to preserve auditable byte comparison. Its INTERNAL prepass order is sorted; the module header, wrapper and optimization rows explicitly disclose that only outer positive replay restores original ordered result semantics.",
+  "workAccounting": [
+    "optimization_rows is separate from returned collision dictionaries.",
+    "Prepass and fallback exact tests/box-counter deltas are both retained; cumulative actual counters include both passes.",
+    "nativeBoundsCallsTotal reports every successful tile call plus original fallback call, not one call per box. Failed/interrupted native-call totals remain None.",
+    "Returned exactNonGroundTriangleTests describes only the returned result pass; extra work is not hidden.",
+    "Sorted candidate hashes use signed int64 little-endian/C-order bytes; hashing time is reported separately and included in optimized time."
+  ],
+  "pairedDriverReview": [
+    "Same10savedticks20halves40boxes; original v3 semantic ground receipt retained exceptMTime/cap and still satisfies old2Mcap.",
+    "Native candidate IDs captured only after original contact returns; sorted hashes compare exact candidate sets.",
+    "Complete old results compared except permitted negative preview; contact_status also equal.",
+    "Baseline identity-capture interval is separately timed/subtracted; raw-inclusive ratio retained, optimized metadata remains included.",
+    "All completed rows/native-call accounting and cumulative triangle/box work reconcile by assertions.",
+    "Alternating pair order,600CPU900wall3GiB64MiB768MiBreserve; no world episode."
+  ],
+  "limits": [
+    "No recorded reference comparison executed by this reviewer.",
+    "Positive fallback may be slower; no measured speedup is asserted here.",
+    "The fixed recorded comparison cases are negative; positive ordering evidence comes from separately identified authored fixtures.",
+    "No geometry, ground classification, body envelope, route, tolerance or physical authority change."
+  ],
+  "recordedReferenceLoadedByReviewer": false,
+  "newWorldEpisodes": 0,
+  "physicalAuthority": false
+}

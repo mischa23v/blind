@@ -1,0 +1,48 @@
+{
+  "scope": "Instrumentation-only source readiness, exact authored equivalence and fresh driver-import review",
+  "passed": true,
+  "sourcePins": {
+    "profiled_v6.py": "3154b8e1262e8d1cc431091116accf40f2d28b17400bad2f06d3dc32d076f6bb",
+    "instrument_v6.py": "e81ca92f88918eb21ac62fbb9e960b421e3ecc3f5a7596f6957ac7fd56f16fe0",
+    "test_profiled_v6.py": "907457c2a4a66ab80ca3cc2b93f51ff55059daf95b7402b2a635115d914d2114",
+    "INSTRUMENTATION.diff": "92e067483eec773138fe3e4d56e44d2e322629459c9181a88c5397ce2412d11e",
+    "GENERATION_RECEIPT.json": "a63cc79fc4f585581206fee4ac6b8dcb748ce7930d9854c716579eded8312d0a",
+    "fixtures-01/RECEIPT.json": "af00b4e1fc57e647b30bb8b8669b9b87150574356f638184eebb9c147dc71b4e",
+    "profile_reference.py": "b90070e7be6d59931fbfccf8e95d4ee586be5b286201ec371f863a3f53f65099",
+    "run_bounded.py": "590efb4e79b4de1d12b2b7a2ede44adcf419c99c754d1fa01eab60ec950278dd",
+    "PROFILE_PROTOCOL.md": "613097cf42c2b63c3f5a9a967f62a631729f5fd52e8aeabdf6aa567fc4bfa39d",
+    "import-smoke-01/RECEIPT.json": "bc2e389447b3b4d432c4795518fc776339b9e02af1d9c44c25329907cc8646fd"
+  },
+  "originalV6SHA256": "7005ab752d855edfdb1295b401ea8ad9d66516a5813f716f1a7818677bb1c222",
+  "originalMethodASTsPreserved": [
+    "__init__",
+    "check",
+    "_filter_box_bounds",
+    "contact_corners"
+  ],
+  "authoredTestsPassed": 12,
+  "freshDriverImportPassed": true,
+  "timingContract": [
+    "Seven mutually exclusive phase accumulators partition the timed contact_corners body.",
+    "Validation segments include original initial and post-query/filter checks; no original algorithm statements moved.",
+    "Native phase contains exactly the existing FindCellsWithinBounds call; Reset remains validation.",
+    "Exact loop includes its existing first-hit result-helper construction and nested owner check.",
+    "Result assembly tail excludes earlier first-hit helper work; separate resultHelper diagnostic records that nested work by phase.",
+    "Owner-check totals include inherited checks and remain nested in phase times; resultHelper also includes its owner check. Never add either nested diagnostic to phase totals.",
+    "Constructor and outer swept_contacts owner/geometry work are not per-contact timing rows. The driver reports whole sweep time minus contact timing as outside/wrapper time.",
+    "Optimization decision uses native phase greater than half WHOLE instrumented sweep time, not only inner measured rows.",
+    "Instrumentation overhead and shared-cache ordering can affect timings; no iPhone or general benchmark claim."
+  ],
+  "driverChecks": [
+    "Same10savedticks20halves40body/margin boxes.",
+    "Old v3 ground semantic receipt equal except MTime/resource cap, with old2Mcap still satisfied.",
+    "Original/instrumented order alternates by half-sweep, full original outputs equal, bothboxcounts40 and exacttrianglecounters equal.",
+    "Explicit imported v3/helper/scorer owners confirmed by fresh-process smoke.",
+    "600CPU/900wall/3GiB/64MiB/768MiBreserve watchdog and frozen pre/post checks."
+  ],
+  "recordedReferenceLoadedByReviewer": false,
+  "recordedProfileRunByReviewer": false,
+  "newOptimizationImplemented": false,
+  "worldEpisodes": 0,
+  "physicalAuthority": false
+}

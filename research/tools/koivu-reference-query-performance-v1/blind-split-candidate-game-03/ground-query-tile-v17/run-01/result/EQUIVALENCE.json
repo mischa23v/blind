@@ -1,0 +1,3896 @@
+{
+  "scope": "Exact original geometry with tiled broad-phase and original ordered positive-contact fallback, compared on frozen saved poses; no navigation episode",
+  "pass": true,
+  "ticks": [
+    0,
+    9,
+    15,
+    28,
+    30,
+    45,
+    60,
+    75,
+    90,
+    106
+  ],
+  "halfSweeps": 20,
+  "logicalBoxComparisons": 40,
+  "physicalContactAndClassificationEquality": true,
+  "negativeSkippedGroundPreviewOrderDifferences": 40,
+  "onlyPermittedOriginalFieldDifference": "negative skippedGroundCandidateIDsFirst16 preview order",
+  "originalWallSecondsIncludingIdentityCapture": 42.974764545069775,
+  "originalCandidateIdentityCaptureSeconds": 0.5264905678632203,
+  "originalWallSecondsExcludingIdentityCapture": 42.448273977206554,
+  "optimizedWallSeconds": 7.513936747040134,
+  "speedupRatioExcludingOriginalIdentityCapture": 5.649272199946006,
+  "speedupRatioIncludingOriginalIdentityCapture": 5.719340738661163,
+  "timingCaveat": "Alternating pair order on a shared loaded locator; same process Linux diagnostic, no iPhone latency or statistical benchmark claim",
+  "candidateTriangles": 2287073,
+  "groundCandidates": 1780895,
+  "nonGroundBoundsRejected": 506178,
+  "returnedExactTriangleTestCounts": 0,
+  "actualOriginalTriangleQueries": 0,
+  "actualOptimizedTriangleQueriesIncludingPrepassAndFallback": 0,
+  "actualOptimizedLogicalPrepassAndFallbackBoxCounter": 40,
+  "groundSetupSeconds": 7.1418799980019685,
+  "exactCandidateSetHashesEqual": true,
+  "originalCandidateIdentityRows": [
+    {
+      "candidateCount": 15006,
+      "sortedCandidateIDsSHA256": "3a5821483a47b034a4188a27da0927b49e58a2d1ac650f0ce929ac3e022e76c2",
+      "nativeCandidateOrderSHA256": "bf7583a7e9edf92d7691b687fbb2f4aee107b2b08754ca9d9740d92802c4b27f",
+      "identityCaptureSeconds": 0.003402596979867667,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 59406,
+      "sortedCandidateIDsSHA256": "886e57b08b901c4a22e8f92d23fb98e9074134276a4e89046f9750d09146f2a5",
+      "nativeCandidateOrderSHA256": "444d71c78f37381b9bc11da573d2169a790a0336cc0a0f57cd8677a4cff8fb24",
+      "identityCaptureSeconds": 0.01403625900275074,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 15006,
+      "sortedCandidateIDsSHA256": "3a5821483a47b034a4188a27da0927b49e58a2d1ac650f0ce929ac3e022e76c2",
+      "nativeCandidateOrderSHA256": "bf7583a7e9edf92d7691b687fbb2f4aee107b2b08754ca9d9740d92802c4b27f",
+      "identityCaptureSeconds": 0.002927522989921272,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 59406,
+      "sortedCandidateIDsSHA256": "886e57b08b901c4a22e8f92d23fb98e9074134276a4e89046f9750d09146f2a5",
+      "nativeCandidateOrderSHA256": "444d71c78f37381b9bc11da573d2169a790a0336cc0a0f57cd8677a4cff8fb24",
+      "identityCaptureSeconds": 0.013300200982484967,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 18710,
+      "sortedCandidateIDsSHA256": "05f9571ba226046090697ddfc4c0616f4383b55433c7dc8b92836b047609c194",
+      "nativeCandidateOrderSHA256": "f05a60aae61ea2a2f0886f1538c9c196b5a87e100c60618dcfe81d18390ad859",
+      "identityCaptureSeconds": 0.0037160700012464076,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 53449,
+      "sortedCandidateIDsSHA256": "31c5735cf328b85ae2bb5792e46cc446b86ef646cd86246fbd7b4eed614b12de",
+      "nativeCandidateOrderSHA256": "170aa9797bb4b60a886228bb20e60c44dbf0bec70cc89458130684cddb9f2c30",
+      "identityCaptureSeconds": 0.013089097978081554,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 18710,
+      "sortedCandidateIDsSHA256": "05f9571ba226046090697ddfc4c0616f4383b55433c7dc8b92836b047609c194",
+      "nativeCandidateOrderSHA256": "f05a60aae61ea2a2f0886f1538c9c196b5a87e100c60618dcfe81d18390ad859",
+      "identityCaptureSeconds": 0.004106695996597409,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 53449,
+      "sortedCandidateIDsSHA256": "31c5735cf328b85ae2bb5792e46cc446b86ef646cd86246fbd7b4eed614b12de",
+      "nativeCandidateOrderSHA256": "170aa9797bb4b60a886228bb20e60c44dbf0bec70cc89458130684cddb9f2c30",
+      "identityCaptureSeconds": 0.014405694993911311,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 22111,
+      "sortedCandidateIDsSHA256": "2f6973d01a59819e3c919521f3ee1baefcbde080dde75160a973c8e312cc99cc",
+      "nativeCandidateOrderSHA256": "52f029885dcf04d7a5d96b39adb9fec75e9da4350d6bc3708670659e51ffed83",
+      "identityCaptureSeconds": 0.0046649839787278324,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 60757,
+      "sortedCandidateIDsSHA256": "0bf0872d187d1f5b4d8a6924606c4bc2c724d1df0d476bf0a1bd4443b17806e6",
+      "nativeCandidateOrderSHA256": "010b676aa31a117ed026a43387902c6f145c88e8264cd5548487f878743c7533",
+      "identityCaptureSeconds": 0.014312343002529815,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 22111,
+      "sortedCandidateIDsSHA256": "2f6973d01a59819e3c919521f3ee1baefcbde080dde75160a973c8e312cc99cc",
+      "nativeCandidateOrderSHA256": "52f029885dcf04d7a5d96b39adb9fec75e9da4350d6bc3708670659e51ffed83",
+      "identityCaptureSeconds": 0.004813219013158232,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 69503,
+      "sortedCandidateIDsSHA256": "aa39002c5aa2961d9e2ceb7ef47c0f1e2476912b7ad8517f30a6b00ed4eae548",
+      "nativeCandidateOrderSHA256": "6fb745d1854c7dfbb4125e887e2b722cbe43d175af02d7ae4815aa9cea88e740",
+      "identityCaptureSeconds": 0.014979683997808024,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 22111,
+      "sortedCandidateIDsSHA256": "2f6973d01a59819e3c919521f3ee1baefcbde080dde75160a973c8e312cc99cc",
+      "nativeCandidateOrderSHA256": "52f029885dcf04d7a5d96b39adb9fec75e9da4350d6bc3708670659e51ffed83",
+      "identityCaptureSeconds": 0.004465684003662318,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 69503,
+      "sortedCandidateIDsSHA256": "aa39002c5aa2961d9e2ceb7ef47c0f1e2476912b7ad8517f30a6b00ed4eae548",
+      "nativeCandidateOrderSHA256": "6fb745d1854c7dfbb4125e887e2b722cbe43d175af02d7ae4815aa9cea88e740",
+      "identityCaptureSeconds": 0.014537091017700732,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 22111,
+      "sortedCandidateIDsSHA256": "2f6973d01a59819e3c919521f3ee1baefcbde080dde75160a973c8e312cc99cc",
+      "nativeCandidateOrderSHA256": "52f029885dcf04d7a5d96b39adb9fec75e9da4350d6bc3708670659e51ffed83",
+      "identityCaptureSeconds": 0.004615993006154895,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 69503,
+      "sortedCandidateIDsSHA256": "aa39002c5aa2961d9e2ceb7ef47c0f1e2476912b7ad8517f30a6b00ed4eae548",
+      "nativeCandidateOrderSHA256": "6fb745d1854c7dfbb4125e887e2b722cbe43d175af02d7ae4815aa9cea88e740",
+      "identityCaptureSeconds": 0.018741795007372275,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 22111,
+      "sortedCandidateIDsSHA256": "2f6973d01a59819e3c919521f3ee1baefcbde080dde75160a973c8e312cc99cc",
+      "nativeCandidateOrderSHA256": "52f029885dcf04d7a5d96b39adb9fec75e9da4350d6bc3708670659e51ffed83",
+      "identityCaptureSeconds": 0.004260071000317112,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 69503,
+      "sortedCandidateIDsSHA256": "aa39002c5aa2961d9e2ceb7ef47c0f1e2476912b7ad8517f30a6b00ed4eae548",
+      "nativeCandidateOrderSHA256": "6fb745d1854c7dfbb4125e887e2b722cbe43d175af02d7ae4815aa9cea88e740",
+      "identityCaptureSeconds": 0.015264843998011202,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 24608,
+      "sortedCandidateIDsSHA256": "4b0af77fdd531e1ed5f1cb1b69171ad6c5c0a963d39b3b5c2c00cdca45c7e6e1",
+      "nativeCandidateOrderSHA256": "8b2c282abb16e4f3e07971983f81b5a7f92533e3af9e26bfd8dde65ec4e9f5cc",
+      "identityCaptureSeconds": 0.006973818002734333,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 75230,
+      "sortedCandidateIDsSHA256": "010f57f90462a7a8b74f5d15f7acee3626739c7be9ad3964a97d4981c3330cd3",
+      "nativeCandidateOrderSHA256": "b140f5dec2f46b19a0ce1a22515e40c1e2fecb4e2ebfe2acc8d87f6656750dce",
+      "identityCaptureSeconds": 0.014669447002233937,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 25701,
+      "sortedCandidateIDsSHA256": "9e2adc395714083019c306ed91bc173a7ed7ffb9bba4706c91cb5e33c3c2514f",
+      "nativeCandidateOrderSHA256": "7e13daa4b20087b6a87bd39dfb4eb8506c931500813c584ab8eac618a45a7531",
+      "identityCaptureSeconds": 0.005203245993470773,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 128888,
+      "sortedCandidateIDsSHA256": "a48d0dfa45dc909a5c6fcaaf9174d5fb7d3cb27fd1c33c532d1e722c55ed5d96",
+      "nativeCandidateOrderSHA256": "1d4e6b1f02b63bb8bf4b87d3d633cdedd7cc4e5bf18bf6b338df7bbd7e1786e7",
+      "identityCaptureSeconds": 0.027814781991764903,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 23190,
+      "sortedCandidateIDsSHA256": "114cbdd8f4b22c48159d8ecc4394e8df81200567e613896eef4eb9cab0287db7",
+      "nativeCandidateOrderSHA256": "446fef890cfbd1ba32fa3f2b91b040c5eca3d32cec4e642ce0ee74a4df0aeafd",
+      "identityCaptureSeconds": 0.004642181971576065,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 128888,
+      "sortedCandidateIDsSHA256": "a48d0dfa45dc909a5c6fcaaf9174d5fb7d3cb27fd1c33c532d1e722c55ed5d96",
+      "nativeCandidateOrderSHA256": "1d4e6b1f02b63bb8bf4b87d3d633cdedd7cc4e5bf18bf6b338df7bbd7e1786e7",
+      "identityCaptureSeconds": 0.04317058599554002,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 32576,
+      "sortedCandidateIDsSHA256": "cefb139230798de6d0c4a97692be4bd08fd5b03cae52876335f7fb32e7cc8c8a",
+      "nativeCandidateOrderSHA256": "c3c5a0f1f9f60266f12923764bbe2afbf90dedd6155c607f312e7045ad3f396e",
+      "identityCaptureSeconds": 0.00673628700315021,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 112322,
+      "sortedCandidateIDsSHA256": "cc56587025903057ef41763b79f102542f48947b94a9a36e75cf8239363cbebf",
+      "nativeCandidateOrderSHA256": "e614757cdf704ddcfba329f911f63eb2e84834232d2a7951d60e7c52702d025c",
+      "identityCaptureSeconds": 0.02410561899887398,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 32576,
+      "sortedCandidateIDsSHA256": "cefb139230798de6d0c4a97692be4bd08fd5b03cae52876335f7fb32e7cc8c8a",
+      "nativeCandidateOrderSHA256": "c3c5a0f1f9f60266f12923764bbe2afbf90dedd6155c607f312e7045ad3f396e",
+      "identityCaptureSeconds": 0.00629883399233222,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 118021,
+      "sortedCandidateIDsSHA256": "e2f27a10d7de9576370f438914829676605f82fcfed7e9af0e797c6b4fd56179",
+      "nativeCandidateOrderSHA256": "677e079f389416a630012ebd2d45b46825dcfcf1bc236bcd38dfca6af31e589e",
+      "identityCaptureSeconds": 0.023943498003063723,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 33259,
+      "sortedCandidateIDsSHA256": "00633e3645b814f552edbcc362f8fc675541598825efb276226b852703b11f02",
+      "nativeCandidateOrderSHA256": "3e4a0decca56c372497f18185345ba45d3e5c45cbeaca42fcd30d47359bdf4f6",
+      "identityCaptureSeconds": 0.007399480993626639,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 99247,
+      "sortedCandidateIDsSHA256": "ebf6e9f2aa42d2adc7d5f99024d940974d972f17e8f497c6ffb9061c31eaa742",
+      "nativeCandidateOrderSHA256": "eed82159a5143c0e455bf16008e03bbf5f39137244713f0fae4ddf39e6393152",
+      "identityCaptureSeconds": 0.025107931985985488,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 33259,
+      "sortedCandidateIDsSHA256": "00633e3645b814f552edbcc362f8fc675541598825efb276226b852703b11f02",
+      "nativeCandidateOrderSHA256": "3e4a0decca56c372497f18185345ba45d3e5c45cbeaca42fcd30d47359bdf4f6",
+      "identityCaptureSeconds": 0.007360918010817841,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 99247,
+      "sortedCandidateIDsSHA256": "ebf6e9f2aa42d2adc7d5f99024d940974d972f17e8f497c6ffb9061c31eaa742",
+      "nativeCandidateOrderSHA256": "eed82159a5143c0e455bf16008e03bbf5f39137244713f0fae4ddf39e6393152",
+      "identityCaptureSeconds": 0.020887652004603297,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 33823,
+      "sortedCandidateIDsSHA256": "f56e95f5472f2259e776733e59da8d4a5c2cc4a4ef64f516987746d8084e7175",
+      "nativeCandidateOrderSHA256": "25a9baf373d5e5ec02cf91f8de016340befbd60a89c51c214310c0b241cfeb6b",
+      "identityCaptureSeconds": 0.008338125015143305,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 116441,
+      "sortedCandidateIDsSHA256": "82518bf93c8ffcd91591e095b40262cb90c4486bb2327f0e10e7754a1c305f4c",
+      "nativeCandidateOrderSHA256": "02cca77effc0f989d948b2907a17ed258f209f0d947d44cc42d641f3b138b12a",
+      "identityCaptureSeconds": 0.024522530002286658,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 29098,
+      "sortedCandidateIDsSHA256": "c3ec100f5f7e212c9a0fbc398395c4d6b2db1b38c0e8f2ba0b2159d712edb9c5",
+      "nativeCandidateOrderSHA256": "d627095af60122e7ae3ff6551da86dd1d1fbc173439732017c8cce75a301cecd",
+      "identityCaptureSeconds": 0.0061942809843458235,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 116441,
+      "sortedCandidateIDsSHA256": "82518bf93c8ffcd91591e095b40262cb90c4486bb2327f0e10e7754a1c305f4c",
+      "nativeCandidateOrderSHA256": "02cca77effc0f989d948b2907a17ed258f209f0d947d44cc42d641f3b138b12a",
+      "identityCaptureSeconds": 0.03320399997755885,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 26070,
+      "sortedCandidateIDsSHA256": "f9f214043d6738367287aeefe944495e285862850f399daec6210dfc5a11b5b5",
+      "nativeCandidateOrderSHA256": "45877946bface46bacc7ed3390fc194fbf25064ec23e86ad2f8ad8bd44cf4855",
+      "identityCaptureSeconds": 0.006592121993890032,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 114826,
+      "sortedCandidateIDsSHA256": "6dcabab36c936f7eb4180bf2603a4d1c6e00850b3bc875693564c5ef05437adf",
+      "nativeCandidateOrderSHA256": "facc8e2cef2e706bfcf13b10f17e60e30404124102f3738ed40cc17f518348e6",
+      "identityCaptureSeconds": 0.024360023002373055,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 26070,
+      "sortedCandidateIDsSHA256": "f9f214043d6738367287aeefe944495e285862850f399daec6210dfc5a11b5b5",
+      "nativeCandidateOrderSHA256": "45877946bface46bacc7ed3390fc194fbf25064ec23e86ad2f8ad8bd44cf4855",
+      "identityCaptureSeconds": 0.0055116110015660524,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    },
+    {
+      "candidateCount": 114826,
+      "sortedCandidateIDsSHA256": "6dcabab36c936f7eb4180bf2603a4d1c6e00850b3bc875693564c5ef05437adf",
+      "nativeCandidateOrderSHA256": "facc8e2cef2e706bfcf13b10f17e60e30404124102f3738ed40cc17f518348e6",
+      "identityCaptureSeconds": 0.023813746985979378,
+      "hashEncoding": "sorted original cell IDs, little-endian signed int64"
+    }
+  ],
+  "queryRows": [
+    {
+      "index": 0,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.2768608417408664,
+          1.8582288277237802,
+          -2.341912254629118,
+          -1.7520852850499353,
+          0.04856886072580897,
+          1.6971771489019356
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 23419,
+        "uniqueOriginalIDs": 15006,
+        "largestTileReturnedIDs": 3172,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.02514193902607076,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "3a5821483a47b034a4188a27da0927b49e58a2d1ac650f0ce929ac3e022e76c2",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00020609400235116482,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.027820969989988953,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.02782507799565792,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 0,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 1,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.0637656831279179,
+          2.071323986336729,
+          -2.554866782793369,
+          -1.5391307568856845,
+          0.04021704620476427,
+          1.7055289634229802
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          5,
+          5,
+          7
+        ],
+        "tileQueries": 175,
+        "rawReturnedIDs": 94009,
+        "uniqueOriginalIDs": 59406,
+        "largestTileReturnedIDs": 7708,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.12619751499732956,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "886e57b08b901c4a22e8f92d23fb98e9074134276a4e89046f9750d09146f2a5",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00034044301719404757,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.1333559759950731,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.13336020297720097,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 175,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 0,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 2,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.2826856025180513,
+          1.864053588500965,
+          -2.3335400649702485,
+          -1.7437130953910651,
+          0.048144476063507885,
+          1.6967527642396345
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 23419,
+        "uniqueOriginalIDs": 15006,
+        "largestTileReturnedIDs": 3172,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.023201475996756926,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "3a5821483a47b034a4188a27da0927b49e58a2d1ac650f0ce929ac3e022e76c2",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 9.783200221136212e-05,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.02532780999899842,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.025331437005661428,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 0,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 3,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.0695904439051027,
+          2.077148747113914,
+          -2.5464945931344993,
+          -1.5307585672268145,
+          0.03979266154246319,
+          1.7051045787606791
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          5,
+          5,
+          7
+        ],
+        "tileQueries": 175,
+        "rawReturnedIDs": 94009,
+        "uniqueOriginalIDs": 59406,
+        "largestTileReturnedIDs": 7708,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.12251531600486487,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "886e57b08b901c4a22e8f92d23fb98e9074134276a4e89046f9750d09146f2a5",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0007425900257658213,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.13008906799950637,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.1300931750156451,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 175,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 0,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 4,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.379001751444402,
+          1.9603697273908942,
+          -2.195102131307059,
+          -1.6052742965829627,
+          0.04112701416377207,
+          1.6897353717944974
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 28770,
+        "uniqueOriginalIDs": 18710,
+        "largestTileReturnedIDs": 4480,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.04106127499835566,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "05f9571ba226046090697ddfc4c0616f4383b55433c7dc8b92836b047609c194",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00024320199736393988,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.0441954429843463,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.04420053298235871,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 9,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 5,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.1659064236521068,
+          2.1734650551831893,
+          -2.4080568279515435,
+          -1.3923195999384779,
+          0.03277517896808187,
+          1.6980872069901876
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          5,
+          5,
+          7
+        ],
+        "tileQueries": 175,
+        "rawReturnedIDs": 91809,
+        "uniqueOriginalIDs": 53449,
+        "largestTileReturnedIDs": 5858,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.12130418201559223,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "31c5735cf328b85ae2bb5792e46cc446b86ef646cd86246fbd7b4eed614b12de",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00034442098694853485,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.12990050500957295,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.12990431298385374,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 175,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 9,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 6,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.3848265491894498,
+          1.9661945251359425,
+          -2.1867299673463694,
+          -1.5969021326222734,
+          0.040702629928171793,
+          1.6893109875588972
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 28770,
+        "uniqueOriginalIDs": 18710,
+        "largestTileReturnedIDs": 4480,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.03613974998006597,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "05f9571ba226046090697ddfc4c0616f4383b55433c7dc8b92836b047609c194",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00011913198977708817,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.038800517009804025,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.03880416401079856,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 9,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 7,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.1717312213971551,
+          2.179289852928237,
+          -2.3996846639908544,
+          -1.3839474359777886,
+          0.03235079473248159,
+          1.6976628227545874
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          5,
+          5,
+          7
+        ],
+        "tileQueries": 175,
+        "rawReturnedIDs": 91990,
+        "uniqueOriginalIDs": 53449,
+        "largestTileReturnedIDs": 5858,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.12485239800298586,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "31c5735cf328b85ae2bb5792e46cc446b86ef646cd86246fbd7b4eed614b12de",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0003124009817838669,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.13063327598501928,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.13063671201234683,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 175,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 9,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 8,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.448899324384981,
+          2.030267300331474,
+          -2.094636163778787,
+          -1.5048083290546899,
+          0.03603440333656881,
+          1.6846427609672943
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 33702,
+        "uniqueOriginalIDs": 22111,
+        "largestTileReturnedIDs": 5968,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.05291358599788509,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "2f6973d01a59819e3c919521f3ee1baefcbde080dde75160a973c8e312cc99cc",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00014127299073152244,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.056949771009385586,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.05695343902334571,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 15,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 9,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.2358039965926855,
+          2.2433626281237697,
+          -2.3075908604232724,
+          -1.2918536324102043,
+          0.02768256814087859,
+          1.6929945961629844
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          5,
+          5,
+          7
+        ],
+        "tileQueries": 175,
+        "rawReturnedIDs": 108042,
+        "uniqueOriginalIDs": 60757,
+        "largestTileReturnedIDs": 8167,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.14665338399936445,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "0bf0872d187d1f5b4d8a6924606c4bc2c724d1df0d476bf0a1bd4443b17806e6",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00035658301203511655,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.16144128100131638,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.16144509700825438,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 175,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 15,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 10,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.4547241221300298,
+          2.0360920980765225,
+          -2.0862639998180983,
+          -1.4964361650940003,
+          0.03561001910096852,
+          1.684218376731694
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 33702,
+        "uniqueOriginalIDs": 22111,
+        "largestTileReturnedIDs": 5968,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.04758002399466932,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "2f6973d01a59819e3c919521f3ee1baefcbde080dde75160a973c8e312cc99cc",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00013837800361216068,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.05123857400030829,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.05124180999700911,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 15,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 11,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.2416287943377338,
+          2.2491874258688185,
+          -2.299218696462584,
+          -1.2834814684495148,
+          0.027258183905278278,
+          1.6925702119273844
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          5,
+          5,
+          7
+        ],
+        "tileQueries": 175,
+        "rawReturnedIDs": 131312,
+        "uniqueOriginalIDs": 69503,
+        "largestTileReturnedIDs": 8015,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.18386972200823948,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "aa39002c5aa2961d9e2ceb7ef47c0f1e2476912b7ad8517f30a6b00ed4eae548",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00041493200114928186,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.20675141000538133,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.20675593800842762,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 175,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 15,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 12,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.4662601186026656,
+          2.037940394290959,
+          -2.095275642131568,
+          -1.4722094587745225,
+          0.03362715782211426,
+          1.6852882441990888
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 33702,
+        "uniqueOriginalIDs": 22111,
+        "largestTileReturnedIDs": 5968,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.03904105501715094,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "2f6973d01a59819e3c919521f3ee1baefcbde080dde75160a973c8e312cc99cc",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0001375559950247407,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.041216960991732776,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.04122122799162753,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 28,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 13,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.2485578260197503,
+          2.255642686873874,
+          -2.3128058308804142,
+          -1.254679270025676,
+          0.024415053136129614,
+          1.6945003488850734
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          5,
+          5,
+          7
+        ],
+        "tileQueries": 175,
+        "rawReturnedIDs": 131312,
+        "uniqueOriginalIDs": 69503,
+        "largestTileReturnedIDs": 8015,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.1611363789997995,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "aa39002c5aa2961d9e2ceb7ef47c0f1e2476912b7ad8517f30a6b00ed4eae548",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0004312319797463715,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.17721704998984933,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.17722122801933438,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 175,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 28,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 14,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.474388203133397,
+          2.044934031516702,
+          -2.0887389091177675,
+          -1.465052509793594,
+          0.03318422585509314,
+          1.684942383288747
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 33887,
+        "uniqueOriginalIDs": 22111,
+        "largestTileReturnedIDs": 5968,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.04280012400704436,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "2f6973d01a59819e3c919521f3ee1baefcbde080dde75160a973c8e312cc99cc",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0001366840151604265,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.04502023299573921,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.04502371899434365,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 28,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 15,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.2567620812935791,
+          2.2625601533565205,
+          -2.30619183572226,
+          -1.2475995831891018,
+          0.023947813554983127,
+          1.694178795588857
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          5,
+          5,
+          7
+        ],
+        "tileQueries": 175,
+        "rawReturnedIDs": 130192,
+        "uniqueOriginalIDs": 69503,
+        "largestTileReturnedIDs": 8015,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.1628608260070905,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "aa39002c5aa2961d9e2ceb7ef47c0f1e2476912b7ad8517f30a6b00ed4eae548",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0004774080007337034,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.17871194999315776,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.1787158870138228,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 175,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 28,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 16,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.499132506577073,
+          2.066263582138129,
+          -2.069532021482301,
+          -1.4439783525200531,
+          0.03186714525202879,
+          1.6839128142326962
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 34305,
+        "uniqueOriginalIDs": 22111,
+        "largestTileReturnedIDs": 5434,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.041092328989179805,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "2f6973d01a59819e3c919521f3ee1baefcbde080dde75160a973c8e312cc99cc",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00015105100465007126,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.04327212198404595,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.04327552899485454,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 30,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 17,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.2818343058842907,
+          2.2835617828309114,
+          -2.286653832200343,
+          -1.2268565418020112,
+          0.022562037577393952,
+          1.6932179219073311
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          5,
+          5,
+          7
+        ],
+        "tileQueries": 175,
+        "rawReturnedIDs": 127523,
+        "uniqueOriginalIDs": 69503,
+        "largestTileReturnedIDs": 8015,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.18988623001496308,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "aa39002c5aa2961d9e2ceb7ef47c0f1e2476912b7ad8517f30a6b00ed4eae548",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0003929510130546987,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.20616421900922433,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.20616799499839544,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 175,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 30,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 18,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.507577134834885,
+          2.0734100158924496,
+          -2.0631775209757186,
+          -1.4371752318746531,
+          0.031434321595920904,
+          1.6835701567949115
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 37812,
+        "uniqueOriginalIDs": 24608,
+        "largestTileReturnedIDs": 5633,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.049737643013941124,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "4b0af77fdd531e1ed5f1cb1b69171ad6c5c0a963d39b3b5c2c00cdca45c7e6e1",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00019598499056883156,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.05242852700757794,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.05243203399004415,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 30,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 19,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.2904213497497747,
+          2.29056580097756,
+          -2.2801558779313935,
+          -1.2201968749189782,
+          0.02210773043176376,
+          1.6928967479590689
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          5,
+          5,
+          7
+        ],
+        "tileQueries": 175,
+        "rawReturnedIDs": 134864,
+        "uniqueOriginalIDs": 75230,
+        "largestTileReturnedIDs": 8015,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.20614840398775414,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "010f57f90462a7a8b74f5d15f7acee3626739c7be9ad3964a97d4981c3330cd3",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0024401969858445227,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.22797658501076512,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.22798104301909916,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 175,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 30,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 20,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.743062938804269,
+          2.300397663259581,
+          -1.8777549947350747,
+          -1.2535995079322313,
+          0.02033363715391818,
+          1.6726577891243986
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 40199,
+        "uniqueOriginalIDs": 25701,
+        "largestTileReturnedIDs": 5983,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.057862887013470754,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "9e2adc395714083019c306ed91bc173a7ed7ffb9bba4706c91cb5e33c3c2514f",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00016208199667744339,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.06172902599791996,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.06173278400092386,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 45,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 21,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.5279116546102505,
+          2.5155489474535995,
+          -2.092726131655406,
+          -1.0386283710119,
+          0.010988979391825762,
+          1.682002446886491
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          4,
+          5,
+          7
+        ],
+        "tileQueries": 140,
+        "rawReturnedIDs": 236970,
+        "uniqueOriginalIDs": 128888,
+        "largestTileReturnedIDs": 28220,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.605998697981704,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "a48d0dfa45dc909a5c6fcaaf9174d5fb7d3cb27fd1c33c532d1e722c55ed5d96",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0007208310125861317,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.662704490008764,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.6627083369821776,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 140,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 45,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 22,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.7510448397013616,
+          2.3083795641566724,
+          -1.8714030570905722,
+          -1.2472475702877295,
+          0.01995476053803217,
+          1.6722789125085127
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 36903,
+        "uniqueOriginalIDs": 23190,
+        "largestTileReturnedIDs": 5983,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.05447988101514056,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "114cbdd8f4b22c48159d8ecc4394e8df81200567e613896eef4eb9cab0287db7",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00032878099591471255,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.057063373998971656,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.057066511013545096,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 45,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 23,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.535893555507343,
+          2.523530848350691,
+          -2.0863741940109035,
+          -1.032276433367398,
+          0.010610102775939753,
+          1.681623570270605
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          4,
+          5,
+          7
+        ],
+        "tileQueries": 140,
+        "rawReturnedIDs": 233248,
+        "uniqueOriginalIDs": 128888,
+        "largestTileReturnedIDs": 28220,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.5995218169991858,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "a48d0dfa45dc909a5c6fcaaf9174d5fb7d3cb27fd1c33c532d1e722c55ed5d96",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0007564369880128652,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.639036605018191,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.6390409540035762,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 140,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 45,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 24,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.9825199657170298,
+          2.539854690172341,
+          -1.687196865400003,
+          -1.0630413785971597,
+          0.00896733867733741,
+          1.6612914906478178
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 47812,
+        "uniqueOriginalIDs": 32576,
+        "largestTileReturnedIDs": 7846,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.06758519497816451,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "cefb139230798de6d0c4a97692be4bd08fd5b03cae52876335f7fb32e7cc8c8a",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0002974029921460897,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.07011758501175791,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.07012081000721082,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 60,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 25,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.7673686815230112,
+          2.7550059743663597,
+          -1.9021680023203338,
+          -0.8480702416768287,
+          -0.00037731908475499565,
+          1.6706361484099101
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          4,
+          5,
+          7
+        ],
+        "tileQueries": 140,
+        "rawReturnedIDs": 186975,
+        "uniqueOriginalIDs": 112322,
+        "largestTileReturnedIDs": 13277,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.3315162949729711,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "cc56587025903057ef41763b79f102542f48947b94a9a36e75cf8239363cbebf",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0007008239917922765,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.3529654140002094,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.3529691509902477,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 140,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 60,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 26,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.9905018666141214,
+          2.547836591069433,
+          -1.6808449277555009,
+          -1.0566894409526573,
+          0.008588462061451373,
+          1.6609126140319317
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 47855,
+        "uniqueOriginalIDs": 32576,
+        "largestTileReturnedIDs": 7846,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.06767118800780736,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "cefb139230798de6d0c4a97692be4bd08fd5b03cae52876335f7fb32e7cc8c8a",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00022036998416297138,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.07032279900158755,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.07032621599500999,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 60,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 27,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          1.7753505824201028,
+          2.762987875263452,
+          -1.8958160646758322,
+          -0.8417183040323261,
+          -0.0007561957006410394,
+          1.670257271794024
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          4,
+          5,
+          7
+        ],
+        "tileQueries": 140,
+        "rawReturnedIDs": 194354,
+        "uniqueOriginalIDs": 118021,
+        "largestTileReturnedIDs": 13277,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.3415208989754319,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "e2f27a10d7de9576370f438914829676605f82fcfed7e9af0e797c6b4fd56179",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0006922269822098315,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.3626153180084657,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.36262318200897425,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 140,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 60,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 28,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          2.221976992629791,
+          2.779311717085103,
+          -1.4966387360649318,
+          -0.8724832492620883,
+          -0.002398959799243379,
+          1.649925192171237
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 52547,
+        "uniqueOriginalIDs": 33259,
+        "largestTileReturnedIDs": 7603,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.08926917499047704,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "00633e3645b814f552edbcc362f8fc675541598825efb276226b852703b11f02",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00025592700694687665,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.09211743299965747,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.09212065898464061,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 75,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 29,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          2.0068257084357723,
+          2.9944630012791214,
+          -1.711609872985263,
+          -0.6575121123417572,
+          -0.011743617561335795,
+          1.6592698499333294
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          4,
+          5,
+          7
+        ],
+        "tileQueries": 140,
+        "rawReturnedIDs": 160314,
+        "uniqueOriginalIDs": 99247,
+        "largestTileReturnedIDs": 9932,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.2994316179829184,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "ebf6e9f2aa42d2adc7d5f99024d940974d972f17e8f497c6ffb9061c31eaa742",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0005703629867639393,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.31451456499053165,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.3145179520070087,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 140,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 75,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 30,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          2.2299588935268835,
+          2.7872936179821943,
+          -1.4902867984204295,
+          -0.8661313116175864,
+          -0.002777836415129381,
+          1.649546315555351
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 52547,
+        "uniqueOriginalIDs": 33259,
+        "largestTileReturnedIDs": 7603,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.08137722001993097,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "00633e3645b814f552edbcc362f8fc675541598825efb276226b852703b11f02",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00043194301542825997,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.0843197429785505,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.08432323901797645,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 75,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 31,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          2.0148076093328644,
+          3.002444902176213,
+          -1.7052579353407602,
+          -0.6511601746972551,
+          -0.012122494177221797,
+          1.6588909733174433
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          4,
+          5,
+          7
+        ],
+        "tileQueries": 140,
+        "rawReturnedIDs": 160224,
+        "uniqueOriginalIDs": 99247,
+        "largestTileReturnedIDs": 9932,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.3074648550245911,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "ebf6e9f2aa42d2adc7d5f99024d940974d972f17e8f497c6ffb9061c31eaa742",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0006837609980721027,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.3218145289865788,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.32181931799277663,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 140,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 75,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 32,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          2.461434019542552,
+          3.0187687439978625,
+          -1.3060806067298603,
+          -0.6819251199270171,
+          -0.013765258275824144,
+          1.6385588936946562
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 49642,
+        "uniqueOriginalIDs": 33823,
+        "largestTileReturnedIDs": 7852,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.08255967198056169,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "f56e95f5472f2259e776733e59da8d4a5c2cc4a4ef64f516987746d8084e7175",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00020218599820509553,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.08621615101583302,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.08621938800206408,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 90,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 33,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          2.246282735348533,
+          3.2339200281918816,
+          -1.5210517436501916,
+          -0.4669539830066859,
+          -0.02310991603791656,
+          1.6479035514567486
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          4,
+          5,
+          7
+        ],
+        "tileQueries": 140,
+        "rawReturnedIDs": 201755,
+        "uniqueOriginalIDs": 116441,
+        "largestTileReturnedIDs": 24448,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.5042863939888775,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "82518bf93c8ffcd91591e095b40262cb90c4486bb2327f0e10e7754a1c305f4c",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0007577700016554445,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.5297081989992876,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.5297869259957224,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 140,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 90,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 34,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          2.4694159204396438,
+          3.0267506448949546,
+          -1.2997286690853582,
+          -0.6755731822825146,
+          -0.014144134891710174,
+          1.6381800170787701
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 43813,
+        "uniqueOriginalIDs": 29098,
+        "largestTileReturnedIDs": 7686,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.06409307700232603,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "c3ec100f5f7e212c9a0fbc398395c4d6b2db1b38c0e8f2ba0b2159d712edb9c5",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00017492499318905175,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.06678379199001938,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.06678735799505375,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 90,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 35,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          2.254264636245625,
+          3.2419019290889737,
+          -1.514699806005689,
+          -0.46060204536218363,
+          -0.023488792653802583,
+          1.6475246748408625
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          4,
+          5,
+          7
+        ],
+        "tileQueries": 140,
+        "rawReturnedIDs": 201755,
+        "uniqueOriginalIDs": 116441,
+        "largestTileReturnedIDs": 24448,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.6191207099764142,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "82518bf93c8ffcd91591e095b40262cb90c4486bb2327f0e10e7754a1c305f4c",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0007644520082976669,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.6469741679902654,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.6470912559889257,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 140,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 90,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 36,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          2.55814754696471,
+          3.139286072211766,
+          -1.2077526312099,
+          -0.5958310348301383,
+          -0.018129296884778844,
+          1.6322590766846
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 39425,
+        "uniqueOriginalIDs": 26070,
+        "largestTileReturnedIDs": 5584,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.05048955499660224,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "f9f214043d6738367287aeefe944495e285862850f399daec6210dfc5a11b5b5",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00015942699974402785,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.05318444798467681,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.053187752986559644,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 106,
+        "half": 0,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 37,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          2.340786490769014,
+          3.3566471284074617,
+          -1.4249553069044967,
+          -0.3786283591355418,
+          -0.027005338548346323,
+          1.6411351183481675
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          5,
+          5,
+          7
+        ],
+        "tileQueries": 175,
+        "rawReturnedIDs": 190952,
+        "uniqueOriginalIDs": 114826,
+        "largestTileReturnedIDs": 25031,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.3959349939832464,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "6dcabab36c936f7eb4180bf2603a4d1c6e00850b3bc875693564c5ef05437adf",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0007113130122888833,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.4224461980047636,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.4224494750087615,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 175,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 106,
+        "half": 0,
+        "body": "horizontalMargin"
+      }
+    },
+    {
+      "index": 38,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          2.5645327006959704,
+          3.1461439448872395,
+          -1.1993571745769014,
+          -0.5887102702662061,
+          -0.018479540028414003,
+          1.6317876833402885
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          3,
+          3,
+          7
+        ],
+        "tileQueries": 63,
+        "rawReturnedIDs": 39101,
+        "uniqueOriginalIDs": 26070,
+        "largestTileReturnedIDs": 6578,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.04840601299656555,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "f9f214043d6738367287aeefe944495e285862850f399daec6210dfc5a11b5b5",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.00015519800945185125,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.05050550599116832,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.05050858299364336,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 63,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 106,
+        "half": 1,
+        "body": "actualBody"
+      }
+    },
+    {
+      "index": 39,
+      "completed": true,
+      "exceptionType": null,
+      "tiledQuery": {
+        "kind": "same VTK broad-phase bin union via closed contiguous AABB tiles",
+        "VTKVersion": "9.3.1",
+        "VTKSource": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkStaticCellLocator.cxx",
+        "sourceLines": [
+          486,
+          530
+        ],
+        "referenceBounds": [
+          2.347306069340501,
+          3.363370576242708,
+          -1.4164266768058777,
+          -0.3716407680372297,
+          -0.027322518378847166,
+          1.6406306616907216
+        ],
+        "tileSizeReferenceUnits": 0.25,
+        "tilesPerAxis": [
+          5,
+          5,
+          7
+        ],
+        "tileQueries": 175,
+        "rawReturnedIDs": 190698,
+        "uniqueOriginalIDs": 114826,
+        "largestTileReturnedIDs": 25031,
+        "resourceCaps": {
+          "tiles": 10000,
+          "rawIDs": 32000000,
+          "uniqueIDs": 200000
+        },
+        "queryWallSeconds": 0.424847481015604,
+        "originalGeometryChanged": false,
+        "sameSortedGroundCandidateSemantics": true,
+        "perTickCollisionOrderChanged": false,
+        "outsideQueryClampingPreserved": true,
+        "physicalAuthority": false
+      },
+      "tiledFailureDetails": null,
+      "sortedCandidateIDsSHA256": "6dcabab36c936f7eb4180bf2603a4d1c6e00850b3bc875693564c5ef05437adf",
+      "candidateIDEncoding": "sorted unique original IDs, signed int64 little-endian, C order",
+      "candidateDigestWallSeconds": 0.0008491089974995703,
+      "candidateDigestIncludedInPrepassTime": true,
+      "prepassWallSeconds": 0.4523471599968616,
+      "fallbackWallSeconds": 0.0,
+      "fallbackUsed": false,
+      "fallbackCompleted": false,
+      "prepassContact": false,
+      "prepassFirstReferenceCellID": null,
+      "prepassExactTriangleTests": 0,
+      "fallbackExactTriangleTests": 0,
+      "prepassBoxQueryDelta": 1,
+      "fallbackBoxQueryDelta": 0,
+      "returnedResultCountsDescribeReturnedPassOnly": true,
+      "candidateOrderPolicy": "sorted union prepass; ANY positive replays original native order",
+      "permittedNegativeResultDifferenceFields": [
+        "skippedGroundCandidateIDsFirst16"
+      ],
+      "newCollisionGeometry": false,
+      "physicalAuthority": false,
+      "returnedContact": false,
+      "returnedFirstReferenceCellID": null,
+      "returnedPassExactTriangleTests": 0,
+      "totalWallSeconds": 0.45235069599584676,
+      "actualBoxQueryCounterDelta": 1,
+      "actualExactTriangleCounterDelta": 0,
+      "nativeBoundsCallsTotal": 175,
+      "fallbackNativeBoundsCalls": 0,
+      "savedCase": {
+        "tick": 106,
+        "half": 1,
+        "body": "horizontalMargin"
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "tick": 0,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "optimized"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 0.9405909549968783,
+      "originalCandidateIdentityCaptureSeconds": 0.017438855982618406,
+      "originalWallSecondsExcludingIdentityCapture": 0.9231520990142599,
+      "optimizedWallSeconds": 0.1614847790042404,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 0,
+      "half": 1,
+      "executionOrder": [
+        "optimized",
+        "original"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 0.8011340009979904,
+      "originalCandidateIdentityCaptureSeconds": 0.01622772397240624,
+      "originalWallSecondsExcludingIdentityCapture": 0.7849062770255841,
+      "optimizedWallSeconds": 0.1557441469922196,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 9,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "optimized"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 0.8565405109839048,
+      "originalCandidateIdentityCaptureSeconds": 0.016805167979327962,
+      "originalWallSecondsExcludingIdentityCapture": 0.8397353430045769,
+      "optimizedWallSeconds": 0.17461557500064373,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 9,
+      "half": 1,
+      "executionOrder": [
+        "optimized",
+        "original"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 0.8788580440159421,
+      "originalCandidateIdentityCaptureSeconds": 0.01851239099050872,
+      "originalWallSecondsExcludingIdentityCapture": 0.8603456530254334,
+      "optimizedWallSeconds": 0.16974264799500816,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 15,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "optimized"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 1.054567005019635,
+      "originalCandidateIdentityCaptureSeconds": 0.018977326981257647,
+      "originalWallSecondsExcludingIdentityCapture": 1.0355896780383773,
+      "optimizedWallSeconds": 0.21894733599037863,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 15,
+      "half": 1,
+      "executionOrder": [
+        "optimized",
+        "original"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 1.2461501999932807,
+      "originalCandidateIdentityCaptureSeconds": 0.019792903010966256,
+      "originalWallSecondsExcludingIdentityCapture": 1.2263572969823144,
+      "optimizedWallSeconds": 0.25855703599518165,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 28,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "optimized"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 1.2258132440038025,
+      "originalCandidateIdentityCaptureSeconds": 0.01900277502136305,
+      "originalWallSecondsExcludingIdentityCapture": 1.2068104689824395,
+      "optimizedWallSeconds": 0.21901084401179105,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 28,
+      "half": 1,
+      "executionOrder": [
+        "optimized",
+        "original"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 1.3995950579992495,
+      "originalCandidateIdentityCaptureSeconds": 0.02335778801352717,
+      "originalWallSecondsExcludingIdentityCapture": 1.3762372699857224,
+      "optimizedWallSeconds": 0.22399254600168206,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 30,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "optimized"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 1.237808773003053,
+      "originalCandidateIdentityCaptureSeconds": 0.019524914998328313,
+      "originalWallSecondsExcludingIdentityCapture": 1.2182838580047246,
+      "optimizedWallSeconds": 0.24986020900541916,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 30,
+      "half": 1,
+      "executionOrder": [
+        "optimized",
+        "original"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 1.4846800960076507,
+      "originalCandidateIdentityCaptureSeconds": 0.02164326500496827,
+      "originalWallSecondsExcludingIdentityCapture": 1.4630368310026824,
+      "optimizedWallSeconds": 0.2808278780139517,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 45,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "optimized"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 3.919104311004048,
+      "originalCandidateIdentityCaptureSeconds": 0.033018027985235676,
+      "originalWallSecondsExcludingIdentityCapture": 3.8860862830188125,
+      "optimizedWallSeconds": 0.7247743199986871,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 45,
+      "half": 1,
+      "executionOrder": [
+        "optimized",
+        "original"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 3.7176480300258845,
+      "originalCandidateIdentityCaptureSeconds": 0.04781276796711609,
+      "originalWallSecondsExcludingIdentityCapture": 3.6698352620587684,
+      "optimizedWallSeconds": 0.6963832470064517,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 60,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "optimized"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 3.1464293629978783,
+      "originalCandidateIdentityCaptureSeconds": 0.03084190600202419,
+      "originalWallSecondsExcludingIdentityCapture": 3.115587456995854,
+      "optimizedWallSeconds": 0.4234009600186255,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 60,
+      "half": 1,
+      "executionOrder": [
+        "optimized",
+        "original"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 3.3963915260101203,
+      "originalCandidateIdentityCaptureSeconds": 0.030242331995395944,
+      "originalWallSecondsExcludingIdentityCapture": 3.3661491940147243,
+      "optimizedWallSeconds": 0.4332388059992809,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 75,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "optimized"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 2.4969972380204126,
+      "originalCandidateIdentityCaptureSeconds": 0.03250741297961213,
+      "originalWallSecondsExcludingIdentityCapture": 2.4644898250408005,
+      "optimizedWallSeconds": 0.4071172330004629,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 75,
+      "half": 1,
+      "executionOrder": [
+        "optimized",
+        "original"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 2.4641693079902325,
+      "originalCandidateIdentityCaptureSeconds": 0.028248570015421137,
+      "originalWallSecondsExcludingIdentityCapture": 2.4359207379748113,
+      "optimizedWallSeconds": 0.40638523900997825,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 90,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "optimized"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 2.8606876929989085,
+      "originalCandidateIdentityCaptureSeconds": 0.03286065501742996,
+      "originalWallSecondsExcludingIdentityCapture": 2.8278270379814785,
+      "optimizedWallSeconds": 0.6165981740050483,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 90,
+      "half": 1,
+      "executionOrder": [
+        "optimized",
+        "original"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 3.540762310003629,
+      "originalCandidateIdentityCaptureSeconds": 0.039398280961904675,
+      "originalWallSecondsExcludingIdentityCapture": 3.5013640290417243,
+      "optimizedWallSeconds": 0.7141513009846676,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 106,
+      "half": 0,
+      "executionOrder": [
+        "original",
+        "optimized"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 3.0990724099974614,
+      "originalCandidateIdentityCaptureSeconds": 0.030952144996263087,
+      "originalWallSecondsExcludingIdentityCapture": 3.0681202650011983,
+      "optimizedWallSeconds": 0.476000964990817,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    },
+    {
+      "tick": 106,
+      "half": 1,
+      "executionOrder": [
+        "optimized",
+        "original"
+      ],
+      "originalWallSecondsIncludingIdentityCapture": 3.2077644689998124,
+      "originalCandidateIdentityCaptureSeconds": 0.02932535798754543,
+      "originalWallSecondsExcludingIdentityCapture": 3.178439111012267,
+      "optimizedWallSeconds": 0.5031035040155984,
+      "onlyPermittedDiagnosticDifferences": {
+        "actualBody": [
+          "skippedGroundCandidateIDsFirst16"
+        ],
+        "horizontalMargin": [
+          "skippedGroundCandidateIDsFirst16"
+        ]
+      },
+      "physicalContactAndClassificationEquality": true
+    }
+  ],
+  "runtime": {
+    "version": "9.3.1",
+    "SMPBackend": "Sequential",
+    "threads": 1,
+    "executionMachine": {
+      "system": "Linux",
+      "release": "6.18.55",
+      "machine": "x86_64",
+      "cpuReportedModel": "AMD EPYC 7763 64-Core Processor",
+      "logicalCPUAffinityCount": 1,
+      "memorySnapshotBytes": {
+        "MemTotal": 10451439616,
+        "MemAvailable": 4590092288
+      },
+      "CPUQuotaNotEstablished": true,
+      "iPhoneRuntimeTest": false,
+      "GPUUsed": false
+    }
+  },
+  "referenceMesh": {
+    "vertices": 8940320,
+    "triangles": 17801112,
+    "originalPLYType": "float64",
+    "VTKPointScalarType": "float",
+    "geometryDecimated": false,
+    "meshTransformed": false,
+    "unusedAttributesReleased": true
+  },
+  "totalWallSeconds": 65.3493249900057,
+  "oldResultsChanged": false,
+  "geometryOrGroundOrBodyChanged": false,
+  "navigationEpisodes": 0,
+  "physicalAuthority": false
+}

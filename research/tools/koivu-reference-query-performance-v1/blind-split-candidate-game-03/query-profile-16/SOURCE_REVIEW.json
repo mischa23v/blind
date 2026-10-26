@@ -1,0 +1,16 @@
+{
+  "scope": "Independent read-only review of instrumentation copy, fixed saved-pose driver and bounded watchdog",
+  "instrumentedScorerSHA256": "3154b8e1262e8d1cc431091116accf40f2d28b17400bad2f06d3dc32d076f6bb",
+  "driverSHA256": "b90070e7be6d59931fbfccf8e95d4ee586be5b286201ec371f863a3f53f65099",
+  "watchdogSHA256": "590efb4e79b4de1d12b2b7a2ede44adcf419c99c754d1fa01eab60ec950278dd",
+  "generationPreservesOriginalFourMethodASTs": true,
+  "timingRowsSeparateFromOriginalCollisionReceipts": true,
+  "exclusivePhasesAndNestedOwnerTimingNotDoubleAdded": true,
+  "wholeSweepOutsideContactTimeRetained": true,
+  "recordedDataRunBeforeThisReview": false,
+  "semanticGroundReceiptComparisonRequired": true,
+  "sameFixedTicksAndGeometryRequired": true,
+  "nativeDominanceCriterion": "native bounds time > half of whole instrumented swept_contacts elapsed",
+  "sourceClose": "clear for one bounded profiling run; no optimizer or new movement result",
+  "physicalAuthority": false
+}
