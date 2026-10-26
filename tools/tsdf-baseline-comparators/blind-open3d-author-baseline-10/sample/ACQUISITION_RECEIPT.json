@@ -1,0 +1,120 @@
+{
+  "archive": {
+    "bytes": 3772513,
+    "md5": "43971c5f690c9cfc52dda8c96a0140ee",
+    "sha256": "4f161ba04d81cbe628fc69dac20552749f1b255b0090fe51c766e5d02355937b",
+    "url": "https://github.com/isl-org/open3d_downloads/releases/download/20220301-data/SampleRedwoodRGBDImages.zip"
+  },
+  "elapsedSeconds": 15.047330343993963,
+  "expandedBytes": 6996223,
+  "expectedArchiveBytes": 3772513,
+  "files": [
+    {
+      "bytes": 125,
+      "name": "camera_primesense.json",
+      "sha256": "69ec0cb6a0beeead2551e332e1f728df6d1fe37f4b056410580733d2dbc54259"
+    },
+    {
+      "bytes": 63425,
+      "name": "color/00000.jpg",
+      "sha256": "29468161241d7ef92312991cf0019d7ccf199db1fafbf783d27288ef279d270a"
+    },
+    {
+      "bytes": 63254,
+      "name": "color/00001.jpg",
+      "sha256": "99afaf2e053d57f63b0ef730e6c32d2ae313ad2ef9e83218e253f020188a61df"
+    },
+    {
+      "bytes": 63672,
+      "name": "color/00002.jpg",
+      "sha256": "2c540e0a3c76973b32bcff184ca5dfdec074f262615c4bb5b4d40370429905bd"
+    },
+    {
+      "bytes": 63241,
+      "name": "color/00003.jpg",
+      "sha256": "0ceb63f92fa3c37fe594d480593ff85422c32bcefbfbe468b628af33eeb5f6b3"
+    },
+    {
+      "bytes": 63495,
+      "name": "color/00004.jpg",
+      "sha256": "f32bc60e53da906355e57f879ffabc1195203de19964f3b6e1bd17d1ab14b4ec"
+    },
+    {
+      "bytes": 93238,
+      "name": "depth/00000.png",
+      "sha256": "3eff7854dd5f056fe6f67ce68999a632fbc1fe6f3555cc00f83528312d6cb186"
+    },
+    {
+      "bytes": 93572,
+      "name": "depth/00001.png",
+      "sha256": "9c2a4fc35748ecc883e0142e5353a4d6da22afde9702db3a580ed767aa2b17f2"
+    },
+    {
+      "bytes": 93413,
+      "name": "depth/00002.png",
+      "sha256": "98041b11392817c2781b8853953aa483f707cc19b1c1a9ab2eab6fccac8ee240"
+    },
+    {
+      "bytes": 93869,
+      "name": "depth/00003.png",
+      "sha256": "1861e3fc0fc69c60c98d38730f0c8b5e57eba3311b6499356122e73fb3745849"
+    },
+    {
+      "bytes": 93943,
+      "name": "depth/00004.png",
+      "sha256": "b1dbfb18965ff45e6a927bef653181a4f3a7a99e6638d1190064c3f0dbc60f29"
+    },
+    {
+      "bytes": 6208598,
+      "name": "example_tsdf_pcd.ply",
+      "sha256": "e473fb2d7d283a55fa3f0537c31c26ce1feaf406467edbfc4958b462985bcfaf"
+    },
+    {
+      "bytes": 928,
+      "name": "odometry.log",
+      "sha256": "06c527e3715ce1c3b8b30839e15d866dda067a392e8d91fbf5c4450c54cb0b12"
+    },
+    {
+      "bytes": 160,
+      "name": "rgbd.match",
+      "sha256": "6da5acb7945e539950ae800ef5d3c416a3bad958ee5450b9480834394b746bcb"
+    },
+    {
+      "bytes": 1290,
+      "name": "trajectory.log",
+      "sha256": "1e573b3bdd3d82d8c332b632eff956588c56291690fefbd0f8b620c47c3201fb"
+    }
+  ],
+  "finalFreeBytesBeforeReceipt": 1461055488,
+  "helperSHA256": "64cb34f1e637d0c5c416e3b09f5c4e64e35b7bbea81bac6841e3538927e207ad",
+  "initialFreeBytes": 1471889408,
+  "limits": {
+    "downloadBytes": 4194304,
+    "expandedBytes": 67108864,
+    "members": 1000,
+    "reserveBytes": 805306368,
+    "stageBytes": 943718400,
+    "wallSeconds": 120
+  },
+  "publishedMD5": "43971c5f690c9cfc52dda8c96a0140ee",
+  "purpose": "official engine fixture acquisition only; no import or integration",
+  "rawSamplePublication": "local only; preserve layered licensing; no raw-data redistribution authorized",
+  "recordedAtUTC": "2026-10-26T06:54:04.487604+00:00",
+  "stageBytesBeforeReceipt": 503738361,
+  "status": "complete",
+  "upstream": {
+    "license": {
+      "bytes": 1139,
+      "gitBlobSHA1": "9134a1223b9732cb1577a698462284ae0d4ff655",
+      "sha256": "e5439bd70250da5f17b3435ff9efb05e96e7f9fdc34248d3355b0026baadaa41",
+      "url": "https://raw.githubusercontent.com/isl-org/Open3D/1e7b17438687a0b0c1e5a7187321ac7044afe275/LICENSE"
+    },
+    "notebook": {
+      "bytes": 6812,
+      "md5": "b227b84f3611681a2471bd609a8cb056",
+      "sha256": "adb7e518ce3c4323ed674e595b116249af7da96382ae910efd36a51c2b8dcfce",
+      "url": "https://raw.githubusercontent.com/isl-org/Open3D/1e7b17438687a0b0c1e5a7187321ac7044afe275/docs/jupyter/pipelines/rgbd_integration.ipynb"
+    },
+    "releaseCommit": "1e7b17438687a0b0c1e5a7187321ac7044afe275"
+  }
+}

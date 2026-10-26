@@ -1,0 +1,19 @@
+{
+  "error": "JSONDecodeError('Expecting value: line 1 column 1 (char 0)')",
+  "phases": [
+    {
+      "command": [
+        "$PYTHON_EXECUTABLE",
+        "$WORKSPACE/blind-open3d-author-baseline-10/koivu_author_fusion.py",
+        "--worker",
+        "$WORKSPACE/blind-open3d-author-baseline-10/KOIVU_FROZEN.json",
+        "$WORKSPACE/blind-open3d-author-baseline-10/koivu",
+        "89e4f8add800d85b772a5314f88c45dbecb1dd5536c0b61c9f5f533727f942d4"
+      ],
+      "cpuSeconds": 105.25,
+      "exitCode": 0,
+      "wallSeconds": 67.4224461880076
+    }
+  ],
+  "status": "failed"
+}

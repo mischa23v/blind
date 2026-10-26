@@ -1,0 +1,3462 @@
+{
+  "FAROUsed": false,
+  "allRangeAndEdgeStatisticsReconciled": true,
+  "checks": 28774,
+  "comparisonTolerance": {
+    "absolute": 2e-12,
+    "relative": 2e-12
+  },
+  "floatComparisons": 8500,
+  "frameCount": 29,
+  "frames": [
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.045284395717737284,
+        "absoluteP50": 0.028946881404628533,
+        "absoluteP90": 0.09063876995849089,
+        "absoluteP95": 0.1532735149918699,
+        "absoluteP99": 0.33513647058413887,
+        "count": 46047,
+        "maximumAbsolute": 0.60673236239699,
+        "meanSigned": 0.019353543717584923,
+        "signedP05": -0.06646477740489075,
+        "signedP50": 0.014130809328752214,
+        "signedP95": 0.13903518531641543
+      },
+      "availability": {
+        "bothPositive": 46047,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 18,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            18,
+            46047
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00011",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 6867,
+        "delta_gt010": 682,
+        "delta_le_002": 37588,
+        "missing_centre": 18,
+        "missing_neighbour": 46,
+        "scheduled_raster_boundary": 864
+      },
+      "outOfDomainStatistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 0,
+      "primaryStatistics": {
+        "MAE": 0.045284395717737284,
+        "absoluteP50": 0.028946881404628533,
+        "absoluteP90": 0.09063876995849089,
+        "absoluteP95": 0.1532735149918699,
+        "absoluteP99": 0.33513647058413887,
+        "count": 46047,
+        "maximumAbsolute": 0.60673236239699,
+        "meanSigned": 0.019353543717584923,
+        "signedP05": -0.06646477740489075,
+        "signedP50": 0.014130809328752214,
+        "signedP95": 0.13903518531641543
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 8432,
+        "delta_gt010": 2718,
+        "delta_le_002": 34051,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.0680617900643814,
+        "absoluteP50": 0.027426191869925676,
+        "absoluteP90": 0.0896248678348075,
+        "absoluteP95": 0.19791211047504376,
+        "absoluteP99": 1.117727515303417,
+        "count": 45736,
+        "maximumAbsolute": 3.1462676058983807,
+        "meanSigned": 0.035857259667685736,
+        "signedP05": -0.06598471768164504,
+        "signedP50": 0.00314870868218442,
+        "signedP95": 0.1693733738861788
+      },
+      "availability": {
+        "bothPositive": 45736,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 329,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            329,
+            45736
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00021",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 14275,
+        "delta_gt010": 1613,
+        "delta_le_002": 28772,
+        "missing_centre": 329,
+        "missing_neighbour": 285,
+        "scheduled_raster_boundary": 791
+      },
+      "outOfDomainStatistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 0,
+      "primaryStatistics": {
+        "MAE": 0.0680617900643814,
+        "absoluteP50": 0.027426191869925676,
+        "absoluteP90": 0.0896248678348075,
+        "absoluteP95": 0.19791211047504376,
+        "absoluteP99": 1.117727515303417,
+        "count": 45736,
+        "maximumAbsolute": 3.1462676058983807,
+        "meanSigned": 0.035857259667685736,
+        "signedP05": -0.06598471768164504,
+        "signedP50": 0.00314870868218442,
+        "signedP95": 0.1693733738861788
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 16527,
+        "delta_gt010": 2563,
+        "delta_le_002": 26111,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.07931900346241079,
+        "absoluteP50": 0.042308657504504854,
+        "absoluteP90": 0.1063920748567219,
+        "absoluteP95": 0.2097070490949311,
+        "absoluteP99": 1.218671971269155,
+        "count": 45969,
+        "maximumAbsolute": 3.295106119514584,
+        "meanSigned": 0.043879524459561295,
+        "signedP05": -0.08715360077057684,
+        "signedP50": 0.030972655500909774,
+        "signedP95": 0.13051577693253835
+      },
+      "availability": {
+        "bothPositive": 45969,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 96,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            94,
+            42820
+          ],
+          [
+            2,
+            3149
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00031",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 14418,
+        "delta_gt010": 2014,
+        "delta_le_002": 28606,
+        "missing_centre": 96,
+        "missing_neighbour": 76,
+        "scheduled_raster_boundary": 855
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.5032586441272722,
+        "absoluteP50": 0.3804889834966909,
+        "absoluteP90": 1.2681359256909908,
+        "absoluteP95": 1.3772214671047627,
+        "absoluteP99": 1.4868817575291462,
+        "count": 3149,
+        "maximumAbsolute": 3.295106119514584,
+        "meanSigned": 0.3003301001878309,
+        "signedP05": -0.6479971215443381,
+        "signedP50": 0.05168400502357251,
+        "signedP95": 1.3765139588996678
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 148,
+      "primaryStatistics": {
+        "MAE": 0.04814231199922423,
+        "absoluteP50": 0.041129968060613864,
+        "absoluteP90": 0.08579600994974936,
+        "absoluteP95": 0.11045502290530348,
+        "absoluteP99": 0.2126253289149606,
+        "count": 42820,
+        "maximumAbsolute": 1.5822851536852114,
+        "meanSigned": 0.02502004610906337,
+        "signedP05": -0.07152015256513235,
+        "signedP50": 0.03054558168550625,
+        "signedP95": 0.09419324009046583
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 17202,
+        "delta_gt010": 1428,
+        "delta_le_002": 26571,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.3057033290584454,
+        "absoluteP50": 0.039228521322214216,
+        "absoluteP90": 1.271113156396673,
+        "absoluteP95": 1.6756103087454193,
+        "absoluteP99": 2.809592625676492,
+        "count": 45894,
+        "maximumAbsolute": 5.87149550845279,
+        "meanSigned": 0.21443452415945818,
+        "signedP05": -0.09213891982808689,
+        "signedP50": -0.006079931186051435,
+        "signedP95": 1.5994709299718304
+      },
+      "availability": {
+        "bothPositive": 45894,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 171,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            142,
+            33078
+          ],
+          [
+            29,
+            12816
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00041",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 21385,
+        "delta_gt010": 6640,
+        "delta_le_002": 16826,
+        "missing_centre": 171,
+        "missing_neighbour": 188,
+        "scheduled_raster_boundary": 855
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.6420077246330059,
+        "absoluteP50": 0.2319386591758792,
+        "absoluteP90": 1.6690566565898708,
+        "absoluteP95": 2.070922348207786,
+        "absoluteP99": 3.1568830486249446,
+        "count": 12816,
+        "maximumAbsolute": 4.987084519744661,
+        "meanSigned": 0.4213733242268711,
+        "signedP05": -1.2965674908808953,
+        "signedP50": 0.13585311877061246,
+        "signedP95": 1.998373290681384
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 1414,
+      "primaryStatistics": {
+        "MAE": 0.17540291386757634,
+        "absoluteP50": 0.031041799128511682,
+        "absoluteP90": 0.3381218967301345,
+        "absoluteP95": 1.1739451985943095,
+        "absoluteP99": 2.762828309821214,
+        "count": 33078,
+        "maximumAbsolute": 5.87149550845279,
+        "meanSigned": 0.1342565308810265,
+        "signedP05": -0.06602009539852413,
+        "signedP50": -0.013788274721350524,
+        "signedP95": 1.1739451985943095
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 22897,
+        "delta_gt010": 5502,
+        "delta_le_002": 16802,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.29067091220926516,
+        "absoluteP50": 0.07928892357295125,
+        "absoluteP90": 0.7803903417555954,
+        "absoluteP95": 1.358057366288339,
+        "absoluteP99": 3.2241812471252724,
+        "count": 46030,
+        "maximumAbsolute": 5.34274465151471,
+        "meanSigned": 0.23723457668654738,
+        "signedP05": -0.06258507274203269,
+        "signedP50": 0.061092089166332464,
+        "signedP95": 1.2432425919178367
+      },
+      "availability": {
+        "bothPositive": 46030,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 35,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            25,
+            28529
+          ],
+          [
+            10,
+            17501
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00051",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 20380,
+        "delta_gt010": 7168,
+        "delta_le_002": 17526,
+        "missing_centre": 35,
+        "missing_neighbour": 92,
+        "scheduled_raster_boundary": 864
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.4289064113663695,
+        "absoluteP50": 0.19972042459734318,
+        "absoluteP90": 1.1402573205927116,
+        "absoluteP95": 2.376635527024596,
+        "absoluteP99": 3.234029818725515,
+        "count": 17501,
+        "maximumAbsolute": 4.236225916156167,
+        "meanSigned": 0.33757673144355754,
+        "signedP05": -0.07430692214517709,
+        "signedP50": 0.18416295414810158,
+        "signedP95": 1.8103931077023008
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 1308,
+      "primaryStatistics": {
+        "MAE": 0.2058709027189752,
+        "absoluteP50": 0.03887720934652794,
+        "absoluteP90": 0.5529132129614525,
+        "absoluteP95": 1.0493288407665216,
+        "absoluteP99": 3.1571055572713833,
+        "count": 28529,
+        "maximumAbsolute": 5.34274465151471,
+        "meanSigned": 0.17568008650454192,
+        "signedP05": -0.061635337851899855,
+        "signedP50": 0.0023697110034177626,
+        "signedP95": 1.0403735099736982
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 22865,
+        "delta_gt010": 6806,
+        "delta_le_002": 15530,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.22960249202134658,
+        "absoluteP50": 0.05166510468982599,
+        "absoluteP90": 0.6880385524660594,
+        "absoluteP95": 1.1982981870107459,
+        "absoluteP99": 2.9645296912501387,
+        "count": 44945,
+        "maximumAbsolute": 3.410019126219104,
+        "meanSigned": 0.18152050557624716,
+        "signedP05": -0.1229621992321581,
+        "signedP50": 0.037462062708953914,
+        "signedP95": 1.1562761847847844
+      },
+      "availability": {
+        "bothPositive": 44945,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 1120,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            1001,
+            41012
+          ],
+          [
+            119,
+            3933
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00061",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 7267,
+        "delta_gt010": 2312,
+        "delta_le_002": 34258,
+        "missing_centre": 1120,
+        "missing_neighbour": 333,
+        "scheduled_raster_boundary": 775
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.09654946479272132,
+        "absoluteP50": 0.0692216364304663,
+        "absoluteP90": 0.22900829143504434,
+        "absoluteP95": 0.2641050102387091,
+        "absoluteP99": 0.3059702536289798,
+        "count": 3933,
+        "maximumAbsolute": 0.35888032223234223,
+        "meanSigned": -0.08593304725941552,
+        "signedP05": -0.26397674050082964,
+        "signedP50": -0.06632698678408477,
+        "signedP95": 0.03793472946324609
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 886,
+      "primaryStatistics": {
+        "MAE": 0.24236211252486223,
+        "absoluteP50": 0.050470755042311244,
+        "absoluteP90": 0.7562150633913434,
+        "absoluteP95": 1.423274436438477,
+        "absoluteP99": 2.9800001799749207,
+        "count": 41012,
+        "maximumAbsolute": 3.410019126219104,
+        "meanSigned": 0.20716897000867332,
+        "signedP05": -0.06692330144083794,
+        "signedP50": 0.04147045801028004,
+        "signedP95": 1.3805066762723255
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 7335,
+        "delta_gt010": 2873,
+        "delta_le_002": 34993,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.21525521092155744,
+        "absoluteP50": 0.05219167430914662,
+        "absoluteP90": 0.639871304863908,
+        "absoluteP95": 1.4413573981867125,
+        "absoluteP99": 1.9906349080988657,
+        "count": 45852,
+        "maximumAbsolute": 4.193458052018675,
+        "meanSigned": 0.07501185327040041,
+        "signedP05": -0.36197252275331426,
+        "signedP50": 0.019567035522479737,
+        "signedP95": 0.8668656033661267
+      },
+      "availability": {
+        "bothPositive": 45852,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 213,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            143,
+            36417
+          ],
+          [
+            70,
+            9435
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00071",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 12522,
+        "delta_gt010": 3776,
+        "delta_le_002": 28519,
+        "missing_centre": 213,
+        "missing_neighbour": 171,
+        "scheduled_raster_boundary": 864
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.33595998418104883,
+        "absoluteP50": 0.09064152330889286,
+        "absoluteP90": 0.8817414445943615,
+        "absoluteP95": 1.6271719623472478,
+        "absoluteP99": 2.074099160048176,
+        "count": 9435,
+        "maximumAbsolute": 3.4616385854696397,
+        "meanSigned": -0.2586285039323772,
+        "signedP05": -1.5701336414104659,
+        "signedP50": -0.07449447704850432,
+        "signedP95": 0.08284399141086601
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 1240,
+      "primaryStatistics": {
+        "MAE": 0.18398274103926895,
+        "absoluteP50": 0.04690374014060872,
+        "absoluteP90": 0.513305700364969,
+        "absoluteP95": 1.289599305926746,
+        "absoluteP99": 1.964346270035085,
+        "count": 36417,
+        "maximumAbsolute": 4.193458052018675,
+        "meanSigned": 0.1614521632961633,
+        "signedP05": -0.06693035830680082,
+        "signedP50": 0.03846639931611584,
+        "signedP95": 1.2860698532276693
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 14594,
+        "delta_gt010": 4052,
+        "delta_le_002": 26555,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.3733069681655425,
+        "absoluteP50": 0.02508031047261039,
+        "absoluteP90": 1.4779437192572884,
+        "absoluteP95": 3.0766451656830767,
+        "absoluteP99": 3.312577367868975,
+        "count": 45823,
+        "maximumAbsolute": 3.9697943538016682,
+        "meanSigned": 0.23621851730238402,
+        "signedP05": -0.3693554805047703,
+        "signedP50": 0.001558347120336645,
+        "signedP95": 3.0766451656830767
+      },
+      "availability": {
+        "bothPositive": 45823,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 242,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            242,
+            45823
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00081",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 8152,
+        "delta_gt010": 2403,
+        "delta_le_002": 34358,
+        "missing_centre": 242,
+        "missing_neighbour": 77,
+        "scheduled_raster_boundary": 833
+      },
+      "outOfDomainStatistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 271,
+      "primaryStatistics": {
+        "MAE": 0.3733069681655425,
+        "absoluteP50": 0.02508031047261039,
+        "absoluteP90": 1.4779437192572884,
+        "absoluteP95": 3.0766451656830767,
+        "absoluteP99": 3.312577367868975,
+        "count": 45823,
+        "maximumAbsolute": 3.9697943538016682,
+        "meanSigned": 0.23621851730238402,
+        "signedP05": -0.3693554805047703,
+        "signedP50": 0.001558347120336645,
+        "signedP95": 3.0766451656830767
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 9222,
+        "delta_gt010": 3974,
+        "delta_le_002": 32005,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.11244204303326823,
+        "absoluteP50": 0.03230508002169019,
+        "absoluteP90": 0.4207032505201074,
+        "absoluteP95": 0.49496276513870896,
+        "absoluteP99": 0.6451568896054104,
+        "count": 46041,
+        "maximumAbsolute": 2.9893795525000786,
+        "meanSigned": -0.051871162161074506,
+        "signedP05": -0.47939506751395555,
+        "signedP50": -0.006705161373855795,
+        "signedP95": 0.1531598611854843
+      },
+      "availability": {
+        "bothPositive": 46041,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 24,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            24,
+            36587
+          ],
+          [
+            0,
+            9454
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00091",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 18900,
+        "delta_gt010": 2415,
+        "delta_le_002": 23818,
+        "missing_centre": 24,
+        "missing_neighbour": 45,
+        "scheduled_raster_boundary": 863
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.33808348156565804,
+        "absoluteP50": 0.3488459426674919,
+        "absoluteP90": 0.5476337144002883,
+        "absoluteP95": 0.6003387069049914,
+        "absoluteP99": 2.7607431174583135,
+        "count": 9454,
+        "maximumAbsolute": 2.9893795525000786,
+        "meanSigned": -0.2793691139860303,
+        "signedP05": -0.5934526325003865,
+        "signedP50": -0.3266054785502406,
+        "signedP95": 0.174469597227812
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 418,
+      "primaryStatistics": {
+        "MAE": 0.054136793630879046,
+        "absoluteP50": 0.023320438574791158,
+        "absoluteP90": 0.11101689851539734,
+        "absoluteP95": 0.2166482258772745,
+        "absoluteP99": 0.5261760137438494,
+        "count": 36587,
+        "maximumAbsolute": 2.1762079178198066,
+        "meanSigned": 0.006913806176125376,
+        "signedP05": -0.09826043002075117,
+        "signedP50": -0.003888830200587723,
+        "signedP95": 0.13505835117277346
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 20885,
+        "delta_gt010": 2920,
+        "delta_le_002": 21396,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.05351923752194896,
+        "absoluteP50": 0.013800311649819541,
+        "absoluteP90": 0.0913212594650511,
+        "absoluteP95": 0.2756402704998174,
+        "absoluteP99": 0.8768787129706085,
+        "count": 45968,
+        "maximumAbsolute": 1.0029979524636332,
+        "meanSigned": 0.03131110889527479,
+        "signedP05": -0.048042841483488696,
+        "signedP50": 0.0074713172258615845,
+        "signedP95": 0.216735475398012
+      },
+      "availability": {
+        "bothPositive": 45968,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 97,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            97,
+            45968
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00102",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 4544,
+        "delta_gt010": 876,
+        "delta_le_002": 39608,
+        "missing_centre": 97,
+        "missing_neighbour": 82,
+        "scheduled_raster_boundary": 858
+      },
+      "outOfDomainStatistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 0,
+      "primaryStatistics": {
+        "MAE": 0.05351923752194896,
+        "absoluteP50": 0.013800311649819541,
+        "absoluteP90": 0.0913212594650511,
+        "absoluteP95": 0.2756402704998174,
+        "absoluteP99": 0.8768787129706085,
+        "count": 45968,
+        "maximumAbsolute": 1.0029979524636332,
+        "meanSigned": 0.03131110889527479,
+        "signedP05": -0.048042841483488696,
+        "signedP50": 0.0074713172258615845,
+        "signedP95": 0.216735475398012
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 6760,
+        "delta_gt010": 1941,
+        "delta_le_002": 36500,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.3225327360661982,
+        "absoluteP50": 0.06236795106010273,
+        "absoluteP90": 1.0077369439718944,
+        "absoluteP95": 1.9877503803254402,
+        "absoluteP99": 2.981819807818489,
+        "count": 45151,
+        "maximumAbsolute": 3.4443263109377202,
+        "meanSigned": 0.20476999354637163,
+        "signedP05": -0.16699140823667924,
+        "signedP50": 0.017142765469332133,
+        "signedP95": 1.7337368971078162
+      },
+      "availability": {
+        "bothPositive": 45151,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 914,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            630,
+            37340
+          ],
+          [
+            284,
+            7811
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00112",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 16993,
+        "delta_gt010": 6460,
+        "delta_le_002": 20164,
+        "missing_centre": 914,
+        "missing_neighbour": 720,
+        "scheduled_raster_boundary": 814
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.6678458922663445,
+        "absoluteP50": 0.3231121302345157,
+        "absoluteP90": 2.2658517698553045,
+        "absoluteP95": 2.444866163194858,
+        "absoluteP99": 2.824464411956735,
+        "count": 7811,
+        "maximumAbsolute": 3.250588665082192,
+        "meanSigned": 0.38935623701171646,
+        "signedP05": -0.627000976536205,
+        "signedP50": 0.27908842091389285,
+        "signedP95": 2.318884548595212
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 3040,
+      "primaryStatistics": {
+        "MAE": 0.2502981066318291,
+        "absoluteP50": 0.049443223244322265,
+        "absoluteP90": 0.7994695300830061,
+        "absoluteP95": 1.4743444707710525,
+        "absoluteP99": 3.098860453604104,
+        "count": 37340,
+        "maximumAbsolute": 3.4443263109377202,
+        "meanSigned": 0.16615716152420218,
+        "signedP05": -0.13188179639082073,
+        "signedP50": 0.006110900492111382,
+        "signedP95": 1.3021450336003517
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 15693,
+        "delta_gt010": 6531,
+        "delta_le_002": 22977,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.24856437913206678,
+        "absoluteP50": 0.0677255231281042,
+        "absoluteP90": 0.6806864632603858,
+        "absoluteP95": 1.3234098454903274,
+        "absoluteP99": 2.070602996735115,
+        "count": 45681,
+        "maximumAbsolute": 3.296483809862345,
+        "meanSigned": 0.09178061307076849,
+        "signedP05": -0.29948375640149294,
+        "signedP50": -0.015215184925997605,
+        "signedP95": 1.0206568950050796
+      },
+      "availability": {
+        "bothPositive": 45681,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 384,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            76,
+            33862
+          ],
+          [
+            308,
+            11819
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00122",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 16862,
+        "delta_gt010": 5271,
+        "delta_le_002": 22394,
+        "missing_centre": 384,
+        "missing_neighbour": 294,
+        "scheduled_raster_boundary": 860
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.43932940608554066,
+        "absoluteP50": 0.21117908065159874,
+        "absoluteP90": 1.3292437503832208,
+        "absoluteP95": 1.7022643905838815,
+        "absoluteP99": 2.1783388012308835,
+        "count": 11819,
+        "maximumAbsolute": 3.0820325998984854,
+        "meanSigned": 0.04897838503569151,
+        "signedP05": -1.6143735078587156,
+        "signedP50": -0.03827052164506117,
+        "signedP95": 1.2636408557379772
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 1003,
+      "primaryStatistics": {
+        "MAE": 0.18198083847991667,
+        "absoluteP50": 0.05012125456472183,
+        "absoluteP90": 0.521328901857436,
+        "absoluteP95": 0.8415989814223763,
+        "absoluteP99": 1.9392507506478986,
+        "count": 33862,
+        "maximumAbsolute": 3.296483809862345,
+        "meanSigned": 0.10672005944565995,
+        "signedP05": -0.12290925500080858,
+        "signedP50": -0.012443466338950993,
+        "signedP95": 0.8297066772591232
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 16080,
+        "delta_gt010": 4780,
+        "delta_le_002": 24341,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.19532078165308367,
+        "absoluteP50": 0.061956465981060416,
+        "absoluteP90": 0.3179736215144898,
+        "absoluteP95": 1.2553515330754519,
+        "absoluteP99": 2.332487986496093,
+        "count": 45682,
+        "maximumAbsolute": 3.483159250932381,
+        "meanSigned": 0.038107973271824955,
+        "signedP05": -0.165990783003422,
+        "signedP50": 0.006757259992206999,
+        "signedP95": 0.4980879084105839
+      },
+      "availability": {
+        "bothPositive": 45682,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 383,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            383,
+            45483
+          ],
+          [
+            0,
+            199
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00132",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 15330,
+        "delta_gt010": 3427,
+        "delta_le_002": 25607,
+        "missing_centre": 383,
+        "missing_neighbour": 460,
+        "scheduled_raster_boundary": 858
+      },
+      "outOfDomainStatistics": {
+        "MAE": 1.8621574955769795,
+        "absoluteP50": 2.0355367191780056,
+        "absoluteP90": 2.5799827563917295,
+        "absoluteP95": 2.5909316714726334,
+        "absoluteP99": 2.6067936862860996,
+        "count": 199,
+        "maximumAbsolute": 2.615921765270932,
+        "meanSigned": -1.6690379822261783,
+        "signedP05": -2.5909316714726334,
+        "signedP50": -2.0355367191780056,
+        "signedP95": 0.5071048158999337
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 643,
+      "primaryStatistics": {
+        "MAE": 0.18802793584100322,
+        "absoluteP50": 0.061457646994599546,
+        "absoluteP90": 0.301688463833578,
+        "absoluteP95": 1.0153225067651335,
+        "absoluteP99": 2.257011320009655,
+        "count": 45483,
+        "maximumAbsolute": 3.483159250932381,
+        "meanSigned": 0.04557718253999334,
+        "signedP05": -0.16295991769331558,
+        "signedP50": 0.006951236241935721,
+        "signedP95": 0.49749318707875234
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 18113,
+        "delta_gt010": 3381,
+        "delta_le_002": 23707,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.10622866167553234,
+        "absoluteP50": 0.03600208350279177,
+        "absoluteP90": 0.08994984803635883,
+        "absoluteP95": 0.19900534781486987,
+        "absoluteP99": 2.8305001431355308,
+        "count": 43790,
+        "maximumAbsolute": 2.8955245424873794,
+        "meanSigned": -0.0328371229160914,
+        "signedP05": -0.0706941995419441,
+        "signedP50": 0.022826409197638675,
+        "signedP95": 0.1025803837389059
+      },
+      "availability": {
+        "bothPositive": 43790,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 2275,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            2275,
+            43790
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00142",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 14240,
+        "delta_gt010": 1746,
+        "delta_le_002": 26650,
+        "missing_centre": 2275,
+        "missing_neighbour": 445,
+        "scheduled_raster_boundary": 709
+      },
+      "outOfDomainStatistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 0,
+      "primaryStatistics": {
+        "MAE": 0.10622866167553234,
+        "absoluteP50": 0.03600208350279177,
+        "absoluteP90": 0.08994984803635883,
+        "absoluteP95": 0.19900534781486987,
+        "absoluteP99": 2.8305001431355308,
+        "count": 43790,
+        "maximumAbsolute": 2.8955245424873794,
+        "meanSigned": -0.0328371229160914,
+        "signedP05": -0.0706941995419441,
+        "signedP50": 0.022826409197638675,
+        "signedP95": 0.1025803837389059
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 16203,
+        "delta_gt010": 1125,
+        "delta_le_002": 27873,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.04326667859480264,
+        "absoluteP50": 0.033201939530626445,
+        "absoluteP90": 0.07995715637973537,
+        "absoluteP95": 0.1313870096473477,
+        "absoluteP99": 0.2691810482928313,
+        "count": 45277,
+        "maximumAbsolute": 0.5715655144536764,
+        "meanSigned": 0.02446867402961914,
+        "signedP05": -0.05888348301498342,
+        "signedP50": 0.026686348199110865,
+        "signedP95": 0.11822235106264815
+      },
+      "availability": {
+        "bothPositive": 45277,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 788,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            788,
+            45277
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00165",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 3665,
+        "delta_gt010": 383,
+        "delta_le_002": 39660,
+        "missing_centre": 788,
+        "missing_neighbour": 750,
+        "scheduled_raster_boundary": 819
+      },
+      "outOfDomainStatistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 0,
+      "primaryStatistics": {
+        "MAE": 0.04326667859480264,
+        "absoluteP50": 0.033201939530626445,
+        "absoluteP90": 0.07995715637973537,
+        "absoluteP95": 0.1313870096473477,
+        "absoluteP99": 0.2691810482928313,
+        "count": 45277,
+        "maximumAbsolute": 0.5715655144536764,
+        "meanSigned": 0.02446867402961914,
+        "signedP05": -0.05888348301498342,
+        "signedP50": 0.026686348199110865,
+        "signedP95": 0.11822235106264815
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 4141,
+        "delta_gt010": 1616,
+        "delta_le_002": 39444,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.050220033069859144,
+        "absoluteP50": 0.01166850790077878,
+        "absoluteP90": 0.06125164392545668,
+        "absoluteP95": 0.20023791419160963,
+        "absoluteP99": 0.9326458546315866,
+        "count": 44456,
+        "maximumAbsolute": 1.4226684318125766,
+        "meanSigned": 0.01982528935550241,
+        "signedP05": -0.03888412285409437,
+        "signedP50": -0.0063916445581110315,
+        "signedP95": 0.11670376952871925
+      },
+      "availability": {
+        "bothPositive": 44456,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 1609,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            1609,
+            44456
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00176",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 7690,
+        "delta_gt010": 1447,
+        "delta_le_002": 33909,
+        "missing_centre": 1609,
+        "missing_neighbour": 585,
+        "scheduled_raster_boundary": 825
+      },
+      "outOfDomainStatistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 0,
+      "primaryStatistics": {
+        "MAE": 0.050220033069859144,
+        "absoluteP50": 0.01166850790077878,
+        "absoluteP90": 0.06125164392545668,
+        "absoluteP95": 0.20023791419160963,
+        "absoluteP99": 0.9326458546315866,
+        "count": 44456,
+        "maximumAbsolute": 1.4226684318125766,
+        "meanSigned": 0.01982528935550241,
+        "signedP05": -0.03888412285409437,
+        "signedP50": -0.0063916445581110315,
+        "signedP95": 0.11670376952871925
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 7956,
+        "delta_gt010": 2405,
+        "delta_le_002": 34840,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.09581305949699791,
+        "absoluteP50": 0.01950396983759095,
+        "absoluteP90": 0.20877653934350987,
+        "absoluteP95": 0.5144822182324523,
+        "absoluteP99": 1.3948285294439473,
+        "count": 45875,
+        "maximumAbsolute": 2.430000664254766,
+        "meanSigned": 0.012626639865404804,
+        "signedP05": -0.12749184360509366,
+        "signedP50": 0.010124724147807074,
+        "signedP95": 0.3076265436248901
+      },
+      "availability": {
+        "bothPositive": 45875,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 190,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            190,
+            45744
+          ],
+          [
+            0,
+            131
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00187",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 8841,
+        "delta_gt010": 2815,
+        "delta_le_002": 33091,
+        "missing_centre": 190,
+        "missing_neighbour": 266,
+        "scheduled_raster_boundary": 862
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.1469477444644105,
+        "absoluteP50": 0.14536733952900116,
+        "absoluteP90": 0.1715126988621778,
+        "absoluteP95": 0.17557365363140476,
+        "absoluteP99": 0.17802380545530866,
+        "count": 131,
+        "maximumAbsolute": 0.17808788210614646,
+        "meanSigned": -0.1469477444644105,
+        "signedP05": -0.17557365363140476,
+        "signedP50": -0.14536733952900116,
+        "signedP95": -0.1214744463739017
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 0,
+      "primaryStatistics": {
+        "MAE": 0.09566662184985882,
+        "absoluteP50": 0.01944644684375485,
+        "absoluteP90": 0.2103956264250415,
+        "absoluteP95": 0.5169493725688366,
+        "absoluteP99": 1.3948754022464953,
+        "count": 45744,
+        "maximumAbsolute": 2.430000664254766,
+        "meanSigned": 0.013083623171351064,
+        "signedP05": -0.11959482561466916,
+        "signedP50": 0.0102089105055998,
+        "signedP95": 0.308934132279979
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 11213,
+        "delta_gt010": 4779,
+        "delta_le_002": 29209,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.44356643865957696,
+        "absoluteP50": 0.18475118788556988,
+        "absoluteP90": 1.3012728213904756,
+        "absoluteP95": 2.239061973975553,
+        "absoluteP99": 3.673903561465407,
+        "count": 46014,
+        "maximumAbsolute": 4.783578658995482,
+        "meanSigned": 0.15219976305804953,
+        "signedP05": -0.36358345378275153,
+        "signedP50": 0.016081431222845888,
+        "signedP95": 1.5244880313936353
+      },
+      "availability": {
+        "bothPositive": 46014,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 51,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            20,
+            31325
+          ],
+          [
+            31,
+            14689
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00197",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 18353,
+        "delta_gt010": 6218,
+        "delta_le_002": 20500,
+        "missing_centre": 51,
+        "missing_neighbour": 82,
+        "scheduled_raster_boundary": 861
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.6056061804128593,
+        "absoluteP50": 0.2987082059344175,
+        "absoluteP90": 1.4140907932653435,
+        "absoluteP95": 2.5875256528535364,
+        "absoluteP99": 4.09142638394156,
+        "count": 14689,
+        "maximumAbsolute": 4.783578658995482,
+        "meanSigned": 0.18250633224818893,
+        "signedP05": -2.587525652853541,
+        "signedP50": 0.27714364702239624,
+        "signedP95": 1.399700661444219
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 2093,
+      "primaryStatistics": {
+        "MAE": 0.36758234395522055,
+        "absoluteP50": 0.09138215833969454,
+        "absoluteP90": 1.128910415061131,
+        "absoluteP95": 2.219701446790056,
+        "absoluteP99": 3.4879946337026246,
+        "count": 31325,
+        "maximumAbsolute": 3.832013606303712,
+        "meanSigned": 0.1379883282668617,
+        "signedP05": -0.28931408208121645,
+        "signedP50": -0.009652957759084035,
+        "signedP95": 1.8488089368274934
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 18728,
+        "delta_gt010": 6583,
+        "delta_le_002": 19890,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.18983105950799706,
+        "absoluteP50": 0.0667184844162152,
+        "absoluteP90": 0.23666909171091385,
+        "absoluteP95": 1.3392903797717404,
+        "absoluteP99": 2.528840869117923,
+        "count": 45880,
+        "maximumAbsolute": 2.6393262662934855,
+        "meanSigned": -0.03513379894804221,
+        "signedP05": -0.19840175737053953,
+        "signedP50": -0.03387560510511678,
+        "signedP95": 0.423668865109382
+      },
+      "availability": {
+        "bothPositive": 45880,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 185,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            185,
+            45880
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00207",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 11222,
+        "delta_gt010": 3127,
+        "delta_le_002": 30470,
+        "missing_centre": 185,
+        "missing_neighbour": 202,
+        "scheduled_raster_boundary": 859
+      },
+      "outOfDomainStatistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 0,
+      "primaryStatistics": {
+        "MAE": 0.18983105950799706,
+        "absoluteP50": 0.0667184844162152,
+        "absoluteP90": 0.23666909171091385,
+        "absoluteP95": 1.3392903797717404,
+        "absoluteP99": 2.528840869117923,
+        "count": 45880,
+        "maximumAbsolute": 2.6393262662934855,
+        "meanSigned": -0.03513379894804221,
+        "signedP05": -0.19840175737053953,
+        "signedP50": -0.03387560510511678,
+        "signedP95": 0.423668865109382
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 12446,
+        "delta_gt010": 2947,
+        "delta_le_002": 29808,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.46562453684203126,
+        "absoluteP50": 0.06693251122514421,
+        "absoluteP90": 1.532703080068141,
+        "absoluteP95": 2.569561958423946,
+        "absoluteP99": 5.190774254429612,
+        "count": 46052,
+        "maximumAbsolute": 5.46506029119264,
+        "meanSigned": -0.3452566527684329,
+        "signedP05": -2.5430258400540695,
+        "signedP50": -0.02105621108141531,
+        "signedP95": 0.32125643747136173
+      },
+      "availability": {
+        "bothPositive": 46052,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 13,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            13,
+            35368
+          ],
+          [
+            0,
+            10684
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00218",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 18236,
+        "delta_gt010": 7104,
+        "delta_le_002": 19813,
+        "missing_centre": 13,
+        "missing_neighbour": 35,
+        "scheduled_raster_boundary": 864
+      },
+      "outOfDomainStatistics": {
+        "MAE": 1.0558249537021733,
+        "absoluteP50": 0.2921788082277237,
+        "absoluteP90": 4.75282068340746,
+        "absoluteP95": 5.164658573322568,
+        "absoluteP99": 5.322910051326829,
+        "count": 10684,
+        "maximumAbsolute": 5.46506029119264,
+        "meanSigned": -0.8550309572848356,
+        "signedP05": -5.164658573322568,
+        "signedP50": -0.09715680574750252,
+        "signedP95": 0.4402674843459056
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 709,
+      "primaryStatistics": {
+        "MAE": 0.2873362181999322,
+        "absoluteP50": 0.04840438521561996,
+        "absoluteP90": 1.224686920767895,
+        "absoluteP95": 1.690760857088648,
+        "absoluteP99": 2.5399856959929306,
+        "count": 35368,
+        "maximumAbsolute": 2.984383619084628,
+        "meanSigned": -0.19126353273186744,
+        "signedP05": -1.6555578061023448,
+        "signedP50": -0.01991067192383622,
+        "signedP95": 0.2278780106090397
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 24324,
+        "delta_gt010": 4879,
+        "delta_le_002": 15998,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.4905822136253645,
+        "absoluteP50": 0.05983687917517866,
+        "absoluteP90": 1.5912605564763638,
+        "absoluteP95": 3.5683328526566136,
+        "absoluteP99": 3.92460352128891,
+        "count": 46011,
+        "maximumAbsolute": 4.09334183450043,
+        "meanSigned": -0.3242210816215224,
+        "signedP05": -3.5683328526566136,
+        "signedP50": -0.044714526597298354,
+        "signedP95": 0.5726821810288946
+      },
+      "availability": {
+        "bothPositive": 46011,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 54,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            54,
+            41945
+          ],
+          [
+            0,
+            4066
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00228",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 6603,
+        "delta_gt010": 3619,
+        "delta_le_002": 34861,
+        "missing_centre": 54,
+        "missing_neighbour": 80,
+        "scheduled_raster_boundary": 848
+      },
+      "outOfDomainStatistics": {
+        "MAE": 1.927391997138024,
+        "absoluteP50": 0.33104566349210884,
+        "absoluteP90": 3.9409915635263504,
+        "absoluteP95": 4.025102230104293,
+        "absoluteP99": 4.071694156292321,
+        "count": 4066,
+        "maximumAbsolute": 4.09334183450043,
+        "meanSigned": -1.9230318196440161,
+        "signedP05": -4.025102230104293,
+        "signedP50": -0.17222226999722068,
+        "signedP95": -0.003577694474626858
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 407,
+      "primaryStatistics": {
+        "MAE": 0.35130295317090093,
+        "absoluteP50": 0.05818243423834346,
+        "absoluteP90": 1.0137753270281693,
+        "absoluteP95": 1.819769445175933,
+        "absoluteP99": 3.5597673462686092,
+        "count": 41945,
+        "maximumAbsolute": 3.633945128039565,
+        "meanSigned": -0.16923802140458455,
+        "signedP05": -1.7112978745464165,
+        "signedP50": -0.04163334446278677,
+        "signedP95": 0.5986086267182494
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 7342,
+        "delta_gt010": 3293,
+        "delta_le_002": 34566,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.15031742220539762,
+        "absoluteP50": 0.044734569253623846,
+        "absoluteP90": 0.21980089065881803,
+        "absoluteP95": 0.6800653634589451,
+        "absoluteP99": 2.282832560976438,
+        "count": 46034,
+        "maximumAbsolute": 4.070780879460499,
+        "meanSigned": -0.007258507817304235,
+        "signedP05": -0.14511232267365498,
+        "signedP50": -0.008473354419853196,
+        "signedP95": 0.3522850986018728
+      },
+      "availability": {
+        "bothPositive": 46034,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 31,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            31,
+            31083
+          ],
+          [
+            0,
+            14951
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00238",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 23390,
+        "delta_gt010": 2332,
+        "delta_le_002": 19388,
+        "missing_centre": 31,
+        "missing_neighbour": 60,
+        "scheduled_raster_boundary": 864
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.1729629818568125,
+        "absoluteP50": 0.04936900246959386,
+        "absoluteP90": 0.1729380092225128,
+        "absoluteP95": 0.2826886089809779,
+        "absoluteP99": 2.472475358212706,
+        "count": 14951,
+        "maximumAbsolute": 4.070780879460499,
+        "meanSigned": -0.13889001003478452,
+        "signedP05": -0.2071545998099027,
+        "signedP50": -0.04193969806390285,
+        "signedP95": 0.14240012841985505
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 1446,
+      "primaryStatistics": {
+        "MAE": 0.13942485191461798,
+        "absoluteP50": 0.039421219908437166,
+        "absoluteP90": 0.3003749873206439,
+        "absoluteP95": 0.7692388433218692,
+        "absoluteP99": 1.9310925889391821,
+        "count": 31083,
+        "maximumAbsolute": 2.519194265518174,
+        "meanSigned": 0.05605657083191069,
+        "signedP05": -0.11953155655608277,
+        "signedP50": 0.0017586231041168965,
+        "signedP95": 0.5394349831656428
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 25326,
+        "delta_gt010": 2082,
+        "delta_le_002": 17793,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.0594628028401568,
+        "absoluteP50": 0.03386572965265111,
+        "absoluteP90": 0.10988414681833812,
+        "absoluteP95": 0.19463124339269752,
+        "absoluteP99": 0.5209844497977925,
+        "count": 46065,
+        "maximumAbsolute": 0.8459032993141717,
+        "meanSigned": 0.04105536075349091,
+        "signedP05": -0.05004607598448238,
+        "signedP50": 0.03226815866661625,
+        "signedP95": 0.1596136336654105
+      },
+      "availability": {
+        "bothPositive": 46065,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 0,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            46065
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00248",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 5698,
+        "delta_gt010": 617,
+        "delta_le_002": 38886,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      },
+      "outOfDomainStatistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 0,
+      "primaryStatistics": {
+        "MAE": 0.0594628028401568,
+        "absoluteP50": 0.03386572965265111,
+        "absoluteP90": 0.10988414681833812,
+        "absoluteP95": 0.19463124339269752,
+        "absoluteP99": 0.5209844497977925,
+        "count": 46065,
+        "maximumAbsolute": 0.8459032993141717,
+        "meanSigned": 0.04105536075349091,
+        "signedP05": -0.05004607598448238,
+        "signedP50": 0.03226815866661625,
+        "signedP95": 0.1596136336654105
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 7062,
+        "delta_gt010": 2445,
+        "delta_le_002": 35694,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.027162211967457606,
+        "absoluteP50": 0.015069772198266884,
+        "absoluteP90": 0.05184923773304038,
+        "absoluteP95": 0.08821412173252191,
+        "absoluteP99": 0.28136772012496813,
+        "count": 46058,
+        "maximumAbsolute": 0.7154816725185462,
+        "meanSigned": 0.013976608582891232,
+        "signedP05": -0.03730746564420819,
+        "signedP50": 0.00588442683895507,
+        "signedP95": 0.08110893426737005
+      },
+      "availability": {
+        "bothPositive": 46058,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 7,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            7,
+            46058
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00258",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 4129,
+        "delta_gt010": 467,
+        "delta_le_002": 40580,
+        "missing_centre": 7,
+        "missing_neighbour": 18,
+        "scheduled_raster_boundary": 864
+      },
+      "outOfDomainStatistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 0,
+      "primaryStatistics": {
+        "MAE": 0.027162211967457606,
+        "absoluteP50": 0.015069772198266884,
+        "absoluteP90": 0.05184923773304038,
+        "absoluteP95": 0.08821412173252191,
+        "absoluteP99": 0.28136772012496813,
+        "count": 46058,
+        "maximumAbsolute": 0.7154816725185462,
+        "meanSigned": 0.013976608582891232,
+        "signedP05": -0.03730746564420819,
+        "signedP50": 0.00588442683895507,
+        "signedP95": 0.08110893426737005
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 6436,
+        "delta_gt010": 782,
+        "delta_le_002": 37983,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.27772772445173727,
+        "absoluteP50": 0.039134325161554906,
+        "absoluteP90": 0.6637727100093082,
+        "absoluteP95": 1.7868753461684994,
+        "absoluteP99": 2.9929423512954347,
+        "count": 45974,
+        "maximumAbsolute": 4.547664714410155,
+        "meanSigned": 0.1342934981073191,
+        "signedP05": -0.3472081767023062,
+        "signedP50": -0.00840852463206021,
+        "signedP95": 1.4461499213783504
+      },
+      "availability": {
+        "bothPositive": 45974,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 91,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            14,
+            32724
+          ],
+          [
+            77,
+            13250
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00268",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 16306,
+        "delta_gt010": 6589,
+        "delta_le_002": 22099,
+        "missing_centre": 91,
+        "missing_neighbour": 116,
+        "scheduled_raster_boundary": 864
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.510531571779041,
+        "absoluteP50": 0.28918333142398245,
+        "absoluteP90": 1.5978355002558338,
+        "absoluteP95": 2.0777085770233272,
+        "absoluteP99": 3.177124558933178,
+        "count": 13250,
+        "maximumAbsolute": 4.547664714410155,
+        "meanSigned": 0.1492003086095732,
+        "signedP05": -1.5022884853538914,
+        "signedP50": 0.06604167359972735,
+        "signedP95": 1.6262253346990256
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 1538,
+      "primaryStatistics": {
+        "MAE": 0.18346507388680713,
+        "absoluteP50": 0.026927362506631525,
+        "absoluteP90": 0.3324362553226463,
+        "absoluteP95": 1.3325414368877175,
+        "absoluteP99": 2.9536631826383486,
+        "count": 32724,
+        "maximumAbsolute": 4.251083984713623,
+        "meanSigned": 0.12825770666510955,
+        "signedP05": -0.10595473128888258,
+        "signedP50": -0.011359231273193604,
+        "signedP95": 1.3325414368877175
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 18726,
+        "delta_gt010": 5059,
+        "delta_le_002": 21416,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.19454329365976525,
+        "absoluteP50": 0.054757826946144394,
+        "absoluteP90": 0.5272108098406508,
+        "absoluteP95": 0.7292569351846607,
+        "absoluteP99": 1.7572121268585699,
+        "count": 46055,
+        "maximumAbsolute": 4.354027437849496,
+        "meanSigned": 0.14821581162078676,
+        "signedP05": -0.08154038876245413,
+        "signedP50": 0.0390720907608757,
+        "signedP95": 0.6920430528931651
+      },
+      "availability": {
+        "bothPositive": 46055,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 10,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            31279
+          ],
+          [
+            10,
+            14776
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00278",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 23137,
+        "delta_gt010": 6521,
+        "delta_le_002": 15508,
+        "missing_centre": 10,
+        "missing_neighbour": 25,
+        "scheduled_raster_boundary": 864
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.39159420241444587,
+        "absoluteP50": 0.36591531526243415,
+        "absoluteP90": 0.6971483471950379,
+        "absoluteP95": 0.7915015858529608,
+        "absoluteP99": 1.8552707303013471,
+        "count": 14776,
+        "maximumAbsolute": 4.354027437849496,
+        "meanSigned": 0.2912682489626223,
+        "signedP05": -0.406511304771878,
+        "signedP50": 0.350323030869494,
+        "signedP95": 0.7648762187607561
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 1071,
+      "primaryStatistics": {
+        "MAE": 0.10145770180071732,
+        "absoluteP50": 0.034289448792545585,
+        "absoluteP90": 0.13651315693557423,
+        "absoluteP95": 0.41704641754394717,
+        "absoluteP99": 1.6920510009847405,
+        "count": 31279,
+        "maximumAbsolute": 4.127777948714068,
+        "meanSigned": 0.08063875307789979,
+        "signedP05": -0.06843056146367064,
+        "signedP50": 0.02137159644264308,
+        "signedP95": 0.3848278893588703
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 24364,
+        "delta_gt010": 5810,
+        "delta_le_002": 15027,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.11724701225259086,
+        "absoluteP50": 0.030771990862843213,
+        "absoluteP90": 0.35737577735416604,
+        "absoluteP95": 0.4621388224912206,
+        "absoluteP99": 0.8478580766639606,
+        "count": 46042,
+        "maximumAbsolute": 3.3283867760916257,
+        "meanSigned": -0.019634165681376627,
+        "signedP05": -0.3961236385099102,
+        "signedP50": -0.0006306758475804752,
+        "signedP95": 0.26894094116953965
+      },
+      "availability": {
+        "bothPositive": 46042,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 23,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            21,
+            34960
+          ],
+          [
+            2,
+            11082
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00288",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 20242,
+        "delta_gt010": 2471,
+        "delta_le_002": 22427,
+        "missing_centre": 23,
+        "missing_neighbour": 47,
+        "scheduled_raster_boundary": 855
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.2916396675473327,
+        "absoluteP50": 0.2934877478252833,
+        "absoluteP90": 0.48702861944843023,
+        "absoluteP95": 0.568247577270823,
+        "absoluteP99": 2.825001227968569,
+        "count": 11082,
+        "maximumAbsolute": 3.3283867760916257,
+        "meanSigned": -0.15565724289766092,
+        "signedP05": -0.49424116877025237,
+        "signedP50": -0.15716462227940964,
+        "signedP95": 0.404330325801289
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 956,
+      "primaryStatistics": {
+        "MAE": 0.06196613679560202,
+        "absoluteP50": 0.020469016809198326,
+        "absoluteP90": 0.12114086398041006,
+        "absoluteP95": 0.23966889748418768,
+        "absoluteP99": 0.8314009653426537,
+        "count": 34960,
+        "maximumAbsolute": 2.6902568900749553,
+        "meanSigned": 0.023483904733693814,
+        "signedP05": -0.06994512368163844,
+        "signedP50": 0.0013756600394896346,
+        "signedP95": 0.21443468613709057
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 22690,
+        "delta_gt010": 2773,
+        "delta_le_002": 19738,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.0833158232911947,
+        "absoluteP50": 0.021704760854808547,
+        "absoluteP90": 0.103589758901725,
+        "absoluteP95": 0.39972823621965925,
+        "absoluteP99": 1.2398948584345835,
+        "count": 46064,
+        "maximumAbsolute": 2.3533222176794695,
+        "meanSigned": 0.006997493469371837,
+        "signedP05": -0.08354834971763497,
+        "signedP50": -0.01658118977797085,
+        "signedP95": 0.1779750140180116
+      },
+      "availability": {
+        "bothPositive": 46064,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 1,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            44292
+          ],
+          [
+            0,
+            1772
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00298",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 9821,
+        "delta_gt010": 1636,
+        "delta_le_002": 33739,
+        "missing_centre": 1,
+        "missing_neighbour": 4,
+        "scheduled_raster_boundary": 864
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.12454794085751775,
+        "absoluteP50": 0.052677705769483385,
+        "absoluteP90": 0.13941496583411445,
+        "absoluteP95": 0.48191858091555734,
+        "absoluteP99": 1.4444243898006432,
+        "count": 1772,
+        "maximumAbsolute": 1.5608079875208416,
+        "meanSigned": -0.0683567930654153,
+        "signedP05": -0.3559026675999929,
+        "signedP50": -0.017204569676834147,
+        "signedP95": 0.13159676952485744
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 713,
+      "primaryStatistics": {
+        "MAE": 0.08166624069552225,
+        "absoluteP50": 0.02125525215211188,
+        "absoluteP90": 0.10083104271758184,
+        "absoluteP95": 0.3996957016395149,
+        "absoluteP99": 1.215896379369559,
+        "count": 44292,
+        "maximumAbsolute": 2.3533222176794695,
+        "meanSigned": 0.01001220934898086,
+        "signedP05": -0.0807208719901647,
+        "signedP50": -0.016569844031445013,
+        "signedP95": 0.18868515854456852
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 10801,
+        "delta_gt010": 2947,
+        "delta_le_002": 31453,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    },
+    {
+      "allPositiveStatistics": {
+        "MAE": 0.1352959823223512,
+        "absoluteP50": 0.023397757450727585,
+        "absoluteP90": 0.314557471323327,
+        "absoluteP95": 0.8743168307823795,
+        "absoluteP99": 1.7911150633864874,
+        "count": 45923,
+        "maximumAbsolute": 2.458826765073392,
+        "meanSigned": 0.06957815165027248,
+        "signedP05": -0.09795036326083904,
+        "signedP50": 0.012129114193081714,
+        "signedP95": 0.6310420356538196
+      },
+      "availability": {
+        "bothPositive": 45923,
+        "meshColumns": [
+          "no_hit",
+          "hit"
+        ],
+        "meshOnly": 0,
+        "neither": 0,
+        "scheduled": 46065,
+        "sensorOnly": 142,
+        "sensorStateByMeshNoHitHit": [
+          [
+            0,
+            0
+          ],
+          [
+            79,
+            42089
+          ],
+          [
+            63,
+            3834
+          ]
+        ],
+        "sensorStateNames": [
+          "zero_missing",
+          "positive_below4",
+          "positive_4_and_above"
+        ]
+      },
+      "frameID": "frame_00308",
+      "meshEdgeCounts": {
+        "delta_gt002_le010": 7529,
+        "delta_gt010": 2152,
+        "delta_le_002": 35229,
+        "missing_centre": 142,
+        "missing_neighbour": 160,
+        "scheduled_raster_boundary": 853
+      },
+      "outOfDomainStatistics": {
+        "MAE": 0.18988967355629424,
+        "absoluteP50": 0.10458103689017584,
+        "absoluteP90": 0.25853166588979887,
+        "absoluteP95": 0.3562254796784361,
+        "absoluteP99": 2.2867507849809647,
+        "count": 3834,
+        "maximumAbsolute": 2.458826765073392,
+        "meanSigned": -0.10113231859667172,
+        "signedP05": -0.22632870886057854,
+        "signedP50": -0.06641430055999731,
+        "signedP95": 0.2769536596687283
+      },
+      "primaryPredictionsAtOrBeyond4MetresRetained": 685,
+      "primaryStatistics": {
+        "MAE": 0.1303228964283899,
+        "absoluteP50": 0.021537685316951105,
+        "absoluteP90": 0.3401654232087808,
+        "absoluteP95": 0.907263815839462,
+        "absoluteP99": 1.7626806209160124,
+        "count": 42089,
+        "maximumAbsolute": 2.161803240270234,
+        "meanSigned": 0.08512862666575834,
+        "signedP05": -0.05049307108153913,
+        "signedP50": 0.014172441935291324,
+        "signedP95": 0.6871181887635108
+      },
+      "sensorEdgeCounts": {
+        "delta_gt002_le010": 7988,
+        "delta_gt010": 3203,
+        "delta_le_002": 34010,
+        "missing_centre": 0,
+        "missing_neighbour": 0,
+        "scheduled_raster_boundary": 864
+      }
+    }
+  ],
+  "geometryLoaded": false,
+  "hashes": [
+    {
+      "bytes": 11720,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/FROZEN.json",
+      "sha256": "e138a8cd7e0fac1afd86beb446c8036d4d20558e45c578454702fbb87f295a9a"
+    },
+    {
+      "bytes": 11261,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/RUN_RECEIPT.json",
+      "sha256": "995e9e1dad642eb120194a7029f791b8b3169760cda68e0fe52887ebd25b9436"
+    },
+    {
+      "bytes": 753509,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/result.json",
+      "sha256": "8361b64178d947f8f53246788f62942ef5082dd1cb18fee66dc5423cffb4b279"
+    },
+    {
+      "bytes": 428730,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00011-rays.npz",
+      "sha256": "b3f58ae6082822d0a787c911685afd87b0988e3a8f262213fd1351c46003361e"
+    },
+    {
+      "bytes": 443214,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00021-rays.npz",
+      "sha256": "ac326871d894c4af4b63e4c0dce04c17093cf5d9fb973885e0eab04ceb17e6e1"
+    },
+    {
+      "bytes": 449564,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00031-rays.npz",
+      "sha256": "9d5f59cb1517c312779f1a50f6cf75f5b71fde5689331e7788967c91bc461356"
+    },
+    {
+      "bytes": 447493,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00041-rays.npz",
+      "sha256": "3614343410022e1d8a6a669682b4a00e66711b391a0dc237c8450f42108d4a01"
+    },
+    {
+      "bytes": 456601,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00051-rays.npz",
+      "sha256": "23c1d74a6b37617c0086d86b5f826a812c5153b541a3230e8098055a6cf0a074"
+    },
+    {
+      "bytes": 427007,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00061-rays.npz",
+      "sha256": "33cbada9f8fb27ed2e72d5868779546e1f4f1e6bcaa84937f9b80b53db328c7f"
+    },
+    {
+      "bytes": 445960,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00071-rays.npz",
+      "sha256": "41b24c723b27e35d076d7c41a27631748cd263d45ffcbb927a10affd7969163d"
+    },
+    {
+      "bytes": 424398,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00081-rays.npz",
+      "sha256": "900fa346be249b99c50efe249373c720614f5c7cd064955daaca9a4c0e8fea89"
+    },
+    {
+      "bytes": 454501,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00091-rays.npz",
+      "sha256": "483139f3413f8396733fc313a5b20b0f76068e3a96f75cbf8cbc834f5dfc4e90"
+    },
+    {
+      "bytes": 411717,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00102-rays.npz",
+      "sha256": "88ed1ec6b14cb2dd8ebd4c3904b552d2b26bc824325804e1c3b734dcdbb55d81"
+    },
+    {
+      "bytes": 449355,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00112-rays.npz",
+      "sha256": "ad22ca74da6e211334bdd376458b5c172f856451c5e6ad67f9becf010520ce5d"
+    },
+    {
+      "bytes": 453750,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00122-rays.npz",
+      "sha256": "456d35e800829f23c44137557ab6432a668713d9db5af40aeb3f4f594d3d1db6"
+    },
+    {
+      "bytes": 452991,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00132-rays.npz",
+      "sha256": "d7b420711e10761056e03f3f282f072f1b855fcf02513c6db62a4e6d110d3b02"
+    },
+    {
+      "bytes": 428700,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00142-rays.npz",
+      "sha256": "90e64894a8de0d9b640fe4545c989fed8e04a60893095a900d474954f02d6b49"
+    },
+    {
+      "bytes": 416478,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00165-rays.npz",
+      "sha256": "cdc9b0836856277295b4daedce265ac7650f2ebcef5fd09aba83b17463bfab08"
+    },
+    {
+      "bytes": 409127,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00176-rays.npz",
+      "sha256": "33ffc3dabf740faf7813c74ddae09e45e1d4e71efbe1f91f80d05831efbe73ca"
+    },
+    {
+      "bytes": 436844,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00187-rays.npz",
+      "sha256": "655ef74517637fce5be5f48f75a1b7660f98e5a84cac2cd2ad5f90b3b7cdf98f"
+    },
+    {
+      "bytes": 450759,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00197-rays.npz",
+      "sha256": "5bc0572999bad22fd527f6f71a08a9838b042916058355f6686b39663439517b"
+    },
+    {
+      "bytes": 435033,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00207-rays.npz",
+      "sha256": "87a3430634ed4f144d0271e4c0ed27d08bd518eeaa248e7d081ee188b9d86bdf"
+    },
+    {
+      "bytes": 457944,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00218-rays.npz",
+      "sha256": "387417c1a440652353106e21f792a40d220065470285d57588ef7fe8ef7ea470"
+    },
+    {
+      "bytes": 435469,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00228-rays.npz",
+      "sha256": "0bc51e323ce8043d4d208fbcc5042bd410f0b766702750c965bfb5c4c6690b4a"
+    },
+    {
+      "bytes": 435083,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00238-rays.npz",
+      "sha256": "6eb1882dd0a2d1d39c33e5e2414f89d3f6106af40de71d8bc9e531aa3b0da248"
+    },
+    {
+      "bytes": 411021,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00248-rays.npz",
+      "sha256": "c21ef19ebed01a0f3adee25adc8396edeb8bec7336ec9dbddbb6f0af4185a0a4"
+    },
+    {
+      "bytes": 408531,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00258-rays.npz",
+      "sha256": "febe168df372fec3d911eaf50dc5cb8e007661423b8e7b0f11c322cf603389e9"
+    },
+    {
+      "bytes": 439408,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00268-rays.npz",
+      "sha256": "8dcca84dc0bdd85b51bc0374f11e216be1d9cf5630bd06c415c80e964a84aa28"
+    },
+    {
+      "bytes": 453577,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00278-rays.npz",
+      "sha256": "e2acd21205c2828056dc39d42863b2d17573f0d4c2c3083d7bb987a71ecc06a7"
+    },
+    {
+      "bytes": 455139,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00288-rays.npz",
+      "sha256": "5c630ac3cde44572243f9b53faa7d1fb1526a802293bfdf6c451aa8448222141"
+    },
+    {
+      "bytes": 433359,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00298-rays.npz",
+      "sha256": "be1780bacf9f8dc0b1c381b1bc49c1cec385fc03b38469526f075b8acedb61c1"
+    },
+    {
+      "bytes": 442078,
+      "path": "$WORKSPACE/blind-koivu-tsdf-heldout-11/run-01/evaluate/artifacts/frame_00308-rays.npz",
+      "sha256": "fc11d085e9ed671214f657c5a5c65e3949422eb343322afecda70014f79cf3c6"
+    }
+  ],
+  "limitsNote": "Same saved sensor/prediction arrays and shared processed-capture provenance; verifies arithmetic/denominators, not mesh accuracy, calibration, original sensor authenticity, pose, confidence, obstacle misses or navigation. Missing remains unknown.",
+  "maximumAbsoluteStatisticDifference": 4.440892098500626e-16,
+  "meanMethod": "math.fsum/count independently of evaluator NumPy mean",
+  "originalPNGsRedecoded": false,
+  "pooledRayWeighted": {
+    "allPositiveStatistics": {
+      "MAE": 0.18884891198929693,
+      "absoluteP50": 0.03664904671569236,
+      "absoluteP90": 0.4179643154080576,
+      "absoluteP95": 1.016062641699156,
+      "absoluteP99": 2.898215834038755,
+      "count": 1326389,
+      "maximumAbsolute": 5.87149550845279,
+      "meanSigned": 0.041828283562567695,
+      "signedP05": -0.20576741013660235,
+      "signedP50": 0.004503542267080274,
+      "signedP95": 0.5966678613777946
+    },
+    "availability": {
+      "bothPositive": 1326389,
+      "meshColumns": [
+        "no_hit",
+        "hit"
+      ],
+      "meshOnly": 0,
+      "neither": 0,
+      "scheduled": 1335885,
+      "sensorOnly": 9496,
+      "sensorStateByMeshNoHitHit": [
+        [
+          0,
+          0
+        ],
+        [
+          8491,
+          1161037
+        ],
+        [
+          1005,
+          165352
+        ]
+      ],
+      "sensorStateNames": [
+        "zero_missing",
+        "positive_below4",
+        "positive_4_and_above"
+      ]
+    },
+    "byEdge": {
+      "heldoutSensor": [
+        {
+          "allPositiveStatistics": {
+            "MAE": null,
+            "absoluteP50": null,
+            "absoluteP90": null,
+            "absoluteP95": null,
+            "absoluteP99": null,
+            "count": 0,
+            "maximumAbsolute": null,
+            "meanSigned": null,
+            "signedP05": null,
+            "signedP50": null,
+            "signedP95": null
+          },
+          "code": -1,
+          "label": "missing_centre",
+          "meshHit": 0,
+          "primaryStatistics": {
+            "MAE": null,
+            "absoluteP50": null,
+            "absoluteP90": null,
+            "absoluteP95": null,
+            "absoluteP99": null,
+            "count": 0,
+            "maximumAbsolute": null,
+            "meanSigned": null,
+            "signedP05": null,
+            "signedP50": null,
+            "signedP95": null
+          },
+          "scheduled": 0
+        },
+        {
+          "allPositiveStatistics": {
+            "MAE": 0.19864734249070354,
+            "absoluteP50": 0.041285469727669,
+            "absoluteP90": 0.4444533422392692,
+            "absoluteP95": 1.000840940754639,
+            "absoluteP99": 3.1437950652080153,
+            "count": 24493,
+            "maximumAbsolute": 5.283882915568636,
+            "meanSigned": 0.007451629472317652,
+            "signedP05": -0.31446748214609893,
+            "signedP50": 0.0025768919430175785,
+            "signedP95": 0.5548414962367834
+          },
+          "code": 0,
+          "label": "scheduled_raster_boundary",
+          "meshHit": 24493,
+          "primaryStatistics": {
+            "MAE": 0.16428002914474502,
+            "absoluteP50": 0.03794170783918638,
+            "absoluteP90": 0.33000198170072415,
+            "absoluteP95": 0.785547690575845,
+            "absoluteP99": 2.56292526604246,
+            "count": 23035,
+            "maximumAbsolute": 3.9697943538016682,
+            "meanSigned": 0.015545532192688194,
+            "signedP05": -0.24681417093916314,
+            "signedP50": 0.0023362977745162716,
+            "signedP95": 0.4310890155626957
+          },
+          "scheduled": 25056
+        },
+        {
+          "allPositiveStatistics": {
+            "MAE": null,
+            "absoluteP50": null,
+            "absoluteP90": null,
+            "absoluteP95": null,
+            "absoluteP99": null,
+            "count": 0,
+            "maximumAbsolute": null,
+            "meanSigned": null,
+            "signedP05": null,
+            "signedP50": null,
+            "signedP95": null
+          },
+          "code": 1,
+          "label": "missing_neighbour",
+          "meshHit": 0,
+          "primaryStatistics": {
+            "MAE": null,
+            "absoluteP50": null,
+            "absoluteP90": null,
+            "absoluteP95": null,
+            "absoluteP99": null,
+            "count": 0,
+            "maximumAbsolute": null,
+            "meanSigned": null,
+            "signedP05": null,
+            "signedP50": null,
+            "signedP95": null
+          },
+          "scheduled": 0
+        },
+        {
+          "allPositiveStatistics": {
+            "MAE": 0.14795629799655322,
+            "absoluteP50": 0.02878321732221023,
+            "absoluteP90": 0.2507283571214162,
+            "absoluteP95": 0.5829251526861754,
+            "absoluteP99": 3.1368280065473786,
+            "count": 781113,
+            "maximumAbsolute": 5.46506029119264,
+            "meanSigned": 0.026090964598921913,
+            "signedP05": -0.14975913446315237,
+            "signedP50": 0.0025595143090089145,
+            "signedP95": 0.36753100594541416
+          },
+          "code": 2,
+          "label": "delta_le_002",
+          "meshHit": 781113,
+          "primaryStatistics": {
+            "MAE": 0.11839266338241652,
+            "absoluteP50": 0.02575130007076387,
+            "absoluteP90": 0.12979439932308368,
+            "absoluteP95": 0.45516429979085293,
+            "absoluteP99": 2.7888409902650446,
+            "count": 716296,
+            "maximumAbsolute": 4.9849170960241675,
+            "meanSigned": 0.043178385989862844,
+            "signedP05": -0.09367603058212115,
+            "signedP50": 0.0032731574128996854,
+            "signedP95": 0.2399367889046383
+          },
+          "scheduled": 786281
+        },
+        {
+          "allPositiveStatistics": {
+            "MAE": 0.18392553751646895,
+            "absoluteP50": 0.04450185783220206,
+            "absoluteP90": 0.4032313193893867,
+            "absoluteP95": 1.0287856296304663,
+            "absoluteP99": 2.4101793949646346,
+            "count": 419915,
+            "maximumAbsolute": 5.87149550845279,
+            "meanSigned": 0.029173076679584322,
+            "signedP05": -0.20506864611057604,
+            "signedP50": 0.0033993805145606792,
+            "signedP95": 0.5199768051423566
+          },
+          "code": 3,
+          "label": "delta_gt002_le010",
+          "meshHit": 419915,
+          "primaryStatistics": {
+            "MAE": 0.12952970416675233,
+            "absoluteP50": 0.03832388873624515,
+            "absoluteP90": 0.20842713433660087,
+            "absoluteP95": 0.5457380747750511,
+            "absoluteP99": 1.9354651524407558,
+            "count": 351037,
+            "maximumAbsolute": 5.87149550845279,
+            "meanSigned": 0.01568509781848167,
+            "signedP05": -0.1265125446119555,
+            "signedP50": 0.001422942524300197,
+            "signedP95": 0.29855724601950656
+          },
+          "scheduled": 422351
+        },
+        {
+          "allPositiveStatistics": {
+            "MAE": 0.5236345548810034,
+            "absoluteP50": 0.2500357285706565,
+            "absoluteP90": 1.4347284359706214,
+            "absoluteP95": 1.9913596212211193,
+            "absoluteP99": 3.3849083926422745,
+            "count": 100868,
+            "maximumAbsolute": 5.794354485704002,
+            "meanSigned": 0.22472794464983717,
+            "signedP05": -0.7573269263576743,
+            "signedP50": 0.13150277100333874,
+            "signedP95": 1.629558656886301
+          },
+          "code": 4,
+          "label": "delta_gt010",
+          "meshHit": 100868,
+          "primaryStatistics": {
+            "MAE": 0.48444283005792876,
+            "absoluteP50": 0.22984381882536642,
+            "absoluteP90": 1.3817647634678731,
+            "absoluteP95": 1.850257925901183,
+            "absoluteP99": 2.8379634833202285,
+            "count": 70669,
+            "maximumAbsolute": 5.794354485704002,
+            "meanSigned": 0.2955690187688924,
+            "signedP05": -0.5187108477016538,
+            "signedP50": 0.13488332381258106,
+            "signedP95": 1.6976447781869763
+          },
+          "scheduled": 102197
+        }
+      ],
+      "predictedMesh": [
+        {
+          "allPositiveStatistics": {
+            "MAE": null,
+            "absoluteP50": null,
+            "absoluteP90": null,
+            "absoluteP95": null,
+            "absoluteP99": null,
+            "count": 0,
+            "maximumAbsolute": null,
+            "meanSigned": null,
+            "signedP05": null,
+            "signedP50": null,
+            "signedP95": null
+          },
+          "code": -1,
+          "label": "missing_centre",
+          "meshHit": 0,
+          "primaryStatistics": {
+            "MAE": null,
+            "absoluteP50": null,
+            "absoluteP90": null,
+            "absoluteP95": null,
+            "absoluteP99": null,
+            "count": 0,
+            "maximumAbsolute": null,
+            "meanSigned": null,
+            "signedP05": null,
+            "signedP50": null,
+            "signedP95": null
+          },
+          "scheduled": 9496
+        },
+        {
+          "allPositiveStatistics": {
+            "MAE": 0.19864734249070354,
+            "absoluteP50": 0.041285469727669,
+            "absoluteP90": 0.4444533422392692,
+            "absoluteP95": 1.000840940754639,
+            "absoluteP99": 3.1437950652080153,
+            "count": 24493,
+            "maximumAbsolute": 5.283882915568636,
+            "meanSigned": 0.007451629472317652,
+            "signedP05": -0.31446748214609893,
+            "signedP50": 0.0025768919430175785,
+            "signedP95": 0.5548414962367834
+          },
+          "code": 0,
+          "label": "scheduled_raster_boundary",
+          "meshHit": 24493,
+          "primaryStatistics": {
+            "MAE": 0.16428002914474502,
+            "absoluteP50": 0.03794170783918638,
+            "absoluteP90": 0.33000198170072415,
+            "absoluteP95": 0.785547690575845,
+            "absoluteP99": 2.56292526604246,
+            "count": 23035,
+            "maximumAbsolute": 3.9697943538016682,
+            "meanSigned": 0.015545532192688194,
+            "signedP05": -0.24681417093916314,
+            "signedP50": 0.0023362977745162716,
+            "signedP95": 0.4310890155626957
+          },
+          "scheduled": 24493
+        },
+        {
+          "allPositiveStatistics": {
+            "MAE": 0.47973256534212644,
+            "absoluteP50": 0.13040305683489684,
+            "absoluteP90": 1.618729162145337,
+            "absoluteP95": 2.3813699967377793,
+            "absoluteP99": 3.7507502491244695,
+            "count": 5744,
+            "maximumAbsolute": 5.87149550845279,
+            "meanSigned": 0.31690570827195164,
+            "signedP05": -0.39783408757936134,
+            "signedP50": 0.024340816318756953,
+            "signedP95": 2.366447074243821
+          },
+          "code": 1,
+          "label": "missing_neighbour",
+          "meshHit": 5744,
+          "primaryStatistics": {
+            "MAE": 0.4279933700446442,
+            "absoluteP50": 0.1038616187506034,
+            "absoluteP90": 1.4637131425712895,
+            "absoluteP95": 2.271538920383166,
+            "absoluteP99": 3.7964186422832293,
+            "count": 4851,
+            "maximumAbsolute": 5.87149550845279,
+            "meanSigned": 0.31798805248622747,
+            "signedP05": -0.31864070479083917,
+            "signedP50": 0.024290910651473485,
+            "signedP95": 2.2613151225436976
+          },
+          "scheduled": 5744
+        },
+        {
+          "allPositiveStatistics": {
+            "MAE": 0.1447449941087524,
+            "absoluteP50": 0.029364286483755997,
+            "absoluteP90": 0.2776681445904222,
+            "absoluteP95": 0.5744468987386756,
+            "absoluteP99": 2.8257218034944813,
+            "count": 824854,
+            "maximumAbsolute": 5.443071072177117,
+            "meanSigned": 0.008786523135471836,
+            "signedP05": -0.18344961933492723,
+            "signedP50": 0.0025835266208326657,
+            "signedP95": 0.3595902282515456
+          },
+          "code": 2,
+          "label": "delta_le_002",
+          "meshHit": 824854,
+          "primaryStatistics": {
+            "MAE": 0.11089470720159275,
+            "absoluteP50": 0.025968265142141234,
+            "absoluteP90": 0.14010065544716674,
+            "absoluteP95": 0.44692284149383144,
+            "absoluteP99": 2.2544998706703887,
+            "count": 750260,
+            "maximumAbsolute": 4.625653019961323,
+            "meanSigned": 0.020754877263701624,
+            "signedP05": -0.10122353257254403,
+            "signedP50": 0.003032247961488377,
+            "signedP95": 0.2178639534018836
+          },
+          "scheduled": 824854
+        },
+        {
+          "allPositiveStatistics": {
+            "MAE": 0.16231537215155709,
+            "absoluteP50": 0.04473750308400115,
+            "absoluteP90": 0.35421198446010993,
+            "absoluteP95": 0.8141285808264118,
+            "absoluteP99": 2.097323425487905,
+            "count": 376997,
+            "maximumAbsolute": 5.3595850602380795,
+            "meanSigned": 0.07772671930481542,
+            "signedP05": -0.13315608024844056,
+            "signedP50": 0.005175749571968424,
+            "signedP95": 0.6628566899282314
+          },
+          "code": 3,
+          "label": "delta_gt002_le010",
+          "meshHit": 376997,
+          "primaryStatistics": {
+            "MAE": 0.1325501542517182,
+            "absoluteP50": 0.040200646026379516,
+            "absoluteP90": 0.22441526395922856,
+            "absoluteP95": 0.6013711009977918,
+            "absoluteP99": 1.9041654610089458,
+            "count": 325670,
+            "maximumAbsolute": 4.767583115088284,
+            "meanSigned": 0.07250722193725875,
+            "signedP05": -0.10414125590379043,
+            "signedP50": 0.003829539237355961,
+            "signedP95": 0.5233631583923684
+          },
+          "scheduled": 376997
+        },
+        {
+          "allPositiveStatistics": {
+            "MAE": 0.6604401924053847,
+            "absoluteP50": 0.2606389944551659,
+            "absoluteP90": 1.9137143734205262,
+            "absoluteP95": 2.6619444045868144,
+            "absoluteP99": 3.9594095487934124,
+            "count": 94301,
+            "maximumAbsolute": 5.745229241041271,
+            "meanSigned": 0.1795041124181827,
+            "signedP05": -1.7563312375485953,
+            "signedP50": 0.10639409447145187,
+            "signedP95": 2.052065682333922
+          },
+          "code": 4,
+          "label": "delta_gt010",
+          "meshHit": 94301,
+          "primaryStatistics": {
+            "MAE": 0.6302814129569357,
+            "absoluteP50": 0.22186486898847924,
+            "absoluteP90": 1.8612010799292107,
+            "absoluteP95": 2.536814056054745,
+            "absoluteP99": 3.445854113964607,
+            "count": 57221,
+            "maximumAbsolute": 5.745229241041271,
+            "meanSigned": 0.29000857402872143,
+            "signedP05": -1.4203496125344905,
+            "signedP50": 0.10380389308848603,
+            "signedP95": 2.238373199737944
+          },
+          "scheduled": 94301
+        }
+      ]
+    },
+    "bySensorDepth": [
+      {
+        "allPositiveStatistics": {
+          "MAE": null,
+          "absoluteP50": null,
+          "absoluteP90": null,
+          "absoluteP95": null,
+          "absoluteP99": null,
+          "count": 0,
+          "maximumAbsolute": null,
+          "meanSigned": null,
+          "signedP05": null,
+          "signedP50": null,
+          "signedP95": null
+        },
+        "label": "positive_below015",
+        "meshHit": 0,
+        "primaryStatistics": {
+          "MAE": null,
+          "absoluteP50": null,
+          "absoluteP90": null,
+          "absoluteP95": null,
+          "absoluteP99": null,
+          "count": 0,
+          "maximumAbsolute": null,
+          "meanSigned": null,
+          "signedP05": null,
+          "signedP50": null,
+          "signedP95": null
+        },
+        "scheduled": 0
+      },
+      {
+        "allPositiveStatistics": {
+          "MAE": 0.24919795544133183,
+          "absoluteP50": 0.034777263822060756,
+          "absoluteP90": 0.5351697266651787,
+          "absoluteP95": 1.5423204815780949,
+          "absoluteP99": 3.282932157188312,
+          "count": 84044,
+          "maximumAbsolute": 3.9697943538016682,
+          "meanSigned": 0.23761009395547816,
+          "signedP05": -0.03110457154281216,
+          "signedP50": 0.032895830847112284,
+          "signedP95": 1.5423204815780949
+        },
+        "label": "015_to_below1",
+        "meshHit": 84044,
+        "primaryStatistics": {
+          "MAE": 0.24919795544133183,
+          "absoluteP50": 0.034777263822060756,
+          "absoluteP90": 0.5351697266651787,
+          "absoluteP95": 1.5423204815780949,
+          "absoluteP99": 3.282932157188312,
+          "count": 84044,
+          "maximumAbsolute": 3.9697943538016682,
+          "meanSigned": 0.23761009395547816,
+          "signedP05": -0.03110457154281216,
+          "signedP50": 0.032895830847112284,
+          "signedP95": 1.5423204815780949
+        },
+        "scheduled": 84292
+      },
+      {
+        "allPositiveStatistics": {
+          "MAE": 0.13580216805221315,
+          "absoluteP50": 0.03745974053337564,
+          "absoluteP90": 0.28309022538694106,
+          "absoluteP95": 0.6879679856911766,
+          "absoluteP99": 1.7637354971696446,
+          "count": 376093,
+          "maximumAbsolute": 3.832013606303712,
+          "meanSigned": 0.07341265951525713,
+          "signedP05": -0.14816270437222037,
+          "signedP50": 0.010069541603765275,
+          "signedP95": 0.584598942490721
+        },
+        "label": "1_to_below2",
+        "meshHit": 376093,
+        "primaryStatistics": {
+          "MAE": 0.13580216805221315,
+          "absoluteP50": 0.03745974053337564,
+          "absoluteP90": 0.28309022538694106,
+          "absoluteP95": 0.6879679856911766,
+          "absoluteP99": 1.7637354971696446,
+          "count": 376093,
+          "maximumAbsolute": 3.832013606303712,
+          "meanSigned": 0.07341265951525713,
+          "signedP05": -0.14816270437222037,
+          "signedP50": 0.010069541603765275,
+          "signedP95": 0.584598942490721
+        },
+        "scheduled": 381268
+      },
+      {
+        "allPositiveStatistics": {
+          "MAE": 0.11361603486883118,
+          "absoluteP50": 0.023817478235393708,
+          "absoluteP90": 0.14334685689587345,
+          "absoluteP95": 0.5936878039096075,
+          "absoluteP99": 1.8597010165227976,
+          "count": 442687,
+          "maximumAbsolute": 4.775257480751758,
+          "meanSigned": 0.03597848353633728,
+          "signedP05": -0.0914631364141724,
+          "signedP50": 0.004717283453900656,
+          "signedP95": 0.2598183981009406
+        },
+        "label": "2_to_below3",
+        "meshHit": 442687,
+        "primaryStatistics": {
+          "MAE": 0.11361603486883118,
+          "absoluteP50": 0.023817478235393708,
+          "absoluteP90": 0.14334685689587345,
+          "absoluteP95": 0.5936878039096075,
+          "absoluteP99": 1.8597010165227976,
+          "count": 442687,
+          "maximumAbsolute": 4.775257480751758,
+          "meanSigned": 0.03597848353633728,
+          "signedP05": -0.0914631364141724,
+          "signedP50": 0.004717283453900656,
+          "signedP95": 0.2598183981009406
+        },
+        "scheduled": 445070
+      },
+      {
+        "allPositiveStatistics": {
+          "MAE": 0.17806621438935327,
+          "absoluteP50": 0.03865885441391059,
+          "absoluteP90": 0.2796964313488678,
+          "absoluteP95": 0.7997911338007396,
+          "absoluteP99": 3.0107343898465726,
+          "count": 258213,
+          "maximumAbsolute": 5.87149550845279,
+          "meanSigned": -0.022565416370894473,
+          "signedP05": -0.16514612381159166,
+          "signedP50": -0.011129630579437055,
+          "signedP95": 0.36762015551994304
+        },
+        "label": "3_to_below4",
+        "meshHit": 258213,
+        "primaryStatistics": {
+          "MAE": 0.17806621438935327,
+          "absoluteP50": 0.03865885441391059,
+          "absoluteP90": 0.2796964313488678,
+          "absoluteP95": 0.7997911338007396,
+          "absoluteP99": 3.0107343898465726,
+          "count": 258213,
+          "maximumAbsolute": 5.87149550845279,
+          "meanSigned": -0.022565416370894473,
+          "signedP05": -0.16514612381159166,
+          "signedP50": -0.011129630579437055,
+          "signedP95": 0.36762015551994304
+        },
+        "scheduled": 258898
+      },
+      {
+        "allPositiveStatistics": {
+          "MAE": 0.39487139052756165,
+          "absoluteP50": 0.08476002140351913,
+          "absoluteP90": 1.0987366732378512,
+          "absoluteP95": 2.477488175679376,
+          "absoluteP99": 3.914207766212255,
+          "count": 79384,
+          "maximumAbsolute": 4.987084519744661,
+          "meanSigned": -0.0745069610177079,
+          "signedP05": -2.0570262060487026,
+          "signedP50": -0.02505584601239219,
+          "signedP95": 0.8915582552681911
+        },
+        "label": "4_to_below5",
+        "meshHit": 79384,
+        "primaryStatistics": {
+          "MAE": null,
+          "absoluteP50": null,
+          "absoluteP90": null,
+          "absoluteP95": null,
+          "absoluteP99": null,
+          "count": 0,
+          "maximumAbsolute": null,
+          "meanSigned": null,
+          "signedP05": null,
+          "signedP50": null,
+          "signedP95": null
+        },
+        "scheduled": 80005
+      },
+      {
+        "allPositiveStatistics": {
+          "MAE": 0.591469596343558,
+          "absoluteP50": 0.3491490123252077,
+          "absoluteP90": 1.429761929955905,
+          "absoluteP95": 2.050859174582793,
+          "absoluteP99": 5.088983693560598,
+          "count": 85968,
+          "maximumAbsolute": 5.46506029119264,
+          "meanSigned": 0.04321401712685826,
+          "signedP05": -1.629875297437353,
+          "signedP50": 0.15905926244004487,
+          "signedP95": 1.357736951916898
+        },
+        "label": "5_and_above",
+        "meshHit": 85968,
+        "primaryStatistics": {
+          "MAE": null,
+          "absoluteP50": null,
+          "absoluteP90": null,
+          "absoluteP95": null,
+          "absoluteP99": null,
+          "count": 0,
+          "maximumAbsolute": null,
+          "meanSigned": null,
+          "signedP05": null,
+          "signedP50": null,
+          "signedP95": null
+        },
+        "scheduled": 86352
+      }
+    ],
+    "outOfDomainStatistics": {
+      "MAE": 0.4970845754759722,
+      "absoluteP50": 0.21892820317840034,
+      "absoluteP90": 1.3539833299016883,
+      "absoluteP95": 2.2833829440618976,
+      "absoluteP99": 4.066889316119442,
+      "count": 165352,
+      "maximumAbsolute": 5.46506029119264,
+      "meanSigned": -0.013302759985170868,
+      "signedP05": -1.6625424643189632,
+      "signedP50": 0.020890703500487717,
+      "signedP95": 1.2533834109025366
+    },
+    "primaryStatistics": {
+      "MAE": 0.14495075591946566,
+      "absoluteP50": 0.03170443093572495,
+      "absoluteP90": 0.24573986490621968,
+      "absoluteP95": 0.7305802434352123,
+      "absoluteP99": 2.521307898712882,
+      "count": 1161037,
+      "maximumAbsolute": 5.87149550845279,
+      "meanSigned": 0.04967990957681674,
+      "signedP05": -0.11783993484359745,
+      "signedP50": 0.004109559037222876,
+      "signedP95": 0.48183453922645963
+    }
+  },
+  "primaryPredictionsAtOrBeyond4MetresRetained": 19989,
+  "quantileMethod": "independent sorted order statistics and linear interpolation; no evaluator import",
+  "raysCast": 0,
+  "resources": {
+    "CPUSeconds": 2.8047541089999997,
+    "enforcement": "process CPU/address-space/alarm limits plus sampled peak-RSS/free-space checks, not a cgroup",
+    "limits": {
+      "addressSpaceBytes": 2147483648,
+      "cpuSeconds": 45,
+      "freeReserveBytes": 805306368,
+      "observedRSSBytes": 402653184,
+      "outputBytes": 1048576,
+      "wallSeconds": 60
+    },
+    "peakRSSBytes": 133480448,
+    "wallSeconds": 2.8313199559925124
+  },
+  "scheduledRays": 1335885,
+  "scope": "Independent saved-array arithmetic recount, not new sensing or independent physical truth",
+  "sourceSHA256": "2e3417de191ac79d0e802b79ccfc0d9ea04549f8675b7a24ddd19c72fca32dd9",
+  "success": true
+}

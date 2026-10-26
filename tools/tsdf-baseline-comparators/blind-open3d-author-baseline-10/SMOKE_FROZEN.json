@@ -1,0 +1,46 @@
+{
+  "dataRoot": "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted",
+  "parameters": {
+    "depthScale": 1000.0,
+    "depthTrunc": 4.0,
+    "frames": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "intrinsic": "Open3D PrimeSenseDefault",
+    "poseFile": "odometry.log",
+    "sdfTrunc": 0.04,
+    "voxelLength": 0.0078125
+  },
+  "pins": {
+    "$WORKSPACE/blind-open3d-author-baseline-10/SMOKE_PROTOCOL.md": "e6fa1af6c8162a7917eddebf76857ea4f7cd5c4dc8388b32fd5ec1d5e8032616",
+    "$WORKSPACE/blind-open3d-author-baseline-10/acquire_environment.py": "103d401e5534168b629a79bb66dae64f29d83a90e6ce1d302af949c6c8803fdd",
+    "$WORKSPACE/blind-open3d-author-baseline-10/environment/RECEIPT.json": "5bd34d287c491e3d1ad7dff2e767534b7672dce7976f2fa527d513fc660fe888",
+    "$WORKSPACE/blind-open3d-author-baseline-10/environment/target/open3d/__init__.py": "bf0f4cd2031549d60ad691fffa26ce60737b5e094c9b727e3ddbab189a6dc738",
+    "$WORKSPACE/blind-open3d-author-baseline-10/environment/target/open3d/cpu/pybind.cpython-312-x86_64-linux-gnu.so": "e99d5acb1ad93e609e83864ec69553a08b2a486e5d639241cc51e3c795e0f0d7",
+    "$WORKSPACE/blind-open3d-author-baseline-10/official_smoke.py": "b8ca782d05971a3322651ef10606b1df218264cb93eef4f1852cc5fa0096760a",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/ACQUISITION_RECEIPT.json": "c232a6e31e6388a98aeeb2ed7e8d15f771faba3a7fa087f444f66ce8a13ea517",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted/camera_primesense.json": "69ec0cb6a0beeead2551e332e1f728df6d1fe37f4b056410580733d2dbc54259",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted/color/00000.jpg": "29468161241d7ef92312991cf0019d7ccf199db1fafbf783d27288ef279d270a",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted/color/00001.jpg": "99afaf2e053d57f63b0ef730e6c32d2ae313ad2ef9e83218e253f020188a61df",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted/color/00002.jpg": "2c540e0a3c76973b32bcff184ca5dfdec074f262615c4bb5b4d40370429905bd",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted/color/00003.jpg": "0ceb63f92fa3c37fe594d480593ff85422c32bcefbfbe468b628af33eeb5f6b3",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted/color/00004.jpg": "f32bc60e53da906355e57f879ffabc1195203de19964f3b6e1bd17d1ab14b4ec",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted/depth/00000.png": "3eff7854dd5f056fe6f67ce68999a632fbc1fe6f3555cc00f83528312d6cb186",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted/depth/00001.png": "9c2a4fc35748ecc883e0142e5353a4d6da22afde9702db3a580ed767aa2b17f2",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted/depth/00002.png": "98041b11392817c2781b8853953aa483f707cc19b1c1a9ab2eab6fccac8ee240",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted/depth/00003.png": "1861e3fc0fc69c60c98d38730f0c8b5e57eba3311b6499356122e73fb3745849",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted/depth/00004.png": "b1dbfb18965ff45e6a927bef653181a4f3a7a99e6638d1190064c3f0dbc60f29",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted/example_tsdf_pcd.ply": "e473fb2d7d283a55fa3f0537c31c26ce1feaf406467edbfc4958b462985bcfaf",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted/odometry.log": "06c527e3715ce1c3b8b30839e15d866dda067a392e8d91fbf5c4450c54cb0b12",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted/rgbd.match": "6da5acb7945e539950ae800ef5d3c416a3bad958ee5450b9480834394b746bcb",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/extracted/trajectory.log": "1e573b3bdd3d82d8c332b632eff956588c56291690fefbd0f8b620c47c3201fb",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/upstream/LICENSE": "e5439bd70250da5f17b3435ff9efb05e96e7f9fdc34248d3355b0026baadaa41",
+    "$WORKSPACE/blind-open3d-author-baseline-10/sample/upstream/rgbd_integration.ipynb": "adb7e518ce3c4323ed674e595b116249af7da96382ae910efd36a51c2b8dcfce"
+  },
+  "scope": "Official five-frame synthetic engine smoke; no Koivu/FARO/body/navigation",
+  "sourceNotebookSHA256": "adb7e518ce3c4323ed674e595b116249af7da96382ae910efd36a51c2b8dcfce"
+}

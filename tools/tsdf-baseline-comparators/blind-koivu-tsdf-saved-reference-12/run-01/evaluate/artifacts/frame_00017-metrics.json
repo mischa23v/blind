@@ -1,0 +1,325 @@
+{
+  "allPairedStatistics": {
+    "MAE": 0.050322514951076786,
+    "absoluteP50": 0.021624123965359843,
+    "absoluteP90": 0.09289240786369042,
+    "absoluteP95": 0.16180729571778713,
+    "absoluteP99": 0.6043353111171107,
+    "count": 44634,
+    "maximumAbsolute": 1.4136216035302591,
+    "meanSigned": -0.008886608497612084,
+    "signedP05": -0.09789023148735754,
+    "signedP50": -0.015592351356796375,
+    "signedP95": 0.06929394631859778
+  },
+  "availability": {
+    "TSDFOnly": 1276,
+    "neither": 143,
+    "paired": 44634,
+    "referenceOnly": 12,
+    "scheduled": 46065
+  },
+  "byReferenceDepth": [
+    {
+      "TSDFHit": 0,
+      "label": "positive_below015",
+      "referenceValid": 0,
+      "scheduled": 0,
+      "statistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      }
+    },
+    {
+      "TSDFHit": 0,
+      "label": "015_to_below1",
+      "referenceValid": 0,
+      "scheduled": 0,
+      "statistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      }
+    },
+    {
+      "TSDFHit": 15876,
+      "label": "1_to_below2",
+      "referenceValid": 15876,
+      "scheduled": 15876,
+      "statistics": {
+        "MAE": 0.04475509288748442,
+        "absoluteP50": 0.010941337815729923,
+        "absoluteP90": 0.08486900892931404,
+        "absoluteP95": 0.18099244881292753,
+        "absoluteP99": 0.6988447907899276,
+        "count": 15876,
+        "maximumAbsolute": 0.8222536259189694,
+        "meanSigned": 0.017615336089796943,
+        "signedP05": -0.07032572324705977,
+        "signedP50": 0.0002853528122699345,
+        "signedP95": 0.152270913207867
+      }
+    },
+    {
+      "TSDFHit": 27828,
+      "label": "2_to_below3",
+      "referenceValid": 27840,
+      "scheduled": 27840,
+      "statistics": {
+        "MAE": 0.05018628947250045,
+        "absoluteP50": 0.027892791404338535,
+        "absoluteP90": 0.09033788491930997,
+        "absoluteP95": 0.14348552853959357,
+        "absoluteP99": 0.541074262696036,
+        "count": 27828,
+        "maximumAbsolute": 1.4136216035302591,
+        "meanSigned": -0.01933449979138436,
+        "signedP05": -0.10127791523111207,
+        "signedP50": -0.02406066626843817,
+        "signedP95": 0.023731997622746217
+      }
+    },
+    {
+      "TSDFHit": 930,
+      "label": "3_to_below4",
+      "referenceValid": 930,
+      "scheduled": 930,
+      "statistics": {
+        "MAE": 0.1494400152730284,
+        "absoluteP50": 0.08237489778996698,
+        "absoluteP90": 0.6453633995157431,
+        "absoluteP95": 0.7242249632261067,
+        "absoluteP99": 0.7709767365070062,
+        "count": 930,
+        "maximumAbsolute": 0.7798277726108176,
+        "meanSigned": -0.1486725798380538,
+        "signedP05": -0.7242249632261069,
+        "signedP50": -0.08237489778996698,
+        "signedP95": -0.03701539825504228
+      }
+    },
+    {
+      "TSDFHit": 0,
+      "label": "4_to_below5",
+      "referenceValid": 0,
+      "scheduled": 0,
+      "statistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      }
+    },
+    {
+      "TSDFHit": 0,
+      "label": "5_and_above",
+      "referenceValid": 0,
+      "scheduled": 0,
+      "statistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      }
+    }
+  ],
+  "bySavedReferenceEdge": [
+    {
+      "TSDFHit": 1276,
+      "code": -1,
+      "label": "missing_centre",
+      "referenceValid": 0,
+      "scheduled": 1419,
+      "statistics": {
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "count": 0,
+        "maximumAbsolute": null,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null
+      }
+    },
+    {
+      "TSDFHit": 737,
+      "code": 0,
+      "label": "scheduled_raster_boundary",
+      "referenceValid": 737,
+      "scheduled": 737,
+      "statistics": {
+        "MAE": 0.053807608183966515,
+        "absoluteP50": 0.0247699849261811,
+        "absoluteP90": 0.08970595006322658,
+        "absoluteP95": 0.13894403947611544,
+        "absoluteP99": 0.5427567963602195,
+        "count": 737,
+        "maximumAbsolute": 0.9036819336560149,
+        "meanSigned": -0.007907272903313394,
+        "signedP05": -0.08970374885501532,
+        "signedP50": -0.017010707894155264,
+        "signedP95": 0.048673358708218074
+      }
+    },
+    {
+      "TSDFHit": 104,
+      "code": 1,
+      "label": "missing_neighbour",
+      "referenceValid": 104,
+      "scheduled": 104,
+      "statistics": {
+        "MAE": 0.018244080727765392,
+        "absoluteP50": 0.01997625442293982,
+        "absoluteP90": 0.031125571905627057,
+        "absoluteP95": 0.033810194564381155,
+        "absoluteP99": 0.03976748090582387,
+        "count": 104,
+        "maximumAbsolute": 0.04116695581252605,
+        "meanSigned": -0.017990285266929754,
+        "signedP05": -0.03381019456438117,
+        "signedP50": -0.01997625442293982,
+        "signedP95": 0.0013597501479047022
+      }
+    },
+    {
+      "TSDFHit": 38723,
+      "code": 2,
+      "label": "delta_le_002",
+      "referenceValid": 38727,
+      "scheduled": 38727,
+      "statistics": {
+        "MAE": 0.03877011318731655,
+        "absoluteP50": 0.018815441704075564,
+        "absoluteP90": 0.07162606294598665,
+        "absoluteP95": 0.09911792768263757,
+        "absoluteP99": 0.5484403892967542,
+        "count": 38723,
+        "maximumAbsolute": 1.4136216035302591,
+        "meanSigned": -0.011376477714443936,
+        "signedP05": -0.08069424633046864,
+        "signedP50": -0.01475341307139777,
+        "signedP95": 0.03058772543293946
+      }
+    },
+    {
+      "TSDFHit": 2653,
+      "code": 3,
+      "label": "delta_gt002_le010",
+      "referenceValid": 2653,
+      "scheduled": 2653,
+      "statistics": {
+        "MAE": 0.10256741326338686,
+        "absoluteP50": 0.061754128867799185,
+        "absoluteP90": 0.19032896720142256,
+        "absoluteP95": 0.45444560122371175,
+        "absoluteP99": 0.6468767060394157,
+        "count": 2653,
+        "maximumAbsolute": 0.7792828814720782,
+        "meanSigned": -0.016529843129690545,
+        "signedP05": -0.16888290485482527,
+        "signedP50": -0.036503925630674505,
+        "signedP95": 0.3755173616194528
+      }
+    },
+    {
+      "TSDFHit": 2417,
+      "code": 4,
+      "label": "delta_gt010",
+      "referenceValid": 2425,
+      "scheduled": 2425,
+      "statistics": {
+        "MAE": 0.17837612757917515,
+        "absoluteP50": 0.10786696427269904,
+        "absoluteP90": 0.4862165032280932,
+        "absoluteP95": 0.612657947102729,
+        "absoluteP99": 0.7712207561838323,
+        "count": 2417,
+        "maximumAbsolute": 0.8154815554448889,
+        "meanSigned": 0.03948646523565017,
+        "signedP05": -0.26054936614491175,
+        "signedP50": -0.02551962939501129,
+        "signedP95": 0.5227946851412735
+      }
+    }
+  ],
+  "frameID": "frame_00017",
+  "index": 4,
+  "poseCheck": {
+    "rotationDeterminant": 0.9999999749260093,
+    "rotationOrthogonalityResidual": 4.0086525293636655e-08
+  },
+  "query": {
+    "FAROScaleAppliedAgain": false,
+    "cellsPerNode": 16,
+    "farEndpointDistancePhoneMapUnits": 12.544639237482953,
+    "intersectionTolerancePhoneMapUnits": 1e-07,
+    "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+    "maxBuckets": 2097152,
+    "maxHitInverseVersusParameterAxialResidual": 2.220446049250313e-15,
+    "meshTransformedOrDuplicated": false,
+    "nearestSurface": true,
+    "rayTransform": "identity @ original camera_to_phone",
+    "twoSidedTriangleIntersection": true
+  },
+  "reference4AndAboveStatistics": {
+    "MAE": null,
+    "absoluteP50": null,
+    "absoluteP90": null,
+    "absoluteP95": null,
+    "absoluteP99": null,
+    "count": 0,
+    "maximumAbsolute": null,
+    "meanSigned": null,
+    "signedP05": null,
+    "signedP50": null,
+    "signedP95": null
+  },
+  "referenceBelow4Statistics": {
+    "MAE": 0.050322514951076786,
+    "absoluteP50": 0.021624123965359843,
+    "absoluteP90": 0.09289240786369042,
+    "absoluteP95": 0.16180729571778713,
+    "absoluteP99": 0.6043353111171107,
+    "count": 44634,
+    "maximumAbsolute": 1.4136216035302591,
+    "meanSigned": -0.008886608497612084,
+    "signedP05": -0.09789023148735754,
+    "signedP50": -0.015592351356796375,
+    "signedP95": 0.06929394631859778
+  },
+  "usedByTSDFIntegration": true
+}

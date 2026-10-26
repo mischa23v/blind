@@ -1,0 +1,29 @@
+{
+  "cpuSeconds": 9.18,
+  "freeAfterBytes": 1449738240,
+  "frozenSHA256": "fd4c4aedf74665624264c5b7f93834c0d9d2773dfcaf99a275975017432385ae",
+  "phases": [
+    {
+      "command": [
+        "$PYTHON_EXECUTABLE",
+        "$WORKSPACE/blind-open3d-author-baseline-10/official_smoke.py",
+        "--worker",
+        "$WORKSPACE/blind-open3d-author-baseline-10/SMOKE_FROZEN.json",
+        "$WORKSPACE/blind-open3d-author-baseline-10/smoke"
+      ],
+      "cpuSeconds": 8.879999999999999,
+      "exitCode": 0,
+      "wallSeconds": 5.6310905010032
+    }
+  ],
+  "pinsReverifiedAfter": true,
+  "resultSHA256": "08245ae0a83b45d426f4d6c28d3c29090bed8f08293bd514b69d4837337e70b3",
+  "sampledPeakProcessTreeRSSBytes": 485044224,
+  "scope": "Official synthetic five-frame engine smoke only; not iPhone, accuracy, detection or navigation",
+  "smokeOutputAllocatedBytes": 11132928,
+  "status": "completed",
+  "totalStageAllocatedBytesPlusMetadataReservation": 528056320,
+  "triangles": 279171,
+  "vertices": 146747,
+  "wallSeconds": 5.934009738994064
+}

@@ -1,0 +1,123 @@
+{
+  "scope": "Official synthetic five-frame engine smoke only; not iPhone, accuracy, detection or navigation",
+  "frames": [
+    {
+      "frameID": 0,
+      "pixels": 307200,
+      "rawZeroPixels": 40071,
+      "nativeConvertedPositiveDepthPixels": 267129,
+      "nativeConvertedZeroDepthPixels": 40071,
+      "nativeConvertedPositiveDepthMinMaxM": [
+        0.9549999833106995,
+        2.7019999027252197
+      ]
+    },
+    {
+      "frameID": 1,
+      "pixels": 307200,
+      "rawZeroPixels": 39472,
+      "nativeConvertedPositiveDepthPixels": 267728,
+      "nativeConvertedZeroDepthPixels": 39472,
+      "nativeConvertedPositiveDepthMinMaxM": [
+        0.9819999933242798,
+        2.7019999027252197
+      ]
+    },
+    {
+      "frameID": 2,
+      "pixels": 307200,
+      "rawZeroPixels": 39017,
+      "nativeConvertedPositiveDepthPixels": 268183,
+      "nativeConvertedZeroDepthPixels": 39017,
+      "nativeConvertedPositiveDepthMinMaxM": [
+        1.0069999694824219,
+        2.7019999027252197
+      ]
+    },
+    {
+      "frameID": 3,
+      "pixels": 307200,
+      "rawZeroPixels": 38580,
+      "nativeConvertedPositiveDepthPixels": 268620,
+      "nativeConvertedZeroDepthPixels": 38580,
+      "nativeConvertedPositiveDepthMinMaxM": [
+        1.0290000438690186,
+        2.6760001182556152
+      ]
+    },
+    {
+      "frameID": 4,
+      "pixels": 307200,
+      "rawZeroPixels": 38149,
+      "nativeConvertedPositiveDepthPixels": 269051,
+      "nativeConvertedZeroDepthPixels": 38149,
+      "nativeConvertedPositiveDepthMinMaxM": [
+        1.0520000457763672,
+        2.7019999027252197
+      ]
+    }
+  ],
+  "integratedFrameCount": 5,
+  "vertices": 146747,
+  "triangles": 279171,
+  "boundsMin": [
+    0.60546875,
+    0.83203125,
+    0.66796875
+  ],
+  "boundsMax": [
+    3.07421875,
+    2.424890187600089,
+    2.4511965716514723
+  ],
+  "intrinsicWidth": 640,
+  "intrinsicHeight": 480,
+  "intrinsicMatrix": [
+    [
+      525.0,
+      0.0,
+      319.5
+    ],
+    [
+      0.0,
+      525.0,
+      239.5
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "fusionAndExtractionWallSeconds": 1.3107575760077452,
+  "modules": {
+    "open3d": {
+      "path": "$WORKSPACE/blind-open3d-author-baseline-10/environment/target/open3d/__init__.py",
+      "sha256": "bf0f4cd2031549d60ad691fffa26ce60737b5e094c9b727e3ddbab189a6dc738",
+      "bytes": 8597
+    },
+    "open3d.cpu.pybind": {
+      "path": "$WORKSPACE/blind-open3d-author-baseline-10/environment/target/open3d/cpu/pybind.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "e99d5acb1ad93e609e83864ec69553a08b2a486e5d639241cc51e3c795e0f0d7",
+      "bytes": 225559512
+    },
+    "numpy": {
+      "path": "$PYTHON_SITE_PACKAGES/numpy/__init__.py",
+      "sha256": "93924ac4b793328947dfd9eb9355e54eccdfd26a92c8dd52188aed2e52c7eb38",
+      "bytes": 25919
+    },
+    "numpy._core._multiarray_umath": {
+      "path": "$PYTHON_SITE_PACKAGES/numpy/_core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "ba96467ae494babaf7c3458b09cc03c4200c2e10010860d80e452ffb8b01c8cd",
+      "bytes": 10808937
+    },
+    "numpy.linalg._umath_linalg": {
+      "path": "$PYTHON_SITE_PACKAGES/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "64bfb8bb8a1a09ca31f7a6e307a87b4c78a75f3489aaf3c61ed8aa4ffada9845",
+      "bytes": 231833
+    }
+  },
+  "moduleHashesReverifiedAfter": true,
+  "meshSHA256": "c6a389188f4d97d0f853d581aa1de85af8385863b854fcf250d81198b7402883",
+  "physicalAuthority": false
+}

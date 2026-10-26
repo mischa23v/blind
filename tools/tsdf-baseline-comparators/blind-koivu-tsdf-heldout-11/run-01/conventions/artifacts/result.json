@@ -1,0 +1,53 @@
+{
+  "physicalAuthority": false,
+  "recordedRays": 0,
+  "runtime": {
+    "SMPBackend": "Sequential",
+    "executionMachine": {
+      "CPUQuotaNotEstablished": true,
+      "GPUUsed": false,
+      "cpuReportedModel": "AMD EPYC 7763 64-Core Processor",
+      "iPhoneRuntimeTest": false,
+      "logicalCPUAffinityCount": 1,
+      "machine": "x86_64",
+      "memorySnapshotBytes": {
+        "MemAvailable": 4652929024,
+        "MemTotal": 10451439616
+      },
+      "release": "6.18.55",
+      "system": "Linux"
+    },
+    "threads": 1,
+    "version": "9.3.1"
+  },
+  "tests": [
+    {
+      "name": "integer_asymmetric_projection_backprojection",
+      "passed": true
+    },
+    {
+      "name": "nearest_unsorted_reverse_False",
+      "passed": true
+    },
+    {
+      "name": "nearest_unsorted_reverse_True",
+      "passed": true
+    },
+    {
+      "name": "pose_inverse_axial_not_range",
+      "passed": true
+    },
+    {
+      "name": "no_hit_and_backward_ray_retained",
+      "passed": true
+    },
+    {
+      "name": "all_six_categories_and_prediction_above4_preserved",
+      "passed": true
+    },
+    {
+      "name": "edge_bins_and_missing_centre_counted",
+      "passed": true
+    }
+  ]
+}

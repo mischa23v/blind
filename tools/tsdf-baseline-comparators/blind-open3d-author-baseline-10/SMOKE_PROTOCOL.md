@@ -1,0 +1,13 @@
+# Frozen official five-frame Open3D integration smoke
+
+Purpose: reproduce the released Open3D 0.19 scalable RGB-D integration notebook's numerical pipeline using the installed, verified CPU wheel. This is an upstream-engine smoke on synthetic ICL-NUIM/Redwood data, not a real iPhone result, reconstruction accuracy benchmark, hazard test or navigation episode.
+
+Upstream notebook at commit `1e7b17438687a0b0c1e5a7187321ac7044afe275`, SHA256 `adb7e518ce3c4323ed674e595b116249af7da96382ae910efd36a51c2b8dcfce`; source license MIT. Official sample ZIP: 3,772,513 bytes, published MD5 `43971c5f690c9cfc52dda8c96a0140ee`. The acquisition receipt anchors its actual SHA256 and extracted members. Original ICL-NUIM data is CC BY 3.0; additional Redwood/Open3D asset provenance is documented separately, and the raw sample stays local.
+
+Use all five original color/depth pairs 00000 through 00004 in index order, `odometry.log` poses, and actual Open3D PrimeSenseDefault intrinsics. Depth conversion is the unchanged RGBD factory with depth scale1000, depth cutoff4m, RGB8 color and no RGB-to-intensity conversion. ScalableTSDFVolume uses voxel length4/512m and SDF truncation0.04m. Integrate with the inverse supplied pose. No resampling, pose fitting, smoothing, component deletion, hole filling or floor classification. Remove only notebook visualization/download calls; use the preverified local files and save the extracted mesh.
+
+Prerecorded success checks are deliberately limited: all5 inputs parsed and integrated; finite positive converted depth; all output vertices finite; nonempty mesh with valid triangle indices; original input/source/installed-binary hashes unchanged. Report counts, bounds, dimensions, accepted factory depth counts, timing and sampled RSS. There is no claimed golden mesh count/hash or physical error threshold: the packaged example point cloud's exact generating recipe is not established. Do not promote an image or nonempty mesh to accuracy or safety evidence.
+
+Before running, freeze source/protocol, sample hashes, acquisition receipt, environment receipt and loaded module identities. Record actual Open3D CPU pybind and NumPy linear algebra module paths and SHA256, not just distribution versions. Reuse installed packages without modifying them; bytecode/cache/home paths stay local and CPU thread environment is1. The environment is host-reusing, not hermetic.
+
+Execution bounds:60 aggregate CPU /90 wall seconds,1GiB sampled process-tree RSS,32MiB smoke output,900MiB total stage allocated disk including the external metadata reservation, and768MiB free reserve. Retain terminal failures; no alternate frame subset or changed parameters after observing results. No Koivu data, FARO mesh, body, controller or planner is loaded.
