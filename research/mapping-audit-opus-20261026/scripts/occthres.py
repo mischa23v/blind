@@ -16,18 +16,19 @@ def tree(maxrange):
   tr.updateInnerOccupancy();return tr
 tA=tree(-1.);tN=tree(PL.THRESHOLDS['near_m']);print('trees built',flush=True)
 shape=o['D1__walk'].shape+(int(np.ceil(1.85/RES))+int(np.ceil(.20/RES))+1,);z0=int(np.ceil(.20/RES))
-base=None;out={}
+base=None;out={};SPLIT=os.environ.get('SPLIT')=='1';sup05=None
 for thr in (0.5,0.6,0.7,0.8):
   for tr in (tA,tN):tr.setOccupancyThres(thr)
   oA,fA=tA.extractPointCloud();oN,fN=tN.extractPointCloud()
   A=P2.grid3(oA,fA,lo,shape,RES);N=P2.grid3(oN,fN,lo,shape,RES)
-  D=P2.classify(A,N,z0,RES);walk=D['walk']
+  if thr==0.5:sup05=(A[:,:,P2.band_layers(RES,z0,shape[2])[0]]==2).any(2)
+  D=P2.classify(A,N,z0,RES,support_override=(sup05 if SPLIT else None));walk=D['walk']
   r={}
   for mk,mm in (('permissive',walk),('statClear',walk&(state=='clear'))):
     sc=score(mm,ref);sc['missRatePct']=round(100*sc['refLow25']/max(sc['n'],1),3);sc['refWalkPhoneBlocked']=int((rw&~mm).sum());r[mk]=sc
   if base is None:base=walk
   newly=walk&~base&cov;r['unblockedVsBase']=int(newly.sum());r['unblockedVsBase_refGeom']=int((newly&refgeom).sum());r['unblockedVsBase_refLow25']=int((newly&(ref['low_max']>=.025)).sum())
   r['occupiedLeavesAll']=int(len(oA));out[thr]=r;print(json.dumps({'thr':thr,**r}),flush=True)
-  np.savez(f'occthres_{thr}.npz',**D)
-  for mk,mm in (('permissive',walk),('statClear',walk&(state=='clear'))):P2.run_routes(mm,lo,RES,os.environ['RECAST_ADAPTER_DIR'],f'{room} thr={thr} {mk}')
-json.dump(out,open('OCCTHRES_RESULTS.json','w'),indent=1)
+  np.savez(f'occthres_{"split" if SPLIT else ""}{thr}.npz',**D)
+  for mk,mm in (('permissive',walk),('statClear',walk&(state=='clear'))):P2.run_routes(mm,lo,RES,os.environ['RECAST_ADAPTER_DIR'],f'{room} {"split-support " if SPLIT else ""}thr={thr} {mk}')
+json.dump(out,open('OCCTHRES_SPLIT_RESULTS.json' if SPLIT else 'OCCTHRES_RESULTS.json','w'),indent=1)

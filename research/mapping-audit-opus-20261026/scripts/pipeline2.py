@@ -36,12 +36,12 @@ def band_layers(res,z0,nlayers):
     deep=h<RULES['dip_band'][0]-e
     return floor,low,body,dip,deep
 
-def classify(A,N,z0,res,occ_override=None):
+def classify(A,N,z0,res,occ_override=None,support_override=None):
     """D1 rules in metre bands. occ_override: optional bool grid replacing 'occupied' evidence in low+body bands
     (used by the TSDF variant and the ungrounded-blob variant); free/unknown coverage always from the OctoMap trees."""
     fl,lw,bd,dp,dpp=band_layers(res,z0,A.shape[2])
     occA=(A==2) if occ_override is None else occ_override;occN=(N==2) if occ_override is None else (occ_override&(N!=0))
-    sup=(A[:,:,fl]==2).any(2)
+    sup=(A[:,:,fl]==2).any(2) if support_override is None else support_override
     deep=(A[:,:,dpp]==2).any(2)
     dipN=(N[:,:,dp]==2).any(2)
     lowN_occ=occN[:,:,lw].any(2);lowA_occ=occA[:,:,lw].any(2);lowN_free=(N[:,:,lw]==1).all(2);lowN_unk=(N[:,:,lw]==0).any(2);lowA_unk=(A[:,:,lw]==0).any(2)
