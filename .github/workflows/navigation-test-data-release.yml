@@ -1,8 +1,10 @@
 name: Experimental navigation test-data mirror
-# INERT preparation. A maintainer must publish the reviewed source, then pin
-# SOURCE_REVISION and explicitly activate a one-shot, self-path push marker.
+# One-shot activation of reviewed source fc0b52f01be03a2c49cedcc8b0c2e031bc147520.
+# Only the exact source marker on this workflow path may start the transfer.
 on:
-  workflow_dispatch:
+  push:
+    branches: [master]
+    paths: [.github/workflows/navigation-test-data-release.yml]
 permissions:
   contents: read
 concurrency:
@@ -10,13 +12,13 @@ concurrency:
   cancel-in-progress: false
 jobs:
   mirror:
-    if: ${{ false }}
+    if: ${{ github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/master' && github.run_attempt == 1 && github.event_name == 'push' && contains(github.event.head_commit.message, '[navigation-test-data-fc0b52f-once]') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
       contents: write
     env:
-      SOURCE_REVISION: UNACTIVATED
+      SOURCE_REVISION: fc0b52f01be03a2c49cedcc8b0c2e031bc147520
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
