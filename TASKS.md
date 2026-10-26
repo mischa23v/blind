@@ -1,3 +1,16 @@
+## Gate 0: evidence and sensing feasibility first
+
+**FIRST — UNPROVEN.** [Gate 0 contract and source references](REBUILD_TRACKER.md#gate-0-real-sensor-evidence-before-navigation-completion) supersede the implementation order below: research → preregistered genuine phone sensing/obstacle-avoidance feasibility → pathing/maps/unknown mapping/return completion → other features. Preserve the detailed navigation and independent fresh-safety requirements.
+
+- [ ] Review real-phone and robotics experiments and verify usable released code, repository/version, license, hardware, dependencies and reproducible builds. Record limitations and unavailable artifacts; do not treat papers or pending research as an implemented solution.
+- [ ] Freeze the protocol before more tests: actual device/configuration and source provenance, licenses, byte hashes, confidence, timestamps/synchronization, tracking, intrinsics/extrinsics and coordinate/scale metadata. Separate missing dataset fields from hardware infeasibility.
+- [ ] Preregister independent hazard/coverage labels, warning lead-time and miss/false-warning metrics, denominators, pass bounds and held-out cases/seeds. Cover floor-to-head, near-feet/sideways, thin/low objects, toys, slopes/drops, changes and sensor/privacy loss without cane/person/dog-dependent assumptions.
+- [ ] Run and label genuine iPhone sensor feasibility evidence only under that protocol. Keep synthetic rendering, fixed real recordings and live actual-device execution distinct. Recorded sensing is not counterfactual human closed-loop proof; a mesh rendering is not phone sensor output.
+- [ ] Decide measured phone-baseline capabilities and gaps, then the needed belt/additional sensors, placement changes, gimbal or redesign. Phone-only is not the final requirement; a newer chip is not proof that coverage or misses improve. Verify additions rather than assuming they work.
+- [ ] Close Gate 0 only for its measured operating envelope; preserve unknowns and all failures. No component count, provided-map baseline or synthetic A-to-B success closes it. After a bounded pass, resume completion of the detailed map/path/return checklist below, then secondary features and later supervised utility/adoption gates.
+
+---
+
 ## Navigation-first delivery checklist
 
 **Priority 1 — do this before expanding reading or other secondary features.** Deliver useful indoor A-to-B navigation through rooms, to the kitchen or an exit, and back. The detailed source of truth is [Navigation first: purpose, architecture and acceptance](REBUILD_TRACKER.md#navigation-first-purpose-architecture-and-acceptance). Zero collisions **and** arrival within a preregistered time are required; stopping, no motion, deadlock or stopping short is not success.

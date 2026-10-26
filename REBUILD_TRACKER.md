@@ -1,3 +1,37 @@
+# Gate 0: real sensor evidence before navigation completion
+
+**FIRST gate — UNPROVEN, 2026-10-26.** Research real-phone/robotics evidence and usable released code first; preregister the sensing protocol; then establish genuine iPhone sensor feasibility and obstacle avoidance. Only after that gate passes within an explicitly supported operating envelope should completion of pathing, maps/unknown-space mapping and return become the next acceptance target, followed by other features. The detailed navigation and independent live-safety contract below remains binding; this Gate 0 supersedes its implementation order, not its safety requirements. [Gate 0 checklist](TASKS.md#gate-0-evidence-and-sensing-feasibility-first) · [Immediate order](TODO.md#next-gate-0-research-protocol-then-real-sensing).
+
+**Phone-only is not the final hardware requirement.** The phone is the starting platform to measure and optimize. Belt-mounted and additional sensors have always been part of the intended system. Gate 0 must identify what the tested phone configuration can actually cover and where additional sensors, changed placement, a gimbal or a redesigned arrangement are needed. A newer processor or phone model does not establish better coverage, sufficient warning time or fewer missed hazards without measurement.
+
+## Evidence and code review before further trials
+
+Review actual experiments, sensing arrangements, limitations and reusable released implementations—not only abstracts, demonstrations or a successful library build. Verify each candidate's repository/release, license, exact version, supported hardware, dependencies and reproducible build; distinguish available code from a paper whose implementation has not been released or verified. Do not manufacture a replacement mapping/sensing system because a research artifact is unavailable. The hardware/code-availability research remains open until its evidence is recorded; this tracker does not pre-empt that review.
+
+Track the separate [phone-first hardware and released-code research review](research/PHONE_FIRST_NAVIGATION_ENGINEERING.md); its findings do not by themselves pass this sensing gate.
+
+Starting references, not acceptance of this app:
+
+- [Corridor-Walker](https://publications.ri.cmu.edu/corridor-walker-mobile-indoor-walking-assistance-for-blind-people-to-avoid-obstacles-and-recognize-intersections): smartphone LiDAR corridor assistance studied with 14 blind participants. Inspect the study's environment, assistance/cane conditions and task limits before transferring conclusions; it is not proof of general independent full-body protection.
+- [RAIS, ASSETS 2024](https://makeabilitylab.cs.washington.edu/media/publications/Su_RaisTowardsARoboticMappingAndAssessmentToolForIndoorAccessibilityUsingCommodityHardware_ASSETS2024.pdf): an iPhone 13 Pro Max combined with a robot and motorized gimbal, preliminarily evaluated in three spaces. This is relevant to sensor placement and active coverage, not a phone-only human obstacle-avoidance validation.
+- Apple's [scene-depth point-cloud example](https://developer.apple.com/documentation/arkit/displaying-a-point-cloud-using-scene-depth) and [depth confidence map API](https://developer.apple.com/documentation/arkit/ardepthdata/confidencemap) are acquisition/API references, not hazard-detection or safe-navigation guarantees.
+
+## Freeze the protocol before collecting or scoring tests
+
+- Record the actual device and sensor configuration, mounting/coverage, capture software/version, data source/license, original byte hashes and transformations. Verify that an allegedly iPhone recording is actually from an identified iPhone; do not infer device provenance from a dataset name or label ARKitScenes as iPhone data.
+- Require the fields needed by the intended test: original camera/depth streams and confidence, capture timestamps and synchronization, tracking status, intrinsics, extrinsics/coordinate frames, scale/units and relevant motion/quality metadata. Document missing fields explicitly. Missing confidence or tracking information in a released recording is a **dataset limitation**, not evidence that the hardware cannot provide it or that the required sensing is impossible.
+- Preregister independently labelled hazards and ground truth, visible/occluded/uncovered regions, floor-to-head and reachable-body coverage, warning lead time relative to motion/reaction/stopping needs, misses and false warnings, and the thresholds for a bounded pass. Include thin/low objects, toys, slopes/drops, near-feet and sideways hazards, changing obstacles and sensor/privacy interruptions. Preserve the existing no-cane/person/dog-dependent authority rule.
+- Separate development cases from held-out devices/configurations, environments, hazards and noise/timing conditions as applicable. Fix the splits, seeds, thresholds and failure accounting before examining results. Report denominators and unavailable/unknown coverage, not only detected examples or a single aggregate success rate.
+- Name the evidence level on every result: **synthetic/3D-rendered**, **fixed recorded real sensors**, or **live actual-device execution**. A rendered real-room mesh is not actual phone sensor evidence. Fixed recordings can assess sensing on the recorded view/motion; they cannot establish the counterfactual closed-loop movement or reactions of a person following different commands. Supplied odometry is not own localization.
+
+## Gate decision and current status
+
+The decision must state the tested phone baseline's measured capabilities and gaps, the required added sensors/placement/gimbal or redesign, and which independent live-safety requirements remain unsupported. A gap may require different acquisition data, a code repair, a hardware addition or a different configuration; distinguish these causes instead of automatically declaring phone feasibility or infeasibility. Added hardware must be measured under the same protocol rather than assumed to solve the gap.
+
+**Current status remains UNPROVEN.** Existing source, library/component checks, recorded diagnostics and authored A-to-B simulations do not close Gate 0—even a future synthetic arrival without collisions cannot do so. Do not start another feature increment or substitute trial until the research review and protocol are agreed. A bounded sensing pass supports only its documented conditions; it is not a promise of zero risk in every world. Continue withholding movement where current coverage is insufficient. Pathing/map/return completion and later supervised utility/adoption acceptance remain subsequent gates, not replacements for this one.
+
+---
+
 # Navigation first: purpose, architecture and acceptance
 
 **Priority 1 — current project order, 2026-10-26.** The foundation is useful indoor navigation: help a person get from A to B, including the kitchen, another room, an exit and a return to the starting place. Build and test the complete map–localization–body–collision–route–control loop before expanding reading or other secondary features. Signs and labels can help identify or orient within a place; reading them is not a substitute for getting there.

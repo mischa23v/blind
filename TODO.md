@@ -1,3 +1,15 @@
+## Next: Gate 0 research, protocol, then real sensing
+
+**Current first gate is UNPROVEN.** Follow the [Gate 0 contract](REBUILD_TRACKER.md#gate-0-real-sensor-evidence-before-navigation-completion) and [first checklist](TASKS.md#gate-0-evidence-and-sensing-feasibility-first). This order takes precedence over the earlier next steps retained below.
+
+1. Finish real-phone/robotics evidence and released-code availability review. Verify experiments, limitations, code versions/licenses and usable builds; do not duplicate pending research or assume paper results transfer to this app.
+2. Freeze the genuine-phone sensing protocol before further trials: actual device/source provenance and byte hashes; required confidence, timestamps, tracking, intrinsics/extrinsics; independently labelled hazards/coverage, warning lead time, misses/false warnings, held-out cases and preregistered pass bounds. Missing dataset fields do not prove hardware infeasibility.
+3. Measure the phone starting configuration and explicitly decide its capabilities and gaps. Belt/additional sensors remain intended, not a fallback forbidden by a phone-only goal; evaluate required placement changes, gimbal or redesign without assuming a newer chip solves sensing.
+4. Keep synthetic/3D-rendered, fixed-recording and live-device evidence separate. Fixed recordings assess sensing, not counterfactual human closed-loop responses; synthetic arrival cannot pass Gate 0. Preserve independent fresh floor-to-head/reachable-body safety and unknown-space withholding.
+5. Only after a bounded sensing pass, complete pathing, map/unknown-space mapping and return; then other features. Until the research review and protocol are agreed, do not launch a new feature increment or substitute trial. No stage promises zero all-world risk.
+
+---
+
 ## Next: navigation foundation before secondary features
 
 **First priority:** make the code-controlled indoor A-to-B and return loop useful, not merely collision-free while stopped. Follow the [detailed navigation architecture and acceptance contract](REBUILD_TRACKER.md#navigation-first-purpose-architecture-and-acceptance) and [first delivery checklist](TASKS.md#navigation-first-delivery-checklist).
