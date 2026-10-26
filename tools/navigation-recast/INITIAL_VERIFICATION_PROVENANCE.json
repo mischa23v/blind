@@ -1,0 +1,43 @@
+{
+  "scope": "Historical initial native-component build/test evidence only. No new execution and no final-source, journey or physical-safety claim.",
+  "upstreamRevision": "9f4ce64458dfae86e1239c525ddc219c4e9e06f1",
+  "relationship": "Adds the three original evidence files referenced by the frozen native source packet README; does not alter its 57 files.",
+  "preservation": {
+    "copiedBytesUnchanged": true,
+    "normalization": "none",
+    "privatePathsOrCredentialsFound": false,
+    "binaryIncluded": false
+  },
+  "initialBuild": {
+    "librarySHA256": "0595509aa56b29af7aa8372c7998941277f7fd687bc040e334aec88815d24ddc",
+    "libraryBytes": 327400,
+    "wallSeconds": 5.975976390996948,
+    "maxResidentKiB": 50640,
+    "exitCode": 0
+  },
+  "initialTests": {
+    "run": 12,
+    "passed": 12,
+    "failed": 0,
+    "seconds": 0.046,
+    "kind": "native adapter component checks; not completed navigation episodes"
+  },
+  "historicalSourceCaveat": "Initial C++/Python source snapshots were reconstructed after local hardening, not captured contemporaneously. This supplement does not publish or rely on those reconstructed snapshots; it preserves the original output logs only. Use FINAL_VERIFICATION.json for the final tested source cut.",
+  "originalOutputs": [
+    {
+      "path": "tools/navigation-recast/build-result.json",
+      "bytes": 150,
+      "sha256": "07d4628554015ca2272a3fd1f8f97c6132985f1568b2365122a8af87cce17dcf"
+    },
+    {
+      "path": "tools/navigation-recast/build.log",
+      "bytes": 7829,
+      "sha256": "4555200b7926c2d75295dce08f07493b16146078eb3691dedaebb8720015cb61"
+    },
+    {
+      "path": "tools/navigation-recast/tests-attempt-1.log",
+      "bytes": 1591,
+      "sha256": "8d0c438e4fd3715bcf5d9f61ba882a5b74b2189c95ae30bad61b671240706942"
+    }
+  ]
+}
