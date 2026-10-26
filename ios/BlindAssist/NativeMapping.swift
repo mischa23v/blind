@@ -1,9 +1,7 @@
 import Foundation
 import ARKit
 import Combine
-#if DEBUG
 import BlindCore
-#endif
 #if BLIND_RTABMAP
 import GLKit
 #endif
@@ -14,6 +12,23 @@ final class NativeMapping: ObservableObject {
     @Published private(set) var status = "Native RTAB-Map build required for growing 3D maps."
     @Published private(set) var active = false
     @Published private(set) var exportURL: URL?
+    @Published private(set) var localGridSnapshot: NativeLocalGridSnapshot?
+    private var localGridConsumer = NativeLocalGridConsumer()
+    private var localGridGeneration: UInt64 = 0
+    private var gridTrackingLost = false
+    private var minimumGridCapture = -Double.infinity
+    private var gridWatchdog: Timer?
+    private func clearLocalGrid() {
+        gridWatchdog?.invalidate(); gridWatchdog = nil
+        localGridConsumer.invalidate(); localGridSnapshot = nil
+    }
+    private func publishLocalGrid(_ value: NativeLocalGridSnapshot) {
+        guard localGridSnapshot != value else { return }
+        localGridSnapshot = value
+        if active {
+            status = "Private 3D map: \(value.groundCellCount) ground, \(value.obstacleCellCount) obstacle, \(value.emptyCellCount) empty-ray cells. \(value.status.rawValue). Not walking guidance."
+        }
+    }
     var available: Bool {
         #if BLIND_RTABMAP
         return true
@@ -62,6 +77,7 @@ final class NativeMapping: ObservableObject {
         } else { deleteMapFiles() }
     }
     private func deleteMapFiles() {
+        clearLocalGrid()
         do {
             for name in ["personal.db", "personal.db-wal", "personal.db-shm"] {
                 let url = storage.appendingPathComponent(name)
@@ -95,24 +111,76 @@ final class NativeMapping: ObservableObject {
             let renderer = GLKView(frame: CGRect(x: 0, y: 0, width: 16, height: 16), context: context)
             EAGLContext.setCurrent(context); renderer.bindDrawable()
             let engine = RTABMap()
-            engine.setupCallbacksWithCPP(); engine.initGlContent()
+            // This owner uses only the lifetime-managed local-grid mailbox.
+            // Do not register unused legacy raw-self renderer/UI callbacks.
+            engine.initGlContent()
             engine.setupGraphic(size: CGSize(width: 16, height: 16), orientation: .portrait)
             engine.setMappingParameter(key: "Rtabmap/DetectionRate", value: "2")
+            // Reuse upstream node-local 3D classification/rays. No local raycaster.
+            // Empty rays are unavailable unless that upstream build has OctoMap.
+            for (key, value) in ["RGBD/CreateOccupancyGrid": "true", "Rtabmap/PublishStats": "true",
+                "Grid/Sensor": "1", "Grid/3D": "true", "Grid/CellSize": "0.1",
+                "Grid/RangeMin": "0.2", "Grid/RangeMax": "6.0", "Grid/DepthDecimation": "4",
+                "Grid/MapFrameProjection": "false", "Grid/Scan2dUnknownSpaceFilled": "false",
+                "Grid/RayTracing": engine.supportsLocalGridRayTracing ? "true" : "false"] {
+                engine.setMappingParameter(key: key, value: value)
+            }
+            guard localGridGeneration < UInt64.max else { throw CocoaError(.featureUnsupported) }
+            localGridGeneration += 1; localGridConsumer.begin(generation: localGridGeneration)
+            gridTrackingLost = false; minimumGridCapture = ProcessInfo.processInfo.systemUptime
+            engine.localGridReceived = { [weak self, weak engine] packet in
+                guard let self, let engine, self.engine === engine, self.active else { return }
+                let value = self.localGridConsumer.consume(packet, now: ProcessInfo.processInfo.systemUptime)
+                self.publishLocalGrid(value)
+            }
+            engine.enableLocalGrid(generation: localGridGeneration)
             engine.setAppendMode(enabled: true)
             guard engine.openDatabase(databasePath: database.path, databaseInMemory: false, optimize: false, clearDatabase: false) >= 0,
                   engine.startCamera() else { throw CocoaError(.fileReadUnknown) }
             engine.setPausedMapping(paused: false)
             self.context = context; self.renderer = renderer; self.engine = engine; self.database = database
             active = true; exportURL = nil; lastFrame = -.infinity
-            status = "Building your private 3D map on this phone."
-        } catch { status = "Local mapping could not start: \(error.localizedDescription)" }
+            status = "Building your private 3D map on this phone. Waiting for upstream local grids."
+            gridWatchdog?.invalidate()
+            gridWatchdog = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
+                guard let self, self.active else { return }
+                self.publishLocalGrid(self.localGridConsumer.snapshot(now: ProcessInfo.processInfo.systemUptime))
+            }
+            if let gridWatchdog { RunLoop.main.add(gridWatchdog, forMode: .common) }
+        } catch { clearLocalGrid(); status = "Local mapping could not start: \(error.localizedDescription)" }
+        #endif
+    }
+    /// Lightweight ownership retirement, called before the app frame throttle
+    /// and independently of the upright-heading DepthSampler admission.
+    func trackingLost(at capturedAt: Double? = nil) {
+        #if BLIND_RTABMAP
+        guard active, let engine else { return }
+        let now = ProcessInfo.processInfo.systemUptime
+        // This hook runs before app freshness admission. Invalid/future loss
+        // stamps may withdraw ownership but must not poison the recovery fence.
+        let loss = capturedAt.flatMap { FrameTimestampPolicy.isFresh(capturedAt: $0, receivedAt: now) ? $0 : nil } ?? now
+        guard loss.isFinite, loss >= minimumGridCapture else { return }
+        minimumGridCapture = max(minimumGridCapture, loss, lastFrame)
+        guard !gridTrackingLost else { return }
+        gridTrackingLost = true
+        guard localGridGeneration < UInt64.max else { clearLocalGrid(); engine.disableLocalGrid(); return }
+        localGridGeneration += 1; localGridConsumer.begin(generation: localGridGeneration)
+        engine.resetLocalGrid(generation: localGridGeneration, resetCameraOrigin: true)
+        publishLocalGrid(localGridConsumer.snapshot())
         #endif
     }
     func consume(_ frame: ARFrame) {
         #if BLIND_RTABMAP
-        guard active, let engine, case .normal = frame.camera.trackingState,
-              frame.timestamp - lastFrame >= 0.5 else { return }
-        lastFrame = frame.timestamp
+        guard active, let engine else { return }
+        // Retire coordinate ownership BEFORE cadence. The old normal-only guard
+        // otherwise hid upstream resetOrigin from every lost-tracking frame.
+        guard case .normal = frame.camera.trackingState else {
+            trackingLost(at: frame.timestamp); return
+        }
+        let now = ProcessInfo.processInfo.systemUptime
+        guard frame.timestamp.isFinite, frame.timestamp >= 0, now >= frame.timestamp,
+              now - frame.timestamp <= 0.5, frame.timestamp > minimumGridCapture, frame.timestamp - lastFrame >= 0.5 else { return }
+        gridTrackingLost = false; lastFrame = frame.timestamp
         EAGLContext.setCurrent(context); renderer?.bindDrawable()
         engine.postOdometryEvent(frame: frame, orientation: .portrait, viewport: CGSize(width: 16, height: 16))
         // The upstream renderer also drains mapping/statistics event queues.
@@ -121,8 +189,10 @@ final class NativeMapping: ObservableObject {
     }
     func stop() {
         mapLifecycleRevision = UUID()
+        clearLocalGrid()
         #if BLIND_RTABMAP
         guard let engine else { return }
+        engine.disableLocalGrid()
         EAGLContext.setCurrent(context)
         engine.stopCamera(); engine.setPausedMapping(paused: true)
         // Upstream destructor closes with save=false; explicitly flush first.

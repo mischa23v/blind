@@ -1170,6 +1170,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             journeys.breakTracking()
             nativeObservations.trackingLost()
             withObservedScene { $0.trackingLost(at: frame.timestamp) }
+            mapping.trackingLost(at: frame.timestamp)
             clearBoardingReading() // Retire transferred/passive travel even when no reader tool remains.
             // Retire old OCR even if depth was already unavailable and the hazard
             // category does not change. This runs before frame throttling.
@@ -1184,6 +1185,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // Candidate capture follows urgent sensors; no history writer/LLM dependency.
         defer { offerNativeLocalization(frame, now: ProcessInfo.processInfo.systemUptime) }
         guard FrameTimestampPolicy.isFresh(capturedAt: frame.timestamp, receivedAt: receivedAt) else { return }
+        // RTAB consumes the original RGB/depth frame only after urgent handling.
+        // This still runs on the normal-tracking nil-DepthSampler path (e.g. a
+        // downward camera), but never on stale/future frames rejected above.
+        defer {
+            if buildPrivateMap, running, !simulation, !places.scanning,
+               assistantSession.foregroundActive, cameraAwareness {
+                mapping.consume(frame)
+            }
+        }
         let timing = AssistantPerformance.signposter.beginInterval("SensorFrame", id: AssistantPerformance.signposter.makeSignpostID())
         defer { AssistantPerformance.signposter.endInterval("SensorFrame", timing) }
         // Deferred until the existing sensor/hazard callback has completed. This only
@@ -1261,7 +1271,6 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         lastObservation = observation
         peopleTracking.consume(frame, observation: observation, at: lastFrameWallTime)
         journeys.observe(observation)
-        if buildPrivateMap { mapping.consume(frame) }
         attention.observe(camera: observation.camera, at: lastFrameWallTime, tracking: observation.trackingNormal)
         attentionMode = attention.mode(detail: detail)
         // An unanswered retry prompt expires without starting another capture or blocking ambience.

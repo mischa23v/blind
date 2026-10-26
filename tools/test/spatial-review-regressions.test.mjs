@@ -330,10 +330,11 @@ test('connected issuer is retired by mount or frame ownership loss before frame 
         }`;
     assert.ok(prefix.endsWith(registrationHook), 'Bounded registration capture is synchronous after all loss retirements and before scan throttle');
     const retirementPrefix = prefix.slice(0, -registrationHook.length).trim();
-    assert.match(retirementPrefix, /^if case \.normal = frame\.camera\.trackingState \{\} else \{ invalidateNativeLocalization\(\.trackingUnavailable\) \}\s*if case \.normal = frame\.camera\.trackingState \{\} else \{\s*journeys\.breakTracking\(\)\s*nativeObservations\.trackingLost\(\)\s*withObservedScene \{ \$0\.trackingLost\(at: frame\.timestamp\) \}\s*clearBoardingReading\(\)\s*if readingTool != nil && !usesCapturedText \{ stopReadingTool\(announce: false\) \}\s*\}$/,
+    assert.match(retirementPrefix, /^if case \.normal = frame\.camera\.trackingState \{\} else \{ invalidateNativeLocalization\(\.trackingUnavailable\) \}\s*if case \.normal = frame\.camera\.trackingState \{\} else \{\s*journeys\.breakTracking\(\)\s*nativeObservations\.trackingLost\(\)\s*withObservedScene \{ \$0\.trackingLost\(at: frame\.timestamp\) \}\s*mapping\.trackingLost\(at: frame\.timestamp\)\s*clearBoardingReading\(\)\s*if readingTool != nil && !usesCapturedText \{ stopReadingTool\(announce: false\) \}\s*\}$/,
       'All exact ownership retirements are synchronous and before throttle; normal frames do not retire them');
     before(candidate, 'journeys.breakTracking()', 'frame.timestamp - lastProcessed');
     before(candidate, 'nativeObservations.trackingLost()', 'frame.timestamp - lastProcessed');
+    before(candidate, 'mapping.trackingLost(at: frame.timestamp)', 'frame.timestamp - lastProcessed');
     before(candidate, 'stopReadingTool(announce: false)', 'frame.timestamp - lastProcessed');
     before(candidate, 'clearBoardingReading()', 'frame.timestamp - lastProcessed');
     assert.match(candidate, /let legacyDetection = detector\.process\(observation\)/);
@@ -358,6 +359,8 @@ test('connected issuer is retired by mount or frame ownership loss before frame 
     frames.replace('clearBoardingReading()', 'Task { clearBoardingReading() }'),
     frames.replace('journeys.breakTracking()', '/* missing journey retirement */'),
     frames.replace('nativeObservations.trackingLost()', '/* missing route-history retirement */'),
+    frames.replace('mapping.trackingLost(at: frame.timestamp)', '/* missing native grid retirement */'),
+    frames.replace('mapping.trackingLost(at: frame.timestamp)', 'Task { mapping.trackingLost(at: frame.timestamp) }'),
     frames.replace('withObservedScene { $0.trackingLost(at: frame.timestamp) }', '/* missing scene retirement */'),
     frames.replace('withObservedScene { $0.trackingLost(at: frame.timestamp) }', 'Task { withObservedScene { $0.trackingLost(at: frame.timestamp) } }'),
     frames.replace('nativeObservations.trackingLost()', 'Task { nativeObservations.trackingLost() }'),

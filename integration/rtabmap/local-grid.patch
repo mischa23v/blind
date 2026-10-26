@@ -1,0 +1,485 @@
+--- a/app/android/jni/RTABMapApp.h
++++ b/app/android/jni/RTABMapApp.h
+@@ -39,10 +39,15 @@
+ #include "CameraMobile.h"
+ #include "util.h"
+ #include "ProgressionStatus.h"
++#ifndef __ANDROID__
++#include "BlindLocalGridBridge.hpp"
++#endif
+ 
+ #include <rtabmap/core/SensorCaptureThread.h>
+ #include <rtabmap/core/RtabmapThread.h>
+ #include <rtabmap/core/SensorEvent.h>
++#include <rtabmap/core/Statistics.h>
++#include <rtabmap/core/Version.h>
+ #include <rtabmap/utilite/UEventsHandler.h>
+ #include <boost/thread/mutex.hpp>
+ #include <pcl/pcl_base.h>
+@@ -74,6 +79,11 @@
+                                                     float, float, float, float, float, float),
+                            void(*cameraInfoCallback)(void *, int, const char*, const char*));
+     
++#endif
++#ifndef __ANDROID__
++  void setBlindGridCallback(void * context, BlindGridCallback callback);
++  void resetBlindGrid(uint64_t generation, bool resetCameraOrigin);
++  static uint32_t blindGridCapabilities();
+ #endif
+   ~RTABMapApp();
+ 
+@@ -207,7 +217,7 @@
+         const float * points, int pointsLen, int pointsChannels,
+ 		rtabmap::Transform viewMatrix, //view matrix
+         float p00, float p11, float p02, float p12, float p22, float p32, float p23, // projection matrix
+-        float t0, float t1, float t2, float t3, float t4, float t5, float t6, float t7); // tex coord
++        float t0, float t1, float t2, float t3, float t4, float t5, float t6, float t7, const float * originalCameraToWorld = nullptr, int originalCameraColumnCount = 0); // tex coord + original AR capture
+ 
+  protected:
+   virtual bool handleEvent(UEvent * event);
+@@ -222,6 +232,15 @@
+   std::vector<pcl::Vertices> filterPolygons(const std::vector<pcl::Vertices> & polygons, int cloudSize) const;
+ 
+  private:
++#ifndef __ANDROID__
++  void retireBlindGridFrame();
++  void emitBlindGrid(const rtabmap::Statistics & stats);
++  boost::mutex blindGridMutex_;
++  blind_grid::CaptureRegistry blindGridCaptures_;
++  uint64_t blindGridGeneration_=0, blindGridFrame_=1, blindGridEvent_=0;
++  blind_grid::CallbackSlot blindGridCallbacks_;
++  bool blindGridCreate_=false, blindGrid3D_=false, blindGridDepth_=true;
++#endif
+   int cameraDriver_;
+   rtabmap::CameraMobile * camera_;
+   rtabmap::SensorCaptureThread * sensorCaptureThread_;
+@@ -327,7 +346,7 @@
+ 	rtabmap::ProgressionStatus progressionStatus_;
+     
+ #ifndef __ANDROID__
+-    void * swiftClassPtr_;
++    void * swiftClassPtr_=nullptr; // Safe until a legacy observer explicitly registers.
+     void(*swiftInitCallback)(void *, int, const char *);
+     void(*swiftStatsUpdatedCallback)(void *,
+                              int, int, int, int,
+--- a/app/android/jni/RTABMapApp.cpp
++++ b/app/android/jni/RTABMapApp.cpp
+@@ -360,8 +360,108 @@
+ }
+ #endif
+ 
++
++#ifndef __ANDROID__
++namespace {
++void blindTransform(const rtabmap::Transform & t, double * columns) {
++    blind_grid::identity(columns);
++    if(t.isNull()) { columns[0]=std::numeric_limits<double>::quiet_NaN(); return; }
++    for(int col=0;col<4;++col) for(int row=0;row<3;++row) columns[col*4+row]=t(row,col);
++}
++bool blindCopyRGBGrid(const cv::Mat & source,std::array<float,BLIND_GRID_MAX_CELLS*3>& storage,BlindGridCells& cells) {
++    if(source.empty()) return blind_grid::copyXYZRGB(nullptr,0,0,storage,cells);
++    // Only this pinned depth+3D RGB producer's 1xN XYZRGB format is supported.
++    // Do not infer a floor Z from 2D XY or unknown scan channel layouts.
++    if(source.rows!=1||source.type()!=CV_32FC4||!source.isContinuous()) return false;
++    return blind_grid::copyXYZRGB(source.ptr<float>(),source.total()*4,source.total(),storage,cells);
++}
++}
++void RTABMapApp::setBlindGridCallback(void * context,BlindGridCallback callback) {
++    blindGridCallbacks_.set(context,callback);
++}
++uint32_t RTABMapApp::blindGridCapabilities() {
++#ifdef RTABMAP_OCTOMAP
++    return 1; // Existing upstream 3D ray-tracing implementation is compiled.
++#else
++    return 0;
++#endif
++}
++void RTABMapApp::retireBlindGridFrame() {
++    boost::mutex::scoped_lock lock(blindGridMutex_);
++    if(blindGridFrame_==UINT64_MAX) {blindGridGeneration_=0;blindGridCallbacks_.setOwner(0,blindGridFrame_);return;}
++    ++blindGridFrame_;blindGridEvent_=0;blindGridCaptures_.clear();
++    blindGridCallbacks_.setOwner(blindGridGeneration_,blindGridFrame_);
++}
++void RTABMapApp::resetBlindGrid(uint64_t generation,bool resetCameraOrigin) {
++    // Match the input path's camera -> grid lock order. Never callback under either.
++    boost::mutex::scoped_lock cameraLock(cameraMutex_);
++    {
++        boost::mutex::scoped_lock lock(blindGridMutex_);
++        blindGridGeneration_=generation;
++        if(blindGridFrame_==UINT64_MAX) blindGridGeneration_=0;else ++blindGridFrame_;
++        blindGridEvent_=0;blindGridCaptures_.clear();
++        blindGridCallbacks_.setOwner(blindGridGeneration_,blindGridFrame_);
++    }
++    if(resetCameraOrigin&&camera_) camera_->resetOrigin();
++}
++void RTABMapApp::emitBlindGrid(const rtabmap::Statistics & stats) {
++    blind_grid::PacketStorage storage;auto & p=storage.packet;
++    blind_grid::Capture capture;bool associated=false,supported=false;
++    if(!blindGridCallbacks_.enabled()) return;
++    const auto signature=stats.getSignaturesData().find(stats.refImageId());
++    {
++        boost::mutex::scoped_lock lock(blindGridMutex_);
++        if(!blindGridGeneration_||blindGridEvent_==UINT64_MAX) return;
++        p.generation=blindGridGeneration_;p.frameRevision=blindGridFrame_;p.eventRevision=++blindGridEvent_;
++        supported=blindGridCreate_&&blindGrid3D_&&blindGridDepth_;
++        if(signature!=stats.getSignaturesData().end()) {
++            p.upstreamStamp=signature->second.sensorData().stamp();
++            associated=blindGridCaptures_.find(p.upstreamStamp,p.generation,p.frameRevision,capture);
++        }
++    }
++    p.nodeID=stats.refImageId();p.mapID=stats.refImageMapId();
++    p.status=associated?BLIND_GRID_UNAVAILABLE:BLIND_GRID_UNASSOCIATED;
++    // Graph correction is useful even when this event has no fresh local grid.
++    // Never preserve a retained tile whose pose is absent from this bounded event.
++    blindTransform(stats.mapCorrection(),p.mapCorrection);
++    auto appendPose=[&](int id,const rtabmap::Transform & transform) {
++        if(id<=0||transform.isNull()) return;
++        if(p.poseCount==BLIND_GRID_MAX_POSES) {p.graphTruncated=1;return;}
++        auto & target=storage.poses[p.poseCount++];target.nodeID=id;blindTransform(transform,target.columns);
++    };
++    const auto currentPose=stats.poses().find(p.nodeID);
++    if(currentPose!=stats.poses().end()) appendPose(currentPose->first,currentPose->second);
++    uint32_t inspected=0;
++    for(auto it=stats.poses().rbegin();it!=stats.poses().rend();++it) {
++        if(inspected++==BLIND_GRID_MAX_POSES||p.poseCount==BLIND_GRID_MAX_POSES) {p.graphTruncated=1;break;}
++        if(it->first!=p.nodeID) appendPose(it->first,it->second);
++    }
++    if(associated&&supported) {
++        const auto pose=stats.poses().find(p.nodeID);
++        const auto & data=signature->second.sensorData();
++        if(pose!=stats.poses().end()&&!pose->second.isNull()&&data.cameraModels().size()==1&&!stats.mapCorrection().isNull()) {
++            p.capturedAt=capture.uptime;p.captureSequence=capture.sequence;p.cellSize=data.gridCellSize();
++            std::copy(capture.cameraToARWorld.begin(),capture.cameraToARWorld.end(),p.cameraToARWorld);
++            blindTransform(stats.mapCorrection(),p.mapCorrection);
++            blindTransform(pose->second*data.cameraModels()[0].localTransform(),p.mapFromCameraOptical);p.hasCameraOpticalPose=1;
++            const bool copied=blindCopyRGBGrid(data.gridGroundCellsRaw(),storage.ground,p.ground)&&
++                blindCopyRGBGrid(data.gridObstacleCellsRaw(),storage.obstacles,p.obstacles)&&
++                blindCopyRGBGrid(data.gridEmptyCellsRaw(),storage.empty,p.empty);
++            p.status=copied&&(p.ground.available||p.obstacles.available||p.empty.available)?BLIND_GRID_AVAILABLE:BLIND_GRID_UNAVAILABLE;
++            if(!copied||!blind_grid::validPacket(p)) p.status=BLIND_GRID_INVALID;
++        }
++    }
++    // Immutable stack-owned packet; Swift must copy synchronously before return.
++    // No camera/grid/render mutex is held during this call.
++    blindGridCallbacks_.deliver(p);
++}
++#endif
++
+ RTABMapApp::~RTABMapApp() {
+ 	LOGI("~RTABMapApp() begin");
++#ifndef __ANDROID__
++    setBlindGridCallback(nullptr,nullptr);
++#endif
+ 	stopCamera();
+ 	if(rtabmapThread_)
+ 	{
+@@ -399,6 +499,9 @@
+ 
+ int RTABMapApp::openDatabase(const std::string & databasePath, bool databaseInMemory, bool optimize, bool clearDatabase)
+ {
++#ifndef __ANDROID__
++    retireBlindGridFrame();
++#endif
+ 	LOGW("Opening database %s (inMemory=%d, optimize=%d, clearDatabase=%d)", databasePath.c_str(), databaseInMemory?1:0, optimize?1:0, clearDatabase?1:0);
+ 	this->unregisterFromEventsManager(); // to ignore published init events when closing rtabmap
+ 	status_.first = rtabmap::RtabmapEventInit::kInitializing;
+@@ -1062,6 +1165,9 @@
+ 
+ void RTABMapApp::stopCamera()
+ {
++#ifndef __ANDROID__
++    retireBlindGridFrame();
++#endif
+ 	LOGI("stopCamera()");
+ 	{
+ 		boost::mutex::scoped_lock  lock(cameraMutex_);
+@@ -2630,6 +2736,9 @@
+ 
+         if(teleportClicked_)
+         {
++#ifndef __ANDROID__
++            retireBlindGridFrame();
++#endif
+             camera_->resetOrigin(rtabmap::Transform(-pt.z, -pt.x, pt.y-Scene::kHeightOffset.y,0,0,0));
+         }
+         else if(addMeasureClicked_) // Add measure
+@@ -2917,6 +3026,9 @@
+ 		else if(!rtabmapThread_->isRunning() && !paused)
+ 		{
+ 			LOGW("Resume!");
++#ifndef __ANDROID__
++            retireBlindGridFrame();
++#endif
+ 			rtabmap_->triggerNewMap();
+ 			rtabmap_->parseParameters(getRtabmapParameters());
+ 			rtabmapThread_->registerToEventsManager();
+@@ -3221,6 +3333,15 @@
+ 	{
+ 		LOGI("%s", uFormat("Setting param \"%s\"  to \"%s\"", compatibleKey.c_str(), value.c_str()).c_str());
+ 		uInsert(mappingParameters_, rtabmap::ParametersPair(compatibleKey, value));
++#ifndef __ANDROID__
++        if(compatibleKey.compare(0,5,"Grid/")==0||compatibleKey=="RGBD/CreateOccupancyGrid") {
++            retireBlindGridFrame();
++            boost::mutex::scoped_lock gridLock(blindGridMutex_);
++            if(compatibleKey=="RGBD/CreateOccupancyGrid") blindGridCreate_=value=="true"||value=="1";
++            if(compatibleKey=="Grid/3D") blindGrid3D_=value=="true"||value=="1";
++            if(compatibleKey=="Grid/Sensor") blindGridDepth_=value=="1";
++        }
++#endif
+ 		UEventsManager::post(new rtabmap::ParamEvent(this->getRtabmapParameters()));
+ 		return 0;
+ 	}
+@@ -4591,7 +4712,7 @@
+         const float * points, int pointsLen, int pointsChannels,
+         rtabmap::Transform viewMatrix,
+         float p00, float p11, float p02, float p12, float p22, float p32, float p23,
+-        float t0, float t1, float t2, float t3, float t4, float t5, float t6, float t7)
++        float t0, float t1, float t2, float t3, float t4, float t5, float t6, float t7, const float * originalCameraToWorld, int originalCameraColumnCount)
+ {
+ #if defined(RTABMAP_ARCORE) || defined(__APPLE__)
+ 	boost::mutex::scoped_lock  lock(cameraMutex_);
+@@ -4600,6 +4721,9 @@
+         if(pose.isNull())
+         {
+             // We are lost, trigger a new map on next update
++#ifndef __ANDROID__
++            retireBlindGridFrame();
++#endif
+             camera_->resetOrigin();
+             return;
+         }
+@@ -4691,6 +4815,18 @@
+ 
+ 					// We should update the pose before querying poses for depth below (if not same stamp than rgb)
+ 					camera_->poseReceived(pose, stamp);
++#ifndef __ANDROID__
++                    {
++                        double arColumns[16];blind_grid::identity(arColumns);
++                        if(originalCameraToWorld&&originalCameraColumnCount==16) {
++                            for(size_t i=0;i<16;++i) arColumns[i]=originalCameraToWorld[i];
++                        } else { arColumns[0]=std::numeric_limits<double>::quiet_NaN(); }
++                        boost::mutex::scoped_lock gridLock(blindGridMutex_);
++                        // Exactly the same epoch conversion used by captureImage.
++                        blindGridCaptures_.record(camera_->getStampEpochOffset()+stamp,stamp,
++                            blindGridGeneration_,blindGridFrame_,arColumns);
++                    }
++#endif
+ 
+ 					// Registration depth to rgb
+ 					if(!outputDepth.empty() && !depthFrame.isNull() && depth_fx!=0 && (rgbFrame != depthFrame || depthStamp!=stamp))
+@@ -4836,6 +4972,9 @@
+ 			LOGI("Received RtabmapEvent event! status=%d", status_.first);
+ 			if(status_.first == rtabmap::RtabmapEventInit::kInitialized)
+ 			{
++#ifndef __ANDROID__
++                emitBlindGrid(((rtabmap::RtabmapEvent*)event)->getStats());
++#endif
+ 				boost::mutex::scoped_lock lock(rtabmapMutex_);
+ 				rtabmapEvents_.push_back((rtabmap::RtabmapEvent*)event);
+ 				return true;
+--- a/app/ios/RTABMapApp/NativeWrapper.hpp
++++ b/app/ios/RTABMapApp/NativeWrapper.hpp
+@@ -10,6 +10,7 @@
+ #define NativeWrapper_hpp
+ 
+ #include <stdbool.h>
++#include "../../android/jni/BlindLocalGridBridge.hpp"
+ 
+ #ifdef __cplusplus
+ extern "C" {
+@@ -32,6 +33,9 @@
+                                                    float, float, float, float, float, float),
+                           void(*cameraInfoEventCallback)(void *, int, const char*, const char*));
+ void destroyNativeApplication(const void *object);
++void setBlindGridCallbackNative(const void *object,void *context,BlindGridCallback callback);
++void resetBlindGridNative(const void *object,uint64_t generation,bool resetCameraOrigin);
++uint32_t blindGridCapabilitiesNative(void);
+ void setScreenRotationNative(const void *object, int displayRotation);
+ int openDatabaseNative(const void *object, const char * databasePath, bool databaseInMemory, bool optimize, bool clearDatabase);
+ void saveNative(const void *object, const char * databasePath);
+@@ -78,7 +82,7 @@
+                        const void * points, int pointsLen, int pointsChannels,
+                        float vx, float vy, float vz, float vqx, float vqy, float vqz, float vqw,
+                        float p00, float p11, float p02, float p12, float p22, float p32, float p23,
+-                       float t0, float t1, float t2, float t3, float t4, float t5, float t6, float t7);
++                       float t0, float t1, float t2, float t3, float t4, float t5, float t6, float t7, const float * originalCameraToWorld, int originalCameraColumnCount);
+ 
+ void setOnlineBlendingNative(const void *object, bool enabled);
+ void setMapCloudShownNative(const void *object, bool shown);
+--- a/app/ios/RTABMapApp/NativeWrapper.cpp
++++ b/app/ios/RTABMapApp/NativeWrapper.cpp
+@@ -285,6 +285,14 @@
+     }
+ }
+ 
++void setBlindGridCallbackNative(const void *object,void *context,BlindGridCallback callback) {
++    if(object) native(object)->setBlindGridCallback(context,callback);
++}
++void resetBlindGridNative(const void *object,uint64_t generation,bool resetCameraOrigin) {
++    if(object) native(object)->resetBlindGrid(generation,resetCameraOrigin);
++}
++uint32_t blindGridCapabilitiesNative(void) {return RTABMapApp::blindGridCapabilities();}
++
+ void postOdometryEventNative(const void *object,
+         float x, float y, float z, float qx, float qy, float qz, float qw,
+         float fx, float fy, float cx, float cy,
+@@ -295,7 +303,7 @@
+         const void * points, int pointsLen, int pointsChannels,
+         float vx, float vy, float vz, float vqx, float vqy, float vqz, float vqw,
+         float p00, float p11, float p02, float p12, float p22, float p32, float p23,
+-        float t0, float t1, float t2, float t3, float t4, float t5, float t6, float t7)
++        float t0, float t1, float t2, float t3, float t4, float t5, float t6, float t7, const float * originalCameraToWorld, int originalCameraColumnCount)
+ {
+     if(object)
+     {
+@@ -310,7 +318,7 @@
+                 (const float *)points, pointsLen, pointsChannels,
+                 rtabmap::Transform(vx, vy, vz, vqx, vqy, vqz, vqw),
+                 p00, p11, p02, p12, p22, p32, p23,
+-                t0, t1, t2, t3, t4, t5, t6, t7);
++                t0, t1, t2, t3, t4, t5, t6, t7, originalCameraToWorld, originalCameraColumnCount);
+     }
+     else
+     {
+--- a/app/ios/RTABMapApp/RTABMap.swift
++++ b/app/ios/RTABMapApp/RTABMap.swift
+@@ -7,9 +7,112 @@
+ 
+ import Foundation
+ import ARKit
++import BlindCore
+ 
+ class RTABMap {
+     var native_rtabmap: UnsafeMutableRawPointer
++    // Capture-scoped local-grid stream. This is separate from rendered-camera stats.
++    // The C callback never retains/upgrades RTABMap: final native-owner release
++    // must not run deinit recursively inside the C++ callback-draining mutex.
++    private final class LocalGridContext {
++        weak var owner: RTABMap?
++        private let lock = NSLock()
++        private var pending: NativeLocalGridPacket?
++        private var scheduled = false
++        private var drops = 0
++        init(_ owner: RTABMap) { self.owner = owner }
++        var droppedPackets: Int { lock.lock(); defer { lock.unlock() }; return drops }
++        func clear() { lock.lock(); pending = nil; lock.unlock() }
++        func enqueue(_ packet: NativeLocalGridPacket) {
++            lock.lock()
++            if let previous = pending {
++                let older = packet.generation < previous.generation ||
++                    (packet.generation == previous.generation && packet.frameRevision < previous.frameRevision) ||
++                    (packet.generation == previous.generation && packet.frameRevision == previous.frameRevision && packet.eventRevision <= previous.eventRevision)
++                if older { lock.unlock(); return }
++                drops = min(Int.max - 1, drops) + 1
++            }
++            pending = packet
++            if scheduled { lock.unlock(); return }
++            scheduled = true; lock.unlock()
++            DispatchQueue.main.async { [weak self] in
++                guard let self else { return }
++                self.lock.lock()
++                let value = self.pending
++                self.pending = nil; self.scheduled = false
++                self.lock.unlock()
++                // Resolve owner ONLY on main, never from the native C callback.
++                if let value, let owner = self.owner { owner.localGridReceived?(value) }
++            }
++        }
++    }
++    private var localGridContext: LocalGridContext?
++    var localGridReceived: ((NativeLocalGridPacket) -> Void)?
++    var localGridDroppedPackets: Int { localGridContext?.droppedPackets ?? 0 }
++    var supportsLocalGridRayTracing: Bool { blindGridCapabilitiesNative() & 1 != 0 }
++    func enableLocalGrid(generation: UInt64) {
++        setBlindGridCallbackNative(native_rtabmap, nil, nil) // drain prior context before replacing it
++        localGridContext?.clear(); localGridContext = nil
++        resetBlindGridNative(native_rtabmap, generation, false)
++        let box = LocalGridContext(self); localGridContext = box
++        setBlindGridCallbackNative(native_rtabmap,
++            UnsafeMutableRawPointer(Unmanaged.passUnretained(box).toOpaque()), { context, packet in
++                guard let context, let packet else { return }
++                let box = Unmanaged<LocalGridContext>.fromOpaque(context).takeUnretainedValue()
++                // All C buffers are copied NOW, before returning to C++.
++                guard let copied = RTABMap.copyLocalGrid(packet.pointee) else { return }
++                box.enqueue(copied)
++            })
++    }
++    func resetLocalGrid(generation: UInt64, resetCameraOrigin: Bool) {
++        localGridContext?.clear()
++        resetBlindGridNative(native_rtabmap, generation, resetCameraOrigin)
++    }
++    func disableLocalGrid() {
++        setBlindGridCallbackNative(native_rtabmap, nil, nil) // drains active callback before context release
++        localGridContext?.clear(); localGridContext = nil
++        localGridReceived = nil
++    }
++    private static func gridMatrix<T>(_ columns: T) -> NativeCameraTransform {
++        withUnsafeBytes(of: columns) { NativeCameraTransform(columns: Array($0.bindMemory(to: Double.self))) }
++    }
++    private static func copyGridCells(_ cells: BlindGridCells) -> NativeLocalGridCells? {
++        guard cells.count <= 4096, cells.originalCount <= UInt64(Int.max), cells.originalCount >= UInt64(cells.count),
++              cells.available <= 1, cells.truncated <= 1,
++              cells.truncated == (cells.originalCount > UInt64(cells.count) ? 1 : 0),
++              cells.count == 0 || cells.xyz != nil else { return nil }
++        if cells.available == 0 && (cells.count != 0 || cells.originalCount != 0) { return nil }
++        let raw = UnsafeBufferPointer(start: cells.xyz, count: Int(cells.count) * 3)
++        var points: [Point3] = []; points.reserveCapacity(Int(cells.count))
++        for i in 0..<Int(cells.count) { points.append(Point3(Double(raw[i*3]), Double(raw[i*3+1]), Double(raw[i*3+2]))) }
++        return .init(points: points, originalCount: Int(cells.originalCount), available: cells.available == 1, truncated: cells.truncated == 1)
++    }
++    private static func copyLocalGrid(_ p: BlindGridPacket) -> NativeLocalGridPacket? {
++        guard p.schema == 1, p.generation > 0, p.frameRevision > 0, p.eventRevision > 0 else { return nil }
++        let absent = NativeLocalGridCells(points: [], originalCount: 0, available: false, truncated: false)
++        var status: NativeLocalGridPacket.Status
++        switch p.status { case 1: status = .available; case 2: status = .unavailable; case 4: status = .unassociated; default: status = .invalid }
++        var ground = absent, obstacles = absent, empty = absent
++        var poses: [NativeLocalGridNodePose] = []
++        if p.poseCount <= 64, p.poseCount == 0 || p.poses != nil, p.graphTruncated <= 1,
++           p.hasCameraOpticalPose <= 1 {
++            poses = UnsafeBufferPointer(start: p.poses, count: Int(p.poseCount)).map {
++                NativeLocalGridNodePose(id: Int($0.nodeID), transform: gridMatrix($0.columns))
++            }
++        } else { status = .invalid }
++        if status == .available {
++            if let g = copyGridCells(p.ground), let o = copyGridCells(p.obstacles), let e = copyGridCells(p.empty) {
++                ground = g; obstacles = o; empty = e
++            } else { status = .invalid }
++        }
++        return .init(status: status, generation: p.generation, frameRevision: p.frameRevision,
++            eventRevision: p.eventRevision, captureSequence: p.captureSequence,
++            capturedAt: p.capturedAt, upstreamStamp: p.upstreamStamp, nodeID: Int(p.nodeID), mapID: Int(p.mapID), cellSize: p.cellSize,
++            mapCorrection: gridMatrix(p.mapCorrection), cameraToARWorld: gridMatrix(p.cameraToARWorld),
++            mapFromCameraOptical: p.hasCameraOpticalPose == 1 ? gridMatrix(p.mapFromCameraOptical) : nil,
++            poses: poses, ground: ground, obstacles: obstacles, empty: empty, graphTruncated: p.graphTruncated == 1)
++    }
++
+     
+     struct Observation {
+         weak var observer: RTABMapObserver?
+@@ -108,6 +211,7 @@
+     }
+     
+     deinit {
++        setBlindGridCallbackNative(native_rtabmap,nil,nil)
+         destroyNativeApplication(native_rtabmap)
+     }
+     
+@@ -353,6 +457,8 @@
+                 }
+                 // Notify lost with pose=null
+ 
++                let originalCameraColumns = (0..<4).flatMap { column in (0..<4).map { row in pose[column,row] } }
++                originalCameraColumns.withUnsafeBufferPointer { originalCamera in
+                 postOdometryEventNative(native_rtabmap,
+                                         !lost ? pose[3,0]:0, !lost ? pose[3,1]:0, !lost ? pose[3,2]:0, !lost ? quat.x:0, !lost ? quat.y:0, !lost ? quat.z:0, !lost ? quat.w:0,
+                                         frame.camera.intrinsics[0,0], // fx
+@@ -380,7 +486,8 @@
+                                         bufferPoints.baseAddress, Int32(frame.rawFeaturePoints!.points.count), 4,
+                                         v[3,0], v[3,1], v[3,2], quatv.x, quatv.y, quatv.z, quatv.w,
+                                         p[0,0], p[1,1], p[2,0], p[2,1], p[2,2], p[2,3], p[3,2],
+-                                        texCoord[0],texCoord[1],texCoord[2],texCoord[3],texCoord[4],texCoord[5],texCoord[6],texCoord[7])
++                                        texCoord[0],texCoord[1],texCoord[2],texCoord[3],texCoord[4],texCoord[5],texCoord[6],texCoord[7], originalCamera.baseAddress, Int32(originalCamera.count))
++                }
+                 if depthMap != nil {
+                     CVPixelBufferUnlockBaseAddress(depthMap!, CVPixelBufferLockFlags.readOnly)
+                 }

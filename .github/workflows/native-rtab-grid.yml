@@ -1,0 +1,39 @@
+name: Native RTAB grid unsigned device compile
+# Preparation is not activation: a maintainer must explicitly dispatch this one-attempt experiment.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: native-rtab-grid
+  cancel-in-progress: false
+jobs:
+  compile:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/master' && github.run_attempt == 1
+    runs-on: xcode-27
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+      CMAKE_BUILD_PARALLEL_LEVEL: '2'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: One bounded exact-source device compile (no install, tests or signing)
+        timeout-minutes: 42
+        run: python3 tools/ci/native-rtab-grid.py
+      - name: Enforce metadata upload allowlist and byte cap
+        id: receipt_guard
+        if: always()
+        run: python3 tools/ci/native-rtab-grid.py --validate-receipt
+      - name: Preserve bounded metadata only
+        if: always() && steps.receipt_guard.outcome == 'success'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: native-rtab-grid-metadata-${{ github.run_id }}
+          path: ${{ runner.temp }}/blind-rtab-grid-${{ github.run_id }}-${{ github.run_attempt }}/receipt/*
+          if-no-files-found: warn
+          retention-days: 3

@@ -1,0 +1,43 @@
+{
+  "dateUTC": "2026-10-26",
+  "appBaselineCommit": "86992184020d877c26295db8fc6ec903eb21a9f9",
+  "upstreamRevision": "a4e7f13522722878dea3f07e8fd082291e72eb49",
+  "upstreamLicense": "BSD-3-Clause",
+  "checks": {
+    "swiftCoreConsumer": {
+      "passed": 15,
+      "failed": 0
+    },
+    "swiftActualCallbackFragment": {
+      "passed": 5,
+      "failed": 0
+    },
+    "productionCXXBridgeHelper": "passed",
+    "newSourceContracts": {
+      "passed": 7,
+      "failed": 0
+    },
+    "existingSourceContracts": {
+      "passed": 41,
+      "failed": 0
+    },
+    "nativeSwiftSyntax": "passed",
+    "pinnedPatchRoundTrip": "passed",
+    "fullRTABAppleBuild": "not run",
+    "RTABEngineReplay": "not run",
+    "physicalGuidance": "not authorized"
+  },
+  "checkedPortableSources": {
+    "integration/rtabmap/BlindLocalGridBridge.hpp": "bb3979e0a14ac2052dfc33d139a607a653d52dea0b62951a4206a961a079b079",
+    "research/evaluations/rtab-local-grid/fixtures/grid_bridge_test.cpp": "9139cac4aa19e92b553f040abc25afd10dbe158b65c95fb47ae185fa455ff89c",
+    "BlindCore/Sources/BlindCore/Geometry.swift": "f7a27aff67ed97dda0550463e70ee9df9c85381024ce02f2f091a2b35f353eb5",
+    "BlindCore/Sources/BlindCore/NativeObservation.swift": "3ddeb793d9c3fcbadd1de6d1103f182a58c9228dee2c6188ae9a31f42748be45",
+    "BlindCore/Sources/BlindCore/NativeLocalGrid.swift": "333f3521ede9eb8c6af68f5ad87b1f595ed35343c6409ccb00f01620b14629c5",
+    "BlindCore/Tests/BlindCoreTests/NativeLocalGridTests.swift": "5e0d0902a45634e0f5bab5e081c2598a3db09f836b2cd4680abddb8760b1fc4c",
+    "research/evaluations/rtab-local-grid/fixtures/BridgeFixture.h": "0a2ce99eeb961621f72037a0b379045358df3aa1b4bbb3a1384e35a9bc778e57",
+    "research/evaluations/rtab-local-grid/fixtures/BridgeFixture.cpp": "5ee693b231e392207d25696116494dfbccf7d12123c05ff38cb2d104e850cfca",
+    "research/evaluations/rtab-local-grid/fixtures/NativeGridInteropTests.swift": "f32509669487510c956ef32941c4e9facd9382489e5be9821cbfa7110818f94b",
+    "integration/rtabmap/local-grid.patch": "fef08c978dda281ff66bcf879ae530212c3e50eda6f3ef2038d9c777402b3cdd"
+  },
+  "sourceScope": "Code-owned capture/geometry/map feedback, candidate-only; no LLM geometry and no measured localization error claim."
+}

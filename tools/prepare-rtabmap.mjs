@@ -18,6 +18,39 @@ if (head !== lock.revision) {
   execFileSync('git', ['-C', checkout, 'fetch', 'origin', lock.revision], { stdio: 'inherit' });
   execFileSync('git', ['-C', checkout, 'checkout', '--detach', lock.revision], { stdio: 'inherit' });
 }
+// Pinned native local-grid bridge: fail on drift, never patch a different upstream.
+const gridDirectory = join(root, 'integration/rtabmap');
+const gridManifest = JSON.parse(await readFile(join(gridDirectory, 'local-grid-manifest.json'), 'utf8'));
+if (gridManifest.revision !== lock.revision) throw new Error('Local-grid overlay and upstream pin differ.');
+const expectedGridPaths = ['app/android/jni/RTABMapApp.h', 'app/android/jni/RTABMapApp.cpp',
+  'app/ios/RTABMapApp/NativeWrapper.hpp', 'app/ios/RTABMapApp/NativeWrapper.cpp', 'app/ios/RTABMapApp/RTABMap.swift'];
+if (!Array.isArray(gridManifest.files) || gridManifest.files.length !== expectedGridPaths.length ||
+    new Set(gridManifest.files.map(entry => entry.path)).size !== expectedGridPaths.length ||
+    !gridManifest.files.every(entry => expectedGridPaths.includes(entry.path) &&
+      /^[0-9a-f]{64}$/.test(entry.beforeSHA256) && /^[0-9a-f]{64}$/.test(entry.afterSHA256))) {
+  throw new Error('Malformed native local-grid manifest; only the five reviewed upstream paths are accepted.');
+}
+const digest = bytes => createHash('sha256').update(bytes).digest('hex');
+const actualGridHashes = await Promise.all(gridManifest.files.map(async entry => digest(await readFile(join(checkout, entry.path)))));
+const beforeGrid = gridManifest.files.every((entry, i) => entry.beforeSHA256 === actualGridHashes[i]);
+const afterGrid = gridManifest.files.every((entry, i) => entry.afterSHA256 === actualGridHashes[i]);
+if (!beforeGrid && !afterGrid) throw new Error('Native local-grid overlay preimage drift; preserve and review local edits.');
+if (beforeGrid) {
+  const patch = join(gridDirectory, 'local-grid.patch');
+  execFileSync('git', ['-C', checkout, 'apply', '--check', patch], { stdio: 'inherit' });
+  execFileSync('git', ['-C', checkout, 'apply', patch], { stdio: 'inherit' });
+}
+for (const entry of gridManifest.files) {
+  if (digest(await readFile(join(checkout, entry.path))) !== entry.afterSHA256) throw new Error(`Local-grid overlay result differs: ${entry.path}`);
+}
+const bridgeHeader = await readFile(join(gridDirectory, 'BlindLocalGridBridge.hpp'));
+const bridgeTarget = join(checkout, 'app/android/jni/BlindLocalGridBridge.hpp');
+try {
+  if (digest(await readFile(bridgeTarget)) !== digest(bridgeHeader)) throw new Error('Local-grid support header drift; review before replacement.');
+} catch (error) {
+  if (error.code !== 'ENOENT') throw error;
+  await writeFile(bridgeTarget, bridgeHeader, { flag: 'wx' });
+}
 const base = join(checkout, 'app/ios'), project = join(base, 'RTABMapApp.xcodeproj/project.pbxproj');
 const marker = join(base, '.blind-assist-project-original');
 let pbx;
