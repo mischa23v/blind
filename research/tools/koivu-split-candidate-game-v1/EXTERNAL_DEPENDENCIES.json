@@ -1,0 +1,69 @@
+{
+  "files": [
+    {
+      "expectedSHA256": "560567438e5c88aaa8e20d3ac92ce4db6fe8803018f537b82819b47ed7cc05b8",
+      "historicalPath": "blind-authored-navigation-pilot/native/libblind_detour.so",
+      "referencingFreezes": [
+        "blind-split-candidate-game-03/SELECTION_FROZEN.json",
+        "blind-split-candidate-game-03/SELECTION_FROZEN-02.json",
+        "blind-split-candidate-game-03/FROZEN_PILOT.json",
+        "blind-split-candidate-game-03/ground-follow-v2/FROZEN.json",
+        "blind-split-candidate-game-03/ground-follow-v3/FROZEN.json",
+        "blind-split-candidate-game-03/table-loop-proposal/run-01/FROZEN.json",
+        "blind-split-candidate-game-03/table-loop-proposal/run-02/FROZEN.json",
+        "blind-split-candidate-game-03/table-loop-proposal/run-03/FROZEN.json"
+      ]
+    },
+    {
+      "expectedSHA256": "b294d92cfd9136d00de510239c2b85a9d68d878dcf7dac1a64b144d8880cb076",
+      "historicalPath": "blind-split-candidate-game-03/inputs/koivu_5cm_occthres_split0.7.npz",
+      "referencingFreezes": [
+        "blind-split-candidate-game-03/SELECTION_FROZEN.json",
+        "blind-split-candidate-game-03/SELECTION_FROZEN-02.json",
+        "blind-split-candidate-game-03/FROZEN_PILOT.json",
+        "blind-split-candidate-game-03/ground-follow-v2/FROZEN.json",
+        "blind-split-candidate-game-03/ground-follow-v3/FROZEN.json",
+        "blind-split-candidate-game-03/table-loop-proposal/run-01/FROZEN.json",
+        "blind-split-candidate-game-03/table-loop-proposal/run-02/FROZEN.json",
+        "blind-split-candidate-game-03/table-loop-proposal/run-03/FROZEN.json"
+      ]
+    },
+    {
+      "expectedSHA256": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d",
+      "historicalPath": "blind-split-candidate-game-03/inputs/koivu_5cm_v2_pipeline2_out.npz",
+      "referencingFreezes": [
+        "blind-split-candidate-game-03/SELECTION_FROZEN.json",
+        "blind-split-candidate-game-03/SELECTION_FROZEN-02.json",
+        "blind-split-candidate-game-03/FROZEN_PILOT.json",
+        "blind-split-candidate-game-03/ground-follow-v2/FROZEN.json",
+        "blind-split-candidate-game-03/ground-follow-v3/FROZEN.json",
+        "blind-split-candidate-game-03/table-loop-proposal/run-01/FROZEN.json",
+        "blind-split-candidate-game-03/table-loop-proposal/run-02/FROZEN.json",
+        "blind-split-candidate-game-03/table-loop-proposal/run-03/FROZEN.json"
+      ]
+    },
+    {
+      "expectedSHA256": "e18db651c694046de7994237e276d88138ecef9071351281a418de9c9a279b5e",
+      "historicalPath": "blind-koivu-faro-acquisition-04/selected-reference/gt_mesh.ply",
+      "referencingFreezes": [
+        "blind-split-candidate-game-03/FROZEN_PILOT.json",
+        "blind-split-candidate-game-03/ground-follow-v2/FROZEN.json",
+        "blind-split-candidate-game-03/ground-follow-v3/FROZEN.json"
+      ]
+    },
+    {
+      "expectedSHA256": "95b4e26d6d260bd9b06cff801648fc38c030a510cf4055af2294490cf49938d4",
+      "historicalPath": "blind-koivu-faro-acquisition-04/selected-reference/icp_iphone.json",
+      "referencingFreezes": [
+        "blind-split-candidate-game-03/FROZEN_PILOT.json",
+        "blind-split-candidate-game-03/ground-follow-v2/FROZEN.json",
+        "blind-split-candidate-game-03/ground-follow-v3/FROZEN.json"
+      ]
+    }
+  ],
+  "publishedMaskSourceCommit": "57fdf25f2c17b3f1cf6c5aba1156756c1e808eee",
+  "publishedMaskSourceTree": "research/mapping-audit-opus-20261026",
+  "rebuildDependency": "Pinned Recast/Detour source at 9f4ce64458dfae86e1239c525ddc219c4e9e06f1; no package installation or build performed here.",
+  "scope": "Historical identities only. Large assets/native runtime not read or reverified by this packaging step. Sources use the mirrored sibling-stage layout; not a standalone clean-machine bundle.",
+  "upstreamNativeManifest": "blind-authored-navigation-pilot/native/UPSTREAM_MANIFEST.json"
+}

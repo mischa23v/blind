@@ -1,0 +1,50 @@
+{
+  "scope": "Focused read-only review of controlled planar simulation support, local ground-face recovery, original collision scorer reuse and same-route runner; no episode or physical-safety approval",
+  "reviewDateUTC": "2026-10-26",
+  "reviewerTask": "/root/implement_closed_loop_navigation/review_game_collision",
+  "outsideFrozenManifest": true,
+  "sourcePins": {
+    "ground_support.py": "cf4745cae6ac3392346cc2e43cf507f42b4513af349b016ce466cdc04d04c06b",
+    "test_ground_support.py": "9fd79a25bf033602ee080a9ca6bbc36ab17592183d4242d883ac5d0327bd7549",
+    "run_ground_pilot.py": "0ec5a20679569ac9710520ac46ce11019517bf8afd08d174d6d95ee4fc9e9784",
+    "run_bounded.py": "0683dd1622933e25b3a6c96dbe2e2a9861e07b25d5a7954ca61d4e65bd97424a",
+    "test_ground_physics.py": "70898c38c9af27b719d3e7aca9ce770a92c36a4c63c38869f8d489cb39565e00",
+    "test_oriented_ground_container.py": "47eb6a52293459f0363dab8db55c177728780a18c68263f4294620289e16cd1e",
+    "PROTOCOL.md": "9f63642600930d9f91972aadb38d119275907e06d031731c839041a30881d44f"
+  },
+  "frozenManifestSHA256": "1161bd07dab97752f245151294c762a5e8e4f04ed224774316a2e3a6f0f921ef",
+  "unchangedCollisionDependency": {
+    "path": "../ground-follow-v2/oriented_ground_container.py",
+    "sha256": "728860fa18f762f90b13f581e4b3cae474f4d8bf4223854252778802e405ea89"
+  },
+  "findingsClosed": [
+    "Original v2 seeded shared-edge <=5 degree component is retained; the new residual rule does not silently discard its sparse large triangles or curved low-slope ground.",
+    "Excluded microfaces are recovered only by fixed 20 cm square local patches on a 10 cm lattice, trained solely from original seeded ground vertices; local slope <=5 degrees, every recovered-face vertex within 2 mm, raw facet slope <=45 degrees, then final original shared-edge connectivity. No iterative or per-contact refit.",
+    "The ONE broad robust plane defines controlled actor support, not raw reference floor height or live ground truth. Raw geometry is unchanged, and every non-ground face remains in original swept obstacle scoring.",
+    "Original reference ownership, mesh revision and transform association remain checked, including plane-height queries.",
+    "Initial, midpoint and endpoint raw probes must hit selected ground and satisfy the unchanged 2 cm association to chosen planar foot Y. Previous-anchor continuity checks and missing/disconnected support rejection remain.",
+    "Continuous oriented actual-body and separate margin sweeps are unchanged. Each move has two support-adjusted halves, bounded total 3D distance, and no XZ or yaw repair. Contact, unknown support and invalid setup cannot become arrival.",
+    "Detached 1 cm tops, 1 cm bumps and risers, disconnected/drop support, walls and head geometry remain represented in authored regression fixtures. Original hole rays are not replaced by the infinite plane.",
+    "Runner metadata now separates retained original ground, local recovered-face residuals and broad planar actor support; prior failure cases and unexecuted proposal are preserved."
+  ],
+  "evidence": {
+    "kind": "Parent-executed final combined authored fixtures; reviewer inspected receipt/log and exact source pins, did not rerun",
+    "receipt": "combined-checks-03/RECEIPT.json",
+    "receiptSHA256": "0fcf6fb9071800cbc3a03029768819a822b1a3afa299907a6d7f95902f70bdb6",
+    "testsPassed": 31,
+    "testSeconds": 0.29,
+    "wallSeconds": 1.271358544996474,
+    "peakRSSBytes": 155803648
+  },
+  "limits": [
+    "This selects a simplified simulation ground model; it is not semantic floor truth, current phone clearance, general uneven-terrain validation or physical authorization.",
+    "Original ground component is a training assumption. Smooth ramp-like objects can be semantically ambiguous; low objects inside the declared 2 mm microgeometry band are not proven detectable.",
+    "Nine raw support rays remain finite samples, not continuous full-footprint support or measured-reference coverage.",
+    "The VTK scorer uses conservative swept box/surface intersections; full closed-solid containment and exact time of impact remain outside the established contract.",
+    "Ground triangle reports may repeat across envelopes and half-steps; they are not unique physical contact events.",
+    "No recorded mesh was loaded, game episode executed, outcome certified or frozen source edited by this reviewer in this task."
+  ],
+  "remainingSourceBlockers": [],
+  "episodeOutcome": "not assessed by this review",
+  "physicalAuthority": false
+}

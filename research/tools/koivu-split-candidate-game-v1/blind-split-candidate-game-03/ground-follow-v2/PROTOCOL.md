@@ -1,0 +1,15 @@
+# Same-route connected-ground simulator correction
+
+This is an additive correction to the preserved `pilot-01` result, not a new map or more favorable route. The frozen FIRST_ROUTE, phone-only split mask and controller remain identical. Actual body is 0.45 m wide × 0.30 m forward depth × 1.60 m high, plus a separately scored 0.15 m horizontal margin once. Existing 2 mm contact exclusion is unchanged.
+
+The first attempt moved 0.175355 m then the margin box overlapped a triangle only 15.2 micrometres beyond its fixed vertical floor exclusion. The contact and its one-ring patch were smooth (contact normal 2.91 degrees, neighbor maximum 4.96 degrees), demonstrating the fixed-foot physics limitation. The first result is retained as an evaluator-ground ambiguity, not erased or recounted as an arrival.
+
+The new reference-world model constructs only a local shared-edge triangle component with normal tilt at most 5 degrees, seeded by all nine initial accepted support faces. The fixed route bounding box is expanded 0.8 m horizontally; the fixed height window is [-0.25,+0.25] m. Candidate cells are capped at two million. Exact mesh vertex IDs define shared edges: no coordinate welding, hole bridging, step climbing, detached-top acceptance, or whole-reference adjacency graph. This is an explicit simulation support assumption; a smooth ramp-like object remains a semantic ambiguity.
+
+Only faces in that component are ground, and their intersections are counted separately. Every other low, body-height or overhead face remains an obstacle. Ground-contact reports are triangle reports, not unique physical events. Obstacle event counting remains first-contact termination, actual body versus margin separately.
+
+At each actor increment, world physics casts the unchanged nine support rays at the midpoint and endpoint. All must hit the selected ground component and pass unchanged finite support spread/continuity checks. World Y follows maximum support height; XZ, yaw, route and goal are never corrected by the reference. Each half of this piecewise-linear motion is enclosed by the original conservative oriented swept body. Total three-dimensional translation remains at most 2.5 cm and yaw at most 1 degree per 15 Hz tick. Missing, disconnected or discontinuous support stops the run. Nine finite probes do not prove continuous support or physical stair/drop detection.
+
+Nominal horizontal speed is 0.30 m/s, maximum 0.375 m/s, baseline no added lag, 1,200 ticks. Same arrival threshold: actual XZ error at most 0.35 m, delivered controller goal stop, zero applied/pending movement and nonzero sufficient actual travel. Invalid setup, unknown support, collision, margin contact, deadlock and timeout are not arrivals. The permissive map's unresolved flags remain visible; even an arrival is not live or physical clearance.
+
+Budgets are unchanged: 1,800 CPU seconds, 2,700 wall seconds, 3 GiB process-tree RSS, 64 MiB output, at least 768 MiB free. No reference data enters the controller. Source/input pins are verified before and after. Focused fixtures must pass before this same-route execution. No threshold changes after observing its outcome.

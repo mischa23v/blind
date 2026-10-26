@@ -1,0 +1,167 @@
+{
+  "scope": "saved phone mask only; finite sampled fit and distance-transform diagnostic, not physical clearance or a route",
+  "sourceInputSHA256": {
+    "blind-split-candidate-game-03/inputs/koivu_5cm_occthres_split0.7.npz": "b294d92cfd9136d00de510239c2b85a9d68d878dcf7dac1a64b144d8880cb076",
+    "blind-split-candidate-game-03/inputs/koivu_5cm_v2_pipeline2_out.npz": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d",
+    "blind-split-candidate-game-03/table-loop-proposal/run-03/artifacts/PROPOSAL.json": "45f034606811b7896dea48ff2d0ebc68166b70a090400338cd1900f65b38b78a",
+    "blind-split-candidate-game-03/table-loop-proposal/diagnose_west_clearance.py": "460b553eba99b7ac184e50cadca8a2e5190600a0505b3536076e0597598b3b01"
+  },
+  "targetBoundsSourceXY": [
+    [
+      -3.9000000000000004,
+      -4.1000000000000005
+    ],
+    [
+      1.2999999999999998,
+      3.5999999999999996
+    ]
+  ],
+  "targetMinimumCellCentreX": -3.875000000000001,
+  "globalDiscFitCentres": 1809,
+  "minimumDiscFitCentreX": -3.4250000000000007,
+  "westHalfPlaneWalkCentres": 344,
+  "westHalfPlaneDiscFitCentres": 0,
+  "westMaximumDiscClearanceLowerBoundMetres": 0.30005485756564115,
+  "westTopClearanceCentres": [
+    {
+      "sourceIJ": [
+        37,
+        183
+      ],
+      "sourceXY": [
+        -3.9250000000000007,
+        3.125
+      ],
+      "discClearanceLowerBoundMetres": 0.30005485756564115
+    },
+    {
+      "sourceIJ": [
+        37,
+        182
+      ],
+      "sourceXY": [
+        -3.9250000000000007,
+        3.0749999999999993
+      ],
+      "discClearanceLowerBoundMetres": 0.26878278745558365
+    },
+    {
+      "sourceIJ": [
+        36,
+        184
+      ],
+      "sourceXY": [
+        -3.9750000000000005,
+        3.174999999999999
+      ],
+      "discClearanceLowerBoundMetres": 0.2646446609406727
+    },
+    {
+      "sourceIJ": [
+        37,
+        184
+      ],
+      "sourceXY": [
+        -3.9250000000000007,
+        3.174999999999999
+      ],
+      "discClearanceLowerBoundMetres": 0.2646446609406727
+    },
+    {
+      "sourceIJ": [
+        36,
+        183
+      ],
+      "sourceXY": [
+        -3.9750000000000005,
+        3.125
+      ],
+      "discClearanceLowerBoundMetres": 0.2561922556829377
+    },
+    {
+      "sourceIJ": [
+        35,
+        184
+      ],
+      "sourceXY": [
+        -4.025,
+        3.174999999999999
+      ],
+      "discClearanceLowerBoundMetres": 0.24748737341529167
+    },
+    {
+      "sourceIJ": [
+        36,
+        182
+      ],
+      "sourceXY": [
+        -3.9750000000000005,
+        3.0749999999999993
+      ],
+      "discClearanceLowerBoundMetres": 0.2339029012973978
+    },
+    {
+      "sourceIJ": [
+        36,
+        181
+      ],
+      "sourceXY": [
+        -3.9750000000000005,
+        3.0250000000000004
+      ],
+      "discClearanceLowerBoundMetres": 0.21959563662031187
+    },
+    {
+      "sourceIJ": [
+        37,
+        181
+      ],
+      "sourceXY": [
+        -3.9250000000000007,
+        3.0250000000000004
+      ],
+      "discClearanceLowerBoundMetres": 0.21959563662031187
+    },
+    {
+      "sourceIJ": [
+        33,
+        185
+      ],
+      "sourceXY": [
+        -4.125000000000001,
+        3.2249999999999996
+      ],
+      "discClearanceLowerBoundMetres": 0.2146446609406726
+    }
+  ],
+  "westSampledRectangleFitCentres": 0,
+  "westFirstRectangleFits": [],
+  "rectangleDimensionsIncludingMarginsMetres": {
+    "forward": 0.6,
+    "lateral": 0.75
+  },
+  "sampledHeadings": 72,
+  "headingStepDegrees": 5,
+  "rectangleSpatialSamplingMetres": 0.025,
+  "discFit4Components": 9,
+  "discFitComponentSizesDescending": [
+    788,
+    625,
+    331,
+    59,
+    2,
+    1,
+    1,
+    1,
+    1
+  ],
+  "clearanceRule": "upstream EDT(mask)*.05-.05*sqrt(2)/2; unchanged radius .375",
+  "referenceInputsUsed": false,
+  "routeQueriesExecuted": 0,
+  "movementEpisodesExecuted": 0,
+  "physicalAuthority": false,
+  "counterInterpretation": "rectangle-only diagnostic does not weaken or replace the actual native disc planner",
+  "wallSeconds": 1.4536292950069765,
+  "peakRSSBytes": 55267328,
+  "pinsVerifiedBeforeAfter": true
+}

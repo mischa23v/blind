@@ -1,0 +1,448 @@
+{
+  "scope": "One permissive offline candidate-map episode; not live or physical clearance",
+  "condition": "baseline",
+  "physicalAuthority": false,
+  "gameEpisodesScheduled": 1,
+  "arrival": false,
+  "motionExecuted": true,
+  "actualDistanceMetres": 0.1753554739294998,
+  "attemptedDistanceMetres": 0.19535547392949978,
+  "actualBodyContactEvents": 0,
+  "marginContactEvents": 1,
+  "nearFootAmbiguousContactEvents": 1,
+  "initialReferenceSupport": {
+    "probes": [
+      {
+        "modelXZ": [
+          -1.7250000000000005,
+          2.2250000000000005
+        ],
+        "hit": true,
+        "modelHeightY": 0.00204632924028934,
+        "referenceCellID": 124763,
+        "rayFraction": 0.36988417689927666
+      },
+      {
+        "modelXZ": [
+          -1.6984840014659535,
+          2.092417377376436
+        ],
+        "hit": true,
+        "modelHeightY": 0.002228057667991872,
+        "referenceCellID": 25326,
+        "rayFraction": 0.3694298558300202
+      },
+      {
+        "modelXZ": [
+          -1.8575824203194624,
+          2.2515170100545587
+        ],
+        "hit": true,
+        "modelHeightY": 0.00240579440349499,
+        "referenceCellID": 107503,
+        "rayFraction": 0.3689855139912625
+      },
+      {
+        "modelXZ": [
+          -1.5924175796805387,
+          2.1984829899454423
+        ],
+        "hit": true,
+        "modelHeightY": 0.001773084359188163,
+        "referenceCellID": 688615,
+        "rayFraction": 0.3705672891020296
+      },
+      {
+        "modelXZ": [
+          -1.7515159985340476,
+          2.357582622623565
+        ],
+        "hit": true,
+        "modelHeightY": 0.0018100444674499956,
+        "referenceCellID": 111262,
+        "rayFraction": 0.37047488883137497
+      },
+      {
+        "modelXZ": [
+          -1.6719680029319064,
+          1.9598347547528723
+        ],
+        "hit": true,
+        "modelHeightY": 0.0017499364705932802,
+        "referenceCellID": 671152,
+        "rayFraction": 0.37062515882351676
+      },
+      {
+        "modelXZ": [
+          -1.9901648406389243,
+          2.278034020109117
+        ],
+        "hit": true,
+        "modelHeightY": 0.002128145099464844,
+        "referenceCellID": 141350,
+        "rayFraction": 0.3696796372513379
+      },
+      {
+        "modelXZ": [
+          -1.4598351593610768,
+          2.171965979890884
+        ],
+        "hit": true,
+        "modelHeightY": 0.0015605624740683433,
+        "referenceCellID": 693466,
+        "rayFraction": 0.3710985938148291
+      },
+      {
+        "modelXZ": [
+          -1.7780319970680947,
+          2.4901652452471286
+        ],
+        "hit": true,
+        "modelHeightY": 0.002346057424566771,
+        "referenceCellID": 119255,
+        "rayFraction": 0.369134856438583
+      }
+    ],
+    "hitCount": 9,
+    "missingCount": 0,
+    "pattern": "centre, four raw-body quadrant centres and four actual rectangle corners",
+    "rayTopModelY": 0.15,
+    "rayBottomModelY": -0.25,
+    "rayIntervalIsAbsolute": true,
+    "continuousSupportProven": false,
+    "semanticFloorEstablished": false,
+    "measuredCoverageEstablished": false,
+    "physicalClearanceEstablished": false,
+    "physicalAuthority": false
+  },
+  "initialSupportCheck": {
+    "acceptedFiniteSupportModel": true,
+    "hitCount": 9,
+    "missingCount": 0,
+    "spreadMetres": 0.0008452319294266469,
+    "maximumAnchorErrorMetres": 0.00240579440349499,
+    "heightMinimum": 0.0015605624740683433,
+    "heightMaximum": 0.00240579440349499,
+    "continuousSupportProven": false,
+    "semanticFloorEstablished": false
+  },
+  "nominalStart": [
+    -1.7250000000000005,
+    0.0,
+    2.2250000000000005
+  ],
+  "goal": [
+    -0.625,
+    0.0,
+    3.9250000000000007
+  ],
+  "sourceConfidence": "unavailable and not synthesized",
+  "trackingState": "unavailable and not synthesized",
+  "farOnlyDipConflict": "unassessed in supplied masks",
+  "strictStatClearFeasibility": "external logs report no 2\u20136m routes; unchanged failure retained",
+  "settledStart": [
+    -1.7250000000000005,
+    0.00240579440349499,
+    2.2250000000000005
+  ],
+  "referenceFootAnchorCorrectionMetres": 0.00240579440349499,
+  "footAnchorPolicy": "world initialization only; fixed thereafter; no horizontal relocation or planner correction",
+  "initialContacts": {
+    "actualBody": {
+      "contact": false,
+      "candidateTriangles": 15006,
+      "firstReferenceCellID": null,
+      "reason": "noReferenceSurfaceContact",
+      "closedBoundaries": true,
+      "closedSolidContainmentClassified": false,
+      "measuredCoverageEstablished": false,
+      "physicalClearanceEstablished": false,
+      "physicalAuthority": false,
+      "sweep": {
+        "midpointYawRadians": 0.7853943487147133,
+        "actualYawDeltaRadians": 0.0,
+        "cornerRadiusMetres": 0.2704163456597992,
+        "halfProjectedTranslationMetres": [
+          0.0,
+          0.0
+        ],
+        "rotationPaddingMetresPerHorizontalAxis": 0.0,
+        "enclosingHalfExtentsForwardLateral": [
+          0.15,
+          0.225
+        ],
+        "verticalBoundsMetres": [
+          0.00440579440349499,
+          1.602405794403495
+        ],
+        "floorContactExclusionMetres": 0.002,
+        "continuousMotionEnclosed": true,
+        "conservativeEnclosureMayOvercount": true
+      }
+    },
+    "horizontalMargin": {
+      "contact": false,
+      "candidateTriangles": 59406,
+      "firstReferenceCellID": null,
+      "reason": "noReferenceSurfaceContact",
+      "closedBoundaries": true,
+      "closedSolidContainmentClassified": false,
+      "measuredCoverageEstablished": false,
+      "physicalClearanceEstablished": false,
+      "physicalAuthority": false,
+      "sweep": {
+        "midpointYawRadians": 0.7853943487147133,
+        "actualYawDeltaRadians": 0.0,
+        "cornerRadiusMetres": 0.4802343178074636,
+        "halfProjectedTranslationMetres": [
+          0.0,
+          0.0
+        ],
+        "rotationPaddingMetresPerHorizontalAxis": 0.0,
+        "enclosingHalfExtentsForwardLateral": [
+          0.3,
+          0.375
+        ],
+        "verticalBoundsMetres": [
+          0.00440579440349499,
+          1.602405794403495
+        ],
+        "floorContactExclusionMetres": 0.002,
+        "continuousMotionEnclosed": true,
+        "conservativeEnclosureMayOvercount": true
+      }
+    },
+    "bodyDimensionsWidthDepthHeight": [
+      0.45,
+      0.3,
+      1.6
+    ],
+    "horizontalMarginMetres": 0.15,
+    "marginExtendsVerticalHeight": false,
+    "actualBodyContactIsConservativeEnclosureOverlap": true,
+    "physicalAuthority": false
+  },
+  "status": "firstContactTriangleNearFootAmbiguous",
+  "ticks": 10,
+  "goalErrorMetres": 1.8537468369125931,
+  "finalPosition": [
+    -1.601004918904576,
+    0.00240579440349499,
+    2.348995008371638
+  ],
+  "finalYawRadians": 0.7853987594433995,
+  "terminal": {
+    "cue": {
+      "physicalAuthority": false,
+      "forwardMetres": 0.02,
+      "yawRadians": -8.881784197001252e-16,
+      "goalReached": false,
+      "reason": "boundedNativeCandidate",
+      "sourceCapturedAt": 100.6,
+      "poseAgeSeconds": 0.0,
+      "phoneFlagReceipt": {
+        "sampledFit": true,
+        "sampleCount": 775,
+        "insideSampleCount": 775,
+        "uniqueMaskCells": 218,
+        "lowUnresolvedCells": 183,
+        "farOnlyDipFlag": "unavailable in supplied split artifact",
+        "physicalAuthority": false,
+        "sampleSpacingMetres": 0.025,
+        "mapRevision": "6e88753b1c0021b5a3dd6fae3c48cf824df28b0bb4861422da4dd4088f1564e8"
+      },
+      "goalError": 1.8537468369125931,
+      "proposedPhoneFlagReceipt": {
+        "sampledFit": true,
+        "sampleCount": 775,
+        "insideSampleCount": 775,
+        "uniqueMaskCells": 207,
+        "lowUnresolvedCells": 172,
+        "farOnlyDipFlag": "unavailable in supplied split artifact",
+        "physicalAuthority": false,
+        "sampleSpacingMetres": 0.025,
+        "mapRevision": "6e88753b1c0021b5a3dd6fae3c48cf824df28b0bb4861422da4dd4088f1564e8"
+      },
+      "nativeCandidatePoints": [
+        [
+          -1.499999761581421,
+          0.0,
+          2.450000286102295
+        ],
+        [
+          -0.8499999046325684,
+          0.0,
+          3.6500000953674316
+        ],
+        [
+          -0.625,
+          0.0,
+          3.9000000953674316
+        ]
+      ],
+      "permissiveUnknownAdmitted": true
+    },
+    "appliedCommand": {
+      "forward_metres": 0.02,
+      "yaw_radians": -8.881784197001252e-16,
+      "applied_tick": 9,
+      "issued_tick": 9,
+      "source_captured_at": 100.6,
+      "stop_reason": "boundedNativeCandidate",
+      "forced_wrong_turn": false,
+      "translation_clipped": false,
+      "reaction_delay_ticks": 0
+    },
+    "contacts": {
+      "actualBody": {
+        "contact": false,
+        "candidateTriangles": 18710,
+        "firstReferenceCellID": null,
+        "reason": "noReferenceSurfaceContact",
+        "closedBoundaries": true,
+        "closedSolidContainmentClassified": false,
+        "measuredCoverageEstablished": false,
+        "physicalClearanceEstablished": false,
+        "physicalAuthority": false,
+        "sweep": {
+          "midpointYawRadians": 0.7853987594433991,
+          "actualYawDeltaRadians": -8.881784197001252e-16,
+          "cornerRadiusMetres": 0.2704163456597992,
+          "halfProjectedTranslationMetres": [
+            0.009999999999999936,
+            9.454242944073599e-17
+          ],
+          "rotationPaddingMetresPerHorizontalAxis": 1.2008898127460164e-16,
+          "enclosingHalfExtentsForwardLateral": [
+            0.16000000000000003,
+            0.2250000000000002
+          ],
+          "verticalBoundsMetres": [
+            0.00440579440349499,
+            1.602405794403495
+          ],
+          "floorContactExclusionMetres": 0.002,
+          "continuousMotionEnclosed": true,
+          "conservativeEnclosureMayOvercount": true
+        }
+      },
+      "horizontalMargin": {
+        "contact": true,
+        "candidateTriangles": 53449,
+        "firstReferenceCellID": 694053,
+        "reason": "boundaryIntersection",
+        "closedBoundaries": true,
+        "closedSolidContainmentClassified": false,
+        "measuredCoverageEstablished": false,
+        "physicalClearanceEstablished": false,
+        "physicalAuthority": false,
+        "firstTriangleModelHeightRange": [
+          0.004166926234058977,
+          0.004420988867255711
+        ],
+        "heightRangeIsWholeTriangleNotContactPoint": true,
+        "sweep": {
+          "midpointYawRadians": 0.7853987594433991,
+          "actualYawDeltaRadians": -8.881784197001252e-16,
+          "cornerRadiusMetres": 0.4802343178074636,
+          "halfProjectedTranslationMetres": [
+            0.009999999999999936,
+            9.454242944073599e-17
+          ],
+          "rotationPaddingMetresPerHorizontalAxis": 2.1326687873800037e-16,
+          "enclosingHalfExtentsForwardLateral": [
+            0.31000000000000016,
+            0.37500000000000033
+          ],
+          "verticalBoundsMetres": [
+            0.00440579440349499,
+            1.602405794403495
+          ],
+          "floorContactExclusionMetres": 0.002,
+          "continuousMotionEnclosed": true,
+          "conservativeEnclosureMayOvercount": true
+        },
+        "firstTriangleHeightRelativeToStartFootRange": [
+          0.0017611318305639865,
+          0.0020151944637607205
+        ]
+      },
+      "bodyDimensionsWidthDepthHeight": [
+        0.45,
+        0.3,
+        1.6
+      ],
+      "horizontalMarginMetres": 0.15,
+      "marginExtendsVerticalHeight": false,
+      "actualBodyContactIsConservativeEnclosureOverlap": true,
+      "physicalAuthority": false
+    },
+    "support": [
+      {
+        "acceptedFiniteSupportModel": true,
+        "hitCount": 9,
+        "missingCount": 0,
+        "spreadMetres": 0.0013451526368736082,
+        "maximumAnchorErrorMetres": 0.001034258500029769,
+        "heightMinimum": 0.0013715359034652212,
+        "heightMaximum": 0.0027166885403388293,
+        "continuousSupportProven": false,
+        "semanticFloorEstablished": false
+      },
+      {
+        "acceptedFiniteSupportModel": true,
+        "hitCount": 9,
+        "missingCount": 0,
+        "spreadMetres": 0.001410451775950337,
+        "maximumAnchorErrorMetres": 0.0009898808875105775,
+        "heightMinimum": 0.0014159135159844127,
+        "heightMaximum": 0.0028263652919347498,
+        "continuousSupportProven": false,
+        "semanticFloorEstablished": false
+      }
+    ],
+    "pendingMotion": false,
+    "actualGoalErrorMetres": 1.8537468369125931
+  },
+  "traceSHA256": "f4617d54462dc8aa11ad441eb6109baa06ae8007d78f863f2cddd2528c7400cc",
+  "nominalSpeedMetresPerSecond": 0.3,
+  "maximumSpeedMetresPerSecond": 0.375,
+  "warningBurden": "not measured: no live sensor/hazard stream in offline game",
+  "ticksWithSampledLowUnresolvedExposure": 10,
+  "ticksWithoutCurrentFlagReceipt": 0,
+  "traceMissingFlagSentinel": -1,
+  "runtime": {
+    "version": "9.3.1",
+    "SMPBackend": "Sequential",
+    "threads": 1,
+    "executionMachine": {
+      "system": "Linux",
+      "release": "6.18.55",
+      "machine": "x86_64",
+      "cpuReportedModel": "AMD EPYC 7763 64-Core Processor",
+      "logicalCPUAffinityCount": 1,
+      "memorySnapshotBytes": {
+        "MemTotal": 10451439616,
+        "MemAvailable": 4612661248
+      },
+      "CPUQuotaNotEstablished": true,
+      "iPhoneRuntimeTest": false,
+      "GPUUsed": false
+    }
+  },
+  "referenceMesh": {
+    "vertices": 8940320,
+    "triangles": 17801112,
+    "originalPLYType": "float64",
+    "VTKPointScalarType": "float",
+    "geometryDecimated": false,
+    "meshTransformed": false,
+    "unusedAttributesReleased": true
+  },
+  "wallSeconds": 26.90303623500222,
+  "FAROUsedByController": false,
+  "referencePhysicsNeverSelectsRoute": true,
+  "firstContactTerminates": true,
+  "continuousSupportProven": false,
+  "routeSHA256": "b24413d7fa43f79232b227088a235e85ef3a9c5d45bbe5f5f5e2fa415752f02b"
+}

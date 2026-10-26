@@ -1,0 +1,100 @@
+{
+  "budgets": {
+    "CPUSeconds": 60,
+    "RSSBytes": 536870912,
+    "freeReserveBytes": 805306368,
+    "outputBytes": 8388608,
+    "wallSeconds": 90
+  },
+  "dataEvaluationExecuted": false,
+  "modes": [
+    "synthetic-fixtures",
+    "phone-only-feasibility"
+  ],
+  "physicalAuthority": false,
+  "pins": [
+    {
+      "bytes": 4720,
+      "path": "blind-authored-navigation-pilot/native/detour_engine.py",
+      "sha256": "8ab51b8fe7ac2585cfbe797615dd9ac78956e6cb14277deb092aca19df38787d"
+    },
+    {
+      "bytes": 327400,
+      "path": "blind-authored-navigation-pilot/native/libblind_detour.so",
+      "sha256": "560567438e5c88aaa8e20d3ac92ce4db6fe8803018f537b82819b47ed7cc05b8"
+    },
+    {
+      "bytes": 3954,
+      "path": "blind-split-candidate-game-03/upstream/scripts/routes_rect.py",
+      "sha256": "c96f1cb4e87e1f283645f4dbe7e8ee76f51b1d701ddf6a0965be4e1a1bd5c980"
+    },
+    {
+      "bytes": 2790,
+      "path": "blind-split-candidate-game-03/upstream/scripts/routes.py",
+      "sha256": "20723183941e16968eaacfd227972448385255dc5f3ff86bc39c7de8edb1f2d8"
+    },
+    {
+      "bytes": 7240,
+      "path": "blind-split-candidate-game-03/source/candidate_map.py",
+      "sha256": "5e0132f4711200bca1b7ae90eb27b5666ce0707b1573e815e40e622caff98c09"
+    },
+    {
+      "bytes": 484020,
+      "path": "blind-split-candidate-game-03/inputs/koivu_5cm_occthres_split0.7.npz",
+      "sha256": "b294d92cfd9136d00de510239c2b85a9d68d878dcf7dac1a64b144d8880cb076"
+    },
+    {
+      "bytes": 8384142,
+      "path": "blind-split-candidate-game-03/inputs/koivu_5cm_v2_pipeline2_out.npz",
+      "sha256": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d"
+    },
+    {
+      "bytes": 13575,
+      "path": "blind-koivu-game-07/run_bounded.py",
+      "sha256": "1f695e6c927fba3cb20ee157e2f04cc74a71c1051937fc061ad2e956b6db7735"
+    },
+    {
+      "bytes": 3211,
+      "path": "blind-split-candidate-game-03/source/run_selector_bounded_02.py",
+      "sha256": "e4f0524722e98553d0e2ba56b24b55b4765b0f3ad0810122cda67db864f542a2"
+    },
+    {
+      "bytes": 7956,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/PROTOCOL.md",
+      "sha256": "07555ca479879c3d30ea8561887007038f5383fa5adf0e70508a2b92c69b788a"
+    },
+    {
+      "bytes": 26165,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/table_loop.py",
+      "sha256": "8ff34e28a8b30961db2c287f5e91ddf29497ca8ecc729bf6023afae185493cc6"
+    },
+    {
+      "bytes": 9502,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/test_table_loop.py",
+      "sha256": "d07edb347cc8e3fbf14b3311754126563a61ca04879351bb507de0511be9cbc7"
+    },
+    {
+      "bytes": 4865,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/freeze_loop_03.py",
+      "sha256": "acbe0f4a0b0f2eefa2182346988146efc0eb9091c740a765ee11740974cc822a"
+    },
+    {
+      "bytes": 2715,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/loop_driver_03.py",
+      "sha256": "6879dd0d941c3f4c801ce5ebdf1c56eb86c03fdd07ba878dc3c2e41e36a37240"
+    },
+    {
+      "bytes": 8716,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run_loop_bounded_03.py",
+      "sha256": "8de58b949ab5da24c96d188b25dda01154fc74477d7582f299e1ff15df565b41"
+    },
+    {
+      "bytes": 6911,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/IMPLEMENTATION_NOTES.md",
+      "sha256": "a0a90ecdfac426c94b4e9a6aedf5f8b15d7fa849afd8d1e2393b2c04b4fc48d9"
+    }
+  ],
+  "schemaVersion": 1,
+  "scope": "one phone-only loop feasibility construction; no actor/reference execution",
+  "semanticTarget": "unresolvedGeometricProxy"
+}

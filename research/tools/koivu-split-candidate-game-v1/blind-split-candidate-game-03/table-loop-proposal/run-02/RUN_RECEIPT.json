@@ -1,0 +1,29 @@
+{
+  "technicalExecutionCompleted": false,
+  "failure": "FileNotFoundError(2, 'No such file or directory')",
+  "failedPhase": "running-feasibility",
+  "modes": [
+    {
+      "mode": "fixtures",
+      "exitCode": 0
+    }
+  ],
+  "sourceInputHashesVerifiedBeforeAndAfter": false,
+  "frozenSHA256": "7220d39c48ef7dc87b157ad9ca02bb5e92b0ad7a14f52d21f8197db1aade0186",
+  "wallSeconds": 1.601112145013758,
+  "sampledCPUSeconds": 1.5199999999999998,
+  "peakSampledOrWaitedRSSBytes": 78848000,
+  "peakOutputBytesBeforeReceipt": 527034,
+  "budgets": {
+    "CPUSeconds": 60,
+    "wallSeconds": 90,
+    "RSSBytes": 536870912,
+    "outputBytes": 8388608,
+    "freeReserveBytes": 805306368
+  },
+  "sampledNotCgroup": true,
+  "outputAccounting": "logical regular-file bytes including manifest, caches and logs",
+  "movementEpisodesExecuted": 0,
+  "referenceInputsUsed": false,
+  "physicalAuthority": false
+}

@@ -1,0 +1,33 @@
+{
+  "technicalExecutionCompleted": false,
+  "failure": "ValueError('source/input changed: blind-split-candidate-game-03/table-loop-proposal/loop_driver.py')",
+  "failedPhase": "verify-after-feasibility",
+  "modes": [
+    {
+      "mode": "fixtures",
+      "exitCode": 0
+    },
+    {
+      "mode": "feasibility",
+      "exitCode": 1
+    }
+  ],
+  "sourceInputHashesVerifiedBeforeAndAfter": false,
+  "frozenSHA256": "c5e073281b12baed333d723910bb57f820ab752235e3e359faf181b9b5f3a016",
+  "wallSeconds": 3.6608842740097316,
+  "sampledCPUSeconds": 3.6100000000000003,
+  "peakSampledOrWaitedRSSBytes": 108294144,
+  "peakOutputBytesBeforeReceipt": 1702374,
+  "budgets": {
+    "CPUSeconds": 60,
+    "wallSeconds": 90,
+    "RSSBytes": 536870912,
+    "outputBytes": 8388608,
+    "freeReserveBytes": 805306368
+  },
+  "sampledNotCgroup": true,
+  "outputAccounting": "logical regular-file bytes including manifest, caches and logs",
+  "movementEpisodesExecuted": 0,
+  "referenceInputsUsed": false,
+  "physicalAuthority": false
+}

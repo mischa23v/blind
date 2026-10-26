@@ -1,0 +1,991 @@
+{
+  "controlFilesExcluded": [
+    "MANIFEST.json",
+    "VALIDATION.json"
+  ],
+  "files": [
+    {
+      "bytes": 3880,
+      "path": "EXTERNAL_DEPENDENCIES.json",
+      "sha256": "a3ffa349678185a79b7328700a1c580d65fbee91b722289213e988e4d120c1d7"
+    },
+    {
+      "bytes": 63720,
+      "path": "HISTORICAL_SOURCE_MAP.json",
+      "sha256": "a0d46a414970b87a969ce4112b0d86b08c0a79ec2abb77953177ea5f67c63aef"
+    },
+    {
+      "bytes": 105847,
+      "path": "NORMALIZATION_MAP.json",
+      "sha256": "2c55f9057223f933b6b11275d6f0d2963756eaa8e5acd4899b90e288f1e5d772"
+    },
+    {
+      "bytes": 9512,
+      "path": "README.md",
+      "sha256": "650b3f5166c2bfe215d5fdce2be99e3ca21c5dc89fca391b0f344752f7503ca4"
+    },
+    {
+      "bytes": 1232,
+      "path": "blind-authored-navigation-pilot/native/FINAL_VERIFICATION.json",
+      "sha256": "ea503aaa13a0cc25df2a228d668adf84dd2a0f2dff1071d3a6dd447024385a70"
+    },
+    {
+      "bytes": 10684,
+      "path": "blind-authored-navigation-pilot/native/UPSTREAM_MANIFEST.json",
+      "sha256": "d42b9fc56473bf8b8afe278e862acb6bb96e8ed3d228c192765203572d14d9e7"
+    },
+    {
+      "bytes": 2208,
+      "path": "blind-authored-navigation-pilot/native/acquire_recast.py",
+      "sha256": "862046a443895f98f6a829cadc3672a6ee48b05a33b1843202e80420f0a8e401"
+    },
+    {
+      "bytes": 10681,
+      "path": "blind-authored-navigation-pilot/native/blind_detour.cpp",
+      "sha256": "4673cf5c1912ea62ac811218f96cbecbf03955070162942de764249b38276773"
+    },
+    {
+      "bytes": 1365,
+      "path": "blind-authored-navigation-pilot/native/blind_detour.h",
+      "sha256": "c6270b968024d0703800160d45d4110f04f73ad3ecca50ceb0fd0de3b002dbb4"
+    },
+    {
+      "bytes": 1700,
+      "path": "blind-authored-navigation-pilot/native/build_serial.sh",
+      "sha256": "adb9841cb45756ec6fbe89b381e1b688e87cbac3a8e981057e1e6db9e7e89b1d"
+    },
+    {
+      "bytes": 4720,
+      "path": "blind-authored-navigation-pilot/native/detour_engine.py",
+      "sha256": "8ab51b8fe7ac2585cfbe797615dd9ac78956e6cb14277deb092aca19df38787d"
+    },
+    {
+      "bytes": 877,
+      "path": "blind-authored-navigation-pilot/native/upstream/License.txt",
+      "sha256": "ffad87821cce7cfd3be00b63ffadd01b04e83a4c6a0bcc68f06362ffd42d705e"
+    },
+    {
+      "bytes": 8048,
+      "path": "blind-authored-navigation-pilot/source/impairments.py",
+      "sha256": "44e5383e19b42a5b524ae5305125e4fb8e992127f785a6e0010ca12334f63fd2"
+    },
+    {
+      "bytes": 7023,
+      "path": "blind-koivu-game-07/game_model.py",
+      "sha256": "3e38e76fd2cd05e19a41dd906748ccbb9fee6bc6e4086c117944965e6ddfc3ee"
+    },
+    {
+      "bytes": 13575,
+      "path": "blind-koivu-game-07/run_bounded.py",
+      "sha256": "1f695e6c927fba3cb20ee157e2f04cc74a71c1051937fc061ad2e956b6db7735"
+    },
+    {
+      "bytes": 10435,
+      "path": "blind-koivu-reference-comparison-06/reference_geometry.py",
+      "sha256": "266026051a781f122a59187f599688e8c5eb38807984b7e607401e7b4356386d"
+    },
+    {
+      "bytes": 1972,
+      "path": "blind-mushroom-koivu-acquisition-01/ATTRIBUTION.md",
+      "sha256": "3d01dde51d375689a1c19c2c793a5bac095ac63d63758aca182ec8b38b060c08"
+    },
+    {
+      "bytes": 5426,
+      "path": "blind-opus-reference-scoring-audit-02/source/label_contract.py",
+      "sha256": "e9107b10238fff7ead7f8d60733b0439771d592a9a6f1bece2ddf547c44c4db3"
+    },
+    {
+      "bytes": 9740,
+      "path": "blind-opus-reference-scoring-audit-02/source/reference_band_box.py",
+      "sha256": "18fdf528f5eb4c017ed0d94476babed57f94807323798984064679d419831ef1"
+    },
+    {
+      "bytes": 13294,
+      "path": "blind-opus-reference-scoring-audit-02/source/score_reference.py",
+      "sha256": "ccb8b730cde932e191571cebd1c0b09ffbce8429e67de21455268eff5c6d53d7"
+    },
+    {
+      "bytes": 3369,
+      "path": "blind-split-candidate-game-03/ACQUISITION_RECEIPT.json",
+      "sha256": "279b4ab03053ad79f64d0eae5eeb79cb02a6b3148f66f298f84add09796cb145"
+    },
+    {
+      "bytes": 2860,
+      "path": "blind-split-candidate-game-03/ADAPTER_NOTES.md",
+      "sha256": "3b14d045d600e8fcd256fa2d95266c5c6a6d133b798318c65aa70318d5980c26"
+    },
+    {
+      "bytes": 726,
+      "path": "blind-split-candidate-game-03/ADAPTER_TEST_RECEIPT.json",
+      "sha256": "15bed9e128f19e8040c7e24f0d26b684de4668d0949122b020a34a7252fb1cfb"
+    },
+    {
+      "bytes": 2272,
+      "path": "blind-split-candidate-game-03/FETCH_METADATA.json",
+      "sha256": "f1a353b7467787a1fb8fb6bfde095164acb92ede62724af754d0c33d173d41c5"
+    },
+    {
+      "bytes": 55686,
+      "path": "blind-split-candidate-game-03/FIRST_ROUTE.json",
+      "sha256": "b24413d7fa43f79232b227088a235e85ef3a9c5d45bbe5f5f5e2fa415752f02b"
+    },
+    {
+      "bytes": 5712,
+      "path": "blind-split-candidate-game-03/FROZEN_PILOT.json",
+      "sha256": "74fedfcf46249f293a5e86fb90f0204a0d6bbcb22a2ccb2cc5c472794e2e9eac"
+    },
+    {
+      "bytes": 4009,
+      "path": "blind-split-candidate-game-03/GROUND_PHYSICS_PROPOSAL.md",
+      "sha256": "4fa6dfb386a022b3cf1a706ceb23a5ab9953e97451a71df0c72081e30bd174db"
+    },
+    {
+      "bytes": 4978,
+      "path": "blind-split-candidate-game-03/PILOT_PROTOCOL.md",
+      "sha256": "0eed4edfc0d4e1953b391fae96f97b2e2a0a0b5f68452cb4b72b5fc287e1ca8c"
+    },
+    {
+      "bytes": 406,
+      "path": "blind-split-candidate-game-03/ROUTES_SOURCE_RECEIPT.json",
+      "sha256": "823865b5adf273cf34822ad5740bde7f19ebe3b39c13ddc665dae854596d2886"
+    },
+    {
+      "bytes": 1652,
+      "path": "blind-split-candidate-game-03/SELECTION_FROZEN-02.json",
+      "sha256": "f2e09ac5605a810116c36be5a900edda44a703065876820251106df028680aed"
+    },
+    {
+      "bytes": 1609,
+      "path": "blind-split-candidate-game-03/SELECTION_FROZEN.json",
+      "sha256": "782d4e714893caac5bc053bbcb8481fd6224b162f81edbce482be39cbcc135b6"
+    },
+    {
+      "bytes": 918,
+      "path": "blind-split-candidate-game-03/adapter-tests.stderr.log",
+      "sha256": "d8481e0a8b81792c59a6b15ffef96f0ea4a3437d01a07039a5d586efc967d626"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/adapter-tests.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 372,
+      "path": "blind-split-candidate-game-03/contact-diagnostic-01/PLOT_RECEIPT.json",
+      "sha256": "042b1cb1266f2d6fa67470f1a15a755f55c59f4fb69f1f0ecce60f6619993c14"
+    },
+    {
+      "bytes": 1783,
+      "path": "blind-split-candidate-game-03/contact-diagnostic-01/TRIANGLE_PATCH.json",
+      "sha256": "0a56884c88108deafb96fe01b702e17b437001a0dda7c34593c198e68a0ece68"
+    },
+    {
+      "bytes": 169972,
+      "path": "blind-split-candidate-game-03/contact-diagnostic-01/pilot-01-planned-vs-actual.png",
+      "sha256": "54c461b41455e520b7b68e5298a120e5d5cc7c1f2ad1305eee787c8433a4eb9e"
+    },
+    {
+      "bytes": 601,
+      "path": "blind-split-candidate-game-03/controller-fixtures-01/RECEIPT.json",
+      "sha256": "ef07ceacfd9e62f332664c4e3a17dbb33a7fae897f663294bae684807b358c2a"
+    },
+    {
+      "bytes": 884,
+      "path": "blind-split-candidate-game-03/controller-fixtures-01/stderr.log",
+      "sha256": "60f582788760d7efb0f7b1535deac5733876c44c2b6ee460d822ed30c53f168c"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/controller-fixtures-01/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 553,
+      "path": "blind-split-candidate-game-03/controller-fixtures-02/RECEIPT.json",
+      "sha256": "e44fe5963b0ab6c370a5467c678d09d90ae6cca9b0275a85ccc3e0af8e59fe0a"
+    },
+    {
+      "bytes": 884,
+      "path": "blind-split-candidate-game-03/controller-fixtures-02/stderr.log",
+      "sha256": "60f582788760d7efb0f7b1535deac5733876c44c2b6ee460d822ed30c53f168c"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/controller-fixtures-02/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 7268,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/FROZEN.json",
+      "sha256": "b92636a6233a90ec7ddefa7379c612947bc5c1662151b6f6edf6fa3c93c1f04a"
+    },
+    {
+      "bytes": 3164,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/PROTOCOL.md",
+      "sha256": "7164eff684fb4771bc21e752b2c9697bedd1e6463637270e2fc5c1e948f3071d"
+    },
+    {
+      "bytes": 3807,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/REVIEW.json",
+      "sha256": "d283e8df05b00ce6cc64b29c8bcdc8c448d0cb25db1491ee8f4a634e870421bd"
+    },
+    {
+      "bytes": 1119,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/combined-checks-01/RECEIPT.json",
+      "sha256": "82d4123a145c3050da01877229daa9ccf72faeb2b56176363958d09ecf86e5a0"
+    },
+    {
+      "bytes": 3721,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/combined-checks-01/stderr.log",
+      "sha256": "fad7b10111e229a34fd8896d066b1c5d8f05daebd3d749f0dd3b2e97762dbdc8"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/combined-checks-01/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 11870,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/contact-diagnostic-01/FACE_698154.json",
+      "sha256": "60c8f53a9df2e70921414ffc18a411a6b6fc374263ed0d56f4e70438dc314e3f"
+    },
+    {
+      "bytes": 430,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/contact-diagnostic-01/PATCH_FIT.json",
+      "sha256": "8fb81f64b0ab8b527d696dad587c7cf39968266ea618445c6226e688e11dd0d4"
+    },
+    {
+      "bytes": 274,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/contact-diagnostic-01/same-route-ground-follow.json",
+      "sha256": "7a2b4338fee52fbab73b0bf2ed33c78a989df868a605907cb625a3612af1ba99"
+    },
+    {
+      "bytes": 129984,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/contact-diagnostic-01/same-route-ground-follow.png",
+      "sha256": "a7c1be988a3a88718d0a9bb0a1495bee0d632f2b93aadd34fa7b78686323de47"
+    },
+    {
+      "bytes": 2316,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/diagnose_support_face.py",
+      "sha256": "0aa26d2989fb958af70be307300659c08d15e7c9906f41b9ac6fd48b3b61193d"
+    },
+    {
+      "bytes": 8369,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/ground_support.py",
+      "sha256": "095906c4cda9972e46751b511f46d41e2e541e2ebc44ebbb7da6dbe8240acfaf"
+    },
+    {
+      "bytes": 5367,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/oriented_ground_container.py",
+      "sha256": "728860fa18f762f90b13f581e4b3cae474f4d8bf4223854252778802e405ea89"
+    },
+    {
+      "bytes": 78,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/physics-checks-01/stderr.log",
+      "sha256": "edbe47204943cdd0e2c73b656876576a393789ba9a090b2cef9ce504500c3189"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/physics-checks-01/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 390,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/physics-checks-02/RECEIPT.json",
+      "sha256": "84c163c6ee631efcfd56230f75000e21d8c906388ef2239177455f403310fe23"
+    },
+    {
+      "bytes": 961,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/physics-checks-02/stderr.log",
+      "sha256": "bbfa61939d72e037be39175f99c4fc1347e4ff7ae3b1d583b4d524dd86bd0fd7"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/physics-checks-02/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 501,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/run-01/READBACK.json",
+      "sha256": "2ddbeb824d792a9247a93f7921d6afc78ccb09431f66f9740fb3c3f53e3e19b8"
+    },
+    {
+      "bytes": 526,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/run-01/RUN_RECEIPT.json",
+      "sha256": "012c6a4eed4877378e71f573e0adc7b1260e2cbd647d559bd88ec1330b8cc379"
+    },
+    {
+      "bytes": 275640,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/run-01/heartbeat.jsonl",
+      "sha256": "55087cc5ae692d2f96ea0eddac5002f002da843e60db2db0b3197178f32e43de"
+    },
+    {
+      "bytes": 1951,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/run-01/result/ACTOR_TRACE.npz",
+      "sha256": "d99bde4cc2f6f57fbeabdacf22b0b6aefc56a24c1fd7fa18a1121c373cf1ad25"
+    },
+    {
+      "bytes": 13591,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/run-01/result/RESULT.json",
+      "sha256": "7b3fd46eef7a30be82b7afe3b0695eb996ad6bf1b1dea3327190b8d923bf5326"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/run-01/result/controller.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/run-01/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 523,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/run-01/stdout.log",
+      "sha256": "b177d22b7f771f3e9cfd5bc4ff863b209b5e2537a5d06a3eae3f330b78456036"
+    },
+    {
+      "bytes": 3584,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/run_bounded.py",
+      "sha256": "0683dd1622933e25b3a6c96dbe2e2a9861e07b25d5a7954ca61d4e65bd97424a"
+    },
+    {
+      "bytes": 12396,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/run_ground_pilot.py",
+      "sha256": "679851a99466803d8390b38433a165ec409d52a4df266ff7e3651855370793de"
+    },
+    {
+      "bytes": 2480,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/test_ground_physics.py",
+      "sha256": "c61ec01610561e90b42ce7bb5e7e8a490ea1ee2b75005368e19c4139629ae357"
+    },
+    {
+      "bytes": 4018,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/test_ground_support.py",
+      "sha256": "1ed4e4e9c7d2415f741cad376693c0632e469972c4e7526a32014490f0fcd397"
+    },
+    {
+      "bytes": 5030,
+      "path": "blind-split-candidate-game-03/ground-follow-v2/test_oriented_ground_container.py",
+      "sha256": "faf152deff73ecacc1ab03ca042954d9c533f69a9b193654175f4eb96a1d050d"
+    },
+    {
+      "bytes": 9189,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/FROZEN.json",
+      "sha256": "1161bd07dab97752f245151294c762a5e8e4f04ed224774316a2e3a6f0f921ef"
+    },
+    {
+      "bytes": 2889,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/HELPER_PROTOCOL.md",
+      "sha256": "4915e53e6b9e4c4399839656241b196281639357d068464815d65c0e63c2e31f"
+    },
+    {
+      "bytes": 4553,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/PROTOCOL.md",
+      "sha256": "9f63642600930d9f91972aadb38d119275907e06d031731c839041a30881d44f"
+    },
+    {
+      "bytes": 4525,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/REVIEW.json",
+      "sha256": "f04f150333c18bc05a13ce12922b8110332471344b309954452bcf5ddc5c1c41"
+    },
+    {
+      "bytes": 1129,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/combined-checks-01/RECEIPT.json",
+      "sha256": "efd9cebe7a377e7c8ba2487563e187d1ff30bcccc02eb21d16cc31c021982f2f"
+    },
+    {
+      "bytes": 4299,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/combined-checks-01/stderr.log",
+      "sha256": "0401f4e19f450fa901c5cc415bea8daedc4e01414a15c625107feec69f4645cc"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/combined-checks-01/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1129,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/combined-checks-02/RECEIPT.json",
+      "sha256": "739ac0a50b729eec62b1ddd4c7a31689ddbceaa409c20c93d45c1bacc074217d"
+    },
+    {
+      "bytes": 4446,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/combined-checks-02/stderr.log",
+      "sha256": "b408fff86616a8e31fd7d01f9910a06e70858c0dac9db4ede646000435e13608"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/combined-checks-02/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1128,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/combined-checks-03/RECEIPT.json",
+      "sha256": "0fcf6fb9071800cbc3a03029768819a822b1a3afa299907a6d7f95902f70bdb6"
+    },
+    {
+      "bytes": 4446,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/combined-checks-03/stderr.log",
+      "sha256": "cc05dace3508ebc38ad3807cbcb2e67ee4a535713b49e673a4ccd83233fa944d"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/combined-checks-03/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 15011,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/ground_support.py",
+      "sha256": "cf4745cae6ac3392346cc2e43cf507f42b4513af349b016ce466cdc04d04c06b"
+    },
+    {
+      "bytes": 907,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/helper-checks-01/RECEIPT.json",
+      "sha256": "42b8737d19eccfa8090be4a243432afc9ebfe1f135386f8e90a4c5bf65d3dc10"
+    },
+    {
+      "bytes": 1921,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/helper-checks-01/test-final.log",
+      "sha256": "a5eeabde4307a7bb5201218762e8bfc0ccb1d48c71956f4ee622fe38b7c89acf"
+    },
+    {
+      "bytes": 5655,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/helper-checks-01/test_ground_support.failed-fixture.py",
+      "sha256": "6614fe852492460650618cab3bc782f582a21091ba7cfb63b168e93fa2e29387"
+    },
+    {
+      "bytes": 12344,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/initial-plane-proposal.not-executed.py",
+      "sha256": "e8a7e50d9ce284f686aa1c66b5b90eacc1775e09940b4c030ff2281331b30145"
+    },
+    {
+      "bytes": 668,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/run-01/READBACK.json",
+      "sha256": "276d6a548ac8b76c536ea86ea20a377fcce288af0037ff91efe6d2cd981e063f"
+    },
+    {
+      "bytes": 526,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/run-01/RUN_RECEIPT.json",
+      "sha256": "81cf93baa1f7024d9b5329c76dc2286ffa26f48880f0c6cc8179cb9806b1d2dd"
+    },
+    {
+      "bytes": 1173060,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/run-01/heartbeat.jsonl",
+      "sha256": "c5560bb4a5097417b506d4ad5b078a437e91d799c28882c8add33445dcd8d03a"
+    },
+    {
+      "bytes": 5862,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/run-01/result/ACTOR_TRACE.npz",
+      "sha256": "926c2f8324ffd8e03bc151572300f2cc2ef55dfc77e35530beb27de473bf5950"
+    },
+    {
+      "bytes": 650927,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/run-01/result/RESULT.json",
+      "sha256": "48521e87fcc6fc670dde77d6c8cf70b199a231f1015b20bec03e18334f4647af"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/run-01/result/controller.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 274,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/run-01/same-route-plane-arrival.json",
+      "sha256": "40b52b82d3d17e5265aadb3eb89014c092922377f7e3343bab595113cceee4bc"
+    },
+    {
+      "bytes": 132389,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/run-01/same-route-plane-arrival.png",
+      "sha256": "42b29439d5c5234d6c7d43de1ff2568c7e69279edf2e647340a54a68a25dd17c"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/run-01/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1538,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/run-01/stdout.log",
+      "sha256": "69f252f15fdc5c05bcd8ec7240ec3235762fad165ab14e197bd8269ace4c1a27"
+    },
+    {
+      "bytes": 3584,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/run_bounded.py",
+      "sha256": "0683dd1622933e25b3a6c96dbe2e2a9861e07b25d5a7954ca61d4e65bd97424a"
+    },
+    {
+      "bytes": 14542,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/run_ground_pilot.py",
+      "sha256": "0ec5a20679569ac9710520ac46ce11019517bf8afd08d174d6d95ee4fc9e9784"
+    },
+    {
+      "bytes": 2810,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/test_ground_physics.py",
+      "sha256": "70898c38c9af27b719d3e7aca9ce770a92c36a4c63c38869f8d489cb39565e00"
+    },
+    {
+      "bytes": 5655,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/test_ground_support.py",
+      "sha256": "9fd79a25bf033602ee080a9ca6bbc36ab17592183d4242d883ac5d0327bd7549"
+    },
+    {
+      "bytes": 5222,
+      "path": "blind-split-candidate-game-03/ground-follow-v3/test_oriented_ground_container.py",
+      "sha256": "47eb6a52293459f0363dab8db55c177728780a18c68263f4294620289e16cd1e"
+    },
+    {
+      "bytes": 534,
+      "path": "blind-split-candidate-game-03/inputs/ACQUISITION.json",
+      "sha256": "0e4789c9c18a7c5a32670bffe74486dd971b7612c609f3de5d5788e609d47b27"
+    },
+    {
+      "bytes": 1245,
+      "path": "blind-split-candidate-game-03/oriented-fixtures-01/RECEIPT.json",
+      "sha256": "b859a5d9ea69e19c361e772dbde835be884fe4f72421aa3e608cf982ee88bc4e"
+    },
+    {
+      "bytes": 2859,
+      "path": "blind-split-candidate-game-03/oriented-fixtures-01/tests.log",
+      "sha256": "5e3154756f891f8b5967ae02b1f767e828be86a4859d9f2f3e9e6d1f5d343405"
+    },
+    {
+      "bytes": 526,
+      "path": "blind-split-candidate-game-03/pilot-01/RUN_RECEIPT.json",
+      "sha256": "9c8bffed18bc022275ca18569e902d1d704e78766907a9bf013048fcafdca632"
+    },
+    {
+      "bytes": 34873,
+      "path": "blind-split-candidate-game-03/pilot-01/heartbeat.jsonl",
+      "sha256": "3d1d8abda5428ff16ac1178d8e7dc4c8dc7d18341f116037fc4a1b633fac5c22"
+    },
+    {
+      "bytes": 1100,
+      "path": "blind-split-candidate-game-03/pilot-01/result/ACTOR_TRACE.npz",
+      "sha256": "f4617d54462dc8aa11ad441eb6109baa06ae8007d78f863f2cddd2528c7400cc"
+    },
+    {
+      "bytes": 13872,
+      "path": "blind-split-candidate-game-03/pilot-01/result/RESULT.json",
+      "sha256": "095f3193652119c3292de29fd54fa119334340ff7db7720936aec77e81190530"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/pilot-01/result/controller.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/pilot-01/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 525,
+      "path": "blind-split-candidate-game-03/pilot-01/stdout.log",
+      "sha256": "afa9406292ce5f49c9f70ded4c9f38cd0f7977fdec650d75b03e6720812b596a"
+    },
+    {
+      "bytes": 3856,
+      "path": "blind-split-candidate-game-03/plot_saved_episode.py",
+      "sha256": "e0b280a7c8f570b33aa4515ffd19cba5425a391c80b975652644b9eec443794a"
+    },
+    {
+      "bytes": 574,
+      "path": "blind-split-candidate-game-03/selection-01/RUN_RECEIPT.json",
+      "sha256": "3792eb31b482defb133af000cd9d12a9bf8104e4d7f7dcd9968a45fc1f88d8c1"
+    },
+    {
+      "bytes": 4333,
+      "path": "blind-split-candidate-game-03/selection-01/select_first_route.executed.py",
+      "sha256": "b8efa997c9fbced5839ded543d34106bbff3053f225ed6f36265aa34dfadf9ee"
+    },
+    {
+      "bytes": 477,
+      "path": "blind-split-candidate-game-03/selection-01/stderr.log",
+      "sha256": "4a42819114c353432dfdbab075f9cdb83045302328450d166bb4f632a52f4312"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/selection-01/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 537,
+      "path": "blind-split-candidate-game-03/selection-02/RUN_RECEIPT.json",
+      "sha256": "1a61a0c7418eb2baf8da316719736608775f0dd49aa3a5bab91e55dc1522b69d"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/selection-02/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 302,
+      "path": "blind-split-candidate-game-03/selection-02/stdout.log",
+      "sha256": "54b1cd4fa02a95fb49aef7aecfb476b4a70eec5e28156253e6392308f5ad28df"
+    },
+    {
+      "bytes": 7240,
+      "path": "blind-split-candidate-game-03/source/candidate_map.py",
+      "sha256": "5e0132f4711200bca1b7ae90eb27b5666ce0707b1573e815e40e622caff98c09"
+    },
+    {
+      "bytes": 12118,
+      "path": "blind-split-candidate-game-03/source/oriented_container.py",
+      "sha256": "f6c66faa66a30922b48833194814119c555c62b50ee308042483fbad08dfcda8"
+    },
+    {
+      "bytes": 4755,
+      "path": "blind-split-candidate-game-03/source/pilot_controller.py",
+      "sha256": "95aad3f7de031286ba75c08dff45e97b0d2b998d5f9a23334cc194c82a9a69d8"
+    },
+    {
+      "bytes": 11372,
+      "path": "blind-split-candidate-game-03/source/run_pilot.py",
+      "sha256": "8dba7dedf09e74dda80a035c3b7d404ebafeea09e953fcb968d75a8a2396ff64"
+    },
+    {
+      "bytes": 3585,
+      "path": "blind-split-candidate-game-03/source/run_pilot_bounded.py",
+      "sha256": "1f28d225d497dbbe87522ea5c84be5a5a7556bd972800fe24d535fa88533339f"
+    },
+    {
+      "bytes": 3208,
+      "path": "blind-split-candidate-game-03/source/run_selector_bounded.py",
+      "sha256": "f55f5b21e5be279cd9e83eb0216192740335c50cc56c16a600bf14fb3774554a"
+    },
+    {
+      "bytes": 3211,
+      "path": "blind-split-candidate-game-03/source/run_selector_bounded_02.py",
+      "sha256": "e4f0524722e98553d0e2ba56b24b55b4765b0f3ad0810122cda67db864f542a2"
+    },
+    {
+      "bytes": 4333,
+      "path": "blind-split-candidate-game-03/source/select_first_route.py",
+      "sha256": "3851450d969d1d9d9850bed502501ef4101256855d95135e594159520ebd17f9"
+    },
+    {
+      "bytes": 3519,
+      "path": "blind-split-candidate-game-03/source/test_candidate_map.py",
+      "sha256": "5b1dd791d78ce4898067fe99a49fde7e531a79a9368a3a956d83600e04918e37"
+    },
+    {
+      "bytes": 10456,
+      "path": "blind-split-candidate-game-03/source/test_oriented_container.py",
+      "sha256": "8db6c95cc7ef08dbe0521c76b39b03596d373329bb99cf4abc5e30a5cd81fb26"
+    },
+    {
+      "bytes": 2382,
+      "path": "blind-split-candidate-game-03/source/test_pilot_controller.py",
+      "sha256": "e4ee34a5430a94414274eab9d2b8402b1eaf292876ab49d3b835f49d8c3e33d1"
+    },
+    {
+      "bytes": 6911,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/IMPLEMENTATION_NOTES.md",
+      "sha256": "a0a90ecdfac426c94b4e9a6aedf5f8b15d7fa849afd8d1e2393b2c04b4fc48d9"
+    },
+    {
+      "bytes": 7956,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/PROTOCOL.md",
+      "sha256": "07555ca479879c3d30ea8561887007038f5383fa5adf0e70508a2b92c69b788a"
+    },
+    {
+      "bytes": 4089,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/WEST_CLEARANCE_DIAGNOSTIC.json",
+      "sha256": "0564f0dbd6a901af912e0ebaf06decef007254dcf55a5876694a74e5c80413c8"
+    },
+    {
+      "bytes": 4066,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/diagnose_west_clearance.py",
+      "sha256": "460b553eba99b7ac184e50cadca8a2e5190600a0505b3536076e0597598b3b01"
+    },
+    {
+      "bytes": 4856,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/freeze_loop.py",
+      "sha256": "7e27b370f112bd73a2792778182396c7022a14cbfc55425f0970536e55cbe04d"
+    },
+    {
+      "bytes": 4865,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/freeze_loop_02.py",
+      "sha256": "5f75abf099a932024e26017f2d3ba357c0e18b0f51b1d6edbfc22e21afff34e1"
+    },
+    {
+      "bytes": 4865,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/freeze_loop_03.py",
+      "sha256": "acbe0f4a0b0f2eefa2182346988146efc0eb9091c740a765ee11740974cc822a"
+    },
+    {
+      "bytes": 2712,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/loop_driver.py",
+      "sha256": "10eec9ef639590c48094f4f9b6602080f1d9b9e0db7f5156e72d1accaef437a7"
+    },
+    {
+      "bytes": 2715,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/loop_driver_02.py",
+      "sha256": "c6ff29204cba00351be88700a2c14af8d9619c526348cfebb7f526fa6cda7e52"
+    },
+    {
+      "bytes": 2715,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/loop_driver_03.py",
+      "sha256": "6879dd0d941c3f4c801ce5ebdf1c56eb86c03fdd07ba878dc3c2e41e36a37240"
+    },
+    {
+      "bytes": 3615,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/FROZEN.json",
+      "sha256": "c5e073281b12baed333d723910bb57f820ab752235e3e359faf181b9b5f3a016"
+    },
+    {
+      "bytes": 338,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/RACE_NOTE.json",
+      "sha256": "05278ee08e7d8914637794def42ef8556f3e272a95177e832a1ceb12b0bc8b3f"
+    },
+    {
+      "bytes": 1013,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/RUN_RECEIPT.json",
+      "sha256": "e981f94c675f2e5c6a7c2018def6fcb69908dfe230b5d40cb2ab14262f39f11f"
+    },
+    {
+      "bytes": 78471,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/artifacts/PHONE_ONLY_DIAGNOSTIC.png",
+      "sha256": "80af27f4ef0e81896acd5b551fcd8a20f91706b6d2e2e7846cdbba80549569ee"
+    },
+    {
+      "bytes": 313016,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/artifacts/PROPOSAL.json",
+      "sha256": "45f034606811b7896dea48ff2d0ebc68166b70a090400338cd1900f65b38b78a"
+    },
+    {
+      "bytes": 774,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/feasibility.stderr.log",
+      "sha256": "9b669ad8fe7f2977423bfca25538bf28c1daa3bbce265c8fe3ec81de1bfc9de4"
+    },
+    {
+      "bytes": 153,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/feasibility.stdout.log",
+      "sha256": "3d15951421d0a0bf84a00c97fef07bcb6ab3e69f3b9e2fd4928668f6f3cc31f3"
+    },
+    {
+      "bytes": 123,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/fixtures.stderr.log",
+      "sha256": "35ca44b72f2036f11f388272afcc96c8b05cd32d318e135feb1ba51c7a7c65be"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/fixtures.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 451,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/heartbeat.jsonl",
+      "sha256": "9ab39334b14af769f5f140dabd1263fdacb8fc5eb7eabcef652c62cc3b7a4e17"
+    },
+    {
+      "bytes": 5315,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/source-cuts/IMPLEMENTATION_NOTES.md",
+      "sha256": "24d275f8421d1db9ee920a333cfdbe5fa795da6686c30f9bf860d6ca94d0acb2"
+    },
+    {
+      "bytes": 7956,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/source-cuts/PROTOCOL.md",
+      "sha256": "07555ca479879c3d30ea8561887007038f5383fa5adf0e70508a2b92c69b788a"
+    },
+    {
+      "bytes": 4856,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/source-cuts/freeze_loop.py",
+      "sha256": "7e27b370f112bd73a2792778182396c7022a14cbfc55425f0970536e55cbe04d"
+    },
+    {
+      "bytes": 2681,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/source-cuts/loop_driver.py",
+      "sha256": "2a294ec3836d31fdc660648cd59e5cf24f0edbd3f46e3800b8fedfc1ad034800"
+    },
+    {
+      "bytes": 8220,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/source-cuts/run_loop_bounded.py",
+      "sha256": "89b5a98f0a0ac5795415b64a46d446405dbfccb9a1165cbaaf6ef70d2f19c5cf"
+    },
+    {
+      "bytes": 26165,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/source-cuts/table_loop.py",
+      "sha256": "8ff34e28a8b30961db2c287f5e91ddf29497ca8ecc729bf6023afae185493cc6"
+    },
+    {
+      "bytes": 9502,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-01/source-cuts/test_table_loop.py",
+      "sha256": "d07edb347cc8e3fbf14b3311754126563a61ca04879351bb507de0511be9cbc7"
+    },
+    {
+      "bytes": 377,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-02/FAILURE_NOTE.json",
+      "sha256": "583e0994323cd59ba2eb839b06531cb426d93b36fff3cfb4e82d53398ab9bed9"
+    },
+    {
+      "bytes": 3624,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-02/FROZEN.json",
+      "sha256": "7220d39c48ef7dc87b157ad9ca02bb5e92b0ad7a14f52d21f8197db1aade0186"
+    },
+    {
+      "bytes": 892,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-02/RUN_RECEIPT.json",
+      "sha256": "ad4afa74e095a7374b2cb5fa397115e08b016603d84059b98f3e1e184cc71bd6"
+    },
+    {
+      "bytes": 313016,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-02/artifacts/PROPOSAL.json",
+      "sha256": "45f034606811b7896dea48ff2d0ebc68166b70a090400338cd1900f65b38b78a"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-02/feasibility.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 153,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-02/feasibility.stdout.log",
+      "sha256": "3d15951421d0a0bf84a00c97fef07bcb6ab3e69f3b9e2fd4928668f6f3cc31f3"
+    },
+    {
+      "bytes": 123,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-02/fixtures.stderr.log",
+      "sha256": "aae7e3727dd8d7de7ec76244d42ca239e07d6e37378489a36b419a4533d5d222"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-02/fixtures.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 222,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-02/heartbeat.jsonl",
+      "sha256": "b544257cd6640f3d7b6816012ebf65ed44a2aff1d541612514126e6d173b0320"
+    },
+    {
+      "bytes": 3624,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-03/FROZEN.json",
+      "sha256": "83e1268387f7637a8a3f04092880273a4c0e82f9c5ea2333b42b28e41f708246"
+    },
+    {
+      "bytes": 1026,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-03/RUN_RECEIPT.json",
+      "sha256": "0786ce684d4414954951a27523a9bb8c6015db37ccba9f5cfeb33527afc38f13"
+    },
+    {
+      "bytes": 1127,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-03/artifacts/ARTIFACTS.json",
+      "sha256": "127ab0ee16c7aa2311a60dd13d14e25461b7628c58f6ca13c85b89c2d1611c27"
+    },
+    {
+      "bytes": 78471,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-03/artifacts/PHONE_ONLY_DIAGNOSTIC.png",
+      "sha256": "80af27f4ef0e81896acd5b551fcd8a20f91706b6d2e2e7846cdbba80549569ee"
+    },
+    {
+      "bytes": 313016,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-03/artifacts/PROPOSAL.json",
+      "sha256": "45f034606811b7896dea48ff2d0ebc68166b70a090400338cd1900f65b38b78a"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-03/feasibility.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1164,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-03/feasibility.stdout.log",
+      "sha256": "694ff088717016f718055afe174389ec3a0a0327354fecefd879f8dbf3781a81"
+    },
+    {
+      "bytes": 123,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-03/fixtures.stderr.log",
+      "sha256": "3e9ba7017ab56c0cdf70617436529d33ec5d47b7f345c40da7888be2ce2067e5"
+    },
+    {
+      "bytes": 0,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-03/fixtures.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 450,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run-03/heartbeat.jsonl",
+      "sha256": "4a6059dfa61e3920a87cc0d299d493bd554ac285aa9610c576a96533a0f6b226"
+    },
+    {
+      "bytes": 8251,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run_loop_bounded.py",
+      "sha256": "7c171a072b68869ac9ffeeaa64b51747eb2e6d20e234446480733d75b5faef3e"
+    },
+    {
+      "bytes": 8257,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run_loop_bounded_02.py",
+      "sha256": "b41de3fb6cab322d692e23082d310e7b3e2290fae6c7339bd00bd9ac444bda08"
+    },
+    {
+      "bytes": 8716,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/run_loop_bounded_03.py",
+      "sha256": "8de58b949ab5da24c96d188b25dda01154fc74477d7582f299e1ff15df565b41"
+    },
+    {
+      "bytes": 26165,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/table_loop.py",
+      "sha256": "8ff34e28a8b30961db2c287f5e91ddf29497ca8ecc729bf6023afae185493cc6"
+    },
+    {
+      "bytes": 9502,
+      "path": "blind-split-candidate-game-03/table-loop-proposal/test_table_loop.py",
+      "sha256": "d07edb347cc8e3fbf14b3311754126563a61ca04879351bb507de0511be9cbc7"
+    },
+    {
+      "bytes": 7251,
+      "path": "blind-split-candidate-game-03/upstream/VARIANT_TESTS.md",
+      "sha256": "44f63cd296d9a59b5c2e295897d67c8575534a089259ce1778d15782c9ce8837"
+    },
+    {
+      "bytes": 3715,
+      "path": "blind-split-candidate-game-03/upstream/derived/pipeline-outputs/SHA256SUMS.txt",
+      "sha256": "c837f7a1aad796629762e9a3669b720022e7eab97674aa274688f303c853f972"
+    },
+    {
+      "bytes": 3453,
+      "path": "blind-split-candidate-game-03/upstream/derived/pipeline-outputs/coffee_5cm_occthres_split.log",
+      "sha256": "e86d8226503a9cef814366cbdc530258a4a84cd0c3ae4fb2cc74c8fc1f3ab9c4"
+    },
+    {
+      "bytes": 3439,
+      "path": "blind-split-candidate-game-03/upstream/derived/pipeline-outputs/koivu_5cm_occthres_split.log",
+      "sha256": "622bb05891abc3ca692d45490d11f96de3551c49765139057d936ff5d5392ba1"
+    },
+    {
+      "bytes": 5162,
+      "path": "blind-split-candidate-game-03/upstream/derived/pipeline-outputs/koivu_5cm_v2_PIPELINE2_RECEIPT.json",
+      "sha256": "2f3dadee5f441e3b9c5667ba23e6d05341eef28bf949f006a6d9bc6fc3a33376"
+    },
+    {
+      "bytes": 2744,
+      "path": "blind-split-candidate-game-03/upstream/scripts/occthres.py",
+      "sha256": "37441fcb180efba2e67b007c1140d268c45e136c863ddbcf4bef19d26b345095"
+    },
+    {
+      "bytes": 9609,
+      "path": "blind-split-candidate-game-03/upstream/scripts/pipeline2.py",
+      "sha256": "b6077b4ac1a6db6519491ea7ab51c49b7b3e508fb698ad728f6bb56ded48f4ce"
+    },
+    {
+      "bytes": 2790,
+      "path": "blind-split-candidate-game-03/upstream/scripts/routes.py",
+      "sha256": "20723183941e16968eaacfd227972448385255dc5f3ff86bc39c7de8edb1f2d8"
+    },
+    {
+      "bytes": 3954,
+      "path": "blind-split-candidate-game-03/upstream/scripts/routes_rect.py",
+      "sha256": "c96f1cb4e87e1f283645f4dbe7e8ee76f51b1d701ddf6a0965be4e1a1bd5c980"
+    },
+    {
+      "bytes": 3309,
+      "path": "validate_packet.py",
+      "sha256": "d8d79835375835041547b43d9554ba3ece5fa32fdd533e18f9399482555f1b43"
+    }
+  ],
+  "payloadBytes": 4579087,
+  "payloadFiles": 196,
+  "scope": "fixed provided-map selector/pilot1/v2/v3 and terminal phone-only loop feasibility history; no active comparator"
+}

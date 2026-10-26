@@ -1,0 +1,18 @@
+{
+  "scope": "tiny authored helper fixtures only; no recorded geometry or episode",
+  "tests": 14,
+  "passed": 14,
+  "reportedTestSeconds": 0.241,
+  "sourceSHA256": "cf4745cae6ac3392346cc2e43cf507f42b4513af349b016ce466cdc04d04c06b",
+  "testsSHA256": "9fd79a25bf033602ee080a9ca6bbc36ab17592183d4242d883ac5d0327bd7549",
+  "logSHA256": "a5eeabde4307a7bb5201218762e8bfc0ccb1d48c71956f4ee622fe38b7c89acf",
+  "priorFixtureFailure": {
+    "tests": 14,
+    "passed": 13,
+    "failed": 1,
+    "cause": "authored curved floor reached 5.48 degrees, outside the declared 5 degree training limit; asserted all 1800 faces but 1650 retained",
+    "fix": "curvature coefficient .04 to .03, keeping the fixture within the declared slope; helper source unchanged by this fixture correction",
+    "preservedFixtureSHA256": "6614fe852492460650618cab3bc782f582a21091ba7cfb63b168e93fa2e29387"
+  },
+  "physicalAuthority": false
+}

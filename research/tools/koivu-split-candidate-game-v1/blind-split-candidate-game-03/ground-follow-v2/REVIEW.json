@@ -1,0 +1,48 @@
+{
+  "scope": "Narrow source/API review of the isolated ground-contact scorer and same-route two-half-segment simulation runner; not an episode result or physical-safety approval",
+  "reviewDateUTC": "2026-10-26",
+  "reviewerTask": "/root/implement_closed_loop_navigation/review_game_collision",
+  "outsideFrozenManifest": true,
+  "sourcePins": {
+    "oriented_ground_container.py": "728860fa18f762f90b13f581e4b3cae474f4d8bf4223854252778802e405ea89",
+    "test_oriented_ground_container.py": "faf152deff73ecacc1ab03ca042954d9c533f69a9b193654175f4eb96a1d050d",
+    "run_ground_pilot.py": "679851a99466803d8390b38433a165ec409d52a4df266ff7e3651855370793de",
+    "ground_support.py": "095906c4cda9972e46751b511f46d41e2e541e2ebc44ebbb7da6dbe8240acfaf",
+    "run_bounded.py": "0683dd1622933e25b3a6c96dbe2e2a9861e07b25d5a7954ca61d4e65bd97424a"
+  },
+  "preservedDependencies": {
+    "../source/oriented_container.py": "f6c66faa66a30922b48833194814119c555c62b50ee308042483fbad08dfcda8",
+    "../../blind-opus-reference-scoring-audit-02/source/reference_band_box.py": "18fdf528f5eb4c017ed0d94476babed57f94807323798984064679d419831ef1"
+  },
+  "reviewedProperties": [
+    "Only original triangle IDs confirmed by the frozen seeded ground component are exempted; exact surface owner, mesh revision and model-to-reference transform are checked.",
+    "Height alone does not exempt triangles. Detached 1 cm tops, risers, walls and head-height triangles remain non-ground obstacles.",
+    "The prior continuous oriented actual-body and separate horizontal-margin enclosures are inherited without changing their dimensions or the explicit 2 mm ordinary-floor exclusion.",
+    "Ground counts include actual triangle intersections or contained vertices, not broadphase candidates. The loop completes after its first non-ground contact so ground/non-ground face-report counts are complete within the query cap.",
+    "The new runner retains the selected route and actor XZ/yaw. Connected-support height updates define two bounded physical half-segments; their combined 3D length is checked before motion is committed.",
+    "Missing or disconnected support terminates uncertainty. Non-ground contact terminates failure. Reference geometry does not select the route, correct horizontal pose or enter controller packets.",
+    "Arrival still requires actual goal proximity, delivered-pose stop, drained motion commands and nonzero actual distance. No standstill success is introduced."
+  ],
+  "fixtureEvidence": {
+    "receipt": "combined-checks-01/RECEIPT.json",
+    "receiptSHA256": "82d4123a145c3050da01877229daa9ccf72faeb2b56176363958d09ecf86e5a0",
+    "executor": "parent implementation worker",
+    "combinedFixturesReportedPassed": 26,
+    "receiptExitCode": 0,
+    "wallSeconds": 0.9696040520066163,
+    "peakRSSBytes": 145297408,
+    "reviewerAuthoredFocusedScorerFixtures": 9,
+    "reviewerExecutedCombinedSuite": false
+  },
+  "limitations": [
+    "Ground membership is an experimental simulation-world contact model, not semantic or measured ground truth.",
+    "Nine first-hit probes and midpoint/end support checks do not establish continuous support or absence of holes.",
+    "Conservative swept OBBs can overcount contact. Complete containment inside an unlabeled closed solid is not classified by surface intersections.",
+    "Ground triangle reports can repeat the same face across body/margin envelopes and half-segments; they are not unique physical events.",
+    "This review does not independently establish the candidate phone map's clearance, resolve admitted unknown flags, verify a successful journey or establish live iPhone safety."
+  ],
+  "remainingConcreteSourceBlockerFound": false,
+  "recordedReferenceLoadedByReviewer": false,
+  "dataEpisodesExecutedByReviewer": 0,
+  "physicalAuthority": false
+}

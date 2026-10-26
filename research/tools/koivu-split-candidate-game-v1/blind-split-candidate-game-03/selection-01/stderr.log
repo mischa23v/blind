@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "$WORKSPACE/blind-split-candidate-game-03/source/select_first_route.py", line 48, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "$WORKSPACE/blind-split-candidate-game-03/source/select_first_route.py", line 43, in main
+    resource.setrlimit(resource.RLIMIT_CPU,(60,65));start=time.monotonic()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not allowed to raise maximum limit

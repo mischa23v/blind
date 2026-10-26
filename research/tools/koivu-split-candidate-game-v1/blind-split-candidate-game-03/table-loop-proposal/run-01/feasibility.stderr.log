@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "$WORKSPACE/blind-split-candidate-game-03/table-loop-proposal/loop_driver.py", line 52, in <module>
+    
+  File "$WORKSPACE/blind-split-candidate-game-03/table-loop-proposal/loop_driver.py", line 39, in main
+    plot = table_loop.write_phone_only_diagnostic(result, model, out/"PHONE_ONLY_DIAGNOSTIC.png")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "$WORKSPACE/blind-split-candidate-game-03/table-loop-proposal/freeze_loop.py", line 66, in verify_manifest
+    if pin(WS/row["path"]) != row: raise ValueError("source/input changed: "+row["path"])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: source/input changed: blind-split-candidate-game-03/table-loop-proposal/loop_driver.py

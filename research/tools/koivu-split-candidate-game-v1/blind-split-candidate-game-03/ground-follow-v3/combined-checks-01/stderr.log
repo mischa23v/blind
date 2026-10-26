@@ -1,0 +1,35 @@
+test_detached_flat_top_cannot_set_height (test_ground_physics.Tests.test_detached_flat_top_cannot_set_height) ... ok
+test_drop_not_hidden_by_plane (test_ground_physics.Tests.test_drop_not_hidden_by_plane) ... ok
+test_midpoint_hole_prevents_endpoint_repair (test_ground_physics.Tests.test_midpoint_hole_prevents_endpoint_repair) ... ok
+test_missing_support_is_not_filled_by_infinite_plane (test_ground_physics.Tests.test_missing_support_is_not_filled_by_infinite_plane) ... ok
+test_one_plane_sets_height_without_horizontal_correction (test_ground_physics.Tests.test_one_plane_sets_height_without_horizontal_correction) ... ok
+test_planar_motion_cannot_exceed_3d_cap (test_ground_physics.Tests.test_planar_motion_cannot_exceed_3d_cap) ... ok
+test_raw_ground_noise_does_not_move_planar_body_up_down (test_ground_physics.Tests.test_raw_ground_noise_does_not_move_planar_body_up_down) ... ok
+test_actual_vtk_patch_transform_and_owner_retirement (test_ground_support.BoundFixtureTests.test_actual_vtk_patch_transform_and_owner_retirement) ... ok
+test_all_nine_seeds_required (test_ground_support.GroundTests.test_all_nine_seeds_required) ... ok
+test_detached_one_cm_toy_top_not_ground (test_ground_support.GroundTests.test_detached_one_cm_toy_top_not_ground) ... ok
+test_drop_and_disconnected_support_seed_fail (test_ground_support.GroundTests.test_drop_and_disconnected_support_seed_fail) ... ok
+test_flat_shared_edge_and_reverse_winding (test_ground_support.GroundTests.test_flat_shared_edge_and_reverse_winding) ... ok
+test_one_cm_riser_and_top_remain_non_ground (test_ground_support.GroundTests.test_one_cm_riser_and_top_remain_non_ground) ... ok
+test_original_ids_preserved_and_bounds_do_not_admit_by_height (test_ground_support.GroundTests.test_original_ids_preserved_and_bounds_do_not_admit_by_height) ... ok
+test_point_only_connection_does_not_join (test_ground_support.GroundTests.test_point_only_connection_does_not_join) ... ok
+test_smooth_three_degree_ramp_is_ground (test_ground_support.GroundTests.test_smooth_three_degree_ramp_is_ground) ... ok
+test_steep_slope_seed_unknown (test_ground_support.GroundTests.test_steep_slope_seed_unknown) ... ok
+test_global_fit_is_frozen_not_recomputed_by_height_queries (test_ground_support.PatchTests.test_global_fit_is_frozen_not_recomputed_by_height_queries) ... ok
+test_noisy_microfacets_recovered_without_global_band (test_ground_support.PatchTests.test_noisy_microfacets_recovered_without_global_band) ... ok
+test_one_cm_bump_not_recovered (test_ground_support.PatchTests.test_one_cm_bump_not_recovered) ... ok
+test_smooth_curvature_not_rejected_by_global_2mm_band (test_ground_support.PatchTests.test_smooth_curvature_not_rejected_by_global_2mm_band) ... ok
+test_cannot_reuse_ground_face_ids_with_other_mesh_or_transform (test_oriented_ground_container.GroundedCollisionTests.test_cannot_reuse_ground_face_ids_with_other_mesh_or_transform) ... ok
+test_detached_flat_one_cm_top_remains_contact (test_oriented_ground_container.GroundedCollisionTests.test_detached_flat_one_cm_top_remains_contact) ... ok
+test_ground_broadphase_without_intersection_is_not_counted (test_oriented_ground_container.GroundedCollisionTests.test_ground_broadphase_without_intersection_is_not_counted) ... ok
+test_ground_counts_finish_after_non_ground_contact (test_oriented_ground_container.GroundedCollisionTests.test_ground_counts_finish_after_non_ground_contact) ... ok
+test_ground_only_overlap_is_excluded_and_counted (test_oriented_ground_container.GroundedCollisionTests.test_ground_only_overlap_is_excluded_and_counted) ... ok
+test_inherited_ground_probes_return_heights_not_acceptance (test_oriented_ground_container.GroundedCollisionTests.test_inherited_ground_probes_return_heights_not_acceptance) ... ok
+test_mutation_retires_ground_exemption_and_support_probes (test_oriented_ground_container.GroundedCollisionTests.test_mutation_retires_ground_exemption_and_support_probes) ... ok
+test_one_cm_riser_remains_contact (test_oriented_ground_container.GroundedCollisionTests.test_one_cm_riser_remains_contact) ... ok
+test_wall_and_head_are_unchanged_obstacles (test_oriented_ground_container.GroundedCollisionTests.test_wall_and_head_are_unchanged_obstacles) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 0.262s
+
+OK
