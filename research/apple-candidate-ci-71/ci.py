@@ -67,7 +67,7 @@ def main():
  for sdk,target,stem in [('macosx','arm64-apple-macosx14.0','macos'),('iphonesimulator','arm64-apple-ios17.0-simulator','simulator')]:
   sdkpath=output(['xcrun','--sdk',sdk,'--show-sdk-path']);dest=out/stem;dest.mkdir()
   lib=dest/'libblind_detour.dylib'
-  native=['xcrun','--sdk',sdk,'clang++','-target',target,'-isysroot',sdkpath,'-std=c++11','-O1','-dynamiclib','-fPIC','-fno-rtti','-fno-exceptions',*includes,*map(str,sources),str(H/'native/clearance_adapter.cpp'),'-Wl,-install_name,@rpath/libblind_detour.dylib','-o',str(lib)]
+  native=['xcrun','--sdk',sdk,'clang++','-target',target,'-isysroot',sdkpath,'-std=c++11','-O1','-ffp-contract=off','-dynamiclib','-fPIC','-fno-rtti','-fno-exceptions',*includes,*map(str,sources),str(H/'native/clearance_adapter.cpp'),'-Wl,-install_name,@rpath/libblind_detour.dylib','-o',str(lib)]
   receipts.append(run(native,stem+'-native',out))
   cmd=['xcrun','--sdk',sdk,'swiftc','-target',target,'-sdk',sdkpath,'-j','1','-module-cache-path',str(dest/'cache'),'-I',str(H/'cmodule'),'-L',str(dest),'-lblind_detour','-Xlinker','-rpath','-Xlinker','@executable_path',*swift,'-o',str(dest/'replay')]
   receipts.append(run(cmd,stem+'-swift',out))

@@ -1,0 +1,573 @@
+{
+  "scope": "Numerical diagnosis only, not collision validation or changed acceptance",
+  "physicalAuthority": false,
+  "appleRun": 40415772372,
+  "appleCommit": "3ab6fe02dd0231bc96c8678859f612b53220c7a9",
+  "boundsFloat32": [
+    -5.069046497344971,
+    -0.04929184913635254,
+    -5.471590518951416
+  ],
+  "cellSizeFloat32": 0.02500000037252903,
+  "formulaSource": "DetourNavMeshBuilder.cpp:494,496",
+  "testedWaypointCoordinates": 42,
+  "allAppleCoordinatesEqualFused": true,
+  "coordinatesDifferingFromSeparate": 19,
+  "routeLengths": [
+    {
+      "routeSet": "actualOriginal",
+      "pair": 0,
+      "actualPoints": 2,
+      "expectedPoints": 2,
+      "actualLength": 3.0843424445530516,
+      "expectedLength": 3.0843424445382186,
+      "lengthDifference": 1.483302369820194e-11
+    },
+    {
+      "routeSet": "actualOriginal",
+      "pair": 1,
+      "actualPoints": 14,
+      "expectedPoints": 12,
+      "actualLength": 4.412209539994829,
+      "expectedLength": 4.41220956646854,
+      "lengthDifference": -2.6473711223218288e-08
+    },
+    {
+      "routeSet": "actualOriginal",
+      "pair": 2,
+      "actualPoints": 2,
+      "expectedPoints": 2,
+      "actualLength": 2.256702875304723,
+      "expectedLength": 2.2567028752844505,
+      "lengthDifference": 2.027267242965536e-11
+    },
+    {
+      "routeSet": "actualOriginal",
+      "pair": 3,
+      "actualPoints": 2,
+      "expectedPoints": 2,
+      "actualLength": 3.67590748186037,
+      "expectedLength": 3.67590748186037,
+      "lengthDifference": 0.0
+    },
+    {
+      "routeSet": "actualOriginal",
+      "pair": 4,
+      "actualPoints": 11,
+      "expectedPoints": 10,
+      "actualLength": 6.379024699649916,
+      "expectedLength": 6.379024681787143,
+      "lengthDifference": 1.786277259441249e-08
+    },
+    {
+      "routeSet": "actualExcluded",
+      "pair": 0,
+      "actualPoints": 2,
+      "expectedPoints": 2,
+      "actualLength": 3.0843424445530516,
+      "expectedLength": 3.0843424445382186,
+      "lengthDifference": 1.483302369820194e-11
+    },
+    {
+      "routeSet": "actualExcluded",
+      "pair": 1,
+      "actualPoints": 14,
+      "expectedPoints": 12,
+      "actualLength": 4.412209539994829,
+      "expectedLength": 4.41220956646854,
+      "lengthDifference": -2.6473711223218288e-08
+    },
+    {
+      "routeSet": "actualExcluded",
+      "pair": 2,
+      "actualPoints": 2,
+      "expectedPoints": 2,
+      "actualLength": 2.256702875304723,
+      "expectedLength": 2.2567028752844505,
+      "lengthDifference": 2.027267242965536e-11
+    },
+    {
+      "routeSet": "actualExcluded",
+      "pair": 3,
+      "actualPoints": 2,
+      "expectedPoints": 2,
+      "actualLength": 3.67590748186037,
+      "expectedLength": 3.67590748186037,
+      "lengthDifference": 0.0
+    },
+    {
+      "routeSet": "actualExcluded",
+      "pair": 4,
+      "actualPoints": 10,
+      "expectedPoints": 10,
+      "actualLength": 6.379024699649907,
+      "expectedLength": 6.379024681787143,
+      "lengthDifference": 1.7862763712628293e-08
+    }
+  ],
+  "coordinateEvidence": [
+    {
+      "pair": 1,
+      "waypoint": 1,
+      "axis": 0,
+      "integerGridCoordinate": 219,
+      "apple": 0.405953586101532,
+      "separate": 0.40595340728759766,
+      "fused": 0.405953586101532,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 1,
+      "axis": 2,
+      "integerGridCoordinate": 385,
+      "apple": 4.153409481048584,
+      "separate": 4.153409481048584,
+      "fused": 4.153409481048584,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 1,
+      "waypoint": 2,
+      "axis": 0,
+      "integerGridCoordinate": 225,
+      "apple": 0.5559535622596741,
+      "separate": 0.5559535026550293,
+      "fused": 0.5559535622596741,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 2,
+      "axis": 2,
+      "integerGridCoordinate": 385,
+      "apple": 4.153409481048584,
+      "separate": 4.153409481048584,
+      "fused": 4.153409481048584,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 1,
+      "waypoint": 3,
+      "axis": 0,
+      "integerGridCoordinate": 228,
+      "apple": 0.6309536099433899,
+      "separate": 0.6309537887573242,
+      "fused": 0.6309536099433899,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 3,
+      "axis": 2,
+      "integerGridCoordinate": 384,
+      "apple": 4.128409385681152,
+      "separate": 4.1284098625183105,
+      "fused": 4.128409385681152,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 4,
+      "axis": 0,
+      "integerGridCoordinate": 230,
+      "apple": 0.6809535622596741,
+      "separate": 0.6809535026550293,
+      "fused": 0.6809535622596741,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 4,
+      "axis": 2,
+      "integerGridCoordinate": 383,
+      "apple": 4.103409767150879,
+      "separate": 4.103409290313721,
+      "fused": 4.103409767150879,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 5,
+      "axis": 0,
+      "integerGridCoordinate": 232,
+      "apple": 0.730953574180603,
+      "separate": 0.7309536933898926,
+      "fused": 0.730953574180603,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 5,
+      "axis": 2,
+      "integerGridCoordinate": 382,
+      "apple": 4.078409671783447,
+      "separate": 4.078409671783447,
+      "fused": 4.078409671783447,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 1,
+      "waypoint": 6,
+      "axis": 0,
+      "integerGridCoordinate": 234,
+      "apple": 0.780953586101532,
+      "separate": 0.7809534072875977,
+      "fused": 0.780953586101532,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 6,
+      "axis": 2,
+      "integerGridCoordinate": 381,
+      "apple": 4.053409576416016,
+      "separate": 4.053410053253174,
+      "fused": 4.053409576416016,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 7,
+      "axis": 0,
+      "integerGridCoordinate": 236,
+      "apple": 0.8309535980224609,
+      "separate": 0.8309535980224609,
+      "fused": 0.8309535980224609,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 1,
+      "waypoint": 7,
+      "axis": 2,
+      "integerGridCoordinate": 380,
+      "apple": 4.028409481048584,
+      "separate": 4.028409481048584,
+      "fused": 4.028409481048584,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 1,
+      "waypoint": 8,
+      "axis": 0,
+      "integerGridCoordinate": 239,
+      "apple": 0.905953586101532,
+      "separate": 0.9059534072875977,
+      "fused": 0.905953586101532,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 8,
+      "axis": 2,
+      "integerGridCoordinate": 377,
+      "apple": 3.9534096717834473,
+      "separate": 3.9534096717834473,
+      "fused": 3.9534096717834473,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 1,
+      "waypoint": 9,
+      "axis": 0,
+      "integerGridCoordinate": 241,
+      "apple": 0.9559535980224609,
+      "separate": 0.9559535980224609,
+      "fused": 0.9559535980224609,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 1,
+      "waypoint": 9,
+      "axis": 2,
+      "integerGridCoordinate": 375,
+      "apple": 3.903409719467163,
+      "separate": 3.903409481048584,
+      "fused": 3.903409719467163,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 10,
+      "axis": 0,
+      "integerGridCoordinate": 243,
+      "apple": 1.0059535503387451,
+      "separate": 1.0059537887573242,
+      "fused": 1.0059535503387451,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 10,
+      "axis": 2,
+      "integerGridCoordinate": 371,
+      "apple": 3.8034095764160156,
+      "separate": 3.803410053253174,
+      "fused": 3.8034095764160156,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 11,
+      "axis": 0,
+      "integerGridCoordinate": 244,
+      "apple": 1.0309536457061768,
+      "separate": 1.0309534072875977,
+      "fused": 1.0309536457061768,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 11,
+      "axis": 2,
+      "integerGridCoordinate": 368,
+      "apple": 3.7284095287323,
+      "separate": 3.7284092903137207,
+      "fused": 3.7284095287323,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 12,
+      "axis": 0,
+      "integerGridCoordinate": 244,
+      "apple": 1.0309536457061768,
+      "separate": 1.0309534072875977,
+      "fused": 1.0309536457061768,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 1,
+      "waypoint": 12,
+      "axis": 2,
+      "integerGridCoordinate": 363,
+      "apple": 3.6034095287323,
+      "separate": 3.6034092903137207,
+      "fused": 3.6034095287323,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 4,
+      "waypoint": 1,
+      "axis": 0,
+      "integerGridCoordinate": 95,
+      "apple": -2.6940464973449707,
+      "separate": -2.6940464973449707,
+      "fused": -2.6940464973449707,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 4,
+      "waypoint": 1,
+      "axis": 2,
+      "integerGridCoordinate": 76,
+      "apple": -3.5715904235839844,
+      "separate": -3.5715904235839844,
+      "fused": -3.5715904235839844,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 4,
+      "waypoint": 2,
+      "axis": 0,
+      "integerGridCoordinate": 92,
+      "apple": -2.7690465450286865,
+      "separate": -2.7690465450286865,
+      "fused": -2.7690465450286865,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 4,
+      "waypoint": 2,
+      "axis": 2,
+      "integerGridCoordinate": 77,
+      "apple": -3.546590566635132,
+      "separate": -3.5465903282165527,
+      "fused": -3.546590566635132,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 4,
+      "waypoint": 3,
+      "axis": 0,
+      "integerGridCoordinate": 90,
+      "apple": -2.8190464973449707,
+      "separate": -2.8190464973449707,
+      "fused": -2.8190464973449707,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 4,
+      "waypoint": 3,
+      "axis": 2,
+      "integerGridCoordinate": 78,
+      "apple": -3.5215904712677,
+      "separate": -3.5215904712677,
+      "fused": -3.5215904712677,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 4,
+      "waypoint": 4,
+      "axis": 0,
+      "integerGridCoordinate": 88,
+      "apple": -2.869046449661255,
+      "separate": -2.869046449661255,
+      "fused": -2.869046449661255,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 4,
+      "waypoint": 4,
+      "axis": 2,
+      "integerGridCoordinate": 79,
+      "apple": -3.4965903759002686,
+      "separate": -3.4965906143188477,
+      "fused": -3.4965903759002686,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": false
+    },
+    {
+      "pair": 4,
+      "waypoint": 5,
+      "axis": 0,
+      "integerGridCoordinate": 85,
+      "apple": -2.9440464973449707,
+      "separate": -2.9440464973449707,
+      "fused": -2.9440464973449707,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 4,
+      "waypoint": 5,
+      "axis": 2,
+      "integerGridCoordinate": 81,
+      "apple": -3.4465904235839844,
+      "separate": -3.4465904235839844,
+      "fused": -3.4465904235839844,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 4,
+      "waypoint": 6,
+      "axis": 0,
+      "integerGridCoordinate": 82,
+      "apple": -3.0190465450286865,
+      "separate": -3.0190465450286865,
+      "fused": -3.0190465450286865,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 4,
+      "waypoint": 6,
+      "axis": 2,
+      "integerGridCoordinate": 84,
+      "apple": -3.3715903759002686,
+      "separate": -3.3715903759002686,
+      "fused": -3.3715903759002686,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 4,
+      "waypoint": 7,
+      "axis": 0,
+      "integerGridCoordinate": 61,
+      "apple": -3.544046401977539,
+      "separate": -3.544046401977539,
+      "fused": -3.544046401977539,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 4,
+      "waypoint": 7,
+      "axis": 2,
+      "integerGridCoordinate": 119,
+      "apple": -2.4965903759002686,
+      "separate": -2.4965903759002686,
+      "fused": -2.4965903759002686,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 4,
+      "waypoint": 8,
+      "axis": 0,
+      "integerGridCoordinate": 59,
+      "apple": -3.5940465927124023,
+      "separate": -3.5940465927124023,
+      "fused": -3.5940465927124023,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 4,
+      "waypoint": 8,
+      "axis": 2,
+      "integerGridCoordinate": 123,
+      "apple": -2.3965904712677,
+      "separate": -2.3965904712677,
+      "fused": -2.3965904712677,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 4,
+      "waypoint": 9,
+      "axis": 0,
+      "integerGridCoordinate": 59,
+      "apple": -3.5940465927124023,
+      "separate": -3.5940465927124023,
+      "fused": -3.5940465927124023,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    },
+    {
+      "pair": 4,
+      "waypoint": 9,
+      "axis": 2,
+      "integerGridCoordinate": 126,
+      "apple": -2.3215904235839844,
+      "separate": -2.3215904235839844,
+      "fused": -2.3215904235839844,
+      "appleEqualsFused": true,
+      "appleEqualsSeparate": true
+    }
+  ],
+  "conclusion": "Strong evidence of contracted multiply-add differences; full causality requires controlled compiler variant. Existing strict parity remains failed."
+}

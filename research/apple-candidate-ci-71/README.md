@@ -122,3 +122,24 @@ is **not** byte-identical to70; original source/pins/workflow are preserved in
 the original revision, not a successful Apple replay. New local validation
 passes all55checks; an intentionally altered expected route still causes a
 nonzero exit while preserving all actual/expected diagnostic route sets.
+
+### Diagnostic retry and explicit contraction variant
+Run40415772372 at `3ab6fe02dd0231bc96c8678859f612b53220c7a9` failed the
+unchanged cross-platform comparison again. Its SHA-verified diagnostic artifact
+is preserved in `diagnostic-apple-run/`. All five same-build original/tile
+comparisons had exactly zero coordinate difference and636exclusion spans.
+Baseline pairs1/4 had14/11Apple waypoints versus12/10Linux; excludedpair1
+also differed. Lengths differ by less than3e-8m, but this is not clearance proof.
+
+`analyze_apple_routes.py` reproduces42intermediate X/Z coordinate calculations:
+all match fused multiply-add exactly;19differ from separately rounded multiply
+and add. This supports, but does not fully prove, compiler contraction as cause.
+The originalLinux66 build used g++-O1; Apple uses clang++-O1.
+
+The next diagnostic changes only native build flag `-ffp-contract=off` in ci.py,
+not source, geometry, comparison tolerance or path acceptance. A separately
+built LinuxClang21 library with this flag passes all55checks against original
+Linux references; dynamic loader evidence confirms the new library was used.
+Original66 library is untouched. Apple with this explicit flag remains untested
+until a new CI run; do not call the mismatch fixed yet. Prior ci.py/pins are in
+`attempt-2/`. This is still a candidate-only SDK proof, not a safety trial.
