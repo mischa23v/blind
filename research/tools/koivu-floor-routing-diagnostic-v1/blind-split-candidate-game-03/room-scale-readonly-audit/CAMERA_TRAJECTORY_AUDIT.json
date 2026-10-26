@@ -1,0 +1,49 @@
+{
+  "cameraFrames": 294,
+  "cameraCentreWalk": 255,
+  "cameraCentreBlocked": 39,
+  "cameraCentreOutside": 0,
+  "cameraCentreFlagCountsOverlapping": {
+    "support": 281,
+    "deepBelow": 3,
+    "nearDip": 1,
+    "low1": 20,
+    "lowUnresolvedFlag": 178,
+    "highObstacle": 2,
+    "highUnknown": 0,
+    "walk": 255
+  },
+  "consecutiveStraightChords": 293,
+  "chordsTouchingBlockedCells": 71,
+  "totalChordLengthMetres": 52.92855003795983,
+  "blockedChordLengthMetres": 5.689241470220198,
+  "proxySourceXY": [
+    -1.2250000000000005,
+    -0.07500000000000018
+  ],
+  "openAngularSweepTurns": 1.7568733468878948,
+  "endpointGapMetres": 3.6166986390189884,
+  "artificiallyClosedPolylineProxyWinding": 2.0,
+  "targetCellsEnclosedByArtificiallyClosedPolyline": 4571,
+  "targetCells": 4667,
+  "caveats": [
+    "camera centre is not body centre; arm reach, camera height and occlusion matter",
+    "straight chords between consecutive frames are not recorded continuous trajectory",
+    "winding closes final pose to first artificially; no timestamp inferred",
+    "target component/proxy not a verified semantic table"
+  ],
+  "nearReturn": {
+    "frameIndex1Based": 214,
+    "distanceToFirstCameraMetres": 0.3396452767777999,
+    "angularSweepTurns": 1.003913215826133
+  },
+  "westernPassage": {
+    "roi": "X<-3m and 1m<Y<3.5m",
+    "cameraCentres": 71,
+    "blocked": 33,
+    "low1Blocked": 20,
+    "missingSupportBlocked": 13,
+    "highObstacleBlocked": 0,
+    "highUnknownBlocked": 0
+  }
+}

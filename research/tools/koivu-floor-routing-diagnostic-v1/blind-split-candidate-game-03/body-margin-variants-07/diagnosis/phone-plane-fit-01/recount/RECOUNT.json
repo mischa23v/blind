@@ -1,0 +1,59 @@
+{
+  "confirmed": true,
+  "scope": "Saved-array association and arithmetic recount only; no depth reread, native fit, reference or navigation",
+  "frameCount": 294,
+  "validFrames": 236,
+  "invalidFrames": 58,
+  "westernCells": 57,
+  "rawEndpointCount": 8567,
+  "exactAssociationFields": [
+    "frame",
+    "i",
+    "j",
+    "row",
+    "col",
+    "depthMM",
+    "range",
+    "globalHeight == raw.level[:,2]"
+  ],
+  "perFrameWesternSummariesReconciled": true,
+  "perCellSummariesAndOriginalFlagsReconciled": true,
+  "savedPlaneResidualEquationReconciled": true,
+  "maximumResidualArithmeticDifferenceMetres": 0.0,
+  "maximumFittedHeightArithmeticDifferenceMetres": 0.0,
+  "numericComparisonAbsoluteTolerance": 1e-12,
+  "sourceInputHashesVerifiedBeforeAfter": true,
+  "pins": {
+    "result": {
+      "path": "$WORKSPACE/blind-split-candidate-game-03/body-margin-variants-07/diagnosis/phone-plane-fit-01/run-01/result/RESULT.json",
+      "sha256": "1c7770da82b960cfeac70d2da0efc1f5d7d35380a96752b239577e401aa85d63"
+    },
+    "residuals": {
+      "path": "$WORKSPACE/blind-split-candidate-game-03/body-margin-variants-07/diagnosis/phone-plane-fit-01/run-01/result/WESTERN_ENDPOINT_PLANE_RESIDUALS.npz",
+      "sha256": "7cc4830a7b2b83ecb8cf9032040a8f7e5aa92b9d33e47a80a3c1fa573f58e573"
+    },
+    "rawEndpoints": {
+      "path": "$WORKSPACE/blind-split-candidate-game-03/body-margin-variants-07/diagnosis/west-depth-run-01/result/SELECTED_ENDPOINTS.npz",
+      "sha256": "d78d922801629f776728fb3a8ada737f8f38c45bec56b2b5e3cdb03919839b02"
+    },
+    "rawResult": {
+      "path": "$WORKSPACE/blind-split-candidate-game-03/body-margin-variants-07/diagnosis/west-depth-run-01/result/RESULT.json",
+      "sha256": "9e63fde586c25b5b7b8cea57f1d3f41030e9447fbe823f1397e6503095756056"
+    },
+    "fitFreeze": {
+      "path": "$WORKSPACE/blind-split-candidate-game-03/body-margin-variants-07/diagnosis/phone-plane-fit-01/FROZEN.json",
+      "sha256": "365b8763b82de702f76e8b8ee7a606abc6a42bf092196ba6868fdac56b56b26e"
+    },
+    "fitRunReceipt": {
+      "path": "$WORKSPACE/blind-split-candidate-game-03/body-margin-variants-07/diagnosis/phone-plane-fit-01/run-01/RUN_RECEIPT.json",
+      "sha256": "17d6fb9f1550bfcdf75f631e05f2007a7f3900e94f2de2b18661088c7d0138c8"
+    },
+    "source": {
+      "path": "$WORKSPACE/blind-split-candidate-game-03/body-margin-variants-07/diagnosis/phone-plane-fit-01/recount/recount_saved.py",
+      "sha256": "39aeb30f834e3ac423df0bca1a15e61888f2fcb5f8eb4710b031fa944efa38ab"
+    }
+  },
+  "wallSeconds": 0.17506090899405535,
+  "peakRSSBytes": 30281728,
+  "physicalAuthority": false
+}

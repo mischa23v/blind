@@ -1,0 +1,2626 @@
+{
+  "scope": "Exact same-frame saved-reference association for all fixed western phone cells, not new reference queries",
+  "inputPins": {
+    "oldPhoneArtifact": {
+      "path": "blind-opus-reference-scoring-audit-02/artifacts/koivu_v1_pipeline_out.npz",
+      "sha256": "dfd9a7afa958fc8012e43b9fe86f72dafb97e88d4198640080c110c14941b55e"
+    },
+    "currentFrameMetadata": {
+      "path": "blind-split-candidate-game-03/inputs/koivu_5cm_v2_pipeline2_out.npz",
+      "sha256": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d"
+    },
+    "currentPhoneMask": {
+      "path": "blind-split-candidate-game-03/inputs/koivu_5cm_occthres_split0.7.npz",
+      "sha256": "b294d92cfd9136d00de510239c2b85a9d68d878dcf7dac1a64b144d8880cb076"
+    },
+    "fixedDepthCells": {
+      "path": "blind-split-candidate-game-03/body-margin-variants-07/diagnosis/west-depth-run-01/result/RESULT.json",
+      "sha256": "9e63fde586c25b5b7b8cea57f1d3f41030e9447fbe823f1397e6503095756056"
+    },
+    "savedTriangles": {
+      "path": "blind-opus-reference-scoring-audit-02/run-01/result/TRIANGLE_BANDS.npz",
+      "sha256": "7f13e136f1ded00e1ffa8cee240e8a038d7a0af46b21a24152c2fe095d86795a"
+    },
+    "savedVertices": {
+      "path": "blind-opus-reference-scoring-audit-02/run-01/result/REFERENCE_VERTEX_BANDS.npz",
+      "sha256": "a235fd7e1fc4fe6c2f4af26b60cdcd9ef6586b7ff08fe36c18d543d0d506811b"
+    },
+    "savedSummary": {
+      "path": "blind-opus-reference-scoring-audit-02/run-01/result/SUMMARY.json",
+      "sha256": "9376bfd37afa5b2c113eb27729b7790dcf3c4f1b50bcf1f599ddf3fe0e7e3c95"
+    }
+  },
+  "frameExactMatch": {
+    "R": true,
+    "t": true,
+    "lo": true
+  },
+  "gridShape": [
+    241,
+    250
+  ],
+  "gridResolutionMetres": 0.05,
+  "bandNames": [
+    "10to15mm",
+    "15to25mm",
+    "25to75mm",
+    "75to300mm",
+    "300to1750mm",
+    "1750to1800mm"
+  ],
+  "bandsMetres": [
+    [
+      0.01,
+      0.015
+    ],
+    [
+      0.015,
+      0.025
+    ],
+    [
+      0.025,
+      0.075
+    ],
+    [
+      0.075,
+      0.3
+    ],
+    [
+      0.3,
+      1.75
+    ],
+    [
+      1.75,
+      1.8
+    ]
+  ],
+  "vertexBandsHalfOpen": true,
+  "triangleBandsClosed": true,
+  "floorVertexBandOpenMetres": [
+    -0.06,
+    0.06
+  ],
+  "uniqueCells": 57,
+  "groups": {
+    "blocked": {
+      "cells": 25,
+      "savedTriangleColumns": 13,
+      "vertexOnlyColumns": 12,
+      "anyVertexColumns": 25,
+      "floorBandVertexColumns": 25,
+      "bandPositiveVertexColumns": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "walkableControls": {
+      "cells": 32,
+      "savedTriangleColumns": 9,
+      "vertexOnlyColumns": 23,
+      "anyVertexColumns": 32,
+      "floorBandVertexColumns": 32,
+      "bandPositiveVertexColumns": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "low1Blocked": {
+      "cells": 15,
+      "savedTriangleColumns": 13,
+      "vertexOnlyColumns": 2,
+      "anyVertexColumns": 15,
+      "floorBandVertexColumns": 15,
+      "bandPositiveVertexColumns": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "missingSupportBlocked": {
+      "cells": 10,
+      "savedTriangleColumns": 0,
+      "vertexOnlyColumns": 10,
+      "anyVertexColumns": 10,
+      "floorBandVertexColumns": 10,
+      "bandPositiveVertexColumns": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "rows": [
+    {
+      "sourceIJ": [
+        44,
+        171
+      ],
+      "sourceCellCentreXY": [
+        -3.575,
+        2.5250000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        34
+      ],
+      "anyReferenceVertexCount": 66,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 66,
+      "referenceFloorBandMeanHeight": -0.003513945132266132,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.003552129591954436,
+        -0.0034423130535287637,
+        -0.0034553771118002296,
+        -0.003373108762055925,
+        -0.003678673841169105
+      ]
+    },
+    {
+      "sourceIJ": [
+        45,
+        166
+      ],
+      "sourceCellCentreXY": [
+        -3.5250000000000004,
+        2.275
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        45
+      ],
+      "anyReferenceVertexCount": 101,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 101,
+      "referenceFloorBandMeanHeight": -0.0029438513289010266,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.002886259720286938,
+        -0.0027243163337865896,
+        -0.0031131361915421683,
+        -0.003029193548247929,
+        -0.0027641481603269315
+      ]
+    },
+    {
+      "sourceIJ": [
+        45,
+        167
+      ],
+      "sourceCellCentreXY": [
+        -3.5250000000000004,
+        2.325
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        44
+      ],
+      "anyReferenceVertexCount": 93,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 93,
+      "referenceFloorBandMeanHeight": -0.002924444823771476,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.003079941426006063,
+        -0.0029090174698000043,
+        -0.002795217486743386,
+        -0.003068525760285523,
+        -0.00307566858116853
+      ]
+    },
+    {
+      "sourceIJ": [
+        45,
+        172
+      ],
+      "sourceCellCentreXY": [
+        -3.5250000000000004,
+        2.575
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        33,
+        35
+      ],
+      "anyReferenceVertexCount": 53,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 53,
+      "referenceFloorBandMeanHeight": -0.0034721297963495167,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        45,
+        173
+      ],
+      "sourceCellCentreXY": [
+        -3.5250000000000004,
+        2.625
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        36
+      ],
+      "anyReferenceVertexCount": 46,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 46,
+      "referenceFloorBandMeanHeight": -0.0034232920812745696,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.003409476866657284,
+        -0.0034071981967347485,
+        -0.003530478431177781,
+        -0.0033158367752365685,
+        -0.003361041901590058
+      ]
+    },
+    {
+      "sourceIJ": [
+        45,
+        174
+      ],
+      "sourceCellCentreXY": [
+        -3.5250000000000004,
+        2.6750000000000003
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        43
+      ],
+      "anyReferenceVertexCount": 44,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 44,
+      "referenceFloorBandMeanHeight": -0.0033214958251106944,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.003201056072570525,
+        -0.003296927252874291,
+        -0.0035543894338537583,
+        -0.003438581896509245,
+        -0.003296183597220845
+      ]
+    },
+    {
+      "sourceIJ": [
+        46,
+        146
+      ],
+      "sourceCellCentreXY": [
+        -3.475,
+        1.2750000000000001
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        62
+      ],
+      "anyReferenceVertexCount": 45,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 45,
+      "referenceFloorBandMeanHeight": -0.005964700189814372,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.006102680680151143,
+        -0.006035072641709334,
+        -0.00599653797796261,
+        -0.006035348042845848,
+        -0.005848038713169173
+      ]
+    },
+    {
+      "sourceIJ": [
+        46,
+        160
+      ],
+      "sourceCellCentreXY": [
+        -3.475,
+        1.975
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        46
+      ],
+      "anyReferenceVertexCount": 99,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 99,
+      "referenceFloorBandMeanHeight": -0.0039802804356933365,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        46,
+        163
+      ],
+      "sourceCellCentreXY": [
+        -3.475,
+        2.125
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        260
+      ],
+      "anyReferenceVertexCount": 107,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 107,
+      "referenceFloorBandMeanHeight": -0.0033672794915682066,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.0033905588933431773,
+        -0.0033504442623518895,
+        -0.003404844794119566,
+        -0.0032235021434639088,
+        -0.0033682062487363496
+      ]
+    },
+    {
+      "sourceIJ": [
+        46,
+        174
+      ],
+      "sourceCellCentreXY": [
+        -3.475,
+        2.6750000000000003
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        40,
+        41,
+        42
+      ],
+      "anyReferenceVertexCount": 38,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 38,
+      "referenceFloorBandMeanHeight": -0.0032252572571512582,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.003197263540760019,
+        -0.0031194786477828224,
+        -0.0034401963111579167,
+        -0.003219941870401064,
+        -0.00317314542494275
+      ]
+    },
+    {
+      "sourceIJ": [
+        46,
+        175
+      ],
+      "sourceCellCentreXY": [
+        -3.475,
+        2.725
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        37
+      ],
+      "anyReferenceVertexCount": 38,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 38,
+      "referenceFloorBandMeanHeight": -0.0032068611306869345,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.0031566042775259314,
+        -0.0032300086083302555,
+        -0.003081454669940944,
+        -0.0033359047105478885,
+        -0.0032414182616424016
+      ]
+    },
+    {
+      "sourceIJ": [
+        46,
+        177
+      ],
+      "sourceCellCentreXY": [
+        -3.475,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        38,
+        39,
+        257
+      ],
+      "anyReferenceVertexCount": 59,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 59,
+      "referenceFloorBandMeanHeight": -0.003636515116701553,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.003542871577789269,
+        -0.0036128388930872,
+        -0.003619147172508729,
+        -0.0037125371531720203,
+        -0.0036564191204194706
+      ]
+    },
+    {
+      "sourceIJ": [
+        47,
+        148
+      ],
+      "sourceCellCentreXY": [
+        -3.4250000000000003,
+        1.375
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        63,
+        68
+      ],
+      "anyReferenceVertexCount": 48,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 48,
+      "referenceFloorBandMeanHeight": -0.005849798650227116,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        47,
+        149
+      ],
+      "sourceCellCentreXY": [
+        -3.4250000000000003,
+        1.425
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        64,
+        67
+      ],
+      "anyReferenceVertexCount": 54,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 54,
+      "referenceFloorBandMeanHeight": -0.0056602723235630766,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        47,
+        150
+      ],
+      "sourceCellCentreXY": [
+        -3.4250000000000003,
+        1.475
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        66
+      ],
+      "anyReferenceVertexCount": 130,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 130,
+      "referenceFloorBandMeanHeight": -0.00488489191202734,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.004866755164974888,
+        -0.004673131624690373,
+        -0.0047406866348725235,
+        -0.004986833491662172,
+        -0.005567729278931649
+      ]
+    },
+    {
+      "sourceIJ": [
+        47,
+        151
+      ],
+      "sourceCellCentreXY": [
+        -3.4250000000000003,
+        1.5250000000000001
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        65
+      ],
+      "anyReferenceVertexCount": 142,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 142,
+      "referenceFloorBandMeanHeight": -0.004894556097133991,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        47,
+        157
+      ],
+      "sourceCellCentreXY": [
+        -3.4250000000000003,
+        1.8250000000000002
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        79
+      ],
+      "anyReferenceVertexCount": 98,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 98,
+      "referenceFloorBandMeanHeight": -0.004140352489032143,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        47,
+        159
+      ],
+      "sourceCellCentreXY": [
+        -3.4250000000000003,
+        1.925
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        47
+      ],
+      "anyReferenceVertexCount": 96,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 96,
+      "referenceFloorBandMeanHeight": -0.004076254809896954,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        47,
+        173
+      ],
+      "sourceCellCentreXY": [
+        -3.4250000000000003,
+        2.625
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        258
+      ],
+      "anyReferenceVertexCount": 39,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 39,
+      "referenceFloorBandMeanHeight": -0.0032048907610403377,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.0031142930605645384,
+        -0.003088818035450641,
+        -0.003204873825853046,
+        -0.0032960654234119365,
+        -0.003213001592120396
+      ]
+    },
+    {
+      "sourceIJ": [
+        47,
+        177
+      ],
+      "sourceCellCentreXY": [
+        -3.4250000000000003,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        250
+      ],
+      "anyReferenceVertexCount": 57,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 57,
+      "referenceFloorBandMeanHeight": -0.003784758263195934,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.003952901546703136,
+        -0.0036674929265172653,
+        -0.0037652624908010354,
+        -0.0038132613169110444,
+        -0.003705099724345384
+      ]
+    },
+    {
+      "sourceIJ": [
+        47,
+        178
+      ],
+      "sourceCellCentreXY": [
+        -3.4250000000000003,
+        2.875
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        251
+      ],
+      "anyReferenceVertexCount": 51,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 51,
+      "referenceFloorBandMeanHeight": -0.003940026565438648,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.0038421241767757595,
+        -0.0041545703957658504,
+        -0.0038578500465641288,
+        -0.003935478637963091,
+        -0.0038826044379112
+      ]
+    },
+    {
+      "sourceIJ": [
+        48,
+        144
+      ],
+      "sourceCellCentreXY": [
+        -3.375,
+        1.175
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        61
+      ],
+      "anyReferenceVertexCount": 36,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 36,
+      "referenceFloorBandMeanHeight": -0.005691720112850956,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        48,
+        149
+      ],
+      "sourceCellCentreXY": [
+        -3.375,
+        1.425
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        69,
+        70,
+        71
+      ],
+      "anyReferenceVertexCount": 48,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 48,
+      "referenceFloorBandMeanHeight": -0.005887745285023588,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        48,
+        152
+      ],
+      "sourceCellCentreXY": [
+        -3.375,
+        1.5750000000000002
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        48
+      ],
+      "anyReferenceVertexCount": 136,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 136,
+      "referenceFloorBandMeanHeight": -0.004840655481388539,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        48,
+        156
+      ],
+      "sourceCellCentreXY": [
+        -3.375,
+        1.7750000000000001
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        78
+      ],
+      "anyReferenceVertexCount": 108,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 108,
+      "referenceFloorBandMeanHeight": -0.004384984160774432,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        48,
+        157
+      ],
+      "sourceCellCentreXY": [
+        -3.375,
+        1.8250000000000002
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        261
+      ],
+      "anyReferenceVertexCount": 107,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 107,
+      "referenceFloorBandMeanHeight": -0.00413533205110804,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        48,
+        170
+      ],
+      "sourceCellCentreXY": [
+        -3.375,
+        2.475
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        259
+      ],
+      "anyReferenceVertexCount": 43,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 43,
+      "referenceFloorBandMeanHeight": -0.003097833440237515,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.0031790047681037534,
+        -0.0031962077044268428,
+        -0.0032083694716093167,
+        -0.002988908041850624,
+        -0.003013820620217801
+      ]
+    },
+    {
+      "sourceIJ": [
+        48,
+        175
+      ],
+      "sourceCellCentreXY": [
+        -3.375,
+        2.725
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        32
+      ],
+      "anyReferenceVertexCount": 32,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 32,
+      "referenceFloorBandMeanHeight": -0.0033100252078399547,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.003372452400654433,
+        -0.003195590277453109,
+        -0.003371039249081288,
+        -0.0033340368642042397,
+        -0.0033165583666246064
+      ]
+    },
+    {
+      "sourceIJ": [
+        48,
+        178
+      ],
+      "sourceCellCentreXY": [
+        -3.375,
+        2.875
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        248,
+        249,
+        252
+      ],
+      "anyReferenceVertexCount": 56,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 56,
+      "referenceFloorBandMeanHeight": -0.003935309097111693,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.004083858559584564,
+        -0.0038913521555751784,
+        -0.0038491277564221254,
+        -0.004030177906754858,
+        -0.004045266545051123
+      ]
+    },
+    {
+      "sourceIJ": [
+        49,
+        146
+      ],
+      "sourceCellCentreXY": [
+        -3.325,
+        1.2750000000000001
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        85
+      ],
+      "anyReferenceVertexCount": 37,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 37,
+      "referenceFloorBandMeanHeight": -0.005675866574030114,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        49,
+        147
+      ],
+      "sourceCellCentreXY": [
+        -3.325,
+        1.3250000000000002
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        84
+      ],
+      "anyReferenceVertexCount": 42,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 42,
+      "referenceFloorBandMeanHeight": -0.005588827760963361,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        49,
+        148
+      ],
+      "sourceCellCentreXY": [
+        -3.325,
+        1.375
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        72
+      ],
+      "anyReferenceVertexCount": 47,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 47,
+      "referenceFloorBandMeanHeight": -0.005698756020416582,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        49,
+        149
+      ],
+      "sourceCellCentreXY": [
+        -3.325,
+        1.425
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        74
+      ],
+      "anyReferenceVertexCount": 48,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 48,
+      "referenceFloorBandMeanHeight": -0.005904572022356063,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        49,
+        150
+      ],
+      "sourceCellCentreXY": [
+        -3.325,
+        1.475
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        83
+      ],
+      "anyReferenceVertexCount": 49,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 49,
+      "referenceFloorBandMeanHeight": -0.005847858864624226,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        49,
+        151
+      ],
+      "sourceCellCentreXY": [
+        -3.325,
+        1.5250000000000001
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        262
+      ],
+      "anyReferenceVertexCount": 91,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 91,
+      "referenceFloorBandMeanHeight": -0.005040162728570549,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        49,
+        154
+      ],
+      "sourceCellCentreXY": [
+        -3.325,
+        1.675
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        81
+      ],
+      "anyReferenceVertexCount": 124,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 124,
+      "referenceFloorBandMeanHeight": -0.004670897456892102,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        49,
+        155
+      ],
+      "sourceCellCentreXY": [
+        -3.325,
+        1.725
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        75,
+        77,
+        80
+      ],
+      "anyReferenceVertexCount": 112,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 112,
+      "referenceFloorBandMeanHeight": -0.004407800742317227,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        49,
+        156
+      ],
+      "sourceCellCentreXY": [
+        -3.325,
+        1.7750000000000001
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        76
+      ],
+      "anyReferenceVertexCount": 102,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 102,
+      "referenceFloorBandMeanHeight": -0.004197639706973728,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        49,
+        178
+      ],
+      "sourceCellCentreXY": [
+        -3.325,
+        2.875
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        31
+      ],
+      "anyReferenceVertexCount": 60,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 60,
+      "referenceFloorBandMeanHeight": -0.004006887711217214,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.0038557299175111057,
+        -0.003960801213346592,
+        -0.003964958746352316,
+        -0.004159776714486918,
+        -0.0039695951829486
+      ]
+    },
+    {
+      "sourceIJ": [
+        50,
+        148
+      ],
+      "sourceCellCentreXY": [
+        -3.2750000000000004,
+        1.375
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        73
+      ],
+      "anyReferenceVertexCount": 45,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 45,
+      "referenceFloorBandMeanHeight": -0.005558597444273146,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        50,
+        153
+      ],
+      "sourceCellCentreXY": [
+        -3.2750000000000004,
+        1.625
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        82
+      ],
+      "anyReferenceVertexCount": 130,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 130,
+      "referenceFloorBandMeanHeight": -0.004785953722059722,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        50,
+        179
+      ],
+      "sourceCellCentreXY": [
+        -3.2750000000000004,
+        2.9250000000000003
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        247
+      ],
+      "anyReferenceVertexCount": 58,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 58,
+      "referenceFloorBandMeanHeight": -0.004322363853110941,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.004320614957569486,
+        -0.004464237134291893,
+        -0.004392649726709049,
+        -0.004328251744384573,
+        -0.004232302757588832
+      ]
+    },
+    {
+      "sourceIJ": [
+        50,
+        180
+      ],
+      "sourceCellCentreXY": [
+        -3.2750000000000004,
+        2.975
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        253
+      ],
+      "anyReferenceVertexCount": 59,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 59,
+      "referenceFloorBandMeanHeight": -0.004433965066414315,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        50,
+        181
+      ],
+      "sourceCellCentreXY": [
+        -3.2750000000000004,
+        3.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        246,
+        254
+      ],
+      "anyReferenceVertexCount": 63,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 63,
+      "referenceFloorBandMeanHeight": -0.00458153227655733,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        50,
+        182
+      ],
+      "sourceCellCentreXY": [
+        -3.2750000000000004,
+        3.075
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        255
+      ],
+      "anyReferenceVertexCount": 58,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 58,
+      "referenceFloorBandMeanHeight": -0.0048561647566325574,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.004792896204101546,
+        -0.0048098552145541505,
+        -0.004802844580195118,
+        -0.00507145840324634,
+        -0.004823903101451251
+      ]
+    },
+    {
+      "sourceIJ": [
+        50,
+        183
+      ],
+      "sourceCellCentreXY": [
+        -3.2750000000000004,
+        3.125
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        256
+      ],
+      "anyReferenceVertexCount": 48,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 48,
+      "referenceFloorBandMeanHeight": -0.004928556483346128,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        51,
+        142
+      ],
+      "sourceCellCentreXY": [
+        -3.225,
+        1.075
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        60
+      ],
+      "anyReferenceVertexCount": 32,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 32,
+      "referenceFloorBandMeanHeight": -0.005609679126412269,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        51,
+        145
+      ],
+      "sourceCellCentreXY": [
+        -3.225,
+        1.225
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        263
+      ],
+      "anyReferenceVertexCount": 36,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 36,
+      "referenceFloorBandMeanHeight": -0.005538184878411974,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        51,
+        146
+      ],
+      "sourceCellCentreXY": [
+        -3.225,
+        1.2750000000000001
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        49
+      ],
+      "anyReferenceVertexCount": 39,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 39,
+      "referenceFloorBandMeanHeight": -0.005526811232274398,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        51,
+        182
+      ],
+      "sourceCellCentreXY": [
+        -3.225,
+        3.075
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        30
+      ],
+      "anyReferenceVertexCount": 63,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 63,
+      "referenceFloorBandMeanHeight": -0.004865300689109575,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.005018035709493482,
+        -0.004741742376185149,
+        -0.004771533873964187,
+        -0.004858128894667812,
+        -0.005035465548407437
+      ]
+    },
+    {
+      "sourceIJ": [
+        52,
+        142
+      ],
+      "sourceCellCentreXY": [
+        -3.1750000000000003,
+        1.075
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        59
+      ],
+      "anyReferenceVertexCount": 29,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 29,
+      "referenceFloorBandMeanHeight": -0.005468735534304787,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        53,
+        141
+      ],
+      "sourceCellCentreXY": [
+        -3.125,
+        1.0250000000000001
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        58
+      ],
+      "anyReferenceVertexCount": 29,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 29,
+      "referenceFloorBandMeanHeight": -0.005377414136710721,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        53,
+        143
+      ],
+      "sourceCellCentreXY": [
+        -3.125,
+        1.125
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        264
+      ],
+      "anyReferenceVertexCount": 32,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 32,
+      "referenceFloorBandMeanHeight": -0.005441841185563283,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        53,
+        146
+      ],
+      "sourceCellCentreXY": [
+        -3.125,
+        1.2750000000000001
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        50
+      ],
+      "anyReferenceVertexCount": 40,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 40,
+      "referenceFloorBandMeanHeight": -0.005540539249970167,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        54,
+        143
+      ],
+      "sourceCellCentreXY": [
+        -3.075,
+        1.125
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      },
+      "cameraFrameRecords": [
+        86
+      ],
+      "anyReferenceVertexCount": 34,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 34,
+      "referenceFloorBandMeanHeight": -0.0055346499176197935,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    },
+    {
+      "sourceIJ": [
+        55,
+        183
+      ],
+      "sourceCellCentreXY": [
+        -3.0250000000000004,
+        3.125
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        29
+      ],
+      "anyReferenceVertexCount": 85,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 85,
+      "referenceFloorBandMeanHeight": -0.004591822988075199,
+      "savedTriangleColumnAvailable": true,
+      "savedTriangleContacts": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "savedFloorProbeHits": 5,
+      "savedFloorProbeHeights": [
+        -0.004568663689615265,
+        -0.004661688836657116,
+        -0.004506821738663409,
+        -0.004712330546665065,
+        -0.0046059951417921005
+      ]
+    },
+    {
+      "sourceIJ": [
+        55,
+        184
+      ],
+      "sourceCellCentreXY": [
+        -3.0250000000000004,
+        3.1750000000000003
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "cameraFrameRecords": [
+        245
+      ],
+      "anyReferenceVertexCount": 75,
+      "referenceBandVertexCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "referenceFloorBandVertexCount": 75,
+      "referenceFloorBandMeanHeight": -0.004849659062295458,
+      "savedTriangleColumnAvailable": false,
+      "savedTriangleContacts": null,
+      "savedFloorProbeHits": null,
+      "savedFloorProbeHeights": null
+    }
+  ],
+  "noVertexIsNotFree": true,
+  "savedTriangleAbsenceIsNotNoContact": true,
+  "referenceMeasuredSupportMaskAvailable": false,
+  "nearFloorPositiveGeometryMayBeRegisteredFloorNotObstacle": true,
+  "referenceCleanedCompletedAndDifferentCaptureTime": true,
+  "referenceQueries": 0,
+  "mapEdits": 0,
+  "newRoutes": 0,
+  "physicalAuthority": false,
+  "schemaProbeNote": "Initial exploratory print requested walk from metadata-only current archive and raised KeyError after confirming R/t/lo; this join reads walk from the separate pinned mask. No prior scoring or data was changed.",
+  "wallSeconds": 0.7875333709962433,
+  "peakRSSBytes": 30134272
+}

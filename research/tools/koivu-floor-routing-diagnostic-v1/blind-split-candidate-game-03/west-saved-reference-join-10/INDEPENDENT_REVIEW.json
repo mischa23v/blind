@@ -1,0 +1,42 @@
+{
+  "scope": "Independent saved-data provenance and arithmetic readback; no geometry load, scoring, maps, routes or episode",
+  "passed": true,
+  "checks": {
+    "allSevenExecutedInputPinsMatchActualFiles": true,
+    "originalSavedReferencePinsMatchPriorPostcheck": true,
+    "oldArtifactAndScoringSourceMatchOriginalFreeze": true,
+    "currentMetadataMaskMatchCandidateAdapterPins": true,
+    "sameOriginalFrameGridResolutionAndShape": true,
+    "all57RowsIndependentlyReconcile": true,
+    "allFourAggregateGroupsReconcile": true,
+    "thirteenSampledBlockedColumnsHaveZeroSixBandContactsAndFiveFloorHits": true
+  },
+  "reviewedResultSHA256": "af5f526a920df590de8e76ffeac723a730006e956e8e2fa680882383035e0d25",
+  "reviewedJoinSourceSHA256": "29240a15c902c06e0c8c0bd0b3126246d46ec2794a79165a0429cc5aef6c43f6",
+  "priorPostcheckSHA256": "38644867050e3aee24a02ab8eb86c28d92db2f7b7b2751981de8308446ad8276",
+  "originalScoringFreezeSHA256": "91a0be168033121ff9d906ab9688a5a05f02f7a56b8b6d398d9bf5f63267f76e",
+  "candidateAdapterSHA256": "5e0132f4711200bca1b7ae90eb27b5666ce0707b1573e815e40e622caff98c09",
+  "originalScoringSourceSHA256": "ccb8b730cde932e191571cebd1c0b09ffbce8429e67de21455268eff5c6d53d7",
+  "counts": {
+    "uniqueCells": 57,
+    "blocked": 25,
+    "walkControls": 32,
+    "sampledBlockedTriangleColumns": 13,
+    "blockedVertexOnlyColumns": 12,
+    "contactsInSixSavedBandsForSampledBlocked": 0,
+    "floorRayHitsPerSampledBlockedColumn": 5
+  },
+  "limits": [
+    "13 sampled blocked columns do not establish all25 blocked columns clear.",
+    "No-hit/vertex absence is not clearance or measured support; floor probes are finite only.",
+    "Saved bands cover10mm to1800mm; lower near-foot region and arbitrary body sweeps are not scored by this join.",
+    "FARO is cleaned/completed and from a different capture time.",
+    "Same-frame saved reference diagnostic does not authorize changing phone masks or physical movement."
+  ],
+  "FAROLoaded": false,
+  "referenceQueries": 0,
+  "gameEpisodes": 0,
+  "physicalAuthority": false,
+  "wallSeconds": 0.7985226159944432,
+  "peakRSSBytes": 31240192
+}

@@ -1,0 +1,109 @@
+{
+  "scope": "measurement only, no changed planner/rectangle/margin or accepted route",
+  "unchangedPaddedRectangleForwardLateralMetres": [
+    0.6,
+    0.75
+  ],
+  "inscribedDiscRadiusMetres": 0.3,
+  "originalDiscRadiusMetres": 0.375,
+  "fixedOriginalTargetCells": 4667,
+  "fixedTargetProbe": [
+    91,
+    119
+  ],
+  "conservativeEDT030": {
+    "foreground4Components": 6,
+    "componentsWithAnyBoundedRegion": 0,
+    "anyRegionEnclosesAllTarget": false,
+    "anyRegionEnclosesFixedProbe": false,
+    "components": [
+      {
+        "foreground4Component": 1,
+        "eligibleCentreCells": 2,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 2,
+        "eligibleCentreCells": 1125,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 3,
+        "eligibleCentreCells": 650,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 4,
+        "eligibleCentreCells": 1137,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 5,
+        "eligibleCentreCells": 21,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 6,
+        "eligibleCentreCells": 7,
+        "boundedComplement8Regions": []
+      }
+    ]
+  },
+  "circleCellIntersection030": {
+    "foreground4Components": 6,
+    "componentsWithAnyBoundedRegion": 0,
+    "anyRegionEnclosesAllTarget": false,
+    "anyRegionEnclosesFixedProbe": false,
+    "components": [
+      {
+        "foreground4Component": 1,
+        "eligibleCentreCells": 2,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 2,
+        "eligibleCentreCells": 1125,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 3,
+        "eligibleCentreCells": 650,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 4,
+        "eligibleCentreCells": 1137,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 5,
+        "eligibleCentreCells": 21,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 6,
+        "eligibleCentreCells": 7,
+        "boundedComplement8Regions": []
+      }
+    ]
+  },
+  "exactStencilCells": 137,
+  "exactStencilRule": "all offset square cells whose closed box intersects radius.30 disc at the query cell centre; circle-to-cell nearest distance,1e-12m numeric boundary allowance",
+  "continuousRouteImpossibilityEstablished": false,
+  "circleMeaning": "Necessary geometric subset of the padded rectangle at a sampled centre; does not establish oriented rectangle fit or continuous connectivity",
+  "EDTMeaning": "conservative sufficient distance lower-bound criterion, not an exact necessary condition",
+  "sourceInputSHA256": {
+    "blind-split-candidate-game-03/inputs/koivu_5cm_occthres_split0.7.npz": "b294d92cfd9136d00de510239c2b85a9d68d878dcf7dac1a64b144d8880cb076",
+    "blind-split-candidate-game-03/table-loop-proposal/run-03/artifacts/PROPOSAL.json": "45f034606811b7896dea48ff2d0ebc68166b70a090400338cd1900f65b38b78a",
+    "blind-split-candidate-game-03/table-loop-proposal/CENTRE_TOPOLOGY.json": "bc31ee23f0333d476e8508e715d98776a2a6af0cacd72b4ecff089ddb4513301",
+    "blind-split-candidate-game-03/table-loop-proposal/topology_quick.py": "7e5b7923a4435559bb7bc6be90f8abb0fb14b4a873d9ec7718a76c9014ed24a9",
+    "blind-split-candidate-game-03/table-loop-proposal/diagnose_inscribed_disc.py": "c77eaa1161b74c244a05f31be1d7e21bf303e14400f96a2102b36284ad27818b"
+  },
+  "referenceInputsUsed": false,
+  "nativeQueries": 0,
+  "movementEpisodes": 0,
+  "physicalAuthority": false,
+  "pinsVerifiedBeforeAfter": true,
+  "wallSeconds": 0.02063031001307536,
+  "observedPeakRSSBytes": 48332800
+}

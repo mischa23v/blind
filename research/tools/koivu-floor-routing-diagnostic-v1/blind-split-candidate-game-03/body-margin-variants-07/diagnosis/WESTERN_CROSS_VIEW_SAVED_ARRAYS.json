@@ -1,0 +1,852 @@
+{
+  "scope": "Derived saved-array cross-view residual diagnosis, no data rerender/fusion/route/reference",
+  "inputs": {
+    "RESULT.json": "9e63fde586c25b5b7b8cea57f1d3f41030e9447fbe823f1397e6503095756056",
+    "SELECTED_ENDPOINTS.npz": "d78d922801629f776728fb3a8ada737f8f38c45bec56b2b5e3cdb03919839b02",
+    "postrun_western_evidence.py": "ddd39f24894502f73a6497d3de76f7a838db3a5440f8e12cd46bcf145efdcbc2"
+  },
+  "diagnosticHeightWindowMetres": [
+    -0.1,
+    0.1
+  ],
+  "heightWindowChangesMap": false,
+  "allRawEndpointsRetained": true,
+  "low1Cells": 15,
+  "perCellConditionalComparison": [
+    {
+      "sourceIJ": [
+        44,
+        171
+      ],
+      "near": {
+        "n": 20,
+        "p05_p50_p95Metres": [
+          0.06411493429017315,
+          0.07644188866318424,
+          0.07721884664420067
+        ]
+      },
+      "far": {
+        "n": 58,
+        "p05_p50_p95Metres": [
+          -0.009613454555787415,
+          0.005011192175252366,
+          0.024502211158309646
+        ]
+      },
+      "nearMinusFarMedianMetres": 0.07143069648793188
+    },
+    {
+      "sourceIJ": [
+        45,
+        166
+      ],
+      "near": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "far": {
+        "n": 51,
+        "p05_p50_p95Metres": [
+          -0.00390744546829036,
+          0.032876396285549836,
+          0.07137957897636438
+        ]
+      },
+      "nearMinusFarMedianMetres": null
+    },
+    {
+      "sourceIJ": [
+        45,
+        167
+      ],
+      "near": {
+        "n": 2,
+        "p05_p50_p95Metres": [
+          0.06407186440528265,
+          0.064083842700556,
+          0.06409582099582936
+        ]
+      },
+      "far": {
+        "n": 43,
+        "p05_p50_p95Metres": [
+          -0.00292478240161822,
+          0.024646858216188727,
+          0.07392655386685272
+        ]
+      },
+      "nearMinusFarMedianMetres": 0.03943698448436728
+    },
+    {
+      "sourceIJ": [
+        45,
+        172
+      ],
+      "near": {
+        "n": 85,
+        "p05_p50_p95Metres": [
+          0.06350267382456218,
+          0.06912524263382602,
+          0.07551275397633801
+        ]
+      },
+      "far": {
+        "n": 68,
+        "p05_p50_p95Metres": [
+          -0.010069126272861217,
+          0.003254029348830456,
+          0.07256408552054205
+        ]
+      },
+      "nearMinusFarMedianMetres": 0.06587121328499557
+    },
+    {
+      "sourceIJ": [
+        45,
+        173
+      ],
+      "near": {
+        "n": 99,
+        "p05_p50_p95Metres": [
+          0.06325734529883416,
+          0.06831752343916753,
+          0.07385191395140675
+        ]
+      },
+      "far": {
+        "n": 71,
+        "p05_p50_p95Metres": [
+          -0.011391504659374108,
+          0.0015709203786393733,
+          0.021053185469602997
+        ]
+      },
+      "nearMinusFarMedianMetres": 0.06674660306052815
+    },
+    {
+      "sourceIJ": [
+        45,
+        174
+      ],
+      "near": {
+        "n": 92,
+        "p05_p50_p95Metres": [
+          0.06347588202693723,
+          0.06794653588722299,
+          0.0727277960133504
+        ]
+      },
+      "far": {
+        "n": 85,
+        "p05_p50_p95Metres": [
+          -0.011292292397373904,
+          0.0005123600812133589,
+          0.05389604043707883
+        ]
+      },
+      "nearMinusFarMedianMetres": 0.06743417580600963
+    },
+    {
+      "sourceIJ": [
+        46,
+        174
+      ],
+      "near": {
+        "n": 90,
+        "p05_p50_p95Metres": [
+          0.06276040757408345,
+          0.06633318714600878,
+          0.07064544379779053
+        ]
+      },
+      "far": {
+        "n": 61,
+        "p05_p50_p95Metres": [
+          -0.010774911157338751,
+          -0.0022276238226759393,
+          0.04551717277303191
+        ]
+      },
+      "nearMinusFarMedianMetres": 0.06856081096868472
+    },
+    {
+      "sourceIJ": [
+        46,
+        175
+      ],
+      "near": {
+        "n": 84,
+        "p05_p50_p95Metres": [
+          0.06227374832804402,
+          0.06450440540878799,
+          0.07010996970673579
+        ]
+      },
+      "far": {
+        "n": 73,
+        "p05_p50_p95Metres": [
+          -0.010583221519589925,
+          -0.0023309300160156976,
+          0.022891219669959283
+        ]
+      },
+      "nearMinusFarMedianMetres": 0.06683533542480369
+    },
+    {
+      "sourceIJ": [
+        46,
+        177
+      ],
+      "near": {
+        "n": 33,
+        "p05_p50_p95Metres": [
+          0.06211077291756841,
+          0.06407739594002915,
+          0.06761599660013182
+        ]
+      },
+      "far": {
+        "n": 113,
+        "p05_p50_p95Metres": [
+          -0.013136442880156673,
+          0.004098783990182486,
+          0.0654868463400895
+        ]
+      },
+      "nearMinusFarMedianMetres": 0.05997861194984666
+    },
+    {
+      "sourceIJ": [
+        47,
+        173
+      ],
+      "near": {
+        "n": 100,
+        "p05_p50_p95Metres": [
+          0.06287074698532788,
+          0.06566960735401728,
+          0.07084118080413723
+        ]
+      },
+      "far": {
+        "n": 50,
+        "p05_p50_p95Metres": [
+          -0.008893708733961236,
+          0.022305025865364536,
+          0.061399203311742735
+        ]
+      },
+      "nearMinusFarMedianMetres": 0.04336458148865274
+    },
+    {
+      "sourceIJ": [
+        47,
+        177
+      ],
+      "near": {
+        "n": 34,
+        "p05_p50_p95Metres": [
+          0.059998839840752785,
+          0.061744859478352176,
+          0.06569254813279614
+        ]
+      },
+      "far": {
+        "n": 104,
+        "p05_p50_p95Metres": [
+          -0.010839919097640881,
+          0.004648265871475377,
+          0.06401243431033674
+        ]
+      },
+      "nearMinusFarMedianMetres": 0.0570965936068768
+    },
+    {
+      "sourceIJ": [
+        48,
+        170
+      ],
+      "near": {
+        "n": 49,
+        "p05_p50_p95Metres": [
+          0.06461954947011547,
+          0.0658673691027285,
+          0.0708778466353924
+        ]
+      },
+      "far": {
+        "n": 60,
+        "p05_p50_p95Metres": [
+          -0.017073161386118564,
+          0.024595815204087268,
+          0.06917283497673624
+        ]
+      },
+      "nearMinusFarMedianMetres": 0.04127155389864123
+    },
+    {
+      "sourceIJ": [
+        48,
+        175
+      ],
+      "near": {
+        "n": 81,
+        "p05_p50_p95Metres": [
+          0.05987129566404659,
+          0.06204450129569605,
+          0.06730289124999289
+        ]
+      },
+      "far": {
+        "n": 81,
+        "p05_p50_p95Metres": [
+          -0.011421701498827819,
+          -0.0014349280742149695,
+          0.06884670051803732
+        ]
+      },
+      "nearMinusFarMedianMetres": 0.06347942936991102
+    },
+    {
+      "sourceIJ": [
+        55,
+        183
+      ],
+      "near": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "far": {
+        "n": 146,
+        "p05_p50_p95Metres": [
+          -0.01486556452444554,
+          0.037866641754248365,
+          0.047131827741501764
+        ]
+      },
+      "nearMinusFarMedianMetres": null
+    },
+    {
+      "sourceIJ": [
+        55,
+        184
+      ],
+      "near": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "far": {
+        "n": 124,
+        "p05_p50_p95Metres": [
+          -0.013957056982368576,
+          0.03666401046089984,
+          0.04520036804159176
+        ]
+      },
+      "nearMinusFarMedianMetres": null
+    }
+  ],
+  "perFrameConditionalComparison": [
+    {
+      "poseIndex": 20,
+      "allRanges": {
+        "n": 101,
+        "p05_p50_p95Metres": [
+          -0.01115841966292197,
+          -0.0095768207206679,
+          -0.007650033539471357
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 21,
+      "allRanges": {
+        "n": 107,
+        "p05_p50_p95Metres": [
+          -0.012318576462526654,
+          -0.009965106519672418,
+          0.01568298522150858
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 22,
+      "allRanges": {
+        "n": 122,
+        "p05_p50_p95Metres": [
+          -0.005347008730674041,
+          -0.002620710914211233,
+          0.04811425172494229
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 23,
+      "allRanges": {
+        "n": 141,
+        "p05_p50_p95Metres": [
+          0.01720596650584927,
+          0.021644852589130403,
+          0.027274215263815682
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 61,
+      "allRanges": {
+        "n": 316,
+        "p05_p50_p95Metres": [
+          0.039579162554728264,
+          0.06330929512753736,
+          0.06550019368446769
+        ]
+      },
+      "atMost2m": {
+        "n": 245,
+        "p05_p50_p95Metres": [
+          0.06077078788530277,
+          0.0636311533644709,
+          0.06586240473182112
+        ]
+      },
+      "nearSourceCells": [
+        [
+          44,
+          171
+        ],
+        [
+          45,
+          167
+        ],
+        [
+          45,
+          172
+        ],
+        [
+          45,
+          173
+        ],
+        [
+          45,
+          174
+        ],
+        [
+          46,
+          174
+        ],
+        [
+          46,
+          175
+        ],
+        [
+          47,
+          173
+        ],
+        [
+          48,
+          170
+        ],
+        [
+          48,
+          175
+        ]
+      ]
+    },
+    {
+      "poseIndex": 62,
+      "allRanges": {
+        "n": 319,
+        "p05_p50_p95Metres": [
+          0.0468320716151327,
+          0.07008496327035929,
+          0.07581825770789086
+        ]
+      },
+      "atMost2m": {
+        "n": 267,
+        "p05_p50_p95Metres": [
+          0.06553913650676144,
+          0.07054754504765892,
+          0.076147908387646
+        ]
+      },
+      "nearSourceCells": [
+        [
+          44,
+          171
+        ],
+        [
+          45,
+          172
+        ],
+        [
+          45,
+          173
+        ],
+        [
+          45,
+          174
+        ],
+        [
+          46,
+          174
+        ],
+        [
+          46,
+          175
+        ],
+        [
+          46,
+          177
+        ],
+        [
+          47,
+          173
+        ],
+        [
+          47,
+          177
+        ],
+        [
+          48,
+          170
+        ],
+        [
+          48,
+          175
+        ]
+      ]
+    },
+    {
+      "poseIndex": 63,
+      "allRanges": {
+        "n": 292,
+        "p05_p50_p95Metres": [
+          0.043773574193768,
+          0.06510910390535041,
+          0.06903528204621509
+        ]
+      },
+      "atMost2m": {
+        "n": 257,
+        "p05_p50_p95Metres": [
+          0.06125823516786246,
+          0.06594014710486018,
+          0.06907998530999024
+        ]
+      },
+      "nearSourceCells": [
+        [
+          45,
+          172
+        ],
+        [
+          45,
+          173
+        ],
+        [
+          45,
+          174
+        ],
+        [
+          46,
+          174
+        ],
+        [
+          46,
+          175
+        ],
+        [
+          46,
+          177
+        ],
+        [
+          47,
+          173
+        ],
+        [
+          47,
+          177
+        ],
+        [
+          48,
+          175
+        ]
+      ]
+    },
+    {
+      "poseIndex": 64,
+      "allRanges": {
+        "n": 41,
+        "p05_p50_p95Metres": [
+          0.03544726313300295,
+          0.03704321739700034,
+          0.03799564397484079
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 65,
+      "allRanges": {
+        "n": 47,
+        "p05_p50_p95Metres": [
+          0.03970204032889506,
+          0.04094994396595264,
+          0.04210638143512853
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 117,
+      "allRanges": {
+        "n": 6,
+        "p05_p50_p95Metres": [
+          -0.0109287855476084,
+          -0.009742525200243435,
+          -0.008260665445467108
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 118,
+      "allRanges": {
+        "n": 2,
+        "p05_p50_p95Metres": [
+          -0.022927188361252515,
+          -0.022793884186451896,
+          -0.022660580011651277
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 119,
+      "allRanges": {
+        "n": 4,
+        "p05_p50_p95Metres": [
+          -0.01543075751684635,
+          -0.014934322531999777,
+          0.026366091295275645
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 234,
+      "allRanges": {
+        "n": 17,
+        "p05_p50_p95Metres": [
+          -0.001040942626600394,
+          0.001336126307243779,
+          0.005065908905443361
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 235,
+      "allRanges": {
+        "n": 61,
+        "p05_p50_p95Metres": [
+          -0.022286613283039935,
+          0.037413375931010906,
+          0.07108337043250978
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 236,
+      "allRanges": {
+        "n": 18,
+        "p05_p50_p95Metres": [
+          -0.016934261067241708,
+          -0.015158432480210426,
+          -0.013639729996219086
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 237,
+      "allRanges": {
+        "n": 23,
+        "p05_p50_p95Metres": [
+          -0.013920232734246741,
+          -0.01300524576780382,
+          -0.006833598836210045
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 238,
+      "allRanges": {
+        "n": 46,
+        "p05_p50_p95Metres": [
+          0.016126974500317526,
+          0.018351310507868424,
+          0.07673914057828368
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 239,
+      "allRanges": {
+        "n": 23,
+        "p05_p50_p95Metres": [
+          -0.017586651946223462,
+          -0.014461594515624787,
+          0.0632909685718893
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 240,
+      "allRanges": {
+        "n": 169,
+        "p05_p50_p95Metres": [
+          -0.0032699784705781275,
+          0.006310555028157028,
+          0.06965660504857527
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    },
+    {
+      "poseIndex": 241,
+      "allRanges": {
+        "n": 102,
+        "p05_p50_p95Metres": [
+          0.0002746178128480215,
+          0.0032239009952034214,
+          0.032162568582506955
+        ]
+      },
+      "atMost2m": {
+        "n": 0,
+        "p05_p50_p95Metres": null
+      },
+      "nearSourceCells": []
+    }
+  ],
+  "untouchedOriginalVisualInspection": [
+    {
+      "path": "blind-open3d-author-baseline-10/author-inputs/selected/images/frame_00062.jpg",
+      "sha256": "9c9bdaac4ae306a9989b2d454249fec6d7c672d2ea7ea512c851f497012ddbaa",
+      "pixelRowCol": [
+        [
+          931,
+          3
+        ],
+        [
+          903,
+          23
+        ],
+        [
+          871,
+          55
+        ]
+      ],
+      "visualInspection": "Representative measured endpoint pixels are on visibly carpet-like red surface, not an apparent wheel/toy. Visual appearance is not metric floor truth or hazard clearance."
+    },
+    {
+      "path": "blind-open3d-author-baseline-10/author-inputs/selected/images/frame_00064.jpg",
+      "sha256": "b82cf4cdca330fda72741cc941a080ef65fe5795a6b60f66a77e779ab91a2dcb",
+      "pixelRowCol": [
+        [
+          983,
+          179
+        ],
+        [
+          955,
+          207
+        ],
+        [
+          927,
+          255
+        ]
+      ],
+      "visualInspection": "Representative measured endpoint pixels are on visibly carpet-like red surface, not an apparent wheel/toy. Visual appearance is not metric floor truth or hazard clearance."
+    }
+  ],
+  "limitations": [
+    "Conditional heights within +/-10 cm exclude all other recorded returns only for this distribution report; raw arrays and classification remain unchanged.",
+    "Same map column does not guarantee the same physical surface across views; pose/depth error, occlusion, changing foreground and real small objects remain alternatives.",
+    "Near/far view populations differ; this is not an independent sensor-error estimate or evidence to erase low objects."
+  ]
+}

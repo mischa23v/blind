@@ -1,0 +1,886 @@
+{
+  "scope": "finite-grid enclosing-region diagnostic; no native path or physical-room impossibility proof",
+  "fixtureChecksPassed": 3,
+  "fixedOriginalTargetCells": 4667,
+  "fixedTargetNearestCentroidCell": [
+    91,
+    119
+  ],
+  "targetChanged": false,
+  "probeMeaning": "diagnostic original target cell nearest centroid; not a verified semantic table centre",
+  "rawPermissiveWalkTopology": {
+    "foreground4Components": 74,
+    "componentsWithAnyBoundedRegion": 1,
+    "anyRegionEnclosesAllTarget": true,
+    "anyRegionEnclosesFixedProbe": true,
+    "components": [
+      {
+        "foreground4Component": 1,
+        "eligibleCentreCells": 11364,
+        "boundedComplement8Regions": [
+          {
+            "background8Region": 2,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 3,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 4,
+            "regionCells": 4718,
+            "targetCellsEnclosed": 4667,
+            "allTargetCellsEnclosed": true,
+            "fixedTargetProbeEnclosed": true
+          },
+          {
+            "background8Region": 5,
+            "regionCells": 2,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 6,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 7,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 8,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 9,
+            "regionCells": 3,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 10,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 11,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 12,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 13,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 14,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 15,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 16,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 17,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 18,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 19,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 20,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 21,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 22,
+            "regionCells": 2,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 23,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 24,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 25,
+            "regionCells": 2,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 26,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 27,
+            "regionCells": 7,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 28,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 29,
+            "regionCells": 6,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 30,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 31,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 32,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 33,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 34,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 35,
+            "regionCells": 3,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 36,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 37,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 38,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 39,
+            "regionCells": 5,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 40,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 41,
+            "regionCells": 146,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 42,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 43,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 44,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 45,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 46,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 47,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 48,
+            "regionCells": 2,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 49,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 50,
+            "regionCells": 6,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 51,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 52,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 53,
+            "regionCells": 2,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 54,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 55,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 56,
+            "regionCells": 2,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 57,
+            "regionCells": 3,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 58,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 59,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 60,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 61,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          },
+          {
+            "background8Region": 62,
+            "regionCells": 1,
+            "targetCellsEnclosed": 0,
+            "allTargetCellsEnclosed": false,
+            "fixedTargetProbeEnclosed": false
+          }
+        ]
+      },
+      {
+        "foreground4Component": 2,
+        "eligibleCentreCells": 7,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 3,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 4,
+        "eligibleCentreCells": 2,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 5,
+        "eligibleCentreCells": 2,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 6,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 7,
+        "eligibleCentreCells": 5,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 8,
+        "eligibleCentreCells": 3,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 9,
+        "eligibleCentreCells": 3,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 10,
+        "eligibleCentreCells": 2,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 11,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 12,
+        "eligibleCentreCells": 9,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 13,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 14,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 15,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 16,
+        "eligibleCentreCells": 2,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 17,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 18,
+        "eligibleCentreCells": 3,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 19,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 20,
+        "eligibleCentreCells": 8,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 21,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 22,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 23,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 24,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 25,
+        "eligibleCentreCells": 2,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 26,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 27,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 28,
+        "eligibleCentreCells": 2,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 29,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 30,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 31,
+        "eligibleCentreCells": 5,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 32,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 33,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 34,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 35,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 36,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 37,
+        "eligibleCentreCells": 2,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 38,
+        "eligibleCentreCells": 3,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 39,
+        "eligibleCentreCells": 2,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 40,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 41,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 42,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 43,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 44,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 45,
+        "eligibleCentreCells": 6,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 46,
+        "eligibleCentreCells": 2,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 47,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 48,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 49,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 50,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 51,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 52,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 53,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 54,
+        "eligibleCentreCells": 32,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 55,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 56,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 57,
+        "eligibleCentreCells": 14,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 58,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 59,
+        "eligibleCentreCells": 2,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 60,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 61,
+        "eligibleCentreCells": 3,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 62,
+        "eligibleCentreCells": 9,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 63,
+        "eligibleCentreCells": 2,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 64,
+        "eligibleCentreCells": 8,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 65,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 66,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 67,
+        "eligibleCentreCells": 4,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 68,
+        "eligibleCentreCells": 2,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 69,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 70,
+        "eligibleCentreCells": 3,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 71,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 72,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 73,
+        "eligibleCentreCells": 3,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 74,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      }
+    ]
+  },
+  "unchangedDiscCentreTopology": {
+    "foreground4Components": 9,
+    "componentsWithAnyBoundedRegion": 0,
+    "anyRegionEnclosesAllTarget": false,
+    "anyRegionEnclosesFixedProbe": false,
+    "components": [
+      {
+        "foreground4Component": 1,
+        "eligibleCentreCells": 625,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 2,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 3,
+        "eligibleCentreCells": 331,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 4,
+        "eligibleCentreCells": 59,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 5,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 6,
+        "eligibleCentreCells": 788,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 7,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 8,
+        "eligibleCentreCells": 2,
+        "boundedComplement8Regions": []
+      },
+      {
+        "foreground4Component": 9,
+        "eligibleCentreCells": 1,
+        "boundedComplement8Regions": []
+      }
+    ]
+  },
+  "connectivity": "foreground4/background8, border-connected complement is exterior",
+  "bodyDiscRule": "unchanged EDT*.05-.05*sqrt(2)/2 >= .375",
+  "rawWalkIsNotAlternativeClearance": true,
+  "continuousOrOrientationAwareRouteImpossibilityEstablished": false,
+  "physicalAuthority": false,
+  "referenceInputsUsed": false,
+  "nativeQueries": 0,
+  "movementEpisodes": 0,
+  "sourceInputSHA256": {
+    "blind-split-candidate-game-03/inputs/koivu_5cm_occthres_split0.7.npz": "b294d92cfd9136d00de510239c2b85a9d68d878dcf7dac1a64b144d8880cb076",
+    "blind-split-candidate-game-03/table-loop-proposal/run-03/artifacts/PROPOSAL.json": "45f034606811b7896dea48ff2d0ebc68166b70a090400338cd1900f65b38b78a",
+    "blind-split-candidate-game-03/table-loop-proposal/topology_quick.py": "7e5b7923a4435559bb7bc6be90f8abb0fb14b4a873d9ec7718a76c9014ed24a9"
+  },
+  "pinsVerifiedBeforeAfter": true,
+  "wallSeconds": 0.06277825799770653,
+  "peakRSSBytes": 48508928
+}

@@ -1,0 +1,23 @@
+{
+  "scope": "Signed-key X row decoding only; fixed source, thresholds, pixel convention, samples, map extent and western ROI. No fusion/map/navigation/reference.",
+  "files": {
+    "blind-split-candidate-game-03/body-margin-variants-07/diagnosis/floor-fit-indexing/floor_fit_impact.py": "93f2da56fbf9f94bb6dea5c1245063feb1d48f195ef5c0068819587cb24dbff0",
+    "blind-split-candidate-game-03/body-margin-variants-07/diagnosis/floor-fit-indexing/run_bounded.py": "9362795a28ee8210e7b1649d0dd1ae47b3b9d26bd59fae0364c90659e0463f31",
+    "blind-koivu-game-07/run_bounded.py": "1f695e6c927fba3cb20ee157e2f04cc74a71c1051937fc061ad2e956b6db7735",
+    "blind-opus-reference-scoring-audit-02/upstream/scripts/pipeline.py": "32a2fc27bb23421d2192005a9aa99ff15e3936ad4c20161592c1d85fab337dfc",
+    "blind-mushroom-koivu-acquisition-01/selected/room_datasets/koivu/iphone/long_capture/transformations.json": "c496c8dc6474679766db8abd92da9c756104a752bb9e4519fd462fe294af90c3",
+    "blind-koivu-game-07/map/depths/DEPTH_INPUT_MANIFEST.json": "8795ad2625e49336031a6a826e8247b6cbcc8bb3867f7c27a640a89ee049c82c",
+    "blind-split-candidate-game-03/inputs/koivu_5cm_v2_pipeline2_out.npz": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d",
+    "blind-split-candidate-game-03/inputs/koivu_5cm_occthres_split0.7.npz": "b294d92cfd9136d00de510239c2b85a9d68d878dcf7dac1a64b144d8880cb076",
+    "blind-split-candidate-game-03/room-scale-readonly-audit/WESTERN_PASSAGE_CAMERA_CELLS.json": "e57f9675901b1bc9fab2043b094742fd0ad7986bb87139236d24b470c5227efa"
+  },
+  "depthFiles": "Exact 294 manifest records; each compressed depth size/SHA checked before projection and SHA again after all calculations.",
+  "suppliedTransformAbsoluteTolerance": 1e-12,
+  "budgets": {
+    "CPUSeconds": 120,
+    "wallSeconds": 180,
+    "RSSBytes": 805306368,
+    "outputBytes": 8388608,
+    "freeReserveBytes": 805306368
+  }
+}
