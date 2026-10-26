@@ -6,7 +6,10 @@
     "depthHashesMatchingV1Manifest": "294/294"
   },
   "environment": {
-    "python": "3.13.17", "numpy": "2.5.3", "scipy": "1.18.1", "pillow": "system",
+    "python": "3.13.17",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "pillow": "system",
     "octomap": "octomap-python 1.10.0.0 (wraps OctoMap 1.10.0, BSD-3-Clause); default sensor model hit 0.7 miss 0.4 threshold 0.5 clamp 0.1192/0.971",
     "recast": "tools/navigation-recast pinned 9f4ce64458dfae86e1239c525ddc219c4e9e06f1 rebuilt with g++ 13.3.0 (original receipts used 14.2.0); its 12 adapter tests passed",
     "machine": "Linux cloud container, 4 vCPU, 15 GiB; OMP_NUM_THREADS=2 for OctoMap insertion"
@@ -16,74 +19,361 @@
     "countsIdenticalToPublishedReceipt": true,
     "surfaceJsonByteIdentical": true,
     "mapNpzDifference": "floating point only, max 1.8e-15 m in voxel Y extents and transforms",
-    "wallSeconds": 118.06, "peakRSSBytes": 468135936,
-    "counts": {"supportedCells": 2637, "unblockedSupported": 13, "sampledClearance": 1}
+    "wallSeconds": 118.06,
+    "peakRSSBytes": 468135936,
+    "counts": {
+      "supportedCells": 2637,
+      "unblockedSupported": 13,
+      "sampledClearance": 1
+    }
   },
   "inputGeometryChecks": {
     "depthEncoding": "uint16 millimetres, 994x738 portrait, no zero pixels",
     "upsampling": "nearest-neighbour 4x of 256x192 then 15 px border crop (run lengths 4, first run 1). 215,670,168 pixels = 13,415,808 independent LiDAR samples x 16 copies; v1/v2 hit counts and per-voxel frame/hit statistics count each sample up to 16 times",
-    "axialVersusRange": {"axialPlanarResidualStdMedian_m": 0.0187, "rangePlanarResidualStdMedian_m": 0.0239, "axialCurvature": 0.0072, "rangeCurvature": 0.0300, "verdict": "axial (as implemented) is correct"},
+    "axialVersusRange": {
+      "axialPlanarResidualStdMedian_m": 0.0187,
+      "rangePlanarResidualStdMedian_m": 0.0239,
+      "axialCurvature": 0.0072,
+      "rangeCurvature": 0.03,
+      "verdict": "axial (as implemented) is correct"
+    },
     "poseConvention": "OpenGL camera-to-world, +Z up; consistent with 5 cm median reference agreement",
     "pixelCentre": "half-pixel convention correct; block-centre vs pixel ray difference <= 1.5 px (about 0.5 cm at 3 m)"
   },
   "floorMeasurement": {
     "method": "LiDAR-native samples, 20 cm cells, mode +-6 cm then median",
-    "floorHeightPhoneZ_m": -1.272, "v1FittedFloor_m": -1.275,
-    "tiltDegrees": 0.05, "cellMedianResidualStd_m": 0.016,
-    "perFrameFloorOffset_cm": {"p5": -1.05, "p50": 0.0, "p95": 1.11, "min": -2.98, "max": 3.5, "framesAbove2cm": [60, 62, 63, 64, 69, 116, 117, 118, 119]},
-    "residualByRange_cm_p95_p99": {"0-1.5m": [1.74, 4.77], "1.5-2.5m": [5.30, 8.43], "2.5-3.5m": [7.02, 9.30], "3.5-4.5m": [7.74, 10.11], "4.5-7m": [7.95, 9.81]}
+    "floorHeightPhoneZ_m": -1.272,
+    "v1FittedFloor_m": -1.275,
+    "tiltDegrees": 0.05,
+    "cellMedianResidualStd_m": 0.016,
+    "perFrameFloorOffset_cm": {
+      "p5": -1.05,
+      "p50": 0.0,
+      "p95": 1.11,
+      "min": -2.98,
+      "max": 3.5,
+      "framesAbove2cm": [
+        60,
+        62,
+        63,
+        64,
+        69,
+        116,
+        117,
+        118,
+        119
+      ]
+    },
+    "residualByRange_cm_p95_p99": {
+      "0-1.5m": [
+        1.74,
+        4.77
+      ],
+      "1.5-2.5m": [
+        5.3,
+        8.43
+      ],
+      "2.5-3.5m": [
+        7.02,
+        9.3
+      ],
+      "3.5-4.5m": [
+        7.74,
+        10.11
+      ],
+      "4.5-7m": [
+        7.95,
+        9.81
+      ]
+    }
   },
   "v1FloorSelfBlocking": {
-    "floorLayerVoxels_0to5cm": 22668, "ofWhichObstacleBecauseMaxYAbove3cm": 16619,
-    "floorLayerVoxels_minus5to0cm": 21190, "ofWhichBelowFloorContradiction": 7768
+    "floorLayerVoxels_0to5cm": 22668,
+    "ofWhichObstacleBecauseMaxYAbove3cm": 16619,
+    "floorLayerVoxels_minus5to0cm": 21190,
+    "ofWhichBelowFloorContradiction": 7768
   },
   "v2Attribution": {
     "positiveOccupiedObstacleVoxels": 190522,
     "floorLayerVoxelsCountedAsObstacle": 15650,
-    "floorLayerObstacleMaxYcm_p10_p50_p90": [4.04, 4.94, 5.0],
+    "floorLayerObstacleMaxYcm_p10_p50_p90": [
+      4.04,
+      4.94,
+      5.0
+    ],
     "surfaceCellsBlockedOnlyByFloorLayerVoxels": 1365,
     "eligibleCellsNearestObstacleIsFloorLayerFraction": 0.298,
-    "eligibleCellsNearestAboveFloorObstacleCentreDistance_m_p10_p50_p90": [0.079, 0.106, 0.226],
+    "eligibleCellsNearestAboveFloorObstacleCentreDistance_m_p10_p50_p90": [
+      0.079,
+      0.106,
+      0.226
+    ],
     "recastNavmeshFromV2Surface": "no supported walkable polygons at radius 0.5324/0.4204/0.3704/0.2704"
   },
   "octomapAllRange_M2": {
-    "insertSeconds": 40.4, "occupiedLeaves": 280717, "freeLeaves": 1125461,
-    "columns5cm": {"support": 22340, "obstacle_2.5to177.5cm": 16555, "unknownInBody": 39646, "belowFloor_layers-1-2": 9684, "walk": 5738, "supportNoObstacleKnown": 11500},
-    "belowFloorByLayer": {"-1 (-7.5..-2.5cm)": 9446, "-2 (-12.5..-7.5cm)": 203, "-3 (-17.5..-12.5cm)": 32},
-    "rayReductionComparison": {"fullRays_walk": 5738, "onePerEndpointVoxel_walk": 5826, "verdict": "not a material cause"}
+    "insertSeconds": 40.4,
+    "occupiedLeaves": 280717,
+    "freeLeaves": 1125461,
+    "columns5cm": {
+      "support": 22340,
+      "obstacle_2.5to177.5cm": 16555,
+      "unknownInBody": 39646,
+      "belowFloor_layers-1-2": 9684,
+      "walk": 5738,
+      "supportNoObstacleKnown": 11500
+    },
+    "belowFloorByLayer": {
+      "-1 (-7.5..-2.5cm)": 9446,
+      "-2 (-12.5..-7.5cm)": 203,
+      "-3 (-17.5..-12.5cm)": 32
+    },
+    "rayReductionComparison": {
+      "fullRays_walk": 5738,
+      "onePerEndpointVoxel_walk": 5826,
+      "verdict": "not a material cause"
+    }
   },
-  "octomapNearRangeTree": {"2.0m": {"occupied": 72060, "free": 784564, "belowFloorColumns": 463}, "1.5m": {"occupied": 23990, "free": 512755, "belowFloorColumns": 9}},
+  "octomapNearRangeTree": {
+    "2.0m": {
+      "occupied": 72060,
+      "free": 784564,
+      "belowFloorColumns": 463
+    },
+    "1.5m": {
+      "occupied": 23990,
+      "free": 512755,
+      "belowFloorColumns": 9
+    }
+  },
   "policyD1": {
     "rules": "support = all-range layer 0 occupied; blocked if: no support; any all-range occupancy >= 7.5 cm below plane; near(<=2 m) occupancy 2.5-7.5 cm below; layer +1 (2.5-7.5 cm) near-occupied or all-range-occupied unless near says free; layer +1 unknown in both; any occupancy 7.5-177.5 cm in either tree; any unknown 7.5-177.5 cm in both trees",
-    "columns": {"support": 22340, "deepBelow": 221, "nearDip": 463, "low1": 6860, "highObstacle": 16461, "highUnknown": 39259, "walk": 10669, "walkWithLowBandUnresolvedFlag": 7012, "walkWithFarOnlyDipFlag": 5116},
-    "fullBodyCentres": {
-      "0.2704": {"centres": 1645, "largestComponentExtent_m": 6.92},
-      "0.3704": {"centres": 642, "largestComponentExtent_m": 5.73},
-      "0.4204": {"centres": 365, "largestComponentExtent_m": 1.73},
-      "0.5324": {"centres": 35, "largestComponentExtent_m": 0.53},
-      "0.6000": {"centres": 5, "largestComponentExtent_m": 0.14}
+    "columns": {
+      "support": 22340,
+      "deepBelow": 221,
+      "nearDip": 463,
+      "low1": 6860,
+      "highObstacle": 16461,
+      "highUnknown": 39259,
+      "walk": 10669,
+      "walkWithLowBandUnresolvedFlag": 7012,
+      "walkWithFarOnlyDipFlag": 5116
     },
-    "radiusScan_largestComponentExtent_m": {"0.27": 6.92, "0.31": 6.78, "0.33": 5.89, "0.37": 5.73, "0.39": 3.6, "0.41": 1.96, "0.45": 1.65},
+    "fullBodyCentres": {
+      "0.2704": {
+        "centres": 1645,
+        "largestComponentExtent_m": 6.92
+      },
+      "0.3704": {
+        "centres": 642,
+        "largestComponentExtent_m": 5.73
+      },
+      "0.4204": {
+        "centres": 365,
+        "largestComponentExtent_m": 1.73
+      },
+      "0.5324": {
+        "centres": 35,
+        "largestComponentExtent_m": 0.53
+      },
+      "0.6000": {
+        "centres": 5,
+        "largestComponentExtent_m": 0.14
+      }
+    },
+    "radiusScan_largestComponentExtent_m": {
+      "0.27": 6.92,
+      "0.31": 6.78,
+      "0.33": 5.89,
+      "0.37": 5.73,
+      "0.39": 3.6,
+      "0.41": 1.96,
+      "0.45": 1.65
+    },
     "recastDetour": {
       "method": "walk columns exported as flat quads; Config(height 1.75, max_climb 0); endpoints = 40 seeded (seed 7) full-body centres; associated complete routes only",
-      "r0.5324_cs0.10": {"orderedPairs": 1190, "complete": 650, "maxPath_m": 0.38},
-      "r0.4204_cs0.05": {"orderedPairs": 1560, "complete": 614, "medianPath_m": 0.41, "maxPath_m": 1.35},
-      "r0.3704_cs0.05": {"orderedPairs": 1560, "complete": 510, "medianPath_m": 0.78, "maxPath_m": 2.60},
-      "r0.2704_cs0.05": {"orderedPairs": 1560, "complete": 602, "medianPath_m": 1.53, "maxPath_m": 5.82}
+      "r0.5324_cs0.10": {
+        "orderedPairs": 1190,
+        "complete": 650,
+        "maxPath_m": 0.38
+      },
+      "r0.4204_cs0.05": {
+        "orderedPairs": 1560,
+        "complete": 614,
+        "medianPath_m": 0.41,
+        "maxPath_m": 1.35
+      },
+      "r0.3704_cs0.05": {
+        "orderedPairs": 1560,
+        "complete": 510,
+        "medianPath_m": 0.78,
+        "maxPath_m": 2.6
+      },
+      "r0.2704_cs0.05": {
+        "orderedPairs": 1560,
+        "complete": 602,
+        "medianPath_m": 1.53,
+        "maxPath_m": 5.82
+      }
     },
-    "isolatedObstacleSpecks": {"columns": 104, "blobs": 86, "distinctFramesPerVoxel_p50_p90_max": [3.5, 6, 12], "singleFrameVoxels": 0, "heights_m_p10_p50_p90": [0.05, 0.22, 0.75], "status": "retained; real/artifact undetermined without reference scoring"}
+    "isolatedObstacleSpecks": {
+      "columns": 104,
+      "blobs": 86,
+      "distinctFramesPerVoxel_p50_p90_max": [
+        3.5,
+        6,
+        12
+      ],
+      "singleFrameVoxels": 0,
+      "heights_m_p10_p50_p90": [
+        0.05,
+        0.22,
+        0.75
+      ],
+      "status": "retained; real/artifact undetermined without reference scoring"
+    }
   },
   "syntheticRetentionFixture": {
     "meaning": "noise-free 10x10 cm boxes rendered into the real recorded rays; tests that the classification does not erase them, not that the phone would detect them",
-    "near-zone 4cm": {"raysHit": 1505, "frames": 23, "blocked3x3": "9/9"},
-    "near-zone 8cm": {"raysHit": 2469, "frames": 39, "blocked3x3": "9/9"},
-    "far-only-zone 4cm": {"raysHit": 1615, "frames": 41, "blocked3x3": "9/9"},
-    "far-only-zone 8cm": {"raysHit": 1134, "frames": 14, "blocked3x3": "9/9"},
+    "near-zone 4cm": {
+      "raysHit": 1505,
+      "frames": 23,
+      "blocked3x3": "9/9"
+    },
+    "near-zone 8cm": {
+      "raysHit": 2469,
+      "frames": 39,
+      "blocked3x3": "9/9"
+    },
+    "far-only-zone 4cm": {
+      "raysHit": 1615,
+      "frames": 41,
+      "blocked3x3": "9/9"
+    },
+    "far-only-zone 8cm": {
+      "raysHit": 1134,
+      "frames": 14,
+      "blocked3x3": "9/9"
+    },
     "declaredBlindSpot": "anything lower than 2.5 cm above the plane is inside layer 0 and is not separable from floor in this policy"
   },
-  "bodyEnvelope": {"declared": [0.45, 0.30, 1.60], "circumradius": 0.2704, "v1v2PlannerRadius": 0.3824, "withMargin": 0.5324, "recastErosion_cs0.1": 0.60},
-  "notRun": ["100 game episodes", "FARO scoring of any corrected map", "Open3D TSDF baseline", "Swift SurfaceGameWorker", "any live device"],
+  "bodyEnvelope": {
+    "declared": [
+      0.45,
+      0.3,
+      1.6
+    ],
+    "circumradius": 0.2704,
+    "v1v2PlannerRadius": 0.3824,
+    "withMargin": 0.5324,
+    "recastErosion_cs0.1": 0.6
+  },
+  "notRun": [
+    "100 game episodes",
+    "FARO scoring of any corrected map",
+    "Open3D TSDF baseline",
+    "Swift SurfaceGameWorker",
+    "any live device"
+  ],
   "gameEpisodesExecuted": 0,
   "FAROUsedByPlanner": false,
-  "physicalAuthority": false
+  "physicalAuthority": false,
+  "secondPass": {
+    "correctionToFirstPass": "frame/scan counts are NOT inflated by the 4x4 pixel repetition (v1 views once per frame; OctoMap once per scan); v1 hit counts and min/max extremes are",
+    "statisticalLowBand": {
+      "sigmaCmByRangeBin": {
+        "edges_m": [
+          0,
+          1,
+          1.5,
+          2,
+          2.5,
+          3,
+          3.5,
+          4.5,
+          8
+        ],
+        "sigma_cm": [
+          0.3,
+          0.73,
+          0.84,
+          0.93,
+          0.69,
+          0.68,
+          1.06,
+          3.04
+        ]
+      },
+      "perFrameBiasRemoved": true,
+      "thresholds": "n>=30, frames>=3; clear: mean+3SE<2.5cm and tail<7%; object: mean-3SE>1cm or tail>15%; else unresolved (diagnostic, not frozen)",
+      "nearResolvedWalk": {
+        "clear": 3165,
+        "object": 198,
+        "unresolved": 294
+      },
+      "flaggedFarOnlyWalk": {
+        "clear": 5289,
+        "object": 510,
+        "unresolved": 1213
+      },
+      "d1LowBandPositive": {
+        "clear": 132,
+        "object": 316,
+        "unresolved": 156
+      },
+      "objectColumns": {
+        "total": 1024,
+        "meanHeightCm_p10_p50_p90": [
+          0.0,
+          1.8,
+          4.4
+        ],
+        "blobs": 168,
+        "singleColumnBlobs": 90,
+        "blobsOver10": 17,
+        "nearClearConflicts": 198
+      },
+      "injectedBoxes": {
+        "near4cm": "+3.6cm object",
+        "near8cm": "+7.5cm object",
+        "far4cm": "+4.0cm object",
+        "far8cm": "+8.3cm object"
+      },
+      "walkColumns": {
+        "d1Permissive": 10669,
+        "d1Strict": 3657,
+        "statClearOnly": 8427,
+        "statObjectBlockedOnly": 9942
+      }
+    },
+    "rectangleRoutes": {
+      "method": "Recast disc 0.375 (lateral half-width+0.15), swept inflated rectangle 0.375x0.30 half-extents along Detour path, 5deg turn sampling, 60 seeded endpoints, routes 2-6 m",
+      "d1Permissive": {
+        "discCentres": 642,
+        "complete": 615,
+        "len2to6": 103,
+        "rectPass": 28,
+        "passLengths_m": {
+          "min": 2.3,
+          "median": 2.58,
+          "max": 3.02
+        },
+        "failTurn": 22,
+        "failSegment": 53
+      },
+      "d1Strict": "no walkable polygons",
+      "statClearOnly": {
+        "discCentres": 405,
+        "complete": 552,
+        "len2to6": 0
+      },
+      "statObjectBlockedOnly": {
+        "discCentres": 519,
+        "complete": 465,
+        "len2to6": 0
+      }
+    },
+    "gameEpisodesExecuted": 0,
+    "FAROUsedByPlanner": false,
+    "FAROScoringRun": false
+  }
 }
