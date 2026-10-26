@@ -1,0 +1,921 @@
+{
+  "scope": "Public MuSHRoom-derived assisted table lap, source exclusion and candidate-only Swift/native bridge; no private data.",
+  "source": "Xuqian Ren et al., MuSHRoom: https://zenodo.org/records/10230733 and https://zenodo.org/records/10222321; CC BY4.0 https://creativecommons.org/licenses/by/4.0/. Modifications documented; Recast license included.",
+  "inputPublicationManifestSHA256": {
+    "blind-tabletop-exclusion-planner-66/PUBLICATION_MANIFEST.json": "466c79ddeaba250cace95a8d2cddf2229631aa4d97a846081fa3195fb12f1070",
+    "blind-tabletop-exclusion-loop-67/PUBLICATION_MANIFEST.json": "54287b767d12e23ecd6e9a7597950f63f5f7ead7c1acaabedf7907149149a552",
+    "blind-swift-native-mesh-replay-68/MANIFEST.json": "d5141a1cc37c00f0c7f9785569a12121ebebeb84121710376fcd904663825055"
+  },
+  "files": [
+    {
+      "path": "blind-tabletop-exclusion-planner-66/BUILD_RECEIPT.json",
+      "source": "blind-tabletop-exclusion-planner-66/BUILD_RECEIPT.json",
+      "group": "code-source-and-swift",
+      "bytes": 9728,
+      "sha256": "b871498ca713fb2b5ae28ea42309c8d67bbca4dc1760c64d1044b955f7548f95"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/FRAME_METADATA_PARITY.json",
+      "source": "blind-tabletop-exclusion-planner-66/FRAME_METADATA_PARITY.json",
+      "group": "code-source-and-swift",
+      "bytes": 583,
+      "sha256": "b0f98ccad8c5973e4af6f5c0af177f101b459fc080b124320ca03ebe2fb4bf14"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/FROZEN.json",
+      "source": "blind-tabletop-exclusion-planner-66/FROZEN.json",
+      "group": "code-source-and-swift",
+      "bytes": 13104,
+      "sha256": "fa84ea2746c989aa8b00078e0223083bbfc3afeaaf1c3f2d6bfdf023156d0ac7"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/GRAPH_IDENTITY.json",
+      "source": "blind-tabletop-exclusion-planner-66/GRAPH_IDENTITY.json",
+      "group": "code-source-and-swift",
+      "bytes": 910,
+      "sha256": "c1936d36921716cbbded279f7df4bc558c0d26ca3f61a29a92d9e454663894c3"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/GRID_MONOTONICITY_AUDIT.json",
+      "source": "blind-tabletop-exclusion-planner-66/GRID_MONOTONICITY_AUDIT.json",
+      "group": "code-source-and-swift",
+      "bytes": 633,
+      "sha256": "eed04ec64519b8feb9028ed39e240fcc60929ffbc020fc85092cbc85b14904f5"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/INDEPENDENT_FINAL_SOURCE_GATE.json",
+      "source": "blind-tabletop-exclusion-planner-66/INDEPENDENT_FINAL_SOURCE_GATE.json",
+      "group": "code-source-and-swift",
+      "bytes": 420,
+      "sha256": "f3ce7d2fb4f94a85cc85636fb059727fca1c7d2d7f9ff602d279958002a779f3"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/INDEPENDENT_REVIEW.json",
+      "source": "blind-tabletop-exclusion-planner-66/INDEPENDENT_REVIEW.json",
+      "group": "code-source-and-swift",
+      "bytes": 742,
+      "sha256": "17730329b5643b76fb887df680aff3cb91a6852c1be8df3506fe922eae540075"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/INDEPENDENT_SOURCE_RESULT_REVIEW.json",
+      "source": "blind-tabletop-exclusion-planner-66/INDEPENDENT_SOURCE_RESULT_REVIEW.json",
+      "group": "code-source-and-swift",
+      "bytes": 863,
+      "sha256": "d3dfefa8d0e75f4f6f974b6f27470db685a469320d3339ab7ff0909b14e096e9"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/INDEPENDENT_STREAMING_PREFLIGHT_GATE.json",
+      "source": "blind-tabletop-exclusion-planner-66/INDEPENDENT_STREAMING_PREFLIGHT_GATE.json",
+      "group": "code-source-and-swift",
+      "bytes": 449,
+      "sha256": "bc79fe211508723c7df72a5f92bd48b496d256a1dffc7a84d3dae082010b5167"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/License.txt",
+      "source": "blind-tabletop-exclusion-planner-66/License.txt",
+      "group": "code-source-and-swift",
+      "bytes": 877,
+      "sha256": "ffad87821cce7cfd3be00b63ffadd01b04e83a4c6a0bcc68f06362ffd42d705e"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/METADATA_ONLY_PATH_PARITY.json",
+      "source": "blind-tabletop-exclusion-planner-66/METADATA_ONLY_PATH_PARITY.json",
+      "group": "code-source-and-swift",
+      "bytes": 750,
+      "sha256": "6bcce65f8383e3e2c887a8af834b4e634ce0123a336f1caaac195a6e4b0c5653"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/PREFLIGHT_FAILED_MANIFEST_NOT_QUERIED.json",
+      "source": "blind-tabletop-exclusion-planner-66/PREFLIGHT_FAILED_MANIFEST_NOT_QUERIED.json",
+      "group": "code-source-and-swift",
+      "bytes": 72266,
+      "sha256": "bc880c992f1f5c704f98a9c1814abb387f989761f34643f6beadbc9a56aea759"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/PREFLIGHT_FAILURE_01.json",
+      "source": "blind-tabletop-exclusion-planner-66/PREFLIGHT_FAILURE_01.json",
+      "group": "code-source-and-swift",
+      "bytes": 378,
+      "sha256": "78942c6fa0f447324ef7a8000b7ab61f8e613489a9dbc03e4302e537c73acf0d"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/PRE_REVIEW_BUILD_RECEIPT.json",
+      "source": "blind-tabletop-exclusion-planner-66/PRE_REVIEW_BUILD_RECEIPT.json",
+      "group": "code-source-and-swift",
+      "bytes": 9728,
+      "sha256": "6509d76d8a9e5f495e21b19ea8e4f7de4a646ff03a24b16805fb0ac078ec97cb"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/PRE_REVIEW_MANIFEST_NOT_RUN.json",
+      "source": "blind-tabletop-exclusion-planner-66/PRE_REVIEW_MANIFEST_NOT_RUN.json",
+      "group": "code-source-and-swift",
+      "bytes": 72266,
+      "sha256": "dd011229428144276872a5411f88bea0748408c3e7a863b9057d99989eb338dd"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/PROTOCOL.md",
+      "source": "blind-tabletop-exclusion-planner-66/PROTOCOL.md",
+      "group": "code-source-and-swift",
+      "bytes": 3134,
+      "sha256": "5303334b4f2d93555eff925032cd19384a2d68c7af85e711373e5cd4856aaa84"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/README.md",
+      "source": "blind-tabletop-exclusion-planner-66/README.md",
+      "group": "code-source-and-swift",
+      "bytes": 3309,
+      "sha256": "f92b5e0064a881eac5f6ce6dfcfd6c81acb33c10d4ff8a4024574af96f449323"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/SOURCE_PROPOSAL.png",
+      "source": "blind-tabletop-exclusion-planner-66/SOURCE_PROPOSAL.png",
+      "group": "code-source-and-swift",
+      "bytes": 96077,
+      "sha256": "a20b98b53e672b0aa491359de3d33034eff5ec8896a94e0c491d74d4c4620bb4"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/SOURCE_RUNTIME_MANIFEST.json",
+      "source": "blind-tabletop-exclusion-planner-66/SOURCE_RUNTIME_MANIFEST.json",
+      "group": "code-source-and-swift",
+      "bytes": 2434,
+      "sha256": "f16b96f7f510b7641c6a97e2dbd598ba66dfdd08e30e3428c3e100237eb02b87"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/audit_grid_monotonicity.py",
+      "source": "blind-tabletop-exclusion-planner-66/audit_grid_monotonicity.py",
+      "group": "code-source-and-swift",
+      "bytes": 2291,
+      "sha256": "f20619649721f7a8d59bc99715a017367a927b47212bb78fff74ada9c6b7a831"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/blind_detour_exclusion.cpp",
+      "source": "blind-tabletop-exclusion-planner-66/blind_detour_exclusion.cpp",
+      "group": "code-source-and-swift",
+      "bytes": 13868,
+      "sha256": "b4e5b2fa059e8b59d9e325e9ede734eb27f93a8933571adc576bef9262ed4ff9"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/build.py",
+      "source": "blind-tabletop-exclusion-planner-66/build.py",
+      "group": "code-source-and-swift",
+      "bytes": 1312,
+      "sha256": "9573c104e1ab09a56cb1e5aedc14db3abd425a01c079e9e0d52fb4efeb78e6cc"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/build.stderr.log",
+      "source": "blind-tabletop-exclusion-planner-66/build.stderr.log",
+      "group": "code-source-and-swift",
+      "bytes": 10130,
+      "sha256": "f4f5aca911340bfdbf699a10343abf757a496c77d05021daada1720a7ce8f000"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/clearance_adapter.cpp",
+      "source": "blind-tabletop-exclusion-planner-66/clearance_adapter.cpp",
+      "group": "code-source-and-swift",
+      "bytes": 1316,
+      "sha256": "c1c69184a434bbb46280fd6125f52138f83802e114724d26369eb4e2a62ae2ee"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/draw_source.py",
+      "source": "blind-tabletop-exclusion-planner-66/draw_source.py",
+      "group": "code-source-and-swift",
+      "bytes": 2712,
+      "sha256": "8aa0070305357689cadc0850ab622a36a51d3cf7f844e06da57311eb89813bbd"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/fixtures-01.log",
+      "source": "blind-tabletop-exclusion-planner-66/fixtures-01.log",
+      "group": "code-source-and-swift",
+      "bytes": 786,
+      "sha256": "4c1dd133b8527782df1fc26bf33f265fb4fadc313f9015e698fc4d7021c33b7a"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/fixtures-02.log",
+      "source": "blind-tabletop-exclusion-planner-66/fixtures-02.log",
+      "group": "code-source-and-swift",
+      "bytes": 106,
+      "sha256": "365fb2767464d5bc4d952304776db8b00578282ee9b0e1e9bb245ef879321a03"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/fixtures-03.log",
+      "source": "blind-tabletop-exclusion-planner-66/fixtures-03.log",
+      "group": "code-source-and-swift",
+      "bytes": 107,
+      "sha256": "26e30ef28d852e2b9e19d659aa799b54e3dfc2400572d6eb8a55619ce7cd856c"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/freeze.py",
+      "source": "blind-tabletop-exclusion-planner-66/freeze.py",
+      "group": "code-source-and-swift",
+      "bytes": 1093,
+      "sha256": "d0a77df942438df212026acc66a82ae40e40b9fedd8e626604db297e4c3e9562"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/graph_identity.py",
+      "source": "blind-tabletop-exclusion-planner-66/graph_identity.py",
+      "group": "code-source-and-swift",
+      "bytes": 1200,
+      "sha256": "9b56fbbe5afd1feddcd5f187ad4e07be5bf17d5b51566348ffc21161e81743fa"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/lib_pre_review_not_frozen.so",
+      "source": "blind-tabletop-exclusion-planner-66/lib_pre_review_not_frozen.so",
+      "group": "code-source-and-swift",
+      "bytes": 327688,
+      "sha256": "3752d13f2f1b7d9b3187348b18cd458507c36fe5e33df4931808c0cacb243a85"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/libblind_detour.so",
+      "source": "blind-tabletop-exclusion-planner-66/libblind_detour.so",
+      "group": "code-source-and-swift",
+      "bytes": 327688,
+      "sha256": "68979a79c67e8d9e4783d272059b7a7f2bc779718fd74f3f8e287cf90ec02b4d"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/native_exclusion.py",
+      "source": "blind-tabletop-exclusion-planner-66/native_exclusion.py",
+      "group": "code-source-and-swift",
+      "bytes": 3365,
+      "sha256": "aa1da6fe3f4bc962fafa2bfc597d81675d7da61daab181d8e834e5bd3414d0bd"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/run_source.py",
+      "source": "blind-tabletop-exclusion-planner-66/run_source.py",
+      "group": "code-source-and-swift",
+      "bytes": 2891,
+      "sha256": "6d75a26385e06acbe5e6d5130c48c178c7addaa6d6653b6bec6821d50b00657c"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/source-01/QUERY_EVIDENCE.json.gz",
+      "source": "blind-tabletop-exclusion-planner-66/source-01/QUERY_EVIDENCE.json.gz",
+      "group": "code-source-and-swift",
+      "bytes": 71779,
+      "sha256": "2f9e2178527ca3f31e31103a3145fa8bcfa6adf9c453f6c2aad32a47d690ae0d"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/source-01/RESULT.json",
+      "source": "blind-tabletop-exclusion-planner-66/source-01/RESULT.json",
+      "group": "code-source-and-swift",
+      "bytes": 12948,
+      "sha256": "da05487a1550d1bf907fd8b63b606ce4324b8ca2eb864a2040c3c5b33a8bfa5b"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/source_metadata_only.py",
+      "source": "blind-tabletop-exclusion-planner-66/source_metadata_only.py",
+      "group": "code-source-and-swift",
+      "bytes": 5183,
+      "sha256": "ca0d6a6064855ae89026fefb7727bd15e535605d9e229ea2a7845cc0d6c3c163"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/source_replan.py",
+      "source": "blind-tabletop-exclusion-planner-66/source_replan.py",
+      "group": "code-source-and-swift",
+      "bytes": 5166,
+      "sha256": "ae2c905e9f0719a3d758055689dea61f7dd51b546e3d46d324d2958f4c175ad1"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/test_exclusion.py",
+      "source": "blind-tabletop-exclusion-planner-66/test_exclusion.py",
+      "group": "code-source-and-swift",
+      "bytes": 4041,
+      "sha256": "249d433f7487e7425ba41252293f06f29311675be1cc302b6776a0db6b9a4af8"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/verify_metadata_only.py",
+      "source": "blind-tabletop-exclusion-planner-66/verify_metadata_only.py",
+      "group": "code-source-and-swift",
+      "bytes": 1039,
+      "sha256": "07d310cca746e059d79dce845eedb746c8d577f6561559e98412a6d5e6882f96"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/PUBLICATION_MANIFEST.json",
+      "source": "blind-tabletop-exclusion-planner-66/PUBLICATION_MANIFEST.json",
+      "group": "code-source-and-swift",
+      "bytes": 5805,
+      "sha256": "466c79ddeaba250cace95a8d2cddf2229631aa4d97a846081fa3195fb12f1070"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/ACTUAL_PATH.png",
+      "source": "blind-tabletop-exclusion-loop-67/ACTUAL_PATH.png",
+      "group": "code-source-and-swift",
+      "bytes": 97959,
+      "sha256": "249ff0f0b18df7414a8a06076bebc6c69663c0d19d6d93dc8904ea984c4fa0e8"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/DUAL_SOURCE_FIXED_PATH_AUDIT.json",
+      "source": "blind-tabletop-exclusion-loop-67/DUAL_SOURCE_FIXED_PATH_AUDIT.json",
+      "group": "code-source-and-swift",
+      "bytes": 1642,
+      "sha256": "a562cfee1325e096b3877db4a5ecfa7e8f377ca00eb93db9945653067115f9f1"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/DUAL_SOURCE_FIXED_SEGMENTS.json.gz",
+      "source": "blind-tabletop-exclusion-loop-67/DUAL_SOURCE_FIXED_SEGMENTS.json.gz",
+      "group": "code-source-and-swift",
+      "bytes": 53011,
+      "sha256": "51dce403b377fd98694b942f0bb2c916c746839d5ef1c7ad029e982f851a67a9"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/EVIDENCE_CODEC.json",
+      "source": "blind-tabletop-exclusion-loop-67/EVIDENCE_CODEC.json",
+      "group": "code-source-and-swift",
+      "bytes": 970,
+      "sha256": "a3c621e4f398b796b06dc8330d2c796de243630e1a10af9e03e11c84cef7ac0f"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/FROZEN.json",
+      "source": "blind-tabletop-exclusion-loop-67/FROZEN.json",
+      "group": "code-source-and-swift",
+      "bytes": 77357,
+      "sha256": "ed212f4956d50c41fd16f7f0744e2003c1bcc8e2ec3499bc36160a1f390a6c51"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/INDEPENDENT_FINAL_REVIEW.json",
+      "source": "blind-tabletop-exclusion-loop-67/INDEPENDENT_FINAL_REVIEW.json",
+      "group": "code-source-and-swift",
+      "bytes": 1202,
+      "sha256": "1bc4b453acf905f4ae09058e82a4996feb900eec5bc0f5df4915979346781733"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/INDEPENDENT_TERMINAL_REVIEW.json",
+      "source": "blind-tabletop-exclusion-loop-67/INDEPENDENT_TERMINAL_REVIEW.json",
+      "group": "code-source-and-swift",
+      "bytes": 4601,
+      "sha256": "ac8f6e1e169e5a9cbc84a90cc84361e492848c6b496bff711074e5db44476378"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/MOVEMENT_PROTOCOL.md",
+      "source": "blind-tabletop-exclusion-loop-67/MOVEMENT_PROTOCOL.md",
+      "group": "code-source-and-swift",
+      "bytes": 4530,
+      "sha256": "9e110414b42f21d64c0a90bda926ab16e061ac7b135006329037ae0101a67483"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/PRE_CONNECTOR_DISCLOSURE_MANIFEST_NOT_RUN.json",
+      "source": "blind-tabletop-exclusion-loop-67/PRE_CONNECTOR_DISCLOSURE_MANIFEST_NOT_RUN.json",
+      "group": "code-source-and-swift",
+      "bytes": 77357,
+      "sha256": "7dcee092bdba12729e7d697fc3078a85272abf50974fedff7e8273fe1b8c22ef"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/PRE_DUAL_SOURCE_CHECK_MANIFEST_NOT_RUN.json",
+      "source": "blind-tabletop-exclusion-loop-67/PRE_DUAL_SOURCE_CHECK_MANIFEST_NOT_RUN.json",
+      "group": "code-source-and-swift",
+      "bytes": 76933,
+      "sha256": "b4c068ac558e894ce4383718109ee2009a7ef7844383aed938d0c5fabb99cc63"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/PRE_IDENTITY_REVIEW_MANIFEST_NOT_RUN.json",
+      "source": "blind-tabletop-exclusion-loop-67/PRE_IDENTITY_REVIEW_MANIFEST_NOT_RUN.json",
+      "group": "code-source-and-swift",
+      "bytes": 76933,
+      "sha256": "be8fc10746d22f58d9210c37b265733bd1140bf0191404e06ce84e19fcac140d"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/PUBLICATION_MANIFEST.json",
+      "source": "blind-tabletop-exclusion-loop-67/PUBLICATION_MANIFEST.json",
+      "group": "code-source-and-swift",
+      "bytes": 7824,
+      "sha256": "54287b767d12e23ecd6e9a7597950f63f5f7ead7c1acaabedf7907149149a552"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/README.md",
+      "source": "blind-tabletop-exclusion-loop-67/README.md",
+      "group": "code-source-and-swift",
+      "bytes": 3900,
+      "sha256": "8849e0155ba515f7641a500994c7b16e75f5feff2aebef14fd6fa594d99cb9e8"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/SELECTED_PLAN.json",
+      "source": "blind-tabletop-exclusion-loop-67/SELECTED_PLAN.json",
+      "group": "code-source-and-swift",
+      "bytes": 20148,
+      "sha256": "68a1c41d4cc82fe3073152c4f76b769162cd5048db53fc305be8502d69cdac12"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/SOURCE_RUNTIME_SMOKE.json",
+      "source": "blind-tabletop-exclusion-loop-67/SOURCE_RUNTIME_SMOKE.json",
+      "group": "code-source-and-swift",
+      "bytes": 713,
+      "sha256": "138a7ac29b4b2c70004e3af94fb19920c0aea1925160780dfd56fe3fc0ab3f18"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/audit_fixed_source_segments.py",
+      "source": "blind-tabletop-exclusion-loop-67/audit_fixed_source_segments.py",
+      "group": "code-source-and-swift",
+      "bytes": 1217,
+      "sha256": "c5110de33da48aa4c6908e5ca5fa8d94f8124c2799c3d5c2f9f62dd3dd5222d5"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/draw_actual_trace.py",
+      "source": "blind-tabletop-exclusion-loop-67/draw_actual_trace.py",
+      "group": "code-source-and-swift",
+      "bytes": 3145,
+      "sha256": "e0efd7f7aba754884069ce2a9f12da7d1bdfb5d79b767dd3f3e8e1fe57b831bf"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/evidence_codec.py",
+      "source": "blind-tabletop-exclusion-loop-67/evidence_codec.py",
+      "group": "code-source-and-swift",
+      "bytes": 1019,
+      "sha256": "36a8497ce591d7010f399a4b83e975d94952c97c0917c304d63e92bd00bd9145"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/fixtures-01.log",
+      "source": "blind-tabletop-exclusion-loop-67/fixtures-01.log",
+      "group": "code-source-and-swift",
+      "bytes": 158,
+      "sha256": "231df2b222cfa6ba6acd798ba8c2a5cc5c63f7f4c5c5906b0c144ecc7a49b8bd"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/fixtures-02.log",
+      "source": "blind-tabletop-exclusion-loop-67/fixtures-02.log",
+      "group": "code-source-and-swift",
+      "bytes": 760,
+      "sha256": "566cd40b191741813b3201fa79d111cc01ee21c0e48b335b226618cd006f482e"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/fixtures-03.log",
+      "source": "blind-tabletop-exclusion-loop-67/fixtures-03.log",
+      "group": "code-source-and-swift",
+      "bytes": 167,
+      "sha256": "970065fd1f17b87a25cdfa9a791aa3a780ac9530724f6da5fe1373e62570725c"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/fixtures-04.log",
+      "source": "blind-tabletop-exclusion-loop-67/fixtures-04.log",
+      "group": "code-source-and-swift",
+      "bytes": 168,
+      "sha256": "1c0760d84035ebde8736d6d2d8e1cab744ccd19f06496ceaf496b4a72774f3de"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/fixtures-05.log",
+      "source": "blind-tabletop-exclusion-loop-67/fixtures-05.log",
+      "group": "code-source-and-swift",
+      "bytes": 170,
+      "sha256": "2cf644f518a79ae9ed98523f5b68157802263682a9e347d1a59abbeccccdcd2a"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/freeze.py",
+      "source": "blind-tabletop-exclusion-loop-67/freeze.py",
+      "group": "code-source-and-swift",
+      "bytes": 1781,
+      "sha256": "5cea08ef7d0168ea12f94f5d95c6c4c765f7ed6e204254b8b671c2abe5e60c11"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/local_support.py",
+      "source": "blind-tabletop-exclusion-loop-67/local_support.py",
+      "group": "code-source-and-swift",
+      "bytes": 7406,
+      "sha256": "87fb064d47a695aa6656ba1753cabfec58f7ce6cadfef5094f4922fb14e19e9c"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/loop_controller.py",
+      "source": "blind-tabletop-exclusion-loop-67/loop_controller.py",
+      "group": "code-source-and-swift",
+      "bytes": 6164,
+      "sha256": "35a28a7f99063ce9b32b05ef5e6afbbec85f44781faae78b7902807c3cbaf876"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/loop_episode.py",
+      "source": "blind-tabletop-exclusion-loop-67/loop_episode.py",
+      "group": "code-source-and-swift",
+      "bytes": 13896,
+      "sha256": "6787c894af56d166ca9db978e50525b548b2e5fdc05865d80d75ca920d9eb547"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/loop_map.py",
+      "source": "blind-tabletop-exclusion-loop-67/loop_map.py",
+      "group": "code-source-and-swift",
+      "bytes": 3391,
+      "sha256": "9a42fd88149c61433c93a1309555c448fce696133044327b07135490c6b7f308"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/review_terminal_recount.py",
+      "source": "blind-tabletop-exclusion-loop-67/review_terminal_recount.py",
+      "group": "code-source-and-swift",
+      "bytes": 5647,
+      "sha256": "86127dc872e1a7f02c5881630fda8bf3b7ad17e90c89ed941d3897068a723d5a"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/RAM_PREFLIGHT.json",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/RAM_PREFLIGHT.json",
+      "group": "lap-execution",
+      "bytes": 102,
+      "sha256": "bac86df22e11ce7ae82b9b7719e8113eea1b1fcf6a84935df638876fd4b6979b"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/RUN_RECEIPT.json",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/RUN_RECEIPT.json",
+      "group": "lap-execution",
+      "bytes": 535,
+      "sha256": "ebd78282a849c7eddc36d4665b2ae7c96231a3d96488a3939b23c05fe747408f"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/heartbeat.jsonl.gz",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/heartbeat.jsonl.gz",
+      "group": "lap-execution",
+      "bytes": 153072,
+      "sha256": "a704c9977a8761effd25d2594ab2ea3d00458d8ce2ca788426e49f2ebbc001e0"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/result/ACTOR_TRACE.npz",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/result/ACTOR_TRACE.npz",
+      "group": "lap-execution",
+      "bytes": 71809,
+      "sha256": "c8d6281ba8d6756e72bce6bf8a74469001aaf8e8308b3c6cb71c0c5b77d1f600"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/result/ACTUAL_TRACE_PARTIAL.csv",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/result/ACTUAL_TRACE_PARTIAL.csv",
+      "group": "lap-execution",
+      "bytes": 363951,
+      "sha256": "c4f34ecfd447d78af72266885fa7b23226eb67ca57aceeaa5dd8bbfae173e881"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/result/LIVE_PROGRESS.json",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/result/LIVE_PROGRESS.json",
+      "group": "lap-execution",
+      "bytes": 385,
+      "sha256": "11b023ad38a0657214f36c5f2d1c987504735739dc5798e9e506859997f0f7ca"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/result/QUERY_OPTIMIZATION.json.xz",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/result/QUERY_OPTIMIZATION.json.xz",
+      "group": "lap-execution",
+      "bytes": 898980,
+      "sha256": "a6a567f981365093e7395494eaacdc71265532cb33e2327a52a795758d93899b"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/result/RESULT.json",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/result/RESULT.json",
+      "group": "lap-execution",
+      "bytes": 85471,
+      "sha256": "468c3c63ab2c96bf3e01573fff355f980ed7c2818f771dd8700bd35f34f3e212"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/result/SOURCE_REPLAN_LEG1.json.gz",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/result/SOURCE_REPLAN_LEG1.json.gz",
+      "group": "lap-execution",
+      "bytes": 38438,
+      "sha256": "0f3bfd16636607c175be8bce8f059fb94e4d3a3549750cfcdc4f53f8e7e11121"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/result/SOURCE_REPLAN_LEG2.json.gz",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/result/SOURCE_REPLAN_LEG2.json.gz",
+      "group": "lap-execution",
+      "bytes": 9708,
+      "sha256": "3e77a136eb1cb7793434fd6f753b7e1531f1a41b88613a09cd5fd46a18c0fb00"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/result/SOURCE_REPLAN_LEG3.json.gz",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/result/SOURCE_REPLAN_LEG3.json.gz",
+      "group": "lap-execution",
+      "bytes": 25252,
+      "sha256": "e2f56efc16ec9323b214c9c449ef015747a62b009477020ed398b6e0e9fe7568"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/result/SOURCE_REPLAN_LEG4.json.gz",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/result/SOURCE_REPLAN_LEG4.json.gz",
+      "group": "lap-execution",
+      "bytes": 42485,
+      "sha256": "355b6a5706526540a9d2ac7a28ece2a88db3b7af92f56967ab2559edec03a267"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/result/TICK_EVIDENCE.jsonl.xz",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/result/TICK_EVIDENCE.jsonl.xz",
+      "group": "lap-execution",
+      "bytes": 1746612,
+      "sha256": "ce303c552df6d508cb5c20d9dc6ee976846747eb02b4a6312a35667be63664ed"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/result/controller.stderr.log",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/result/controller.stderr.log",
+      "group": "lap-execution",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/stderr.log",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/stderr.log",
+      "group": "lap-execution",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run-01/stdout.log",
+      "source": "blind-tabletop-exclusion-loop-67/run-01/stdout.log",
+      "group": "lap-execution",
+      "bytes": 5913,
+      "sha256": "cdf2a54ecb31c6ac4202555a00aa4734e83c67c164ea476b3c287e2903141278"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run_bounded.py",
+      "source": "blind-tabletop-exclusion-loop-67/run_bounded.py",
+      "group": "code-source-and-swift",
+      "bytes": 4082,
+      "sha256": "48924e3cc48b2e5469017ea7592212376e5ee7c14d3c5b636926773708b1be11"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/run_loop.py",
+      "source": "blind-tabletop-exclusion-loop-67/run_loop.py",
+      "group": "code-source-and-swift",
+      "bytes": 3030,
+      "sha256": "9c86869cbb7e1c77d15d774bb25a9fb02c8a8f656dab4676c4620148bfb2b628"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/source_runtime.py",
+      "source": "blind-tabletop-exclusion-loop-67/source_runtime.py",
+      "group": "code-source-and-swift",
+      "bytes": 6852,
+      "sha256": "300f44677c017904dade1e41302fce782b1bbec0da40d9c381fdcc324b0c6ddf"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/test_actual_replan.py",
+      "source": "blind-tabletop-exclusion-loop-67/test_actual_replan.py",
+      "group": "code-source-and-swift",
+      "bytes": 3477,
+      "sha256": "5336767f69335a2fadbe1bdbfedfe8fb907a21d53ba29cba50d91ef8dd5a3941"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/test_evidence_codec.py",
+      "source": "blind-tabletop-exclusion-loop-67/test_evidence_codec.py",
+      "group": "code-source-and-swift",
+      "bytes": 972,
+      "sha256": "c14e06513aaae6b7799d1798d4aaa63e7a5f6d0cb38311ab20be81a2d9290619"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/test_local_support.py",
+      "source": "blind-tabletop-exclusion-loop-67/test_local_support.py",
+      "group": "code-source-and-swift",
+      "bytes": 5263,
+      "sha256": "217a22633a18bf4361e4ee939d019dbbc3da9eeb5e139a17bf86b8190fdadc35"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/test_loop_contract.py",
+      "source": "blind-tabletop-exclusion-loop-67/test_loop_contract.py",
+      "group": "code-source-and-swift",
+      "bytes": 7210,
+      "sha256": "73a7ef57913253b9be9f3b6254c03b2655fc428376e88c6e4e0e7069a3179dcd"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/test_low_objects.py",
+      "source": "blind-tabletop-exclusion-loop-67/test_low_objects.py",
+      "group": "code-source-and-swift",
+      "bytes": 2735,
+      "sha256": "a9c8993816f18cae54256e3d5ca0c29c8acc860245b00f55a7ec7292a743eb44"
+    },
+    {
+      "path": "blind-tabletop-exclusion-loop-67/test_runtime_exclusion.py",
+      "source": "blind-tabletop-exclusion-loop-67/test_runtime_exclusion.py",
+      "group": "code-source-and-swift",
+      "bytes": 3177,
+      "sha256": "076675f0f178f3d04c2721129ccb3ed9bafb8065590933fcd8052e2f66b78106"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/Bridge.swift",
+      "source": "blind-swift-native-mesh-replay-68/Bridge.swift",
+      "group": "code-source-and-swift",
+      "bytes": 7446,
+      "sha256": "0e11352ad14ef066a1502ef4738d540a1412f1fe593e05f34800e2f1a0278452"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/COMPILE.log",
+      "source": "blind-swift-native-mesh-replay-68/COMPILE.log",
+      "group": "code-source-and-swift",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/COMPILER_VERSION.txt",
+      "source": "blind-swift-native-mesh-replay-68/COMPILER_VERSION.txt",
+      "group": "code-source-and-swift",
+      "bytes": 75,
+      "sha256": "d7df78b37cc23138e1c65ac3cc35f9bd0db2caf1df39880130951b36a7d039f1"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/COMPILE_ATTEMPT0_NO_TIME.log",
+      "source": "blind-swift-native-mesh-replay-68/COMPILE_ATTEMPT0_NO_TIME.log",
+      "group": "code-source-and-swift",
+      "bytes": 60,
+      "sha256": "3e737f6a9117cec194b02103b357f8668fae9adb86a8a8cd0bf25efab8948548"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/COMPILE_RECEIPT.json",
+      "source": "blind-swift-native-mesh-replay-68/COMPILE_RECEIPT.json",
+      "group": "code-source-and-swift",
+      "bytes": 815,
+      "sha256": "2b1ffe415e47cd784ec03c6ff68b5ee91ba5371526aff7bd7fe74127a988387a"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/EXECUTION.log",
+      "source": "blind-swift-native-mesh-replay-68/EXECUTION.log",
+      "group": "code-source-and-swift",
+      "bytes": 66,
+      "sha256": "ac8ce462191799fc4b02821293313d48e6252fd440a3a8a4ecacec4769488be5"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/EXECUTION_RECEIPT.json",
+      "source": "blind-swift-native-mesh-replay-68/EXECUTION_RECEIPT.json",
+      "group": "code-source-and-swift",
+      "bytes": 111,
+      "sha256": "005978ddfba2867c11cc89492de2ca796c99dfa1a0315987785e421adf82d613"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/FROZEN.json",
+      "source": "blind-swift-native-mesh-replay-68/FROZEN.json",
+      "group": "code-source-and-swift",
+      "bytes": 2030,
+      "sha256": "95f4e34c6bdc2c4896d3dee4df0629e66af773bd2325163d7284299775790a43"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/INDEPENDENT_REVIEW.json",
+      "source": "blind-swift-native-mesh-replay-68/INDEPENDENT_REVIEW.json",
+      "group": "code-source-and-swift",
+      "bytes": 995,
+      "sha256": "75a9f4e9de9c5ac44a2e0de6dd8ca356482af7852a627f9fdbfca4a001a98298"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/PROTOCOL.md",
+      "source": "blind-swift-native-mesh-replay-68/PROTOCOL.md",
+      "group": "code-source-and-swift",
+      "bytes": 2938,
+      "sha256": "0cb63a438732f84f7e48376d23495ad0959c4f4aad827bd2f4e814de809a2c08"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/README.md",
+      "source": "blind-swift-native-mesh-replay-68/README.md",
+      "group": "code-source-and-swift",
+      "bytes": 5549,
+      "sha256": "8379388402d788423e99a94f7716fc6af0e3b9a39165cc1b84b85458a0630697"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/RESULT.json",
+      "source": "blind-swift-native-mesh-replay-68/RESULT.json",
+      "group": "code-source-and-swift",
+      "bytes": 10319,
+      "sha256": "376cefaf746d074944f26eb97a4f88b1c1ee3975659167f83dc661bcad11b868"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/attempt1-schema/EXECUTION.log",
+      "source": "blind-swift-native-mesh-replay-68/attempt1-schema/EXECUTION.log",
+      "group": "code-source-and-swift",
+      "bytes": 2031,
+      "sha256": "c624e59e5d0fa2d338422b7ec117c1d715519701bdcb756fe3085f06cc0183a1"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/attempt1-schema/EXECUTION_RECEIPT.json",
+      "source": "blind-swift-native-mesh-replay-68/attempt1-schema/EXECUTION_RECEIPT.json",
+      "group": "code-source-and-swift",
+      "bytes": 112,
+      "sha256": "4dcbe3fdd720e85ba88e8d02a6ac39b48c6efc2aa148649d8c631d4311e5c69e"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/attempt1-schema/FROZEN.json",
+      "source": "blind-swift-native-mesh-replay-68/attempt1-schema/FROZEN.json",
+      "group": "code-source-and-swift",
+      "bytes": 2013,
+      "sha256": "66541b817b98275c0cdfbdfccb4ddcfbfceee89c210c00cd6d231dc1306d2a83"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/attempt1-schema/PROTOCOL.md",
+      "source": "blind-swift-native-mesh-replay-68/attempt1-schema/PROTOCOL.md",
+      "group": "code-source-and-swift",
+      "bytes": 2081,
+      "sha256": "0b0762dc69da88fd3cad5cb96d6135d70fe60439848b83645997b9c0660630f8"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/attempt1-schema/make_fixture.py",
+      "source": "blind-swift-native-mesh-replay-68/attempt1-schema/make_fixture.py",
+      "group": "code-source-and-swift",
+      "bytes": 1573,
+      "sha256": "6c7de906da82a78f0fdb78f8bc24a84d536a0124ddb1d9f6c8e865219b53d441"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/attempt2-removal-review/Bridge.swift",
+      "source": "blind-swift-native-mesh-replay-68/attempt2-removal-review/Bridge.swift",
+      "group": "code-source-and-swift",
+      "bytes": 7295,
+      "sha256": "b2b0bd9ac2d46b27b0fa17d5c131b8ce3974e192e935bb658e3604f99b496b5a"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/attempt2-removal-review/COMPILE_RECEIPT.json",
+      "source": "blind-swift-native-mesh-replay-68/attempt2-removal-review/COMPILE_RECEIPT.json",
+      "group": "code-source-and-swift",
+      "bytes": 620,
+      "sha256": "13454d22954ab639b8fbf1549cadfe381c89aeb30f0c1f4f14062b14ea7fb514"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/attempt2-removal-review/EXECUTION.log",
+      "source": "blind-swift-native-mesh-replay-68/attempt2-removal-review/EXECUTION.log",
+      "group": "code-source-and-swift",
+      "bytes": 66,
+      "sha256": "4f1ff06bb85047b689d1c64fa81c1937640b74dc27de19921770c0fc6ccf6355"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/attempt2-removal-review/EXECUTION_RECEIPT.json",
+      "source": "blind-swift-native-mesh-replay-68/attempt2-removal-review/EXECUTION_RECEIPT.json",
+      "group": "code-source-and-swift",
+      "bytes": 110,
+      "sha256": "f9782f572f664f098e48ab7f9fcd7657ff78b07365ece4a4a286c5aa7469955e"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/attempt2-removal-review/FROZEN.json",
+      "source": "blind-swift-native-mesh-replay-68/attempt2-removal-review/FROZEN.json",
+      "group": "code-source-and-swift",
+      "bytes": 2030,
+      "sha256": "814ae0cb604f7c99b539cbb422efc856fafb689d68db572b25ccd6b705267b6a"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/attempt2-removal-review/PROTOCOL.md",
+      "source": "blind-swift-native-mesh-replay-68/attempt2-removal-review/PROTOCOL.md",
+      "group": "code-source-and-swift",
+      "bytes": 2478,
+      "sha256": "635d5d976bee094cb29f4bff79fe16335d071476c356f53777b30a2fe4fc9276"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/attempt2-removal-review/RESULT.json",
+      "source": "blind-swift-native-mesh-replay-68/attempt2-removal-review/RESULT.json",
+      "group": "code-source-and-swift",
+      "bytes": 10270,
+      "sha256": "a62345084088439cfbbd865914289aaeedaad08660f6ac53c2e3c92c22a2aca2"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/attempt2-removal-review/main.swift",
+      "source": "blind-swift-native-mesh-replay-68/attempt2-removal-review/main.swift",
+      "group": "code-source-and-swift",
+      "bytes": 5423,
+      "sha256": "4e8f44ebd4f8bd9b173f6dd01e221ebc676bd471468400682a2c091d7c0759cc"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/build.py",
+      "source": "blind-swift-native-mesh-replay-68/build.py",
+      "group": "code-source-and-swift",
+      "bytes": 1224,
+      "sha256": "76b31d1d0c0f0b84ce43c5d48abd90055538ecec9cc1e651d6e580dd32f948e4"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/cmodule/blind_detour.h",
+      "source": "blind-swift-native-mesh-replay-68/cmodule/blind_detour.h",
+      "group": "code-source-and-swift",
+      "bytes": 1365,
+      "sha256": "c6270b968024d0703800160d45d4110f04f73ad3ecca50ceb0fd0de3b002dbb4"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/cmodule/module.modulemap",
+      "source": "blind-swift-native-mesh-replay-68/cmodule/module.modulemap",
+      "group": "code-source-and-swift",
+      "bytes": 52,
+      "sha256": "ca0948e7abf144baf7af21b209d23cb9f761e967ba97a81185ea9f678ed07460"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/main.swift",
+      "source": "blind-swift-native-mesh-replay-68/main.swift",
+      "group": "code-source-and-swift",
+      "bytes": 5682,
+      "sha256": "1c38b33c57b55cc46ffb332e73e7b6896dbdf629cab1eddb2a50ac11872058cb"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/make_fixture.py",
+      "source": "blind-swift-native-mesh-replay-68/make_fixture.py",
+      "group": "code-source-and-swift",
+      "bytes": 1585,
+      "sha256": "96efc6b56fbf5423d453bb583a751806ed385284d1c09c90ed8c74050100c8e7"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/run.py",
+      "source": "blind-swift-native-mesh-replay-68/run.py",
+      "group": "code-source-and-swift",
+      "bytes": 1223,
+      "sha256": "92fd56a72e87df36aa6a691b1dd0470f81de2251d4acb249e822706657b3fb29"
+    },
+    {
+      "path": "blind-swift-native-mesh-replay-68/MANIFEST.json",
+      "source": "blind-swift-native-mesh-replay-68/MANIFEST.json",
+      "group": "code-source-and-swift",
+      "bytes": 3027,
+      "sha256": "d5141a1cc37c00f0c7f9785569a12121ebebeb84121710376fcd904663825055"
+    },
+    {
+      "path": "PUBLICATION/README.md",
+      "source": "blind-verified-table-lap-publication/README.md",
+      "group": "code-source-and-swift",
+      "bytes": 3363,
+      "sha256": "5117d491f4afe01d9aa4bf27b0275c7baada77f02f50a0afa62690d3a4d665ed"
+    },
+    {
+      "path": "PUBLICATION/CURRENT_CHECKPOINT_PREFIX.md",
+      "source": "blind-verified-table-lap-publication/CURRENT_CHECKPOINT_PREFIX.md",
+      "group": "code-source-and-swift",
+      "bytes": 2176,
+      "sha256": "de8dcb23dfc81e0cddfb07d4349c78f6f811f81c70e8776ca293540d70420943"
+    },
+    {
+      "path": "THIRD_PARTY/RECAST_LICENSE.txt",
+      "source": "blind-tabletop-exclusion-planner-66/License.txt",
+      "group": "code-source-and-swift",
+      "bytes": 877,
+      "sha256": "ffad87821cce7cfd3be00b63ffadd01b04e83a4c6a0bcc68f06362ffd42d705e"
+    }
+  ]
+}

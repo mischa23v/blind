@@ -1,4 +1,19 @@
-## Current checkpoint: one controlled arrival; phone-map floor barriers still open
+## Current checkpoint — one verified assisted table lap
+
+**Stage67 completed ONE assisted table lap:20.393912m horizontal travel, all five original goals, clockwise winding−1, zero actual non-floor contacts and zero predicted collision rejections.** The final pose is33.05cm from the original start, inside the unchanged35cm goal region. The winding calculation's mathematical closing segment was **not walked**.
+
+[Verified lap, code and checked evidence](research/tools/verified-assisted-table-loop-v1/README.md). Stage54's [8.432m assisted doorway entry-and-return](research/tools/verified-assisted-roundtrip-v1/README.md) is a separate completed test.
+
+**What changed:** the original source mesh missed part of a standing-table rim.64/65 used original RGB contours and interior native depth to form a manually assisted, unknown-confidence additive exclusion hypothesis.66 inserted that exclusion before Recast's existing single erosion.67 executed with source graph/native identity checks, baseline-plus-excluded segment checks and unchanged full-body/underbody collision rules. No reference geometry sized the exclusion; no failed collider was deleted.
+
+**Limits remain explicit:** one static recorded scene;45×30×160cm zero-margin body; simulated delivered localization; evaluator/reference-labelled floor support; finite-probe and sub2mm ambiguities; manually selected tabletop ROI; uncalibrated ±3px stress assumption and unknown confidence. Exempted floor contacts are unmeasured. This is not autonomous phone navigation, live tracking, moving-obstacle handling or person/device safety validation.
+
+**Implementation bridge:**68 passed34 Linux Swift→native Recast/Detour checks with existing source mesh and synthetic anchor replay. Candidate-only: the bridge is not connected to the app’s existing ARKit capture or live hazard pipeline; actual-world clearance remains unproven.
+
+**Next:**69 continuous three-lap test is running; no completed three-lap result is claimed. Preserve all prior failures in [59–65](research/tools/local-support-and-source-tabletop-v1/README.md), including59's output-target breach and older53/57 report-label correction. No100journey or physical-device trial is claimed.
+
+---
+## Earlier checkpoint: one controlled arrival; phone-map floor barriers still open
 
 **2026-10-26 — navigation remains the first priority. Live sensor clearance and physical navigation remain UNPROVEN.**
 
