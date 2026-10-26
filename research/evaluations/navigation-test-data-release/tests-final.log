@@ -1,0 +1,36 @@
+test_allowlist_exact (__main__.Tests.test_allowlist_exact) ... ok
+test_asset_upload_timeout_reconciles_once (__main__.Tests.test_asset_upload_timeout_reconciles_once) ... ok
+test_bad_existing_asset_never_overwrites (__main__.Tests.test_bad_existing_asset_never_overwrites) ... ok
+test_body_records_both_shas (__main__.Tests.test_body_records_both_shas) ... ok
+test_create_once_then_get_reconciliation (__main__.Tests.test_create_once_then_get_reconciliation) ... ok
+test_download_rejects_alternate_origins (__main__.Tests.test_download_rejects_alternate_origins) ... ok
+test_download_unauthed_and_integrity (__main__.Tests.test_download_unauthed_and_integrity) ... ok
+test_duplicate_and_unexpected_assets (__main__.Tests.test_duplicate_and_unexpected_assets) ... ok
+test_environment_guards (__main__.Tests.test_environment_guards) ... ok
+test_event_accepts_exact (__main__.Tests.test_event_accepts_exact) ... ok
+test_existing_asset_skip_no_file_read (__main__.Tests.test_existing_asset_skip_no_file_read) ... ok
+test_existing_release_no_write (__main__.Tests.test_existing_release_no_write) ... ok
+test_full_mocked_execution_downloads_before_writes (__main__.Tests.test_full_mocked_execution_downloads_before_writes) ... ok
+test_local_corruption_never_uploads (__main__.Tests.test_local_corruption_never_uploads) ... ok
+test_local_execution_refuses_before_file_or_network_access (__main__.Tests.test_local_execution_refuses_before_file_or_network_access) ... ok
+test_manifest_checksum_file_consistency (__main__.Tests.test_manifest_checksum_file_consistency) ... ok
+test_method_and_origin_scope (__main__.Tests.test_method_and_origin_scope) ... ok
+test_no_redirect_authenticated (__main__.Tests.test_no_redirect_authenticated) ... ok
+test_payload_guards (__main__.Tests.test_payload_guards) ... ok
+test_pending_chunk_reserves_space (__main__.Tests.test_pending_chunk_reserves_space) ... ok
+test_pinned_source_guard (__main__.Tests.test_pinned_source_guard) ... ok
+test_post_send_integrity_change_reconciles_without_success (__main__.Tests.test_post_send_integrity_change_reconciles_without_success) ... ok
+test_post_send_unlink_reconciles_without_success (__main__.Tests.test_post_send_unlink_reconciles_without_success) ... ok
+test_receipt_guard (__main__.Tests.test_receipt_guard) ... ok
+test_release_conflict_and_tag_conflict (__main__.Tests.test_release_conflict_and_tag_conflict) ... ok
+test_resource_budgets (__main__.Tests.test_resource_budgets) ... ok
+test_streamed_upload_headers (__main__.Tests.test_streamed_upload_headers) ... ok
+test_unresolved_asset_never_posts_twice (__main__.Tests.test_unresolved_asset_never_posts_twice) ... ok
+test_unresolved_release_never_posts_twice (__main__.Tests.test_unresolved_release_never_posts_twice) ... ok
+test_upload_path_replacement_rejected (__main__.Tests.test_upload_path_replacement_rejected) ... ok
+test_workflow_is_inert_and_scoped (__main__.Tests.test_workflow_is_inert_and_scoped) ... ok
+
+----------------------------------------------------------------------
+Ran 31 tests in 0.017s
+
+OK

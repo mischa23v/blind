@@ -1,0 +1,44 @@
+name: Experimental navigation test-data mirror
+# INERT preparation. A maintainer must publish the reviewed source, then pin
+# SOURCE_REVISION and explicitly activate a one-shot, self-path push marker.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: navigation-test-data-20261026
+  cancel-in-progress: false
+jobs:
+  mirror:
+    if: ${{ false }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      SOURCE_REVISION: UNACTIVATED
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.SOURCE_REVISION }}
+          path: pinned-source
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Transfer exact public archives once (no extraction or execution)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 -B pinned-source/tools/ci/navigation-test-data-release.py --source "$GITHUB_WORKSPACE/pinned-source" --expected-source "$SOURCE_REVISION"
+      - name: Validate bounded metadata receipt
+        id: receipt_guard
+        if: always()
+        run: python3 -B pinned-source/tools/ci/navigation-test-data-release.py --validate-receipt
+      - name: Preserve metadata receipt only
+        if: always() && steps.receipt_guard.outcome == 'success'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: navigation-test-data-receipt-${{ github.run_id }}
+          path: ${{ runner.temp }}/blind-test-data-${{ github.run_id }}-1/receipt/receipt.json
+          if-no-files-found: error
+          retention-days: 7

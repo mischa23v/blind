@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "scope": "Mocked source/protocol verification only; no real downloads, credentials, release creation, upload or dataset execution.",
+  "finalTests": {
+    "count": 31,
+    "passed": 31,
+    "failed": 0,
+    "command": "python3 -B tools/ci/test-navigation-test-data-release.py",
+    "log": "tests-final.log"
+  },
+  "reviewRegressions": {
+    "beforeFixTests": 29,
+    "failedBeforeFix": 2,
+    "issues": [
+      "hashed pathname reopened for upload",
+      "last pending download chunk did not reserve its write bytes"
+    ],
+    "corrections": [
+      "single O_NOFOLLOW regular-file descriptor, identity checked before/after streaming, remote digest required",
+      "pending-byte disk reservation, flush and reserve recheck"
+    ],
+    "log": "review-regressions-before-fix.log",
+    "originalLogSHA256": "3bc6048256c841e3fe03e9f154c5e4c999f9c78b47b878168ab78f39a3e4303d",
+    "publicNormalization": "Only the absolute preparation source prefix was removed from traceback filenames; original failure log retained separately.",
+    "additionalRegression": "Post-send local integrity change performs bounded GET reconciliation, then remains failure; no repeated POST.",
+    "unlinkCase": {
+      "failedBeforeFix": true,
+      "originalLogSHA256": "b8d4427ef19b4bc179d9a6be27a8386e75abe4f85d4a8b95ebe2bf9622ae5128",
+      "publicLog": "unlink-regression-before-fix.log",
+      "correction": "Stat/fstat OSError normalized into an integrity change; read-only reconciliation cannot convert it to success."
+    }
+  },
+  "localInvocation": {
+    "exitCode": 1,
+    "reason": "GitHub-hosted Linux only",
+    "beforeNetwork": true
+  },
+  "workflow": "inert; source unactivated; no push trigger",
+  "notEstablished": [
+    "Hosted GITHUB_TOKEN authorization",
+    "Actual GitHub Release or uploaded assets",
+    "Network throughput within deadline",
+    "Remote digest availability",
+    "Navigation or app release safety"
+  ],
+  "sourceFiles": {
+    "tools/ci/navigation-test-data-release.py": {
+      "bytes": 21453,
+      "sha256": "fde6c96439cca19c38337025cb3b062b20ecf1d6076f156a58e78acca1acb085"
+    },
+    "tools/ci/test-navigation-test-data-release.py": {
+      "bytes": 22853,
+      "sha256": "b56ea8da3c387b98011764035da12824e9e7db7a0de1c8a8b168c0269176f262"
+    },
+    ".github/workflows/navigation-test-data-release.yml": {
+      "bytes": 1719,
+      "sha256": "20bf2d32e05d1fe28a69c7ab44c2d36a30275755f90fcf5adb2e2004f02d776a"
+    }
+  }
+}
