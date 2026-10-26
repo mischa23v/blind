@@ -1,4 +1,9 @@
-## Current checkpoint — Apple bridge passed; five short synthetic pilots completed
+## Latest development result — retained-pose jitter variant rejected
+
+Stage 74 timed out after 450 ticks and 1.240 m; it did not arrive. Reducing no-pose stops from 193 to 2 was not an improvement: coalescing discarded a valid corner-progress observation, and steering continued toward the old waypoint. The passing stage 73 baseline remains preserved. [Failure, exact diagnosis and separate restoration-index update](research/tools/failed-retained-pose-and-restoration-v1/README.md). No new movement success or safety claim follows from this experiment.
+
+---
+## Earlier checkpoint — Apple bridge passed; five short synthetic pilots completed
 
 **Stage 73: five of five predeclared first-leg synthetic episodes reached the original goal region.** Nominal: 2.775841 m / 172 ticks; 3-tick command delay: 2.839975 m / 197 ticks; 2 ± 2-tick pose timing delay/jitter: 2.800000 m / 370 ticks; 1.15× translation: 2.783000 m / 154 ticks; capture withholding at ticks 60–89: 2.775841 m / 202 ticks. These are short development trials on the SAME route, not five laps, five rooms or a 100-episode validation suite. **Jitter caused 193 stop ticks / 191 coalesced packets: arrival was not smooth guidance.** Zero actual contacts alone is insufficient with a reference veto; no predicted collision/support veto occurred here. Future no-path/invalid starts remain counted.
 

@@ -1,0 +1,436 @@
+{
+  "scope": "Failed retained-pose pilot preserved separately from checkpoint restoration update; no later controller fix or unfinished CI files",
+  "inputManifestSHA256": {
+    "blind-retained-pose-jitter-pilot-74/PUBLICATION_MANIFEST.json": "1d25cb84de4785dbb38e986c55cc244d5e446aadb42fd1b445f2b65635fe035d",
+    "blind-checkpoint-restore-update-74/MANIFEST.json": "addc77894b69f08ae4a82d9ecd886ba5de9f215ece598a6414d1daac2a669fe9"
+  },
+  "files": [
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/CONDITIONS.json",
+      "source": "blind-retained-pose-jitter-pilot-74/CONDITIONS.json",
+      "group": "retained-pose-failure",
+      "bytes": 2481,
+      "sha256": "4949e25beadc387011279159e71aa4a3c897fed4988a134a8f83e20e97c010ad"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/DUAL_SOURCE_FIXED_PATH_AUDIT.json",
+      "source": "blind-retained-pose-jitter-pilot-74/DUAL_SOURCE_FIXED_PATH_AUDIT.json",
+      "group": "retained-pose-failure",
+      "bytes": 1642,
+      "sha256": "a562cfee1325e096b3877db4a5ecfa7e8f377ca00eb93db9945653067115f9f1"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/DUAL_SOURCE_FIXED_SEGMENTS.json.gz",
+      "source": "blind-retained-pose-jitter-pilot-74/DUAL_SOURCE_FIXED_SEGMENTS.json.gz",
+      "group": "retained-pose-failure",
+      "bytes": 53011,
+      "sha256": "51dce403b377fd98694b942f0bb2c916c746839d5ef1c7ad029e982f851a67a9"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/EVIDENCE_CODEC.json",
+      "source": "blind-retained-pose-jitter-pilot-74/EVIDENCE_CODEC.json",
+      "group": "retained-pose-failure",
+      "bytes": 970,
+      "sha256": "a3c621e4f398b796b06dc8330d2c796de243630e1a10af9e03e11c84cef7ac0f"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/FROZEN.json",
+      "source": "blind-retained-pose-jitter-pilot-74/FROZEN.json",
+      "group": "retained-pose-failure",
+      "bytes": 83942,
+      "sha256": "12fed4bc8f5097c830fd391932d424e133015e36fa5f6c49631829d2a834193d"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/INDEPENDENT_PRELAUNCH_REVIEW.json",
+      "source": "blind-retained-pose-jitter-pilot-74/INDEPENDENT_PRELAUNCH_REVIEW.json",
+      "group": "retained-pose-failure",
+      "bytes": 1627,
+      "sha256": "fde4c0e8ed4373ae12bd57d6ecae324293537650e6a7539de640d979508e5cec"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/INDEPENDENT_TERMINAL_RECOUNT.json",
+      "source": "blind-retained-pose-jitter-pilot-74/INDEPENDENT_TERMINAL_RECOUNT.json",
+      "group": "retained-pose-failure",
+      "bytes": 3291,
+      "sha256": "f6223dd777a32ad19f4f130ba6de282c2a39f6b1c0987121733d0e182af72313"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/MOVEMENT_PROTOCOL.md",
+      "source": "blind-retained-pose-jitter-pilot-74/MOVEMENT_PROTOCOL.md",
+      "group": "retained-pose-failure",
+      "bytes": 3622,
+      "sha256": "dd7f072c740d06ae6a2eadf9bdbc008741949b299709a92aee80bc1b0fbbe8b2"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/PUBLICATION_MANIFEST.json",
+      "source": "blind-retained-pose-jitter-pilot-74/PUBLICATION_MANIFEST.json",
+      "group": "retained-pose-failure",
+      "bytes": 7030,
+      "sha256": "1d25cb84de4785dbb38e986c55cc244d5e446aadb42fd1b445f2b65635fe035d"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/README.md",
+      "source": "blind-retained-pose-jitter-pilot-74/README.md",
+      "group": "retained-pose-failure",
+      "bytes": 4362,
+      "sha256": "bdf0e58c693ea30ea919a0b79d29eee3c651384c5a14d8562f3c7802f6dcbe23"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/SELECTED_PLAN.json",
+      "source": "blind-retained-pose-jitter-pilot-74/SELECTED_PLAN.json",
+      "group": "retained-pose-failure",
+      "bytes": 20148,
+      "sha256": "68a1c41d4cc82fe3073152c4f76b769162cd5048db53fc305be8502d69cdac12"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/WAYPOINT_DIAGNOSIS.json",
+      "source": "blind-retained-pose-jitter-pilot-74/WAYPOINT_DIAGNOSIS.json",
+      "group": "retained-pose-failure",
+      "bytes": 459626,
+      "sha256": "e93237e3712383f78bc50adcd2470dcf1ef825881d64e061081d0f30ca74c71e"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/diagnose_waypoint.py",
+      "source": "blind-retained-pose-jitter-pilot-74/diagnose_waypoint.py",
+      "group": "retained-pose-failure",
+      "bytes": 2967,
+      "sha256": "0cbe86b17d700eadef61a9b3e8b4970c84836e586e13658ae86131a2337ad7ac"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/diagnosis.log",
+      "source": "blind-retained-pose-jitter-pilot-74/diagnosis.log",
+      "group": "retained-pose-failure",
+      "bytes": 2369,
+      "sha256": "535a109221675f81bada04fa656c1c6e353f20b3ca4337856179025dfc86ab0b"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/evidence_codec.py",
+      "source": "blind-retained-pose-jitter-pilot-74/evidence_codec.py",
+      "group": "retained-pose-failure",
+      "bytes": 1019,
+      "sha256": "36a8497ce591d7010f399a4b83e975d94952c97c0917c304d63e92bd00bd9145"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/fixtures-01.log",
+      "source": "blind-retained-pose-jitter-pilot-74/fixtures-01.log",
+      "group": "retained-pose-failure",
+      "bytes": 9280,
+      "sha256": "ed8735ad0bede7b5daf1e7a1647fc49a851aaa9bbb9e4d023c804cb6230fea4f"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/fixtures-02.log",
+      "source": "blind-retained-pose-jitter-pilot-74/fixtures-02.log",
+      "group": "retained-pose-failure",
+      "bytes": 11803,
+      "sha256": "aebe3df4df723352a3be874168560a72f93abda8024addd1d6719ad7b90cbaa4"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/fixtures-03.log",
+      "source": "blind-retained-pose-jitter-pilot-74/fixtures-03.log",
+      "group": "retained-pose-failure",
+      "bytes": 10360,
+      "sha256": "a67ed04f2350a11b2869e62c9bc57b989085ec6398cdfb21df088a7967ce2d91"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/freeze.py",
+      "source": "blind-retained-pose-jitter-pilot-74/freeze.py",
+      "group": "retained-pose-failure",
+      "bytes": 1522,
+      "sha256": "4deedd1a886bdbd126c23fe81f64f29cab6550c013d3878d7fceefd7faa34fa0"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/local_support.py",
+      "source": "blind-retained-pose-jitter-pilot-74/local_support.py",
+      "group": "retained-pose-failure",
+      "bytes": 7406,
+      "sha256": "87fb064d47a695aa6656ba1753cabfec58f7ce6cadfef5094f4922fb14e19e9c"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/loop_controller.py",
+      "source": "blind-retained-pose-jitter-pilot-74/loop_controller.py",
+      "group": "retained-pose-failure",
+      "bytes": 6518,
+      "sha256": "42495c1948fc3da320ae70b618fa1aa7c7b102936f88be9f516b07dddb40182a"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/loop_episode.py",
+      "source": "blind-retained-pose-jitter-pilot-74/loop_episode.py",
+      "group": "retained-pose-failure",
+      "bytes": 14576,
+      "sha256": "aa8710d12cdc81e789d7cff637d0df99d8006fd7700700c43a094ce6f1198768"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/loop_map.py",
+      "source": "blind-retained-pose-jitter-pilot-74/loop_map.py",
+      "group": "retained-pose-failure",
+      "bytes": 3391,
+      "sha256": "9a42fd88149c61433c93a1309555c448fce696133044327b07135490c6b7f308"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/RAM_PREFLIGHT.json",
+      "source": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/RAM_PREFLIGHT.json",
+      "group": "retained-pose-failure",
+      "bytes": 102,
+      "sha256": "a1bf4b2a08c0d91976505f36afcd11178eb5a336ba225399b24dc5fce935abcd"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/RUN_RECEIPT.json",
+      "source": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/RUN_RECEIPT.json",
+      "group": "retained-pose-failure",
+      "bytes": 564,
+      "sha256": "4a42be6d578cb5feb2f240d752aed3a1e6ce2fe87019864f2867ed73b6a2ea45"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/heartbeat.jsonl.gz",
+      "source": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/heartbeat.jsonl.gz",
+      "group": "retained-pose-failure",
+      "bytes": 34000,
+      "sha256": "160729abe567c4855c266373eb27a7d865511986e8c9dd143c931def533fff5f"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/result/ACTOR_TRACE.npz",
+      "source": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/result/ACTOR_TRACE.npz",
+      "group": "retained-pose-failure",
+      "bytes": 13358,
+      "sha256": "2503028d9871a2dd5dbc38ae4ea777d4e73226947029f24d6c043b8d088b16ba"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/result/ACTUAL_TRACE_PARTIAL.csv",
+      "source": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/result/ACTUAL_TRACE_PARTIAL.csv",
+      "group": "retained-pose-failure",
+      "bytes": 98626,
+      "sha256": "153e74f0998ebfc8146766b5d064f7be0cda3590269df9fe8db7cfd1e9e9cb4d"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/result/LIVE_PROGRESS.json",
+      "source": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/result/LIVE_PROGRESS.json",
+      "group": "retained-pose-failure",
+      "bytes": 358,
+      "sha256": "abfbbc2fbca442a5007db348c1956452fad12372a2771ec9179576ba63488afe"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/result/QUERY_OPTIMIZATION.json.xz",
+      "source": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/result/QUERY_OPTIMIZATION.json.xz",
+      "group": "retained-pose-failure",
+      "bytes": 226060,
+      "sha256": "5f0db6cb593a44ea3850000249677bffc66142d3e20e359da57b112a6a18c1f6"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/result/RESULT.json",
+      "source": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/result/RESULT.json",
+      "group": "retained-pose-failure",
+      "bytes": 62912,
+      "sha256": "043cd5956f493c88dcd52f901b4ef5fd0fd80c86c7856ac044c648d3b1c52a5e"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/result/TICK_EVIDENCE.jsonl.xz",
+      "source": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/result/TICK_EVIDENCE.jsonl.xz",
+      "group": "retained-pose-failure",
+      "bytes": 463956,
+      "sha256": "f98730812cde221dad3cc74d9275beaa6c7f1f31f9f3f632bbce18b3d51c0387"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/result/controller.stderr.log",
+      "source": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/result/controller.stderr.log",
+      "group": "retained-pose-failure",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/stderr.log",
+      "source": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/stderr.log",
+      "group": "retained-pose-failure",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/stdout.log",
+      "source": "blind-retained-pose-jitter-pilot-74/pilot-temporal_jitter/stdout.log",
+      "group": "retained-pose-failure",
+      "bytes": 1877,
+      "sha256": "5cb5f8c0481134d0226cebe3f8971a70d7426acf2e33780b7989db051608e636"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/pose_delivery.py",
+      "source": "blind-retained-pose-jitter-pilot-74/pose_delivery.py",
+      "group": "retained-pose-failure",
+      "bytes": 5199,
+      "sha256": "e66834c3a291a74fc2779ba0333993a3bbb70f366162ebeef35d6074ed8e2d06"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/review_terminal_recount.py",
+      "source": "blind-retained-pose-jitter-pilot-74/review_terminal_recount.py",
+      "group": "retained-pose-failure",
+      "bytes": 7200,
+      "sha256": "0cebf095d195aa6fadad15b815a8cc3f356a2607c4933a7f229392ab8cfeb4b5"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/run_bounded.py",
+      "source": "blind-retained-pose-jitter-pilot-74/run_bounded.py",
+      "group": "retained-pose-failure",
+      "bytes": 4642,
+      "sha256": "33de202d8e5f210a27626ef720b8a486605ee887e9fdc58ed792a3a5456b23bc"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/run_loop.py",
+      "source": "blind-retained-pose-jitter-pilot-74/run_loop.py",
+      "group": "retained-pose-failure",
+      "bytes": 3150,
+      "sha256": "f484e33bbe26699125adcd01ad1b169ff3fd555ee4a49841a59aeeea8b343052"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/source_runtime.py",
+      "source": "blind-retained-pose-jitter-pilot-74/source_runtime.py",
+      "group": "retained-pose-failure",
+      "bytes": 6852,
+      "sha256": "300f44677c017904dade1e41302fce782b1bbec0da40d9c381fdcc324b0c6ddf"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/test_actual_replan.py",
+      "source": "blind-retained-pose-jitter-pilot-74/test_actual_replan.py",
+      "group": "retained-pose-failure",
+      "bytes": 3477,
+      "sha256": "5336767f69335a2fadbe1bdbfedfe8fb907a21d53ba29cba50d91ef8dd5a3941"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/test_evidence_codec.py",
+      "source": "blind-retained-pose-jitter-pilot-74/test_evidence_codec.py",
+      "group": "retained-pose-failure",
+      "bytes": 972,
+      "sha256": "c14e06513aaae6b7799d1798d4aaa63e7a5f6d0cb38311ab20be81a2d9290619"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/test_local_support.py",
+      "source": "blind-retained-pose-jitter-pilot-74/test_local_support.py",
+      "group": "retained-pose-failure",
+      "bytes": 5263,
+      "sha256": "217a22633a18bf4361e4ee939d019dbbc3da9eeb5e139a17bf86b8190fdadc35"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/test_loop_contract.py",
+      "source": "blind-retained-pose-jitter-pilot-74/test_loop_contract.py",
+      "group": "retained-pose-failure",
+      "bytes": 7311,
+      "sha256": "87980316d2b050990f419aa6f7bc012a230c041e5802f62c4b80719ab893519b"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/test_low_objects.py",
+      "source": "blind-retained-pose-jitter-pilot-74/test_low_objects.py",
+      "group": "retained-pose-failure",
+      "bytes": 2735,
+      "sha256": "a9c8993816f18cae54256e3d5ca0c29c8acc860245b00f55a7ec7292a743eb44"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/test_pose_delivery.py",
+      "source": "blind-retained-pose-jitter-pilot-74/test_pose_delivery.py",
+      "group": "retained-pose-failure",
+      "bytes": 5633,
+      "sha256": "01ea8f3f38d378af8795f7c4b2ace4f047d88a0ba6d36e365b583cb9873b8631"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/test_retained_policy.py",
+      "source": "blind-retained-pose-jitter-pilot-74/test_retained_policy.py",
+      "group": "retained-pose-failure",
+      "bytes": 3204,
+      "sha256": "5b55052e19d0fa874136284614846cbb6b1df7326db90faa710fa6a9e7a4efd8"
+    },
+    {
+      "path": "blind-retained-pose-jitter-pilot-74/test_runtime_exclusion.py",
+      "source": "blind-retained-pose-jitter-pilot-74/test_runtime_exclusion.py",
+      "group": "retained-pose-failure",
+      "bytes": 3177,
+      "sha256": "076675f0f178f3d04c2721129ccb3ed9bafb8065590933fcd8052e2f66b78106"
+    },
+    {
+      "path": "blind-checkpoint-restore-update-74/ARCHIVE_REBUILD_CHECK.json",
+      "source": "blind-checkpoint-restore-update-74/ARCHIVE_REBUILD_CHECK.json",
+      "group": "restoration-index-update",
+      "bytes": 1366,
+      "sha256": "ca383fcc6d22c711f26359a96d98855f007743dec4c9e5668113f635df96b0ee"
+    },
+    {
+      "path": "blind-checkpoint-restore-update-74/FIXTURES.log",
+      "source": "blind-checkpoint-restore-update-74/FIXTURES.log",
+      "group": "restoration-index-update",
+      "bytes": 1329,
+      "sha256": "985528a73a08e597ad80b5d93fcc503672ed2825322bc3e6f322c4b818edfa8d"
+    },
+    {
+      "path": "blind-checkpoint-restore-update-74/INDEPENDENT_REVIEW.json",
+      "source": "blind-checkpoint-restore-update-74/INDEPENDENT_REVIEW.json",
+      "group": "restoration-index-update",
+      "bytes": 1333,
+      "sha256": "f1cddf1f768ed28a131cb2c9c5aabee97dcf4ca33efcad02ff439845e17376ea"
+    },
+    {
+      "path": "blind-checkpoint-restore-update-74/INDEX.json",
+      "source": "blind-checkpoint-restore-update-74/INDEX.json",
+      "group": "restoration-index-update",
+      "bytes": 17950,
+      "sha256": "28ad326dd90f962563f7ec0554812901f20c6b4738252c94631b34c56b950257"
+    },
+    {
+      "path": "blind-checkpoint-restore-update-74/MANIFEST.json",
+      "source": "blind-checkpoint-restore-update-74/MANIFEST.json",
+      "group": "restoration-index-update",
+      "bytes": 1373,
+      "sha256": "addc77894b69f08ae4a82d9ecd886ba5de9f215ece598a6414d1daac2a669fe9"
+    },
+    {
+      "path": "blind-checkpoint-restore-update-74/PREVIOUS_INDEX.json",
+      "source": "blind-checkpoint-restore-update-74/PREVIOUS_INDEX.json",
+      "group": "restoration-index-update",
+      "bytes": 5002,
+      "sha256": "2d845b980a4a23ab0f22f341d064b8bfa25e1e4aa33f137b49242621d65d8ca7"
+    },
+    {
+      "path": "blind-checkpoint-restore-update-74/PUBLICATION_PROVENANCE.json",
+      "source": "blind-checkpoint-restore-update-74/PUBLICATION_PROVENANCE.json",
+      "group": "restoration-index-update",
+      "bytes": 2464,
+      "sha256": "ec09b2d0c14c772fc3a59077fd7af6fc94c0aac528b6d56324f86d11f758bd62"
+    },
+    {
+      "path": "blind-checkpoint-restore-update-74/README.md",
+      "source": "blind-checkpoint-restore-update-74/README.md",
+      "group": "restoration-index-update",
+      "bytes": 2425,
+      "sha256": "b45295118f7fcb58bf0d3faaa884f1b43fb1fc056a6d7d28ce0b77fc13df01aa"
+    },
+    {
+      "path": "blind-checkpoint-restore-update-74/checkpoint.py",
+      "source": "blind-checkpoint-restore-update-74/checkpoint.py",
+      "group": "restoration-index-update",
+      "bytes": 6135,
+      "sha256": "33c59d7414bbfe210ecce7ba229ebc68c0b8202e60024dc7abc75df13400c37d"
+    },
+    {
+      "path": "blind-checkpoint-restore-update-74/memory_synthetic_pilot_package.py",
+      "source": "blind-checkpoint-restore-update-74/memory_synthetic_pilot_package.py",
+      "group": "restoration-index-update",
+      "bytes": 3673,
+      "sha256": "f1067861cdb3f7d395be67991fd5dee918e444772b3df5d0b2c2c1b6f589f615"
+    },
+    {
+      "path": "blind-checkpoint-restore-update-74/test_checkpoint.py",
+      "source": "blind-checkpoint-restore-update-74/test_checkpoint.py",
+      "group": "restoration-index-update",
+      "bytes": 5592,
+      "sha256": "816f0e384ebd35aca1e1fa85f7cb805eaa1976ce6446975a5e2c41e2432e8ca5"
+    },
+    {
+      "path": "PUBLICATION/README.md",
+      "source": "blind-retained-failure-restoration-publication/README.md",
+      "group": "retained-pose-failure",
+      "bytes": 2986,
+      "sha256": "6b8a3ea75aefdb39afdcde75d92318d1001373eeb0b06b756aa72ee448ff7c03"
+    },
+    {
+      "path": "THIRD_PARTY/RECAST_LICENSE.txt",
+      "source": "blind-tabletop-exclusion-planner-66/License.txt",
+      "group": "retained-pose-failure",
+      "bytes": 877,
+      "sha256": "ffad87821cce7cfd3be00b63ffadd01b04e83a4c6a0bcc68f06362ffd42d705e"
+    }
+  ]
+}
