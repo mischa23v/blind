@@ -1,0 +1,88 @@
+{
+  "status": "pass",
+  "oneNativeCandidateQuery": true,
+  "worldExecuted": false,
+  "initialize": {
+    "physicalAuthority": false,
+    "status": "importedCorrectedPhoneGoalRegion",
+    "mapRevision": "bf4fed07f0c5cf47b8d8f7f30b9e0217ce0f65d2490257bc173715bb4717e18d"
+  },
+  "begin": {
+    "physicalAuthority": false,
+    "status": "originalTaskGoalRetained",
+    "steeringGoalIsNotArrivalOrigin": true
+  },
+  "tick": {
+    "physicalAuthority": false,
+    "forwardMetres": 0.02,
+    "yawRadians": -1.4023738201807134e-06,
+    "goalReached": false,
+    "reason": "boundedNativeCandidate",
+    "sourceCapturedAt": 100.0,
+    "poseAgeSeconds": 0.0,
+    "phoneFlagReceipt": {
+      "sampledFit": true,
+      "sampleCount": 169,
+      "insideSampleCount": 169,
+      "uniqueMaskCells": 47,
+      "lowUnresolvedCells": 47,
+      "farOnlyDipFlag": "unavailable in supplied split artifact",
+      "physicalAuthority": false,
+      "sampleSpacingMetres": 0.025,
+      "mapRevision": "bf4fed07f0c5cf47b8d8f7f30b9e0217ce0f65d2490257bc173715bb4717e18d",
+      "inputFrame": "original game",
+      "queriedFrame": "corrected game",
+      "queriedPositionXYZ": [
+        -0.8626612788929839,
+        0.0011615613797137936,
+        -2.841557106819982
+      ],
+      "queriedYawRadians": -2.4393874071698525,
+      "referenceInputUsed": false
+    },
+    "goalError": 2.0170344938537403,
+    "proposedPhoneFlagReceipt": {
+      "sampledFit": true,
+      "sampleCount": 169,
+      "insideSampleCount": 169,
+      "uniqueMaskCells": 50,
+      "lowUnresolvedCells": 50,
+      "farOnlyDipFlag": "unavailable in supplied split artifact",
+      "physicalAuthority": false,
+      "sampleSpacingMetres": 0.025,
+      "mapRevision": "bf4fed07f0c5cf47b8d8f7f30b9e0217ce0f65d2490257bc173715bb4717e18d",
+      "inputFrame": "original game",
+      "queriedFrame": "corrected game",
+      "queriedPositionXYZ": [
+        -0.877929689373763,
+        0.0011689211320824455,
+        -2.854475140231631
+      ],
+      "queriedYawRadians": -2.439388809543764,
+      "referenceInputUsed": false
+    },
+    "nativeCandidatePoints": [
+      [
+        -1.7000071506317243,
+        0.0,
+        -3.550005043048941
+      ],
+      [
+        -1.7500070970170438,
+        0.0,
+        -3.5750051415336865
+      ],
+      [
+        -2.6750070001848787,
+        0.0,
+        -3.575005207069858
+      ],
+      [
+        -2.9750071946254293,
+        0.0,
+        -3.4250048970899045
+      ]
+    ],
+    "permissiveUnknownAdmitted": true
+  }
+}

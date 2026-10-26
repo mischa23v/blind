@@ -1,0 +1,4078 @@
+{
+  "candidateCheckpoint": "b0be8628b159e0fc0446a7af8c57c13c99553a77",
+  "candidate": "older coffee_floorfix split0.7, NOT latest Opus color/v3",
+  "analysisMode": "postrun isolated saved-reference-vertex-column diagnostic; no triangle scorer and no map edits",
+  "referenceKeysRead": [
+    "ref_n",
+    "ref_low_max",
+    "ref_body_max",
+    "ref_floor_h"
+  ],
+  "selectionWasFrozenPhoneOnlyBeforeReferenceRead": true,
+  "phoneNeighborhoodSourceSHA256": "c68a1dbebb5ff9ebd9ae56e218b5be41b555d5cf111c220921f2fb8933285c98",
+  "metadataNPZSHA256": "57c8552dbd98c966f26625dc1440bd77ff4cfb4257966b4cf6af76bfcd95963b",
+  "routeFrozenManifestSHA256": "cf52680013ba59c6427f8bbd12d85e15ed09436342be9dfd93e7e35b03a6fa74",
+  "counts": {
+    "neighborhoodAll": {
+      "cells": 436,
+      "referenceCovered": 425,
+      "referenceFloorProxyPresent": 418,
+      "referenceLowAtLeast2p5cm": 25,
+      "referenceBodyBandVertex": 100,
+      "referenceLowOrBodyGeometry": 101,
+      "referenceFloorAndNoSavedLowOrBodyGeometry": 317,
+      "referenceMissingCoverage": 11,
+      "referenceNoFloorProxy": 18
+    },
+    "neighborhoodBlocked": {
+      "cells": 158,
+      "referenceCovered": 147,
+      "referenceFloorProxyPresent": 140,
+      "referenceLowAtLeast2p5cm": 24,
+      "referenceBodyBandVertex": 92,
+      "referenceLowOrBodyGeometry": 93,
+      "referenceFloorAndNoSavedLowOrBodyGeometry": 47,
+      "referenceMissingCoverage": 11,
+      "referenceNoFloorProxy": 18
+    },
+    "neighborhoodHighObstacleBlocked": {
+      "cells": 120,
+      "referenceCovered": 109,
+      "referenceFloorProxyPresent": 102,
+      "referenceLowAtLeast2p5cm": 23,
+      "referenceBodyBandVertex": 91,
+      "referenceLowOrBodyGeometry": 92,
+      "referenceFloorAndNoSavedLowOrBodyGeometry": 10,
+      "referenceMissingCoverage": 11,
+      "referenceNoFloorProxy": 18
+    },
+    "neighborhoodMissingSupportBlocked": {
+      "cells": 25,
+      "referenceCovered": 22,
+      "referenceFloorProxyPresent": 22,
+      "referenceLowAtLeast2p5cm": 1,
+      "referenceBodyBandVertex": 2,
+      "referenceLowOrBodyGeometry": 2,
+      "referenceFloorAndNoSavedLowOrBodyGeometry": 20,
+      "referenceMissingCoverage": 3,
+      "referenceNoFloorProxy": 3
+    },
+    "neighborhoodHighUnknownBlocked": {
+      "cells": 6,
+      "referenceCovered": 0,
+      "referenceFloorProxyPresent": 0,
+      "referenceLowAtLeast2p5cm": 0,
+      "referenceBodyBandVertex": 0,
+      "referenceLowOrBodyGeometry": 0,
+      "referenceFloorAndNoSavedLowOrBodyGeometry": 0,
+      "referenceMissingCoverage": 6,
+      "referenceNoFloorProxy": 6
+    },
+    "neighborhoodLow1Blocked": {
+      "cells": 37,
+      "referenceCovered": 29,
+      "referenceFloorProxyPresent": 22,
+      "referenceLowAtLeast2p5cm": 19,
+      "referenceBodyBandVertex": 18,
+      "referenceLowOrBodyGeometry": 19,
+      "referenceFloorAndNoSavedLowOrBodyGeometry": 3,
+      "referenceMissingCoverage": 8,
+      "referenceNoFloorProxy": 15
+    },
+    "neighborhoodNearDipBlocked": {
+      "cells": 15,
+      "referenceCovered": 15,
+      "referenceFloorProxyPresent": 15,
+      "referenceLowAtLeast2p5cm": 0,
+      "referenceBodyBandVertex": 0,
+      "referenceLowOrBodyGeometry": 0,
+      "referenceFloorAndNoSavedLowOrBodyGeometry": 15,
+      "referenceMissingCoverage": 0,
+      "referenceNoFloorProxy": 0
+    },
+    "criticalPointWitnessCells": {
+      "cells": 32,
+      "referenceCovered": 32,
+      "referenceFloorProxyPresent": 32,
+      "referenceLowAtLeast2p5cm": 0,
+      "referenceBodyBandVertex": 5,
+      "referenceLowOrBodyGeometry": 5,
+      "referenceFloorAndNoSavedLowOrBodyGeometry": 27,
+      "referenceMissingCoverage": 0,
+      "referenceNoFloorProxy": 0
+    },
+    "neighborhoodWalk": {
+      "cells": 278,
+      "referenceCovered": 278,
+      "referenceFloorProxyPresent": 278,
+      "referenceLowAtLeast2p5cm": 1,
+      "referenceBodyBandVertex": 8,
+      "referenceLowOrBodyGeometry": 8,
+      "referenceFloorAndNoSavedLowOrBodyGeometry": 270,
+      "referenceMissingCoverage": 0,
+      "referenceNoFloorProxy": 0
+    }
+  },
+  "blockedNeighborhoodRows": [
+    {
+      "sourceIJ": [
+        43,
+        126
+      ],
+      "levelXYMetres": [
+        -3.725,
+        2.875
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 203,
+      "referenceFloorHeightMetres": -0.008961235670059199,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        44,
+        125
+      ],
+      "levelXYMetres": [
+        -3.6750000000000003,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 160,
+      "referenceFloorHeightMetres": -0.008639683262828882,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        44,
+        126
+      ],
+      "levelXYMetres": [
+        -3.6750000000000003,
+        2.875
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 201,
+      "referenceFloorHeightMetres": -0.008860558450759188,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        45,
+        127
+      ],
+      "levelXYMetres": [
+        -3.6250000000000004,
+        2.925
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 247,
+      "referenceFloorHeightMetres": -0.00847108835991075,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6476000023457754,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        45,
+        128
+      ],
+      "levelXYMetres": [
+        -3.6250000000000004,
+        2.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 310,
+      "referenceFloorHeightMetres": -0.008341200859628712,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6476448595230185,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        45,
+        129
+      ],
+      "levelXYMetres": [
+        -3.6250000000000004,
+        3.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 308,
+      "referenceFloorHeightMetres": -0.008182267639806598,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.647586543034938,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        46,
+        122
+      ],
+      "levelXYMetres": [
+        -3.575,
+        2.675
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 188,
+      "referenceFloorHeightMetres": -0.008634210150114351,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        46,
+        126
+      ],
+      "levelXYMetres": [
+        -3.575,
+        2.875
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 386,
+      "referenceFloorHeightMetres": -0.00838233237904525,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6479702885668986,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        46,
+        127
+      ],
+      "levelXYMetres": [
+        -3.575,
+        2.925
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 437,
+      "referenceFloorHeightMetres": -0.008237310853958558,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6477412277979318,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        46,
+        128
+      ],
+      "levelXYMetres": [
+        -3.575,
+        2.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 408,
+      "referenceFloorHeightMetres": -0.008059139845345321,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6476754077692843,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        47,
+        122
+      ],
+      "levelXYMetres": [
+        -3.5250000000000004,
+        2.675
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 202,
+      "referenceFloorHeightMetres": -0.008141145888099043,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        47,
+        125
+      ],
+      "levelXYMetres": [
+        -3.5250000000000004,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 426,
+      "referenceFloorHeightMetres": -0.008353386290925089,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.648182639298605,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        47,
+        126
+      ],
+      "levelXYMetres": [
+        -3.5250000000000004,
+        2.875
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 413,
+      "referenceFloorHeightMetres": -0.008149867975144151,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6479482321493395,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        47,
+        127
+      ],
+      "levelXYMetres": [
+        -3.5250000000000004,
+        2.925
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 224,
+      "referenceFloorHeightMetres": -0.00790459597465408,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6476959535973319,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        48,
+        124
+      ],
+      "levelXYMetres": [
+        -3.475,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 389,
+      "referenceFloorHeightMetres": -0.007364097020804854,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6480281714463227,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        48,
+        125
+      ],
+      "levelXYMetres": [
+        -3.475,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 461,
+      "referenceFloorHeightMetres": -0.007217564997914739,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6479419032790317,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        48,
+        126
+      ],
+      "levelXYMetres": [
+        -3.475,
+        2.875
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 344,
+      "referenceFloorHeightMetres": -0.006901834023455869,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6478727615547044,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        48,
+        127
+      ],
+      "levelXYMetres": [
+        -3.475,
+        2.925
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 255,
+      "referenceFloorHeightMetres": -0.0066241614902416545,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6474183308365102,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        49,
+        124
+      ],
+      "levelXYMetres": [
+        -3.4250000000000003,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 478,
+      "referenceFloorHeightMetres": -0.00715420516664221,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6479382807381213,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        49,
+        125
+      ],
+      "levelXYMetres": [
+        -3.4250000000000003,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 420,
+      "referenceFloorHeightMetres": -0.006980389206444985,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6478741121168936,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        49,
+        126
+      ],
+      "levelXYMetres": [
+        -3.4250000000000003,
+        2.875
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 225,
+      "referenceFloorHeightMetres": -0.006643986475565237,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6476893112010688,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        49,
+        127
+      ],
+      "levelXYMetres": [
+        -3.4250000000000003,
+        2.925
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 372,
+      "referenceFloorHeightMetres": -0.006385250259742299,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6473520517882192,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        50,
+        123
+      ],
+      "levelXYMetres": [
+        -3.375,
+        2.7250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 364,
+      "referenceFloorHeightMetres": -0.007092315464762147,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6476985836102016,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        50,
+        124
+      ],
+      "levelXYMetres": [
+        -3.375,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 487,
+      "referenceFloorHeightMetres": -0.00712592677898732,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6478478005583987,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        50,
+        125
+      ],
+      "levelXYMetres": [
+        -3.375,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 334,
+      "referenceFloorHeightMetres": -0.006882289274688389,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6475243049275708,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        50,
+        126
+      ],
+      "levelXYMetres": [
+        -3.375,
+        2.875
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 249,
+      "referenceFloorHeightMetres": -0.006575925858107066,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6473677640160382,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        50,
+        127
+      ],
+      "levelXYMetres": [
+        -3.375,
+        2.925
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 457,
+      "referenceFloorHeightMetres": -0.0026214990154583076,
+      "referenceLowBandMaxMetres": 0.01618189945400972,
+      "referenceBodyBandMaxMetres": 0.6472741231914111,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        51,
+        123
+      ],
+      "levelXYMetres": [
+        -3.325,
+        2.7250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 463,
+      "referenceFloorHeightMetres": -0.006774535104181635,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6475723574899146,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        51,
+        124
+      ],
+      "levelXYMetres": [
+        -3.325,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 490,
+      "referenceFloorHeightMetres": -0.006854778991361379,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6474141146930896,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        51,
+        125
+      ],
+      "levelXYMetres": [
+        -3.325,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 242,
+      "referenceFloorHeightMetres": -0.006854911448837821,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6471908038946969,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        51,
+        126
+      ],
+      "levelXYMetres": [
+        -3.325,
+        2.875
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 415,
+      "referenceFloorHeightMetres": -0.0032922319424288212,
+      "referenceLowBandMaxMetres": 0.01591921417820008,
+      "referenceBodyBandMaxMetres": 0.6471637257017857,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        52,
+        123
+      ],
+      "levelXYMetres": [
+        -3.2750000000000004,
+        2.7250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 535,
+      "referenceFloorHeightMetres": -0.006647715497021392,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6471019366755233,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        52,
+        124
+      ],
+      "levelXYMetres": [
+        -3.2750000000000004,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 535,
+      "referenceFloorHeightMetres": -0.006518901184574714,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6472707744993351,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        52,
+        125
+      ],
+      "levelXYMetres": [
+        -3.2750000000000004,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 416,
+      "referenceFloorHeightMetres": -0.006727300064038113,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.647263166712565,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        52,
+        126
+      ],
+      "levelXYMetres": [
+        -3.2750000000000004,
+        2.875
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 588,
+      "referenceFloorHeightMetres": 0.008126927199868949,
+      "referenceLowBandMaxMetres": 0.0229378670965088,
+      "referenceBodyBandMaxMetres": 0.6472183601738206,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        53,
+        123
+      ],
+      "levelXYMetres": [
+        -3.225,
+        2.7250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 571,
+      "referenceFloorHeightMetres": -0.006440821138042008,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6471613199600412,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        53,
+        124
+      ],
+      "levelXYMetres": [
+        -3.225,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 517,
+      "referenceFloorHeightMetres": -0.006282926326944483,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.646809200703447,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        53,
+        125
+      ],
+      "levelXYMetres": [
+        -3.225,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 522,
+      "referenceFloorHeightMetres": -0.0043608156618764535,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6468391867548017,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        54,
+        123
+      ],
+      "levelXYMetres": [
+        -3.1750000000000003,
+        2.7250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 545,
+      "referenceFloorHeightMetres": -0.0060201103468979274,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6469012325564201,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        54,
+        124
+      ],
+      "levelXYMetres": [
+        -3.1750000000000003,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 489,
+      "referenceFloorHeightMetres": -0.005870373401923128,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6468188980900209,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        54,
+        125
+      ],
+      "levelXYMetres": [
+        -3.1750000000000003,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 491,
+      "referenceFloorHeightMetres": -0.001082520896011983,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6466643727913322,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        55,
+        121
+      ],
+      "levelXYMetres": [
+        -3.125,
+        2.625
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 194,
+      "referenceFloorHeightMetres": -0.00675711223774358,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        55,
+        123
+      ],
+      "levelXYMetres": [
+        -3.125,
+        2.7250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 533,
+      "referenceFloorHeightMetres": -0.006150053046796371,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.646869451038513,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        55,
+        124
+      ],
+      "levelXYMetres": [
+        -3.125,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 479,
+      "referenceFloorHeightMetres": -0.005970387004591751,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.646685162036595,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        55,
+        125
+      ],
+      "levelXYMetres": [
+        -3.125,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 469,
+      "referenceFloorHeightMetres": -0.0023796392607984503,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6466372657127826,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        56,
+        123
+      ],
+      "levelXYMetres": [
+        -3.075,
+        2.7250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 553,
+      "referenceFloorHeightMetres": -0.00670428468470071,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6469101469145211,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        56,
+        124
+      ],
+      "levelXYMetres": [
+        -3.075,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 480,
+      "referenceFloorHeightMetres": -0.006385302304950813,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6467233695650814,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        56,
+        125
+      ],
+      "levelXYMetres": [
+        -3.075,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 461,
+      "referenceFloorHeightMetres": -0.006378964586434647,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6465678509347571,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        57,
+        123
+      ],
+      "levelXYMetres": [
+        -3.0250000000000004,
+        2.7250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 541,
+      "referenceFloorHeightMetres": -0.007740441531341747,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.647079082620518,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        57,
+        124
+      ],
+      "levelXYMetres": [
+        -3.0250000000000004,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 481,
+      "referenceFloorHeightMetres": -0.007147295416135438,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6467787181127188,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        57,
+        125
+      ],
+      "levelXYMetres": [
+        -3.0250000000000004,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 453,
+      "referenceFloorHeightMetres": -0.00720852513002587,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6465930110628252,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        58,
+        123
+      ],
+      "levelXYMetres": [
+        -2.975,
+        2.7250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 533,
+      "referenceFloorHeightMetres": -0.009268823596061987,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6470948199666094,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        58,
+        124
+      ],
+      "levelXYMetres": [
+        -2.975,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 484,
+      "referenceFloorHeightMetres": -0.008169495394215237,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.646802723665953,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        58,
+        125
+      ],
+      "levelXYMetres": [
+        -2.975,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 457,
+      "referenceFloorHeightMetres": -0.007867701277593148,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6466244431695256,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        59,
+        123
+      ],
+      "levelXYMetres": [
+        -2.9250000000000003,
+        2.7250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 479,
+      "referenceFloorHeightMetres": -0.011034564734007721,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6471115381751925,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        59,
+        124
+      ],
+      "levelXYMetres": [
+        -2.9250000000000003,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 505,
+      "referenceFloorHeightMetres": -0.00859696377778746,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6468147295218212,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        59,
+        125
+      ],
+      "levelXYMetres": [
+        -2.9250000000000003,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 448,
+      "referenceFloorHeightMetres": -0.007499149195808536,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6465826027914882,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        60,
+        123
+      ],
+      "levelXYMetres": [
+        -2.875,
+        2.7250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 409,
+      "referenceFloorHeightMetres": -0.012054922683463032,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6470799604654693,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        60,
+        124
+      ],
+      "levelXYMetres": [
+        -2.875,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 518,
+      "referenceFloorHeightMetres": -0.008645660615619794,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6470287708748401,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        60,
+        125
+      ],
+      "levelXYMetres": [
+        -2.875,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 459,
+      "referenceFloorHeightMetres": -0.0075105631010085085,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6467075313733625,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        61,
+        123
+      ],
+      "levelXYMetres": [
+        -2.825,
+        2.7250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 330,
+      "referenceFloorHeightMetres": -0.012007960565218518,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6471180485179027,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        61,
+        124
+      ],
+      "levelXYMetres": [
+        -2.825,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 511,
+      "referenceFloorHeightMetres": -0.009541674546821102,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6470741771515572,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        61,
+        125
+      ],
+      "levelXYMetres": [
+        -2.825,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 475,
+      "referenceFloorHeightMetres": -0.007967496972244324,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6467506472519328,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        62,
+        124
+      ],
+      "levelXYMetres": [
+        -2.7750000000000004,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 536,
+      "referenceFloorHeightMetres": -0.010414838860873545,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6471159859804592,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        62,
+        125
+      ],
+      "levelXYMetres": [
+        -2.7750000000000004,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 458,
+      "referenceFloorHeightMetres": -0.00822523056319657,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6468115169510227,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        63,
+        124
+      ],
+      "levelXYMetres": [
+        -2.725,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 462,
+      "referenceFloorHeightMetres": -0.011039304211253164,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6471855301299569,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        63,
+        125
+      ],
+      "levelXYMetres": [
+        -2.725,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 462,
+      "referenceFloorHeightMetres": -0.00667644302896983,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6470296302498058,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        64,
+        124
+      ],
+      "levelXYMetres": [
+        -2.6750000000000003,
+        2.7750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 352,
+      "referenceFloorHeightMetres": -0.007853500606402079,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6473182064268874,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        64,
+        125
+      ],
+      "levelXYMetres": [
+        -2.6750000000000003,
+        2.825
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 479,
+      "referenceFloorHeightMetres": -0.0066514842173008865,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.6472466927092645,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        82,
+        108
+      ],
+      "levelXYMetres": [
+        -1.7750000000000004,
+        1.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 1646,
+      "referenceFloorHeightMetres": -0.008187873345854448,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.7658521853236638,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        82,
+        109
+      ],
+      "levelXYMetres": [
+        -1.7750000000000004,
+        2.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 567,
+      "referenceFloorHeightMetres": -0.007920474469913346,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.7326431875940083,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        82,
+        110
+      ],
+      "levelXYMetres": [
+        -1.7750000000000004,
+        2.075
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 168,
+      "referenceFloorHeightMetres": -0.00764903675021902,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        83,
+        108
+      ],
+      "levelXYMetres": [
+        -1.7250000000000005,
+        1.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 1672,
+      "referenceFloorHeightMetres": -0.008261208700800179,
+      "referenceLowBandMaxMetres": 0.2991774313226272,
+      "referenceBodyBandMaxMetres": 0.7755697642899679,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        83,
+        109
+      ],
+      "levelXYMetres": [
+        -1.7250000000000005,
+        2.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 981,
+      "referenceFloorHeightMetres": -0.008047078791902501,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.7373596091558404,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        83,
+        110
+      ],
+      "levelXYMetres": [
+        -1.7250000000000005,
+        2.075
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 159,
+      "referenceFloorHeightMetres": -0.007826571971435749,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        84,
+        108
+      ],
+      "levelXYMetres": [
+        -1.6749999999999998,
+        1.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 1367,
+      "referenceFloorHeightMetres": -0.00836434070378854,
+      "referenceLowBandMaxMetres": 0.2996445839416959,
+      "referenceBodyBandMaxMetres": 0.7651703278933975,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        84,
+        109
+      ],
+      "levelXYMetres": [
+        -1.6749999999999998,
+        2.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 594,
+      "referenceFloorHeightMetres": -0.008151708951015227,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.5622119600102276,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        84,
+        111
+      ],
+      "levelXYMetres": [
+        -1.6749999999999998,
+        2.125
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 138,
+      "referenceFloorHeightMetres": -0.00788655641288193,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        85,
+        108
+      ],
+      "levelXYMetres": [
+        -1.625,
+        1.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 1058,
+      "referenceFloorHeightMetres": -0.008660175602929756,
+      "referenceLowBandMaxMetres": 0.29948190197504276,
+      "referenceBodyBandMaxMetres": 0.5690928587755385,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        85,
+        109
+      ],
+      "levelXYMetres": [
+        -1.625,
+        2.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 1199,
+      "referenceFloorHeightMetres": -0.008394163153348847,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.5650005526647275,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        85,
+        110
+      ],
+      "levelXYMetres": [
+        -1.625,
+        2.075
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 164,
+      "referenceFloorHeightMetres": -0.008252789591844483,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        86,
+        108
+      ],
+      "levelXYMetres": [
+        -1.5750000000000002,
+        1.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 826,
+      "referenceFloorHeightMetres": -0.008752534933621227,
+      "referenceLowBandMaxMetres": 0.29646250608929337,
+      "referenceBodyBandMaxMetres": 0.5682581262617394,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        86,
+        109
+      ],
+      "levelXYMetres": [
+        -1.5750000000000002,
+        2.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 1252,
+      "referenceFloorHeightMetres": -0.008541948909506263,
+      "referenceLowBandMaxMetres": 0.2992419902163199,
+      "referenceBodyBandMaxMetres": 0.5650985599181295,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        86,
+        110
+      ],
+      "levelXYMetres": [
+        -1.5750000000000002,
+        2.075
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 164,
+      "referenceFloorHeightMetres": -0.008345225363458556,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        86,
+        112
+      ],
+      "levelXYMetres": [
+        -1.5750000000000002,
+        2.175
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": true,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 129,
+      "referenceFloorHeightMetres": -0.0081578248552533,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        86,
+        113
+      ],
+      "levelXYMetres": [
+        -1.5750000000000002,
+        2.2250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": true,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 125,
+      "referenceFloorHeightMetres": -0.008182089724499242,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        87,
+        108
+      ],
+      "levelXYMetres": [
+        -1.5250000000000004,
+        1.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 799,
+      "referenceFloorHeightMetres": -0.00872876997191235,
+      "referenceLowBandMaxMetres": 0.2997189390186652,
+      "referenceBodyBandMaxMetres": 0.5648140770748284,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        87,
+        109
+      ],
+      "levelXYMetres": [
+        -1.5250000000000004,
+        2.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 197,
+      "referenceFloorHeightMetres": -0.008533254947615651,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": 0.5373524399692827,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        87,
+        113
+      ],
+      "levelXYMetres": [
+        -1.5250000000000004,
+        2.2250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": true,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 124,
+      "referenceFloorHeightMetres": -0.008211794145326726,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        87,
+        114
+      ],
+      "levelXYMetres": [
+        -1.5250000000000004,
+        2.2750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": true,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 121,
+      "referenceFloorHeightMetres": -0.008215370384434942,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        88,
+        113
+      ],
+      "levelXYMetres": [
+        -1.4750000000000005,
+        2.2250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": true,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 123,
+      "referenceFloorHeightMetres": -0.008338857413530644,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        88,
+        114
+      ],
+      "levelXYMetres": [
+        -1.4750000000000005,
+        2.2750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": true,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 123,
+      "referenceFloorHeightMetres": -0.00831551767614757,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        89,
+        114
+      ],
+      "levelXYMetres": [
+        -1.4249999999999998,
+        2.2750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": true,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 145,
+      "referenceFloorHeightMetres": -0.008274975488072643,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        93,
+        108
+      ],
+      "levelXYMetres": [
+        -1.2250000000000005,
+        1.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 171,
+      "referenceFloorHeightMetres": -0.009515238021299539,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        93,
+        109
+      ],
+      "levelXYMetres": [
+        -1.2250000000000005,
+        2.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 188,
+      "referenceFloorHeightMetres": -0.009311494443743499,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        93,
+        114
+      ],
+      "levelXYMetres": [
+        -1.2250000000000005,
+        2.2750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": true,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 197,
+      "referenceFloorHeightMetres": -0.008793122634028575,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        93,
+        115
+      ],
+      "levelXYMetres": [
+        -1.2250000000000005,
+        2.325
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": true,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 159,
+      "referenceFloorHeightMetres": -0.008708109476064891,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        93,
+        116
+      ],
+      "levelXYMetres": [
+        -1.2250000000000005,
+        2.375
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": true,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 151,
+      "referenceFloorHeightMetres": -0.008636456616358132,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        94,
+        108
+      ],
+      "levelXYMetres": [
+        -1.1749999999999998,
+        1.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 178,
+      "referenceFloorHeightMetres": -0.009841590164573198,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        94,
+        113
+      ],
+      "levelXYMetres": [
+        -1.1749999999999998,
+        2.2250000000000005
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 183,
+      "referenceFloorHeightMetres": -0.008906455336588811,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        94,
+        115
+      ],
+      "levelXYMetres": [
+        -1.1749999999999998,
+        2.325
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": true,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 186,
+      "referenceFloorHeightMetres": -0.008762064455752214,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        94,
+        116
+      ],
+      "levelXYMetres": [
+        -1.1749999999999998,
+        2.375
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": true,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 173,
+      "referenceFloorHeightMetres": -0.008708775395592195,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        95,
+        108
+      ],
+      "levelXYMetres": [
+        -1.125,
+        1.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 183,
+      "referenceFloorHeightMetres": -0.009942562929893761,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        95,
+        109
+      ],
+      "levelXYMetres": [
+        -1.125,
+        2.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 185,
+      "referenceFloorHeightMetres": -0.009696004123612583,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        95,
+        113
+      ],
+      "levelXYMetres": [
+        -1.125,
+        2.2250000000000005
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 172,
+      "referenceFloorHeightMetres": -0.009074688282851842,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        95,
+        115
+      ],
+      "levelXYMetres": [
+        -1.125,
+        2.325
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": true,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 182,
+      "referenceFloorHeightMetres": -0.008894151751488654,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        95,
+        116
+      ],
+      "levelXYMetres": [
+        -1.125,
+        2.375
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": true,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 302,
+      "referenceFloorHeightMetres": -0.00878641824930674,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        96,
+        108
+      ],
+      "levelXYMetres": [
+        -1.0750000000000002,
+        1.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 167,
+      "referenceFloorHeightMetres": -0.010016329116759598,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        96,
+        109
+      ],
+      "levelXYMetres": [
+        -1.0750000000000002,
+        2.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 170,
+      "referenceFloorHeightMetres": -0.009933171630898678,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        96,
+        116
+      ],
+      "levelXYMetres": [
+        -1.0750000000000002,
+        2.375
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": true,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 241,
+      "referenceFloorHeightMetres": -0.008907961713391905,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        97,
+        108
+      ],
+      "levelXYMetres": [
+        -1.0250000000000004,
+        1.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 157,
+      "referenceFloorHeightMetres": -0.01022808081327383,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        97,
+        109
+      ],
+      "levelXYMetres": [
+        -1.0250000000000004,
+        2.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 172,
+      "referenceFloorHeightMetres": -0.010028646633195332,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        97,
+        110
+      ],
+      "levelXYMetres": [
+        -1.0250000000000004,
+        2.075
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 238,
+      "referenceFloorHeightMetres": -0.009972320828192075,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        97,
+        111
+      ],
+      "levelXYMetres": [
+        -1.0250000000000004,
+        2.125
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 311,
+      "referenceFloorHeightMetres": -0.009729185882973843,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        97,
+        112
+      ],
+      "levelXYMetres": [
+        -1.0250000000000004,
+        2.175
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 327,
+      "referenceFloorHeightMetres": -0.00956556617573783,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        98,
+        108
+      ],
+      "levelXYMetres": [
+        -0.9749999999999996,
+        1.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 265,
+      "referenceFloorHeightMetres": -0.010430060859445313,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        98,
+        109
+      ],
+      "levelXYMetres": [
+        -0.9749999999999996,
+        2.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 283,
+      "referenceFloorHeightMetres": -0.010188777591201218,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        99,
+        108
+      ],
+      "levelXYMetres": [
+        -0.9249999999999998,
+        1.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 170,
+      "referenceFloorHeightMetres": -0.010511070926355597,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        99,
+        109
+      ],
+      "levelXYMetres": [
+        -0.9249999999999998,
+        2.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 251,
+      "referenceFloorHeightMetres": -0.010377499168861905,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        100,
+        110
+      ],
+      "levelXYMetres": [
+        -0.875,
+        2.075
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 338,
+      "referenceFloorHeightMetres": -0.010209605672081469,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        119,
+        115
+      ],
+      "levelXYMetres": [
+        0.07500000000000018,
+        2.325
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 5737,
+      "referenceFloorHeightMetres": 0.006342380385825605,
+      "referenceLowBandMaxMetres": 0.2997903065021983,
+      "referenceBodyBandMaxMetres": 1.7998175314248221,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        119,
+        116
+      ],
+      "levelXYMetres": [
+        0.07500000000000018,
+        2.375
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 5357,
+      "referenceFloorHeightMetres": 0.015260714552023765,
+      "referenceLowBandMaxMetres": 0.29995776639517246,
+      "referenceBodyBandMaxMetres": 1.7997334303703996,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        120,
+        112
+      ],
+      "levelXYMetres": [
+        0.125,
+        2.175
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 241,
+      "referenceFloorHeightMetres": -0.013316815833005336,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        120,
+        113
+      ],
+      "levelXYMetres": [
+        0.125,
+        2.2250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 240,
+      "referenceFloorHeightMetres": -0.013481111154918183,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": true
+    },
+    {
+      "sourceIJ": [
+        120,
+        114
+      ],
+      "levelXYMetres": [
+        0.125,
+        2.2750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 2318,
+      "referenceFloorHeightMetres": -0.013159302341145644,
+      "referenceLowBandMaxMetres": 0.2955914676275788,
+      "referenceBodyBandMaxMetres": 1.799663653469302,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        120,
+        115
+      ],
+      "levelXYMetres": [
+        0.125,
+        2.325
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 5552,
+      "referenceFloorHeightMetres": 0.0183573345370888,
+      "referenceLowBandMaxMetres": 0.29991285071996443,
+      "referenceBodyBandMaxMetres": 1.7992811125634385,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        120,
+        116
+      ],
+      "levelXYMetres": [
+        0.125,
+        2.375
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 843,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        121,
+        110
+      ],
+      "levelXYMetres": [
+        0.17499999999999982,
+        2.075
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 8298,
+      "referenceFloorHeightMetres": 0.013468263414327792,
+      "referenceLowBandMaxMetres": 0.29989036015206993,
+      "referenceBodyBandMaxMetres": 1.7999184971223245,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        121,
+        111
+      ],
+      "levelXYMetres": [
+        0.17499999999999982,
+        2.125
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 3382,
+      "referenceFloorHeightMetres": 0.01776418643386749,
+      "referenceLowBandMaxMetres": 0.2992433471468978,
+      "referenceBodyBandMaxMetres": 1.7998314085737475,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        121,
+        112
+      ],
+      "levelXYMetres": [
+        0.17499999999999982,
+        2.175
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 3729,
+      "referenceFloorHeightMetres": 0.01212213767955376,
+      "referenceLowBandMaxMetres": 0.2994303738046731,
+      "referenceBodyBandMaxMetres": 1.7995569626887866,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        121,
+        113
+      ],
+      "levelXYMetres": [
+        0.17499999999999982,
+        2.2250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 3335,
+      "referenceFloorHeightMetres": 0.004607603001637054,
+      "referenceLowBandMaxMetres": 0.2989287993429184,
+      "referenceBodyBandMaxMetres": 1.799092552922514,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        121,
+        114
+      ],
+      "levelXYMetres": [
+        0.17499999999999982,
+        2.2750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 8839,
+      "referenceFloorHeightMetres": 0.016073973219047365,
+      "referenceLowBandMaxMetres": 0.2999834587659549,
+      "referenceBodyBandMaxMetres": 1.7998131626294485,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        121,
+        115
+      ],
+      "levelXYMetres": [
+        0.17499999999999982,
+        2.325
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 1008,
+      "referenceFloorHeightMetres": 0.014872711796187826,
+      "referenceLowBandMaxMetres": 0.15753896343596785,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        121,
+        116
+      ],
+      "levelXYMetres": [
+        0.17499999999999982,
+        2.375
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 126,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        122,
+        109
+      ],
+      "levelXYMetres": [
+        0.22499999999999964,
+        2.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 5480,
+      "referenceFloorHeightMetres": 0.005284931070998191,
+      "referenceLowBandMaxMetres": 0.2971449706393403,
+      "referenceBodyBandMaxMetres": 1.7992980889223782,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        122,
+        110
+      ],
+      "levelXYMetres": [
+        0.22499999999999964,
+        2.075
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 1915,
+      "referenceFloorHeightMetres": 0.022083128011769586,
+      "referenceLowBandMaxMetres": 0.29690962173838953,
+      "referenceBodyBandMaxMetres": 1.7994143412614163,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        122,
+        111
+      ],
+      "levelXYMetres": [
+        0.22499999999999964,
+        2.125
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 1072,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        122,
+        112
+      ],
+      "levelXYMetres": [
+        0.22499999999999964,
+        2.175
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 1043,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        122,
+        113
+      ],
+      "levelXYMetres": [
+        0.22499999999999964,
+        2.2250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 2863,
+      "referenceFloorHeightMetres": 0.0240537580040502,
+      "referenceLowBandMaxMetres": 0.2980206957241265,
+      "referenceBodyBandMaxMetres": 1.798735952838916,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        122,
+        114
+      ],
+      "levelXYMetres": [
+        0.22499999999999964,
+        2.2750000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 241,
+      "referenceFloorHeightMetres": 0.014999590150997942,
+      "referenceLowBandMaxMetres": 0.27187779293908343,
+      "referenceBodyBandMaxMetres": 1.4062938783339267,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        122,
+        115
+      ],
+      "levelXYMetres": [
+        0.22499999999999964,
+        2.325
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 0,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        122,
+        116
+      ],
+      "levelXYMetres": [
+        0.22499999999999964,
+        2.375
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": true,
+        "walk": false
+      },
+      "referenceVertexCount": 0,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        123,
+        106
+      ],
+      "levelXYMetres": [
+        0.27500000000000036,
+        1.875
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 2899,
+      "referenceFloorHeightMetres": 0.016567593120417883,
+      "referenceLowBandMaxMetres": 0.2995409269346452,
+      "referenceBodyBandMaxMetres": 1.7998341530485609,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        123,
+        107
+      ],
+      "levelXYMetres": [
+        0.27500000000000036,
+        1.9249999999999998
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 2827,
+      "referenceFloorHeightMetres": 0.015204826853952856,
+      "referenceLowBandMaxMetres": 0.29899031440767465,
+      "referenceBodyBandMaxMetres": 1.7987918181951454,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        123,
+        108
+      ],
+      "levelXYMetres": [
+        0.27500000000000036,
+        1.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 6903,
+      "referenceFloorHeightMetres": 0.012009580032466681,
+      "referenceLowBandMaxMetres": 0.29980247793216375,
+      "referenceBodyBandMaxMetres": 1.7999237408630318,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        123,
+        109
+      ],
+      "levelXYMetres": [
+        0.27500000000000036,
+        2.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 6597,
+      "referenceFloorHeightMetres": 0.014619460732708905,
+      "referenceLowBandMaxMetres": 0.29989061485074764,
+      "referenceBodyBandMaxMetres": 1.7988997086631915,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        123,
+        110
+      ],
+      "levelXYMetres": [
+        0.27500000000000036,
+        2.075
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 540,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        123,
+        111
+      ],
+      "levelXYMetres": [
+        0.27500000000000036,
+        2.125
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 0,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        123,
+        112
+      ],
+      "levelXYMetres": [
+        0.27500000000000036,
+        2.175
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 0,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        123,
+        113
+      ],
+      "levelXYMetres": [
+        0.27500000000000036,
+        2.2250000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": true,
+        "walk": false
+      },
+      "referenceVertexCount": 0,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        123,
+        114
+      ],
+      "levelXYMetres": [
+        0.27500000000000036,
+        2.2750000000000004
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": true,
+        "walk": false
+      },
+      "referenceVertexCount": 0,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        124,
+        106
+      ],
+      "levelXYMetres": [
+        0.3250000000000002,
+        1.875
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 721,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        124,
+        107
+      ],
+      "levelXYMetres": [
+        0.3250000000000002,
+        1.9249999999999998
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 559,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        124,
+        108
+      ],
+      "levelXYMetres": [
+        0.3250000000000002,
+        1.9750000000000005
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 0,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        124,
+        109
+      ],
+      "levelXYMetres": [
+        0.3250000000000002,
+        2.0250000000000004
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": false,
+        "walk": false
+      },
+      "referenceVertexCount": 0,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        124,
+        110
+      ],
+      "levelXYMetres": [
+        0.3250000000000002,
+        2.075
+      ],
+      "phoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": true,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": true,
+        "walk": false
+      },
+      "referenceVertexCount": 0,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        124,
+        111
+      ],
+      "levelXYMetres": [
+        0.3250000000000002,
+        2.125
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": true,
+        "walk": false
+      },
+      "referenceVertexCount": 0,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    },
+    {
+      "sourceIJ": [
+        124,
+        112
+      ],
+      "levelXYMetres": [
+        0.3250000000000002,
+        2.175
+      ],
+      "phoneFlags": {
+        "support": false,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": true,
+        "highUnknown": true,
+        "walk": false
+      },
+      "referenceVertexCount": 0,
+      "referenceFloorHeightMetres": null,
+      "referenceLowBandMaxMetres": null,
+      "referenceBodyBandMaxMetres": null,
+      "referenceFloorWithoutSavedObstacleVerticesProxy": false
+    }
+  ],
+  "physicalBarrierVerified": false,
+  "falsePhoneBarrierVerified": false,
+  "plannerOrRouteRerun": false,
+  "referenceFedToPlanner": false,
+  "limitations": [
+    "No actual coffee RGB/depth frames or occupied/free leaf clouds are local; collapsed flags cannot identify source frames or physical semantics.",
+    "Vertex absence is not mesh-surface absence; this is not enough to remove a blocker or claim traversability.",
+    "The available reference arrays were generated and registered upstream; no independent registration/triangle replay was performed here.",
+    "Semantic venue is the dataset name coffee_room, not proof of a public cafe or accessible customer route."
+  ]
+}

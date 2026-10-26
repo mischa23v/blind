@@ -1,0 +1,1 @@
+Initial authored fixture incorrectly expected eight unique endpoints on a square. The specified lexicographic direction-extreme policy legitimately deduplicates the square corners to four endpoints. The expectation was corrected before any real endpoint/native route execution; endpoint policy and selector were unchanged.

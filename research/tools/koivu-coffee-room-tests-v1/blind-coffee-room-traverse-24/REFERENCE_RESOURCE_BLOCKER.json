@@ -1,0 +1,32 @@
+{
+  "scope": "Planning/storage assessment only; no reference acquisition",
+  "metadataSource": "blind-room-reference-research-04/zenodo-record-10222321.json",
+  "metadataSHA256": "147ea028701494eeb1e267bf2ec575c683a87bfab606fafe306ca8d603dc803b",
+  "officialRecord": "https://zenodo.org/records/10222321",
+  "archive": {
+    "id": "8def8dd0-248c-48c5-942a-b7f0e76076c1",
+    "key": "coffee_room_mesh_pd.tar.gz",
+    "size": 288148502,
+    "checksum": "md5:d051bb90179d53374c1bb0c6ec4b0745",
+    "links": {
+      "self": "https://zenodo.org/api/records/10222321/files/coffee_room_mesh_pd.tar.gz/content"
+    }
+  },
+  "freeBytesObserved": 983150592,
+  "reserveBytes": 805306368,
+  "usableAboveReserveBytes": 177844224,
+  "archiveOnlyAdditionalFreeBytesNeeded": 110304278,
+  "selectiveMeshMemberBytes": null,
+  "selectiveMeshSizeStatus": "Not verified: no local Coffee archive inventory or header; only Koivu inventory is available. A bounded header/inventory check is needed before allocation.",
+  "availableSavedReceiptReferenceVertexCount": 5695474,
+  "referenceVertexCountIsNotVerifiedMeshByteSize": true,
+  "neededForTriangleScoring": [
+    "Coffee gt_mesh.ply, exact byte size/header/hash validated",
+    "Coffee icp_iphone.json and frame/registration contract verified against the corrected phone level frame",
+    "Frozen accepted route converted into explicitly simulated actor episode and independently evaluated by existing scorer; static route result alone is not movement",
+    "Resource preflight and isolated no-reference planning/data boundary"
+  ],
+  "notNeededForThisRouteTest": "Coffee raw iPhone archive was not acquired; derived phone mask and level metadata suffice only for this fixed-map route test.",
+  "downloadsStarted": false,
+  "filesDeleted": false
+}

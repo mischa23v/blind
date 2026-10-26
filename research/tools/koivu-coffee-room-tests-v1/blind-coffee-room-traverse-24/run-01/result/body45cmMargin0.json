@@ -1,0 +1,6251 @@
+{
+  "summary": {
+    "profile": "body45cmMargin0",
+    "geometry": {
+      "width": 0.45,
+      "depth": 0.3,
+      "height": 1.6,
+      "margin": 0.0,
+      "nativeProposalRadius": 0.225,
+      "publicProfile": "body45cmMargin0",
+      "proposalOnlyFallback": false,
+      "horizontalEnvelopeWidth": 0.45,
+      "horizontalEnvelopeDepth": 0.3,
+      "halfLateral": 0.225,
+      "halfForward": 0.15,
+      "nativeRadiusIntended": 0.225,
+      "nativeRadiusFloat32": 0.22499999403953552,
+      "nativeRadiusPolicy": "explicit proposal-only radius; unchanged full rectangle must validate every candidate",
+      "maxHalfBodyEnvelopeRadiusDiagnostic": 0.225,
+      "nativeCellSize": 0.025,
+      "nativeCellSizeFloat32": 0.02500000037252903,
+      "nativeFloat32RadiusCellQuotient": 9.0,
+      "nativeWalkableRadiusCells": 9,
+      "nativeEffectiveErosionRadiusMetres": 0.22500000335276127,
+      "nativeRadiusFormula": "(int)std::ceil(c->radius/config.cs); operands are Float32",
+      "nativeHeight": 1.75,
+      "sourceMaskCellSize": 0.05,
+      "newSensorDetailCreated": false,
+      "discIsNotFullRectangleClearance": true,
+      "circleFailureIsNotPhysicalFitImpossibility": true,
+      "abstractGeometrySensitivityOnly": false
+    },
+    "queries": 42,
+    "accepted": 16,
+    "statusCounts": {
+      "fixedPhoneModelLegAccepted": 16,
+      "fixedNativeOrRectangleRejected": 26
+    },
+    "nativeReasonCounts": {
+      "ok": 16,
+      "incomplete": 24,
+      "sampled_turn": 1,
+      "sampled_segment": 1
+    },
+    "acceptedLengthMetresMinMax": [
+      0.04999999999999982,
+      2.122482836687311
+    ],
+    "maximumAcceptedEndpointDisplacementMetres": 2.05,
+    "acceptedRoutesTouchingLowUnresolved": 16,
+    "allAcceptedSampledFootprintRechecksPassed": true,
+    "acceptedEndpointPairs": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        5
+      ],
+      [
+        0,
+        6
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        5
+      ],
+      [
+        1,
+        6
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        5,
+        0
+      ],
+      [
+        5,
+        1
+      ],
+      [
+        5,
+        6
+      ],
+      [
+        6,
+        0
+      ],
+      [
+        6,
+        1
+      ],
+      [
+        6,
+        5
+      ]
+    ]
+  },
+  "routes": [
+    {
+      "requestedStartXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.4249999999999998
+      ],
+      "requestedGoalXYZ": [
+        -0.27500000000000036,
+        0.0,
+        -2.125
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            -0.2750000059604645,
+            0.02500000037252903,
+            -2.125
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "projectedGoal": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          -1.1920929132713809e-08
+        ],
+        "horizontalDisplacementMetres": 1.2287812438566716e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037253205,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        "projectedXYZ": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "deltaXYZMetres": [
+          -5.960464122267695e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 5.960464122267695e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037252974,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 5.960464122267695e-09,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 1.7585505395068977,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 0,
+      "goalEndpointID": 1,
+      "straightLineEndpointDistanceMetres": 1.7585505395068977,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 1.7585505395068977,
+        "lengthInHistorical2To6Band": false,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": -1.8295672187585943,
+        "sampledPoseCount": 72,
+        "uniqueSampledFootprintCells": 427,
+        "lowUnresolvedSampledCells": 427,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.4249999999999998
+      ],
+      "requestedGoalXYZ": [
+        -4.675000000000001,
+        0.0,
+        -3.2250000000000005
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.3500001430511475
+          ],
+          [
+            -0.25,
+            0.02500000037252903,
+            -1.4500000476837158
+          ],
+          [
+            -0.6499996185302734,
+            0.02500000037252903,
+            -2.200000047683716
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "projectedGoal": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          -1.1920929132713809e-08
+        ],
+        "horizontalDisplacementMetres": 1.2287812438566716e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037253205,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        "projectedXYZ": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "deltaXYZMetres": [
+          -1.9073486257070726e-07,
+          0.02500000037252903,
+          9.536743217353205e-08
+        ],
+        "horizontalDisplacementMetres": 2.1324805959079633e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000373438525,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.3500001430511475
+        ],
+        [
+          -0.25,
+          0.02500000037252903,
+          -1.4500000476837158
+        ],
+        [
+          -0.6499996185302734,
+          0.02500000037252903,
+          -2.200000047683716
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 0,
+      "goalEndpointID": 2,
+      "straightLineEndpointDistanceMetres": 5.6002232098372655
+    },
+    {
+      "requestedStartXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.4249999999999998
+      ],
+      "requestedGoalXYZ": [
+        -4.825,
+        0.0,
+        -2.575
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.3500001430511475
+          ],
+          [
+            -0.25,
+            0.02500000037252903,
+            -1.4500000476837158
+          ],
+          [
+            -0.6499996185302734,
+            0.02500000037252903,
+            -2.200000047683716
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "projectedGoal": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          -1.1920929132713809e-08
+        ],
+        "horizontalDisplacementMetres": 1.2287812438566716e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037253205,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.825,
+          0.0,
+          -2.575
+        ],
+        "projectedXYZ": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "deltaXYZMetres": [
+          1.9073486345888568e-07,
+          0.02500000037252903,
+          -4.7683715642676816e-08
+        ],
+        "horizontalDisplacementMetres": 1.9660499707833326e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003733021,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.3500001430511475
+        ],
+        [
+          -0.25,
+          0.02500000037252903,
+          -1.4500000476837158
+        ],
+        [
+          -0.6499996185302734,
+          0.02500000037252903,
+          -2.200000047683716
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 0,
+      "goalEndpointID": 3,
+      "straightLineEndpointDistanceMetres": 5.442655601817922
+    },
+    {
+      "requestedStartXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.4249999999999998
+      ],
+      "requestedGoalXYZ": [
+        -3.9750000000000005,
+        0.0,
+        -1.375
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -0.8999996185302734,
+            0.02500000037252903,
+            -0.5
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "projectedGoal": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          -1.1920929132713809e-08
+        ],
+        "horizontalDisplacementMetres": 1.2287812438566716e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037253205,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ],
+        "projectedXYZ": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "deltaXYZMetres": [
+          9.536743217353205e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 9.536743217353205e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037271093,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.8999996185302734,
+          0.02500000037252903,
+          -0.5
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 0,
+      "goalEndpointID": 4,
+      "straightLineEndpointDistanceMetres": 4.257346591481601
+    },
+    {
+      "requestedStartXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.4249999999999998
+      ],
+      "requestedGoalXYZ": [
+        -0.7249999999999996,
+        0.0,
+        -0.125
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            -0.7250000238418579,
+            0.02500000037252903,
+            -0.125
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "projectedGoal": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          -1.1920929132713809e-08
+        ],
+        "horizontalDisplacementMetres": 1.2287812438566716e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037253205,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        "projectedXYZ": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "deltaXYZMetres": [
+          -2.3841858265427618e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.3841858265427618e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003725404,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 2.3841858265427618e-08,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 0.9486832980505132,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 0,
+      "goalEndpointID": 5,
+      "straightLineEndpointDistanceMetres": 0.9486832980505132,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 0.9486832980505132,
+        "lengthInHistorical2To6Band": false,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": 2.819842099193151,
+        "sampledPoseCount": 39,
+        "uniqueSampledFootprintCells": 261,
+        "lowUnresolvedSampledCells": 259,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.4249999999999998
+      ],
+      "requestedGoalXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.375
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            0.17499999701976776,
+            0.02500000037252903,
+            -0.375
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "projectedGoal": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          -1.1920929132713809e-08
+        ],
+        "horizontalDisplacementMetres": 1.2287812438566716e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037253205,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.9802320611338473e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000372529207,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 2.9802320611338473e-09,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 0.04999999999999982,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 0,
+      "goalEndpointID": 6,
+      "straightLineEndpointDistanceMetres": 0.04999999999999982,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 0.04999999999999982,
+        "lengthInHistorical2To6Band": false,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": 1.5707963267948966,
+        "sampledPoseCount": 4,
+        "uniqueSampledFootprintCells": 72,
+        "lowUnresolvedSampledCells": 72,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        -0.27500000000000036,
+        0.0,
+        -2.125
+      ],
+      "requestedGoalXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.4249999999999998
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            0.17499999701976776,
+            0.02500000037252903,
+            -0.42500001192092896
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "projectedGoal": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        "projectedXYZ": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "deltaXYZMetres": [
+          -5.960464122267695e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 5.960464122267695e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037252974,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          -1.1920929132713809e-08
+        ],
+        "horizontalDisplacementMetres": 1.2287812438566716e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037253205,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 1.2287812438566716e-08,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 1.7585505395068977,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 1,
+      "goalEndpointID": 0,
+      "straightLineEndpointDistanceMetres": 1.7585505395068977,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 1.7585505395068977,
+        "lengthInHistorical2To6Band": false,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": 1.3120254348311988,
+        "sampledPoseCount": 72,
+        "uniqueSampledFootprintCells": 427,
+        "lowUnresolvedSampledCells": 427,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        -0.27500000000000036,
+        0.0,
+        -2.125
+      ],
+      "requestedGoalXYZ": [
+        -4.675000000000001,
+        0.0,
+        -3.2250000000000005
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -0.5749998092651367,
+            0.02500000037252903,
+            -2.1500000953674316
+          ],
+          [
+            -0.625,
+            0.02500000037252903,
+            -2.1750001907348633
+          ],
+          [
+            -0.6499996185302734,
+            0.02500000037252903,
+            -2.200000047683716
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "projectedGoal": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        "projectedXYZ": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "deltaXYZMetres": [
+          -5.960464122267695e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 5.960464122267695e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037252974,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        "projectedXYZ": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "deltaXYZMetres": [
+          -1.9073486257070726e-07,
+          0.02500000037252903,
+          9.536743217353205e-08
+        ],
+        "horizontalDisplacementMetres": 2.1324805959079633e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000373438525,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.5749998092651367,
+          0.02500000037252903,
+          -2.1500000953674316
+        ],
+        [
+          -0.625,
+          0.02500000037252903,
+          -2.1750001907348633
+        ],
+        [
+          -0.6499996185302734,
+          0.02500000037252903,
+          -2.200000047683716
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 1,
+      "goalEndpointID": 2,
+      "straightLineEndpointDistanceMetres": 4.535416188179427
+    },
+    {
+      "requestedStartXYZ": [
+        -0.27500000000000036,
+        0.0,
+        -2.125
+      ],
+      "requestedGoalXYZ": [
+        -4.825,
+        0.0,
+        -2.575
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -0.5749998092651367,
+            0.02500000037252903,
+            -2.1500000953674316
+          ],
+          [
+            -0.625,
+            0.02500000037252903,
+            -2.1750001907348633
+          ],
+          [
+            -0.6499996185302734,
+            0.02500000037252903,
+            -2.200000047683716
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "projectedGoal": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        "projectedXYZ": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "deltaXYZMetres": [
+          -5.960464122267695e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 5.960464122267695e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037252974,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.825,
+          0.0,
+          -2.575
+        ],
+        "projectedXYZ": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "deltaXYZMetres": [
+          1.9073486345888568e-07,
+          0.02500000037252903,
+          -4.7683715642676816e-08
+        ],
+        "horizontalDisplacementMetres": 1.9660499707833326e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003733021,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.5749998092651367,
+          0.02500000037252903,
+          -2.1500000953674316
+        ],
+        [
+          -0.625,
+          0.02500000037252903,
+          -2.1750001907348633
+        ],
+        [
+          -0.6499996185302734,
+          0.02500000037252903,
+          -2.200000047683716
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 1,
+      "goalEndpointID": 3,
+      "straightLineEndpointDistanceMetres": 4.572198595861733
+    },
+    {
+      "requestedStartXYZ": [
+        -0.27500000000000036,
+        0.0,
+        -2.125
+      ],
+      "requestedGoalXYZ": [
+        -3.9750000000000005,
+        0.0,
+        -1.375
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.3500001430511475
+          ],
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.2250001430511475
+          ],
+          [
+            -0.25,
+            0.02500000037252903,
+            -1.125000238418579
+          ],
+          [
+            -0.2999997138977051,
+            0.02500000037252903,
+            -1.0750000476837158
+          ],
+          [
+            -0.875,
+            0.02500000037252903,
+            -0.5
+          ],
+          [
+            -0.8999996185302734,
+            0.02500000037252903,
+            -0.5
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "projectedGoal": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        "projectedXYZ": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "deltaXYZMetres": [
+          -5.960464122267695e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 5.960464122267695e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037252974,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ],
+        "projectedXYZ": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "deltaXYZMetres": [
+          9.536743217353205e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 9.536743217353205e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037271093,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.3500001430511475
+        ],
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.2250001430511475
+        ],
+        [
+          -0.25,
+          0.02500000037252903,
+          -1.125000238418579
+        ],
+        [
+          -0.2999997138977051,
+          0.02500000037252903,
+          -1.0750000476837158
+        ],
+        [
+          -0.875,
+          0.02500000037252903,
+          -0.5
+        ],
+        [
+          -0.8999996185302734,
+          0.02500000037252903,
+          -0.5
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 1,
+      "goalEndpointID": 4,
+      "straightLineEndpointDistanceMetres": 3.775248336202534
+    },
+    {
+      "requestedStartXYZ": [
+        -0.27500000000000036,
+        0.0,
+        -2.125
+      ],
+      "requestedGoalXYZ": [
+        -0.7249999999999996,
+        0.0,
+        -0.125
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.3500001430511475
+          ],
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.2250001430511475
+          ],
+          [
+            -0.7250000238418579,
+            0.02500000037252903,
+            -0.125
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "projectedGoal": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        "projectedXYZ": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "deltaXYZMetres": [
+          -5.960464122267695e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 5.960464122267695e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037252974,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        "projectedXYZ": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "deltaXYZMetres": [
+          -2.3841858265427618e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.3841858265427618e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003725404,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.3500001430511475
+        ],
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.2250001430511475
+        ],
+        [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.3500001430511475
+        ],
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.2250001430511475
+        ],
+        [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        [
+          -0.19999980926513672,
+          0.0,
+          -1.3500001430511475
+        ],
+        [
+          -0.19999980926513672,
+          0.0,
+          -1.2250001430511475
+        ],
+        [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 2.3841858265427618e-08,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 2.122482836687311,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 1,
+      "goalEndpointID": 5,
+      "straightLineEndpointDistanceMetres": 2.05,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 2.122482836687311,
+        "lengthInHistorical2To6Band": true,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": 1.4743222900892077,
+        "sampledPoseCount": 100,
+        "uniqueSampledFootprintCells": 503,
+        "lowUnresolvedSampledCells": 503,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        -0.27500000000000036,
+        0.0,
+        -2.125
+      ],
+      "requestedGoalXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.375
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            0.17499999701976776,
+            0.02500000037252903,
+            -0.375
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "projectedGoal": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        "projectedXYZ": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "deltaXYZMetres": [
+          -5.960464122267695e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 5.960464122267695e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037252974,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.9802320611338473e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000372529207,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 2.9802320611338473e-09,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 1.8069310999592652,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 1,
+      "goalEndpointID": 6,
+      "straightLineEndpointDistanceMetres": 1.8069310999592652,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 1.8069310999592652,
+        "lengthInHistorical2To6Band": false,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": 1.3191063550367097,
+        "sampledPoseCount": 74,
+        "uniqueSampledFootprintCells": 437,
+        "lowUnresolvedSampledCells": 437,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        -4.675000000000001,
+        0.0,
+        -3.2250000000000005
+      ],
+      "requestedGoalXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.4249999999999998
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -3.75,
+            0.02500000037252903,
+            -2.4750001430511475
+          ],
+          [
+            -3.674999713897705,
+            0.02500000037252903,
+            -2.4250001907348633
+          ],
+          [
+            -3.625,
+            0.02500000037252903,
+            -2.4000000953674316
+          ],
+          [
+            -3.124999761581421,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -3.0749998092651367,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -1.4249999523162842,
+            0.02500000037252903,
+            -2.6500000953674316
+          ],
+          [
+            -1.3999998569488525,
+            0.02500000037252903,
+            -2.6500000953674316
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "projectedGoal": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        "projectedXYZ": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "deltaXYZMetres": [
+          -1.9073486257070726e-07,
+          0.02500000037252903,
+          9.536743217353205e-08
+        ],
+        "horizontalDisplacementMetres": 2.1324805959079633e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000373438525,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          -1.1920929132713809e-08
+        ],
+        "horizontalDisplacementMetres": 1.2287812438566716e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037253205,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -3.75,
+          0.02500000037252903,
+          -2.4750001430511475
+        ],
+        [
+          -3.674999713897705,
+          0.02500000037252903,
+          -2.4250001907348633
+        ],
+        [
+          -3.625,
+          0.02500000037252903,
+          -2.4000000953674316
+        ],
+        [
+          -3.124999761581421,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -3.0749998092651367,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -1.4249999523162842,
+          0.02500000037252903,
+          -2.6500000953674316
+        ],
+        [
+          -1.3999998569488525,
+          0.02500000037252903,
+          -2.6500000953674316
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 2,
+      "goalEndpointID": 0,
+      "straightLineEndpointDistanceMetres": 5.6002232098372655
+    },
+    {
+      "requestedStartXYZ": [
+        -4.675000000000001,
+        0.0,
+        -3.2250000000000005
+      ],
+      "requestedGoalXYZ": [
+        -0.27500000000000036,
+        0.0,
+        -2.125
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -3.75,
+            0.02500000037252903,
+            -2.4750001430511475
+          ],
+          [
+            -3.674999713897705,
+            0.02500000037252903,
+            -2.4250001907348633
+          ],
+          [
+            -3.625,
+            0.02500000037252903,
+            -2.4000000953674316
+          ],
+          [
+            -3.124999761581421,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -3.0749998092651367,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -1.3249998092651367,
+            0.02500000037252903,
+            -2.7250001430511475
+          ],
+          [
+            -1.299999713897705,
+            0.02500000037252903,
+            -2.7250001430511475
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "projectedGoal": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        "projectedXYZ": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "deltaXYZMetres": [
+          -1.9073486257070726e-07,
+          0.02500000037252903,
+          9.536743217353205e-08
+        ],
+        "horizontalDisplacementMetres": 2.1324805959079633e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000373438525,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        "projectedXYZ": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "deltaXYZMetres": [
+          -5.960464122267695e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 5.960464122267695e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037252974,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -3.75,
+          0.02500000037252903,
+          -2.4750001430511475
+        ],
+        [
+          -3.674999713897705,
+          0.02500000037252903,
+          -2.4250001907348633
+        ],
+        [
+          -3.625,
+          0.02500000037252903,
+          -2.4000000953674316
+        ],
+        [
+          -3.124999761581421,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -3.0749998092651367,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -1.3249998092651367,
+          0.02500000037252903,
+          -2.7250001430511475
+        ],
+        [
+          -1.299999713897705,
+          0.02500000037252903,
+          -2.7250001430511475
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 2,
+      "goalEndpointID": 1,
+      "straightLineEndpointDistanceMetres": 4.535416188179427
+    },
+    {
+      "requestedStartXYZ": [
+        -4.675000000000001,
+        0.0,
+        -3.2250000000000005
+      ],
+      "requestedGoalXYZ": [
+        -4.825,
+        0.0,
+        -2.575
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            -4.824999809265137,
+            0.02500000037252903,
+            -2.575000047683716
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "projectedGoal": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        "projectedXYZ": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "deltaXYZMetres": [
+          -1.9073486257070726e-07,
+          0.02500000037252903,
+          9.536743217353205e-08
+        ],
+        "horizontalDisplacementMetres": 2.1324805959079633e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000373438525,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.825,
+          0.0,
+          -2.575
+        ],
+        "projectedXYZ": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "deltaXYZMetres": [
+          1.9073486345888568e-07,
+          0.02500000037252903,
+          -4.7683715642676816e-08
+        ],
+        "horizontalDisplacementMetres": 1.9660499707833326e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003733021,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        [
+          -4.825,
+          0.0,
+          -2.575
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        [
+          -4.825,
+          0.0,
+          -2.575
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 1.9660499707833326e-07,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 0.667083203206317,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 2,
+      "goalEndpointID": 3,
+      "straightLineEndpointDistanceMetres": 0.667083203206317,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 0.667083203206317,
+        "lengthInHistorical2To6Band": false,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": 1.7975951748487815,
+        "sampledPoseCount": 28,
+        "uniqueSampledFootprintCells": 205,
+        "lowUnresolvedSampledCells": 125,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        -4.675000000000001,
+        0.0,
+        -3.2250000000000005
+      ],
+      "requestedGoalXYZ": [
+        -3.9750000000000005,
+        0.0,
+        -1.375
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            -3.9749999046325684,
+            0.02500000037252903,
+            -1.375
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "projectedGoal": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        "projectedXYZ": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "deltaXYZMetres": [
+          -1.9073486257070726e-07,
+          0.02500000037252903,
+          9.536743217353205e-08
+        ],
+        "horizontalDisplacementMetres": 2.1324805959079633e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000373438525,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ],
+        "projectedXYZ": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "deltaXYZMetres": [
+          9.536743217353205e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 9.536743217353205e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037271093,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 9.536743217353205e-08,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 1.978004044485249,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 2,
+      "goalEndpointID": 4,
+      "straightLineEndpointDistanceMetres": 1.978004044485249,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 1.978004044485249,
+        "lengthInHistorical2To6Band": false,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": 1.2090670852749643,
+        "sampledPoseCount": 81,
+        "uniqueSampledFootprintCells": 477,
+        "lowUnresolvedSampledCells": 243,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        -4.675000000000001,
+        0.0,
+        -3.2250000000000005
+      ],
+      "requestedGoalXYZ": [
+        -0.7249999999999996,
+        0.0,
+        -0.125
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -3.75,
+            0.02500000037252903,
+            -2.4750001430511475
+          ],
+          [
+            -3.674999713897705,
+            0.02500000037252903,
+            -2.4250001907348633
+          ],
+          [
+            -3.625,
+            0.02500000037252903,
+            -2.4000000953674316
+          ],
+          [
+            -3.124999761581421,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -3.0749998092651367,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -1.749999761581421,
+            0.02500000037252903,
+            -2.4250001907348633
+          ],
+          [
+            -1.7249999046325684,
+            0.02500000037252903,
+            -2.4250001907348633
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "projectedGoal": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        "projectedXYZ": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "deltaXYZMetres": [
+          -1.9073486257070726e-07,
+          0.02500000037252903,
+          9.536743217353205e-08
+        ],
+        "horizontalDisplacementMetres": 2.1324805959079633e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000373438525,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        "projectedXYZ": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "deltaXYZMetres": [
+          -2.3841858265427618e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.3841858265427618e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003725404,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -3.75,
+          0.02500000037252903,
+          -2.4750001430511475
+        ],
+        [
+          -3.674999713897705,
+          0.02500000037252903,
+          -2.4250001907348633
+        ],
+        [
+          -3.625,
+          0.02500000037252903,
+          -2.4000000953674316
+        ],
+        [
+          -3.124999761581421,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -3.0749998092651367,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -1.749999761581421,
+          0.02500000037252903,
+          -2.4250001907348633
+        ],
+        [
+          -1.7249999046325684,
+          0.02500000037252903,
+          -2.4250001907348633
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 2,
+      "goalEndpointID": 5,
+      "straightLineEndpointDistanceMetres": 5.021205034650548
+    },
+    {
+      "requestedStartXYZ": [
+        -4.675000000000001,
+        0.0,
+        -3.2250000000000005
+      ],
+      "requestedGoalXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.375
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -3.75,
+            0.02500000037252903,
+            -2.4750001430511475
+          ],
+          [
+            -3.674999713897705,
+            0.02500000037252903,
+            -2.4250001907348633
+          ],
+          [
+            -3.625,
+            0.02500000037252903,
+            -2.4000000953674316
+          ],
+          [
+            -3.124999761581421,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -3.0749998092651367,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -1.4249999523162842,
+            0.02500000037252903,
+            -2.6500000953674316
+          ],
+          [
+            -1.3999998569488525,
+            0.02500000037252903,
+            -2.6500000953674316
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "projectedGoal": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        "projectedXYZ": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "deltaXYZMetres": [
+          -1.9073486257070726e-07,
+          0.02500000037252903,
+          9.536743217353205e-08
+        ],
+        "horizontalDisplacementMetres": 2.1324805959079633e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000373438525,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.9802320611338473e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000372529207,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -3.75,
+          0.02500000037252903,
+          -2.4750001430511475
+        ],
+        [
+          -3.674999713897705,
+          0.02500000037252903,
+          -2.4250001907348633
+        ],
+        [
+          -3.625,
+          0.02500000037252903,
+          -2.4000000953674316
+        ],
+        [
+          -3.124999761581421,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -3.0749998092651367,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -1.4249999523162842,
+          0.02500000037252903,
+          -2.6500000953674316
+        ],
+        [
+          -1.3999998569488525,
+          0.02500000037252903,
+          -2.6500000953674316
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 2,
+      "goalEndpointID": 6,
+      "straightLineEndpointDistanceMetres": 5.625388875446746
+    },
+    {
+      "requestedStartXYZ": [
+        -4.825,
+        0.0,
+        -2.575
+      ],
+      "requestedGoalXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.4249999999999998
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -3.625,
+            0.02500000037252903,
+            -2.4000000953674316
+          ],
+          [
+            -3.124999761581421,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -3.0749998092651367,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -1.4249999523162842,
+            0.02500000037252903,
+            -2.6500000953674316
+          ],
+          [
+            -1.3999998569488525,
+            0.02500000037252903,
+            -2.6500000953674316
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "projectedGoal": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.825,
+          0.0,
+          -2.575
+        ],
+        "projectedXYZ": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "deltaXYZMetres": [
+          1.9073486345888568e-07,
+          0.02500000037252903,
+          -4.7683715642676816e-08
+        ],
+        "horizontalDisplacementMetres": 1.9660499707833326e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003733021,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          -1.1920929132713809e-08
+        ],
+        "horizontalDisplacementMetres": 1.2287812438566716e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037253205,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -3.625,
+          0.02500000037252903,
+          -2.4000000953674316
+        ],
+        [
+          -3.124999761581421,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -3.0749998092651367,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -1.4249999523162842,
+          0.02500000037252903,
+          -2.6500000953674316
+        ],
+        [
+          -1.3999998569488525,
+          0.02500000037252903,
+          -2.6500000953674316
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 3,
+      "goalEndpointID": 0,
+      "straightLineEndpointDistanceMetres": 5.442655601817922
+    },
+    {
+      "requestedStartXYZ": [
+        -4.825,
+        0.0,
+        -2.575
+      ],
+      "requestedGoalXYZ": [
+        -0.27500000000000036,
+        0.0,
+        -2.125
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -3.625,
+            0.02500000037252903,
+            -2.4000000953674316
+          ],
+          [
+            -3.124999761581421,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -3.0749998092651367,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -1.3249998092651367,
+            0.02500000037252903,
+            -2.7250001430511475
+          ],
+          [
+            -1.299999713897705,
+            0.02500000037252903,
+            -2.7250001430511475
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "projectedGoal": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.825,
+          0.0,
+          -2.575
+        ],
+        "projectedXYZ": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "deltaXYZMetres": [
+          1.9073486345888568e-07,
+          0.02500000037252903,
+          -4.7683715642676816e-08
+        ],
+        "horizontalDisplacementMetres": 1.9660499707833326e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003733021,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        "projectedXYZ": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "deltaXYZMetres": [
+          -5.960464122267695e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 5.960464122267695e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037252974,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -3.625,
+          0.02500000037252903,
+          -2.4000000953674316
+        ],
+        [
+          -3.124999761581421,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -3.0749998092651367,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -1.3249998092651367,
+          0.02500000037252903,
+          -2.7250001430511475
+        ],
+        [
+          -1.299999713897705,
+          0.02500000037252903,
+          -2.7250001430511475
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 3,
+      "goalEndpointID": 1,
+      "straightLineEndpointDistanceMetres": 4.572198595861733
+    },
+    {
+      "requestedStartXYZ": [
+        -4.825,
+        0.0,
+        -2.575
+      ],
+      "requestedGoalXYZ": [
+        -4.675000000000001,
+        0.0,
+        -3.2250000000000005
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            -4.675000190734863,
+            0.02500000037252903,
+            -3.2249999046325684
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "projectedGoal": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.825,
+          0.0,
+          -2.575
+        ],
+        "projectedXYZ": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "deltaXYZMetres": [
+          1.9073486345888568e-07,
+          0.02500000037252903,
+          -4.7683715642676816e-08
+        ],
+        "horizontalDisplacementMetres": 1.9660499707833326e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003733021,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        "projectedXYZ": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "deltaXYZMetres": [
+          -1.9073486257070726e-07,
+          0.02500000037252903,
+          9.536743217353205e-08
+        ],
+        "horizontalDisplacementMetres": 2.1324805959079633e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000373438525,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          -4.825,
+          0.0,
+          -2.575
+        ],
+        [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          -4.825,
+          0.0,
+          -2.575
+        ],
+        [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 2.1324805959079633e-07,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 0.667083203206317,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 3,
+      "goalEndpointID": 2,
+      "straightLineEndpointDistanceMetres": 0.667083203206317,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 0.667083203206317,
+        "lengthInHistorical2To6Band": false,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": -1.3439974787410116,
+        "sampledPoseCount": 28,
+        "uniqueSampledFootprintCells": 205,
+        "lowUnresolvedSampledCells": 125,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        -4.825,
+        0.0,
+        -2.575
+      ],
+      "requestedGoalXYZ": [
+        -3.9750000000000005,
+        0.0,
+        -1.375
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -4.474999904632568,
+            0.02500000037252903,
+            -2.1750001907348633
+          ],
+          [
+            -3.9749999046325684,
+            0.02500000037252903,
+            -1.375
+          ]
+        ],
+        "reason": "sampled_turn",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "projectedGoal": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "sampledRectangleResult": "turn",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.825,
+          0.0,
+          -2.575
+        ],
+        "projectedXYZ": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "deltaXYZMetres": [
+          1.9073486345888568e-07,
+          0.02500000037252903,
+          -4.7683715642676816e-08
+        ],
+        "horizontalDisplacementMetres": 1.9660499707833326e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003733021,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ],
+        "projectedXYZ": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "deltaXYZMetres": [
+          9.536743217353205e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 9.536743217353205e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037271093,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -4.474999904632568,
+          0.02500000037252903,
+          -2.1750001907348633
+        ],
+        [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 3,
+      "goalEndpointID": 4,
+      "straightLineEndpointDistanceMetres": 1.4705441169852742
+    },
+    {
+      "requestedStartXYZ": [
+        -4.825,
+        0.0,
+        -2.575
+      ],
+      "requestedGoalXYZ": [
+        -0.7249999999999996,
+        0.0,
+        -0.125
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -3.625,
+            0.02500000037252903,
+            -2.4000000953674316
+          ],
+          [
+            -3.124999761581421,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -3.0749998092651367,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -1.749999761581421,
+            0.02500000037252903,
+            -2.4250001907348633
+          ],
+          [
+            -1.7249999046325684,
+            0.02500000037252903,
+            -2.4250001907348633
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "projectedGoal": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.825,
+          0.0,
+          -2.575
+        ],
+        "projectedXYZ": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "deltaXYZMetres": [
+          1.9073486345888568e-07,
+          0.02500000037252903,
+          -4.7683715642676816e-08
+        ],
+        "horizontalDisplacementMetres": 1.9660499707833326e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003733021,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        "projectedXYZ": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "deltaXYZMetres": [
+          -2.3841858265427618e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.3841858265427618e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003725404,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -3.625,
+          0.02500000037252903,
+          -2.4000000953674316
+        ],
+        [
+          -3.124999761581421,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -3.0749998092651367,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -1.749999761581421,
+          0.02500000037252903,
+          -2.4250001907348633
+        ],
+        [
+          -1.7249999046325684,
+          0.02500000037252903,
+          -2.4250001907348633
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 3,
+      "goalEndpointID": 5,
+      "straightLineEndpointDistanceMetres": 4.776243293635701
+    },
+    {
+      "requestedStartXYZ": [
+        -4.825,
+        0.0,
+        -2.575
+      ],
+      "requestedGoalXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.375
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -3.625,
+            0.02500000037252903,
+            -2.4000000953674316
+          ],
+          [
+            -3.124999761581421,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -3.0749998092651367,
+            0.02500000037252903,
+            -2.3500001430511475
+          ],
+          [
+            -1.4249999523162842,
+            0.02500000037252903,
+            -2.6500000953674316
+          ],
+          [
+            -1.3999998569488525,
+            0.02500000037252903,
+            -2.6500000953674316
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "projectedGoal": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.825,
+          0.0,
+          -2.575
+        ],
+        "projectedXYZ": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "deltaXYZMetres": [
+          1.9073486345888568e-07,
+          0.02500000037252903,
+          -4.7683715642676816e-08
+        ],
+        "horizontalDisplacementMetres": 1.9660499707833326e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003733021,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.9802320611338473e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000372529207,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -3.625,
+          0.02500000037252903,
+          -2.4000000953674316
+        ],
+        [
+          -3.124999761581421,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -3.0749998092651367,
+          0.02500000037252903,
+          -2.3500001430511475
+        ],
+        [
+          -1.4249999523162842,
+          0.02500000037252903,
+          -2.6500000953674316
+        ],
+        [
+          -1.3999998569488525,
+          0.02500000037252903,
+          -2.6500000953674316
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 3,
+      "goalEndpointID": 6,
+      "straightLineEndpointDistanceMetres": 5.462600113499065
+    },
+    {
+      "requestedStartXYZ": [
+        -3.9750000000000005,
+        0.0,
+        -1.375
+      ],
+      "requestedGoalXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.4249999999999998
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -2.2249999046325684,
+            0.02500000037252903,
+            -2.2750000953674316
+          ],
+          [
+            -2.174999952316284,
+            0.02500000037252903,
+            -2.3000001907348633
+          ],
+          [
+            -1.4249999523162842,
+            0.02500000037252903,
+            -2.6500000953674316
+          ],
+          [
+            -1.3999998569488525,
+            0.02500000037252903,
+            -2.6500000953674316
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "projectedGoal": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ],
+        "projectedXYZ": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "deltaXYZMetres": [
+          9.536743217353205e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 9.536743217353205e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037271093,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          -1.1920929132713809e-08
+        ],
+        "horizontalDisplacementMetres": 1.2287812438566716e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037253205,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -2.2249999046325684,
+          0.02500000037252903,
+          -2.2750000953674316
+        ],
+        [
+          -2.174999952316284,
+          0.02500000037252903,
+          -2.3000001907348633
+        ],
+        [
+          -1.4249999523162842,
+          0.02500000037252903,
+          -2.6500000953674316
+        ],
+        [
+          -1.3999998569488525,
+          0.02500000037252903,
+          -2.6500000953674316
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 4,
+      "goalEndpointID": 0,
+      "straightLineEndpointDistanceMetres": 4.257346591481601
+    },
+    {
+      "requestedStartXYZ": [
+        -3.9750000000000005,
+        0.0,
+        -1.375
+      ],
+      "requestedGoalXYZ": [
+        -0.27500000000000036,
+        0.0,
+        -2.125
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -2.2249999046325684,
+            0.02500000037252903,
+            -2.2750000953674316
+          ],
+          [
+            -2.174999952316284,
+            0.02500000037252903,
+            -2.3000001907348633
+          ],
+          [
+            -1.3249998092651367,
+            0.02500000037252903,
+            -2.7250001430511475
+          ],
+          [
+            -1.299999713897705,
+            0.02500000037252903,
+            -2.7250001430511475
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "projectedGoal": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ],
+        "projectedXYZ": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "deltaXYZMetres": [
+          9.536743217353205e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 9.536743217353205e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037271093,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        "projectedXYZ": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "deltaXYZMetres": [
+          -5.960464122267695e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 5.960464122267695e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037252974,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -2.2249999046325684,
+          0.02500000037252903,
+          -2.2750000953674316
+        ],
+        [
+          -2.174999952316284,
+          0.02500000037252903,
+          -2.3000001907348633
+        ],
+        [
+          -1.3249998092651367,
+          0.02500000037252903,
+          -2.7250001430511475
+        ],
+        [
+          -1.299999713897705,
+          0.02500000037252903,
+          -2.7250001430511475
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 4,
+      "goalEndpointID": 1,
+      "straightLineEndpointDistanceMetres": 3.775248336202534
+    },
+    {
+      "requestedStartXYZ": [
+        -3.9750000000000005,
+        0.0,
+        -1.375
+      ],
+      "requestedGoalXYZ": [
+        -4.675000000000001,
+        0.0,
+        -3.2250000000000005
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            -4.675000190734863,
+            0.02500000037252903,
+            -3.2249999046325684
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "projectedGoal": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ],
+        "projectedXYZ": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "deltaXYZMetres": [
+          9.536743217353205e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 9.536743217353205e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037271093,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        "projectedXYZ": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "deltaXYZMetres": [
+          -1.9073486257070726e-07,
+          0.02500000037252903,
+          9.536743217353205e-08
+        ],
+        "horizontalDisplacementMetres": 2.1324805959079633e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000373438525,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ],
+        [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ],
+        [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 2.1324805959079633e-07,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 1.978004044485249,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 4,
+      "goalEndpointID": 2,
+      "straightLineEndpointDistanceMetres": 1.978004044485249,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 1.978004044485249,
+        "lengthInHistorical2To6Band": false,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": -1.9325255683148288,
+        "sampledPoseCount": 81,
+        "uniqueSampledFootprintCells": 477,
+        "lowUnresolvedSampledCells": 242,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        -3.9750000000000005,
+        0.0,
+        -1.375
+      ],
+      "requestedGoalXYZ": [
+        -4.825,
+        0.0,
+        -2.575
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -4.474999904632568,
+            0.02500000037252903,
+            -2.1750001907348633
+          ],
+          [
+            -4.824999809265137,
+            0.02500000037252903,
+            -2.575000047683716
+          ]
+        ],
+        "reason": "sampled_segment",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "projectedGoal": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "sampledRectangleResult": "segment",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ],
+        "projectedXYZ": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "deltaXYZMetres": [
+          9.536743217353205e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 9.536743217353205e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037271093,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.825,
+          0.0,
+          -2.575
+        ],
+        "projectedXYZ": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "deltaXYZMetres": [
+          1.9073486345888568e-07,
+          0.02500000037252903,
+          -4.7683715642676816e-08
+        ],
+        "horizontalDisplacementMetres": 1.9660499707833326e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003733021,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -4.474999904632568,
+          0.02500000037252903,
+          -2.1750001907348633
+        ],
+        [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 4,
+      "goalEndpointID": 3,
+      "straightLineEndpointDistanceMetres": 1.4705441169852742
+    },
+    {
+      "requestedStartXYZ": [
+        -3.9750000000000005,
+        0.0,
+        -1.375
+      ],
+      "requestedGoalXYZ": [
+        -0.7249999999999996,
+        0.0,
+        -0.125
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -2.2249999046325684,
+            0.02500000037252903,
+            -2.2750000953674316
+          ],
+          [
+            -2.174999952316284,
+            0.02500000037252903,
+            -2.3000001907348633
+          ],
+          [
+            -1.874999761581421,
+            0.02500000037252903,
+            -2.4000000953674316
+          ],
+          [
+            -1.749999761581421,
+            0.02500000037252903,
+            -2.4250001907348633
+          ],
+          [
+            -1.7249999046325684,
+            0.02500000037252903,
+            -2.4250001907348633
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "projectedGoal": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ],
+        "projectedXYZ": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "deltaXYZMetres": [
+          9.536743217353205e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 9.536743217353205e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037271093,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        "projectedXYZ": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "deltaXYZMetres": [
+          -2.3841858265427618e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.3841858265427618e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003725404,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -2.2249999046325684,
+          0.02500000037252903,
+          -2.2750000953674316
+        ],
+        [
+          -2.174999952316284,
+          0.02500000037252903,
+          -2.3000001907348633
+        ],
+        [
+          -1.874999761581421,
+          0.02500000037252903,
+          -2.4000000953674316
+        ],
+        [
+          -1.749999761581421,
+          0.02500000037252903,
+          -2.4250001907348633
+        ],
+        [
+          -1.7249999046325684,
+          0.02500000037252903,
+          -2.4250001907348633
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 4,
+      "goalEndpointID": 5,
+      "straightLineEndpointDistanceMetres": 3.4820970692960307
+    },
+    {
+      "requestedStartXYZ": [
+        -3.9750000000000005,
+        0.0,
+        -1.375
+      ],
+      "requestedGoalXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.375
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -2.2249999046325684,
+            0.02500000037252903,
+            -2.2750000953674316
+          ],
+          [
+            -2.174999952316284,
+            0.02500000037252903,
+            -2.3000001907348633
+          ],
+          [
+            -1.4249999523162842,
+            0.02500000037252903,
+            -2.6500000953674316
+          ],
+          [
+            -1.3999998569488525,
+            0.02500000037252903,
+            -2.6500000953674316
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "projectedGoal": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ],
+        "projectedXYZ": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "deltaXYZMetres": [
+          9.536743217353205e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 9.536743217353205e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037271093,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.9802320611338473e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000372529207,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -2.2249999046325684,
+          0.02500000037252903,
+          -2.2750000953674316
+        ],
+        [
+          -2.174999952316284,
+          0.02500000037252903,
+          -2.3000001907348633
+        ],
+        [
+          -1.4249999523162842,
+          0.02500000037252903,
+          -2.6500000953674316
+        ],
+        [
+          -1.3999998569488525,
+          0.02500000037252903,
+          -2.6500000953674316
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 4,
+      "goalEndpointID": 6,
+      "straightLineEndpointDistanceMetres": 4.2687820276982995
+    },
+    {
+      "requestedStartXYZ": [
+        -0.7249999999999996,
+        0.0,
+        -0.125
+      ],
+      "requestedGoalXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.4249999999999998
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            0.17499999701976776,
+            0.02500000037252903,
+            -0.42500001192092896
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "projectedGoal": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        "projectedXYZ": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "deltaXYZMetres": [
+          -2.3841858265427618e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.3841858265427618e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003725404,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          -1.1920929132713809e-08
+        ],
+        "horizontalDisplacementMetres": 1.2287812438566716e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037253205,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 1.2287812438566716e-08,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 0.9486832980505132,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 5,
+      "goalEndpointID": 0,
+      "straightLineEndpointDistanceMetres": 0.9486832980505132,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 0.9486832980505132,
+        "lengthInHistorical2To6Band": false,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": -0.3217505543966422,
+        "sampledPoseCount": 39,
+        "uniqueSampledFootprintCells": 261,
+        "lowUnresolvedSampledCells": 259,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        -0.7249999999999996,
+        0.0,
+        -0.125
+      ],
+      "requestedGoalXYZ": [
+        -0.27500000000000036,
+        0.0,
+        -2.125
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.2250001430511475
+          ],
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.3500001430511475
+          ],
+          [
+            -0.2750000059604645,
+            0.02500000037252903,
+            -2.125
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "projectedGoal": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        "projectedXYZ": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "deltaXYZMetres": [
+          -2.3841858265427618e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.3841858265427618e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003725404,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        "projectedXYZ": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "deltaXYZMetres": [
+          -5.960464122267695e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 5.960464122267695e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037252974,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.2250001430511475
+        ],
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.3500001430511475
+        ],
+        [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.2250001430511475
+        ],
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.3500001430511475
+        ],
+        [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        [
+          -0.19999980926513672,
+          0.0,
+          -1.2250001430511475
+        ],
+        [
+          -0.19999980926513672,
+          0.0,
+          -1.3500001430511475
+        ],
+        [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 5.960464122267695e-09,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 2.122482836687311,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 5,
+      "goalEndpointID": 1,
+      "straightLineEndpointDistanceMetres": 2.05,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 2.122482836687311,
+        "lengthInHistorical2To6Band": true,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": -1.125495192233943,
+        "sampledPoseCount": 100,
+        "uniqueSampledFootprintCells": 503,
+        "lowUnresolvedSampledCells": 503,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        -0.7249999999999996,
+        0.0,
+        -0.125
+      ],
+      "requestedGoalXYZ": [
+        -4.675000000000001,
+        0.0,
+        -3.2250000000000005
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.2250001430511475
+          ],
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.3500001430511475
+          ],
+          [
+            -0.25,
+            0.02500000037252903,
+            -1.4500000476837158
+          ],
+          [
+            -0.6499996185302734,
+            0.02500000037252903,
+            -2.200000047683716
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "projectedGoal": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        "projectedXYZ": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "deltaXYZMetres": [
+          -2.3841858265427618e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.3841858265427618e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003725404,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        "projectedXYZ": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "deltaXYZMetres": [
+          -1.9073486257070726e-07,
+          0.02500000037252903,
+          9.536743217353205e-08
+        ],
+        "horizontalDisplacementMetres": 2.1324805959079633e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000373438525,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.2250001430511475
+        ],
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.3500001430511475
+        ],
+        [
+          -0.25,
+          0.02500000037252903,
+          -1.4500000476837158
+        ],
+        [
+          -0.6499996185302734,
+          0.02500000037252903,
+          -2.200000047683716
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 5,
+      "goalEndpointID": 2,
+      "straightLineEndpointDistanceMetres": 5.021205034650548
+    },
+    {
+      "requestedStartXYZ": [
+        -0.7249999999999996,
+        0.0,
+        -0.125
+      ],
+      "requestedGoalXYZ": [
+        -4.825,
+        0.0,
+        -2.575
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.2250001430511475
+          ],
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.3500001430511475
+          ],
+          [
+            -0.25,
+            0.02500000037252903,
+            -1.4500000476837158
+          ],
+          [
+            -0.6499996185302734,
+            0.02500000037252903,
+            -2.200000047683716
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "projectedGoal": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        "projectedXYZ": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "deltaXYZMetres": [
+          -2.3841858265427618e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.3841858265427618e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003725404,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.825,
+          0.0,
+          -2.575
+        ],
+        "projectedXYZ": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "deltaXYZMetres": [
+          1.9073486345888568e-07,
+          0.02500000037252903,
+          -4.7683715642676816e-08
+        ],
+        "horizontalDisplacementMetres": 1.9660499707833326e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003733021,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.2250001430511475
+        ],
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.3500001430511475
+        ],
+        [
+          -0.25,
+          0.02500000037252903,
+          -1.4500000476837158
+        ],
+        [
+          -0.6499996185302734,
+          0.02500000037252903,
+          -2.200000047683716
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 5,
+      "goalEndpointID": 3,
+      "straightLineEndpointDistanceMetres": 4.776243293635701
+    },
+    {
+      "requestedStartXYZ": [
+        -0.7249999999999996,
+        0.0,
+        -0.125
+      ],
+      "requestedGoalXYZ": [
+        -3.9750000000000005,
+        0.0,
+        -1.375
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -0.8499999046325684,
+            0.02500000037252903,
+            -0.40000009536743164
+          ],
+          [
+            -0.8999996185302734,
+            0.02500000037252903,
+            -0.5
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "projectedGoal": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        "projectedXYZ": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "deltaXYZMetres": [
+          -2.3841858265427618e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.3841858265427618e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003725404,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ],
+        "projectedXYZ": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "deltaXYZMetres": [
+          9.536743217353205e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 9.536743217353205e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037271093,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.8499999046325684,
+          0.02500000037252903,
+          -0.40000009536743164
+        ],
+        [
+          -0.8999996185302734,
+          0.02500000037252903,
+          -0.5
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 5,
+      "goalEndpointID": 4,
+      "straightLineEndpointDistanceMetres": 3.4820970692960307
+    },
+    {
+      "requestedStartXYZ": [
+        -0.7249999999999996,
+        0.0,
+        -0.125
+      ],
+      "requestedGoalXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.375
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            0.17499999701976776,
+            0.02500000037252903,
+            -0.375
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "projectedGoal": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        "projectedXYZ": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "deltaXYZMetres": [
+          -2.3841858265427618e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.3841858265427618e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003725404,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.9802320611338473e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000372529207,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 2.9802320611338473e-09,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 0.9340770846134697,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 5,
+      "goalEndpointID": 6,
+      "straightLineEndpointDistanceMetres": 0.9340770846134697,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 0.9340770846134697,
+        "lengthInHistorical2To6Band": false,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": -0.2709468503384207,
+        "sampledPoseCount": 39,
+        "uniqueSampledFootprintCells": 260,
+        "lowUnresolvedSampledCells": 258,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.375
+      ],
+      "requestedGoalXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.4249999999999998
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            0.17499999701976776,
+            0.02500000037252903,
+            -0.42500001192092896
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "projectedGoal": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.9802320611338473e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000372529207,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          -1.1920929132713809e-08
+        ],
+        "horizontalDisplacementMetres": 1.2287812438566716e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037253205,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.42500001192092896
+        ],
+        [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        [
+          0.17499999999999982,
+          0.0,
+          -0.4249999999999998
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 1.2287812438566716e-08,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 0.04999999999999982,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 6,
+      "goalEndpointID": 0,
+      "straightLineEndpointDistanceMetres": 0.04999999999999982,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 0.04999999999999982,
+        "lengthInHistorical2To6Band": false,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": -1.5707963267948966,
+        "sampledPoseCount": 4,
+        "uniqueSampledFootprintCells": 72,
+        "lowUnresolvedSampledCells": 72,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.375
+      ],
+      "requestedGoalXYZ": [
+        -0.27500000000000036,
+        0.0,
+        -2.125
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            -0.2750000059604645,
+            0.02500000037252903,
+            -2.125
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "projectedGoal": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.9802320611338473e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000372529207,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ],
+        "projectedXYZ": [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        "deltaXYZMetres": [
+          -5.960464122267695e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 5.960464122267695e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037252974,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        [
+          -0.2750000059604645,
+          0.02500000037252903,
+          -2.125
+        ],
+        [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        [
+          -0.27500000000000036,
+          0.0,
+          -2.125
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 5.960464122267695e-09,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 1.8069310999592652,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 6,
+      "goalEndpointID": 1,
+      "straightLineEndpointDistanceMetres": 1.8069310999592652,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 1.8069310999592652,
+        "lengthInHistorical2To6Band": false,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": -1.8224862985530834,
+        "sampledPoseCount": 74,
+        "uniqueSampledFootprintCells": 437,
+        "lowUnresolvedSampledCells": 437,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    },
+    {
+      "requestedStartXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.375
+      ],
+      "requestedGoalXYZ": [
+        -4.675000000000001,
+        0.0,
+        -3.2250000000000005
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.3500001430511475
+          ],
+          [
+            -0.25,
+            0.02500000037252903,
+            -1.4500000476837158
+          ],
+          [
+            -0.6499996185302734,
+            0.02500000037252903,
+            -2.200000047683716
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "projectedGoal": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.9802320611338473e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000372529207,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.675000000000001,
+          0.0,
+          -3.2250000000000005
+        ],
+        "projectedXYZ": [
+          -4.675000190734863,
+          0.02500000037252903,
+          -3.2249999046325684
+        ],
+        "deltaXYZMetres": [
+          -1.9073486257070726e-07,
+          0.02500000037252903,
+          9.536743217353205e-08
+        ],
+        "horizontalDisplacementMetres": 2.1324805959079633e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000373438525,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.3500001430511475
+        ],
+        [
+          -0.25,
+          0.02500000037252903,
+          -1.4500000476837158
+        ],
+        [
+          -0.6499996185302734,
+          0.02500000037252903,
+          -2.200000047683716
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 6,
+      "goalEndpointID": 2,
+      "straightLineEndpointDistanceMetres": 5.625388875446746
+    },
+    {
+      "requestedStartXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.375
+      ],
+      "requestedGoalXYZ": [
+        -4.825,
+        0.0,
+        -2.575
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -0.19999980926513672,
+            0.02500000037252903,
+            -1.3500001430511475
+          ],
+          [
+            -0.25,
+            0.02500000037252903,
+            -1.4500000476837158
+          ],
+          [
+            -0.6499996185302734,
+            0.02500000037252903,
+            -2.200000047683716
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "projectedGoal": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.9802320611338473e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000372529207,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -4.825,
+          0.0,
+          -2.575
+        ],
+        "projectedXYZ": [
+          -4.824999809265137,
+          0.02500000037252903,
+          -2.575000047683716
+        ],
+        "deltaXYZMetres": [
+          1.9073486345888568e-07,
+          0.02500000037252903,
+          -4.7683715642676816e-08
+        ],
+        "horizontalDisplacementMetres": 1.9660499707833326e-07,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003733021,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.19999980926513672,
+          0.02500000037252903,
+          -1.3500001430511475
+        ],
+        [
+          -0.25,
+          0.02500000037252903,
+          -1.4500000476837158
+        ],
+        [
+          -0.6499996185302734,
+          0.02500000037252903,
+          -2.200000047683716
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 6,
+      "goalEndpointID": 3,
+      "straightLineEndpointDistanceMetres": 5.462600113499065
+    },
+    {
+      "requestedStartXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.375
+      ],
+      "requestedGoalXYZ": [
+        -3.9750000000000005,
+        0.0,
+        -1.375
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": false,
+        "points": [
+          [
+            -0.8999996185302734,
+            0.02500000037252903,
+            -0.5
+          ]
+        ],
+        "reason": "incomplete",
+        "nativeComplete": false,
+        "nativeStatus": 1073741888,
+        "nativeError": null,
+        "projectedStart": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "projectedGoal": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "sampledRectangleResult": null,
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.9802320611338473e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000372529207,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -3.9750000000000005,
+          0.0,
+          -1.375
+        ],
+        "projectedXYZ": [
+          -3.9749999046325684,
+          0.02500000037252903,
+          -1.375
+        ],
+        "deltaXYZMetres": [
+          9.536743217353205e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 9.536743217353205e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.02500000037271093,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.8999996185302734,
+          0.02500000037252903,
+          -0.5
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "status": "fixedNativeOrRectangleRejected",
+      "startEndpointID": 6,
+      "goalEndpointID": 4,
+      "straightLineEndpointDistanceMetres": 4.2687820276982995
+    },
+    {
+      "requestedStartXYZ": [
+        0.17499999999999982,
+        0.0,
+        -0.375
+      ],
+      "requestedGoalXYZ": [
+        -0.7249999999999996,
+        0.0,
+        -0.125
+      ],
+      "nativeAndOriginalRectangleResult": {
+        "complete": true,
+        "points": [
+          [
+            -0.7250000238418579,
+            0.02500000037252903,
+            -0.125
+          ]
+        ],
+        "reason": "ok",
+        "nativeComplete": true,
+        "nativeStatus": 1073741824,
+        "nativeError": null,
+        "projectedStart": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "projectedGoal": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "sampledRectangleResult": "ok",
+        "mapRevision": "19ae50a3f28a743748e2af1e8784a0e5b68435ad2be3f16f094681a6d66e1766",
+        "physicalAuthority": false,
+        "actorSnapped": false
+      },
+      "startAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        "projectedXYZ": [
+          0.17499999701976776,
+          0.02500000037252903,
+          -0.375
+        ],
+        "deltaXYZMetres": [
+          -2.9802320611338473e-09,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.9802320611338473e-09,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.025000000372529207,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "goalAssociation": {
+        "validProjectedXYZ": true,
+        "requestedXYZ": [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ],
+        "projectedXYZ": [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        "deltaXYZMetres": [
+          -2.3841858265427618e-08,
+          0.02500000037252903,
+          0.0
+        ],
+        "horizontalDisplacementMetres": 2.3841858265427618e-08,
+        "verticalDisplacementMetres": 0.02500000037252903,
+        "full3DDisplacementMetres": 0.0250000003725404,
+        "existingHorizontalAssociationAtMost0p10m": true,
+        "newVerticalAcceptanceThresholdAdded": false,
+        "actorSnapped": false
+      },
+      "originalNativePointsFullXYZ": [
+        [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ]
+      ],
+      "fixedObjectivesRelocated": false,
+      "movementExecuted": false,
+      "physicalAuthority": false,
+      "fullXYZCandidateWithExactGoalConnector": [
+        [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        [
+          -0.7250000238418579,
+          0.02500000037252903,
+          -0.125
+        ],
+        [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ]
+      ],
+      "planarFootprintValidationPath": [
+        [
+          0.17499999999999982,
+          0.0,
+          -0.375
+        ],
+        [
+          -0.7249999999999996,
+          0.0,
+          -0.125
+        ]
+      ],
+      "planarCoalescingReceipt": {
+        "goalConnectorMetresBeforeCoalescing": 2.3841858265427618e-08,
+        "goalConnectorNativeSearch": false,
+        "numericalCoalescingBoundMetres": 1e-06,
+        "merges": [],
+        "actorStartGoalOrPoseChanged": false
+      },
+      "openPathCheck": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactSegmentEndpointHeadingsFit": true,
+        "horizontalLengthMetres": 0.9340770846134697,
+        "heightUsedForFootprintCheck": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5,
+        "continuousBodyOrVerticalClearanceProven": false
+      },
+      "status": "fixedPhoneModelLegAccepted",
+      "startEndpointID": 6,
+      "goalEndpointID": 5,
+      "straightLineEndpointDistanceMetres": 0.9340770846134697,
+      "sampledFootprintDiagnostic": {
+        "passed": true,
+        "unchangedSourceSweep": "ok",
+        "exactEndpointHeadingsFit": true,
+        "pathLengthMetres": 0.9340770846134697,
+        "lengthInHistorical2To6Band": false,
+        "historicalLengthBandIsDiagnosticNotAcceptance": true,
+        "initialYawRadians": 2.8706458032513726,
+        "sampledPoseCount": 39,
+        "uniqueSampledFootprintCells": 260,
+        "lowUnresolvedSampledCells": 258,
+        "continuousClearanceProven": false,
+        "translationSpacingMetres": 0.025,
+        "turnStepDegrees": 5
+      }
+    }
+  ]
+}

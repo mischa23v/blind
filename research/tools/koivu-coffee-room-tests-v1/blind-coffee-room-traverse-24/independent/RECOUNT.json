@@ -1,0 +1,102 @@
+{
+  "scope": "Independent source review and saved JSON arithmetic; no new route query and no NPZ array materialization",
+  "frozenManifestSHA256": "cf52680013ba59c6427f8bbd12d85e15ed09436342be9dfd93e7e35b03a6fa74",
+  "all18PinnedFileHashesVerified": true,
+  "frozenSourcePinCount": 18,
+  "allOrderedPairsPresentExactlyOnce": true,
+  "profiles": [
+    {
+      "profile": "body45cmMargin0",
+      "savedRouteFileSHA256": "9738c81087fee51b9636e46703bfae37708cee76bec698f75ea5d02a3b0a156f",
+      "orderedQueryCount": 42,
+      "accepted": 16,
+      "nativeReasons": {
+        "ok": 16,
+        "incomplete": 24,
+        "sampled_turn": 1,
+        "sampled_segment": 1
+      },
+      "minimumLengthMetres": 0.04999999999999982,
+      "maximumLengthMetres": 2.122482836687311,
+      "maximumEndpointDisplacementMetres": 2.05,
+      "acceptedPathsAtLeast2Metres": 2,
+      "acceptedEndpointPairsAtLeast2MetresApart": 2,
+      "acceptedPathsUnder0p10Metres": 2,
+      "lowUnresolvedCellCountsAmongAcceptedMinMax": [
+        72,
+        503
+      ],
+      "incompleteCrossGroupQueryCount": 24,
+      "acceptedPathEndpointsExact": true,
+      "lengthArithmeticReproduced": true
+    },
+    {
+      "profile": "body45cmMargin5cm",
+      "savedRouteFileSHA256": "827d1dbad50ddf4fb8ab33861b1287b019c745a1745da347ea0f72191180cd4d",
+      "orderedQueryCount": 42,
+      "accepted": 14,
+      "nativeReasons": {
+        "ok": 14,
+        "incomplete": 24,
+        "sampled_turn": 3,
+        "sampled_segment": 1
+      },
+      "minimumLengthMetres": 0.04999999999999982,
+      "maximumLengthMetres": 2.1512667687749665,
+      "maximumEndpointDisplacementMetres": 2.05,
+      "acceptedPathsAtLeast2Metres": 2,
+      "acceptedEndpointPairsAtLeast2MetresApart": 2,
+      "acceptedPathsUnder0p10Metres": 2,
+      "lowUnresolvedCellCountsAmongAcceptedMinMax": [
+        130,
+        640
+      ],
+      "incompleteCrossGroupQueryCount": 24,
+      "acceptedPathEndpointsExact": true,
+      "lengthArithmeticReproduced": true
+    },
+    {
+      "profile": "abstract28cmProfile",
+      "savedRouteFileSHA256": "2c29b76de8137e9bca447e5ae54179628e04221fceaf67cece242ae3b297af7e",
+      "orderedQueryCount": 42,
+      "accepted": 18,
+      "nativeReasons": {
+        "ok": 18,
+        "incomplete": 24
+      },
+      "minimumLengthMetres": 0.04999999999999982,
+      "maximumLengthMetres": 2.0884865661869774,
+      "maximumEndpointDisplacementMetres": 2.05,
+      "acceptedPathsAtLeast2Metres": 2,
+      "acceptedEndpointPairsAtLeast2MetresApart": 2,
+      "acceptedPathsUnder0p10Metres": 2,
+      "lowUnresolvedCellCountsAmongAcceptedMinMax": [
+        56,
+        340
+      ],
+      "incompleteCrossGroupQueryCount": 24,
+      "acceptedPathEndpointsExact": true,
+      "lengthArithmeticReproduced": true
+    }
+  ],
+  "commonNativeIncompleteEndpointPartition": [
+    [
+      0,
+      1,
+      5,
+      6
+    ],
+    [
+      2,
+      3,
+      4
+    ]
+  ],
+  "claimCautions": [
+    "Two accepted ordered paths in every profile connect endpoints just 5 cm apart; accepted-query counts are not room coverage.",
+    "The endpoints span 5.0 x 3.1 m but all accepted endpoint displacements are at most 2.05 m.",
+    "No cross-group candidate is accepted; this bounded native/rectangle policy does not prove physical impossibility.",
+    "Reference array access log is self-reported, corroborated by inspected explicit-key loading source; this audit did not trace OS reads.",
+    "No movement episode, continuous swept-body test or FARO triangle scoring occurred."
+  ]
+}

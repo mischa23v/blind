@@ -1,0 +1,25 @@
+{
+  "scope": "Independent source review before episode; saved plot visually inspected after episode",
+  "beforeLaunch": {
+    "reviewer": "separate read-only review agent",
+    "blockingDefectsFound": false,
+    "exactOriginalStart": [
+      -2.281401302639457,
+      0.0,
+      1.0373834286611066
+    ],
+    "mappedOriginalYawRadians": 1.095367702664267,
+    "correctV17Owner": true,
+    "priorAndSelectedSupportEnvelopeExactlyEqual": true,
+    "originalNineSeedsAndStage14PlaneRetained": true,
+    "phoneOnlyControllerInput": true,
+    "baselineActorDelayZeroScaleOne": true,
+    "minorCosmeticHistoricalDocstringsRetained": true
+  },
+  "afterRun": {
+    "independentRecount": "PASS",
+    "coveragePlotVisuallyInspected": true,
+    "coveragePlotScope": "partial traces and excluded ROI; dotted links are not traversed paths",
+    "sourceOrFrozenOutcomesChangedAfterLaunch": false
+  }
+}

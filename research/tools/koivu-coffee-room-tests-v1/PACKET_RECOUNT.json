@@ -1,0 +1,51 @@
+{
+  "checks": {
+    "blind-remaining-room-traverse-23": {
+      "admittedLegsPerProfile": 1,
+      "fullItineraryCompleted": false,
+      "movementExecuted": false,
+      "nativeQueries": 99
+    },
+    "blind-small-room-entry-return-24": {
+      "admittedLegsPerProfile": 0,
+      "fullItineraryCompleted": false,
+      "movementExecuted": false,
+      "nativeQueries": 96
+    },
+    "coffee": {
+      "abstract28cmProfile": {
+        "accepted": 18,
+        "longestAcceptedMetres": 2.0884865661869774,
+        "nativeIncomplete": 24,
+        "queries": 42
+      },
+      "body45cmMargin0": {
+        "accepted": 16,
+        "longestAcceptedMetres": 2.122482836687311,
+        "nativeIncomplete": 24,
+        "queries": 42
+      },
+      "body45cmMargin5cm": {
+        "accepted": 14,
+        "longestAcceptedMetres": 2.151266768774967,
+        "nativeIncomplete": 24,
+        "queries": 42
+      }
+    },
+    "partialEpisode": {
+      "actualDistanceMetres": 2.7599999999999993,
+      "arrival": true,
+      "bodyContactEvents": 0,
+      "finalStopAndDrainedFIFO": true,
+      "full3DGoalErrorMetres": 0.3261297817447533,
+      "groundContactsUnmeasured": true,
+      "marginContactEvents": 0,
+      "nativeBoundsCalls": 34902,
+      "queryRows": 554,
+      "ticks": 139,
+      "unresolvedLowTicks": 125
+    }
+  },
+  "scope": "Independent saved JSON/NPZ arithmetic only; no reference rescore, map load, native route query, or source execution",
+  "status": "PASS"
+}

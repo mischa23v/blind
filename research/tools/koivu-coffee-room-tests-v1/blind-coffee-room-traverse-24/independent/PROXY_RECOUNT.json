@@ -1,0 +1,108 @@
+{
+  "scope": "Independent arithmetic of saved blocked-row JSON and source inspection; no NPZ materialization or route rerun",
+  "sourceFilesSHA256": {
+    "reference-proxy-diagnostic/SCOPE.md": "f855dbd1f1936139407b9968a9a54669cf33605f32990bd0385cda712f1da1f4",
+    "reference-proxy-diagnostic/triage.py": "0ad3fc7156ae2e6eb3aca27cf0afcbed004a2446de736a5a2f8a06b0b0427265",
+    "reference-proxy-diagnostic/RESULT.json": "6bf85c190e09c417b9cf9d071d4924c11e96ea43249e354807469d377c22342f",
+    "reference-proxy-diagnostic/COUNTS.json": "78cec76034691042bfe5ef71454026d4ad013bac914b5198bbf0f22c637e91b9",
+    "postrun/localize.py": "2d323c8855298cfac86d7b5bfbd286e1e1e24b89aceed22fd368d51b03a95165",
+    "postrun/LOCALIZATION.json": "c68a1dbebb5ff9ebd9ae56e218b5be41b555d5cf111c220921f2fb8933285c98"
+  },
+  "countsReproduced": {
+    "neighborhoodBlocked": {
+      "recounted": {
+        "cells": 158,
+        "referenceCovered": 147,
+        "referenceFloorProxyPresent": 140,
+        "referenceLowAtLeast2p5cm": 24,
+        "referenceBodyBandVertex": 92,
+        "referenceLowOrBodyGeometry": 93,
+        "referenceFloorAndNoSavedLowOrBodyGeometry": 47,
+        "referenceMissingCoverage": 11,
+        "referenceNoFloorProxy": 18
+      },
+      "geometryFloorOnlyNoFloorDisjointForTheseSavedRows": true,
+      "threeGroupsCoverSavedRows": true
+    },
+    "neighborhoodHighObstacleBlocked": {
+      "recounted": {
+        "cells": 120,
+        "referenceCovered": 109,
+        "referenceFloorProxyPresent": 102,
+        "referenceLowAtLeast2p5cm": 23,
+        "referenceBodyBandVertex": 91,
+        "referenceLowOrBodyGeometry": 92,
+        "referenceFloorAndNoSavedLowOrBodyGeometry": 10,
+        "referenceMissingCoverage": 11,
+        "referenceNoFloorProxy": 18
+      },
+      "geometryFloorOnlyNoFloorDisjointForTheseSavedRows": true,
+      "threeGroupsCoverSavedRows": true
+    },
+    "neighborhoodMissingSupportBlocked": {
+      "recounted": {
+        "cells": 25,
+        "referenceCovered": 22,
+        "referenceFloorProxyPresent": 22,
+        "referenceLowAtLeast2p5cm": 1,
+        "referenceBodyBandVertex": 2,
+        "referenceLowOrBodyGeometry": 2,
+        "referenceFloorAndNoSavedLowOrBodyGeometry": 20,
+        "referenceMissingCoverage": 3,
+        "referenceNoFloorProxy": 3
+      },
+      "geometryFloorOnlyNoFloorDisjointForTheseSavedRows": true,
+      "threeGroupsCoverSavedRows": true
+    },
+    "neighborhoodHighUnknownBlocked": {
+      "recounted": {
+        "cells": 6,
+        "referenceCovered": 0,
+        "referenceFloorProxyPresent": 0,
+        "referenceLowAtLeast2p5cm": 0,
+        "referenceBodyBandVertex": 0,
+        "referenceLowOrBodyGeometry": 0,
+        "referenceFloorAndNoSavedLowOrBodyGeometry": 0,
+        "referenceMissingCoverage": 6,
+        "referenceNoFloorProxy": 6
+      },
+      "geometryFloorOnlyNoFloorDisjointForTheseSavedRows": true,
+      "threeGroupsCoverSavedRows": true
+    },
+    "neighborhoodLow1Blocked": {
+      "recounted": {
+        "cells": 37,
+        "referenceCovered": 29,
+        "referenceFloorProxyPresent": 22,
+        "referenceLowAtLeast2p5cm": 19,
+        "referenceBodyBandVertex": 18,
+        "referenceLowOrBodyGeometry": 19,
+        "referenceFloorAndNoSavedLowOrBodyGeometry": 3,
+        "referenceMissingCoverage": 8,
+        "referenceNoFloorProxy": 15
+      },
+      "geometryFloorOnlyNoFloorDisjointForTheseSavedRows": true,
+      "threeGroupsCoverSavedRows": true
+    },
+    "neighborhoodNearDipBlocked": {
+      "recounted": {
+        "cells": 15,
+        "referenceCovered": 15,
+        "referenceFloorProxyPresent": 15,
+        "referenceLowAtLeast2p5cm": 0,
+        "referenceBodyBandVertex": 0,
+        "referenceLowOrBodyGeometry": 0,
+        "referenceFloorAndNoSavedLowOrBodyGeometry": 15,
+        "referenceMissingCoverage": 0,
+        "referenceNoFloorProxy": 0
+      },
+      "geometryFloorOnlyNoFloorDisjointForTheseSavedRows": true,
+      "threeGroupsCoverSavedRows": true
+    }
+  },
+  "criticalPointWitnessCells": 32,
+  "phoneOnlyNeighborhoodCellsFromWitness": 436,
+  "newReferenceInputToPlanner": false,
+  "originalRouteManifestUnchanged": true,
+  "rawArrayValuesIndependentlyVerified": false
+}

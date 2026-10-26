@@ -1,0 +1,9 @@
+# Isolated postrun reference-column triage
+
+Authorized after frozen phone-only route outcomes and phone-only localization were complete. This does not modify maps/routes/endpoints or send reference data to any planner. Inputs: the original Coffee split0.7 flags, metadata lo/res/R/t, phone-only minimum-clearance witness neighborhood already saved in postrun/LOCALIZATION.json, and four existing saved reference vertex-column arrays (ref_n, ref_low_max, ref_body_max, ref_floor_h). The neighborhood is not changed after seeing reference values.
+
+Report overlapping diagnostic categories, not false-positive clearance truth: reference floor proxy present, any reference low-band maximum>=2.5cm, any reference body-band vertex, no saved band geometry, missing reference coverage/floor proxy. A floor-present column with no saved obstacle vertices is merely a candidate disagreement for follow-up. Vertex columns can miss triangle interiors, sparse surfaces, boundary registration effects, low objects or unsupported areas. Do not infer a safe passage or remove phone blockers.
+
+Source candidate is the OLDER external b0be8628 coffee_floorfix split0.7 artifact. It is NOT the latest Opus color/v3 candidate, which is not available in this workspace. Raw Coffee depth/colour images and per-frame/leaf evidence are absent; the NPZ exports only collapsed flags, statistics, an ungrounded mask and reference-column proxies, not original occupied/free leaf clouds. Exact object/doorway semantics, false barrier status and frame causes therefore remain unresolved.
+
+The neighborhood covers ONE point-grid witness, not all possible passages. Reference floor presence means at least one vertex within +/-6 cm and uses a mean height; that band overlaps phone dip heights and does not itself contradict dip/support flags. Reference body-band geometry spans 0.30–1.80m rather than exactly the 1.60 m body height.

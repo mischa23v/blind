@@ -1,0 +1,365 @@
+{
+  "scope": "Read-only source identification and photo/depth coordinate association, not movement, reference scoring, doorway width, or physical clearance proof.",
+  "roomIdentity": "VARPU adjoining gray-carpeted room with yellow table/chairs; high-confidence visual identification, room naming not independently confirmed.",
+  "entryReturnDoor": "Open wooden/glass door between red Koivu main room and gray VARPU room.",
+  "otherDoor": "Closed solid gray door near exit sign; beyond-door destination not observed.",
+  "referenceInputsUsed": false,
+  "selectedMetadataKeysOnly": [
+    "R",
+    "t",
+    "lo",
+    "res"
+  ],
+  "photoViews": [
+    {
+      "frameID": "frame_00131",
+      "poseIndex0": 130,
+      "originalRGBPath": "$WORKSPACE/blind-open3d-author-baseline-10/author-inputs/selected/images/frame_00131.jpg",
+      "originalRGBSHA256": "37a2fc18070736190e47b8701b3040a01f30f85ec7bc47f2ab69712d140554b0",
+      "depthPath": "$WORKSPACE/blind-koivu-game-07/map/depths/frame_00131.png",
+      "depthSHA256": "483446646caf2e8989a3ab9f3308f23f25b5300ea638c38f94b9259faea6074f",
+      "visuallyInspected": true,
+      "observation": "Outside red-carpeted main room looking through wooden/glass doorway labeled VARPU into gray-carpeted adjoining room."
+    },
+    {
+      "frameID": "frame_00140",
+      "poseIndex0": 139,
+      "originalRGBPath": "$WORKSPACE/blind-open3d-author-baseline-10/author-inputs/selected/images/frame_00140.jpg",
+      "originalRGBSHA256": "3702f87ec629a94097a2dc3defa8a6dd20b4a97755f1bf415e0e560ef05e9915",
+      "depthPath": "$WORKSPACE/blind-koivu-game-07/map/depths/frame_00140.png",
+      "depthSHA256": "bf0ad521f1a2009fb915da10b2313444a121c48f8fc5fa4eb35a5a4d3081afbd",
+      "visuallyInspected": true,
+      "observation": "Close view of wooden/glass VARPU door leaf and gray floor beyond."
+    },
+    {
+      "frameID": "frame_00144",
+      "poseIndex0": 143,
+      "originalRGBPath": "$WORKSPACE/blind-open3d-author-baseline-10/author-inputs/selected/images/frame_00144.jpg",
+      "originalRGBSHA256": "45de22fe2acdfc84a2430b96fc840823ec8ec106fd9a917df4caeeea30dbabb9",
+      "depthPath": "$WORKSPACE/blind-koivu-game-07/map/depths/frame_00144.png",
+      "depthSHA256": "3f4da79e19ebe622903cd378fecc97a723671eceacfd9cba9d71fc5e0111001f",
+      "visuallyInspected": true,
+      "observation": "Within gray room: exit sign at left, wall, portable display."
+    },
+    {
+      "frameID": "frame_00145",
+      "poseIndex0": 144,
+      "originalRGBPath": "$WORKSPACE/blind-open3d-author-baseline-10/author-inputs/selected/images/frame_00145.jpg",
+      "originalRGBSHA256": "99841f647f86e02db295f07e634f07ef08efab3ae571308a0458da847b5e263a",
+      "depthPath": "$WORKSPACE/blind-koivu-game-07/map/depths/frame_00145.png",
+      "depthSHA256": "935da1e84d88a8007939418a7571a964eb923a87f6f241f3376f8812b50fb778",
+      "visuallyInspected": true,
+      "observation": "Within gray room: exit sign at left, wall, portable display."
+    },
+    {
+      "frameID": "frame_00155",
+      "poseIndex0": 147,
+      "originalRGBPath": "$WORKSPACE/blind-open3d-author-baseline-10/author-inputs/selected/images/frame_00155.jpg",
+      "originalRGBSHA256": "e0057fa3839ee3f4f2fff5e8e4c88b21e84249144a85257896e4c2d4cdb223dc",
+      "depthPath": "$WORKSPACE/blind-koivu-game-07/map/depths/frame_00155.png",
+      "depthSHA256": "bcaeef3a6396ae9cf29b29d2ce4e352eae42b5a974bf57828c5ed51c1654d75b",
+      "visuallyInspected": true,
+      "observation": "Closed solid gray door with silver handle and evacuation diagram; gray carpet in front. No view beyond."
+    },
+    {
+      "frameID": "frame_00175",
+      "poseIndex0": 160,
+      "originalRGBPath": "$WORKSPACE/blind-open3d-author-baseline-10/author-inputs/selected/images/frame_00175.jpg",
+      "originalRGBSHA256": "67b8b07e183bb72379038f4d5697878777a9845cc97db5487fc265aa8733bd5e",
+      "depthPath": "$WORKSPACE/blind-koivu-game-07/map/depths/frame_00175.png",
+      "depthSHA256": "1f3aaaed307a74cfb704467b13923295f46c327c63eb4fa2c201ae6ae03101ef",
+      "visuallyInspected": true,
+      "observation": "Gray room interior with yellow table/chairs and flower picture."
+    },
+    {
+      "frameID": "frame_00194",
+      "poseIndex0": 178,
+      "originalRGBPath": "$WORKSPACE/blind-open3d-author-baseline-10/author-inputs/selected/images/frame_00194.jpg",
+      "originalRGBSHA256": "385a1101b790666d0728bea3ee412a9b7fb8106f3698208f3b3bc4169d1255cd",
+      "depthPath": "$WORKSPACE/blind-koivu-game-07/map/depths/frame_00194.png",
+      "depthSHA256": "15f12a771539d22f297b62a6fef25ec7affa843535d6f335f050ee9c2d297b33",
+      "visuallyInspected": true,
+      "observation": "View from gray room toward open wooden/glass doorway and red main room; threshold visible."
+    },
+    {
+      "frameID": "frame_00195",
+      "poseIndex0": 179,
+      "originalRGBPath": "$WORKSPACE/blind-open3d-author-baseline-10/author-inputs/selected/images/frame_00195.jpg",
+      "originalRGBSHA256": "b4164d2a9de05b18738b781cbe79f443bcfa84f605b12e70d9635148024a1473",
+      "depthPath": "$WORKSPACE/blind-koivu-game-07/map/depths/frame_00195.png",
+      "depthSHA256": "66644cfe3a43116f085481c11f2b2951bf81c42e222ee61ff0260655b88d671c",
+      "visuallyInspected": true,
+      "observation": "View from gray room toward red main room; wooden threshold and gray foreground clearly visible."
+    }
+  ],
+  "candidateObjectives": [
+    {
+      "role": "outside_start_and_same_return",
+      "frameID": "frame_00131",
+      "poseIndex0": 130,
+      "cameraPhoneXYZ": [
+        1.3968786001205444,
+        -3.658848524093628,
+        0.22305193543434143
+      ],
+      "originalCameraGameXYZ": [
+        1.395818549852976,
+        1.4932220396236149,
+        3.6596092423337994
+      ],
+      "correctedCameraGameXYZ": [
+        1.3963053676817945,
+        1.4924482581418805,
+        3.6598846382755963
+      ],
+      "cameraNotBodyCentre": true,
+      "cameraHeightIsNotFloorTargetHeight": true
+    },
+    {
+      "role": "inside_room",
+      "frameID": "frame_00175",
+      "poseIndex0": 160,
+      "cameraPhoneXYZ": [
+        4.560202121734619,
+        -0.31683433055877686,
+        -0.029590755701065063
+      ],
+      "originalCameraGameXYZ": [
+        4.559319477295879,
+        1.2445285073224712,
+        0.31746676921436623
+      ],
+      "correctedCameraGameXYZ": [
+        4.55972481962024,
+        1.2433398749514648,
+        0.3176959413150047
+      ],
+      "cameraNotBodyCentre": true,
+      "cameraHeightIsNotFloorTargetHeight": true
+    }
+  ],
+  "projectionConvention": "PNG uint16 millimetres; original full-resolution K; pixel centre u+.5,v+.5; OpenGL camera ray ((u+.5-cx)/fx,-(v+.5-cy)/fy,-1); camera-to-phone T then level R,t; game=(levelX,levelZ,-levelY).",
+  "thresholdSamples": [
+    {
+      "role": "threshold_interior_sample_a",
+      "frameID": "frame_00195",
+      "uv0": [
+        340,
+        875
+      ],
+      "depthMm": 2174,
+      "phoneXYZ": [
+        2.325845175690456,
+        -2.33197068874561,
+        -1.2739494189988343
+      ],
+      "originalGameXYZ": [
+        2.325847497068594,
+        -0.002443041983301031,
+        2.331968905253956
+      ],
+      "correctedGameXYZ": [
+        2.3258466054428677,
+        -0.003275039306885663,
+        2.331968357627868
+      ],
+      "reprojectionMaxErrorPixels": 2.8676221745627117e-05,
+      "correctedCellIJ": [
+        162,
+        74
+      ],
+      "correctedPhoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      }
+    },
+    {
+      "role": "threshold_interior_sample_b",
+      "frameID": "frame_00195",
+      "uv0": [
+        645,
+        914
+      ],
+      "depthMm": 2035,
+      "phoneXYZ": [
+        2.020152596693493,
+        -1.612476834511258,
+        -1.2616464508504552
+      ],
+      "originalGameXYZ": [
+        2.0201459979689314,
+        0.01000939463917594,
+        1.612481412360257
+      ],
+      "correctedGameXYZ": [
+        2.020149130931377,
+        0.009409745404190595,
+        1.612483213601803
+      ],
+      "reprojectionMaxErrorPixels": 2.9793163548674784e-05,
+      "correctedCellIJ": [
+        156,
+        88
+      ],
+      "correctedPhoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      }
+    },
+    {
+      "role": "threshold_middle_sample",
+      "frameID": "frame_00195",
+      "uv0": [
+        490,
+        894
+      ],
+      "depthMm": 2104,
+      "phoneXYZ": [
+        2.169839339090089,
+        -1.966526481669042,
+        -1.2676676696387266
+      ],
+      "originalGameXYZ": [
+        2.1698371066452538,
+        0.003914100411378074,
+        1.966527945953064
+      ],
+      "correctedGameXYZ": [
+        2.169838269757276,
+        0.003200357854442837,
+        1.9665285974177347
+      ],
+      "reprojectionMaxErrorPixels": 2.924192790487723e-05,
+      "correctedCellIJ": [
+        159,
+        81
+      ],
+      "correctedPhoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": false,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      }
+    },
+    {
+      "role": "gray_room_foreground_floor",
+      "frameID": "frame_00195",
+      "uv0": [
+        470,
+        945
+      ],
+      "depthMm": 1926,
+      "phoneXYZ": [
+        2.3623085252289364,
+        -1.9284090646754577,
+        -1.27086975578413
+      ],
+      "originalGameXYZ": [
+        2.362308504402906,
+        0.0008681158594814331,
+        1.928408902546641
+      ],
+      "correctedGameXYZ": [
+        2.362308661639005,
+        9.866079263209926e-05,
+        1.9284089676828338
+      ],
+      "reprojectionMaxErrorPixels": 3.199981119905715e-05,
+      "correctedCellIJ": [
+        163,
+        82
+      ],
+      "correctedPhoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      }
+    },
+    {
+      "role": "red_main_room_floor",
+      "frameID": "frame_00195",
+      "uv0": [
+        450,
+        780
+      ],
+      "depthMm": 2678,
+      "phoneXYZ": [
+        1.7085780604177545,
+        -2.3249829092951866,
+        -1.2785031548774743
+      ],
+      "originalGameXYZ": [
+        1.708583768719359,
+        -0.007431564429197568,
+        2.3249788067287627
+      ],
+      "correctedGameXYZ": [
+        1.708581283206937,
+        -0.008061052861390694,
+        2.3249774200360878
+      ],
+      "reprojectionMaxErrorPixels": 2.312980018359667e-05,
+      "correctedCellIJ": [
+        150,
+        74
+      ],
+      "correctedPhoneFlags": {
+        "support": true,
+        "deepBelow": false,
+        "nearDip": false,
+        "low1": false,
+        "lowUnresolvedFlag": true,
+        "highObstacle": false,
+        "highUnknown": false,
+        "walk": true
+      }
+    }
+  ],
+  "thresholdCaveat": "Manual visually selected interior samples on wooden strip; not jamb endpoints and not physical doorway-width measurement. Extend the sample-a/sample-b line for semantic side crossing only; no portal width claim.",
+  "enoughForCandidateTest": "Actual RGB/depth observes doorway and room interior; camera visits and returns. Current phone map has supported/walk cells but also low unresolved, blocked, and high-unknown cells. Native/body test must establish route success; camera track does not establish body passage.",
+  "unposedArchiveFramesNotUsed": [
+    "frame_00148",
+    "frame_00149",
+    "frame_00150",
+    "frame_00151",
+    "frame_00152",
+    "frame_00153",
+    "frame_00154",
+    "frame_00157",
+    "frame_00158",
+    "frame_00159",
+    "frame_00160",
+    "frame_00161",
+    "frame_00162",
+    "frame_00167",
+    "frame_00180"
+  ],
+  "inputPins": {
+    "$WORKSPACE/blind-mushroom-koivu-acquisition-01/selected/room_datasets/koivu/iphone/long_capture/transformations.json": "c496c8dc6474679766db8abd92da9c756104a752bb9e4519fd462fe294af90c3",
+    "$WORKSPACE/blind-pose-experiments-review-17/upstream/pose-consistency/poses/koivu_floorfix_transformations.json": "f1373e025aa4cdd7c6b89b786b1e315ce7b68a5817d2655353331ffe13334621",
+    "$WORKSPACE/blind-split-candidate-game-03/inputs/koivu_5cm_v2_pipeline2_out.npz": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d",
+    "$WORKSPACE/blind-pose-experiments-review-17/upstream/pose-consistency/runs/koivu_floorfix/pipeline2_out.npz": "ac63b5219a61094d754b6303d40b7f9dc0905a2abe446b6070bab94458c592d7",
+    "$WORKSPACE/blind-pose-experiments-review-17/upstream/pose-consistency/runs/koivu_floorfix/occthres_split0.7.npz": "41f26bb3bd7d364982978b8d9b3cfe7ab64e49a67de66c100f58a795e65af011"
+  }
+}

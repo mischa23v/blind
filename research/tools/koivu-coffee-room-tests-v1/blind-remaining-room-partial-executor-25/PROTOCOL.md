@@ -1,0 +1,9 @@
+# One partial main-room episode25
+
+Both complete itinerary proposals failed under their frozen finite phone-only policies: main-room horseshoe99 native queries, VARPU entry96. Preserve these failures. Independently execute ONLY admitted main-room first leg: original raw camera92 to original camera120 task region, nominal45x30x160cm body/zero margin, immutable corrected phone map. No post-reference alternative profile or route. Selected plan and all controller/physics sources freeze before FARO loading. Camera floor projection is not a measured body pose.
+
+Reuse stage21 goal-region controller, full old/new transforms/yaw mapping, exact raw original start; original task-goal arrival remains ≤0.34m horizontal controller stop and ≤0.35m full3D, with settled world verification/no pending motion. No compounded steering tolerance. Add conservative ORIGINAL-frame all-yaw radius AABB rejection for each controller proposal touching X<=-3,Y[1,3.5]; actor limits and collision authority unchanged.
+
+Use exact stage21/v17 physics, original nine support seeds, exact stage14 support-plane coefficients. Include prior north path in scene envelope to preserve prior classification ownership. Selected partial leg lies inside that prior envelope; no support-policy extension required. 3M candidate cap, local20cm2mm residual classifier, unknown-support and first-contact termination all unchanged. 1200ticks/150stationary cap;600CPU/900wall seconds;3GiB sampledRSS;64MiB outputs;768MiB disk reserve;one heavy scorer. No map clear, reference route choice, remote writes, installs, or human/device trials.
+
+This is a partial corridor movement pilot, NOT main-room traversal, NOT small-room entry/return, NOT continuous floor clearance or physical safety certification. Unresolved-low exposures must be counted and disclosed.
