@@ -1,0 +1,23 @@
+{
+  "scope": "Independent read-only review and terminology clarification; original executed source/result preserved",
+  "sourceSHA256": "a296842b2af9207e86a338886d49fc664155b34d96c957331217cc8e50ec54b6",
+  "resultSHA256": "9dc3f79ff56441edab65d2ab75d5eeb67f3eb63cb820cb2a9536e1b25b0ae4f4",
+  "reviewOutcome": "No concrete key-join, distance-bound or input-schema blocker found",
+  "reviewExecution": "Reviewer inspected source and four authored test cases/log; did not execute recorded data",
+  "clarifications": [
+    "The 0.60 m Recast value is the configured six-cell nominal erosion setting, not an exact Euclidean clearance guarantee. Upstream grid/chamfer computation owns the actual raster erosion.",
+    "The metric is shortest distance to the closed occupied horizontal squares. It is zero inside a square. All recorded candidate distances here are positive, so calling them boundary distances did not change these reported values.",
+    "The hypothetical single-bound cylinder preserves the original body rectangle and margin, not the larger historical square-container corners. It was not implemented or rerun."
+  ],
+  "numericalResultsChanged": false,
+  "executedSourceChanged": false,
+  "postRunDependencyHashes": {
+    "blind-octomap-reuse-08/octomap_engine.py": "3dc587cf7086078ff4362906fe2fbe723ea43e4bcdc6a6c6acf946f8aa308186",
+    "blind-octomap-reuse-08/octomap_adapter.cpp": "715b3e544dff913a82ec43f49c0255297af0c3a799397faceaa66ebe97f9dff7",
+    "blind-octomap-reuse-08/build-04/libblind_octomap.so": "3c0a88593d07540d93dbbc3e404ee44b3f5167ff7bda74f16fc8075aab83b1db"
+  },
+  "dependencyVerificationMeaning": "Post-run hashes recorded for closure; wrapper itself verifies its pinned native library at load. No separate pre-run source hash claim is added here.",
+  "FAROUsed": false,
+  "gameEpisodesExecuted": 0,
+  "physicalAuthority": false
+}

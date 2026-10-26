@@ -1,0 +1,80 @@
+{
+  "scope": "Read-only offline geometry clearance and representation diagnosis; no alternative route or game outcomes",
+  "eligibleCandidateCentres": 359,
+  "nativeOccupiedKeysAssociatedWithPositiveRawHits": 190508,
+  "distinctNativeOccupiedHorizontalSquares": 23099,
+  "distanceQuantilesModelMetres": {
+    "nativeOccupiedPositiveVoxelBoxes": {
+      "0": 0.04999999999999929,
+      "0.25": 0.04999999999999979,
+      "0.5": 0.0500000000000004,
+      "0.75": 0.09999999999999995,
+      "0.95": 0.14999999999999983,
+      "1": 0.2236067977499789
+    },
+    "projectedOccupiedSurfaceCells": {
+      "0": 0.04999999999999964,
+      "0.25": 0.04999999999999964,
+      "0.5": 0.04999999999999964,
+      "0.75": 0.05000000000000053,
+      "0.95": 0.1499999999999993,
+      "1": 0.15811388300841903
+    },
+    "missingSupportSurfaceCells": {
+      "0": 0.04999999999999964,
+      "0.25": 0.0707106781186555,
+      "0.5": 0.24999999999999983,
+      "0.75": 0.35355339059327406,
+      "0.95": 0.6500000000000001,
+      "1": 0.7778174593052023
+    }
+  },
+  "distanceMeaning": "Shortest horizontal distance to saved box/cell boundaries. Native boxes selected only by saved upstream occupied flags associated with original positive raw hits; supporting-floor-only keys are not added. These are model distances, not physical or sensor uncertainty guarantees.",
+  "envelopeStages": [
+    {
+      "stage": "original body circumscribed yaw-independent circle",
+      "radius": 0.2704163456597992,
+      "diameter": 0.5408326913195984
+    },
+    {
+      "stage": "current square player container circumscribed again by native cylinder",
+      "radius": 0.3824264635194589,
+      "diameter": 0.7648529270389178,
+      "extraRadiusFromDoubleBound": 0.1120101178596597
+    },
+    {
+      "stage": "unchanged declared planning margin",
+      "radius": 0.5324264635194589,
+      "diameter": 1.0648529270389178,
+      "addedMargin": 0.15
+    },
+    {
+      "stage": "Recast cell-quantized erosion",
+      "radius": 0.6000000000000001,
+      "diameter": 1.2000000000000002,
+      "additionalQuantization": 0.06757353648054121
+    }
+  ],
+  "stationarySwiftRadius": 0.5324264635194589,
+  "nominal2cmStepSwiftRadius": 0.5424264635194589,
+  "hypotheticalSingleBoundCylinder": {
+    "radiusBeforeMargin": 0.2704163456597992,
+    "unchangedMargin": 0.15,
+    "requestedRadius": 0.42041634565979924,
+    "same10cmRecastErosionRadius": 0.5,
+    "status": "Representation proposal only, NOT rerun and NOT a claim that any route would fit",
+    "constraint": "It encloses the original declared rectangle at every yaw, but not the larger historical square-container corners. A new independently tested evaluator/container variant would be required; old failures stay unchanged."
+  },
+  "inputs": {
+    "run-01/map/SURFACE.json": "7421a58b88a3f80c0b10501854be6e49ff29a78b0ef51eceeb113a0b36343129",
+    "run-01/map/SURFACE_EVIDENCE.npz": "c4b80a0305a82fd7dfe1e7de8d8a5da6396634dd8afd832663f5eb31baffdfd8",
+    "run-01/map/RAW_NATIVE_ASSOCIATIONS.npz": "d425972314a56981909b87ffd64cc0a045bddb8c066eb4c296562ce606595ed5",
+    "run-01/map/OCTOMAP_LEAVES.npz": "1c3731371fd20c325d3b30e10475796aca96c0eb19a0dcb156af97e0851d8977"
+  },
+  "sourceSHA256": "a296842b2af9207e86a338886d49fc664155b34d96c957331217cc8e50ec54b6",
+  "wallSeconds": 0.6475241510052001,
+  "FAROUsed": false,
+  "mapOrBodyChanged": false,
+  "gameEpisodesExecuted": 0,
+  "physicalAuthority": false
+}

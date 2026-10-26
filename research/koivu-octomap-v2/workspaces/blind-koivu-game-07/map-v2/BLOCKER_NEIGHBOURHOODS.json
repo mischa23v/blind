@@ -1,0 +1,32 @@
+{
+  "scope": "Saved phone-map blocker neighbourhood diagnosis only; no modified map or route/controller output",
+  "surfaceSHA256": "7421a58b88a3f80c0b10501854be6e49ff29a78b0ef51eceeb113a0b36343129",
+  "surfaceEvidenceSHA256": "c4b80a0305a82fd7dfe1e7de8d8a5da6396634dd8afd832663f5eb31baffdfd8",
+  "sourceSHA256": "8ac4e005740aac960449a3005b904140118f5c6f7e3d2f0949be457b8fb555c2",
+  "bodyRadiusWithMarginMetres": 0.5324264635194589,
+  "resolutionMetres": 0.1,
+  "stationaryFootprintIntersectedCellOffsets": 109,
+  "eligibleCentres": 359,
+  "neighbourhoodBlockerCentreCounts": {
+    "missingOriginalFloorSupport": 319,
+    "retainedBelowFloorContradiction": 226,
+    "positiveNativeOccupied": 359,
+    "positiveNativeUnknownOrUnresolved": 0,
+    "additionalVolumeCoverageMissing": 2,
+    "surfaceBoundary": 0
+  },
+  "overlappingBlockerSignatures": {
+    "missingOriginalFloorSupport + retainedBelowFloorContradiction + positiveNativeOccupied": 216,
+    "missingOriginalFloorSupport + positiveNativeOccupied": 101,
+    "positiveNativeOccupied": 32,
+    "retainedBelowFloorContradiction + positiveNativeOccupied": 8,
+    "missingOriginalFloorSupport + retainedBelowFloorContradiction + positiveNativeOccupied + additionalVolumeCoverageMissing": 2
+  },
+  "eligibleCentresWithoutAnyNeighbourhoodBlocker": 0,
+  "originalActualSwiftFitResult": "0 of 359 eligible centres fit; see PHONE_FOOTPRINT_DIAGNOSTIC.json",
+  "interpretation": "Counts overlap. A below-floor contradiction is a model conflict, not independently proven stairs or obstacle truth. No floor band, support prior, body margin or occupied state changed.",
+  "geometryOrCriteriaChanged": false,
+  "FAROUsed": false,
+  "gameEpisodesExecuted": 0,
+  "physicalAuthority": false
+}

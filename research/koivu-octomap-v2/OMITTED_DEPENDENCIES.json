@@ -1,0 +1,102 @@
+{
+  "compiledBinariesIncluded": false,
+  "externalFrozenOrFootprintDependencies": [
+    {
+      "bytes": 402736,
+      "path": "blind-octomap-reuse-08/build-04/libblind_octomap.so",
+      "reason": "Already-published v1/input dependency or intentionally omitted native binary; required for exact frozen execution.",
+      "sha256": "3c0a88593d07540d93dbbc3e404ee44b3f5167ff7bda74f16fc8075aab83b1db"
+    },
+    {
+      "bytes": 14921426,
+      "path": "blind-koivu-game-07/map/run-01/map/MAP.npz",
+      "reason": "Already-published v1/input dependency or intentionally omitted native binary; required for exact frozen execution.",
+      "sha256": "1961eef94bc98f5d89d4986c8b62d7352d0e2046e1dbfa3e6baf767a54e7646d"
+    },
+    {
+      "bytes": 29349,
+      "path": "blind-koivu-game-07/map/run-01/map/MAP_RECEIPT.json",
+      "reason": "Already-published v1/input dependency or intentionally omitted native binary; required for exact frozen execution.",
+      "sha256": "1edaa0aa95363dacaa1fb57dcc9b78de1fa9827385c6bc5d1e3a3a8d90afa44f"
+    },
+    {
+      "bytes": 1449098,
+      "path": "blind-koivu-game-07/map/run-01/map/SURFACE.json",
+      "reason": "Already-published v1/input dependency or intentionally omitted native binary; required for exact frozen execution.",
+      "sha256": "1311d3e49f1ac39cdea6dfe28943808aae37fc41322ea7f546062d5478446da3"
+    },
+    {
+      "bytes": 76007,
+      "path": "blind-koivu-game-07/map/depths/DEPTH_INPUT_MANIFEST.json",
+      "reason": "Already-published v1/input dependency or intentionally omitted native binary; required for exact frozen execution.",
+      "sha256": "8795ad2625e49336031a6a826e8247b6cbcc8bb3867f7c27a640a89ee049c82c"
+    },
+    {
+      "bytes": 1195,
+      "path": "blind-koivu-game-07/map/FROZEN.json",
+      "reason": "Already-published v1/input dependency or intentionally omitted native binary; required for exact frozen execution.",
+      "sha256": "d69e2c1bd61ebb61d307056e53f5c8b653e06eb9ae8189667fa425500461b350"
+    },
+    {
+      "bytes": 7023,
+      "path": "blind-koivu-game-07/game_model.py",
+      "reason": "Sibling-owned native footprint/model dependency; owner-produced feasibility result retained, not a game execution or self-contained worker distribution.",
+      "sha256": "3e38e76fd2cd05e19a41dd906748ccbb9fee6bc6e4086c117944965e6ddfc3ee"
+    },
+    {
+      "bytes": 3296,
+      "path": "blind-koivu-game-07/SurfaceGameWorker.swift",
+      "reason": "Sibling-owned native footprint/model dependency; owner-produced feasibility result retained, not a game execution or self-contained worker distribution.",
+      "sha256": "acc43dd1aa5f192c9b47f35c722933f283b55a2706884e634a1548330f67ce27"
+    },
+    {
+      "bytes": 125448,
+      "path": "blind-koivu-game-07/build/surface-worker",
+      "reason": "Sibling-owned native footprint/model dependency; owner-produced feasibility result retained, not a game execution or self-contained worker distribution.",
+      "sha256": "05bdc253736f6a957b5247700636b128f4feb041d239937ee7666bd744d2b024"
+    },
+    {
+      "bytes": 3497,
+      "path": "blind-koivu-game-07/select_routes.py",
+      "reason": "Sibling-owned route selector; included receipt is phone-map feasibility only, not an avoidance episode.",
+      "sha256": "c761ad02e52cbfdcdf0ae46c82b0adcc4793f724d4ab2fc34e870a422d833d70"
+    }
+  ],
+  "gamesExecutedByPackaging": 0,
+  "largeArchivesIncluded": false,
+  "nativeBinaries": [
+    {
+      "bytes": 398408,
+      "path": "blind-octomap-reuse-08/build-01/libblind_octomap.so",
+      "reason": "Compiled Linux artifact omitted from source-first packet; exact source/serial build recipe/receipt retained.",
+      "sha256": "8cf6c8dbbfe5ef7159e8757a5d8a572c1e7be9e4addd45f2f1ec16318d2b5bd8",
+      "stageMeaning": "intermediate component history, not final build"
+    },
+    {
+      "bytes": 398496,
+      "path": "blind-octomap-reuse-08/build-02/libblind_octomap.so",
+      "reason": "Compiled Linux artifact omitted from source-first packet; exact source/serial build recipe/receipt retained.",
+      "sha256": "3d951fc57d0610ae22ff665cbfd737a85912f530105141b9dd652214490bdbd4",
+      "stageMeaning": "intermediate component history, not final build"
+    },
+    {
+      "bytes": 398496,
+      "path": "blind-octomap-reuse-08/build-03/libblind_octomap.so",
+      "reason": "Compiled Linux artifact omitted from source-first packet; exact source/serial build recipe/receipt retained.",
+      "sha256": "33b70719f58791fd50b05822b05089b67971f1c90a12d3e6798a481059379af3",
+      "stageMeaning": "intermediate component history, not final build"
+    },
+    {
+      "bytes": 402736,
+      "path": "blind-octomap-reuse-08/build-04/libblind_octomap.so",
+      "reason": "Compiled Linux artifact omitted from source-first packet; exact source/serial build recipe/receipt retained.",
+      "sha256": "3c0a88593d07540d93dbbc3e404ee44b3f5167ff7bda74f16fc8075aab83b1db",
+      "stageMeaning": "final recorded-map native dependency"
+    }
+  ],
+  "priorRawV1MapAlreadyPublished": true,
+  "priorRawV1MapSHA256": "1961eef94bc98f5d89d4986c8b62d7352d0e2046e1dbfa3e6baf767a54e7646d",
+  "rawDepthPNGCountExcluded": 294,
+  "scope": "Intentional omissions, not missing evidence silently hidden",
+  "sourceArchiveSHA256": "68735cfa0758e1288a006c30dc8b95ffb4caa3392bc9c68c0c3ea6c111966518"
+}

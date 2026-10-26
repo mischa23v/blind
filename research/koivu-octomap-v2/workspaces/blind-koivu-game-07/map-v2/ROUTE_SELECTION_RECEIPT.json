@@ -1,0 +1,27 @@
+{
+  "status": "completed",
+  "exitCode": 0,
+  "command": [
+    "python",
+    "blind-koivu-game-07/select_routes.py",
+    "--surface",
+    "blind-koivu-game-07/map-v2/run-01/map/SURFACE.json",
+    "--sha256",
+    "7421a58b88a3f80c0b10501854be6e49ff29a78b0ef51eceeb113a0b36343129",
+    "--output",
+    "blind-koivu-game-07/map-v2/ROUTES_PHONE_ONLY_V2.json"
+  ],
+  "wallSeconds": 0.3679003559955163,
+  "childCPUSeconds": 0.379846,
+  "childPeakRSSKiB": 92280,
+  "FAROUsed": false,
+  "gameEpisodesExecuted": 0,
+  "initialLaunchFailure": {
+    "log": "route-selection-01.stderr.log",
+    "reason": "optional /usr/bin/time utility unavailable; selector was not launched"
+  },
+  "sourceSHA256": "c761ad02e52cbfdcdf0ae46c82b0adcc4793f724d4ab2fc34e870a422d833d70",
+  "phoneFootprintCandidates": 0,
+  "phoneOnlyOrderedPairPool": 0,
+  "routesSHA256": "399b47b48a34326764a171c7b44db8e66763b442ff166806e0c3215feb533b8f"
+}

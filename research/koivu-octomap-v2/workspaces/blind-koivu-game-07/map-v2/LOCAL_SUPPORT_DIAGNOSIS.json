@@ -1,0 +1,154 @@
+{
+  "scope": "Saved-mask local support/height diagnosis only; no changed criteria or proposed physical clearance",
+  "eligibleCentres": 359,
+  "footprintNeighbourCells": 2766,
+  "supportedNeighbourCells": 1556,
+  "missingSupportNeighbourCells": 1210,
+  "missingSupportQuadHistograms": {
+    "1": {
+      "0": 423,
+      "1": 185,
+      "2": 214,
+      "3": 218,
+      "4": 170
+    },
+    "2": {
+      "0": 547,
+      "1": 225,
+      "2": 218,
+      "3": 220,
+      "4": 0
+    }
+  },
+  "missingSupportWithAllFourQuadsAtOneFrameButNotTwo": 170,
+  "groundBandRawVoxelCountInRegion": 11427,
+  "groundBandObservedYMinQuantiles": {
+    "0": -0.02999827872379579,
+    "0.05": -0.028045096768843102,
+    "0.5": -0.00916408978444827,
+    "0.95": 0.00028974328115957985,
+    "1": 0.026063056665771134
+  },
+  "groundBandObservedYMaxQuantiles": {
+    "0": -0.020956438517848452,
+    "0.05": -0.0006378392659875942,
+    "0.5": -6.713235525257488e-06,
+    "0.95": 0.026277875386428177,
+    "1": 0.029999287487094906
+  },
+  "groundBandMidExtentQuantiles_NotRawPointQuantiles": {
+    "0": -0.023807682221468007,
+    "0.05": -0.014128495769406923,
+    "0.5": -0.004673852960863312,
+    "0.95": 0.013280298793507292,
+    "1": 0.026110221250716714
+  },
+  "belowFloorRawVoxelCountInRegion": 2706,
+  "belowFloorObservedYMinQuantiles": {
+    "0": -0.13663709079059094,
+    "0.05": -0.05760276648152585,
+    "0.5": -0.03622075946844361,
+    "0.95": -0.03054519133238226,
+    "1": -0.030009884027749623
+  },
+  "belowFloorObservedYMaxQuantiles": {
+    "0": -0.10210498220581288,
+    "0.05": -0.05053621733310476,
+    "0.5": -4.029420728790534e-05,
+    "0.95": -1.7414695536177582e-06,
+    "1": -2.088310546710659e-08
+  },
+  "nativeOccupiedHeightBands": [
+    {
+      "actualObservedHeightInterval": [
+        0.03,
+        0.1
+      ],
+      "overlapRule": "maximumY>lower and minimumY<upper",
+      "nativeOccupiedRawVoxelsInNeighbourRegion": 7333,
+      "touchedCellsInNeighbourRegion": 1823,
+      "eligibleCentresWhoseFootprintTouchesThisEvidence": 359
+    },
+    {
+      "actualObservedHeightInterval": [
+        0.1,
+        0.3
+      ],
+      "overlapRule": "maximumY>lower and minimumY<upper",
+      "nativeOccupiedRawVoxelsInNeighbourRegion": 5003,
+      "touchedCellsInNeighbourRegion": 744,
+      "eligibleCentresWhoseFootprintTouchesThisEvidence": 342
+    },
+    {
+      "actualObservedHeightInterval": [
+        0.3,
+        0.8
+      ],
+      "overlapRule": "maximumY>lower and minimumY<upper",
+      "nativeOccupiedRawVoxelsInNeighbourRegion": 14248,
+      "touchedCellsInNeighbourRegion": 1072,
+      "eligibleCentresWhoseFootprintTouchesThisEvidence": 359
+    },
+    {
+      "actualObservedHeightInterval": [
+        0.8,
+        1.4
+      ],
+      "overlapRule": "maximumY>lower and minimumY<upper",
+      "nativeOccupiedRawVoxelsInNeighbourRegion": 10718,
+      "touchedCellsInNeighbourRegion": 560,
+      "eligibleCentresWhoseFootprintTouchesThisEvidence": 318
+    },
+    {
+      "actualObservedHeightInterval": [
+        1.4,
+        1.75
+      ],
+      "overlapRule": "maximumY>lower and minimumY<upper",
+      "nativeOccupiedRawVoxelsInNeighbourRegion": 5785,
+      "touchedCellsInNeighbourRegion": 361,
+      "eligibleCentresWhoseFootprintTouchesThisEvidence": 137
+    }
+  ],
+  "nativeOccupiedFrameRepetition": [
+    {
+      "minimumDistinctOriginalFrames": 1,
+      "positiveVoxelsInNeighbourRegion": 43087,
+      "eligibleCentresTouched": 359,
+      "meaning": "Descriptive repetition only, not a confidence filter or removal rule"
+    },
+    {
+      "minimumDistinctOriginalFrames": 2,
+      "positiveVoxelsInNeighbourRegion": 38926,
+      "eligibleCentresTouched": 359,
+      "meaning": "Descriptive repetition only, not a confidence filter or removal rule"
+    },
+    {
+      "minimumDistinctOriginalFrames": 5,
+      "positiveVoxelsInNeighbourRegion": 27977,
+      "eligibleCentresTouched": 359,
+      "meaning": "Descriptive repetition only, not a confidence filter or removal rule"
+    },
+    {
+      "minimumDistinctOriginalFrames": 10,
+      "positiveVoxelsInNeighbourRegion": 13313,
+      "eligibleCentresTouched": 344,
+      "meaning": "Descriptive repetition only, not a confidence filter or removal rule"
+    }
+  ],
+  "caveats": [
+    "Ground-band candidates are model-defined, not semantic floor labels.",
+    "Quantiles describe saved voxel observed endpoint extrema, not every raw point or independent height error.",
+    "Height/repetition classes may overlap; no voxel is deleted or reclassified.",
+    "A declared level-support variant would be a new controlled model, not proof of sensed support, stairs, drops or toys."
+  ],
+  "inputHashes": {
+    "map/run-01/map/MAP.npz": "1961eef94bc98f5d89d4986c8b62d7352d0e2046e1dbfa3e6baf767a54e7646d",
+    "map-v2/run-01/map/SURFACE_EVIDENCE.npz": "c4b80a0305a82fd7dfe1e7de8d8a5da6396634dd8afd832663f5eb31baffdfd8",
+    "map-v2/FOOTPRINT_NEIGHBOURHOODS.npz": "3d7b8eaecec72bd54e0ab9afdabe98dacfc990d8245aeed9b33c4c95549f0c60"
+  },
+  "sourceSHA256": "945c8c9c70611f42baed0788048d5cd5c9721920d5554ccf51400bd5b4df645a",
+  "FAROUsed": false,
+  "mapChanged": false,
+  "gameEpisodes": 0
+}

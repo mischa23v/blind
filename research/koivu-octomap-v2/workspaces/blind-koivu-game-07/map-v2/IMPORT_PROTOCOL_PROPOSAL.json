@@ -1,0 +1,80 @@
+{
+  "schema": "offline-octomap-surface-import-proposal-v2",
+  "status": "Import adapter implemented with 17 authored tests passing; independent review pending. No recorded v2 map or game execution.",
+  "reason": "Frozen v1 irreversible all-positive-hit union produced 13 candidate 10 cm cells and no meaningful full-body routes; preserve v1 and diagnostic evidence.",
+  "unchangedInputs": [
+    "all294pose-matched processed Koivu depth exports and original pose/intrinsic source",
+    "all finite nonzero endpoint retention in fixed ROI",
+    "phone-only floor fit/up model and3cm ambiguity band",
+    "raw5cm voxel indices, min/max heights, source-frame counts",
+    "original10cm support criterion: four5cm quadrants, each at least2sourceframes",
+    "90fixed projected coverage samples/cell",
+    "below-floor raw contradiction/support revocation",
+    "no native confidence/tracking/time/body-mount fabrication"
+  ],
+  "newUpstreamDependency": {
+    "name": "OctoMap",
+    "requestedVersion": "v1.10.0",
+    "sourceDirectory": "blind-octomap-reuse-08/sources",
+    "adapterSource": "blind-octomap-reuse-08/octomap_adapter.cpp",
+    "exactRevisionAndHashes": {
+      "revision": "007a0b5b6e4d3bb6c54f2c65a12234e03adcd72f",
+      "adapterSHA256": "715b3e544dff913a82ec43f49c0255297af0c3a799397faceaa66ebe97f9dff7",
+      "wrapperSHA256": "3dc587cf7086078ff4362906fe2fbe723ea43e4bcdc6a6c6acf946f8aa308186",
+      "build04LibrarySHA256": "3c0a88593d07540d93dbbc3e404ee44b3f5167ff7bda74f16fc8075aab83b1db"
+    },
+    "probabilityMeaning": "Offline occupancy estimate, not source confidence, error probability or physical permission",
+    "defaultsReportedByBuilder": {
+      "hit": 0.7,
+      "miss": 0.4,
+      "occupiedThreshold": 0.5,
+      "clampMinimum": 0.1192,
+      "clampMaximum": 0.971
+    },
+    "defaultVerification": "Require om_defaults and pinned upstream source before integration; no parameter tuning after map or FARO outcomes."
+  },
+  "scanBoundary": {
+    "order": "original frozen294pose order",
+    "resolutionMetres": 0.05,
+    "endpointDeduplication": "First actual measured endpoint per native voxel key; never a synthetic voxel-centre ray",
+    "origins": "actual exported camera origin transformed by unchanged phoneToApp",
+    "upstreamOperations": "Pinned computeUpdate/occupied-wins/updateNode/updateInnerOccupancy, not a custom raycaster or fusion algorithm",
+    "accounting": "Retain original endpoint count, representative count, native occupied/free update counts and every frame/source hash.",
+    "nativeKeyAssociation": "Use upstream coordToKeyChecked for actual Float32 measured endpoints. Bind each original Float64 raw voxel to every native key actually observed from its endpoint members, retain boundary discrepancies, and require ALL associated keys to satisfy native-known-free plus freeScans>0 before reopening. Do not assume a reconstructed voxel-centre query has the same key. A usual centre shortcut is allowed only after exact association equality has been verified for all members."
+  },
+  "surfaceRules": {
+    "rawLayer": "Never delete raw endpoint evidence from artifacts. Native-free reclassification affects the declared game model only; every conflict remains counted and inspectable.",
+    "floor": "Keep v1 estimated commonY=0 and floorUncertainty=null; no FARO correction or widened band.",
+    "positiveBodyHeightCandidates": "Same raw point-extents test above+.03 and below1.75, not a9cm exclusion. Query corresponding native keys and retain known/occupied/probability/logOdds/hitScans/freeScans.",
+    "occupied": "Any corresponding upstream occupied node blocks the10cm cell.",
+    "unknown": "Unknown native state for any raw positive candidate remains blocked/unknown; it is not converted to free.",
+    "freeReclassification": "A raw positive candidate stops obstructing only if ALL actual associated native keys are known-free, have freeScans > 0, and have hitScans > 0 confirming the measured endpoint association. This is observed-ray evidence, not disappearance or missing detection.",
+    "supportContradiction": "Raw below-floor contradiction in the frozen v1 band remains support-invalid in this first v2 cut, even if an occupancy score later becomes free; no stair/drop erasure.",
+    "verticalCoverage": "Every one of the original90finite volume samples must satisfy original processed-depth observed-free projection AND query to a native known-free node with freeScans>0. Unknown/occupied samples leave clearance=null.",
+    "priority": "Native occupied or unknown-positive and support contradictions override free samples. No SurfaceCell is made traversable by probability alone.",
+    "export": "Identical NavigationSurface JSON schema; floor0 ornull, clearance1.75 ornull, blocked, floorUncertainty:null. Recast receives only eligible support quads; actual native Surface validates footprint/height/sweep.",
+    "minimumGeometryCaveat": "5cm voxels/10cm cells/finite samples and3cm floor band do not prove preservation of every tiny/thin/drop geometry. Detailed reference scorer remains independent.",
+    "coverageRecomputation": "The v1 artifact sampled only13v1eligible cells. Recompute the SAME frozen90sample/reprojection rule over every newly v2eligible cell using all294original frames; do not reinterpret absent old rows as coverage or omit the rule.",
+    "supportPriorLimitation": "The controlled first v2 comparison retains the exact v1 four-quadrant floor prior. A ground-band voxel later marked native-free is reported as a conflict diagnostic but does not change that prior in this cut. Old floor evidence is NOT current support or stair/drop safety. The fixed below-floor contradiction band does not detect every deeper drop. No game clearance or arrival may be called physical safety."
+  },
+  "requiredOutputAccounting": [
+    "raw occupied-hit keys and native known/occupied/free/unknown counts",
+    "raw-hit/native-free conflict counts, distinct source scan counts and probability/logOdds",
+    "cells blocked by occupied vs unknown-positive vs below-floor contradictions vs missing support",
+    "coverage failures separated: original projection vs native unknown vs occupied vs no actual free update",
+    "all source/input/native binary/config hashes before and after",
+    "model and source-code revisions immutable before phone-only route selection",
+    "raw ground-band/native-free conflict voxel and affected surface-cell counts, without hiding the retained support-prior limitation"
+  ],
+  "fixturesBeforeRecordedIntegration": [
+    "known-free is not unknown",
+    "native occupied overrides sampled free",
+    "unknown raw-positive node does not become clear",
+    "free reclassification requires actual free-scan evidence",
+    "below-floor contradiction remains blocked",
+    "no threshold/floor-band change",
+    "same SurfaceCell schema and actual native footprint guard"
+  ],
+  "gameBoundary": "No controller/scorer threshold change to rescue first map; same20phone-map-onlyroutes\u00d75conditions frozen only after reviewed v2 map. No meaningful100 launch until map supports real candidate routes and maintainer sees exact protocol/pins.",
+  "physicalAuthority": false
+}
