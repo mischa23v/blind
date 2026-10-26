@@ -1,4 +1,25 @@
-## Current checkpoint: real-phone map and 100-run development test
+## Current checkpoint: one controlled arrival; phone-map floor barriers still open
+
+**2026-10-26 — navigation remains the first priority. Live sensor clearance and physical navigation remain UNPROVEN.**
+
+### Verified and published
+- [Fixed supplied-map simulation checkpoint](research/tools/koivu-split-candidate-game-v1/README.md): three preserved attempts on the same short phone-derived route. The fixed-foot attempt stopped after 0.175 m on a near-ground margin contact; the raw-ground-following attempt stopped after 0.315 m on ground classification. The separately declared planar-ground world model reached the goal after **1.715355 m / 108 ticks**, with **0 body contacts and 0 margin contacts**, ending **0.322712 m** from the goal within the predeclared **0.35 m** tolerance. All 108 ticks retained unresolved low-obstacle exposure. This is an offline provided-map component result, not live obstacle avoidance.
+- The simulator ground repair does **not** establish that the phone routing mask correctly separates floor, low objects and unknown support. The supplied mask still requires a separate, phone-only floor/coverage diagnosis. Failed loop construction is not proof that the physical room is impassable.
+- [Author-configured Open3D baseline and exact comparators](tools/tsdf-baseline-comparators/README.md), [matching-height reference audit](research/tools/koivu-reference-height-audit-v1/README.md), [recorded 12/17 input comparison](tools/recent-iphone-depth-comparison/README.md), and [coverage/ARKit acquisition research](research/coverage-mapping-20261026/RESEARCH_AND_ACQUISITION_COACH.md) are preserved with source and evidence limits. None is a navigation-safety pass.
+- [Original Koivu phone and reference archives](https://github.com/mischa23v/blind/releases/tag/navigation-test-data-20261026) are Release assets, not automatically extracted repository folders.
+
+### Next acceptance work, in order
+1. Verify room units, transforms, effective body/planner dimensions and the exact map barriers against original phone observations. Compare the recorded camera trajectory without treating camera centres as body centres or carving them into free space. Isolate phone-map floor/low-band and missing-support defects; preserve genuinely unresolved observations.
+2. Correct only justified mapping defects using phone inputs. Smooth verified ground, not arbitrary low objects; preserve obstacle residuals, boundaries, slopes, drops and coverage provenance. Keep evaluator/reference geometry out of mapper correction and route selection.
+3. Complete the requested **three-lap** challenge if a frozen phone-only around-table route exists. Compare the explicitly declared numerical body/margin variants without silently shrinking geometry, moving furniture or counting no-path results as successful movement. Record actual body contacts, margin contacts, stops, invalid starts, support uncertainty and true lap completion separately.
+4. Freeze the corrected map, route pairs, conditions, source/input hashes and evaluator assumptions before the **20 routes × 5 conditions** benchmark. The three developmental attempts are not that benchmark: **the frozen 100-run suite has not run; no completed room lap is established in this checkpoint.**
+5. Integrate useful tested components only with these evidence boundaries intact. Actual localization, progressive/live sensing, dynamic obstacles, floor-to-head coverage, warning lead time and supervised device validation remain open. No physical trial is represented here.
+
+Earlier tracker content is retained below as history and constraints, not an override of this checkpoint.
+
+---
+
+## Earlier checkpoint: real-phone map and 100-run development test
 
 **2026-10-26 — navigation remains first; live sensing/obstacle-avoidance acceptance remains UNPROVEN.** The latest requested development step is a compact map, object/container and collision game built from genuine recorded iPhone geometry, followed by **100 reproducible schedules (20 fixed routes × 5 movement conditions)**. This explicitly resumes that bounded real-scene simulation work; it does not reopen unrelated features or close the live-safety gate below.
 
@@ -450,3 +471,4 @@ Seeing AI learning: read research/SEEING_AI_CODE_REFERENCES.md on the Mac and do
 - Run the app-hosted input-only model replay on the Mac with the frozen source revision, then grade saved outputs separately. Keep absent FoundationModels and unsupported language as unavailable, not passing.
 - Execute the iPhone checklist with real sensor/voice conditions; first tab must remain reply-only. Check consent/gallery disable while a familiar hint is queued.
 - Investigate held-out usefulness omissions without fabricating tools or unsafe physical advice. Preserve initial failures before any change.
+
