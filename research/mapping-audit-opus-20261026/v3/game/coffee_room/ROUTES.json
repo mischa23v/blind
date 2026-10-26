@@ -1,0 +1,379 @@
+{
+ "map": "occthres_statsplit0.7.npz",
+ "mapSHA256": "116a02ca1ebffb5011b49e7ec1c1382a2d37b480ce29b6a9f50559db40279a13",
+ "params": {
+  "hz": 15,
+  "ticks": 1200,
+  "step": 0.02,
+  "maxYawDeg": 1.0,
+  "alignDeg": 5.0,
+  "goalTol": 0.35,
+  "inset": 0.01,
+  "poseMaxAge": 0.5,
+  "replanTicks": 15,
+  "offCorridor": 0.15,
+  "deadlock": 150,
+  "seed": 271828,
+  "lattice": 0.25,
+  "sep": [
+   2.0,
+   6.0
+  ],
+  "routes": 20,
+  "maxEndpointUse": 2
+ },
+ "disc": 0.375,
+ "latticeCandidates": 48,
+ "pairsInRange": 1248,
+ "pairsTested": 974,
+ "selectionRule": "phone map only: 0.5 m lattice centres with disc 0.375 and rectangle fit at some heading; pairs 2-6 m; shuffled with seed; Detour complete AND swept-rectangle check (0.45x0.30 + 0.15 margin) on the phone map; each endpoint used at most twice",
+ "routes": [
+  {
+   "routeID": 0,
+   "seed": 271828,
+   "start": [
+    -1.875,
+    2.825
+   ],
+   "goal": [
+    -3.875,
+    2.325
+   ],
+   "straightDistanceMetres": 2.0615528128088303,
+   "initialYawRadians": -2.1112145648509255,
+   "initialPath": [
+    [
+     -1.8749998807907104,
+     2.825000047683716
+    ],
+    [
+     -1.9499998092651367,
+     2.6999998092651367
+    ],
+    [
+     -2.049999952316284,
+     2.5999999046325684
+    ],
+    [
+     -2.299999952316284,
+     2.4499998092651367
+    ],
+    [
+     -2.499999761581421,
+     2.3499999046325684
+    ],
+    [
+     -2.749999761581421,
+     2.25
+    ],
+    [
+     -3.049999952316284,
+     2.1500000953674316
+    ],
+    [
+     -3.1999998092651367,
+     2.1500000953674316
+    ],
+    [
+     -3.875,
+     2.325000047683716
+    ]
+   ],
+   "pathLengthMetres": 2.235152018685175,
+   "status": "selectedPhoneOnly"
+  },
+  {
+   "routeID": 1,
+   "seed": 271829,
+   "start": [
+    -4.125,
+    2.075
+   ],
+   "goal": [
+    -1.875,
+    2.825
+   ],
+   "straightDistanceMetres": 2.3717082451262845,
+   "initialYawRadians": 0.06965461479096956,
+   "initialPath": [
+    [
+     -4.125,
+     2.075000047683716
+    ],
+    [
+     -3.049999952316284,
+     2.1500000953674316
+    ],
+    [
+     -2.749999761581421,
+     2.25
+    ],
+    [
+     -2.499999761581421,
+     2.3499999046325684
+    ],
+    [
+     -2.299999952316284,
+     2.4499998092651367
+    ],
+    [
+     -2.049999952316284,
+     2.5999999046325684
+    ],
+    [
+     -1.9499998092651367,
+     2.6999998092651367
+    ],
+    [
+     -1.8749998807907104,
+     2.825000047683716
+    ]
+   ],
+   "pathLengthMetres": 2.465448859022708,
+   "status": "selectedPhoneOnly"
+  },
+  {
+   "routeID": 2,
+   "seed": 271830,
+   "start": [
+    -4.125,
+    2.075
+   ],
+   "goal": [
+    -2.125,
+    2.575
+   ],
+   "straightDistanceMetres": 2.0615528128088303,
+   "initialYawRadians": 0.06965461479096956,
+   "initialPath": [
+    [
+     -4.125,
+     2.075000047683716
+    ],
+    [
+     -3.049999952316284,
+     2.1500000953674316
+    ],
+    [
+     -2.749999761581421,
+     2.25
+    ],
+    [
+     -2.499999761581421,
+     2.3499999046325684
+    ],
+    [
+     -2.299999952316284,
+     2.4499998092651367
+    ],
+    [
+     -2.125,
+     2.575000047683716
+    ]
+   ],
+   "pathLengthMetres": 2.1017640916978433,
+   "status": "selectedPhoneOnly"
+  },
+  {
+   "routeID": 3,
+   "seed": 271831,
+   "start": [
+    -3.875,
+    2.325
+   ],
+   "goal": [
+    -1.625,
+    2.825
+   ],
+   "straightDistanceMetres": 2.3048861143232218,
+   "initialYawRadians": -0.25367396130040515,
+   "initialPath": [
+    [
+     -3.875,
+     2.325000047683716
+    ],
+    [
+     -3.1999998092651367,
+     2.1500000953674316
+    ],
+    [
+     -3.049999952316284,
+     2.1500000953674316
+    ],
+    [
+     -2.749999761581421,
+     2.25
+    ],
+    [
+     -2.499999761581421,
+     2.3499999046325684
+    ],
+    [
+     -2.299999952316284,
+     2.4499998092651367
+    ],
+    [
+     -1.625,
+     2.825000047683716
+    ]
+   ],
+   "pathLengthMetres": 2.4285813545852717,
+   "status": "selectedPhoneOnly"
+  },
+  {
+   "routeID": 4,
+   "seed": 271832,
+   "start": [
+    -1.625,
+    2.825
+   ],
+   "goal": [
+    -3.875,
+    2.075
+   ],
+   "straightDistanceMetres": 2.3717082451262845,
+   "initialYawRadians": -2.6344938492999015,
+   "initialPath": [
+    [
+     -1.625,
+     2.825000047683716
+    ],
+    [
+     -2.299999952316284,
+     2.4499998092651367
+    ],
+    [
+     -2.499999761581421,
+     2.3499999046325684
+    ],
+    [
+     -2.749999761581421,
+     2.25
+    ],
+    [
+     -3.049999952316284,
+     2.1500000953674316
+    ],
+    [
+     -3.875,
+     2.075000047683716
+    ]
+   ],
+   "pathLengthMetres": 2.4096671690174123,
+   "status": "selectedPhoneOnly"
+  },
+  {
+   "routeID": 5,
+   "seed": 271833,
+   "start": [
+    -2.125,
+    2.575
+   ],
+   "goal": [
+    -4.125,
+    1.8250000000000002
+   ],
+   "straightDistanceMetres": 2.1360009363293826,
+   "initialYawRadians": -2.521342136608189,
+   "initialPath": [
+    [
+     -2.125,
+     2.575000047683716
+    ],
+    [
+     -2.299999952316284,
+     2.4499998092651367
+    ],
+    [
+     -2.499999761581421,
+     2.3499999046325684
+    ],
+    [
+     -2.749999761581421,
+     2.25
+    ],
+    [
+     -3.049999952316284,
+     2.1500000953674316
+    ],
+    [
+     -4.125,
+     1.8250000476837158
+    ]
+   ],
+   "pathLengthMetres": 2.1472048694018104,
+   "status": "selectedPhoneOnly"
+  },
+  {
+   "routeID": 6,
+   "seed": 271834,
+   "status": "insufficientPhoneMapPairs"
+  },
+  {
+   "routeID": 7,
+   "seed": 271835,
+   "status": "insufficientPhoneMapPairs"
+  },
+  {
+   "routeID": 8,
+   "seed": 271836,
+   "status": "insufficientPhoneMapPairs"
+  },
+  {
+   "routeID": 9,
+   "seed": 271837,
+   "status": "insufficientPhoneMapPairs"
+  },
+  {
+   "routeID": 10,
+   "seed": 271838,
+   "status": "insufficientPhoneMapPairs"
+  },
+  {
+   "routeID": 11,
+   "seed": 271839,
+   "status": "insufficientPhoneMapPairs"
+  },
+  {
+   "routeID": 12,
+   "seed": 271840,
+   "status": "insufficientPhoneMapPairs"
+  },
+  {
+   "routeID": 13,
+   "seed": 271841,
+   "status": "insufficientPhoneMapPairs"
+  },
+  {
+   "routeID": 14,
+   "seed": 271842,
+   "status": "insufficientPhoneMapPairs"
+  },
+  {
+   "routeID": 15,
+   "seed": 271843,
+   "status": "insufficientPhoneMapPairs"
+  },
+  {
+   "routeID": 16,
+   "seed": 271844,
+   "status": "insufficientPhoneMapPairs"
+  },
+  {
+   "routeID": 17,
+   "seed": 271845,
+   "status": "insufficientPhoneMapPairs"
+  },
+  {
+   "routeID": 18,
+   "seed": 271846,
+   "status": "insufficientPhoneMapPairs"
+  },
+  {
+   "routeID": 19,
+   "seed": 271847,
+   "status": "insufficientPhoneMapPairs"
+  }
+ ],
+ "referenceQueried": false
+}

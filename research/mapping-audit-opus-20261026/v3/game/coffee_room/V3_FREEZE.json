@@ -1,0 +1,7 @@
+{"name":"phone-map v3 (coffee_room holdout)","decidedBeforeAnyGameEpisode":true,
+ "poses":"Open3D colored ICP on top of floor-constrained correction; held-out acceptance (refined/coffee_coloricp)",
+ "map":"pipeline2 5 cm OctoMap (all-range + <=2 m trees), D1 bands, floor support = OctoMap 0.5 OR statistical support layer, low/body obstacles at OctoMap 0.7 (occthres_statsplit0.7.npz)",
+ "planner":"Recast/Detour disc 0.375 m (lateral half-width 0.225 + margin 0.15), cs 0.05",
+ "routeRule":"0.25 m lattice (deviation from draft 0.5 m, fixed before episodes), pairs 2-6 m, Detour complete + swept 0.45x0.30 rectangle with 0.15 margin on phone map, seed 271828, endpoint used at most twice",
+ "body":[0.45,0.30,1.60],"margin":0.15,"conditions":["baseline","delay","motion-scale","wrong-turn","combined"],
+ "scoring":"master 7506ad9 v3 connected-ground world: actual-body and margin contact separately; first contact ends a run; evaluator only"}

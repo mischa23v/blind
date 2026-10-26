@@ -1,0 +1,188 @@
+{
+ "rules": {
+  "band": 0.1,
+  "core": 0.025,
+  "max_abs_s": 0.025,
+  "max_se": 0.005,
+  "min_n": 30,
+  "min_frames": 3,
+  "max_raised": 0.15,
+  "max_sunken": 0.15,
+  "max_step": 0.02,
+  "sigma_edges": [
+   0,
+   1.0,
+   1.5,
+   2.0,
+   2.5,
+   3.0,
+   3.5,
+   4.5,
+   8.0
+  ]
+ },
+ "fixtures": [
+  {
+   "fixture": "box 10x10 cm, 4 cm high",
+   "col": [
+    64,
+    93
+   ],
+   "supportBefore": true,
+   "centreSupportAfter": false,
+   "supportedColumnsInFootprintAfter": 4,
+   "footprintColumns": 9
+  },
+  {
+   "fixture": "box 10x10 cm, 4 cm high",
+   "col": [
+    50,
+    125
+   ],
+   "supportBefore": true,
+   "centreSupportAfter": false,
+   "supportedColumnsInFootprintAfter": 1,
+   "footprintColumns": 9
+  },
+  {
+   "fixture": "box 10x10 cm, 4 cm high",
+   "col": [
+    70,
+    125
+   ],
+   "supportBefore": true,
+   "centreSupportAfter": false,
+   "supportedColumnsInFootprintAfter": 1,
+   "footprintColumns": 9
+  },
+  {
+   "fixture": "box 10x10 cm, 8 cm high",
+   "col": [
+    39,
+    177
+   ],
+   "supportBefore": true,
+   "centreSupportAfter": false,
+   "supportedColumnsInFootprintAfter": 0,
+   "footprintColumns": 9
+  },
+  {
+   "fixture": "box 10x10 cm, 8 cm high",
+   "col": [
+    150,
+    83
+   ],
+   "supportBefore": true,
+   "centreSupportAfter": false,
+   "supportedColumnsInFootprintAfter": 0,
+   "footprintColumns": 9
+  },
+  {
+   "fixture": "box 10x10 cm, 8 cm high",
+   "col": [
+    141,
+    47
+   ],
+   "supportBefore": true,
+   "centreSupportAfter": false,
+   "supportedColumnsInFootprintAfter": 0,
+   "footprintColumns": 9
+  },
+  {
+   "fixture": "object 10x10 cm, 1 cm high",
+   "col": [
+    94,
+    205
+   ],
+   "supportBefore": true,
+   "centreSupportAfter": false,
+   "supportedColumnsInFootprintAfter": 3,
+   "footprintColumns": 9
+  },
+  {
+   "fixture": "object 10x10 cm, 1 cm high",
+   "col": [
+    83,
+    200
+   ],
+   "supportBefore": true,
+   "centreSupportAfter": true,
+   "supportedColumnsInFootprintAfter": 9,
+   "footprintColumns": 9
+  },
+  {
+   "fixture": "object 10x10 cm, 1 cm high",
+   "col": [
+    48,
+    144
+   ],
+   "supportBefore": true,
+   "centreSupportAfter": true,
+   "supportedColumnsInFootprintAfter": 8,
+   "footprintColumns": 9
+  },
+  {
+   "fixture": "object 20x20 cm, 2 cm high",
+   "col": [
+    63,
+    194
+   ],
+   "supportBefore": true,
+   "centreSupportAfter": true,
+   "supportedColumnsInFootprintAfter": 25,
+   "footprintColumns": 25
+  },
+  {
+   "fixture": "object 20x20 cm, 2 cm high",
+   "col": [
+    139,
+    113
+   ],
+   "supportBefore": true,
+   "centreSupportAfter": true,
+   "supportedColumnsInFootprintAfter": 10,
+   "footprintColumns": 25
+  },
+  {
+   "fixture": "object 20x20 cm, 2 cm high",
+   "col": [
+    110,
+    164
+   ],
+   "supportBefore": true,
+   "centreSupportAfter": true,
+   "supportedColumnsInFootprintAfter": 11,
+   "footprintColumns": 25
+  },
+  {
+   "fixture": "6 cm drop, 40x40 cm",
+   "col": [
+    64,
+    93
+   ],
+   "supportedInsideDrop": 0,
+   "insideColumns": 49,
+   "stepEdgesFlagged": 0
+  },
+  {
+   "fixture": "6 cm drop, 40x40 cm",
+   "col": [
+    50,
+    125
+   ],
+   "supportedInsideDrop": 0,
+   "insideColumns": 49,
+   "stepEdgesFlagged": 0
+  },
+  {
+   "fixture": "6 cm drop, 40x40 cm",
+   "col": [
+    70,
+    125
+   ],
+   "supportedInsideDrop": 0,
+   "insideColumns": 49,
+   "stepEdgesFlagged": 0
+  }
+ ]
+}

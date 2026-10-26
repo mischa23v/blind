@@ -1,0 +1,347 @@
+{
+ "mapSHA256": "9c2fde8cbe35f534701c76d451a9ce6cd4982401b9a013b6de7cc4bbba1dcbc5",
+ "params": {
+  "hz": 15,
+  "ticks": 1200,
+  "step": 0.02,
+  "maxYawDeg": 1.0,
+  "alignDeg": 5.0,
+  "goalTol": 0.35,
+  "inset": 0.01,
+  "poseMaxAge": 0.5,
+  "replanTicks": 15,
+  "offCorridor": 0.15,
+  "deadlock": 150,
+  "seed": 271828,
+  "lattice": 0.5,
+  "sep": [
+   2.0,
+   6.0
+  ],
+  "routes": 20,
+  "maxEndpointUse": 2
+ },
+ "disc": 0.375,
+ "reference": "author-registered FARO (evaluator only); yaw-independent 0.54 m square container, 1.6 m, 2 mm floor exclusion",
+ "controller": "Python substitute for the Swift SurfaceGameWorker (not buildable here); Detour on frozen phone mask",
+ "summary": {
+  "referenceContactDuringMotion": 5,
+  "routeUnavailable": 5
+ },
+ "byCondition": {
+  "baseline": {
+   "referenceContactDuringMotion": 1,
+   "routeUnavailable": 1
+  },
+  "delay": {
+   "referenceContactDuringMotion": 1,
+   "routeUnavailable": 1
+  },
+  "motion-scale": {
+   "referenceContactDuringMotion": 1,
+   "routeUnavailable": 1
+  },
+  "wrong-turn": {
+   "referenceContactDuringMotion": 1,
+   "routeUnavailable": 1
+  },
+  "combined": {
+   "referenceContactDuringMotion": 1,
+   "routeUnavailable": 1
+  }
+ },
+ "results": [
+  {
+   "runID": "route-00-baseline",
+   "routeID": 0,
+   "condition": "baseline",
+   "arrival": false,
+   "contactEvents": 1,
+   "motionExecuted": true,
+   "physicalAuthority": false,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271828,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "firstContact": {
+    "contact": true,
+    "candidateTriangles": 50064,
+    "firstReferenceCellID": 14619799,
+    "reason": "boundaryIntersection",
+    "kind": "conservativeSweptPlayerContainerSurfaceContact",
+    "closedSolidContainmentClassified": false,
+    "floorContactExclusionMetres": 0.002,
+    "firstTriangleHeightRelativeToFootMetres": [
+     0.0018158515201562742,
+     0.002058863672424145
+    ],
+    "nearFootOrFloorRegistrationAmbiguity": true,
+    "physicalObstacleEstablished": false
+   },
+   "status": "referenceContactDuringMotion",
+   "ticks": 56,
+   "travelMetres": 0.06,
+   "finalGoalErrorMetres": 2.633,
+   "counts": {
+    "reason:following": 56,
+    "motionTicks": 3
+   },
+   "routeLengthMetres": 2.692582497647842
+  },
+  {
+   "runID": "route-00-delay",
+   "routeID": 0,
+   "condition": "delay",
+   "arrival": false,
+   "contactEvents": 1,
+   "motionExecuted": true,
+   "physicalAuthority": false,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271828,
+    "delay_ticks": 3,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "firstContact": {
+    "contact": true,
+    "candidateTriangles": 50064,
+    "firstReferenceCellID": 14619799,
+    "reason": "boundaryIntersection",
+    "kind": "conservativeSweptPlayerContainerSurfaceContact",
+    "closedSolidContainmentClassified": false,
+    "floorContactExclusionMetres": 0.002,
+    "firstTriangleHeightRelativeToFootMetres": [
+     0.0018158515201562742,
+     0.002058863672424145
+    ],
+    "nearFootOrFloorRegistrationAmbiguity": true,
+    "physicalObstacleEstablished": false
+   },
+   "status": "referenceContactDuringMotion",
+   "ticks": 10,
+   "travelMetres": 0.06,
+   "finalGoalErrorMetres": 2.633,
+   "counts": {
+    "reason:noPose": 3,
+    "reason:following": 7,
+    "motionTicks": 3
+   },
+   "routeLengthMetres": 2.692582497647842
+  },
+  {
+   "runID": "route-00-motion-scale",
+   "routeID": 0,
+   "condition": "motion-scale",
+   "arrival": false,
+   "contactEvents": 1,
+   "motionExecuted": true,
+   "physicalAuthority": false,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": null,
+    "wrong_turn_end_tick_exclusive": null,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271828,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "firstContact": {
+    "contact": true,
+    "candidateTriangles": 50064,
+    "firstReferenceCellID": 14619799,
+    "reason": "boundaryIntersection",
+    "kind": "conservativeSweptPlayerContainerSurfaceContact",
+    "closedSolidContainmentClassified": false,
+    "floorContactExclusionMetres": 0.002,
+    "firstTriangleHeightRelativeToFootMetres": [
+     0.0018158515201562742,
+     0.002058863672424145
+    ],
+    "nearFootOrFloorRegistrationAmbiguity": true,
+    "physicalObstacleEstablished": false
+   },
+   "status": "referenceContactDuringMotion",
+   "ticks": 64,
+   "travelMetres": 0.064,
+   "finalGoalErrorMetres": 2.629,
+   "counts": {
+    "reason:following": 64,
+    "motionTicks": 4
+   },
+   "routeLengthMetres": 2.692582497647842
+  },
+  {
+   "runID": "route-00-wrong-turn",
+   "routeID": 0,
+   "condition": "wrong-turn",
+   "arrival": false,
+   "contactEvents": 1,
+   "motionExecuted": true,
+   "physicalAuthority": false,
+   "actorProfile": {
+    "reaction_delay_ticks": 0,
+    "translation_scale": 1.0,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271828,
+    "delay_ticks": 0,
+    "jitter_ticks": 0,
+    "drop_probability": 0.0,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "firstContact": {
+    "contact": true,
+    "candidateTriangles": 50064,
+    "firstReferenceCellID": 14619799,
+    "reason": "boundaryIntersection",
+    "kind": "conservativeSweptPlayerContainerSurfaceContact",
+    "closedSolidContainmentClassified": false,
+    "floorContactExclusionMetres": 0.002,
+    "firstTriangleHeightRelativeToFootMetres": [
+     0.0018158515201562742,
+     0.002058863672424145
+    ],
+    "nearFootOrFloorRegistrationAmbiguity": true,
+    "physicalObstacleEstablished": false
+   },
+   "status": "referenceContactDuringMotion",
+   "ticks": 56,
+   "travelMetres": 0.06,
+   "finalGoalErrorMetres": 2.633,
+   "counts": {
+    "reason:following": 56,
+    "motionTicks": 3
+   },
+   "routeLengthMetres": 2.692582497647842
+  },
+  {
+   "runID": "route-00-combined",
+   "routeID": 0,
+   "condition": "combined",
+   "arrival": false,
+   "contactEvents": 1,
+   "motionExecuted": true,
+   "physicalAuthority": false,
+   "actorProfile": {
+    "reaction_delay_ticks": 3,
+    "translation_scale": 0.8,
+    "wrong_turn_start_tick": 75,
+    "wrong_turn_end_tick_exclusive": 80,
+    "wrong_turn_yaw_radians": -0.017453292519943295
+   },
+   "poseProfile": {
+    "seed": 271828,
+    "delay_ticks": 3,
+    "jitter_ticks": 2,
+    "drop_probability": 0.05,
+    "maximum_pending_packets": 64,
+    "maximum_packet_bytes": 1048576
+   },
+   "firstContact": {
+    "contact": true,
+    "candidateTriangles": 50064,
+    "firstReferenceCellID": 14619799,
+    "reason": "boundaryIntersection",
+    "kind": "conservativeSweptPlayerContainerSurfaceContact",
+    "closedSolidContainmentClassified": false,
+    "floorContactExclusionMetres": 0.002,
+    "firstTriangleHeightRelativeToFootMetres": [
+     0.0018158515201562742,
+     0.002058863672424145
+    ],
+    "nearFootOrFloorRegistrationAmbiguity": true,
+    "physicalObstacleEstablished": false
+   },
+   "status": "referenceContactDuringMotion",
+   "ticks": 10,
+   "travelMetres": 0.064,
+   "finalGoalErrorMetres": 2.629,
+   "counts": {
+    "reason:noPose": 2,
+    "reason:following": 8,
+    "motionTicks": 4
+   },
+   "routeLengthMetres": 2.692582497647842
+  },
+  {
+   "runID": "route-01-baseline",
+   "routeID": 1,
+   "condition": "baseline",
+   "arrival": false,
+   "contactEvents": 0,
+   "motionExecuted": false,
+   "physicalAuthority": false,
+   "status": "routeUnavailable"
+  },
+  {
+   "runID": "route-01-delay",
+   "routeID": 1,
+   "condition": "delay",
+   "arrival": false,
+   "contactEvents": 0,
+   "motionExecuted": false,
+   "physicalAuthority": false,
+   "status": "routeUnavailable"
+  },
+  {
+   "runID": "route-01-motion-scale",
+   "routeID": 1,
+   "condition": "motion-scale",
+   "arrival": false,
+   "contactEvents": 0,
+   "motionExecuted": false,
+   "physicalAuthority": false,
+   "status": "routeUnavailable"
+  },
+  {
+   "runID": "route-01-wrong-turn",
+   "routeID": 1,
+   "condition": "wrong-turn",
+   "arrival": false,
+   "contactEvents": 0,
+   "motionExecuted": false,
+   "physicalAuthority": false,
+   "status": "routeUnavailable"
+  },
+  {
+   "runID": "route-01-combined",
+   "routeID": 1,
+   "condition": "combined",
+   "arrival": false,
+   "contactEvents": 0,
+   "motionExecuted": false,
+   "physicalAuthority": false,
+   "status": "routeUnavailable"
+  }
+ ]
+}
