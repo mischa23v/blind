@@ -1,0 +1,294 @@
+{
+ "rules": {
+  "tsdf_volume_note": "Uniform volume; Scalable returned empty in open3d-cpu 0.20.0",
+  "floor_band": [
+   -0.025,
+   0.025
+  ],
+  "low_band": [
+   0.025,
+   0.075
+  ],
+  "body_band": [
+   0.075,
+   1.775
+  ],
+  "dip_band": [
+   -0.075,
+   -0.025
+  ],
+  "deep_below": -0.075,
+  "ungrounded_max_voxels_at5cm": 24,
+  "grounded_structure_voxels_at5cm": 200,
+  "ground_touch_top": 0.075,
+  "tsdf_voxel": 0.025,
+  "tsdf_trunc": 0.08,
+  "tsdf_depth_trunc": 4.0
+ },
+ "thresholds": {
+  "voxel": 0.05,
+  "near_m": 2.0,
+  "floor_cell": 0.2,
+  "floor_search": [
+   -2.6,
+   -0.4
+  ],
+  "band_top": 1.75,
+  "stat_min_n": 30,
+  "stat_min_frames": 3,
+  "clear_mean_plus3se": 0.025,
+  "clear_tail": 0.07,
+  "obj_mean_minus3se": 0.01,
+  "obj_tail": 0.15,
+  "sigma_edges": [
+   0,
+   1.0,
+   1.5,
+   2.0,
+   2.5,
+   3.0,
+   3.5,
+   4.5,
+   8.0
+  ],
+  "body": [
+   0.45,
+   0.3
+  ],
+  "margin": 0.15,
+  "disc": 0.375,
+  "ref_low_band": [
+   0.015,
+   0.3
+  ],
+  "ref_body_band": [
+   0.3,
+   1.8
+  ]
+ },
+ "res": 0.05,
+ "tsdf": true,
+ "log": [
+  {
+   "stage": "samples",
+   "frames": 388,
+   "samples": 17705216,
+   "res": 0.05,
+   "t": 7.2
+  },
+  {
+   "stage": "floor",
+   "cells": 748,
+   "tilt_deg": 0.017263120917516493,
+   "floor_z": -1.3522673520354243,
+   "resid_std": 0.019555887443781457,
+   "t": 8.3
+  },
+  {
+   "stage": "fusion",
+   "occAll": 170138,
+   "freeAll": 695180,
+   "occNear": 62892,
+   "freeNear": 533479,
+   "t": 83.0
+  },
+  {
+   "stage": "stat",
+   "sigma_cm": [
+    0.21,
+    0.3,
+    0.62,
+    0.5,
+    0.66,
+    1.05,
+    1.44,
+    4.92
+   ],
+   "t": 92.5
+  },
+  {
+   "stage": "ungrounded",
+   "blobs": 207,
+   "ungroundedBlobs": 179,
+   "ungroundedVoxels": 300,
+   "t": 92.5
+  },
+  {
+   "stage": "tsdf",
+   "version": "0.20.0",
+   "volume": "UniformTSDFVolume",
+   "voxel": 0.025,
+   "resolution": 364,
+   "trunc": 0.08,
+   "surfacePoints": 386395,
+   "seconds": 23.6,
+   "t": 127.2
+  },
+  {
+   "stage": "ref",
+   "vertices": 5695474,
+   "scale": 1.0096088423128524,
+   "ref_floor_vs_plane_cm_p5_50_95": [
+    -1.6,
+    -1.11,
+    1.54
+   ],
+   "t": 128.5
+  },
+  {
+   "stage": "variant",
+   "name": "D1",
+   "permissive": {
+    "n": 6246,
+    "noRefCov": 4,
+    "refLow25": 25,
+    "refLow40": 22,
+    "refBody": 96,
+    "refWalkPhoneBlocked": 1695,
+    "refWalk": 7821,
+    "missRatePct": 0.4
+   },
+   "statClear": {
+    "n": 4785,
+    "noRefCov": 0,
+    "refLow25": 8,
+    "refLow40": 8,
+    "refBody": 55,
+    "refWalkPhoneBlocked": 3094,
+    "refWalk": 7821,
+    "missRatePct": 0.167
+   },
+   "t": 128.5
+  },
+  {
+   "stage": "variant",
+   "name": "D1_noUngrounded",
+   "permissive": {
+    "n": 6580,
+    "noRefCov": 4,
+    "refLow25": 55,
+    "refLow40": 48,
+    "refBody": 158,
+    "refWalkPhoneBlocked": 1441,
+    "refWalk": 7821,
+    "missRatePct": 0.836
+   },
+   "statClear": {
+    "n": 4962,
+    "noRefCov": 0,
+    "refLow25": 18,
+    "refLow40": 15,
+    "refBody": 104,
+    "refWalkPhoneBlocked": 2970,
+    "refWalk": 7821,
+    "missRatePct": 0.363
+   },
+   "unblockedVsD1": 450,
+   "unblockedVsD1_refGeom": 83,
+   "unblockedVsD1_refLow25": 31,
+   "t": 128.5
+  },
+  {
+   "stage": "variant",
+   "name": "TSDF_surface",
+   "permissive": {
+    "n": 7618,
+    "noRefCov": 1,
+    "refLow25": 167,
+    "refLow40": 157,
+    "refBody": 437,
+    "refWalkPhoneBlocked": 718,
+    "refWalk": 7821,
+    "missRatePct": 2.192
+   },
+   "statClear": {
+    "n": 5357,
+    "noRefCov": 0,
+    "refLow25": 33,
+    "refLow40": 30,
+    "refBody": 227,
+    "refWalkPhoneBlocked": 2703,
+    "refWalk": 7821,
+    "missRatePct": 0.616
+   },
+   "unblockedVsD1": 1434,
+   "unblockedVsD1_refGeom": 390,
+   "unblockedVsD1_refLow25": 144,
+   "t": 128.5
+  }
+ ],
+ "results": {
+  "D1": {
+   "permissive": {
+    "n": 6246,
+    "noRefCov": 4,
+    "refLow25": 25,
+    "refLow40": 22,
+    "refBody": 96,
+    "refWalkPhoneBlocked": 1695,
+    "refWalk": 7821,
+    "missRatePct": 0.4
+   },
+   "statClear": {
+    "n": 4785,
+    "noRefCov": 0,
+    "refLow25": 8,
+    "refLow40": 8,
+    "refBody": 55,
+    "refWalkPhoneBlocked": 3094,
+    "refWalk": 7821,
+    "missRatePct": 0.167
+   }
+  },
+  "D1_noUngrounded": {
+   "permissive": {
+    "n": 6580,
+    "noRefCov": 4,
+    "refLow25": 55,
+    "refLow40": 48,
+    "refBody": 158,
+    "refWalkPhoneBlocked": 1441,
+    "refWalk": 7821,
+    "missRatePct": 0.836
+   },
+   "statClear": {
+    "n": 4962,
+    "noRefCov": 0,
+    "refLow25": 18,
+    "refLow40": 15,
+    "refBody": 104,
+    "refWalkPhoneBlocked": 2970,
+    "refWalk": 7821,
+    "missRatePct": 0.363
+   },
+   "unblockedVsD1": 450,
+   "unblockedVsD1_refGeom": 83,
+   "unblockedVsD1_refLow25": 31
+  },
+  "TSDF_surface": {
+   "permissive": {
+    "n": 7618,
+    "noRefCov": 1,
+    "refLow25": 167,
+    "refLow40": 157,
+    "refBody": 437,
+    "refWalkPhoneBlocked": 718,
+    "refWalk": 7821,
+    "missRatePct": 2.192
+   },
+   "statClear": {
+    "n": 5357,
+    "noRefCov": 0,
+    "refLow25": 33,
+    "refLow40": 30,
+    "refBody": 227,
+    "refWalkPhoneBlocked": 2703,
+    "refWalk": 7821,
+    "missRatePct": 0.616
+   },
+   "unblockedVsD1": 1434,
+   "unblockedVsD1_refGeom": 390,
+   "unblockedVsD1_refLow25": 144
+  }
+ }
+}
