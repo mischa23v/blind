@@ -550,5 +550,67 @@
       "koivuOpenFloorMisses": 7,
       "status": "rejected"
     }
+  },
+  "poseExperiments": {
+    "see": "pose-consistency/POSE_EXPERIMENTS.md",
+    "cause": {
+      "koivu": {
+        "R2_range": 0.007,
+        "R2_temporalNeighbours": 0.74
+      },
+      "coffee_room": {
+        "R2_range": 0.077,
+        "R2_temporalNeighbours": 0.46
+      },
+      "verdict": "pose drift in runs of frames"
+    },
+    "poseGraph": {
+      "v1": "rejected: median pose change 27 cm, max rotation 21 deg",
+      "v2": "rejected: 157/174 good frames became inconsistent; floor |offset| median 0.89->2.91 cm"
+    },
+    "floorfix": {
+      "koivu": {
+        "flagged": 77,
+        "corrected": 9,
+        "poseInconsistent": 68
+      },
+      "coffee_room": {
+        "flagged": 76,
+        "corrected": 1,
+        "poseInconsistent": 75
+      }
+    },
+    "maps_split07": {
+      "koivu_recorded": {
+        "openFloorMisses": 4,
+        "realFloorBlocked": 1287,
+        "cameraCentresBlocked": 39,
+        "lowObstacleCameraBlocks": 20,
+        "routes": 97
+      },
+      "koivu_floorfix": {
+        "openFloorMisses": 4,
+        "realFloorBlocked": 1030,
+        "cameraCentresBlocked": 17,
+        "lowObstacleCameraBlocks": 1,
+        "routes": 93
+      },
+      "koivu_floorfix_excludeInconsistent": {
+        "openFloorMisses": 13,
+        "routes": 28,
+        "status": "rejected unsafe"
+      },
+      "coffee_recorded": {
+        "openFloorMisses": 0,
+        "realFloorBlocked": 1218,
+        "routes": 21
+      },
+      "coffee_floorfix": {
+        "openFloorMisses": 0,
+        "realFloorBlocked": 1220,
+        "routes": 22
+      }
+    },
+    "gameEpisodesExecuted": 0
   }
 }

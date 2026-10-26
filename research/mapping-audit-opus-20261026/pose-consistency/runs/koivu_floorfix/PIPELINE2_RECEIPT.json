@@ -1,0 +1,230 @@
+{
+ "rules": {
+  "tsdf_volume_note": "Uniform volume; Scalable returned empty in open3d-cpu 0.20.0",
+  "floor_band": [
+   -0.025,
+   0.025
+  ],
+  "low_band": [
+   0.025,
+   0.075
+  ],
+  "body_band": [
+   0.075,
+   1.775
+  ],
+  "dip_band": [
+   -0.075,
+   -0.025
+  ],
+  "deep_below": -0.075,
+  "ungrounded_max_voxels_at5cm": 24,
+  "grounded_structure_voxels_at5cm": 200,
+  "ground_touch_top": 0.075,
+  "tsdf_voxel": 0.025,
+  "tsdf_trunc": 0.08,
+  "tsdf_depth_trunc": 4.0
+ },
+ "thresholds": {
+  "voxel": 0.05,
+  "near_m": 2.0,
+  "floor_cell": 0.2,
+  "floor_search": [
+   -2.6,
+   -0.4
+  ],
+  "band_top": 1.75,
+  "stat_min_n": 30,
+  "stat_min_frames": 3,
+  "clear_mean_plus3se": 0.025,
+  "clear_tail": 0.07,
+  "obj_mean_minus3se": 0.01,
+  "obj_tail": 0.15,
+  "sigma_edges": [
+   0,
+   1.0,
+   1.5,
+   2.0,
+   2.5,
+   3.0,
+   3.5,
+   4.5,
+   8.0
+  ],
+  "body": [
+   0.45,
+   0.3
+  ],
+  "margin": 0.15,
+  "disc": 0.375,
+  "ref_low_band": [
+   0.015,
+   0.3
+  ],
+  "ref_body_band": [
+   0.3,
+   1.8
+  ]
+ },
+ "res": 0.05,
+ "tsdf": false,
+ "log": [
+  {
+   "stage": "samples",
+   "frames": 294,
+   "samples": 13415808,
+   "res": 0.05,
+   "t": 6.9
+  },
+  {
+   "stage": "floor",
+   "cells": 1390,
+   "tilt_deg": 0.04544354453649505,
+   "floor_z": -1.2713990349211817,
+   "resid_std": 0.016292277786377977,
+   "t": 8.4
+  },
+  {
+   "stage": "fusion",
+   "occAll": 279924,
+   "freeAll": 1125956,
+   "occNear": 72694,
+   "freeNear": 785686,
+   "t": 97.5
+  },
+  {
+   "stage": "stat",
+   "sigma_cm": [
+    0.25,
+    0.71,
+    0.75,
+    0.88,
+    0.66,
+    0.63,
+    1.02,
+    2.99
+   ],
+   "t": 107.4
+  },
+  {
+   "stage": "ungrounded",
+   "blobs": 310,
+   "ungroundedBlobs": 301,
+   "ungroundedVoxels": 563,
+   "t": 107.5
+  },
+  {
+   "stage": "ref",
+   "vertices": 8940320,
+   "scale": 1.020790844238779,
+   "ref_floor_vs_plane_cm_p5_50_95": [
+    -0.69,
+    -0.04,
+    1.97
+   ],
+   "t": 115.4
+  },
+  {
+   "stage": "variant",
+   "name": "D1",
+   "permissive": {
+    "n": 10923,
+    "noRefCov": 39,
+    "refLow25": 89,
+    "refLow40": 80,
+    "refBody": 179,
+    "refWalkPhoneBlocked": 1538,
+    "refWalk": 10828,
+    "missRatePct": 0.815
+   },
+   "statClear": {
+    "n": 8592,
+    "noRefCov": 38,
+    "refLow25": 51,
+    "refLow40": 49,
+    "refBody": 100,
+    "refWalkPhoneBlocked": 3115,
+    "refWalk": 10828,
+    "missRatePct": 0.594
+   },
+   "t": 115.4
+  },
+  {
+   "stage": "variant",
+   "name": "D1_noUngrounded",
+   "permissive": {
+    "n": 11583,
+    "noRefCov": 42,
+    "refLow25": 141,
+    "refLow40": 127,
+    "refBody": 371,
+    "refWalkPhoneBlocked": 1086,
+    "refWalk": 10828,
+    "missRatePct": 1.217
+   },
+   "statClear": {
+    "n": 8950,
+    "noRefCov": 39,
+    "refLow25": 62,
+    "refLow40": 59,
+    "refBody": 191,
+    "refWalkPhoneBlocked": 2846,
+    "refWalk": 10828,
+    "missRatePct": 0.693
+   },
+   "unblockedVsD1": 779,
+   "unblockedVsD1_refGeom": 213,
+   "unblockedVsD1_refLow25": 55,
+   "t": 115.4
+  }
+ ],
+ "results": {
+  "D1": {
+   "permissive": {
+    "n": 10923,
+    "noRefCov": 39,
+    "refLow25": 89,
+    "refLow40": 80,
+    "refBody": 179,
+    "refWalkPhoneBlocked": 1538,
+    "refWalk": 10828,
+    "missRatePct": 0.815
+   },
+   "statClear": {
+    "n": 8592,
+    "noRefCov": 38,
+    "refLow25": 51,
+    "refLow40": 49,
+    "refBody": 100,
+    "refWalkPhoneBlocked": 3115,
+    "refWalk": 10828,
+    "missRatePct": 0.594
+   }
+  },
+  "D1_noUngrounded": {
+   "permissive": {
+    "n": 11583,
+    "noRefCov": 42,
+    "refLow25": 141,
+    "refLow40": 127,
+    "refBody": 371,
+    "refWalkPhoneBlocked": 1086,
+    "refWalk": 10828,
+    "missRatePct": 1.217
+   },
+   "statClear": {
+    "n": 8950,
+    "noRefCov": 39,
+    "refLow25": 62,
+    "refLow40": 59,
+    "refBody": 191,
+    "refWalkPhoneBlocked": 2846,
+    "refWalk": 10828,
+    "missRatePct": 0.693
+   },
+   "unblockedVsD1": 779,
+   "unblockedVsD1_refGeom": 213,
+   "unblockedVsD1_refLow25": 55
+  }
+ }
+}
