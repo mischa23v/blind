@@ -1,4 +1,18 @@
-## Current checkpoint — three continuous assisted laps verified
+## Current checkpoint — Apple bridge passed; five short synthetic pilots completed
+
+**Stage 73: five of five predeclared first-leg synthetic episodes reached the original goal region.** Nominal: 2.775841 m / 172 ticks; 3-tick command delay: 2.839975 m / 197 ticks; 2 ± 2-tick pose timing delay/jitter: 2.800000 m / 370 ticks; 1.15× translation: 2.783000 m / 154 ticks; capture withholding at ticks 60–89: 2.775841 m / 202 ticks. These are short development trials on the SAME route, not five laps, five rooms or a 100-episode validation suite. **Jitter caused 193 stop ticks / 191 coalesced packets: arrival was not smooth guidance.** Zero actual contacts alone is insufficient with a reference veto; no predicted collision/support veto occurred here. Future no-path/invalid starts remain counted.
+
+[Protocol and pilot evidence](research/tools/synthetic-first-leg-pilot-v1/README.md). Stage 72's corrected 20 distinct ordered anchor-pair × 5-condition matrix is planned, not executed. Independent Stage 73 review checks actual traces/queues rather than treating a successful process exit as navigation success.
+
+**Apple SDK 71:** [verified results](research/apple-sdk-result-71/README.md) retain 55 unchanged macOS ARM64 native/Swift replay checks, 636 exclusion spans and 15 exactly matching route comparisons. Simulator ARM64 native + Swift compiled and linked ONLY; executable not launched. No app build, live ARKit or device test. Explicit native `-ffp-contract=off` fixed the recorded platform parity discrepancy without relaxing geometry/assertions/tolerance; earlier failures remain preserved.
+
+**Earlier milestone remains:** [Stage 69: three continuous assisted laps](research/tools/verified-continuous-three-laps-v1/README.md), 61.791889 m, 15 goals, one actor and no reset. The original 35 cm goal tolerance and unwalked winding-closing chords remain disclosed; this was nominal deterministic simulation.
+
+**Limits:** one static recorded scene, 45 × 30 × 160 cm zero-margin body, simulated delivered pose, manual tabletop ROI/unknown source confidence, evaluator/reference floor support. Floor contacts are unmeasured; finite probes/sub-2 mm ambiguity remain. Synthetic timing/translation perturbations are not measured real sensor error or human reaction models. Spatial drift, dynamic hazards, holdout scenes, margins, the full 100-episode matrix and live sensor integration/device safety remain open.
+
+---
+
+## Earlier checkpoint — three continuous assisted laps verified
 
 **Stage69:61.791889m horizontal /61.903697m actual3D travel;15 of15 original goals;three continuous clockwise laps;one actor and one initial settlement;no resets. Zero actual OR predicted non-floor body/underbody contacts.** Independent saved-evidence review passed.
 

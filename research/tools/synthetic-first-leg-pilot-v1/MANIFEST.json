@@ -1,0 +1,752 @@
+{
+  "scope": "Public source-derived five short synthetic first-leg pilots and frozen development protocol; no private data or live navigation validation.",
+  "source": "Xuqian Ren et al., MuSHRoom: https://zenodo.org/records/10230733 and https://zenodo.org/records/10222321; CC BY4.0 https://creativecommons.org/licenses/by/4.0/. Modifications documented; Recast license included.",
+  "inputPublicationManifestSHA256": {
+    "blind-synthetic-stress-protocol-72/MANIFEST.json": "9dfa72f75dbb0b9be7273e48069c588bdf960e3e0c53ea2f5988815c226b4675",
+    "blind-synthetic-first-leg-pilot-73/PUBLICATION_MANIFEST.json": "247d15079b73e8ba69affb8f775c30e8072d7c66d54760bf801e5ce18222598c"
+  },
+  "files": [
+    {
+      "path": "blind-synthetic-stress-protocol-72/CONDITIONS.json",
+      "source": "blind-synthetic-stress-protocol-72/CONDITIONS.json",
+      "group": "code-and-protocol",
+      "bytes": 2481,
+      "sha256": "4949e25beadc387011279159e71aa4a3c897fed4988a134a8f83e20e97c010ad"
+    },
+    {
+      "path": "blind-synthetic-stress-protocol-72/PROTOCOL.md",
+      "source": "blind-synthetic-stress-protocol-72/PROTOCOL.md",
+      "group": "code-and-protocol",
+      "bytes": 10401,
+      "sha256": "d72668e77d03116072ac8b86744e00d4943a592debf82748f756b584cccb399e"
+    },
+    {
+      "path": "blind-synthetic-stress-protocol-72/QUEUE_SEMANTICS_RECEIPT.json",
+      "source": "blind-synthetic-stress-protocol-72/QUEUE_SEMANTICS_RECEIPT.json",
+      "group": "code-and-protocol",
+      "bytes": 471636,
+      "sha256": "4dcd83374a4b28b5439b7b925c13c5ed320ecf2e0ddc0fb3ecd23833bc7b7219"
+    },
+    {
+      "path": "blind-synthetic-stress-protocol-72/SUPERSEDED_REPLICATE_CONDITIONS_NOT_RUN.json",
+      "source": "blind-synthetic-stress-protocol-72/SUPERSEDED_REPLICATE_CONDITIONS_NOT_RUN.json",
+      "group": "code-and-protocol",
+      "bytes": 1859,
+      "sha256": "0187db98d38062c4f0b3562a3a1f934396c9189fbd790d398610d6df24971290"
+    },
+    {
+      "path": "blind-synthetic-stress-protocol-72/SUPERSEDED_REPLICATE_PROTOCOL_NOT_RUN.md",
+      "source": "blind-synthetic-stress-protocol-72/SUPERSEDED_REPLICATE_PROTOCOL_NOT_RUN.md",
+      "group": "code-and-protocol",
+      "bytes": 9810,
+      "sha256": "960c537e686d95022ee1db65caf871cb0ee6227f700c862983f89e73eb39ae26"
+    },
+    {
+      "path": "blind-synthetic-stress-protocol-72/TWENTY_SOURCE_PAIRS.json",
+      "source": "blind-synthetic-stress-protocol-72/TWENTY_SOURCE_PAIRS.json",
+      "group": "code-and-protocol",
+      "bytes": 6509,
+      "sha256": "5a02f4ed25a80b6c2929bdcba04f4a5880d8af003e04817102fcf8f8baacc5ee"
+    },
+    {
+      "path": "blind-synthetic-stress-protocol-72/probe_queues.py",
+      "source": "blind-synthetic-stress-protocol-72/probe_queues.py",
+      "group": "code-and-protocol",
+      "bytes": 3119,
+      "sha256": "52c34a7678b68295c618954a30f47a972104f5d87e8aa166de2afa4e47c36b2a"
+    },
+    {
+      "path": "blind-synthetic-stress-protocol-72/MANIFEST.json",
+      "source": "blind-synthetic-stress-protocol-72/MANIFEST.json",
+      "group": "code-and-protocol",
+      "bytes": 1160,
+      "sha256": "9dfa72f75dbb0b9be7273e48069c588bdf960e3e0c53ea2f5988815c226b4675"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/CONDITIONS.json",
+      "source": "blind-synthetic-first-leg-pilot-73/CONDITIONS.json",
+      "group": "code-and-protocol",
+      "bytes": 2481,
+      "sha256": "4949e25beadc387011279159e71aa4a3c897fed4988a134a8f83e20e97c010ad"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/DUAL_SOURCE_FIXED_PATH_AUDIT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/DUAL_SOURCE_FIXED_PATH_AUDIT.json",
+      "group": "code-and-protocol",
+      "bytes": 1642,
+      "sha256": "a562cfee1325e096b3877db4a5ecfa7e8f377ca00eb93db9945653067115f9f1"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/DUAL_SOURCE_FIXED_SEGMENTS.json.gz",
+      "source": "blind-synthetic-first-leg-pilot-73/DUAL_SOURCE_FIXED_SEGMENTS.json.gz",
+      "group": "code-and-protocol",
+      "bytes": 53011,
+      "sha256": "51dce403b377fd98694b942f0bb2c916c746839d5ef1c7ad029e982f851a67a9"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/EVIDENCE_CODEC.json",
+      "source": "blind-synthetic-first-leg-pilot-73/EVIDENCE_CODEC.json",
+      "group": "code-and-protocol",
+      "bytes": 970,
+      "sha256": "a3c621e4f398b796b06dc8330d2c796de243630e1a10af9e03e11c84cef7ac0f"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/FROZEN.json",
+      "source": "blind-synthetic-first-leg-pilot-73/FROZEN.json",
+      "group": "code-and-protocol",
+      "bytes": 80885,
+      "sha256": "33ebe269afdc54b28bb9b4d5940eaa7be100fc4a0129044b99d0622797b6d46d"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/INDEPENDENT_FIRST_TWO_RECOUNT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/INDEPENDENT_FIRST_TWO_RECOUNT.json",
+      "group": "code-and-protocol",
+      "bytes": 2538,
+      "sha256": "27c60e90a94b68aa6d4b272120d666efc1112b5967d04d0ba91157aa4e3f0bf4"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/INDEPENDENT_PRELAUNCH_REVIEW.json",
+      "source": "blind-synthetic-first-leg-pilot-73/INDEPENDENT_PRELAUNCH_REVIEW.json",
+      "group": "code-and-protocol",
+      "bytes": 1910,
+      "sha256": "e128c7a44f8ac8056c53b6db53c8b7b46d75df7e724875f0b34ab451110e0b50"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/INDEPENDENT_SUPPORT_BUDGET_RECOUNT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/INDEPENDENT_SUPPORT_BUDGET_RECOUNT.json",
+      "group": "code-and-protocol",
+      "bytes": 1152,
+      "sha256": "d2fb92dba8c3ffbc159f68315bad23e24d7465c43088b8926940e9e729cc698a"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/INDEPENDENT_TERMINAL_RECOUNT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/INDEPENDENT_TERMINAL_RECOUNT.json",
+      "group": "code-and-protocol",
+      "bytes": 6686,
+      "sha256": "6f4e53353ddb1805986be754b7f4d66e8ed12b3f3419d1bcd0b53118292ceada"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/MOVEMENT_PROTOCOL.md",
+      "source": "blind-synthetic-first-leg-pilot-73/MOVEMENT_PROTOCOL.md",
+      "group": "code-and-protocol",
+      "bytes": 5152,
+      "sha256": "5020012b860eff7ebdc87dcb63682a8fce6b7a05822d5f244879af0627a5e274"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/README.md",
+      "source": "blind-synthetic-first-leg-pilot-73/README.md",
+      "group": "code-and-protocol",
+      "bytes": 5039,
+      "sha256": "1f244549751c313de935aa828bc4083ad29859901091b176fbdcd63ed6d44a54"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/SELECTED_PLAN.json",
+      "source": "blind-synthetic-first-leg-pilot-73/SELECTED_PLAN.json",
+      "group": "code-and-protocol",
+      "bytes": 20148,
+      "sha256": "68a1c41d4cc82fe3073152c4f76b769162cd5048db53fc305be8502d69cdac12"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/SUMMARY.json",
+      "source": "blind-synthetic-first-leg-pilot-73/SUMMARY.json",
+      "group": "code-and-protocol",
+      "bytes": 5816,
+      "sha256": "e36335a3a1a1995f79e5721d2afade093bc3eae960d1a8cd9fe9ba3970122c11"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/evidence_codec.py",
+      "source": "blind-synthetic-first-leg-pilot-73/evidence_codec.py",
+      "group": "code-and-protocol",
+      "bytes": 1019,
+      "sha256": "36a8497ce591d7010f399a4b83e975d94952c97c0917c304d63e92bd00bd9145"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/fixtures-01.log",
+      "source": "blind-synthetic-first-leg-pilot-73/fixtures-01.log",
+      "group": "code-and-protocol",
+      "bytes": 8988,
+      "sha256": "1729bdd3c33be1b61130e60d3a5211f1dfdabc20026f20bc1b6dd4f39627b6de"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/fixtures-02.log",
+      "source": "blind-synthetic-first-leg-pilot-73/fixtures-02.log",
+      "group": "code-and-protocol",
+      "bytes": 9280,
+      "sha256": "f8836ded0bbb082bebcba5106174a54aa53fa7051b95b50987d64774a28489b1"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/fixtures-03.log",
+      "source": "blind-synthetic-first-leg-pilot-73/fixtures-03.log",
+      "group": "code-and-protocol",
+      "bytes": 9280,
+      "sha256": "0858cd40ffd6e3d30f17022d00ee698e12f64e426a3d04957bf05fb5706487ab"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/freeze.py",
+      "source": "blind-synthetic-first-leg-pilot-73/freeze.py",
+      "group": "code-and-protocol",
+      "bytes": 1587,
+      "sha256": "6b35faeef6c89a76df887c5c440e429ac76a91e1b88236289f6a873049cecc7a"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/local_support.py",
+      "source": "blind-synthetic-first-leg-pilot-73/local_support.py",
+      "group": "code-and-protocol",
+      "bytes": 7406,
+      "sha256": "87fb064d47a695aa6656ba1753cabfec58f7ce6cadfef5094f4922fb14e19e9c"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/loop_controller.py",
+      "source": "blind-synthetic-first-leg-pilot-73/loop_controller.py",
+      "group": "code-and-protocol",
+      "bytes": 6369,
+      "sha256": "97f24644313e92bb8651a7d82eec48e58188085dcf9c0da29849cd7c9f55af29"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/loop_episode.py",
+      "source": "blind-synthetic-first-leg-pilot-73/loop_episode.py",
+      "group": "code-and-protocol",
+      "bytes": 14397,
+      "sha256": "4ab0481b6f964ff8af411d692eeff2577fe531dfa102a565c8b7b9fadb02cf06"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/loop_map.py",
+      "source": "blind-synthetic-first-leg-pilot-73/loop_map.py",
+      "group": "code-and-protocol",
+      "bytes": 3391,
+      "sha256": "9a42fd88149c61433c93a1309555c448fce696133044327b07135490c6b7f308"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/RAM_PREFLIGHT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/RAM_PREFLIGHT.json",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 102,
+      "sha256": "1313887248d752bf28d7614e307f1d45ebdf0348d57322101afa541c3864c34f"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/RUN_RECEIPT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/RUN_RECEIPT.json",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 564,
+      "sha256": "edf54db95df96e7e1401ca9f2fdfc7ea02f77e3e2771e83e6dc7840bc7451f5b"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/heartbeat.jsonl.gz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/heartbeat.jsonl.gz",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 22549,
+      "sha256": "1762532079dc05d62e2dc5fea8c9b9489216aeb4d8e4bf055a2a9ea17c02381b"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/result/ACTOR_TRACE.npz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/result/ACTOR_TRACE.npz",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 10034,
+      "sha256": "856a0ee2e87878d3a1320a16395ee4baa22d5ab82cb73ef8e184d6ec234f669f"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/result/ACTUAL_TRACE_PARTIAL.csv",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/result/ACTUAL_TRACE_PARTIAL.csv",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 43153,
+      "sha256": "3ab785c510d22d663a4d8c9222781ed2be81a0628e63b722367c44f07774cf63"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/result/LIVE_PROGRESS.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/result/LIVE_PROGRESS.json",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 381,
+      "sha256": "2eeb30fd86f26101d7f883d1a2f2bfb32a48ace618cf6bb484e99c44cb522d3d"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/result/QUERY_OPTIMIZATION.json.xz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/result/QUERY_OPTIMIZATION.json.xz",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 106152,
+      "sha256": "3e4dcefd0b9572d5034d014d2556af8b539663ec63713571d9beac087d8c9994"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/result/RESULT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/result/RESULT.json",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 24834,
+      "sha256": "6904e3c7609d55d866b6367dca5e50b5c12cbf105866c2c46ddf2cf27ca9a97d"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/result/TICK_EVIDENCE.jsonl.xz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/result/TICK_EVIDENCE.jsonl.xz",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 244228,
+      "sha256": "7511304bb2c74c419fa0e1a676a74324f9545188cceeeb652c78d09227752e4b"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/result/controller.stderr.log",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/result/controller.stderr.log",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/stderr.log",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/stderr.log",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/stdout.log",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-command_delay/stdout.log",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 1120,
+      "sha256": "83631a156b7eb7ba627df5f96eadc71e0154a3eab45ea8907cea55f524108809"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/RAM_PREFLIGHT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/RAM_PREFLIGHT.json",
+      "group": "pilots-translation-interruption",
+      "bytes": 102,
+      "sha256": "1c7ae8c25fa4c805e521e77795fa3d90170838d85492b370cac94e3f0aa7616a"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/RUN_RECEIPT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/RUN_RECEIPT.json",
+      "group": "pilots-translation-interruption",
+      "bytes": 565,
+      "sha256": "24184826db0deb602acd8978290122010d99a42b0dd6880a927a158ee4965135"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/heartbeat.jsonl.gz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/heartbeat.jsonl.gz",
+      "group": "pilots-translation-interruption",
+      "bytes": 18677,
+      "sha256": "57df11ebcf940c422c76f6b761d25cabf65ccced02037a09ee2c8a6983410a3a"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/result/ACTOR_TRACE.npz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/result/ACTOR_TRACE.npz",
+      "group": "pilots-translation-interruption",
+      "bytes": 7655,
+      "sha256": "eb010a77c0c81037dc332eebb5cb74352818d472a261fdf1e5bd4faaf1907053"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/result/ACTUAL_TRACE_PARTIAL.csv",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/result/ACTUAL_TRACE_PARTIAL.csv",
+      "group": "pilots-translation-interruption",
+      "bytes": 33577,
+      "sha256": "63c8591f52acb955d26e4856b0ee0dce9f47a7cf88739615059756343c45a7d6"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/result/LIVE_PROGRESS.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/result/LIVE_PROGRESS.json",
+      "group": "pilots-translation-interruption",
+      "bytes": 380,
+      "sha256": "ac7a0570155042d6ab023c08e04ec6ef1f2af3ff48c291c50c77cd4a6b0411b0"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/result/QUERY_OPTIMIZATION.json.xz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/result/QUERY_OPTIMIZATION.json.xz",
+      "group": "pilots-translation-interruption",
+      "bytes": 86204,
+      "sha256": "66b6e62a20bf1ec1c1a3e4686f0ce1de157adf8370afce43b3f1d24c09752720"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/result/RESULT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/result/RESULT.json",
+      "group": "pilots-translation-interruption",
+      "bytes": 24736,
+      "sha256": "6f008aa816f82dff390f35906d27f57b8aa346e28f3089ecb9b32682293d88a2"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/result/TICK_EVIDENCE.jsonl.xz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/result/TICK_EVIDENCE.jsonl.xz",
+      "group": "pilots-translation-interruption",
+      "bytes": 190224,
+      "sha256": "7d00f760b49231e5cfe036a1970fdd8c232f64363d598fdc0c460e25147654ba"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/result/controller.stderr.log",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/result/controller.stderr.log",
+      "group": "pilots-translation-interruption",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/stderr.log",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/stderr.log",
+      "group": "pilots-translation-interruption",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/stdout.log",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-extra_translation/stdout.log",
+      "group": "pilots-translation-interruption",
+      "bytes": 1021,
+      "sha256": "8d27c9f1063984b7b4a681af747e9ce615572e4126926df73fa68ef105d67464"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-nominal/RAM_PREFLIGHT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-nominal/RAM_PREFLIGHT.json",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 102,
+      "sha256": "d3830fba9fb6d63451b576ef3585927588b16f2e06b27dbd1c005fb6db2479e2"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-nominal/RUN_RECEIPT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-nominal/RUN_RECEIPT.json",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 563,
+      "sha256": "887305e60203296ce3e1750299855a36b478881b18da9b3a58570baf1fc20b38"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-nominal/heartbeat.jsonl.gz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-nominal/heartbeat.jsonl.gz",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 20340,
+      "sha256": "7ea666ec39c1d99547b680b96217e01778619e905407aa9c893d5d9a034cfd83"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-nominal/result/ACTOR_TRACE.npz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-nominal/result/ACTOR_TRACE.npz",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 8341,
+      "sha256": "0ac26dd9fd2d101df99bc3d23ce553be9e7dfb9deef77282afe33ea6b355734f"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-nominal/result/ACTUAL_TRACE_PARTIAL.csv",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-nominal/result/ACTUAL_TRACE_PARTIAL.csv",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 36527,
+      "sha256": "75fa9371a8ca8baf90fa54e8c1e8073abd5515a58977f843f64d50c718620425"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-nominal/result/LIVE_PROGRESS.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-nominal/result/LIVE_PROGRESS.json",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 380,
+      "sha256": "f277df74ec87ec1a8ca040ea8eb021bb1bdf18f3c8591731a8ebb3e7f6e048ff"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-nominal/result/QUERY_OPTIMIZATION.json.xz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-nominal/result/QUERY_OPTIMIZATION.json.xz",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 95544,
+      "sha256": "8ea65484312b87987924a999149787d88fed35bc0b2e96e5f3149efd8a969166"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-nominal/result/RESULT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-nominal/result/RESULT.json",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 24723,
+      "sha256": "c21a419ca2225400c576ea8eb9ddf14cfb5a82e167fc3620b62f6bd3587c51c3"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-nominal/result/TICK_EVIDENCE.jsonl.xz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-nominal/result/TICK_EVIDENCE.jsonl.xz",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 191456,
+      "sha256": "5a1e1af9220bd5c506fda4563a924ffff082e12b7a69e83ae65942ad4e77e207"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-nominal/result/controller.stderr.log",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-nominal/result/controller.stderr.log",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-nominal/stderr.log",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-nominal/stderr.log",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-nominal/stdout.log",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-nominal/stdout.log",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 1020,
+      "sha256": "b72a87f27a6465f24b82c40dc3dc7af269d3ab399096218f5f7739a2c2345e7d"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/RAM_PREFLIGHT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/RAM_PREFLIGHT.json",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 102,
+      "sha256": "3d417b9db727e096ac1af99ef769f2e202c5e21dd37837aec4082434439191b4"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/RUN_RECEIPT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/RUN_RECEIPT.json",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 563,
+      "sha256": "73b1a70a859bc887f9631b9328ba19417905f315653461089e3c8e3fc6d52ead"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/heartbeat.jsonl.gz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/heartbeat.jsonl.gz",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 20836,
+      "sha256": "81df59bfd1211f07536f23f58fc600c225a862d89b857a6913838ce2ca8d8b96"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/result/ACTOR_TRACE.npz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/result/ACTOR_TRACE.npz",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 10876,
+      "sha256": "08b564ea7f818823dbdadb0c3ae51f944fde8d06d9ec34d9927a15bc7ea20e7e"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/result/ACTUAL_TRACE_PARTIAL.csv",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/result/ACTUAL_TRACE_PARTIAL.csv",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 76455,
+      "sha256": "c44264742c97d8a9354f190b17e82e20da6926f80b22ea6558254b11f8ff611e"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/result/LIVE_PROGRESS.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/result/LIVE_PROGRESS.json",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 377,
+      "sha256": "0b856381643d809b695b784b7d4e1c94ddcfc77756c2947ff768d50b7f3e816b"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/result/QUERY_OPTIMIZATION.json.xz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/result/QUERY_OPTIMIZATION.json.xz",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 97372,
+      "sha256": "06a5c811417ae2d23e1c6f8755ea9781c6abd22485a746757ba0b336695d6f49"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/result/RESULT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/result/RESULT.json",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 24906,
+      "sha256": "afb50c2a7616c3a0086f95429d112ac2865f74912c2a0991348f030fa172e873"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/result/TICK_EVIDENCE.jsonl.xz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/result/TICK_EVIDENCE.jsonl.xz",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 215320,
+      "sha256": "13982344619918ffa52e9537475ba493daf1c8820a6aa5e9409df3b301928eab"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/result/controller.stderr.log",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/result/controller.stderr.log",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/stderr.log",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/stderr.log",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/stdout.log",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-temporal_jitter/stdout.log",
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 1693,
+      "sha256": "4f6a325f95040669d9143d4abd6679875bdafff9f2dc6fe3cdb81cb9f99540cc"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/RAM_PREFLIGHT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/RAM_PREFLIGHT.json",
+      "group": "pilots-translation-interruption",
+      "bytes": 102,
+      "sha256": "faa4c3724bf9022dc098dfae3e2528276a538d77a4efef68ab238478e9f9d1f5"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/RUN_RECEIPT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/RUN_RECEIPT.json",
+      "group": "pilots-translation-interruption",
+      "bytes": 564,
+      "sha256": "8402680831cd2ec7207de46f3ae961b53659e58b04d03090269583689844f91e"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/heartbeat.jsonl.gz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/heartbeat.jsonl.gz",
+      "group": "pilots-translation-interruption",
+      "bytes": 20271,
+      "sha256": "909525ad98d212e05d817b1a16e20f90ea57710bf59bfccaca9253e747f6ecbf"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/result/ACTOR_TRACE.npz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/result/ACTOR_TRACE.npz",
+      "group": "pilots-translation-interruption",
+      "bytes": 8591,
+      "sha256": "302306c5cfa5922ee56cca51ab2d75489805210685bb7949dbcef24bc5f6f9cb"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/result/ACTUAL_TRACE_PARTIAL.csv",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/result/ACTUAL_TRACE_PARTIAL.csv",
+      "group": "pilots-translation-interruption",
+      "bytes": 42397,
+      "sha256": "33299a2069a617a8e1ba69e315eeedc0a17a278c34175a12d726f47792b6bb81"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/result/LIVE_PROGRESS.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/result/LIVE_PROGRESS.json",
+      "group": "pilots-translation-interruption",
+      "bytes": 380,
+      "sha256": "f489636ffbbd974bc3d9653a726aa50cbfb65105d38778f0524c02f6b91c41b0"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/result/QUERY_OPTIMIZATION.json.xz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/result/QUERY_OPTIMIZATION.json.xz",
+      "group": "pilots-translation-interruption",
+      "bytes": 95480,
+      "sha256": "3aa5bd17593a9331271d2aaf62cbafa472f0558af648d20abd17430048b753bb"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/result/RESULT.json",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/result/RESULT.json",
+      "group": "pilots-translation-interruption",
+      "bytes": 24807,
+      "sha256": "9fbeacef204b3ed5ad94e81058b0bfa40637d9b8932e2935317122f25514cb4c"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/result/TICK_EVIDENCE.jsonl.xz",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/result/TICK_EVIDENCE.jsonl.xz",
+      "group": "pilots-translation-interruption",
+      "bytes": 191716,
+      "sha256": "af707dc9b0f9cc876896e174acfbe7c34f8fe903054724b1ef2b82228903d338"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/result/controller.stderr.log",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/result/controller.stderr.log",
+      "group": "pilots-translation-interruption",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/stderr.log",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/stderr.log",
+      "group": "pilots-translation-interruption",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/stdout.log",
+      "source": "blind-synthetic-first-leg-pilot-73/pilot-tracking_interruption/stdout.log",
+      "group": "pilots-translation-interruption",
+      "bytes": 1119,
+      "sha256": "2eaefe7ebec285a597a1464e6eec642ea2db307d73ea4b3311a2445e89b458c9"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/pose_delivery.py",
+      "source": "blind-synthetic-first-leg-pilot-73/pose_delivery.py",
+      "group": "code-and-protocol",
+      "bytes": 3252,
+      "sha256": "0f03c76d0156220b80008c9c9612981072ceca162b5839bdb4e1397474df5f1f"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/review_terminal_recount.py",
+      "source": "blind-synthetic-first-leg-pilot-73/review_terminal_recount.py",
+      "group": "code-and-protocol",
+      "bytes": 6388,
+      "sha256": "11f497dacc987c41d429f9adeec259062ef1984d7b3d045696e8288e41f341c7"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/run_bounded.py",
+      "source": "blind-synthetic-first-leg-pilot-73/run_bounded.py",
+      "group": "code-and-protocol",
+      "bytes": 4547,
+      "sha256": "7ce3375cd43be87f2d1ae349699f110238ae905e6d02220954c682475c80d50b"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/run_loop.py",
+      "source": "blind-synthetic-first-leg-pilot-73/run_loop.py",
+      "group": "code-and-protocol",
+      "bytes": 3150,
+      "sha256": "f484e33bbe26699125adcd01ad1b169ff3fd555ee4a49841a59aeeea8b343052"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/source_runtime.py",
+      "source": "blind-synthetic-first-leg-pilot-73/source_runtime.py",
+      "group": "code-and-protocol",
+      "bytes": 6852,
+      "sha256": "300f44677c017904dade1e41302fce782b1bbec0da40d9c381fdcc324b0c6ddf"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/test_actual_replan.py",
+      "source": "blind-synthetic-first-leg-pilot-73/test_actual_replan.py",
+      "group": "code-and-protocol",
+      "bytes": 3477,
+      "sha256": "5336767f69335a2fadbe1bdbfedfe8fb907a21d53ba29cba50d91ef8dd5a3941"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/test_evidence_codec.py",
+      "source": "blind-synthetic-first-leg-pilot-73/test_evidence_codec.py",
+      "group": "code-and-protocol",
+      "bytes": 972,
+      "sha256": "c14e06513aaae6b7799d1798d4aaa63e7a5f6d0cb38311ab20be81a2d9290619"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/test_local_support.py",
+      "source": "blind-synthetic-first-leg-pilot-73/test_local_support.py",
+      "group": "code-and-protocol",
+      "bytes": 5263,
+      "sha256": "217a22633a18bf4361e4ee939d019dbbc3da9eeb5e139a17bf86b8190fdadc35"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/test_loop_contract.py",
+      "source": "blind-synthetic-first-leg-pilot-73/test_loop_contract.py",
+      "group": "code-and-protocol",
+      "bytes": 7242,
+      "sha256": "561d54ba891e9a50e401292a8ecffce3325372e5aeb38ccd66606ef794d29da9"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/test_low_objects.py",
+      "source": "blind-synthetic-first-leg-pilot-73/test_low_objects.py",
+      "group": "code-and-protocol",
+      "bytes": 2735,
+      "sha256": "a9c8993816f18cae54256e3d5ca0c29c8acc860245b00f55a7ec7292a743eb44"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/test_pose_delivery.py",
+      "source": "blind-synthetic-first-leg-pilot-73/test_pose_delivery.py",
+      "group": "code-and-protocol",
+      "bytes": 5473,
+      "sha256": "6f96cf0a9ba07733d1308254b4ac70eed9466ee121edff6750706ded6b4f844e"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/test_runtime_exclusion.py",
+      "source": "blind-synthetic-first-leg-pilot-73/test_runtime_exclusion.py",
+      "group": "code-and-protocol",
+      "bytes": 3177,
+      "sha256": "076675f0f178f3d04c2721129ccb3ed9bafb8065590933fcd8052e2f66b78106"
+    },
+    {
+      "path": "blind-synthetic-first-leg-pilot-73/PUBLICATION_MANIFEST.json",
+      "source": "blind-synthetic-first-leg-pilot-73/PUBLICATION_MANIFEST.json",
+      "group": "code-and-protocol",
+      "bytes": 14754,
+      "sha256": "247d15079b73e8ba69affb8f775c30e8072d7c66d54760bf801e5ce18222598c"
+    },
+    {
+      "path": "PUBLICATION/README.md",
+      "source": "blind-synthetic-pilot-publication/README.md",
+      "group": "code-and-protocol",
+      "bytes": 3679,
+      "sha256": "f5df84b670bb68acda96c04f014bcc354c6335f7b87d47f5a6a83b177f017670"
+    },
+    {
+      "path": "PUBLICATION/CURRENT_CHECKPOINT_PREFIX.md",
+      "source": "blind-synthetic-pilot-publication/CURRENT_CHECKPOINT_PREFIX.md",
+      "group": "code-and-protocol",
+      "bytes": 2300,
+      "sha256": "2e91de83aafc82a141e6e11a32e3a87d64ac4f9111f10b803908bfd57af98053"
+    },
+    {
+      "path": "THIRD_PARTY/RECAST_LICENSE.txt",
+      "source": "blind-tabletop-exclusion-planner-66/License.txt",
+      "group": "code-and-protocol",
+      "bytes": 877,
+      "sha256": "ffad87821cce7cfd3be00b63ffadd01b04e83a4c6a0bcc68f06362ffd42d705e"
+    }
+  ]
+}

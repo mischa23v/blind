@@ -1,0 +1,22 @@
+{
+  "verdict": "PASS saved Apple artifact evidence: host replay and simulator compile/link",
+  "artifactSHA256": "04831ceb1ec92d8db35574fba4dc5743020b0f96f18078929aaa91853edb6d06",
+  "artifactBytes": 8350,
+  "artifactFilesByteVerified": 8,
+  "sourceCommit": "caebdacedd4e19a74fa5899adf016c912caf402d",
+  "checksPassed": 55,
+  "markedSpans": 636,
+  "exactRouteComparisons": 15,
+  "allFiveCommandReceiptsSuccessful": true,
+  "macOSReplayPassed": true,
+  "iOSSimulatorCompileLinkPassed": true,
+  "iOSSimulatorExecuted": false,
+  "physicalAuthority": false,
+  "remoteRunIdentity": "40416322676/job121899440437 supplied by publishing worker; this review independently inspected downloaded artifact, not GitHub API",
+  "limitations": [
+    "No app project, ARKit capture, device or physical navigation tested",
+    "No iPhone performance claim; CPU/RSS not measured",
+    "Compiler contraction fix validated on this fixture only",
+    "RESULT inherited Linux scope string is stale; Apple SUMMARY/toolchain/commands establish artifact execution provenance"
+  ]
+}

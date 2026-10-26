@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "groups": [
+    {
+      "group": "code-and-protocol",
+      "bytes": 187903,
+      "CRCAndAllMemberHashesPass": true,
+      "twoBuildsIdentical": true
+    },
+    {
+      "group": "pilots-nominal-delay-jitter",
+      "bytes": 1095419,
+      "CRCAndAllMemberHashesPass": true,
+      "twoBuildsIdentical": true
+    },
+    {
+      "group": "pilots-translation-interruption",
+      "bytes": 653945,
+      "CRCAndAllMemberHashesPass": true,
+      "twoBuildsIdentical": true
+    }
+  ],
+  "exactSourceAllowlists": {
+    "blind-synthetic-stress-protocol-72": true,
+    "blind-synthetic-first-leg-pilot-73": true
+  },
+  "inputPublicationManifestSHA256": {
+    "blind-synthetic-stress-protocol-72/MANIFEST.json": "9dfa72f75dbb0b9be7273e48069c588bdf960e3e0c53ea2f5988815c226b4675",
+    "blind-synthetic-first-leg-pilot-73/PUBLICATION_MANIFEST.json": "247d15079b73e8ba69affb8f775c30e8072d7c66d54760bf801e5ce18222598c"
+  },
+  "manifestSHA256": "2230867c850075489f2fe09aff619791e8ff79ac16cfab3a42367b94de3a5e32",
+  "applePlaintextFiles": 10,
+  "applePlaintextBytes": 72438,
+  "applePlaintextHashesStillMatch": true,
+  "sourceFilesUnmodified": true,
+  "localZIPCopiesWritten": false
+}
