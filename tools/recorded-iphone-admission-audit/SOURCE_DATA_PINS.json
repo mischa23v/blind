@@ -1,0 +1,110 @@
+{
+  "scope": "Production scalar depth/confidence admission only; no tracking/projection/detection/navigation",
+  "clipSHA256": "aa200931b3769084043b4cd45ae76aef52151971194b079735756aca186749d4",
+  "datasetRevision": "a285cd1249fe9762085713a1c796ab68b1810ac2",
+  "policySource": {
+    "path": "$WORKSPACE/blind-native-depth-policy/source/BlindCore/Sources/BlindCore/NativeDepthObservationPolicy.swift",
+    "sha256": "0e6e55ddc3321b6b89998ca43c9fcd3711ec8e54d7395ea99b6edeb52e2b6e7c"
+  },
+  "policyBinary": {
+    "path": "$WORKSPACE/blind-native-depth-policy/build-01/libNativeDepthPolicySupport.so",
+    "sha256": "b52ad4059563b983e4277fcdca28238475c3d1884c2be4846d16796bbc180d2f"
+  },
+  "policyModule": {
+    "path": "$WORKSPACE/blind-native-depth-policy/build-01/NativeDepthPolicySupport.swiftmodule",
+    "sha256": "0c291a5601d20324377a62939672806b06900e2b000d04fb0bca4ea6e828e9d5"
+  },
+  "actualNativeSamplerSource": {
+    "path": "$WORKSPACE/blind-native-depth-policy/source/ios/BlindAssist/DepthSampler.swift",
+    "sha256": "e659262705258516fed4db98b333743c1342b5397087bf0f13ec7941a55f8171"
+  },
+  "supportBinary": {
+    "path": "$WORKSPACE/blind-navigation-recorded/build-06/libRecordedNavigationSupport.so",
+    "sha256": "259d738498f385fb8753755dd2e54554d7f1d13df800a77d872aae5504586531"
+  },
+  "runnerSHA256": "34b1e474d2b420ab05df1f747f539e98d0175606caf2ad3558bd403b40164c8b",
+  "protocolSHA256": "751a49b0804a7a0b96ae4682068262f868659b1e09464c4150483d5e5a9b2f1a",
+  "originalFieldAuditSHA256": "d788e4cdcf5de5331680876bf5dfc91f38e8497c3f8aa92e9204a34200bf10fa",
+  "dataFiles": [
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/0.depth.f32le",
+      "bytes": 196608,
+      "sha256": "970d2bdc2de2c938409ab12c5979224d2672e63b82095c51018757077462de5c"
+    },
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/0.confidence.u8",
+      "bytes": 49152,
+      "sha256": "678999e0c1c32fe42b5aae8ffe9a24e0e92f5ebd99539c4d6179c4c8798c91e4"
+    },
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/1.depth.f32le",
+      "bytes": 196608,
+      "sha256": "a083b4d227fc0e40e205e0d165e123dde4b50d9d951f1831f90cbdddd9c6122d"
+    },
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/1.confidence.u8",
+      "bytes": 49152,
+      "sha256": "4911a7bf4c7b3b718acf1095cc2bb936a87e3a16a9eb212a32c6bec68a8fee68"
+    },
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/2.depth.f32le",
+      "bytes": 196608,
+      "sha256": "2a65ed81d5559e975657fa9ff1a34a6a1e66a726993a7099ac1f92bc5a74ec1e"
+    },
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/2.confidence.u8",
+      "bytes": 49152,
+      "sha256": "a072f008111e696aef3899e741c7414eebef8b3f75ce9b96271f237b2188657e"
+    },
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/3.depth.f32le",
+      "bytes": 196608,
+      "sha256": "ccc4a91a5779ef5db45f0ba7f3e0bcb396ccb31085c4096e492a8d506a85274c"
+    },
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/3.confidence.u8",
+      "bytes": 49152,
+      "sha256": "0ee30c2455a87db530eade8480335adb648af21f8de146aedf9631fa296a16be"
+    },
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/4.depth.f32le",
+      "bytes": 196608,
+      "sha256": "4590fed39d0c6197bb0b6143aa277082726ba8ec23283115ff22f4d728d34dd3"
+    },
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/4.confidence.u8",
+      "bytes": 49152,
+      "sha256": "89121a8e9fc89d90cbc5c5fa10982d143d86eca0cd4bb6e212f71384e9aa5f74"
+    },
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/5.depth.f32le",
+      "bytes": 196608,
+      "sha256": "7def937beb12b9624c9133f8f2f1c8ed18880859f94ad6224d07053c0a548ea4"
+    },
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/5.confidence.u8",
+      "bytes": 49152,
+      "sha256": "c526cbbaaedbb1c27a89e73bf2d2cd48fb2b7ef652ec1cc2a2a219e0b725f33a"
+    },
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/6.depth.f32le",
+      "bytes": 196608,
+      "sha256": "54751e76d62836b106bc3b7dfe4cbcace4394647ca9dfb578253ff7b76c2b54a"
+    },
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/6.confidence.u8",
+      "bytes": 49152,
+      "sha256": "09236adacb9361d520524b7a940f8fbb7fc17a30d04c7609acdae62bfc00fa14"
+    },
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/7.depth.f32le",
+      "bytes": 196608,
+      "sha256": "a20f87412b8c41db4d083df4bf775afd849fa01ed05114ed1f2469305c8456bb"
+    },
+    {
+      "path": "$WORKSPACE/blind-raw-iphone-feasibility-01/decoded/7.confidence.u8",
+      "bytes": 49152,
+      "sha256": "8f9b3adfaa5ba24cec21aad6761dab542c57792a52b88aa0e34f27fe6123a83f"
+    }
+  ]
+}

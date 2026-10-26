@@ -1,0 +1,105 @@
+{
+  "scope": "Original metadata association check using author-confirmed intrinsics order; no pixel/world projection or perception call",
+  "metadataSHA256": "fa1cab04539609735af5282726a453ce8e8da1b63e45e372bd3a70e03303f1fa",
+  "authorConfirmation": "https://github.com/marek-simonik/record3d/issues/99#issuecomment-2459540413",
+  "officialDemoPin": "0c6e7692da100aad2d5195e307f01e75427a6a2a",
+  "coefficientOrder": [
+    "fx",
+    "fy",
+    "tx_principal_x",
+    "ty_principal_y"
+  ],
+  "globalKLayout": "column-major flat array",
+  "globalKEqualsConstructedFirstFrameExactly": true,
+  "globalKIsFirstFrameOnly": true,
+  "perFrameCount": 89,
+  "rgbWidthHeight": [
+    1920,
+    1440
+  ],
+  "depthWidthHeight": [
+    256,
+    192
+  ],
+  "sameAspectRatio": true,
+  "depthOverRGBScaleXY": [
+    0.13333333333333333,
+    0.13333333333333333
+  ],
+  "allCoefficientsAreExactlyFloat32Representable": true,
+  "coefficientMin": [
+    1476.1424560546875,
+    1476.1424560546875,
+    953.0910034179688,
+    747.4664916992188
+  ],
+  "coefficientMax": [
+    1488.6868896484375,
+    1488.6868896484375,
+    957.5903930664062,
+    751.5174560546875
+  ],
+  "framesWhoseCoefficientsDifferFromFirst": 88,
+  "selectedFirst8OriginalCoefficientRows": [
+    [
+      1477.268798828125,
+      1477.268798828125,
+      956.9019775390625,
+      751.5174560546875
+    ],
+    [
+      1477.2012939453125,
+      1477.2012939453125,
+      956.7471313476562,
+      751.26416015625
+    ],
+    [
+      1477.7152099609375,
+      1477.7152099609375,
+      956.8390502929688,
+      751.3587646484375
+    ],
+    [
+      1477.2325439453125,
+      1477.2325439453125,
+      956.8594360351562,
+      751.2792358398438
+    ],
+    [
+      1476.806884765625,
+      1476.806884765625,
+      956.7808837890625,
+      751.3456420898438
+    ],
+    [
+      1476.822509765625,
+      1476.822509765625,
+      956.7908325195312,
+      751.3321533203125
+    ],
+    [
+      1476.8380126953125,
+      1476.8380126953125,
+      956.846435546875,
+      751.3153686523438
+    ],
+    [
+      1476.848388671875,
+      1476.848388671875,
+      956.8026733398438,
+      751.320068359375
+    ]
+  ],
+  "firstFrameDepthResolutionCoefficientsDerivedOnly": [
+    196.96917317708332,
+    196.96917317708332,
+    127.58693033854166,
+    100.20232747395833
+  ],
+  "depthRGBAlignmentProvenance": "Record3D author states Apple-aligned RGB/depth. This audit checks dimensions and metadata, not independent geometric registration residuals.",
+  "alignmentSource": "https://github.com/marek-simonik/record3d/issues/108",
+  "pixelProjectionExecuted": false,
+  "nativeProjectionCalled": false,
+  "bodyOrWorldAssociationEstablished": false,
+  "physicalAuthority": false
+}

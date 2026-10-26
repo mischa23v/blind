@@ -1,0 +1,6 @@
+{
+  "exitCode": 0,
+  "wallSeconds": 0.7979730969964294,
+  "peakChildRSSKiB": 170748,
+  "command": "source $SHARED/swift-toolchain/env.sh\nswiftc -parse-as-library -module-cache-path '$WORKSPACE/blind-navigation-recorded/build-06/cache' -I '$SHARED/blind-body-warning-build/.build/debug' -I '$WORKSPACE/blind-navigation-recorded/build-06' -I '$WORKSPACE/blind-native-depth-policy/build-01' -L '$WORKSPACE/blind-navigation-recorded/build-06' -L '$WORKSPACE/blind-native-depth-policy/build-01' -lRecordedNavigationSupport -lNativeDepthPolicySupport '$WORKSPACE/blind-raw-iphone-admission-02/AdmissionAudit.swift' -o '$WORKSPACE/blind-raw-iphone-admission-02/build/admission-audit'\n"
+}

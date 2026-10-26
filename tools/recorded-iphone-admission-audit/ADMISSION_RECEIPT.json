@@ -1,0 +1,199 @@
+{
+  "scope": "Executed unchanged production acceptedDepth scalar gate on original recorded Float32/confidence; NOT obstacle detection, avoidance, clearance, tracking, localization or navigation",
+  "frameCount": 8,
+  "frameIDs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "fullRasterPixels": 393216,
+  "attemptedStride2Pixels": 98304,
+  "unsampledPixels": 294912,
+  "aggregate": {
+    "admitted": 31648,
+    "admittedConversionExact": 31648,
+    "attempted": 98304,
+    "rejectedConfidence0": 28299,
+    "rejectedConfidence1": 38357,
+    "rejectedDepthAboveRange": 0,
+    "rejectedDepthBelowRange": 0,
+    "rejectedNonfiniteDepth": 0,
+    "rejectedOtherConfidence": 0
+  },
+  "totalRejected": 66656,
+  "independentCrossCheckMatchesAllFrames": true,
+  "dataAndProductionSourceUnchangedDuringRun": true,
+  "Float32BitPatternsPreserved": true,
+  "uint16QuantizationUsed": false,
+  "confidenceFabricated": false,
+  "trackingState": "unknown and unused",
+  "intrinsicsUsed": false,
+  "worldPoseOrBodyOrFloorUsed": false,
+  "physicalAuthority": false,
+  "nativeObservationCreated": false,
+  "obstacleDetectorCalled": false,
+  "navigationRun": false,
+  "sourceDataPinsSHA256": "de104438ce42ec161e399e1209d5c9044eb0bafaca406b6ce0210b7c9ab6a250",
+  "protocolSHA256": "751a49b0804a7a0b96ae4682068262f868659b1e09464c4150483d5e5a9b2f1a",
+  "runnerBinarySHA256": "1fe85f729845d1e3f8ddcac26725a574203ae17b9dba1c4f77888767df762f63",
+  "runnerBinaryBytes": 159008,
+  "runtimeWallSeconds": 0.0317194809904322,
+  "runtimeMeaning": "Linux component runtime, not iPhone sensor-to-warning latency",
+  "compile": {
+    "exitCode": 0,
+    "wallSeconds": 0.7979730969964294,
+    "peakChildRSSKiB": 170748,
+    "command": "source $SHARED/swift-toolchain/env.sh\nswiftc -parse-as-library -module-cache-path '$WORKSPACE/blind-navigation-recorded/build-06/cache' -I '$SHARED/blind-body-warning-build/.build/debug' -I '$WORKSPACE/blind-navigation-recorded/build-06' -I '$WORKSPACE/blind-native-depth-policy/build-01' -L '$WORKSPACE/blind-navigation-recorded/build-06' -L '$WORKSPACE/blind-native-depth-policy/build-01' -lRecordedNavigationSupport -lNativeDepthPolicySupport '$WORKSPACE/blind-raw-iphone-admission-02/AdmissionAudit.swift' -o '$WORKSPACE/blind-raw-iphone-admission-02/build/admission-audit'\n"
+  },
+  "frames": [
+    {
+      "counts": {
+        "admitted": 4278,
+        "admittedConversionExact": 4278,
+        "attempted": 12288,
+        "rejectedConfidence0": 3363,
+        "rejectedConfidence1": 4647,
+        "rejectedDepthAboveRange": 0,
+        "rejectedDepthBelowRange": 0,
+        "rejectedNonfiniteDepth": 0,
+        "rejectedOtherConfidence": 0
+      },
+      "frameID": 0,
+      "fullRasterPixels": 49152,
+      "height": 192,
+      "unsampledPixels": 36864,
+      "width": 256
+    },
+    {
+      "counts": {
+        "admitted": 4296,
+        "admittedConversionExact": 4296,
+        "attempted": 12288,
+        "rejectedConfidence0": 3088,
+        "rejectedConfidence1": 4904,
+        "rejectedDepthAboveRange": 0,
+        "rejectedDepthBelowRange": 0,
+        "rejectedNonfiniteDepth": 0,
+        "rejectedOtherConfidence": 0
+      },
+      "frameID": 1,
+      "fullRasterPixels": 49152,
+      "height": 192,
+      "unsampledPixels": 36864,
+      "width": 256
+    },
+    {
+      "counts": {
+        "admitted": 4037,
+        "admittedConversionExact": 4037,
+        "attempted": 12288,
+        "rejectedConfidence0": 3220,
+        "rejectedConfidence1": 5031,
+        "rejectedDepthAboveRange": 0,
+        "rejectedDepthBelowRange": 0,
+        "rejectedNonfiniteDepth": 0,
+        "rejectedOtherConfidence": 0
+      },
+      "frameID": 2,
+      "fullRasterPixels": 49152,
+      "height": 192,
+      "unsampledPixels": 36864,
+      "width": 256
+    },
+    {
+      "counts": {
+        "admitted": 3692,
+        "admittedConversionExact": 3692,
+        "attempted": 12288,
+        "rejectedConfidence0": 3633,
+        "rejectedConfidence1": 4963,
+        "rejectedDepthAboveRange": 0,
+        "rejectedDepthBelowRange": 0,
+        "rejectedNonfiniteDepth": 0,
+        "rejectedOtherConfidence": 0
+      },
+      "frameID": 3,
+      "fullRasterPixels": 49152,
+      "height": 192,
+      "unsampledPixels": 36864,
+      "width": 256
+    },
+    {
+      "counts": {
+        "admitted": 3568,
+        "admittedConversionExact": 3568,
+        "attempted": 12288,
+        "rejectedConfidence0": 3871,
+        "rejectedConfidence1": 4849,
+        "rejectedDepthAboveRange": 0,
+        "rejectedDepthBelowRange": 0,
+        "rejectedNonfiniteDepth": 0,
+        "rejectedOtherConfidence": 0
+      },
+      "frameID": 4,
+      "fullRasterPixels": 49152,
+      "height": 192,
+      "unsampledPixels": 36864,
+      "width": 256
+    },
+    {
+      "counts": {
+        "admitted": 3878,
+        "admittedConversionExact": 3878,
+        "attempted": 12288,
+        "rejectedConfidence0": 4041,
+        "rejectedConfidence1": 4369,
+        "rejectedDepthAboveRange": 0,
+        "rejectedDepthBelowRange": 0,
+        "rejectedNonfiniteDepth": 0,
+        "rejectedOtherConfidence": 0
+      },
+      "frameID": 5,
+      "fullRasterPixels": 49152,
+      "height": 192,
+      "unsampledPixels": 36864,
+      "width": 256
+    },
+    {
+      "counts": {
+        "admitted": 3828,
+        "admittedConversionExact": 3828,
+        "attempted": 12288,
+        "rejectedConfidence0": 3736,
+        "rejectedConfidence1": 4724,
+        "rejectedDepthAboveRange": 0,
+        "rejectedDepthBelowRange": 0,
+        "rejectedNonfiniteDepth": 0,
+        "rejectedOtherConfidence": 0
+      },
+      "frameID": 6,
+      "fullRasterPixels": 49152,
+      "height": 192,
+      "unsampledPixels": 36864,
+      "width": 256
+    },
+    {
+      "counts": {
+        "admitted": 4071,
+        "admittedConversionExact": 4071,
+        "attempted": 12288,
+        "rejectedConfidence0": 3347,
+        "rejectedConfidence1": 4870,
+        "rejectedDepthAboveRange": 0,
+        "rejectedDepthBelowRange": 0,
+        "rejectedNonfiniteDepth": 0,
+        "rejectedOtherConfidence": 0
+      },
+      "frameID": 7,
+      "fullRasterPixels": 49152,
+      "height": 192,
+      "unsampledPixels": 36864,
+      "width": 256
+    }
+  ]
+}

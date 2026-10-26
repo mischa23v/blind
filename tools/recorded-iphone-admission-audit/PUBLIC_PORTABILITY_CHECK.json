@@ -1,0 +1,214 @@
+{
+  "scope": "Public-copy content/syntax/configuration verification only; historical execution evidence is not replaced",
+  "originalPacket": "blind-raw-iphone-admission-publication-stage-02",
+  "originalPayloadFilesVerifiedUnchanged": 19,
+  "originalPublicationManifestSHA256": "c700c222f3106ab9cf3c37cf0fb01d89bf384fa2560a7bba3d71dac3cb35049c",
+  "originalValidatorSHA256": "ac9173cf70ae0dcfac3820fcd79b31223786e23391db25dbca0e08c256b82d27",
+  "pythonSyntaxFiles": [
+    "source/tools/recorded-iphone-admission-audit/check_intrinsics.py",
+    "source/tools/recorded-iphone-admission-audit/run_audit.py",
+    "source/tools/recorded-iphone-admission-audit/verify_public_inputs.py"
+  ],
+  "allJSONParsed": true,
+  "historicalSHA256LiteralsPreserved": true,
+  "licenseAndVendorAndProductionSourceCutsUnchanged": true,
+  "absoluteWorkspacePathsRemaining": false,
+  "credentialPatternScan": "No matches for listed private workspace, home, signed credential or private-key patterns; not a general security certification",
+  "compilerExecuted": false,
+  "nativeCodeExecuted": false,
+  "downloadPerformed": false,
+  "rawDataModified": false,
+  "byteIdenticalExecutableSourceFiles": [
+    "tools/recorded-iphone-admission-audit/AdmissionAudit.swift",
+    "tools/recorded-iphone-admission-audit/source-cuts/DepthSampler.swift",
+    "tools/recorded-iphone-admission-audit/source-cuts/NativeDepthObservationPolicy.swift"
+  ],
+  "configurationAndOverwriteGuardChecks": [
+    {
+      "case": "missing WORKSPACE",
+      "refusedBeforeNativeExecution": true
+    },
+    {
+      "case": "relative WORKSPACE",
+      "refusedBeforeNativeExecution": true
+    },
+    {
+      "case": "missing SHARED",
+      "refusedBeforeNativeExecution": true
+    },
+    {
+      "case": "nonexistent SHARED",
+      "refusedBeforeNativeExecution": true
+    },
+    {
+      "case": "run_audit.py historical evidence overwrite guard",
+      "refusedBeforeNativeExecution": true
+    },
+    {
+      "case": "check_intrinsics.py historical evidence overwrite guard",
+      "refusedBeforeNativeExecution": true
+    }
+  ],
+  "sameEightReadOnlyRecount": {
+    "scope": "Public wrapper path/hash preflight plus read-only independent same-eight-array recount against historical production result; NOT a new native run",
+    "checkedDependencyPins": [
+      "policySource",
+      "policyBinary",
+      "policyModule",
+      "actualNativeSamplerSource",
+      "supportBinary"
+    ],
+    "checkedDecodedFiles": 16,
+    "configuredRoots": [
+      "$WORKSPACE",
+      "$SHARED"
+    ],
+    "frameIDs": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "aggregate": {
+      "admitted": 31648,
+      "admittedConversionExact": 31648,
+      "attempted": 98304,
+      "rejectedConfidence0": 28299,
+      "rejectedConfidence1": 38357,
+      "rejectedDepthAboveRange": 0,
+      "rejectedDepthBelowRange": 0,
+      "rejectedNonfiniteDepth": 0,
+      "rejectedOtherConfidence": 0
+    },
+    "matchesOriginalProductionAllFrames": true,
+    "productionRunnerSourceUnchanged": true,
+    "productionPolicySourceUnchanged": true,
+    "Float32InputsPreserved": true,
+    "newNativeRun": false,
+    "compilerExecuted": false,
+    "projectionExecuted": false,
+    "navigationExecuted": false,
+    "claimLimit": "The modified Python build/launch wrappers received syntax/configuration/hash checks only; their full compile/launch path was not rerun.",
+    "verifierSHA256": "86f05fb87b51ead0dd06deabec2b039e5c05b0d0e149b2f6bd633d9ed165360a",
+    "publicDriverSHA256": "111ad1937f3c021499331957d054718bd57dd9bf94271b29aad604bf8282a073",
+    "originalClipSHA256": "aa200931b3769084043b4cd45ae76aef52151971194b079735756aca186749d4",
+    "frames": [
+      {
+        "frameID": 0,
+        "counts": {
+          "attempted": 12288,
+          "admitted": 4278,
+          "admittedConversionExact": 4278,
+          "rejectedConfidence0": 3363,
+          "rejectedConfidence1": 4647,
+          "rejectedOtherConfidence": 0,
+          "rejectedNonfiniteDepth": 0,
+          "rejectedDepthBelowRange": 0,
+          "rejectedDepthAboveRange": 0
+        }
+      },
+      {
+        "frameID": 1,
+        "counts": {
+          "attempted": 12288,
+          "admitted": 4296,
+          "admittedConversionExact": 4296,
+          "rejectedConfidence0": 3088,
+          "rejectedConfidence1": 4904,
+          "rejectedOtherConfidence": 0,
+          "rejectedNonfiniteDepth": 0,
+          "rejectedDepthBelowRange": 0,
+          "rejectedDepthAboveRange": 0
+        }
+      },
+      {
+        "frameID": 2,
+        "counts": {
+          "attempted": 12288,
+          "admitted": 4037,
+          "admittedConversionExact": 4037,
+          "rejectedConfidence0": 3220,
+          "rejectedConfidence1": 5031,
+          "rejectedOtherConfidence": 0,
+          "rejectedNonfiniteDepth": 0,
+          "rejectedDepthBelowRange": 0,
+          "rejectedDepthAboveRange": 0
+        }
+      },
+      {
+        "frameID": 3,
+        "counts": {
+          "attempted": 12288,
+          "admitted": 3692,
+          "admittedConversionExact": 3692,
+          "rejectedConfidence0": 3633,
+          "rejectedConfidence1": 4963,
+          "rejectedOtherConfidence": 0,
+          "rejectedNonfiniteDepth": 0,
+          "rejectedDepthBelowRange": 0,
+          "rejectedDepthAboveRange": 0
+        }
+      },
+      {
+        "frameID": 4,
+        "counts": {
+          "attempted": 12288,
+          "admitted": 3568,
+          "admittedConversionExact": 3568,
+          "rejectedConfidence0": 3871,
+          "rejectedConfidence1": 4849,
+          "rejectedOtherConfidence": 0,
+          "rejectedNonfiniteDepth": 0,
+          "rejectedDepthBelowRange": 0,
+          "rejectedDepthAboveRange": 0
+        }
+      },
+      {
+        "frameID": 5,
+        "counts": {
+          "attempted": 12288,
+          "admitted": 3878,
+          "admittedConversionExact": 3878,
+          "rejectedConfidence0": 4041,
+          "rejectedConfidence1": 4369,
+          "rejectedOtherConfidence": 0,
+          "rejectedNonfiniteDepth": 0,
+          "rejectedDepthBelowRange": 0,
+          "rejectedDepthAboveRange": 0
+        }
+      },
+      {
+        "frameID": 6,
+        "counts": {
+          "attempted": 12288,
+          "admitted": 3828,
+          "admittedConversionExact": 3828,
+          "rejectedConfidence0": 3736,
+          "rejectedConfidence1": 4724,
+          "rejectedOtherConfidence": 0,
+          "rejectedNonfiniteDepth": 0,
+          "rejectedDepthBelowRange": 0,
+          "rejectedDepthAboveRange": 0
+        }
+      },
+      {
+        "frameID": 7,
+        "counts": {
+          "attempted": 12288,
+          "admitted": 4071,
+          "admittedConversionExact": 4071,
+          "rejectedConfidence0": 3347,
+          "rejectedConfidence1": 4870,
+          "rejectedOtherConfidence": 0,
+          "rejectedNonfiniteDepth": 0,
+          "rejectedDepthBelowRange": 0,
+          "rejectedDepthAboveRange": 0
+        }
+      }
+    ]
+  }
+}

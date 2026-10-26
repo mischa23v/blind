@@ -1,0 +1,206 @@
+{
+  "scope": "Original payload to public-normalized payload mapping; new helper/notes are separately covered by the current publication manifest",
+  "originalPacket": "blind-raw-iphone-admission-publication-stage-02",
+  "publicPacket": "blind-raw-iphone-admission-public-normalized-stage-02",
+  "originalPublicationManifestSHA256": "c700c222f3106ab9cf3c37cf0fb01d89bf384fa2560a7bba3d71dac3cb35049c",
+  "originalFileCount": 19,
+  "changedOriginalFileCount": 9,
+  "pathPlaceholders": {
+    "$WORKSPACE": "Explicit local root containing audit/data/dependency workspaces",
+    "$SHARED": "Explicit local shared compiler/core prerequisite root"
+  },
+  "historicalHashSemantics": "All original recorded hashes retain their original-byte referents. They are not the hashes of normalized display copies; this mapping provides those. Full native compile/launch not rerun for the modified public Python wrappers.",
+  "files": [
+    {
+      "path": "tools/recorded-iphone-admission-audit/ADMISSION_RECEIPT.json",
+      "originalSHA256": "ba4204d49a9317b4957b7d46e7c6f11bffc27761cda653127811040f89a60cbb",
+      "publicSHA256": "c11bf672230b67de205a9abda3114f9d9a091f92b88c03f7dd2229a792749906",
+      "originalBytes": 6363,
+      "publicBytes": 6196,
+      "changed": true,
+      "transformations": [
+        "workspace path normalization or configurable public-only wrapper"
+      ]
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/AdmissionAudit.swift",
+      "originalSHA256": "34b1e474d2b420ab05df1f747f539e98d0175606caf2ad3558bd403b40164c8b",
+      "publicSHA256": "34b1e474d2b420ab05df1f747f539e98d0175606caf2ad3558bd403b40164c8b",
+      "originalBytes": 5079,
+      "publicBytes": 5079,
+      "changed": false,
+      "transformations": []
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/COMPILE_RECEIPT.json",
+      "originalSHA256": "c55c5d896f35dc6974681b944c38dff517fa52260679f243406cba6b3be8b323",
+      "publicSHA256": "223b9a2a0726082eceb012ea8ab15bbdc270c9fe235c1135312aa10f617c7038",
+      "originalBytes": 850,
+      "publicBytes": 683,
+      "changed": true,
+      "transformations": [
+        "workspace path normalization or configurable public-only wrapper"
+      ]
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/INPUT_MANIFEST.json",
+      "originalSHA256": "46e6b50c6c96c0cf448b0ce064a29429c7921ce684603ebbf02978e0c2faa6c7",
+      "publicSHA256": "00fc6e34a023746573b71ee9c46879404bfebc99886a0301619e8ecab5374d91",
+      "originalBytes": 2349,
+      "publicBytes": 2013,
+      "changed": true,
+      "transformations": [
+        "workspace path normalization or configurable public-only wrapper"
+      ]
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/INTRINSICS_METADATA_CHECK.json",
+      "originalSHA256": "5e78a6a829e0246567d4039fe8cde1d67a3beb1fbb8c008a5b69bb31dfdc1651",
+      "publicSHA256": "5e78a6a829e0246567d4039fe8cde1d67a3beb1fbb8c008a5b69bb31dfdc1651",
+      "originalBytes": 2695,
+      "publicBytes": 2695,
+      "changed": false,
+      "transformations": []
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/INTRINSICS_PROVENANCE_REVIEW.md",
+      "originalSHA256": "99de8e716f530f81c3f6fa6045e5870a53a02a39c2410b3c9346d90a302e5b87",
+      "publicSHA256": "99de8e716f530f81c3f6fa6045e5870a53a02a39c2410b3c9346d90a302e5b87",
+      "originalBytes": 8946,
+      "publicBytes": 8946,
+      "changed": false,
+      "transformations": []
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/NEXT_EVIDENCE_REQUIREMENTS.md",
+      "originalSHA256": "c8624a9098ea29aee0afca9dea47a4f428f4c3c9586a5643f2bc239224828047",
+      "publicSHA256": "492ab4d00362de544a82aad928aeb9cd628e74146dfba1c659b20f85b925f5bf",
+      "originalBytes": 4013,
+      "publicBytes": 4015,
+      "changed": true,
+      "transformations": [
+        "coordination prose normalization"
+      ]
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/PROTOCOL.md",
+      "originalSHA256": "751a49b0804a7a0b96ae4682068262f868659b1e09464c4150483d5e5a9b2f1a",
+      "publicSHA256": "751a49b0804a7a0b96ae4682068262f868659b1e09464c4150483d5e5a9b2f1a",
+      "originalBytes": 3063,
+      "publicBytes": 3063,
+      "changed": false,
+      "transformations": []
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/README.md",
+      "originalSHA256": "74026b510df4bce19c69db83d17000db24db6f47e825a432087be443932c6dc4",
+      "publicSHA256": "0dc5c6051adbd0111805fe6c92ba1178232ed6c853384a0c935ff4da5d6b71f8",
+      "originalBytes": 6235,
+      "publicBytes": 6598,
+      "changed": true,
+      "transformations": [
+        "coordination prose normalization",
+        "public-copy disclosure note"
+      ]
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/SOURCE_DATA_PINS.json",
+      "originalSHA256": "de104438ce42ec161e399e1209d5c9044eb0bafaca406b6ce0210b7c9ab6a250",
+      "publicSHA256": "abdc4d0dca87443f81de545861eb48f078fb22139fd958bab39830f5f353ffe4",
+      "originalBytes": 5262,
+      "publicBytes": 4821,
+      "changed": true,
+      "transformations": [
+        "workspace path normalization or configurable public-only wrapper"
+      ]
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/check_intrinsics.py",
+      "originalSHA256": "b8fcb159102fb9cf265c59594aa85f234542b183e02c7740b82f022cf2424ca1",
+      "publicSHA256": "5405eed3b52dd5ddf10a8d8e7c90a6f9477013aa8b4b83d1ba10d8192e42b7db",
+      "originalBytes": 2810,
+      "publicBytes": 3200,
+      "changed": true,
+      "transformations": [
+        "distinct public-only configurable wrapper with overwrite guard; full compile/launch not rerun"
+      ]
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/compile.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "publicSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "originalBytes": 0,
+      "publicBytes": 0,
+      "changed": false,
+      "transformations": []
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/intrinsics-check.log",
+      "originalSHA256": "2d99f7ca4987a5e20eb03ac5cd87ced06b2c1cf1da6fff35be15f882374bd5f7",
+      "publicSHA256": "2d99f7ca4987a5e20eb03ac5cd87ced06b2c1cf1da6fff35be15f882374bd5f7",
+      "originalBytes": 1746,
+      "publicBytes": 1746,
+      "changed": false,
+      "transformations": []
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/production-result.json",
+      "originalSHA256": "1045ef4c082e925d7711f626e9d3cff7defa189cc517ba6bca91d550306fb6b4",
+      "publicSHA256": "1045ef4c082e925d7711f626e9d3cff7defa189cc517ba6bca91d550306fb6b4",
+      "originalBytes": 4299,
+      "publicBytes": 4299,
+      "changed": false,
+      "transformations": []
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/resolved-libraries.log",
+      "originalSHA256": "d4a037aa26b09ffde69e786e52ed45222b9a5c3bd1e02dd7ece9eb14f590a1c1",
+      "publicSHA256": "59b5f92d9f8d86c79899e3d819a3e8e2791c90d9b3a6273c079e6ebec2bf48bd",
+      "originalBytes": 3284,
+      "publicBytes": 3082,
+      "changed": true,
+      "transformations": [
+        "workspace path normalization or configurable public-only wrapper"
+      ]
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/run_audit.py",
+      "originalSHA256": "db65e7ea771bb031ce4385cf507e057ab8e8f3d342c293edc2a25bec7cf1783c",
+      "publicSHA256": "111ad1937f3c021499331957d054718bd57dd9bf94271b29aad604bf8282a073",
+      "originalBytes": 8878,
+      "publicBytes": 9469,
+      "changed": true,
+      "transformations": [
+        "workspace path normalization or configurable public-only wrapper",
+        "distinct public-only configurable wrapper with overwrite guard; full compile/launch not rerun"
+      ]
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/runtime.stderr.log",
+      "originalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "publicSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "originalBytes": 0,
+      "publicBytes": 0,
+      "changed": false,
+      "transformations": []
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/source-cuts/DepthSampler.swift",
+      "originalSHA256": "e659262705258516fed4db98b333743c1342b5397087bf0f13ec7941a55f8171",
+      "publicSHA256": "e659262705258516fed4db98b333743c1342b5397087bf0f13ec7941a55f8171",
+      "originalBytes": 7047,
+      "publicBytes": 7047,
+      "changed": false,
+      "transformations": []
+    },
+    {
+      "path": "tools/recorded-iphone-admission-audit/source-cuts/NativeDepthObservationPolicy.swift",
+      "originalSHA256": "0e6e55ddc3321b6b89998ca43c9fcd3711ec8e54d7395ea99b6edeb52e2b6e7c",
+      "publicSHA256": "0e6e55ddc3321b6b89998ca43c9fcd3711ec8e54d7395ea99b6edeb52e2b6e7c",
+      "originalBytes": 2076,
+      "publicBytes": 2076,
+      "changed": false,
+      "transformations": []
+    }
+  ]
+}
