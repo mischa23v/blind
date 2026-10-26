@@ -1,0 +1,44 @@
+name: Candidate mesh bridge Apple SDK proof
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'research/apple-candidate-ci-71/**'
+      - '.github/workflows/native-candidate-bridge.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: candidate-apple-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  candidate:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    runs-on: xcode-27
+    timeout-minutes: 18
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Build and test isolated candidate bridge; compile simulator target only
+        timeout-minutes: 16
+        run: python3 research/apple-candidate-ci-71/ci.py
+      - name: Preserve bounded public synthetic receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: candidate-apple-71-receipts
+          path: |
+            ${{ runner.temp }}/blind-candidate-bridge-71/*-receipt.json
+            ${{ runner.temp }}/blind-candidate-bridge-71/RESULT.json
+            ${{ runner.temp }}/blind-candidate-bridge-71/SUMMARY.json
+          if-no-files-found: warn
+          retention-days: 3

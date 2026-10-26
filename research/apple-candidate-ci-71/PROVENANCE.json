@@ -1,0 +1,49 @@
+{
+  "copies": [
+    {
+      "packaged": "native/blind_detour_exclusion.cpp",
+      "packagedSHA256": "03002dd6dab8e85d8b0ed48eba2c17ac6e9a0e8239e61a3c38fc3d3667ecc526",
+      "original": "blind-tabletop-exclusion-planner-66/blind_detour_exclusion.cpp",
+      "originalSHA256": "b4e5b2fa059e8b59d9e325e9ede734eb27f93a8933571adc576bef9262ed4ff9",
+      "change": "include path only"
+    },
+    {
+      "packaged": "native/clearance_adapter.cpp",
+      "packagedSHA256": "c1c69184a434bbb46280fd6125f52138f83802e114724d26369eb4e2a62ae2ee",
+      "original": "blind-tabletop-exclusion-planner-66/clearance_adapter.cpp",
+      "originalSHA256": "c1c69184a434bbb46280fd6125f52138f83802e114724d26369eb4e2a62ae2ee",
+      "change": "none"
+    },
+    {
+      "packaged": "source/Bridge.swift",
+      "packagedSHA256": "548ec9398c8112256653e6f3128414a2c373742aa1c16e330ea393f8dd6b5c8d",
+      "original": "blind-swift-exclusion-snapshot-70/Bridge.swift",
+      "originalSHA256": "548ec9398c8112256653e6f3128414a2c373742aa1c16e330ea393f8dd6b5c8d",
+      "change": "none"
+    },
+    {
+      "packaged": "source/Exclusion.swift",
+      "packagedSHA256": "625e4458430ff8852a5772603c0fa1eaed35f0114edc411dfcc3dd47a3fc388a",
+      "original": "blind-swift-exclusion-snapshot-70/Exclusion.swift",
+      "originalSHA256": "625e4458430ff8852a5772603c0fa1eaed35f0114edc411dfcc3dd47a3fc388a",
+      "change": "none"
+    },
+    {
+      "packaged": "source/main.swift",
+      "packagedSHA256": "42da666adc4b9c38f41a5c584041d2bfd44f13634adf23ed903e26eb8f32e17c",
+      "original": "blind-swift-exclusion-snapshot-70/main.swift",
+      "originalSHA256": "42da666adc4b9c38f41a5c584041d2bfd44f13634adf23ed903e26eb8f32e17c",
+      "change": "none"
+    }
+  ],
+  "existingInputs": {
+    "blind-polycam-alignment-feasibility-36/POLYCAM_INTRINSIC_GEOMETRY.npz": "9a8b08d23ec1202b35028161a29c873cee296ca82b38381635440e4733b0f1fb",
+    "blind-polycam-rigid-registration-37/run-01/CANDIDATE_RIGID_TRANSFORM.npz": "4085c76c14e1e97acd939a302daf1a9cd1f258b86d97e8e08ea6e6e9aae8da8f",
+    "blind-tabletop-exclusion-hypothesis-65/FROZEN_EXCLUSION.json": "77139530c92f7c8bfab9ae4bfc69fc9958ba56f705de74eea0b3826bfe022a37",
+    "blind-swift-exclusion-snapshot-70/INPUT.transient.json": "6cd1b3317d13c98551335b12f24ca6899553dd8bfb291f62b0d2187aa364bfdb",
+    "blind-swift-exclusion-snapshot-70/build/replay": "534a61d3110260f718d24ad1a78c20ac87666af51c616829da419e12e4d93c70",
+    "blind-tabletop-exclusion-planner-66/libblind_detour.so": "68979a79c67e8d9e4783d272059b7a7f2bc779718fd74f3f8e287cf90ec02b4d"
+  },
+  "noFARO": true,
+  "physicalAuthority": false
+}

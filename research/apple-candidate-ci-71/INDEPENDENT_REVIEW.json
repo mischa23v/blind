@@ -1,0 +1,29 @@
+{
+  "verdict": "PASS for prepared isolated Apple candidate CI package; Apple execution untested",
+  "sourcePinsSHA256": "621bf12d882c0dc7e923185f288611af1ff5a32a291f9dc54e38ab3cdf2c97da",
+  "packageFilesVerified": 14,
+  "upstreamFilesVerified": 43,
+  "fixtureDecodedBytes": 3088598,
+  "independentFailureReceiptChecks": [
+    "timeout kills process group and saves failure receipt",
+    "missing executable saves launch-failure receipt"
+  ],
+  "swiftSourceMatches70": true,
+  "reviewed": [
+    "readonly public repository job",
+    "commit-pinned actions with checkout credentials disabled",
+    "isolated native and Swift targets; no app project or tools/ci changes",
+    "raw fixture public Polycam no FARO or photos",
+    "host replay plus simulator compile/link only",
+    "output artifact JSON allowlist",
+    "stage time and file caps; scratch stage-end guard"
+  ],
+  "AppleExecuted": false,
+  "externalPublicationPerformed": false,
+  "limitations": [
+    "Runner/toolchain availability and Apple compile/link outcome not yet verified",
+    "512MiB scratch is postcommand check not hard live quota; no RAM guarantee",
+    "No simulator execution/install or sensor/device/navigation validation",
+    "Existing app CI failures remain unrelated and unresolved"
+  ]
+}

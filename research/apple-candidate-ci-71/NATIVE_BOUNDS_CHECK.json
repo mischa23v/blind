@@ -1,0 +1,49 @@
+{
+  "scope": "Existing Linux native66 bound rejection only; Apple unexecuted; no physical authority",
+  "librarySHA256": "68979a79c67e8d9e4783d272059b7a7f2bc779718fd74f3f8e287cf90ec02b4d",
+  "checks": [
+    {
+      "name": "huge finite coordinate",
+      "returnedHandle": false,
+      "error": "invalid vertex",
+      "passed": true
+    },
+    {
+      "name": "huge negative coordinate",
+      "returnedHandle": false,
+      "error": "invalid vertex",
+      "passed": true
+    },
+    {
+      "name": "oversized X extent",
+      "returnedHandle": false,
+      "error": "mesh extent limit",
+      "passed": true
+    },
+    {
+      "name": "oversized Z extent",
+      "returnedHandle": false,
+      "error": "mesh extent limit",
+      "passed": true
+    },
+    {
+      "name": "oversized Y extent",
+      "returnedHandle": false,
+      "error": "mesh extent limit",
+      "passed": true
+    },
+    {
+      "name": "extent allowed but grid too large",
+      "returnedHandle": false,
+      "error": "grid cell cap",
+      "passed": true
+    },
+    {
+      "name": "zero planar dimension",
+      "returnedHandle": false,
+      "error": "grid cell cap",
+      "passed": true
+    }
+  ],
+  "passed": true
+}

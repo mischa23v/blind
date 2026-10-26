@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "label": "timeout",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-c",
+        "import time;time.sleep(1)"
+      ],
+      "exitCode": -9,
+      "timedOut": true,
+      "exceptionType": null,
+      "wallSeconds": 0.03190541599178687,
+      "scratchBytesAfterCommand": 0,
+      "scratchCapExceeded": false
+    },
+    {
+      "label": "launch-missing",
+      "command": [
+        "/nonexistent-ci71-test-binary"
+      ],
+      "exitCode": null,
+      "timedOut": false,
+      "exceptionType": "FileNotFoundError",
+      "wallSeconds": 0.00189962302101776,
+      "scratchBytesAfterCommand": 332,
+      "scratchCapExceeded": false
+    }
+  ]
+}
