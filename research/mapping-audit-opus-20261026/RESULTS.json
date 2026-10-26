@@ -507,16 +507,6 @@
       "occupancyThreshold0.8": "3 new open-floor misses on Koivu",
       "voxel2.5cm_floorBand\u00b13.75cm": "widened blind spot; 7 open-floor misses"
     },
-    "passesSafetyNoRoutesOnHoldout": {
-      "occupancyThreshold0.7": {
-        "koivuRoutes": 82,
-        "coffeeRoutes": 0
-      },
-      "splitSupport0.5_obstacles0.7": {
-        "koivuRoutes": 97,
-        "coffeeRoutes": "pending"
-      }
-    },
     "voxel2.5cm_strictFloor": {
       "openFloorMisses": 0,
       "realFloorBlockedPct": 34,
@@ -526,6 +516,39 @@
       "koivu": 387,
       "coffee_room": 537
     },
-    "gameEpisodesExecuted": 0
+    "gameEpisodesExecuted": 0,
+    "passesSafetyWithRoutes": {
+      "occupancyThreshold0.7": {
+        "koivuRoutes": 82,
+        "coffeeRoutes": 0
+      },
+      "splitSupport0.5_obstacles0.7": {
+        "koivuRoutes": 97,
+        "coffeeRoutes": 21,
+        "openFloorMisses": {
+          "koivu": 4,
+          "coffee_room": 0
+        },
+        "edgeMisses": {
+          "koivu": 359,
+          "coffee_room": 157
+        },
+        "routeLength_m": {
+          "koivu": {
+            "median": 2.66,
+            "max": 3.41
+          },
+          "coffee_room": {
+            "median": 2.25,
+            "max": 2.65
+          }
+        },
+        "status": "first variant passing safety with routes on both rooms; candidate for frozen v3, not frozen"
+      }
+    },
+    "splitSupport0.5_obstacles0.8": {
+      "koivuOpenFloorMisses": 7,
+      "status": "rejected"
+    }
   }
 }
