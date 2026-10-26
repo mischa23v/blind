@@ -1,0 +1,107 @@
+{
+  "scope": "Independent recount of exact saved evaluator arrays, not a new FARO triangle score",
+  "artifactSHA256": "dfd9a7afa958fc8012e43b9fe86f72dafb97e88d4198640080c110c14941b55e",
+  "allPublishedMetricsReproduced": true,
+  "sets": {
+    "d1Permissive": {
+      "originalMetrics": {
+        "n": 10657,
+        "noRefCov": 38,
+        "refLow25": 94,
+        "refLow40": 83,
+        "refBody": 175
+      },
+      "lowOrBodyUnion": 225,
+      "lowAndBodyOverlap": 44,
+      "anyVertexButNoFloorBandVertices": 32,
+      "anyVertexButNeitherLowNorBody": 10432,
+      "referenceFloorBandVerticesAbove10mm": 228
+    },
+    "d1Strict": {
+      "originalMetrics": {
+        "n": 3595,
+        "noRefCov": 37,
+        "refLow25": 25,
+        "refLow40": 21,
+        "refBody": 63
+      },
+      "lowOrBodyUnion": 76,
+      "lowAndBodyOverlap": 12,
+      "anyVertexButNoFloorBandVertices": 29,
+      "anyVertexButNeitherLowNorBody": 3519,
+      "referenceFloorBandVerticesAbove10mm": 110
+    },
+    "statClearOnly": {
+      "originalMetrics": {
+        "n": 8426,
+        "noRefCov": 37,
+        "refLow25": 54,
+        "refLow40": 51,
+        "refBody": 98
+      },
+      "lowOrBodyUnion": 127,
+      "lowAndBodyOverlap": 25,
+      "anyVertexButNoFloorBandVertices": 30,
+      "anyVertexButNeitherLowNorBody": 8299,
+      "referenceFloorBandVerticesAbove10mm": 163
+    },
+    "statObjectBlocked": {
+      "originalMetrics": {
+        "n": 9932,
+        "noRefCov": 38,
+        "refLow25": 67,
+        "refLow40": 59,
+        "refBody": 129
+      },
+      "lowOrBodyUnion": 166,
+      "lowAndBodyOverlap": 30,
+      "anyVertexButNoFloorBandVertices": 30,
+      "anyVertexButNeitherLowNorBody": 9766,
+      "referenceFloorBandVerticesAbove10mm": 181
+    },
+    "statObject": {
+      "originalMetrics": {
+        "n": 1035,
+        "noRefCov": 0,
+        "refLow25": 44,
+        "refLow40": 41,
+        "refBody": 85
+      },
+      "lowOrBodyUnion": 100,
+      "lowAndBodyOverlap": 29,
+      "anyVertexButNoFloorBandVertices": 3,
+      "anyVertexButNeitherLowNorBody": 935,
+      "referenceFloorBandVerticesAbove10mm": 64
+    },
+    "isolatedSpecks": {
+      "originalMetrics": {
+        "n": 129,
+        "noRefCov": 0,
+        "refLow25": 0,
+        "refLow40": 0,
+        "refBody": 0
+      },
+      "lowOrBodyUnion": 0,
+      "lowAndBodyOverlap": 0,
+      "anyVertexButNoFloorBandVertices": 0,
+      "anyVertexButNeitherLowNorBody": 129,
+      "referenceFloorBandVerticesAbove10mm": 1
+    },
+    "d1HighObstacleSupported": {
+      "originalMetrics": {
+        "n": 10070,
+        "noRefCov": 580,
+        "refLow25": 2849,
+        "refLow40": 2636,
+        "refBody": 7936
+      },
+      "lowOrBodyUnion": 8262,
+      "lowAndBodyOverlap": 2523,
+      "anyVertexButNoFloorBandVertices": 450,
+      "anyVertexButNeitherLowNorBody": 1808,
+      "referenceFloorBandVerticesAbove10mm": 1464
+    }
+  },
+  "sourceFramesOrFARORead": false,
+  "gameEpisodes": 0
+}

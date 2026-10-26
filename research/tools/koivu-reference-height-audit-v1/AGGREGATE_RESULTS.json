@@ -1,0 +1,440 @@
+{
+  "scope": "Matching-height reference-relative surface audit; no live safety or false-obstacle removal claim",
+  "artifactSHA256": "dfd9a7afa958fc8012e43b9fe86f72dafb97e88d4198640080c110c14941b55e",
+  "originalSavedReferenceColumnsMatched": true,
+  "registration": {
+    "singularValues": [
+      1.020790844238779,
+      1.0207908442387779,
+      1.0207908442387734
+    ],
+    "scale": 1.0207908442387768,
+    "determinant": 1.0636782973625978,
+    "scaleFittedHere": false
+  },
+  "mesh": {
+    "vertices": 8940320,
+    "triangles": 17801112,
+    "originalPLYType": "float64",
+    "VTKPointScalarType": "float",
+    "geometryDecimated": false,
+    "meshTransformed": false,
+    "unusedAttributesReleased": true
+  },
+  "selection": {
+    "seed": 20261026,
+    "selectedColumns": 1413,
+    "primaryPopulation": 1157,
+    "primarySelected": 1157,
+    "clearPopulation": 8463,
+    "clearSelected": 256,
+    "selectionReadsReferenceArrays": false,
+    "noResamplingAfterReferenceOutcomes": true
+  },
+  "bandsMetres": [
+    [
+      0.01,
+      0.015
+    ],
+    [
+      0.015,
+      0.025
+    ],
+    [
+      0.025,
+      0.075
+    ],
+    [
+      0.075,
+      0.3
+    ],
+    [
+      0.3,
+      1.75
+    ],
+    [
+      1.75,
+      1.8
+    ]
+  ],
+  "bandNames": [
+    "10to15mm",
+    "15to25mm",
+    "25to75mm",
+    "75to300mm",
+    "300to1750mm",
+    "1750to1800mm"
+  ],
+  "vertexBandsHalfOpen": true,
+  "triangleBandsClosed": true,
+  "boundaryDoubleCountingPossible": true,
+  "overallContactCountsUseUnion": true,
+  "vertex": {
+    "d1Permissive": {
+      "phoneColumns": 10695,
+      "originalAnyVertexCovered": 10657,
+      "noReferenceVertices": 38,
+      "anyVertexButNoFloorBandVertices": 32,
+      "bandPositiveColumns": {
+        "10to15mm": 274,
+        "15to25mm": 203,
+        "25to75mm": 85,
+        "75to300mm": 43,
+        "300to1750mm": 175,
+        "1750to1800mm": 15
+      },
+      "any10to1800mmVertexColumns": 460,
+      "any10to75mmVertexColumns": 340,
+      "noVertexIsNotFree": true,
+      "measuredCoverageAvailable": false
+    },
+    "d1Strict": {
+      "phoneColumns": 3632,
+      "originalAnyVertexCovered": 3595,
+      "noReferenceVertices": 37,
+      "anyVertexButNoFloorBandVertices": 29,
+      "bandPositiveColumns": {
+        "10to15mm": 130,
+        "15to25mm": 84,
+        "25to75mm": 24,
+        "75to300mm": 9,
+        "300to1750mm": 63,
+        "1750to1800mm": 2
+      },
+      "any10to1800mmVertexColumns": 200,
+      "any10to75mmVertexColumns": 154,
+      "noVertexIsNotFree": true,
+      "measuredCoverageAvailable": false
+    },
+    "statClearOnly": {
+      "phoneColumns": 8463,
+      "originalAnyVertexCovered": 8426,
+      "noReferenceVertices": 37,
+      "anyVertexButNoFloorBandVertices": 30,
+      "bandPositiveColumns": {
+        "10to15mm": 199,
+        "15to25mm": 116,
+        "25to75mm": 51,
+        "75to300mm": 22,
+        "300to1750mm": 98,
+        "1750to1800mm": 6
+      },
+      "any10to1800mmVertexColumns": 305,
+      "any10to75mmVertexColumns": 231,
+      "noVertexIsNotFree": true,
+      "measuredCoverageAvailable": false
+    },
+    "statObjectBlocked": {
+      "phoneColumns": 9970,
+      "originalAnyVertexCovered": 9932,
+      "noReferenceVertices": 38,
+      "anyVertexButNoFloorBandVertices": 30,
+      "bandPositiveColumns": {
+        "10to15mm": 222,
+        "15to25mm": 144,
+        "25to75mm": 63,
+        "75to300mm": 25,
+        "300to1750mm": 129,
+        "1750to1800mm": 7
+      },
+      "any10to1800mmVertexColumns": 362,
+      "any10to75mmVertexColumns": 264,
+      "noVertexIsNotFree": true,
+      "measuredCoverageAvailable": false
+    },
+    "statObject": {
+      "phoneColumns": 1035,
+      "originalAnyVertexCovered": 1035,
+      "noReferenceVertices": 0,
+      "anyVertexButNoFloorBandVertices": 3,
+      "bandPositiveColumns": {
+        "10to15mm": 71,
+        "15to25mm": 79,
+        "25to75mm": 35,
+        "75to300mm": 33,
+        "300to1750mm": 85,
+        "1750to1800mm": 18
+      },
+      "any10to1800mmVertexColumns": 143,
+      "any10to75mmVertexColumns": 97,
+      "noVertexIsNotFree": true,
+      "measuredCoverageAvailable": false
+    },
+    "isolatedSpecks": {
+      "phoneColumns": 129,
+      "originalAnyVertexCovered": 129,
+      "noReferenceVertices": 0,
+      "anyVertexButNoFloorBandVertices": 0,
+      "bandPositiveColumns": {
+        "10to15mm": 2,
+        "15to25mm": 1,
+        "25to75mm": 0,
+        "75to300mm": 0,
+        "300to1750mm": 0,
+        "1750to1800mm": 0
+      },
+      "any10to1800mmVertexColumns": 3,
+      "any10to75mmVertexColumns": 3,
+      "noVertexIsNotFree": true,
+      "measuredCoverageAvailable": false
+    },
+    "d1HighObstacleSupported": {
+      "phoneColumns": 10650,
+      "originalAnyVertexCovered": 10070,
+      "noReferenceVertices": 580,
+      "anyVertexButNoFloorBandVertices": 450,
+      "bandPositiveColumns": {
+        "10to15mm": 1666,
+        "15to25mm": 1615,
+        "25to75mm": 1916,
+        "75to300mm": 2236,
+        "300to1750mm": 7936,
+        "1750to1800mm": 772
+      },
+      "any10to1800mmVertexColumns": 8428,
+      "any10to75mmVertexColumns": 2327,
+      "noVertexIsNotFree": true,
+      "measuredCoverageAvailable": false
+    }
+  },
+  "triangleSample": {
+    "d1Permissive": {
+      "sampledColumns": 981,
+      "populationColumns": 10695,
+      "allPopulationColumnsIncluded": false,
+      "bandContactColumns": {
+        "10to15mm": 66,
+        "15to25mm": 68,
+        "25to75mm": 25,
+        "75to300mm": 19,
+        "300to1750mm": 50,
+        "1750to1800mm": 8
+      },
+      "anyBandContactColumns": 113,
+      "triangleContactWithoutVertexInSameHalfOpenBand": {
+        "10to15mm": 5,
+        "15to25mm": 3,
+        "25to75mm": 2,
+        "75to300mm": 0,
+        "300to1750mm": 1,
+        "1750to1800mm": 0
+      },
+      "columnsWithAnyMissingFloorProbe": 3,
+      "columnsWithAllFiveHits": 978,
+      "allFiveHitsIsNotVerifiedSupport": true,
+      "firstHitHeightP5P50P95Metres": [
+        -0.00730602856315608,
+        5.726605486274308e-05,
+        0.00995939429662839
+      ]
+    },
+    "d1Strict": {
+      "sampledColumns": 299,
+      "populationColumns": 3632,
+      "allPopulationColumnsIncluded": false,
+      "bandContactColumns": {
+        "10to15mm": 26,
+        "15to25mm": 22,
+        "25to75mm": 6,
+        "75to300mm": 4,
+        "300to1750mm": 10,
+        "1750to1800mm": 2
+      },
+      "anyBandContactColumns": 36,
+      "triangleContactWithoutVertexInSameHalfOpenBand": {
+        "10to15mm": 1,
+        "15to25mm": 0,
+        "25to75mm": 0,
+        "75to300mm": 0,
+        "300to1750mm": 0,
+        "1750to1800mm": 0
+      },
+      "columnsWithAnyMissingFloorProbe": 2,
+      "columnsWithAllFiveHits": 297,
+      "allFiveHitsIsNotVerifiedSupport": true,
+      "firstHitHeightP5P50P95Metres": [
+        -0.0064268495299961,
+        -0.00032562687876058413,
+        0.010490917564123943
+      ]
+    },
+    "statClearOnly": {
+      "sampledColumns": 256,
+      "populationColumns": 8463,
+      "allPopulationColumnsIncluded": false,
+      "bandContactColumns": {
+        "10to15mm": 9,
+        "15to25mm": 7,
+        "25to75mm": 1,
+        "75to300mm": 1,
+        "300to1750mm": 3,
+        "1750to1800mm": 0
+      },
+      "anyBandContactColumns": 12,
+      "triangleContactWithoutVertexInSameHalfOpenBand": {
+        "10to15mm": 0,
+        "15to25mm": 1,
+        "25to75mm": 0,
+        "75to300mm": 0,
+        "300to1750mm": 0,
+        "1750to1800mm": 0
+      },
+      "columnsWithAnyMissingFloorProbe": 1,
+      "columnsWithAllFiveHits": 255,
+      "allFiveHitsIsNotVerifiedSupport": true,
+      "firstHitHeightP5P50P95Metres": [
+        -0.007099779061723408,
+        -0.002139079954681034,
+        0.007930008620630348
+      ]
+    },
+    "statObjectBlocked": {
+      "sampledColumns": 256,
+      "populationColumns": 9970,
+      "allPopulationColumnsIncluded": false,
+      "bandContactColumns": {
+        "10to15mm": 9,
+        "15to25mm": 7,
+        "25to75mm": 1,
+        "75to300mm": 1,
+        "300to1750mm": 3,
+        "1750to1800mm": 0
+      },
+      "anyBandContactColumns": 12,
+      "triangleContactWithoutVertexInSameHalfOpenBand": {
+        "10to15mm": 0,
+        "15to25mm": 1,
+        "25to75mm": 0,
+        "75to300mm": 0,
+        "300to1750mm": 0,
+        "1750to1800mm": 0
+      },
+      "columnsWithAnyMissingFloorProbe": 1,
+      "columnsWithAllFiveHits": 255,
+      "allFiveHitsIsNotVerifiedSupport": true,
+      "firstHitHeightP5P50P95Metres": [
+        -0.007099779061723408,
+        -0.002139079954681034,
+        0.007930008620630348
+      ]
+    },
+    "statObject": {
+      "sampledColumns": 1035,
+      "populationColumns": 1035,
+      "allPopulationColumnsIncluded": true,
+      "bandContactColumns": {
+        "10to15mm": 78,
+        "15to25mm": 82,
+        "25to75mm": 38,
+        "75to300mm": 33,
+        "300to1750mm": 86,
+        "1750to1800mm": 18
+      },
+      "anyBandContactColumns": 147,
+      "triangleContactWithoutVertexInSameHalfOpenBand": {
+        "10to15mm": 7,
+        "15to25mm": 3,
+        "25to75mm": 3,
+        "75to300mm": 0,
+        "300to1750mm": 1,
+        "1750to1800mm": 0
+      },
+      "columnsWithAnyMissingFloorProbe": 7,
+      "columnsWithAllFiveHits": 1028,
+      "allFiveHitsIsNotVerifiedSupport": true,
+      "firstHitHeightP5P50P95Metres": [
+        -0.00716600972322651,
+        -0.0011900481959522145,
+        0.01023064194794522
+      ]
+    },
+    "isolatedSpecks": {
+      "sampledColumns": 129,
+      "populationColumns": 129,
+      "allPopulationColumnsIncluded": true,
+      "bandContactColumns": {
+        "10to15mm": 2,
+        "15to25mm": 1,
+        "25to75mm": 0,
+        "75to300mm": 0,
+        "300to1750mm": 0,
+        "1750to1800mm": 0
+      },
+      "anyBandContactColumns": 3,
+      "triangleContactWithoutVertexInSameHalfOpenBand": {
+        "10to15mm": 0,
+        "15to25mm": 0,
+        "25to75mm": 0,
+        "75to300mm": 0,
+        "300to1750mm": 0,
+        "1750to1800mm": 0
+      },
+      "columnsWithAnyMissingFloorProbe": 0,
+      "columnsWithAllFiveHits": 129,
+      "allFiveHitsIsNotVerifiedSupport": true,
+      "firstHitHeightP5P50P95Metres": [
+        -0.005975309225233433,
+        0.0010389533165777558,
+        0.007546650000395153
+      ]
+    },
+    "d1HighObstacleSupported": {
+      "sampledColumns": 79,
+      "populationColumns": 10650,
+      "allPopulationColumnsIncluded": false,
+      "bandContactColumns": {
+        "10to15mm": 2,
+        "15to25mm": 1,
+        "25to75mm": 0,
+        "75to300mm": 0,
+        "300to1750mm": 0,
+        "1750to1800mm": 0
+      },
+      "anyBandContactColumns": 3,
+      "triangleContactWithoutVertexInSameHalfOpenBand": {
+        "10to15mm": 0,
+        "15to25mm": 0,
+        "25to75mm": 0,
+        "75to300mm": 0,
+        "300to1750mm": 0,
+        "1750to1800mm": 0
+      },
+      "columnsWithAnyMissingFloorProbe": 0,
+      "columnsWithAllFiveHits": 79,
+      "allFiveHitsIsNotVerifiedSupport": true,
+      "firstHitHeightP5P50P95Metres": [
+        -0.005929905983468975,
+        0.0010089954344399757,
+        0.008897252611717341
+      ]
+    }
+  },
+  "nativeQueries": {
+    "boxes": 8478,
+    "triangles": 6052859,
+    "floorRays": 7065
+  },
+  "referenceMeasuredSupportMaskAvailable": false,
+  "referenceCleanedCompletedAndDifferentCaptureTime": true,
+  "registrationFittedHere": false,
+  "planeRefittedHere": false,
+  "FAROUsedByPlanner": false,
+  "mapsOrBodyChanged": false,
+  "gameEpisodes": 0,
+  "physicalAuthority": false,
+  "seconds": 84.2721742720023,
+  "maximumOriginalCoordinateFloat32RoundingMetres": 0.0,
+  "coordinatePrecisionMeaning": "Float64 original vertices own vertex counts; unchanged VTK PLY reader uses its reported coordinate type for triangle queries. Rounding measured, not hidden or a calibrated uncertainty bound.",
+  "nearFloorMeaning": "Positive reference geometry in a band can be floor registration or surface-height variation, not necessarily a physical obstacle. No reference band is used to erase phone evidence.",
+  "testedHeightRangeNominalMetres": [
+    0.01,
+    1.8
+  ],
+  "untestedNearFootRangeNominalMetres": [
+    0.002,
+    0.01
+  ],
+  "fullNearFootClearanceEstablished": false,
+  "exactOriginalSummarySHA256": "9376bfd37afa5b2c113eb27729b7790dcf3c4f1b50bcf1f599ddf3fe0e7e3c95",
+  "publicationNormalization": "Omitted execution machine metadata and dataset coordinate transform only; counts and semantics unchanged."
+}

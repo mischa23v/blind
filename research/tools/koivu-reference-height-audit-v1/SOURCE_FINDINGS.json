@@ -1,0 +1,89 @@
+{
+  "sourceCommit": "b9a652bbe0203f11caade0bf136e8df22badbbea",
+  "scope": "Independent source/receipt analysis, not a recorded geometry rerun",
+  "highImpactFindings": [
+    "Statistical object threshold uses mean minus3SE>10mm OR tail; headline tests only low_max>=25mm, and reference low-band extraction itself starts15mm.",
+    "Headline low matches omit body-band positives already present in the same receipt.",
+    "Any vertex at any height makes cov=true; neither no vertex nor no box contact proves observed free space.",
+    "Latest d1Strict removes lowUnresolvedFlag only, not the farOnlyDip veto used by the separately proposed strict interpretation.",
+    "Latest pipeline labels/plane absent from committed tree; old D1 artifacts cannot substitute.",
+    "All87 misses within6cm refers to an earlier pass, not current combined low/body matches."
+  ],
+  "sets": {
+    "d1Permissive": {
+      "anyVertexCoveredColumns": 10657,
+      "noVertexColumns": 38,
+      "low25to300mmHitColumns": 94,
+      "body300to1800mmHitColumns": 175,
+      "unionLowerBound": 175,
+      "unionUpperBound": 269,
+      "unionLowerBoundPercentOfAnyVertexCovered": 1.6421131650558318,
+      "exactUnionUnknown": true
+    },
+    "d1Strict": {
+      "anyVertexCoveredColumns": 3595,
+      "noVertexColumns": 37,
+      "low25to300mmHitColumns": 25,
+      "body300to1800mmHitColumns": 63,
+      "unionLowerBound": 63,
+      "unionUpperBound": 88,
+      "unionLowerBoundPercentOfAnyVertexCovered": 1.7524339360222532,
+      "exactUnionUnknown": true
+    },
+    "statClearOnly": {
+      "anyVertexCoveredColumns": 8426,
+      "noVertexColumns": 37,
+      "low25to300mmHitColumns": 54,
+      "body300to1800mmHitColumns": 98,
+      "unionLowerBound": 98,
+      "unionUpperBound": 152,
+      "unionLowerBoundPercentOfAnyVertexCovered": 1.1630666983147402,
+      "exactUnionUnknown": true
+    },
+    "statObjectBlocked": {
+      "anyVertexCoveredColumns": 9932,
+      "noVertexColumns": 38,
+      "low25to300mmHitColumns": 67,
+      "body300to1800mmHitColumns": 129,
+      "unionLowerBound": 129,
+      "unionUpperBound": 196,
+      "unionLowerBoundPercentOfAnyVertexCovered": 1.2988320579943617,
+      "exactUnionUnknown": true
+    },
+    "statObject": {
+      "anyVertexCoveredColumns": 1035,
+      "noVertexColumns": 0,
+      "low25to300mmHitColumns": 44,
+      "body300to1800mmHitColumns": 85,
+      "unionLowerBound": 85,
+      "unionUpperBound": 129,
+      "unionLowerBoundPercentOfAnyVertexCovered": 8.21256038647343,
+      "exactUnionUnknown": true
+    },
+    "isolatedSpecks": {
+      "anyVertexCoveredColumns": 129,
+      "noVertexColumns": 0,
+      "low25to300mmHitColumns": 0,
+      "body300to1800mmHitColumns": 0,
+      "unionLowerBound": 0,
+      "unionUpperBound": 0,
+      "unionLowerBoundPercentOfAnyVertexCovered": 0.0,
+      "exactUnionUnknown": true
+    }
+  },
+  "fixtures": {
+    "passed": 6,
+    "receipt": "fixtures-01/RECEIPT.json",
+    "recordedReferenceLoaded": false
+  },
+  "recordedScoringStatus": "pending exact latest pipeline_out.npz and frozen source/geometry protocol",
+  "gameEpisodes": 0,
+  "physicalAuthority": false,
+  "pins": {
+    "upstream/scripts/pipeline.py": "32a2fc27bb23421d2192005a9aa99ff15e3936ad4c20161592c1d85fab337dfc",
+    "upstream/REFERENCE_SCORING.md": "90841a1ca8192819a7b33ae4ef196fa98b6da4f3a7c0c6699a31a65d90daf2d7",
+    "upstream/koivu_PIPELINE_RECEIPT.json": "4ff09e093f6da056908d227180b01f822f03aac7017cbc91fe4a4c0292a8f821",
+    "OLD_D1_ARTIFACT_RECEIPT.json": "819dc48666be584b8a7b41213c0de415721590401c15fb1dc41d664dbfc8c46e",
+    "fixtures-01/RECEIPT.json": "8330edbcdfaed7dcf37337acbe33a700db6c8a993a6ef61e915d768ddb249ec9"
+  }
+}

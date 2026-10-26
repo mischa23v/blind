@@ -1,0 +1,63 @@
+{
+  "scope": "Separate saved-array and per-column native-row arithmetic reconciliation; no geometry rerun",
+  "passed": true,
+  "all1413RowsReconcile": true,
+  "checks": {
+    "statObject": {
+      "sampledColumns": 1035,
+      "populationColumns": 1035,
+      "anyBandContactColumns": 147,
+      "bandContactColumns": {
+        "10to15mm": 78,
+        "15to25mm": 82,
+        "25to75mm": 38,
+        "75to300mm": 33,
+        "300to1750mm": 86,
+        "1750to1800mm": 18
+      },
+      "columnsWithAnyMissingFloorProbe": 7,
+      "vertexAnyBand": 143
+    },
+    "isolatedSpecks": {
+      "sampledColumns": 129,
+      "populationColumns": 129,
+      "anyBandContactColumns": 3,
+      "bandContactColumns": {
+        "10to15mm": 2,
+        "15to25mm": 1,
+        "25to75mm": 0,
+        "75to300mm": 0,
+        "300to1750mm": 0,
+        "1750to1800mm": 0
+      },
+      "columnsWithAnyMissingFloorProbe": 0,
+      "vertexAnyBand": 3
+    },
+    "statClearOnly": {
+      "sampledColumns": 256,
+      "populationColumns": 8463,
+      "anyBandContactColumns": 12,
+      "bandContactColumns": {
+        "10to15mm": 9,
+        "15to25mm": 7,
+        "25to75mm": 1,
+        "75to300mm": 1,
+        "300to1750mm": 3,
+        "1750to1800mm": 0
+      },
+      "columnsWithAnyMissingFloorProbe": 1,
+      "vertexAnyBand": 305
+    }
+  },
+  "wallSeconds": 3.8729832069948316,
+  "peakRSSBytes": 65261568,
+  "FAROLoaded": false,
+  "gameEpisodes": 0,
+  "hashes": {
+    "SUMMARY.json": "9376bfd37afa5b2c113eb27729b7790dcf3c4f1b50bcf1f599ddf3fe0e7e3c95",
+    "TRIANGLE_BANDS.npz": "7f13e136f1ded00e1ffa8cee240e8a038d7a0af46b21a24152c2fe095d86795a",
+    "REFERENCE_VERTEX_BANDS.npz": "a235fd7e1fc4fe6c2f4af26b60cdcd9ef6586b7ff08fe36c18d543d0d506811b",
+    "TRIANGLE_COLUMN_ROWS.jsonl": "7a44f4f64ea843af5a422d357e550fd038bff245e100127cd9f9ca6ae54e86f6",
+    "RUN_RECEIPT.json": "74a0b15ad42a71c537f3b46516dac24f60f5e9619497acef287194a803454b72"
+  }
+}

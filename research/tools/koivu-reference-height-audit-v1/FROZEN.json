@@ -1,0 +1,86 @@
+{
+  "scope": "Exact Koivu v1 matching-height/reference-coverage diagnostic; no map change or game",
+  "sourceCommit": "b9a652bbe0203f11caade0bf136e8df22badbbea",
+  "artifactCommit": "c1231d4042068176e09a33c3020647c2c0e292ba",
+  "selectedColumns": 1413,
+  "selectionSeed": 20261026,
+  "bandsNominalMetres": [
+    [
+      0.01,
+      0.015
+    ],
+    [
+      0.015,
+      0.025
+    ],
+    [
+      0.025,
+      0.075
+    ],
+    [
+      0.075,
+      0.3
+    ],
+    [
+      0.3,
+      1.75
+    ],
+    [
+      1.75,
+      1.8
+    ]
+  ],
+  "untestedNearFootBand": [
+    0.002,
+    0.01
+  ],
+  "budgets": {
+    "CPUSeconds": 1800,
+    "wallSeconds": 2700,
+    "RSSBytes": 3221225472,
+    "outputBytes": 67108864,
+    "reserveBytes": 805306368
+  },
+  "files": {
+    "blind-opus-reference-scoring-audit-02/source/label_contract.py": "e9107b10238fff7ead7f8d60733b0439771d592a9a6f1bece2ddf547c44c4db3",
+    "blind-opus-reference-scoring-audit-02/source/reference_band_box.py": "18fdf528f5eb4c017ed0d94476babed57f94807323798984064679d419831ef1",
+    "blind-opus-reference-scoring-audit-02/source/run_bounded.py": "f3c08c761ac5fb33b781aebc371ba6b80623551482ee4d717439e7ef58125aed",
+    "blind-opus-reference-scoring-audit-02/source/score_reference.py": "ccb8b730cde932e191571cebd1c0b09ffbce8429e67de21455268eff5c6d53d7",
+    "blind-opus-reference-scoring-audit-02/source/test_label_contract.py": "39bd5de7d8d8965e85a9ae24417a6ecf890306e25bcb98641751bfa3124825e9",
+    "blind-opus-reference-scoring-audit-02/source/test_reference_band_box.py": "12ac9dd706390eee634b1bb596881b068c2bec2d99b408b36848dcf00c2253ac",
+    "blind-opus-reference-scoring-audit-02/source/test_scoring_contract.py": "ad1e2b510f56c294a829f0bf8f8208a24621dd2b36e01f516fc1a6a1aa7f94bb",
+    "blind-opus-reference-scoring-audit-02/DIAGNOSTIC_PLAN.md": "cfdec2c88af5d0e89dbc549140d7edfd5d2af7cfe85db6c0429e86ad1b94fe6f",
+    "blind-opus-reference-scoring-audit-02/INDEPENDENT_SOURCE_REVIEW.md": "4af934e81367e4a72efb1cdc12fa63ea912671ce114f4ad4d4cafe0ae1908b9f",
+    "blind-opus-reference-scoring-audit-02/ARTIFACT_VERIFICATION.json": "f46abc9a221b98ee92af1ec0313de70001eb18d08c56bd0f7e1a41c1dcdcf068",
+    "blind-opus-reference-scoring-audit-02/ARTIFACT_FETCH_METADATA.json": "31590b42681eb034e0557c993b00af412795011059b1c183f8ea96887bdb065a",
+    "blind-opus-reference-scoring-audit-02/SELECTED_COLUMNS.npz": "1ed61ab8192db756d0be8132c4a4fdf612195304ae47db547719c417b47aba64",
+    "blind-opus-reference-scoring-audit-02/SAVED_ARRAY_RECOUNT.json": "1404c9a311ce359b3f786d552077b42c945f5cd0b3949c198733cb166815dee8",
+    "blind-opus-reference-scoring-audit-02/artifacts/koivu_v1_pipeline_out.npz": "dfd9a7afa958fc8012e43b9fe86f72dafb97e88d4198640080c110c14941b55e",
+    "blind-opus-reference-scoring-audit-02/artifacts/koivu_v1_PIPELINE_RECEIPT.json": "4ff09e093f6da056908d227180b01f822f03aac7017cbc91fe4a4c0292a8f821",
+    "blind-opus-reference-scoring-audit-02/artifacts/SHA256SUMS.txt": "58b1271d54fb8571b1ac24856afcd1e3d9a679f82a72b001fab6c244b53ac4e3",
+    "blind-opus-reference-scoring-audit-02/artifacts/README.md": "2a0f414b569c31603d10eae75dc64930d76f6d76c789168e87930f9eb90d6ae1",
+    "blind-opus-reference-scoring-audit-02/upstream/scripts/pipeline.py": "32a2fc27bb23421d2192005a9aa99ff15e3936ad4c20161592c1d85fab337dfc",
+    "blind-opus-reference-scoring-audit-02/upstream/scripts/ref_columns.py": "e033041d41995e0a54d58c70580bb5ad898b76a52821fc2aa0e050cf63b8b701",
+    "blind-opus-reference-scoring-audit-02/upstream/scripts/score_ref.py": "ec1e062838bb69f124c5d13d7b77cf4ecf98e4ebd7a054a8eb444e47afecd94e",
+    "blind-opus-reference-scoring-audit-02/upstream/REFERENCE_SCORING.md": "90841a1ca8192819a7b33ae4ef196fa98b6da4f3a7c0c6699a31a65d90daf2d7",
+    "blind-opus-reference-scoring-audit-02/upstream/koivu_PIPELINE_RECEIPT.json": "4ff09e093f6da056908d227180b01f822f03aac7017cbc91fe4a4c0292a8f821",
+    "blind-opus-reference-scoring-audit-02/ACQUISITION_RECEIPT.json": "3977214a46ea4f7343e9ab5b52639b0a77eb877dbbb98b6f6f1be5831cb7f10a",
+    "blind-opus-reference-scoring-audit-02/fixtures-01/RECEIPT.json": "8330edbcdfaed7dcf37337acbe33a700db6c8a993a6ef61e915d768ddb249ec9",
+    "blind-opus-reference-scoring-audit-02/fixtures-01/stderr.log": "4b7250c54970416f9b6aa193a8d8c71969ebafaf467473444ec5fa8b8d3ce704",
+    "blind-opus-reference-scoring-audit-02/fixtures-01/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "blind-opus-reference-scoring-audit-02/band-box-fixtures-01/RECEIPT.json": "e08bc13b26ba6eb129e7568d86a52769c755aaa43e9bb5eb36e548a16209df6f",
+    "blind-opus-reference-scoring-audit-02/band-box-fixtures-01/tests.log": "e695b035fc9aa64432458ae8ffee8d38eabda4446ea911e9bcafe73c0bb7a118",
+    "blind-opus-reference-scoring-audit-02/label-fixtures-01/RECEIPT.json": "2c2bb74d5dddc2f37d906d3b9172db5af04a0c5ab865808e056d3928d46f533b",
+    "blind-opus-reference-scoring-audit-02/label-fixtures-01/stderr.log": "d4d9c0dc3a332e9c5f27b23a6e70ad7284a2475130738e9e163823b08f90b9dc",
+    "blind-opus-reference-scoring-audit-02/label-fixtures-01/stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "blind-koivu-reference-comparison-06/reference_geometry.py": "266026051a781f122a59187f599688e8c5eb38807984b7e607401e7b4356386d",
+    "blind-koivu-game-07/reference_container.py": "11f69b8d0ccb9d066f55ee2e0e40f1a68259f218509bb773471726846413d40e",
+    "blind-koivu-faro-acquisition-04/selected-reference/gt_mesh.ply": "e18db651c694046de7994237e276d88138ecef9071351281a418de9c9a279b5e",
+    "blind-koivu-faro-acquisition-04/selected-reference/icp_iphone.json": "95b4e26d6d260bd9b06cff801648fc38c030a510cf4055af2294490cf49938d4",
+    "blind-koivu-faro-acquisition-04/selected-reference/PLY_HEADER_REPORT.json": "c143c1fe7b86940434022c68759c13587861c97963ff018d93e47611f9800814"
+  },
+  "noResamplingOrOutcomeDrivenThresholdChange": true,
+  "FAROPlannerInput": false,
+  "gameEpisodes": 0,
+  "physicalAuthority": false
+}
