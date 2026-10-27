@@ -126,7 +126,23 @@ def service_crash_diagnostics(out, label, since):
     return result
 
 
-def app_build_command(root, out, stem, flag='', planning_only=False):
+def app_environment(package_env):
+    # Host SwiftPM keeps its host SDK; app resolution/build select platform themselves.
+    env = dict(package_env)
+    env.pop('SDKROOT', None)
+    return env
+
+
+def app_build_command(root, out, stem, flag='', planning_only=False, normalized=False):
+    if normalized:
+        assert not flag and not planning_only, 'normalized control is flag-absent actual build only'
+        # Match tools/ci/native-apple.sh semantics; retain bounded jobs/dependency controls.
+        return ['xcodebuild', '-project', str(root / 'ios/BlindAssist.xcodeproj'),
+            '-scheme', 'BlindAssist', '-configuration', 'Debug', '-jobs', '1',
+            '-derivedDataPath', str(out / stem), 'CODE_SIGNING_ALLOWED=NO',
+            '-clonedSourcePackagesDirPath', str(out / 'app-source-packages'),
+            '-disableAutomaticPackageResolution',
+            '-destination', 'generic/platform=iOS Simulator', 'build']
     command = ['xcodebuild', '-project', str(root / 'ios/BlindAssist.xcodeproj'),
         '-scheme', 'BlindAssist', '-configuration', 'Debug', '-sdk', 'iphonesimulator',
         '-destination', 'generic/platform=iOS Simulator', '-derivedDataPath', str(out / stem),
@@ -296,7 +312,7 @@ def planning_comparison(runner, out, env, patch, option=None, actual_build=False
         started = time.time()
         baseline_diagnostics = {}
         try:
-            receipt = runner.run(app_build_command(ROOT, out, stem, planning_only=not actual_build),
+            receipt = runner.run(app_build_command(ROOT, out, stem, planning_only=not actual_build, normalized=actual_build),
                 stem, out, budget, env=env)
         except RuntimeError:
             receipt = json.loads((out / (stem + '-receipt.json')).read_text())
@@ -310,7 +326,7 @@ def planning_comparison(runner, out, env, patch, option=None, actual_build=False
         stem = prefix + '-proposal'
         started = time.time()
         try:
-            receipt = runner.run(app_build_command(ROOT, out, stem, planning_only=not actual_build),
+            receipt = runner.run(app_build_command(ROOT, out, stem, planning_only=not actual_build, normalized=actual_build),
                 stem, out, budget, env=env)
         except RuntimeError:
             receipt = json.loads((out / (stem + '-receipt.json')).read_text())
@@ -322,7 +338,10 @@ def planning_comparison(runner, out, env, patch, option=None, actual_build=False
         order='unpatched then proposed; separate fresh derived directories; same runner and dependency checkout',
         automaticRetries=0, fullAppCompiled=actual_build and len(results) == 2 and all(
             planning_can_continue(x["receipt"]) and x["receipt"]["exitCode"] == 0 for x in results),
-        actualBuildControl=actual_build, perCommandWallSeconds=budget, appExecuted=False, simulatorExecuted=False,
+        actualBuildControl=actual_build,
+        harnessCompatibility=('native-apple minimal invocation plus jobs1/exact dependency controls; app SDKROOT removed; bundled change, not isolated cause proof'
+            if actual_build else 'original planning harness'),
+        appSDKROOTPresent='SDKROOT' in env, perCommandWallSeconds=budget, appExecuted=False, simulatorExecuted=False,
         physicalAuthority=False, scope=('flag-absent actual app build control; no flag-enabled/symbol/runtime acceptance'
             if actual_build else 'build planning only; not compiler, linker or runtime acceptance'),
         limitation='fixed order and shared resolved dependency/host caches; not a causal proof of crash mechanism')
@@ -403,6 +422,8 @@ def main():
         # The complete existing app needs a larger explicitly scoped scratch allowance.
         # This remains stage-end accounting, NOT a live disk quota or an RSS guarantee.
         runner.SCRATCH_CAP = 2 << 30
+        if args.build_control:
+            env = app_environment(env) # after both host/simulator package graphs only
         # Clean app checkout has no tracked lockfile. Seed the already-reviewed
         # exact dependency, resolve only from that lock, then verify before build.
         # Do not turn an absent lockfile into an implicit dependency upgrade.

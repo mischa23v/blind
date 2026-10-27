@@ -1,0 +1,61 @@
+{
+  "label": "app-patch-check",
+  "command": [
+    "git",
+    "-C",
+    "/Users/runner/work/blind/blind",
+    "apply",
+    "--check",
+    "/Users/runner/work/blind/blind/research/native-candidate-app-integration-85/app-integration.patch"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "exceptionType": null,
+  "wallSeconds": 0.07875641599997607,
+  "scratchBytesAfterCommand": 152069834,
+  "scratchCapExceeded": false,
+  "scratchScanComplete": true,
+  "scratchEntriesScanned": 588,
+  "largestScratchFiles": [
+    {
+      "path": "simulator-graph-clang-cache/48MLG9Y0GETY/Accelerate-2RS2B605MA2MS.pcm",
+      "bytes": 12464520
+    },
+    {
+      "path": "simulator-graph-clang-cache/48MLG9Y0GETY/UIKit-1SF41X50U0EGT.pcm",
+      "bytes": 10577336
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/Foundation-39TTUHVSZQC5F.pcm",
+      "bytes": 6570792
+    },
+    {
+      "path": "host-client-cache/3K72HEM2GP8QE/Foundation-39TTUHVSZQC5F.pcm",
+      "bytes": 6570264
+    },
+    {
+      "path": "simulator-graph-clang-cache/48MLG9Y0GETY/AVFoundation-AISBXT9VZISD.pcm",
+      "bytes": 6391144
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/Darwin-3OP3DCIIHQBHB.pcm",
+      "bytes": 5871728
+    },
+    {
+      "path": "host-client-cache/3K72HEM2GP8QE/Darwin-3OP3DCIIHQBHB.pcm",
+      "bytes": 5871240
+    },
+    {
+      "path": "simulator-graph-clang-cache/48MLG9Y0GETY/Foundation-GMXN3YSRP9U8.pcm",
+      "bytes": 5579992
+    }
+  ],
+  "fileCapBytes": 134217728,
+  "scratchCapBytes": 536870912,
+  "cpuCapSeconds": 300,
+  "wallTimeoutSeconds": 30,
+  "scratchAccounting": "stage-end only; scoped tree; not a live disk quota",
+  "terminationSignal": null,
+  "fileSizeLimitSignal": false,
+  "logTail": ""
+}

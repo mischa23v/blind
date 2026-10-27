@@ -188,3 +188,28 @@ for baseline_exit, proposal_exit, cap in [(0,0,False),(65,65,False),(65,0,True)]
   check('planning-help' not in calls and result['installedPlanningOption'] is None)
   check(result['actualBuildControl'] is True and result['perCommandWallSeconds']==600)
 print(f'PASS: {count} total planning/restoration/resource/capability/build-control fixtures; no Apple execution')
+
+# Known native invocation semantics, with bounded exact-dependency exceptions.
+env={'SDKROOT':'/host/MacOSX.sdk','TMPDIR':'/bounded/tmp/','DEVELOPER_DIR':'/Xcode',
+     'GIT_CONFIG_COUNT':'1','GIT_CONFIG_KEY_0':'url.local.insteadOf','GIT_CONFIG_VALUE_0':'remote'}
+appenv=m.app_environment(env)
+check('SDKROOT' not in appenv and env['SDKROOT']=='/host/MacOSX.sdk')
+check(appenv=={k:v for k,v in env.items() if k!='SDKROOT'})
+check(m.app_environment(appenv)==appenv)
+normalized=m.app_build_command(root,out,'build-control-baseline',normalized=True)
+expected=['xcodebuild','-project','/source/ios/BlindAssist.xcodeproj','-scheme','BlindAssist',
+ '-configuration','Debug','-jobs','1','-derivedDataPath','/scratch/build-control-baseline',
+ 'CODE_SIGNING_ALLOWED=NO','-clonedSourcePackagesDirPath','/scratch/app-source-packages',
+ '-disableAutomaticPackageResolution','-destination','generic/platform=iOS Simulator','build']
+check(normalized==expected)
+check(not any(x.startswith(('ARCHS=','ONLY_ACTIVE_ARCH=','ENABLE_DEBUG_DYLIB=',
+ 'SWIFT_OPTIMIZATION_LEVEL=','SWIFT_ACTIVE_COMPILATION_CONDITIONS=','CODE_SIGNING_REQUIRED=')) for x in normalized))
+check('-sdk' not in normalized and '-dry-run' not in normalized)
+second=m.app_build_command(root,out,'build-control-proposal',normalized=True)
+check([(a,b) for a,b in zip(normalized,second) if a!=b]==[('/scratch/build-control-baseline','/scratch/build-control-proposal')])
+for kw in [dict(flag='FLAG'),dict(planning_only=True)]:
+ try:m.app_build_command(root,out,'bad',normalized=True,**kw)
+ except AssertionError:check(True)
+ else:check(False)
+check(m.app_build_command(old_root,old_out,'app-flag-absent')==old)
+print(f'PASS: {count} total normalized-command/environment and previous control fixtures; no Apple execution')
