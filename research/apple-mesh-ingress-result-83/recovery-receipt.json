@@ -1,0 +1,158 @@
+{
+  "repo": "mischa23v/blind",
+  "commit": "fb879d235f38a3f0121b69b023e8ee14c0ded61c",
+  "artifacts": [
+    {
+      "artifact_id": 12753230836,
+      "run_id": 40545204675,
+      "bytes": 15857,
+      "sha256": "fcf07f9f12a8a37568d2cba8dfd9f56128861b5f057fd495813157be4d3cccd2",
+      "expected_hash_match": true,
+      "all_zip_crc_pass": true,
+      "members": [
+        {
+          "path": "RESULT.json",
+          "bytes": 17853,
+          "crc32": "07ad9185"
+        },
+        {
+          "path": "ROUTE_DIAGNOSTIC.json",
+          "bytes": 28543,
+          "crc32": "64e8535a"
+        },
+        {
+          "path": "RUNTIME_RESULT.json",
+          "bytes": 1994,
+          "crc32": "b70b2072"
+        },
+        {
+          "path": "SUMMARY.json",
+          "bytes": 32701,
+          "crc32": "198ead03"
+        },
+        {
+          "path": "host-fixtures-link-receipt.json",
+          "bytes": 6064,
+          "crc32": "6a043e34"
+        },
+        {
+          "path": "host-fixtures-run-receipt.json",
+          "bytes": 1759,
+          "crc32": "04f57546"
+        },
+        {
+          "path": "host-package-receipt.json",
+          "bytes": 3740,
+          "crc32": "a7250eab"
+        },
+        {
+          "path": "host-public-client-link-receipt.json",
+          "bytes": 6105,
+          "crc32": "aaaa837d"
+        },
+        {
+          "path": "host-public-client-run-receipt.json",
+          "bytes": 1643,
+          "crc32": "30b0bb7b"
+        },
+        {
+          "path": "simulator-package-receipt.json",
+          "bytes": 3836,
+          "crc32": "1e831872"
+        },
+        {
+          "path": "simulator-public-client-link-receipt.json",
+          "bytes": 6522,
+          "crc32": "b7228054"
+        }
+      ]
+    },
+    {
+      "artifact_id": 12752721727,
+      "run_id": 40545204872,
+      "bytes": 11621,
+      "sha256": "ec37cb1168eb9058840c2471e1c61735a26e0cbb97127b6539a075a809514351",
+      "expected_hash_match": true,
+      "all_zip_crc_pass": true,
+      "members": [
+        {
+          "path": "RESULT.json",
+          "bytes": 496,
+          "crc32": "1a67e268"
+        },
+        {
+          "path": "host-MeshBufferDecoder81-receipt.json",
+          "bytes": 1700,
+          "crc32": "36842073"
+        },
+        {
+          "path": "host-MeshCandidateIngress83-receipt.json",
+          "bytes": 1817,
+          "crc32": "0308a1ea"
+        },
+        {
+          "path": "host-MeshSnapshot82-receipt.json",
+          "bytes": 1726,
+          "crc32": "47465993"
+        },
+        {
+          "path": "host-fixtures-compile-receipt.json",
+          "bytes": 1554,
+          "crc32": "d8db07dd"
+        },
+        {
+          "path": "host-fixtures-run-receipt.json",
+          "bytes": 603,
+          "crc32": "f3921301"
+        },
+        {
+          "path": "host-package-build-receipt.json",
+          "bytes": 3888,
+          "crc32": "f7dc72a3"
+        },
+        {
+          "path": "host-package-dylib-receipt.json",
+          "bytes": 5384,
+          "crc32": "ac3cda7d"
+        },
+        {
+          "path": "simulator-MeshBufferDecoder81-receipt.json",
+          "bytes": 1781,
+          "crc32": "d149577e"
+        },
+        {
+          "path": "simulator-MeshCandidateIngress83-receipt.json",
+          "bytes": 1976,
+          "crc32": "28eb2bb7"
+        },
+        {
+          "path": "simulator-MeshSnapshot82-receipt.json",
+          "bytes": 1885,
+          "crc32": "8dec4306"
+        },
+        {
+          "path": "simulator-package-build-receipt.json",
+          "bytes": 3957,
+          "crc32": "2a27bde6"
+        },
+        {
+          "path": "simulator-package-dylib-receipt.json",
+          "bytes": 5769,
+          "crc32": "50e1354f"
+        }
+      ]
+    }
+  ],
+  "verified_utc": "2026-10-27T17:00:28Z",
+  "method": "GitHub download_workflow_artifact; tool URL download; local size/SHA-256/ZIP CRC and JSON parse checks",
+  "package75_checks": {
+    "legacy": 55,
+    "runtime": 32,
+    "failureCommitChecks": 5,
+    "all_true": true,
+    "total": 92
+  },
+  "ingress83_reported_checks": 55,
+  "ingress83_count_evidence": "RESULT.json and exit-0 host-fixtures-run receipt agree; individual check results not retained",
+  "all_json_parse": true
+}
