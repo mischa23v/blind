@@ -1,0 +1,332 @@
+[
+  {
+    "local": "oriented_container.py",
+    "origin": {
+      "path": "research/tools/koivu-coffee-room-tests-v1/blind-split-candidate-game-03/source/oriented_container.py"
+    },
+    "originalSHA256": "f6c66faa66a30922b48833194814119c555c62b50ee308042483fbad08dfcda8",
+    "adaptedSHA256": "b10cc8f78894c173f48c0cdc3978ce56fb0a3eae8682434db493f432e3d50978",
+    "replacements": [
+      {
+        "from": "sys.path.insert(0, str(WS / 'blind-opus-reference-scoring-audit-02/source'))",
+        "to": "sys.path.insert(0,str(Path(__file__).resolve().parent))"
+      }
+    ]
+  },
+  {
+    "local": "oriented_ground_container.py",
+    "origin": {
+      "path": "research/tools/koivu-coffee-room-tests-v1/blind-split-candidate-game-03/ground-follow-v2/oriented_ground_container.py"
+    },
+    "originalSHA256": "728860fa18f762f90b13f581e4b3cae474f4d8bf4223854252778802e405ea89",
+    "adaptedSHA256": "b95bd1bb51eea9d902122cab893ce9a0e525d128b884e230d85ceaec63226996",
+    "replacements": [
+      {
+        "from": "sys.path.insert(0,str(ROOT/'source'))",
+        "to": "sys.path.insert(0,str(Path(__file__).resolve().parent))"
+      }
+    ]
+  },
+  {
+    "local": "oriented_ground_skip_container.py",
+    "origin": {
+      "path": "research/tools/koivu-coffee-room-tests-v1/blind-split-candidate-game-03/ground-skip-v4/oriented_ground_skip_container.py"
+    },
+    "originalSHA256": "25131c4057ebca9afcbde025da672d1d75a7c5083d45cb2a0b6b5ce522189387",
+    "adaptedSHA256": "5653a47ca1548df32ee6dea0cd5f2946d9ccfe76ef52965e3d6030db5490aef1",
+    "replacements": [
+      {
+        "from": "sys.path.insert(0,str(ROOT/'ground-follow-v2'))",
+        "to": "sys.path.insert(0,str(Path(__file__).resolve().parent))"
+      }
+    ]
+  },
+  {
+    "local": "oriented_ground_vector_container.py",
+    "origin": {
+      "path": "research/tools/koivu-coffee-room-tests-v1/blind-split-candidate-game-03/ground-vector-v5/oriented_ground_vector_container.py"
+    },
+    "originalSHA256": "939e4dc678d7f410675ffc461bb7ff3c01bd39490c97bfa48bc4747eb9e1bb56",
+    "adaptedSHA256": "3dca4c0e820ccc1bce89c27fac0f96f73d51cbbdd9d2b6a38913dffc908c7d07",
+    "replacements": [
+      {
+        "from": "sys.path.insert(0,str(ROOT/'ground-skip-v4'))",
+        "to": "sys.path.insert(0,str(Path(__file__).resolve().parent))"
+      }
+    ]
+  },
+  {
+    "local": "oriented_ground_obb_container.py",
+    "origin": {
+      "path": "research/tools/koivu-coffee-room-tests-v1/blind-split-candidate-game-03/ground-obb-v6/oriented_ground_obb_container.py"
+    },
+    "originalSHA256": "7005ab752d855edfdb1295b401ea8ad9d66516a5813f716f1a7818677bb1c222",
+    "adaptedSHA256": "9f42c2e09fd53fb2a5778ad0ba965fd3cf1b9a5167e2f91f3161575908ec55d3",
+    "replacements": [
+      {
+        "from": "sys.path.insert(0,str(ROOT/'ground-vector-v5'))",
+        "to": "sys.path.insert(0,str(Path(__file__).resolve().parent))"
+      }
+    ]
+  },
+  {
+    "local": "tiled_bounds.py",
+    "origin": {
+      "path": "research/tools/koivu-coffee-room-tests-v1/blind-split-candidate-game-03/ground-query-tile-13/tiled_bounds.py"
+    },
+    "originalSHA256": "9a7015950867f095e2990c117918423496f9d659ca50c5e7f6a0f765e4d18188",
+    "adaptedSHA256": "9a7015950867f095e2990c117918423496f9d659ca50c5e7f6a0f765e4d18188",
+    "replacements": []
+  },
+  {
+    "local": "reference_band_box.py",
+    "origin": {
+      "path": "research/tools/koivu-split-candidate-game-v1/blind-opus-reference-scoring-audit-02/source/reference_band_box.py"
+    },
+    "originalSHA256": "18fdf528f5eb4c017ed0d94476babed57f94807323798984064679d419831ef1",
+    "adaptedSHA256": "29a9c71e8fec83f5f9fbc3bf3fe33a3e32fa0ed659c6dc425f2a334677700f22",
+    "replacements": [
+      {
+        "from": "sys.path.insert(0, str(WS / 'blind-koivu-reference-comparison-06'))",
+        "to": "sys.path.insert(0,str(Path(__file__).resolve().parent))"
+      }
+    ]
+  },
+  {
+    "local": "reference_geometry.py",
+    "origin": {
+      "path": "research/tools/koivu-split-candidate-game-v1/blind-koivu-reference-comparison-06/reference_geometry.py"
+    },
+    "originalSHA256": "266026051a781f122a59187f599688e8c5eb38807984b7e607401e7b4356386d",
+    "adaptedSHA256": "266026051a781f122a59187f599688e8c5eb38807984b7e607401e7b4356386d",
+    "replacements": []
+  },
+  {
+    "local": "impairments.py",
+    "origin": {
+      "path": "research/tools/koivu-split-candidate-game-v1/blind-authored-navigation-pilot/source/impairments.py"
+    },
+    "originalSHA256": "44e5383e19b42a5b524ae5305125e4fb8e992127f785a6e0010ca12334f63fd2",
+    "adaptedSHA256": "44e5383e19b42a5b524ae5305125e4fb8e992127f785a6e0010ca12334f63fd2",
+    "replacements": []
+  },
+  {
+    "local": "oriented_ground_tiled_container.py",
+    "origin": {
+      "path": "research/tools/koivu-coffee-room-tests-v1/blind-split-candidate-game-03/ground-query-tile-v17/oriented_ground_tiled_container.py"
+    },
+    "originalSHA256": "ee71c67d68692d1da2dc56a9a3f970836e158303f7d3e90cdf048e52885371d7",
+    "adaptedSHA256": "fb851d64c80118edc0b6a3f9e9d9d2d90f64d08f1205d693e15291e82d67b7ac",
+    "replacements": [
+      {
+        "from": "sys.path.insert(0,str(ROOT/'ground-obb-v6'))",
+        "to": "sys.path.insert(0,str(Path(__file__).resolve().parent))"
+      },
+      {
+        "from": "sys.path.insert(0,str(ROOT/'ground-query-tile-13'))",
+        "to": "sys.path.insert(0,str(Path(__file__).resolve().parent))"
+      },
+      {
+        "from": "ROOT/'ground-obb-v6/oriented_ground_obb_container.py'",
+        "to": "Path(__file__).resolve().parent/'oriented_ground_obb_container.py'"
+      },
+      {
+        "from": "ROOT/'ground-query-tile-13/tiled_bounds.py'",
+        "to": "Path(__file__).resolve().parent/'tiled_bounds.py'"
+      },
+      {
+        "from": "7005ab752d855edfdb1295b401ea8ad9d66516a5813f716f1a7818677bb1c222",
+        "to": "9f42c2e09fd53fb2a5778ad0ba965fd3cf1b9a5167e2f91f3161575908ec55d3"
+      }
+    ]
+  },
+  {
+    "local": "ground_classifier_resource.py",
+    "origin": {
+      "archive": "research/tools/local-support-and-source-tabletop-v1/code-results-and-source-audits.zip",
+      "member": "blind-conditioned-floor-membership-59/ground_classifier_resource.py"
+    },
+    "originalSHA256": "bc5eddf22bb76cbd6655691bee5e5e363f57e26f7cbd626501410e3d575838ac",
+    "adaptedSHA256": "bc5eddf22bb76cbd6655691bee5e5e363f57e26f7cbd626501410e3d575838ac",
+    "replacements": []
+  },
+  {
+    "local": "ground_setup.py",
+    "origin": {
+      "archive": "research/tools/local-support-and-source-tabletop-v1/code-results-and-source-audits.zip",
+      "member": "blind-conditioned-floor-membership-59/ground_setup.py"
+    },
+    "originalSHA256": "7e8d97465b9716e4be5ffc1153b949418439999b8a9455ccf95900be04bf3d94",
+    "adaptedSHA256": "0360a369a25ef0500d8b1affc2b2e992c41fcd0c3fd6c37be3bffd4564651d4f",
+    "replacements": [
+      {
+        "from": "sys.path.insert(0,str(GAME/'ground-query-tile-13'))",
+        "to": "sys.path.insert(0,str(HERE))"
+      }
+    ]
+  },
+  {
+    "local": "local_support.py",
+    "origin": {
+      "archive": "research/tools/measured-progress-and-coffee-v1/measured-progress-pilot.zip",
+      "member": "blind-batched-observation-progress-76/local_support.py"
+    },
+    "originalSHA256": "87fb064d47a695aa6656ba1753cabfec58f7ce6cadfef5094f4922fb14e19e9c",
+    "adaptedSHA256": "1699ddcef1f5fd22bed1ebdf049fdcaae43a7ab80596925b47b96066eff6ab5c",
+    "replacements": [
+      {
+        "from": "H=Path(__file__).resolve().parent;sys.path.insert(0,str(H.parent/'blind-polycam-varpu-executor-40'));import run_north as legacy\nmotion=legacy.motion",
+        "to": "H=Path(__file__).resolve().parent\nimport physics_primitives as motion"
+      }
+    ]
+  },
+  {
+    "local": "pose_delivery.py",
+    "origin": {
+      "archive": "research/tools/measured-progress-and-coffee-v1/measured-progress-pilot.zip",
+      "member": "blind-batched-observation-progress-76/pose_delivery.py"
+    },
+    "originalSHA256": "463db47674dbac7906a5e4b89e52785cf504b92fe8285669ffacdf148164d2a8",
+    "adaptedSHA256": "99717d014a2a8469124b6a5ef49769b8cf2d103bdedec04e08c3f4b1b13de73a",
+    "replacements": [
+      {
+        "from": "sys.path.insert(0,str(W/'blind-authored-navigation-pilot/source'))",
+        "to": "sys.path.insert(0,str(H))"
+      },
+      {
+        "from": "SESSION_ID='stage76-temporal-jitter-seed72000'",
+        "to": "import os\nSESSION_ID=os.environ.get('FROZEN_EPISODE_SESSION_ID','stage84-contract-fixtures')"
+      }
+    ]
+  },
+  {
+    "local": "observation_batch.py",
+    "origin": {
+      "archive": "research/tools/measured-progress-and-coffee-v1/measured-progress-pilot.zip",
+      "member": "blind-batched-observation-progress-76/observation_batch.py"
+    },
+    "originalSHA256": "f80fc869942c8312d9169de43843916e35163039455ac6ceb2f9f7bf90025a8a",
+    "adaptedSHA256": "f80fc869942c8312d9169de43843916e35163039455ac6ceb2f9f7bf90025a8a",
+    "replacements": []
+  },
+  {
+    "local": "loop_controller.py",
+    "origin": {
+      "archive": "research/tools/measured-progress-and-coffee-v1/measured-progress-pilot.zip",
+      "member": "blind-batched-observation-progress-76/loop_controller.py"
+    },
+    "originalSHA256": "c47c62ecf8d042b6b74635e142e70d8c661d5fe7e6e6af88d46deb15e4f9ca8c",
+    "adaptedSHA256": "d690bc1706a3b82ee626d11e7568fe294a410a31c90d14edc4d7087fe375ba20",
+    "replacements": [
+      {
+        "from": "sys.path.insert(0,str(WS/'blind-koivu-game-07'))",
+        "to": "sys.path.insert(0,str(Path(__file__).resolve().parent))"
+      },
+      {
+        "from": "from game_model import follow_candidate",
+        "to": "from follower import follow_candidate"
+      }
+    ]
+  },
+  {
+    "local": "loop_episode.py",
+    "origin": {
+      "archive": "research/tools/measured-progress-and-coffee-v1/measured-progress-pilot.zip",
+      "member": "blind-batched-observation-progress-76/loop_episode.py"
+    },
+    "originalSHA256": "aae6fcd81b62112810f282296b805e311329ab77d2cdd6e6cfa252e494f73fe8",
+    "adaptedSHA256": "a1a6a4326193bd0d510e5305e8a2c86731abc576d02aa8601e88ba4e5ddfe678",
+    "replacements": [
+      {
+        "from": "H=Path(__file__).resolve().parent;W=H.parent;S=W/'blind-polycam-varpu-executor-40';sys.path.insert(0,str(S));import run_north as legacy\nmotion=legacy.motion",
+        "to": "H=Path(__file__).resolve().parent;W=H.parent\nimport physics_primitives as motion"
+      },
+      {
+        "from": "sys.path.insert(0,str(H));from loop_map import PLAN,PLAN_SHA,load_plan",
+        "to": "sys.path.insert(0,str(H));from loop_map import load_plan"
+      },
+      {
+        "from": "def __init__(self,out):",
+        "to": "def __init__(self,out,plan):"
+      },
+      {
+        "from": "'planPath':str(PLAN),'planSHA256':PLAN_SHA",
+        "to": "'planPath':plan['_path'],'planSHA256':plan['_sha']"
+      },
+      {
+        "from": "controller=ControllerProcess(out)",
+        "to": "controller=ControllerProcess(out,plan)"
+      },
+      {
+        "from": "for tick in range(450):",
+        "to": "for tick in range(plan['maximumTicks']):"
+      },
+      {
+        "from": "completeFirstLegSyntheticPilot",
+        "to": "completeOrderedPairSyntheticEpisode"
+      },
+      {
+        "from": "'firstLegOnly':True",
+        "to": "'firstLegOnly':False"
+      },
+      {
+        "from": "firstLegOnly=True",
+        "to": "firstLegOnly=False"
+      },
+      {
+        "from": "One short original first-leg synthetic stress episode",
+        "to": "One frozen ordered-pair synthetic stress episode"
+      }
+    ]
+  },
+  {
+    "extractedName": "sha",
+    "origin": "research/tools/koivu-split-candidate-game-v1/blind-split-candidate-game-03/source/run_pilot.py",
+    "verbatimSHA256": "9f8bc8aed204908e470a5cfee4ae57cdef400d8f40d3a8687ddec5ca98ffa8bb"
+  },
+  {
+    "extractedName": "ControllerProcess",
+    "origin": "research/tools/koivu-split-candidate-game-v1/blind-split-candidate-game-03/source/run_pilot.py",
+    "verbatimSHA256": "dc8552eec7ca9f319bb80a8dec7330db17329e9defdb81d43c32d9f2d4271f48"
+  },
+  {
+    "extractedName": "support_check",
+    "origin": "research/tools/koivu-split-candidate-game-v1/blind-split-candidate-game-03/source/run_pilot.py",
+    "verbatimSHA256": "5a9f23d17e5bd038a7d503f9018adcdb823136ce636fc7c114802274f4a2071b"
+  },
+  {
+    "extractedName": "contact_status",
+    "origin": "research/tools/koivu-split-candidate-game-v1/blind-split-candidate-game-03/source/run_pilot.py",
+    "verbatimSHA256": "4144bde5e61ef78cfc9b2af53acd6729792a35e25ad56baa7e535c4784a50439"
+  },
+  {
+    "extractedName": "connected_support",
+    "origin": "research/tools/koivu-coffee-room-tests-v1/blind-split-candidate-game-03/ground-follow-v3/run_ground_pilot.py",
+    "verbatimSHA256": "8c3b9693a91f039bb4702cbe064feb5b54280734c2a93a8f39246b8f4cdb12d9"
+  },
+  {
+    "extractedName": "transform",
+    "origin": "research/tools/koivu-split-candidate-game-v1/blind-opus-reference-scoring-audit-02/source/score_reference.py",
+    "verbatimSHA256": "14cb1598eb884d6ade6879041959712bcdffff0fbaac1bb8c7e780350c2be574"
+  },
+  {
+    "extractedName": "load_surface",
+    "origin": "research/tools/koivu-split-candidate-game-v1/blind-opus-reference-scoring-audit-02/source/score_reference.py",
+    "verbatimSHA256": "62c8c76b661dd1278ddb5525fdbd9be6f83b4167123b6a689f8f018c95d3fb82"
+  },
+  {
+    "extractedName": "follow_candidate",
+    "origin": "research/tools/koivu-offline-game-v1/game_model.py",
+    "verbatimSHA256": "5ed275d3f9aef3bfa25abf9521db213a7f909f661c03644b3140169525e5f8f7"
+  },
+  {
+    "local": "HISTORICAL_SELECTED_PLAN.json",
+    "origin": {
+      "archive": "research/tools/verified-assisted-table-loop-v1/code-source-and-swift.zip",
+      "member": "blind-tabletop-exclusion-loop-67/SELECTED_PLAN.json"
+    },
+    "originalSHA256": "68a1c41d4cc82fe3073152c4f76b769162cd5048db53fc305be8502d69cdac12",
+    "adaptedSHA256": "68a1c41d4cc82fe3073152c4f76b769162cd5048db53fc305be8502d69cdac12",
+    "replacements": []
+  }
+]
