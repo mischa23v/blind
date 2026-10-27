@@ -191,8 +191,8 @@ def planning_can_continue(receipt):
         receipt.get('fileSizeLimitSignal') is False)
 
 
-def planning_baseline_gate(out, receipt, diagnostics):
-    log_path = out / 'planning-baseline.log'
+def planning_baseline_gate(out, receipt, diagnostics, prefix="planning"):
+    log_path = out / (prefix + '-baseline.log')
     complete = False
     data = b''
     try:
@@ -207,7 +207,7 @@ def planning_baseline_gate(out, receipt, diagnostics):
     result = dict(secondArmAllowed=allowed, completeBaselineLogInspected=complete,
         inspectedLogBytes=min(len(data), 4 << 20), resourceLimitObserved=observed_resource,
         missingOrIncompleteLogStopsComparison=True)
-    (out / 'planning-second-arm-gate-diagnostic.json').write_text(json.dumps(result, indent=2) + '\n')
+    (out / (prefix + '-second-arm-gate-diagnostic.json')).write_text(json.dumps(result, indent=2) + '\n')
     return allowed
 
 
@@ -267,10 +267,12 @@ def restore_proposal_sources(root, originals, out):
         raise RuntimeError('proposal restoration failed; inspect planning-restoration-diagnostic.json')
 
 
-def planning_comparison(runner, out, env, patch, option=None):
-    if option is None:
+def planning_comparison(runner, out, env, patch, option=None, actual_build=False):
+    prefix = "build-control" if actual_build else "planning"
+    budget = 600 if actual_build else 180
+    if option is None and not actual_build:
         option = planning_capability(runner, out, env)
-    if option is None:
+    if option is None and not actual_build:
         raise ValueError('planning capability not established; inspect capability diagnostic')
     relative = ['ios/BlindAssist/NavigationModel.swift',
         'ios/BlindAssist.xcodeproj/project.pbxproj', 'ios/BlindAssist/MeshCandidateDiagnostics.swift']
@@ -282,20 +284,20 @@ def planning_comparison(runner, out, env, patch, option=None):
     results = []
     # The patch was already applied only inside this disposable CI checkout.
     runner.run(['git', '-C', str(ROOT), 'apply', '-R', '--check', str(patch)],
-        'planning-baseline-reverse-check', out, 30)
+        prefix + '-baseline-reverse-check', out, 30)
     try:
         runner.run(['git', '-C', str(ROOT), 'apply', '-R', str(patch)],
-            'planning-baseline-reverse', out, 30)
+            prefix + '-baseline-reverse', out, 30)
         baseline = source_state()
         pins = json.loads((HOME / 'SOURCE_PINS.json').read_text())
         assert baseline[relative[0]] == pins[relative[0]] and baseline[relative[1]] == pins[relative[1]]
         assert baseline[relative[2]] is None, 'baseline retains proposed bridge'
-        stem = 'planning-baseline'
+        stem = prefix + '-baseline'
         started = time.time()
         baseline_diagnostics = {}
         try:
-            receipt = runner.run(app_build_command(ROOT, out, stem, planning_only=True),
-                stem, out, 180, env=env)
+            receipt = runner.run(app_build_command(ROOT, out, stem, planning_only=not actual_build),
+                stem, out, budget, env=env)
         except RuntimeError:
             receipt = json.loads((out / (stem + '-receipt.json')).read_text())
             baseline_diagnostics = service_crash_diagnostics(out, stem + '-failure', started)
@@ -304,12 +306,12 @@ def planning_comparison(runner, out, env, patch, option=None):
         # Never leave the disposable checkout in a partially reversed state.
         restore_proposal_sources(ROOT, originals, out)
         assert source_state() == proposed_state, 'proposal not byte-identically restored'
-    if planning_baseline_gate(out, receipt, baseline_diagnostics):
-        stem = 'planning-proposal'
+    if planning_baseline_gate(out, receipt, baseline_diagnostics, prefix):
+        stem = prefix + '-proposal'
         started = time.time()
         try:
-            receipt = runner.run(app_build_command(ROOT, out, stem, planning_only=True),
-                stem, out, 180, env=env)
+            receipt = runner.run(app_build_command(ROOT, out, stem, planning_only=not actual_build),
+                stem, out, budget, env=env)
         except RuntimeError:
             receipt = json.loads((out / (stem + '-receipt.json')).read_text())
             service_crash_diagnostics(out, stem + '-failure', started)
@@ -318,10 +320,13 @@ def planning_comparison(runner, out, env, patch, option=None):
         predeclaredSameCommandExceptDerivedDataPath=True, predeclaredSameEnvironmentAndLimits=True,
         bothArmsExecuted=len(results) == 2,
         order='unpatched then proposed; separate fresh derived directories; same runner and dependency checkout',
-        automaticRetries=0, fullAppCompiled=False, appExecuted=False, simulatorExecuted=False,
-        physicalAuthority=False, scope='build planning only; not compiler, linker or runtime acceptance',
+        automaticRetries=0, fullAppCompiled=actual_build and len(results) == 2 and all(
+            planning_can_continue(x["receipt"]) and x["receipt"]["exitCode"] == 0 for x in results),
+        actualBuildControl=actual_build, perCommandWallSeconds=budget, appExecuted=False, simulatorExecuted=False,
+        physicalAuthority=False, scope=('flag-absent actual app build control; no flag-enabled/symbol/runtime acceptance'
+            if actual_build else 'build planning only; not compiler, linker or runtime acceptance'),
         limitation='fixed order and shared resolved dependency/host caches; not a causal proof of crash mechanism')
-    (out / 'PLANNING_COMPARISON.json').write_text(json.dumps(result, indent=2) + '\n')
+    (out / ('BUILD_CONTROL.json' if actual_build else 'PLANNING_COMPARISON.json')).write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps({key:value for key,value in result.items() if key != 'arms'}))
     assert len(results) == 2 and all(planning_can_continue(x['receipt']) and
         x['receipt']['exitCode'] == 0 for x in results), 'planning comparison contains failures; inspect both arm receipts'
@@ -333,6 +338,7 @@ def main():
     mode.add_argument('--app-proposal', action='store_true')
     mode.add_argument('--planning-comparison', action='store_true')
     mode.add_argument('--planning-capability', action='store_true')
+    mode.add_argument('--build-control', action='store_true')
     args = parser.parse_args()
     assert platform.system() == 'Darwin', 'Apple host required'
     assert os.environ.get('GITHUB_REPOSITORY') == 'mischa23v/blind'
@@ -388,7 +394,7 @@ def main():
             assert len(fixture_result) == 1 and fixture_result[0].startswith(
                 'RESULT: 83 stage83 real-runtime synthetic checks passed;')
     app_results = []
-    if args.app_proposal or args.planning_comparison:
+    if args.app_proposal or args.planning_comparison or args.build_control:
         patch = HOME / 'app-integration.patch'
         receipts.append(runner.run(['git', '-C', str(ROOT), 'apply', '--check', str(patch)],
                                    'app-patch-check', out, 30))
@@ -433,6 +439,9 @@ def main():
         assert pins == [expected_pin], 'dependency identity/version/revision changed during resolution'
         checkout = out / 'app-source-packages/checkouts/GRDB.swift'
         assert runner.output(['git', '-C', str(checkout), 'rev-parse', 'HEAD']) == grdb_revision
+        if args.build_control:
+            planning_comparison(runner, out, env, patch, actual_build=True)
+            return # diagnostic only; never flag-enabled acceptance or retries
         if args.planning_comparison:
             planning_comparison(runner, out, env, patch, planning_option)
             return # never fall through to compilation or symbol checks

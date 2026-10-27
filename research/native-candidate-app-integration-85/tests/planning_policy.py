@@ -146,3 +146,45 @@ for payload, accepted, complete in [(helptext.encode(),True,True),
   if complete:check((o/'planning-help-bounded.txt').read_bytes()==payload)
   if b'dry-run,' in payload:check(d['relevantHelpExcerpts'][0]['text']==payload.decode().rstrip('\n'))
 print(f'PASS: {count} total planning/restoration/resource/capability fixtures; no Apple execution')
+
+# Actual-build diagnostic reuses transaction, no capability invocation or undocumented flag.
+for baseline_exit, proposal_exit, cap in [(0,0,False),(65,65,False),(65,0,True)]:
+ with tempfile.TemporaryDirectory(prefix='stage85-build-control-test-') as temp:
+  r=Path(temp)/'repo';h=r/'research/stage';o=Path(temp)/'out';o.mkdir();h.mkdir(parents=True)
+  names=['ios/BlindAssist/NavigationModel.swift','ios/BlindAssist.xcodeproj/project.pbxproj','ios/BlindAssist/MeshCandidateDiagnostics.swift']
+  import hashlib
+  for n in names:(r/n).parent.mkdir(parents=True,exist_ok=True);(r/n).write_text('proposal:'+n)
+  (h/'SOURCE_PINS.json').write_text(json.dumps({n:hashlib.sha256(('baseline:'+n).encode()).hexdigest() for n in names[:2]}))
+  calls=[]
+  class Fake:
+   @staticmethod
+   def run(command,label,out,timeout,env=None):
+    calls.append(label)
+    if label=='planning-help':(out/(label+'.log')).write_text(helptext);return {}
+    if label=='build-control-baseline-reverse':
+     for n in names[:2]:(r/n).write_text('baseline:'+n)
+     (r/names[2]).unlink();return {}
+    if label=='build-control-proposal-restore':
+     for n in names:(r/n).write_text('proposal:'+n)
+     return {}
+    if label.endswith('-check'):return {}
+    assert label in ['build-control-baseline','build-control-proposal']
+    check(timeout==600 and '-dry-run' not in command and command[-1]=='build')
+    rec=dict(base,exitCode=baseline_exit if label=='build-control-baseline' else proposal_exit,
+             scratchCapExceeded=cap and label=='build-control-baseline')
+    (out/(label+'-receipt.json')).write_text(json.dumps(rec))
+    (out/(label+'.log')).write_text('synthetic planning log')
+    if rec['exitCode'] or rec['scratchCapExceeded']:raise RuntimeError('simulated')
+    return rec
+  with patch.object(m,'ROOT',r),patch.object(m,'HOME',h),patch.dict(m.os.environ,{'GITHUB_SHA':'fixture'}),patch.object(m,'service_crash_diagnostics',return_value={}):
+   try:m.planning_comparison(Fake,o,{},h/'candidate.patch',actual_build=True)
+   except AssertionError:check(baseline_exit!=0 or proposal_exit!=0 or cap)
+   else:check(baseline_exit==proposal_exit==0 and not cap)
+  check(all((r/n).read_text()=='proposal:'+n for n in names))
+  result=json.loads((o/'BUILD_CONTROL.json').read_text())
+  check(len(result['arms'])==(1 if cap else 2))
+  check(calls.count('build-control-baseline')==1 and calls.count('build-control-proposal')==(0 if cap else 1))
+  check(result['fullAppCompiled']==(baseline_exit==proposal_exit==0 and not cap) and result['automaticRetries']==0)
+  check('planning-help' not in calls and result['installedPlanningOption'] is None)
+  check(result['actualBuildControl'] is True and result['perCommandWallSeconds']==600)
+print(f'PASS: {count} total planning/restoration/resource/capability/build-control fixtures; no Apple execution')
