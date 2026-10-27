@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Execute the committed default project. Never regenerate it or enable feature flags.
 set -euo pipefail
-mode="${1:?Expected preflight, core, memory, build, unit, ui, or summary}"
+mode="${1:?Expected preflight, core, memory, build, diagnostics-build, unit, ui, or summary}"
 out="${RUNNER_TEMP:?This helper expects a disposable CI runner}/blind-native-ci"
 mkdir -p "$out"
 project=ios/BlindAssist.xcodeproj
@@ -92,6 +92,12 @@ PY
   memory)
     # Existing exact GRDB 7.11.1 package dependency only; no weights/framework downloads.
     run_logged memory xcrun swift test --package-path BlindMemory --scratch-path "$out/BlindMemory-build" --jobs 2
+    ;;
+  diagnostics-build)
+    # Compile only in an isolated CI job. No launch, test, install or runtime opt-in.
+    run_logged diagnostics-build xcodebuild "${base[@]}" \
+      -destination 'generic/platform=iOS Simulator' \
+      'SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG BLIND_MESH_CANDIDATE_DIAGNOSTICS' build
     ;;
   build)
     run_logged build xcodebuild "${base[@]}" -destination 'generic/platform=iOS Simulator' build

@@ -1,14 +1,5 @@
-name: Candidate local packages and app planning comparison
+name: Historical stage85 pre-integration experiment (retired)
 on:
-  push:
-    branches: [codex/recovery-hazard-order-20261027]
-    paths:
-      - 'research/native-candidate-app-integration-85/**'
-      - 'research/native-mesh-decoder-81/**'
-      - 'research/arkit-mesh-adapter-82/**'
-      - 'research/mesh-candidate-ingress-83/**'
-      - 'research/room-mesh-package-75/**'
-      - '.github/workflows/native-candidate-app-integration.yml'
   workflow_dispatch:
 permissions:
   contents: read
@@ -17,7 +8,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   compile-only:
-    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    # Historical only: assumes unapplied patch; intentionally never runs on integrated source.
+    if: ${{ false }}
     runs-on: xcode-27
     timeout-minutes: 40
     env:

@@ -289,6 +289,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published var serviceURL = UserDefaults.standard.string(forKey: "scene-service") ?? "" {
         didSet { UserDefaults.standard.set(serviceURL, forKey: "scene-service") }
     }
+    #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+    private let meshCandidateDiagnostics = MeshCandidateDiagnostics()
+    #endif
     let session = ARSession()
     let places = PlaceStore()
     let indoor = IndoorNavigator()
@@ -957,6 +960,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         places.onScanFinished = { [weak self] in
             guard let self else { return }
+            #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+            self.meshCandidateDiagnostics.beginEpoch(); self.meshCandidateDiagnostics.stop()
+            #endif
             self.session.delegate = self; self.detector.reset(); self.phoneDetection = Detection(.needsCalibration)
             if self.running {
                 let configuration = ARWorldTrackingConfiguration()
@@ -968,6 +974,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     self.withObservedScene { $0.begin(session: sessionID, capturedAfter: ProcessInfo.processInfo.systemUptime) }
                 }
                 self.retireCapturedTextSource()
+                #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+                self.meshCandidateDiagnostics.beginEpoch()
+                #endif
                 self.session.run(configuration)
                 if self.buildPrivateMap { self.mapping.start() }
             }
@@ -1043,6 +1052,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         nativeObservations.begin(sessionID: worldSessionID, memory: places.memory)
         withObservedScene { $0.begin(session: worldSessionID, capturedAfter: ProcessInfo.processInfo.systemUptime) }
         retireCapturedTextSource()
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        meshCandidateDiagnostics.beginEpoch()
+        #endif
         session.delegate = self; session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         if buildPrivateMap { mapping.start() }
         UIApplication.shared.isIdleTimerDisabled = true
@@ -1062,6 +1074,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     /// Camera/sensor lifecycle is independent of an opted-in audio conversation.
     private func stopCameraMonitoring() {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        meshCandidateDiagnostics.stop()
+        #endif
         nativeObservations.stop()
         voiceRoomScan.cancel()
         retireBodyWarning(publishChange: false)
@@ -1128,6 +1143,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 self.speakMobility(self.placeRecoveryQuestion)
             }
             let now = ProcessInfo.processInfo.systemUptime
+            #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+            if !self.simulation && now - self.lastFrameWallTime > 0.5 { self.meshCandidateDiagnostics.stop() }
+            #endif
             self.expireBackgroundPerception(now: now)
             self.expireItemAppearanceLookup(now: now)
             self.expireRequestedColor(now: now)
@@ -1162,7 +1180,40 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         if let watchdog { RunLoop.main.add(watchdog, forMode: .common) }
     }
+    #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+    // Internal developer-only control; no persisted setting or normal-build API.
+    func setMeshCandidateDiagnosticsEnabled(_ enabled: Bool) {
+        meshCandidateDiagnostics.setEnabled(enabled)
+    }
+    func discardMeshCandidateDiagnostics(completion: @escaping () -> Void) {
+        meshCandidateDiagnostics.discard(completion: completion)
+    }
+    func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
+        guard session === self.session else { return }
+        for anchor in anchors where anchor is ARMeshAnchor {
+            meshCandidateDiagnostics.observe(.added, anchorID: anchor.identifier,
+                receiptUptime: ProcessInfo.processInfo.systemUptime)
+        }
+    }
+    func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
+        guard session === self.session else { return }
+        for anchor in anchors where anchor is ARMeshAnchor {
+            meshCandidateDiagnostics.observe(.updated, anchorID: anchor.identifier,
+                receiptUptime: ProcessInfo.processInfo.systemUptime)
+        }
+    }
+    func session(_ session: ARSession, didRemove anchors: [ARAnchor]) {
+        guard session === self.session else { return }
+        for anchor in anchors where anchor is ARMeshAnchor {
+            meshCandidateDiagnostics.observe(.removed, anchorID: anchor.identifier,
+                receiptUptime: ProcessInfo.processInfo.systemUptime)
+        }
+    }
+    #endif
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        if case .normal = frame.camera.trackingState {} else { meshCandidateDiagnostics.stop() }
+        #endif
         // Tracking loss retires selected-owner evidence even on throttled frames.
         if case .normal = frame.camera.trackingState {} else { invalidateNativeLocalization(.trackingUnavailable) }
         // Tracking loss retires the issuer even when this frame is throttled below.
@@ -1568,6 +1619,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func session(_ session: ARSession, didFailWithError error: Error) {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        meshCandidateDiagnostics.stop()
+        #endif
         retireBodyWarning(publishChange: false)
         nativeObservations.stop()
         withObservedScene { $0.stop() }
@@ -1606,6 +1660,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func sessionWasInterrupted(_ session: ARSession) {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        meshCandidateDiagnostics.stop()
+        #endif
         retireBodyWarning(publishChange: false)
         nativeObservations.stop()
         withObservedScene { $0.stop() }
@@ -1626,6 +1683,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if UIApplication.shared.applicationState == .active { _ = speakMobility(message) }
     }
     func sessionInterruptionEnded(_ session: ARSession) {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        meshCandidateDiagnostics.stop()
+        #endif
         cameraInterrupted = false
         guard running, assistantSession.foregroundActive, cameraAwareness else { return }
         awaitingPlace = nil
@@ -1643,6 +1703,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         _ = speakMobility(arabic ? "مسح الغرفة يعمل. تنبيهات الكاميرا متوقفة حتى ينتهي المسح. ابقَ مع مساعد مبصر." : "Room scan running. Camera path alerts are off until the scan ends. Stay with a sighted helper.")
         nativeObservations.stop()
         withObservedScene { $0.stop() }
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        meshCandidateDiagnostics.scanStarted()
+        #endif
         places.startScan(session: session, name: name, compare: compare ? recognizedPlace : nil, relocalized: recognizedPlace != nil, registrationSessionID: UUID(uuidString: observationFrameID))
     }
     func recognize(_ place: SavedPlace) {

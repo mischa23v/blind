@@ -8,6 +8,12 @@ on:
       - 'BlindMemory/**'
       - 'ios/**'
       - 'tools/ci/**'
+      - 'research/native-mesh-decoder-81/**'
+      - 'research/arkit-mesh-adapter-82/**'
+      - 'research/mesh-candidate-ingress-83/**'
+      - 'research/room-mesh-package-75/**'
+      - 'research/native-candidate-app-integration-85/integrated/check.py'
+      - 'research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json'
       - '.github/workflows/native-apple.yml'
   workflow_dispatch:
 
@@ -96,3 +102,26 @@ jobs:
           path: ${{ runner.temp }}/blind-native-ci/unit-case-statuses.json
           if-no-files-found: error
           retention-days: 3
+
+  mesh-diagnostics-compile:
+    # Separate runner/derived data: cannot change the default app test configuration.
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    runs-on: xcode-27
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Verify integrated no-copy source and toolchain
+        timeout-minutes: 3
+        run: |
+          python3 research/native-candidate-app-integration-85/integrated/check.py
+          bash tools/ci/native-apple.sh preflight
+      - name: Compile diagnostics flag present only
+        timeout-minutes: 20
+        run: bash tools/ci/native-apple.sh diagnostics-build
