@@ -1,0 +1,694 @@
+{
+  "condition": {
+    "id": "nominal",
+    "actor": {
+      "reaction_delay_ticks": 0,
+      "translation_scale": 1.0
+    },
+    "poseDelivery": {
+      "delay_ticks": 0,
+      "jitter_ticks": 0,
+      "drop_probability": 0.0
+    },
+    "withholdCaptureTicks": null
+  },
+  "seed": 72006,
+  "firstLegOnly": false,
+  "syntheticPoseDelivery": true,
+  "worldVetoIsEvaluatorNotPhoneDetection": true,
+  "scope": "One frozen ordered-pair synthetic stress episode; observed local floor support; not a table lap, real sensors or human safety",
+  "arrival": true,
+  "completedLaps": 0,
+  "completedLegs": 1,
+  "motionExecuted": true,
+  "physicalAuthority": false,
+  "profile": "body45cmMargin0",
+  "geometry": {
+    "width": 0.45,
+    "depth": 0.3,
+    "height": 1.6,
+    "margin": 0.0
+  },
+  "actualDistanceMetres": 6.791552952753903,
+  "actual3DDistanceMetres": 6.8099175436827775,
+  "actualBodyContactEvents": 0,
+  "marginContactEvents": 0,
+  "rejectedPredictedBodyContactEvents": 0,
+  "rejectedPredictedMarginContactEvents": 0,
+  "rejectedPredictedUnderbodyContactEvents": 0,
+  "initialUnderbodyGuardContact": false,
+  "underbodyGuardEnabled": true,
+  "groundContacts": "unmeasured: classified floor IDs exempted as in previous scorer",
+  "floorPartitionPolicy": "immutable59 memberships; measured local max9 support; global plane provenance only; no handoff snaps",
+  "thresholdExceptions": false,
+  "nominalStart": [
+    -0.9024904099661475,
+    0.0,
+    3.796214579425151
+  ],
+  "historicalWesternTaskExclusionRemoved": true,
+  "initialRawSupport": {
+    "probes": [
+      {
+        "modelXZ": [
+          -0.9024904099661475,
+          3.796214579425151
+        ],
+        "hit": true,
+        "modelHeightY": 0.0022902887051834755,
+        "referenceCellID": 861171,
+        "rayFraction": 0.3692742782370413
+      },
+      {
+        "modelXZ": [
+          -0.8931581961526313,
+          3.931100308045116
+        ],
+        "hit": true,
+        "modelHeightY": 0.0020830922919916964,
+        "referenceCellID": 887190,
+        "rayFraction": 0.3697922692700207
+      },
+      {
+        "modelXZ": [
+          -0.7815698196298401,
+          3.73572110182038
+        ],
+        "hit": true,
+        "modelHeightY": 0.0023196598828216196,
+        "referenceCellID": 870284,
+        "rayFraction": 0.3692008502929459
+      },
+      {
+        "modelXZ": [
+          -1.023411000302455,
+          3.856708057029922
+        ],
+        "hit": true,
+        "modelHeightY": 0.0019936958583593577,
+        "referenceCellID": 403672,
+        "rayFraction": 0.37001576035410155
+      },
+      {
+        "modelXZ": [
+          -0.9118226237796637,
+          3.661328850805186
+        ],
+        "hit": true,
+        "modelHeightY": 0.0024454390403968584,
+        "referenceCellID": 861643,
+        "rayFraction": 0.36888640239900783
+      },
+      {
+        "modelXZ": [
+          -0.8838259823391149,
+          4.06598603666508
+        ],
+        "hit": true,
+        "modelHeightY": 0.0018845742242932662,
+        "referenceCellID": 413977,
+        "rayFraction": 0.3702885644392668
+      },
+      {
+        "modelXZ": [
+          -0.6606492292935325,
+          3.6752276242156094
+        ],
+        "hit": true,
+        "modelHeightY": 0.002574446299308355,
+        "referenceCellID": 875224,
+        "rayFraction": 0.3685638842517291
+      },
+      {
+        "modelXZ": [
+          -1.1443315906387623,
+          3.9172015346346925
+        ],
+        "hit": true,
+        "modelHeightY": 0.002218873062818134,
+        "referenceCellID": 421239,
+        "rayFraction": 0.3694528173429546
+      },
+      {
+        "modelXZ": [
+          -0.92115483759318,
+          3.5264431221852215
+        ],
+        "hit": true,
+        "modelHeightY": 0.0028785521340130293,
+        "referenceCellID": 856508,
+        "rayFraction": 0.3678036196649674
+      }
+    ],
+    "hitCount": 9,
+    "missingCount": 0,
+    "pattern": "centre, four raw-body quadrant centres and four actual rectangle corners",
+    "rayTopModelY": 0.15,
+    "rayBottomModelY": -0.25,
+    "rayIntervalIsAbsolute": true,
+    "continuousSupportProven": false,
+    "semanticFloorEstablished": false,
+    "measuredCoverageEstablished": false,
+    "physicalClearanceEstablished": false,
+    "physicalAuthority": false
+  },
+  "initialNumericSupport": {
+    "acceptedFiniteSupportModel": true,
+    "hitCount": 9,
+    "missingCount": 0,
+    "spreadMetres": 0.0009939779097197631,
+    "maximumAnchorErrorMetres": 0.0028785521340130293,
+    "heightMinimum": 0.0018845742242932662,
+    "heightMaximum": 0.0028785521340130293,
+    "continuousSupportProven": false,
+    "semanticFloorEstablished": false
+  },
+  "initialObservedSupport": {
+    "acceptedFiniteSupportModel": true,
+    "hitCount": 9,
+    "missingCount": 0,
+    "spreadMetres": 0.0009939779097197631,
+    "maximumAnchorErrorMetres": 0.0009939779097197631,
+    "heightMinimum": 0.0018845742242932662,
+    "heightMaximum": 0.0028785521340130293,
+    "continuousSupportProven": false,
+    "semanticFloorEstablished": false,
+    "groundComponentConfirmedForAllProbes": true,
+    "nonGroundProbeCellIDs": [],
+    "supportPolicy": "same immutable floor IDs, nine observed support heights, local actual foot datum"
+  },
+  "settledStart": [
+    -0.9024904099661475,
+    0.0028785521340130293,
+    3.796214579425151
+  ],
+  "initialVerticalSettlementMetres": 0.0028785521340130293,
+  "noPoseResetAfterInitialSettlement": true,
+  "globalPlaneProvenanceOnly": true,
+  "activeHeightLaw": "maximum nine known observed floor hits with bounded continuity",
+  "initialContacts": {
+    "actualBody": {
+      "contact": false,
+      "candidateTriangles": 21870,
+      "firstReferenceCellID": null,
+      "reason": "noNonGroundReferenceSurfaceContact",
+      "closedBoundaries": true,
+      "closedSolidContainmentClassified": false,
+      "measuredCoverageEstablished": false,
+      "physicalClearanceEstablished": false,
+      "physicalAuthority": false,
+      "groundContactCount": null,
+      "nonGroundContactCount": 0,
+      "groundContactEvent": null,
+      "groundContactFaceIDsFirst16": null,
+      "groundContactFaceIDsTruncated": null,
+      "groundContactMeasurement": "unmeasured: classified ground skipped before GetCell and exact intersection",
+      "skippedGroundCandidateCount": 21870,
+      "skippedGroundCandidateIDsFirst16": [
+        389473,
+        389480,
+        389487,
+        389489,
+        389500,
+        389503,
+        389518,
+        389531,
+        389551,
+        389583,
+        389585,
+        389589,
+        389603,
+        389615,
+        389629,
+        389635
+      ],
+      "skippedGroundCandidateIDsTruncated": true,
+      "skippedGroundCandidatesAreContacts": false,
+      "exactNonGroundTriangleTests": 0,
+      "completeCandidateContactCounts": false,
+      "completeNonGroundCandidateContactCounts": true,
+      "groundExemption": "confirmed immutable original face-ID component only",
+      "lowHeightAloneExcluded": false,
+      "groundComponentDoesNotEstablishSemanticFloor": true,
+      "rejectedNonGroundBoundsCandidates": 0,
+      "nonGroundBoundsFilter": {
+        "kind": "all-three-vertices separated from one padded affine box axis",
+        "vtkVersion": "9.3.1",
+        "outsideParamTolerance": 1e-06,
+        "newtonConvergence": 1e-05,
+        "source": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkHexahedron.cxx",
+        "chunkTriangles": 32768,
+        "originalGeometryChanged": false,
+        "meshArrayCopies": false,
+        "fallbackAllExact": false,
+        "referencePadding": 2.6364986293106123e-05,
+        "numericalPadding": 3.6810696634956286e-13,
+        "parametricPadding": [
+          0.00011363618731203392,
+          1.70564182474639e-05,
+          7.330926160455269e-05
+        ],
+        "paddingRule": "(1e-6+1e-5)*sum(referenceEdgeLengths)+256*float64eps*coordinateScale; inverse-row L1 mapping"
+      },
+      "sweep": {
+        "midpointYawRadians": -2.6226660473300365,
+        "actualYawDeltaRadians": 0.0,
+        "cornerRadiusMetres": 0.2704163456597992,
+        "halfProjectedTranslationMetres": [
+          0.0,
+          0.0
+        ],
+        "rotationPaddingMetresPerHorizontalAxis": 0.0,
+        "enclosingHalfExtentsForwardLateral": [
+          0.15,
+          0.225
+        ],
+        "verticalBoundsMetres": [
+          0.004878552134013029,
+          1.6028785521340132
+        ],
+        "floorContactExclusionMetres": 0.002,
+        "continuousMotionEnclosed": true,
+        "conservativeEnclosureMayOvercount": true
+      }
+    },
+    "horizontalMargin": {
+      "contact": false,
+      "candidateTriangles": 21870,
+      "firstReferenceCellID": null,
+      "reason": "noNonGroundReferenceSurfaceContact",
+      "closedBoundaries": true,
+      "closedSolidContainmentClassified": false,
+      "measuredCoverageEstablished": false,
+      "physicalClearanceEstablished": false,
+      "physicalAuthority": false,
+      "groundContactCount": null,
+      "nonGroundContactCount": 0,
+      "groundContactEvent": null,
+      "groundContactFaceIDsFirst16": null,
+      "groundContactFaceIDsTruncated": null,
+      "groundContactMeasurement": "unmeasured: classified ground skipped before GetCell and exact intersection",
+      "skippedGroundCandidateCount": 21870,
+      "skippedGroundCandidateIDsFirst16": [
+        389473,
+        389480,
+        389487,
+        389489,
+        389500,
+        389503,
+        389518,
+        389531,
+        389551,
+        389583,
+        389585,
+        389589,
+        389603,
+        389615,
+        389629,
+        389635
+      ],
+      "skippedGroundCandidateIDsTruncated": true,
+      "skippedGroundCandidatesAreContacts": false,
+      "exactNonGroundTriangleTests": 0,
+      "completeCandidateContactCounts": false,
+      "completeNonGroundCandidateContactCounts": true,
+      "groundExemption": "confirmed immutable original face-ID component only",
+      "lowHeightAloneExcluded": false,
+      "groundComponentDoesNotEstablishSemanticFloor": true,
+      "rejectedNonGroundBoundsCandidates": 0,
+      "nonGroundBoundsFilter": {
+        "kind": "all-three-vertices separated from one padded affine box axis",
+        "vtkVersion": "9.3.1",
+        "outsideParamTolerance": 1e-06,
+        "newtonConvergence": 1e-05,
+        "source": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkHexahedron.cxx",
+        "chunkTriangles": 32768,
+        "originalGeometryChanged": false,
+        "meshArrayCopies": false,
+        "fallbackAllExact": false,
+        "referencePadding": 2.6364986293106123e-05,
+        "numericalPadding": 3.6810696634956286e-13,
+        "parametricPadding": [
+          0.00011363618731203392,
+          1.70564182474639e-05,
+          7.330926160455269e-05
+        ],
+        "paddingRule": "(1e-6+1e-5)*sum(referenceEdgeLengths)+256*float64eps*coordinateScale; inverse-row L1 mapping"
+      },
+      "sweep": {
+        "midpointYawRadians": -2.6226660473300365,
+        "actualYawDeltaRadians": 0.0,
+        "cornerRadiusMetres": 0.2704163456597992,
+        "halfProjectedTranslationMetres": [
+          0.0,
+          0.0
+        ],
+        "rotationPaddingMetresPerHorizontalAxis": 0.0,
+        "enclosingHalfExtentsForwardLateral": [
+          0.15,
+          0.225
+        ],
+        "verticalBoundsMetres": [
+          0.004878552134013029,
+          1.6028785521340132
+        ],
+        "floorContactExclusionMetres": 0.002,
+        "continuousMotionEnclosed": true,
+        "conservativeEnclosureMayOvercount": true
+      }
+    },
+    "bodyDimensionsWidthDepthHeight": [
+      0.45,
+      0.3,
+      1.6
+    ],
+    "horizontalMarginMetres": 0.0,
+    "marginExtendsVerticalHeight": false,
+    "actualBodyContactIsConservativeEnclosureOverlap": true,
+    "physicalAuthority": false
+  },
+  "initialUnderbodyGuard": {
+    "contact": false,
+    "raw": {
+      "contact": false,
+      "candidateTriangles": 17209,
+      "firstReferenceCellID": null,
+      "reason": "noNonGroundReferenceSurfaceContact",
+      "closedBoundaries": true,
+      "closedSolidContainmentClassified": false,
+      "measuredCoverageEstablished": false,
+      "physicalClearanceEstablished": false,
+      "physicalAuthority": false,
+      "groundContactCount": null,
+      "nonGroundContactCount": 0,
+      "groundContactEvent": null,
+      "groundContactFaceIDsFirst16": null,
+      "groundContactFaceIDsTruncated": null,
+      "groundContactMeasurement": "unmeasured: classified ground skipped before GetCell and exact intersection",
+      "skippedGroundCandidateCount": 17209,
+      "skippedGroundCandidateIDsFirst16": [
+        389473,
+        389480,
+        389487,
+        389489,
+        389500,
+        389503,
+        389518,
+        389531,
+        389551,
+        389583,
+        389585,
+        389589,
+        389603,
+        389615,
+        389629,
+        389635
+      ],
+      "skippedGroundCandidateIDsTruncated": true,
+      "skippedGroundCandidatesAreContacts": false,
+      "exactNonGroundTriangleTests": 0,
+      "completeCandidateContactCounts": false,
+      "completeNonGroundCandidateContactCounts": true,
+      "groundExemption": "confirmed immutable original face-ID component only",
+      "lowHeightAloneExcluded": false,
+      "groundComponentDoesNotEstablishSemanticFloor": true,
+      "rejectedNonGroundBoundsCandidates": 0,
+      "nonGroundBoundsFilter": {
+        "kind": "all-three-vertices separated from one padded affine box axis",
+        "vtkVersion": "9.3.1",
+        "outsideParamTolerance": 1e-06,
+        "newtonConvergence": 1e-05,
+        "source": "https://raw.githubusercontent.com/Kitware/VTK/v9.3.1/Common/DataModel/vtkHexahedron.cxx",
+        "chunkTriangles": 32768,
+        "originalGeometryChanged": false,
+        "meshArrayCopies": false,
+        "fallbackAllExact": false,
+        "referencePadding": 8.679717296428432e-06,
+        "numericalPadding": 3.6810696634956286e-13,
+        "parametricPadding": [
+          3.741060092150908e-05,
+          0.00039023707923425244,
+          2.413442050997015e-05
+        ],
+        "paddingRule": "(1e-6+1e-5)*sum(referenceEdgeLengths)+256*float64eps*coordinateScale; inverse-row L1 mapping"
+      }
+    },
+    "lowerY": -0.018115425775706732,
+    "upperY": 0.004878552134013029,
+    "observedSupportMinimumY": 0.0018845742242932662,
+    "observedSupportMaximumY": 0.0028785521340130293,
+    "existingSupportAssociationEnvelopeMetres": 0.02,
+    "actualHalfSegmentEnclosed": true,
+    "onlySameFloorMembershipExempted": true,
+    "globalPlaneUsed": false,
+    "continuousSupportProven": false
+  },
+  "stressCounts": {
+    "retainedObservationTicks": 0,
+    "ticksWithoutNewPacket": 0,
+    "captureWithheldTicks": 0,
+    "ticksWithoutUsableObservation": 0,
+    "coalescedPackets": 0,
+    "controllerReason:boundedNativeCandidate": 625,
+    "motionAfterIssuedZeroTicks": 0,
+    "translationClippedTicks": 0,
+    "controllerReason:deliveredPoseGoalStop": 1
+  },
+  "maximumDeliveredPoseErrorMetres": 0.0,
+  "maximumDeliveredYawErrorRadians": 0.0,
+  "maximumDeliveredPoseAgeSeconds": 0.0,
+  "maximumPendingPosePackets": 0,
+  "interruptionExposureComplete": null,
+  "status": "completeOrderedPairSyntheticEpisode",
+  "ticks": 626,
+  "attemptedDistanceMetres": 6.791552952753878,
+  "finalPosition": [
+    0.34690051453694365,
+    0.0013547271849808432,
+    -0.3106898844456618
+  ],
+  "finalYawRadians": -8.23578755177886,
+  "terminal": {
+    "poseDelivery": {
+      "capture": {
+        "kind": "simulated-physics-body-pose",
+        "position": [
+          0.34690051453694365,
+          0.0013547271849808432,
+          -0.3106898844456618
+        ],
+        "yaw": -8.23578755177886,
+        "capturedAt": 141.66666666666666,
+        "capturedTick": 625,
+        "generation": 0,
+        "mapRevision": "a9e72a3687f5c49a1a5f134b2300bd297d89e988b46947be954ae2c122e71f80",
+        "sessionID": "stage84-pair6-nominal-seed72006"
+      },
+      "captureWithheld": false,
+      "disposition": {
+        "source_tick": 625,
+        "scheduled_tick": 625,
+        "dropped": false,
+        "protected_command": false
+      },
+      "released": [
+        {
+          "packet": {
+            "tick": 625,
+            "receivedAt": 141.66666666666666,
+            "command": "continue",
+            "pose": {
+              "kind": "simulated-physics-body-pose",
+              "position": [
+                0.34690051453694365,
+                0.0013547271849808432,
+                -0.3106898844456618
+              ],
+              "yaw": -8.23578755177886,
+              "capturedAt": 141.66666666666666,
+              "capturedTick": 625,
+              "generation": 0,
+              "mapRevision": "a9e72a3687f5c49a1a5f134b2300bd297d89e988b46947be954ae2c122e71f80",
+              "sessionID": "stage84-pair6-nominal-seed72006"
+            }
+          },
+          "source_tick": 625,
+          "scheduled_tick": 625,
+          "delivered_tick": 625
+        }
+      ],
+      "selectedSourceTick": 625,
+      "coalescedPackets": 0,
+      "pendingPackets": 0,
+      "syntheticOnly": true,
+      "truePosePassedDirectlyToController": false,
+      "newPacketSelected": true,
+      "retainedObservation": false,
+      "retainedOriginalCaptureTimestamp": 141.66666666666666,
+      "invalidContextLatched": false
+    },
+    "deliveredPose": {
+      "kind": "simulated-physics-body-pose",
+      "position": [
+        0.34690051453694365,
+        0.0013547271849808432,
+        -0.3106898844456618
+      ],
+      "yaw": -8.23578755177886,
+      "capturedAt": 141.66666666666666,
+      "capturedTick": 625,
+      "generation": 0,
+      "mapRevision": "a9e72a3687f5c49a1a5f134b2300bd297d89e988b46947be954ae2c122e71f80",
+      "sessionID": "stage84-pair6-nominal-seed72006",
+      "deliveryMode": "new"
+    },
+    "lastCommittedMotionTick": 624,
+    "goalObservationCurrent": true,
+    "cue": {
+      "physicalAuthority": false,
+      "forwardMetres": 0.0,
+      "yawRadians": 0.0,
+      "goalReached": true,
+      "reason": "deliveredPoseGoalStop",
+      "sourceCapturedAt": 141.66666666666666,
+      "releasedObservationProgress": [
+        {
+          "cursorBefore": 10,
+          "cursorAfter": 10,
+          "positionXYZ": [
+            0.34690051453694365,
+            0.0013547271849808432,
+            -0.3106898844456618
+          ],
+          "unchangedRadiusMetres": 0.01,
+          "sourceOnly": true,
+          "capturedTick": 625,
+          "capturedAt": 141.66666666666666
+        }
+      ],
+      "steeringFromNewestOnly": true,
+      "sourceDeliveryMode": "new",
+      "sourceCapturedTick": 625,
+      "sourceGeneration": 0,
+      "poseAgeSeconds": 0.0,
+      "phoneFlagReceipt": {
+        "lowUnresolvedCells": -1,
+        "source": "historical occupancy diagnostic not available in forward runner",
+        "available": false,
+        "approval": false,
+        "physicalAuthority": false,
+        "noSyntheticEligibleCells": true
+      },
+      "goalError": 0.3379950880777929
+    },
+    "appliedCommand": {
+      "forward_metres": 0.0,
+      "yaw_radians": 0.0,
+      "applied_tick": 625,
+      "issued_tick": 625,
+      "source_captured_at": 141.66666666666666,
+      "stop_reason": "deliveredPoseGoalStop",
+      "forced_wrong_turn": false,
+      "translation_clipped": false,
+      "reaction_delay_ticks": 0
+    },
+    "contacts": [],
+    "support": null,
+    "movement": null,
+    "pendingMotion": false,
+    "actualFull3DGoalError": 0.33799780302608584,
+    "candidateStateCommitted": true,
+    "underbodyGuard": null
+  },
+  "legTransitions": [
+    {
+      "leg": 0,
+      "tick": 625,
+      "position": [
+        0.34690051453694365,
+        0.0013547271849808432,
+        -0.3106898844456618
+      ],
+      "yaw": -8.23578755177886,
+      "goal": [
+        0.2209646416855992,
+        0.0,
+        -0.6243470786782905
+      ],
+      "legDistanceMetres": 6.791552952753903,
+      "totalDistanceMetres": 6.791552952753903,
+      "full3DGoalErrorMetres": 0.33799780302608584,
+      "pendingMotion": false,
+      "appliedMotion": false,
+      "sameActorStateRetained": true
+    }
+  ],
+  "ticksWithLowUnresolvedExposure": 0,
+  "traceSHA256": "3981d364f065acd70af024aeea4897863d39c70aa01a86092ff19527d66f80f7",
+  "sourceRouteNeverChanged": true,
+  "sourceRouteFixedWithinEachLeg": true,
+  "sourceOnlyReplannedAtDrainedHandoffs": false,
+  "sourceRequeriesExecuted": 0,
+  "actualBodyContactsCommitted": 0,
+  "firstPredictedContactOrSupportFailureTerminates": true,
+  "finalPendingMotion": false,
+  "finalAppliedCommand": {
+    "forward_metres": 0.0,
+    "yaw_radians": 0.0,
+    "applied_tick": 625,
+    "issued_tick": 625,
+    "source_captured_at": 141.66666666666666,
+    "stop_reason": "deliveredPoseGoalStop",
+    "forced_wrong_turn": false,
+    "translation_clipped": false,
+    "reaction_delay_ticks": 0
+  },
+  "finalOriginalStartError3DMetres": 4.292743154776261,
+  "finalOriginalStartErrorHorizontalMetres": 4.292742941010176,
+  "schedule": {
+    "episodeIndex": 30,
+    "pairIndex": 6,
+    "conditionID": "nominal",
+    "seed": 72006,
+    "status": "notRun",
+    "movementExecuted": false
+  },
+  "referenceMesh": {
+    "vertices": 8940320,
+    "triangles": 17801112,
+    "originalPLYType": "float64",
+    "VTKPointScalarType": "float",
+    "geometryDecimated": false,
+    "meshTransformed": false,
+    "unusedAttributesReleased": true
+  },
+  "runtime": {
+    "version": "9.3.1",
+    "SMPBackend": "Sequential",
+    "threads": 1,
+    "executionMachine": {
+      "system": "Linux",
+      "release": "6.18.55",
+      "machine": "x86_64",
+      "cpuReportedModel": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "logicalCPUAffinityCount": 1,
+      "memorySnapshotBytes": {
+        "MemTotal": 10475814912,
+        "MemAvailable": 9442983936
+      },
+      "CPUQuotaNotEstablished": true,
+      "iPhoneRuntimeTest": false,
+      "GPUUsed": false
+    }
+  },
+  "wallSeconds": 294.20849572500083,
+  "pairPlanSHA256": "a9e72a3687f5c49a1a5f134b2300bd297d89e988b46947be954ae2c122e71f80",
+  "cacheResultSHA256": "0f0ee1e311fb511958177ef5a775809e71c01e673585730f2b98e29cddb09c62",
+  "evaluatorManifestSHA256": "3d17b1b816abd553fde50ea9702e35b4bcd380d10b18375f5535be2a5101b525",
+  "cacheManifestSHA256": "01fd57f962f2c57ee8e7aae8f60504ec1bc3514d2a01650e3b9374345152c6b6",
+  "worldOrReferenceNeverSelectsHorizontalRoute": true,
+  "sourceROIManuallyAssisted": true,
+  "sourceExclusionUnknown": true,
+  "physicalWorldGeometryChanged": false,
+  "sourceConfidenceUnavailable": true
+}

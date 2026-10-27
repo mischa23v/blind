@@ -1,0 +1,22 @@
+{
+  "scope": "Small synthetic reproductions only; no native commands, process signals, app/test changes or rerun",
+  "untrackedStatus": {
+    "default": [
+      "?? ios/"
+    ],
+    "expanded": [
+      "?? ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+    ],
+    "fullPathRecovered": true
+  },
+  "permissionFailure": {
+    "stage": "group probe after successful mocked SIGTERM",
+    "exception": "PermissionError",
+    "record": {
+      "sentSIGTERM": true
+    },
+    "leaderWaitCalled": false,
+    "cleanupStatusPresent": false
+  },
+  "limits": "Does not identify which native killpg call raised EPERM or prove whether native child groups remained."
+}

@@ -1,0 +1,24 @@
+2026-10-27T21:03:26.3077200Z 38ac458c70a236f6a75d05b572724c1996ece57a
+2026-10-27T21:03:28.0249970Z 38ac458c70a236f6a75d05b572724c1996ece57a
+2026-10-27T21:03:28.6569920Z 38ac458c70a236f6a75d05b572724c1996ece57a
+2026-10-27T21:05:26.8143890Z core exit status: 0
+2026-10-27T21:05:27.2935580Z 	 Executed 1385 tests, with 1 test skipped and 0 failures (0 unexpected) in 10.972 (11.252) seconds
+2026-10-27T21:05:27.3147120Z 	 Executed 1385 tests, with 1 test skipped and 0 failures (0 unexpected) in 10.972 (11.257) seconds
+2026-10-27T21:06:56.3534440Z memory exit status: 0
+2026-10-27T21:06:56.3868770Z 	 Executed 51 tests, with 0 failures (0 unexpected) in 17.946 (17.955) seconds
+2026-10-27T21:06:56.3869800Z 	 Executed 51 tests, with 0 failures (0 unexpected) in 17.946 (17.956) seconds
+2026-10-27T21:09:59.7169720Z build exit status: 0
+2026-10-27T21:09:59.7758180Z ** BUILD SUCCEEDED **
+2026-10-27T21:13:21.1137190Z unit exit status: 0
+2026-10-27T21:13:25.0684690Z ** TEST SUCCEEDED **
+2026-10-27T21:29:27.8801020Z ui exit status: 65
+2026-10-27T21:29:27.9847340Z /Users/runner/work/blind/blind/ios/BlindAssistUITests/LaunchTests.swift:350: error: -[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk] : Dynamic Type font sizes are partially unsupported
+2026-10-27T21:29:27.9849720Z Test Case '-[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk]' failed (147.595 seconds).
+2026-10-27T21:29:27.9867700Z /Users/runner/work/blind/blind/ios/BlindAssistUITests/LaunchTests.swift:109: error: -[BlindAssistUITests.LaunchTests testPracticeIsAnnouncedAndCanStop] : XCTAssertTrue failed
+2026-10-27T21:29:27.9909160Z Test Case '-[BlindAssistUITests.LaunchTests testPracticeIsAnnouncedAndCanStop]' failed (266.236 seconds).
+2026-10-27T21:29:27.9965860Z ** TEST FAILED **
+2026-10-27T21:29:28.0379530Z /Users/runner/work/blind/blind/ios/BlindAssistUITests/LaunchTests.swift:109: error: -[BlindAssistUITests.LaunchTests testPracticeIsAnnouncedAndCanStop] : XCTAssertTrue failed
+2026-10-27T21:29:28.0381000Z Test Case '-[BlindAssistUITests.LaunchTests testPracticeIsAnnouncedAndCanStop]' failed (266.236 seconds).
+2026-10-27T21:29:28.0480660Z ** TEST FAILED **
+2026-10-27T21:29:36.1422220Z unit xcresult: {"result": "Passed", "totalTestCount": 155, "passedTests": 149, "failedTests": 0, "skippedTests": 6, "expectedFailures": 0, "startTime": 1793135407.29, "finishTime": 1793135595.865}
+2026-10-27T21:29:36.2508730Z ui xcresult: {"result": "Failed", "totalTestCount": 17, "passedTests": 12, "failedTests": 2, "skippedTests": 3, "expectedFailures": 0, "startTime": 1793135628.001, "finishTime": 1793136558.783}
