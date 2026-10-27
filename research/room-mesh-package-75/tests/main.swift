@@ -129,5 +129,29 @@ let eighthDone=DispatchSemaphore(value:0);var eighthStale=false
 for i in 0..<8 {capacity.request(start:[-2,0,0],goal:[2,0,0],body:body){r in if i==7{if case .failure(.stale)=r{eighthStale=true};eighthDone.signal()}}}
 capacity.request(start:[-1,0,0],goal:[1,0,0],body:body){r in if case .failure(.unavailable)=r{capDone.signal()}}
 try rc("capacity rejected query completes unavailable",capDone.wait(timeout:.now()+2) == .success);try rc("capacity rejected goal invalidates old snapshot",!capacity.isCurrent(capOld));capGate.signal();drain();_ = eighthDone.wait(timeout:.now()+2);try rc("rejected ninth query retires eighth queued query",eighthStale)
-let runtimeResult:[String:Any]=["passed":runtimeChecks.values.allSatisfy{$0},"checks":runtimeChecks,"physicalAuthority":false,"ARKitExecuted":false,"scope":"Portable candidate package asynchronous lifecycle only"]
+// Deterministic failure-commit witnesses, not a timed native-apply race.
+// Each runtime starts at lifecycle 0; reset retires that captured lifecycle.
+// Exercise the exact helper used by offer's catch, leaving the baseline32 intact.
+var failureCommitChecks=[String:Bool]()
+func fc(_ name:String,_ value:Bool)throws{failureCommitChecks[name]=value;if !value{throw Failure.invalid("failure commit: "+name)}}
+for transition in ["generation","session","ABA"] {
+ let late=try RoomMeshCandidateRuntime(sessionID:"live")
+ _ = late.offer(event());drain()
+ if transition=="generation" {try late.reset(sessionID:"live",generation:1)}
+ else {try late.reset(sessionID:"other",generation:0);if transition=="ABA"{try late.reset(sessionID:"live",generation:0)}}
+ // Old work passed eligibility before reset; its failure commits afterward.
+ late.recordOfferFailure(sessionID:"live",generation:0,lifecycle:0)
+ let freshSession=transition=="session" ? "other" : "live"
+ _ = late.offer(event(session:freshSession,generation:transition=="generation" ? 1 : 0));drain()
+ try fc("late failure after \(transition) reset leaves fresh delivery complete",(try query(late)).sourceDeliveryComplete)
+}
+let currentFailure=try RoomMeshCandidateRuntime(sessionID:"live")
+_ = currentFailure.offer(event());drain();_ = try query(currentFailure)
+// Newer ingress/query revisions do not retire an in-lifecycle missed event.
+currentFailure.recordOfferFailure(sessionID:"live",generation:0,lifecycle:0)
+let currentFailureRoute=try query(currentFailure)
+try fc("current lifecycle failure survives revision advances",!currentFailureRoute.sourceDeliveryComplete && currentFailureRoute.unknownCoverage.contains("ingress-or-lifecycle-gap"))
+_ = currentFailure.offer(event(2));drain()
+try fc("later valid event cannot clear current failure",!(try query(currentFailure)).sourceDeliveryComplete)
+let runtimeResult:[String:Any]=["passed":runtimeChecks.values.allSatisfy{$0},"checks":runtimeChecks,"failureCommitChecks":failureCommitChecks,"physicalAuthority":false,"ARKitExecuted":false,"scope":"Portable candidate package asynchronous lifecycle only"]
 try JSONSerialization.data(withJSONObject:runtimeResult,options:[.prettyPrinted,.sortedKeys]).write(to:URL(fileURLWithPath:CommandLine.arguments[2]).deletingLastPathComponent().appendingPathComponent("RUNTIME_RESULT.json"));print("PASS \(runtimeChecks.count) runtime checks")

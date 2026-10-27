@@ -125,7 +125,8 @@ def main():
    a=json.loads((out/'RESULT.json').read_text());b=json.loads((out/'RUNTIME_RESULT.json').read_text())
    assert a['passed'] and len(a['checks'])==55 and a['markedSpans']==636
    assert b['passed'] and len(b['checks'])==32
+   assert len(b['failureCommitChecks'])==5 and all(b['failureCommitChecks'].values())
   # Simulator client is compile/link only, never launched or installed.
- summary=dict(sourceCommit=os.environ.get('GITHUB_SHA'),toolchain=toolchain,swiftPMBuildSystem=BUILD_SYSTEM,defaultSwiftBuildBackendPassed=False,macOSSwiftPMPackageBuilt=True,publicImportedClientExecuted=True,legacyChecks=55,runtimeChecks=32,iOSSimulatorPackageAndClientLinked=True,iOSSimulatorExecuted=False,appProjectBuilt=False,ARKitExecuted=False,physicalAuthority=False,publicExclusionUpdatesImplemented=False,receipts=receipts)
+ summary=dict(sourceCommit=os.environ.get('GITHUB_SHA'),toolchain=toolchain,swiftPMBuildSystem=BUILD_SYSTEM,defaultSwiftBuildBackendPassed=False,macOSSwiftPMPackageBuilt=True,publicImportedClientExecuted=True,legacyChecks=55,runtimeChecks=32,failureCommitChecks=5,iOSSimulatorPackageAndClientLinked=True,iOSSimulatorExecuted=False,appProjectBuilt=False,ARKitExecuted=False,physicalAuthority=False,publicExclusionUpdatesImplemented=False,receipts=receipts)
  (out/'SUMMARY.json').write_text(json.dumps(summary,indent=2)+'\n');print(json.dumps({k:v for k,v in summary.items()if k!='receipts'}))
 if __name__=='__main__':main()

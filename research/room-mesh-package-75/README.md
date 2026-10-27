@@ -96,3 +96,29 @@ Apple CI uses the same native contraction-off package flags plus explicitO1.
 Post-command512MiB scratch checks are not hard live RAM/system-cache caps.
 
 Independent prepared Apple workflow review passed; execution remains pending.
+
+## 2026-10-27 late offer-failure lifecycle correction (Apple execution pending)
+
+The offer worker previously checked ownership before applying a packet but set
+`gap` unconditionally on a thrown failure. A reset between those two points
+could let retired work contaminate the replacement lifecycle. The catch now
+commits through a locked lifecycle/session/generation fence. It intentionally
+ignores ordinary query/event revision changes: a missed current-lifecycle event
+must still leave delivery unknown. No public interface or physical authority
+changes.
+
+Five additional deterministic failure-commit checks exercise the exact internal
+helper used by that catch: generation reset, session reset, ABA reset, current
+failure after revision changes, and a later valid packet not clearing the gap.
+The helper can only mark a matching lifecycle incomplete; it cannot fabricate
+geometry or clear a gap. This avoids adding an injectable native worker or
+public testing authority. These are commit-boundary witnesses, not execution of
+a paused native-apply race. Existing invalid-packet coverage still exercises the
+actual catch in the same lifecycle. The original 55 geometry and 32 runtime
+checks remain unchanged; Apple CI requires those plus the five new checks.
+
+Only current `APPLE_SOURCE_PINS.json` is updated. Frozen historical manifests,
+receipts and results retain their original source hashes and are not evidence
+for this change; the historical `run_portable.py` remains frozen-input-only.
+No local Swift build or test was run for this correction. The existing isolated
+Apple workflow must establish compilation/execution before a passing claim.

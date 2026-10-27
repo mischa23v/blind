@@ -87,10 +87,20 @@ public final class RoomMeshCandidateRuntime {
    do {
     if ownerLifecycle != eventLifecycle || owner?.session != event.sessionID || owner?.generation != event.generation {owner=try Replay(event.sessionID,event.generation);ownerLifecycle=eventLifecycle}
     _ = try owner!.apply(event.packet)
-   } catch {locked{gap=true}}
+   } catch {recordOfferFailure(sessionID:event.sessionID,generation:event.generation,lifecycle:eventLifecycle)}
   }
   lock.unlock()
   return true
+ }
+ // Internal failure-commit boundary: tests can reproduce a late throw without
+ // timing a native operation or exposing a public injection/clearance hook.
+ // Revision is deliberately not compared: a newer offer/query in the same
+ // lifecycle does not make a missed event harmless. Only reset retires it.
+ func recordOfferFailure(sessionID:String,generation:Int,lifecycle:UInt64) {
+  locked {
+   guard !stopped,self.lifecycle==lifecycle,session==sessionID,self.generation==generation else{return}
+   gap=true
+  }
  }
  public func isCurrent(_ candidate:MeshCandidateRoute)->Bool {
   locked{matches(candidate.sessionID,candidate.generation,candidate.revision)}
