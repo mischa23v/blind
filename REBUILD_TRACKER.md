@@ -1,3 +1,13 @@
+## Required navigation gate — localization, orientation and continuous route deviation: OPEN
+
+A map route is not usable guidance unless the system knows the correct map/floor, current position and camera/body heading with supported uncertainty. Track signed cross-track distance, along-route progress, heading error and confidence throughout movement; distinguish measured deviation from localization loss. Never snap a person to a route or issue an unchecked straight-line correction.
+
+[Detailed user-requested acceptance tests](research/world-map-localization-audit/TRACKER_ADDENDUM.md) cover held-out one-image/two-image/sequence localization with query poses hidden; wrong-map/floor and repeated-room ambiguity; off-path starts and collision/coverage-checked connectors; lateral steps, wrong turns, overshoot, camera-only turns, loss/restart and return. [Verified existing implementation and wiring gaps](research/world-map-localization-audit/README.md) must be reused rather than replaced by a parallel map architecture. The existing layered registry and saved-map recovery do not yet establish calibrated navigation localization.
+
+Progressive capture tests must reveal frames in recorded order without final-mesh or future-frame mapping inputs; supplied globally optimized poses remain a stated limitation, not live SLAM. More rooms and constructive improvements continue. Both this gate and the live-hazard gate below remain open; concerns are not a cancellation of development.
+
+---
+
 # Priority 0 — live ground hazards and warning reliability: BLOCKED
 
 This is an acceptance addendum to the existing belt/phone requirements, **not a new hardware proposal**. Keep `hardware/BUYING_PLAN.md`, `hardware/CONNECTIONS.md`, `hardware/PROTOCOL.md` and `research/ELEVATION_AND_LIGHTING.md` authoritative. Their independent ground-warning design and unresolved belt attitude, mounting/extrinsics, synchronization and 250 mm slant-trigger limitations remain open.
