@@ -1,4 +1,25 @@
-## Latest development result — retained-pose jitter variant rejected
+# Priority 0 — live ground hazards and warning reliability: BLOCKED
+
+This is an acceptance addendum to the existing belt/phone requirements, **not a new hardware proposal**. Keep `hardware/BUYING_PLAN.md`, `hardware/CONNECTIONS.md`, `hardware/PROTOCOL.md` and `research/ELEVATION_AND_LIGHTING.md` authoritative. Their independent ground-warning design and unresolved belt attitude, mounting/extrinsics, synchronization and 250 mm slant-trigger limitations remain open.
+
+**Release condition:** before any physical movement guidance, show that missing/corrupt/stale depth never becomes confirmed floor; stairs/drop-offs and near-feet/lateral swept coverage are either reliably assessed or explicitly unavailable; and warnings arrive with a measured stopping/response allowance under declared latency and mounting conditions. No alert is not evidence of no hazard. A user's increased reliance makes this blocker especially important.
+
+- Test timestamped raw sensor validity, unknown regions, stair edges, toys, mount changes, lateral steps, occlusion and tracking loss on a controlled rig/replay with independent truth—not children or a person approaching an unprotected drop.
+- Record false-clear events, missing/late warnings, warning onset/lead time, coverage gaps and false stops. Freeze the operating envelope and limits before scoring; never derive “safe” limits from a successful room lap.
+- Map routes remain proposals. Old geometry, RGB appearance, an LLM answer or a reference-world collision veto cannot grant live clearance. Existing static/synthetic successes do not pass this gate; preserve them and their failures separately.
+- Current audited Koivu exports lack original timing, native confidence, raw tracking/IMU and body-to-phone calibration. They cannot establish live warning lead time. Scope this limitation to the audited inputs; do not invent fields for replay.
+
+**Next deliverable:** a raw-input availability inventory and a frozen small missing-depth/stair-edge bench matrix, with explicit “not evaluable” results where required evidence is absent. **No physical guidance, real-user trial or certified-safety claim is authorized.** Detailed criteria: [live-hazard acceptance protocol](research/live-hazard-release-blocker/PROTOCOL.md).
+
+
+## Latest bounded engineering evidence
+
+[Stage 76 and Coffee checkpoint](research/tools/measured-progress-and-coffee-v1/README.md): one measured-batch-progress jitter pilot arrived after 201 ticks and 2.840 m, with two no-usable-pose stops and no predicted non-floor contacts. The failed stage 74 experiment is preserved below. Coffee has 20 accepted native route proposals among five sampled endpoints and ZERO executed movement episodes. Neither result closes the live-hazard release blocker above. [Additional real-data candidates](research/additional-room-research/README.md) include more phone scans; independently labelled negative-obstacle warning episodes remain unverified.
+
+Stage 75 package/workflow publication was cancelled before tool approval and is NOT included in this checkpoint. Existing stage 71 Apple results remain separate from unrun stage 75 Apple SwiftPM checks.
+
+---
+## Earlier development result — retained-pose jitter variant rejected
 
 Stage 74 timed out after 450 ticks and 1.240 m; it did not arrive. Reducing no-pose stops from 193 to 2 was not an improvement: coalescing discarded a valid corner-progress observation, and steering continued toward the old waypoint. The passing stage 73 baseline remains preserved. [Failure, exact diagnosis and separate restoration-index update](research/tools/failed-retained-pose-and-restoration-v1/README.md). No new movement success or safety claim follows from this experiment.
 

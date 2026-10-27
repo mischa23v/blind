@@ -1,0 +1,604 @@
+{
+  "scope": "Completed measured-progress short pilot and Coffee source-only topology; excludes cancelled stage 75 package/workflow",
+  "inputManifestSHA256": {
+    "blind-batched-observation-progress-76/PUBLICATION_MANIFEST.json": "10a237fb2c614f55b53a4db11978a6b0bb6ec2afa47c4f931c3c8ebd3b902c1d",
+    "blind-coffee-native-topology/PUBLICATION_MANIFEST.json": "2784020d1b8fc8919cb6d7c25ed33d73944b31de6cd03cdd8065d32739dbe79e"
+  },
+  "files": [
+    {
+      "path": "blind-batched-observation-progress-76/CONDITIONS.json",
+      "source": "blind-batched-observation-progress-76/CONDITIONS.json",
+      "group": "measured-progress-pilot",
+      "bytes": 2481,
+      "sha256": "4949e25beadc387011279159e71aa4a3c897fed4988a134a8f83e20e97c010ad"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/DUAL_SOURCE_FIXED_PATH_AUDIT.json",
+      "source": "blind-batched-observation-progress-76/DUAL_SOURCE_FIXED_PATH_AUDIT.json",
+      "group": "measured-progress-pilot",
+      "bytes": 1642,
+      "sha256": "a562cfee1325e096b3877db4a5ecfa7e8f377ca00eb93db9945653067115f9f1"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/DUAL_SOURCE_FIXED_SEGMENTS.json.gz",
+      "source": "blind-batched-observation-progress-76/DUAL_SOURCE_FIXED_SEGMENTS.json.gz",
+      "group": "measured-progress-pilot",
+      "bytes": 53011,
+      "sha256": "51dce403b377fd98694b942f0bb2c916c746839d5ef1c7ad029e982f851a67a9"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/EVIDENCE_CODEC.json",
+      "source": "blind-batched-observation-progress-76/EVIDENCE_CODEC.json",
+      "group": "measured-progress-pilot",
+      "bytes": 970,
+      "sha256": "a3c621e4f398b796b06dc8330d2c796de243630e1a10af9e03e11c84cef7ac0f"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/FROZEN.json",
+      "source": "blind-batched-observation-progress-76/FROZEN.json",
+      "group": "measured-progress-pilot",
+      "bytes": 87564,
+      "sha256": "0cdabfc606692b9fb3bdaaf921cb51e51b5e620bd9abb19a09d47890046a2695"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/INDEPENDENT_PRELAUNCH_REVIEW.json",
+      "source": "blind-batched-observation-progress-76/INDEPENDENT_PRELAUNCH_REVIEW.json",
+      "group": "measured-progress-pilot",
+      "bytes": 1678,
+      "sha256": "516e8423fbe209a941973ac8e127115166cda7a5d7ad1f016082463330ca7c72"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/INDEPENDENT_TERMINAL_RECOUNT.json",
+      "source": "blind-batched-observation-progress-76/INDEPENDENT_TERMINAL_RECOUNT.json",
+      "group": "measured-progress-pilot",
+      "bytes": 3462,
+      "sha256": "00db70b3cbfc6e36ded5a68b46a6ddd8a95cf270352c0184e16202e51fe611a9"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/MOVEMENT_PROTOCOL.md",
+      "source": "blind-batched-observation-progress-76/MOVEMENT_PROTOCOL.md",
+      "group": "measured-progress-pilot",
+      "bytes": 3636,
+      "sha256": "6d73305809d8f4f7809faa1018f3b8884ba4bb6849bb1957c5e12ff5a95f66f7"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/PAIRED_COMPARISON.json",
+      "source": "blind-batched-observation-progress-76/PAIRED_COMPARISON.json",
+      "group": "measured-progress-pilot",
+      "bytes": 2643,
+      "sha256": "42f74e599c86045126f438079fe6776b34aded6addba3a755891c28c994d2841"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/PAIRED_JITTER_PATHS.png",
+      "source": "blind-batched-observation-progress-76/PAIRED_JITTER_PATHS.png",
+      "group": "measured-progress-pilot",
+      "bytes": 53191,
+      "sha256": "c8e032703408ee54dfda5cb485b78a4452f93fdff008075d45c3d4c4e035ec47"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/README.md",
+      "source": "blind-batched-observation-progress-76/README.md",
+      "group": "measured-progress-pilot",
+      "bytes": 4863,
+      "sha256": "dc3689fd0c50168813234ee0352a65d2c7bbf1a571b7f217f31481a0cd026b28"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/SELECTED_PLAN.json",
+      "source": "blind-batched-observation-progress-76/SELECTED_PLAN.json",
+      "group": "measured-progress-pilot",
+      "bytes": 20148,
+      "sha256": "68a1c41d4cc82fe3073152c4f76b769162cd5048db53fc305be8502d69cdac12"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/compare_saved_pilots.py",
+      "source": "blind-batched-observation-progress-76/compare_saved_pilots.py",
+      "group": "measured-progress-pilot",
+      "bytes": 3278,
+      "sha256": "30692d18f1881977a569c92b5731736604dd974bb948c3ff95c34414b00ceb73"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/evidence_codec.py",
+      "source": "blind-batched-observation-progress-76/evidence_codec.py",
+      "group": "measured-progress-pilot",
+      "bytes": 1019,
+      "sha256": "36a8497ce591d7010f399a4b83e975d94952c97c0917c304d63e92bd00bd9145"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/fixtures-01.log",
+      "source": "blind-batched-observation-progress-76/fixtures-01.log",
+      "group": "measured-progress-pilot",
+      "bytes": 10360,
+      "sha256": "80317538a777848fd1ea9658b00b16124fc369a2e984b99d00a9aab25b739b6b"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/fixtures-02.log",
+      "source": "blind-batched-observation-progress-76/fixtures-02.log",
+      "group": "measured-progress-pilot",
+      "bytes": 11749,
+      "sha256": "81bf17e3466685e0a7bae2578f4bc7e15e1703ae75e39b12749608a2f71130cd"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/freeze.py",
+      "source": "blind-batched-observation-progress-76/freeze.py",
+      "group": "measured-progress-pilot",
+      "bytes": 1595,
+      "sha256": "31666bbb09912c20419388ae21eea35961d1c9a09bba6ed732c48b86ab9f7514"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/local_support.py",
+      "source": "blind-batched-observation-progress-76/local_support.py",
+      "group": "measured-progress-pilot",
+      "bytes": 7406,
+      "sha256": "87fb064d47a695aa6656ba1753cabfec58f7ce6cadfef5094f4922fb14e19e9c"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/loop_controller.py",
+      "source": "blind-batched-observation-progress-76/loop_controller.py",
+      "group": "measured-progress-pilot",
+      "bytes": 6933,
+      "sha256": "c47c62ecf8d042b6b74635e142e70d8c661d5fe7e6e6af88d46deb15e4f9ca8c"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/loop_episode.py",
+      "source": "blind-batched-observation-progress-76/loop_episode.py",
+      "group": "measured-progress-pilot",
+      "bytes": 14672,
+      "sha256": "aae6fcd81b62112810f282296b805e311329ab77d2cdd6e6cfa252e494f73fe8"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/loop_map.py",
+      "source": "blind-batched-observation-progress-76/loop_map.py",
+      "group": "measured-progress-pilot",
+      "bytes": 3862,
+      "sha256": "0878845f147c2660da977b5e7b5b4243cabe1f266a3066c887d536b88dc7fe79"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/observation_batch.py",
+      "source": "blind-batched-observation-progress-76/observation_batch.py",
+      "group": "measured-progress-pilot",
+      "bytes": 1293,
+      "sha256": "f80fc869942c8312d9169de43843916e35163039455ac6ceb2f9f7bf90025a8a"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/pilot-temporal_jitter/RAM_PREFLIGHT.json",
+      "source": "blind-batched-observation-progress-76/pilot-temporal_jitter/RAM_PREFLIGHT.json",
+      "group": "measured-progress-pilot",
+      "bytes": 102,
+      "sha256": "95ea5227db0748f95188384fe4d78af5c4d7a09458ed2447084b7bc2333eb5f6"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/pilot-temporal_jitter/RUN_RECEIPT.json",
+      "source": "blind-batched-observation-progress-76/pilot-temporal_jitter/RUN_RECEIPT.json",
+      "group": "measured-progress-pilot",
+      "bytes": 564,
+      "sha256": "36aea7107f6976c44baaf581a22f781b640b9fa40fd25b9f0206d60fb2a67977"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/pilot-temporal_jitter/heartbeat.jsonl.gz",
+      "source": "blind-batched-observation-progress-76/pilot-temporal_jitter/heartbeat.jsonl.gz",
+      "group": "measured-progress-pilot",
+      "bytes": 23027,
+      "sha256": "befe86686928cb042466f5c00543ba02520f3638ee7f9273f3d9b074fc6c1515"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/pilot-temporal_jitter/result/ACTOR_TRACE.npz",
+      "source": "blind-batched-observation-progress-76/pilot-temporal_jitter/result/ACTOR_TRACE.npz",
+      "group": "measured-progress-pilot",
+      "bytes": 9680,
+      "sha256": "b5bb07d63b183a06c8d7e8cc44286d59fa87b2a2cc3288996ece8ffce45684f0"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/pilot-temporal_jitter/result/ACTUAL_TRACE_PARTIAL.csv",
+      "source": "blind-batched-observation-progress-76/pilot-temporal_jitter/result/ACTUAL_TRACE_PARTIAL.csv",
+      "group": "measured-progress-pilot",
+      "bytes": 43906,
+      "sha256": "9a79ca76174736c633a025961b4df25d6f83d7e5457a0272383bd9f0585ae281"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/pilot-temporal_jitter/result/LIVE_PROGRESS.json",
+      "source": "blind-batched-observation-progress-76/pilot-temporal_jitter/result/LIVE_PROGRESS.json",
+      "group": "measured-progress-pilot",
+      "bytes": 367,
+      "sha256": "566699c380d6dbba7e55261595fed73992be932a1769169c4f0649f4d5bc0bb5"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/pilot-temporal_jitter/result/QUERY_OPTIMIZATION.json.xz",
+      "source": "blind-batched-observation-progress-76/pilot-temporal_jitter/result/QUERY_OPTIMIZATION.json.xz",
+      "group": "measured-progress-pilot",
+      "bytes": 107836,
+      "sha256": "06cf7d64f12545d146b4911a37e4c2ab3e7d542b014f522601a3745aefc3d64a"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/pilot-temporal_jitter/result/RESULT.json",
+      "source": "blind-batched-observation-progress-76/pilot-temporal_jitter/result/RESULT.json",
+      "group": "measured-progress-pilot",
+      "bytes": 26917,
+      "sha256": "941bc45212aa958b2ede11475764c77de319de43df37cc6226e7de91d643dddb"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/pilot-temporal_jitter/result/TICK_EVIDENCE.jsonl.xz",
+      "source": "blind-batched-observation-progress-76/pilot-temporal_jitter/result/TICK_EVIDENCE.jsonl.xz",
+      "group": "measured-progress-pilot",
+      "bytes": 242176,
+      "sha256": "3500d5a0ea65090aafeab203cce50a1f0c356661ebf3e947fa988f5f7de9131e"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/pilot-temporal_jitter/result/controller.stderr.log",
+      "source": "blind-batched-observation-progress-76/pilot-temporal_jitter/result/controller.stderr.log",
+      "group": "measured-progress-pilot",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/pilot-temporal_jitter/stderr.log",
+      "source": "blind-batched-observation-progress-76/pilot-temporal_jitter/stderr.log",
+      "group": "measured-progress-pilot",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/pilot-temporal_jitter/stdout.log",
+      "source": "blind-batched-observation-progress-76/pilot-temporal_jitter/stdout.log",
+      "group": "measured-progress-pilot",
+      "bytes": 1106,
+      "sha256": "9cf548817430c6ced1a215841eec5a1fc2c3295eec36535425e73d6962b48d13"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/pose_delivery.py",
+      "source": "blind-batched-observation-progress-76/pose_delivery.py",
+      "group": "measured-progress-pilot",
+      "bytes": 5199,
+      "sha256": "463db47674dbac7906a5e4b89e52785cf504b92fe8285669ffacdf148164d2a8"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/review_batch_terminal.py",
+      "source": "blind-batched-observation-progress-76/review_batch_terminal.py",
+      "group": "measured-progress-pilot",
+      "bytes": 3460,
+      "sha256": "1df90d9ba7cbe0fdeb499182c78e162c6068fce9f00c197201c80a0a7256059b"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/review_queue_terminal.py",
+      "source": "blind-batched-observation-progress-76/review_queue_terminal.py",
+      "group": "measured-progress-pilot",
+      "bytes": 7202,
+      "sha256": "d8f2dcca43923b664a5c3a815d124778f9e8a2d794c9dabb7e946ff476fd037a"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/run_bounded.py",
+      "source": "blind-batched-observation-progress-76/run_bounded.py",
+      "group": "measured-progress-pilot",
+      "bytes": 4642,
+      "sha256": "33de202d8e5f210a27626ef720b8a486605ee887e9fdc58ed792a3a5456b23bc"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/run_loop.py",
+      "source": "blind-batched-observation-progress-76/run_loop.py",
+      "group": "measured-progress-pilot",
+      "bytes": 3150,
+      "sha256": "f484e33bbe26699125adcd01ad1b169ff3fd555ee4a49841a59aeeea8b343052"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/source_runtime.py",
+      "source": "blind-batched-observation-progress-76/source_runtime.py",
+      "group": "measured-progress-pilot",
+      "bytes": 6852,
+      "sha256": "300f44677c017904dade1e41302fce782b1bbec0da40d9c381fdcc324b0c6ddf"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/test_actual_replan.py",
+      "source": "blind-batched-observation-progress-76/test_actual_replan.py",
+      "group": "measured-progress-pilot",
+      "bytes": 3477,
+      "sha256": "5336767f69335a2fadbe1bdbfedfe8fb907a21d53ba29cba50d91ef8dd5a3941"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/test_evidence_codec.py",
+      "source": "blind-batched-observation-progress-76/test_evidence_codec.py",
+      "group": "measured-progress-pilot",
+      "bytes": 972,
+      "sha256": "c14e06513aaae6b7799d1798d4aaa63e7a5f6d0cb38311ab20be81a2d9290619"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/test_local_support.py",
+      "source": "blind-batched-observation-progress-76/test_local_support.py",
+      "group": "measured-progress-pilot",
+      "bytes": 5263,
+      "sha256": "217a22633a18bf4361e4ee939d019dbbc3da9eeb5e139a17bf86b8190fdadc35"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/test_loop_contract.py",
+      "source": "blind-batched-observation-progress-76/test_loop_contract.py",
+      "group": "measured-progress-pilot",
+      "bytes": 7420,
+      "sha256": "dc7caf0e740d342dd48893128af0c4bf1192a06b835079fda8b9f7ec91bd7a23"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/test_low_objects.py",
+      "source": "blind-batched-observation-progress-76/test_low_objects.py",
+      "group": "measured-progress-pilot",
+      "bytes": 2735,
+      "sha256": "a9c8993816f18cae54256e3d5ca0c29c8acc860245b00f55a7ec7292a743eb44"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/test_observation_batch.py",
+      "source": "blind-batched-observation-progress-76/test_observation_batch.py",
+      "group": "measured-progress-pilot",
+      "bytes": 4579,
+      "sha256": "6f9b7a1dd3c87524566832eac8e1d34e68a6f0ebb881b904f868b5e7ae248753"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/test_pose_delivery.py",
+      "source": "blind-batched-observation-progress-76/test_pose_delivery.py",
+      "group": "measured-progress-pilot",
+      "bytes": 5699,
+      "sha256": "9c59937ae353f1e99e79dd3b741e3a4178a21fb9b4479f5c009fd98ad17829a0"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/test_retained_policy.py",
+      "source": "blind-batched-observation-progress-76/test_retained_policy.py",
+      "group": "measured-progress-pilot",
+      "bytes": 3204,
+      "sha256": "5b55052e19d0fa874136284614846cbb6b1df7326db90faa710fa6a9e7a4efd8"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/test_runtime_exclusion.py",
+      "source": "blind-batched-observation-progress-76/test_runtime_exclusion.py",
+      "group": "measured-progress-pilot",
+      "bytes": 3177,
+      "sha256": "076675f0f178f3d04c2721129ccb3ed9bafb8065590933fcd8052e2f66b78106"
+    },
+    {
+      "path": "blind-batched-observation-progress-76/PUBLICATION_MANIFEST.json",
+      "source": "blind-batched-observation-progress-76/PUBLICATION_MANIFEST.json",
+      "group": "measured-progress-pilot",
+      "bytes": 7349,
+      "sha256": "10a237fb2c614f55b53a4db11978a6b0bb6ec2afa47c4f931c3c8ebd3b902c1d"
+    },
+    {
+      "path": "blind-clearance-centered-loop-55/planner.py",
+      "source": "blind-clearance-centered-loop-55/planner.py",
+      "group": "coffee-evidence",
+      "bytes": 4094,
+      "sha256": "2bab104d9df3e68b6aa8c9ff8b555eff0fd959cf2c9739966c77283fd3754c81"
+    },
+    {
+      "path": "blind-coffee-native-topology/FROZEN.json",
+      "source": "blind-coffee-native-topology/FROZEN.json",
+      "group": "coffee-evidence",
+      "bytes": 2711,
+      "sha256": "b27951cdd9d48df26dd9e6d4d5510663e7c35a5799d1e4cdbc6e6f1383640c12"
+    },
+    {
+      "path": "blind-coffee-native-topology/INDEPENDENT_REVIEW.json",
+      "source": "blind-coffee-native-topology/INDEPENDENT_REVIEW.json",
+      "group": "coffee-evidence",
+      "bytes": 2101,
+      "sha256": "dce8b7cd17cec12cfa09c2cab3b06eff6d620de8493d2aa8406ad1c6c670302b"
+    },
+    {
+      "path": "blind-coffee-native-topology/NATIVE_PROPOSALS.png",
+      "source": "blind-coffee-native-topology/NATIVE_PROPOSALS.png",
+      "group": "coffee-evidence",
+      "bytes": 201154,
+      "sha256": "39d580b04a0543387d8373409cde73a6fa8c1199eb63970c20e087460da3de65"
+    },
+    {
+      "path": "blind-coffee-native-topology/PROTOCOL.json",
+      "source": "blind-coffee-native-topology/PROTOCOL.json",
+      "group": "coffee-evidence",
+      "bytes": 1143,
+      "sha256": "552bdce20612a34c00c865fe1308d055ace6ef628c4934cd35ea60a9d285fb7b"
+    },
+    {
+      "path": "blind-coffee-native-topology/README.md",
+      "source": "blind-coffee-native-topology/README.md",
+      "group": "coffee-evidence",
+      "bytes": 3875,
+      "sha256": "c0ca335d1050d968c0ecdc0dda9f607d37ae379a2f607971e7ef17176886c646"
+    },
+    {
+      "path": "blind-coffee-native-topology/RECOUNT.json",
+      "source": "blind-coffee-native-topology/RECOUNT.json",
+      "group": "coffee-evidence",
+      "bytes": 4615,
+      "sha256": "eaa2da50bbc4e3fa7bc905ba9c74bcfca6b24819ed442c1031bd2292aa8b3502"
+    },
+    {
+      "path": "blind-coffee-native-topology/RESULT.json",
+      "source": "blind-coffee-native-topology/RESULT.json",
+      "group": "coffee-evidence",
+      "bytes": 62219,
+      "sha256": "bd60b9289888fe775dbd538a331a45ae354ae2d535b1b140042e7482ae437905"
+    },
+    {
+      "path": "blind-coffee-native-topology/review_and_draw.py",
+      "source": "blind-coffee-native-topology/review_and_draw.py",
+      "group": "coffee-evidence",
+      "bytes": 2966,
+      "sha256": "75f1fac1be39f369a40236c9e13c2c8536032be0fe595e253e6eb0b66121b4eb"
+    },
+    {
+      "path": "blind-coffee-native-topology/run.py",
+      "source": "blind-coffee-native-topology/run.py",
+      "group": "coffee-evidence",
+      "bytes": 4230,
+      "sha256": "dd4f9199b4e75b500d2fcebff5b8ed31c4e25712449d6f1f1952ee97749db974"
+    },
+    {
+      "path": "blind-coffee-source-readiness/ACQUISITION.json",
+      "source": "blind-coffee-source-readiness/ACQUISITION.json",
+      "group": "coffee-evidence",
+      "bytes": 175422,
+      "sha256": "a474fe38acc5f4479b4ff085b2a8ce73ae4413eb08c87fb2de450a0fbfb57313"
+    },
+    {
+      "path": "blind-coffee-source-readiness/ATTRIBUTION.md",
+      "source": "blind-coffee-source-readiness/ATTRIBUTION.md",
+      "group": "coffee-evidence",
+      "bytes": 1585,
+      "sha256": "955790ec745fcdb52935e6cce4d31762f0068f6166bcb79c7e1e36d0d6c2be86"
+    },
+    {
+      "path": "blind-coffee-source-readiness/CAPTURE_COUNTS.json",
+      "source": "blind-coffee-source-readiness/CAPTURE_COUNTS.json",
+      "group": "coffee-evidence",
+      "bytes": 114,
+      "sha256": "9cf338323d9ec4785352e9dd7c6b7e57eadb233ec7145b2bf32e980ca5ed3253"
+    },
+    {
+      "path": "blind-coffee-source-readiness/LOCAL_INPUTS.json",
+      "source": "blind-coffee-source-readiness/LOCAL_INPUTS.json",
+      "group": "coffee-evidence",
+      "bytes": 1913,
+      "sha256": "dbdce22464fed0faf7a8f5d5b64118cf0c3ab2fcb6787b46d4d7ff3b37a3e4b9"
+    },
+    {
+      "path": "blind-coffee-source-readiness/MESH_INVENTORY.json",
+      "source": "blind-coffee-source-readiness/MESH_INVENTORY.json",
+      "group": "coffee-evidence",
+      "bytes": 777,
+      "sha256": "4e2030f43db2de6bf804636b148c82909c509fab090631934afa8bbfb6c8e86f"
+    },
+    {
+      "path": "blind-coffee-source-readiness/OFFICIAL_SOURCE.json",
+      "source": "blind-coffee-source-readiness/OFFICIAL_SOURCE.json",
+      "group": "coffee-evidence",
+      "bytes": 575,
+      "sha256": "926adeeab68e47b10fc10404810214d8702fa844a93dde1568e5b61c3b849deb"
+    },
+    {
+      "path": "blind-coffee-source-readiness/ORIENTATION_AUDIT.json",
+      "source": "blind-coffee-source-readiness/ORIENTATION_AUDIT.json",
+      "group": "coffee-evidence",
+      "bytes": 4253,
+      "sha256": "a4e3bfd684a9316ceddedf1fcdd7d78b40b3c683e100732cec6439b063d45d0e"
+    },
+    {
+      "path": "blind-coffee-source-readiness/READINESS_VALIDATION.json",
+      "source": "blind-coffee-source-readiness/READINESS_VALIDATION.json",
+      "group": "coffee-evidence",
+      "bytes": 367,
+      "sha256": "89b80d8a2f1f298649578485f54790bcf0e8e42aa646f75e83602eacffd9df30"
+    },
+    {
+      "path": "blind-coffee-source-readiness/README.md",
+      "source": "blind-coffee-source-readiness/README.md",
+      "group": "coffee-evidence",
+      "bytes": 6986,
+      "sha256": "8a30716a243d92d8516173a8747c4e879addfab55caef3c166a11cddd29c7f10"
+    },
+    {
+      "path": "blind-coffee-source-readiness/REMOTE_LISTING.json",
+      "source": "blind-coffee-source-readiness/REMOTE_LISTING.json",
+      "group": "coffee-evidence",
+      "bytes": 8513,
+      "sha256": "2846b8f8fdcb68f35a18a928ed188a48e8474e873476e1977c681efc88d596c6"
+    },
+    {
+      "path": "blind-coffee-source-readiness/SOURCE_TOP_VIEW.png",
+      "source": "blind-coffee-source-readiness/SOURCE_TOP_VIEW.png",
+      "group": "coffee-evidence",
+      "bytes": 395270,
+      "sha256": "963aaa4c9c3f61b072d2c03c01de9be6dd3a1bc6a19c41efad02a6a4ffc0185d"
+    },
+    {
+      "path": "blind-coffee-source-readiness/acquire_source.py",
+      "source": "blind-coffee-source-readiness/acquire_source.py",
+      "group": "coffee-evidence",
+      "bytes": 2709,
+      "sha256": "bfd0cffdd07d0cf0ef277b87e4d7b897ea36e46ae371a8e8fa4f79ac24d9519a"
+    },
+    {
+      "path": "blind-coffee-source-readiness/orientation_audit.py",
+      "source": "blind-coffee-source-readiness/orientation_audit.py",
+      "group": "coffee-evidence",
+      "bytes": 4788,
+      "sha256": "bbd2df89d84eec05fb0f2c84de89ef18501eb410d79243a58d2293e3b8a92e92"
+    },
+    {
+      "path": "blind-coffee-source-readiness/selected/room_datasets/coffee_room/iphone/long_capture/polycam_mesh/textured.obj",
+      "source": "blind-coffee-source-readiness/selected/room_datasets/coffee_room/iphone/long_capture/polycam_mesh/textured.obj",
+      "group": "coffee-source-mesh",
+      "bytes": 10497144,
+      "sha256": "f10de085426143ad095fefc713b4966d22fdf08beda9ff9ead759019a0a8306a"
+    },
+    {
+      "path": "blind-coffee-source-readiness/selected/room_datasets/coffee_room/iphone/long_capture/transformations.json",
+      "source": "blind-coffee-source-readiness/selected/room_datasets/coffee_room/iphone/long_capture/transformations.json",
+      "group": "coffee-evidence",
+      "bytes": 317438,
+      "sha256": "46c8d1fc5188d38179e88eff98fd42f99956fb93b570bd9483e6e92764ae7010"
+    },
+    {
+      "path": "blind-split-candidate-game-03/body-margin-variants-07/native025/detour_engine.py",
+      "source": "blind-split-candidate-game-03/body-margin-variants-07/native025/detour_engine.py",
+      "group": "coffee-evidence",
+      "bytes": 4720,
+      "sha256": "8ab51b8fe7ac2585cfbe797615dd9ac78956e6cb14277deb092aca19df38787d"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/BUILD_RECEIPT.json",
+      "source": "blind-tabletop-exclusion-planner-66/BUILD_RECEIPT.json",
+      "group": "coffee-evidence",
+      "bytes": 9728,
+      "sha256": "b871498ca713fb2b5ae28ea42309c8d67bbca4dc1760c64d1044b955f7548f95"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/License.txt",
+      "source": "blind-tabletop-exclusion-planner-66/License.txt",
+      "group": "coffee-evidence",
+      "bytes": 877,
+      "sha256": "ffad87821cce7cfd3be00b63ffadd01b04e83a4c6a0bcc68f06362ffd42d705e"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/blind_detour_exclusion.cpp",
+      "source": "blind-tabletop-exclusion-planner-66/blind_detour_exclusion.cpp",
+      "group": "coffee-evidence",
+      "bytes": 13868,
+      "sha256": "b4e5b2fa059e8b59d9e325e9ede734eb27f93a8933571adc576bef9262ed4ff9"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/clearance_adapter.cpp",
+      "source": "blind-tabletop-exclusion-planner-66/clearance_adapter.cpp",
+      "group": "coffee-evidence",
+      "bytes": 1316,
+      "sha256": "c1c69184a434bbb46280fd6125f52138f83802e114724d26369eb4e2a62ae2ee"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/libblind_detour.so",
+      "source": "blind-tabletop-exclusion-planner-66/libblind_detour.so",
+      "group": "coffee-evidence",
+      "bytes": 327688,
+      "sha256": "68979a79c67e8d9e4783d272059b7a7f2bc779718fd74f3f8e287cf90ec02b4d"
+    },
+    {
+      "path": "blind-tabletop-exclusion-planner-66/native_exclusion.py",
+      "source": "blind-tabletop-exclusion-planner-66/native_exclusion.py",
+      "group": "coffee-evidence",
+      "bytes": 3365,
+      "sha256": "aa1da6fe3f4bc962fafa2bfc597d81675d7da61daab181d8e834e5bd3414d0bd"
+    },
+    {
+      "path": "blind-coffee-native-topology/PUBLICATION_MANIFEST.json",
+      "source": "blind-coffee-native-topology/PUBLICATION_MANIFEST.json",
+      "group": "coffee-evidence",
+      "bytes": 6047,
+      "sha256": "2784020d1b8fc8919cb6d7c25ed33d73944b31de6cd03cdd8065d32739dbe79e"
+    },
+    {
+      "path": "PUBLICATION/README.md",
+      "source": "blind-measured-progress-coffee-publication/README.md",
+      "group": "measured-progress-pilot",
+      "bytes": 3598,
+      "sha256": "bba3c470d9ce79338f4fd67954988b14b17004fe0945b2ad54350020726a537f"
+    },
+    {
+      "path": "THIRD_PARTY/RECAST_LICENSE.txt",
+      "source": "blind-tabletop-exclusion-planner-66/License.txt",
+      "group": "measured-progress-pilot",
+      "bytes": 877,
+      "sha256": "ffad87821cce7cfd3be00b63ffadd01b04e83a4c6a0bcc68f06362ffd42d705e"
+    }
+  ]
+}
