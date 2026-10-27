@@ -1,0 +1,19 @@
+{
+  "label": "host-fixtures-run",
+  "command": [
+    "/Users/runner/work/_temp/blind-mesh-decoder-81/fixtures"
+  ],
+  "exitCode": 0,
+  "expectedFailure": false,
+  "timedOut": false,
+  "exception": null,
+  "wallSeconds": 0.3375006249999615,
+  "scratchBytesAfterCommand": 30774554,
+  "scratchEntries": 67,
+  "fileCapBytes": 134217728,
+  "cpuCapSeconds": 180,
+  "wallTimeoutSeconds": 240,
+  "scratchAccounting": "stage end only; not a live quota or RAM cap",
+  "logTail": "PASS: local float3\nPASS: uint16 triangles\nPASS: missing classification is diagnostic\nPASS: no physical authority\nPASS: complete revision identity\nPASS: unaligned offset and padded stride\nPASS: uint32 padded indices\nPASS: transform preserved bit exactly\nPASS: transform not preapplied\nPASS: one downstream transform\nPASS: padded multiface classification\nPASS: unknown label diagnostic\nPASS: unknown label retains geometry without authority\nPASS: malformed classification short\nPASS: malformed classification wrong count\nPASS: malformed classification wrong format\nPASS: malformed classification negative offset\nPASS: malformed classification overflow\nPASS: high UInt32 index not truncated\nPASS: exact inclusive budgets\nPASS: one byte input over\nPASS: one byte decoded over\nPASS: classification counts toward input\nPASS: vertex cap\nPASS: face cap\nPASS: invalid limits\nPASS: zero revision\nPASS: out of range index\nPASS: UInt32 max index\nPASS: partial triangle\nPASS: truncated vertex\nPASS: negative offset\nPASS: short stride\nPASS: range overflow\nPASS: stride overflow\nPASS: wrong vertex format\nPASS: truncated indices\nPASS: index offset overflow\nPASS: index short stride\nPASS: index negative count\nPASS: index wrong format\nPASS: decoded allocation multiplication overflow\nPASS: late nonfinite vertex rejects full revision\nPASS: late nonfinite vertex rejects full revision\nPASS: late nonfinite vertex rejects full revision\nPASS: transform scale\nPASS: transform reflection\nPASS: transform shear\nPASS: transform projective\nPASS: transform nonfinite translation\nPASS: short transform\nRESULT: 51 fresh synthetic checks passed; no device/runtime/clearance claim\n",
+  "passed": true
+}
