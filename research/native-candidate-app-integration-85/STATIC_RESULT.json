@@ -1,5 +1,5 @@
 {
-  "staticChecksPassed": 61,
+  "staticChecksPassed": 70,
   "checks": [
     "Python syntax: check_static.py",
     "Python syntax: ci.py",
@@ -31,6 +31,8 @@
     "native package dependency",
     "host condition ARKitMeshAdapter.swift",
     "host condition ARKitIngress.swift",
+    "exact shallow seed before resolve",
+    "git rewrite process local",
     "exact app dependency resolution",
     "resolve before disabled-resolution builds",
     "checkout revision independently verified",
@@ -61,6 +63,13 @@
     "pin BlindMemory/Package.swift",
     "pin research/assistant-selected/grdb-7.11.1/SELECTED_SOURCE.json",
     "pin research/native-candidate-app-integration-85/evidence/run-40562846752-host-swiftpm-graph-receipt.json",
+    "pin research/native-candidate-app-integration-85/evidence/run-40564108510/simulator-swiftpm-graph-receipt.json",
+    "pin research/native-candidate-app-integration-85/evidence/run-40564108510/app-patch-check-receipt.json",
+    "pin research/native-candidate-app-integration-85/evidence/run-40564108510/host-swiftpm-graph-receipt.json",
+    "pin research/native-candidate-app-integration-85/evidence/run-40564108510/app-exact-dependency-resolve-receipt.json",
+    "pin research/native-candidate-app-integration-85/evidence/run-40564108510/host-fixtures-link-receipt.json",
+    "pin research/native-candidate-app-integration-85/evidence/run-40564108510/app-patch-apply-receipt.json",
+    "pin research/native-candidate-app-integration-85/evidence/run-40564108510/host-fixtures-run-receipt.json",
     "patch applies without modifying app"
   ],
   "swiftExecutedLocally": false,

@@ -125,3 +125,29 @@ simulator graph, exact GRDB resolution and both app compile flag phases were
 **not reached**. The correction requires a new exact-source Apple run; local
 static success is not a build pass. The original bounded receipt is retained in
 `evidence/run-40562846752-host-swiftpm-graph-receipt.json`.
+
+### Second exact-commit Apple run: dependency fetch failure
+
+Run [40564108510](https://github.com/mischa23v/blind/actions/runs/40564108510),
+commit `1c53f27b2a3b9497bec269af1fd9a843d6fe7600`, **passed the actual local host
+SwiftPM graph, all83 existing host fixtures, actual iOS Simulator SwiftPM graph,
+and app patch check/application**. It failed the explicit GRDB resolution command
+(exit74,38.39s): the full-history fetch reported114,085objects, reached123.25MiB,
+then `fatal: fetch-pack: invalid index-pack output`. Both app flag compile phases
+were **not reached**. All seven original bounded receipts are retained under
+`evidence/run-40564108510/`.
+
+The receipt reports no direct parent file-limit signal or exceeded scratch cap;
+a child index-pack hitting the inherited128MiB cap is plausible but **not proven**
+by the available tail. No cap is increased and no fetch error is suppressed.
+Instead, the corrected resolver first makes a bounded shallow bare clone of only
+`v7.11.1`, requires the peeled tag and HEAD to equal the already-pinned revision,
+then supplies a process-local Git URL rewrite from the canonical dependency URL
+to that verified seed. SwiftPM still resolves the unchanged exact lock and actual
+source; the checked-out HEAD and resulting lock are verified afterward. This is
+an **exact shallow-seeded resolution variant**, not a pass of the original
+full-history fetch. No global Git configuration, application dependency manifest,
+version constraint, cap or algorithm is changed. If the runner does not honor the
+scoped rewrite or the bounded seed fails, the stage fails rather than falling back
+to arbitrary source or claiming the app compiled. This correction awaits its own
+exact-source Apple run.

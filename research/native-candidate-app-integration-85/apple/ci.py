@@ -100,6 +100,21 @@ def main():
         expected_pin = dict(identity='grdb.swift', kind='remoteSourceControl',
             location=grdb_location, state=dict(revision=grdb_revision, version='7.11.1'))
         resolved.write_text(json.dumps(dict(pins=[expected_pin], version=2), indent=2) + '\n')
+        # Fetch only the reviewed release snapshot, not GRDB's entire history.
+        # URL rewriting is scoped to this command environment, never global config.
+        seed = out / 'grdb-exact-seed.git'
+        receipts.append(runner.run(['git', 'clone', '--bare', '--depth', '1',
+            '--single-branch', '--branch', 'v7.11.1', grdb_location, str(seed)],
+            'app-exact-dependency-seed', out, 180, env=env))
+        assert runner.output(['git', '--git-dir', str(seed), 'rev-parse',
+            'refs/tags/v7.11.1^{}']) == grdb_revision, 'release tag changed; refuse resolution'
+        assert runner.output(['git', '--git-dir', str(seed), 'rev-parse', 'HEAD']) == grdb_revision
+        assert runner.output(['git', '--git-dir', str(seed), 'rev-parse', '--is-shallow-repository']) == 'true'
+        env = dict(env)
+        config_index = int(env.get('GIT_CONFIG_COUNT', '0'))
+        env['GIT_CONFIG_COUNT'] = str(config_index + 1)
+        env['GIT_CONFIG_KEY_' + str(config_index)] = 'url.' + seed.as_uri() + '.insteadOf'
+        env['GIT_CONFIG_VALUE_' + str(config_index)] = grdb_location
         resolve = ['xcodebuild', '-resolvePackageDependencies',
             '-project', str(ROOT / 'ios/BlindAssist.xcodeproj'), '-scheme', 'BlindAssist',
             '-clonedSourcePackagesDirPath', str(out / 'app-source-packages'),
@@ -136,7 +151,9 @@ def main():
         swiftPMBuildSystem=runner.BUILD_SYSTEM, defaultSwiftBuildBackendPassed=False,
         actualLocalPackageGraphHost='passed', actualLocalPackageGraphSimulator='passed',
         fixtureResult=fixture_result, appProposalCompile=app_results,
-        appProposalApplied=args.app_proposal, appExecuted=False, simulatorExecuted=False,
+        appProposalApplied=args.app_proposal,
+        appDependencyResolution='exact verified shallow seed' if args.app_proposal else 'not run',
+        appExecuted=False, simulatorExecuted=False,
         runtimeOptInChanged=False, nativeCopyLatencyMeasured=False, deviceAcceptance='not run')
     (out / 'RESULT.json').write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps(result))

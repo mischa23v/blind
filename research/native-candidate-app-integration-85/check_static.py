@@ -62,6 +62,8 @@ check('native package dependency', '.package(path: "../room-mesh-package-75/Blin
 for folder,file in [('arkit-mesh-adapter-82','ARKitMeshAdapter.swift'),('mesh-candidate-ingress-83','ARKitIngress.swift')]:
     check('host condition '+file, (R/'research'/folder/'Sources'/file).read_text().startswith('#if os(iOS) && canImport(ARKit)\n'))
 ci = (H/'apple/ci.py').read_text()
+check('exact shallow seed before resolve', ci.index("'app-exact-dependency-seed'") < ci.index("'app-exact-dependency-resolve'") and "'refs/tags/v7.11.1^{}']) == grdb_revision" in ci)
+check('git rewrite process local', "env['GIT_CONFIG_COUNT']" in ci and "'url.' + seed.as_uri() + '.insteadOf'" in ci and "'--global'" not in ci)
 check('exact app dependency resolution', '-onlyUsePackageVersionsFromResolvedFile' in ci and "assert pins == [expected_pin]" in ci and "grdb_revision = 'b83108d10f42680d78f23fe4d4d80fc88dab3212'" in ci)
 check('resolve before disabled-resolution builds', ci.index("'app-exact-dependency-resolve'") < ci.index("'-disableAutomaticPackageResolution'"))
 check('checkout revision independently verified', "str(checkout), 'rev-parse', 'HEAD']) == grdb_revision" in ci)
