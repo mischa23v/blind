@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "scope": "synthetic full-app camera/ask accessibility audit",
+  "nativeAuditOutcome": "not_inferred_from_attachments",
+  "screenshots": [
+    "full-audit-camera-before.png",
+    "full-audit-camera-issue-1-screen.png"
+  ],
+  "metadata": [
+    "full-audit-camera-issue-1-metadata.json"
+  ],
+  "errors": [],
+  "phases": {
+    "camera": {
+      "status": "missing_or_partial",
+      "observedRoles": [
+        "camera-before"
+      ],
+      "retainedRoles": [
+        "camera-before"
+      ],
+      "missingRoles": [
+        "camera-after"
+      ]
+    },
+    "ask": {
+      "status": "not_observed",
+      "observedRoles": [],
+      "retainedRoles": [],
+      "missingRoles": []
+    }
+  },
+  "issues": {
+    "camera-issue-1": {
+      "status": "complete",
+      "missingRoles": []
+    }
+  },
+  "screenshotBytes": 499298,
+  "evidenceComplete": false
+}

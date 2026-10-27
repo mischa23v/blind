@@ -1,0 +1,51 @@
+{
+  "commit": "0babd78d14eafe8b818e3b15be1ebe84aaf04caf",
+  "run_id": 40571313138,
+  "job_id": 122425944711,
+  "conclusion": "failure",
+  "core": {
+    "total": 1385,
+    "skipped": 1,
+    "failed": 0
+  },
+  "memory": {
+    "total": 51,
+    "failed": 0
+  },
+  "simulator_build": "passed",
+  "unit": {
+    "total": 155,
+    "passed": 148,
+    "failed_test_declarations": 5,
+    "skipped": 2,
+    "parameterized_model_issues": 14,
+    "availability_before_invocations": "available",
+    "reported_asset_failure": "UAF Code5000 missing com.apple.MobileAsset.UAF.FM.Overrides underlying assets",
+    "model_reply_text": "nil",
+    "adapter_status": "The on-device reply could not finish. No external action was taken."
+  },
+  "ui": {
+    "total": 17,
+    "passed": 13,
+    "failed": 1,
+    "skipped": 3,
+    "failure": "LaunchTests.testAccessibilityAuditOfCameraAndAsk",
+    "audit_type": 65536,
+    "element": "Practice footer",
+    "camera_after": "not reached",
+    "ask": "not reached"
+  },
+  "runtime_test_evidence": {
+    "failure_extractor_emitted": 0,
+    "failure_extractor_omitted": 0,
+    "specific_positive_pass_witness": "not published",
+    "unit_xcresult": "not uploaded; only summary available"
+  },
+  "artifact": {
+    "id": 12766756189,
+    "bytes": 424725,
+    "sha256": "d588ed9abab10f9df6dadd4159b3bbc7d2b2d8a64bad538568818a96bb8f9762",
+    "crc_verified": true
+  },
+  "job_log_sha256": "27fc892263e1a223480449cdc4fc975ac62b20444390f9fc7c1640a655938732"
+}
