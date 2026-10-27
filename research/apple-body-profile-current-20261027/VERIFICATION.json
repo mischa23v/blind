@@ -1,0 +1,159 @@
+{
+  "commit": "0babd78d14eafe8b818e3b15be1ebe84aaf04caf",
+  "run_id": 40571313226,
+  "artifact_id": 12764309072,
+  "artifact_size": 5775,
+  "artifact_sha256": "c5cad70fa01f51ebfcdb6576e8a3330491dd99ddac8d2050f89eba84a001e2da",
+  "zip_crc_verified": true,
+  "compiled_inputs_count": 27,
+  "compiled_inputs_local_matches": true,
+  "actual_unique_passing_tests": 55,
+  "suite_counts": {
+    "BodyProfileStoreTests": 9,
+    "BodyCollisionWarningTests": 11,
+    "BodyProfileTests": 19,
+    "DetectorTests": 16
+  },
+  "source_checks": [
+    {
+      "path": "BlindCore/Sources/BlindCore/BodyProfile.swift",
+      "sha256": "61c8f6cb69944433f6dad350619c702e332306c95fee40da30c5232caf18cea4",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/Geometry.swift",
+      "sha256": "f7a27aff67ed97dda0550463e70ee9df9c85381024ce02f2f091a2b35f353eb5",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/IndoorMap.swift",
+      "sha256": "143907bb8733793b91cdf17916002e5888943049c3ff2c7fc5ae725be4419529",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/KeepOutZone.swift",
+      "sha256": "eddf790cac4ca97596b42631af7e86501f7089024443a5d30c19570469035968",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeObservation.swift",
+      "sha256": "3ddeb793d9c3fcbadd1de6d1103f182a58c9228dee2c6188ae9a31f42748be45",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NavigationSurface.swift",
+      "sha256": "d0dc93843ce65d43f0199edbd3d9a08e4b83f783839c17522b2b60484b6d13fb",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/PlacePackage.swift",
+      "sha256": "6c23c635ed8fc9fbb62608f1475e0aa28f2a9762d32e4700a5a0e84d395dacaa",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/RecordedRouteHistory.swift",
+      "sha256": "11ff46516cd534aa6da5da6b6bce713c2c7eff6a9015b0c8f5102eae9b87a9a3",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/RoomLayout.swift",
+      "sha256": "3e7609313a1d781e5b6c0c40071439442df88fddfe2005e86078e54ae6d0af18",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SavedWorldFrame.swift",
+      "sha256": "c81551da30f5c778dd8202cf2572a4cd4c347a9fa5a05884fc54a43a0416653e",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SpatialFrameRegistry.swift",
+      "sha256": "856d97523516429b2e655bc1c3e36dd5331728f40e4d15a6f5817c925e545541",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SpatialLocalizationLease.swift",
+      "sha256": "88a9e9f888a1c23b0e27a3da270008c6dbc6d88fff61f016cef5344280c60193",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SpatialMapInstallation.swift",
+      "sha256": "600fb45acdcf5d4b7dbb2b0e6f6a4e35b847479824147ba0bbbb3ffed2532b55",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift",
+      "sha256": "cdd10af53179e7f56b3ae575145f56222edae2382177ade0e68d89e72c90a76f",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/StoredTerrainAssessment.swift",
+      "sha256": "53a0cf8756ed4ce9c445f889f31eac88b8333f6b8d8ed471b5c08d923817b3a8",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/HazardDetector.swift",
+      "sha256": "9bbcdae56f58ed76d8a06f0b03651af24a023c48c0a23111187ec2a511c1d615",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/MonitoringRecovery.swift",
+      "sha256": "7f031367494fae7cc47720560b83cfea72ff6283e051c6be892102b41d069fae",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/GuidanceText.swift",
+      "sha256": "b1f29eeef4a94d9ad1cbc17032bc68c52cdcd4216ea84ff42d94e8d9824c5836",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/AlertPolicy.swift",
+      "sha256": "b13f4fd8075c6055d604a13fbe027f10b60b55b4dc4b07abbba7d15b0ce489a0",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/BodyCollisionWarning.swift",
+      "sha256": "c06d47fe8e8c49abfb60acaa396cb046fa1b3fc193a50410ae51e257fe21c49c",
+      "local_match": true
+    },
+    {
+      "path": "ios/BlindAssist/BodyProfileStore.swift",
+      "sha256": "64b795deea263d3ef0baf80f283e1d620a78b903b6a3a53fef22895c717fc84c",
+      "local_match": true
+    },
+    {
+      "path": "ios/BlindAssist/SpatialMapIO.swift",
+      "sha256": "f044ff2aa869cf0ea3ab8a2ff8d4c6ba7fc7fcd9915fe1fed59109219a3c548c",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/BodyCollisionWarningTests.swift",
+      "sha256": "2c462a70fd8c31fe5d5257f955fd80f2177b5e3d5c209cb5e1fa9747a893d265",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/BodyProfileTests.swift",
+      "sha256": "06929a1b4c73d6201fae8105626b77420568316716defa35b468a78116b1514e",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/SpatialIntegrationFixture.swift",
+      "sha256": "a8bd9d2235b20d997438374473ed38fe3eceae5939f200776069eb24e3016ea3",
+      "local_match": true
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/BlindCoreTests.swift",
+      "sha256": "0e360c501f789e36d87d91746ba512a8817a015c4a5f8478db74ce61750f8979",
+      "local_match": true
+    },
+    {
+      "path": "research/evaluations/body-aware-warning/verification/Tests/BodyProfileStoreTests.swift",
+      "sha256": "f59df1f08c25e512d382babd80084d342bb6ac09fec7c0b4001c428e54416236",
+      "local_match": true
+    }
+  ],
+  "limits": [
+    "macOS extracted-source tests, not live iPhone/device evidence",
+    "No historical overlay",
+    "Full native app suite remains separate"
+  ]
+}

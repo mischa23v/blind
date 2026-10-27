@@ -1,3 +1,16 @@
+## Latest checkpoint — 2026-10-27 19:54 UTC
+
+[Current reconciliation](research/checkpoint-20261027-1954/README.md) supersedes stale publication/test-state wording in the earlier reconciliation below. Review implementation is `0babd78`; no merge, app activation or physical-readiness claim.
+
+- Decoder 51 and adapter 36 synthetic host/API checks passed. Later owned-discard checks passed 111 package and 83 ingress checks. The stage 85 real dependency graph passed; actual app builds still fail at the Xcode build service, and its default-off app patch remains unapplied.
+- The actual foreground IO priority change is published with original assertions/deadlines unchanged. Current-source BodyProfileStore evidence verifies 55 unique XCTest passes, zero failures/skips and all 27 compiled-input hashes matched; full native green is not established. Dynamic Type remains open.
+- Frozen matrix snapshot:14 actual simulated arrivals, one interrupted/unknown, one marked running with producer liveness under investigation and 84 unrun. It is not a completed 100-run result. Evaluator oracle support/veto, supplied poses, manual unknown region, zero margin and unmeasured floor contacts prevent interpretation as live obstacle avoidance.
+- Live hazard coverage/lead time, metric localization, body heading/calibration, continuous deviation, checked route connectors and return/restart remain OPEN. The 400 actual-stack journeys and device/participant acceptance remain unfinished.
+
+The earlier “stage 82 untested” and “IO diagnostic running” statements below are historical checkpoint records, not current status. Preserve the failures; do not lower acceptance gates.
+
+---
+
 ## Current reconciliation — 2026-10-27, review branch only
 
 **Navigation remains the first implementation priority. Live ground-hazard/warning acceptance is BLOCKED; localization, body orientation, continuous deviation and useful live A-to-B/return acceptance remain OPEN.** Component counts are not a completion percentage or physical-readiness evidence.

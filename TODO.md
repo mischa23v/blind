@@ -1,3 +1,15 @@
+## Next actions — 2026-10-27 19:54 UTC
+
+Navigation remains first. [Current status and evidence](research/checkpoint-20261027-1954/README.md) supersede stale current-status wording in the historical notes below.
+
+1. Check the frozen matrix producer and continue without duplicate execution or changed thresholds. Snapshot:14 simulated arrivals, one unknown, one marked running whose liveness is under investigation,84 unrun.
+2. Preserve the verified 55-case exact-source Apple body-profile result and review full native results; diagnose the stage 85 build-service crash. Keep the app integration proposal default-off and unapplied until actual app builds pass. Repair the measured Dynamic Type defect without suppressing audits.
+3. Publish verified code/evidence checkpoints, then complete live sensing, body/phone calibration, localization/deviation, safe connectors and return/restart acceptance. Reference-assisted movement is not phone hazard detection.
+
+The full tracker,100-episode benchmark and 400 actual-stack journeys are unfinished. No live physical guidance or participant readiness is claimed.
+
+---
+
 ## Current checkpoint: one controlled arrival; phone-map floor barriers still open
 
 **2026-10-26 — navigation remains the first priority. Live sensor clearance and physical navigation remain UNPROVEN.**

@@ -1,3 +1,16 @@
+## Current navigation-first work — 2026-10-27 19:54 UTC
+
+Use the [current reconciliation and exact evidence](research/checkpoint-20261027-1954/README.md) before the historical checkpoints below. Review source is `0babd78`; no merge or live guidance activation is established.
+
+- [ ] Finish the frozen 20×5 movement matrix and independent recount. The dated local snapshot has 14 simulated arrivals, episode 8 interrupted/unknown, one marked running with liveness under investigation, and 84 not run. This is not a full benchmark pass or live navigation evidence.
+- [ ] Close actual-app integration and regression gates: decoder 51, adapter 36, later package 111/ingress 83 component checks passed, but stage 85's app builds remain blocked by an Xcode service crash. Its default-off patch is still unapplied. Current-source body-profile verification passed 55 unique XCTest cases with zero failures/skips and all 27 compiled-input hashes matched. Review the full native run; Dynamic Type remains open.
+- [ ] Establish live hazard coverage/lead time, body-camera calibration, localization/heading/deviation, checked path entry, changing obstacles and recovery/return. The assisted simulation cannot close these gates.
+- [ ] Complete 400 actual-stack journeys and staged device/participant acceptance. No percentage completion or independent-use readiness is inferred from component counts.
+
+Historical entries below describe their original dates and remain preserved, including failures and unrun stages.
+
+---
+
 ## Current checkpoint: one controlled arrival; phone-map floor barriers still open
 
 **2026-10-26 — navigation remains the first priority. Live sensor clearance and physical navigation remain UNPROVEN.**

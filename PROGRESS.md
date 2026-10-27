@@ -1,3 +1,13 @@
+## 2026-10-27 19:54 UTC — Review-branch navigation and Apple checkpoint
+
+[Full reconciliation with exact runs and limitations](research/checkpoint-20261027-1954/README.md). Published implementation is review-branch `0babd78`, not a merge or release. Decoder 81 passed 51 synthetic host checks; ARKit adapter 82 passed 36 host checks/API compilation; later terminal-discard checks passed 111 package and 83 ingress checks. Owned-discard evidence is published at `dc56e65`. These are component scopes, not cumulative independent trials or live capture validation.
+
+The actual SpatialMapIO foreground-priority change preserves original deadlines/safeguards. Current-source BodyProfileStore evidence verifies 55 unique XCTest passes, zero failures/skips and all 27 compiled-input hashes matched; full native acceptance is not claimed. Stage 85's local graph passed, but actual app compilation and the one permitted build-service retry failed; the app patch remains unapplied. Dynamic Type remains unresolved despite measured category changes.
+
+The dated local frozen-matrix snapshot records 14 simulated arrivals, one interrupted/unknown episode, one marked running with liveness under investigation and 84 unrun. Supplied poses, reference/manual support and veto, manual unknown region, zero margin and unmeasured exempt floor contacts remain explicit. No live sensing or safe real-world navigation result follows. Earlier reports below retain their original results.
+
+---
+
 ## 2026-10-25 — Local selected-PDF page quotation
 
 The existing conversation controls now offer Choose a PDF, one-based file-page selection, Read and Forget, with equivalent trusted English/Arabic typed commands. A bounded whole-request grammar also accepts terminal sentence punctuation and reviewed direct polite English/Arabic commands, not general natural-language intent. Selection is separate from reading. One bounded immutable source is hashed from its actual bytes and read locally through PDFKit's accessibility-permitted text layer; no PDF content, filename, path or hash enters models, histories, stores or diagnostics.

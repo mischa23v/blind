@@ -1,0 +1,56 @@
+{
+  "verified": true,
+  "required_names": [
+    "testLocalStoreRoundTripScopedDeletionAndCorruptFile",
+    "testBlockedWriteDoesNotBlockMainAndCannotResurrectAfterDelete",
+    "testRejectedStaleWriterDoesNotCancelAdmittedCurrentWriter",
+    "testReopeningReadWaitsForBlockedSaveWithoutRollingItBack",
+    "testWaitingReadsCoalesceAndCannotCrossDeletionBarrier",
+    "testFailedDeleteDoesNotPermitNewSaveUntilDeletionRetry",
+    "testSourceGeometryHookRetiresBothOwnersWithoutChangingTrustedIdentity",
+    "testRuntimeSubscriptionStartupSaveAndDeletionAreRevisionOwned",
+    "testSupersededWriteCannotRepublishDeletedRuntimeGeometry"
+  ],
+  "events": {
+    "testLocalStoreRoundTripScopedDeletionAndCorruptFile": [
+      "started",
+      "passed"
+    ],
+    "testBlockedWriteDoesNotBlockMainAndCannotResurrectAfterDelete": [
+      "started",
+      "passed"
+    ],
+    "testRejectedStaleWriterDoesNotCancelAdmittedCurrentWriter": [
+      "started",
+      "passed"
+    ],
+    "testReopeningReadWaitsForBlockedSaveWithoutRollingItBack": [
+      "started",
+      "passed"
+    ],
+    "testWaitingReadsCoalesceAndCannotCrossDeletionBarrier": [
+      "started",
+      "passed"
+    ],
+    "testFailedDeleteDoesNotPermitNewSaveUntilDeletionRetry": [
+      "started",
+      "passed"
+    ],
+    "testSourceGeometryHookRetiresBothOwnersWithoutChangingTrustedIdentity": [
+      "started",
+      "passed"
+    ],
+    "testRuntimeSubscriptionStartupSaveAndDeletionAreRevisionOwned": [
+      "started",
+      "passed"
+    ],
+    "testSupersededWriteCannotRepublishDeletedRuntimeGeometry": [
+      "started",
+      "passed"
+    ]
+  },
+  "invalid_or_missing": {},
+  "errors": [],
+  "log_bytes_seen": 16449,
+  "log_truncated": false
+}
