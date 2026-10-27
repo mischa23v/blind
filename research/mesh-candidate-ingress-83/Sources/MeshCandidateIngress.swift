@@ -19,6 +19,14 @@ public final class MeshCandidateIngress83 {
     private var epoch: UUID
     private var token: UInt64 = 0
     private var stopped = false, copies = 0
+    private var discarding = false, runtimeDiscarded = false, discarded = false
+    private var discardWaiters: [() -> Void] = []
+    // Only the decode job reads/releases contents. Clearing this box also releases
+    // the ingress stack's reference even if a fast worker finishes before return.
+    private final class OwnedCopy {
+        var value: MeshSnapshot82.Capture?
+        init(_ value: MeshSnapshot82.Capture) { self.value = value }
+    }
     private var receipt: Double = -1
     // Tombstones remain until reset; no eviction that could permit anchor ABA.
     private var revisions: [UUID: UInt64] = [:]
@@ -59,13 +67,20 @@ public final class MeshCandidateIngress83 {
             copies += 1; return c
         }
         guard let context else { return false }
-        let owned = capture(context) // token retired and aggregate slot reserved BEFORE copy
+        let owned = OwnedCopy(capture(context)) // token retired and aggregate slot reserved BEFORE copy
         worker.async { [self] in
+            install(owned, context: context, anchorID: anchorID)
+            owned.value = nil
+            locked { copies -= 1; acknowledgeDiscardIfDrained() }
+        }
+        return true
+    }
+    // Separate scope releases decoded geometry/event temporaries before the slot.
+    private func install(_ owned: OwnedCopy, context: MeshSnapshot82.Context, anchorID: UUID) {
             // A lifecycle fence before expensive decode, then again at install.
             let eligible = locked { !stopped && epoch == context.sessionID && revisions[anchorID] == context.revision }
-            let decoded = eligible ? MeshSnapshot82.decode(owned) : nil
+            let decoded = eligible ? MeshSnapshot82.decode(owned.value!) : nil
             locked {
-                defer { copies -= 1 }
                 guard !stopped, epoch == context.sessionID else { return }
                 // A newer accepted update/removal subsumes this copy. Any refusal
                 // already marked its own gap at ingress; stale completion adds none.
@@ -88,8 +103,6 @@ public final class MeshCandidateIngress83 {
                     _ = runtime.offer(event)
                 }
             }
-        }
-        return true
     }
     @discardableResult public func remove(anchorID: UUID, receiptUptime: Double) -> Bool {
         locked {
@@ -101,11 +114,34 @@ public final class MeshCandidateIngress83 {
     }
     /// Fences only; NOT a privacy purge or acknowledgement that native work drained.
     public func stop() { locked { _ = advance(); stopped = true; runtime.stop() } }
+    /// Terminal stop and acknowledged release of this owner's retained copies and
+    /// runtime geometry. Does not erase ARKit/caller/system allocations. Captures
+    /// already admitted must return; no slot is released early and no reset/restart
+    /// is permitted after this call. Completion runs asynchronously outside locks.
+    public func stopAndDiscard(completion: @escaping () -> Void) {
+        locked {
+            if discarded { DispatchQueue.global(qos: .utility).async { completion() }; return }
+            discardWaiters.append(completion)
+            guard !discarding else { return }
+            discarding = true; _ = advance(); stopped = true
+            revisions.removeAll(keepingCapacity: false); receipt = -1
+            runtime.stopAndDiscard { [self] in
+                locked { runtimeDiscarded = true; acknowledgeDiscardIfDrained() }
+            }
+        }
+    }
+    // Under ingress lock; runtime completion never calls back while holding its lock.
+    private func acknowledgeDiscardIfDrained() {
+        guard discarding, !discarded, runtimeDiscarded, copies == 0 else { return }
+        discarded = true
+        let waiters = discardWaiters; discardWaiters.removeAll(keepingCapacity: false)
+        for waiter in waiters { DispatchQueue.global(qos: .utility).async { waiter() } }
+    }
     /// Fresh UUID epoch prevents A->B->A generation reuse. Outstanding copies still
     /// consume their original aggregate slots until they actually return/drain.
     public func reset() throws {
         try locked {
-            guard advance() else { throw Failure.unavailable }
+            guard !discarding, advance() else { throw Failure.unavailable }
             let next = UUID()
             try runtime.reset(sessionID: next.uuidString, generation: 1)
             epoch = next; revisions.removeAll(keepingCapacity: false); receipt = -1; stopped = false

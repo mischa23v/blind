@@ -153,5 +153,57 @@ let currentFailureRoute=try query(currentFailure)
 try fc("current lifecycle failure survives revision advances",!currentFailureRoute.sourceDeliveryComplete && currentFailureRoute.unknownCoverage.contains("ingress-or-lifecycle-gap"))
 _ = currentFailure.offer(event(2));drain()
 try fc("later valid event cannot clear current failure",!(try query(currentFailure)).sourceDeliveryComplete)
-let runtimeResult:[String:Any]=["passed":runtimeChecks.values.allSatisfy{$0},"checks":runtimeChecks,"failureCommitChecks":failureCommitChecks,"physicalAuthority":false,"ARKitExecuted":false,"scope":"Portable candidate package asynchronous lifecycle only"]
+// Terminal discard fixtures use the actual native runtime and private serial queue.
+// Reflection observes object lifetime only; no production injection/test API.
+var discardChecks=[String:Bool]()
+func dc(_ name:String,_ value:Bool)throws{discardChecks[name]=value;if !value{throw Failure.invalid("discard: "+name)}}
+let terminal=try RoomMeshCandidateRuntime(sessionID:"live")
+_ = terminal.offer(event());drain();let terminalRoute=try query(terminal)
+weak var retainedReplay:Replay?
+RoomMeshCandidateRuntime.worker.sync {
+ retainedReplay = Mirror(reflecting:terminal).children.first{$0.label=="owner"}!.value as! Replay?
+}
+try dc("fixture observes retained native geometry owner",retainedReplay != nil)
+let discardGate=DispatchSemaphore(value:0),discardBegan=DispatchSemaphore(value:0)
+RoomMeshCandidateRuntime.worker.async{discardBegan.signal();discardGate.wait()}
+_ = discardBegan.wait(timeout:.now()+2)
+try dc("pre-discard offer admitted",terminal.offer(event(2)))
+let terminalQuery=DispatchSemaphore(value:0)
+terminal.request(start:[-2,0,0],goal:[2,0,0],body:body){_ in terminalQuery.signal()}
+let discardedA=DispatchSemaphore(value:0),discardedB=DispatchSemaphore(value:0)
+terminal.stopAndDiscard{discardedA.signal()};terminal.stopAndDiscard{discardedB.signal()}
+try dc("discard immediately fences existing candidate",!terminal.isCurrent(terminalRoute))
+try dc("discard rejects new offer",!terminal.offer(event(3)))
+try dc("reset cannot bypass pending terminal discard",rejected{try terminal.reset(sessionID:"new",generation:0)})
+try dc("acknowledgement waits for admitted native jobs",discardedA.wait(timeout:.now()+0.05) == .timedOut && discardedB.wait(timeout:.now()+0.05) == .timedOut)
+try dc("owner not prematurely released on busy worker",retainedReplay != nil)
+discardGate.signal()
+try dc("both pending callers acknowledged",discardedA.wait(timeout:.now()+5) == .success && discardedB.wait(timeout:.now()+5) == .success)
+try dc("actual retained Replay released before acknowledgement",retainedReplay == nil)
+try dc("admitted query still completes",terminalQuery.wait(timeout:.now()+5) == .success)
+try dc("reset remains terminal after acknowledgement",rejected{try terminal.reset(sessionID:"new",generation:0)})
+try dc("terminal query unavailable",rejected{_ = try query(terminal)})
+let discardedAgain=DispatchSemaphore(value:0)
+terminal.stopAndDiscard{discardedAgain.signal()}
+try dc("duplicate post-drain call acknowledged",discardedAgain.wait(timeout:.now()+5) == .success)
+try dc("each earlier waiter acknowledged once",discardedA.wait(timeout:.now()+0.05) == .timedOut && discardedB.wait(timeout:.now()+0.05) == .timedOut)
+// A reset before terminal discard must not let late old work install a new owner.
+let resetDiscard=try RoomMeshCandidateRuntime(sessionID:"live")
+let resetDiscardGate=DispatchSemaphore(value:0)
+RoomMeshCandidateRuntime.worker.async{resetDiscardGate.wait()}
+_ = resetDiscard.offer(event())
+try resetDiscard.reset(sessionID:"other",generation:0)
+_ = resetDiscard.offer(event(session:"other"))
+let resetDiscardDone=DispatchSemaphore(value:0)
+resetDiscard.stopAndDiscard{resetDiscardDone.signal()}
+resetDiscard.recordOfferFailure(sessionID:"live",generation:0,lifecycle:0)
+try dc("reset interleaving still waits for both generations",resetDiscardDone.wait(timeout:.now()+0.05) == .timedOut)
+resetDiscardGate.signal()
+try dc("reset interleaving drains",resetDiscardDone.wait(timeout:.now()+5) == .success)
+try dc("late generations cannot revive terminal owner",rejected{_ = try query(resetDiscard)})
+let ordinaryReset=try RoomMeshCandidateRuntime(sessionID:"live")
+ordinaryReset.stop();try ordinaryReset.reset(sessionID:"other",generation:0)
+try dc("ordinary stop reset remains reusable",ordinaryReset.offer(event(session:"other")))
+drain();try dc("ordinary reset still rebuilds",(try query(ordinaryReset)).sourceDeliveryComplete)
+let runtimeResult:[String:Any]=["passed":runtimeChecks.values.allSatisfy{$0},"checks":runtimeChecks,"failureCommitChecks":failureCommitChecks,"discardChecks":discardChecks,"physicalAuthority":false,"ARKitExecuted":false,"scope":"Portable candidate package asynchronous lifecycle only"]
 try JSONSerialization.data(withJSONObject:runtimeResult,options:[.prettyPrinted,.sortedKeys]).write(to:URL(fileURLWithPath:CommandLine.arguments[2]).deletingLastPathComponent().appendingPathComponent("RUNTIME_RESULT.json"));print("PASS \(runtimeChecks.count) runtime checks")

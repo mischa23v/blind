@@ -85,7 +85,7 @@ def main():
                 '-lBlindRoomMesh', '-lMeshCandidateIngress83', str(HOME / 'tests/main.swift'),
                 '-o', str(out / 'fixtures')], 'host-fixtures-compile', out)
             fixture_log = runner.run([str(out / 'fixtures')], 'host-fixtures-run', out)
-            assert 'stage83' in fixture_log and 'checks passed' in fixture_log and 'RESULT:' in fixture_log
+            assert 'RESULT: 83 stage83 real-runtime synthetic checks passed' in fixture_log
     result = dict(commit=os.environ['GITHUB_SHA'], hostRealPackageFixtures='passed',
         actualARKitSimulatorCompile='passed', swiftPMBuildSystem=package_runner.BUILD_SYSTEM,
         defaultSwiftBuildBackendPassed=False,

@@ -145,4 +145,98 @@ check(supersede.ingest(anchorID: a, receiptUptime: 1) { capture($0, a) }, "new e
 supersedeQueue.sync {}
 check(candidate(supersede).route.sourceDeliveryComplete, "copy completion from old epoch cannot contaminate current runtime")
 
+// Terminal release acknowledges this owner's reservations only, not ARKit/caller memory.
+// All callback observations are locked; no timing-sensitive native-work injection.
+final class DiscardReceipts {
+    private let lock = NSLock()
+    private var counts: [Int: Int] = [:]
+    func record(_ id: Int) { lock.lock(); defer { lock.unlock() }; counts[id, default: 0] += 1 }
+    func count(_ id: Int) -> Int { lock.lock(); defer { lock.unlock() }; return counts[id, default: 0] }
+    var total: Int { lock.lock(); defer { lock.unlock() }; return counts.values.reduce(0, +) }
+}
+func resetRejected(_ owner: MeshCandidateIngress83) -> Bool {
+    do { try owner.reset(); return false } catch { return true }
+}
+// Ordinary stop remains restartable; terminal discard alone forbids reset.
+try owner.reset()
+check(owner.ingest(anchorID: a, receiptUptime: 1) { capture($0, a) }, "ordinary stop permits normal reset")
+queue.sync {}
+check(candidate(owner).route.sourceDeliveryComplete, "normal reset after stop rebuilds runtime")
+
+let discardQueue = DispatchQueue(label: "test.stage83.discard")
+let discarded = try MeshCandidateIngress83(decodeQueue: discardQueue)
+check(discarded.ingest(anchorID: a, receiptUptime: 1) { capture($0, a) }, "discard owner initial floor")
+discardQueue.sync {}
+let discardCandidate = candidate(discarded)
+let discardGate = DispatchSemaphore(value: 0), discardEntered = DispatchSemaphore(value: 0)
+discardQueue.async {
+    discardEntered.signal()
+    precondition(discardGate.wait(timeout: .now()+10) == .success)
+}
+check(discardEntered.wait(timeout: .now()+5) == .success, "discard decoder hold established")
+check(discarded.ingest(anchorID: a, receiptUptime: 2) { capture($0, a) }, "discard retains queued owned copy")
+let discardReceipts = DiscardReceipts(), discardDone = DispatchGroup()
+discardDone.enter()
+discarded.stopAndDiscard { discardReceipts.record(0); discardDone.leave() }
+check(!discarded.isCurrent(discardCandidate), "terminal discard immediately fences candidate")
+check(resetRejected(discarded), "terminal discard rejects reset before drain")
+var copiedAfterDiscard = false
+check(!discarded.ingest(anchorID: a, receiptUptime: 3) { c in
+    copiedAfterDiscard = true; return capture(c, a)
+}, "terminal discard rejects new ingest")
+check(!copiedAfterDiscard, "terminal discard never calls new capture")
+check(!discarded.remove(anchorID: a, receiptUptime: 4), "terminal discard rejects remove")
+if case .failure = query(discarded) { checks += 1 } else { preconditionFailure("terminal discarded query") }
+let discardCalls = DispatchGroup()
+for id in 1...3 {
+    discardCalls.enter(); discardDone.enter()
+    DispatchQueue.global(qos: .utility).async {
+        discarded.stopAndDiscard { discardReceipts.record(id); discardDone.leave() }
+        discardCalls.leave()
+    }
+}
+check(discardCalls.wait(timeout: .now()+5) == .success, "concurrent discard calls return without blocking")
+check(discardDone.wait(timeout: .now()+0.05) == .timedOut && discardReceipts.total == 0,
+      "discard acknowledgement waits for held owned copy")
+discardGate.signal(); discardQueue.sync {}
+check(discardDone.wait(timeout: .now()+5) == .success, "all duplicate discard calls acknowledged after drain")
+check((0...3).allSatisfy { discardReceipts.count($0) == 1 }, "concurrent discard callbacks exactly once")
+check(resetRejected(discarded), "terminal discard rejects reset after acknowledgement")
+let repeatedDone = DispatchSemaphore(value: 0)
+discarded.stopAndDiscard { discardReceipts.record(4); repeatedDone.signal() }
+check(repeatedDone.wait(timeout: .now()+5) == .success && discardReceipts.count(4) == 1,
+      "repeat discard after acknowledgement completes exactly once")
+check(!discarded.ingest(anchorID: b, receiptUptime: 5) { capture($0, b) }, "drained owner cannot rebuild geometry")
+
+// A synchronous capture reservation exists before its owned value even returns.
+let captureQueue = DispatchQueue(label: "test.stage83.discard.capture")
+let duringCapture = try MeshCandidateIngress83(decodeQueue: captureQueue)
+let captureReceipts = DiscardReceipts(), captureDone = DispatchSemaphore(value: 0)
+check(duringCapture.ingest(anchorID: a, receiptUptime: 1) { c in
+    duringCapture.stopAndDiscard { captureReceipts.record(0); captureDone.signal() }
+    check(captureDone.wait(timeout: .now()+0.05) == .timedOut && captureReceipts.total == 0,
+          "discard waits for synchronous capture reservation")
+    check(resetRejected(duringCapture), "discard during capture rejects reset")
+    return capture(c, a)
+}, "already admitted capture returns after terminal discard")
+captureQueue.sync {}
+check(captureDone.wait(timeout: .now()+5) == .success && captureReceipts.count(0) == 1,
+      "capture discard acknowledgement follows late owned-copy release")
+if case .failure = query(duringCapture) { checks += 1 } else { preconditionFailure("late capture installed after discard") }
+
+// Reset does not erase the prior epoch's reservation, and discard drains both epochs.
+let resetDiscardQueue = DispatchQueue(label: "test.stage83.discard.reset")
+let resetDiscard = try MeshCandidateIngress83(decodeQueue: resetDiscardQueue)
+let resetDiscardGate = DispatchSemaphore(value: 0), resetDiscardDone = DispatchSemaphore(value: 0)
+resetDiscardQueue.async { precondition(resetDiscardGate.wait(timeout: .now()+10) == .success) }
+check(resetDiscard.ingest(anchorID: a, receiptUptime: 1) { capture($0, a) }, "old epoch copy before terminal discard")
+try resetDiscard.reset()
+resetDiscard.stopAndDiscard { resetDiscardDone.signal() }
+check(resetDiscardDone.wait(timeout: .now()+0.05) == .timedOut,
+      "reset cannot release old copy ahead of terminal acknowledgement")
+check(resetRejected(resetDiscard), "second reset cannot reopen terminal owner")
+resetDiscardGate.signal(); resetDiscardQueue.sync {}
+check(resetDiscardDone.wait(timeout: .now()+5) == .success, "old epoch copy drains before terminal acknowledgement")
+if case .failure = query(resetDiscard) { checks += 1 } else { preconditionFailure("old epoch restored terminal runtime") }
+
 print("RESULT: \(checks) stage83 real-runtime synthetic checks passed; no ARKit execution or privacy purge proof")

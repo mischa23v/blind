@@ -17,3 +17,11 @@ runtime.request(start:[-2,0,0],goal:[2,0,0],body:try MeshCandidateBody(radius:0.
 precondition(done.wait(timeout:.now()+10) == .success)
 lock.lock();let passed=ok;lock.unlock();precondition(passed)
 print("PUBLIC API PASS: imported package, candidate query, removal retirement, authority false")
+
+let discarded=DispatchSemaphore(value:0)
+runtime.stopAndDiscard{discarded.signal()}
+precondition(discarded.wait(timeout:.now()+10) == .success)
+var terminalResetRejected=false
+do {try runtime.reset(sessionID:"new",generation:0)} catch {terminalResetRejected=true}
+precondition(terminalResetRejected)
+print("PUBLIC DISCARD API PASS: acknowledged terminal owner release; not system erasure")

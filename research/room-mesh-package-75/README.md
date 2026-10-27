@@ -122,3 +122,23 @@ receipts and results retain their original source hashes and are not evidence
 for this change; the historical `run_portable.py` remains frozen-input-only.
 No local Swift build or test was run for this correction. The existing isolated
 Apple workflow must establish compilation/execution before a passing claim.
+
+## Terminal owned-geometry discard increment (2026-10-27; execution pending)
+
+`stopAndDiscard(completion:)` fences output immediately, rejects further work and
+permanently disallows reset on this instance. Existing `stop()`/normal `reset()`
+behavior is unchanged. It acknowledges every caller asynchronously after all
+admitted work returns and a subsequent serial-native-worker block releases the
+retained `Replay`. The pending count covers the admission/enqueue interval too;
+no early reservation release or reset/new lifecycle can bypass the drain.
+Wait for acknowledgement before creating a replacement owner. A nonreturning
+native job prevents acknowledgement rather than producing a false success.
+
+This releases this runtime's retained geometry, not caller-held results, ARKit,
+Metal, allocator pages or system memory. Already-dispatched result callbacks may
+still arrive and require `isCurrent` at use. No secure zeroization or device privacy
+acceptance is claimed. No app wiring or physical authority is introduced.
+The original 55 + 32 + 5 checks remain; 19 additional actual-runtime discard checks
+include pending native jobs, duplicate calls, actual weak `Replay` release,
+reset/late completion interleavings and ordinary stop/reset reuse. The imported
+public client also exercises the terminal API. New checks await Apple execution.

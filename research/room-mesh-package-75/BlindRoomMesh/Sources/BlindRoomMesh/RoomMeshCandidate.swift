@@ -48,6 +48,8 @@ public final class RoomMeshCandidateRuntime {
  private var session: String, generation: Int, revision: UInt64=0
  private var lifecycle:UInt64=0, ownerLifecycle:UInt64?
  private var pending=0, pendingScalars=0, gap=false, stopped=false
+ private var discarding=false, discarded=false, discardScheduled=false
+ private var discardWaiters:[()->Void]=[]
  private let maxPending=8, maxPendingScalars=900000
  // Accessed only on worker. No native handles escape a single query.
  private var owner: Replay?
@@ -60,8 +62,37 @@ public final class RoomMeshCandidateRuntime {
  /// Tracking loss, body/goal changes and raw-depth veto call this before further query work.
  public func invalidate() {locked{advance();gap=true}}
  public func stop(){locked{advance();stopped=true;gap=true}}
+ /// Terminal fence plus asynchronous release of this runtime's retained geometry.
+ /// Completion is not ARKit/caller/system-memory erasure, nor callback cancellation.
+ /// Every caller is acknowledged off-lock after all admitted native work drains.
+ /// Reset cannot revive this owner once discard starts; do not replace it to bypass
+ /// outstanding work. Ordinary stop/reset retain their existing nonterminal behavior.
+ public func stopAndDiscard(completion:@escaping ()->Void) {
+  locked {
+   if discarded {DispatchQueue.global(qos:.utility).async {completion()};return}
+   if !discarding {advance();stopped=true;gap=true;discarding=true}
+   discardWaiters.append(completion)
+   scheduleDiscardIfDrained()
+  }
+ }
+ // Called under lock. A last-job defer may run before its captured event dies;
+ // the subsequent serial-worker block ensures that job has actually returned.
+ private func scheduleDiscardIfDrained() {
+  guard discarding,!discarded,!discardScheduled,pending==0 else{return}
+  discardScheduled=true
+  Self.worker.async { [self] in
+   owner=nil;ownerLifecycle=nil
+   let waiters=locked { ()->[()->Void] in
+    discarded=true
+    let result=discardWaiters;discardWaiters.removeAll(keepingCapacity:false)
+    return result
+   }
+   for waiter in waiters {DispatchQueue.global(qos:.utility).async {waiter()}}
+  }
+ }
  public func reset(sessionID:String,generation:Int)throws {
   try locked {
+   guard !discarding else{throw MeshCandidateError.unavailable}
    guard !sessionID.isEmpty,sessionID.utf8.count<=128,generation>=0,(sessionID != session || generation>self.generation),revision<UInt64.max else{throw MeshCandidateError.invalidInput}
    advance();lifecycle=revision;session=sessionID;self.generation=generation;gap=false;stopped=false
   }
@@ -82,7 +113,7 @@ public final class RoomMeshCandidateRuntime {
   guard admitted else{lock.unlock();return false}
   let eventLifecycle=lifecycle
   Self.worker.async { [self] in
-   defer{locked{pending-=1;pendingScalars-=scalarCount}}
+   defer{locked{pending-=1;pendingScalars-=scalarCount;scheduleDiscardIfDrained()}}
    guard locked({!stopped && lifecycle==eventLifecycle && session==event.sessionID && generation==event.generation})else{return}
    do {
     if ownerLifecycle != eventLifecycle || owner?.session != event.sessionID || owner?.generation != event.generation {owner=try Replay(event.sessionID,event.generation);ownerLifecycle=eventLifecycle}
@@ -118,7 +149,7 @@ public final class RoomMeshCandidateRuntime {
   }
   guard let (s,g,r,cycle)=token else{finish(.failure(.unavailable));return}
   Self.worker.async { [self] in
-   defer{locked{pending-=1}}
+   defer{locked{pending-=1;scheduleDiscardIfDrained()}}
    guard locked({matches(s,g,r)}),let owner=owner,ownerLifecycle==cycle,owner.session==s,owner.generation==g else{finish(.failure(.stale));return}
    do {
     let(v,t)=owner.geometry();let native=try Native(v,t,radius:body.radius,height:body.height)

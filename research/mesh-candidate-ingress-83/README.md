@@ -51,16 +51,24 @@ validation diagnostics, not walkability, support, clearance or physical authorit
 `complete: true` means complete delivery of this bounded revision, not real-world
 coverage. The existing runtime still reports actual-world coverage false.
 
-## Deliberate unresolved privacy interface
+## Terminal owned-resource discard (source authored; Apple verification pending)
 
-`stop()` fences output. It **does not purge**: stage75 has no public drain/discard
-acknowledgement and retains its native owner. Outstanding copies and native work
-can retain private geometry until they actually complete/release. Reset is also
-not a privacy purge. Do not wire privacy erase or camera-off deletion to this seam
-and claim erasure. A reviewed downstream drain-and-discard API, plus acknowledgement
-that owned copy/decode jobs have drained and released their values, is required
-before any privacy-sensitive app activation. This folder does not change stage75
-to force that missing interface. Cancellation does not imply memory erasure.
+`stop()` still fences only; ordinary stop/reset remains reusable and is not purge.
+`stopAndDiscard(completion:)` immediately fences results and permanently refuses
+new work/reset on this owner. It waits for every admitted synchronous capture,
+owned-copy/decode reservation and the stage75 native runtime drain. Each caller,
+including concurrent/repeated callers, gets one asynchronous off-lock acknowledgement.
+The owned capture is explicitly cleared and decoded/event temporaries leave scope
+before its reservation releases. Reset-before-discard cannot drop old reservations.
+Do not create a replacement owner to bypass those reservations: await acknowledgement
+before replacing the discarded owner. A capture that never returns cannot be acknowledged.
+
+Acknowledgement means these owners released their retained copied/native geometry;
+it does not erase caller-held candidates/copies, ARKit/Metal/camera buffers, allocator
+pages or operating-system memory. It does not cancel already-dispatched result
+callbacks: consumers still MUST recheck `isCurrent` at use, even after receipt.
+No zeroization, RSS reduction, ARKit stop, app activation or device privacy proof
+is claimed. Existing process-global native serialization remains unchanged.
 
 ## Evidence and handoff
 
@@ -81,3 +89,5 @@ receipts identify the inputs. Source-only compilation cannot establish real
 ARMeshAnchor callback behavior, copy latency, hazard prioritization, phone memory,
 tracking/localization or participant safety. Device/resource and privacy acceptance
 remain open. No shared tracker, app source or workflow was changed here.
+
+The terminal increment retains the original 55 ingress checks and authors 28 additional real-runtime checks (83 expected). Exact-source Apple execution remains pending; static checks are not those results.

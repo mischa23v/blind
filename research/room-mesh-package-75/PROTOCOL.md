@@ -15,3 +15,8 @@ throwing closure signature); no scientific data or acceptance was changed.
 
 New package remains candidate-only. No app edit, deployment, physical guidance,
 or raw-depth authority wiring. Unknown evidence cannot be cleared by geometry.
+
+Terminal-discard continuation preserves all 92 existing assertions and adds 19
+separate discard assertions. Do not rewrite historical result JSON as new passes.
+Apple runner must assert all 19 plus the original categories; public imported
+client must compile/use acknowledged discard and terminal reset rejection.

@@ -1,5 +1,5 @@
 {
-  "staticChecksPassed": 37,
+  "staticChecksPassed": 39,
   "checks": [
     "Python syntax: check_static.py",
     "Python syntax: ci.py",
@@ -27,6 +27,8 @@
     "single bounded native mailbox reused",
     "no pointer/ARKit in owner",
     "no pretransform",
+    "terminal discard release handshake",
+    "terminal reset prohibited",
     "fixture authored: outer token retired before copy",
     "fixture authored: ordinary update does not introduce sticky gap",
     "fixture authored: local transform applied exactly once",
@@ -42,6 +44,7 @@
   "swiftExecutedLocally": false,
   "appleExecution": "pending",
   "appActivation": false,
-  "privacyPurgeImplemented": false,
+  "ownedDiscardAPIAuthored": true,
+  "systemMemoryPurgeClaimed": false,
   "physicalAuthority": false
 }
