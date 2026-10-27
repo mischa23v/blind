@@ -1,0 +1,101 @@
+{
+  "label": "simulator-public-client-link",
+  "command": [
+    "xcrun",
+    "--sdk",
+    "iphonesimulator",
+    "swiftc",
+    "-target",
+    "arm64-apple-ios17.0-simulator",
+    "-sdk",
+    "/Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+    "-module-cache-path",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator-client-cache",
+    "-I",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/Modules",
+    "-I",
+    "/Users/runner/work/blind/blind/research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/clearance_adapter.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Detour/Source/DetourAlloc.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Detour/Source/DetourAssert.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Detour/Source/DetourCommon.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Detour/Source/DetourNavMesh.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Detour/Source/DetourNavMeshBuilder.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Detour/Source/DetourNavMeshQuery.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Detour/Source/DetourNode.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/DetourCrowd/Source/DetourCrowd.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/DetourCrowd/Source/DetourLocalBoundary.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/DetourCrowd/Source/DetourObstacleAvoidance.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/DetourCrowd/Source/DetourPathCorridor.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/DetourCrowd/Source/DetourPathQueue.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/DetourCrowd/Source/DetourProximityGrid.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Recast/Source/Recast.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Recast/Source/RecastAlloc.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Recast/Source/RecastArea.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Recast/Source/RecastAssert.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Recast/Source/RecastContour.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Recast/Source/RecastFilter.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Recast/Source/RecastLayers.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Recast/Source/RecastMesh.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Recast/Source/RecastMeshDetail.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Recast/Source/RecastRasterization.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/CDetour.build/upstream/Recast/Source/RecastRegion.cpp.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/BlindRoomMesh.build/Bridge.swift.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/BlindRoomMesh.build/Exclusion.swift.o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator/arm64-apple-ios-simulator/release/BlindRoomMesh.build/RoomMeshCandidate.swift.o",
+    "-lc++",
+    "/Users/runner/work/blind/blind/research/room-mesh-package-75/apple/public-client.swift",
+    "-o",
+    "/Users/runner/work/_temp/blind-room-mesh-75/simulator-public-client"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "exceptionType": null,
+  "wallSeconds": 3.3468167500000163,
+  "scratchBytesAfterCommand": 107232735,
+  "scratchCapExceeded": false,
+  "scratchScanComplete": true,
+  "scratchEntriesScanned": 469,
+  "largestScratchFiles": [
+    {
+      "path": "host-clang-cache/18LUXMWMEVRH3/Foundation-39TTUHVSZQC5F.pcm",
+      "bytes": 6570368
+    },
+    {
+      "path": "host-client-cache/3K72HEM2GP8QE/Foundation-39TTUHVSZQC5F.pcm",
+      "bytes": 6569832
+    },
+    {
+      "path": "host-clang-cache/18LUXMWMEVRH3/Darwin-3OP3DCIIHQBHB.pcm",
+      "bytes": 5871480
+    },
+    {
+      "path": "host-client-cache/3K72HEM2GP8QE/Darwin-3OP3DCIIHQBHB.pcm",
+      "bytes": 5870928
+    },
+    {
+      "path": "simulator-clang-cache/48MLG9Y0GETY/Foundation-GMXN3YSRP9U8.pcm",
+      "bytes": 5579568
+    },
+    {
+      "path": "simulator-client-cache/4ZNIZMSZ8WKV/Foundation-GMXN3YSRP9U8.pcm",
+      "bytes": 5578992
+    },
+    {
+      "path": "host-clang-cache/18LUXMWMEVRH3/CoreServices-10TOEKYM0QMZO.pcm",
+      "bytes": 4513840
+    },
+    {
+      "path": "host-client-cache/3K72HEM2GP8QE/CoreServices-10TOEKYM0QMZO.pcm",
+      "bytes": 4513296
+    }
+  ],
+  "fileCapBytes": 134217728,
+  "scratchCapBytes": 536870912,
+  "cpuCapSeconds": 300,
+  "wallTimeoutSeconds": 300,
+  "scratchAccounting": "stage-end only; scoped tree; not a live disk quota",
+  "terminationSignal": null,
+  "fileSizeLimitSignal": false,
+  "logTail": ""
+}
