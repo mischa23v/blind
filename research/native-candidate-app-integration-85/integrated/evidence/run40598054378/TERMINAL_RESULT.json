@@ -1,0 +1,75 @@
+{
+  "run": 40598054378,
+  "url": "https://github.com/mischa23v/blind/actions/runs/40598054378",
+  "commit": "003788a78db7c25c66005e6d28ffb8f0e7b7e62c",
+  "defaultBuild": "passed",
+  "diagnosticsBuild": "passed",
+  "core": {
+    "executed": 1385,
+    "skipped": 1,
+    "failed": 0
+  },
+  "memory": {
+    "executed": 51,
+    "failed": 0
+  },
+  "hostedUnits": {
+    "total": 155,
+    "passed": 149,
+    "failed": 0,
+    "skipped": 6,
+    "uniqueCasesVerified": true,
+    "sourceVerified": true,
+    "originalIORegression": "Passed",
+    "queuedSceneFenceRegression": "Passed"
+  },
+  "ui": {
+    "total": 18,
+    "passed": 13,
+    "failed": 2,
+    "skipped": 3,
+    "failures": [
+      "testAccessibilityAuditOfCameraAndAsk: Dynamic Type font sizes are partially unsupported (line371)",
+      "testPracticeIsAnnouncedAndCanStop: snapshot query timeout at active-banner precondition (line123)"
+    ],
+    "newNavigationReachabilityCase": "No direct exact-case status exported; aggregate and failure list alone are not independent per-case proof"
+  },
+  "practiceCancellation": {
+    "status": "failed_before_End_tap",
+    "caseSeconds": 191.97,
+    "StartTapEventAtCaseSeconds": 19.91,
+    "idleWaitEndedAtCaseSeconds": 80.27,
+    "firstActiveBannerQueryAtCaseSeconds": 85.68,
+    "snapshotQueryRetriesAtCaseSeconds": [
+      122.02,
+      153.05
+    ],
+    "positive90SecondWitness": false,
+    "explicitEndTapObserved": false,
+    "naturalExpiryOrStopSuccessClaimed": false,
+    "interpretation": "Camera-local split did not remove XCTest idle/snapshot failure. Source cause remains unisolated; no longer waits, retry, app timer changes or quiescence bypass were applied."
+  },
+  "callbackExtraction": {
+    "outcome": "failure",
+    "reason": "camera-after missing; ask not observed; evidence incomplete"
+  },
+  "unitArtifact": {
+    "id": 12777724596,
+    "bytes": 5358,
+    "sha256": "d9ab38bbfc0d901d6fe23d980cf0f18ec843ee9d32efc8c21850b4c7b3f2740e",
+    "zipCRCVerified": true
+  },
+  "uiArtifact": {
+    "id": 12778607205,
+    "bytes": 425579,
+    "sha256ReportedByGitHub": "29d812d85ebc85ec74a7ea508e1d0a5fb77113ff095d24212ca7de22ba365540",
+    "downloaded": false
+  },
+  "source": {
+    "LaunchTestsSwiftSHA256": "fa49a100fad5a40ae4e5a1b65bf3b8846ef347edee7c22bf0ad851cd26867573",
+    "localMatchesExactRemoteCommit": true
+  },
+  "runtimeActivation": false,
+  "fullNativeAcceptance": false,
+  "experimentalCaps": "not claimed"
+}
