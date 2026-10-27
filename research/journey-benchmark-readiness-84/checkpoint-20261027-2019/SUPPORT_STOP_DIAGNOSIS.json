@@ -1,0 +1,239 @@
+{
+  "scope": "frozen source and saved last-tick inspection only, not new mesh queries",
+  "rows": [
+    {
+      "episodeIndex": 16,
+      "tick": 382,
+      "distanceMetres": 3.080000000000001,
+      "support": [
+        {
+          "acceptedFiniteSupportModel": true,
+          "hitCount": 9,
+          "missingCount": 0,
+          "spreadMetres": 0.0006477638993676836,
+          "maximumAnchorErrorMetres": 0.0008854918760356125,
+          "heightMinimum": -0.004915127514851937,
+          "heightMaximum": -0.0042673636154842536,
+          "continuousSupportProven": false,
+          "semanticFloorEstablished": false,
+          "groundComponentConfirmedForAllProbes": true,
+          "nonGroundProbeCellIDs": [],
+          "supportPolicy": "same immutable floor IDs, nine observed support heights, local actual foot datum",
+          "localHeightContinuity": {
+            "accepted": true,
+            "previousFootMatchesPreviousMax9": true,
+            "previousFootMax9ErrorMetres": 0.0,
+            "maximumCorrespondingProbeXZDisplacementMetres": 0.012048977334752351,
+            "heightDeltaMetres": 0.0002377279766679289,
+            "heightChangeLimitMetres": 0.005054148923871633,
+            "twoSidedExistingResidualAllowanceMetres": 0.004,
+            "existingFloorSlopeDegrees": 5.0,
+            "probeOrderValidated": true,
+            "probePoseToleranceMetres": 1e-09
+          },
+          "observedLocalFootHeight": -0.0042673636154842536,
+          "localFootAssociation": {
+            "acceptedFiniteSupportModel": true,
+            "hitCount": 9,
+            "missingCount": 0,
+            "spreadMetres": 0.0006477638993676836,
+            "maximumAnchorErrorMetres": 0.0006477638993676836,
+            "heightMinimum": -0.004915127514851937,
+            "heightMaximum": -0.0042673636154842536,
+            "continuousSupportProven": false,
+            "semanticFloorEstablished": false,
+            "groundComponentConfirmedForAllProbes": true,
+            "nonGroundProbeCellIDs": [],
+            "supportPolicy": "same immutable floor IDs, nine observed support heights, local actual foot datum"
+          }
+        },
+        {
+          "acceptedFiniteSupportModel": false,
+          "reason": "nine observed finite support probes required",
+          "groundComponentConfirmedForAllProbes": false
+        }
+      ],
+      "position": [
+        -3.5656401167070557,
+        -0.004029635638816325,
+        -1.688055528966556
+      ],
+      "yawRadians": -1.8199769757655198,
+      "appliedCommand": {
+        "forward_metres": 0.02,
+        "yaw_radians": 0.017453292519943295,
+        "applied_tick": 382,
+        "issued_tick": 379,
+        "source_captured_at": 125.26666666666667,
+        "stop_reason": "boundedNativeCandidate",
+        "forced_wrong_turn": false,
+        "translation_clipped": false,
+        "reaction_delay_ticks": 3
+      },
+      "candidateStateCommitted": false,
+      "resultSHA256": "bf1095bfd785c5463f67cedd79a53e0d1764a4f815efe60c0dafac5ca67f8cd6",
+      "tickEvidenceSHA256": "32f090280bf0c5f581fcb28d0c656813013d8d581f87f1e803b7694f55dfe99f"
+    },
+    {
+      "episodeIndex": 17,
+      "tick": 559,
+      "distanceMetres": 5.4953224525338245,
+      "support": [
+        {
+          "acceptedFiniteSupportModel": true,
+          "hitCount": 9,
+          "missingCount": 0,
+          "spreadMetres": 0.001745435716090274,
+          "maximumAnchorErrorMetres": 0.0018301124239270272,
+          "heightMinimum": -0.006243259523285662,
+          "heightMaximum": -0.004497823807195388,
+          "continuousSupportProven": false,
+          "semanticFloorEstablished": false,
+          "groundComponentConfirmedForAllProbes": true,
+          "nonGroundProbeCellIDs": [],
+          "supportPolicy": "same immutable floor IDs, nine observed support heights, local actual foot datum",
+          "localHeightContinuity": {
+            "accepted": true,
+            "previousFootMatchesPreviousMax9": true,
+            "previousFootMax9ErrorMetres": 0.0,
+            "maximumCorrespondingProbeXZDisplacementMetres": 0.0023598203035297945,
+            "heightDeltaMetres": 8.46767078367533e-05,
+            "heightChangeLimitMetres": 0.004206457524517162,
+            "twoSidedExistingResidualAllowanceMetres": 0.004,
+            "existingFloorSlopeDegrees": 5.0,
+            "probeOrderValidated": true,
+            "probePoseToleranceMetres": 1e-09
+          },
+          "observedLocalFootHeight": -0.004497823807195388,
+          "localFootAssociation": {
+            "acceptedFiniteSupportModel": true,
+            "hitCount": 9,
+            "missingCount": 0,
+            "spreadMetres": 0.001745435716090274,
+            "maximumAnchorErrorMetres": 0.001745435716090274,
+            "heightMinimum": -0.006243259523285662,
+            "heightMaximum": -0.004497823807195388,
+            "continuousSupportProven": false,
+            "semanticFloorEstablished": false,
+            "groundComponentConfirmedForAllProbes": true,
+            "nonGroundProbeCellIDs": [],
+            "supportPolicy": "same immutable floor IDs, nine observed support heights, local actual foot datum"
+          }
+        },
+        {
+          "acceptedFiniteSupportModel": false,
+          "hitCount": 9,
+          "missingCount": 0,
+          "spreadMetres": 0.03949644593814785,
+          "maximumAnchorErrorMetres": 0.03845377979383144,
+          "heightMinimum": -0.0055404899515118025,
+          "heightMaximum": 0.03395595598663605,
+          "continuousSupportProven": false,
+          "semanticFloorEstablished": false,
+          "groundComponentConfirmedForAllProbes": false,
+          "nonGroundProbeCellIDs": [
+            10030019
+          ],
+          "supportPolicy": "same immutable floor IDs, nine observed support heights, local actual foot datum"
+        }
+      ],
+      "position": [
+        -2.7636804582757177,
+        -0.004413147099358635,
+        -3.693758881376829
+      ],
+      "yawRadians": -0.6915101225512567,
+      "appliedCommand": {
+        "forward_metres": 0.0,
+        "yaw_radians": 0.017453292519943295,
+        "applied_tick": 559,
+        "issued_tick": 559,
+        "source_captured_at": 137.06666666666666,
+        "stop_reason": "boundedNativeCandidate",
+        "forced_wrong_turn": false,
+        "translation_clipped": false,
+        "reaction_delay_ticks": 0
+      },
+      "candidateStateCommitted": false,
+      "resultSHA256": "e576b555251ad8b244bb7804c7dfd223bea139943c017c55927bfb433799d58d",
+      "tickEvidenceSHA256": "2703564986fb97b6f6e7e97d63ad7205887fb8d0ed7340b7192b0e14466458db"
+    },
+    {
+      "episodeIndex": 18,
+      "tick": 357,
+      "distanceMetres": 3.3806176890174626,
+      "support": [
+        {
+          "acceptedFiniteSupportModel": true,
+          "hitCount": 9,
+          "missingCount": 0,
+          "spreadMetres": 0.001363893152995302,
+          "maximumAnchorErrorMetres": 0.001093802101251826,
+          "heightMinimum": -0.004200059939584541,
+          "heightMaximum": -0.0028361667865892393,
+          "continuousSupportProven": false,
+          "semanticFloorEstablished": false,
+          "groundComponentConfirmedForAllProbes": true,
+          "nonGroundProbeCellIDs": [],
+          "supportPolicy": "same immutable floor IDs, nine observed support heights, local actual foot datum",
+          "localHeightContinuity": {
+            "accepted": true,
+            "previousFootMatchesPreviousMax9": true,
+            "previousFootMax9ErrorMetres": 0.0,
+            "maximumCorrespondingProbeXZDisplacementMetres": 0.011500000000000175,
+            "heightDeltaMetres": 0.0002700910517434759,
+            "heightChangeLimitMetres": 0.005006119630548141,
+            "twoSidedExistingResidualAllowanceMetres": 0.004,
+            "existingFloorSlopeDegrees": 5.0,
+            "probeOrderValidated": true,
+            "probePoseToleranceMetres": 1e-09
+          },
+          "observedLocalFootHeight": -0.0028361667865892393,
+          "localFootAssociation": {
+            "acceptedFiniteSupportModel": true,
+            "hitCount": 9,
+            "missingCount": 0,
+            "spreadMetres": 0.001363893152995302,
+            "maximumAnchorErrorMetres": 0.001363893152995302,
+            "heightMinimum": -0.004200059939584541,
+            "heightMaximum": -0.0028361667865892393,
+            "continuousSupportProven": false,
+            "semanticFloorEstablished": false,
+            "groundComponentConfirmedForAllProbes": true,
+            "nonGroundProbeCellIDs": [],
+            "supportPolicy": "same immutable floor IDs, nine observed support heights, local actual foot datum"
+          }
+        },
+        {
+          "acceptedFiniteSupportModel": false,
+          "reason": "nine observed finite support probes required",
+          "groundComponentConfirmedForAllProbes": false
+        }
+      ],
+      "position": [
+        -3.631940530104479,
+        -0.003106257838332715,
+        -1.9853434496016487
+      ],
+      "yawRadians": -1.7838428714196315,
+      "appliedCommand": {
+        "forward_metres": 0.023,
+        "yaw_radians": -4.440892098500626e-16,
+        "applied_tick": 357,
+        "issued_tick": 357,
+        "source_captured_at": 123.8,
+        "stop_reason": "boundedNativeCandidate",
+        "forced_wrong_turn": false,
+        "translation_clipped": false,
+        "reaction_delay_ticks": 0
+      },
+      "candidateStateCommitted": false,
+      "resultSHA256": "f72ff1e3ea4557be0b852c8a540aa17f9382a25a262d58c7b3d86ca62e766d03",
+      "tickEvidenceSHA256": "44066da316595c691f8e44089d761112562c52db90d9c1b8b72314a4c60148ba"
+    }
+  ],
+  "episode16And18": "at least one of nine full-reference-mesh rays had no hit in absolute model Y[-0.25,+0.15]m; not a support-cache lookup miss; exact rejected raw rays not retained",
+  "episode17": "all nine rays hit, spread 0.03949644593814785m; original face10030019 outside frozen ground IDs; real geometry versus classifier limitation unresolved",
+  "nextDiagnostic": "after frozen matrix: query exact rejected body-corner rays and inspect face10030019 against frozen corridor envelope and original mesh; do not change current cache, floor band or result",
+  "physicalAuthority": false
+}
