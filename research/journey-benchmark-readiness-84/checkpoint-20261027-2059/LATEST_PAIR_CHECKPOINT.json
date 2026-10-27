@@ -1,0 +1,171 @@
+{
+  "scope": "five frozen conditions, no live phone validation",
+  "rows": [
+    {
+      "episodeIndex": 25,
+      "conditionID": "nominal",
+      "status": "completeOrderedPairSyntheticEpisode",
+      "arrival": true,
+      "actualDistanceMetres": 4.531552952753935,
+      "ticks": 511,
+      "bodyContactEvents": 0,
+      "resultSHA256": "f1e8063da889f6a3e75b14adb180cb6c0902656ea9a61dcfde5ca78ef8806043",
+      "boundedReceiptSHA256": "6047394abfff09e746a4cdb8cc4bfe42496a072594d091eeaaa5e87ab31f0ed7",
+      "boundedReceipt": {
+        "processStarted": true,
+        "terminalOutputBytes": 1221293,
+        "processCompleted": true,
+        "failure": null,
+        "exitCode": 0,
+        "mode": "episode",
+        "index": 25,
+        "CPUSeconds": 383.87537100000003,
+        "wallSeconds": 286.7186602010006,
+        "peakSampledTreeOrWaitRSSBytes": 2293014528,
+        "limits": {
+          "CPUSeconds": 900,
+          "wallSeconds": 1200,
+          "RSSBytes": 3758096384,
+          "outputBytes": 10485760
+        },
+        "sampledNotCgroup": true,
+        "processGroupKilledAtEnd": true,
+        "evaluatorManifestSHA256": "3d17b1b816abd553fde50ea9702e35b4bcd380d10b18375f5535be2a5101b525",
+        "physicalAuthority": false
+      }
+    },
+    {
+      "episodeIndex": 26,
+      "conditionID": "command_delay",
+      "status": "completeOrderedPairSyntheticEpisode",
+      "arrival": true,
+      "actualDistanceMetres": 4.612708750490233,
+      "ticks": 547,
+      "bodyContactEvents": 0,
+      "resultSHA256": "60307b7a2101faab64f0edd8e1111aa5dbce7521d7a9e41fd8c0c8b4107fd288",
+      "boundedReceiptSHA256": "78c77522d63090697d74b40cefd7b27b47abb682af67f60c92e2a8189cb83527",
+      "boundedReceipt": {
+        "processStarted": true,
+        "terminalOutputBytes": 1342842,
+        "processCompleted": true,
+        "failure": null,
+        "exitCode": 0,
+        "mode": "episode",
+        "index": 26,
+        "CPUSeconds": 312.181486,
+        "wallSeconds": 254.6981123580008,
+        "peakSampledTreeOrWaitRSSBytes": 2293223424,
+        "limits": {
+          "CPUSeconds": 900,
+          "wallSeconds": 1200,
+          "RSSBytes": 3758096384,
+          "outputBytes": 10485760
+        },
+        "sampledNotCgroup": true,
+        "processGroupKilledAtEnd": true,
+        "evaluatorManifestSHA256": "3d17b1b816abd553fde50ea9702e35b4bcd380d10b18375f5535be2a5101b525",
+        "physicalAuthority": false
+      }
+    },
+    {
+      "episodeIndex": 27,
+      "conditionID": "temporal_jitter",
+      "status": "completeOrderedPairSyntheticEpisode",
+      "arrival": true,
+      "actualDistanceMetres": 4.6184792062816635,
+      "ticks": 561,
+      "bodyContactEvents": 0,
+      "resultSHA256": "2e6af89d2f7bac037966d36349c0f1f3f0915d55373c47ca63e34b53abe5c8d5",
+      "boundedReceiptSHA256": "5bb3bdb5380c2067498907b0d5d43732d6743f699c86c2029b9e0493fb935d7f",
+      "boundedReceipt": {
+        "processStarted": true,
+        "terminalOutputBytes": 1359159,
+        "processCompleted": true,
+        "failure": null,
+        "exitCode": 0,
+        "mode": "episode",
+        "index": 27,
+        "CPUSeconds": 371.250154,
+        "wallSeconds": 288.2156719470004,
+        "peakSampledTreeOrWaitRSSBytes": 2293723136,
+        "limits": {
+          "CPUSeconds": 900,
+          "wallSeconds": 1200,
+          "RSSBytes": 3758096384,
+          "outputBytes": 10485760
+        },
+        "sampledNotCgroup": true,
+        "processGroupKilledAtEnd": true,
+        "evaluatorManifestSHA256": "3d17b1b816abd553fde50ea9702e35b4bcd380d10b18375f5535be2a5101b525",
+        "physicalAuthority": false
+      }
+    },
+    {
+      "episodeIndex": 28,
+      "conditionID": "extra_translation",
+      "status": "completeOrderedPairSyntheticEpisode",
+      "arrival": true,
+      "actualDistanceMetres": 4.521208616472479,
+      "ticks": 483,
+      "bodyContactEvents": 0,
+      "resultSHA256": "9a62fd3cbb56888abaedb1bf9f4a5a62afbc325ed8cae7fb358e48d6b4b02cb7",
+      "boundedReceiptSHA256": "f950be92d1355df2dd2601599722ea57c54f768d304dfdeec73a91a57df4d03b",
+      "boundedReceipt": {
+        "processStarted": true,
+        "terminalOutputBytes": 1177658,
+        "processCompleted": true,
+        "failure": null,
+        "exitCode": 0,
+        "mode": "episode",
+        "index": 28,
+        "CPUSeconds": 306.21176599999995,
+        "wallSeconds": 243.4970768960011,
+        "peakSampledTreeOrWaitRSSBytes": 2291834880,
+        "limits": {
+          "CPUSeconds": 900,
+          "wallSeconds": 1200,
+          "RSSBytes": 3758096384,
+          "outputBytes": 10485760
+        },
+        "sampledNotCgroup": true,
+        "processGroupKilledAtEnd": true,
+        "evaluatorManifestSHA256": "3d17b1b816abd553fde50ea9702e35b4bcd380d10b18375f5535be2a5101b525",
+        "physicalAuthority": false
+      }
+    },
+    {
+      "episodeIndex": 29,
+      "conditionID": "tracking_interruption",
+      "status": "completeOrderedPairSyntheticEpisode",
+      "arrival": true,
+      "actualDistanceMetres": 4.531552952753935,
+      "ticks": 534,
+      "bodyContactEvents": 0,
+      "resultSHA256": "8cb9288d28a71380dd67bfb956b8344299368595498fdbbecf6cf7405546c1a6",
+      "boundedReceiptSHA256": "ff4ca1176cdab610607e3afa68738215dbd4e3dc6c52345cd1c5a0f8415c60b0",
+      "boundedReceipt": {
+        "processStarted": true,
+        "terminalOutputBytes": 1226533,
+        "processCompleted": true,
+        "failure": null,
+        "exitCode": 0,
+        "mode": "episode",
+        "index": 29,
+        "CPUSeconds": 301.13490099999996,
+        "wallSeconds": 242.61388928999986,
+        "peakSampledTreeOrWaitRSSBytes": 2292887552,
+        "limits": {
+          "CPUSeconds": 900,
+          "wallSeconds": 1200,
+          "RSSBytes": 3758096384,
+          "outputBytes": 10485760
+        },
+        "sampledNotCgroup": true,
+        "processGroupKilledAtEnd": true,
+        "evaluatorManifestSHA256": "3d17b1b816abd553fde50ea9702e35b4bcd380d10b18375f5535be2a5101b525",
+        "physicalAuthority": false
+      }
+    }
+  ],
+  "physicalAuthority": false
+}

@@ -1,13 +1,20 @@
-## Current navigation-first work — 2026-10-27 19:54 UTC
+## Status update — 2026-10-27 21:19 UTC
 
-Use the [current reconciliation and exact evidence](research/checkpoint-20261027-1954/README.md) before the historical checkpoints below. Review source is `0babd78`; no merge or live guidance activation is established.
+Latest published repair `38ac458` has passed both app compilation modes and its hosted-unit step in [run40583132225](https://github.com/mischa23v/blind/actions/runs/40583132225). Exact case-count verification and the terminal accessibility result remain pending; this is not full-app acceptance. The mesh connection remains default-off/no-copy, with no physical guidance authority. The dated checkpoint below retains its earlier status and evidence scope.
 
-- [ ] Finish the frozen 20×5 movement matrix and independent recount. The dated local snapshot has 14 simulated arrivals, episode 8 interrupted/unknown, one marked running with liveness under investigation, and 84 not run. This is not a full benchmark pass or live navigation evidence.
-- [ ] Close actual-app integration and regression gates: decoder 51, adapter 36, later package 111/ingress 83 component checks passed, but stage 85's app builds remain blocked by an Xcode service crash. Its default-off patch is still unapplied. Current-source body-profile verification passed 55 unique XCTest cases with zero failures/skips and all 27 compiled-input hashes matched. Review the full native run; Dynamic Type remains open.
-- [ ] Establish live hazard coverage/lead time, body-camera calibration, localization/heading/deviation, checked path entry, changing obstacles and recovery/return. The assisted simulation cannot close these gates.
-- [ ] Complete 400 actual-stack journeys and staged device/participant acceptance. No percentage completion or independent-use readiness is inferred from component counts.
+---
 
-Historical entries below describe their original dates and remain preserved, including failures and unrun stages.
+## Current navigation-first work — 2026-10-27 21:01 UTC
+
+Current pointers: [published stage85 integration](https://github.com/mischa23v/blind/blob/1658cf/research/native-candidate-app-integration-85/integrated/README.md), [current critical-order receipt](research/native-candidate-app-integration-85/integrated/README.md), and [20:59 frozen-matrix checkpoint](research/journey-benchmark-readiness-84/checkpoint-20261027-2059/README.md). Earlier checkpoints remain historical. No master merge, live guidance activation or physical-readiness claim.
+
+- [ ] Complete exact-source native regression review. Stage85 integration is pushed at `1658cf`; both normal and diagnostic-enabled app compilation passed [run40580300632](https://github.com/mischa23v/blind/actions/runs/40580300632). Its hosted-unit step passed, but exact count verification and terminal UI outcome remain pending at this snapshot. This is not full-app green or live capture validation.
+- [ ] Verify the later critical-retirement ordering layer and deterministic scene fixture published at `38ac458`. Portable results are 35 integrated source checks, 43 targeted contracts and 14 additional privacy/recovery/handoff checks passed. Native [run40583132225](https://github.com/mischa23v/blind/actions/runs/40583132225) remains pending; earlier-source compile success does not validate this later revision. The mesh bridge remains diagnostic-flag fenced, process-default-off and no-copy/no-ingest, without guidance authority.
+- [ ] Complete the frozen 20×5 movement matrix and independent recount. Through 30 scheduled outcomes at 20:59 UTC: 25 simulated arrivals, three support-uncertainty stops and two interrupted/unknown outcomes (8 and 15). Later outcomes are not claimed. The reference-ray diagnostic at `74edb75` changed no frozen outcome, geometry, support rule or threshold. Supplied poses, evaluator support/veto, zero margin and unmeasured ground contacts remain explicit limits.
+- [x] Preserve the exact original indoor-import test's positive-witness pass on the `8c` evidence revision, published in [checkpoint8a657fc](https://github.com/mischa23v/blind/commit/8a657fc), alongside earlier failures. The separate current-source body-profile result remains 55 unique XCTest passes with zero failures/skips and 27 matching compiled-input hashes; neither focused result closes full-app acceptance.
+- [ ] Establish live hazard coverage/lead time, body-camera calibration, metric localization/heading/deviation, checked path entry, changing obstacles and recovery/return. Complete 400 actual-stack journeys and staged device/participant acceptance. No completion percentage or independent-use readiness follows from component counts.
+
+Historical entries below preserve their original dates, failures and unrun stages.
 
 ---
 

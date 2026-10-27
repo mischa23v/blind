@@ -1,10 +1,18 @@
-## 2026-10-27 19:54 UTC — Review-branch navigation and Apple checkpoint
+## Status update — 2026-10-27 21:19 UTC
 
-[Full reconciliation with exact runs and limitations](research/checkpoint-20261027-1954/README.md). Published implementation is review-branch `0babd78`, not a merge or release. Decoder 81 passed 51 synthetic host checks; ARKit adapter 82 passed 36 host checks/API compilation; later terminal-discard checks passed 111 package and 83 ingress checks. Owned-discard evidence is published at `dc56e65`. These are component scopes, not cumulative independent trials or live capture validation.
+Latest published repair `38ac458` has passed both app compilation modes and its hosted-unit step in [run40583132225](https://github.com/mischa23v/blind/actions/runs/40583132225). Exact case-count verification and the terminal accessibility result remain pending; this is not full-app acceptance. The mesh connection remains default-off/no-copy, with no physical guidance authority. The dated checkpoint below retains its earlier status and evidence scope.
 
-The actual SpatialMapIO foreground-priority change preserves original deadlines/safeguards. Current-source BodyProfileStore evidence verifies 55 unique XCTest passes, zero failures/skips and all 27 compiled-input hashes matched; full native acceptance is not claimed. Stage 85's local graph passed, but actual app compilation and the one permitted build-service retry failed; the app patch remains unapplied. Dynamic Type remains unresolved despite measured category changes.
+---
 
-The dated local frozen-matrix snapshot records 14 simulated arrivals, one interrupted/unknown episode, one marked running with liveness under investigation and 84 unrun. Supplied poses, reference/manual support and veto, manual unknown region, zero margin and unmeasured exempt floor contacts remain explicit. No live sensing or safe real-world navigation result follows. Earlier reports below retain their original results.
+## 2026-10-27 21:01 UTC — Published integration compiles; later revision awaits native verification
+
+Stage85 integration is pushed at `1658cf`; [published receipt](https://github.com/mischa23v/blind/blob/1658cf/research/native-candidate-app-integration-85/integrated/README.md). Both normal and diagnostic-enabled app compilation passed [run40580300632](https://github.com/mischa23v/blind/actions/runs/40580300632). Its hosted-unit step passed, while exact count verification and terminal UI outcome remain pending at this snapshot. The earlier “unapplied until compilation passes” sequencing is superseded; the actual bridge remains DEBUG/diagnostic-flag fenced, process-default-off and no-copy/no-ingest, with no guidance authority. The established native workflow's budgets are distinct from the failed experimental harness's limits, whose failures remain preserved.
+
+The later critical-retirement ordering layer and deterministic scene fixture are published at `38ac458`; see [current integrated receipt](research/native-candidate-app-integration-85/integrated/README.md). Portable verification passed 35 source checks, 43 targeted contracts and 14 additional privacy/recovery/handoff checks. Native [run40583132225](https://github.com/mischa23v/blind/actions/runs/40583132225) is pending. The earlier integration's compile result must not be presented as a native pass for this later source.
+
+The [20:59 saved-evidence checkpoint](research/journey-benchmark-readiness-84/checkpoint-20261027-2059/README.md) covers 30 scheduled outcomes: 28 completed simulated movement episodes, comprising 25 arrivals and three support-uncertainty stops, plus two interrupted/unknown outcomes (8 and 15). No frozen path, threshold, geometry, cache or physics changed. Supplied poses, evaluator support/veto, zero margin, assisted exclusions and unmeasured ground contacts remain limits. This is not live phone sensing or a table-lap result.
+
+The exact original indoor-import test passed with a positive witness on the `8c` evidence revision; its public evidence is preserved at [8a657fc](https://github.com/mischa23v/blind/commit/8a657fc), not inferred from a later retry alone. The [body-profile evidence](research/apple-body-profile-current-20261027/README.md) separately verifies 55 unique XCTest passes, zero failures/skips and 27 matching compiled-input hashes. Full native `0babd78` model-asset/UI failures remain historical failures. No full-app green, latest-source native pass or participant acceptance is claimed.
 
 ---
 

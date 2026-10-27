@@ -1,0 +1,46 @@
+{
+  "run": 40580300632,
+  "commit": "1658cf257d03a9be15ab68dea79b6339e433f529",
+  "defaultBuild": "passed",
+  "diagnosticsBuild": "passed",
+  "core": {
+    "executed": 1385,
+    "skipped": 1,
+    "failed": 0
+  },
+  "memory": {
+    "executed": 51,
+    "failed": 0
+  },
+  "hostedUnits": {
+    "total": 155,
+    "passed": 149,
+    "failed": 0,
+    "skipped": 6,
+    "uniqueCasesVerified": true,
+    "sourceVerified": true
+  },
+  "ui": {
+    "total": 17,
+    "passed": 13,
+    "failed": 2,
+    "skipped": 2,
+    "failures": [
+      "testAccessibilityAuditOfCameraAndAsk: Dynamic Type font sizes are partially unsupported",
+      "testPracticeLayoutAtLargestAccessibilitySize: failed to terminate app"
+    ]
+  },
+  "callbackExtraction": {
+    "outcome": "failure",
+    "reason": "camera-after missing; ask not observed; evidence incomplete"
+  },
+  "unitArtifact": {
+    "id": 12769169745,
+    "bytes": 5359,
+    "sha256": "a3b9838bd4d8191bdf1c31f542bb46e0d651fe5350d519a19abdb937c189b074",
+    "zipCRCVerified": true
+  },
+  "runtimeActivation": false,
+  "fullNativeAcceptance": false,
+  "experimentalCaps": "not claimed"
+}

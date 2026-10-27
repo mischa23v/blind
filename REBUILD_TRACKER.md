@@ -1,13 +1,20 @@
-## Latest checkpoint — 2026-10-27 19:54 UTC
+## Status update — 2026-10-27 21:19 UTC
 
-[Current reconciliation](research/checkpoint-20261027-1954/README.md) supersedes stale publication/test-state wording in the earlier reconciliation below. Review implementation is `0babd78`; no merge, app activation or physical-readiness claim.
+Latest published repair `38ac458` has passed both app compilation modes and its hosted-unit step in [run40583132225](https://github.com/mischa23v/blind/actions/runs/40583132225). Exact case-count verification and the terminal accessibility result remain pending; this is not full-app acceptance. The mesh connection remains default-off/no-copy, with no physical guidance authority. The dated checkpoint below retains its earlier status and evidence scope.
 
-- Decoder 51 and adapter 36 synthetic host/API checks passed. Later owned-discard checks passed 111 package and 83 ingress checks. The stage 85 real dependency graph passed; actual app builds still fail at the Xcode build service, and its default-off app patch remains unapplied.
-- The actual foreground IO priority change is published with original assertions/deadlines unchanged. Current-source BodyProfileStore evidence verifies 55 unique XCTest passes, zero failures/skips and all 27 compiled-input hashes matched; full native green is not established. Dynamic Type remains open.
-- Frozen matrix snapshot:14 actual simulated arrivals, one interrupted/unknown, one marked running with producer liveness under investigation and 84 unrun. It is not a completed 100-run result. Evaluator oracle support/veto, supplied poses, manual unknown region, zero margin and unmeasured floor contacts prevent interpretation as live obstacle avoidance.
-- Live hazard coverage/lead time, metric localization, body heading/calibration, continuous deviation, checked route connectors and return/restart remain OPEN. The 400 actual-stack journeys and device/participant acceptance remain unfinished.
+---
 
-The earlier “stage 82 untested” and “IO diagnostic running” statements below are historical checkpoint records, not current status. Preserve the failures; do not lower acceptance gates.
+## Latest checkpoint — 2026-10-27 21:01 UTC
+
+Use the [published stage85 integration receipt](https://github.com/mischa23v/blind/blob/1658cf/research/native-candidate-app-integration-85/integrated/README.md), [current critical-order follow-on](research/native-candidate-app-integration-85/integrated/README.md) and [20:59 matrix checkpoint](research/journey-benchmark-readiness-84/checkpoint-20261027-2059/README.md). Earlier records remain historical. No merge, live activation or physical-readiness claim.
+
+- Integration `1658cf` is pushed. Normal and diagnostic-enabled app compilation passed run40580300632; its hosted-unit step passed, but exact counts and terminal UI results remain pending. The bridge remains process-default-off and no-copy/no-ingest, without physical-output authority. Compilation is not sensor execution.
+- Later `38ac458` publishes critical retirement ordering plus the deterministic scene fixture. Its 35 source checks, 43 targeted contracts and 14 additional privacy/recovery/handoff checks passed. Native run40583132225 remains pending. Do not transfer an earlier-source compile pass to this later revision.
+- The original import test passed with a positive witness on the `8c` evidence revision, with public evidence at `8a657fc`. The separate body-profile evidence verifies 55 unique XCTest passes and 27 matching compiled-input hashes. Full-app green remains unestablished; earlier failures are retained.
+- Through 30 scheduled frozen-matrix outcomes: 25 actual simulated arrivals, three support stops and two interrupted/unknowns (8 and 15). Later outcomes are not claimed. The published reference-ray diagnostic changed no rule or outcome. Supplied poses, evaluator support/veto, zero margin and unmeasured ground contacts prevent interpretation as live obstacle avoidance or completion of 100 trials.
+- Live hazard coverage/lead time, metric localization, body heading/calibration, continuous deviation, checked connectors and return/restart remain OPEN. The 400 actual-stack journeys and device/participant acceptance remain unfinished.
+
+Earlier records below retain their original failures and checkpoint scope. Do not lower acceptance gates or convert a historical pending state into a claimed pass.
 
 ---
 

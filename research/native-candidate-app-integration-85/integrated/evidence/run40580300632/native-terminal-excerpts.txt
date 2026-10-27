@@ -1,0 +1,22 @@
+2026-10-27T20:41:47.3079850Z 1658cf257d03a9be15ab68dea79b6339e433f529
+2026-10-27T20:41:48.3368360Z 1658cf257d03a9be15ab68dea79b6339e433f529
+2026-10-27T20:41:48.9149120Z 1658cf257d03a9be15ab68dea79b6339e433f529
+2026-10-27T20:43:07.4962480Z core exit status: 0
+2026-10-27T20:43:07.5268950Z 	 Executed 1385 tests, with 1 test skipped and 0 failures (0 unexpected) in 7.412 (7.579) seconds
+2026-10-27T20:43:07.5269880Z 	 Executed 1385 tests, with 1 test skipped and 0 failures (0 unexpected) in 7.412 (7.582) seconds
+2026-10-27T20:43:59.5080820Z memory exit status: 0
+2026-10-27T20:43:59.5171410Z 	 Executed 51 tests, with 0 failures (0 unexpected) in 9.514 (9.523) seconds
+2026-10-27T20:43:59.5172540Z 	 Executed 51 tests, with 0 failures (0 unexpected) in 9.514 (9.525) seconds
+2026-10-27T20:46:22.4414370Z build exit status: 0
+2026-10-27T20:46:22.4872180Z ** BUILD SUCCEEDED **
+2026-10-27T20:50:48.9306110Z unit exit status: 0
+2026-10-27T20:50:50.8278450Z ** TEST SUCCEEDED **
+2026-10-27T21:02:55.7827590Z ui exit status: 65
+2026-10-27T21:02:55.9403810Z /Users/runner/work/blind/blind/ios/BlindAssistUITests/LaunchTests.swift:350: error: -[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk] : Dynamic Type font sizes are partially unsupported
+2026-10-27T21:02:55.9405290Z Test Case '-[BlindAssistUITests.LaunchTests testAccessibilityAuditOfCameraAndAsk]' failed (66.354 seconds).
+2026-10-27T21:02:55.9406610Z /Users/runner/work/blind/blind/ios/BlindAssistUITests/LaunchTests.swift:21: error: -[BlindAssistUITests.LaunchTests testPracticeLayoutAtLargestAccessibilitySize] : Failed to terminate org.blindassist.mobility:29727: Failed to terminate org.blindassist.mobility:0
+2026-10-27T21:02:55.9410410Z Test Case '-[BlindAssistUITests.LaunchTests testPracticeLayoutAtLargestAccessibilitySize]' failed (68.559 seconds).
+2026-10-27T21:02:55.9418310Z ** TEST FAILED **
+2026-10-27T21:02:55.9929730Z ** TEST FAILED **
+2026-10-27T21:03:02.6388570Z unit xcresult: {"result": "Passed", "totalTestCount": 155, "passedTests": 149, "failedTests": 0, "skippedTests": 6, "expectedFailures": 0, "startTime": 1793133989.868, "finishTime": 1793134244.098}
+2026-10-27T21:03:02.7911810Z ui xcresult: {"result": "Failed", "totalTestCount": 17, "passedTests": 13, "failedTests": 2, "skippedTests": 2, "expectedFailures": 0, "startTime": 1793134259.651, "finishTime": 1793134962.948}

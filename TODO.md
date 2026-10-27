@@ -1,12 +1,19 @@
-## Next actions — 2026-10-27 19:54 UTC
+## Status update — 2026-10-27 21:19 UTC
 
-Navigation remains first. [Current status and evidence](research/checkpoint-20261027-1954/README.md) supersede stale current-status wording in the historical notes below.
+Latest published repair `38ac458` has passed both app compilation modes and its hosted-unit step in [run40583132225](https://github.com/mischa23v/blind/actions/runs/40583132225). Exact case-count verification and the terminal accessibility result remain pending; this is not full-app acceptance. The mesh connection remains default-off/no-copy, with no physical guidance authority. The dated checkpoint below retains its earlier status and evidence scope.
 
-1. Check the frozen matrix producer and continue without duplicate execution or changed thresholds. Snapshot:14 simulated arrivals, one unknown, one marked running whose liveness is under investigation,84 unrun.
-2. Preserve the verified 55-case exact-source Apple body-profile result and review full native results; diagnose the stage 85 build-service crash. Keep the app integration proposal default-off and unapplied until actual app builds pass. Repair the measured Dynamic Type defect without suppressing audits.
-3. Publish verified code/evidence checkpoints, then complete live sensing, body/phone calibration, localization/deviation, safe connectors and return/restart acceptance. Reference-assisted movement is not phone hazard detection.
+---
 
-The full tracker,100-episode benchmark and 400 actual-stack journeys are unfinished. No live physical guidance or participant readiness is claimed.
+## Next actions — 2026-10-27 21:01 UTC
+
+Navigation remains first. Current pointers: [published stage85 integration](https://github.com/mischa23v/blind/blob/1658cf/research/native-candidate-app-integration-85/integrated/README.md), [critical-order follow-on](research/native-candidate-app-integration-85/integrated/README.md), and [20:59 matrix evidence](research/journey-benchmark-readiness-84/checkpoint-20261027-2059/README.md).
+
+1. Finish native review for both exact revisions. Integration `1658cf` compiled in normal and diagnostic-enabled modes; its hosted-unit step passed, with count verification and UI terminal result pending. Later `38ac458` adds critical ordering plus a deterministic scene fixture: 35 source checks, 43 targeted contracts and 14 additional checks passed, but its native run40583132225 has not passed yet. Keep the bridge default-off/no-copy; compilation never activates guidance.
+2. Continue the unchanged frozen matrix without duplicate execution or rescoring unknowns. Through 30 scheduled outcomes: 25 arrivals, three support stops and two interrupted/unknowns. Preserve zero-margin/evaluator-oracle/supplied-pose limitations and unmeasured ground contacts.
+3. Finish the bounded full-app footer-end control and review remaining unsuppressed accessibility findings. Original import-test positive evidence (`8a657fc`), the 55-case body-profile result and earlier failures are already preserved; they do not replace full-app acceptance.
+4. Complete live sensing, body/phone calibration, localization/deviation, checked connectors and return/restart acceptance. Reference-assisted movement is not phone hazard detection.
+
+The full tracker, 100-episode benchmark and 400 actual-stack journeys remain unfinished. No live physical guidance or participant readiness is claimed.
 
 ---
 
