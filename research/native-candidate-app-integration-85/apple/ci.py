@@ -8,9 +8,12 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import itertools
 import os
 from pathlib import Path
 import platform
+import re
+import time
 
 HOME = Path(__file__).resolve().parent.parent
 ROOT = HOME.parent.parent
@@ -27,6 +30,98 @@ def load(name, path):
 def verify_pins(base, manifest):
     for name, digest in json.loads(manifest.read_text()).items():
         assert hashlib.sha256((base / name).read_bytes()).hexdigest() == digest, name
+
+
+SERVICE_CRASH_MARKER = 'unexpected service error: The Xcode build system has crashed. Build again to continue.'
+
+
+def resource_termination(value):
+    text = json.dumps(value).upper()
+    if any(marker in text for marker in ('SIGXFSZ', 'SIGXCPU', 'EXC_RESOURCE',
+            'FILE SIZE LIMIT', 'CPU TIME LIMIT', 'RESOURCE LIMIT')):
+        return True
+    if isinstance(value, dict):
+        if value.get('resourceLimitObserved') is True:
+            return True
+        if str(value.get('namespace', '')).upper() == 'SIGNAL' and str(value.get('code')) in ('24', '25'):
+            return True # Darwin SIGXCPU / SIGXFSZ, including signal-number-only reports
+        return any(resource_termination(v) for v in value.values())
+    if isinstance(value, list):
+        return any(resource_termination(v) for v in value)
+    return False
+
+
+def service_retry_allowed(receipt, diagnostics, log, log_complete):
+    """Exact retry marker is necessary, not sufficient; unknown reports stay unknown."""
+    if not (receipt.get('exitCode') == 65 and log_complete and
+            not receipt.get('timedOut', True) and not receipt.get('scratchCapExceeded', True) and
+            not receipt.get('fileSizeLimitSignal', True) and receipt.get('scratchScanComplete', False) and
+            receipt.get('exceptionType') is None and receipt.get('terminationSignal') is None):
+        return False
+    if resource_termination(diagnostics) or resource_termination(log):
+        return False
+    marker_lines = 0
+    for line in log.splitlines():
+        if line.strip() == 'error: ' + SERVICE_CRASH_MARKER:
+            marker_lines += 1
+        elif re.search(r'\b(?:error|fatal)\b', line, re.IGNORECASE):
+            return False # compiler/linker/other error even if the service marker coexists
+    return marker_lines == 1
+
+
+def service_crash_diagnostics(out, label, since):
+    """Bounded summaries of this command's build-service crash reports, not raw logs."""
+    directory = Path.home() / 'Library/Logs/DiagnosticReports'
+    reports = []
+    if not directory.is_symlink() and directory.is_dir():
+        # macOS may write service reports asynchronously; absence is not no-crash proof.
+        candidates = sorted((p for p in itertools.islice(directory.iterdir(), 256) if not p.is_symlink() and p.is_file() and
+            p.name.startswith(('XCBBuildService', 'SWBBuildService', 'SwiftBuildService', 'XCBuildService')) and
+            p.suffix in ('.ips', '.crash') and p.stat().st_mtime >= since - 5),
+            key=lambda p: p.stat().st_mtime, reverse=True)[:6]
+        for path in candidates:
+            size = path.stat().st_size
+            item = dict(name=path.name, bytes=size)
+            if size > 2 << 20:
+                item['read'] = 'skipped above 2 MiB diagnostic input limit'
+            else:
+                # O_NOFOLLOW closes the symlink-swap gap between enumeration and read.
+                try:
+                    with os.fdopen(os.open(path, os.O_RDONLY | os.O_NOFOLLOW), 'rb') as handle:
+                        raw = handle.read((2 << 20) + 1)
+                    if len(raw) > 2 << 20:
+                        item['read'] = 'grew above 2 MiB diagnostic input limit'
+                        reports.append(item)
+                        continue
+                    value = raw.decode('utf-8', errors='replace')
+                except OSError:
+                    item['read'] = 'refused or unavailable diagnostic file; no follow'
+                    reports.append(item)
+                    continue
+                if path.suffix == '.ips':
+                    try:
+                        # IPS normally has a single metadata JSON line then a JSON payload.
+                        payload = json.loads(value.split('\n', 1)[1])
+                        allowed = {key: payload[key] for key in
+                            ('exception', 'termination', 'faultingThread') if key in payload}
+                        # Classify structured numeric signals BEFORE display conversion.
+                        item['resourceLimitObserved'] = resource_termination(allowed)
+                        for key, value in allowed.items():
+                            item[key] = str(value)[:4096]
+                    except (ValueError, IndexError):
+                        item['read'] = 'unparsed IPS; no raw report uploaded'
+                else:
+                    item['resourceLimitObserved'] = resource_termination(value)
+                    item['summary'] = [line[:1024] for line in value.splitlines()
+                        if line.startswith(('Exception Type:', 'Exception Codes:',
+                            'Termination Reason:', 'Crashed Thread:', 'Process:'))][:8]
+            reports.append(item)
+    observed_limit = any(item.get('resourceLimitObserved', False) for item in reports)
+    result = dict(label=label, diagnosticReports=reports,
+        resourceLimitEvidence='observed' if observed_limit else 'unknown; no limit established by available reports',
+        scope='first 256 directory entries; recent matching build-service reports only; absence is inconclusive')
+    (out / (label + '-diagnostic.json')).write_text(json.dumps(result, indent=2) + '\n')
+    return result
 
 
 def main():
@@ -137,7 +232,35 @@ def main():
                 'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'ARCHS=arm64',
                 'ONLY_ACTIVE_ARCH=YES', 'ENABLE_DEBUG_DYLIB=NO', 'SWIFT_OPTIMIZATION_LEVEL=-Onone',
                 'SWIFT_ACTIVE_COMPILATION_CONDITIONS=DEBUG' + (' ' + flag if flag else ''), 'build']
-            receipts.append(runner.run(command, stem + '-build', out, 600, env=env))
+            recovered_service_crash = False
+            started = time.time()
+            try:
+                receipts.append(runner.run(command, stem + '-build', out, 600, env=env))
+            except RuntimeError:
+                diagnostics = service_crash_diagnostics(out, stem + '-first-service-failure', started)
+                first = json.loads((out / (stem + '-build-receipt.json')).read_text())
+                # Inspect complete bounded log, not only the receipt tail: an earlier
+                # compiler error must not disappear behind the final service failure.
+                log_path = out / (stem + '-build.log')
+                with log_path.open('rb') as handle:
+                    log_bytes = handle.read((4 << 20) + 1)
+                log_complete = len(log_bytes) <= 4 << 20
+                allowed = service_retry_allowed(first, diagnostics,
+                    log_bytes[:4 << 20].decode('utf-8', errors='replace'), log_complete)
+                (out / (stem + '-retry-decision-diagnostic.json')).write_text(json.dumps(dict(
+                    retryAllowed=allowed, completeLogInspected=log_complete,
+                    resourceLimitEvidence=diagnostics['resourceLimitEvidence']), indent=2) + '\n')
+                if not allowed:
+                    raise
+                recovered_service_crash = True
+                receipts.append(first) # preserve first failed attempt even if retry succeeds
+                started = time.time()
+                try:
+                    receipts.append(runner.run(command, stem + '-build-service-retry', out, 600, env=env))
+                except RuntimeError:
+                    service_crash_diagnostics(out, stem + '-retry-service-failure', started)
+                    raise
+
             executable = derived / 'Build/Products/Debug-iphonesimulator/BlindAssist.app/BlindAssist'
             assert executable.is_file(), 'expected compile-only product missing'
             receipts.append(runner.run(['xcrun', 'nm', str(executable)], stem + '-symbols', out, 60))
@@ -145,7 +268,8 @@ def main():
             present = 'MeshCandidateDiagnostics' in symbols
             assert present == bool(flag), 'diagnostic bridge symbol compile gate mismatch'
             app_results.append(dict(configuration='Debug', diagnosticFlag=bool(flag),
-                                    compiled=True, bridgeSymbolPresent=present))
+                                    compiled=True, bridgeSymbolPresent=present,
+                                    recoveredAfterServiceCrash=recovered_service_crash))
     result = dict(commit=os.environ['GITHUB_SHA'],
         toolchain=runner.output(['xcrun', 'swiftc', '--version']),
         swiftPMBuildSystem=runner.BUILD_SYSTEM, defaultSwiftBuildBackendPassed=False,

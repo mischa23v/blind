@@ -39,6 +39,7 @@ jobs:
           name: candidate-native-app-integration-85-receipts
           path: |
             ${{ runner.temp }}/blind-native-app-integration-85/*-receipt.json
+            ${{ runner.temp }}/blind-native-app-integration-85/*-diagnostic.json
             ${{ runner.temp }}/blind-native-app-integration-85/RESULT.json
           if-no-files-found: warn
           retention-days: 3

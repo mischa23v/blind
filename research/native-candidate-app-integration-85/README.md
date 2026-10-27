@@ -151,3 +151,55 @@ version constraint, cap or algorithm is changed. If the runner does not honor th
 scoped rewrite or the bounded seed fails, the stage fails rather than falling back
 to arbitrary source or claiming the app compiled. This correction awaits its own
 exact-source Apple run.
+
+### Third exact-commit Apple run: app build-service crash
+
+Run [40566037160](https://github.com/mischa23v/blind/actions/runs/40566037160),
+commit `316e112136c0dfbee8baad709d9069bed5a1d39f`, passed the real package graphs,
+83host fixtures, shallow exact-tag seed, canonical locked GRDB resolution and
+post-resolution revision verification. The first flag-absent app build failed
+(exit65,8.38s) at build-description creation: Xcode reported that its build system
+crashed and explicitly instructed “Build again to continue.” No source compiler
+error or crash-report exception cause is established by the retained tail. The
+flag-enabled app build was not reached. The original nine receipts are preserved
+under `evidence/run-40566037160/`;334,596,833 bytes scoped scratch and no direct
+parent file-limit signal, timeout or exceeded scratch cap were reported.
+
+The harness now preserves the first failure and allows **one identical-command
+retry only for that exact retry-directed service-crash marker**, exit65 and
+non-cap/non-timeout conditions. It does not retry source errors, relax limits,
+delete caches, change SDK/build settings, or claim the first attempt passed.
+A persistent failure remains a failure. Recent matching macOS build-service
+DiagnosticReports are summarized on each failure (first256directory entries,
+at most6reports,2MiB input per
+report; exception/termination fields only, no raw report upload). Missing or late
+crash reports are inconclusive. Those summaries can distinguish an internal service
+failure from an indirect limit signal on a later run without guessing now.
+
+#### Retry classifier hardening
+
+Retry admission inspects the **complete app build log up to4MiB**, not just its
+last35lines; a larger/incomplete log refuses retry. Exactly one standalone known
+service-crash error line is allowed. Any other error/fatal diagnostic line,
+observed child SIGXFSZ/SIGXCPU/EXC_RESOURCE (including Darwin signal numbers24/25),
+parent termination, timeout, file-limit or scratch-limit evidence refuses retry.
+The diagnostic collector returns its summary to this decision; it is not merely
+logging evidence after making the choice. Absent/unparsed reports remain
+**unknown**, not proof that child resource limits were not involved. That unknown
+is explicitly recorded in a separate retry-decision summary. The same-command
+single retry and original failure receipt remain unchanged.
+
+`python3 research/native-candidate-app-integration-85/tests/retry_policy.py` runs
+17pure Python policy fixtures: exact-marker admission, mixed compiler/linker/fatal
+error refusal, child file/CPU/resource termination, parent limits/timeouts, missing
+or duplicate markers and incomplete logs. These are harness-policy tests, not
+Swift, Apple build, crash recovery or app execution results.
+
+Three additional collector-to-policy fixtures create real fake IPS files with
+numeric-only SIGNAL24/25 metadata, execute the collector, round-trip its serialized
+summary and assert retry refusal. A symlink fixture asserts that a matching report
+name pointing outside the diagnostic directory is skipped and leaves evidence
+unknown. The collector classifies only raw allowed exception/termination metadata
+before string conversion or truncation, retains the boolean observation, skips
+symlink entries and uses `O_NOFOLLOW` for reads to reject a symlink swap. These
+20local Python fixtures do not execute Apple's build service.
