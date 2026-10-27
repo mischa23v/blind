@@ -1,3 +1,4 @@
+#if canImport(ARKit)
 import ARKit
 import MeshBufferDecoder81
 import MeshSnapshot82
@@ -17,3 +18,4 @@ public extension MeshCandidateIngress83 {
         }
     }
 }
+#endif

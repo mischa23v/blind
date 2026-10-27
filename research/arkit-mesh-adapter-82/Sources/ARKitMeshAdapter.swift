@@ -1,3 +1,4 @@
+#if canImport(ARKit)
 import ARKit
 import Foundation
 import Metal
@@ -59,3 +60,4 @@ public enum ARKitMeshAdapter82 {
         }
     }
 }
+#endif
