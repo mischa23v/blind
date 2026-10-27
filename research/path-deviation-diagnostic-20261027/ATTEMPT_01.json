@@ -1,0 +1,27 @@
+{
+  "freeze": "FROZEN_01.json",
+  "freeze_sha256": "425cb04f575c216243a02173d574f5407ad86fbdf96c666eb263c2290c2af5f8",
+  "startedUTC": "2026-10-27T23:11:15.606418+00:00",
+  "upstream_all_manifest_files_verified": 43,
+  "stages": [
+    {
+      "stage": "compile",
+      "exit_code": 0,
+      "wall_seconds": 0.6655882550003298,
+      "log": "ATTEMPT_01_compile.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "fixtures",
+      "exit_code": 0,
+      "wall_seconds": 0.11907776800217107,
+      "log": "ATTEMPT_01_fixtures.log",
+      "log_sha256": "bf9091a782d964f291b6363159554f6aff31de9da51b8ff79f32dd3601223122"
+    }
+  ],
+  "physical_guidance": false,
+  "real_data_executed": false,
+  "sources_unchanged": true,
+  "passed": true,
+  "finishedUTC": "2026-10-27T23:11:16.394291+00:00"
+}
