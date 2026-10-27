@@ -1,3 +1,17 @@
+## Status update — 2026-10-27 23:19 UTC
+
+Navigation remains the engineering priority. Earlier dated sections below retain historical results, not current completion claims.
+
+- Exact `38ac458` native evidence is now verified: both app compilation modes passed; hosted units **149 passed, zero failed, six skipped**; UI **12 passed, two failed, three skipped**. The scene-fence repair passed. Dynamic Type and the practice test's active-state precondition failed. [Source-bound evidence](research/native-candidate-app-integration-85/integrated/evidence/run40583132225/).
+- `003788a` separates practice reachability from explicit cancellation, retaining the production 120-second expiry and two sub-90-second cancellation guards. Existing [run40598054378](https://github.com/mischa23v/blind/actions/runs/40598054378) has passed both compilation modes and its hosted-unit step; UI checks remain in progress. No terminal UI verdict or exact new case count is credited yet. [Repair and coverage trade-off](research/practice-cancellation-test-review-20261027/).
+- [Frozen recovery04 checkpoint](research/journey-benchmark-readiness-84/checkpoint-20261027-2318/README.md): first **46 scheduled outcomes = 39 arrivals, three support stops and four interrupted/unknowns** (8,15,31,45). Episode46 resumed after the prior deadline plus grace and unchanged-evidence checks. No unknown was rerun, no frozen rule changed. Supplied poses, reference support/collision veto, zero margin, assisted source exclusions and unmeasured ground contacts remain explicit limitations; this is not live phone avoidance or a completed table lap.
+- [Offline route-deviation diagnostic](research/path-deviation-diagnostic-20261027/README.md), published `25244fb`: unchanged pinned Detour geometry, **62 synthetic fixtures passed**, zero failures/skips. Measures supplied-pose cross-track, along-path and camera-heading error; ambiguous association remains unavailable. No localization, body-heading, physical accuracy or runtime guidance claim.
+- The actual mesh bridge remains diagnostic-flag fenced, default-off and no-copy/no-ingest. Origin-lease and new endpoint workflow proposals remain inactive pending their specifically requested activation approval. The source84 archive has a separate pending upload approval. Ordinary code publication does not resolve either gate; no master merge or deployment.
+
+Next: complete the unchanged matrix and current native review; establish independently estimated map-relative pose, measured body/mount calibration, live support/hazard coverage, checked path entry/deviation and recovery before physical guidance. The 400 actual-stack journeys and staged supervised acceptance remain open.
+
+---
+
 ## Status update — 2026-10-27 21:19 UTC
 
 Latest published repair `38ac458` has passed both app compilation modes and its hosted-unit step in [run40583132225](https://github.com/mischa23v/blind/actions/runs/40583132225). Exact case-count verification and the terminal accessibility result remain pending; this is not full-app acceptance. The mesh connection remains default-off/no-copy, with no physical guidance authority. The dated checkpoint below retains its earlier status and evidence scope.

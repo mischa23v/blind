@@ -1,3 +1,9 @@
+## Current navigation evidence priority — 2026-10-27 23:19 UTC
+
+Navigation is the current engineering priority within the broader local companion product. The reference-assisted frozen room matrix, native regression repairs and offline deviation evaluator are development evidence, not physical readiness. Current status and evidence are in [TASKS.md](TASKS.md) and [PROGRESS.md](PROGRESS.md). Next acceptance must establish independently estimated map-relative position, camera versus body orientation, calibrated phone mounting, path deviation, current support/clearance and recovery. A supplied-pose route or a passing arithmetic fixture cannot substitute for these. Pending workflow/upload approvals and the default-off/no-copy bridge remain unchanged; no release or master merge is authorized by this checkpoint.
+
+---
+
 ## Current everyday-companion plan — 2026-10-23
 
 The goal is a free, local, continuously available general companion whose memory and tools reduce the work needed to obtain visual information. Navigation is only one tool, not the product definition. Current implementation and remaining gaps are tracked in [EVERYDAY_COMPANION_ACCEPTANCE.md](EVERYDAY_COMPANION_ACCEPTANCE.md), [SPATIAL_COMPANION_ACCEPTANCE.md](SPATIAL_COMPANION_ACCEPTANCE.md), and the reconciled [CHILD_ASSISTANT_TEST_TRACKER.md](CHILD_ASSISTANT_TEST_TRACKER.md). Successful source tests do not establish parity with a sighted helper, all-day reliability or safe unsupervised use.
