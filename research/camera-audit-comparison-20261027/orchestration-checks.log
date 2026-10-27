@@ -1,0 +1,13 @@
+.F.........
+======================================================================
+FAIL: test_build_timeout_retains_sanitized_tail_and_termination_metrics (__main__.ScopeTests.test_build_timeout_retains_sanitized_tail_and_termination_metrics)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/90f3f6703064/blind/tools/test/camera-audit-scope-control.test.py", line 179, in test_build_timeout_retains_sanitized_tail_and_termination_metrics
+    self.assertIn('SwiftCompile', tail)
+AssertionError: 'SwiftCompile' not found in '{"lines": [], "omittedMatchedLines": 0, "truncatedLines": 0, "logByteCount": 0}'
+
+----------------------------------------------------------------------
+Ran 11 tests in 26.335s
+
+FAILED (failures=1)
