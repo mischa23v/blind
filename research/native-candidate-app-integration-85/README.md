@@ -3,7 +3,7 @@
 This increment supplies **actual local SwiftPM products** for the existing source
 chain `MeshBufferDecoder81 → MeshSnapshot82 → MeshCandidateIngress83`, with the
 existing stage75 `BlindRoomMesh` native package. No algorithm is copied. The two
-ARKit-only source files are conditionally compiled with `canImport(ARKit)` so the
+ARKit-only source files are conditionally compiled with `os(iOS) && canImport(ARKit)` so the
 same packages can build on macOS; simulator builds include the actual ARKit seam.
 The deployment floor remains iOS17/macOS13. The mesh-only graph uses local
 dependencies; the optional app compile resolves the existing exact GRDB dependency
@@ -105,3 +105,23 @@ scratch accounting. A sparse CAS/cache file exceeding that per-file cap may fail
 the app build; the receipt must report that failure rather than calling it a
 compile pass. These limits are not live disk/RSS quotas, phone resource evidence,
 or runtime-memory proof. No cap has been silently raised.
+
+### First exact-commit Apple run: host platform condition failure
+
+Run [40562846752](https://github.com/mischa23v/blind/actions/runs/40562846752),
+commit `929be18186ca9290d5ac64dd3ad01060dbb10bad`, failed the first
+`host-swiftpm-graph` command (exit1;22.73s). The actual macOS27 SDK admitted the
+`canImport(ARKit)` branch and attempted to compile the iOS-native mesh adapter;
+the retained compiler tail reports contextual `.uchar`/`.shared` failures. The
+bounded tail does not retain earlier diagnostics, so it is not claimed to identify
+every compiler error. The intended host product must exclude this iOS-only seam,
+not infer mesh API availability merely from module importability. Both native
+seams now explicitly require `os(iOS) && canImport(ARKit)`. The iOS Simulator
+branch still compiles the actual native source; no SDK errors are suppressed.
+
+Receipt evidence:70,212,973 bytes scratch, largest file10,921,328 bytes; no timeout,
+file-limit signal or exceeded scratch cap. No cap change was made. Host fixtures,
+simulator graph, exact GRDB resolution and both app compile flag phases were
+**not reached**. The correction requires a new exact-source Apple run; local
+static success is not a build pass. The original bounded receipt is retained in
+`evidence/run-40562846752-host-swiftpm-graph-receipt.json`.

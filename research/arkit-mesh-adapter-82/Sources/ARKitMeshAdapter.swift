@@ -1,4 +1,4 @@
-#if canImport(ARKit)
+#if os(iOS) && canImport(ARKit)
 import ARKit
 import Foundation
 import Metal

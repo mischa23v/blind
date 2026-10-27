@@ -1,4 +1,4 @@
-#if canImport(ARKit)
+#if os(iOS) && canImport(ARKit)
 import ARKit
 import MeshBufferDecoder81
 import MeshSnapshot82

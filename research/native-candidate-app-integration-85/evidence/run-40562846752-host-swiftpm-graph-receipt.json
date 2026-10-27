@@ -1,0 +1,90 @@
+{
+  "label": "host-swiftpm-graph",
+  "command": [
+    "xcrun",
+    "--sdk",
+    "macosx",
+    "swift",
+    "build",
+    "--build-system",
+    "native",
+    "--package-path",
+    "/Users/runner/work/blind/blind/research/mesh-candidate-ingress-83",
+    "--scratch-path",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph",
+    "--configuration",
+    "release",
+    "--jobs",
+    "1",
+    "--triple",
+    "arm64-apple-macosx14.0",
+    "--sdk",
+    "/Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk",
+    "-Xswiftc",
+    "-enable-testing",
+    "-Xcc",
+    "-O1",
+    "-Xcxx",
+    "-O1",
+    "--cache-path",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/swiftpm-cache",
+    "--manifest-cache",
+    "local",
+    "-Xswiftc",
+    "-module-cache-path",
+    "-Xswiftc",
+    "/Users/runner/work/_temp/blind-native-app-integration-85/host-graph-module-cache",
+    "-Xcc",
+    "-fmodules-cache-path=/Users/runner/work/_temp/blind-native-app-integration-85/host-graph-clang-cache"
+  ],
+  "exitCode": 1,
+  "timedOut": false,
+  "exceptionType": null,
+  "wallSeconds": 22.731537292000013,
+  "scratchBytesAfterCommand": 70212973,
+  "scratchCapExceeded": false,
+  "scratchScanComplete": true,
+  "scratchEntriesScanned": 187,
+  "largestScratchFiles": [
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/AppKit-27SVORXAVQ5J2.pcm",
+      "bytes": 10921328
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/Foundation-39TTUHVSZQC5F.pcm",
+      "bytes": 6570792
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/Darwin-3OP3DCIIHQBHB.pcm",
+      "bytes": 5871728
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/CoreServices-10TOEKYM0QMZO.pcm",
+      "bytes": 4514152
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/simd-18JHBB313LCXT.pcm",
+      "bytes": 3959640
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/IOKit-FVLFRHYESQKG.pcm",
+      "bytes": 3726544
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/_Builtin_intrinsics-1DFW800BO2QSL.pcm",
+      "bytes": 3275384
+    },
+    {
+      "path": "host-graph-clang-cache/18LUXMWMEVRH3/Security-2U1WYKGRJLUTR.pcm",
+      "bytes": 3125176
+    }
+  ],
+  "fileCapBytes": 134217728,
+  "scratchCapBytes": 536870912,
+  "cpuCapSeconds": 300,
+  "wallTimeoutSeconds": 300,
+  "scratchAccounting": "stage-end only; scoped tree; not a live disk quota",
+  "terminationSignal": null,
+  "fileSizeLimitSignal": false,
+  "logTail": "19 |                   faces.primitiveType == .triangle, faces.indexCountPerPrimitive == 3,\n20 |                   faces.bytesPerIndex == 2 || faces.bytesPerIndex == 4 else {\n\n/Users/runner/work/blind/blind/research/arkit-mesh-adapter-82/Sources/ARKitMeshAdapter.swift:33:36: error: cannot infer contextual base in reference to member 'uchar'\n31 |             var cd: MeshSnapshot82.Descriptor?\n32 |             if let c = classes {\n33 |                 guard c.format == .uchar, c.componentsPerVector == 1 else {\n   |                                    `- error: cannot infer contextual base in reference to member 'uchar'\n34 |                     throw MeshSnapshot82.Failure.unsupportedFormat\n35 |                 }\n\n/Users/runner/work/blind/blind/research/arkit-mesh-adapter-82/Sources/ARKitMeshAdapter.swift:43:51: error: cannot infer contextual base in reference to member 'shared'\n41 |             // iOS shared buffers are CPU-accessible. Reject private/memoryless rather than\n42 |             // touching contents or inventing a GPU readback/synchronization contract.\n43 |             guard vertices.buffer.storageMode == .shared, faces.buffer.storageMode == .shared,\n   |                                                   `- error: cannot infer contextual base in reference to member 'shared'\n44 |                   classes == nil || classes!.buffer.storageMode == .shared else {\n45 |                 throw MeshSnapshot82.Failure.inaccessibleBuffer\n\n/Users/runner/work/blind/blind/research/arkit-mesh-adapter-82/Sources/ARKitMeshAdapter.swift:43:88: error: cannot infer contextual base in reference to member 'shared'\n41 |             // iOS shared buffers are CPU-accessible. Reject private/memoryless rather than\n42 |             // touching contents or inventing a GPU readback/synchronization contract.\n43 |             guard vertices.buffer.storageMode == .shared, faces.buffer.storageMode == .shared,\n   |                                                                                        `- error: cannot infer contextual base in reference to member 'shared'\n44 |                   classes == nil || classes!.buffer.storageMode == .shared else {\n45 |                 throw MeshSnapshot82.Failure.inaccessibleBuffer\n\n/Users/runner/work/blind/blind/research/arkit-mesh-adapter-82/Sources/ARKitMeshAdapter.swift:44:69: error: cannot infer contextual base in reference to member 'shared'\n42 |             // touching contents or inventing a GPU readback/synchronization contract.\n43 |             guard vertices.buffer.storageMode == .shared, faces.buffer.storageMode == .shared,\n44 |                   classes == nil || classes!.buffer.storageMode == .shared else {\n   |                                                                     `- error: cannot infer contextual base in reference to member 'shared'\n45 |                 throw MeshSnapshot82.Failure.inaccessibleBuffer\n46 |             }\nwarning: '--build-system native' has been deprecated and will be removed in a future release; please report an issue at https://github.com/swiftlang/swift-package-manager/issues if you are unable to adopt the default build system."
+}
