@@ -149,6 +149,40 @@ def planning_help_line(text):
     return lines[0]
 
 
+def planning_capability(runner, out, env):
+    runner.run(['xcodebuild', '-help'], 'planning-help', out, 30, env=env)
+    path = out / 'planning-help.log'
+    with os.fdopen(os.open(path, os.O_RDONLY | os.O_NOFOLLOW), 'rb') as handle:
+        raw = handle.read((256 << 10) + 1)
+    complete = len(raw) <= 256 << 10
+    if complete:
+        (out / 'planning-help-bounded.txt').write_bytes(raw)
+    text = raw[:256 << 10].decode('utf-8', errors='replace')
+    option = None
+    reason = 'help output exceeds 256 KiB bound'
+    if complete:
+        try:
+            option = planning_help_line(text)
+            reason = 'installed help documents the required planning-only behavior'
+        except ValueError as error:
+            reason = str(error)
+    lines = text.splitlines()
+    # Preserve the exact relevant text even on rejection; do not expose environment.
+    excerpts = []
+    for index, line in enumerate(lines):
+        if 'dry-run' in line.lower() or 'dry run' in line.lower():
+            excerpts.append(dict(line=index + 1, text='\n'.join(lines[index:index + 3])[:2048]))
+            if len(excerpts) == 16:
+                break
+    result = dict(commit=os.environ.get('GITHUB_SHA'), helpComplete=complete,
+        helpSHA256=hashlib.sha256(raw).hexdigest() if complete else None,
+        helpBytes=len(raw), optionAccepted=option is not None, acceptedOption=option,
+        reason=reason, relevantHelpExcerpts=excerpts,
+        fullAppCompiled=False, planningArmsExecuted=0, appExecuted=False)
+    (out / 'planning-capability-diagnostic.json').write_text(json.dumps(result, indent=2) + '\n')
+    return option
+
+
 def planning_can_continue(receipt):
     # A second arm is a different graph, never a retry of the failed arm.
     return (not resource_termination(receipt) and receipt.get('exitCode') in (0, 65) and receipt.get('timedOut') is False and
@@ -233,11 +267,11 @@ def restore_proposal_sources(root, originals, out):
         raise RuntimeError('proposal restoration failed; inspect planning-restoration-diagnostic.json')
 
 
-def planning_comparison(runner, out, env, patch):
-    runner.run(['xcodebuild', '-help'], 'planning-help', out, 30, env=env)
-    help_path = out / 'planning-help.log'
-    assert help_path.stat().st_size <= 256 << 10, 'unexpected help output size'
-    option = planning_help_line(help_path.read_text())
+def planning_comparison(runner, out, env, patch, option=None):
+    if option is None:
+        option = planning_capability(runner, out, env)
+    if option is None:
+        raise ValueError('planning capability not established; inspect capability diagnostic')
     relative = ['ios/BlindAssist/NavigationModel.swift',
         'ios/BlindAssist.xcodeproj/project.pbxproj', 'ios/BlindAssist/MeshCandidateDiagnostics.swift']
     def source_state():
@@ -298,6 +332,7 @@ def main():
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument('--app-proposal', action='store_true')
     mode.add_argument('--planning-comparison', action='store_true')
+    mode.add_argument('--planning-capability', action='store_true')
     args = parser.parse_args()
     assert platform.system() == 'Darwin', 'Apple host required'
     assert os.environ.get('GITHUB_REPOSITORY') == 'mischa23v/blind'
@@ -313,6 +348,13 @@ def main():
     out = Path(os.environ['RUNNER_TEMP']) / 'blind-native-app-integration-85'
     out.mkdir(exist_ok=False)
     (out / 'tmp').mkdir()
+    planning_option = None
+    if args.planning_capability or args.planning_comparison:
+        planning_option = planning_capability(runner, out, os.environ)
+        if args.planning_capability:
+            return # metadata probe only; no dependency, graph, patch or app commands
+        if planning_option is None:
+            raise ValueError('planning capability not established; no graph work started')
     host_sdk = runner.output(['xcrun', '--sdk', 'macosx', '--show-sdk-path'])
     env = runner.package_environment(host_sdk, out)
     package = ROOT / 'research/mesh-candidate-ingress-83'
@@ -392,7 +434,7 @@ def main():
         checkout = out / 'app-source-packages/checkouts/GRDB.swift'
         assert runner.output(['git', '-C', str(checkout), 'rev-parse', 'HEAD']) == grdb_revision
         if args.planning_comparison:
-            planning_comparison(runner, out, env, patch)
+            planning_comparison(runner, out, env, patch, planning_option)
             return # never fall through to compilation or symbol checks
         # Retain the inherited 128 MiB per-file cap; a sparse CAS/cache crossing it
         # is a bounded build failure, never app acceptance or runtime-memory proof.

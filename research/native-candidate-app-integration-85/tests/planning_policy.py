@@ -128,3 +128,21 @@ for restoration_fails in [False,True]:
   check((r/names[1]).read_text()=='proposal:'+names[1] and (r/names[2]).read_text()=='proposal:'+names[2])
   check(not list(r.rglob('.stage85-restore-*')))
 print(f'PASS: {count} total planning/restoration/resource fixtures; no Apple execution')
+
+for payload, accepted, complete in [(helptext.encode(),True,True),
+ (b' -dry-run, -n\n Print commands, but do not execute them.\n',False,True),
+ (b'no option found',False,True),(b'x'*((256<<10)+1),False,False)]:
+ with tempfile.TemporaryDirectory(prefix='stage85-help-fixture-') as folder:
+  o=Path(folder);calls=[]
+  class HelpFake:
+   @staticmethod
+   def run(command,label,out,timeout,env=None):
+    calls.append(command);(out/'planning-help.log').write_bytes(payload)
+  option=m.planning_capability(HelpFake,o,{})
+  d=json.loads((o/'planning-capability-diagnostic.json').read_text())
+  check((option is not None)==accepted and d['optionAccepted']==accepted and d['helpComplete']==complete)
+  check(calls==[['xcodebuild','-help']] and d['planningArmsExecuted']==0)
+  check((o/'planning-help-bounded.txt').exists()==complete)
+  if complete:check((o/'planning-help-bounded.txt').read_bytes()==payload)
+  if b'dry-run,' in payload:check(d['relevantHelpExcerpts'][0]['text']==payload.decode().rstrip('\n'))
+print(f'PASS: {count} total planning/restoration/resource/capability fixtures; no Apple execution')

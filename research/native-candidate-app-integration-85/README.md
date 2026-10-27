@@ -259,3 +259,21 @@ Before a second planning arm, the harness now inspects the complete baseline log
 up to 4 MiB plus its receipt and crash summaries for resource signals. Missing,
 unreadable, symlinked or oversized logs stop the comparison. Explicit child
 SIGXFSZ/SIGXCPU evidence cannot disappear merely because no IPS report was found.
+
+
+### Planning-capability probe after run40574538504
+
+At commit `65906d1`, both package graphs and 83 synthetic fixtures passed again,
+but the installed-help guard rejected the available text before either planning
+arm ran. The retained help receipt contains only the generic final help lines,
+not the option section, so the exact reason (absent option versus wording/parser
+mismatch) is not established. No baseline/proposal comparison was performed.
+
+The next workflow is deliberately `--planning-capability`: it runs only bounded
+Apple tool/version/source preflight and `xcodebuild -help`, with no dependency
+resolution, graph build, patch application or app command. It preserves the entire
+help output only when it is within256KiB, its hash, exact relevant option excerpts,
+and the acceptance/rejection reason. The same capability check has moved before
+all expensive graph work for future `--planning-comparison` calls. The existing
+parser is not relaxed without observing the primary installed-tool evidence.
+A successful probe means the help was inspected, not that a build passed.
