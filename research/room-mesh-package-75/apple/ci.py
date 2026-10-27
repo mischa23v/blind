@@ -40,6 +40,16 @@ def build_cache_options(out,stem):
          '-Xswiftc','-module-cache-path','-Xswiftc',str(out/(stem+'-module-cache')),
          '-Xcc','-fmodules-cache-path='+str(out/(stem+'-clang-cache'))]
 
+def package_build_command(package,out,stem,triple,target_sdk):
+ # SwiftPM/Package.swift execute on macOS even when products target iOS Simulator.
+ return ['xcrun','--sdk','macosx','swift','build','--build-system',BUILD_SYSTEM,
+         '--package-path',str(package),'--scratch-path',str(out/stem),
+         '--configuration','release','--jobs','1','--triple',triple,'--sdk',target_sdk,
+         '-Xswiftc','-enable-testing','-Xcc','-O1','-Xcxx','-O1']+build_cache_options(out,stem)
+
+def package_environment(host_sdk,out):
+ return dict(os.environ,SDKROOT=host_sdk,TMPDIR=str(out/'tmp')+'/')
+
 def run(cmd,label,out,timeout=300,env=None):
  start=time.monotonic();log=out/(label+'.log');code=None;timed_out=False;exception_type=None
  # Keep subprocess temporaries inside the measured scratch tree.
@@ -89,15 +99,17 @@ def main():
  out=Path(os.environ['RUNNER_TEMP'])/'blind-room-mesh-75';out.mkdir(exist_ok=False);(out/'INPUT.json').write_bytes(data)
  receipts=[];toolchain=output(['xcrun','swiftc','--version'])
  # Verify advertised SwiftPM options on the pinned Apple toolchain before use.
- help_text=output(['xcrun','swift','build','--build-system',BUILD_SYSTEM,'--help'])
+ host_sdk=output(['xcrun','--sdk','macosx','--show-sdk-path'])
+ (out/'tmp').mkdir(exist_ok=True)
+ package_env=package_environment(host_sdk,out)
+ help_text=output(['xcrun','--sdk','macosx','swift','build','--build-system',BUILD_SYSTEM,'--help'],env=package_env)
  assert all(flag in help_text for flag in ['--cache-path','--manifest-cache','--scratch-path','--build-system']), 'required SwiftPM cache options unavailable'
  for sdk,triple,stem in [('macosx','arm64-apple-macosx14.0','host'),('iphonesimulator','arm64-apple-ios17.0-simulator','simulator')]:
   sdkpath=output(['xcrun','--sdk',sdk,'--show-sdk-path'])
-  build=['xcrun','--sdk',sdk,'swift','build','--build-system',BUILD_SYSTEM,'--package-path',str(package),'--scratch-path',str(out/stem),'--configuration','release','--jobs','1','--triple',triple,'--sdk',sdkpath,'-Xswiftc','-enable-testing','-Xcc','-O1','-Xcxx','-O1']
-  build+=build_cache_options(out,stem)
-  receipts.append(run(build,stem+'-package',out,300))
-  # Even the bin-path query uses the same temporary directory.
-  bindir=Path(output(build+['--show-bin-path'],env=dict(os.environ,TMPDIR=str(out/'tmp')+'/')))
+  build=package_build_command(package,out,stem,triple,sdkpath)
+  receipts.append(run(build,stem+'-package',out,300,env=package_env))
+  # Bin-path lookup must use the identical host environment and target options.
+  bindir=Path(output(build+['--show-bin-path'],env=package_env))
   objects=sorted((bindir/'CDetour.build').rglob('*.o'))+sorted((bindir/'BlindRoomMesh.build').glob('*.o'))
   assert len(objects)>=25 and len(objects)<=64,'unexpected package object set'
   common=['xcrun','--sdk',sdk,'swiftc','-target',triple,'-sdk',sdkpath,'-module-cache-path',str(out/(stem+'-client-cache')),'-I',str(bindir/'Modules'),'-I',str(package/'Sources/CDetour/include'),*map(str,objects),'-lc++']

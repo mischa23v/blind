@@ -1,0 +1,59 @@
+name: Focused indoor IO diagnostic
+on:
+  push:
+    branches: [codex/recovery-hazard-order-20261027]
+    paths:
+      - .github/workflows/focused-indoor-io.yml
+      - research/indoor-io-diagnostic-20261027/focused-indoor-io.py
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: focused-indoor-io-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  focused:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    runs-on: xcode-27
+    timeout-minutes: 55
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - label: baseline
+            sha: 106cc2ad9565513af578d9325110213216e8cc39
+          - label: review
+            sha: 8d878c86ab0b3a96d5fd44b31b418fbdc9bc5ed6
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - name: Check out reviewed diagnostic harness
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          path: harness
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Check out exact candidate source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ matrix.sha }}
+          path: source
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Original focused tests, without assertion or timeout changes
+        timeout-minutes: 50
+        run: python3 harness/research/indoor-io-diagnostic-20261027/focused-indoor-io.py source '${{ matrix.sha }}' '${{ matrix.label }}'
+      - name: Preserve bounded diagnostic evidence only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: focused-indoor-io-${{ matrix.label }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/focused-indoor-io/evidence/
+          if-no-files-found: warn
+          retention-days: 3
