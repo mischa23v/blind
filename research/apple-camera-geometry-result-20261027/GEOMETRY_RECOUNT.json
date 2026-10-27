@@ -1,0 +1,2097 @@
+{
+  "schema": 1,
+  "scope": "saved synthetic native geometry evidence; not accessibility pass",
+  "cases": [
+    {
+      "file": "blind-camera-audit-scope-control/artifacts/camera-dynamic-type-geometry-type.json",
+      "sha256": "6492f21452b003f0234014f6068fb7b0909627da746fc06810a9585f5eb713d1",
+      "traceStatus": "partial",
+      "overflow": false,
+      "rowCount": 229,
+      "inAuditGeometryCount": 75,
+      "geometryCoverage": {
+        "button": {
+          "observedCategories": [
+            "accessibility1",
+            "large",
+            "medium",
+            "small",
+            "xLarge",
+            "xSmall",
+            "xxLarge",
+            "xxxLarge"
+          ],
+          "missingCategories": [
+            "accessibility2",
+            "accessibility3",
+            "accessibility4",
+            "accessibility5"
+          ]
+        },
+        "container": {
+          "observedCategories": [
+            "accessibility1",
+            "accessibility2",
+            "accessibility3",
+            "accessibility4",
+            "accessibility5",
+            "large",
+            "medium",
+            "small",
+            "xLarge",
+            "xSmall",
+            "xxLarge",
+            "xxxLarge"
+          ],
+          "missingCategories": []
+        },
+        "footer": {
+          "observedCategories": [
+            "accessibility1",
+            "large",
+            "medium",
+            "small",
+            "xLarge",
+            "xSmall",
+            "xxLarge",
+            "xxxLarge"
+          ],
+          "missingCategories": [
+            "accessibility2",
+            "accessibility3",
+            "accessibility4",
+            "accessibility5"
+          ]
+        },
+        "header": {
+          "observedCategories": [
+            "accessibility1",
+            "accessibility2",
+            "large",
+            "medium",
+            "small",
+            "xLarge",
+            "xSmall",
+            "xxLarge",
+            "xxxLarge"
+          ],
+          "missingCategories": [
+            "accessibility3",
+            "accessibility4",
+            "accessibility5"
+          ]
+        }
+      },
+      "flushAfterAuditEnd": true,
+      "roles": {
+        "header": {
+          "events": {
+            "geometry": 21,
+            "appear": 12,
+            "dynamic-change": 10,
+            "legacy-change": 10,
+            "disappear": 11
+          },
+          "geometry": [
+            {
+              "seq": 6,
+              "dynamic": "large",
+              "uptime": 1721.9637679583334,
+              "frame": [
+                40,
+                578.3333333333333,
+                65.66666666666666,
+                20.333333333333258
+              ]
+            },
+            {
+              "seq": 18,
+              "dynamic": "xSmall",
+              "uptime": 1729.3780169583335,
+              "frame": [
+                40,
+                562,
+                56,
+                17
+              ]
+            },
+            {
+              "seq": 23,
+              "dynamic": "xSmall",
+              "uptime": 1729.38630775,
+              "frame": [
+                40,
+                553,
+                56,
+                17
+              ]
+            },
+            {
+              "seq": 39,
+              "dynamic": "small",
+              "uptime": 1729.5576062083335,
+              "frame": [
+                40,
+                558,
+                59.33333333333333,
+                18
+              ]
+            },
+            {
+              "seq": 44,
+              "dynamic": "small",
+              "uptime": 1729.5727724166668,
+              "frame": [
+                40,
+                561,
+                59.33333333333333,
+                18
+              ]
+            },
+            {
+              "seq": 60,
+              "dynamic": "medium",
+              "uptime": 1729.6751317916667,
+              "frame": [
+                40,
+                567.3333333333333,
+                62.66666666666666,
+                19.333333333333258
+              ]
+            },
+            {
+              "seq": 65,
+              "dynamic": "medium",
+              "uptime": 1729.6923545000002,
+              "frame": [
+                40,
+                570.3333333333333,
+                62.66666666666666,
+                19.333333333333258
+              ]
+            },
+            {
+              "seq": 81,
+              "dynamic": "large",
+              "uptime": 1729.7978269166667,
+              "frame": [
+                40,
+                575.3333333333333,
+                65.66666666666666,
+                20.333333333333258
+              ]
+            },
+            {
+              "seq": 86,
+              "dynamic": "large",
+              "uptime": 1729.8134502083335,
+              "frame": [
+                40,
+                578.3333333333333,
+                65.66666666666666,
+                20.333333333333258
+              ]
+            },
+            {
+              "seq": 102,
+              "dynamic": "xLarge",
+              "uptime": 1729.9320392916668,
+              "frame": [
+                40,
+                593.6666666666667,
+                73,
+                23
+              ]
+            },
+            {
+              "seq": 107,
+              "dynamic": "xLarge",
+              "uptime": 1729.9509817916667,
+              "frame": [
+                40,
+                596.6666666666667,
+                73,
+                23
+              ]
+            },
+            {
+              "seq": 123,
+              "dynamic": "xxLarge",
+              "uptime": 1730.065689875,
+              "frame": [
+                40,
+                638.3333333333333,
+                79,
+                25.333333333333258
+              ]
+            },
+            {
+              "seq": 128,
+              "dynamic": "xxLarge",
+              "uptime": 1730.0859592916668,
+              "frame": [
+                40,
+                640.3333333333333,
+                79,
+                25.333333333333258
+              ]
+            },
+            {
+              "seq": 144,
+              "dynamic": "xxxLarge",
+              "uptime": 1730.2029117916668,
+              "frame": [
+                40,
+                660.6666666666667,
+                86,
+                27.66666666666663
+              ]
+            },
+            {
+              "seq": 150,
+              "dynamic": "xxxLarge",
+              "uptime": 1730.207386625,
+              "frame": [
+                40,
+                662.6666666666667,
+                86,
+                27.66666666666663
+              ]
+            },
+            {
+              "seq": 153,
+              "dynamic": "xxxLarge",
+              "uptime": 1730.223368375,
+              "frame": [
+                40,
+                666.6666666666667,
+                86,
+                27.66666666666663
+              ]
+            },
+            {
+              "seq": 169,
+              "dynamic": "accessibility1",
+              "uptime": 1730.3451431666667,
+              "frame": [
+                40,
+                749.6666666666666,
+                104.66666666666666,
+                33.66666666666663
+              ]
+            },
+            {
+              "seq": 187,
+              "dynamic": "accessibility2",
+              "uptime": 1730.4812679583335,
+              "frame": [
+                40,
+                944.3333333333333,
+                123,
+                39.66666666666663
+              ]
+            },
+            {
+              "seq": 209,
+              "dynamic": "large",
+              "uptime": 1731.0174686666667,
+              "frame": [
+                40,
+                619.3333333333334,
+                65.66666666666666,
+                20.33333333333337
+              ]
+            },
+            {
+              "seq": 218,
+              "dynamic": "large",
+              "uptime": 1731.0225855416668,
+              "frame": [
+                40,
+                602,
+                65.66666666666666,
+                20.333333333333258
+              ]
+            },
+            {
+              "seq": 221,
+              "dynamic": "large",
+              "uptime": 1731.0400401250001,
+              "frame": [
+                40,
+                578.3333333333333,
+                65.66666666666666,
+                20.333333333333258
+              ]
+            }
+          ],
+          "disappearanceCategories": [
+            "xSmall",
+            "small",
+            "medium",
+            "large",
+            "xLarge",
+            "xxLarge",
+            "xxxLarge",
+            "accessibility1",
+            "accessibility2",
+            "accessibility2",
+            "large"
+          ]
+        },
+        "button": {
+          "events": {
+            "geometry": 20,
+            "appear": 11,
+            "dynamic-change": 9,
+            "legacy-change": 9,
+            "disappear": 10
+          },
+          "geometry": [
+            {
+              "seq": 8,
+              "dynamic": "large",
+              "uptime": 1721.9647585,
+              "frame": [
+                40,
+                624.5,
+                181.66666666666666,
+                20.333333333333485
+              ]
+            },
+            {
+              "seq": 21,
+              "dynamic": "xSmall",
+              "uptime": 1729.378401375,
+              "frame": [
+                40,
+                606.5,
+                154.66666666666666,
+                17
+              ]
+            },
+            {
+              "seq": 24,
+              "dynamic": "xSmall",
+              "uptime": 1729.3864496666667,
+              "frame": [
+                40,
+                596,
+                154.66666666666666,
+                17
+              ]
+            },
+            {
+              "seq": 42,
+              "dynamic": "small",
+              "uptime": 1729.5576137083335,
+              "frame": [
+                40,
+                601.5,
+                164,
+                18
+              ]
+            },
+            {
+              "seq": 45,
+              "dynamic": "small",
+              "uptime": 1729.5729332916667,
+              "frame": [
+                40,
+                605,
+                164,
+                18
+              ]
+            },
+            {
+              "seq": 63,
+              "dynamic": "medium",
+              "uptime": 1729.67514125,
+              "frame": [
+                40,
+                612,
+                173.33333333333331,
+                19.333333333333485
+              ]
+            },
+            {
+              "seq": 66,
+              "dynamic": "medium",
+              "uptime": 1729.6928647500001,
+              "frame": [
+                40,
+                615.5,
+                173.33333333333331,
+                19.333333333333485
+              ]
+            },
+            {
+              "seq": 84,
+              "dynamic": "large",
+              "uptime": 1729.7978343333334,
+              "frame": [
+                40,
+                621,
+                181.66666666666666,
+                20.333333333333485
+              ]
+            },
+            {
+              "seq": 87,
+              "dynamic": "large",
+              "uptime": 1729.813632,
+              "frame": [
+                40,
+                624.5,
+                181.66666666666666,
+                20.333333333333485
+              ]
+            },
+            {
+              "seq": 105,
+              "dynamic": "xLarge",
+              "uptime": 1729.9320464166667,
+              "frame": [
+                40,
+                641.6666666666667,
+                201.33333333333331,
+                23
+              ]
+            },
+            {
+              "seq": 108,
+              "dynamic": "xLarge",
+              "uptime": 1729.9512739166669,
+              "frame": [
+                40,
+                645.1666666666667,
+                201.33333333333331,
+                23
+              ]
+            },
+            {
+              "seq": 126,
+              "dynamic": "xxLarge",
+              "uptime": 1730.0656983333333,
+              "frame": [
+                40,
+                688.6666666666667,
+                216.66666666666663,
+                25.33333333333337
+              ]
+            },
+            {
+              "seq": 129,
+              "dynamic": "xxLarge",
+              "uptime": 1730.0863883333334,
+              "frame": [
+                40,
+                691.0000000000001,
+                216.66666666666663,
+                25.333333333333258
+              ]
+            },
+            {
+              "seq": 147,
+              "dynamic": "xxxLarge",
+              "uptime": 1730.2029192500001,
+              "frame": [
+                40,
+                713.3333333333334,
+                234.33333333333331,
+                27.66666666666663
+              ]
+            },
+            {
+              "seq": 151,
+              "dynamic": "xxxLarge",
+              "uptime": 1730.2075317916667,
+              "frame": [
+                40,
+                715.3333333333334,
+                234.33333333333331,
+                27.66666666666663
+              ]
+            },
+            {
+              "seq": 154,
+              "dynamic": "xxxLarge",
+              "uptime": 1730.2235458333334,
+              "frame": [
+                40,
+                720,
+                234.33333333333331,
+                27.666666666666742
+              ]
+            },
+            {
+              "seq": 172,
+              "dynamic": "accessibility1",
+              "uptime": 1730.345893875,
+              "frame": [
+                40,
+                808.3333333333334,
+                283.66666666666663,
+                33.66666666666663
+              ]
+            },
+            {
+              "seq": 212,
+              "dynamic": "large",
+              "uptime": 1731.017477625,
+              "frame": [
+                40,
+                665.5,
+                181.66666666666666,
+                20.333333333333258
+              ]
+            },
+            {
+              "seq": 219,
+              "dynamic": "large",
+              "uptime": 1731.0226415000002,
+              "frame": [
+                40,
+                648.1666666666665,
+                181.66666666666666,
+                20.333333333333485
+              ]
+            },
+            {
+              "seq": 222,
+              "dynamic": "large",
+              "uptime": 1731.0401328333335,
+              "frame": [
+                40,
+                624.5,
+                181.66666666666666,
+                20.333333333333485
+              ]
+            }
+          ],
+          "disappearanceCategories": [
+            "xSmall",
+            "small",
+            "medium",
+            "large",
+            "xLarge",
+            "xxLarge",
+            "xxxLarge",
+            "accessibility1",
+            "accessibility1",
+            "large"
+          ]
+        },
+        "footer": {
+          "events": {
+            "geometry": 20,
+            "appear": 11,
+            "dynamic-change": 9,
+            "legacy-change": 9,
+            "disappear": 10
+          },
+          "geometry": [
+            {
+              "seq": 4,
+              "dynamic": "large",
+              "uptime": 1721.9631388333335,
+              "frame": [
+                40,
+                668.6666666666667,
+                358,
+                86.33333333333337
+              ]
+            },
+            {
+              "seq": 15,
+              "dynamic": "xSmall",
+              "uptime": 1729.3778085833335,
+              "frame": [
+                40,
+                649,
+                338.66666666666663,
+                74
+              ]
+            },
+            {
+              "seq": 22,
+              "dynamic": "xSmall",
+              "uptime": 1729.3862297916667,
+              "frame": [
+                40,
+                637,
+                338.66666666666663,
+                74
+              ]
+            },
+            {
+              "seq": 36,
+              "dynamic": "small",
+              "uptime": 1729.5575973750001,
+              "frame": [
+                40,
+                643,
+                359,
+                78
+              ]
+            },
+            {
+              "seq": 43,
+              "dynamic": "small",
+              "uptime": 1729.5726015416667,
+              "frame": [
+                40,
+                647,
+                359,
+                78
+              ]
+            },
+            {
+              "seq": 57,
+              "dynamic": "medium",
+              "uptime": 1729.6751230416667,
+              "frame": [
+                40,
+                654.6666666666667,
+                351.3333333333333,
+                82.33333333333337
+              ]
+            },
+            {
+              "seq": 64,
+              "dynamic": "medium",
+              "uptime": 1729.6921555833335,
+              "frame": [
+                40,
+                658.6666666666667,
+                351.3333333333333,
+                82.33333333333337
+              ]
+            },
+            {
+              "seq": 78,
+              "dynamic": "large",
+              "uptime": 1729.797818875,
+              "frame": [
+                40,
+                664.6666666666667,
+                358,
+                86.33333333333337
+              ]
+            },
+            {
+              "seq": 85,
+              "dynamic": "large",
+              "uptime": 1729.8133619166667,
+              "frame": [
+                40,
+                668.6666666666667,
+                358,
+                86.33333333333337
+              ]
+            },
+            {
+              "seq": 99,
+              "dynamic": "xLarge",
+              "uptime": 1729.9320324583334,
+              "frame": [
+                40,
+                687.6666666666667,
+                351.3333333333333,
+                119
+              ]
+            },
+            {
+              "seq": 106,
+              "dynamic": "xLarge",
+              "uptime": 1729.9506680416669,
+              "frame": [
+                40,
+                691.6666666666666,
+                351.3333333333333,
+                119
+              ]
+            },
+            {
+              "seq": 120,
+              "dynamic": "xxLarge",
+              "uptime": 1730.0656813333335,
+              "frame": [
+                40,
+                737,
+                353,
+                129.33333333333326
+              ]
+            },
+            {
+              "seq": 127,
+              "dynamic": "xxLarge",
+              "uptime": 1730.0857649166667,
+              "frame": [
+                40,
+                739.6666666666666,
+                353,
+                129.33333333333337
+              ]
+            },
+            {
+              "seq": 141,
+              "dynamic": "xxxLarge",
+              "uptime": 1730.2029042083334,
+              "frame": [
+                40,
+                764,
+                360,
+                172.66666666666663
+              ]
+            },
+            {
+              "seq": 149,
+              "dynamic": "xxxLarge",
+              "uptime": 1730.2073522916667,
+              "frame": [
+                40,
+                766,
+                360,
+                172.66666666666663
+              ]
+            },
+            {
+              "seq": 152,
+              "dynamic": "xxxLarge",
+              "uptime": 1730.2232133750001,
+              "frame": [
+                40,
+                771.3333333333334,
+                360,
+                172.66666666666663
+              ]
+            },
+            {
+              "seq": 166,
+              "dynamic": "accessibility1",
+              "uptime": 1730.3448756250002,
+              "frame": [
+                40,
+                865,
+                344.3333333333333,
+                237.66666666666652
+              ]
+            },
+            {
+              "seq": 206,
+              "dynamic": "large",
+              "uptime": 1731.0174600416667,
+              "frame": [
+                40,
+                709.6666666666667,
+                358,
+                86.33333333333337
+              ]
+            },
+            {
+              "seq": 217,
+              "dynamic": "large",
+              "uptime": 1731.022549625,
+              "frame": [
+                40,
+                692.3333333333334,
+                358,
+                86.33333333333337
+              ]
+            },
+            {
+              "seq": 220,
+              "dynamic": "large",
+              "uptime": 1731.0399160416669,
+              "frame": [
+                40,
+                668.6666666666667,
+                358,
+                86.33333333333337
+              ]
+            }
+          ],
+          "disappearanceCategories": [
+            "xSmall",
+            "small",
+            "medium",
+            "large",
+            "xLarge",
+            "xxLarge",
+            "xxxLarge",
+            "accessibility1",
+            "accessibility1",
+            "large"
+          ]
+        },
+        "container": {
+          "events": {
+            "geometry": 19,
+            "appear": 1,
+            "dynamic-change": 13,
+            "legacy-change": 13
+          },
+          "geometry": [
+            {
+              "seq": 1,
+              "dynamic": "large",
+              "uptime": 1720.3718809583333,
+              "frame": [
+                -220,
+                -478,
+                440,
+                956
+              ]
+            },
+            {
+              "seq": 3,
+              "dynamic": "large",
+              "uptime": 1721.9614865833335,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            },
+            {
+              "seq": 12,
+              "dynamic": "xSmall",
+              "uptime": 1729.377223125,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            },
+            {
+              "seq": 33,
+              "dynamic": "small",
+              "uptime": 1729.5575861250002,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            },
+            {
+              "seq": 54,
+              "dynamic": "medium",
+              "uptime": 1729.67510975,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            },
+            {
+              "seq": 75,
+              "dynamic": "large",
+              "uptime": 1729.797804,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            },
+            {
+              "seq": 96,
+              "dynamic": "xLarge",
+              "uptime": 1729.9320206250002,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            },
+            {
+              "seq": 117,
+              "dynamic": "xxLarge",
+              "uptime": 1730.0656619583335,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            },
+            {
+              "seq": 138,
+              "dynamic": "xxxLarge",
+              "uptime": 1730.2028930416668,
+              "frame": [
+                0,
+                168.33333333333331,
+                440,
+                704.6666666666667
+              ]
+            },
+            {
+              "seq": 148,
+              "dynamic": "xxxLarge",
+              "uptime": 1730.2067744583335,
+              "frame": [
+                0,
+                170,
+                440,
+                703
+              ]
+            },
+            {
+              "seq": 163,
+              "dynamic": "accessibility1",
+              "uptime": 1730.326304875,
+              "frame": [
+                0,
+                170,
+                440,
+                703
+              ]
+            },
+            {
+              "seq": 181,
+              "dynamic": "accessibility2",
+              "uptime": 1730.4624799583335,
+              "frame": [
+                0,
+                174,
+                440,
+                699
+              ]
+            },
+            {
+              "seq": 184,
+              "dynamic": "accessibility2",
+              "uptime": 1730.4798116666668,
+              "frame": [
+                0,
+                177.66666666666666,
+                440,
+                695.3333333333334
+              ]
+            },
+            {
+              "seq": 192,
+              "dynamic": "accessibility3",
+              "uptime": 1730.5909681666667,
+              "frame": [
+                0,
+                177.66666666666666,
+                440,
+                695.3333333333334
+              ]
+            },
+            {
+              "seq": 196,
+              "dynamic": "accessibility4",
+              "uptime": 1730.727619,
+              "frame": [
+                0,
+                181.66666666666666,
+                440,
+                691.3333333333334
+              ]
+            },
+            {
+              "seq": 197,
+              "dynamic": "accessibility4",
+              "uptime": 1730.7452446666668,
+              "frame": [
+                0,
+                185.33333333333331,
+                440,
+                687.6666666666667
+              ]
+            },
+            {
+              "seq": 200,
+              "dynamic": "accessibility5",
+              "uptime": 1730.8537765416668,
+              "frame": [
+                0,
+                185.33333333333331,
+                440,
+                687.6666666666667
+              ]
+            },
+            {
+              "seq": 203,
+              "dynamic": "large",
+              "uptime": 1731.0174465416667,
+              "frame": [
+                0,
+                189,
+                440,
+                684
+              ]
+            },
+            {
+              "seq": 216,
+              "dynamic": "large",
+              "uptime": 1731.0219731666668,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            }
+          ],
+          "disappearanceCategories": []
+        }
+      }
+    },
+    {
+      "file": "blind-camera-audit-scope-control/artifacts/original-all-geometry-type.json",
+      "sha256": "73308c0c05174ff5a6c029f075b0bb9b7270a4df5c920a160c94e741efdba0a2",
+      "traceStatus": "partial",
+      "overflow": false,
+      "rowCount": 229,
+      "inAuditGeometryCount": 75,
+      "geometryCoverage": {
+        "button": {
+          "observedCategories": [
+            "accessibility1",
+            "large",
+            "medium",
+            "small",
+            "xLarge",
+            "xSmall",
+            "xxLarge",
+            "xxxLarge"
+          ],
+          "missingCategories": [
+            "accessibility2",
+            "accessibility3",
+            "accessibility4",
+            "accessibility5"
+          ]
+        },
+        "container": {
+          "observedCategories": [
+            "accessibility1",
+            "accessibility2",
+            "accessibility3",
+            "accessibility4",
+            "accessibility5",
+            "large",
+            "medium",
+            "small",
+            "xLarge",
+            "xSmall",
+            "xxLarge",
+            "xxxLarge"
+          ],
+          "missingCategories": []
+        },
+        "footer": {
+          "observedCategories": [
+            "accessibility1",
+            "large",
+            "medium",
+            "small",
+            "xLarge",
+            "xSmall",
+            "xxLarge",
+            "xxxLarge"
+          ],
+          "missingCategories": [
+            "accessibility2",
+            "accessibility3",
+            "accessibility4",
+            "accessibility5"
+          ]
+        },
+        "header": {
+          "observedCategories": [
+            "accessibility1",
+            "accessibility2",
+            "large",
+            "medium",
+            "small",
+            "xLarge",
+            "xSmall",
+            "xxLarge",
+            "xxxLarge"
+          ],
+          "missingCategories": [
+            "accessibility3",
+            "accessibility4",
+            "accessibility5"
+          ]
+        }
+      },
+      "flushAfterAuditEnd": true,
+      "roles": {
+        "header": {
+          "events": {
+            "geometry": 21,
+            "appear": 12,
+            "dynamic-change": 10,
+            "legacy-change": 10,
+            "disappear": 11
+          },
+          "geometry": [
+            {
+              "seq": 6,
+              "dynamic": "large",
+              "uptime": 1617.0003152916668,
+              "frame": [
+                40,
+                578.3333333333333,
+                65.66666666666666,
+                20.333333333333258
+              ]
+            },
+            {
+              "seq": 18,
+              "dynamic": "xSmall",
+              "uptime": 1624.1696091666668,
+              "frame": [
+                40,
+                562,
+                56,
+                17
+              ]
+            },
+            {
+              "seq": 23,
+              "dynamic": "xSmall",
+              "uptime": 1624.1787477916669,
+              "frame": [
+                40,
+                553,
+                56,
+                17
+              ]
+            },
+            {
+              "seq": 39,
+              "dynamic": "small",
+              "uptime": 1624.3251175,
+              "frame": [
+                40,
+                558,
+                59.33333333333333,
+                18
+              ]
+            },
+            {
+              "seq": 44,
+              "dynamic": "small",
+              "uptime": 1624.3423171666668,
+              "frame": [
+                40,
+                561,
+                59.33333333333333,
+                18
+              ]
+            },
+            {
+              "seq": 60,
+              "dynamic": "medium",
+              "uptime": 1624.4326832916668,
+              "frame": [
+                40,
+                567.3333333333333,
+                62.66666666666666,
+                19.333333333333258
+              ]
+            },
+            {
+              "seq": 65,
+              "dynamic": "medium",
+              "uptime": 1624.4463244166668,
+              "frame": [
+                40,
+                570.3333333333333,
+                62.66666666666666,
+                19.333333333333258
+              ]
+            },
+            {
+              "seq": 81,
+              "dynamic": "large",
+              "uptime": 1624.5589236666667,
+              "frame": [
+                40,
+                575.3333333333333,
+                65.66666666666666,
+                20.333333333333258
+              ]
+            },
+            {
+              "seq": 86,
+              "dynamic": "large",
+              "uptime": 1624.5748791666667,
+              "frame": [
+                40,
+                578.3333333333333,
+                65.66666666666666,
+                20.333333333333258
+              ]
+            },
+            {
+              "seq": 102,
+              "dynamic": "xLarge",
+              "uptime": 1624.6929569166668,
+              "frame": [
+                40,
+                593.6666666666667,
+                73,
+                23
+              ]
+            },
+            {
+              "seq": 107,
+              "dynamic": "xLarge",
+              "uptime": 1624.7113672500002,
+              "frame": [
+                40,
+                596.6666666666667,
+                73,
+                23
+              ]
+            },
+            {
+              "seq": 123,
+              "dynamic": "xxLarge",
+              "uptime": 1624.8342577916667,
+              "frame": [
+                40,
+                638.3333333333333,
+                79,
+                25.333333333333258
+              ]
+            },
+            {
+              "seq": 128,
+              "dynamic": "xxLarge",
+              "uptime": 1624.8571955833334,
+              "frame": [
+                40,
+                640.3333333333333,
+                79,
+                25.333333333333258
+              ]
+            },
+            {
+              "seq": 144,
+              "dynamic": "xxxLarge",
+              "uptime": 1624.9664519166668,
+              "frame": [
+                40,
+                660.6666666666667,
+                86,
+                27.66666666666663
+              ]
+            },
+            {
+              "seq": 150,
+              "dynamic": "xxxLarge",
+              "uptime": 1624.9725315833334,
+              "frame": [
+                40,
+                662.6666666666667,
+                86,
+                27.66666666666663
+              ]
+            },
+            {
+              "seq": 153,
+              "dynamic": "xxxLarge",
+              "uptime": 1624.9901858750002,
+              "frame": [
+                40,
+                666.6666666666667,
+                86,
+                27.66666666666663
+              ]
+            },
+            {
+              "seq": 169,
+              "dynamic": "accessibility1",
+              "uptime": 1625.1083242916668,
+              "frame": [
+                40,
+                749.6666666666666,
+                104.66666666666666,
+                33.66666666666663
+              ]
+            },
+            {
+              "seq": 187,
+              "dynamic": "accessibility2",
+              "uptime": 1625.2525504166667,
+              "frame": [
+                40,
+                944.3333333333333,
+                123,
+                39.66666666666663
+              ]
+            },
+            {
+              "seq": 209,
+              "dynamic": "large",
+              "uptime": 1625.7674935,
+              "frame": [
+                40,
+                619.3333333333334,
+                65.66666666666666,
+                20.33333333333337
+              ]
+            },
+            {
+              "seq": 218,
+              "dynamic": "large",
+              "uptime": 1625.7724791666667,
+              "frame": [
+                40,
+                602,
+                65.66666666666666,
+                20.333333333333258
+              ]
+            },
+            {
+              "seq": 221,
+              "dynamic": "large",
+              "uptime": 1625.7904447083333,
+              "frame": [
+                40,
+                578.3333333333333,
+                65.66666666666666,
+                20.333333333333258
+              ]
+            }
+          ],
+          "disappearanceCategories": [
+            "xSmall",
+            "small",
+            "medium",
+            "large",
+            "xLarge",
+            "xxLarge",
+            "xxxLarge",
+            "accessibility1",
+            "accessibility2",
+            "accessibility2",
+            "large"
+          ]
+        },
+        "button": {
+          "events": {
+            "geometry": 20,
+            "appear": 11,
+            "dynamic-change": 9,
+            "legacy-change": 9,
+            "disappear": 10
+          },
+          "geometry": [
+            {
+              "seq": 8,
+              "dynamic": "large",
+              "uptime": 1617.0016385416668,
+              "frame": [
+                40,
+                624.5,
+                181.66666666666666,
+                20.333333333333485
+              ]
+            },
+            {
+              "seq": 21,
+              "dynamic": "xSmall",
+              "uptime": 1624.1700968750001,
+              "frame": [
+                40,
+                606.5,
+                154.66666666666666,
+                17
+              ]
+            },
+            {
+              "seq": 24,
+              "dynamic": "xSmall",
+              "uptime": 1624.1788904166667,
+              "frame": [
+                40,
+                596,
+                154.66666666666666,
+                17
+              ]
+            },
+            {
+              "seq": 42,
+              "dynamic": "small",
+              "uptime": 1624.3251248333333,
+              "frame": [
+                40,
+                601.5,
+                164,
+                18
+              ]
+            },
+            {
+              "seq": 45,
+              "dynamic": "small",
+              "uptime": 1624.3425390416667,
+              "frame": [
+                40,
+                605,
+                164,
+                18
+              ]
+            },
+            {
+              "seq": 63,
+              "dynamic": "medium",
+              "uptime": 1624.4326901250001,
+              "frame": [
+                40,
+                612,
+                173.33333333333331,
+                19.333333333333485
+              ]
+            },
+            {
+              "seq": 66,
+              "dynamic": "medium",
+              "uptime": 1624.4466300833335,
+              "frame": [
+                40,
+                615.5,
+                173.33333333333331,
+                19.333333333333485
+              ]
+            },
+            {
+              "seq": 84,
+              "dynamic": "large",
+              "uptime": 1624.5589433750001,
+              "frame": [
+                40,
+                621,
+                181.66666666666666,
+                20.333333333333485
+              ]
+            },
+            {
+              "seq": 87,
+              "dynamic": "large",
+              "uptime": 1624.575307125,
+              "frame": [
+                40,
+                624.5,
+                181.66666666666666,
+                20.333333333333485
+              ]
+            },
+            {
+              "seq": 105,
+              "dynamic": "xLarge",
+              "uptime": 1624.6929671666667,
+              "frame": [
+                40,
+                641.6666666666667,
+                201.33333333333331,
+                23
+              ]
+            },
+            {
+              "seq": 108,
+              "dynamic": "xLarge",
+              "uptime": 1624.7119430416667,
+              "frame": [
+                40,
+                645.1666666666667,
+                201.33333333333331,
+                23
+              ]
+            },
+            {
+              "seq": 126,
+              "dynamic": "xxLarge",
+              "uptime": 1624.8342659166667,
+              "frame": [
+                40,
+                688.6666666666667,
+                216.66666666666663,
+                25.33333333333337
+              ]
+            },
+            {
+              "seq": 129,
+              "dynamic": "xxLarge",
+              "uptime": 1624.8574395416667,
+              "frame": [
+                40,
+                691.0000000000001,
+                216.66666666666663,
+                25.333333333333258
+              ]
+            },
+            {
+              "seq": 147,
+              "dynamic": "xxxLarge",
+              "uptime": 1624.966459125,
+              "frame": [
+                40,
+                713.3333333333334,
+                234.33333333333331,
+                27.66666666666663
+              ]
+            },
+            {
+              "seq": 151,
+              "dynamic": "xxxLarge",
+              "uptime": 1624.9726905,
+              "frame": [
+                40,
+                715.3333333333334,
+                234.33333333333331,
+                27.66666666666663
+              ]
+            },
+            {
+              "seq": 154,
+              "dynamic": "xxxLarge",
+              "uptime": 1624.9904003333334,
+              "frame": [
+                40,
+                720,
+                234.33333333333331,
+                27.666666666666742
+              ]
+            },
+            {
+              "seq": 172,
+              "dynamic": "accessibility1",
+              "uptime": 1625.1087413333335,
+              "frame": [
+                40,
+                808.3333333333334,
+                283.66666666666663,
+                33.66666666666663
+              ]
+            },
+            {
+              "seq": 212,
+              "dynamic": "large",
+              "uptime": 1625.7675007083335,
+              "frame": [
+                40,
+                665.5,
+                181.66666666666666,
+                20.333333333333258
+              ]
+            },
+            {
+              "seq": 219,
+              "dynamic": "large",
+              "uptime": 1625.7725400833335,
+              "frame": [
+                40,
+                648.1666666666665,
+                181.66666666666666,
+                20.333333333333485
+              ]
+            },
+            {
+              "seq": 222,
+              "dynamic": "large",
+              "uptime": 1625.7905339166668,
+              "frame": [
+                40,
+                624.5,
+                181.66666666666666,
+                20.333333333333485
+              ]
+            }
+          ],
+          "disappearanceCategories": [
+            "xSmall",
+            "small",
+            "medium",
+            "large",
+            "xLarge",
+            "xxLarge",
+            "xxxLarge",
+            "accessibility1",
+            "accessibility1",
+            "large"
+          ]
+        },
+        "footer": {
+          "events": {
+            "geometry": 20,
+            "appear": 11,
+            "dynamic-change": 9,
+            "legacy-change": 9,
+            "disappear": 10
+          },
+          "geometry": [
+            {
+              "seq": 4,
+              "dynamic": "large",
+              "uptime": 1616.9997392500002,
+              "frame": [
+                40,
+                668.6666666666667,
+                358,
+                86.33333333333337
+              ]
+            },
+            {
+              "seq": 15,
+              "dynamic": "xSmall",
+              "uptime": 1624.169396,
+              "frame": [
+                40,
+                649,
+                338.66666666666663,
+                74
+              ]
+            },
+            {
+              "seq": 22,
+              "dynamic": "xSmall",
+              "uptime": 1624.1786979166668,
+              "frame": [
+                40,
+                637,
+                338.66666666666663,
+                74
+              ]
+            },
+            {
+              "seq": 36,
+              "dynamic": "small",
+              "uptime": 1624.3251070000001,
+              "frame": [
+                40,
+                643,
+                359,
+                78
+              ]
+            },
+            {
+              "seq": 43,
+              "dynamic": "small",
+              "uptime": 1624.3421774166668,
+              "frame": [
+                40,
+                647,
+                359,
+                78
+              ]
+            },
+            {
+              "seq": 57,
+              "dynamic": "medium",
+              "uptime": 1624.4326757916667,
+              "frame": [
+                40,
+                654.6666666666667,
+                351.3333333333333,
+                82.33333333333337
+              ]
+            },
+            {
+              "seq": 64,
+              "dynamic": "medium",
+              "uptime": 1624.4462149166668,
+              "frame": [
+                40,
+                658.6666666666667,
+                351.3333333333333,
+                82.33333333333337
+              ]
+            },
+            {
+              "seq": 78,
+              "dynamic": "large",
+              "uptime": 1624.5589134166667,
+              "frame": [
+                40,
+                664.6666666666667,
+                358,
+                86.33333333333337
+              ]
+            },
+            {
+              "seq": 85,
+              "dynamic": "large",
+              "uptime": 1624.5747730416667,
+              "frame": [
+                40,
+                668.6666666666667,
+                358,
+                86.33333333333337
+              ]
+            },
+            {
+              "seq": 99,
+              "dynamic": "xLarge",
+              "uptime": 1624.6929493333334,
+              "frame": [
+                40,
+                687.6666666666667,
+                351.3333333333333,
+                119
+              ]
+            },
+            {
+              "seq": 106,
+              "dynamic": "xLarge",
+              "uptime": 1624.711125,
+              "frame": [
+                40,
+                691.6666666666666,
+                351.3333333333333,
+                119
+              ]
+            },
+            {
+              "seq": 120,
+              "dynamic": "xxLarge",
+              "uptime": 1624.8342493750001,
+              "frame": [
+                40,
+                737,
+                353,
+                129.33333333333326
+              ]
+            },
+            {
+              "seq": 127,
+              "dynamic": "xxLarge",
+              "uptime": 1624.8570036666667,
+              "frame": [
+                40,
+                739.6666666666666,
+                353,
+                129.33333333333337
+              ]
+            },
+            {
+              "seq": 141,
+              "dynamic": "xxxLarge",
+              "uptime": 1624.96644375,
+              "frame": [
+                40,
+                764,
+                360,
+                172.66666666666663
+              ]
+            },
+            {
+              "seq": 149,
+              "dynamic": "xxxLarge",
+              "uptime": 1624.9724877916667,
+              "frame": [
+                40,
+                766,
+                360,
+                172.66666666666663
+              ]
+            },
+            {
+              "seq": 152,
+              "dynamic": "xxxLarge",
+              "uptime": 1624.9900587083334,
+              "frame": [
+                40,
+                771.3333333333334,
+                360,
+                172.66666666666663
+              ]
+            },
+            {
+              "seq": 166,
+              "dynamic": "accessibility1",
+              "uptime": 1625.108058,
+              "frame": [
+                40,
+                865,
+                344.3333333333333,
+                237.66666666666652
+              ]
+            },
+            {
+              "seq": 206,
+              "dynamic": "large",
+              "uptime": 1625.7674855416667,
+              "frame": [
+                40,
+                709.6666666666667,
+                358,
+                86.33333333333337
+              ]
+            },
+            {
+              "seq": 217,
+              "dynamic": "large",
+              "uptime": 1625.7724412083335,
+              "frame": [
+                40,
+                692.3333333333334,
+                358,
+                86.33333333333337
+              ]
+            },
+            {
+              "seq": 220,
+              "dynamic": "large",
+              "uptime": 1625.7903616666667,
+              "frame": [
+                40,
+                668.6666666666667,
+                358,
+                86.33333333333337
+              ]
+            }
+          ],
+          "disappearanceCategories": [
+            "xSmall",
+            "small",
+            "medium",
+            "large",
+            "xLarge",
+            "xxLarge",
+            "xxxLarge",
+            "accessibility1",
+            "accessibility1",
+            "large"
+          ]
+        },
+        "container": {
+          "events": {
+            "geometry": 19,
+            "appear": 1,
+            "dynamic-change": 13,
+            "legacy-change": 13
+          },
+          "geometry": [
+            {
+              "seq": 1,
+              "dynamic": "large",
+              "uptime": 1616.9227959583334,
+              "frame": [
+                -220,
+                -478,
+                440,
+                956
+              ]
+            },
+            {
+              "seq": 3,
+              "dynamic": "large",
+              "uptime": 1616.9624255416668,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            },
+            {
+              "seq": 12,
+              "dynamic": "xSmall",
+              "uptime": 1624.1687444583333,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            },
+            {
+              "seq": 33,
+              "dynamic": "small",
+              "uptime": 1624.3250937916669,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            },
+            {
+              "seq": 54,
+              "dynamic": "medium",
+              "uptime": 1624.4326650833334,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            },
+            {
+              "seq": 75,
+              "dynamic": "large",
+              "uptime": 1624.5588962083334,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            },
+            {
+              "seq": 96,
+              "dynamic": "xLarge",
+              "uptime": 1624.6929385416668,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            },
+            {
+              "seq": 117,
+              "dynamic": "xxLarge",
+              "uptime": 1624.8342350833334,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            },
+            {
+              "seq": 138,
+              "dynamic": "xxxLarge",
+              "uptime": 1624.9664312500001,
+              "frame": [
+                0,
+                168.33333333333331,
+                440,
+                704.6666666666667
+              ]
+            },
+            {
+              "seq": 148,
+              "dynamic": "xxxLarge",
+              "uptime": 1624.9718907916667,
+              "frame": [
+                0,
+                170,
+                440,
+                703
+              ]
+            },
+            {
+              "seq": 163,
+              "dynamic": "accessibility1",
+              "uptime": 1625.0911832916668,
+              "frame": [
+                0,
+                170,
+                440,
+                703
+              ]
+            },
+            {
+              "seq": 181,
+              "dynamic": "accessibility2",
+              "uptime": 1625.2353772083334,
+              "frame": [
+                0,
+                174,
+                440,
+                699
+              ]
+            },
+            {
+              "seq": 184,
+              "dynamic": "accessibility2",
+              "uptime": 1625.2510182083333,
+              "frame": [
+                0,
+                177.66666666666666,
+                440,
+                695.3333333333334
+              ]
+            },
+            {
+              "seq": 192,
+              "dynamic": "accessibility3",
+              "uptime": 1625.3589420416668,
+              "frame": [
+                0,
+                177.66666666666666,
+                440,
+                695.3333333333334
+              ]
+            },
+            {
+              "seq": 196,
+              "dynamic": "accessibility4",
+              "uptime": 1625.4939652500002,
+              "frame": [
+                0,
+                181.66666666666666,
+                440,
+                691.3333333333334
+              ]
+            },
+            {
+              "seq": 197,
+              "dynamic": "accessibility4",
+              "uptime": 1625.5123660416668,
+              "frame": [
+                0,
+                185.33333333333331,
+                440,
+                687.6666666666667
+              ]
+            },
+            {
+              "seq": 200,
+              "dynamic": "accessibility5",
+              "uptime": 1625.6226430000002,
+              "frame": [
+                0,
+                185.33333333333331,
+                440,
+                687.6666666666667
+              ]
+            },
+            {
+              "seq": 203,
+              "dynamic": "large",
+              "uptime": 1625.7674734166667,
+              "frame": [
+                0,
+                189,
+                440,
+                684
+              ]
+            },
+            {
+              "seq": 216,
+              "dynamic": "large",
+              "uptime": 1625.7718493333334,
+              "frame": [
+                0,
+                168,
+                440,
+                705
+              ]
+            }
+          ],
+          "disappearanceCategories": []
+        }
+      }
+    }
+  ],
+  "geometrySequencesExactlyMatchAcrossScopes": true
+}

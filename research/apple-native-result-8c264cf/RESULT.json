@@ -1,0 +1,57 @@
+{
+  "commit": "8c264cfe9b641918c813405ef2b27771f56a944f",
+  "run_id": 40575978143,
+  "conclusion": "failure",
+  "core": {
+    "total": 1385,
+    "skipped": 1,
+    "failed": 0
+  },
+  "memory": {
+    "total": 51,
+    "failed": 0
+  },
+  "simulator_build": "passed",
+  "unit": {
+    "total": 155,
+    "passed": 148,
+    "failed": 1,
+    "skipped": 6,
+    "failure": "ObservedSceneRuntimeTests/testGoalAndBodyChangesFenceQueuedPlansWithoutRetiringScene()",
+    "assertion_issues": 2,
+    "model_availability": "modelNotReady; existing model-availability tests skipped"
+  },
+  "ui": {
+    "total": 17,
+    "passed": 13,
+    "failed": 1,
+    "skipped": 3,
+    "failure": "Dynamic Type raw65536 Practice footer"
+  },
+  "target_pass_verified": true,
+  "target": "IndoorGoalContinuityTests/testTrackingLossStillInvalidatesRetainedMapFrame",
+  "target_source_sha256": {
+    "ios/BlindAssistTests/CommunityTests.swift": "24930b5106810a9a6929e08243ce4164cb0cb40693259e5e93a788cc593cf7b6",
+    "ios/BlindAssist/SpatialMapIO.swift": "f044ff2aa869cf0ea3ab8a2ff8d4c6ba7fc7fcd9915fe1fed59109219a3c548c"
+  },
+  "artifact_receipts": [
+    {
+      "id": 12768058773,
+      "n": "unit",
+      "size": 5369,
+      "sha": "f9c96210ca140cc671a323bb13803728ebe512c3f9c954a1cd0dbe924cfd5104"
+    },
+    {
+      "id": 12769091975,
+      "n": "ui",
+      "size": 425772,
+      "sha": "5700c00f171a671fc0a270d7fff0ef8df3d67149335e1dc55f4231ddf6abf762"
+    }
+  ],
+  "independent_case_recount": {
+    "Passed": 148,
+    "Skipped": 6,
+    "Failed": 1
+  },
+  "job_log_sha256": "9ef61f5b3cd0fe312e2afd8ddb5d338ad000a05b5982ad3fc23e0ffa19d6f391"
+}
