@@ -100,18 +100,39 @@ final class LaunchTests: XCTestCase {
         openTab("Assistant")
         XCTAssertTrue(app.staticTexts["companion-reply"].waitForExistence(timeout: 5))
     }
-    func testPracticeIsAnnouncedAndCanStop() {
+    func testPracticeNavigationRemainsReachable() {
         openSettingsPage("camera-screen")
         XCTAssertEqual(app.buttons["monitor-toggle"].label, "Start monitoring", "The explicit camera-off launch preference is respected before practice")
         openSettingsPage("home-practice")
-        XCTAssertTrue(app.staticTexts["companion-reply"].waitForExistence(timeout: 5))
+        let reply = app.staticTexts["companion-reply"]
+        XCTAssertTrue(reply.waitForExistence(timeout: 5))
+        XCTAssertTrue(reply.isHittable, "Practice navigation must expose the companion reply")
+        // Navigation reachability is separate from cancellation. This check does
+        // not prove audible speech or active practice after the navigation delay.
+    }
+    func testPracticeIsAnnouncedAndCanStop() {
         openSettingsPage("camera-screen")
+        XCTAssertEqual(app.buttons["monitor-toggle"].label, "Start monitoring", "The explicit camera-off launch preference is respected before practice")
+        let start = app.buttons["start-simulation"]
+        reveal(start)
+        // Start before synthesizing the tap: this overestimates elapsed practice
+        // time. Keep a 30-second margin below the unchanged production 120s expiry.
+        let startedBeforeTap = ProcessInfo.processInfo.systemUptime
+        let cancellationEvidenceLimit: TimeInterval = 90
+        start.tap()
         XCTAssertTrue(app.staticTexts["SIMULATION · generated readings"].waitForExistence(timeout: 5))
         // Ending practice respects the separate camera preference, rather than forcing sensors on.
         let end = app.buttons["end-practice"]
-        reveal(end); end.tap()
+        reveal(end)
+        XCTAssertLessThan(ProcessInfo.processInfo.systemUptime - startedBeforeTap, cancellationEvidenceLimit,
+                          "Automation consumed the cancellation evidence window; natural expiry cannot count as Stop")
+        end.tap()
         XCTAssertFalse(app.staticTexts["SIMULATION · generated readings"].exists)
         XCTAssertEqual(app.buttons["monitor-toggle"].label, "Start monitoring")
+        let elapsed = ProcessInfo.processInfo.systemUptime - startedBeforeTap
+        XCTAssertLessThan(elapsed, cancellationEvidenceLimit,
+                          "Postconditions must precede natural expiry; a late observation is not cancellation evidence")
+        print("PRACTICE_CANCEL elapsedUpperBound=\(elapsed) limit=\(cancellationEvidenceLimit) explicitEndTap=true")
     }
     func testAccessibleMainModesAndOfflineDefault() {
         openSettingsPage("camera-screen")
