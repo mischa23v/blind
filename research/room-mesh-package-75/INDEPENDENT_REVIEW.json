@@ -1,0 +1,29 @@
+{
+  "verdict": "PASS portable candidate package lifecycle gate; no app or Apple package build tested",
+  "frozenSHA256": "55bb512f66736961af7556fdb4769943b9f9d7b58057b3534dc953d4b34ee52b",
+  "packagePinsVerified": 56,
+  "independentlyExecutedLegacyChecks": 55,
+  "independentlyExecutedRuntimeChecks": 32,
+  "verifiedNativeLibrary": "/tmp/blind71-no-contract/libblind_detour.so",
+  "defectsFoundAndFixed": [
+    "ABA session reset could reuse retained or queued geometry; independent lifecycle epoch now fences owner and events",
+    "Capacity-rejected new body/goal request left older query current; every request now advances ingress revision before admission"
+  ],
+  "reviewed": [
+    "Native work globally serial for process-global adapter error state",
+    "Owned packed column-major input transformed once",
+    "Eight pending work items and900000 scalar mailbox cap per runtime",
+    "No native handle escapes; callbacks off native worker",
+    "Output revision must be checked at use; asynchronous result can become stale after publication",
+    "Removal/invalid/overflow coverage stays unknown until reset",
+    "Physical authority false and raw-depth veto true"
+  ],
+  "limitations": [
+    "No app integration, ARKit session or device safety proof",
+    "SwiftPM manifest parsed, but package product not built on Apple",
+    "Caller can create arbitrary many runtimes; no global memory cap",
+    "Caller must recheck isCurrent immediately before use"
+  ],
+  "physicalAuthority": false,
+  "nativeLibraryAndFixturePinsVerified": true
+}

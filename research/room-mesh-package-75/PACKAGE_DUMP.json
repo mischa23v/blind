@@ -1,0 +1,139 @@
+{
+  "cLanguageStandard" : null,
+  "cxxLanguageStandard" : "c++11",
+  "defaultLocalization" : null,
+  "dependencies" : [
+
+  ],
+  "name" : "BlindRoomMesh",
+  "packageKind" : {
+    "root" : [
+      "/workspace/scratch/90f3f6703064/blind-room-mesh-package-75/BlindRoomMesh"
+    ]
+  },
+  "pkgConfig" : null,
+  "platforms" : [
+    {
+      "options" : [
+
+      ],
+      "platformName" : "ios",
+      "version" : "17.0"
+    },
+    {
+      "options" : [
+
+      ],
+      "platformName" : "macos",
+      "version" : "13.0"
+    }
+  ],
+  "products" : [
+    {
+      "name" : "BlindRoomMesh",
+      "settings" : [
+
+      ],
+      "targets" : [
+        "BlindRoomMesh"
+      ],
+      "type" : {
+        "library" : [
+          "automatic"
+        ]
+      }
+    }
+  ],
+  "providers" : null,
+  "swiftLanguageVersions" : null,
+  "targets" : [
+    {
+      "dependencies" : [
+
+      ],
+      "exclude" : [
+
+      ],
+      "name" : "CDetour",
+      "packageAccess" : true,
+      "path" : "Sources/CDetour",
+      "publicHeadersPath" : "include",
+      "resources" : [
+
+      ],
+      "settings" : [
+        {
+          "kind" : {
+            "headerSearchPath" : {
+              "_0" : "upstream/Recast/Include"
+            }
+          },
+          "tool" : "cxx"
+        },
+        {
+          "kind" : {
+            "headerSearchPath" : {
+              "_0" : "upstream/Detour/Include"
+            }
+          },
+          "tool" : "cxx"
+        },
+        {
+          "kind" : {
+            "headerSearchPath" : {
+              "_0" : "upstream/DetourCrowd/Include"
+            }
+          },
+          "tool" : "cxx"
+        },
+        {
+          "kind" : {
+            "unsafeFlags" : {
+              "_0" : [
+                "-ffp-contract=off",
+                "-fno-rtti",
+                "-fno-exceptions"
+              ]
+            }
+          },
+          "tool" : "cxx"
+        }
+      ],
+      "sources" : [
+        "upstream/Recast/Source",
+        "upstream/Detour/Source",
+        "upstream/DetourCrowd/Source",
+        "clearance_adapter.cpp"
+      ],
+      "type" : "regular"
+    },
+    {
+      "dependencies" : [
+        {
+          "byName" : [
+            "CDetour",
+            null
+          ]
+        }
+      ],
+      "exclude" : [
+
+      ],
+      "name" : "BlindRoomMesh",
+      "packageAccess" : true,
+      "resources" : [
+
+      ],
+      "settings" : [
+
+      ],
+      "type" : "regular"
+    }
+  ],
+  "toolsVersion" : {
+    "_version" : "5.9.0"
+  },
+  "traits" : [
+
+  ]
+}

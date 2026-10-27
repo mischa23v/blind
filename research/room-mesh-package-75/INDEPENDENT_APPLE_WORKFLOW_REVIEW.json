@@ -1,0 +1,25 @@
+{
+  "verdict": "PASS prepared isolated SwiftPM Apple proof workflow; not an executed Apple package result",
+  "applePinsSHA256": "11fa58363d0075fa4bf0483d8a120c9907adf172cc80e7fd5145c265bf5e6018",
+  "applePinnedFilesVerified": 57,
+  "previousPackagePinsUnchanged": 56,
+  "reviewed": [
+    "Readonly public repository guard, pinned actions, no checkout credential persistence",
+    "No app project, signing, simulator launch or device operation",
+    "Actual SwiftPM product built separately for macOS and simulator",
+    "Ordinary public import client distinct from testable internal fixture client",
+    "Client links object files from freshly built package with explicit libc++",
+    "55 baseline and32 runtime assertions unchanged",
+    "Package no-contraction flag retained; explicit native O1",
+    "Fixed public fixture hashes and bounded gzip decode",
+    "Failure receipts and allowlisted JSON artifact retention"
+  ],
+  "limitations": [
+    "Apple SwiftPM commands and object layout remain unexecuted locally",
+    "SwiftPM package can be compiler-version dependent; job must pass before claiming support",
+    "Public exclusion update API absent; package alone does not reproduce assisted table loop",
+    "Postcommand scratch cap is not a live memory/filesystem guarantee"
+  ],
+  "AppleExecuted": false,
+  "physicalAuthority": false
+}

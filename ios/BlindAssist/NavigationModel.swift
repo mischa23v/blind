@@ -1209,6 +1209,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if case .normal = frame.camera.trackingState { cameraRecovery.observeHealthyFrame(now: receivedAt) }
         // RGB classification runs separately; its task never blocks depth processing.
         visualStairs.consume(frame, at: lastFrameWallTime)
+        if awaitingPlace != nil {
+            processRecoveryHazards(frame, receivedAt: receivedAt)
+        }
         probeAutomaticRoomAppearance(frame: frame)
         if let place = awaitingPlace {
             let recoveredFrame = UUID(uuidString: observationFrameID).flatMap {
@@ -1235,7 +1238,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     message = "Saved map matched: \(place.name). Recalibrate the floor."
                     if !automaticRoomRecoveryEnabled { speakOperation(message) }
             }
-            phoneDetection = Detection(.uncertain, reason: .localizing); publish()
+            // The independent warning/status was published before recovery work.
             updateNonspatialObjectMemory(frame: frame)
             return
         }
@@ -1276,18 +1279,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         // An unanswered retry prompt expires without starting another capture or blocking ambience.
         if let deadline = currencyRetake.expiresAt, lastFrameWallTime >= deadline { currencyRetake.clear() }
         if !attention.stationary, currencyActive || currencyRetake.isPending { cancelDescription() }
-        let legacyDetection = detector.process(observation)
-        if legacyDetection.hazard.isUrgent {
-            // Never delay an existing urgent alert for supplemental geometry work.
-            bodyWarningAssessment = nil; phoneDetection = legacyDetection
-        } else {
-            let bodyAssessment = BodyCollisionWarning.assess(observation,
-                cameraToWorld: DepthSampler.cameraToWorld(from: frame), profile: bodyWarningProfile,
-                fixedMount: fixedBodyMount && !mountSlipAnnounced && !bodyHeadingEstimator.mountSlipSuspected,
-                now: receivedAt, floorHeight: detector.floorHeight)
-            bodyWarningAssessment = bodyAssessment
-            phoneDetection = BodyCollisionWarning.combining(legacyDetection, with: bodyAssessment)
-        }
+        processDepthHazards(observation, frame: frame, receivedAt: receivedAt)
         // Nonurgent scene adaptation follows immediate hazard processing. The
         // profile preview retains unknown bounds; missing/withdrawn/invalid profiles
         // accumulate geometry without a plan, never fall back to a smaller body.
@@ -1341,6 +1333,54 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             readScene(cloud: false, automatic: true)
         }
     }
+    /// Recovery owns map matching, not independent warning admission. Never expose
+    /// this frame to route/scene consumers or revive a pre-restart mount/floor.
+    private func processRecoveryHazards(_ frame: ARFrame, receivedAt: Double) {
+        bodyWarningAssessment = nil
+        // Retire pose-owned state even when the same frame has no usable depth.
+        if case .normal = frame.camera.trackingState {} else {
+            invalidatePerceptionWork(preserveRGBHistoryWork: true)
+            invalidateRecognizedRoom()
+            detector.reset(); recognizedPlace = nil; indoor.invalidatePosition(); fixedBodyMount = false
+            invalidateReturn()
+        }
+        if let observation = DepthSampler.observation(from: frame) {
+            processDepthHazards(observation, frame: frame, receivedAt: receivedAt)
+        } else {
+            if lastObservation != nil { invalidatePerceptionWork(preserveRGBHistoryWork: true) }
+            invalidateRecognizedRoom()
+            detector.invalidateRecentEvidence()
+            phoneDetection = Detection(.uncertain, reason: DepthSampler.unavailableReason(from: frame))
+        }
+        // Recovery never supplies route progress or support, even on a normal frame.
+        lastObservation = nil
+        withObservedScene { $0.suspendLive(at: frame.timestamp) }
+        survey.invalidate()
+        // Journey authority was withdrawn at recovery entry; do not retire a
+        // new clarification or emit camera-restart changes on every normal frame.
+        invalidateReturn()
+        if !phoneDetection.hazard.isUrgent {
+            phoneDetection = Detection(.uncertain, reason: .localizing)
+        }
+        // Must precede recovery acceptance/rejection and optional furniture/history.
+        publish()
+    }
+
+    private func processDepthHazards(_ observation: Observation, frame: ARFrame, receivedAt: Double) {
+        let legacyDetection = detector.process(observation)
+        if legacyDetection.hazard.isUrgent {
+            // Never delay an existing urgent alert for supplemental geometry work.
+            bodyWarningAssessment = nil; phoneDetection = legacyDetection
+        } else {
+            let bodyAssessment = BodyCollisionWarning.assess(observation,
+                cameraToWorld: DepthSampler.cameraToWorld(from: frame), profile: bodyWarningProfile,
+                fixedMount: fixedBodyMount && !mountSlipAnnounced && !bodyHeadingEstimator.mountSlipSuspected,
+                now: receivedAt, floorHeight: detector.floorHeight)
+            bodyWarningAssessment = bodyAssessment
+            phoneDetection = BodyCollisionWarning.combining(legacyDetection, with: bodyAssessment)
+        }
+    }
+
     #if BLIND_FAMILIAR_PEOPLE
     @discardableResult func routeFamiliarPeopleCommand(_ text: String) -> Bool {
         guard let command = FamiliarPeopleCommand.parse(text) else { return false }
@@ -1614,6 +1654,8 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             let sessionID = UUID()
             let map = try places.beginWorldMapRecovery(for: place, sessionID: sessionID)
             importFurnitureHistory(place)
+            // Entry must withdraw live journey authority even if launch is refused.
+            journeys.breakTracking()
             recognizedPlace = nil; awaitingPlace = place
             placeRecovery.begin(candidate: place.id.uuidString, now: ProcessInfo.processInfo.systemUptime)
             placeRecoveryQuestion = ""
@@ -4998,6 +5040,8 @@ extension NavigationModel {
             do {
                 let sessionID = UUID()
                 let map = try places.beginWorldMapRecovery(for: place, sessionID: sessionID, now: now)
+                // Entry must withdraw live journey authority even if launch is refused.
+                journeys.breakTracking()
                 automaticRoomAttempt = next; awaitingPlace = place
                 placeRecovery.begin(candidate: next.placeID, now: now)
                 launch(map: map, worldSessionID: sessionID, announceCalibration: false)

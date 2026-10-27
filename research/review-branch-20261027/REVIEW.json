@@ -1,0 +1,27 @@
+{
+  "verdict": "PASS bounded publication/workflow gate; not an Apple execution pass",
+  "repository": "mischa23v/blind",
+  "branch": "codex/recovery-hazard-order-20261027",
+  "manifestSHA256": "cbeb7221e1b821ff97f32c0a176138b68a38e92bb09a7139c20b63411a0e858e",
+  "rowsVerified": 84,
+  "applePinsVerified": 55,
+  "canonicalBaselineGitBlob": "c596a9b8c182c36c2fdf2ba58e5cc202558f3829",
+  "canonicalProposalGitBlob": "5488be56e1e5202ac7c08e6f1a1072a29622ca2c",
+  "checks": [
+    "Every row length/SHA256/Git blob matches transformed source",
+    "Canonical single-final-LF normalization reproduces unchanged reviewed patch",
+    "Original proposal and FROZEN hashes unchanged; frozen package source pins verified",
+    "Package source and projection tests have no override or transform",
+    "Both workflows change only exact push branch and exact job ref guard; public repo guard retained",
+    "Contents read only; pinned actions; credentials persistence disabled; bounded job/command timeouts; no secret, signing or deployment additions",
+    "Two build metadata files excluded; clean Apple pins update workflow only; historical FROZEN limitation explicit"
+  ],
+  "limitations": [
+    "No builds or Apple execution performed",
+    "Public baseline identity checked against supplied expected blob; no external read or write",
+    "Existing native Apple helper scripts are unchanged and outside this workflow-only delta review",
+    "Manifest independentWorkflowReview remains PENDING until root records this receipt"
+  ],
+  "externalActions": false,
+  "sourceWrites": false
+}

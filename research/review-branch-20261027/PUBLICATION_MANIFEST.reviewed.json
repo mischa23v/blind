@@ -1,0 +1,775 @@
+{
+  "repository": "mischa23v/blind",
+  "branch": "codex/recovery-hazard-order-20261027",
+  "baseRef": "106cc2",
+  "externalWritesPerformed": false,
+  "independentWorkflowReview": "PENDING",
+  "originalProposalSHA256": "18eb1c63011e6c44cc55b0e31d52aa1eea7f5fb2589ced1aa7ece4d02e8a89ad",
+  "canonicalBaselineGitBlobSHA": "c596a9b8c182c36c2fdf2ba58e5cc202558f3829",
+  "canonicalProposalSHA256": "6193f6c5ee09e5ac572532fff7fc4f6ea6ae31aeec1b24957eb380ed6fe07d9a",
+  "canonicalProposalGitBlobSHA": "5488be56e1e5202ac7c08e6f1a1072a29622ca2c",
+  "normalization": "Remove exactly one final LF from proposal at materialization; preserve frozen original. Baseline with same transform matches public blob.",
+  "excludedCachePins": [
+    "BlindRoomMesh/.build/.buildSystem_debug",
+    "BlindRoomMesh/.build/CACHEDIR.TAG"
+  ],
+  "originalFROZEN_SHA256": "55bb512f66736961af7556fdb4769943b9f9d7b58057b3534dc953d4b34ee52b",
+  "rows": [
+    {
+      "sourcepath": "blind-recovery-hazard-research/proposal/NavigationModel.swift",
+      "contentoverride": null,
+      "transform": "remove_one_final_lf",
+      "destination": "ios/BlindAssist/NavigationModel.swift",
+      "bytes": 484470,
+      "gitBlobSHA": "5488be56e1e5202ac7c08e6f1a1072a29622ca2c",
+      "SHA256": "6193f6c5ee09e5ac572532fff7fc4f6ea6ae31aeec1b24957eb380ed6fe07d9a"
+    },
+    {
+      "sourcepath": "review-branch-manifest-20261027/native-apple.original.yml",
+      "contentoverride": "review-branch-manifest-20261027/native-apple.yml",
+      "transform": null,
+      "destination": ".github/workflows/native-apple.yml",
+      "bytes": 3457,
+      "gitBlobSHA": "968e9274967ce79f75fa8396d6425f1c932e5be0",
+      "SHA256": "82f8c688c2605d8a4cf2b062d2ab74a16c3dcc0eb231330fb531c38102a64be1"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/APPLE_SOURCE_PINS.json",
+      "contentoverride": "review-branch-manifest-20261027/APPLE_SOURCE_PINS.json",
+      "transform": null,
+      "destination": "research/room-mesh-package-75/APPLE_SOURCE_PINS.json",
+      "bytes": 7611,
+      "gitBlobSHA": "1e75c42e5a4e63f3cd3a10d3baa99bc1b8e69008",
+      "SHA256": "690931a79f155d6d85e4abda2715963936499378c8d54b15a2a622347bdd28d7"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/LICENSE-Recast.txt",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/LICENSE-Recast.txt",
+      "bytes": 877,
+      "gitBlobSHA": "c259ddf6cd36f4745ca71bff1092d3c9d2af900d",
+      "SHA256": "ffad87821cce7cfd3be00b63ffadd01b04e83a4c6a0bcc68f06362ffd42d705e"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Package.swift",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Package.swift",
+      "bytes": 753,
+      "gitBlobSHA": "53ec61801a28ef255c39b58fbc8dc25fcf1ead99",
+      "SHA256": "0b847f71419fa2f74e5231e5c32fc5db049ae512fbafe57ace7d7bf41ed8dfba"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift",
+      "bytes": 7997,
+      "gitBlobSHA": "cd42beb7ca7ab0ab3c028cf9de5dcc8ab56a3a90",
+      "SHA256": "ba1b689e899698bdfddd41a2e8ebdf687045817bd86c60c6f9adc2d521a50ca4"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Exclusion.swift",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Exclusion.swift",
+      "bytes": 3867,
+      "gitBlobSHA": "006713257d7122c0845c9def6a5190733dca5a6f",
+      "SHA256": "625e4458430ff8852a5772603c0fa1eaed35f0114edc411dfcc3dd47a3fc388a"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+      "bytes": 7596,
+      "gitBlobSHA": "1958266d26c51418813fb84f14b79f0631d5d966",
+      "SHA256": "3fdd5b2f048924992bf54d62f70574ed710c2c39bfbec7427815029f6c52cd68"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp",
+      "bytes": 13809,
+      "gitBlobSHA": "ee56590bb9a463cae1006b8ae9b87e995469599a",
+      "SHA256": "7f7946016cdfc6c851ec2b946b2c20d0eb32ccc395421acc488b9463f15485fd"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/clearance_adapter.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/clearance_adapter.cpp",
+      "bytes": 1316,
+      "gitBlobSHA": "e3bd02c62437356dff73c5418c8390094fcd6153",
+      "SHA256": "c1c69184a434bbb46280fd6125f52138f83802e114724d26369eb4e2a62ae2ee"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h",
+      "bytes": 1608,
+      "gitBlobSHA": "bd86b79966ca985c17112e57cb00d288388b3547",
+      "SHA256": "0fc921f5064ef8e14ed4518d554a9f6c79b9a1757b8ca5ae708b3f006a838162"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/module.modulemap",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/module.modulemap",
+      "bytes": 52,
+      "gitBlobSHA": "ed1f329b56ac19879c5ab3ff1c037414a8f7cded",
+      "SHA256": "ca0948e7abf144baf7af21b209d23cb9f761e967ba97a81185ea9f678ed07460"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourAlloc.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourAlloc.h",
+      "bytes": 2657,
+      "gitBlobSHA": "f87b454acb6fa975313cf9f480d7fe35221616fd",
+      "SHA256": "5f617c7f162069c395d7edfc59f0e06a9b6afaf6698de8fd674c80f00056ab71"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourAssert.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourAssert.h",
+      "bytes": 2302,
+      "gitBlobSHA": "ea58dd9a03374e75d0fd8a670be28c0163b56efd",
+      "SHA256": "2859e197e1877d3c53f7acc455ceedbe9ce1181fe44779169a3dc16c1508b794"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourCommon.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourCommon.h",
+      "bytes": 19435,
+      "gitBlobSHA": "d54bc7edc7d5c4932e9605f000b7e640c8b0a09d",
+      "SHA256": "24d69468f73782718855b3691ae348e50437febc7594635b37a940f1c0c8db46"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourMath.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourMath.h",
+      "bytes": 754,
+      "gitBlobSHA": "eec89ce08ed5b558906dbfd23d212bdbf0c98a60",
+      "SHA256": "1251390f71e85b8b20cfd33340a42f712f2e8305e363c001fcdd9b55578a3cd4"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNavMesh.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNavMesh.h",
+      "bytes": 31772,
+      "gitBlobSHA": "422a3342f2711e704cc3e95bfd9f43dfbfee5308",
+      "SHA256": "aee0d0d332d3ac352ed14d0a3d86fe0fdfd1d9cd424e67c2a0438e1c41bb6e31"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNavMeshBuilder.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNavMeshBuilder.h",
+      "bytes": 6759,
+      "gitBlobSHA": "1840ab5248566fbce4836335b35ef2bbd2872e37",
+      "SHA256": "e2734317981bb9dfb973af6a33025f926ce28535389696d9babf15254817c682"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNavMeshQuery.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNavMeshQuery.h",
+      "bytes": 31195,
+      "gitBlobSHA": "dd8150c29d907275f2621b1949bd40154e5890da",
+      "SHA256": "fa80858bb80c984f85ec15182c31e1757858bc86511f81fb8bb265b8fe20f6d6"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNode.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNode.h",
+      "bytes": 4644,
+      "gitBlobSHA": "8918d4686c0d394145eef2b5c6002da8893c9207",
+      "SHA256": "7c295c61f09dff0de42bdcc873a5d698d687bb2052aca8b293425c0ef0444a9e"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourStatus.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourStatus.h",
+      "bytes": 2707,
+      "gitBlobSHA": "8e1bb44b9dc9525efbac1d0b34fa98a99254b591",
+      "SHA256": "7255e33173c4bdb26f4224514d098fdc5c31e19cd80263a4e56475627602ade9"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourAlloc.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourAlloc.cpp",
+      "bytes": 1515,
+      "gitBlobSHA": "d9ad1fc013934206d782f5f1a06da34a9c828ddd",
+      "SHA256": "ddf4d9857e9e1714daa9dd9b687ac8139085cc602359db0dba4f1dedbedc69c1"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourAssert.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourAssert.cpp",
+      "bytes": 1206,
+      "gitBlobSHA": "a9727a31981744d3ae49cf12b947b805944580a6",
+      "SHA256": "3caf6f89119fab5b89f3454cfb13b3776f429c9f0e4e5c8acb3ac56ab813273c"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourCommon.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourCommon.cpp",
+      "bytes": 9831,
+      "gitBlobSHA": "b8457828e3e1594ec214ce98e71b7dd3c12cce9c",
+      "SHA256": "c28eb2d5fd251e1b2e24a7c03a679ff82684e51a0ce95db3cf457fda60362008"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNavMesh.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNavMesh.cpp",
+      "bytes": 45489,
+      "gitBlobSHA": "ee868f2f176b2110e4f281bb9fb425e7b1084ef3",
+      "SHA256": "637d8750f0d097ba00d9ef3fd4d8f30a36de5e482b8f8c3c8930d6df05b86600"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNavMeshBuilder.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNavMeshBuilder.cpp",
+      "bytes": 24214,
+      "gitBlobSHA": "07ba86311f2d5aaa370da579789cae850a100989",
+      "SHA256": "159b4bacae86bdb2ff40225e837ff7b84e306456fbf08ec717b1da1dfeba4555"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNavMeshQuery.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNavMeshQuery.cpp",
+      "bytes": 105016,
+      "gitBlobSHA": "7edbe3b1dc849c40c4478e51cb3695405247c5d8",
+      "SHA256": "73651e2cea3c162cd01574e24668a30ab4c3dc985e07d51a9d7038c0523b0db1"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNode.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNode.cpp",
+      "bytes": 4884,
+      "gitBlobSHA": "48abbba6b5b256e0b03c97c35cee780b379e8c8a",
+      "SHA256": "067ffb9a81f7315f2253ff217263acb1c01590d130e01d4de4500308d756132b"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourCrowd.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourCrowd.h",
+      "bytes": 18147,
+      "gitBlobSHA": "6360dfb3e61ba5666aae123fb05964cd633e8875",
+      "SHA256": "66053c29eddcdb8794569e4f60d0a3d2102740f403822d451d63a1b336cf4855"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourLocalBoundary.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourLocalBoundary.h",
+      "bytes": 2077,
+      "gitBlobSHA": "56b5cb27c5cba0ab79e43fbbab4636e4ce146abe",
+      "SHA256": "61a0bef8538a48de8e30a4e0e49442383c83543ce0b8d749affa24d452c8132c"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourObstacleAvoidance.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourObstacleAvoidance.h",
+      "bytes": 5346,
+      "gitBlobSHA": "cc46347a0fbcf5abf61960edddc6398b1433d6d3",
+      "SHA256": "f3c6e39dd4b8c60a4a8ae4c1202ab06170fe673bcb43568cb910601fad993065"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourPathCorridor.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourPathCorridor.h",
+      "bytes": 7498,
+      "gitBlobSHA": "f5ee8df70d1c933e9e242be4b3e8b55d88aba669",
+      "SHA256": "f252e962a4b3aef1e7f31caa367134c85d27264f9238d06763383b8a78dfce62"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourPathQueue.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourPathQueue.h",
+      "bytes": 2381,
+      "gitBlobSHA": "310721e7093e66fca40e27df968dc77194c0de28",
+      "SHA256": "7c48d76be6a59a9ec82ed11e687d4bdd414a6ba96aabd3adb28e869dccdceb82"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourProximityGrid.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourProximityGrid.h",
+      "bytes": 2122,
+      "gitBlobSHA": "d8968efd5640b9801cb5eb46fb368ffcd254b0f0",
+      "SHA256": "b98a88367f2eb29ed5e615d73dc3c8bcd7742a8010eec21fdbfa6ca048af6198"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourCrowd.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourCrowd.cpp",
+      "bytes": 38144,
+      "gitBlobSHA": "d7cdae0b9b58b4cee41b4b56763f23526af9c4aa",
+      "SHA256": "c0d5164dabc3e68ee25ba479d13ae7f77066ccf7bfb461963d16a144caaf3ac5"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourLocalBoundary.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourLocalBoundary.cpp",
+      "bytes": 3491,
+      "gitBlobSHA": "79d4322063dcafc94c4837f212579f457e0d83b6",
+      "SHA256": "ecb0196533c654d43894c061f1dd551008f95f3f03e2d03558962f82c77e486e"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourObstacleAvoidance.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourObstacleAvoidance.cpp",
+      "bytes": 15386,
+      "gitBlobSHA": "f460c3d92a7bad1abde6c262b2bf1dac76ed8499",
+      "SHA256": "a385493b551ea6a72af687fceaf1283e738570ea288a1ebe73e11c32aa3a386a"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourPathCorridor.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourPathCorridor.cpp",
+      "bytes": 17857,
+      "gitBlobSHA": "3835a389b5fa02048c49c0c79735a6325703e5dc",
+      "SHA256": "09fd84d977b48789fc5d999e53850ce9f47bcc3ab6d4c9dea98beec2789ced05"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourPathQueue.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourPathQueue.cpp",
+      "bytes": 4731,
+      "gitBlobSHA": "1ed0cd7ebc50c9cdfd92fdd6ff51701d6604ed11",
+      "SHA256": "69360fd1e15efb427fa43948234a3fb516ec1b53db2154c1bbf3e0df36f8bfea"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourProximityGrid.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourProximityGrid.cpp",
+      "bytes": 4813,
+      "gitBlobSHA": "fc1e2e13686070313cb07144df84aa4619db9718",
+      "SHA256": "ba4acb2161cfca60ec10669eafc665230150b6856efa33c0afa0c39f321a2521"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Include/Recast.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Include/Recast.h",
+      "bytes": 63085,
+      "gitBlobSHA": "30e710e50c5458e115b3aafe70e69438c3c0ecf1",
+      "SHA256": "712634ac8d933af70ef08270a2f439270cddb821cc901c216494fa843e4e5990"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Include/RecastAlloc.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Include/RecastAlloc.h",
+      "bytes": 13046,
+      "gitBlobSHA": "2ca43ec558fd11c6c84c622d9ff706d036a66f3e",
+      "SHA256": "36dcd90719f0ff80d568eee808d7a05416265f2e370a32842411cd67f30eb4cd"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Include/RecastAssert.h",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Include/RecastAssert.h",
+      "bytes": 2210,
+      "gitBlobSHA": "7527cffc046adac402519c5ec64435834281be5f",
+      "SHA256": "22feb557dfcd302cff1ef882741a608a338b0a99689ea56d4320d8dafecd7912"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/Recast.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/Recast.cpp",
+      "bytes": 13572,
+      "gitBlobSHA": "d75a9f59f6ae27bcf1dd8429ccccc6eb770bd8bb",
+      "SHA256": "865595763451cde0aad5b99088bfab48d4ea35050fefd67f3d4f95885ba38d66"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastAlloc.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastAlloc.cpp",
+      "bytes": 1545,
+      "gitBlobSHA": "e919daf7be43b0d700db463c461bf64ce81d77db",
+      "SHA256": "e77600ee0a1f4b36e9e0700480fcfccf8a62e31eb9e16aa7cb8eab5e93511a2e"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastArea.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastArea.cpp",
+      "bytes": 24692,
+      "gitBlobSHA": "7a7091cc88c1e1af061d85edc9c7f430aee53168",
+      "SHA256": "445cce010d7a3220355497a3c2c3f45fbc4fcd2436db5cca15157d935a42d477"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastAssert.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastAssert.cpp",
+      "bytes": 1187,
+      "gitBlobSHA": "08a05a6cb9f7df9dad44e3247fa95800ceb314c4",
+      "SHA256": "335af77176d9ee1fb5c9763df6ce21a818aed19524f3dc251a50ae61ae853496"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastContour.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastContour.cpp",
+      "bytes": 30361,
+      "gitBlobSHA": "ce50c78c9c30be0341a3615e5fe056bcce8f73a2",
+      "SHA256": "a9282897a5a5cb56cf8bbab97e0fd5edc3cd394ae8fe5266a28ce4199a4f3bfa"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastFilter.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastFilter.cpp",
+      "bytes": 7559,
+      "gitBlobSHA": "7875040b9f07a17d54d9f61ae3389db0732e2103",
+      "SHA256": "0d133cdce1446babbf01bf47dc152c843e9cb2ee5dbb537c2e0ae566b6c95b9d"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastLayers.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastLayers.cpp",
+      "bytes": 17586,
+      "gitBlobSHA": "ca37ebba7f3c8ced782562c13938b8b693f03dd9",
+      "SHA256": "f01d325fd096feee2971f71f9b03b1d37a6d0a4777bb9d529ce698253b484820"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastMesh.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastMesh.cpp",
+      "bytes": 42215,
+      "gitBlobSHA": "98e15cdccec2985e3c688bca048f3b42a8efcaa7",
+      "SHA256": "9667e69e1886a520fcc84044b2e96154ff75e5c804fa32520b1cc0d991e42fd9"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastMeshDetail.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastMeshDetail.cpp",
+      "bytes": 40115,
+      "gitBlobSHA": "07bbdbd5ab462456f4478e4adccfbcb0ae5bb626",
+      "SHA256": "e77e8fc479215fe9a14c68051090fa16884a13ba03b0e424a80bbf6f506f818f"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastRasterization.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastRasterization.cpp",
+      "bytes": 18226,
+      "gitBlobSHA": "c65d6ea0a67f649d880d73957f0905cab09f3933",
+      "SHA256": "30ed7b12d42bd61dda5aa9eff2e559574d91a61145f40fe4cea449b9eabf792a"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastRegion.cpp",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastRegion.cpp",
+      "bytes": 46156,
+      "gitBlobSHA": "48eed36b597111b5415d9731c3a6fd787c44989a",
+      "SHA256": "174e00a76287e03eff20d889c0b744ea24c9cababd22c42f2d1f83e8d512c345"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/FROZEN.json",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/FROZEN.json",
+      "bytes": 8099,
+      "gitBlobSHA": "5d4e07e12e5762c3ddc41a7a02ae4b9de0f6084c",
+      "SHA256": "55bb512f66736961af7556fdb4769943b9f9d7b58057b3534dc953d4b34ee52b"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/IMPORTED_MODULE_VALIDATION.json",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/IMPORTED_MODULE_VALIDATION.json",
+      "bytes": 230,
+      "gitBlobSHA": "705ae7b98010592bc8ae63b3cb3cea5f7a78ce71",
+      "SHA256": "3dd747e048e6348dcdf7bc7455bc38b47b51e603fb35dac0f072e7e28f540a4f"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/INDEPENDENT_APPLE_WORKFLOW_REVIEW.json",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/INDEPENDENT_APPLE_WORKFLOW_REVIEW.json",
+      "bytes": 1346,
+      "gitBlobSHA": "475ea62ebccdf539f37a9ffbf61624aa21ae765f",
+      "SHA256": "fa40479ce591efd900aba5779e8fcb611bf03e8630f0942e7112adb12bfec4b2"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/INDEPENDENT_REVIEW.json",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/INDEPENDENT_REVIEW.json",
+      "bytes": 1543,
+      "gitBlobSHA": "a7fea3c5085dd0a6d182dd57edb85faff5d65b96",
+      "SHA256": "c8abe3a6957347eaa16c41c2758f947c15001281fc2694d08188684d3ae82a0a"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/PACKAGE_DUMP.json",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/PACKAGE_DUMP.json",
+      "bytes": 2480,
+      "gitBlobSHA": "96fcb208eb7158e017bdb3707de0e214a99a2645",
+      "SHA256": "6d0001ad849bed25598923a4a62a8ef6971355488a6f422e9f6813a567743755"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/PORTABLE_RECEIPT.json",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/PORTABLE_RECEIPT.json",
+      "bytes": 1506,
+      "gitBlobSHA": "e6339dc70c28e0d2063821e8f6a2059481bd0828",
+      "SHA256": "06c309550fe932bced36f476eee9f6b94f73b6a7a40108e59d3bf4eaea1456b8"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/PROTOCOL.md",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/PROTOCOL.md",
+      "bytes": 1047,
+      "gitBlobSHA": "3c8b15a0e549758e6181bb2faddc95b917e421f1",
+      "SHA256": "65015731994cd2941133c6646f9da42c7545932915146549a5f812fe8d05cc85"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/README.md",
+      "contentoverride": "review-branch-manifest-20261027/package-README.md",
+      "transform": null,
+      "destination": "research/room-mesh-package-75/README.md",
+      "bytes": 6888,
+      "gitBlobSHA": "789b9f88bc7b2a9729e5fae26c346e3ce2ccdf25",
+      "SHA256": "40fff96ec72623612fbb2a9334fb2e49f0ed8e8e6afc68b069d357c604d742f7"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/RESULT.json",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/RESULT.json",
+      "bytes": 15816,
+      "gitBlobSHA": "c2cd0b3a132551dddca62411d38b9844ade2fef5",
+      "SHA256": "7872a36f92d8e1f8bb53017c4159ba246671e6e1592beb8f333a01be22c27d6a"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/ROUTE_DIAGNOSTIC.json",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/ROUTE_DIAGNOSTIC.json",
+      "bytes": 25136,
+      "gitBlobSHA": "64697c956f139d8b81a85ef2638f8bee50e38bc0",
+      "SHA256": "e60c008fd5759ebf81863774f8335c27429a20b19253c95b2b6db45291bb44d2"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/RUNTIME_RESULT.json",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/RUNTIME_RESULT.json",
+      "bytes": 1601,
+      "gitBlobSHA": "86f57ac71b1223629e73924565e02b446338657a",
+      "SHA256": "a2e7f5dd1435c81ea3486ea1384c86d1d34e3099022096743580cfa74c8f8b09"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/apple/ci.py",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/apple/ci.py",
+      "bytes": 5258,
+      "gitBlobSHA": "e5aee251123230e16ec50fbf058b45ffceccef22",
+      "SHA256": "1b2770235bee5ae86ade71d3f91753b77ee61f8d389ed8c55d4e338e44de793f"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/apple/native-room-mesh-package.yml",
+      "contentoverride": "review-branch-manifest-20261027/native-room-mesh-package.yml",
+      "transform": null,
+      "destination": "research/room-mesh-package-75/apple/native-room-mesh-package.yml",
+      "bytes": 1667,
+      "gitBlobSHA": "c8e58ffd66e9cd6e3accc3b544722eb2b5cf62d7",
+      "SHA256": "a654db0c4fcd3215213d048e14fc7820a13a752deb4e5e406f3daaac8736ba5d"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/apple/public-client.swift",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/apple/public-client.swift",
+      "bytes": 1397,
+      "gitBlobSHA": "b4ef7aab92348b71532768c6f4a5b2ce60d6711a",
+      "SHA256": "7a0c580f9798d2fb52228e073989338a97ae5d06381dbd632260553d1bcb5020"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/run_portable.py",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/run_portable.py",
+      "bytes": 2624,
+      "gitBlobSHA": "439d41f1d6bb8f79c3b495c6480eb8e1f9b370bf",
+      "SHA256": "d1ba814fe1ab9835f9065121c4bd350fa3932423a1c6f0299b18575e69250b03"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/tests/main.swift",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/room-mesh-package-75/tests/main.swift",
+      "bytes": 18781,
+      "gitBlobSHA": "4f11a65879ea5977ea159267f03b4b7c229172e2",
+      "SHA256": "14b45c2b6cce2455a26b969be7767f346abec6284d10ab79ce9d2ad6f900250b"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/apple/native-room-mesh-package.yml",
+      "contentoverride": "review-branch-manifest-20261027/native-room-mesh-package.yml",
+      "transform": null,
+      "destination": ".github/workflows/native-room-mesh-package.yml",
+      "bytes": 1667,
+      "gitBlobSHA": "c8e58ffd66e9cd6e3accc3b544722eb2b5cf62d7",
+      "SHA256": "a654db0c4fcd3215213d048e14fc7820a13a752deb4e5e406f3daaac8736ba5d"
+    },
+    {
+      "sourcepath": "blind-room-mesh-package-75/MANIFEST.json",
+      "contentoverride": "review-branch-manifest-20261027/package-MANIFEST.json",
+      "transform": null,
+      "destination": "research/room-mesh-package-75/MANIFEST.json",
+      "bytes": 8822,
+      "gitBlobSHA": "67349884814d4352c742c4e5fb075f00c7153970",
+      "SHA256": "c0865a976ff4e02fab2a6a4e402e0576b23f00f565da0fb36347c38b224da2a3"
+    },
+    {
+      "sourcepath": "blind-recovery-hazard-research/README.md",
+      "contentoverride": "review-branch-manifest-20261027/recovery-README.md",
+      "transform": null,
+      "destination": "research/recovery-hazard-order/README.md",
+      "bytes": 11912,
+      "gitBlobSHA": "2e308fd49376290d43149eb562acfb4e7dc98a0e",
+      "SHA256": "7e31c95a705f88c9e63e65e1eb3369de38411fa63ec2ccdb4cd94246d16aa238"
+    },
+    {
+      "sourcepath": "blind-recovery-hazard-research/INDEPENDENT_REVIEW.md",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/recovery-hazard-order/INDEPENDENT_REVIEW.md",
+      "bytes": 1347,
+      "gitBlobSHA": "5328ce3ad3741ebe079ccaaa7c1e34b5edf4ffac",
+      "SHA256": "1ff45a5202dfee54793314708b67ab18f32b8d2d944f762c245f3b6ef4ee7256"
+    },
+    {
+      "sourcepath": "blind-recovery-hazard-research/recovery-hazards.patch",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/recovery-hazard-order/recovery-hazards.patch",
+      "bytes": 6681,
+      "gitBlobSHA": "c7db0540bd594d8abe6bd6e7dc3c378afa7e2997",
+      "SHA256": "0164d8b2a0af3c389a3528b527de14ec3fe26a2319ed368b9cee8fce8d4947cc"
+    },
+    {
+      "sourcepath": "blind-recovery-hazard-research/RecoveryProjection.swift",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/recovery-hazard-order/RecoveryProjection.swift",
+      "bytes": 8836,
+      "gitBlobSHA": "d2f31c5f975fa639455eef6edb129f4af2dd2b2c",
+      "SHA256": "80923fbd0768aa77f2bbc5dec83c1a64e666d283e9c6755821130e5014419129"
+    },
+    {
+      "sourcepath": "blind-recovery-hazard-research/projection-prefix.swift.txt",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/recovery-hazard-order/projection-prefix.swift.txt",
+      "bytes": 3442,
+      "gitBlobSHA": "fef6646e4c3ca92a04ca5dd54c973227270c4e67",
+      "SHA256": "5a91e83ee62a3608de524af2ca86569dba67be775940083046417a2f1603ad0d"
+    },
+    {
+      "sourcepath": "blind-recovery-hazard-research/projection-suffix.swift.txt",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/recovery-hazard-order/projection-suffix.swift.txt",
+      "bytes": 2875,
+      "gitBlobSHA": "1ccd62b69d0b32a5414982923de305ab0adaea49",
+      "SHA256": "96ae5bfc16487c645026bf7b2a756a47b7d1eb672de12dc76a152a45a9c939e2"
+    },
+    {
+      "sourcepath": "blind-recovery-hazard-research/real-owner/PROVENANCE.json",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/recovery-hazard-order/real-owner/PROVENANCE.json",
+      "bytes": 1847,
+      "gitBlobSHA": "f1e5dde7eb9bf14551f455db354366bc98dd31aa",
+      "SHA256": "753d58baa4f003213bf2b3e1a9c84cf63cb62d8defb2ec8c2e1acaf0025d35c5"
+    },
+    {
+      "sourcepath": "blind-recovery-hazard-research/real-owner/RESULT.txt",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/recovery-hazard-order/real-owner/RESULT.txt",
+      "bytes": 192,
+      "gitBlobSHA": "c78cf690c3bb764239a8905b76a0e85a7836d216",
+      "SHA256": "213c875c1bf66bcfc1479f812bd24b3c9a83f6721451e70219db4d78ba226795"
+    },
+    {
+      "sourcepath": "blind-recovery-hazard-research/real-owner/GeneratedModels.swift",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/recovery-hazard-order/real-owner/GeneratedModels.swift",
+      "bytes": 9308,
+      "gitBlobSHA": "e9aa73388ff602dfc2c40d56088a243ac14761bb",
+      "SHA256": "ce3ddda42e21350b20f4ed20eaf56e279a10835c53b8494ab8848cde75b7d6f5"
+    },
+    {
+      "sourcepath": "blind-recovery-hazard-research/real-owner/RuntimeWitness.swift",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/recovery-hazard-order/real-owner/RuntimeWitness.swift",
+      "bytes": 3905,
+      "gitBlobSHA": "d11b763e915f48899b28131fb346770dc7790778",
+      "SHA256": "206776e94a00b3424237ce513f00eefa46ead3f170dc2f996f39da4adbc0f96a"
+    },
+    {
+      "sourcepath": "blind-recovery-hazard-research/real-owner/ConnectedJourneyFixture.swift",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/recovery-hazard-order/real-owner/ConnectedJourneyFixture.swift",
+      "bytes": 9710,
+      "gitBlobSHA": "0106b69b9aad190432ae51004f1817be049e60ec",
+      "SHA256": "3a389b1b6b936797e95127bfdf637014d11415dff6a4540df8847d6faff2ff5d"
+    },
+    {
+      "sourcepath": "blind-recovery-hazard-research/real-owner/SpatialIntegrationFixture.swift",
+      "contentoverride": null,
+      "transform": null,
+      "destination": "research/recovery-hazard-order/real-owner/SpatialIntegrationFixture.swift",
+      "bytes": 6202,
+      "gitBlobSHA": "c28ae54bf284e1cfc66d2a01a16191b5277bcbaa",
+      "SHA256": "a8bd9d2235b20d997438374473ed38fe3eceae5939f200776069eb24e3016ea3"
+    }
+  ]
+}

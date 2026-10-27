@@ -1,0 +1,43 @@
+name: Candidate room mesh SwiftPM proof
+on:
+  push:
+    branches: [codex/recovery-hazard-order-20261027]
+    paths:
+      - 'research/room-mesh-package-75/**'
+      - '.github/workflows/native-room-mesh-package.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: candidate-room-mesh-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  package:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    runs-on: xcode-27
+    timeout-minutes: 18
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Build isolated SwiftPM product and public client; compile simulator only
+        timeout-minutes: 16
+        run: python3 research/room-mesh-package-75/apple/ci.py
+      - name: Preserve bounded public proof receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: candidate-room-mesh-75-receipts
+          path: |
+            ${{ runner.temp }}/blind-room-mesh-75/*-receipt.json
+            ${{ runner.temp }}/blind-room-mesh-75/RESULT.json
+            ${{ runner.temp }}/blind-room-mesh-75/RUNTIME_RESULT.json
+            ${{ runner.temp }}/blind-room-mesh-75/ROUTE_DIAGNOSTIC.json
+            ${{ runner.temp }}/blind-room-mesh-75/SUMMARY.json
+          if-no-files-found: warn
+          retention-days: 3

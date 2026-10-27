@@ -2,7 +2,7 @@ name: Native Apple SDK checks
 
 on:
   push:
-    branches: [master]
+    branches: [codex/recovery-hazard-order-20261027]
     paths:
       - 'BlindCore/**'
       - 'BlindMemory/**'
@@ -21,7 +21,7 @@ concurrency:
 jobs:
   native:
     # Fail closed before allocating a runner if visibility changes or this is a fork.
-    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
     runs-on: xcode-27
     timeout-minutes: 65
     env:
