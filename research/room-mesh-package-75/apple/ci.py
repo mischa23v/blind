@@ -4,6 +4,8 @@ import gzip,hashlib,json,os,platform,resource,signal,stat,subprocess,time
 from pathlib import Path
 H=Path(__file__).resolve().parent.parent
 sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+# Controlled compatibility variant; not a pass of the default SwiftBuild backend.
+BUILD_SYSTEM='native'
 FILE_CAP=128<<20
 SCRATCH_CAP=512<<20
 
@@ -87,11 +89,11 @@ def main():
  out=Path(os.environ['RUNNER_TEMP'])/'blind-room-mesh-75';out.mkdir(exist_ok=False);(out/'INPUT.json').write_bytes(data)
  receipts=[];toolchain=output(['xcrun','swiftc','--version'])
  # Verify advertised SwiftPM options on the pinned Apple toolchain before use.
- help_text=output(['xcrun','swift','build','--help'])
- assert all(flag in help_text for flag in ['--cache-path','--manifest-cache','--scratch-path']), 'required SwiftPM cache options unavailable'
+ help_text=output(['xcrun','swift','build','--build-system',BUILD_SYSTEM,'--help'])
+ assert all(flag in help_text for flag in ['--cache-path','--manifest-cache','--scratch-path','--build-system']), 'required SwiftPM cache options unavailable'
  for sdk,triple,stem in [('macosx','arm64-apple-macosx14.0','host'),('iphonesimulator','arm64-apple-ios17.0-simulator','simulator')]:
   sdkpath=output(['xcrun','--sdk',sdk,'--show-sdk-path'])
-  build=['xcrun','--sdk',sdk,'swift','build','--package-path',str(package),'--scratch-path',str(out/stem),'--configuration','release','--jobs','1','--triple',triple,'--sdk',sdkpath,'-Xswiftc','-enable-testing','-Xcc','-O1','-Xcxx','-O1']
+  build=['xcrun','--sdk',sdk,'swift','build','--build-system',BUILD_SYSTEM,'--package-path',str(package),'--scratch-path',str(out/stem),'--configuration','release','--jobs','1','--triple',triple,'--sdk',sdkpath,'-Xswiftc','-enable-testing','-Xcc','-O1','-Xcxx','-O1']
   build+=build_cache_options(out,stem)
   receipts.append(run(build,stem+'-package',out,300))
   # Even the bin-path query uses the same temporary directory.
@@ -112,6 +114,6 @@ def main():
    assert a['passed'] and len(a['checks'])==55 and a['markedSpans']==636
    assert b['passed'] and len(b['checks'])==32
   # Simulator client is compile/link only, never launched or installed.
- summary=dict(sourceCommit=os.environ.get('GITHUB_SHA'),toolchain=toolchain,macOSSwiftPMPackageBuilt=True,publicImportedClientExecuted=True,legacyChecks=55,runtimeChecks=32,iOSSimulatorPackageAndClientLinked=True,iOSSimulatorExecuted=False,appProjectBuilt=False,ARKitExecuted=False,physicalAuthority=False,publicExclusionUpdatesImplemented=False,receipts=receipts)
+ summary=dict(sourceCommit=os.environ.get('GITHUB_SHA'),toolchain=toolchain,swiftPMBuildSystem=BUILD_SYSTEM,defaultSwiftBuildBackendPassed=False,macOSSwiftPMPackageBuilt=True,publicImportedClientExecuted=True,legacyChecks=55,runtimeChecks=32,iOSSimulatorPackageAndClientLinked=True,iOSSimulatorExecuted=False,appProjectBuilt=False,ARKitExecuted=False,physicalAuthority=False,publicExclusionUpdatesImplemented=False,receipts=receipts)
  (out/'SUMMARY.json').write_text(json.dumps(summary,indent=2)+'\n');print(json.dumps({k:v for k,v in summary.items()if k!='receipts'}))
 if __name__=='__main__':main()
