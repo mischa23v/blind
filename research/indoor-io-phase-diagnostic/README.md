@@ -1,82 +1,58 @@
-# One-shot indoor import phase diagnostic
+# Refined one-shot phase diagnostic — Apple execution pending
 
-## Question and source finding
+This reviewed harness revision is published for a new one-shot Apple diagnostic. The previous run's results and interpretation remain unchanged; no result is claimed for this revision before execution.
 
-The earlier `focused-indoor-io` run 40470002343 observed an actual first-invocation
-10-second map-IO wait failure on both baseline and review, followed by passing
-isolated/class executions. That does not prove a regression or a fix. Its
-`source_clean_after: false` lacked the changed paths needed to interpret provenance.
+Copying these files into the real diagnostic directory would be a new reviewed
+harness revision. It retains the source/toolchain pin, one test, 10-second wait,
+assertions, `.utility` queue, 256-event limit and subprocess budgets. It is not a fix.
 
-The source chain at `e9e18d15fe1fdac1ff1487b3c2a8a2e731607427` is:
+## New discrimination
 
-1. `IndoorNavigator.init` starts `RegisteredIndoorNavigation.restore`.
-2. The synthetic test immediately calls `load`; `beginIO` invalidates the restore
-   token and submits the import to the same serial `.utility` worker.
-3. `SpatialMapIO.drain` prepares/decodes, reads prior durable bytes, writes, then
-   enqueues main publication. A superseded restore may finish with an expected error.
-4. Main publication checks current ownership, calls registered/navigator/test
-   completion, then enqueues the worker acknowledgement and resumes draining.
+- `drain.enter` uses a per-worker random diagnostic owner UUID. `slot.lock.before`
+  and `slot.lock.acquired` capture timestamps around production lock acquisition.
+  Both are printed **after unlocking**, never while holding the production lock.
+  Captured uptime, not printed sequence, governs those two events. Consecutive
+  owner-scoped events distinguish worker dispatch from lock acquisition before
+  `job.taken` establishes the actual request token.
+- A synchronous `preparing` wrapper sets/restores a diagnostic-only thread-local
+  request token. Nested file/decoder events now correlate with the correct request,
+  avoiding confusion with concurrent app-startup operations. The extra Foundation
+  thread-dictionary access itself can perturb cold-start timing; no benchmark claim.
+- File open, seek, bounded read, prior read and preview decode/validation boundaries
+  distinguish blocked read/preparation from queue admission and JSON work.
+- File/decoder `return` means the scope exited, including throwing; it is not a
+  success marker. Actual success still requires original XCTest success.
 
-No lost callback, deadlock or specific bottleneck was established by source review.
-In particular, changing queue QoS or extending the wait would hide rather than
-explain the observed failure. There is **no production fix in this directory**.
+## Generated lockfile policy
 
-## Scope and containment
+`resolution.py` reads only the exact Xcode-generated Package.resolved path, rejects
+symlinks, nonregular files, sizes >64KiB, duplicate JSON keys, unknown schema,
+additional packages, nonpublic/unexpected locations, version/revision mismatch.
+Only public GRDB 7.11.1 at existing recorded revision
+`b83108d10f42680d78f23fe4d4d80fc88dab3212` is accepted. Rejected content is never
+retained; only a reason and, where bounded, byte count/hash are recorded.
 
-The dedicated workflow is limited to the same public repository and review branch,
-read-only permissions, full-SHA-pinned checkout/upload actions and unsigned default
-Apple Debug configuration. It applies exact-anchor markers to **four files in a
-separate disposable source checkout**, not to committed app source. The source pin,
-Xcode 27.0, simulator SDK 27.0 and already-installed iPhone 18 Pro Max are checked.
-No dependency installation, simulator download, cloud/model backend, secret input,
-private geometry, signing, device execution or runtime feature activation is added.
+The runner captures sanitized resolution records before build, after each command,
+and at exit. It retains *all* post-instrumentation deltas. Only an initially absent,
+exactly validated resolution file with matching hash and mode 0644 can be separately
+classified as expected generated metadata. Every other delta still fails integrity.
+Exact instrumented-state equality and equality except validated generated metadata
+are separate fields. No blanket untracked-file exception is introduced. The current
+run's unknown lockfile is not retroactively accepted.
 
-One original `testTrackingLossStillInvalidatesRetainedMapFrame` invocation follows
-one unsigned build. There are no repeats or retries. The original XCTest assertions,
-10-second waits, utility queue and production control flow remain intact. The
-workflow wall limit is 30 minutes; build/test subprocess limits are 18/6 minutes,
-with process-group termination on expiry. This is not a latency benchmark: the
-bounded lock/print diagnostic itself can perturb scheduling.
+## Checks performed
 
-## Reading the evidence
+`verify.py /path/to/blind` passes Python AST, pinned-source exact anchors, four-file
+scope, preserved timeout/assertion/QoS/dispatch counts, and atomic rejection of
+repeat application/source drift. `verify_resolution.py` passes known-pin acceptance,
+seven invalid JSON/pin/size cases and symlink rejection. Native Swift compilation
+and actual Apple timing remain **not run**. Independent review required before
+publishing or executing this draft.
 
-`single-1-phases.json` retains at most 256 markers, each <= 1000 characters. Markers
-contain only a fixed phase name, monotonic uptime, main-thread boolean, sequence
-number, and process-local random request UUID. They contain no map identifiers,
-geometry, bytes, URL/path payloads or error descriptions. Decode the stage using the
-ordered sequence and same token, not just the last globally printed line:
-
-- `submit` / `worker.enqueue` without `job.taken`: admission/worker scheduling.
-- `prepare.begin` without `prepare.end` or `job.error`: preparation/read/decode.
-- `previous-read.begin` without end: prior durable-byte read.
-- `write.begin` without end/error: actual storage write.
-- `publish.enqueue` without `publish.main`: main publication scheduling.
-- `publish.main` then `registered.callback` / `navigator.callback` but no
-  `test.completion`: inspect callback ownership/result delivery.
-- `test.completion` but no `test.wait.end`: waiter resumption.
-- `publish.callback-returned` without `ack.worker`: worker acknowledgement scheduling.
-
-Missing output is not proof that a stage never ran; process termination or output
-capture can lose markers. A pass does not close the intermittent timeout. A failure
-with useful markers narrows the next investigation; it is not automatically a
-proven cause.
-
-`provenance.json` records source/harness/helper hashes and exact Apple toolchain.
-`source-before.json` and `source-after.json` cover every Git-tracked and unignored
-untracked file by path/hash, without copying their contents. Symlinks are hashed as
-link text, not traversed. `expected-instrumentation.json` records the four deliberate
-changes; `summary.json` distinguishes all changes from pristine, unintended changes
-relative to the instrumented state, and final porcelain paths. Ignored build output
-is outside this source-integrity inventory. Any unintended source delta fails the
-harness but remains visible rather than being erased or called an app regression.
-Raw `.xcresult`, DerivedData, and full logs are not uploaded. Diagnostic log excerpts
-are capped at 160 first matching lines plus 100 tail lines per phase (1000 chars each).
-
-## Local validation and limits
-
-Python AST parsing and disposable-file instrumentation were checked on this Linux
-executor. All exact anchors matched; a second application was rejected; original
-wait/assertion counts were preserved. No Swift compiler, Apple build or simulator
-was run locally. Native compilation, execution and actual phase evidence await the
-bounded Apple workflow. This diagnostic does not establish physical localization,
-safe guidance, device acceptance or release readiness.
+Independent static review also passed both verification scripts and found no
+blocking issue. One interpretation caveat remains: `slot.lock.before` is emitted
+only after acquisition/unlock. A permanently blocked acquisition leaves
+`drain.enter` without a slot timestamp pair; missing slot markers do not prove
+that lock acquisition was never attempted. Avoid printing while holding or waiting
+on the production lock merely to fill that gap. Apple compilation/runtime remains
+unverified.

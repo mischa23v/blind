@@ -4,12 +4,13 @@ import ast
 import json
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 from instrument import FILES, instrument
 
 PIN = 'e9e18d15fe1fdac1ff1487b3c2a8a2e731607427'
-ROOT = Path(__file__).resolve().parents[2]
-for filename in ('instrument.py', 'run.py', 'verify.py'):
+ROOT = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else Path(__file__).resolve().parents[2] / 'blind'
+for filename in ('instrument.py', 'refine.py', 'resolution.py', 'run.py', 'verify.py'):
     ast.parse(Path(__file__).with_name(filename).read_text())
 original = {p: subprocess.check_output(['git', 'show', f'{PIN}:{p}'], cwd=ROOT).decode() for p in FILES}
 

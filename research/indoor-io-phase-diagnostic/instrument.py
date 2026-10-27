@@ -47,6 +47,8 @@ def instrument(root):
     change(test, '        try action { result = $0; done.fulfill() }', '        IndoorIOPhaseTrace.emit("test.action.begin")\n        try action {\n            IndoorIOPhaseTrace.emit("test.completion")\n            result = $0; done.fulfill()\n        }\n        IndoorIOPhaseTrace.emit("test.wait.begin")', count=2)
     change(test, '        IndoorIOPhaseTrace.emit("test.wait.begin")\n        await fulfillment(of: [done], timeout: 10)\n        try XCTUnwrap(result).get()', '        IndoorIOPhaseTrace.emit("test.wait.begin")\n        await fulfillment(of: [done], timeout: 10)\n        IndoorIOPhaseTrace.emit("test.wait.end")\n        try XCTUnwrap(result).get()')
     change(test, '        IndoorIOPhaseTrace.emit("test.wait.begin")\n        wait(for: [done], timeout: 10); try XCTUnwrap(result).get()', '        IndoorIOPhaseTrace.emit("test.wait.begin")\n        wait(for: [done], timeout: 10); IndoorIOPhaseTrace.emit("test.wait.end"); try XCTUnwrap(result).get()')
+    from refine import refine
+    refine(texts, FILES)
     # Validate every anchor before touching any file.
     for path in FILES:
         assert texts[path] != originals[path]

@@ -15,6 +15,7 @@ import sys
 import time
 
 from instrument import instrument, FILES as INSTRUMENTED_FILES
+from resolution import inspect as inspect_resolution, PATH as RESOLUTION_PATH
 
 PINS = {'review': 'e9e18d15fe1fdac1ff1487b3c2a8a2e731607427'}
 PHASES = ['preflight', 'build', 'single-1']
@@ -149,6 +150,7 @@ def main():
                 record['reason'] = 'Test passed but phase capture is incomplete; not a diagnostic success'
         (evidence / (name + '-phases.json')).write_text(json.dumps(markers, indent=2) + '\n')
         record['phase_markers_retained'] = len(markers)
+        capture_resolution(name)
         (evidence / (name + '.txt')).write_text(
             json.dumps(record, indent=2) + '\nDIAGNOSTICS (first 160, each <=1000 chars)\n' +
             '\n'.join(issues) + '\nTAIL (last 100, each <=1000 chars)\n' + '\n'.join(tail) + '\n')
@@ -178,6 +180,12 @@ def main():
     def delta(a, b):
         return {p: {'before': a.get(p), 'after': b.get(p)} for p in sorted(a.keys() | b.keys()) if a.get(p) != b.get(p)}
 
+    def capture_resolution(stage):
+        record = inspect_resolution(source)
+        summary.setdefault('generated_resolution', {})[stage] = record
+        (evidence / ('resolution-' + stage + '.json')).write_text(json.dumps(record, indent=2) + '\n')
+        return record
+
     before = expected_state = None
     save()
     try:
@@ -186,6 +194,7 @@ def main():
         assert small(['uname', '-s']) == 'Darwin', 'Apple runner required'
         assert small(['git', 'rev-parse', 'HEAD']) == expected, 'Source pin mismatch'
         assert not small(['git', 'status', '--porcelain']), 'Candidate checkout must be clean'
+        capture_resolution('before')
         before = manifest()
         (evidence / 'source-before.json').write_text(json.dumps(before, indent=2) + '\n')
         xcode = small(['xcodebuild', '-version'])
@@ -201,6 +210,8 @@ def main():
         provenance = {
             'source_sha': expected, 'harness_sha': os.environ.get('GITHUB_SHA'),
             'helper_sha256': hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
+            'refine_sha256': hashlib.sha256(pathlib.Path(__file__).with_name('refine.py').read_bytes()).hexdigest(),
+            'resolution_sha256': hashlib.sha256(pathlib.Path(__file__).with_name('resolution.py').read_bytes()).hexdigest(),
             'instrument_sha256': hashlib.sha256(pathlib.Path(__file__).with_name('instrument.py').read_bytes()).hexdigest(),
             'macos': small(['sw_vers', '-productVersion']), 'macos_build': small(['sw_vers', '-buildVersion']),
             'xcode': xcode, 'swift': small(['xcrun', 'swift', '--version']), 'simulator_sdk': sdk,
@@ -239,6 +250,7 @@ def main():
         print('Diagnostic stopped: ' + str(exc)[:2000], flush=True)
     finally:
         try:
+            resolution = capture_resolution('after')
             after = manifest()
             (evidence / 'source-after.json').write_text(json.dumps(after, indent=2) + '\n')
             status = small(['git', 'status', '--porcelain=v1', '--untracked-files=all']).splitlines()
@@ -250,8 +262,18 @@ def main():
             if before is not None:
                 summary['all_changes_from_pristine'] = delta(before, after)
             if expected_state is not None:
-                summary['unintended_changes'] = delta(expected_state, after)
-                summary['expected_instrumented_state_preserved'] = not bool(summary['unintended_changes'])
+                summary['changes_after_instrumentation'] = delta(expected_state, after)
+                summary['unintended_changes'] = dict(summary['changes_after_instrumentation'])
+                generated = summary['unintended_changes'].get(RESOLUTION_PATH)
+                if (generated and generated['before'] is None and
+                    resolution['status'] == 'validated_public_exact_pin' and
+                    generated['after'] == resolution['sha256'] + ':mode=0o644'):
+                    summary['validated_generated_metadata'] = {RESOLUTION_PATH: generated}
+                    del summary['unintended_changes'][RESOLUTION_PATH]
+                elif resolution['status'] == 'rejected':
+                    summary['integrity_error'] = 'Generated resolution failed exact public pin validation'
+                summary['exact_instrumented_state_preserved'] = not bool(summary['changes_after_instrumentation'])
+                summary['source_preserved_except_validated_metadata'] = not bool(summary['unintended_changes'])
                 if summary['unintended_changes']:
                     summary['integrity_error'] = 'Unintended changes beyond expected instrumentation; inspect path/hash delta'
         except Exception as exc:
