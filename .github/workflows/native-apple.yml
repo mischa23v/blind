@@ -88,3 +88,11 @@ jobs:
           UNIT_OUTCOME: ${{ steps.unit.outcome }}
           UI_OUTCOME: ${{ steps.ui.outcome }}
         run: bash tools/ci/native-apple.sh summary
+      - name: Preserve bounded hosted-unit case statuses
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: native-unit-case-statuses-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/blind-native-ci/unit-case-statuses.json
+          if-no-files-found: error
+          retention-days: 3

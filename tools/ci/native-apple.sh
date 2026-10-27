@@ -117,19 +117,15 @@ PY
     } >> "$GITHUB_STEP_SUMMARY"
     for suite in unit ui; do
       if [[ -d "$out/$suite.xcresult" ]]; then
-        if xcrun xcresulttool get test-results summary --path "$out/$suite.xcresult" > "$out/$suite-summary.json" 2>/dev/null; then
-          python3 - "$out/$suite-summary.json" "$suite" <<'PY'
-import json, sys
-summary = json.load(open(sys.argv[1]))
-keys = ('result', 'totalTestCount', 'passedTests', 'failedTests', 'skippedTests', 'expectedFailures', 'startTime', 'finishTime')
-# Only counts/status/times, never screenshots, recordings, attachments or device logs.
-print(sys.argv[2] + ' xcresult: ' + json.dumps({k: summary[k] for k in keys if k in summary}))
-PY
+        if python3 tools/ci/export-native-unit-statuses.py --summary "$out/$suite.xcresult" "$out/$suite-summary.json"; then
+          :
         else
           echo "$suite xcresult summary unavailable; consult bounded test output above."
         fi
       fi
     done
+    # Preserve positive as well as failing case statuses; never alter test verdicts.
+    python3 tools/ci/export-native-unit-statuses.py "$out/unit.xcresult" "$out/unit.log" "$out/unit-case-statuses.json" || true
     git diff --exit-code -- ios BlindCore BlindMemory
     ;;
   *) echo "Unknown mode: $mode" >&2; exit 2 ;;
