@@ -14,6 +14,8 @@ from pathlib import Path
 import platform
 import re
 import time
+import stat
+import tempfile
 
 HOME = Path(__file__).resolve().parent.parent
 ROOT = HOME.parent.parent
@@ -124,9 +126,178 @@ def service_crash_diagnostics(out, label, since):
     return result
 
 
+def app_build_command(root, out, stem, flag='', planning_only=False):
+    command = ['xcodebuild', '-project', str(root / 'ios/BlindAssist.xcodeproj'),
+        '-scheme', 'BlindAssist', '-configuration', 'Debug', '-sdk', 'iphonesimulator',
+        '-destination', 'generic/platform=iOS Simulator', '-derivedDataPath', str(out / stem),
+        '-clonedSourcePackagesDirPath', str(out / 'app-source-packages'),
+        '-disableAutomaticPackageResolution', '-jobs', '1',
+        'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'ARCHS=arm64',
+        'ONLY_ACTIVE_ARCH=YES', 'ENABLE_DEBUG_DYLIB=NO', 'SWIFT_OPTIMIZATION_LEVEL=-Onone',
+        'SWIFT_ACTIVE_COMPILATION_CONDITIONS=DEBUG' + (' ' + flag if flag else '')]
+    if planning_only:
+        command.append('-dry-run')
+    return command + ['build']
+
+
+def planning_help_line(text):
+    # The installed Apple tool's own help is the primary capability contract.
+    lines = [line.strip() for line in text.splitlines()
+        if re.match(r'^\s*-dry-run\s+', line)]
+    if len(lines) != 1 or 'except' not in lines[0].lower() or 'commands' not in lines[0].lower():
+        raise ValueError('installed xcodebuild did not document the expected planning-only option')
+    return lines[0]
+
+
+def planning_can_continue(receipt):
+    # A second arm is a different graph, never a retry of the failed arm.
+    return (not resource_termination(receipt) and receipt.get('exitCode') in (0, 65) and receipt.get('timedOut') is False and
+        receipt.get('scratchCapExceeded') is False and receipt.get('scratchScanComplete') is True and
+        receipt.get('exceptionType') is None and receipt.get('terminationSignal') is None and
+        receipt.get('fileSizeLimitSignal') is False)
+
+
+def planning_baseline_gate(out, receipt, diagnostics):
+    log_path = out / 'planning-baseline.log'
+    complete = False
+    data = b''
+    try:
+        with os.fdopen(os.open(log_path, os.O_RDONLY | os.O_NOFOLLOW), 'rb') as handle:
+            data = handle.read((4 << 20) + 1)
+        complete = len(data) <= 4 << 20
+    except OSError:
+        pass # missing/unreadable/symlink log is unknown, never permission to continue
+    observed_resource = (resource_termination(receipt) or resource_termination(diagnostics) or
+        resource_termination(data[:4 << 20].decode('utf-8', errors='replace')))
+    allowed = complete and not observed_resource and planning_can_continue(receipt)
+    result = dict(secondArmAllowed=allowed, completeBaselineLogInspected=complete,
+        inspectedLogBytes=min(len(data), 4 << 20), resourceLimitObserved=observed_resource,
+        missingOrIncompleteLogStopsComparison=True)
+    (out / 'planning-second-arm-gate-diagnostic.json').write_text(json.dumps(result, indent=2) + '\n')
+    return allowed
+
+
+def capture_proposal_sources(root, relative):
+    originals = {}
+    for name in relative:
+        path = root / name
+        with os.fdopen(os.open(path, os.O_RDONLY | os.O_NOFOLLOW), 'rb') as handle:
+            metadata = os.fstat(handle.fileno())
+            assert stat.S_ISREG(metadata.st_mode) and metadata.st_size <= 4 << 20
+            data = handle.read((4 << 20) + 1)
+            assert len(data) <= 4 << 20
+        originals[name] = (data, stat.S_IMODE(metadata.st_mode))
+    assert sum(len(data) for data, _ in originals.values()) <= 8 << 20
+    return originals
+
+
+def restore_proposal_sources(root, originals, out):
+    # Cleanup only: no compiler/build command, and no limits are changed. The
+    # shared runner can report a cap AFTER git already mutated the checkout, so
+    # restoration cannot itself depend on that runner's stage-wide cap check.
+    errors = []
+    for name, (data, mode) in originals.items():
+        target = root / name
+        temporary = None
+        try:
+            fd, temporary = tempfile.mkstemp(prefix='.stage85-restore-', dir=target.parent)
+            with os.fdopen(fd, 'wb') as handle:
+                handle.write(data)
+                handle.flush()
+                os.fsync(handle.fileno())
+                os.fchmod(handle.fileno(), mode)
+            os.replace(temporary, target)
+            temporary = None
+        except OSError as error:
+            errors.append(dict(path=name, errorType=type(error).__name__))
+        finally:
+            if temporary is not None:
+                try:
+                    os.unlink(temporary) # only the temporary created by this call
+                except OSError as error:
+                    errors.append(dict(path=name, cleanupErrorType=type(error).__name__))
+    verified = {}
+    for name, (data, mode) in originals.items():
+        try:
+            with os.fdopen(os.open(root / name, os.O_RDONLY | os.O_NOFOLLOW), 'rb') as handle:
+                actual = handle.read(len(data) + 1)
+                metadata = os.fstat(handle.fileno())
+            verified[name] = (actual == data and stat.S_IMODE(metadata.st_mode) == mode)
+        except OSError:
+            verified[name] = False
+    result = dict(restored=not errors and all(verified.values()), verified=verified, errors=errors,
+        boundedOriginalBytes=sum(len(data) for data, _ in originals.values()),
+        scope='three owned proposal files only; atomic same-directory replacement; no build limits changed')
+    (out / 'planning-restoration-diagnostic.json').write_text(json.dumps(result, indent=2) + '\n')
+    if not result['restored']:
+        raise RuntimeError('proposal restoration failed; inspect planning-restoration-diagnostic.json')
+
+
+def planning_comparison(runner, out, env, patch):
+    runner.run(['xcodebuild', '-help'], 'planning-help', out, 30, env=env)
+    help_path = out / 'planning-help.log'
+    assert help_path.stat().st_size <= 256 << 10, 'unexpected help output size'
+    option = planning_help_line(help_path.read_text())
+    relative = ['ios/BlindAssist/NavigationModel.swift',
+        'ios/BlindAssist.xcodeproj/project.pbxproj', 'ios/BlindAssist/MeshCandidateDiagnostics.swift']
+    def source_state():
+        return {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
+            if (ROOT / name).exists() else None for name in relative}
+    proposed_state = source_state()
+    originals = capture_proposal_sources(ROOT, relative)
+    results = []
+    # The patch was already applied only inside this disposable CI checkout.
+    runner.run(['git', '-C', str(ROOT), 'apply', '-R', '--check', str(patch)],
+        'planning-baseline-reverse-check', out, 30)
+    try:
+        runner.run(['git', '-C', str(ROOT), 'apply', '-R', str(patch)],
+            'planning-baseline-reverse', out, 30)
+        baseline = source_state()
+        pins = json.loads((HOME / 'SOURCE_PINS.json').read_text())
+        assert baseline[relative[0]] == pins[relative[0]] and baseline[relative[1]] == pins[relative[1]]
+        assert baseline[relative[2]] is None, 'baseline retains proposed bridge'
+        stem = 'planning-baseline'
+        started = time.time()
+        baseline_diagnostics = {}
+        try:
+            receipt = runner.run(app_build_command(ROOT, out, stem, planning_only=True),
+                stem, out, 180, env=env)
+        except RuntimeError:
+            receipt = json.loads((out / (stem + '-receipt.json')).read_text())
+            baseline_diagnostics = service_crash_diagnostics(out, stem + '-failure', started)
+        results.append(dict(arm='unpatched', sourceHashes=baseline, receipt=receipt))
+    finally:
+        # Never leave the disposable checkout in a partially reversed state.
+        restore_proposal_sources(ROOT, originals, out)
+        assert source_state() == proposed_state, 'proposal not byte-identically restored'
+    if planning_baseline_gate(out, receipt, baseline_diagnostics):
+        stem = 'planning-proposal'
+        started = time.time()
+        try:
+            receipt = runner.run(app_build_command(ROOT, out, stem, planning_only=True),
+                stem, out, 180, env=env)
+        except RuntimeError:
+            receipt = json.loads((out / (stem + '-receipt.json')).read_text())
+            service_crash_diagnostics(out, stem + '-failure', started)
+        results.append(dict(arm='proposed', sourceHashes=source_state(), receipt=receipt))
+    result = dict(commit=os.environ['GITHUB_SHA'], installedPlanningOption=option, arms=results,
+        predeclaredSameCommandExceptDerivedDataPath=True, predeclaredSameEnvironmentAndLimits=True,
+        bothArmsExecuted=len(results) == 2,
+        order='unpatched then proposed; separate fresh derived directories; same runner and dependency checkout',
+        automaticRetries=0, fullAppCompiled=False, appExecuted=False, simulatorExecuted=False,
+        physicalAuthority=False, scope='build planning only; not compiler, linker or runtime acceptance',
+        limitation='fixed order and shared resolved dependency/host caches; not a causal proof of crash mechanism')
+    (out / 'PLANNING_COMPARISON.json').write_text(json.dumps(result, indent=2) + '\n')
+    print(json.dumps({key:value for key,value in result.items() if key != 'arms'}))
+    assert len(results) == 2 and all(planning_can_continue(x['receipt']) and
+        x['receipt']['exitCode'] == 0 for x in results), 'planning comparison contains failures; inspect both arm receipts'
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--app-proposal', action='store_true')
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument('--app-proposal', action='store_true')
+    mode.add_argument('--planning-comparison', action='store_true')
     args = parser.parse_args()
     assert platform.system() == 'Darwin', 'Apple host required'
     assert os.environ.get('GITHUB_REPOSITORY') == 'mischa23v/blind'
@@ -175,7 +346,7 @@ def main():
             assert len(fixture_result) == 1 and fixture_result[0].startswith(
                 'RESULT: 83 stage83 real-runtime synthetic checks passed;')
     app_results = []
-    if args.app_proposal:
+    if args.app_proposal or args.planning_comparison:
         patch = HOME / 'app-integration.patch'
         receipts.append(runner.run(['git', '-C', str(ROOT), 'apply', '--check', str(patch)],
                                    'app-patch-check', out, 30))
@@ -220,18 +391,14 @@ def main():
         assert pins == [expected_pin], 'dependency identity/version/revision changed during resolution'
         checkout = out / 'app-source-packages/checkouts/GRDB.swift'
         assert runner.output(['git', '-C', str(checkout), 'rev-parse', 'HEAD']) == grdb_revision
+        if args.planning_comparison:
+            planning_comparison(runner, out, env, patch)
+            return # never fall through to compilation or symbol checks
         # Retain the inherited 128 MiB per-file cap; a sparse CAS/cache crossing it
         # is a bounded build failure, never app acceptance or runtime-memory proof.
         for flag, stem in [('', 'app-flag-absent'), ('BLIND_MESH_CANDIDATE_DIAGNOSTICS', 'app-flag-enabled')]:
             derived = out / stem
-            command = ['xcodebuild', '-project', str(ROOT / 'ios/BlindAssist.xcodeproj'),
-                '-scheme', 'BlindAssist', '-configuration', 'Debug', '-sdk', 'iphonesimulator',
-                '-destination', 'generic/platform=iOS Simulator', '-derivedDataPath', str(derived),
-                '-clonedSourcePackagesDirPath', str(out / 'app-source-packages'),
-                '-disableAutomaticPackageResolution', '-jobs', '1',
-                'CODE_SIGNING_ALLOWED=NO', 'CODE_SIGNING_REQUIRED=NO', 'ARCHS=arm64',
-                'ONLY_ACTIVE_ARCH=YES', 'ENABLE_DEBUG_DYLIB=NO', 'SWIFT_OPTIMIZATION_LEVEL=-Onone',
-                'SWIFT_ACTIVE_COMPILATION_CONDITIONS=DEBUG' + (' ' + flag if flag else ''), 'build']
+            command = app_build_command(ROOT, out, stem, flag)
             recovered_service_crash = False
             started = time.time()
             try:

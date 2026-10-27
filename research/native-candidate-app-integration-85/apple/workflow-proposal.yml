@@ -1,4 +1,4 @@
-name: Candidate local packages and default-off app compile
+name: Candidate local packages and app planning comparison
 on:
   push:
     branches: [codex/recovery-hazard-order-20261027]
@@ -29,9 +29,9 @@ jobs:
           fetch-depth: 1
           lfs: false
           submodules: false
-      - name: Build actual local graph and compile proposal with flag absent and present
+      - name: Build actual local graph and compare unpatched/proposed app planning
         timeout-minutes: 38
-        run: python3 research/native-candidate-app-integration-85/apple/ci.py --app-proposal
+        run: python3 research/native-candidate-app-integration-85/apple/ci.py --planning-comparison
       - name: Preserve bounded source-only receipts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -41,5 +41,6 @@ jobs:
             ${{ runner.temp }}/blind-native-app-integration-85/*-receipt.json
             ${{ runner.temp }}/blind-native-app-integration-85/*-diagnostic.json
             ${{ runner.temp }}/blind-native-app-integration-85/RESULT.json
+            ${{ runner.temp }}/blind-native-app-integration-85/PLANNING_COMPARISON.json
           if-no-files-found: warn
           retention-days: 3

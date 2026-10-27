@@ -203,3 +203,59 @@ unknown. The collector classifies only raw allowed exception/termination metadat
 before string conversion or truncation, retains the boolean observation, skips
 symlink entries and uses `O_NOFOLLOW` for reads to reject a symlink swap. These
 20local Python fixtures do not execute Apple's build service.
+
+### Fourth run and bounded planning-only comparison
+
+[Run 40571313055](https://github.com/mischa23v/blind/actions/runs/40571313055)
+at `0babd78` passed both package graphs, 83 host synthetic fixtures, patch checking
+and exact dependency resolution. Both the flag-absent build and its one allowed
+service retry failed during `CreateBuildDescription`, before an app compiler
+error. The bounded crash-report collections were empty. Resource-limit cause is
+still unknown. [Verified receipts](evidence/run40571313055/README.md) preserve both
+failures; neither is an app pass.
+
+The next workflow mode is `--planning-comparison`, not another identical retry.
+It requires the installed Apple `xcodebuild -help` to document `-dry-run` as doing
+everything except running commands. If that primary tool capability contract is
+missing or ambiguous, the comparison refuses to run. The help output itself is
+bounded and the matched line is retained. This capability has not been verified
+on Apple for this new diagnostic yet.
+
+After the same actual package graph checks and exact dependency resolution, the
+harness temporarily reverses the proposal only in its disposable checkout. It
+verifies the original NavigationModel and project hashes and absence of the new
+bridge, then plans the unpatched app. A `finally` block restores and verifies all
+three proposed source hashes. If the first arm did not hit a resource/timeout or
+harness failure, it plans the proposal in a separate fresh derived-data directory.
+The two commands differ only in that directory. Both retain the existing SDK,
+flag-absent configuration, environment, one job, exact dependency and original
+128 MiB file/300 CPU-second/2 GiB stage-end scratch limits; each planning command
+has a tighter 180-second wall timeout. There is no automatic retry of either arm,
+no fallback to a real build, and no changes to production source or runtime gates.
+
+`PLANNING_COMPARISON.json` records each executed arm, its source hashes and receipt,
+including failures. A planning pass is not compilation, linking, app execution,
+or device acceptance. Both failures would point toward a broader harness/tool
+problem; baseline success plus proposal failure would isolate the added graph as
+a trigger under this harness, not prove an underlying Xcode defect. Fixed arm
+order and shared dependency/host caches remain explicit confounds. A successful
+comparison still leaves the actual two-configuration app compile proof open.
+
+Portable verification: 54 pure planning-policy/transaction checks exercise the
+installed-help gate, command equivalence, exact old compile-command preservation,
+resource stops, and byte-identical restoration after failures. Existing 20 retry
+and collector checks remain passing. These are Python fixtures, not Apple runs.
+
+Independent review hardened the cleanup and continuation boundary before Apple
+execution. The mutating reverse is now inside the protected try/finally region.
+Three bounded original source byte arrays and modes are captured first; cleanup
+atomically restores them directly, without depending on a shared runner that may
+reject commands after detecting a pre-existing scratch cap. This changes no build
+limits and launches no cleanup build. Any restoration failure is recorded and
+fails closed before the second arm. Injected post-execution reverse failures and
+atomic-restoration failures are covered by portable fixtures.
+
+Before a second planning arm, the harness now inspects the complete baseline log
+up to 4 MiB plus its receipt and crash summaries for resource signals. Missing,
+unreadable, symlinked or oversized logs stop the comparison. Explicit child
+SIGXFSZ/SIGXCPU evidence cannot disappear merely because no IPS report was found.
