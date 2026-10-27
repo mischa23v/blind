@@ -4,6 +4,16 @@ User-requested tracker addition, 2026-10-27. Applies to layered world → place 
 
 **Current status:** registry, saved-map recovery attempts, route ownership and synthetic journey contracts exist. Full native navigation localization/body-orientation evidence, safe current-pose-to-path entry and real-device validation are not established. This gate is not passed by supplied query poses, a room label, normal ARKit tracking, a successful static route, or compiling stage75.
 
+## Current reconciliation — 2026-10-27
+
+This gate remains **NOT PASSED**. [Draft PR #2](https://github.com/mischa23v/blind/pull/2), review branch `codex/recovery-hazard-order-20261027` at `e9e18d15fe1fdac1ff1487b3c2a8a2e731607427`, now contains the recovery warning-order correction and candidate mesh package; master is separately pinned at `8471d58476d591fe7b04bf7f1154a4b56fc6a36b`. No merge, deployment or physical authority is claimed.
+
+The original `awaitingPlace` source finding below has progressed to a branch-published correction with portable projection and real-owner regression evidence: process/publish otherwise-admissible warnings before recovery returns, and withdraw journey authority at entry rather than each normal recovery frame. This does not validate real sensor/callback/audio behavior or add missing calibration/coverage. Keep the original finding as historical diagnosis, not an outstanding claim that no source fix exists.
+
+[Apple package run 40470002271](https://github.com/mischa23v/blind/actions/runs/40470002271) passed 87 macOS host checks using the native SwiftPM backend; Simulator package/client compilation and linking passed **without client execution**. These are not app localization or body-heading evidence. [Focused IO run 40470002343](https://github.com/mischa23v/blind/actions/runs/40470002343) failed the original 10-second fixture on the first invocation for both baseline and review, despite later passes; both reported `source_clean_after: false` with changed paths/cause unresolved. Full-app Dynamic Type failure also remains open. No clean app regression pass is established.
+
+The local decoder's 49 fixtures were authored but uncompiled and its source became unavailable after reset; fresh implementation is underway, not completed or validated here. See the [current ordered engineering gates](../../REBUILD_TRACKER.md#next-ordered-gates): live hazard evidence first; bounded native mesh/IO verification; then measured localization/orientation/deviation and safe connectors; integrated useful A-to-B/return and separate supervised device acceptance. No unpublished successor result is credited.
+
 ## Required outcomes
 
 - **Correct saved map and floor:** select the exact map/frame/revision and floor, distinguish look-alike rooms and repeated layouts across buildings/floors, and reject ambiguous, stale, unavailable or contradictory matches. GPS/appearance may shortlist; neither establishes metric pose. No match does not prove that the area is new.
