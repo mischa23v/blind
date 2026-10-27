@@ -1,0 +1,52 @@
+{
+  "repo": "mischa23v/blind",
+  "run_id": 40543469837,
+  "commit": "8f1c6bf03791dbe8e6805ebefe138a47a30aaaa1",
+  "artifact_id": 12752066260,
+  "bytes": 4399,
+  "sha256": "56f6cf6cb2e9771f34ab18bfab0ed4d71182b7ae9fd5db8449aa88691bf53183",
+  "expected_sha256_match": true,
+  "all_zip_crc_pass": true,
+  "members": [
+    {
+      "path": "RESULT.json",
+      "bytes": 366,
+      "crc32": "c889119d"
+    },
+    {
+      "path": "host-MeshSnapshot82-receipt.json",
+      "bytes": 1299,
+      "crc32": "e326832b"
+    },
+    {
+      "path": "host-MeshBufferDecoder81-receipt.json",
+      "bytes": 1121,
+      "crc32": "c4629465"
+    },
+    {
+      "path": "host-fixtures-compile-receipt.json",
+      "bytes": 1184,
+      "crc32": "780f26c9"
+    },
+    {
+      "path": "host-fixtures-run-receipt.json",
+      "bytes": 584,
+      "crc32": "8a511fb0"
+    },
+    {
+      "path": "simulator-MeshBufferDecoder81-receipt.json",
+      "bytes": 1217,
+      "crc32": "cea67cdc"
+    },
+    {
+      "path": "simulator-MeshSnapshot82-receipt.json",
+      "bytes": 1481,
+      "crc32": "772d7b18"
+    }
+  ],
+  "verified_utc": "2026-10-27T16:43:54Z",
+  "method": "GitHub download_workflow_artifact; tool-provided URL download; local size/SHA-256/ZIP CRC/JSON parsing",
+  "reported_host_fixture_count": 36,
+  "fixture_count_evidence": "RESULT.json and exit-0 host-fixtures-run-receipt.json logTail both report 36; no individual check lines retained",
+  "all_json_parse": true
+}
