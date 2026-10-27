@@ -1,0 +1,148 @@
+{
+  "appRevision": "c8aa872748aded3bd6672c7d2e299eec5361cb94",
+  "assetSHA256": "ec84a34adacb09a851e14dff4f351114f92aca261ad36df8906b8c2945a28747",
+  "error": "pinned install recipe drift",
+  "minimumFreeBytes": 38793969664,
+  "peakOwnedBytes": 82338758,
+  "policyCaps": {
+    "jobs": 2,
+    "minimumFreeBytes": 2147483648,
+    "seconds": 2400,
+    "workBytes": 8589934592,
+    "zipEntries": 100000,
+    "zipExpandedBytes": 4294967296
+  },
+  "runnerSHA256": "90d27828cb9d8d364f75217e6ce68f99bc60ce2501237db03d14699f5c7d2183",
+  "scope": "unsigned device compile only; no runtime or physical-safety validation",
+  "seconds": 9.35,
+  "status": "failed",
+  "steps": [
+    {
+      "command": [
+        "xcodebuild",
+        "-version"
+      ],
+      "exitCode": 0,
+      "name": "xcode-version",
+      "seconds": 2.93,
+      "status": "passed"
+    },
+    {
+      "command": [
+        "xcrun",
+        "--sdk",
+        "iphoneos",
+        "--show-sdk-version"
+      ],
+      "exitCode": 0,
+      "name": "sdk-version",
+      "seconds": 1.59,
+      "status": "passed"
+    },
+    {
+      "command": [
+        "cmake",
+        "--version"
+      ],
+      "exitCode": 0,
+      "name": "cmake-version",
+      "seconds": 0.18,
+      "status": "passed"
+    },
+    {
+      "command": [
+        "node",
+        "--version"
+      ],
+      "exitCode": 0,
+      "name": "node-version",
+      "seconds": 0.24,
+      "status": "passed"
+    },
+    {
+      "command": [
+        "python3",
+        "--version"
+      ],
+      "exitCode": 0,
+      "name": "python3-version",
+      "seconds": 0.14,
+      "status": "passed"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--exit-code",
+        "HEAD",
+        "--"
+      ],
+      "exitCode": 0,
+      "name": "source-clean-at-entry",
+      "seconds": 0.25,
+      "status": "passed"
+    },
+    {
+      "command": [
+        "git",
+        "init",
+        "/Users/runner/work/_temp/blind-rtab-grid-40256696185-1/app/.tools/rtabmap"
+      ],
+      "exitCode": 0,
+      "name": "upstream-init",
+      "seconds": 0.12,
+      "status": "passed"
+    },
+    {
+      "command": [
+        "git",
+        "remote",
+        "add",
+        "origin",
+        "https://github.com/introlab/rtabmap.git"
+      ],
+      "exitCode": 0,
+      "name": "upstream-remote",
+      "seconds": 0.13,
+      "status": "passed"
+    },
+    {
+      "command": [
+        "git",
+        "fetch",
+        "--depth=1",
+        "origin",
+        "a4e7f13522722878dea3f07e8fd082291e72eb49"
+      ],
+      "exitCode": 0,
+      "name": "upstream-fetch",
+      "seconds": 2.58,
+      "status": "passed"
+    },
+    {
+      "command": [
+        "git",
+        "checkout",
+        "--detach",
+        "FETCH_HEAD"
+      ],
+      "exitCode": 0,
+      "name": "upstream-checkout",
+      "seconds": 0.63,
+      "status": "passed"
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "name": "upstream-head",
+      "seconds": 0.12,
+      "status": "passed"
+    }
+  ],
+  "upstreamRevision": "a4e7f13522722878dea3f07e8fd082291e72eb49",
+  "workflowRevision": "e677c185c208728b02b103247913ef03a1467c1b"
+}

@@ -1,0 +1,21 @@
+{
+  "scope": "offline source/pin checks, not backend execution",
+  "passed": 14,
+  "failed": 0,
+  "checks": [
+    "canonical upstream byte count",
+    "canonical Git blob identity",
+    "canonical SHA256 rejects old pin",
+    "byte mutation rejected",
+    "unchanged preimage tools/ci/native-rtab-grid.py",
+    "single replacement tools/ci/native-rtab-grid.py",
+    "runner AST otherwise identical",
+    "unchanged preimage research/evaluations/rtab-local-grid/native-build-plan.md",
+    "single replacement research/evaluations/rtab-local-grid/native-build-plan.md",
+    "patch exact two pin substitutions",
+    "RTAB workflow untouched",
+    "RTAB push path remains workflow only",
+    "guard retained before archive acquisition",
+    "failure receipt is precompile provenance stop"
+  ]
+}

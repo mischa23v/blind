@@ -1,0 +1,20 @@
+--- a/tools/ci/native-rtab-grid.py
++++ b/tools/ci/native-rtab-grid.py
+@@ -30,7 +30,7 @@
+ ASSET_URL = "https://github.com/introlab/rtabmap/releases/download/0.23.1/libraries-ios-xcode26.5.zip"
+ ASSET_BYTES = 234342396
+ ASSET_SHA = "ec84a34adacb09a851e14dff4f351114f92aca261ad36df8906b8c2945a28747"
+-INSTALL_SHA = "7b6bd18c9240183a4fc873fedefee9c0a8d89c8da9f7e91218c1d2d2fd217aa1"
++INSTALL_SHA = "c1c71cc728c3f49169021b2db9b8fc3af55de27b3d12f598ec3cf28bf52fd532"
+ DEVELOPER = "/Applications/Xcode_27.0.app/Contents/Developer"
+ MAX_WORK = 8 * GIB
+ MAX_ZIP = 4 * GIB
+--- a/research/evaluations/rtab-local-grid/native-build-plan.md
++++ b/research/evaluations/rtab-local-grid/native-build-plan.md
+@@ -52,5 +52,5 @@
+ 9. Preserve exit codes, exact source/asset/toolchain pins, CMake settings, architecture/platform inspection, bounded diagnostics and resource summary. Upload **metadata/log excerpts only** (suggested <=2 MiB, retention3days), never Libraries, .app, .ipa, archive, private sensor data, environment dump or credentials. Keep full first-failure logs on that ephemeral CI run for diagnosis, with honest timeout/failure classification.
+ 10. Success means this exact source and library set compiled/linked for device SDK under Xcode27. It does **not** establish live mapping, localization accuracy, sensor-to-body calibration, simulator runtime compatibility, device installability, safety, complete license compliance, or navigation completion.
+ 
+-Dependency-install script SHA256: 7b6bd18c9240183a4fc873fedefee9c0a8d89c8da9f7e91218c1d2d2fd217aa1.
++Dependency-install script SHA256: c1c71cc728c3f49169021b2db9b8fc3af55de27b3d12f598ec3cf28bf52fd532.
+ 
