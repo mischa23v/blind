@@ -1,0 +1,119 @@
+diff --git a/ios/BlindAssist/ObservedSceneRuntime.swift b/ios/BlindAssist/ObservedSceneRuntime.swift
+index d2206e6..8b762d8 100644
+--- a/ios/BlindAssist/ObservedSceneRuntime.swift
++++ b/ios/BlindAssist/ObservedSceneRuntime.swift
+@@ -8,7 +8,7 @@ import BlindCore
+         var scene = ObservedSceneAccumulator()
+         init(session: UUID) { scene.begin(sessionID: session) }
+     }
+-    private let queue = DispatchQueue(label: "blind.observed-scene", qos: .utility)
++    private let queue: DispatchQueue
+     private let clock: () -> Double
+     private var worker: Worker?
+     private var session: UUID?
+@@ -24,7 +24,10 @@ import BlindCore
+     private(set) var plan: ObservedScenePlan?
+     private(set) var liveStatus = "unavailable"
+     var onChange: (() -> Void)?
+-    init(clock: @escaping () -> Double = { ProcessInfo.processInfo.systemUptime }) { self.clock = clock }
++    init(clock: @escaping () -> Double = { ProcessInfo.processInfo.systemUptime },
++         queue: DispatchQueue = DispatchQueue(label: "blind.observed-scene", qos: .utility)) {
++        self.clock = clock; self.queue = queue
++    }
+     func begin(session: UUID, capturedAfter: Double? = nil) {
+         self.session = session; epoch = UUID(); worker = Worker(session: session)
+         intent = .lookAhead; goalRevision = UUID(); lastOffered = -.infinity
+@@ -67,16 +70,18 @@ import BlindCore
+         guard let captured = snapshot?.capturedAt else { return }
+         if !now.isFinite || now < captured || now - captured > 0.5 { plan = nil; liveStatus = "expired"; onChange?() }
+     }
+-    func offer(_ observation: Observation, session: UUID, floor: Double?,
+-               body: BodyEnvelope?, now: Double, hazard: Hazard = .uncertain) {
++    /// Busy frames are intentionally dropped: the accumulator has exactly one owned worker.
++    /// The receipt reports admission only, never successful processing or clearance.
++    @discardableResult func offer(_ observation: Observation, session: UUID, floor: Double?,
++               body: BodyEnvelope?, now: Double, hazard: Hazard = .uncertain) -> Bool {
+         guard self.session == session, let worker, workID == nil,
+               observation.timestamp > minimumCapture,
+-              observation.timestamp - lastOffered >= 0.1 else { return }
++              observation.timestamp - lastOffered >= 0.1 else { return false }
+         // Validate before updating cadence; a rejected future/NaN timestamp must
+         // never poison lastOffered and prevent later valid captures recovering.
+         guard observation.timestamp.isFinite, observation.timestamp >= 0, now.isFinite,
+               now >= observation.timestamp, now - observation.timestamp <= 0.5 else {
+-            plan = nil; liveStatus = "stale"; onChange?(); return
++            plan = nil; liveStatus = "stale"; onChange?(); return false
+         }
+         lastOffered = observation.timestamp
+         let id = UUID(), generation = epoch, intent = intent, goal = goalRevision, bodyVersion = bodyRevision
+@@ -95,5 +100,6 @@ import BlindCore
+                 self.revalidate(now: self.clock()); self.onChange?()
+             }
+         }
++        return true
+     }
+ }
+diff --git a/ios/BlindAssistTests/ObservedSceneRuntimeTests.swift b/ios/BlindAssistTests/ObservedSceneRuntimeTests.swift
+index 8b6dc70..a4cb5e9 100644
+--- a/ios/BlindAssistTests/ObservedSceneRuntimeTests.swift
++++ b/ios/BlindAssistTests/ObservedSceneRuntimeTests.swift
+@@ -69,19 +69,52 @@ final class ObservedSceneRuntimeTests: XCTestCase {
+         XCTAssertEqual(runtime.plan?.capturedAt, 2)
+     }
+     @MainActor func testGoalAndBodyChangesFenceQueuedPlansWithoutRetiringScene() async {
+-        let runtime = ObservedSceneRuntime(clock: { 2 }), session = UUID()
++        let queue = DispatchQueue(label: "test.observed-scene.fence", qos: .utility)
++        let runtime = ObservedSceneRuntime(clock: { 2 }, queue: queue), session = UUID()
++        defer { runtime.onChange = nil }
++        // Preserve the original total nominal wait budget (100ms + 100ms + 1s).
++        // Completion markers, rather than elapsed sleeps, establish slot retirement.
++        let deadline = ProcessInfo.processInfo.systemUptime + 1.2
++        var forbiddenPublication = false
++        runtime.onChange = {
++            if runtime.snapshot != nil || runtime.plan != nil { forbiddenPublication = true }
++        }
+         runtime.begin(session: session); runtime.bindGoalRevision("first")
+-        runtime.offer(frame(1), session: session, floor: 0, body: body, now: 1)
++        queue.suspend()
++        let firstAccepted = runtime.offer(frame(1), session: session, floor: 0, body: body, now: 1)
+         runtime.bindGoalRevision("new trusted goal")
+-        try? await Task.sleep(nanoseconds: 100_000_000)
++        let busyGoalAccepted = runtime.offer(frame(1.2), session: session, floor: 0, body: body, now: 1.2)
++        queue.resume()
++        XCTAssertTrue(firstAccepted); XCTAssertFalse(busyGoalAccepted)
++        let goalDrained = expectation(description: "old-goal worker and main delivery drained")
++        queue.async { DispatchQueue.main.async { goalDrained.fulfill() } }
++        await fulfillment(of: [goalDrained], timeout: max(0.001, min(1, deadline - ProcessInfo.processInfo.systemUptime)))
++        XCTAssertFalse(forbiddenPublication)
+         XCTAssertNil(runtime.plan); XCTAssertNil(runtime.snapshot)
+-        runtime.offer(frame(1.5), session: session, floor: 0, body: body, now: 1.5)
++
++        queue.suspend()
++        let bodyAccepted = runtime.offer(frame(1.5), session: session, floor: 0, body: body, now: 1.5)
+         runtime.invalidateBody()
+-        try? await Task.sleep(nanoseconds: 100_000_000)
++        let busyBodyAccepted = runtime.offer(frame(1.7), session: session, floor: 0, body: body, now: 1.7)
++        queue.resume()
++        XCTAssertTrue(bodyAccepted); XCTAssertFalse(busyBodyAccepted)
++        let bodyDrained = expectation(description: "old-body worker and main delivery drained")
++        queue.async { DispatchQueue.main.async { bodyDrained.fulfill() } }
++        await fulfillment(of: [bodyDrained], timeout: max(0.001, min(1, deadline - ProcessInfo.processInfo.systemUptime)))
++        XCTAssertFalse(forbiddenPublication)
+         XCTAssertNil(runtime.plan); XCTAssertNil(runtime.snapshot)
+-        runtime.offer(frame(2), session: session, floor: 0, body: nil, now: 2)
+-        for _ in 0..<100 where runtime.snapshot == nil { try? await Task.sleep(nanoseconds: 10_000_000) }
++        // Observe every subsequent delivery too: neither stale generation may surface.
++        runtime.onChange = {
++            if let snapshot = runtime.snapshot, snapshot.capturedAt != 2 { forbiddenPublication = true }
++            if runtime.plan != nil { forbiddenPublication = true }
++        }
++        XCTAssertTrue(runtime.offer(frame(2), session: session, floor: 0, body: nil, now: 2))
++        for _ in 0..<100 where runtime.snapshot == nil && ProcessInfo.processInfo.systemUptime < deadline {
++            try? await Task.sleep(nanoseconds: 10_000_000)
++        }
++        XCTAssertFalse(forbiddenPublication)
+         XCTAssertNotNil(runtime.snapshot); XCTAssertNil(runtime.plan)
++        XCTAssertEqual(runtime.snapshot?.capturedAt, 2)
+         XCTAssertEqual(runtime.liveStatus, "bodyEnvelopeUnavailable")
+     }
+ 

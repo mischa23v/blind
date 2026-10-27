@@ -1074,13 +1074,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     /// Camera/sensor lifecycle is independent of an opted-in audio conversation.
     private func stopCameraMonitoring() {
-        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
-        meshCandidateDiagnostics.stop()
-        #endif
         nativeObservations.stop()
         voiceRoomScan.cancel()
         retireBodyWarning(publishChange: false)
         withObservedScene { $0.stop() }
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        meshCandidateDiagnostics.stop()
+        #endif
         cameraRecovery.pause()
         cancelAutomaticRoomRecovery()
         interruptedSearch.cancel()
@@ -1211,9 +1211,6 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     #endif
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
-        if case .normal = frame.camera.trackingState {} else { meshCandidateDiagnostics.stop() }
-        #endif
         // Tracking loss retires selected-owner evidence even on throttled frames.
         if case .normal = frame.camera.trackingState {} else { invalidateNativeLocalization(.trackingUnavailable) }
         // Tracking loss retires the issuer even when this frame is throttled below.
@@ -1227,6 +1224,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             // category does not change. This runs before frame throttling.
             if readingTool != nil && !usesCapturedText { stopReadingTool(announce: false) }
         }
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        if case .normal = frame.camera.trackingState {} else { meshCandidateDiagnostics.stop() }
+        #endif
         if places.scanning, let scanSession = UUID(uuidString: observationFrameID) {
             places.observeRegistrationFrame(frame, sessionID: scanSession, now: ProcessInfo.processInfo.systemUptime)
         }
@@ -1619,9 +1619,6 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func session(_ session: ARSession, didFailWithError error: Error) {
-        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
-        meshCandidateDiagnostics.stop()
-        #endif
         retireBodyWarning(publishChange: false)
         nativeObservations.stop()
         withObservedScene { $0.stop() }
@@ -1635,6 +1632,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         detector.reset(); phoneDetection = Detection(.uncertain, reason: .frameUnavailable); recognizedPlace = nil
         indoor.invalidatePosition()
         publish()
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        meshCandidateDiagnostics.stop()
+        #endif
         requestCameraRecovery(now: ProcessInfo.processInfo.systemUptime)
     }
     private func requestCameraRecovery(now: Double) {
@@ -1660,12 +1660,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func sessionWasInterrupted(_ session: ARSession) {
-        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
-        meshCandidateDiagnostics.stop()
-        #endif
         retireBodyWarning(publishChange: false)
         nativeObservations.stop()
         withObservedScene { $0.stop() }
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        meshCandidateDiagnostics.stop()
+        #endif
         cameraRecovery.pause()
         invalidatePerceptionWork()
         peopleTracking.reset()

@@ -9,15 +9,19 @@
     "ios/BlindAssist.xcodeproj/project.pbxproj": "ae6019c332ab26081523defd8d97f0d728163171026cf70dcb00cdf4ad80ae67"
   },
   "integrated": {
-    "ios/BlindAssist/NavigationModel.swift": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307",
+    "ios/BlindAssist/NavigationModel.swift": "ef35a58edbebd33f5d30ef4921169227ec1dfe2e9fb06664ba5a520687684c14",
     "ios/BlindAssist.xcodeproj/project.pbxproj": "5aa44c32a0692dd650823d85f89b8334d59e9dd8a2d0c21900f82be14ce10614",
     "ios/BlindAssist/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
     "tools/ci/native-apple.sh": "683323c46df0e18673ba75dc6e3c610d0aa5087884a4a07ddd74b2c5600be263",
     ".github/workflows/native-apple.yml": "fa2fed05f2fcdce59f1cdcb92fb77442a3c7e5c3d0bf53ef78c0fe1c2df40672",
     ".github/workflows/native-candidate-app-integration.yml": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
-    "research/native-candidate-app-integration-85/integrated/check.py": "7d44915355729cd94f7d61ada326fc2908cd6f85b3052103165fce651775ba2a",
-    "research/native-candidate-app-integration-85/integrated/README.md": "bcfe071d853cdd74638cc2e92d65dbda2a80696d4936085ee1931fabfa1a6ce7",
+    "research/native-candidate-app-integration-85/integrated/check.py": "3da2a3a2e4a60f031078fc81a508254f77b4df0cf706494935869301e4986b0b",
+    "research/native-candidate-app-integration-85/integrated/README.md": "4a508a01b02015ffe9a4f01b2c424951c22ab97d193ce5445a93721de0166ff1",
     "research/native-candidate-app-integration-85/app-integration.patch": "3cbde1075811ebab3d9fc1a54101ffad0b3749030c3dfc920cbcdca4fde2c619",
-    "research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724"
+    "research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
+    "research/native-candidate-app-integration-85/integrated/critical-order.patch": "8f298574cd79ff3e86f0a5ef124824686b2d9a95e96d3ca273d697f97e1d9efa"
+  },
+  "beforeCriticalOrder": {
+    "ios/BlindAssist/NavigationModel.swift": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307"
   }
 }

@@ -8,7 +8,7 @@ import BlindCore
         var scene = ObservedSceneAccumulator()
         init(session: UUID) { scene.begin(sessionID: session) }
     }
-    private let queue = DispatchQueue(label: "blind.observed-scene", qos: .utility)
+    private let queue: DispatchQueue
     private let clock: () -> Double
     private var worker: Worker?
     private var session: UUID?
@@ -24,7 +24,10 @@ import BlindCore
     private(set) var plan: ObservedScenePlan?
     private(set) var liveStatus = "unavailable"
     var onChange: (() -> Void)?
-    init(clock: @escaping () -> Double = { ProcessInfo.processInfo.systemUptime }) { self.clock = clock }
+    init(clock: @escaping () -> Double = { ProcessInfo.processInfo.systemUptime },
+         queue: DispatchQueue = DispatchQueue(label: "blind.observed-scene", qos: .utility)) {
+        self.clock = clock; self.queue = queue
+    }
     func begin(session: UUID, capturedAfter: Double? = nil) {
         self.session = session; epoch = UUID(); worker = Worker(session: session)
         intent = .lookAhead; goalRevision = UUID(); lastOffered = -.infinity
@@ -67,16 +70,18 @@ import BlindCore
         guard let captured = snapshot?.capturedAt else { return }
         if !now.isFinite || now < captured || now - captured > 0.5 { plan = nil; liveStatus = "expired"; onChange?() }
     }
-    func offer(_ observation: Observation, session: UUID, floor: Double?,
-               body: BodyEnvelope?, now: Double, hazard: Hazard = .uncertain) {
+    /// Busy frames are intentionally dropped: the accumulator has exactly one owned worker.
+    /// The receipt reports admission only, never successful processing or clearance.
+    @discardableResult func offer(_ observation: Observation, session: UUID, floor: Double?,
+               body: BodyEnvelope?, now: Double, hazard: Hazard = .uncertain) -> Bool {
         guard self.session == session, let worker, workID == nil,
               observation.timestamp > minimumCapture,
-              observation.timestamp - lastOffered >= 0.1 else { return }
+              observation.timestamp - lastOffered >= 0.1 else { return false }
         // Validate before updating cadence; a rejected future/NaN timestamp must
         // never poison lastOffered and prevent later valid captures recovering.
         guard observation.timestamp.isFinite, observation.timestamp >= 0, now.isFinite,
               now >= observation.timestamp, now - observation.timestamp <= 0.5 else {
-            plan = nil; liveStatus = "stale"; onChange?(); return
+            plan = nil; liveStatus = "stale"; onChange?(); return false
         }
         lastOffered = observation.timestamp
         let id = UUID(), generation = epoch, intent = intent, goal = goalRevision, bodyVersion = bodyRevision
@@ -95,5 +100,6 @@ import BlindCore
                 self.revalidate(now: self.clock()); self.onChange?()
             }
         }
+        return true
     }
 }

@@ -1,5 +1,5 @@
 {
-  "sourceChecksPassed": 28,
+  "sourceChecksPassed": 35,
   "checks": [
     "integrated pin ios/BlindAssist/NavigationModel.swift",
     "integrated pin ios/BlindAssist.xcodeproj/project.pbxproj",
@@ -11,6 +11,8 @@
     "integrated pin research/native-candidate-app-integration-85/integrated/README.md",
     "integrated pin research/native-candidate-app-integration-85/app-integration.patch",
     "integrated pin research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift",
+    "integrated pin research/native-candidate-app-integration-85/integrated/critical-order.patch",
+    "exact published stage85 recovered ios/BlindAssist/NavigationModel.swift",
     "exact original recovered ios/BlindAssist/NavigationModel.swift",
     "exact original recovered ios/BlindAssist.xcodeproj/project.pbxproj",
     "bridge absent in original",
@@ -23,6 +25,11 @@
     "existing main callback ownership",
     "flag not in default project settings",
     "only declaration of runtime enable control",
+    "flag absent navigation exactly preserves original",
+    "camera stop critical retirement precedes optional diagnostics and pause",
+    "session interruption critical retirement precedes optional diagnostics and pause",
+    "failure retires authority before optional diagnostics and recovery",
+    "tracking retirement precedes optional stop before frame throttle",
     "flag mode build only",
     "default build unchanged",
     "no custom limits added",
@@ -31,6 +38,7 @@
     "custom experiment retired"
   ],
   "appPatchApplied": true,
+  "criticalOrderPatchApplied": true,
   "appleBuild": "pending",
   "runtimeOptIn": false,
   "geometryCopyEnabled": false,

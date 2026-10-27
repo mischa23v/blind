@@ -69,19 +69,52 @@ final class ObservedSceneRuntimeTests: XCTestCase {
         XCTAssertEqual(runtime.plan?.capturedAt, 2)
     }
     @MainActor func testGoalAndBodyChangesFenceQueuedPlansWithoutRetiringScene() async {
-        let runtime = ObservedSceneRuntime(clock: { 2 }), session = UUID()
+        let queue = DispatchQueue(label: "test.observed-scene.fence", qos: .utility)
+        let runtime = ObservedSceneRuntime(clock: { 2 }, queue: queue), session = UUID()
+        defer { runtime.onChange = nil }
+        // Preserve the original total nominal wait budget (100ms + 100ms + 1s).
+        // Completion markers, rather than elapsed sleeps, establish slot retirement.
+        let deadline = ProcessInfo.processInfo.systemUptime + 1.2
+        var forbiddenPublication = false
+        runtime.onChange = {
+            if runtime.snapshot != nil || runtime.plan != nil { forbiddenPublication = true }
+        }
         runtime.begin(session: session); runtime.bindGoalRevision("first")
-        runtime.offer(frame(1), session: session, floor: 0, body: body, now: 1)
+        queue.suspend()
+        let firstAccepted = runtime.offer(frame(1), session: session, floor: 0, body: body, now: 1)
         runtime.bindGoalRevision("new trusted goal")
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        let busyGoalAccepted = runtime.offer(frame(1.2), session: session, floor: 0, body: body, now: 1.2)
+        queue.resume()
+        XCTAssertTrue(firstAccepted); XCTAssertFalse(busyGoalAccepted)
+        let goalDrained = expectation(description: "old-goal worker and main delivery drained")
+        queue.async { DispatchQueue.main.async { goalDrained.fulfill() } }
+        await fulfillment(of: [goalDrained], timeout: max(0.001, min(1, deadline - ProcessInfo.processInfo.systemUptime)))
+        XCTAssertFalse(forbiddenPublication)
         XCTAssertNil(runtime.plan); XCTAssertNil(runtime.snapshot)
-        runtime.offer(frame(1.5), session: session, floor: 0, body: body, now: 1.5)
+
+        queue.suspend()
+        let bodyAccepted = runtime.offer(frame(1.5), session: session, floor: 0, body: body, now: 1.5)
         runtime.invalidateBody()
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        let busyBodyAccepted = runtime.offer(frame(1.7), session: session, floor: 0, body: body, now: 1.7)
+        queue.resume()
+        XCTAssertTrue(bodyAccepted); XCTAssertFalse(busyBodyAccepted)
+        let bodyDrained = expectation(description: "old-body worker and main delivery drained")
+        queue.async { DispatchQueue.main.async { bodyDrained.fulfill() } }
+        await fulfillment(of: [bodyDrained], timeout: max(0.001, min(1, deadline - ProcessInfo.processInfo.systemUptime)))
+        XCTAssertFalse(forbiddenPublication)
         XCTAssertNil(runtime.plan); XCTAssertNil(runtime.snapshot)
-        runtime.offer(frame(2), session: session, floor: 0, body: nil, now: 2)
-        for _ in 0..<100 where runtime.snapshot == nil { try? await Task.sleep(nanoseconds: 10_000_000) }
+        // Observe every subsequent delivery too: neither stale generation may surface.
+        runtime.onChange = {
+            if let snapshot = runtime.snapshot, snapshot.capturedAt != 2 { forbiddenPublication = true }
+            if runtime.plan != nil { forbiddenPublication = true }
+        }
+        XCTAssertTrue(runtime.offer(frame(2), session: session, floor: 0, body: nil, now: 2))
+        for _ in 0..<100 where runtime.snapshot == nil && ProcessInfo.processInfo.systemUptime < deadline {
+            try? await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertFalse(forbiddenPublication)
         XCTAssertNotNil(runtime.snapshot); XCTAssertNil(runtime.plan)
+        XCTAssertEqual(runtime.snapshot?.capturedAt, 2)
         XCTAssertEqual(runtime.liveStatus, "bodyEnvelopeUnavailable")
     }
 
