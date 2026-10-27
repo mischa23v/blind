@@ -1,0 +1,18 @@
+{
+  "auditCheckerPassed": false,
+  "matchedAuditPins": 13,
+  "auditPinCount": 14,
+  "mismatches": [
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "auditedSHA256": "6193f6c5ee09e5ac572532fff7fc4f6ea6ae31aeec1b24957eb380ed6fe07d9a",
+      "currentSHA256": "ef35a58edbebd33f5d30ef4921169227ec1dfe2e9fb06664ba5a520687684c14"
+    }
+  ],
+  "explanation": "Historical NavigationModel source differs after reviewed stage85 no-copy patch integration. Audit preserved, not repinned; stage83 and other audit pins unchanged.",
+  "stage83StaticChecksPassed": 42,
+  "swiftCompiled": false,
+  "swiftExecuted": false,
+  "appChangedByThisProposal": false,
+  "liveCopyEnabled": false
+}

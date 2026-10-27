@@ -1,0 +1,94 @@
+name: Practice endpoints under established native policy
+on:
+  push:
+    branches: [codex/recovery-hazard-order-20261027]
+    paths:
+      - '.github/workflows/practice-endpoint-native.yml'
+      - 'research/practice-endpoint-native-20261027/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: practice-endpoint-native-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  endpoints:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    runs-on: xcode-27
+    timeout-minutes: 65
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fb879d235f38a3f0121b69b023e8ee14c0ded61c
+          path: pinned-practice-source
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Verify exact source and reused tooling
+        id: source
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          python3 research/practice-endpoint-native-20261027/evidence.py before pinned-practice-source
+          python3 research/practice-endpoint-native-20261027/verify.py pinned-practice-source
+      - name: Established native preflight
+        id: preflight
+        timeout-minutes: 3
+        working-directory: pinned-practice-source
+        run: bash "$GITHUB_WORKSPACE/tools/ci/native-apple.sh" preflight
+      - name: Established unsigned simulator build
+        id: build
+        timeout-minutes: 20
+        working-directory: pinned-practice-source
+        run: bash "$GITHUB_WORKSPACE/tools/ci/native-apple.sh" build
+      - name: Prepare the selected job-local installed simulator
+        id: setup
+        timeout-minutes: 3
+        run: bash research/practice-endpoint-native-20261027/native.sh setup
+      - name: Large then AX5 under the established UI stage budget
+        id: ui
+        timeout-minutes: 20
+        run: bash research/practice-endpoint-native-20261027/native.sh ui
+      - name: Preserve Large authored endpoint images
+        id: export_large
+        if: always() && steps.source.outcome == 'success'
+        timeout-minutes: 3
+        run: bash research/practice-endpoint-native-20261027/native.sh export large
+      - name: Preserve AX5 authored endpoint images
+        id: export_ax5
+        if: always() && steps.source.outcome == 'success'
+        timeout-minutes: 3
+        run: bash research/practice-endpoint-native-20261027/native.sh export accessibility-extra-extra-extra-large
+      - name: Verify final source and summarize exact endpoint evidence
+        if: always()
+        timeout-minutes: 3
+        env:
+          SOURCE_OUTCOME: ${{ steps.source.outcome }}
+          PREFLIGHT_OUTCOME: ${{ steps.preflight.outcome }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          SETUP_OUTCOME: ${{ steps.setup.outcome }}
+          UI_OUTCOME: ${{ steps.ui.outcome }}
+          EXPORT_LARGE_OUTCOME: ${{ steps.export_large.outcome }}
+          EXPORT_AX5_OUTCOME: ${{ steps.export_ax5.outcome }}
+        run: python3 research/practice-endpoint-native-20261027/evidence.py finish pinned-practice-source
+      - name: Preserve bounded synthetic evidence only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: practice-endpoint-native-20261027
+          path: |
+            ${{ runner.temp }}/blind-practice-endpoint-native/artifacts/**/*.png
+            ${{ runner.temp }}/blind-practice-endpoint-native/artifacts/*.json
+          if-no-files-found: error
+          retention-days: 3
