@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "transportChecks": [
+    {
+      "group": "prefix-replay",
+      "chunkOffset": 0,
+      "base64Characters": 78756,
+      "sha256": "63f4da778635346f322382e72f8ce5c1278677a3bb696db9da72ec15e2611ec0",
+      "status": "PASS"
+    },
+    {
+      "group": "visual-original-v1-v2",
+      "chunkOffset": 0,
+      "base64Characters": 81300,
+      "sha256": "2853cf44033bf9e65912f1f80303fc6f8717adbcf35980f91f9bfc0d5e791fda",
+      "status": "PASS"
+    }
+  ],
+  "originalRunnerFrozenSHA256Verified": true,
+  "originalRunnerSourceAndBuildPinsVerified": 7,
+  "visualOriginalAndAuditArtifactPinsVerified": true,
+  "experimentsRerun": false
+}

@@ -1,3 +1,13 @@
+## Latest diagnostic checkpoint — progressive observations and visual localization
+
+[Completed progressive replay and original visual baselines](research/tools/progressive-mapping-and-visual-localization-v1/README.md): all 294 recorded depth observations fused in order at ten checkpoints with supplied poses, without final mesh/FARO/future floor inputs. This is native occupancy growth, NOT walkability or causal live SLAM. Supplied exported poses may use future optimization; original confidence/timing remain missing.
+
+[Denser references, calibration audit and 1/2/5-view development tests](research/tools/denser-visual-localization-and-prefix-design-v1/README.md): unchanged acceptance gates improved fixed single-image acceptance from 1/8 to 3/8 with 80 reference frames. The current-endpoint sequence comparison accepted the same 2/4 endpoints in all three modes; seven anchored optical-flow attempts were rejected and no old pose was reused as current. These are fixed development cases, not a randomized holdout or continuous navigation. The separate prefix-TSDF path design is NOT RUN and lacks validated support/endpoint evidence.
+
+The localization, orientation, continuous-deviation and live-hazard gates below remain OPEN. More reference coverage helped, but neither image localization nor body/path guidance is ready for physical authority.
+
+---
+
 ## Required navigation gate — localization, orientation and continuous route deviation: OPEN
 
 A map route is not usable guidance unless the system knows the correct map/floor, current position and camera/body heading with supported uncertainty. Track signed cross-track distance, along-route progress, heading error and confidence throughout movement; distinguish measured deviation from localization loss. Never snap a person to a route or issue an unchecked straight-line correction.
