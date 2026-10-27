@@ -1,0 +1,2685 @@
+{
+  "scope": "separate evaluator-only full-reference ray query at saved rejected poses; no actor replay or changed episode result",
+  "referenceMesh": {
+    "vertices": 8940320,
+    "triangles": 17801112,
+    "originalPLYType": "float64",
+    "VTKPointScalarType": "float",
+    "geometryDecimated": false,
+    "meshTransformed": false,
+    "unusedAttributesReleased": true
+  },
+  "frozenManifestSHA256": "3d17b1b816abd553fde50ea9702e35b4bcd380d10b18375f5535be2a5101b525",
+  "cacheManifestSHA256": "01fd57f962f2c57ee8e7aae8f60504ec1bc3514d2a01650e3b9374345152c6b6",
+  "referenceTransformSHA256": "067eccbc9204d15b2e9b44c1bfce9adb9b96d743abeb3d118d35663c176ab191",
+  "frozenEvaluationBoundsXYZ": [
+    [
+      -4.500011598277087,
+      -0.25,
+      -4.64606766234802
+    ],
+    [
+      -0.7490106222790673,
+      0.25,
+      1.8373834286611066
+    ]
+  ],
+  "rows": [
+    {
+      "episodeIndex": 16,
+      "resultSHA256": "bf1095bfd785c5463f67cedd79a53e0d1764a4f815efe60c0dafac5ca67f8cd6",
+      "csvSHA256": "cf0a1ef2ec11019963ffd36607f5ff937e28826dbfce770634d4022303623e6f",
+      "unchangedEpisodeTerminalSupport": {
+        "acceptedFiniteSupportModel": false,
+        "reason": "nine observed finite support probes required",
+        "groundComponentConfirmedForAllProbes": false
+      },
+      "queries": [
+        {
+          "label": "start",
+          "savedCandidatePointXYZ": [
+            -3.5656401167070557,
+            -0.004029635638816325,
+            -1.688055528966556
+          ],
+          "yawRadians": -1.8199769757655198,
+          "raw": {
+            "probes": [
+              {
+                "modelXZ": [
+                  -3.5656401167070557,
+                  -1.688055528966556
+                ],
+                "hit": true,
+                "modelHeightY": -0.004544380405865973,
+                "referenceCellID": 3595192,
+                "rayFraction": 0.3863609510146649,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.5662460490834773,
+                    -0.0045283229110677226,
+                    -1.685613588635935
+                  ],
+                  [
+                    -3.5618333688016683,
+                    -0.004669452570244186,
+                    -1.6897349554029815
+                  ],
+                  [
+                    -3.567068904714662,
+                    -0.004489831285464322,
+                    -1.6917204690549472
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.6561697827426514,
+                  -1.587628293778667
+                ],
+                "hit": true,
+                "modelHeightY": -0.004734531818966135,
+                "referenceCellID": 3574073,
+                "rayFraction": 0.38683632954741537,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.6578851794829195,
+                    -0.0045835721130088256,
+                    -1.5832855911664254
+                  ],
+                  [
+                    -3.6515885856198773,
+                    -0.0047728714853029625,
+                    -1.5875628412060638
+                  ],
+                  [
+                    -3.6583847883288962,
+                    -0.0047973526822239244,
+                    -1.5902609519636204
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.438118951135314,
+                  -1.6431155430828868
+                ],
+                "hit": true,
+                "modelHeightY": -0.004995819433670931,
+                "referenceCellID": 3635002,
+                "rayFraction": 0.3874895485841774,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.440446070639728,
+                    -0.004972983969255839,
+                    -1.64304728332244
+                  ],
+                  [
+                    -3.4358039328241428,
+                    -0.005061209573224701,
+                    -1.641326330881571
+                  ],
+                  [
+                    -3.437513490216899,
+                    -0.004962367458551841,
+                    -1.6448476675139572
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.6931612822787976,
+                  -1.7329955148502252
+                ],
+                "hit": true,
+                "modelHeightY": -0.0045167767460063055,
+                "referenceCellID": 3552941,
+                "rayFraction": 0.38629194186501564,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.6912127210681343,
+                    -0.004389831280552602,
+                    -1.7281718363191836
+                  ],
+                  [
+                    -3.6922554305318354,
+                    -0.00451613160053815,
+                    -1.7349524118592006
+                  ],
+                  [
+                    -3.6959707013255434,
+                    -0.004566503676542228,
+                    -1.7303599764363409
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.47511045067146,
+                  -1.788482764154445
+                ],
+                "hit": true,
+                "modelHeightY": -0.004265742714827252,
+                "referenceCellID": 3611780,
+                "rayFraction": 0.38566435678706806,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.4708818547307843,
+                    -0.0042048208244058055,
+                    -1.7892294264866326
+                  ],
+                  [
+                    -3.47704868857865,
+                    -0.004361502142036764,
+                    -1.7910382213837173
+                  ],
+                  [
+                    -3.47684619156165,
+                    -0.004219134687821296,
+                    -1.7851171036656728
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.746699448778246,
+                  -1.487201058590778
+                ],
+                "hit": true,
+                "modelHeightY": -0.004487283899143157,
+                "referenceCellID": 3583092,
+                "rayFraction": 0.3862182097478578,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.7480598877918982,
+                    -0.0044602440649619615,
+                    -1.4888146401785483
+                  ],
+                  [
+                    -3.7459856008687025,
+                    -0.0045405337595838535,
+                    -1.483088774328728
+                  ],
+                  [
+                    -3.742388322572195,
+                    -0.004492558979391943,
+                    -1.488810319498594
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.310597785563572,
+                  -1.5981755571992176
+                ],
+                "hit": true,
+                "modelHeightY": -0.00476807120292112,
+                "referenceCellID": 3623372,
+                "rayFraction": 0.38692017800730283,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.312204956587468,
+                    -0.004773515169458044,
+                    -1.6007773306017181
+                  ],
+                  [
+                    -3.312996390138468,
+                    -0.004809107634377363,
+                    -1.595628339793122
+                  ],
+                  [
+                    -3.3084068510025797,
+                    -0.0047423557484298495,
+                    -1.59820301931079
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.8206824478505395,
+                  -1.7779355007338944
+                ],
+                "hit": true,
+                "modelHeightY": -0.004270341773288021,
+                "referenceCellID": 3586658,
+                "rayFraction": 0.38567585443322006,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.818452222900185,
+                    -0.004220675623403097,
+                    -1.7755014821192543
+                  ],
+                  [
+                    -3.8204693688772844,
+                    -0.004335474184764116,
+                    -1.782643695377162
+                  ],
+                  [
+                    -3.8249342511147777,
+                    -0.004291869887831659,
+                    -1.777403157611156
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.3845807846358653,
+                  -1.888909999342334
+                ],
+                "hit": true,
+                "modelHeightY": -0.004029635638816325,
+                "referenceCellID": 3595523,
+                "rayFraction": 0.3850740890970408,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.384435082607705,
+                    -0.003995511248500472,
+                    -1.8865243346554437
+                  ],
+                  [
+                    -3.3799414019267564,
+                    -0.004090131581066251,
+                    -1.8883913088334319
+                  ],
+                  [
+                    -3.38618738682936,
+                    -0.00405065024121566,
+                    -1.8918496679835177
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              }
+            ],
+            "hitCount": 9,
+            "missingCount": 0,
+            "pattern": "centre, four raw-body quadrant centres and four actual rectangle corners",
+            "rayTopModelY": 0.15,
+            "rayBottomModelY": -0.25,
+            "rayIntervalIsAbsolute": true,
+            "continuousSupportProven": false,
+            "semanticFloorEstablished": false,
+            "measuredCoverageEstablished": false,
+            "physicalClearanceEstablished": false,
+            "physicalAuthority": false
+          }
+        },
+        {
+          "label": "midpoint",
+          "savedCandidatePointXYZ": [
+            -3.5679367072221755,
+            -0.004029635638816325,
+            -1.697788240408177
+          ],
+          "yawRadians": -1.8112503295055482,
+          "raw": {
+            "probes": [
+              {
+                "modelXZ": [
+                  -3.5679367072221755,
+                  -1.697788240408177
+                ],
+                "hit": true,
+                "modelHeightY": -0.004540895764992815,
+                "referenceCellID": 3597602,
+                "rayFraction": 0.38635223941248203,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.569081599299861,
+                    -0.004503406506449054,
+                    -1.7027486404558594
+                  ],
+                  [
+                    -3.5684023026185425,
+                    -0.004537097246902506,
+                    -1.6972804845632334
+                  ],
+                  [
+                    -3.56593388465134,
+                    -0.004559694784149901,
+                    -1.6994299856626733
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.659339307998357,
+                  -1.5981548395259932
+                ],
+                "hit": true,
+                "modelHeightY": -0.004915127514851937,
+                "referenceCellID": 3573193,
+                "rayFraction": 0.38728781878712976,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.658568272241358,
+                    -0.004906651170426841,
+                    -1.5972624764066292
+                  ],
+                  [
+                    -3.6626740398911783,
+                    -0.004961219568361732,
+                    -1.6025728227367673
+                  ],
+                  [
+                    -3.66254899806688,
+                    -0.00488844447940897,
+                    -1.5982000987841005
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.440812567647782,
+                  -1.6517371477233107
+                ],
+                "hit": true,
+                "modelHeightY": -0.004865478067603058,
+                "referenceCellID": 3634938,
+                "rayFraction": 0.3871636951690076,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.4394216512540203,
+                    -0.004861775612708955,
+                    -1.653567415368124
+                  ],
+                  [
+                    -3.443359826654366,
+                    -0.004845148604552398,
+                    -1.6518712979522403
+                  ],
+                  [
+                    -3.439395342333951,
+                    -0.004903272503379977,
+                    -1.64825702672862
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.695060846796569,
+                  -1.7438393330930433
+                ],
+                "hit": true,
+                "modelHeightY": -0.0047170360745981965,
+                "referenceCellID": 3552800,
+                "rayFraction": 0.3867925901864954,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.699174893259186,
+                    -0.004633790479074508,
+                    -1.7424467536362627
+                  ],
+                  [
+                    -3.6925340989394835,
+                    -0.0048373700705156494,
+                    -1.7408513795821337
+                  ],
+                  [
+                    -3.6948594287984475,
+                    -0.004697508742212673,
+                    -1.745218250823312
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.476534106445994,
+                  -1.7974216412903607
+                ],
+                "hit": true,
+                "modelHeightY": -0.004289496300645058,
+                "referenceCellID": 3611448,
+                "rayFraction": 0.38572374075161253,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.4753271278108677,
+                    -0.004258943557286614,
+                    -1.7969159110186623
+                  ],
+                  [
+                    -3.478225093272309,
+                    -0.00436731863345103,
+                    -1.8014396363392058
+                  ],
+                  [
+                    -3.4806038053381583,
+                    -0.0043555707039406415,
+                    -1.795635393937055
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.7507419087745393,
+                  -1.4985214386438095
+                ],
+                "hit": true,
+                "modelHeightY": -0.004483975111052248,
+                "referenceCellID": 3583057,
+                "rayFraction": 0.38620993777763063,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.751708587351617,
+                    -0.004549003673638568,
+                    -1.500176524818875
+                  ],
+                  [
+                    -3.7541966845269616,
+                    -0.0044228100676699175,
+                    -1.4963317808828196
+                  ],
+                  [
+                    -3.748215074157927,
+                    -0.004414669543171476,
+                    -1.4969745407630362
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.3136884280733887,
+                  -1.6056860550384444
+                ],
+                "hit": true,
+                "modelHeightY": -0.0047624452189969115,
+                "referenceCellID": 3623258,
+                "rayFraction": 0.38690611304749223,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.3129819100896865,
+                    -0.0047477544098480234,
+                    -1.6052357363215106
+                  ],
+                  [
+                    -3.3138169565248266,
+                    -0.00473363714681134,
+                    -1.6095952502897364
+                  ],
+                  [
+                    -3.3179509228791244,
+                    -0.004860360751660443,
+                    -1.6072741181224124
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.8221849863709623,
+                  -1.7898904257779096
+                ],
+                "hit": true,
+                "modelHeightY": -0.0042985886976266985,
+                "referenceCellID": 3269353,
+                "rayFraction": 0.3857464717440667,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.826992508743351,
+                    -0.004039340167903175,
+                    -1.7909414590873711
+                  ],
+                  [
+                    -3.8215518227893313,
+                    -0.004307912020092331,
+                    -1.7887465875953452
+                  ],
+                  [
+                    -3.823579919508834,
+                    -0.004332799102932567,
+                    -1.7946282553252686
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.3851315056698117,
+                  -1.8970550421725445
+                ],
+                "hit": true,
+                "modelHeightY": -0.0042673636154842536,
+                "referenceCellID": 3595586,
+                "rayFraction": 0.3856684090387107,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.380235413968759,
+                    -0.004079725958289556,
+                    -1.8942091541491697
+                  ],
+                  [
+                    -3.381263494023804,
+                    -0.004179368675417881,
+                    -1.8994860706952348
+                  ],
+                  [
+                    -3.3861067843501367,
+                    -0.0043031502149157574,
+                    -1.8974984307504588
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              }
+            ],
+            "hitCount": 9,
+            "missingCount": 0,
+            "pattern": "centre, four raw-body quadrant centres and four actual rectangle corners",
+            "rayTopModelY": 0.15,
+            "rayBottomModelY": -0.25,
+            "rayIntervalIsAbsolute": true,
+            "continuousSupportProven": false,
+            "semanticFloorEstablished": false,
+            "measuredCoverageEstablished": false,
+            "physicalClearanceEstablished": false,
+            "physicalAuthority": false
+          }
+        },
+        {
+          "label": "rejectedEndpoint",
+          "savedCandidatePointXYZ": [
+            -3.5702332977372953,
+            -0.004029635638816325,
+            -1.7075209518497982
+          ],
+          "yawRadians": -1.8025236832455764,
+          "raw": {
+            "probes": [
+              {
+                "modelXZ": [
+                  -3.5702332977372953,
+                  -1.7075209518497982
+                ],
+                "hit": true,
+                "modelHeightY": -0.004578948822559346,
+                "referenceCellID": 3597210,
+                "rayFraction": 0.3864473720563984,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.567311811218005,
+                    -0.004582449890216923,
+                    -1.7100888631379327
+                  ],
+                  [
+                    -3.5718543037393022,
+                    -0.00459129920990857,
+                    -1.707596875914876
+                  ],
+                  [
+                    -3.5685080663242,
+                    -0.004558009769322257,
+                    -1.706621724417728
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.6625018725921348,
+                  -1.6086889727425433
+                ],
+                "hit": true,
+                "modelHeightY": -0.004695743752429628,
+                "referenceCellID": 3573174,
+                "rayFraction": 0.38673935938107407,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.6615243993268294,
+                    -0.004621808273391467,
+                    -1.612979194135167
+                  ],
+                  [
+                    -3.6652054247500887,
+                    -0.004857748347599576,
+                    -1.6086316994815177
+                  ],
+                  [
+                    -3.659917777209941,
+                    -0.0045457891707762,
+                    -1.6073841887424563
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.44351586515566,
+                  -1.6603622593327367
+                ],
+                "hit": true,
+                "modelHeightY": -0.004775934146058029,
+                "referenceCellID": 3634770,
+                "rayFraction": 0.386939835365145,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.4457225246680814,
+                    -0.00467357207822677,
+                    -1.6601790491016344
+                  ],
+                  [
+                    -3.441886077333163,
+                    -0.004845697669439264,
+                    -1.658133133480795
+                  ],
+                  [
+                    -3.442611141625491,
+                    -0.00482607089117202,
+                    -1.6637453165916265
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.6969507303189304,
+                  -1.7546796443668597
+                ],
+                "hit": true,
+                "modelHeightY": -0.004492169802120076,
+                "referenceCellID": 3552669,
+                "rayFraction": 0.3862304245053002,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.6974812874068315,
+                    -0.004475811499360924,
+                    -1.7583161691176017
+                  ],
+                  [
+                    -3.7024224964082073,
+                    -0.004501625479754703,
+                    -1.7532450764968195
+                  ],
+                  [
+                    -3.6954367747392363,
+                    -0.004500841348658649,
+                    -1.7526095295569328
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.4779647228824557,
+                  -1.8063529309570532
+                ],
+                "hit": true,
+                "modelHeightY": -0.004545817064873878,
+                "referenceCellID": 3611428,
+                "rayFraction": 0.3863645426621847,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.4812148354391503,
+                    -0.004223689681496036,
+                    -1.8064779710429548
+                  ],
+                  [
+                    -3.478225093272309,
+                    -0.00436731863345103,
+                    -1.8014396363392058
+                  ],
+                  [
+                    -3.476663622704633,
+                    -0.004684015341946152,
+                    -1.8066008911606415
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.7547704474469743,
+                  -1.5098569936352884
+                ],
+                "hit": true,
+                "modelHeightY": -0.004621555835739019,
+                "referenceCellID": 3579050,
+                "rayFraction": 0.3865538895893474,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.7553906528170407,
+                    -0.004612443878393102,
+                    -1.5103812243442636
+                  ],
+                  [
+                    -3.7526709766863275,
+                    -0.004700818703241332,
+                    -1.50572257307408
+                  ],
+                  [
+                    -3.748446487489902,
+                    -0.004578908925405873,
+                    -1.5111185865180385
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.316798432574025,
+                  -1.6132035668156752
+                ],
+                "hit": true,
+                "modelHeightY": -0.004797034076431169,
+                "referenceCellID": 3622888,
+                "rayFraction": 0.3869925851910779,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.3182637043375434,
+                    -0.004807559770024481,
+                    -1.6120466819809194
+                  ],
+                  [
+                    -3.3136673586001715,
+                    -0.004745260483848882,
+                    -1.6143325323872169
+                  ],
+                  [
+                    -3.3181916234331847,
+                    -0.004912856325638797,
+                    -1.61695721773567
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.8236681629005655,
+                  -1.8018383368839213
+                ],
+                "hit": true,
+                "modelHeightY": -0.0041055577759062795,
+                "referenceCellID": 3269459,
+                "rayFraction": 0.38526389443976566,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.8219480489882045,
+                    -0.004065109166201864,
+                    -1.8047719708276635
+                  ],
+                  [
+                    -3.8261222252570697,
+                    -0.004138479931739554,
+                    -1.8004253251977393
+                  ],
+                  [
+                    -3.8202637154996957,
+                    -0.00410387089214825,
+                    -1.7988786154785001
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.385696148027616,
+                  -1.9051849100643081
+                ],
+                "hit": false,
+                "modelHeightY": null,
+                "referenceCellID": null,
+                "rayFraction": null,
+                "xzInsideFrozenEvaluationEnvelope": true
+              }
+            ],
+            "hitCount": 8,
+            "missingCount": 1,
+            "pattern": "centre, four raw-body quadrant centres and four actual rectangle corners",
+            "rayTopModelY": 0.15,
+            "rayBottomModelY": -0.25,
+            "rayIntervalIsAbsolute": true,
+            "continuousSupportProven": false,
+            "semanticFloorEstablished": false,
+            "measuredCoverageEstablished": false,
+            "physicalClearanceEstablished": false,
+            "physicalAuthority": false
+          }
+        }
+      ]
+    },
+    {
+      "episodeIndex": 17,
+      "resultSHA256": "e576b555251ad8b244bb7804c7dfd223bea139943c017c55927bfb433799d58d",
+      "csvSHA256": "b62f59631e9ada22fe26b3cb902ea49b616069f6906834d23f140166e9d73fd3",
+      "unchangedEpisodeTerminalSupport": {
+        "acceptedFiniteSupportModel": false,
+        "hitCount": 9,
+        "missingCount": 0,
+        "spreadMetres": 0.03949644593814785,
+        "maximumAnchorErrorMetres": 0.03845377979383144,
+        "heightMinimum": -0.0055404899515118025,
+        "heightMaximum": 0.03395595598663605,
+        "continuousSupportProven": false,
+        "semanticFloorEstablished": false,
+        "groundComponentConfirmedForAllProbes": false,
+        "nonGroundProbeCellIDs": [
+          10030019
+        ],
+        "supportPolicy": "same immutable floor IDs, nine observed support heights, local actual foot datum"
+      },
+      "queries": [
+        {
+          "label": "start",
+          "savedCandidatePointXYZ": [
+            -2.7636804582757177,
+            -0.004413147099358635,
+            -3.693758881376829
+          ],
+          "yawRadians": -0.6915101225512567,
+          "raw": {
+            "probes": [
+              {
+                "modelXZ": [
+                  -2.7636804582757177,
+                  -3.693758881376829
+                ],
+                "hit": true,
+                "modelHeightY": -0.004899135324932396,
+                "referenceCellID": 10075198,
+                "rayFraction": 0.387247838312331,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.765755801484932,
+                    -0.005118868850320198,
+                    -3.6961747567539627
+                  ],
+                  [
+                    -2.7671695245821106,
+                    -0.004812512433663176,
+                    -3.691718240469383
+                  ],
+                  [
+                    -2.761402025460296,
+                    -0.004789944825970043,
+                    -3.692873483853454
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.8931931271337037,
+                  -3.732588233744356
+                ],
+                "hit": true,
+                "modelHeightY": -0.004785821388343322,
+                "referenceCellID": 10077818,
+                "rayFraction": 0.3869645534708584,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.8956474740049307,
+                    -0.004731523795255068,
+                    -3.732554180673511
+                  ],
+                  [
+                    -2.891571497754146,
+                    -0.004803512266311278,
+                    -3.730188461569388
+                  ],
+                  [
+                    -2.892423985179924,
+                    -0.004833320682760194,
+                    -3.7366594789859313
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.749710372438825,
+                  -3.559274359212716
+                ],
+                "hit": true,
+                "modelHeightY": -0.004962775455555988,
+                "referenceCellID": 10069229,
+                "rayFraction": 0.38740693863889,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.7525104990969145,
+                    -0.0051146584809202665,
+                    -3.5559118495374884
+                  ],
+                  [
+                    -2.747709744176655,
+                    -0.004911666624892789,
+                    -3.559399761301737
+                  ],
+                  [
+                    -2.7509553122590256,
+                    -0.004939667184416262,
+                    -3.561374350888837
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.7776505441126105,
+                  -3.8282434035409425
+                ],
+                "hit": true,
+                "modelHeightY": -0.005555255696329295,
+                "referenceCellID": 10038244,
+                "rayFraction": 0.3888881392408233,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.7754237358510854,
+                    -0.005568528932400896,
+                    -3.831404939831514
+                  ],
+                  [
+                    -2.781283624771883,
+                    -0.00551729750876314,
+                    -3.827755396884764
+                  ],
+                  [
+                    -2.7774357881458815,
+                    -0.005567546880654358,
+                    -3.825394036454002
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.6341677894177318,
+                  -3.6549295290093022
+                ],
+                "hit": true,
+                "modelHeightY": -0.005251912099570377,
+                "referenceCellID": 10059509,
+                "rayFraction": 0.3881297802489261,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.6331179909912623,
+                    -0.005223868752575349,
+                    -3.6536374995872176
+                  ],
+                  [
+                    -2.6334187094378088,
+                    -0.005308594890713787,
+                    -3.659877381174656
+                  ],
+                  [
+                    -2.638428110482687,
+                    -0.005314085059430523,
+                    -3.6562210715521912
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.0227057959916905,
+                  -3.7714175861118835
+                ],
+                "hit": true,
+                "modelHeightY": -0.004413147099358635,
+                "referenceCellID": 3962493,
+                "rayFraction": 0.3860328677483966,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.025596989668587,
+                    -0.0043061008294156405,
+                    -3.7702831788151085
+                  ],
+                  [
+                    -3.0199841257551343,
+                    -0.0043726136745433145,
+                    -3.7674966057486508
+                  ],
+                  [
+                    -3.0215817255982906,
+                    -0.004512659730403292,
+                    -3.773902649194529
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.7357402866019322,
+                  -3.424789837048603
+                ],
+                "hit": true,
+                "modelHeightY": -0.004984212681773924,
+                "referenceCellID": 10070834,
+                "rayFraction": 0.3874605317044348,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.731017961958739,
+                    -0.00498212783185294,
+                    -3.4244997195063034
+                  ],
+                  [
+                    -2.7383077013989774,
+                    -0.004937480046724917,
+                    -3.428919518564861
+                  ],
+                  [
+                    -2.7362176876499626,
+                    -0.005011490672340319,
+                    -3.4225731161903257
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.791620629949503,
+                  -3.9627279257050554
+                ],
+                "hit": true,
+                "modelHeightY": -0.006258040907445989,
+                "referenceCellID": 10038579,
+                "rayFraction": 0.39064510226861504,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.7893746618077295,
+                    -0.0062762970385101605,
+                    -3.9583861351318452
+                  ],
+                  [
+                    -2.7883281160096742,
+                    -0.006223828759831167,
+                    -3.96495610323295
+                  ],
+                  [
+                    -2.7942573514944486,
+                    -0.006275105449858896,
+                    -3.9623998077434157
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.504655120559745,
+                  -3.616100176641775
+                ],
+                "hit": true,
+                "modelHeightY": -0.005033519792299941,
+                "referenceCellID": 10229026,
+                "rayFraction": 0.3875837994807499,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.5033778914121734,
+                    -0.004963206876029108,
+                    -3.614024338893751
+                  ],
+                  [
+                    -2.505302860169111,
+                    -0.005128104399386924,
+                    -3.6193620468695826
+                  ],
+                  [
+                    -2.509205679880394,
+                    -0.005070921909251621,
+                    -3.61550653177651
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              }
+            ],
+            "hitCount": 9,
+            "missingCount": 0,
+            "pattern": "centre, four raw-body quadrant centres and four actual rectangle corners",
+            "rayTopModelY": 0.15,
+            "rayBottomModelY": -0.25,
+            "rayIntervalIsAbsolute": true,
+            "continuousSupportProven": false,
+            "semanticFloorEstablished": false,
+            "measuredCoverageEstablished": false,
+            "physicalClearanceEstablished": false,
+            "physicalAuthority": false
+          }
+        },
+        {
+          "label": "midpoint",
+          "savedCandidatePointXYZ": [
+            -2.7636804582757177,
+            -0.004413147099358635,
+            -3.693758881376829
+          ],
+          "yawRadians": -0.682783476291285,
+          "raw": {
+            "probes": [
+              {
+                "modelXZ": [
+                  -2.7636804582757177,
+                  -3.693758881376829
+                ],
+                "hit": true,
+                "modelHeightY": -0.004899135324932396,
+                "referenceCellID": 10075198,
+                "rayFraction": 0.387247838312331,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.765755801484932,
+                    -0.005118868850320198,
+                    -3.6961747567539627
+                  ],
+                  [
+                    -2.7671695245821106,
+                    -0.004812512433663176,
+                    -3.691718240469383
+                  ],
+                  [
+                    -2.761402025460296,
+                    -0.004789944825970043,
+                    -3.692873483853454
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.892849349966309,
+                  -3.7337169521438764
+                ],
+                "hit": true,
+                "modelHeightY": -0.004801864489654226,
+                "referenceCellID": 10077818,
+                "rayFraction": 0.3870046612241356,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.8956474740049307,
+                    -0.004731523795255068,
+                    -3.732554180673511
+                  ],
+                  [
+                    -2.891571497754146,
+                    -0.004803512266311278,
+                    -3.730188461569388
+                  ],
+                  [
+                    -2.892423985179924,
+                    -0.004833320682760194,
+                    -3.7366594789859313
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.750884488333534,
+                  -3.559157569521265
+                ],
+                "hit": true,
+                "modelHeightY": -0.004993858890697832,
+                "referenceCellID": 10069229,
+                "rayFraction": 0.3874846472267446,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.7525104990969145,
+                    -0.0051146584809202665,
+                    -3.5559118495374884
+                  ],
+                  [
+                    -2.747709744176655,
+                    -0.004911666624892789,
+                    -3.559399761301737
+                  ],
+                  [
+                    -2.7509553122590256,
+                    -0.004939667184416262,
+                    -3.561374350888837
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.7764764282179013,
+                  -3.828360193232393
+                ],
+                "hit": true,
+                "modelHeightY": -0.005567665631881578,
+                "referenceCellID": 10038244,
+                "rayFraction": 0.38891916407970406,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.7754237358510854,
+                    -0.005568528932400896,
+                    -3.831404939831514
+                  ],
+                  [
+                    -2.781283624771883,
+                    -0.00551729750876314,
+                    -3.827755396884764
+                  ],
+                  [
+                    -2.7774357881458815,
+                    -0.005567546880654358,
+                    -3.825394036454002
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.6345115665851266,
+                  -3.653800810609782
+                ],
+                "hit": true,
+                "modelHeightY": -0.005239443522558784,
+                "referenceCellID": 10059531,
+                "rayFraction": 0.38809860880639707,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.6373502058677265,
+                    -0.005199763441013718,
+                    -3.649596800585038
+                  ],
+                  [
+                    -2.6331179909912623,
+                    -0.005223868752575349,
+                    -3.6536374995872176
+                  ],
+                  [
+                    -2.638428110482687,
+                    -0.005314085059430523,
+                    -3.6562210715521912
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.0220182416569,
+                  -3.7736750229109233
+                ],
+                "hit": true,
+                "modelHeightY": -0.004497823807195388,
+                "referenceCellID": 3962523,
+                "rayFraction": 0.3862445595179885,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.025596989668587,
+                    -0.0043061008294156405,
+                    -3.7702831788151085
+                  ],
+                  [
+                    -3.0215817255982906,
+                    -0.004512659730403292,
+                    -3.773902649194529
+                  ],
+                  [
+                    -3.027238358482063,
+                    -0.004610362038093552,
+                    -3.7772643014485707
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.7380885183913506,
+                  -3.4245562576657016
+                ],
+                "hit": true,
+                "modelHeightY": -0.004965127249026077,
+                "referenceCellID": 10070821,
+                "rayFraction": 0.3874128181225652,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.742136272518924,
+                    -0.0048947359774342,
+                    -3.423283186743565
+                  ],
+                  [
+                    -2.7362176876499626,
+                    -0.005011490672340319,
+                    -3.4225731161903257
+                  ],
+                  [
+                    -2.7383077013989774,
+                    -0.004937480046724917,
+                    -3.428919518564861
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.789272398160085,
+                  -3.9629615050879567
+                ],
+                "hit": true,
+                "modelHeightY": -0.006243259523285662,
+                "referenceCellID": 10038579,
+                "rayFraction": 0.39060814880821415,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.7893746618077295,
+                    -0.0062762970385101605,
+                    -3.9583861351318452
+                  ],
+                  [
+                    -2.7883281160096742,
+                    -0.006223828759831167,
+                    -3.96495610323295
+                  ],
+                  [
+                    -2.7942573514944486,
+                    -0.006275105449858896,
+                    -3.9623998077434157
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.5053426748945355,
+                  -3.613842739842735
+                ],
+                "hit": true,
+                "modelHeightY": -0.004991343508269137,
+                "referenceCellID": 10229012,
+                "rayFraction": 0.38747835877067305,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.5033778914121734,
+                    -0.004963206876029108,
+                    -3.614024338893751
+                  ],
+                  [
+                    -2.509205679880394,
+                    -0.005070921909251621,
+                    -3.61550653177651
+                  ],
+                  [
+                    -2.5080772905461677,
+                    -0.0049955863795207445,
+                    -3.610681137206056
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              }
+            ],
+            "hitCount": 9,
+            "missingCount": 0,
+            "pattern": "centre, four raw-body quadrant centres and four actual rectangle corners",
+            "rayTopModelY": 0.15,
+            "rayBottomModelY": -0.25,
+            "rayIntervalIsAbsolute": true,
+            "continuousSupportProven": false,
+            "semanticFloorEstablished": false,
+            "measuredCoverageEstablished": false,
+            "physicalClearanceEstablished": false,
+            "physicalAuthority": false
+          }
+        },
+        {
+          "label": "rejectedEndpoint",
+          "savedCandidatePointXYZ": [
+            -2.7636804582757177,
+            -0.004413147099358635,
+            -3.693758881376829
+          ],
+          "yawRadians": -0.6740568300313133,
+          "raw": {
+            "probes": [
+              {
+                "modelXZ": [
+                  -2.7636804582757177,
+                  -3.693758881376829
+                ],
+                "hit": true,
+                "modelHeightY": -0.004899135324932396,
+                "referenceCellID": 10075198,
+                "rayFraction": 0.387247838312331,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.765755801484932,
+                    -0.005118868850320198,
+                    -3.6961747567539627
+                  ],
+                  [
+                    -2.7671695245821106,
+                    -0.004812512433663176,
+                    -3.691718240469383
+                  ],
+                  [
+                    -2.761402025460296,
+                    -0.004789944825970043,
+                    -3.692873483853454
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.8924957360877137,
+                  -3.7348426275816036
+                ],
+                "hit": true,
+                "modelHeightY": -0.00481810134012528,
+                "referenceCellID": 10077818,
+                "rayFraction": 0.3870452533503132,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.8956474740049307,
+                    -0.004731523795255068,
+                    -3.732554180673511
+                  ],
+                  [
+                    -2.891571497754146,
+                    -0.004803512266311278,
+                    -3.730188461569388
+                  ],
+                  [
+                    -2.892423985179924,
+                    -0.004833320682760194,
+                    -3.7366594789859313
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.7520595786908952,
+                  -3.5590510302408425
+                ],
+                "hit": true,
+                "modelHeightY": -0.00502264016855198,
+                "referenceCellID": 10069222,
+                "rayFraction": 0.38755660042138,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.7525104990969145,
+                    -0.0051146584809202665,
+                    -3.5559118495374884
+                  ],
+                  [
+                    -2.7509553122590256,
+                    -0.004939667184416262,
+                    -3.561374350888837
+                  ],
+                  [
+                    -2.755175026657705,
+                    -0.005080227325953795,
+                    -3.5591465343807416
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.7753013378605402,
+                  -3.828466732512816
+                ],
+                "hit": true,
+                "modelHeightY": -0.0055404899515118025,
+                "referenceCellID": 10038242,
+                "rayFraction": 0.38885122487877954,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.7754237358510854,
+                    -0.005568528932400896,
+                    -3.831404939831514
+                  ],
+                  [
+                    -2.7774357881458815,
+                    -0.005567546880654358,
+                    -3.825394036454002
+                  ],
+                  [
+                    -2.7720983264878196,
+                    -0.00545757309993905,
+                    -3.828102331986729
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.6348651804637218,
+                  -3.6526751351720548
+                ],
+                "hit": true,
+                "modelHeightY": -0.005225025695970772,
+                "referenceCellID": 10059531,
+                "rayFraction": 0.3880625642399269,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.6373502058677265,
+                    -0.005199763441013718,
+                    -3.649596800585038
+                  ],
+                  [
+                    -2.6331179909912623,
+                    -0.005223868752575349,
+                    -3.6536374995872176
+                  ],
+                  [
+                    -2.638428110482687,
+                    -0.005314085059430523,
+                    -3.6562210715521912
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.0213110138997097,
+                  -3.775926373786378
+                ],
+                "hit": true,
+                "modelHeightY": -0.004556043756102149,
+                "referenceCellID": 3962379,
+                "rayFraction": 0.38639010939025537,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.0215817255982906,
+                    -0.004512659730403292,
+                    -3.773902649194529
+                  ],
+                  [
+                    -3.0167417716995844,
+                    -0.0047106928812479555,
+                    -3.77695798427911
+                  ],
+                  [
+                    -3.022877112933833,
+                    -0.004582915286669154,
+                    -3.7801537413826756
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.7404386991060736,
+                  -3.4243431791048566
+                ],
+                "hit": true,
+                "modelHeightY": -0.004921427942078272,
+                "referenceCellID": 10070821,
+                "rayFraction": 0.38730356985519565,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.742136272518924,
+                    -0.0048947359774342,
+                    -3.423283186743565
+                  ],
+                  [
+                    -2.7362176876499626,
+                    -0.005011490672340319,
+                    -3.4225731161903257
+                  ],
+                  [
+                    -2.7383077013989774,
+                    -0.004937480046724917,
+                    -3.428919518564861
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.786922217445362,
+                  -3.9631745836488017
+                ],
+                "hit": true,
+                "modelHeightY": 0.03395595598663605,
+                "referenceCellID": 10030019,
+                "rayFraction": 0.29011011003340975,
+                "inFrozenGroundIDs": false,
+                "triangleModelXYZ": [
+                  [
+                    -2.790110379510415,
+                    0.03331182353628852,
+                    -3.963739826498558
+                  ],
+                  [
+                    -2.785616363457246,
+                    0.03372827280154833,
+                    -3.962745286430284
+                  ],
+                  [
+                    -2.790033788773077,
+                    0.03729219134250844,
+                    -3.9653216448100315
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -2.506049902651726,
+                  -3.6115913889672804
+                ],
+                "hit": true,
+                "modelHeightY": -0.004986580197094154,
+                "referenceCellID": 10229011,
+                "rayFraction": 0.3874664504927354,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -2.5033778914121734,
+                    -0.004963206876029108,
+                    -3.614024338893751
+                  ],
+                  [
+                    -2.5080772905461677,
+                    -0.0049955863795207445,
+                    -3.610681137206056
+                  ],
+                  [
+                    -2.5028808531900535,
+                    -0.0050165051130093945,
+                    -3.608296770698229
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              }
+            ],
+            "hitCount": 9,
+            "missingCount": 0,
+            "pattern": "centre, four raw-body quadrant centres and four actual rectangle corners",
+            "rayTopModelY": 0.15,
+            "rayBottomModelY": -0.25,
+            "rayIntervalIsAbsolute": true,
+            "continuousSupportProven": false,
+            "semanticFloorEstablished": false,
+            "measuredCoverageEstablished": false,
+            "physicalClearanceEstablished": false,
+            "physicalAuthority": false
+          }
+        }
+      ]
+    },
+    {
+      "episodeIndex": 18,
+      "resultSHA256": "f72ff1e3ea4557be0b852c8a540aa17f9382a25a262d58c7b3d86ca62e766d03",
+      "csvSHA256": "dd3d6c966a4105536d04411ccd4b4b5882b789ea545382c64ff8f1a1d6b3d0f3",
+      "unchangedEpisodeTerminalSupport": {
+        "acceptedFiniteSupportModel": false,
+        "reason": "nine observed finite support probes required",
+        "groundComponentConfirmedForAllProbes": false
+      },
+      "queries": [
+        {
+          "label": "start",
+          "savedCandidatePointXYZ": [
+            -3.631940530104479,
+            -0.003106257838332715,
+            -1.9853434496016487
+          ],
+          "yawRadians": -1.7838428714196315,
+          "raw": {
+            "probes": [
+              {
+                "modelXZ": [
+                  -3.631940530104479,
+                  -1.9853434496016487
+                ],
+                "hit": true,
+                "modelHeightY": -0.0039039577879004667,
+                "referenceCellID": 3250972,
+                "rayFraction": 0.3847598944697511,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.627312803730936,
+                    -0.0036986329996646916,
+                    -1.9873519371267092
+                  ],
+                  [
+                    -3.6337253157458065,
+                    -0.0038303781548706985,
+                    -1.9880644223573725
+                  ],
+                  [
+                    -3.6308524650618015,
+                    -0.003960102352843463,
+                    -1.9834263654524433
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.726039160042725,
+                  -1.8882522664605152
+                ],
+                "hit": true,
+                "modelHeightY": -0.00399369322004277,
+                "referenceCellID": 3228406,
+                "rayFraction": 0.3849842330501069,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.7236581940555267,
+                    -0.0038853235926199475,
+                    -1.8864359945314233
+                  ],
+                  [
+                    -3.7269849079750577,
+                    -0.004029900070280753,
+                    -1.8909521033891654
+                  ],
+                  [
+                    -3.7279900204432463,
+                    -0.004095039739967412,
+                    -1.886108977855965
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.5061261187671846,
+                  -1.9358259385590888
+                ],
+                "hit": true,
+                "modelHeightY": -0.004284802567175224,
+                "referenceCellID": 3293411,
+                "rayFraction": 0.385712006417938,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.5052092531456047,
+                    -0.004250988987960443,
+                    -1.9306162930476523
+                  ],
+                  [
+                    -3.503813856444272,
+                    -0.004201671102849271,
+                    -1.93672587763259
+                  ],
+                  [
+                    -3.5095353239813303,
+                    -0.004407527957930157,
+                    -1.9355216765435952
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.7577549414417737,
+                  -2.0348609606442083
+                ],
+                "hit": true,
+                "modelHeightY": -0.003734924079387093,
+                "referenceCellID": 3261636,
+                "rayFraction": 0.38433731019846773,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.756942190778539,
+                    -0.003746756288176254,
+                    -2.038161703642894
+                  ],
+                  [
+                    -3.7618987106676087,
+                    -0.003545731014195126,
+                    -2.033376767814973
+                  ],
+                  [
+                    -3.7563984940261435,
+                    -0.0038126747090205734,
+                    -2.033463205561719
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.5378419001662333,
+                  -2.0824346327427823
+                ],
+                "hit": true,
+                "modelHeightY": -0.0033818154891474515,
+                "referenceCellID": 3286754,
+                "rayFraction": 0.38345453872286867,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.541536760081213,
+                    -0.0033560155263845717,
+                    -2.080404124790361
+                  ],
+                  [
+                    -3.5355637367780473,
+                    -0.003495536707738384,
+                    -2.077391682718453
+                  ],
+                  [
+                    -3.536095321706906,
+                    -0.003388140136788842,
+                    -2.083772307136936
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.82013778998097,
+                  -1.7911610833193816
+                ],
+                "hit": true,
+                "modelHeightY": -0.0042828499763129,
+                "referenceCellID": 3269264,
+                "rayFraction": 0.38570712494078224,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.8184686343519774,
+                    -0.004255194533054042,
+                    -1.792381709685338
+                  ],
+                  [
+                    -3.823579919508834,
+                    -0.004332799102932567,
+                    -1.7946282553252686
+                  ],
+                  [
+                    -3.8215518227893313,
+                    -0.004307912020092331,
+                    -1.7887465875953452
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.38031170742989,
+                  -1.8863084275165292
+                ],
+                "hit": true,
+                "modelHeightY": -0.004039995349156675,
+                "referenceCellID": 3595518,
+                "rayFraction": 0.3850999883728917,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.3797593051302384,
+                    -0.003977076797200611,
+                    -1.8831413087226607
+                  ],
+                  [
+                    -3.3799414019267564,
+                    -0.004090131581066251,
+                    -1.8883913088334319
+                  ],
+                  [
+                    -3.384435082607705,
+                    -0.003995511248500472,
+                    -1.8865243346554437
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.8835693527790682,
+                  -2.0843784716867684
+                ],
+                "hit": true,
+                "modelHeightY": -0.0031928399812291078,
+                "referenceCellID": 3242747,
+                "rayFraction": 0.3829820999530728,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.881125068106944,
+                    -0.003113269675851184,
+                    -2.084870634976852
+                  ],
+                  [
+                    -3.885514739470869,
+                    -0.003280999353014952,
+                    -2.0853459424092655
+                  ],
+                  [
+                    -3.882822575554287,
+                    -0.003098607373018201,
+                    -2.0807013312896423
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.4437432702279884,
+                  -2.1795258158839155
+                ],
+                "hit": true,
+                "modelHeightY": -0.003106257838332715,
+                "referenceCellID": 3285082,
+                "rayFraction": 0.3827656445958318,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.44559538046565,
+                    -0.0028461853825798647,
+                    -2.1759849854064512
+                  ],
+                  [
+                    -3.441281431960902,
+                    -0.003074950104047937,
+                    -2.178679801201448
+                  ],
+                  [
+                    -3.4466407791334444,
+                    -0.0033146570282532005,
+                    -2.183048191160988
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              }
+            ],
+            "hitCount": 9,
+            "missingCount": 0,
+            "pattern": "centre, four raw-body quadrant centres and four actual rectangle corners",
+            "rayTopModelY": 0.15,
+            "rayBottomModelY": -0.25,
+            "rayIntervalIsAbsolute": true,
+            "continuousSupportProven": false,
+            "semanticFloorEstablished": false,
+            "measuredCoverageEstablished": false,
+            "physicalClearanceEstablished": false,
+            "physicalAuthority": false
+          }
+        },
+        {
+          "label": "midpoint",
+          "savedCandidatePointXYZ": [
+            -3.634372073345073,
+            -0.003106257838332715,
+            -1.996583449489065
+          ],
+          "yawRadians": -1.7838428714196317,
+          "raw": {
+            "probes": [
+              {
+                "modelXZ": [
+                  -3.634372073345073,
+                  -1.996583449489065
+                ],
+                "hit": true,
+                "modelHeightY": -0.0037243233115486617,
+                "referenceCellID": 3250836,
+                "rayFraction": 0.38431080827887165,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.6326662485203682,
+                    -0.003721553430419475,
+                    -1.9981230631720568
+                  ],
+                  [
+                    -3.63789108832853,
+                    -0.0038012254011647127,
+                    -1.998398727966112
+                  ],
+                  [
+                    -3.634957364161208,
+                    -0.0036874104543023357,
+                    -1.9934003728687466
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.728470703283319,
+                  -1.8994922663479317
+                ],
+                "hit": true,
+                "modelHeightY": -0.0038803558817813288,
+                "referenceCellID": 3228270,
+                "rayFraction": 0.3847008897044533,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.7283071542003716,
+                    -0.0038532441302116926,
+                    -1.8968789123365692
+                  ],
+                  [
+                    -3.723801746155792,
+                    -0.0038158968062436925,
+                    -1.9006088435937782
+                  ],
+                  [
+                    -3.7286594602842484,
+                    -0.003905537017136725,
+                    -1.9018564098922284
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.5085576620077785,
+                  -1.9470659384465052
+                ],
+                "hit": true,
+                "modelHeightY": -0.0040112161410267265,
+                "referenceCellID": 3293323,
+                "rayFraction": 0.38502804035256677,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.5120428726087445,
+                    -0.0040579924191283066,
+                    -1.9452619903484327
+                  ],
+                  [
+                    -3.508941042085244,
+                    -0.004110515203602446,
+                    -1.9410343275294284
+                  ],
+                  [
+                    -3.508221954924718,
+                    -0.00400388379207371,
+                    -1.947414825703295
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.7601864846823676,
+                  -2.046100960531625
+                ],
+                "hit": true,
+                "modelHeightY": -0.0038027385453590877,
+                "referenceCellID": 3261605,
+                "rayFraction": 0.38450684636339777,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.7586468789898158,
+                    -0.0037975043581680665,
+                    -2.0481282753329335
+                  ],
+                  [
+                    -3.762558323588368,
+                    -0.0037836209392257993,
+                    -2.044721537536705
+                  ],
+                  [
+                    -3.7575211783296165,
+                    -0.003892760056188955,
+                    -2.0432540977206823
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.5402734434068273,
+                  -2.093674632630199
+                ],
+                "hit": true,
+                "modelHeightY": -0.0033633378440477892,
+                "referenceCellID": 3288605,
+                "rayFraction": 0.3834083446101195,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.541419767462842,
+                    -0.003347275268775351,
+                    -2.095075067950148
+                  ],
+                  [
+                    -3.5374292966158167,
+                    -0.003395692888211078,
+                    -2.0899740686239925
+                  ],
+                  [
+                    -3.536481474697136,
+                    -0.0036013659481511345,
+                    -2.094613710889055
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.822569333221564,
+                  -1.8024010832067978
+                ],
+                "hit": true,
+                "modelHeightY": -0.004091441869209338,
+                "referenceCellID": 3269459,
+                "rayFraction": 0.3852286046730233,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.8219480489882045,
+                    -0.004065109166201864,
+                    -1.8047719708276635
+                  ],
+                  [
+                    -3.8261222252570697,
+                    -0.004138479931739554,
+                    -1.8004253251977393
+                  ],
+                  [
+                    -3.8202637154996957,
+                    -0.00410387089214825,
+                    -1.7988786154785001
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.382743250670484,
+                  -1.8975484274039454
+                ],
+                "hit": true,
+                "modelHeightY": -0.004200059939584541,
+                "referenceCellID": 3595586,
+                "rayFraction": 0.3855001498489613,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.380235413968759,
+                    -0.004079725958289556,
+                    -1.8942091541491697
+                  ],
+                  [
+                    -3.381263494023804,
+                    -0.004179368675417881,
+                    -1.8994860706952348
+                  ],
+                  [
+                    -3.3861067843501367,
+                    -0.0043031502149157574,
+                    -1.8974984307504588
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.886000896019662,
+                  -2.095618471574185
+                ],
+                "hit": true,
+                "modelHeightY": -0.0031851867740343067,
+                "referenceCellID": 3242714,
+                "rayFraction": 0.3829629669350856,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.886650700031737,
+                    -0.0031896370928368133,
+                    -2.0921692910162433
+                  ],
+                  [
+                    -3.8814945489423147,
+                    -0.003238269093990557,
+                    -2.09433233548652
+                  ],
+                  [
+                    -3.8863470085170873,
+                    -0.0031784589921562793,
+                    -2.096513193145607
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.4461748134685823,
+                  -2.190765815771332
+                ],
+                "hit": true,
+                "modelHeightY": -0.0028361667865892393,
+                "referenceCellID": 4029253,
+                "rayFraction": 0.38209041696647317,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.4473570687439814,
+                    -0.0027937539164091807,
+                    -2.18912993689933
+                  ],
+                  [
+                    -3.441041517464502,
+                    -0.00299811045172595,
+                    -2.1921296261426226
+                  ],
+                  [
+                    -3.446822005917177,
+                    -0.002838262152598201,
+                    -2.1964109507253076
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              }
+            ],
+            "hitCount": 9,
+            "missingCount": 0,
+            "pattern": "centre, four raw-body quadrant centres and four actual rectangle corners",
+            "rayTopModelY": 0.15,
+            "rayBottomModelY": -0.25,
+            "rayIntervalIsAbsolute": true,
+            "continuousSupportProven": false,
+            "semanticFloorEstablished": false,
+            "measuredCoverageEstablished": false,
+            "physicalClearanceEstablished": false,
+            "physicalAuthority": false
+          }
+        },
+        {
+          "label": "rejectedEndpoint",
+          "savedCandidatePointXYZ": [
+            -3.6368036165856665,
+            -0.003106257838332715,
+            -2.0078234493764815
+          ],
+          "yawRadians": -1.783842871419632,
+          "raw": {
+            "probes": [
+              {
+                "modelXZ": [
+                  -3.6368036165856665,
+                  -2.0078234493764815
+                ],
+                "hit": true,
+                "modelHeightY": -0.0036421412587104157,
+                "referenceCellID": 3249405,
+                "rayFraction": 0.38410535314677596,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.63525883904419,
+                    -0.0035564507423223313,
+                    -2.0099804706887534
+                  ],
+                  [
+                    -3.6407141070717755,
+                    -0.0037988395111850422,
+                    -2.008021965806323
+                  ],
+                  [
+                    -3.6368039259638483,
+                    -0.0036927533307153145,
+                    -2.0030687043948925
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.730902246523912,
+                  -1.9107322662353479
+                ],
+                "hit": true,
+                "modelHeightY": -0.003783388530655709,
+                "referenceCellID": 3228161,
+                "rayFraction": 0.3844584713266393,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.729895795709843,
+                    -0.003757979824756043,
+                    -1.9115336888347063
+                  ],
+                  [
+                    -3.736997350728956,
+                    -0.003844201712225267,
+                    -1.913179488283897
+                  ],
+                  [
+                    -3.7331103514226216,
+                    -0.0038596933523062926,
+                    -1.9073611292664097
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.5109892052483715,
+                  -1.9583059383339219
+                ],
+                "hit": true,
+                "modelHeightY": -0.004213248513606951,
+                "referenceCellID": 3292830,
+                "rayFraction": 0.3855331212840174,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.509488017748981,
+                    -0.004179183658257146,
+                    -1.9533384460763867
+                  ],
+                  [
+                    -3.508147376091798,
+                    -0.0041245788575882195,
+                    -1.9601820909797156
+                  ],
+                  [
+                    -3.512901144972389,
+                    -0.004270286506494653,
+                    -1.9582646443539573
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.7626180279229615,
+                  -2.057340960419041
+                ],
+                "hit": true,
+                "modelHeightY": -0.003808662239323435,
+                "referenceCellID": 3260037,
+                "rayFraction": 0.38452165559830853,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.761796124071248,
+                    -0.0037216632748506666,
+                    -2.0587677968448315
+                  ],
+                  [
+                    -3.7652573998230867,
+                    -0.003856956096259993,
+                    -2.058942378021375
+                  ],
+                  [
+                    -3.763207153475026,
+                    -0.00393372407803577,
+                    -2.0546404267282536
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.542704986647421,
+                  -2.104914632517615
+                ],
+                "hit": true,
+                "modelHeightY": -0.0034419945723593286,
+                "referenceCellID": 3274699,
+                "rayFraction": 0.3836049864308984,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.5387144764640546,
+                    -0.0034135021756420223,
+                    -2.109797380625369
+                  ],
+                  [
+                    -3.54422105455203,
+                    -0.0034683151874018558,
+                    -2.1080103651443194
+                  ],
+                  [
+                    -3.5416742820400424,
+                    -0.0034213209511652406,
+                    -2.1019219777469944
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.8250008764621573,
+                  -1.8136410830942145
+                ],
+                "hit": true,
+                "modelHeightY": -0.0038949806926361734,
+                "referenceCellID": 3269198,
+                "rayFraction": 0.3847374517315904,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.82909614953675,
+                    -0.0038101450986681665,
+                    -1.8129998149824014
+                  ],
+                  [
+                    -3.8237061048914702,
+                    -0.0039790166583460115,
+                    -1.8109937690532119
+                  ],
+                  [
+                    -3.824161391636294,
+                    -0.0038215056556830176,
+                    -1.8182988941359002
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.3851747939110775,
+                  -1.908788427291362
+                ],
+                "hit": false,
+                "modelHeightY": null,
+                "referenceCellID": null,
+                "rayFraction": null,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.8884324392602556,
+                  -2.1068584714616008
+                ],
+                "hit": true,
+                "modelHeightY": -0.0032966973387671614,
+                "referenceCellID": 3241746,
+                "rayFraction": 0.38324174334691796,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.883823045310568,
+                    -0.003175374638893072,
+                    -2.105349883486479
+                  ],
+                  [
+                    -3.8890386347872354,
+                    -0.003335097096456456,
+                    -2.107702522812433
+                  ],
+                  [
+                    -3.889899438152103,
+                    -0.003191249035797485,
+                    -2.1031944083992276
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              },
+              {
+                "modelXZ": [
+                  -3.448606356709176,
+                  -2.2020058156587488
+                ],
+                "hit": true,
+                "modelHeightY": -0.002781474221258273,
+                "referenceCellID": 4029214,
+                "rayFraction": 0.3819536855531457,
+                "inFrozenGroundIDs": true,
+                "triangleModelXYZ": [
+                  [
+                    -3.4470608976670585,
+                    -0.0027622562442832076,
+                    -2.203224266653783
+                  ],
+                  [
+                    -3.453399576291268,
+                    -0.0028178256790264075,
+                    -2.200288284494298
+                  ],
+                  [
+                    -3.446822005917177,
+                    -0.002838262152598201,
+                    -2.1964109507253076
+                  ]
+                ],
+                "triangleEntirelyInsideFrozenEvaluationBounds": true,
+                "xzInsideFrozenEvaluationEnvelope": true
+              }
+            ],
+            "hitCount": 8,
+            "missingCount": 1,
+            "pattern": "centre, four raw-body quadrant centres and four actual rectangle corners",
+            "rayTopModelY": 0.15,
+            "rayBottomModelY": -0.25,
+            "rayIntervalIsAbsolute": true,
+            "continuousSupportProven": false,
+            "semanticFloorEstablished": false,
+            "measuredCoverageEstablished": false,
+            "physicalClearanceEstablished": false,
+            "physicalAuthority": false
+          }
+        }
+      ]
+    }
+  ],
+  "physicalAuthority": false
+}
