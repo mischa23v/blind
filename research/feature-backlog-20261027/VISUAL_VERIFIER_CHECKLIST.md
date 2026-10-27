@@ -1,0 +1,12 @@
+### Backlog — independent image-grounded answer verification (iPhone test feedback, 2026-10-27)
+
+**Research/design captured; no implementation or model tests; does not divert mapping/localization or Apple CI work.**
+
+- User proposes a separate narrowly tasked agent checking the actual photograph, silently accepting correct replies and issuing a specific correction only when warranted. Research supports the principle: [Woodpecker](https://arxiv.org/html/2310.16045v2) validates visual claims using image-grounded expert models; [CoVe](https://arxiv.org/abs/2309.11495) motivates independent assessment; [VISCO](https://visco-benchmark.github.io/) warns model critiques can also worsen correct answers. Async speech-first correction is an unvalidated adaptation, not those papers' safety result.
+- Audit at `106cc2ad9565513af578d9325110213216e8cc39`: `VisualGrounding` confirms object categories, not door open/closed or chair occupied/free. Existing scene-description two-of-three-frame grounding is **not** the independent immediate coded hazard path. Reuse source-bound capture/speech leases, cancellation and nonurgent resource admission rather than bypassing them.
+- Future first check: verify first answer and checker actually receive the intended current image, timestamp, orientation/crop and target—not stale/text-only context. Independently assess pixels before seeing the answer's asserted polarity, then compare atomic claims. Same-model separate invocation may help but does not remove shared errors; text-only checks are not visual verification.
+- Keep fast provisional output nonactionable. Action-relevant physical facts need adequate fresh evidence before assertion or explicit unknown; later correction cannot justify confidently wrong sitting/walking guidance. A checker never overrides coded hazard/movement gates.
+- Bind image/frame/time/target/map/goal/session/claim/speech IDs. Distinguish original mistake from later scene change; discard stale/cancelled corrections, revalidate at actual speech onset, do not correct unheard queued output, and remain silent when supported.
+- Offline/on-device only under existing private-image prohibition. Bound/preempt checks for navigation, hazards and thermal pressure; unavailable/skipped never means verified. Future evaluation: actual latency added, coverage, missed errors, false corrections, stale output, scene changes and user interruptions—not only success examples.
+
+Detailed bounded source audit/design: `research/BACKGROUND_VISUAL_VERIFICATION_ADDENDUM.md` (research only).
