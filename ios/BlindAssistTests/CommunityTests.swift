@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 import BlindCore
 @testable import BlindAssist
 
@@ -1177,5 +1178,32 @@ private extension XCTestCase {
         var result: Result<Void, Error>?
         try action { result = $0; done.fulfill() }
         wait(for: [done], timeout: 10); try XCTUnwrap(result).get()
+    }
+}
+
+/// Platform publisher semantics only. These are not NavigationModel integration
+/// tests; exact production-source contracts and the UI suite cover that boundary.
+final class PracticePresentationPublisherSemanticsTests: XCTestCase {
+    private final class Fixture: ObservableObject {
+        @Published var detection = Detection(.observing)
+        @Published var progress = 1.0
+    }
+    func testPublishedDetectionEmitsEvenForIdenticalValue() {
+        let fixture = Fixture()
+        var received: [Detection] = []
+        let token = fixture.$detection.dropFirst().sink { received.append($0) }
+        defer { token.cancel() }
+        fixture.detection = Detection(.observing)
+        fixture.detection = Detection(.observing)
+        XCTAssertEqual(received, [Detection(.observing), Detection(.observing)])
+    }
+    func testPublishedProgressEmitsEvenForIdenticalValue() {
+        let fixture = Fixture()
+        var received: [Double] = []
+        let token = fixture.$progress.dropFirst().sink { received.append($0) }
+        defer { token.cancel() }
+        fixture.progress = 1.0
+        fixture.progress = 1.0
+        XCTAssertEqual(received, [1.0, 1.0])
     }
 }

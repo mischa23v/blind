@@ -359,6 +359,10 @@ struct AssistantToolsView: View {
             } header: { Text(t("Return to start", "العودة إلى البداية")) }
             Section {
                 if model.simulation {
+                    Text(t("Practice only · no live camera", "تدريب فقط · دون كاميرا مباشرة"))
+                        .font(.body)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityIdentifier("practice-active-status")
                     Button(t("End practice", "أنهِ التدريب")) { model.endPractice() }
                         .accessibilityIdentifier("end-practice")
                 } else {

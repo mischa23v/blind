@@ -1,0 +1,60 @@
+--- a/ios/BlindAssist/NavigationModel.swift
++++ b/ios/BlindAssist/NavigationModel.swift
+@@ -1571,7 +1571,11 @@
+         let now = ProcessInfo.processInfo.systemUptime
+         let previousHazard = detection.hazard
+         let visual = !simulation ? visualStairs.detection(at: now).map { [$0] } ?? [] : []
+-        detection = continuity.process(AlertPolicy.highest(visual + [phoneDetection] + (simulation ? [] : wearables.detections(at: now))), at: now)
++        let nextDetection = continuity.process(AlertPolicy.highest(visual + [phoneDetection] + (simulation ? [] : wearables.detections(at: now))), at: now)
++        // Practice keeps processing every tick, but identical presentation values
++        // must not invalidate the whole accessibility tree ten times per second.
++        // Live publication and all safety/policy work below remain unchanged.
++        if !simulation || detection != nextDetection { detection = nextDetection }
+         // Retire route IDs before independent hazard/status sinks run. Never stop
+         // a newer sensor alert when an old route callback arrives later.
+         spatialRouteOutput.revalidate()
+@@ -4839,7 +4843,9 @@
+         }
+         phoneDetection = detector.process(Observation(timestamp: demonstrationTime, camera: Point3(0, 1.3, 0),
+                                                       forward: Point3(0, 0, -1), samples: samples))
+-        calibrationProgress = detector.calibrationProgress
++        if calibrationProgress != detector.calibrationProgress {
++            calibrationProgress = detector.calibrationProgress
++        }
+     }
+ }
+ 
+--- a/ios/BlindAssist/DashboardView.swift
++++ b/ios/BlindAssist/DashboardView.swift
+@@ -359,6 +359,10 @@
+             } header: { Text(t("Return to start", "العودة إلى البداية")) }
+             Section {
+                 if model.simulation {
++                    Text(t("Practice only · no live camera", "تدريب فقط · دون كاميرا مباشرة"))
++                        .font(.body)
++                        .fixedSize(horizontal: false, vertical: true)
++                        .accessibilityIdentifier("practice-active-status")
+                     Button(t("End practice", "أنهِ التدريب")) { model.endPractice() }
+                         .accessibilityIdentifier("end-practice")
+                 } else {
+--- a/ios/BlindAssistUITests/LaunchTests.swift
++++ b/ios/BlindAssistUITests/LaunchTests.swift
+@@ -120,14 +120,16 @@
+         let startedBeforeTap = ProcessInfo.processInfo.systemUptime
+         let cancellationEvidenceLimit: TimeInterval = 90
+         start.tap()
+-        XCTAssertTrue(app.staticTexts["SIMULATION · generated readings"].waitForExistence(timeout: 5))
++        let practiceStatus = app.staticTexts["practice-active-status"]
++        XCTAssertTrue(practiceStatus.waitForExistence(timeout: 5))
++        reveal(practiceStatus)
+         // Ending practice respects the separate camera preference, rather than forcing sensors on.
+         let end = app.buttons["end-practice"]
+         reveal(end)
+         XCTAssertLessThan(ProcessInfo.processInfo.systemUptime - startedBeforeTap, cancellationEvidenceLimit,
+                           "Automation consumed the cancellation evidence window; natural expiry cannot count as Stop")
+         end.tap()
+-        XCTAssertFalse(app.staticTexts["SIMULATION · generated readings"].exists)
++        XCTAssertFalse(practiceStatus.exists)
+         XCTAssertEqual(app.buttons["monitor-toggle"].label, "Start monitoring")
+         let elapsed = ProcessInfo.processInfo.systemUptime - startedBeforeTap
+         XCTAssertLessThan(elapsed, cancellationEvidenceLimit,

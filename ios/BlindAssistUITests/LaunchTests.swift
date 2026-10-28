@@ -120,14 +120,16 @@ final class LaunchTests: XCTestCase {
         let startedBeforeTap = ProcessInfo.processInfo.systemUptime
         let cancellationEvidenceLimit: TimeInterval = 90
         start.tap()
-        XCTAssertTrue(app.staticTexts["SIMULATION · generated readings"].waitForExistence(timeout: 5))
+        let practiceStatus = app.staticTexts["practice-active-status"]
+        XCTAssertTrue(practiceStatus.waitForExistence(timeout: 5))
+        reveal(practiceStatus)
         // Ending practice respects the separate camera preference, rather than forcing sensors on.
         let end = app.buttons["end-practice"]
         reveal(end)
         XCTAssertLessThan(ProcessInfo.processInfo.systemUptime - startedBeforeTap, cancellationEvidenceLimit,
                           "Automation consumed the cancellation evidence window; natural expiry cannot count as Stop")
         end.tap()
-        XCTAssertFalse(app.staticTexts["SIMULATION · generated readings"].exists)
+        XCTAssertFalse(practiceStatus.exists)
         XCTAssertEqual(app.buttons["monitor-toggle"].label, "Start monitoring")
         let elapsed = ProcessInfo.processInfo.systemUptime - startedBeforeTap
         XCTAssertLessThan(elapsed, cancellationEvidenceLimit,

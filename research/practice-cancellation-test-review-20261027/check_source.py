@@ -11,6 +11,7 @@ import re
 H = Path(__file__).resolve().parent
 R = H.parents[1]
 EXPECTED = json.loads((H / 'SOURCE_CONTRACT.json').read_text())
+EXPECTED_CANCELLATION = json.loads((H / 'CANCELLATION_CONTRACT.json').read_text())
 
 def compact(value):
     return re.sub(r'\s+', ' ', value).strip()
@@ -42,16 +43,23 @@ def validate(dashboard, model):
 
 def validate_cancellation(tests):
     body = tests.split('    func testPracticeIsAnnouncedAndCanStop() {', 1)[1].split('    func testAccessibleMainModesAndOfflineDefault()', 1)[0]
+    reveal = tests.split('    private func reveal(_ element: XCUIElement) {', 1)[1].split('    override func setUpWithError()', 1)[0]
+    assert compact(body) == compact(EXPECTED_CANCELLATION['cancellation']), 'unreviewed cancellation body'
+    assert compact(reveal) == compact(EXPECTED_CANCELLATION['reveal']), 'unreviewed reveal/hittability body'
+    setup = tests.split('    override func setUpWithError() throws {', 1)[1].split('    private func openTab(', 1)[0]
+    assert compact(setup) == compact(EXPECTED_CANCELLATION['setup']), 'unreviewed failure-stop or launch setup'
     expected = [
         'let startedBeforeTap = ProcessInfo.processInfo.systemUptime',
         'let cancellationEvidenceLimit: TimeInterval = 90',
         'start.tap()',
-        'XCTAssertTrue(app.staticTexts["SIMULATION · generated readings"].waitForExistence(timeout: 5))',
+        'let practiceStatus = app.staticTexts["practice-active-status"]',
+        'XCTAssertTrue(practiceStatus.waitForExistence(timeout: 5))',
+        'reveal(practiceStatus)',
         'let end = app.buttons["end-practice"]',
         'reveal(end)',
         'XCTAssertLessThan(ProcessInfo.processInfo.systemUptime - startedBeforeTap, cancellationEvidenceLimit,',
         'end.tap()',
-        'XCTAssertFalse(app.staticTexts["SIMULATION · generated readings"].exists)',
+        'XCTAssertFalse(practiceStatus.exists)',
         'XCTAssertEqual(app.buttons["monitor-toggle"].label, "Start monitoring")',
         'let elapsed = ProcessInfo.processInfo.systemUptime - startedBeforeTap',
         'XCTAssertLessThan(elapsed, cancellationEvidenceLimit,',
@@ -96,14 +104,21 @@ def main():
     witness_line = next(line for line in tests.splitlines(True) if line.startswith(witness))
     cancellation_mutations = [
         ('missing End tap', tests.replace('        end.tap()\n', '', 1)),
-        ('missing active banner', tests.replace('        XCTAssertTrue(app.staticTexts["SIMULATION · generated readings"].waitForExistence(timeout: 5))\n', '', 1)),
+        ('missing adjacent active status', tests.replace('        XCTAssertTrue(practiceStatus.waitForExistence(timeout: 5))\n', '', 1)),
         ('missing pre-End guard', tests.replace('XCTAssertLessThan(ProcessInfo.processInfo.systemUptime - startedBeforeTap, cancellationEvidenceLimit,', 'XCTAssertTrue(true,', 1)),
         ('missing final guard', tests.replace('XCTAssertLessThan(elapsed, cancellationEvidenceLimit,', 'XCTAssertTrue(true,', 1)),
         ('raised limit', tests.replace('cancellationEvidenceLimit: TimeInterval = 90', 'cancellationEvidenceLimit: TimeInterval = 120', 1)),
         ('timestamp after Start', tests.replace('        let startedBeforeTap = ProcessInfo.processInfo.systemUptime\n', '', 1).replace('        start.tap()\n', '        start.tap()\n        let startedBeforeTap = ProcessInfo.processInfo.systemUptime\n', 1)),
         ('early witness', tests.replace(witness_line, '', 1).replace('        XCTAssertLessThan(elapsed, cancellationEvidenceLimit,', witness_line + '        XCTAssertLessThan(elapsed, cancellationEvidenceLimit,', 1)),
-        ('missing stopped banner', tests.replace('        XCTAssertFalse(app.staticTexts["SIMULATION · generated readings"].exists)\n', '', 1)),
+        ('missing stopped status', tests.replace('        XCTAssertFalse(practiceStatus.exists)\n', '', 1)),
     ]
+    cancellation_mutations.extend([
+        ('dead fail-fast assignment', tests.replace('        continueAfterFailure = false\n', '        if false { continueAfterFailure = false }\n', 1)),
+        ('dead End tap', tests.replace('        end.tap()\n', '        if false { end.tap() }\n', 1)),
+        ('return before Start', tests.replace('        start.tap()\n', '        return\n        start.tap()\n', 1)),
+        ('dead cancellation body', tests.replace('    func testPracticeIsAnnouncedAndCanStop() {', '    func testPracticeIsAnnouncedAndCanStop() { if false {', 1).replace('    func testAccessibleMainModesAndOfflineDefault()', '    }\n    func testAccessibleMainModesAndOfflineDefault()', 1)),
+        ('reveal without hittability assertion', tests.replace('        XCTAssertTrue(element.isHittable)\n', '', 1)),
+    ])
     for name, changed in cancellation_mutations:
         assert changed != tests, 'mutation did not change source: ' + name
         try:

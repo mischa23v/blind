@@ -1,5 +1,15 @@
 # Review-branch source integration receipt
 
+## Current follow-on — 2026-10-27 23:33 UTC
+
+A separate `practice-publication.patch` now binds a narrow non-mesh change: equal-value presentation publication is suppressed only for generated simulation, while every live publication and detector/continuity/policy/watchdog tick remains unchanged. The reviewed app also shows practice-only status beside End practice and its UI test checks that visible status. This is a candidate fix for the preserved003788a idle/snapshot failure, not a claimed native pass.
+
+The checker first reverses this exact new NavigationModel layer and requires the published pre-practice hash `ef35a58edbebd33f5d30ef4921169227ec1dfe2e9fb06664ba5a520687684c14`, then performs both historical reversals below. The default-flag/original comparison applies to that recovered pre-practice source; it does not pretend the new non-mesh presentation change never happened. Historical patch bytes are unchanged. Current native verification is pending.
+
+The older dated receipts below are preserved as history.
+
+---
+
 2026-10-27 20:33 UTC. The exact reviewed stage85 three-file patch is now applied **locally to the review branch**, before actual app compilation succeeds. This explicitly supersedes the former sequencing rule “remain unapplied until compilation passes.” It does not change runtime or physical-safety gates. No master merge, device activation or push was performed by this agent.
 
 Patch SHA256: `3cbde1075811ebab3d9fc1a54101ffad0b3749030c3dfc920cbcdca4fde2c619`.
