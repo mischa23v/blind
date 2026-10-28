@@ -1,0 +1,100 @@
+{
+  "parent": "4eb0d10f1724bce3ef2f6e6a8ff8ae35a06b85e6",
+  "scope": "explicit hosted81 linkage only; existing testsource/83/runtime/workflow unchanged",
+  "files": [
+    {
+      "path": "tools/generate-xcode-project.mjs",
+      "bytes": 49920,
+      "sha256": "57c6581051415118a06de6d4b47de064723fd0e2505a53dd5a34614482f4811b"
+    },
+    {
+      "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
+      "bytes": 40288,
+      "sha256": "2d3c3327bb7fff87bf134fff97bcd8d2f8565ee9d6e40e7549923adb675b4127"
+    },
+    {
+      "path": "tools/test/hosted-mesh-decoder-link.test.mjs",
+      "bytes": 3826,
+      "sha256": "49b7c0f6683fc937eff7aa4942151cdc7cd865585d09472feeb62ac8f3da7290"
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/check.py",
+      "bytes": 13717,
+      "sha256": "3bc0c442a22ea30adec705240d8b6a95cfdcc2884636a492407aed86b8e8f180"
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json",
+      "bytes": 7024,
+      "sha256": "c31c943fcea3b60741c1d170056afe418e551f8873e60e698ecd9ab64fe8f72d"
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/hosted-decoder-link-membership.patch",
+      "bytes": 5663,
+      "sha256": "275ee7237a2e740250c9bf870157e0e91912d819932aa55332ae668aa30876ef"
+    },
+    {
+      "path": "research/hosted-mesh-decoder-link-20261028/README.md",
+      "bytes": 3145,
+      "sha256": "05594d82fd6a188ae27d240119abc4426991dd6a8255dc184364b85ab3b4b661"
+    },
+    {
+      "path": "research/hosted-mesh-decoder-link-20261028/RESULT.json",
+      "bytes": 1294,
+      "sha256": "0813b6e62150723661f0d4dde3a66066016c4c21d89963c0726701c79edff40b"
+    },
+    {
+      "path": "research/hosted-mesh-decoder-link-20261028/check.py",
+      "bytes": 6358,
+      "sha256": "7a5180481e27fb9cf61037b3e538950dcb2d85bb3cb95f133469c2a243997e81"
+    },
+    {
+      "path": "research/hosted-mesh-decoder-link-20261028/generator-link.patch",
+      "bytes": 5149,
+      "sha256": "ea809da5c6292fdd115570eaa3832cd21fa9cfc8f43523d447704192e658aba9"
+    },
+    {
+      "path": "research/hosted-mesh-decoder-link-20261028/generator.before.mjs",
+      "bytes": 49269,
+      "sha256": "0e154bcf64cd499f3ab48758185228107de530b6dac66b8fe76b528c1bfce7e3"
+    },
+    {
+      "path": "research/hosted-mesh-decoder-link-20261028/integrated-SOURCE_PINS.json.before",
+      "bytes": 6574,
+      "sha256": "a65951fece8fc480feac441138a80dfc782a8d813880c3db0b8d10892e4c152e"
+    },
+    {
+      "path": "research/hosted-mesh-decoder-link-20261028/integrated-check.py.before",
+      "bytes": 13292,
+      "sha256": "00efd7ccb22b565cffc7c28701ba68e35a334967c23637466bcd0192d66b7137"
+    },
+    {
+      "path": "research/hosted-mesh-decoder-link-20261028/integrated-result.json",
+      "bytes": 6160,
+      "sha256": "bce7b0cd13fce6634354e8556f2f8a961555c8dd90309a5f1d0b2b2f8f18bc07"
+    },
+    {
+      "path": "research/hosted-mesh-decoder-link-20261028/project.pbxproj.before",
+      "bytes": 39859,
+      "sha256": "1193e809452cc763af98250a8c27bba7085254bb11504b17a00bd99ebe51a7a3"
+    },
+    {
+      "path": "research/hosted-mesh-decoder-link-20261028/regression.tap",
+      "bytes": 852,
+      "sha256": "8a8e72d0919c50049d008a88fae1fe5a92d080284eb41438f6bd59c434476e36"
+    },
+    {
+      "path": "research/hosted-mesh-decoder-link-20261028/verified-app-inventory.json",
+      "bytes": 7396,
+      "sha256": "f2ddd6f3670ec72d0690f5d983359b3c77d830c0a4f676aff0bdfb4acb3cdb5d"
+    }
+  ],
+  "checks": {
+    "source": 18,
+    "nodeTests": 3,
+    "cumulative85": 70,
+    "remoteAppInventory": 65,
+    "localAppSwiftFiles": 5,
+    "appleLinkVerified": false,
+    "hostedTestsExecutedAfterFix": false
+  }
+}

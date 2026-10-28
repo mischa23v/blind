@@ -10,12 +10,12 @@
   },
   "integrated": {
     "ios/BlindAssist/NavigationModel.swift": "3943fc01cbe915f941d653827ff14c80093bbceef9215f77fa60c03e795cf7b1",
-    "ios/BlindAssist.xcodeproj/project.pbxproj": "1193e809452cc763af98250a8c27bba7085254bb11504b17a00bd99ebe51a7a3",
+    "ios/BlindAssist.xcodeproj/project.pbxproj": "2d3c3327bb7fff87bf134fff97bcd8d2f8565ee9d6e40e7549923adb675b4127",
     "ios/BlindAssist/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
     "tools/ci/native-apple.sh": "c6c51f72b00004b17aba1ef20b5a4314c5062847cddfa7a377cba41060b093c4",
     ".github/workflows/native-apple.yml": "d5d9d483e138803d4c952976fe0bfa531946f8f0ebffe198abb0d08a9d3b799b",
     ".github/workflows/native-candidate-app-integration.yml": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
-    "research/native-candidate-app-integration-85/integrated/check.py": "00efd7ccb22b565cffc7c28701ba68e35a334967c23637466bcd0192d66b7137",
+    "research/native-candidate-app-integration-85/integrated/check.py": "3bc0c442a22ea30adec705240d8b6a95cfdcc2884636a492407aed86b8e8f180",
     "research/native-candidate-app-integration-85/integrated/README.md": "e0c2967287b5ce57ab0c630f3b07fd1f466121aceae1cf931d48d113a5703bb1",
     "research/native-candidate-app-integration-85/app-integration.patch": "3cbde1075811ebab3d9fc1a54101ffad0b3749030c3dfc920cbcdca4fde2c619",
     "research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
@@ -23,7 +23,7 @@
     "research/native-candidate-app-integration-85/integrated/practice-publication.patch": "d63db63272a4bf53d9a4209cb5be2d3e55ff44a782242eeede2a46a4a5178156",
     "research/native-candidate-app-integration-85/integrated/project-canonicalization.patch": "57860e8d3c8513bfca04a636def7aec9aaaa2b201ac3985db2ebf011618f43f8",
     "research/native-candidate-app-integration-85/integrated/connected-bench-preview-membership.patch": "85d1a3c5982030f8437e7695ae3a70623a53747f0a96f3a7fbd89c515ed9a7c9",
-    "tools/generate-xcode-project.mjs": "0e154bcf64cd499f3ab48758185228107de530b6dac66b8fe76b528c1bfce7e3",
+    "tools/generate-xcode-project.mjs": "57c6581051415118a06de6d4b47de064723fd0e2505a53dd5a34614482f4811b",
     "research/native-candidate-app-integration-85/integrated/navigation-test-recording.patch": "e6cf0038fb7814ce20ed31baddf6ee48c8990a81afc8af92a4e1b766aa130865",
     "research/native-candidate-app-integration-85/integrated/saved-frame-camera-association.patch": "36703f6e1a78bf5c027e94563f7de8661be8a7862397aad96c16bb698247c2de",
     "research/native-candidate-app-integration-85/integrated/scene-timing-ci-helper.patch": "af1124b6dae32a945a625b2c017f532e15d23df721cce323fef09e580cd81e4b",
@@ -35,7 +35,9 @@
     "research/native-candidate-app-integration-85/integrated/classification-ingress-membership.patch": "1268edf8dfa33164b03c3ca403d1cb3c5f9f05ea2b920435efe7d0abe7af402c",
     "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "733a7bdcc4a8da7ff4fc95c087b690e369ca03c79adcc729e277934d708b53b1",
     "research/mesh-candidate-ingress-83/SOURCE_PINS.json": "5d54a3c436166fd1ee1568cc15f2c34ce724958eee6a630d006c1e448cd1663a",
-    "ios/BlindAssistTests/ClassificationIngressTests.swift": "5acab13703280db80c7faba48d82927baabf6fa1d78f3103ed2ce4f14435f8bb"
+    "ios/BlindAssistTests/ClassificationIngressTests.swift": "5acab13703280db80c7faba48d82927baabf6fa1d78f3103ed2ce4f14435f8bb",
+    "research/native-candidate-app-integration-85/integrated/hosted-decoder-link-membership.patch": "275ee7237a2e740250c9bf870157e0e91912d819932aa55332ae668aa30876ef",
+    "tools/test/hosted-mesh-decoder-link.test.mjs": "49b7c0f6683fc937eff7aa4942151cdc7cd865585d09472feeb62ac8f3da7290"
   },
   "beforeCriticalOrder": {
     "ios/BlindAssist/NavigationModel.swift": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307"
@@ -77,5 +79,8 @@
   },
   "beforeClassificationIngressMembership": {
     "ios/BlindAssist.xcodeproj/project.pbxproj": "d65a2d9eaa66fdb5a46e89ac27438cf1340cc31f096423d16abaa6adbc37c543"
+  },
+  "beforeHostedDecoderLinkMembership": {
+    "ios/BlindAssist.xcodeproj/project.pbxproj": "1193e809452cc763af98250a8c27bba7085254bb11504b17a00bd99ebe51a7a3"
   }
 }

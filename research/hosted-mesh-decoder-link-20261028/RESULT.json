@@ -1,0 +1,37 @@
+{
+  "kind": "source_graph_and_inverse_only",
+  "passed": 18,
+  "checks": [
+    "all nine classification fixtures byte unchanged",
+    "83 source byte unchanged",
+    "latest workflow byte unchanged",
+    "native helper byte unchanged",
+    "exact latest parent pins snapshot",
+    "new inverse before classification inverse",
+    "entire previous checker preserved",
+    "all prior inverse metadata preserved",
+    "only narrow intended pins change",
+    "all changed pins exact",
+    "exact prior project pin",
+    "exact inverse ios/BlindAssist.xcodeproj/project.pbxproj",
+    "exact forward ios/BlindAssist.xcodeproj/project.pbxproj",
+    "exact inverse tools/generate-xcode-project.mjs",
+    "exact forward tools/generate-xcode-project.mjs",
+    "canonical65 inventory and unchanged app/test source graph",
+    "three graph/symbol regression tests pass",
+    "cumulative70 source checks pass"
+  ],
+  "project": {
+    "canonicalBeforeAndAfter": true,
+    "remoteAppFiles": 65,
+    "appAndTestSourcesUnchanged": true,
+    "appLinkageAndAllBuildSettingsUnchanged": true
+  },
+  "regressionTestsPassed": 3,
+  "cumulativeSourceChecks": 70,
+  "localAppSwiftFiles": 5,
+  "appleLinkVerified": false,
+  "hostedTestsExecutedAfterFix": false,
+  "workflowChanged": false,
+  "physicalAuthority": false
+}
