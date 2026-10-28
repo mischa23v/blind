@@ -199,7 +199,7 @@ jobs:
           git status --porcelain > "$out/source-after.txt"
           test "${statuses[0]}" -eq 0
           test "${statuses[1]}" -eq 0
-          test -s "$out/tests.xml"
+          python3 tools/ci/collect-classified-bench.py research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift "$out"
           diff -u "$out/source-before.txt" "$out/source-after.txt"
       - name: Preserve classified-mesh synthetic test results
         if: always()

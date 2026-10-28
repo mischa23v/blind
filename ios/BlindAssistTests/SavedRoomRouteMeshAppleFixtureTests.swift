@@ -3,6 +3,9 @@ import CryptoKit
 import CoreFoundation
 import RoomPlan
 import ModelIO
+import SceneKit
+import SceneKit.ModelIO
+import UIKit
 import simd
 @testable import BlindAssist
 
@@ -45,6 +48,46 @@ import simd
             try SavedRoomRouteMeshAdapter.decode(data: data, expectedSHA256: expected)
         }.value
         return (mesh, try JSONDecoder().decode(RawRoom.self, from: data))
+    }
+    func testPublicRawExportAndExactDegenerateReceiptsRemainAuditable() async throws {
+        for fixture in Fixture.allCases {
+            let (mesh, _) = try await snapshot(fixture)
+            XCTAssertEqual(mesh.rawExportTriangles.count / 3, fixture == .hallway ? 334 : 236)
+            XCTAssertEqual(mesh.ignoredDegenerateFaces.count, fixture == .hallway ? 4 : 0)
+            let ignored = Set(mesh.ignoredDegenerateFaces.map(\.rawTriangleIndex))
+            XCTAssertEqual(ignored.count, mesh.ignoredDegenerateFaces.count)
+            for receipt in mesh.ignoredDegenerateFaces {
+                XCTAssertEqual(receipt.featureID.uuidString, "90B9E5EF-6BE5-4E01-83F5-B5F757B563FA")
+                XCTAssertEqual(mesh.rawExportTriangleFeatureIDs[receipt.rawTriangleIndex], receipt.featureID)
+                let offset = receipt.rawTriangleIndex * 3
+                XCTAssertEqual(receipt.indices, Array(mesh.rawExportTriangles[offset..<(offset+3)]))
+                let rawWorld = receipt.indices.map { index -> [Double] in
+                    let i = Int(index) * 3
+                    return Array(mesh.rawExportVertices[i..<(i+3)])
+                }
+                XCTAssertEqual(receipt.worldVertices, rawWorld)
+                let local = receipt.localVertices.map { SIMD3<Double>($0[0],$0[1],$0[2]) }
+                let world = receipt.worldVertices.map { SIMD3<Double>($0[0],$0[1],$0[2]) }
+                XCTAssertTrue(try SavedRoomRouteMeshAdapter.exactDuplicateTriangleDisposition(local: local, world: world))
+            }
+            let floors = Set(mesh.features.filter { $0.kind == .floor }.map(\.id))
+            let rawFaces = mesh.rawExportTriangleFeatureIDs.indices.filter {
+                !floors.contains(mesh.rawExportTriangleFeatureIDs[$0]) && !ignored.contains($0)
+            }
+            let routeFaces = mesh.floorSupport.indices.filter { !mesh.floorSupport[$0] }
+            XCTAssertEqual(rawFaces.count, routeFaces.count)
+            for (rawFace,routeFace) in zip(rawFaces,routeFaces) {
+                XCTAssertEqual(mesh.rawExportTriangleFeatureIDs[rawFace], mesh.triangleFeatureIDs[routeFace])
+                for corner in 0..<3 {
+                    let rawIndex = Int(mesh.rawExportTriangles[rawFace*3+corner])*3
+                    let routeIndex = Int(mesh.triangles[routeFace*3+corner])*3
+                    XCTAssertEqual(Array(mesh.rawExportVertices[rawIndex..<(rawIndex+3)]).map(\.bitPattern),
+                        Array(mesh.vertices[routeIndex..<(routeIndex+3)]).map(\.bitPattern),
+                        "Every positive-area obstacle corner and face order must remain unchanged")
+                }
+            }
+            XCTAssertFalse(mesh.physicalAuthority)
+        }
     }
     private func vertex(_ mesh: SavedRoomRouteMeshSnapshot, _ index: Int32) -> SIMD3<Double> {
         let i = Int(index) * 3
@@ -131,6 +174,10 @@ import simd
         var geometryProbe: SourceBoundsProbe?
         var geometryProbeFailure: String?
         var meshParity: MeshParityCapture?
+        var floorTessellation: [HistoricalFloorPlatformProbe.Capture] = []
+        var rawExportTriangleCount: Int?
+        var routingTriangleCount: Int?
+        var ignoredDegenerateFaces: [SavedRoomRouteMeshSnapshot.IgnoredDegenerateFace] = []
     }
     /// Exact Float32 words from the raw diagnostic Model I/O import. This is
     /// separate from the adapter's routing geometry and never grants authority.
@@ -399,7 +446,14 @@ import simd
             result.inventoryFailure = "wrongExecutionContext"
             return .init(inventory: result, sameExport: nil)
         }
-        do { _ = try Adapter.decode(data: data, expectedSHA256: expectedSHA256) }
+        do {
+            let snapshot = try Adapter.decode(data: data, expectedSHA256: expectedSHA256)
+            // Only the two unchanged public-fixture digests admitted above can
+            // reach this artifact. Private snapshots are never logged/uploaded.
+            result.rawExportTriangleCount = snapshot.rawExportTriangles.count / 3
+            result.routingTriangleCount = snapshot.triangles.count / 3
+            result.ignoredDegenerateFaces = snapshot.ignoredDegenerateFaces
+        }
         catch { result.adapterFailure = failureCode(error) }
         do {
             let raw = try JSONDecoder().decode(RawRoom.self, from: data)
@@ -410,6 +464,11 @@ import simd
             }
             let room = try JSONDecoder().decode(CapturedRoom.self, from: data)
             let sourceFeatures = Dictionary(uniqueKeysWithValues: try Adapter.originalFeatures(room).map { ($0.id, $0) })
+            // This is inside the unchanged two-public-fixture digest admission.
+            // Capture direct generated buffers before any bridge conversion.
+            result.floorTessellation = sourceFeatures.values.filter { $0.kind == .floor }.map {
+                HistoricalFloorPlatformProbe.capture($0)
+            }
             let manager = FileManager.default
             var root = manager.temporaryDirectory.appendingPathComponent("BlindPublicAppleMeshInventory-\(UUID().uuidString)", isDirectory: true)
             try manager.createDirectory(at: root, withIntermediateDirectories: false,
@@ -901,6 +960,70 @@ import simd
 
 
 
+/// Test-only, bounded inspection of Apple's generated buffers. Call only for
+/// synthetic input or after the two original-public-fixture digest guard. No
+/// application logs or private-room diagnostics are introduced.
+private enum HistoricalFloorPlatformProbe {
+    struct Source: Encodable, Sendable {
+        let vectorCount, componentsPerVector, bytesPerComponent, dataOffset, dataStride, dataByteCount: Int
+        let usesFloatComponents: Bool
+        let dataBase64: String?
+    }
+    struct Element: Encodable, Sendable {
+        let primitiveType, primitiveCount, bytesPerIndex, dataByteCount: Int
+        let dataBase64: String?
+    }
+    struct Geometry: Encodable, Sendable {
+        let sourceCount, elementCount: Int
+        let sources: [Source]
+        let elements: [Element]
+    }
+    struct Capture: Encodable, Sendable {
+        let schema = "blind.public-or-synthetic-floor-tessellation-probe.v1"
+        let physicalAuthority = false
+        let sourcePolygon: [[Double]]
+        let direct, afterModelIOConversion, roundTrip: Geometry
+        let modelIOVertexCount, modelIOSubmeshCount: Int
+        let adapterFailure: String?
+    }
+    static func inventory(_ geometry: SCNGeometry) -> Geometry {
+        let sources = geometry.sources(for: .vertex)
+        return .init(sourceCount: sources.count, elementCount: geometry.elements.count,
+            sources: sources.prefix(8).map {
+                .init(vectorCount: $0.vectorCount, componentsPerVector: $0.componentsPerVector,
+                    bytesPerComponent: $0.bytesPerComponent, dataOffset: $0.dataOffset,
+                    dataStride: $0.dataStride, dataByteCount: $0.data.count,
+                    usesFloatComponents: $0.usesFloatComponents,
+                    dataBase64: $0.data.count <= 4096 ? $0.data.base64EncodedString() : nil)
+            }, elements: geometry.elements.prefix(8).map {
+                .init(primitiveType: $0.primitiveType.rawValue, primitiveCount: $0.primitiveCount,
+                    bytesPerIndex: $0.bytesPerIndex, dataByteCount: $0.data.count,
+                    dataBase64: $0.data.count <= 4096 ? $0.data.base64EncodedString() : nil)
+            })
+    }
+    static func capture(_ feature: SavedRoomRouteMeshSnapshot.Feature) -> Capture {
+        // All callers use admitted original features or the fixed synthetic
+        // polygons below; production validation is not bypassed by this probe.
+        let path = UIBezierPath(), points = feature.polygonCorners
+        if let first = points.first {
+            path.move(to: CGPoint(x: first[0], y: first[1]))
+            for p in points.dropFirst() { path.addLine(to: CGPoint(x: p[0], y: p[1])) }
+            path.close()
+        }
+        let shape = SCNShape(path: path, extrusionDepth: 0)
+        shape.chamferRadius = 0
+        let direct = inventory(shape)
+        let mesh = MDLMesh(scnGeometry: shape)
+        let roundTrip = inventory(SCNGeometry(mdlMesh: mesh))
+        var failure: String?
+        do { _ = try SavedRoomRouteMeshAdapter.tessellateHistoricalFloor(feature) }
+        catch { failure = (error as? SavedRoomRouteMeshAdapter.Failure).map { String(describing: $0) } ?? "unclassifiedError" }
+        return .init(sourcePolygon: points, direct: direct, afterModelIOConversion: inventory(shape),
+            roundTrip: roundTrip, modelIOVertexCount: mesh.vertexCount,
+            modelIOSubmeshCount: mesh.submeshes?.count ?? 0, adapterFailure: failure)
+    }
+}
+
 /// Synthetic contracts for platform tessellation; these are not real-room or
 /// device safety trials. The unchanged Apple fixtures retain their own tests.
 @MainActor final class SavedRoomHistoricalSupportTests: XCTestCase {
@@ -912,6 +1035,22 @@ import simd
     private let square: [[Double]] = [[-1,-1,0],[1,-1,0],[1,1,0],[-1,1,0]]
     private func onWorker(_ feature: SavedRoomRouteMeshSnapshot.Feature) async throws -> SavedRoomRouteMeshAdapter.HistoricalRoutingGeometry {
         try await Task.detached(priority: .utility) { try SavedRoomRouteMeshAdapter.tessellateHistoricalFloor(feature) }.value
+    }
+    func testNativeGeneratedBufferInventoryRetainsFailureStage() async throws {
+        let concave: [[Double]] = [[-1,-1,0],[1,-1,0],[1,0,0],[0,0,0],[0,1,0],[-1,1,0]]
+        let features = [floor(square), floor(Array(square.reversed())), floor(concave)]
+        let captures = await Task.detached(priority: .utility) {
+            features.map { HistoricalFloorPlatformProbe.capture($0) }
+        }.value
+        let data = try JSONEncoder().encode(captures)
+        XCTAssertLessThanOrEqual(data.count, 65_536)
+        let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+        attachment.name = "HISTORICAL_FLOOR_TESSELLATION_BUFFERS.json"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        for capture in captures {
+            XCTAssertNil(capture.adapterFailure, "Inspect retained generated buffers; no fallback geometry or relaxed tolerance")
+        }
     }
     func testZeroExtrusionHasOnlyOriginalPlaneSupportForBothSourceWindings() async throws {
         for corners in [square, Array(square.reversed())] {
@@ -935,10 +1074,25 @@ import simd
             XCTAssertTrue((10...12).contains(result.vertices[index + 2]))
         }
     }
+    func testCPUConcavityRetainsExactOriginalVerticesAndPlane() async throws {
+        let corners: [[Double]] = [[-1,-1,0.125],[1,-1,0.125],[1,0,0.125],
+                                  [0,0,0.125],[0,1,0.125],[-1,1,0.125]]
+        let result = try await onWorker(floor(corners))
+        XCTAssertEqual(result.vertices.count, corners.count * 3)
+        // The known rigid test frame maps (x,y,z) to (x,z,-y). This
+        // independently proves there are no generated or rounded positions.
+        XCTAssertEqual(result.vertices, corners.flatMap { [$0[0], $0[2], -$0[1]] })
+        XCTAssertEqual(result.triangles.count, 12)
+        XCTAssertNoThrow(try SavedRoomRouteMeshAdapter.verifyHistoricalFloorBoundary(source: corners,
+            tessellated: corners, triangles: result.triangles, epsilon: 0))
+    }
     func testMalformedSourcePolygonsAreRejectedInsteadOfRepaired() async {
         let polygons: [[[Double]]] = [
             [[-1,-1,0],[1,1,0],[-1,1,0],[1,-1,0]], // crossing
             [[-1,-1,0],[1,-1,0],[1,-1,0],[-1,1,0]], // duplicate edge
+            [[0,0,0],[2,0,0],[2,2,0],[1,0,0],[0,2,0]], // nonadjacent touch
+            [[0,0,0],[2,0,0],[1,0,0],[2,2,0],[0,2,0]], // adjacent backtrack
+            [[0,0,0],[2,0,0],[2,2,0],[0,2,0],[0,0,0]], // repeated closing corner
             [[-1,-1,0],[1,-1,0],[1,1,0.1],[-1,1,0]], // not planar
             [[0,0,0],[1,0,0],[2,0,0]], // zero area
             [[0,0,0],[1,0,0],[0,Double.nan,0]],
@@ -972,6 +1126,88 @@ import simd
                 XCTAssertLessThanOrEqual(abs(result.vertices[index+2]), 1)
             }
         }
+    }
+    func testExactDuplicateDispositionRequiresSameSourceAndWorldPairs() throws {
+        typealias V = SIMD3<Double>
+        let a = V(0,0,0), b = V(1,0,0), c = V(0,1,0)
+        for points in [[a,a,b],[a,b,b],[a,b,a],[a,a,a]] {
+            XCTAssertTrue(try SavedRoomRouteMeshAdapter.exactDuplicateTriangleDisposition(local: points, world: points))
+        }
+        XCTAssertFalse(try SavedRoomRouteMeshAdapter.exactDuplicateTriangleDisposition(local: [a,b,c], world: [a,b,c]))
+        let tiny = Double(sign: .plus, exponent: -30, significand: 1)
+        let small = [a,V(tiny,0,0),V(0,tiny,0)]
+        XCTAssertFalse(try SavedRoomRouteMeshAdapter.exactDuplicateTriangleDisposition(local: small, world: small),
+            "Every nonzero-area face survives; no small-area tolerance")
+        let invalidPairs: [([V],[V])] = [
+            ([a,b,V(2,0,0)], [a,b,V(2,0,0)]), // distinct-collinear, not duplicate
+            ([a,b,c], [a,b,b]), // transform-induced collapse
+            ([a,b,b], [a,a,b]), // coincident pair changed
+            ([a,b,b], [a,b,c]), // source/world disagreement
+            ([a,b,c], [a,b,V(2,0,0)]), // distinct transform-induced collinearity
+            ([a,b,V(.nan,0,0)], [a,b,c]),
+            ([a,b,c], [a,b,V(.infinity,0,0)]),
+            ([a,b], [a,b,c])
+        ]
+        for (local,world) in invalidPairs {
+            XCTAssertThrowsError(try SavedRoomRouteMeshAdapter.exactDuplicateTriangleDisposition(local: local, world: world)) {
+                XCTAssertEqual($0 as? SavedRoomRouteMeshAdapter.Failure, .invalidMesh)
+            }
+        }
+    }
+    func testWitnessedDuplicateNormalizationPreservesObstacleOrderValuesAndBounds() async throws {
+        let source = floor(square)
+        let wall = SavedRoomRouteMeshSnapshot.Feature(id: UUID(), kind: .wall, parentID: nil,
+            category: "wall", transform: [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+            dimensions: [3,2,0], polygonCorners: [], capturedDoorOpen: nil)
+        let furniture = SavedRoomRouteMeshSnapshot.Feature(id: UUID(), kind: .furniture, parentID: nil,
+            category: "storage", transform: wall.transform, dimensions: [1,1,1], polygonCorners: [], capturedDoorOpen: nil)
+        let tiny = Double(sign: .plus, exponent: -20, significand: 1)
+        let vertices: [Double] = [3,0,0, 3,2,0, 3,0,2, // valid wall
+                                  3,0,0, 3,2,0, 3,2,0, // distinct indices, exact duplicate positions
+                                  4,0,0, 4+tiny,0,0, 4,0,tiny] // valid tiny furniture face
+        let triangles: [Int32] = [0,1,2,3,4,5,6,7,8]
+        let ids = [wall.id,wall.id,furniture.id]
+        let result = try await Task.detached(priority: .utility) {
+            try SavedRoomRouteMeshAdapter.historicalRoutingGeometry(features: [source,wall,furniture],
+                rawVertices: vertices, rawTriangles: triangles, rawTriangleFeatureIDs: ids, ignoredRawTriangleIndices: [1])
+        }.value
+        let expected = Array(vertices.prefix(9)) + Array(vertices.suffix(9))
+        XCTAssertEqual(Array(result.vertices.prefix(18)).map(\.bitPattern), expected.map(\.bitPattern))
+        XCTAssertEqual(Array(result.triangles.prefix(6)), [0,1,2,3,4,5])
+        XCTAssertEqual(Array(result.featureIDs.prefix(2)), [wall.id,furniture.id])
+        XCTAssertEqual(Array(result.floorSupport.prefix(2)), [false,false])
+        // This fixture's duplicate endpoints already occur in valid faces.
+        // Assert bounds, not the stronger (false) equality of geometric pointsets.
+        for axis in 0..<3 {
+            let before = stride(from: axis, to: vertices.count, by: 3).map { vertices[$0] }
+            let after = stride(from: axis, to: expected.count, by: 3).map { expected[$0] }
+            XCTAssertEqual(before.min(), after.min()); XCTAssertEqual(before.max(), after.max())
+        }
+        XCTAssertEqual(triangles, [0,1,2,3,4,5,6,7,8], "Raw arrays remain unchanged")
+        XCTAssertEqual(vertices.count, 27)
+    }
+    func testDuplicateNormalizationRejectsMissingExtraRepeatedAndInvalidReceipts() async {
+        let source = floor(square)
+        let wall = SavedRoomRouteMeshSnapshot.Feature(id: UUID(), kind: .wall, parentID: nil,
+            category: "wall", transform: [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+            dimensions: [3,2,0], polygonCorners: [], capturedDoorOpen: nil)
+        let vertices: [Double] = [3,0,0,3,2,0,3,0,2, 3,0,0,3,2,0,3,2,0]
+        for ignored in [[],[0],[0,1],[1,1],[-1],[2]] as [[Int]] {
+            do {
+                _ = try await Task.detached(priority: .utility) {
+                    try SavedRoomRouteMeshAdapter.historicalRoutingGeometry(features: [source,wall], rawVertices: vertices,
+                        rawTriangles: [0,1,2,3,4,5], rawTriangleFeatureIDs: [wall.id,wall.id], ignoredRawTriangleIndices: ignored)
+                }.value
+                XCTFail("Missing, extra or invalid receipt was accepted")
+            } catch { XCTAssertEqual(error as? SavedRoomRouteMeshAdapter.Failure, .invalidMesh) }
+        }
+        do {
+            _ = try await Task.detached(priority: .utility) {
+                try SavedRoomRouteMeshAdapter.historicalRoutingGeometry(features: [source,wall], rawVertices: vertices,
+                    rawTriangles: [3,4,5], rawTriangleFeatureIDs: [wall.id], ignoredRawTriangleIndices: [0])
+            }.value
+            XCTFail("All-degenerate non-floor feature was accepted")
+        } catch { XCTAssertEqual(error as? SavedRoomRouteMeshAdapter.Failure, .invalidMesh) }
     }
     func testFeatureFrameRejectsScaleShiftAndDoubleTransform() throws {
         let source = floor(square, transform: [1,0,0,0,0,0,-1,0,0,1,0,0,4,2,3,1])

@@ -5,7 +5,7 @@ on:
     branches: [master, codex/recovery-hazard-order-20261027]
     paths:
       - '.github/workflows/native-floor-probe.yml'
-      - 'research/native-floor-import-repair-20261028/**'
+      - 'research/native-floor-import-repair-20261028/scnshape_probe.swift'
   workflow_dispatch:
 
 permissions:

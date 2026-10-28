@@ -1,0 +1,50 @@
+--- a/research/mesh-candidate-ingress-83/apple/ci.py
++++ b/research/mesh-candidate-ingress-83/apple/ci.py
+@@ -23,8 +23,11 @@
+ package_runner = load('stage75_runner', PACKAGE_HOME / 'apple/ci.py')
+ 
+ 
+-def verify_pins(base, manifest):
+-    for name, digest in json.loads(manifest.read_text()).items():
++def verify_pins(base, manifest, historical):
++    current = json.loads(manifest.read_text())
++    assert current['schema'] == 1
++    assert hashlib.sha256(historical.read_bytes()).hexdigest() == current['historical_manifest_sha256'], 'historical manifest changed'
++    for name, digest in current['files'].items():
+         assert hashlib.sha256((base / name).read_bytes()).hexdigest() == digest, name
+ 
+ 
+@@ -35,8 +38,8 @@
+     assert runner.output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD']) == os.environ['GITHUB_SHA']
+     assert runner.output(['xcodebuild', '-version']).splitlines()[0] == 'Xcode 27.0'
+     assert runner.output(['xcrun', '--sdk', 'iphonesimulator', '--show-sdk-version']) == '27.0'
+-    verify_pins(ROOT, HOME / 'SOURCE_PINS.json')
+-    verify_pins(PACKAGE_HOME, PACKAGE_HOME / 'APPLE_SOURCE_PINS.json')
++    verify_pins(ROOT, HOME / 'CURRENT_SOURCE_PINS.json', HOME / 'SOURCE_PINS.json')
++    verify_pins(PACKAGE_HOME, PACKAGE_HOME / 'APPLE_CURRENT_SOURCE_PINS.json', PACKAGE_HOME / 'APPLE_SOURCE_PINS.json')
+     out = Path(os.environ['RUNNER_TEMP']) / 'blind-mesh-candidate-ingress-83'
+     out.mkdir(exist_ok=False)
+     (out / 'tmp').mkdir()
+@@ -54,14 +57,20 @@
+         build = package_runner.package_build_command(package, out, stem + '-package', triple, sdkpath)
+         package_runner.run(build, stem + '-package-build', out, 300, env=env)
+         bindir = Path(package_runner.output(build + ['--show-bin-path'], env=env))
+-        objects = sorted((bindir / 'CDetour.build').rglob('*.o')) + sorted((bindir / 'BlindRoomMesh.build').glob('*.o'))
++        earcut_objects = sorted((bindir / 'CEarcut.build').rglob('*.o'))
++        assert earcut_objects, 'missing reviewed CEarcut objects'
++        earcut_modulemap = bindir / 'CEarcut.build/module.modulemap'
++        assert earcut_modulemap.is_file(), 'missing SwiftPM CEarcut module map'
++        objects = sorted((bindir / 'CDetour.build').rglob('*.o')) + earcut_objects + sorted((bindir / 'BlindRoomMesh.build').glob('*.o'))
+         assert 25 <= len(objects) <= 64, 'unexpected real package object set'
+         folder = out / stem
+         folder.mkdir()
+         base = ['xcrun', '--sdk', sdk, 'swiftc', '-target', triple, '-sdk', sdkpath,
+                 '-module-cache-path', str(out / (stem + '-client-cache'))]
+         imports = ['-I', str(folder), '-I', str(bindir / 'Modules'),
+-                   '-I', str(package / 'Sources/CDetour/include')]
++                   '-I', str(package / 'Sources/CDetour/include'),
++                   '-I', str(package / 'Sources/CEarcut/include'),
++                   '-Xcc', '-fmodule-map-file=' + str(earcut_modulemap)]
+         libraries = ['-L', str(folder), '-Xlinker', '-rpath', '-Xlinker', str(folder)]
+         # Materialize a linkable dylib from the actual SwiftPM objects, not replacement stubs.
+         runner.run(base + ['-emit-library', *map(str, objects), '-lc++',

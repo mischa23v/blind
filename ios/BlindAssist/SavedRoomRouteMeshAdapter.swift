@@ -2,10 +2,9 @@ import Foundation
 import CryptoKit
 import RoomPlan
 import ModelIO
-import SceneKit
-import UIKit
 import simd
 import BlindCore
+import BlindRoomMesh
 
 /// Owned, historical Apple-export geometry. No live ARSession, registration,
 /// floor-support lease, sensor freshness, speech or physical-output capability.
@@ -26,11 +25,20 @@ struct SavedRoomRouteMeshSnapshot: Sendable {
     let features: [Feature]
     // The raw Apple export remains available unchanged for audit/rendering.
     // Routing uses its non-floor triangles plus the original semantic floor
-    // polygon tessellated by SceneKit, never the exported slab's added rim.
+    // polygon tessellated by pinned Mapbox earcut, never the exported slab's added rim.
     let rawExportVertices: [Double]
     let rawExportTriangles: [Int32]
     let rawExportTriangleFeatureIDs: [UUID]
-    let historicalSupportProvenance = "roomplan-original-polygon-platform-tessellation"
+    struct IgnoredDegenerateFace: Encodable, Sendable {
+        let rawTriangleIndex: Int
+        let featureID: UUID
+        let indices: [Int32]
+        let localVertices, worldVertices: [[Double]]
+    }
+    // Triangle-collision normalization only: zero-area line interiors are NOT
+    // claimed equivalent to retained area surfaces. Raw geometry stays intact.
+    var ignoredDegenerateFaces: [IgnoredDegenerateFace] = []
+    let historicalSupportProvenance = "roomplan-original-polygon-earcut-v3.2.4"
     let vertices: [Double] // routing geometry in saved-world XYZ metres
     let triangles: [Int32]
     let floorSupport: [Bool] // exactly one value per triangle
@@ -45,7 +53,7 @@ struct SavedRoomRouteMeshSnapshot: Sendable {
 
 /// Apple provides exported obstacle tessellation/cutouts and separately the
 /// original semantic floor polygon. Preserve the raw export; derive historical
-/// route support with Apple's flat SCNShape tessellator. No guessed floor fill,
+/// route support with released Mapbox earcut CPU tessellation. No guessed floor fill,
 /// physical support claim, detailed model replacement or geometry inflation.
 /// Call only on a bounded utility worker, never the main/AR/hazard callback.
 enum SavedRoomRouteMeshAdapter {
@@ -57,6 +65,9 @@ enum SavedRoomRouteMeshAdapter {
         // missingMetadata stages independently of the supported wire encoding.
         case metadataReadFailed, metadataDecodeFailed, metadataEmpty, metadataInvalidEntries
         case meshNodeMissingMetadata, metadataUnknownFeature
+        // Content-free native diagnostic stages. No private coordinates or IDs.
+        case floorTessellationFailed, floorTessellationIndexOutOfRange
+        case floorTessellationWindingMismatch, floorTessellationDegenerateTriangle
     }
     static let maximumSourceBytes = 8 * 1024 * 1024
     static let maximumExportBytes = 32 * 1024 * 1024
@@ -64,6 +75,7 @@ enum SavedRoomRouteMeshAdapter {
     static let maximumVertices = 200_000
     static let maximumTriangles = 100_000
     static let maximumNodes = 4_096
+    static let maximumDegenerateFaceReceipts = 4_096
     // Numeric comparison ONLY: Float32 exported vertices plus matrix round trips.
     // This is not RoomPlan accuracy, physical uncertainty or collision clearance.
     static func roundoffAllowance(_ scale: Double) -> Double {
@@ -153,6 +165,7 @@ enum SavedRoomRouteMeshAdapter {
         var vertices: [Double] = [], triangles: [Int32] = [], support: [Bool] = [], triangleIDs: [UUID] = []
         var exported = Set<UUID>(), visited = Set<ObjectIdentifier>(), nodeCount = 0
         var upward = 0, downward = 0
+        var ignoredDegenerateFaces: [SavedRoomRouteMeshSnapshot.IgnoredDegenerateFace] = []
 
         func visit(_ node: MDLObject, inheritedID: UUID?, depth: Int) throws {
             guard depth <= 64, visited.insert(ObjectIdentifier(node)).inserted else { throw Failure.invalidMesh }
@@ -190,6 +203,8 @@ enum SavedRoomRouteMeshAdapter {
                       abs(matrixValues[15] - 1) <= roundoffAllowance(1) else { throw Failure.invalidMesh }
                 let base = Int32(vertices.count / 3)
                 let vertexMap = mesh.vertexBuffers[0].map()
+                var localVertices: [SIMD3<Double>] = []
+                localVertices.reserveCapacity(mesh.vertexCount)
                 for index in 0..<mesh.vertexCount {
                     let address = vertexMap.bytes.advanced(by: index * 12)
                     let p = SIMD4<Float>(address.loadUnaligned(as: Float.self),
@@ -201,6 +216,7 @@ enum SavedRoomRouteMeshAdapter {
                           abs(w.x) <= 10_000, abs(w.y) <= 10_000, abs(w.z) <= 10_000,
                           abs(w.w - 1) <= Float(roundoffAllowance(1)) else { throw Failure.invalidMesh }
                     let value = [Double(w.x), Double(w.y), Double(w.z)]
+                    localVertices.append(SIMD3(Double(p.x), Double(p.y), Double(p.z)))
                     // Furniture and architectural surface dimensions have different
                     // contracts. Apple's architectural export adds solid depth and
                     // end extensions absent from its planar source representation.
@@ -237,12 +253,23 @@ enum SavedRoomRouteMeshAdapter {
                     for offset in stride(from: 0, to: localIndices.count, by: 3) {
                         let indices = Array(localIndices[offset..<(offset + 3)])
                         let a = point(vertices, indices[0]), b = point(vertices, indices[1]), c = point(vertices, indices[2])
+                        let local = indices.map { localVertices[Int($0 - base)] }
+                        let ignored = try exactDuplicateTriangleDisposition(local: local, world: [a,b,c])
                         let normal = simd_cross(b - a, c - a)
-                        guard normal.x.isFinite, normal.y.isFinite, normal.z.isFinite,
-                              simd_length_squared(normal) > 0 else { throw Failure.invalidMesh }
                         let isFloor = feature.kind == .floor
-                        if isFloor { if normal.y > 0 { upward += 1 } else if normal.y < 0 { downward += 1 } }
-                        triangles.append(contentsOf: indices); support.append(isFloor); triangleIDs.append(id); emitted += 1
+                        if ignored {
+                            guard ignoredDegenerateFaces.count < maximumDegenerateFaceReceipts else { throw Failure.budgetExceeded }
+                            ignoredDegenerateFaces.append(.init(rawTriangleIndex: triangles.count / 3,
+                                featureID: id, indices: indices,
+                                localVertices: local.map { [$0.x,$0.y,$0.z] },
+                                worldVertices: [a,b,c].map { [$0.x,$0.y,$0.z] }))
+                        } else {
+                            emitted += 1
+                            if isFloor { if normal.y > 0 { upward += 1 } else if normal.y < 0 { downward += 1 } }
+                        }
+                        // Preserve raw order, indices, feature identity and positions,
+                        // including exact duplicate-position faces, for audit/rendering.
+                        triangles.append(contentsOf: indices); support.append(isFloor); triangleIDs.append(id)
                     }
                 }
                 guard emitted > 0 else { throw Failure.invalidMesh }
@@ -260,9 +287,11 @@ enum SavedRoomRouteMeshAdapter {
               support.count == triangles.count / 3, triangleIDs.count == support.count,
               support.contains(true) else { throw Failure.unsupportedGeometry }
         let routing = try historicalRoutingGeometry(features: features, rawVertices: vertices,
-            rawTriangles: triangles, rawTriangleFeatureIDs: triangleIDs)
+            rawTriangles: triangles, rawTriangleFeatureIDs: triangleIDs,
+            ignoredRawTriangleIndices: ignoredDegenerateFaces.map(\.rawTriangleIndex))
         return .init(sourceSHA256: expectedSHA256, capturedRoomID: room.identifier, features: features,
             rawExportVertices: vertices, rawExportTriangles: triangles, rawExportTriangleFeatureIDs: triangleIDs,
+            ignoredDegenerateFaces: ignoredDegenerateFaces,
             vertices: routing.vertices, triangles: routing.triangles,
             floorSupport: routing.floorSupport, triangleFeatureIDs: routing.featureIDs,
             exportedFeatureIDs: exported, upwardFloorTriangles: routing.upward, downwardFloorTriangles: 0)
@@ -280,6 +309,30 @@ enum SavedRoomRouteMeshAdapter {
         }
     }
 
+    /// Adapt the established exact duplicate-vertex / degenerate-index cleanup
+    /// semantics (Open3D 0.19) without epsilon merging. Both SOURCE and WORLD
+    /// positions must contain the same exact coincident pair; distinct-collinear
+    /// faces and transform-induced collapse remain errors. No thin valid face
+    /// is removed. A true result authorizes triangle-list normalization only.
+    static func exactDuplicateTriangleDisposition(local: [SIMD3<Double>], world: [SIMD3<Double>]) throws -> Bool {
+        guard local.count == 3, world.count == 3,
+              (local + world).allSatisfy({ $0.x.isFinite && $0.y.isFinite && $0.z.isFinite }) else { throw Failure.invalidMesh }
+        let localNormal = simd_cross(local[1]-local[0],local[2]-local[0])
+        let worldNormal = simd_cross(world[1]-world[0],world[2]-world[0])
+        guard [localNormal.x,localNormal.y,localNormal.z,worldNormal.x,worldNormal.y,worldNormal.z].allSatisfy(\.isFinite) else {
+            throw Failure.invalidMesh
+        }
+        let pairs = [(0,1),(1,2),(2,0)]
+        let localDuplicates = pairs.map { local[$0.0] == local[$0.1] }
+        let worldDuplicates = pairs.map { world[$0.0] == world[$0.1] }
+        if localDuplicates.contains(true) || worldDuplicates.contains(true) {
+            guard localDuplicates == worldDuplicates, localDuplicates.contains(true) else { throw Failure.invalidMesh }
+            return true
+        }
+        guard simd_length_squared(localNormal) > 0, simd_length_squared(worldNormal) > 0 else { throw Failure.invalidMesh }
+        return false
+    }
+
     struct HistoricalRoutingGeometry: Sendable {
         var vertices: [Double] = []
         var triangles: [Int32] = []
@@ -289,9 +342,13 @@ enum SavedRoomRouteMeshAdapter {
     }
 
     /// Never use the raw slab top, sides or underside as floor support. Preserve
-    /// all non-floor export triangles without translation, scaling or simplification.
+    /// all positive-area non-floor export triangles without translation, scaling
+    /// or simplification. Only separately witnessed exact duplicate-position
+    /// faces are omitted from this triangle-only representation; raw data and
+    /// per-face endpoint receipts remain available and confer no physical authority.
     static func historicalRoutingGeometry(features: [SavedRoomRouteMeshSnapshot.Feature],
-        rawVertices: [Double], rawTriangles: [Int32], rawTriangleFeatureIDs: [UUID]) throws -> HistoricalRoutingGeometry {
+        rawVertices: [Double], rawTriangles: [Int32], rawTriangleFeatureIDs: [UUID],
+        ignoredRawTriangleIndices: [Int] = []) throws -> HistoricalRoutingGeometry {
         guard rawVertices.count % 3 == 0, rawTriangles.count % 3 == 0,
               rawTriangleFeatureIDs.count == rawTriangles.count / 3,
               rawVertices.count / 3 <= maximumVertices, rawTriangles.count / 3 <= maximumTriangles,
@@ -299,12 +356,23 @@ enum SavedRoomRouteMeshAdapter {
               rawTriangles.allSatisfy({ $0 >= 0 && Int($0) < rawVertices.count / 3 }) else { throw Failure.invalidMesh }
         guard Set(features.map(\.id)).count == features.count else { throw Failure.invalidSource }
         let byID = Dictionary(uniqueKeysWithValues: features.map { ($0.id, $0) })
+        guard ignoredRawTriangleIndices.count <= maximumDegenerateFaceReceipts,
+              Set(ignoredRawTriangleIndices).count == ignoredRawTriangleIndices.count,
+              ignoredRawTriangleIndices.allSatisfy({ $0 >= 0 && $0 < rawTriangleFeatureIDs.count }) else { throw Failure.invalidMesh }
+        let ignored = Set(ignoredRawTriangleIndices)
         var result = HistoricalRoutingGeometry()
         var copiedVertices: [Int32: Int32] = [:]
+        var requiredNonFloor = Set<UUID>(), retainedNonFloor = Set<UUID>()
         for face in rawTriangleFeatureIDs.indices {
             let id = rawTriangleFeatureIDs[face]
             guard let feature = byID[id] else { throw Failure.metadataUnknownFeature }
-            guard feature.kind != .floor else { continue }
+            let indices = Array(rawTriangles[(face * 3)..<(face * 3 + 3)])
+            let world = indices.map { point(rawVertices, $0) }
+            let duplicate = try exactDuplicateTriangleDisposition(local: world, world: world)
+            guard duplicate == ignored.contains(face) else { throw Failure.invalidMesh }
+            if feature.kind != .floor { requiredNonFloor.insert(id) }
+            guard !duplicate, feature.kind != .floor else { continue }
+            retainedNonFloor.insert(id)
             for corner in 0..<3 {
                 let source = rawTriangles[face * 3 + corner]
                 if let existing = copiedVertices[source] { result.triangles.append(existing) }
@@ -317,6 +385,7 @@ enum SavedRoomRouteMeshAdapter {
             }
             result.floorSupport.append(false); result.featureIDs.append(id)
         }
+        guard requiredNonFloor.isSubset(of: retainedNonFloor) else { throw Failure.invalidMesh }
         for floor in features.filter({ $0.kind == .floor }) {
             let flat = try tessellateHistoricalFloor(floor)
             guard flat.vertices.count / 3 <= maximumVertices - result.vertices.count / 3,
@@ -333,8 +402,11 @@ enum SavedRoomRouteMeshAdapter {
         return result
     }
 
-    /// SCNShape owns polygon tessellation. These checks bound and validate its
-    /// result; they are not a second triangulator or a live-ground clearance test.
+    /// Released Mapbox earcut owns CPU polygon tessellation and returns indices
+    /// into the exact source corners. Do not rely on SCNShape's lazy/generated
+    /// buffers: the retained native probes returned empty flat geometry. These
+    /// checks validate the upstream result, not a second triangulator or live
+    /// supporting-floor evidence. Invalid source rings are never repaired.
     static func tessellateHistoricalFloor(_ floor: SavedRoomRouteMeshSnapshot.Feature) throws -> HistoricalRoutingGeometry {
         guard floor.kind == .floor, (3...1024).contains(floor.polygonCorners.count),
               floor.polygonCorners.allSatisfy({ $0.count == 3 && $0.allSatisfy(\.isFinite) }),
@@ -370,71 +442,42 @@ enum SavedRoomRouteMeshAdapter {
             return sum + points[i][0] * next[1] - next[0] * points[i][1]
         }) / 2
         guard sourceArea.isFinite, sourceArea > 0 else { throw Failure.invalidSource }
-        let path = UIBezierPath()
-        path.move(to: CGPoint(x: points[0][0], y: points[0][1]))
-        for p in points.dropFirst() { path.addLine(to: CGPoint(x: p[0], y: p[1])) }
-        path.close()
-        let shape = SCNShape(path: path, extrusionDepth: 0)
-        shape.chamferRadius = 0
-        let sources = shape.sources(for: .vertex)
-        guard sources.count == 1, let source = sources.first,
-              source.usesFloatComponents, source.componentsPerVector == 3,
-              [4,8].contains(source.bytesPerComponent), source.vectorCount > 0,
-              source.vectorCount <= maximumVertices, source.dataOffset >= 0,
-              source.dataStride >= source.bytesPerComponent * 3,
-              source.data.count <= maximumExportBytes, source.dataStride <= maximumExportBytes,
-              source.dataOffset <= source.data.count,
-              (source.vectorCount - 1) <= (source.data.count - source.dataOffset) / source.dataStride,
-              source.dataOffset + (source.vectorCount - 1) * source.dataStride + source.bytesPerComponent * 3 <= source.data.count
-        else { throw Failure.invalidMesh }
+        let indices: [Int32]
+        do { indices = try HistoricalPolygonTriangulation.indices(xy: points.flatMap { [$0[0], $0[1]] }) }
+        catch { throw Failure.floorTessellationFailed }
+        guard !indices.isEmpty, indices.count % 3 == 0,
+              indices.count / 3 <= maximumTriangles,
+              indices.allSatisfy({ $0 >= 0 && Int($0) < points.count }) else {
+            throw Failure.floorTessellationIndexOutOfRange
+        }
         let transform = NativeCameraTransform(columns: floor.transform)
-        var result = HistoricalRoutingGeometry(), localPoints: [[Double]] = []
-        try source.data.withUnsafeBytes { data in
-            for index in 0..<source.vectorCount {
-                let offset = source.dataOffset + index * source.dataStride
-                let p = (0..<3).map { component -> Double in
-                    let at = offset + component * source.bytesPerComponent
-                    return source.bytesPerComponent == 4 ? Double(data.loadUnaligned(fromByteOffset: at, as: Float.self)) :
-                        data.loadUnaligned(fromByteOffset: at, as: Double.self)
-                }
-                guard p.allSatisfy(\.isFinite), abs(p[2]) <= epsilon else { throw Failure.invalidMesh }
-                let local = [p[0], p[1], planeZ]
-                let world = try transform.applying(to: Point3(local[0], local[1], local[2]))
-                let value = [world.x, world.y, world.z]
-                try verifySourceBounds(value, feature: floor)
-                localPoints.append(local); result.vertices.append(contentsOf: value)
-            }
+        var result = HistoricalRoutingGeometry()
+        // Preserve the original Double values (decoded from RoomPlan Float32),
+        // including a nonzero source plane offset. No generated mesh positions,
+        // deduplication, grid quantization or affine transform is inserted here.
+        let localPoints = points
+        for local in localPoints {
+            let world = try transform.applying(to: Point3(local[0], local[1], local[2]))
+            let value = [world.x, world.y, world.z]
+            try verifySourceBounds(value, feature: floor)
+            result.vertices.append(contentsOf: value)
         }
         var area = 0.0
-        guard !shape.elements.isEmpty, shape.elements.count <= maximumNodes else { throw Failure.invalidMesh }
-        for element in shape.elements {
-            guard element.primitiveType == .triangles, element.primitiveCount > 0,
-                  element.primitiveCount <= maximumTriangles - result.triangles.count / 3,
-                  [1,2,4].contains(element.bytesPerIndex),
-                  element.primitiveCount <= element.data.count / (3 * element.bytesPerIndex) else { throw Failure.invalidMesh }
-            try element.data.withUnsafeBytes { data in
-                for triangle in 0..<element.primitiveCount {
-                    let indices = (0..<3).map { corner -> Int32 in
-                        let offset = (triangle * 3 + corner) * element.bytesPerIndex
-                        switch element.bytesPerIndex {
-                        case 1: return Int32(data.loadUnaligned(fromByteOffset: offset, as: UInt8.self))
-                        case 2: return Int32(data.loadUnaligned(fromByteOffset: offset, as: UInt16.self))
-                        default: return Int32(bitPattern: data.loadUnaligned(fromByteOffset: offset, as: UInt32.self))
-                        }
-                    }
-                    guard indices.allSatisfy({ $0 >= 0 && Int($0) < localPoints.count }) else { throw Failure.invalidMesh }
-                    let a = point(result.vertices, indices[0]), b = point(result.vertices, indices[1]), c = point(result.vertices, indices[2])
-                    let normal = simd_cross(b-a,c-a)
-                    // The platform's front face must already point upward. Do not
-                    // silently flip imported triangles to obtain a usable route.
-                    guard normal.y > 0, [normal.x,normal.y,normal.z].allSatisfy(\.isFinite) else { throw Failure.unsupportedGeometry }
-                    let local = indices.map { localPoints[Int($0)] }
-                    let localArea = abs(orient(local[0],local[1],local[2])) / 2
-                    guard localArea > 0 else { throw Failure.invalidMesh }
-                    area += localArea
-                    result.triangles.append(contentsOf: indices)
-                }
+        for offset in stride(from: 0, to: indices.count, by: 3) {
+            let face = Array(indices[offset..<(offset + 3)])
+            let a = point(result.vertices, face[0]), b = point(result.vertices, face[1]), c = point(result.vertices, face[2])
+            let normal = simd_cross(b-a,c-a)
+            // Earcut documents CCW XY output for either input winding. The
+            // original floor frame must map that front face upward; never flip
+            // an imported source frame or output indices to force acceptance.
+            guard normal.y > 0, [normal.x,normal.y,normal.z].allSatisfy(\.isFinite) else {
+                throw Failure.floorTessellationWindingMismatch
             }
+            let local = face.map { localPoints[Int($0)] }
+            let localArea = orient(local[0],local[1],local[2]) / 2
+            guard localArea > 0 else { throw Failure.floorTessellationDegenerateTriangle }
+            area += localArea
+            result.triangles.append(contentsOf: face)
         }
         guard abs(area - sourceArea) <= roundoffAllowance(sourceArea) else { throw Failure.sourceGeometryMismatch }
         try verifyHistoricalFloorBoundary(source: points, tessellated: localPoints, triangles: result.triangles, epsilon: epsilon)

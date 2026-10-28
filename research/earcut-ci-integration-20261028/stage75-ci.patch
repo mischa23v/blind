@@ -1,0 +1,30 @@
+--- a/research/room-mesh-package-75/apple/ci.py
++++ b/research/room-mesh-package-75/apple/ci.py
+@@ -89,8 +89,9 @@
+  assert platform.system()=='Darwin' and os.environ.get('GITHUB_REPOSITORY')=='mischa23v/blind'
+  assert output(['xcodebuild','-version']).splitlines()[0]=='Xcode 27.0'
+  assert output(['xcrun','--sdk','iphonesimulator','--show-sdk-version'])=='27.0'
+- pins=json.loads((H/'APPLE_SOURCE_PINS.json').read_text())
+- for name,digest in pins.items():assert sha(H/name)==digest,name
++ current=json.loads((H/'APPLE_CURRENT_SOURCE_PINS.json').read_text())
++ assert current['schema']==1 and sha(H/'APPLE_SOURCE_PINS.json')==current['historical_manifest_sha256'], 'historical stage75 pin manifest changed'
++ for name,digest in current['files'].items():assert sha(H/name)==digest,name
+  assert sha(root/'.github/workflows/native-room-mesh-package.yml')==sha(H/'apple/native-room-mesh-package.yml')
+  fixture=root/'research/apple-candidate-ci-71/fixture/room.json.gz'
+  assert sha(fixture)=='6ae71b8660d7ae617eee274d0bae07eccb2fa983b382dd741f18596cbe596bc1'
+@@ -110,9 +111,13 @@
+   receipts.append(run(build,stem+'-package',out,300,env=package_env))
+   # Bin-path lookup must use the identical host environment and target options.
+   bindir=Path(output(build+['--show-bin-path'],env=package_env))
+-  objects=sorted((bindir/'CDetour.build').rglob('*.o'))+sorted((bindir/'BlindRoomMesh.build').glob('*.o'))
++  earcut_objects=sorted((bindir/'CEarcut.build').rglob('*.o'))
++  assert earcut_objects, 'missing reviewed CEarcut objects'
++  earcut_modulemap=bindir/'CEarcut.build/module.modulemap'
++  assert earcut_modulemap.is_file(), 'missing SwiftPM CEarcut module map'
++  objects=sorted((bindir/'CDetour.build').rglob('*.o'))+earcut_objects+sorted((bindir/'BlindRoomMesh.build').glob('*.o'))
+   assert len(objects)>=25 and len(objects)<=64,'unexpected package object set'
+-  common=['xcrun','--sdk',sdk,'swiftc','-target',triple,'-sdk',sdkpath,'-module-cache-path',str(out/(stem+'-client-cache')),'-I',str(bindir/'Modules'),'-I',str(package/'Sources/CDetour/include'),*map(str,objects),'-lc++']
++  common=['xcrun','--sdk',sdk,'swiftc','-target',triple,'-sdk',sdkpath,'-module-cache-path',str(out/(stem+'-client-cache')),'-I',str(bindir/'Modules'),'-I',str(package/'Sources/CDetour/include'),'-I',str(package/'Sources/CEarcut/include'),'-Xcc','-fmodule-map-file='+str(earcut_modulemap),*map(str,objects),'-lc++']
+   executable=out/(stem+'-public-client')
+   receipts.append(run(common+[str(H/'apple/public-client.swift'),'-o',str(executable)],stem+'-public-client-link',out))
+   if stem=='host':

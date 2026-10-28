@@ -1,0 +1,56 @@
+{
+  "status": "prepared; native current-source validation pending",
+  "historical_untouched": {
+    "research/room-mesh-package-75/APPLE_SOURCE_PINS.json": "d96e7e5ecf2f1bfdfe42e95e1717119ffccb7e306bfd54aa4815b2f5f40b8530",
+    "research/mesh-candidate-ingress-83/SOURCE_PINS.json": "5d54a3c436166fd1ee1568cc15f2c34ce724958eee6a630d006c1e448cd1663a",
+    "research/live-mesh-classified-bench-20261028/INPUT_PINS.json": "a3de515d8ed3cbda2a764c70c94c75cbffe6df882ef628cc1b1709453ad0236f"
+  },
+  "stage75_delta": [
+    {
+      "path": "BlindRoomMesh/Package.swift",
+      "before": "0b847f71419fa2f74e5231e5c32fc5db049ae512fbafe57ace7d7bf41ed8dfba",
+      "after": "c63d781574c06f8a8a5bfeccb0268ad4ad2614408299c34bdc893f43a327a612"
+    },
+    {
+      "path": "apple/ci.py",
+      "before": "29bac96c47f2352f1b7af52dd6b0217c3238ab5707fa8ac9e7a38f4d8caa7bde",
+      "after": "537b7e6a8594e06610f3fea210ce290c495c2507d7bc0d8cd79774feb01ea4e0"
+    }
+  ],
+  "stage83_delta": [
+    {
+      "path": "research/room-mesh-package-75/apple/ci.py",
+      "before": "29bac96c47f2352f1b7af52dd6b0217c3238ab5707fa8ac9e7a38f4d8caa7bde",
+      "after": "537b7e6a8594e06610f3fea210ce290c495c2507d7bc0d8cd79774feb01ea4e0"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/apple/ci.py",
+      "before": "03fff8f2bf62e1cf2ea2ac5a0a0d2b11c78a17225a5a6314b0a68ff8b6ed92b3",
+      "after": "d27fb357de78e4c29dfc9bc315b7e6ddd1a6ab3482686e3558a94eb80c0f5a44"
+    }
+  ],
+  "classifier_delta": [
+    {
+      "path": "research/mesh-candidate-ingress-83/apple/ci.py",
+      "before": "03fff8f2bf62e1cf2ea2ac5a0a0d2b11c78a17225a5a6314b0a68ff8b6ed92b3",
+      "after": "d27fb357de78e4c29dfc9bc315b7e6ddd1a6ab3482686e3558a94eb80c0f5a44"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Package.swift",
+      "before": "0b847f71419fa2f74e5231e5c32fc5db049ae512fbafe57ace7d7bf41ed8dfba",
+      "after": "c63d781574c06f8a8a5bfeccb0268ad4ad2614408299c34bdc893f43a327a612"
+    }
+  ],
+  "new_stage75_paths": [
+    "BlindRoomMesh/Sources/CEarcut/LICENSE",
+    "BlindRoomMesh/Sources/CEarcut/earcut_adapter.cpp",
+    "BlindRoomMesh/Sources/CEarcut/include/blind_earcut.h",
+    "BlindRoomMesh/Sources/CEarcut/upstream/mapbox/earcut.hpp",
+    "BlindRoomMesh/Sources/BlindRoomMesh/HistoricalPolygonTriangulation.swift"
+  ],
+  "current_files": {
+    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "9cf211849f46dd0257db7a5570acf92c4a2d746a62ce1188e2f610849a6192ed",
+    "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json": "e23d2cc90bddc4250e9c6a1ea5d5e2cf5bc14b2d2d1840cc8026a390e6db0282",
+    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "1100da67bc4af3ccb66e85a89e5e03f2a8cace04268fee3565da62c59d18c33b"
+  }
+}
