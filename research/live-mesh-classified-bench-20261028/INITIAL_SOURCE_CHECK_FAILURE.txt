@@ -1,0 +1,4 @@
+2026-10-28: initial source checker run failed before current-source validation.
+AssertionError: named standalone package and test target
+Cause: checker incorrectly expected seven textual occurrences of the renamed package; actual manifest has six. No Swift code/test had run. Corrected by comparing the entire manifest to the frozen manifest with only the intended module rename, rather than weakening product/path membership.
+Initial unittest:11 tests,1 failed(current-source),10 mutation tests reported ok but were not evidence because the baseline itself failed. Added setUp validation before every mutation so a broken baseline cannot make negative tests appear to pass. Final results are separately recorded.

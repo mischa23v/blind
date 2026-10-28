@@ -256,15 +256,22 @@
       ],
       "gitBlobSha": "4f5cde932f04525f45ab99b7b85b30fbb2f2dba3",
       "storage": {
-        "kind": "single",
-        "blobUploadsComplete": false,
+        "kind": "concatenated-parts",
+        "blobUploadsComplete": true,
         "objects": [
           {
-            "repoPath": "research/benchmark-artifacts-20261028/archives/open3d-benchmark-20261028-faro-ray-arrays.tar.gz",
-            "bytes": 11823090,
-            "sha256": "b342df41356922e340ea2778b3006cf0321b4c1588f9051fbee1dba37b88ebf1",
-            "gitBlobSha": "4f5cde932f04525f45ab99b7b85b30fbb2f2dba3",
-            "blobUploadConfirmed": false
+            "repoPath": "research/benchmark-artifacts-20261028/archives/open3d-benchmark-20261028-faro-ray-arrays.tar.gz.part001",
+            "bytes": 8388608,
+            "sha256": "b22caf76da95e23eee7a54d003e24f57c62ba0a50e6d5cab60979ecf3e753774",
+            "gitBlobSha": "7a7a83a5ce15d37e58e620c53cec3c62d53d3f09",
+            "blobUploadConfirmed": true
+          },
+          {
+            "repoPath": "research/benchmark-artifacts-20261028/archives/open3d-benchmark-20261028-faro-ray-arrays.tar.gz.part002",
+            "bytes": 3434482,
+            "sha256": "71139f18796f1d26b6f997d51e0ac7aa2fcc13021fa81f574af0717e03bdb39f",
+            "gitBlobSha": "c7c9a0dda367fe7e9ba54f63fdbcb6e041058e04",
+            "blobUploadConfirmed": true
           }
         ]
       }
@@ -302,14 +309,14 @@
       "gitBlobSha": "d79e2dba8dc4fef0963dddcc4287390e0a8e375d",
       "storage": {
         "kind": "single",
-        "blobUploadsComplete": false,
+        "blobUploadsComplete": true,
         "objects": [
           {
             "repoPath": "research/benchmark-artifacts-20261028/archives/open3d-benchmark-20261028-mesh.tar.gz",
             "bytes": 5071981,
             "sha256": "aef4b67e455f1b18801723532e78adb758b951954d9efc36c64ccc9becc16062",
             "gitBlobSha": "d79e2dba8dc4fef0963dddcc4287390e0a8e375d",
-            "blobUploadConfirmed": false
+            "blobUploadConfirmed": true
           }
         ]
       }
@@ -515,14 +522,14 @@
       "gitBlobSha": "a404e6da8ae70c70f6ffd04723b62ab3d10d63b2",
       "storage": {
         "kind": "single",
-        "blobUploadsComplete": false,
+        "blobUploadsComplete": true,
         "objects": [
           {
             "repoPath": "research/benchmark-artifacts-20261028/archives/open3d-benchmark-20261028-tsdf-ray-arrays.tar.gz",
             "bytes": 11181586,
             "sha256": "eedec377b949c3be79570ae5e75ace987f1508ee1fd5a27030f57768d142720a",
             "gitBlobSha": "a404e6da8ae70c70f6ffd04723b62ab3d10d63b2",
-            "blobUploadConfirmed": false
+            "blobUploadConfirmed": true
           }
         ]
       }
@@ -986,15 +993,29 @@
       ],
       "gitBlobSha": "64e0f43a4f3ec57d71f408474de0d1f901d48b0b",
       "storage": {
-        "kind": "single",
-        "blobUploadsComplete": false,
+        "kind": "concatenated-parts",
+        "blobUploadsComplete": true,
         "objects": [
           {
-            "repoPath": "research/benchmark-artifacts-20261028/archives/rtabmap-common-surface-reader-fixed-fixed.tar.gz",
-            "bytes": 17276319,
-            "sha256": "e9195656da7239092b993f403f0b0f8053db46890541cb62972971482e1549fa",
-            "gitBlobSha": "64e0f43a4f3ec57d71f408474de0d1f901d48b0b",
-            "blobUploadConfirmed": false
+            "repoPath": "research/benchmark-artifacts-20261028/archives/rtabmap-common-surface-reader-fixed-fixed.tar.gz.part001",
+            "bytes": 8388608,
+            "sha256": "badd6fea98e660115bb3ebd3205ca580a3513493edb5be5b7a58f050eb93c327",
+            "gitBlobSha": "5fd2c499ae33b802137edb97465f0a1b7bb56387",
+            "blobUploadConfirmed": true
+          },
+          {
+            "repoPath": "research/benchmark-artifacts-20261028/archives/rtabmap-common-surface-reader-fixed-fixed.tar.gz.part002",
+            "bytes": 8388608,
+            "sha256": "0b9987c3d1afecdb47518ed9c1c8c0838875365dbccaffbccd1a866c6a1a4275",
+            "gitBlobSha": "efa0000c447f2b260193047bf68bb77c2eb812b2",
+            "blobUploadConfirmed": true
+          },
+          {
+            "repoPath": "research/benchmark-artifacts-20261028/archives/rtabmap-common-surface-reader-fixed-fixed.tar.gz.part003",
+            "bytes": 499103,
+            "sha256": "45aa6c50383eea1867495c210624f438dd444b916e0daa2a16d1cc9aca077955",
+            "gitBlobSha": "5e96ae480cee6adbde53066e414147fd9f0790a6",
+            "blobUploadConfirmed": true
           }
         ]
       }
@@ -1031,14 +1052,28 @@
       ],
       "gitBlobSha": "0002c51b766eb1cdf0b5a16d2dde34e9be99df59",
       "storage": {
-        "kind": "single",
+        "kind": "concatenated-parts",
         "blobUploadsComplete": false,
         "objects": [
           {
-            "repoPath": "research/benchmark-artifacts-20261028/archives/rtabmap-common-surface-reader-fixed-graph.tar.gz",
-            "bytes": 20207118,
-            "sha256": "aac6da8e41b6cd1a1824709c1a9c270a02a07dc8e340a16587f81743e9493295",
-            "gitBlobSha": "0002c51b766eb1cdf0b5a16d2dde34e9be99df59",
+            "repoPath": "research/benchmark-artifacts-20261028/archives/rtabmap-common-surface-reader-fixed-graph.tar.gz.part001",
+            "bytes": 8388608,
+            "sha256": "2db62b13f43d5e687012ec9b8ce6101c38b091bdd0dcdc73971fe68c438e0726",
+            "gitBlobSha": "49e860653adc24508b384157ec73d9288ee91359",
+            "blobUploadConfirmed": false
+          },
+          {
+            "repoPath": "research/benchmark-artifacts-20261028/archives/rtabmap-common-surface-reader-fixed-graph.tar.gz.part002",
+            "bytes": 8388608,
+            "sha256": "69323fe075465b1f845174f53ef7d1e1e26b9e08b3a6c22e34985356c802fdd8",
+            "gitBlobSha": "707d98e9230d316f6b52fa6ed6a8de2d4acd2d8b",
+            "blobUploadConfirmed": false
+          },
+          {
+            "repoPath": "research/benchmark-artifacts-20261028/archives/rtabmap-common-surface-reader-fixed-graph.tar.gz.part003",
+            "bytes": 3429902,
+            "sha256": "2ed1ae985828a3292b1251e270cb72d2ccf9dac875226e3416c21b7889d8798a",
+            "gitBlobSha": "2d5df99598ed2621b66a128e1b8838f87219997d",
             "blobUploadConfirmed": false
           }
         ]
@@ -1665,14 +1700,14 @@
       "gitBlobSha": "3872071d15cc816c9e73c0e747b0c39c9d5e53fb",
       "storage": {
         "kind": "single",
-        "blobUploadsComplete": false,
+        "blobUploadsComplete": true,
         "objects": [
           {
             "repoPath": "research/benchmark-artifacts-20261028/archives/octomap-corrected-zup-native-indices.tar.gz",
             "bytes": 3948537,
             "sha256": "a0f0f979b9c1903ee4c8ff590d69a155d1290461638e7cf778cc217bd41a64db",
             "gitBlobSha": "3872071d15cc816c9e73c0e747b0c39c9d5e53fb",
-            "blobUploadConfirmed": false
+            "blobUploadConfirmed": true
           }
         ]
       }
@@ -1746,14 +1781,14 @@
       "gitBlobSha": "81604d5934dccccc333fc1cf4003601b3c0feee6",
       "storage": {
         "kind": "single",
-        "blobUploadsComplete": false,
+        "blobUploadsComplete": true,
         "objects": [
           {
             "repoPath": "research/benchmark-artifacts-20261028/archives/octomap-corrected-zup-reference-evaluator-samples.tar.gz",
             "bytes": 2895033,
             "sha256": "f6692eb890bdc2590c99c3813845a3dd15584a90a1bd901f6ee773230656e968",
             "gitBlobSha": "81604d5934dccccc333fc1cf4003601b3c0feee6",
-            "blobUploadConfirmed": false
+            "blobUploadConfirmed": true
           }
         ]
       }
@@ -2256,14 +2291,14 @@
       "gitBlobSha": "365447c6b54575f5790d1273b0ace2e9aceef052",
       "storage": {
         "kind": "single",
-        "blobUploadsComplete": false,
+        "blobUploadsComplete": true,
         "objects": [
           {
             "repoPath": "research/benchmark-artifacts-20261028/archives/octomap-corrected-zup-scoring-arrays.tar.gz",
             "bytes": 9168199,
             "sha256": "e6bcb6bbba2574e02668778ab7fb8f808d26d0b04d11df412113f88078b8c8b9",
             "gitBlobSha": "365447c6b54575f5790d1273b0ace2e9aceef052",
-            "blobUploadConfirmed": false
+            "blobUploadConfirmed": true
           }
         ]
       }
