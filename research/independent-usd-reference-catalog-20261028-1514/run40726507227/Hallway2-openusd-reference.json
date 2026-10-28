@@ -1,0 +1,6596 @@
+{
+  "schema": "public-openusd-geometry-reference-v1",
+  "fixtureID": "Hallway2",
+  "nativeManifestSHA256": "f37807c60966174724e4f3758c0b1b9d57e887e596377925de6a9aaebbc8bdf2",
+  "nativeInventorySHA256": "e0418b9919e73ce518580206105707c91a9d3e33307b0e076a035e60810e52fa",
+  "nativeTestIdentifier": "SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleSameExportForOpenUSDComparison",
+  "exportRole": "diagnostic-export",
+  "productionAdapterExport": "separate-unretained",
+  "nativeAdapterFailure": "sourceGeometryMismatch",
+  "nativeMDLGeometryProbe": {
+    "vertexIndex": 4,
+    "lower": 0,
+    "axis": 2,
+    "sourceWorldMaximum": [
+      4.03806241790528,
+      1.015705943107605,
+      12.590531334312672
+    ],
+    "sourceEncoding": "capturedRoomFloat32",
+    "sourceTransform": [
+      0.9873415231704712,
+      0,
+      0.15860848128795624,
+      0,
+      0,
+      1,
+      0,
+      0,
+      -0.15860848128795624,
+      0,
+      0.9873415231704712,
+      0,
+      0.9597339630126953,
+      -0.2042940855026245,
+      12.096022605895996,
+      1
+    ],
+    "epsilon": 9.228532871929929e-05,
+    "sourceWorldMinimum": [
+      -2.1185944918798896,
+      -1.424294114112854,
+      11.60151387747932
+    ],
+    "worldPoint": [
+      -2.093217134475708,
+      -1.424294114112854,
+      11.4435396194458
+    ],
+    "sourceLocalMaximum": [
+      3.117794990539551,
+      1.2200000286102295,
+      0
+    ],
+    "upper": 0,
+    "parentGlobalTransform": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "meshLocalPoint": [
+      -3.117794990539551,
+      -1.2200000286102295,
+      -0.1599999964237213
+    ],
+    "side": "belowMinimum",
+    "exportedWorldMaximum": [
+      4.06343936920166,
+      1.015705943107605,
+      12.590531349182129
+    ],
+    "exportedWorldMinimum": [
+      -2.1185944080352783,
+      -1.424294114112854,
+      11.4435396194458
+    ],
+    "meshGlobalTransform": [
+      0.9873415231704712,
+      0,
+      0.15860848128795624,
+      0,
+      0,
+      1,
+      0,
+      0,
+      -0.15860848128795624,
+      0,
+      0.9873415231704712,
+      0,
+      0.9597339630126953,
+      -0.2042940855026245,
+      12.096022605895996,
+      1
+    ],
+    "exportedSourceLocalMaximum": [
+      3.117794468045048,
+      1.2200000286102295,
+      6.579490730018733e-08
+    ],
+    "sourceLocalPoint": [
+      -3.1177947223062574,
+      -1.2200000286102295,
+      -0.15999960866551888
+    ],
+    "residual": 0.15999960866551888,
+    "featureKind": "wall",
+    "featureID": "0D0716C9-28D9-4F00-BE7C-E2A6FAFA36FA",
+    "meshLocalTransform": [
+      0.9873415231704712,
+      0,
+      0.15860848128795624,
+      0,
+      0,
+      1,
+      0,
+      0,
+      -0.15860848128795624,
+      0,
+      0.9873415231704712,
+      0,
+      0.9597339630126953,
+      -0.2042940855026245,
+      12.096022605895996,
+      1
+    ],
+    "vertexCount": 24,
+    "exportedSourceLocalMinimum": [
+      -3.1177947223062574,
+      -1.2200000286102295,
+      -0.15999960866551888
+    ],
+    "nodeIndex": 4,
+    "sourceDimensions": [
+      6.235589981079102,
+      2.440000057220459,
+      0
+    ],
+    "assetUpAxis": [
+      0,
+      1,
+      0
+    ],
+    "sourceLocalMinimum": [
+      -3.117794990539551,
+      -1.2200000286102295,
+      0
+    ],
+    "rootGlobalTransform": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1
+    ]
+  },
+  "sourceSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+  "usdzSHA256": "0c47630270348ded24ce0a4fe6a18f5defce5d445d8c7e109c932b56d812d232",
+  "metadataSHA256": "0fbb1daaa7fb13a7ac76c7e428046876a614a8287248318f8f023561d143672c",
+  "usdzByteCount": 57294,
+  "metadataByteCount": 707,
+  "openUSDVersion": [
+    0,
+    26,
+    5
+  ],
+  "stageMetersPerUnit": 1.0,
+  "metersPerUnitAuthored": true,
+  "stageUpAxis": "Y",
+  "upAxisAuthored": true,
+  "meterConversionBasis": "authored stage metadata",
+  "meterConversionIsMeasurement": false,
+  "coordinatePolicy": "No axis/scale/origin edits; raw world and labeled one-time meter conversion reported separately",
+  "matrixEncoding": "row-major Gf matrices; Gf uses row-vector transform convention",
+  "boundsPolicy": "all mesh points; all purposes and visibility included; cached extents and tight vertex bounds separate",
+  "archiveMembers": [
+    {
+      "name": "room.usda",
+      "bytes": 2882
+    },
+    {
+      "name": "assets/Mesh/Floors/Floor0.usda",
+      "bytes": 4141
+    },
+    {
+      "name": "assets/Mesh/Walls/Wall0/Wall0.usda",
+      "bytes": 2412
+    },
+    {
+      "name": "assets/Mesh/Walls/Wall1/Door0.usda",
+      "bytes": 2687
+    },
+    {
+      "name": "assets/Mesh/Walls/Wall1/Wall1.usda",
+      "bytes": 5782
+    },
+    {
+      "name": "assets/Mesh/Walls/Wall2/Door1.usda",
+      "bytes": 2627
+    },
+    {
+      "name": "assets/Mesh/Walls/Wall2/Wall2.usda",
+      "bytes": 5884
+    },
+    {
+      "name": "assets/Mesh/Walls/Wall3/Door2.usda",
+      "bytes": 2654
+    },
+    {
+      "name": "assets/Mesh/Walls/Wall3/Wall3.usda",
+      "bytes": 3891
+    },
+    {
+      "name": "assets/Mesh/Walls/Wall4/Door3.usda",
+      "bytes": 2649
+    },
+    {
+      "name": "assets/Mesh/Walls/Wall4/Door5.usda",
+      "bytes": 2637
+    },
+    {
+      "name": "assets/Mesh/Walls/Wall4/Wall4.usda",
+      "bytes": 7726
+    },
+    {
+      "name": "assets/Mesh/Walls/Wall5/Door4.usda",
+      "bytes": 2574
+    },
+    {
+      "name": "assets/Mesh/Walls/Wall5/Wall5.usda",
+      "bytes": 5754
+    }
+  ],
+  "externalLayerPolicy": "reject non-session composed layers outside admitted same-export package",
+  "usedLayers": [
+    "<admitted-public-export-directory>/admitted-public-export.usdz",
+    "anon:0x211de020:admitted-public-export-session.usda",
+    "<admitted-public-export-directory>/admitted-public-export.usdz[assets/Mesh/Floors/Floor0.usda]",
+    "<admitted-public-export-directory>/admitted-public-export.usdz[assets/Mesh/Walls/Wall5/Door4.usda]",
+    "<admitted-public-export-directory>/admitted-public-export.usdz[assets/Mesh/Walls/Wall5/Wall5.usda]",
+    "<admitted-public-export-directory>/admitted-public-export.usdz[assets/Mesh/Walls/Wall4/Door3.usda]",
+    "<admitted-public-export-directory>/admitted-public-export.usdz[assets/Mesh/Walls/Wall4/Wall4.usda]",
+    "<admitted-public-export-directory>/admitted-public-export.usdz[assets/Mesh/Walls/Wall4/Door5.usda]",
+    "<admitted-public-export-directory>/admitted-public-export.usdz[assets/Mesh/Walls/Wall2/Wall2.usda]",
+    "<admitted-public-export-directory>/admitted-public-export.usdz[assets/Mesh/Walls/Wall3/Door2.usda]",
+    "<admitted-public-export-directory>/admitted-public-export.usdz[assets/Mesh/Walls/Wall3/Wall3.usda]",
+    "<admitted-public-export-directory>/admitted-public-export.usdz[assets/Mesh/Walls/Wall2/Door1.usda]",
+    "<admitted-public-export-directory>/admitted-public-export.usdz[assets/Mesh/Walls/Wall1/Door0.usda]",
+    "<admitted-public-export-directory>/admitted-public-export.usdz[assets/Mesh/Walls/Wall1/Wall1.usda]",
+    "<admitted-public-export-directory>/admitted-public-export.usdz[assets/Mesh/Walls/Wall0/Wall0.usda]"
+  ],
+  "nodes": [
+    {
+      "path": "/room",
+      "parent": "/",
+      "type": "Xform",
+      "name": "room",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Section_grp",
+      "parent": "/room",
+      "type": "Xform",
+      "name": "Section_grp",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Section_grp/unidentified0",
+      "parent": "/room/Section_grp",
+      "type": "Xform",
+      "name": "unidentified0",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          1.308980941772461,
+          0.0,
+          12.557718276977539,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          1.308980941772461,
+          0.0,
+          12.557718276977539,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Section_grp/unidentified0/unidentified0_centerTop",
+      "parent": "/room/Section_grp/unidentified0",
+      "type": "Xform",
+      "name": "unidentified0_centerTop",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.5,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          1.308980941772461,
+          0.0,
+          12.557718276977539,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.308980941772461,
+          1.5,
+          12.557718276977539,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp",
+      "parent": "/room",
+      "type": "Xform",
+      "name": "Mesh_grp",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp",
+      "parent": "/room/Mesh_grp",
+      "type": "Xform",
+      "name": "Arch_grp",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_0_grp",
+      "parent": "/room/Mesh_grp/Arch_grp",
+      "type": "Xform",
+      "name": "Wall_0_grp",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_0_grp/Wall0",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_0_grp",
+      "type": "Mesh",
+      "name": "Wall0",
+      "directFeatureID": "0d0716c9-28d9-4f00-be7c-e2a6fafa36fa",
+      "resolvedFeatureID": "0d0716c9-28d9-4f00-be7c-e2a6fafa36fa",
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          0.9873415231704712,
+          0.0,
+          0.15860848128795624,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -0.15860848128795624,
+          0.0,
+          0.9873415231704712,
+          0.0
+        ],
+        [
+          0.9597339630126953,
+          -0.2042940855026245,
+          12.096022605895996,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          0.9873415231704712,
+          0.0,
+          0.15860848128795624,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -0.15860848128795624,
+          0.0,
+          0.9873415231704712,
+          0.0
+        ],
+        [
+          0.9597339630126953,
+          -0.2042940855026245,
+          12.096022605895996,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_0_grp/Wall0_color",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_0_grp",
+      "type": "Material",
+      "name": "Wall0_color",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_0_grp/Wall0_color/surfaceShader",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_0_grp/Wall0_color",
+      "type": "Shader",
+      "name": "surfaceShader",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_1_grp",
+      "parent": "/room/Mesh_grp/Arch_grp",
+      "type": "Xform",
+      "name": "Wall_1_grp",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_1_grp/Door0",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_1_grp",
+      "type": "Mesh",
+      "name": "Door0",
+      "directFeatureID": "544608b7-bc20-4b57-b390-e08cb0c05d27",
+      "resolvedFeatureID": "544608b7-bc20-4b57-b390-e08cb0c05d27",
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          0.9873417019844055,
+          0.0,
+          0.15860730409622192,
+          0.0
+        ],
+        [
+          0.0,
+          0.9999998807907104,
+          0.0,
+          0.0
+        ],
+        [
+          -0.15860730409622192,
+          0.0,
+          0.9873417019844055,
+          0.0
+        ],
+        [
+          4.68086051940918,
+          -0.42601168155670166,
+          11.762495040893555,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          0.9873417019844055,
+          0.0,
+          0.15860730409622192,
+          0.0
+        ],
+        [
+          0.0,
+          0.9999998807907104,
+          0.0,
+          0.0
+        ],
+        [
+          -0.15860730409622192,
+          0.0,
+          0.9873417019844055,
+          0.0
+        ],
+        [
+          4.68086051940918,
+          -0.42601168155670166,
+          11.762495040893555,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_1_grp/Door0_color",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_1_grp",
+      "type": "Material",
+      "name": "Door0_color",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_1_grp/Door0_color/surfaceShader",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_1_grp/Door0_color",
+      "type": "Shader",
+      "name": "surfaceShader",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_1_grp/Wall1",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_1_grp",
+      "type": "Mesh",
+      "name": "Wall1",
+      "directFeatureID": "84c6bf1b-d654-4b06-9e0e-71154800e6f9",
+      "resolvedFeatureID": "84c6bf1b-d654-4b06-9e0e-71154800e6f9",
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          0.9873416423797607,
+          0.0,
+          0.1586078703403473,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -0.1586078703403473,
+          0.0,
+          0.9873416423797607,
+          0.0
+        ],
+        [
+          4.6944074630737305,
+          -0.2042940855026245,
+          11.764671325683594,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          0.9873416423797607,
+          0.0,
+          0.1586078703403473,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -0.1586078703403473,
+          0.0,
+          0.9873416423797607,
+          0.0
+        ],
+        [
+          4.6944074630737305,
+          -0.2042940855026245,
+          11.764671325683594,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_1_grp/Wall1_color",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_1_grp",
+      "type": "Material",
+      "name": "Wall1_color",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_1_grp/Wall1_color/surfaceShader",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_1_grp/Wall1_color",
+      "type": "Shader",
+      "name": "surfaceShader",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_2_grp",
+      "parent": "/room/Mesh_grp/Arch_grp",
+      "type": "Xform",
+      "name": "Wall_2_grp",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_2_grp/Door1",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_2_grp",
+      "type": "Mesh",
+      "name": "Door1",
+      "directFeatureID": "07ca23ff-3eea-4fdd-ad4f-f98b47851fe4",
+      "resolvedFeatureID": "07ca23ff-3eea-4fdd-ad4f-f98b47851fe4",
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          0.15860874950885773,
+          0.0,
+          -0.9873414635658264,
+          0.0
+        ],
+        [
+          0.0,
+          0.9999999403953552,
+          0.0,
+          0.0
+        ],
+        [
+          0.9873415231704712,
+          0.0,
+          0.15860874950885773,
+          0.0
+        ],
+        [
+          4.118849754333496,
+          -0.3877214193344116,
+          12.087627410888672,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          0.15860874950885773,
+          0.0,
+          -0.9873414635658264,
+          0.0
+        ],
+        [
+          0.0,
+          0.9999999403953552,
+          0.0,
+          0.0
+        ],
+        [
+          0.9873415231704712,
+          0.0,
+          0.15860874950885773,
+          0.0
+        ],
+        [
+          4.118849754333496,
+          -0.3877214193344116,
+          12.087627410888672,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_2_grp/Door1_color",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_2_grp",
+      "type": "Material",
+      "name": "Door1_color",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_2_grp/Door1_color/surfaceShader",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_2_grp/Door1_color",
+      "type": "Shader",
+      "name": "surfaceShader",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_2_grp/Wall2",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_2_grp",
+      "type": "Mesh",
+      "name": "Wall2",
+      "directFeatureID": "0cd2f73e-5f0b-444c-be63-2f9855c59d47",
+      "resolvedFeatureID": "0cd2f73e-5f0b-444c-be63-2f9855c59d47",
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          0.1586083024740219,
+          0.0,
+          -0.9873414635658264,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.987341582775116,
+          0.0,
+          0.1586083173751831,
+          0.0
+        ],
+        [
+          4.110983371734619,
+          -0.2042940855026245,
+          12.1365966796875,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          0.1586083024740219,
+          0.0,
+          -0.9873414635658264,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.987341582775116,
+          0.0,
+          0.1586083173751831,
+          0.0
+        ],
+        [
+          4.110983371734619,
+          -0.2042940855026245,
+          12.1365966796875,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_2_grp/Wall2_color",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_2_grp",
+      "type": "Material",
+      "name": "Wall2_color",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_2_grp/Wall2_color/surfaceShader",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_2_grp/Wall2_color",
+      "type": "Shader",
+      "name": "surfaceShader",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_3_grp",
+      "parent": "/room/Mesh_grp/Arch_grp",
+      "type": "Xform",
+      "name": "Wall_3_grp",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_3_grp/Door2",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_3_grp",
+      "type": "Mesh",
+      "name": "Door2",
+      "directFeatureID": "0321026a-56e2-4d3d-ac9e-be7659f4ecfe",
+      "resolvedFeatureID": "0321026a-56e2-4d3d-ac9e-be7659f4ecfe",
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          0.15860877931118011,
+          0.0,
+          -0.9873414635658264,
+          0.0
+        ],
+        [
+          0.0,
+          0.9999999403953552,
+          0.0,
+          0.0
+        ],
+        [
+          0.9873415231704712,
+          0.0,
+          0.15860877931118011,
+          0.0
+        ],
+        [
+          -3.2677664756774902,
+          -0.41780662536621094,
+          12.115446090698242,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          0.15860877931118011,
+          0.0,
+          -0.9873414635658264,
+          0.0
+        ],
+        [
+          0.0,
+          0.9999999403953552,
+          0.0,
+          0.0
+        ],
+        [
+          0.9873415231704712,
+          0.0,
+          0.15860877931118011,
+          0.0
+        ],
+        [
+          -3.2677664756774902,
+          -0.41780662536621094,
+          12.115446090698242,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_3_grp/Door2_color",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_3_grp",
+      "type": "Material",
+      "name": "Door2_color",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_3_grp/Door2_color/surfaceShader",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_3_grp/Door2_color",
+      "type": "Shader",
+      "name": "surfaceShader",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_3_grp/Wall3",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_3_grp",
+      "type": "Mesh",
+      "name": "Wall3",
+      "directFeatureID": "efd7d4de-5e77-4ae2-8a82-934a1a28066b",
+      "resolvedFeatureID": "efd7d4de-5e77-4ae2-8a82-934a1a28066b",
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          0.15860910713672638,
+          0.0,
+          -0.9873414635658264,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9873414635658264,
+          0.0,
+          0.15860910713672638,
+          0.0
+        ],
+        [
+          -3.2739925384521484,
+          -0.2042940855026245,
+          12.154205322265625,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          0.15860910713672638,
+          0.0,
+          -0.9873414635658264,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9873414635658264,
+          0.0,
+          0.15860910713672638,
+          0.0
+        ],
+        [
+          -3.2739925384521484,
+          -0.2042940855026245,
+          12.154205322265625,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_3_grp/Wall3_color",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_3_grp",
+      "type": "Material",
+      "name": "Wall3_color",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_3_grp/Wall3_color/surfaceShader",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_3_grp/Wall3_color",
+      "type": "Shader",
+      "name": "surfaceShader",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_4_grp",
+      "parent": "/room/Mesh_grp/Arch_grp",
+      "type": "Xform",
+      "name": "Wall_4_grp",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Door5",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_4_grp",
+      "type": "Mesh",
+      "name": "Door5",
+      "directFeatureID": "5e1d9c94-d64e-4b9e-af30-94c9f9855056",
+      "resolvedFeatureID": "5e1d9c94-d64e-4b9e-af30-94c9f9855056",
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          -0.9873414635658264,
+          0.0,
+          -0.15860900282859802,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.15860900282859802,
+          0.0,
+          -0.9873414635658264,
+          0.0
+        ],
+        [
+          0.5230977535247803,
+          -0.39592647552490234,
+          13.026508331298828,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          -0.9873414635658264,
+          0.0,
+          -0.15860900282859802,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.15860900282859802,
+          0.0,
+          -0.9873414635658264,
+          0.0
+        ],
+        [
+          0.5230977535247803,
+          -0.39592647552490234,
+          13.026508331298828,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Door5_color",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_4_grp",
+      "type": "Material",
+      "name": "Door5_color",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Door5_color/surfaceShader",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Door5_color",
+      "type": "Shader",
+      "name": "surfaceShader",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Door3",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_4_grp",
+      "type": "Mesh",
+      "name": "Door3",
+      "directFeatureID": "22519aab-4e27-457c-8a65-8f45665f28cf",
+      "resolvedFeatureID": "22519aab-4e27-457c-8a65-8f45665f28cf",
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          -0.9873414635658264,
+          0.0,
+          -0.15860894322395325,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.15860894322395325,
+          0.0,
+          -0.9873414635658264,
+          0.0
+        ],
+        [
+          -1.978428602218628,
+          -0.4059019088745117,
+          12.624656677246094,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          -0.9873414635658264,
+          0.0,
+          -0.15860894322395325,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.15860894322395325,
+          0.0,
+          -0.9873414635658264,
+          0.0
+        ],
+        [
+          -1.978428602218628,
+          -0.4059019088745117,
+          12.624656677246094,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Door3_color",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_4_grp",
+      "type": "Material",
+      "name": "Door3_color",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Door3_color/surfaceShader",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Door3_color",
+      "type": "Shader",
+      "name": "surfaceShader",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Wall4",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_4_grp",
+      "type": "Mesh",
+      "name": "Wall4",
+      "directFeatureID": "90b9e5ef-6be5-4e01-83f5-b5f757b563fa",
+      "resolvedFeatureID": "90b9e5ef-6be5-4e01-83f5-b5f757b563fa",
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          -0.987341582775116,
+          0.0,
+          -0.15860851109027863,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.15860851109027863,
+          0.0,
+          -0.987341582775116,
+          0.0
+        ],
+        [
+          0.7936477661132812,
+          -0.2042940855026245,
+          13.069969177246094,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          -0.987341582775116,
+          0.0,
+          -0.15860851109027863,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.15860851109027863,
+          0.0,
+          -0.987341582775116,
+          0.0
+        ],
+        [
+          0.7936477661132812,
+          -0.2042940855026245,
+          13.069969177246094,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Wall4_color",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_4_grp",
+      "type": "Material",
+      "name": "Wall4_color",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Wall4_color/surfaceShader",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Wall4_color",
+      "type": "Shader",
+      "name": "surfaceShader",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_5_grp",
+      "parent": "/room/Mesh_grp/Arch_grp",
+      "type": "Xform",
+      "name": "Wall_5_grp",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_5_grp/Door4",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_5_grp",
+      "type": "Mesh",
+      "name": "Door4",
+      "directFeatureID": "a16df794-df3b-4ec0-8b98-cbfc2b92e49a",
+      "resolvedFeatureID": "a16df794-df3b-4ec0-8b98-cbfc2b92e49a",
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          -0.15860827267169952,
+          0.0,
+          0.9873415231704712,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -0.9873416423797607,
+          0.0,
+          -0.15860828757286072,
+          0.0
+        ],
+        [
+          4.977390289306641,
+          -0.39592647552490234,
+          13.2629976272583,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          -0.15860827267169952,
+          0.0,
+          0.9873415231704712,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -0.9873416423797607,
+          0.0,
+          -0.15860828757286072,
+          0.0
+        ],
+        [
+          4.977390289306641,
+          -0.39592647552490234,
+          13.2629976272583,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_5_grp/Door4_color",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_5_grp",
+      "type": "Material",
+      "name": "Door4_color",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_5_grp/Door4_color/surfaceShader",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_5_grp/Door4_color",
+      "type": "Shader",
+      "name": "surfaceShader",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_5_grp/Wall5",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_5_grp",
+      "type": "Mesh",
+      "name": "Wall5",
+      "directFeatureID": "b3307a9e-32b7-42a2-848c-c72c44a19255",
+      "resolvedFeatureID": "b3307a9e-32b7-42a2-848c-c72c44a19255",
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          -0.15860846638679504,
+          0.0,
+          0.987341582775116,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -0.987341582775116,
+          0.0,
+          -0.15860846638679504,
+          0.0
+        ],
+        [
+          5.053639888763428,
+          -0.2042940855026245,
+          12.78834056854248,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          -0.15860846638679504,
+          0.0,
+          0.987341582775116,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -0.987341582775116,
+          0.0,
+          -0.15860846638679504,
+          0.0
+        ],
+        [
+          5.053639888763428,
+          -0.2042940855026245,
+          12.78834056854248,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_5_grp/Wall5_color",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_5_grp",
+      "type": "Material",
+      "name": "Wall5_color",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_5_grp/Wall5_color/surfaceShader",
+      "parent": "/room/Mesh_grp/Arch_grp/Wall_5_grp/Wall5_color",
+      "type": "Shader",
+      "name": "surfaceShader",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Floor_grp",
+      "parent": "/room/Mesh_grp",
+      "type": "Xform",
+      "name": "Floor_grp",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Floor_grp/Floor0",
+      "parent": "/room/Mesh_grp/Floor_grp",
+      "type": "Mesh",
+      "name": "Floor0",
+      "directFeatureID": "7c48cacf-5979-4bfb-b1d1-88de721921db",
+      "resolvedFeatureID": "7c48cacf-5979-4bfb-b1d1-88de721921db",
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          0.9873417019844055,
+          0.0,
+          0.15860804915428162,
+          0.0
+        ],
+        [
+          0.15860798954963684,
+          0.0,
+          -0.9873417019844055,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.944918155670166,
+          -1.424294114112854,
+          12.12830924987793,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          0.9873417019844055,
+          0.0,
+          0.15860804915428162,
+          0.0
+        ],
+        [
+          0.15860798954963684,
+          0.0,
+          -0.9873417019844055,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.944918155670166,
+          -1.424294114112854,
+          12.12830924987793,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    },
+    {
+      "path": "/room/Mesh_grp/Floor_grp/Floor0_color",
+      "parent": "/room/Mesh_grp/Floor_grp",
+      "type": "Material",
+      "name": "Floor0_color",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Floor_grp/Floor0_color/surfaceShader",
+      "parent": "/room/Mesh_grp/Floor_grp/Floor0_color",
+      "type": "Shader",
+      "name": "surfaceShader",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": null,
+      "visibility": null
+    },
+    {
+      "path": "/room/Mesh_grp/Object_grp",
+      "parent": "/room/Mesh_grp",
+      "type": "Xform",
+      "name": "Object_grp",
+      "directFeatureID": null,
+      "resolvedFeatureID": null,
+      "instanceProxy": false,
+      "resetsXformStack": false,
+      "localMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parentWorldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "worldMatrixRows": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "purpose": "default",
+      "visibility": "inherited"
+    }
+  ],
+  "meshes": [
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_0_grp/Wall0",
+      "featureID": "0d0716c9-28d9-4f00-be7c-e2a6fafa36fa",
+      "vertexCount": 24,
+      "faceCount": 12,
+      "faceVertexCountHistogram": {
+        "3": 12
+      },
+      "orientation": "rightHanded",
+      "subdivisionScheme": "none",
+      "authoredExtent": [],
+      "localVertexBounds": {
+        "minimum": [
+          -3.117794990539551,
+          -1.2200000286102295,
+          -0.1599999964237213
+        ],
+        "maximum": [
+          3.117794990539551,
+          1.2200000286102295,
+          0.0
+        ]
+      },
+      "worldVertexBoundsStageUnits": {
+        "minimum": [
+          -2.1185944918798896,
+          -1.424294114112854,
+          11.443539237303053
+        ],
+        "maximum": [
+          4.0634397743441255,
+          1.015705943107605,
+          12.590531334312672
+        ]
+      },
+      "worldVertexBoundsMeters": {
+        "minimum": [
+          -2.1185944918798896,
+          -1.424294114112854,
+          11.443539237303053
+        ],
+        "maximum": [
+          4.0634397743441255,
+          1.015705943107605,
+          12.590531334312672
+        ]
+      },
+      "cachedWorldBoundStageUnits": {
+        "minimum": [
+          -2.1185944918798896,
+          -1.424294114112854,
+          11.443539237303053
+        ],
+        "maximum": [
+          4.0634397743441255,
+          1.015705943107605,
+          12.590531334312672
+        ]
+      },
+      "firstVertexLocal": [
+        -3.117794990539551,
+        -1.2200000286102295,
+        0.0
+      ],
+      "firstVertexWorldStageUnits": [
+        -2.1185944918798896,
+        -1.424294114112854,
+        11.60151387747932
+      ]
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_1_grp/Door0",
+      "featureID": "544608b7-bc20-4b57-b390-e08cb0c05d27",
+      "vertexCount": 24,
+      "faceCount": 12,
+      "faceVertexCountHistogram": {
+        "3": 12
+      },
+      "orientation": "rightHanded",
+      "subdivisionScheme": "none",
+      "authoredExtent": [],
+      "localVertexBounds": {
+        "minimum": [
+          -0.37045177817344666,
+          -0.9982823133468628,
+          -0.1599999964237213
+        ],
+        "maximum": [
+          0.37045177817344666,
+          0.9982823133468628,
+          0.0
+        ]
+      },
+      "worldVertexBoundsStageUnits": {
+        "minimum": [
+          4.315098030244259,
+          -1.424293875899039,
+          11.545764014273317
+        ],
+        "maximum": [
+          5.0720001766622715,
+          0.5722705127856358,
+          11.821251398727297
+        ]
+      },
+      "worldVertexBoundsMeters": {
+        "minimum": [
+          4.315098030244259,
+          -1.424293875899039,
+          11.545764014273317
+        ],
+        "maximum": [
+          5.0720001766622715,
+          0.5722705127856358,
+          11.821251398727297
+        ]
+      },
+      "cachedWorldBoundStageUnits": {
+        "minimum": [
+          4.315098030244259,
+          -1.424293875899039,
+          11.545764014273317
+        ],
+        "maximum": [
+          5.0720001766622715,
+          0.5722705127856358,
+          11.821251398727297
+        ]
+      },
+      "firstVertexLocal": [
+        -0.37045177817344666,
+        -0.9982823133468628,
+        0.0
+      ],
+      "firstVertexWorldStageUnits": [
+        4.315098030244259,
+        -1.424293875899039,
+        11.703738683059813
+      ]
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_1_grp/Wall1",
+      "featureID": "84c6bf1b-d654-4b06-9e0e-71154800e6f9",
+      "vertexCount": 88,
+      "faceCount": 44,
+      "faceVertexCountHistogram": {
+        "3": 44
+      },
+      "orientation": "rightHanded",
+      "subdivisionScheme": "none",
+      "authoredExtent": [],
+      "localVertexBounds": {
+        "minimum": [
+          -0.5170480012893677,
+          -1.2200000286102295,
+          -0.1599999964237213
+        ],
+        "maximum": [
+          0.6770480871200562,
+          1.2200000286102295,
+          9.539390788404489e-08
+        ]
+      },
+      "worldVertexBoundsStageUnits": {
+        "minimum": [
+          4.1839044402915135,
+          -1.424294114112854,
+          11.524688784085601
+        ],
+        "maximum": [
+          5.388262463706854,
+          1.015705943107605,
+          11.872056556178558
+        ]
+      },
+      "worldVertexBoundsMeters": {
+        "minimum": [
+          4.1839044402915135,
+          -1.424294114112854,
+          11.524688784085601
+        ],
+        "maximum": [
+          5.388262463706854,
+          1.015705943107605,
+          11.872056556178558
+        ]
+      },
+      "cachedWorldBoundStageUnits": {
+        "minimum": [
+          4.183904425161289,
+          -1.424294114112854,
+          11.524688784085601
+        ],
+        "maximum": [
+          5.388262492068152,
+          1.015705943107605,
+          11.87205657508609
+        ]
+      },
+      "firstVertexLocal": [
+        -0.5170480012893677,
+        -1.2200000286102295,
+        0.0
+      ],
+      "firstVertexWorldStageUnits": [
+        4.1839044402915135,
+        -1.424294114112854,
+        11.682663443335354
+      ]
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_2_grp/Door1",
+      "featureID": "07ca23ff-3eea-4fdd-ad4f-f98b47851fe4",
+      "vertexCount": 24,
+      "faceCount": 12,
+      "faceVertexCountHistogram": {
+        "3": 12
+      },
+      "orientation": "rightHanded",
+      "subdivisionScheme": "none",
+      "authoredExtent": [],
+      "localVertexBounds": {
+        "minimum": [
+          -0.32513779401779175,
+          -1.0365725755691528,
+          -0.1599999964237213
+        ],
+        "maximum": [
+          0.32513779401779175,
+          1.0365725755691528,
+          0.0
+        ]
+      },
+      "worldVertexBoundsStageUnits": {
+        "minimum": [
+          3.9093054152299986,
+          -1.4242939331190243,
+          11.741227986128393
+        ],
+        "maximum": [
+          4.170419453260727,
+          0.6488510944502011,
+          12.408649436294763
+        ]
+      },
+      "worldVertexBoundsMeters": {
+        "minimum": [
+          3.9093054152299986,
+          -1.4242939331190243,
+          11.741227986128393
+        ],
+        "maximum": [
+          4.170419453260727,
+          0.6488510944502011,
+          12.408649436294763
+        ]
+      },
+      "cachedWorldBoundStageUnits": {
+        "minimum": [
+          3.9093054152299986,
+          -1.4242939331190243,
+          11.741227986128393
+        ],
+        "maximum": [
+          4.170419453260727,
+          0.6488510944502011,
+          12.408649436294763
+        ]
+      },
+      "firstVertexLocal": [
+        -0.32513779401779175,
+        -1.0365725755691528,
+        0.0
+      ],
+      "firstVertexWorldStageUnits": [
+        4.067280055406266,
+        -1.4242939331190243,
+        12.408649436294763
+      ]
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_2_grp/Wall2",
+      "featureID": "0cd2f73e-5f0b-444c-be63-2f9855c59d47",
+      "vertexCount": 88,
+      "faceCount": 44,
+      "faceVertexCountHistogram": {
+        "3": 44
+      },
+      "orientation": "rightHanded",
+      "subdivisionScheme": "none",
+      "authoredExtent": [],
+      "localVertexBounds": {
+        "minimum": [
+          -0.45975399017333984,
+          -1.2200000286102295,
+          -0.1599999964237213
+        ],
+        "maximum": [
+          0.6197540760040283,
+          1.2200000286102295,
+          1.0389461522208876e-06
+        ]
+      },
+      "worldVertexBoundsStageUnits": {
+        "minimum": [
+          3.8800879220845577,
+          -1.424294114112854,
+          11.499310611373017
+        ],
+        "maximum": [
+          4.209282520568129,
+          1.015705943107605,
+          12.590530857225474
+        ]
+      },
+      "worldVertexBoundsMeters": {
+        "minimum": [
+          3.8800879220845577,
+          -1.424294114112854,
+          11.499310611373017
+        ],
+        "maximum": [
+          4.209282520568129,
+          1.015705943107605,
+          12.590530857225474
+        ]
+      },
+      "cachedWorldBoundStageUnits": {
+        "minimum": [
+          3.8800879220845577,
+          -1.424294114112854,
+          11.499310453021995
+        ],
+        "maximum": [
+          4.209282539475712,
+          1.015705943107605,
+          12.590531022010975
+        ]
+      },
+      "firstVertexLocal": [
+        -0.45975399017333984,
+        -1.2200000286102295,
+        0.0
+      ],
+      "firstVertexWorldStageUnits": [
+        4.038062571797568,
+        -1.424294114112854,
+        12.590530857225474
+      ]
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_3_grp/Door2",
+      "featureID": "0321026a-56e2-4d3d-ac9e-be7659f4ecfe",
+      "vertexCount": 24,
+      "faceCount": 12,
+      "faceVertexCountHistogram": {
+        "3": 12
+      },
+      "orientation": "rightHanded",
+      "subdivisionScheme": "none",
+      "authoredExtent": [],
+      "localVertexBounds": {
+        "minimum": [
+          -0.21975459158420563,
+          -1.0064873695373535,
+          -0.1599999964237213
+        ],
+        "maximum": [
+          0.21975459158420563,
+          1.0064873695373535,
+          0.0
+        ]
+      },
+      "worldVertexBoundsStageUnits": {
+        "minimum": [
+          -3.460596123372955,
+          -1.4242939349122423,
+          11.873095866495623
+        ],
+        "maximum": [
+          -3.2329114681582922,
+          0.5886806841798204,
+          12.332418910778301
+        ]
+      },
+      "worldVertexBoundsMeters": {
+        "minimum": [
+          -3.460596123372955,
+          -1.4242939349122423,
+          11.873095866495623
+        ],
+        "maximum": [
+          -3.2329114681582922,
+          0.5886806841798204,
+          12.332418910778301
+        ]
+      },
+      "cachedWorldBoundStageUnits": {
+        "minimum": [
+          -3.460596123372955,
+          -1.4242939349122423,
+          11.873095866495623
+        ],
+        "maximum": [
+          -3.2329114681582922,
+          0.5886806841798204,
+          12.332418910778301
+        ]
+      },
+      "firstVertexLocal": [
+        -0.21975459158420563,
+        -1.0064873695373535,
+        0.0
+      ],
+      "firstVertexWorldStageUnits": [
+        -3.3026214831966882,
+        -1.4242939349122423,
+        12.332418910778301
+      ]
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_3_grp/Wall3",
+      "featureID": "efd7d4de-5e77-4ae2-8a82-934a1a28066b",
+      "vertexCount": 52,
+      "faceCount": 26,
+      "faceVertexCountHistogram": {
+        "3": 26
+      },
+      "orientation": "rightHanded",
+      "subdivisionScheme": "none",
+      "authoredExtent": [],
+      "localVertexBounds": {
+        "minimum": [
+          -0.25900977849960327,
+          -1.2200000286102295,
+          -0.1599999964237213
+        ],
+        "maximum": [
+          0.25900977849960327,
+          1.2200000286102295,
+          0.0
+        ]
+      },
+      "worldVertexBoundsStageUnits": {
+        "minimum": [
+          -3.4730484787991758,
+          -1.424294114112854,
+          11.87309677190932
+        ],
+        "maximum": [
+          -3.232911228744645,
+          1.015705943107605,
+          12.409936416047284
+        ]
+      },
+      "worldVertexBoundsMeters": {
+        "minimum": [
+          -3.4730484787991758,
+          -1.424294114112854,
+          11.87309677190932
+        ],
+        "maximum": [
+          -3.232911228744645,
+          1.015705943107605,
+          12.409936416047284
+        ]
+      },
+      "cachedWorldBoundStageUnits": {
+        "minimum": [
+          -3.4730484787991758,
+          -1.424294114112854,
+          11.87309677190932
+        ],
+        "maximum": [
+          -3.232911228744645,
+          1.015705943107605,
+          12.409936416047284
+        ]
+      },
+      "firstVertexLocal": [
+        -0.25900977849960327,
+        -1.2200000286102295,
+        0.0
+      ],
+      "firstVertexWorldStageUnits": [
+        -3.315073848159652,
+        -1.424294114112854,
+        12.409936416047284
+      ]
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Door5",
+      "featureID": "5e1d9c94-d64e-4b9e-af30-94c9f9855056",
+      "vertexCount": 24,
+      "faceCount": 12,
+      "faceVertexCountHistogram": {
+        "3": 12
+      },
+      "orientation": "rightHanded",
+      "subdivisionScheme": "none",
+      "authoredExtent": [],
+      "localVertexBounds": {
+        "minimum": [
+          -0.3582810163497925,
+          -1.0283674001693726,
+          -0.1599999964237213
+        ],
+        "maximum": [
+          0.3582810163497925,
+          1.0283674001693726,
+          0.0
+        ]
+      },
+      "worldVertexBoundsStageUnits": {
+        "minimum": [
+          0.1439746105887787,
+          -1.424293875694275,
+          12.969681736563171
+        ],
+        "maximum": [
+          0.8768434565754362,
+          0.6324409246444702,
+          13.24130955667401
+        ]
+      },
+      "worldVertexBoundsMeters": {
+        "minimum": [
+          0.1439746105887787,
+          -1.424293875694275,
+          12.969681736563171
+        ],
+        "maximum": [
+          0.8768434565754362,
+          0.6324409246444702,
+          13.24130955667401
+        ]
+      },
+      "cachedWorldBoundStageUnits": {
+        "minimum": [
+          0.1439746105887787,
+          -1.424293875694275,
+          12.969681736563171
+        ],
+        "maximum": [
+          0.8768434565754362,
+          0.6324409246444702,
+          13.24130955667401
+        ]
+      },
+      "firstVertexLocal": [
+        -0.3582810163497925,
+        -1.0283674001693726,
+        0.0
+      ],
+      "firstVertexWorldStageUnits": [
+        0.8768434565754362,
+        -1.424293875694275,
+        13.083334926034485
+      ]
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Door3",
+      "featureID": "22519aab-4e27-457c-8a65-8f45665f28cf",
+      "vertexCount": 24,
+      "faceCount": 12,
+      "faceVertexCountHistogram": {
+        "3": 12
+      },
+      "orientation": "rightHanded",
+      "subdivisionScheme": "none",
+      "authoredExtent": [],
+      "localVertexBounds": {
+        "minimum": [
+          -0.323819100856781,
+          -1.0183920860290527,
+          -0.1599999964237213
+        ],
+        "maximum": [
+          0.323819100856781,
+          1.0183920860290527,
+          0.0
+        ]
+      },
+      "worldVertexBoundsStageUnits": {
+        "minimum": [
+          -2.323526057537735,
+          -1.4242939949035645,
+          12.573296071863469
+        ],
+        "maximum": [
+          -1.6587085772481238,
+          0.612490177154541,
+          12.833991913268243
+        ]
+      },
+      "worldVertexBoundsMeters": {
+        "minimum": [
+          -2.323526057537735,
+          -1.4242939949035645,
+          12.573296071863469
+        ],
+        "maximum": [
+          -1.6587085772481238,
+          0.612490177154541,
+          12.833991913268243
+        ]
+      },
+      "cachedWorldBoundStageUnits": {
+        "minimum": [
+          -2.323526057537735,
+          -1.4242939949035645,
+          12.573296071863469
+        ],
+        "maximum": [
+          -1.6587085772481238,
+          0.612490177154541,
+          12.833991913268243
+        ]
+      },
+      "firstVertexLocal": [
+        -0.323819100856781,
+        -1.0183920860290527,
+        0.0
+      ],
+      "firstVertexWorldStageUnits": [
+        -1.6587085772481238,
+        -1.4242939949035645,
+        12.676017282628719
+      ]
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Wall4",
+      "featureID": "90b9e5ef-6be5-4e01-83f5-b5f757b563fa",
+      "vertexCount": 128,
+      "faceCount": 64,
+      "faceVertexCountHistogram": {
+        "3": 64
+      },
+      "orientation": "rightHanded",
+      "subdivisionScheme": "none",
+      "authoredExtent": [],
+      "localVertexBounds": {
+        "minimum": [
+          -4.161398410797119,
+          -1.2200000286102295,
+          -0.1600009649991989
+        ],
+        "maximum": [
+          4.3213982582092285,
+          1.2200000286102295,
+          0.0
+        ]
+      },
+      "worldVertexBoundsStageUnits": {
+        "minimum": [
+          -3.4984259447801787,
+          -1.424294114112854,
+          12.384559453569986
+        ],
+        "maximum": [
+          4.902369459587561,
+          1.015705943107605,
+          13.887977032949086
+        ]
+      },
+      "worldVertexBoundsMeters": {
+        "minimum": [
+          -3.4984259447801787,
+          -1.424294114112854,
+          12.384559453569986
+        ],
+        "maximum": [
+          4.902369459587561,
+          1.015705943107605,
+          13.887977032949086
+        ]
+      },
+      "cachedWorldBoundStageUnits": {
+        "minimum": [
+          -3.4984259447801787,
+          -1.424294114112854,
+          12.384558633683405
+        ],
+        "maximum": [
+          4.902369459587561,
+          1.015705943107605,
+          13.88797798926393
+        ]
+      },
+      "firstVertexLocal": [
+        -4.161398410797119,
+        -1.2200000286102295,
+        0.0
+      ],
+      "firstVertexWorldStageUnits": [
+        4.902369459587561,
+        -1.424294114112854,
+        13.730002383236076
+      ]
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_5_grp/Door4",
+      "featureID": "a16df794-df3b-4ec0-8b98-cbfc2b92e49a",
+      "vertexCount": 24,
+      "faceCount": 12,
+      "faceVertexCountHistogram": {
+        "3": 12
+      },
+      "orientation": "rightHanded",
+      "subdivisionScheme": "none",
+      "authoredExtent": [],
+      "localVertexBounds": {
+        "minimum": [
+          -0.38426831364631653,
+          -1.0283674001693726,
+          -0.1599999964237213
+        ],
+        "maximum": [
+          0.38426831364631653,
+          1.0283674001693726,
+          0.0
+        ]
+      },
+      "worldVertexBoundsStageUnits": {
+        "minimum": [
+          4.916442155836732,
+          -1.424293875694275,
+          12.883593565156598
+        ],
+        "maximum": [
+          5.196313082026302,
+          0.6324409246444702,
+          13.667779014804434
+        ]
+      },
+      "worldVertexBoundsMeters": {
+        "minimum": [
+          4.916442155836732,
+          -1.424293875694275,
+          12.883593565156598
+        ],
+        "maximum": [
+          5.196313082026302,
+          0.6324409246444702,
+          13.667779014804434
+        ]
+      },
+      "cachedWorldBoundStageUnits": {
+        "minimum": [
+          4.916442155836732,
+          -1.424293875694275,
+          12.883593565156598
+        ],
+        "maximum": [
+          5.196313082026302,
+          0.6324409246444702,
+          13.667779014804434
+        ]
+      },
+      "firstVertexLocal": [
+        -0.38426831364631653,
+        -1.0283674001693726,
+        0.0
+      ],
+      "firstVertexWorldStageUnits": [
+        5.038338422776549,
+        -1.424293875694275,
+        12.883593565156598
+      ]
+    },
+    {
+      "path": "/room/Mesh_grp/Arch_grp/Wall_5_grp/Wall5",
+      "featureID": "b3307a9e-32b7-42a2-848c-c72c44a19255",
+      "vertexCount": 88,
+      "faceCount": 44,
+      "faceVertexCountHistogram": {
+        "3": 44
+      },
+      "orientation": "rightHanded",
+      "subdivisionScheme": "none",
+      "authoredExtent": [],
+      "localVertexBounds": {
+        "minimum": [
+          -0.9537346363067627,
+          -1.2200000286102295,
+          -0.16000047326087952
+        ],
+        "maximum": [
+          1.1137346029281616,
+          1.2200000286102295,
+          0.0
+        ]
+      },
+      "worldVertexBoundsStageUnits": {
+        "minimum": [
+          4.876992616056903,
+          -1.424294114112854,
+          11.846678703183912
+        ],
+        "maximum": [
+          5.362884926481021,
+          1.015705943107605,
+          13.913354483874055
+        ]
+      },
+      "worldVertexBoundsMeters": {
+        "minimum": [
+          4.876992616056903,
+          -1.424294114112854,
+          11.846678703183912
+        ],
+        "maximum": [
+          5.362884926481021,
+          1.015705943107605,
+          13.913354483874055
+        ]
+      },
+      "cachedWorldBoundStageUnits": {
+        "minimum": [
+          4.876992151431086,
+          -1.424294114112854,
+          11.846678703183912
+        ],
+        "maximum": [
+          5.3628853972821755,
+          1.015705943107605,
+          13.913354483874055
+        ]
+      },
+      "firstVertexLocal": [
+        -0.9537346363067627,
+        -1.2200000286102295,
+        0.0
+      ],
+      "firstVertexWorldStageUnits": [
+        5.204910276768011,
+        -1.424294114112854,
+        11.846678703183912
+      ]
+    },
+    {
+      "path": "/room/Mesh_grp/Floor_grp/Floor0",
+      "featureID": "7c48cacf-5979-4bfb-b1d1-88de721921db",
+      "vertexCount": 48,
+      "faceCount": 28,
+      "faceVertexCountHistogram": {
+        "3": 28
+      },
+      "orientation": "rightHanded",
+      "subdivisionScheme": "none",
+      "authoredExtent": [],
+      "localVertexBounds": {
+        "minimum": [
+          -4.321399688720703,
+          -1.113734483718872,
+          -0.07999999821186066
+        ],
+        "maximum": [
+          4.3213982582092285,
+          1.113735318183899,
+          0.0
+        ]
+      },
+      "worldVertexBoundsStageUnits": {
+        "minimum": [
+          -3.4984265313519565,
+          -1.5042941123247147,
+          11.25112909798021
+        ],
+        "maximum": [
+          5.3882621865904845,
+          -1.424294114112854,
+          13.913354146684497
+        ]
+      },
+      "worldVertexBoundsMeters": {
+        "minimum": [
+          -3.4984265313519565,
+          -1.5042941123247147,
+          11.25112909798021
+        ],
+        "maximum": [
+          5.3882621865904845,
+          -1.424294114112854,
+          13.913354146684497
+        ]
+      },
+      "cachedWorldBoundStageUnits": {
+        "minimum": [
+          -3.4984271553009663,
+          -1.5042941123247147,
+          10.343263151018185
+        ],
+        "maximum": [
+          5.3882621865904845,
+          -1.424294114112854,
+          13.91335429794492
+        ]
+      },
+      "firstVertexLocal": [
+        -4.321399688720703,
+        -1.113730549812317,
+        0.0
+      ],
+      "firstVertexWorldStageUnits": [
+        -3.4984265313519565,
+        -1.424294114112854,
+        12.54253309223774
+      ]
+    }
+  ],
+  "nodeCount": 53,
+  "meshCount": 13,
+  "vertexCount": 660,
+  "faceCount": 334,
+  "unmatchedMeshCount": 0,
+  "overallWorldVertexBoundsStageUnits": {
+    "minimum": [
+      -3.4984265313519565,
+      -1.5042941123247147,
+      11.25112909798021
+    ],
+    "maximum": [
+      5.388262463706854,
+      1.015705943107605,
+      13.913354483874055
+    ]
+  },
+  "overallWorldVertexBoundsMeters": {
+    "minimum": [
+      -3.4984265313519565,
+      -1.5042941123247147,
+      11.25112909798021
+    ],
+    "maximum": [
+      5.388262463706854,
+      1.015705943107605,
+      13.913354483874055
+    ]
+  },
+  "perFeatureWorldVertexBoundsMeters": {
+    "0321026a-56e2-4d3d-ac9e-be7659f4ecfe": {
+      "minimum": [
+        -3.460596123372955,
+        -1.4242939349122423,
+        11.873095866495623
+      ],
+      "maximum": [
+        -3.2329114681582922,
+        0.5886806841798204,
+        12.332418910778301
+      ]
+    },
+    "07ca23ff-3eea-4fdd-ad4f-f98b47851fe4": {
+      "minimum": [
+        3.9093054152299986,
+        -1.4242939331190243,
+        11.741227986128393
+      ],
+      "maximum": [
+        4.170419453260727,
+        0.6488510944502011,
+        12.408649436294763
+      ]
+    },
+    "0cd2f73e-5f0b-444c-be63-2f9855c59d47": {
+      "minimum": [
+        3.8800879220845577,
+        -1.424294114112854,
+        11.499310611373017
+      ],
+      "maximum": [
+        4.209282520568129,
+        1.015705943107605,
+        12.590530857225474
+      ]
+    },
+    "0d0716c9-28d9-4f00-be7c-e2a6fafa36fa": {
+      "minimum": [
+        -2.1185944918798896,
+        -1.424294114112854,
+        11.443539237303053
+      ],
+      "maximum": [
+        4.0634397743441255,
+        1.015705943107605,
+        12.590531334312672
+      ]
+    },
+    "22519aab-4e27-457c-8a65-8f45665f28cf": {
+      "minimum": [
+        -2.323526057537735,
+        -1.4242939949035645,
+        12.573296071863469
+      ],
+      "maximum": [
+        -1.6587085772481238,
+        0.612490177154541,
+        12.833991913268243
+      ]
+    },
+    "544608b7-bc20-4b57-b390-e08cb0c05d27": {
+      "minimum": [
+        4.315098030244259,
+        -1.424293875899039,
+        11.545764014273317
+      ],
+      "maximum": [
+        5.0720001766622715,
+        0.5722705127856358,
+        11.821251398727297
+      ]
+    },
+    "5e1d9c94-d64e-4b9e-af30-94c9f9855056": {
+      "minimum": [
+        0.1439746105887787,
+        -1.424293875694275,
+        12.969681736563171
+      ],
+      "maximum": [
+        0.8768434565754362,
+        0.6324409246444702,
+        13.24130955667401
+      ]
+    },
+    "7c48cacf-5979-4bfb-b1d1-88de721921db": {
+      "minimum": [
+        -3.4984265313519565,
+        -1.5042941123247147,
+        11.25112909798021
+      ],
+      "maximum": [
+        5.3882621865904845,
+        -1.424294114112854,
+        13.913354146684497
+      ]
+    },
+    "84c6bf1b-d654-4b06-9e0e-71154800e6f9": {
+      "minimum": [
+        4.1839044402915135,
+        -1.424294114112854,
+        11.524688784085601
+      ],
+      "maximum": [
+        5.388262463706854,
+        1.015705943107605,
+        11.872056556178558
+      ]
+    },
+    "90b9e5ef-6be5-4e01-83f5-b5f757b563fa": {
+      "minimum": [
+        -3.4984259447801787,
+        -1.424294114112854,
+        12.384559453569986
+      ],
+      "maximum": [
+        4.902369459587561,
+        1.015705943107605,
+        13.887977032949086
+      ]
+    },
+    "a16df794-df3b-4ec0-8b98-cbfc2b92e49a": {
+      "minimum": [
+        4.916442155836732,
+        -1.424293875694275,
+        12.883593565156598
+      ],
+      "maximum": [
+        5.196313082026302,
+        0.6324409246444702,
+        13.667779014804434
+      ]
+    },
+    "b3307a9e-32b7-42a2-848c-c72c44a19255": {
+      "minimum": [
+        4.876992616056903,
+        -1.424294114112854,
+        11.846678703183912
+      ],
+      "maximum": [
+        5.362884926481021,
+        1.015705943107605,
+        13.913354483874055
+      ]
+    },
+    "efd7d4de-5e77-4ae2-8a82-934a1a28066b": {
+      "minimum": [
+        -3.4730484787991758,
+        -1.424294114112854,
+        11.87309677190932
+      ],
+      "maximum": [
+        -3.232911228744645,
+        1.015705943107605,
+        12.409936416047284
+      ]
+    }
+  },
+  "originalFeaturesWithoutImportedMesh": [],
+  "originalPublicFeatures": {
+    "7c48cacf-5979-4bfb-b1d1-88de721921db": {
+      "kind": "floors",
+      "dimensions": [
+        8.322798,
+        1.9074692,
+        0
+      ],
+      "transformColumnMajor": [
+        0.9873417,
+        0,
+        0.15860805,
+        0,
+        0.15860799,
+        0,
+        -0.9873417,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0.94491816,
+        -1.4242941,
+        12.128309,
+        1
+      ],
+      "polygonCorners": [
+        [
+          4.1613975,
+          -0.9537344,
+          1.1920929e-07
+        ],
+        [
+          -4.1613994,
+          -0.9537306,
+          1.1920929e-07
+        ],
+        [
+          -4.1613984,
+          -0.4357109,
+          1.1920929e-07
+        ],
+        [
+          -4.1613984,
+          0.034230232,
+          1.1920929e-07
+        ],
+        [
+          -3.1082876,
+          0.034230232,
+          1.1920929e-07
+        ],
+        [
+          3.1273022,
+          0.03422737,
+          1.1920929e-07
+        ],
+        [
+          3.1273022,
+          0.95373535,
+          1.1920929e-07
+        ],
+        [
+          4.1613984,
+          0.95373535,
+          1.1920929e-07
+        ]
+      ],
+      "category": {
+        "floor": {}
+      }
+    },
+    "0d0716c9-28d9-4f00-be7c-e2a6fafa36fa": {
+      "kind": "walls",
+      "dimensions": [
+        6.23559,
+        2.44,
+        0
+      ],
+      "transformColumnMajor": [
+        0.9873415,
+        0,
+        0.15860848,
+        0,
+        0,
+        1,
+        0,
+        0,
+        -0.15860848,
+        0,
+        0.9873415,
+        0,
+        0.95973396,
+        -0.20429409,
+        12.096023,
+        1
+      ],
+      "polygonCorners": [],
+      "category": {
+        "wall": {}
+      }
+    },
+    "84c6bf1b-d654-4b06-9e0e-71154800e6f9": {
+      "kind": "walls",
+      "dimensions": [
+        1.034096,
+        2.44,
+        0
+      ],
+      "transformColumnMajor": [
+        0.98734164,
+        0,
+        0.15860787,
+        0,
+        0,
+        1,
+        0,
+        0,
+        -0.15860787,
+        0,
+        0.98734164,
+        0,
+        4.6944075,
+        -0.20429409,
+        11.764671,
+        1
+      ],
+      "polygonCorners": [],
+      "category": {
+        "wall": {}
+      }
+    },
+    "0cd2f73e-5f0b-444c-be63-2f9855c59d47": {
+      "kind": "walls",
+      "dimensions": [
+        0.9195079,
+        2.44,
+        0
+      ],
+      "transformColumnMajor": [
+        0.1586083,
+        0,
+        -0.98734146,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0.9873416,
+        0,
+        0.15860832,
+        0,
+        4.1109834,
+        -0.20429409,
+        12.136597,
+        1
+      ],
+      "polygonCorners": [],
+      "category": {
+        "wall": {}
+      }
+    },
+    "efd7d4de-5e77-4ae2-8a82-934a1a28066b": {
+      "kind": "walls",
+      "dimensions": [
+        0.51801956,
+        2.44,
+        0
+      ],
+      "transformColumnMajor": [
+        0.1586091,
+        0,
+        -0.98734146,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0.98734146,
+        0,
+        0.1586091,
+        0,
+        -3.2739925,
+        -0.20429409,
+        12.154205,
+        1
+      ],
+      "polygonCorners": [],
+      "category": {
+        "wall": {}
+      }
+    },
+    "90b9e5ef-6be5-4e01-83f5-b5f757b563fa": {
+      "kind": "walls",
+      "dimensions": [
+        8.322797,
+        2.44,
+        0
+      ],
+      "transformColumnMajor": [
+        -0.9873416,
+        0,
+        -0.15860851,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0.15860851,
+        0,
+        -0.9873416,
+        0,
+        0.79364777,
+        -0.20429409,
+        13.069969,
+        1
+      ],
+      "polygonCorners": [],
+      "category": {
+        "wall": {}
+      }
+    },
+    "b3307a9e-32b7-42a2-848c-c72c44a19255": {
+      "kind": "walls",
+      "dimensions": [
+        1.9074693,
+        2.44,
+        0
+      ],
+      "transformColumnMajor": [
+        -0.15860847,
+        0,
+        0.9873416,
+        0,
+        0,
+        1,
+        0,
+        0,
+        -0.9873416,
+        0,
+        -0.15860847,
+        0,
+        5.05364,
+        -0.20429409,
+        12.788341,
+        1
+      ],
+      "polygonCorners": [],
+      "category": {
+        "wall": {}
+      }
+    },
+    "544608b7-bc20-4b57-b390-e08cb0c05d27": {
+      "kind": "doors",
+      "dimensions": [
+        0.74090356,
+        1.9965646,
+        0
+      ],
+      "transformColumnMajor": [
+        0.9873417,
+        0,
+        0.1586073,
+        0,
+        0,
+        0.9999999,
+        0,
+        0,
+        -0.1586073,
+        0,
+        0.9873417,
+        0,
+        4.6808605,
+        -0.42601168,
+        11.762495,
+        1
+      ],
+      "polygonCorners": [],
+      "category": {
+        "door": {
+          "isOpen": false
+        }
+      }
+    },
+    "07ca23ff-3eea-4fdd-ad4f-f98b47851fe4": {
+      "kind": "doors",
+      "dimensions": [
+        0.6502756,
+        2.0731452,
+        0
+      ],
+      "transformColumnMajor": [
+        0.15860875,
+        0,
+        -0.98734146,
+        0,
+        0,
+        0.99999994,
+        0,
+        0,
+        0.9873415,
+        0,
+        0.15860875,
+        0,
+        4.1188498,
+        -0.38772142,
+        12.087627,
+        1
+      ],
+      "polygonCorners": [],
+      "category": {
+        "door": {
+          "isOpen": false
+        }
+      }
+    },
+    "0321026a-56e2-4d3d-ac9e-be7659f4ecfe": {
+      "kind": "doors",
+      "dimensions": [
+        0.43950918,
+        2.0129747,
+        0
+      ],
+      "transformColumnMajor": [
+        0.15860878,
+        0,
+        -0.98734146,
+        0,
+        0,
+        0.99999994,
+        0,
+        0,
+        0.9873415,
+        0,
+        0.15860878,
+        0,
+        -3.2677665,
+        -0.41780663,
+        12.115446,
+        1
+      ],
+      "polygonCorners": [],
+      "category": {
+        "door": {
+          "isOpen": false
+        }
+      }
+    },
+    "22519aab-4e27-457c-8a65-8f45665f28cf": {
+      "kind": "doors",
+      "dimensions": [
+        0.6476382,
+        2.0367842,
+        0
+      ],
+      "transformColumnMajor": [
+        -0.98734146,
+        0,
+        -0.15860894,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0.15860894,
+        0,
+        -0.98734146,
+        0,
+        -1.9784286,
+        -0.4059019,
+        12.624657,
+        1
+      ],
+      "polygonCorners": [],
+      "category": {
+        "door": {
+          "isOpen": false
+        }
+      }
+    },
+    "a16df794-df3b-4ec0-8b98-cbfc2b92e49a": {
+      "kind": "doors",
+      "dimensions": [
+        0.7685366,
+        2.0567348,
+        0
+      ],
+      "transformColumnMajor": [
+        -0.15860827,
+        0,
+        0.9873415,
+        0,
+        0,
+        1,
+        0,
+        0,
+        -0.98734164,
+        0,
+        -0.15860829,
+        0,
+        4.9773903,
+        -0.39592648,
+        13.262998,
+        1
+      ],
+      "polygonCorners": [],
+      "category": {
+        "door": {
+          "isOpen": true
+        }
+      }
+    },
+    "5e1d9c94-d64e-4b9e-af30-94c9f9855056": {
+      "kind": "doors",
+      "dimensions": [
+        0.71656203,
+        2.0567348,
+        0
+      ],
+      "transformColumnMajor": [
+        -0.98734146,
+        0,
+        -0.158609,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0.158609,
+        0,
+        -0.98734146,
+        0,
+        0.52309775,
+        -0.39592648,
+        13.026508,
+        1
+      ],
+      "polygonCorners": [],
+      "category": {
+        "door": {
+          "isOpen": true
+        }
+      }
+    }
+  },
+  "originalEncoding": "raw source JSON numbers, not native decoded Float32",
+  "elapsedSeconds": 0.28314138799942157,
+  "peakRSSKiB": 100808,
+  "geometryAgreementEstablished": false,
+  "physicalAuthority": false
+}

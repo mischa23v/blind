@@ -1,0 +1,82 @@
+{
+  "FAROUsed": false,
+  "authorStyleCloudPoints": 1000000,
+  "boundsMax": [
+    6.183396458929402,
+    5.466233612949931,
+    1.62
+  ],
+  "boundsMin": [
+    -5.086048403198615,
+    -5.4663440456892,
+    -1.4374157353420753
+  ],
+  "excludedTestFrameCount": 29,
+  "exportedRasterPixels": 194396580,
+  "fullTSDFWeightCoverageExported": false,
+  "integratedFrameCount": 265,
+  "loaderDifferences": [
+    "Open3D PNG/JPEG IO rather than OpenCV",
+    "dimension mismatch fails; no resize",
+    "fixed random seeds rather than unspecified seeds",
+    "additional unfiltered final native mesh export"
+  ],
+  "missingMeshImpliesFree": false,
+  "moduleHashesReverifiedAfter": true,
+  "modules": {
+    "numpy": {
+      "bytes": 25919,
+      "path": "$PYTHON_SITE_PACKAGES/numpy/__init__.py",
+      "sha256": "93924ac4b793328947dfd9eb9355e54eccdfd26a92c8dd52188aed2e52c7eb38"
+    },
+    "numpy._core._multiarray_umath": {
+      "bytes": 10808937,
+      "path": "$PYTHON_SITE_PACKAGES/numpy/_core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "ba96467ae494babaf7c3458b09cc03c4200c2e10010860d80e452ffb8b01c8cd"
+    },
+    "numpy.linalg._umath_linalg": {
+      "bytes": 231833,
+      "path": "$PYTHON_SITE_PACKAGES/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "64bfb8bb8a1a09ca31f7a6e307a87b4c78a75f3489aaf3c61ed8aa4ffada9845"
+    },
+    "open3d": {
+      "bytes": 8597,
+      "path": "$WORKSPACE/blind-open3d-author-baseline-10/environment/target/open3d/__init__.py",
+      "sha256": "bf0f4cd2031549d60ad691fffa26ce60737b5e094c9b727e3ddbab189a6dc738"
+    },
+    "open3d.cpu.pybind": {
+      "bytes": 225559512,
+      "path": "$WORKSPACE/blind-open3d-author-baseline-10/environment/target/open3d/cpu/pybind.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "e99d5acb1ad93e609e83864ec69553a08b2a486e5d639241cc51e3c795e0f0d7"
+    }
+  },
+  "nativeConvertedPositiveDepthPixels": 164771607,
+  "nativeConvertedZeroDepthPixels": 29624973,
+  "nativeFactoryClippedNonzeroDepthPixels": 29624973,
+  "originalConfidence": "unavailable",
+  "originalTracking": "unavailable",
+  "outputSHA256": {
+    "author-style-initialization-cloud.ply": "052518207750369556da9f3253f473a5d8776df228a35aaec8eee9498d0c2c1a",
+    "unfiltered-tsdf-mesh.ply": "5a75ebce93a3c65928344ce486223aa17a01a2c196982fc97edff8c41dd56e2e"
+  },
+  "parameters": {
+    "color": "RGB8",
+    "depthScale": 1000.0,
+    "depthTrunc": 4.0,
+    "sdfTrunc": 0.2,
+    "voxelLength": 0.04
+  },
+  "physicalAuthority": false,
+  "poseConventionProbesPassed": 2,
+  "randomSeeds": {
+    "numpyLegacy": 0,
+    "python": 0
+  },
+  "rasterCountsAreIndependentSensorMeasurements": false,
+  "scope": "Author-configured observed-depth Koivu provided-pose fusion; not SLAM, accuracy or navigation",
+  "triangles": 461256,
+  "vertices": 242293,
+  "workerCPUAffinity": [
+    0
+  ]
+}

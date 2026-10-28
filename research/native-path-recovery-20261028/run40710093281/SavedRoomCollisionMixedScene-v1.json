@@ -1,0 +1,687 @@
+{
+  "cells": [
+    {
+      "backendReady": true,
+      "configurationID": "wall-only-combined",
+      "failedControls": [],
+      "floorCategoryMask": 1,
+      "gravity": [
+        0,
+        0,
+        0
+      ],
+      "layout": "wall-only",
+      "obstacleCategoryMask": 1,
+      "physicsSpeed": 1,
+      "probeCategoryMask": 2,
+      "queries": [
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "thinWallForward",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "terminal": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "thinWallReverse",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "terminal": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "name": "wallInitialOverlap",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "terminal": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "wallTerminalOverlap",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "terminal": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "clear",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "terminal": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "floor",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "terminal": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        }
+      ],
+      "queryCollisionMasks": [
+        1
+      ],
+      "queryMode": "combined",
+      "rendererMode": "retained-offscreen-update",
+      "timeStepSeconds": 0.016666666666666666
+    },
+    {
+      "backendReady": false,
+      "configurationID": "wall-and-floor-combined",
+      "failedControls": [
+        "thinWallForward",
+        "thinWallReverse"
+      ],
+      "floorCategoryMask": 1,
+      "gravity": [
+        0,
+        0,
+        0
+      ],
+      "layout": "wall-and-floor",
+      "obstacleCategoryMask": 1,
+      "physicsSpeed": 1,
+      "probeCategoryMask": 2,
+      "queries": [
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "thinWallForward",
+          "passed": false,
+          "swept": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "terminal": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "thinWallReverse",
+          "passed": false,
+          "swept": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "terminal": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "name": "wallInitialOverlap",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "terminal": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "wallTerminalOverlap",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "terminal": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "clear",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "terminal": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "floor",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "terminal": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        }
+      ],
+      "queryCollisionMasks": [
+        1
+      ],
+      "queryMode": "combined",
+      "rendererMode": "retained-offscreen-update",
+      "timeStepSeconds": 0.016666666666666666
+    },
+    {
+      "backendReady": true,
+      "configurationID": "wall-only-separated",
+      "failedControls": [],
+      "floorCategoryMask": 4,
+      "gravity": [
+        0,
+        0,
+        0
+      ],
+      "layout": "wall-only",
+      "obstacleCategoryMask": 1,
+      "physicsSpeed": 1,
+      "probeCategoryMask": 2,
+      "queries": [
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "thinWallForward",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "terminal": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "thinWallReverse",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "terminal": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "name": "wallInitialOverlap",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "terminal": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "wallTerminalOverlap",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "terminal": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "clear",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "terminal": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "floor",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "terminal": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        }
+      ],
+      "queryCollisionMasks": [
+        1,
+        4
+      ],
+      "queryMode": "separated",
+      "rendererMode": "retained-offscreen-update",
+      "timeStepSeconds": 0.016666666666666666
+    },
+    {
+      "backendReady": true,
+      "configurationID": "wall-and-floor-separated",
+      "failedControls": [],
+      "floorCategoryMask": 4,
+      "gravity": [
+        0,
+        0,
+        0
+      ],
+      "layout": "wall-and-floor",
+      "obstacleCategoryMask": 1,
+      "physicsSpeed": 1,
+      "probeCategoryMask": 2,
+      "queries": [
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "thinWallForward",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "terminal": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "thinWallReverse",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "terminal": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "name": "wallInitialOverlap",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "terminal": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "wallTerminalOverlap",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          },
+          "terminal": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000001"
+            ]
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "clear",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "terminal": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        },
+        {
+          "errorCode": "none",
+          "initial": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "name": "floor",
+          "passed": true,
+          "swept": {
+            "floorSurfaceIDs": [],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          },
+          "terminal": {
+            "floorSurfaceIDs": [
+              "10000000-0000-0000-0000-000000000002"
+            ],
+            "furnitureBoundIDs": [],
+            "obstacleSurfaceIDs": []
+          }
+        }
+      ],
+      "queryCollisionMasks": [
+        1,
+        4
+      ],
+      "queryMode": "separated",
+      "rendererMode": "retained-offscreen-update",
+      "timeStepSeconds": 0.016666666666666666
+    }
+  ],
+  "evidenceKind": "synthetic-collision-mixed-scene",
+  "fullFootprintSupportVerified": false,
+  "physicalAuthority": false,
+  "schemaVersion": 1
+}

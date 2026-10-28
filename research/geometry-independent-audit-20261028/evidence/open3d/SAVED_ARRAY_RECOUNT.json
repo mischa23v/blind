@@ -1,0 +1,1127 @@
+{
+  "scope": "New arithmetic recount of historical eight-view derived arrays; no new geometry or reconstruction",
+  "sourceRevision": "9284719",
+  "historicalPixelOffset": 0.5,
+  "sameCaptureHoldoutViews": [
+    "frame_00021"
+  ],
+  "integratedViewCount": 7,
+  "reusedPublishedArrayBytes": 6477426,
+  "newRaycasts": 0,
+  "newReconstructionRuns": 0,
+  "physicalSafetyValidated": false,
+  "thresholdInterpretation": "Post-hoc descriptive bins fixed before this recount, not safety criteria; early/late are not proven false obstacles or missed objects",
+  "historicalArithmetic": {
+    "checks": 3578,
+    "floatComparisons": 1010,
+    "maximumAbsoluteDifference": 4.440892098500626e-16
+  },
+  "sourceSHA256": "5a20cffc84b3805bbbd7bcf860a2a89f9f83132970365361cafe287053eea37a",
+  "historicalRecountSourceSHA256": "a5c6c157edfe72520469f7df5f1d793bbfb523d6212ceaf3c886b3b53001365c",
+  "publishedResultSHA256": "f9b3b96aa7ed83e65bc907d6d36ae47ba5530a5b2a47a84bd518686e3baa2128",
+  "protocolSHA256": "cacdfee3e8173b83eaade57a479cfe3f297dd50c77caff9e0608ceef95631cd2",
+  "pooled": {
+    "availability": {
+      "scheduled": 368520,
+      "paired": 334223,
+      "referenceOnly": 111,
+      "TSDFOnly": 33671,
+      "neither": 515
+    },
+    "allPairedStatistics": {
+      "count": 334223,
+      "meanSigned": -0.1735470825972011,
+      "signedP05": -1.9328345146668486,
+      "signedP50": 0.006338439317091105,
+      "signedP95": 0.13199440489331438,
+      "MAE": 0.2710900882554968,
+      "absoluteP50": 0.039114838737215774,
+      "absoluteP90": 0.26890201185880014,
+      "absoluteP95": 1.9837386518127393,
+      "absoluteP99": 5.166640889996551,
+      "maximumAbsolute": 5.898652571353914
+    },
+    "diagnosticBins": {
+      "all": {
+        "paired": 334223,
+        "thresholds": [
+          {
+            "nominalMetres": 0.02,
+            "early": 97587,
+            "within": 96804,
+            "late": 139832,
+            "earlyPercentPaired": 29.19817008404568,
+            "withinPercentPaired": 28.963895363275416,
+            "latePercentPaired": 41.8379345526789
+          },
+          {
+            "nominalMetres": 0.05,
+            "early": 60207,
+            "within": 199177,
+            "late": 74839,
+            "earlyPercentPaired": 18.01402057907445,
+            "withinPercentPaired": 59.594043497904096,
+            "latePercentPaired": 22.391935923021457
+          },
+          {
+            "nominalMetres": 0.1,
+            "early": 33921,
+            "within": 275199,
+            "late": 25103,
+            "earlyPercentPaired": 10.14921175382903,
+            "withinPercentPaired": 82.33993471424768,
+            "latePercentPaired": 7.5108535319232965
+          }
+        ]
+      },
+      "reference_below_4m": {
+        "paired": 305567,
+        "thresholds": [
+          {
+            "nominalMetres": 0.02,
+            "early": 80630,
+            "within": 88097,
+            "late": 136840,
+            "earlyPercentPaired": 26.38701168647138,
+            "withinPercentPaired": 28.83066561506969,
+            "latePercentPaired": 44.782322698458934
+          },
+          {
+            "nominalMetres": 0.05,
+            "early": 47696,
+            "within": 184384,
+            "late": 73487,
+            "earlyPercentPaired": 15.60901537142427,
+            "withinPercentPaired": 60.341594478461346,
+            "latePercentPaired": 24.049390150114377
+          },
+          {
+            "nominalMetres": 0.1,
+            "early": 23332,
+            "within": 257805,
+            "late": 24430,
+            "earlyPercentPaired": 7.635641283253755,
+            "withinPercentPaired": 84.36938543756362,
+            "latePercentPaired": 7.994973279182633
+          }
+        ]
+      },
+      "reference_at_least_4m": {
+        "paired": 28656,
+        "thresholds": [
+          {
+            "nominalMetres": 0.02,
+            "early": 16957,
+            "within": 8707,
+            "late": 2992,
+            "earlyPercentPaired": 59.17434394193188,
+            "withinPercentPaired": 30.384561697375766,
+            "latePercentPaired": 10.44109436069235
+          },
+          {
+            "nominalMetres": 0.05,
+            "early": 12511,
+            "within": 14793,
+            "late": 1352,
+            "earlyPercentPaired": 43.65926856504746,
+            "withinPercentPaired": 51.62269681742043,
+            "latePercentPaired": 4.718034617532105
+          },
+          {
+            "nominalMetres": 0.1,
+            "early": 10589,
+            "within": 17394,
+            "late": 673,
+            "earlyPercentPaired": 36.95212171970966,
+            "withinPercentPaired": 60.699329983249584,
+            "latePercentPaired": 2.348548297040759
+          }
+        ]
+      }
+    }
+  },
+  "frames": [
+    {
+      "frameID": "frame_00001",
+      "usedByTSDFIntegration": true,
+      "availability": {
+        "scheduled": 46065,
+        "paired": 36041,
+        "referenceOnly": 2,
+        "TSDFOnly": 10008,
+        "neither": 14
+      },
+      "allPairedStatistics": {
+        "count": 36041,
+        "meanSigned": -1.7473477086796445,
+        "signedP05": -5.310278204653519,
+        "signedP50": -0.14915120034308016,
+        "signedP95": 0.2601271650070526,
+        "MAE": 1.851604715249301,
+        "absoluteP50": 1.0206433395831267,
+        "absoluteP90": 5.1425303026742695,
+        "absoluteP95": 5.310278204653519,
+        "absoluteP99": 5.575287107005502,
+        "maximumAbsolute": 5.898652571353914
+      },
+      "diagnosticBins": {
+        "all": {
+          "paired": 36041,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 23461,
+              "within": 5970,
+              "late": 6610,
+              "earlyPercentPaired": 65.09530812130629,
+              "withinPercentPaired": 16.56446824449932,
+              "latePercentPaired": 18.340223634194388
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 20135,
+              "within": 12086,
+              "late": 3820,
+              "earlyPercentPaired": 55.86692933048473,
+              "withinPercentPaired": 33.534030687272825,
+              "latePercentPaired": 10.599039982242447
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 18469,
+              "within": 14846,
+              "late": 2726,
+              "earlyPercentPaired": 51.244416081684754,
+              "withinPercentPaired": 41.19197580533282,
+              "latePercentPaired": 7.563608112982437
+            }
+          ]
+        },
+        "reference_below_4m": {
+          "paired": 19467,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 10938,
+              "within": 4317,
+              "late": 4212,
+              "earlyPercentPaired": 56.18739405147172,
+              "withinPercentPaired": 22.175990137155186,
+              "latePercentPaired": 21.63661581137309
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 10194,
+              "within": 6396,
+              "late": 2877,
+              "earlyPercentPaired": 52.36554168593004,
+              "withinPercentPaired": 32.85560178764062,
+              "latePercentPaired": 14.778856526429344
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 9580,
+              "within": 7606,
+              "late": 2281,
+              "earlyPercentPaired": 49.21148610468999,
+              "withinPercentPaired": 39.07124877998665,
+              "latePercentPaired": 11.717265115323368
+            }
+          ]
+        },
+        "reference_at_least_4m": {
+          "paired": 16574,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 12523,
+              "within": 1653,
+              "late": 2398,
+              "earlyPercentPaired": 75.55810305297453,
+              "withinPercentPaired": 9.973452395317969,
+              "latePercentPaired": 14.468444551707494
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 9941,
+              "within": 5690,
+              "late": 943,
+              "earlyPercentPaired": 59.97948594183661,
+              "withinPercentPaired": 34.330879691082416,
+              "latePercentPaired": 5.68963436708097
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 8889,
+              "within": 7240,
+              "late": 445,
+              "earlyPercentPaired": 53.63219500422348,
+              "withinPercentPaired": 43.68287679498009,
+              "latePercentPaired": 2.684928200796428
+            }
+          ]
+        }
+      }
+    },
+    {
+      "frameID": "frame_00005",
+      "usedByTSDFIntegration": true,
+      "availability": {
+        "scheduled": 46065,
+        "paired": 40805,
+        "referenceOnly": 3,
+        "TSDFOnly": 5248,
+        "neither": 9
+      },
+      "allPairedStatistics": {
+        "count": 40805,
+        "meanSigned": -0.029996442253741477,
+        "signedP05": -0.16112445542580467,
+        "signedP50": 0.01181810664722005,
+        "signedP95": 0.14399848290478673,
+        "MAE": 0.15062679354474112,
+        "absoluteP50": 0.026892917930698257,
+        "absoluteP90": 0.1486324263130953,
+        "absoluteP95": 0.5691848662586914,
+        "absoluteP99": 2.4151847442945,
+        "maximumAbsolute": 4.170155196799977
+      },
+      "diagnosticBins": {
+        "all": {
+          "paired": 40805,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 6434,
+              "within": 17746,
+              "late": 16625,
+              "earlyPercentPaired": 15.767675529959563,
+              "withinPercentPaired": 43.48976841073398,
+              "latePercentPaired": 40.74255605930646
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 3930,
+              "within": 23273,
+              "late": 13602,
+              "earlyPercentPaired": 9.631172650410488,
+              "withinPercentPaired": 57.0346771229016,
+              "latePercentPaired": 33.33415022668791
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 2629,
+              "within": 31794,
+              "late": 6382,
+              "earlyPercentPaired": 6.442837887513784,
+              "withinPercentPaired": 77.91692194583997,
+              "latePercentPaired": 15.640240166646244
+            }
+          ]
+        },
+        "reference_below_4m": {
+          "paired": 28723,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 2000,
+              "within": 10692,
+              "late": 16031,
+              "earlyPercentPaired": 6.9630609615987185,
+              "withinPercentPaired": 37.22452390070675,
+              "latePercentPaired": 55.81241513769453
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 1360,
+              "within": 14170,
+              "late": 13193,
+              "earlyPercentPaired": 4.734881453887129,
+              "withinPercentPaired": 49.33328691292692,
+              "latePercentPaired": 45.93183163318595
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 929,
+              "within": 21640,
+              "late": 6154,
+              "earlyPercentPaired": 3.2343418166626052,
+              "withinPercentPaired": 75.34031960449813,
+              "latePercentPaired": 21.425338578839256
+            }
+          ]
+        },
+        "reference_at_least_4m": {
+          "paired": 12082,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 4434,
+              "within": 7054,
+              "late": 594,
+              "earlyPercentPaired": 36.69922198311538,
+              "withinPercentPaired": 58.38437344810462,
+              "latePercentPaired": 4.9164045687800035
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 2570,
+              "within": 9103,
+              "late": 409,
+              "earlyPercentPaired": 21.271312696573418,
+              "withinPercentPaired": 75.34348617778514,
+              "latePercentPaired": 3.38520112564145
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 1700,
+              "within": 10154,
+              "late": 228,
+              "earlyPercentPaired": 14.070518126138056,
+              "withinPercentPaired": 84.04237708988578,
+              "latePercentPaired": 1.887104783976163
+            }
+          ]
+        }
+      }
+    },
+    {
+      "frameID": "frame_00009",
+      "usedByTSDFIntegration": true,
+      "availability": {
+        "scheduled": 46065,
+        "paired": 43355,
+        "referenceOnly": 9,
+        "TSDFOnly": 2701,
+        "neither": 0
+      },
+      "allPairedStatistics": {
+        "count": 43355,
+        "meanSigned": 0.03037217787966006,
+        "signedP05": -0.10907047550914574,
+        "signedP50": 0.040970846246104475,
+        "signedP95": 0.12418838932608746,
+        "MAE": 0.07243463935851494,
+        "absoluteP50": 0.05721140678505732,
+        "absoluteP90": 0.11909439359103186,
+        "absoluteP95": 0.26117043390154715,
+        "absoluteP99": 0.5234293938970024,
+        "maximumAbsolute": 1.3266573356230298
+      },
+      "diagnosticBins": {
+        "all": {
+          "paired": 43355,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 8760,
+              "within": 11429,
+              "late": 23166,
+              "earlyPercentPaired": 20.205281974397415,
+              "withinPercentPaired": 26.361434667281742,
+              "latePercentPaired": 53.433283358320836
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 4744,
+              "within": 18085,
+              "late": 20526,
+              "earlyPercentPaired": 10.942221197093762,
+              "withinPercentPaired": 41.713758505362705,
+              "latePercentPaired": 47.34402029754354
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 2361,
+              "within": 37929,
+              "late": 3065,
+              "earlyPercentPaired": 5.445738669126975,
+              "withinPercentPaired": 87.48471917887211,
+              "latePercentPaired": 7.069542152000922
+            }
+          ]
+        },
+        "reference_below_4m": {
+          "paired": 43355,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 8760,
+              "within": 11429,
+              "late": 23166,
+              "earlyPercentPaired": 20.205281974397415,
+              "withinPercentPaired": 26.361434667281742,
+              "latePercentPaired": 53.433283358320836
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 4744,
+              "within": 18085,
+              "late": 20526,
+              "earlyPercentPaired": 10.942221197093762,
+              "withinPercentPaired": 41.713758505362705,
+              "latePercentPaired": 47.34402029754354
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 2361,
+              "within": 37929,
+              "late": 3065,
+              "earlyPercentPaired": 5.445738669126975,
+              "withinPercentPaired": 87.48471917887211,
+              "latePercentPaired": 7.069542152000922
+            }
+          ]
+        },
+        "reference_at_least_4m": {
+          "paired": 0,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "frameID": "frame_00013",
+      "usedByTSDFIntegration": true,
+      "availability": {
+        "scheduled": 46065,
+        "paired": 44713,
+        "referenceOnly": 34,
+        "TSDFOnly": 1318,
+        "neither": 0
+      },
+      "allPairedStatistics": {
+        "count": 44713,
+        "meanSigned": 0.0035878759011240715,
+        "signedP05": -0.16686837668819612,
+        "signedP50": -0.0039026634706806895,
+        "signedP95": 0.22888895718097696,
+        "MAE": 0.06871473181435064,
+        "absoluteP50": 0.02916582031454462,
+        "absoluteP90": 0.18036027545430822,
+        "absoluteP95": 0.33572531793525323,
+        "absoluteP99": 0.5186765344219271,
+        "maximumAbsolute": 0.6247314015310486
+      },
+      "diagnosticBins": {
+        "all": {
+          "paired": 44713,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 14903,
+              "within": 18187,
+              "late": 11623,
+              "earlyPercentPaired": 33.330351351955805,
+              "withinPercentPaired": 40.67497148480308,
+              "latePercentPaired": 25.994677163241114
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 7773,
+              "within": 28453,
+              "late": 8487,
+              "earlyPercentPaired": 17.384205935633933,
+              "withinPercentPaired": 63.634737101066804,
+              "latePercentPaired": 18.981056963299263
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 4028,
+              "within": 36736,
+              "late": 3949,
+              "earlyPercentPaired": 9.008565741506944,
+              "withinPercentPaired": 82.15955091360453,
+              "latePercentPaired": 8.83188334488851
+            }
+          ]
+        },
+        "reference_below_4m": {
+          "paired": 44713,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 14903,
+              "within": 18187,
+              "late": 11623,
+              "earlyPercentPaired": 33.330351351955805,
+              "withinPercentPaired": 40.67497148480308,
+              "latePercentPaired": 25.994677163241114
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 7773,
+              "within": 28453,
+              "late": 8487,
+              "earlyPercentPaired": 17.384205935633933,
+              "withinPercentPaired": 63.634737101066804,
+              "latePercentPaired": 18.981056963299263
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 4028,
+              "within": 36736,
+              "late": 3949,
+              "earlyPercentPaired": 9.008565741506944,
+              "withinPercentPaired": 82.15955091360453,
+              "latePercentPaired": 8.83188334488851
+            }
+          ]
+        },
+        "reference_at_least_4m": {
+          "paired": 0,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "frameID": "frame_00017",
+      "usedByTSDFIntegration": true,
+      "availability": {
+        "scheduled": 46065,
+        "paired": 44634,
+        "referenceOnly": 12,
+        "TSDFOnly": 1276,
+        "neither": 143
+      },
+      "allPairedStatistics": {
+        "count": 44634,
+        "meanSigned": -0.008886608497612084,
+        "signedP05": -0.09789023148735754,
+        "signedP50": -0.015592351356796375,
+        "signedP95": 0.06929394631859778,
+        "MAE": 0.050322514951076786,
+        "absoluteP50": 0.021624123965359843,
+        "absoluteP90": 0.09289240786369042,
+        "absoluteP95": 0.16180729571778713,
+        "absoluteP99": 0.6043353111171107,
+        "maximumAbsolute": 1.4136216035302591
+      },
+      "diagnosticBins": {
+        "all": {
+          "paired": 44634,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 19533,
+              "within": 21040,
+              "late": 4061,
+              "earlyPercentPaired": 43.762602500336065,
+              "withinPercentPaired": 47.13895236814984,
+              "latePercentPaired": 9.098445131514092
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 9250,
+              "within": 32745,
+              "late": 2639,
+              "earlyPercentPaired": 20.724111663754087,
+              "withinPercentPaired": 73.36335528968947,
+              "latePercentPaired": 5.912533046556437
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 2140,
+              "within": 40586,
+              "late": 1908,
+              "earlyPercentPaired": 4.794551238965811,
+              "withinPercentPaired": 90.93068064704038,
+              "latePercentPaired": 4.274768113993816
+            }
+          ]
+        },
+        "reference_below_4m": {
+          "paired": 44634,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 19533,
+              "within": 21040,
+              "late": 4061,
+              "earlyPercentPaired": 43.762602500336065,
+              "withinPercentPaired": 47.13895236814984,
+              "latePercentPaired": 9.098445131514092
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 9250,
+              "within": 32745,
+              "late": 2639,
+              "earlyPercentPaired": 20.724111663754087,
+              "withinPercentPaired": 73.36335528968947,
+              "latePercentPaired": 5.912533046556437
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 2140,
+              "within": 40586,
+              "late": 1908,
+              "earlyPercentPaired": 4.794551238965811,
+              "withinPercentPaired": 90.93068064704038,
+              "latePercentPaired": 4.274768113993816
+            }
+          ]
+        },
+        "reference_at_least_4m": {
+          "paired": 0,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "frameID": "frame_00021",
+      "usedByTSDFIntegration": false,
+      "availability": {
+        "scheduled": 46065,
+        "paired": 40864,
+        "referenceOnly": 37,
+        "TSDFOnly": 4865,
+        "neither": 299
+      },
+      "allPairedStatistics": {
+        "count": 40864,
+        "meanSigned": 0.012659174304040012,
+        "signedP05": -0.12841296771499047,
+        "signedP50": -0.015310570705046267,
+        "signedP95": 0.19728259201550102,
+        "MAE": 0.09014765868297205,
+        "absoluteP50": 0.036180452968353705,
+        "absoluteP90": 0.14008676023650327,
+        "absoluteP95": 0.34149923535921795,
+        "absoluteP99": 1.1583103740757623,
+        "maximumAbsolute": 3.0900136441861425
+      },
+      "diagnosticBins": {
+        "all": {
+          "paired": 40864,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 19531,
+              "within": 7876,
+              "late": 13457,
+              "earlyPercentPaired": 47.79512529365701,
+              "withinPercentPaired": 19.27368833202819,
+              "latePercentPaired": 32.931186374314805
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 11707,
+              "within": 25461,
+              "late": 3696,
+              "earlyPercentPaired": 28.648688332028193,
+              "withinPercentPaired": 62.30667580266249,
+              "latePercentPaired": 9.044635865309319
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 3353,
+              "within": 34710,
+              "late": 2801,
+              "earlyPercentPaired": 8.205266249021143,
+              "withinPercentPaired": 84.94028974158184,
+              "latePercentPaired": 6.8544440093970245
+            }
+          ]
+        },
+        "reference_below_4m": {
+          "paired": 40864,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 19531,
+              "within": 7876,
+              "late": 13457,
+              "earlyPercentPaired": 47.79512529365701,
+              "withinPercentPaired": 19.27368833202819,
+              "latePercentPaired": 32.931186374314805
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 11707,
+              "within": 25461,
+              "late": 3696,
+              "earlyPercentPaired": 28.648688332028193,
+              "withinPercentPaired": 62.30667580266249,
+              "latePercentPaired": 9.044635865309319
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 3353,
+              "within": 34710,
+              "late": 2801,
+              "earlyPercentPaired": 8.205266249021143,
+              "withinPercentPaired": 84.94028974158184,
+              "latePercentPaired": 6.8544440093970245
+            }
+          ]
+        },
+        "reference_at_least_4m": {
+          "paired": 0,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "frameID": "frame_00025",
+      "usedByTSDFIntegration": true,
+      "availability": {
+        "scheduled": 46065,
+        "paired": 39975,
+        "referenceOnly": 14,
+        "TSDFOnly": 6030,
+        "neither": 46
+      },
+      "allPairedStatistics": {
+        "count": 39975,
+        "meanSigned": 0.0709522382641226,
+        "signedP05": -0.051375496640835114,
+        "signedP50": 0.03357311039556432,
+        "signedP95": 0.13321142698337843,
+        "MAE": 0.08930125138857324,
+        "absoluteP50": 0.036405956483524626,
+        "absoluteP90": 0.08401118091756582,
+        "absoluteP95": 0.17733806527285823,
+        "absoluteP99": 1.860760742540512,
+        "maximumAbsolute": 1.947434122902868
+      },
+      "diagnosticBins": {
+        "all": {
+          "paired": 39975,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 4019,
+              "within": 7361,
+              "late": 28595,
+              "earlyPercentPaired": 10.053783614759224,
+              "withinPercentPaired": 18.41400875547217,
+              "latePercentPaired": 71.5322076297686
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 2048,
+              "within": 29982,
+              "late": 7945,
+              "earlyPercentPaired": 5.123202001250782,
+              "withinPercentPaired": 75.00187617260788,
+              "latePercentPaired": 19.87492182614134
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 629,
+              "within": 36767,
+              "late": 2579,
+              "earlyPercentPaired": 1.5734834271419635,
+              "withinPercentPaired": 91.97498436522827,
+              "latePercentPaired": 6.451532207629769
+            }
+          ]
+        },
+        "reference_below_4m": {
+          "paired": 39975,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 4019,
+              "within": 7361,
+              "late": 28595,
+              "earlyPercentPaired": 10.053783614759224,
+              "withinPercentPaired": 18.41400875547217,
+              "latePercentPaired": 71.5322076297686
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 2048,
+              "within": 29982,
+              "late": 7945,
+              "earlyPercentPaired": 5.123202001250782,
+              "withinPercentPaired": 75.00187617260788,
+              "latePercentPaired": 19.87492182614134
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 629,
+              "within": 36767,
+              "late": 2579,
+              "earlyPercentPaired": 1.5734834271419635,
+              "withinPercentPaired": 91.97498436522827,
+              "latePercentPaired": 6.451532207629769
+            }
+          ]
+        },
+        "reference_at_least_4m": {
+          "paired": 0,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "frameID": "frame_00029",
+      "usedByTSDFIntegration": true,
+      "availability": {
+        "scheduled": 46065,
+        "paired": 43836,
+        "referenceOnly": 0,
+        "TSDFOnly": 2225,
+        "neither": 4
+      },
+      "allPairedStatistics": {
+        "count": 43836,
+        "meanSigned": 0.040207847453619126,
+        "signedP05": -0.005600181746422017,
+        "signedP50": 0.041403969859208356,
+        "signedP95": 0.08868771702425216,
+        "MAE": 0.045897858840101086,
+        "absoluteP50": 0.04208050171961841,
+        "absoluteP90": 0.07086090364287856,
+        "absoluteP95": 0.09546467909750656,
+        "absoluteP99": 0.1718269731791568,
+        "maximumAbsolute": 0.5467329220631567
+      },
+      "diagnosticBins": {
+        "all": {
+          "paired": 43836,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 946,
+              "within": 7195,
+              "late": 35695,
+              "earlyPercentPaired": 2.1580436171183504,
+              "withinPercentPaired": 16.41345013231134,
+              "latePercentPaired": 81.42850625057031
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 620,
+              "within": 29092,
+              "late": 14124,
+              "earlyPercentPaired": 1.4143626243270373,
+              "withinPercentPaired": 66.36554430148736,
+              "latePercentPaired": 32.2200930741856
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 312,
+              "within": 41831,
+              "late": 1693,
+              "earlyPercentPaired": 0.7117437722419928,
+              "withinPercentPaired": 95.4261337713295,
+              "latePercentPaired": 3.8621224564285064
+            }
+          ]
+        },
+        "reference_below_4m": {
+          "paired": 43836,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 946,
+              "within": 7195,
+              "late": 35695,
+              "earlyPercentPaired": 2.1580436171183504,
+              "withinPercentPaired": 16.41345013231134,
+              "latePercentPaired": 81.42850625057031
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 620,
+              "within": 29092,
+              "late": 14124,
+              "earlyPercentPaired": 1.4143626243270373,
+              "withinPercentPaired": 66.36554430148736,
+              "latePercentPaired": 32.2200930741856
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 312,
+              "within": 41831,
+              "late": 1693,
+              "earlyPercentPaired": 0.7117437722419928,
+              "withinPercentPaired": 95.4261337713295,
+              "latePercentPaired": 3.8621224564285064
+            }
+          ]
+        },
+        "reference_at_least_4m": {
+          "paired": 0,
+          "thresholds": [
+            {
+              "nominalMetres": 0.02,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            },
+            {
+              "nominalMetres": 0.05,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            },
+            {
+              "nominalMetres": 0.1,
+              "early": 0,
+              "within": 0,
+              "late": 0,
+              "earlyPercentPaired": null,
+              "withinPercentPaired": null,
+              "latePercentPaired": null
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "resource": {
+    "wallSeconds": 0.6128830870002275,
+    "cpuSeconds": 0.699732267,
+    "processPeakRSSBytes": 53153792,
+    "machinePerformanceNotPhoneLatency": true
+  }
+}

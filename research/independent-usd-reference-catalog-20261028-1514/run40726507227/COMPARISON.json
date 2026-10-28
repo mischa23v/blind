@@ -1,0 +1,1877 @@
+{
+  "schema": "same-public-export-independent-observations-v1",
+  "nativeCommit": "c4ffa28c07d0a17b513d123de3bec2fd8be93eec",
+  "nativeRunID": 40726507227,
+  "nativeArtifactID": 12834885760,
+  "referenceReader": "official OpenUSD 26.5",
+  "sourceEncodingComparison": "Original JSON scalars rounded to IEEE754 Float32, matching native CapturedRoom witness encoding",
+  "fixtures": [
+    {
+      "fixtureID": "Hallway2",
+      "referenceReportSHA256": "7b4fc9e7c45db737a3f2629a3e2f3c32dd8816de2d2c5197db1c8aa668d6777d",
+      "sourceSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "usdzSHA256": "0c47630270348ded24ce0a4fe6a18f5defce5d445d8c7e109c932b56d812d232",
+      "metadataSHA256": "0fbb1daaa7fb13a7ac76c7e428046876a614a8287248318f8f023561d143672c",
+      "nativeManifestSHA256": "f37807c60966174724e4f3758c0b1b9d57e887e596377925de6a9aaebbc8bdf2",
+      "nativeInventorySHA256": "e0418b9919e73ce518580206105707c91a9d3e33307b0e076a035e60810e52fa",
+      "stageMetersPerUnit": 1.0,
+      "metersPerUnitAuthored": true,
+      "stageUpAxis": "Y",
+      "upAxisAuthored": true,
+      "meshCount": 13,
+      "vertexCount": 660,
+      "faceCount": 334,
+      "featureKinds": {
+        "walls": 6,
+        "doors": 6,
+        "floors": 1
+      },
+      "unmatchedMeshCount": 0,
+      "originalFeaturesWithoutImportedMesh": [],
+      "exactSourceFloat32WorldTransformMatches": 13,
+      "sourceAnchorPairCount": 78,
+      "maxSourceAnchorDistanceDeltaMeters": 0.0,
+      "overallExportedWorldBoundsMeters": {
+        "minimum": [
+          -3.4984265313519565,
+          -1.5042941123247147,
+          11.25112909798021
+        ],
+        "maximum": [
+          5.388262463706854,
+          1.015705943107605,
+          13.913354483874055
+        ]
+      },
+      "firstNativeFailureComparison": {
+        "featureID": "0D0716C9-28D9-4F00-BE7C-E2A6FAFA36FA",
+        "meshPath": "/room/Mesh_grp/Arch_grp/Wall_0_grp/Wall0",
+        "nativeFailure": "sourceGeometryMismatch",
+        "axis": 2,
+        "sourceDimensionOnFailedAxis": 0,
+        "exportedLocalBounds": {
+          "minimum": [
+            -3.117794990539551,
+            -1.2200000286102295,
+            -0.1599999964237213
+          ],
+          "maximum": [
+            3.117794990539551,
+            1.2200000286102295,
+            0.0
+          ]
+        },
+        "nativeWorldMatrixMaxAbsoluteDelta": 0.0,
+        "nativeWorldBoundsMaxAbsoluteDeltaMeters": 4.0514246535394705e-07,
+        "nativePredicateResidualMeters": 0.15999960866551888,
+        "nativePredicateEpsilonMeters": 9.228532871929929e-05,
+        "vertexIndicesCompared": false
+      },
+      "features": [
+        {
+          "featureID": "0d0716c9-28d9-4f00-be7c-e2a6fafa36fa",
+          "kind": "walls",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_0_grp/Wall0",
+          "sourceDimensionsFloat32": [
+            6.235589981079102,
+            2.440000057220459,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -3.117794990539551,
+              -1.2200000286102295,
+              -0.0
+            ],
+            "maximum": [
+              3.117794990539551,
+              1.2200000286102295,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -3.117794990539551,
+              -1.2200000286102295,
+              -0.1599999964237213
+            ],
+            "maximum": [
+              3.117794990539551,
+              1.2200000286102295,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            6.235589981079102,
+            2.440000057220459,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowAbove": [
+            0,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            0.9597339630126953,
+            -0.2042940855026245,
+            12.096022605895996
+          ],
+          "exportedAnchorMeters": [
+            0.9597339630126953,
+            -0.2042940855026245,
+            12.096022605895996
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              -2.1185944918798896,
+              -1.424294114112854,
+              11.443539237303053
+            ],
+            "maximum": [
+              4.0634397743441255,
+              1.015705943107605,
+              12.590531334312672
+            ]
+          }
+        },
+        {
+          "featureID": "544608b7-bc20-4b57-b390-e08cb0c05d27",
+          "kind": "doors",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_1_grp/Door0",
+          "sourceDimensionsFloat32": [
+            0.7409035563468933,
+            1.9965646266937256,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.37045177817344666,
+              -0.9982823133468628,
+              -0.0
+            ],
+            "maximum": [
+              0.37045177817344666,
+              0.9982823133468628,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.37045177817344666,
+              -0.9982823133468628,
+              -0.1599999964237213
+            ],
+            "maximum": [
+              0.37045177817344666,
+              0.9982823133468628,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            0.7409035563468933,
+            1.9965646266937256,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowAbove": [
+            0,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            4.68086051940918,
+            -0.42601168155670166,
+            11.762495040893555
+          ],
+          "exportedAnchorMeters": [
+            4.68086051940918,
+            -0.42601168155670166,
+            11.762495040893555
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              4.315098030244259,
+              -1.424293875899039,
+              11.545764014273317
+            ],
+            "maximum": [
+              5.0720001766622715,
+              0.5722705127856358,
+              11.821251398727297
+            ]
+          }
+        },
+        {
+          "featureID": "84c6bf1b-d654-4b06-9e0e-71154800e6f9",
+          "kind": "walls",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_1_grp/Wall1",
+          "sourceDimensionsFloat32": [
+            1.0340960025787354,
+            2.440000057220459,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.5170480012893677,
+              -1.2200000286102295,
+              -0.0
+            ],
+            "maximum": [
+              0.5170480012893677,
+              1.2200000286102295,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.5170480012893677,
+              -1.2200000286102295,
+              -0.1599999964237213
+            ],
+            "maximum": [
+              0.6770480871200562,
+              1.2200000286102295,
+              9.539390788404489e-08
+            ]
+          },
+          "exportedLocalSpans": [
+            1.1940960884094238,
+            2.440000057220459,
+            0.1600000918176292
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowAbove": [
+            0.16000008583068848,
+            0,
+            9.539390788404489e-08
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            4.6944074630737305,
+            -0.2042940855026245,
+            11.764671325683594
+          ],
+          "exportedAnchorMeters": [
+            4.6944074630737305,
+            -0.2042940855026245,
+            11.764671325683594
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              4.1839044402915135,
+              -1.424294114112854,
+              11.524688784085601
+            ],
+            "maximum": [
+              5.388262463706854,
+              1.015705943107605,
+              11.872056556178558
+            ]
+          }
+        },
+        {
+          "featureID": "07ca23ff-3eea-4fdd-ad4f-f98b47851fe4",
+          "kind": "doors",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_2_grp/Door1",
+          "sourceDimensionsFloat32": [
+            0.6502755880355835,
+            2.0731451511383057,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.32513779401779175,
+              -1.0365725755691528,
+              -0.0
+            ],
+            "maximum": [
+              0.32513779401779175,
+              1.0365725755691528,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.32513779401779175,
+              -1.0365725755691528,
+              -0.1599999964237213
+            ],
+            "maximum": [
+              0.32513779401779175,
+              1.0365725755691528,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            0.6502755880355835,
+            2.0731451511383057,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowAbove": [
+            0,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            4.118849754333496,
+            -0.3877214193344116,
+            12.087627410888672
+          ],
+          "exportedAnchorMeters": [
+            4.118849754333496,
+            -0.3877214193344116,
+            12.087627410888672
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              3.9093054152299986,
+              -1.4242939331190243,
+              11.741227986128393
+            ],
+            "maximum": [
+              4.170419453260727,
+              0.6488510944502011,
+              12.408649436294763
+            ]
+          }
+        },
+        {
+          "featureID": "0cd2f73e-5f0b-444c-be63-2f9855c59d47",
+          "kind": "walls",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_2_grp/Wall2",
+          "sourceDimensionsFloat32": [
+            0.9195079207420349,
+            2.440000057220459,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.45975396037101746,
+              -1.2200000286102295,
+              -0.0
+            ],
+            "maximum": [
+              0.45975396037101746,
+              1.2200000286102295,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.45975399017333984,
+              -1.2200000286102295,
+              -0.1599999964237213
+            ],
+            "maximum": [
+              0.6197540760040283,
+              1.2200000286102295,
+              1.0389461522208876e-06
+            ]
+          },
+          "exportedLocalSpans": [
+            1.0795080661773682,
+            2.440000057220459,
+            0.16000103536987353
+          ],
+          "localBoundsOverflowBelow": [
+            2.9802322387695312e-08,
+            0,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowAbove": [
+            0.16000011563301086,
+            0,
+            1.0389461522208876e-06
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            4.110983371734619,
+            -0.2042940855026245,
+            12.1365966796875
+          ],
+          "exportedAnchorMeters": [
+            4.110983371734619,
+            -0.2042940855026245,
+            12.1365966796875
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              3.8800879220845577,
+              -1.424294114112854,
+              11.499310611373017
+            ],
+            "maximum": [
+              4.209282520568129,
+              1.015705943107605,
+              12.590530857225474
+            ]
+          }
+        },
+        {
+          "featureID": "0321026a-56e2-4d3d-ac9e-be7659f4ecfe",
+          "kind": "doors",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_3_grp/Door2",
+          "sourceDimensionsFloat32": [
+            0.43950918316841125,
+            2.012974739074707,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.21975459158420563,
+              -1.0064873695373535,
+              -0.0
+            ],
+            "maximum": [
+              0.21975459158420563,
+              1.0064873695373535,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.21975459158420563,
+              -1.0064873695373535,
+              -0.1599999964237213
+            ],
+            "maximum": [
+              0.21975459158420563,
+              1.0064873695373535,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            0.43950918316841125,
+            2.012974739074707,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowAbove": [
+            0,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            -3.2677664756774902,
+            -0.41780662536621094,
+            12.115446090698242
+          ],
+          "exportedAnchorMeters": [
+            -3.2677664756774902,
+            -0.41780662536621094,
+            12.115446090698242
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              -3.460596123372955,
+              -1.4242939349122423,
+              11.873095866495623
+            ],
+            "maximum": [
+              -3.2329114681582922,
+              0.5886806841798204,
+              12.332418910778301
+            ]
+          }
+        },
+        {
+          "featureID": "efd7d4de-5e77-4ae2-8a82-934a1a28066b",
+          "kind": "walls",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_3_grp/Wall3",
+          "sourceDimensionsFloat32": [
+            0.5180195569992065,
+            2.440000057220459,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.25900977849960327,
+              -1.2200000286102295,
+              -0.0
+            ],
+            "maximum": [
+              0.25900977849960327,
+              1.2200000286102295,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.25900977849960327,
+              -1.2200000286102295,
+              -0.1599999964237213
+            ],
+            "maximum": [
+              0.25900977849960327,
+              1.2200000286102295,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            0.5180195569992065,
+            2.440000057220459,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowAbove": [
+            0,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            -3.2739925384521484,
+            -0.2042940855026245,
+            12.154205322265625
+          ],
+          "exportedAnchorMeters": [
+            -3.2739925384521484,
+            -0.2042940855026245,
+            12.154205322265625
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              -3.4730484787991758,
+              -1.424294114112854,
+              11.87309677190932
+            ],
+            "maximum": [
+              -3.232911228744645,
+              1.015705943107605,
+              12.409936416047284
+            ]
+          }
+        },
+        {
+          "featureID": "5e1d9c94-d64e-4b9e-af30-94c9f9855056",
+          "kind": "doors",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Door5",
+          "sourceDimensionsFloat32": [
+            0.716562032699585,
+            2.056734800338745,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.3582810163497925,
+              -1.0283674001693726,
+              -0.0
+            ],
+            "maximum": [
+              0.3582810163497925,
+              1.0283674001693726,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.3582810163497925,
+              -1.0283674001693726,
+              -0.1599999964237213
+            ],
+            "maximum": [
+              0.3582810163497925,
+              1.0283674001693726,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            0.716562032699585,
+            2.056734800338745,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowAbove": [
+            0,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            0.5230977535247803,
+            -0.39592647552490234,
+            13.026508331298828
+          ],
+          "exportedAnchorMeters": [
+            0.5230977535247803,
+            -0.39592647552490234,
+            13.026508331298828
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              0.1439746105887787,
+              -1.424293875694275,
+              12.969681736563171
+            ],
+            "maximum": [
+              0.8768434565754362,
+              0.6324409246444702,
+              13.24130955667401
+            ]
+          }
+        },
+        {
+          "featureID": "22519aab-4e27-457c-8a65-8f45665f28cf",
+          "kind": "doors",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Door3",
+          "sourceDimensionsFloat32": [
+            0.647638201713562,
+            2.0367841720581055,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.323819100856781,
+              -1.0183920860290527,
+              -0.0
+            ],
+            "maximum": [
+              0.323819100856781,
+              1.0183920860290527,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.323819100856781,
+              -1.0183920860290527,
+              -0.1599999964237213
+            ],
+            "maximum": [
+              0.323819100856781,
+              1.0183920860290527,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            0.647638201713562,
+            2.0367841720581055,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowAbove": [
+            0,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            -1.978428602218628,
+            -0.4059019088745117,
+            12.624656677246094
+          ],
+          "exportedAnchorMeters": [
+            -1.978428602218628,
+            -0.4059019088745117,
+            12.624656677246094
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              -2.323526057537735,
+              -1.4242939949035645,
+              12.573296071863469
+            ],
+            "maximum": [
+              -1.6587085772481238,
+              0.612490177154541,
+              12.833991913268243
+            ]
+          }
+        },
+        {
+          "featureID": "90b9e5ef-6be5-4e01-83f5-b5f757b563fa",
+          "kind": "walls",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_4_grp/Wall4",
+          "sourceDimensionsFloat32": [
+            8.322796821594238,
+            2.440000057220459,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -4.161398410797119,
+              -1.2200000286102295,
+              -0.0
+            ],
+            "maximum": [
+              4.161398410797119,
+              1.2200000286102295,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -4.161398410797119,
+              -1.2200000286102295,
+              -0.1600009649991989
+            ],
+            "maximum": [
+              4.3213982582092285,
+              1.2200000286102295,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            8.482796669006348,
+            2.440000057220459,
+            0.1600009649991989
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.1600009649991989
+          ],
+          "localBoundsOverflowAbove": [
+            0.15999984741210938,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            0.7936477661132812,
+            -0.2042940855026245,
+            13.069969177246094
+          ],
+          "exportedAnchorMeters": [
+            0.7936477661132812,
+            -0.2042940855026245,
+            13.069969177246094
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              -3.4984259447801787,
+              -1.424294114112854,
+              12.384559453569986
+            ],
+            "maximum": [
+              4.902369459587561,
+              1.015705943107605,
+              13.887977032949086
+            ]
+          }
+        },
+        {
+          "featureID": "a16df794-df3b-4ec0-8b98-cbfc2b92e49a",
+          "kind": "doors",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_5_grp/Door4",
+          "sourceDimensionsFloat32": [
+            0.7685366272926331,
+            2.056734800338745,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.38426831364631653,
+              -1.0283674001693726,
+              -0.0
+            ],
+            "maximum": [
+              0.38426831364631653,
+              1.0283674001693726,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.38426831364631653,
+              -1.0283674001693726,
+              -0.1599999964237213
+            ],
+            "maximum": [
+              0.38426831364631653,
+              1.0283674001693726,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            0.7685366272926331,
+            2.056734800338745,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowAbove": [
+            0,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            4.977390289306641,
+            -0.39592647552490234,
+            13.2629976272583
+          ],
+          "exportedAnchorMeters": [
+            4.977390289306641,
+            -0.39592647552490234,
+            13.2629976272583
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              4.916442155836732,
+              -1.424293875694275,
+              12.883593565156598
+            ],
+            "maximum": [
+              5.196313082026302,
+              0.6324409246444702,
+              13.667779014804434
+            ]
+          }
+        },
+        {
+          "featureID": "b3307a9e-32b7-42a2-848c-c72c44a19255",
+          "kind": "walls",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_5_grp/Wall5",
+          "sourceDimensionsFloat32": [
+            1.9074692726135254,
+            2.440000057220459,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.9537346363067627,
+              -1.2200000286102295,
+              -0.0
+            ],
+            "maximum": [
+              0.9537346363067627,
+              1.2200000286102295,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.9537346363067627,
+              -1.2200000286102295,
+              -0.16000047326087952
+            ],
+            "maximum": [
+              1.1137346029281616,
+              1.2200000286102295,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            2.0674692392349243,
+            2.440000057220459,
+            0.16000047326087952
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.16000047326087952
+          ],
+          "localBoundsOverflowAbove": [
+            0.15999996662139893,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            5.053639888763428,
+            -0.2042940855026245,
+            12.78834056854248
+          ],
+          "exportedAnchorMeters": [
+            5.053639888763428,
+            -0.2042940855026245,
+            12.78834056854248
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              4.876992616056903,
+              -1.424294114112854,
+              11.846678703183912
+            ],
+            "maximum": [
+              5.362884926481021,
+              1.015705943107605,
+              13.913354483874055
+            ]
+          }
+        },
+        {
+          "featureID": "7c48cacf-5979-4bfb-b1d1-88de721921db",
+          "kind": "floors",
+          "meshPath": "/room/Mesh_grp/Floor_grp/Floor0",
+          "sourceDimensionsFloat32": [
+            8.322797775268555,
+            1.9074691534042358,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -4.1613993644714355,
+              -0.9537343978881836,
+              1.1920928955078125e-07
+            ],
+            "maximum": [
+              4.161398410797119,
+              0.9537353515625,
+              1.1920928955078125e-07
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -4.321399688720703,
+              -1.113734483718872,
+              -0.07999999821186066
+            ],
+            "maximum": [
+              4.3213982582092285,
+              1.113735318183899,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            8.642797946929932,
+            2.227469801902771,
+            0.07999999821186066
+          ],
+          "localBoundsOverflowBelow": [
+            0.16000032424926758,
+            0.16000008583068848,
+            0.08000011742115021
+          ],
+          "localBoundsOverflowAbove": [
+            0.15999984741210938,
+            0.15999996662139893,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            0.944918155670166,
+            -1.424294114112854,
+            12.12830924987793
+          ],
+          "exportedAnchorMeters": [
+            0.944918155670166,
+            -1.424294114112854,
+            12.12830924987793
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              -3.4984265313519565,
+              -1.5042941123247147,
+              11.25112909798021
+            ],
+            "maximum": [
+              5.3882621865904845,
+              -1.424294114112854,
+              13.913354146684497
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "fixtureID": "Bedroom3",
+      "referenceReportSHA256": "56ddb40981a65b7a88af42211211ef86bd05b2428a64fd9639f833140f63542b",
+      "sourceSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "usdzSHA256": "f808de2e0283b8b2aaea07ecc16e694222877c1452dd7203a321d84186345a67",
+      "metadataSHA256": "2c87670fed01165ec90e74d2b70e7f25c4fdbf6bfe4ee05fbd05dbedf3ec3236",
+      "nativeManifestSHA256": "f37807c60966174724e4f3758c0b1b9d57e887e596377925de6a9aaebbc8bdf2",
+      "nativeInventorySHA256": "e0418b9919e73ce518580206105707c91a9d3e33307b0e076a035e60810e52fa",
+      "stageMetersPerUnit": 1.0,
+      "metersPerUnitAuthored": true,
+      "stageUpAxis": "Y",
+      "upAxisAuthored": true,
+      "meshCount": 11,
+      "vertexCount": 472,
+      "faceCount": 236,
+      "featureKinds": {
+        "windows": 1,
+        "walls": 4,
+        "doors": 2,
+        "floors": 1,
+        "objects": 3
+      },
+      "unmatchedMeshCount": 0,
+      "originalFeaturesWithoutImportedMesh": [],
+      "exactSourceFloat32WorldTransformMatches": 11,
+      "sourceAnchorPairCount": 55,
+      "maxSourceAnchorDistanceDeltaMeters": 0.0,
+      "overallExportedWorldBoundsMeters": {
+        "minimum": [
+          -1.3667634041342076,
+          -1.5459849387407303,
+          12.724405457112624
+        ],
+        "maximum": [
+          2.972425093416078,
+          0.9490149617195129,
+          16.88425455152409
+        ]
+      },
+      "firstNativeFailureComparison": {
+        "featureID": "353F4E08-C315-4198-8BF0-EE02B764A70B",
+        "meshPath": "/room/Mesh_grp/Arch_grp/Wall_0_grp/Wall0",
+        "nativeFailure": "sourceGeometryMismatch",
+        "axis": 2,
+        "sourceDimensionOnFailedAxis": 0,
+        "exportedLocalBounds": {
+          "minimum": [
+            -1.7720868587493896,
+            -1.2074999809265137,
+            -0.1600019931793213
+          ],
+          "maximum": [
+            1.9320868253707886,
+            1.2074999809265137,
+            0.0
+          ]
+        },
+        "nativeWorldMatrixMaxAbsoluteDelta": 0.0,
+        "nativeWorldBoundsMaxAbsoluteDeltaMeters": 2.832447592027165e-07,
+        "nativePredicateResidualMeters": 0.15999971859605822,
+        "nativePredicateEpsilonMeters": 0.0001286451006308198,
+        "vertexIndicesCompared": false
+      },
+      "features": [
+        {
+          "featureID": "efd4d238-2299-4026-bbf4-956f323874b8",
+          "kind": "windows",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_0_grp/Window0",
+          "sourceDimensionsFloat32": [
+            1.7958203554153442,
+            1.2030638456344604,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.8979101777076721,
+              -0.6015319228172302,
+              -0.0
+            ],
+            "maximum": [
+              0.8979101777076721,
+              0.6015319228172302,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.8979101777076721,
+              -0.6015319228172302,
+              -0.07999999821186066
+            ],
+            "maximum": [
+              0.8979101777076721,
+              0.6015319228172302,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            1.7958203554153442,
+            1.2030638456344604,
+            0.07999999821186066
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.07999999821186066
+          ],
+          "localBoundsOverflowAbove": [
+            0,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            0.5803844928741455,
+            -0.011841118335723877,
+            16.455997467041016
+          ],
+          "exportedAnchorMeters": [
+            0.5803844928741455,
+            -0.011841118335723877,
+            16.455997467041016
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              -0.3198577177434263,
+              -0.6133730052988575,
+              16.32981585781851
+            ],
+            "maximum": [
+              1.4693844571151935,
+              0.5896907686274098,
+              16.661385207381922
+            ]
+          }
+        },
+        {
+          "featureID": "353f4e08-c315-4198-8bf0-ee02b764a70b",
+          "kind": "walls",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_0_grp/Wall0",
+          "sourceDimensionsFloat32": [
+            3.5441737174987793,
+            2.4149999618530273,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -1.7720868587493896,
+              -1.2074999809265137,
+              -0.0
+            ],
+            "maximum": [
+              1.7720868587493896,
+              1.2074999809265137,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -1.7720868587493896,
+              -1.2074999809265137,
+              -0.1600019931793213
+            ],
+            "maximum": [
+              1.9320868253707886,
+              1.2074999809265137,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            3.7041736841201782,
+            2.4149999618530273,
+            0.1600019931793213
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.1600019931793213
+          ],
+          "localBoundsOverflowAbove": [
+            0.15999996662139893,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            0.5686354637145996,
+            -0.25848501920700073,
+            16.454330444335938
+          ],
+          "exportedAnchorMeters": [
+            0.5686354637145996,
+            -0.25848501920700073,
+            16.454330444335938
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              -1.3667634041342076,
+              -1.4659850001335144,
+              16.18281962067203
+            ],
+            "maximum": [
+              2.3231373040219694,
+              0.9490149617195129,
+              16.86177091312757
+            ]
+          }
+        },
+        {
+          "featureID": "10a2a02e-d0bd-465b-a893-2e7095137efb",
+          "kind": "doors",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_1_grp/Door0",
+          "sourceDimensionsFloat32": [
+            0.7594656944274902,
+            2.0635905265808105,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.3797328472137451,
+              -1.0317952632904053,
+              -0.0
+            ],
+            "maximum": [
+              0.3797328472137451,
+              1.0317952632904053,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.3797328472137451,
+              -1.0317952632904053,
+              -0.1599999964237213
+            ],
+            "maximum": [
+              0.3797328472137451,
+              1.0317952632904053,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            0.7594656944274902,
+            2.0635905265808105,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowAbove": [
+            0,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            0.3555906116962433,
+            -0.43418967723846436,
+            13.057609558105469
+          ],
+          "exportedAnchorMeters": [
+            0.3555906116962433,
+            -0.43418967723846436,
+            13.057609558105469
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              -0.02037408568843091,
+              -1.4659849405288696,
+              12.845834415509794
+            ],
+            "maximum": [
+              0.754039685008864,
+              0.5976055860519409,
+              13.110972409854117
+            ]
+          }
+        },
+        {
+          "featureID": "839162ba-cd3e-498f-8b42-9260ade7373f",
+          "kind": "walls",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_1_grp/Wall1",
+          "sourceDimensionsFloat32": [
+            3.5441739559173584,
+            2.4149999618530273,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -1.7720869779586792,
+              -1.2074999809265137,
+              -0.0
+            ],
+            "maximum": [
+              1.7720869779586792,
+              1.2074999809265137,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -1.7720869779586792,
+              -1.2074999809265137,
+              -0.1599999964237213
+            ],
+            "maximum": [
+              1.9320869445800781,
+              1.2074999809265137,
+              9.5367431640625e-07
+            ]
+          },
+          "exportedLocalSpans": [
+            3.7041739225387573,
+            2.4149999618530273,
+            0.16000095009803772
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowAbove": [
+            0.15999996662139893,
+            0,
+            9.5367431640625e-07
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            1.0370265245437622,
+            -0.25848501920700073,
+            13.15433120727539
+          ],
+          "exportedAnchorMeters": [
+            1.0370265245437622,
+            -0.25848501920700073,
+            13.15433120727539
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              -0.7174754337899429,
+              -1.4659850001335144,
+              12.746890748137641
+            ],
+            "maximum": [
+              2.972425093416078,
+              0.9490149617195129,
+              13.4258448538938
+            ]
+          }
+        },
+        {
+          "featureID": "f93d7f37-5c72-4b50-a7ac-add7dc4d0bc3",
+          "kind": "doors",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_2_grp/Door1",
+          "sourceDimensionsFloat32": [
+            0.7365513443946838,
+            2.026763916015625,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.3682756721973419,
+              -1.0133819580078125,
+              -0.0
+            ],
+            "maximum": [
+              0.3682756721973419,
+              1.0133819580078125,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.3682756721973419,
+              -1.0133819580078125,
+              -0.1599999964237213
+            ],
+            "maximum": [
+              0.3682756721973419,
+              1.0133819580078125,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            0.7365513443946838,
+            2.026763916015625,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowAbove": [
+            0,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            -0.8131400942802429,
+            -0.45260298252105713,
+            13.57929801940918
+          ],
+          "exportedAnchorMeters": [
+            -0.8131400942802429,
+            -0.45260298252105713,
+            13.57929801940918
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              -1.0233054636167536,
+              -1.465984880126598,
+              13.192192344887106
+            ],
+            "maximum": [
+              -0.7613869871805301,
+              0.5607789150844837,
+              13.943919189257278
+            ]
+          }
+        },
+        {
+          "featureID": "3246f511-4564-4198-b04f-517bb31085ce",
+          "kind": "walls",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_2_grp/Wall2",
+          "sourceDimensionsFloat32": [
+            3.3330743312835693,
+            2.4149999618530273,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -1.6665371656417847,
+              -1.2074999809265137,
+              -0.0
+            ],
+            "maximum": [
+              1.6665371656417847,
+              1.2074999809265137,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -1.6665372848510742,
+              -1.2074999809265137,
+              -0.1599999964237213
+            ],
+            "maximum": [
+              1.8265371322631836,
+              1.2074999809265137,
+              1.1920928955078125e-07
+            ]
+          },
+          "exportedLocalSpans": [
+            3.493074417114258,
+            2.4149999618530273,
+            0.16000011563301086
+          ],
+          "localBoundsOverflowBelow": [
+            1.1920928955078125e-07,
+            0,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowAbove": [
+            0.15999996662139893,
+            0,
+            1.1920928955078125e-07
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            -0.9516708850860596,
+            -0.25848501920700073,
+            14.555301666259766
+          ],
+          "exportedAnchorMeters": [
+            -0.9516708850860596,
+            -0.25848501920700073,
+            14.555301666259766
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              -1.3442786451604842,
+              -1.4659850001335144,
+              12.72440549655505
+            ],
+            "maximum": [
+              -0.6949907880780251,
+              0.9490149617195129,
+              16.205301237526953
+            ]
+          }
+        },
+        {
+          "featureID": "2305c38a-4008-4ef3-82b5-f5d5ccba7a7e",
+          "kind": "walls",
+          "meshPath": "/room/Mesh_grp/Arch_grp/Wall_3_grp/Wall3",
+          "sourceDimensionsFloat32": [
+            3.3330743312835693,
+            2.4149999618530273,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -1.6665371656417847,
+              -1.2074999809265137,
+              -0.0
+            ],
+            "maximum": [
+              1.6665371656417847,
+              1.2074999809265137,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -1.6665371656417847,
+              -1.2074999809265137,
+              -0.1599999964237213
+            ],
+            "maximum": [
+              1.8265371322631836,
+              1.2074999809265137,
+              4.76837158203125e-07
+            ]
+          },
+          "exportedLocalSpans": [
+            3.4930742979049683,
+            2.4149999618530273,
+            0.16000047326087952
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0.1599999964237213
+          ],
+          "localBoundsOverflowAbove": [
+            0.15999996662139893,
+            0,
+            4.76837158203125e-07
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            2.557332992553711,
+            -0.25848501920700073,
+            15.05335807800293
+          ],
+          "exportedAnchorMeters": [
+            2.557332992553711,
+            -0.25848501920700073,
+            15.05335807800293
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              2.3006525248332395,
+              -1.4659850001335144,
+              13.40335862476207
+            ],
+            "maximum": [
+              2.9499408161357383,
+              0.9490149617195129,
+              16.88425409285915
+            ]
+          }
+        },
+        {
+          "featureID": "b95427e8-846f-4367-a2da-87892e259635",
+          "kind": "floors",
+          "meshPath": "/room/Mesh_grp/Floor_grp/Floor0",
+          "sourceDimensionsFloat32": [
+            3.5544705390930176,
+            3.3611373901367188,
+            0.0
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -1.7669384479522705,
+              -1.6525068283081055,
+              0.0
+            ],
+            "maximum": [
+              1.777235507965088,
+              1.680567741394043,
+              0.0
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -1.926938533782959,
+              -1.8125067949295044,
+              -0.07999999821186066
+            ],
+            "maximum": [
+              1.9372354745864868,
+              1.8405678272247314,
+              0.0
+            ]
+          },
+          "exportedLocalSpans": [
+            3.864174008369446,
+            3.653074622154236,
+            0.07999999821186066
+          ],
+          "localBoundsOverflowBelow": [
+            0.16000008583068848,
+            0.15999996662139893,
+            0.07999999821186066
+          ],
+          "localBoundsOverflowAbove": [
+            0.15999996662139893,
+            0.16000008583068848,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            0.7957619428634644,
+            -1.4659849405288696,
+            14.817497253417969
+          ],
+          "exportedAnchorMeters": [
+            0.7957619428634644,
+            -1.4659849405288696,
+            14.817497253417969
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              -1.3667630559074802,
+              -1.5459849387407303,
+              12.724405457112624
+            ],
+            "maximum": [
+              2.972424953303637,
+              -1.4659849405288696,
+              16.88425455152409
+            ]
+          }
+        },
+        {
+          "featureID": "531a8ed6-a501-403d-b765-064236b96fc2",
+          "kind": "objects",
+          "meshPath": "/room/Mesh_grp/Object_grp/Chair_grp/Chair0",
+          "sourceDimensionsFloat32": [
+            0.6677245497703552,
+            1.2607076168060303,
+            0.7448721528053284
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.3338622748851776,
+              -0.6303538084030151,
+              -0.3724360764026642
+            ],
+            "maximum": [
+              0.3338622748851776,
+              0.6303538084030151,
+              0.3724360764026642
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.3338622748851776,
+              -0.6303538084030151,
+              -0.3724360764026642
+            ],
+            "maximum": [
+              0.3338622748851776,
+              0.6303538084030151,
+              0.3724360764026642
+            ]
+          },
+          "exportedLocalSpans": [
+            0.6677245497703552,
+            1.2607076168060303,
+            0.7448721528053284
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0
+          ],
+          "localBoundsOverflowAbove": [
+            0,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            -0.702325701713562,
+            -0.8356311917304993,
+            15.49435043334961
+          ],
+          "exportedAnchorMeters": [
+            -0.702325701713562,
+            -0.8356311917304993,
+            15.49435043334961
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              -1.0592535637730118,
+              -1.465985075277544,
+              15.101386495296726
+            ],
+            "maximum": [
+              -0.3453978396541122,
+              -0.20527730818345447,
+              15.887314371402493
+            ]
+          }
+        },
+        {
+          "featureID": "4a54c731-0088-4253-b4fa-ed5c331ec338",
+          "kind": "objects",
+          "meshPath": "/room/Mesh_grp/Object_grp/Table_grp/Table0",
+          "sourceDimensionsFloat32": [
+            0.7202476859092712,
+            0.75858473777771,
+            0.6981382966041565
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.3601238429546356,
+              -0.379292368888855,
+              -0.34906914830207825
+            ],
+            "maximum": [
+              0.3601238429546356,
+              0.379292368888855,
+              0.34906914830207825
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.3601238429546356,
+              -0.379292368888855,
+              -0.34906914830207825
+            ],
+            "maximum": [
+              0.3601238429546356,
+              0.379292368888855,
+              0.34906914830207825
+            ]
+          },
+          "exportedLocalSpans": [
+            0.7202476859092712,
+            0.75858473777771,
+            0.6981382966041565
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0
+          ],
+          "localBoundsOverflowAbove": [
+            0,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            -0.7896531820297241,
+            -1.0866925716400146,
+            15.897802352905273
+          ],
+          "exportedAnchorMeters": [
+            -0.7896531820297241,
+            -1.0866925716400146,
+            15.897802352905273
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              -1.1858659013827273,
+              -1.4659849405288696,
+              15.49219813309761
+            ],
+            "maximum": [
+              -0.39344046267672095,
+              -0.7074002027511597,
+              16.303406572712937
+            ]
+          }
+        },
+        {
+          "featureID": "45597d99-3218-4419-a2e4-2adfa824d033",
+          "kind": "objects",
+          "meshPath": "/room/Mesh_grp/Object_grp/Bed_grp/Bed0",
+          "sourceDimensionsFloat32": [
+            1.6728521585464478,
+            0.6448028087615967,
+            2.174929618835449
+          ],
+          "sourceLocalBoundsFloat32": {
+            "minimum": [
+              -0.8364260792732239,
+              -0.32240140438079834,
+              -1.0874648094177246
+            ],
+            "maximum": [
+              0.8364260792732239,
+              0.32240140438079834,
+              1.0874648094177246
+            ]
+          },
+          "exportedLocalBounds": {
+            "minimum": [
+              -0.8364260792732239,
+              -0.32240140438079834,
+              -1.0874648094177246
+            ],
+            "maximum": [
+              0.8364260792732239,
+              0.32240140438079834,
+              1.0874648094177246
+            ]
+          },
+          "exportedLocalSpans": [
+            1.6728521585464478,
+            0.6448028087615967,
+            2.174929618835449
+          ],
+          "localBoundsOverflowBelow": [
+            0,
+            0,
+            0
+          ],
+          "localBoundsOverflowAbove": [
+            0,
+            0,
+            0
+          ],
+          "sourceToExportedWorldMatrixMaxAbsoluteDelta": 0.0,
+          "sourceAnchorMetersFloat32": [
+            1.4342299699783325,
+            -1.1435835361480713,
+            15.227649688720703
+          ],
+          "exportedAnchorMeters": [
+            1.4342299699783325,
+            -1.1435835361480713,
+            15.227649688720703
+          ],
+          "exportedWorldBoundsMeters": {
+            "minimum": [
+              0.2400150541396897,
+              -1.4659849405288696,
+              14.246704324275878
+            ],
+            "maximum": [
+              2.6284448858169753,
+              -0.821182131767273,
+              16.208595053165528
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "finding": "Exact input reference shows authored meter/Y-up units and preserved source feature transforms; source-plane containment rejects exporter-provided solid thickness/extensions",
+  "limits": [
+    "Only retained diagnostic export and its same-test Model I/O inventory are paired; production adapter export is separate/unretained",
+    "Native numerical bounds/transform witness covers the first failed wall in each fixture, not every native-imported mesh",
+    "OpenUSD-to-source per-feature transforms/anchors checked for all 24 features; this is not physical survey accuracy",
+    "Exporter solid thickness/outline extensions do not establish measured wall thickness, current clearance or navigation safety",
+    "No fitting, rescaling, recentering, source mutation, production gate change, topology repair or route tuning performed"
+  ],
+  "physicalAuthority": false
+}

@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "scope": "report content/link and derived-count review only; no new native execution; incorporates independently reviewed same-file USDZ comparison",
+  "reportWords": 6218,
+  "findingCount": 19,
+  "relativeLinksChecked": 69,
+  "missingRelativeLinks": [],
+  "latestHostedCounts": {
+    "Passed": 223,
+    "Skipped": 6,
+    "Failed": 7
+  },
+  "routeOutcomeCounts": [
+    12,
+    6,
+    16
+  ],
+  "originalFixtureSHA256Recomputed": true,
+  "sameExportSevenInputHashesVerified": true,
+  "comparison24TransformsAnd133AnchorsRecounted": true,
+  "semanticEqualityChecks": [
+    {
+      "runID": 40706611490,
+      "earlyFinalJSONObjectsEqual": true,
+      "namedReportCopiesMatchEmbeddedOriginals": true
+    },
+    {
+      "runID": 40710093281,
+      "earlyFinalJSONObjectsEqual": true,
+      "namedReportCopiesMatchEmbeddedOriginals": true
+    },
+    {
+      "runID": 40726507227,
+      "earlyFinalJSONObjectsEqual": true,
+      "namedReportCopiesMatchEmbeddedOriginals": true
+    }
+  ],
+  "open3dSectionPeerReview": "Source evidence owner checked P06 counts, domains, metrics and caveats against exact receipts; explicit positive-depth domain and scorer differences clarified",
+  "sameExportComparison": "completed on exact retained diagnostic files; two native first-wall numerical witnesses, 24 reference features",
+  "noImplementationFilesChangedByReportTask": true,
+  "notes": [
+    "The first evidence-summary derivation failed because one native-build duration is null; corrected aggregation excludes null durations and separately reports the number of measured build receipts. No original evidence was changed.",
+    "Source code in the shared checkout can contain unpublished work. Published behavior is attributed to retained exact-source receipts or exact-revision audit records.",
+    "Exact diagnostic same-file import comparison completed; fresh raw-input reconstruction comparison and corrective implementation remain unfinished."
+  ]
+}

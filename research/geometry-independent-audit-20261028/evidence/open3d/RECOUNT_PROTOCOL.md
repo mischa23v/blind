@@ -1,0 +1,11 @@
+# Saved-array diagnostic recount (2026-10-28)
+
+This new analysis reuses eight already-published stage-12 numeric output NPZs from repository revision `9284719`. It does not reconstruct a map, cast new rays, tune a mapper, evaluate a new held-out scene, or validate physical safety.
+
+Before loading the arrays, freeze all eight original frame IDs (1, 5, 9, 13, 17, 21, 25, 29), all 368,520 scheduled rays, and descriptive absolute tolerances of 0.02, 0.05 and 0.10 nominal metres. These tolerances are post-hoc reporting bins relative to the historical experiment, not preregistered safety thresholds or pass criteria. Seven views were integrated; only frame 21 was held out. Preserve and report the held-out view separately without treating one view as an independent room.
+
+For valid reference and predicted depths define residual = predicted axial depth minus registered reference axial depth. Count `early = residual < -t`, `within = abs(residual) <= t`, and `late = residual > t`; each denominator is all paired rays. Preserve reference-only, prediction-only and neither counts separately. Missing reference never establishes false geometry; missing prediction never establishes free space. Early/late discrepancies are only reference-relative geometric diagnostics, not proven false obstacles or missed real objects, because reference geometry includes author cleaning/completion without a measured-versus-edited mask.
+
+Compute all-range, reference-below-4 m, and reference-at-least-4 m strata; use reference depth only, never agreement to select pixels. Reproduce the historical paired statistics and availability counts; abort on byte hash, schedule, shape, dtype or arithmetic mismatch. Original source and arrays remain unchanged. No inferred pose, scale fitting, reprojection-convention sweep, smoothing, floor classification, routing or body-clearance test is permitted.
+
+One serial NumPy process, no installs/download of scientific packages, maximum 60 seconds wall / 512 MiB process address-space target where compatible / 32 MiB new derived outputs. Numeric archive transfer is approximately 6.5 MB total; validate each Git blob and the saved-result SHA-256, allow_pickle=False, reject object arrays and arrays outside the expected small schedule. Record actual elapsed time and process peak RSS. Recount success establishes accounting only.

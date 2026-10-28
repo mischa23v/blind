@@ -1,0 +1,22 @@
+{
+  "executed_at_utc": "2026-10-28T16:45:50Z",
+  "native_commit": "c4ffa28c07d0a17b513d123de3bec2fd8be93eec",
+  "native_run_id": 40726507227,
+  "reader": "official usd-core 26.5",
+  "wrapperSHA256": "5665c41dad18251eabe3747786779871ff38119ddc0e24b7e75f1e5e3374c4a5",
+  "resource_environment": {
+    "PXR_WORK_THREAD_LIMIT": "1",
+    "OMP_NUM_THREADS": "1",
+    "timeout_seconds_per_fixture": 60
+  },
+  "mode": "serial read-only imports, each from manifest/hash-verified exact private copy",
+  "process_exit_code": 0,
+  "fixtures_read": [
+    "Hallway2",
+    "Bedroom3"
+  ],
+  "independent_review": "separate agent directly reread exact same assets and matched all reference matrices/bounds",
+  "source_geometry_changed": false,
+  "production_gate_changed": false,
+  "route_tuning_performed": false
+}

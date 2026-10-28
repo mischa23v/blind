@@ -1,0 +1,15 @@
+{
+  "reviewer": "independent sibling sub-agent review_openusd_wrapper",
+  "scope": "static source/API review only; no native USDZ available",
+  "findings_addressed": [
+    "single numeric time sample can differ from Default: reject all sampled/spline attributes",
+    "mutable input filename after hash: import private 0700 exact-byte copy and rehash after read",
+    "source/export linkage: verify native manifest expected hash, its inventory hash, source hashes, export role and exact test identity",
+    "report missing features; reject zero meshes; linear Counter histogram"
+  ],
+  "coordinate_review": "no basic world-transform, axis or one-time stage-meter conversion error found",
+  "API_checks": "official OpenUSD 26.5 BBoxCache/XformCache/Gf signatures and spline/time-sample APIs available",
+  "additional_hardening": "reject non-session composed USD layers outside exact admitted package",
+  "fixture_import_ran": false,
+  "geometry_agreement_established": false
+}

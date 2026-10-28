@@ -1,0 +1,50 @@
+{
+  "schema": "independent-usd-comparator-status-v1",
+  "checkpoint_utc": "2026-10-28T16:50:00Z",
+  "official_reader_installed": true,
+  "official_reader_version": "26.5",
+  "package_import_passed": true,
+  "wrapper_syntax_passed": true,
+  "wrapper_help_passed": true,
+  "wrapper_static_review": "four findings addressed, re-reviewed; no coordinate/API blocker found; external-layer hardening added",
+  "same_export_fixture_available": true,
+  "same_export_fixture_read": true,
+  "geometry_agreement": "Scoped: all24 reference source transforms/anchors preserved; native parity first failed wall in each fixture; physicalaccuracy unknown",
+  "pathing_evidence": "none from this task",
+  "native_handoff": {
+    "owner": "repair_room_mesh_metadata",
+    "same_export": "diagnostic export #2 only; production export #1 separate/unretained",
+    "usdz_max_bytes": 4194304,
+    "metadata_max_bytes": 65536,
+    "expected_files": [
+      "APPLE_ROOM_ROUTE_Hallway2_SAME_EXPORT.usdz",
+      "APPLE_ROOM_ROUTE_Hallway2_SAME_EXPORT_METADATA.bin",
+      "APPLE_ROOM_ROUTE_Bedroom3_SAME_EXPORT.usdz",
+      "APPLE_ROOM_ROUTE_Bedroom3_SAME_EXPORT_METADATA.bin"
+    ],
+    "planned_manifest_schema": "blind.saved-room-route-same-export.v1",
+    "testIdentifier": "SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleSameExportForOpenUSDComparison",
+    "inventory_binding": "exact inventory from new same-export test, not old inventory test"
+  },
+  "scope": "read-only reference geometry, no route tuning, no source fitting, no production gate relaxation",
+  "native_capture_attempt": {
+    "reported_by": "monitor_plist_native_run",
+    "commit": "4eb0d10f1724bce3ef2f6e6a8ff8ae35a06b85e6",
+    "run_id": 40721822359,
+    "artifact_id": 12830728547,
+    "receipt_status": "unverified_case_evidence",
+    "files": [],
+    "unit_cases_complete": false,
+    "reader_action": "not run: no admitted USDZ bytes",
+    "owner_action": "native failure diagnosis and authorized retry pending"
+  },
+  "result": "source-plane versus exporter-solid/outline validation mismatch; no units/axis/placement discrepancy demonstrated",
+  "comparison_path": "run40726507227/COMPARISON.json",
+  "independent_actual_reimport_review": true,
+  "native_capture_success": {
+    "commit": "c4ffa28c07d0a17b513d123de3bec2fd8be93eec",
+    "run_id": 40726507227,
+    "artifact_id": 12834885760,
+    "manifestSHA256": "f37807c60966174724e4f3758c0b1b9d57e887e596377925de6a9aaebbc8bdf2"
+  }
+}

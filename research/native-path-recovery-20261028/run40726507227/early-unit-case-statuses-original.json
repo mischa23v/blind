@@ -1,0 +1,4252 @@
+{
+  "schema": 1,
+  "target": "IndoorGoalContinuityTests/testTrackingLossStillInvalidatesRetainedMapFrame",
+  "complete": true,
+  "target_pass_verified": true,
+  "source_verified": true,
+  "expected_commit": "c4ffa28c07d0a17b513d123de3bec2fd8be93eec",
+  "limits": {
+    "query_bytes": 4194304,
+    "query_seconds": 30,
+    "tree_nodes": 10000
+  },
+  "provenance": {
+    "actual_head": "c4ffa28c07d0a17b513d123de3bec2fd8be93eec",
+    "tracked_source_clean": true,
+    "untracked_scopes": [
+      "ios",
+      "BlindCore",
+      "BlindMemory",
+      "tools/ci",
+      ".github/workflows"
+    ],
+    "generated_metadata": [
+      {
+        "path": "BlindMemory/Package.resolved",
+        "status": "validated_public_exact_pin",
+        "bytes": 388,
+        "sha256": "159a0bf93b792f403c70f7ec2cfea61686aff384e55c8c132946fb8980e26889",
+        "schema_version": 3,
+        "pins": [
+          {
+            "identity": "grdb.swift",
+            "kind": "remoteSourceControl",
+            "location": "https://github.com/groue/GRDB.swift.git",
+            "state": {
+              "revision": "b83108d10f42680d78f23fe4d4d80fc88dab3212",
+              "version": "7.11.1"
+            }
+          }
+        ]
+      },
+      {
+        "path": "ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+        "status": "validated_public_exact_pin",
+        "bytes": 388,
+        "sha256": "79fa78e75cfa5af75fa0778ca38c28bf1a8cf32b9885c97f29d4da6599dec175",
+        "schema_version": 3,
+        "pins": [
+          {
+            "identity": "grdb.swift",
+            "kind": "remoteSourceControl",
+            "location": "https://github.com/groue/GRDB.swift.git",
+            "state": {
+              "revision": "b83108d10f42680d78f23fe4d4d80fc88dab3212",
+              "version": "7.11.1"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "source_commit": "c4ffa28c07d0a17b513d123de3bec2fd8be93eec",
+  "cases": [
+    {
+      "identifier": "AssistantSituationTests/testLongDescriptionFollowUpAndGoalChangeReachNativeSnapshot()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "AssistantSituationTests/testRestoredBathroomGoalDoesNotRestorePoseOrInventRoomOwnership()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "AssistantSituationTests/testReviewedRoomIsHistoricalPreviewNotCurrentRoomOrEmptyChair()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "AssistantSituationTests/testUnreviewedInventoryIsOmittedAndInterestIsNotAnObservation()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ClassificationIngressTests/testActualDecoderPreservesKnownLabelsAndDoesNotGuessMissingOrUnsupported()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ClassificationIngressTests/testClassifiedFloorUsesRealRuntimeAndTransformOnceWithoutPhysicalAuthority()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ClassificationIngressTests/testDefaultLegacyPolicyKeepsExistingUnclassifiedDiagnosticBehavior()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ClassificationIngressTests/testKnownNonFloorMissingNoneAndUnsupportedNeverPromoteUpwardPlanes()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ClassificationIngressTests/testKnownTableGeometryRemainsObstacleAndRemovalCanRestoreFloorCandidate()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ClassificationIngressTests/testMalformedDecodedLabelsReplaceFloorWhileRejectedDescriptorKeepsExplicitGap()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ClassificationIngressTests/testMissingReplacementRemovesPriorFloorAndValidRevisionRecoversButGapStays()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ClassificationIngressTests/testPortableLabelContractAgreesWithNativeARKitSDK()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ClassificationIngressTests/testUnknownCompanionFacesKeepExistingFloorRouteButNeverCompleteCoverage()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConversationTests/remembersNameWithoutRecitingHistory()",
+      "result": "Skipped"
+    },
+    {
+      "identifier": "ClassifiedRoomMeshTests/testClassifiedFloorRoutesWithoutGrantingPhysicalAuthority()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ClassifiedRoomMeshTests/testFloorTouchingBedAndLowObjectNeverGainSupportUnderTriangleOrderPermutations()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ClassifiedRoomMeshTests/testIdenticalUpwardObstaclePlaneIsNotPromotedToFloor()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ClassifiedRoomMeshTests/testLegacyUnclassifiedAPIStillRoutesAndDoesNotIgnoreExplicitLabels()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ClassifiedRoomMeshTests/testMissingAndMismatchedSupportAreRejectedAtIngress()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "TextChatScenarioTests/followsConversation(_:)",
+      "result": "Skipped"
+    },
+    {
+      "identifier": "TextChatScenarioTests/doesNotInventFloorClearance()",
+      "result": "Skipped"
+    },
+    {
+      "identifier": "CommunityTests/testCorruptionDoesNotHideOtherMapsAndRequiresExplicitRemoval()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testCountAndByteQuotaFailuresKeepSavedRevisionIntact()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testDownloadChecksDigestAndDoesNotInstallUntilReviewed()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testHTTPFailureAndStreamingSizeLimit()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testInstallReopenConflictAndImmutableOlderRevision()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testOfflineLaunchStillLoadsMapsAndRejectsNetwork()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testOfflineToggleCancelsPendingDownloadWithoutLatePreview()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testOversizedAndSymlinkFilesAreExcludedWithoutReadingTarget()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testPublicCopyKeepsProvenanceButDropsOldReviewClaims()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CommunityTests/testPublicReleaseFilteringUsesUploadedCompatibleAssetsAndRepository()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedProfileConversationTests/suppliesNameWithoutOldHistory(corrected:)",
+      "result": "Skipped"
+    },
+    {
+      "identifier": "CompanionNativeReplayTests/testInputOnlyConversationBatch()",
+      "result": "Skipped"
+    },
+    {
+      "identifier": "UnsupportedPremiseTests/repliesNeverAssertUnsupportedFacts(_:)",
+      "result": "Skipped"
+    },
+    {
+      "identifier": "UnsupportedPremiseTests/codeOwnedHistoricalReportNeverBecomesCurrentGeometry()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "UnsupportedPremiseTests/unavailableProviderDoesNotInventAReply()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testCorrectionForgetRemoveExactSourcesNotUnrelatedReports()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testExplicitReplacementDropsParentWhileSameValuePreservesProgress()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testExplicitSubtaskReportRetiresFindFocusWithoutClaimingPossession()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testForgetParentSourceRemovesItFromActiveAndPausedFind()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testModelFactCannotDropNegationOrExtractFromUncertainty()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testNegatedQuotedAndConditionalCancellationCannotMutateGoal()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testOldStateDecodesAndBoundsRestoredCollections()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testParentDecodeRejectsInvalidHierarchyAndBoundsProgress()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPausedFindRestoresItsParentAcrossPersistenceWithoutOldAction()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM001SameGoalTransitionRetiresOtherFridgeProgress()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM008RestartAndIdentityLossDoNotRestoreActivePlaceOrPronoun()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM009DelayedModelUpdateCannotCommitAcrossScopeTransition()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM010ScopedCorrectionDeletionAndReturnHistory()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM013OldDialogueCannotRefillScopedTaskContext()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM016ScopedReportReachesActualRetrievalWithBoundedID()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM017MalformedArchivedContextIsDroppedWithoutTruncation()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM020AmbiguousLegacyMutationWithholdsAndExactSourceDeletionStaysLocal()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM023BoundLocationSourceRetainsTimestampAndDeletesItsOriginalReport()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testPM027MalformedDerivedSourceFieldsAreNotRetained()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testProposedStepsNeverExecuteOrProveCompletion()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testReadingReportDoesNotCompleteSeparateFindGoal()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testRepeatedFindSwitchesKeepOnlyOneParentWithoutGrowingPauseStack()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testReplacementRetiresOldProposalAndReportedProgress()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testReportedIngredientsAdvanceOnlyBoundConversationalStepAndKeepEvidenceSource()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testSchoolParentSurvivesCoatBackpackSwitchAndOnlyExplicitResumeReturns()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testSuspendedAndReportStorageAreBounded()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testSuspendResumeRequiresExplicitCallAndClearsOldProposal()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "CompanionWorkingStateTests/testUnrelatedOrQuotedCompletionCannotRetireCurrentStep()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testAutomaticRecoveryKeepsCurrentConservativeRestrictions()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testCancelIsSynchronousAndLatestOnlyWhileWriterIsBlocked()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testDeleteRestartCannotReimportSameRevisionAndForgetRestrictions()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testDeleteWhileRestoreIsPendingCannotReinstallQueuedOldMap()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testDormantNativeRuntimePersistsDestinationButCannotInventCalibrationOrPose()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testFailedSaveNewCommandAndEraseCannotReviveSupersededGoal()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testIntegratedAutomaticRecoveryAfterRejectedEvidence()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testIntegratedRejectedEvidenceCannotInferMidLegStart()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testInvalidCalibrationReplacementCannotReuseOldBodyOrRoute()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testMapIOWithdrawalInvalidGoalAndDeletionFenceStaleOutput()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testMaximumHistorySynchronousResidualIsBoundedAndMeasuredNotDeviceLatency()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testOuterEnvelopeCannotBypassNestedHistoryByteLimit()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testPauseRestartAndResumeRetainRealGoalButNeedFreshEvidence()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testRejectedEvidenceWaitsAtMidLegThenAutomaticallyReplansFromFreshAuthoredNode()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testReplacementOrHoldDuringDelayedRestoreOwnsLatestIntent()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testSyntheticFullNativeRuntimeOutAndBackRequiresDeliveredOneUseChoice()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedJourneyRuntimeTests/testUnverifiedCommandsCannotEvenRetireActiveNativeRoute()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedNavigationBenchIntegrationTests/testAuthoredWholeOwnerChainRetiresFakeOutputOnHazardAndTrackingLoss()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedNavigationBenchIntegrationTests/testMissingSupportNeverReachesRuntimeAcceptance()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ConnectedNavigationBenchIntegrationTests/testRecordedKoivuMetadataLoadsThroughOwnersWithoutInventingRegistrationOrFloor()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorGoalContinuityTests/testCancellationAfterWithheldLegacyCueClearsMessageInBothLanguages()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorGoalContinuityTests/testConfirmedFinalWaypointHasNoActiveRoute()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorGoalContinuityTests/testExplicitReplanDoesNotReuseOldRouteAlignment()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorGoalContinuityTests/testTaskCancellationCannotCreateUnknownAlignment()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorGoalContinuityTests/testTaskCancellationRetiresRouteButPreservesPreviewFrame()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorGoalContinuityTests/testTrackingLossStillInvalidatesRetainedMapFrame()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testActualControllerAsyncFileImportRejectsOversizedInputWithoutMainRead()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testActualControllerRetiresPoseAndOutputBeforeBlockedImportThenPreservesNewTaskCaption()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testActualInitializerRestoresBoundedMapAsynchronouslyAndKeepsPoseUnknown()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testDelayedCommunityCacheCompletionCannotOverwriteNewImport()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testDelayedCommunityCacheCompletionCannotResurrectDeletedMap()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testDelayedMissingStartupFileCannotOverwriteNewerTaskCaption()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testDelayedPrivacyPurgeCannotDeleteNewerImportOrOverwriteItsStatus()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testFailedPrivacyPurgeCannotDowngradeRetainedRegisteredMapThroughPreviewEdits()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testJourneyDeletionPublishesOnlyRemovedBindingWithoutGeometry()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testJourneyHooksDoNotConfuseLegacyPreviewWithDeletedMapOrPublishStaleDelete()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testJourneyHooksWithdrawSynchronouslyAndPublishAfterCurrentCAS()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testPendingOrFailedReplacementCannotTagObservationsWithRetainedOldMap()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testPrivacyPurgePrecedesActualDeleteAndFailureKeepsMapUnavailable()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorNavigatorAsyncTests/testPublicPlanAttemptDuringBlockedSaveRetiresOldReplanContinuation()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testAsyncMapWaitLeavesMainOwnerAvailable()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testBoundaryAndOverlappingRoomsRemainUnknownWithoutRegisteredPose()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testDownloadPlanAndRestartNeverRestoreLivePose()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testForgedRevisionCannotAttachAnotherGeometryOnRestart()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testLegacyMapContextKeepsGoalWithoutInventingRoomArrival()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testManualPoseKeepsCameraAndBodySeparate()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testOfflinePackageMetadataRestoresButPoseDoesNot()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testPreparationTimeExpiresPoseAndTracksBeforeModelDispatch()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "IndoorSituationTests/testTrackingAgeAndAlignmentChangesInvalidateClaims()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ObservedSceneRuntimeTests/testGoalAndBodyChangesFenceQueuedPlansWithoutRetiringScene()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ObservedSceneRuntimeTests/testInvalidationAfterPlanningCompletesBeforeDeliveryRetainsBusySlot()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ObservedSceneRuntimeTests/testNativeRuntimeFeedsActualAccumulatorAndRejectsAbandonedCompletion()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ObservedSceneRuntimeTests/testPreLossAndPreRestartFramesCannotSeedNewScene()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ObservedSceneRuntimeTests/testQueuedObsoletePlanKeepsHistoryAndNextValidPlanStillRuns()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ObservedSceneRuntimeTests/testRejectedFrameDisplaysEvidenceFailureNotTrailState()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ObservedSceneRuntimeTests/testRejectedFutureTimestampDoesNotPoisonLaterCapture()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "ObservedSceneRuntimeTests/testRuntimeRechecksClockAfterWorkerAndWatchdogExpiresPlan()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "PracticePresentationPublisherSemanticsTests/testPublishedDetectionEmitsEvenForIdenticalValue()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "PracticePresentationPublisherSemanticsTests/testPublishedProgressEmitsEvenForIdenticalValue()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testActiveTripSurvivesNewSessionAndRestartWithBoundedReversePages()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testClearRetiresQueuedReadAndStaleAnchorCannotResurrect()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testColdBudgetHasBoundedVolatileLossAndKeepsOriginalStart()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testConstantMemoryQuotaRollsPastOldLimitWhilePinningStartAndMeeting()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testCorruptTypedArchiveNeverInstallsHistoricalRecording()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testDelayedClearCannotEraseLaterSessionSamples()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testDeleteAndClearFenceQueuedArchiveCreationAndPendingReopen()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testDiagnosticLateExtractionAndSessionRestartCannotResume()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testDiagnosticRequiresOptInAndReusesAdmittedSampleThenStops()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testDurableDiagnosticReopensExactSampleStoppedAndClearRemovesArchive()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testFailedGRDBEraseFencesSamplesAndAnchorsUntilExplicitRetry()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testFullArchiveSlotsKeepUnsavedTailUntilExplicitDeleteAndRetry()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testInterruptedCommittedPrefixReopensWithoutRecordingOrStopTime()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testLegacyChunkImportPreservesTripAndDoesNotReimportAfterClear()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testMultipleDurabilityBatchesRetainOrderAndTerminalStatus()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testNamedReferenceAmbiguityAndUntrustedMarkAreNotGuessed()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testNonJSONEnumerationIsBounded()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testOldSessionExtractionFailureCannotOwnReplacementSession()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testOperationTimingReceiptsAreBoundedImmutableAndSeparateBusyCalls()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testOwnedRouteDeduplicationCancellationAndProvenanceNeverInventAlignment()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testPendingSameFrameReceiptIsRetiredByTrackingContinuityLoss()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testRejectedPlanUpdateEndsDiagnosticInsteadOfKeepingStaleAssociation()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testSameFrameReceiptTravelsWithExactOfferedSampleAndReopensInert()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RecordedRouteStoreTests/testTrackingLossAndSameSessionRestartWithdrawPinUntilFreshCapture()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testActualAdapterPersistsEnvelopeAndRestoresNoAuthority()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testEnvelopeLargerThanLegacyMapLimitLoadsWithExactBytes()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testExpiryWithdrawsHeldOutputWithoutAnotherSensorCallback()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testGoalCancellationRetiresOnlyHeldRouteOutputAndKeepsPose()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testLegacyImportCannotKeepRegisteredAuthority()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testMapReplacementAndSessionLossNotifyRouteOutputRetirement()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testReconfigureOrRestoreCannotEraseRestrictionsInActiveOwner()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testReportedBlockedNextLegIsAppliedToRegisteredPlanner()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testReportedClosureSurvivesRestoreAndReconfiguration()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testUnconfiguredFailedRestrictionSaveCannotGainAuthorityByConfigure()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigationTests/testUnconfiguredImportedMapCanPersistAvoidanceWithoutInventingPosePolicy()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigatorCaptionTests/testExpiredRouteCannotOverwriteNewDestinationSuggestion()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "RegisteredIndoorNavigatorCaptionTests/testExpiredRouteCaptionIsWithdrawn()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryAppleFixtureTests/testBedroomOriginalFloorPolygonAndBedDepthHaveIndependentWorldWitnesses()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryAppleFixtureTests/testBothOriginalAppleRoomsDecodeThroughNativeFrameworkAndProductionExtractor()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryAppleFixtureTests/testDefaultProviderReadsOriginalRoomAndRetiresAtDeletionAdmission()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryAppleFixtureTests/testRealSourceHashMismatchIsRejectedInsteadOfBorrowingOtherRoom()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryAppleFixtureTests/testRepeatedOriginalDecodesBindStableSourceAndFeaturesNotRoomUUID()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryProviderTests/testActualPlaceSourceBindsDescriptorMemoryOwnerAndDeletionAdmission()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryProviderTests/testCancelAndSameDescriptorRefreshDoNotResurrectOrDuplicateWork()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryProviderTests/testDecoderRejectsWrongHashMalformedOriginalAndOversize()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryProviderTests/testDeletionDuringDecodeCannotPublishAndNewReadStaysBlocked()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryProviderTests/testInjectedWrongFrameAndUnsupportedResultsNeverBecomeReady()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryProviderTests/testRapidSelectionsKeepOneWorkerAndOnlyLatestPendingRoom()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomDiagnosticGeometryProviderTests/testReadyCacheIsWithdrawnOnPlaceDeletionRefresh()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteCollisionOracleTests/testBackendDiagnosticMatrixRecordsEveryControl()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteCollisionOracleTests/testExplicitBodyVersusMarginBoundsAreNotInflatedAgain()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteCollisionOracleTests/testHeadHeightAndSeparateFloorContact()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteCollisionOracleTests/testInitialOverlapIsNotLostByZeroLengthSweep()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteCollisionOracleTests/testMalformedGeometryAndMissingFurnitureIdentityFail()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteCollisionOracleTests/testMixedSceneCombinedAndSeparatedQueriesRecordEveryPhase()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteCollisionOracleTests/testOriginalFurnitureSolidDetectsContainedStartSeparatelyFromShell()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteCollisionOracleTests/testThinWallSweepBothDirectionsAndNegativeControl()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteDiagnosticAppleTests/testPredeclaredApplePathsWaypointSinkAndIndependentFullBodySweeps()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteDiagnosticAppleTests/testScoredChainRetainsBothNativeEndpointDiscrepanciesAndNeverBridgesPartialGoal()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteDiagnosticAppleTests/testSeparatelyPreregistered28cmWidthDoesNotReplaceBaseline()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteJourneyAppleTests/testPredeclaredSuppliedBedChairConnectorsAroundRoomDoorWithholdingAndReturn()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteJourneyAppleTests/testSeatedMissingWrongFrameAndUnknownHeadingDoNotBecomePositionFinding()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testAppleWallMeshHasRealDoorAndWindowCutoutsWithClosedDoorBarrierSeparate()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testFlatMetadataDecoderPreservesPublicUUIDsForBinaryPlistAndJSON()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testFlatMetadataDecoderRejectsMalformedWrongShapeAndUnsupportedFormats()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testMetadataInventoryRejectsChangedPublicFixtureBeforeExport()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleExportInventoryPreservesFeatureIdentityAndHistoricalDoorState()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleExportMetadataAndNodeInventory()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleSameExportForOpenUSDComparison()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testRealFloorTriangulationPreservesOriginalConcavityAreaAndWorldCorners()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testSameExportReadRejectsEmptyOversizeAndNonRegularFiles()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testSourceBoundsProbeRetainsZeroDepthAndExactRoundoffPredicate()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testWrongOriginalRoomDigestFailsBeforeExport()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testAccessibilityPermissionNotCopyPermission()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testArabicAndMixedNumeralsUseActualTextLayer()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testColumnsAndTableRemainLiteralTextNotAssociatedMeaning()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testEnglishActualBytesHashAndWholePageText()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testExplicitPageIndexDoesNotReadNextPage()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testImageOnlyIsNoReadableTextLayerNotBlank()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testLockedPDFDoesNotTryPasswords()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testMalformedAndWholeOversizeAreDistinct()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testNonFileSelectionCannotBecomeNetworkAcquisition()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testNSMutableDataAliasCannotMutateFrozenPDFBytesHashOrText()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testOversizedPageTextIsRejectedWithoutTruncation()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testPickerCancelThenLateSuccessCannotReviveOwner()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testPickerSuccessThenLateCancelResolvesOnceWithOriginalOwner()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SelectedDocumentPDFTests/testSourceReplacementDoesNotMutateSelectedImmutableBytes()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testBlockedWriterLeavesIndependentMainWarningAndWatchdogResponsive()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testDeleteBarrierCannotDisappearBehindLaterReplacementOrReportFalseSuccess()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testDeleteFailureBlocksQueuedReplacementUntilExplicitRetryBarrier()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testDeleteWaitsBehindInFlightWriteAndNoLateSaveResurrects()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testFailedNewerImportPreservesLastCommittedMapAfterStaleWrite()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testFailedRestrictionPersistenceRetainsUnionForRetryAndBlocksConfigure()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testInvalidLatestInputFencesAnAlreadyRunningWrite()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testLatestSlotIsBoundedAndSupersededImportsNeverPublish()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testNewGoalAttemptDuringSaveRetiresOldReplanContinuation()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testPendingRestrictionUnionCannotBeClearedByDelayedEmptyUpdate()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testPersistentRollbackFailureFencesLaterWritesUntilDeleteBarrierSucceeds()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testRestoreAndFileImportUseBoundedReaderAndDoNotRestorePose()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testSupersededMainPublicationRestoresPriorBytesBeforeFailedNewerJob()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testSupersededRestoreCannotOverwriteNewImport()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testSupersededValidationCannotReachDurableCommit()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialMapIOTests/testTaskCancellationDuringRestrictionWriteDoesNotResurrectOldRoute()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testBeaconOwnershipRejectsStaleRetirementAfterReplacement()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testBodyAndRestrictionChangesRetireHeldOutput()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testCurrentInstalledRouteReachesBothOwnedSinks()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testDelayedPlaybackStartRechecksTicket()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testExpiredTicketReachesNeitherSink()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testFailedSpeechDoesNotStartBeaconOrHoldAttempt()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testGoalChangeRetiresOutputButNotMeasuredPoseOrMap()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testOldCallbackCannotRetireNewRouteOrIndependentAlert()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testPermissionChangesBetweenSpeechAndBeacon()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SpatialRouteOutputControllerTests/testWatchdogRetiresExpiredOutputWithoutNewSensorCallback()",
+      "result": "Passed"
+    }
+  ],
+  "case_count": 236,
+  "counts": {
+    "Failed": 7,
+    "Passed": 223,
+    "Skipped": 6,
+    "Expected Failure": 0
+  },
+  "aggregate_counts_match": true,
+  "target_records": [
+    {
+      "identifier": "IndoorGoalContinuityTests/testTrackingLossStillInvalidatesRetainedMapFrame()",
+      "result": "Passed"
+    }
+  ],
+  "target_log_events": [
+    "started",
+    "passed"
+  ],
+  "query_sha256": "2bae06e0739facab30345d4d0e336dc1c261185e09989ac7ff62388625d2baf2",
+  "routeDiagnosticEvidence": {
+    "schema": 1,
+    "status": "complete",
+    "physicalAuthority": false,
+    "scope": "public Apple historical fixtures and synthetic controls; no physical authority",
+    "aggregateByteLimit": 1048576,
+    "reports": [
+      {
+        "attachmentName": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+        "testIdentifier": "SavedRoomRouteDiagnosticAppleTests/testPredeclaredApplePathsWaypointSinkAndIndependentFullBodySweeps()",
+        "status": "collected",
+        "testResult": "Failed",
+        "bytes": 2481,
+        "sha256": "e933185d19639c9a0df60ab50e4c3535f65385c4d858ddac9cd11a81c2f52d65",
+        "report": {
+          "currentCoverageKnown": false,
+          "errors": [
+            "Bedroom3: sourceGeometryMismatch",
+            "Hallway2: sourceGeometryMismatch"
+          ],
+          "fullFootprintSupportVerified": false,
+          "outcomes": [
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-aisle",
+              "profile": "declared-nominal"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-aisle",
+              "profile": "declared-wide"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-around-bed",
+              "profile": "declared-nominal"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-around-bed",
+              "profile": "declared-wide"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-contained-start",
+              "profile": "declared-nominal"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-contained-start",
+              "profile": "declared-wide"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-long",
+              "profile": "declared-nominal"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-long",
+              "profile": "declared-wide"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-corner",
+              "profile": "declared-nominal"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-corner",
+              "profile": "declared-wide"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-missing-floor",
+              "profile": "declared-nominal"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-missing-floor",
+              "profile": "declared-wide"
+            }
+          ],
+          "physicalAuthority": false,
+          "profileAddendumSHA256": "none",
+          "protocolSHA256": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123",
+          "schedule": "original-baseline",
+          "schema": 1,
+          "scope": "candidate waypoint replay; not controller/device arrival"
+        }
+      },
+      {
+        "attachmentName": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+        "testIdentifier": "SavedRoomRouteDiagnosticAppleTests/testSeparatelyPreregistered28cmWidthDoesNotReplaceBaseline()",
+        "status": "collected",
+        "testResult": "Failed",
+        "bytes": 1704,
+        "sha256": "48cbb4aa5c08e53096439cfb775fd38826a749b530686b755691c949a3184148",
+        "report": {
+          "currentCoverageKnown": false,
+          "errors": [
+            "Bedroom3: sourceGeometryMismatch",
+            "Hallway2: sourceGeometryMismatch"
+          ],
+          "fullFootprintSupportVerified": false,
+          "outcomes": [
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-aisle",
+              "profile": "declared-width28-assumed-depth20-height120"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-around-bed",
+              "profile": "declared-width28-assumed-depth20-height120"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-contained-start",
+              "profile": "declared-width28-assumed-depth20-height120"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-long",
+              "profile": "declared-width28-assumed-depth20-height120"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-corner",
+              "profile": "declared-width28-assumed-depth20-height120"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-missing-floor",
+              "profile": "declared-width28-assumed-depth20-height120"
+            }
+          ],
+          "physicalAuthority": false,
+          "profileAddendumSHA256": "c52792a1213a1b3969e97a6201d43bac2426a444f3f39e8b906a5feb0e0f701d",
+          "protocolSHA256": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123",
+          "schedule": "width28-addendum",
+          "schema": 1,
+          "scope": "candidate waypoint replay; not controller/device arrival"
+        }
+      },
+      {
+        "attachmentName": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+        "testIdentifier": "SavedRoomRouteJourneyAppleTests/testPredeclaredSuppliedBedChairConnectorsAroundRoomDoorWithholdingAndReturn()",
+        "status": "collected",
+        "testResult": "Failed",
+        "bytes": 3973,
+        "sha256": "1c7fd67d45536b4c7d8f149f847b6d8158aa9fc4254e3ab0d75a1701e91355ff",
+        "report": {
+          "baseline18Unchanged": true,
+          "cameraLocalizationTested": false,
+          "errors": [
+            "Bedroom3: sourceGeometryMismatch",
+            "Hallway2: sourceGeometryMismatch"
+          ],
+          "fullFootprintSupportVerified": false,
+          "getUpKinematicsTested": false,
+          "outcomes": [
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "bed-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "connector-to-existing-aisle-route"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "bed-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "around-bed"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "bed-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "back-to-aisle"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "bed-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "closed-door-approach"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "bed-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "closed-door-outbound-unsupported"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "bed-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "return-to-supplied-standing-place"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "chair-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "connector-to-existing-aisle-route"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "chair-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "around-room-aisle"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "chair-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "closed-door-approach"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "chair-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "closed-door-outbound-unsupported"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "chair-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "return-to-supplied-standing-place"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "standing-inside-bed-is-invalid",
+              "outcome": "unsupported-geometry",
+              "stage": "inside-bed-connector-attempt"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "standing-inside-chair-is-invalid",
+              "outcome": "unsupported-geometry",
+              "stage": "inside-chair-connector-attempt"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "historically-open-hallway-door-outside-unknown-return",
+              "outcome": "unsupported-geometry",
+              "stage": "open-door-approach"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "historically-open-hallway-door-outside-unknown-return",
+              "outcome": "unsupported-geometry",
+              "stage": "outside-original-floor-unsupported"
+            },
+            {
+              "error": "sourceGeometryMismatch",
+              "journey": "historically-open-hallway-door-outside-unknown-return",
+              "outcome": "unsupported-geometry",
+              "stage": "return-within-original-supported-model"
+            }
+          ],
+          "physicalAuthority": false,
+          "productionGuidanceCode": [
+            "SpatialFacts.relation",
+            "SpatialFacts.phrase",
+            "GuidanceCadence.label"
+          ],
+          "protocolSHA256": "8e060627d0f570820fd00a427e22f6672eb50048611dfc9682986cac5c30cc9a",
+          "schema": 1,
+          "suppliedPoseCandidateReplayOnly": true,
+          "sustainedControllerTested": false,
+          "VoiceOverTested": false
+        }
+      },
+      {
+        "attachmentName": "APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json",
+        "testIdentifier": "SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleExportMetadataAndNodeInventory()",
+        "status": "collected",
+        "testResult": "Failed",
+        "bytes": 25150,
+        "sha256": "01d3ebf19211763f0b67541b8b95d95da19e512fb761dcc8b2b347ebc5c8a3fd",
+        "report": {
+          "physicalAuthority": false,
+          "fixtures": [
+            {
+              "unmatchedMeshCount": 0,
+              "meshCount": 13,
+              "adapterFailure": "sourceGeometryMismatch",
+              "metadataRootKind": "object",
+              "sourceSHA256": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+              "metadataEntryCount": 13,
+              "nodesTruncated": false,
+              "metadataEntries": [
+                {
+                  "keySHA256": "d3c7608936d15912571dedb0d72df391306d05b80a0453dd31c5d927450a72cf",
+                  "key": "Door0",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "544608B7-BC20-4B57-B390-E08CB0C05D27"
+                },
+                {
+                  "keySHA256": "321bf5e854ca335b073e4eccfa4b527cd272f930730a592356a69daea0387573",
+                  "key": "Door1",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "07CA23FF-3EEA-4FDD-AD4F-F98B47851FE4"
+                },
+                {
+                  "keySHA256": "4eb4e73a0a67cdb7bdcc8faf957d2d4d2ac324111da1d25e26730e163b50fb4f",
+                  "key": "Door2",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "0321026A-56E2-4D3D-AC9E-BE7659F4ECFE"
+                },
+                {
+                  "keySHA256": "c46a186ace6cd2f3b8942819cb1e1e8277061d212b294803ee415beafb77093a",
+                  "key": "Door3",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "22519AAB-4E27-457C-8A65-8F45665F28CF"
+                },
+                {
+                  "keySHA256": "e13226e2db8b4cd9d7415639292e3c75e9c2321ea52cf4990805da03c316f9a4",
+                  "key": "Door4",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "A16DF794-DF3B-4EC0-8B98-CBFC2B92E49A"
+                },
+                {
+                  "keySHA256": "58ab163f3d8778c665e3b730c647e46ff826e0b0e105e8283b729bc8a93b7ce6",
+                  "key": "Door5",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "5E1D9C94-D64E-4B9E-AF30-94C9F9855056"
+                },
+                {
+                  "keySHA256": "1b670bae8e568b9ee924965e426552482ef9d3ae1083b00868d8adc68d73d52e",
+                  "key": "Floor0",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "7C48CACF-5979-4BFB-B1D1-88DE721921DB"
+                },
+                {
+                  "keySHA256": "444bd5001a93e9f3d13c8f89632aea95d8f3885006cd01fd1dcfc2c2535276f8",
+                  "key": "Wall0",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "0D0716C9-28D9-4F00-BE7C-E2A6FAFA36FA"
+                },
+                {
+                  "keySHA256": "822a908359bea8bbecc05da9eda58c7a99fe8fdb93d0920edf7c17bab98c356a",
+                  "key": "Wall1",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "84C6BF1B-D654-4B06-9E0E-71154800E6F9"
+                },
+                {
+                  "keySHA256": "ce43e664c8fca18d255dca73d7cd10b54bf937844594141db42c64456a3876b0",
+                  "key": "Wall2",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "0CD2F73E-5F0B-444C-BE63-2F9855C59D47"
+                },
+                {
+                  "keySHA256": "88bc25913818578e91a2433dcc4dc8e460f266c0bcae4a685eacfb5dea0ef53e",
+                  "key": "Wall3",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "EFD7D4DE-5E77-4AE2-8A82-934A1A28066B"
+                },
+                {
+                  "keySHA256": "285ece53fed36619f69943d6bb415f22fc1d80383f8539374876ed9d3268c44f",
+                  "key": "Wall4",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "90B9E5EF-6BE5-4E01-83F5-B5F757B563FA"
+                },
+                {
+                  "keySHA256": "faa7aae6019708ab0cf26801d2d5de516b7e16e3375ea0740de572c721043246",
+                  "key": "Wall5",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "B3307A9E-32B7-42A2-848C-C72C44A19255"
+                }
+              ],
+              "fixtureID": "Hallway2",
+              "metadataByteCount": 707,
+              "geometryProbe": {
+                "vertexIndex": 4,
+                "lower": 0,
+                "axis": 2,
+                "sourceWorldMaximum": [
+                  4.03806241790528,
+                  1.015705943107605,
+                  12.590531334312672
+                ],
+                "sourceEncoding": "capturedRoomFloat32",
+                "sourceTransform": [
+                  0.9873415231704712,
+                  0,
+                  0.15860848128795624,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  -0.15860848128795624,
+                  0,
+                  0.9873415231704712,
+                  0,
+                  0.9597339630126953,
+                  -0.2042940855026245,
+                  12.096022605895996,
+                  1
+                ],
+                "epsilon": 9.228532871929929e-05,
+                "sourceWorldMinimum": [
+                  -2.1185944918798896,
+                  -1.424294114112854,
+                  11.60151387747932
+                ],
+                "worldPoint": [
+                  -2.093217134475708,
+                  -1.424294114112854,
+                  11.4435396194458
+                ],
+                "sourceLocalMaximum": [
+                  3.117794990539551,
+                  1.2200000286102295,
+                  0
+                ],
+                "upper": 0,
+                "parentGlobalTransform": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "meshLocalPoint": [
+                  -3.117794990539551,
+                  -1.2200000286102295,
+                  -0.1599999964237213
+                ],
+                "side": "belowMinimum",
+                "exportedWorldMinimum": [
+                  -2.1185944080352783,
+                  -1.424294114112854,
+                  11.4435396194458
+                ],
+                "exportedWorldMaximum": [
+                  4.06343936920166,
+                  1.015705943107605,
+                  12.590531349182129
+                ],
+                "meshGlobalTransform": [
+                  0.9873415231704712,
+                  0,
+                  0.15860848128795624,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  -0.15860848128795624,
+                  0,
+                  0.9873415231704712,
+                  0,
+                  0.9597339630126953,
+                  -0.2042940855026245,
+                  12.096022605895996,
+                  1
+                ],
+                "exportedSourceLocalMaximum": [
+                  3.117794468045048,
+                  1.2200000286102295,
+                  6.579490730018733e-08
+                ],
+                "sourceLocalPoint": [
+                  -3.1177947223062574,
+                  -1.2200000286102295,
+                  -0.15999960866551888
+                ],
+                "residual": 0.15999960866551888,
+                "featureKind": "wall",
+                "featureID": "0D0716C9-28D9-4F00-BE7C-E2A6FAFA36FA",
+                "meshLocalTransform": [
+                  0.9873415231704712,
+                  0,
+                  0.15860848128795624,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  -0.15860848128795624,
+                  0,
+                  0.9873415231704712,
+                  0,
+                  0.9597339630126953,
+                  -0.2042940855026245,
+                  12.096022605895996,
+                  1
+                ],
+                "vertexCount": 24,
+                "exportedSourceLocalMinimum": [
+                  -3.1177947223062574,
+                  -1.2200000286102295,
+                  -0.15999960866551888
+                ],
+                "sourceDimensions": [
+                  6.235589981079102,
+                  2.440000057220459,
+                  0
+                ],
+                "nodeIndex": 4,
+                "assetUpAxis": [
+                  0,
+                  1,
+                  0
+                ],
+                "sourceLocalMinimum": [
+                  -3.117794990539551,
+                  -1.2200000286102295,
+                  0
+                ],
+                "rootGlobalTransform": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              },
+              "nodeCount": 27,
+              "unknownFeatureMeshCount": 0,
+              "metadataFormat": "binaryPlist",
+              "metadataEntriesTruncated": false,
+              "nodes": [
+                {
+                  "name": "room",
+                  "nameSHA256": "1f1c5b2fad778434024f1537986346927917f4755a6e7d3fd91f22653b7c3132",
+                  "isMesh": false,
+                  "inheritedMappingPresent": false,
+                  "directMappingPresent": false,
+                  "index": 0,
+                  "depth": 0,
+                  "knownFeature": false
+                },
+                {
+                  "name": "Mesh_grp",
+                  "nameSHA256": "4068d692ffb31d420aa4afdbdfafccc5f3600db28c55fadabf4ca1006d1d19a3",
+                  "parentIndex": 0,
+                  "isMesh": false,
+                  "inheritedMappingPresent": false,
+                  "directMappingPresent": false,
+                  "index": 1,
+                  "depth": 1,
+                  "knownFeature": false
+                },
+                {
+                  "name": "Arch_grp",
+                  "nameSHA256": "7290b4a18692bb0887d0b645d329016752aa6e51caf16726b79ada2731e45011",
+                  "parentIndex": 1,
+                  "isMesh": false,
+                  "inheritedMappingPresent": false,
+                  "directMappingPresent": false,
+                  "index": 2,
+                  "depth": 2,
+                  "knownFeature": false
+                },
+                {
+                  "name": "Wall_0_grp",
+                  "nameSHA256": "5436f1f7f30e0247cbfb1944bcce9af702ee81576364762844c96999819cb769",
+                  "parentIndex": 2,
+                  "isMesh": false,
+                  "inheritedMappingPresent": false,
+                  "directMappingPresent": false,
+                  "index": 3,
+                  "depth": 3,
+                  "knownFeature": false
+                },
+                {
+                  "vertexCount": 24,
+                  "isMesh": true,
+                  "nameSHA256": "444bd5001a93e9f3d13c8f89632aea95d8f3885006cd01fd1dcfc2c2535276f8",
+                  "inheritedMappingPresent": false,
+                  "depth": 4,
+                  "name": "Wall0",
+                  "submeshCount": 1,
+                  "knownFeature": true,
+                  "resolvedUUID": "0D0716C9-28D9-4F00-BE7C-E2A6FAFA36FA",
+                  "index": 4,
+                  "parentIndex": 3,
+                  "directUUID": "0D0716C9-28D9-4F00-BE7C-E2A6FAFA36FA",
+                  "directMappingPresent": true
+                },
+                {
+                  "isMesh": false,
+                  "knownFeature": false,
+                  "nameSHA256": "2677b8167c2e7a5deffb06801bc23b67db01a2408a00ec7c98407b1db0ead32a",
+                  "name": "Wall_1_grp",
+                  "inheritedMappingPresent": false,
+                  "index": 5,
+                  "parentIndex": 2,
+                  "directMappingPresent": false,
+                  "depth": 3
+                },
+                {
+                  "vertexCount": 24,
+                  "isMesh": true,
+                  "nameSHA256": "d3c7608936d15912571dedb0d72df391306d05b80a0453dd31c5d927450a72cf",
+                  "inheritedMappingPresent": false,
+                  "depth": 4,
+                  "name": "Door0",
+                  "submeshCount": 1,
+                  "knownFeature": true,
+                  "resolvedUUID": "544608B7-BC20-4B57-B390-E08CB0C05D27",
+                  "index": 6,
+                  "parentIndex": 5,
+                  "directUUID": "544608B7-BC20-4B57-B390-E08CB0C05D27",
+                  "directMappingPresent": true
+                },
+                {
+                  "vertexCount": 88,
+                  "isMesh": true,
+                  "nameSHA256": "822a908359bea8bbecc05da9eda58c7a99fe8fdb93d0920edf7c17bab98c356a",
+                  "inheritedMappingPresent": false,
+                  "depth": 4,
+                  "name": "Wall1",
+                  "submeshCount": 1,
+                  "knownFeature": true,
+                  "resolvedUUID": "84C6BF1B-D654-4B06-9E0E-71154800E6F9",
+                  "index": 7,
+                  "parentIndex": 5,
+                  "directUUID": "84C6BF1B-D654-4B06-9E0E-71154800E6F9",
+                  "directMappingPresent": true
+                },
+                {
+                  "isMesh": false,
+                  "knownFeature": false,
+                  "nameSHA256": "377be67331cbdbf97bfde455bc55e1e0b9cd87dcdf5d8c6f93e743fc3efae169",
+                  "name": "Wall_2_grp",
+                  "inheritedMappingPresent": false,
+                  "index": 8,
+                  "parentIndex": 2,
+                  "directMappingPresent": false,
+                  "depth": 3
+                },
+                {
+                  "vertexCount": 24,
+                  "isMesh": true,
+                  "nameSHA256": "321bf5e854ca335b073e4eccfa4b527cd272f930730a592356a69daea0387573",
+                  "inheritedMappingPresent": false,
+                  "depth": 4,
+                  "name": "Door1",
+                  "submeshCount": 1,
+                  "knownFeature": true,
+                  "resolvedUUID": "07CA23FF-3EEA-4FDD-AD4F-F98B47851FE4",
+                  "index": 9,
+                  "parentIndex": 8,
+                  "directUUID": "07CA23FF-3EEA-4FDD-AD4F-F98B47851FE4",
+                  "directMappingPresent": true
+                },
+                {
+                  "depth": 4,
+                  "inheritedMappingPresent": false,
+                  "directMappingPresent": true,
+                  "isMesh": true,
+                  "directUUID": "0CD2F73E-5F0B-444C-BE63-2F9855C59D47",
+                  "resolvedUUID": "0CD2F73E-5F0B-444C-BE63-2F9855C59D47",
+                  "nameSHA256": "ce43e664c8fca18d255dca73d7cd10b54bf937844594141db42c64456a3876b0",
+                  "name": "Wall2",
+                  "vertexCount": 88,
+                  "knownFeature": true,
+                  "index": 10,
+                  "submeshCount": 1,
+                  "parentIndex": 8
+                },
+                {
+                  "isMesh": false,
+                  "knownFeature": false,
+                  "nameSHA256": "e195ca33857494f3263131b29ee72d8b7d46ed30e20ccceb6f759b7d94cbad9e",
+                  "name": "Wall_3_grp",
+                  "inheritedMappingPresent": false,
+                  "index": 11,
+                  "parentIndex": 2,
+                  "directMappingPresent": false,
+                  "depth": 3
+                },
+                {
+                  "depth": 4,
+                  "inheritedMappingPresent": false,
+                  "directMappingPresent": true,
+                  "isMesh": true,
+                  "directUUID": "0321026A-56E2-4D3D-AC9E-BE7659F4ECFE",
+                  "resolvedUUID": "0321026A-56E2-4D3D-AC9E-BE7659F4ECFE",
+                  "nameSHA256": "4eb4e73a0a67cdb7bdcc8faf957d2d4d2ac324111da1d25e26730e163b50fb4f",
+                  "name": "Door2",
+                  "vertexCount": 24,
+                  "knownFeature": true,
+                  "index": 12,
+                  "submeshCount": 1,
+                  "parentIndex": 11
+                },
+                {
+                  "depth": 4,
+                  "inheritedMappingPresent": false,
+                  "directMappingPresent": true,
+                  "isMesh": true,
+                  "directUUID": "EFD7D4DE-5E77-4AE2-8A82-934A1A28066B",
+                  "resolvedUUID": "EFD7D4DE-5E77-4AE2-8A82-934A1A28066B",
+                  "nameSHA256": "88bc25913818578e91a2433dcc4dc8e460f266c0bcae4a685eacfb5dea0ef53e",
+                  "name": "Wall3",
+                  "vertexCount": 52,
+                  "knownFeature": true,
+                  "index": 13,
+                  "submeshCount": 1,
+                  "parentIndex": 11
+                },
+                {
+                  "isMesh": false,
+                  "knownFeature": false,
+                  "nameSHA256": "1e36bb2240dd8367c98139a250126b5e3eca9e059d8ab2f5fb8f8aab6a92bc45",
+                  "name": "Wall_4_grp",
+                  "inheritedMappingPresent": false,
+                  "index": 14,
+                  "parentIndex": 2,
+                  "directMappingPresent": false,
+                  "depth": 3
+                },
+                {
+                  "depth": 4,
+                  "inheritedMappingPresent": false,
+                  "directMappingPresent": true,
+                  "isMesh": true,
+                  "directUUID": "22519AAB-4E27-457C-8A65-8F45665F28CF",
+                  "resolvedUUID": "22519AAB-4E27-457C-8A65-8F45665F28CF",
+                  "nameSHA256": "c46a186ace6cd2f3b8942819cb1e1e8277061d212b294803ee415beafb77093a",
+                  "name": "Door3",
+                  "vertexCount": 24,
+                  "knownFeature": true,
+                  "index": 15,
+                  "submeshCount": 1,
+                  "parentIndex": 14
+                },
+                {
+                  "depth": 4,
+                  "inheritedMappingPresent": false,
+                  "directMappingPresent": true,
+                  "isMesh": true,
+                  "directUUID": "5E1D9C94-D64E-4B9E-AF30-94C9F9855056",
+                  "resolvedUUID": "5E1D9C94-D64E-4B9E-AF30-94C9F9855056",
+                  "nameSHA256": "58ab163f3d8778c665e3b730c647e46ff826e0b0e105e8283b729bc8a93b7ce6",
+                  "name": "Door5",
+                  "vertexCount": 24,
+                  "knownFeature": true,
+                  "index": 16,
+                  "submeshCount": 1,
+                  "parentIndex": 14
+                },
+                {
+                  "depth": 4,
+                  "inheritedMappingPresent": false,
+                  "directMappingPresent": true,
+                  "isMesh": true,
+                  "directUUID": "90B9E5EF-6BE5-4E01-83F5-B5F757B563FA",
+                  "resolvedUUID": "90B9E5EF-6BE5-4E01-83F5-B5F757B563FA",
+                  "nameSHA256": "285ece53fed36619f69943d6bb415f22fc1d80383f8539374876ed9d3268c44f",
+                  "name": "Wall4",
+                  "vertexCount": 128,
+                  "knownFeature": true,
+                  "index": 17,
+                  "submeshCount": 1,
+                  "parentIndex": 14
+                },
+                {
+                  "isMesh": false,
+                  "knownFeature": false,
+                  "nameSHA256": "0d8da476a39b793bef8dae1e6c8e05db6499725353d899563a2bbf48c1cf3258",
+                  "name": "Wall_5_grp",
+                  "inheritedMappingPresent": false,
+                  "index": 18,
+                  "parentIndex": 2,
+                  "directMappingPresent": false,
+                  "depth": 3
+                },
+                {
+                  "depth": 4,
+                  "inheritedMappingPresent": false,
+                  "resolvedUUID": "A16DF794-DF3B-4EC0-8B98-CBFC2B92E49A",
+                  "directMappingPresent": true,
+                  "isMesh": true,
+                  "directUUID": "A16DF794-DF3B-4EC0-8B98-CBFC2B92E49A",
+                  "nameSHA256": "e13226e2db8b4cd9d7415639292e3c75e9c2321ea52cf4990805da03c316f9a4",
+                  "name": "Door4",
+                  "vertexCount": 24,
+                  "knownFeature": true,
+                  "index": 19,
+                  "submeshCount": 1,
+                  "parentIndex": 18
+                },
+                {
+                  "depth": 4,
+                  "inheritedMappingPresent": false,
+                  "resolvedUUID": "B3307A9E-32B7-42A2-848C-C72C44A19255",
+                  "directMappingPresent": true,
+                  "isMesh": true,
+                  "directUUID": "B3307A9E-32B7-42A2-848C-C72C44A19255",
+                  "nameSHA256": "faa7aae6019708ab0cf26801d2d5de516b7e16e3375ea0740de572c721043246",
+                  "name": "Wall5",
+                  "vertexCount": 88,
+                  "knownFeature": true,
+                  "index": 20,
+                  "submeshCount": 1,
+                  "parentIndex": 18
+                },
+                {
+                  "nameSHA256": "19c0772f250c8b3f7d1cacc3c721057c1360ffd6e1dff8d74e2ba9facc9ebae3",
+                  "index": 21,
+                  "knownFeature": false,
+                  "parentIndex": 1,
+                  "depth": 2,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "name": "Floor_grp",
+                  "inheritedMappingPresent": false
+                },
+                {
+                  "depth": 3,
+                  "inheritedMappingPresent": false,
+                  "resolvedUUID": "7C48CACF-5979-4BFB-B1D1-88DE721921DB",
+                  "directMappingPresent": true,
+                  "isMesh": true,
+                  "directUUID": "7C48CACF-5979-4BFB-B1D1-88DE721921DB",
+                  "nameSHA256": "1b670bae8e568b9ee924965e426552482ef9d3ae1083b00868d8adc68d73d52e",
+                  "name": "Floor0",
+                  "vertexCount": 48,
+                  "knownFeature": true,
+                  "index": 22,
+                  "submeshCount": 1,
+                  "parentIndex": 21
+                },
+                {
+                  "nameSHA256": "83003ea22b57ae57abb93b6020c9f29ec5110c3d410ddb4c85a5455d448630d8",
+                  "index": 23,
+                  "knownFeature": false,
+                  "parentIndex": 1,
+                  "depth": 2,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "name": "Object_grp",
+                  "inheritedMappingPresent": false
+                },
+                {
+                  "nameSHA256": "c1172b5b6cf8ee91ba5a825a9b659427cc9e1e2cdb1f980fa07a6948e891ac28",
+                  "index": 24,
+                  "knownFeature": false,
+                  "parentIndex": 0,
+                  "depth": 1,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "name": "Section_grp",
+                  "inheritedMappingPresent": false
+                },
+                {
+                  "nameSHA256": "74ba9aa6d0fbfb0f4be55dc48a6329675ce0a6ed322f35a255a3e915a4d2f81e",
+                  "index": 25,
+                  "knownFeature": false,
+                  "parentIndex": 24,
+                  "depth": 2,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "name": "unidentified0",
+                  "inheritedMappingPresent": false
+                },
+                {
+                  "nameSHA256": "5503241bd8014cb6c1b03693d3f75bd77e9b75d955c205078d75fec0bee62834",
+                  "index": 26,
+                  "knownFeature": false,
+                  "parentIndex": 25,
+                  "depth": 3,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "name": "unidentified0_centerTop",
+                  "inheritedMappingPresent": false
+                }
+              ]
+            },
+            {
+              "sourceSHA256": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+              "metadataRootKind": "object",
+              "nodesTruncated": false,
+              "fixtureID": "Bedroom3",
+              "metadataEntries": [
+                {
+                  "keySHA256": "ff7b1130e72225e93b52c4b1807c46866c865e07e15e90e4c1fece8d4f93843c",
+                  "key": "Bed0",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "45597D99-3218-4419-A2E4-2ADFA824D033"
+                },
+                {
+                  "keySHA256": "863ed1047cdb82fdd1a389f9cd57c899c681aafcbcfd61ec0cc051d735111861",
+                  "key": "Chair0",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "531A8ED6-A501-403D-B765-064236B96FC2"
+                },
+                {
+                  "keySHA256": "d3c7608936d15912571dedb0d72df391306d05b80a0453dd31c5d927450a72cf",
+                  "key": "Door0",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "10A2A02E-D0BD-465B-A893-2E7095137EFB"
+                },
+                {
+                  "keySHA256": "321bf5e854ca335b073e4eccfa4b527cd272f930730a592356a69daea0387573",
+                  "key": "Door1",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "F93D7F37-5C72-4B50-A7AC-ADD7DC4D0BC3"
+                },
+                {
+                  "keySHA256": "1b670bae8e568b9ee924965e426552482ef9d3ae1083b00868d8adc68d73d52e",
+                  "key": "Floor0",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "B95427E8-846F-4367-A2DA-87892E259635"
+                },
+                {
+                  "keySHA256": "fc262cb60305be3bbe9df2f8e28b382a9cc49b306f8e8962bf90a84f16c55352",
+                  "key": "Table0",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "4A54C731-0088-4253-B4FA-ED5C331EC338"
+                },
+                {
+                  "keySHA256": "444bd5001a93e9f3d13c8f89632aea95d8f3885006cd01fd1dcfc2c2535276f8",
+                  "key": "Wall0",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "353F4E08-C315-4198-8BF0-EE02B764A70B"
+                },
+                {
+                  "keySHA256": "822a908359bea8bbecc05da9eda58c7a99fe8fdb93d0920edf7c17bab98c356a",
+                  "key": "Wall1",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "839162BA-CD3E-498F-8B42-9260ADE7373F"
+                },
+                {
+                  "keySHA256": "ce43e664c8fca18d255dca73d7cd10b54bf937844594141db42c64456a3876b0",
+                  "key": "Wall2",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "3246F511-4564-4198-B04F-517BB31085CE"
+                },
+                {
+                  "keySHA256": "88bc25913818578e91a2433dcc4dc8e460f266c0bcae4a685eacfb5dea0ef53e",
+                  "key": "Wall3",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "2305C38A-4008-4EF3-82B5-F5D5CCBA7A7E"
+                },
+                {
+                  "keySHA256": "5cb4bab8d90eaf71de7eaa92868f81c98349fae4703ff9a3cdd80bdb8917c2fd",
+                  "key": "Window0",
+                  "valueKind": "string",
+                  "uuidValue": true,
+                  "knownFeature": true,
+                  "uuid": "EFD4D238-2299-4026-BBF4-956F323874B8"
+                }
+              ],
+              "unknownFeatureMeshCount": 0,
+              "adapterFailure": "sourceGeometryMismatch",
+              "nodes": [
+                {
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "index": 0,
+                  "name": "room",
+                  "inheritedMappingPresent": false,
+                  "depth": 0,
+                  "knownFeature": false,
+                  "nameSHA256": "1f1c5b2fad778434024f1537986346927917f4755a6e7d3fd91f22653b7c3132"
+                },
+                {
+                  "parentIndex": 0,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "index": 1,
+                  "name": "Mesh_grp",
+                  "inheritedMappingPresent": false,
+                  "depth": 1,
+                  "knownFeature": false,
+                  "nameSHA256": "4068d692ffb31d420aa4afdbdfafccc5f3600db28c55fadabf4ca1006d1d19a3"
+                },
+                {
+                  "parentIndex": 1,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "index": 2,
+                  "name": "Arch_grp",
+                  "inheritedMappingPresent": false,
+                  "depth": 2,
+                  "knownFeature": false,
+                  "nameSHA256": "7290b4a18692bb0887d0b645d329016752aa6e51caf16726b79ada2731e45011"
+                },
+                {
+                  "parentIndex": 2,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "index": 3,
+                  "name": "Wall_0_grp",
+                  "inheritedMappingPresent": false,
+                  "depth": 3,
+                  "knownFeature": false,
+                  "nameSHA256": "5436f1f7f30e0247cbfb1944bcce9af702ee81576364762844c96999819cb769"
+                },
+                {
+                  "resolvedUUID": "353F4E08-C315-4198-8BF0-EE02B764A70B",
+                  "submeshCount": 1,
+                  "depth": 4,
+                  "name": "Wall0",
+                  "isMesh": true,
+                  "directUUID": "353F4E08-C315-4198-8BF0-EE02B764A70B",
+                  "inheritedMappingPresent": false,
+                  "parentIndex": 3,
+                  "vertexCount": 88,
+                  "knownFeature": true,
+                  "nameSHA256": "444bd5001a93e9f3d13c8f89632aea95d8f3885006cd01fd1dcfc2c2535276f8",
+                  "index": 4,
+                  "directMappingPresent": true
+                },
+                {
+                  "resolvedUUID": "EFD4D238-2299-4026-BBF4-956F323874B8",
+                  "submeshCount": 1,
+                  "depth": 4,
+                  "name": "Window0",
+                  "isMesh": true,
+                  "directUUID": "EFD4D238-2299-4026-BBF4-956F323874B8",
+                  "inheritedMappingPresent": false,
+                  "parentIndex": 3,
+                  "vertexCount": 24,
+                  "knownFeature": true,
+                  "nameSHA256": "5cb4bab8d90eaf71de7eaa92868f81c98349fae4703ff9a3cdd80bdb8917c2fd",
+                  "index": 5,
+                  "directMappingPresent": true
+                },
+                {
+                  "parentIndex": 2,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "index": 6,
+                  "name": "Wall_1_grp",
+                  "inheritedMappingPresent": false,
+                  "depth": 3,
+                  "knownFeature": false,
+                  "nameSHA256": "2677b8167c2e7a5deffb06801bc23b67db01a2408a00ec7c98407b1db0ead32a"
+                },
+                {
+                  "resolvedUUID": "10A2A02E-D0BD-465B-A893-2E7095137EFB",
+                  "submeshCount": 1,
+                  "depth": 4,
+                  "name": "Door0",
+                  "isMesh": true,
+                  "directUUID": "10A2A02E-D0BD-465B-A893-2E7095137EFB",
+                  "inheritedMappingPresent": false,
+                  "parentIndex": 6,
+                  "vertexCount": 24,
+                  "knownFeature": true,
+                  "nameSHA256": "d3c7608936d15912571dedb0d72df391306d05b80a0453dd31c5d927450a72cf",
+                  "index": 7,
+                  "directMappingPresent": true
+                },
+                {
+                  "resolvedUUID": "839162BA-CD3E-498F-8B42-9260ADE7373F",
+                  "submeshCount": 1,
+                  "depth": 4,
+                  "name": "Wall1",
+                  "isMesh": true,
+                  "directUUID": "839162BA-CD3E-498F-8B42-9260ADE7373F",
+                  "inheritedMappingPresent": false,
+                  "parentIndex": 6,
+                  "vertexCount": 80,
+                  "knownFeature": true,
+                  "nameSHA256": "822a908359bea8bbecc05da9eda58c7a99fe8fdb93d0920edf7c17bab98c356a",
+                  "index": 8,
+                  "directMappingPresent": true
+                },
+                {
+                  "parentIndex": 2,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "index": 9,
+                  "name": "Wall_2_grp",
+                  "inheritedMappingPresent": false,
+                  "depth": 3,
+                  "knownFeature": false,
+                  "nameSHA256": "377be67331cbdbf97bfde455bc55e1e0b9cd87dcdf5d8c6f93e743fc3efae169"
+                },
+                {
+                  "resolvedUUID": "F93D7F37-5C72-4B50-A7AC-ADD7DC4D0BC3",
+                  "submeshCount": 1,
+                  "depth": 4,
+                  "name": "Door1",
+                  "isMesh": true,
+                  "directUUID": "F93D7F37-5C72-4B50-A7AC-ADD7DC4D0BC3",
+                  "inheritedMappingPresent": false,
+                  "parentIndex": 9,
+                  "vertexCount": 24,
+                  "knownFeature": true,
+                  "nameSHA256": "321bf5e854ca335b073e4eccfa4b527cd272f930730a592356a69daea0387573",
+                  "index": 10,
+                  "directMappingPresent": true
+                },
+                {
+                  "resolvedUUID": "3246F511-4564-4198-B04F-517BB31085CE",
+                  "submeshCount": 1,
+                  "depth": 4,
+                  "name": "Wall2",
+                  "isMesh": true,
+                  "directUUID": "3246F511-4564-4198-B04F-517BB31085CE",
+                  "inheritedMappingPresent": false,
+                  "parentIndex": 9,
+                  "vertexCount": 88,
+                  "knownFeature": true,
+                  "nameSHA256": "ce43e664c8fca18d255dca73d7cd10b54bf937844594141db42c64456a3876b0",
+                  "index": 11,
+                  "directMappingPresent": true
+                },
+                {
+                  "parentIndex": 2,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "index": 12,
+                  "name": "Wall_3_grp",
+                  "inheritedMappingPresent": false,
+                  "depth": 3,
+                  "knownFeature": false,
+                  "nameSHA256": "e195ca33857494f3263131b29ee72d8b7d46ed30e20ccceb6f759b7d94cbad9e"
+                },
+                {
+                  "resolvedUUID": "2305C38A-4008-4EF3-82B5-F5D5CCBA7A7E",
+                  "submeshCount": 1,
+                  "depth": 4,
+                  "name": "Wall3",
+                  "isMesh": true,
+                  "directUUID": "2305C38A-4008-4EF3-82B5-F5D5CCBA7A7E",
+                  "inheritedMappingPresent": false,
+                  "parentIndex": 12,
+                  "vertexCount": 48,
+                  "knownFeature": true,
+                  "nameSHA256": "88bc25913818578e91a2433dcc4dc8e460f266c0bcae4a685eacfb5dea0ef53e",
+                  "index": 13,
+                  "directMappingPresent": true
+                },
+                {
+                  "parentIndex": 1,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "index": 14,
+                  "name": "Floor_grp",
+                  "inheritedMappingPresent": false,
+                  "depth": 2,
+                  "knownFeature": false,
+                  "nameSHA256": "19c0772f250c8b3f7d1cacc3c721057c1360ffd6e1dff8d74e2ba9facc9ebae3"
+                },
+                {
+                  "resolvedUUID": "B95427E8-846F-4367-A2DA-87892E259635",
+                  "submeshCount": 1,
+                  "depth": 3,
+                  "name": "Floor0",
+                  "isMesh": true,
+                  "directUUID": "B95427E8-846F-4367-A2DA-87892E259635",
+                  "inheritedMappingPresent": false,
+                  "parentIndex": 14,
+                  "vertexCount": 24,
+                  "knownFeature": true,
+                  "nameSHA256": "1b670bae8e568b9ee924965e426552482ef9d3ae1083b00868d8adc68d73d52e",
+                  "index": 15,
+                  "directMappingPresent": true
+                },
+                {
+                  "parentIndex": 1,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "index": 16,
+                  "name": "Object_grp",
+                  "inheritedMappingPresent": false,
+                  "depth": 2,
+                  "knownFeature": false,
+                  "nameSHA256": "83003ea22b57ae57abb93b6020c9f29ec5110c3d410ddb4c85a5455d448630d8"
+                },
+                {
+                  "parentIndex": 16,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "index": 17,
+                  "name": "Bed_grp",
+                  "inheritedMappingPresent": false,
+                  "depth": 3,
+                  "knownFeature": false,
+                  "nameSHA256": "4043154e40b86ea78282c49b0cb01ec3a0156c933471d6a29525291cfb26892c"
+                },
+                {
+                  "resolvedUUID": "45597D99-3218-4419-A2E4-2ADFA824D033",
+                  "submeshCount": 1,
+                  "depth": 4,
+                  "name": "Bed0",
+                  "isMesh": true,
+                  "directUUID": "45597D99-3218-4419-A2E4-2ADFA824D033",
+                  "inheritedMappingPresent": false,
+                  "parentIndex": 17,
+                  "vertexCount": 24,
+                  "knownFeature": true,
+                  "nameSHA256": "ff7b1130e72225e93b52c4b1807c46866c865e07e15e90e4c1fece8d4f93843c",
+                  "index": 18,
+                  "directMappingPresent": true
+                },
+                {
+                  "parentIndex": 16,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "index": 19,
+                  "name": "Chair_grp",
+                  "inheritedMappingPresent": false,
+                  "depth": 3,
+                  "knownFeature": false,
+                  "nameSHA256": "95a6e185e5431be83a775bbea36f25f73212fc7439bb4e9c80542baa3bad8218"
+                },
+                {
+                  "resolvedUUID": "531A8ED6-A501-403D-B765-064236B96FC2",
+                  "submeshCount": 1,
+                  "depth": 4,
+                  "name": "Chair0",
+                  "isMesh": true,
+                  "directUUID": "531A8ED6-A501-403D-B765-064236B96FC2",
+                  "inheritedMappingPresent": false,
+                  "parentIndex": 19,
+                  "vertexCount": 24,
+                  "knownFeature": true,
+                  "nameSHA256": "863ed1047cdb82fdd1a389f9cd57c899c681aafcbcfd61ec0cc051d735111861",
+                  "index": 20,
+                  "directMappingPresent": true
+                },
+                {
+                  "parentIndex": 16,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "index": 21,
+                  "name": "Table_grp",
+                  "inheritedMappingPresent": false,
+                  "depth": 3,
+                  "knownFeature": false,
+                  "nameSHA256": "500ccc12793d20c1184af65643ecf63ad7383d4147999b12914960e0c978e56d"
+                },
+                {
+                  "directMappingPresent": true,
+                  "resolvedUUID": "4A54C731-0088-4253-B4FA-ED5C331EC338",
+                  "directUUID": "4A54C731-0088-4253-B4FA-ED5C331EC338",
+                  "knownFeature": true,
+                  "index": 22,
+                  "nameSHA256": "fc262cb60305be3bbe9df2f8e28b382a9cc49b306f8e8962bf90a84f16c55352",
+                  "submeshCount": 1,
+                  "vertexCount": 24,
+                  "isMesh": true,
+                  "name": "Table0",
+                  "depth": 4,
+                  "inheritedMappingPresent": false,
+                  "parentIndex": 21
+                },
+                {
+                  "parentIndex": 0,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "index": 23,
+                  "name": "Section_grp",
+                  "inheritedMappingPresent": false,
+                  "depth": 1,
+                  "knownFeature": false,
+                  "nameSHA256": "c1172b5b6cf8ee91ba5a825a9b659427cc9e1e2cdb1f980fa07a6948e891ac28"
+                },
+                {
+                  "parentIndex": 23,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "index": 24,
+                  "name": "bedroom0",
+                  "inheritedMappingPresent": false,
+                  "depth": 2,
+                  "knownFeature": false,
+                  "nameSHA256": "4680a02967a968c9fc25fd25b836d73ff817a7c206a5799c6447174ce595640c"
+                },
+                {
+                  "parentIndex": 24,
+                  "directMappingPresent": false,
+                  "isMesh": false,
+                  "index": 25,
+                  "name": "bedroom0_centerTop",
+                  "inheritedMappingPresent": false,
+                  "depth": 3,
+                  "knownFeature": false,
+                  "nameSHA256": "299e854c9cd5b7073af284df2d8ba611a91190686787835e1e1e45c22fa00f3b"
+                }
+              ],
+              "nodeCount": 26,
+              "metadataFormat": "binaryPlist",
+              "metadataEntriesTruncated": false,
+              "geometryProbe": {
+                "worldPoint": [
+                  2.3006527423858643,
+                  -1.4659850597381592,
+                  16.861770629882812
+                ],
+                "meshGlobalTransform": [
+                  -0.9900766611099243,
+                  0,
+                  -0.14052821695804596,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0.14052821695804596,
+                  0,
+                  -0.9900766611099243,
+                  0,
+                  0.5686354637145996,
+                  -0.25848501920700073,
+                  16.454330444335938,
+                  1
+                ],
+                "axis": 2,
+                "assetUpAxis": [
+                  0,
+                  1,
+                  0
+                ],
+                "featureKind": "wall",
+                "sourceLocalPoint": [
+                  -1.7720867270435008,
+                  -1.2075000405311584,
+                  -0.15999971859605822
+                ],
+                "rootGlobalTransform": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "featureID": "353F4E08-C315-4198-8BF0-EE02B764A70B",
+                "vertexIndex": 16,
+                "epsilon": 0.0001286451006308198,
+                "side": "belowMinimum",
+                "sourceEncoding": "capturedRoomFloat32",
+                "meshLocalPoint": [
+                  -1.7720868587493896,
+                  -1.2074999809265137,
+                  -0.1599999964237213
+                ],
+                "vertexCount": 88,
+                "sourceDimensions": [
+                  3.5441737174987793,
+                  2.4149999618530273,
+                  0
+                ],
+                "exportedWorldMaximum": [
+                  2.3231372833251953,
+                  0.9490149617195129,
+                  16.861770629882812
+                ],
+                "exportedSourceLocalMaximum": [
+                  1.9320867471523684,
+                  1.2074999809265137,
+                  9.419786763942284e-07
+                ],
+                "upper": 0,
+                "sourceTransform": [
+                  -0.9900766611099243,
+                  0,
+                  -0.14052821695804596,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0.14052821695804596,
+                  0,
+                  -0.9900766611099243,
+                  0,
+                  0.5686354637145996,
+                  -0.25848501920700073,
+                  16.454330444335938,
+                  1
+                ],
+                "sourceLocalMinimum": [
+                  -1.7720868587493896,
+                  -1.2074999809265137,
+                  0
+                ],
+                "exportedWorldMinimum": [
+                  -1.3667633533477783,
+                  -1.4659850597381592,
+                  16.182819366455078
+                ],
+                "parentGlobalTransform": [
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "residual": 0.15999971859605822,
+                "exportedSourceLocalMinimum": [
+                  -1.7720867270435008,
+                  -1.2075000405311584,
+                  -0.1600023115492597
+                ],
+                "lower": 0,
+                "sourceLocalMaximum": [
+                  1.7720868587493896,
+                  1.2074999809265137,
+                  0
+                ],
+                "nodeIndex": 4,
+                "sourceWorldMinimum": [
+                  -1.1858663765927702,
+                  -1.4659850001335144,
+                  16.2053022377811
+                ],
+                "meshLocalTransform": [
+                  -0.9900766611099243,
+                  0,
+                  -0.14052821695804596,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0.14052821695804596,
+                  0,
+                  -0.9900766611099243,
+                  0,
+                  0.5686354637145996,
+                  -0.25848501920700073,
+                  16.454330444335938,
+                  1
+                ],
+                "sourceWorldMaximum": [
+                  2.3231373040219694,
+                  0.9490149617195129,
+                  16.703358650890774
+                ]
+              },
+              "metadataByteCount": 608,
+              "meshCount": 11,
+              "metadataEntryCount": 11,
+              "unmatchedMeshCount": 0
+            }
+          ],
+          "schema": "blind.saved-room-route-mesh-metadata-inventory.v1"
+        }
+      },
+      {
+        "attachmentName": "SavedRoomCollisionBackendMatrix-v1.json",
+        "testIdentifier": "SavedRoomRouteCollisionOracleTests/testBackendDiagnosticMatrixRecordsEveryControl()",
+        "status": "collected",
+        "testResult": "Passed",
+        "bytes": 14550,
+        "sha256": "86419e0783f75edce22cb9cbfa358066c8a4a0a690bb793a7078d6d4411f697d",
+        "report": {
+          "cells": [
+            {
+              "backendReady": false,
+              "configurationID": "restricted-no-renderer",
+              "failedControls": [
+                "thinWallForward",
+                "thinWallReverse",
+                "wallInitialOverlap",
+                "wallTerminalOverlap",
+                "containedSolid",
+                "overheadTallForward",
+                "overheadTallReverse",
+                "floor"
+              ],
+              "gravity": [
+                0,
+                0,
+                0
+              ],
+              "physicsSpeed": 1,
+              "probeCategoryMask": 2,
+              "queries": [
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallForward",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallReverse",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "wallInitialOverlap",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "wallTerminalOverlap",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "containedSolid",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "overheadTallForward",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "overheadTallReverse",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "overheadShort",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "clear",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "floor",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                }
+              ],
+              "queryCollisionMask": 1,
+              "rendererMode": "none",
+              "sourceCategoryMask": 1,
+              "sourceCollisionMask": "probe-only",
+              "timeStepSeconds": 0.016666666666666666
+            },
+            {
+              "backendReady": true,
+              "configurationID": "default-no-renderer",
+              "failedControls": [],
+              "gravity": [
+                0,
+                0,
+                0
+              ],
+              "physicsSpeed": 1,
+              "probeCategoryMask": 2,
+              "queries": [
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallForward",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallReverse",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "name": "wallInitialOverlap",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "wallTerminalOverlap",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000001"
+                    ]
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [
+                      "00000000-0000-0000-0000-000000000002"
+                    ],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "containedSolid",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [
+                      "00000000-0000-0000-0000-000000000002"
+                    ],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "overheadTallForward",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000003"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "overheadTallReverse",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000003"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "overheadShort",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "clear",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000004"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "floor",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000004"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                }
+              ],
+              "queryCollisionMask": 1,
+              "rendererMode": "none",
+              "sourceCategoryMask": 1,
+              "sourceCollisionMask": "platform-default-all",
+              "timeStepSeconds": 0.016666666666666666
+            },
+            {
+              "backendReady": false,
+              "configurationID": "restricted-offscreen-renderer",
+              "failedControls": [
+                "thinWallForward",
+                "thinWallReverse",
+                "wallInitialOverlap",
+                "wallTerminalOverlap",
+                "containedSolid",
+                "overheadTallForward",
+                "overheadTallReverse",
+                "floor"
+              ],
+              "gravity": [
+                0,
+                0,
+                0
+              ],
+              "physicsSpeed": 1,
+              "probeCategoryMask": 2,
+              "queries": [
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallForward",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallReverse",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "wallInitialOverlap",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "wallTerminalOverlap",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "containedSolid",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "overheadTallForward",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "overheadTallReverse",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "overheadShort",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "clear",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "floor",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                }
+              ],
+              "queryCollisionMask": 1,
+              "rendererMode": "retained-offscreen-update",
+              "sourceCategoryMask": 1,
+              "sourceCollisionMask": "probe-only",
+              "timeStepSeconds": 0.016666666666666666
+            },
+            {
+              "backendReady": true,
+              "configurationID": "default-offscreen-renderer",
+              "failedControls": [],
+              "gravity": [
+                0,
+                0,
+                0
+              ],
+              "physicsSpeed": 1,
+              "probeCategoryMask": 2,
+              "queries": [
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallForward",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallReverse",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "name": "wallInitialOverlap",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "wallTerminalOverlap",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000001"
+                    ]
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [
+                      "00000000-0000-0000-0000-000000000002"
+                    ],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "containedSolid",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [
+                      "00000000-0000-0000-0000-000000000002"
+                    ],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "overheadTallForward",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000003"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "overheadTallReverse",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000003"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "overheadShort",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "clear",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000004"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "floor",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [
+                      "00000000-0000-0000-0000-000000000004"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                }
+              ],
+              "queryCollisionMask": 1,
+              "rendererMode": "retained-offscreen-update",
+              "sourceCategoryMask": 1,
+              "sourceCollisionMask": "platform-default-all",
+              "timeStepSeconds": 0.016666666666666666
+            }
+          ],
+          "evidenceKind": "synthetic-collision-backend-matrix",
+          "fullFootprintSupportVerified": false,
+          "physicalAuthority": false,
+          "schemaVersion": 1
+        }
+      },
+      {
+        "attachmentName": "SavedRoomCollisionMixedScene-v1.json",
+        "testIdentifier": "SavedRoomRouteCollisionOracleTests/testMixedSceneCombinedAndSeparatedQueriesRecordEveryPhase()",
+        "status": "collected",
+        "testResult": "Passed",
+        "bytes": 10665,
+        "sha256": "bcb22fcc3662ff31b389a7e352928eb4b9036a5e3e5a37d96fc11ebb7cad5d53",
+        "report": {
+          "cells": [
+            {
+              "backendReady": true,
+              "configurationID": "wall-only-combined",
+              "failedControls": [],
+              "floorCategoryMask": 1,
+              "gravity": [
+                0,
+                0,
+                0
+              ],
+              "layout": "wall-only",
+              "obstacleCategoryMask": 1,
+              "physicsSpeed": 1,
+              "probeCategoryMask": 2,
+              "queries": [
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallForward",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallReverse",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "name": "wallInitialOverlap",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "wallTerminalOverlap",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "clear",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "floor",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                }
+              ],
+              "queryCollisionMasks": [
+                1
+              ],
+              "queryMode": "combined",
+              "rendererMode": "retained-offscreen-update",
+              "timeStepSeconds": 0.016666666666666666
+            },
+            {
+              "backendReady": false,
+              "configurationID": "wall-and-floor-combined",
+              "failedControls": [
+                "thinWallForward",
+                "thinWallReverse"
+              ],
+              "floorCategoryMask": 1,
+              "gravity": [
+                0,
+                0,
+                0
+              ],
+              "layout": "wall-and-floor",
+              "obstacleCategoryMask": 1,
+              "physicsSpeed": 1,
+              "probeCategoryMask": 2,
+              "queries": [
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallForward",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallReverse",
+                  "passed": false,
+                  "swept": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "name": "wallInitialOverlap",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "wallTerminalOverlap",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "clear",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "floor",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                }
+              ],
+              "queryCollisionMasks": [
+                1
+              ],
+              "queryMode": "combined",
+              "rendererMode": "retained-offscreen-update",
+              "timeStepSeconds": 0.016666666666666666
+            },
+            {
+              "backendReady": true,
+              "configurationID": "wall-only-separated",
+              "failedControls": [],
+              "floorCategoryMask": 4,
+              "gravity": [
+                0,
+                0,
+                0
+              ],
+              "layout": "wall-only",
+              "obstacleCategoryMask": 1,
+              "physicsSpeed": 1,
+              "probeCategoryMask": 2,
+              "queries": [
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallForward",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallReverse",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "name": "wallInitialOverlap",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "wallTerminalOverlap",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "clear",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "floor",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                }
+              ],
+              "queryCollisionMasks": [
+                1,
+                4
+              ],
+              "queryMode": "separated",
+              "rendererMode": "retained-offscreen-update",
+              "timeStepSeconds": 0.016666666666666666
+            },
+            {
+              "backendReady": true,
+              "configurationID": "wall-and-floor-separated",
+              "failedControls": [],
+              "floorCategoryMask": 4,
+              "gravity": [
+                0,
+                0,
+                0
+              ],
+              "layout": "wall-and-floor",
+              "obstacleCategoryMask": 1,
+              "physicsSpeed": 1,
+              "probeCategoryMask": 2,
+              "queries": [
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallForward",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "thinWallReverse",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "name": "wallInitialOverlap",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "wallTerminalOverlap",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000001"
+                    ]
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "clear",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                },
+                {
+                  "errorCode": "none",
+                  "initial": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "name": "floor",
+                  "passed": true,
+                  "swept": {
+                    "floorSurfaceIDs": [],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  },
+                  "terminal": {
+                    "floorSurfaceIDs": [
+                      "10000000-0000-0000-0000-000000000002"
+                    ],
+                    "furnitureBoundIDs": [],
+                    "obstacleSurfaceIDs": []
+                  }
+                }
+              ],
+              "queryCollisionMasks": [
+                1,
+                4
+              ],
+              "queryMode": "separated",
+              "rendererMode": "retained-offscreen-update",
+              "timeStepSeconds": 0.016666666666666666
+            }
+          ],
+          "evidenceKind": "synthetic-collision-mixed-scene",
+          "fullFootprintSupportVerified": false,
+          "physicalAuthority": false,
+          "schemaVersion": 1
+        }
+      }
+    ],
+    "sourceSHA256": {
+      "ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/PROTOCOL.json": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123",
+      "ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/PROFILE_28CM_ADDENDUM.json": "c52792a1213a1b3969e97a6201d43bac2426a444f3f39e8b906a5feb0e0f701d",
+      "ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/JOURNEY_ADDENDUM.json": "8e060627d0f570820fd00a427e22f6672eb50048611dfc9682986cac5c30cc9a",
+      "ios/BlindAssistTests/Fixtures/RoomPlanApple/Hallway2.capturedRoom.json": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "ios/BlindAssistTests/Fixtures/RoomPlanApple/Bedroom3.capturedRoom.json": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift": "30385ac82baf712393cc479e802db2c49b0ddf0d798c173a36f024b801f403b0",
+      "ios/BlindAssistTests/SavedRoomRouteJourneyAppleTests.swift": "94e8e2ea83e212d3557b1f974d935404b0a79fa6e6f7d62d7a1dc16ad85e8b73",
+      "ios/BlindAssistTests/SavedRoomRouteMeshAppleFixtureTests.swift": "c689d522d07dbcbbb55f9a13a5f994ebd2c6dc3b46f2e02a7c481e22c4e0083e",
+      "ios/BlindAssistTests/SavedRoomRouteCollisionOracleTests.swift": "139de1ae5309296c6efa96225040b816b08b40f75e1f0c5c7c118194bc3a2256",
+      "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift": "30941a88fda667560962fc1baca7f980ba534f613d093b79662b3951e0da5fd9",
+      "ios/BlindAssist/SavedRoomRouteMeshAdapter.swift": "00607603fa3725182a1bfa809eeb880b9930b6654fd29ca92c96f59951789983",
+      "BlindCore/Sources/BlindCore/SpatialFacts.swift": "c99d1ffa433ca6b6688c09c7e995667b04a44b80fb8ed62a6b5f94d7e25e96c3",
+      "BlindCore/Sources/BlindCore/GuidanceCadence.swift": "b9c93fdda0216862ad06f1c0a46755894e07fc2ddaea4b1976edca68965baf2f"
+    },
+    "rawAttachmentBytes": 58523
+  },
+  "source_sha256": {
+    "ios/BlindAssistTests/CommunityTests.swift": "d75f04b38ce3760a74f26e863b07656f8008133a064e81daf06fb57d28a4a83d",
+    "ios/BlindAssist/SpatialMapIO.swift": "f044ff2aa869cf0ea3ab8a2ff8d4c6ba7fc7fcd9915fe1fed59109219a3c548c"
+  }
+}
