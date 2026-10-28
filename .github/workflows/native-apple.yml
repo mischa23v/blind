@@ -122,6 +122,18 @@ jobs:
             ${{ runner.temp }}/blind-main-audit-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/*.json
           if-no-files-found: error
           retention-days: 3
+      - name: Extract bounded synthetic Practice runtime evidence
+        if: always() && steps.preflight.outcome == 'success'
+        timeout-minutes: 2
+        run: python3 tools/ci/export-practice-runtime-evidence.py "$RUNNER_TEMP/blind-native-ci/simulator-id" "$RUNNER_TEMP/blind-native-ci/ui.log" "$RUNNER_TEMP/blind-practice-runtime-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+      - name: Preserve bounded synthetic Practice runtime evidence
+        if: always() && steps.preflight.outcome == 'success'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: practice-runtime-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/blind-practice-runtime-${{ github.run_id }}-${{ github.run_attempt }}/practice-runtime-evidence.json
+          if-no-files-found: error
+          retention-days: 3
       - name: Summarize native evidence and preserve source
         if: always() && steps.preflight.outcome == 'success'
         timeout-minutes: 3

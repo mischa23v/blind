@@ -50,6 +50,7 @@ import simd
         return (mesh, try JSONDecoder().decode(RawRoom.self, from: data))
     }
     func testPublicRawExportAndExactDegenerateReceiptsRemainAuditable() async throws {
+        var packedFixtures: [PackedRoutingFixture] = []
         for fixture in Fixture.allCases {
             let (mesh, _) = try await snapshot(fixture)
             XCTAssertEqual(mesh.rawExportTriangles.count / 3, fixture == .hallway ? 334 : 236)
@@ -87,7 +88,60 @@ import simd
                 }
             }
             XCTAssertFalse(mesh.physicalAuthority)
+            // This method obtains bytes only through the two-case Fixture enum
+            // and its hard SHA admission above. No private-room capture API.
+            guard !mesh.vertices.isEmpty, mesh.vertices.count % 3 == 0, mesh.vertices.count / 3 <= 2_048,
+                  !mesh.triangles.isEmpty, mesh.triangles.count % 3 == 0, mesh.triangles.count / 3 <= 1_024,
+                  mesh.floorSupport.count == mesh.triangles.count / 3,
+                  mesh.triangleFeatureIDs.count == mesh.floorSupport.count,
+                  mesh.vertices.allSatisfy({ $0.isFinite && Float($0).isFinite }),
+                  mesh.triangles.allSatisfy({ $0 >= 0 && Int($0) < mesh.vertices.count / 3 }) else {
+                XCTFail("Public packed-routing diagnostic exceeds its fixed bounds")
+                return
+            }
+            let boxes = mesh.features.filter { $0.kind == .furniture }.map {
+                PackedRoutingBox(featureID: $0.id, dimensions: $0.dimensions, transform: $0.transform)
+            }
+            guard boxes.count <= 64, boxes.allSatisfy({
+                $0.dimensions.count == 3 && $0.dimensions.allSatisfy { $0.isFinite && $0 > 0 && $0 <= 100 } &&
+                $0.transform.count == 16 && $0.transform.allSatisfy(\.isFinite)
+            }) else { XCTFail("Public furniture-box budget/shape invalid"); return }
+            packedFixtures.append(.init(fixtureID: fixture.rawValue, sourceSHA256: fixture.digest,
+                worldPositionBits: mesh.vertices.map { Float($0).bitPattern },
+                triangleIndices: mesh.triangles, floorSupport: mesh.floorSupport,
+                triangleFeatureIDs: mesh.triangleFeatureIDs, furnitureBoxes: boxes))
         }
+        let packed = try JSONEncoder().encode(PackedRoutingReport(fixtures: packedFixtures))
+        guard packedFixtures.count == 2, packed.count <= 131_072 else {
+            XCTFail("Public packed-routing report exceeds its fixed byte/count budget")
+            return
+        }
+        let attachment = XCTAttachment(data: packed, uniformTypeIdentifier: "public.json")
+        attachment.name = "APPLE_ROOM_PACKED_ROUTING_GEOMETRY.json"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+    private struct PackedRoutingBox: Encodable {
+        let featureID: UUID
+        let dimensions, transform: [Double]
+    }
+    private struct PackedRoutingFixture: Encodable {
+        let fixtureID, sourceSHA256: String
+        let worldPositionBits: [UInt32]
+        let triangleIndices: [Int32]
+        let floorSupport: [Bool]
+        let triangleFeatureIDs: [UUID]
+        let furnitureBoxes: [PackedRoutingBox]
+    }
+    private struct PackedRoutingReport: Encodable {
+        let schema = "blind.public-apple-packed-routing-geometry.v1"
+        let representation = "final-adapter-routing-input"
+        let coordinateEncoding = "float32-bit-patterns"
+        let frame = "original-saved-world-y-up-metres"
+        let complete = true
+        let physicalAuthority = false
+        let fullFootprintSupportVerified = false
+        let fixtures: [PackedRoutingFixture]
     }
     private func vertex(_ mesh: SavedRoomRouteMeshSnapshot, _ index: Int32) -> SIMD3<Double> {
         let i = Int(index) * 3

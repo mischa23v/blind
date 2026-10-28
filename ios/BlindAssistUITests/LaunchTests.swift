@@ -18,6 +18,14 @@ final class LaunchTests: XCTestCase {
         continueAfterFailure = false
         app = XCUIApplication(); app.launchArguments = ["--ui-testing", "-AppleLanguages", "(en)", "-AppleLocale", "en_US",
             "-background-conversation", "NO", "-camera-awareness", "NO"]
+        // A closed test identity, not a global simulator logging mode.
+        if name == "-[BlindAssistUITests.LaunchTests testPracticeIsAnnouncedAndCanStop]" {
+            let runID = UUID().uuidString
+            app.launchArguments.append("--practice-runtime-diagnostic")
+            app.launchEnvironment["BLIND_PRACTICE_TRACE_TEST"] = "LaunchTests/testPracticeIsAnnouncedAndCanStop"
+            app.launchEnvironment["BLIND_PRACTICE_TRACE_RUN"] = runID
+            print("PRACTICE_RUNTIME_RUN test=LaunchTests/testPracticeIsAnnouncedAndCanStop run=\(runID)")
+        }
         app.launch()
     }
     private func openTab(_ name: String) {
@@ -144,6 +152,10 @@ final class LaunchTests: XCTestCase {
         reveal(ask); ask.tap()
         XCTAssertTrue(app.buttons["voice-question"].waitForExistence(timeout: 5))
         reveal(app.buttons["local-answer"])
+        XCTAssertFalse(app.buttons["local-answer"].isEnabled, "Readable unavailable action must not start the camera")
+        let unavailableReason = app.staticTexts["local-answer-unavailable-reason"]
+        reveal(unavailableReason)
+        XCTAssertEqual(unavailableReason.label, "Camera monitoring is not running. Open Camera and safety to start it.")
         // The production privacy build contains no photo-upload control. Developer builds
         // may expose it, but offline mode must still disable it.
         if app.buttons["cloud-answer"].exists {
@@ -361,7 +373,13 @@ final class LaunchTests: XCTestCase {
 
     @MainActor
     private func auditFullDestination(_ phase: String, title: String, requiredControl: String) throws {
-        defer { recordFullAuditEvidence(phase, "after") }
+        let previousContinueAfterFailure = continueAfterFailure
+        defer {
+            // Keep the original audit failure, but allow its after-state evidence
+            // to be retained before restoring this test's fail-fast policy.
+            recordFullAuditEvidence(phase, "after")
+            continueAfterFailure = previousContinueAfterFailure
+        }
         // Required destination UI, not a sleep, scroll, altered state or audit exemption.
         let titleReady = app.navigationBars[title].waitForExistence(timeout: 10)
         let controlReady = app.buttons[requiredControl].waitForExistence(timeout: 10)
@@ -369,6 +387,9 @@ final class LaunchTests: XCTestCase {
         recordFullAuditEvidence(phase, "before")
         XCTAssertTrue(titleReady, "Expected destination navigation title")
         XCTAssertTrue(controlReady, "Expected destination control")
+        // XCTest records audit failures normally; only abort-on-first-failure is
+        // delayed inside this scope so the diagnostic defer can execute.
+        continueAfterFailure = true
         var observedFindings = 0
         try app.performAccessibilityAudit { issue in
             print("ACCESSIBILITY_AUDIT=type:\(issue.auditType),phase:\(phase),compact:\(issue.compactDescription.prefix(2048)),detailed:\(issue.detailedDescription.prefix(4096)),element:\(String((issue.element?.debugDescription ?? "unidentified").prefix(1200)).replacingOccurrences(of: "\n", with: " | "))")

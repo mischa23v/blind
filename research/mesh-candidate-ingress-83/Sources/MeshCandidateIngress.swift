@@ -43,6 +43,25 @@ public final class MeshCandidateIngress83 {
         runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1,
                                                supportPolicy: supportPolicy)
     }
+#if DEBUG
+    /// Explicit synthetic-test timing only; the ordinary initializer and release
+    /// API remain unchanged. No geometry or session/anchor identity is recorded.
+    public init(maxAnchors: Int = 128, maxCopies: Int = 1,
+                supportPolicy: MeshSupportPolicy = .legacySlope,
+                captureSyntheticTestTiming: Bool,
+                decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh83.decode", qos: .utility)) throws {
+        guard (1...1024).contains(maxAnchors), (1...2).contains(maxCopies) else { throw Failure.unavailable }
+        self.maxAnchors = maxAnchors; self.maxCopies = maxCopies; worker = decodeQueue
+        self.supportPolicy = supportPolicy
+        let initialEpoch = UUID(); epoch = initialEpoch
+        runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1,
+            supportPolicy: supportPolicy, captureSyntheticTestTiming: captureSyntheticTestTiming)
+    }
+    public var diagnosticReceiptID: UUID? { runtime.diagnosticReceiptID }
+    public var diagnosticStageReceipts: [RoomMeshCandidateRuntime.DiagnosticStageReceipt] {
+        runtime.diagnosticStageReceipts
+    }
+#endif
     private func locked<T>(_ body: () throws -> T) rethrows -> T {
         lock.lock(); defer { lock.unlock() }; return try body()
     }

@@ -25,6 +25,23 @@ private struct CameraControlButtonStyle: ButtonStyle {
     }
 }
 
+/// Keep the unavailable camera action readable instead of relying on dim text.
+/// The actual Button remains disabled; its nearby explanation carries the reason.
+private struct AskCameraAnswerButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+    let tint: Color
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .fixedSize(horizontal: false, vertical: true)
+            .multilineTextAlignment(.leading)
+            .frame(minWidth: 44, minHeight: 44, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .foregroundStyle(isEnabled ? tint : Color.primary)
+            .contentShape(Rectangle())
+            .opacity(isEnabled && configuration.isPressed ? 0.9 : 1)
+    }
+}
+
 /// The child's first tab contains one settled reply and the shared tab navigation only.
 /// Display changes do not request focus or post a second speech announcement.
 private struct CompanionHomeView: View {
@@ -419,6 +436,19 @@ struct AssistantToolsView: View {
         .navigationTitle(t("Camera and safety", "الكاميرا والسلامة"))
     }
 
+    private var localAnswerDisabledReason: String {
+        if model.simulation {
+            return t("Practice uses generated readings, not a live camera view.", "التدريب يستخدم قراءات مولّدة، وليس صورة مباشرة من الكاميرا.")
+        }
+        if !model.running {
+            return t("Camera monitoring is not running. Open Camera and safety to start it.", "مراقبة الكاميرا لا تعمل. افتح الكاميرا والسلامة لبدئها.")
+        }
+        if model.busy {
+            return t("Another request is in progress. Wait for it to finish.", "هناك طلب آخر قيد التنفيذ. انتظر حتى ينتهي.")
+        }
+        return ""
+    }
+
     /// Ask about the camera view, hear the answer, and set an ongoing goal.
     private var assistant: some View {
         Form {
@@ -462,7 +492,16 @@ struct AssistantToolsView: View {
                 }
                 .font(.headline)
                 .disabled(model.busy || model.simulation || !model.running)
+                .buttonStyle(AskCameraAnswerButtonStyle(tint: accent))
                 .accessibilityIdentifier("local-answer")
+                .accessibilityHint(localAnswerDisabledReason)
+                if !localAnswerDisabledReason.isEmpty {
+                    Text(localAnswerDisabledReason)
+                        .font(.body)
+                        .foregroundStyle(.primary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityIdentifier("local-answer-unavailable-reason")
+                }
                 Button(model.voice.listening ? t("Finish question", "إنهاء السؤال") : t("Talk", "تحدث")) {
                     if model.voice.listening { model.voice.finish() } else { model.startVoiceQuestion() }
                 }
@@ -501,7 +540,8 @@ struct AssistantToolsView: View {
             } header: { Text(t("Reading tools", "أدوات القراءة")) }
             Section {
                 if !model.assistantDialogue.goal.isEmpty { Text(t("Current goal: ", "الهدف الحالي: ") + model.assistantDialogue.goal) }
-                TextField(t("New goal, for example: the bathroom", "هدف جديد، مثلاً: الحمام"), text: $model.objectiveDraft, axis: .vertical)
+                TextField(t("New goal, for example: the bathroom", "هدف جديد، مثلاً: الحمام"), text: $model.objectiveDraft,
+                    prompt: Text(t("New goal, for example: the bathroom", "هدف جديد، مثلاً: الحمام")).foregroundColor(.primary), axis: .vertical)
                     .accessibilityLabel(t("New goal", "هدف جديد"))
                 Button(t("Set goal", "حدد الهدف")) { model.setAssistantObjective() }
                 Button(t("Find my question on the saved map", "ابحث عن سؤالي في الخريطة المحفوظة")) { model.findMapDestination() }

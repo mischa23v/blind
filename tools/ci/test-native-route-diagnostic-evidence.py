@@ -145,7 +145,25 @@ def collision_matrix():
     return result
 
 
+def packed_routing():
+    d={'schema':'blind.public-apple-packed-routing-geometry.v1','representation':'final-adapter-routing-input','coordinateEncoding':'float32-bit-patterns','frame':'original-saved-world-y-up-metres','complete':True,'physicalAuthority':False,'fullFootprintSupportVerified':False,'fixtures':[]}
+    for room,digest in m.FIXTURES.items():
+        source=DOCS['RoomPlanApple/'+room+'.capturedRoom.json']
+        d['fixtures'].append({'fixtureID':room,'sourceSHA256':digest,'worldPositionBits':[0]*9,'triangleIndices':[0,1,2],'floorSupport':[True],'triangleFeatureIDs':[source['floors'][0]['identifier']],
+          'furnitureBoxes':[{'featureID':o['identifier'],'dimensions':[m.float32(x) for x in o['dimensions']],'transform':[m.float32(x) for x in o['transform']]} for o in source['objects']]})
+    return d
+
+class PackedRoutingTests(unittest.TestCase):
+    def test_explicit_public_schema(self):self.assertEqual(m.validate_packed_routing(packed_routing(),UUIDS,DOCS),packed_routing())
+    def test_bad_fields_rejected(self):
+        changes=[lambda d:d.update(physicalAuthority=True),lambda d:d.update(complete=False),lambda d:d.update(extra='private'),lambda d:d['fixtures'].append(d['fixtures'][0]),
+          lambda d:d['fixtures'][0]['worldPositionBits'].__setitem__(0,0x7f800000),lambda d:d['fixtures'][0]['worldPositionBits'].__setitem__(0,True),lambda d:d['fixtures'][0]['triangleIndices'].__setitem__(0,3),lambda d:d['fixtures'][0].update(floorSupport=[]),lambda d:d['fixtures'][0].update(floorSupport=[False]),lambda d:d['fixtures'][0].update(triangleFeatureIDs=['private']),lambda d:d['fixtures'][1].update(fixtureID='Hallway2'),lambda d:d['fixtures'][1].update(furnitureBoxes=[])]
+        for change in changes:
+            d=packed_routing();change(d)
+            with self.subTest(change=change),self.assertRaises(m.EvidenceError):m.validate_packed_routing(d,UUIDS,DOCS)
+
 def diagnostic_report(label):
+    if label == 'packed-routing': return packed_routing()
     if label == 'metadata-inventory': return metadata_inventory()
     if label == 'collision-backend': return collision_matrix()
     return mixed_collision_matrix()
@@ -285,7 +303,7 @@ class GeometryProbeValidationTests(unittest.TestCase):
             value=report(label) if (key,name,label) in m.SPECS else (geometry_inventory() if label=='metadata-inventory' else diagnostic_report(label))
             export_fixture(destination,name,value)
         with patch.object(m,'export_test',side_effect=exporter):result=m.collect(ROOT,Path('unused'),cases,u.query)
-        self.assertEqual(result['status'],'complete');self.assertEqual(len(result['reports']),6)
+        self.assertEqual(result['status'],'complete');self.assertEqual(len(result['reports']),7)
         record=result['reports'][3];self.assertEqual(record['testResult'],'Failed')
         self.assertEqual(record['report'],geometry_inventory());self.assertLess(record['bytes'],m.DIAGNOSTIC_LIMIT)
 
@@ -880,9 +898,9 @@ class MixedCollisionEvidenceTests(unittest.TestCase):
         self.assertEqual(m.validate_mixed_collision_matrix(data),data)
     def test_optional_sixth_report_keeps_failed_status_and_existing_reports(self):
         result=self.collect()
-        self.assertEqual(result['status'],'complete');self.assertEqual(len(result['reports']),6)
+        self.assertEqual(result['status'],'complete');self.assertEqual(len(result['reports']),7)
         self.assertTrue(all(row['testResult']=='Failed' and row['status']=='collected' for row in result['reports']))
-        self.assertEqual(result['reports'][-1]['report'],mixed_collision_matrix())
+        self.assertEqual(result['reports'][-2]['report'],mixed_collision_matrix())
         self.assertEqual(result['aggregateByteLimit'],m.LIMIT)
         self.assertLessEqual(result['rawAttachmentBytes'],m.LIMIT)
     def test_mixed_report_keeps_existing_per_report_and_shared_byte_caps(self):
@@ -901,6 +919,49 @@ class MixedCollisionEvidenceTests(unittest.TestCase):
         self.assertEqual(result['reports'][-1]['status'],'aggregate_over_budget')
         self.assertLessEqual(result['rawAttachmentBytes'],m.LIMIT)
 
+
+class FloorInventoryTests(unittest.TestCase):
+    def sample(self):
+        d=metadata_inventory()
+        for f in d['fixtures']:
+            room=DOCS['RoomPlanApple/'+f['fixtureID']+'.capturedRoom.json']
+            empty={'sourceCount':0,'elementCount':0,'sources':[],'elements':[]}
+            f.update(rawExportTriangleCount=100,routingTriangleCount=120,ignoredDegenerateFaces=[],floorTessellation=[{
+                'schema':'blind.public-or-synthetic-floor-tessellation-probe.v1','physicalAuthority':False,
+                'sourcePolygon':[[m.float32(x) for x in p] for p in room['floors'][0]['polygonCorners']],
+                'direct':copy.deepcopy(empty),'afterModelIOConversion':copy.deepcopy(empty),'roundTrip':copy.deepcopy(empty),
+                'modelIOVertexCount':0,'modelIOSubmeshCount':0}])
+        return d
+    def validate(self,d):return m.validate_metadata_inventory(d,UUIDS,DOCS)
+    def test_new_public_floor_receipts(self):self.validate(self.sample())
+    def test_historical_receipts_unchanged(self):self.validate(metadata_inventory())
+    def test_known_floor_failure_codes(self):
+        for code in ("floorTessellationFailed","floorTessellationIndexOutOfRange","floorTessellationWindingMismatch","floorTessellationDegenerateTriangle"):
+            d=self.sample();d["fixtures"][0]["floorTessellation"][0]["adapterFailure"]=code;self.validate(d)
+    def test_mutations(self):
+        for mutation in [
+            lambda f:f.update(unreviewed='text'),
+            lambda f:f.update(rawExportTriangleCount=True),
+            lambda f:f.update(rawExportTriangleCount=100001),
+            lambda f:f.pop('routingTriangleCount'),
+            lambda f:f['floorTessellation'][0].update(physicalAuthority=True),
+            lambda f:f['floorTessellation'][0]['sourcePolygon'][0].__setitem__(0,999),
+            lambda f:f['floorTessellation'].append(copy.deepcopy(f['floorTessellation'][0])),
+            lambda f:f['floorTessellation'][0]['direct'].update(sourceCount=1),
+            lambda f:f['floorTessellation'][0].update(adapterFailure='private path'),
+            lambda f:f.update(ignoredDegenerateFaces=[{'rawTriangleIndex':100,'featureID':sorted(UUIDS[f['fixtureID']])[0],'indices':[0,0,1],'localVertices':[[0,0,0]]*3,'worldVertices':[[0,0,0]]*3}]),
+        ]:
+            with self.subTest(mutation=mutation):
+                d=self.sample();mutation(d['fixtures'][0])
+                with self.assertRaises(m.EvidenceError):self.validate(d)
+    def test_buffers_and_exact_duplicate_receipts(self):
+        d=self.sample();f=d['fixtures'][0];g=f['floorTessellation'][0]['direct']
+        g.update(sourceCount=1,sources=[{'vectorCount':0,'componentsPerVector':3,'bytesPerComponent':4,'dataOffset':0,'dataStride':12,'dataByteCount':0,'usesFloatComponents':True,'dataBase64':''}])
+        f['ignoredDegenerateFaces']=[{'rawTriangleIndex':0,'featureID':sorted(UUIDS[f['fixtureID']])[0],'indices':[0,0,1],'localVertices':[[0,0,0],[0,0,0],[1,0,0]],'worldVertices':[[0,0,0],[0,0,0],[1,0,0]]}]
+        self.validate(d)
+        for mutation in [lambda f:f['floorTessellation'][0]['direct']['sources'][0].update(dataBase64='!'),lambda f:f['ignoredDegenerateFaces'][0].update(featureID='private'),lambda f:f['ignoredDegenerateFaces'][0]['worldVertices'].__setitem__(1,[0,1,0]),lambda f:f['ignoredDegenerateFaces'][0].update(worldVertices=[[0,0,0],[1,0,0],[1,0,0]])]:
+            bad=copy.deepcopy(d);mutation(bad['fixtures'][0])
+            with self.assertRaises(m.EvidenceError):self.validate(bad)
 
 if __name__=='__main__':unittest.main()
 

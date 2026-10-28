@@ -11,6 +11,8 @@ is opened; unrelated attachment names/contents never enter evidence.
 No source/outcome changes, retries, screenshots, logs, private history, audio or
 model output. Unknown schema is an explicit evidence error, NOT a test verdict.
 """
+import base64
+import binascii
 import hashlib
 import json
 import math
@@ -46,7 +48,9 @@ DIAGNOSTIC_SPECS = (
     ('SavedRoomRouteCollisionOracleTests/testBackendDiagnosticMatrixRecordsEveryControl',
      'SavedRoomCollisionBackendMatrix-v1.json', 'collision-backend'),
     ('SavedRoomRouteCollisionOracleTests/testMixedSceneCombinedAndSeparatedQueriesRecordEveryPhase',
-     'SavedRoomCollisionMixedScene-v1.json', 'collision-mixed-scene'))
+     'SavedRoomCollisionMixedScene-v1.json', 'collision-mixed-scene'),
+    ('SavedRoomRouteMeshAppleFixtureTests/testPublicRawExportAndExactDegenerateReceiptsRemainAuditable',
+     'APPLE_ROOM_PACKED_ROUTING_GEOMETRY.json', 'packed-routing'))
 DIAGNOSTIC_LIMIT = 131072
 CONTROL_NAMES = ('thinWallForward', 'thinWallReverse', 'wallInitialOverlap', 'wallTerminalOverlap',
                  'containedSolid', 'overheadTallForward', 'overheadTallReverse', 'overheadShort', 'clear', 'floor')
@@ -207,7 +211,8 @@ FAILURES = {'wrongExecutionContext','sourceMismatch','invalidSource','unsupporte
             'invalidQuery','invalidFurnitureBox','invalidInput','unavailable','stale','nativeFailure'}
 METADATA_FAILURES = {'wrongExecutionContext','sourceMismatch','invalidSource','unsupportedGeometry','exportFailed',
                      'invalidMesh','sourceGeometryMismatch','budgetExceeded','metadataReadFailed','metadataDecodeFailed',
-                     'metadataEmpty','metadataInvalidEntries','meshNodeMissingMetadata','metadataUnknownFeature','unclassifiedError'}
+                     'metadataEmpty','metadataInvalidEntries','meshNodeMissingMetadata','metadataUnknownFeature','unclassifiedError','floorTessellationFailed','floorTessellationIndexOutOfRange',
+                     'floorTessellationWindingMismatch','floorTessellationDegenerateTriangle'}
 FAILURES.update(METADATA_FAILURES - {'unclassifiedError'})
 FAILURES.update('backendUnavailable("' + message + '")' for message in (
     'unassociated physics contact', 'bidirectional thin-plane continuous sweep',
@@ -454,7 +459,7 @@ def validate_metadata_inventory(report, uuids, docs=None):
                 'metadataEntriesTruncated','metadataEntries','nodeCount','nodesTruncated','nodes',
                 'meshCount','unmatchedMeshCount','unknownFeatureMeshCount'}
     for fixture in fixtures:
-        keys(fixture, required | {'adapterFailure','inventoryFailure','geometryProbe','geometryProbeFailure','meshParity'}, required)
+        keys(fixture, required | {'adapterFailure','inventoryFailure','geometryProbe','geometryProbeFailure','meshParity','floorTessellation','rawExportTriangleCount','routingTriangleCount','ignoredDegenerateFaces'}, required)
         room = fixture['fixtureID']
         require(isinstance(room, str) and room in FIXTURES and room not in seen, 'unknown_or_duplicate_fixture')
         seen.add(room)
@@ -540,8 +545,111 @@ def validate_metadata_inventory(report, uuids, docs=None):
             validate_geometry_probe(fixture, docs)
         if 'meshParity' in fixture:
             validate_mesh_parity(fixture)
+        validate_floor_inventory(fixture, uuids, docs)
     return report
 
+
+
+def validate_floor_inventory(fixture, uuids, docs):
+    """Public-fixture diagnostics only; never a support or collision verdict."""
+    extra = {'floorTessellation','rawExportTriangleCount','routingTriangleCount','ignoredDegenerateFaces'}
+    if not extra & set(fixture):
+        return  # Historical v1 receipts remain valid without new diagnostics.
+    require({'floorTessellation','ignoredDegenerateFaces'} <= set(fixture), 'incomplete_floor_inventory')
+    require(isinstance(docs, dict), 'floor_inventory_source_unavailable')
+    room = docs.get('RoomPlanApple/' + fixture['fixtureID'] + '.capturedRoom.json')
+    require(isinstance(room, dict), 'floor_inventory_source_unavailable')
+    counts = {'rawExportTriangleCount','routingTriangleCount'} & set(fixture)
+    require(not counts or len(counts) == 2, 'incomplete_floor_counts')
+    for name in counts:
+        require(bounded_integer(fixture[name],100000), 'floor_triangle_count_over_budget')
+    captures = fixture['floorTessellation']
+    require(isinstance(captures,list) and len(captures) <= len(room['floors']) <= 64, 'floor_capture_count')
+    polygons = [[[float32(x) for x in p] for p in f['polygonCorners']] for f in room['floors']]
+    seen = set()
+    def geometry(g):
+        keys(g, {'sourceCount','elementCount','sources','elements'}, {'sourceCount','elementCount','sources','elements'})
+        for count, rows in [('sourceCount','sources'),('elementCount','elements')]:
+            require(bounded_integer(g[count],4096) and isinstance(g[rows],list) and len(g[rows]) == min(g[count],8), 'floor_geometry_count')
+            for row in g[rows]:
+                names = ({'vectorCount','componentsPerVector','bytesPerComponent','dataOffset','dataStride','dataByteCount','usesFloatComponents'} if rows == 'sources' else
+                         {'primitiveType','primitiveCount','bytesPerIndex','dataByteCount'})
+                keys(row,names|{'dataBase64'},names)
+                for name in names - {'usesFloatComponents'}:
+                    require(bounded_integer(row[name],32*1024*1024), 'floor_buffer_integer')
+                if rows == 'sources':
+                    require(type(row['usesFloatComponents']) is bool and row['vectorCount'] <= 200000 and row['componentsPerVector'] <= 16 and row['bytesPerComponent'] <= 8, 'floor_source_format')
+                else:
+                    require(row['primitiveType'] <= 4 and row['primitiveCount'] <= 100000 and row['bytesPerIndex'] <= 8, 'floor_element_format')
+                require(('dataBase64' in row) == (row['dataByteCount'] <= 4096), 'floor_buffer_capture_mismatch')
+                if 'dataBase64' in row:
+                    value = row['dataBase64']
+                    require(isinstance(value,str) and len(value) <= 5464, 'floor_buffer_over_budget')
+                    try: raw = base64.b64decode(value,validate=True)
+                    except (ValueError, binascii.Error): require(False, 'invalid_floor_buffer_base64')
+                    require(len(raw) == row['dataByteCount'] and base64.b64encode(raw).decode() == value, 'floor_buffer_capture_mismatch')
+    for capture in captures:
+        fields = {'schema','physicalAuthority','sourcePolygon','direct','afterModelIOConversion','roundTrip','modelIOVertexCount','modelIOSubmeshCount'}
+        keys(capture,fields|{'adapterFailure'},fields)
+        require(capture['schema'] == 'blind.public-or-synthetic-floor-tessellation-probe.v1' and capture['physicalAuthority'] is False, 'unsupported_floor_probe_schema')
+        polygon = capture['sourcePolygon']
+        require(isinstance(polygon,list) and 3 <= len(polygon) <= 1024 and all(vector(p) for p in polygon), 'floor_polygon_invalid')
+        match = next((i for i,p in enumerate(polygons) if p == polygon),None)
+        require(match is not None and match not in seen, 'floor_polygon_source_mismatch'); seen.add(match)
+        for name in ('modelIOVertexCount','modelIOSubmeshCount'):
+            require(bounded_integer(capture[name],200000), 'floor_probe_count')
+        if 'adapterFailure' in capture:
+            require(capture['adapterFailure'] in METADATA_FAILURES, 'unapproved_error_text')
+        for name in ('direct','afterModelIOConversion','roundTrip'): geometry(capture[name])
+    faces = fixture['ignoredDegenerateFaces']
+    require(isinstance(faces,list) and len(faces) <= 4096 and (not faces or len(counts) == 2), 'degenerate_receipt_count')
+    seen_faces=set()
+    for face in faces:
+        fields={'rawTriangleIndex','featureID','indices','localVertices','worldVertices'}; keys(face,fields,fields)
+        index=face['rawTriangleIndex']
+        require(bounded_integer(index,fixture['rawExportTriangleCount']-1) and index not in seen_faces, 'degenerate_receipt_index');seen_faces.add(index)
+        require(isinstance(face['featureID'],str) and face['featureID'] in uuids[fixture['fixtureID']], 'unknown_fixture_identifier')
+        require(isinstance(face['indices'],list) and len(face['indices']) == 3 and all(bounded_integer(i,199999) for i in face['indices']), 'degenerate_receipt_indices')
+        for name in ('localVertices','worldVertices'):
+            points=face[name]
+            require(isinstance(points,list) and len(points)==3 and all(vector(p) for p in points), 'degenerate_receipt_vertices')
+            require(len({tuple(p) for p in points}) < 3, 'degenerate_receipt_not_exact_duplicate')
+        pairs=((0,1),(1,2),(0,2))
+        require([face['localVertices'][a] == face['localVertices'][b] for a,b in pairs] ==
+                [face['worldVertices'][a] == face['worldVertices'][b] for a,b in pairs], 'degenerate_duplicate_pair_mismatch')
+
+
+def validate_packed_routing(report, uuids, docs):
+    fields={'schema','representation','coordinateEncoding','frame','complete','physicalAuthority','fullFootprintSupportVerified','fixtures'}
+    keys(report,fields,fields)
+    require(report['schema']=='blind.public-apple-packed-routing-geometry.v1' and report['representation']=='final-adapter-routing-input' and
+            report['coordinateEncoding']=='float32-bit-patterns' and report['frame']=='original-saved-world-y-up-metres' and
+            report['complete'] is True and report['physicalAuthority'] is False and report['fullFootprintSupportVerified'] is False, 'packed_routing_schema')
+    require(isinstance(docs,dict), 'packed_source_unavailable')
+    fixtures=report['fixtures'];require(isinstance(fixtures,list) and len(fixtures)==2,'packed_fixture_count');seen=set()
+    for f in fixtures:
+        fields={'fixtureID','sourceSHA256','worldPositionBits','triangleIndices','floorSupport','triangleFeatureIDs','furnitureBoxes'}
+        keys(f,fields,fields);room=f['fixtureID']
+        require(isinstance(room,str) and room in FIXTURES and room not in seen and f['sourceSHA256']==FIXTURES[room],'packed_fixture_identity');seen.add(room)
+        words=f['worldPositionBits'];require(isinstance(words,list) and 3<=len(words)<=6144 and len(words)%3==0 and all(type(w)is int and 0<=w<=0xffffffff for w in words),'packed_position_words')
+        values=[struct.unpack('<f',struct.pack('<I',w))[0] for w in words]
+        require(all(math.isfinite(v) and abs(v)<=10000 for v in values),'packed_position_number')
+        indices=f['triangleIndices'];require(isinstance(indices,list) and 3<=len(indices)<=3072 and len(indices)%3==0 and all(type(i)is int and 0<=i<len(words)//3 for i in indices),'packed_triangle_indices')
+        count=len(indices)//3
+        require(isinstance(f['floorSupport'],list) and len(f['floorSupport'])==count and all(type(v)is bool for v in f['floorSupport']),'packed_support_alignment')
+        require(isinstance(f['triangleFeatureIDs'],list) and len(f['triangleFeatureIDs'])==count and all(isinstance(v,str) and v in uuids[room] for v in f['triangleFeatureIDs']),'packed_feature_alignment')
+        source=docs['RoomPlanApple/'+room+'.capturedRoom.json'];floor_ids={x['identifier'] for x in source['floors']}
+        require(all(s==(i in floor_ids) for s,i in zip(f['floorSupport'],f['triangleFeatureIDs'])),'packed_support_identity')
+        boxes=f['furnitureBoxes'];require(isinstance(boxes,list) and len(boxes)<=64,'packed_box_count');objects={x['identifier']:x for x in source['objects']};box_seen=set()
+        for box in boxes:
+            keys(box,{'featureID','dimensions','transform'},{'featureID','dimensions','transform'});i=box['featureID']
+            require(isinstance(i,str) and i in objects and i not in box_seen,'packed_box_identity');box_seen.add(i)
+            dims=box['dimensions'];matrix=box['transform']
+            require(isinstance(dims,list) and len(dims)==3 and all(number(v) and 0<v<=100 for v in dims),'packed_box_dimensions')
+            require(isinstance(matrix,list) and len(matrix)==16 and all(number(v) and abs(v)<=10000 for v in matrix),'packed_box_transform')
+            require(dims==[float32(v) for v in objects[i]['dimensions']] and matrix==[float32(v) for v in objects[i]['transform']],'packed_box_source_mismatch')
+        require(box_seen==set(objects),'packed_box_inventory_incomplete')
+    return report
 
 
 def validate_mesh_parity(fixture):
@@ -871,10 +979,11 @@ def collect(repo, bundle, cases, query):
                     raw = exported_report(directory, name)
                 require(total + len(raw) <= LIMIT, 'aggregate_over_budget')
                 total += len(raw)
-                if label in ('metadata-inventory','collision-backend','collision-mixed-scene'):
+                if label in ('metadata-inventory','collision-backend','collision-mixed-scene','packed-routing'):
                     require(len(raw) <= DIAGNOSTIC_LIMIT, 'diagnostic_over_budget')
                     if label == 'metadata-inventory': report = validate_metadata_inventory(decode(raw), uuids, docs)
                     elif label == 'collision-backend': report = validate_collision_matrix(decode(raw))
+                    elif label == 'packed-routing': report = validate_packed_routing(decode(raw), uuids, docs)
                     else: report = validate_mixed_collision_matrix(decode(raw))
                 else:
                     report = validate_report(decode(raw), label, docs, uuids)

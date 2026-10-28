@@ -40,23 +40,56 @@ final class ClassificationIngressTests: XCTestCase {
                 reason: (error as? MeshSnapshot82.Failure) ?? .invalidDescriptor))
         }
     }
+    private func makeOwner(supportPolicy: MeshSupportPolicy = .legacySlope,
+                           decodeQueue: DispatchQueue) throws -> MeshCandidateIngress83 {
+#if DEBUG
+        try MeshCandidateIngress83(supportPolicy: supportPolicy,
+            captureSyntheticTestTiming: true, decodeQueue: decodeQueue)
+#else
+        try MeshCandidateIngress83(supportPolicy: supportPolicy, decodeQueue: decodeQueue)
+#endif
+    }
+    private enum TimingEvent: String { case submitted, callback, waitFinished, failureDiscardCompleted, discardCompleted }
+    private static func timingReceipt(_ owner: MeshCandidateIngress83, event: TimingEvent,
+                                      queryID: UUID, submittedAt: TimeInterval) {
+#if DEBUG
+        guard let runtimeID = owner.diagnosticReceiptID else { return }
+        let stages = owner.diagnosticStageReceipts.map { "\($0.stage.rawValue):\($0.elapsedMilliseconds)" }.joined(separator: ";")
+        let elapsed = max(0, Int((ProcessInfo.processInfo.systemUptime - submittedAt) * 1_000))
+        // Random diagnostic IDs and closed stage names only; no geometry,
+        // session/anchor identity or arbitrary error text. Stage clocks are owner-
+        // relative; elapsed_ms is query-relative. Thread flag is not an actor proof.
+        print("CLASSIFICATION_INGRESS_TIMING query=\(queryID.uuidString) runtime=\(runtimeID.uuidString) event=\(event.rawValue) elapsed_ms=\(elapsed) main_thread=\(Thread.isMainThread) stages=\(stages)")
+#endif
+    }
     private func query(_ owner: MeshCandidateIngress83, x: Float = 0) async throws
         -> Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure> {
         let done = expectation(description: "real dependency candidate callback")
         let box = Box<Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>>()
+        let queryID = UUID(), submittedAt = ProcessInfo.processInfo.systemUptime
+        Self.timingReceipt(owner, event: .submitted, queryID: queryID, submittedAt: submittedAt)
         owner.request(start: [-2+x,0,0], goal: [2+x,0,0], body: try .init(radius: 0.225, height: 1.75)) {
-            box.put($0); done.fulfill()
+            box.put($0)
+            Self.timingReceipt(owner, event: .callback, queryID: queryID, submittedAt: submittedAt)
+            done.fulfill()
         }
         await fulfillment(of: [done], timeout: 10)
+        Self.timingReceipt(owner, event: .waitFinished, queryID: queryID, submittedAt: submittedAt)
         guard let value = box.get() else {
-            owner.stopAndDiscard {} // Fence on timeout; no late result becomes a passing assertion.
+            owner.stopAndDiscard {
+                Self.timingReceipt(owner, event: .failureDiscardCompleted, queryID: queryID, submittedAt: submittedAt)
+            } // Fence on timeout; no late result becomes a passing assertion.
             throw MeshCandidateIngress83.Failure.unavailable
         }
         return value
     }
     private func discard(_ owner: MeshCandidateIngress83) async {
         let done = expectation(description: "acknowledged owned/native discard")
-        owner.stopAndDiscard { done.fulfill() }
+        let queryID = UUID(), submittedAt = ProcessInfo.processInfo.systemUptime
+        owner.stopAndDiscard {
+            Self.timingReceipt(owner, event: .discardCompleted, queryID: queryID, submittedAt: submittedAt)
+            done.fulfill()
+        }
         await fulfillment(of: [done], timeout: 10)
     }
     private func assertNoCandidate(_ result: Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>,
@@ -93,7 +126,7 @@ final class ClassificationIngressTests: XCTestCase {
     }
     func testClassifiedFloorUsesRealRuntimeAndTransformOnceWithoutPhysicalAuthority() async throws {
         let queue = DispatchQueue(label: "classification.test.floor"), id = UUID()
-        let owner = try MeshCandidateIngress83(supportPolicy: .classifiedFloorOnly, decodeQueue: queue)
+        let owner = try makeOwner(supportPolicy: .classifiedFloorOnly, decodeQueue: queue)
         defer { owner.stopAndDiscard {} }
         XCTAssertTrue(owner.ingest(anchorID: id, receiptUptime: 1) { plane($0, id, labels: [2,2], x: 10) })
         queue.sync {}
@@ -105,7 +138,7 @@ final class ClassificationIngressTests: XCTestCase {
     }
     func testDefaultLegacyPolicyKeepsExistingUnclassifiedDiagnosticBehavior() async throws {
         let queue = DispatchQueue(label: "classification.test.legacy"), id = UUID()
-        let owner = try MeshCandidateIngress83(decodeQueue: queue) // Deliberately no opt-in.
+        let owner = try makeOwner(decodeQueue: queue) // Deliberately no opt-in.
         defer { owner.stopAndDiscard {} }
         XCTAssertTrue(owner.ingest(anchorID: id, receiptUptime: 1) { plane($0, id, labels: nil) })
         queue.sync {}
@@ -119,7 +152,7 @@ final class ClassificationIngressTests: XCTestCase {
         let labels: [UInt8?] = [nil,0,1,3,4,5,6,7,8,255]
         for label in labels {
             let queue = DispatchQueue(label: "classification.test.non-floor"), id = UUID()
-            let owner = try MeshCandidateIngress83(supportPolicy: .classifiedFloorOnly, decodeQueue: queue)
+            let owner = try makeOwner(supportPolicy: .classifiedFloorOnly, decodeQueue: queue)
             defer { owner.stopAndDiscard {} }
             XCTAssertTrue(owner.ingest(anchorID: id, receiptUptime: 1) { plane($0, id, labels: label.map { [$0,$0] }) })
             queue.sync {}
@@ -129,7 +162,7 @@ final class ClassificationIngressTests: XCTestCase {
     }
     func testKnownTableGeometryRemainsObstacleAndRemovalCanRestoreFloorCandidate() async throws {
         let queue = DispatchQueue(label: "classification.test.obstacle-retention"), floor = UUID(), table = UUID()
-        let owner = try MeshCandidateIngress83(supportPolicy: .classifiedFloorOnly, decodeQueue: queue)
+        let owner = try makeOwner(supportPolicy: .classifiedFloorOnly, decodeQueue: queue)
         defer { owner.stopAndDiscard {} }
         XCTAssertTrue(owner.ingest(anchorID: floor, receiptUptime: 1) { plane($0, floor, labels: [2,2]) })
         queue.sync {}; let clearFixture = try await query(owner).get()
@@ -147,7 +180,7 @@ final class ClassificationIngressTests: XCTestCase {
     }
     func testMissingReplacementRemovesPriorFloorAndValidRevisionRecoversButGapStays() async throws {
         let queue = DispatchQueue(label: "classification.test.recovery"), id = UUID()
-        let owner = try MeshCandidateIngress83(supportPolicy: .classifiedFloorOnly, decodeQueue: queue)
+        let owner = try makeOwner(supportPolicy: .classifiedFloorOnly, decodeQueue: queue)
         defer { owner.stopAndDiscard {} }
         XCTAssertTrue(owner.ingest(anchorID: id, receiptUptime: 1) { plane($0, id, labels: [2,2]) })
         queue.sync {}; let old = try await query(owner).get()
@@ -175,7 +208,7 @@ final class ClassificationIngressTests: XCTestCase {
         let cases: [[UInt8]?] = [nil,[0,0],[255,255]]
         for labels in cases {
             let queue = DispatchQueue(label: "classification.test.unknown"), a = UUID(), b = UUID()
-            let owner = try MeshCandidateIngress83(supportPolicy: .classifiedFloorOnly, decodeQueue: queue)
+            let owner = try makeOwner(supportPolicy: .classifiedFloorOnly, decodeQueue: queue)
             defer { owner.stopAndDiscard {} }
             XCTAssertTrue(owner.ingest(anchorID: a, receiptUptime: 1) { plane($0, a, labels: [2,2]) })
             queue.sync {}
@@ -189,7 +222,7 @@ final class ClassificationIngressTests: XCTestCase {
     }
     func testMalformedDecodedLabelsReplaceFloorWhileRejectedDescriptorKeepsExplicitGap() async throws {
         let queue = DispatchQueue(label: "classification.test.malformed"), id = UUID()
-        let owner = try MeshCandidateIngress83(supportPolicy: .classifiedFloorOnly, decodeQueue: queue)
+        let owner = try makeOwner(supportPolicy: .classifiedFloorOnly, decodeQueue: queue)
         defer { owner.stopAndDiscard {} }
         XCTAssertTrue(owner.ingest(anchorID: id, receiptUptime: 1) { plane($0, id, labels: [2,2]) })
         queue.sync {}

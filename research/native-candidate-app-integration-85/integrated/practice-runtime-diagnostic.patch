@@ -1,0 +1,210 @@
+--- a/ios/BlindAssist/NavigationModel.swift
++++ b/ios/BlindAssist/NavigationModel.swift
+@@ -184,6 +184,32 @@
+     }
+ 
+     private var practiceTimer: Timer?
++    #if DEBUG
++    private var practiceRuntimeDiagnostic: PracticeRuntimeDiagnostic?
++    private var practiceDiagnosticSubscriptions = Set<AnyCancellable>()
++    private func beginPracticeRuntimeDiagnosticIfRequested() {
++        let process = ProcessInfo.processInfo
++        guard process.arguments.contains("--ui-testing"),
++              process.arguments.contains("--practice-runtime-diagnostic"),
++              process.environment["BLIND_PRACTICE_TRACE_TEST"] == PracticeRuntimeDiagnostic.testID,
++              let runID = UUID(uuidString: process.environment["BLIND_PRACTICE_TRACE_RUN"] ?? "") else { return }
++        practiceDiagnosticSubscriptions.removeAll()
++        let trace = PracticeRuntimeDiagnostic(runID: runID)
++        practiceRuntimeDiagnostic = trace
++        let publishers: [(String, ObservableObjectPublisher)] = [
++            ("model", objectWillChange), ("places", places.objectWillChange),
++            ("indoor", indoor.objectWillChange), ("outdoor", outdoor.objectWillChange),
++            ("mapping", mapping.objectWillChange), ("journeys", journeys.objectWillChange),
++            ("voice", voice.objectWillChange), ("survey", survey.objectWillChange),
++            ("visualStairs", visualStairs.objectWillChange), ("peopleTracking", peopleTracking.objectWillChange)
++        ]
++        for (source, publisher) in publishers {
++            publisher.sink { [weak trace] _ in trace?.publication(source) }.store(in: &practiceDiagnosticSubscriptions)
++        }
++        $detection.dropFirst().sink { [weak trace] _ in trace?.publication("detection") }.store(in: &practiceDiagnosticSubscriptions)
++        $calibrationProgress.dropFirst().sink { [weak trace] _ in trace?.publication("calibrationProgress") }.store(in: &practiceDiagnosticSubscriptions)
++    }
++    #endif
+     private var cameraInterrupted = false
+     private var lastCameraRestart = -Double.infinity
+     private var lastLiveActivityUpdate = -Double.infinity
+@@ -1132,6 +1158,15 @@
+         watchdog?.invalidate()
+         watchdog = Timer(timeInterval: 0.1, repeats: true) { [weak self] _ in
+             guard let self else { return }
++            #if DEBUG
++            let diagnosticTickStart = self.practiceRuntimeDiagnostic.map { _ in ProcessInfo.processInfo.systemUptime }
++            defer {
++                if let diagnosticTickStart {
++                    self.practiceRuntimeDiagnostic?.tick(start: diagnosticTickStart,
++                        finish: ProcessInfo.processInfo.systemUptime, hazard: self.detection.hazard)
++                }
++            }
++            #endif
+             // Held route output expires even if no sensor callback arrives.
+             self.indoor.revalidateSpatialOutput(now: ProcessInfo.processInfo.systemUptime)
+             self.journeys.withConnectedJourney { $0.revalidate(now: ProcessInfo.processInfo.systemUptime) }
+@@ -4840,19 +4875,64 @@
+         }
+     }
+     func startSimulation() {
+-        stopCameraMonitoring(); feedback.stop(includingAlerts: true)
++        #if DEBUG
++        beginPracticeRuntimeDiagnosticIfRequested()
++        practiceRuntimeDiagnostic?.mark(.startEntered)
++        defer { practiceRuntimeDiagnostic?.mark(.startReturned) }
++        #endif
++        stopCameraMonitoring()
++        #if DEBUG
++        practiceRuntimeDiagnostic?.mark(.cameraStopped)
++        #endif
++        feedback.stop(includingAlerts: true)
++        #if DEBUG
++        practiceRuntimeDiagnostic?.mark(.feedbackStopped)
++        #endif
+         simulation = true; running = true; detector.beginCalibration()
+         demonstrationTime = 0; demonstrationHazard = .observing; policy = AlertPolicy(); continuity = MonitoringContinuity()
+         for _ in 0..<15 { demoFrame() }
+-        startWatchdog(); message = arabic ? "المحاكاة تستخدم عمقاً مولداً. لا يوجد استشعار حقيقي." : "Simulation uses generated depth. No live sensing is active."
++        #if DEBUG
++        practiceRuntimeDiagnostic?.mark(.calibrationGenerated)
++        #endif
++        startWatchdog()
++        #if DEBUG
++        practiceRuntimeDiagnostic?.mark(.watchdogStarted)
++        #endif
++        message = arabic ? "المحاكاة تستخدم عمقاً مولداً. لا يوجد استشعار حقيقي." : "Simulation uses generated depth. No live sensing is active."
+         _ = speakMobility(arabic ? "تدريب. الحساسات الحقيقية متوقفة لمدة دقيقتين." : "Practice. Live sensors are paused for two minutes.")
++        #if DEBUG
++        practiceRuntimeDiagnostic?.mark(.speechHandedOff)
++        #endif
+         // Practice ends automatically; this does not promise calibrated live sensing.
+-        practiceTimer = Timer.scheduledTimer(withTimeInterval: 120, repeats: false) { [weak self] _ in self?.endPractice() }
++        practiceTimer = Timer.scheduledTimer(withTimeInterval: 120, repeats: false) { [weak self] _ in
++            #if DEBUG
++            self?.practiceRuntimeDiagnostic?.mark(.expiryFired)
++            #endif
++            self?.endPractice()
++        }
++        #if DEBUG
++        practiceRuntimeDiagnostic?.mark(.expiryArmed)
++        #endif
+     }
+     /// Ends practice and returns to live camera and sensors.
+     func endPractice() {
+         guard simulation else { return }
+-        stopCameraMonitoring(); feedback.stop(includingAlerts: true)
++        #if DEBUG
++        practiceRuntimeDiagnostic?.mark(.endEntered)
++        defer {
++            practiceRuntimeDiagnostic?.mark(.endReturned)
++            practiceDiagnosticSubscriptions.removeAll()
++            practiceRuntimeDiagnostic = nil
++        }
++        #endif
++        stopCameraMonitoring()
++        #if DEBUG
++        practiceRuntimeDiagnostic?.mark(.endCameraStopped)
++        #endif
++        feedback.stop(includingAlerts: true)
++        #if DEBUG
++        practiceRuntimeDiagnostic?.mark(.endFeedbackStopped)
++        #endif
+         if cameraAwareness && assistantSession.foregroundActive && !textOnly { start() }
+         _ = speakMobility(arabic ? "انتهى التدريب. تحتاج تنبيهات الكاميرا إلى تشغيلها وإعادة المعايرة." : "Practice ended. Camera alerts require the camera to be on and the floor recalibrated.")
+     }
+@@ -7499,3 +7579,89 @@
+         if feedback.speechPriority == nil { selectedDocumentNotice(text) }
+     }
+ }
++
++#if DEBUG
++/// Synthetic UI-test metadata only. No UI signals, content, geometry or speech.
++/// Every engine tick still runs; writes are bounded and never occur on the tick's thread.
++private final class PracticeRuntimeDiagnostic {
++    static let testID = "LaunchTests/testPracticeIsAnnouncedAndCanStop"
++    enum Phase: String, Codable {
++        case startEntered, cameraStopped, feedbackStopped, calibrationGenerated
++        case watchdogStarted, speechHandedOff, expiryArmed, startReturned
++        case expiryFired, endEntered, endCameraStopped, endFeedbackStopped, endReturned
++    }
++    private struct Event: Codable { var phase: Phase; var elapsedMS: Double }
++    private struct Snapshot: Codable {
++        var schema = 1
++        var scope = "synthetic-practice-runtime"
++        var testID = PracticeRuntimeDiagnostic.testID
++        var runID: String
++        var events: [Event] = []
++        var ticks = 0
++        var totalTickMS = 0.0
++        var maxTickMS = 0.0
++        var maxTickGapMS = 0.0
++        var lastTickMS = 0.0
++        var hazard = "stopped"
++        var hazardTransitions = 0
++        var publications: [String: Int] = [:]
++        var snapshots = 0
++        var truncated = false
++    }
++    private let lock = NSLock()
++    private let queue = DispatchQueue(label: "blind.synthetic-practice-diagnostic", qos: .utility)
++    private let started = ProcessInfo.processInfo.systemUptime
++    private let destination: URL
++    private var state: Snapshot
++    private var previousTick: Double?
++    private var nextTickSnapshot = 0.0
++    init(runID: UUID) {
++        state = Snapshot(runID: runID.uuidString)
++        destination = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
++            .appendingPathComponent("BlindPracticeRuntime", isDirectory: true)
++            .appendingPathComponent(runID.uuidString + ".json")
++    }
++    private func persistLocked() {
++        guard state.snapshots < 32 else { state.truncated = true; return }
++        state.snapshots += 1
++        if state.snapshots == 32 { state.truncated = true }
++        guard let data = try? JSONEncoder().encode(state), data.count <= 16 * 1024 else { return }
++        let target = destination
++        queue.async {
++            do {
++                try FileManager.default.createDirectory(at: target.deletingLastPathComponent(), withIntermediateDirectories: true)
++                try data.write(to: target, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
++            } catch {
++                // Diagnostic failure must not alter engine operation or test verdicts.
++            }
++        }
++    }
++    func mark(_ phase: Phase) {
++        lock.lock(); defer { lock.unlock() }
++        if state.events.count < 16 {
++            state.events.append(Event(phase: phase, elapsedMS: max(0, (ProcessInfo.processInfo.systemUptime - started) * 1000)))
++        } else { state.truncated = true }
++        persistLocked()
++    }
++    func publication(_ source: String) {
++        lock.lock(); defer { lock.unlock() }
++        // Source names are hard-coded at subscription sites, never app content.
++        state.publications[source, default: 0] = min(1_000_000, state.publications[source, default: 0] + 1)
++    }
++    func tick(start: Double, finish: Double, hazard: Hazard) {
++        lock.lock(); defer { lock.unlock() }
++        guard start.isFinite, finish.isFinite, finish >= start else { return }
++        state.ticks = min(1_000_000, state.ticks + 1)
++        let duration = (finish - start) * 1000
++        state.totalTickMS += duration; state.maxTickMS = max(state.maxTickMS, duration)
++        if let previousTick { state.maxTickGapMS = max(state.maxTickGapMS, (start - previousTick) * 1000) }
++        previousTick = start; state.lastTickMS = max(0, (finish - started) * 1000)
++        if state.hazard != hazard.rawValue { state.hazardTransitions += 1; state.hazard = hazard.rawValue }
++        if finish >= nextTickSnapshot {
++            nextTickSnapshot = finish + 10
++            persistLocked()
++        }
++    }
++}
++#endif
++
