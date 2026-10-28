@@ -1,3 +1,29 @@
+## Connected navigation handoff priority — 2026-10-28 06:34 UTC
+
+The user requires a connected usable build before walking-test handoff: place/building map → floor/room → established pose/direction → code planner → current support/hazard validation → code-owned output. Do not substitute an LLM path or ask the user to discover missing basic integration during a walk. **N00 connected recorded replay is the next integration slice**, using existing owners and a nonphysical replay sink; supplied replay poses/support are not live calibration. See the [dependency-linked reconciliation](research/tracker-reconciliation-20261028/README.md).
+
+The final100-schedule package is published at4eb51bd. Historical separately assisted one-/three-lap records do exist; the final100 matrix is not a lap test and neither establishes live phone-only navigation. The practice-presentation fix is published atfee8c7d; existing native run40644081432 is in progress, not a passing UI result. New photo-retention and localization-test checkpoints are locally reviewed but await publication/native validation. New workflow activation and raw archive approval remain separate. Jev/similar verifier implementation stays deferred; the user requested deeper decision-model research only, preserved in the [review](research/JEV_IMAGE_VERIFICATION_REVIEW.md).
+
+---
+
+## Status update — 2026-10-28 06:24 UTC
+
+The complete frozen schedule accounting is published at `4eb51bd`: [final audited report](research/journey-benchmark-readiness-84/final-20261028-0325/README.md). **100 attempts accounted, 94 completed movement episodes: 90 arrivals, three support stops, one predicted-underbody rejection, five interrupted unknowns and one CPU-limited partial.** None of the six incomplete attempts was rerun or counted as success. Completed distance551.244139m;14/20 directed pairs arrived under all five conditions. Supplied poses, reference support/collision veto, zero-margin body, assisted source exclusions and unmeasured ground contacts prevent treating this as phone-only accuracy, safe guidance or a table-lap test.
+
+The reviewed simulation-presentation/cancellation candidate below remains native-verification pending. The last tested003 revision retained two UI failures. Jev and similar visual-verifier work are **deferred** by the user, research retained only. Navigation, localization, image-retention and native accessibility work continue in separated workstreams; no full tracker,400-journey or device acceptance claim. New workflow activations and source84 raw archive remain separately unapproved; ordinary source/evidence publication to the named review branch was explicitly approved.
+
+---
+
+## Status update — 2026-10-27 23:37 UTC
+
+Native `003788a` is terminal: both builds passed; hosted units149 passed/6 skipped/0 failed; UI13 passed/3 skipped/2 failed. The practice split still failed before End with no sub-90-second witness; Dynamic Type remains open. [Verified evidence](research/native-candidate-app-integration-85/integrated/evidence/run40598054378/).
+
+A separately reviewed candidate now avoids identical **simulation-only** detection/progress publications while retaining every detector, continuity, hazard, expiry and feedback tick; live publication is unchanged. A practice-only status is adjacent to End, retaining the top banner, explicit tap, camera-off postcondition, both90s guards and120s expiry. Portable contracts and mutations pass; native compile/UI and two authored publisher-semantics fixtures remain pending. No root-cause or actual-model notification-count proof is claimed. [Candidate, exact reversible source layers and limits](research/practice-cancellation-test-review-20261027/production-diagnosis/FINDINGS.md).
+
+The [first50 frozen outcomes](research/journey-benchmark-readiness-84/checkpoint-20261027-2335/README.md) independently recount43 simulated arrivals,3 support stops and4 interrupted/unknowns. Remaining schedules continue without retuning or rerunning unknowns. Supplied-pose/reference-assisted/zero-margin and unmeasured-ground-contact limitations remain unchanged. The full tracker, live localization/sensing, physical acceptance and400 journeys remain unfinished; pending new-workflow/archive approvals remain separate.
+
+---
+
 ## Status update — 2026-10-27 23:19 UTC
 
 Navigation remains the engineering priority. Earlier dated sections below retain historical results, not current completion claims.

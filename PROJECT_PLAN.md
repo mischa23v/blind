@@ -1,3 +1,11 @@
+## Connected navigation handoff priority — 2026-10-28 06:34 UTC
+
+The user requires a connected usable build before walking-test handoff: place/building map → floor/room → established pose/direction → code planner → current support/hazard validation → code-owned output. Do not substitute an LLM path or ask the user to discover missing basic integration during a walk. **N00 connected recorded replay is the next integration slice**, using existing owners and a nonphysical replay sink; supplied replay poses/support are not live calibration. See the [dependency-linked reconciliation](research/tracker-reconciliation-20261028/README.md).
+
+The final100-schedule package is published at4eb51bd. Historical separately assisted one-/three-lap records do exist; the final100 matrix is not a lap test and neither establishes live phone-only navigation. The practice-presentation fix is published atfee8c7d; existing native run40644081432 is in progress, not a passing UI result. New photo-retention and localization-test checkpoints are locally reviewed but await publication/native validation. New workflow activation and raw archive approval remain separate. Jev/similar verifier implementation stays deferred; the user requested deeper decision-model research only, preserved in the [review](research/JEV_IMAGE_VERIFICATION_REVIEW.md).
+
+---
+
 ## Current navigation evidence priority — 2026-10-27 23:19 UTC
 
 Navigation is the current engineering priority within the broader local companion product. The reference-assisted frozen room matrix, native regression repairs and offline deviation evaluator are development evidence, not physical readiness. Current status and evidence are in [TASKS.md](TASKS.md) and [PROGRESS.md](PROGRESS.md). Next acceptance must establish independently estimated map-relative position, camera versus body orientation, calibrated phone mounting, path deviation, current support/clearance and recovery. A supplied-pose route or a passing arithmetic fixture cannot substitute for these. Pending workflow/upload approvals and the default-off/no-copy bridge remain unchanged; no release or master merge is authorized by this checkpoint.
