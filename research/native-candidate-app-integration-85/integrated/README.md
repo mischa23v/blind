@@ -1,3 +1,9 @@
+# Apple saved-room route diagnostic membership — 2026-10-28
+
+The exact `apple-room-route-membership.patch` adds one app adapter (65 app sources), six hosted test/helper Swift files, the hosted-only RoomRouteDiagnostic protocol folder, and explicit app/hosted product linkage to the existing local `research/room-mesh-package-75/BlindRoomMesh` package. Existing Ingress83, Core, Memory and GRDB identities remain; no upstream version, build setting or workflow changes. The checker recovers prior PBX `3153028060dc7265eec090d3fbc50cd58a4d53b8f2b61fd169af92aa82471591` before all previous project layers. The two-layer CI helper proof remains unchanged. This membership is not a native compile, successful path or physical safety result.
+
+---
+
 # Recorder failure metadata helper proof — 2026-10-28
 
 `recorder-timing-ci-helper.patch` binds only the authorized three-line, failure-only `RECORDED_ROUTE_WAIT_FAILURE` extraction (at most 8 lines, 1500 characters per line). No build modes, workflow, recorder source or physical authority change is made by this proof layer. The checker first reverses this helper to exact `163fa512486bbbce522aa735cda0d36ca2711955edef9b118d8b598e900061e6`, then reverses the unchanged scene-timing layer to its historical helper. All app/project history remains intact. Source checks do not establish native execution or resolve the failing recorder timing assertion.

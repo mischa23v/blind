@@ -10,6 +10,12 @@ typedef struct BNConfig {
 } BNConfig;
 void* bn_build(const float* vertices, int vertex_count, const int* triangles,
                int triangle_count, const BNConfig* config);
+/* Explicit source classification per triangle: 0=obstacle, 1=original floor.
+   All triangles obstruct; only original-floor triangles may become walkable.
+   Null/malformed classification is rejected, never slope-only fallback. */
+void* bn_build_classified(const float* vertices, int vertex_count, const int* triangles,
+                         int triangle_count, const BNConfig* config,
+                         const unsigned char* triangle_support);
 void* bn_build_excluded(const float* vertices,int vertex_count,const int* triangles,int triangle_count,const BNConfig* config,const float* polygon,int count,float observed_min_y,float observed_max_y);
 int bn_excluded_span_count(void* handle);
 void bn_destroy(void* handle);

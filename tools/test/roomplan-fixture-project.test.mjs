@@ -12,7 +12,7 @@ function verify(project) {
  assert.equal(graph.get(folder),'isa = PBXFileReference; lastKnownFileType = folder; path = "BlindAssistTests/Fixtures/RoomPlanApple"; sourceTree = SOURCE_ROOT;');
  assert.equal(graph.get(build),`isa = PBXBuildFile; fileRef = ${folder};`);
  assert.ok(graph.get(phase).startsWith('isa = PBXResourcesBuildPhase;'));
- assert.deepEqual(list(graph.get(phase),'files'),[build]);
+ assert.deepEqual(list(graph.get(phase),'files'),[build,id('unit-route-fixtures-build')]);
  assert.ok(list(graph.get(id('unit-target')),'buildPhases').includes(phase));
  assert.ok(list(graph.get(id('group')),'children').includes(folder));
  const testBuild=id('unit-spatial-build:SavedRoomDiagnosticGeometryAppleFixtureTests.swift');
@@ -32,7 +32,7 @@ test('RoomPlan folder and test belong only to hosted test resource/source phases
 test('fixture resource checks reject missing membership and app embedding',()=>{
  const source=generateProject(['BlindAssistApp.swift']);verify(source);
  const phase=id('unit-resources'),build=id('unit-roomplan-fixtures-build');
- for(const changed of [source.replace(`${phase},); buildRules`,'); buildRules'),source.replace(`files = (${build},);`,'files = ();'),source.replace(`buildPhases = (${id('sources')},`,`buildPhases = (${phase},${id('sources')},`),source.replace(`files = (); runOnlyForDeploymentPostprocessing = 0;`,`files = (${build},); runOnlyForDeploymentPostprocessing = 0;`)]) {
+ for(const changed of [source.replace(`${phase},); buildRules`,'); buildRules'),source.replace(`files = (${build},${id('unit-route-fixtures-build')},);`,'files = ();'),source.replace(`buildPhases = (${id('sources')},`,`buildPhases = (${phase},${id('sources')},`),source.replace(`files = (); runOnlyForDeploymentPostprocessing = 0;`,`files = (${build},); runOnlyForDeploymentPostprocessing = 0;`)]) {
   assert.notEqual(changed,source);assert.throws(()=>verify(changed));
  }
 });

@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "baseProtocolSHA256": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123",
+  "preregisteredBeforeFirstNativeExecution": true,
+  "physicalAuthority": false,
+  "profiles": [
+    {"id": "declared-width28-assumed-depth20-height120", "width": 0.28, "depth": 0.20, "height": 1.20, "margin": 0.15}
+  ],
+  "assumptions": "Width28cm is the user's requested diagnostic width; depth20cm and height120cm are explicit test inputs only, NOT measured/inferred child dimensions. No child's body, equipment, camera mount, uncertainty or reaction behavior is calibrated.",
+  "shape": "Single circumscribed upright cylinder radius=hypot(width,depth)/2. This is conservative relative to a 28x20cm rectangle; no intermediate square, second circumcircle or heading-dependent squeezing. Source geometry is not expanded.",
+  "margin": "The original 15cm baseline margin remains unchanged. Effective radius adds this once; effective height adds this once following existing BodyEnvelope policy. SceneKit collisionMargin remains zero. No zero/5cm-margin alternatives are substituted.",
+  "schedule": "Run the same six original pairs once with this separately labelled profile. Preserve the original twelve nominal/wide baseline outcomes and their frozen protocol byte-for-byte; total scheduled outcomes across the two native tests is eighteen.",
+  "reporting": "Contained/rejected starts, no-path, partial paths, collision attempts and stops are not successful arrival. These are historical Apple-model candidate routes, not current safety or child guidance."
+}

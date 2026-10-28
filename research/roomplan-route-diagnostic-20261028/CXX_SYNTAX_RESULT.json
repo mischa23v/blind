@@ -1,0 +1,25 @@
+{
+  "command": [
+    "g++",
+    "-std=c++11",
+    "-fno-rtti",
+    "-fno-exceptions",
+    "-ffp-contract=off",
+    "-fsyntax-only",
+    "-I",
+    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Include",
+    "-I",
+    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include",
+    "-I",
+    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include",
+    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/clearance_adapter.cpp"
+  ],
+  "exitCode": 0,
+  "wallSeconds": 0.3685076130059315,
+  "adapterSHA256": "f20ab288f7e6372b1d615c98d0cf2952e6bfed2956aeea5ae616785b68418d0d",
+  "stdout": "",
+  "stderr": "",
+  "linkedLibraryBuilt": false,
+  "nativeRouteExecuted": false,
+  "AppleExecuted": false
+}

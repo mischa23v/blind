@@ -39,9 +39,11 @@ struct BuildData {
 };
 extern "C" const char* bn_last_error() { return error_message; }
 extern "C" void bn_destroy(void* handle) { delete static_cast<BNHandle*>(handle); }
-extern "C" void* bn_build_excluded(const float* v, int nv, const int* t, int nt, const BNConfig* c, const float* exclusion, int exclusionCount, float observedMinY, float observedMaxY) {
+static void* build_impl(const float* v, int nv, const int* t, int nt, const BNConfig* c, const float* exclusion, int exclusionCount, float observedMinY, float observedMaxY, const unsigned char* triangleSupport, bool classifiedFloorOnly) {
     error_message[0] = 0;
     if (!v || !t || !c || nv < 3 || nv > 250000 || nt < 1 || nt > 500000) { fail("invalid/count-limited mesh input"); return 0; }
+    if (classifiedFloorOnly && !triangleSupport) { fail("missing triangle support"); return 0; }
+    if (classifiedFloorOnly) for (int i=0; i<nt; ++i) if (triangleSupport[i]>1) { fail("invalid triangle support"); return 0; }
     if (!std::isfinite(c->radius) || c->radius < .1f || c->radius > 2.f ||
         !std::isfinite(c->height) || c->height < .5f || c->height > 3.f ||
         !std::isfinite(c->cell_size) || c->cell_size < .025f || c->cell_size > .5f ||
@@ -102,8 +104,29 @@ extern "C" void* bn_build_excluded(const float* v, int nv, const int* t, int nt,
     if (!b.heightfield || !b.compact || !b.contours || !b.mesh || !b.detail) { fail("build allocation"); return 0; }
     if (!rcCreateHeightfield(&context, *b.heightfield, config.width, config.height, config.bmin, config.bmax, config.cs, config.ch)) { fail("heightfield"); return 0; }
     std::vector<unsigned char> areas(nt, RC_NULL_AREA);
-    rcMarkWalkableTriangles(&context, config.walkableSlopeAngle, v, nv, t, nt, areas.data());
+    if (classifiedFloorOnly) {
+        // Recast addSpan merges overlapping area IDs with max(). Its maximum
+        // height is updated BEFORE that comparison, so ordinary floor=63 and
+        // obstacle=0 can promote a floor-touching obstacle top. Use temporary
+        // priorities floor=1 / obstacle=2, then map only retained floor to 63.
+        // These are raster provenance tags, not new navigation/search logic.
+        for (int i=0; i<nt; ++i) if (triangleSupport[i]==1) areas[i]=1;
+        // Upstream only clears steep/downward floor triangles. It never promotes
+        // furniture, walls or unclassified geometry to support in this mode.
+        rcClearUnwalkableTriangles(&context, config.walkableSlopeAngle, v, nv, t, nt, areas.data());
+        for (int i=0; i<nt; ++i) if (triangleSupport[i]==0) areas[i]=2;
+    } else {
+        // Preserve the original unclassified diagnostic build byte-for-byte path.
+        rcMarkWalkableTriangles(&context, config.walkableSlopeAngle, v, nv, t, nt, areas.data());
+    }
     if (!rcRasterizeTriangles(&context, v, nv, t, areas.data(), nt, *b.heightfield, config.walkableClimb)) { fail("rasterization"); return 0; }
+    if (classifiedFloorOnly) {
+        for (int i=0; i<config.width*config.height; ++i) {
+            for (rcSpan* span=b.heightfield->spans[i]; span; span=span->next) {
+                span->area=span->area==1 ? RC_WALKABLE_AREA : RC_NULL_AREA;
+            }
+        }
+    }
     // No low-hanging-obstacle promotion: an observed obstacle is not made floor.
     rcFilterLedgeSpans(&context, config.walkableHeight, config.walkableClimb, *b.heightfield);
     rcFilterWalkableLowHeightSpans(&context, config.walkableHeight, *b.heightfield);
@@ -189,6 +212,12 @@ extern "C" int bn_velocity(const float* pos,float radius,float vmax,const float*
     return query.sampleVelocityAdaptive(pos,radius,vmax,vel,desired,output,&p);
 }
 
+extern "C" void* bn_build_excluded(const float* v, int nv, const int* t, int nt, const BNConfig* c, const float* exclusion, int exclusionCount, float observedMinY, float observedMaxY) {
+    return build_impl(v,nv,t,nt,c,exclusion,exclusionCount,observedMinY,observedMaxY,0,false);
+}
+extern "C" void* bn_build_classified(const float* v, int nv, const int* t, int nt, const BNConfig* c, const unsigned char* triangleSupport) {
+    return build_impl(v,nv,t,nt,c,0,0,0.f,0.f,triangleSupport,true);
+}
 extern "C" void* bn_build(const float* v, int nv, const int* t, int nt, const BNConfig* c) {
     return bn_build_excluded(v,nv,t,nt,c,0,0,0.f,0.f);
 }

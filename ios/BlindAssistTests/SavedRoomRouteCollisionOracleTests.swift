@@ -1,0 +1,93 @@
+import XCTest
+import simd
+
+/// Authored controls for the actual Apple collision backend, not real-room trials.
+/// Real RoomPlan route fixtures consume the same helper separately.
+@MainActor
+final class SavedRoomRouteCollisionOracleTests: XCTestCase {
+    private let wall = UUID(uuidString: "10000000-0000-0000-0000-000000000001")!
+    private let floor = UUID(uuidString: "10000000-0000-0000-0000-000000000002")!
+
+    private func wallAndFloor() throws -> SavedRoomRouteCollisionOracle {
+        try SavedRoomRouteCollisionOracle(
+            vertices: [0,0,-2, 0,3,-2, 0,3,2, 0,0,2,
+                       -3,0,-3, 3,0,-3, 3,0,3, -3,0,3],
+            triangles: [0,1,2, 0,2,3, 4,5,6, 4,6,7],
+            floorSupport: [false,false,true,true], triangleFeatureIDs: [wall,wall,floor,floor])
+    }
+
+    func testThinWallSweepBothDirectionsAndNegativeControl() throws {
+        let oracle = try wallAndFloor() // mandatory actual-backend calibration
+        for (a,b) in [(SIMD3<Float>(-1,0,0),SIMD3<Float>(1,0,0)),
+                      (SIMD3<Float>(1,0,0),SIMD3<Float>(-1,0,0))] {
+            let hit = try oracle.sweep(from: a, to: b, radius: 0.2, height: 1.6)
+            XCTAssertTrue(hit.initial.obstacleSurfaceIDs.isEmpty)
+            XCTAssertTrue(hit.terminal.obstacleSurfaceIDs.isEmpty)
+            XCTAssertEqual(hit.swept.obstacleSurfaceIDs, [wall])
+            XCTAssertFalse(hit.physicalAuthority)
+            XCTAssertFalse(hit.fullFootprintSupportVerified)
+        }
+        let clear = try oracle.sweep(from: SIMD3(-1,0,3), to: SIMD3(1,0,3), radius: 0.2, height: 1.6)
+        XCTAssertFalse(clear.all.hasObstacleContact)
+    }
+
+    func testInitialOverlapIsNotLostByZeroLengthSweep() throws {
+        let oracle = try wallAndFloor()
+        let result = try oracle.sweep(from: SIMD3(0,0,0), to: SIMD3(0,0,0), radius: 0.2, height: 1.6)
+        XCTAssertEqual(result.initial.obstacleSurfaceIDs, [wall])
+        XCTAssertEqual(result.terminal.obstacleSurfaceIDs, [wall])
+    }
+
+    func testOriginalFurnitureSolidDetectsContainedStartSeparatelyFromShell() throws {
+        let furniture = UUID(uuidString: "10000000-0000-0000-0000-000000000003")!
+        // A 2x3x2 original model bound. Its separate shell is one outside face;
+        // the contained cylinder cannot touch that face at x=-1.
+        let oracle = try SavedRoomRouteCollisionOracle(vertices: [-1,0,-1,-1,3,-1,-1,3,1,-1,0,1],
+            triangles: [0,1,2,0,2,3], floorSupport: [false,false], triangleFeatureIDs: [furniture,furniture],
+            furnitureBoxes: [.init(featureID: furniture, dimensions: [2,3,2],
+                transform: [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,1.5,0,1])])
+        let result = try oracle.sweep(from: SIMD3(0,0.5,0), to: SIMD3(0,0.5,0), radius: 0.2, height: 1)
+        XCTAssertEqual(result.initial.furnitureBoundIDs, [furniture])
+        XCTAssertTrue(result.initial.obstacleSurfaceIDs.isEmpty)
+        XCTAssertTrue(result.all.hasObstacleContact)
+    }
+
+    func testHeadHeightAndSeparateFloorContact() throws {
+        let top = UUID(uuidString: "10000000-0000-0000-0000-000000000004")!
+        let oracle = try SavedRoomRouteCollisionOracle(vertices: [-1,1.4,-1,1,1.4,-1,1,1.4,1,-1,1.4,1,
+            -3,0,-3,3,0,-3,3,0,3,-3,0,3], triangles: [0,1,2,0,2,3,4,5,6,4,6,7],
+            floorSupport: [false,false,true,true], triangleFeatureIDs: [top,top,floor,floor])
+        let short = try oracle.sweep(from: SIMD3(-2,0,0), to: SIMD3(2,0,0), radius: 0.2, height: 1)
+        let tall = try oracle.sweep(from: SIMD3(-2,0,0), to: SIMD3(2,0,0), radius: 0.2, height: 1.6)
+        XCTAssertFalse(short.all.hasObstacleContact)
+        XCTAssertEqual(tall.swept.obstacleSurfaceIDs, [top])
+        let floorContact = try oracle.sweep(from: SIMD3(2,-0.1,0), to: SIMD3(2,-0.1,0), radius: 0.2, height: 1.6)
+        XCTAssertEqual(floorContact.initial.floorSurfaceIDs, [floor])
+        XCTAssertFalse(floorContact.all.hasObstacleContact)
+        XCTAssertFalse(floorContact.fullFootprintSupportVerified)
+    }
+
+    func testExplicitBodyVersusMarginBoundsAreNotInflatedAgain() throws {
+        let oracle = try wallAndFloor()
+        let from = SIMD3<Float>(0.3,0,-1), to = SIMD3<Float>(0.3,0,1)
+        let body = try oracle.sweep(from: from, to: to, radius: 0.2, height: 1.6)
+        let margin = try oracle.sweep(from: from, to: to, radius: 0.35, height: 1.75)
+        XCTAssertFalse(body.all.hasObstacleContact)
+        XCTAssertTrue(margin.all.obstacleSurfaceIDs.contains(wall))
+        // A caller must count this as one margin-violating schedule, not the number
+        // of triangle IDs or repeated start/sweep/end contact reports.
+    }
+
+    func testMalformedGeometryAndMissingFurnitureIdentityFail() throws {
+        XCTAssertThrowsError(try SavedRoomRouteCollisionOracle(vertices: [0,0,0,1,0,0,0,1,0],
+            triangles: [0,1,9], floorSupport: [false], triangleFeatureIDs: [wall]))
+        XCTAssertThrowsError(try SavedRoomRouteCollisionOracle(vertices: [0,0,0,1,0,0,0,1,0],
+            triangles: [0,1,2], floorSupport: [], triangleFeatureIDs: [wall]))
+        XCTAssertThrowsError(try SavedRoomRouteCollisionOracle(vertices: [0,0,0,1,0,0,0,1,0],
+            triangles: [0,1,2], floorSupport: [true], triangleFeatureIDs: [floor],
+            furnitureBoxes: [.init(featureID: floor, dimensions: [1,1,1],
+                transform: [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])]))
+        let oracle = try wallAndFloor()
+        XCTAssertThrowsError(try oracle.sweep(from: SIMD3(.nan,0,0), to: SIMD3(1,0,0), radius: 0.2, height: 1.6))
+    }
+}

@@ -1,26 +1,34 @@
 import Foundation
 
 public enum MeshCandidateError: Error { case invalidInput, unavailable, stale, nativeFailure }
+/// Source semantics, not live support evidence. Obstacles are still rasterized.
+public enum MeshTriangleSupport: UInt8, Codable, Sendable { case obstacle = 0, floor = 1 }
+/// Classified mode never promotes furniture tops or unclassified triangles to floor.
+/// The default preserves the existing unclassified/legacy diagnostic API.
+public enum MeshSupportPolicy: Equatable, Sendable { case legacySlope, classifiedFloorOnly }
 /// Owned packed anchor-local geometry. Transform is ARKit column-major, +Y up, metres.
 public struct MeshAnchorEvent {
  public let sessionID: String, anchorID: String
  public let generation: Int, revision: Int
  public let timestamp: Double
  public let vertices: [Double], triangles: [Int32], columnMajorTransform: [Double]
+ public let triangleSupport: [MeshTriangleSupport]?
  public let complete: Bool, removed: Bool
  public init(sessionID: String, generation: Int, anchorID: String, revision: Int,
              timestamp: Double, vertices: [Double], triangles: [Int32],
-             columnMajorTransform: [Double], complete: Bool, removed: Bool = false) {
+             columnMajorTransform: [Double], complete: Bool, removed: Bool = false,
+             triangleSupport: [MeshTriangleSupport]? = nil) {
   self.sessionID=sessionID;self.generation=generation;self.anchorID=anchorID;self.revision=revision
   self.timestamp=timestamp;self.vertices=vertices;self.triangles=triangles
   self.columnMajorTransform=columnMajorTransform;self.complete=complete;self.removed=removed
+  self.triangleSupport=triangleSupport
  }
  fileprivate var bounded: Bool {
-  !sessionID.isEmpty && sessionID.utf8.count<=128 && !anchorID.isEmpty && anchorID.utf8.count<=128 && generation>=0 && revision>=0 && timestamp.isFinite && timestamp>=0 && vertices.count<=600000 && triangles.count<=300000 && (removed ? columnMajorTransform.isEmpty && vertices.isEmpty && triangles.isEmpty : columnMajorTransform.count==16)
+  !sessionID.isEmpty && sessionID.utf8.count<=128 && !anchorID.isEmpty && anchorID.utf8.count<=128 && generation>=0 && revision>=0 && timestamp.isFinite && timestamp>=0 && vertices.count<=600000 && triangles.count<=300000 && (triangleSupport?.count ?? 0)<=100000 && (removed ? columnMajorTransform.isEmpty && vertices.isEmpty && triangles.isEmpty && triangleSupport == nil : columnMajorTransform.count==16)
  }
  var packet: Packet {
   let rows=removed ? [] : (0..<16).map{columnMajorTransform[($0%4)*4+$0/4]}
-  return Packet(session:sessionID,generation:generation,anchor:anchorID,revision:revision,timestamp:timestamp,vertices:vertices,triangles:triangles,transform:rows,complete:complete,removed:removed)
+  return Packet(session:sessionID,generation:generation,anchor:anchorID,revision:revision,timestamp:timestamp,vertices:vertices,triangles:triangles,transform:rows,complete:complete,removed:removed,triangleSupport:triangleSupport)
  }
 }
 public struct MeshCandidateBody {
@@ -51,11 +59,12 @@ public final class RoomMeshCandidateRuntime {
  private var discarding=false, discarded=false, discardScheduled=false
  private var discardWaiters:[()->Void]=[]
  private let maxPending=8, maxPendingScalars=900000
+ private let supportPolicy: MeshSupportPolicy
  // Accessed only on worker. No native handles escape a single query.
  private var owner: Replay?
- public init(sessionID: String,generation: Int=0)throws {
+ public init(sessionID: String,generation: Int=0,supportPolicy: MeshSupportPolicy = .legacySlope)throws {
   guard !sessionID.isEmpty,sessionID.utf8.count<=128,generation>=0 else{throw MeshCandidateError.invalidInput}
-  session=sessionID;self.generation=generation
+  session=sessionID;self.generation=generation;self.supportPolicy=supportPolicy
  }
  private func locked<T>(_ f:() throws ->T) rethrows ->T {lock.lock();defer{lock.unlock()};return try f()}
  private func advance(){if revision == UInt64.max {stopped=true;gap=true}else{revision+=1}}
@@ -101,13 +110,15 @@ public final class RoomMeshCandidateRuntime {
  /// False means rejected/overflow, never free space. Any missed in-session event
  /// makes delivery unknown until a new session/generation reset.
  @discardableResult public func offer(_ event:MeshAnchorEvent)->Bool {
-  let scalarCount=event.vertices.count+event.triangles.count
+  let scalarCount=event.vertices.count+event.triangles.count+(event.triangleSupport?.count ?? 0)
   let shapeBounded=event.bounded
+  let supportValid = event.removed ? event.triangleSupport == nil :
+   (supportPolicy == .classifiedFloorOnly ? event.triangles.count%3 == 0 && event.triangleSupport?.count == event.triangles.count/3 : event.triangleSupport == nil)
   lock.lock()
   let admitted: Bool = {
    guard !stopped,event.sessionID==session,event.generation==generation else{return false}
    advance()
-   guard shapeBounded,pending<maxPending,scalarCount<=maxPendingScalars-pendingScalars else{gap=true;return false}
+   guard shapeBounded,supportValid,pending<maxPending,scalarCount<=maxPendingScalars-pendingScalars else{gap=true;return false}
    pending+=1;pendingScalars+=scalarCount;return true
   }()
   guard admitted else{lock.unlock();return false}
@@ -116,7 +127,7 @@ public final class RoomMeshCandidateRuntime {
    defer{locked{pending-=1;pendingScalars-=scalarCount;scheduleDiscardIfDrained()}}
    guard locked({!stopped && lifecycle==eventLifecycle && session==event.sessionID && generation==event.generation})else{return}
    do {
-    if ownerLifecycle != eventLifecycle || owner?.session != event.sessionID || owner?.generation != event.generation {owner=try Replay(event.sessionID,event.generation);ownerLifecycle=eventLifecycle}
+    if ownerLifecycle != eventLifecycle || owner?.session != event.sessionID || owner?.generation != event.generation {owner=try Replay(event.sessionID,event.generation,supportPolicy:supportPolicy);ownerLifecycle=eventLifecycle}
     _ = try owner!.apply(event.packet)
    } catch {recordOfferFailure(sessionID:event.sessionID,generation:event.generation,lifecycle:eventLifecycle)}
   }
@@ -152,7 +163,7 @@ public final class RoomMeshCandidateRuntime {
    defer{locked{pending-=1;scheduleDiscardIfDrained()}}
    guard locked({matches(s,g,r)}),let owner=owner,ownerLifecycle==cycle,owner.session==s,owner.generation==g else{finish(.failure(.stale));return}
    do {
-    let(v,t)=owner.geometry();let native=try Native(v,t,radius:body.radius,height:body.height)
+    let(v,t)=owner.geometry();let native=try Native(v,t,radius:body.radius,height:body.height,triangleSupport:owner.geometrySupport())
     let path=try native.route(start,goal)
     let state=locked{(matches(s,g,r),gap)}
     guard state.0 else{finish(.failure(.stale));return}

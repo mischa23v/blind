@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "baseProtocolSHA256": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123",
+  "width28ProfileSHA256": "c52792a1213a1b3969e97a6201d43bac2426a444f3f39e8b906a5feb0e0f701d",
+  "preregisteredBeforeFirstNativeExecution": true,
+  "physicalAuthority": false,
+  "cameraLocalizationTested": false,
+  "getUpKinematicsTested": false,
+  "profile": {"id":"declared-width28-assumed-depth20-height120","width":0.28,"depth":0.20,"height":1.20,"margin":0.15},
+  "interpretation": "The JSON names an original historical chair/bed but contains no person/camera observations. Seated posture is supplied test context only. A separate supplied post-rise standing-floor pose is required before querying; the transition is NOT reconstructed, animated, scored or claimed as a localization/get-up success.",
+  "coordinateFrame": "Every pose/stage triple is in that fixture's original floor-local plane and transformed exactly once by its original floor transform. Frame identity is the exact source JSON SHA256. Never join the two fixture frames.",
+  "poseGateControls": ["seated-only-withholds", "missing-standing-pose-withholds", "wrong-source-frame-withholds"],
+  "declaredHeadingFloorLocal": [1.0,0.0,0.0],
+  "guidance": "Test-only declared fixed heading along the original floor local +X axis, NOT camera/body calibration. Execute existing production SpatialFacts.relation, SpatialFacts.phrase and GuidanceCadence.label at 2-second synthetic cue times; receive text in a test-owned array only. Missing position/frame/heading and retired route withhold output. This tests code direction/distance formatting/cadence, not a live route owner, VoiceOver or physical guidance release.",
+  "replayModel": "Ideal waypoint candidate replay only: evaluate actual Recast connector and route segment sweeps against original modeled geometry. Requested pose is never replaced by a projection. Advance the scripted endpoint only after a complete no-contact candidate including both projection connectors. This is not real person's progress, reaction-time/delay/jitter or closed-loop controller validation.",
+  "journeys": [
+    {
+      "id":"bed-supplied-rise-around-closed-door-return", "room":"Bedroom3",
+      "seatedFeatureID":"45597D99-3218-4419-A2E4-2ADFA824D033", "standingFloorLocal":[-0.60,0.0,0.0],
+      "stages":[
+        {"id":"connector-to-existing-aisle-route","goal":[-0.60,1.10,0.0],"expectedWithhold":false},
+        {"id":"around-bed","goal":[1.00,1.10,0.0],"expectedWithhold":false},
+        {"id":"back-to-aisle","goal":[-0.60,1.10,0.0],"expectedWithhold":false},
+        {"id":"closed-door-approach","goal":[-0.6831174920,1.20,0.0],"doorID":"10A2A02E-D0BD-465B-A893-2E7095137EFB","expectedWithhold":false},
+        {"id":"closed-door-outbound-unsupported","goal":[-0.6831174920,2.18,0.0],"doorID":"10A2A02E-D0BD-465B-A893-2E7095137EFB","expectedWithhold":true},
+        {"id":"return-to-supplied-standing-place","goal":[-0.60,0.0,0.0],"expectedWithhold":false}
+      ]
+    },
+    {
+      "id":"chair-supplied-rise-around-closed-door-return", "room":"Bedroom3",
+      "seatedFeatureID":"531A8ED6-A501-403D-B765-064236B96FC2", "standingFloorLocal":[-0.65,-0.50,0.0],
+      "stages":[
+        {"id":"connector-to-existing-aisle-route","goal":[-0.60,0.40,0.0],"expectedWithhold":false},
+        {"id":"around-room-aisle","goal":[-0.60,1.10,0.0],"expectedWithhold":false},
+        {"id":"closed-door-approach","goal":[-0.6831174920,1.20,0.0],"doorID":"10A2A02E-D0BD-465B-A893-2E7095137EFB","expectedWithhold":false},
+        {"id":"closed-door-outbound-unsupported","goal":[-0.6831174920,2.18,0.0],"doorID":"10A2A02E-D0BD-465B-A893-2E7095137EFB","expectedWithhold":true},
+        {"id":"return-to-supplied-standing-place","goal":[-0.65,-0.50,0.0],"expectedWithhold":false}
+      ]
+    },
+    {
+      "id":"standing-inside-bed-is-invalid", "room":"Bedroom3",
+      "seatedFeatureID":"45597D99-3218-4419-A2E4-2ADFA824D033", "standingFeatureFootCenter":"45597D99-3218-4419-A2E4-2ADFA824D033", "expectsInvalidStandingStart":true,
+      "stages":[{"id":"inside-bed-connector-attempt","goal":[-0.60,1.10,0.0],"expectedWithhold":true}]
+    },
+    {
+      "id":"standing-inside-chair-is-invalid", "room":"Bedroom3",
+      "seatedFeatureID":"531A8ED6-A501-403D-B765-064236B96FC2", "standingFeatureFootCenter":"531A8ED6-A501-403D-B765-064236B96FC2", "expectsInvalidStandingStart":true,
+      "stages":[{"id":"inside-chair-connector-attempt","goal":[-0.60,0.40,0.0],"expectedWithhold":true}]
+    },
+    {
+      "id":"historically-open-hallway-door-outside-unknown-return", "room":"Hallway2", "standingFloorLocal":[3.0,-0.45,0.0],
+      "stages":[
+        {"id":"open-door-approach","goal":[3.65,-0.48,0.0],"doorID":"A16DF794-DF3B-4EC0-8B98-CBFC2B92E49A","expectedWithhold":false},
+        {"id":"outside-original-floor-unsupported","goal":[4.66,-0.48,0.0],"doorID":"A16DF794-DF3B-4EC0-8B98-CBFC2B92E49A","expectedWithhold":true},
+        {"id":"return-within-original-supported-model","goal":[3.0,-0.45,0.0],"expectedWithhold":false}
+      ]
+    }
+  ],
+  "denominator": {"journeys":5,"candidateStageSchedules":16,"baselineCandidateSchedulesUnchanged":18},
+  "withholding": "Original closed doors block. A historically open door does not establish current state or floor beyond the original polygon. After an expected withheld outbound attempt the replay remains at its previous supplied/swept endpoint; a separately queried in-room return may continue. Any other failed/contacting stage stops that journey and leaves later stages explicitly unexecuted, not arrivals.",
+  "output": "Only test-owned waypoint receipts, all source/model/query deltas and per-stage body/margin/floor/bound contacts. No physical output or successful camera-localization/get-up/real arrival claim. Never remove furniture, shrink the profile, invent floor or switch sources to make a failed schedule pass."
+}

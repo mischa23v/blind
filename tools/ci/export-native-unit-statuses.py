@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Metadata-only xcresult case evidence; never changes test outcomes or retries tests.
+"""Bounded xcresult case + public fixture evidence; never changes test outcomes/retries.
 
 Schema reference: Chromium's Xcode16LogParser consumes testNodes/children,
 nodeType='Test Case', nodeIdentifier and result from Apple's xcresulttool.
@@ -164,6 +164,44 @@ def provenance(repo, expected):
             'untracked_scopes': scopes, 'generated_metadata': metadata}
 
 
+def route_evidence(repo, bundle, cases):
+    """Optional additive evidence; cannot change existing case/target verdicts."""
+    spec = importlib.util.spec_from_file_location('native_route_evidence',
+        repo / 'tools/ci/native-route-diagnostic-evidence.py')
+    module = importlib.util.module_from_spec(spec)
+    old = sys.dont_write_bytecode
+    try:
+        sys.dont_write_bytecode = True
+        spec.loader.exec_module(module)
+        return module.collect(repo, bundle, cases, query)
+    except (ValueError, OSError, KeyError, TypeError, RecursionError, subprocess.SubprocessError):
+        # Never serialize arbitrary parser/OS text from an attachment.
+        return {'schema': 1, 'status': 'collection_error', 'physicalAuthority': False}
+    finally:
+        sys.dont_write_bytecode = old
+
+
+def encode_evidence(result):
+    """The additive reports must not evict case statuses from the existing 1 MiB."""
+    encoded = json.dumps(result, indent=2, allow_nan=False) + '\n'
+    if len(encoded.encode()) <= 1024 * 1024:
+        return encoded
+    evidence = result.get('routeDiagnosticEvidence')
+    if evidence is not None:
+        for record in evidence.get('reports', []):
+            if 'report' in record:
+                del record['report']
+                record['status'] = 'omitted_artifact_over_budget'
+        evidence['status'] = 'artifact_over_budget'
+        encoded = json.dumps(result, indent=2, allow_nan=False) + '\n'
+        if len(encoded.encode()) > 1024 * 1024:
+            result['routeDiagnosticEvidence'] = {'schema': 1, 'status': 'artifact_over_budget', 'physicalAuthority': False}
+            # Compact representation retains every existing case if whitespace
+            # rather than metadata was the limiting factor.
+            encoded = json.dumps(result, separators=(',', ':'), allow_nan=False) + '\n'
+    return encoded
+
+
 def main():
     bundle, log, output = map(Path, sys.argv[1:4])
     result = {'schema': 1, 'target': TARGET, 'complete': False,
@@ -187,15 +225,17 @@ def main():
                       query_sha256=hashlib.sha256(raw).hexdigest(),
                       target_pass_verified=len(targets) == 1 and targets[0]['result'] == 'Passed'
                       and witnesses == ['started', 'passed'])
+        result['routeDiagnosticEvidence'] = route_evidence(repo, bundle, cases)
         if provenance(repo, os.environ.get('GITHUB_SHA')) != verified_source:
             raise ValueError('Source provenance changed during evidence collection')
         result['source_verified'] = True
         result['source_sha256'] = {name: hashlib.sha256((repo / name).read_bytes()).hexdigest()
             for name in ['ios/BlindAssistTests/CommunityTests.swift', 'ios/BlindAssist/SpatialMapIO.swift']}
     except (ValueError, OSError, RecursionError, subprocess.SubprocessError) as error:
+        result['routeDiagnosticEvidence'] = {'schema': 1, 'status': 'source_or_cases_unverified', 'physicalAuthority': False}
         result.update(complete=False, target_pass_verified=False, source_verified=False,
                       error_type=type(error).__name__, error=str(error)[:256])
-    encoded = json.dumps(result, indent=2) + '\n'
+    encoded = encode_evidence(result)
     if len(encoded.encode()) > 1024 * 1024:
         result = {'schema': 1, 'complete': False, 'target_pass_verified': False, 'error': 'Evidence exceeds 1 MiB'}
         encoded = json.dumps(result) + '\n'
