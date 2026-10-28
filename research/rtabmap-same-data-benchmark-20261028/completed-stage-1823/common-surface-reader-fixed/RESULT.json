@@ -1,0 +1,253 @@
+{
+  "launchSHA256": "24d6c5ded0a111090a92cc9c4d75548179e27a924bc2ef5686abbfbdfaff08bf",
+  "missingReferenceMeansFree": false,
+  "physicalSafetyEstablished": false,
+  "protocolSHA256": "7f9845e6d26aad2233610830154c5a8560c261dfdca9545a1583c749d7548882",
+  "reference4cmPointCount": 127774,
+  "referenceSamplesSHA256": "55ece9f280595f12dc02644588d69d7f6ef71ffa7a8456d25102a7e96eb066e0",
+  "referenceSampling": {
+    "finiteOriginalReferenceHits": 1194544,
+    "missingReferenceRaysExcludedButNotFree": 141341,
+    "scheduledOriginalRays": 1335885
+  },
+  "registration": {
+    "determinant": 1.0636782973625978,
+    "scale": 1.0207908442387768,
+    "scaleFittedHere": false,
+    "singularValues": [
+      1.020790844238779,
+      1.020790844238778,
+      1.0207908442387734
+    ]
+  },
+  "results": {
+    "fixed": {
+      "arraySHA256": "d343a54b9ed6e8f9ca749d7e611fb055821872ebb1b35d743aa9d205b847ddcc",
+      "common4cmPointCount": 497307,
+      "forwardUnsignedPointToReferenceTriangle": {
+        "invalid": 0,
+        "maxMetres": 1.397780226579294,
+        "meanMetres": 0.12843908286227004,
+        "medianMetres": 0.06639420595338492,
+        "p95Metres": 0.4828159793858501,
+        "p99Metres": 0.7438714455903476,
+        "scheduled": 497307,
+        "valid": 497307,
+        "within": {
+          "0.02": {
+            "count": 110134,
+            "fractionOfScheduled": 0.22146078780310754
+          },
+          "0.05": {
+            "count": 204491,
+            "fractionOfScheduled": 0.4111967054555838
+          },
+          "0.1": {
+            "count": 309321,
+            "fractionOfScheduled": 0.6219920491768666
+          },
+          "0.2": {
+            "count": 395244,
+            "fractionOfScheduled": 0.794768623807829
+          },
+          "0.5": {
+            "count": 474812,
+            "fractionOfScheduled": 0.9547663716778569
+          }
+        }
+      },
+      "rawOutputPointCount": 693573,
+      "reverseVisibleReferenceToSampledOutputPoint": {
+        "invalid": 0,
+        "maxMetres": 0.5326087478503688,
+        "meanMetres": 0.02532218292909811,
+        "medianMetres": 0.021910435420374214,
+        "p95Metres": 0.050285470209674867,
+        "p99Metres": 0.09171017635747625,
+        "scheduled": 127774,
+        "valid": 127774,
+        "within": {
+          "0.02": {
+            "count": 51918,
+            "fractionOfScheduled": 0.40632679574874386
+          },
+          "0.05": {
+            "count": 121286,
+            "fractionOfScheduled": 0.9492228465885079
+          },
+          "0.1": {
+            "count": 126727,
+            "fractionOfScheduled": 0.9918058446945388
+          },
+          "0.2": {
+            "count": 127590,
+            "fractionOfScheduled": 0.9985599574248282
+          },
+          "0.5": {
+            "count": 127766,
+            "fractionOfScheduled": 0.9999373894532534
+          }
+        }
+      }
+    },
+    "graph": {
+      "arraySHA256": "06d35289cf5d553d4d5512e6a54cbf9c0f46ebb774839774399abe21af2f3b40",
+      "common4cmPointCount": 588726,
+      "forwardUnsignedPointToReferenceTriangle": {
+        "invalid": 0,
+        "maxMetres": 1.3968703890541723,
+        "meanMetres": 0.15741186196438883,
+        "medianMetres": 0.10362751384463417,
+        "p95Metres": 0.4937544890543968,
+        "p99Metres": 0.759225319068558,
+        "scheduled": 588726,
+        "valid": 588726,
+        "within": {
+          "0.02": {
+            "count": 66383,
+            "fractionOfScheduled": 0.11275703807883464
+          },
+          "0.05": {
+            "count": 158233,
+            "fractionOfScheduled": 0.2687718904889541
+          },
+          "0.1": {
+            "count": 286932,
+            "fractionOfScheduled": 0.48737782941470226
+          },
+          "0.2": {
+            "count": 426486,
+            "fractionOfScheduled": 0.7244218872616464
+          },
+          "0.5": {
+            "count": 560349,
+            "fractionOfScheduled": 0.9517993090164185
+          }
+        }
+      },
+      "rawOutputPointCount": 813869,
+      "reverseVisibleReferenceToSampledOutputPoint": {
+        "invalid": 0,
+        "maxMetres": 0.6151226514664475,
+        "meanMetres": 0.03843760798726163,
+        "medianMetres": 0.02779662153898219,
+        "p95Metres": 0.10101348319020129,
+        "p99Metres": 0.15899032919213482,
+        "scheduled": 127774,
+        "valid": 127774,
+        "within": {
+          "0.02": {
+            "count": 32859,
+            "fractionOfScheduled": 0.257164994443314
+          },
+          "0.05": {
+            "count": 99752,
+            "fractionOfScheduled": 0.7806909073833487
+          },
+          "0.1": {
+            "count": 121238,
+            "fractionOfScheduled": 0.9488471833080282
+          },
+          "0.2": {
+            "count": 127403,
+            "fractionOfScheduled": 0.9970964358946265
+          },
+          "0.5": {
+            "count": 127730,
+            "fractionOfScheduled": 0.9996556419928937
+          }
+        }
+      }
+    },
+    "open3d": {
+      "arraySHA256": "7e36b5d9bd7909dbe88045f4177fc4c544dc6df2cceb983f09b472ccba672ce2",
+      "common4cmPointCount": 231472,
+      "forwardUnsignedPointToReferenceTriangle": {
+        "invalid": 0,
+        "maxMetres": 1.401108092236538,
+        "meanMetres": 0.10729081703699496,
+        "medianMetres": 0.04260128548774546,
+        "p95Metres": 0.49712467740463845,
+        "p99Metres": 0.8174710766061506,
+        "scheduled": 231472,
+        "valid": 231472,
+        "within": {
+          "0.02": {
+            "count": 73654,
+            "fractionOfScheduled": 0.318198313402917
+          },
+          "0.05": {
+            "count": 127176,
+            "fractionOfScheduled": 0.5494228243588858
+          },
+          "0.1": {
+            "count": 168632,
+            "fractionOfScheduled": 0.7285200801824843
+          },
+          "0.2": {
+            "count": 196481,
+            "fractionOfScheduled": 0.8488326881869082
+          },
+          "0.5": {
+            "count": 220027,
+            "fractionOfScheduled": 0.950555574756342
+          }
+        }
+      },
+      "rawOutputPointCount": 1000000,
+      "reverseVisibleReferenceToSampledOutputPoint": {
+        "invalid": 0,
+        "maxMetres": 0.6344928188459928,
+        "meanMetres": 0.03578222907901444,
+        "medianMetres": 0.02708511758177732,
+        "p95Metres": 0.08306161515105041,
+        "p99Metres": 0.15994826442654791,
+        "scheduled": 127774,
+        "valid": 127774,
+        "within": {
+          "0.02": {
+            "count": 35314,
+            "fractionOfScheduled": 0.2763786059761767
+          },
+          "0.05": {
+            "count": 104168,
+            "fractionOfScheduled": 0.8152519291874716
+          },
+          "0.1": {
+            "count": 123686,
+            "fractionOfScheduled": 0.9680060106124877
+          },
+          "0.2": {
+            "count": 127166,
+            "fractionOfScheduled": 0.9952415984472585
+          },
+          "0.5": {
+            "count": 127756,
+            "fractionOfScheduled": 0.9998591262698201
+          }
+        }
+      }
+    }
+  },
+  "runtime": {
+    "SMPBackend": "Sequential",
+    "executionMachine": {
+      "CPUQuotaNotEstablished": true,
+      "GPUUsed": false,
+      "cpuReportedModel": "AMD EPYC 9V74 80-Core Processor",
+      "iPhoneRuntimeTest": false,
+      "logicalCPUAffinityCount": 1,
+      "machine": "x86_64",
+      "memorySnapshotBytes": {
+        "MemAvailable": 9398120448,
+        "MemTotal": 10451439616
+      },
+      "release": "6.18.55",
+      "system": "Linux"
+    },
+    "threads": 1,
+    "version": "9.3.1"
+  },
+  "status": "completed",
+  "surfaceReconstructionPerformed": false
+}

@@ -1,0 +1,41 @@
+{
+  "command": [
+    "python",
+    "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/common-surface-proposal/compare.py",
+    "--inputs",
+    "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/COMMON_SURFACE_LAUNCH.json",
+    "--out",
+    "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/common-surface",
+    "--expected-freeze",
+    "fab4bff89a50d3131b74311a34d7604294a798702618a4f4360f501ac860f363"
+  ],
+  "cpuAffinity": [
+    0
+  ],
+  "returncode": -11,
+  "stopReason": null,
+  "peakSampledTreeRSS": 2095943680,
+  "elapsedSeconds": 8.558910608291626,
+  "samples": [
+    {
+      "elapsed": 0.14382290840148926,
+      "rss": 0,
+      "disk": 1432823101
+    },
+    {
+      "elapsed": 2.2787787914276123,
+      "rss": 331776000,
+      "disk": 1435889894
+    },
+    {
+      "elapsed": 4.43006706237793,
+      "rss": 998277120,
+      "disk": 1435889894
+    },
+    {
+      "elapsed": 6.558664321899414,
+      "rss": 2095943680,
+      "disk": 1435889981
+    }
+  ]
+}

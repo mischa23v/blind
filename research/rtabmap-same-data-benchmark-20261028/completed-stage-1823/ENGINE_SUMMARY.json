@@ -1,0 +1,93 @@
+{
+  "arms": {
+    "fixed": {
+      "scheduledFrames": 265,
+      "acceptedFrames": 265,
+      "loopClosureEventFrames": 0,
+      "nativeInclusive4mBoundaryPixels": 50544,
+      "exportedPoseCount": 265,
+      "sumLocalGridGroundCells": 263923,
+      "sumLocalGridObstacleCells": 2279985,
+      "sumLocalGridEmptyCells": 0,
+      "cloudSHA256": "a33e8e8bb2760e923df435e2cdc24a45f7e07d0067ac802a15a52f3b87ccc7bc",
+      "mapperResource": {
+        "command": [
+          "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/adapter-build/koivu_rtab_mapper",
+          "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/adapter/INPUTS.tsv",
+          "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/fixed",
+          "fixed"
+        ],
+        "cpuAffinity": [
+          0
+        ],
+        "returncode": 2,
+        "stopReason": null,
+        "peakSampledTreeRSS": 676786176,
+        "elapsedSeconds": 66.19843125343323,
+        "samples": "see original receipt"
+      },
+      "exportResource": {
+        "command": [
+          "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/adapter-build/koivu_rtab_export",
+          "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/fixed/map.db",
+          "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/fixed/POSES.tsv",
+          "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/fixed/cloud.ply"
+        ],
+        "cpuAffinity": [
+          0
+        ],
+        "returncode": 0,
+        "stopReason": null,
+        "peakSampledTreeRSS": 258691072,
+        "elapsedSeconds": 21.35271167755127,
+        "samples": "see original receipt"
+      }
+    },
+    "graph": {
+      "scheduledFrames": 265,
+      "acceptedFrames": 265,
+      "loopClosureEventFrames": 45,
+      "nativeInclusive4mBoundaryPixels": 50544,
+      "exportedPoseCount": 265,
+      "sumLocalGridGroundCells": 263923,
+      "sumLocalGridObstacleCells": 2279985,
+      "sumLocalGridEmptyCells": 0,
+      "cloudSHA256": "cc4afe4e06d5d8dea0a9c42e5fa2398211e8c90ba7fd02dd86c1c80f993e32c4",
+      "mapperResource": {
+        "command": [
+          "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/adapter-build/koivu_rtab_mapper",
+          "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/adapter/INPUTS.tsv",
+          "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/graph",
+          "graph"
+        ],
+        "cpuAffinity": [
+          0
+        ],
+        "returncode": 2,
+        "stopReason": null,
+        "peakSampledTreeRSS": 677773312,
+        "elapsedSeconds": 72.96016812324524,
+        "samples": "see original receipt"
+      },
+      "exportResource": {
+        "command": [
+          "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/adapter-build/koivu_rtab_export",
+          "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/graph/map.db",
+          "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/graph/POSES.tsv",
+          "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/graph/cloud.ply"
+        ],
+        "cpuAffinity": [
+          0
+        ],
+        "returncode": 0,
+        "stopReason": null,
+        "peakSampledTreeRSS": 257937408,
+        "elapsedSeconds": 23.491440773010254,
+        "samples": "see original receipt"
+      }
+    }
+  },
+  "physicalSafetyEstablished": false,
+  "rayClearingTested": false,
+  "initialExportAdapterFailurePreserved": true
+}

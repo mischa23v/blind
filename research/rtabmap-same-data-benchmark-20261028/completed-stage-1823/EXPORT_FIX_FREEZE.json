@@ -1,0 +1,46 @@
+{
+  "timestampUTC": "2026-10-28T18:13:12.936099+00:00",
+  "change": "Export-only fix: pass native valid indices to upstream voxelize; no mapper replay or threshold changes",
+  "files": [
+    {
+      "path": "adapter/export.cpp",
+      "sha256": "fd7e685707802b3aedddd631d516016f9f4ef554608a86f4109bea432bea2560",
+      "bytes": 1637
+    },
+    {
+      "path": "adapter/main.cpp",
+      "sha256": "8a83f375fadb592120deade5e6ea2e71b1f6b3181c7fc4525145ff7fe9e03d26",
+      "bytes": 4609
+    },
+    {
+      "path": "adapter-build/koivu_rtab_export",
+      "sha256": "9bf51a81924ef9d02c774597b03e2d5170379f34ca9a11e23bdc786a40535282",
+      "bytes": 51064
+    },
+    {
+      "path": "adapter-build/koivu_rtab_component",
+      "sha256": "a59e08c04ffebdf01cf7fcf338001577bcff4901b8ae105cf6a314bd1553eefe",
+      "bytes": 60400
+    },
+    {
+      "path": "fixed/map.db",
+      "sha256": "ebf5b96e2785a7acb524da891d0e9053bdcd3a41c54af9aaeb5ad4e76b74fabd",
+      "bytes": 218603520
+    },
+    {
+      "path": "fixed/POSES.tsv",
+      "sha256": "57fac4a5e64c67deadd10ffea276658df179e2e48ebee54f1f4fdea681137841",
+      "bytes": 40913
+    },
+    {
+      "path": "graph/map.db",
+      "sha256": "af85c78ee1d49bd60ad3899fad8e2149197944f2c90685ea218f0852120e9d76",
+      "bytes": 218693632
+    },
+    {
+      "path": "graph/POSES.tsv",
+      "sha256": "b85098dcd9b1d6621a7fa92ff1ffe1ed0b538e5a139500e881e1385b71073add",
+      "bytes": 41090
+    }
+  ]
+}

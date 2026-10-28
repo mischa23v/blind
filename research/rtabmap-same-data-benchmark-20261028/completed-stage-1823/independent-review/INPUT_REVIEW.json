@@ -1,0 +1,18 @@
+{
+  "status": "passed_static_input_and_numpy_checks_not_runtime",
+  "checks": 4777,
+  "training": 265,
+  "excluded": 29,
+  "verifiedImages": 530,
+  "asymmetricWorldPointChecks": 795,
+  "maximumFloatInputMatrixDifference": 0.0,
+  "mapperSHA256": "3cb84e14ca81065db60f0158baddca81dfcfc465e71632f0b989884577ed56a0",
+  "inputTSVSHA256": "ee71d30361d678dbc45f38a74922503fd1152b7069265781020194ff11499d7b",
+  "sourceRevision": "8cd2f81a735722402d1e220147c4e83a1a746eaf",
+  "limitations": [
+    "No native C++ fixture executed by this review; no reconstruction.",
+    "Native RTAB maxDepth is inclusive4m whereas Open3D baseline cutoff exclusive4m; freeze choice and disclose before execution.",
+    "No actual timestamps/IMU/covariance; stamp0 and API identity covariance are conventions not measurements.",
+    "Fixed-arm exported poses and signature completeness need runtime assertions."
+  ]
+}
