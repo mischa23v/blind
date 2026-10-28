@@ -105,7 +105,7 @@ import BlindCore
         preview = nil
         guard let archive else { return }
         do { preview = try decode(archive); error = false }
-        catch { clear(); error = true }
+        catch { clear(); self.error = true }
     }
     private func retireImport() { lease.retire(); importToken = nil; importing = false }
     private func clear() { preview = nil; archive = nil; error = false }
