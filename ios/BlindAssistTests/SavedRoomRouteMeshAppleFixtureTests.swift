@@ -147,6 +147,29 @@ import simd
         let physicalAuthority = false
         let fixtures: [ExportInventory]
     }
+    private struct SameExportRecord: Encodable, Sendable {
+        let fixtureID, sourceSHA256, assetAttachmentName, metadataAttachmentName: String
+        let assetSHA256, metadataSHA256, metadataFormat: String
+        let assetByteCount, metadataByteCount: Int
+    }
+    private struct SameExportAssets: Sendable {
+        let record: SameExportRecord
+        let asset, metadata: Data
+    }
+    private struct InventoryCapture: Sendable {
+        let inventory: ExportInventory
+        let sameExport: SameExportAssets?
+    }
+    private struct SameExportManifest: Encodable {
+        let schema = "blind.saved-room-route-same-export.v1"
+        let physicalAuthority = false
+        let exportRole = "diagnostic-export"
+        let productionAdapterExport = "separate-unretained"
+        let testIdentifier = "SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleSameExportForOpenUSDComparison"
+        let inventoryAttachmentName = "APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json"
+        let inventorySHA256: String
+        let fixtures: [SameExportRecord]
+    }
     private nonisolated static func digest(_ data: Data) -> String {
         SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
     }
@@ -172,6 +195,15 @@ import simd
     private nonisolated static func failureCode(_ error: Error) -> String {
         guard let failure = error as? SavedRoomRouteMeshAdapter.Failure else { return "unclassifiedError" }
         return String(describing: failure)
+    }
+    private nonisolated static func boundedSameExportData(at url: URL, limit: Int) throws -> Data {
+        let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
+        guard attributes[.type] as? FileAttributeType == .typeRegular,
+              let size = attributes[.size] as? NSNumber, size.int64Value > 0,
+              size.int64Value <= Int64(limit) else { throw SavedRoomRouteMeshAdapter.Failure.budgetExceeded }
+        let data = try Data(contentsOf: url)
+        guard data.count == size.intValue, data.count <= limit else { throw SavedRoomRouteMeshAdapter.Failure.budgetExceeded }
+        return data
     }
 
     /// One first-failing mesh, not a geometry dump. Uses the unchanged production
@@ -257,9 +289,10 @@ import simd
     /// fallback or geometry matcher. It deliberately proceeds to node inventory
     /// after a metadata decode failure, without accepting any of that geometry.
     private nonisolated static func exportInventory(data: Data, fixtureID: String,
-                                                    expectedSHA256: String) -> ExportInventory {
+        expectedSHA256: String, retainSameExport: Bool = false) -> InventoryCapture {
         typealias Adapter = SavedRoomRouteMeshAdapter
         var result = ExportInventory(fixtureID: fixtureID, sourceSHA256: expectedSHA256)
+        var sameExport: SameExportAssets?
         let publicFixtures = [
             "Hallway2": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
             "Bedroom3": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e"
@@ -270,11 +303,11 @@ import simd
               !data.isEmpty, data.count <= Adapter.maximumSourceBytes,
               digest(data) == expectedSHA256 else {
             result.inventoryFailure = "sourceMismatch"
-            return result
+            return .init(inventory: result, sameExport: nil)
         }
         guard !Thread.isMainThread else {
             result.inventoryFailure = "wrongExecutionContext"
-            return result
+            return .init(inventory: result, sameExport: nil)
         }
         do { _ = try Adapter.decode(data: data, expectedSHA256: expectedSHA256) }
         catch { result.adapterFailure = failureCode(error) }
@@ -298,12 +331,43 @@ import simd
             let metadataURL = root.appendingPathComponent("metadata.json")
             do { try room.export(to: meshURL, metadataURL: metadataURL, modelProvider: nil, exportOptions: .mesh) }
             catch { throw Adapter.Failure.exportFailed }
+            // Retain only the comparison test's exact diagnostic export #2.
+            // The ordinary JSON-only inventory test does not read/attach assets.
+            let retainedAsset: Data?, retainedMetadata: Data?
+            if retainSameExport {
+                retainedAsset = try boundedSameExportData(at: meshURL, limit: 4 * 1024 * 1024)
+                retainedMetadata = try boundedSameExportData(at: metadataURL, limit: 64 * 1024)
+            } else { retainedAsset = nil; retainedMetadata = nil }
+            defer {
+                if let retainedAsset, let retainedMetadata {
+                    do {
+                        // This defer runs before the earlier directory-removal
+                        // defer, including when the Model I/O diagnostic fails.
+                        guard try boundedSameExportData(at: meshURL, limit: 4 * 1024 * 1024) == retainedAsset,
+                              try boundedSameExportData(at: metadataURL, limit: 64 * 1024) == retainedMetadata else {
+                            throw Adapter.Failure.sourceMismatch
+                        }
+                        let record = SameExportRecord(fixtureID: fixtureID, sourceSHA256: expectedSHA256,
+                            assetAttachmentName: "APPLE_ROOM_ROUTE_\(fixtureID)_SAME_EXPORT.usdz",
+                            metadataAttachmentName: "APPLE_ROOM_ROUTE_\(fixtureID)_SAME_EXPORT_METADATA.bin",
+                            assetSHA256: digest(retainedAsset), metadataSHA256: digest(retainedMetadata),
+                            metadataFormat: result.metadataFormat, assetByteCount: retainedAsset.count,
+                            metadataByteCount: retainedMetadata.count)
+                        sameExport = .init(record: record, asset: retainedAsset, metadata: retainedMetadata)
+                    } catch {
+                        sameExport = nil
+                        result.inventoryFailure = failureCode(error)
+                    }
+                }
+            }
             var metadata: [String: UUID] = [:]
             do {
                 let attributes = try manager.attributesOfItem(atPath: metadataURL.path)
                 guard let size = attributes[.size] as? NSNumber, size.int64Value >= 0,
                       size.int64Value <= Int64(Adapter.maximumMetadataBytes) else { throw Adapter.Failure.budgetExceeded }
-                let bytes = try Data(contentsOf: metadataURL)
+                let bytes: Data
+                if let retainedMetadata { bytes = retainedMetadata }
+                else { bytes = try Data(contentsOf: metadataURL) }
                 guard bytes.count <= Adapter.maximumMetadataBytes else { throw Adapter.Failure.budgetExceeded }
                 result.metadataByteCount = bytes.count
                 result.metadataFormat = "unknown"
@@ -406,16 +470,17 @@ import simd
                 try visit(root, parentIndex: nil, inheritedID: nil, depth: 0, sceneRoot: root, parent: nil)
             }
         } catch { result.inventoryFailure = result.inventoryFailure ?? failureCode(error) }
-        return result
+        return .init(inventory: result, sameExport: sameExport)
     }
 
     func testOriginalAppleExportMetadataAndNodeInventory() async throws {
         var reports: [ExportInventory] = []
         for fixture in Fixture.allCases {
             let data = try bytes(fixture), fixtureID = fixture.rawValue, expected = fixture.digest
-            reports.append(await Task.detached(priority: .utility) {
+            let capture = await Task.detached(priority: .utility) {
                 Self.exportInventory(data: data, fixtureID: fixtureID, expectedSHA256: expected)
-            }.value)
+            }.value
+            reports.append(capture.inventory)
         }
         let data = try JSONEncoder().encode(InventoryAttachment(fixtures: reports))
         guard data.count <= 131_072 else { throw SavedRoomRouteMeshAdapter.Failure.budgetExceeded }
@@ -439,13 +504,59 @@ import simd
         }
     }
 
+    /// Separate allowlisted test so binary attachments cannot widen the existing
+    /// JSON-only collector. These are inputs for an independent reader, not proof
+    /// that the production adapter or physical route succeeds.
+    func testOriginalAppleSameExportForOpenUSDComparison() async throws {
+        var captures: [InventoryCapture] = []
+        for fixture in Fixture.allCases {
+            let data = try bytes(fixture), fixtureID = fixture.rawValue, expected = fixture.digest
+            captures.append(await Task.detached(priority: .utility) {
+                Self.exportInventory(data: data, fixtureID: fixtureID, expectedSHA256: expected, retainSameExport: true)
+            }.value)
+        }
+        let reports = captures.map(\.inventory)
+        let inventoryData = try JSONEncoder().encode(InventoryAttachment(fixtures: reports))
+        guard inventoryData.count <= 131_072 else { throw SavedRoomRouteMeshAdapter.Failure.budgetExceeded }
+        let inventory = XCTAttachment(data: inventoryData, uniformTypeIdentifier: "public.json")
+        inventory.name = "APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json"; inventory.lifetime = .keepAlways
+        add(inventory)
+        let exports = captures.compactMap(\.sameExport)
+        guard exports.count == Fixture.allCases.count else {
+            XCTFail("Both exact original public exports must be retained within the comparison caps")
+            return
+        }
+        let manifestData = try JSONEncoder().encode(SameExportManifest(inventorySHA256: Self.digest(inventoryData),
+            fixtures: exports.map(\.record)))
+        guard manifestData.count <= 16_384 else { throw SavedRoomRouteMeshAdapter.Failure.budgetExceeded }
+        let manifest = XCTAttachment(data: manifestData, uniformTypeIdentifier: "public.json")
+        manifest.name = "APPLE_ROOM_ROUTE_SAME_EXPORT_MANIFEST.json"; manifest.lifetime = .keepAlways
+        add(manifest)
+        for export in exports {
+            let asset = XCTAttachment(data: export.asset, uniformTypeIdentifier: "public.data")
+            asset.name = export.record.assetAttachmentName; asset.lifetime = .keepAlways; add(asset)
+            let metadata = XCTAttachment(data: export.metadata, uniformTypeIdentifier: "public.data")
+            metadata.name = export.record.metadataAttachmentName; metadata.lifetime = .keepAlways; add(metadata)
+        }
+        for report in reports {
+            XCTAssertNil(report.inventoryFailure)
+            XCTAssertNil(report.geometryProbeFailure)
+            XCTAssertEqual(report.unmatchedMeshCount, 0)
+            XCTAssertEqual(report.unknownFeatureMeshCount, 0)
+            if report.adapterFailure == "sourceGeometryMismatch" { XCTAssertNotNil(report.geometryProbe) }
+            // Adapter failure is retained in the bound inventory, not converted
+            // into success by this asset-capture test's pass/fail result.
+        }
+    }
+
     func testMetadataInventoryRejectsChangedPublicFixtureBeforeExport() async throws {
         var changed = try bytes(.bedroom)
         changed.append(0x0a) // Still valid JSON, but no longer the admitted original.
         let data = changed, expected = Fixture.bedroom.digest
-        let report = await Task.detached(priority: .utility) {
-            Self.exportInventory(data: data, fixtureID: "Bedroom3", expectedSHA256: expected)
+        let capture = await Task.detached(priority: .utility) {
+            Self.exportInventory(data: data, fixtureID: "Bedroom3", expectedSHA256: expected, retainSameExport: true)
         }.value
+        let report = capture.inventory
         XCTAssertEqual(report.inventoryFailure, "sourceMismatch")
         XCTAssertNil(report.adapterFailure)
         XCTAssertEqual(report.metadataByteCount, 0)
@@ -456,6 +567,26 @@ import simd
         XCTAssertTrue(report.nodes.isEmpty)
         XCTAssertNil(report.geometryProbe)
         XCTAssertNil(report.geometryProbeFailure)
+        XCTAssertNil(capture.sameExport)
+    }
+
+    func testSameExportReadRejectsEmptyOversizeAndNonRegularFiles() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("BlindSameExportReadTest-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: false)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let url = root.appendingPathComponent("bounded.bin")
+        let exact = Data([1, 2, 3, 4])
+        try exact.write(to: url)
+        XCTAssertEqual(try Self.boundedSameExportData(at: url, limit: 4), exact)
+        for value in [Data(), Data([1, 2, 3, 4, 5])] {
+            try value.write(to: url)
+            XCTAssertThrowsError(try Self.boundedSameExportData(at: url, limit: 4)) {
+                XCTAssertEqual($0 as? SavedRoomRouteMeshAdapter.Failure, .budgetExceeded)
+            }
+        }
+        XCTAssertThrowsError(try Self.boundedSameExportData(at: root, limit: 4)) {
+            XCTAssertEqual($0 as? SavedRoomRouteMeshAdapter.Failure, .budgetExceeded)
+        }
     }
 
     func testSourceBoundsProbeRetainsZeroDepthAndExactRoundoffPredicate() throws {

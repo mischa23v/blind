@@ -78,12 +78,28 @@ jobs:
             fi
           fi
           python3 tools/ci/export-native-unit-statuses.py "$out/unit.xcresult" "$out/unit.log" "$out/unit-case-statuses.json" || true
+          python3 tools/ci/export-public-apple-same-export.py "$out/unit.xcresult" "$out/unit-case-statuses.json" "$out/public-apple-same-export" || true
       - name: Preserve bounded hosted-unit case statuses
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: native-unit-case-statuses-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/blind-native-ci/unit-case-statuses.json
+          if-no-files-found: error
+          retention-days: 3
+      - name: Preserve bounded public Apple same-export comparison assets
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: public-apple-same-export-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/blind-native-ci/public-apple-same-export/APPLE_ROOM_ROUTE_Hallway2_SAME_EXPORT.usdz
+            ${{ runner.temp }}/blind-native-ci/public-apple-same-export/APPLE_ROOM_ROUTE_Hallway2_SAME_EXPORT_METADATA.bin
+            ${{ runner.temp }}/blind-native-ci/public-apple-same-export/APPLE_ROOM_ROUTE_Bedroom3_SAME_EXPORT.usdz
+            ${{ runner.temp }}/blind-native-ci/public-apple-same-export/APPLE_ROOM_ROUTE_Bedroom3_SAME_EXPORT_METADATA.bin
+            ${{ runner.temp }}/blind-native-ci/public-apple-same-export/APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json
+            ${{ runner.temp }}/blind-native-ci/public-apple-same-export/APPLE_ROOM_ROUTE_SAME_EXPORT_MANIFEST.json
+            ${{ runner.temp }}/blind-native-ci/public-apple-same-export/receipt.json
           if-no-files-found: error
           retention-days: 3
       - name: iOS UI and accessibility audit tests

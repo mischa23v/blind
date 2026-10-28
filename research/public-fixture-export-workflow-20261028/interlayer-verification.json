@@ -1,0 +1,29 @@
+{
+  "actualWorkflowShellRealExporterTests": {
+    "passed": 15,
+    "failed": 0,
+    "durationSeconds": 2.116,
+    "command": "python3 tools/ci/test-export-public-apple-same-export.py",
+    "externalGitAndXcrunReplies": "synthetic; real exporter/summary/status code executed",
+    "originalPublicFixtureFiles": "copied exact into test sandbox; generated USD ZIP payloads are synthetic, not Apple outputs"
+  },
+  "uploadFilesMatchActualCollector": true,
+  "uploadFiles": [
+    "APPLE_ROOM_ROUTE_Hallway2_SAME_EXPORT.usdz",
+    "APPLE_ROOM_ROUTE_Hallway2_SAME_EXPORT_METADATA.bin",
+    "APPLE_ROOM_ROUTE_Bedroom3_SAME_EXPORT.usdz",
+    "APPLE_ROOM_ROUTE_Bedroom3_SAME_EXPORT_METADATA.bin",
+    "APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json",
+    "APPLE_ROOM_ROUTE_SAME_EXPORT_MANIFEST.json",
+    "receipt.json"
+  ],
+  "collectorCapsConfirmed": true,
+  "dedicatedProducerTestDeclarationMatched": true,
+  "sha256": {
+    ".github/workflows/native-apple.yml": "d5d9d483e138803d4c952976fe0bfa531946f8f0ebffe198abb0d08a9d3b799b",
+    "tools/ci/export-public-apple-same-export.py": "6eb41a0fa2490b9840620fb46b0b93b3b0f75f79d4f94023ade5415e8a4c61f9",
+    "tools/ci/test-export-public-apple-same-export.py": "979bff7be18ef46651ac3932a92f79959cad39d1795f83d429c6aa320e64559b"
+  },
+  "nativeSDKOrRealBinaryExportRun": false,
+  "githubUploadVerified": false
+}

@@ -1,0 +1,78 @@
+{
+  "parentWorkflowSHA256": "ba74cd55736aa76248b885cf3c2454ba7ce2d082b0f7f040cd87ad8389e37a8e",
+  "parentPinsSHA256": "4790530fe65ee2280ae3946c223e1878a1beda7e1ba8f41ffe23a5c403182a2f",
+  "published": false,
+  "nativeTestsRun": false,
+  "requiresSeparateLayers": [
+    "public Apple fixture retained-export producer",
+    "tools/ci/export-public-apple-same-export.py with full-shell integration proof"
+  ],
+  "files": [
+    {
+      "path": ".github/workflows/native-apple.yml",
+      "bytes": 7130,
+      "sha256": "d5d9d483e138803d4c952976fe0bfa531946f8f0ebffe198abb0d08a9d3b799b",
+      "gitBlobSHA1": "92dba060e71c8593af58d20a5a1a737816ece178"
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json",
+      "bytes": 6574,
+      "sha256": "a65951fece8fc480feac441138a80dfc782a8d813880c3db0b8d10892e4c152e",
+      "gitBlobSHA1": "0808fd6a232bdb0398f39c7dce9428e526ef1939"
+    },
+    {
+      "path": "research/public-fixture-export-workflow-20261028/README.md",
+      "bytes": 5589,
+      "sha256": "6c23b6b3ae8593e465ccaeefe0a88264c6972ea9e30baa817bdbf238333158b5",
+      "gitBlobSHA1": "e70f668963ae1e73ba3e8edc747e4651ffab3109"
+    },
+    {
+      "path": "research/public-fixture-export-workflow-20261028/SOURCE_PINS.before.json",
+      "bytes": 6574,
+      "sha256": "4790530fe65ee2280ae3946c223e1878a1beda7e1ba8f41ffe23a5c403182a2f",
+      "gitBlobSHA1": "8394f62b7030ad050a9520028c10f4658f32e6af"
+    },
+    {
+      "path": "research/public-fixture-export-workflow-20261028/check.py",
+      "bytes": 6592,
+      "sha256": "8852e87c83096357b5656940712ee9722d0539bc0500d4c946ae1f9a5a8311c5",
+      "gitBlobSHA1": "6d4cf7429eda9828ac212256b33753a5f5e4edef"
+    },
+    {
+      "path": "research/public-fixture-export-workflow-20261028/integrated85-verification.json",
+      "bytes": 5835,
+      "sha256": "cce3629bb4fb0d987e5326abe852b018d430a4dfb306c029f3bf12edbaa8357a",
+      "gitBlobSHA1": "7ff201caefd28391747d14967f3e380e3d835cdd"
+    },
+    {
+      "path": "research/public-fixture-export-workflow-20261028/interlayer-verification.json",
+      "bytes": 1348,
+      "sha256": "e10623a10f6f4218eb5dd27ea3772ecde0c1e86b6b5d9d9ab0a6ca0264c26455",
+      "gitBlobSHA1": "bc4ca0c1fe3116701de0497d337a8b7e10b5fc29"
+    },
+    {
+      "path": "research/public-fixture-export-workflow-20261028/native-apple.before.yml",
+      "bytes": 5820,
+      "sha256": "ba74cd55736aa76248b885cf3c2454ba7ce2d082b0f7f040cd87ad8389e37a8e",
+      "gitBlobSHA1": "f60c3df9d45d8a4eecd361ae19f21524c43cb9f4"
+    },
+    {
+      "path": "research/public-fixture-export-workflow-20261028/source-verification.json",
+      "bytes": 1847,
+      "sha256": "362d37487b35563127ee79cc394d8e3bfecd5dd683254ba23f71ffb0dd4c39b3",
+      "gitBlobSHA1": "f3c81e58d4a0338ffd454b645d0dcf821dfc79f2"
+    },
+    {
+      "path": "research/public-fixture-export-workflow-20261028/workflow.inverse.patch",
+      "bytes": 3210,
+      "sha256": "207c7fe986e19cf33746c419b5ebe9644fb171ce2924a36e213523ea2d61bca2",
+      "gitBlobSHA1": "7de84e690dc2ae1ed4f038fa15f29d016eb1893b"
+    },
+    {
+      "path": "research/public-fixture-export-workflow-20261028/workflow.patch",
+      "bytes": 3210,
+      "sha256": "1f4979bea824c7f24f6b6b1e9a5abd8e27a69c93da14639e87cc1c118944a04d",
+      "gitBlobSHA1": "a4e87b87c73524c7cdff7e21ef54a694f6040cde"
+    }
+  ]
+}
