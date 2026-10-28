@@ -454,7 +454,7 @@ def validate_metadata_inventory(report, uuids, docs=None):
                 'metadataEntriesTruncated','metadataEntries','nodeCount','nodesTruncated','nodes',
                 'meshCount','unmatchedMeshCount','unknownFeatureMeshCount'}
     for fixture in fixtures:
-        keys(fixture, required | {'adapterFailure','inventoryFailure','geometryProbe','geometryProbeFailure'}, required)
+        keys(fixture, required | {'adapterFailure','inventoryFailure','geometryProbe','geometryProbeFailure','meshParity'}, required)
         room = fixture['fixtureID']
         require(isinstance(room, str) and room in FIXTURES and room not in seen, 'unknown_or_duplicate_fixture')
         seen.add(room)
@@ -538,7 +538,73 @@ def validate_metadata_inventory(report, uuids, docs=None):
                     'geometryProbe' not in fixture, 'geometry_probe_context_mismatch')
         if 'geometryProbe' in fixture:
             validate_geometry_probe(fixture, docs)
+        if 'meshParity' in fixture:
+            validate_mesh_parity(fixture)
     return report
+
+
+
+def validate_mesh_parity(fixture):
+    """Bounded raw same-export numeric capture; validation is not geometry parity.
+
+    Float32 words avoid decimal conversion loss. Internal matrix/point coherence
+    is checked, while source-frame agreement and face/winding equality belong to
+    the independent reader comparison, not an assumed successful capture.
+    """
+    capture = fixture['meshParity']
+    fields = {'schema','representation','coordinateEncoding','winding','complete','meshes'}
+    keys(capture, fields, fields)
+    require(capture['schema'] == 'blind.public-apple-native-mesh-parity.v1' and
+            capture['representation'] == 'raw-diagnostic-export' and
+            capture['coordinateEncoding'] == 'float32-bit-patterns-column-major' and
+            capture['winding'] == 'ordered-native-triangle-indices' and capture['complete'] is True,
+            'unsupported_mesh_parity_schema')
+    require(fixture['nodesTruncated'] is False and fixture['unmatchedMeshCount'] == 0 and
+            fixture['unknownFeatureMeshCount'] == 0 and 'inventoryFailure' not in fixture,
+            'mesh_parity_incomplete_context')
+    rows = capture['meshes']
+    nodes = {node['index']:node for node in fixture['nodes'] if node['isMesh']}
+    require(isinstance(rows, list) and 0 < len(rows) == len(nodes) <= 64, 'mesh_parity_count_mismatch')
+    def values(words, count):
+        require(isinstance(words, list) and len(words) == count and all(
+                type(word) is int and 0 <= word <= 0xffffffff for word in words), 'invalid_mesh_parity_words')
+        decoded = [struct.unpack('<f', struct.pack('<I', word))[0] for word in words]
+        require(all(math.isfinite(value) and abs(value) <= 10000 for value in decoded), 'invalid_mesh_parity_number')
+        return decoded
+    seen = set(); vertex_count = triangle_count = 0
+    row_fields = {'nodeIndex','featureID','localTransformBits','worldTransformBits',
+                  'localPositionBits','worldPositionBits','triangleIndices'}
+    for row in rows:
+        keys(row, row_fields, row_fields)
+        i = row['nodeIndex']
+        require(type(i) is int and i in nodes and i not in seen, 'mesh_parity_node_mismatch')
+        seen.add(i); node = nodes[i]
+        require(node['knownFeature'] is True and row['featureID'] == node.get('resolvedUUID'), 'mesh_parity_feature_mismatch')
+        count = node['vertexCount']; vertex_count += count
+        require(0 < count and vertex_count <= 1024, 'mesh_parity_vertex_budget')
+        local = values(row['localPositionBits'], count * 3)
+        world = values(row['worldPositionBits'], count * 3)
+        local_t = values(row['localTransformBits'], 16)
+        world_t = values(row['worldTransformBits'], 16)
+        for matrix in (local_t, world_t):
+            require(all(abs(matrix[k]) <= 64 * 2**-23 for k in (3,7,11)) and
+                    abs(matrix[15] - 1) <= 64 * 2**-23, 'invalid_mesh_parity_affine')
+        indices = row['triangleIndices']
+        require(isinstance(indices, list) and 0 < len(indices) <= 3072 and len(indices) % 3 == 0 and
+                all(type(index) is int and 0 <= index < count for index in indices), 'invalid_mesh_parity_indices')
+        triangle_count += len(indices) // 3
+        require(triangle_count <= 1024, 'mesh_parity_triangle_budget')
+        for offset in range(0, len(local), 3):
+            p = local[offset:offset+3]
+            expected = [sum(world_t[c*4+r]*p[c] for c in range(3))+world_t[12+r] for r in range(3)]
+            actual = world[offset:offset+3]
+            # SIMD may fuse Float32 operations. This is the existing arithmetic
+            # scale allowance, not sensor accuracy or an extrusion tolerance.
+            scale = max([1] + [abs(value) for value in p + world_t + expected + actual])
+            require(all(abs(a-b) <= 64 * 2**-23 * scale for a,b in zip(actual, expected)),
+                    'mesh_parity_world_local_mismatch')
+    require(seen == set(nodes), 'mesh_parity_count_mismatch')
+    return capture
 
 
 def float32(value):

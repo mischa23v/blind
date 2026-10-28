@@ -1,3 +1,9 @@
+## Current first priority: verified geometry — 2026-10-28 17:40 UTC
+
+Follow [GEO-01–04, then NAV-01–04](research/geometry-tracker-checkpoint-20261028/STATUS.md): native all-feature parity and support-contract correction; compatible reconstruction comparisons; then unchanged route/full-body acceptance and current localization/guidance. RTAB-Map is ongoing and InfiniTAM CPU feasibility is under review. No geometry or navigation task is closed merely by producing a mesh. Earlier dated instructions below are historical checkpoints.
+
+---
+
 ## Immediate navigation work — 2026-10-28 13:25 UTC
 
 Verified published head: `dc32a9bad9a75566f27924fb9f7aa8fe50a46e95`. Native run 40677832625 builds, but **18 route cases and 16 supplied-pose journey stages are blocked before movement by `missingMetadata`**. These are not physical room-clearance results.

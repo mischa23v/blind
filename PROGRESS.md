@@ -1,3 +1,9 @@
+## Geometry evidence checkpoint — 2026-10-28 17:40 UTC
+
+The independent Apple comparison confirms a representation-validation defect; fresh Open3D reconstruction and held-out reference scoring are complete, with substantial residual tails. Neither establishes navigation readiness. See the [current geometry-first status and open acceptance](research/geometry-tracker-checkpoint-20261028/STATUS.md). The older dated entries below remain unchanged historical evidence.
+
+---
+
 ## Apple route failures isolated before movement — 2026-10-28 13:25 UTC
 
 Rechecked published commit `dc32a9bad9a75566f27924fb9f7aa8fe50a46e95` and native run 40677832625. Hosted tests: 218 total, 198 passed, 18 failed, 2 skipped. The exact collected reports contain 12 baseline and 6 width-28 route outcomes plus 16 supplied-pose journey stages, all `unsupported-geometry / missingMetadata`. No route was admitted by these reports. Six collision-oracle tests fail the mandatory bidirectional thin-plane backend control. Neither failure proves that the actual rooms lack space.

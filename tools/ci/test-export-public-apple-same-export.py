@@ -139,6 +139,30 @@ class ValidationTests(unittest.TestCase):
                 with self.subTest(change=change),self.assertRaises(m.Error):m.observed_case(path,'a'*40)
 
 
+class MeshParityPayloadTests(unittest.TestCase):
+    def values(self):
+        values=payloads();inventory=json.loads(values[m.INVENTORY]);parity=samples.MeshParityEvidenceTests().capture()
+        for target,source in zip(inventory['fixtures'],parity['fixtures']):target['meshParity']=source['meshParity']
+        values[m.INVENTORY]=json.dumps(inventory).encode()
+        manifest=json.loads(values[m.MANIFEST]);manifest['inventorySHA256']=hashlib.sha256(values[m.INVENTORY]).hexdigest()
+        values[m.MANIFEST]=json.dumps(manifest).encode()
+        return values
+    def test_parity_remains_bound_to_same_inventory_and_six_payloads(self):
+        values=self.values()
+        self.assertEqual(set(values),set(m.FILES));self.assertEqual(len(values),6)
+        self.assertLess(len(values[m.INVENTORY]),m.INVENTORY_CAP)
+        self.assertEqual(len(m.validate_payloads(values,samples.DOCS,samples.UUIDS)),2)
+        inventory=json.loads(values[m.INVENTORY]);inventory['fixtures'][0]['meshParity']['meshes'][0]['triangleIndices']=[0,2,1]
+        values[m.INVENTORY]=json.dumps(inventory).encode()
+        with self.assertRaisesRegex(m.Error,'inventory_hash_mismatch'):m.validate_payloads(values,samples.DOCS,samples.UUIDS)
+    def test_rehashed_invalid_parity_is_rejected_not_silently_ignored(self):
+        values=self.values();inventory=json.loads(values[m.INVENTORY]);inventory['fixtures'][0]['meshParity']['complete']=False
+        values[m.INVENTORY]=json.dumps(inventory).encode()
+        manifest=json.loads(values[m.MANIFEST]);manifest['inventorySHA256']=hashlib.sha256(values[m.INVENTORY]).hexdigest()
+        values[m.MANIFEST]=json.dumps(manifest).encode()
+        with self.assertRaisesRegex(m.Error,'unsupported_mesh_parity_schema'):m.validate_payloads(values,samples.DOCS,samples.UUIDS)
+
+
 class BoundaryTests(unittest.TestCase):
     def test_exact_names_known_exporter_suffix_and_type(self):
         for name in m.FILES:

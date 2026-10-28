@@ -130,7 +130,25 @@ import simd
         var inventoryFailure: String?
         var geometryProbe: SourceBoundsProbe?
         var geometryProbeFailure: String?
+        var meshParity: MeshParityCapture?
     }
+    /// Exact Float32 words from the raw diagnostic Model I/O import. This is
+    /// separate from the adapter's routing geometry and never grants authority.
+    private struct MeshParityCapture: Encodable, Sendable {
+        let schema = "blind.public-apple-native-mesh-parity.v1"
+        let representation = "raw-diagnostic-export"
+        let coordinateEncoding = "float32-bit-patterns-column-major"
+        let winding = "ordered-native-triangle-indices"
+        let complete = true
+        let meshes: [MeshParityRow]
+    }
+    private struct MeshParityRow: Encodable, Sendable {
+        let nodeIndex: Int
+        let featureID: String
+        let localTransformBits, worldTransformBits: [UInt32]
+        let localPositionBits, worldPositionBits, triangleIndices: [UInt32]
+    }
+
     private struct SourceBoundsProbe: Encodable, Sendable {
         let sourceEncoding = "capturedRoomFloat32"
         let nodeIndex, vertexIndex, vertexCount, axis: Int
@@ -285,6 +303,78 @@ import simd
             parentGlobalTransform: parentGlobal, rootGlobalTransform: rootGlobal)
     }
 
+    /// Bounded original-public-fixture capture, not a general/private mesh dump.
+    /// Keep all faces and duplicate vertices. Winding is recorded, never repaired.
+    private nonisolated static func nativeMeshParity(mesh: MDLMesh, nodeIndex: Int,
+        featureID: UUID, asset: MDLAsset, vertices: inout Int, triangles: inout Int) throws -> MeshParityRow {
+        typealias Adapter = SavedRoomRouteMeshAdapter
+        guard nodeIndex < 128, mesh.vertexCount > 0, mesh.vertexCount <= 1_024 - vertices,
+              mesh.vertexDescriptor.attributes.count > 0, mesh.vertexDescriptor.layouts.count > 0,
+              let attribute = mesh.vertexDescriptor.attributes[0] as? MDLVertexAttribute,
+              attribute.name == MDLVertexAttributePosition, attribute.format == .float3,
+              attribute.offset == 0, attribute.bufferIndex == 0,
+              let layout = mesh.vertexDescriptor.layouts[0] as? MDLVertexBufferLayout,
+              layout.stride == 12, !mesh.vertexBuffers.isEmpty,
+              mesh.vertexBuffers[0].length >= mesh.vertexCount * 12,
+              let submeshes = mesh.submeshes as? [MDLSubmesh], !submeshes.isEmpty,
+              submeshes.count <= 64 else { throw Adapter.Failure.budgetExceeded }
+        func words(_ matrix: simd_float4x4) throws -> [UInt32] {
+            let values = (0..<4).flatMap { column in (0..<4).map { row in matrix[column][row] } }
+            guard values.allSatisfy({ $0.isFinite && abs($0) <= 10_000 }),
+                  abs(values[3]) <= Float(Adapter.roundoffAllowance(1)),
+                  abs(values[7]) <= Float(Adapter.roundoffAllowance(1)),
+                  abs(values[11]) <= Float(Adapter.roundoffAllowance(1)),
+                  abs(values[15] - 1) <= Float(Adapter.roundoffAllowance(1)) else { throw Adapter.Failure.invalidMesh }
+            return values.map(\.bitPattern)
+        }
+        let transform = MDLTransform.globalTransform(with: mesh, atTime: asset.startTime)
+        let localTransform = try words(mesh.transform?.matrix ?? matrix_identity_float4x4)
+        let worldTransform = try words(transform)
+        var local: [UInt32] = [], world: [UInt32] = [], indices: [UInt32] = []
+        local.reserveCapacity(mesh.vertexCount * 3); world.reserveCapacity(mesh.vertexCount * 3)
+        let map = mesh.vertexBuffers[0].map()
+        for i in 0..<mesh.vertexCount {
+            let address = map.bytes.advanced(by: i * 12)
+            let p = SIMD4<Float>(address.loadUnaligned(as: Float.self),
+                address.advanced(by: 4).loadUnaligned(as: Float.self),
+                address.advanced(by: 8).loadUnaligned(as: Float.self), 1)
+            let w = transform * p
+            guard [p.x,p.y,p.z,w.x,w.y,w.z,w.w].allSatisfy({ $0.isFinite && abs($0) <= 10_000 }),
+                  abs(w.w - 1) <= Float(Adapter.roundoffAllowance(1)) else { throw Adapter.Failure.invalidMesh }
+            local.append(contentsOf: [p.x.bitPattern,p.y.bitPattern,p.z.bitPattern])
+            world.append(contentsOf: [w.x.bitPattern,w.y.bitPattern,w.z.bitPattern])
+        }
+        for submesh in submeshes {
+            guard submesh.geometryType == .triangles, submesh.indexCount > 0, submesh.indexCount % 3 == 0,
+                  submesh.indexCount / 3 <= 1_024 - triangles else { throw Adapter.Failure.budgetExceeded }
+            let width: Int
+            switch submesh.indexType {
+            case .uInt8: width = 1
+            case .uInt16: width = 2
+            case .uInt32: width = 4
+            default: throw Adapter.Failure.unsupportedGeometry
+            }
+            guard submesh.indexBuffer.length >= submesh.indexCount * width else { throw Adapter.Failure.invalidMesh }
+            let indexMap = submesh.indexBuffer.map()
+            for i in 0..<submesh.indexCount {
+                let address = indexMap.bytes.advanced(by: i * width)
+                let value: UInt32
+                switch width {
+                case 1: value = UInt32(address.loadUnaligned(as: UInt8.self))
+                case 2: value = UInt32(address.loadUnaligned(as: UInt16.self))
+                default: value = address.loadUnaligned(as: UInt32.self)
+                }
+                guard value < UInt32(mesh.vertexCount) else { throw Adapter.Failure.invalidMesh }
+                indices.append(value)
+            }
+            triangles += submesh.indexCount / 3
+        }
+        vertices += mesh.vertexCount
+        return .init(nodeIndex: nodeIndex, featureID: featureID.uuidString,
+            localTransformBits: localTransform, worldTransformBits: worldTransform,
+            localPositionBits: local, worldPositionBits: world, triangleIndices: indices)
+    }
+
     /// Test-only observation of the unchanged exporter/importer, never a parser
     /// fallback or geometry matcher. It deliberately proceeds to node inventory
     /// after a metadata decode failure, without accepting any of that geometry.
@@ -424,6 +514,7 @@ import simd
                   asset.startTime == asset.endTime else { throw Adapter.Failure.invalidMesh }
             var visited = Set<ObjectIdentifier>()
             var geometryExaminedVertices = 0
+            var parityMeshes: [MeshParityRow] = [], parityVertices = 0, parityTriangles = 0
             func visit(_ node: MDLObject, parentIndex: Int?, inheritedID: UUID?, depth: Int,
                        sceneRoot: MDLObject, parent: MDLObject?) throws {
                 guard depth <= 64, visited.insert(ObjectIdentifier(node)).inserted else { throw Adapter.Failure.invalidMesh }
@@ -443,6 +534,13 @@ import simd
                     result.meshCount += 1
                     if identity == nil { result.unmatchedMeshCount += 1 }
                     else if publicID(identity) == nil { result.unknownFeatureMeshCount += 1 }
+                }
+                if retainSameExport, let mesh {
+                    guard let identity, sourceFeatures[identity] != nil, parityMeshes.count < 64 else {
+                        throw Adapter.Failure.metadataUnknownFeature
+                    }
+                    parityMeshes.append(try nativeMeshParity(mesh: mesh, nodeIndex: index, featureID: identity,
+                        asset: asset, vertices: &parityVertices, triangles: &parityTriangles))
                 }
                 if result.adapterFailure == "sourceGeometryMismatch", result.geometryProbe == nil,
                    result.geometryProbeFailure == nil, let mesh, let identity, let feature = sourceFeatures[identity] {
@@ -468,6 +566,12 @@ import simd
             for index in 0..<asset.count {
                 let root = asset.object(at: index)
                 try visit(root, parentIndex: nil, inheritedID: nil, depth: 0, sceneRoot: root, parent: nil)
+            }
+            if retainSameExport {
+                guard !result.nodesTruncated, parityMeshes.count == result.meshCount, !parityMeshes.isEmpty else {
+                    throw Adapter.Failure.invalidMesh
+                }
+                result.meshParity = .init(meshes: parityMeshes)
             }
         } catch { result.inventoryFailure = result.inventoryFailure ?? failureCode(error) }
         return .init(inventory: result, sameExport: sameExport)
@@ -540,6 +644,8 @@ import simd
         }
         for report in reports {
             XCTAssertNil(report.inventoryFailure)
+            XCTAssertNotNil(report.meshParity, "Every raw diagnostic mesh must be captured without truncation")
+            XCTAssertEqual(report.meshParity?.meshes.count, report.meshCount)
             XCTAssertNil(report.geometryProbeFailure)
             XCTAssertEqual(report.unmatchedMeshCount, 0)
             XCTAssertEqual(report.unknownFeatureMeshCount, 0)
@@ -671,7 +777,7 @@ import simd
             XCTAssertFalse(mesh.currentDoorStateKnown)
             XCTAssertFalse(mesh.actualWorldCoverageKnown)
             XCTAssertFalse(mesh.vertices.isEmpty)
-            XCTAssertGreaterThan(mesh.upwardFloorTriangles, 0, "Export must provide upward floor support; no silent winding repair")
+            XCTAssertGreaterThan(mesh.upwardFloorTriangles, 0, "Original polygon platform tessellation must provide upward historical support; no silent winding repair")
             let floorIDs = Set(raw.floors.map(\.identifier))
             for index in mesh.floorSupport.indices {
                 XCTAssertEqual(mesh.floorSupport[index], floorIDs.contains(mesh.triangleFeatureIDs[index]))
@@ -793,3 +899,103 @@ import simd
     }
 }
 
+
+
+/// Synthetic contracts for platform tessellation; these are not real-room or
+/// device safety trials. The unchanged Apple fixtures retain their own tests.
+@MainActor final class SavedRoomHistoricalSupportTests: XCTestCase {
+    private func floor(_ corners: [[Double]], transform: [Double]? = nil) -> SavedRoomRouteMeshSnapshot.Feature {
+        .init(id: UUID(), kind: .floor, parentID: nil, category: "floor",
+            transform: transform ?? [1,0,0,0, 0,0,-1,0, 0,1,0,0, 0,0,0,1],
+            dimensions: [2,2,0], polygonCorners: corners, capturedDoorOpen: nil)
+    }
+    private let square: [[Double]] = [[-1,-1,0],[1,-1,0],[1,1,0],[-1,1,0]]
+    private func onWorker(_ feature: SavedRoomRouteMeshSnapshot.Feature) async throws -> SavedRoomRouteMeshAdapter.HistoricalRoutingGeometry {
+        try await Task.detached(priority: .utility) { try SavedRoomRouteMeshAdapter.tessellateHistoricalFloor(feature) }.value
+    }
+    func testZeroExtrusionHasOnlyOriginalPlaneSupportForBothSourceWindings() async throws {
+        for corners in [square, Array(square.reversed())] {
+            let feature = floor(corners), result = try await onWorker(feature)
+            XCTAssertGreaterThan(result.upward, 0)
+            XCTAssertEqual(result.floorSupport, Array(repeating: true, count: result.triangles.count / 3))
+            XCTAssertTrue(result.featureIDs.allSatisfy { $0 == feature.id })
+            for index in stride(from: 0, to: result.vertices.count, by: 3) {
+                XCTAssertEqual(result.vertices[index + 1], 0)
+                XCTAssertLessThanOrEqual(abs(result.vertices[index]), 1)
+                XCTAssertLessThanOrEqual(abs(result.vertices[index + 2]), 1)
+            }
+        }
+    }
+    func testSourcePlaneOffsetAndMetricTransformAppliedOnce() async throws {
+        let corners = square.map { [$0[0], $0[1], 0.125] }
+        let result = try await onWorker(floor(corners, transform: [0,0,1,0, 1,0,0,0, 0,1,0,0, 7,2,11,1]))
+        for index in stride(from: 0, to: result.vertices.count, by: 3) {
+            XCTAssertEqual(result.vertices[index + 1], 2.125)
+            XCTAssertTrue((6...8).contains(result.vertices[index]))
+            XCTAssertTrue((10...12).contains(result.vertices[index + 2]))
+        }
+    }
+    func testMalformedSourcePolygonsAreRejectedInsteadOfRepaired() async {
+        let polygons: [[[Double]]] = [
+            [[-1,-1,0],[1,1,0],[-1,1,0],[1,-1,0]], // crossing
+            [[-1,-1,0],[1,-1,0],[1,-1,0],[-1,1,0]], // duplicate edge
+            [[-1,-1,0],[1,-1,0],[1,1,0.1],[-1,1,0]], // not planar
+            [[0,0,0],[1,0,0],[2,0,0]], // zero area
+            [[0,0,0],[1,0,0],[0,Double.nan,0]],
+            Array(repeating: [0,0,0], count: 1025)
+        ]
+        for polygon in polygons {
+            do { _ = try await onWorker(floor(polygon)); XCTFail("Malformed polygon was accepted") }
+            catch { XCTAssertNotNil(error as? SavedRoomRouteMeshAdapter.Failure) }
+        }
+    }
+    func testRawSlabSidesUndersideAndRimCannotBecomeRoutingSupport() async throws {
+        let source = floor(square)
+        let wall = SavedRoomRouteMeshSnapshot.Feature(id: UUID(), kind: .wall, parentID: nil,
+            category: "wall", transform: [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+            dimensions: [3,2,0], polygonCorners: [], capturedDoorOpen: nil)
+        let vertices: [Double] = [-1.16,-0.08,-1.16, 1.16,-0.08,-1.16, 1.16,0,1.16,
+                                  3,0,0, 3,2,0, 3,0,2]
+        let result = try await Task.detached(priority: .utility) {
+            try SavedRoomRouteMeshAdapter.historicalRoutingGeometry(features: [source,wall], rawVertices: vertices,
+                rawTriangles: [0,1,2,3,4,5], rawTriangleFeatureIDs: [source.id,wall.id])
+        }.value
+        XCTAssertEqual(Array(result.vertices.prefix(9)), Array(vertices.suffix(9)), "Non-floor export stays byte-value identical")
+        XCTAssertEqual(Array(result.triangles.prefix(3)), [0,1,2])
+        XCTAssertEqual(result.featureIDs.first, wall.id)
+        XCTAssertEqual(result.floorSupport.first, false)
+        for face in result.floorSupport.indices where result.floorSupport[face] {
+            for corner in 0..<3 {
+                let index = Int(result.triangles[face*3+corner]) * 3
+                XCTAssertEqual(result.vertices[index+1], 0)
+                XCTAssertLessThanOrEqual(abs(result.vertices[index]), 1)
+                XCTAssertLessThanOrEqual(abs(result.vertices[index+2]), 1)
+            }
+        }
+    }
+    func testFeatureFrameRejectsScaleShiftAndDoubleTransform() throws {
+        let source = floor(square, transform: [1,0,0,0,0,0,-1,0,0,1,0,0,4,2,3,1])
+        let exact = simd_float4x4(columns: (SIMD4(1,0,0,0),SIMD4(0,0,-1,0),SIMD4(0,1,0,0),SIMD4(4,2,3,1)))
+        XCTAssertNoThrow(try SavedRoomRouteMeshAdapter.verifyFeatureFrame(exact, feature: source))
+        var shifted = exact; shifted.columns.3.x += 0.01
+        XCTAssertThrowsError(try SavedRoomRouteMeshAdapter.verifyFeatureFrame(shifted, feature: source))
+        var scaled = exact; scaled.columns.0 *= 100
+        XCTAssertThrowsError(try SavedRoomRouteMeshAdapter.verifyFeatureFrame(scaled, feature: source))
+        XCTAssertThrowsError(try SavedRoomRouteMeshAdapter.verifyFeatureFrame(exact * exact, feature: source))
+    }
+    func testOrientedBoundaryRejectsConcavityBridgeMissingPatchAndDuplicateTriangles() throws {
+        let vertices = square
+        XCTAssertNoThrow(try SavedRoomRouteMeshAdapter.verifyHistoricalFloorBoundary(source: square,
+            tessellated: vertices, triangles: [0,1,2,0,2,3], epsilon: 0.00001))
+        XCTAssertNoThrow(try SavedRoomRouteMeshAdapter.verifyHistoricalFloorBoundary(source: Array(square.reversed()),
+            tessellated: vertices, triangles: [0,1,2,0,2,3], epsilon: 0.00001))
+        XCTAssertThrowsError(try SavedRoomRouteMeshAdapter.verifyHistoricalFloorBoundary(source: square,
+            tessellated: vertices, triangles: [0,1,2], epsilon: 0.00001))
+        XCTAssertThrowsError(try SavedRoomRouteMeshAdapter.verifyHistoricalFloorBoundary(source: square,
+            tessellated: vertices, triangles: [0,1,2,0,2,3,0,1,2], epsilon: 0.00001))
+        let concave: [[Double]] = [[-1,-1,0],[1,-1,0],[1,0,0],[0,0,0],[0,1,0],[-1,1,0]]
+        XCTAssertThrowsError(try SavedRoomRouteMeshAdapter.verifyHistoricalFloorBoundary(source: concave,
+            tessellated: vertices, triangles: [0,1,2,0,2,3], epsilon: 0.00001))
+    }
+
+}

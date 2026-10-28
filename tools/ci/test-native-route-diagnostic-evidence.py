@@ -761,6 +761,71 @@ class DiagnosticCollectionTests(unittest.TestCase):
             self.assertEqual(len(final['routeDiagnosticEvidence']['reports']),5)
 
 
+class MeshParityEvidenceTests(unittest.TestCase):
+    def capture(self):
+        data = metadata_inventory()
+        for fixture in data['fixtures']:
+            bits = lambda values: [m.struct.unpack('<I', m.struct.pack('<f', value))[0] for value in values]
+            identity = bits([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1])
+            points = bits([0,0,0, 1,0,0, 1,1,0, 0,1,0])
+            fixture['meshParity'] = {'schema':'blind.public-apple-native-mesh-parity.v1',
+                'representation':'raw-diagnostic-export','coordinateEncoding':'float32-bit-patterns-column-major',
+                'winding':'ordered-native-triangle-indices','complete':True,'meshes':[{
+                    'nodeIndex':1,'featureID':fixture['nodes'][1]['resolvedUUID'],
+                    'localTransformBits':identity[:],'worldTransformBits':identity[:],
+                    'localPositionBits':points[:],'worldPositionBits':points[:],'triangleIndices':[0,1,2,0,2,3]}]}
+        return data
+    def test_complete_numeric_capture_and_legacy_inventory_are_both_valid(self):
+        for data in (self.capture(), metadata_inventory()):
+            self.assertEqual(m.validate_metadata_inventory(data, UUIDS), data)
+    def test_rejects_unknown_schema_authority_and_coordinate_semantics(self):
+        changes = [('schema','other'),('representation','corrected-route-mesh'),('coordinateEncoding','float64'),
+                   ('winding','silently-repaired'),('complete',False),('complete',1)]
+        for field,value in changes:
+            data=self.capture();data['fixtures'][0]['meshParity'][field]=value
+            with self.subTest(field=field), self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+    def test_rejects_missing_duplicate_and_unknown_meshes(self):
+        for mode in ('missing','duplicate','unknown','wrong-feature'):
+            data=self.capture();rows=data['fixtures'][0]['meshParity']['meshes']
+            if mode=='missing':rows.clear()
+            elif mode=='duplicate':rows.append(copy.deepcopy(rows[0]))
+            elif mode=='unknown':rows[0]['nodeIndex']=0
+            else:rows[0]['featureID']='00000000-0000-0000-0000-000000000000'
+            with self.subTest(mode=mode),self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+    def test_rejects_invalid_float_words_and_lengths(self):
+        for value in (-1,0x100000000,True,1.0,0x7f800000,0x7fc00000):
+            data=self.capture();data['fixtures'][0]['meshParity']['meshes'][0]['localPositionBits'][0]=value
+            with self.subTest(value=value),self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+        for field in ('localTransformBits','worldTransformBits','localPositionBits','worldPositionBits'):
+            data=self.capture();data['fixtures'][0]['meshParity']['meshes'][0][field].pop()
+            with self.subTest(field=field),self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+    def test_rejects_indices_and_world_local_disagreement(self):
+        for indices in ([],[0,1],[0,1,4],[0,1,-1],[0,1,True],[0,1,1.0],[0,1,2]*1025):
+            data=self.capture();data['fixtures'][0]['meshParity']['meshes'][0]['triangleIndices']=indices
+            with self.subTest(indices=indices[:6]),self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+        data=self.capture();row=data['fixtures'][0]['meshParity']['meshes'][0]
+        row['worldPositionBits'][0]=0x3f800000
+        with self.assertRaisesRegex(m.EvidenceError,'world_local'):m.validate_metadata_inventory(data,UUIDS)
+        data=self.capture();row=data['fixtures'][0]['meshParity']['meshes'][0];row['worldTransformBits'][15]=0
+        with self.assertRaisesRegex(m.EvidenceError,'affine'):m.validate_metadata_inventory(data,UUIDS)
+    def test_records_winding_instead_of_claiming_geometric_correctness(self):
+        data=self.capture();row=data['fixtures'][0]['meshParity']['meshes'][0]
+        row['triangleIndices']=[0,2,1,0,3,2]
+        self.assertEqual(m.validate_metadata_inventory(data,UUIDS),data)
+        # A source-frame scale mistake is retained for independent comparison;
+        # an internally coherent numeric capture does not prove correct units.
+        row['worldTransformBits'][0]=0x40000000
+        row['worldPositionBits'][3]=row['worldPositionBits'][6]=0x40000000
+        self.assertEqual(m.validate_metadata_inventory(data,UUIDS),data)
+    def test_rejects_partial_capture_and_unapproved_extra_fields(self):
+        for change in ('failure','extra','vertex-budget'):
+            data=self.capture();fixture=data['fixtures'][0];row=fixture['meshParity']['meshes'][0]
+            if change=='failure':fixture['inventoryFailure']='invalidMesh'
+            elif change=='extra':row['privatePath']='not-allowed'
+            else:fixture['nodes'][1]['vertexCount']=1025
+            with self.subTest(change=change),self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+
+
 class MixedCollisionEvidenceTests(unittest.TestCase):
     def collect(self):
         specs=m.SPECS+m.DIAGNOSTIC_SPECS

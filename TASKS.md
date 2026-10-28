@@ -1,3 +1,9 @@
+## Active geometry-first acceptance — 2026-10-28 17:40 UTC
+
+The [current dependency-ordered checklist](research/geometry-tracker-checkpoint-20261028/STATUS.md) records completed evidence separately from open geometry correction, route/full-body validation and live localization work. All navigation readiness and complete-journey tasks remain open. Existing task definitions and historical evidence below are preserved.
+
+---
+
 ## Navigation checkpoint and open acceptance — 2026-10-28 13:26 UTC
 
 - [ ] Repair Apple mesh metadata adapter using actual export/node evidence. Run 40677832625: all 18 route outcomes and 16 supplied-pose journey stages blocked by missingMetadata; zero admitted paths.
