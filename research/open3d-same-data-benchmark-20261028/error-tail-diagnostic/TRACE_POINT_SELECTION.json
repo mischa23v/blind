@@ -1,0 +1,102 @@
+{
+  "selectionRule": "row-major component/rectangle indices floor(q*(n-1)), q=.25,.5,.75; nearest integer pixel floor(coord+.5); no interpolation",
+  "selectionComputedBeforeTrainingDepthLoop": true,
+  "points": [
+    {
+      "id": "frame_00228_q0.25",
+      "sourceFrame": "frame_00228",
+      "quantile": 0.25,
+      "pixel": [
+        640,
+        172
+      ],
+      "tsdfAxialMetres": 0.3666484701394638,
+      "faroAxialMetres": 3.896371095921312,
+      "worldPoint": [
+        0.1423648021096195,
+        0.09837922929098294,
+        0.06065232626498396
+      ]
+    },
+    {
+      "id": "frame_00228_q0.5",
+      "sourceFrame": "frame_00228",
+      "quantile": 0.5,
+      "pixel": [
+        672,
+        288
+      ],
+      "tsdfAxialMetres": 0.39111570421413433,
+      "faroAxialMetres": 4.1116348274594205,
+      "worldPoint": [
+        0.12681654196246406,
+        0.12046849998164028,
+        0.01034505028071378
+      ]
+    },
+    {
+      "id": "frame_00228_q0.75",
+      "sourceFrame": "frame_00228",
+      "quantile": 0.75,
+      "pixel": [
+        652,
+        452
+      ],
+      "tsdfAxialMetres": 0.4169947149885307,
+      "faroAxialMetres": 4.459715308662114,
+      "worldPoint": [
+        0.12237074692667749,
+        0.12052683028680564,
+        -0.0710597225211793
+      ]
+    },
+    {
+      "id": "frame_00197_q0.25",
+      "sourceFrame": "frame_00197",
+      "quantile": 0.25,
+      "pixel": [
+        600,
+        824
+      ],
+      "tsdfAxialMetres": 2.5039862018284786,
+      "faroAxialMetres": 2.4882041147186347,
+      "worldPoint": [
+        0.9060400996867686,
+        -1.866409461027956,
+        -1.2687304808501598
+      ]
+    },
+    {
+      "id": "frame_00197_q0.5",
+      "sourceFrame": "frame_00197",
+      "quantile": 0.5,
+      "pixel": [
+        600,
+        872
+      ],
+      "tsdfAxialMetres": 2.2675682915986037,
+      "faroAxialMetres": 2.2587083628191276,
+      "worldPoint": [
+        1.1506574836763428,
+        -1.8179090374468347,
+        -1.2673344595560168
+      ]
+    },
+    {
+      "id": "frame_00197_q0.75",
+      "sourceFrame": "frame_00197",
+      "quantile": 0.75,
+      "pixel": [
+        600,
+        920
+      ],
+      "tsdfAxialMetres": 2.071991028346232,
+      "faroAxialMetres": 2.0683296795719452,
+      "worldPoint": [
+        1.353022822594403,
+        -1.7777834012967149,
+        -1.2662123124498628
+      ]
+    }
+  ]
+}

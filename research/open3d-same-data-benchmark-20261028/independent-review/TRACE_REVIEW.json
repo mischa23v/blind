@@ -1,0 +1,188 @@
+{
+  "status": "passed",
+  "checks": 11180,
+  "maximumFloatingDifference": 1.3387762010097504e-08,
+  "comparisonTolerance": "absolute1e-9 plus relative1e-12, for near-camera-plane projected coordinates; integer sample pixels and statuses exact",
+  "scriptSHA256": "19abd2987defc4e893f8acb5dba246d8e8b56410584df4b36edaaaa1c75d5dff",
+  "traceSHA256": "f93507a4181a537d202c8bd78dd6210606f2c7337c4064ea1fb9aaa734fb4bcc",
+  "observationsRecomputed": 1590,
+  "trainingDepthHashesVerified": 265,
+  "points": [
+    {
+      "id": "frame_00228_q0.25",
+      "compatible": [
+        {
+          "frame": "frame_00074",
+          "pixel": [
+            115,
+            150
+          ],
+          "axialResidualMetres": 0.002800177686092642
+        }
+      ]
+    },
+    {
+      "id": "frame_00228_q0.5",
+      "compatible": [
+        {
+          "frame": "frame_00074",
+          "pixel": [
+            111,
+            162
+          ],
+          "axialResidualMetres": 0.02725319478812649
+        }
+      ]
+    },
+    {
+      "id": "frame_00228_q0.75",
+      "compatible": [
+        {
+          "frame": "frame_00074",
+          "pixel": [
+            113,
+            183
+          ],
+          "axialResidualMetres": 0.04925041688507115
+        }
+      ]
+    },
+    {
+      "id": "frame_00197_q0.25",
+      "compatible": [
+        {
+          "frame": "frame_00136",
+          "pixel": [
+            449,
+            962
+          ],
+          "axialResidualMetres": -0.007537613580538727
+        },
+        {
+          "frame": "frame_00137",
+          "pixel": [
+            240,
+            779
+          ],
+          "axialResidualMetres": 0.00273066026428026
+        },
+        {
+          "frame": "frame_00195",
+          "pixel": [
+            656,
+            726
+          ],
+          "axialResidualMetres": -0.00010255909346490455
+        },
+        {
+          "frame": "frame_00196",
+          "pixel": [
+            619,
+            768
+          ],
+          "axialResidualMetres": 0.008669125607986494
+        },
+        {
+          "frame": "frame_00198",
+          "pixel": [
+            624,
+            975
+          ],
+          "axialResidualMetres": -0.0010554222803329516
+        }
+      ]
+    },
+    {
+      "id": "frame_00197_q0.5",
+      "compatible": [
+        {
+          "frame": "frame_00136",
+          "pixel": [
+            554,
+            977
+          ],
+          "axialResidualMetres": -0.014130458381982347
+        },
+        {
+          "frame": "frame_00137",
+          "pixel": [
+            346,
+            784
+          ],
+          "axialResidualMetres": 0.007245911534697447
+        },
+        {
+          "frame": "frame_00138",
+          "pixel": [
+            134,
+            931
+          ],
+          "axialResidualMetres": -0.0038298207229932046
+        },
+        {
+          "frame": "frame_00195",
+          "pixel": [
+            653,
+            755
+          ],
+          "axialResidualMetres": 0.0171804540479501
+        },
+        {
+          "frame": "frame_00196",
+          "pixel": [
+            617,
+            804
+          ],
+          "axialResidualMetres": 0.0032180995854043104
+        }
+      ]
+    },
+    {
+      "id": "frame_00197_q0.75",
+      "compatible": [
+        {
+          "frame": "frame_00136",
+          "pixel": [
+            646,
+            990
+          ],
+          "axialResidualMetres": -0.00809173490066284
+        },
+        {
+          "frame": "frame_00137",
+          "pixel": [
+            435,
+            787
+          ],
+          "axialResidualMetres": 0.011103201612502112
+        },
+        {
+          "frame": "frame_00138",
+          "pixel": [
+            241,
+            915
+          ],
+          "axialResidualMetres": -0.0025537820889018903
+        },
+        {
+          "frame": "frame_00195",
+          "pixel": [
+            649,
+            783
+          ],
+          "axialResidualMetres": 0.01120076847434559
+        },
+        {
+          "frame": "frame_00196",
+          "pixel": [
+            615,
+            840
+          ],
+          "axialResidualMetres": -0.004405287451789253
+        }
+      ]
+    }
+  ],
+  "scope": "Independent optical-coordinate projection and nearest-pixel sampling, original GL poses converted with flip. Independently selected row-major component/rectangle quantiles. No TSDF contribution instrumentation, new raycast or reconstruction.",
+  "interpretation": "These are six post-hoc surface-point projection checks, not proof that frame74 caused the reconstructed surface or that other images provided clear-space evidence. Axial20cm compatibility is not the exact TSDF integration support/weight."
+}
