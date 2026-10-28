@@ -13,6 +13,71 @@ final class RecordedRouteStore: @unchecked Sendable {
     private var restarted = false, trackingLost = false
     private var continuityEpoch = UUID()
     private var sampler = RecordedRouteSampler()
+#if DEBUG
+    enum DiagnosticOperationKind: Int { case read, clear }
+    struct DiagnosticOperationSnapshot: Sendable {
+        let ownerID, operationID: UUID
+        let index: Int
+        let kind: String
+        let values: [TimeInterval?]
+        func report() -> String {
+            func time(_ slot: Int) -> String { values[slot].map { String($0) } ?? "missing" }
+            func delta(_ start: Int, _ end: Int) -> String {
+                guard let first = values[start], let last = values[end] else { return "missing" }
+                return String(last - first)
+            }
+            let admission = values[0] != nil ? "queued" : (values[6] != nil ? "rejectedBusy" : "notAdmitted")
+            return "RECORDED_ROUTE_OPERATION owner=\(ownerID) id=\(operationID) index=\(index) kind=\(kind) admission=\(admission) queued=\(time(0)) workerStarted=\(time(1)) loadFinished=\(time(2)) databaseReturned=\(time(3)) workerFinished=\(time(4)) mainDelivered=\(time(5)) inlineDelivered=\(time(6)) queueWait=\(delta(0,1)) loadWall=\(delta(1,2)) databaseWall=\(delta(2,3)) workerWall=\(delta(1,4)) mainHandoff=\(delta(4,5))"
+        }
+    }
+    final class DiagnosticOperationTiming: @unchecked Sendable {
+        enum Phase: Int { case queued, workerStarted, loadFinished, databaseReturned, workerFinished, mainDelivered, inlineDelivered }
+        private let lock = NSLock()
+        private let ownerID, operationID: UUID
+        private let index: Int
+        private let kind: DiagnosticOperationKind
+        private var values: [TimeInterval?] = [nil, nil, nil, nil, nil, nil, nil]
+        init(ownerID: UUID, index: Int, kind: DiagnosticOperationKind) {
+            self.ownerID = ownerID; operationID = UUID(); self.index = index; self.kind = kind
+        }
+        func mark(_ phase: Phase) {
+            let time = ProcessInfo.processInfo.systemUptime
+            lock.lock(); defer { lock.unlock() }
+            if values[phase.rawValue] == nil { values[phase.rawValue] = time }
+        }
+        func snapshot() -> DiagnosticOperationSnapshot {
+            lock.lock(); let times = values; lock.unlock()
+            return .init(ownerID: ownerID, operationID: operationID, index: index,
+                kind: kind == .read ? "read" : "clear", values: times)
+        }
+    }
+    /// Disabled by default. Two latest handles only; an in-flight operation
+    /// separately retains its own receipt, including when a busy call replaces
+    /// the latest handle. No observations, paths, labels or database IDs enter it.
+    private final class DiagnosticOperations: @unchecked Sendable {
+        private let lock = NSLock()
+        private let ownerID = UUID()
+        private var enabled = false
+        private var index = 0
+        private var latest: [DiagnosticOperationTiming?] = [nil, nil]
+        func enable() { lock.lock(); enabled = true; lock.unlock() }
+        func begin(_ kind: DiagnosticOperationKind) -> DiagnosticOperationTiming? {
+            lock.lock(); defer { lock.unlock() }
+            guard enabled else { return nil }
+            if index < Int.max { index += 1 }
+            let receipt = DiagnosticOperationTiming(ownerID: ownerID, index: index, kind: kind)
+            latest[kind.rawValue] = receipt; return receipt
+        }
+        func last(_ kind: DiagnosticOperationKind) -> DiagnosticOperationTiming? {
+            lock.lock(); defer { lock.unlock() }; return latest[kind.rawValue]
+        }
+    }
+    private let diagnosticOperations = DiagnosticOperations()
+    func enableOperationTimingForTesting() { diagnosticOperations.enable() }
+    func diagnosticLastOperationForTesting(_ kind: DiagnosticOperationKind) -> DiagnosticOperationTiming? {
+        diagnosticOperations.last(kind)
+    }
+#endif
     // Explicit local diagnostic; memory/receipt state protected by lock. No export.
     private var testRecording: NavigationTestRecording?
     private var testOwnedRoute: NavigationTestRecording.OwnedRoute?
@@ -341,10 +406,26 @@ final class RecordedRouteStore: @unchecked Sendable {
     }
     func preview(referenceKind: RecordedRouteAnchor.Kind? = nil, _ completion: @escaping (Snapshot) -> Void) { page(cursor: nil, reference: nil, referenceKind: referenceKind, completion: completion) }
     func page(cursor: RecordedRouteCursor?, reference: String?, referenceKind: RecordedRouteAnchor.Kind? = nil, completion: @escaping (Snapshot) -> Void) {
-        lock.lock(); guard !readPending else { lock.unlock(); completion(withheld(busy: true)); return }
+#if DEBUG
+        let timing = diagnosticOperations.begin(.read)
+#endif
+        lock.lock(); guard !readPending else { lock.unlock();
+#if DEBUG
+            timing?.mark(.inlineDelivered)
+#endif
+            completion(withheld(busy: true)); return }
         readPending = true; let token = generation; lock.unlock()
+#if DEBUG
+        timing?.mark(.queued)
+#endif
         queue.async {
+#if DEBUG
+            timing?.mark(.workerStarted)
+#endif
             self.load()
+#if DEBUG
+            timing?.mark(.loadFinished)
+#endif
             var preview: RecordedRoutePreview?, next: RecordedRouteCursor?
             var referenceUnavailable = false
             do {
@@ -357,6 +438,9 @@ final class RecordedRouteStore: @unchecked Sendable {
                         selectedReference = candidates[0].id
                     }
                     let page = try repository.reversePage(cursor: cursor, returningTo: selectedReference)
+#if DEBUG
+                    timing?.mark(.databaseReturned)
+#endif
                     let samples = try page.samples.map { stored -> RecordedRouteSample in
                         let sample = try RecordedRouteSample(payload: stored.row.payload)
                         guard sample.observationID.uuidString == stored.row.id, sample.sessionID.uuidString == stored.row.sessionID,
@@ -386,7 +470,13 @@ final class RecordedRouteStore: @unchecked Sendable {
             let result = Snapshot(preview: preview, trip: self.trip, nextPage: next,
                 persistenceFailed: self.persistenceFailed, loadFailed: self.loadFailed, busy: false, budgetDeferred: self.budgetDeferred, referenceUnavailable: referenceUnavailable,
                 durableSampleCount: Int(self.trip?.retainedCount ?? 0), volatileSampleCount: self.pending.count, droppedVolatileSampleCount: self.droppedVolatile)
+#if DEBUG
+            timing?.mark(.workerFinished)
+#endif
             DispatchQueue.main.async {
+#if DEBUG
+                timing?.mark(.mainDelivered)
+#endif
                 self.lock.lock(); let current = self.generation == token; self.readPending = false; self.lock.unlock()
                 completion(current ? result : self.withheld(busy: true))
             }
@@ -418,10 +508,23 @@ final class RecordedRouteStore: @unchecked Sendable {
         }
     }
     func clear(_ completion: @escaping (Bool) -> Void) {
+#if DEBUG
+        let timing = diagnosticOperations.begin(.clear)
+#endif
         lock.lock(); testWriteGeneration = UUID(); testArchive = nil; testSaveFailed = false; testRecording = nil; testOwnedRoute = nil; testRejectedSamples = 0; testRejectedPlans = 0; testGapPending = false
-        guard !clearPending else { lock.unlock(); completion(false); return }
+        guard !clearPending else { lock.unlock();
+#if DEBUG
+            timing?.mark(.inlineDelivered)
+#endif
+            completion(false); return }
         clearPending = true; sessionID = nil; generation = UUID(); lock.unlock()
+#if DEBUG
+        timing?.mark(.queued)
+#endif
         queue.async {
+#if DEBUG
+            timing?.mark(.workerStarted)
+#endif
             let erasedTrip = self.trip
             self.pending = []; self.sampler.restart(); self.trip = nil; self.loadFailed = true
             var success = false
@@ -429,14 +532,26 @@ final class RecordedRouteStore: @unchecked Sendable {
                 // Loading here is storage-only. An existing failed clear retains the
                 // repository for retry; an unopened store can still erase its disk data.
                 if self.repository == nil { try self.openRepository() }
+#if DEBUG
+                timing?.mark(.loadFinished)
+#endif
                 if let repository = self.repository {
                     try repository.clear(trip: erasedTrip ?? repository.state()); self.trip = try repository.state()
+#if DEBUG
+                    timing?.mark(.databaseReturned)
+#endif
                     try self.removeLegacyChunks()
                     self.loaded = true; self.loadFailed = false; self.persistenceFailed = false; self.droppedVolatile = 0; success = true
                 }
             } catch { self.persistenceFailed = true }
             let result = success
+#if DEBUG
+            timing?.mark(.workerFinished)
+#endif
             DispatchQueue.main.async {
+#if DEBUG
+                timing?.mark(.mainDelivered)
+#endif
                 self.lock.lock(); self.clearPending = false; self.lock.unlock(); completion(result)
             }
         }

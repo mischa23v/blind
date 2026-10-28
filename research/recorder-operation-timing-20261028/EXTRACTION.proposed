@@ -1,0 +1,3 @@
+      echo 'RECORDED_ROUTE_TIMING_BEGIN (at most 8 metadata lines; 1500 characters each)'
+      grep -E '^RECORDED_ROUTE_WAIT_FAILURE ' "$out/$label.log" | head -8 | cut -c 1-1500 || true
+      echo 'RECORDED_ROUTE_TIMING_END'

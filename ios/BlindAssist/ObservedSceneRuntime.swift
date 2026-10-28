@@ -14,25 +14,36 @@ import BlindCore
     private var session: UUID?
     private var epoch = UUID()
     private var workID: UUID?
+    /// Retirement may race with the serial worker. This token only avoids a
+    /// not-yet-started obsolete plan; it never cancels observation accumulation
+    /// or frees the single work slot before the real main-owner callback.
+    private final class PlanValidity: @unchecked Sendable {
+        private let lock = NSLock()
+        private var current = true
+        func invalidate() { lock.lock(); current = false; lock.unlock() }
+        var isCurrent: Bool { lock.lock(); defer { lock.unlock() }; return current }
+    }
+    private var planValidity: PlanValidity?
 #if DEBUG
     struct DiagnosticWorkTimingSnapshot: Sendable {
         fileprivate let id: UUID
         fileprivate let values: [TimeInterval?]
+        var planWasInvoked: Bool { values[3] != nil }
         func report() -> String {
             func time(_ index: Int) -> String { values[index].map { String($0) } ?? "missing" }
             func delta(_ from: Int, _ to: Int) -> String {
                 guard let first = values[from], let last = values[to] else { return "missing" }
                 return String(last - first)
             }
-            return "OBSERVED_SCENE_WORK_TIMING id=\(id) admitted=\(time(0)) workerStarted=\(time(1)) workerFinished=\(time(2)) mainDelivered=\(time(3)) queueAdmission=\(delta(0,1)) workerWall=\(delta(1,2)) mainHandoff=\(delta(2,3))"
+            return "OBSERVED_SCENE_WORK_TIMING id=\(id) admitted=\(time(0)) workerStarted=\(time(1)) workerFinished=\(time(5)) mainDelivered=\(time(6)) queueAdmission=\(delta(0,1)) workerWall=\(delta(1,5)) mainHandoff=\(delta(5,6)) observeWall=\(delta(1,2)) planInvoked=\(planWasInvoked) planWall=\(delta(3,4))"
         }
     }
-    // Fixed four-slot metadata only. Worker writes are lock-protected; no printing,
+    // Fixed seven-slot metadata only. Worker writes are lock-protected; no printing,
     // asynchronous actor hop, image, position, map or body data enters this buffer.
     private final class DiagnosticWorkTiming: @unchecked Sendable {
-        enum Phase: Int { case admitted, workerStarted, workerFinished, mainDelivered }
+        enum Phase: Int { case admitted, workerStarted, observationFinished, planStarted, planFinished, workerFinished, mainDelivered }
         private let lock = NSLock()
-        private var times: [TimeInterval?] = [nil, nil, nil, nil]
+        private var times: [TimeInterval?] = [nil, nil, nil, nil, nil, nil, nil]
         func mark(_ phase: Phase) {
             let now = ProcessInfo.processInfo.systemUptime
             lock.lock(); defer { lock.unlock() }
@@ -63,6 +74,9 @@ import BlindCore
         }
     }
     private var diagnosticWorkCompletion: (UUID, DiagnosticWorkCompletion)?
+    // Test-only gate after real planning, before publication. Nil in production
+    // and normal tests; never runs inside the validity lock or on the main owner.
+    var diagnosticAfterPlanningForTesting: (@Sendable () -> Void)?
     func diagnosticLastWorkTimingForTesting() -> DiagnosticWorkTimingSnapshot? {
         guard let completion = diagnosticWorkCompletion else { return nil }
         return completion.1.timing.snapshot(id: completion.0)
@@ -90,6 +104,7 @@ import BlindCore
         self.clock = clock; self.queue = queue
     }
     func begin(session: UUID, capturedAfter: Double? = nil) {
+        planValidity?.invalidate()
         self.session = session; epoch = UUID(); worker = Worker(session: session)
         intent = .lookAhead; goalRevision = UUID(); lastOffered = -.infinity
         minimumCapture = capturedAfter.flatMap { $0.isFinite ? $0 : nil } ?? -.infinity
@@ -97,10 +112,12 @@ import BlindCore
         // An old in-flight job retains the one worker slot until it really exits.
     }
     func stop() {
+        planValidity?.invalidate()
         session = nil; worker = nil; epoch = UUID(); snapshot = nil; plan = nil; liveStatus = "stopped"; onChange?()
     }
     func trackingLost(at capturedAt: Double? = nil) {
         guard let session else { return }
+        planValidity?.invalidate()
         epoch = UUID(); worker = Worker(session: session); snapshot = nil; plan = nil
         // Preserve requested intent, but never revive the former return origin.
         let loss = capturedAt ?? clock()
@@ -108,6 +125,7 @@ import BlindCore
         liveStatus = "trackingUnavailable"; onChange?()
     }
     func setIntent(_ intent: ObservedSceneAccumulator.Intent) {
+        planValidity?.invalidate()
         self.intent = intent; goalRevision = UUID(); plan = nil; liveStatus = "waitingForObservation"; onChange?()
     }
     /// A trusted goal/subtask replacement retires the previous return request,
@@ -119,9 +137,11 @@ import BlindCore
     /// Body/profile changes invalidate a queued plan without discarding the
     /// observed map or silently restarting the owned return breadcrumb path.
     func invalidateBody() {
+        planValidity?.invalidate()
         bodyRevision = UUID(); plan = nil; liveStatus = "waitingForBodyObservation"; onChange?()
     }
     func suspendLive(at capturedAt: Double? = nil) {
+        planValidity?.invalidate()
         epoch = UUID(); plan = nil; liveStatus = "depthUnavailable"
         let loss = capturedAt ?? clock()
         if loss.isFinite { minimumCapture = max(minimumCapture, lastOffered, loss) }
@@ -147,11 +167,14 @@ import BlindCore
         lastOffered = observation.timestamp
         let id = UUID(), generation = epoch, intent = intent, goal = goalRevision, bodyVersion = bodyRevision
         workID = id
+        let validity = PlanValidity()
+        planValidity = validity
 #if DEBUG
         let completion = DiagnosticWorkCompletion()
         let timing = completion.timing
         timing.mark(.admitted)
         diagnosticWorkCompletion = (id, completion)
+        let afterPlanning = diagnosticAfterPlanningForTesting
 #endif
         queue.async { [weak self] in
 #if DEBUG
@@ -159,7 +182,21 @@ import BlindCore
 #endif
             worker.scene.setIntent(intent, revision: goal)
             let snapshot = worker.scene.observe(observation, sessionID: session, now: now, hazard: hazard)
-            let plan = body.flatMap { worker.scene.planCurrent(floor: floor, body: $0, now: now) }
+#if DEBUG
+            timing.mark(.observationFinished)
+#endif
+            let plan = body.flatMap { body -> ObservedScenePlan? in
+                guard validity.isCurrent else { return nil }
+#if DEBUG
+                timing.mark(.planStarted)
+#endif
+                let result = worker.scene.planCurrent(floor: floor, body: body, now: now)
+#if DEBUG
+                timing.mark(.planFinished)
+                afterPlanning?()
+#endif
+                return result
+            }
 #if DEBUG
             timing.mark(.workerFinished)
 #endif
@@ -172,6 +209,7 @@ import BlindCore
 #endif
                 guard let self, self.workID == id else { return }
                 self.workID = nil
+                self.planValidity = nil
                 guard self.epoch == generation, self.session == session, self.goalRevision == goal, self.bodyRevision == bodyVersion else { return }
                 self.snapshot = snapshot; self.plan = plan
                 self.liveStatus = snapshot.status == .observing

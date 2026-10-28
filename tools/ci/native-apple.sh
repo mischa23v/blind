@@ -36,6 +36,9 @@ run_logged() {
       echo 'OBSERVED_SCENE_TIMING_BEGIN (at most 8 metadata lines; 1500 characters each)'
       grep -E '^OBSERVED_SCENE_FENCE_(PHASE|LATENCY) ' "$out/$label.log" | head -8 | cut -c 1-1500 || true
       echo 'OBSERVED_SCENE_TIMING_END'
+      echo 'RECORDED_ROUTE_TIMING_BEGIN (at most 8 metadata lines; 1500 characters each)'
+      grep -E '^RECORDED_ROUTE_WAIT_FAILURE ' "$out/$label.log" | head -8 | cut -c 1-1500 || true
+      echo 'RECORDED_ROUTE_TIMING_END'
     fi
     # The finite practice session can expire while XCTest waits for UI idleness.
     # Preserve its synthetic action chronology without changing the app or assertions.

@@ -111,11 +111,42 @@ import BlindCore
             let room = try JSONDecoder().decode(CapturedRoom.self, from: data)
             let frame = syntheticDescriptor(fixture)
             let geometry = try SavedRoomDiagnosticGeometryDecoder.decode(data, frame: frame)
+            let nativeCounts = SavedRoomDiagnosticGeometry.Counts(floors: room.floors.count, walls: room.walls.count,
+                doors: room.doors.count, windows: room.windows.count, openings: room.openings.count, furniture: room.objects.count)
+            XCTAssertEqual(nativeCounts, fixture.counts)
+            // The original JSON has no room identifier. Native run40664336968
+            // observed different framework-assigned IDs on separate decodes.
+            // Test identifier copying only from the SAME native room instance;
+            // stable source ownership uses the frame/hash and persisted features.
+            let sameNativeRoom = try SavedRoomDiagnosticGeometryDecoder.extract(room, frame: frame)
+            XCTAssertEqual(sameNativeRoom.capturedRoomID, room.identifier)
             XCTAssertEqual(geometry.frame, frame)
-            XCTAssertEqual(geometry.capturedRoomID, room.identifier)
+            XCTAssertEqual(geometry.frame.roomCaptureSHA256, fixture.digest)
+            XCTAssertEqual(geometry.sourceCounts, nativeCounts)
+            XCTAssertEqual(geometry.features, sameNativeRoom.features)
             XCTAssertEqual(geometry.sourceCounts, fixture.counts)
             XCTAssertEqual(geometry.features.count, try XCTUnwrap(fixture.counts.total))
             try assertEveryOriginalField(geometry, raw: JSONDecoder().decode(RawRoom.self, from: data))
+        }
+    }
+    func testRepeatedOriginalDecodesBindStableSourceAndFeaturesNotRoomUUID() throws {
+        for fixture in Fixture.allCases {
+            let data = try bytes(fixture), frame = syntheticDescriptor(fixture)
+            let original = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+            XCTAssertNil(original["identifier"])
+            let first = try SavedRoomDiagnosticGeometryDecoder.decode(data, frame: frame)
+            let second = try SavedRoomDiagnosticGeometryDecoder.decode(data, frame: frame)
+            XCTAssertEqual(first.frame, second.frame)
+            XCTAssertEqual(first.frame, frame)
+            XCTAssertEqual(second.frame.roomCaptureSHA256, fixture.digest)
+            XCTAssertEqual(first.story, second.story)
+            XCTAssertEqual(first.sourceCounts, second.sourceCounts)
+            XCTAssertEqual(first.features, second.features)
+            XCTAssertEqual(first.polylines, second.polylines)
+            // No equality OR inequality assertion on cross-decode capturedRoomID:
+            // its persistence is not the source contract, even if an SDK changes it.
+            XCTAssertFalse(first.permitsPhysicalGuidance)
+            XCTAssertFalse(second.permitsPhysicalGuidance)
         }
     }
     func testBedroomOriginalFloorPolygonAndBedDepthHaveIndependentWorldWitnesses() throws {

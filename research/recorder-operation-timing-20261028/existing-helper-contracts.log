@@ -1,0 +1,20 @@
+✔ early failure retains its IO IDs and false completion despite hundreds of later successes (66.49888ms)
+✔ phase ring and total failure cap are explicit and preserve a displaced false completion (38.463569ms)
+✔ crashed failing wait retains missing-end marker and only allowlisted metadata (74.429527ms)
+✔ passing log emits no failure window (62.241627ms)
+✔ combined unit shell retains original error and exit65 plus early failure window (75.618146ms)
+✔ each adapter call has immediately preceding fixed observation; no gate (2.384654ms)
+✔ diagnostic extraction is bounded on success and failure and preserves status (125.762715ms)
+✔ host provenance is explicit and never a new gate or environment dump (1.218739ms)
+✔ every real-model text unwrap retains its require and adds only fixture/status context (9.39072ms)
+✔ early Swift Testing issue and app status survive later output without changing exit65 (79.164847ms)
+✔ Swift Testing excerpt is independently capped by lines and line length (70.694142ms)
+✔ successful unit execution keeps status zero and does not emit a failure excerpt (27.297736ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1550.108426

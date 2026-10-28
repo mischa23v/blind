@@ -85,3 +85,37 @@ test('real-byte default provider fixture does not inject geometry and rejects mi
   assert.match(mismatch, /\.sourceMismatch/);
   assert.match(swift, /descriptor below is SYNTHETIC test metadata/);
 });
+
+test('native room UUID is same-instance metadata, not a stable cross-decode source key', () => {
+  for (const [file] of pins) assert.equal(Object.hasOwn(JSON.parse(read(`${directory}${file}`)), 'identifier'), false);
+  const check = source => {
+    const decode = declaration(source, 'func testBothOriginalAppleRoomsDecodeThroughNativeFrameworkAndProductionExtractor()');
+    assert.match(decode, /let sameNativeRoom = try SavedRoomDiagnosticGeometryDecoder\.extract\(room, frame: frame\)/);
+    assert.match(decode, /XCTAssertEqual\(sameNativeRoom\.capturedRoomID, room\.identifier\)/);
+    assert.doesNotMatch(withoutComments(decode), /XCTAssertEqual\(geometry\.capturedRoomID, room\.identifier\)/);
+    assert.match(decode, /XCTAssertEqual\(nativeCounts, fixture\.counts\)/);
+    for (const group of ['floors','walls','doors','windows','openings','objects']) assert.ok(decode.includes(`room.${group}.count`));
+    const repeat = declaration(source, 'func testRepeatedOriginalDecodesBindStableSourceAndFeaturesNotRoomUUID()');
+    assert.match(repeat, /XCTAssertNil\(original\["identifier"\]\)/);
+    assert.equal((repeat.match(/SavedRoomDiagnosticGeometryDecoder\.decode\(data, frame: frame\)/g) ?? []).length, 2);
+    for (const property of ['frame','story','sourceCounts','features','polylines']) {
+      assert.ok(repeat.includes(`XCTAssertEqual(first.${property}, second.${property})`), property);
+    }
+    assert.match(repeat, /XCTAssertEqual\(second\.frame\.roomCaptureSHA256, fixture\.digest\)/);
+    assert.doesNotMatch(withoutComments(repeat), /capturedRoomID|XCTAssertEqual\(first, second\)/);
+  };
+  check(swift);
+  for (const [from,to] of [
+    ['SavedRoomDiagnosticGeometryDecoder.extract(room, frame: frame)', 'SavedRoomDiagnosticGeometryDecoder.decode(data, frame: frame)'],
+    ['XCTAssertEqual(geometry.frame, frame)', 'XCTAssertEqual(geometry.capturedRoomID, room.identifier)'],
+    ['XCTAssertEqual(first.features, second.features)', 'XCTAssertEqual(first, second)'],
+    ['XCTAssertEqual(second.frame.roomCaptureSHA256, fixture.digest)', 'XCTAssertTrue(true)'],
+  ]) {
+    assert.ok(swift.includes(from)); assert.throws(() => check(swift.replace(from,to)), { name: 'AssertionError' });
+  }
+  const provider = read('ios/BlindAssist/SavedRoomDiagnosticGeometryProvider.swift').toString();
+  const view = read('ios/BlindAssist/NavigationTestRecordingView.swift').toString();
+  assert.match(provider, /geometry\.frame == work\.source\.frame/);
+  assert.match(view, /recording\.sameFrameSegments\(for: geometry\.frame\)/);
+  assert.doesNotMatch(withoutComments(provider + view), /\.capturedRoomID/);
+});

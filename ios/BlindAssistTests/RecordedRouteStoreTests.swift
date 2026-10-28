@@ -7,6 +7,12 @@ import GRDB
 #endif
 
 final class RecordedRouteStoreTests: XCTestCase {
+    private enum TimingFixture: String { case activeTrip, clearRetirement }
+    private var timingFixture: TimingFixture?
+    private func reportOperation(_ receipt: RecordedRouteStore.DiagnosticOperationTiming?, wait: StaticString) {
+        guard let receipt, let timingFixture else { return }
+        print("RECORDED_ROUTE_WAIT_FAILURE fixture=\(timingFixture.rawValue) wait=\(wait) originalBudget=5 \(receipt.snapshot().report())")
+    }
     final class Clock: @unchecked Sendable {
         let lock = NSLock(); private var value = 0.0
         func read() -> Double { lock.lock(); defer { lock.unlock() }; return value }
@@ -21,7 +27,12 @@ final class RecordedRouteStoreTests: XCTestCase {
     }
     private func snapshot(_ store: RecordedRouteStore) -> RecordedRouteStore.Snapshot? {
         var result: RecordedRouteStore.Snapshot?; let done = expectation(description: "snapshot")
-        store.preview { result = $0; done.fulfill() }; wait(for: [done], timeout: 5); return result
+        let failuresBefore = testRun?.failureCount ?? 0
+        store.preview { result = $0; done.fulfill() }
+        let receipt = store.diagnosticLastOperationForTesting(.read)
+        wait(for: [done], timeout: 5)
+        if result == nil || (testRun?.failureCount ?? 0) > failuresBefore { reportOperation(receipt, wait: "snapshot") }
+        return result
     }
     func testDiagnosticRequiresOptInAndReusesAdmittedSampleThenStops() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
@@ -339,28 +350,38 @@ final class RecordedRouteStoreTests: XCTestCase {
         XCTAssertTrue(result.preview?.gaps.contains(.retentionLoss) == true)
     }
     func testActiveTripSurvivesNewSessionAndRestartWithBoundedReversePages() throws {
+        timingFixture = .activeTrip
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: directory) }
         let url = directory.appendingPathComponent("routes.sqlite"), clock = Clock(), session = UUID()
-        let store = RecordedRouteStore(url: url, now: clock.read); store.begin(sessionID: session); clock.set(60)
+        let store = RecordedRouteStore(url: url, now: clock.read)
+        store.enableOperationTimingForTesting()
+        store.begin(sessionID: session); clock.set(60)
         for i in 0..<90 {
             let time = 60 + Double(i)*0.21; clock.set(time)
             let sample = record(session, time: time); store.offer(sessionID: session, at: time) { sample }; _ = snapshot(store)
         }
         store.stop(); let prior = try XCTUnwrap(snapshot(store))
         let reopened = RecordedRouteStore(url: url, now: clock.read)
+        reopened.enableOperationTimingForTesting()
         reopened.begin(sessionID: UUID())
+        let restartFailuresBefore = testRun?.failureCount ?? 0
         let current = try XCTUnwrap(snapshot(reopened))
+        let restartReceipt = reopened.diagnosticLastOperationForTesting(.read)
         XCTAssertEqual(current.trip?.id, prior.trip?.id)
         XCTAssertLessThanOrEqual(current.preview?.reverseSamples.count ?? 0, 64)
         XCTAssertNotNil(current.nextPage)
+        if (testRun?.failureCount ?? 0) > restartFailuresBefore { reportOperation(restartReceipt, wait: "reopenedSnapshot") }
         let page = expectation(description: "earlier page")
+        let pageFailuresBefore = testRun?.failureCount ?? 0
         reopened.page(cursor: current.nextPage, reference: nil) { next in
             XCTAssertLessThanOrEqual(next.preview?.reverseSamples.count ?? 0, 64)
             XCTAssertEqual(next.preview?.reverseSamples.last?.sourceID, "frame-60.0")
             page.fulfill()
         }
+        let pageReceipt = reopened.diagnosticLastOperationForTesting(.read)
         wait(for: [page], timeout: 5)
+        if (testRun?.failureCount ?? 0) > pageFailuresBefore { reportOperation(pageReceipt, wait: "earlierPage") }
     }
     func testTrackingLossAndSameSessionRestartWithdrawPinUntilFreshCapture() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
@@ -531,18 +552,54 @@ final class RecordedRouteStoreTests: XCTestCase {
         XCTAssertFalse(current.preview?.reverseSamples.contains { $0.sessionID == a } ?? true)
     }
     func testClearRetiresQueuedReadAndStaleAnchorCannotResurrect() throws {
+        timingFixture = .clearRetirement
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: directory) }
         let clock = Clock(), session = UUID(), store = RecordedRouteStore(url: directory.appendingPathComponent("routes.sqlite"), now: clock.read)
+        store.enableOperationTimingForTesting()
         store.begin(sessionID: session); clock.set(60)
         let sample = record(session, time: 60); store.offer(sessionID: session, at: 60) { sample }; _ = snapshot(store)
         let old = expectation(description: "withheld read")
+        let failuresBefore = testRun?.failureCount ?? 0
         store.preview { XCTAssertTrue($0.busy); XCTAssertNil($0.preview); old.fulfill() }
+        let oldReceipt = store.diagnosticLastOperationForTesting(.read)
         Thread.sleep(forTimeInterval: 0.05)
         let clear = expectation(description: "clear")
-        store.clear { XCTAssertTrue($0); clear.fulfill() }; wait(for: [old,clear], timeout: 5)
+        store.clear { XCTAssertTrue($0); clear.fulfill() }
+        let clearReceipt = store.diagnosticLastOperationForTesting(.clear)
+        wait(for: [old,clear], timeout: 5)
+        if (testRun?.failureCount ?? 0) > failuresBefore {
+            reportOperation(oldReceipt, wait: "withheldRead")
+            reportOperation(clearReceipt, wait: "clear")
+        }
         XCTAssertNil(snapshot(store)?.preview)
         let denied = expectation(description: "stale last sample unavailable")
         store.pinLatest(kind: .entrance, label: "Old", origin: .trustedInterface) { XCTAssertFalse($0); denied.fulfill() }; wait(for: [denied], timeout: 5)
+    }
+
+    func testOperationTimingReceiptsAreBoundedImmutableAndSeparateBusyCalls() {
+        let owner = UUID()
+        let accepted = RecordedRouteStore.DiagnosticOperationTiming(ownerID: owner, index: 1, kind: .read)
+        let before = accepted.snapshot()
+        XCTAssertEqual(before.values.count, 7)
+        XCTAssertTrue(before.values.allSatisfy { $0 == nil })
+        XCTAssertTrue(before.report().contains("admission=notAdmitted"))
+        accepted.mark(.queued); accepted.mark(.workerStarted); accepted.mark(.loadFinished)
+        accepted.mark(.databaseReturned); accepted.mark(.workerFinished); accepted.mark(.mainDelivered)
+        let completed = accepted.snapshot()
+        accepted.mark(.queued)
+        XCTAssertEqual(accepted.snapshot().values, completed.values) // First timestamp owns each slot.
+        XCTAssertTrue(before.values.allSatisfy { $0 == nil })
+        XCTAssertEqual(completed.ownerID, owner); XCTAssertEqual(completed.index, 1)
+        XCTAssertNil(completed.values[6]); XCTAssertTrue(completed.report().contains("admission=queued"))
+        let rejected = RecordedRouteStore.DiagnosticOperationTiming(ownerID: owner, index: 2, kind: .read)
+        rejected.mark(.inlineDelivered)
+        let rejectedSnapshot = rejected.snapshot()
+        XCTAssertNotEqual(rejectedSnapshot.operationID, completed.operationID)
+        XCTAssertEqual(rejectedSnapshot.index, 2); XCTAssertEqual(rejectedSnapshot.kind, "read")
+        XCTAssertTrue(rejectedSnapshot.values.prefix(6).allSatisfy { $0 == nil })
+        XCTAssertNotNil(rejectedSnapshot.values[6])
+        XCTAssertTrue(rejectedSnapshot.report().contains("admission=rejectedBusy"))
+        XCTAssertTrue(rejectedSnapshot.report().contains("mainDelivered=missing"))
     }
 }

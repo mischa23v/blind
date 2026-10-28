@@ -1,3 +1,9 @@
+# Recorder failure metadata helper proof — 2026-10-28
+
+`recorder-timing-ci-helper.patch` binds only the authorized three-line, failure-only `RECORDED_ROUTE_WAIT_FAILURE` extraction (at most 8 lines, 1500 characters per line). No build modes, workflow, recorder source or physical authority change is made by this proof layer. The checker first reverses this helper to exact `163fa512486bbbce522aa735cda0d36ca2711955edef9b118d8b598e900061e6`, then reverses the unchanged scene-timing layer to its historical helper. All app/project history remains intact. Source checks do not establish native execution or resolve the failing recorder timing assertion.
+
+---
+
 # Original Apple RoomPlan hosted-test resources — 2026-10-28
 
 `apple-roomplan-fixture-membership.patch` adds only `SavedRoomDiagnosticGeometryAppleFixtureTests.swift` to the hosted test source phase and a `RoomPlanApple` folder reference to a new **hosted-test-only** resource phase. The folder holds two original Apple JSON samples, the Apple license and local provenance README/manifest. No app resource phase receives the folder; no additional app Swift file, dependency, flag or workflow is added.
