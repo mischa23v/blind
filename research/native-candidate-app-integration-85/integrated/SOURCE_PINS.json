@@ -12,11 +12,11 @@
     "ios/BlindAssist/NavigationModel.swift": "fcea783bbbbaa4e1bdda04740fc38f11c10f30de1e6160d8eb5072d7b4a01298",
     "ios/BlindAssist.xcodeproj/project.pbxproj": "63fc5fcd1d9ef153c87ca48b9fa195f270fec3c039ee58887d407d46b300d87c",
     "ios/BlindAssist/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
-    "tools/ci/native-apple.sh": "683323c46df0e18673ba75dc6e3c610d0aa5087884a4a07ddd74b2c5600be263",
+    "tools/ci/native-apple.sh": "163fa512486bbbce522aa735cda0d36ca2711955edef9b118d8b598e900061e6",
     ".github/workflows/native-apple.yml": "fa2fed05f2fcdce59f1cdcb92fb77442a3c7e5c3d0bf53ef78c0fe1c2df40672",
     ".github/workflows/native-candidate-app-integration.yml": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
-    "research/native-candidate-app-integration-85/integrated/check.py": "01a4167f3668c648d48deb62e55be96a455f214ce64ca2d5429a07f985a734eb",
-    "research/native-candidate-app-integration-85/integrated/README.md": "6fc5ec72b24673114d4a49128188fb2382c8a828e9b47785ac072ffd3aa64af4",
+    "research/native-candidate-app-integration-85/integrated/check.py": "e231aca9b37d51fa24c7bafc7c67f1e57b24d29a6b72f04ec8ffb53b71c3b59f",
+    "research/native-candidate-app-integration-85/integrated/README.md": "3755d4a2851bea17fc08688b13a874f8a7aa958570d742d080ff6a95117769dd",
     "research/native-candidate-app-integration-85/app-integration.patch": "3cbde1075811ebab3d9fc1a54101ffad0b3749030c3dfc920cbcdca4fde2c619",
     "research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
     "research/native-candidate-app-integration-85/integrated/critical-order.patch": "8f298574cd79ff3e86f0a5ef124824686b2d9a95e96d3ca273d697f97e1d9efa",
@@ -25,7 +25,8 @@
     "research/native-candidate-app-integration-85/integrated/connected-bench-preview-membership.patch": "85d1a3c5982030f8437e7695ae3a70623a53747f0a96f3a7fbd89c515ed9a7c9",
     "tools/generate-xcode-project.mjs": "a23fc3364eeb2fbb5f43c3a11db60010840f2650b7a0be3f852a10a86657b9ad",
     "research/native-candidate-app-integration-85/integrated/navigation-test-recording.patch": "e6cf0038fb7814ce20ed31baddf6ee48c8990a81afc8af92a4e1b766aa130865",
-    "research/native-candidate-app-integration-85/integrated/saved-frame-camera-association.patch": "36703f6e1a78bf5c027e94563f7de8661be8a7862397aad96c16bb698247c2de"
+    "research/native-candidate-app-integration-85/integrated/saved-frame-camera-association.patch": "36703f6e1a78bf5c027e94563f7de8661be8a7862397aad96c16bb698247c2de",
+    "research/native-candidate-app-integration-85/integrated/scene-timing-ci-helper.patch": "af1124b6dae32a945a625b2c017f532e15d23df721cce323fef09e580cd81e4b"
   },
   "beforeCriticalOrder": {
     "ios/BlindAssist/NavigationModel.swift": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307"
@@ -45,5 +46,8 @@
   },
   "beforeSavedFrameCameraAssociation": {
     "ios/BlindAssist/NavigationModel.swift": "f101f67cb88c6b2ea8847a380ce09a351322f73e01df0dcb9e0893146d4264d1"
+  },
+  "beforeSceneTimingHelper": {
+    "tools/ci/native-apple.sh": "683323c46df0e18673ba75dc6e3c610d0aa5087884a4a07ddd74b2c5600be263"
   }
 }

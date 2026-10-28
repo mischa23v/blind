@@ -1,0 +1,34 @@
+--- a/ios/BlindAssistTests/RecordedRouteStoreTests.swift
++++ b/ios/BlindAssistTests/RecordedRouteStoreTests.swift
+@@ -323,9 +323,10 @@
+             }
+             wait(for: [done], timeout: 5)
+         }
+-        let release = DispatchSemaphore(value: 0)
++        let release = DispatchSemaphore(value: 0), entered = DispatchSemaphore(value: 0)
+         clock.set(60.20)
+         store.offer(sessionID: session, at: 60.20) {
++            entered.signal()
+             _ = release.wait(timeout: .now()+5)
+             return self.record(session, time: 60.20)
+         }
+@@ -443,8 +444,9 @@
+         let clock = Clock(), a = UUID(), b = UUID()
+         let store = RecordedRouteStore(url: directory.appendingPathComponent("routes.sqlite"), now: clock.read)
+         store.begin(sessionID: a); clock.set(60)
+-        let release = DispatchSemaphore(value: 0)
++        let release = DispatchSemaphore(value: 0), entered = DispatchSemaphore(value: 0)
+         store.offer(sessionID: a, at: 60) {
++            entered.signal()
+             _ = release.wait(timeout: .now()+5)
+             throw RecordedRouteError.invalidArchive
+         }
+@@ -462,7 +464,7 @@
+         defer { try? FileManager.default.removeItem(at: directory) }
+         let clock = Clock(), a = UUID(), b = UUID(), store = RecordedRouteStore(url: directory.appendingPathComponent("routes.sqlite"), now: clock.read)
+         store.begin(sessionID: a); clock.set(60)
+-        let release = DispatchSemaphore(value: 0)
++        let release = DispatchSemaphore(value: 0), entered = DispatchSemaphore(value: 0)
+         store.offer(sessionID: a, at: 60) { entered.signal(); _ = release.wait(timeout: .now()+5); return self.record(a, time: 60) }
+         XCTAssertEqual(entered.wait(timeout: .now()+5), .success)
+         let erased = expectation(description: "delayed clear")

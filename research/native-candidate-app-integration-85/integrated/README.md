@@ -1,3 +1,13 @@
+# Bounded scene-timing CI helper extraction — 2026-10-28
+
+The separate `scene-timing-ci-helper.patch` is the exact three-line `tools/ci/native-apple.sh` hunk already authorized in `research/scene-publication-timing-20261028/APPLIED.patch`. It prints at most eight matching metadata lines, capped at 1,500 characters each, after the existing unit-failure extractor. No build/test command, timeout, result condition, workflow or app source is changed by this repair.
+
+The integrated precheck had failed because the helper's prior source pin was still active. Instead of replacing history, the checker now reverses this exact helper hunk in a separate temporary copy and requires prior SHA `683323c46df0e18673ba75dc6e3c610d0aa5087884a4a07ddd74b2c5600be263`. Current helper SHA is `163fa512486bbbce522aa735cda0d36ca2711955edef9b118d8b598e900061e6`. All original app/project/helper-mode checks and historical reversals remain. The earlier failure is retained under `research/localization-contract-review-20261028/ci-helper-pin-stage/`.
+
+This is a bounded source-proof repair, not an Apple build pass or performance result. No helper/runtime/workflow files were edited by the proof owner.
+
+---
+
 # Capture-bound saved-frame camera association — 2026-10-28
 
 The separate `saved-frame-camera-association.patch` binds the independently reviewed narrow NavigationModel changes: exact ARSession callback identity, O(1) nonnormal tracking observation before throttling, actual receipt-clock use, and saved-frame retirement on interruption/failure. It does not add a recorder consumer, transform, measured uncertainty or physical guidance authority. No project membership/flag/workflow change.

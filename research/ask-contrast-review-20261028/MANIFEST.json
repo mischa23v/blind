@@ -1,0 +1,25 @@
+{
+  "base": "adb8fd8",
+  "scope": "question placeholder primary foreground only; not anonymous-audit or snapshot-timeout fix",
+  "validation": {
+    "targetedPassed": 10,
+    "affectedPassed": 107,
+    "affectedSkipped": 2,
+    "affectedFailed": 0,
+    "skipReason": "BLIND_SWIFTC unavailable for two existing extracted Swift replay checks",
+    "native": "pending"
+  },
+  "files": {
+    "ios/BlindAssist/DashboardView.swift": "254502265265d98cee7453bb8df9b1c2ba1b8af19f37a1be551f6f4cc5cac191",
+    "tools/test/ask-question-prompt-contrast.test.mjs": "6413ae90b0c941bfed2091fd00de8dde47bda1f289bcb9753c730f53851ac7ef",
+    "tools/test/camera-nonlazy-layout.test.mjs": "d9bd2f080236a91aa40c7ea0ee0ea9e8766cb2f6395ca00a9ae947ee874cde67",
+    "research/ask-contrast-review-20261028/CONTRAST_MEASUREMENT.json": "94f2714e0bdc805c00e61feb2b996c701534c321f162bd5f95c098ab05e3c703",
+    "research/ask-contrast-review-20261028/DashboardView.before.swift.txt": "131231a5aded7cb8c71acbc8130e7bc0c7e312e3c7e05c1468a8f81964ba5f5d",
+    "research/ask-contrast-review-20261028/INDEPENDENT_REVIEW.json": "6d42d09a6a050464ab268803bf4d1eb74a92fb6522e17169bc404e4424f4f58b",
+    "research/ask-contrast-review-20261028/README.md": "3f0f3f7c0ea15aed58ca173f731aee0e90149d2406325a8029d15caad5e1b7b4",
+    "research/ask-contrast-review-20261028/affected-checks.log": "76fb91fe728ecee16a40db85e416cb733ca6c534f8dde8382df531eb79a4364e",
+    "research/ask-contrast-review-20261028/candidate.patch": "ffc84cac32b34864105c6f1e07a67a1365469fa74362ceedf381f00e3c200cd2",
+    "research/ask-contrast-review-20261028/prompt-delta.json": "1a82a473bf90ff54e0e71b5a9cf3b7a06506e5e74a2074ac9c878adad4047852",
+    "research/ask-contrast-review-20261028/targeted-checks.log": "6a6b8d5c71f1f0c052540a0f220ccea50828de132a45738fbdee51afb205f6bf"
+  }
+}

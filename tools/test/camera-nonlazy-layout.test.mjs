@@ -13,7 +13,7 @@ function assertContainer(s) {
  assert.match(m,/\.buttonStyle\(CameraControlButtonStyle\(\)\)/);
  assert.match(m,/\.navigationTitle\(t\("Camera and safety", "الكاميرا والسلامة"\)\)/);
 }
-test('only reviewed monitor and diagnostic entry differ from published8767fa0',()=>{
+test('only reviewed monitor, diagnostic entry and question prompt differ from published8767fa0',()=>{
  assertContainer(source);
  // Compare all three original Section closures verbatim apart from indentation.
  const sections = s => { const m=monitor(s); const a=m.indexOf('Section {'); const b=m.indexOf('\n        }\n        .navigationTitle'); return s===baseline ? m.slice(a,b).trim().split('\n').map(x=>x.trim()).join('\n') : m.slice(a,m.indexOf('\n            }\n            .frame(maxWidth:')).trim().split('\n').map(x=>x.trim()).join('\n'); };
@@ -21,7 +21,9 @@ test('only reviewed monitor and diagnostic entry differ from published8767fa0',(
  const strip = s => s.replace(/\/\/\/ Camera-only buttons[\s\S]*?(?=\/\/\/ The child's first tab)/,'').replace(monitor(s),'');
  const entry=read('research/recorder-entry-access-20261028/rooms-entry.swift.txt');
  assert.equal(source.split(entry).length,2); // Exact independently scoped addition, not a broad exclusion.
- assert.equal(strip(source.replace(entry,'')),strip(baseline));
+ const prompt=JSON.parse(read('research/ask-contrast-review-20261028/prompt-delta.json'));
+ assert.equal(source.split(prompt.after).length,2); // Exact reviewed prompt-only delta.
+ assert.equal(strip(source.replace(entry,'').replace(prompt.after,prompt.before)),strip(baseline));
  for(const [a,b] of [['ScrollView {','Form {'],['VStack(alignment: .leading, spacing: 20)','LazyVStack(alignment: .leading, spacing: 20)'],['.buttonStyle(CameraControlButtonStyle())','']]) {
   const m=monitor(source).replace(a,b); assert.throws(()=>assertContainer(source.replace(monitor(source),m)));
  }

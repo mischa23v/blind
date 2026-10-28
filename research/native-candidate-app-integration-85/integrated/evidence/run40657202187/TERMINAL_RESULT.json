@@ -1,0 +1,41 @@
+{
+  "run": 40657202187,
+  "url": "https://github.com/mischa23v/blind/actions/runs/40657202187",
+  "commit": "adb8fd8f4fa16f0563bdd708635a12ba7888bcf3",
+  "conclusion": "failure",
+  "defaultBuild": "passed",
+  "diagnosticsBuild": "passed",
+  "core": {
+    "executed": 1422,
+    "skipped": 1,
+    "failed": 0,
+    "individualNewCoreCaseStatusesExported": false
+  },
+  "memory": {
+    "executed": 58,
+    "failed": 0,
+    "individualNewRepositoryCaseStatusesExported": false
+  },
+  "testBuildFailure": {
+    "file": "ios/BlindAssistTests/RecordedRouteStoreTests.swift",
+    "lines": [
+      332,
+      451,
+      466,
+      467
+    ],
+    "error": "cannot find 'entered' in scope; cascading Equatable.success errors"
+  },
+  "hostedUnits": {
+    "status": "test_target_compile_failed",
+    "executed": 0
+  },
+  "ui": {
+    "status": "test_target_compile_failed",
+    "executed": 0
+  },
+  "sceneCompletionAndLatencyAssertions": "not executed",
+  "artifactsDownloaded": false,
+  "runtimeActivation": false,
+  "fullNativeAcceptance": false
+}

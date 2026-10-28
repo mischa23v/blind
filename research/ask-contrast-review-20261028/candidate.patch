@@ -1,0 +1,12 @@
+--- a/ios/BlindAssist/DashboardView.swift
++++ b/ios/BlindAssist/DashboardView.swift
+@@ -431,7 +431,8 @@
+                 } header: { Text(t("The assistant asked", "سؤال من المساعد")) }
+             }
+             Section {
+-                TextField(t("Your question", "سؤالك"), text: $model.assistantQuestion, axis: .vertical)
++                TextField(t("Your question", "سؤالك"), text: $model.assistantQuestion,
++                    prompt: Text(t("Your question", "سؤالك")).foregroundColor(.primary), axis: .vertical)
+                     .accessibilityLabel(t("Question or target", "السؤال أو الهدف"))
+                 Picker(t("Look at", "انظر إلى"), selection: $focus) {
+                     Text(t("Everything in view", "كل ما في الصورة")).tag("surroundings")
