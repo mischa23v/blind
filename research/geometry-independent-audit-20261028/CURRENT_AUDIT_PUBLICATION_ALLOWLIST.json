@@ -1,0 +1,27 @@
+{
+  "schema": "blind.compact-current-audit-publication.v1",
+  "purpose": "Aggregate current audit and small review only; no raw data, per-frame records, images or binaries",
+  "files": [
+    {
+      "path": "research/geometry-independent-audit-20261028/CURRENT_AUDIT.md",
+      "bytes": 34039,
+      "sha256": "119230b193750cda0a6bba11e0e9e892d9c472c8543c4383e30019ca2dc7261d"
+    },
+    {
+      "path": "research/geometry-independent-audit-20261028/CURRENT_AUDIT_REVIEW.json",
+      "bytes": 1119,
+      "sha256": "45f2e6421b0ad58d2d4136ce6823773e1d2db1c1c65122f0eada8284d47fad94"
+    }
+  ],
+  "total_payload_bytes": 35158,
+  "publication_status": "prepared_not_published",
+  "exclude": [
+    "raw RGB/depth",
+    "database files",
+    "numeric arrays",
+    "large per-frame JSON",
+    "private host paths",
+    "private storage identifiers"
+  ],
+  "root_sole_publisher": true
+}
