@@ -18,6 +18,38 @@ final class NavigationTestRecordingTests: XCTestCase {
                 calibrationRevision: "mount-1", evidenceID: "synthetic-only", map: map, sourceToMap: .identity,
                 validFrom: 0, validThrough: expiry) : nil, recordedAt: time)
     }
+    func testArchiveRoundTripKeepsRawSamplesPlansMarkersAndStops() throws {
+        var recording = try NavigationTestRecording(explicitStartAt: 0)
+        try recording.setPlan(plan()); try recording.observe(sample(0.2), receivedAt: 0.3)
+        try recording.mark(.apparentFurnitureCrossing, at: 0.4); try recording.stop(at: 0.5)
+        let decoded = try recording.archiveEvents.map { try NavigationTestArchiveEvent(payload: $0.encoded()) }
+        var restored = try NavigationTestRecording.restored(id: recording.id, startedAt: recording.startedAt, events: decoded)
+        XCTAssertEqual(restored.entries, recording.entries); XCTAssertEqual(restored.plans, recording.plans)
+        XCTAssertEqual(restored.markers, recording.markers); XCTAssertEqual(restored.archiveEvents, recording.archiveEvents)
+        XCTAssertTrue(restored.restoredHistorical); XCTAssertFalse(restored.restoredInterrupted)
+        XCTAssertEqual(restored.status, .stopped); XCTAssertFalse(restored.permitsPhysicalGuidance)
+        XCTAssertThrowsError(try restored.observe(sample(0.6), receivedAt: 0.6))
+    }
+    func testInterruptedPrefixReopensStoppedWithoutInventedStopTime() throws {
+        var recording = try NavigationTestRecording(explicitStartAt: 0)
+        try recording.observe(sample(0.2), receivedAt: 0.2)
+        let restored = try NavigationTestRecording.restored(id: recording.id, startedAt: 0, events: recording.archiveEvents)
+        XCTAssertTrue(restored.restoredInterrupted); XCTAssertEqual(restored.status, .stopped)
+        XCTAssertNil(restored.endedAt); XCTAssertEqual(restored.archiveEvents, recording.archiveEvents)
+        XCTAssertEqual(restored.entries, recording.entries)
+    }
+    func testArchiveRejectsInventedAssociationAndTerminalCorruption() throws {
+        let observed = try sample(0.2)
+        let invented = NavigationTestRecording.Entry(sample: observed, receivedAt: 0.2, planIndex: 99, cameraInMap: Point3(4,0,0))
+        XCTAssertThrowsError(try NavigationTestRecording.restored(id: UUID(), startedAt: 0, events: [.sample(invented)]))
+        XCTAssertThrowsError(try NavigationTestRecording.restored(id: UUID(), startedAt: 0,
+            events: [.ended(status: .recording, at: 0.2)]))
+        XCTAssertThrowsError(try NavigationTestRecording.restored(id: UUID(), startedAt: 0,
+            events: [.ended(status: .capacityReached, at: 0.2)]))
+        XCTAssertThrowsError(try NavigationTestRecording.restored(id: UUID(), startedAt: 0,
+            events: [.ended(status: .stopped, at: 0.2), .plan(plan(at: 0.3))]))
+        XCTAssertThrowsError(try NavigationTestArchiveEvent(payload: Data(repeating: 0, count: NavigationTestArchiveEvent.maximumBytes + 1)))
+    }
     func testReadOnlyConnectedRouteSnapshotUsesActualOwnerWithoutRetiringTicket() throws {
         typealias F = ConnectedFixture
         var owner = try F.prepared()

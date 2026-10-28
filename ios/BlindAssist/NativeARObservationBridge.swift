@@ -11,7 +11,12 @@ final class NativeARObservationBridge {
     // Explicit local diagnostic controls; camera start never opts into test recording.
     @discardableResult func startNavigationTestRecording() -> Bool { recordedRoute.startTestRecording() }
     func stopNavigationTestRecording() { recordedRoute.stopTestRecording() }
-    func deleteNavigationTestRecording() { recordedRoute.deleteTestRecording() }
+    func deleteNavigationTestRecording(completion: @escaping (Bool) -> Void = { _ in }) { recordedRoute.deleteTestRecording(completion: completion) }
+    func retryNavigationTestSave() { recordedRoute.retryTestSave() }
+    @discardableResult func closeNavigationTestRecording() -> Bool { recordedRoute.closeTestRecording() }
+    func listSavedNavigationTests(_ completion: @escaping ([NavigationTestSessionState]?) -> Void) { recordedRoute.listSavedTestRecordings(completion) }
+    func reopenNavigationTest(id: String, completion: @escaping (Bool) -> Void) { recordedRoute.reopenTestRecording(id: id, completion: completion) }
+    func deleteSavedNavigationTest(id: String, completion: @escaping (Bool) -> Void) { recordedRoute.deleteSavedTestRecording(id: id, completion: completion) }
     func navigationTestSnapshot() -> RecordedRouteStore.TestSnapshot { recordedRoute.testRecordingSnapshot() }
     @discardableResult func markNavigationTestProblem(_ problem: NavigationTestRecording.Problem) -> Bool {
         recordedRoute.markTestProblem(problem)

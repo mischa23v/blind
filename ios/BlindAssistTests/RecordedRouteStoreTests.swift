@@ -46,7 +46,9 @@ final class RecordedRouteStoreTests: XCTestCase {
         XCTAssertEqual(store.testRecordingSnapshot().recording?.entries.count, 1)
         XCTAssertEqual(store.testRecordingSnapshot().recording?.status, .stopped)
         XCTAssertFalse(store.markTestProblem(.other))
-        store.deleteTestRecording(); XCTAssertNil(store.testRecordingSnapshot().recording)
+        let deleted = expectation(description: "delete diagnostic")
+        store.deleteTestRecording { success in XCTAssertTrue(success); deleted.fulfill() }
+        XCTAssertNil(store.testRecordingSnapshot().recording); wait(for: [deleted], timeout: 5)
     }
     func testDiagnosticLateExtractionAndSessionRestartCannotResume() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
@@ -61,11 +63,13 @@ final class RecordedRouteStoreTests: XCTestCase {
         }
         wait(for: [extracting], timeout: 5)
         let oldID = store.testRecordingSnapshot().recording?.id
-        store.stopTestRecording(); XCTAssertTrue(store.startTestRecording())
+        store.stopTestRecording(); XCTAssertFalse(store.startTestRecording()) // Never replace an unsaved session.
+        let deleted = expectation(description: "diagnostic delete after in-flight capture")
+        store.deleteTestRecording { success in XCTAssertTrue(success); deleted.fulfill() }
+        release.signal(); wait(for: [deleted], timeout: 5)
+        XCTAssertTrue(store.startTestRecording())
         XCTAssertNotEqual(store.testRecordingSnapshot().recording?.id, oldID)
-        // Same monotonic timestamp is deliberate: generation, not clock luck,
-        // must keep the previously offered callback out of the new recording.
-        release.signal(); _ = snapshot(store)
+        _ = snapshot(store)
         XCTAssertEqual(store.testRecordingSnapshot().recording?.entries.count, 0)
         store.begin(sessionID: UUID())
         XCTAssertEqual(store.testRecordingSnapshot().recording?.status, .stopped)
@@ -110,6 +114,151 @@ final class RecordedRouteStoreTests: XCTestCase {
         XCTAssertEqual(store.testRecordingSnapshot().recording?.plans.count, 2)
         XCTAssertEqual(store.testRecordingSnapshot().recording?.plans.last?.points, [])
         XCTAssertEqual(store.testRecordingSnapshot().recording?.plans.last?.recordedAt, 60.1)
+    }
+    private func drain(_ store: RecordedRouteStore) async {
+        await withCheckedContinuation { continuation in store.drainTestSavesForTesting { continuation.resume() } }
+    }
+    func testDurableDiagnosticReopensExactSampleStoppedAndClearRemovesArchive() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let clock = Clock(), session = UUID(), url = directory.appendingPathComponent("routes.sqlite")
+        let store = RecordedRouteStore(url: url, now: clock.read)
+        store.begin(sessionID: session); clock.set(60); XCTAssertTrue(store.startTestRecording())
+        let frame = record(session, time: 60)
+        store.offer(sessionID: session, at: 60) { frame }
+        // Serial persistence fence also follows the admitted-sample worker.
+        await drain(store); clock.set(60.3); XCTAssertTrue(store.markTestProblem(.apparentFurnitureCrossing))
+        store.stopTestRecording(); await drain(store)
+        let before = try XCTUnwrap(store.testRecordingSnapshot().recording)
+        XCTAssertEqual(store.testRecordingSnapshot().pendingEvents, 0)
+        let reopened = RecordedRouteStore(url: url, now: clock.read)
+        let opened = await withCheckedContinuation { continuation in
+            reopened.reopenTestRecording(id: before.id.uuidString) { continuation.resume(returning: $0) }
+        }
+        XCTAssertTrue(opened)
+        let after = try XCTUnwrap(reopened.testRecordingSnapshot().recording)
+        XCTAssertEqual(after.entries, before.entries); XCTAssertEqual(after.markers, before.markers)
+        XCTAssertEqual(after.archiveEvents, before.archiveEvents); XCTAssertEqual(after.status, .stopped)
+        XCTAssertTrue(after.restoredHistorical); XCTAssertFalse(after.restoredInterrupted)
+        let erased = await withCheckedContinuation { continuation in reopened.clear { continuation.resume(returning: $0) } }
+        XCTAssertTrue(erased)
+        let rows = await withCheckedContinuation { continuation in reopened.listSavedTestRecordings { continuation.resume(returning: $0) } }
+        XCTAssertEqual(rows?.count, 0)
+    }
+    func testInterruptedCommittedPrefixReopensWithoutRecordingOrStopTime() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let clock = Clock(), session = UUID(), url = directory.appendingPathComponent("routes.sqlite")
+        let store = RecordedRouteStore(url: url, now: clock.read)
+        store.begin(sessionID: session); clock.set(60); XCTAssertTrue(store.startTestRecording())
+        XCTAssertTrue(store.markTestProblem(.other)); await drain(store)
+        let before = try XCTUnwrap(store.testRecordingSnapshot().recording)
+        let reopened = RecordedRouteStore(url: url, now: clock.read)
+        let opened = await withCheckedContinuation { continuation in
+            reopened.reopenTestRecording(id: before.id.uuidString) { continuation.resume(returning: $0) }
+        }
+        XCTAssertTrue(opened)
+        let after = try XCTUnwrap(reopened.testRecordingSnapshot().recording)
+        XCTAssertTrue(after.restoredInterrupted); XCTAssertNil(after.endedAt)
+        XCTAssertEqual(after.archiveEvents, before.archiveEvents); XCTAssertEqual(after.status, .stopped)
+        XCTAssertFalse(reopened.markTestProblem(.wrongDirection))
+    }
+    func testFullArchiveSlotsKeepUnsavedTailUntilExplicitDeleteAndRetry() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("routes.sqlite"), clock = Clock()
+        let repository = try RecordedRouteRepository(path: url.path), trip = try repository.state()
+        var ids: [String] = []
+        for i in 0..<3 {
+            let id = UUID().uuidString; ids.append(id)
+            _ = try repository.createNavigationTest(id: id, startedAt: Double(i), createdAt: Double(i), trip: trip)
+        }
+        let release = DispatchSemaphore(value: 0)
+        let store = RecordedRouteStore(url: url, now: clock.read, factory: { path in
+            _ = release.wait(timeout: .now() + 5); return try RecordedRouteRepository(path: path)
+        })
+        store.begin(sessionID: UUID()); clock.set(60); XCTAssertTrue(store.startTestRecording())
+        XCTAssertTrue(store.markTestProblem(.missedObstacle)); release.signal(); await drain(store)
+        let failed = store.testRecordingSnapshot()
+        XCTAssertTrue(failed.saveFailed); XCTAssertGreaterThanOrEqual(failed.pendingEvents, 2)
+        XCTAssertEqual(failed.recording?.markers.count, 1); XCTAssertEqual(failed.recording?.status, .stopped)
+        let removed = await withCheckedContinuation { continuation in
+            store.deleteSavedTestRecording(id: ids[0]) { continuation.resume(returning: $0) }
+        }
+        XCTAssertTrue(removed); store.retryTestSave(); await drain(store)
+        let saved = store.testRecordingSnapshot()
+        XCTAssertFalse(saved.saveFailed); XCTAssertEqual(saved.pendingEvents, 0)
+        XCTAssertEqual(saved.recording?.markers, failed.recording?.markers)
+        XCTAssertEqual(saved.recording?.archiveEvents, failed.recording?.archiveEvents)
+    }
+    func testDeleteAndClearFenceQueuedArchiveCreationAndPendingReopen() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("routes.sqlite"), clock = Clock()
+        let release = DispatchSemaphore(value: 0), entered = expectation(description: "diagnostic repository open entered")
+        defer { release.signal() }
+        let store = RecordedRouteStore(url: url, now: clock.read, factory: { path in
+            entered.fulfill(); release.wait()
+            return try RecordedRouteRepository(path: path)
+        })
+        store.begin(sessionID: UUID()); clock.set(60); XCTAssertTrue(store.startTestRecording())
+        let id = try XCTUnwrap(store.testRecordingSnapshot().recording?.id.uuidString)
+        await fulfillment(of: [entered], timeout: 5)
+        // The initial create is in flight, not merely still queued.
+        let deleted = await withCheckedContinuation { continuation in
+            store.deleteTestRecording { continuation.resume(returning: $0) }; release.signal()
+        }
+        XCTAssertTrue(deleted); XCTAssertNil(store.testRecordingSnapshot().recording)
+        let rows = await withCheckedContinuation { continuation in store.listSavedTestRecordings { continuation.resume(returning: $0) } }
+        XCTAssertFalse(rows?.contains(where: { $0.id == id }) ?? true)
+        // Hold this fresh owner's repository open so erase cannot finish before
+        // the pending-erase admission check; this is not a timing race assertion.
+        let releaseClear = DispatchSemaphore(value: 0)
+        let eraseStore = RecordedRouteStore(url: url, factory: { path in
+            _ = releaseClear.wait(timeout: .now() + 5); return try RecordedRouteRepository(path: path)
+        })
+        var prematureReopen: Bool?
+        let cleared = await withCheckedContinuation { continuation in
+            eraseStore.clear { continuation.resume(returning: $0) }
+            eraseStore.reopenTestRecording(id: id) { prematureReopen = $0 }
+            releaseClear.signal()
+        }
+        XCTAssertTrue(cleared); XCTAssertEqual(prematureReopen, false)
+        XCTAssertNil(eraseStore.testRecordingSnapshot().recording)
+    }
+    func testCorruptTypedArchiveNeverInstallsHistoricalRecording() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("routes.sqlite"), repository = try RecordedRouteRepository(path: url.path)
+        let id = UUID().uuidString
+        let session = try repository.createNavigationTest(id: id, startedAt: 1, createdAt: 1, trip: repository.state())
+        _ = try repository.appendNavigationTest(rows: [.init(sequence: 0, payload: Data("not a typed event".utf8))], session: session, status: "recording")
+        let store = RecordedRouteStore(url: url)
+        let opened = await withCheckedContinuation { continuation in store.reopenTestRecording(id: id) { continuation.resume(returning: $0) } }
+        XCTAssertFalse(opened); XCTAssertNil(store.testRecordingSnapshot().recording)
+    }
+    func testMultipleDurabilityBatchesRetainOrderAndTerminalStatus() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let clock = Clock(), url = directory.appendingPathComponent("routes.sqlite")
+        let store = RecordedRouteStore(url: url, now: clock.read)
+        store.begin(sessionID: UUID()); clock.set(60); XCTAssertTrue(store.startTestRecording())
+        for i in 0..<100 { XCTAssertTrue(store.markTestProblem(i % 2 == 0 ? .missedObstacle : .falseBlockage)) }
+        store.stopTestRecording(); await drain(store)
+        let before = try XCTUnwrap(store.testRecordingSnapshot().recording)
+        XCTAssertEqual(before.archiveEvents.count, 101)
+        XCTAssertEqual(store.testRecordingSnapshot().savedEvents, 101)
+        XCTAssertEqual(store.testRecordingSnapshot().pendingEvents, 0)
+        let reopened = RecordedRouteStore(url: url, now: clock.read)
+        let opened = await withCheckedContinuation { continuation in
+            reopened.reopenTestRecording(id: before.id.uuidString) { continuation.resume(returning: $0) }
+        }
+        XCTAssertTrue(opened)
+        XCTAssertEqual(reopened.testRecordingSnapshot().recording?.archiveEvents, before.archiveEvents)
+        XCTAssertEqual(reopened.testRecordingSnapshot().recording?.status, .stopped)
+        XCTAssertEqual(reopened.testRecordingSnapshot().recording?.restoredInterrupted, false)
     }
     func testConstantMemoryQuotaRollsPastOldLimitWhilePinningStartAndMeeting() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
@@ -174,10 +323,10 @@ final class RecordedRouteStoreTests: XCTestCase {
             }
             wait(for: [done], timeout: 5)
         }
-        let entered = DispatchSemaphore(value: 0), release = DispatchSemaphore(value: 0)
+        let release = DispatchSemaphore(value: 0)
         clock.set(60.20)
         store.offer(sessionID: session, at: 60.20) {
-            entered.signal(); _ = release.wait(timeout: .now()+5)
+            _ = release.wait(timeout: .now()+5)
             return self.record(session, time: 60.20)
         }
         XCTAssertEqual(entered.wait(timeout: .now()+5), .success)
@@ -294,9 +443,9 @@ final class RecordedRouteStoreTests: XCTestCase {
         let clock = Clock(), a = UUID(), b = UUID()
         let store = RecordedRouteStore(url: directory.appendingPathComponent("routes.sqlite"), now: clock.read)
         store.begin(sessionID: a); clock.set(60)
-        let entered = DispatchSemaphore(value: 0), release = DispatchSemaphore(value: 0)
+        let release = DispatchSemaphore(value: 0)
         store.offer(sessionID: a, at: 60) {
-            entered.signal(); _ = release.wait(timeout: .now()+5)
+            _ = release.wait(timeout: .now()+5)
             throw RecordedRouteError.invalidArchive
         }
         XCTAssertEqual(entered.wait(timeout: .now()+5), .success)
@@ -313,7 +462,7 @@ final class RecordedRouteStoreTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: directory) }
         let clock = Clock(), a = UUID(), b = UUID(), store = RecordedRouteStore(url: directory.appendingPathComponent("routes.sqlite"), now: clock.read)
         store.begin(sessionID: a); clock.set(60)
-        let entered = DispatchSemaphore(value: 0), release = DispatchSemaphore(value: 0)
+        let release = DispatchSemaphore(value: 0)
         store.offer(sessionID: a, at: 60) { entered.signal(); _ = release.wait(timeout: .now()+5); return self.record(a, time: 60) }
         XCTAssertEqual(entered.wait(timeout: .now()+5), .success)
         let erased = expectation(description: "delayed clear")

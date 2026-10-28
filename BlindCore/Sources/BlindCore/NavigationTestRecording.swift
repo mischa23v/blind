@@ -89,6 +89,9 @@ public struct NavigationTestRecording: Sendable {
     public private(set) var entries: [Entry] = []
     public private(set) var plans: [Plan] = []
     public private(set) var markers: [Marker] = []
+    public private(set) var archiveEvents: [NavigationTestArchiveEvent] = []
+    public private(set) var restoredHistorical = false
+    public private(set) var restoredInterrupted = false
     public var permitsPhysicalGuidance: Bool { false }
     private var lastEventAt: Double
     /// Only call following explicit Record action. No default or automatic resume.
@@ -99,7 +102,7 @@ public struct NavigationTestRecording: Sendable {
     private mutating func admit(time: Double, count: Int, limit: Int) throws {
         guard status == .recording else { throw Failure.notRecording }
         guard time.isFinite, time >= lastEventAt else { throw Failure.invalidInput }
-        guard count < limit else { status = .capacityReached; endedAt = time; throw Failure.capacityReached }
+        guard count < limit else { finish(.capacityReached, at: time); throw Failure.capacityReached }
     }
     public mutating func setPlan(_ plan: Plan) throws {
         try admit(time: plan.recordedAt, count: plans.count, limit: Self.maximumEvents)
@@ -109,7 +112,7 @@ public struct NavigationTestRecording: Sendable {
               plan.artifactSHA256.map({ $0.utf8.count == 64 && $0.utf8.allSatisfy { (48...57).contains($0) || (97...102).contains($0) } }) ?? true,
               [plan.map.mapID, plan.map.frameID, plan.map.revision].allSatisfy(NativeObservationRecord.validID),
               plan.alignment.map({ $0.valid && $0.map == plan.map }) ?? true else { throw Failure.invalidInput }
-        plans.append(plan); lastEventAt = plan.recordedAt
+        plans.append(plan); lastEventAt = plan.recordedAt; archiveEvents.append(.plan(plan))
     }
     /// `receivedAt` is the local monotonic receipt time; samples retain their own
     /// capture times, including delayed delivery and source-session resets.
@@ -125,16 +128,54 @@ public struct NavigationTestRecording: Sendable {
         if let plan, sample.capturedAt >= plan.recordedAt, let alignment, alignment.accepts(sample) {
             mapped = try alignment.sourceToMap.applying(to: sample.cameraPosition)
         } else { mapped = nil }
-        entries.append(.init(sample: sample, receivedAt: receivedAt, planIndex: index, cameraInMap: mapped)); lastEventAt = receivedAt
+        let entry = Entry(sample: sample, receivedAt: receivedAt, planIndex: index, cameraInMap: mapped)
+        entries.append(entry); lastEventAt = receivedAt; archiveEvents.append(.sample(entry))
     }
     public mutating func mark(_ problem: Problem, at time: Double) throws {
         try admit(time: time, count: markers.count, limit: Self.maximumEvents)
-        markers.append(.init(problem: problem, recordedAt: time, lastObservationID: entries.last?.sample.observationID,
-                             planIndex: plans.indices.last)); lastEventAt = time
+        let marker = Marker(problem: problem, recordedAt: time, lastObservationID: entries.last?.sample.observationID,
+                            planIndex: plans.indices.last)
+        markers.append(marker); lastEventAt = time; archiveEvents.append(.marker(marker))
     }
     public mutating func stop(at time: Double) throws {
         guard time.isFinite, time >= lastEventAt else { throw Failure.invalidInput }
-        if status == .recording { status = .stopped; endedAt = time; lastEventAt = time }
+        if status == .recording { finish(.stopped, at: time) }
+    }
+    private mutating func finish(_ reason: Status, at time: Double) {
+        status = reason; endedAt = time; lastEventAt = time
+        archiveEvents.append(.ended(status: reason, at: time))
+    }
+    /// Reconstruct only the validated committed prefix. Historical reads never
+    /// restart recording, reinterpret source frames, or append invented samples.
+    public static func restored(id: UUID, startedAt: Double, events: [NavigationTestArchiveEvent]) throws -> Self {
+        guard events.count <= maximumSamples + 2 * maximumEvents + 1 else { throw Failure.invalidInput }
+        var result = try Self(explicitStartAt: startedAt, id: id)
+        for event in events {
+            guard result.status == .recording else { throw Failure.invalidInput }
+            switch event {
+            case .plan(let plan): try result.setPlan(plan)
+            case .sample(let entry):
+                try result.observe(entry.sample, receivedAt: entry.receivedAt)
+                guard result.entries.last == entry else { throw Failure.invalidInput }
+            case .marker(let marker):
+                try result.mark(marker.problem, at: marker.recordedAt)
+                guard result.markers.last == marker else { throw Failure.invalidInput }
+            case .ended(let status, let time):
+                guard time.isFinite, time >= result.lastEventAt, status != .recording else { throw Failure.invalidInput }
+                if status == .capacityReached {
+                    guard result.entries.count == maximumSamples || result.plans.count == maximumEvents ||
+                          result.markers.count == maximumEvents else { throw Failure.invalidInput }
+                }
+                result.finish(status, at: time)
+            }
+        }
+        result.restoredHistorical = true
+        if result.status == .recording {
+            result.restoredInterrupted = true; result.status = .stopped
+            // No actual stop timestamp is known. Keep it absent instead of using reopen time.
+            result.endedAt = nil
+        }
+        return result
     }
     /// Separate line segments: never draw across tracking loss, plan/alignment
     /// revisions or an unregistered sample. Planned points remain independently visible.

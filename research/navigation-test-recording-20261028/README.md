@@ -1,3 +1,9 @@
+## Current durable candidate
+
+The initial volatile checkpoint below is historical (`26bfa69`). The later durable local save/reopen source and its still-pending native validation are documented in [DURABLE_IMPLEMENTATION.md](DURABLE_IMPLEMENTATION.md), with a separate `DURABLE_MANIFEST.json`. Do not confuse Python schema checks with executed Swift/GRDB tests.
+
+---
+
 # Planned route versus actual phone trajectory — local diagnostic increment
 
 Request: user message `Sentinel_e1906dc3cd448191a1c05c713f079703` asks to track the paths they take in a future device test because reported arrivals and plotted routes can conceal table/wall crossings.

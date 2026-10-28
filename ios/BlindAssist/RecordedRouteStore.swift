@@ -13,39 +13,67 @@ final class RecordedRouteStore: @unchecked Sendable {
     private var restarted = false, trackingLost = false
     private var continuityEpoch = UUID()
     private var sampler = RecordedRouteSampler()
-    // Opt-in, volatile diagnostic sidecar; protected by lock, never persisted/exported.
+    // Explicit local diagnostic; memory/receipt state protected by lock. No export.
     private var testRecording: NavigationTestRecording?
     private var testOwnedRoute: NavigationTestRecording.OwnedRoute?
     private var testRejectedSamples = 0, testRejectedPlans = 0, testGapPending = false
     struct TestSnapshot {
         let recording: NavigationTestRecording?
         let rejectedSamples, rejectedPlans: Int
+        let savedEvents, pendingEvents: Int
+        let saving, saveFailed, deleting, erasePending: Bool
     }
     @discardableResult func startTestRecording() -> Bool {
         lock.lock(); defer { lock.unlock() }
-        guard sessionID != nil, !clearPending, testRecording?.status != .recording,
+        guard sessionID != nil, !clearPending, !testDeleting, testRecording == nil,
               let recording = try? NavigationTestRecording(explicitStartAt: now()) else { return false }
-        testRecording = recording; testOwnedRoute = nil; testRejectedSamples = 0; testRejectedPlans = 0; testGapPending = false; return true
+        testRecording = recording; testOwnedRoute = nil; testRejectedSamples = 0; testRejectedPlans = 0; testGapPending = false
+        testWriteGeneration = UUID(); testArchive = nil; testSaveFailed = false; testLastCommit = -.infinity; testCreatedAt = Date().timeIntervalSince1970
+        scheduleTestSaveLocked(force: true); return true
     }
     func stopTestRecording() {
-        lock.lock(); defer { lock.unlock() }; try? testRecording?.stop(at: now())
+        lock.lock(); defer { lock.unlock() }; try? testRecording?.stop(at: now()); scheduleTestSaveLocked(force: true)
     }
-    func deleteTestRecording() {
-        lock.lock(); defer { lock.unlock() }; testRecording = nil; testOwnedRoute = nil; testRejectedSamples = 0; testRejectedPlans = 0; testGapPending = false
+    func deleteTestRecording(completion: @escaping (Bool) -> Void = { _ in }) {
+        lock.lock()
+        guard !testDeleting else { lock.unlock(); completion(false); return }
+        let id = testRecording?.id.uuidString
+        testWriteGeneration = UUID(); testRecording = nil; testOwnedRoute = nil; testArchive = nil
+        testRejectedSamples = 0; testRejectedPlans = 0; testGapPending = false; testSaveFailed = false
+        testDeleting = true; lock.unlock()
+        queue.async {
+            var success = true
+            do {
+                self.load()
+                if let id {
+                    guard !self.loadFailed, let repository = self.repository else { throw RecordedRouteRepositoryError.invalid }
+                    if let state = try repository.listNavigationTests().first(where: { $0.id == id }) {
+                        try repository.deleteNavigationTest(session: state)
+                    }
+                }
+            } catch { success = false }
+            self.lock.lock(); self.testDeleting = false; self.lock.unlock()
+            let result = success
+            DispatchQueue.main.async { completion(result) }
+        }
     }
     func testRecordingSnapshot() -> TestSnapshot {
         lock.lock(); defer { lock.unlock() }
-        return .init(recording: testRecording, rejectedSamples: testRejectedSamples, rejectedPlans: testRejectedPlans)
+        scheduleTestSaveLocked()
+        let committed = Int(testArchive?.nextSequence ?? 0)
+        return .init(recording: testRecording, rejectedSamples: testRejectedSamples, rejectedPlans: testRejectedPlans,
+            savedEvents: committed, pendingEvents: max(0, (testRecording?.archiveEvents.count ?? 0) - committed),
+            saving: testSaveBusy, saveFailed: testSaveFailed, deleting: testDeleting, erasePending: clearPending)
     }
     @discardableResult func markTestProblem(_ problem: NavigationTestRecording.Problem) -> Bool {
-        lock.lock(); defer { lock.unlock() }
+        lock.lock(); defer { scheduleTestSaveLocked(force: true); lock.unlock() }
         guard testRecording != nil else { return false }
         do { try testRecording?.mark(problem, at: now()); return true } catch { return false }
     }
     /// Receipt time assigned under the same lock as samples. A cancelled owner
     /// clears comparison context; missing registration stays nil, never identity.
     @discardableResult func recordOwnedTestPlan(_ route: NavigationTestRecording.OwnedRoute?) -> Bool {
-        lock.lock(); defer { lock.unlock() }
+        lock.lock(); defer { scheduleTestSaveLocked(force: true); lock.unlock() }
         guard testRecording?.status == .recording else { return false }
         guard route != testOwnedRoute else { return true }
         let previous = testOwnedRoute; testOwnedRoute = route
@@ -58,7 +86,7 @@ final class RecordedRouteStore: @unchecked Sendable {
         catch { testRejectedPlans += 1; try? testRecording?.stop(at: now()); return false }
     }
     @discardableResult func setTestPlan(_ plan: NavigationTestRecording.Plan) -> Bool {
-        lock.lock(); defer { lock.unlock() }
+        lock.lock(); defer { scheduleTestSaveLocked(force: true); lock.unlock() }
         guard testRecording != nil else { return false }
         do {
             guard plan.recordedAt <= now() else { throw NavigationTestRecording.Failure.invalidInput }
@@ -69,6 +97,151 @@ final class RecordedRouteStore: @unchecked Sendable {
             testRejectedPlans += 1; try? testRecording?.stop(at: now()); return false
         }
     }
+    private var testArchive: NavigationTestSessionState?
+    private var testWriteGeneration = UUID(), testSaveBusy = false, testSaveFailed = false
+    private var testLastCommit = -Double.infinity
+    private var testCreatedAt = 0.0
+    private var testDeleting = false
+    /// Caller holds lock. One queued bounded transaction at a time; no full-file rewrite.
+    private func scheduleTestSaveLocked(force: Bool = false) {
+        guard !testSaveBusy, !testSaveFailed, !testDeleting,
+              let recording = testRecording, !recording.restoredHistorical else { return }
+        let committed = Int(testArchive?.nextSequence ?? 0)
+        guard testArchive == nil || committed < recording.archiveEvents.count else { return }
+        guard force || testArchive == nil || recording.status != .recording ||
+              recording.archiveEvents.count - committed >= 25 || now() - testLastCommit >= 5 else { return }
+        testSaveBusy = true; let token = testWriteGeneration
+        queue.async { self.persistTestBatch(token: token) }
+    }
+    private func persistTestBatch(token: UUID) {
+        lock.lock()
+        guard token == testWriteGeneration, let recording = testRecording, !recording.restoredHistorical else {
+            testSaveBusy = false; scheduleTestSaveLocked(); lock.unlock(); return
+        }
+        let prior = testArchive, createdAt = testCreatedAt
+        lock.unlock()
+        do {
+            load()
+            guard !loadFailed, let repository, let trip else { throw RecordedRouteRepositoryError.invalid }
+            var state = try prior ?? repository.createNavigationTest(id: recording.id.uuidString,
+                startedAt: recording.startedAt, createdAt: createdAt, trip: trip)
+            let start = Int(state.nextSequence)
+            guard start <= recording.archiveEvents.count else { throw RecordedRouteRepositoryError.conflict }
+            let selected = recording.archiveEvents.dropFirst(start).prefix(64)
+            let rows = try selected.enumerated().map { offset, event in
+                NavigationTestEventRow(sequence: Int64(start + offset), payload: try event.encoded())
+            }
+            var status = "recording"
+            if case .ended(let terminal, _)? = selected.last { status = terminal.rawValue }
+            if !rows.isEmpty { state = try repository.appendNavigationTest(rows: rows, session: state, status: status) }
+            lock.lock()
+            if token == testWriteGeneration {
+                testArchive = state; testLastCommit = now()
+            }
+            testSaveBusy = false; scheduleTestSaveLocked(); lock.unlock()
+        } catch {
+            lock.lock()
+            if token == testWriteGeneration {
+                testSaveFailed = true
+                try? testRecording?.stop(at: now()) // Retain ALL unsaved events for explicit retry.
+            }
+            testSaveBusy = false; lock.unlock()
+        }
+    }
+    func retryTestSave() {
+        lock.lock(); defer { lock.unlock() }
+        guard testRecording?.restoredHistorical == false else { return }
+        testSaveFailed = false; scheduleTestSaveLocked(force: true)
+    }
+    func listSavedTestRecordings(_ completion: @escaping ([NavigationTestSessionState]?) -> Void) {
+        lock.lock(); guard !clearPending else { lock.unlock(); completion(nil); return }
+        let token = testWriteGeneration; lock.unlock()
+        queue.async {
+            self.load()
+            let rows: [NavigationTestSessionState]?
+            if self.loadFailed { rows = nil } else { rows = try? self.repository?.listNavigationTests() }
+            DispatchQueue.main.async {
+                self.lock.lock(); let current = token == self.testWriteGeneration && !self.clearPending; self.lock.unlock()
+                completion(current ? rows : nil)
+            }
+        }
+    }
+    @discardableResult func closeTestRecording() -> Bool {
+        lock.lock(); defer { lock.unlock() }
+        guard let recording = testRecording, recording.status != .recording,
+              !testSaveBusy, !testSaveFailed, !testDeleting,
+              Int(testArchive?.nextSequence ?? -1) == recording.archiveEvents.count else { return false }
+        testWriteGeneration = UUID(); testRecording = nil; testArchive = nil; testOwnedRoute = nil; return true
+    }
+    func deleteSavedTestRecording(id: String, completion: @escaping (Bool) -> Void) {
+        lock.lock()
+        guard !clearPending, !testDeleting, testRecording?.id.uuidString != id else { lock.unlock(); completion(false); return }
+        if testRecording == nil { testWriteGeneration = UUID() } // Fence an in-flight historical read.
+        testDeleting = true; lock.unlock()
+        queue.async {
+            var success = false
+            do {
+                self.load()
+                guard !self.loadFailed, let repository = self.repository else { throw RecordedRouteRepositoryError.invalid }
+                if let state = try repository.listNavigationTests().first(where: { $0.id == id }) {
+                    try repository.deleteNavigationTest(session: state)
+                }
+                success = true
+            } catch { success = false }
+            self.lock.lock(); self.testDeleting = false; self.scheduleTestSaveLocked(force: true); self.lock.unlock()
+            let result = success; DispatchQueue.main.async { completion(result) }
+        }
+    }
+    func reopenTestRecording(id: String, completion: @escaping (Bool) -> Void) {
+        lock.lock()
+        guard !clearPending, testRecording == nil, !testDeleting, !testSaveBusy else { lock.unlock(); completion(false); return }
+        testWriteGeneration = UUID(); let token = testWriteGeneration; lock.unlock()
+        queue.async {
+            var restored: NavigationTestRecording?, stored: NavigationTestSessionState?
+            do {
+                self.load()
+                guard !self.loadFailed, let repository = self.repository,
+                      let state = try repository.listNavigationTests().first(where: { $0.id == id }),
+                      let uuid = UUID(uuidString: state.id) else { throw RecordedRouteRepositoryError.invalid }
+                var events: [NavigationTestArchiveEvent] = [], after: Int64?
+                while events.count < Int(state.nextSequence) {
+                    let page = try repository.navigationTestEvents(session: state, after: after, limit: 64)
+                    guard !page.isEmpty else { throw RecordedRouteRepositoryError.invalid }
+                    for row in page {
+                        guard row.sequence == Int64(events.count), events.count < 3257 else { throw RecordedRouteRepositoryError.invalid }
+                        events.append(try .init(payload: row.payload)); after = row.sequence
+                    }
+                }
+                let value = try NavigationTestRecording.restored(id: uuid, startedAt: state.startedAt, events: events)
+                if state.status != "recording" {
+                    guard value.status.rawValue == state.status, !value.restoredInterrupted else { throw RecordedRouteRepositoryError.invalid }
+                } else { guard value.restoredInterrupted else { throw RecordedRouteRepositoryError.invalid } }
+                restored = value; stored = state
+            } catch { restored = nil }
+            self.lock.lock()
+            let current = token == self.testWriteGeneration && self.testRecording == nil && !self.testDeleting && !self.clearPending
+            if current, let restored {
+                self.testRecording = restored; self.testArchive = stored; self.testOwnedRoute = nil
+                self.testRejectedSamples = 0; self.testRejectedPlans = 0; self.testSaveFailed = false
+            }
+            self.lock.unlock()
+            let success = current && restored != nil
+            DispatchQueue.main.async { completion(success) }
+        }
+    }
+#if DEBUG
+    /// Functional persistence fence for finite test input, not a latency assertion.
+    /// Tests must release blocked capture/IO before awaiting this fence.
+    func drainTestSavesForTesting(_ completion: @escaping () -> Void) {
+        lock.lock(); scheduleTestSaveLocked(force: true); lock.unlock()
+        queue.async { self.testSaveFence(completion) }
+    }
+    private func testSaveFence(_ completion: @escaping () -> Void) {
+        lock.lock(); scheduleTestSaveLocked(force: true); let waiting = testSaveBusy; lock.unlock()
+        if waiting { queue.async { self.testSaveFence(completion) } }
+        else { DispatchQueue.main.async(execute: completion) }
+    }
+#endif
     private var pending: [RecordedRouteSample] = []
     private var repository: RecordedRouteRepository?
     private var trip: RecordedTripState?
@@ -86,11 +259,11 @@ final class RecordedRouteStore: @unchecked Sendable {
         budget = .init(configuration: try! .init(bytesPerInterval: 524_288, intervalSeconds: 60, burstBytes: 131_072), now: now())
     }
     func begin(sessionID: UUID) {
-        lock.lock(); try? testRecording?.stop(at: now()); self.sessionID = sessionID; generation = UUID(); lastAccepted = -.infinity; restarted = true; continuityEpoch = UUID(); lock.unlock()
+        lock.lock(); try? testRecording?.stop(at: now()); scheduleTestSaveLocked(force: true); self.sessionID = sessionID; generation = UUID(); lastAccepted = -.infinity; restarted = true; continuityEpoch = UUID(); lock.unlock()
     }
     func breakContinuity() { lock.lock(); trackingLost = true; continuityEpoch = UUID(); lock.unlock() }
     func stop() {
-        lock.lock(); try? testRecording?.stop(at: now()); sessionID = nil; generation = UUID()
+        lock.lock(); try? testRecording?.stop(at: now()); scheduleTestSaveLocked(force: true); sessionID = nil; generation = UUID()
         guard !flushPending else { lock.unlock(); return }; flushPending = true; lock.unlock()
         queue.async {
             defer { self.lock.lock(); self.flushPending = false; self.lock.unlock() }
@@ -127,6 +300,7 @@ final class RecordedRouteStore: @unchecked Sendable {
                             try self.testRecording?.observe(diagnosticSample, receivedAt: self.now())
                             self.testGapPending = false
                         } catch { self.testRejectedSamples += 1; self.testGapPending = true }
+                        self.scheduleTestSaveLocked()
                     }
                     if sample.tracking == .normal { self.restarted = false; self.trackingLost = false }
                     else { self.trackingLost = true; self.continuityEpoch = UUID() }
@@ -244,7 +418,7 @@ final class RecordedRouteStore: @unchecked Sendable {
         }
     }
     func clear(_ completion: @escaping (Bool) -> Void) {
-        lock.lock(); testRecording = nil; testOwnedRoute = nil; testRejectedSamples = 0; testRejectedPlans = 0; testGapPending = false
+        lock.lock(); testWriteGeneration = UUID(); testArchive = nil; testSaveFailed = false; testRecording = nil; testOwnedRoute = nil; testRejectedSamples = 0; testRejectedPlans = 0; testGapPending = false
         guard !clearPending else { lock.unlock(); completion(false); return }
         clearPending = true; sessionID = nil; generation = UUID(); lock.unlock()
         queue.async {

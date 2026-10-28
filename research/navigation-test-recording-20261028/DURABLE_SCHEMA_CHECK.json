@@ -1,0 +1,19 @@
+{
+  "checks_passed": [
+    "both_migrations_parse",
+    "opaque_bytes_unchanged",
+    "ordinary_route_eviction_does_not_delete_diagnostic",
+    "negative_sequence_rejected",
+    "past_event_cap_rejected",
+    "text_payload_rejected",
+    "wrong_byte_count_rejected",
+    "oversized_event_rejected",
+    "explicit_trip_clear_cascades_diagnostics"
+  ],
+  "count": 9,
+  "swift_or_grdb_executed": false,
+  "schema_sha256": {
+    "BlindMemory/Sources/BlindMemory/SQL/recorded_routes.sql": "0382b78d550e99fb6b9e3f11836abe28ccc19908d7112e43fe56b60a91291e20",
+    "BlindMemory/Sources/BlindMemory/SQL/navigation_test_recordings.sql": "d35bd6f30e3776cfd330b3f1217d3db724f103bbf0f9b0ddfcaef59a20651c04"
+  }
+}
