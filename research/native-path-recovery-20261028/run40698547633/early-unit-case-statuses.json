@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "target": "IndoorGoalContinuityTests/testTrackingLossStillInvalidatesRetainedMapFrame",
+  "complete": false,
+  "target_pass_verified": false,
+  "source_verified": false,
+  "expected_commit": "6fe9d5270f23954fa59fc3509cccf23445cefa51",
+  "limits": {
+    "query_bytes": 4194304,
+    "query_seconds": 30,
+    "tree_nodes": 10000
+  },
+  "provenance": {
+    "actual_head": "6fe9d5270f23954fa59fc3509cccf23445cefa51",
+    "tracked_source_clean": true,
+    "untracked_scopes": [
+      "ios",
+      "BlindCore",
+      "BlindMemory",
+      "tools/ci",
+      ".github/workflows"
+    ],
+    "generated_metadata": [
+      {
+        "path": "BlindMemory/Package.resolved",
+        "status": "validated_public_exact_pin",
+        "bytes": 388,
+        "sha256": "159a0bf93b792f403c70f7ec2cfea61686aff384e55c8c132946fb8980e26889",
+        "schema_version": 3,
+        "pins": [
+          {
+            "identity": "grdb.swift",
+            "kind": "remoteSourceControl",
+            "location": "https://github.com/groue/GRDB.swift.git",
+            "state": {
+              "revision": "b83108d10f42680d78f23fe4d4d80fc88dab3212",
+              "version": "7.11.1"
+            }
+          }
+        ]
+      },
+      {
+        "path": "ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+        "status": "validated_public_exact_pin",
+        "bytes": 388,
+        "sha256": "d11cb7a41a81538c6dac3ffac3b8187ff08abdec9bdae64e6f53c51cf5c8ad69",
+        "schema_version": 3,
+        "pins": [
+          {
+            "identity": "grdb.swift",
+            "kind": "remoteSourceControl",
+            "location": "https://github.com/groue/GRDB.swift.git",
+            "state": {
+              "revision": "b83108d10f42680d78f23fe4d4d80fc88dab3212",
+              "version": "7.11.1"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "source_commit": "6fe9d5270f23954fa59fc3509cccf23445cefa51",
+  "routeDiagnosticEvidence": {
+    "schema": 1,
+    "status": "source_or_cases_unverified",
+    "physicalAuthority": false
+  },
+  "error_type": "FileNotFoundError",
+  "error": "[Errno 2] No such file or directory: '/Users/runner/work/_temp/blind-native-ci/unit-summary.json'"
+}

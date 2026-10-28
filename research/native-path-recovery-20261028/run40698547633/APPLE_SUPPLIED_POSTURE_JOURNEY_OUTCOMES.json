@@ -1,0 +1,119 @@
+{
+  "baseline18Unchanged": true,
+  "cameraLocalizationTested": false,
+  "errors": [
+    "Bedroom3: metadataDecodeFailed",
+    "Hallway2: metadataDecodeFailed"
+  ],
+  "fullFootprintSupportVerified": false,
+  "getUpKinematicsTested": false,
+  "outcomes": [
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "bed-supplied-rise-around-closed-door-return",
+      "outcome": "unsupported-geometry",
+      "stage": "connector-to-existing-aisle-route"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "bed-supplied-rise-around-closed-door-return",
+      "outcome": "unsupported-geometry",
+      "stage": "around-bed"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "bed-supplied-rise-around-closed-door-return",
+      "outcome": "unsupported-geometry",
+      "stage": "back-to-aisle"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "bed-supplied-rise-around-closed-door-return",
+      "outcome": "unsupported-geometry",
+      "stage": "closed-door-approach"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "bed-supplied-rise-around-closed-door-return",
+      "outcome": "unsupported-geometry",
+      "stage": "closed-door-outbound-unsupported"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "bed-supplied-rise-around-closed-door-return",
+      "outcome": "unsupported-geometry",
+      "stage": "return-to-supplied-standing-place"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "chair-supplied-rise-around-closed-door-return",
+      "outcome": "unsupported-geometry",
+      "stage": "connector-to-existing-aisle-route"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "chair-supplied-rise-around-closed-door-return",
+      "outcome": "unsupported-geometry",
+      "stage": "around-room-aisle"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "chair-supplied-rise-around-closed-door-return",
+      "outcome": "unsupported-geometry",
+      "stage": "closed-door-approach"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "chair-supplied-rise-around-closed-door-return",
+      "outcome": "unsupported-geometry",
+      "stage": "closed-door-outbound-unsupported"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "chair-supplied-rise-around-closed-door-return",
+      "outcome": "unsupported-geometry",
+      "stage": "return-to-supplied-standing-place"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "standing-inside-bed-is-invalid",
+      "outcome": "unsupported-geometry",
+      "stage": "inside-bed-connector-attempt"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "standing-inside-chair-is-invalid",
+      "outcome": "unsupported-geometry",
+      "stage": "inside-chair-connector-attempt"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "historically-open-hallway-door-outside-unknown-return",
+      "outcome": "unsupported-geometry",
+      "stage": "open-door-approach"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "historically-open-hallway-door-outside-unknown-return",
+      "outcome": "unsupported-geometry",
+      "stage": "outside-original-floor-unsupported"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "journey": "historically-open-hallway-door-outside-unknown-return",
+      "outcome": "unsupported-geometry",
+      "stage": "return-within-original-supported-model"
+    }
+  ],
+  "physicalAuthority": false,
+  "productionGuidanceCode": [
+    "SpatialFacts.relation",
+    "SpatialFacts.phrase",
+    "GuidanceCadence.label"
+  ],
+  "protocolSHA256": "8e060627d0f570820fd00a427e22f6672eb50048611dfc9682986cac5c30cc9a",
+  "schema": 1,
+  "suppliedPoseCandidateReplayOnly": true,
+  "sustainedControllerTested": false,
+  "VoiceOverTested": false
+}

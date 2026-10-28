@@ -1,0 +1,52 @@
+{
+  "currentCoverageKnown": false,
+  "errors": [
+    "Bedroom3: metadataDecodeFailed",
+    "Hallway2: metadataDecodeFailed"
+  ],
+  "fullFootprintSupportVerified": false,
+  "outcomes": [
+    {
+      "error": "metadataDecodeFailed",
+      "outcome": "unsupported-geometry",
+      "pair": "bedroom-aisle",
+      "profile": "declared-width28-assumed-depth20-height120"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "outcome": "unsupported-geometry",
+      "pair": "bedroom-around-bed",
+      "profile": "declared-width28-assumed-depth20-height120"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "outcome": "unsupported-geometry",
+      "pair": "bedroom-contained-start",
+      "profile": "declared-width28-assumed-depth20-height120"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "outcome": "unsupported-geometry",
+      "pair": "hall-long",
+      "profile": "declared-width28-assumed-depth20-height120"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "outcome": "unsupported-geometry",
+      "pair": "hall-corner",
+      "profile": "declared-width28-assumed-depth20-height120"
+    },
+    {
+      "error": "metadataDecodeFailed",
+      "outcome": "unsupported-geometry",
+      "pair": "hall-missing-floor",
+      "profile": "declared-width28-assumed-depth20-height120"
+    }
+  ],
+  "physicalAuthority": false,
+  "profileAddendumSHA256": "c52792a1213a1b3969e97a6201d43bac2426a444f3f39e8b906a5feb0e0f701d",
+  "protocolSHA256": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123",
+  "schedule": "width28-addendum",
+  "schema": 1,
+  "scope": "candidate waypoint replay; not controller/device arrival"
+}

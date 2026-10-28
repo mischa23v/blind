@@ -1,0 +1,68 @@
+{
+  "stage": "P0 exclusive nonwalking mesh producer proposal",
+  "status": "staged_not_activated",
+  "audited_source_commit": "dc32a9bad9a75566f27924fb9f7aa8fe50a46e95",
+  "files": [
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/DEPENDENCY_PINS.json",
+      "bytes": 1839,
+      "sha256": "f549b452952c0b59945ae8bfe65fb842680df53af8c87794a511dfad2359f808"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/Package.swift",
+      "bytes": 1402,
+      "sha256": "0e71546f2377fcb4df676e8dcbeac54ad68a8f21344f6e225bc64bfe9b972f95"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/README.md",
+      "bytes": 9021,
+      "sha256": "5d275a59ade60bfce3f2a96b2d0b5a1a29f01066f7c814a3d4515ba828d837a2"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/STATIC_RESULT.json",
+      "bytes": 1312,
+      "sha256": "171f66bf0fc7189221ee525ad479d9c4cdf9613882f5f5745b92fc22623d3c1c"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/Sources/LiveMeshBenchIngress.swift",
+      "bytes": 4080,
+      "sha256": "4a1e7a16d84a8a5ee7822b3216afd2ae6014571bc8d72c2b7453478d56748e20"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/Sources/LiveMeshBenchSession.swift",
+      "bytes": 15341,
+      "sha256": "6779285aabbe1f5964938be4e9707ce9dc24eb3ad56aeeaeb126116d97e81bd7"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/Tests/LiveMeshBenchIngressTests.swift",
+      "bytes": 11222,
+      "sha256": "4637fb2f9189287bbc85d94996ea246359d19e4800238584bd1f7ee4be17e64b"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/Tests/LiveMeshBenchSessionTests.swift",
+      "bytes": 4545,
+      "sha256": "7d4ea67bf4925e3194caf4321aa98ec36a35973350f2c088fb7b07f3c2b0ea82"
+    },
+    {
+      "path": "research/live-mesh-bench-proposal-20261028/verify_staging.py",
+      "bytes": 4385,
+      "sha256": "4823cf597b29d73d74038a4440f02c5fe86ea81c9b0a8749c9bbcd9eb67ca7f0"
+    }
+  ],
+  "verification": {
+    "source_contract_checks_passed": 26,
+    "authored_swift_test_methods": 13,
+    "swift_compiled": false,
+    "swift_tests_executed": false,
+    "camera_activated": false,
+    "physical_guidance_authorized": false
+  },
+  "remaining_blockers": [
+    "classified-floor semantics lost in existing83 legacySlope path",
+    "app stopped-session handoff warning delivery UI absent",
+    "native compilation unrun",
+    "native late-callback generation buffer validity and resource/device evidence unverified",
+    "main preview expiry not independently clock-leased",
+    "physical localization and swept-volume clearance absent"
+  ]
+}
