@@ -1,0 +1,169 @@
+--- a/ios/BlindAssist/ConnectedJourneyRuntime.swift
++++ b/ios/BlindAssist/ConnectedJourneyRuntime.swift
+@@ -102,6 +102,39 @@
+     // Opt-in hosted-test instrumentation only. Nil for ordinary app instances;
+     // no global logging, user payloads, scheduling changes or release-build API.
+     var diagnosticPhaseRecorder: (@Sendable (String, UUID, TimeInterval) -> Void)?
++    // Test observability only: retain the actual outer tasks, including main-owner
++    // publication. Never substitute a test executor or change production priority.
++    private var diagnosticRestoreCompletion: (UUID, Task<Void, Never>)?
++    private var diagnosticCatalogCompletion: (UUID, Task<Void, Never>)?
++    private var diagnosticWriteCompletion: (UUID, Task<Void, Never>)?
++    enum DiagnosticCompletionError: Error { case missingOperation, unfinishedOperation }
++
++    /// Functional fixture fence, not a latency claim. Tests must release held IO
++    /// before calling. Successor catalog/write operations are part of the fence.
++    /// A completed task that leaves its own operation active is an error, not a retry.
++    func waitForPendingOperationsForTesting() async throws {
++        while loadID != nil || mapWorkID != nil || writing != nil {
++            if let id = loadID {
++                guard let operation = diagnosticRestoreCompletion, operation.0 == id else {
++                    throw DiagnosticCompletionError.missingOperation
++                }
++                await operation.1.value
++                guard loadID != id else { throw DiagnosticCompletionError.unfinishedOperation }
++            } else if let id = mapWorkID {
++                guard let operation = diagnosticCatalogCompletion, operation.0 == id else {
++                    throw DiagnosticCompletionError.missingOperation
++                }
++                await operation.1.value
++                guard mapWorkID != id else { throw DiagnosticCompletionError.unfinishedOperation }
++            } else if let id = writing {
++                guard let operation = diagnosticWriteCompletion, operation.0 == id else {
++                    throw DiagnosticCompletionError.missingOperation
++                }
++                await operation.1.value
++                guard writing != id else { throw DiagnosticCompletionError.unfinishedOperation }
++            }
++        }
++    }
+ #endif
+     public private(set) var snapshot = ConnectedJourneySnapshot()
+     public private(set) var loading = false
+@@ -178,7 +211,7 @@
+         let trace = diagnosticPhaseRecorder
+         trace?("restore-task-queued", id, ProcessInfo.processInfo.systemUptime)
+ #endif
+-        Task { [weak self, io, sha256] in
++        let completion = Task { [weak self, io, sha256] in
+ #if DEBUG
+             trace?("restore-task-entered", id, ProcessInfo.processInfo.systemUptime)
+ #endif
+@@ -261,6 +294,9 @@
+                 self.onChange?()
+             }
+         }
++#if DEBUG
++        diagnosticRestoreCompletion = (id, completion)
++#endif
+     }
+     /// Installs source-known artifacts after the existing native atomic map import
+     /// succeeds. A queued initial installation is one latest value, not a FIFO.
+@@ -310,7 +346,7 @@
+         let trace = diagnosticPhaseRecorder
+         trace?("catalog-task-queued", input.0, ProcessInfo.processInfo.systemUptime)
+ #endif
+-        Task { [weak self] in
++        let completion = Task { [weak self] in
+ #if DEBUG
+             trace?("catalog-task-entered", input.0, ProcessInfo.processInfo.systemUptime)
+             trace?("catalog-detached-queued", input.0, ProcessInfo.processInfo.systemUptime)
+@@ -361,6 +397,9 @@
+             }
+             self.onChange?()
+         }
++#if DEBUG
++        diagnosticCatalogCompletion = (input.0, completion)
++#endif
+     }
+     public func configure(body: BodyEnvelope, limits: SpatialLocalizationLimits) throws {
+         retire(); coordinator?.loseTracking()
+@@ -617,7 +656,7 @@
+     }
+     private func startWrite(_ ticket: UUID, _ payload: JourneyRuntimeWrite) {
+         writing = ticket
+-        Task { [weak self, io] in
++        let completion = Task { [weak self, io] in
+             var error: Error?
+             do { try await io.write(payload) } catch let failure { error = failure }
+             guard let self, self.writing == ticket else { return }
+@@ -638,6 +677,9 @@
+             }
+             self.onChange?()
+         }
++#if DEBUG
++        diagnosticWriteCompletion = (ticket, completion)
++#endif
+     }
+     private func retireOutput() { held = nil; onOutputRetired?() }
+     private func retire() {
+--- a/ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift
++++ b/ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift
+@@ -133,16 +133,30 @@
+             throw WaitError.timedOut // Never continue with incomplete map state and report a misleading missing-map error.
+         }
+     }
++    /// Wait for the actual operations and owner publication, not a wall-clock
++    /// assumption about Simulator worker admission. Not used while IO is held.
++    private func completedWork(_ runtime: ConnectedJourneyRuntime,
++                               file: StaticString = #filePath, line: UInt = #line) async throws {
++        enum CompletionError: Error { case unfinishedOrFailed }
++        try await runtime.waitForPendingOperationsForTesting()
++        XCTAssertFalse(runtime.loading, file: file, line: line)
++        XCTAssertEqual(runtime.pendingMapWorkCount, 0, file: file, line: line)
++        XCTAssertEqual(runtime.pendingWriteCount, 0, file: file, line: line)
++        XCTAssertFalse(runtime.storageError, file: file, line: line)
++        XCTAssertTrue(runtime.durable, file: file, line: line)
++        guard !runtime.loading, runtime.pendingMapWorkCount == 0, runtime.pendingWriteCount == 0,
++              !runtime.storageError, runtime.durable else { throw CompletionError.unfinishedOrFailed }
++    }
+     private func installed(_ suppliedIO: RuntimeIO? = nil) async throws -> ConnectedJourneyRuntime {
+         let io = suppliedIO ?? makeIO()
+         let runtime = makeRuntime(io: io)
+-        runtime.restore(); try await until(runtime) { !runtime.loading }
++        runtime.restore(); try await completedWork(runtime)
+         let catalog = try F.catalog()
+         // Deliberate burst proves the one-latest catalog task retains ALL accepted
+         // installations rather than dropping a map when coalescing work.
+         for map in catalog.installations.values { try runtime.install(map, portals: catalog.portals) }
+         XCTAssertLessThanOrEqual(runtime.pendingMapWorkCount, 2)
+-        try await until(runtime) { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
++        try await completedWork(runtime)
+         XCTAssertTrue(runtime.durable); return runtime
+     }
+     private func capture(_ runtime: ConnectedJourneyRuntime, _ endpoint: JourneyEndpoint, time: Double, yaw: Double = -.pi/2) throws -> SpatialLocalizationCapture {
+@@ -451,14 +465,14 @@
+         let io = makeIO(), runtime = try await installed(io), maps = try F.catalog()
+         let restricted = try XCTUnwrap(maps.installations[F.a]).addingRestrictions(blocked:[MapConnection("s","m")],zones:[])
+         try runtime.install(restricted,portals:maps.portals)
+-        try await until(runtime) { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
++        try await completedWork(runtime)
+         try runtime.withdrawMap(F.a)
+-        try await until(runtime) { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
++        try await completedWork(runtime)
+         let bytes = await io.read(), disk = try JourneyRuntimeEnvelope(data:XCTUnwrap(bytes))
+         XCTAssertEqual(disk.retiredBindings,[F.a])
+         XCTAssertFalse(try disk.installations.map { try SpatialMapInstallation(data:$0,sha256:F.sha256).binding }.contains(F.a))
+         let restored = makeRuntime(io: io)
+-        restored.restore(); try await until(restored) { !restored.loading }
++        restored.restore(); try await completedWork(restored)
+         XCTAssertThrowsError(try restored.install(XCTUnwrap(maps.installations[F.a]),portals:maps.portals))
+         try restored.configure(body:F.body,limits:F.limits)
+         XCTAssertThrowsError(try restored.beginLocalization(in:F.a))
+@@ -587,13 +601,13 @@
+         let runtime = try await installed(), map = try XCTUnwrap(F.catalog().installations[F.a])
+         let restricted = try map.addingRestrictions(blocked:[MapConnection("s","m")],zones:[])
+         try runtime.install(restricted)
+-        try await until(runtime) { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
++        try await completedWork(runtime)
+         try runtime.configure(body:F.body,limits:F.limits)
+         try runtime.setDestination(binding:F.c,nodeID:"p",origin:.trustedInterface)
+-        try await until(runtime) { runtime.pendingWriteCount == 0 }
++        try await completedWork(runtime)
+         _ = try runtime.beginLocalization(in:F.a)
+         try observe(runtime,F.endpoint(F.a,"m"),time:1)
+-        try await until(runtime) { runtime.pendingWriteCount == 0 }
++        try await completedWork(runtime)
+         try observe(runtime,F.endpoint(F.a,"m"),time:1.1)
+         let old = try runtime.next(now:1.1), saved = try runtime.snapshot.encoded()
+         let bad = try capture(runtime,F.endpoint(F.a,"m"),time:1.2)

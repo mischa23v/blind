@@ -102,6 +102,39 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
     // Opt-in hosted-test instrumentation only. Nil for ordinary app instances;
     // no global logging, user payloads, scheduling changes or release-build API.
     var diagnosticPhaseRecorder: (@Sendable (String, UUID, TimeInterval) -> Void)?
+    // Test observability only: retain the actual outer tasks, including main-owner
+    // publication. Never substitute a test executor or change production priority.
+    private var diagnosticRestoreCompletion: (UUID, Task<Void, Never>)?
+    private var diagnosticCatalogCompletion: (UUID, Task<Void, Never>)?
+    private var diagnosticWriteCompletion: (UUID, Task<Void, Never>)?
+    enum DiagnosticCompletionError: Error { case missingOperation, unfinishedOperation }
+
+    /// Functional fixture fence, not a latency claim. Tests must release held IO
+    /// before calling. Successor catalog/write operations are part of the fence.
+    /// A completed task that leaves its own operation active is an error, not a retry.
+    func waitForPendingOperationsForTesting() async throws {
+        while loadID != nil || mapWorkID != nil || writing != nil {
+            if let id = loadID {
+                guard let operation = diagnosticRestoreCompletion, operation.0 == id else {
+                    throw DiagnosticCompletionError.missingOperation
+                }
+                await operation.1.value
+                guard loadID != id else { throw DiagnosticCompletionError.unfinishedOperation }
+            } else if let id = mapWorkID {
+                guard let operation = diagnosticCatalogCompletion, operation.0 == id else {
+                    throw DiagnosticCompletionError.missingOperation
+                }
+                await operation.1.value
+                guard mapWorkID != id else { throw DiagnosticCompletionError.unfinishedOperation }
+            } else if let id = writing {
+                guard let operation = diagnosticWriteCompletion, operation.0 == id else {
+                    throw DiagnosticCompletionError.missingOperation
+                }
+                await operation.1.value
+                guard writing != id else { throw DiagnosticCompletionError.unfinishedOperation }
+            }
+        }
+    }
 #endif
     public private(set) var snapshot = ConnectedJourneySnapshot()
     public private(set) var loading = false
@@ -178,7 +211,7 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
         let trace = diagnosticPhaseRecorder
         trace?("restore-task-queued", id, ProcessInfo.processInfo.systemUptime)
 #endif
-        Task { [weak self, io, sha256] in
+        let completion = Task { [weak self, io, sha256] in
 #if DEBUG
             trace?("restore-task-entered", id, ProcessInfo.processInfo.systemUptime)
 #endif
@@ -261,6 +294,9 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
                 self.onChange?()
             }
         }
+#if DEBUG
+        diagnosticRestoreCompletion = (id, completion)
+#endif
     }
     /// Installs source-known artifacts after the existing native atomic map import
     /// succeeds. A queued initial installation is one latest value, not a FIFO.
@@ -310,7 +346,7 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
         let trace = diagnosticPhaseRecorder
         trace?("catalog-task-queued", input.0, ProcessInfo.processInfo.systemUptime)
 #endif
-        Task { [weak self] in
+        let completion = Task { [weak self] in
 #if DEBUG
             trace?("catalog-task-entered", input.0, ProcessInfo.processInfo.systemUptime)
             trace?("catalog-detached-queued", input.0, ProcessInfo.processInfo.systemUptime)
@@ -361,6 +397,9 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
             }
             self.onChange?()
         }
+#if DEBUG
+        diagnosticCatalogCompletion = (input.0, completion)
+#endif
     }
     public func configure(body: BodyEnvelope, limits: SpatialLocalizationLimits) throws {
         retire(); coordinator?.loseTracking()
@@ -617,7 +656,7 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
     }
     private func startWrite(_ ticket: UUID, _ payload: JourneyRuntimeWrite) {
         writing = ticket
-        Task { [weak self, io] in
+        let completion = Task { [weak self, io] in
             var error: Error?
             do { try await io.write(payload) } catch let failure { error = failure }
             guard let self, self.writing == ticket else { return }
@@ -638,6 +677,9 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
             }
             self.onChange?()
         }
+#if DEBUG
+        diagnosticWriteCompletion = (ticket, completion)
+#endif
     }
     private func retireOutput() { held = nil; onOutputRetired?() }
     private func retire() {

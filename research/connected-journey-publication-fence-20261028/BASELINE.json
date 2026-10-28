@@ -1,0 +1,15 @@
+{
+  "native_commit": "fee8c7da4e85cb279d93cdedf881b4f016b384ad",
+  "native_run": 40644081432,
+  "job": 122668728565,
+  "baseline_local_sha256": {
+    "ios/BlindAssist/ConnectedJourneyRuntime.swift": "62b65db8ca5d173a2834b67acb501cc0873b213f66a7193a9b66a11a4e606c9f",
+    "ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift": "c5309572e29fa240e18ad07943b51913480f7448b5d77b8c249f64dcc9109e1c"
+  },
+  "native_case_results": {
+    "testAutomaticRecoveryKeepsCurrentConservativeRestrictions": "Failed",
+    "testDeleteRestartCannotReimportSameRevisionAndForgetRestrictions": "Failed"
+  },
+  "failure_trace_sha256": "2e05d1a1f6236f878de22ae6ca777d41441531714cc5d439b5cfd71a3ca0acce",
+  "limits": "Local source hashes are not independently remote-verified. These traces are preserved from the existing GitHub Actions job log, not a new run."
+}

@@ -133,16 +133,30 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
             throw WaitError.timedOut // Never continue with incomplete map state and report a misleading missing-map error.
         }
     }
+    /// Wait for the actual operations and owner publication, not a wall-clock
+    /// assumption about Simulator worker admission. Not used while IO is held.
+    private func completedWork(_ runtime: ConnectedJourneyRuntime,
+                               file: StaticString = #filePath, line: UInt = #line) async throws {
+        enum CompletionError: Error { case unfinishedOrFailed }
+        try await runtime.waitForPendingOperationsForTesting()
+        XCTAssertFalse(runtime.loading, file: file, line: line)
+        XCTAssertEqual(runtime.pendingMapWorkCount, 0, file: file, line: line)
+        XCTAssertEqual(runtime.pendingWriteCount, 0, file: file, line: line)
+        XCTAssertFalse(runtime.storageError, file: file, line: line)
+        XCTAssertTrue(runtime.durable, file: file, line: line)
+        guard !runtime.loading, runtime.pendingMapWorkCount == 0, runtime.pendingWriteCount == 0,
+              !runtime.storageError, runtime.durable else { throw CompletionError.unfinishedOrFailed }
+    }
     private func installed(_ suppliedIO: RuntimeIO? = nil) async throws -> ConnectedJourneyRuntime {
         let io = suppliedIO ?? makeIO()
         let runtime = makeRuntime(io: io)
-        runtime.restore(); try await until(runtime) { !runtime.loading }
+        runtime.restore(); try await completedWork(runtime)
         let catalog = try F.catalog()
         // Deliberate burst proves the one-latest catalog task retains ALL accepted
         // installations rather than dropping a map when coalescing work.
         for map in catalog.installations.values { try runtime.install(map, portals: catalog.portals) }
         XCTAssertLessThanOrEqual(runtime.pendingMapWorkCount, 2)
-        try await until(runtime) { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
+        try await completedWork(runtime)
         XCTAssertTrue(runtime.durable); return runtime
     }
     private func capture(_ runtime: ConnectedJourneyRuntime, _ endpoint: JourneyEndpoint, time: Double, yaw: Double = -.pi/2) throws -> SpatialLocalizationCapture {
@@ -451,14 +465,14 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         let io = makeIO(), runtime = try await installed(io), maps = try F.catalog()
         let restricted = try XCTUnwrap(maps.installations[F.a]).addingRestrictions(blocked:[MapConnection("s","m")],zones:[])
         try runtime.install(restricted,portals:maps.portals)
-        try await until(runtime) { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
+        try await completedWork(runtime)
         try runtime.withdrawMap(F.a)
-        try await until(runtime) { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
+        try await completedWork(runtime)
         let bytes = await io.read(), disk = try JourneyRuntimeEnvelope(data:XCTUnwrap(bytes))
         XCTAssertEqual(disk.retiredBindings,[F.a])
         XCTAssertFalse(try disk.installations.map { try SpatialMapInstallation(data:$0,sha256:F.sha256).binding }.contains(F.a))
         let restored = makeRuntime(io: io)
-        restored.restore(); try await until(restored) { !restored.loading }
+        restored.restore(); try await completedWork(restored)
         XCTAssertThrowsError(try restored.install(XCTUnwrap(maps.installations[F.a]),portals:maps.portals))
         try restored.configure(body:F.body,limits:F.limits)
         XCTAssertThrowsError(try restored.beginLocalization(in:F.a))
@@ -587,13 +601,13 @@ extension ConnectedJourneyRuntimeTests {
         let runtime = try await installed(), map = try XCTUnwrap(F.catalog().installations[F.a])
         let restricted = try map.addingRestrictions(blocked:[MapConnection("s","m")],zones:[])
         try runtime.install(restricted)
-        try await until(runtime) { runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
+        try await completedWork(runtime)
         try runtime.configure(body:F.body,limits:F.limits)
         try runtime.setDestination(binding:F.c,nodeID:"p",origin:.trustedInterface)
-        try await until(runtime) { runtime.pendingWriteCount == 0 }
+        try await completedWork(runtime)
         _ = try runtime.beginLocalization(in:F.a)
         try observe(runtime,F.endpoint(F.a,"m"),time:1)
-        try await until(runtime) { runtime.pendingWriteCount == 0 }
+        try await completedWork(runtime)
         try observe(runtime,F.endpoint(F.a,"m"),time:1.1)
         let old = try runtime.next(now:1.1), saved = try runtime.snapshot.encoded()
         let bad = try capture(runtime,F.endpoint(F.a,"m"),time:1.2)

@@ -1,0 +1,27 @@
+{
+  "checks_passed": 17,
+  "checks": [
+    "canonical source unchanged: ios/BlindAssist/ConnectedJourneyRuntime.swift",
+    "canonical source unchanged: ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift",
+    "release task bodies/priority/publication unchanged",
+    "three actual outer task handles retained",
+    "exactly three typed completion handles",
+    "no diagnostic seam in release",
+    "same-ID completion explicitly errors",
+    "successor drain includes each operation",
+    "original three-second wait helper byte-identical",
+    "held-IO scenario untouched: testCancelIsSynchronousAndLatestOnlyWhileWriterIsBlocked",
+    "held-IO scenario untouched: testDeleteWhileRestoreIsPendingCannotReinstallQueuedOldMap",
+    "held-IO scenario untouched: testReplacementOrHoldDuringDelayedRestoreOwnsLatestIntent",
+    "all test cases retained",
+    "fence asserts storage success and durability",
+    "first-failure traces immutable",
+    "first restore admission exceeded unchanged3s",
+    "first restore body under1ms"
+  ],
+  "scope": "portable proposal source/provenance only",
+  "swift_compiled": false,
+  "native_executed": false,
+  "first_failure_queue_delay_seconds": 3.9129864583333074,
+  "first_failure_detached_work_seconds": 0.0001650833332860202
+}
