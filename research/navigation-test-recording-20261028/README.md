@@ -1,3 +1,7 @@
+## Same-frame room overlay candidate — 2026-10-28
+
+After durable checkpoint `efdc2c1`, [SAME_FRAME_OVERLAY.md](SAME_FRAME_OVERLAY.md) describes the camera-only exact saved-room receipt, atomic inert archive event and historical top-down room/trace UI. This candidate is source-reviewed work, not native or device validation. The existing measured-alignment route overlay remains separate; no imported-map transform is invented.
+
 ## Current durable candidate
 
 The initial volatile checkpoint below is historical (`26bfa69`). The later durable local save/reopen source and its still-pending native validation are documented in [DURABLE_IMPLEMENTATION.md](DURABLE_IMPLEMENTATION.md), with a separate `DURABLE_MANIFEST.json`. Do not confuse Python schema checks with executed Swift/GRDB tests.

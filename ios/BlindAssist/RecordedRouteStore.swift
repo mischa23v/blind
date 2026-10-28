@@ -270,7 +270,7 @@ final class RecordedRouteStore: @unchecked Sendable {
             self.sampler.interrupt(); self.flush()
         }
     }
-    func offer(sessionID: UUID, at time: Double, extract: @escaping () throws -> NativeObservationRecord) {
+    func offer(sessionID: UUID, at time: Double, sameFrameAssociation: SavedWorldFrameCameraAssociation? = nil, extract: @escaping () throws -> NativeObservationRecord) {
         lock.lock()
         guard self.sessionID == sessionID else { lock.unlock(); return }
         if time.isFinite && time < lastAccepted { trackingLost = true; continuityEpoch = UUID(); lastAccepted = -.infinity }
@@ -297,7 +297,7 @@ final class RecordedRouteStore: @unchecked Sendable {
                     if self.testRecording?.status == .recording, self.testRecording?.id == diagnosticID {
                         do {
                             let diagnosticSample = self.testGapPending ? sample.markingBoundary(.interrupted) : sample
-                            try self.testRecording?.observe(diagnosticSample, receivedAt: self.now())
+                            try self.testRecording?.observe(diagnosticSample, receivedAt: self.now(), sameFrameReceipt: sameFrameAssociation)
                             self.testGapPending = false
                         } catch { self.testRejectedSamples += 1; self.testGapPending = true }
                         self.scheduleTestSaveLocked()

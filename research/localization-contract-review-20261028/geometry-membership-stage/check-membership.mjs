@@ -1,0 +1,9 @@
+import{readFile,readdir,access}from'node:fs/promises';import{createHash}from'node:crypto';import assert from'node:assert/strict';import{generateProject}from'../../../tools/generate-xcode-project.mjs';
+const root=new URL('../../../',import.meta.url),read=p=>readFile(new URL(p,root),'utf8'),id=n=>createHash('sha256').update(n).digest('hex').slice(0,24).toUpperCase();
+const before=await read('research/localization-contract-review-20261028/geometry-membership-stage/project-before.txt'),after=await read('ios/BlindAssist.xcodeproj/project.pbxproj');
+const files=(await readdir(new URL('ios/BlindAssist/',root))).filter(f=>f.endsWith('.swift')).sort();assert.equal(files.length,64);assert.equal(after,generateProject(files));
+const paths=s=>[...s.matchAll(/path = "?([^;"\n]+\.swift)"?;/g)].map(m=>m[1]).sort(),a=paths(before),b=paths(after),added=b.filter(x=>!a.includes(x));assert.deepEqual(added,['BlindAssist/SavedRoomDiagnosticGeometryProvider.swift','BlindAssistTests/SavedRoomDiagnosticGeometryProviderTests.swift']);assert.deepEqual(a.filter(x=>!b.includes(x)),[]);
+const stable=s=>s.split('\n').filter(l=>/XCLocalSwiftPackageReference|XCRemoteSwiftPackageReference|XCSwiftPackageProductDependency|PBXFrameworksBuildPhase|buildSettings =/.test(l));assert.deepEqual(stable(after),stable(before));
+const build=id('unit-spatial-build:SavedRoomDiagnosticGeometryProviderTests.swift');assert.ok(after.includes(build+' = { isa = PBXBuildFile;'));assert.ok(after.split('\n').some(l=>l.includes('PBXSourcesBuildPhase')&&l.includes(build+',')));
+for(const p of added)await access(new URL('ios/'+p,root));
+console.log(JSON.stringify({kind:'source-membership-only',nativeSwiftFiles:64,addedPaths:added,removedPaths:[],packagesProductsFrameworksAndFlagsUnchanged:true,exactGeneratorParity:true,hostedProviderTestsInSourcePhase:true,nativeExecution:false,currentProjectSHA256:createHash('sha256').update(after).digest('hex')},null,2));

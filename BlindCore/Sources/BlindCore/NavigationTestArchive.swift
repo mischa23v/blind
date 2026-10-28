@@ -4,6 +4,8 @@ import Foundation
 public enum NavigationTestArchiveEvent: Codable, Equatable, Sendable {
     case plan(NavigationTestRecording.Plan)
     case sample(NavigationTestRecording.Entry)
+    /// Atomic sample + inert provenance. Old unassociated sample events remain valid.
+    case associatedSample(NavigationTestRecording.Entry, NavigationTestRecording.SameFrameAssociation)
     case marker(NavigationTestRecording.Marker)
     case ended(status: NavigationTestRecording.Status, at: Double)
 

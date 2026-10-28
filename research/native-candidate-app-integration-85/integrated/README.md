@@ -1,3 +1,11 @@
+# Saved-room diagnostic geometry membership — 2026-10-28
+
+The separate `saved-room-geometry-membership.patch` binds the reviewed NavigationModel same-frame diagnostic handoff and provider factory/deletion hook, plus canonical membership for `SavedRoomDiagnosticGeometryProvider.swift` and `SavedRoomDiagnosticGeometryProviderTests.swift`. There are now 64 app Swift files. Existing hosted tests, package/product links, flags and workflows remain unchanged; Core source/test files are discovered by the existing Swift package.
+
+The checker reverses this latest app layer to exact Nav `fcea783bbbbaa4e1bdda04740fc38f11c10f30de1e6160d8eb5072d7b4a01298` and PBX `63fc5fcd1d9ef153c87ca48b9fa195f270fec3c039ee58887d407d46b300d87c` before all previous app layers. The independently reversible CI helper extraction proof remains active and unchanged. No prior patch/pin was rewritten. This is diagnostic geometry/source association only, not a collision mesh, measured alignment accuracy or physical guidance authority. Native compilation/runtime remain pending.
+
+---
+
 # Bounded scene-timing CI helper extraction — 2026-10-28
 
 The separate `scene-timing-ci-helper.patch` is the exact three-line `tools/ci/native-apple.sh` hunk already authorized in `research/scene-publication-timing-20261028/APPLIED.patch`. It prints at most eight matching metadata lines, capped at 1,500 characters each, after the existing unit-failure extractor. No build/test command, timeout, result condition, workflow or app source is changed by this repair.

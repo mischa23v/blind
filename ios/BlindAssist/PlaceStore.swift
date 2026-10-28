@@ -36,6 +36,8 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     private var scanID = UUID()
     private var processing: Task<Void, Never>?
     private var worldFrameRecovery = SavedWorldFrameRecovery()
+    private var diagnosticGeometryDeletionGeneration = UUID()
+    private var diagnosticGeometryBlockedPlaces = Set<UUID>()
     @Published private(set) var registration: RoomRegistrationAcquisition?
     @Published private(set) var registrationStatus = ""
     @Published private(set) var registrationSaving = false
@@ -71,9 +73,14 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     /// Supplied by the app from on-device location; nil when location is off or unavailable.
     var currentCoordinate: (() -> (latitude: Double, longitude: Double)?)?
     var onMessage: ((String) -> Void)?
-    override init() {
-        directory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("Places", isDirectory: true)
+    override convenience init() {
+        self.init(directory: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("Places", isDirectory: true))
+    }
+    /// The default app destination is unchanged; tests can exercise the actual
+    /// source/deletion owner against an isolated protected local directory.
+    init(directory: URL) {
+        self.directory = directory
         super.init()
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
@@ -350,6 +357,27 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
         now: Double = ProcessInfo.processInfo.systemUptime) -> SavedWorldFrameCameraAssociation? {
         worldFrameRecovery.cameraAssociation(sessionID: sessionID, capturedAt: capturedAt, now: now)
     }
+    /// Read-only request preparation; byte reads, hashes and CapturedRoom decoding
+    /// belong to the diagnostic provider's bounded utility worker, never a frame.
+    @MainActor func diagnosticGeometrySource(for frame: SavedWorldFrame) -> SavedRoomDiagnosticGeometrySource? {
+        guard frame.valid, let memory, let id = UUID(uuidString: frame.placeID),
+              !diagnosticGeometryBlockedPlaces.contains(id),
+              places.contains(where: { $0.id == id && $0.worldFrame == frame }) else { return nil }
+        return .init(frame: frame, url: directory.appendingPathComponent("\(id).room.json"), memory: memory,
+            memoryOwner: memory.writeOwner, deletionGeneration: diagnosticGeometryDeletionGeneration)
+    }
+    @MainActor func ownsDiagnosticGeometrySource(_ source: SavedRoomDiagnosticGeometrySource) -> Bool {
+        guard let memory, memory === source.memory, memory.writeOwner == source.memoryOwner,
+              diagnosticGeometryDeletionGeneration == source.deletionGeneration,
+              let id = UUID(uuidString: source.frame.placeID), !diagnosticGeometryBlockedPlaces.contains(id)
+        else { return false }
+        return places.contains { $0.id == id && $0.worldFrame == source.frame }
+    }
+    /// User deletion admission can precede asynchronous history erasure. Block new
+    /// geometry reads immediately and keep them blocked if that erasure fails.
+    func retireDiagnosticGeometry(for place: SavedPlace) {
+        if diagnosticGeometryBlockedPlaces.insert(place.id).inserted { diagnosticGeometryDeletionGeneration = UUID() }
+    }
     /// Original, hash-bound scan measurements only. They are dated map history, not
     /// live detections and never ownership/personal-item identity. Do not recompute
     /// this disk read on every camera frame; callers may cache by descriptor.revision.
@@ -397,6 +425,8 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
         }
     }
     func delete(_ place: SavedPlace) {
+        // Retire geometry at deletion admission, even if durable erasure fails.
+        retireDiagnosticGeometry(for: place)
         retireRegistration(for: place)
         do {
             guard let memory else { throw MemoryError.missing }
@@ -406,6 +436,7 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
             worldFrameRecovery.reset()
             if registration?.frame.placeID == place.id.uuidString { registration = nil; registrationStoreOwner = nil }
             places.removeAll { $0.id == place.id }
+            diagnosticGeometryBlockedPlaces.remove(place.id)
             retryDeletionCleanup()
         } catch { message = t("Deleting the place did not finish. Some private files may remain; try again.", "لم يكتمل حذف المكان. قد تبقى بعض الملفات الخاصة؛ أعد المحاولة.") }
     }

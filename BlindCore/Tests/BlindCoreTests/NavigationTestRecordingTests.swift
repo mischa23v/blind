@@ -5,8 +5,8 @@ final class NavigationTestRecordingTests: XCTestCase {
     private let session = UUID()
     private var sampler = RecordedRouteSampler()
     private let map = SpatialMapBinding(mapID: "synthetic-room", frameID: "map-frame", revision: "r1")
-    private func sample(_ time: Double, tracking: NativeObservationRecord.Tracking = .normal) throws -> RecordedRouteSample {
-        return try sampler.observe(.init(sessionID: session, coordinateFrameID: "camera-frame", producer: .arkit,
+    private func sample(_ time: Double, tracking: NativeObservationRecord.Tracking = .normal, frameID: String = "camera-frame") throws -> RecordedRouteSample {
+        return try sampler.observe(.init(sessionID: session, coordinateFrameID: frameID, producer: .arkit,
             sourceID: "synthetic-\(time)", mapTarget: map, capturedAt: time, receivedAt: time,
             observedAt: Date(timeIntervalSince1970: 1000 + time), tracking: tracking,
             cameraConvention: .arKitRightUpBack, cameraToSessionWorld: .identity,
@@ -17,6 +17,92 @@ final class NavigationTestRecordingTests: XCTestCase {
               alignment: aligned ? .init(sessionID: session, sourceFrameID: "camera-frame", revision: "registration-1",
                 calibrationRevision: "mount-1", evidenceID: "synthetic-only", map: map, sourceToMap: .identity,
                 validFrom: 0, validThrough: expiry) : nil, recordedAt: time)
+    }
+    private var savedFrame: SavedWorldFrame {
+        .init(placeID: UUID().uuidString, revision: UUID().uuidString,
+              worldMapSHA256: String(repeating: "a", count: 64), roomCaptureSHA256: String(repeating: "b", count: 64),
+              originAnchorID: UUID().uuidString, capturedAt: Date(timeIntervalSince1970: 100))
+    }
+    private func recovery(_ frame: SavedWorldFrame) -> SavedWorldFrameRecovery {
+        var value = SavedWorldFrameRecovery(); value.begin(frame: frame, sessionID: session, now: 0)
+        _ = value.observe(sessionID: session, tracking: .relocalizing, mappingAvailable: true, originAnchorMatches: true, frameTime: 0, now: 0)
+        for time in [0.1, 0.2, 0.3] {
+            _ = value.observe(sessionID: session, tracking: .normal, mappingAvailable: true, originAnchorMatches: true, frameTime: time, now: time)
+        }
+        return value
+    }
+    func testSameFrameAtomicArchivePreservesRawCameraAndNoAuthority() throws {
+        let frame = savedFrame; let gate = recovery(frame)
+        let receipt = try XCTUnwrap(gate.cameraAssociation(sessionID: session, capturedAt: 0.3, now: 0.31))
+        let raw = try sample(0.3, frameID: receipt.sourceFrameID)
+        var value = try NavigationTestRecording(explicitStartAt: 0)
+        try value.observe(raw, receivedAt: 0.4, sameFrameReceipt: receipt)
+        XCTAssertEqual(value.archiveEvents.count, 1)
+        XCTAssertLessThanOrEqual(try value.archiveEvents[0].encoded().count, NavigationTestArchiveEvent.maximumBytes)
+        XCTAssertEqual(NavigationTestRecording.maximumSamples + 2 * NavigationTestRecording.maximumEvents + 1, 3_257)
+        XCTAssertNil(value.entries[0].cameraInMap); XCTAssertTrue(value.overlaySegments.isEmpty)
+        XCTAssertEqual(value.sameFrameSegments(for: frame), [[raw.cameraPosition]])
+        let events = try value.archiveEvents.map { try NavigationTestArchiveEvent(payload: $0.encoded()) }
+        let restored = try NavigationTestRecording.restored(id: value.id, startedAt: 0, events: events)
+        XCTAssertEqual(restored.sameFrameAssociations, value.sameFrameAssociations)
+        XCTAssertEqual(restored.entries, value.entries); XCTAssertEqual(restored.status, .stopped)
+        XCTAssertTrue(restored.restoredInterrupted); XCTAssertNil(restored.endedAt)
+        XCTAssertFalse(restored.permitsPhysicalGuidance); XCTAssertFalse(restored.sameFrameAssociations[0].permitsPhysicalGuidance)
+        XCTAssertTrue(restored.sameFrameSegments(for: savedFrame).isEmpty)
+        XCTAssertThrowsError(try NavigationTestRecording.restored(id: value.id, startedAt: 0, events: events + events))
+        let empty = try NavigationTestRecording.restored(id: value.id, startedAt: 0, events: [])
+        XCTAssertTrue(empty.sameFrameAssociations.isEmpty)
+    }
+    func testMismatchedReceiptKeepsRawSampleWithoutAssociation() throws {
+        let frame = savedFrame; let gate = recovery(frame)
+        let receipt = try XCTUnwrap(gate.cameraAssociation(sessionID: session, capturedAt: 0.3, now: 0.31))
+        var value = try NavigationTestRecording(explicitStartAt: 0)
+        try value.observe(sample(0.3), receivedAt: 0.4, sameFrameReceipt: receipt) // wrong source frame
+        try value.observe(sample(0.5, frameID: receipt.sourceFrameID), receivedAt: 0.5, sameFrameReceipt: receipt) // wrong capture
+        XCTAssertEqual(value.entries.count, 2); XCTAssertTrue(value.sameFrameAssociations.isEmpty)
+        let old = try NavigationTestRecording.restored(id: value.id, startedAt: 0, events: value.archiveEvents)
+        XCTAssertEqual(old.entries, value.entries); XCTAssertTrue(old.sameFrameAssociations.isEmpty)
+    }
+    func testSameFrameTraceBreaksAtMissingReceiptTrackingLossAndRecoveryEpoch() throws {
+        let frame = savedFrame; var gate = recovery(frame)
+        let source = "arkit-session:\(session.uuidString)"
+        var value = try NavigationTestRecording(explicitStartAt: 0)
+        for time in [0.3, 0.5] {
+            if time > 0.3 { _ = gate.observe(sessionID: session, tracking: .normal, mappingAvailable: true, originAnchorMatches: true, frameTime: time, now: time) }
+            try value.observe(sample(time, frameID: source), receivedAt: time,
+                sameFrameReceipt: gate.cameraAssociation(sessionID: session, capturedAt: time, now: time))
+        }
+        XCTAssertEqual(value.sameFrameSegments(for: frame).map(\.count), [2])
+        try value.observe(sample(0.7, frameID: source), receivedAt: 0.7) // no receipt, no bridge across it
+        _ = gate.observe(sessionID: session, tracking: .normal, mappingAvailable: true, originAnchorMatches: true, frameTime: 0.9, now: 0.9)
+        try value.observe(sample(0.9, frameID: source), receivedAt: 0.9,
+            sameFrameReceipt: gate.cameraAssociation(sessionID: session, capturedAt: 0.9, now: 0.9))
+        gate.observeTrackingInterruption(sessionID: session, tracking: .relocalizing, frameTime: 1, now: 1)
+        for time in [1.1, 1.2, 1.3] {
+            _ = gate.observe(sessionID: session, tracking: .normal, mappingAvailable: true, originAnchorMatches: true, frameTime: time, now: time)
+        }
+        try value.observe(sample(1.3, frameID: source), receivedAt: 1.3,
+            sameFrameReceipt: gate.cameraAssociation(sessionID: session, capturedAt: 1.3, now: 1.3))
+        XCTAssertEqual(value.sameFrameSegments(for: frame).map(\.count), [2, 1, 1])
+        XCTAssertNotEqual(value.sameFrameAssociations.first?.recoveryID, value.sameFrameAssociations.last?.recoveryID)
+        try value.observe(sample(1.5, tracking: .limited, frameID: source), receivedAt: 1.5)
+        XCTAssertEqual(value.sameFrameAssociations.count, 4)
+    }
+    func testSameFrameMetadataFutureVersionAndMismatchRejected() throws {
+        let frame = savedFrame; let gate = recovery(frame)
+        let receipt = try XCTUnwrap(gate.cameraAssociation(sessionID: session, capturedAt: 0.3, now: 0.31))
+        var value = try NavigationTestRecording(explicitStartAt: 0)
+        try value.observe(sample(0.3, frameID: receipt.sourceFrameID), receivedAt: 0.4, sameFrameReceipt: receipt)
+        let metadata = try XCTUnwrap(value.sameFrameAssociations.first)
+        let data = try JSONEncoder().encode(metadata)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        for (key, replacement) in [("schemaVersion", 2 as Any), ("capturedAt", 99 as Any), ("observationID", UUID().uuidString as Any)] {
+            var corrupt = object; corrupt[key] = replacement
+            let decoded = try JSONDecoder().decode(NavigationTestRecording.SameFrameAssociation.self,
+                from: JSONSerialization.data(withJSONObject: corrupt))
+            XCTAssertThrowsError(try NavigationTestRecording.restored(id: value.id, startedAt: 0,
+                events: [.associatedSample(value.entries[0], decoded)]))
+        }
     }
     func testArchiveRoundTripKeepsRawSamplesPlansMarkersAndStops() throws {
         var recording = try NavigationTestRecording(explicitStartAt: 0)

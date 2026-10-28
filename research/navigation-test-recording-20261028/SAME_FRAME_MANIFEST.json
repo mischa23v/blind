@@ -1,0 +1,65 @@
+{
+  "base_checkpoint": "efdc2c1952bfce22b5eb5543aaf931a8db32eda5",
+  "scope": "Same-frame camera-only archive and top-down diagnostic overlay. Root sole publisher. Source-only candidate, no private recordings/photos/health/raw scans.",
+  "requires_coordinated_geometry_provider": [
+    "BlindCore/Sources/BlindCore/SavedRoomDiagnosticGeometry.swift",
+    "ios/BlindAssist/SavedRoomDiagnosticGeometryProvider.swift",
+    "ios/BlindAssist/PlaceStore.swift",
+    "ios/BlindAssist/NavigationModel.swift",
+    "native target membership for geometry provider"
+  ],
+  "validation": {
+    "sqlite_schema_checks_passed": 9,
+    "new_core_tests_authored": 4,
+    "new_hosted_tests_authored": 2,
+    "swift_or_native_tests_executed_for_this_increment": false,
+    "source_review": "Independent final review of these nine files found no source-level blocker; geometry provider/tests/membership remain separately reviewed dependencies."
+  },
+  "files": [
+    {
+      "path": "BlindCore/Sources/BlindCore/NavigationTestRecording.swift",
+      "sha256": "6fa90d6e17ac83adfa53d16c2dc8a9a25e425742260dd89f5135dfa38568330d",
+      "bytes": 16951
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NavigationTestArchive.swift",
+      "sha256": "5291e3a4bd0045859af0eaab6cac7b7c4bb39efda3ddbdbe7bc859810040ac81",
+      "bytes": 1262
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/NavigationTestRecordingTests.swift",
+      "sha256": "4195e08026136f2ff154b9f0432d9b01104b2eb7561b9e1d809e089022b120e7",
+      "bytes": 17448
+    },
+    {
+      "path": "ios/BlindAssist/RecordedRouteStore.swift",
+      "sha256": "414c9416b6aa4dedc3a0bcd3ac51d8539a8b7a16a1879cd7fc7532310d398fde",
+      "bytes": 33394
+    },
+    {
+      "path": "ios/BlindAssist/NativeARObservationBridge.swift",
+      "sha256": "ca86a012a53ff599dbed66dbaaba18a7235a7ddcee68374712a8fbb5139f738a",
+      "bytes": 8403
+    },
+    {
+      "path": "ios/BlindAssist/NavigationTestRecordingView.swift",
+      "sha256": "ee77e9e0254ad438c2a46012162c12dffe69c8f65ecf2d9af8b821cc881bb6d5",
+      "bytes": 25454
+    },
+    {
+      "path": "ios/BlindAssistTests/RecordedRouteStoreTests.swift",
+      "sha256": "47f565d7aa0e56c534d4cf5fde52744afbdc04dad2ee1591ef83ecbb04e291d5",
+      "bytes": 39244
+    },
+    {
+      "path": "research/navigation-test-recording-20261028/README.md",
+      "sha256": "fbf21c028211e2219b1b2e2ce76c34120f15f55bf41907e6075e7fcb13732b60",
+      "bytes": 8249
+    },
+    {
+      "path": "research/navigation-test-recording-20261028/SAME_FRAME_OVERLAY.md",
+      "sha256": "0970527beff07a9e651a00adf382171f6dd9d189fb7bdbb717d273d77eb7de3b",
+      "bytes": 5140
+    }
+  ]
+}

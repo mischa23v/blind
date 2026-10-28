@@ -75,6 +75,33 @@ public struct NavigationTestRecording: Sendable {
         /// Nil is unregistered/expired/limited, NEVER snapped to the nearest route.
         public let cameraInMap: Point3?
     }
+    /// Inert historical coordinate provenance, never a recovered live receipt.
+    /// Version 1 pairs one exact camera capture with its saved RoomPlan world.
+    public struct SameFrameAssociation: Codable, Equatable, Sendable {
+        public let schemaVersion: Int
+        public let observationID, sessionID, recoveryID: UUID
+        public let sourceFrameID: String
+        public let capturedAt: Double
+        public let frame: SavedWorldFrame
+        public var permitsPhysicalGuidance: Bool { false }
+        public var uncertainty: String { "unmeasured" }
+        private init(sample: RecordedRouteSample, receipt: SavedWorldFrameCameraAssociation) {
+            schemaVersion = 1; observationID = sample.observationID
+            sessionID = receipt.sessionID; recoveryID = receipt.recoveryID
+            sourceFrameID = receipt.sourceFrameID; capturedAt = receipt.capturedAt; frame = receipt.frame
+        }
+        fileprivate static func capturing(_ sample: RecordedRouteSample, receipt: SavedWorldFrameCameraAssociation) -> Self? {
+            let value = Self(sample: sample, receipt: receipt)
+            return value.matches(sample) ? value : nil
+        }
+        fileprivate func matches(_ sample: RecordedRouteSample) -> Bool {
+            schemaVersion == 1 && frame.valid && observationID == sample.observationID &&
+            sessionID == sample.sessionID && sourceFrameID == sample.sourceFrameID &&
+            sourceFrameID == "arkit-session:\(sessionID.uuidString)" &&
+            capturedAt.isFinite && capturedAt == sample.capturedAt && sample.poseCapturedAt == capturedAt &&
+            sample.producer == .arkit && sample.tracking == .normal
+        }
+    }
     public struct Marker: Codable, Equatable, Sendable {
         public let problem: Problem
         public let recordedAt: Double
@@ -89,6 +116,7 @@ public struct NavigationTestRecording: Sendable {
     public private(set) var entries: [Entry] = []
     public private(set) var plans: [Plan] = []
     public private(set) var markers: [Marker] = []
+    public private(set) var sameFrameAssociations: [SameFrameAssociation] = []
     public private(set) var archiveEvents: [NavigationTestArchiveEvent] = []
     public private(set) var restoredHistorical = false
     public private(set) var restoredInterrupted = false
@@ -116,7 +144,13 @@ public struct NavigationTestRecording: Sendable {
     }
     /// `receivedAt` is the local monotonic receipt time; samples retain their own
     /// capture times, including delayed delivery and source-session resets.
-    public mutating func observe(_ sample: RecordedRouteSample, receivedAt: Double) throws {
+    public mutating func observe(_ sample: RecordedRouteSample, receivedAt: Double,
+                                 sameFrameReceipt: SavedWorldFrameCameraAssociation? = nil) throws {
+        let association = sameFrameReceipt.flatMap { SameFrameAssociation.capturing(sample, receipt: $0) }
+        try appendSample(sample, receivedAt: receivedAt, association: association)
+    }
+    private mutating func appendSample(_ sample: RecordedRouteSample, receivedAt: Double,
+                                      association: SameFrameAssociation?) throws {
         try admit(time: receivedAt, count: entries.count, limit: Self.maximumSamples)
         try sample.validate()
         guard sample.capturedAt >= startedAt, sample.capturedAt <= receivedAt, !entries.contains(where: { $0.sample.observationID == sample.observationID }) else { throw Failure.invalidInput }
@@ -129,7 +163,11 @@ public struct NavigationTestRecording: Sendable {
             mapped = try alignment.sourceToMap.applying(to: sample.cameraPosition)
         } else { mapped = nil }
         let entry = Entry(sample: sample, receivedAt: receivedAt, planIndex: index, cameraInMap: mapped)
-        entries.append(entry); lastEventAt = receivedAt; archiveEvents.append(.sample(entry))
+        entries.append(entry); lastEventAt = receivedAt
+        if let association {
+            sameFrameAssociations.append(association)
+            archiveEvents.append(.associatedSample(entry, association))
+        } else { archiveEvents.append(.sample(entry)) }
     }
     public mutating func mark(_ problem: Problem, at time: Double) throws {
         try admit(time: time, count: markers.count, limit: Self.maximumEvents)
@@ -157,6 +195,10 @@ public struct NavigationTestRecording: Sendable {
             case .sample(let entry):
                 try result.observe(entry.sample, receivedAt: entry.receivedAt)
                 guard result.entries.last == entry else { throw Failure.invalidInput }
+            case .associatedSample(let entry, let association):
+                guard association.matches(entry.sample) else { throw Failure.invalidInput }
+                try result.appendSample(entry.sample, receivedAt: entry.receivedAt, association: association)
+                guard result.entries.last == entry else { throw Failure.invalidInput }
             case .marker(let marker):
                 try result.mark(marker.problem, at: marker.recordedAt)
                 guard result.markers.last == marker else { throw Failure.invalidInput }
@@ -183,6 +225,28 @@ public struct NavigationTestRecording: Sendable {
         public let planIndex: Int
         public let map: SpatialMapBinding
         public let points: [Point3]
+    }
+    /// Camera-only historical trace in an exactly matching saved world. Raw points
+    /// are copied unchanged. A missing association, recovery epoch or tracking gap
+    /// breaks the line; this never creates an Alignment or a movement permission.
+    public func sameFrameSegments(for frame: SavedWorldFrame) -> [[Point3]] {
+        guard frame.valid else { return [] }
+        let byID = Dictionary(uniqueKeysWithValues: sameFrameAssociations.map { ($0.observationID, $0) })
+        var result: [[Point3]] = [], current: [Point3] = []
+        var previous: Entry?, previousAssociation: SameFrameAssociation?
+        for entry in entries {
+            let association = byID[entry.sample.observationID]
+            let accepted = association?.frame == frame && association?.matches(entry.sample) == true
+            let continuous = accepted && entry.sample.boundaryBefore == nil &&
+                previousAssociation?.frame == frame && previousAssociation?.recoveryID == association?.recoveryID &&
+                previous?.sample.sessionID == entry.sample.sessionID &&
+                previous.map { entry.sample.capturedAt > $0.sample.capturedAt && entry.sample.capturedAt - $0.sample.capturedAt <= 0.5 } == true
+            if !continuous { if !current.isEmpty { result.append(current) }; current = [] }
+            if accepted { current.append(entry.sample.cameraPosition) }
+            previous = entry; previousAssociation = accepted ? association : nil
+        }
+        if !current.isEmpty { result.append(current) }
+        return result
     }
     public var overlaySegments: [OverlaySegment] {
         var result: [OverlaySegment] = [], current: [Point3] = []

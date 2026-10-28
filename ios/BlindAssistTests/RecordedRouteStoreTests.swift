@@ -12,9 +12,9 @@ final class RecordedRouteStoreTests: XCTestCase {
         func read() -> Double { lock.lock(); defer { lock.unlock() }; return value }
         func set(_ n: Double) { lock.lock(); value = n; lock.unlock() }
     }
-    private func record(_ session: UUID, time: Double, tracking: NativeObservationRecord.Tracking = .normal) -> NativeObservationRecord {
+    private func record(_ session: UUID, time: Double, tracking: NativeObservationRecord.Tracking = .normal, frameID: String? = nil) -> NativeObservationRecord {
         var c = NativeCameraTransform.identity.columns; c[12] = time*0.01
-        return .init(sessionID: session, coordinateFrameID: "source-\(session.uuidString)", producer: .arkit,
+        return .init(sessionID: session, coordinateFrameID: frameID ?? "source-\(session.uuidString)", producer: .arkit,
             sourceID: "frame-\(time)", capturedAt: time, receivedAt: time, observedAt: Date(), tracking: tracking,
             cameraConvention: .arKitRightUpBack, cameraToSessionWorld: .init(columns: c),
             intrinsics: .init(width: 2, height: 2, fx: 1, fy: 1, cx: 1, cy: 1), depth: nil)
@@ -117,6 +117,60 @@ final class RecordedRouteStoreTests: XCTestCase {
     }
     private func drain(_ store: RecordedRouteStore) async {
         await withCheckedContinuation { continuation in store.drainTestSavesForTesting { continuation.resume() } }
+    }
+    private func sameFrameReceipt(_ session: UUID) throws -> SavedWorldFrameCameraAssociation {
+        let descriptor = SavedWorldFrame(placeID: UUID().uuidString, revision: UUID().uuidString,
+            worldMapSHA256: String(repeating: "a", count: 64), roomCaptureSHA256: String(repeating: "b", count: 64),
+            originAnchorID: UUID().uuidString, capturedAt: Date(timeIntervalSince1970: 100))
+        var recovery = SavedWorldFrameRecovery(); recovery.begin(frame: descriptor, sessionID: session, now: 59)
+        _ = recovery.observe(sessionID: session, tracking: .relocalizing, mappingAvailable: true, originAnchorMatches: true, frameTime: 59.7, now: 59.7)
+        for time in [59.8, 59.9, 60.0] {
+            _ = recovery.observe(sessionID: session, tracking: .normal, mappingAvailable: true, originAnchorMatches: true, frameTime: time, now: time)
+        }
+        return try XCTUnwrap(recovery.cameraAssociation(sessionID: session, capturedAt: 60, now: 60))
+    }
+    func testSameFrameReceiptTravelsWithExactOfferedSampleAndReopensInert() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let clock = Clock(), session = UUID(), url = directory.appendingPathComponent("routes.sqlite")
+        let store = RecordedRouteStore(url: url, now: clock.read)
+        store.begin(sessionID: session); clock.set(60); XCTAssertTrue(store.startTestRecording())
+        let receipt = try sameFrameReceipt(session)
+        let frame = record(session, time: 60, frameID: receipt.sourceFrameID)
+        store.offer(sessionID: session, at: 60, sameFrameAssociation: receipt) { frame }
+        await drain(store); store.stopTestRecording(); await drain(store)
+        let before = try XCTUnwrap(store.testRecordingSnapshot().recording)
+        XCTAssertEqual(before.sameFrameAssociations.count, 1)
+        XCTAssertEqual(before.sameFrameAssociations[0].observationID, frame.id)
+        XCTAssertEqual(before.sameFrameSegments(for: receipt.frame), [[before.entries[0].sample.cameraPosition]])
+        XCTAssertNil(before.entries[0].cameraInMap)
+        let reopened = RecordedRouteStore(url: url, now: clock.read)
+        let opened = await withCheckedContinuation { continuation in
+            reopened.reopenTestRecording(id: before.id.uuidString) { continuation.resume(returning: $0) }
+        }
+        XCTAssertTrue(opened)
+        let after = try XCTUnwrap(reopened.testRecordingSnapshot().recording)
+        XCTAssertEqual(after.sameFrameAssociations, before.sameFrameAssociations)
+        XCTAssertEqual(after.archiveEvents, before.archiveEvents); XCTAssertEqual(after.status, .stopped)
+        XCTAssertFalse(after.permitsPhysicalGuidance)
+    }
+    func testPendingSameFrameReceiptIsRetiredByTrackingContinuityLoss() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let clock = Clock(), session = UUID()
+        let store = RecordedRouteStore(url: directory.appendingPathComponent("routes.sqlite"), now: clock.read)
+        store.begin(sessionID: session); clock.set(60); XCTAssertTrue(store.startTestRecording())
+        let receipt = try sameFrameReceipt(session), frame = record(session, time: 60, frameID: "arkit-session:\(session.uuidString)")
+        let entered = expectation(description: "receipt-bearing extract entered"), release = DispatchSemaphore(value: 0)
+        defer { release.signal() }
+        store.offer(sessionID: session, at: 60, sameFrameAssociation: receipt) {
+            entered.fulfill(); release.wait(); return frame
+        }
+        wait(for: [entered], timeout: 5); store.breakContinuity(); release.signal(); _ = snapshot(store)
+        XCTAssertEqual(store.testRecordingSnapshot().recording?.entries.count, 0)
+        XCTAssertEqual(store.testRecordingSnapshot().recording?.sameFrameAssociations.count, 0)
+        let cleared = expectation(description: "clear receipt fixture")
+        store.clear { _ in cleared.fulfill() }; wait(for: [cleared], timeout: 5)
     }
     func testDurableDiagnosticReopensExactSampleStoppedAndClearRemovesArchive() async throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)

@@ -91,13 +91,13 @@ final class NativeARObservationBridge {
         }
     }
     func offer(_ frame: ARFrame, sessionID: UUID, mapTarget: SpatialMapBinding? = nil,
-               receivedAt: Double, receivedDate: Date) {
+               sameFrameAssociation: SavedWorldFrameCameraAssociation? = nil, receivedAt: Double, receivedDate: Date) {
         guard self.sessionID == sessionID else { return }
         let context = NativeARObservationAdapter.Context(sessionID: sessionID,
             frameID: "arkit-session:\(sessionID.uuidString)", mapTarget: mapTarget,
             receivedAt: receivedAt, receivedDate: receivedDate)
         if case .normal = frame.camera.trackingState {} else { recordedRoute.breakContinuity() }
-        recordedRoute.offer(sessionID: sessionID, at: frame.timestamp) {
+        recordedRoute.offer(sessionID: sessionID, at: frame.timestamp, sameFrameAssociation: sameFrameAssociation) {
             try NativeARObservationAdapter.captureRoutePose(frame, context: context)
         }
         let generation = outcomeGeneration

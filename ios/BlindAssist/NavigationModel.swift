@@ -1265,7 +1265,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             if running, !simulation, !places.scanning, assistantSession.foregroundActive, cameraAwareness,
                let nativeSessionID = UUID(uuidString: observationFrameID) {
                 nativeObservations.offer(frame, sessionID: nativeSessionID,
-                    mapTarget: indoor.registeredObservationMapTarget, receivedAt: receivedAt, receivedDate: receivedDate)
+                    mapTarget: indoor.registeredObservationMapTarget,
+                    sameFrameAssociation: places.cameraWorldFrameAssociation(sessionID: nativeSessionID,
+                        capturedAt: frame.timestamp, now: ProcessInfo.processInfo.systemUptime),
+                    receivedAt: receivedAt, receivedDate: receivedDate)
             }
         }
         lastProcessed = frame.timestamp; lastFrameWallTime = frame.timestamp
@@ -4729,8 +4732,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
         stopReturn()
     }
+    @MainActor private lazy var savedRoomDiagnosticGeometry = SavedRoomDiagnosticGeometryProvider(places: places)
     @MainActor func makeNavigationTestRecordingView() -> NavigationTestRecordingView {
-        NavigationTestRecordingView(bridge: nativeObservations, arabic: arabic,
+        NavigationTestRecordingView(bridge: nativeObservations, geometryProvider: savedRoomDiagnosticGeometry, arabic: arabic,
             onRecordingStarted: { [weak self] in self?.syncNavigationTestPlan() })
     }
     @MainActor private func syncNavigationTestPlan() {
@@ -6246,6 +6250,7 @@ extension NavigationModel {
     /// Deletes a saved place and everything derived from it: scans, room pictures, the companion's
     /// room record, and the current-place state if it was this place.
     func deletePlace(_ place: SavedPlace) {
+        places.retireDiagnosticGeometry(for: place)
         places.retireRegistration(for: place)
         companionWorkingState.retireSearchClue(placeID: place.id.uuidString)
         retireHeldSearchForPrivacyDeletion()

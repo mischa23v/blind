@@ -1,0 +1,44 @@
+{
+  "scope": "Complete bounded original RoomPlan diagnostic geometry and source/deletion ownership; exact-frame receipt into existing recorder; no measured accuracy, body/clearance or physical authority.",
+  "newNativeFiles": [
+    "ios/BlindAssist/SavedRoomDiagnosticGeometryProvider.swift",
+    "ios/BlindAssistTests/SavedRoomDiagnosticGeometryProviderTests.swift"
+  ],
+  "verification": {
+    "nodeSourceChecksPassed": 47,
+    "newCoreTestsAuthored": 8,
+    "newHostedTestsAuthored": 7,
+    "swiftExecuted": false,
+    "reason": "No local Swift compiler; Apple validation pending"
+  },
+  "files": [
+    {
+      "path": "BlindCore/Sources/BlindCore/SavedRoomDiagnosticGeometry.swift",
+      "sha256": "7c591f00b560d194cf800093cbb4c431a3839399114389bf328fd2d629b02c75"
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/SavedRoomDiagnosticGeometryTests.swift",
+      "sha256": "32fd9e431306d6b3357467a4f0262807e6888f8de5a508683aa150a9e45e56db"
+    },
+    {
+      "path": "ios/BlindAssist/SavedRoomDiagnosticGeometryProvider.swift",
+      "sha256": "18046e310562870b02c553012d978c861e4cb12f205d558a73ba50fb33a52ee1"
+    },
+    {
+      "path": "ios/BlindAssistTests/SavedRoomDiagnosticGeometryProviderTests.swift",
+      "sha256": "57fee1552ee92c6dd36387e6285b284ed00d94edd80d1d95a2b4854567547eb4"
+    },
+    {
+      "path": "ios/BlindAssist/PlaceStore.swift",
+      "sha256": "98ede574724139ae2ea6916e23720561cbddf1689a6663bc013014506221435b"
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "sha256": "3943fc01cbe915f941d653827ff14c80093bbceef9215f77fa60c03e795cf7b1"
+    },
+    {
+      "path": "tools/test/saved-room-diagnostic-geometry.test.mjs",
+      "sha256": "41aa1c7b3ff06f6d9069c0f758bb3b5dbd29b95a5a6cdda9a77230cfd9fd52b0"
+    }
+  ]
+}

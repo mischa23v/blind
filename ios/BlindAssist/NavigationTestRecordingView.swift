@@ -6,6 +6,7 @@ import BlindMemory
 /// Inject the app's existing bridge, never create a second AR session for this view.
 @MainActor struct NavigationTestRecordingView: View {
     let bridge: NativeARObservationBridge
+    @ObservedObject var geometryProvider: SavedRoomDiagnosticGeometryProvider
     let arabic: Bool
     var onRecordingStarted: () -> Void = {}
     @Environment(\.scenePhase) private var scenePhase
@@ -23,8 +24,8 @@ import BlindMemory
         List {
             Section {
                 Text(t("Compare the planned line with the measured phone path", "قارن المسار المخطط بمسار الهاتف المقاس")).font(.headline)
-                Text(t("Diagnostic only. The camera path is not your body or feet. This plot does not reconstruct furniture or prove clearance. Close the saved recording or explicitly delete it before starting another. No photos, audio or uploads are recorded.",
-                       "للتشخيص فقط. مسار الكاميرا ليس مسار جسمك أو قدميك. لا يعيد هذا الرسم بناء الأثاث ولا يثبت خلو المسار. أغلق التسجيل المحفوظ أو احذفه صراحةً قبل بدء تسجيل آخر. لا تُسجل صور أو أصوات ولا تُرفع بيانات."))
+                Text(t("Diagnostic only. The camera path is not your body or feet. Saved room geometry is historical and does not prove clearance. Close the saved recording or explicitly delete it before starting another. No photos, audio or uploads are recorded.",
+                       "للتشخيص فقط. مسار الكاميرا ليس مسار جسمك أو قدميك. هندسة الغرفة المحفوظة تاريخية ولا تثبت خلو المسار. أغلق التسجيل المحفوظ أو احذفه صراحةً قبل بدء تسجيل آخر. لا تُسجل صور أو أصوات ولا تُرفع بيانات."))
                 Button(t("Start local path recording", "بدء تسجيل المسار محلياً")) {
                     if bridge.startNavigationTestRecording() { message = ""; onRecordingStarted() }
                     else { message = t("Recording could not start. The existing camera session must be active.", "تعذر بدء التسجيل. يجب أن تكون جلسة الكاميرا الحالية نشطة.") }
@@ -103,8 +104,29 @@ import BlindMemory
                         Text(t("Latest plan revision only. Only samples with matching supplied registration are plotted. Registration may be wrong; raw samples are retained.",
                                "أحدث نسخة مخطط فقط. تُرسم العينات ذات التسجيل المطابق المقدم فقط. قد يكون التسجيل خاطئاً؛ تبقى العينات الخام محفوظة."))
                     }
-                    Text(t("\(recording.entries.filter { $0.cameraInMap == nil }.count) samples have no map association.",
-                           "\(recording.entries.filter { $0.cameraInMap == nil }.count) عينة دون ارتباط بالخريطة."))
+                    Text(t("\(recording.entries.filter { $0.cameraInMap == nil }.count) samples have no supplied planned-route registration. Same-room camera provenance is shown separately below.",
+                           "\(recording.entries.filter { $0.cameraInMap == nil }.count) عينة دون تسجيل مقدم للمسار المخطط. يُعرض ارتباط الكاميرا بالغرفة نفسها بشكل منفصل أدناه."))
+                }
+                Section(t("Saved room and camera trace", "الغرفة المحفوظة ومسار الكاميرا")) {
+                    Button(t("Reload room geometry", "إعادة تحميل هندسة الغرفة")) { geometryProvider.reload() }
+                        .disabled(recording.sameFrameAssociations.isEmpty)
+                        .accessibilityIdentifier("navigationTest.reloadGeometry")
+                    Text(t("Latest associated saved room only. Historical top-down projection of the original saved 3D room, not a live obstacle map or clearance check. Orange is the phone camera, not your body or feet. Registration uncertainty is unmeasured. Walls and furniture may have changed since the scan.",
+                           "أحدث غرفة محفوظة مرتبطة فقط. إسقاط علوي تاريخي للغرفة ثلاثية الأبعاد المحفوظة، وليس خريطة عوائق حية أو فحصاً لخلو المسار. البرتقالي لكاميرا الهاتف، لا لجسمك أو قدميك. عدم يقين التسجيل غير مقاس. قد تكون الجدران والأثاث تغيرت منذ المسح."))
+                    if geometryProvider.status == .ready, let geometry = geometryProvider.geometry,
+                       recording.sameFrameAssociations.last?.frame == geometry.frame {
+                        NavigationTestRoomPlot(recording: recording, geometry: geometry)
+                            .frame(height: 320)
+                            .accessibilityIdentifier("navigationTest.roomOverlay")
+                            .accessibilityLabel(t("Saved room geometry and exact same-frame historical camera trace. No route clearance is established.", "هندسة الغرفة المحفوظة ومسار الكاميرا التاريخي في الإطار نفسه. لا يثبت خلو المسار."))
+                        Text(t("Saved room features: \(geometry.features.count). Associated camera samples: \(recording.sameFrameSegments(for: geometry.frame).reduce(0) { $0 + $1.count }).", "عناصر الغرفة المحفوظة: \(geometry.features.count). عينات الكاميرا المرتبطة: \(recording.sameFrameSegments(for: geometry.frame).reduce(0) { $0 + $1.count })."))
+                        Text(geometry.frame.frameID).font(.caption).textSelection(.enabled)
+                        Text(t("Gray: room surfaces. Green: recorded doors/openings. Purple: furniture bounds. Orange: camera. Red rings: your problem markers at the last associated sample, not your position when tapping.", "الرمادي: أسطح الغرفة. الأخضر: الأبواب والفتحات المسجلة. البنفسجي: حدود الأثاث. البرتقالي: الكاميرا. الحلقات الحمراء: علامات مشكلاتك عند آخر عينة مرتبطة، لا موضعك عند الضغط."))
+                        Text(t("Full original transforms and heights remain in the local room artifact. The drawing is a 2D projection, not an interactive 3D simulation. Planned paths in unrelated map coordinates are not overlaid.", "تبقى التحويلات والارتفاعات الأصلية كاملة في ملف الغرفة المحلي. الرسم إسقاط ثنائي الأبعاد، لا محاكاة ثلاثية الأبعاد تفاعلية. لا تُرسم المسارات المخططة في إحداثيات خريطة غير مرتبطة."))
+                    } else {
+                        Text(roomGeometryStatus)
+                            .accessibilityIdentifier("navigationTest.roomOverlayStatus")
+                    }
                 }
                 Section(t("Mark a problem you noticed", "ضع علامة على مشكلة لاحظتها")) {
                     ForEach(problemChoices, id: \.0) { problem, label in
@@ -127,7 +149,7 @@ import BlindMemory
                 guard !Task.isCancelled else { break }; refresh()
             }
         }
-        .onDisappear { visible = false; requestGeneration = UUID(); stop() }
+        .onDisappear { visible = false; requestGeneration = UUID(); geometryProvider.cancel(); stop() }
         .onChange(of: scenePhase) { _, phase in if phase != .active { stop() } }
     }
     private func statusLabel(_ status: NavigationTestRecording.Status) -> String {
@@ -171,7 +193,20 @@ import BlindMemory
             refresh(); refreshSaved()
         }; refresh()
     }
-    private func refresh() { snapshot = bridge.navigationTestSnapshot() }
+    private func refresh() {
+        snapshot = bridge.navigationTestSnapshot()
+        if visible { geometryProvider.select(recording?.sameFrameAssociations.last?.frame) }
+    }
+    private var roomGeometryStatus: String {
+        guard recording?.sameFrameAssociations.isEmpty == false else {
+            return t("No exact saved-room camera association was recorded. Raw camera samples remain available; no room overlay is invented.", "لم يُسجل ارتباط دقيق بين الكاميرا والغرفة المحفوظة. تبقى عينات الكاميرا الخام متاحة؛ لا يُختلق تراكب للغرفة.")
+        }
+        switch geometryProvider.status {
+        case .loading: return t("Loading hash-matched local room geometry…", "جارٍ تحميل هندسة الغرفة المحلية المطابقة للبصمة…")
+        case .unsupported: return t("This saved room format cannot be displayed; raw trace is retained.", "لا يمكن عرض تنسيق الغرفة المحفوظة هذا؛ يبقى المسار الخام محفوظاً.")
+        default: return t("Exact saved room geometry is unavailable or changed. No substitute room is shown; raw trace is retained.", "هندسة الغرفة المحفوظة الدقيقة غير متاحة أو تغيرت. لا تُعرض غرفة بديلة؛ يبقى المسار الخام محفوظاً.")
+        }
+    }
     private func stop() { bridge.stopNavigationTestRecording(); refresh() }
 }
 
@@ -211,6 +246,50 @@ private struct NavigationTestTrajectoryPlot: View {
             }
             line(planned, color: .blue)
             for segment in segments { line(segment, color: .orange) }
+        }
+    }
+}
+
+/// Projection only; retains original coordinates and never infers clear space.
+private struct NavigationTestRoomPlot: View {
+    let recording: NavigationTestRecording
+    let geometry: SavedRoomDiagnosticGeometry
+    var body: some View {
+        Canvas { context, size in
+            let segments = recording.sameFrameSegments(for: geometry.frame)
+            let all = geometry.polylines.flatMap(\.points) + segments.flatMap { $0 }
+            guard let first = all.first else { return }
+            let minX = all.map(\.x).min() ?? first.x, maxX = all.map(\.x).max() ?? first.x
+            let minZ = all.map(\.z).min() ?? first.z, maxZ = all.map(\.z).max() ?? first.z
+            let scale = min(max(1, size.width - 24) / CGFloat(max(1, maxX-minX)), max(1, size.height - 24) / CGFloat(max(1, maxZ-minZ)))
+            func point(_ p: Point3) -> CGPoint {
+                CGPoint(x: size.width/2 + CGFloat(p.x-(minX+maxX)/2)*scale,
+                        y: size.height/2 - CGFloat(p.z-(minZ+maxZ)/2)*scale)
+            }
+            for line in geometry.polylines {
+                guard let first = line.points.first else { continue }
+                var path = Path(); path.move(to: point(first))
+                for p in line.points.dropFirst() { path.addLine(to: point(p)) }
+                if line.closed { path.closeSubpath() }
+                let color: Color = line.kind == .furniture ? .purple : (line.kind == .door || line.kind == .opening ? .green : .gray)
+                context.stroke(path, with: .color(color), lineWidth: line.kind == .wall ? 2 : 1)
+            }
+            for segment in segments {
+                guard let first = segment.first else { continue }
+                var path = Path(); path.move(to: point(first))
+                for p in segment.dropFirst() { path.addLine(to: point(p)) }
+                context.stroke(path, with: .color(.orange), lineWidth: 2)
+                for p in segment {
+                    let c = point(p)
+                    context.fill(Path(ellipseIn: CGRect(x: c.x-2, y: c.y-2, width: 4, height: 4)), with: .color(.orange))
+                }
+            }
+            let associatedIDs = Set(recording.sameFrameAssociations.filter { $0.frame == geometry.frame }.map(\.observationID))
+            let markedIDs = Set(recording.markers.compactMap(\.lastObservationID)).intersection(associatedIDs)
+            for entry in recording.entries where markedIDs.contains(entry.sample.observationID) {
+                let c = point(entry.sample.cameraPosition)
+                context.stroke(Path(ellipseIn: CGRect(x: c.x-5, y: c.y-5, width: 10, height: 10)), with: .color(.red), lineWidth: 2)
+            }
         }
     }
 }
