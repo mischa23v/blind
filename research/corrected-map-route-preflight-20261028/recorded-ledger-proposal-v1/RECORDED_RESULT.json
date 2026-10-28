@@ -1,0 +1,1022 @@
+{
+  "scope": "projected corridor connectivity only, not actual task/landmark navigation",
+  "inputFreezeSHA256": "9600a91793b48e6b1d8423c229a9136be17ba3b1c3337ef09b4d134b0807eb40",
+  "syntheticProfile": true,
+  "profileMeasured": false,
+  "requestedEndpointConnectionsVerified": false,
+  "requestedRouteComplete": false,
+  "evidenceQualifiedTraversable": false,
+  "physicalAuthority": false,
+  "movementExecuted": false,
+  "executedMovementMetres": 0,
+  "episodesExecuted": 0,
+  "queries": [
+    {
+      "pairIndex": 0,
+      "startAnchorIndex": 0,
+      "goalAnchorIndex": 1,
+      "status": "partialProjectedCorridor",
+      "startLeafRow": 121368,
+      "goalLeafRow": 264041,
+      "projectedCandidateLengthMetres": 0.2686798844911936,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          -2.5799999237060547,
+          -1.2399999909102917,
+          0.6599999666213989
+        ],
+        "requestedGoal": [
+          0.09999999403953552,
+          -1.2399999909102917,
+          4.779999732971191
+        ],
+        "projectedStart": [
+          -2.520000457763672,
+          -1.2200000286102295,
+          0.6599999666213989
+        ],
+        "projectedGoal": [
+          0.09999999403953552,
+          -1.2200000286102295,
+          4.679999351501465
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 0.06324503463019894,
+          "horizontalMetres": 0.05999946594238281,
+          "verticalMetres": 0.01999996230006218
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 0.10198075694019308,
+          "horizontalMetres": 0.10000038146972656,
+          "verticalMetres": 0.01999996230006218
+        },
+        "path": [
+          [
+            -2.520000457763672,
+            -1.2200000286102295,
+            0.6599999666213989
+          ],
+          [
+            -2.3600003719329834,
+            -1.2200000286102295,
+            0.5599994659423828
+          ],
+          [
+            -2.2800004482269287,
+            -1.2200000286102295,
+            0.5599994659423828
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 1,
+      "startAnchorIndex": 0,
+      "goalAnchorIndex": 2,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 121368,
+      "goalLeafRow": 522887,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          -2.5799999237060547,
+          -1.2399999909102917,
+          0.6599999666213989
+        ],
+        "requestedGoal": [
+          3.9800000190734863,
+          -1.279999952763319,
+          0.6200000047683716
+        ],
+        "projectedStart": [
+          -2.520000457763672,
+          -1.2200000286102295,
+          0.6599999666213989
+        ],
+        "projectedGoal": null,
+        "startProjectionOffset": {
+          "threeDMetres": 0.06324503463019894,
+          "horizontalMetres": 0.05999946594238281,
+          "verticalMetres": 0.01999996230006218
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 2,
+      "startAnchorIndex": 0,
+      "goalAnchorIndex": 3,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 121368,
+      "goalLeafRow": 760747,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          -2.5799999237060547,
+          -1.2399999909102917,
+          0.6599999666213989
+        ],
+        "requestedGoal": [
+          -1.7799999713897705,
+          -1.2399999909102917,
+          -0.6200000047683716
+        ],
+        "projectedStart": [
+          -2.520000457763672,
+          -1.2200000286102295,
+          0.6599999666213989
+        ],
+        "projectedGoal": null,
+        "startProjectionOffset": {
+          "threeDMetres": 0.06324503463019894,
+          "horizontalMetres": 0.05999946594238281,
+          "verticalMetres": 0.01999996230006218
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 3,
+      "startAnchorIndex": 0,
+      "goalAnchorIndex": 4,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 121368,
+      "goalLeafRow": 968963,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          -2.5799999237060547,
+          -1.2399999909102917,
+          0.6599999666213989
+        ],
+        "requestedGoal": [
+          -1.659999966621399,
+          -1.279999952763319,
+          -4.5
+        ],
+        "projectedStart": [
+          -2.520000457763672,
+          -1.2200000286102295,
+          0.6599999666213989
+        ],
+        "projectedGoal": null,
+        "startProjectionOffset": {
+          "threeDMetres": 0.06324503463019894,
+          "horizontalMetres": 0.05999946594238281,
+          "verticalMetres": 0.01999996230006218
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 4,
+      "startAnchorIndex": 1,
+      "goalAnchorIndex": 0,
+      "status": "partialProjectedCorridor",
+      "startLeafRow": 264041,
+      "goalLeafRow": 121368,
+      "projectedCandidateLengthMetres": 0.6808374396881722,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.09999999403953552,
+          -1.2399999909102917,
+          4.779999732971191
+        ],
+        "requestedGoal": [
+          -2.5799999237060547,
+          -1.2399999909102917,
+          0.6599999666213989
+        ],
+        "projectedStart": [
+          0.09999999403953552,
+          -1.2200000286102295,
+          4.679999351501465
+        ],
+        "projectedGoal": [
+          -2.520000457763672,
+          -1.2200000286102295,
+          0.6599999666213989
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": 0.10198075694019308,
+          "horizontalMetres": 0.10000038146972656,
+          "verticalMetres": 0.01999996230006218
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 0.06324503463019894,
+          "horizontalMetres": 0.05999946594238281,
+          "verticalMetres": 0.01999996230006218
+        },
+        "path": [
+          [
+            0.09999999403953552,
+            -1.2200000286102295,
+            4.679999351501465
+          ],
+          [
+            -4.76837158203125e-07,
+            -1.2200000286102295,
+            4.479999542236328
+          ],
+          [
+            -0.08000040054321289,
+            -1.2200000286102295,
+            4.399999618530273
+          ],
+          [
+            -0.3600006103515625,
+            -1.2200000286102295,
+            4.19999885559082
+          ]
+        ],
+        "error": null,
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 5,
+      "startAnchorIndex": 1,
+      "goalAnchorIndex": 2,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 264041,
+      "goalLeafRow": 522887,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.09999999403953552,
+          -1.2399999909102917,
+          4.779999732971191
+        ],
+        "requestedGoal": [
+          3.9800000190734863,
+          -1.279999952763319,
+          0.6200000047683716
+        ],
+        "projectedStart": [
+          0.09999999403953552,
+          -1.2200000286102295,
+          4.679999351501465
+        ],
+        "projectedGoal": null,
+        "startProjectionOffset": {
+          "threeDMetres": 0.10198075694019308,
+          "horizontalMetres": 0.10000038146972656,
+          "verticalMetres": 0.01999996230006218
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 6,
+      "startAnchorIndex": 1,
+      "goalAnchorIndex": 3,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 264041,
+      "goalLeafRow": 760747,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.09999999403953552,
+          -1.2399999909102917,
+          4.779999732971191
+        ],
+        "requestedGoal": [
+          -1.7799999713897705,
+          -1.2399999909102917,
+          -0.6200000047683716
+        ],
+        "projectedStart": [
+          0.09999999403953552,
+          -1.2200000286102295,
+          4.679999351501465
+        ],
+        "projectedGoal": null,
+        "startProjectionOffset": {
+          "threeDMetres": 0.10198075694019308,
+          "horizontalMetres": 0.10000038146972656,
+          "verticalMetres": 0.01999996230006218
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 7,
+      "startAnchorIndex": 1,
+      "goalAnchorIndex": 4,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 264041,
+      "goalLeafRow": 968963,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          0.09999999403953552,
+          -1.2399999909102917,
+          4.779999732971191
+        ],
+        "requestedGoal": [
+          -1.659999966621399,
+          -1.279999952763319,
+          -4.5
+        ],
+        "projectedStart": [
+          0.09999999403953552,
+          -1.2200000286102295,
+          4.679999351501465
+        ],
+        "projectedGoal": null,
+        "startProjectionOffset": {
+          "threeDMetres": 0.10198075694019308,
+          "horizontalMetres": 0.10000038146972656,
+          "verticalMetres": 0.01999996230006218
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 8,
+      "startAnchorIndex": 2,
+      "goalAnchorIndex": 0,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 522887,
+      "goalLeafRow": 121368,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          3.9800000190734863,
+          -1.279999952763319,
+          0.6200000047683716
+        ],
+        "requestedGoal": [
+          -2.5799999237060547,
+          -1.2399999909102917,
+          0.6599999666213989
+        ],
+        "projectedStart": null,
+        "projectedGoal": [
+          -2.520000457763672,
+          -1.2200000286102295,
+          0.6599999666213989
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 0.06324503463019894,
+          "horizontalMetres": 0.05999946594238281,
+          "verticalMetres": 0.01999996230006218
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 9,
+      "startAnchorIndex": 2,
+      "goalAnchorIndex": 1,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 522887,
+      "goalLeafRow": 264041,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          3.9800000190734863,
+          -1.279999952763319,
+          0.6200000047683716
+        ],
+        "requestedGoal": [
+          0.09999999403953552,
+          -1.2399999909102917,
+          4.779999732971191
+        ],
+        "projectedStart": null,
+        "projectedGoal": [
+          0.09999999403953552,
+          -1.2200000286102295,
+          4.679999351501465
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 0.10198075694019308,
+          "horizontalMetres": 0.10000038146972656,
+          "verticalMetres": 0.01999996230006218
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 10,
+      "startAnchorIndex": 2,
+      "goalAnchorIndex": 3,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 522887,
+      "goalLeafRow": 760747,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          3.9800000190734863,
+          -1.279999952763319,
+          0.6200000047683716
+        ],
+        "requestedGoal": [
+          -1.7799999713897705,
+          -1.2399999909102917,
+          -0.6200000047683716
+        ],
+        "projectedStart": null,
+        "projectedGoal": null,
+        "startProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 11,
+      "startAnchorIndex": 2,
+      "goalAnchorIndex": 4,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 522887,
+      "goalLeafRow": 968963,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          3.9800000190734863,
+          -1.279999952763319,
+          0.6200000047683716
+        ],
+        "requestedGoal": [
+          -1.659999966621399,
+          -1.279999952763319,
+          -4.5
+        ],
+        "projectedStart": null,
+        "projectedGoal": null,
+        "startProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 12,
+      "startAnchorIndex": 3,
+      "goalAnchorIndex": 0,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 760747,
+      "goalLeafRow": 121368,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          -1.7799999713897705,
+          -1.2399999909102917,
+          -0.6200000047683716
+        ],
+        "requestedGoal": [
+          -2.5799999237060547,
+          -1.2399999909102917,
+          0.6599999666213989
+        ],
+        "projectedStart": null,
+        "projectedGoal": [
+          -2.520000457763672,
+          -1.2200000286102295,
+          0.6599999666213989
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 0.06324503463019894,
+          "horizontalMetres": 0.05999946594238281,
+          "verticalMetres": 0.01999996230006218
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 13,
+      "startAnchorIndex": 3,
+      "goalAnchorIndex": 1,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 760747,
+      "goalLeafRow": 264041,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          -1.7799999713897705,
+          -1.2399999909102917,
+          -0.6200000047683716
+        ],
+        "requestedGoal": [
+          0.09999999403953552,
+          -1.2399999909102917,
+          4.779999732971191
+        ],
+        "projectedStart": null,
+        "projectedGoal": [
+          0.09999999403953552,
+          -1.2200000286102295,
+          4.679999351501465
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 0.10198075694019308,
+          "horizontalMetres": 0.10000038146972656,
+          "verticalMetres": 0.01999996230006218
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 14,
+      "startAnchorIndex": 3,
+      "goalAnchorIndex": 2,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 760747,
+      "goalLeafRow": 522887,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          -1.7799999713897705,
+          -1.2399999909102917,
+          -0.6200000047683716
+        ],
+        "requestedGoal": [
+          3.9800000190734863,
+          -1.279999952763319,
+          0.6200000047683716
+        ],
+        "projectedStart": null,
+        "projectedGoal": null,
+        "startProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 15,
+      "startAnchorIndex": 3,
+      "goalAnchorIndex": 4,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 760747,
+      "goalLeafRow": 968963,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          -1.7799999713897705,
+          -1.2399999909102917,
+          -0.6200000047683716
+        ],
+        "requestedGoal": [
+          -1.659999966621399,
+          -1.279999952763319,
+          -4.5
+        ],
+        "projectedStart": null,
+        "projectedGoal": null,
+        "startProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 16,
+      "startAnchorIndex": 4,
+      "goalAnchorIndex": 0,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 968963,
+      "goalLeafRow": 121368,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          -1.659999966621399,
+          -1.279999952763319,
+          -4.5
+        ],
+        "requestedGoal": [
+          -2.5799999237060547,
+          -1.2399999909102917,
+          0.6599999666213989
+        ],
+        "projectedStart": null,
+        "projectedGoal": [
+          -2.520000457763672,
+          -1.2200000286102295,
+          0.6599999666213989
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 0.06324503463019894,
+          "horizontalMetres": 0.05999946594238281,
+          "verticalMetres": 0.01999996230006218
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 17,
+      "startAnchorIndex": 4,
+      "goalAnchorIndex": 1,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 968963,
+      "goalLeafRow": 264041,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          -1.659999966621399,
+          -1.279999952763319,
+          -4.5
+        ],
+        "requestedGoal": [
+          0.09999999403953552,
+          -1.2399999909102917,
+          4.779999732971191
+        ],
+        "projectedStart": null,
+        "projectedGoal": [
+          0.09999999403953552,
+          -1.2200000286102295,
+          4.679999351501465
+        ],
+        "startProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": 0.10198075694019308,
+          "horizontalMetres": 0.10000038146972656,
+          "verticalMetres": 0.01999996230006218
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 18,
+      "startAnchorIndex": 4,
+      "goalAnchorIndex": 2,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 968963,
+      "goalLeafRow": 522887,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          -1.659999966621399,
+          -1.279999952763319,
+          -4.5
+        ],
+        "requestedGoal": [
+          3.9800000190734863,
+          -1.279999952763319,
+          0.6200000047683716
+        ],
+        "projectedStart": null,
+        "projectedGoal": null,
+        "startProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    },
+    {
+      "pairIndex": 19,
+      "startAnchorIndex": 4,
+      "goalAnchorIndex": 3,
+      "status": "endpointAssociationFailed",
+      "startLeafRow": 968963,
+      "goalLeafRow": 760747,
+      "projectedCandidateLengthMetres": 0.0,
+      "result": {
+        "projectedCorridorComplete": false,
+        "requestedRouteComplete": false,
+        "requestedEndpointConnectionsVerified": false,
+        "endpointConnectionStatus": "notChecked",
+        "requestedStart": [
+          -1.659999966621399,
+          -1.279999952763319,
+          -4.5
+        ],
+        "requestedGoal": [
+          -1.7799999713897705,
+          -1.2399999909102917,
+          -0.6200000047683716
+        ],
+        "projectedStart": null,
+        "projectedGoal": null,
+        "startProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "goalProjectionOffset": {
+          "threeDMetres": null,
+          "horizontalMetres": null,
+          "verticalMetres": null
+        },
+        "path": [],
+        "error": "no start or goal polygon within explicit association bounds",
+        "evidenceQualifiedTraversable": false,
+        "fullBodyCoverage": "unverified",
+        "fullFootprintSupport": "unverified",
+        "rasterMayBridgeSubcellUnknownGaps": true,
+        "physicalAuthority": false
+      }
+    }
+  ],
+  "nativeBuildElapsedSeconds": 0.14403976700123167,
+  "nativeStats": {
+    "rows": 2268956,
+    "occupied": 325714,
+    "free": 1943242,
+    "ground": 63720,
+    "other": 261994,
+    "width": 286,
+    "depth": 278,
+    "insertions": 1303551,
+    "provisionalSpans": 26748,
+    "obstacleSpans": 98515
+  },
+  "status": "completedGeometryOnlyQueries",
+  "elapsedSeconds": 0.145676945001469,
+  "queryCount": 20,
+  "scheduledQueryCount": 20,
+  "outcomes": {
+    "completeProjectedCorridor": 0,
+    "endpointAssociationFailed": 18,
+    "partialProjectedCorridor": 2,
+    "queryErrorOrNoCorridor": 0
+  },
+  "unexecutedQueries": 0,
+  "requestedRouteCompletions": 0,
+  "evidenceQualifiedTraversableCount": 0
+}

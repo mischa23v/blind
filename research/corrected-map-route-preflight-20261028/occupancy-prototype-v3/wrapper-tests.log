@@ -1,0 +1,26 @@
+test_diagonal_bottleneck_remains_unqualified (test_occupancy.OccupancyTests.test_diagonal_bottleneck_remains_unqualified) ... ok
+test_elevated_native_ground_remains_provisional (test_occupancy.OccupancyTests.test_elevated_native_ground_remains_provisional) ... ok
+test_flat_floor_candidate_is_never_evidence_qualified (test_occupancy.OccupancyTests.test_flat_floor_candidate_is_never_evidence_qualified) ... ok
+test_floor_obstacle_priority_is_order_independent (test_occupancy.OccupancyTests.test_floor_obstacle_priority_is_order_independent) ... ok
+test_floor_touching_low_obstacle_not_promoted (test_occupancy.OccupancyTests.test_floor_touching_low_obstacle_not_promoted) ... ok
+test_free_historical_obstacle_does_not_add_span (test_occupancy.OccupancyTests.test_free_historical_obstacle_does_not_add_span) ... ok
+test_goal_projection_connection_is_unverified (test_occupancy.OccupancyTests.test_goal_projection_connection_is_unverified) ... ok
+test_head_obstacle_blocks_without_floor_contact (test_occupancy.OccupancyTests.test_head_obstacle_blocks_without_floor_contact) ... ok
+test_invalid_inputs_and_config_rejected (test_occupancy.OccupancyTests.test_invalid_inputs_and_config_rejected) ... ok
+test_metric_basis_nonzero_and_variable_leaf_size (test_occupancy.OccupancyTests.test_metric_basis_nonzero_and_variable_leaf_size) ... ok
+test_mixed_four_eight_cm_leaf_topology (test_occupancy.OccupancyTests.test_mixed_four_eight_cm_leaf_topology) ... ok
+test_multilayer_nearest_poly_does_not_connect_requested_height (test_occupancy.OccupancyTests.test_multilayer_nearest_poly_does_not_connect_requested_height) ... ok
+test_narrow_opening_and_quantized_radius (test_occupancy.OccupancyTests.test_narrow_opening_and_quantized_radius) ... ok
+test_near_wall_projection_is_not_a_requested_route (test_occupancy.OccupancyTests.test_near_wall_projection_is_not_a_requested_route) ... ok
+test_nonzero_translation_keeps_metric_route (test_occupancy.OccupancyTests.test_nonzero_translation_keeps_metric_route) ... ok
+test_obstacle_below_overlapping_ground_still_wins (test_occupancy.OccupancyTests.test_obstacle_below_overlapping_ground_still_wins) ... ok
+test_projection_does_not_move_requested_state (test_occupancy.OccupancyTests.test_projection_does_not_move_requested_state) ... ok
+test_subcell_unknown_gap_is_not_support_certification (test_occupancy.OccupancyTests.test_subcell_unknown_gap_is_not_support_certification) ... ok
+test_unknown_body_volume_is_not_clearance (test_occupancy.OccupancyTests.test_unknown_body_volume_is_not_clearance) ... ok
+test_unknown_floor_hole_not_filled (test_occupancy.OccupancyTests.test_unknown_floor_hole_not_filled) ... ok
+test_vertical_projection_is_not_a_requested_route (test_occupancy.OccupancyTests.test_vertical_projection_is_not_a_requested_route) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 0.160s
+
+OK

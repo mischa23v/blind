@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/span-diagnostic-v1/diagnose_recorded.py", line 16, in <module>
+    q=e.diagnostic(aa['requestedPlannerXYZ'],bb['requestedPlannerXYZ'],query_half_extents=f['queryHalfExtents'],max_points=f['maxPoints']);assert q==old['queries'][pair['pairIndex']]['result'],'instrumentation changed route';queries.append(q)
+                                                                                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: instrumentation changed route

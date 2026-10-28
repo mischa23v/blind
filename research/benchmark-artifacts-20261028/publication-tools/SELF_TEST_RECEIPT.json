@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-28T20:52:58.553168+00:00",
+  "command": "python -B -m unittest -v test_assembler.py",
+  "workingDirectory": "publication-tools",
+  "tests": 25,
+  "failures": 0,
+  "errors": 0,
+  "passed": true,
+  "sourceSha256": {
+    "assemble_binary_publication.py": "412dd44c2867c265fed865837e0c857ef15e53e8025066a36dfb2b404a892b72",
+    "restore_benchmarks.py": "372adee5fa4d024df1faff0e59ad9d6b58fbb7d25515ab195fa0ede9b9a55893",
+    "test_assembler.py": "c83b218ebadb0f918a67dcd2095e915c32819fd07b2501f8d3dc4fbbd1ad7eb1"
+  },
+  "outputSha256": "33181ac4364147c8b0b4ab216b32d63a8674fa4dc84361f012c050a277b3425d",
+  "scope": "Synthetic standard-library integrity/transport tests; not Apple-native geometry or physical-safety evidence."
+}

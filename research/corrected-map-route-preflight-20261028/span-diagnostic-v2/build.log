@@ -1,0 +1,88 @@
+In function ‘bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)’,
+    inlined from ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’ at /workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:39:33: warning: ‘amax[0]’ may be used uninitialized [-Wmaybe-uninitialized]
+   39 |         const float maxx = dtMin(amax[0]-px,bmax[0]-px);
+      |                            ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp: In member function ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:310:24: note: ‘amax[0]’ was declared here
+  310 |         float amin[2], amax[2];
+      |                        ^~~~
+In function ‘bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)’,
+    inlined from ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’ at /workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:45:21: warning: ‘amin[1]’ may be used uninitialized [-Wmaybe-uninitialized]
+   45 |         const float ak = amin[1] - ad*amin[0];
+      |                     ^~
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp: In member function ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:310:15: note: ‘amin[1]’ was declared here
+  310 |         float amin[2], amax[2];
+      |               ^~~~
+In function ‘bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)’,
+    inlined from ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’ at /workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:44:34: warning: ‘amax[1]’ may be used uninitialized [-Wmaybe-uninitialized]
+   44 |         const float ad = (amax[1]-amin[1]) / (amax[0]-amin[0]);
+      |                          ~~~~~~~~^~~~~~~~~
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp: In member function ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:310:24: note: ‘amax[1]’ was declared here
+  310 |         float amin[2], amax[2];
+      |                        ^~~~
+In function ‘bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)’,
+    inlined from ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’ at /workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:38:33: warning: ‘amin[0]’ may be used uninitialized [-Wmaybe-uninitialized]
+   38 |         const float minx = dtMax(amin[0]+px,bmin[0]+px);
+      |                            ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp: In member function ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:310:15: note: ‘amin[0]’ was declared here
+  310 |         float amin[2], amax[2];
+      |               ^~~~
+In function ‘bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)’,
+    inlined from ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’ at /workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:38:33: warning: ‘bmin[0]’ may be used uninitialized [-Wmaybe-uninitialized]
+   38 |         const float minx = dtMax(amin[0]+px,bmin[0]+px);
+      |                            ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp: In member function ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:315:15: note: ‘bmin[0]’ was declared here
+  315 |         float bmin[2], bmax[2];
+      |               ^~~~
+In function ‘bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)’,
+    inlined from ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’ at /workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:47:21: warning: ‘bmin[1]’ may be used uninitialized [-Wmaybe-uninitialized]
+   47 |         const float bk = bmin[1] - bd*bmin[0];
+      |                     ^~
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp: In member function ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:315:15: note: ‘bmin[1]’ was declared here
+  315 |         float bmin[2], bmax[2];
+      |               ^~~~
+In function ‘bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)’,
+    inlined from ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’ at /workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:39:33: warning: ‘bmax[0]’ may be used uninitialized [-Wmaybe-uninitialized]
+   39 |         const float maxx = dtMin(amax[0]-px,bmax[0]-px);
+      |                            ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp: In member function ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:315:24: note: ‘bmax[0]’ was declared here
+  315 |         float bmin[2], bmax[2];
+      |                        ^~~~
+In function ‘bool overlapSlabs(const float*, const float*, const float*, const float*, float, float)’,
+    inlined from ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’ at /workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:341:21:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:46:34: warning: ‘bmax[1]’ may be used uninitialized [-Wmaybe-uninitialized]
+   46 |         const float bd = (bmax[1]-bmin[1]) / (bmax[0]-bmin[0]);
+      |                          ~~~~~~~~^~~~~~~~~
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp: In member function ‘int dtNavMesh::findConnectingPolys(const float*, const float*, const dtMeshTile*, int, dtPolyRef*, float*, int) const’:
+/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/native/upstream/Detour/Source/DetourNavMesh.cpp:315:24: note: ‘bmax[1]’ was declared here
+  315 |         float bmin[2], bmax[2];
+      |                        ^~~~
+occupancy_adapter.cpp: In function ‘int bn_occupancy_leaf_bounds(const BNOccupancyLeaf*, double*, double*)’:
+occupancy_adapter.cpp:22:2: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   22 |  if(!a || !lo || !hi || !leaf_valid(*a))return 0;leaf_bounds(*a,lo,hi);return 1;
+      |  ^~
+occupancy_adapter.cpp:22:50: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   22 |  if(!a || !lo || !hi || !leaf_valid(*a))return 0;leaf_bounds(*a,lo,hi);return 1;
+      |                                                  ^~~~~~~~~~~
+occupancy_adapter.cpp: In function ‘void snapshot_compact(const rcCompactHeightfield&, bool)’:
+occupancy_adapter.cpp:39:31: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+   39 |   for(unsigned int i=c.index;i<c.index+c.count;i++)if(h.spans[i].y==d.smax){if(regions)d.regionID=h.spans[i].reg;else d.afterErosionArea=h.areas[i];break;}
+      |                              ~^~~~~~~~~~~~~~~~
+occupancy_adapter.cpp: In function ‘void* bn_build_occupancy(const BNOccupancyLeaf*, int, const BNConfig*)’:
+occupancy_adapter.cpp:107:24: warning: missing initializer for member ‘BNDebugSpan::afterErosionArea’ [-Wmissing-field-initializers]
+  107 |   debug_spans.push_back({i%config.width,i/config.width,(int)p->smin,(int)p->smax,(int)p->area,0,0});
+      |   ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+occupancy_adapter.cpp:107:24: warning: missing initializer for member ‘BNDebugSpan::regionID’ [-Wmissing-field-initializers]

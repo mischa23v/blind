@@ -1,0 +1,46 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-m",
+    "unittest",
+    "-v",
+    "test_occupancy"
+  ],
+  "returncode": 0,
+  "stopReason": null,
+  "elapsedSeconds": 0.4067221029981738,
+  "peakSampledAggregateRSSBytes": 42074112,
+  "cpuAffinity": [
+    0
+  ],
+  "samples": [
+    {
+      "elapsed": 0.002549437998823123,
+      "processTreeRSS": 0,
+      "wrapperPeakRSS": 11010048,
+      "processGroupCPUSecondsIncludingReaped": 0.0,
+      "stageDiskBytes": 397716
+    },
+    {
+      "elapsed": 0.10494983500029775,
+      "processTreeRSS": 23248896,
+      "wrapperPeakRSS": 11010048,
+      "processGroupCPUSecondsIncludingReaped": 0.1,
+      "stageDiskBytes": 397716
+    },
+    {
+      "elapsed": 0.20570509100070922,
+      "processTreeRSS": 30384128,
+      "wrapperPeakRSS": 11010048,
+      "processGroupCPUSecondsIncludingReaped": 0.19,
+      "stageDiskBytes": 399168
+    },
+    {
+      "elapsed": 0.30646211500061327,
+      "processTreeRSS": 31064064,
+      "wrapperPeakRSS": 11010048,
+      "processGroupCPUSecondsIncludingReaped": 0.3,
+      "stageDiskBytes": 441734
+    }
+  ]
+}

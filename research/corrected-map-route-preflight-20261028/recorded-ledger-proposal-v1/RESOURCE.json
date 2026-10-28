@@ -1,0 +1,41 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "/workspace/scratch/90f3f6703064/research/corrected-map-route-preflight-20261028/recorded-ledger-proposal-v1/run_recorded.py",
+    "--worker"
+  ],
+  "inputFreezeSHA256": "9600a91793b48e6b1d8423c229a9136be17ba3b1c3337ef09b4d134b0807eb40",
+  "launchFreezeSHA256": "059de2df1517613923c4a98e5fa9f1923d9edc22509632208ba9ae9c1c8f9772",
+  "returncode": 0,
+  "stopReason": null,
+  "elapsedSeconds": 0.31462486799864564,
+  "childCPUSeconds": 0.309222,
+  "peakSampledAggregateRSSBytes": 179970048,
+  "cpuAffinity": [
+    0
+  ],
+  "samples": [
+    {
+      "elapsedSeconds": 0.0044902640001964755,
+      "aggregateRSSBytes": 10878976,
+      "aggregateCPUSeconds": 0.045120999999999994,
+      "outputBytes": 14609,
+      "stageDiskBytes": 2525622
+    },
+    {
+      "elapsedSeconds": 0.10822144800113165,
+      "aggregateRSSBytes": 26288128,
+      "aggregateCPUSeconds": 0.147197,
+      "outputBytes": 14609,
+      "stageDiskBytes": 2525622
+    },
+    {
+      "elapsedSeconds": 0.2109301080017758,
+      "aggregateRSSBytes": 179970048,
+      "aggregateCPUSeconds": 0.239357,
+      "outputBytes": 14609,
+      "stageDiskBytes": 2525622
+    }
+  ],
+  "physicalAuthority": false
+}

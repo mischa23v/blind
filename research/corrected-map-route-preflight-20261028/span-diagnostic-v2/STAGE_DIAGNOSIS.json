@@ -1,0 +1,429 @@
+{
+  "nativeStageCounts": {
+    "beforeFilters": 26748,
+    "afterLedge": 24952,
+    "afterHead": 13652,
+    "compact": 13652,
+    "eroded": 737,
+    "distance": 737,
+    "regions": 737,
+    "polygons": 126,
+    "vertices": 254,
+    "ox": -5.160000324249268,
+    "oy": -1.5,
+    "oz": -5.520000457763672,
+    "cs": 0.03999999910593033,
+    "ch": 0.019999999552965164
+  },
+  "nativeMergedSpanCount": 125263,
+  "unchanged20QueryOutputs": true,
+  "quantizedConfiguration": {
+    "walkableHeightCells": 61,
+    "walkableHeightMetres": 1.219999972730875,
+    "walkableClimbCells": 0,
+    "walkableRadiusCells": 6,
+    "walkableRadiusMetres": 0.23999999463558197,
+    "marginAddedAgain": false
+  },
+  "releasedLedgePredicateRecount": {
+    "before": 26748,
+    "removed": 1796,
+    "retained": 24952,
+    "nativeDisagreements": 0,
+    "removalReasons": {
+      "accessibleNeighborDrop": 1726,
+      "gapBelowFirstNeighborSpan": 64,
+      "accessibleNeighborDrop+gapBelowFirstNeighborSpan": 6
+    },
+    "accessibleDropHeightCellsHistogram": {
+      "2": 782,
+      "1": 362,
+      "3": 65,
+      "4": 215,
+      "10": 89,
+      "6": 123,
+      "22": 49,
+      "8": 43,
+      "5": 20,
+      "28": 28,
+      "14": 82,
+      "31": 3,
+      "34": 85,
+      "27": 1,
+      "30": 48,
+      "29": 2,
+      "24": 24,
+      "32": 55,
+      "18": 65,
+      "36": 51,
+      "26": 40,
+      "25": 2,
+      "15": 7,
+      "12": 58,
+      "16": 85,
+      "13": 6,
+      "11": 8,
+      "38": 4,
+      "9": 12,
+      "20": 37,
+      "35": 12,
+      "7": 41,
+      "40": 23,
+      "44": 22,
+      "41": 2,
+      "46": 11,
+      "42": 13,
+      "19": 4,
+      "17": 6,
+      "33": 3,
+      "21": 1,
+      "45": 1,
+      "43": 2,
+      "37": 3
+    },
+    "adjacentGroundHypothesisMinHeightDifferenceCellsPartialTraversalHistogram": {
+      "noNeighborGroundHypothesis": 7695,
+      "0": 89235,
+      "1": 2784,
+      "2": 2439,
+      "26": 74,
+      "16": 172,
+      "3": 443,
+      "4": 484,
+      "20": 85,
+      "24": 73,
+      "6": 319,
+      "22": 116,
+      "12": 138,
+      "8": 56,
+      "5": 43,
+      "34": 405,
+      "28": 73,
+      "30": 182,
+      "36": 491,
+      "35": 212,
+      "7": 130,
+      "29": 18,
+      "31": 10,
+      "32": 243,
+      "37": 19,
+      "38": 65,
+      "11": 22,
+      "25": 2,
+      "33": 48,
+      "9": 56,
+      "18": 94,
+      "10": 174,
+      "40": 60,
+      "42": 34,
+      "19": 16,
+      "14": 165,
+      "21": 9,
+      "15": 19,
+      "13": 14,
+      "44": 67,
+      "46": 53,
+      "41": 15,
+      "39": 11,
+      "76": 2,
+      "74": 4,
+      "45": 8,
+      "48": 5,
+      "17": 6,
+      "47": 2
+    },
+    "histogramTraversalMayShortCircuitLikeUpstream": true
+  },
+  "anchors": [
+    {
+      "anchorIndex": 0,
+      "leafRow": 121368,
+      "exactSourceLeaf": {
+        "x": -2.5799999237060547,
+        "y": -0.6599999666213989,
+        "z": -1.2599999904632568,
+        "size": 0.03999999910593033,
+        "probability": 0.957121729850769,
+        "type": 1,
+        "node": 237,
+        "occupied": 1
+      },
+      "columnXZ": [
+        64,
+        154
+      ],
+      "columnSpans": [
+        {
+          "smin": 9,
+          "smax": 14,
+          "tag": 1,
+          "afterLedgeArea": 63,
+          "afterHeadArea": 63,
+          "afterErosionArea": 0,
+          "regionID": 0,
+          "topPlannerY": -1.2200000062584877
+        },
+        {
+          "smin": 131,
+          "smax": 140,
+          "tag": 2,
+          "afterLedgeArea": 0,
+          "afterHeadArea": 0,
+          "afterErosionArea": 0,
+          "regionID": 0,
+          "topPlannerY": 1.299999937415123
+        }
+      ],
+      "intersectingSyntheticBodyAABBOnly": {
+        "occupiedGround": 167,
+        "otherOccupied": 44,
+        "observedFree": 5197,
+        "unknownVolumeNotComputed": true,
+        "notCylinderCollisionScoring": true
+      }
+    },
+    {
+      "anchorIndex": 1,
+      "leafRow": 264041,
+      "exactSourceLeaf": {
+        "x": 0.09999999403953552,
+        "y": -4.779999732971191,
+        "z": -1.2599999904632568,
+        "size": 0.03999999910593033,
+        "probability": 0.957121729850769,
+        "type": 1,
+        "node": 257,
+        "occupied": 1
+      },
+      "columnXZ": [
+        131,
+        257
+      ],
+      "columnSpans": [
+        {
+          "smin": 9,
+          "smax": 14,
+          "tag": 1,
+          "afterLedgeArea": 63,
+          "afterHeadArea": 63,
+          "afterErosionArea": 0,
+          "regionID": 0,
+          "topPlannerY": -1.2200000062584877
+        },
+        {
+          "smin": 140,
+          "smax": 148,
+          "tag": 2,
+          "afterLedgeArea": 0,
+          "afterHeadArea": 0,
+          "afterErosionArea": 0,
+          "regionID": 0,
+          "topPlannerY": 1.4599999338388443
+        }
+      ],
+      "intersectingSyntheticBodyAABBOnly": {
+        "occupiedGround": 148,
+        "otherOccupied": 385,
+        "observedFree": 4759,
+        "unknownVolumeNotComputed": true,
+        "notCylinderCollisionScoring": true
+      }
+    },
+    {
+      "anchorIndex": 2,
+      "leafRow": 522887,
+      "exactSourceLeaf": {
+        "x": 3.9800000190734863,
+        "y": -0.6200000047683716,
+        "z": -1.2999999523162842,
+        "size": 0.03999999910593033,
+        "probability": 0.9270270466804504,
+        "type": 1,
+        "node": 128,
+        "occupied": 1
+      },
+      "columnXZ": [
+        228,
+        153
+      ],
+      "columnSpans": [
+        {
+          "smin": 9,
+          "smax": 14,
+          "tag": 1,
+          "afterLedgeArea": 0,
+          "afterHeadArea": 0,
+          "afterErosionArea": 0,
+          "regionID": 0,
+          "topPlannerY": -1.2200000062584877
+        },
+        {
+          "smin": 133,
+          "smax": 138,
+          "tag": 2,
+          "afterLedgeArea": 0,
+          "afterHeadArea": 0,
+          "afterErosionArea": 0,
+          "regionID": 0,
+          "topPlannerY": 1.2599999383091927
+        }
+      ],
+      "intersectingSyntheticBodyAABBOnly": {
+        "occupiedGround": 224,
+        "otherOccupied": 431,
+        "observedFree": 4550,
+        "unknownVolumeNotComputed": true,
+        "notCylinderCollisionScoring": true
+      }
+    },
+    {
+      "anchorIndex": 3,
+      "leafRow": 760747,
+      "exactSourceLeaf": {
+        "x": -1.7799999713897705,
+        "y": 0.6200000047683716,
+        "z": -1.2599999904632568,
+        "size": 0.03999999910593033,
+        "probability": 0.9710000157356262,
+        "type": 1,
+        "node": 77,
+        "occupied": 1
+      },
+      "columnXZ": [
+        84,
+        122
+      ],
+      "columnSpans": [
+        {
+          "smin": 9,
+          "smax": 20,
+          "tag": 2,
+          "afterLedgeArea": 0,
+          "afterHeadArea": 0,
+          "afterErosionArea": 0,
+          "regionID": 0,
+          "topPlannerY": -1.1000000089406967
+        },
+        {
+          "smin": 25,
+          "smax": 34,
+          "tag": 2,
+          "afterLedgeArea": 0,
+          "afterHeadArea": 0,
+          "afterErosionArea": 0,
+          "regionID": 0,
+          "topPlannerY": -0.8200000151991844
+        },
+        {
+          "smin": 41,
+          "smax": 44,
+          "tag": 2,
+          "afterLedgeArea": 0,
+          "afterHeadArea": 0,
+          "afterErosionArea": 0,
+          "regionID": 0,
+          "topPlannerY": -0.6200000196695328
+        },
+        {
+          "smin": 45,
+          "smax": 48,
+          "tag": 2,
+          "afterLedgeArea": 0,
+          "afterHeadArea": 0,
+          "afterErosionArea": 0,
+          "regionID": 0,
+          "topPlannerY": -0.5400000214576721
+        },
+        {
+          "smin": 131,
+          "smax": 136,
+          "tag": 2,
+          "afterLedgeArea": 0,
+          "afterHeadArea": 0,
+          "afterErosionArea": 0,
+          "regionID": 0,
+          "topPlannerY": 1.2199999392032623
+        }
+      ],
+      "intersectingSyntheticBodyAABBOnly": {
+        "occupiedGround": 416,
+        "otherOccupied": 834,
+        "observedFree": 3659,
+        "unknownVolumeNotComputed": true,
+        "notCylinderCollisionScoring": true
+      }
+    },
+    {
+      "anchorIndex": 4,
+      "leafRow": 968963,
+      "exactSourceLeaf": {
+        "x": -1.659999966621399,
+        "y": 4.5,
+        "z": -1.2999999523162842,
+        "size": 0.03999999910593033,
+        "probability": 0.9710000157356262,
+        "type": 1,
+        "node": 209,
+        "occupied": 1
+      },
+      "columnXZ": [
+        87,
+        25
+      ],
+      "columnSpans": [
+        {
+          "smin": 9,
+          "smax": 14,
+          "tag": 1,
+          "afterLedgeArea": 63,
+          "afterHeadArea": 0,
+          "afterErosionArea": 0,
+          "regionID": 0,
+          "topPlannerY": -1.2200000062584877
+        },
+        {
+          "smin": 31,
+          "smax": 38,
+          "tag": 2,
+          "afterLedgeArea": 0,
+          "afterHeadArea": 0,
+          "afterErosionArea": 0,
+          "regionID": 0,
+          "topPlannerY": -0.7400000169873238
+        },
+        {
+          "smin": 133,
+          "smax": 136,
+          "tag": 2,
+          "afterLedgeArea": 0,
+          "afterHeadArea": 0,
+          "afterErosionArea": 0,
+          "regionID": 0,
+          "topPlannerY": 1.2199999392032623
+        },
+        {
+          "smin": 137,
+          "smax": 142,
+          "tag": 2,
+          "afterLedgeArea": 0,
+          "afterHeadArea": 0,
+          "afterErosionArea": 0,
+          "regionID": 0,
+          "topPlannerY": 1.3399999365210533
+        }
+      ],
+      "intersectingSyntheticBodyAABBOnly": {
+        "occupiedGround": 280,
+        "otherOccupied": 213,
+        "observedFree": 4915,
+        "unknownVolumeNotComputed": true,
+        "notCylinderCollisionScoring": true
+      }
+    }
+  ],
+  "noThresholdRetune": true,
+  "physicalAuthority": false,
+  "elapsedSeconds": 1.1056574729991553,
+  "peakSelfRSSBytes": 216449024,
+  "spanPayloadSHA256": "ef616f2d30b9d88894f9c10b60e509e2160ca4473bc8cf45c6861dfa25451be7"
+}
