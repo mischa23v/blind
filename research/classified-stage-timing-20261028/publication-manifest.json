@@ -1,0 +1,91 @@
+{
+  "codeBaselineCommit": "6fe9d5270f23954fa59fc3509cccf23445cefa51",
+  "integratedBaselineCommit": "ed7fda1c1d6b0567cf7d2b5875d00780b3ac7e83",
+  "status": "independently source-reviewed frozen candidate; native not run",
+  "deadlineSeconds": 10,
+  "changedImplementationAndIntegrationFiles": [
+    "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+    "ios/BlindAssistTests/ClassifiedRoomMeshTests.swift",
+    "tools/ci/native-apple.sh",
+    "research/native-candidate-app-integration-85/integrated/check.py",
+    "research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json",
+    "research/native-candidate-app-integration-85/integrated/classified-timing-ci-helper.patch"
+  ],
+  "restoredUnchangedFilesNotForPublication": [
+    "research/native-candidate-app-integration-85/integrated/recorder-timing-ci-helper.patch",
+    "research/native-candidate-app-integration-85/integrated/scene-timing-ci-helper.patch"
+  ],
+  "files": [
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+      "bytes": 13810,
+      "sha256": "264a44959d812e9db9827644f3b5a6629acaa95d822cf4fe122adc2cb7a5f473"
+    },
+    {
+      "path": "ios/BlindAssistTests/ClassifiedRoomMeshTests.swift",
+      "bytes": 9129,
+      "sha256": "46e2f7df8fdb8a98c8e5cb6f96d9040c2d7b787d51916cefe0cfac90a090c55f"
+    },
+    {
+      "path": "tools/ci/native-apple.sh",
+      "bytes": 8653,
+      "sha256": "c6c51f72b00004b17aba1ef20b5a4314c5062847cddfa7a377cba41060b093c4"
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/check.py",
+      "bytes": 12853,
+      "sha256": "88afb1516a712ee3ca760e6c35b6fc7937ed7fe15f24216c00ae2e5363b0fedc"
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json",
+      "bytes": 5836,
+      "sha256": "d031c5e0dcd777d1ef6c51814abac3148c89c46e59d9b70035b098b96e52f2bb"
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/classified-timing-ci-helper.patch",
+      "bytes": 1319,
+      "sha256": "34df77a7a9ba5ddbf6ef6a70beed03b48aaad43ed4bc935bcb4fa45ff92961b9"
+    },
+    {
+      "path": "research/classified-stage-timing-20261028/ClassifiedRoomMeshTests.swift.before",
+      "bytes": 7838,
+      "sha256": "61efa2b796adaefba820804ab0b72f5aa07dc165c770ad2e4e019563b6b8e308"
+    },
+    {
+      "path": "research/classified-stage-timing-20261028/README.md",
+      "bytes": 6218,
+      "sha256": "53fe881262c48f86bf63dbcffa712afbed032be4a0a51235227f24036bb0953b"
+    },
+    {
+      "path": "research/classified-stage-timing-20261028/RoomMeshCandidate.swift.before",
+      "bytes": 10907,
+      "sha256": "5d7d28344ac33be5ef9d0926b0964312ef87942d1515502e33e5874969177dee"
+    },
+    {
+      "path": "research/classified-stage-timing-20261028/SOURCE_PINS.json.before",
+      "bytes": 5531,
+      "sha256": "88a89117ecd1b17cfa90e8432b47c67ab761e091e55c01079b92e78a30c4ac61"
+    },
+    {
+      "path": "research/classified-stage-timing-20261028/check.py",
+      "bytes": 8412,
+      "sha256": "3f4642d1e65090cea62553af15f85e3ad3b02d22061f9b88cf485dceffc91623"
+    },
+    {
+      "path": "research/classified-stage-timing-20261028/check.py.before",
+      "bytes": 12477,
+      "sha256": "6b47a8ccdbdadbc3b81f50994a8a0eacb44b2c4ccb692e913a06341d0b067159"
+    },
+    {
+      "path": "research/classified-stage-timing-20261028/native-apple.sh.before",
+      "bytes": 7814,
+      "sha256": "d798efeed160cb0a0513991ee7d291bffe88b30844ba112121662e0d79add32a"
+    },
+    {
+      "path": "research/classified-stage-timing-20261028/verification.txt",
+      "bytes": 106,
+      "sha256": "389e01ee0077dce7ff8ae1df1438b65e14d6292ee9b9d485b644cb488f507f64"
+    }
+  ],
+  "reviewedRuntimeSHA256": "264a44959d812e9db9827644f3b5a6629acaa95d822cf4fe122adc2cb7a5f473"
+}

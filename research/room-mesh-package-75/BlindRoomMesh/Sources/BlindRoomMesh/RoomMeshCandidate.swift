@@ -66,6 +66,47 @@ public final class RoomMeshCandidateRuntime {
   guard !sessionID.isEmpty,sessionID.utf8.count<=128,generation>=0 else{throw MeshCandidateError.invalidInput}
   session=sessionID;self.generation=generation;self.supportPolicy=supportPolicy
  }
+#if DEBUG
+ /// Explicit synthetic-test opt-in. Release builds contain no receipt storage,
+ /// clock reads, stage locks or public diagnostic API. No geometry/identity is kept.
+ public enum DiagnosticStage: String, Sendable {
+  case requestEnqueued, workerStarted, nativeBuildBegin, nativeBuildEnd
+  case routeBegin, routeEnd, nativeFailure, completionQueued, completionDelivered
+  case discardRequested, discardWorkerStarted, discardReleased, discardCompletionDelivered
+ }
+ public struct DiagnosticStageReceipt: Sendable {
+  public let stage: DiagnosticStage
+  public let elapsedMilliseconds: Int
+ }
+ private var diagnosticStartedAt: TimeInterval?
+ private var diagnosticReceipts: [DiagnosticStageReceipt] = []
+ public private(set) var diagnosticReceiptID: UUID?
+ public convenience init(sessionID: String,generation: Int=0,supportPolicy: MeshSupportPolicy = .legacySlope,
+                         captureSyntheticTestTiming: Bool)throws {
+  try self.init(sessionID:sessionID,generation:generation,supportPolicy:supportPolicy)
+  // Assigned before this owner escapes; never enabled/disabled during work.
+  if captureSyntheticTestTiming {
+   diagnosticReceiptID=UUID()
+   diagnosticStartedAt=ProcessInfo.processInfo.systemUptime
+  }
+ }
+ public var diagnosticStageReceipts: [DiagnosticStageReceipt] { locked { diagnosticReceipts } }
+ private func recordDiagnosticStage(_ stage: DiagnosticStage) {
+  guard let startedAt=diagnosticStartedAt else{return}
+  locked {
+   if diagnosticReceipts.count<64 {
+    let elapsed=max(0,Int((ProcessInfo.processInfo.systemUptime-startedAt)*1_000))
+    diagnosticReceipts.append(.init(stage:stage,elapsedMilliseconds:elapsed))
+   }
+  }
+ }
+ private func diagnosticRecorder() -> (DiagnosticStage)->Void {
+  guard diagnosticStartedAt != nil else{return { _ in }}
+  // A queued diagnostic must not extend this runtime's lifetime, including in
+  // ordinary DEBUG clients that never opt in. Native/caller ownership is unchanged.
+  return { [weak self] stage in self?.recordDiagnosticStage(stage) }
+ }
+#endif
  private func locked<T>(_ f:() throws ->T) rethrows ->T {lock.lock();defer{lock.unlock()};return try f()}
  private func advance(){if revision == UInt64.max {stopped=true;gap=true}else{revision+=1}}
  /// Tracking loss, body/goal changes and raw-depth veto call this before further query work.
@@ -77,6 +118,9 @@ public final class RoomMeshCandidateRuntime {
  /// Reset cannot revive this owner once discard starts; do not replace it to bypass
  /// outstanding work. Ordinary stop/reset retain their existing nonterminal behavior.
  public func stopAndDiscard(completion:@escaping ()->Void) {
+#if DEBUG
+  recordDiagnosticStage(.discardRequested)
+#endif
   locked {
    if discarded {DispatchQueue.global(qos:.utility).async {completion()};return}
    if !discarding {advance();stopped=true;gap=true;discarding=true}
@@ -90,13 +134,25 @@ public final class RoomMeshCandidateRuntime {
   guard discarding,!discarded,!discardScheduled,pending==0 else{return}
   discardScheduled=true
   Self.worker.async { [self] in
+#if DEBUG
+   recordDiagnosticStage(.discardWorkerStarted)
+#endif
    owner=nil;ownerLifecycle=nil
    let waiters=locked { ()->[()->Void] in
     discarded=true
     let result=discardWaiters;discardWaiters.removeAll(keepingCapacity:false)
     return result
    }
-   for waiter in waiters {DispatchQueue.global(qos:.utility).async {waiter()}}
+#if DEBUG
+   recordDiagnosticStage(.discardReleased)
+   let diagnostic=diagnosticRecorder()
+#endif
+   for waiter in waiters {DispatchQueue.global(qos:.utility).async {
+#if DEBUG
+    diagnostic(.discardCompletionDelivered)
+#endif
+    waiter()
+   }}
   }
  }
  public func reset(sessionID:String,generation:Int)throws {
@@ -151,7 +207,20 @@ public final class RoomMeshCandidateRuntime {
  /// Each new body/goal request invalidates older query snapshots at ingress.
  public func request(start:[Float],goal:[Float],body:MeshCandidateBody,
                      completion:@escaping(Result<MeshCandidateRoute,MeshCandidateError>)->Void) {
-  let finish: (Result<MeshCandidateRoute,MeshCandidateError>)->Void = { result in DispatchQueue.global(qos:.utility).async { completion(result) } }
+#if DEBUG
+  let diagnostic=diagnosticRecorder()
+#endif
+  let finish: (Result<MeshCandidateRoute,MeshCandidateError>)->Void = { result in
+#if DEBUG
+   diagnostic(.completionQueued)
+#endif
+   DispatchQueue.global(qos:.utility).async {
+#if DEBUG
+    diagnostic(.completionDelivered)
+#endif
+    completion(result)
+   }
+  }
   guard start.count==3,goal.count==3,(start+goal).allSatisfy({$0.isFinite})else{locked{advance()};finish(.failure(.invalidInput));return}
   let token:(String,Int,UInt64,UInt64)?=locked {
    advance()
@@ -159,17 +228,39 @@ public final class RoomMeshCandidateRuntime {
    pending+=1;return(session,generation,revision,lifecycle)
   }
   guard let (s,g,r,cycle)=token else{finish(.failure(.unavailable));return}
+#if DEBUG
+  recordDiagnosticStage(.requestEnqueued)
+#endif
   Self.worker.async { [self] in
+#if DEBUG
+   recordDiagnosticStage(.workerStarted)
+#endif
    defer{locked{pending-=1;scheduleDiscardIfDrained()}}
    guard locked({matches(s,g,r)}),let owner=owner,ownerLifecycle==cycle,owner.session==s,owner.generation==g else{finish(.failure(.stale));return}
    do {
-    let(v,t)=owner.geometry();let native=try Native(v,t,radius:body.radius,height:body.height,triangleSupport:owner.geometrySupport())
+    let(v,t)=owner.geometry()
+#if DEBUG
+    recordDiagnosticStage(.nativeBuildBegin)
+#endif
+    let native=try Native(v,t,radius:body.radius,height:body.height,triangleSupport:owner.geometrySupport())
+#if DEBUG
+    recordDiagnosticStage(.nativeBuildEnd)
+    recordDiagnosticStage(.routeBegin)
+#endif
     let path=try native.route(start,goal)
+#if DEBUG
+    recordDiagnosticStage(.routeEnd)
+#endif
     let state=locked{(matches(s,g,r),gap)}
     guard state.0 else{finish(.failure(.stale));return}
     var unknown=owner.unknown.sorted();if state.1{unknown.append("ingress-or-lifecycle-gap")}
     finish(.success(MeshCandidateRoute(sessionID:s,generation:g,revision:r,points:path.points,projectedStart:path.projected_start,projectedGoal:path.projected_goal,complete:path.complete,nativeStatus:path.status,sourceDeliveryComplete:owner.sourceComplete && !state.1,unknownCoverage:unknown)))
-   } catch {finish(.failure(.nativeFailure))}
+   } catch {
+#if DEBUG
+    recordDiagnosticStage(.nativeFailure)
+#endif
+    finish(.failure(.nativeFailure))
+   }
   }
  }
 }

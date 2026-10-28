@@ -19,6 +19,23 @@ final class ClassifiedRoomMeshTests: XCTestCase {
               timestamp: 1, vertices: vertices, triangles: triangles, columnMajorTransform: identity,
               complete: true, triangleSupport: support)
     }
+    private func makeRuntime(sessionID: String, supportPolicy: MeshSupportPolicy = .legacySlope) throws -> RoomMeshCandidateRuntime {
+#if DEBUG
+        try RoomMeshCandidateRuntime(sessionID: sessionID, supportPolicy: supportPolicy, captureSyntheticTestTiming: true)
+#else
+        try RoomMeshCandidateRuntime(sessionID: sessionID, supportPolicy: supportPolicy)
+#endif
+    }
+    private enum ReceiptEvent: String { case callback, waitFinished, failureDiscardCompleted, discardCompleted }
+    private static func stageReceipt(_ runtime: RoomMeshCandidateRuntime, event: ReceiptEvent) {
+#if DEBUG
+        guard let id = runtime.diagnosticReceiptID else { return }
+        let stages = runtime.diagnosticStageReceipts.map { "\($0.stage.rawValue):\($0.elapsedMilliseconds)" }.joined(separator: ";")
+        // Fixed public-synthetic UUID, closed stage/event names, numeric elapsed
+        // milliseconds only. No session/anchor identity, geometry or error text.
+        print("CLASSIFIED_QUERY_STAGE_RECEIPT id=\(id.uuidString) event=\(event.rawValue) stages=\(stages)")
+#endif
+    }
     private func query(_ runtime: RoomMeshCandidateRuntime, start: [Float] = [-2,0,0], goal: [Float] = [2,0,0]) async throws -> Result<MeshCandidateRoute, MeshCandidateError> {
         let done = expectation(description: "native candidate result"), box = Box()
         // Test-only boundary receipts: elapsed callback time includes native-worker
@@ -29,6 +46,7 @@ final class ClassifiedRoomMeshTests: XCTestCase {
             box.put($0)
             let elapsedMS = Int((ProcessInfo.processInfo.systemUptime - submittedAt) * 1_000)
             print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:callback,elapsed_ms:\(elapsedMS)")
+            Self.stageReceipt(runtime, event: .callback)
             done.fulfill()
         }
         await fulfillment(of: [done], timeout: 10)
@@ -39,18 +57,23 @@ final class ClassifiedRoomMeshTests: XCTestCase {
             // Fence this owner now; do not wait longer or infer native completion.
             runtime.stopAndDiscard {
                 print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:failure-discard-completed")
+                Self.stageReceipt(runtime, event: .failureDiscardCompleted)
             }
             print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:failure-discard-requested,elapsed_ms:\(elapsedMS)")
         }
+        Self.stageReceipt(runtime, event: .waitFinished)
         return try XCTUnwrap(result, "Native callback did not complete; no passing route inferred; receipt=\(receipt), wait_elapsed_ms=\(elapsedMS), terminal discard requested")
     }
     private func discard(_ runtime: RoomMeshCandidateRuntime) async {
         let done = expectation(description: "terminal geometry release")
-        runtime.stopAndDiscard { done.fulfill() }
+        runtime.stopAndDiscard {
+            Self.stageReceipt(runtime, event: .discardCompleted)
+            done.fulfill()
+        }
         await fulfillment(of: [done], timeout: 10)
     }
     func testClassifiedFloorRoutesWithoutGrantingPhysicalAuthority() async throws {
-        let runtime = try RoomMeshCandidateRuntime(sessionID: "classified-floor", supportPolicy: .classifiedFloorOnly)
+        let runtime = try makeRuntime(sessionID: "classified-floor", supportPolicy: .classifiedFloorOnly)
         XCTAssertTrue(runtime.offer(event(session: "classified-floor", support: [.floor, .floor])))
         let result = try await query(runtime)
         switch result {
@@ -64,14 +87,14 @@ final class ClassifiedRoomMeshTests: XCTestCase {
         await discard(runtime)
     }
     func testIdenticalUpwardObstaclePlaneIsNotPromotedToFloor() async throws {
-        let runtime = try RoomMeshCandidateRuntime(sessionID: "classified-obstacle", supportPolicy: .classifiedFloorOnly)
+        let runtime = try makeRuntime(sessionID: "classified-obstacle", supportPolicy: .classifiedFloorOnly)
         XCTAssertTrue(runtime.offer(event(session: "classified-obstacle", support: [.obstacle, .obstacle])))
         let result = try await query(runtime)
         if case .success = result { XCTFail("Slope-only promotion turned an obstacle surface into support") }
         await discard(runtime)
     }
     func testMissingAndMismatchedSupportAreRejectedAtIngress() async throws {
-        let runtime = try RoomMeshCandidateRuntime(sessionID: "strict", supportPolicy: .classifiedFloorOnly)
+        let runtime = try makeRuntime(sessionID: "strict", supportPolicy: .classifiedFloorOnly)
         XCTAssertFalse(runtime.offer(event(session: "strict", support: nil)))
         XCTAssertFalse(runtime.offer(event(session: "strict", support: [.floor])))
         XCTAssertTrue(runtime.offer(event(session: "strict", support: [.floor, .floor])))
@@ -83,7 +106,7 @@ final class ClassifiedRoomMeshTests: XCTestCase {
         await discard(runtime)
     }
     func testLegacyUnclassifiedAPIStillRoutesAndDoesNotIgnoreExplicitLabels() async throws {
-        let runtime = try RoomMeshCandidateRuntime(sessionID: "legacy")
+        let runtime = try makeRuntime(sessionID: "legacy")
         XCTAssertFalse(runtime.offer(event(session: "legacy", support: [.floor, .floor])))
         try runtime.reset(sessionID: "legacy-next", generation: 0)
         XCTAssertTrue(runtime.offer(event(session: "legacy-next", support: nil)))
@@ -105,7 +128,7 @@ final class ClassifiedRoomMeshTests: XCTestCase {
             let orders = [labelled, Array(labelled.reversed()), Array(labelled.dropFirst(2)) + Array(labelled.prefix(2))]
             for (index, order) in orders.enumerated() {
                 let session = "touching-\(height)-\(index)"
-                let runtime = try RoomMeshCandidateRuntime(sessionID:session,supportPolicy:.classifiedFloorOnly)
+                let runtime = try makeRuntime(sessionID:session,supportPolicy:.classifiedFloorOnly)
                 XCTAssertTrue(runtime.offer(.init(sessionID:session,generation:0,anchorID:"floor-and-solid",revision:1,
                     timestamp:1,vertices:vertices+boxVertices,triangles:order.flatMap { $0.0 },columnMajorTransform:identity,
                     complete:true,triangleSupport:order.map { $0.1 })))
