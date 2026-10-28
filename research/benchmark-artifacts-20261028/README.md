@@ -20,6 +20,5 @@ The range-5m reports archive is a dated snapshot; its independent-review paragra
 
 ## This checkpoint
 
-Confirmed binary objects: 23. Complete original binary files: 18/23 (22 archives plus one image).
+Confirmed binary objects: 30. Complete original binary files: 23/23 (22 archives plus one image).
 
-Pending files remain explicitly incomplete in the restore index; blob creation and publication are distinct.
