@@ -1,3 +1,11 @@
+# Canonical generated project follow-on — 2026-10-28
+
+`project-canonicalization.patch` is an exact reversible serialization-only layer for the normal Xcode project. The same 61 native Swift paths, mesh local package/product identities and existing compilation flags remain. The current generator places `MeshCandidateDiagnostics.swift` with canonical IDs and source/group ordering instead of the former manual insertion. No source or new flag is added.
+
+The checker reverses this layer first and requires the exact pre-canonical project hash `5aa44c32a0692dd650823d85f89b8334d59e9dd8a2d0c21900f82be14ce10614`, then runs the existing practice/critical/original patch reversals. The historical `app-integration.patch` and all prior original/intermediate pins remain intact. This fixes full checked/generated text parity, not a missing-membership defect and not native compilation. Diagnostic before/after evidence lives in `research/localization-contract-review-20261028/pbx-diagnostic/`.
+
+---
+
 # Review-branch source integration receipt
 
 ## Current follow-on — 2026-10-27 23:33 UTC

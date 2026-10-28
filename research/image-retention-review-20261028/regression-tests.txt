@@ -1,0 +1,29 @@
+Command: node --test tools/test/selected-photo-reference.test.mjs tools/test/privacy-rule.test.mjs
+Source-contract regression only; no Swift runtime/device execution.
+✔ the app build cannot send a camera picture off the phone (83.710371ms)
+✔ no network upload path exists outside developer-only code, except public map downloads (61.399409ms)
+✔ room memory and items stay in protected on-phone storage (1.512236ms)
+✔ public place packages have no photo or personal-memory fields (1.618641ms)
+✔ private photo intent runs after command-origin authorization but before physical mutation (25.433977ms)
+✔ picker assigns source ownership before bounded asynchronous file loading (2.393075ms)
+✔ ImageIO bounds headers and decoded pixels and never persists the transfer (4.570203ms)
+✔ native photo reader preserves complete source records outside model budgets (9.395635ms)
+✔ photo output uses normal gates, actual callbacks, and original source expiry (10.166011ms)
+✔ selected photo Vision retains low-confidence OCR qualifiers without weakening camera threshold (2.23814ms)
+✔ one native photo lease survives UI cancellation until actual decode or Vision completion (8.476199ms)
+✔ camera cancellation is separate; only trusted photo interruption and explicit quiet clear the snapshot (11.079012ms)
+✔ helper ingress and delayed actual speech start enforce photo ownership (9.670469ms)
+✔ selected-photo source text is omitted from opt-in debug output records (6.658396ms)
+✔ failed Vision extraction is unreadable, never a successful empty reference (3.15989ms)
+✖ the normal generated Xcode source phase includes the bounded photo decoder (12.578349ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 15
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 367.878755
+✖ failing tests:
+✖ the normal generated Xcode source phase includes the bounded photo decoder (12.578349ms)
+Failure: selected-photo-reference.test.mjs:129 compares checked-in PBX against generateProject(files). They differ in the shared worktree; this agent did not modify the project.

@@ -395,7 +395,7 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
             guard let memory else { throw MemoryError.missing }
             for id in try memory.deletedRooms() {
                 guard let uuid = UUID(uuidString: id) else { throw MemoryError.invalid }
-                for ext in ["worldmap", "room.json", "usdz", "layout.json", "svg", "photo.jpg", "json"] {
+                for ext in ["worldmap", "room.json", "usdz", "layout.json", "svg", "photo.jpg", "photo-trash.jpg", "json"] {
                     let url = directory.appendingPathComponent("\(uuid).\(ext)")
                     if FileManager.default.fileExists(atPath: url.path) { try FileManager.default.removeItem(at: url) }
                 }
@@ -612,6 +612,30 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
             try JSONEncoder().encode(layout).write(to: prefix.appendingPathExtension("layout.json"), options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
             try Data(layout.svg().utf8).write(to: prefix.appendingPathExtension("svg"), options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
         } catch { message = t("The room was saved; its export could not be refreshed.", "حُفظت الغرفة؛ تعذر تحديث ملف التصدير.") }
+    }
+    /// One recoverable reference-photo slot per room, in the existing protected,
+    /// backup-excluded directory. Moves never overwrite an occupied destination.
+    /// These operations do not alter room geometry, recall fingerprints or Photos.
+    @MainActor func trashPhoto(for place: SavedPlace) throws {
+        try moveReferencePhoto(for: place, source: "photo.jpg", destination: "photo-trash.jpg")
+    }
+    @MainActor func restorePhoto(for place: SavedPlace) throws {
+        try moveReferencePhoto(for: place, source: "photo-trash.jpg", destination: "photo.jpg")
+    }
+    @MainActor private func moveReferencePhoto(for place: SavedPlace, source: String, destination: String) throws {
+        guard places.contains(where: { $0.id == place.id }) else { throw CocoaError(.fileNoSuchFile) }
+        let from = directory.appendingPathComponent("\(place.id).\(source)")
+        let to = directory.appendingPathComponent("\(place.id).\(destination)")
+        guard !FileManager.default.fileExists(atPath: to.path) else { throw CocoaError(.fileWriteFileExists) }
+        // Same-directory rename keeps file protection and avoids duplicate image copies.
+        try FileManager.default.moveItem(at: from, to: to)
+        objectWillChange.send()
+    }
+    /// Call only after the explicit permanent-delete confirmation in RoomDetailView.
+    @MainActor func deleteTrashedPhoto(for place: SavedPlace) throws {
+        guard places.contains(where: { $0.id == place.id }) else { throw CocoaError(.fileNoSuchFile) }
+        try FileManager.default.removeItem(at: directory.appendingPathComponent("\(place.id).photo-trash.jpg"))
+        objectWillChange.send()
     }
     func savePhoto(_ jpeg: Data, for place: SavedPlace) throws {
         guard jpeg.count <= 2_000_000, places.contains(where: { $0.id == place.id }) else { throw CocoaError(.fileWriteUnknown) }

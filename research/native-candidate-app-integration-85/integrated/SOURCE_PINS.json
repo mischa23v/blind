@@ -10,22 +10,26 @@
   },
   "integrated": {
     "ios/BlindAssist/NavigationModel.swift": "5275400e782a88374641aa0b61d2c85b1d35f20330b58e5b2d86b7b9626b4d67",
-    "ios/BlindAssist.xcodeproj/project.pbxproj": "5aa44c32a0692dd650823d85f89b8334d59e9dd8a2d0c21900f82be14ce10614",
+    "ios/BlindAssist.xcodeproj/project.pbxproj": "e80ced174477574a28b45c594e2a10029d14da9c6ef588845a93f9eab3321cd1",
     "ios/BlindAssist/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
     "tools/ci/native-apple.sh": "683323c46df0e18673ba75dc6e3c610d0aa5087884a4a07ddd74b2c5600be263",
     ".github/workflows/native-apple.yml": "fa2fed05f2fcdce59f1cdcb92fb77442a3c7e5c3d0bf53ef78c0fe1c2df40672",
     ".github/workflows/native-candidate-app-integration.yml": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
-    "research/native-candidate-app-integration-85/integrated/check.py": "f31e3ba73d6996efdaa91b871ed9bff9b24a3f4ef33b455fed4a81f3f78c0bac",
-    "research/native-candidate-app-integration-85/integrated/README.md": "06a436f9e875a0ea7db38a34a25d53463da0783fc7d8a0851488f2bc6aaa6ba6",
+    "research/native-candidate-app-integration-85/integrated/check.py": "25f5cf53079be3be3fdf5c5aae02b726d56b5c6f0d920cce6851422272297480",
+    "research/native-candidate-app-integration-85/integrated/README.md": "5662b5649c8bd76077bd232021105ed141d8e7b4547059e68d269fd3c29ba75e",
     "research/native-candidate-app-integration-85/app-integration.patch": "3cbde1075811ebab3d9fc1a54101ffad0b3749030c3dfc920cbcdca4fde2c619",
     "research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
     "research/native-candidate-app-integration-85/integrated/critical-order.patch": "8f298574cd79ff3e86f0a5ef124824686b2d9a95e96d3ca273d697f97e1d9efa",
-    "research/native-candidate-app-integration-85/integrated/practice-publication.patch": "d63db63272a4bf53d9a4209cb5be2d3e55ff44a782242eeede2a46a4a5178156"
+    "research/native-candidate-app-integration-85/integrated/practice-publication.patch": "d63db63272a4bf53d9a4209cb5be2d3e55ff44a782242eeede2a46a4a5178156",
+    "research/native-candidate-app-integration-85/integrated/project-canonicalization.patch": "57860e8d3c8513bfca04a636def7aec9aaaa2b201ac3985db2ebf011618f43f8"
   },
   "beforeCriticalOrder": {
     "ios/BlindAssist/NavigationModel.swift": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307"
   },
   "beforePracticePublication": {
     "ios/BlindAssist/NavigationModel.swift": "ef35a58edbebd33f5d30ef4921169227ec1dfe2e9fb06664ba5a520687684c14"
+  },
+  "beforeProjectCanonicalization": {
+    "ios/BlindAssist.xcodeproj/project.pbxproj": "5aa44c32a0692dd650823d85f89b8334d59e9dd8a2d0c21900f82be14ce10614"
   }
 }

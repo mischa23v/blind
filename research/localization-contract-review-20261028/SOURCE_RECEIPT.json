@@ -1,0 +1,26 @@
+{
+  "kind": "source-integrity-only",
+  "checks": {
+    "ten_direct_gate_test_methods": true,
+    "fixture_validator_only_in_test_target": true,
+    "fixture_is_explicitly_not_accuracy_evidence": true,
+    "same_id_changed_matrix_is_tested": true,
+    "superseded_completion_preserves_newer_candidate_tested": true,
+    "all_three_missing_records_have_expected_reason": true,
+    "release_remains_withheld_in_gate": true,
+    "issuer_remains_missing_calibration": true,
+    "fixture_never_calls_capture_acceptance": true
+  },
+  "all_source_checks_pass": true,
+  "swift_available": false,
+  "swift_tests_executed_by_this_script": false,
+  "physical_localization_accuracy_measured": false,
+  "physical_guidance_enabled": false,
+  "source_sha256": {
+    "BlindCore/Sources/BlindCore/NativeLocalizationEvidence.swift": "c015f273cc415c42fa55bb775471492cd90de6b485b60b12c03db860424a2dce",
+    "BlindCore/Sources/BlindCore/SavedWorldFrame.swift": "c81551da30f5c778dd8202cf2572a4cd4c347a9fa5a05884fc54a43a0416653e",
+    "BlindCore/Sources/BlindCore/BodyHeading.swift": "903f0889c4ccf98631036887f4d5588a3039bef1efa5b7363e72ecba557e3b3c",
+    "ios/BlindAssist/NativeLocalizationIssuer.swift": "eccde9f2b901830a45760491aaefa4db603c59fe5bc3f05d647256e7cbf003d6",
+    "BlindCore/Tests/BlindCoreTests/NativeLocalizationEvidenceGateTests.swift": "b245440c9219ba7c0cb80221513453fe3533f7e218d1c86a8906835d21a8a10c"
+  }
+}
