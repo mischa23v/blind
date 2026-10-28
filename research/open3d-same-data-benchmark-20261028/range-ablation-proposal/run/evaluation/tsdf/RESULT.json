@@ -1,0 +1,712 @@
+{
+  "fittingPerformed": false,
+  "meshCells": 502334,
+  "meshSHA256": "10c72a92c6fc5f6ba291d6cd0d6b94af41bf39f8ae847783d24b9c70d7f54e46",
+  "meshVertices": 263918,
+  "mode": "tsdf",
+  "physicalAuthority": false,
+  "pinsReverified": true,
+  "pixelOffset": 0,
+  "records": [
+    {
+      "fileSHA256": "e9d1bb2e06d841cb7fff37bfccc0a54e6a126b7c9a97669eee943c8776028288",
+      "frameID": "frame_00011",
+      "index": 0,
+      "poseCheck": {
+        "rotationDeterminant": 0.999999968891793,
+        "rotationOrthogonalityResidual": 3.456073183194519e-08
+      },
+      "positiveHits": 46065,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 12.123245559167616,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 1.7763568394002505e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "d868217b57e5762b225c2f9aa6ab4c33439f207323d59884da61f185cb339f2e",
+      "frameID": "frame_00021",
+      "index": 1,
+      "poseCheck": {
+        "rotationDeterminant": 0.9999999920361329,
+        "rotationOrthogonalityResidual": 4.4116463815413454e-08
+      },
+      "positiveHits": 45861,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 13.329004759324683,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 2.220446049250313e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "46602f9d60d948c7d0256480997bc9ff7c4089e083efc551c9aae959253a0ed4",
+      "frameID": "frame_00031",
+      "index": 2,
+      "poseCheck": {
+        "rotationDeterminant": 1.0000000270215568,
+        "rotationOrthogonalityResidual": 4.282637866559469e-08
+      },
+      "positiveHits": 45971,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 13.853514479158559,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 2.6645352591003757e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "4a2e647a9d19e7df7e636a931f2f74e90cfd5941df6d01c20821031e390b1a22",
+      "frameID": "frame_00041",
+      "index": 3,
+      "poseCheck": {
+        "rotationDeterminant": 1.0000000058531142,
+        "rotationOrthogonalityResidual": 2.1972726083063776e-08
+      },
+      "positiveHits": 46038,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 13.841073869703386,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 3.552713678800501e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "ce48f551e520c0a18cfb70c5096d26d09f635eb6c7f67b1de5df7d819da2177e",
+      "frameID": "frame_00051",
+      "index": 4,
+      "poseCheck": {
+        "rotationDeterminant": 1.0000000389484371,
+        "rotationOrthogonalityResidual": 5.1966078995491216e-08
+      },
+      "positiveHits": 46047,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 12.425832703107426,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 3.552713678800501e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "0500216d0defb4854ccc640e2e0f8223dfc4831f244989ddc363adf970e75768",
+      "frameID": "frame_00061",
+      "index": 5,
+      "poseCheck": {
+        "rotationDeterminant": 1.0000000530197277,
+        "rotationOrthogonalityResidual": 5.5445636526485487e-08
+      },
+      "positiveHits": 45104,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 12.846293616883083,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 2.6645352591003757e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "bd863c133e27078a0f0bea0d9819d304597a781044ee94569cdb29dc7f527681",
+      "frameID": "frame_00071",
+      "index": 6,
+      "poseCheck": {
+        "rotationDeterminant": 0.9999999511084421,
+        "rotationOrthogonalityResidual": 4.591369129336442e-08
+      },
+      "positiveHits": 45979,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 13.010163004169108,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 2.6645352591003757e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "87bc1cad4ce12e9737dd1260268ec3b93d24cfcb79b0b65d25591fc150e029d3",
+      "frameID": "frame_00081",
+      "index": 7,
+      "poseCheck": {
+        "rotationDeterminant": 0.9999999303395902,
+        "rotationOrthogonalityResidual": 5.845436168439022e-08
+      },
+      "positiveHits": 45831,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 13.18152525811351,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 1.7763568394002505e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "83217a9f54bc6d08589829b998e0e7e603ddbdc14d7c88e9c64e7ccd9115eeb3",
+      "frameID": "frame_00091",
+      "index": 8,
+      "poseCheck": {
+        "rotationDeterminant": 0.9999999902154466,
+        "rotationOrthogonalityResidual": 2.155736567033273e-08
+      },
+      "positiveHits": 45986,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 11.714691137702816,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 1.7763568394002505e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "74bb3e091f2d4fd36bd0d923f9f9c953515bbfbd9e024bc50a26378e445bc093",
+      "frameID": "frame_00102",
+      "index": 9,
+      "poseCheck": {
+        "rotationDeterminant": 1.00000000394653,
+        "rotationOrthogonalityResidual": 5.426285154541688e-08
+      },
+      "positiveHits": 45944,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 12.575724901393324,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 1.7763568394002505e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "c002aaf94c53e592612804661d76180947fc7306ffe425ea2ee67b48db175799",
+      "frameID": "frame_00112",
+      "index": 10,
+      "poseCheck": {
+        "rotationDeterminant": 0.9999999745568822,
+        "rotationOrthogonalityResidual": 4.554987131921706e-08
+      },
+      "positiveHits": 45504,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 12.968142520659653,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 2.6645352591003757e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "e10a91de7075064fc7ee5a8a00b7bb17012f4dd8c4e9aaa8cfcfa7b23011ec8a",
+      "frameID": "frame_00122",
+      "index": 11,
+      "poseCheck": {
+        "rotationDeterminant": 1.000000023585315,
+        "rotationOrthogonalityResidual": 5.5701229184634826e-08
+      },
+      "positiveHits": 45960,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 13.011381458298983,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 3.552713678800501e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "ef8edc5d1b96641061018afd81594d90bf17e5b970dada8b2cad995989d9ef87",
+      "frameID": "frame_00132",
+      "index": 12,
+      "poseCheck": {
+        "rotationDeterminant": 0.9999999993070737,
+        "rotationOrthogonalityResidual": 4.1931617067447746e-08
+      },
+      "positiveHits": 45552,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 12.59088526525154,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 1.7763568394002505e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "6ba9548a0f4cb034e394e1a8583225db3200acebc29959ff95f27d967ec403cf",
+      "frameID": "frame_00142",
+      "index": 13,
+      "poseCheck": {
+        "rotationDeterminant": 1.0000000184106046,
+        "rotationOrthogonalityResidual": 3.9064089962792536e-08
+      },
+      "positiveHits": 43954,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 11.874003333246558,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 2.220446049250313e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "b6749e8b9fce1ef818a1cdd992081862d030730f7a0db9738e9369df11f338fa",
+      "frameID": "frame_00165",
+      "index": 14,
+      "poseCheck": {
+        "rotationDeterminant": 0.9999999509736648,
+        "rotationOrthogonalityResidual": 5.245746503845794e-08
+      },
+      "positiveHits": 45277,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 12.766155899561769,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 2.220446049250313e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "ba6efc4098833d4b6c9744d1e28ff879fb64eb9dfa36fe1cfd11b336d5393814",
+      "frameID": "frame_00176",
+      "index": 15,
+      "poseCheck": {
+        "rotationDeterminant": 0.9999999747438799,
+        "rotationOrthogonalityResidual": 4.4140697430528064e-08
+      },
+      "positiveHits": 44456,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 12.5612951894623,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 1.7763568394002505e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "45a01f92421a2130238fcb8a105e29b6fae66fe8b5d17eb00b3c92a4ca937003",
+      "frameID": "frame_00187",
+      "index": 16,
+      "poseCheck": {
+        "rotationDeterminant": 1.0000000247891963,
+        "rotationOrthogonalityResidual": 5.6874091436398544e-08
+      },
+      "positiveHits": 45916,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 12.910679014614326,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 1.7763568394002505e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "36f0c9f56357f39def6d4c4f0f01b0ba70e0cc996b460529ec33d147954be560",
+      "frameID": "frame_00197",
+      "index": 17,
+      "poseCheck": {
+        "rotationDeterminant": 1.0000000114737058,
+        "rotationOrthogonalityResidual": 3.2543294503639686e-08
+      },
+      "positiveHits": 46034,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 12.205977932679833,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 2.6645352591003757e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "1fcdee5c0db7698e39e510bef7fc43735ead2f82a8a7ee2f41d55548999c0f7f",
+      "frameID": "frame_00207",
+      "index": 18,
+      "poseCheck": {
+        "rotationDeterminant": 1.0000000075374857,
+        "rotationOrthogonalityResidual": 2.47484699400502e-08
+      },
+      "positiveHits": 45950,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 11.940041723113628,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 1.7763568394002505e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "7f0f49be661c329d887cd654ed06e3aed265c3d5482bd6b38f957ad04c621f5e",
+      "frameID": "frame_00218",
+      "index": 19,
+      "poseCheck": {
+        "rotationDeterminant": 0.9999999983266388,
+        "rotationOrthogonalityResidual": 2.121737718852046e-08
+      },
+      "positiveHits": 46057,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 10.09662206580667,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 2.6645352591003757e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "57978c6128b5fe9340a9cabd578a215fdfa93f0f33364ad0551c2a3c7bf83792",
+      "frameID": "frame_00228",
+      "index": 20,
+      "poseCheck": {
+        "rotationDeterminant": 1.000000001576495,
+        "rotationOrthogonalityResidual": 5.599081820406582e-08
+      },
+      "positiveHits": 46024,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 9.199096359216686,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 2.6645352591003757e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "794c6e39be4ed46559d66101e8a84ff89ea2691f4b2841bd81a610b830abfed2",
+      "frameID": "frame_00238",
+      "index": 21,
+      "poseCheck": {
+        "rotationDeterminant": 0.9999999629084332,
+        "rotationOrthogonalityResidual": 4.838831824116596e-08
+      },
+      "positiveHits": 46060,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 10.318536791430486,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 2.6645352591003757e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "da72fbedde06e6704f4ba07e983c0e7aa7400318df2cdc750737c3fa31f6a0a4",
+      "frameID": "frame_00248",
+      "index": 22,
+      "poseCheck": {
+        "rotationDeterminant": 0.9999999705934048,
+        "rotationOrthogonalityResidual": 4.961401556258238e-08
+      },
+      "positiveHits": 46065,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 12.65588447411174,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 1.7763568394002505e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "11bc6d696d96d171043b34dfde18f7e148a1d189f73c69893ffb2bfe97382ef8",
+      "frameID": "frame_00258",
+      "index": 23,
+      "poseCheck": {
+        "rotationDeterminant": 1.0000000338470003,
+        "rotationOrthogonalityResidual": 3.3799939958001346e-08
+      },
+      "positiveHits": 46058,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 13.681456126077984,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 2.220446049250313e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "8c09414df8ec450988310c70ff365d5be266627ad1c4c43eaa8776263bdcee41",
+      "frameID": "frame_00268",
+      "index": 24,
+      "poseCheck": {
+        "rotationDeterminant": 1.0000000397749118,
+        "rotationOrthogonalityResidual": 5.69013252071926e-08
+      },
+      "positiveHits": 46051,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 13.885529532038614,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 3.552713678800501e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "dbc33246d869692111fd665e36b698ce1ecbfbdbe54dee19eb41d49a970bfb84",
+      "frameID": "frame_00278",
+      "index": 25,
+      "poseCheck": {
+        "rotationDeterminant": 1.0000000209261728,
+        "rotationOrthogonalityResidual": 4.600993830372602e-08
+      },
+      "positiveHits": 46063,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 12.716886513758531,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 2.6645352591003757e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "47f1b5d88b5dfebe8e193da2a89904589bbd50394ea5bb657b092c5d4dbc4a78",
+      "frameID": "frame_00288",
+      "index": 26,
+      "poseCheck": {
+        "rotationDeterminant": 1.0000000307529486,
+        "rotationOrthogonalityResidual": 4.8967410126721234e-08
+      },
+      "positiveHits": 46044,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 11.628040193540716,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 2.6645352591003757e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "1a18bac7974924d564d2b4bb35ea36698b784460bff23940209211b57383c673",
+      "frameID": "frame_00298",
+      "index": 27,
+      "poseCheck": {
+        "rotationDeterminant": 0.9999999766466224,
+        "rotationOrthogonalityResidual": 4.58163382788257e-08
+      },
+      "positiveHits": 46064,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 12.373605170127925,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 3.552713678800501e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    },
+    {
+      "fileSHA256": "5d140a26e2131b47c1094a4a582b8e48567cf8d585b61ed064becc7755934ddf",
+      "frameID": "frame_00308",
+      "index": 28,
+      "poseCheck": {
+        "rotationDeterminant": 0.9999999543968536,
+        "rotationOrthogonalityResidual": 4.109350526526612e-08
+      },
+      "positiveHits": 46026,
+      "query": {
+        "cellsPerNode": 16,
+        "farEndpointDistanceFaroUnits": 12.591239825238203,
+        "intersectionToleranceFaroUnits": 1e-07,
+        "locator": "vtkStaticCellLocator first-hit overload with reused vtkGenericCell",
+        "maxBuckets": 2097152,
+        "maxHitInverseVersusParameterAxialResidual": 2.6645352591003757e-15,
+        "meshTransformedOrDuplicated": false,
+        "nearestSurface": true,
+        "rayTransform": "phone_to_faro @ camera_to_phone",
+        "twoSidedTriangleIntersection": true
+      },
+      "scheduled": 46065
+    }
+  ],
+  "runtime": {
+    "SMPBackend": "Sequential",
+    "executionMachine": {
+      "CPUQuotaNotEstablished": true,
+      "GPUUsed": false,
+      "cpuReportedModel": "AMD EPYC 9V74 80-Core Processor",
+      "iPhoneRuntimeTest": false,
+      "logicalCPUAffinityCount": 1,
+      "machine": "x86_64",
+      "memorySnapshotBytes": {
+        "MemAvailable": 9328906240,
+        "MemTotal": 10451439616
+      },
+      "release": "6.18.55",
+      "system": "Linux"
+    },
+    "threads": 1,
+    "version": "9.3.1"
+  },
+  "sampleStride": 4,
+  "scheduledRays": 1335885,
+  "status": "completed",
+  "transformCheck": {
+    "determinant": 1.0,
+    "scale": 1.0,
+    "scaleFittedHere": false,
+    "singularValues": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "views": 29
+}

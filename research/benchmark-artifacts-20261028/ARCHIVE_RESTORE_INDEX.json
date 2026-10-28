@@ -1,0 +1,1950 @@
+{
+  "scope": "Derived benchmark outputs only; no raw photographs, raw depth, mapper databases, original FARO mesh, dependencies or credentials. No navigation safety certification.",
+  "restore": "Extract each archive into a separate temporary directory first; verify member SHA-256 against this index, then copy research/ paths into the repository root. Root-level provenance files are archive-local metadata and should not overwrite one another.",
+  "provenance": "Geometry and evaluator arrays derive from public MuSHRoom Koivu benchmark inputs. Preserve upstream dataset attribution and applicable terms; private repository storage is not a grant to redistribute source scans. Engine/source versions and licences are recorded in included experiment protocols and source manifests. RTAB-Map/OctoMap/Open3D outputs are separate experiments, not interchangeable app-ready navigation maps.",
+  "historicalSnapshotNote": "open3d-range5m-reports.tar.gz predates final independent review only. Its RESULTS.md last paragraph and manifest report review pending. Numeric artifacts are unchanged. The final reviewed report is in research/geometry-range-audit-20261028-1836/; do not overwrite that final packet with archived historical text.",
+  "archives": [
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/open3d-benchmark-20261028-cloud.tar.gz",
+      "bytes": 15073390,
+      "sha256": "037be2b5ddfb67cd407256be69699a9295c019b95fa60b8d8cdbad0123da266f",
+      "members": [
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/fusion/author-style-initialization-cloud.ply",
+          "bytes": 27000210,
+          "sha256": "052518207750369556da9f3253f473a5d8776df228a35aaec8eee9498d0c2c1a",
+          "verification": "allowlist"
+        },
+        {
+          "path": "PROVENANCE.txt",
+          "bytes": 360,
+          "sha256": "9eb118335cb30fe0b4f1c22c05d92481e64a30bd02a7ed0e9a307664dfde07b2",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "bytes": 166,
+          "sha256": "481aa0a56d227db64b34c15c617067d4606f66ccf148bd15295e429ca0a4ada9",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SUBSET_MANIFEST.json",
+          "bytes": 351,
+          "sha256": "076e9f81c81fb5847b1c8089a73dd424609d0f885c849dd73272685a02200c3b",
+          "verification": "archive metadata"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/open3d-benchmark-20261028-faro-ray-arrays.tar.gz",
+      "bytes": 11823090,
+      "sha256": "b342df41356922e340ea2778b3006cf0321b4c1588f9051fbee1dba37b88ebf1",
+      "members": [
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00011.npz",
+          "bytes": 445338,
+          "sha256": "50ed5e2f60b447acfbadf3a4e20fc0090d02024796c853d05bb17ed4dbd17957",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00021.npz",
+          "bytes": 410558,
+          "sha256": "ecea6fefc7b16adef3a8ca3227c5a1426ca5fd4ba77daa50d5ac752a2547dd1f",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00031.npz",
+          "bytes": 425119,
+          "sha256": "9051e99a586086c1f1191bc98ad9e28480b4eb49ba26bc817084d4e6cd1aade9",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00041.npz",
+          "bytes": 380927,
+          "sha256": "b2c77984f6274fce2c2a7ab31ecb97f983f25b18e1a0a0603733ad71a0424024",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00051.npz",
+          "bytes": 395714,
+          "sha256": "4ffd80625367f095e3b7bf57e91f4b9f6cd68253fd577dd737c9d6a1e317edac",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00061.npz",
+          "bytes": 442035,
+          "sha256": "503d76a2a14aee9f52faf5195fded30934a57a20aaeec79e88da0a9e80f19245",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00071.npz",
+          "bytes": 415043,
+          "sha256": "243a4a29fee6928fec1a36325c625164c3905f308bd9de5d8691a98747f3b7b0",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00081.npz",
+          "bytes": 433790,
+          "sha256": "e66a270409c9b7b593bc3983ce52de9b9a54a457990dfe33113be8f16724c21e",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00091.npz",
+          "bytes": 422469,
+          "sha256": "bfaa38576b8d70d1dd8ed9f77f320ce8411b6ae77b40ead8a186d46489b8f26e",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00102.npz",
+          "bytes": 404626,
+          "sha256": "3f1a45b6a54f29532a3954fde80ff23e6d4e405c2ff1d2621926a4c62027cce0",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00112.npz",
+          "bytes": 373364,
+          "sha256": "0751c949af13b6030c3a8c157bef702ab97508569e17670d4dc43fe364182be0",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00122.npz",
+          "bytes": 413438,
+          "sha256": "bcc24c766998005c5f06f126be67433e1a9187d822c0edc53282fcd1e9d8c765",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00132.npz",
+          "bytes": 377862,
+          "sha256": "e5e6738bcd07c0dd1533618269fb5d7b7d016a0a1c55eb804c6b6a619cc181f4",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00142.npz",
+          "bytes": 413191,
+          "sha256": "e790f2dc2a2b7bb29b559bb6070479b975548030a147a4f6e9de9017d7d3cd99",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00165.npz",
+          "bytes": 319178,
+          "sha256": "8419764f755955cc44e28835a85b53f21d118ff6bfaa7213eb4ea6ef4d97e616",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00176.npz",
+          "bytes": 420728,
+          "sha256": "c830fd8350b162a2680e9a2c77d26d93705b8ccab53829a7265aaabf3dfcd695",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00187.npz",
+          "bytes": 413497,
+          "sha256": "7efaa35657b0af081f6525dff318bad18600982f5270c07ab1daf8b0e220fab5",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00197.npz",
+          "bytes": 386428,
+          "sha256": "0883aa99167345ca921ed05ebefad2c4c4f0e96162a57f95b1ab36b283673717",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00207.npz",
+          "bytes": 371223,
+          "sha256": "e8e5c7c64b9a52c9f7e15f7630f3a81347a4389edd69d4f176814c5afd932b94",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00218.npz",
+          "bytes": 384242,
+          "sha256": "6434586ffe0561cca2259c40ba8838faf901a5afcc96a1dcc9e581a1eebc1d7d",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00228.npz",
+          "bytes": 441739,
+          "sha256": "af92b84019d8c73d555ce23056bf969012a898c275b4e41217794aea42143d77",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00238.npz",
+          "bytes": 376023,
+          "sha256": "bba7e1b27f2a224863576c121bc562725a34851146c422861c73ae4d187a6277",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00248.npz",
+          "bytes": 437848,
+          "sha256": "0806ea7dcf6282629275fa854e4fed9a385a9a38b3166f4e9e85b904010563df",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00258.npz",
+          "bytes": 437607,
+          "sha256": "4d271feb4b75d10bdc9de7f8c26374547a8c7f6bd50f2997ec67b83816e06f22",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00268.npz",
+          "bytes": 421014,
+          "sha256": "b3ce551d26162f47712ded4585a90d0a0d3c07afe510d036b6395c70a0f37eb1",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00278.npz",
+          "bytes": 369050,
+          "sha256": "962e61db9897d77d0596677c2afe9d0a62932833e931a8c6b72332a0d0712adc",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00288.npz",
+          "bytes": 426411,
+          "sha256": "571b06ee894fcf54d08fdddb7143b3e518082b6cc37c1b5e05d70740e333fc11",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00298.npz",
+          "bytes": 456986,
+          "sha256": "06603e55fed55b10b449292931943269677dfc7d4c209cd6e25e0bb4a8eb83fc",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/faro/frame_00308.npz",
+          "bytes": 459020,
+          "sha256": "26e240502938bef5b113271ac85ad3f97d2692e51b1cac6970bacfd0b9a5c21e",
+          "verification": "allowlist"
+        },
+        {
+          "path": "PROVENANCE.txt",
+          "bytes": 360,
+          "sha256": "9eb118335cb30fe0b4f1c22c05d92481e64a30bd02a7ed0e9a307664dfde07b2",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "bytes": 4437,
+          "sha256": "8f26fe37bce6df5db9cc675d3b9a4a4cbc48bc76b7f57215c5841209c001d409",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SUBSET_MANIFEST.json",
+          "bytes": 6580,
+          "sha256": "b11fce5d4e63db443129bb12dc94faef71783a24c3b4d5b49c42c43c503d7a2c",
+          "verification": "archive metadata"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/open3d-benchmark-20261028-mesh.tar.gz",
+      "bytes": 5071981,
+      "sha256": "aef4b67e455f1b18801723532e78adb758b951954d9efc36c64ccc9becc16062",
+      "members": [
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/fusion/unfiltered-tsdf-mesh.ply",
+          "bytes": 12538508,
+          "sha256": "5a75ebce93a3c65928344ce486223aa17a01a2c196982fc97edff8c41dd56e2e",
+          "verification": "allowlist"
+        },
+        {
+          "path": "PROVENANCE.txt",
+          "bytes": 360,
+          "sha256": "9eb118335cb30fe0b4f1c22c05d92481e64a30bd02a7ed0e9a307664dfde07b2",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "bytes": 153,
+          "sha256": "b668bbc686a2a744c86eef768d15af781d209093a2d2b6744c97f457e95054df",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SUBSET_MANIFEST.json",
+          "bytes": 338,
+          "sha256": "e8cea8ff8461f9a7c5b8a02d023fedf539e7acba531cb53845a94151d8bd0416",
+          "verification": "archive metadata"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/open3d-benchmark-20261028-tsdf-ray-arrays.tar.gz",
+      "bytes": 11181586,
+      "sha256": "eedec377b949c3be79570ae5e75ace987f1508ee1fd5a27030f57768d142720a",
+      "members": [
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00011.npz",
+          "bytes": 382918,
+          "sha256": "7cd0723d99dd92dde3b32d32f444d19295d628f229064c484b3b343999e4d24e",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00021.npz",
+          "bytes": 394358,
+          "sha256": "969cc1c9d128411f0c55204ce6c1033442936e2bee202b67509fea25f505f34d",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00031.npz",
+          "bytes": 400713,
+          "sha256": "e22db153d19fbb9d995b3d31b1b99eac5ca0462d11b94fb68d0ed985d8fef786",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00041.npz",
+          "bytes": 393868,
+          "sha256": "baa74503f066f5ae5de8034c9241834aba20a37285a5ab1ca02957c60c519344",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00051.npz",
+          "bytes": 400215,
+          "sha256": "2b565bd8845c252d5528e9d69fcd1f3c53b5a702879fc4a0a1aebe7b594696b1",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00061.npz",
+          "bytes": 376475,
+          "sha256": "f8b6e6ae1992878867317895d5be11e2b5f12ca8cae9e2e566291867ff360b43",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00071.npz",
+          "bytes": 392653,
+          "sha256": "77aba5d4b8c490f3b09ee78eb5fb93427878ba47a270730cdbdece0ab1a5f74e",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00081.npz",
+          "bytes": 374637,
+          "sha256": "d917a6aa29c5f327ff2a3bce302bd44196ca6c85d162a61c977f86986807e00a",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00091.npz",
+          "bytes": 402416,
+          "sha256": "5d0a8881aa9fda9496a65a3b00534e4d282ce5c691da5fb13af3e7f38cfb8f64",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00102.npz",
+          "bytes": 374161,
+          "sha256": "286c65eb45c67b0828aa6d2a4a09b5bc6e845d3816aa917c5bb72b846326fead",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00112.npz",
+          "bytes": 394683,
+          "sha256": "047eab3cab276dad0903b3681dae6b993ff5e1c40f285b061280dfde61609a39",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00122.npz",
+          "bytes": 395873,
+          "sha256": "f7f5a0b36956e5addd07cdf2bbb852c790e29c91274aaed38ddc09a897f4635c",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00132.npz",
+          "bytes": 397397,
+          "sha256": "f0eb0afa62de44269070b8cdd5d7405fb6faa18c5c3aae09f9bb31f79ace7de9",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00142.npz",
+          "bytes": 380372,
+          "sha256": "0f08ea3013dd8471e4b645c3c7dd2d29607abeb63077ce749736c202b0734db2",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00165.npz",
+          "bytes": 365885,
+          "sha256": "50915a8d9f49d1fdb61a1548c46b286e46ee84fa57b75e6c6fb9ba9bb9a0bfa3",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00176.npz",
+          "bytes": 366978,
+          "sha256": "b312825b6347693a8e4bb8367c1de47e526026bd077dc5339d1545cb39006a4b",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00187.npz",
+          "bytes": 385653,
+          "sha256": "ecc56fca1ea9c72b8e35db64d9836916326a8511115790c1aaeb2cf78cfb29a3",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00197.npz",
+          "bytes": 397979,
+          "sha256": "ebddb4a0af6ef7d842416565324a610cd088d6d9047aaad231cba91accb868e7",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00207.npz",
+          "bytes": 387569,
+          "sha256": "146e00b83adce9eece506c406a06b928b81c65e6d56ee94e88950461519be72d",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00218.npz",
+          "bytes": 401771,
+          "sha256": "9ef9c1f321daf0c5c67848837e8a7d0465668401cf50d362c6d2873139f55c70",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00228.npz",
+          "bytes": 385836,
+          "sha256": "fca3b3c730d556ca4cbcd163656e5540081c99529ed3df901668202b6bc39f06",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00238.npz",
+          "bytes": 389928,
+          "sha256": "f13b1334b20e6d97a2d0ac133ce04f044e0e8e775a417722d2d5ddefa8349626",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00248.npz",
+          "bytes": 369149,
+          "sha256": "9776374c9586af966786bd2365b979a338d112154f680b6e1a0d11ef8f58c22f",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00258.npz",
+          "bytes": 375086,
+          "sha256": "d545b59706283d3cd32aec0af4997eafb43f23532d6332ea45e81655bc12d634",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00268.npz",
+          "bytes": 389257,
+          "sha256": "ae9097fcdaf70b166cd9257553a24925e81cd537447d446defeaa03ab8e1a2a7",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00278.npz",
+          "bytes": 400842,
+          "sha256": "2403fc4522f0a168eed346607d18b9d8306c29ef245d1a84bee2b0f5f26ec539",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00288.npz",
+          "bytes": 402768,
+          "sha256": "b8a42f762d3a912e5e4c288f116996a40aea5273f38d84da724fefb1f870f230",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00298.npz",
+          "bytes": 389503,
+          "sha256": "85e679f26b34dc3eee779f02779ca95caa917ba10fd0404bf0a6108105ae1840",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/fresh-run/evaluation/tsdf/frame_00308.npz",
+          "bytes": 392693,
+          "sha256": "e8e6215119307cc6a345bf5105efd6a27baa8976b387e26c019a260ad44d9708",
+          "verification": "allowlist"
+        },
+        {
+          "path": "PROVENANCE.txt",
+          "bytes": 360,
+          "sha256": "9eb118335cb30fe0b4f1c22c05d92481e64a30bd02a7ed0e9a307664dfde07b2",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "bytes": 4437,
+          "sha256": "13dfcfe98d8f7ea6e8403156291ab1b8c3c9aada45c97b82a7f062dcc8f6dd9a",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SUBSET_MANIFEST.json",
+          "bytes": 6580,
+          "sha256": "e13be3d7fd46d5c7ca2958dcc1b127e217306f26dd4f667f0e15f3832109e254",
+          "verification": "archive metadata"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/open3d-range5m-author-style-initialization-cloud.tar.gz",
+      "bytes": 15086202,
+      "sha256": "c63a4d1b6f576e28be36e72f3873878ea89a53de823a7615dfd03cfd47f1cc19",
+      "members": [
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/fusion/author-style-initialization-cloud.ply",
+          "bytes": 27000210,
+          "sha256": "82602996033441276a92a7a5e42b48d0b3dcd5dcd3d6432f89494a14c1f22390",
+          "verification": "allowlist"
+        },
+        {
+          "path": "PROVENANCE.txt",
+          "bytes": 250,
+          "sha256": "70f6b63bc08675d600c963f7c4a406485c37ce0402eff0cbb7b5de9a6d9f83ff",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "bytes": 184,
+          "sha256": "1c0b34f65164402e8967901df55c8e68580d51571204c8564d7147af7ada228f",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SUBSET_MANIFEST.json",
+          "bytes": 731,
+          "sha256": "8f6ea1cbf6d6e6c4c63c83c53ba0a01729d6f6832c7600ac7c614bbc4252faf3",
+          "verification": "archive metadata"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/open3d-range5m-rays.tar.gz",
+      "bytes": 11208911,
+      "sha256": "212b228aaaabf477566960d3a6ff5f918c96cf2c78fad1958c2635d0dcc3a606",
+      "members": [
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00011.npz",
+          "bytes": 382925,
+          "sha256": "e9d1bb2e06d841cb7fff37bfccc0a54e6a126b7c9a97669eee943c8776028288",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00021.npz",
+          "bytes": 395147,
+          "sha256": "d868217b57e5762b225c2f9aa6ab4c33439f207323d59884da61f185cb339f2e",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00031.npz",
+          "bytes": 401330,
+          "sha256": "46602f9d60d948c7d0256480997bc9ff7c4089e083efc551c9aae959253a0ed4",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00041.npz",
+          "bytes": 394549,
+          "sha256": "4a2e647a9d19e7df7e636a931f2f74e90cfd5941df6d01c20821031e390b1a22",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00051.npz",
+          "bytes": 401151,
+          "sha256": "ce48f551e520c0a18cfb70c5096d26d09f635eb6c7f67b1de5df7d819da2177e",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00061.npz",
+          "bytes": 378185,
+          "sha256": "0500216d0defb4854ccc640e2e0f8223dfc4831f244989ddc363adf970e75768",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00071.npz",
+          "bytes": 392815,
+          "sha256": "bd863c133e27078a0f0bea0d9819d304597a781044ee94569cdb29dc7f527681",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00081.npz",
+          "bytes": 375126,
+          "sha256": "87bc1cad4ce12e9737dd1260268ec3b93d24cfcb79b0b65d25591fc150e029d3",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00091.npz",
+          "bytes": 401808,
+          "sha256": "83217a9f54bc6d08589829b998e0e7e603ddbdc14d7c88e9c64e7ccd9115eeb3",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00102.npz",
+          "bytes": 373769,
+          "sha256": "74bb3e091f2d4fd36bd0d923f9f9c953515bbfbd9e024bc50a26378e445bc093",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00112.npz",
+          "bytes": 398398,
+          "sha256": "c002aaf94c53e592612804661d76180947fc7306ffe425ea2ee67b48db175799",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00122.npz",
+          "bytes": 399166,
+          "sha256": "e10a91de7075064fc7ee5a8a00b7bb17012f4dd8c4e9aaa8cfcfa7b23011ec8a",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00132.npz",
+          "bytes": 397331,
+          "sha256": "ef8edc5d1b96641061018afd81594d90bf17e5b970dada8b2cad995989d9ef87",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00142.npz",
+          "bytes": 382091,
+          "sha256": "6ba9548a0f4cb034e394e1a8583225db3200acebc29959ff95f27d967ec403cf",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00165.npz",
+          "bytes": 365822,
+          "sha256": "b6749e8b9fce1ef818a1cdd992081862d030730f7a0db9738e9369df11f338fa",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00176.npz",
+          "bytes": 366972,
+          "sha256": "ba6efc4098833d4b6c9744d1e28ff879fb64eb9dfa36fe1cfd11b336d5393814",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00187.npz",
+          "bytes": 385759,
+          "sha256": "45a01f92421a2130238fcb8a105e29b6fae66fe8b5d17eb00b3c92a4ca937003",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00197.npz",
+          "bytes": 402360,
+          "sha256": "36f0c9f56357f39def6d4c4f0f01b0ba70e0cc996b460529ec33d147954be560",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00207.npz",
+          "bytes": 389089,
+          "sha256": "1fcdee5c0db7698e39e510bef7fc43735ead2f82a8a7ee2f41d55548999c0f7f",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00218.npz",
+          "bytes": 401950,
+          "sha256": "7f0f49be661c329d887cd654ed06e3aed265c3d5482bd6b38f957ad04c621f5e",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00228.npz",
+          "bytes": 388437,
+          "sha256": "57978c6128b5fe9340a9cabd578a215fdfa93f0f33364ad0551c2a3c7bf83792",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00238.npz",
+          "bytes": 390389,
+          "sha256": "794c6e39be4ed46559d66101e8a84ff89ea2691f4b2841bd81a610b830abfed2",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00248.npz",
+          "bytes": 368699,
+          "sha256": "da72fbedde06e6704f4ba07e983c0e7aa7400318df2cdc750737c3fa31f6a0a4",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00258.npz",
+          "bytes": 374847,
+          "sha256": "11bc6d696d96d171043b34dfde18f7e148a1d189f73c69893ffb2bfe97382ef8",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00268.npz",
+          "bytes": 389277,
+          "sha256": "8c09414df8ec450988310c70ff365d5be266627ad1c4c43eaa8776263bdcee41",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00278.npz",
+          "bytes": 401962,
+          "sha256": "dbc33246d869692111fd665e36b698ce1ecbfbdbe54dee19eb41d49a970bfb84",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00288.npz",
+          "bytes": 402957,
+          "sha256": "47f1b5d88b5dfebe8e193da2a89904589bbd50394ea5bb657b092c5d4dbc4a78",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00298.npz",
+          "bytes": 389546,
+          "sha256": "1a18bac7974924d564d2b4bb35ea36698b784460bff23940209211b57383c673",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/frame_00308.npz",
+          "bytes": 393871,
+          "sha256": "5d140a26e2131b47c1094a4a582b8e48567cf8d585b61ed064becc7755934ddf",
+          "verification": "allowlist"
+        },
+        {
+          "path": "PROVENANCE.txt",
+          "bytes": 250,
+          "sha256": "70f6b63bc08675d600c963f7c4a406485c37ce0402eff0cbb7b5de9a6d9f83ff",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "bytes": 4959,
+          "sha256": "30331c7ea07dc7512094a96da51ec4e4641622756c83f46ca03ff344d2067752",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SUBSET_MANIFEST.json",
+          "bytes": 8080,
+          "sha256": "ea815de86c99736c8b3e8f255f0f2a1df65d8aa2330c6306f9be8b6009ba796f",
+          "verification": "archive metadata"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/open3d-range5m-reports.tar.gz",
+      "bytes": 214738,
+      "sha256": "497e6b63c3b1eeb2f1199bbb19891d61907667371b5e532a9baab2c3c3cf0640",
+      "members": [
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/FROZEN.json",
+          "bytes": 144986,
+          "sha256": "0b9e6eeee19565a3ca2112ea926a2ecdbdf4c930528e7bfe8d063323d164d448",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/FROZEN.sha256",
+          "bytes": 78,
+          "sha256": "b47ed75b5742cdb6e9bec273560a9388a6a9f4e7f8a80506bd04b76dbd616732",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/PROTOCOL.md",
+          "bytes": 5183,
+          "sha256": "feb48d33915b65b3c68d612a91cd7806f636ac33c5f73dd362cc4c3ac98ee5f9",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/RESULTS.md",
+          "bytes": 4798,
+          "sha256": "d1f17fd4825dfe91fcb61d48e54cce2757cb3d71e9d5877be0001a75261603ee",
+          "verification": "historical snapshot: numerical results unchanged; independent-review paragraph was pending"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/COMMON_GEOMETRY_RESULTS.json",
+          "bytes": 304482,
+          "sha256": "9dc5893de1c1b3faa4e547b56fa7716969b83f9d45eac687ab14240f6ab9f51e",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/COMPARISON.json",
+          "bytes": 655247,
+          "sha256": "981f4c83e606ee3b1ee1a3a7100f1c76da4c51dcf28896e2475546bcd6015309",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/EVALUATOR_FROZEN.json",
+          "bytes": 145858,
+          "sha256": "b84ccc669621746f911dd18560ea2a7d65b2f84a74165573fb137ba44b14279e",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/RECEIPT.json",
+          "bytes": 2070,
+          "sha256": "ef1b6109fc0132f9177dd0928d409e3003b1cfc8a5866935bb91de794d36ff9c",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/CONVENTIONS.json",
+          "bytes": 2568,
+          "sha256": "0b938c6f4f1d622291600537de54015200904881a703e85dd379a40b151e2d95",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/evaluation/tsdf/RESULT.json",
+          "bytes": 26880,
+          "sha256": "c6c5d85c7df43f9a59d821a5570c75e6ce1d14f2ccd1f184745017e000873769",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/fusion/FRAMES.jsonl",
+          "bytes": 115585,
+          "sha256": "0812043fb1a8e8044051b98f119ac05b70d4ef622572dc32bf2ed5ae23ed62ff",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/fusion/RESULT.json",
+          "bytes": 3162,
+          "sha256": "aeab0b1dae3080ea22ab4125180367fd0dda7e8e6cca3b3b62e7190484586c02",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/PUBLICATION_MANIFEST.json",
+          "bytes": 22324,
+          "sha256": "926d96f218d5a74e0d668356f3e8126c7c54499e5c5784820f18456518cff9da",
+          "verification": "historical manifest before independent review; numeric artifacts unchanged"
+        },
+        {
+          "path": "PROVENANCE.txt",
+          "bytes": 250,
+          "sha256": "70f6b63bc08675d600c963f7c4a406485c37ce0402eff0cbb7b5de9a6d9f83ff",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "bytes": 2042,
+          "sha256": "4ae722f3cc0486751bc29e0496eda1da20a059a02299eeccd4bf024b0dc56b47",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SUBSET_MANIFEST.json",
+          "bytes": 3688,
+          "sha256": "b9c16678de365b4832fa62ae51e9336c0d696e3bb5be4aa516c211404b855b52",
+          "verification": "archive metadata"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/open3d-range5m-unfiltered-tsdf-mesh.tar.gz",
+      "bytes": 5524763,
+      "sha256": "aa05d02003876ea587191c410dbfcf58a705ad3550a5349497f3f658dc943146",
+      "members": [
+        {
+          "path": "research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/fusion/unfiltered-tsdf-mesh.ply",
+          "bytes": 13656397,
+          "sha256": "10c72a92c6fc5f6ba291d6cd0d6b94af41bf39f8ae847783d24b9c70d7f54e46",
+          "verification": "allowlist"
+        },
+        {
+          "path": "PROVENANCE.txt",
+          "bytes": 250,
+          "sha256": "70f6b63bc08675d600c963f7c4a406485c37ce0402eff0cbb7b5de9a6d9f83ff",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "bytes": 171,
+          "sha256": "37324781abb731e1b2e3f32e7bca822c73dc63f60c0400917d079c9c49408e15",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SUBSET_MANIFEST.json",
+          "bytes": 718,
+          "sha256": "6f25225c99ddd41860fb940d70bff9f7a29b4ce87622b22d73a5248cdc7f2ba9",
+          "verification": "archive metadata"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/rtabmap-common-surface-reader-fixed-fixed.tar.gz",
+      "bytes": 17276319,
+      "sha256": "e9195656da7239092b993f403f0b0f8053db46890541cb62972971482e1549fa",
+      "members": [
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/common-surface-reader-fixed/fixed.npz",
+          "bytes": 17278990,
+          "sha256": "d343a54b9ed6e8f9ca749d7e611fb055821872ebb1b35d743aa9d205b847ddcc",
+          "verification": "allowlist"
+        },
+        {
+          "path": "PROVENANCE.txt",
+          "bytes": 250,
+          "sha256": "70f6b63bc08675d600c963f7c4a406485c37ce0402eff0cbb7b5de9a6d9f83ff",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "bytes": 160,
+          "sha256": "c5183a477aeae138b12bbefb133e57d500e6b7a813c3e08c8486c853553a5db2",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SUBSET_MANIFEST.json",
+          "bytes": 707,
+          "sha256": "7db9a90e9088f8f000ef749145b97dca4598fd48202d7698b036e320bf2d5822",
+          "verification": "archive metadata"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/rtabmap-common-surface-reader-fixed-graph.tar.gz",
+      "bytes": 20207118,
+      "sha256": "aac6da8e41b6cd1a1824709c1a9c270a02a07dc8e340a16587f81743e9493295",
+      "members": [
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/common-surface-reader-fixed/graph.npz",
+          "bytes": 20209460,
+          "sha256": "06d35289cf5d553d4d5512e6a54cbf9c0f46ebb774839774399abe21af2f3b40",
+          "verification": "allowlist"
+        },
+        {
+          "path": "PROVENANCE.txt",
+          "bytes": 250,
+          "sha256": "70f6b63bc08675d600c963f7c4a406485c37ce0402eff0cbb7b5de9a6d9f83ff",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "bytes": 160,
+          "sha256": "ed79291a9dfa9e4b1b823e183067c7e0b68aefd11a34d62736faf1503aaf2ad4",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SUBSET_MANIFEST.json",
+          "bytes": 707,
+          "sha256": "d517428be117240da173901f5ffe0683a01d33e905dbb32cec49870e23eb8554",
+          "verification": "archive metadata"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/rtabmap-common-surface-reader-fixed-open3d.tar.gz",
+      "bytes": 8602111,
+      "sha256": "0e91def1cc8d6982875527ef0b508033408e8bdcd18ff816f8e1a68bb40d5678",
+      "members": [
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/common-surface-reader-fixed/open3d.npz",
+          "bytes": 8601929,
+          "sha256": "7e36b5d9bd7909dbe88045f4177fc4c544dc6df2cceb983f09b472ccba672ce2",
+          "verification": "allowlist"
+        },
+        {
+          "path": "PROVENANCE.txt",
+          "bytes": 250,
+          "sha256": "70f6b63bc08675d600c963f7c4a406485c37ce0402eff0cbb7b5de9a6d9f83ff",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "bytes": 161,
+          "sha256": "46459a7b5b89eee3c5d06cc73880f29215b3f33a5ee924893a43659cf57822dd",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SUBSET_MANIFEST.json",
+          "bytes": 707,
+          "sha256": "97a0c4badd7cd2c79e497824aed4c5e344b7247ee9b16184dac6a6bc25e0a2d0",
+          "verification": "archive metadata"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/rtabmap-fixed-cloud.tar.gz",
+      "bytes": 9439724,
+      "sha256": "748aa82d23842be8d519144b1b38176b572d5d18a349a7fb825950211b481523",
+      "members": [
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/fixed/cloud.ply",
+          "bytes": 10404382,
+          "sha256": "a33e8e8bb2760e923df435e2cdc24a45f7e07d0067ac802a15a52f3b87ccc7bc",
+          "verification": "allowlist"
+        },
+        {
+          "path": "PROVENANCE.txt",
+          "bytes": 250,
+          "sha256": "70f6b63bc08675d600c963f7c4a406485c37ce0402eff0cbb7b5de9a6d9f83ff",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "bytes": 138,
+          "sha256": "6f2a476e426eb96735fb2b9c78bce2ec1c782f8e212264b35f485cc3cd4d5d35",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SUBSET_MANIFEST.json",
+          "bytes": 685,
+          "sha256": "61114366c76cbb8981b5d13e160244e3f5d36faf7fa997988f9c3b7263d0800b",
+          "verification": "archive metadata"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/rtabmap-graph-cloud.tar.gz",
+      "bytes": 11076448,
+      "sha256": "1afa99290d37c57c346c21b889b448ed1f49dac16faea8543186998dbded3453",
+      "members": [
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/graph/cloud.ply",
+          "bytes": 12208822,
+          "sha256": "cc4afe4e06d5d8dea0a9c42e5fa2398211e8c90ba7fd02dd86c1c80f993e32c4",
+          "verification": "allowlist"
+        },
+        {
+          "path": "PROVENANCE.txt",
+          "bytes": 250,
+          "sha256": "70f6b63bc08675d600c963f7c4a406485c37ce0402eff0cbb7b5de9a6d9f83ff",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "bytes": 138,
+          "sha256": "e0a3611078c4b2f6d6d25ea2550391ee8a04ff8a2b7c638ae721613d2c322ced",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SUBSET_MANIFEST.json",
+          "bytes": 685,
+          "sha256": "262318145eb1000a25fcd4a1074365f83fd42a37922b3b90912c442f363f93ba",
+          "verification": "archive metadata"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/rtabmap-reports.tar.gz",
+      "bytes": 115142,
+      "sha256": "fd32bf8f58983da19409a95e708f3e5787fd5a6570d7e125e213ed3d940f5636",
+      "members": [
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/COMMON_SURFACE_LAUNCH.json",
+          "bytes": 1474,
+          "sha256": "8ce193b3659acf88bfa405312242f46ecfdf721fcd60bfb42b7ce05feb165e7d",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/COMMON_SURFACE_LAUNCH_READER_FIXED.json",
+          "bytes": 1474,
+          "sha256": "24d6c5ded0a111090a92cc9c4d75548179e27a924bc2ef5686abbfbdfaff08bf",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/DOWNLOAD_LEDGER.json",
+          "bytes": 43472,
+          "sha256": "4fb19dde2202e72e0a5578cc68fa83578d8c91cd1ff49d5731a893d8c2c0becb",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/ENGINE_SUMMARY.json",
+          "bytes": 3845,
+          "sha256": "02da02d403c1665d1c19f263f891928065b6dd095c03621558c4cdbe17eec44d",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/EXPORT_FIX_FREEZE.json",
+          "bytes": 1439,
+          "sha256": "af5cbb7becf897bc7f347be73f250632c9d2f56c332e310ed951358f4061697a",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/EXPORT_REPAIR.md",
+          "bytes": 2438,
+          "sha256": "b74242a30806a2af59e01962bd673e9b28125a227158f4a9ef087d8e54798a5f",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/PRE_RUN_FREEZE.json",
+          "bytes": 2772,
+          "sha256": "1fd235f5451b4d461c55a557677caaa9a757544abee9ecc165b177fa5d188d0b",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/PROTOCOL.md",
+          "bytes": 5338,
+          "sha256": "b86b3caac469a449e98c04c8f69ca591a60460a3c5049ba12cbf32d1b5f49e91",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/RESULTS.md",
+          "bytes": 5520,
+          "sha256": "66848040ff14754dd2075627f91dfd0128923c473fbd4ad9dbe20becba96db9c",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/STRENGTHENED_FIXTURE_PIN.json",
+          "bytes": 435,
+          "sha256": "c9defacef6b0f2d0678b998a4a277124350766524369e4ebb20f8f2f4508ef4a",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/common-surface-reader-fixed/FIXTURES.json",
+          "bytes": 45,
+          "sha256": "a22f47edf7122edf23f542b95720630df4481d0c1cdbf679fff5f1b3434a531d",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/common-surface-reader-fixed/RESULT.json",
+          "bytes": 7659,
+          "sha256": "c507dcff8a8da93e39b00d33669e07fe06349c6edebdaca07b378ce733f8e9b7",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/common-surface-reader-fixed/fixed_decoded_points.npy.json",
+          "bytes": 423,
+          "sha256": "d0acfe4225e4b88cb2fec7c240d421de0f23fe22dc30cba64a936708ccc845aa",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/common-surface-reader-fixed/graph_decoded_points.npy.json",
+          "bytes": 423,
+          "sha256": "944c285b0c2117cda8eda67eb165d41915903ac1b451163dcea49482eb9d730c",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/common-surface-reader-fixed/open3d_decoded_points.npy.json",
+          "bytes": 425,
+          "sha256": "86a72344e9b35299fcd443384fe22c5d9b38b7627f2b1232d22fb57f2fe23ef2",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/common-surface/FIXTURES.json",
+          "bytes": 45,
+          "sha256": "a22f47edf7122edf23f542b95720630df4481d0c1cdbf679fff5f1b3434a531d",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/fixed/ENGINE_RESULT.txt",
+          "bytes": 393,
+          "sha256": "9b048ad33e48bf891442ea3821fdc35a5bab77b44368c62dc679f987e0982cdf",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/fixed/FRAMES.tsv",
+          "bytes": 8481,
+          "sha256": "950a9eca713aed6e3b1ed97f85fcd692ae3460594e36484013b61aef96effd59",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/fixed/LOCAL_GRID_COUNTS.tsv",
+          "bytes": 3916,
+          "sha256": "c74778840158c7c6df31ff2e78646e9807ffdd71eda45e9495f2a09dfc2eed29",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/fixed/PARAMETERS.tsv",
+          "bytes": 16555,
+          "sha256": "cacd55d3ee56a825bac9879eb2ebe48e76355b4586a70d91550217035c6b0948",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/fixed/POSES.tsv",
+          "bytes": 40913,
+          "sha256": "57fac4a5e64c67deadd10ffea276658df179e2e48ebee54f1f4fdea681137841",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/graph/ENGINE_RESULT.txt",
+          "bytes": 393,
+          "sha256": "2b10d004f439dd13d40faecfb154383137ab297a0dc6e4e0f6b47b73aeb3ecf6",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/graph/FRAMES.tsv",
+          "bytes": 8517,
+          "sha256": "cfd555e1914990ac3272ad0ea719740c1d3944c0ba99b5f64dc2c9f70cf236a7",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/graph/LOCAL_GRID_COUNTS.tsv",
+          "bytes": 3916,
+          "sha256": "c74778840158c7c6df31ff2e78646e9807ffdd71eda45e9495f2a09dfc2eed29",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/graph/PARAMETERS.tsv",
+          "bytes": 16562,
+          "sha256": "0c25e969a88393b8b101da155f8a71ac489af06306c00215a72b1ee20d18a2a2",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/graph/POSES.tsv",
+          "bytes": 41090,
+          "sha256": "b85098dcd9b1d6621a7fa92ff1ffe1ed0b538e5a139500e881e1385b71073add",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/adapter-build_RESOURCE.json",
+          "bytes": 834,
+          "sha256": "99b9a6279c17ce5bbc3c4d1f43603c51a15b3fdd5e3238ef0e057c613ade8639",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/adapter-relink2_RESOURCE.json",
+          "bytes": 535,
+          "sha256": "2033fe9b21beb44873f13d66d6aef3d58640975e4740137c1f2d0a3797b746da",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/adapter-relink3_RESOURCE.json",
+          "bytes": 934,
+          "sha256": "b5859fb0b9e9c40ac3df9c93623cad2eefbadc5b1a0888152465a4920b17f5f7",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/adapter-relink_RESOURCE.json",
+          "bytes": 537,
+          "sha256": "8878e06a54c40dac91d806363de2313544f3db2fb095685e464925dbe5ad8d95",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/common-surface-reader-fixed_RESOURCE.json",
+          "bytes": 9744,
+          "sha256": "a56b39ffdcbe05e9b178ffcc5a72030df54020c471bc869477743d1e5335e5fc",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/common-surface_RESOURCE.json",
+          "bytes": 1068,
+          "sha256": "d9fda331346ef5a4f0bf306fbb20ec0bb8c331def1284ce4878bf3d2205dbdb4",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/core-build_RESOURCE.json",
+          "bytes": 34332,
+          "sha256": "8e6d46af750a4b9dc586fe8b6d3412a53ba79c79e6f003de44fb811aa0f7d7e6",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/core-relink_RESOURCE.json",
+          "bytes": 565,
+          "sha256": "da8c48e68f889e392747951ec567253c483d148e116ab270e64e9d75f06aa0a1",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/export-fix-build_RESOURCE.json",
+          "bytes": 1303,
+          "sha256": "467b4a388e34f64009bcae3285523ff3d8786e3df054ad8bfcfe79b1de2df9a3",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/exporter-build_RESOURCE.json",
+          "bytes": 878,
+          "sha256": "976c413c20e39dd1fc831f632425f921d096c2e9060a5df72be9de998def6ff7",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/fixed-db-export-fixed_RESOURCE.json",
+          "bytes": 1619,
+          "sha256": "7e7e71d8bbeff7ac1bb47619af1b15906bc22e561239280fdab582fa05163932",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/fixed-db-export_RESOURCE.json",
+          "bytes": 1228,
+          "sha256": "8eb93df8deb038c12fdbf84c2f131f29fa8a0de0ac4bae048192c1e1de88030a",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/fixed-mapper_RESOURCE.json",
+          "bytes": 3581,
+          "sha256": "c69b062ed4ca844a26b92f4593024c18a1eebddd760c5c990682f9a2a302e065",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/fixture9-build_RESOURCE.json",
+          "bytes": 883,
+          "sha256": "2d271af6ea26c36c64f016d67d9fe5d661da8dae011933bd09d9f39a5bc9625c",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/graph-db-export-fixed_RESOURCE.json",
+          "bytes": 1721,
+          "sha256": "f39f9a1ecdb6370ab982afd949f8f03db3e72331f0abc6beb562e7338333fc6e",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/graph-mapper_RESOURCE.json",
+          "bytes": 3880,
+          "sha256": "ce5f0184493333227c35a1685a136ae8ea5ea73944d2021bf6feb7ba56e6cb64",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/native-fixtures9-strengthened_RESOURCE.json",
+          "bytes": 419,
+          "sha256": "bac8181b9ebc6d16b6ef3ede95955175de6c93328bb867a873ece1fadc45a73a",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/native-fixtures9_RESOURCE.json",
+          "bytes": 419,
+          "sha256": "32899215a409ada9b15df8e4d45a747ecca68fd6416e2588b3ad86b90b0b467f",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/native-fixtures_RESOURCE.json",
+          "bytes": 417,
+          "sha256": "7f0eada6718bc394ec2f5dcedf4da1d3ff8f489427d6708e281d49e5b71dc3cd",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/logs/strengthened-fixture-build_RESOURCE.json",
+          "bytes": 885,
+          "sha256": "5a5f1155c9245abaecda9cf4cbad41cf9a4103228ea5d0c4b7d32dcbc94b5e51",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/common-surface-proposal/PROTOCOL.md",
+          "bytes": 8603,
+          "sha256": "02c56c70bfb604f2564467b25da41393c468bc883b9fdd3e4784f6b2073991e5",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/common-surface-proposal/FROZEN.json",
+          "bytes": 9935,
+          "sha256": "7f9845e6d26aad2233610830154c5a8560c261dfdca9545a1583c749d7548882",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/common-surface-proposal/SHA256SUMS.txt",
+          "bytes": 397,
+          "sha256": "acefcec0c4ea69b345df4d8162e6b8e83f3dd08deee59fa8403f07158e34b384",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/common-surface-proposal/failed-vtk-cloud-reader/README.md",
+          "bytes": 408,
+          "sha256": "9f985c72f656cd8c757e2d516af4ac13f5ca0eb5cd1b39f095b629e388fcda13",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/common-surface-proposal/failed-vtk-cloud-reader/PROTOCOL.md",
+          "bytes": 7553,
+          "sha256": "b1933c25f9d0d1ab96eb8637c9e826a5a7c9e0ca2c3c62e0873f8a6cbfd14dd7",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/common-surface-proposal/failed-vtk-cloud-reader/FROZEN.json",
+          "bytes": 9129,
+          "sha256": "fab4bff89a50d3131b74311a34d7604294a798702618a4f4360f501ac860f363",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/independent-review/README.md",
+          "bytes": 3749,
+          "sha256": "8a92d7e3fa4c3048e44bcee6dca7bbb460d272ecd1482e81fa283258bc16a1a5",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/independent-review/COMMON_RESULT_REVIEW.json",
+          "bytes": 1235,
+          "sha256": "0ae56c2ca3ae65f58745e3998214cb19498593dcf12fc12fd96fbf454c1bd986",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/independent-review/EXPORT_FIX_REVIEW.md",
+          "bytes": 3976,
+          "sha256": "2d2fa78b2899eef69538576d0be841506ed8cfdcaaa30bbd751147cf7bbc7c9b",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/independent-review/INPUT_REVIEW.json",
+          "bytes": 891,
+          "sha256": "03f9eff8adff0f7a0c2c1013b195d89d8c272eed3b0c2c7db0235698efbd2986",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/independent-review/SHA256SUMS.txt",
+          "bytes": 684,
+          "sha256": "c6e6f61489480c12e0c2a42d26005de79db6df350d1abefd9152f9b0b1dbfbb7",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/independent-review/GRAPH_GAUGE_REVIEW.json",
+          "bytes": 1564,
+          "sha256": "51ad5b4153bf60995a47526dd2fa06165e8b36d40960d64fc82dbde6cccab407",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/independent-review/EXPORT_FIX_REVIEW.json",
+          "bytes": 739,
+          "sha256": "a15c50a3a5c93b01b7042b5df73fee203145e7a9c45d290939e4acd16614a320",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/completed-stage-1823/PUBLICATION_MANIFEST.json",
+          "bytes": 20779,
+          "sha256": "6b068e506e19f4a102e0166a8261cb0966b0ede3e509451834bd9acbb237bd7a",
+          "verification": "exact local report/source; not original allowlist"
+        },
+        {
+          "path": "PROVENANCE.txt",
+          "bytes": 250,
+          "sha256": "70f6b63bc08675d600c963f7c4a406485c37ce0402eff0cbb7b5de9a6d9f83ff",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SHA256SUMS.txt",
+          "bytes": 10014,
+          "sha256": "4876d9271b7077d6a82329c53ef13f6943823671f27131b85b462fc1e8570fdb",
+          "verification": "archive metadata"
+        },
+        {
+          "path": "SUBSET_MANIFEST.json",
+          "bytes": 15908,
+          "sha256": "29ef40e7458e46bbec11b6775bfa4a0f9d0e94c6285204ca681dc0d4cd3e2698",
+          "verification": "archive metadata"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/octomap-corrected-zup-decoded-geometry.tar.gz",
+      "bytes": 3846897,
+      "sha256": "c9a1161196e4908893b7a480ecd3783d83ffa9ae6a545a7bda14166a25382dba",
+      "members": [
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-common-surface/octomap_zup_regenerated_decoded_points.npy",
+          "bytes": 7817264,
+          "sha256": "f6514411b0350392c34dc066555be512bf497808094a1a186fb2785dc34645f2",
+          "verification": "allowlist"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/octomap-corrected-zup-leaf-ledger.tar.gz",
+      "bytes": 7664087,
+      "sha256": "fe9842c7a251822acb40322b3b6c731c1486867d2138c1a136ee11bb9806bdac",
+      "members": [
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-native-grid/leaves_dataset_world.bin",
+          "bytes": 72606592,
+          "sha256": "1c1c03f0d9037b137d3bacf8606e64d63b13c02e7291da8199c105d7b0250a9d",
+          "verification": "allowlist"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/octomap-corrected-zup-native-indices.tar.gz",
+      "bytes": 3948537,
+      "sha256": "a0f0f979b9c1903ee4c8ff590d69a155d1290461638e7cf778cc217bd41a64db",
+      "members": [
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-native-grid/free_leaf_indices.u64",
+          "bytes": 15545936,
+          "sha256": "8e01e1c9684b7f3a0b5379e814067647c11f77ae4da7fa2863549cdad59629c2",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-native-grid/native_ground_occupied_leaf_indices.u64",
+          "bytes": 509760,
+          "sha256": "d5e9658d4b1e487a1a329739f969e5e277e918c31a68d0144f2216700e5e0fa7",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-native-grid/occupied_leaf_indices.u64",
+          "bytes": 2605712,
+          "sha256": "e43a771813b9b175d4409bc5808e2ba633291d7b81ff53984b93abd499ee5fbc",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-native-grid/other_occupied_leaf_indices.u64",
+          "bytes": 2095952,
+          "sha256": "de57cbaa04ab752f4dcb1f245a0208f99afc22f68d9410bd1e65ef9dd661733a",
+          "verification": "allowlist"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/octomap-corrected-zup-occupied-geometry.tar.gz",
+      "bytes": 4431988,
+      "sha256": "b00497ebdefa2e1f19219ab74c210e59191928a036f8ea80346369466e69e1ce",
+      "members": [
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-native-grid/occupied_ground_endpoints.ply",
+          "bytes": 4886497,
+          "sha256": "927ee531f96ffebc325171ff0a44be1d16e9d982be8be2f652cb9c1159cf8c47",
+          "verification": "allowlist"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/octomap-corrected-zup-probability-tree.tar.gz",
+      "bytes": 3660653,
+      "sha256": "eeb20341b4d20547f04d8a4c3f39b0f49a7470c4d14ae469886408e2e981fb6b",
+      "members": [
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-native-grid/native_probability_tree.ot",
+          "bytes": 20925605,
+          "sha256": "91a5ca685aae3d99583b8a0ac369ed7d590abe2cea7bc02171c8128e6f533f25",
+          "verification": "allowlist"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/octomap-corrected-zup-reference-evaluator-samples.tar.gz",
+      "bytes": 2895033,
+      "sha256": "f6692eb890bdc2590c99c3813845a3dd15584a90a1bd901f6ee773230656e968",
+      "members": [
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-common-surface/reference_samples_faro_metres.npy",
+          "bytes": 3066704,
+          "sha256": "55ece9f280595f12dc02644588d69d7f6ef71ffa7a8456d25102a7e96eb066e0",
+          "verification": "allowlist"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/octomap-corrected-zup-reports.tar.gz",
+      "bytes": 114617,
+      "sha256": "b7616e156d8532151712ef5648b8336e79282120a9986f32beda8927d55ffb0d",
+      "members": [
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/ADAPTER_CONFIGURE_COMMAND.json",
+          "bytes": 1432,
+          "sha256": "a88fb30017dc5cfe80130529b7a87cebd5d2f766b90bf098177aac7bd9ad8060",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/CONFIGURE_COMMAND.json",
+          "bytes": 2992,
+          "sha256": "58be93c23aef8eb4c170d0184ea50a20ef5a03ee34c4cc57602704c83f86b0cc",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/INPUT_EXPECTED_PINS.json",
+          "bytes": 272,
+          "sha256": "5238d5c38269fe492698818ffa364d9315319ddd466dd0e2f1fbaf56bf97b13b",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/LEAF_FORMAT.json",
+          "bytes": 1041,
+          "sha256": "2d74aa4fe12e6bf61bfe8c38388922f409a8687f49564f8dd30e58bcf79cf6a8",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/ORIGINAL_PROCESS_UNCERTAINTY.json",
+          "bytes": 427,
+          "sha256": "64d75f4e9a66946e77246a3b0b1b2014d5c3550cc58ff5f5da975f507db7d249",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/PROTOCOL.md",
+          "bytes": 4834,
+          "sha256": "0fbce60c166e100b35669c92192c901e9294b9eb7a2da9f4f49a999e58642af6",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/PUBLICATION_ALLOWLIST.json",
+          "bytes": 16161,
+          "sha256": "9f4a617798c31101aabb503a73b8b9410d707ef0e8a800e1f032a2efcda5523a",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/STAGE_LIMITS.json",
+          "bytes": 291,
+          "sha256": "516ddda02d25128ea7f973d1e519b625e8f4ffbcec6ef6a1db8f76c8bc03cdba",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/ZUP_COMMON_LAUNCH.json",
+          "bytes": 1462,
+          "sha256": "f8cd94e395ee827e62edb39866bbfd71eabacc8f660d3b80799b7ab2c3fab4ff",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/ZUP_CORRECTION_PROTOCOL.md",
+          "bytes": 3971,
+          "sha256": "d3d71fab075dc8e88059b89bb9205d4ae19b54f0dfb4fb90b23407145260ab7d",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/ZUP_DERIVED_OUTPUT_MANIFEST.json",
+          "bytes": 4336,
+          "sha256": "1de387c33ef840b425415d81fa19d8ac0d190011954fa3056ce4f5147e01c73d",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/ZUP_LEAF_FORMAT.json",
+          "bytes": 1199,
+          "sha256": "8c5e57a03499bef11b3730ed4dd41ce9cf65bf9bc3d37ef00e3f58912d35831d",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/ZUP_OUTPUT_CHECKS.json",
+          "bytes": 870,
+          "sha256": "eb549fc1953fb85db98e4997c1a06986e74e94bd77eec9780bda257f7eb9fa92",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/ZUP_PRE_RUN_FREEZE.json",
+          "bytes": 2711,
+          "sha256": "d39bf28e7f47d01e3880eb19f89edd7dc3aedf9c4ea79b6d1c351f9a4e4520e9",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/ZUP_RECOVERY_RECEIPT.json",
+          "bytes": 715,
+          "sha256": "4a0ec9ef571e3326edc08c7c1d2963dfd1e40b9036de2ec6f9c59286b70cbda2",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/ZUP_RESULTS.md",
+          "bytes": 6434,
+          "sha256": "aa188a8f5c2fa4ef4c3ab3c8b35ad4a24d369e9cca8a0cacc603b482c710e43f",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/adapter/CMakeLists.txt",
+          "bytes": 1156,
+          "sha256": "ccd77206d145e9f81bf8387b052e0cbd44e9f9b4328b90a468e6567a739df715",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/adapter/main.cpp",
+          "bytes": 9662,
+          "sha256": "70ba09dd7960104ee16de85ffb347cc2b7ab2c37e4c5d2691b0d9ce72b247fe2",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/adapter/main_zup.cpp",
+          "bytes": 9657,
+          "sha256": "d43d8ef57ba4d96ef5bfaa8042e6b20a97f73de9c99a5fd1e341be429001fc2e",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/adapter/mapper_zup.cpp",
+          "bytes": 5854,
+          "sha256": "965325f6a2f93580d39339ce0f6359d86c0c6f2667d027e8654d95cf139713b2",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/adapter/world_fixture.cpp",
+          "bytes": 1774,
+          "sha256": "2b1d2b1f0712d0aca6e93231dd7a5b985da02cd2c3edc5f62f55470f9edc4c3b",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/check_zup_outputs.py",
+          "bytes": 2789,
+          "sha256": "c4394274a4e182d0291ba15a243e4e5118293e672e761eae690156046079c68a",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/common-surface-proposal/FROZEN.json",
+          "bytes": 10449,
+          "sha256": "3c79015256f98811c15ab6c61a32ddf7a643a9ecc13f721a9502a7721113b082",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/common-surface-proposal/PROTOCOL.md",
+          "bytes": 2510,
+          "sha256": "db817bc41ac4ffc3d674119d73a787d9b0123147b3693bf3f6e43a763194dddb",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/common-surface-proposal/SHA256SUMS.txt",
+          "bytes": 397,
+          "sha256": "9120873c345a4949ce8a39079bd3d0bd85f93edb8b37a10c1b5aef5ca0be4d23",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/common-surface-proposal/compare.py",
+          "bytes": 8163,
+          "sha256": "d79da8807013104d52b047c8b961964983a2ad0b6c6cfeecdf1580e65667a12d",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/common-surface-proposal/convert_cloud.py",
+          "bytes": 2966,
+          "sha256": "211d9d8b028e4b4122e05c60d28c234e61d91fb59c662329511e28b284a06616",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/common-surface-proposal/make_launch.py",
+          "bytes": 706,
+          "sha256": "b93d096c387e49a4469c85bec9db3f2a14f8b6700f3fc8cafb3fb64ee0392ab3",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/configure.py",
+          "bytes": 805,
+          "sha256": "7a47b4ed7279b9d11be8992c1d418c624e4290993841289af81c3fd459da5f97",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/configure_adapter.py",
+          "bytes": 741,
+          "sha256": "bfe7047add8bfeb83cd3252c6acf77bb5c2a1b100b874cca92d9861cd14d4c19",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/freeze_zup.py",
+          "bytes": 1412,
+          "sha256": "d2c9413e725dc66d3073333a680a4164827e06bc9d429c0fc4bbee31823f74fa",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/guard.py",
+          "bytes": 2399,
+          "sha256": "7112336b8af940d1c33c9f147c3d14940bed9dee5cbf895807e2758b05d12447",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/adapter-build.log",
+          "bytes": 172,
+          "sha256": "23ce900ce33bdff60a9260eaa1dd496e487e7db31cc8d6817b7093bdcc37fd23",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/adapter-build_RESOURCE.json",
+          "bytes": 1358,
+          "sha256": "bee83aa1a8334a0b5f90d77fad6af74ffe80fd341bb75753bf1e93b33e0615ea",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/adapter-configure.log",
+          "bytes": 11643,
+          "sha256": "0f545699deaefe3e52055f4b40a518e7dc7190827376aa1181292d681e198f3b",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/configure.log",
+          "bytes": 8667,
+          "sha256": "bbf544fb23b965d7b9ad365ab43c2e9eb011b2ac0757f949d4449ba92873a8fb",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/core-build-resumed.log",
+          "bytes": 25736,
+          "sha256": "ca86d90a1e6980297d6311e2d80c527eeb5d597be8d62df3d1e559aa69b7cc52",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/core-build-resumed_RESOURCE.json",
+          "bytes": 54973,
+          "sha256": "6bdc5403ec7ce0e8e737c115789d973357d2318d451a76c9cae3d4078422cb28",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/core-build.log",
+          "bytes": 5648,
+          "sha256": "02c7d3a8b5161381745362006cf1b8ea5458c8b2e87f07a687b51ca5a889c1d7",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/core-build_INTERRUPTED.json",
+          "bytes": 275,
+          "sha256": "30e222364401544cbbf1beaa9cf7fb084088928613cdeae3b71d494fb5690454",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/interruption-charge_RESOURCE.json",
+          "bytes": 151,
+          "sha256": "6528a2f6be6c9663112372c019459391498c151e8dbed538e0f2c5abb0319d2d",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/native-fixtures.log",
+          "bytes": 77,
+          "sha256": "87b4a9ef15cb48f8b9b95ea9b77975075d6b9a914a3ae6d13033ad45c06b3be1",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/native-fixtures_RESOURCE.json",
+          "bytes": 681,
+          "sha256": "e074d0b7c1d2aabb02342a0aac2059ebb54bcc01e5d138b98944cce21e859903",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/occupancy-zup-fixtures.log",
+          "bytes": 77,
+          "sha256": "87b4a9ef15cb48f8b9b95ea9b77975075d6b9a914a3ae6d13033ad45c06b3be1",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/occupancy-zup-fixtures_RESOURCE.json",
+          "bytes": 678,
+          "sha256": "3545e7674e1283b1c92523e0222f3349cf96a45d6f18a9fb361d5edee48a4979",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/restore.log",
+          "bytes": 46,
+          "sha256": "0af5dc06bc945e28faf0a30d036c89e8fb859e1f7db21fda3ada144b53961671",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/world-zup-fixtures.log",
+          "bytes": 61,
+          "sha256": "1fdb04bc387aa45c6b7ff2e909950a124e074407106ec2103160bf164c6e9c7b",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/world-zup-fixtures_RESOURCE.json",
+          "bytes": 681,
+          "sha256": "a96866f5a3c463382f5ab879c6325bd3b6dbe55dd69dd6bd7eb37a2962cc0ef1",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/zup-adapters-build.log",
+          "bytes": 554,
+          "sha256": "27ea01acea929c640f6f6030e960ca7c2d71dcc8d5eb1f6afd31360d178a351f",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/zup-adapters-build_RESOURCE.json",
+          "bytes": 2498,
+          "sha256": "5fbace6a156b9738b6f7d77905a979b2c79fbffdba894555183dd8bbd157e672",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/zup-common-surface.log",
+          "bytes": 3506,
+          "sha256": "564a7ee45218ef637dcff75de8ea69dba73ec639161e2542d8dc00c82a128ac9",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/zup-common-surface_RESOURCE.json",
+          "bytes": 3456,
+          "sha256": "fbb46fad950b02e52e2ace00ba52caea66f1dced298585a896ccd4ae4b9abbd0",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/zup-configure.log",
+          "bytes": 1503,
+          "sha256": "10fb08a2f330cee376cbb02e050af54615b7f6f967ad8d6ef6e09ae6472d4975",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/zup-interruption-charge_RESOURCE.json",
+          "bytes": 148,
+          "sha256": "54740ea85f49d76425e550ac237d8095873059b5656f5a80c2127285a35e2105",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/zup-mapper.log",
+          "bytes": 6252,
+          "sha256": "8d349704e1102a5e9dc626fce3a6cd70fde708a972bce8158f096a321f8d2bba",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/zup-occupancy.log",
+          "bytes": 6337,
+          "sha256": "a78cb31a0e8a7cb8e5e67ee40c895ce951df632d72c02222a0d28e236b0bf7ee",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/logs/zup-occupancy_RESOURCE.json",
+          "bytes": 3534,
+          "sha256": "c1d4910a187f693c0ecc8c96f541fc70855722fb3f58b34ecb304c4532b0c4b0",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/make_zup_launch.py",
+          "bytes": 851,
+          "sha256": "d38cb09186fc46367531d53a33bff85f1dafa89480749b6ea01160f27a3a34d9",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/recover_zup.py",
+          "bytes": 2126,
+          "sha256": "20f5d2c840b53ce8166c247596b57107ed908675f9308fe66d8116350aca62aa",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-common-surface/FIXTURES.json",
+          "bytes": 45,
+          "sha256": "a22f47edf7122edf23f542b95720630df4481d0c1cdbf679fff5f1b3434a531d",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-common-surface/RESULT.json",
+          "bytes": 3489,
+          "sha256": "cc860c0a58e0911d59983c14491d745e45a80e5d3adc2dbe0a3ba69f5b735e7e",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-common-surface/octomap_zup_regenerated_decoded_points.decoder_fixture.ply",
+          "bytes": 844,
+          "sha256": "4c3a62dcbad4444fb625aea570ef6e1417ded75988c6a2450baa4581d1d7e619",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-common-surface/octomap_zup_regenerated_decoded_points.npy.json",
+          "bytes": 516,
+          "sha256": "274e0c57df4ce87e616dd895961134682b90736e87598307dfbf7c113949e8de",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-mapper/FRAMES.tsv",
+          "bytes": 8475,
+          "sha256": "873e147b73e1ea13f81e41892ad22561c06f16cd60d2ff94372f2e01575e7a56",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-mapper/LOCAL_GRID_COUNTS.tsv",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-mapper/PARAMETERS.tsv",
+          "bytes": 16555,
+          "sha256": "cacd55d3ee56a825bac9879eb2ebe48e76355b4586a70d91550217035c6b0948",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-mapper/POSES.tsv",
+          "bytes": 8195,
+          "sha256": "982d0ac8b19f09865563ba4f50c4067cf40431bf7adbb2ff925a8309322fc85a",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-mapper/RECOVERED_POSES.tsv",
+          "bytes": 44075,
+          "sha256": "6d62356314118fd54f852255fe024a2499fd4b6615f798b6cdb5ca329b0dfcb9",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-native-grid/FRAMES.tsv",
+          "bytes": 10205,
+          "sha256": "759b06be590a661aeaef711fd325eae82db05e2b3bcc5f38568c74177689ed12",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-native-grid/PARAMETERS.tsv",
+          "bytes": 16554,
+          "sha256": "a27a30073fe230adc1a4d525d77d8123095a0359d485126cccd9518baab3298a",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-native-grid/RESULT.txt",
+          "bytes": 316,
+          "sha256": "de0dabe38204f1757e888ff8e21479e165c677543750e10585c63f0ada7fb08f",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/independent-review/octomap-zup-final/GEOMETRY_CONTRACT.json",
+          "bytes": 508,
+          "sha256": "e1d570c03d9c1212fbbb0f85370d4d2f57f1260e7654bed742aa1524a2b2d42f",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/independent-review/octomap-zup-final/LEAF_RECOUNT.json",
+          "bytes": 1897,
+          "sha256": "cd510742569e3714ba74e9e6ad2bc3e385f616daf434ad40a9b252ece4a02396",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/independent-review/octomap-zup-final/METRIC_RECOUNT.json",
+          "bytes": 2986,
+          "sha256": "2d578c24733bd635efdb3cb4e2fb28b5033a66e607d71a2eae26108e809c9cf6",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/independent-review/octomap-zup-final/REVIEW.md",
+          "bytes": 6316,
+          "sha256": "66d540187b06ea44049a93d4bb018929bd28b31145ab0268fa17e2345b1a054b",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/independent-review/octomap-zup-final/check_geometry_contract.py",
+          "bytes": 2514,
+          "sha256": "fbde3f29a7ff55efbb4ca763134deddd1dd1140f2a3441d99e49aae6ec611bb2",
+          "verification": "allowlist"
+        },
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/independent-review/octomap-zup-final/recount_metrics.py",
+          "bytes": 2543,
+          "sha256": "aa9a0e0eae025d8673f7032d6339900223172b549f2f28d826ad833f5c569916",
+          "verification": "allowlist"
+        }
+      ]
+    },
+    {
+      "repoPath": "research/benchmark-artifacts-20261028/archives/octomap-corrected-zup-scoring-arrays.tar.gz",
+      "bytes": 9168199,
+      "sha256": "e6bcb6bbba2574e02668778ab7fb8f808d26d0b04d11df412113f88078b8c8b9",
+      "members": [
+        {
+          "path": "research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/zup-common-surface/octomap_zup_regenerated.npz",
+          "bytes": 9169383,
+          "sha256": "e5fa3252986f45a28fb64f98a7ce1b80c3c5177af331e3a28af1fd297e8c32dd",
+          "verification": "allowlist"
+        }
+      ]
+    }
+  ]
+}

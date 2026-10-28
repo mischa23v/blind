@@ -1,0 +1,16 @@
+[
+  "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/bin/cmake",
+  "-S",
+  "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/adapter",
+  "-B",
+  "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/adapter-build",
+  "-DCMAKE_BUILD_TYPE=Release",
+  "-DRTABMap_DIR=/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/build",
+  "-DCMAKE_PREFIX_PATH=/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr",
+  "-DMPI_C_COMPILER_INCLUDE_DIRS=/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/openmpi/include;/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi",
+  "-DMPI_C_HEADER_DIR=/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/openmpi/include",
+  "-DMPI_C_ADDITIONAL_INCLUDE_DIRS=/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi",
+  "-DMPI_C_LIB_NAMES=mpi",
+  "-DMPI_mpi_LIBRARY=/usr/lib/x86_64-linux-gnu/libmpi.so.40",
+  "-DMPI_C_COMPILER=/usr/bin/gcc"
+]

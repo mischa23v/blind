@@ -1,0 +1,348 @@
+{
+  "availability": {
+    "scheduled": 1335885,
+    "paired": 1188709,
+    "referenceOnly": 5835,
+    "TSDFOnly": 139232,
+    "neither": 2109
+  },
+  "all": {
+    "scheduled": 1335885,
+    "statistics": {
+      "count": 1188709,
+      "meanSigned": 0.050527971096383656,
+      "signedP05": -0.16448212985311086,
+      "signedP50": 0.01028777790644897,
+      "signedP95": 0.5945458449598171,
+      "MAE": 0.18969344707472705,
+      "absoluteP50": 0.03475374909091067,
+      "absoluteP90": 0.38337416840461225,
+      "absoluteP95": 1.2281535609800338,
+      "absoluteP99": 3.0025345276819553,
+      "maximumAbsolute": 6.4399237005310335
+    },
+    "earlyWithinLate": {
+      "0.02": {
+        "earlier": 255699,
+        "within": 433438,
+        "later": 499572
+      },
+      "0.05": {
+        "earlier": 152820,
+        "within": 734598,
+        "later": 301291
+      },
+      "0.1": {
+        "earlier": 84403,
+        "within": 936861,
+        "later": 167445
+      }
+    }
+  },
+  "referenceBelow4m": {
+    "scheduled": 1042402,
+    "statistics": {
+      "count": 1036835,
+      "meanSigned": 0.0781877818915667,
+      "signedP05": -0.12487603842012954,
+      "signedP50": 0.011605725924921595,
+      "signedP95": 0.648611870646285,
+      "MAE": 0.17255173724708112,
+      "absoluteP50": 0.03466025769097669,
+      "absoluteP90": 0.35120518699444425,
+      "absoluteP95": 1.0654345605685356,
+      "absoluteP99": 2.575878765012858,
+      "maximumAbsolute": 5.776509611108912
+    },
+    "earlyWithinLate": {
+      "0.02": {
+        "earlier": 208447,
+        "within": 378873,
+        "later": 449515
+      },
+      "0.05": {
+        "earlier": 121649,
+        "within": 644660,
+        "later": 270526
+      },
+      "0.1": {
+        "earlier": 63180,
+        "within": 824805,
+        "later": 148850
+      }
+    }
+  },
+  "referenceAtLeast4m": {
+    "scheduled": 152142,
+    "statistics": {
+      "count": 151874,
+      "meanSigned": -0.13830395488056835,
+      "signedP05": -2.229189607168801,
+      "signedP50": 0.0005035561833532931,
+      "signedP95": 0.2760109463867631,
+      "MAE": 0.3067189070556801,
+      "absoluteP50": 0.03541665527849469,
+      "absoluteP90": 0.9585550773262509,
+      "absoluteP95": 2.570542826629999,
+      "absoluteP99": 3.268202296448596,
+      "maximumAbsolute": 6.4399237005310335
+    },
+    "earlyWithinLate": {
+      "0.02": {
+        "earlier": 47252,
+        "within": 54565,
+        "later": 50057
+      },
+      "0.05": {
+        "earlier": 31171,
+        "within": 89938,
+        "later": 30765
+      },
+      "0.1": {
+        "earlier": 21223,
+        "within": 112056,
+        "later": 18595
+      }
+    }
+  },
+  "byReferenceDepth": [
+    {
+      "label": "positive_below015",
+      "scheduled": 0,
+      "statistics": {
+        "count": 0,
+        "meanSigned": null,
+        "signedP05": null,
+        "signedP50": null,
+        "signedP95": null,
+        "MAE": null,
+        "absoluteP50": null,
+        "absoluteP90": null,
+        "absoluteP95": null,
+        "absoluteP99": null,
+        "maximumAbsolute": null
+      },
+      "earlyWithinLate": {
+        "0.02": {
+          "earlier": 0,
+          "within": 0,
+          "later": 0
+        },
+        "0.05": {
+          "earlier": 0,
+          "within": 0,
+          "later": 0
+        },
+        "0.1": {
+          "earlier": 0,
+          "within": 0,
+          "later": 0
+        }
+      }
+    },
+    {
+      "label": "015_to_below1",
+      "scheduled": 67305,
+      "statistics": {
+        "count": 67015,
+        "meanSigned": 0.24392473807057444,
+        "signedP05": -0.01897929153502944,
+        "signedP50": 0.044319698273922015,
+        "signedP95": 1.0606387319108626,
+        "MAE": 0.24969609512647953,
+        "absoluteP50": 0.04596507599003674,
+        "absoluteP90": 0.5825124671100036,
+        "absoluteP95": 1.0606387319108626,
+        "absoluteP99": 3.4211515852803904,
+        "maximumAbsolute": 3.954677628982503
+      },
+      "earlyWithinLate": {
+        "0.02": {
+          "earlier": 3217,
+          "within": 22579,
+          "later": 41219
+        },
+        "0.05": {
+          "earlier": 788,
+          "within": 35735,
+          "later": 30492
+        },
+        "0.1": {
+          "earlier": 143,
+          "within": 47376,
+          "later": 19496
+        }
+      }
+    },
+    {
+      "label": "1_to_below2",
+      "scheduled": 354355,
+      "statistics": {
+        "count": 350868,
+        "meanSigned": 0.1299588829094482,
+        "signedP05": -0.11135950817050985,
+        "signedP50": 0.009968453320950199,
+        "signedP95": 1.2098364844577707,
+        "MAE": 0.18854271263675945,
+        "absoluteP50": 0.036619129657813554,
+        "absoluteP90": 0.47874325914808186,
+        "absoluteP95": 1.2108752909707325,
+        "absoluteP99": 2.5038627608124475,
+        "maximumAbsolute": 4.367002040973153
+      },
+      "earlyWithinLate": {
+        "0.02": {
+          "earlier": 77559,
+          "within": 125234,
+          "later": 148075
+        },
+        "0.05": {
+          "earlier": 42124,
+          "within": 206845,
+          "later": 101899
+        },
+        "0.1": {
+          "earlier": 19784,
+          "within": 270314,
+          "later": 60770
+        }
+      }
+    },
+    {
+      "label": "2_to_below3",
+      "scheduled": 395955,
+      "statistics": {
+        "count": 394434,
+        "meanSigned": 0.05009943516159374,
+        "signedP05": -0.14953727493400748,
+        "signedP50": 0.007384475718853922,
+        "signedP95": 0.3543217883600718,
+        "MAE": 0.14363045668983082,
+        "absoluteP50": 0.032076114518979404,
+        "absoluteP90": 0.20782424100968458,
+        "absoluteP95": 0.9087533558895586,
+        "absoluteP99": 2.205110641117771,
+        "maximumAbsolute": 5.301194987102078
+      },
+      "earlyWithinLate": {
+        "0.02": {
+          "earlier": 87184,
+          "within": 154558,
+          "later": 152692
+        },
+        "0.05": {
+          "earlier": 53421,
+          "within": 264225,
+          "later": 76788
+        },
+        "0.1": {
+          "earlier": 27555,
+          "within": 322335,
+          "later": 44544
+        }
+      }
+    },
+    {
+      "label": "3_to_below4",
+      "scheduled": 224787,
+      "statistics": {
+        "count": 224518,
+        "meanSigned": -0.0028421837957640457,
+        "signedP05": -0.18521222149162897,
+        "signedP50": 0.017811209383115756,
+        "signedP95": 0.22526792182790495,
+        "MAE": 0.17534432260328825,
+        "absoluteP50": 0.03352074960800944,
+        "absoluteP90": 0.2098815902289264,
+        "absoluteP95": 1.1072633982645836,
+        "absoluteP99": 2.7277725716657595,
+        "maximumAbsolute": 5.776509611108912
+      },
+      "earlyWithinLate": {
+        "0.02": {
+          "earlier": 40487,
+          "within": 76502,
+          "later": 107529
+        },
+        "0.05": {
+          "earlier": 25316,
+          "within": 137855,
+          "later": 61347
+        },
+        "0.1": {
+          "earlier": 15698,
+          "within": 184780,
+          "later": 24040
+        }
+      }
+    },
+    {
+      "label": "4_to_below5",
+      "scheduled": 74105,
+      "statistics": {
+        "count": 74006,
+        "meanSigned": -0.10828135366286747,
+        "signedP05": -2.108624633306325,
+        "signedP50": 0.0024537416270109524,
+        "signedP95": 0.2452162172527077,
+        "MAE": 0.28862799767634356,
+        "absoluteP50": 0.03807805873038328,
+        "absoluteP90": 0.48248327042562655,
+        "absoluteP95": 2.71262173266396,
+        "absoluteP99": 3.9881449218246137,
+        "maximumAbsolute": 5.058345425966797
+      },
+      "earlyWithinLate": {
+        "0.02": {
+          "earlier": 23493,
+          "within": 25212,
+          "later": 25301
+        },
+        "0.05": {
+          "earlier": 16122,
+          "within": 43429,
+          "later": 14455
+        },
+        "0.1": {
+          "earlier": 10646,
+          "within": 54761,
+          "later": 8599
+        }
+      }
+    },
+    {
+      "label": "5_and_above",
+      "scheduled": 78037,
+      "statistics": {
+        "count": 77868,
+        "meanSigned": -0.16683753254683908,
+        "signedP05": -2.3820273443656665,
+        "signedP50": -0.0010534564857707096,
+        "signedP95": 0.3230170447581857,
+        "MAE": 0.3239125660622963,
+        "absoluteP50": 0.032697820872107375,
+        "absoluteP90": 1.2304834496259338,
+        "absoluteP95": 2.5340490121184116,
+        "absoluteP99": 3.235321699943323,
+        "maximumAbsolute": 6.4399237005310335
+      },
+      "earlyWithinLate": {
+        "0.02": {
+          "earlier": 23759,
+          "within": 29353,
+          "later": 24756
+        },
+        "0.05": {
+          "earlier": 15049,
+          "within": 46509,
+          "later": 16310
+        },
+        "0.1": {
+          "earlier": 10577,
+          "within": 57295,
+          "later": 9996
+        }
+      }
+    }
+  ]
+}

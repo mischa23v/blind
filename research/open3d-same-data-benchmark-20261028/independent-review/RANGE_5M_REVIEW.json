@@ -1,0 +1,84 @@
+{
+  "status": "passed",
+  "checksPassed": 11581,
+  "floatingComparisons": 2348,
+  "maximumStatisticDifference": 6.661338147750939e-16,
+  "codeAndJSONPinsChecked": 16,
+  "workerASTEquivalentExceptRangeAndScope": true,
+  "summaryFunctionASTIdentical": true,
+  "geometryQueries": 0,
+  "frozenSHA256": "0b9e6eeee19565a3ca2112ea926a2ecdbdf4c930528e7bfe8d063323d164d448",
+  "resultSHA256": "9dc5893de1c1b3faa4e547b56fa7716969b83f9d45eac687ab14240f6ab9f51e",
+  "all29Availability": {
+    "TSDFOnly": 139232,
+    "neither": 2109,
+    "paired": 1188709,
+    "referenceOnly": 5835,
+    "scheduled": 1335885
+  },
+  "variantAllPaired": {
+    "MAE": 0.18969344707472705,
+    "absoluteP50": 0.03475374909091067,
+    "absoluteP90": 0.38337416840461225,
+    "absoluteP95": 1.2281535609800338,
+    "absoluteP99": 3.0025345276819553,
+    "count": 1188709,
+    "maximumAbsolute": 6.4399237005310335,
+    "meanSigned": 0.050527971096383656,
+    "signedP05": -0.16448212985311086,
+    "signedP50": 0.01028777790644897,
+    "signedP95": 0.5945458449598171
+  },
+  "fixedRegions": [
+    {
+      "frame": "frame_00228",
+      "fixedBaselineSelectedSamples": 4166,
+      "baseline4m": {
+        "paired": 4166,
+        "missingPrediction": 0,
+        "medianAbsolute": 3.5677350895704545,
+        "p95Absolute": 3.998213696937107,
+        "signedMin": -4.107613675738334,
+        "signedMedian": -3.5677350895704545,
+        "signedMax": 2.0965323842242545
+      },
+      "variant5m": {
+        "paired": 4166,
+        "missingPrediction": 0,
+        "medianAbsolute": 0.044707718068254465,
+        "p95Absolute": 0.6421752450499667,
+        "signedMin": -2.2122666477179758,
+        "signedMedian": 0.0418961147471153,
+        "signedMax": 2.1253250039624776
+      }
+    },
+    {
+      "frame": "frame_00197",
+      "fixedBaselineSelectedSamples": 5328,
+      "baseline4m": {
+        "paired": 5328,
+        "missingPrediction": 0,
+        "medianAbsolute": 0.004914338834669518,
+        "p95Absolute": 0.016933556661775647,
+        "signedMin": -0.04160474935711589,
+        "signedMedian": 0.004580540867678673,
+        "signedMax": 0.026832490765734907
+      },
+      "variant5m": {
+        "paired": 5328,
+        "missingPrediction": 0,
+        "medianAbsolute": 0.004914338834669518,
+        "p95Absolute": 0.01693355666177536,
+        "signedMin": -0.04160474935711589,
+        "signedMedian": 0.004580540867678673,
+        "signedMax": 0.026832490765734907
+      }
+    }
+  ],
+  "limitations": [
+    "Post-hoc development ablation, not independent holdout validation",
+    "Changing cutoff affects both admitted observations and allocated TSDF coverage, not purely clearing",
+    "No physical safety or navigation conclusion",
+    "Native ray queries not independently repeated; small source/JSON pins and saved arrays checked, not all large training archives rehashed"
+  ]
+}

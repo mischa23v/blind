@@ -1,0 +1,52 @@
+{
+  "aggregateDiskBytes": 2013822976,
+  "frozenSHA256": "0b9e6eeee19565a3ca2112ea926a2ecdbdf4c930528e7bfe8d063323d164d448",
+  "hardAggregateMemoryLimitEstablished": false,
+  "oneVariantDepthTrunc": 5,
+  "peakSampledTreeRSS": 737439744,
+  "phases": [
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/range-ablation-proposal/fusion_5m.py",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/FUSION_FROZEN.json",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/range-ablation-proposal/run/fusion",
+        "65bc6e35e482d916d901aff0b8413b097f3e098d26c2fc346b466a26d033ae43"
+      ],
+      "cpuSeconds": 91.25,
+      "exitCode": 0,
+      "wallSeconds": 91.31745443300315
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/range-ablation-proposal/evaluate_5m.py",
+        "tsdf"
+      ],
+      "cpuSeconds": 31.019999999999996,
+      "exitCode": 0,
+      "wallSeconds": 31.057323709002958
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/range-ablation-proposal/summarize_5m.py"
+      ],
+      "cpuSeconds": 2.5799999999999983,
+      "exitCode": 0,
+      "wallSeconds": 2.609680200999719
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/range-ablation-proposal/compare_fixed.py"
+      ],
+      "cpuSeconds": 0.6199999999999903,
+      "exitCode": 0,
+      "wallSeconds": 0.6360464710014639
+    }
+  ],
+  "physicalAuthority": false,
+  "postHocDevelopmentOnly": true,
+  "status": "completed"
+}

@@ -1,0 +1,1996 @@
+{
+  "command": [
+    "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/bin/cmake",
+    "--build",
+    "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/build",
+    "--target",
+    "rtabmap_core",
+    "--parallel",
+    "1"
+  ],
+  "cpuAffinity": [
+    0
+  ],
+  "returncode": 0,
+  "stopReason": null,
+  "peakSampledTreeRSS": 1693925376,
+  "elapsedSeconds": 703.5359036922455,
+  "childCPUSeconds": 702.298615,
+  "priorStageCPUSeconds": 180,
+  "samples": [
+    {
+      "elapsed": 0.14046812057495117,
+      "rss": 0,
+      "aggregateDisk": 1556019418,
+      "processGroupCPUSecondsIncludingReaped": 0.0
+    },
+    {
+      "elapsed": 2.279345750808716,
+      "rss": 458551296,
+      "aggregateDisk": 1557652854,
+      "processGroupCPUSecondsIncludingReaped": 2.02
+    },
+    {
+      "elapsed": 4.425312042236328,
+      "rss": 586256384,
+      "aggregateDisk": 1557652854,
+      "processGroupCPUSecondsIncludingReaped": 4.09
+    },
+    {
+      "elapsed": 6.552160978317261,
+      "rss": 749178880,
+      "aggregateDisk": 1557652854,
+      "processGroupCPUSecondsIncludingReaped": 6.159999999999999
+    },
+    {
+      "elapsed": 8.67960500717163,
+      "rss": 253595648,
+      "aggregateDisk": 1557963828,
+      "processGroupCPUSecondsIncludingReaped": 8.21
+    },
+    {
+      "elapsed": 10.813012838363647,
+      "rss": 568508416,
+      "aggregateDisk": 1557963828,
+      "processGroupCPUSecondsIncludingReaped": 10.27
+    },
+    {
+      "elapsed": 12.939521312713623,
+      "rss": 646770688,
+      "aggregateDisk": 1557963828,
+      "processGroupCPUSecondsIncludingReaped": 12.34
+    },
+    {
+      "elapsed": 15.067342281341553,
+      "rss": 856092672,
+      "aggregateDisk": 1557963828,
+      "processGroupCPUSecondsIncludingReaped": 14.41
+    },
+    {
+      "elapsed": 17.199801445007324,
+      "rss": 903540736,
+      "aggregateDisk": 1557963828,
+      "processGroupCPUSecondsIncludingReaped": 16.47
+    },
+    {
+      "elapsed": 19.32187843322754,
+      "rss": 917303296,
+      "aggregateDisk": 1557963828,
+      "processGroupCPUSecondsIncludingReaped": 18.54
+    },
+    {
+      "elapsed": 21.47131037712097,
+      "rss": 149118976,
+      "aggregateDisk": 1558953340,
+      "processGroupCPUSecondsIncludingReaped": 20.6
+    },
+    {
+      "elapsed": 23.59980273246765,
+      "rss": 560521216,
+      "aggregateDisk": 1558953340,
+      "processGroupCPUSecondsIncludingReaped": 22.68
+    },
+    {
+      "elapsed": 25.743337392807007,
+      "rss": 684343296,
+      "aggregateDisk": 1558953340,
+      "processGroupCPUSecondsIncludingReaped": 24.740000000000002
+    },
+    {
+      "elapsed": 27.865131616592407,
+      "rss": 826425344,
+      "aggregateDisk": 1558953340,
+      "processGroupCPUSecondsIncludingReaped": 26.810000000000002
+    },
+    {
+      "elapsed": 29.99932050704956,
+      "rss": 379588608,
+      "aggregateDisk": 1559263580,
+      "processGroupCPUSecondsIncludingReaped": 28.880000000000003
+    },
+    {
+      "elapsed": 32.1289644241333,
+      "rss": 584478720,
+      "aggregateDisk": 1559263580,
+      "processGroupCPUSecondsIncludingReaped": 30.950000000000003
+    },
+    {
+      "elapsed": 34.26345205307007,
+      "rss": 708472832,
+      "aggregateDisk": 1559263580,
+      "processGroupCPUSecondsIncludingReaped": 33.0
+    },
+    {
+      "elapsed": 36.40747332572937,
+      "rss": 327430144,
+      "aggregateDisk": 1559475707,
+      "processGroupCPUSecondsIncludingReaped": 35.07
+    },
+    {
+      "elapsed": 38.52761363983154,
+      "rss": 345366528,
+      "aggregateDisk": 1559548798,
+      "processGroupCPUSecondsIncludingReaped": 37.14999999999999
+    },
+    {
+      "elapsed": 40.649081230163574,
+      "rss": 605995008,
+      "aggregateDisk": 1559548798,
+      "processGroupCPUSecondsIncludingReaped": 39.209999999999994
+    },
+    {
+      "elapsed": 42.787517786026,
+      "rss": 794214400,
+      "aggregateDisk": 1559548798,
+      "processGroupCPUSecondsIncludingReaped": 41.269999999999996
+    },
+    {
+      "elapsed": 44.909422874450684,
+      "rss": 911654912,
+      "aggregateDisk": 1559548798,
+      "processGroupCPUSecondsIncludingReaped": 43.339999999999996
+    },
+    {
+      "elapsed": 47.04736924171448,
+      "rss": 320233472,
+      "aggregateDisk": 1559938582,
+      "processGroupCPUSecondsIncludingReaped": 45.38999999999999
+    },
+    {
+      "elapsed": 49.17755842208862,
+      "rss": 543141888,
+      "aggregateDisk": 1559938582,
+      "processGroupCPUSecondsIncludingReaped": 47.47
+    },
+    {
+      "elapsed": 51.312565326690674,
+      "rss": 345354240,
+      "aggregateDisk": 1560031785,
+      "processGroupCPUSecondsIncludingReaped": 49.529999999999994
+    },
+    {
+      "elapsed": 53.45154333114624,
+      "rss": 157802496,
+      "aggregateDisk": 1560214171,
+      "processGroupCPUSecondsIncludingReaped": 51.589999999999996
+    },
+    {
+      "elapsed": 55.57310676574707,
+      "rss": 396353536,
+      "aggregateDisk": 1560214171,
+      "processGroupCPUSecondsIncludingReaped": 53.65
+    },
+    {
+      "elapsed": 57.70213842391968,
+      "rss": 236982272,
+      "aggregateDisk": 1560295439,
+      "processGroupCPUSecondsIncludingReaped": 55.72
+    },
+    {
+      "elapsed": 59.827213525772095,
+      "rss": 476389376,
+      "aggregateDisk": 1560295439,
+      "processGroupCPUSecondsIncludingReaped": 57.79
+    },
+    {
+      "elapsed": 61.948583126068115,
+      "rss": 398614528,
+      "aggregateDisk": 1560376246,
+      "processGroupCPUSecondsIncludingReaped": 59.849999999999994
+    },
+    {
+      "elapsed": 64.0703547000885,
+      "rss": 590413824,
+      "aggregateDisk": 1560376246,
+      "processGroupCPUSecondsIncludingReaped": 61.91
+    },
+    {
+      "elapsed": 66.1953535079956,
+      "rss": 814940160,
+      "aggregateDisk": 1560376246,
+      "processGroupCPUSecondsIncludingReaped": 63.97
+    },
+    {
+      "elapsed": 68.32402920722961,
+      "rss": 256339968,
+      "aggregateDisk": 1560669248,
+      "processGroupCPUSecondsIncludingReaped": 66.04
+    },
+    {
+      "elapsed": 70.45325183868408,
+      "rss": 469725184,
+      "aggregateDisk": 1560669248,
+      "processGroupCPUSecondsIncludingReaped": 68.10000000000001
+    },
+    {
+      "elapsed": 72.58024430274963,
+      "rss": 322568192,
+      "aggregateDisk": 1560750342,
+      "processGroupCPUSecondsIncludingReaped": 70.17
+    },
+    {
+      "elapsed": 74.71133303642273,
+      "rss": 515850240,
+      "aggregateDisk": 1560750342,
+      "processGroupCPUSecondsIncludingReaped": 72.23
+    },
+    {
+      "elapsed": 76.83932399749756,
+      "rss": 359768064,
+      "aggregateDisk": 1560832653,
+      "processGroupCPUSecondsIncludingReaped": 74.29
+    },
+    {
+      "elapsed": 79.0484664440155,
+      "rss": 226623488,
+      "aggregateDisk": 1560991796,
+      "processGroupCPUSecondsIncludingReaped": 76.36000000000001
+    },
+    {
+      "elapsed": 81.1875114440918,
+      "rss": 389283840,
+      "aggregateDisk": 1560991796,
+      "processGroupCPUSecondsIncludingReaped": 78.46000000000001
+    },
+    {
+      "elapsed": 83.3193564414978,
+      "rss": 137404416,
+      "aggregateDisk": 1561075281,
+      "processGroupCPUSecondsIncludingReaped": 80.53
+    },
+    {
+      "elapsed": 85.46375799179077,
+      "rss": 372809728,
+      "aggregateDisk": 1561075281,
+      "processGroupCPUSecondsIncludingReaped": 82.59
+    },
+    {
+      "elapsed": 87.60905861854553,
+      "rss": 313139200,
+      "aggregateDisk": 1561205251,
+      "processGroupCPUSecondsIncludingReaped": 84.66
+    },
+    {
+      "elapsed": 89.75132393836975,
+      "rss": 477380608,
+      "aggregateDisk": 1561205251,
+      "processGroupCPUSecondsIncludingReaped": 86.74
+    },
+    {
+      "elapsed": 91.8973479270935,
+      "rss": 277381120,
+      "aggregateDisk": 1561287282,
+      "processGroupCPUSecondsIncludingReaped": 88.81
+    },
+    {
+      "elapsed": 94.03259539604187,
+      "rss": 460062720,
+      "aggregateDisk": 1561287282,
+      "processGroupCPUSecondsIncludingReaped": 90.88000000000001
+    },
+    {
+      "elapsed": 96.19680094718933,
+      "rss": 245403648,
+      "aggregateDisk": 1561370462,
+      "processGroupCPUSecondsIncludingReaped": 92.95
+    },
+    {
+      "elapsed": 98.38469934463501,
+      "rss": 40013824,
+      "aggregateDisk": 1561489389,
+      "processGroupCPUSecondsIncludingReaped": 95.03
+    },
+    {
+      "elapsed": 100.53570222854614,
+      "rss": 344977408,
+      "aggregateDisk": 1561493308,
+      "processGroupCPUSecondsIncludingReaped": 97.13000000000001
+    },
+    {
+      "elapsed": 102.65941572189331,
+      "rss": 262316032,
+      "aggregateDisk": 1561573466,
+      "processGroupCPUSecondsIncludingReaped": 99.2
+    },
+    {
+      "elapsed": 104.79725289344788,
+      "rss": 171642880,
+      "aggregateDisk": 1561653754,
+      "processGroupCPUSecondsIncludingReaped": 101.27
+    },
+    {
+      "elapsed": 106.99542164802551,
+      "rss": 359731200,
+      "aggregateDisk": 1561653754,
+      "processGroupCPUSecondsIncludingReaped": 103.34
+    },
+    {
+      "elapsed": 109.12526679039001,
+      "rss": 79179776,
+      "aggregateDisk": 1561844812,
+      "processGroupCPUSecondsIncludingReaped": 105.44000000000001
+    },
+    {
+      "elapsed": 111.2834849357605,
+      "rss": 350355456,
+      "aggregateDisk": 1561844812,
+      "processGroupCPUSecondsIncludingReaped": 107.50000000000001
+    },
+    {
+      "elapsed": 113.41534304618835,
+      "rss": 225198080,
+      "aggregateDisk": 1561988351,
+      "processGroupCPUSecondsIncludingReaped": 109.59
+    },
+    {
+      "elapsed": 115.54739689826965,
+      "rss": 153923584,
+      "aggregateDisk": 1562071213,
+      "processGroupCPUSecondsIncludingReaped": 111.65
+    },
+    {
+      "elapsed": 117.67681765556335,
+      "rss": 22056960,
+      "aggregateDisk": 1562153743,
+      "processGroupCPUSecondsIncludingReaped": 113.72
+    },
+    {
+      "elapsed": 119.81534433364868,
+      "rss": 355590144,
+      "aggregateDisk": 1562153743,
+      "processGroupCPUSecondsIncludingReaped": 115.77
+    },
+    {
+      "elapsed": 121.95228171348572,
+      "rss": 266121216,
+      "aggregateDisk": 1562285966,
+      "processGroupCPUSecondsIncludingReaped": 117.84
+    },
+    {
+      "elapsed": 124.0748143196106,
+      "rss": 206950400,
+      "aggregateDisk": 1562373193,
+      "processGroupCPUSecondsIncludingReaped": 119.92000000000002
+    },
+    {
+      "elapsed": 126.21934413909912,
+      "rss": 151011328,
+      "aggregateDisk": 1562455465,
+      "processGroupCPUSecondsIncludingReaped": 121.97000000000001
+    },
+    {
+      "elapsed": 128.3577275276184,
+      "rss": 382615552,
+      "aggregateDisk": 1562455465,
+      "processGroupCPUSecondsIncludingReaped": 124.05000000000001
+    },
+    {
+      "elapsed": 130.49519515037537,
+      "rss": 181313536,
+      "aggregateDisk": 1562541701,
+      "processGroupCPUSecondsIncludingReaped": 126.12
+    },
+    {
+      "elapsed": 132.61668992042542,
+      "rss": 98156544,
+      "aggregateDisk": 1562622906,
+      "processGroupCPUSecondsIncludingReaped": 128.19
+    },
+    {
+      "elapsed": 134.74732995033264,
+      "rss": 363053056,
+      "aggregateDisk": 1562622906,
+      "processGroupCPUSecondsIncludingReaped": 130.24
+    },
+    {
+      "elapsed": 136.8993308544159,
+      "rss": 241127424,
+      "aggregateDisk": 1562704993,
+      "processGroupCPUSecondsIncludingReaped": 132.31000000000003
+    },
+    {
+      "elapsed": 139.0378909111023,
+      "rss": 536039424,
+      "aggregateDisk": 1562704993,
+      "processGroupCPUSecondsIncludingReaped": 134.38000000000002
+    },
+    {
+      "elapsed": 141.16910457611084,
+      "rss": 632164352,
+      "aggregateDisk": 1562704993,
+      "processGroupCPUSecondsIncludingReaped": 136.45000000000002
+    },
+    {
+      "elapsed": 143.3056719303131,
+      "rss": 162975744,
+      "aggregateDisk": 1562898855,
+      "processGroupCPUSecondsIncludingReaped": 138.51
+    },
+    {
+      "elapsed": 145.44362688064575,
+      "rss": 436428800,
+      "aggregateDisk": 1562923867,
+      "processGroupCPUSecondsIncludingReaped": 140.58
+    },
+    {
+      "elapsed": 147.5663378238678,
+      "rss": 587313152,
+      "aggregateDisk": 1562923867,
+      "processGroupCPUSecondsIncludingReaped": 142.65
+    },
+    {
+      "elapsed": 149.70736813545227,
+      "rss": 737128448,
+      "aggregateDisk": 1562923867,
+      "processGroupCPUSecondsIncludingReaped": 144.70000000000002
+    },
+    {
+      "elapsed": 151.83628869056702,
+      "rss": 349552640,
+      "aggregateDisk": 1563164727,
+      "processGroupCPUSecondsIncludingReaped": 146.79
+    },
+    {
+      "elapsed": 153.96335339546204,
+      "rss": 631136256,
+      "aggregateDisk": 1563164727,
+      "processGroupCPUSecondsIncludingReaped": 148.85999999999999
+    },
+    {
+      "elapsed": 156.09134149551392,
+      "rss": 36999168,
+      "aggregateDisk": 1563305928,
+      "processGroupCPUSecondsIncludingReaped": 150.92000000000002
+    },
+    {
+      "elapsed": 158.22984337806702,
+      "rss": 343842816,
+      "aggregateDisk": 1563305928,
+      "processGroupCPUSecondsIncludingReaped": 152.99
+    },
+    {
+      "elapsed": 160.36803674697876,
+      "rss": 394760192,
+      "aggregateDisk": 1563305928,
+      "processGroupCPUSecondsIncludingReaped": 155.06
+    },
+    {
+      "elapsed": 162.5041058063507,
+      "rss": 251633664,
+      "aggregateDisk": 1563409423,
+      "processGroupCPUSecondsIncludingReaped": 157.12
+    },
+    {
+      "elapsed": 164.63576889038086,
+      "rss": 419274752,
+      "aggregateDisk": 1563409423,
+      "processGroupCPUSecondsIncludingReaped": 159.17999999999998
+    },
+    {
+      "elapsed": 166.7633330821991,
+      "rss": 49057792,
+      "aggregateDisk": 1563534270,
+      "processGroupCPUSecondsIncludingReaped": 161.24
+    },
+    {
+      "elapsed": 168.8860788345337,
+      "rss": 346169344,
+      "aggregateDisk": 1563534270,
+      "processGroupCPUSecondsIncludingReaped": 163.31
+    },
+    {
+      "elapsed": 171.01562809944153,
+      "rss": 463372288,
+      "aggregateDisk": 1563534270,
+      "processGroupCPUSecondsIncludingReaped": 165.36
+    },
+    {
+      "elapsed": 173.1450068950653,
+      "rss": 312836096,
+      "aggregateDisk": 1563658142,
+      "processGroupCPUSecondsIncludingReaped": 167.44000000000003
+    },
+    {
+      "elapsed": 175.27288031578064,
+      "rss": 593858560,
+      "aggregateDisk": 1563658142,
+      "processGroupCPUSecondsIncludingReaped": 169.50000000000003
+    },
+    {
+      "elapsed": 177.41657996177673,
+      "rss": 680386560,
+      "aggregateDisk": 1563658142,
+      "processGroupCPUSecondsIncludingReaped": 171.57000000000002
+    },
+    {
+      "elapsed": 179.54518246650696,
+      "rss": 823255040,
+      "aggregateDisk": 1563658142,
+      "processGroupCPUSecondsIncludingReaped": 173.64000000000001
+    },
+    {
+      "elapsed": 181.6729485988617,
+      "rss": 910024704,
+      "aggregateDisk": 1563658142,
+      "processGroupCPUSecondsIncludingReaped": 175.71
+    },
+    {
+      "elapsed": 183.80336570739746,
+      "rss": 917839872,
+      "aggregateDisk": 1563658142,
+      "processGroupCPUSecondsIncludingReaped": 177.77
+    },
+    {
+      "elapsed": 185.94176483154297,
+      "rss": 918757376,
+      "aggregateDisk": 1563658142,
+      "processGroupCPUSecondsIncludingReaped": 179.84
+    },
+    {
+      "elapsed": 188.0633509159088,
+      "rss": 355672064,
+      "aggregateDisk": 1565293962,
+      "processGroupCPUSecondsIncludingReaped": 181.91000000000003
+    },
+    {
+      "elapsed": 190.1913652420044,
+      "rss": 579047424,
+      "aggregateDisk": 1565293962,
+      "processGroupCPUSecondsIncludingReaped": 183.97000000000003
+    },
+    {
+      "elapsed": 192.33003520965576,
+      "rss": 773296128,
+      "aggregateDisk": 1565293962,
+      "processGroupCPUSecondsIncludingReaped": 186.03000000000003
+    },
+    {
+      "elapsed": 194.4593288898468,
+      "rss": 365715456,
+      "aggregateDisk": 1565489029,
+      "processGroupCPUSecondsIncludingReaped": 188.1
+    },
+    {
+      "elapsed": 196.5962553024292,
+      "rss": 588328960,
+      "aggregateDisk": 1565489029,
+      "processGroupCPUSecondsIncludingReaped": 190.17
+    },
+    {
+      "elapsed": 198.7314522266388,
+      "rss": 725954560,
+      "aggregateDisk": 1565489029,
+      "processGroupCPUSecondsIncludingReaped": 192.23
+    },
+    {
+      "elapsed": 200.8673288822174,
+      "rss": 142282752,
+      "aggregateDisk": 1565829269,
+      "processGroupCPUSecondsIncludingReaped": 194.3
+    },
+    {
+      "elapsed": 202.99542331695557,
+      "rss": 579743744,
+      "aggregateDisk": 1565829269,
+      "processGroupCPUSecondsIncludingReaped": 196.37
+    },
+    {
+      "elapsed": 205.1242368221283,
+      "rss": 699559936,
+      "aggregateDisk": 1565829269,
+      "processGroupCPUSecondsIncludingReaped": 198.43
+    },
+    {
+      "elapsed": 207.2513563632965,
+      "rss": 133189632,
+      "aggregateDisk": 1566005087,
+      "processGroupCPUSecondsIncludingReaped": 200.49
+    },
+    {
+      "elapsed": 209.38862991333008,
+      "rss": 471273472,
+      "aggregateDisk": 1566029670,
+      "processGroupCPUSecondsIncludingReaped": 202.56000000000003
+    },
+    {
+      "elapsed": 211.52451133728027,
+      "rss": 587620352,
+      "aggregateDisk": 1566029670,
+      "processGroupCPUSecondsIncludingReaped": 204.62
+    },
+    {
+      "elapsed": 213.66594529151917,
+      "rss": 747659264,
+      "aggregateDisk": 1566029670,
+      "processGroupCPUSecondsIncludingReaped": 206.69000000000003
+    },
+    {
+      "elapsed": 215.80268144607544,
+      "rss": 237682688,
+      "aggregateDisk": 1566289688,
+      "processGroupCPUSecondsIncludingReaped": 208.77
+    },
+    {
+      "elapsed": 217.92398190498352,
+      "rss": 674770944,
+      "aggregateDisk": 1566289688,
+      "processGroupCPUSecondsIncludingReaped": 210.84
+    },
+    {
+      "elapsed": 220.05532383918762,
+      "rss": 770256896,
+      "aggregateDisk": 1566289688,
+      "processGroupCPUSecondsIncludingReaped": 212.89000000000001
+    },
+    {
+      "elapsed": 222.19133400917053,
+      "rss": 1024143360,
+      "aggregateDisk": 1566289688,
+      "processGroupCPUSecondsIncludingReaped": 214.96
+    },
+    {
+      "elapsed": 224.31270837783813,
+      "rss": 1072771072,
+      "aggregateDisk": 1566289688,
+      "processGroupCPUSecondsIncludingReaped": 217.03
+    },
+    {
+      "elapsed": 226.44204998016357,
+      "rss": 1117859840,
+      "aggregateDisk": 1566289688,
+      "processGroupCPUSecondsIncludingReaped": 219.09
+    },
+    {
+      "elapsed": 228.57132148742676,
+      "rss": 95158272,
+      "aggregateDisk": 1567077278,
+      "processGroupCPUSecondsIncludingReaped": 221.15
+    },
+    {
+      "elapsed": 230.7073631286621,
+      "rss": 590639104,
+      "aggregateDisk": 1567077278,
+      "processGroupCPUSecondsIncludingReaped": 223.22
+    },
+    {
+      "elapsed": 232.83534812927246,
+      "rss": 737255424,
+      "aggregateDisk": 1567077278,
+      "processGroupCPUSecondsIncludingReaped": 225.29
+    },
+    {
+      "elapsed": 234.96396136283875,
+      "rss": 1008836608,
+      "aggregateDisk": 1567077278,
+      "processGroupCPUSecondsIncludingReaped": 227.35
+    },
+    {
+      "elapsed": 237.09347343444824,
+      "rss": 1056722944,
+      "aggregateDisk": 1567077278,
+      "processGroupCPUSecondsIncludingReaped": 229.41
+    },
+    {
+      "elapsed": 239.2193443775177,
+      "rss": 1073893376,
+      "aggregateDisk": 1567077278,
+      "processGroupCPUSecondsIncludingReaped": 231.47
+    },
+    {
+      "elapsed": 241.3762173652649,
+      "rss": 1082675200,
+      "aggregateDisk": 1567077278,
+      "processGroupCPUSecondsIncludingReaped": 233.54000000000002
+    },
+    {
+      "elapsed": 243.51215600967407,
+      "rss": 1106923520,
+      "aggregateDisk": 1567077278,
+      "processGroupCPUSecondsIncludingReaped": 235.62
+    },
+    {
+      "elapsed": 245.63351130485535,
+      "rss": 1133793280,
+      "aggregateDisk": 1567077278,
+      "processGroupCPUSecondsIncludingReaped": 237.69
+    },
+    {
+      "elapsed": 247.7594277858734,
+      "rss": 24317952,
+      "aggregateDisk": 1568485551,
+      "processGroupCPUSecondsIncludingReaped": 239.76
+    },
+    {
+      "elapsed": 249.89652633666992,
+      "rss": 501145600,
+      "aggregateDisk": 1568485644,
+      "processGroupCPUSecondsIncludingReaped": 241.82000000000002
+    },
+    {
+      "elapsed": 252.03245449066162,
+      "rss": 621223936,
+      "aggregateDisk": 1568485644,
+      "processGroupCPUSecondsIncludingReaped": 243.89000000000001
+    },
+    {
+      "elapsed": 254.169114112854,
+      "rss": 885596160,
+      "aggregateDisk": 1568485644,
+      "processGroupCPUSecondsIncludingReaped": 245.95000000000002
+    },
+    {
+      "elapsed": 256.3074767589569,
+      "rss": 345550848,
+      "aggregateDisk": 1568729466,
+      "processGroupCPUSecondsIncludingReaped": 248.01
+    },
+    {
+      "elapsed": 258.44735193252563,
+      "rss": 644526080,
+      "aggregateDisk": 1568729466,
+      "processGroupCPUSecondsIncludingReaped": 250.07999999999998
+    },
+    {
+      "elapsed": 260.5999777317047,
+      "rss": 356012032,
+      "aggregateDisk": 1568971406,
+      "processGroupCPUSecondsIncludingReaped": 252.16
+    },
+    {
+      "elapsed": 262.73763704299927,
+      "rss": 597790720,
+      "aggregateDisk": 1568971406,
+      "processGroupCPUSecondsIncludingReaped": 254.24
+    },
+    {
+      "elapsed": 264.88853335380554,
+      "rss": 818515968,
+      "aggregateDisk": 1568971406,
+      "processGroupCPUSecondsIncludingReaped": 256.31
+    },
+    {
+      "elapsed": 267.03254747390747,
+      "rss": 1075044352,
+      "aggregateDisk": 1568972846,
+      "processGroupCPUSecondsIncludingReaped": 258.38
+    },
+    {
+      "elapsed": 269.1891920566559,
+      "rss": 1074921472,
+      "aggregateDisk": 1568972846,
+      "processGroupCPUSecondsIncludingReaped": 260.45
+    },
+    {
+      "elapsed": 271.31932377815247,
+      "rss": 1267335168,
+      "aggregateDisk": 1568972846,
+      "processGroupCPUSecondsIncludingReaped": 262.53000000000003
+    },
+    {
+      "elapsed": 273.46331238746643,
+      "rss": 1435238400,
+      "aggregateDisk": 1568972846,
+      "processGroupCPUSecondsIncludingReaped": 264.6
+    },
+    {
+      "elapsed": 275.62904381752014,
+      "rss": 1499332608,
+      "aggregateDisk": 1568972846,
+      "processGroupCPUSecondsIncludingReaped": 266.67
+    },
+    {
+      "elapsed": 277.75250220298767,
+      "rss": 1555038208,
+      "aggregateDisk": 1568972846,
+      "processGroupCPUSecondsIncludingReaped": 268.76
+    },
+    {
+      "elapsed": 279.8993377685547,
+      "rss": 1598029824,
+      "aggregateDisk": 1568972846,
+      "processGroupCPUSecondsIncludingReaped": 270.82
+    },
+    {
+      "elapsed": 282.03419494628906,
+      "rss": 1636171776,
+      "aggregateDisk": 1568972846,
+      "processGroupCPUSecondsIncludingReaped": 272.89
+    },
+    {
+      "elapsed": 284.179235458374,
+      "rss": 1693925376,
+      "aggregateDisk": 1568987021,
+      "processGroupCPUSecondsIncludingReaped": 274.96
+    },
+    {
+      "elapsed": 286.32593965530396,
+      "rss": 1674194944,
+      "aggregateDisk": 1568987021,
+      "processGroupCPUSecondsIncludingReaped": 277.03000000000003
+    },
+    {
+      "elapsed": 288.44780349731445,
+      "rss": 1674850304,
+      "aggregateDisk": 1568987021,
+      "processGroupCPUSecondsIncludingReaped": 279.1
+    },
+    {
+      "elapsed": 290.5860297679901,
+      "rss": 448528384,
+      "aggregateDisk": 1570598631,
+      "processGroupCPUSecondsIncludingReaped": 281.15999999999997
+    },
+    {
+      "elapsed": 292.7313320636749,
+      "rss": 770572288,
+      "aggregateDisk": 1570598631,
+      "processGroupCPUSecondsIncludingReaped": 283.22999999999996
+    },
+    {
+      "elapsed": 294.859831571579,
+      "rss": 833806336,
+      "aggregateDisk": 1570600349,
+      "processGroupCPUSecondsIncludingReaped": 285.3
+    },
+    {
+      "elapsed": 297.0097348690033,
+      "rss": 1135742976,
+      "aggregateDisk": 1570600349,
+      "processGroupCPUSecondsIncludingReaped": 287.35999999999996
+    },
+    {
+      "elapsed": 299.13135981559753,
+      "rss": 1258422272,
+      "aggregateDisk": 1570600349,
+      "processGroupCPUSecondsIncludingReaped": 289.44
+    },
+    {
+      "elapsed": 301.2598400115967,
+      "rss": 1319370752,
+      "aggregateDisk": 1570600349,
+      "processGroupCPUSecondsIncludingReaped": 291.5
+    },
+    {
+      "elapsed": 303.38926243782043,
+      "rss": 1362231296,
+      "aggregateDisk": 1570600349,
+      "processGroupCPUSecondsIncludingReaped": 293.57
+    },
+    {
+      "elapsed": 305.5086431503296,
+      "rss": 1395785728,
+      "aggregateDisk": 1570600349,
+      "processGroupCPUSecondsIncludingReaped": 295.62
+    },
+    {
+      "elapsed": 307.6594398021698,
+      "rss": 1422786560,
+      "aggregateDisk": 1570600349,
+      "processGroupCPUSecondsIncludingReaped": 297.68
+    },
+    {
+      "elapsed": 309.7872884273529,
+      "rss": 1452015616,
+      "aggregateDisk": 1570600349,
+      "processGroupCPUSecondsIncludingReaped": 299.76
+    },
+    {
+      "elapsed": 311.9233283996582,
+      "rss": 26513408,
+      "aggregateDisk": 1570862354,
+      "processGroupCPUSecondsIncludingReaped": 301.82
+    },
+    {
+      "elapsed": 314.0621271133423,
+      "rss": 457654272,
+      "aggregateDisk": 1571873592,
+      "processGroupCPUSecondsIncludingReaped": 303.89
+    },
+    {
+      "elapsed": 316.20565581321716,
+      "rss": 584007680,
+      "aggregateDisk": 1571873592,
+      "processGroupCPUSecondsIncludingReaped": 305.96
+    },
+    {
+      "elapsed": 318.3433299064636,
+      "rss": 750731264,
+      "aggregateDisk": 1571873592,
+      "processGroupCPUSecondsIncludingReaped": 308.02
+    },
+    {
+      "elapsed": 320.4731583595276,
+      "rss": 482103296,
+      "aggregateDisk": 1572048582,
+      "processGroupCPUSecondsIncludingReaped": 310.09
+    },
+    {
+      "elapsed": 322.6074061393738,
+      "rss": 609079296,
+      "aggregateDisk": 1572048582,
+      "processGroupCPUSecondsIncludingReaped": 312.15999999999997
+    },
+    {
+      "elapsed": 324.73943519592285,
+      "rss": 47353856,
+      "aggregateDisk": 1572204006,
+      "processGroupCPUSecondsIncludingReaped": 314.23
+    },
+    {
+      "elapsed": 326.8817822933197,
+      "rss": 479580160,
+      "aggregateDisk": 1572204006,
+      "processGroupCPUSecondsIncludingReaped": 316.3
+    },
+    {
+      "elapsed": 329.0233721733093,
+      "rss": 612753408,
+      "aggregateDisk": 1572204006,
+      "processGroupCPUSecondsIncludingReaped": 318.36
+    },
+    {
+      "elapsed": 331.1637828350067,
+      "rss": 813686784,
+      "aggregateDisk": 1572204006,
+      "processGroupCPUSecondsIncludingReaped": 320.43
+    },
+    {
+      "elapsed": 333.2913329601288,
+      "rss": 347193344,
+      "aggregateDisk": 1572398889,
+      "processGroupCPUSecondsIncludingReaped": 322.51000000000005
+    },
+    {
+      "elapsed": 335.42883706092834,
+      "rss": 612151296,
+      "aggregateDisk": 1572398889,
+      "processGroupCPUSecondsIncludingReaped": 324.58000000000004
+    },
+    {
+      "elapsed": 337.57550954818726,
+      "rss": 142147584,
+      "aggregateDisk": 1572674461,
+      "processGroupCPUSecondsIncludingReaped": 326.64
+    },
+    {
+      "elapsed": 339.72733879089355,
+      "rss": 476336128,
+      "aggregateDisk": 1572674461,
+      "processGroupCPUSecondsIncludingReaped": 328.71
+    },
+    {
+      "elapsed": 341.85814094543457,
+      "rss": 589934592,
+      "aggregateDisk": 1572679827,
+      "processGroupCPUSecondsIncludingReaped": 330.79
+    },
+    {
+      "elapsed": 344.01540517807007,
+      "rss": 760066048,
+      "aggregateDisk": 1572679827,
+      "processGroupCPUSecondsIncludingReaped": 332.85
+    },
+    {
+      "elapsed": 346.1525225639343,
+      "rss": 872525824,
+      "aggregateDisk": 1572679827,
+      "processGroupCPUSecondsIncludingReaped": 334.93
+    },
+    {
+      "elapsed": 348.2730610370636,
+      "rss": 916443136,
+      "aggregateDisk": 1572679827,
+      "processGroupCPUSecondsIncludingReaped": 336.99
+    },
+    {
+      "elapsed": 350.40062499046326,
+      "rss": 315346944,
+      "aggregateDisk": 1573076582,
+      "processGroupCPUSecondsIncludingReaped": 339.06
+    },
+    {
+      "elapsed": 352.5214364528656,
+      "rss": 358719488,
+      "aggregateDisk": 1573152191,
+      "processGroupCPUSecondsIncludingReaped": 341.12
+    },
+    {
+      "elapsed": 354.6433176994324,
+      "rss": 163287040,
+      "aggregateDisk": 1573313291,
+      "processGroupCPUSecondsIncludingReaped": 343.18
+    },
+    {
+      "elapsed": 356.7636947631836,
+      "rss": 553779200,
+      "aggregateDisk": 1573313291,
+      "processGroupCPUSecondsIncludingReaped": 345.24
+    },
+    {
+      "elapsed": 358.90071177482605,
+      "rss": 639651840,
+      "aggregateDisk": 1573313291,
+      "processGroupCPUSecondsIncludingReaped": 347.29
+    },
+    {
+      "elapsed": 361.0277488231659,
+      "rss": 769675264,
+      "aggregateDisk": 1573313291,
+      "processGroupCPUSecondsIncludingReaped": 349.37
+    },
+    {
+      "elapsed": 363.149432182312,
+      "rss": 346955776,
+      "aggregateDisk": 1573634069,
+      "processGroupCPUSecondsIncludingReaped": 351.43
+    },
+    {
+      "elapsed": 365.2940294742584,
+      "rss": 611901440,
+      "aggregateDisk": 1573634069,
+      "processGroupCPUSecondsIncludingReaped": 353.49
+    },
+    {
+      "elapsed": 367.41272616386414,
+      "rss": 701341696,
+      "aggregateDisk": 1573634069,
+      "processGroupCPUSecondsIncludingReaped": 355.56
+    },
+    {
+      "elapsed": 369.5294785499573,
+      "rss": 411607040,
+      "aggregateDisk": 1573838324,
+      "processGroupCPUSecondsIncludingReaped": 357.62
+    },
+    {
+      "elapsed": 371.65176796913147,
+      "rss": 587931648,
+      "aggregateDisk": 1573840163,
+      "processGroupCPUSecondsIncludingReaped": 359.67
+    },
+    {
+      "elapsed": 373.80356550216675,
+      "rss": 722804736,
+      "aggregateDisk": 1573840163,
+      "processGroupCPUSecondsIncludingReaped": 361.74
+    },
+    {
+      "elapsed": 375.9320750236511,
+      "rss": 381710336,
+      "aggregateDisk": 1574041164,
+      "processGroupCPUSecondsIncludingReaped": 363.82000000000005
+    },
+    {
+      "elapsed": 378.0614056587219,
+      "rss": 586743808,
+      "aggregateDisk": 1574041164,
+      "processGroupCPUSecondsIncludingReaped": 365.89000000000004
+    },
+    {
+      "elapsed": 380.18245577812195,
+      "rss": 183656448,
+      "aggregateDisk": 1574167358,
+      "processGroupCPUSecondsIncludingReaped": 367.94
+    },
+    {
+      "elapsed": 382.31964468955994,
+      "rss": 532176896,
+      "aggregateDisk": 1574167358,
+      "processGroupCPUSecondsIncludingReaped": 370.0
+    },
+    {
+      "elapsed": 384.44247603416443,
+      "rss": 623632384,
+      "aggregateDisk": 1574167358,
+      "processGroupCPUSecondsIncludingReaped": 372.06
+    },
+    {
+      "elapsed": 386.57534861564636,
+      "rss": 414605312,
+      "aggregateDisk": 1574282187,
+      "processGroupCPUSecondsIncludingReaped": 374.12
+    },
+    {
+      "elapsed": 388.7122526168823,
+      "rss": 584212480,
+      "aggregateDisk": 1574282187,
+      "processGroupCPUSecondsIncludingReaped": 376.19
+    },
+    {
+      "elapsed": 390.84204173088074,
+      "rss": 330461184,
+      "aggregateDisk": 1574404686,
+      "processGroupCPUSecondsIncludingReaped": 378.26000000000005
+    },
+    {
+      "elapsed": 392.98423075675964,
+      "rss": 631009280,
+      "aggregateDisk": 1574404686,
+      "processGroupCPUSecondsIncludingReaped": 380.32000000000005
+    },
+    {
+      "elapsed": 395.11535382270813,
+      "rss": 665894912,
+      "aggregateDisk": 1574404686,
+      "processGroupCPUSecondsIncludingReaped": 382.40000000000003
+    },
+    {
+      "elapsed": 397.2453062534332,
+      "rss": 515321856,
+      "aggregateDisk": 1574577007,
+      "processGroupCPUSecondsIncludingReaped": 384.46999999999997
+    },
+    {
+      "elapsed": 399.3673691749573,
+      "rss": 637300736,
+      "aggregateDisk": 1574577007,
+      "processGroupCPUSecondsIncludingReaped": 386.53
+    },
+    {
+      "elapsed": 401.5139157772064,
+      "rss": 896692224,
+      "aggregateDisk": 1574577007,
+      "processGroupCPUSecondsIncludingReaped": 388.59
+    },
+    {
+      "elapsed": 403.6718895435333,
+      "rss": 192520192,
+      "aggregateDisk": 1574886696,
+      "processGroupCPUSecondsIncludingReaped": 390.66
+    },
+    {
+      "elapsed": 405.8085069656372,
+      "rss": 528080896,
+      "aggregateDisk": 1574886696,
+      "processGroupCPUSecondsIncludingReaped": 392.74
+    },
+    {
+      "elapsed": 407.9378499984741,
+      "rss": 634380288,
+      "aggregateDisk": 1574886696,
+      "processGroupCPUSecondsIncludingReaped": 394.81000000000006
+    },
+    {
+      "elapsed": 410.05847096443176,
+      "rss": 795340800,
+      "aggregateDisk": 1574886736,
+      "processGroupCPUSecondsIncludingReaped": 396.87
+    },
+    {
+      "elapsed": 412.2073459625244,
+      "rss": 864882688,
+      "aggregateDisk": 1574886736,
+      "processGroupCPUSecondsIncludingReaped": 398.93
+    },
+    {
+      "elapsed": 414.33617424964905,
+      "rss": 176922624,
+      "aggregateDisk": 1575327866,
+      "processGroupCPUSecondsIncludingReaped": 401.01
+    },
+    {
+      "elapsed": 416.4633481502533,
+      "rss": 578052096,
+      "aggregateDisk": 1575327866,
+      "processGroupCPUSecondsIncludingReaped": 403.08
+    },
+    {
+      "elapsed": 418.5844078063965,
+      "rss": 735633408,
+      "aggregateDisk": 1575327866,
+      "processGroupCPUSecondsIncludingReaped": 405.14
+    },
+    {
+      "elapsed": 420.727596282959,
+      "rss": 984408064,
+      "aggregateDisk": 1575327866,
+      "processGroupCPUSecondsIncludingReaped": 407.21000000000004
+    },
+    {
+      "elapsed": 422.8514950275421,
+      "rss": 1107222528,
+      "aggregateDisk": 1575327866,
+      "processGroupCPUSecondsIncludingReaped": 409.28000000000003
+    },
+    {
+      "elapsed": 424.97966480255127,
+      "rss": 1173807104,
+      "aggregateDisk": 1575327866,
+      "processGroupCPUSecondsIncludingReaped": 411.33
+    },
+    {
+      "elapsed": 427.10824155807495,
+      "rss": 1226891264,
+      "aggregateDisk": 1575327866,
+      "processGroupCPUSecondsIncludingReaped": 413.40000000000003
+    },
+    {
+      "elapsed": 429.2353549003601,
+      "rss": 282279936,
+      "aggregateDisk": 1575757420,
+      "processGroupCPUSecondsIncludingReaped": 415.45
+    },
+    {
+      "elapsed": 431.3801851272583,
+      "rss": 228528128,
+      "aggregateDisk": 1575836690,
+      "processGroupCPUSecondsIncludingReaped": 417.52000000000004
+    },
+    {
+      "elapsed": 433.5335211753845,
+      "rss": 440078336,
+      "aggregateDisk": 1575836690,
+      "processGroupCPUSecondsIncludingReaped": 419.59000000000003
+    },
+    {
+      "elapsed": 435.66340947151184,
+      "rss": 538091520,
+      "aggregateDisk": 1575836690,
+      "processGroupCPUSecondsIncludingReaped": 421.66
+    },
+    {
+      "elapsed": 437.78535747528076,
+      "rss": 307822592,
+      "aggregateDisk": 1576038136,
+      "processGroupCPUSecondsIncludingReaped": 423.74
+    },
+    {
+      "elapsed": 439.92168974876404,
+      "rss": 151240704,
+      "aggregateDisk": 1576156785,
+      "processGroupCPUSecondsIncludingReaped": 425.79
+    },
+    {
+      "elapsed": 442.0512628555298,
+      "rss": 588554240,
+      "aggregateDisk": 1576156785,
+      "processGroupCPUSecondsIncludingReaped": 427.86
+    },
+    {
+      "elapsed": 444.17933988571167,
+      "rss": 691732480,
+      "aggregateDisk": 1576156785,
+      "processGroupCPUSecondsIncludingReaped": 429.92
+    },
+    {
+      "elapsed": 446.30217719078064,
+      "rss": 952696832,
+      "aggregateDisk": 1576156785,
+      "processGroupCPUSecondsIncludingReaped": 431.98
+    },
+    {
+      "elapsed": 448.42332696914673,
+      "rss": 1020784640,
+      "aggregateDisk": 1576156785,
+      "processGroupCPUSecondsIncludingReaped": 434.04
+    },
+    {
+      "elapsed": 450.55133509635925,
+      "rss": 154882048,
+      "aggregateDisk": 1576615903,
+      "processGroupCPUSecondsIncludingReaped": 436.11
+    },
+    {
+      "elapsed": 452.7473397254944,
+      "rss": 573657088,
+      "aggregateDisk": 1576615903,
+      "processGroupCPUSecondsIncludingReaped": 438.17
+    },
+    {
+      "elapsed": 454.8673448562622,
+      "rss": 687579136,
+      "aggregateDisk": 1576615903,
+      "processGroupCPUSecondsIncludingReaped": 440.27
+    },
+    {
+      "elapsed": 457.01534366607666,
+      "rss": 916430848,
+      "aggregateDisk": 1576615903,
+      "processGroupCPUSecondsIncludingReaped": 442.34
+    },
+    {
+      "elapsed": 459.1447842121124,
+      "rss": 75132928,
+      "aggregateDisk": 1577001590,
+      "processGroupCPUSecondsIncludingReaped": 444.41
+    },
+    {
+      "elapsed": 461.27956676483154,
+      "rss": 519356416,
+      "aggregateDisk": 1577001590,
+      "processGroupCPUSecondsIncludingReaped": 446.47
+    },
+    {
+      "elapsed": 463.45547437667847,
+      "rss": 586207232,
+      "aggregateDisk": 1577001590,
+      "processGroupCPUSecondsIncludingReaped": 448.54
+    },
+    {
+      "elapsed": 465.63329243659973,
+      "rss": 758173696,
+      "aggregateDisk": 1577001590,
+      "processGroupCPUSecondsIncludingReaped": 450.63
+    },
+    {
+      "elapsed": 467.7633593082428,
+      "rss": 248483840,
+      "aggregateDisk": 1577256754,
+      "processGroupCPUSecondsIncludingReaped": 452.71000000000004
+    },
+    {
+      "elapsed": 469.893105506897,
+      "rss": 454791168,
+      "aggregateDisk": 1577256754,
+      "processGroupCPUSecondsIncludingReaped": 454.78000000000003
+    },
+    {
+      "elapsed": 472.0473577976227,
+      "rss": 242864128,
+      "aggregateDisk": 1577343196,
+      "processGroupCPUSecondsIncludingReaped": 456.84000000000003
+    },
+    {
+      "elapsed": 474.19140219688416,
+      "rss": 422170624,
+      "aggregateDisk": 1577343196,
+      "processGroupCPUSecondsIncludingReaped": 458.92
+    },
+    {
+      "elapsed": 476.3601279258728,
+      "rss": 166051840,
+      "aggregateDisk": 1577426724,
+      "processGroupCPUSecondsIncludingReaped": 460.99
+    },
+    {
+      "elapsed": 478.5153601169586,
+      "rss": 356237312,
+      "aggregateDisk": 1577426724,
+      "processGroupCPUSecondsIncludingReaped": 463.07
+    },
+    {
+      "elapsed": 480.6840319633484,
+      "rss": 556515328,
+      "aggregateDisk": 1577426724,
+      "processGroupCPUSecondsIncludingReaped": 465.15
+    },
+    {
+      "elapsed": 482.8873736858368,
+      "rss": 414986240,
+      "aggregateDisk": 1577507091,
+      "processGroupCPUSecondsIncludingReaped": 467.25
+    },
+    {
+      "elapsed": 485.03146171569824,
+      "rss": 579715072,
+      "aggregateDisk": 1577507091,
+      "processGroupCPUSecondsIncludingReaped": 469.34000000000003
+    },
+    {
+      "elapsed": 487.18433260917664,
+      "rss": 42364928,
+      "aggregateDisk": 1577633049,
+      "processGroupCPUSecondsIncludingReaped": 471.42
+    },
+    {
+      "elapsed": 489.3313422203064,
+      "rss": 481808384,
+      "aggregateDisk": 1577633049,
+      "processGroupCPUSecondsIncludingReaped": 473.5
+    },
+    {
+      "elapsed": 491.48496556282043,
+      "rss": 590770176,
+      "aggregateDisk": 1577633049,
+      "processGroupCPUSecondsIncludingReaped": 475.57000000000005
+    },
+    {
+      "elapsed": 493.6838665008545,
+      "rss": 816869376,
+      "aggregateDisk": 1577633049,
+      "processGroupCPUSecondsIncludingReaped": 477.64000000000004
+    },
+    {
+      "elapsed": 495.82895040512085,
+      "rss": 425345024,
+      "aggregateDisk": 1577803522,
+      "processGroupCPUSecondsIncludingReaped": 479.73
+    },
+    {
+      "elapsed": 497.97283458709717,
+      "rss": 590761984,
+      "aggregateDisk": 1577803522,
+      "processGroupCPUSecondsIncludingReaped": 481.8
+    },
+    {
+      "elapsed": 500.1001329421997,
+      "rss": 47747072,
+      "aggregateDisk": 1577974316,
+      "processGroupCPUSecondsIncludingReaped": 483.88
+    },
+    {
+      "elapsed": 502.2835249900818,
+      "rss": 484466688,
+      "aggregateDisk": 1577977895,
+      "processGroupCPUSecondsIncludingReaped": 485.94
+    },
+    {
+      "elapsed": 504.4649839401245,
+      "rss": 592924672,
+      "aggregateDisk": 1577977895,
+      "processGroupCPUSecondsIncludingReaped": 488.03000000000003
+    },
+    {
+      "elapsed": 506.62342143058777,
+      "rss": 805916672,
+      "aggregateDisk": 1577977895,
+      "processGroupCPUSecondsIncludingReaped": 490.11
+    },
+    {
+      "elapsed": 508.7861361503601,
+      "rss": 397713408,
+      "aggregateDisk": 1580181054,
+      "processGroupCPUSecondsIncludingReaped": 492.21
+    },
+    {
+      "elapsed": 510.93308544158936,
+      "rss": 592924672,
+      "aggregateDisk": 1580607289,
+      "processGroupCPUSecondsIncludingReaped": 494.3
+    },
+    {
+      "elapsed": 513.0678224563599,
+      "rss": 819417088,
+      "aggregateDisk": 1580607289,
+      "processGroupCPUSecondsIncludingReaped": 496.37
+    },
+    {
+      "elapsed": 515.2313594818115,
+      "rss": 465715200,
+      "aggregateDisk": 1580778360,
+      "processGroupCPUSecondsIncludingReaped": 498.43
+    },
+    {
+      "elapsed": 517.3673484325409,
+      "rss": 582299648,
+      "aggregateDisk": 1580778360,
+      "processGroupCPUSecondsIncludingReaped": 500.52
+    },
+    {
+      "elapsed": 519.5049006938934,
+      "rss": 249442304,
+      "aggregateDisk": 1580908203,
+      "processGroupCPUSecondsIncludingReaped": 502.58
+    },
+    {
+      "elapsed": 521.6393201351166,
+      "rss": 560050176,
+      "aggregateDisk": 1580908203,
+      "processGroupCPUSecondsIncludingReaped": 504.65
+    },
+    {
+      "elapsed": 523.811457157135,
+      "rss": 664182784,
+      "aggregateDisk": 1580908203,
+      "processGroupCPUSecondsIncludingReaped": 506.71
+    },
+    {
+      "elapsed": 525.9562215805054,
+      "rss": 398147584,
+      "aggregateDisk": 1581052370,
+      "processGroupCPUSecondsIncludingReaped": 508.78999999999996
+    },
+    {
+      "elapsed": 528.1354703903198,
+      "rss": 579727360,
+      "aggregateDisk": 1581052370,
+      "processGroupCPUSecondsIncludingReaped": 510.87
+    },
+    {
+      "elapsed": 530.3113214969635,
+      "rss": 700182528,
+      "aggregateDisk": 1581052370,
+      "processGroupCPUSecondsIncludingReaped": 512.96
+    },
+    {
+      "elapsed": 532.4756288528442,
+      "rss": 403263488,
+      "aggregateDisk": 1581322465,
+      "processGroupCPUSecondsIncludingReaped": 515.0600000000001
+    },
+    {
+      "elapsed": 534.621577501297,
+      "rss": 588357632,
+      "aggregateDisk": 1581322465,
+      "processGroupCPUSecondsIncludingReaped": 517.14
+    },
+    {
+      "elapsed": 536.7754309177399,
+      "rss": 798466048,
+      "aggregateDisk": 1581322465,
+      "processGroupCPUSecondsIncludingReaped": 519.22
+    },
+    {
+      "elapsed": 538.9215486049652,
+      "rss": 339283968,
+      "aggregateDisk": 1581456043,
+      "processGroupCPUSecondsIncludingReaped": 521.29
+    },
+    {
+      "elapsed": 541.0793509483337,
+      "rss": 516624384,
+      "aggregateDisk": 1581456043,
+      "processGroupCPUSecondsIncludingReaped": 523.37
+    },
+    {
+      "elapsed": 543.217969417572,
+      "rss": 320393216,
+      "aggregateDisk": 1581535585,
+      "processGroupCPUSecondsIncludingReaped": 525.45
+    },
+    {
+      "elapsed": 545.3553416728973,
+      "rss": 504942592,
+      "aggregateDisk": 1581535585,
+      "processGroupCPUSecondsIncludingReaped": 527.52
+    },
+    {
+      "elapsed": 547.5084052085876,
+      "rss": 277200896,
+      "aggregateDisk": 1581613933,
+      "processGroupCPUSecondsIncludingReaped": 529.56
+    },
+    {
+      "elapsed": 549.6706666946411,
+      "rss": 288796672,
+      "aggregateDisk": 1581676286,
+      "processGroupCPUSecondsIncludingReaped": 531.65
+    },
+    {
+      "elapsed": 551.843456029892,
+      "rss": 99426304,
+      "aggregateDisk": 1581764039,
+      "processGroupCPUSecondsIncludingReaped": 533.73
+    },
+    {
+      "elapsed": 554.0073330402374,
+      "rss": 320733184,
+      "aggregateDisk": 1581764039,
+      "processGroupCPUSecondsIncludingReaped": 535.82
+    },
+    {
+      "elapsed": 556.1555542945862,
+      "rss": 237137920,
+      "aggregateDisk": 1581819947,
+      "processGroupCPUSecondsIncludingReaped": 537.9100000000001
+    },
+    {
+      "elapsed": 558.3317487239838,
+      "rss": 174587904,
+      "aggregateDisk": 1581890160,
+      "processGroupCPUSecondsIncludingReaped": 539.9699999999999
+    },
+    {
+      "elapsed": 560.4759528636932,
+      "rss": 342360064,
+      "aggregateDisk": 1581890160,
+      "processGroupCPUSecondsIncludingReaped": 542.05
+    },
+    {
+      "elapsed": 562.6355514526367,
+      "rss": 39751680,
+      "aggregateDisk": 1581985731,
+      "processGroupCPUSecondsIncludingReaped": 544.14
+    },
+    {
+      "elapsed": 564.7638936042786,
+      "rss": 323727360,
+      "aggregateDisk": 1581985731,
+      "processGroupCPUSecondsIncludingReaped": 546.22
+    },
+    {
+      "elapsed": 566.9089846611023,
+      "rss": 288751616,
+      "aggregateDisk": 1582038319,
+      "processGroupCPUSecondsIncludingReaped": 548.27
+    },
+    {
+      "elapsed": 569.0433247089386,
+      "rss": 421679104,
+      "aggregateDisk": 1582038319,
+      "processGroupCPUSecondsIncludingReaped": 550.35
+    },
+    {
+      "elapsed": 571.189017534256,
+      "rss": 193466368,
+      "aggregateDisk": 1582310081,
+      "processGroupCPUSecondsIncludingReaped": 552.42
+    },
+    {
+      "elapsed": 573.3273329734802,
+      "rss": 39096320,
+      "aggregateDisk": 1582379169,
+      "processGroupCPUSecondsIncludingReaped": 554.49
+    },
+    {
+      "elapsed": 575.463365316391,
+      "rss": 325873664,
+      "aggregateDisk": 1582379169,
+      "processGroupCPUSecondsIncludingReaped": 556.5600000000001
+    },
+    {
+      "elapsed": 577.6083676815033,
+      "rss": 240496640,
+      "aggregateDisk": 1582445596,
+      "processGroupCPUSecondsIncludingReaped": 558.63
+    },
+    {
+      "elapsed": 579.7433288097382,
+      "rss": 30838784,
+      "aggregateDisk": 1582522978,
+      "processGroupCPUSecondsIncludingReaped": 560.7
+    },
+    {
+      "elapsed": 581.8648836612701,
+      "rss": 526299136,
+      "aggregateDisk": 1582522978,
+      "processGroupCPUSecondsIncludingReaped": 562.7700000000001
+    },
+    {
+      "elapsed": 584.0393605232239,
+      "rss": 668946432,
+      "aggregateDisk": 1582522978,
+      "processGroupCPUSecondsIncludingReaped": 564.83
+    },
+    {
+      "elapsed": 586.1784677505493,
+      "rss": 962154496,
+      "aggregateDisk": 1582522978,
+      "processGroupCPUSecondsIncludingReaped": 566.9200000000001
+    },
+    {
+      "elapsed": 588.3079791069031,
+      "rss": 1016680448,
+      "aggregateDisk": 1582522978,
+      "processGroupCPUSecondsIncludingReaped": 568.99
+    },
+    {
+      "elapsed": 590.4394986629486,
+      "rss": 311496704,
+      "aggregateDisk": 1582976056,
+      "processGroupCPUSecondsIncludingReaped": 571.04
+    },
+    {
+      "elapsed": 592.5692238807678,
+      "rss": 273354752,
+      "aggregateDisk": 1583047668,
+      "processGroupCPUSecondsIncludingReaped": 573.11
+    },
+    {
+      "elapsed": 594.7073473930359,
+      "rss": 629764096,
+      "aggregateDisk": 1583047668,
+      "processGroupCPUSecondsIncludingReaped": 575.1700000000001
+    },
+    {
+      "elapsed": 596.8436934947968,
+      "rss": 733990912,
+      "aggregateDisk": 1583047668,
+      "processGroupCPUSecondsIncludingReaped": 577.25
+    },
+    {
+      "elapsed": 598.9652616977692,
+      "rss": 262225920,
+      "aggregateDisk": 1583280539,
+      "processGroupCPUSecondsIncludingReaped": 579.32
+    },
+    {
+      "elapsed": 601.0917356014252,
+      "rss": 616120320,
+      "aggregateDisk": 1583280539,
+      "processGroupCPUSecondsIncludingReaped": 581.3800000000001
+    },
+    {
+      "elapsed": 603.2360112667084,
+      "rss": 710062080,
+      "aggregateDisk": 1583280539,
+      "processGroupCPUSecondsIncludingReaped": 583.44
+    },
+    {
+      "elapsed": 605.3643684387207,
+      "rss": 175747072,
+      "aggregateDisk": 1583505390,
+      "processGroupCPUSecondsIncludingReaped": 585.51
+    },
+    {
+      "elapsed": 607.4945425987244,
+      "rss": 343912448,
+      "aggregateDisk": 1583505390,
+      "processGroupCPUSecondsIncludingReaped": 587.5799999999999
+    },
+    {
+      "elapsed": 609.6326878070831,
+      "rss": 447127552,
+      "aggregateDisk": 1583505390,
+      "processGroupCPUSecondsIncludingReaped": 589.63
+    },
+    {
+      "elapsed": 611.7713527679443,
+      "rss": 250593280,
+      "aggregateDisk": 1583670203,
+      "processGroupCPUSecondsIncludingReaped": 591.6999999999999
+    },
+    {
+      "elapsed": 613.9993541240692,
+      "rss": 397524992,
+      "aggregateDisk": 1583673686,
+      "processGroupCPUSecondsIncludingReaped": 593.77
+    },
+    {
+      "elapsed": 616.1353509426117,
+      "rss": 225128448,
+      "aggregateDisk": 1583752251,
+      "processGroupCPUSecondsIncludingReaped": 595.89
+    },
+    {
+      "elapsed": 618.2839646339417,
+      "rss": 542556160,
+      "aggregateDisk": 1583752251,
+      "processGroupCPUSecondsIncludingReaped": 597.95
+    },
+    {
+      "elapsed": 620.4207293987274,
+      "rss": 654094336,
+      "aggregateDisk": 1583752256,
+      "processGroupCPUSecondsIncludingReaped": 600.02
+    },
+    {
+      "elapsed": 622.5873498916626,
+      "rss": 778743808,
+      "aggregateDisk": 1583752256,
+      "processGroupCPUSecondsIncludingReaped": 602.1
+    },
+    {
+      "elapsed": 624.7583482265472,
+      "rss": 81862656,
+      "aggregateDisk": 1584045202,
+      "processGroupCPUSecondsIncludingReaped": 604.18
+    },
+    {
+      "elapsed": 626.9032082557678,
+      "rss": 224464896,
+      "aggregateDisk": 1584160782,
+      "processGroupCPUSecondsIncludingReaped": 606.2700000000001
+    },
+    {
+      "elapsed": 629.0313377380371,
+      "rss": 408326144,
+      "aggregateDisk": 1584160782,
+      "processGroupCPUSecondsIncludingReaped": 608.33
+    },
+    {
+      "elapsed": 631.1545324325562,
+      "rss": 546721792,
+      "aggregateDisk": 1584160782,
+      "processGroupCPUSecondsIncludingReaped": 610.4000000000001
+    },
+    {
+      "elapsed": 633.2833616733551,
+      "rss": 642011136,
+      "aggregateDisk": 1584160782,
+      "processGroupCPUSecondsIncludingReaped": 612.47
+    },
+    {
+      "elapsed": 635.4044907093048,
+      "rss": 687493120,
+      "aggregateDisk": 1584160782,
+      "processGroupCPUSecondsIncludingReaped": 614.5300000000001
+    },
+    {
+      "elapsed": 637.5593531131744,
+      "rss": 724062208,
+      "aggregateDisk": 1584160782,
+      "processGroupCPUSecondsIncludingReaped": 616.59
+    },
+    {
+      "elapsed": 639.6967589855194,
+      "rss": 717889536,
+      "aggregateDisk": 1584160782,
+      "processGroupCPUSecondsIncludingReaped": 618.6600000000001
+    },
+    {
+      "elapsed": 641.8260624408722,
+      "rss": 719069184,
+      "aggregateDisk": 1584160782,
+      "processGroupCPUSecondsIncludingReaped": 620.73
+    },
+    {
+      "elapsed": 643.9682509899139,
+      "rss": 720510976,
+      "aggregateDisk": 1584160782,
+      "processGroupCPUSecondsIncludingReaped": 622.7900000000001
+    },
+    {
+      "elapsed": 646.1033487319946,
+      "rss": 723525632,
+      "aggregateDisk": 1584160782,
+      "processGroupCPUSecondsIncludingReaped": 624.87
+    },
+    {
+      "elapsed": 648.2396919727325,
+      "rss": 724705280,
+      "aggregateDisk": 1584160782,
+      "processGroupCPUSecondsIncludingReaped": 626.94
+    },
+    {
+      "elapsed": 650.3692507743835,
+      "rss": 40890368,
+      "aggregateDisk": 1585815886,
+      "processGroupCPUSecondsIncludingReaped": 628.99
+    },
+    {
+      "elapsed": 652.5155024528503,
+      "rss": 349282304,
+      "aggregateDisk": 1585815886,
+      "processGroupCPUSecondsIncludingReaped": 631.0600000000001
+    },
+    {
+      "elapsed": 654.6370112895966,
+      "rss": 416260096,
+      "aggregateDisk": 1585815886,
+      "processGroupCPUSecondsIncludingReaped": 633.13
+    },
+    {
+      "elapsed": 656.7593457698822,
+      "rss": 470130688,
+      "aggregateDisk": 1585815886,
+      "processGroupCPUSecondsIncludingReaped": 635.2
+    },
+    {
+      "elapsed": 658.887678861618,
+      "rss": 241831936,
+      "aggregateDisk": 1586312722,
+      "processGroupCPUSecondsIncludingReaped": 637.27
+    },
+    {
+      "elapsed": 661.0017948150635,
+      "rss": 286658560,
+      "aggregateDisk": 1586389410,
+      "processGroupCPUSecondsIncludingReaped": 639.34
+    },
+    {
+      "elapsed": 663.1313700675964,
+      "rss": 581500928,
+      "aggregateDisk": 1586389410,
+      "processGroupCPUSecondsIncludingReaped": 641.3900000000001
+    },
+    {
+      "elapsed": 665.267322063446,
+      "rss": 229220352,
+      "aggregateDisk": 1586594687,
+      "processGroupCPUSecondsIncludingReaped": 643.45
+    },
+    {
+      "elapsed": 667.387336730957,
+      "rss": 627339264,
+      "aggregateDisk": 1586594687,
+      "processGroupCPUSecondsIncludingReaped": 645.52
+    },
+    {
+      "elapsed": 669.5233490467072,
+      "rss": 763887616,
+      "aggregateDisk": 1586594687,
+      "processGroupCPUSecondsIncludingReaped": 647.59
+    },
+    {
+      "elapsed": 671.6593463420868,
+      "rss": 442617856,
+      "aggregateDisk": 1586729634,
+      "processGroupCPUSecondsIncludingReaped": 649.65
+    },
+    {
+      "elapsed": 673.8314030170441,
+      "rss": 80084992,
+      "aggregateDisk": 1586847859,
+      "processGroupCPUSecondsIncludingReaped": 651.72
+    },
+    {
+      "elapsed": 675.9606323242188,
+      "rss": 93544448,
+      "aggregateDisk": 1586938457,
+      "processGroupCPUSecondsIncludingReaped": 653.81
+    },
+    {
+      "elapsed": 678.0833616256714,
+      "rss": 213073920,
+      "aggregateDisk": 1587040664,
+      "processGroupCPUSecondsIncludingReaped": 655.87
+    },
+    {
+      "elapsed": 680.2119836807251,
+      "rss": 319246336,
+      "aggregateDisk": 1587040664,
+      "processGroupCPUSecondsIncludingReaped": 657.93
+    },
+    {
+      "elapsed": 682.3420107364655,
+      "rss": 451465216,
+      "aggregateDisk": 1587340069,
+      "processGroupCPUSecondsIncludingReaped": 660.0
+    },
+    {
+      "elapsed": 684.4791836738586,
+      "rss": 680095744,
+      "aggregateDisk": 1587340069,
+      "processGroupCPUSecondsIncludingReaped": 662.06
+    },
+    {
+      "elapsed": 686.6275269985199,
+      "rss": 835547136,
+      "aggregateDisk": 1587340069,
+      "processGroupCPUSecondsIncludingReaped": 664.13
+    },
+    {
+      "elapsed": 688.7473239898682,
+      "rss": 39620608,
+      "aggregateDisk": 1587873446,
+      "processGroupCPUSecondsIncludingReaped": 666.1999999999999
+    },
+    {
+      "elapsed": 690.8675148487091,
+      "rss": 118870016,
+      "aggregateDisk": 1587991547,
+      "processGroupCPUSecondsIncludingReaped": 668.27
+    },
+    {
+      "elapsed": 693.0165719985962,
+      "rss": 202604544,
+      "aggregateDisk": 1588103738,
+      "processGroupCPUSecondsIncludingReaped": 670.3199999999999
+    },
+    {
+      "elapsed": 695.1440076828003,
+      "rss": 618143744,
+      "aggregateDisk": 1588103738,
+      "processGroupCPUSecondsIncludingReaped": 672.39
+    },
+    {
+      "elapsed": 697.2729172706604,
+      "rss": 767557632,
+      "aggregateDisk": 1588103738,
+      "processGroupCPUSecondsIncludingReaped": 674.46
+    },
+    {
+      "elapsed": 699.3926689624786,
+      "rss": 976879616,
+      "aggregateDisk": 1588103738,
+      "processGroupCPUSecondsIncludingReaped": 676.52
+    },
+    {
+      "elapsed": 701.535365819931,
+      "rss": 127807488,
+      "aggregateDisk": 1588509462,
+      "processGroupCPUSecondsIncludingReaped": 678.56
+    }
+  ]
+}

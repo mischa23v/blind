@@ -1,0 +1,32 @@
+0
+ctionWidgets, RenderingContextOpenGL2,
+  RenderingOpenGL2, ViewsContext2D, ViewsCore.
+
+Call Stack (most recent call first):
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:308 (find_VTK)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:561 (find_external_library)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/build/RTABMapConfig.cmake:18 (find_dependency)
+  CMakeLists.txt:4 (find_package)
+
+
+** WARNING ** surface features related to vtk will be disabled
+-- looking for PCL_COMMON
+-- looking for PCL_OCTREE
+-- looking for PCL_IO_PLY
+-- looking for PCL_IO
+-- looking for PCL_KDTREE
+-- looking for PCL_SEARCH
+-- looking for PCL_SURFACE
+-- looking for PCL_FILTERS
+-- looking for PCL_2D
+-- looking for PCL_FEATURES
+-- looking for PCL_REGISTRATION
+-- looking for PCL_SAMPLE_CONSENSUS
+-- looking for PCL_GEOMETRY
+-- looking for PCL_ML
+-- looking for PCL_SEGMENTATION
+-- Configuring done (1.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/adapter-build
+

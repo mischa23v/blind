@@ -1,0 +1,92 @@
+{
+  "command": [
+    "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/bin/cmake",
+    "--build",
+    "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/adapter-build",
+    "--parallel",
+    "1"
+  ],
+  "cpuAffinity": [
+    0
+  ],
+  "returncode": 0,
+  "stopReason": null,
+  "peakSampledTreeRSS": 974667776,
+  "elapsedSeconds": 25.63362455368042,
+  "childCPUSeconds": 25.067061,
+  "priorStageCPUSeconds": 891.952726,
+  "samples": [
+    {
+      "elapsed": 0.14968347549438477,
+      "rss": 0,
+      "aggregateDisk": 1600030775,
+      "processGroupCPUSecondsIncludingReaped": 0.0
+    },
+    {
+      "elapsed": 2.270902156829834,
+      "rss": 476999680,
+      "aggregateDisk": 1600555894,
+      "processGroupCPUSecondsIncludingReaped": 2.01
+    },
+    {
+      "elapsed": 4.39205527305603,
+      "rss": 656576512,
+      "aggregateDisk": 1600555894,
+      "processGroupCPUSecondsIncludingReaped": 4.06
+    },
+    {
+      "elapsed": 6.521216869354248,
+      "rss": 891457536,
+      "aggregateDisk": 1600555894,
+      "processGroupCPUSecondsIncludingReaped": 6.13
+    },
+    {
+      "elapsed": 8.642922639846802,
+      "rss": 94130176,
+      "aggregateDisk": 1600994488,
+      "processGroupCPUSecondsIncludingReaped": 8.19
+    },
+    {
+      "elapsed": 10.785342693328857,
+      "rss": 574066688,
+      "aggregateDisk": 1600994488,
+      "processGroupCPUSecondsIncludingReaped": 10.25
+    },
+    {
+      "elapsed": 12.921335220336914,
+      "rss": 705576960,
+      "aggregateDisk": 1600994488,
+      "processGroupCPUSecondsIncludingReaped": 12.309999999999999
+    },
+    {
+      "elapsed": 15.065349578857422,
+      "rss": 974667776,
+      "aggregateDisk": 1600994488,
+      "processGroupCPUSecondsIncludingReaped": 14.39
+    },
+    {
+      "elapsed": 17.221341371536255,
+      "rss": 23957504,
+      "aggregateDisk": 1601423615,
+      "processGroupCPUSecondsIncludingReaped": 16.470000000000002
+    },
+    {
+      "elapsed": 19.354660034179688,
+      "rss": 485969920,
+      "aggregateDisk": 1601423615,
+      "processGroupCPUSecondsIncludingReaped": 18.540000000000003
+    },
+    {
+      "elapsed": 21.48255228996277,
+      "rss": 588922880,
+      "aggregateDisk": 1601423615,
+      "processGroupCPUSecondsIncludingReaped": 20.6
+    },
+    {
+      "elapsed": 23.633341312408447,
+      "rss": 225529856,
+      "aggregateDisk": 1601612530,
+      "processGroupCPUSecondsIncludingReaped": 22.66
+    }
+  ]
+}

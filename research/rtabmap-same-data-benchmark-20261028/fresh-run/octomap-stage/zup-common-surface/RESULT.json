@@ -1,0 +1,115 @@
+{
+  "launchSHA256": "f8cd94e395ee827e62edb39866bbfd71eabacc8f660d3b80799b7ab2c3fab4ff",
+  "missingReferenceMeansFree": false,
+  "physicalSafetyEstablished": false,
+  "protocolSHA256": "3c79015256f98811c15ab6c61a32ddf7a643a9ecc13f721a9502a7721113b082",
+  "reference4cmPointCount": 127774,
+  "referenceSamplesSHA256": "55ece9f280595f12dc02644588d69d7f6ef71ffa7a8456d25102a7e96eb066e0",
+  "referenceSampling": {
+    "finiteOriginalReferenceHits": 1194544,
+    "missingReferenceRaysExcludedButNotFree": 141341,
+    "scheduledOriginalRays": 1335885
+  },
+  "registration": {
+    "determinant": 1.0636782973625978,
+    "scale": 1.0207908442387768,
+    "scaleFittedHere": false,
+    "singularValues": [
+      1.020790844238779,
+      1.020790844238778,
+      1.0207908442387734
+    ]
+  },
+  "results": {
+    "octomap_zup_regenerated": {
+      "arraySHA256": "e5fa3252986f45a28fb64f98a7ce1b80c3c5177af331e3a28af1fd297e8c32dd",
+      "common4cmPointCount": 247832,
+      "forwardUnsignedPointToReferenceTriangle": {
+        "invalid": 0,
+        "maxMetres": 1.3773164607565684,
+        "meanMetres": 0.09499359682924774,
+        "medianMetres": 0.041911340800248185,
+        "p95Metres": 0.4324976125155302,
+        "p99Metres": 0.7634245111578636,
+        "scheduled": 247832,
+        "valid": 247832,
+        "within": {
+          "0.02": {
+            "count": 80796,
+            "fractionOfScheduled": 0.32601116885632203
+          },
+          "0.05": {
+            "count": 136709,
+            "fractionOfScheduled": 0.5516196455663513
+          },
+          "0.1": {
+            "count": 187362,
+            "fractionOfScheduled": 0.7560040672713774
+          },
+          "0.2": {
+            "count": 216588,
+            "fractionOfScheduled": 0.8739307272668582
+          },
+          "0.5": {
+            "count": 238580,
+            "fractionOfScheduled": 0.9626682591432906
+          }
+        }
+      },
+      "rawOutputPointCount": 325714,
+      "reverseVisibleReferenceToSampledOutputPoint": {
+        "invalid": 0,
+        "maxMetres": 0.5293158536205111,
+        "meanMetres": 0.029304340081181945,
+        "medianMetres": 0.02469542879735441,
+        "p95Metres": 0.06192076535951686,
+        "p99Metres": 0.10781829117570615,
+        "scheduled": 127774,
+        "valid": 127774,
+        "within": {
+          "0.02": {
+            "count": 42029,
+            "fractionOfScheduled": 0.3289323336516036
+          },
+          "0.05": {
+            "count": 116066,
+            "fractionOfScheduled": 0.9083694648363517
+          },
+          "0.1": {
+            "count": 126245,
+            "fractionOfScheduled": 0.9880335592530561
+          },
+          "0.2": {
+            "count": 127565,
+            "fractionOfScheduled": 0.998364299466245
+          },
+          "0.5": {
+            "count": 127760,
+            "fractionOfScheduled": 0.9998904315431935
+          }
+        }
+      }
+    }
+  },
+  "runtime": {
+    "SMPBackend": "Sequential",
+    "executionMachine": {
+      "CPUQuotaNotEstablished": true,
+      "GPUUsed": false,
+      "cpuReportedModel": "AMD EPYC 9V74 80-Core Processor",
+      "iPhoneRuntimeTest": false,
+      "logicalCPUAffinityCount": 1,
+      "machine": "x86_64",
+      "memorySnapshotBytes": {
+        "MemAvailable": 9378271232,
+        "MemTotal": 10451439616
+      },
+      "release": "6.18.55",
+      "system": "Linux"
+    },
+    "threads": 1,
+    "version": "9.3.1"
+  },
+  "status": "completed",
+  "surfaceReconstructionPerformed": false
+}

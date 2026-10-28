@@ -1,0 +1,146 @@
+-- MOBILE_BUILD=OFF
+-- Could NOT find Pcap (missing: PCAP_LIBRARIES PCAP_INCLUDE_DIRS) 
+-- The imported target "VTK::ParseJava" references the file
+   "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/bin/vtkParseJava-9.3"
+but this file does not exist.  Possible reasons include:
+* The file was deleted, renamed, or moved to another location.
+* An install or uninstall procedure did not complete successfully.
+* The installation package was faulty and contained
+   "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/vtk-9.3/VTK-targets.cmake"
+but not all the files it references.
+
+-- The imported target "VTK::WrapJava" references the file
+   "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/bin/vtkWrapJava-9.3"
+but this file does not exist.  Possible reasons include:
+* The file was deleted, renamed, or moved to another location.
+* An install or uninstall procedure did not complete successfully.
+* The installation package was faulty and contained
+   "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/vtk-9.3/VTK-targets.cmake"
+but not all the files it references.
+
+CMake Warning (dev) at /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/Modules/FindFLANN.cmake:45 (find_package):
+  Policy CMP0144 is not set: find_package uses upper-case <PACKAGENAME>_ROOT
+  variables.  Run "cmake --help-policy CMP0144" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  CMake variable FLANN_ROOT is set to:
+
+    /usr
+
+  For compatibility, find_package is ignoring the variable, but code in a
+  .cmake module might still use it.
+Call Stack (most recent call first):
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:245 (find_package)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:290 (find_flann)
+  /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/cmake/pcl/PCLConfig.cmake:564 (find_external_library)
+  CMakeLists.txt:334 (FIND_PACKAGE)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Found flann version 1.9.2
+-- Found Qhull version 8.0.2
+-- PCL definitions don't contain "-march=native", make sure all libraries using Eigen are also compiled without that flag to avoid some segmentation faults (with gdb referring to some Eigen functions).
+-- Found SQLite3: /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/include /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/libsqlite3.so
+-- Found OpenCV: /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/include/opencv4
+-- Found PCL: /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/include/pcl-1.15;/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/include/eigen3;/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/include
+-- Found ZLIB: /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/include
+-- Found octomap 1.9.7: /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/include
+-- Performing Test COMPILER_SUPPORTS_CXX14
+-- Performing Test COMPILER_SUPPORTS_CXX14 - Success
+-- Found Pthreads
+-- Performing Test COMPILER_HAS_HIDDEN_VISIBILITY
+-- Performing Test COMPILER_HAS_HIDDEN_VISIBILITY - Success
+-- Performing Test COMPILER_HAS_HIDDEN_INLINE_VISIBILITY
+-- Performing Test COMPILER_HAS_HIDDEN_INLINE_VISIBILITY - Success
+-- Performing Test COMPILER_HAS_DEPRECATED_ATTR
+-- Performing Test COMPILER_HAS_DEPRECATED_ATTR - Success
+-- --------------------------------------------
+-- Info :
+--   RTAB-Map Version =     0.24.2
+--   CMAKE_VERSION =        3.31.6
+--   CMAKE_INSTALL_PREFIX = /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr
+--   CMAKE_BUILD_TYPE =     Release
+--   CMAKE_INSTALL_LIBDIR = lib
+--   BUILD_APP =            OFF
+--   BUILD_TOOLS =          OFF
+--   BUILD_EXAMPLES =       OFF
+--   BUILD_TESTING =        OFF
+--   BUILD_PERF_TESTS =     OFF
+--   ENABLE_COVERAGE =      OFF
+--   ENABLE_FORMAT_ERRORS = OFF
+--   BUILD_SHARED_LIBS =    ON
+--   CMAKE_CXX_FLAGS =  -fmessage-length=0 -std=c++14
+--   FLANN_KDTREE_MEM_OPT = OFF
+--   PCL_DEFINITIONS = ;-DDISABLE_VTK
+--   PCL_VERSION = 1.15.0
+-- 
+-- Optional dependencies ('*' affects some default parameters) :
+--  *With OpenCV 4.10.0 xfeatures2d = NO, nonfree = NO, aruco = NO (License: Apache 2)
+--   With Qt                   = NO (WITH_QT=OFF)
+--   With external SQLite3     = YES (License: Public Domain)
+--   With ORB OcTree           = NO (WITH_ORB_OCTREE=OFF)
+--   With SuperPoint           = NO (WITH_TORCH=OFF)
+--   With Superpoint Rpautrat  = NO (WITH_TORCH=OFF)
+--   With Python3              = NO (WITH_PYTHON=OFF)
+--   With Madgwick             = NO (WITH_MADGWICK=OFF)
+--   With FastCV               = NO (WITH_FASTCV=OFF)
+--   With AprilTag             = NO (WITH_APRILTAG=OFF)
+--   With PDAL                 = NO (WITH_PDAL=OFF)
+--   With libLAS               = NO (WITH_LIBLAS=OFF)
+--   With CudaSift             = NO (WITH_CUDASIFT=OFF)
+-- 
+--  Solvers:
+--   With TORO                 = YES (License: Creative Commons [Attribution-NonCommercial-ShareAlike])
+--  *With g2o                  = NO (WITH_G2O=OFF)
+--  *With GTSAM                = NO (WITH_GTSAM=OFF)
+--  *With Ceres                = NO (WITH_CERES=OFF)
+--   With MRPT                 = NO (WITH_MRPT=OFF)
+--   With VERTIGO              = NO (GTSAM or g2o required)
+--   With cvsba                = NO (WITH_CVSBA=OFF)
+--  *With libpointmatcher      = NO (WITH_POINTMATCHER=OFF)
+--   With CCCoreLib            = NO (WITH_CCCORELIB=OFF)
+--   With Open3D               = NO (WITH_OPEN3D=OFF)
+--   With OpenGV               = NO (WITH_OPENGV=OFF)
+-- 
+--  Reconstruction Approaches:
+--   With OctoMap 1.9.7        = YES (License: BSD)
+--   With GridMap              = NO (WITH_GRIDMAP=OFF)
+--   With CPUTSDF              = NO (WITH_CPUTSDF=OFF)
+--   With OpenChisel           = NO (WITH_OPENCHISEL=OFF)
+--   With AliceVision          = NO (WITH_ALICE_VISION=OFF)
+-- 
+--  Camera Drivers:
+--   With Freenect             = NO (WITH_FREENECT=OFF)
+--   With OpenNI               = NO (WITH_OPENNI=OFF)
+--   With OpenNI2              = NO (WITH_OPENNI2=OFF)
+--   With Freenect2            = NO (WITH_FREENECT2=OFF)
+--   With Kinect for Windows 2 = NO (WITH_K4W2=OFF)
+--   With Kinect for Azure     = NO (WITH_K4A=OFF)
+--   With dc1394               = NO (WITH_DC1394=OFF)
+--   With FlyCapture2/Triclops = NO (WITH_FLYCAPTURE2=OFF)
+--   With ZED                  = NO (WITH_ZED=OFF)
+--   With ZEDOC                = NO (WITH_ZEDOC=OFF)
+--   With RealSense            = NO (WITH_REALSENSE=OFF)
+--   With RealSense2           = NO (WITH_REALSENSE2=OFF)
+--   With MyntEyeS             = NO (WITH_MYNTEYE=OFF)
+--   With DepthAI              = NO (WITH_DEPTHAI=OFF)
+--   With XVisio SDK           = NO (WITH_XVSDK=OFF)
+--   With Orbbec SDK           = NO (WITH_ORBBEC_SDK=OFF)
+-- 
+--  Odometry Approaches:
+--   With loam_velodyne        = NO (WITH_LOAM=OFF)
+--   With floam                = NO (WITH_FLOAM=OFF)
+--   With lio_sam              = NO (WITH_LIOSAM=OFF)
+--   With libfovis             = NO (WITH_FOVIS=OFF)
+--   With libviso2             = NO (WITH_VISO2=OFF)
+--   With dvo_core             = NO (WITH_DVO=OFF)
+--   With okvis                = NO (WITH_OKVIS=OFF)
+--   With msckf_vio            = NO (WITH_MSCKF_VIO=OFF)
+--   With VINS-Fusion          = NO (WITH_VINS_FUSION=OFF)
+--   With OpenVINS             = NO (WITH_OPENVINS=OFF)
+--   With ORB_SLAM             = NO (WITH_ORB_SLAM=OFF)
+--   With cuVSLAM              = NO (WITH_CUVSLAM=OFF)
+-- Show all options with: cmake -LA | grep WITH_
+-- --------------------------------------------
+-- Configuring done (1.4s)
+-- Generating done (0.0s)
+-- Build files have been written to: /workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/build

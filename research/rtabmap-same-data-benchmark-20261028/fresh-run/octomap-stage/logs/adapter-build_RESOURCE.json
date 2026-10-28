@@ -1,0 +1,50 @@
+{
+  "command": [
+    "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/bin/cmake",
+    "--build",
+    "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/octomap-stage/adapter-build",
+    "--parallel",
+    "1"
+  ],
+  "cpuAffinity": [
+    0
+  ],
+  "returncode": 0,
+  "stopReason": null,
+  "peakSampledTreeRSS": 895733760,
+  "elapsedSeconds": 10.684061288833618,
+  "childCPUSeconds": 9.280189,
+  "priorStageCPUSeconds": 882.298615,
+  "samples": [
+    {
+      "elapsed": 0.14792227745056152,
+      "rss": 0,
+      "aggregateDisk": 1599495160,
+      "processGroupCPUSecondsIncludingReaped": 0.0
+    },
+    {
+      "elapsed": 2.2820377349853516,
+      "rss": 441270272,
+      "aggregateDisk": 1599495243,
+      "processGroupCPUSecondsIncludingReaped": 2.02
+    },
+    {
+      "elapsed": 4.418865919113159,
+      "rss": 605016064,
+      "aggregateDisk": 1599495243,
+      "processGroupCPUSecondsIncludingReaped": 4.09
+    },
+    {
+      "elapsed": 6.5482378005981445,
+      "rss": 895733760,
+      "aggregateDisk": 1599495243,
+      "processGroupCPUSecondsIncludingReaped": 6.159999999999999
+    },
+    {
+      "elapsed": 8.683810949325562,
+      "rss": 174395392,
+      "aggregateDisk": 1599770392,
+      "processGroupCPUSecondsIncludingReaped": 8.209999999999999
+    }
+  ]
+}
