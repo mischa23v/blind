@@ -1,0 +1,70 @@
+{
+  "status": "passed",
+  "checks": 1155,
+  "maximumFloatingDifference": 0.0,
+  "reviewedScriptSHA256": "4eeb7b4a61c0cdba6e2c6e7c16d564414eeb7a0d744361615ddb414e10b388dd",
+  "reviewedResultSHA256": "6de21c5b6910913a8785d2b1ca44384abee853ccef3e9a6eaf9900677e2ebc90",
+  "reviewedVisualBoxesSHA256": "c89410b73d32f05612fd0e97373373a91c8f736c501d53162d0d529e042c4a96",
+  "frames": [
+    {
+      "frame": "frame_00228",
+      "componentSizes": [
+        4166,
+        1689,
+        862,
+        675,
+        588,
+        287,
+        219,
+        151
+      ],
+      "largestComponentSensorZeroCount": 0,
+      "largestComponentSensorAtLeast4m": 2038,
+      "RGBSHA256": "273a66fcb447ece6c40a6bf1b24a4d75f45ec9fde1343e9399596c73816a7ecc",
+      "depthSHA256": "8ba7cd49144c4871e2639c503cc2bd0c02344b628b393e8378bc2ae951448f43"
+    },
+    {
+      "frame": "frame_00197",
+      "componentSizes": [
+        3305,
+        1422,
+        456,
+        360,
+        345,
+        218,
+        187,
+        132
+      ],
+      "largestComponentSensorZeroCount": 0,
+      "largestComponentSensorAtLeast4m": 431,
+      "RGBSHA256": "23f7d4815efc233e7ca87ec5c9045c65520a5f02740be9cd384d754318f83d9f",
+      "depthSHA256": "b5401b3524afac74e89e8ce4c38834271188367ffb9aa7191922c182ef630573"
+    },
+    {
+      "frame": "frame_00031",
+      "componentSizes": [
+        337,
+        139,
+        62,
+        19,
+        17,
+        16,
+        11,
+        10
+      ],
+      "largestComponentSensorZeroCount": 0,
+      "largestComponentSensorAtLeast4m": 0,
+      "RGBSHA256": "da39cac365c7137900a39e1914f3c1467da7c20a39b3cefec2003692bc4944f7",
+      "depthSHA256": "bbf6b34ecd977f91d33f6169b6d9a06c5255f2dde710e96e07e9604c733ec3d6"
+    }
+  ],
+  "scope": "Independent four-connected components, summaries, integer pixel grid, zero-depth exclusion, RGB dimensions/orientation/hash and algebraic projection roundtrip. No raycast repeated. Full saved ray evaluation and pose/registration already reviewed separately.",
+  "caveats": [
+    "Post-hoc selected regions; not unbiased scene-wide accuracy.",
+    "All distances axial metres, not Euclidean range.",
+    "Some recorded depths exceed fusion input cutoff; do not assume all corresponding surfaces were observed in training.",
+    "Display extent uses raster bins; numerical labels use exact stride-4 integer coordinates.",
+    "Observed earlier/later reconstructed first hits do not uniquely identify drift, truncation, changed furniture or implementation cause.",
+    "No measured-reference mask or physical hazard labels; no safety or false-clear/block rate."
+  ]
+}

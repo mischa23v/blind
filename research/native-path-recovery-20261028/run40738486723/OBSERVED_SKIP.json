@@ -1,0 +1,15 @@
+{
+  "observedAtUTC": "2026-10-28T17:45:26Z",
+  "repository": "mischa23v/blind",
+  "commit": "12a0b64bc403db3f48a997aea868b9ad670e73fb",
+  "workflowRun": 40738486723,
+  "event": "push",
+  "status": "completed",
+  "conclusion": "skipped",
+  "jobs": [{"id":122993379352,"name":"native","conclusion":"skipped","steps":[],"runner_id":null},{"id":122993379767,"name":"mesh-diagnostics-compile","conclusion":"skipped","steps":[],"runner_id":null}],
+  "artifactsCount": 0,
+  "repositoryPrivate": true,
+  "jobCondition": "github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'",
+  "interpretation": "Job privacy condition false; no runner allocated. Not native compilation, test failure, or pass. Full new same-export parity unavailable.",
+  "sources": ["https://api.github.com/repos/mischa23v/blind/actions/runs?head_sha=12a0b64bc403db3f48a997aea868b9ad670e73fb&per_page=10", "https://api.github.com/repos/mischa23v/blind/actions/runs/40738486723/jobs", "https://api.github.com/repos/mischa23v/blind/actions/runs/40738486723/artifacts"]
+}
