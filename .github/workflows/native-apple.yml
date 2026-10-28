@@ -10,6 +10,7 @@ on:
       - 'tools/ci/**'
       - 'research/native-mesh-decoder-81/**'
       - 'research/arkit-mesh-adapter-82/**'
+      - 'research/live-mesh-classified-bench-20261028/**'
       - 'research/mesh-candidate-ingress-83/**'
       - 'research/room-mesh-package-75/**'
       - 'research/native-candidate-app-integration-85/integrated/check.py'
@@ -154,3 +155,61 @@ jobs:
       - name: Compile diagnostics flag present only
         timeout-minutes: 20
         run: bash tools/ci/native-apple.sh diagnostics-build
+
+  classified-mesh-bench:
+    # Synthetic owned buffers only; macOS excludes the five iOS session fixtures.
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/codex/recovery-hazard-order-20261027')
+    runs-on: xcode-27
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Verify source and installed Apple toolchain
+        timeout-minutes: 3
+        run: |
+          bash tools/ci/native-apple.sh preflight
+          out="$RUNNER_TEMP/classified-mesh-bench"
+          mkdir -p "$out"
+          git rev-parse HEAD > "$out/source-sha.txt"
+          git status --porcelain > "$out/source-before.txt"
+          xcrun swift --version > "$out/swift-version.txt"
+          xcrun swift test --help > "$out/swift-test-help.txt"
+          grep -q -- '--build-system' "$out/swift-test-help.txt"
+          grep -q -- '--xunit-output' "$out/swift-test-help.txt"
+      - name: Run isolated classified-mesh package fixtures on macOS
+        timeout-minutes: 20
+        run: |
+          set -euo pipefail
+          out="$RUNNER_TEMP/classified-mesh-bench"
+          mkdir -p "$out"
+          set +e
+          xcrun swift test --package-path research/live-mesh-classified-bench-20261028 --scratch-path "$RUNNER_TEMP/classified-mesh-bench-build" --build-system native --jobs 1 --xunit-output "$out/tests.xml" 2>&1 | tee "$out/swift-test.log"
+          statuses=("${PIPESTATUS[@]}")
+          set -e
+          printf '{"swift_test_exit_code":%s,"log_writer_exit_code":%s,"scope":"macOS synthetic dependency fixtures","ios_session_fixtures_excluded":5}\n' "${statuses[0]}" "${statuses[1]}" > "$out/result.json"
+          git status --porcelain > "$out/source-after.txt"
+          test "${statuses[0]}" -eq 0
+          test "${statuses[1]}" -eq 0
+          test -s "$out/tests.xml"
+          diff -u "$out/source-before.txt" "$out/source-after.txt"
+      - name: Preserve classified-mesh synthetic test results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: classified-mesh-bench-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/classified-mesh-bench/*.txt
+            ${{ runner.temp }}/classified-mesh-bench/*.json
+            ${{ runner.temp }}/classified-mesh-bench/*.xml
+            ${{ runner.temp }}/classified-mesh-bench/*.log
+          if-no-files-found: error
+          retention-days: 3

@@ -1,0 +1,39 @@
+{
+  "status": "source-only validation passed; no native tests executed",
+  "source_commit": "2b4f38dc04296ce04c7430d4b7976c98f6af95eb",
+  "workflow_unchanged_except_job_and_path": true,
+  "original_guard_exactly_preserved": true,
+  "pinned_actions_retained": true,
+  "yaml_parse_pass": true,
+  "bash_syntax_pass": true,
+  "mock_shell_execution": [
+    {
+      "mock_swift_exit": 0,
+      "mock_source_changed": false,
+      "shell_exit": 0,
+      "receipt_exit_preserved": true
+    },
+    {
+      "mock_swift_exit": 9,
+      "mock_source_changed": false,
+      "shell_exit": 1,
+      "receipt_exit_preserved": true
+    },
+    {
+      "mock_swift_exit": 0,
+      "mock_source_changed": true,
+      "shell_exit": 1,
+      "receipt_exit_preserved": true
+    }
+  ],
+  "macos_fixtures_authored": 15,
+  "ios_conditional_fixtures_not_executed_by_job": 5,
+  "candidate_sha256": "8c65c7f7c0cfdf984afbac38d01ad68160d6b8e4801114e2fc49dcbf343fdd29",
+  "limitations": [
+    "No native compiler execution",
+    "No CI triggered",
+    "Swift CLI options checked again by preflight on runner",
+    "No physical guidance or camera activation",
+    "Public-only eligibility does not itself prove monetary billing; root owns zero-cost execution authorization"
+  ]
+}
