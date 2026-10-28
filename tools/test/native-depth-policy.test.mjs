@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { assertDepthHazardsBefore, declaration, depthHazardsCall, frameSignature, withoutComments } from './helpers/navigation-source-contract.mjs';
 const root = new URL('../../', import.meta.url);
 const read = p => readFileSync(new URL(p, root), 'utf8');
 const sampler = read('ios/BlindAssist/DepthSampler.swift');
@@ -44,15 +45,48 @@ test('shared values retain native hazard semantics and Float-to-Double order', (
   }
 });
 test('existing ingress cadence and nil invalidation still precede detector; runtime cadence stays owned', () => {
-  const frames=nav.slice(nav.indexOf('func session(_ session: ARSession, didUpdate frame: ARFrame)'));
-  const check = s => {
-    before(s,'frame.timestamp - lastProcessed >= 1.0 / 15','DepthSampler.observation(from: frame)');
-    before(s,'FrameTimestampPolicy.isFresh','lastProcessed = frame.timestamp');
-    before(s,'$0.suspendLive(at: frame.timestamp)','detector.process(observation)');
-    before(s,'detector.invalidateRecentEvidence()','detector.process(observation)');
+  const frames = declaration(nav, frameSignature);
+  const nilDepthSignature = 'guard let observation = DepthSampler.observation(from: frame) else';
+  const background = 'updateBackgroundPerception(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal)';
+  const normalize = value => value.replace(/\s+/g, ' ').trim();
+  const check = source => {
+    const frame = declaration(withoutComments(source), frameSignature);
+    before(frame, 'frame.timestamp - lastProcessed >= 1.0 / 15', 'DepthSampler.observation(from: frame)');
+    before(frame, 'FrameTimestampPolicy.isFresh', 'lastProcessed = frame.timestamp');
+    // Limit inspection to this guard: a later helper's copy cannot hide a removed
+    // nil-depth invalidation or make an adversarial mutation look unchanged.
+    const missing = declaration(frame, nilDepthSignature);
+    const body = normalize(missing.slice(missing.indexOf('{') + 1, -1));
+    assert.ok(body.startsWith('withObservedScene { $0.suspendLive(at: frame.timestamp) }'), 'Nil-depth scene retirement is the first synchronous statement');
+    assert.ok(body.endsWith(normalize(`detector.invalidateRecentEvidence()
+        phoneDetection = Detection(.uncertain, reason: DepthSampler.unavailableReason(from: frame)); lastObservation = nil; publish()
+        updateNonspatialObjectMemory(frame: frame)
+        return`)), 'Nil-depth evidence invalidation and publication directly precede RGB fallback and return');
+    before(frame, nilDepthSignature, depthHazardsCall);
+    // Verify the actual synchronous helper and assignments, not just a renamed call.
+    assertDepthHazardsBefore(source, background);
   };
-  check(frames);
-  for(const token of ['frame.timestamp - lastProcessed >= 1.0 / 15','FrameTimestampPolicy.isFresh','$0.suspendLive(at: frame.timestamp)','detector.invalidateRecentEvidence()']) assert.throws(()=>check(frames.replace(token,'MUTATED')));
+  check(nav);
+  const mutateFrame = (from, to) => {
+    assert.ok(frames.includes(from));
+    return nav.replace(frames, frames.replace(from, to));
+  };
+  const mutants = [
+    ...['frame.timestamp - lastProcessed >= 1.0 / 15', 'FrameTimestampPolicy.isFresh',
+      '$0.suspendLive(at: frame.timestamp)', 'detector.invalidateRecentEvidence()'].map(token => mutateFrame(token, 'MUTATED')),
+    mutateFrame('detector.invalidateRecentEvidence()', 'Task { detector.invalidateRecentEvidence() }'),
+    mutateFrame('withObservedScene { $0.suspendLive(at: frame.timestamp) }', 'Task { withObservedScene { $0.suspendLive(at: frame.timestamp) } }'),
+    mutateFrame('lastObservation = nil; publish()', 'lastObservation = nil'),
+    mutateFrame(depthHazardsCall, `Task { ${depthHazardsCall} }`),
+    mutateFrame(depthHazardsCall, `defer { ${depthHazardsCall} }`),
+    mutateFrame(depthHazardsCall, '').replace(background, `${background}\n${depthHazardsCall}`),
+    nav.replace('let legacyDetection = detector.process(observation)', 'let legacyDetection = Detection(.observing)'),
+    nav.replace('phoneDetection = legacyDetection', '/* missing urgent publication */')
+  ];
+  for (const mutant of mutants) {
+    assert.notEqual(mutant, nav);
+    assert.throws(() => check(mutant), { name: 'AssertionError' });
+  }
   assert.match(runtime,/observation\.timestamp - lastOffered >= 0\.1/);
   assert.match(runtime,/self\.revalidate\(now: self\.clock\(\)\)/);
 });

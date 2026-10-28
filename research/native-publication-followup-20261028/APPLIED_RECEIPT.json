@@ -1,0 +1,17 @@
+{
+  "status": "applied independently source-reviewed candidate; native pending",
+  "utc": "2026-10-28T08:21:17Z",
+  "source_sha256": {
+    "ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift": "1b39fcf6a76052ea4e5ba3db1ee7633299e6cdd55c00e8bee8965f80e01b92c3",
+    "ios/BlindAssist/ObservedSceneRuntime.swift": "35ce45a7dedf4d4bdbdb6beb2545ed698efb845932b2f0bd1935f064e69019c1",
+    "ios/BlindAssistTests/ObservedSceneRuntimeTests.swift": "814169aa27fb24a8232ae5c4ffc14b4f4ac4bd980df12d098a10d83e072e023a"
+  },
+  "source_checks_passed": 15,
+  "existing_node_checks_passed": 21,
+  "swift_compiled": false,
+  "native_executed": false,
+  "latency_improvement_claimed": false,
+  "independent_reviewer": "/root/review_recorded_route_preview",
+  "scope": "one journey post-release functional waiter; DEBUG exactscenejob receipts and functional tests; retained1.2s latencyassertion",
+  "caveat": "If actual callback never executes, existing XCTest/job ceiling remains required; not a liveness fix."
+}

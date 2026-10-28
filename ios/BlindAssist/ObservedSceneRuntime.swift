@@ -14,6 +14,34 @@ import BlindCore
     private var session: UUID?
     private var epoch = UUID()
     private var workID: UUID?
+#if DEBUG
+    // Exact completion of one accepted job, including its main-owner callback.
+    // One waiter per job keeps test-only storage bounded; rejected frames have no job.
+    @MainActor private final class DiagnosticWorkCompletion {
+        enum WaitError: Error { case alreadyWaiting, missingOperation }
+        private var finished = false
+        private var waiter: CheckedContinuation<Void, Never>?
+        func wait() async throws {
+            if finished { return }
+            guard waiter == nil else { throw WaitError.alreadyWaiting }
+            await withCheckedContinuation { waiter = $0 }
+        }
+        func finish() {
+            guard !finished else { return }
+            finished = true
+            let pending = waiter; waiter = nil
+            pending?.resume()
+        }
+    }
+    private var diagnosticWorkCompletion: (UUID, DiagnosticWorkCompletion)?
+    func waitForCurrentWorkForTesting() async throws {
+        guard let id = workID else { return }
+        guard let completion = diagnosticWorkCompletion, completion.0 == id else {
+            throw DiagnosticWorkCompletion.WaitError.missingOperation
+        }
+        try await completion.1.wait()
+    }
+#endif
     private var lastOffered = -Double.infinity
     private var minimumCapture = -Double.infinity
     private var intent: ObservedSceneAccumulator.Intent = .lookAhead
@@ -86,11 +114,20 @@ import BlindCore
         lastOffered = observation.timestamp
         let id = UUID(), generation = epoch, intent = intent, goal = goalRevision, bodyVersion = bodyRevision
         workID = id
+#if DEBUG
+        let completion = DiagnosticWorkCompletion()
+        diagnosticWorkCompletion = (id, completion)
+#endif
         queue.async { [weak self] in
             worker.scene.setIntent(intent, revision: goal)
             let snapshot = worker.scene.observe(observation, sessionID: session, now: now, hazard: hazard)
             let plan = body.flatMap { worker.scene.planCurrent(floor: floor, body: $0, now: now) }
             DispatchQueue.main.async { [weak self] in
+#if DEBUG
+                // Captured independently of weak self: stale/rejected/deallocated
+                // owner exits still complete the exact admitted operation.
+                defer { completion.finish() }
+#endif
                 guard let self, self.workID == id else { return }
                 self.workID = nil
                 guard self.epoch == generation, self.session == session, self.goalRevision == goal, self.bodyRevision == bodyVersion else { return }

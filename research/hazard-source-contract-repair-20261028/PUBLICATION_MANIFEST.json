@@ -1,0 +1,57 @@
+{
+  "scope": "Separate test-only helper-aware source contract repair. No runtime/cadence/helper changes.",
+  "results": {
+    "affectedFiles": {
+      "pass": 11,
+      "fail": 0
+    },
+    "broaderAffectedSourceSet": {
+      "pass": 69,
+      "fail": 0
+    },
+    "negativeMutationsInRepairedCases": 20,
+    "runtimeChanges": false
+  },
+  "files": [
+    {
+      "path": "tools/test/native-depth-policy.test.mjs",
+      "sha256": "c4c85f5f08291862695ed798e57b1d8255d9c82ed54d39e89fa00ed50adb9456"
+    },
+    {
+      "path": "tools/test/passive-object-memory.test.mjs",
+      "sha256": "850f2dbc561675b8687b053f0fe7172ee32b5979c8eb903562c0a1de506c1b71"
+    },
+    {
+      "path": "research/hazard-source-contract-repair-20261028/CANDIDATE_MANIFEST.json",
+      "sha256": "f35bca1c2e84857b549e4925abe3f674dd034c295126cfb3f6c5b8c5529607e5"
+    },
+    {
+      "path": "research/hazard-source-contract-repair-20261028/README.md",
+      "sha256": "7f1ea0dfa7e74f2df6022126ae4dd0b7f63561b7a557bfbf27560189f639f65b"
+    },
+    {
+      "path": "research/hazard-source-contract-repair-20261028/node-affected.tap",
+      "sha256": "ce84014f47b41c71b687a238b7983bf90c23e8e9eb2e08c3d4a26ef63a0ff5a9"
+    },
+    {
+      "path": "research/hazard-source-contract-repair-20261028/node-corrected.tap",
+      "sha256": "bd6d6b34efbe449a5f0a52b9b3ea2056b84234101cb51ccf8a23745a5a96d89f"
+    },
+    {
+      "path": "research/hazard-source-contract-repair-20261028/node-final.tap",
+      "sha256": "da922a0f1fd26e9774f25fd074f3082aa3fa4a39931163d2f75706388f2cf694"
+    },
+    {
+      "path": "research/hazard-source-contract-repair-20261028/node-initial.tap",
+      "sha256": "56f4afd0e5072ba4aa2d9d9f2b0a1d9c3dbede8f96569466bd64143851913202"
+    },
+    {
+      "path": "research/hazard-source-contract-repair-20261028/preimage/native-depth-policy.test.mjs.txt",
+      "sha256": "60dafb7a7398af04b0700046759ac7e020f04ee329402f744c8b9897eead2671"
+    },
+    {
+      "path": "research/hazard-source-contract-repair-20261028/preimage/passive-object-memory.test.mjs.txt",
+      "sha256": "ac344aeb430c6d55d5b11434fcc1b9dbd8987458bb22301b0b600838b2ac8624"
+    }
+  ]
+}

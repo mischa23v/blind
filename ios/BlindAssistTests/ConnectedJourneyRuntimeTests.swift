@@ -373,7 +373,8 @@ private actor RuntimeIO: ConnectedJourneyRuntimeIO {
         // Allow the read to enter its continuation before releasing it.
         try await Task.sleep(nanoseconds:10_000_000)
         await io.releaseRead()
-        try await until(runtime) { !runtime.loading && runtime.pendingMapWorkCount == 0 && runtime.pendingWriteCount == 0 }
+        // IO is released: fence actual restore, catalog and durable-write publication.
+        try await completedWork(runtime)
         try runtime.configure(body:F.body,limits:F.limits)
         XCTAssertThrowsError(try runtime.beginLocalization(in:F.c))
         XCTAssertEqual(runtime.goal?.target.endpoint.binding,F.c)

@@ -1,0 +1,56 @@
+✔ native hazard sampler uses shared policy without copying buffers or changing world transform (3.269796ms)
+✔ shared values retain native hazard semantics and Float-to-Double order (0.375511ms)
+✖ existing ingress cadence and nil invalidation still precede detector; runtime cadence stays owned (91.548769ms)
+✔ passive observations enter foreground loop independently of a find command (13.169661ms)
+✔ historical retrieval precedes another current-view search and never saves camera as object (3.672247ms)
+✔ unverified onset preserves original search, explicit controls cancel and current delivery checks pose (5.420704ms)
+✔ runtime detector rejects incompatible raw tensor results and has no classifier geometry fallback (1.15304ms)
+✔ history is bounded private storage, deletable and old scans do not resurrect after clear (4.3245ms)
+✔ completion is accounted on the actual speech callback and stopped sessions stay quiet (7.87451ms)
+✔ room transitions and privacy changes cannot relabel or resurrect old captures (6.871324ms)
+✔ continuous pose/hazard cadence is separate from bounded async visual observations (118.698932ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 10
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 669.153836
+
+✖ failing tests:
+
+test at tools/test/native-depth-policy.test.mjs:47:1
+✖ existing ingress cadence and nil invalidation still precede detector; runtime cadence stays owned (91.548769ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    Comparison {
+  +   name: 'SyntaxError'
+  -   name: 'AssertionError'
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/90f3f6703064/blind/tools/test/native-depth-policy.test.mjs:88:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: SyntaxError: Unterminated template (1:39)
+        at pp$4.raise (node:internal/deps/acorn/acorn/dist/acorn:3813:15)
+        at pp.readTmplToken (node:internal/deps/acorn/acorn/dist/acorn:6067:49)
+        at pp.tryReadTemplateToken (node:internal/deps/acorn/acorn/dist/acorn:6044:12)
+        at types.q_tmpl [as override] (node:internal/deps/acorn/acorn/dist/acorn:2488:69)
+        at pp.nextToken (node:internal/deps/acorn/acorn/dist/acorn:5519:50)
+        at pp.next (node:internal/deps/acorn/acorn/dist/acorn:5481:10)
+        at pp.getToken (node:internal/deps/acorn/acorn/dist/acorn:5485:10)
+        at Object.next (node:internal/deps/acorn/acorn/dist/acorn:5496:32)
+        at getFirstExpression (node:internal/errors/error_source:83:14)
+        at getErrorSourceExpression (node:internal/errors/error_source:159:10),
+    expected: { name: 'AssertionError' },
+    operator: 'throws',
+    diff: 'simple'
+  }
