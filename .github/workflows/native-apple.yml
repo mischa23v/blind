@@ -2,7 +2,7 @@ name: Native Apple SDK checks
 
 on:
   push:
-    branches: [codex/recovery-hazard-order-20261027]
+    branches: [master, codex/recovery-hazard-order-20261027]
     paths:
       - 'BlindCore/**'
       - 'BlindMemory/**'
@@ -27,7 +27,7 @@ concurrency:
 jobs:
   native:
     # Fail closed before allocating a runner if visibility changes or this is a fork.
-    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/codex/recovery-hazard-order-20261027')
     runs-on: xcode-27
     timeout-minutes: 65
     env:
@@ -134,7 +134,7 @@ jobs:
 
   mesh-diagnostics-compile:
     # Separate runner/derived data: cannot change the default app test configuration.
-    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/codex/recovery-hazard-order-20261027')
     runs-on: xcode-27
     timeout-minutes: 25
     env:

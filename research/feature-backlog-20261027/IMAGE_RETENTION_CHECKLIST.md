@@ -1,0 +1,14 @@
+## Open — unnecessary image retention, useful room references and accessible Trash
+
+User-requested tracker addition, 2026-10-27. **Planned; not implemented or tested.** The user wants a trashcan for unnecessary images and no continued saving of redundant room pictures after enough useful views exist.
+
+Source audit at `106cc2ad9565513af578d9325110213216e8cc39`: room recall already retains at most two thumbnails/feature prints per each of eight sectors and has whole-room picture deletion. Do not describe the app as saving every frame. Existing controls do not establish per-image Trash/restore or a global retention policy. Item feature prints, transient frames, saved world maps and optional upstream mapping databases are not interchangeable with a photo gallery.
+
+- [ ] Default ordinary capture to temporary processing; bound in-flight images, age, bytes and disk caches. Persist only explicit user-kept images and useful, purpose-bound keyframes; deduplicate redundant views and stop unnecessary room-reference churn once adequate evidence is retained.
+- [ ] Provide accessible voice/VoiceOver review, keep, individual and bulk Move to Trash, restore and separately confirmed permanent deletion. Explain that Trash still retains private data, show capacity/policy, and do not silently permanently purge user-kept/trashed material or change existing immediate privacy deletion into recoverable retention.
+- [ ] Inventory raw images, thumbnails, crops, fingerprints, OCR/labels, caches, SQLite sidecars and map storage. Set per-room and global count/byte/age budgets; verify actual ARWorldMap/RTAB-Map serialization and raw-image dependencies instead of assuming they are photo-free.
+- [ ] Preserve independently usable maps where possible. If deleting an image or its derivatives breaks landmark/recognition/map dependencies, explicitly invalidate those capabilities and offer rescan/rebuild. Never secretly retain a user-deleted image to preserve navigation. Explain any separately approved geometry-only retention.
+- [ ] Make trash/deletion immediately revoke active use and stale callbacks; make cleanup crash-safe and retryable without resurrection. Test restore, partial failure, restart, relearning and concurrent map saves. Report incomplete cleanup honestly.
+- [ ] Keep everything on-device with no new upload/sync/backup/telemetry path; do not alter system Photos or raw research archives. Validate Arabic/English voice and VoiceOver flows, storage stability, privacy-copy cleanup and map dependency behavior on device.
+
+Detailed source audit, proposed contract, outstanding design decisions and unrun acceptance cases: `research/APP_IMAGE_RETENTION_AND_TRASH.md` (publication target for this packet's README). No actual deletions or app edits are authorized by this tracker request. Existing hazard and localization gates remain unchanged.

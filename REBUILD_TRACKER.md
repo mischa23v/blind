@@ -1,3 +1,12 @@
+## User testing backlog — recorded, not a diversion from navigation
+
+- **Image retention and accessible Trash:** stop redundant image accumulation, use temporary processing by default, retain purposeful references, and provide voice/VoiceOver review, Trash, restore and explicit permanent deletion with map-dependency/privacy handling. [Source audit and planned contract](research/APP_IMAGE_RETENTION_AND_TRASH.md). Existing room recall is already capped at 16 thumbnails/feature prints; this does not mean every frame is saved. No deletion or implementation occurred for this note.
+- **Independent image-grounded answer verification:** a narrowly tasked background checker should independently inspect the intended image, then compare atomic claims and issue supported corrections only when needed. [Research and implementation/test plan](research/BACKGROUND_VISUAL_VERIFICATION_ADDENDUM.md) links Woodpecker, Chain-of-Verification, CRITIC and VISCO. Verify actual image attachment/freshness first; category recognition is not door-state or chair-occupancy verification. Respect existing privacy, capture/speech leases, cancellation and coded navigation authority. Speak-first asynchronous correction is an unvalidated adaptation, not a safety guarantee.
+
+Both are OPEN backlog requirements from iPhone testing. No model/provider calls, private image uploads or app changes were made. Current mapping, localization and approved review-branch Apple checks remain the active priority.
+
+---
+
 ## Status update — 2026-10-27 21:19 UTC
 
 Latest published repair `38ac458` has passed both app compilation modes and its hosted-unit step in [run40583132225](https://github.com/mischa23v/blind/actions/runs/40583132225). Exact case-count verification and the terminal accessibility result remain pending; this is not full-app acceptance. The mesh connection remains default-off/no-copy, with no physical guidance authority. The dated checkpoint below retains its earlier status and evidence scope.
