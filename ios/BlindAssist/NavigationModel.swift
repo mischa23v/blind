@@ -686,6 +686,11 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         spatialRouteOutput.stopBeacon = { [weak self] id in self?.feedback.stopSpatialRouteBeacon(id) }
         indoor.onSpatialOutputRetired = { [weak self] in self?.spatialRouteOutput.retire() }
         journeys.withConnectedJourney { runtime in
+            let originalOnChange = runtime.onChange
+            runtime.onChange = { [weak self] in
+                originalOnChange?()
+                self?.syncNavigationTestPlan()
+            }
             runtime.onOutputRetired = { [weak self] in self?.spatialRouteOutput.retire() }
             runtime.onClarificationRetired = { [weak self] id in self?.feedback.stopRequestedSpeech(id) }
         }
@@ -4711,6 +4716,15 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         withObservedScene { $0.setIntent(.lookAhead) }
         try? journeys.withConnectedJourney { try $0.cancel(origin: .trustedInterface) }
         stopReturn()
+    }
+    @MainActor func makeNavigationTestRecordingView() -> NavigationTestRecordingView {
+        NavigationTestRecordingView(bridge: nativeObservations, arabic: arabic,
+            onRecordingStarted: { [weak self] in self?.syncNavigationTestPlan() })
+    }
+    @MainActor private func syncNavigationTestPlan() {
+        guard nativeObservations.navigationTestSnapshot().recording?.status == .recording else { return }
+        let route = journeys.withConnectedJourney { $0.diagnosticOwnedRoute }
+        _ = nativeObservations.recordOwnedNavigationTestPlan(route)
     }
     /// Explicit calibrated-adapter seam. No current camera/room-recognition path
     /// calls this, and retained history is never promoted to a localization capture.

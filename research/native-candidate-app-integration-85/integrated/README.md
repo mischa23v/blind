@@ -1,3 +1,11 @@
+# Opt-in test recording hookup — 2026-10-28
+
+`navigation-test-recording.patch` separately binds the reviewed NavigationModel diagnostic callbacks/factory and canonical project membership. It adds the sole new app source `NavigationTestRecordingView.swift` (63 app sources) and existing `RecordedRouteStoreTests.swift` to hosted test membership. That Store file was not a hosted member previously; its four new diagnostic tests and older tests are not retroactively claimed executed. The generator preserves prior sources and flags. Root additionally approved explicit hosted links to existing BlindMemory and GRDB products: the same GRDB.swift URL/exact 7.11.1 already pinned by BlindMemory, not a new library/version. A direct PBX package reference removes reliance on implicit transitive hosted linkage. No local dependency download was performed; native resolver/import/link verification remains pending.
+
+The checker reverses this latest layer first and requires exact NavigationModel preimage `5275400e782a88374641aa0b61d2c85b1d35f20330b58e5b2d86b7b9626b4d67` and PBX preimage `cee0cbac7dc54bba1ba5845b6d901f00b32afaa44e1647c0fca73490c59142a1`. It then performs every earlier project/practice/critical/stage85 reversal. Historical patch bytes and pins remain intact. No workflow, model, sensor authority or physical guidance gate changes are part of this membership layer. Recorder implementation has its own author manifest and source review; native execution remains pending existing CI.
+
+---
+
 # Connected bench and recorded preview membership — 2026-10-28
 
 The separate `connected-bench-preview-membership.patch` adds only the reviewed `RecordedRoomRoutePreview.swift` app source and two hosted test sources (`KoivuSourceAnchorBenchFixture.swift`, `ConnectedNavigationBenchIntegrationTests.swift`) to canonical project membership. There are now 62 app Swift sources. No new package dependency, feature flag, workflow or device activation is introduced. This is membership, not evidence that the tests compile or navigation works.

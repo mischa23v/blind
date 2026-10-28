@@ -1,0 +1,15 @@
+import{readFile,readdir,access}from'node:fs/promises';import{createHash}from'node:crypto';import assert from'node:assert/strict';import{generateProject}from'../../../tools/generate-xcode-project.mjs';
+const root=new URL('../../../',import.meta.url),read=p=>readFile(new URL(p,root),'utf8'),id=n=>createHash('sha256').update(n).digest('hex').slice(0,24).toUpperCase();
+const before=await read('research/localization-contract-review-20261028/recorder-membership-stage/project-before.txt'),after=await read('ios/BlindAssist.xcodeproj/project.pbxproj');
+const files=(await readdir(new URL('ios/BlindAssist/',root))).filter(f=>f.endsWith('.swift')).sort();assert.equal(files.length,63);assert.equal(after,generateProject(files));
+const paths=s=>[...s.matchAll(/path = "?([^;"\n]+\.swift)"?;/g)].map(m=>m[1]).sort(),a=paths(before),b=paths(after),added=b.filter(x=>!a.includes(x));assert.deepEqual(added,['BlindAssist/NavigationTestRecordingView.swift','BlindAssistTests/RecordedRouteStoreTests.swift']);assert.deepEqual(a.filter(x=>!b.includes(x)),[]);
+const settings=s=>s.split('\n').filter(l=>l.includes('buildSettings ='));assert.deepEqual(settings(after),settings(before));
+const line=(text,key)=>text.split('\n').find(l=>l.startsWith(id(key)+' = '));assert.equal(line(after,'frameworks'),line(before,'frameworks'));assert.equal(line(after,'target'),line(before,'target'));
+for(const key of ['package','memory-package','stage85package'])assert.equal(line(after,key),line(before,key));
+const memory=await read('BlindMemory/Package.swift');assert.ok(memory.includes('.package(url: "https://github.com/groue/GRDB.swift.git", exact: "7.11.1")'));
+assert.ok(line(after,'hosted-grdb-package').includes('repositoryURL = "https://github.com/groue/GRDB.swift.git"; requirement = { kind = exactVersion; version = 7.11.1; }'));
+for(const key of ['unit-core','unit-memory','unit-grdb'])assert.ok(line(after,'unit-target').includes(id(key)+','));
+for(const key of ['unit-core-build','unit-memory-build','unit-grdb-build'])assert.ok(line(after,'unit-frameworks').includes(id(key)+','));
+assert.ok(line(after,'unit-sources').includes(id('unit-spatial-build:RecordedRouteStoreTests.swift')+','));
+for(const p of added)await access(new URL('ios/'+p,root));
+console.log(JSON.stringify({kind:'source-membership-only',nativeSwiftFiles:63,addedPaths:added,removedPaths:[],priorLocalPackagesAndAppLinkageUnchanged:true,flagsUnchanged:true,hostedExistingProducts:['BlindCore','BlindMemory','GRDB'],grdbURLAndExactVersionMatchExistingMemoryManifest:true,exactGeneratorParity:true,nativeResolverBuildAndTestsExecuted:false,currentProjectSHA256:createHash('sha256').update(after).digest('hex')},null,2));

@@ -150,6 +150,12 @@ public actor FoundationJourneyRuntimeIO: ConnectedJourneyRuntimeIO {
     public var goal: JourneyGoal? { snapshot.goal }
     public var question: JourneyReturnQuestion? { coordinator?.currentQuestion }
     public var expectedSessionID: UUID? { coordinator?.expectedSessionID }
+    /// Read-only diagnostic snapshot; unlike next(now:), never changes held output.
+    public var diagnosticOwnedRoute: NavigationTestRecording.OwnedRoute? {
+        guard !loading, !externalMapPending, !mapValidationBlocked, mapWorkID == nil,
+              !commandBlocked else { return nil }
+        return coordinator?.diagnosticOwnedRoute
+    }
     public var nativeLocalizationContext: NativeLocalizationRouteContext? {
         guard !loading, !externalMapPending, !mapValidationBlocked, mapWorkID == nil, !commandBlocked else { return nil }
         return coordinator?.nativeLocalizationContext

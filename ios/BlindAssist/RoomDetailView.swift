@@ -50,6 +50,12 @@ struct RoomDetailView: View {
                     RecordedRoomRoutePreview(arabic: model.arabic)
                 }
             }
+            Section(t("Local navigation diagnostic", "تشخيص التنقل المحلي")) {
+                NavigationLink(t("Record my phone path", "تسجيل مسار هاتفي")) {
+                    model.makeNavigationTestRecordingView()
+                }
+                Text(t("Uses the existing camera session. Selecting this room does not locate you in it.", "يستخدم جلسة الكاميرا الحالية. اختيار هذه الغرفة لا يحدد موقعك فيها."))
+            }
             if let layout {
                 Section(t("Measured room overview", "مخطط الغرفة المقاس")) {
                     FloorPlanPreview(layout: layout).frame(height: 280).accessibilityHidden(true)

@@ -41,6 +41,16 @@ public struct ConnectedJourneyCoordinator: Sendable {
     public private(set) var persistenceBlocked = false
     public private(set) var ordinarySpeechMuted = false
     public var currentLeg: JourneyLeg? { itinerary.indices.contains(legIndex) ? itinerary[legIndex] : nil }
+    /// Pure diagnostic projection of the route already owned here. No next(),
+    /// replanning, acceptance, output lease or source-frame conversion occurs.
+    public var diagnosticOwnedRoute: NavigationTestRecording.OwnedRoute? {
+        guard snapshot.goal?.status == .active, !snapshot.returnClarificationPending,
+              case .local? = currentLeg, let owner, let installation = owner.installation,
+              let goal = owner.goalRevision, owner.route.count >= 2 else { return nil }
+        return .init(map: installation.binding, routeRevision: owner.routeID, goalRevision: goal,
+            bodyRevision: owner.bodyRevision, obstacleRevision: owner.obstacleRevision,
+            artifactSHA256: installation.artifact.sha256, points: owner.route.map(\.position))
+    }
     public var currentQuestion: JourneyReturnQuestion? { question }
     private let body: BodyEnvelope?
     private let limits: SpatialLocalizationLimits?

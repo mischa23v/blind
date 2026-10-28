@@ -8,6 +8,20 @@ import Foundation
 final class NativeARObservationBridge {
     private let pipeline = NativeObservationPipeline()
     private let recordedRoute = RecordedRouteStore()
+    // Explicit local diagnostic controls; camera start never opts into test recording.
+    @discardableResult func startNavigationTestRecording() -> Bool { recordedRoute.startTestRecording() }
+    func stopNavigationTestRecording() { recordedRoute.stopTestRecording() }
+    func deleteNavigationTestRecording() { recordedRoute.deleteTestRecording() }
+    func navigationTestSnapshot() -> RecordedRouteStore.TestSnapshot { recordedRoute.testRecordingSnapshot() }
+    @discardableResult func markNavigationTestProblem(_ problem: NavigationTestRecording.Problem) -> Bool {
+        recordedRoute.markTestProblem(problem)
+    }
+    @discardableResult func recordOwnedNavigationTestPlan(_ route: NavigationTestRecording.OwnedRoute?) -> Bool {
+        recordedRoute.recordOwnedTestPlan(route)
+    }
+    @discardableResult func recordNavigationTestPlan(_ plan: NavigationTestRecording.Plan) -> Bool {
+        recordedRoute.setTestPlan(plan)
+    }
     func trackingLost() { recordedRoute.breakContinuity() }
     func readRecordedRoute(referenceKind: RecordedRouteAnchor.Kind? = nil, _ completion: @escaping (RecordedRouteStore.Snapshot) -> Void) {
         recordedRoute.preview(referenceKind: referenceKind, completion)

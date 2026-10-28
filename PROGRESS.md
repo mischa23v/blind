@@ -1,3 +1,23 @@
+## Preview compiler repair — 2026-10-28 07:47 UTC
+
+Checkpoint `3aef69509a2d287204f16f52e9c5e819e63046ad` was pushed and remote-verified. It fixes the preview reload handler's caught `error` shadowing the Boolean property by explicitly assigning `self.error`. Native run `40651360959` at the earlier preview source failed both app builds on that line; Core passed 1,402 executed with zero failures and one skip, and Memory 51 passed. Hosted/UI did not execute. This repair is not yet native-verified. The intervening fence source still contains that compile error; do not conflate source revisions.
+
+The next recorder checkpoint has a reachable local screen and read-only actual code-owned plan feed, independently source-reviewed. Raw camera positions remain unchanged and registration is nil until a measured producer exists. This is a temporary in-memory diagnostic, not saved/exportable evidence or a collision guarantee. Canonical membership and existing package linkage for its hosted storage tests are being completed before publication.
+
+---
+
+## Published navigation checkpoints — 2026-10-28 07:42 UTC
+
+Remote branch `codex/recovery-hazard-order-20261027` verified at `8767fa0e4696ce8b7d5562fe623783cd137c55ee`. Prior checkpoint `0e7fc50992bd538864365782242e65b2718b3e4e` publishes the bounded recorded-route preview, canonical native membership, actual-owner hosted bench fixtures and both native evidence packages. The preview is diagnostic archived geometry, not current-room localization or physical guidance.
+
+Latest completed native validation at `2636519`: both builds passed; Core 1,395 executed, zero failures, one skip; Memory 51 passed. Hosted 157: 145 passed, six failed, six skipped. UI 18: 14 passed, one Dynamic Type failure, three skipped. Practice explicit End passed with 5.534 seconds elapsed upper bound. Five journey publication waits and the queued-scene-fence regression remain pre-fix failures. [Exact source-bound evidence](research/native-candidate-app-integration-85/integrated/evidence/run40645432883/).
+
+Checkpoint `8767fa0` adds a DEBUG actual-task completion fence for functional test setup, retaining original responsiveness limits and release behavior. Nineteen source/provenance checks and twelve Node checks passed; native validation has not yet accepted this fix. Preview run `40651360959` is active; fence run `40651563267` is pending behind it at this checkpoint. These are separate source revisions, not interchangeable results.
+
+Next: finish reachable opt-in trajectory recording controls and a read-only code-owned plan feed, preserving raw phone samples without snapping or fabricated registration; finish native failure diagnosis and validate exact source. The source-level recorder remains local and uncompiled until its separate checkpoint. No automatic private upload, workflow activation, merge, deployment or child trial is authorized by these changes.
+
+---
+
 ## Native evidence and preview integration — 2026-10-28 07:04 UTC
 
 Exactfee8c7d native validation is terminal: both builds passed;157 hosted cases comprise149 passed,2 failed,6 skipped. Both new publisher-semantics fixtures passed. The practice Stop UI test now passes with explicit End and41.978s elapsed upper bound below90s. UI14 passed/1 Dynamic Type failure/3 skipped. The two hosted failures are separate map-recovery publication waits, under investigation; full-app acceptance remains open. [Exact evidence](research/native-candidate-app-integration-85/integrated/evidence/run40644081432/).

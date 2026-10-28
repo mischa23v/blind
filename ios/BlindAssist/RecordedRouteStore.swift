@@ -13,6 +13,62 @@ final class RecordedRouteStore: @unchecked Sendable {
     private var restarted = false, trackingLost = false
     private var continuityEpoch = UUID()
     private var sampler = RecordedRouteSampler()
+    // Opt-in, volatile diagnostic sidecar; protected by lock, never persisted/exported.
+    private var testRecording: NavigationTestRecording?
+    private var testOwnedRoute: NavigationTestRecording.OwnedRoute?
+    private var testRejectedSamples = 0, testRejectedPlans = 0, testGapPending = false
+    struct TestSnapshot {
+        let recording: NavigationTestRecording?
+        let rejectedSamples, rejectedPlans: Int
+    }
+    @discardableResult func startTestRecording() -> Bool {
+        lock.lock(); defer { lock.unlock() }
+        guard sessionID != nil, !clearPending, testRecording?.status != .recording,
+              let recording = try? NavigationTestRecording(explicitStartAt: now()) else { return false }
+        testRecording = recording; testOwnedRoute = nil; testRejectedSamples = 0; testRejectedPlans = 0; testGapPending = false; return true
+    }
+    func stopTestRecording() {
+        lock.lock(); defer { lock.unlock() }; try? testRecording?.stop(at: now())
+    }
+    func deleteTestRecording() {
+        lock.lock(); defer { lock.unlock() }; testRecording = nil; testOwnedRoute = nil; testRejectedSamples = 0; testRejectedPlans = 0; testGapPending = false
+    }
+    func testRecordingSnapshot() -> TestSnapshot {
+        lock.lock(); defer { lock.unlock() }
+        return .init(recording: testRecording, rejectedSamples: testRejectedSamples, rejectedPlans: testRejectedPlans)
+    }
+    @discardableResult func markTestProblem(_ problem: NavigationTestRecording.Problem) -> Bool {
+        lock.lock(); defer { lock.unlock() }
+        guard testRecording != nil else { return false }
+        do { try testRecording?.mark(problem, at: now()); return true } catch { return false }
+    }
+    /// Receipt time assigned under the same lock as samples. A cancelled owner
+    /// clears comparison context; missing registration stays nil, never identity.
+    @discardableResult func recordOwnedTestPlan(_ route: NavigationTestRecording.OwnedRoute?) -> Bool {
+        lock.lock(); defer { lock.unlock() }
+        guard testRecording?.status == .recording else { return false }
+        guard route != testOwnedRoute else { return true }
+        let previous = testOwnedRoute; testOwnedRoute = route
+        guard let context = route ?? previous else { return true }
+        let plan = NavigationTestRecording.Plan(revision: route?.routeRevision ?? UUID(),
+            goalRevision: context.goalRevision, map: context.map, points: route?.points ?? [], alignment: nil,
+            recordedAt: now(), bodyRevision: context.bodyRevision, obstacleRevision: context.obstacleRevision,
+            artifactSHA256: context.artifactSHA256)
+        do { try testRecording?.setPlan(plan); return true }
+        catch { testRejectedPlans += 1; try? testRecording?.stop(at: now()); return false }
+    }
+    @discardableResult func setTestPlan(_ plan: NavigationTestRecording.Plan) -> Bool {
+        lock.lock(); defer { lock.unlock() }
+        guard testRecording != nil else { return false }
+        do {
+            guard plan.recordedAt <= now() else { throw NavigationTestRecording.Failure.invalidInput }
+            try testRecording?.setPlan(plan); return true
+        } catch {
+            // Dropping a changed route must never keep associating later samples
+            // with the preceding plan. Retain history, but end this diagnostic run.
+            testRejectedPlans += 1; try? testRecording?.stop(at: now()); return false
+        }
+    }
     private var pending: [RecordedRouteSample] = []
     private var repository: RecordedRouteRepository?
     private var trip: RecordedTripState?
@@ -30,11 +86,11 @@ final class RecordedRouteStore: @unchecked Sendable {
         budget = .init(configuration: try! .init(bytesPerInterval: 524_288, intervalSeconds: 60, burstBytes: 131_072), now: now())
     }
     func begin(sessionID: UUID) {
-        lock.lock(); self.sessionID = sessionID; generation = UUID(); lastAccepted = -.infinity; restarted = true; continuityEpoch = UUID(); lock.unlock()
+        lock.lock(); try? testRecording?.stop(at: now()); self.sessionID = sessionID; generation = UUID(); lastAccepted = -.infinity; restarted = true; continuityEpoch = UUID(); lock.unlock()
     }
     func breakContinuity() { lock.lock(); trackingLost = true; continuityEpoch = UUID(); lock.unlock() }
     func stop() {
-        lock.lock(); sessionID = nil; generation = UUID()
+        lock.lock(); try? testRecording?.stop(at: now()); sessionID = nil; generation = UUID()
         guard !flushPending else { lock.unlock(); return }; flushPending = true; lock.unlock()
         queue.async {
             defer { self.lock.lock(); self.flushPending = false; self.lock.unlock() }
@@ -46,7 +102,7 @@ final class RecordedRouteStore: @unchecked Sendable {
         guard self.sessionID == sessionID else { lock.unlock(); return }
         if time.isFinite && time < lastAccepted { trackingLost = true; continuityEpoch = UUID(); lastAccepted = -.infinity }
         guard self.sessionID == sessionID, time.isFinite, time >= 0, !busy, time-lastAccepted >= 0.2 else { lock.unlock(); return }
-        busy = true; lastAccepted = time; let token = generation, evidence = continuityEpoch; lock.unlock()
+        busy = true; lastAccepted = time; let token = generation, evidence = continuityEpoch, diagnosticID = testRecording?.id; lock.unlock()
         queue.async {
             defer { self.lock.lock(); self.busy = false; self.lock.unlock() }
             self.lock.lock(); let current = self.generation == token; self.lock.unlock()
@@ -65,6 +121,13 @@ final class RecordedRouteStore: @unchecked Sendable {
                 let sample = try self.sampler.observe(observation)
                 self.lock.lock()
                 if self.generation == token && self.continuityEpoch == evidence {
+                    if self.testRecording?.status == .recording, self.testRecording?.id == diagnosticID {
+                        do {
+                            let diagnosticSample = self.testGapPending ? sample.markingBoundary(.interrupted) : sample
+                            try self.testRecording?.observe(diagnosticSample, receivedAt: self.now())
+                            self.testGapPending = false
+                        } catch { self.testRejectedSamples += 1; self.testGapPending = true }
+                    }
                     if sample.tracking == .normal { self.restarted = false; self.trackingLost = false }
                     else { self.trackingLost = true; self.continuityEpoch = UUID() }
                 }
@@ -181,7 +244,8 @@ final class RecordedRouteStore: @unchecked Sendable {
         }
     }
     func clear(_ completion: @escaping (Bool) -> Void) {
-        lock.lock(); guard !clearPending else { lock.unlock(); completion(false); return }
+        lock.lock(); testRecording = nil; testOwnedRoute = nil; testRejectedSamples = 0; testRejectedPlans = 0; testGapPending = false
+        guard !clearPending else { lock.unlock(); completion(false); return }
         clearPending = true; sessionID = nil; generation = UUID(); lock.unlock()
         queue.async {
             let erasedTrip = self.trip

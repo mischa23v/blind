@@ -1,0 +1,40 @@
+{
+  "run": 40651360959,
+  "url": "https://github.com/mischa23v/blind/actions/runs/40651360959",
+  "commit": "0e7fc50992bd538864365782242e65b2718b3e4e",
+  "conclusion": "failure",
+  "defaultBuild": "failed",
+  "diagnosticsBuild": "failed",
+  "buildFailure": {
+    "file": "ios/BlindAssist/RecordedRoomRoutePreview.swift",
+    "line": 108,
+    "errors": [
+      "cannot assign to value: 'error' is immutable",
+      "cannot assign value of type 'Bool' to type 'any Error'"
+    ],
+    "cause": "Implicit catch error shadows Boolean view state property. Neither native build completed."
+  },
+  "core": {
+    "executed": 1402,
+    "skipped": 1,
+    "failed": 0,
+    "newPreviewAndImportSourceCases": 7,
+    "exactNewCaseStatusesExported": false
+  },
+  "memory": {
+    "executed": 51,
+    "failed": 0
+  },
+  "hostedUnits": {
+    "status": "skipped_after_build_failure",
+    "newBenchTestsExecuted": false
+  },
+  "ui": {
+    "status": "skipped_after_build_failure",
+    "practiceAndDynamicType": "not retested"
+  },
+  "artifactsDownloaded": false,
+  "runtimeActivation": false,
+  "fullNativeAcceptance": false,
+  "laterCommit": "8767fa0e4696ce8b7d5562fe623783cd137c55ee is separate run; no result inferred here"
+}

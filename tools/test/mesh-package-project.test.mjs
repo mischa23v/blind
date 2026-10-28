@@ -85,7 +85,14 @@ test('ordinary generation includes the fenced bridge but leaves every feature fl
   assert.equal(conditions.length, 6);
   assert.deepEqual(new Set(conditions), new Set(['$(inherited)', '$(inherited) DEBUG']));
   assert.doesNotMatch(project + generateScheme(), /BLIND_MESH_CANDIDATE_DIAGNOSTICS|BLIND_DEVELOPER_CLOUD|BLIND_RTABMAP/);
-  assert.doesNotMatch(project, /XCRemoteSwiftPackageReference|PBXShellScriptBuildPhase|https?:\/\//);
+  // Hosted Store tests now explicitly link the SAME GRDB version already used by BlindMemory.
+  // Do not permit arbitrary remote dependencies, shell steps or changed versions.
+  const remote = [...graph].filter(([, body]) => body.startsWith('isa = XCRemoteSwiftPackageReference;'));
+  assert.equal(remote.length, 1);
+  assert.equal(remote[0][1], 'isa = XCRemoteSwiftPackageReference; repositoryURL = "https://github.com/groue/GRDB.swift.git"; requirement = { kind = exactVersion; version = 7.11.1; };');
+  const memoryManifest = await readFile(new URL('../../BlindMemory/Package.swift', import.meta.url), 'utf8');
+  assert.ok(memoryManifest.includes('.package(url: "https://github.com/groue/GRDB.swift.git", exact: "7.11.1")'));
+  assert.doesNotMatch(project.replace(`${remote[0][0]} = { ${remote[0][1]} };`, ''), /XCRemoteSwiftPackageReference|PBXShellScriptBuildPhase|https?:\/\//);
   assert.throws(() => parseProjectArguments(['--mesh-candidate-diagnostics']), /Unknown/);
 });
 
@@ -105,3 +112,21 @@ for (const [name, options] of Object.entries({
     assert.equal(project, generateProject(files, options), 'deterministic generation');
   });
 }
+
+
+test('hosted Store tests explicitly own existing Memory and GRDB products without adding them to app', () => {
+  const graph = objects(generateProject(files));
+  const only = pattern => { const entries = [...graph].filter(([, body]) => pattern.test(body)); assert.equal(entries.length, 1); return entries[0]; };
+  const [, unit] = only(/isa = PBXNativeTarget; .*name = BlindAssistTests;/);
+  const [, app] = only(/isa = PBXNativeTarget; .*name = BlindAssist;/);
+  for (const productName of ['BlindMemory', 'GRDB']) {
+    const matches = [...graph].filter(([id, body]) => body.includes(`productName = ${productName};`) && list(unit, 'packageProductDependencies').includes(id));
+    assert.equal(matches.length, 1);
+    const [productID, product] = matches[0];
+    const packageID = product.match(/package = ([A-F0-9]{24});/)[1];
+    assert.ok(graph.has(packageID));
+    const [libraryID] = only(new RegExp(`isa = PBXBuildFile; productRef = ${productID};`));
+    assert.ok(list(unit, 'buildPhases').some(id => graph.get(id).startsWith('isa = PBXFrameworksBuildPhase;') && list(graph.get(id), 'files').includes(libraryID)));
+    assert.ok(!list(app, 'packageProductDependencies').includes(productID), 'test product linkage is not app linkage');
+  }
+});

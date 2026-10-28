@@ -23,6 +23,94 @@ final class RecordedRouteStoreTests: XCTestCase {
         var result: RecordedRouteStore.Snapshot?; let done = expectation(description: "snapshot")
         store.preview { result = $0; done.fulfill() }; wait(for: [done], timeout: 5); return result
     }
+    func testDiagnosticRequiresOptInAndReusesAdmittedSampleThenStops() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let clock = Clock(), session = UUID()
+        let store = RecordedRouteStore(url: directory.appendingPathComponent("routes.sqlite"), now: clock.read)
+        XCTAssertFalse(store.startTestRecording())
+        store.begin(sessionID: session); clock.set(60)
+        let first = record(session, time: 60)
+        store.offer(sessionID: session, at: 60) { first }; _ = snapshot(store)
+        XCTAssertNil(store.testRecordingSnapshot().recording)
+        XCTAssertTrue(store.startTestRecording()); XCTAssertFalse(store.startTestRecording())
+        clock.set(60.3); let second = record(session, time: 60.3)
+        store.offer(sessionID: session, at: 60.3) { second }; _ = snapshot(store)
+        let recorded = try XCTUnwrap(store.testRecordingSnapshot().recording)
+        XCTAssertEqual(recorded.entries.map { $0.sample.observationID }, [second.id])
+        XCTAssertNil(recorded.entries[0].cameraInMap)
+        XCTAssertTrue(store.markTestProblem(.apparentWallCrossing))
+        store.stopTestRecording(); clock.set(60.6)
+        let third = record(session, time: 60.6)
+        store.offer(sessionID: session, at: 60.6) { third }; _ = snapshot(store)
+        XCTAssertEqual(store.testRecordingSnapshot().recording?.entries.count, 1)
+        XCTAssertEqual(store.testRecordingSnapshot().recording?.status, .stopped)
+        XCTAssertFalse(store.markTestProblem(.other))
+        store.deleteTestRecording(); XCTAssertNil(store.testRecordingSnapshot().recording)
+    }
+    func testDiagnosticLateExtractionAndSessionRestartCannotResume() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let clock = Clock(), session = UUID()
+        let store = RecordedRouteStore(url: directory.appendingPathComponent("routes.sqlite"), now: clock.read)
+        store.begin(sessionID: session); clock.set(60); XCTAssertTrue(store.startTestRecording())
+        let extracting = expectation(description: "existing extraction entered"), release = DispatchSemaphore(value: 0)
+        let frame = record(session, time: 60)
+        store.offer(sessionID: session, at: 60) {
+            extracting.fulfill(); _ = release.wait(timeout: .now() + 5); return frame
+        }
+        wait(for: [extracting], timeout: 5)
+        let oldID = store.testRecordingSnapshot().recording?.id
+        store.stopTestRecording(); XCTAssertTrue(store.startTestRecording())
+        XCTAssertNotEqual(store.testRecordingSnapshot().recording?.id, oldID)
+        // Same monotonic timestamp is deliberate: generation, not clock luck,
+        // must keep the previously offered callback out of the new recording.
+        release.signal(); _ = snapshot(store)
+        XCTAssertEqual(store.testRecordingSnapshot().recording?.entries.count, 0)
+        store.begin(sessionID: UUID())
+        XCTAssertEqual(store.testRecordingSnapshot().recording?.status, .stopped)
+        let cleared = expectation(description: "private route clear")
+        store.clear { _ in cleared.fulfill() }
+        XCTAssertNil(store.testRecordingSnapshot().recording)
+        wait(for: [cleared], timeout: 5)
+    }
+    func testRejectedPlanUpdateEndsDiagnosticInsteadOfKeepingStaleAssociation() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let clock = Clock(), session = UUID()
+        let store = RecordedRouteStore(url: directory.appendingPathComponent("routes.sqlite"), now: clock.read)
+        store.begin(sessionID: session); clock.set(60); XCTAssertTrue(store.startTestRecording())
+        let map = SpatialMapBinding(mapID: "fixture", frameID: "map", revision: "r1")
+        let plan = NavigationTestRecording.Plan(revision: UUID(), goalRevision: UUID(), map: map,
+            points: [Point3(0,0,0), Point3(1,0,0)], alignment: nil, recordedAt: 60)
+        XCTAssertTrue(store.setTestPlan(plan))
+        clock.set(60.3); let frame = record(session, time: 60.3)
+        store.offer(sessionID: session, at: 60.3) { frame }; _ = snapshot(store)
+        XCTAssertFalse(store.setTestPlan(plan)) // Delayed route event after sample receipt.
+        XCTAssertEqual(store.testRecordingSnapshot().recording?.status, .stopped)
+        XCTAssertEqual(store.testRecordingSnapshot().rejectedPlans, 1)
+        XCTAssertEqual(store.testRecordingSnapshot().recording?.plans.count, 1)
+    }
+    func testOwnedRouteDeduplicationCancellationAndProvenanceNeverInventAlignment() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let clock = Clock(), store = RecordedRouteStore(url: directory.appendingPathComponent("routes.sqlite"), now: clock.read)
+        store.begin(sessionID: UUID()); clock.set(60); XCTAssertTrue(store.startTestRecording())
+        let route = NavigationTestRecording.OwnedRoute(map: .init(mapID: "synthetic", frameID: "map", revision: "r1"),
+            routeRevision: UUID(), goalRevision: UUID(), bodyRevision: UUID(), obstacleRevision: UUID(),
+            artifactSHA256: String(repeating: "a", count: 64), points: [Point3(0,0,0), Point3(2,0,0)])
+        XCTAssertTrue(store.recordOwnedTestPlan(route)); clock.set(60.1)
+        XCTAssertTrue(store.recordOwnedTestPlan(route))
+        XCTAssertEqual(store.testRecordingSnapshot().recording?.plans.count, 1)
+        let plan = try XCTUnwrap(store.testRecordingSnapshot().recording?.plans.first)
+        XCTAssertEqual(plan.points, route.points); XCTAssertEqual(plan.bodyRevision, route.bodyRevision)
+        XCTAssertEqual(plan.obstacleRevision, route.obstacleRevision); XCTAssertEqual(plan.artifactSHA256, route.artifactSHA256)
+        XCTAssertNil(plan.alignment); XCTAssertEqual(plan.recordedAt, 60)
+        XCTAssertTrue(store.recordOwnedTestPlan(nil))
+        XCTAssertEqual(store.testRecordingSnapshot().recording?.plans.count, 2)
+        XCTAssertEqual(store.testRecordingSnapshot().recording?.plans.last?.points, [])
+        XCTAssertEqual(store.testRecordingSnapshot().recording?.plans.last?.recordedAt, 60.1)
+    }
     func testConstantMemoryQuotaRollsPastOldLimitWhilePinningStartAndMeeting() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: directory) }
