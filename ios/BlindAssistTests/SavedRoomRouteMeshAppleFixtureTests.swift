@@ -223,8 +223,13 @@ import simd
                     }
                 }
                 do {
-                    let object = try JSONSerialization.jsonObject(with: bytes, options: [.fragmentsAllowed])
-                    result.metadataFormat = "json"
+                    let object: Any
+                    if result.metadataFormat == "binaryPlist" {
+                        object = try PropertyListSerialization.propertyList(from: bytes, options: [], format: nil)
+                    } else {
+                        object = try JSONSerialization.jsonObject(with: bytes, options: [.fragmentsAllowed])
+                        result.metadataFormat = "json"
+                    }
                     result.metadataRootKind = jsonKind(object)
                     if let entries = object as? [String: Any] {
                         result.metadataEntryCount = min(entries.count, Adapter.maximumNodes)
@@ -239,17 +244,11 @@ import simd
                         if entries.count > Adapter.maximumNodes { result.inventoryFailure = "budgetExceeded" }
                     }
                 } catch {
-                    result.metadataRootKind = "invalidJSON"
+                    result.metadataRootKind = result.metadataFormat == "binaryPlist" ? "invalidPropertyList" : "invalidJSON"
                     result.inventoryFailure = "metadataDecodeFailed"
                 }
-                do { metadata = try JSONDecoder().decode([String: UUID].self, from: bytes) }
-                catch { result.inventoryFailure = result.inventoryFailure ?? "metadataDecodeFailed" }
-                if result.inventoryFailure == nil {
-                    if metadata.isEmpty { result.inventoryFailure = "metadataEmpty" }
-                    else if metadata.count > Adapter.maximumNodes || !metadata.keys.allSatisfy({ !$0.isEmpty && $0.utf8.count <= 512 }) {
-                        result.inventoryFailure = "metadataInvalidEntries"
-                    }
-                }
+                do { metadata = try Adapter.decodeMetadata(data: bytes) }
+                catch { result.inventoryFailure = result.inventoryFailure ?? failureCode(error) }
             } catch {
                 result.inventoryFailure = (error as? Adapter.Failure).map { String(describing: $0) } ?? "metadataReadFailed"
             }
@@ -319,6 +318,12 @@ import simd
         add(attachment)
         for report in reports {
             XCTAssertNil(report.inventoryFailure, "\(report.fixtureID): inventory must complete without relaxing bounds")
+            XCTAssertTrue(["binaryPlist", "json"].contains(report.metadataFormat))
+            XCTAssertEqual(report.metadataRootKind, "object")
+            XCTAssertGreaterThan(report.metadataEntryCount, 0)
+            XCTAssertGreaterThan(report.meshCount, 0)
+            XCTAssertEqual(report.unmatchedMeshCount, 0, "Every real mesh must resolve through an exact metadata name or ancestor")
+            XCTAssertEqual(report.unknownFeatureMeshCount, 0, "Resolved mesh UUIDs must belong to the unchanged original room")
             XCTAssertNil(report.adapterFailure, "\(report.fixtureID): inspect retained metadata/node inventory; no guessed matching")
         }
     }
@@ -338,6 +343,57 @@ import simd
         XCTAssertTrue(report.metadataEntries.isEmpty)
         XCTAssertEqual(report.nodeCount, 0)
         XCTAssertTrue(report.nodes.isEmpty)
+    }
+
+    func testFlatMetadataDecoderPreservesPublicUUIDsForBinaryPlistAndJSON() throws {
+        for fixture in Fixture.allCases {
+            let raw = try JSONDecoder().decode(RawRoom.self, from: bytes(fixture))
+            // Synthetic serialization of public fixture UUIDs tests decoding,
+            // not actual exporter node association (the inventory tests that).
+            let expected = Dictionary(uniqueKeysWithValues: raw.all.enumerated().map {
+                ("PublicFeature_\($0.offset)", $0.element.identifier)
+            })
+            let encoder = PropertyListEncoder(); encoder.outputFormat = .binary
+            let binary = try encoder.encode(expected)
+            XCTAssertTrue(binary.starts(with: Data("bplist00".utf8)))
+            XCTAssertEqual(try SavedRoomRouteMeshAdapter.decodeMetadata(data: binary), expected)
+            let json = Data(" \n\t\r".utf8) + (try JSONEncoder().encode(expected))
+            XCTAssertEqual(try SavedRoomRouteMeshAdapter.decodeMetadata(data: json), expected)
+        }
+    }
+
+    func testFlatMetadataDecoderRejectsMalformedWrongShapeAndUnsupportedFormats() throws {
+        typealias Adapter = SavedRoomRouteMeshAdapter
+        let id = "00000000-0000-0000-0000-000000000001"
+        func binary(_ value: Any) throws -> Data {
+            try PropertyListSerialization.data(fromPropertyList: value, format: .binary, options: 0)
+        }
+        func rejects(_ data: Data, _ expected: Adapter.Failure, line: UInt = #line) {
+            XCTAssertThrowsError(try Adapter.decodeMetadata(data: data), line: line) {
+                XCTAssertEqual($0 as? Adapter.Failure, expected, line: line)
+            }
+        }
+        rejects(Data(), .metadataEmpty)
+        rejects(Data("bplist00".utf8), .metadataDecodeFailed)
+        rejects(Data("not a metadata file".utf8), .metadataDecodeFailed)
+        rejects(try binary([id]), .metadataDecodeFailed)
+        rejects(try binary(["Floor0": ["identifier": id]]), .metadataDecodeFailed)
+        rejects(try binary(["Floor0": "not-a-uuid"]), .metadataDecodeFailed)
+        rejects(try binary(["Floor0": 1]), .metadataDecodeFailed)
+        rejects(try binary([:] as [String: String]), .metadataEmpty)
+        rejects(try binary(["": id]), .metadataInvalidEntries)
+        rejects(try binary([String(repeating: "é", count: 257): id]), .metadataInvalidEntries)
+        let xml = try PropertyListSerialization.data(fromPropertyList: ["Floor0": id], format: .xml, options: 0)
+        rejects(xml, .metadataDecodeFailed) // Not observed/accepted by this narrow repair.
+        rejects(Data("[]".utf8), .metadataDecodeFailed)
+        rejects(Data("{\"Floor0\":{\"identifier\":\"\(id)\"}}".utf8), .metadataDecodeFailed)
+        rejects(Data("{\"Floor0\":\"not-a-uuid\"}".utf8), .metadataDecodeFailed)
+        rejects(Data("{}".utf8), .metadataEmpty)
+        rejects(Data(repeating: 0, count: Adapter.maximumMetadataBytes + 1), .budgetExceeded)
+        let tooMany = Dictionary(uniqueKeysWithValues: (0...Adapter.maximumNodes).map { ("Node\($0)", id) })
+        rejects(try binary(tooMany), .metadataInvalidEntries)
+        let boundaryName = String(repeating: "é", count: 256) // Exactly 512 UTF-8 bytes.
+        XCTAssertEqual(try Adapter.decodeMetadata(data: binary([boundaryName: id])), [boundaryName: UUID(uuidString: id)!])
     }
 
     func testOriginalAppleExportInventoryPreservesFeatureIdentityAndHistoricalDoorState() async throws {

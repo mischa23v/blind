@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "status": "frozen-portable-collector-compatibility-verified-not-native-repair-validation",
+  "sourceSHA256": {
+    "tools/ci/native-route-diagnostic-evidence.py": "3e25c6a499c9eab630fb5bb5b5cb5879d61b2d46bf03e2152f3a29015cf3f232",
+    "tools/ci/test-native-route-diagnostic-evidence.py": "978aabc5770112195a7b89412a8b239d74a1613b6e6496798815f2def9d6a857"
+  },
+  "change": "Allow decoded binaryPlist metadata shape kinds and binaryPlist-only invalidPropertyList errors in fixed public-fixture inventory. The XCTest attachment itself remains JSON.",
+  "unchanged": [
+    "Exact two public source hashes and feature UUID allowlists.",
+    "Existing JSON/XML/unknown/unread format rules.",
+    "Historical binaryPlist+invalidJSON evidence remains accepted.",
+    "Failure-code enum, original route/matrix schemas, per-report131072B, shared/final1MiB limits, private-data rejection and test verdicts."
+  ],
+  "tests": [
+    {
+      "command": "python3 tools/ci/test-native-route-diagnostic-evidence.py",
+      "passed": 54,
+      "failed": 0
+    },
+    {
+      "command": "python3 tools/ci/test-native-unit-statuses.py",
+      "passed": 31,
+      "failed": 0
+    },
+    {
+      "command": "python3 research/early-native-summary-repair-20261028/test-export-order.py",
+      "passed": 6,
+      "failed": 0
+    }
+  ],
+  "historicalNativeAttachmentRevalidated": {
+    "path": "research/native-path-recovery-20261028/run40698547633/APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json",
+    "sha256": "e09061f5fb33257a1a90e28bb1221bc83b45d0b28ef09639bd7301984e47cdb3",
+    "status": "accepted-unchanged",
+    "fixtures": [
+      {
+        "fixtureID": "Hallway2",
+        "metadataFormat": "binaryPlist",
+        "metadataRootKind": "invalidJSON"
+      },
+      {
+        "fixtureID": "Bedroom3",
+        "metadataFormat": "binaryPlist",
+        "metadataRootKind": "invalidJSON"
+      }
+    ]
+  },
+  "newRegressionCoverage": [
+    "All six decoded shape kinds accepted for binaryPlist without raw payload.",
+    "Historical binaryPlist+invalidJSON and new invalidPropertyList retained.",
+    "invalidPropertyList rejected for JSON/XML/unknown/unread formats.",
+    "BinaryPlist cannot bypass source hash, raw metadata rejection, path text restriction, UUID allowlist, metadata-byte cap or false physical authority."
+  ],
+  "nativeLimitation": "This validates only bounded collector schema compatibility. It does not execute PropertyListDecoder, ModelIO or native route/collision tests.",
+  "publicationAllowlist": [
+    "tools/ci/native-route-diagnostic-evidence.py",
+    "tools/ci/test-native-route-diagnostic-evidence.py",
+    "research/native-path-recovery-20261028/collector-plist-compatibility.json"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "baseCommit": "6fe9d5270f23954fa59fc3509cccf23445cefa51",
+  "sourceChecksPassed": 15,
+  "checks": [
+    "published 6fe9d52 workflow baseline exact",
+    "published 6fe9d52 manifest baseline exact",
+    "published 6fe9d52 helper exact unchanged reference",
+    "only existing early reporting run changed",
+    "exact helper summary condition arguments fallback reused before collector",
+    "original collector failure handling retained",
+    "same single artifact upload and identity",
+    "manifest only changed workflow pin",
+    "integrated consumer matches candidate workflow",
+    "reject original incomplete early command",
+    "reporting shell syntax",
+    "inverse exact published workflow",
+    "inverse exact published manifest",
+    "forward exact repaired workflow",
+    "forward exact repaired manifest"
+  ],
+  "workflowSHA256": "ba74cd55736aa76248b885cf3c2454ba7ce2d082b0f7f040cd87ad8389e37a8e",
+  "manifestSHA256": "88a89117ecd1b17cfa90e8432b47c67ab761e091e55c01079b92e78a30c4ac61",
+  "nativeOrSDKTestsRun": false,
+  "githubRuntimeVerified": false,
+  "behavioralRegression": "test-export-order.py (separate result; not counted here)"
+}

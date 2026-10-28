@@ -168,10 +168,36 @@ class DiagnosticValidationTests(unittest.TestCase):
                            metadataByteCount=0 if format=='unread' else 128,metadataEntryCount=0,
                            metadataEntries=[],inventoryFailure='metadataDecodeFailed')
             self.assertEqual(m.validate_metadata_inventory(data,UUIDS),data)
-        for format in ('json','binaryPlist','/Users/private',True):
+        for format in ('json','xmlPlist','unknown','/Users/private',True):
             data=metadata_inventory();data['fixtures'][0]['metadataFormat']=format
             if format=='json':data['fixtures'][0]['metadataRootKind']='invalidJSON'
             with self.subTest(format=format),self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+    def test_binary_plist_decoded_shapes_and_historical_decode_failure(self):
+        for kind in ('object','array','string','number','boolean','null','invalidPropertyList','invalidJSON'):
+            data=metadata_inventory();fixture=data['fixtures'][0]
+            fixture.update(metadataFormat='binaryPlist',metadataRootKind=kind)
+            if kind!='object':fixture.update(metadataEntryCount=0,metadataEntries=[])
+            if kind.startswith('invalid'):fixture['inventoryFailure']='metadataDecodeFailed'
+            self.assertEqual(m.validate_metadata_inventory(data,UUIDS),data)
+    def test_property_list_parse_error_is_exclusive_to_binary_plist(self):
+        for format in ('unread','json','xmlPlist','unknown'):
+            data=metadata_inventory();fixture=data['fixtures'][0]
+            fixture.update(metadataFormat=format,metadataRootKind='invalidPropertyList',
+                           metadataEntryCount=0,metadataEntries=[],inventoryFailure='metadataDecodeFailed')
+            with self.subTest(format=format),self.assertRaisesRegex(m.EvidenceError,'metadata_format_disagreement'):
+                m.validate_metadata_inventory(data,UUIDS)
+        data=metadata_inventory();data['fixtures'][0].update(metadataFormat='binaryPlist',metadataRootKind='unread')
+        with self.assertRaisesRegex(m.EvidenceError,'metadata_format_disagreement'):m.validate_metadata_inventory(data,UUIDS)
+    def test_decoded_binary_plist_cannot_bypass_fixture_or_private_data_guards(self):
+        for change in ('source','raw','path','unknown_uuid','bytes','authority'):
+            data=metadata_inventory();fixture=data['fixtures'][0];fixture['metadataFormat']='binaryPlist'
+            if change=='source':fixture['sourceSHA256']='0'*64
+            elif change=='raw':fixture['rawMetadata']='PRIVATE_BINARY_PAYLOAD'
+            elif change=='path':fixture['metadataEntries'][0]['key']='/Users/private/family'
+            elif change=='unknown_uuid':fixture['metadataEntries'][0]['uuid']='00000000-0000-0000-0000-000000000000'
+            elif change=='bytes':fixture['metadataByteCount']=m.LIMIT+1
+            else:data['physicalAuthority']=True
+            with self.subTest(change=change),self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
     def test_metadata_schema_source_and_private_payload_fail_closed(self):
         for key,value in [('fixtureID','PrivateBedroom'),('sourceSHA256','0'*64),('adapterFailure','/Users/private/photo.jpg'),
                           ('rawMetadata',{'family':'secret'}),('metadataRootKind','private'),('metadataByteCount',m.LIMIT+1),

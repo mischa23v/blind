@@ -44,7 +44,7 @@ enum SavedRoomRouteMeshAdapter {
         case exportFailed, invalidMesh, sourceGeometryMismatch, budgetExceeded
         // Keep failures content-free: private room names/identifiers and file
         // paths must never enter logs. These distinguish previously conflated
-        // missingMetadata stages without changing the accepted export format.
+        // missingMetadata stages independently of the supported wire encoding.
         case metadataReadFailed, metadataDecodeFailed, metadataEmpty, metadataInvalidEntries
         case meshNodeMissingMetadata, metadataUnknownFeature
     }
@@ -58,6 +58,30 @@ enum SavedRoomRouteMeshAdapter {
     // This is not RoomPlan accuracy, physical uncertainty or collision clearance.
     static func roundoffAllowance(_ scale: Double) -> Double {
         64 * Double(Float.ulpOfOne) * max(1, abs(scale))
+    }
+
+    /// RoomPlan's real exporter emits a binary property list even when the
+    /// caller's metadata URL ends in .json (native run 40698547633). Preserve
+    /// the documented flat node-name -> UUID map; choose its wire decoder from
+    /// bytes, never the filename. JSON object input remains explicitly supported.
+    /// Other formats, nested maps and invalid UUIDs remain rejected.
+    static func decodeMetadata(data: Data) throws -> [String: UUID] {
+        guard !data.isEmpty else { throw Failure.metadataEmpty }
+        guard data.count <= maximumMetadataBytes else { throw Failure.budgetExceeded }
+        let metadata: [String: UUID]
+        do {
+            if data.starts(with: Data("bplist00".utf8)) {
+                metadata = try PropertyListDecoder().decode([String: UUID].self, from: data)
+            } else if data.drop(while: { [9, 10, 13, 32].contains($0) }).first == 123 {
+                metadata = try JSONDecoder().decode([String: UUID].self, from: data)
+            } else {
+                throw Failure.metadataDecodeFailed
+            }
+        } catch { throw Failure.metadataDecodeFailed }
+        guard !metadata.isEmpty else { throw Failure.metadataEmpty }
+        guard metadata.count <= maximumNodes,
+              metadata.keys.allSatisfy({ !$0.isEmpty && $0.utf8.count <= 512 }) else { throw Failure.metadataInvalidEntries }
+        return metadata
     }
 
     static func decode(data: Data, expectedSHA256: String) throws -> SavedRoomRouteMeshSnapshot {
@@ -103,12 +127,7 @@ enum SavedRoomRouteMeshAdapter {
         let metadataData: Data
         do { metadataData = try Data(contentsOf: metadataURL) }
         catch { throw Failure.metadataReadFailed }
-        let metadata: [String: UUID]
-        do { metadata = try JSONDecoder().decode([String: UUID].self, from: metadataData) }
-        catch { throw Failure.metadataDecodeFailed }
-        guard !metadata.isEmpty else { throw Failure.metadataEmpty }
-        guard metadata.count <= maximumNodes,
-              metadata.keys.allSatisfy({ !$0.isEmpty && $0.utf8.count <= 512 }) else { throw Failure.metadataInvalidEntries }
+        let metadata = try decodeMetadata(data: metadataData)
 
         // Ask the platform to convert indices to triangles and positions to an
         // explicit packed format. Validate the returned buffers before reading.

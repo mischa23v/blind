@@ -1,0 +1,131 @@
+name: Native Apple SDK checks
+
+on:
+  push:
+    branches: [codex/recovery-hazard-order-20261027]
+    paths:
+      - 'BlindCore/**'
+      - 'BlindMemory/**'
+      - 'ios/**'
+      - 'tools/ci/**'
+      - 'research/native-mesh-decoder-81/**'
+      - 'research/arkit-mesh-adapter-82/**'
+      - 'research/mesh-candidate-ingress-83/**'
+      - 'research/room-mesh-package-75/**'
+      - 'research/native-candidate-app-integration-85/integrated/check.py'
+      - 'research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json'
+      - '.github/workflows/native-apple.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-apple-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  native:
+    # Fail closed before allocating a runner if visibility changes or this is a fork.
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    runs-on: xcode-27
+    timeout-minutes: 65
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Verify source and installed Apple toolchain
+        id: preflight
+        timeout-minutes: 3
+        run: bash tools/ci/native-apple.sh preflight
+      - name: BlindCore package tests on macOS
+        id: core
+        timeout-minutes: 18
+        run: bash tools/ci/native-apple.sh core
+      - name: BlindMemory package tests on macOS
+        id: memory
+        if: ${{ !cancelled() && steps.preflight.outcome == 'success' }}
+        timeout-minutes: 12
+        run: bash tools/ci/native-apple.sh memory
+      - name: Unsigned default iOS Simulator build
+        id: build
+        if: ${{ !cancelled() && steps.preflight.outcome == 'success' }}
+        timeout-minutes: 20
+        run: bash tools/ci/native-apple.sh build
+      - name: Hosted iOS unit tests
+        id: unit
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 15
+        run: bash tools/ci/native-apple.sh unit
+      - name: Extract bounded hosted-unit case statuses before UI tests
+        if: always()
+        timeout-minutes: 3
+        run: python3 tools/ci/export-native-unit-statuses.py "$RUNNER_TEMP/blind-native-ci/unit.xcresult" "$RUNNER_TEMP/blind-native-ci/unit.log" "$RUNNER_TEMP/blind-native-ci/unit-case-statuses.json" || true
+      - name: Preserve bounded hosted-unit case statuses
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: native-unit-case-statuses-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/blind-native-ci/unit-case-statuses.json
+          if-no-files-found: error
+          retention-days: 3
+      - name: iOS UI and accessibility audit tests
+        id: ui
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 20
+        run: bash tools/ci/native-apple.sh ui
+      - name: Extract callback evidence from the existing UI result bundle
+        if: always()
+        timeout-minutes: 3
+        run: python3 tools/ci/export-full-audit-evidence.py "$RUNNER_TEMP/blind-native-ci/ui.xcresult" "$RUNNER_TEMP/blind-main-audit-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+      - name: Preserve bounded synthetic main UI audit evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: main-ui-audit-callback-evidence
+          path: |
+            ${{ runner.temp }}/blind-main-audit-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/*.png
+            ${{ runner.temp }}/blind-main-audit-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/*.json
+          if-no-files-found: error
+          retention-days: 3
+      - name: Summarize native evidence and preserve source
+        if: always() && steps.preflight.outcome == 'success'
+        timeout-minutes: 3
+        env:
+          CORE_OUTCOME: ${{ steps.core.outcome }}
+          MEMORY_OUTCOME: ${{ steps.memory.outcome }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          UNIT_OUTCOME: ${{ steps.unit.outcome }}
+          UI_OUTCOME: ${{ steps.ui.outcome }}
+        run: bash tools/ci/native-apple.sh summary
+
+  mesh-diagnostics-compile:
+    # Separate runner/derived data: cannot change the default app test configuration.
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027'
+    runs-on: xcode-27
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Verify integrated no-copy source and toolchain
+        timeout-minutes: 3
+        run: |
+          python3 research/native-candidate-app-integration-85/integrated/check.py
+          bash tools/ci/native-apple.sh preflight
+      - name: Compile diagnostics flag present only
+        timeout-minutes: 20
+        run: bash tools/ci/native-apple.sh diagnostics-build

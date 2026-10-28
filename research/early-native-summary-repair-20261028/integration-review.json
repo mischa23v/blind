@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "status": "portable-reporting-regression-passed-native-failure-cause-not-established",
+  "reviewedSHA256": {
+    ".github/workflows/native-apple.yml": "ba74cd55736aa76248b885cf3c2454ba7ce2d082b0f7f040cd87ad8389e37a8e",
+    "tools/ci/export-native-unit-statuses.py": "75b18b4b00b02b7da42453a4decec7ec043fb9672f66f463b5a0f5778f1dedfe",
+    "tools/ci/native-route-diagnostic-evidence.py": "22dd01fb734d00da33ce23451c8f5cf8d192d9f415b492da0bc4bda6bd6e56af",
+    "research/early-native-summary-repair-20261028/test-export-order.py": "58d6521ccef618ddfd11658d6d33053f1d0778e0e65af28d33913b6b4f1ce968"
+  },
+  "dependency": "The real status main reads output.with_name(unit-summary.json) after querying case statuses and before reconcile(). The existing early step invoked only the three-argument collector, so no early summary existed until the post-UI helper summary stage.",
+  "fixReviewed": "The existing early step calls the unchanged exporter --summary for unit.xcresult before invoking the unchanged three-argument collector. Existing summary failure fallback and collector || true remain reporting-only; neither converts an incomplete record into a passing test.",
+  "newTestCommand": "PYTHONDONTWRITEBYTECODE=1 python3 research/early-native-summary-repair-20261028/test-export-order.py -v",
+  "newTests": {
+    "passed": 6,
+    "failed": 0
+  },
+  "unchangedSuiteReruns": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tools/ci/test-native-route-diagnostic-evidence.py",
+      "passed": 51,
+      "failed": 0
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tools/ci/test-native-unit-statuses.py",
+      "passed": 31,
+      "failed": 0
+    }
+  ],
+  "harness": {
+    "executed": "Exact current and frozen previous workflow run blocks, real exporter --summary and main(), real bounded query wrapper, source pin parser, case parser, reconcile(), log witness, optional route collector, SHA reads and final artifact encoder.",
+    "stubbed": "Only git HEAD/diff/status replies and xcrun summary/tests JSON. Minimal source-hash fixtures are synthetic. No xcrun attachment command is permitted by stub.",
+    "resourceBounds": "Serial subprocesses, 10-second harness timeout per scenario, less than 1 MiB combined harness output; existing production query/artifact limits unchanged.",
+    "notProven": "Apple/Xcode execution, actual failing native unit cause, native metadata/collision results, or real source provenance."
+  },
+  "checks": [
+    "Current real workflow queries summary before cases, and unit-summary.json exists when the tests query starts.",
+    "Actual reconciliation completes on matching counts while retaining one Failed and one Skipped case and the synthetic target witness.",
+    "The exact frozen previous workflow run command retains its historical shell exit 0 due to || true, but records FileNotFoundError with complete/source_verified/target_pass_verified false. Running the same command without only that shell fallback also proves the real collector exits 1.",
+    "Mismatched aggregate counts still fail closed; the workflow reporting fallback does not change the false verdict.",
+    "Summary-query failure overwrites an existing stale successful summary with incomplete metadata and does not export arbitrary subprocess stderr.",
+    "Missing unit bundle skips summary generation and cannot claim completion.",
+    "A wrong source HEAD still blocks collection despite a freshly written summary.",
+    "Private unknown summary keys are removed; only summary/tests queries occur, with no UI or broad attachment query."
+  ],
+  "publicationAllowlist": [
+    "research/early-native-summary-repair-20261028/test-export-order.py",
+    "research/early-native-summary-repair-20261028/integration-review.json"
+  ]
+}

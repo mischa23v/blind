@@ -68,7 +68,16 @@ jobs:
       - name: Extract bounded hosted-unit case statuses before UI tests
         if: always()
         timeout-minutes: 3
-        run: python3 tools/ci/export-native-unit-statuses.py "$RUNNER_TEMP/blind-native-ci/unit.xcresult" "$RUNNER_TEMP/blind-native-ci/unit.log" "$RUNNER_TEMP/blind-native-ci/unit-case-statuses.json" || true
+        run: |
+          out="$RUNNER_TEMP/blind-native-ci"
+          if [[ -d "$out/unit.xcresult" ]]; then
+            if python3 tools/ci/export-native-unit-statuses.py --summary "$out/unit.xcresult" "$out/unit-summary.json"; then
+              :
+            else
+              echo "unit xcresult summary unavailable; consult bounded test output above."
+            fi
+          fi
+          python3 tools/ci/export-native-unit-statuses.py "$out/unit.xcresult" "$out/unit.log" "$out/unit-case-statuses.json" || true
       - name: Preserve bounded hosted-unit case statuses
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

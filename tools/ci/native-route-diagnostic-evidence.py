@@ -457,11 +457,15 @@ def validate_metadata_inventory(report, uuids):
         require(fixture['sourceSHA256'] == FIXTURES[room], 'source_hash_mismatch')
         require(bounded_integer(fixture['metadataByteCount'], LIMIT), 'inventory_metadata_over_budget')
         require(isinstance(fixture['metadataRootKind'], str) and
-                fixture['metadataRootKind'] in kinds | {'unread','invalidJSON'}, 'unsupported_metadata_kind')
+                fixture['metadataRootKind'] in kinds | {'unread','invalidJSON','invalidPropertyList'}, 'unsupported_metadata_kind')
         require(isinstance(fixture['metadataFormat'], str) and fixture['metadataFormat'] in
                 {'unread','json','binaryPlist','xmlPlist','unknown'}, 'unsupported_metadata_format')
-        require((fixture['metadataFormat'] == 'json') == (fixture['metadataRootKind'] in kinds) and
-                (fixture['metadataFormat'] == 'unread') == (fixture['metadataRootKind'] == 'unread'), 'metadata_format_disagreement')
+        # The attachment remains JSON; this field describes the source export.
+        # Keep pre-repair binary-plist/invalidJSON witnesses as historical errors.
+        roots_by_format = {'unread':{'unread'}, 'json':kinds,
+                           'binaryPlist':kinds | {'invalidJSON','invalidPropertyList'},
+                           'xmlPlist':{'invalidJSON'}, 'unknown':{'invalidJSON'}}
+        require(fixture['metadataRootKind'] in roots_by_format[fixture['metadataFormat']], 'metadata_format_disagreement')
         for field in ('adapterFailure','inventoryFailure'):
             if field in fixture:
                 require(isinstance(fixture[field], str) and fixture[field] in METADATA_FAILURES, 'unapproved_error_text')
