@@ -1,0 +1,16 @@
+{
+  "reviewer": "review_monitor_container",
+  "decision": "accepted for native experiment; no blocking source findings",
+  "independentContracts": {
+    "passed": 13,
+    "failed": 0
+  },
+  "dashboardSha256": "3833318d7d3e6b1cffcf092bc613cdd42c6566cbf31346396aef48c686de3193",
+  "testSha256": "5fe34bd454b78c8c4a11dcc72768bd89c25d43fa7fcbee72d365f902b131881c",
+  "limits": [
+    "native compilation not performed",
+    "full audit not run",
+    "VoiceOver grouping/heading rotor/RTL unverified",
+    "AX5 footer-end reachability and pressed/disabled contrast unverified"
+  ]
+}

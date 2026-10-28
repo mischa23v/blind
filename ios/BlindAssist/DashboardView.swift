@@ -8,6 +8,23 @@ struct DashboardView: View {
     var body: some View { AssistantToolsView(model: model, initialTab: "companion") }
 }
 
+/// Camera-only buttons retain a full-width touch target outside Form rows.
+/// Minimum height allows multiline and accessibility-size labels to grow.
+private struct CameraControlButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .frame(minWidth: 44, minHeight: 44, alignment: .leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 4)
+            .foregroundStyle(.tint)
+            .background(.quaternary, in: RoundedRectangle(cornerRadius: 12))
+            .contentShape(Rectangle())
+            .opacity(isEnabled ? (configuration.isPressed ? 0.7 : 1) : 0.5)
+    }
+}
+
 /// The child's first tab contains one settled reply and the shared tab navigation only.
 /// Display changes do not request focus or post a second speech announcement.
 private struct CompanionHomeView: View {
@@ -314,86 +331,91 @@ struct AssistantToolsView: View {
 
     /// Camera and safety: live monitoring status, calibration, return guidance and practice.
     private var monitor: some View {
-        Form {
-            Section {
-                if model.simulation {
-                    Text(t("SIMULATION · generated readings", "محاكاة · قراءات مولدة"))
-                        .font(.headline).foregroundStyle(accent)
-                }
-                Text(GuidanceText.detection(model.detection, arabic: model.arabic))
-                    .font(.title2.weight(.bold)).accessibilityAddTraits(.isHeader)
-                if let distance = model.detection.distance {
-                    Text(t("Measured distance", "المسافة المقاسة") + " " + String(format: model.arabic ? "%.1f متر" : "%.1f metres", distance))
-                }
-                // Camera monitoring never starts or unmutes a separate voice conversation.
-                Button(model.simulation ? t("End practice", "أنهِ التدريب") :
-                    model.cameraAwareness ? t("Stop monitoring", "أوقف المراقبة") : t("Start monitoring", "ابدأ المراقبة")) {
-                    if model.simulation { model.endPractice() } else { model.cameraAwareness.toggle() }
-                }
-                .font(.headline)
-                .accessibilityIdentifier("monitor-toggle")
-                if model.running && !model.places.scanning {
-                    Button(t("Repeat status", "كرر الحالة")) { model.repeatMonitoringStatus() }
-                        .accessibilityIdentifier("repeat-monitoring-status")
-                    Button(t("Calibrate on level ground", "المعايرة على أرض مستوية")) { model.calibrate() }
-                    if model.detection.hazard == .calibrating {
-                        ProgressView(value: model.calibrationProgress)
-                            .accessibilityLabel(t("Floor calibration", "معايرة الأرض"))
-                            .accessibilityValue("\(Int(model.calibrationProgress * 100))%")
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                Section {
+                    if model.simulation {
+                        Text(t("SIMULATION · generated readings", "محاكاة · قراءات مولدة"))
+                            .font(.headline).foregroundStyle(accent)
                     }
-                }
-                Button(t("Stop descriptions, keep alerts", "أوقف الوصف وأبقِ التنبيهات")) { model.stopDescriptions() }
-                if !model.message.isEmpty { Text(model.message) }
-                if model.running && !model.simulation { Text(model.visualStairs.status(arabic: model.arabic)) }
-            } header: { Text(t("Safety alerts", "تنبيهات السلامة")) }
-            Section {
-                Button(model.hasReturnIntent ? t("Stop return guidance", "إيقاف إرشاد العودة") : t("Guide me back to where I started", "أرشدني إلى نقطة البداية")) {
-                    if model.hasReturnIntent { model.cancelReturnIntent() } else { model.startReturn() }
-                }
-                .disabled(model.simulation)
-                .accessibilityIdentifier("retrace-session")
-                if model.hasReturnIntent { Button(t("Repeat direction", "كرر الاتجاه")) { model.indoorBeacon() } }
-                if !model.returnStatus.isEmpty { Text(model.returnStatus) }
-                ConversationMemoryPersistenceView(model: model)
-                ConnectedJourneyPersistenceView(store: model.journeys, arabic: model.arabic)
-            } header: { Text(t("Return to start", "العودة إلى البداية")) }
-            Section {
-                if model.simulation {
-                    Text(t("Practice only · no live camera", "تدريب فقط · دون كاميرا مباشرة"))
-                        .font(.body)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .accessibilityIdentifier("practice-active-status")
-                    Button(t("End practice", "أنهِ التدريب")) { model.endPractice() }
-                        .accessibilityIdentifier("end-practice")
-                } else {
-                    Button { model.startSimulation() } label: {
-                        Text(t("Try practice (2 minutes)", "جرب التدريب (دقيقتان)"))
+                    Text(GuidanceText.detection(model.detection, arabic: model.arabic))
+                        .font(.title2.weight(.bold)).accessibilityAddTraits(.isHeader)
+                    if let distance = model.detection.distance {
+                        Text(t("Measured distance", "المسافة المقاسة") + " " + String(format: model.arabic ? "%.1f متر" : "%.1f metres", distance))
+                    }
+                    // Camera monitoring never starts or unmutes a separate voice conversation.
+                    Button(model.simulation ? t("End practice", "أنهِ التدريب") :
+                        model.cameraAwareness ? t("Stop monitoring", "أوقف المراقبة") : t("Start monitoring", "ابدأ المراقبة")) {
+                        if model.simulation { model.endPractice() } else { model.cameraAwareness.toggle() }
+                    }
+                    .font(.headline)
+                    .accessibilityIdentifier("monitor-toggle")
+                    if model.running && !model.places.scanning {
+                        Button(t("Repeat status", "كرر الحالة")) { model.repeatMonitoringStatus() }
+                            .accessibilityIdentifier("repeat-monitoring-status")
+                        Button(t("Calibrate on level ground", "المعايرة على أرض مستوية")) { model.calibrate() }
+                        if model.detection.hazard == .calibrating {
+                            ProgressView(value: model.calibrationProgress)
+                                .accessibilityLabel(t("Floor calibration", "معايرة الأرض"))
+                                .accessibilityValue("\(Int(model.calibrationProgress * 100))%")
+                        }
+                    }
+                    Button(t("Stop descriptions, keep alerts", "أوقف الوصف وأبقِ التنبيهات")) { model.stopDescriptions() }
+                    if !model.message.isEmpty { Text(model.message) }
+                    if model.running && !model.simulation { Text(model.visualStairs.status(arabic: model.arabic)) }
+                } header: { Text(t("Safety alerts", "تنبيهات السلامة")) }
+                Section {
+                    Button(model.hasReturnIntent ? t("Stop return guidance", "إيقاف إرشاد العودة") : t("Guide me back to where I started", "أرشدني إلى نقطة البداية")) {
+                        if model.hasReturnIntent { model.cancelReturnIntent() } else { model.startReturn() }
+                    }
+                    .disabled(model.simulation)
+                    .accessibilityIdentifier("retrace-session")
+                    if model.hasReturnIntent { Button(t("Repeat direction", "كرر الاتجاه")) { model.indoorBeacon() } }
+                    if !model.returnStatus.isEmpty { Text(model.returnStatus) }
+                    ConversationMemoryPersistenceView(model: model)
+                    ConnectedJourneyPersistenceView(store: model.journeys, arabic: model.arabic)
+                } header: { Text(t("Return to start", "العودة إلى البداية")) }
+                Section {
+                    if model.simulation {
+                        Text(t("Practice only · no live camera", "تدريب فقط · دون كاميرا مباشرة"))
                             .font(.body)
-                            .lineLimit(nil)
                             .fixedSize(horizontal: false, vertical: true)
-                            .multilineTextAlignment(.leading)
+                            .accessibilityIdentifier("practice-active-status")
+                        Button(t("End practice", "أنهِ التدريب")) { model.endPractice() }
+                            .accessibilityIdentifier("end-practice")
+                    } else {
+                        Button { model.startSimulation() } label: {
+                            Text(t("Try practice (2 minutes)", "جرب التدريب (دقيقتان)"))
+                                .font(.body)
+                                .lineLimit(nil)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .multilineTextAlignment(.leading)
+                        }
+                        .accessibilityIdentifier("start-simulation")
                     }
-                    .accessibilityIdentifier("start-simulation")
-                }
-                if model.simulation {
-                    ForEach([Hazard.observing, .drop, .obstacle, .overhead, .uncertain], id: \.self) { hazard in
-                        Button(t("Practice: ", "تدريب: ") + model.feedback.message(for: hazard)) { model.simulate(hazard) }
+                    if model.simulation {
+                        ForEach([Hazard.observing, .drop, .obstacle, .overhead, .uncertain], id: \.self) { hazard in
+                            Button(t("Practice: ", "تدريب: ") + model.feedback.message(for: hazard)) { model.simulate(hazard) }
+                        }
                     }
+                } header: {
+                    Text(t("Practice", "التدريب"))
+                        .font(.body.weight(.semibold))
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(.leading)
+                } footer: {
+                    Text(t("Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.", "التدريب يوقف الحساسات الحقيقية وينتهي وحده بعد دقيقتين. تستأنف المراقبة فقط إذا كانت الكاميرا مفعّلة، وتحتاج إلى المعايرة. واصل استخدام العصا أو كلب الإرشاد."))
+                        .font(.body)
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(.leading)
                 }
-            } header: {
-                Text(t("Practice", "التدريب"))
-                    .font(.body.weight(.semibold))
-                    .lineLimit(nil)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .multilineTextAlignment(.leading)
-            } footer: {
-                Text(t("Practice pauses live sensors and ends by itself after two minutes. Live monitoring resumes only if the camera control is on, and requires calibration. Keep using your cane or guide dog.", "التدريب يوقف الحساسات الحقيقية وينتهي وحده بعد دقيقتين. تستأنف المراقبة فقط إذا كانت الكاميرا مفعّلة، وتحتاج إلى المعايرة. واصل استخدام العصا أو كلب الإرشاد."))
-                    .font(.body)
-                    .lineLimit(nil)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .multilineTextAlignment(.leading)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(20)
         }
+        .buttonStyle(CameraControlButtonStyle())
         .navigationTitle(t("Camera and safety", "الكاميرا والسلامة"))
     }
 
