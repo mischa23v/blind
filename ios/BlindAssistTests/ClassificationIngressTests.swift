@@ -69,16 +69,14 @@ final class ClassificationIngressTests: XCTestCase {
         let queryID = UUID(), submittedAt = ProcessInfo.processInfo.systemUptime
         Self.timingReceipt(owner, event: .submitted, queryID: queryID, submittedAt: submittedAt)
         owner.request(start: [-2+x,0,0], goal: [2+x,0,0], body: try .init(radius: 0.225, height: 1.75)) {
+            // Completion critical path: no stdout, receipt snapshot or formatting.
             box.put($0)
-            Self.timingReceipt(owner, event: .callback, queryID: queryID, submittedAt: submittedAt)
             done.fulfill()
         }
         await fulfillment(of: [done], timeout: 10)
         Self.timingReceipt(owner, event: .waitFinished, queryID: queryID, submittedAt: submittedAt)
         guard let value = box.get() else {
-            owner.stopAndDiscard {
-                Self.timingReceipt(owner, event: .failureDiscardCompleted, queryID: queryID, submittedAt: submittedAt)
-            } // Fence on timeout; no late result becomes a passing assertion.
+            owner.stopAndDiscard {} // Fence on timeout; no late result becomes a passing assertion.
             throw MeshCandidateIngress83.Failure.unavailable
         }
         return value
@@ -86,11 +84,9 @@ final class ClassificationIngressTests: XCTestCase {
     private func discard(_ owner: MeshCandidateIngress83) async {
         let done = expectation(description: "acknowledged owned/native discard")
         let queryID = UUID(), submittedAt = ProcessInfo.processInfo.systemUptime
-        owner.stopAndDiscard {
-            Self.timingReceipt(owner, event: .discardCompleted, queryID: queryID, submittedAt: submittedAt)
-            done.fulfill()
-        }
+        owner.stopAndDiscard { done.fulfill() }
         await fulfillment(of: [done], timeout: 10)
+        Self.timingReceipt(owner, event: .waitFinished, queryID: queryID, submittedAt: submittedAt)
     }
     private func assertNoCandidate(_ result: Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>,
                                    file: StaticString = #filePath, line: UInt = #line) {

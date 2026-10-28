@@ -18,7 +18,23 @@ function guardTrace(model, ui) {
  assert.ok(diagnostic.includes('data.count <= 16 * 1024'));
  assert.ok(diagnostic.includes('nextTickSnapshot = finish + 10'));
  assert.ok(diagnostic.indexOf('queue.async {') < diagnostic.indexOf('try data.write'));
- assert.ok(ui.includes('if name == "-[BlindAssistUITests.LaunchTests testPracticeIsAnnouncedAndCanStop]"'));
+ const setup = ui.match(/override func setUpWithError\(\) throws \{([\s\S]*?)\n    \}/)?.[1];
+ const practice = ui.match(/func testPracticeIsAnnouncedAndCanStop\(\) \{([\s\S]*?)\n    \}/)?.[1];
+ assert.ok(setup && practice);
+ assert.doesNotMatch(setup,/practice-runtime-diagnostic|BLIND_PRACTICE_TRACE|PRACTICE_RUNTIME_RUN/);
+ assert.doesNotMatch(ui,/if name ==/);
+ assert.equal(ui.split('app.launchArguments.append("--practice-runtime-diagnostic")').length,2);
+ assert.equal(ui.split('print("PRACTICE_RUNTIME_RUN test=').length,2);
+ const configured = practice.indexOf('app.launchArguments.append("--practice-runtime-diagnostic")');
+ const launched = practice.indexOf('app.launch()');
+ const navigated = practice.indexOf('openSettingsPage("camera-screen")');
+ assert.ok(practice.indexOf('let runID = UUID().uuidString') >= 0 && practice.indexOf('let runID = UUID().uuidString') < configured);
+ assert.ok(practice.indexOf('app.terminate()') >= 0 && practice.indexOf('app.terminate()') < configured);
+ assert.ok(configured >= 0 && launched > configured && navigated > launched);
+ assert.ok(practice.slice(configured,launched).includes('app.launchEnvironment["BLIND_PRACTICE_TRACE_TEST"] = "LaunchTests/testPracticeIsAnnouncedAndCanStop"'));
+ assert.ok(practice.slice(configured,launched).includes('app.launchEnvironment["BLIND_PRACTICE_TRACE_RUN"] = runID'));
+ assert.ok(practice.slice(configured,launched).includes('print("PRACTICE_RUNTIME_RUN test=LaunchTests/testPracticeIsAnnouncedAndCanStop run=\\(runID)")'));
+ assert.doesNotMatch(practice.slice(navigated),/app\.launch\(|app\.terminate\(|launchArguments|launchEnvironment/);
  assert.ok(ui.includes('app.launchEnvironment["BLIND_PRACTICE_TRACE_TEST"] = "LaunchTests/testPracticeIsAnnouncedAndCanStop"'));
  assert.ok(ui.includes('let cancellationEvidenceLimit: TimeInterval = 90'));
  assert.equal((ui.match(/XCTAssertLessThan\(.*(?:\n[^\n]*)?/g)||[]).filter(x=>x.includes('cancellationEvidenceLimit')).length,2);
@@ -38,4 +54,11 @@ for(const [name,from,to] of [
 test('real End tap and evidence deadline cannot be substituted',()=>{
  assert.throws(()=>guardTrace(model,ui.replace('        end.tap()','        // no tap')));
  assert.throws(()=>guardTrace(model,ui.replace('let cancellationEvidenceLimit: TimeInterval = 90','let cancellationEvidenceLimit: TimeInterval = 180')));
+});
+
+test('only the explicit Practice test may relaunch with the diagnostic nonce',()=>{
+ assert.throws(()=>guardTrace(model,ui.replace('func testPracticeIsAnnouncedAndCanStop()', 'func testOtherPractice()')));
+ assert.throws(()=>guardTrace(model,ui.replace('        app.launchArguments.append("--practice-runtime-diagnostic")','        // diagnostic not configured')));
+ assert.throws(()=>guardTrace(model,ui.replace('        app.terminate()','        // stale instance')));
+ assert.throws(()=>guardTrace(model,ui.replace('        end.tap()', '        app.launch()\n        end.tap()')));
 });

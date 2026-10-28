@@ -18,14 +18,6 @@ final class LaunchTests: XCTestCase {
         continueAfterFailure = false
         app = XCUIApplication(); app.launchArguments = ["--ui-testing", "-AppleLanguages", "(en)", "-AppleLocale", "en_US",
             "-background-conversation", "NO", "-camera-awareness", "NO"]
-        // A closed test identity, not a global simulator logging mode.
-        if name == "-[BlindAssistUITests.LaunchTests testPracticeIsAnnouncedAndCanStop]" {
-            let runID = UUID().uuidString
-            app.launchArguments.append("--practice-runtime-diagnostic")
-            app.launchEnvironment["BLIND_PRACTICE_TRACE_TEST"] = "LaunchTests/testPracticeIsAnnouncedAndCanStop"
-            app.launchEnvironment["BLIND_PRACTICE_TRACE_RUN"] = runID
-            print("PRACTICE_RUNTIME_RUN test=LaunchTests/testPracticeIsAnnouncedAndCanStop run=\(runID)")
-        }
         app.launch()
     }
     private func openTab(_ name: String) {
@@ -119,6 +111,15 @@ final class LaunchTests: XCTestCase {
         // not prove audible speech or active practice after the navigation delay.
     }
     func testPracticeIsAnnouncedAndCanStop() {
+        // This explicit test owns the synthetic receipt. Do not depend on
+        // XCTest's display-name formatting to decide whether to enable it.
+        let runID = UUID().uuidString
+        app.terminate()
+        app.launchArguments.append("--practice-runtime-diagnostic")
+        app.launchEnvironment["BLIND_PRACTICE_TRACE_TEST"] = "LaunchTests/testPracticeIsAnnouncedAndCanStop"
+        app.launchEnvironment["BLIND_PRACTICE_TRACE_RUN"] = runID
+        print("PRACTICE_RUNTIME_RUN test=LaunchTests/testPracticeIsAnnouncedAndCanStop run=\(runID)")
+        app.launch()
         openSettingsPage("camera-screen")
         XCTAssertEqual(app.buttons["monitor-toggle"].label, "Start monitoring", "The explicit camera-off launch preference is respected before practice")
         let start = app.buttons["start-simulation"]
@@ -220,6 +221,46 @@ final class LaunchTests: XCTestCase {
             recordPracticeLayoutAttachment(sizeName + "-" + role)
         }
         recordPracticeFooterEnd(footerElement, expectedLabel: footer, sizeName: sizeName)
+        recordAskLayout(sizeName: sizeName)
+    }
+    @MainActor private func recordAskLayout(sizeName: String) {
+        // Same system-selected category and synthetic app as the Practice probe.
+        // Observe real Form rows at this size; do not override fonts or the audit.
+        openSettingsPage("ask-screen")
+        let action = app.buttons["local-answer"]
+        let reason = app.staticTexts["local-answer-unavailable-reason"]
+        let expectedReason = "Camera monitoring is not running. Open Camera and safety to start it."
+        for (role, element) in [("ask-action", action), ("ask-reason", reason)] {
+            let existedBeforeReveal = element.exists
+            print("ASK_LAYOUT beforeReveal size=\(sizeName) role=\(role) exists=\(existedBeforeReveal)")
+            revealPracticeDiagnosticElement(element)
+            recordPracticeLayoutAttachment(sizeName + "-" + role)
+            print("ASK_LAYOUT afterReveal size=\(sizeName) role=\(role) frame=\(element.frame) hittable=\(element.isHittable) enabled=\(element.isEnabled) label=\(element.label)")
+            XCTAssertEqual(element.label, role == "ask-action" ? "Ask about the camera view" : expectedReason)
+        }
+        XCTAssertFalse(action.isEnabled, "Readable unavailable action must not start the camera")
+        let navigation = app.navigationBars.firstMatch
+        let tabs = app.tabBars.firstMatch
+        XCTAssertTrue(navigation.exists)
+        XCTAssertTrue(tabs.exists)
+        func endIsVisible() -> Bool {
+            guard reason.exists else { return false }
+            return reason.frame.maxY > navigation.frame.maxY && reason.frame.maxY <= tabs.frame.minY
+        }
+        for _ in 0..<8 {
+            if endIsVisible() { break }
+            app.swipeUp()
+        }
+        for _ in 0..<8 {
+            if endIsVisible() { break }
+            app.swipeDown()
+        }
+        recordPracticeLayoutAttachment(sizeName + "-ask-reason-end")
+        XCTAssertTrue(reason.exists)
+        print("ASK_LAYOUT reasonEnd size=\(sizeName) frame=\(reason.frame) unobscuredTop=\(navigation.frame.maxY) unobscuredBottom=\(tabs.frame.minY) endVisible=\(endIsVisible())")
+        XCTAssertTrue(endIsVisible(), "Full unavailable reason must scroll above the tab bar and below the navigation bar")
+        XCTAssertTrue(reason.isHittable)
+        XCTAssertEqual(reason.label, expectedReason)
     }
     @MainActor private func recordPracticeFooterEnd(_ footer: XCUIElement, expectedLabel: String, sizeName: String) {
         let navigation = app.navigationBars.firstMatch

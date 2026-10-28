@@ -25,6 +25,10 @@ with tempfile.TemporaryDirectory(prefix='stage85-ci-helper-') as temp:
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(R / name, target)
+    subprocess.run(['git', 'apply', '-R', str(H / 'ingress-timing-ci-helper.patch')], cwd=root,
+                   check=True, timeout=15, capture_output=True)
+    for name, digest in manifest['beforeIngressTimingHelper'].items():
+        check('exact pre-ingress-timing CI helper recovered ' + name, hashlib.sha256((root / name).read_bytes()).hexdigest() == digest)
     subprocess.run(['git', 'apply', '-R', str(H / 'classified-timing-ci-helper.patch')], cwd=root,
                    check=True, timeout=15, capture_output=True)
     for name, digest in manifest['beforeClassifiedTimingHelper'].items():

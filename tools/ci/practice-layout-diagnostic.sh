@@ -46,7 +46,7 @@ for size in large accessibility-extra-extra-extra-large; do
     -only-testing:"BlindAssistUITests/LaunchTests/$selector" \
     -resultBundlePath "$out/$size.xcresult" test > "$out/$size.log" 2>&1 || result=$?
   printf 'PRACTICE_LAYOUT size=%s exit=%s\n' "$size" "$result"
-  grep -E 'PRACTICE_LAYOUT|error:|Test Case .* (passed|failed)|Executed .*failure' "$out/$size.log" | tail -100 || true
+  grep -E 'PRACTICE_LAYOUT|ASK_LAYOUT|error:|Test Case .* (passed|failed)|Executed .*failure' "$out/$size.log" | tail -100 || true
   if (( result != 0 )); then status=1; fi
   if ! grep -q "PRACTICE_LAYOUT afterReveal.*role=footer" "$out/$size.log"; then
     echo "PRACTICE_LAYOUT incomplete: footer evidence missing for $size"
@@ -56,9 +56,17 @@ for size in large accessibility-extra-extra-extra-large; do
     echo "PRACTICE_LAYOUT incomplete: footer end reachability missing for $size"
     status=1
   fi
+  if ! grep -q "ASK_LAYOUT afterReveal.*role=ask-reason" "$out/$size.log"; then
+    echo "ASK_LAYOUT incomplete: unavailable reason evidence missing for $size"
+    status=1
+  fi
+  if ! grep -q "ASK_LAYOUT reasonEnd.*endVisible=true" "$out/$size.log"; then
+    echo "ASK_LAYOUT incomplete: full reason reachability missing for $size"
+    status=1
+  fi
   if [[ -d "$out/$size.xcresult" ]]; then
     if xcrun xcresulttool export attachments --path "$out/$size.xcresult" --output-path "$out/attachments-$size"; then
-      # Fail closed unless all four exact test-authored role screenshots exist.
+      # Fail closed unless all seven exact Practice/Ask role screenshots exist.
       if ! python3 tools/ci/export-practice-layout-screenshots.py "$out/attachments-$size" "$out/screenshots" "$size"; then
         status=1
       fi

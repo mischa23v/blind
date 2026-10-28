@@ -1,7 +1,7 @@
 name: Focused accessibility diagnostic
 on:
   push:
-    branches: [master]
+    branches: [master, codex/recovery-hazard-order-20261027]
     paths:
       - '.github/workflows/accessibility-diagnostic.yml'
       - 'ios/BlindAssist/DashboardView.swift'

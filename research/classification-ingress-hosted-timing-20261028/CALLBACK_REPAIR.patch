@@ -1,0 +1,75 @@
+--- a/ios/BlindAssistTests/ClassificationIngressTests.swift
++++ b/ios/BlindAssistTests/ClassificationIngressTests.swift
+@@ -69,16 +69,14 @@
+         let queryID = UUID(), submittedAt = ProcessInfo.processInfo.systemUptime
+         Self.timingReceipt(owner, event: .submitted, queryID: queryID, submittedAt: submittedAt)
+         owner.request(start: [-2+x,0,0], goal: [2+x,0,0], body: try .init(radius: 0.225, height: 1.75)) {
++            // Completion critical path: no stdout, receipt snapshot or formatting.
+             box.put($0)
+-            Self.timingReceipt(owner, event: .callback, queryID: queryID, submittedAt: submittedAt)
+             done.fulfill()
+         }
+         await fulfillment(of: [done], timeout: 10)
+         Self.timingReceipt(owner, event: .waitFinished, queryID: queryID, submittedAt: submittedAt)
+         guard let value = box.get() else {
+-            owner.stopAndDiscard {
+-                Self.timingReceipt(owner, event: .failureDiscardCompleted, queryID: queryID, submittedAt: submittedAt)
+-            } // Fence on timeout; no late result becomes a passing assertion.
++            owner.stopAndDiscard {} // Fence on timeout; no late result becomes a passing assertion.
+             throw MeshCandidateIngress83.Failure.unavailable
+         }
+         return value
+@@ -86,11 +84,9 @@
+     private func discard(_ owner: MeshCandidateIngress83) async {
+         let done = expectation(description: "acknowledged owned/native discard")
+         let queryID = UUID(), submittedAt = ProcessInfo.processInfo.systemUptime
+-        owner.stopAndDiscard {
+-            Self.timingReceipt(owner, event: .discardCompleted, queryID: queryID, submittedAt: submittedAt)
+-            done.fulfill()
+-        }
++        owner.stopAndDiscard { done.fulfill() }
+         await fulfillment(of: [done], timeout: 10)
++        Self.timingReceipt(owner, event: .waitFinished, queryID: queryID, submittedAt: submittedAt)
+     }
+     private func assertNoCandidate(_ result: Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>,
+                                    file: StaticString = #filePath, line: UInt = #line) {
+--- a/ios/BlindAssistTests/ClassifiedRoomMeshTests.swift
++++ b/ios/BlindAssistTests/ClassifiedRoomMeshTests.swift
+@@ -43,10 +43,8 @@
+         let receipt = UUID().uuidString, submittedAt = ProcessInfo.processInfo.systemUptime
+         print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:submitted")
+         runtime.request(start: start, goal: goal, body: try .init(radius: 0.225, height: 1.75)) {
++            // Completion critical path: no stdout, receipt snapshot or formatting.
+             box.put($0)
+-            let elapsedMS = Int((ProcessInfo.processInfo.systemUptime - submittedAt) * 1_000)
+-            print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:callback,elapsed_ms:\(elapsedMS)")
+-            Self.stageReceipt(runtime, event: .callback)
+             done.fulfill()
+         }
+         await fulfillment(of: [done], timeout: 10)
+@@ -55,10 +53,7 @@
+         if case nil = result {
+             // A thrown XCTUnwrap bypasses the test body's normal async discard.
+             // Fence this owner now; do not wait longer or infer native completion.
+-            runtime.stopAndDiscard {
+-                print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:failure-discard-completed")
+-                Self.stageReceipt(runtime, event: .failureDiscardCompleted)
+-            }
++            runtime.stopAndDiscard {}
+             print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:failure-discard-requested,elapsed_ms:\(elapsedMS)")
+         }
+         Self.stageReceipt(runtime, event: .waitFinished)
+@@ -66,11 +61,9 @@
+     }
+     private func discard(_ runtime: RoomMeshCandidateRuntime) async {
+         let done = expectation(description: "terminal geometry release")
+-        runtime.stopAndDiscard {
+-            Self.stageReceipt(runtime, event: .discardCompleted)
+-            done.fulfill()
+-        }
++        runtime.stopAndDiscard { done.fulfill() }
+         await fulfillment(of: [done], timeout: 10)
++        Self.stageReceipt(runtime, event: .waitFinished)
+     }
+     func testClassifiedFloorRoutesWithoutGrantingPhysicalAuthority() async throws {
+         let runtime = try makeRuntime(sessionID: "classified-floor", supportPolicy: .classifiedFloorOnly)

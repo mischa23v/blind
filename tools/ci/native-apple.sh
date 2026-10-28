@@ -25,6 +25,10 @@ run_logged() {
     local stage='(requestEnqueued|workerStarted|nativeBuildBegin|nativeBuildEnd|routeBegin|routeEnd|nativeFailure|completionQueued|completionDelivered|discardRequested|discardWorkerStarted|discardReleased|discardCompletionDelivered)'
     grep -E "^CLASSIFIED_QUERY_STAGE_RECEIPT id=[0-9A-F-]{36} event=(callback|waitFinished|failureDiscardCompleted|discardCompleted) stages=($stage:[0-9]+;)*$stage:[0-9]+$" "$out/$label.log" | head -40 | cut -c 1-1500 || true
     echo 'CLASSIFIED_QUERY_STAGE_TIMING_END'
+    # Exact synthetic ingress fields only; no source IDs, geometry or free text.
+    echo 'CLASSIFICATION_INGRESS_TIMING_BEGIN (at most 80 lines; 1800 characters each)'
+    grep -E "^CLASSIFICATION_INGRESS_TIMING query=[0-9A-F-]{36} runtime=[0-9A-F-]{36} event=(submitted|waitFinished) elapsed_ms=[0-9]+ main_thread=(true|false) stages=(($stage:[0-9]+;)*$stage:[0-9]+)?$" "$out/$label.log" | head -80 | cut -c 1-1800 || true
+    echo 'CLASSIFICATION_INGRESS_TIMING_END'
   fi
   # Inputs are committed public source and synthetic tests only; no secrets are supplied.
   # Avoid an environment dump or full build settings. Keep failure diagnostics bounded.

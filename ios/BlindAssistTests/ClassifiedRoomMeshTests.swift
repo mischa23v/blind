@@ -43,10 +43,8 @@ final class ClassifiedRoomMeshTests: XCTestCase {
         let receipt = UUID().uuidString, submittedAt = ProcessInfo.processInfo.systemUptime
         print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:submitted")
         runtime.request(start: start, goal: goal, body: try .init(radius: 0.225, height: 1.75)) {
+            // Completion critical path: no stdout, receipt snapshot or formatting.
             box.put($0)
-            let elapsedMS = Int((ProcessInfo.processInfo.systemUptime - submittedAt) * 1_000)
-            print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:callback,elapsed_ms:\(elapsedMS)")
-            Self.stageReceipt(runtime, event: .callback)
             done.fulfill()
         }
         await fulfillment(of: [done], timeout: 10)
@@ -55,10 +53,7 @@ final class ClassifiedRoomMeshTests: XCTestCase {
         if case nil = result {
             // A thrown XCTUnwrap bypasses the test body's normal async discard.
             // Fence this owner now; do not wait longer or infer native completion.
-            runtime.stopAndDiscard {
-                print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:failure-discard-completed")
-                Self.stageReceipt(runtime, event: .failureDiscardCompleted)
-            }
+            runtime.stopAndDiscard {}
             print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:failure-discard-requested,elapsed_ms:\(elapsedMS)")
         }
         Self.stageReceipt(runtime, event: .waitFinished)
@@ -66,11 +61,9 @@ final class ClassifiedRoomMeshTests: XCTestCase {
     }
     private func discard(_ runtime: RoomMeshCandidateRuntime) async {
         let done = expectation(description: "terminal geometry release")
-        runtime.stopAndDiscard {
-            Self.stageReceipt(runtime, event: .discardCompleted)
-            done.fulfill()
-        }
+        runtime.stopAndDiscard { done.fulfill() }
         await fulfillment(of: [done], timeout: 10)
+        Self.stageReceipt(runtime, event: .waitFinished)
     }
     func testClassifiedFloorRoutesWithoutGrantingPhysicalAuthority() async throws {
         let runtime = try makeRuntime(sessionID: "classified-floor", supportPolicy: .classifiedFloorOnly)
