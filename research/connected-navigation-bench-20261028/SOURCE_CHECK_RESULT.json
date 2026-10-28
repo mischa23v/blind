@@ -13,7 +13,7 @@
     "physical_release_still_withheld": true,
     "missing_support_negative_present": true,
     "recorded_import_negative_not_fake_success": true,
-    "candidate_only_no_ios_test_file": true,
+    "hosted_sources_match_reviewed_candidates": true,
     "production_issuer_does_not_accept": true
   },
   "swiftAvailable": false,
@@ -21,5 +21,5 @@
   "nativeBuildExecuted": false,
   "recordedMovementExecuted": false,
   "physicalAuthority": false,
-  "scope": "Source/provenance only. Candidate native tests require reviewed test-target membership and native CI. Not N00 completion."
+  "scope": "Source/provenance only. Reviewed sources copied to hosted-test directory; PBX owner coordinates membership and native CI remains pending. Not N00 completion."
 }

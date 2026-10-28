@@ -26,11 +26,11 @@ checks={
  'physical_release_still_withheld':'XCTAssertEqual(router.reason, .physicalReleaseNotApproved)' in t,
  'missing_support_negative_present':'testMissingSupportNeverReachesRuntimeAcceptance' in t and 'omitSupport: true' in t,
  'recorded_import_negative_not_fake_success':'testRecordedKoivuMetadataLoadsThroughOwnersWithoutInventingRegistrationOrFloor' in t and '.importedFrameNeedsMeasuredRegistration' in t,
- 'candidate_only_no_ios_test_file':not (ROOT/'ios/BlindAssistTests/ConnectedNavigationBenchIntegrationTests.swift').exists(),
+ 'hosted_sources_match_reviewed_candidates':all((ROOT/'ios/BlindAssistTests'/name).read_bytes()==(HERE/name).read_bytes() for name in ['ConnectedNavigationBenchIntegrationTests.swift','KoivuSourceAnchorBenchFixture.swift']),
  'production_issuer_does_not_accept':not re.search(r'(?m)^\s*(?:try\??\s+)?(?:\w+\.)?acceptRegisteredCapture\(', (ROOT/'ios/BlindAssist/NativeLocalizationIssuer.swift').read_text()),
 }
 assert all(checks.values()),checks
 sources=['ios/BlindAssist/IndoorNavigator.swift','ios/BlindAssist/ConnectedJourneyRuntime.swift','ios/BlindAssist/NativeLocalizationRouter.swift','ios/BlindAssist/NativeLocalizationIssuer.swift','ios/BlindAssist/SpatialRouteOutputController.swift','BlindCore/Sources/BlindCore/NativeLocalizationEvidence.swift','BlindCore/Sources/BlindCore/HazardDetector.swift','ios/BlindAssistTests/SpatialIntegrationFixture.swift']
 (HERE/'SOURCE_PINS.json').write_text(json.dumps({p:sha((ROOT/p).read_bytes()) for p in sources},indent=2)+'\n')
-result={'sourceChecksPassed':len(checks),'checks':checks,'swiftAvailable':shutil.which('swift') is not None,'swiftTestsExecuted':False,'nativeBuildExecuted':False,'recordedMovementExecuted':False,'physicalAuthority':False,'scope':'Source/provenance only. Candidate native tests require reviewed test-target membership and native CI. Not N00 completion.'}
+result={'sourceChecksPassed':len(checks),'checks':checks,'swiftAvailable':shutil.which('swift') is not None,'swiftTestsExecuted':False,'nativeBuildExecuted':False,'recordedMovementExecuted':False,'physicalAuthority':False,'scope':'Source/provenance only. Reviewed sources copied to hosted-test directory; PBX owner coordinates membership and native CI remains pending. Not N00 completion.'}
 (HERE/'SOURCE_CHECK_RESULT.json').write_text(json.dumps(result,indent=2)+'\n'); print(json.dumps(result))

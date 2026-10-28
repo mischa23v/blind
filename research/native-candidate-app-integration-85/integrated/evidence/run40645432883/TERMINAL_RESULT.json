@@ -1,0 +1,81 @@
+{
+  "run": 40645432883,
+  "url": "https://github.com/mischa23v/blind/actions/runs/40645432883",
+  "commit": "26365197e71bb650e02e302ce292821d008dd9ce",
+  "conclusion": "failure",
+  "defaultBuild": "passed",
+  "diagnosticsBuild": "passed",
+  "core": {
+    "executed": 1395,
+    "skipped": 1,
+    "failed": 0,
+    "newGateSourceCases": 10,
+    "exactNewGateCaseStatusesExported": false,
+    "interpretation": "Exact source includes ten new XCTest methods and aggregate executed count rose by ten, with zero failures. Bounded log does not export individual new gate case statuses."
+  },
+  "memory": {
+    "executed": 51,
+    "failed": 0
+  },
+  "hostedUnits": {
+    "total": 157,
+    "passed": 145,
+    "failed": 6,
+    "skipped": 6,
+    "uniqueCasesVerified": true,
+    "sourceVerified": true,
+    "bothNewCombineFixtures": "Passed",
+    "originalIORegression": "Passed",
+    "queuedSceneFenceRegression": "Failed",
+    "failedCases": [
+      "ConnectedJourneyRuntimeTests/testCancelIsSynchronousAndLatestOnlyWhileWriterIsBlocked()",
+      "ConnectedJourneyRuntimeTests/testDeleteWhileRestoreIsPendingCannotReinstallQueuedOldMap()",
+      "ConnectedJourneyRuntimeTests/testDormantNativeRuntimePersistsDestinationButCannotInventCalibrationOrPose()",
+      "ConnectedJourneyRuntimeTests/testFailedSaveNewCommandAndEraseCannotReviveSupersededGoal()",
+      "ConnectedJourneyRuntimeTests/testIntegratedAutomaticRecoveryAfterRejectedEvidence()",
+      "ObservedSceneRuntimeTests/testGoalAndBodyChangesFenceQueuedPlansWithoutRetiringScene()"
+    ],
+    "failureDescription": "Five ConnectedJourneyRuntime 3-second state-publication expectation failures. ObservedScene queued-fence case failed worker/main-drain expectations followed by state assertions. Cause not isolated; do not dismiss as harmless timing."
+  },
+  "ui": {
+    "total": 18,
+    "passed": 14,
+    "failed": 1,
+    "skipped": 3,
+    "failure": "testAccessibilityAuditOfCameraAndAsk: Dynamic Type font sizes are partially unsupported (line373)",
+    "newNavigationReachabilityCase": "No direct exact-case status exported; aggregate alone is not independent per-case proof"
+  },
+  "practiceCancellation": {
+    "status": "passed",
+    "caseSeconds": 21.988,
+    "elapsedUpperBoundSeconds": 5.533783125000127,
+    "limitSeconds": 90,
+    "explicitEndTapObserved": true,
+    "positive90SecondWitness": true,
+    "naturalExpiryClaimed": false,
+    "rootCauseIsolated": false
+  },
+  "callbackExtraction": {
+    "outcome": "failure",
+    "reason": "camera-after missing; ask not observed; evidence incomplete"
+  },
+  "unitArtifact": {
+    "id": 12799345556,
+    "bytes": 5432,
+    "sha256": "d29be4090ffb16dfb73e8141bd4fc66b91fe82255a49b1ea16d4bc2e443b4933",
+    "zipCRCVerified": true
+  },
+  "uiArtifact": {
+    "id": 12798547787,
+    "bytes": 423600,
+    "sha256ReportedByGitHub": "da6003d5f19febd008290bcd3962703afddd8365acb1fb336c304fada82078e4",
+    "downloaded": false
+  },
+  "photoTrash": {
+    "nativeCompile": "passed",
+    "deviceInteractionAndFilesystemRecovery": "not evaluated by this run"
+  },
+  "runtimeActivation": false,
+  "fullNativeAcceptance": false,
+  "experimentalCaps": "not claimed"
+}

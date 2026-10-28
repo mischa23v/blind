@@ -1,3 +1,13 @@
+## Native evidence and preview integration — 2026-10-28 07:04 UTC
+
+Exactfee8c7d native validation is terminal: both builds passed;157 hosted cases comprise149 passed,2 failed,6 skipped. Both new publisher-semantics fixtures passed. The practice Stop UI test now passes with explicit End and41.978s elapsed upper bound below90s. UI14 passed/1 Dynamic Type failure/3 skipped. The two hosted failures are separate map-recovery publication waits, under investigation; full-app acceptance remains open. [Exact evidence](research/native-candidate-app-integration-85/integrated/evidence/run40644081432/).
+
+The next reviewed source connects a local recorded-route preview to the app and registers actual-owner integration fixtures. It displays archived Recast coordinates/hierarchy in a bounded ephemeral2D X/Z viewer, not a3D obstacle model or current-room route. No pose, floor, physical authority or LLM directions are fabricated. Portable source/artifact checks passed; new Swift tests, file-picker lifecycle and preview UI require native validation. N00 connected live navigation is still unfinished. Current263 native run40645432883 is testing the prior photo/localization/project stage.
+
+The user's local visual-claim checker and complete world→building→floor/room→pose/body→route→goal flow are recorded below. Editable labelled body estimates are allowed for setup/replay; mapping/pathing defects in wide areas must be diagnosed separately. Local planned-vs-phone-trajectory test recording with problem markers is requested and under implementation, with no automatic private upload. A usable connected navigation build precedes a walking handoff.
+
+---
+
 ## Connected navigation handoff priority — 2026-10-28 06:34 UTC
 
 The user requires a connected usable build before walking-test handoff: place/building map → floor/room → established pose/direction → code planner → current support/hazard validation → code-owned output. Do not substitute an LLM path or ask the user to discover missing basic integration during a walk. **N00 connected recorded replay is the next integration slice**, using existing owners and a nonphysical replay sink; supplied replay poses/support are not live calibration. See the [dependency-linked reconciliation](research/tracker-reconciliation-20261028/README.md).

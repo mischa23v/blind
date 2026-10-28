@@ -45,6 +45,11 @@ struct RoomDetailView: View {
 
     var body: some View {
         List {
+            Section(t("Research tools (not this room)", "أدوات بحثية (ليست هذه الغرفة)")) {
+                NavigationLink(t("Recorded route preview", "معاينة مسار مسجل")) {
+                    RecordedRoomRoutePreview(arabic: model.arabic)
+                }
+            }
             if let layout {
                 Section(t("Measured room overview", "مخطط الغرفة المقاس")) {
                     FloorPlanPreview(layout: layout).frame(height: 280).accessibilityHidden(true)

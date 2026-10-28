@@ -1,0 +1,70 @@
+{
+  "run": 40644081432,
+  "url": "https://github.com/mischa23v/blind/actions/runs/40644081432",
+  "commit": "fee8c7da4e85cb279d93cdedf881b4f016b384ad",
+  "conclusion": "failure",
+  "defaultBuild": "passed",
+  "diagnosticsBuild": "passed",
+  "core": {
+    "executed": 1385,
+    "skipped": 1,
+    "failed": 0
+  },
+  "memory": {
+    "executed": 51,
+    "failed": 0
+  },
+  "hostedUnits": {
+    "total": 157,
+    "passed": 149,
+    "failed": 2,
+    "skipped": 6,
+    "uniqueCasesVerified": true,
+    "sourceVerified": true,
+    "bothNewCombineFixtures": "Passed",
+    "originalIORegression": "Passed",
+    "queuedSceneFenceRegression": "Passed",
+    "failedCases": [
+      "ConnectedJourneyRuntimeTests/testAutomaticRecoveryKeepsCurrentConservativeRestrictions()",
+      "ConnectedJourneyRuntimeTests/testDeleteRestartCannotReimportSameRevisionAndForgetRestrictions()"
+    ],
+    "failureDescription": "3-second asynchronous bounded runtime state publication expectations expired; second case also reported loading=false,maps=2,writes=0,storageError=false,status=Registered map update is pending. Guidance is paused. Cause not isolated."
+  },
+  "ui": {
+    "total": 18,
+    "passed": 14,
+    "failed": 1,
+    "skipped": 3,
+    "failure": "testAccessibilityAuditOfCameraAndAsk: Dynamic Type font sizes are partially unsupported (line373)",
+    "newNavigationReachabilityCase": "No direct exact-case status exported; aggregate alone is not independent per-case proof"
+  },
+  "practiceCancellation": {
+    "status": "passed",
+    "caseSeconds": 71.872,
+    "elapsedUpperBoundSeconds": 41.978364416666636,
+    "limitSeconds": 90,
+    "explicitEndTapObserved": true,
+    "positive90SecondWitness": true,
+    "naturalExpiryClaimed": false,
+    "rootCauseIsolated": false
+  },
+  "callbackExtraction": {
+    "outcome": "failure",
+    "reason": "camera-after missing; ask not observed; evidence incomplete"
+  },
+  "unitArtifact": {
+    "id": 12797408964,
+    "bytes": 5423,
+    "sha256": "b700a2229c33768354f553080d4292e0ddd40eb3063f29b64ef430d84c7216e8",
+    "zipCRCVerified": true
+  },
+  "uiArtifact": {
+    "id": 12797224541,
+    "bytes": 426485,
+    "sha256ReportedByGitHub": "4aff5c1b9ee791befc47cc2121d334646feeb7e69b7d213f03c0de8d508986f2",
+    "downloaded": false
+  },
+  "runtimeActivation": false,
+  "fullNativeAcceptance": false,
+  "experimentalCaps": "not claimed"
+}

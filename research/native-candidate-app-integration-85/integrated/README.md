@@ -1,3 +1,11 @@
+# Connected bench and recorded preview membership — 2026-10-28
+
+The separate `connected-bench-preview-membership.patch` adds only the reviewed `RecordedRoomRoutePreview.swift` app source and two hosted test sources (`KoivuSourceAnchorBenchFixture.swift`, `ConnectedNavigationBenchIntegrationTests.swift`) to canonical project membership. There are now 62 app Swift sources. No new package dependency, feature flag, workflow or device activation is introduced. This is membership, not evidence that the tests compile or navigation works.
+
+The checker first reverses this exact new layer and verifies pre-membership project SHA `e80ced174477574a28b45c594e2a10029d14da9c6ef588845a93f9eab3321cd1`, then reverses the canonicalization layer and the existing historical patches. Earlier source receipts/patches remain unchanged. Native compilation and execution are pending existing CI.
+
+---
+
 # Canonical generated project follow-on — 2026-10-28
 
 `project-canonicalization.patch` is an exact reversible serialization-only layer for the normal Xcode project. The same 61 native Swift paths, mesh local package/product identities and existing compilation flags remain. The current generator places `MeshCandidateDiagnostics.swift` with canonical IDs and source/group ordering instead of the former manual insertion. No source or new flag is added.

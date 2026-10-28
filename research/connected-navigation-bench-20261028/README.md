@@ -1,6 +1,6 @@
 # Connected navigation bench integration candidate
 
-**Implemented candidate test code, not yet compiled or executed. N00 is not complete.** No Swift executable or Apple SDK is available in this workspace. The source checks below do not substitute for native execution. Files remain here, outside the app/test target, until independent review and coordinated PBX membership. No production source/release gate changed.
+**Implemented candidate test code, not yet compiled or executed. N00 is not complete.** No Swift executable or Apple SDK is available in this workspace. The source checks below do not substitute for native execution. Independent source review found no blocker. The two byte-identical Swift candidates have now been copied to `ios/BlindAssistTests/` under parent approval; the separate PBX owner coordinates generator/target membership. Native CI remains pending. The prior candidate-only source-check receipt is preserved as `CANDIDATE_ONLY_SOURCE_CHECK_RESULT.json`. No production source/release gate changed.
 
 ## What this actually connects
 
@@ -31,4 +31,4 @@ Thus this increment tests the existing handoff boundary and imports genuine sour
 
 `python research/connected-navigation-bench-20261028/source-check.py`
 
-Checks source/provenance, actual owner calls, evidence identity and absence of manufactured support in the recorded fixture. `SOURCE_PINS.json` identifies the exact inspected native/Core sources. `SOURCE_CHECK_RESULT.json` explicitly marks Swift/native/recorded movement as not executed. For native adoption, review both candidate Swift files, coordinate their test membership with the PBX owner and run them through the existing approved native CI. Preserve any first compiler/runtime failure; do not silently call source checks a test pass.
+Checks source/provenance, actual owner calls, evidence identity and absence of manufactured support in the recorded fixture. `SOURCE_PINS.json` identifies the exact inspected native/Core sources. `SOURCE_CHECK_RESULT.json` explicitly marks Swift/native/recorded movement as not executed. For native execution, verify the reviewed hosted copies match these candidates and that the PBX owner has added their membership, then run the existing approved native CI. Preserve any first compiler/runtime failure; do not silently call source checks a test pass.
