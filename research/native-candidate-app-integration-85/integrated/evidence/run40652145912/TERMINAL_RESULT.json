@@ -1,0 +1,78 @@
+{
+  "run": 40652145912,
+  "url": "https://github.com/mischa23v/blind/actions/runs/40652145912",
+  "commit": "3aef69509a2d287204f16f52e9c5e819e63046ad",
+  "conclusion": "failure",
+  "defaultBuild": "passed",
+  "diagnosticsBuild": "passed",
+  "core": {
+    "executed": 1402,
+    "skipped": 1,
+    "failed": 0,
+    "individualNewCoreCaseStatusesExported": false
+  },
+  "memory": {
+    "executed": 51,
+    "failed": 0
+  },
+  "hostedUnits": {
+    "total": 160,
+    "passed": 149,
+    "failed": 5,
+    "skipped": 6,
+    "uniqueCasesVerified": true,
+    "sourceVerified": true,
+    "threeNewBenchCases": [
+      {
+        "identifier": "ConnectedNavigationBenchIntegrationTests/testAuthoredWholeOwnerChainRetiresFakeOutputOnHazardAndTrackingLoss()",
+        "result": "Passed"
+      },
+      {
+        "identifier": "ConnectedNavigationBenchIntegrationTests/testMissingSupportNeverReachesRuntimeAcceptance()",
+        "result": "Passed"
+      },
+      {
+        "identifier": "ConnectedNavigationBenchIntegrationTests/testRecordedKoivuMetadataLoadsThroughOwnersWithoutInventingRegistrationOrFloor()",
+        "result": "Passed"
+      }
+    ],
+    "failedCases": [
+      "ConnectedJourneyRuntimeTests/testDeleteWhileRestoreIsPendingCannotReinstallQueuedOldMap()",
+      "ObservedSceneRuntimeTests/testGoalAndBodyChangesFenceQueuedPlansWithoutRetiringScene()",
+      "ObservedSceneRuntimeTests/testNativeRuntimeFeedsActualAccumulatorAndRejectsAbandonedCompletion()",
+      "ObservedSceneRuntimeTests/testRejectedFutureTimestampDoesNotPoisonLaterCapture()",
+      "ObservedSceneRuntimeTests/testRuntimeRechecksClockAfterWorkerAndWatchdogExpiresPlan()"
+    ],
+    "interpretation": "One remaining ConnectedJourney publication wait and four ObservedScene failures; DEBUG fence does not establish full hosted acceptance or device latency."
+  },
+  "ui": {
+    "total": 18,
+    "passed": 14,
+    "failed": 1,
+    "skipped": 3,
+    "failure": "Dynamic Type font sizes partially unsupported, testAccessibilityAuditOfCameraAndAsk line373",
+    "laterContainerCandidateIncluded": false
+  },
+  "practiceCancellation": {
+    "status": "passed",
+    "caseSeconds": 19.564,
+    "elapsedUpperBoundSeconds": 5.315657208333505,
+    "limitSeconds": 90,
+    "explicitEndTapObserved": true,
+    "positive90SecondWitness": true
+  },
+  "unitArtifact": {
+    "id": 12801840827,
+    "bytes": 5530,
+    "sha256": "a92866f93a5ee1c93edd3e5ec6c9b275c42a4f8d70903f362e5b039d75404037",
+    "zipCRCVerified": true
+  },
+  "uiArtifact": {
+    "id": 12801565242,
+    "bytes": 426081,
+    "sha256ReportedByGitHub": "fb378284801705cdb2cd36bfbeea45a91a171a46a87ba0d3cee1a68ad522c897",
+    "downloaded": false
+  },
+  "runtimeActivation": false,
+  "fullNativeAcceptance": false
+}

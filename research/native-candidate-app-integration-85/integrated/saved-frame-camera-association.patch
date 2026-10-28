@@ -1,0 +1,60 @@
+--- a/ios/BlindAssist/NavigationModel.swift
++++ b/ios/BlindAssist/NavigationModel.swift
+@@ -1216,6 +1216,13 @@
+     }
+     #endif
+     func session(_ session: ARSession, didUpdate frame: ARFrame) {
++        guard session === self.session else { return }
++        // Record only nonnormal tracking before throttling. This constant-work
++        // hook preserves a real relocalizing callback without inspecting anchors.
++        if let worldSessionID = UUID(uuidString: observationFrameID) {
++            places.observeWorldMapTrackingInterruption(frame: frame, sessionID: worldSessionID,
++                now: ProcessInfo.processInfo.systemUptime)
++        }
+         // Tracking loss retires selected-owner evidence even on throttled frames.
+         if case .normal = frame.camera.trackingState {} else { invalidateNativeLocalization(.trackingUnavailable) }
+         // Tracking loss retires the issuer even when this frame is throttled below.
+@@ -1271,7 +1278,7 @@
+         probeAutomaticRoomAppearance(frame: frame)
+         if let place = awaitingPlace {
+             let recoveredFrame = UUID(uuidString: observationFrameID).flatMap {
+-                places.observeWorldMapRecovery(for: place, frame: frame, sessionID: $0, now: lastFrameWallTime)
++                places.observeWorldMapRecovery(for: place, frame: frame, sessionID: $0, now: receivedAt)
+             }
+             let normal: Bool
+             if case .normal = frame.camera.trackingState {
+@@ -1299,7 +1306,7 @@
+             return
+         }
+         if let place = recognizedPlace, let sessionID = UUID(uuidString: observationFrameID) {
+-            let verifiedFrame = places.observeWorldMapRecovery(for: place, frame: frame, sessionID: sessionID, now: lastFrameWallTime)
++            let verifiedFrame = places.observeWorldMapRecovery(for: place, frame: frame, sessionID: sessionID, now: receivedAt)
+             if place.worldFrame != nil, verifiedFrame == nil {
+                 journeys.breakTracking()
+                 beginAutomaticRecoveryAfterLoss()
+@@ -1628,6 +1635,8 @@
+         }
+     }
+     func session(_ session: ARSession, didFailWithError error: Error) {
++        guard session === self.session else { return }
++        places.invalidateWorldMapRecovery()
+         retireBodyWarning(publishChange: false)
+         nativeObservations.stop()
+         withObservedScene { $0.stop() }
+@@ -1669,6 +1678,8 @@
+         }
+     }
+     func sessionWasInterrupted(_ session: ARSession) {
++        guard session === self.session else { return }
++        places.invalidateWorldMapRecovery()
+         retireBodyWarning(publishChange: false)
+         nativeObservations.stop()
+         withObservedScene { $0.stop() }
+@@ -1692,6 +1703,7 @@
+         if UIApplication.shared.applicationState == .active { _ = speakMobility(message) }
+     }
+     func sessionInterruptionEnded(_ session: ARSession) {
++        guard session === self.session else { return }
+         #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+         meshCandidateDiagnostics.stop()
+         #endif

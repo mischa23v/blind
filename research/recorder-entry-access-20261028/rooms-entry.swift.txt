@@ -1,0 +1,9 @@
+            Section(t("Local navigation diagnostic", "تشخيص التنقل المحلي")) {
+                NavigationLink(t("Record my phone path", "تسجيل مسار هاتفي")) {
+                    model.makeNavigationTestRecordingView()
+                }
+                .frame(minHeight: 44)
+                .disabled(model.places.scanning)
+                .accessibilityIdentifier("navigation-test-open")
+                Text(t("No saved room is required. Uses the existing camera session; recording does not start camera monitoring or prove a clear path.", "لا تحتاج إلى غرفة محفوظة. يستخدم جلسة الكاميرا الحالية؛ لا يبدأ التسجيل مراقبة الكاميرا ولا يثبت خلو المسار."))
+            }

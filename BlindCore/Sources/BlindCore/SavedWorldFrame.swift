@@ -59,6 +59,26 @@ public struct SavedFurnitureObservation: Equatable, Sendable {
     }
 }
 
+/// A capture-bound diagnostic association with the SAME restored RoomPlan world.
+/// This is not a fitted transform, a body/feet pose, an error estimate, or a live
+/// guidance lease. It cannot be decoded or created by a caller. Retaining it as
+/// history does not keep it current; consumers must preserve the raw camera sample.
+public struct SavedWorldFrameCameraAssociation: Equatable, Sendable {
+    public enum Reference: Equatable, Sendable { case camera }
+    public enum Uncertainty: Equatable, Sendable { case unmeasured }
+    public let frame: SavedWorldFrame
+    public let sessionID: UUID
+    public let recoveryID: UUID
+    public let capturedAt: Double
+    public var sourceFrameID: String { "arkit-session:\(sessionID.uuidString)" }
+    public var reference: Reference { .camera }
+    public var uncertainty: Uncertainty { .unmeasured }
+    public var permitsPhysicalGuidance: Bool { false }
+    fileprivate init(frame: SavedWorldFrame, sessionID: UUID, recoveryID: UUID, capturedAt: Double) {
+        self.frame = frame; self.sessionID = sessionID; self.recoveryID = recoveryID; self.capturedAt = capturedAt
+    }
+}
+
 /// Small lifecycle/evidence gate around Apple's relocalizer, not a SLAM implementation.
 /// This state is deliberately not Codable: a restart must collect new live evidence.
 /// The restored origin anchor binds the loaded artifact, not physical accuracy. A match
@@ -75,6 +95,7 @@ public struct SavedWorldFrameRecovery: Sendable {
     private var lastValidatedAt: Double?
     private var sawRelocalizing = false
     private var normalFrames = 0
+    private var recoveryID = UUID()
 
     public init() {}
     public mutating func reset() { self = SavedWorldFrameRecovery() }
@@ -93,19 +114,21 @@ public struct SavedWorldFrameRecovery: Sendable {
         if let last = lastFrameTime {
             guard frameTime > last else { return nil }
             if frameTime - last > Self.maximumFrameAge {
+                recoveryID = UUID()
                 normalFrames = 0; lastValidatedAt = nil; sawRelocalizing = false
             }
         }
         lastFrameTime = frameTime
         switch tracking {
         case .relocalizing:
+            if lastValidatedAt != nil { recoveryID = UUID() }
             sawRelocalizing = true; normalFrames = 0; lastValidatedAt = nil
         case .unavailable:
-            if lastValidatedAt != nil { sawRelocalizing = false }
+            if lastValidatedAt != nil { recoveryID = UUID(); sawRelocalizing = false }
             normalFrames = 0; lastValidatedAt = nil
         case .normal:
             guard sawRelocalizing, mappingAvailable, originAnchorMatches else {
-                if lastValidatedAt != nil { sawRelocalizing = false }
+                if lastValidatedAt != nil { recoveryID = UUID(); sawRelocalizing = false }
                 normalFrames = 0; lastValidatedAt = nil; return nil
             }
             normalFrames = min(Self.minimumNormalFrames, normalFrames + 1)
@@ -120,5 +143,28 @@ public struct SavedWorldFrameRecovery: Sendable {
         guard self.sessionID == sessionID, let lastValidatedAt, now.isFinite,
               now >= lastValidatedAt, now - lastValidatedAt <= Self.maximumFrameAge else { return nil }
         return expected
+    }
+    /// Native pre-throttle loss hook. It cannot establish an association and does
+    /// not inspect anchors. A real relocalizing callback is retained even when the
+    /// normal frame-processing throttle skips it. Obsolete callbacks must not
+    /// withdraw another recovery epoch or a newer accepted frame.
+    public mutating func observeTrackingInterruption(sessionID: UUID, tracking: Tracking,
+        frameTime: Double, now: Double) {
+        guard self.sessionID == sessionID, let startedAt,
+              frameTime.isFinite, frameTime >= startedAt,
+              lastFrameTime.map({ frameTime > $0 }) ?? true else { return }
+        switch tracking {
+        case .normal: return
+        case .relocalizing, .unavailable:
+            _ = observe(sessionID: sessionID, tracking: tracking, mappingAvailable: false,
+                originAnchorMatches: false, frameTime: frameTime, now: now)
+        }
+    }
+    /// Exact latest validated capture only, checked against the REAL receipt clock.
+    /// A previous frame's descriptor cannot associate a new/delayed camera sample.
+    public func cameraAssociation(sessionID: UUID, capturedAt: Double, now: Double) -> SavedWorldFrameCameraAssociation? {
+        guard let lastValidatedAt, capturedAt == lastValidatedAt,
+              let frame = current(sessionID: sessionID, now: now) else { return nil }
+        return .init(frame: frame, sessionID: sessionID, recoveryID: recoveryID, capturedAt: capturedAt)
     }
 }

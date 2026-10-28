@@ -9,14 +9,14 @@
     "ios/BlindAssist.xcodeproj/project.pbxproj": "ae6019c332ab26081523defd8d97f0d728163171026cf70dcb00cdf4ad80ae67"
   },
   "integrated": {
-    "ios/BlindAssist/NavigationModel.swift": "f101f67cb88c6b2ea8847a380ce09a351322f73e01df0dcb9e0893146d4264d1",
+    "ios/BlindAssist/NavigationModel.swift": "fcea783bbbbaa4e1bdda04740fc38f11c10f30de1e6160d8eb5072d7b4a01298",
     "ios/BlindAssist.xcodeproj/project.pbxproj": "63fc5fcd1d9ef153c87ca48b9fa195f270fec3c039ee58887d407d46b300d87c",
     "ios/BlindAssist/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
     "tools/ci/native-apple.sh": "683323c46df0e18673ba75dc6e3c610d0aa5087884a4a07ddd74b2c5600be263",
     ".github/workflows/native-apple.yml": "fa2fed05f2fcdce59f1cdcb92fb77442a3c7e5c3d0bf53ef78c0fe1c2df40672",
     ".github/workflows/native-candidate-app-integration.yml": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
-    "research/native-candidate-app-integration-85/integrated/check.py": "7a86da9a1d894f29def58e4612585284e57c95861d1fe286b640d67de033c545",
-    "research/native-candidate-app-integration-85/integrated/README.md": "9beee661e63b067bb5aee9fbc6537ff8745a2d24fccd3c08d0bd7997dbedd13b",
+    "research/native-candidate-app-integration-85/integrated/check.py": "01a4167f3668c648d48deb62e55be96a455f214ce64ca2d5429a07f985a734eb",
+    "research/native-candidate-app-integration-85/integrated/README.md": "6fc5ec72b24673114d4a49128188fb2382c8a828e9b47785ac072ffd3aa64af4",
     "research/native-candidate-app-integration-85/app-integration.patch": "3cbde1075811ebab3d9fc1a54101ffad0b3749030c3dfc920cbcdca4fde2c619",
     "research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
     "research/native-candidate-app-integration-85/integrated/critical-order.patch": "8f298574cd79ff3e86f0a5ef124824686b2d9a95e96d3ca273d697f97e1d9efa",
@@ -24,7 +24,8 @@
     "research/native-candidate-app-integration-85/integrated/project-canonicalization.patch": "57860e8d3c8513bfca04a636def7aec9aaaa2b201ac3985db2ebf011618f43f8",
     "research/native-candidate-app-integration-85/integrated/connected-bench-preview-membership.patch": "85d1a3c5982030f8437e7695ae3a70623a53747f0a96f3a7fbd89c515ed9a7c9",
     "tools/generate-xcode-project.mjs": "a23fc3364eeb2fbb5f43c3a11db60010840f2650b7a0be3f852a10a86657b9ad",
-    "research/native-candidate-app-integration-85/integrated/navigation-test-recording.patch": "e6cf0038fb7814ce20ed31baddf6ee48c8990a81afc8af92a4e1b766aa130865"
+    "research/native-candidate-app-integration-85/integrated/navigation-test-recording.patch": "e6cf0038fb7814ce20ed31baddf6ee48c8990a81afc8af92a4e1b766aa130865",
+    "research/native-candidate-app-integration-85/integrated/saved-frame-camera-association.patch": "36703f6e1a78bf5c027e94563f7de8661be8a7862397aad96c16bb698247c2de"
   },
   "beforeCriticalOrder": {
     "ios/BlindAssist/NavigationModel.swift": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307"
@@ -41,5 +42,8 @@
   "beforeNavigationTestRecording": {
     "ios/BlindAssist.xcodeproj/project.pbxproj": "cee0cbac7dc54bba1ba5845b6d901f00b32afaa44e1647c0fca73490c59142a1",
     "ios/BlindAssist/NavigationModel.swift": "5275400e782a88374641aa0b61d2c85b1d35f20330b58e5b2d86b7b9626b4d67"
+  },
+  "beforeSavedFrameCameraAssociation": {
+    "ios/BlindAssist/NavigationModel.swift": "f101f67cb88c6b2ea8847a380ce09a351322f73e01df0dcb9e0893146d4264d1"
   }
 }

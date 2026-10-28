@@ -536,6 +536,15 @@ struct AssistantToolsView: View {
                 }
                 .onDelete { offsets in placesToDelete = offsets.map { model.places.places[$0] } }
             }
+            Section(t("Local navigation diagnostic", "تشخيص التنقل المحلي")) {
+                NavigationLink(t("Record my phone path", "تسجيل مسار هاتفي")) {
+                    model.makeNavigationTestRecordingView()
+                }
+                .frame(minHeight: 44)
+                .disabled(model.places.scanning)
+                .accessibilityIdentifier("navigation-test-open")
+                Text(t("No saved room is required. Uses the existing camera session; recording does not start camera monitoring or prove a clear path.", "لا تحتاج إلى غرفة محفوظة. يستخدم جلسة الكاميرا الحالية؛ لا يبدأ التسجيل مراقبة الكاميرا ولا يثبت خلو المسار."))
+            }
             Section(t("Scan a new room", "امسح غرفة جديدة")) {
                 if model.places.scanning {
                     Button(t("Stop and save scan", "أوقف المسح واحفظه")) { model.places.finishScan() }

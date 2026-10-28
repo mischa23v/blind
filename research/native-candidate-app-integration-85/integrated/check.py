@@ -25,6 +25,10 @@ with tempfile.TemporaryDirectory(prefix='stage85-integrated-') as temp:
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(R / name, target)
+    subprocess.run(['git', 'apply', '-R', str(H / 'saved-frame-camera-association.patch')], cwd=root,
+                   check=True, timeout=15, capture_output=True)
+    for name, digest in manifest['beforeSavedFrameCameraAssociation'].items():
+        check('exact pre-saved-frame-association source recovered ' + name, hashlib.sha256((root / name).read_bytes()).hexdigest() == digest)
     subprocess.run(['git', 'apply', '-R', str(H / 'navigation-test-recording.patch')], cwd=root,
                    check=True, timeout=15, capture_output=True)
     for name, digest in manifest['beforeNavigationTestRecording'].items():
@@ -83,14 +87,17 @@ normalize = lambda value: re.sub(r'\s+', ' ', value).strip()
 hook = '#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\nmeshCandidateDiagnostics.stop()\n#endif'
 for label, signature, prefix in [
     ('camera stop', 'private func stopCameraMonitoring()', 'nativeObservations.stop()\nvoiceRoomScan.cancel()\nretireBodyWarning(publishChange: false)\nwithObservedScene { $0.stop() }'),
-    ('session interruption', 'func sessionWasInterrupted(_ session: ARSession)', 'retireBodyWarning(publishChange: false)\nnativeObservations.stop()\nwithObservedScene { $0.stop() }')]:
+    ('session interruption', 'func sessionWasInterrupted(_ session: ARSession)', 'guard session === self.session else { return }\nplaces.invalidateWorldMapRecovery()\nretireBodyWarning(publishChange: false)\nnativeObservations.stop()\nwithObservedScene { $0.stop() }')]:
     check(label + ' critical retirement precedes optional diagnostics and pause',
           normalize(body(signature)).startswith(normalize(prefix + '\n' + hook + '\ncameraRecovery.pause()')))
 failure = normalize(body('func session(_ session: ARSession, didFailWithError error: Error)'))
 check('failure retires authority before optional diagnostics and recovery',
-      failure.startswith(normalize('retireBodyWarning(publishChange: false)\nnativeObservations.stop()\nwithObservedScene { $0.stop() }')) and
+      failure.startswith(normalize('guard session === self.session else { return }\nplaces.invalidateWorldMapRecovery()\nretireBodyWarning(publishChange: false)\nnativeObservations.stop()\nwithObservedScene { $0.stop() }')) and
       failure.endswith(normalize('indoor.invalidatePosition()\npublish()\n' + hook + '\nrequestCameraRecovery(now: ProcessInfo.processInfo.systemUptime)')))
 frame = body('func session(_ session: ARSession, didUpdate frame: ARFrame)')
+check('frame exact ARSession guard precedes all work', normalize(frame).startswith('guard session === self.session else { return }'))
+check('pre-throttle tracking association hook precedes existing evidence retirement',
+      frame.index('places.observeWorldMapTrackingInterruption(') < frame.index('invalidateNativeLocalization(.trackingUnavailable)'))
 retire_end = 'if readingTool != nil && !usesCapturedText { stopReadingTool(announce: false) }'
 mesh_stop = 'if case .normal = frame.camera.trackingState {} else { meshCandidateDiagnostics.stop() }'
 throttle = 'guard running, !simulation, !places.scanning, frame.timestamp - lastProcessed >= 1.0 / 15 else { return }'
@@ -107,6 +114,6 @@ check('compile isolated job', 'runs-on: xcode-27' in job and 'timeout-minutes: 2
 check('no diagnostic runtime steps', 'native-apple.sh diagnostics-build' in job and not re.search(r'native-apple.sh (unit|ui)\b', job))
 retired = (R / '.github/workflows/native-candidate-app-integration.yml').read_text()
 check('custom experiment retired', '  push:' not in retired and 'if: ${{ false }}' in retired)
-print(json.dumps(dict(sourceChecksPassed=len(checks), checks=checks, appPatchApplied=True, criticalOrderPatchApplied=True, practicePublicationPatchApplied=True, projectCanonicalizationPatchApplied=True, connectedBenchPreviewMembershipApplied=True, navigationTestRecordingApplied=True,
+print(json.dumps(dict(sourceChecksPassed=len(checks), checks=checks, appPatchApplied=True, criticalOrderPatchApplied=True, practicePublicationPatchApplied=True, projectCanonicalizationPatchApplied=True, connectedBenchPreviewMembershipApplied=True, navigationTestRecordingApplied=True, savedFrameCameraAssociationApplied=True,
     appleBuild='pending', runtimeOptIn=False, geometryCopyEnabled=False,
     physicalAuthority=False, experimental128MiBCapCompliance='not claimed'), indent=2))

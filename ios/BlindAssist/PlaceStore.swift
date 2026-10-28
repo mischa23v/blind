@@ -331,6 +331,25 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
     func currentWorldFrame(sessionID: UUID, now: Double = ProcessInfo.processInfo.systemUptime) -> SavedWorldFrame? {
         worldFrameRecovery.current(sessionID: sessionID, now: now)
     }
+    /// Constant-work native loss observation before the normal camera throttle.
+    /// Never inspect anchors or authorize a new association on this path.
+    func observeWorldMapTrackingInterruption(frame: ARFrame, sessionID: UUID,
+        now: Double = ProcessInfo.processInfo.systemUptime) {
+        let tracking: SavedWorldFrameRecovery.Tracking
+        switch frame.camera.trackingState {
+        case .normal: return
+        case .limited(.relocalizing): tracking = .relocalizing
+        default: tracking = .unavailable
+        }
+        worldFrameRecovery.observeTrackingInterruption(sessionID: sessionID, tracking: tracking,
+            frameTime: frame.timestamp, now: now)
+    }
+    /// Diagnostic seam only: SAME saved-frame camera coordinates, uncertainty
+    /// unmeasured. No imported-map transform, body/support evidence or guidance.
+    func cameraWorldFrameAssociation(sessionID: UUID, capturedAt: Double,
+        now: Double = ProcessInfo.processInfo.systemUptime) -> SavedWorldFrameCameraAssociation? {
+        worldFrameRecovery.cameraAssociation(sessionID: sessionID, capturedAt: capturedAt, now: now)
+    }
     /// Original, hash-bound scan measurements only. They are dated map history, not
     /// live detections and never ownership/personal-item identity. Do not recompute
     /// this disk read on every camera frame; callers may cache by descriptor.revision.

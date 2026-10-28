@@ -1,3 +1,11 @@
+# Capture-bound saved-frame camera association — 2026-10-28
+
+The separate `saved-frame-camera-association.patch` binds the independently reviewed narrow NavigationModel changes: exact ARSession callback identity, O(1) nonnormal tracking observation before throttling, actual receipt-clock use, and saved-frame retirement on interruption/failure. It does not add a recorder consumer, transform, measured uncertainty or physical guidance authority. No project membership/flag/workflow change.
+
+The checker reverses this latest layer first and requires recorder-era NavigationModel SHA `f101f67cb88c6b2ea8847a380ce09a351322f73e01df0dcb9e0893146d4264d1`, then reverses every existing recorder/membership/canonical/practice/critical/stage85 layer. Prior patch bytes and hashes remain unchanged. Current retirement-prefix assertions explicitly include the new owner guard and recovery withdrawal **before** the existing critical-retirement/optional-diagnostics order; they are not weakened to arbitrary token presence. Native execution remains pending.
+
+---
+
 # Opt-in test recording hookup — 2026-10-28
 
 `navigation-test-recording.patch` separately binds the reviewed NavigationModel diagnostic callbacks/factory and canonical project membership. It adds the sole new app source `NavigationTestRecordingView.swift` (63 app sources) and existing `RecordedRouteStoreTests.swift` to hosted test membership. That Store file was not a hosted member previously; its four new diagnostic tests and older tests are not retroactively claimed executed. The generator preserves prior sources and flags. Root additionally approved explicit hosted links to existing BlindMemory and GRDB products: the same GRDB.swift URL/exact 7.11.1 already pinned by BlindMemory, not a new library/version. A direct PBX package reference removes reliance on implicit transitive hosted linkage. No local dependency download was performed; native resolver/import/link verification remains pending.

@@ -1,0 +1,56 @@
+✔ native hazard sampler uses shared policy without copying buffers or changing world transform (3.238589ms)
+✔ shared values retain native hazard semantics and Float-to-Double order (0.339469ms)
+✖ existing ingress cadence and nil invalidation still precede detector; runtime cadence stays owned (14.91802ms)
+✔ passive observations enter foreground loop independently of a find command (22.499621ms)
+✔ historical retrieval precedes another current-view search and never saves camera as object (14.465195ms)
+✔ unverified onset preserves original search, explicit controls cancel and current delivery checks pose (9.961863ms)
+✔ runtime detector rejects incompatible raw tensor results and has no classifier geometry fallback (2.274927ms)
+✔ history is bounded private storage, deletable and old scans do not resurrect after clear (9.65414ms)
+✔ completion is accounted on the actual speech callback and stopped sessions stay quiet (10.516678ms)
+✔ room transitions and privacy changes cannot relabel or resurrect old captures (21.99303ms)
+✖ continuous pose/hazard cadence is separate from bounded async visual observations (17.758638ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 9
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 567.648063
+
+✖ failing tests:
+
+test at ../../../../tmp/saved-frame-baseline-5w7aizt5/tools/test/native-depth-policy.test.mjs:46:1
+✖ existing ingress cadence and nil invalidation still precede detector; runtime cadence stays owned (14.91802ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///tmp/saved-frame-baseline-5w7aizt5/tools/test/native-depth-policy.test.mjs:55:185)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/saved-frame-baseline-5w7aizt5/tools/test/passive-object-memory.test.mjs:76:1
+✖ continuous pose/hazard cadence is separate from bounded async visual observations (17.758638ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(frames.indexOf('detector.process(observation)') < frames.indexOf('updateBackgroundPerception(frame: frame, observation: observation, nonspatialOnly: !observation.trackingNormal)'))
+  
+      at TestContext.<anonymous> (file:///tmp/saved-frame-baseline-5w7aizt5/tools/test/passive-object-memory.test.mjs:80:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
