@@ -1,0 +1,20 @@
+--- official/flann-targets-none.cmake
++++ workspace/flann-targets-none.cmake
+@@ -20,7 +20,7 @@
+ set_property(TARGET flann::flann_cpp_s APPEND PROPERTY IMPORTED_CONFIGURATIONS NONE)
+ set_target_properties(flann::flann_cpp_s PROPERTIES
+   IMPORTED_LINK_INTERFACE_LANGUAGES_NONE "CXX"
+-  IMPORTED_LINK_INTERFACE_LIBRARIES_NONE "/usr/lib/x86_64-linux-gnu/liblz4.so"
++  IMPORTED_LINK_INTERFACE_LIBRARIES_NONE "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/liblz4.so"
+   IMPORTED_LOCATION_NONE "${_IMPORT_PREFIX}/lib/x86_64-linux-gnu/libflann_cpp_s.a"
+   )
+ 
+@@ -42,7 +42,7 @@
+ set_property(TARGET flann::flann_s APPEND PROPERTY IMPORTED_CONFIGURATIONS NONE)
+ set_target_properties(flann::flann_s PROPERTIES
+   IMPORTED_LINK_INTERFACE_LANGUAGES_NONE "CXX"
+-  IMPORTED_LINK_INTERFACE_LIBRARIES_NONE "/usr/lib/x86_64-linux-gnu/liblz4.so"
++  IMPORTED_LINK_INTERFACE_LIBRARIES_NONE "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr/lib/x86_64-linux-gnu/liblz4.so"
+   IMPORTED_LOCATION_NONE "${_IMPORT_PREFIX}/lib/x86_64-linux-gnu/libflann_s.a"
+   )
+ 

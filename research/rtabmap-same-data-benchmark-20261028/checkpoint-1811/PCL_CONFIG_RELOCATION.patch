@@ -1,0 +1,11 @@
+--- original/PCLConfig.cmake
++++ workspace/PCLConfig.cmake
+@@ -420,7 +420,7 @@
+   endif()
+ else()
+ # PCLConfig.cmake is installed to PCL_ROOT/share/pcl-x.y
+-  set(PCL_ROOT "/usr")
++  set(PCL_ROOT "/workspace/scratch/90f3f6703064/research/rtabmap-same-data-benchmark-20261028/fresh-run/prefix/usr")
+ endif()
+ 
+ # check whether PCLConfig.cmake is found into a PCL installation or in a build tree
