@@ -1,0 +1,7 @@
+Initial source-check execution failed before any shell stub, native command or upload ran:
+AssertionError: candidate is exact reporting insertion and same upload relocation
+
+Cause: the new check.py expected transformation inserted an extra blank job separator.
+The production workflow candidate was unchanged. Correcting the check's removal from
+replace(old_upload, '\n', 1) to replace(old_upload, '', 1) preserves the existing separator.
+Final verification.json records the corrected checker run, not the initial failed run.

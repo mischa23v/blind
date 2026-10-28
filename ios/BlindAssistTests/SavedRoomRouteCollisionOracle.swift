@@ -17,6 +17,8 @@ import simd
 /// https://developer.apple.com/documentation/scenekit/scnphysicsworld/updatecollisionpairs()
 /// https://developer.apple.com/documentation/scenekit/scnphysicsshape/init(geometry:options:)
 /// https://developer.apple.com/documentation/scenekit/scnphysicsshape/shapetype/concavepolyhedron
+/// https://developer.apple.com/documentation/scenekit/scnrenderer/update(attime:)
+/// https://developer.apple.com/documentation/scenekit/scnphysicsbody/collisionbitmask
 @MainActor
 final class SavedRoomRouteCollisionOracle {
     enum Failure: Error, Equatable {
@@ -58,6 +60,12 @@ final class SavedRoomRouteCollisionOracle {
     private struct Identity { let id: UUID; let kind: Kind }
     private struct Group: Hashable { let id: UUID; let floor: Bool }
     private let scene = SCNScene()
+    // Retain the renderer for the entire query world's lifetime. No view, camera,
+    // display link, render target, AR session or asynchronous render loop exists.
+    private var renderer: SCNRenderer?
+    private var simulationTick = 0
+    private static let physicsTimeStep: TimeInterval = 1.0 / 60.0
+    private let configuration: BackendConfiguration
     private var identities: [ObjectIdentifier: Identity] = [:]
     private let sourceMask = 1
     private let probeMask = 2
@@ -69,11 +77,13 @@ final class SavedRoomRouteCollisionOracle {
                      triangleFeatureIDs: [UUID], furnitureBoxes: [FurnitureBox] = []) throws {
         try self.init(vertices: vertices, triangles: triangles, floorSupport: floorSupport,
                       triangleFeatureIDs: triangleFeatureIDs, furnitureBoxes: furnitureBoxes,
-                      checkBackend: true)
+                      configuration: .candidate, checkBackend: true)
     }
 
     private init(vertices: [Double], triangles: [Int32], floorSupport: [Bool],
-                 triangleFeatureIDs: [UUID], furnitureBoxes: [FurnitureBox], checkBackend: Bool) throws {
+                 triangleFeatureIDs: [UUID], furnitureBoxes: [FurnitureBox],
+                 configuration: BackendConfiguration, checkBackend: Bool) throws {
+        self.configuration = configuration
         guard !vertices.isEmpty, vertices.count % 3 == 0, vertices.count <= 600_000,
               !triangles.isEmpty, triangles.count % 3 == 0, triangles.count <= 300_000,
               floorSupport.count == triangles.count / 3, triangleFeatureIDs.count == floorSupport.count,
@@ -82,9 +92,12 @@ final class SavedRoomRouteCollisionOracle {
               Set(triangleFeatureIDs).count <= 512, furnitureBoxes.count <= 512,
               Set(furnitureBoxes.map(\.featureID)).count == furnitureBoxes.count else { throw Failure.invalidGeometry }
         scene.physicsWorld.gravity = SCNVector3Zero
-        // There is no dynamic actor, render loop, AR session or gravity integration.
-        // Queries follow explicit resetTransform/updateCollisionPairs calls below.
-        scene.physicsWorld.speed = 0
+        scene.isPaused = false
+        // All bodies are static/kinematic: enabling physics cannot integrate a
+        // dynamic actor or change supplied geometry. Zero speed previously left
+        // startup ambiguous. Every diagnostic cell uses this same unpaused world.
+        scene.physicsWorld.speed = 1
+        scene.physicsWorld.timeStep = Self.physicsTimeStep
         let positions = vertices.map(Float.init)
         // Reject an exported triangle that collapses at the physics API's Float32
         // boundary; do not silently drop it and interpret the gap as clear space.
@@ -131,19 +144,44 @@ final class SavedRoomRouteCollisionOracle {
             let shape = SCNPhysicsShape(geometry: geometry, options: [.collisionMargin: 0.0])
             add(shape: shape, id: box.featureID, kind: .furnitureBound, transform: transform)
         }
-        scene.physicsWorld.updateCollisionPairs()
-        if checkBackend { try Self.verifyBackend() }
+        if configuration.usesRenderer {
+            let retained = SCNRenderer(device: nil, options: nil)
+            retained.scene = scene
+            retained.isPlaying = true
+            renderer = retained
+            retained.update(atTime: 0)
+        }
+        synchronizePhysics()
+        if checkBackend { try Self.verifyBackend(configuration: configuration) }
     }
 
     private func add(shape: SCNPhysicsShape, id: UUID, kind: Kind, transform: simd_float4x4) {
         let node = SCNNode()
         node.simdTransform = transform
         let body = SCNPhysicsBody(type: .static, shape: shape)
-        body.categoryBitMask = sourceMask; body.collisionBitMask = probeMask; body.contactTestBitMask = probeMask
+        body.categoryBitMask = sourceMask
+        // Leave SceneKit's documented all-category collision mask unchanged in
+        // the candidate. The query's source-category filter remains explicit.
+        // Probe-only masking is retained solely as a diagnostic comparison cell.
+        if configuration.restrictsSourceMask { body.collisionBitMask = probeMask }
+        body.contactTestBitMask = probeMask
         node.physicsBody = body
         scene.rootNode.addChildNode(node)
         identities[ObjectIdentifier(node)] = Identity(id: id, kind: kind)
         body.resetTransform()
+    }
+
+    private func synchronizePhysics() {
+        // Synchronous, fixed clock, no sleeps or retry-until-contact loop. Apple
+        // documents update(atTime:) as updating scene state without drawing.
+        // This is a startup candidate, NOT proof the backend is ready: all
+        // positive and negative controls below must still pass on this runtime.
+        SCNTransaction.flush()
+        if let renderer {
+            simulationTick += 1
+            renderer.update(atTime: TimeInterval(simulationTick) * Self.physicsTimeStep)
+        }
+        scene.physicsWorld.updateCollisionPairs()
     }
 
     /// Feet/base-centre positions in the original saved world. Continuous sweep of
@@ -155,7 +193,7 @@ final class SavedRoomRouteCollisionOracle {
         let shape = SCNPhysicsShape(geometry: geometry, options: [.collisionMargin: 0.0])
         let initial = try overlap(at: from, height: height, shape: shape)
         let start = Self.centreTransform(from, height: height), end = Self.centreTransform(to, height: height)
-        scene.physicsWorld.updateCollisionPairs()
+        synchronizePhysics()
         let raw = scene.physicsWorld.convexSweepTest(with: shape, from: SCNMatrix4(start), to: SCNMatrix4(end),
             options: [.collisionBitMask: sourceMask, .searchMode: SCNPhysicsWorld.TestSearchMode.all,
                       .backfaceCulling: false])
@@ -172,8 +210,8 @@ final class SavedRoomRouteCollisionOracle {
         node.physicsBody = body
         scene.rootNode.addChildNode(node)
         body.resetTransform()
-        scene.physicsWorld.updateCollisionPairs()
-        defer { node.removeFromParentNode(); scene.physicsWorld.updateCollisionPairs() }
+        synchronizePhysics()
+        defer { node.removeFromParentNode(); synchronizePhysics() }
         return try contacts(scene.physicsWorld.contactTest(with: body, options: [.collisionBitMask: sourceMask]))
     }
 
@@ -231,39 +269,173 @@ final class SavedRoomRouteCollisionOracle {
         return m
     }
 
-    /// Mandatory on every external oracle creation. A headless/uninitialized
-    /// physics engine, failed thin-plane sweep or failed contained-solid query
-    /// throws; an empty hit array must never silently certify this backend.
-    private static func verifyBackend() throws {
-        let wall = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
-        let solid = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
-        let overhead = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
-        let floor = UUID(uuidString: "00000000-0000-0000-0000-000000000004")!
-        let vertices: [Double] = [0,0,-1, 0,3,-1, 0,3,1, 0,0,1,
-                                 4,0,-1, 4,3,-1, 4,3,1, 4,0,1,
-                                 9,1.4,-1, 11,1.4,-1, 11,1.4,1, 9,1.4,1,
-                                 19,0,-1, 21,0,-1, 21,0,1, 19,0,1]
-        let triangles: [Int32] = [0,1,2, 0,2,3, 4,5,6, 4,6,7, 8,9,10, 8,10,11, 12,13,14, 12,14,15]
-        let oracle = try SavedRoomRouteCollisionOracle(vertices: vertices, triangles: triangles,
-            floorSupport: [false,false,false,false,false,false,true,true],
-            triangleFeatureIDs: [wall,wall,solid,solid,overhead,overhead,floor,floor],
-            furnitureBoxes: [.init(featureID: solid, dimensions: [2,3,2],
-                transform: [1,0,0,0, 0,1,0,0, 0,0,1,0, 5,1.5,0,1])], checkBackend: false)
-        let cross = try oracle.sweep(from: SIMD3(-1,0,0), to: SIMD3(1,0,0), radius: 0.2, height: 1.6)
-        let reverse = try oracle.sweep(from: SIMD3(1,0,0), to: SIMD3(-1,0,0), radius: 0.2, height: 1.6)
-        guard cross.swept.obstacleSurfaceIDs.contains(wall), reverse.swept.obstacleSurfaceIDs.contains(wall)
-        else { throw Failure.backendUnavailable("bidirectional thin-plane continuous sweep") }
-        let contained = try oracle.sweep(from: SIMD3(5,0.5,0), to: SIMD3(5,0.5,0), radius: 0.2, height: 1)
-        guard contained.initial.furnitureBoundIDs.contains(solid), contained.initial.obstacleSurfaceIDs.isEmpty
-        else { throw Failure.backendUnavailable("contained-cylinder initial overlap distinct from shell") }
-        let high = try oracle.sweep(from: SIMD3(8,0,0), to: SIMD3(12,0,0), radius: 0.2, height: 1.6)
-        let reverseHigh = try oracle.sweep(from: SIMD3(12,0,0), to: SIMD3(8,0,0), radius: 0.2, height: 1.6)
-        let low = try oracle.sweep(from: SIMD3(8,0,0), to: SIMD3(12,0,0), radius: 0.2, height: 1)
-        guard high.all.obstacleSurfaceIDs.contains(overhead), reverseHigh.all.obstacleSurfaceIDs.contains(overhead),
-              !low.all.hasObstacleContact else { throw Failure.backendUnavailable("bidirectional height-sensitive overhead sweep") }
-        let clear = try oracle.sweep(from: SIMD3(-2,0,4), to: SIMD3(2,0,4), radius: 0.2, height: 1.6)
-        guard !clear.all.hasObstacleContact else { throw Failure.backendUnavailable("negative sweep control") }
-        let ground = try oracle.sweep(from: SIMD3(20,-0.1,0), to: SIMD3(20,-0.1,0), radius: 0.2, height: 1.6)
-        guard ground.all.floorSurfaceIDs.contains(floor), !ground.all.hasObstacleContact else { throw Failure.backendUnavailable("separate floor contact") }
+    private enum BackendConfiguration: String, CaseIterable {
+        case restrictedNoRenderer = "restricted-no-renderer"
+        case defaultNoRenderer = "default-no-renderer"
+        case restrictedOffscreenRenderer = "restricted-offscreen-renderer"
+        case defaultOffscreenRenderer = "default-offscreen-renderer"
+        static let candidate = BackendConfiguration.defaultOffscreenRenderer
+        var restrictsSourceMask: Bool {
+            self == .restrictedNoRenderer || self == .restrictedOffscreenRenderer
+        }
+        var usesRenderer: Bool {
+            self == .restrictedOffscreenRenderer || self == .defaultOffscreenRenderer
+        }
+    }
+
+    enum ControlName: String, CaseIterable, Encodable {
+        case thinWallForward, thinWallReverse, wallInitialOverlap, wallTerminalOverlap
+        case containedSolid, overheadTallForward, overheadTallReverse, overheadShort, clear, floor
+    }
+
+    /// Only the fixed authored controls below can create this witness. No saved
+    /// room, device pose, private geometry, arbitrary errors or camera input is
+    /// accepted by the diagnostic entry point. Keep the collector allowlist in
+    /// sync if this versioned schema ever changes.
+    struct ContactWitness: Encodable {
+        let obstacleSurfaceIDs, floorSurfaceIDs, furnitureBoundIDs: [String]
+        fileprivate init(_ contacts: Contacts) {
+            obstacleSurfaceIDs = contacts.obstacleSurfaceIDs.map(\.uuidString).sorted()
+            floorSurfaceIDs = contacts.floorSurfaceIDs.map(\.uuidString).sorted()
+            furnitureBoundIDs = contacts.furnitureBoundIDs.map(\.uuidString).sorted()
+        }
+    }
+    struct QueryWitness: Encodable {
+        let name: ControlName
+        let passed: Bool
+        let errorCode: String
+        let initial, swept, terminal: ContactWitness
+        fileprivate static func failed(_ name: ControlName, error: Error) -> QueryWitness {
+            let code: String
+            switch error {
+            case Failure.invalidGeometry: code = "invalidGeometry"
+            case Failure.invalidQuery: code = "invalidQuery"
+            case Failure.invalidFurnitureBox: code = "invalidFurnitureBox"
+            case Failure.backendUnavailable("unassociated physics contact"): code = "unassociatedContact"
+            default: code = "unexpectedError"
+            }
+            let empty = ContactWitness(Contacts())
+            return QueryWitness(name: name, passed: false, errorCode: code,
+                                initial: empty, swept: empty, terminal: empty)
+        }
+    }
+    struct BackendCellWitness: Encodable {
+        let configurationID, sourceCollisionMask, rendererMode: String
+        let physicsSpeed = 1
+        let timeStepSeconds = 1.0 / 60.0
+        let gravity = [0, 0, 0]
+        let sourceCategoryMask = 1, probeCategoryMask = 2, queryCollisionMask = 1
+        let backendReady: Bool
+        let failedControls: [ControlName]
+        let queries: [QueryWitness]
+    }
+    struct BackendMatrixWitness: Encodable {
+        let schemaVersion = 1
+        let evidenceKind = "synthetic-collision-backend-matrix"
+        let physicalAuthority = false
+        let fullFootprintSupportVerified = false
+        let cells: [BackendCellWitness]
+    }
+
+    /// Four cells, ten queries per cell, once each; not a fallback search or a
+    /// retry policy. All cells are unpaused. Thus this isolates mask/renderer
+    /// effects at speed 1, not the independent causal effect of old speed 0.
+    static func backendDiagnosticMatrix() -> BackendMatrixWitness {
+        BackendMatrixWitness(cells: BackendConfiguration.allCases.map { diagnoseBackend(configuration: $0) })
+    }
+
+    /// Mandatory on every external oracle creation. A failed control always
+    /// throws, including a positive control whose raw hit arrays are empty.
+    /// No alternate matrix cell can substitute for the selected candidate.
+    private static func verifyBackend(configuration: BackendConfiguration) throws {
+        let witness = diagnoseBackend(configuration: configuration)
+        guard witness.backendReady else {
+            throw Failure.backendUnavailable("backend controls failed: " +
+                witness.failedControls.map(\.rawValue).joined(separator: ","))
+        }
+    }
+
+    private static let controlWall = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+    private static let controlSolid = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
+    private static let controlOverhead = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
+    private static let controlFloor = UUID(uuidString: "00000000-0000-0000-0000-000000000004")!
+
+    private static func diagnoseBackend(configuration: BackendConfiguration) -> BackendCellWitness {
+        let queries: [QueryWitness]
+        do {
+            let wall = controlWall, solid = controlSolid, overhead = controlOverhead, floor = controlFloor
+            let vertices: [Double] = [0,0,-1, 0,3,-1, 0,3,1, 0,0,1,
+                                     4,0,-1, 4,3,-1, 4,3,1, 4,0,1,
+                                     9,1.4,-1, 11,1.4,-1, 11,1.4,1, 9,1.4,1,
+                                     19,0,-1, 21,0,-1, 21,0,1, 19,0,1]
+            let triangles: [Int32] = [0,1,2, 0,2,3, 4,5,6, 4,6,7, 8,9,10, 8,10,11, 12,13,14, 12,14,15]
+            let oracle = try SavedRoomRouteCollisionOracle(vertices: vertices, triangles: triangles,
+                floorSupport: [false,false,false,false,false,false,true,true],
+                triangleFeatureIDs: [wall,wall,solid,solid,overhead,overhead,floor,floor],
+                furnitureBoxes: [.init(featureID: solid, dimensions: [2,3,2],
+                    transform: [1,0,0,0, 0,1,0,0, 0,0,1,0, 5,1.5,0,1])],
+                configuration: configuration, checkBackend: false)
+            // Do not short-circuit on a failed wall or thrown query: the witness
+            // must still record containment, height, clear and floor controls.
+            queries = ControlName.allCases.map { name in
+                do { return try runControl(name, oracle: oracle) }
+                catch { return QueryWitness.failed(name, error: error) }
+            }
+        } catch {
+            queries = ControlName.allCases.map { QueryWitness.failed($0, error: error) }
+        }
+        let failures = queries.filter { !$0.passed }.map(\.name)
+        return BackendCellWitness(configurationID: configuration.rawValue,
+            sourceCollisionMask: configuration.restrictsSourceMask ? "probe-only" : "platform-default-all",
+            rendererMode: configuration.usesRenderer ? "retained-offscreen-update" : "none",
+            backendReady: failures.isEmpty, failedControls: failures, queries: queries)
+    }
+
+    private static func runControl(_ name: ControlName, oracle: SavedRoomRouteCollisionOracle) throws -> QueryWitness {
+        let from: SIMD3<Float>, to: SIMD3<Float>, height: Float
+        switch name {
+        case .thinWallForward: from = SIMD3(-1,0,0); to = SIMD3(1,0,0); height = 1.6
+        case .thinWallReverse: from = SIMD3(1,0,0); to = SIMD3(-1,0,0); height = 1.6
+        case .wallInitialOverlap: from = SIMD3(0,0,0); to = SIMD3(1,0,0); height = 1.6
+        case .wallTerminalOverlap: from = SIMD3(-1,0,0); to = SIMD3(0,0,0); height = 1.6
+        case .containedSolid: from = SIMD3(5,0.5,0); to = from; height = 1
+        case .overheadTallForward: from = SIMD3(8,0,0); to = SIMD3(12,0,0); height = 1.6
+        case .overheadTallReverse: from = SIMD3(12,0,0); to = SIMD3(8,0,0); height = 1.6
+        case .overheadShort: from = SIMD3(8,0,0); to = SIMD3(12,0,0); height = 1
+        case .clear: from = SIMD3(-2,0,4); to = SIMD3(2,0,4); height = 1.6
+        case .floor: from = SIMD3(20,-0.1,0); to = from; height = 1.6
+        }
+        let result = try oracle.sweep(from: from, to: to, radius: 0.2, height: height)
+        let empty = Contacts()
+        let all = result.all
+        let passed: Bool
+        switch name {
+        case .thinWallForward, .thinWallReverse:
+            passed = result.initial == empty && result.terminal == empty &&
+                result.swept.obstacleSurfaceIDs == [controlWall] &&
+                all.floorSurfaceIDs.isEmpty && all.furnitureBoundIDs.isEmpty
+        case .wallInitialOverlap:
+            passed = result.initial.obstacleSurfaceIDs == [controlWall] && result.terminal == empty &&
+                all.obstacleSurfaceIDs == [controlWall] && all.floorSurfaceIDs.isEmpty && all.furnitureBoundIDs.isEmpty
+        case .wallTerminalOverlap:
+            passed = result.terminal.obstacleSurfaceIDs == [controlWall] && result.initial == empty &&
+                all.obstacleSurfaceIDs == [controlWall] && all.floorSurfaceIDs.isEmpty && all.furnitureBoundIDs.isEmpty
+        case .containedSolid:
+            passed = result.initial.furnitureBoundIDs == [controlSolid] &&
+                result.terminal.furnitureBoundIDs == [controlSolid] && all.furnitureBoundIDs == [controlSolid] &&
+                all.obstacleSurfaceIDs.isEmpty && all.floorSurfaceIDs.isEmpty
+        case .overheadTallForward, .overheadTallReverse:
+            passed = result.initial == empty && result.terminal == empty &&
+                result.swept.obstacleSurfaceIDs == [controlOverhead] &&
+                all.floorSurfaceIDs.isEmpty && all.furnitureBoundIDs.isEmpty
+        case .overheadShort, .clear:
+            passed = all == empty
+        case .floor:
+            passed = result.initial.floorSurfaceIDs == [controlFloor] &&
+                result.terminal.floorSurfaceIDs == [controlFloor] && all.floorSurfaceIDs == [controlFloor] &&
+                !all.hasObstacleContact
+        }
+        return QueryWitness(name: name, passed: passed, errorCode: "none",
+            initial: ContactWitness(result.initial), swept: ContactWitness(result.swept), terminal: ContactWitness(result.terminal))
     }
 }

@@ -1,5 +1,8 @@
 import XCTest
 import CryptoKit
+import CoreFoundation
+import RoomPlan
+import ModelIO
 import simd
 @testable import BlindAssist
 
@@ -7,7 +10,7 @@ import simd
 /// unchanged official fixtures. No synthetic CapturedRoom, supplied mesh or AR
 /// registration. Numerical tolerances concern Float32 export arithmetic only.
 @MainActor final class SavedRoomRouteMeshAppleFixtureTests: XCTestCase {
-    private enum Fixture: String, CaseIterable {
+    private enum Fixture: String, CaseIterable, Sendable {
         case hallway = "Hallway2", bedroom = "Bedroom3"
         var digest: String {
             self == .hallway ? "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d" :
@@ -30,7 +33,10 @@ import simd
         let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "\(fixture.rawValue).capturedRoom",
             withExtension: "json", subdirectory: "RoomPlanApple"))
         let data = try Data(contentsOf: url)
-        XCTAssertEqual(SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined(), fixture.digest)
+        guard SHA256.hash(data: data).map({ String(format: "%02x", $0) }).joined() == fixture.digest else {
+            XCTFail("Only unchanged original public Apple fixture bytes are allowed")
+            throw SavedRoomRouteMeshAdapter.Failure.sourceMismatch
+        }
         return data
     }
     private func snapshot(_ fixture: Fixture) async throws -> (SavedRoomRouteMeshSnapshot, RawRoom) {
@@ -91,6 +97,247 @@ import simd
         guard squaredLength > 0 else { return simd_length(point-edge.a) }
         let fraction = max(0,min(1,simd_dot(point-edge.a,segment)/squaredLength))
         return simd_length(point-(edge.a+fraction*segment))
+    }
+
+    private struct MetadataEntry: Encodable, Sendable {
+        let key, keySHA256, valueKind: String
+        let uuidValue, knownFeature: Bool
+        let uuid: String?
+    }
+    private struct ExportNode: Encodable, Sendable {
+        let index, depth: Int
+        let name, nameSHA256: String
+        let isMesh, directMappingPresent, inheritedMappingPresent, knownFeature: Bool
+        let parentIndex: Int?
+        let directUUID, inheritedUUID, resolvedUUID: String?
+        let vertexCount, submeshCount: Int?
+    }
+    private struct ExportInventory: Encodable, Sendable {
+        let fixtureID, sourceSHA256: String
+        var metadataByteCount = 0
+        var metadataFormat = "unread"
+        var metadataRootKind = "unread"
+        var metadataEntryCount = 0
+        var metadataEntriesTruncated = false
+        var metadataEntries: [MetadataEntry] = []
+        var nodeCount = 0
+        var nodesTruncated = false
+        var nodes: [ExportNode] = []
+        var meshCount = 0
+        var unmatchedMeshCount = 0
+        var unknownFeatureMeshCount = 0
+        var adapterFailure: String?
+        var inventoryFailure: String?
+    }
+    private struct InventoryAttachment: Encodable {
+        let schema = "blind.saved-room-route-mesh-metadata-inventory.v1"
+        let physicalAuthority = false
+        let fixtures: [ExportInventory]
+    }
+    private nonisolated static func digest(_ data: Data) -> String {
+        SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+    }
+    private nonisolated static func safeExportName(_ value: String) -> String {
+        // No paths, URLs, control characters or unbounded exporter text in CI.
+        let bytes = value.utf8
+        guard (1...128).contains(bytes.count), bytes.allSatisfy({
+            (48...57).contains($0) || (65...90).contains($0) || (97...122).contains($0) ||
+                [32, 45, 46, 95].contains($0)
+        }) else { return "<redacted>" }
+        return value
+    }
+    private nonisolated static func jsonKind(_ value: Any) -> String {
+        if value is [String: Any] { return "object" }
+        if value is [Any] { return "array" }
+        if value is NSNull { return "null" }
+        if value is String { return "string" }
+        if let number = value as? NSNumber {
+            return CFGetTypeID(number) == CFBooleanGetTypeID() ? "boolean" : "number"
+        }
+        return "null"
+    }
+    private nonisolated static func failureCode(_ error: Error) -> String {
+        guard let failure = error as? SavedRoomRouteMeshAdapter.Failure else { return "unclassifiedError" }
+        return String(describing: failure)
+    }
+
+    /// Test-only observation of the unchanged exporter/importer, never a parser
+    /// fallback or geometry matcher. It deliberately proceeds to node inventory
+    /// after a metadata decode failure, without accepting any of that geometry.
+    private nonisolated static func exportInventory(data: Data, fixtureID: String,
+                                                    expectedSHA256: String) -> ExportInventory {
+        typealias Adapter = SavedRoomRouteMeshAdapter
+        var result = ExportInventory(fixtureID: fixtureID, sourceSHA256: expectedSHA256)
+        let publicFixtures = [
+            "Hallway2": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+            "Bedroom3": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e"
+        ]
+        // Assertion alone would continue on mismatch and could export private
+        // replacement bytes. This admission guard precedes every decode/export.
+        guard publicFixtures[fixtureID] == expectedSHA256,
+              !data.isEmpty, data.count <= Adapter.maximumSourceBytes,
+              digest(data) == expectedSHA256 else {
+            result.inventoryFailure = "sourceMismatch"
+            return result
+        }
+        guard !Thread.isMainThread else {
+            result.inventoryFailure = "wrongExecutionContext"
+            return result
+        }
+        do { _ = try Adapter.decode(data: data, expectedSHA256: expectedSHA256) }
+        catch { result.adapterFailure = failureCode(error) }
+        do {
+            let raw = try JSONDecoder().decode(RawRoom.self, from: data)
+            let knownIDs = Set(raw.all.map(\.identifier))
+            func publicID(_ id: UUID?) -> String? {
+                guard let id, knownIDs.contains(id) else { return nil }
+                return id.uuidString
+            }
+            let room = try JSONDecoder().decode(CapturedRoom.self, from: data)
+            let manager = FileManager.default
+            var root = manager.temporaryDirectory.appendingPathComponent("BlindPublicAppleMeshInventory-\(UUID().uuidString)", isDirectory: true)
+            try manager.createDirectory(at: root, withIntermediateDirectories: false,
+                attributes: [.posixPermissions: 0o700, .protectionKey: FileProtectionType.complete])
+            defer { try? manager.removeItem(at: root) }
+            var resourceValues = URLResourceValues(); resourceValues.isExcludedFromBackup = true
+            try root.setResourceValues(resourceValues)
+            let meshURL = root.appendingPathComponent("room.usdz")
+            let metadataURL = root.appendingPathComponent("metadata.json")
+            do { try room.export(to: meshURL, metadataURL: metadataURL, modelProvider: nil, exportOptions: .mesh) }
+            catch { throw Adapter.Failure.exportFailed }
+            var metadata: [String: UUID] = [:]
+            do {
+                let attributes = try manager.attributesOfItem(atPath: metadataURL.path)
+                guard let size = attributes[.size] as? NSNumber, size.int64Value >= 0,
+                      size.int64Value <= Int64(Adapter.maximumMetadataBytes) else { throw Adapter.Failure.budgetExceeded }
+                let bytes = try Data(contentsOf: metadataURL)
+                guard bytes.count <= Adapter.maximumMetadataBytes else { throw Adapter.Failure.budgetExceeded }
+                result.metadataByteCount = bytes.count
+                result.metadataFormat = "unknown"
+                if bytes.starts(with: Data("bplist00".utf8)) { result.metadataFormat = "binaryPlist" }
+                else if let prefix = String(data: Data(bytes.prefix(256)), encoding: .utf8) {
+                    let header = prefix.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if header.hasPrefix("<plist ") || header.hasPrefix("<plist>") ||
+                        (header.hasPrefix("<?xml ") && header.contains("<plist")) {
+                        result.metadataFormat = "xmlPlist"
+                    }
+                }
+                do {
+                    let object = try JSONSerialization.jsonObject(with: bytes, options: [.fragmentsAllowed])
+                    result.metadataFormat = "json"
+                    result.metadataRootKind = jsonKind(object)
+                    if let entries = object as? [String: Any] {
+                        result.metadataEntryCount = min(entries.count, Adapter.maximumNodes)
+                        result.metadataEntriesTruncated = result.metadataEntryCount > 64
+                        result.metadataEntries = entries.keys.sorted().prefix(64).map { key in
+                            let value = entries[key]!
+                            let id = (value as? String).flatMap(UUID.init(uuidString:))
+                            return MetadataEntry(key: safeExportName(key), keySHA256: digest(Data(key.utf8)),
+                                valueKind: jsonKind(value), uuidValue: id != nil,
+                                knownFeature: publicID(id) != nil, uuid: publicID(id))
+                        }
+                        if entries.count > Adapter.maximumNodes { result.inventoryFailure = "budgetExceeded" }
+                    }
+                } catch {
+                    result.metadataRootKind = "invalidJSON"
+                    result.inventoryFailure = "metadataDecodeFailed"
+                }
+                do { metadata = try JSONDecoder().decode([String: UUID].self, from: bytes) }
+                catch { result.inventoryFailure = result.inventoryFailure ?? "metadataDecodeFailed" }
+                if result.inventoryFailure == nil {
+                    if metadata.isEmpty { result.inventoryFailure = "metadataEmpty" }
+                    else if metadata.count > Adapter.maximumNodes || !metadata.keys.allSatisfy({ !$0.isEmpty && $0.utf8.count <= 512 }) {
+                        result.inventoryFailure = "metadataInvalidEntries"
+                    }
+                }
+            } catch {
+                result.inventoryFailure = (error as? Adapter.Failure).map { String(describing: $0) } ?? "metadataReadFailed"
+            }
+
+            let attributes = try manager.attributesOfItem(atPath: meshURL.path)
+            guard let size = attributes[.size] as? NSNumber, size.int64Value > 0,
+                  size.int64Value <= Int64(Adapter.maximumExportBytes) else { throw Adapter.Failure.budgetExceeded }
+            let descriptor = MDLVertexDescriptor()
+            descriptor.attributes[0] = MDLVertexAttribute(name: MDLVertexAttributePosition,
+                format: .float3, offset: 0, bufferIndex: 0)
+            descriptor.layouts[0] = MDLVertexBufferLayout(stride: 3 * MemoryLayout<Float>.size)
+            var importError: NSError?
+            let asset = MDLAsset(url: meshURL, vertexDescriptor: descriptor,
+                bufferAllocator: nil, preserveTopology: false, error: &importError)
+            guard importError == nil, asset.count > 0, asset.count <= Adapter.maximumNodes,
+                  asset.startTime == asset.endTime else { throw Adapter.Failure.invalidMesh }
+            var visited = Set<ObjectIdentifier>()
+            func visit(_ node: MDLObject, parentIndex: Int?, inheritedID: UUID?, depth: Int) throws {
+                guard depth <= 64, visited.insert(ObjectIdentifier(node)).inserted else { throw Adapter.Failure.invalidMesh }
+                guard result.nodeCount < Adapter.maximumNodes else { throw Adapter.Failure.budgetExceeded }
+                let index = result.nodeCount
+                result.nodeCount += 1
+                result.nodesTruncated = result.nodeCount > 128
+                let directID = metadata[node.name], identity = directID ?? inheritedID
+                let mesh = node as? MDLMesh
+                let isMesh = mesh != nil
+                let vertexCount = mesh.map { min($0.vertexCount, Adapter.maximumVertices) }
+                let submeshCount = mesh.map { min($0.submeshes?.count ?? 0, Adapter.maximumNodes) }
+                if let mesh, mesh.vertexCount > Adapter.maximumVertices || (mesh.submeshes?.count ?? 0) > Adapter.maximumNodes {
+                    result.inventoryFailure = result.inventoryFailure ?? "budgetExceeded"
+                }
+                if isMesh {
+                    result.meshCount += 1
+                    if identity == nil { result.unmatchedMeshCount += 1 }
+                    else if publicID(identity) == nil { result.unknownFeatureMeshCount += 1 }
+                }
+                if result.nodes.count < 128 {
+                    result.nodes.append(ExportNode(index: index, depth: depth, name: safeExportName(node.name),
+                        nameSHA256: digest(Data(node.name.utf8)), isMesh: isMesh,
+                        directMappingPresent: directID != nil, inheritedMappingPresent: inheritedID != nil,
+                        knownFeature: publicID(identity) != nil, parentIndex: parentIndex,
+                        directUUID: publicID(directID), inheritedUUID: publicID(inheritedID), resolvedUUID: publicID(identity),
+                        vertexCount: vertexCount, submeshCount: submeshCount))
+                }
+                let children = node.children.objects
+                guard children.count <= Adapter.maximumNodes - result.nodeCount else { throw Adapter.Failure.budgetExceeded }
+                for child in children { try visit(child, parentIndex: index, inheritedID: identity, depth: depth + 1) }
+            }
+            for index in 0..<asset.count { try visit(asset.object(at: index), parentIndex: nil, inheritedID: nil, depth: 0) }
+        } catch { result.inventoryFailure = result.inventoryFailure ?? failureCode(error) }
+        return result
+    }
+
+    func testOriginalAppleExportMetadataAndNodeInventory() async throws {
+        var reports: [ExportInventory] = []
+        for fixture in Fixture.allCases {
+            let data = try bytes(fixture), fixtureID = fixture.rawValue, expected = fixture.digest
+            reports.append(await Task.detached(priority: .utility) {
+                Self.exportInventory(data: data, fixtureID: fixtureID, expectedSHA256: expected)
+            }.value)
+        }
+        let data = try JSONEncoder().encode(InventoryAttachment(fixtures: reports))
+        guard data.count <= 131_072 else { throw SavedRoomRouteMeshAdapter.Failure.budgetExceeded }
+        let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+        attachment.name = "APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        for report in reports {
+            XCTAssertNil(report.inventoryFailure, "\(report.fixtureID): inventory must complete without relaxing bounds")
+            XCTAssertNil(report.adapterFailure, "\(report.fixtureID): inspect retained metadata/node inventory; no guessed matching")
+        }
+    }
+
+    func testMetadataInventoryRejectsChangedPublicFixtureBeforeExport() async throws {
+        var changed = try bytes(.bedroom)
+        changed.append(0x0a) // Still valid JSON, but no longer the admitted original.
+        let data = changed, expected = Fixture.bedroom.digest
+        let report = await Task.detached(priority: .utility) {
+            Self.exportInventory(data: data, fixtureID: "Bedroom3", expectedSHA256: expected)
+        }.value
+        XCTAssertEqual(report.inventoryFailure, "sourceMismatch")
+        XCTAssertNil(report.adapterFailure)
+        XCTAssertEqual(report.metadataByteCount, 0)
+        XCTAssertEqual(report.metadataFormat, "unread")
+        XCTAssertEqual(report.metadataRootKind, "unread")
+        XCTAssertTrue(report.metadataEntries.isEmpty)
+        XCTAssertEqual(report.nodeCount, 0)
+        XCTAssertTrue(report.nodes.isEmpty)
     }
 
     func testOriginalAppleExportInventoryPreservesFeatureIdentityAndHistoricalDoorState() async throws {
@@ -225,3 +472,4 @@ import simd
         XCTAssertEqual(result, .sourceMismatch)
     }
 }
+

@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "status": "candidate-reviewed-portable-tests-passed-not-native-executed",
+  "baseCommit": "dc32a9bad9a75566f27924fb9f7aa8fe50a46e95",
+  "scope": "Narrow fixed-schema evidence collection only; no route verdict, geometry, planner or authority change.",
+  "sourceSHA256": {
+    "tools/ci/native-route-diagnostic-evidence.py": "22dd01fb734d00da33ce23451c8f5cf8d192d9f415b492da0bc4bda6bd6e56af",
+    "tools/ci/export-native-unit-statuses.py": "75b18b4b00b02b7da42453a4decec7ec043fb9672f66f463b5a0f5778f1dedfe",
+    "tools/ci/test-native-route-diagnostic-evidence.py": "308d485e6c9c7dc32814d2b74469174a44f457f21b6cc42684df2d31b7ae5308"
+  },
+  "publicationAllowlist": [
+    "tools/ci/native-route-diagnostic-evidence.py",
+    "tools/ci/export-native-unit-statuses.py",
+    "tools/ci/test-native-route-diagnostic-evidence.py",
+    "research/native-path-recovery-20261028/collector-checkpoint.json"
+  ],
+  "tests": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tools/ci/test-native-route-diagnostic-evidence.py",
+      "passed": 51,
+      "failed": 0,
+      "originalTestsRetained": 35,
+      "newTests": 16
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tools/ci/test-native-unit-statuses.py",
+      "passed": 31,
+      "failed": 0,
+      "sourceUnchangedFromBase": true,
+      "sourceSHA256": "11996ca8b4dde9e1ebc08173d9aa42a5707f97b3cc0298a37cb6dc9dd02d10dc"
+    }
+  ],
+  "independentReview": "No blocker reported; independent reviewer and root each reran 51 collector and 31 exporter tests.",
+  "attachmentAllowlist": [
+    {
+      "testIdentifier": "SavedRoomRouteDiagnosticAppleTests/testPredeclaredApplePathsWaypointSinkAndIndependentFullBodySweeps",
+      "attachmentName": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+      "existing": true
+    },
+    {
+      "testIdentifier": "SavedRoomRouteDiagnosticAppleTests/testSeparatelyPreregistered28cmWidthDoesNotReplaceBaseline",
+      "attachmentName": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+      "existing": true
+    },
+    {
+      "testIdentifier": "SavedRoomRouteJourneyAppleTests/testPredeclaredSuppliedBedChairConnectorsAroundRoomDoorWithholdingAndReturn",
+      "attachmentName": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "existing": true
+    },
+    {
+      "testIdentifier": "SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleExportMetadataAndNodeInventory",
+      "attachmentName": "APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json",
+      "existing": false
+    },
+    {
+      "testIdentifier": "SavedRoomRouteCollisionOracleTests/testBackendDiagnosticMatrixRecordsEveryControl",
+      "attachmentName": "SavedRoomCollisionBackendMatrix-v1.json",
+      "existing": false
+    }
+  ],
+  "limits": {
+    "eachNewDiagnosticBytes": 131072,
+    "aggregateRawAttachmentBytes": 1048576,
+    "finalUnitCaseEvidenceBytes": 1048576,
+    "metadataEntriesPerFixture": 64,
+    "nodesPerFixture": 128,
+    "fullTraversalCount": 4096,
+    "nodeDepth": 64,
+    "metadataSourceBytes": 1048576,
+    "nameAsciiBytes": 128,
+    "syntheticConfigurations": 4,
+    "syntheticQueriesEach": 10
+  },
+  "preserved": [
+    "Exactly targeted per-test export; no suite-wide/all-unit attachment export.",
+    "No raw metadata values, geometry buffers, source paths, private history, camera, audio, model text or screenshots.",
+    "Metadata source inputs must match exact original public Hallway2 and Bedroom3 SHA256; node and metadata UUIDs must be source feature IDs.",
+    "Unknown metadata key/node names containing paths or non-allowlisted characters are redacted by producer; collector accepts only bounded safe names with matching SHA256 or the fixed redaction marker.",
+    "Synthetic collision contacts accept only four fixed authored UUIDs and exact control predicates; they do not verify physical clearance.",
+    "Every original case status and target verdict is retained; malformed or overbudget diagnostic is only an additive evidence error.",
+    "Original three-report shape remains compatible when new exact diagnostic cases are absent.",
+    "Export file limits, manifest validation, symlink/path checks, temporary cleanup, timeout and child process ownership remain unchanged."
+  ],
+  "limitsOfEvidence": [
+    "Python tests use synthetic payloads and a bounded fake xcresulttool; no Apple SDK, RoomPlan/ModelIO or SceneKit execution on this candidate here.",
+    "Metadata inventory is a second export of the same admitted original public input, not asserted to be the identical export artifact used for adapterFailure.",
+    "Collision predicates are a literal schema-consistency mirror, not an independent physics solver or a native passing result.",
+    "No repair of unknown exporter metadata mapping is guessed; failures and no-authority flags remain explicit."
+  ]
+}

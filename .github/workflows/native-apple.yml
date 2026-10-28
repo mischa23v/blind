@@ -65,6 +65,18 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         timeout-minutes: 15
         run: bash tools/ci/native-apple.sh unit
+      - name: Extract bounded hosted-unit case statuses before UI tests
+        if: always()
+        timeout-minutes: 3
+        run: python3 tools/ci/export-native-unit-statuses.py "$RUNNER_TEMP/blind-native-ci/unit.xcresult" "$RUNNER_TEMP/blind-native-ci/unit.log" "$RUNNER_TEMP/blind-native-ci/unit-case-statuses.json" || true
+      - name: Preserve bounded hosted-unit case statuses
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: native-unit-case-statuses-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/blind-native-ci/unit-case-statuses.json
+          if-no-files-found: error
+          retention-days: 3
       - name: iOS UI and accessibility audit tests
         id: ui
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
@@ -94,14 +106,6 @@ jobs:
           UNIT_OUTCOME: ${{ steps.unit.outcome }}
           UI_OUTCOME: ${{ steps.ui.outcome }}
         run: bash tools/ci/native-apple.sh summary
-      - name: Preserve bounded hosted-unit case statuses
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: native-unit-case-statuses-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/blind-native-ci/unit-case-statuses.json
-          if-no-files-found: error
-          retention-days: 3
 
   mesh-diagnostics-compile:
     # Separate runner/derived data: cannot change the default app test configuration.

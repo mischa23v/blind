@@ -8,6 +8,34 @@ final class SavedRoomRouteCollisionOracleTests: XCTestCase {
     private let wall = UUID(uuidString: "10000000-0000-0000-0000-000000000001")!
     private let floor = UUID(uuidString: "10000000-0000-0000-0000-000000000002")!
 
+    func testBackendDiagnosticMatrixRecordsEveryControl() throws {
+        let witness = SavedRoomRouteCollisionOracle.backendDiagnosticMatrix()
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        let data = try encoder.encode(witness)
+        XCTAssertLessThanOrEqual(data.count, 131_072)
+        let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+        attachment.name = "SavedRoomCollisionBackendMatrix-v1.json"
+        attachment.lifetime = .keepAlways
+        add(attachment) // retain evidence even when the candidate remains unavailable
+
+        XCTAssertEqual(witness.cells.map(\.configurationID), ["restricted-no-renderer", "default-no-renderer",
+            "restricted-offscreen-renderer", "default-offscreen-renderer"])
+        XCTAssertFalse(witness.physicalAuthority)
+        XCTAssertFalse(witness.fullFootprintSupportVerified)
+        for cell in witness.cells {
+            XCTAssertEqual(cell.queries.map(\.name), SavedRoomRouteCollisionOracle.ControlName.allCases)
+            XCTAssertEqual(cell.failedControls, cell.queries.filter { !$0.passed }.map(\.name))
+            XCTAssertEqual(cell.backendReady, cell.failedControls.isEmpty)
+            XCTAssertTrue(cell.queries.filter { $0.errorCode != "none" }.allSatisfy { !$0.passed })
+        }
+        let candidate = try XCTUnwrap(witness.cells.last)
+        XCTAssertEqual(candidate.configurationID, "default-offscreen-renderer")
+        XCTAssertTrue(candidate.backendReady, "Candidate controls failed: \(candidate.failedControls.map(\.rawValue))")
+        // Other cells are diagnostic controls, not an alternative success path.
+        // A passing comparison cell never overrides an unavailable candidate.
+    }
+
     private func wallAndFloor() throws -> SavedRoomRouteCollisionOracle {
         try SavedRoomRouteCollisionOracle(
             vertices: [0,0,-2, 0,3,-2, 0,3,2, 0,0,2,
@@ -91,3 +119,4 @@ final class SavedRoomRouteCollisionOracleTests: XCTestCase {
         XCTAssertThrowsError(try oracle.sweep(from: SIMD3(.nan,0,0), to: SIMD3(1,0,0), radius: 0.2, height: 1.6))
     }
 }
+

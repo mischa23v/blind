@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: baseline twelve schedules and separate width28 addendum remain preregistered exact bytes
+ok 1 - baseline twelve schedules and separate width28 addendum remain preregistered exact bytes
+  ---
+  duration_ms: 1.954466
+  type: 'test'
+  ...
+# Subtest: classified runtime cannot silently mix missing labels with legacy slope mode
+ok 2 - classified runtime cannot silently mix missing labels with legacy slope mode
+  ---
+  duration_ms: 0.255714
+  type: 'test'
+  ...
+# Subtest: source-classified Recast uses obstacle-priority raster tags before existing filters
+ok 3 - source-classified Recast uses obstacle-priority raster tags before existing filters
+  ---
+  duration_ms: 0.253841
+  type: 'test'
+  ...
+# Subtest: native adapter uses actual mesh export and identity-mapped floor-only triangles without model replacement
+ok 4 - native adapter uses actual mesh export and identity-mapped floor-only triangles without model replacement
+  ---
+  duration_ms: 0.264788
+  type: 'test'
+  ...
+# Subtest: independent test-only full-cylinder oracle has zero hidden inflation and mandatory controls
+ok 5 - independent test-only full-cylinder oracle has zero hidden inflation and mandatory controls
+  ---
+  duration_ms: 0.529986
+  type: 'test'
+  ...
+# Subtest: bench preserves all outcomes and never feeds oracle feedback into route selection
+ok 6 - bench preserves all outcomes and never feeds oracle feedback into route selection
+  ---
+  duration_ms: 0.276905
+  type: 'test'
+  ...
+# Subtest: separate supplied-posture journeys keep baseline eighteen intact and use existing code guidance only
+ok 7 - separate supplied-posture journeys keep baseline eighteen intact and use existing code guidance only
+  ---
+  duration_ms: 0.972751
+  type: 'test'
+  ...
+# Subtest: export witness preserves original boundary and concavity without requiring collinear tessellation vertices
+ok 8 - export witness preserves original boundary and concavity without requiring collinear tessellation vertices
+  ---
+  duration_ms: 0.997258
+  type: 'test'
+  ...
+# Subtest: baseline collision scoring retains an exact continuous endpoint chain without claiming floor support
+ok 9 - baseline collision scoring retains an exact continuous endpoint chain without claiming floor support
+  ---
+  duration_ms: 0.339009
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 127.616534

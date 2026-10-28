@@ -2,6 +2,7 @@
 """Bounded synthetic exporter/CLI fixtures; NOT Apple path/collision execution."""
 import contextlib
 import copy
+import hashlib
 import importlib.util
 import io
 import json
@@ -94,6 +95,173 @@ def export_fixture(directory, name, payload, suggested=None, filename='report.js
     (directory/'manifest.json').write_text(json.dumps([{'testName':'synthetic fixture','attachments':[
         {'suggestedHumanReadableName':suggested or name,'exportedFileName':filename}]}]))
     if filename == 'report.json': (directory/filename).write_text(json.dumps(payload))
+
+
+def metadata_inventory():
+    result = {'schema':'blind.saved-room-route-mesh-metadata-inventory.v1','physicalAuthority':False,'fixtures':[]}
+    for room, digest in m.FIXTURES.items():
+        uuid = sorted(UUIDS[room])[0]
+        name_hash = hashlib.sha256(b'Wall0').hexdigest()
+        root = {'index':0,'depth':0,'name':'Wall0','nameSHA256':name_hash,'isMesh':False,
+                'directMappingPresent':True,'inheritedMappingPresent':False,'knownFeature':True,
+                'directUUID':uuid,'resolvedUUID':uuid}
+        mesh = {'index':1,'parentIndex':0,'depth':1,'name':'Wall0','nameSHA256':name_hash,'isMesh':True,
+                'vertexCount':4,'submeshCount':1,'directMappingPresent':False,
+                'inheritedMappingPresent':True,'knownFeature':True,'inheritedUUID':uuid,'resolvedUUID':uuid}
+        result['fixtures'].append({'fixtureID':room,'sourceSHA256':digest,'metadataByteCount':128,'metadataFormat':'json','metadataRootKind':'object',
+            'metadataEntryCount':1,'metadataEntriesTruncated':False,'metadataEntries':[
+                {'key':'Wall0','keySHA256':name_hash,'valueKind':'string','uuidValue':True,'knownFeature':True,'uuid':uuid}],
+            'nodeCount':2,'nodesTruncated':False,'nodes':[root,mesh],
+            'meshCount':1,'unmatchedMeshCount':0,'unknownFeatureMeshCount':0})
+    return result
+
+
+def collision_matrix():
+    result = {'schemaVersion':1,'evidenceKind':'synthetic-collision-backend-matrix','physicalAuthority':False,
+              'fullFootprintSupportVerified':False,'cells':[]}
+    for configuration in ('restricted-no-renderer','default-no-renderer','restricted-offscreen-renderer','default-offscreen-renderer'):
+        queries = []
+        for name in m.CONTROL_NAMES:
+            empty = {'obstacleSurfaceIDs':[],'floorSurfaceIDs':[],'furnitureBoundIDs':[]}
+            query = {'name':name,'errorCode':'none','initial':copy.deepcopy(empty),'swept':copy.deepcopy(empty),
+                     'terminal':copy.deepcopy(empty),'passed':False}
+            wall, solid, overhead, floor = ['00000000-0000-0000-0000-00000000000'+str(i) for i in range(1,5)]
+            if name.startswith('thinWall'): query['swept']['obstacleSurfaceIDs'] = [wall]
+            elif name == 'wallInitialOverlap': query['initial']['obstacleSurfaceIDs'] = [wall]
+            elif name == 'wallTerminalOverlap': query['terminal']['obstacleSurfaceIDs'] = [wall]
+            elif name == 'containedSolid':
+                for phase in ('initial','terminal'): query[phase]['furnitureBoundIDs'] = [solid]
+            elif name.startswith('overheadTall'): query['swept']['obstacleSurfaceIDs'] = [overhead]
+            elif name == 'floor':
+                for phase in ('initial','terminal'): query[phase]['floorSurfaceIDs'] = [floor]
+            query['passed'] = True
+            queries.append(query)
+        result['cells'].append({'configurationID':configuration,
+            'sourceCollisionMask':'probe-only' if configuration.startswith('restricted') else 'platform-default-all',
+            'rendererMode':'none' if configuration.endswith('no-renderer') else 'retained-offscreen-update',
+            'physicsSpeed':1,'timeStepSeconds':1/60,'gravity':[0,0,0],
+            'sourceCategoryMask':1,'probeCategoryMask':2,'queryCollisionMask':1,
+            'backendReady':True,'failedControls':[],'queries':queries})
+    return result
+
+
+def diagnostic_report(label):
+    return metadata_inventory() if label == 'metadata-inventory' else collision_matrix()
+
+
+class DiagnosticValidationTests(unittest.TestCase):
+    def test_fixed_public_inventory_and_synthetic_matrix(self):
+        self.assertEqual(m.validate_metadata_inventory(metadata_inventory(),UUIDS),metadata_inventory())
+        self.assertEqual(m.validate_collision_matrix(collision_matrix()),collision_matrix())
+    def test_metadata_failures_preserved_not_promoted(self):
+        for error in m.METADATA_FAILURES:
+            data=metadata_inventory();data['fixtures'][0].update(adapterFailure=error,inventoryFailure=error)
+            self.assertEqual(m.validate_metadata_inventory(data,UUIDS),data)
+        for error in m.METADATA_FAILURES-{'unclassifiedError'}:
+            data=report('original-baseline');data['outcomes'][0].update(outcome='unsupported-geometry',error=error)
+            data['errors']=['Hallway2: '+error]
+            self.assertEqual(m.validate_report(data,'original-baseline',DOCS,UUIDS),data)
+    def test_content_free_metadata_format_enums_and_json_coherence(self):
+        for format in ('binaryPlist','xmlPlist','unknown','unread'):
+            data=metadata_inventory();fixture=data['fixtures'][0]
+            fixture.update(metadataFormat=format,metadataRootKind='unread' if format=='unread' else 'invalidJSON',
+                           metadataByteCount=0 if format=='unread' else 128,metadataEntryCount=0,
+                           metadataEntries=[],inventoryFailure='metadataDecodeFailed')
+            self.assertEqual(m.validate_metadata_inventory(data,UUIDS),data)
+        for format in ('json','binaryPlist','/Users/private',True):
+            data=metadata_inventory();data['fixtures'][0]['metadataFormat']=format
+            if format=='json':data['fixtures'][0]['metadataRootKind']='invalidJSON'
+            with self.subTest(format=format),self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+    def test_metadata_schema_source_and_private_payload_fail_closed(self):
+        for key,value in [('fixtureID','PrivateBedroom'),('sourceSHA256','0'*64),('adapterFailure','/Users/private/photo.jpg'),
+                          ('rawMetadata',{'family':'secret'}),('metadataRootKind','private'),('metadataByteCount',m.LIMIT+1),
+                          ('nodeCount',4097),('metadataEntryCount',4097),('metadataEntriesTruncated',1),
+                          ('nodesTruncated',True),('meshCount',2),('unknownFeatureMeshCount',2)]:
+            data=metadata_inventory();data['fixtures'][0][key]=value
+            with self.subTest(key=key),self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+        data=metadata_inventory();data['physicalAuthority']=True
+        with self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+        data=metadata_inventory();data['fixtures'][1]=copy.deepcopy(data['fixtures'][0])
+        with self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+    def test_metadata_names_are_bounded_paths_redacted_hashes_checked(self):
+        for name in ('/Users/private/family','file://private','x\\private','private\ntext','x'*129,''):
+            data=metadata_inventory();node=data['fixtures'][0]['nodes'][0];node['name']=name
+            node['nameSHA256']=hashlib.sha256(name.encode()).hexdigest()
+            with self.subTest(name=name),self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+        data=metadata_inventory();node=data['fixtures'][0]['nodes'][0];node['name']='<redacted>'
+        self.assertEqual(m.validate_metadata_inventory(data,UUIDS),data)
+        node['nameSHA256']='bad'
+        with self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+        data=metadata_inventory();data['fixtures'][0]['metadataEntries'][0]['keySHA256']='a'*64
+        with self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+    def test_metadata_uuid_parent_and_geometry_count_consistency(self):
+        for key,value in [('resolvedUUID','00000000-0000-0000-0000-000000000000'),('parentIndex',1),('depth',64),
+                          ('index',True),('knownFeature',False),('inheritedMappingPresent',False),('vertexCount',200001),
+                          ('submeshCount',True),('coordinates',[0,0,0])]:
+            data=metadata_inventory();data['fixtures'][0]['nodes'][1][key]=value
+            with self.subTest(key=key),self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+        for key,value in [('uuid','00000000-0000-0000-0000-000000000000'),('uuidValue',False),
+                          ('knownFeature',False),('valueKind','number')]:
+            data=metadata_inventory();data['fixtures'][0]['metadataEntries'][0][key]=value
+            with self.subTest(key=key),self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+        data=metadata_inventory();node=data['fixtures'][0]['nodes'][1]
+        node.update(directMappingPresent=True,knownFeature=False);del node['resolvedUUID']
+        data['fixtures'][0]['unknownFeatureMeshCount']=1
+        self.assertEqual(m.validate_metadata_inventory(data,UUIDS),data) # unknown direct wins; no guessed feature
+    def test_metadata_exact_sample_limits_and_mesh_required_fields(self):
+        data=metadata_inventory();fixture=data['fixtures'][0]
+        fixture.update(nodeCount=4096,nodesTruncated=True,meshCount=127,
+                       metadataEntryCount=4096,metadataEntriesTruncated=True)
+        entry=fixture['metadataEntries'][0]
+        fixture['metadataEntries']=[dict(entry,key='Wall'+str(i),keySHA256=hashlib.sha256(('Wall'+str(i)).encode()).hexdigest()) for i in range(64)]
+        mesh=copy.deepcopy(fixture['nodes'][1])
+        fixture['nodes']=[fixture['nodes'][0]]+[dict(mesh,index=i) for i in range(1,128)]
+        self.assertEqual(m.validate_metadata_inventory(data,UUIDS),data)
+        fixture['nodes'].append(dict(mesh,index=128))
+        with self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+        for key in ('vertexCount','submeshCount'):
+            data=metadata_inventory();del data['fixtures'][0]['nodes'][1][key]
+            with self.assertRaises(m.EvidenceError):m.validate_metadata_inventory(data,UUIDS)
+    def test_synthetic_schema_order_configuration_and_identifiers(self):
+        for change in ('schema','cell_count','cell_order','query_order','speed','mask','renderer','gravity','time','private','unknown_id','wrong_category','duplicate'):
+            data=collision_matrix();cell=data['cells'][0];query=cell['queries'][0]
+            if change=='schema':data['schemaVersion']=True
+            elif change=='cell_count':data['cells'].pop()
+            elif change=='cell_order':data['cells'].reverse()
+            elif change=='query_order':cell['queries'].reverse()
+            elif change=='speed':cell['physicsSpeed']=False
+            elif change=='mask':cell['sourceCollisionMask']='all'
+            elif change=='renderer':cell['rendererMode']='none-but-ready'
+            elif change=='gravity':cell['gravity']=[False,0,0]
+            elif change=='time':cell['timeStepSeconds']=float('nan')
+            elif change=='private':query['privateHistory']='family'
+            elif change=='unknown_id':query['swept']['obstacleSurfaceIDs']=[sorted(UUIDS['Hallway2'])[0]]
+            elif change=='wrong_category':query['swept']['floorSurfaceIDs']=query['swept']['obstacleSurfaceIDs']
+            else:query['swept']['obstacleSurfaceIDs']*=2
+            with self.subTest(change=change),self.assertRaises(m.EvidenceError):m.validate_collision_matrix(data)
+    def test_collision_predicates_ready_and_error_coherence(self):
+        for index in range(10):
+            data=collision_matrix();query=data['cells'][0]['queries'][index]
+            query['passed']=False
+            with self.subTest(index=index),self.assertRaisesRegex(m.EvidenceError,'collision_pass_disagreement'):m.validate_collision_matrix(data)
+        data=collision_matrix();cell=data['cells'][0];query=cell['queries'][0]
+        query['swept']['obstacleSurfaceIDs']=[];query['passed']=False
+        cell.update(backendReady=False,failedControls=['thinWallForward'])
+        self.assertEqual(m.validate_collision_matrix(data),data)
+        query['errorCode']='invalidGeometry'
+        self.assertEqual(m.validate_collision_matrix(data),data)
+        query['initial']['obstacleSurfaceIDs']=['00000000-0000-0000-0000-000000000001']
+        with self.assertRaisesRegex(m.EvidenceError,'collision_error_disagreement'):m.validate_collision_matrix(data)
+        data=collision_matrix();data['cells'][0]['backendReady']=False
+        with self.assertRaisesRegex(m.EvidenceError,'collision_readiness_disagreement'):m.validate_collision_matrix(data)
+    def test_control_failure_text_accepts_only_ordered_fixed_names(self):
+        failure='backendUnavailable("backend controls failed: thinWallForward,containedSolid,floor")'
+        self.assertTrue(m.approved_failure(failure))
+        data=report('original-baseline');data['outcomes'][0].update(outcome='collision-backend-unavailable',error=failure)
+        data['errors']=['Hallway2 collision backend unavailable: '+failure]
+        self.assertEqual(m.validate_report(data,'original-baseline',DOCS,UUIDS),data)
+        for names in ('','floor,thinWallForward','floor,floor','private','floor,/Users/private','floor, floor'):
+            self.assertFalse(m.approved_failure('backendUnavailable("backend controls failed: '+names+'")'))
 
 
 class ValidationTests(unittest.TestCase):
@@ -346,4 +514,85 @@ p=pathlib.Path(args[args.index('--output-path')+1]);p.mkdir()
             self.assertTrue(all(not Path(c[c.index('--output-path')+1]).exists() for c in commands))
 
 
+class DiagnosticCollectionTests(unittest.TestCase):
+    specs=m.SPECS+m.DIAGNOSTIC_SPECS
+    def cases(self):
+        return [{'identifier':'BlindAssistTests/'+key+'()','result':'Failed'} for key,_,_ in self.specs]
+    def exporter(self,bundle,identifier,destination):
+        key,name,label=next(spec for spec in self.specs if spec[0]==m.canonical(identifier))
+        export_fixture(destination,name,diagnostic_report(label) if (key,name,label) in m.DIAGNOSTIC_SPECS else report(label))
+    def collect(self,cases=None):
+        with patch.object(m,'export_test',side_effect=self.exporter):
+            return m.collect(ROOT,Path('unused'),self.cases() if cases is None else cases,u.query)
+    def test_both_diagnostics_additive_failed_verdicts_and_source_hashes_preserved(self):
+        result=self.collect()
+        self.assertEqual(result['status'],'complete');self.assertEqual(len(result['reports']),5)
+        self.assertTrue(all(row['testResult']=='Failed' and row['status']=='collected' for row in result['reports']))
+        self.assertIn('ios/BlindAssistTests/SavedRoomRouteMeshAppleFixtureTests.swift',result['sourceSHA256'])
+        self.assertIn('ios/BlindAssistTests/SavedRoomRouteCollisionOracleTests.swift',result['sourceSHA256'])
+        self.assertLessEqual(result['rawAttachmentBytes'],m.LIMIT)
+        legacy=self.collect(self.cases()[:3]);self.assertEqual(len(legacy['reports']),3)
+        self.assertEqual(legacy['status'],'complete')
+    def test_exact_diagnostic_identifiers_only_duplicate_never_exported(self):
+        for key,_,_ in m.DIAGNOSTIC_SPECS:
+            for invalid in ('Unknown/'+key,key+'Extra()',key+'/subcase'):
+                with patch.object(m,'export_test') as tool:
+                    result=m.collect(ROOT,Path('unused'),[{'identifier':invalid,'result':'Failed'}],u.query)
+                    self.assertEqual(result['status'],'not_observed');tool.assert_not_called()
+        cases=self.cases();result=self.collect(cases+[cases[-1]])
+        self.assertEqual(result['status'],'incomplete')
+        self.assertEqual(result['reports'][-1]['status'],'duplicate_test_case')
+    def test_diagnostic_per_report_budget_and_private_errors_are_sanitized(self):
+        original=m.exported_report
+        def oversized(directory,name):
+            raw=original(directory,name)
+            return raw+b' '*m.DIAGNOSTIC_LIMIT if name==m.DIAGNOSTIC_SPECS[0][1] else raw
+        with patch.object(m,'exported_report',side_effect=oversized):result=self.collect()
+        self.assertEqual(result['reports'][3]['status'],'diagnostic_over_budget')
+        self.assertTrue(all(row['status']=='collected' for row in result['reports'][:3]))
+        def private(directory,name):
+            raw=original(directory,name)
+            if name!=m.DIAGNOSTIC_SPECS[0][1]: return raw
+            data=json.loads(raw);data['fixtures'][0]['adapterFailure']='/Users/private/family-camera.jpg'
+            return json.dumps(data).encode()
+        with patch.object(m,'exported_report',side_effect=private):result=self.collect()
+        self.assertEqual(result['reports'][3]['status'],'unapproved_error_text')
+        self.assertNotIn('family-camera',json.dumps(result))
+    def test_shared_aggregate_cap_not_increased_by_diagnostics(self):
+        original=m.exported_report
+        def padded(directory,name):
+            raw=original(directory,name)
+            size=330000 if name in {spec[1] for spec in m.SPECS} else (90000 if name==m.DIAGNOSTIC_SPECS[0][1] else len(raw))
+            return raw+b' '*max(0,size-len(raw))
+        with patch.object(m,'exported_report',side_effect=padded):result=self.collect()
+        self.assertEqual(result['reports'][3]['status'],'aggregate_over_budget')
+        self.assertLessEqual(result['rawAttachmentBytes'],m.LIMIT)
+        self.assertEqual(result['aggregateByteLimit'],m.LIMIT)
+    def test_final_artifact_budget_preserves_every_case_and_test_verdict(self):
+        result={'schema':1,'complete':True,'target_pass_verified':False,'cases':self.cases(),'routeDiagnosticEvidence':self.collect()}
+        for row in result['routeDiagnosticEvidence']['reports']:row['report']['oversized']='x'*300000
+        encoded=u.encode_evidence(result);decoded=json.loads(encoded)
+        self.assertLessEqual(len(encoded.encode()),m.LIMIT)
+        self.assertEqual(decoded['cases'],self.cases());self.assertTrue(decoded['complete'])
+        self.assertFalse(decoded['target_pass_verified'])
+        self.assertTrue(all(row['testResult']=='Failed' and row['status']=='omitted_artifact_over_budget'
+                            for row in decoded['routeDiagnosticEvidence']['reports']))
+    def test_actual_status_main_keeps_five_failed_cases_and_zero_native_pass_claim(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);out=root/'unit-case-statuses.json';log=root/'unit.log';log.write_text('')
+            cases=self.cases()
+            (root/'unit-summary.json').write_text(json.dumps({'totalTestCount':5,'passedTests':0,'failedTests':5,'skippedTests':0,'expectedFailures':0}))
+            raw=json.dumps({'testNodes':[{'nodeType':'Test Case','nodeIdentifier':case['identifier'],'result':case['result']} for case in cases]}).encode()
+            source={'actual_head':'a'*40,'tracked_source_clean':True}
+            with patch.object(sys,'argv',['exporter','unit.xcresult',str(log),str(out)]),patch.dict(os.environ,{'GITHUB_SHA':'a'*40}),\
+                 patch.object(u,'provenance',return_value=source),patch.object(u,'query',return_value=raw),\
+                 patch.object(u,'route_evidence',return_value=self.collect(cases)),contextlib.redirect_stdout(io.StringIO()):
+                code=u.main()
+            final=json.loads(out.read_text());self.assertEqual(code,0);self.assertTrue(final['complete'])
+            self.assertFalse(final['target_pass_verified']);self.assertEqual(final['cases'],cases)
+            self.assertEqual(final['counts']['Failed'],5)
+            self.assertEqual(len(final['routeDiagnosticEvidence']['reports']),5)
+
+
 if __name__=='__main__':unittest.main()
+

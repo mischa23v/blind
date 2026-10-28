@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read ONLY three authored public Apple-fixture JSON reports into existing evidence.
+"""Read ONLY authored public Apple-fixture/synthetic JSON into existing evidence.
 
 Exact per-test `export attachments --test-id` and manifest keys follow the
 existing export-practice-layout-screenshots.py / Chromium Xcode16LogParser:
@@ -37,6 +37,16 @@ SPECS = (
      'APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json', 'width28-addendum'),
     ('SavedRoomRouteJourneyAppleTests/testPredeclaredSuppliedBedChairConnectorsAroundRoomDoorWithholdingAndReturn',
      'APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json', 'journey'))
+# Optional additive witnesses: older xcresults keep the original three reports.
+# No suite-wide export or general-purpose test/attachment matching is permitted.
+DIAGNOSTIC_SPECS = (
+    ('SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleExportMetadataAndNodeInventory',
+     'APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json', 'metadata-inventory'),
+    ('SavedRoomRouteCollisionOracleTests/testBackendDiagnosticMatrixRecordsEveryControl',
+     'SavedRoomCollisionBackendMatrix-v1.json', 'collision-backend'))
+DIAGNOSTIC_LIMIT = 131072
+CONTROL_NAMES = ('thinWallForward', 'thinWallReverse', 'wallInitialOverlap', 'wallTerminalOverlap',
+                 'containedSolid', 'overheadTallForward', 'overheadTallReverse', 'overheadShort', 'clear', 'floor')
 STATUSES = {'Success': 'Passed', 'Failure': 'Failed', 'Skipped': 'Skipped', 'Expected Failure': 'Expected Failure'}
 
 
@@ -67,7 +77,7 @@ def canonical(identifier):
     stripped = identifier.removesuffix('()')
     if stripped.startswith('BlindAssistTests/'):
         stripped = stripped[len('BlindAssistTests/'):]
-    return stripped if stripped in {s[0] for s in SPECS} else None
+    return stripped if stripped in {s[0] for s in SPECS + DIAGNOSTIC_SPECS} else None
 
 
 def export_size(directory):
@@ -166,6 +176,8 @@ def sources(repo):
         uuids[room] = {item['identifier'] for kind in ('floors','walls','doors','windows','openings','objects') for item in doc[kind]}
     for name in ('ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift',
                  'ios/BlindAssistTests/SavedRoomRouteJourneyAppleTests.swift',
+                 'ios/BlindAssistTests/SavedRoomRouteMeshAppleFixtureTests.swift',
+                 'ios/BlindAssistTests/SavedRoomRouteCollisionOracleTests.swift',
                  'ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift',
                  'ios/BlindAssist/SavedRoomRouteMeshAdapter.swift',
                  'BlindCore/Sources/BlindCore/SpatialFacts.swift',
@@ -189,6 +201,10 @@ IDS = {'initialFurnitureBoundIDs','floorContactIDs','obstacleSurfaceIDs','furnit
 FAILURES = {'wrongExecutionContext','sourceMismatch','invalidSource','unsupportedGeometry','exportFailed',
             'missingMetadata','invalidMesh','sourceGeometryMismatch','budgetExceeded','invalidGeometry',
             'invalidQuery','invalidFurnitureBox','invalidInput','unavailable','stale','nativeFailure'}
+METADATA_FAILURES = {'wrongExecutionContext','sourceMismatch','invalidSource','unsupportedGeometry','exportFailed',
+                     'invalidMesh','sourceGeometryMismatch','budgetExceeded','metadataReadFailed','metadataDecodeFailed',
+                     'metadataEmpty','metadataInvalidEntries','meshNodeMissingMetadata','metadataUnknownFeature','unclassifiedError'}
+FAILURES.update(METADATA_FAILURES - {'unclassifiedError'})
 FAILURES.update('backendUnavailable("' + message + '")' for message in (
     'unassociated physics contact', 'bidirectional thin-plane continuous sweep',
     'contained-cylinder initial overlap distinct from shell', 'bidirectional height-sensitive overhead sweep',
@@ -211,6 +227,15 @@ def keys(obj, allowed, required):
     require(isinstance(obj, dict) and not set(obj) - allowed and required <= set(obj), 'unsupported_report_schema')
 
 
+def approved_failure(value):
+    if not isinstance(value, str): return False
+    if value in FAILURES: return True
+    prefix, suffix = 'backendUnavailable("backend controls failed: ', '")'
+    if not value.startswith(prefix) or not value.endswith(suffix): return False
+    names = value[len(prefix):-len(suffix)].split(',')
+    return bool(names) and names == [name for name in CONTROL_NAMES if name in names]
+
+
 def fields(obj, room, uuids):
     for key, item in obj.items():
         if key in FALSE_FIELDS:
@@ -224,7 +249,7 @@ def fields(obj, room, uuids):
         elif key in IDS:
             require(isinstance(item, list) and len(item) <= 512 and all(isinstance(v, str) and v in uuids[room] for v in item), 'unknown_fixture_identifier')
         elif key in ('error','nativeError'):
-            require(isinstance(item, str) and item in FAILURES, 'unapproved_error_text')
+            require(approved_failure(item), 'unapproved_error_text')
         elif key == 'nativeStatus':
             require(type(item) is int and 0 <= item < 2**32, 'invalid_native_status')
 
@@ -301,8 +326,13 @@ def validate_report(report, label, docs, uuids):
     errors.update(room + ' collision backend unavailable: ' + failure for room in FIXTURES for failure in FAILURES)
     if journey:
         errors.update(j + '/' + s + ' crossed withheld original support/state' for j, s in schedules)
+    def approved_error(value):
+        if not isinstance(value, str): return False
+        if value in errors: return True
+        return any(value.startswith(prefix) and approved_failure(value[len(prefix):])
+                   for room in FIXTURES for prefix in (room + ': ', room + ' collision backend unavailable: '))
     require(isinstance(report['errors'], list) and len(report['errors']) <= 32 and
-            all(isinstance(e, str) and e in errors for e in report['errors']), 'unapproved_error_text')
+            all(approved_error(e) for e in report['errors']), 'unapproved_error_text')
     rows = report['outcomes']
     require(isinstance(rows, list) and len(rows) == len(schedules), 'schedule_denominator_mismatch')
     seen = set()
@@ -394,12 +424,191 @@ def validate_report(report, label, docs, uuids):
     return report
 
 
+def bounded_integer(value, maximum):
+    return type(value) is int and 0 <= value <= maximum
+
+
+def inventory_name(value, digest):
+    require(isinstance(value, str) and (value == '<redacted>' or
+            re.fullmatch(r'[A-Za-z0-9_. -]{1,128}', value)), 'unapproved_inventory_text')
+    require(isinstance(digest, str) and re.fullmatch(r'[0-9a-f]{64}', digest), 'invalid_inventory_hash')
+    if value != '<redacted>':
+        require(hashlib.sha256(value.encode()).hexdigest() == digest, 'inventory_name_hash_mismatch')
+
+
+def validate_metadata_inventory(report, uuids):
+    """No raw metadata values/paths; only fixed fixture IDs, enums and bounded names."""
+    top = {'schema', 'physicalAuthority', 'fixtures'}
+    keys(report, top, top)
+    require(report['schema'] == 'blind.saved-room-route-mesh-metadata-inventory.v1' and
+            report['physicalAuthority'] is False, 'unsupported_report_schema')
+    fixtures = report['fixtures']
+    require(isinstance(fixtures, list) and len(fixtures) == 2, 'inventory_fixture_count_mismatch')
+    seen = set()
+    kinds = {'object', 'array', 'string', 'number', 'boolean', 'null'}
+    required = {'fixtureID','sourceSHA256','metadataByteCount','metadataFormat','metadataRootKind','metadataEntryCount',
+                'metadataEntriesTruncated','metadataEntries','nodeCount','nodesTruncated','nodes',
+                'meshCount','unmatchedMeshCount','unknownFeatureMeshCount'}
+    for fixture in fixtures:
+        keys(fixture, required | {'adapterFailure','inventoryFailure'}, required)
+        room = fixture['fixtureID']
+        require(isinstance(room, str) and room in FIXTURES and room not in seen, 'unknown_or_duplicate_fixture')
+        seen.add(room)
+        require(fixture['sourceSHA256'] == FIXTURES[room], 'source_hash_mismatch')
+        require(bounded_integer(fixture['metadataByteCount'], LIMIT), 'inventory_metadata_over_budget')
+        require(isinstance(fixture['metadataRootKind'], str) and
+                fixture['metadataRootKind'] in kinds | {'unread','invalidJSON'}, 'unsupported_metadata_kind')
+        require(isinstance(fixture['metadataFormat'], str) and fixture['metadataFormat'] in
+                {'unread','json','binaryPlist','xmlPlist','unknown'}, 'unsupported_metadata_format')
+        require((fixture['metadataFormat'] == 'json') == (fixture['metadataRootKind'] in kinds) and
+                (fixture['metadataFormat'] == 'unread') == (fixture['metadataRootKind'] == 'unread'), 'metadata_format_disagreement')
+        for field in ('adapterFailure','inventoryFailure'):
+            if field in fixture:
+                require(isinstance(fixture[field], str) and fixture[field] in METADATA_FAILURES, 'unapproved_error_text')
+        for count, rows, truncated, cap in (('metadataEntryCount','metadataEntries','metadataEntriesTruncated',64),
+                                             ('nodeCount','nodes','nodesTruncated',128)):
+            require(bounded_integer(fixture[count], 4096), 'inventory_count_over_budget')
+            require(isinstance(fixture[rows], list) and len(fixture[rows]) == min(fixture[count], cap) and
+                    type(fixture[truncated]) is bool and fixture[truncated] == (fixture[count] > cap),
+                    'inventory_count_mismatch')
+        for field in ('meshCount','unmatchedMeshCount','unknownFeatureMeshCount'):
+            require(bounded_integer(fixture[field], fixture['nodeCount']), 'inventory_mesh_count_mismatch')
+        require(fixture['unmatchedMeshCount'] + fixture['unknownFeatureMeshCount'] <= fixture['meshCount'],
+                'inventory_mesh_count_mismatch')
+        entry_keys = {'key','keySHA256','valueKind','uuidValue','knownFeature'}
+        entry_hashes = set()
+        for entry in fixture['metadataEntries']:
+            keys(entry, entry_keys | {'uuid'}, entry_keys)
+            inventory_name(entry['key'], entry['keySHA256'])
+            require(entry['keySHA256'] not in entry_hashes, 'duplicate_inventory_key')
+            entry_hashes.add(entry['keySHA256'])
+            require(isinstance(entry['valueKind'], str) and entry['valueKind'] in kinds and
+                    type(entry['uuidValue']) is bool and type(entry['knownFeature']) is bool,
+                    'unsupported_metadata_entry')
+            require(entry['knownFeature'] == ('uuid' in entry) and
+                    (not entry['uuidValue'] or entry['valueKind'] == 'string'), 'metadata_uuid_disagreement')
+            if 'uuid' in entry:
+                require(entry['uuidValue'] is True and isinstance(entry['uuid'], str) and
+                        entry['uuid'] in uuids[room], 'unknown_fixture_identifier')
+        node_keys = {'index','depth','name','nameSHA256','isMesh','directMappingPresent','inheritedMappingPresent','knownFeature'}
+        nodes = fixture['nodes']
+        for i, node in enumerate(nodes):
+            keys(node, node_keys | {'parentIndex','directUUID','inheritedUUID','resolvedUUID','vertexCount','submeshCount'}, node_keys)
+            require(type(node['index']) is int and node['index'] == i and bounded_integer(node['depth'],64), 'invalid_inventory_node')
+            inventory_name(node['name'], node['nameSHA256'])
+            for field in ('isMesh','directMappingPresent','inheritedMappingPresent','knownFeature'):
+                require(type(node[field]) is bool, 'invalid_boolean')
+            require(('vertexCount' in node) == node['isMesh'] and ('submeshCount' in node) == node['isMesh'], 'invalid_inventory_mesh')
+            if node['isMesh']:
+                require(bounded_integer(node['vertexCount'],200000) and bounded_integer(node['submeshCount'],4096), 'invalid_inventory_mesh')
+            if 'parentIndex' in node:
+                parent = node['parentIndex']
+                require(bounded_integer(parent, i - 1) and node['depth'] == nodes[parent]['depth'] + 1, 'invalid_inventory_parent')
+                ancestor = nodes[parent]
+                require(node['inheritedMappingPresent'] == (ancestor['directMappingPresent'] or ancestor['inheritedMappingPresent']) and
+                        node.get('inheritedUUID') == ancestor.get('resolvedUUID'), 'metadata_inheritance_disagreement')
+            else:
+                require(node['depth'] == 0 and node['inheritedMappingPresent'] is False and 'inheritedUUID' not in node, 'invalid_inventory_parent')
+            for field in ('directUUID','inheritedUUID','resolvedUUID'):
+                if field in node:
+                    require(isinstance(node[field], str) and node[field] in uuids[room], 'unknown_fixture_identifier')
+            require(node['knownFeature'] == ('resolvedUUID' in node) and
+                    ('directUUID' not in node or node['directMappingPresent']) and
+                    ('inheritedUUID' not in node or node['inheritedMappingPresent']), 'metadata_uuid_disagreement')
+            # Direct unknown mappings override a known inherited mapping; never
+            # silently relabel an unknown mesh as a recognized parent feature.
+            resolved = node.get('directUUID') if node['directMappingPresent'] else node.get('inheritedUUID')
+            require(node.get('resolvedUUID') == resolved, 'metadata_uuid_disagreement')
+        sampled_meshes = [node for node in nodes if node['isMesh']]
+        sampled_counts = {'meshCount':len(sampled_meshes),
+                          'unmatchedMeshCount':sum(not node['directMappingPresent'] and not node['inheritedMappingPresent'] for node in sampled_meshes),
+                          'unknownFeatureMeshCount':sum(not node['knownFeature'] and (node['directMappingPresent'] or node['inheritedMappingPresent']) for node in sampled_meshes)}
+        for field, count in sampled_counts.items():
+            require(count <= fixture[field] and (fixture['nodesTruncated'] or count == fixture[field]), 'inventory_mesh_count_mismatch')
+    return report
+
+
+def collision_control_passed(query):
+    """Literal mirror of fixed synthetic predicates, not an independent physics test."""
+    initial, swept, terminal = (query[phase] for phase in ('initial','swept','terminal'))
+    obstacle, floor, bound = ('obstacleSurfaceIDs','floorSurfaceIDs','furnitureBoundIDs')
+    union = {key: set(initial[key] + swept[key] + terminal[key]) for key in (obstacle,floor,bound)}
+    empty = lambda contacts: not any(contacts.values())
+    wall, solid, overhead, ground = ('00000000-0000-0000-0000-00000000000' + str(i) for i in range(1,5))
+    name = query['name']
+    no_floor_or_bound = not union[floor] and not union[bound]
+    if name in ('thinWallForward','thinWallReverse','overheadTallForward','overheadTallReverse'):
+        expected = wall if name.startswith('thinWall') else overhead
+        return empty(initial) and empty(terminal) and swept[obstacle] == [expected] and no_floor_or_bound
+    if name == 'wallInitialOverlap':
+        return initial[obstacle] == [wall] and empty(terminal) and union[obstacle] == {wall} and no_floor_or_bound
+    if name == 'wallTerminalOverlap':
+        return terminal[obstacle] == [wall] and empty(initial) and union[obstacle] == {wall} and no_floor_or_bound
+    if name == 'containedSolid':
+        return initial[bound] == [solid] and terminal[bound] == [solid] and union[bound] == {solid} and not union[obstacle] and not union[floor]
+    if name in ('overheadShort','clear'):
+        return empty(union)
+    return initial[floor] == [ground] and terminal[floor] == [ground] and union[floor] == {ground} and not union[obstacle] and not union[bound]
+
+
+def validate_collision_matrix(report):
+    top = {'schemaVersion','evidenceKind','physicalAuthority','fullFootprintSupportVerified','cells'}
+    keys(report, top, top)
+    require(type(report['schemaVersion']) is int and report['schemaVersion'] == 1 and
+            report['evidenceKind'] == 'synthetic-collision-backend-matrix' and
+            report['physicalAuthority'] is False and report['fullFootprintSupportVerified'] is False, 'unsupported_report_schema')
+    cells = report['cells']
+    configurations = ('restricted-no-renderer','default-no-renderer','restricted-offscreen-renderer','default-offscreen-renderer')
+    require(isinstance(cells, list) and len(cells) == 4, 'collision_matrix_count_mismatch')
+    cell_keys = {'configurationID','sourceCollisionMask','rendererMode','physicsSpeed','timeStepSeconds','gravity',
+                 'sourceCategoryMask','probeCategoryMask','queryCollisionMask','backendReady','failedControls','queries'}
+    query_keys = {'name','passed','errorCode','initial','swept','terminal'}
+    ids = ['00000000-0000-0000-0000-00000000000' + str(i) for i in range(1,5)]
+    contact_ids = {'obstacleSurfaceIDs':set(ids[:3]),'furnitureBoundIDs':{ids[1]},'floorSurfaceIDs':{ids[3]}}
+    for cell, configuration in zip(cells, configurations):
+        keys(cell, cell_keys, cell_keys)
+        require(cell['configurationID'] == configuration and
+                cell['sourceCollisionMask'] == ('probe-only' if configuration.startswith('restricted') else 'platform-default-all') and
+                cell['rendererMode'] == ('none' if configuration.endswith('no-renderer') else 'retained-offscreen-update'), 'collision_configuration_mismatch')
+        for key, value in (('physicsSpeed',1),('sourceCategoryMask',1),('probeCategoryMask',2),('queryCollisionMask',1)):
+            require(type(cell[key]) is int and cell[key] == value, 'collision_configuration_mismatch')
+        require(number(cell['timeStepSeconds']) and cell['timeStepSeconds'] == 1 / 60 and
+                vector(cell['gravity']) and cell['gravity'] == [0,0,0], 'collision_configuration_mismatch')
+        queries = cell['queries']
+        require(isinstance(queries, list) and len(queries) == len(CONTROL_NAMES), 'collision_query_count_mismatch')
+        failed = []
+        for query, name in zip(queries, CONTROL_NAMES):
+            keys(query, query_keys, query_keys)
+            require(query['name'] == name and type(query['passed']) is bool, 'collision_control_mismatch')
+            require(isinstance(query['errorCode'], str) and query['errorCode'] in
+                    {'none','invalidGeometry','invalidQuery','invalidFurnitureBox','unassociatedContact','unexpectedError'}, 'unapproved_error_text')
+            for phase in ('initial','swept','terminal'):
+                contacts = query[phase]
+                keys(contacts, set(contact_ids), set(contact_ids))
+                for category, allowed in contact_ids.items():
+                    values = contacts[category]
+                    require(isinstance(values, list) and len(values) <= len(allowed) and
+                            all(isinstance(value, str) and value in allowed for value in values) and
+                            values == sorted(set(values)), 'unknown_synthetic_identifier')
+            if query['errorCode'] != 'none':
+                require(query['passed'] is False and not any(query[phase][category]
+                        for phase in ('initial','swept','terminal') for category in contact_ids), 'collision_error_disagreement')
+            else:
+                require(query['passed'] == collision_control_passed(query), 'collision_pass_disagreement')
+            if not query['passed']: failed.append(name)
+        require(type(cell['backendReady']) is bool and cell['backendReady'] == (not failed) and
+                cell['failedControls'] == failed, 'collision_readiness_disagreement')
+    return report
+
+
 def collect(repo, bundle, cases, query):
     result = {'schema':1, 'status':'not_observed', 'physicalAuthority':False,
-              'scope':'public Apple historical fixtures; supplied-pose candidate replay only',
+              'scope':'public Apple historical fixtures and synthetic controls; no physical authority',
               'aggregateByteLimit':LIMIT, 'reports':[]}
     wanted = {}
-    for key, name, label in SPECS:
+    observed = {canonical(case['identifier']) for case in cases}
+    specs = SPECS + tuple(spec for spec in DIAGNOSTIC_SPECS if spec[0] in observed)
+    for key, name, label in specs:
         found = [c for c in cases if canonical(c['identifier']) == key]
         record = {'attachmentName':name, 'testIdentifier':key, 'status':'test_not_observed'}
         result['reports'].append(record)
@@ -415,7 +624,7 @@ def collect(repo, bundle, cases, query):
         docs, uuids, hashes = sources(repo)
         result['sourceSHA256'] = hashes
         total = 0
-        for (key, name, label), record in zip(SPECS, result['reports']):
+        for (key, name, label), record in zip(specs, result['reports']):
             if key not in wanted: continue
             try:
                 # No suite/all-test export and no --only-failures: passing and
@@ -426,7 +635,12 @@ def collect(repo, bundle, cases, query):
                     raw = exported_report(directory, name)
                 require(total + len(raw) <= LIMIT, 'aggregate_over_budget')
                 total += len(raw)
-                report = validate_report(decode(raw), label, docs, uuids)
+                if label in ('metadata-inventory','collision-backend'):
+                    require(len(raw) <= DIAGNOSTIC_LIMIT, 'diagnostic_over_budget')
+                    report = (validate_metadata_inventory(decode(raw), uuids) if label == 'metadata-inventory'
+                              else validate_collision_matrix(decode(raw)))
+                else:
+                    report = validate_report(decode(raw), label, docs, uuids)
                 record.update(status='collected', bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest(), report=report)
             except (ValueError, OSError, KeyError, TypeError, RecursionError, subprocess.SubprocessError) as error:
                 record['status'] = str(error) if isinstance(error, EvidenceError) else 'attachment_export_or_schema_error'
@@ -437,3 +651,4 @@ def collect(repo, bundle, cases, query):
         for record in result['reports']:
             if record['status'] == 'pending': record['status'] = 'not_collected'
     return result
+

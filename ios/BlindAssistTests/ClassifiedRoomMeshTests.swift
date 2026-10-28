@@ -21,11 +21,28 @@ final class ClassifiedRoomMeshTests: XCTestCase {
     }
     private func query(_ runtime: RoomMeshCandidateRuntime, start: [Float] = [-2,0,0], goal: [Float] = [2,0,0]) async throws -> Result<MeshCandidateRoute, MeshCandidateError> {
         let done = expectation(description: "native candidate result"), box = Box()
+        // Test-only boundary receipts: elapsed callback time includes native-worker
+        // queueing, build/query and callback-queue delay; it does not separate them.
+        let receipt = UUID().uuidString, submittedAt = ProcessInfo.processInfo.systemUptime
+        print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:submitted")
         runtime.request(start: start, goal: goal, body: try .init(radius: 0.225, height: 1.75)) {
-            box.put($0); done.fulfill()
+            box.put($0)
+            let elapsedMS = Int((ProcessInfo.processInfo.systemUptime - submittedAt) * 1_000)
+            print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:callback,elapsed_ms:\(elapsedMS)")
+            done.fulfill()
         }
         await fulfillment(of: [done], timeout: 10)
-        return try XCTUnwrap(box.get(), "Native callback did not complete; no passing route inferred")
+        let result = box.get()
+        let elapsedMS = Int((ProcessInfo.processInfo.systemUptime - submittedAt) * 1_000)
+        if case nil = result {
+            // A thrown XCTUnwrap bypasses the test body's normal async discard.
+            // Fence this owner now; do not wait longer or infer native completion.
+            runtime.stopAndDiscard {
+                print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:failure-discard-completed")
+            }
+            print("CLASSIFIED_QUERY_RECEIPT=id:\(receipt),stage:failure-discard-requested,elapsed_ms:\(elapsedMS)")
+        }
+        return try XCTUnwrap(result, "Native callback did not complete; no passing route inferred; receipt=\(receipt), wait_elapsed_ms=\(elapsedMS), terminal discard requested")
     }
     private func discard(_ runtime: RoomMeshCandidateRuntime) async {
         let done = expectation(description: "terminal geometry release")
@@ -99,3 +116,4 @@ final class ClassifiedRoomMeshTests: XCTestCase {
         }
     }
 }
+

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bounded xcresult case + public fixture evidence; never changes test outcomes/retries.
+"""Bounded xcresult case + public/synthetic evidence; never changes test outcomes/retries.
 
 Schema reference: Chromium's Xcode16LogParser consumes testNodes/children,
 nodeType='Test Case', nodeIdentifier and result from Apple's xcresulttool.
@@ -165,7 +165,7 @@ def provenance(repo, expected):
 
 
 def route_evidence(repo, bundle, cases):
-    """Optional additive evidence; cannot change existing case/target verdicts."""
+    """Fixed-schema public/synthetic attachments; cannot change case/target verdicts."""
     spec = importlib.util.spec_from_file_location('native_route_evidence',
         repo / 'tools/ci/native-route-diagnostic-evidence.py')
     module = importlib.util.module_from_spec(spec)
@@ -262,3 +262,4 @@ if __name__ == '__main__':
             raise SystemExit(1)
     else:
         raise SystemExit(main())
+

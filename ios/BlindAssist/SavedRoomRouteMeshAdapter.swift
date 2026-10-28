@@ -41,7 +41,12 @@ struct SavedRoomRouteMeshSnapshot: Sendable {
 enum SavedRoomRouteMeshAdapter {
     enum Failure: Error, Equatable {
         case wrongExecutionContext, sourceMismatch, invalidSource, unsupportedGeometry
-        case exportFailed, missingMetadata, invalidMesh, sourceGeometryMismatch, budgetExceeded
+        case exportFailed, invalidMesh, sourceGeometryMismatch, budgetExceeded
+        // Keep failures content-free: private room names/identifiers and file
+        // paths must never enter logs. These distinguish previously conflated
+        // missingMetadata stages without changing the accepted export format.
+        case metadataReadFailed, metadataDecodeFailed, metadataEmpty, metadataInvalidEntries
+        case meshNodeMissingMetadata, metadataUnknownFeature
     }
     static let maximumSourceBytes = 8 * 1024 * 1024
     static let maximumExportBytes = 32 * 1024 * 1024
@@ -83,17 +88,27 @@ enum SavedRoomRouteMeshAdapter {
         } catch { throw Failure.exportFailed }
         // These are acceptance bounds, not hard bounds on Apple's internal
         // exporter allocations. No textures are loaded or network URLs resolved.
-        for (url, limit) in [(meshURL, maximumExportBytes), (metadataURL, maximumMetadataBytes)] {
-            let attributes = try manager.attributesOfItem(atPath: url.path)
+        for (url, limit, readFailure) in [(meshURL, maximumExportBytes, Failure.exportFailed),
+                                         (metadataURL, maximumMetadataBytes, Failure.metadataReadFailed)] {
+            let attributes: [FileAttributeKey: Any]
+            do { attributes = try manager.attributesOfItem(atPath: url.path) }
+            catch { throw readFailure }
+            if url == metadataURL, (attributes[.size] as? NSNumber)?.int64Value == 0 {
+                throw Failure.metadataEmpty
+            }
             guard let bytes = attributes[.size] as? NSNumber, bytes.int64Value > 0,
                   bytes.int64Value <= Int64(limit) else { throw Failure.budgetExceeded }
             try manager.setAttributes([.protectionKey: FileProtectionType.complete], ofItemAtPath: url.path)
         }
+        let metadataData: Data
+        do { metadataData = try Data(contentsOf: metadataURL) }
+        catch { throw Failure.metadataReadFailed }
         let metadata: [String: UUID]
-        do { metadata = try JSONDecoder().decode([String: UUID].self, from: Data(contentsOf: metadataURL)) }
-        catch { throw Failure.missingMetadata }
-        guard !metadata.isEmpty, metadata.count <= maximumNodes,
-              metadata.keys.allSatisfy({ !$0.isEmpty && $0.utf8.count <= 512 }) else { throw Failure.missingMetadata }
+        do { metadata = try JSONDecoder().decode([String: UUID].self, from: metadataData) }
+        catch { throw Failure.metadataDecodeFailed }
+        guard !metadata.isEmpty else { throw Failure.metadataEmpty }
+        guard metadata.count <= maximumNodes,
+              metadata.keys.allSatisfy({ !$0.isEmpty && $0.utf8.count <= 512 }) else { throw Failure.metadataInvalidEntries }
 
         // Ask the platform to convert indices to triangles and positions to an
         // explicit packed format. Validate the returned buffers before reading.
@@ -116,7 +131,8 @@ enum SavedRoomRouteMeshAdapter {
             guard nodeCount <= maximumNodes else { throw Failure.budgetExceeded }
             let identity = metadata[node.name] ?? inheritedID
             if let mesh = node as? MDLMesh {
-                guard let id = identity, let feature = byID[id] else { throw Failure.missingMetadata }
+                guard let id = identity else { throw Failure.meshNodeMissingMetadata }
+                guard let feature = byID[id] else { throw Failure.metadataUnknownFeature }
                 guard mesh.vertexCount > 0, mesh.vertexCount <= maximumVertices - vertices.count / 3,
                       mesh.vertexDescriptor.attributes.count > 0, mesh.vertexDescriptor.layouts.count > 0,
                       let attribute = mesh.vertexDescriptor.attributes[0] as? MDLVertexAttribute,
@@ -258,3 +274,4 @@ enum SavedRoomRouteMeshAdapter {
         }
     }
 }
+

@@ -75,8 +75,22 @@ test('independent test-only full-cylinder oracle has zero hidden inflation and m
   assert.match(oracle,/convexSweepTest/);
   assert.match(oracle,/contactTest\(with: body/);
   assert.match(oracle,/updateCollisionPairs/);
-  for (const phrase of ['bidirectional thin-plane continuous sweep','contained-cylinder initial overlap distinct from shell','bidirectional height-sensitive overhead sweep','negative sweep control','separate floor contact']) assert.ok(oracle.includes(phrase));
-  assert.match(oracle,/if checkBackend \{ try Self\.verifyBackend\(\) \}/);
+  // Startup now records every fixed control instead of stopping at the first
+  // error string. Preserve the mandatory candidate gate, not obsolete wording.
+  for (const name of ['thinWallForward','thinWallReverse','wallInitialOverlap','wallTerminalOverlap',
+    'containedSolid','overheadTallForward','overheadTallReverse','overheadShort','clear','floor']) {
+    assert.ok(oracle.includes(name));
+  }
+  assert.match(oracle,/if checkBackend \{ try Self\.verifyBackend\(configuration: configuration\) \}/);
+  assert.match(oracle,/static let candidate = BackendConfiguration\.defaultOffscreenRenderer/);
+  assert.match(oracle,/configuration: \.candidate, checkBackend: true/);
+  assert.match(oracle,/guard witness\.backendReady else \{\s*throw Failure\.backendUnavailable/);
+  assert.match(oracle,/backendReady: failures\.isEmpty, failedControls: failures, queries: queries/);
+  assert.match(oracle,/result\.swept\.obstacleSurfaceIDs == \[controlWall\]/);
+  assert.match(oracle,/result\.swept\.obstacleSurfaceIDs == \[controlOverhead\]/);
+  assert.match(oracle,/case \.overheadShort, \.clear:\s*passed = all == empty/);
+  assert.match(oracle,/result\.initial\.furnitureBoundIDs == \[controlSolid\]/);
+  assert.match(oracle,/result\.terminal\.floorSurfaceIDs == \[controlFloor\]/);
   assert.match(oracle,/fullFootprintSupportVerified = false/);
 });
 
