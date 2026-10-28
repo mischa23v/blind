@@ -1,0 +1,51 @@
+{
+  "status": "passed",
+  "scope": "Independent saved-array/hash/count/statistic and coordinate-algebra review; no duplicate fusion or full mesh raycasting",
+  "checksPassed": 12236,
+  "floatingComparisons": 2310,
+  "maximumStatisticDifference": 8.881784197001252e-16,
+  "trainingFrames": 265,
+  "excludedFrames": 29,
+  "scheduledRays": 1335885,
+  "arrayFilesRehashed": 58,
+  "heldoutDepthFilesRehashed": 29,
+  "registrationScale": 1.0207908442387768,
+  "pooledAvailability": {
+    "TSDFOnly": 138401,
+    "neither": 2940,
+    "paired": 1187988,
+    "referenceOnly": 6556,
+    "scheduled": 1335885
+  },
+  "pooledAllPairedStatistics": {
+    "MAE": 0.18649635826950825,
+    "absoluteP50": 0.03404056819706591,
+    "absoluteP90": 0.3377180012896749,
+    "absoluteP95": 1.1382981583173042,
+    "absoluteP99": 3.1169523070139014,
+    "count": 1187988,
+    "maximumAbsolute": 6.277549303446032,
+    "meanSigned": -0.00031737363028880165,
+    "signedP05": -0.26252452758131445,
+    "signedP50": 0.00703325340450367,
+    "signedP95": 0.4041793070555649
+  },
+  "elapsedSeconds": 2.265184620000582,
+  "reviewedFileSHA256": {
+    "evaluate_common.py": "06503818a4a402a2e9ca73e622c8cef8e9eb92f124f0e32c9abd72204175c3ee",
+    "run_evaluation.py": "5dc583411c9dee91c4488bb0fe1338e85aff500586c6824778651a85b83fa7ec",
+    "summarize_common.py": "74e553a69f06ad17875c6e01532b302ae473fc93a6bd30df56fc80859ac251e1",
+    "EVALUATOR_FROZEN.json": "8e96c22a447da8406d352b8caf76c16c97a3e5b0a37a8197770829f07592ebd1",
+    "COMMON_GEOMETRY_RESULTS.json": "ed1aaf510b8c0dcfc8ba93d1a177a054299933022cc454f9122c580308075df0"
+  },
+  "limitations": [
+    "No independent full reference raycast repeated",
+    "Same-capture supplied poses are not live localization",
+    "Integer-pixel rays are deliberate and consistent with Open3D fusion; earlier half-pixel reference scores are a different protocol",
+    "Author reference registration includes scale and was not refitted here",
+    "Child evaluator did not receive expected freeze-file hash; freeze is locally mutable",
+    "Secondary sensor-depth hashes verified in this review, not listed individually in evaluator launch pins",
+    "FARO edited/completed-face mask unavailable; errors are not physical hazard labels",
+    "No navigation, clearance or safe-use percentage established"
+  ]
+}

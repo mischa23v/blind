@@ -1,0 +1,24 @@
+{
+  "allocatedStageBytes": 1923260416,
+  "cpuSeconds": 86.2,
+  "frozenSHA256": "65bc6e35e482d916d901aff0b8413b097f3e098d26c2fc346b466a26d033ae43",
+  "hardAggregateMemoryLimitEstablished": false,
+  "phases": [
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/fusion_worker.py",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/FUSION_FROZEN.json",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/fusion",
+        "65bc6e35e482d916d901aff0b8413b097f3e098d26c2fc346b466a26d033ae43"
+      ],
+      "cpuSeconds": 85.92999999999999,
+      "exitCode": 0,
+      "wallSeconds": 85.98339100699923
+    }
+  ],
+  "pinsReverified": true,
+  "sampledPeakProcessTreeRSSBytes": 720896000,
+  "status": "completed",
+  "wallSeconds": 86.25385857900073
+}

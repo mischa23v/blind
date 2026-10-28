@@ -1,0 +1,106 @@
+{
+  "physicalAuthority": false,
+  "recordedRays": 0,
+  "referenceHelperConventions": {
+    "physicalAccuracyEstablished": false,
+    "recordedFramesEvaluated": 0,
+    "runtime": {
+      "SMPBackend": "Sequential",
+      "executionMachine": {
+        "CPUQuotaNotEstablished": true,
+        "GPUUsed": false,
+        "cpuReportedModel": "AMD EPYC 9V74 80-Core Processor",
+        "iPhoneRuntimeTest": false,
+        "logicalCPUAffinityCount": 1,
+        "machine": "x86_64",
+        "memorySnapshotBytes": {
+          "MemAvailable": 9431695360,
+          "MemTotal": 10451439616
+        },
+        "release": "6.18.55",
+        "system": "Linux"
+      },
+      "threads": 1,
+      "version": "9.3.1"
+    },
+    "tests": [
+      {
+        "maxError": 0.0,
+        "name": "half_pixel_asymmetric_ray_golden"
+      },
+      {
+        "axialDepth": 2.0,
+        "cellID": 0,
+        "name": "first_surface_reverse_winding_False"
+      },
+      {
+        "axialDepth": 2.0,
+        "cellID": 0,
+        "name": "first_surface_reverse_winding_True"
+      },
+      {
+        "axialDepth": 1.9999999999999993,
+        "difference": 6.661338147750939e-16,
+        "name": "similarity_translated_rotated_ray_vs_mesh_equivalence"
+      },
+      {
+        "axialDepth": 1.0,
+        "cellID": 4,
+        "name": "unsorted_plane_order_2_4_1"
+      },
+      {
+        "name": "no_hit_retained_missing",
+        "passed": true
+      }
+    ]
+  },
+  "runtime": {
+    "SMPBackend": "Sequential",
+    "executionMachine": {
+      "CPUQuotaNotEstablished": true,
+      "GPUUsed": false,
+      "cpuReportedModel": "AMD EPYC 9V74 80-Core Processor",
+      "iPhoneRuntimeTest": false,
+      "logicalCPUAffinityCount": 1,
+      "machine": "x86_64",
+      "memorySnapshotBytes": {
+        "MemAvailable": 9431695360,
+        "MemTotal": 10451439616
+      },
+      "release": "6.18.55",
+      "system": "Linux"
+    },
+    "threads": 1,
+    "version": "9.3.1"
+  },
+  "tests": [
+    {
+      "name": "integer_asymmetric_projection_backprojection",
+      "passed": true
+    },
+    {
+      "name": "nearest_unsorted_reverse_False",
+      "passed": true
+    },
+    {
+      "name": "nearest_unsorted_reverse_True",
+      "passed": true
+    },
+    {
+      "name": "pose_inverse_axial_not_range",
+      "passed": true
+    },
+    {
+      "name": "no_hit_and_backward_ray_retained",
+      "passed": true
+    },
+    {
+      "name": "all_six_categories_and_prediction_above4_preserved",
+      "passed": true
+    },
+    {
+      "name": "edge_bins_and_missing_centre_counted",
+      "passed": true
+    }
+  ]
+}

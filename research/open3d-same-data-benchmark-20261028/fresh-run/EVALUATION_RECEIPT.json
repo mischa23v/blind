@@ -1,0 +1,30 @@
+{
+  "cpuSeconds": 204.81,
+  "hardAggregateMemoryLimitEstablished": false,
+  "phases": [
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/evaluate_common.py",
+        "tsdf"
+      ],
+      "cpuSeconds": 29.74,
+      "exitCode": 0,
+      "wallSeconds": 29.812184841999624
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/evaluate_common.py",
+        "faro"
+      ],
+      "cpuSeconds": 174.05,
+      "exitCode": 0,
+      "wallSeconds": 174.24466519700036
+    }
+  ],
+  "sampledPeakProcessTreeRSSBytes": 2132860928,
+  "status": "completed",
+  "totalAllocatedBytes": 1946767360,
+  "wallSeconds": 205.07132332199944
+}

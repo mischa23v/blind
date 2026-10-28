@@ -1,0 +1,3099 @@
+{
+  "allocatedBytes": 1883303936,
+  "cpuSeconds": 15.34,
+  "initialMemAvailable": 9523748864,
+  "peakSampledRSS": 72368128,
+  "phases": [
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--no-index",
+        "--no-deps",
+        "--no-compile",
+        "--target",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/environment/target",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/addict-2.4.0-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/blinker-1.9.0-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/comm-0.2.3-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/configargparse-1.7.1-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/dash-3.2.0-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/fastjsonschema-2.21.2-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/flask-3.1.3-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/importlib_metadata-8.7.0-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/ipywidgets-8.1.7-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/itsdangerous-2.2.0-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/jinja2-3.1.6-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/jupyter_core-5.8.1-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/jupyterlab_widgets-3.0.15-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/narwhals-2.7.0-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/nbformat-5.10.4-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/nest_asyncio-1.6.0-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/open3d_cpu-0.19.0-cp312-cp312-manylinux_2_31_x86_64.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/platformdirs-4.4.0-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/plotly-6.3.1-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/pyquaternion-0.9.9-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/requests-2.34.2-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/retrying-1.4.2-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/tqdm-4.67.1-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/urllib3-2.8.0-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/werkzeug-3.1.9-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/widgetsnbextension-4.0.14-py3-none-any.whl",
+        "/workspace/scratch/90f3f6703064/research/open3d-same-data-benchmark-20261028/fresh-run/wheels/zipp-3.23.0-py3-none-any.whl"
+      ],
+      "cpuSeconds": 3.09,
+      "exitCode": 0,
+      "wallSeconds": 3.18228712599921
+    }
+  ],
+  "selected": [
+    {
+      "bytes": 235669,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00215.png",
+      "sha256": "3fe788c0d1922ed380122c035e88a3b10293d1397aa03b16787576d2b4c3efd1"
+    },
+    {
+      "bytes": 245913,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00018.png",
+      "sha256": "71fdf0e5cb6356a0412cfdf14c7d60ca930b1938bfdae776b5912b20a72b9d36"
+    },
+    {
+      "bytes": 230354,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00226.png",
+      "sha256": "fb750d0f040069d4386e18f00caf25b82adc53ac95bff525be170f1d452e0110"
+    },
+    {
+      "bytes": 253566,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00019.png",
+      "sha256": "9e3f538c46d3dcad5f71667f67f4b0142ca5e0231fcae39f911a94b385f096cb"
+    },
+    {
+      "bytes": 215913,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00155.png",
+      "sha256": "bcaeef3a6396ae9cf29b29d2ce4e352eae42b5a974bf57828c5ed51c1654d75b"
+    },
+    {
+      "bytes": 218573,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00188.png",
+      "sha256": "f9dee0b89c54b25c70080f9a55c7a466614478896f83da1b510b111339058b12"
+    },
+    {
+      "bytes": 222818,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00137.png",
+      "sha256": "03b9401dd685ce9bf8e759aa6294d7e969fa78512651e728918f1ead42e48915"
+    },
+    {
+      "bytes": 230970,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00153.png",
+      "sha256": "011356267bde43d20571069b8f0e639c172fb01de3a50617e52352425464ad75"
+    },
+    {
+      "bytes": 223874,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00042.png",
+      "sha256": "aa0ab0cffc1dc3211be2d10020d2fdcd3278b11afeb170980e5a8a8281bfc9d2"
+    },
+    {
+      "bytes": 245463,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00056.png",
+      "sha256": "f9d66706765bed7c6f62504a4bd22f47ed4ed6240cf8e8fb141a7d896b02b8d4"
+    },
+    {
+      "bytes": 210649,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00070.png",
+      "sha256": "57865772e8fe46b26deb9765623a50b84930ab719937a9249904e472ca689e27"
+    },
+    {
+      "bytes": 216125,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00296.png",
+      "sha256": "813877387beb3e2ded8ce885be7c87cf17198a7cdcc7f88e91f5d619474e9035"
+    },
+    {
+      "bytes": 232600,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00006.png",
+      "sha256": "b26d8579e029b90c85acd20224a235e0b4421ab123f7b5a10fd632b8ad542da7"
+    },
+    {
+      "bytes": 153136,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00178.png",
+      "sha256": "765a7dcf39a79b7cdb1c91b1658ce2a35bb5df0bc18125548d68aecc15f1c7c1"
+    },
+    {
+      "bytes": 162387,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00258.png",
+      "sha256": "871f11bcef39f4db4f1d075b3130fd4f6f5b5a649087e588fccfddd98fa1df8e"
+    },
+    {
+      "bytes": 268183,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00110.png",
+      "sha256": "bc40627a57dcc890a800620aed191e5d87146342438499d3ca0017d122596b36"
+    },
+    {
+      "bytes": 247422,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00097.png",
+      "sha256": "76671760960802208d66e276d616b6d952d68aa53f5126375acd1413c0b8a217"
+    },
+    {
+      "bytes": 200817,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00240.png",
+      "sha256": "c5d0ce8662092c0a4fadee4aac3157171fa55b19f005a06fd97612df189cbd94"
+    },
+    {
+      "bytes": 206341,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00209.png",
+      "sha256": "555a41cae030103c48bf561603cacef97beb649dab9944b95cdef124ad78da6e"
+    },
+    {
+      "bytes": 199033,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00079.png",
+      "sha256": "79431958f67370bbb813acac940a21a4414441b8e70e661cd281e0a462ec64ef"
+    },
+    {
+      "bytes": 238829,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00262.png",
+      "sha256": "76cbbdbf274a26b48ca6f7fb83aa32a65dd6566f0fa49926c5f59ebff5cc4cad"
+    },
+    {
+      "bytes": 163510,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00014.png",
+      "sha256": "409fffaf1dfe0e179989f0baa01a0b4dc10269e2f1240a6ebf4c41997e2bbe71"
+    },
+    {
+      "bytes": 240098,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00123.png",
+      "sha256": "782a034b56c035721b36e68d30f564cbc4f4938101cd06a8e489d7f70119a5f8"
+    },
+    {
+      "bytes": 239445,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00134.png",
+      "sha256": "ac766f683dc777e513a43db2b38745dec59e07520fb9de3c6971eecb0ef1b1cc"
+    },
+    {
+      "bytes": 152280,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00147.png",
+      "sha256": "0ce305b893b1104dea0a356e06ceb7ec65e26fbb18f634cefdfbe1770f190573"
+    },
+    {
+      "bytes": 231720,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00274.png",
+      "sha256": "07e76fb1525f8fcf6ac2461593f552f414e0694e277efc9f50e846f019ab51cb"
+    },
+    {
+      "bytes": 231229,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00287.png",
+      "sha256": "c940fc275a46e3ad2d589e76cb8657a09eff87a69975d099242fbc8938c1621c"
+    },
+    {
+      "bytes": 273681,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00093.png",
+      "sha256": "3ebd1f9a6e990cb70f7b53ebcf4224a68742ecfe718d9f3f2b3f9168a72cd11d"
+    },
+    {
+      "bytes": 191671,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00304.png",
+      "sha256": "64b2b371ae35320bffd7ea09992cc68a864406504f4f5f8ae1ea88f0391077a4"
+    },
+    {
+      "bytes": 254934,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00010.png",
+      "sha256": "9df581187ccbf522e0cc1b4bcb91b3a651a05fa7977487176e76ea1f8b75d880"
+    },
+    {
+      "bytes": 243524,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00007.png",
+      "sha256": "a4b0afd66ac042761d63ddf8f06b9f46d1f79820e25e36b41bd6ebbca3f0f0fd"
+    },
+    {
+      "bytes": 148820,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00160.png",
+      "sha256": "5fc4ea839d1a7886a35e2683b5ba4b45665e2360309a6aa8d852789fdba898c3"
+    },
+    {
+      "bytes": 250352,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00087.png",
+      "sha256": "0d274adcf275d0011b8f335445059d57c9b5a892d0f3067899ee258721d6509f"
+    },
+    {
+      "bytes": 252614,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00124.png",
+      "sha256": "5514f005047fc8e24f662bc6f275ca55a541028ed881217f091ecfae43df0e79"
+    },
+    {
+      "bytes": 211379,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00175.png",
+      "sha256": "1f3aaaed307a74cfb704467b13923295f46c327c63eb4fa2c201ae6ae03101ef"
+    },
+    {
+      "bytes": 268534,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00140.png",
+      "sha256": "bf0ad521f1a2009fb915da10b2313444a121c48f8fc5fa4eb35a5a4d3081afbd"
+    },
+    {
+      "bytes": 193285,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00026.png",
+      "sha256": "41d011c1a46e97320926bda03f9d408cb09b96c8e4ec259c88de2e35644c1a87"
+    },
+    {
+      "bytes": 224821,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00058.png",
+      "sha256": "4903e213acb6a669344127668a17a98450ba6d0e728b5f7c1d07fa369f8a36cd"
+    },
+    {
+      "bytes": 221436,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00041.png",
+      "sha256": "686f6df138de34120ceb8f980a2279ce2c3e3b6a6cb71ebf551c0f6dc2789230"
+    },
+    {
+      "bytes": 216204,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00299.png",
+      "sha256": "091c2ec2f4567e8996169ea77cfea74df631b9616a0dfa16a28a1bd365838d08"
+    },
+    {
+      "bytes": 280130,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00139.png",
+      "sha256": "48fb65a64094796955d0a48cbe5a5749b3237fe8ba3ebb31bb66d2311762fdb8"
+    },
+    {
+      "bytes": 265627,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00291.png",
+      "sha256": "222cdc94425276457563ed23d928393d589fadc3e745541989aa3be668ba91ed"
+    },
+    {
+      "bytes": 244712,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00184.png",
+      "sha256": "56765411fcdd067ba0cae5c1bb8599b7fff3832b2c31ac99b893f02b8ad94d97"
+    },
+    {
+      "bytes": 221547,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00064.png",
+      "sha256": "c28077dc993b5a3cb2641370c3789541d933bd8399084efb315169ac385fa58a"
+    },
+    {
+      "bytes": 242655,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00089.png",
+      "sha256": "caa4fd4db0d262d8d1414896924e84dee4f874942e84fc54f221b489fba8968d"
+    },
+    {
+      "bytes": 223944,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00063.png",
+      "sha256": "361a99be0fe022406f36d90b76539cf8c5dc6c030561e8ece47aaad0c44dc482"
+    },
+    {
+      "bytes": 248524,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00218.png",
+      "sha256": "42cd3254cf202f3ae835437fc497f5475951ed7ec8f85c1772f5a18f492906aa"
+    },
+    {
+      "bytes": 248400,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00168.png",
+      "sha256": "64e787b5b928da5a4f806568296a8234948a03f15ab119884eefe0c5fc5479c9"
+    },
+    {
+      "bytes": 228279,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00286.png",
+      "sha256": "8df8945a73981834e98b6a90f938b9f76d07919b03e8cba9205db7a8713719b5"
+    },
+    {
+      "bytes": 207336,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00260.png",
+      "sha256": "1fa8e0e6613dbf3f1d45590e0c8e945bc9d58d9dff1427435e4db572b773e730"
+    },
+    {
+      "bytes": 235740,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00216.png",
+      "sha256": "6f6348349310ef450ad2625c15bd3e8607ac77c97231b3bfbb104f1abc94b1ae"
+    },
+    {
+      "bytes": 212332,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00241.png",
+      "sha256": "06da533cb9d5974a5f47bd51f82d6a1036c284d4296f139df825ea27ffa5e714"
+    },
+    {
+      "bytes": 219641,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00099.png",
+      "sha256": "6070871d4e61537a486839c47856221cb5cfb646b8ff25ebd6ca2191081ca48e"
+    },
+    {
+      "bytes": 207986,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00015.png",
+      "sha256": "8d42d243ab02d33ae3e1dbd99ac4675fc3be3b7c466967e5eb24d0102a941634"
+    },
+    {
+      "bytes": 172273,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00068.png",
+      "sha256": "0589ac08778bf348ee38cf6242010fd19e96822ee791e402d6b4c9349de860fa"
+    },
+    {
+      "bytes": 205791,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00246.png",
+      "sha256": "ec66c1e9c5a2edd53246eea5ffba0cb29c604da37dc1c31a03e29200f5af166a"
+    },
+    {
+      "bytes": 228661,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00273.png",
+      "sha256": "c30f64cd0b38a03d1a7bf39d7097cafa9a414130ca066090e2af8f6ef262f8c0"
+    },
+    {
+      "bytes": 263195,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00111.png",
+      "sha256": "c3b4823160cdbedced0453ca069b39dcba34611b89898503a5bbff1b712853cc"
+    },
+    {
+      "bytes": 226465,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00077.png",
+      "sha256": "907ef00ba0ff1eee7d89f6c7882e9edc26800cec1162e41dddde5874dd660598"
+    },
+    {
+      "bytes": 251746,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00090.png",
+      "sha256": "54d2da1541ac8d3363e8c6500f6a32d989bfd874cfec617b12065814dc9a6d22"
+    },
+    {
+      "bytes": 247113,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00045.png",
+      "sha256": "1c490c9b21f2cfb63631918cb7f61865820a4ae64d4a7ec812d6cc9487f28a73"
+    },
+    {
+      "bytes": 233744,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00212.png",
+      "sha256": "c809f6272913818f139713d66f8e74cb49cbf0da826b070af70f9ecc9ae9b366"
+    },
+    {
+      "bytes": 214195,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00001.png",
+      "sha256": "13c6f1d0dbf8ba4779db8457eb2285e8766503f2e473a68153e1cd62c4e1052e"
+    },
+    {
+      "bytes": 242132,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00217.png",
+      "sha256": "8448bc2ff5ebbf7e17d6f2ce6d2284c15ba644d56116fbe6e0c96d7c769ae9f5"
+    },
+    {
+      "bytes": 199165,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00239.png",
+      "sha256": "24aff762eb658d1f4985496195d18642f9f5671c048b5e2f95afca6a26b6a280"
+    },
+    {
+      "bytes": 155051,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00170.png",
+      "sha256": "e7828c1a14b28eb3c227fcb09389bed30e3e804f2511f9d85e7b16dddac982c5"
+    },
+    {
+      "bytes": 185484,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00247.png",
+      "sha256": "4fc91a81731dfa729c671e40c5632716eec85dc0e6b66a45047c9cfd0ad98610"
+    },
+    {
+      "bytes": 216546,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00081.png",
+      "sha256": "5fa55f85ec0774c9f5fe1031fbe75e26ace5e66e6f656ff2e95e1541c2e9648e"
+    },
+    {
+      "bytes": 216826,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00005.png",
+      "sha256": "9c9c3156df6633d813d487352ce6c391fd185f4a80d3facfd4a54a49d7a50081"
+    },
+    {
+      "bytes": 173337,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00190.png",
+      "sha256": "28352460b5d45f177a5fc3b6c0bc29dae35c98231932a59b9ae3a96d0c6140b2"
+    },
+    {
+      "bytes": 210724,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00269.png",
+      "sha256": "703fd4a89937dd9e6a9d76d525e83f6a824299503624f16ad502340658c5f31a"
+    },
+    {
+      "bytes": 204723,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00237.png",
+      "sha256": "a70bdea9d2f36fd6b92a1a5604a8335362017fe51419a945798e2f5a501a00b9"
+    },
+    {
+      "bytes": 243561,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00044.png",
+      "sha256": "913a7a6523962a26bb3a8ceb880b6989ac53e782090364bdfaff9279279927b7"
+    },
+    {
+      "bytes": 229426,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00135.png",
+      "sha256": "eafc6cfd768163071b31d813c06c134c1c32deb5aa36e41cd5574a60d04a6492"
+    },
+    {
+      "bytes": 233015,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00252.png",
+      "sha256": "434f7ee0d003d61d54a48a168655fed9d8bcf5e2a1f40b666d12b3751532cc37"
+    },
+    {
+      "bytes": 191605,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00023.png",
+      "sha256": "23936d97cab730e226edbd3534f710cf0e677c7e92a47a1e563c69f66ffdac33"
+    },
+    {
+      "bytes": 239523,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00278.png",
+      "sha256": "ddfad4ca084464f4eb4b40e29ef6d00f722b49698da2de665af434ca6a64261b"
+    },
+    {
+      "bytes": 211961,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00113.png",
+      "sha256": "2305d16708cafe63df7784409357f3987ed162419e28b01aae1ab9542fb80255"
+    },
+    {
+      "bytes": 177778,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00189.png",
+      "sha256": "461d7f5db6c78a4b415df919c642c0a992ec3df046ed19ba6805cbef68101743"
+    },
+    {
+      "bytes": 234617,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00309.png",
+      "sha256": "57143663dce87fed5b2d90c6310e9c565a7ec6fac5853fb8caaa9aa6c70642bd"
+    },
+    {
+      "bytes": 249572,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00096.png",
+      "sha256": "555460fbcc8911a333d93c8264aeeb4b789bc1fcfc62f2d6430c2f59b46a309c"
+    },
+    {
+      "bytes": 220497,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00303.png",
+      "sha256": "0789e0e9b3046b584cc0aaabcaebc16563f6a9e6e7c39449969a622259e5e03e"
+    },
+    {
+      "bytes": 242422,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00119.png",
+      "sha256": "f31aa6d4e99d28af06ee15d57dcff6044b0cbd15389cb90ed7eb7d5fe16e7c60"
+    },
+    {
+      "bytes": 260059,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00128.png",
+      "sha256": "bb000a88cf1c7b697f06044010e9e1f44300fa9f2c4b762fdfb923a00ed3c70b"
+    },
+    {
+      "bytes": 230548,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00152.png",
+      "sha256": "a2f71e4d9d3c54b546e30d88f72b85c81e26a81880dbee3407fbec4390b38fd2"
+    },
+    {
+      "bytes": 248524,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00034.png",
+      "sha256": "b9c172f6001bbef02ce98b60cf32f101e9195e08a6e33593d064841006e7e21b"
+    },
+    {
+      "bytes": 263480,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00141.png",
+      "sha256": "a3d5987ee446eaa6ee682ad723c2850a601a686ded93617a03b8f4156fae0b73"
+    },
+    {
+      "bytes": 216295,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00118.png",
+      "sha256": "98dda0036f0542dd92b813350aa254d75a53579db23f0b304b62d284c51d8783"
+    },
+    {
+      "bytes": 239019,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00088.png",
+      "sha256": "f31cc4b1c752df2879c7ac55f292c09e7f8028476ed7190b462f676625a13f62"
+    },
+    {
+      "bytes": 213113,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00002.png",
+      "sha256": "7cf098d615329dcd5ef19de4f60e0eb6b0091979451e10a484f58011f33b6bf8"
+    },
+    {
+      "bytes": 234117,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00051.png",
+      "sha256": "f1d9ad82dc484057309421c4738967ca0150120135d54a380793ed9eca55dc4e"
+    },
+    {
+      "bytes": 226952,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00098.png",
+      "sha256": "0f1ab0c7344ef59612148679010f9e850c846749b2c37ddf3d73d6576dc73233"
+    },
+    {
+      "bytes": 220731,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00228.png",
+      "sha256": "8ba7cd49144c4871e2639c503cc2bd0c02344b628b393e8378bc2ae951448f43"
+    },
+    {
+      "bytes": 248694,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00046.png",
+      "sha256": "7a4d211ad8634aa49b325372e77495dfc61229ed21e1c23bd8063c76f89bce61"
+    },
+    {
+      "bytes": 204467,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00198.png",
+      "sha256": "400a488745d655a06cabb23cbdb25dc617bc4a7f5d1deaaabdb16b8f3123d8fd"
+    },
+    {
+      "bytes": 216939,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00271.png",
+      "sha256": "b49c891fe515e5ac54aeab3741427ccfab1083d155c0bf159bd415dc64040066"
+    },
+    {
+      "bytes": 189939,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00102.png",
+      "sha256": "48d0b76607db09674be25713acbabd34b9e6604809da4683d1cb32cac1285970"
+    },
+    {
+      "bytes": 199997,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00208.png",
+      "sha256": "b1877e6265cb8f04713d3365bf1d8db115b79bc48d66e85fdaa3f4933beffccf"
+    },
+    {
+      "bytes": 214845,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00150.png",
+      "sha256": "51676165727fe3744e44bd91082498105f14ffdd070d7ccfb63f7461a7345366"
+    },
+    {
+      "bytes": 208015,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00024.png",
+      "sha256": "dd34c289ff5c067c2a56673bdb64fe98a920ee212e3436bfec172089b5b82384"
+    },
+    {
+      "bytes": 223636,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00074.png",
+      "sha256": "6f189809380faa644807bcb2b4b787ab46da63168ab39c777193bab706191e19"
+    },
+    {
+      "bytes": 235767,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00050.png",
+      "sha256": "440a905861fbe3bf771b7b70e4410d7f5b39c13de8098ae3ba31aa05ae14e53e"
+    },
+    {
+      "bytes": 252044,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00008.png",
+      "sha256": "ce5cc9e30f625aca0c1556c9bc25e5c04abbaf2686556978ae16b2fb8c7a2951"
+    },
+    {
+      "bytes": 252845,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00181.png",
+      "sha256": "7ff2ee91fde1f4073db31938b3fe5f1deb57df09562e436aa90651f0022df3b7"
+    },
+    {
+      "bytes": 237232,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00066.png",
+      "sha256": "61281342b64d60ed405081eb80b02ee57840a6ffff5f8f0ab35eaab2eab402f9"
+    },
+    {
+      "bytes": 230887,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00242.png",
+      "sha256": "bc09201c7c9f0a5493201b9c5801636ae26ce3155e219e4c2bb24cbdf05b4bb0"
+    },
+    {
+      "bytes": 199198,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00249.png",
+      "sha256": "ec6c5e0e4c9716469e44190fb664a842f7d4488ca263f11b676e5ac61586e0ce"
+    },
+    {
+      "bytes": 247667,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00085.png",
+      "sha256": "aa7220323c9ad1bad8db33016554bbb7fcb8cff0dc19cb22d5fb59db0b47502f"
+    },
+    {
+      "bytes": 230822,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00284.png",
+      "sha256": "2df5851ef02cbf554fd4e3a5eca9c285e68cb009afa2f2635a2379915a8b2a5a"
+    },
+    {
+      "bytes": 249048,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00279.png",
+      "sha256": "68b6b990e8548e64312e9cc3a76b0a197076c3d00cfd3e136583509d8c2d8ff0"
+    },
+    {
+      "bytes": 226538,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00107.png",
+      "sha256": "bbaa421df0e76b483a2b8de80f7b9676838f8ccd648116c5b0152a22da78297a"
+    },
+    {
+      "bytes": 244348,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00075.png",
+      "sha256": "8163d1172799657ca4d5db88e541158cd9859ec3b53a3835e30ae9c6341e2c57"
+    },
+    {
+      "bytes": 198470,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00149.png",
+      "sha256": "6e06d3190a116899b77024eb780bd7eb633d206b7d1207c38dd90815b9330bbd"
+    },
+    {
+      "bytes": 252205,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00048.png",
+      "sha256": "23e05144d58a26f964413f194799952a1435092a4ac9b6469bf5dedfa5c76f10"
+    },
+    {
+      "bytes": 267202,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00095.png",
+      "sha256": "b4cfcdc7db025411f9a9d4466f31dd0642f689a48a4f985928dc5e38af36293f"
+    },
+    {
+      "bytes": 232155,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00294.png",
+      "sha256": "928d86284ed5b2f8211c8377fea0d3b71bc01ea3ef3d2b5ffd1e4dcdfdc91cdd"
+    },
+    {
+      "bytes": 216540,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00267.png",
+      "sha256": "155c6615a19d65c4d91d4042b57bdc19fe6ace9f106183bb062beb531256234a"
+    },
+    {
+      "bytes": 216564,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00234.png",
+      "sha256": "b2918475a0b22d64e4d327d9f54ea094bdc237d3516223594da5ba50f8ce8411"
+    },
+    {
+      "bytes": 253069,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00244.png",
+      "sha256": "0abfaf2f5229dfd7b9c2765f791de5ff85e7bc6bad5706357ec82afcff9f68d0"
+    },
+    {
+      "bytes": 256685,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00032.png",
+      "sha256": "32cb5e9d9a5d533e21700130092576a9c9d5555ebcff0772d72c7e93d87e50b0"
+    },
+    {
+      "bytes": 255960,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00031.png",
+      "sha256": "bbf6b34ecd977f91d33f6169b6d9a06c5255f2dde710e96e07e9604c733ec3d6"
+    },
+    {
+      "bytes": 255231,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00125.png",
+      "sha256": "fd2d36a34dded2d0031ab7914329ab7246176c1cdd48fe2d5d1c383e9195f3a6"
+    },
+    {
+      "bytes": 226870,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00120.png",
+      "sha256": "f9b1766bb68bcb8f7d3cd3b367b5541dc3deccde8ae8591c0e693fe42fa2cafb"
+    },
+    {
+      "bytes": 211723,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00235.png",
+      "sha256": "a45adb2b3f14c147343911bcb5ffb7b6be353ba4065a8227facf5c5722eae9bd"
+    },
+    {
+      "bytes": 247428,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00306.png",
+      "sha256": "fe925aac72d431d9ef2ada905b6c4bfb66cd8e8b626d048012643b560638ee59"
+    },
+    {
+      "bytes": 201093,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00004.png",
+      "sha256": "32450883fb5e00496860dbeeb465089627af6a558aaf3fb8927a06b111534e67"
+    },
+    {
+      "bytes": 280205,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00289.png",
+      "sha256": "990ece0a7d9d9c0e238912b9b8cb13b13762cbc86e390ac179bd9f2ad659d8ee"
+    },
+    {
+      "bytes": 221446,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00157.png",
+      "sha256": "8823cde6088e2d2e53efab11cb8e6d2000e8ccc537821b4722d7bd128c5c1194"
+    },
+    {
+      "bytes": 242633,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00265.png",
+      "sha256": "7f4b52cdd6f6777da877ee85619ced074f3aca26eb0eea6604c8ece63d3323d5"
+    },
+    {
+      "bytes": 240494,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00293.png",
+      "sha256": "f72a13b8f0d96a39d99146529311907294aca649d1c6f195a54f65cc89d65f7a"
+    },
+    {
+      "bytes": 204160,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00298.png",
+      "sha256": "65466f938fa97d351761988f02fef87314a8fbb1d1c66bca8167c16197aac7f9"
+    },
+    {
+      "bytes": 206469,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00114.png",
+      "sha256": "921b015fc061e4f4d205ee4e7c43a2899b6f6378d08fdcf311e46cdac726a739"
+    },
+    {
+      "bytes": 208294,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00171.png",
+      "sha256": "e74c82549af177c5ce35bfc616274caf891091d462642492997f2b89d4aa221e"
+    },
+    {
+      "bytes": 191760,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00148.png",
+      "sha256": "0d60a5b7fc9b97b064e4a804f176dc71c75d5fa112f37bfd313121aa1f61fc9e"
+    },
+    {
+      "bytes": 222356,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00036.png",
+      "sha256": "53dc318b2360e9ee8e548a5ea10daf099cfd250249e16d2b50ab324b1a98c0df"
+    },
+    {
+      "bytes": 246513,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00011.png",
+      "sha256": "deaa45692897429887601de4da5c57cb351eac3ec42f78aac6fccff38e4b90f9"
+    },
+    {
+      "bytes": 196791,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00025.png",
+      "sha256": "a871b8afc892eecd22c0ab874a862f289afd8fda7029a6eb72cb7aee73b0fe37"
+    },
+    {
+      "bytes": 200453,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00105.png",
+      "sha256": "fdb645234507626f7fe94609fb31d8e51e739675f152291ac0ac4739691b0b7d"
+    },
+    {
+      "bytes": 193741,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00176.png",
+      "sha256": "a105a79e5191adb66f5848ad192fbae37bfcb317e06185cf3e4398791a9eb4fa"
+    },
+    {
+      "bytes": 250204,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00143.png",
+      "sha256": "a45f5604b3bed4b75c2d3f3aba86e9cf65c66e6744e164eb02e76d7c9274d36a"
+    },
+    {
+      "bytes": 200349,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00207.png",
+      "sha256": "4cffb51bf44eadf162162bbe98f1d5011ca668c19f7fca76bcf7f736f4c9ec32"
+    },
+    {
+      "bytes": 252623,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00084.png",
+      "sha256": "bf0c91be15c29bc24612a5201c8398a6dc8a4d3ab82dbecc2e5b6e1ba7cd6e18"
+    },
+    {
+      "bytes": 235362,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00285.png",
+      "sha256": "6398297220c4c7a0c371e5348f97412d29d0845c7a91883089649c47b0115d06"
+    },
+    {
+      "bytes": 241514,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00164.png",
+      "sha256": "b4babc0e830ff869955291330a2e4bf28fd73edc7aaa27ca47aaf59fb5545a7d"
+    },
+    {
+      "bytes": 269153,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00094.png",
+      "sha256": "650d56d9cfe6119dd68fc7e16fce80a1bba2aa20b884fbe825484b9564bcefd1"
+    },
+    {
+      "bytes": 258844,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00301.png",
+      "sha256": "cc99c493f8d549a9a56914e246b426738275b1f7c8366ebb26708cf23e9e0d1b"
+    },
+    {
+      "bytes": 211729,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00172.png",
+      "sha256": "bc8031ccdcb7a5a88c6c160a2462e26cc1e7e9ce156035540951c6df3966882b"
+    },
+    {
+      "bytes": 238895,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00030.png",
+      "sha256": "7b02d87c3f99cfac58252254a6080c7409667cb66c4228fe5f5a31d5e8109558"
+    },
+    {
+      "bytes": 226468,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00054.png",
+      "sha256": "21d5035fd2ac6a4510376eb9c11d334bc3e24f0fbf2ea182453284508ec7dd32"
+    },
+    {
+      "bytes": 232070,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00144.png",
+      "sha256": "3f4da79e19ebe622903cd378fecc97a723671eceacfd9cba9d71fc5e0111001f"
+    },
+    {
+      "bytes": 241902,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00065.png",
+      "sha256": "3fee8e66ad562cae7cbac1599469eb27f9ad64c2d65c91f942631f41ba392c50"
+    },
+    {
+      "bytes": 203899,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00192.png",
+      "sha256": "4803ca98e04b1824919f6e82446e489256d98baed49b10a46c507f4847b7153a"
+    },
+    {
+      "bytes": 247651,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00047.png",
+      "sha256": "8c1041d94730c188dd9ecf1390c083a6ce533a4d9c19443fb04a58aa1d920c67"
+    },
+    {
+      "bytes": 218609,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00158.png",
+      "sha256": "13f84573aa2079c3cb7282776ae658a5a561eceecf57696f8ca6618a1fdf40c3"
+    },
+    {
+      "bytes": 221663,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00043.png",
+      "sha256": "912d12e9dc1c1e28750bb1eb1c7ab51999b0edb030af996c1a35ec22248f5351"
+    },
+    {
+      "bytes": 236140,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00263.png",
+      "sha256": "b515c88ab103344a8a1e1d660296a16b089700d152c8369562fa6fb9a91fa7f8"
+    },
+    {
+      "bytes": 252114,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00288.png",
+      "sha256": "5c7e89994265dba83e226a9ddfe2038e3d137e384c1a86bc952ed63e09b6d3dd"
+    },
+    {
+      "bytes": 224962,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00197.png",
+      "sha256": "b5401b3524afac74e89e8ce4c38834271188367ffb9aa7191922c182ef630573"
+    },
+    {
+      "bytes": 204415,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00106.png",
+      "sha256": "377bf33c7c8ba5ff5e797837b430c41a0e8c9bfbe3afd54cbc5b391dd94516fa"
+    },
+    {
+      "bytes": 240602,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00173.png",
+      "sha256": "e0709bfa6418989b6b3d6d74aacb66dc399b579e2dc4bf260fa918d744dc8aa8"
+    },
+    {
+      "bytes": 260403,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00166.png",
+      "sha256": "03dd3d4eadadecb23b162ac4592a640183e5dc6b520a6830ad1ee029d5fd33a9"
+    },
+    {
+      "bytes": 213021,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00270.png",
+      "sha256": "86c541d1b487071037557a4e57190870b6e96592bd29d24efe0cdba8b1c11ec3"
+    },
+    {
+      "bytes": 230159,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00222.png",
+      "sha256": "60067353cf0b8df81e404949e80ed269d1969e0cf2036832544f03e5c5c42623"
+    },
+    {
+      "bytes": 245609,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00255.png",
+      "sha256": "0057ecbdfbb9d7f3770dc8a9f7df33753b899e61fc79157facc2605d1be70901"
+    },
+    {
+      "bytes": 225233,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00213.png",
+      "sha256": "48fda4f6259f5ad8f6b90aadbbd8d525e3f47967e84ecd6e51b117e4ef0f3fdb"
+    },
+    {
+      "bytes": 230182,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00221.png",
+      "sha256": "3886150c6c177872a4df042dbf83976ca543ac14a01d31d0e8c06291027ad2de"
+    },
+    {
+      "bytes": 224702,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00151.png",
+      "sha256": "23afef911c079b722cf9492da834bd39a52ed0526645c5ec56d9225588402c91"
+    },
+    {
+      "bytes": 225126,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00053.png",
+      "sha256": "004efb93c488bf0b289d967d70c2ce767d5c8b96c14b3ede205b4d9b9611c7c3"
+    },
+    {
+      "bytes": 230151,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00035.png",
+      "sha256": "ba1ac83f00f99657b61fcb929b2486a348ed921cda9c0b8f13b814a73e1bedf4"
+    },
+    {
+      "bytes": 204586,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00179.png",
+      "sha256": "433da190bb499648d7d98381a27cb2f789491965b57597bf1c625cf335a3de67"
+    },
+    {
+      "bytes": 267855,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00205.png",
+      "sha256": "e23cef6f9374a1a91396987dc2caad5b1ef95ed112dce900a514a82f159feafa"
+    },
+    {
+      "bytes": 257576,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00167.png",
+      "sha256": "fae37a8a32c28933beaa2fc2709176b998a979bd7c9fe673fd5865a40de68092"
+    },
+    {
+      "bytes": 187455,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00078.png",
+      "sha256": "35695c28f75df172376b6ac886e216c664279c3186e0919116036be319f68735"
+    },
+    {
+      "bytes": 221833,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00062.png",
+      "sha256": "9c73acc6cecf9269ef3b28bc0f18a0b03c838df26e6d37e459b34c96a8a7e1d5"
+    },
+    {
+      "bytes": 158354,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00146.png",
+      "sha256": "81656da0e8ed6cc9d0e1dde2779b0665c367f9366b23052fb99b32cbab520c74"
+    },
+    {
+      "bytes": 240601,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00308.png",
+      "sha256": "d9e2c836508115633aa1a15e26f94a677d35a899c55385f475a2bef8d0bd4dbc"
+    },
+    {
+      "bytes": 235687,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00049.png",
+      "sha256": "74199b9121e5be5a14ffa1799b833ece6a45ec90f1557ef7f6da21d4abc006b7"
+    },
+    {
+      "bytes": 239940,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00196.png",
+      "sha256": "887271f21c04b0558c9c92ef3327b28641f48c90c180c53387ce1b2d58dcac75"
+    },
+    {
+      "bytes": 208292,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00230.png",
+      "sha256": "9a400945b61b0ae45c2da3b988064c2485fc41d0cb169edb869757066edf6669"
+    },
+    {
+      "bytes": 225520,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00272.png",
+      "sha256": "c47e9d55bf861aee11cb75fae8303405666b94b2417275dc8dd41c54ea659fb1"
+    },
+    {
+      "bytes": 218620,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00305.png",
+      "sha256": "83b6d4a6231ca988a7e1d023ee0007fb965bc81654794103216b85683ff2d853"
+    },
+    {
+      "bytes": 243215,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00203.png",
+      "sha256": "a3bb90be41499a203f57e9bf4a29c6f37ed18aa259b84a12e9fc8f132ddd9c0d"
+    },
+    {
+      "bytes": 274113,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00109.png",
+      "sha256": "0e4a60d8970df32048a8db949a08206915aed0e34dd59ea091687f0d00d5e28c"
+    },
+    {
+      "bytes": 228718,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00013.png",
+      "sha256": "63427b218efb1ebae2be34c068ef88e0df15a5fce32636d6030d82a36913d314"
+    },
+    {
+      "bytes": 239978,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00243.png",
+      "sha256": "8a73d54bd68c3f9f1942ca8c50298938a344358f54986130e52edf1df94ca832"
+    },
+    {
+      "bytes": 262777,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00182.png",
+      "sha256": "e5bd1d20fab4ff9f656fb891b98f96ac0d0345f9bb607c0a3decbd4cc7e915d5"
+    },
+    {
+      "bytes": 259091,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00108.png",
+      "sha256": "0cc6c189fbb4e67ce41b22a19bb42d7232406f11bd5e6f7b5601f2b421b28e62"
+    },
+    {
+      "bytes": 198512,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00038.png",
+      "sha256": "6c9e4544ca77613c3e06b3b34fde6b3323a1416a6e69ec44a49a57fe861ddfa0"
+    },
+    {
+      "bytes": 205214,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00022.png",
+      "sha256": "240189b82b05a1bc2fa704df73f811f791188729614a68f53c8749151455f5c7"
+    },
+    {
+      "bytes": 246830,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00122.png",
+      "sha256": "823c1bb77426b3dcdb9efd8294be5c28df56fab0bb9709153d09bc28425c4df4"
+    },
+    {
+      "bytes": 224307,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00136.png",
+      "sha256": "92d78d628285405b0ad0d5643cdcf12f653581bbef631a2afdf2f2d684a72f4c"
+    },
+    {
+      "bytes": 274701,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00092.png",
+      "sha256": "ef749b4870938b07430846d7ce2d512001fbbdfe31624ff4ac5b5d354993a36e"
+    },
+    {
+      "bytes": 245500,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00302.png",
+      "sha256": "0aa9e8ab0555aadeb491a43f2b8274bfb39273f51b942cb13d95e47757702a14"
+    },
+    {
+      "bytes": 235065,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00086.png",
+      "sha256": "0d4ffd6cd4e39ce8e4984cbba0a2423020e880ed43921fb123152cadf35408e0"
+    },
+    {
+      "bytes": 203902,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00116.png",
+      "sha256": "3f90307f1d54897f050ef451e624bd628cd84b4f888998fdcc12c9444d2b3db8"
+    },
+    {
+      "bytes": 220099,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00174.png",
+      "sha256": "9fb71c43e65018637f540dba54007445a1e83a0e0d8cd1507243519a034d1510"
+    },
+    {
+      "bytes": 227261,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00227.png",
+      "sha256": "eca4323396d640c2146edff719bdf81fad73755d9c66e6195766860f07e97eb0"
+    },
+    {
+      "bytes": 271816,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00290.png",
+      "sha256": "d76038c705d33611fbea0dc1c8a9453552e1caf9e9f4e9aebd020825ff78391c"
+    },
+    {
+      "bytes": 184833,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00103.png",
+      "sha256": "85c03a2ce15f26b6530fb8b2978a0d062dad3373d452bb4387ec1075d035667f"
+    },
+    {
+      "bytes": 248620,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00276.png",
+      "sha256": "7c5753fa4ddd4360281e665240f5564a29dab59b9e8091f73e41494aa3fbb8af"
+    },
+    {
+      "bytes": 222348,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00193.png",
+      "sha256": "24920474e4e3de2c0fcd57be518a36a99f5f8112764a73f452d3c81d09fcea93"
+    },
+    {
+      "bytes": 179765,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00162.png",
+      "sha256": "3ae371c14bdc7c08efe2ed90f99989cc5dc4374242549514f086f03d05f40098"
+    },
+    {
+      "bytes": 278831,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00129.png",
+      "sha256": "a8eb9c48702d6d6941ddd194802c16662063e89a3f3048bc1b01303eead65c47"
+    },
+    {
+      "bytes": 226515,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00224.png",
+      "sha256": "fe1b77d648b0650fe0a4ad9a83cf6400ca66d92d7d76d2f26213292541014469"
+    },
+    {
+      "bytes": 236869,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00071.png",
+      "sha256": "5e970423f77fa97e0d26cc231e909b099d6b099c409dabd91e767161c2611f40"
+    },
+    {
+      "bytes": 209132,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00250.png",
+      "sha256": "3c9f123484b2201419eee363ff1eddf9d31faa7efc8f1fc9d3de7bdeb1daeea8"
+    },
+    {
+      "bytes": 242566,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00277.png",
+      "sha256": "22a99f2d7b032aeaf61995b82b1985a78712e63bceb6433c7684fa9daab34228"
+    },
+    {
+      "bytes": 222804,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00156.png",
+      "sha256": "0e103affa8a46074d3813ac4e017a16fb3c32157473c254b700f4574178abc4a"
+    },
+    {
+      "bytes": 197689,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00069.png",
+      "sha256": "9ac3225c4429d4379e850cc0d61ab5cfbad6d00df970c8409609b3d31b285eff"
+    },
+    {
+      "bytes": 212044,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00003.png",
+      "sha256": "3f7cd87a7152ff4bf299055e19b223d1e4e5dd633dd46b046f7fe66bae30cc33"
+    },
+    {
+      "bytes": 82654,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00161.png",
+      "sha256": "6293d4be5c04d3c679de5698abe328c37fc3477ebc35655686bf5894905c07f2"
+    },
+    {
+      "bytes": 240667,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00300.png",
+      "sha256": "86ab13150b6aeed5f2ad7d51d03931345370dc1fb620309b3861e46260c1ac17"
+    },
+    {
+      "bytes": 217778,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00059.png",
+      "sha256": "b0c7a969b75b55f830f4187e12b56e6b555adf701c8603876a052f86fa2dce3a"
+    },
+    {
+      "bytes": 237828,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00225.png",
+      "sha256": "3ff0ac62f77a335d44c33f5c5d42ede607c5f34b1c3c07fdfeccec455a553c44"
+    },
+    {
+      "bytes": 218670,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00231.png",
+      "sha256": "86aeb197202137ecd95fbba29ac6cf798a2904541a036d770011bc0474421d3e"
+    },
+    {
+      "bytes": 261415,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00186.png",
+      "sha256": "cf25de61b266ec5602d888b55ac3a7a88d97559d4b7886fc9812250a69678066"
+    },
+    {
+      "bytes": 241493,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00194.png",
+      "sha256": "15f12a771539d22f297b62a6fef25ec7affa843535d6f335f050ee9c2d297b33"
+    },
+    {
+      "bytes": 227848,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00017.png",
+      "sha256": "d892d3abe246c93c1eeeea7e8c547938eaa52ea3754c126b739908ca2742ea7a"
+    },
+    {
+      "bytes": 227315,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00163.png",
+      "sha256": "d2ca8a4728fc2fe5e7bf9d1cae6071d6a10e6113ae35b9426e7a0fa4b4db46b3"
+    },
+    {
+      "bytes": 260947,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00091.png",
+      "sha256": "7abe032a5d666e1a211d5687fae86e6797ad2048e19a0ce958288913252c24fb"
+    },
+    {
+      "bytes": 254884,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00009.png",
+      "sha256": "77645bcfa59aceded5c3e18f838bbae7fd8cc19aed640e2ae1a31aaed52c42e0"
+    },
+    {
+      "bytes": 252502,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00204.png",
+      "sha256": "abd68fb573518df3999815bc86839bd10cd0e81f97e9645b30711de0e2a04eaa"
+    },
+    {
+      "bytes": 149710,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00169.png",
+      "sha256": "12be0d8eb0f90487126d3a465b96179cac0c76098ec99aa01ba09d9429d3c767"
+    },
+    {
+      "bytes": 233643,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00254.png",
+      "sha256": "1a4b5b9ed28d85340877157b4bd95f49726ecce8f60f956d99cf859a1aa1576a"
+    },
+    {
+      "bytes": 257752,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00127.png",
+      "sha256": "efe4e113f0dabd0ce75c740e34917578435e3fcde19a034b623ae3bf8e20db6e"
+    },
+    {
+      "bytes": 217037,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00210.png",
+      "sha256": "057652cde221e86f3371a7dba53d2cc79b958f142031b4093c83ee63a758bd91"
+    },
+    {
+      "bytes": 212309,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00080.png",
+      "sha256": "d50726af47f61bd36b90a56877ba8433f9b4c45ad3b02357708ee5c56d3e1983"
+    },
+    {
+      "bytes": 250579,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00220.png",
+      "sha256": "2f2c372f839f3933b6e66bcf205a0871eab342327a052e386e0688f2c98319b9"
+    },
+    {
+      "bytes": 222021,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00295.png",
+      "sha256": "c5ebf1864747a4d3ce9d3a2f7b5a65d73aa5bdc2f22fb62fe8f736776b39781c"
+    },
+    {
+      "bytes": 189075,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00027.png",
+      "sha256": "869ab2174490140903caee91c77c40f8851c36cbee142be81ec8d0dec28ddd6e"
+    },
+    {
+      "bytes": 251765,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00083.png",
+      "sha256": "04f08e72e40c13ff2c3db17394273fb7e31302cef89876ca67e5866b498dd477"
+    },
+    {
+      "bytes": 242441,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00187.png",
+      "sha256": "51dfe96bc6efb94c79c6dd0ed18d4dd6ccddd69391af1c4eadc51f49dadce098"
+    },
+    {
+      "bytes": 198504,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00115.png",
+      "sha256": "0b14e75c6ddc97b1b268ea888c9faa23034b8d85d6b818c91533d193359a9cb3"
+    },
+    {
+      "bytes": 267614,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00132.png",
+      "sha256": "7374e6fea3c86a67d99624736528d86227ba8ab9e62d81e86779940d0a4be1c0"
+    },
+    {
+      "bytes": 168470,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00191.png",
+      "sha256": "52c75e4372454dbbf85f5e97d7093505c6117e162c95af467f845fa38e89dd17"
+    },
+    {
+      "bytes": 198611,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00238.png",
+      "sha256": "4268bf405f56c632e743b0f35bc8454cf62543e578176102dead5efb00263dad"
+    },
+    {
+      "bytes": 206992,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00028.png",
+      "sha256": "d478092a70eb31dcaaaa80774d0f8d076ba496abb761b2d076643745ff1ff88d"
+    },
+    {
+      "bytes": 224382,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00236.png",
+      "sha256": "38e1d9571f45b72dbba0553f819daa78b1ffc5fd141457c6e0e35ce5eafcdf4a"
+    },
+    {
+      "bytes": 236317,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00055.png",
+      "sha256": "3f37ea828a343600d9297f70ca469eb3f4b2cce79b83a4e148caeeecfa3450d2"
+    },
+    {
+      "bytes": 240557,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00275.png",
+      "sha256": "978e70028cb4eeb9e55c0099fcb70bf108d210a24090ed2662f394e53d94a9d8"
+    },
+    {
+      "bytes": 228920,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00261.png",
+      "sha256": "220d21d154503af816929164bea3c37029976859f3a390a9b88efd48913d62dc"
+    },
+    {
+      "bytes": 260029,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00131.png",
+      "sha256": "483446646caf2e8989a3ab9f3308f23f25b5300ea638c38f94b9259faea6074f"
+    },
+    {
+      "bytes": 222550,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00016.png",
+      "sha256": "7e4d44486ca150dfffdce9c84f129a8660c0365dfa1268c2637ced50480541e6"
+    },
+    {
+      "bytes": 247863,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00307.png",
+      "sha256": "48eac86c2ebdc5f8167dd6daa964eb8810218b3328f2d2dc02617956b172ee52"
+    },
+    {
+      "bytes": 255618,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00020.png",
+      "sha256": "250c6ae174720841beff35a03a03085b4656cb08005b3716278fd95527520bd2"
+    },
+    {
+      "bytes": 253979,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00142.png",
+      "sha256": "d748c70dcee209c13397ef7b1b8ed101f9e4bced0f60483fea4207c540acde27"
+    },
+    {
+      "bytes": 219290,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00061.png",
+      "sha256": "825cedbcee4c387a68a623af8206e303c1a2ad1b2e0a156f3576e8382f1aa1f8"
+    },
+    {
+      "bytes": 222165,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00251.png",
+      "sha256": "a84fb3f35a8415faf8748395fb27cb1a86e2386c9576aba9812badb0556eda12"
+    },
+    {
+      "bytes": 224617,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00154.png",
+      "sha256": "340cf5d88e33a89d4e5e4002fcbf9b92a761cfa9c53c6bfbca51281d9c1affbb"
+    },
+    {
+      "bytes": 225091,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00266.png",
+      "sha256": "b55587c456eac435cf17e7ef612181faf1873f55e3b9bba13ed71290749c0053"
+    },
+    {
+      "bytes": 233935,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00112.png",
+      "sha256": "879400d3a1427ef4749d52001f8dfb76fbba26b55aad12a9374a0c5a3d319cfa"
+    },
+    {
+      "bytes": 225111,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00117.png",
+      "sha256": "98eca79cd697dacc1180b013b6d238c418fb4c61ca454ebd12cdb0241c46696c"
+    },
+    {
+      "bytes": 258211,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00033.png",
+      "sha256": "53ead31e6ebd22ca40eb23ad9047864a2c4fa77e7f4fab14e2f0f6c27c060d7d"
+    },
+    {
+      "bytes": 232259,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00233.png",
+      "sha256": "56dcfd225fa3baa55f5e7b977e15e837a2534abccb8ba7279ace8c74f0b7858d"
+    },
+    {
+      "bytes": 237349,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00012.png",
+      "sha256": "6edd4fce683e1943e624b0c2ec1999bc0e0fc5833ee695c9a0441c6ff874f670"
+    },
+    {
+      "bytes": 239735,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00057.png",
+      "sha256": "bd409003decdaf9a47c199f1bdaffb18aa2ae6d37a0bc18deb35dfc2c48a16b9"
+    },
+    {
+      "bytes": 245423,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00202.png",
+      "sha256": "6aca2e8b3ad100af56c90ba0eadbd414f7aad139e32213b519357bf2407505fc"
+    },
+    {
+      "bytes": 228783,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00082.png",
+      "sha256": "c56e4d1254bcc237efb572478ffbf672929f297e840bbadcfe8b637e771ec8f8"
+    },
+    {
+      "bytes": 237085,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00195.png",
+      "sha256": "66644cfe3a43116f085481c11f2b2951bf81c42e222ee61ff0260655b88d671c"
+    },
+    {
+      "bytes": 254898,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00183.png",
+      "sha256": "339c929bd69da86dc53c1608739e4787fd36ece232f4d4d199894f5c39e3ba74"
+    },
+    {
+      "bytes": 216617,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00297.png",
+      "sha256": "1668ed0b5a4298a79a7eb641dca9825dbcb40a11a559f0be8b66080a3664b278"
+    },
+    {
+      "bytes": 203281,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00257.png",
+      "sha256": "46c8e291115f50cc7d5eb528571a025d708cf99c5ab03c3b8d2b547f9257ec97"
+    },
+    {
+      "bytes": 241014,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00211.png",
+      "sha256": "2319750445d2c7972d099185d0fbe0fa78a805e00ce40d70a0f10636cbb2f378"
+    },
+    {
+      "bytes": 221874,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00029.png",
+      "sha256": "120650222b20949da80238ce808226b7b9e9879944b60680e686ffd886502ca5"
+    },
+    {
+      "bytes": 235995,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00264.png",
+      "sha256": "dba7051d1acccaa33875fb495f36a6f798a17290e043cf719aa8b88dd2602e9a"
+    },
+    {
+      "bytes": 210316,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00229.png",
+      "sha256": "5e24ef711fcb6a1b7ae63545c3712a11ff312803d1dfccd2a4a6c6867f085ba6"
+    },
+    {
+      "bytes": 209689,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00145.png",
+      "sha256": "935da1e84d88a8007939418a7571a964eb923a87f6f241f3376f8812b50fb778"
+    },
+    {
+      "bytes": 258928,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00245.png",
+      "sha256": "b9de23deda1f7deef3906db9c40a6721289b8a403d1c119e3a688d33838c6ad6"
+    },
+    {
+      "bytes": 226280,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00052.png",
+      "sha256": "49ec91dfbd67e59ad8070e022d51d51c1e2df985586accccfa1a43e8f8e936db"
+    },
+    {
+      "bytes": 220023,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00199.png",
+      "sha256": "8ad1aa56de1a588f519cf124030c3a59f5d6cc8aeafcdfcca8ce759651a88ab3"
+    },
+    {
+      "bytes": 244846,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00073.png",
+      "sha256": "c68645e7b25ccc7e5a5283ded02a498cb3639f64465fa392100b2fd398b17e2c"
+    },
+    {
+      "bytes": 234701,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00200.png",
+      "sha256": "a9bec9ee96088894f0f57f302beb598eb62fa32c38e1b4b983126a272e7b62b6"
+    },
+    {
+      "bytes": 253812,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00185.png",
+      "sha256": "383eb4db64e3ae7b918ed6db269def240d30826a40ce08df1579ddf7bca8f3ad"
+    },
+    {
+      "bytes": 229526,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00253.png",
+      "sha256": "11c4963c08a3d26c6136abbfe9af42b47f08771e6add884eeb4f569551dccf95"
+    },
+    {
+      "bytes": 173633,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00177.png",
+      "sha256": "a0e9a47c2707a365e742b69e5268fd6451669b606dd64daf2345eec17fbaaae8"
+    },
+    {
+      "bytes": 217359,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00223.png",
+      "sha256": "70be7b2bf54b605ed71eeef83ef726d07a8cdcc38984ba376fb8e2144575b3d5"
+    },
+    {
+      "bytes": 243069,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00282.png",
+      "sha256": "652755cec2466cf7a30a3702757bd8da256511bc23deafdda22fbadd1c686107"
+    },
+    {
+      "bytes": 252653,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00201.png",
+      "sha256": "8cba937471dad18b07dc0e24a6acb9a66150dae9698a3aa5910a51fa15fc4315"
+    },
+    {
+      "bytes": 182494,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00104.png",
+      "sha256": "dc1c56218396441e61c1e1ec907925636a94c80424a8379c441eb26f0f745606"
+    },
+    {
+      "bytes": 246071,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00219.png",
+      "sha256": "76a168a0503ddd43e36fae8b9adb7c2bed9f15f6009b0a1c1e9aba08fd41a8a1"
+    },
+    {
+      "bytes": 232488,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00280.png",
+      "sha256": "58af6d7c8c8b475dd91497a45bf13fbf17702c7b61c776430c9b46c02af1a340"
+    },
+    {
+      "bytes": 255048,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00165.png",
+      "sha256": "2776815a9b55a014dd412467c98c8f5432c111c332b9313685c051dce04a77d2"
+    },
+    {
+      "bytes": 202565,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00039.png",
+      "sha256": "f2b3051e4a80c0cc47892801a37f5799d2cfe7a5a089f25f1ef21b31e0cd2dea"
+    },
+    {
+      "bytes": 232202,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00076.png",
+      "sha256": "14bee187b9c5c72357cb2bbe86201ca4d769c9e92add04e25d0458b7e22f9f86"
+    },
+    {
+      "bytes": 194780,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00248.png",
+      "sha256": "29c3f7931439cd1811bff62a18ad9202887a0e5dee516267d92d87a977f4567f"
+    },
+    {
+      "bytes": 193722,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00101.png",
+      "sha256": "2daa96eb104f9e87cd433835853bd325705f16813be31c685045761a63eb6985"
+    },
+    {
+      "bytes": 208411,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00268.png",
+      "sha256": "952eea557385aa8c93fd9b0dc49745fb62dfeeed0728f09ee1027998d50abebf"
+    },
+    {
+      "bytes": 253365,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00126.png",
+      "sha256": "a868bd3c5440168dc714661949997714e57fd914ebab1045be3efdf6fbb0a9cc"
+    },
+    {
+      "bytes": 255137,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00072.png",
+      "sha256": "097c76ce3012677d277a03e4e03c52e781edc7b96b044782441eb23647905491"
+    },
+    {
+      "bytes": 247262,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00121.png",
+      "sha256": "28c4c2d388705d4d47bab06414305552e384791520c3991653b7ff3f3d9b89ca"
+    },
+    {
+      "bytes": 217187,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00040.png",
+      "sha256": "8112eb8b9db5aa05ac47f2599f2229114d74668707f921da50b3a3ba0978b6d8"
+    },
+    {
+      "bytes": 243972,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00021.png",
+      "sha256": "4aa18a6102948815c77d89de5b8584727e459e9c094c32898b9fe37ddf6a8da5"
+    },
+    {
+      "bytes": 223149,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00067.png",
+      "sha256": "c52532710fccff2d7c0ff3999e198e5edba6a33b461c7a4a7e971dfdded8e03a"
+    },
+    {
+      "bytes": 183369,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00060.png",
+      "sha256": "a997dce972d14faa2126654bc8da2be26e6cc345bda50ae966e83804a9ada985"
+    },
+    {
+      "bytes": 199165,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00100.png",
+      "sha256": "72f69ef13dea72f66895f4602109cd1ed14f8fa4809a0ae17f88f2a1f6afe6ba"
+    },
+    {
+      "bytes": 269113,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00130.png",
+      "sha256": "dc156772e6feae0ac226c758ae6c9f412af214d54722971d053274159536107c"
+    },
+    {
+      "bytes": 195373,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00259.png",
+      "sha256": "1e04120489f7cb31d196ec348f1f2f32f7ab08dc94969bf33b17f392180cb7a3"
+    },
+    {
+      "bytes": 244009,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00292.png",
+      "sha256": "6817ec2a5e32124c02d8fec56b75a7420483d5c5b901ecac3605264631a45324"
+    },
+    {
+      "bytes": 219608,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00283.png",
+      "sha256": "76d9e69a655b6cf796a7b7c376d9e6de1eb95790218032a19df89e2ae97d4962"
+    },
+    {
+      "bytes": 243757,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00281.png",
+      "sha256": "4af9c8a9b1b345c30865713f4c9a7bd44b778c3e7cfd6ac45e316eec0b8242ae"
+    },
+    {
+      "bytes": 259662,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00133.png",
+      "sha256": "6c6d4ba9e1b7716f6918191d8d965b6ef4dfdfd2f57b7b69472a25e771e708bc"
+    },
+    {
+      "bytes": 239572,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00180.png",
+      "sha256": "54a63106240e58a5a8ab4a6d9baa3524a426855059d21bc34a2ae2d424ee207f"
+    },
+    {
+      "bytes": 188206,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00159.png",
+      "sha256": "9759c6527a7ba2e5cfe4a6af3479685cc4e2bc67a07be99cf25b3b756ff0316b"
+    },
+    {
+      "bytes": 248809,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00206.png",
+      "sha256": "9a47669a15f59572d4eb7dc91fa69bca18ab288e973fcadf2877dfdc90c4ad6d"
+    },
+    {
+      "bytes": 229278,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00214.png",
+      "sha256": "521373cb657e9427632947fc01a6f2debc6ef9b354959220bff6e8c212d59f59"
+    },
+    {
+      "bytes": 244884,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00138.png",
+      "sha256": "16745258ac0e543e4f0292e00d5cbb59b2684613e7ef3aa0c88c6ee15af0abff"
+    },
+    {
+      "bytes": 210071,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00037.png",
+      "sha256": "f399a7492a4bafbbe7943abe9bbd92fb47d03fac428a39ca1b082671d93384bd"
+    },
+    {
+      "bytes": 224240,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00232.png",
+      "sha256": "91800bb0ff06fe32ebc72aea91188b639942c86630f011163ee660f6485a11f2"
+    },
+    {
+      "bytes": 235783,
+      "member": "room_datasets/koivu/iphone/long_capture/depth/frame_00256.png",
+      "sha256": "3a5018a3048fd99d5b19e62ad7a76141d5031fc75cc25c779737342731732495"
+    },
+    {
+      "bytes": 206915,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00244.jpg",
+      "sha256": "dd2f76aa2a1e8c80e26b6539b961cd39828b8f25a3a5ba517c16e2ad6eb8129a"
+    },
+    {
+      "bytes": 193139,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00088.jpg",
+      "sha256": "c61675a2aa669d1a49b9bcd2d59198c2e78656ac22dea537f774726c89236395"
+    },
+    {
+      "bytes": 186668,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00113.jpg",
+      "sha256": "2d5bd02eab29398c8f0bad4ad7d6a46e679c167cea681423fb71b731add5d914"
+    },
+    {
+      "bytes": 120998,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00027.jpg",
+      "sha256": "44a00df74debf2db6e4b0e2ac97b9b8906558bd6ac7155c6c0f3a8d28d934e3a"
+    },
+    {
+      "bytes": 139705,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00177.jpg",
+      "sha256": "797fa3c6ace1e435fd2063132df9bcefcff376ddc94aed5aa663751916537b3f"
+    },
+    {
+      "bytes": 149005,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00106.jpg",
+      "sha256": "82940ca060877afdb5ba90d2fd6ccd2d17ead797163889ae432b881f629ff236"
+    },
+    {
+      "bytes": 230760,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00134.jpg",
+      "sha256": "23dbb5064ac262354c100f7722c3691115eb4b9526d5a7668ead644a2a43c701"
+    },
+    {
+      "bytes": 173094,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00085.jpg",
+      "sha256": "ac611aa556a1f63e53d5b7f2769b91e5099ccb5644c77304e4f319115987289c"
+    },
+    {
+      "bytes": 145961,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00069.jpg",
+      "sha256": "febeae9b6f7d86d22beb8387bb461399b8e7eb47e9f55830abb707ae6352ba91"
+    },
+    {
+      "bytes": 126989,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00181.jpg",
+      "sha256": "cd28dbca478cb55d129869ecf9c99a677dd3da01c38dcde58f80c8dfb3c1f160"
+    },
+    {
+      "bytes": 182662,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00072.jpg",
+      "sha256": "277978effa3b5715dff7785665170bb07868c2c633393644d9a6afbae6e9a838"
+    },
+    {
+      "bytes": 148961,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00067.jpg",
+      "sha256": "e931ef0920e1b8f16b4be25ee7f283704fdfe0edd7cbc93095c005839452cb19"
+    },
+    {
+      "bytes": 237813,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00016.jpg",
+      "sha256": "e54faa5ca6f7b4ce1ecf9803c86aadc42b525e7c5720a670df1678796af82736"
+    },
+    {
+      "bytes": 226495,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00136.jpg",
+      "sha256": "8d9041c2caa359c8853142e1ce172b1b2a63811fac0052be0d2bccd1a843437e"
+    },
+    {
+      "bytes": 169436,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00095.jpg",
+      "sha256": "89c8072f03a19ed40f1327cd9308bd651cefde25b98d6ac22b9c490a426e2db6"
+    },
+    {
+      "bytes": 179020,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00306.jpg",
+      "sha256": "d1acdf3947b17e5b1f107d4251888fde7c3c663cce66c220cd66c3de0092453f"
+    },
+    {
+      "bytes": 148718,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00232.jpg",
+      "sha256": "6f216da64f1b722cc9cf42dc75d878ec0971817a6a94ca63bbe488fe22d99ce9"
+    },
+    {
+      "bytes": 152044,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00172.jpg",
+      "sha256": "8f2a208ea7f3919431fc2d48074cf7fd771f9665adf7e54478c9bf9c3de3a307"
+    },
+    {
+      "bytes": 199481,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00279.jpg",
+      "sha256": "27eb9a1ce35154b99ae47c4d73315687b3ec7780f8d0c85243f304f4ef192bc0"
+    },
+    {
+      "bytes": 174421,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00255.jpg",
+      "sha256": "0c305205da113323ce82c0894a6b8e4087d8846c097d941c45ca54cb1efca5a0"
+    },
+    {
+      "bytes": 150801,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00070.jpg",
+      "sha256": "a06811448a28fcfbc3b4e58d40d683cd46bb18adc481751db2c9c21b4f35ed28"
+    },
+    {
+      "bytes": 166434,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00060.jpg",
+      "sha256": "d6e5c83ad1dd1c41b43682d297deda665732b45c96234e407e5a871fad3c222b"
+    },
+    {
+      "bytes": 161404,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00254.jpg",
+      "sha256": "e2df332c92d6b1ee6af9ffb97f7fb71502b1cd180ed0a4740bc1add76580b34f"
+    },
+    {
+      "bytes": 208825,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00037.jpg",
+      "sha256": "4ebe9f3ee3d23d361f6501c12746595efa638b79d8747b808d9a9903d4eaa551"
+    },
+    {
+      "bytes": 168283,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00059.jpg",
+      "sha256": "e109b1fa01ae3861711ecdfdcd80a12f3fb127b608211bfce7e53648ffd94d60"
+    },
+    {
+      "bytes": 193815,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00004.jpg",
+      "sha256": "bdab265f65fee9f823c0850e5de507023790688237455d2a05e7ff83b2941550"
+    },
+    {
+      "bytes": 105367,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00261.jpg",
+      "sha256": "0f56593cb89e233b5bd1794d73f34695c77a0568114dce0bfabbbf5aabc262d5"
+    },
+    {
+      "bytes": 168622,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00269.jpg",
+      "sha256": "dfe761f02e040f8d56ddcb3990a9b940ba9f358b723eb636b02fe68aeac9ac08"
+    },
+    {
+      "bytes": 105609,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00262.jpg",
+      "sha256": "dacf693df3764cb2b8d0ba58801f6195c3ae64974859433c2fd8ef09d2c6d45b"
+    },
+    {
+      "bytes": 187553,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00109.jpg",
+      "sha256": "c0a4716d260970195037ff46e7288f55e72b6236787f848ad461f1e01ce2e5cb"
+    },
+    {
+      "bytes": 232033,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00049.jpg",
+      "sha256": "24b97eb2bf2e0627abbf2b4a8439fb4417d80c5c84d6001c7433d94d0e020ee1"
+    },
+    {
+      "bytes": 245193,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00018.jpg",
+      "sha256": "aeb8f799c8dfdee026d3afa83a7ddf96cc916ce9ba7fcd4e688aa845a7932280"
+    },
+    {
+      "bytes": 138745,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00257.jpg",
+      "sha256": "cfd7d2a4f5671d157608445a9614024dc7dbf6d6b209b9ae25efeb1491bb254f"
+    },
+    {
+      "bytes": 158930,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00252.jpg",
+      "sha256": "33f6c51ccb301f766c0e16db374f9c8c4aa5ac77e0c676eacd2011a6d8408350"
+    },
+    {
+      "bytes": 223372,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00294.jpg",
+      "sha256": "73695180820770de967154e429c26a85d88035ce07130d212d67dee330ef285e"
+    },
+    {
+      "bytes": 156138,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00033.jpg",
+      "sha256": "08ac664319e20b0cdf4d56b7ec231df36cec886ef18e59eabb283e8b3e31108f"
+    },
+    {
+      "bytes": 128016,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00140.jpg",
+      "sha256": "3702f87ec629a94097a2dc3defa8a6dd20b4a97755f1bf415e0e560ef05e9915"
+    },
+    {
+      "bytes": 168661,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00077.jpg",
+      "sha256": "d81c48e5ef69b201e5cc016b561ae273a84bf2f23bd5add617f5d89746e89ff8"
+    },
+    {
+      "bytes": 224684,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00001.jpg",
+      "sha256": "12afdaf4170a05a8c9e177b14ab6dc0dd35bbf552d824dcb6063713b26131fb4"
+    },
+    {
+      "bytes": 164554,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00193.jpg",
+      "sha256": "657392a5c97b2736e51496831ab127f42a5ad1ce0503769a00e2c5f53a028c6d"
+    },
+    {
+      "bytes": 211899,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00283.jpg",
+      "sha256": "2539c7ce473966c5bc3941d444b12081c520be911d50bfe090aece1ae77934cd"
+    },
+    {
+      "bytes": 227547,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00019.jpg",
+      "sha256": "79f83024641df9625ad449cd942a21c4058872865a936a146af8b03845091cb3"
+    },
+    {
+      "bytes": 209630,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00225.jpg",
+      "sha256": "04a80933027ecb161e2164917a709a947c93c7cef9d4be60bcfb274a6a48fd1e"
+    },
+    {
+      "bytes": 114824,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00259.jpg",
+      "sha256": "1c003c18fae614cb383f16353f470f372754a7db3bdc98e77110cc43581a878c"
+    },
+    {
+      "bytes": 193696,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00243.jpg",
+      "sha256": "7db1ec0334d952efd9fd5a501b4b7d8154628aa3d9a70a47d2b47792df531ed1"
+    },
+    {
+      "bytes": 205883,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00119.jpg",
+      "sha256": "4fd8cc97ec45a06327ed1b5a5c2e2e1011ed795db1aae3e93bb0c632a868231e"
+    },
+    {
+      "bytes": 202353,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00295.jpg",
+      "sha256": "be4b0e9a1ed096f457f2d0de173035a409255d69d6bcd228e0a0f972f6f09e1b"
+    },
+    {
+      "bytes": 135648,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00025.jpg",
+      "sha256": "d6c9ca8622e0469e33e06c6ff19d031cd63707d555ec44c1e15628e9471b189e"
+    },
+    {
+      "bytes": 178331,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00200.jpg",
+      "sha256": "21269688197a6851b0fb3135d87aebd996fc47e709f09ad1a7996c2337b2688f"
+    },
+    {
+      "bytes": 149758,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00023.jpg",
+      "sha256": "9c3bde232a04a35e6e995ff8c87d2086bb054ad9c3648d0431aad187638ef554"
+    },
+    {
+      "bytes": 90648,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00155.jpg",
+      "sha256": "e0057fa3839ee3f4f2fff5e8e4c88b21e84249144a85257896e4c2d4cdb223dc"
+    },
+    {
+      "bytes": 208531,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00087.jpg",
+      "sha256": "e1f6bb6e6bfb136bbcde822c1c83278ee8a1a382b0e09229827fcbb867ff4658"
+    },
+    {
+      "bytes": 144352,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00026.jpg",
+      "sha256": "80e55907b1f2a10fb03cba9d79ab9bb18f6c4d4517c6dd3cc025a943f8c48ffb"
+    },
+    {
+      "bytes": 143067,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00171.jpg",
+      "sha256": "f9d876a9afc067fe95ade9c235084f78c235b4d0c699a8c80fbb42d07b97e498"
+    },
+    {
+      "bytes": 181088,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00240.jpg",
+      "sha256": "700f710e9487b2effe78ee0c935499f92d63d0062e7c44c7cbb186ad23cc3d85"
+    },
+    {
+      "bytes": 143316,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00264.jpg",
+      "sha256": "848671cdc1b72fc87b500881c3440689374f95c7a47c26d6badee4575cd0ffe7"
+    },
+    {
+      "bytes": 229198,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00043.jpg",
+      "sha256": "b0c59621425aa27377e42766c0344a6d723254fef2a93ee757393f7614c6bd98"
+    },
+    {
+      "bytes": 233849,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00250.jpg",
+      "sha256": "eaef6e324bdacdd5d375a4d18dd3d5c8ca272533e0b6e234435fa16ead9e6d46"
+    },
+    {
+      "bytes": 174649,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00253.jpg",
+      "sha256": "84d732bb33e03f72734861af7abff2e2546325a0750cc015094946c007c52965"
+    },
+    {
+      "bytes": 197100,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00173.jpg",
+      "sha256": "e58179bc6630554824165bda2bec05338b36783c5a8a5f2eba1f8ad21f3b0cc9"
+    },
+    {
+      "bytes": 195743,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00202.jpg",
+      "sha256": "f1d99bbac05e542f24b3bf5fd817dc8f57eb53fb6ba269794cb78970e88a8899"
+    },
+    {
+      "bytes": 172671,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00270.jpg",
+      "sha256": "601347805690cfa683644926aab1d18edd3d698cc1c710786313716795950091"
+    },
+    {
+      "bytes": 228243,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00215.jpg",
+      "sha256": "9755a11b9290c2ef2296fc6e862edd79ce7de60d8b6cf69983d1d80ae068be62"
+    },
+    {
+      "bytes": 185578,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00063.jpg",
+      "sha256": "46cca15a820da23acab5d4921b40623209830d11d196f8b9b23b60ab50d3173b"
+    },
+    {
+      "bytes": 236830,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00249.jpg",
+      "sha256": "20916b4a79c243660be31d38ac2839b1378db0f1ca01ef1c7269b161914981db"
+    },
+    {
+      "bytes": 208816,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00272.jpg",
+      "sha256": "c8f58bda9b7e734b0dbe90f54debc89c05d053f456e716cf3f1a731ae96c3a1f"
+    },
+    {
+      "bytes": 111890,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00146.jpg",
+      "sha256": "514019547c15f694f77eff868879927fd40b57559b7a3c165b541c4fc2e5d528"
+    },
+    {
+      "bytes": 230421,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00035.jpg",
+      "sha256": "e9684f9af17ba9a4461214d27b246f9b67b5fed138ac2a7c397016b3d95b0f4e"
+    },
+    {
+      "bytes": 155272,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00304.jpg",
+      "sha256": "90188eb5f034dfd50e1bea4815afe4efd381965633355e3ce921b5e8d578e8a4"
+    },
+    {
+      "bytes": 166607,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00204.jpg",
+      "sha256": "403812701791afa9b89ea368f496d68fa19f94f9a8c17332ef51698f6b103d59"
+    },
+    {
+      "bytes": 214799,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00048.jpg",
+      "sha256": "c0baf245619b90cd68f8e98121cc51c65f8ec070e8fb2e294db8b63ed0ae1e96"
+    },
+    {
+      "bytes": 94819,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00163.jpg",
+      "sha256": "cb2f487f5ad5c7ad521d6d033c08a9f1e2c2759c79925dd457b93c00a9d0af8d"
+    },
+    {
+      "bytes": 267879,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00036.jpg",
+      "sha256": "62440a8119c8bb3992fffd097907ee37eb6ad526320a6ebff453c933a5b74d1d"
+    },
+    {
+      "bytes": 218627,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00245.jpg",
+      "sha256": "630059c931837fc767ec9f657ceffa33d0932a8aaaf65cb99969ceeb273f49d6"
+    },
+    {
+      "bytes": 215646,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00251.jpg",
+      "sha256": "2459f16de826406a5e83539a469485605171b2819f0622a9eae2d0e4e25a352a"
+    },
+    {
+      "bytes": 232134,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00074.jpg",
+      "sha256": "9fec903ebb440d4542c725886e73b4bfa44f76595124ce865df96db53b633c24"
+    },
+    {
+      "bytes": 139470,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00188.jpg",
+      "sha256": "ef057a241b3b349717307f21b77a74b78b14fe60fbc68bebd9edf74bb42f3550"
+    },
+    {
+      "bytes": 171079,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00138.jpg",
+      "sha256": "0ae18df2fd5042e10b555ae0772eef366ef42de27688119d3d2f6dacc089e9ae"
+    },
+    {
+      "bytes": 155354,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00209.jpg",
+      "sha256": "1c735144c52bb7c48f7b125a4a247d99f69cf137a4c2addfb109dd0dca70a9d4"
+    },
+    {
+      "bytes": 142056,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00174.jpg",
+      "sha256": "22913b88b81de491ca382f3cb73b64a40b314660fd5753acf4726b3bb3866315"
+    },
+    {
+      "bytes": 144129,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00022.jpg",
+      "sha256": "8075c53b4bbb9c615e7ca4a320a2b4d48a6f384eea3c536c45219c64b054bd9e"
+    },
+    {
+      "bytes": 159175,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00233.jpg",
+      "sha256": "716cae5f7ca11cfe77dc1a09e6d1c3b469281343607f8e484e80654b72f55e85"
+    },
+    {
+      "bytes": 160679,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00124.jpg",
+      "sha256": "c7db2f590a5eababe0b156597bbbcf170102d02ee3ac0fc303d27b63e41665d3"
+    },
+    {
+      "bytes": 171287,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00082.jpg",
+      "sha256": "a92508e21c2ef279c23a6433cd1bd249bacad4435e489c9fcfe58367cf7d7f22"
+    },
+    {
+      "bytes": 160573,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00092.jpg",
+      "sha256": "8a9b11b6adb7148332b5371c27cb1070fedf7098084d9cd958b32454b75e07aa"
+    },
+    {
+      "bytes": 151840,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00100.jpg",
+      "sha256": "03fa2db6ff68560717e370e28fde3ee9b0bc638aa81d82c1870f240fa399229c"
+    },
+    {
+      "bytes": 220888,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00116.jpg",
+      "sha256": "b42db7532be9de50e1499e514f52f766b8559a80187b3c0f41f85de0e526c236"
+    },
+    {
+      "bytes": 242535,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00050.jpg",
+      "sha256": "009448fb6503b17d9a3f81d1796354efdec52cfbf766f3c5d66fdb36dd5ad894"
+    },
+    {
+      "bytes": 192741,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00013.jpg",
+      "sha256": "d5005aec96fa62afaaa7f0a5144bd86f063b6ba0d51d886b30e7b2c553a9a94a"
+    },
+    {
+      "bytes": 179403,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00111.jpg",
+      "sha256": "c37f54ce800f0723062033c97e798f04d1f62b38e0a2954d2cdc63e3412853d1"
+    },
+    {
+      "bytes": 219366,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00280.jpg",
+      "sha256": "dd734f1d23f6ae1c1ce4b26e2ee628361e7cfff1b85d19cd69961f24633bb570"
+    },
+    {
+      "bytes": 213496,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00217.jpg",
+      "sha256": "c1d8d52c14431c55fc572ab2d18771efafadc0110be340e379b6b4047bd7f9b5"
+    },
+    {
+      "bytes": 224181,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00198.jpg",
+      "sha256": "dc872034829ce9025783780b2a8a89a93557a8145ae4276acd7018138bf67587"
+    },
+    {
+      "bytes": 122700,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00168.jpg",
+      "sha256": "65f4956ecab81e31ca81962ed0d4806c23cc0336e1ee3094f8c15a62902fb61c"
+    },
+    {
+      "bytes": 99786,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00156.jpg",
+      "sha256": "77d3a92cf2be7de05528f0c45ff797cb9f857bc955cc1adb832e599322960e63"
+    },
+    {
+      "bytes": 154097,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00105.jpg",
+      "sha256": "3e06049dacbe53582d6b859a80c9ad5433d30b2657802498e0e9dd69838eaeb8"
+    },
+    {
+      "bytes": 199617,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00003.jpg",
+      "sha256": "17c01228b8ba804604a0ee1f67a88bd705b2ddf6b9af0982a7534ca7bae8b861"
+    },
+    {
+      "bytes": 197960,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00224.jpg",
+      "sha256": "2b967aa5a868a9c5c334bce62c0d34003e06eba2a927e4c1202600e3d076b8e0"
+    },
+    {
+      "bytes": 190664,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00189.jpg",
+      "sha256": "825fd5e10545ab9525b277b83f5fb06dff7125303bd5f4c76030597220b7d858"
+    },
+    {
+      "bytes": 194762,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00056.jpg",
+      "sha256": "4721fe34dc7185a788bf9030b6c419d1cade18252b0ce23581dce28aa5ec5ac4"
+    },
+    {
+      "bytes": 176447,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00096.jpg",
+      "sha256": "648649a640ccd556251469a760fd5207ea8b1eb1e9052cfc5caacd849dbe963a"
+    },
+    {
+      "bytes": 204526,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00210.jpg",
+      "sha256": "b0d58d6e5d925bc0c529ed3fdbc8b736fe75cbdd4215d5711c228e23b2274bab"
+    },
+    {
+      "bytes": 125717,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00145.jpg",
+      "sha256": "99841f647f86e02db295f07e634f07ef08efab3ae571308a0458da847b5e263a"
+    },
+    {
+      "bytes": 206550,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00291.jpg",
+      "sha256": "39e8248d1b874b35ff59bd1d5f16e6555689e7f6ad54c1dbedb0f3b0cce0ba73"
+    },
+    {
+      "bytes": 157278,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00182.jpg",
+      "sha256": "a6b8920a46bf1fe6a89d74d46939895771a1ee506b50675bf34099400c6ecb12"
+    },
+    {
+      "bytes": 248400,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00184.jpg",
+      "sha256": "4c5d189d18c3114aef6bb75c26fbb126988f23437c1963cae31912ae816a2094"
+    },
+    {
+      "bytes": 153926,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00265.jpg",
+      "sha256": "7011970ec9ce1ee6a2c95ef23dcff535b184ebdec54a62dde8219c29633b352e"
+    },
+    {
+      "bytes": 185012,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00185.jpg",
+      "sha256": "e544eeb4f6767ad360edb3301fb61df483722107147e905ecc07085d2fcb985d"
+    },
+    {
+      "bytes": 169547,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00084.jpg",
+      "sha256": "7760d1069bc65def1b343cbaa3927e26c6950dca5e3e3ea5e75029307e134c79"
+    },
+    {
+      "bytes": 197368,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00271.jpg",
+      "sha256": "6500f8427210700776e4e842f9a162e064fb6466bb6fe106770768249b486305"
+    },
+    {
+      "bytes": 187675,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00097.jpg",
+      "sha256": "fae06d20aaaea0749f3364a6c30b0b5d2df37dadadbd67967ab8de7366ecc298"
+    },
+    {
+      "bytes": 169261,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00094.jpg",
+      "sha256": "c5b3def123dae6f740a930a9d0d06951652c0c21cd690b78f00647457450d856"
+    },
+    {
+      "bytes": 191768,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00012.jpg",
+      "sha256": "9a7b9e8994c873d84c4da269256106181ecb5c02a135d10e36a4a7e9a330b12f"
+    },
+    {
+      "bytes": 217415,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00047.jpg",
+      "sha256": "86b0c7a71d5d2adc1bbfd64eae6feea58a0ed72c7c841e2c1bcaaf2f4b689ba5"
+    },
+    {
+      "bytes": 195349,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00220.jpg",
+      "sha256": "561ad97c04734baddc9ce2b0b7e2310c1a4953e4e7bca99cf3ffed4b6c9cdacb"
+    },
+    {
+      "bytes": 146438,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00066.jpg",
+      "sha256": "414a23fe1f5e6de2deae8305e78a8cbdac8646cec83f6274ac7c9cc0ef9ab6a2"
+    },
+    {
+      "bytes": 170368,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00058.jpg",
+      "sha256": "44e11f8d45dead625d2ad33243729d4fec8b3d361f4a4c9607cfbb4fcc63b455"
+    },
+    {
+      "bytes": 217589,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00044.jpg",
+      "sha256": "6a384e53e9f43dfc0631cc93e1df0ce5e9c42ef80f285f94b237adb3b0b630b4"
+    },
+    {
+      "bytes": 209887,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00213.jpg",
+      "sha256": "d6b660d508afb697653b398f1d0ae6bb719582e5159fe87494386ecc57677938"
+    },
+    {
+      "bytes": 164528,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00101.jpg",
+      "sha256": "1e2c11901dd94138541ce68b481606eb56ee8bfa619b82206c76ef3718d58f1b"
+    },
+    {
+      "bytes": 181850,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00130.jpg",
+      "sha256": "f9103281243532929496a6a49c06db30f48f11c95be1d80e3182fdffeccabb03"
+    },
+    {
+      "bytes": 107615,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00164.jpg",
+      "sha256": "c41b318e0538263d44473af4ea4ea0fa568d3ad76abb29da8186aa3678e155f5"
+    },
+    {
+      "bytes": 167916,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00205.jpg",
+      "sha256": "af3b1698d746eb022ee0f02f269f77b1da1d492f81061d51024af5ce739aabda"
+    },
+    {
+      "bytes": 108088,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00260.jpg",
+      "sha256": "d12e98ec94c901202fa3aea9b84e360e991c28dafcb9f951ea4e9c2858850a94"
+    },
+    {
+      "bytes": 181898,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00277.jpg",
+      "sha256": "8f2c11241389901b53037c05f6032544158cea30267eaf4eda140275767f24a1"
+    },
+    {
+      "bytes": 161683,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00032.jpg",
+      "sha256": "a68500ca4a433edfc58ee612a79894e2343cc1703e332c2d117241d4e126187f"
+    },
+    {
+      "bytes": 194536,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00064.jpg",
+      "sha256": "b82cf4cdca330fda72741cc941a080ef65fe5795a6b60f66a77e779ab91a2dcb"
+    },
+    {
+      "bytes": 174419,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00192.jpg",
+      "sha256": "5c6fa1094903bbc80a9d4814d09c3eb4be5adcefb10b8e6659cf2ae09b53e5da"
+    },
+    {
+      "bytes": 165303,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00093.jpg",
+      "sha256": "0b4bad47a193f1c75f31424a1f42a036687b5da731d7889fb7196e60e6a7bbb8"
+    },
+    {
+      "bytes": 148474,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00139.jpg",
+      "sha256": "ff5a3afd41117c757f96a5895c9c4f803ccea4315de0cca7ce006dcd58f43924"
+    },
+    {
+      "bytes": 119078,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00030.jpg",
+      "sha256": "bdbe4a4c3eb48af0f2d77f41295072742f1698b0394e2e2b0957a02d49a504e4"
+    },
+    {
+      "bytes": 201665,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00246.jpg",
+      "sha256": "a1c63ca9fd649197a2d43ae8f12be6c1b57a3b247a4cacdd514d0026d3b8b1f3"
+    },
+    {
+      "bytes": 194906,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00276.jpg",
+      "sha256": "74ded933447cf41600e1bfdeb727dc51705741685a1a4c8490fb624c816fd0dd"
+    },
+    {
+      "bytes": 216444,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00045.jpg",
+      "sha256": "c013207a4c7161f0a200faca80bfd7b353dfd07f5c24a8abaf2f993025b8e4f9"
+    },
+    {
+      "bytes": 173273,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00129.jpg",
+      "sha256": "4061a9ee798003a2e18a1c8cde205e59689ceee621980df4fdba189c664c4d41"
+    },
+    {
+      "bytes": 210998,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00046.jpg",
+      "sha256": "30a1bedad4b259063496ebf5b4dfd0e4edbbd8bd073661d9650b3e8ebc7f2a48"
+    },
+    {
+      "bytes": 197555,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00120.jpg",
+      "sha256": "265dfbd03aa83e723b5c27449d78353104559413d23d2b7aedd60b7a99dea51b"
+    },
+    {
+      "bytes": 166464,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00227.jpg",
+      "sha256": "8bc2f0e8270a0d136abfe7bb0ae46e26850aa30864f57f9defa0640babdc6cec"
+    },
+    {
+      "bytes": 124757,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00141.jpg",
+      "sha256": "391dba6bb282d2d351dd8e44acfd391203ed45a8c3afc9a97e3a10581de319b0"
+    },
+    {
+      "bytes": 177695,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00302.jpg",
+      "sha256": "10071b799ae26715d9fb3f141f028628c1a8fc7bfab61514996241559b7ec4b9"
+    },
+    {
+      "bytes": 172528,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00226.jpg",
+      "sha256": "26b15ed381b79d0d3fbe26600b0a30bd30764f2874dac7f9e7c48e2980a399af"
+    },
+    {
+      "bytes": 192276,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00055.jpg",
+      "sha256": "228823ed1092cef6b092d6a457ef17b073860c97082c3182067efa64d4cbfd23"
+    },
+    {
+      "bytes": 148384,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00104.jpg",
+      "sha256": "8506f0b7b80c1faac4f0fdc48bfcab02f9b3f2f030bebabae18017298e123867"
+    },
+    {
+      "bytes": 162618,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00296.jpg",
+      "sha256": "3c71e85ab246535a9b0835f27fdcf4faedc4d65d2fe52333453d627b16706211"
+    },
+    {
+      "bytes": 204030,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00053.jpg",
+      "sha256": "dbc90eaa27eff7a9d4a478b032c78c6486318661b17682fc28e61cde5612c692"
+    },
+    {
+      "bytes": 170384,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00103.jpg",
+      "sha256": "7fba75ed48d7ea6666c4226751d61974310d831d1f047fc72b83f9511bcde185"
+    },
+    {
+      "bytes": 169726,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00235.jpg",
+      "sha256": "d211c56581e7f55cc352ed5c9d65e8afde75d5de864e13e3652611a12c59c917"
+    },
+    {
+      "bytes": 232984,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00183.jpg",
+      "sha256": "5531e95af5f71d68389cc5d6eae7f136136e5e646c49e955b3c7f5da096ad71e"
+    },
+    {
+      "bytes": 208277,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00128.jpg",
+      "sha256": "e7d72135202070edde848e55bd39e222ac95e62f453f274b3507b1e701e4bfc6"
+    },
+    {
+      "bytes": 191938,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00034.jpg",
+      "sha256": "2f407fb34252a0f8cadaa5203c66a99cbfcae386c4eaa72541c7a25264011767"
+    },
+    {
+      "bytes": 214028,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00127.jpg",
+      "sha256": "812615adae3fa12896a8ce49956d8a92e82466a711bc2337be0946d3e5e94127"
+    },
+    {
+      "bytes": 176704,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00230.jpg",
+      "sha256": "1443d2dda57754767b09fa410fb66773ec1265358e6ff51fc8b1083372704f83"
+    },
+    {
+      "bytes": 158419,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00256.jpg",
+      "sha256": "03ddf72461b5f0f6439e8e51bdde1603114aef285e888c4a4e70d5f9491cf11e"
+    },
+    {
+      "bytes": 184610,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00057.jpg",
+      "sha256": "81a65f379b968afff5894a23c4b6c28661b75a4f5bab12cc00676e4f9195aa10"
+    },
+    {
+      "bytes": 148227,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00208.jpg",
+      "sha256": "f562b250d937588cfeb73a48875008ad9da13718edc0e874552dd6ad87cf09a5"
+    },
+    {
+      "bytes": 128291,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00178.jpg",
+      "sha256": "a6326c30c8f103339ab4b357ad5f20a1948679ec166b6c4010cb2677dc1f827d"
+    },
+    {
+      "bytes": 148278,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00231.jpg",
+      "sha256": "7aefcf96b46f53b3686a0b2ef68982d86777dc0191349a44d78afc7f0ad9cac5"
+    },
+    {
+      "bytes": 206743,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00266.jpg",
+      "sha256": "bc0ccdd2dfbed627dd4650b68d5f8d5c7544077002d21569094add6a22dab56c"
+    },
+    {
+      "bytes": 201798,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00201.jpg",
+      "sha256": "f11fb7c6e88d9c674500da95307b3d32a182fe82455d4e0165f76f3d47177ac2"
+    },
+    {
+      "bytes": 177153,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00090.jpg",
+      "sha256": "7433ed4e25a071c456cabcfa3f8101b26a081882b4ab2029fb9f2ceaa2d6aade"
+    },
+    {
+      "bytes": 221096,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00211.jpg",
+      "sha256": "687a7534ac222d527ee77959c7a0cdeb918e16007d64c24a37b72de9edeb10a4"
+    },
+    {
+      "bytes": 215989,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00273.jpg",
+      "sha256": "fa48b8604aac07e2175ac12cffe0c53b20da1f878f5ec3941ebbf3e788ad4f35"
+    },
+    {
+      "bytes": 184685,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00039.jpg",
+      "sha256": "957fa0c3ad75af84c11e49b9c8f5bf28e9df5771da90c81ba178d43491abd4cc"
+    },
+    {
+      "bytes": 211653,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00014.jpg",
+      "sha256": "976a46a9098bcabf97491e1bda67b58a50411888e295f5ee7027c6c7b0c70cef"
+    },
+    {
+      "bytes": 205975,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00125.jpg",
+      "sha256": "7a25ad6fc89b928e2a81dcbfda6fc6c8578d2681d58151310b4a3e1c1356735d"
+    },
+    {
+      "bytes": 207805,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00114.jpg",
+      "sha256": "1eef9569593d985cc6e613fd11101500082745326906392951ac8b2cf0f492d1"
+    },
+    {
+      "bytes": 203573,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00042.jpg",
+      "sha256": "adb2f2efbb220b797cb62cb8acfbc9826059f512151526d9ab9789045e5261d0"
+    },
+    {
+      "bytes": 114354,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00166.jpg",
+      "sha256": "140db269dd491cdd09e6ef1f54272798feb24968ffbf6821c13b098b72dd1306"
+    },
+    {
+      "bytes": 138580,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00080.jpg",
+      "sha256": "21d141744ce2289cb355d9f22f5db1a9856ebec7c5ac38688fceb30fb278eb38"
+    },
+    {
+      "bytes": 186780,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00287.jpg",
+      "sha256": "598e53f3635f9ae5742da5ac984dad41ef3039e75a2f981ad8b9fe9d389e78b5"
+    },
+    {
+      "bytes": 183286,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00005.jpg",
+      "sha256": "b18976ca4e7c494d184cf40ac820c3dc81c118cc5e6235ccf015450e17862e41"
+    },
+    {
+      "bytes": 215558,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00282.jpg",
+      "sha256": "5dfa275471cebaff78c1ba74f635ffec8372b3e1d44897a85a8db620f6f883c8"
+    },
+    {
+      "bytes": 168454,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00089.jpg",
+      "sha256": "7e7a0251b873cf4ad1692a8773ff11a77b6738323bfa8711864c20982082f7d4"
+    },
+    {
+      "bytes": 211930,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00284.jpg",
+      "sha256": "38e7b97ae28bb15dad34333d6da1b8832925e6c5fe93fc1c448d7f5bfb44bce8"
+    },
+    {
+      "bytes": 196997,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00214.jpg",
+      "sha256": "7bb4a64a74d3c2c931402ecff159cc779242f2c9994a570fdaccb831bf614c92"
+    },
+    {
+      "bytes": 206423,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00079.jpg",
+      "sha256": "bb894c60cf1bf9cfd252a15439b61476ab33ca17184d3ba93eb2fe590dbf175f"
+    },
+    {
+      "bytes": 197141,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00239.jpg",
+      "sha256": "159e6004856e4fc5c32d0bc35ed452b3972a146f4a71e017e0bb739c1137a5e6"
+    },
+    {
+      "bytes": 196430,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00194.jpg",
+      "sha256": "385a1101b790666d0728bea3ee412a9b7fb8106f3698208f3b3bc4169d1255cd"
+    },
+    {
+      "bytes": 177109,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00098.jpg",
+      "sha256": "0e92b05c94955e5e72de939fd91cf38f986aa786375b006323c3b3c39b5b7ea8"
+    },
+    {
+      "bytes": 199570,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00219.jpg",
+      "sha256": "05b93d1fea592667212edc7612aa4309aac36751bd400c5d9bf4c61c7370bd54"
+    },
+    {
+      "bytes": 161589,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00107.jpg",
+      "sha256": "66333d577d5ea646ccd1810add3afc7cd43b0b6ceb65fba908a51d1f0195d70a"
+    },
+    {
+      "bytes": 194100,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00222.jpg",
+      "sha256": "2ca3e0c06d9ff6c670ac09c321c6a920bdf53d8025eb1be6abe8034fa81f3c1d"
+    },
+    {
+      "bytes": 218563,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00293.jpg",
+      "sha256": "d8c0bef9b415188149eac8558726c3f536949ff34469defa3031c3376c66618b"
+    },
+    {
+      "bytes": 172059,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00062.jpg",
+      "sha256": "9c9bdaac4ae306a9989b2d454249fec6d7c672d2ea7ea512c851f497012ddbaa"
+    },
+    {
+      "bytes": 232881,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00236.jpg",
+      "sha256": "b313eb4dd695ef4db88ff496391813d84545d813db73194714e0da0fec5c92b1"
+    },
+    {
+      "bytes": 130367,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00170.jpg",
+      "sha256": "9c15bcaded4afeb25b7f275ce9fd17ade06b9adb30a1b4d908f528de4557698b"
+    },
+    {
+      "bytes": 176893,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00073.jpg",
+      "sha256": "20a6ea465ba4c04c4872572b8388fda3ec7b1d4828391723214291ec8a702107"
+    },
+    {
+      "bytes": 172183,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00108.jpg",
+      "sha256": "3a7dbe52a49a1b6b615f3cf3df135f5a35cafc017bf0f5a78703714e372c31fa"
+    },
+    {
+      "bytes": 199250,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00110.jpg",
+      "sha256": "88ecaed5352996ffc8b9d873b141850716cab62aaedd778f7f4d5af81a07f1e6"
+    },
+    {
+      "bytes": 155386,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00229.jpg",
+      "sha256": "a80ef75c33e48b0122924d6bc03b0928d8e5a1074ea9067983efa7f828c853b1"
+    },
+    {
+      "bytes": 125167,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00169.jpg",
+      "sha256": "8a5d1e145a07ffe06762f2eba12fe9baa6eb538d8d591bf23003638353d4480a"
+    },
+    {
+      "bytes": 220167,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00015.jpg",
+      "sha256": "b04489fa37fcf89d6a4da47321eb0e0f7764e8fb5d48c299f1e76abaa72797ee"
+    },
+    {
+      "bytes": 222065,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00237.jpg",
+      "sha256": "76cb9dc5e15526f823397f7ab4dda047bc16a9ae0534c9ae78c222678b1cee55"
+    },
+    {
+      "bytes": 234048,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00118.jpg",
+      "sha256": "324ad7d89a518454e1b99c93b77e13f1b007565986c2f4eda23ad3368f43f3df"
+    },
+    {
+      "bytes": 180263,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00038.jpg",
+      "sha256": "149f1f7e2fdd26f43c74ba48185b5ab265f96c1027c7f842a3197adf398c34e0"
+    },
+    {
+      "bytes": 212717,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00292.jpg",
+      "sha256": "22ab6b0f3482db628746d72685dee99e60f08f4e1cbf2882a54ad9310dc7a3a2"
+    },
+    {
+      "bytes": 215391,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00281.jpg",
+      "sha256": "9d05252d4e159d3b8d5583dfadabd476398c98651d6c3911d28316f34c33d910"
+    },
+    {
+      "bytes": 218035,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00115.jpg",
+      "sha256": "753ea5a195ac23c7f74f4fe4177d7fdaec02cd3a32bf66124e7e14c5bbe6eef6"
+    },
+    {
+      "bytes": 117314,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00029.jpg",
+      "sha256": "c38a87684e0dd0d04d33b47ca5ccf5d1f8883ad84dcb3593264ec9d69960c3f4"
+    },
+    {
+      "bytes": 178728,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00065.jpg",
+      "sha256": "07821f83287ee3f0d5ba851a23e36460cc7ac909762bd1de0b67cc58d6413da3"
+    },
+    {
+      "bytes": 169652,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00008.jpg",
+      "sha256": "c13d84c6b595c9aa679dd52ae8f4312de1b0ae4c8de1ee7b0c3dc7a41ab27514"
+    },
+    {
+      "bytes": 171109,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00234.jpg",
+      "sha256": "c3d40161d8b729bd05ccb6c0a6d23e8a7e40db146abac157e82800d9c9a03025"
+    },
+    {
+      "bytes": 181074,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00133.jpg",
+      "sha256": "e91ca2c927139c02265761e0a4e170f123a26ce7ea8790b638d49dcc74bc7c8d"
+    },
+    {
+      "bytes": 164278,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00123.jpg",
+      "sha256": "ec4cb4f09dd997288240a396b5d109d7e135284e4196f1653df3b41c9d9cda21"
+    },
+    {
+      "bytes": 216119,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00190.jpg",
+      "sha256": "4d82048226811f668ae0c83e562ba346f78aff73e0b56b00a8211829957a7bcd"
+    },
+    {
+      "bytes": 170454,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00137.jpg",
+      "sha256": "2603b816a36adfa69dc896e17e5ed3cf1ad9ec230510add40370e5638f88702b"
+    },
+    {
+      "bytes": 162107,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00289.jpg",
+      "sha256": "39fea2728ad0a565ba8c5c68659928020e0d0a765ef8c9d944922d211540a001"
+    },
+    {
+      "bytes": 171183,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00006.jpg",
+      "sha256": "5f0078f745310a580cbd82432f1aa4c8de718a5a42bbf298d3c8325b80737ef5"
+    },
+    {
+      "bytes": 195492,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00203.jpg",
+      "sha256": "a0834f565d3c68c377d0a7d0f439bbc938142b71a129694933447c40bb398e1f"
+    },
+    {
+      "bytes": 183814,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00242.jpg",
+      "sha256": "f1554fb7709e63f1e2a0f8a047b009cc8fb27a7cc1078e18bc79ff1803dfa078"
+    },
+    {
+      "bytes": 207145,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00052.jpg",
+      "sha256": "1777a530dc7f42aaad1d101d38c849d693763dee782bf034d149536cba9e5c15"
+    },
+    {
+      "bytes": 187657,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00221.jpg",
+      "sha256": "0ed0f045978cbafba36e0ea0a1fbc3ac3a2e4bf562b4ec7fb79f498383c3e1ae"
+    },
+    {
+      "bytes": 191483,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00290.jpg",
+      "sha256": "86df04ff592d98d5dcbc4dc60eb5cd501a378c16bedf80951adaf5e5d0c125f5"
+    },
+    {
+      "bytes": 119806,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00179.jpg",
+      "sha256": "eb3034b8c61794c6a65cea641f4d9005ca908150be84a1a0d48ca148a0c8b2c7"
+    },
+    {
+      "bytes": 235606,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00135.jpg",
+      "sha256": "9ea15265957f97c169e922982725f88422ea9c1983710fdab1a0ca012d3dbfbd"
+    },
+    {
+      "bytes": 210537,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00126.jpg",
+      "sha256": "db4b866b4e6a284712dbf5d0eee5f83daaa7d77359538c2e5810c2fefbf4d320"
+    },
+    {
+      "bytes": 171105,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00307.jpg",
+      "sha256": "268ff33bdd1f4ac7b5f80259eddf55750c09d8aa613d36a5106ab263d34129fe"
+    },
+    {
+      "bytes": 167747,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00099.jpg",
+      "sha256": "d88350dc8b9fceba125f8458438e7c65741e2ac7bc4e569293a26373cba29caa"
+    },
+    {
+      "bytes": 190233,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00020.jpg",
+      "sha256": "28640bb56946af663b572d891cc8337f42aef3a20867c51a67203f498e86708f"
+    },
+    {
+      "bytes": 159148,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00206.jpg",
+      "sha256": "19a02345e6b4d5977d5c7ccd7971b9b5002addbcc095c66383adf223ab4a5242"
+    },
+    {
+      "bytes": 135842,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00144.jpg",
+      "sha256": "45de22fe2acdfc84a2430b96fc840823ec8ec106fd9a917df4caeeea30dbabb9"
+    },
+    {
+      "bytes": 211100,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00212.jpg",
+      "sha256": "9a0598c3c55446008a270626b947f7a0cd55496fa11b0ca1bba4a8aad4197523"
+    },
+    {
+      "bytes": 237710,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00017.jpg",
+      "sha256": "863d615b15c4a0aa3fe96e1b45f07960fae9b8ce3184dddd04517db38000d87e"
+    },
+    {
+      "bytes": 256400,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00117.jpg",
+      "sha256": "90c0a03fd20f55d6aefaec7b2227d2a2f2d18365f1b19573f2a1750199fe6234"
+    },
+    {
+      "bytes": 179796,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00009.jpg",
+      "sha256": "b246ad8508532f4186472d757a6f1e3e3cc16266ed1c0c487fe9cf33b3776c01"
+    },
+    {
+      "bytes": 157457,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00305.jpg",
+      "sha256": "41c944f59dc6fff999c40c76147e18c3eab85eb1c17ceee2e26dd7d353345b92"
+    },
+    {
+      "bytes": 227719,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00121.jpg",
+      "sha256": "fb5731e99fb8384e8f60edf487e37efbccbd95410a4394b62631c35bb4f605bb"
+    },
+    {
+      "bytes": 215039,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00275.jpg",
+      "sha256": "f6f3d849e13562f097fc345be8f156cc1cb931a7c03d70edf5058011f2eeaef9"
+    },
+    {
+      "bytes": 214783,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00002.jpg",
+      "sha256": "9b039c10d9e8406ebf70ebab1dc6f4f88944543583d6cd4b938ec9fa60104fe1"
+    },
+    {
+      "bytes": 222851,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00199.jpg",
+      "sha256": "d8f348aa5ca1db5f7b0e6674837a7bcf367be0ea1524eef78b9ecb0a2024a082"
+    },
+    {
+      "bytes": 197110,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00086.jpg",
+      "sha256": "eae41434f775af9b6690bc8b72173957b928ad988c4a016a9732e926b899f71f"
+    },
+    {
+      "bytes": 155390,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00076.jpg",
+      "sha256": "af7847766ca93c9126993ba6e900c7cc732705dfcd2e4b26bfb20c896e585e91"
+    },
+    {
+      "bytes": 147902,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00299.jpg",
+      "sha256": "acb2ab6d7d87138585d12f993c95df7eafc04164088b94dcd5cce961a2b1eabc"
+    },
+    {
+      "bytes": 219824,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00216.jpg",
+      "sha256": "83f86c4738f965aeb950d9e39b3cd2095d49e089eb48e4071ca8c6fbaad7d2b7"
+    },
+    {
+      "bytes": 88566,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00147.jpg",
+      "sha256": "df84ff408c3735099636377e5fb9b5e5b11707c8aa7b2532a56322b0337e7949"
+    },
+    {
+      "bytes": 191394,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00040.jpg",
+      "sha256": "f03f3b096d1c565487cf4826543e4d0352b54eaea841dda84acc82acc37cdedb"
+    },
+    {
+      "bytes": 140202,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00143.jpg",
+      "sha256": "0f7cceea7aff2e280ee1681bac5ec7a13c67d52f5d15542502e95cd648f842c1"
+    },
+    {
+      "bytes": 141312,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00175.jpg",
+      "sha256": "67b8b07e183bb72379038f4d5697878777a9845cc97db5487fc265aa8733bd5e"
+    },
+    {
+      "bytes": 159271,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00078.jpg",
+      "sha256": "1a4da1a3466c1616fcc31f1065ace86144107328943273029ba1a79b0d0e45eb"
+    },
+    {
+      "bytes": 218160,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00285.jpg",
+      "sha256": "52fe2ce35f58140c0a8f8a578cd3cebd444487d97ca4c8fbade77463d8166976"
+    },
+    {
+      "bytes": 123011,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00263.jpg",
+      "sha256": "a617a178e743b9db9e7d0ba2a19215a89be433da00b43e15b868291f15b4409e"
+    },
+    {
+      "bytes": 212519,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00247.jpg",
+      "sha256": "779cb16bd4773055e0e7dc2aca7168127bd1e7f157f00d0b51106522657ba100"
+    },
+    {
+      "bytes": 103603,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00028.jpg",
+      "sha256": "126ef65da3dce7fcf6bda4445d87c9d78286e3a99ddb3e8b1fdd4172bc8d1f3b"
+    },
+    {
+      "bytes": 169688,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00297.jpg",
+      "sha256": "3f92e6e607f876817a4c40644803e9dbf042f0e60adfa633fe870cb193823134"
+    },
+    {
+      "bytes": 170566,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00007.jpg",
+      "sha256": "47b88125f98a1f4cb2041d815e42bb0bd0da75fae62b6b44291b1859dfb64137"
+    },
+    {
+      "bytes": 143268,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00186.jpg",
+      "sha256": "721a9ce632c9f7d41d95803ec6d736ef046c30866734557af6796cdb0f8a7af0"
+    },
+    {
+      "bytes": 182158,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00241.jpg",
+      "sha256": "283913aa4e5aa93c204e4c23e49584c8930dc3fcef54d6bce523419efa9e501c"
+    },
+    {
+      "bytes": 179285,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00267.jpg",
+      "sha256": "158b3f4a30f1fee6dc37d55f6cd877beead5f3dc8cc8312b6e9a8f5c2c2b9a1e"
+    },
+    {
+      "bytes": 218050,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00223.jpg",
+      "sha256": "c9c6e68e0cbd7b6698a8031c2dfafebe54017cc3c6324abf4c57b48b26547b61"
+    },
+    {
+      "bytes": 175065,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00075.jpg",
+      "sha256": "d0968193a7c267921ac20ad8a5edbf34cb656bec1da108360b380b193d33a640"
+    },
+    {
+      "bytes": 178791,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00083.jpg",
+      "sha256": "f4dac0b4ce27cdc610f62ff2750fc55ced83533ab52a46ede041d267610c7571"
+    },
+    {
+      "bytes": 200796,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00309.jpg",
+      "sha256": "5af19b6dcc840e8efd0b042296e191c5e9418c06521dfeb4c7bc3fdfa9897329"
+    },
+    {
+      "bytes": 166867,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00301.jpg",
+      "sha256": "a196ad4236c070283a9bc27ecc13d74b88dccb6c2c176e8f375e426f52f0a44a"
+    },
+    {
+      "bytes": 148822,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00068.jpg",
+      "sha256": "ebe18d542f6ae35123be420f3e0a0988ce8a7fbc2ac16021a2c3775b1b7428f7"
+    },
+    {
+      "bytes": 215994,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00274.jpg",
+      "sha256": "4ac3b0aab0ae69772ff3e78a0c986623552bc63bdc7bf3952c7195d325c64e52"
+    },
+    {
+      "bytes": 225666,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00191.jpg",
+      "sha256": "a5acb5751fe3dbed3377918755ced1a72c5964e1bbcc7059f275e2b8700ebead"
+    },
+    {
+      "bytes": 153620,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00300.jpg",
+      "sha256": "a7171c1fc606698f97b6b95b987cbb6ca2349d81c852e677d1408042a9c5f319"
+    },
+    {
+      "bytes": 165084,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00024.jpg",
+      "sha256": "9046ec2d62a143d915e040b10d4aec056e187910845a09a2f13b61f3c21e2054"
+    },
+    {
+      "bytes": 183181,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00303.jpg",
+      "sha256": "82767f8f2ee11814a03d222568da8fa9f19bbc30ad144a513f6a149d24c00474"
+    },
+    {
+      "bytes": 173212,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00195.jpg",
+      "sha256": "b4164d2a9de05b18738b781cbe79f443bcfa84f605b12e70d9635148024a1473"
+    },
+    {
+      "bytes": 193284,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00196.jpg",
+      "sha256": "78fcd679c9b1988667cf3f8de84c3800469ceca3f0a76f64bb4b65004a496a39"
+    },
+    {
+      "bytes": 207985,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00054.jpg",
+      "sha256": "eb3a0eed2c0d367d0c5f0c3a61969e5cd2dce08e44802d306f79beb08585cc72"
+    },
+    {
+      "bytes": 158773,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00131.jpg",
+      "sha256": "37a2fc18070736190e47b8701b3040a01f30f85ec7bc47f2ab69712d140554b0"
+    },
+    {
+      "bytes": 178726,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00010.jpg",
+      "sha256": "a15d645432f061e39270f725e2510f9d40990b111d6aa5f86f5d87c6c369ffce"
+    },
+    {
+      "bytes": 214898,
+      "member": "room_datasets/koivu/iphone/long_capture/images/frame_00286.jpg",
+      "sha256": "b5f6c69299b96cb99fcece9d680d13b8c5130dbf3d966e187fc3715f37afd44d"
+    },
+    {
+      "bytes": 348,
+      "member": "room_datasets/koivu/iphone/long_capture/test.txt",
+      "sha256": "60833925e50adeade36f127ad6035e86bf17f206e7f1d8b53f1eee96731ba97d"
+    },
+    {
+      "bytes": 239937,
+      "member": "room_datasets/koivu/iphone/long_capture/transformations.json",
+      "sha256": "c496c8dc6474679766db8abd92da9c756104a752bb9e4519fd462fe294af90c3"
+    },
+    {
+      "bytes": 660550085,
+      "member": "room_datasets/koivu/gt_mesh.ply",
+      "sha256": "e18db651c694046de7994237e276d88138ecef9071351281a418de9c9a279b5e"
+    },
+    {
+      "bytes": 449,
+      "member": "room_datasets/koivu/icp_iphone.json",
+      "sha256": "95b4e26d6d260bd9b06cff801648fc38c030a510cf4055af2294490cf49938d4"
+    }
+  ],
+  "status": "completed",
+  "transferBytes": 723560005,
+  "transfers": [
+    {
+      "bytes": 3832,
+      "name": "addict-2.4.0-py3-none-any.whl",
+      "sha256": "249bb56bbfd3cdc2a004ea0ff4c2b6ddc84d53bc2194761636eb314d5cfa5dfc"
+    },
+    {
+      "bytes": 8458,
+      "name": "blinker-1.9.0-py3-none-any.whl",
+      "sha256": "ba0efaa9080b619ff2f3459d1d500c57bddea4a6b424b60a91141db6fd2f08bc"
+    },
+    {
+      "bytes": 7294,
+      "name": "comm-0.2.3-py3-none-any.whl",
+      "sha256": "c615d91d75f7f04f095b30d1c1711babd43bdc6419c1be9886a85f2f4e489417"
+    },
+    {
+      "bytes": 25607,
+      "name": "configargparse-1.7.1-py3-none-any.whl",
+      "sha256": "8b586a31f9d873abd1ca527ffbe58863c99f36d896e2829779803125e83be4b6"
+    },
+    {
+      "bytes": 7900661,
+      "name": "dash-3.2.0-py3-none-any.whl",
+      "sha256": "4c1819588d83bed2cbcf5807daa5c2380c8c85789a6935a733f018f04ad8a6a2"
+    },
+    {
+      "bytes": 24024,
+      "name": "fastjsonschema-2.21.2-py3-none-any.whl",
+      "sha256": "1c797122d0a86c5cace2e54bf4e819c36223b552017172f32c5c024a6b77e463"
+    },
+    {
+      "bytes": 103424,
+      "name": "flask-3.1.3-py3-none-any.whl",
+      "sha256": "f4bcbefc124291925f1a26446da31a5178f9483862233b23c0c96a20701f670c"
+    },
+    {
+      "bytes": 27656,
+      "name": "importlib_metadata-8.7.0-py3-none-any.whl",
+      "sha256": "e5dd1551894c77868a30651cef00984d50e1002d06942a7101d34870c5f02afd"
+    },
+    {
+      "bytes": 139806,
+      "name": "ipywidgets-8.1.7-py3-none-any.whl",
+      "sha256": "764f2602d25471c213919b8a1997df04bef869251db4ca8efba1b76b1bd9f7bb"
+    },
+    {
+      "bytes": 16234,
+      "name": "itsdangerous-2.2.0-py3-none-any.whl",
+      "sha256": "c6242fc49e35958c8b15141343aa660db5fc54d4f13a1db01a3f5891b98700ef"
+    },
+    {
+      "bytes": 134899,
+      "name": "jinja2-3.1.6-py3-none-any.whl",
+      "sha256": "85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67"
+    },
+    {
+      "bytes": 28880,
+      "name": "jupyter_core-5.8.1-py3-none-any.whl",
+      "sha256": "c28d268fc90fb53f1338ded2eb410704c5449a358406e8a948b75706e24863d0"
+    },
+    {
+      "bytes": 216571,
+      "name": "jupyterlab_widgets-3.0.15-py3-none-any.whl",
+      "sha256": "d59023d7d7ef71400d51e6fee9a88867f6e65e10a4201605d2d7f3e8f012a31c"
+    },
+    {
+      "bytes": 22947,
+      "name": "markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "d6dd0be5b5b189d31db7cda48b91d7e0a9795f31430b7f271219ab30f1d3ac9d"
+    },
+    {
+      "bytes": 412767,
+      "name": "narwhals-2.7.0-py3-none-any.whl",
+      "sha256": "010791aa0cee86d90bf2b658264aaec3eeea34fb4ddf2e83746ea4940bcffae3"
+    },
+    {
+      "bytes": 78454,
+      "name": "nbformat-5.10.4-py3-none-any.whl",
+      "sha256": "3b48d6c8fbca4b299bf3982ea7db1af21580e4fec269ad087b9e81588891200b"
+    },
+    {
+      "bytes": 5195,
+      "name": "nest_asyncio-1.6.0-py3-none-any.whl",
+      "sha256": "87af6efd6b5e897c81050477ef65c62e2b2f35d51703cae01aff2905b1852e1c"
+    },
+    {
+      "bytes": 99643248,
+      "name": "open3d_cpu-0.19.0-cp312-cp312-manylinux_2_31_x86_64.whl",
+      "sha256": "dc935427a28cdba4ef511e9ee366b6001962b583e64231887c9b2e4cff787ee2"
+    },
+    {
+      "bytes": 18654,
+      "name": "platformdirs-4.4.0-py3-none-any.whl",
+      "sha256": "abd01743f24e5287cd7a5db3752faf1a2d65353f38ec26d98e25a6db65958c85"
+    },
+    {
+      "bytes": 9833698,
+      "name": "plotly-6.3.1-py3-none-any.whl",
+      "sha256": "8b4420d1dcf2b040f5983eed433f95732ed24930e496d36eb70d211923532e64"
+    },
+    {
+      "bytes": 14361,
+      "name": "pyquaternion-0.9.9-py3-none-any.whl",
+      "sha256": "e65f6e3f7b1fdf1a9e23f82434334a1ae84f14223eee835190cd2e841f8172ec"
+    },
+    {
+      "bytes": 73075,
+      "name": "requests-2.34.2-py3-none-any.whl",
+      "sha256": "2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0"
+    },
+    {
+      "bytes": 10859,
+      "name": "retrying-1.4.2-py3-none-any.whl",
+      "sha256": "bbc004aeb542a74f3569aeddf42a2516efefcdaff90df0eb38fbfbf19f179f59"
+    },
+    {
+      "bytes": 78540,
+      "name": "tqdm-4.67.1-py3-none-any.whl",
+      "sha256": "26445eca388f82e72884e0d580d5464cd801a3ea01e63e5601bdff9ba6a48de2"
+    },
+    {
+      "bytes": 135717,
+      "name": "urllib3-2.8.0-py3-none-any.whl",
+      "sha256": "0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3"
+    },
+    {
+      "bytes": 228700,
+      "name": "werkzeug-3.1.9-py3-none-any.whl",
+      "sha256": "6392e50c78460ba618e5b21f08a71f59c99ce99cdc6cf6e3dd7e6ccca8754fab"
+    },
+    {
+      "bytes": 2196503,
+      "name": "widgetsnbextension-4.0.14-py3-none-any.whl",
+      "sha256": "4875a9eaf72fbf5079dc372a51a9f268fc38d46f767cbf85c43a36da5cb9b575"
+    },
+    {
+      "bytes": 10276,
+      "name": "zipp-3.23.0-py3-none-any.whl",
+      "sha256": "071652d6115ed432f5ce1d34c336c0adfd6a884660d1e9712a256d3d3bd4b14e"
+    },
+    {
+      "bytes": 146575749,
+      "name": "koivu_iphone.tar.gz",
+      "sha256": "68735cfa0758e1288a006c30dc8b95ffb4caa3392bc9c68c0c3ea6c111966518"
+    },
+    {
+      "bytes": 455583916,
+      "name": "koivu_mesh_pd.tar.gz",
+      "sha256": "e16605f237f0850fd069fb9aca39d300eb1aa3a3b1f5f3f660cb64230a91dd26"
+    }
+  ],
+  "wallSeconds": 121.07695513399995
+}
