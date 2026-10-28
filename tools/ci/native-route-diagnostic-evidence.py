@@ -18,6 +18,7 @@ import os
 import resource
 import signal
 import stat
+import struct
 import subprocess
 import tempfile
 import time
@@ -439,7 +440,7 @@ def inventory_name(value, digest):
         require(hashlib.sha256(value.encode()).hexdigest() == digest, 'inventory_name_hash_mismatch')
 
 
-def validate_metadata_inventory(report, uuids):
+def validate_metadata_inventory(report, uuids, docs=None):
     """No raw metadata values/paths; only fixed fixture IDs, enums and bounded names."""
     top = {'schema', 'physicalAuthority', 'fixtures'}
     keys(report, top, top)
@@ -453,7 +454,7 @@ def validate_metadata_inventory(report, uuids):
                 'metadataEntriesTruncated','metadataEntries','nodeCount','nodesTruncated','nodes',
                 'meshCount','unmatchedMeshCount','unknownFeatureMeshCount'}
     for fixture in fixtures:
-        keys(fixture, required | {'adapterFailure','inventoryFailure'}, required)
+        keys(fixture, required | {'adapterFailure','inventoryFailure','geometryProbe','geometryProbeFailure'}, required)
         room = fixture['fixtureID']
         require(isinstance(room, str) and room in FIXTURES and room not in seen, 'unknown_or_duplicate_fixture')
         seen.add(room)
@@ -469,7 +470,7 @@ def validate_metadata_inventory(report, uuids):
                            'binaryPlist':kinds | {'invalidJSON','invalidPropertyList'},
                            'xmlPlist':{'invalidJSON'}, 'unknown':{'invalidJSON'}}
         require(fixture['metadataRootKind'] in roots_by_format[fixture['metadataFormat']], 'metadata_format_disagreement')
-        for field in ('adapterFailure','inventoryFailure'):
+        for field in ('adapterFailure','inventoryFailure','geometryProbeFailure'):
             if field in fixture:
                 require(isinstance(fixture[field], str) and fixture[field] in METADATA_FAILURES, 'unapproved_error_text')
         for count, rows, truncated, cap in (('metadataEntryCount','metadataEntries','metadataEntriesTruncated',64),
@@ -532,7 +533,94 @@ def validate_metadata_inventory(report, uuids):
                           'unknownFeatureMeshCount':sum(not node['knownFeature'] and (node['directMappingPresent'] or node['inheritedMappingPresent']) for node in sampled_meshes)}
         for field, count in sampled_counts.items():
             require(count <= fixture[field] and (fixture['nodesTruncated'] or count == fixture[field]), 'inventory_mesh_count_mismatch')
+        if 'geometryProbeFailure' in fixture:
+            require(fixture.get('adapterFailure') == 'sourceGeometryMismatch' and
+                    'geometryProbe' not in fixture, 'geometry_probe_context_mismatch')
+        if 'geometryProbe' in fixture:
+            validate_geometry_probe(fixture, docs)
     return report
+
+
+def float32(value):
+    """Exact representation conversion, not an acceptance tolerance or repair."""
+    return struct.unpack('<f', struct.pack('<f', value))[0]
+
+
+def validate_geometry_probe(fixture, docs):
+    """Only one failed mesh from the already SHA-verified public fixture export."""
+    require(fixture.get('adapterFailure') == 'sourceGeometryMismatch' and
+            'geometryProbeFailure' not in fixture, 'geometry_probe_context_mismatch')
+    require(isinstance(docs, dict), 'geometry_source_unavailable')
+    probe = fixture['geometryProbe']
+    vectors = {'meshLocalPoint','worldPoint','sourceLocalPoint','sourceDimensions','sourceLocalMinimum','sourceLocalMaximum',
+               'sourceWorldMinimum','sourceWorldMaximum','exportedWorldMinimum','exportedWorldMaximum',
+               'exportedSourceLocalMinimum','exportedSourceLocalMaximum','assetUpAxis'}
+    matrices = {'sourceTransform','meshLocalTransform','meshGlobalTransform','parentGlobalTransform','rootGlobalTransform'}
+    required = {'sourceEncoding','nodeIndex','featureID','featureKind','vertexIndex','vertexCount','axis','side',
+                'lower','upper','epsilon','residual'} | vectors | matrices
+    keys(probe, required, required)
+    require(probe['sourceEncoding'] == 'capturedRoomFloat32', 'unsupported_geometry_source_encoding')
+    for field in vectors | matrices:
+        value = probe[field]
+        require(isinstance(value, list) and len(value) == (3 if field in vectors else 16) and
+                all(number(item) and abs(item) <= 10000 for item in value), 'invalid_geometry_probe_number')
+    for field, maximum in (('lower',10000),('upper',10000),('epsilon',1),('residual',20000)):
+        require(number(probe[field]) and abs(probe[field]) <= maximum, 'invalid_geometry_probe_number')
+    require(bounded_integer(probe['nodeIndex'],127) and probe['nodeIndex'] < len(fixture['nodes']), 'invalid_geometry_probe_node')
+    node = fixture['nodes'][probe['nodeIndex']]
+    require(node['isMesh'] is True and node['knownFeature'] is True and
+            probe['featureID'] == node.get('resolvedUUID'), 'geometry_probe_feature_mismatch')
+    require(bounded_integer(probe['vertexCount'],200000) and probe['vertexCount'] > 0 and
+            probe['vertexCount'] == node['vertexCount'] and
+            bounded_integer(probe['vertexIndex'],probe['vertexCount'] - 1), 'invalid_geometry_probe_vertex')
+    room = docs.get('RoomPlanApple/' + fixture['fixtureID'] + '.capturedRoom.json')
+    require(isinstance(room, dict), 'geometry_source_unavailable')
+    sources = [(kind, feature) for key, kind in (('floors','floor'),('walls','wall'),('doors','door'),
+               ('windows','window'),('openings','opening'),('objects','furniture')) for feature in room[key]
+               if feature['identifier'] == probe['featureID']]
+    require(len(sources) == 1 and probe['featureKind'] == sources[0][0], 'geometry_probe_feature_mismatch')
+    kind, feature = sources[0]
+    dimensions = [float32(value) for value in feature['dimensions']]
+    transform = [float32(value) for value in feature['transform']]
+    corners = [] if kind == 'furniture' else [[float32(value) for value in point] for point in feature.get('polygonCorners', [])]
+    minimum = [min(point[axis] for point in corners) if corners else -dimensions[axis] / 2 for axis in range(3)]
+    maximum = [max(point[axis] for point in corners) if corners else dimensions[axis] / 2 for axis in range(3)]
+    require(probe['sourceDimensions'] == dimensions and probe['sourceTransform'] == transform and
+            all(0 <= value <= 100 for value in dimensions) and probe['sourceLocalMinimum'] == minimum and
+            probe['sourceLocalMaximum'] == maximum, 'geometry_probe_source_mismatch')
+    points = corners or [[maximum[axis] if mask & (1 << axis) else minimum[axis] for axis in range(3)] for mask in range(8)]
+    original_world = [[transform[axis] * point[0] + transform[4+axis] * point[1] +
+                       transform[8+axis] * point[2] + transform[12+axis] for axis in range(3)] for point in points]
+    require(probe['sourceWorldMinimum'] == [min(point[axis] for point in original_world) for axis in range(3)] and
+            probe['sourceWorldMaximum'] == [max(point[axis] for point in original_world) for axis in range(3)], 'geometry_probe_source_mismatch')
+    # Match NativeCameraTransform.inverted().applying(to:) over its source
+    # Float32 values copied into Double. Do not rederive the SIMD Float mesh
+    # multiplication: its native contraction/rounding is separate evidence.
+    world = probe['worldPoint']
+    source_local = []
+    for axis in range(3):
+        offset = axis * 4
+        inverse_translation = -(transform[offset] * transform[12] + transform[offset+1] * transform[13] + transform[offset+2] * transform[14])
+        source_local.append(transform[offset] * world[0] + transform[offset+1] * world[1] + transform[offset+2] * world[2] + inverse_translation)
+    require(probe['sourceLocalPoint'] == source_local, 'geometry_probe_world_local_mismatch')
+    for prefix in ('sourceWorld','exportedWorld','exportedSourceLocal'):
+        require(all(lo <= hi for lo, hi in zip(probe[prefix+'Minimum'],probe[prefix+'Maximum'])), 'invalid_geometry_probe_bounds')
+    for point, prefix in (('worldPoint','exportedWorld'),('sourceLocalPoint','exportedSourceLocal')):
+        require(all(lo <= value <= hi for lo, value, hi in
+                    zip(probe[prefix+'Minimum'],probe[point],probe[prefix+'Maximum'])), 'geometry_probe_point_outside_bounds')
+    axis = probe['axis']
+    require(bounded_integer(axis,2) and probe['side'] in ('belowMinimum','aboveMaximum'), 'invalid_geometry_probe_predicate')
+    require(probe['lower'] == minimum[axis] and probe['upper'] == maximum[axis], 'geometry_probe_source_mismatch')
+    scale = max([1] + [abs(value) for value in probe['worldPoint'] + transform + dimensions])
+    epsilon = 64 * 2**-23 * scale
+    local = probe['sourceLocalPoint']
+    residual = minimum[axis] - local[axis] if probe['side'] == 'belowMinimum' else local[axis] - maximum[axis]
+    violates = local[axis] < minimum[axis] - epsilon if probe['side'] == 'belowMinimum' else local[axis] > maximum[axis] + epsilon
+    require(probe['epsilon'] == epsilon and probe['residual'] == residual and residual > epsilon and
+            violates and
+            all(minimum[i] - epsilon <= local[i] <= maximum[i] + epsilon for i in range(axis)),
+            'geometry_probe_predicate_disagreement')
+    return probe
 
 
 def collision_control_passed(query):
@@ -719,7 +807,7 @@ def collect(repo, bundle, cases, query):
                 total += len(raw)
                 if label in ('metadata-inventory','collision-backend','collision-mixed-scene'):
                     require(len(raw) <= DIAGNOSTIC_LIMIT, 'diagnostic_over_budget')
-                    if label == 'metadata-inventory': report = validate_metadata_inventory(decode(raw), uuids)
+                    if label == 'metadata-inventory': report = validate_metadata_inventory(decode(raw), uuids, docs)
                     elif label == 'collision-backend': report = validate_collision_matrix(decode(raw))
                     else: report = validate_mixed_collision_matrix(decode(raw))
                 else:

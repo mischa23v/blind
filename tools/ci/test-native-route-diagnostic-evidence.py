@@ -171,6 +171,125 @@ def mixed_collision_matrix():
     return result
 
 
+def geometry_inventory(group='walls'):
+    data=metadata_inventory()
+    for fixture in data['fixtures']:
+        features=DOCS['RoomPlanApple/'+fixture['fixtureID']+'.capturedRoom.json'][group]
+        if not features:continue
+        feature=features[0];uuid=feature['identifier']
+        fixture['adapterFailure']='sourceGeometryMismatch'
+        fixture['metadataEntries'][0]['uuid']=uuid
+        fixture['nodes'][0].update(directUUID=uuid,resolvedUUID=uuid)
+        fixture['nodes'][1].update(inheritedUUID=uuid,resolvedUUID=uuid)
+        dimensions=[m.float32(value) for value in feature['dimensions']]
+        transform=[m.float32(value) for value in feature['transform']]
+        corners=[] if group=='objects' else [[m.float32(value) for value in point] for point in feature.get('polygonCorners',[])]
+        low=[min(point[i] for point in corners) if corners else -dimensions[i]/2 for i in range(3)]
+        high=[max(point[i] for point in corners) if corners else dimensions[i]/2 for i in range(3)]
+        points=corners or [[high[i] if mask & (1<<i) else low[i] for i in range(3)] for mask in range(8)]
+        def world(point):
+            return [transform[i]*point[0]+transform[4+i]*point[1]+transform[8+i]*point[2]+transform[12+i] for i in range(3)]
+        original=[world(point) for point in points]
+        mesh_local=[(lo+hi)/2 for lo,hi in zip(low,high)];mesh_local[2]=high[2]+0.05
+        exported_world=[m.float32(value) for value in world(mesh_local)]
+        local=[transform[4*i]*exported_world[0]+transform[4*i+1]*exported_world[1]+transform[4*i+2]*exported_world[2]
+               -(transform[4*i]*transform[12]+transform[4*i+1]*transform[13]+transform[4*i+2]*transform[14]) for i in range(3)]
+        epsilon=64*2**-23*max([1]+[abs(value) for value in exported_world+transform+dimensions])
+        identity=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]
+        fixture['geometryProbe']={'sourceEncoding':'capturedRoomFloat32','nodeIndex':1,'featureID':uuid,
+            'featureKind':{'walls':'wall','floors':'floor','objects':'furniture'}[group],
+            'vertexIndex':0,'vertexCount':4,'axis':2,'side':'aboveMaximum','lower':low[2],'upper':high[2],
+            'epsilon':epsilon,'residual':local[2]-high[2],
+            'meshLocalPoint':mesh_local,'worldPoint':exported_world,'sourceLocalPoint':local,
+            'sourceDimensions':dimensions,'sourceLocalMinimum':low,'sourceLocalMaximum':high,
+            'sourceWorldMinimum':[min(point[i] for point in original) for i in range(3)],
+            'sourceWorldMaximum':[max(point[i] for point in original) for i in range(3)],
+            'exportedWorldMinimum':[value-.01 for value in exported_world],'exportedWorldMaximum':[value+.01 for value in exported_world],
+            'exportedSourceLocalMinimum':[value-.01 for value in local],'exportedSourceLocalMaximum':[value+.01 for value in local],
+            'assetUpAxis':[0,1,0],'sourceTransform':transform,'meshLocalTransform':identity,
+            'meshGlobalTransform':transform[:],'parentGlobalTransform':transform[:],'rootGlobalTransform':transform[:]}
+    return data
+
+
+class GeometryProbeValidationTests(unittest.TestCase):
+    def validate(self,data):return m.validate_metadata_inventory(data,UUIDS,DOCS)
+    def test_public_wall_floor_and_furniture_source_values_bound_exactly(self):
+        for group in ('walls','floors','objects'):
+            data=geometry_inventory(group)
+            self.assertEqual(self.validate(data),data)
+    def test_probe_requires_original_docs_known_sampled_mesh_and_matching_context(self):
+        with self.assertRaisesRegex(m.EvidenceError,'geometry_source_unavailable'):
+            m.validate_metadata_inventory(geometry_inventory(),UUIDS)
+        for key,value in [('nodeIndex',128),('nodeIndex',True),('nodeIndex',0),('vertexCount',200001),
+                          ('vertexCount',5),('vertexIndex',4),('vertexIndex',-1),('featureKind','floor'),
+                          ('sourceEncoding','rawJSON'),('featureID','00000000-0000-0000-0000-000000000000')]:
+            data=geometry_inventory();data['fixtures'][0]['geometryProbe'][key]=value
+            with self.subTest(key=key,value=value),self.assertRaises(m.EvidenceError):self.validate(data)
+        data=geometry_inventory();del data['fixtures'][0]['adapterFailure']
+        with self.assertRaisesRegex(m.EvidenceError,'geometry_probe_context_mismatch'):self.validate(data)
+    def test_source_dimensions_transform_bounds_never_approximate_or_replace_pinned_values(self):
+        for key in ('sourceDimensions','sourceTransform','sourceLocalMinimum','sourceLocalMaximum','sourceWorldMinimum','sourceWorldMaximum'):
+            data=geometry_inventory();data['fixtures'][0]['geometryProbe'][key][0]+=1e-12
+            with self.subTest(key=key),self.assertRaisesRegex(m.EvidenceError,'geometry_probe_source_mismatch'):self.validate(data)
+        data=geometry_inventory();fixture=data['fixtures'][0];probe=fixture['geometryProbe']
+        raw=DOCS['RoomPlanApple/'+fixture['fixtureID']+'.capturedRoom.json']['walls'][0]
+        self.assertNotEqual(raw['dimensions'],probe['sourceDimensions'])
+        probe['sourceDimensions']=raw['dimensions']
+        with self.assertRaisesRegex(m.EvidenceError,'geometry_probe_source_mismatch'):self.validate(data)
+    def test_unknown_fields_paths_raw_geometry_and_nonfinite_numbers_rejected(self):
+        for key,value in [('vertices',[0,0,0]),('triangles',[0,1,2]),('path','/Users/private/home'),
+                          ('featureID','private-room'),('meshLocalPoint',[True,0,0]),('worldPoint',[float('nan'),0,0]),
+                          ('assetUpAxis',[float('inf'),0,0]),('rootGlobalTransform',[0]*15),
+                          ('meshGlobalTransform',[10001]+[0]*15),('epsilon',True),('residual',20001)]:
+            data=geometry_inventory();data['fixtures'][0]['geometryProbe'][key]=value
+            with self.subTest(key=key),self.assertRaises(m.EvidenceError):self.validate(data)
+    def test_production_epsilon_and_first_axis_not_relaxed_by_probe(self):
+        for key,value in [('epsilon',1),('epsilon',0),('residual',0),('axis',0),('axis',True),
+                          ('side','belowMinimum'),('side','approximatelyOutside'),('lower',-.1),('upper',.1)]:
+            data=geometry_inventory();data['fixtures'][0]['geometryProbe'][key]=value
+            with self.subTest(key=key,value=value),self.assertRaises(m.EvidenceError):self.validate(data)
+        data=geometry_inventory();probe=data['fixtures'][0]['geometryProbe']
+        probe['sourceLocalPoint'][0]=probe['sourceLocalMaximum'][0]+1
+        probe['exportedSourceLocalMaximum'][0]=probe['sourceLocalPoint'][0]
+        with self.assertRaises(m.EvidenceError):self.validate(data)
+    def test_below_bound_observation_keeps_positive_residual_and_full_mesh_bbox(self):
+        data=geometry_inventory();probe=data['fixtures'][0]['geometryProbe']
+        t=probe['sourceTransform'];p=probe['meshLocalPoint'];p[2]=probe['lower']-.05
+        w=[m.float32(t[i]*p[0]+t[4+i]*p[1]+t[8+i]*p[2]+t[12+i]) for i in range(3)]
+        probe['worldPoint']=w
+        probe['sourceLocalPoint']=[t[4*i]*w[0]+t[4*i+1]*w[1]+t[4*i+2]*w[2]-(t[4*i]*t[12]+t[4*i+1]*t[13]+t[4*i+2]*t[14]) for i in range(3)]
+        probe['side']='belowMinimum'
+        probe['epsilon']=64*2**-23*max([1]+[abs(value) for value in w+t+probe['sourceDimensions']])
+        probe['residual']=probe['lower']-probe['sourceLocalPoint'][2]
+        for point,prefix in (('worldPoint','exportedWorld'),('sourceLocalPoint','exportedSourceLocal')):
+            probe[prefix+'Minimum']=probe[point][:];probe[prefix+'Maximum']=probe[point][:]
+        self.assertEqual(self.validate(data),data)
+        probe['exportedSourceLocalMinimum'][2]+=.001
+        with self.assertRaises(m.EvidenceError):self.validate(data)
+    def test_world_local_residual_cannot_be_fabricated_independently(self):
+        for field in ('worldPoint','sourceLocalPoint'):
+            data=geometry_inventory();probe=data['fixtures'][0]['geometryProbe'];probe[field][2]+=.001
+            probe['residual']=probe['sourceLocalPoint'][2]-probe['upper']
+            with self.subTest(field=field),self.assertRaisesRegex(m.EvidenceError,'geometry_probe_world_local_mismatch'):self.validate(data)
+    def test_bounded_probe_failure_retained_without_partial_probe_or_unknown_error(self):
+        data=geometry_inventory();fixture=data['fixtures'][0];del fixture['geometryProbe']
+        fixture['geometryProbeFailure']='budgetExceeded';self.assertEqual(self.validate(data),data)
+        fixture['geometryProbeFailure']='/Users/private/geometry'
+        with self.assertRaisesRegex(m.EvidenceError,'unapproved_error_text'):self.validate(data)
+        data=geometry_inventory();data['fixtures'][0]['geometryProbeFailure']='budgetExceeded'
+        with self.assertRaisesRegex(m.EvidenceError,'geometry_probe_context_mismatch'):self.validate(data)
+    def test_probe_collects_in_same_allowlisted_attachment_and_preserves_failed_test(self):
+        cases=[{'identifier':key,'result':'Failed'} for key,_,_ in m.SPECS+m.DIAGNOSTIC_SPECS]
+        def exporter(bundle,identifier,destination):
+            key,name,label=next(spec for spec in m.SPECS+m.DIAGNOSTIC_SPECS if spec[0]==m.canonical(identifier))
+            value=report(label) if (key,name,label) in m.SPECS else (geometry_inventory() if label=='metadata-inventory' else diagnostic_report(label))
+            export_fixture(destination,name,value)
+        with patch.object(m,'export_test',side_effect=exporter):result=m.collect(ROOT,Path('unused'),cases,u.query)
+        self.assertEqual(result['status'],'complete');self.assertEqual(len(result['reports']),6)
+        record=result['reports'][3];self.assertEqual(record['testResult'],'Failed')
+        self.assertEqual(record['report'],geometry_inventory());self.assertLess(record['bytes'],m.DIAGNOSTIC_LIMIT)
+
+
 class DiagnosticValidationTests(unittest.TestCase):
     def test_fixed_public_inventory_and_synthetic_matrix(self):
         self.assertEqual(m.validate_metadata_inventory(metadata_inventory(),UUIDS),metadata_inventory())

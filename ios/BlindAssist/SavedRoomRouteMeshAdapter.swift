@@ -241,7 +241,9 @@ enum SavedRoomRouteMeshAdapter {
             exportedFeatureIDs: exported, upwardFloorTriangles: upward, downwardFloorTriangles: downward)
     }
 
-    private static func originalFeatures(_ room: CapturedRoom) throws -> [SavedRoomRouteMeshSnapshot.Feature] {
+    // Internal for the original-public-fixture probe to observe the exact
+    // Float32-decoded source fields used by production, not different JSON math.
+    static func originalFeatures(_ room: CapturedRoom) throws -> [SavedRoomRouteMeshSnapshot.Feature] {
         typealias Feature = SavedRoomRouteMeshSnapshot.Feature
         let groups: [(SavedRoomRouteMeshSnapshot.Kind, [CapturedRoom.Surface])] = [(.floor, room.floors),
             (.wall, room.walls), (.door, room.doors), (.window, room.windows), (.opening, room.openings)]
@@ -280,16 +282,28 @@ enum SavedRoomRouteMeshAdapter {
     private static func point(_ v: [Double], _ i: Int32) -> SIMD3<Double> {
         let offset = Int(i) * 3; return SIMD3(v[offset], v[offset + 1], v[offset + 2])
     }
-    private static func verifySourceBounds(_ world: [Double], feature: SavedRoomRouteMeshSnapshot.Feature) throws {
+    struct SourceBoundsAssessment: Sendable {
+        let localPoint, minimum, maximum: [Double]
+        let epsilon: Double
+        var firstViolationAxis: Int? {
+            (0..<3).first { !(localPoint[$0] >= minimum[$0] - epsilon && localPoint[$0] <= maximum[$0] + epsilon) }
+        }
+    }
+    /// The existing predicate exposed as data for a digest-gated test-only
+    /// witness. No tolerance, transform, containment or acceptance is changed.
+    static func sourceBoundsAssessment(_ world: [Double], feature: SavedRoomRouteMeshSnapshot.Feature) throws -> SourceBoundsAssessment {
         let t = NativeCameraTransform(columns: feature.transform)
         let local = try t.inverted().applying(to: Point3(world[0], world[1], world[2]))
         let p = [local.x, local.y, local.z]
         let scale = (world + feature.transform + feature.dimensions).map(abs).max() ?? 1
         let epsilon = roundoffAllowance(scale)
-        for axis in 0..<3 {
-            let lower = feature.polygonCorners.map { $0[axis] }.min() ?? (-feature.dimensions[axis] / 2)
-            let upper = feature.polygonCorners.map { $0[axis] }.max() ?? (feature.dimensions[axis] / 2)
-            guard p[axis] >= lower - epsilon, p[axis] <= upper + epsilon else { throw Failure.sourceGeometryMismatch }
+        let minimum = (0..<3).map { axis in feature.polygonCorners.map { $0[axis] }.min() ?? (-feature.dimensions[axis] / 2) }
+        let maximum = (0..<3).map { axis in feature.polygonCorners.map { $0[axis] }.max() ?? (feature.dimensions[axis] / 2) }
+        return .init(localPoint: p, minimum: minimum, maximum: maximum, epsilon: epsilon)
+    }
+    private static func verifySourceBounds(_ world: [Double], feature: SavedRoomRouteMeshSnapshot.Feature) throws {
+        guard try sourceBoundsAssessment(world, feature: feature).firstViolationAxis == nil else {
+            throw Failure.sourceGeometryMismatch
         }
     }
 }

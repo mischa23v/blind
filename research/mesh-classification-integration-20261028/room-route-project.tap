@@ -1,0 +1,14 @@
+TAP version 13
+# Subtest: canonical project binds existing local room mesh to app/tests and protocols only to hosted tests
+not ok 1 - canonical project binds existing local room mesh to app/tests and protocols only to hosted tests
+  location: '/workspace/scratch/90f3f6703064/blind/tools/test/room-route-project.test.mjs:40:1'
+  error: |-
+  code: 'ERR_ASSERTION'
+  operator: 'strictEqual'
+# Subtest: missing linkage, test source, resource and app embedding mutations are rejected
+ok 2 - missing linkage, test source, resource and app embedding mutations are rejected
+1..2
+# tests 2
+# pass 1
+# fail 1
+# duration_ms 133.137551

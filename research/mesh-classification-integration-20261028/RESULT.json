@@ -1,0 +1,51 @@
+{
+  "kind": "adoption_source_and_inverse_only",
+  "passed": 21,
+  "checks": [
+    "frozen proposal manifest",
+    "all frozen proposal bytes preserved",
+    "actual83 source equals reviewed proposal",
+    "actual hosted tests equal reviewed fixtures",
+    "actual83 source pin",
+    "unrelated83 pin entries preserved",
+    "coordinated75 manifest reference",
+    "default off bench remains byte frozen",
+    "workflow byte unchanged",
+    "timing helper byte unchanged",
+    "membership inverse first",
+    "entire prior cumulative checker preserved",
+    "all prior inverse metadata preserved",
+    "only intended integrated pins changed",
+    "all adoption integrated pins exact",
+    "membership before pin exact",
+    "project inverse recovers exact928 baseline",
+    "generator inverse recovers exact928 baseline",
+    "forward source replay exact",
+    "remote-inventory canonical project and mutations",
+    "cumulative85 checker executed without bypass"
+  ],
+  "project": {
+    "kind": "project_source_graph_only",
+    "beforeAndAfterCanonicalEquality": true,
+    "verifiedRemoteAppFiles": 65,
+    "appBuildGraphUnchanged": true,
+    "newHostedTestOnly": true,
+    "explicitHostedProducts": [
+      "MeshCandidateIngress83",
+      "MeshSnapshot82"
+    ],
+    "mutationsRejected": 6,
+    "swiftCompiled": false,
+    "nativeTestsExecuted": false
+  },
+  "cumulative85SourceChecksPassed": 67,
+  "materializedAppSwiftCount": 5,
+  "expectedRemoteAppSwiftCount": 65,
+  "wholeAppDirectoryScanComplete": false,
+  "fullIntegrated85Gate": "source_checker_executed_with_explicit_app_inventory_limit",
+  "missingPinnedInputs": [],
+  "swiftCompiled": false,
+  "swiftTestsExecuted": false,
+  "cameraActivated": false,
+  "physicalAuthority": false
+}

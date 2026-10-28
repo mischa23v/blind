@@ -1,5 +1,11 @@
 # BlindRoomMesh candidate package (stage75)
 
+## Current Apple source-pin reconciliation — 2026-10-28
+
+At source `9284719fe477135d4bcd85b2cbd2a587609ed428`, the two active isolated Apple lanes stopped **before builds/tests** on the old `Bridge.swift` digest. The last Apple manifest update was `eb0fc673…`; classified-floor adaptation in `4182e995…` changed Bridge, runtime, C++ adapter and header, and `9284719…` later added DEBUG-only runtime timing. This is not solely a timing regression.
+
+The manifest now pins the exact four already-published adapted sources; all 55 targets were checked and the other 51 pins are unchanged. No upstream, fixture, runner, assertion, build option or budget is changed by this repair. Stage83's active nested manifest must reference this revised manifest. Historical `FROZEN.json`, receipts, retired stage85 and inert stage86 review pins remain historical—not relabeled as passing current source. Full provenance and source-only checks: [pin reconciliation](../apple-source-pin-reconciliation-20261028/README.md). Fresh native Apple proof remains pending; matching hashes are not a build or runtime pass.
+
 Reviewed candidate prepared for review branch `codex/recovery-hazard-order-20261027` only. Not an Apple pass. Source app native checks remain pending; no master merge, deployment, physical guidance, or device acceptance.
 
 The portable FROZEN.json is unchanged historical evidence (including its original cache metadata pins). Publication omits build/cache files and rejected intermediate sources. APPLE_SOURCE_PINS.json is regenerated for the branch-only workflow and omits two cache metadata files. The historical INDEPENDENT_APPLE_WORKFLOW_REVIEW.json covers the original workflow, not these trigger/guard changes; independent workflow-only review is required before publication. No algorithm or portable source pin changed.

@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "status": "frozen-portable-tests-passed-independently-reviewed-native-probe-pending",
+  "baseSHA256": {
+    "tools/ci/native-route-diagnostic-evidence.py": "130b6a69db39eabfe58fbede2d151d8adfc20b3b518459272dbf0f9ebf56cc59",
+    "tools/ci/test-native-route-diagnostic-evidence.py": "9901e6d8bf85656ff7859311fca56c7b9241373b4bd68a238422d7e59ba77950"
+  },
+  "sourceSHA256": {
+    "tools/ci/native-route-diagnostic-evidence.py": "eab6db700786caf0099dae97cfb08c10c97a178ec0f62181789bd7c847b75d6e",
+    "tools/ci/test-native-route-diagnostic-evidence.py": "80efc224c95947f70bbb96cfe2cc5d665c4b8ce382e26d26a79644a92078a3f7"
+  },
+  "patch": {
+    "path": "research/native-path-recovery-20261028/collector-geometry-probe.patch",
+    "sha256": "9f3a72b264de089a78ccd69d3f0390eb051e717827eeaac4e6b8e7d57f3d0da4",
+    "roundTrip": "Forward and inverse patches exactly reproduce current/frozen mixed-collector bytes."
+  },
+  "scope": "One optional first-failing known-feature mesh probe inside each original-public fixture inventory; no additional attachment, raw mesh export, geometry repair or tolerance change.",
+  "tests": [
+    {
+      "command": "python3 tools/ci/test-native-route-diagnostic-evidence.py",
+      "passed": 70,
+      "failed": 0
+    },
+    {
+      "command": "python3 tools/ci/test-native-unit-statuses.py",
+      "passed": 31,
+      "failed": 0
+    },
+    {
+      "command": "python3 research/early-native-summary-repair-20261028/test-export-order.py",
+      "passed": 6,
+      "failed": 0
+    }
+  ],
+  "bounds": {
+    "oneProbePerFixture": true,
+    "nodeIndexMaximum": 127,
+    "vertexCountMaximum": 200000,
+    "numericAbsoluteMaximum": 10000,
+    "residualMaximum": 20000,
+    "epsilonMaximum": 1,
+    "attachmentBytes": 131072,
+    "sharedRawAndFinalArtifactBytes": 1048576
+  },
+  "sourceBinding": [
+    "Original fixture SHA256 and original feature UUID must match; probe node must be a known sampled mesh with matching vertexCount.",
+    "Source dimensions/transform/local bounds equal exact Float32 conversion of pinned original public feature; no numeric tolerance.",
+    "Original world bbox is recomputed from source polygon corners or eight original local bbox corners in the identical Double operation order.",
+    "worldPoint to sourceLocalPoint follows exact NativeCameraTransform inverse/apply Double arithmetic; arbitrary independently fabricated residual is rejected.",
+    "Lower/upper, epsilon64*2^-23*scale, positive residual and first violated axis obey the unchanged production inequality.",
+    "Exported bbox contains recorded point; all numeric fields finite and bounded; optional probeFailure is fixed enum and mutually exclusive with probe.",
+    "Probe/probeFailure requires existing adapterFailure sourceGeometryMismatch; unknown fields, raw vertex/triangle arrays and private text remain rejected."
+  ],
+  "inverseSourceEvidence": {
+    "repositoryPath": "BlindCore/Sources/BlindCore/NativeObservation.swift",
+    "ref": "43e33d4",
+    "gitBlob": "ea3e3f31b0cea7047eddcd2ca5f7d68b395f73e9",
+    "verification": "Independently fetched and inspected exact inverse/apply left-associative Double expressions."
+  },
+  "historicalNativeAttachments": [
+    {
+      "path": "research/native-path-recovery-20261028/run40698547633/APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+      "sha256": "3a4d3431c080145d12fa84f38c423027842d79f09d87afc7fa97cbb6f703cab3",
+      "status": "accepted-unchanged"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40698547633/APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+      "sha256": "09cec9f9d2156900f7ae8ee4334785519f974782a544d2453ee5f2e7fecc7dac",
+      "status": "accepted-unchanged"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40698547633/APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "sha256": "ce2c7a0121e195287500349f65778b494af9e687c76452bc373d857e321a97d9",
+      "status": "accepted-unchanged"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40698547633/APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json",
+      "sha256": "e09061f5fb33257a1a90e28bb1221bc83b45d0b28ef09639bd7301984e47cdb3",
+      "status": "accepted-unchanged"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40698547633/SavedRoomCollisionBackendMatrix-v1.json",
+      "sha256": "e90bb9170b54fb7b97336e72ec5c16761ecd738590b0d244c811f663e6e435b9",
+      "status": "accepted-unchanged"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+      "sha256": "5d0c4f850eb0bfd7961bfe357dd7b3038e4ecf27f4360169ba5b217546cf42fb",
+      "status": "accepted-unchanged"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+      "sha256": "7aa20efe20868662f9ae9c0cecc12278374290612ff8ce5a450c2defd9c5db01",
+      "status": "accepted-unchanged"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "sha256": "5f15eb6dde35dabcad5348055faf3c6e65dd2e1c445e278dc58dde418ba1889b",
+      "status": "accepted-unchanged"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json",
+      "sha256": "77c66d3a30eb46b6d38973a58b79cf591bedc9376298d980394499630851fa2b",
+      "status": "accepted-unchanged"
+    },
+    {
+      "path": "research/native-path-recovery-20261028/run40706611490/SavedRoomCollisionBackendMatrix-v1.json",
+      "sha256": "e90bb9170b54fb7b97336e72ec5c16761ecd738590b0d244c811f663e6e435b9",
+      "status": "accepted-unchanged"
+    }
+  ],
+  "limitations": [
+    "Synthetic Python schema/predicate tests are not native ModelIO/RoomPlan execution.",
+    "Native SIMD Float mesh-to-world multiplication is retained as observed data; collector does not impose a guessed Double equivalent.",
+    "No all-vertex or triangle buffer is exported, so collector does not independently prove first vertex or whole-mesh bounds; bounded test producer owns that observation.",
+    "A geometry diagnostic cannot authorize physical guidance or convert a failed test into a pass.",
+    "The inventory/probe is a second export of the same admitted public input; it does not prove byte-identical geometry to the separate adapter export whose failure is recorded."
+  ],
+  "publicationAllowlist": [
+    "tools/ci/native-route-diagnostic-evidence.py",
+    "tools/ci/test-native-route-diagnostic-evidence.py",
+    "research/native-path-recovery-20261028/collector-geometry-probe.patch",
+    "research/native-path-recovery-20261028/collector-geometry-probe.json"
+  ],
+  "independentReview": {
+    "producerOwner": "Reviewed exact inverse/apply expression and 30-field producer alignment; independently ran70collector tests, no blocker.",
+    "nativeEvidenceReviewer": "Verified inverse against exact NativeObservation.swift Git blob ea3e3f31 and closed schema/source binding; independently ran70collector+31exporter tests, no blocker."
+  }
+}

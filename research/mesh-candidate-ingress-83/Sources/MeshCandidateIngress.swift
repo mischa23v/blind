@@ -15,6 +15,7 @@ public final class MeshCandidateIngress83 {
     private let lock = NSLock()
     private let worker: DispatchQueue
     private let runtime: RoomMeshCandidateRuntime
+    private let supportPolicy: MeshSupportPolicy
     private let maxAnchors: Int, maxCopies: Int
     private var epoch: UUID
     private var token: UInt64 = 0
@@ -30,12 +31,17 @@ public final class MeshCandidateIngress83 {
     private var receipt: Double = -1
     // Tombstones remain until reset; no eviction that could permit anchor ABA.
     private var revisions: [UUID: UInt64] = [:]
+    /// Opt-in source classification only, NOT measured physical support. Legacy
+    /// callers retain slope-based diagnostic behavior; policy is fixed across reset.
     public init(maxAnchors: Int = 128, maxCopies: Int = 1,
+                supportPolicy: MeshSupportPolicy = .legacySlope,
                 decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh83.decode", qos: .utility)) throws {
         guard (1...1024).contains(maxAnchors), (1...2).contains(maxCopies) else { throw Failure.unavailable }
         self.maxAnchors = maxAnchors; self.maxCopies = maxCopies; worker = decodeQueue
+        self.supportPolicy = supportPolicy
         let initialEpoch = UUID(); epoch = initialEpoch
-        runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1)
+        runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1,
+                                               supportPolicy: supportPolicy)
     }
     private func locked<T>(_ body: () throws -> T) rethrows -> T {
         lock.lock(); defer { lock.unlock() }; return try body()
@@ -94,11 +100,26 @@ public final class MeshCandidateIngress83 {
                           c.receiptUptime == context.receiptUptime,
                           mesh.revision == context.revision,
                           mesh.triangleIndices.allSatisfy({ $0 <= UInt32(Int32.max) }) else { gap(); return }
+                    var triangleSupport: [MeshTriangleSupport]?
+                    if supportPolicy == .classifiedFloorOnly {
+                        guard mesh.classifications.count == mesh.triangleIndices.count / 3 else { gap(); return }
+                        // ARMeshClassification.floor raw value is 2. Only that label
+                        // is eligible floor; all other faces still rasterize as obstacles.
+                        // No slope/height fallback and no discarded obstacle geometry.
+                        triangleSupport = mesh.classifications.map { $0 == 2 ? .floor : .obstacle }
+                        // Missing, malformed, unsupported and explicit .none labels
+                        // remain unknown even when another classified floor can route.
+                        // Install the replacement below: never retain its prior floor
+                        // merely because current classifications are absent.
+                        if !mesh.classificationDiagnostics.isEmpty ||
+                           mesh.classifications.contains(where: { $0 == nil || $0 == 0 }) { gap() }
+                    }
                     // Local vertices and unmodified column-major transform: package applies ONCE.
                     let event = MeshAnchorEvent(sessionID: epoch.uuidString, generation: 1,
                         anchorID: id.uuidString, revision: Int(c.revision), timestamp: c.receiptUptime,
                         vertices: mesh.localVertices.map(Double.init), triangles: mesh.triangleIndices.map(Int32.init),
-                        columnMajorTransform: mesh.anchorTransform.map(Double.init), complete: true)
+                        columnMajorTransform: mesh.anchorTransform.map(Double.init), complete: true,
+                        triangleSupport: triangleSupport)
                     // Runtime itself marks a rejected offer as sticky unknown coverage.
                     _ = runtime.offer(event)
                 }

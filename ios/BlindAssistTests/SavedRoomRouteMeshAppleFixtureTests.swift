@@ -128,6 +128,19 @@ import simd
         var unknownFeatureMeshCount = 0
         var adapterFailure: String?
         var inventoryFailure: String?
+        var geometryProbe: SourceBoundsProbe?
+        var geometryProbeFailure: String?
+    }
+    private struct SourceBoundsProbe: Encodable, Sendable {
+        let sourceEncoding = "capturedRoomFloat32"
+        let nodeIndex, vertexIndex, vertexCount, axis: Int
+        let featureID, featureKind, side: String
+        let lower, upper, epsilon, residual: Double
+        let meshLocalPoint, worldPoint, sourceLocalPoint, sourceDimensions: [Double]
+        let sourceLocalMinimum, sourceLocalMaximum, sourceWorldMinimum, sourceWorldMaximum: [Double]
+        let exportedWorldMinimum, exportedWorldMaximum: [Double]
+        let exportedSourceLocalMinimum, exportedSourceLocalMaximum, assetUpAxis: [Double]
+        let sourceTransform, meshLocalTransform, meshGlobalTransform, parentGlobalTransform, rootGlobalTransform: [Double]
     }
     private struct InventoryAttachment: Encodable {
         let schema = "blind.saved-room-route-mesh-metadata-inventory.v1"
@@ -159,6 +172,85 @@ import simd
     private nonisolated static func failureCode(_ error: Error) -> String {
         guard let failure = error as? SavedRoomRouteMeshAdapter.Failure else { return "unclassifiedError" }
         return String(describing: failure)
+    }
+
+    /// One first-failing mesh, not a geometry dump. Uses the unchanged production
+    /// predicate and records its entire mesh bounds to distinguish a frame error
+    /// from exporter thickness. Never used to accept or modify geometry.
+    private nonisolated static func sourceBoundsProbe(mesh: MDLMesh, nodeIndex: Int,
+        feature: SavedRoomRouteMeshSnapshot.Feature, sceneRoot: MDLObject, parent: MDLObject?,
+        asset: MDLAsset, examinedVertices: inout Int) throws -> SourceBoundsProbe? {
+        typealias Adapter = SavedRoomRouteMeshAdapter
+        guard nodeIndex < 128, mesh.vertexCount > 0,
+              mesh.vertexCount <= Adapter.maximumVertices - examinedVertices else { throw Adapter.Failure.budgetExceeded }
+        guard mesh.vertexDescriptor.attributes.count > 0, mesh.vertexDescriptor.layouts.count > 0,
+              let attribute = mesh.vertexDescriptor.attributes[0] as? MDLVertexAttribute,
+              attribute.name == MDLVertexAttributePosition, attribute.format == .float3,
+              attribute.offset == 0, attribute.bufferIndex == 0,
+              let layout = mesh.vertexDescriptor.layouts[0] as? MDLVertexBufferLayout,
+              layout.stride == 12, !mesh.vertexBuffers.isEmpty,
+              mesh.vertexBuffers[0].length >= mesh.vertexCount * 12 else { throw Adapter.Failure.invalidMesh }
+        func matrix(_ value: simd_float4x4) throws -> [Double] {
+            let values = (0..<4).flatMap { column in (0..<4).map { row in Double(value[column][row]) } }
+            guard values.allSatisfy({ $0.isFinite && abs($0) <= 10_000 }) else { throw Adapter.Failure.invalidMesh }
+            return values
+        }
+        let transform = MDLTransform.globalTransform(with: mesh, atTime: asset.startTime)
+        let global = try matrix(transform)
+        let local = try matrix(mesh.transform?.matrix ?? matrix_identity_float4x4)
+        let parentGlobal = try matrix(parent.map { MDLTransform.globalTransform(with: $0, atTime: asset.startTime) } ?? matrix_identity_float4x4)
+        let rootGlobal = try matrix(MDLTransform.globalTransform(with: sceneRoot, atTime: asset.startTime))
+        let up = [Double(asset.upAxis.x), Double(asset.upAxis.y), Double(asset.upAxis.z)]
+        guard up.allSatisfy({ $0.isFinite && abs($0) <= 10_000 }) else { throw Adapter.Failure.invalidMesh }
+        var worldMinimum = [Double](repeating: .infinity, count: 3), worldMaximum = [Double](repeating: -.infinity, count: 3)
+        var sourceMinimum = worldMinimum, sourceMaximum = worldMaximum
+        var first: (index: Int, mesh: [Double], world: [Double], assessment: Adapter.SourceBoundsAssessment)?
+        let map = mesh.vertexBuffers[0].map()
+        for index in 0..<mesh.vertexCount {
+            let address = map.bytes.advanced(by: index * 12)
+            let point = SIMD4<Float>(address.loadUnaligned(as: Float.self),
+                address.advanced(by: 4).loadUnaligned(as: Float.self),
+                address.advanced(by: 8).loadUnaligned(as: Float.self), 1)
+            guard point.x.isFinite, point.y.isFinite, point.z.isFinite,
+                  abs(point.x) <= 10_000, abs(point.y) <= 10_000, abs(point.z) <= 10_000 else { throw Adapter.Failure.invalidMesh }
+            let world = transform * point
+            guard world.x.isFinite, world.y.isFinite, world.z.isFinite,
+                  abs(world.x) <= 10_000, abs(world.y) <= 10_000, abs(world.z) <= 10_000,
+                  abs(world.w - 1) <= Float(Adapter.roundoffAllowance(1)) else { throw Adapter.Failure.invalidMesh }
+            let value = [Double(world.x), Double(world.y), Double(world.z)]
+            let assessment = try Adapter.sourceBoundsAssessment(value, feature: feature)
+            guard assessment.localPoint.allSatisfy({ $0.isFinite && abs($0) <= 10_000 }) else { throw Adapter.Failure.invalidMesh }
+            for axis in 0..<3 {
+                worldMinimum[axis] = min(worldMinimum[axis], value[axis]); worldMaximum[axis] = max(worldMaximum[axis], value[axis])
+                sourceMinimum[axis] = min(sourceMinimum[axis], assessment.localPoint[axis]); sourceMaximum[axis] = max(sourceMaximum[axis], assessment.localPoint[axis])
+            }
+            if first == nil, assessment.firstViolationAxis != nil {
+                first = (index, [Double(point.x), Double(point.y), Double(point.z)], value, assessment)
+            }
+        }
+        examinedVertices += mesh.vertexCount
+        guard let first, let axis = first.assessment.firstViolationAxis else { return nil }
+        let bounds = first.assessment
+        let sourcePoints: [[Double]]
+        if !feature.polygonCorners.isEmpty { sourcePoints = feature.polygonCorners }
+        else { sourcePoints = (0..<8).map { mask in (0..<3).map { (mask & (1 << $0)) == 0 ? bounds.minimum[$0] : bounds.maximum[$0] } } }
+        let t = feature.transform
+        let originalWorld = sourcePoints.map { p in
+            (0..<3).map { r in t[r] * p[0] + t[4 + r] * p[1] + t[8 + r] * p[2] + t[12 + r] }
+        }
+        let below = bounds.localPoint[axis] < bounds.minimum[axis] - bounds.epsilon
+        return .init(nodeIndex: nodeIndex, vertexIndex: first.index, vertexCount: mesh.vertexCount, axis: axis,
+            featureID: feature.id.uuidString, featureKind: feature.kind.rawValue,
+            side: below ? "belowMinimum" : "aboveMaximum", lower: bounds.minimum[axis], upper: bounds.maximum[axis],
+            epsilon: bounds.epsilon, residual: below ? bounds.minimum[axis] - bounds.localPoint[axis] : bounds.localPoint[axis] - bounds.maximum[axis],
+            meshLocalPoint: first.mesh, worldPoint: first.world, sourceLocalPoint: bounds.localPoint, sourceDimensions: feature.dimensions,
+            sourceLocalMinimum: bounds.minimum, sourceLocalMaximum: bounds.maximum,
+            sourceWorldMinimum: (0..<3).map { axis in originalWorld.map { $0[axis] }.min()! },
+            sourceWorldMaximum: (0..<3).map { axis in originalWorld.map { $0[axis] }.max()! },
+            exportedWorldMinimum: worldMinimum, exportedWorldMaximum: worldMaximum,
+            exportedSourceLocalMinimum: sourceMinimum, exportedSourceLocalMaximum: sourceMaximum, assetUpAxis: up,
+            sourceTransform: feature.transform, meshLocalTransform: local, meshGlobalTransform: global,
+            parentGlobalTransform: parentGlobal, rootGlobalTransform: rootGlobal)
     }
 
     /// Test-only observation of the unchanged exporter/importer, never a parser
@@ -194,6 +286,7 @@ import simd
                 return id.uuidString
             }
             let room = try JSONDecoder().decode(CapturedRoom.self, from: data)
+            let sourceFeatures = Dictionary(uniqueKeysWithValues: try Adapter.originalFeatures(room).map { ($0.id, $0) })
             let manager = FileManager.default
             var root = manager.temporaryDirectory.appendingPathComponent("BlindPublicAppleMeshInventory-\(UUID().uuidString)", isDirectory: true)
             try manager.createDirectory(at: root, withIntermediateDirectories: false,
@@ -266,7 +359,9 @@ import simd
             guard importError == nil, asset.count > 0, asset.count <= Adapter.maximumNodes,
                   asset.startTime == asset.endTime else { throw Adapter.Failure.invalidMesh }
             var visited = Set<ObjectIdentifier>()
-            func visit(_ node: MDLObject, parentIndex: Int?, inheritedID: UUID?, depth: Int) throws {
+            var geometryExaminedVertices = 0
+            func visit(_ node: MDLObject, parentIndex: Int?, inheritedID: UUID?, depth: Int,
+                       sceneRoot: MDLObject, parent: MDLObject?) throws {
                 guard depth <= 64, visited.insert(ObjectIdentifier(node)).inserted else { throw Adapter.Failure.invalidMesh }
                 guard result.nodeCount < Adapter.maximumNodes else { throw Adapter.Failure.budgetExceeded }
                 let index = result.nodeCount
@@ -285,6 +380,13 @@ import simd
                     if identity == nil { result.unmatchedMeshCount += 1 }
                     else if publicID(identity) == nil { result.unknownFeatureMeshCount += 1 }
                 }
+                if result.adapterFailure == "sourceGeometryMismatch", result.geometryProbe == nil,
+                   result.geometryProbeFailure == nil, let mesh, let identity, let feature = sourceFeatures[identity] {
+                    do {
+                        result.geometryProbe = try sourceBoundsProbe(mesh: mesh, nodeIndex: index, feature: feature,
+                            sceneRoot: sceneRoot, parent: parent, asset: asset, examinedVertices: &geometryExaminedVertices)
+                    } catch { result.geometryProbeFailure = failureCode(error) }
+                }
                 if result.nodes.count < 128 {
                     result.nodes.append(ExportNode(index: index, depth: depth, name: safeExportName(node.name),
                         nameSHA256: digest(Data(node.name.utf8)), isMesh: isMesh,
@@ -295,9 +397,14 @@ import simd
                 }
                 let children = node.children.objects
                 guard children.count <= Adapter.maximumNodes - result.nodeCount else { throw Adapter.Failure.budgetExceeded }
-                for child in children { try visit(child, parentIndex: index, inheritedID: identity, depth: depth + 1) }
+                for child in children {
+                    try visit(child, parentIndex: index, inheritedID: identity, depth: depth + 1, sceneRoot: sceneRoot, parent: node)
+                }
             }
-            for index in 0..<asset.count { try visit(asset.object(at: index), parentIndex: nil, inheritedID: nil, depth: 0) }
+            for index in 0..<asset.count {
+                let root = asset.object(at: index)
+                try visit(root, parentIndex: nil, inheritedID: nil, depth: 0, sceneRoot: root, parent: nil)
+            }
         } catch { result.inventoryFailure = result.inventoryFailure ?? failureCode(error) }
         return result
     }
@@ -324,6 +431,10 @@ import simd
             XCTAssertGreaterThan(report.meshCount, 0)
             XCTAssertEqual(report.unmatchedMeshCount, 0, "Every real mesh must resolve through an exact metadata name or ancestor")
             XCTAssertEqual(report.unknownFeatureMeshCount, 0, "Resolved mesh UUIDs must belong to the unchanged original room")
+            XCTAssertNil(report.geometryProbeFailure)
+            if report.adapterFailure == "sourceGeometryMismatch" {
+                XCTAssertNotNil(report.geometryProbe, "Retain the first public-source bounds violation before proposing a repair")
+            }
             XCTAssertNil(report.adapterFailure, "\(report.fixtureID): inspect retained metadata/node inventory; no guessed matching")
         }
     }
@@ -343,6 +454,28 @@ import simd
         XCTAssertTrue(report.metadataEntries.isEmpty)
         XCTAssertEqual(report.nodeCount, 0)
         XCTAssertTrue(report.nodes.isEmpty)
+        XCTAssertNil(report.geometryProbe)
+        XCTAssertNil(report.geometryProbeFailure)
+    }
+
+    func testSourceBoundsProbeRetainsZeroDepthAndExactRoundoffPredicate() throws {
+        let feature = SavedRoomRouteMeshSnapshot.Feature(id: UUID(), kind: .wall, parentID: nil, category: "wall",
+            transform: [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1], dimensions: [2,2,0], polygonCorners: [], capturedDoorOpen: nil)
+        let onPlane = try SavedRoomRouteMeshAdapter.sourceBoundsAssessment([0,0,0], feature: feature)
+        XCTAssertNil(onPlane.firstViolationAxis)
+        XCTAssertEqual(onPlane.minimum, [-1,-1,0]); XCTAssertEqual(onPlane.maximum, [1,1,0])
+        let boundary = try SavedRoomRouteMeshAdapter.sourceBoundsAssessment([0,0,onPlane.epsilon], feature: feature)
+        XCTAssertNil(boundary.firstViolationAxis)
+        let outside = try SavedRoomRouteMeshAdapter.sourceBoundsAssessment([0,0,onPlane.epsilon.nextUp], feature: feature)
+        XCTAssertEqual(outside.firstViolationAxis, 2)
+        for depth in [-0.05, 0.05] {
+            let thickness = try SavedRoomRouteMeshAdapter.sourceBoundsAssessment([0,0,depth], feature: feature)
+            XCTAssertEqual(thickness.firstViolationAxis, 2, "The diagnostic must not silently approve exporter thickness")
+            XCTAssertEqual(thickness.localPoint[2], depth)
+            XCTAssertEqual(thickness.epsilon, onPlane.epsilon)
+        }
+        let multiple = try SavedRoomRouteMeshAdapter.sourceBoundsAssessment([2,2,0.05], feature: feature)
+        XCTAssertEqual(multiple.firstViolationAxis, 0, "Retain production's first-axis ordering")
     }
 
     func testFlatMetadataDecoderPreservesPublicUUIDsForBinaryPlistAndJSON() throws {
