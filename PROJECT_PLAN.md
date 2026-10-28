@@ -1,3 +1,9 @@
+## Current navigation dependency — 2026-10-28 13:26 UTC
+
+The immediate dependency is a working, independently checked room-geometry and collision pipeline. Native run40677832625 on dc32a9 compiles but admits zero Apple route cases because the metadata adapter fails; collision controls also fail. Resolve these implementation failures before treating route counts as evidence, then connect and test the live unfamiliar-place pipeline. Do not replace current sensing with historical maps or LLM directions. See [TASKS](TASKS.md), [next actions](TODO.md), and [native evidence](research/native-path-recovery-20261028/native-run-40677832625-evidence.json).
+
+---
+
 ## Native recorder checkpoint result — 2026-10-28 08:37 UTC
 
 Native run 40653113122 at `26bfa69` is terminal: both builds passed; Core 1,411 executed, zero failures, one skip; Memory 51 passed. Hosted 175: 168 passed, one failed, six skipped. All fifteen RecordedRouteStore tests and all three connected-navigation bench fixtures passed; all ConnectedJourney tests passed. The remaining hosted failure is ObservedScene actual-accumulator/abandoned-completion on the source before the later `adb8fd8` completion-fence changes.

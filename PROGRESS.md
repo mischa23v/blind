@@ -1,3 +1,15 @@
+## Apple route failures isolated before movement — 2026-10-28 13:25 UTC
+
+Rechecked published commit `dc32a9bad9a75566f27924fb9f7aa8fe50a46e95` and native run 40677832625. Hosted tests: 218 total, 198 passed, 18 failed, 2 skipped. The exact collected reports contain 12 baseline and 6 width-28 route outcomes plus 16 supplied-pose journey stages, all `unsupported-geometry / missingMetadata`. No route was admitted by these reports. Six collision-oracle tests fail the mandatory bidirectional thin-plane backend control. Neither failure proves that the actual rooms lack space.
+
+The adapter combines several metadata failures into one error, so current evidence cannot distinguish decoding from ModelIO node association. The collision control aborts before later controls are measured. Stage-specific diagnostics and a bounded backend control matrix are being prepared; neither is a verified repair yet. A classified-mesh test also times out at its original ten-second deadline; its cause remains unmeasured.
+
+The previous local checkout is unavailable in the resumed environment. Published source is being restored from exact dc32a9; unpublished candidates are not claimed recovered or pushed. The full unfamiliar-place live mapping/localization/collision/guidance loop remains unfinished.
+
+[Source-bound native evidence](research/native-path-recovery-20261028/native-run-40677832625-evidence.json).
+
+---
+
 ## Native recorder checkpoint result — 2026-10-28 08:37 UTC
 
 Native run 40653113122 at `26bfa69` is terminal: both builds passed; Core 1,411 executed, zero failures, one skip; Memory 51 passed. Hosted 175: 168 passed, one failed, six skipped. All fifteen RecordedRouteStore tests and all three connected-navigation bench fixtures passed; all ConnectedJourney tests passed. The remaining hosted failure is ObservedScene actual-accumulator/abandoned-completion on the source before the later `adb8fd8` completion-fence changes.

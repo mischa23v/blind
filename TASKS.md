@@ -1,3 +1,13 @@
+## Navigation checkpoint and open acceptance — 2026-10-28 13:26 UTC
+
+- [ ] Repair Apple mesh metadata adapter using actual export/node evidence. Run 40677832625: all 18 route outcomes and 16 supplied-pose journey stages blocked by missingMetadata; zero admitted paths.
+- [ ] Pass every independent collision-backend control, then score complete original route chains. Six control failures currently prevent a no-contact verdict.
+- [ ] Complete unfamiliar-place live geometry → current room/pose/heading → current obstacles/support → route → guidance integration. A saved map is not evidence of current clearance.
+- [ ] Demonstrate chair/bed post-rise localization, connection to a route, travel across a room, doorway transition, exit/return, deviation and tracking-loss recovery. Supplied-pose fixtures do not establish physical localization.
+- [ ] Publish and verify each tested checkpoint, including failures. Follow [current next actions](TODO.md) and [latest evidence](research/native-path-recovery-20261028/native-run-40677832625-evidence.json). No child/independent mobility readiness claim.
+
+---
+
 ## Native recorder checkpoint result — 2026-10-28 08:37 UTC
 
 Native run 40653113122 at `26bfa69` is terminal: both builds passed; Core 1,411 executed, zero failures, one skip; Memory 51 passed. Hosted 175: 168 passed, one failed, six skipped. All fifteen RecordedRouteStore tests and all three connected-navigation bench fixtures passed; all ConnectedJourney tests passed. The remaining hosted failure is ObservedScene actual-accumulator/abandoned-completion on the source before the later `adb8fd8` completion-fence changes.

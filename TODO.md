@@ -1,3 +1,17 @@
+## Immediate navigation work — 2026-10-28 13:25 UTC
+
+Verified published head: `dc32a9bad9a75566f27924fb9f7aa8fe50a46e95`. Native run 40677832625 builds, but **18 route cases and 16 supplied-pose journey stages are blocked before movement by `missingMetadata`**. These are not physical room-clearance results.
+
+1. Distinguish metadata read/decode/node-association failures using bounded original-public-fixture diagnostics; fix the demonstrated cause, not guessed geometry.
+2. Repair and independently validate the collision backend's mandatory controls before accepting any no-contact route outcome.
+3. Preserve the original route protocols/margins and rerun the same Apple cases; retain every failure and collision.
+4. Audit and connect live AR geometry, current localization, current obstacle/support evidence, route planning and guidance for unfamiliar rooms. Saved fixture success alone cannot close this item.
+5. Keep private frames on device. Publish source and bounded public/synthetic evidence at each reviewed checkpoint; verify the remote commit and its CI.
+
+[Exact latest run evidence](research/native-path-recovery-20261028/native-run-40677832625-evidence.json). No new physical device or child trial is validated.
+
+---
+
 ## Native recorder checkpoint result — 2026-10-28 08:37 UTC
 
 Native run 40653113122 at `26bfa69` is terminal: both builds passed; Core 1,411 executed, zero failures, one skip; Memory 51 passed. Hosted 175: 168 passed, one failed, six skipped. All fifteen RecordedRouteStore tests and all three connected-navigation bench fixtures passed; all ConnectedJourney tests passed. The remaining hosted failure is ObservedScene actual-accumulator/abandoned-completion on the source before the later `adb8fd8` completion-fence changes.

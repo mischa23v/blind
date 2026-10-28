@@ -1,0 +1,476 @@
+{
+  "schema": 1,
+  "source": {
+    "repository": "mischa23v/blind",
+    "commit": "dc32a9bad9a75566f27924fb9f7aa8fe50a46e95",
+    "runID": 40677832625,
+    "jobID": 122780656018,
+    "url": "https://github.com/mischa23v/blind/actions/runs/40677832625/job/122780656018",
+    "retrievedVia": "GitHub connector fetch_workflow_job_logs",
+    "retrievedUTC": "2026-10-28T13:20:41Z"
+  },
+  "hostedUnitCounts": {
+    "Skipped": 2,
+    "Passed": 198,
+    "Expected Failure": 0,
+    "Failed": 18
+  },
+  "hostedUnitCaseCount": 218,
+  "aggregateCountsMatch": true,
+  "provenance": {
+    "actual_head": "dc32a9bad9a75566f27924fb9f7aa8fe50a46e95",
+    "tracked_source_clean": true,
+    "untracked_scopes": [
+      "ios",
+      "BlindCore",
+      "BlindMemory",
+      "tools/ci",
+      ".github/workflows"
+    ],
+    "generated_metadata": [
+      {
+        "path": "BlindMemory/Package.resolved",
+        "status": "validated_public_exact_pin",
+        "bytes": 388,
+        "sha256": "159a0bf93b792f403c70f7ec2cfea61686aff384e55c8c132946fb8980e26889",
+        "schema_version": 3,
+        "pins": [
+          {
+            "identity": "grdb.swift",
+            "kind": "remoteSourceControl",
+            "location": "https://github.com/groue/GRDB.swift.git",
+            "state": {
+              "revision": "b83108d10f42680d78f23fe4d4d80fc88dab3212",
+              "version": "7.11.1"
+            }
+          }
+        ]
+      },
+      {
+        "path": "ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+        "status": "validated_public_exact_pin",
+        "bytes": 388,
+        "sha256": "d11cb7a41a81538c6dac3ffac3b8187ff08abdec9bdae64e6f53c51cf5c8ad69",
+        "schema_version": 3,
+        "pins": [
+          {
+            "identity": "grdb.swift",
+            "kind": "remoteSourceControl",
+            "location": "https://github.com/groue/GRDB.swift.git",
+            "state": {
+              "revision": "b83108d10f42680d78f23fe4d4d80fc88dab3212",
+              "version": "7.11.1"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "routeDiagnosticEvidence": {
+    "schema": 1,
+    "status": "complete",
+    "physicalAuthority": false,
+    "scope": "public Apple historical fixtures; supplied-pose candidate replay only",
+    "aggregateByteLimit": 1048576,
+    "reports": [
+      {
+        "attachmentName": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+        "testIdentifier": "SavedRoomRouteDiagnosticAppleTests/testPredeclaredApplePathsWaypointSinkAndIndependentFullBodySweeps()",
+        "status": "collected",
+        "testResult": "Failed",
+        "bytes": 2383,
+        "sha256": "07fa3cf7db640ad41b758565b89038a908985f51d9ad11ee3b68ff635f778894",
+        "report": {
+          "currentCoverageKnown": false,
+          "errors": [
+            "Bedroom3: missingMetadata",
+            "Hallway2: missingMetadata"
+          ],
+          "fullFootprintSupportVerified": false,
+          "outcomes": [
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-aisle",
+              "profile": "declared-nominal"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-aisle",
+              "profile": "declared-wide"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-around-bed",
+              "profile": "declared-nominal"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-around-bed",
+              "profile": "declared-wide"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-contained-start",
+              "profile": "declared-nominal"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-contained-start",
+              "profile": "declared-wide"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-long",
+              "profile": "declared-nominal"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-long",
+              "profile": "declared-wide"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-corner",
+              "profile": "declared-nominal"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-corner",
+              "profile": "declared-wide"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-missing-floor",
+              "profile": "declared-nominal"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-missing-floor",
+              "profile": "declared-wide"
+            }
+          ],
+          "physicalAuthority": false,
+          "profileAddendumSHA256": "none",
+          "protocolSHA256": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123",
+          "schedule": "original-baseline",
+          "schema": 1,
+          "scope": "candidate waypoint replay; not controller/device arrival"
+        }
+      },
+      {
+        "attachmentName": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+        "testIdentifier": "SavedRoomRouteDiagnosticAppleTests/testSeparatelyPreregistered28cmWidthDoesNotReplaceBaseline()",
+        "status": "collected",
+        "testResult": "Failed",
+        "bytes": 1648,
+        "sha256": "3678bad2077543e3cf39c20c7af4989692c42465553c4509018f584e8c29805d",
+        "report": {
+          "currentCoverageKnown": false,
+          "errors": [
+            "Bedroom3: missingMetadata",
+            "Hallway2: missingMetadata"
+          ],
+          "fullFootprintSupportVerified": false,
+          "outcomes": [
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-aisle",
+              "profile": "declared-width28-assumed-depth20-height120"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-around-bed",
+              "profile": "declared-width28-assumed-depth20-height120"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "bedroom-contained-start",
+              "profile": "declared-width28-assumed-depth20-height120"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-long",
+              "profile": "declared-width28-assumed-depth20-height120"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-corner",
+              "profile": "declared-width28-assumed-depth20-height120"
+            },
+            {
+              "error": "missingMetadata",
+              "outcome": "unsupported-geometry",
+              "pair": "hall-missing-floor",
+              "profile": "declared-width28-assumed-depth20-height120"
+            }
+          ],
+          "physicalAuthority": false,
+          "profileAddendumSHA256": "c52792a1213a1b3969e97a6201d43bac2426a444f3f39e8b906a5feb0e0f701d",
+          "protocolSHA256": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123",
+          "schedule": "width28-addendum",
+          "schema": 1,
+          "scope": "candidate waypoint replay; not controller/device arrival"
+        }
+      },
+      {
+        "attachmentName": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+        "testIdentifier": "SavedRoomRouteJourneyAppleTests/testPredeclaredSuppliedBedChairConnectorsAroundRoomDoorWithholdingAndReturn()",
+        "status": "collected",
+        "testResult": "Failed",
+        "bytes": 3847,
+        "sha256": "a1e72496b3000866d9670426c8cf231cf71d63ff8110b1951730ee845a9eb19b",
+        "report": {
+          "baseline18Unchanged": true,
+          "cameraLocalizationTested": false,
+          "errors": [
+            "Bedroom3: missingMetadata",
+            "Hallway2: missingMetadata"
+          ],
+          "fullFootprintSupportVerified": false,
+          "getUpKinematicsTested": false,
+          "outcomes": [
+            {
+              "error": "missingMetadata",
+              "journey": "bed-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "connector-to-existing-aisle-route"
+            },
+            {
+              "error": "missingMetadata",
+              "journey": "bed-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "around-bed"
+            },
+            {
+              "error": "missingMetadata",
+              "journey": "bed-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "back-to-aisle"
+            },
+            {
+              "error": "missingMetadata",
+              "journey": "bed-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "closed-door-approach"
+            },
+            {
+              "error": "missingMetadata",
+              "journey": "bed-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "closed-door-outbound-unsupported"
+            },
+            {
+              "error": "missingMetadata",
+              "journey": "bed-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "return-to-supplied-standing-place"
+            },
+            {
+              "error": "missingMetadata",
+              "journey": "chair-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "connector-to-existing-aisle-route"
+            },
+            {
+              "error": "missingMetadata",
+              "journey": "chair-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "around-room-aisle"
+            },
+            {
+              "error": "missingMetadata",
+              "journey": "chair-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "closed-door-approach"
+            },
+            {
+              "error": "missingMetadata",
+              "journey": "chair-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "closed-door-outbound-unsupported"
+            },
+            {
+              "error": "missingMetadata",
+              "journey": "chair-supplied-rise-around-closed-door-return",
+              "outcome": "unsupported-geometry",
+              "stage": "return-to-supplied-standing-place"
+            },
+            {
+              "error": "missingMetadata",
+              "journey": "standing-inside-bed-is-invalid",
+              "outcome": "unsupported-geometry",
+              "stage": "inside-bed-connector-attempt"
+            },
+            {
+              "error": "missingMetadata",
+              "journey": "standing-inside-chair-is-invalid",
+              "outcome": "unsupported-geometry",
+              "stage": "inside-chair-connector-attempt"
+            },
+            {
+              "error": "missingMetadata",
+              "journey": "historically-open-hallway-door-outside-unknown-return",
+              "outcome": "unsupported-geometry",
+              "stage": "open-door-approach"
+            },
+            {
+              "error": "missingMetadata",
+              "journey": "historically-open-hallway-door-outside-unknown-return",
+              "outcome": "unsupported-geometry",
+              "stage": "outside-original-floor-unsupported"
+            },
+            {
+              "error": "missingMetadata",
+              "journey": "historically-open-hallway-door-outside-unknown-return",
+              "outcome": "unsupported-geometry",
+              "stage": "return-within-original-supported-model"
+            }
+          ],
+          "physicalAuthority": false,
+          "productionGuidanceCode": [
+            "SpatialFacts.relation",
+            "SpatialFacts.phrase",
+            "GuidanceCadence.label"
+          ],
+          "protocolSHA256": "8e060627d0f570820fd00a427e22f6672eb50048611dfc9682986cac5c30cc9a",
+          "schema": 1,
+          "suppliedPoseCandidateReplayOnly": true,
+          "sustainedControllerTested": false,
+          "VoiceOverTested": false
+        }
+      }
+    ],
+    "sourceSHA256": {
+      "ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/PROTOCOL.json": "ee8f183ca4d7b6fd9aabecf2f7cd8d39bc472ce071873bceafe4c557f65f8123",
+      "ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/PROFILE_28CM_ADDENDUM.json": "c52792a1213a1b3969e97a6201d43bac2426a444f3f39e8b906a5feb0e0f701d",
+      "ios/BlindAssistTests/Fixtures/RoomRouteDiagnostic/JOURNEY_ADDENDUM.json": "8e060627d0f570820fd00a427e22f6672eb50048611dfc9682986cac5c30cc9a",
+      "ios/BlindAssistTests/Fixtures/RoomPlanApple/Hallway2.capturedRoom.json": "f4cf3460fd9e746a86fe6538e2b1980e22e18207a2d3c7ea3f7679f58c8c6f4d",
+      "ios/BlindAssistTests/Fixtures/RoomPlanApple/Bedroom3.capturedRoom.json": "44df7bd5f4d1961bf13344916384dcfa20d42c7ef8dc58b0e13d1c2f7c6a4d2e",
+      "ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift": "30385ac82baf712393cc479e802db2c49b0ddf0d798c173a36f024b801f403b0",
+      "ios/BlindAssistTests/SavedRoomRouteJourneyAppleTests.swift": "94e8e2ea83e212d3557b1f974d935404b0a79fa6e6f7d62d7a1dc16ad85e8b73",
+      "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift": "e8a5fd35062f2282006a48524b6dd83ccd75c2b7f5af44457b8fa0c9d06d5631",
+      "ios/BlindAssist/SavedRoomRouteMeshAdapter.swift": "bcb3dbf20fe3f8f5a1ce890b728bd36d4049beb4c82af230f060077183d044b0",
+      "BlindCore/Sources/BlindCore/SpatialFacts.swift": "c99d1ffa433ca6b6688c09c7e995667b04a44b80fb8ed62a6b5f94d7e25e96c3",
+      "BlindCore/Sources/BlindCore/GuidanceCadence.swift": "b9c93fdda0216862ad06f1c0a46755894e07fc2ddaea4b1976edca68965baf2f"
+    },
+    "rawAttachmentBytes": 7878
+  },
+  "failedCases": [
+    {
+      "identifier": "ClassifiedRoomMeshTests/testClassifiedFloorRoutesWithoutGrantingPhysicalAuthority()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "ConversationTests/remembersNameWithoutRecitingHistory()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "TextChatScenarioTests/followsConversation(_:)",
+      "result": "Failed"
+    },
+    {
+      "identifier": "TextChatScenarioTests/doesNotInventFloorClearance()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedProfileConversationTests/suppliesNameWithoutOldHistory(corrected:)",
+      "result": "Failed"
+    },
+    {
+      "identifier": "UnsupportedPremiseTests/repliesNeverAssertUnsupportedFacts(_:)",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteCollisionOracleTests/testExplicitBodyVersusMarginBoundsAreNotInflatedAgain()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteCollisionOracleTests/testHeadHeightAndSeparateFloorContact()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteCollisionOracleTests/testInitialOverlapIsNotLostByZeroLengthSweep()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteCollisionOracleTests/testMalformedGeometryAndMissingFurnitureIdentityFail()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteCollisionOracleTests/testOriginalFurnitureSolidDetectsContainedStartSeparatelyFromShell()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteCollisionOracleTests/testThinWallSweepBothDirectionsAndNegativeControl()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteDiagnosticAppleTests/testPredeclaredApplePathsWaypointSinkAndIndependentFullBodySweeps()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteDiagnosticAppleTests/testSeparatelyPreregistered28cmWidthDoesNotReplaceBaseline()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteJourneyAppleTests/testPredeclaredSuppliedBedChairConnectorsAroundRoomDoorWithholdingAndReturn()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testAppleWallMeshHasRealDoorAndWindowCutoutsWithClosedDoorBarrierSeparate()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleExportInventoryPreservesFeatureIdentityAndHistoricalDoorState()",
+      "result": "Failed"
+    },
+    {
+      "identifier": "SavedRoomRouteMeshAppleFixtureTests/testRealFloorTriangulationPreservesOriginalConcavityAreaAndWorldCorners()",
+      "result": "Failed"
+    }
+  ],
+  "observedFailureExcerpt": [
+    "2026-10-28T11:25:59.6700040Z /Users/runner/work/blind/blind/ios/BlindAssistTests/ClassifiedRoomMeshTests.swift:27: error: -[BlindAssistTests.ClassifiedRoomMeshTests testClassifiedFloorRoutesWithoutGrantingPhysicalAuthority] : Asynchronous wait failed: Exceeded timeout of 10 seconds, with unfulfilled expectations: \"native candidate result\".",
+    "2026-10-28T11:25:59.6705210Z /Users/runner/work/blind/blind/ios/BlindAssistTests/ClassifiedRoomMeshTests.swift:28: error: -[BlindAssistTests.ClassifiedRoomMeshTests testClassifiedFloorRoutesWithoutGrantingPhysicalAuthority] : XCTUnwrap failed: expected non-nil value of type \"Result<MeshCandidateRoute, MeshCandidateError>\" - Native callback did not complete; no passing route inferred",
+    "2026-10-28T11:25:59.6733760Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift:255: error: -[BlindAssistTests.SavedRoomRouteCollisionOracleTests testExplicitBodyVersusMarginBoundsAreNotInflatedAgain] : failed: caught error: \"backendUnavailable(\"bidirectional thin-plane continuous sweep\")\"",
+    "2026-10-28T11:25:59.6737690Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift:255: error: -[BlindAssistTests.SavedRoomRouteCollisionOracleTests testHeadHeightAndSeparateFloorContact] : failed: caught error: \"backendUnavailable(\"bidirectional thin-plane continuous sweep\")\"",
+    "2026-10-28T11:25:59.6746890Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift:255: error: -[BlindAssistTests.SavedRoomRouteCollisionOracleTests testInitialOverlapIsNotLostByZeroLengthSweep] : failed: caught error: \"backendUnavailable(\"bidirectional thin-plane continuous sweep\")\"",
+    "2026-10-28T11:25:59.6750160Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift:255: error: -[BlindAssistTests.SavedRoomRouteCollisionOracleTests testMalformedGeometryAndMissingFurnitureIdentityFail] : failed: caught error: \"backendUnavailable(\"bidirectional thin-plane continuous sweep\")\"",
+    "2026-10-28T11:25:59.6753480Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift:255: error: -[BlindAssistTests.SavedRoomRouteCollisionOracleTests testOriginalFurnitureSolidDetectsContainedStartSeparatelyFromShell] : failed: caught error: \"backendUnavailable(\"bidirectional thin-plane continuous sweep\")\"",
+    "2026-10-28T11:25:59.6757830Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift:255: error: -[BlindAssistTests.SavedRoomRouteCollisionOracleTests testThinWallSweepBothDirectionsAndNegativeControl] : failed: caught error: \"backendUnavailable(\"bidirectional thin-plane continuous sweep\")\"",
+    "2026-10-28T11:25:59.6798620Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift:338: error: -[BlindAssistTests.SavedRoomRouteDiagnosticAppleTests testPredeclaredApplePathsWaypointSinkAndIndependentFullBodySweeps] : XCTAssertTrue failed - Bedroom3: missingMetadata; Hallway2: missingMetadata",
+    "2026-10-28T11:25:59.6801170Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift:339: error: -[BlindAssistTests.SavedRoomRouteDiagnosticAppleTests testPredeclaredApplePathsWaypointSinkAndIndependentFullBodySweeps] : XCTAssertGreaterThan failed: (\"0\") is not greater than (\"0\") - No complete candidate route was exercised; no-path is not success",
+    "2026-10-28T11:25:59.6804850Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift:338: error: -[BlindAssistTests.SavedRoomRouteDiagnosticAppleTests testSeparatelyPreregistered28cmWidthDoesNotReplaceBaseline] : XCTAssertTrue failed - Bedroom3: missingMetadata; Hallway2: missingMetadata",
+    "2026-10-28T11:25:59.6807370Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomRouteDiagnosticAppleTests.swift:339: error: -[BlindAssistTests.SavedRoomRouteDiagnosticAppleTests testSeparatelyPreregistered28cmWidthDoesNotReplaceBaseline] : XCTAssertGreaterThan failed: (\"0\") is not greater than (\"0\") - No complete candidate route was exercised; no-path is not success",
+    "2026-10-28T11:25:59.6812470Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomRouteJourneyAppleTests.swift:329: error: -[BlindAssistTests.SavedRoomRouteJourneyAppleTests testPredeclaredSuppliedBedChairConnectorsAroundRoomDoorWithholdingAndReturn] : XCTAssertTrue failed - Bedroom3: missingMetadata; Hallway2: missingMetadata",
+    "2026-10-28T11:25:59.6815200Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomRouteJourneyAppleTests.swift:330: error: -[BlindAssistTests.SavedRoomRouteJourneyAppleTests testPredeclaredSuppliedBedChairConnectorsAroundRoomDoorWithholdingAndReturn] : XCTAssertGreaterThan failed: (\"0\") is not greater than (\"0\") - No-path/stopped journeys are not successful motion",
+    "2026-10-28T11:25:59.6817680Z /Users/runner/work/blind/blind/ios/BlindAssistTests/SavedRoomRouteJourneyAppleTests.swift:331: error: -[BlindAssistTests.SavedRoomRouteJourneyAppleTests testPredeclaredSuppliedBedChairConnectorsAroundRoomDoorWithholdingAndReturn] : XCTAssertGreaterThan failed: (\"0\") is not greater than (\"0\") - Production formatter/cadence was not exercised",
+    "2026-10-28T11:25:59.6871700Z <unknown>:0: error: -[BlindAssistTests.SavedRoomRouteMeshAppleFixtureTests testAppleWallMeshHasRealDoorAndWindowCutoutsWithClosedDoorBarrierSeparate] : failed: caught error: \"The operation couldn’t be completed. (BlindAssist.SavedRoomRouteMeshAdapter.Failure error 5.)\"",
+    "2026-10-28T11:25:59.6876270Z <unknown>:0: error: -[BlindAssistTests.SavedRoomRouteMeshAppleFixtureTests testOriginalAppleExportInventoryPreservesFeatureIdentityAndHistoricalDoorState] : failed: caught error: \"The operation couldn’t be completed. (BlindAssist.SavedRoomRouteMeshAdapter.Failure error 5.)\"",
+    "2026-10-28T11:25:59.6879510Z <unknown>:0: error: -[BlindAssistTests.SavedRoomRouteMeshAppleFixtureTests testRealFloorTriangulationPreservesOriginalConcavityAreaAndWorldCorners] : failed: caught error: \"The operation couldn’t be completed. (BlindAssist.SavedRoomRouteMeshAdapter.Failure error 5.)\""
+  ],
+  "limits": [
+    "This is evidence from the prior CI run, not a rerun or proof of any repair.",
+    "18 route outcomes and16 journey stages are blocked before candidate route/guidance replay by missingMetadata.",
+    "Collision backend self-check fails before test-specific positive claims; no raw hit counts or failing direction retained.",
+    "No actual RoomPlan-export metadata bytes or MDL node tree was preserved by this CI run.",
+    "No physical device localization, VoiceOver, footprint support or movement safety demonstrated."
+  ]
+}
