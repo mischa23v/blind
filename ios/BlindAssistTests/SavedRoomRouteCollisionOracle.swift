@@ -206,10 +206,22 @@ final class SavedRoomRouteCollisionOracle {
     private static func rigidTransform(_ values: [Double]) throws -> simd_float4x4 {
         guard values.count == 16, values.allSatisfy({ $0.isFinite && abs($0) <= 10_000 }),
               values[3] == 0, values[7] == 0, values[11] == 0, values[15] == 1 else { throw Failure.invalidFurnitureBox }
-        let c = (0..<4).map { column in SIMD4<Float>(Float(values[column * 4]), Float(values[column * 4 + 1]),
-            Float(values[column * 4 + 2]), Float(values[column * 4 + 3])) }
+        var c: [SIMD4<Float>] = []
+        c.reserveCapacity(4)
+        for column in 0..<4 {
+            let base: Int = column * 4
+            let x: Float = Float(values[base])
+            let y: Float = Float(values[base + 1])
+            let z: Float = Float(values[base + 2])
+            let w: Float = Float(values[base + 3])
+            let vector = SIMD4<Float>(x, y, z, w)
+            c.append(vector)
+        }
         let m = simd_float4x4(columns: (c[0], c[1], c[2], c[3]))
-        let rotation = simd_float3x3(columns: (SIMD3(c[0].x,c[0].y,c[0].z), SIMD3(c[1].x,c[1].y,c[1].z), SIMD3(c[2].x,c[2].y,c[2].z)))
+        let r0 = SIMD3<Float>(c[0].x, c[0].y, c[0].z)
+        let r1 = SIMD3<Float>(c[1].x, c[1].y, c[1].z)
+        let r2 = SIMD3<Float>(c[2].x, c[2].y, c[2].z)
+        let rotation = simd_float3x3(columns: (r0, r1, r2))
         // Match the existing mesh package's Float32 rigid-transform tolerance;
         // this is numerical validation, not a measured spatial error allowance.
         for a in 0..<3 { for b in 0..<3 {

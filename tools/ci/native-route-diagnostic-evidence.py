@@ -229,6 +229,46 @@ def fields(obj, room, uuids):
             require(type(item) is int and 0 <= item < 2**32, 'invalid_native_status')
 
 
+CHAIN_ROW_FIELDS = {'scoredChainContinuous','scoredChainIncludesRequestedGoal','sourceFloorSupportAlongScoredChain'}
+CHAIN_SEGMENT_FIELDS = {'floorContactIDs','fullFootprintSupportVerified','sourceFloorSupport'}
+
+
+def validate_scored_chain(row, journey):
+    """Validate recorded edges, never repair/invent a route or infer floor support."""
+    points, segments = row['routePoints'], row['segments']
+    start, ps, pg, goal = (row[k] for k in ('requestedStart','projectedStart','projectedGoal','requestedGoal'))
+    expected = [('requested-start-to-projection', start, ps)]
+    if points[0] != ps:
+        expected.append(('projection-to-detour-start', ps, points[0]))
+    expected.extend(('detour-segment-' + str(i), points[i-1], points[i]) for i in range(1,len(points)))
+    if row['nativeComplete']:
+        if points[-1] != pg:
+            expected.append(('detour-end-to-projection', points[-1], pg))
+        expected.append(('projection-to-requested-goal', pg, goal))
+    require(len(segments) == len(expected) and all(
+        (segment['kind'],segment['from'],segment['to']) == edge
+        for segment, edge in zip(segments, expected)), 'scored_chain_mismatch')
+    # Both contact aggregates are literal initial+segment observations. A clear
+    # label cannot silently discard a connector's contact; this is not a physics
+    # calculation and says nothing about the unobserved surrounding world.
+    for aggregate, initial in (('bodyContact','initialBodyContact'),('marginContact','initialMarginContact')):
+        require(row[aggregate] == (row[initial] or any(segment[aggregate] for segment in segments)), 'contact_aggregate_mismatch')
+    present = CHAIN_ROW_FIELDS & set(row)
+    require(not present or (not journey and present == CHAIN_ROW_FIELDS), 'incomplete_chain_metadata')
+    if present:
+        require(row['scoredChainContinuous'] is True and row['scoredChainIncludesRequestedGoal'] is row['nativeComplete'], 'chain_metadata_disagreement')
+        require(row['sourceFloorSupportAlongScoredChain'] == 'unverified-full-footprint', 'unsupported_floor_support_claim')
+    for segment in segments:
+        added = CHAIN_SEGMENT_FIELDS & set(segment)
+        require(added == (CHAIN_SEGMENT_FIELDS if present else set()), 'incomplete_segment_support_metadata')
+        if added:
+            require(segment['fullFootprintSupportVerified'] is False and
+                    segment['sourceFloorSupport'] == 'unverified-full-footprint', 'unsupported_floor_support_claim')
+            # Producer reports margin-floor IDs per segment and includes those
+            # same IDs in its aggregate; presence is NOT positive floor support.
+            require(set(segment['floorContactIDs']) <= set(row['floorContactIDs']), 'floor_contact_aggregate_mismatch')
+
+
 def validate_report(report, label, docs, uuids):
     journey = label == 'journey'
     common = {'schema','protocolSHA256','physicalAuthority','fullFootprintSupportVerified','outcomes','errors'}
@@ -273,7 +313,7 @@ def validate_report(report, label, docs, uuids):
     row_extra = ({'journey','stage','seatedFeatureID','seatedObservationIsAuthored','originalSuppliedStandingPoint','declaredHeading',
                   'cameraLocalizationTested','getUpKinematicsTested','expectedWithhold','historicalDoorOpen','currentDoorStateKnown',
                   'closedDoorStraightProbeContactIDs','guidanceDelivered','productionGuidanceReceipts','replayPositionAfterStage'} if journey else
-                 {'pair','profile','rawRadius','rawHeight','effectiveRadius','effectiveHeight','initialFurnitureBoundIDs','waypointSinkDelivered'})
+                 {'pair','profile','rawRadius','rawHeight','effectiveRadius','effectiveHeight','initialFurnitureBoundIDs','waypointSinkDelivered'} | CHAIN_ROW_FIELDS)
     for row in rows:
         identity = ('journey','stage') if journey else ('pair','profile')
         keys(row, row_common | row_extra, set(identity) | {'outcome'})
@@ -298,7 +338,7 @@ def validate_report(report, label, docs, uuids):
         delivered_key = 'guidanceDelivered' if journey else 'waypointSinkDelivered'
         if failure:
             require(row[delivered_key] is False, 'failed_query_delivered_guidance')
-            require(not set(row) & {'routePoints','segments','projectedStart','projectedGoal','productionGuidanceReceipts'}, 'failed_query_has_route')
+            require(not set(row) & ({'routePoints','segments','projectedStart','projectedGoal','productionGuidanceReceipts'} | CHAIN_ROW_FIELDS), 'failed_query_has_route')
         else:
             required_route = {'nativeComplete','nativeStatus','routePoints','projectedStart','projectedGoal',
                               'startProjectionMetres','goalProjectionMetres','segments','bodyContact','marginContact',
@@ -328,9 +368,11 @@ def validate_report(report, label, docs, uuids):
         segments = row.get('segments', [])
         require(isinstance(segments, list) and (failure or len(segments) > 0) and len(segments) <= 4100, 'invalid_segments')
         for segment in segments:
-            keys(segment, {'kind','from','to','bodyContact','marginContact'}, {'kind','from','to','bodyContact','marginContact'})
+            keys(segment, {'kind','from','to','bodyContact','marginContact'} | (set() if journey else CHAIN_SEGMENT_FIELDS), {'kind','from','to','bodyContact','marginContact'})
             require(isinstance(segment['kind'], str) and re.fullmatch(SEGMENT_PATTERN, segment['kind']), 'unknown_segment')
             fields(segment, room, uuids)
+        if not failure:
+            validate_scored_chain(row, journey)
         receipts = row.get('productionGuidanceReceipts', [])
         require(isinstance(receipts, list) and len(receipts) <= 4100, 'invalid_guidance_receipts')
         if journey:

@@ -51,19 +51,41 @@ def report(label, executed=False):
                    projectedStart=[0,0,0],projectedGoal=[1,0,0],nativeComplete=True,nativeStatus=1073741824,
                    startProjectionMetres=0,goalProjectionMetres=0,initialBodyContact=False,initialMarginContact=False,
                    fullFootprintSupportVerified=False,bodyContact=False,marginContact=False,floorContactIDs=[],
-                   obstacleSurfaceIDs=[],furnitureBoundIDs=[],segments=[{'kind':'detour-segment-1','from':[0,0,0],
-                   'to':[1,0,0],'bodyContact':False,'marginContact':False}])
+                   obstacleSurfaceIDs=[],furnitureBoundIDs=[],segments=[
+                       {'kind':'requested-start-to-projection','from':[0,0,0],'to':[0,0,0],'bodyContact':False,'marginContact':False},
+                       {'kind':'detour-segment-1','from':[0,0,0],'to':[1,0,0],'bodyContact':False,'marginContact':False},
+                       {'kind':'projection-to-requested-goal','from':[1,0,0],'to':[1,0,0],'bodyContact':False,'marginContact':False}])
         if journey:
             row.update(seatedFeatureID='45597D99-3218-4419-A2E4-2ADFA824D033',seatedObservationIsAuthored=True,
                        expectedWithhold=False,cameraLocalizationTested=False,getUpKinematicsTested=False,
                        originalSuppliedStandingPoint=[0,0,0],declaredHeading=[1,0,0],replayPositionAfterStage=[1,0,0],
                        guidanceDelivered=True,productionGuidanceReceipts=[{
-                           'segmentIndex':0,'segmentKind':'detour-segment-1','from':[0,0,0],'to':[1,0,0],
+                           'segmentIndex':1,'segmentKind':'detour-segment-1','from':[0,0,0],'to':[1,0,0],
                            'sector':'ahead','angleDegrees':0,'horizontalMetres':1,'syntheticSeconds':2,
                            'physicalAuthority':False,'source':'production SpatialFacts + GuidanceCadence; supplied heading',
                            'text':'TEST '+row['stage']+' detour-segment-1: ahead, 1.0 metres.'}])
         else:
             row.update(rawRadius=.27,rawHeight=1.6,effectiveRadius=.42,effectiveHeight=1.75,initialFurnitureBoundIDs=[],waypointSinkDelivered=True)
+    return result
+
+
+def chain_report(complete=True, metadata=True):
+    result=report('original-baseline',True);row=result['outcomes'][0]
+    row.update(requestedStart=[0,0,0],projectedStart=[1,0,0],routePoints=[[1,.1,0],[2,.1,0]],
+               projectedGoal=[2,0,0],requestedGoal=[3,0,0],nativeComplete=complete,
+               outcome='candidate-model-route-no-contact' if complete else 'partial-route',waypointSinkDelivered=complete)
+    edges=[('requested-start-to-projection',[0,0,0],[1,0,0]),
+           ('projection-to-detour-start',[1,0,0],[1,.1,0]),
+           ('detour-segment-1',[1,.1,0],[2,.1,0])]
+    if complete:
+        edges.extend([('detour-end-to-projection',[2,.1,0],[2,0,0]),
+                      ('projection-to-requested-goal',[2,0,0],[3,0,0])])
+    row['segments']=[{'kind':k,'from':a,'to':b,'bodyContact':False,'marginContact':False} for k,a,b in edges]
+    if metadata:
+        row.update(scoredChainContinuous=True,scoredChainIncludesRequestedGoal=complete,
+                   sourceFloorSupportAlongScoredChain='unverified-full-footprint')
+        for segment in row['segments']:
+            segment.update(floorContactIDs=[],fullFootprintSupportVerified=False,sourceFloorSupport='unverified-full-footprint')
     return result
 
 
@@ -121,6 +143,51 @@ class ValidationTests(unittest.TestCase):
             with self.assertRaises(m.EvidenceError):self.validate(r,label)
             r=report(label,True);r['outcomes'][0]['segments']=[]
             with self.assertRaises(m.EvidenceError):self.validate(r,label)
+    def test_exact_discrepancy_chains_complete_partial_and_legacy(self):
+        for complete in (False,True):
+            for metadata in (False,True):
+                r=chain_report(complete,metadata);self.assertEqual(self.validate(r),r)
+    def test_omitted_reordered_extra_or_edited_edges_rejected(self):
+        for change in ('omit_start_connector','omit_end_connector','reorder','extra','wrong_from','wrong_kind'):
+            r=chain_report();edges=r['outcomes'][0]['segments']
+            if change=='omit_start_connector':del edges[1]
+            elif change=='omit_end_connector':del edges[-2]
+            elif change=='reorder':edges[1],edges[2]=edges[2],edges[1]
+            elif change=='extra':edges.append(copy.deepcopy(edges[-1]))
+            elif change=='wrong_from':edges[2]['from']=[1,0,0]
+            else:edges[1]['kind']='detour-segment-2'
+            with self.assertRaisesRegex(m.EvidenceError,'scored_chain_mismatch'):self.validate(r)
+    def test_partial_chain_must_not_bridge_to_projected_or_requested_goal(self):
+        r=chain_report(False);r['outcomes'][0]['segments']+=chain_report()['outcomes'][0]['segments'][-2:]
+        with self.assertRaisesRegex(m.EvidenceError,'scored_chain_mismatch'):self.validate(r)
+    def test_continuity_metadata_exact_types_and_goal_semantics(self):
+        for key,value in [('scoredChainContinuous',False),('scoredChainContinuous',1),
+                          ('scoredChainIncludesRequestedGoal',False),('scoredChainIncludesRequestedGoal',1)]:
+            r=chain_report();r['outcomes'][0][key]=value
+            with self.assertRaisesRegex(m.EvidenceError,'chain_metadata_disagreement'):self.validate(r)
+    def test_no_positive_or_mixed_floor_support_metadata(self):
+        for change in ('row_positive','segment_positive','verified','missing_row','missing_segment','legacy_segment'):
+            r=chain_report(metadata=change!='legacy_segment');row=r['outcomes'][0];segment=row['segments'][0]
+            if change=='row_positive':row['sourceFloorSupportAlongScoredChain']='verified'
+            elif change=='segment_positive':segment['sourceFloorSupport']='supported'
+            elif change=='verified':segment['fullFootprintSupportVerified']=True
+            elif change=='missing_row':del row['scoredChainContinuous']
+            elif change=='missing_segment':del segment['fullFootprintSupportVerified']
+            else:segment['sourceFloorSupport']='unverified-full-footprint'
+            with self.assertRaises(m.EvidenceError):self.validate(r)
+    def test_contact_aggregates_cannot_hide_scored_connector_collision(self):
+        for field in ('bodyContact','marginContact'):
+            r=chain_report();r['outcomes'][0]['segments'][1][field]=True
+            with self.assertRaisesRegex(m.EvidenceError,'contact_aggregate_mismatch'):self.validate(r)
+            row=r['outcomes'][0];row[field]=True;row['outcome']='candidate-contact'
+            self.assertEqual(self.validate(r),r)
+    def test_floor_contact_is_recorded_but_never_support_proof(self):
+        r=chain_report();row=r['outcomes'][0]
+        floor=DOCS['RoomPlanApple/Hallway2.capturedRoom.json']['floors'][0]['identifier']
+        row['segments'][1]['floorContactIDs']=[floor]
+        with self.assertRaisesRegex(m.EvidenceError,'floor_contact_aggregate_mismatch'):self.validate(r)
+        row['floorContactIDs']=[floor];self.assertEqual(self.validate(r),r)
+        self.assertFalse(row['fullFootprintSupportVerified']);self.assertFalse(row['segments'][1]['fullFootprintSupportVerified'])
     def test_authored_failure_is_retained_not_relabelled_pass(self):
         r=report('original-baseline');r['outcomes'][0].update(outcome='unsupported-geometry',error='invalidMesh')
         r['errors']=['Hallway2: invalidMesh']

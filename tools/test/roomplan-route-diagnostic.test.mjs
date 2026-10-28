@@ -130,3 +130,20 @@ test('export witness preserves original boundary and concavity without requiring
   assert.match(source,/SIMD2<Double>\(0, 0\.5\)/);
   assert.doesNotMatch(source,/let nearest = exportedFloorVertices/);
 });
+
+// Post-freeze bookkeeping repair; endpoints, profiles and existing run evidence
+// stay unchanged. This is a source contract, not native collision/support proof.
+test('baseline collision scoring retains an exact continuous endpoint chain without claiming floor support', () => {
+  for (const kind of ['requested-start-to-projection','projection-to-detour-start','detour-end-to-projection','projection-to-requested-goal']) assert.ok(bench.includes(kind));
+  assert.match(bench,/guard segment\.from == endpoint/);
+  assert.match(bench,/endpoint == \(complete \? goal : last\)/);
+  assert.match(bench,/let segments = try scoredSegments/);
+  assert.match(bench,/for segment in segments/);
+  assert.match(bench,/scoredChainIncludesRequestedGoal"\] = route\.complete/);
+  assert.match(bench,/sourceFloorSupportAlongScoredChain"\] = "unverified-full-footprint"/);
+  assert.match(bench,/"floorContactIDs":margin\.all\.floorSurfaceIDs/);
+  assert.match(bench,/"fullFootprintSupportVerified":false,"sourceFloorSupport":"unverified-full-footprint"/);
+  assert.match(bench,/testScoredChainRetainsBothNativeEndpointDiscrepanciesAndNeverBridgesPartialGoal/);
+  assert.doesNotMatch(bench,/SIMD3\(\(0\.\.<3\)\.map/);
+  assert.doesNotMatch(read('ios/BlindAssistTests/SavedRoomRouteJourneyAppleTests.swift'),/SIMD3\(\(0\.\.<3\)\.map/);
+});

@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "scope": "offline source-only result viewer preparation",
+  "nativeReportsRendered": 0,
+  "physicalAuthority": false,
+  "cameraLocalizationTested": false,
+  "getUpKinematicsTested": false,
+  "tests": {
+    "syntheticRendererTests": 29,
+    "independentSyntheticTests": 4,
+    "passed": 33,
+    "nativeExecution": false
+  },
+  "inputMode": "strict current collector only; no legacy fallback",
+  "validatorPath": "tools/ci/native-route-diagnostic-evidence.py",
+  "validatorSHA256": "386362632a315f3d9746c3c4f5b934644c8bea0a59997b98f39715824d950cb1",
+  "files": [
+    {
+      "path": "research/roomplan-route-result-views-20261028/render_results.py",
+      "sha256": "3bbda40dd56d3fa1fc83c5fb3403c22345963fb4b8d381126fa99c8b58293814",
+      "bytes": 28006
+    },
+    {
+      "path": "research/roomplan-route-result-views-20261028/test_render_results.py",
+      "sha256": "a488ce6913e59022b4bb8efd1da3d923c9f2cf1c4ae3ba755d58c8e3671ef48e",
+      "bytes": 16059
+    },
+    {
+      "path": "research/roomplan-route-result-views-20261028/independent_review_tests.py",
+      "sha256": "7ad85f2ea5ec18f7e658cbc5b53d8a8afbbe9dbab04e45886620d53632535e78",
+      "bytes": 4101
+    },
+    {
+      "path": "research/roomplan-route-result-views-20261028/README.md",
+      "sha256": "7f553f2eee27bac8a9deb162ea82623c66c2dea578c9096c8f901799e1fa323b",
+      "bytes": 8243
+    },
+    {
+      "path": "research/roomplan-route-result-views-20261028/REVIEW.md",
+      "sha256": "bfd46a72341fc2934c1890bac26545744cca9c29344ebafd1fe5c84bd7b64e6a",
+      "bytes": 2411
+    },
+    {
+      "path": "research/roomplan-route-result-views-20261028/TEST_RESULTS.txt",
+      "sha256": "d750ef1a40ca7ac3c6432dbf8b91db00bf219efb061b5c8b68484f76e1da3c6b",
+      "bytes": 3667
+    },
+    {
+      "path": "research/roomplan-route-result-views-20261028/INDEPENDENT_TEST_RESULTS.txt",
+      "sha256": "053537de20107ef33c635bdf7c06497550aaa57abd7b977f570cc7fdda6ac22f",
+      "bytes": 556
+    }
+  ]
+}

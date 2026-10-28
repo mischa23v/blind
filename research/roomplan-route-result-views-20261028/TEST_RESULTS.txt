@@ -1,0 +1,34 @@
+test_synthetic_image_scale_exact_segments_and_no_getup_line (__main__.DrawingTests.test_synthetic_image_scale_exact_segments_and_no_getup_line) ... ok
+test_unexecuted_does_not_draw_protocol_start_or_goal (__main__.DrawingTests.test_unexecuted_does_not_draw_protocol_start_or_goal) ... ok
+test_all_three_failed_native_statuses_preserved (__main__.EvidenceTests.test_all_three_failed_native_statuses_preserved) ... ok
+test_duplicate_report_and_private_data_rejected (__main__.EvidenceTests.test_duplicate_report_and_private_data_rejected) ... ok
+test_inconsistent_source_hash_rejected (__main__.EvidenceTests.test_inconsistent_source_hash_rejected) ... ok
+test_input_hash_mismatch_rejected (__main__.EvidenceTests.test_input_hash_mismatch_rejected) ... ok
+test_missing_report_retained_as_missing (__main__.EvidenceTests.test_missing_report_retained_as_missing) ... ok
+test_no_report_does_not_generate_paths (__main__.EvidenceTests.test_no_report_does_not_generate_paths) ... ok
+test_report_hash_mismatch_rejected_by_existing_validator (__main__.EvidenceTests.test_report_hash_mismatch_rejected_by_existing_validator) ... ok
+test_symlink_and_oversized_input_rejected (__main__.EvidenceTests.test_symlink_and_oversized_input_rejected) ... ok
+test_unverified_ci_envelope_rejected (__main__.EvidenceTests.test_unverified_ci_envelope_rejected) ... ok
+test_expansive_geometry_not_added (__main__.GeometryTests.test_expansive_geometry_not_added) ... ok
+test_full_tilted_furniture_box_uses_height_axis (__main__.GeometryTests.test_full_tilted_furniture_box_uses_height_axis) ... ok
+test_historical_doors_no_state_inference (__main__.GeometryTests.test_historical_doors_no_state_inference) ... ok
+test_original_floor_concavity_and_no_extra_corners (__main__.GeometryTests.test_original_floor_concavity_and_no_extra_corners) ... ok
+test_plot_rejects_unbounded_extent_instead_of_fitting (__main__.GeometryTests.test_plot_rejects_unbounded_extent_instead_of_fitting) ... ok
+test_positive_coordinate_orientation_and_translation (__main__.GeometryTests.test_positive_coordinate_orientation_and_translation) ... ok
+test_all_synthetic_schedules_pass_existing_schema (__main__.ReportTests.test_all_synthetic_schedules_pass_existing_schema) ... ok
+test_contact_flags_cannot_be_erased_or_fabricated (__main__.ReportTests.test_contact_flags_cannot_be_erased_or_fabricated) ... ok
+test_failed_stage_does_not_advance_replay (__main__.ReportTests.test_failed_stage_does_not_advance_replay) ... ok
+test_inconsistent_profile_dimension_rejected (__main__.ReportTests.test_inconsistent_profile_dimension_rejected) ... ok
+test_inconsistent_scored_chain_claim_rejected (__main__.ReportTests.test_inconsistent_scored_chain_claim_rejected) ... ok
+test_inconsistent_segment_endpoints_rejected (__main__.ReportTests.test_inconsistent_segment_endpoints_rejected) ... ok
+test_interstage_gap_not_silently_joined (__main__.ReportTests.test_interstage_gap_not_silently_joined) ... ok
+test_missing_connector_is_reported_not_repaired (__main__.ReportTests.test_missing_connector_is_reported_not_repaired) ... ok
+test_missing_detour_segment_is_disclosed (__main__.ReportTests.test_missing_detour_segment_is_disclosed) ... ok
+test_partial_route_never_bridged_to_requested_goal (__main__.ReportTests.test_partial_route_never_bridged_to_requested_goal) ... ok
+test_projection_displacement_not_silently_rewritten (__main__.ReportTests.test_projection_displacement_not_silently_rewritten) ... ok
+test_reorder_and_duplicate_segments_rejected (__main__.ReportTests.test_reorder_and_duplicate_segments_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 29 tests in 2.604s
+
+OK

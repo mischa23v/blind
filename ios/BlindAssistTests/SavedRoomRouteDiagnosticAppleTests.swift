@@ -84,7 +84,15 @@ import BlindRoomMesh
     private func point(_ local: [Double], floor: SavedRoomRouteMeshSnapshot.Feature) throws -> SIMD3<Float> {
         guard local.count == 3, local.allSatisfy(\.isFinite), floor.kind == .floor, floor.transform.count == 16 else { throw BenchFailure.invalidProtocol }
         let t = floor.transform
-        return SIMD3((0..<3).map { row in Float(t[row] * local[0] + t[4 + row] * local[1] + t[8 + row] * local[2] + t[12 + row]) })
+        var coordinates: [Float] = []
+        for row in 0..<3 {
+            let x: Double = t[row] * local[0]
+            let y: Double = t[4 + row] * local[1]
+            let z: Double = t[8 + row] * local[2]
+            let component: Double = ((x + y) + z) + t[12 + row]
+            coordinates.append(Float(component))
+        }
+        return SIMD3<Float>(coordinates[0], coordinates[1], coordinates[2])
     }
     private func start(_ pair: Pair, floor: SavedRoomRouteMeshSnapshot.Feature, mesh: SavedRoomRouteMeshSnapshot) throws -> SIMD3<Float> {
         if let local = pair.start { guard pair.startFeatureFootCenter == nil else { throw BenchFailure.invalidProtocol }; return try point(local, floor: floor) }
@@ -114,6 +122,58 @@ import BlindRoomMesh
     private func vector(_ point: [Float]) throws -> SIMD3<Float> {
         guard point.count == 3, point.allSatisfy(\.isFinite) else { throw BenchFailure.invalidProtocol }
         return SIMD3(point[0],point[1],point[2])
+    }
+    private struct ScoredSegment {
+        let kind: String
+        let from, to: SIMD3<Float>
+    }
+    /// Stitch ONLY the exact requested/projected/native endpoints. This is not
+    /// route repair: every association edge stays named and independently scored.
+    private func scoredSegments(start: SIMD3<Float>, projectedStart: SIMD3<Float>,
+                                points: [SIMD3<Float>], projectedGoal: SIMD3<Float>,
+                                goal: SIMD3<Float>, complete: Bool) throws -> [ScoredSegment] {
+        guard let first=points.first, let last=points.last,
+              ([start,projectedStart,projectedGoal,goal]+points).allSatisfy({
+                  [$0.x,$0.y,$0.z].allSatisfy(\.isFinite)
+              }) else { throw BenchFailure.invalidProtocol }
+        var segments=[ScoredSegment(kind:"requested-start-to-projection",from:start,to:projectedStart)]
+        if first != projectedStart {
+            segments.append(ScoredSegment(kind:"projection-to-detour-start",from:projectedStart,to:first))
+        }
+        if points.count>1 { for index in 1..<points.count {
+            segments.append(ScoredSegment(kind:"detour-segment-\(index)",from:points[index-1],to:points[index]))
+        } }
+        if complete {
+            if last != projectedGoal {
+                segments.append(ScoredSegment(kind:"detour-end-to-projection",from:last,to:projectedGoal))
+            }
+            segments.append(ScoredSegment(kind:"projection-to-requested-goal",from:projectedGoal,to:goal))
+        }
+        var endpoint=start
+        for segment in segments {
+            guard segment.from == endpoint else { throw BenchFailure.invalidProtocol }
+            endpoint=segment.to
+        }
+        guard endpoint == (complete ? goal : last) else { throw BenchFailure.invalidProtocol }
+        return segments
+    }
+    func testScoredChainRetainsBothNativeEndpointDiscrepanciesAndNeverBridgesPartialGoal() throws {
+        // Synthetic chain bookkeeping control only, not an Apple geometry pass.
+        let requestedStart=SIMD3<Float>(0,0,0), projectedStart=SIMD3<Float>(1,0,0)
+        let points=[SIMD3<Float>(1,0.1,0),SIMD3<Float>(2,0.1,0)]
+        let projectedGoal=SIMD3<Float>(2,0,0), requestedGoal=SIMD3<Float>(3,0,0)
+        let complete=try scoredSegments(start:requestedStart,projectedStart:projectedStart,
+            points:points,projectedGoal:projectedGoal,goal:requestedGoal,complete:true)
+        XCTAssertEqual(complete.map(\.kind),["requested-start-to-projection","projection-to-detour-start",
+            "detour-segment-1","detour-end-to-projection","projection-to-requested-goal"])
+        XCTAssertEqual(complete.first?.from,requestedStart); XCTAssertEqual(complete.last?.to,requestedGoal)
+        for index in 1..<complete.count { XCTAssertEqual(complete[index-1].to,complete[index].from) }
+        let partial=try scoredSegments(start:requestedStart,projectedStart:projectedStart,
+            points:points,projectedGoal:projectedGoal,goal:requestedGoal,complete:false)
+        XCTAssertEqual(partial.map(\.kind),["requested-start-to-projection","projection-to-detour-start","detour-segment-1"])
+        XCTAssertEqual(partial.last?.to,points.last)
+        XCTAssertThrowsError(try scoredSegments(start:requestedStart,projectedStart:projectedStart,
+            points:[],projectedGoal:projectedGoal,goal:requestedGoal,complete:true))
     }
     private func attachment(_ results: [[String: Any]], errors: [String], label: String) throws {
         let data = try JSONSerialization.data(withJSONObject: ["schema":1,"protocolSHA256":protocolDigest,
@@ -230,18 +290,29 @@ import BlindRoomMesh
                     record["startProjectionMetres"] = simd_distance(a,ps); record["goalProjectionMetres"] = simd_distance(b,pg)
                     var bodyContact = initialBody.all.hasObstacleContact, marginContact = initialMargin.all.hasObstacleContact
                     var floorIDs = initialMargin.all.floorSurfaceIDs, surfaceIDs = initialMargin.all.obstacleSurfaceIDs, boundIDs = initialMargin.all.furnitureBoundIDs
-                    // Association connectors are separately labelled, never a snap.
-                    var segments: [(String,SIMD3<Float>,SIMD3<Float>)] = [("requested-start-to-projection",a,ps)]
+                    // Complete exact chain, including any Detour endpoint
+                    // clamping discrepancy. Never silently bridge unscored space.
                     let points = try route.points.map(vector)
-                    if points.count > 1 { for i in 1..<points.count { segments.append(("detour-segment-\(i)",points[i-1],points[i])) } }
-                    if route.complete { segments.append(("projection-to-requested-goal",pg,b)) }
+                    let segments = try scoredSegments(start:a,projectedStart:ps,points:points,
+                        projectedGoal:pg,goal:b,complete:route.complete)
+                    record["scoredChainContinuous"] = true
+                    record["scoredChainIncludesRequestedGoal"] = route.complete
+                    record["sourceFloorSupportAlongScoredChain"] = "unverified-full-footprint"
                     var segmentRecords: [[String:Any]] = []
-                    for (name, from, to) in segments {
+                    for segment in segments {
+                        let name=segment.kind, from=segment.from, to=segment.to
                         let body = try oracle.sweep(from:from,to:to,radius:Float(profile.radius),height:Float(profile.height))
                         let margin = try oracle.sweep(from:from,to:to,radius:profile.effectiveRadius,height:profile.effectiveHeight)
                         bodyContact = bodyContact || body.all.hasObstacleContact; marginContact = marginContact || margin.all.hasObstacleContact
                         floorIDs.formUnion(margin.all.floorSurfaceIDs); surfaceIDs.formUnion(margin.all.obstacleSurfaceIDs); boundIDs.formUnion(margin.all.furnitureBoundIDs)
-                        segmentRecords.append(["kind":name,"from":array(from),"to":array(to),"bodyContact":body.all.hasObstacleContact,"marginContact":margin.all.hasObstacleContact])
+                        segmentRecords.append(["kind":name,"from":array(from),"to":array(to),
+                            "bodyContact":body.all.hasObstacleContact,"marginContact":margin.all.hasObstacleContact,
+                            "floorContactIDs":margin.all.floorSurfaceIDs.map(\.uuidString).sorted(),
+                            "fullFootprintSupportVerified":false,"sourceFloorSupport":"unverified-full-footprint"])
+                        // Floor contact is reported separately, not promoted to
+                        // positive footprint/continuous support or physical arrival.
+                        XCTAssertFalse(body.fullFootprintSupportVerified)
+                        XCTAssertFalse(margin.fullFootprintSupportVerified)
                     }
                     record["segments"] = segmentRecords; record["bodyContact"] = bodyContact; record["marginContact"] = marginContact
                     record["floorContactIDs"] = floorIDs.map(\.uuidString).sorted(); record["obstacleSurfaceIDs"] = surfaceIDs.map(\.uuidString).sorted(); record["furnitureBoundIDs"] = boundIDs.map(\.uuidString).sorted()

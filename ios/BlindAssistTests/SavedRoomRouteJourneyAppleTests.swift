@@ -131,7 +131,15 @@ import BlindRoomMesh
     private func world(_ p:[Double],floor:SavedRoomRouteMeshSnapshot.Feature)throws->SIMD3<Float> {
         guard p.count==3,p.allSatisfy(\.isFinite),floor.kind == .floor,floor.transform.count==16 else { throw Failure.invalidProtocol }
         let t=floor.transform
-        return SIMD3((0..<3).map { r in Float(t[r]*p[0]+t[4+r]*p[1]+t[8+r]*p[2]+t[12+r]) })
+        var coordinates: [Float] = []
+        for row in 0..<3 {
+            let x: Double = t[row] * p[0]
+            let y: Double = t[4 + row] * p[1]
+            let z: Double = t[8 + row] * p[2]
+            let component: Double = ((x + y) + z) + t[12 + row]
+            coordinates.append(Float(component))
+        }
+        return SIMD3<Float>(coordinates[0], coordinates[1], coordinates[2])
     }
     private func standing(_ journey:Journey,snapshot:SavedRoomRouteMeshSnapshot,floor:SavedRoomRouteMeshSnapshot.Feature)throws->SIMD3<Float> {
         if let p=journey.standingFloorLocal { guard journey.standingFeatureFootCenter==nil else { throw Failure.invalidProtocol }; return try world(p,floor:floor) }
