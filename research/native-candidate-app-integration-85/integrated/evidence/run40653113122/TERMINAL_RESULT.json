@@ -1,0 +1,81 @@
+{
+  "run": 40653113122,
+  "url": "https://github.com/mischa23v/blind/actions/runs/40653113122",
+  "commit": "26bfa69e8fb7a9f32df6d4c581477d91e95dfaed",
+  "conclusion": "failure",
+  "defaultBuild": "passed",
+  "diagnosticsBuild": "passed",
+  "core": {
+    "executed": 1411,
+    "skipped": 1,
+    "failed": 0,
+    "newRecorderMethodsInSource": 9,
+    "individualNewCoreCaseStatusesExported": false
+  },
+  "memory": {
+    "executed": 51,
+    "failed": 0
+  },
+  "hostedUnits": {
+    "total": 175,
+    "passed": 168,
+    "failed": 1,
+    "skipped": 6,
+    "uniqueCasesVerified": true,
+    "sourceVerified": true,
+    "recordedRouteStore": {
+      "cases": 15,
+      "passed": 15
+    },
+    "connectedBench": {
+      "cases": 3,
+      "passed": 3
+    },
+    "connectedJourneyAllPassed": true,
+    "failedCases": [
+      "ObservedSceneRuntimeTests/testNativeRuntimeFeedsActualAccumulatorAndRejectsAbandonedCompletion()"
+    ],
+    "laterDEBUGSceneCompletionFixIncluded": false
+  },
+  "ui": {
+    "total": 18,
+    "passed": 13,
+    "failed": 2,
+    "skipped": 3,
+    "failures": [
+      "testAccessibilityAuditOfCameraAndAsk: Contrast failed (Ask callback)",
+      "testDescribeFocusAndStopControl: snapshot timeout line160 (202.883s)"
+    ],
+    "cameraPhase": "before and after captured; proceeded to Ask",
+    "askPhase": "contrast failure, after missing",
+    "fullAccessibilityAcceptance": false
+  },
+  "practiceCancellation": {
+    "status": "passed",
+    "caseSeconds": 33.629,
+    "elapsedUpperBoundSeconds": 8.08587287499995,
+    "limitSeconds": 90,
+    "explicitEndTapObserved": true,
+    "positive90SecondWitness": true
+  },
+  "unitArtifact": {
+    "id": 12802058201,
+    "bytes": 5917,
+    "sha256": "3b5d8533a593226e61ddcdaf77f96b584e21dc4c271053b0958331ee09f6343f",
+    "zipCRCVerified": true
+  },
+  "uiArtifact": {
+    "id": 12802326126,
+    "bytes": 825892,
+    "sha256": "ce4178f1f8006b40609d95ce3d10dcb72d19fa20135c3de80c55399476083a06",
+    "zipCRCVerified": true,
+    "downloaded": true,
+    "publishedMembers": [
+      "evidence.json",
+      "full-audit-ask-issue-1-metadata.json"
+    ],
+    "screenshotsNotPublished": true
+  },
+  "runtimeActivation": false,
+  "fullNativeAcceptance": false
+}

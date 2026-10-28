@@ -1,0 +1,25 @@
+{
+  "status": "applied independently reviewed candidate; native pending",
+  "utc": "2026-10-28T08:35:31Z",
+  "prior_stage_published_commit": "adb8fd8f4fa16f0563bdd708635a12ba7888bcf3",
+  "source_sha256": {
+    "ios/BlindAssist/ObservedSceneRuntime.swift": "44539a67d5739ca37e39d0a39e76ba34753467c9fb4d3e30a456e91ad55190e0",
+    "ios/BlindAssistTests/ObservedSceneRuntimeTests.swift": "439648f8539e10fbfb88105e5beab14a41d964b29b321bbeaa25e7388384c527",
+    "tools/ci/native-apple.sh": "163fa512486bbbce522aa735cda0d36ca2711955edef9b118d8b598e900061e6"
+  },
+  "checks": {
+    "source_and_provenance": 18,
+    "existing_node_scene": 9,
+    "bounded_extraction_fragment": 6,
+    "bash_syntax": true
+  },
+  "swift_compiled": false,
+  "native_executed": false,
+  "speed_claimed": false,
+  "latency_budget_seconds": 1.2,
+  "reviewer": "/root/review_recorded_route_preview",
+  "privacy": "four bounded timestamps plus synthetic operationUUID only; no camera/pose/map/bodydata",
+  "no_workflow_change": true,
+  "no_ci_launch": true,
+  "publisher": "root"
+}

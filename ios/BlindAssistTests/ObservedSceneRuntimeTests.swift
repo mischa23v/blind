@@ -87,6 +87,7 @@ final class ObservedSceneRuntimeTests: XCTestCase {
         queue.resume()
         XCTAssertTrue(firstAccepted); XCTAssertFalse(busyGoalAccepted)
         try await runtime.waitForCurrentWorkForTesting()
+        let goalTiming = runtime.diagnosticLastWorkTimingForTesting()
         XCTAssertFalse(forbiddenPublication)
         XCTAssertNil(runtime.plan); XCTAssertNil(runtime.snapshot)
 
@@ -97,6 +98,7 @@ final class ObservedSceneRuntimeTests: XCTestCase {
         queue.resume()
         XCTAssertTrue(bodyAccepted); XCTAssertFalse(busyBodyAccepted)
         try await runtime.waitForCurrentWorkForTesting()
+        let bodyTiming = runtime.diagnosticLastWorkTimingForTesting()
         XCTAssertFalse(forbiddenPublication)
         XCTAssertNil(runtime.plan); XCTAssertNil(runtime.snapshot)
         // Observe every subsequent delivery too: neither stale generation may surface.
@@ -106,11 +108,17 @@ final class ObservedSceneRuntimeTests: XCTestCase {
         }
         XCTAssertTrue(runtime.offer(frame(2), session: session, floor: 0, body: nil, now: 2))
         try await runtime.waitForCurrentWorkForTesting()
+        let freshTiming = runtime.diagnosticLastWorkTimingForTesting()
         XCTAssertFalse(forbiddenPublication)
         XCTAssertNotNil(runtime.snapshot); XCTAssertNil(runtime.plan)
         XCTAssertEqual(runtime.snapshot?.capturedAt, 2)
         XCTAssertEqual(runtime.liveStatus, "bodyEnvelopeUnavailable")
         let elapsed = ProcessInfo.processInfo.systemUptime - started
+        if elapsed > 1.2 {
+            for (phase, timing) in [("goal", goalTiming), ("body", bodyTiming), ("fresh", freshTiming)] {
+                print("OBSERVED_SCENE_FENCE_PHASE phase=\(phase) \(timing?.report() ?? "timingMissing")")
+            }
+        }
         print("OBSERVED_SCENE_FENCE_LATENCY elapsed=\(elapsed) originalBudget=1.2 functionalCompletion=true")
         XCTAssertLessThanOrEqual(elapsed, 1.2, "Original latency budget exceeded; functional completion is not a speed claim")
     }
