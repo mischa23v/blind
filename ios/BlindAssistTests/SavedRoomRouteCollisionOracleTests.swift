@@ -33,7 +33,34 @@ final class SavedRoomRouteCollisionOracleTests: XCTestCase {
         XCTAssertEqual(candidate.configurationID, "default-offscreen-renderer")
         XCTAssertTrue(candidate.backendReady, "Candidate controls failed: \(candidate.failedControls.map(\.rawValue))")
         // Other cells are diagnostic controls, not an alternative success path.
-        // A passing comparison cell never overrides an unavailable candidate.
+        // This v1 bootstrap matrix retains combined queries. It does not replace
+        // the newly mandatory mixed-scene/separated-query readiness controls.
+    }
+
+    func testMixedSceneCombinedAndSeparatedQueriesRecordEveryPhase() throws {
+        let witness = SavedRoomRouteCollisionOracle.mixedSceneDiagnosticMatrix()
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        let data = try encoder.encode(witness)
+        XCTAssertLessThanOrEqual(data.count, 131_072)
+        let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+        attachment.name = "SavedRoomCollisionMixedScene-v1.json"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        XCTAssertEqual(witness.cells.map(\.configurationID), ["wall-only-combined", "wall-and-floor-combined",
+            "wall-only-separated", "wall-and-floor-separated"])
+        XCTAssertFalse(witness.physicalAuthority)
+        XCTAssertFalse(witness.fullFootprintSupportVerified)
+        for cell in witness.cells {
+            XCTAssertEqual(cell.queries.map(\.name), SavedRoomRouteCollisionOracle.mixedControlNames)
+            XCTAssertEqual(cell.failedControls, cell.queries.filter { !$0.passed }.map(\.name))
+            XCTAssertEqual(cell.backendReady, cell.failedControls.isEmpty)
+            if cell.queryMode == "separated" {
+                XCTAssertTrue(cell.backendReady, "\(cell.configurationID): \(cell.failedControls.map(\.rawValue))")
+            }
+        }
+        // Combined cells record the previous behavior without authorizing a
+        // fallback. The unchanged original mixed-scene test below must also pass.
     }
 
     private func wallAndFloor() throws -> SavedRoomRouteCollisionOracle {

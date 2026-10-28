@@ -81,10 +81,23 @@ test('independent test-only full-cylinder oracle has zero hidden inflation and m
     'containedSolid','overheadTallForward','overheadTallReverse','overheadShort','clear','floor']) {
     assert.ok(oracle.includes(name));
   }
-  assert.match(oracle,/if checkBackend \{ try Self\.verifyBackend\(configuration: configuration\) \}/);
+  assert.match(oracle,/if checkBackend \{ try Self\.verifyBackend\(configuration: configuration, queryMode: queryMode\) \}/);
   assert.match(oracle,/static let candidate = BackendConfiguration\.defaultOffscreenRenderer/);
-  assert.match(oracle,/configuration: \.candidate, checkBackend: true/);
-  assert.match(oracle,/guard witness\.backendReady else \{\s*throw Failure\.backendUnavailable/);
+  assert.match(oracle,/configuration: \.candidate, queryMode: \.separated, checkBackend: true/);
+  assert.match(oracle,/let original = backendQueries\(configuration: configuration, queryMode: queryMode\)/);
+  assert.match(oracle,/let mixed = mixedSceneQueries\(layout: \.wallAndFloor, queryMode: queryMode\)/);
+  assert.match(oracle,/Set\(\(original \+ mixed\)\.filter \{ !\$0\.passed \}\.map\(\\\.name\)\)/);
+  assert.match(oracle,/guard failures\.isEmpty else \{\s*throw Failure\.backendUnavailable/);
+  // Preserve all categories and all phases: query filtering is not permission
+  // to drop floor geometry, move/shrink the body or skip a failed mixed control.
+  assert.match(oracle,/private var floorMask: Int \{ queryMode == \.separated \? 4 : sourceMask \}/);
+  assert.match(oracle,/private var allSourceMask: Int \{ sourceMask \| floorMask \}/);
+  assert.match(oracle,/private var queryMasks: \[Int\] \{ queryMode == \.separated \? \[sourceMask, floorMask\] : \[sourceMask\] \}/);
+  assert.match(oracle,/body\.categoryBitMask = kind == \.floorSurface \? floorMask : sourceMask/);
+  assert.equal((oracle.match(/for mask in queryMasks \{/g)||[]).length,2);
+  assert.match(oracle,/swept\.formUnion\(try contacts\(raw\)\)/);
+  assert.match(oracle,/result\.formUnion\(try contacts\(scene\.physicsWorld\.contactTest/);
+  assert.match(oracle,/let queries = backendQueries\(configuration: configuration, queryMode: \.combined\)/);
   assert.match(oracle,/backendReady: failures\.isEmpty, failedControls: failures, queries: queries/);
   assert.match(oracle,/result\.swept\.obstacleSurfaceIDs == \[controlWall\]/);
   assert.match(oracle,/result\.swept\.obstacleSurfaceIDs == \[controlOverhead\]/);

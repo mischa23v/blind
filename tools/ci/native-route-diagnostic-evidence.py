@@ -43,10 +43,13 @@ DIAGNOSTIC_SPECS = (
     ('SavedRoomRouteMeshAppleFixtureTests/testOriginalAppleExportMetadataAndNodeInventory',
      'APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json', 'metadata-inventory'),
     ('SavedRoomRouteCollisionOracleTests/testBackendDiagnosticMatrixRecordsEveryControl',
-     'SavedRoomCollisionBackendMatrix-v1.json', 'collision-backend'))
+     'SavedRoomCollisionBackendMatrix-v1.json', 'collision-backend'),
+    ('SavedRoomRouteCollisionOracleTests/testMixedSceneCombinedAndSeparatedQueriesRecordEveryPhase',
+     'SavedRoomCollisionMixedScene-v1.json', 'collision-mixed-scene'))
 DIAGNOSTIC_LIMIT = 131072
 CONTROL_NAMES = ('thinWallForward', 'thinWallReverse', 'wallInitialOverlap', 'wallTerminalOverlap',
                  'containedSolid', 'overheadTallForward', 'overheadTallReverse', 'overheadShort', 'clear', 'floor')
+MIXED_CONTROL_NAMES = ('thinWallForward', 'thinWallReverse', 'wallInitialOverlap', 'wallTerminalOverlap', 'clear', 'floor')
 STATUSES = {'Success': 'Passed', 'Failure': 'Failed', 'Skipped': 'Skipped', 'Expected Failure': 'Expected Failure'}
 
 
@@ -605,6 +608,81 @@ def validate_collision_matrix(report):
     return report
 
 
+def mixed_collision_control_passed(query, layout):
+    """Mirror paired synthetic observations; a floor contact is not support proof."""
+    initial, swept, terminal = (query[phase] for phase in ('initial','swept','terminal'))
+    obstacle, floor, bound = ('obstacleSurfaceIDs','floorSurfaceIDs','furnitureBoundIDs')
+    union = {key:set(initial[key] + swept[key] + terminal[key]) for key in (obstacle,floor,bound)}
+    wall, ground = ('10000000-0000-0000-0000-000000000001','10000000-0000-0000-0000-000000000002')
+    if union[bound] or (layout == 'wall-only' and union[floor]): return False
+    name = query['name']
+    if name in ('thinWallForward','thinWallReverse'):
+        return not initial[obstacle] and not terminal[obstacle] and swept[obstacle] == [wall]
+    if name == 'wallInitialOverlap':
+        return initial[obstacle] == [wall] and not terminal[obstacle] and union[obstacle] == {wall}
+    if name == 'wallTerminalOverlap':
+        return terminal[obstacle] == [wall] and not initial[obstacle] and union[obstacle] == {wall}
+    if name == 'clear': return not union[obstacle]
+    return (not union[obstacle] and (not union[floor] if layout == 'wall-only' else
+            initial[floor] == [ground] and terminal[floor] == [ground] and union[floor] == {ground}))
+
+
+def validate_mixed_collision_matrix(report):
+    """Separate versioned witness; never reinterpret the original 4x10 matrix."""
+    top = {'schemaVersion','evidenceKind','physicalAuthority','fullFootprintSupportVerified','cells'}
+    keys(report, top, top)
+    require(type(report['schemaVersion']) is int and report['schemaVersion'] == 1 and
+            report['evidenceKind'] == 'synthetic-collision-mixed-scene' and
+            report['physicalAuthority'] is False and report['fullFootprintSupportVerified'] is False, 'unsupported_report_schema')
+    cells = report['cells']
+    configurations = ('wall-only-combined','wall-and-floor-combined','wall-only-separated','wall-and-floor-separated')
+    require(isinstance(cells, list) and len(cells) == 4, 'collision_matrix_count_mismatch')
+    cell_keys = {'configurationID','layout','queryMode','rendererMode','physicsSpeed','timeStepSeconds','gravity',
+                 'obstacleCategoryMask','floorCategoryMask','probeCategoryMask','queryCollisionMasks',
+                 'backendReady','failedControls','queries'}
+    query_keys = {'name','passed','errorCode','initial','swept','terminal'}
+    allowed_ids = {'obstacleSurfaceIDs':{'10000000-0000-0000-0000-000000000001'},
+                   'floorSurfaceIDs':{'10000000-0000-0000-0000-000000000002'},'furnitureBoundIDs':set()}
+    for cell, configuration in zip(cells, configurations):
+        keys(cell, cell_keys, cell_keys)
+        mode = 'separated' if configuration.endswith('separated') else 'combined'
+        layout = 'wall-and-floor' if configuration.startswith('wall-and-floor') else 'wall-only'
+        require(cell['configurationID'] == configuration and cell['layout'] == layout and cell['queryMode'] == mode and
+                cell['rendererMode'] == 'retained-offscreen-update', 'collision_configuration_mismatch')
+        for key, value in (('physicsSpeed',1),('obstacleCategoryMask',1),('floorCategoryMask',4 if mode == 'separated' else 1),('probeCategoryMask',2)):
+            require(type(cell[key]) is int and cell[key] == value, 'collision_configuration_mismatch')
+        masks = cell['queryCollisionMasks']
+        require(isinstance(masks, list) and all(type(mask) is int for mask in masks) and
+                masks == ([1,4] if mode == 'separated' else [1]) and
+                number(cell['timeStepSeconds']) and cell['timeStepSeconds'] == 1 / 60 and
+                vector(cell['gravity']) and cell['gravity'] == [0,0,0], 'collision_configuration_mismatch')
+        queries = cell['queries']
+        require(isinstance(queries, list) and len(queries) == len(MIXED_CONTROL_NAMES), 'collision_query_count_mismatch')
+        failed = []
+        for query, name in zip(queries, MIXED_CONTROL_NAMES):
+            keys(query, query_keys, query_keys)
+            require(query['name'] == name and type(query['passed']) is bool, 'collision_control_mismatch')
+            require(isinstance(query['errorCode'], str) and query['errorCode'] in
+                    {'none','invalidGeometry','invalidQuery','invalidFurnitureBox','unassociatedContact','unexpectedError'}, 'unapproved_error_text')
+            for phase in ('initial','swept','terminal'):
+                contacts = query[phase]
+                keys(contacts, set(allowed_ids), set(allowed_ids))
+                for category, allowed in allowed_ids.items():
+                    values = contacts[category]
+                    require(isinstance(values, list) and len(values) <= len(allowed) and
+                            all(isinstance(value, str) and value in allowed for value in values) and
+                            values == sorted(set(values)), 'unknown_synthetic_identifier')
+            if query['errorCode'] != 'none':
+                require(query['passed'] is False and not any(query[phase][category]
+                        for phase in ('initial','swept','terminal') for category in allowed_ids), 'collision_error_disagreement')
+            else:
+                require(query['passed'] == mixed_collision_control_passed(query, layout), 'collision_pass_disagreement')
+            if not query['passed']: failed.append(name)
+        require(type(cell['backendReady']) is bool and cell['backendReady'] == (not failed) and
+                cell['failedControls'] == failed, 'collision_readiness_disagreement')
+    return report
+
+
 def collect(repo, bundle, cases, query):
     result = {'schema':1, 'status':'not_observed', 'physicalAuthority':False,
               'scope':'public Apple historical fixtures and synthetic controls; no physical authority',
@@ -639,10 +717,11 @@ def collect(repo, bundle, cases, query):
                     raw = exported_report(directory, name)
                 require(total + len(raw) <= LIMIT, 'aggregate_over_budget')
                 total += len(raw)
-                if label in ('metadata-inventory','collision-backend'):
+                if label in ('metadata-inventory','collision-backend','collision-mixed-scene'):
                     require(len(raw) <= DIAGNOSTIC_LIMIT, 'diagnostic_over_budget')
-                    report = (validate_metadata_inventory(decode(raw), uuids) if label == 'metadata-inventory'
-                              else validate_collision_matrix(decode(raw)))
+                    if label == 'metadata-inventory': report = validate_metadata_inventory(decode(raw), uuids)
+                    elif label == 'collision-backend': report = validate_collision_matrix(decode(raw))
+                    else: report = validate_mixed_collision_matrix(decode(raw))
                 else:
                     report = validate_report(decode(raw), label, docs, uuids)
                 record.update(status='collected', bytes=len(raw), sha256=hashlib.sha256(raw).hexdigest(), report=report)

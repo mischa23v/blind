@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "status": "frozen-portable-tests-passed-independently-reviewed-not-native-executed",
+  "baseSHA256": {
+    "tools/ci/native-route-diagnostic-evidence.py": "3e25c6a499c9eab630fb5bb5b5cb5879d61b2d46bf03e2152f3a29015cf3f232",
+    "tools/ci/test-native-route-diagnostic-evidence.py": "978aabc5770112195a7b89412a8b239d74a1613b6e6496798815f2def9d6a857"
+  },
+  "sourceSHA256": {
+    "tools/ci/native-route-diagnostic-evidence.py": "130b6a69db39eabfe58fbede2d151d8adfc20b3b518459272dbf0f9ebf56cc59",
+    "tools/ci/test-native-route-diagnostic-evidence.py": "9901e6d8bf85656ff7859311fca56c7b9241373b4bd68a238422d7e59ba77950"
+  },
+  "patch": {
+    "path": "research/native-path-recovery-20261028/collector-mixed-scene.patch",
+    "sha256": "3dc95fb628ce309c3cdd6e8c11db98f5c441ded68e9b745a4b443f8095121206",
+    "base": "Frozen plist collector checkpoint, not 6fe9d52",
+    "forwardReverseRoundTrip": "Verified patch produces byte-identical candidate and inverse restores exact frozen plist baseline."
+  },
+  "newAttachment": {
+    "testIdentifier": "SavedRoomRouteCollisionOracleTests/testMixedSceneCombinedAndSeparatedQueriesRecordEveryPhase",
+    "name": "SavedRoomCollisionMixedScene-v1.json",
+    "schemaVersion": 1,
+    "evidenceKind": "synthetic-collision-mixed-scene"
+  },
+  "limits": {
+    "cells": 4,
+    "queriesEach": 6,
+    "perReportBytes": 131072,
+    "sharedRawBytes": 1048576,
+    "finalArtifactBytes": 1048576
+  },
+  "fixedContactIDs": {
+    "wall": "10000000-0000-0000-0000-000000000001",
+    "floor": "10000000-0000-0000-0000-000000000002",
+    "furnitureBounds": "empty"
+  },
+  "tests": [
+    {
+      "command": "python3 tools/ci/test-native-route-diagnostic-evidence.py",
+      "passed": 61,
+      "failed": 0
+    },
+    {
+      "command": "python3 tools/ci/test-native-unit-statuses.py",
+      "passed": 31,
+      "failed": 0
+    },
+    {
+      "command": "python3 research/early-native-summary-repair-20261028/test-export-order.py",
+      "passed": 6,
+      "failed": 0
+    }
+  ],
+  "historicalNativeAttachments": [
+    {
+      "attachment": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json",
+      "sha256": "3a4d3431c080145d12fa84f38c423027842d79f09d87afc7fa97cbb6f703cab3",
+      "status": "accepted-unchanged"
+    },
+    {
+      "attachment": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json",
+      "sha256": "09cec9f9d2156900f7ae8ee4334785519f974782a544d2453ee5f2e7fecc7dac",
+      "status": "accepted-unchanged"
+    },
+    {
+      "attachment": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json",
+      "sha256": "ce2c7a0121e195287500349f65778b494af9e687c76452bc373d857e321a97d9",
+      "status": "accepted-unchanged"
+    },
+    {
+      "attachment": "APPLE_ROOM_ROUTE_MESH_METADATA_INVENTORY.json",
+      "sha256": "e09061f5fb33257a1a90e28bb1221bc83b45d0b28ef09639bd7301984e47cdb3",
+      "status": "accepted-unchanged"
+    },
+    {
+      "attachment": "SavedRoomCollisionBackendMatrix-v1.json",
+      "sha256": "e90bb9170b54fb7b97336e72ec5c16761ecd738590b0d244c811f663e6e435b9",
+      "status": "accepted-unchanged"
+    }
+  ],
+  "checks": [
+    "Original five-report results remain compatible; sixth report is included only when exact new test is observed.",
+    "Fixed combined/separated mode, wall-only/wall-and-floor layout and category/query masks must agree.",
+    "Every phase retains bounded fixed synthetic contacts. Unexpected floor contact in wall-only is a failed observation, not erased or promoted.",
+    "Mixed floor contact cannot hide missing wall/endpoint contacts; floor contact never proves footprint support.",
+    "Passed, errors, failedControls and backendReady must agree with all six literal observation predicates.",
+    "Unknown IDs, raw data, paths, private strings, false authority claims and oversized/shared-budget overflow reject explicitly.",
+    "Existing original4x10 matrix, route protocols, failure grammar, source provenance and byte limits remain unchanged."
+  ],
+  "limitations": [
+    "No Apple/Xcode/SceneKit execution here; predicates mirror fixed Swift diagnostic observations, not an independent physics solver.",
+    "Native source/test verdicts remain authoritative; collected data never turns a failed test into a pass."
+  ],
+  "publicationAllowlist": [
+    "tools/ci/native-route-diagnostic-evidence.py",
+    "tools/ci/test-native-route-diagnostic-evidence.py",
+    "research/native-path-recovery-20261028/collector-mixed-scene.patch",
+    "research/native-path-recovery-20261028/collector-mixed-scene.json"
+  ],
+  "independentReview": {
+    "producerOwner": "Compared all six phase predicates, fields, masks and errors to exact Swift producer; independently reran61collector tests, no mismatch.",
+    "nativeEvidenceReviewer": "No schema/privacy/predicate blocker; independently reran61collector and31unchanged unit-status tests, all passed."
+  }
+}

@@ -436,12 +436,27 @@ struct AssistantToolsView: View {
                     .accessibilityLabel(t("Question or target", "السؤال أو الهدف"))
                 Picker(t("Look at", "انظر إلى"), selection: $focus) {
                     Text(t("Everything in view", "كل ما في الصورة")).tag("surroundings")
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(t("Room layout", "تخطيط الغرفة")).tag("room")
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(t("People", "الأشخاص")).tag("people")
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(t("One object", "غرض واحد")).tag("object")
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(t("Path features", "معالم المسار")).tag("path")
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(t("Read text", "قراءة النص")).tag("text")
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
+                // Give each option a full row instead of squeezing the selected
+                // value beside "Look at". Keep native selection and text scaling.
+                .pickerStyle(.inline)
                 Button(t("Ask about the camera view", "اسأل عن صورة الكاميرا")) {
                     model.readScene(cloud: false, question: sceneQuestion, focus: focus)
                 }

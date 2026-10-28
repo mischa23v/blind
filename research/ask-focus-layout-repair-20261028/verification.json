@@ -1,0 +1,94 @@
+{
+  "scope": "Ask focus text-clipping candidate, not native verification",
+  "date": "2026-10-28",
+  "baseline": {
+    "repository": "mischa23v/blind",
+    "integrationCommit": "e47b6c9f284dc90603dfee15f7e9295a5b3f647f",
+    "failedNativeCommit": "6fe9d5270f23954fa59fc3509cccf23445cefa51",
+    "failedNativeRun": 40698547633,
+    "dashboardGitBlobSHA1": "807bf7642aa8d16225593b81ec24317ee91de4cc",
+    "dashboardSHA256": "254502265265d98cee7453bb8df9b1c2ba1b8af19f37a1be551f6f4cc5cac191",
+    "dashboardIdenticalAtBothRevisions": true,
+    "unchangedAuditGitBlobSHA1": "25e9a6ba7d674cb1352dff8084410440fde88b10",
+    "unchangedAuditHelperGitBlobSHA1": "91c164bbd1592914a77d5a3d3de1ab9da4e293b1"
+  },
+  "checks": {
+    "sourceContracts": {
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0
+    },
+    "sourceOnly": true,
+    "productionDelta": "15 additions, 0 deletions, one existing Picker",
+    "nativeExecution": "not run; no Swift/Xcode/Apple SDK/simulator",
+    "noPushOrWorkflowDispatch": true
+  },
+  "files": [
+    {
+      "path": "ios/BlindAssist/DashboardView.swift",
+      "bytes": 81115,
+      "sha256": "f5446449ce2b0df2e490c86c4597e20023a4bce0ed3759ea820440c81440b760",
+      "gitBlobSHA1": "03239a02d1465495d20cac39acf2cf85c1c67c46",
+      "status": "candidate-or-evidence"
+    },
+    {
+      "path": "tools/test/ask-focus-layout.test.mjs",
+      "bytes": 4784,
+      "sha256": "78ba65f8e3f3855036904fbbd5e0d4876bd949ba002deb619a8644afe7becfc7",
+      "gitBlobSHA1": "fc96678a422cd5b2e5319e3ab89f19791ca97dbd",
+      "status": "candidate-or-evidence"
+    },
+    {
+      "path": "ios/BlindAssistUITests/LaunchTests.swift",
+      "bytes": 23275,
+      "sha256": "30ba3106599bbf1be1740a674e3165b0c53c42b79325cdafa6debf96f5608520",
+      "gitBlobSHA1": "25e9a6ba7d674cb1352dff8084410440fde88b10",
+      "status": "unchanged-reference"
+    },
+    {
+      "path": "tools/test/helpers/full-audit-contract.mjs",
+      "bytes": 3546,
+      "sha256": "420fcb52a6ce794d9948cedd68dd84fa6826cdae1f41952b5c3d7545f8ea593a",
+      "gitBlobSHA1": "91c164bbd1592914a77d5a3d3de1ab9da4e293b1",
+      "status": "unchanged-reference"
+    },
+    {
+      "path": "research/ask-focus-layout-repair-20261028/README.md",
+      "bytes": 5122,
+      "sha256": "828c19bf8570dab02d1b5b9c15a718b47d462080458ca7608af9892dc25ff00d",
+      "gitBlobSHA1": "e0e4295de4c6aa0a38eb8629e8e63a0d6a47ba0c",
+      "status": "candidate-or-evidence"
+    },
+    {
+      "path": "research/ask-focus-layout-repair-20261028/check.py",
+      "bytes": 2710,
+      "sha256": "467f961486653e4e290064b84542c892811f21f0781d40cb901dc8bb0b03d440",
+      "gitBlobSHA1": "d0445742c8550a5602184658ae0ec61d08982b56",
+      "status": "candidate-or-evidence"
+    },
+    {
+      "path": "research/ask-focus-layout-repair-20261028/ask-focus-layout.patch",
+      "bytes": 1882,
+      "sha256": "22b8d7447c683c23161c7eae14e53eb92cecb2fae62aa006173a6152bfb67ff8",
+      "gitBlobSHA1": "e70be1eb0714953f8fde6cc813cdb869897fbba1",
+      "status": "candidate-or-evidence"
+    },
+    {
+      "path": "research/ask-focus-layout-repair-20261028/source-tests.txt",
+      "bytes": 722,
+      "sha256": "805e941a33739c0aa8aebd968470a962cefdc49f2818fe7154d5f06c9ffa8957",
+      "gitBlobSHA1": "c7fc5ad2eae1ba0ed531a53f601c475701fd0655",
+      "status": "candidate-or-evidence"
+    }
+  ],
+  "publicationFiles": [
+    "ios/BlindAssist/DashboardView.swift",
+    "tools/test/ask-focus-layout.test.mjs",
+    "research/ask-focus-layout-repair-20261028/README.md",
+    "research/ask-focus-layout-repair-20261028/check.py",
+    "research/ask-focus-layout-repair-20261028/ask-focus-layout.patch",
+    "research/ask-focus-layout-repair-20261028/source-tests.txt",
+    "research/ask-focus-layout-repair-20261028/verification.json",
+    "research/ask-focus-layout-repair-20261028/SHA256SUMS.txt"
+  ]
+}

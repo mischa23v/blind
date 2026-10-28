@@ -56,7 +56,7 @@ final class SavedRoomRouteCollisionOracle {
         var all: Contacts { var value = initial; value.formUnion(swept); value.formUnion(terminal); return value }
     }
 
-    private enum Kind { case obstacleSurface, floorSurface, furnitureBound }
+    private enum Kind: Equatable { case obstacleSurface, floorSurface, furnitureBound }
     private struct Identity { let id: UUID; let kind: Kind }
     private struct Group: Hashable { let id: UUID; let floor: Bool }
     private let scene = SCNScene()
@@ -66,9 +66,13 @@ final class SavedRoomRouteCollisionOracle {
     private var simulationTick = 0
     private static let physicsTimeStep: TimeInterval = 1.0 / 60.0
     private let configuration: BackendConfiguration
+    private let queryMode: QueryMode
     private var identities: [ObjectIdentifier: Identity] = [:]
     private let sourceMask = 1
     private let probeMask = 2
+    private var floorMask: Int { queryMode == .separated ? 4 : sourceMask }
+    private var allSourceMask: Int { sourceMask | floorMask }
+    private var queryMasks: [Int] { queryMode == .separated ? [sourceMask, floorMask] : [sourceMask] }
 
     /// Array limits match the existing mesh package; no triangles are truncated.
     /// Geometry stays uninflated. Caller-supplied query radius/height already carry
@@ -77,13 +81,14 @@ final class SavedRoomRouteCollisionOracle {
                      triangleFeatureIDs: [UUID], furnitureBoxes: [FurnitureBox] = []) throws {
         try self.init(vertices: vertices, triangles: triangles, floorSupport: floorSupport,
                       triangleFeatureIDs: triangleFeatureIDs, furnitureBoxes: furnitureBoxes,
-                      configuration: .candidate, checkBackend: true)
+                      configuration: .candidate, queryMode: .separated, checkBackend: true)
     }
 
     private init(vertices: [Double], triangles: [Int32], floorSupport: [Bool],
                  triangleFeatureIDs: [UUID], furnitureBoxes: [FurnitureBox],
-                 configuration: BackendConfiguration, checkBackend: Bool) throws {
+                 configuration: BackendConfiguration, queryMode: QueryMode, checkBackend: Bool) throws {
         self.configuration = configuration
+        self.queryMode = queryMode
         guard !vertices.isEmpty, vertices.count % 3 == 0, vertices.count <= 600_000,
               !triangles.isEmpty, triangles.count % 3 == 0, triangles.count <= 300_000,
               floorSupport.count == triangles.count / 3, triangleFeatureIDs.count == floorSupport.count,
@@ -152,14 +157,14 @@ final class SavedRoomRouteCollisionOracle {
             retained.update(atTime: 0)
         }
         synchronizePhysics()
-        if checkBackend { try Self.verifyBackend(configuration: configuration) }
+        if checkBackend { try Self.verifyBackend(configuration: configuration, queryMode: queryMode) }
     }
 
     private func add(shape: SCNPhysicsShape, id: UUID, kind: Kind, transform: simd_float4x4) {
         let node = SCNNode()
         node.simdTransform = transform
         let body = SCNPhysicsBody(type: .static, shape: shape)
-        body.categoryBitMask = sourceMask
+        body.categoryBitMask = kind == .floorSurface ? floorMask : sourceMask
         // Leave SceneKit's documented all-category collision mask unchanged in
         // the candidate. The query's source-category filter remains explicit.
         // Probe-only masking is retained solely as a diagnostic comparison cell.
@@ -194,10 +199,16 @@ final class SavedRoomRouteCollisionOracle {
         let initial = try overlap(at: from, height: height, shape: shape)
         let start = Self.centreTransform(from, height: height), end = Self.centreTransform(to, height: height)
         synchronizePhysics()
-        let raw = scene.physicsWorld.convexSweepTest(with: shape, from: SCNMatrix4(start), to: SCNMatrix4(end),
-            options: [.collisionBitMask: sourceMask, .searchMode: SCNPhysicsWorld.TestSearchMode.all,
-                      .backfaceCulling: false])
-        let swept = try contacts(raw)
+        // Query both categories with the identical cylinder/transforms, then
+        // union every contact. No floor triangles or obstacle bounds are omitted,
+        // and a floor hit never becomes proof of whole-footprint support.
+        var swept = Contacts()
+        for mask in queryMasks {
+            let raw = scene.physicsWorld.convexSweepTest(with: shape, from: SCNMatrix4(start), to: SCNMatrix4(end),
+                options: [.collisionBitMask: mask, .searchMode: SCNPhysicsWorld.TestSearchMode.all,
+                          .backfaceCulling: false])
+            swept.formUnion(try contacts(raw))
+        }
         let terminal = try overlap(at: to, height: height, shape: shape)
         return SweepResult(initial: initial, swept: swept, terminal: terminal)
     }
@@ -206,13 +217,17 @@ final class SavedRoomRouteCollisionOracle {
         let node = SCNNode()
         node.simdTransform = Self.centreTransform(foot, height: height)
         let body = SCNPhysicsBody(type: .kinematic, shape: shape)
-        body.categoryBitMask = probeMask; body.collisionBitMask = sourceMask; body.contactTestBitMask = sourceMask
+        body.categoryBitMask = probeMask; body.collisionBitMask = allSourceMask; body.contactTestBitMask = allSourceMask
         node.physicsBody = body
         scene.rootNode.addChildNode(node)
         body.resetTransform()
         synchronizePhysics()
         defer { node.removeFromParentNode(); synchronizePhysics() }
-        return try contacts(scene.physicsWorld.contactTest(with: body, options: [.collisionBitMask: sourceMask]))
+        var result = Contacts()
+        for mask in queryMasks {
+            result.formUnion(try contacts(scene.physicsWorld.contactTest(with: body, options: [.collisionBitMask: mask])))
+        }
+        return result
     }
 
     private func contacts(_ raw: [SCNPhysicsContact]) throws -> Contacts {
@@ -269,6 +284,8 @@ final class SavedRoomRouteCollisionOracle {
         return m
     }
 
+    private enum QueryMode: String { case combined, separated }
+
     private enum BackendConfiguration: String, CaseIterable {
         case restrictedNoRenderer = "restricted-no-renderer"
         case defaultNoRenderer = "default-no-renderer"
@@ -283,7 +300,7 @@ final class SavedRoomRouteCollisionOracle {
         }
     }
 
-    enum ControlName: String, CaseIterable, Encodable {
+    enum ControlName: String, CaseIterable, Encodable, Hashable {
         case thinWallForward, thinWallReverse, wallInitialOverlap, wallTerminalOverlap
         case containedSolid, overheadTallForward, overheadTallReverse, overheadShort, clear, floor
     }
@@ -347,11 +364,14 @@ final class SavedRoomRouteCollisionOracle {
     /// Mandatory on every external oracle creation. A failed control always
     /// throws, including a positive control whose raw hit arrays are empty.
     /// No alternate matrix cell can substitute for the selected candidate.
-    private static func verifyBackend(configuration: BackendConfiguration) throws {
-        let witness = diagnoseBackend(configuration: configuration)
-        guard witness.backendReady else {
+    private static func verifyBackend(configuration: BackendConfiguration, queryMode: QueryMode) throws {
+        let original = backendQueries(configuration: configuration, queryMode: queryMode)
+        let mixed = mixedSceneQueries(layout: .wallAndFloor, queryMode: queryMode)
+        let failedNames = Set((original + mixed).filter { !$0.passed }.map(\.name))
+        let failures = ControlName.allCases.filter { failedNames.contains($0) }
+        guard failures.isEmpty else {
             throw Failure.backendUnavailable("backend controls failed: " +
-                witness.failedControls.map(\.rawValue).joined(separator: ","))
+                failures.map(\.rawValue).joined(separator: ","))
         }
     }
 
@@ -361,6 +381,18 @@ final class SavedRoomRouteCollisionOracle {
     private static let controlFloor = UUID(uuidString: "00000000-0000-0000-0000-000000000004")!
 
     private static func diagnoseBackend(configuration: BackendConfiguration) -> BackendCellWitness {
+        // Version-one bootstrap witness deliberately retains the original
+        // combined query mode; the separate mixed-scene witness diagnoses the
+        // candidate query split. Do not rewrite historical factorial meaning.
+        let queries = backendQueries(configuration: configuration, queryMode: .combined)
+        let failures = queries.filter { !$0.passed }.map(\.name)
+        return BackendCellWitness(configurationID: configuration.rawValue,
+            sourceCollisionMask: configuration.restrictsSourceMask ? "probe-only" : "platform-default-all",
+            rendererMode: configuration.usesRenderer ? "retained-offscreen-update" : "none",
+            backendReady: failures.isEmpty, failedControls: failures, queries: queries)
+    }
+
+    private static func backendQueries(configuration: BackendConfiguration, queryMode: QueryMode) -> [QueryWitness] {
         let queries: [QueryWitness]
         do {
             let wall = controlWall, solid = controlSolid, overhead = controlOverhead, floor = controlFloor
@@ -374,7 +406,7 @@ final class SavedRoomRouteCollisionOracle {
                 triangleFeatureIDs: [wall,wall,solid,solid,overhead,overhead,floor,floor],
                 furnitureBoxes: [.init(featureID: solid, dimensions: [2,3,2],
                     transform: [1,0,0,0, 0,1,0,0, 0,0,1,0, 5,1.5,0,1])],
-                configuration: configuration, checkBackend: false)
+                configuration: configuration, queryMode: queryMode, checkBackend: false)
             // Do not short-circuit on a failed wall or thrown query: the witness
             // must still record containment, height, clear and floor controls.
             queries = ControlName.allCases.map { name in
@@ -384,11 +416,109 @@ final class SavedRoomRouteCollisionOracle {
         } catch {
             queries = ControlName.allCases.map { QueryWitness.failed($0, error: error) }
         }
-        let failures = queries.filter { !$0.passed }.map(\.name)
-        return BackendCellWitness(configurationID: configuration.rawValue,
-            sourceCollisionMask: configuration.restrictsSourceMask ? "probe-only" : "platform-default-all",
-            rendererMode: configuration.usesRenderer ? "retained-offscreen-update" : "none",
-            backendReady: failures.isEmpty, failedControls: failures, queries: queries)
+        return queries
+    }
+
+    private enum MixedLayout: String { case wallOnly = "wall-only", wallAndFloor = "wall-and-floor" }
+    static let mixedControlNames: [ControlName] = [.thinWallForward, .thinWallReverse,
+        .wallInitialOverlap, .wallTerminalOverlap, .clear, .floor]
+    private static let mixedWall = UUID(uuidString: "10000000-0000-0000-0000-000000000001")!
+    private static let mixedFloor = UUID(uuidString: "10000000-0000-0000-0000-000000000002")!
+
+    struct MixedCellWitness: Encodable {
+        let configurationID, layout, queryMode: String
+        let rendererMode = "retained-offscreen-update"
+        let physicsSpeed = 1
+        let timeStepSeconds = 1.0 / 60.0
+        let gravity = [0, 0, 0]
+        let obstacleCategoryMask = 1, probeCategoryMask = 2
+        let floorCategoryMask: Int
+        let queryCollisionMasks: [Int]
+        let backendReady: Bool
+        let failedControls: [ControlName]
+        let queries: [QueryWitness]
+    }
+    struct MixedSceneWitness: Encodable {
+        let schemaVersion = 1
+        let evidenceKind = "synthetic-collision-mixed-scene"
+        let physicalAuthority = false
+        let fullFootprintSupportVerified = false
+        let cells: [MixedCellWitness]
+    }
+
+    /// Compare the unchanged failing wall+floor geometry with a wall-only
+    /// diagnostic control; then compare combined versus separated category
+    /// queries. Only the mixed layout can validate the candidate, never removal
+    /// of the floor, lifting/shrinking the cylinder, or a passing negative alone.
+    static func mixedSceneDiagnosticMatrix() -> MixedSceneWitness {
+        let configurations: [(MixedLayout, QueryMode)] = [(.wallOnly, .combined), (.wallAndFloor, .combined),
+            (.wallOnly, .separated), (.wallAndFloor, .separated)]
+        return MixedSceneWitness(cells: configurations.map { layout, mode in
+            let queries = mixedSceneQueries(layout: layout, queryMode: mode)
+            let failures = queries.filter { !$0.passed }.map(\.name)
+            return MixedCellWitness(configurationID: layout.rawValue + "-" + mode.rawValue,
+                layout: layout.rawValue, queryMode: mode.rawValue,
+                floorCategoryMask: mode == .separated ? 4 : 1,
+                queryCollisionMasks: mode == .separated ? [1, 4] : [1],
+                backendReady: failures.isEmpty, failedControls: failures, queries: queries)
+        })
+    }
+
+    private static func mixedSceneQueries(layout: MixedLayout, queryMode: QueryMode) -> [QueryWitness] {
+        do {
+            // Identical vertices, triangle ordering and IDs to wallAndFloor() in
+            // the original failed native test. Wall-only is a diagnostic control,
+            // NOT a geometry-reduced candidate or an alternative readiness gate.
+            let includeFloor = layout == .wallAndFloor
+            let oracle = try SavedRoomRouteCollisionOracle(
+                vertices: [0,0,-2, 0,3,-2, 0,3,2, 0,0,2,
+                           -3,0,-3, 3,0,-3, 3,0,3, -3,0,3],
+                triangles: includeFloor ? [0,1,2, 0,2,3, 4,5,6, 4,6,7] : [0,1,2, 0,2,3],
+                floorSupport: includeFloor ? [false,false,true,true] : [false,false],
+                triangleFeatureIDs: includeFloor ? [mixedWall,mixedWall,mixedFloor,mixedFloor] : [mixedWall,mixedWall],
+                furnitureBoxes: [], configuration: .candidate, queryMode: queryMode, checkBackend: false)
+            return mixedControlNames.map { name in
+                do { return try runMixedControl(name, oracle: oracle, layout: layout) }
+                catch { return QueryWitness.failed(name, error: error) }
+            }
+        } catch { return mixedControlNames.map { QueryWitness.failed($0, error: error) } }
+    }
+
+    private static func runMixedControl(_ name: ControlName, oracle: SavedRoomRouteCollisionOracle,
+                                        layout: MixedLayout) throws -> QueryWitness {
+        let from: SIMD3<Float>, to: SIMD3<Float>
+        switch name {
+        case .thinWallForward: from = SIMD3(-1,0,0); to = SIMD3(1,0,0)
+        case .thinWallReverse: from = SIMD3(1,0,0); to = SIMD3(-1,0,0)
+        case .wallInitialOverlap: from = SIMD3(0,0,0); to = SIMD3(1,0,0)
+        case .wallTerminalOverlap: from = SIMD3(-1,0,0); to = SIMD3(0,0,0)
+        case .clear: from = SIMD3(-1,0,3); to = SIMD3(1,0,3)
+        case .floor: from = SIMD3(2,-0.1,0); to = from
+        default: throw Failure.invalidQuery
+        }
+        let result = try oracle.sweep(from: from, to: to, radius: 0.2, height: 1.6)
+        let all = result.all
+        let validFloor = layout == .wallOnly ? all.floorSurfaceIDs.isEmpty : all.floorSurfaceIDs.isSubset(of: [mixedFloor])
+        let expected: Bool
+        switch name {
+        case .thinWallForward, .thinWallReverse:
+            expected = result.initial.obstacleSurfaceIDs.isEmpty && result.terminal.obstacleSurfaceIDs.isEmpty &&
+                result.swept.obstacleSurfaceIDs == [mixedWall]
+        case .wallInitialOverlap:
+            expected = result.initial.obstacleSurfaceIDs == [mixedWall] && result.terminal.obstacleSurfaceIDs.isEmpty &&
+                all.obstacleSurfaceIDs == [mixedWall]
+        case .wallTerminalOverlap:
+            expected = result.terminal.obstacleSurfaceIDs == [mixedWall] && result.initial.obstacleSurfaceIDs.isEmpty &&
+                all.obstacleSurfaceIDs == [mixedWall]
+        case .clear: expected = !all.hasObstacleContact
+        case .floor:
+            expected = layout == .wallOnly ? all == Contacts() :
+                result.initial.floorSurfaceIDs == [mixedFloor] && result.terminal.floorSurfaceIDs == [mixedFloor] &&
+                all.floorSurfaceIDs == [mixedFloor] && !all.hasObstacleContact
+        default: throw Failure.invalidQuery
+        }
+        return QueryWitness(name: name, passed: expected && validFloor && all.furnitureBoundIDs.isEmpty, errorCode: "none",
+            initial: ContactWitness(result.initial), swept: ContactWitness(result.swept), terminal: ContactWitness(result.terminal))
     }
 
     private static func runControl(_ name: ControlName, oracle: SavedRoomRouteCollisionOracle) throws -> QueryWitness {

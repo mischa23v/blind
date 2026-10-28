@@ -146,7 +146,29 @@ def collision_matrix():
 
 
 def diagnostic_report(label):
-    return metadata_inventory() if label == 'metadata-inventory' else collision_matrix()
+    if label == 'metadata-inventory': return metadata_inventory()
+    if label == 'collision-backend': return collision_matrix()
+    return mixed_collision_matrix()
+
+
+def mixed_collision_matrix():
+    result = {'schemaVersion':1,'evidenceKind':'synthetic-collision-mixed-scene','physicalAuthority':False,
+              'fullFootprintSupportVerified':False,'cells':[]}
+    for configuration in ('wall-only-combined','wall-and-floor-combined','wall-only-separated','wall-and-floor-separated'):
+        mode='separated' if configuration.endswith('separated') else 'combined'
+        layout='wall-and-floor' if configuration.startswith('wall-and-floor') else 'wall-only'
+        queries=[copy.deepcopy(query) for query in collision_matrix()['cells'][0]['queries'] if query['name'] in m.MIXED_CONTROL_NAMES]
+        for query in queries:
+            for phase in ('initial','swept','terminal'):
+                contacts=query[phase]
+                contacts['obstacleSurfaceIDs']=['10000000-0000-0000-0000-000000000001'] if contacts['obstacleSurfaceIDs'] else []
+                contacts['floorSurfaceIDs']=['10000000-0000-0000-0000-000000000002'] if layout=='wall-and-floor' else []
+        result['cells'].append({'configurationID':configuration,'layout':layout,'queryMode':mode,
+            'rendererMode':'retained-offscreen-update','physicsSpeed':1,'timeStepSeconds':1/60,'gravity':[0,0,0],
+            'obstacleCategoryMask':1,'floorCategoryMask':4 if mode=='separated' else 1,'probeCategoryMask':2,
+            'queryCollisionMasks':[1,4] if mode=='separated' else [1],
+            'backendReady':True,'failedControls':[],'queries':queries})
+    return result
 
 
 class DiagnosticValidationTests(unittest.TestCase):
@@ -541,7 +563,7 @@ p=pathlib.Path(args[args.index('--output-path')+1]);p.mkdir()
 
 
 class DiagnosticCollectionTests(unittest.TestCase):
-    specs=m.SPECS+m.DIAGNOSTIC_SPECS
+    specs=m.SPECS+m.DIAGNOSTIC_SPECS[:2] # Preserve the original five-report compatibility fixture.
     def cases(self):
         return [{'identifier':'BlindAssistTests/'+key+'()','result':'Failed'} for key,_,_ in self.specs]
     def exporter(self,bundle,identifier,destination):
@@ -618,6 +640,82 @@ class DiagnosticCollectionTests(unittest.TestCase):
             self.assertFalse(final['target_pass_verified']);self.assertEqual(final['cases'],cases)
             self.assertEqual(final['counts']['Failed'],5)
             self.assertEqual(len(final['routeDiagnosticEvidence']['reports']),5)
+
+
+class MixedCollisionEvidenceTests(unittest.TestCase):
+    def collect(self):
+        specs=m.SPECS+m.DIAGNOSTIC_SPECS
+        cases=[{'identifier':key+'()','result':'Failed'} for key,_,_ in specs]
+        def exporter(bundle,identifier,destination):
+            key,name,label=next(spec for spec in specs if spec[0]==m.canonical(identifier))
+            export_fixture(destination,name,report(label) if (key,name,label) in m.SPECS else diagnostic_report(label))
+        with patch.object(m,'export_test',side_effect=exporter):return m.collect(ROOT,Path('unused'),cases,u.query)
+    def test_separate_schema_and_all_four_paired_cells(self):
+        data=mixed_collision_matrix();self.assertEqual(m.validate_mixed_collision_matrix(data),data)
+        with self.assertRaises(m.EvidenceError):m.validate_collision_matrix(data)
+        with self.assertRaises(m.EvidenceError):m.validate_mixed_collision_matrix(collision_matrix())
+        self.assertEqual(m.validate_collision_matrix(collision_matrix()),collision_matrix())
+    def test_configuration_layout_masks_and_denominators_fixed(self):
+        for key,value in [('layout','wall-and-floor'),('queryMode','separated'),('rendererMode','none'),
+                          ('floorCategoryMask',4),('probeCategoryMask',True),('queryCollisionMasks',[True]),
+                          ('queryCollisionMasks',[1,4]),('gravity',[0,1,0]),('physicsSpeed',0),
+                          ('timeStepSeconds',1/30),('configurationID','private-room')]:
+            data=mixed_collision_matrix();data['cells'][0][key]=value
+            with self.subTest(key=key,value=value),self.assertRaises(m.EvidenceError):m.validate_mixed_collision_matrix(data)
+        data=mixed_collision_matrix();data['cells'].reverse()
+        with self.assertRaises(m.EvidenceError):m.validate_mixed_collision_matrix(data)
+        data=mixed_collision_matrix();data['cells'][0]['queries'].pop()
+        with self.assertRaises(m.EvidenceError):m.validate_mixed_collision_matrix(data)
+    def test_fixed_identifiers_error_privacy_and_false_authority(self):
+        for change in ('old_wall','public_uuid','bounds','path','private','authority','error_contacts'):
+            data=mixed_collision_matrix();query=data['cells'][0]['queries'][0]
+            if change=='old_wall':query['swept']['obstacleSurfaceIDs']=['00000000-0000-0000-0000-000000000001']
+            elif change=='public_uuid':query['swept']['obstacleSurfaceIDs']=[sorted(UUIDS['Hallway2'])[0]]
+            elif change=='bounds':query['initial']['furnitureBoundIDs']=['10000000-0000-0000-0000-000000000001']
+            elif change=='path':query['errorCode']='/Users/private/family'
+            elif change=='private':query['rawScene']='private'
+            elif change=='authority':data['physicalAuthority']=True
+            else:query.update(errorCode='invalidQuery',passed=False)
+            with self.subTest(change=change),self.assertRaises(m.EvidenceError):m.validate_mixed_collision_matrix(data)
+    def test_mixed_floor_observations_never_hide_failed_wall_or_endpoint(self):
+        for index in range(6):
+            data=mixed_collision_matrix();data['cells'][1]['queries'][index]['passed']=False
+            with self.subTest(index=index),self.assertRaisesRegex(m.EvidenceError,'collision_pass_disagreement'):
+                m.validate_mixed_collision_matrix(data)
+        data=mixed_collision_matrix();cell=data['cells'][1];query=cell['queries'][0]
+        query['swept']['obstacleSurfaceIDs']=[];query['passed']=False
+        cell.update(backendReady=False,failedControls=['thinWallForward'])
+        self.assertEqual(m.validate_mixed_collision_matrix(data),data) # floor remains; failed wall is not cleared
+        cell['backendReady']=True
+        with self.assertRaisesRegex(m.EvidenceError,'collision_readiness_disagreement'):m.validate_mixed_collision_matrix(data)
+    def test_unexpected_wall_only_floor_is_retained_as_failure_not_success(self):
+        data=mixed_collision_matrix();cell=data['cells'][0];query=cell['queries'][0]
+        query['initial']['floorSurfaceIDs']=['10000000-0000-0000-0000-000000000002']
+        with self.assertRaisesRegex(m.EvidenceError,'collision_pass_disagreement'):m.validate_mixed_collision_matrix(data)
+        query['passed']=False;cell.update(backendReady=False,failedControls=['thinWallForward'])
+        self.assertEqual(m.validate_mixed_collision_matrix(data),data)
+    def test_optional_sixth_report_keeps_failed_status_and_existing_reports(self):
+        result=self.collect()
+        self.assertEqual(result['status'],'complete');self.assertEqual(len(result['reports']),6)
+        self.assertTrue(all(row['testResult']=='Failed' and row['status']=='collected' for row in result['reports']))
+        self.assertEqual(result['reports'][-1]['report'],mixed_collision_matrix())
+        self.assertEqual(result['aggregateByteLimit'],m.LIMIT)
+        self.assertLessEqual(result['rawAttachmentBytes'],m.LIMIT)
+    def test_mixed_report_keeps_existing_per_report_and_shared_byte_caps(self):
+        original=m.exported_report
+        def oversized(directory,name):
+            raw=original(directory,name)
+            return raw+b' '*m.DIAGNOSTIC_LIMIT if name==m.DIAGNOSTIC_SPECS[-1][1] else raw
+        with patch.object(m,'exported_report',side_effect=oversized):result=self.collect()
+        self.assertEqual(result['reports'][-1]['status'],'diagnostic_over_budget')
+        self.assertTrue(all(row['status']=='collected' for row in result['reports'][:-1]))
+        def aggregate(directory,name):
+            raw=original(directory,name)
+            size=330000 if name in {spec[1] for spec in m.SPECS} else (65000 if name==m.DIAGNOSTIC_SPECS[-1][1] else len(raw))
+            return raw+b' '*max(0,size-len(raw))
+        with patch.object(m,'exported_report',side_effect=aggregate):result=self.collect()
+        self.assertEqual(result['reports'][-1]['status'],'aggregate_over_budget')
+        self.assertLessEqual(result['rawAttachmentBytes'],m.LIMIT)
 
 
 if __name__=='__main__':unittest.main()
