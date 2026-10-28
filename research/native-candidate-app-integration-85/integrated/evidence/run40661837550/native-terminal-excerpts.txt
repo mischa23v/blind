@@ -1,0 +1,17 @@
+2026-10-28T09:14:22.1180000Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ac56c97861d23888c24f13d2482055f9302d5ea0:refs/remotes/origin/codex/recovery-hazard-order-20261027
+2026-10-28T09:14:29.2676470Z  * [new ref]         ac56c97861d23888c24f13d2482055f9302d5ea0 -> origin/codex/recovery-hazard-order-20261027
+2026-10-28T09:14:29.3124830Z ac56c97861d23888c24f13d2482055f9302d5ea0
+2026-10-28T09:14:31.1475970Z ac56c97861d23888c24f13d2482055f9302d5ea0
+2026-10-28T09:14:31.8579990Z ac56c97861d23888c24f13d2482055f9302d5ea0
+2026-10-28T09:16:04.1438570Z core exit status: 0
+2026-10-28T09:16:04.1873500Z 	 Executed 1434 tests, with 1 test skipped and 0 failures (0 unexpected) in 7.704 (7.899) seconds
+2026-10-28T09:16:04.1876490Z 	 Executed 1434 tests, with 1 test skipped and 0 failures (0 unexpected) in 7.704 (7.902) seconds
+2026-10-28T09:16:59.0674100Z memory exit status: 0
+2026-10-28T09:16:59.0995110Z 	 Executed 58 tests, with 0 failures (0 unexpected) in 9.934 (9.943) seconds
+2026-10-28T09:16:59.0996130Z 	 Executed 58 tests, with 0 failures (0 unexpected) in 9.934 (9.944) seconds
+2026-10-28T09:19:15.9292040Z build exit status: 65
+2026-10-28T09:19:16.0541490Z /Users/runner/work/blind/blind/ios/BlindAssist/PlaceStore.swift:88:27: error: cannot use mutating member on immutable value: 'directory' is a 'let' constant
+2026-10-28T09:19:16.0544830Z     |                 |         `- error: cannot use mutating member on immutable value: 'directory' is a 'let' constant
+2026-10-28T09:19:16.0545290Z ** BUILD FAILED **
+2026-10-28T09:19:16.0771440Z ** BUILD FAILED **
+2026-10-28T09:19:20.1867800Z NATIVE_UNIT_CASE_STATUSES={"schema":1,"target":"IndoorGoalContinuityTests/testTrackingLossStillInvalidatesRetainedMapFrame","complete":false,"target_pass_verified":false,"source_verified":false,"expected_commit":"ac56c97861d23888c24f13d2482055f9302d5ea0","limits":{"query_bytes":4194304,"query_seconds":30,"tree_nodes":10000},"provenance":{"actual_head":"ac56c97861d23888c24f13d2482055f9302d5ea0","tracked_source_clean":true,"untracked_scopes":["ios","BlindCore","BlindMemory","tools/ci",".github/workflows"],"generated_metadata":[{"path":"BlindMemory/Package.resolved","status":"validated_public_exact_pin","bytes":388,"sha256":"159a0bf93b792f403c70f7ec2cfea61686aff384e55c8c132946fb8980e26889","schema_version":3,"pins":[{"identity":"grdb.swift","kind":"remoteSourceControl","location":"https://github.com/groue/GRDB.swift.git","state":{"revision":"b83108d10f42680d78f23fe4d4d80fc88dab3212","version":"7.11.1"}}]},{"path":"ios/BlindAssist.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved","status":"validated_public_exact_pin","bytes":388,"sha256":"89be7e61ccd45eec15fbfda8395e9de3f2f1a6833845ab64b59bb621fd17d44e","schema_version":3,"pins":[{"identity":"grdb.swift","kind":"remoteSourceControl","location":"https://github.com/groue/GRDB.swift.git","state":{"revision":"b83108d10f42680d78f23fe4d4d80fc88dab3212","version":"7.11.1"}}]}]},"source_commit":"ac56c97861d23888c24f13d2482055f9302d5ea0","error_type":"ValueError","error":"xcresult query exit code 64"}

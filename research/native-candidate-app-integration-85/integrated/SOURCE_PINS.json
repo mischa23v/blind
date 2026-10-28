@@ -10,24 +10,25 @@
   },
   "integrated": {
     "ios/BlindAssist/NavigationModel.swift": "3943fc01cbe915f941d653827ff14c80093bbceef9215f77fa60c03e795cf7b1",
-    "ios/BlindAssist.xcodeproj/project.pbxproj": "22ade4297e94b13957249b507d422895335958a051821e20407a2df5ff6b6c84",
+    "ios/BlindAssist.xcodeproj/project.pbxproj": "3153028060dc7265eec090d3fbc50cd58a4d53b8f2b61fd169af92aa82471591",
     "ios/BlindAssist/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
     "tools/ci/native-apple.sh": "163fa512486bbbce522aa735cda0d36ca2711955edef9b118d8b598e900061e6",
     ".github/workflows/native-apple.yml": "fa2fed05f2fcdce59f1cdcb92fb77442a3c7e5c3d0bf53ef78c0fe1c2df40672",
     ".github/workflows/native-candidate-app-integration.yml": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
-    "research/native-candidate-app-integration-85/integrated/check.py": "8454f8f1d804d08c8bd6b1dd2aada70b8bfc335d3052673b4abba9123d09b7b4",
-    "research/native-candidate-app-integration-85/integrated/README.md": "e3c469f702d31269e4a61f7266455fe3d76c2b40d65c5c17fabf88ddd12fe028",
+    "research/native-candidate-app-integration-85/integrated/check.py": "738d59a80da31b18ad0b017f5e80621029474f55154516f393ad4190cb3515cb",
+    "research/native-candidate-app-integration-85/integrated/README.md": "cbb7b0035464bd2933837849fc1d444f34df3c0b6e26bff46c50e62d8d0998ce",
     "research/native-candidate-app-integration-85/app-integration.patch": "3cbde1075811ebab3d9fc1a54101ffad0b3749030c3dfc920cbcdca4fde2c619",
     "research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
     "research/native-candidate-app-integration-85/integrated/critical-order.patch": "8f298574cd79ff3e86f0a5ef124824686b2d9a95e96d3ca273d697f97e1d9efa",
     "research/native-candidate-app-integration-85/integrated/practice-publication.patch": "d63db63272a4bf53d9a4209cb5be2d3e55ff44a782242eeede2a46a4a5178156",
     "research/native-candidate-app-integration-85/integrated/project-canonicalization.patch": "57860e8d3c8513bfca04a636def7aec9aaaa2b201ac3985db2ebf011618f43f8",
     "research/native-candidate-app-integration-85/integrated/connected-bench-preview-membership.patch": "85d1a3c5982030f8437e7695ae3a70623a53747f0a96f3a7fbd89c515ed9a7c9",
-    "tools/generate-xcode-project.mjs": "ae93a753ae0c43f8d4f9014fcf91d604bff07193b31c24903c88c76b9e714666",
+    "tools/generate-xcode-project.mjs": "56f70386d63c2edded720b3a0c54ff91e085360abd34715caa7910dd80a983dc",
     "research/native-candidate-app-integration-85/integrated/navigation-test-recording.patch": "e6cf0038fb7814ce20ed31baddf6ee48c8990a81afc8af92a4e1b766aa130865",
     "research/native-candidate-app-integration-85/integrated/saved-frame-camera-association.patch": "36703f6e1a78bf5c027e94563f7de8661be8a7862397aad96c16bb698247c2de",
     "research/native-candidate-app-integration-85/integrated/scene-timing-ci-helper.patch": "af1124b6dae32a945a625b2c017f532e15d23df721cce323fef09e580cd81e4b",
-    "research/native-candidate-app-integration-85/integrated/saved-room-geometry-membership.patch": "78c27cef1798dd97ecf0092bcec4138ac380b226a11882cc3de87a5cd4550bd7"
+    "research/native-candidate-app-integration-85/integrated/saved-room-geometry-membership.patch": "78c27cef1798dd97ecf0092bcec4138ac380b226a11882cc3de87a5cd4550bd7",
+    "research/native-candidate-app-integration-85/integrated/apple-roomplan-fixture-membership.patch": "a1745698e2ae3b038930cca52ac9d143907130efd88f39a13cd9fb4e8ad67101"
   },
   "beforeCriticalOrder": {
     "ios/BlindAssist/NavigationModel.swift": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307"
@@ -54,5 +55,8 @@
   "beforeSavedRoomGeometry": {
     "ios/BlindAssist.xcodeproj/project.pbxproj": "63fc5fcd1d9ef153c87ca48b9fa195f270fec3c039ee58887d407d46b300d87c",
     "ios/BlindAssist/NavigationModel.swift": "fcea783bbbbaa4e1bdda04740fc38f11c10f30de1e6160d8eb5072d7b4a01298"
+  },
+  "beforeAppleRoomPlanFixtures": {
+    "ios/BlindAssist.xcodeproj/project.pbxproj": "22ade4297e94b13957249b507d422895335958a051821e20407a2df5ff6b6c84"
   }
 }

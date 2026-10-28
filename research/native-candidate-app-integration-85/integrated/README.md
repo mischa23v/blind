@@ -1,3 +1,11 @@
+# Original Apple RoomPlan hosted-test resources — 2026-10-28
+
+`apple-roomplan-fixture-membership.patch` adds only `SavedRoomDiagnosticGeometryAppleFixtureTests.swift` to the hosted test source phase and a `RoomPlanApple` folder reference to a new **hosted-test-only** resource phase. The folder holds two original Apple JSON samples, the Apple license and local provenance README/manifest. No app resource phase receives the folder; no additional app Swift file, dependency, flag or workflow is added.
+
+The checker reverses this exact PBX layer first to `22ade4297e94b13957249b507d422895335958a051821e20407a2df5ff6b6c84`, then all earlier geometry/capture/recorder/project proofs; the separate CI helper proof remains intact. Native bundle copying, RoomPlan decoder execution and assertions remain pending existing CI. These public samples carry no paired world map, live trajectory or physical accuracy evidence.
+
+---
+
 # Saved-room diagnostic geometry membership — 2026-10-28
 
 The separate `saved-room-geometry-membership.patch` binds the reviewed NavigationModel same-frame diagnostic handoff and provider factory/deletion hook, plus canonical membership for `SavedRoomDiagnosticGeometryProvider.swift` and `SavedRoomDiagnosticGeometryProviderTests.swift`. There are now 64 app Swift files. Existing hosted tests, package/product links, flags and workflows remain unchanged; Core source/test files are discovered by the existing Swift package.

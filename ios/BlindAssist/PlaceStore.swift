@@ -85,7 +85,8 @@ final class PlaceStore: NSObject, RoomCaptureSessionDelegate, ObservableObject {
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
             var storage = URLResourceValues(); storage.isExcludedFromBackup = true
-            try directory.setResourceValues(storage)
+            var protectedDirectory = directory
+            try protectedDirectory.setResourceValues(storage)
             try FileManager.default.setAttributes([.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication], ofItemAtPath: directory.path)
             do {
             let memoryDirectory = directory.deletingLastPathComponent().appendingPathComponent("AssistantMemory", isDirectory: true)
