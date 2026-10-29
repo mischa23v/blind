@@ -54,6 +54,22 @@ public final class LiveMeshBenchIngress {
         guard active(generation) else { return false }
         return ingress.remove(anchorID: anchorID, receiptUptime: receiptUptime)
     }
+    /// Inspect admitted source values even when delivery is incomplete. This is
+    /// deliberately distinct from request(), whose strict route gates are unchanged.
+    public func requestSourceSnapshot(generation: UUID, limits: MeshSourceSnapshotLimits = .init(),
+        completion: @escaping (Result<MeshCandidateIngress83.SourceSnapshot, MeshCandidateIngress83.SourceSnapshotFailure>) -> Void) {
+        guard active(generation) else { completion(.failure(.unavailable)); return }
+        ingress.requestSourceSnapshot(limits: limits) { [weak self] result in
+            guard let self, self.active(generation) else { completion(.failure(.stale)); return }
+            if case .success(let snapshot) = result, !self.ingress.isCurrent(snapshot) {
+                completion(.failure(.stale)); return
+            }
+            completion(result)
+        }
+    }
+    public func isCurrent(_ snapshot: MeshCandidateIngress83.SourceSnapshot, generation: UUID) -> Bool {
+        active(generation) && ingress.isCurrent(snapshot)
+    }
     /// Explicit supplied test points, never current body pose or a movement request.
     /// Delivery/coverage authority remains false in the existing candidate type.
     public func request(generation: UUID, start: [Float], goal: [Float], body: MeshCandidateBody,

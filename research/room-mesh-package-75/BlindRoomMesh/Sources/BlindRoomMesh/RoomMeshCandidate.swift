@@ -69,6 +69,45 @@ public struct MeshCandidateRoute {
  public let endpointAdmission: MeshEndpointAdmissionReceipt?
  public let authorizesPhysicalGuidance=false, actualWorldCoverageKnown=false, rawDepthHazardImplemented=false, rawDepthHazardVeto=true
 }
+/// Conservative logical retained-payload bounds (including reserved metadata),
+/// not an exact encoded size or a claim about allocator/RSS or device timing.
+public struct MeshSourceSnapshotLimits: Sendable {
+ public let anchors:Int, records:Int, vertices:Int, triangles:Int, payloadBytes:Int
+ public init(anchors:Int=64,records:Int=256,vertices:Int=200000,triangles:Int=100000,payloadBytes:Int=8000000) {
+  self.anchors=anchors;self.records=records;self.vertices=vertices;self.triangles=triangles;self.payloadBytes=payloadBytes
+ }
+ var valid:Bool {(1...64).contains(anchors) && (1...256).contains(records) && (1...200000).contains(vertices) && (1...100000).contains(triangles) && (1...8000000).contains(payloadBytes)}
+}
+public enum MeshSourceSnapshotError: Error {case invalidLimits,budget,unavailable,stale,invalidRetainedState}
+/// Ledger bookkeeping only: storedRevision is not a native mesh capture version.
+public struct MeshSourceAnchorReceipt: Sendable {
+ public let anchorID:String,storedRevision:Int,receiptUptime:Double
+ public let removed:Bool,hasRetainedGeometry:Bool,complete:Bool
+ public var captureUptime:Double? {nil}
+}
+/// Original admitted anchor-local values. Apply columnMajorTransform ONCE to
+/// obtain the session-world frame; these vertices have NOT already been transformed.
+public struct MeshSourceAnchorGeometry: Sendable {
+ public let anchorID:String
+ public let localVertices:[Double],triangleIndices:[Int32],columnMajorTransform:[Double]
+ /// Normalized planner roles, NOT original ARKit classification labels.
+ public let normalizedSupportRoles:[MeshTriangleSupport]?
+ public var rawARKitClassificationsAvailable:Bool {false}
+}
+/// Immutable retained-source inspection, never a route, pose or clearance ticket.
+/// isCurrent checks delivery identity, NOT real-world freshness. On incomplete
+/// delivery, retained geometry may be superseded: inspect it only as diagnostics.
+public struct MeshSourceGeometrySnapshot: Sendable {
+ public let sessionID:String,generation:Int,revision:UInt64
+ public let anchors:[MeshSourceAnchorGeometry],records:[MeshSourceAnchorReceipt]
+ public let sourceDeliveryComplete:Bool,unknownCoverage:[String],logicalPayloadBytes:Int
+ public let coordinateConvention="arkit-anchor-local-column-major-to-session-world-y-up"
+ public let units="metres"
+ public let authorizesPhysicalGuidance=false,actualWorldCoverageKnown=false
+ public var captureUptime:Double? {nil}
+ public var retainedGeometryMayBeSuperseded:Bool {!sourceDeliveryComplete}
+ fileprivate let ownerID:UUID,lifecycle:UInt64,ingressHadGap:Bool
+}
 /// Candidate-only bounded mailbox. No ARKit, speech, haptics or motion outputs.
 /// Ingress takes only a short metadata lock; native work executes on a utility queue.
 /// Callers MUST recheck isCurrent before displaying/using a candidate snapshot.
@@ -80,6 +119,14 @@ public final class RoomMeshCandidateRuntime {
  private var session: String, generation: Int, revision: UInt64=0
  private var lifecycle:UInt64=0, ownerLifecycle:UInt64?
  private var pending=0, pendingScalars=0, gap=false, stopped=false
+ private let snapshotOwnerID=UUID()
+ private var sourceSnapshotPending=false
+ // Serial diagnostic delivery also gives native tests an actual completion fence.
+ static let sourceSnapshotDeliveryWorker=DispatchQueue(label:"blind.room-mesh.snapshot-delivery",qos:.utility)
+ private final class SourceSnapshotDelivery {
+  var value:Result<MeshSourceGeometrySnapshot,MeshSourceSnapshotError>?
+  init(_ value:Result<MeshSourceGeometrySnapshot,MeshSourceSnapshotError>){self.value=value}
+ }
  private var discarding=false, discarded=false, discardScheduled=false
  private var discardWaiters:[()->Void]=[]
  private let maxPending=8, maxPendingScalars=900000
@@ -217,7 +264,7 @@ public final class RoomMeshCandidateRuntime {
  // Called under lock. A last-job defer may run before its captured event dies;
  // the subsequent serial-worker block ensures that job has actually returned.
  private func scheduleDiscardIfDrained() {
-  guard discarding,!discarded,!discardScheduled,pending==0 else{return}
+  guard discarding,!discarded,!discardScheduled,pending==0,!sourceSnapshotPending else{return}
   discardScheduled=true
   Self.worker.async { [self] in
 #if DEBUG
@@ -288,6 +335,62 @@ public final class RoomMeshCandidateRuntime {
  }
  public func isCurrent(_ candidate:MeshCandidateRoute)->Bool {
   locked{matches(candidate.sessionID,candidate.generation,candidate.revision)}
+ }
+ /// Snapshot currentness is exact owner/lifecycle/revision identity only. It
+ /// never certifies capture age, pose, complete support or current obstacles.
+ public func isCurrent(_ snapshot:MeshSourceGeometrySnapshot)->Bool {
+  locked{snapshot.ownerID==snapshotOwnerID && snapshot.lifecycle==lifecycle &&
+   snapshot.ingressHadGap==gap && matches(snapshot.sessionID,snapshot.generation,snapshot.revision)}
+ }
+ // Separate scope releases the delivered/stale value before releasing its box
+ // and reservation. A consumer may retain its own copy, outside owner erasure.
+ private func deliverSourceSnapshot(_ owned:SourceSnapshotDelivery,
+  completion:(Result<MeshSourceGeometrySnapshot,MeshSourceSnapshotError>)->Void) {
+  guard let result=owned.value else{return}
+  if case .success(let snapshot)=result,!isCurrent(snapshot){completion(.failure(.stale))}
+  else{completion(result)}
+ }
+ /// One outstanding immutable payload, including its asynchronous delivery.
+ /// Read-only: this request does not advance revisions or invalidate a route.
+ /// A caller may retain a delivered value; discard cannot erase caller memory.
+ /// Completion runs off-lock on the serial diagnostic delivery queue. Return
+ /// promptly; never synchronously wait for stopAndDiscard inside completion,
+ /// because terminal drain correctly waits for this delivery to return.
+ public func requestSourceSnapshot(limits:MeshSourceSnapshotLimits = .init(),
+   completion:@escaping(Result<MeshSourceGeometrySnapshot,MeshSourceSnapshotError>)->Void) {
+  guard limits.valid else{DispatchQueue.global(qos:.utility).async{completion(.failure(.invalidLimits))};return}
+  let token:(String,Int,UInt64,UInt64)?=locked {
+   guard !stopped,!sourceSnapshotPending,pending<maxPending else{return nil}
+   sourceSnapshotPending=true;pending+=1;return(session,generation,revision,lifecycle)
+  }
+  guard let (s,g,r,cycle)=token else{DispatchQueue.global(qos:.utility).async{completion(.failure(.unavailable))};return}
+  let finish:(Result<MeshSourceGeometrySnapshot,MeshSourceSnapshotError>)->Void={ [self] result in
+   let owned=SourceSnapshotDelivery(result)
+   Self.sourceSnapshotDeliveryWorker.async { [self] in
+    // Fence at delivery and release all owner-held payload references before drain.
+    deliverSourceSnapshot(owned,completion:completion)
+    owned.value=nil
+    locked{sourceSnapshotPending=false;scheduleDiscardIfDrained()}
+   }
+  }
+  Self.worker.async { [self] in
+   defer{locked{pending-=1;scheduleDiscardIfDrained()}}
+   guard locked({matches(s,g,r) && lifecycle==cycle}) else{finish(.failure(.stale));return}
+   guard let owner=owner,ownerLifecycle==cycle,owner.session==s,owner.generation==g else{finish(.failure(.unavailable));return}
+   do {
+    let (anchors,records,payloadBytes)=try owner.sourceSnapshotData(limits:limits)
+    let state=locked{(matches(s,g,r) && lifecycle==cycle,gap)}
+    guard state.0 else{finish(.failure(.stale));return}
+    var unknown=owner.unknown.sorted();if state.1{unknown.append("ingress-or-lifecycle-gap")}
+    // sourceSnapshotData reserves the optional gap label in its logical budget.
+    let snapshot=MeshSourceGeometrySnapshot(sessionID:s,generation:g,revision:r,
+     anchors:anchors,records:records,sourceDeliveryComplete:owner.sourceComplete && !state.1,
+     unknownCoverage:unknown,logicalPayloadBytes:payloadBytes,
+     ownerID:snapshotOwnerID,lifecycle:cycle,ingressHadGap:state.1)
+    finish(.success(snapshot))
+   } catch let error as MeshSourceSnapshotError {finish(.failure(error))}
+   catch {finish(.failure(.invalidRetainedState))}
+  }
  }
  /// Explicit body and session-local query points; no projection is a movement command.
  /// Each new body/goal request invalidates older query snapshots at ingress.

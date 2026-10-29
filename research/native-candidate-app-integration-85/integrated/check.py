@@ -17,6 +17,18 @@ def check(name, value):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# Recover the exact prior ingress/collector bytes in scratch only; historical layers remain intact.
+with tempfile.TemporaryDirectory(prefix='stage85-snapshot-') as temp:
+    root = Path(temp)
+    for name in manifest['beforeImmutableSnapshot']:
+        target = root / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(R / name, target)
+    subprocess.run(['git', 'apply', '-R', str(H / 'immutable-snapshot-layer.patch')], cwd=root,
+                   check=True, timeout=15, capture_output=True)
+    for name, digest in manifest['beforeImmutableSnapshot'].items():
+        check('exact pre-immutable-snapshot source recovered ' + name, hashlib.sha256((root / name).read_bytes()).hexdigest() == digest)
+
 # The authorized CI metadata extraction is a separate reversible helper layer.
 # Recover the exact prior helper before assessing unchanged build-mode contracts.
 with tempfile.TemporaryDirectory(prefix='stage85-ci-helper-') as temp:

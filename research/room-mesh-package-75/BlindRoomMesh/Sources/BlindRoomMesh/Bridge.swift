@@ -80,6 +80,52 @@ final class Replay {
   for key in tiles.keys.sorted(){let t=tiles[key]!;guard let support=t.triangleSupport,support.count==t.triangles.count/3 else{throw Failure.invalid("missing triangle support")};result.append(contentsOf:support)}
   return result
  }
+ /// Read the same admitted ledger/tiles as geometry(), without a second mapper.
+ /// Preflight ALL counts/bytes before constructing any output geometry arrays.
+ /// Failed/rejected replacements may leave old tiles: unknown/sourceComplete
+ /// must travel with this diagnostic payload and never imply current clearance.
+ func sourceSnapshotData(limits:MeshSourceSnapshotLimits)throws->([MeshSourceAnchorGeometry],[MeshSourceAnchorReceipt],Int) {
+  guard limits.valid else{throw MeshSourceSnapshotError.invalidLimits}
+  guard tiles.count<=limits.anchors,ledger.count<=limits.records else{throw MeshSourceSnapshotError.budget}
+  var bytes=1024,vertices=0,triangles=0 // reserves bounded headers/session/frame/unit IDs and the optional ingress-gap label
+  func add(_ a:Int,_ b:Int)throws->Int {let(n,o)=a.addingReportingOverflow(b);guard !o else{throw MeshSourceSnapshotError.budget};return n}
+  func mul(_ a:Int,_ b:Int)throws->Int {let(n,o)=a.multipliedReportingOverflow(by:b);guard !o else{throw MeshSourceSnapshotError.budget};return n}
+  for (id,p) in ledger {bytes=try add(bytes,add(id.utf8.count,64));guard p.anchor==id else{throw MeshSourceSnapshotError.invalidRetainedState}}
+  for label in unknown {bytes=try add(bytes,add(label.utf8.count,16))}
+  for id in tiles.keys {
+   guard let p=ledger[id],let tile=tiles[id],!p.removed,p.vertices.count==tile.vertices.count,
+    p.triangles==tile.triangles,p.triangleSupport==tile.triangleSupport,p.transform.count==16 else{throw MeshSourceSnapshotError.invalidRetainedState}
+   vertices=try add(vertices,p.vertices.count/3);triangles=try add(triangles,p.triangles.count/3)
+   bytes=try add(bytes,add(mul(p.vertices.count,8),mul(p.triangles.count,4)))
+   bytes=try add(bytes,add(128,add(id.utf8.count,p.triangleSupport?.count ?? 0)))
+  }
+  guard vertices<=limits.vertices,triangles<=limits.triangles,bytes<=limits.payloadBytes else{throw MeshSourceSnapshotError.budget}
+  // Replay can commit a ledger packet before rejecting projected overflow.
+  // Never pair that newer packet with an older tile just because counts match.
+  // Verify the exact transform-once world values against the retained tile;
+  // reject the WHOLE snapshot on divergence without changing route/mutation policy.
+  for id in tiles.keys {
+   let p=ledger[id]!,tile=tiles[id]!
+   for i in stride(from:0,to:p.vertices.count,by:3) {for r in 0..<3 {
+    let j=r*4
+    let world=p.transform[j]*p.vertices[i]+p.transform[j+1]*p.vertices[i+1]+p.transform[j+2]*p.vertices[i+2]+p.transform[j+3]
+    guard world.isFinite,Float(world).isFinite,world==tile.vertices[i+r] else{throw MeshSourceSnapshotError.invalidRetainedState}
+   }}
+  }
+  let records=ledger.keys.sorted().map {id -> MeshSourceAnchorReceipt in
+   let p=ledger[id]!
+   return MeshSourceAnchorReceipt(anchorID:id,storedRevision:p.revision,receiptUptime:p.timestamp,
+    removed:p.removed,hasRetainedGeometry:tiles[id] != nil,complete:p.complete)
+  }
+  let anchors=tiles.keys.sorted().map {id -> MeshSourceAnchorGeometry in
+   let p=ledger[id]!
+   // Packet stores rows; transpose back to the unchanged source column layout.
+   let columns=(0..<16).map{p.transform[($0%4)*4+$0/4]}
+   return MeshSourceAnchorGeometry(anchorID:id,localVertices:p.vertices,triangleIndices:p.triangles,
+    columnMajorTransform:columns,normalizedSupportRoles:p.triangleSupport)
+  }
+  return(anchors,records,bytes)
+ }
  func receipt()->[String:Any]{["authorizesPhysicalGuidance":false,"actualWorldCoverageKnown":false,"rawDepthHazard":"notImplemented","rawHazardVeto":true,"sourceDeliveryComplete":sourceComplete,"unknownCoverage":unknown.sorted(),"epoch":epoch]}
 }
 struct NativeRoute:Codable {

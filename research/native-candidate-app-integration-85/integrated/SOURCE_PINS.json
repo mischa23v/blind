@@ -15,7 +15,7 @@
     "tools/ci/native-apple.sh": "0825a5ac144218b755f1b8f62e73ca52c6f849a756a5e0c3553f7854bdc40ea2",
     ".github/workflows/native-apple.yml": "f0918d26a6542ce5a2d09e913b19e629009538f2421bd732b982564b58d4cc2b",
     ".github/workflows/native-candidate-app-integration.yml": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
-    "research/native-candidate-app-integration-85/integrated/check.py": "3762ef709e8239c4c182cc53a50a9269b60e6e7582f6ea08b6c3e5111930ad04",
+    "research/native-candidate-app-integration-85/integrated/check.py": "dbf2ca1311886c8264be64650d374b59b2f153b89f3597ae6da5feef9add059f",
     "research/native-candidate-app-integration-85/integrated/README.md": "e0c2967287b5ce57ab0c630f3b07fd1f466121aceae1cf931d48d113a5703bb1",
     "research/native-candidate-app-integration-85/app-integration.patch": "3cbde1075811ebab3d9fc1a54101ffad0b3749030c3dfc920cbcdca4fde2c619",
     "research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
@@ -33,7 +33,7 @@
     "research/native-candidate-app-integration-85/integrated/apple-room-route-membership.patch": "26038f39ecc6ca83271c971f26d62b7a1dea2c0bcb4fd7b3fe59a6c099495f8e",
     "research/native-candidate-app-integration-85/integrated/classified-timing-ci-helper.patch": "34df77a7a9ba5ddbf6ef6a70beed03b48aaad43ed4bc935bcb4fa45ff92961b9",
     "research/native-candidate-app-integration-85/integrated/classification-ingress-membership.patch": "1268edf8dfa33164b03c3ca403d1cb3c5f9f05ea2b920435efe7d0abe7af402c",
-    "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "5197a43b0df0e08a6b1fde8f5235d3ad8320df3148610ad261244860f7b07a0d",
+    "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "0fd937d63360a77a8e104d1b4e86b93bd49ca118ac5338853bede92bf9091510",
     "research/mesh-candidate-ingress-83/SOURCE_PINS.json": "5d54a3c436166fd1ee1568cc15f2c34ce724958eee6a630d006c1e448cd1663a",
     "ios/BlindAssistTests/ClassificationIngressTests.swift": "00efadb2602cbcb6dae7cdb9c7c21a7d35f98aaeb6791dc0d10a75dce3fa173a",
     "research/native-candidate-app-integration-85/integrated/hosted-decoder-link-membership.patch": "275ee7237a2e740250c9bf870157e0e91912d819932aa55332ae668aa30876ef",
@@ -48,9 +48,10 @@
     "ios/BlindAssistTests/ConversationRuntimeFailureTests.swift": "9c64a3eacaf3c039e2b168efabf741851f33339996032618bebb856fde9fb98c",
     "tools/test/conversation-runtime-failure.test.py": "13da5dea93d3e5d10e6b094a846887cdcc0c73f536e82870a03d7571f7b11233",
     "research/native-candidate-app-integration-85/integrated/conversation-runtime-failure-layer.patch": "c21ec75b2585b22187096cc6f7de1ce4b46f49aee47738a970b71686c88703c6",
-    "tools/ci/collect-classified-bench.py": "49834ea7edfc7fbca43e72ff96790b84987f082b9cacbb7eb338c2fc7a3beb7d",
-    "tools/ci/test_collect_classified_bench.py": "93ca5c861e672d0202b5f5687d9a7c4f476821195e128720909e79b628da0eac",
-    "research/strict-caller-runtime-ci-integration-20261029/test_ci_contract.py": "4df89de97dec273c928873312d38c50f0f56416f8a0abfee51dfb3c5fe59a5b3"
+    "tools/ci/collect-classified-bench.py": "125f2e52af90f0bad671d80a47297c79b9d7214dfa4dd849284d23b938495dc5",
+    "tools/ci/test_collect_classified_bench.py": "65c4edd947a8b224edaf6221a04383a9b07c64cf7bc9fd2349f71c19757207e2",
+    "research/strict-caller-runtime-ci-integration-20261029/test_ci_contract.py": "4df89de97dec273c928873312d38c50f0f56416f8a0abfee51dfb3c5fe59a5b3",
+    "research/native-candidate-app-integration-85/integrated/immutable-snapshot-layer.patch": "242ce273e86b1978fe5f84e1b5e898a097927896c53ac00ce8f33ed3836eb35a"
   },
   "beforeCriticalOrder": {
     "ios/BlindAssist/NavigationModel.swift": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307"
@@ -111,5 +112,10 @@
   "beforeConversationRuntimeFailure": {
     "ios/BlindAssist/NavigationModel.swift": "cf2d107ce5c8309b49ed977094bd634e5a96a0fb37ef0f57c75f1af0c3b2556c",
     "ios/BlindAssist.xcodeproj/project.pbxproj": "3496d3d93e30e32a0c2534867d9dc08d32bfba3009bd3d695775879399c8f13d"
+  },
+  "beforeImmutableSnapshot": {
+    "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "5197a43b0df0e08a6b1fde8f5235d3ad8320df3148610ad261244860f7b07a0d",
+    "tools/ci/collect-classified-bench.py": "49834ea7edfc7fbca43e72ff96790b84987f082b9cacbb7eb338c2fc7a3beb7d",
+    "tools/ci/test_collect_classified_bench.py": "93ca5c861e672d0202b5f5687d9a7c4f476821195e128720909e79b628da0eac"
   }
 }

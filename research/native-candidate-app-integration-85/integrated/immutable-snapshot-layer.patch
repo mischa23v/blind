@@ -1,0 +1,168 @@
+--- a/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift
++++ b/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift
+@@ -12,6 +12,14 @@
+         public var physicalAuthority: Bool { false }
+         public var coverageKnown: Bool { false }
+     }
++    public enum SourceSnapshotFailure: Error { case unavailable, stale, runtime(MeshSourceSnapshotError) }
++    public struct SourceSnapshot {
++        public let geometry: MeshSourceGeometrySnapshot
++        fileprivate let epoch: UUID, token: UInt64
++        public var physicalAuthority: Bool { false }
++        public var coverageKnown: Bool { false }
++    }
++    private var sourceSnapshotPending = false
+     private let lock = NSLock()
+     private let worker: DispatchQueue
+     private let runtime: RoomMeshCandidateRuntime
+@@ -197,6 +205,34 @@
+     public func isCurrent(_ candidate: Candidate) -> Bool {
+         locked { !stopped && copies == 0 && epoch == candidate.epoch && token == candidate.token && runtime.isCurrent(candidate.route) }
+     }
++    /// Read-only retained source inspection. Incomplete delivery is visible, not
++    /// repaired; no snapshot is a current sensor/body/support/route authority.
++    public func requestSourceSnapshot(limits: MeshSourceSnapshotLimits = .init(),
++        completion: @escaping (Result<SourceSnapshot, SourceSnapshotFailure>) -> Void) {
++        let accepted: Bool = locked {
++            guard !stopped, copies == 0, !sourceSnapshotPending else { return false }
++            sourceSnapshotPending = true
++            let e = epoch, t = token
++            runtime.requestSourceSnapshot(limits: limits) { [self] result in
++                defer { locked { sourceSnapshotPending = false } }
++                let value: Result<SourceSnapshot, SourceSnapshotFailure> = locked {
++                    guard !stopped, copies == 0, epoch == e, token == t else { return .failure(.stale) }
++                    switch result {
++                    case .failure(let error): return .failure(.runtime(error))
++                    case .success(let geometry):
++                        guard runtime.isCurrent(geometry) else { return .failure(.stale) }
++                        return .success(SourceSnapshot(geometry: geometry, epoch: e, token: t))
++                    }
++                }
++                completion(value) // consumers recheck at display/use, not just completion
++            }
++            return true
++        }
++        if !accepted { completion(.failure(.unavailable)) }
++    }
++    public func isCurrent(_ snapshot: SourceSnapshot) -> Bool {
++        locked { !stopped && copies == 0 && epoch == snapshot.epoch && token == snapshot.token && runtime.isCurrent(snapshot.geometry) }
++    }
+     public func request(start: [Float], goal: [Float], body: MeshCandidateBody,
+                         completion: @escaping (Result<Candidate, Failure>) -> Void) {
+         let accepted: Bool = locked {
+--- a/tools/ci/collect-classified-bench.py
++++ b/tools/ci/collect-classified-bench.py
+@@ -1,6 +1,7 @@
+ #!/usr/bin/env python3
+ """Verify exact macOS XCTest fixtures; Swift Testing's separate zero suite is not evidence."""
+ import argparse, json, re
++from collections import Counter
+ from pathlib import Path
+ 
+ def require(value, message):
+@@ -9,9 +10,14 @@
+ 
+ EXPECTED_CASES = ['testActualDependencyRouteAndExactlyOneTransformRemainNonphysical', 'testForeignGenerationCannotInvokeBorrowedCapture', 'testReplacementRetiresBeforeCopyAndExactRemovalWithholdsIncompletePreview', 'testMalformedReplacementCannotExposeRetainedOldFloorPreview', 'testSingleCopyBackpressureDoesNotInvokeSecondCaptureAndRetainsGap', 'testStopDuringCaptureFencesLateCompletionAndDoesNotReleaseReservationEarly', 'testCallbackBudgetBoundsSumWorkWithFastDecoderAndRotatesOmissions', 'testBlockedSynchronousCapturePreventsDiscardAcknowledgement', 'testClassifiedConsumerNeverPromotesMissingUnknownOrNonFloorPlane', 'testNonFloorGeometryStillBlocksAndExactRemovalCannotDeclareClearance', 'testUnclassifiedReplacementAndLaterFloorCannotEraseGapInSameOwner', 'testNewTerminalOwnerCannotReusePriorGenerationOrGeometry', 'testQueuedFloorThenRefusedRemovalCannotExposeStaleFloorPreview', 'testRotatedTranslatedMetreGeometryUsesExactlyOneRigidTransform', 'testScaleAndReflectionReplacementCannotExposePriorFloor', 'testStrictSelectionPreservesInsideAndVerticalEndpointReceipts', 'testStrictSelectionRejectsGoalAndStartProjectionWithTypedReceipts', 'testDebugIngressStrictPolicySurvivesResetWithoutChangingLegacyDefault']
+ 
+-def collect(source, log, command, before, after):
++SNAPSHOT_CASES = ['testSnapshotPreservesLocalValuesTransformRolesAndUnknownPhysicalAuthority', 'testStableAnchorOrderReadOnlyRevisionAndExactOwnerIdentity', 'testNoOwnerReturnsUnavailableNotSyntheticEmptyRoom', 'testWholeSnapshotBudgetsAndInvalidLimitsNeverReturnPrefixes', 'testRemovalRetiresSnapshotKeepsTombstoneAndUnknownNotFreeSpace', 'testMalformedReplacementRetainsOnlyExplicitlyIncompleteDiagnosticHistory', 'testProjectedOverflowCannotPairNewLedgerWithOldRetainedTile', 'testQueuedDeliveryRetainsReservationAndDiscardUntilPayloadReleased', 'testInvalidateAndResetRetireExactSnapshot', 'testQueuedSnapshotCannotDeliverAfterNewerUpdate', 'testOnlyOneOutstandingSnapshotAndDiscardWaitsForAdmittedWorker', 'testLateFailureGapRetiresPreviouslyCompleteSnapshotWithoutRevisionChange', 'testActualIngressAndBenchForwardOwnedGeometryAndKeepMissingClassesUnknown', 'testIngressResetRetiresSnapshotAndCannotExposePreviousEpochGeometry', 'testIngressOutstandingDecodeRefusesSnapshotWithoutCopyingAgain', 'testForeignBenchGenerationCannotRequestSnapshot']
++
++def collect(source, log, command, before, after, snapshot_source):
+     expected=re.findall(r'^\s*func (test\w+)\(', source, re.M)
+     require(expected==EXPECTED_CASES and len(set(expected))==18, 'expected exact reviewed 18-fixture XCTest source')
++    snapshot_expected=re.findall(r'^\s*func (test\w+)\(', snapshot_source, re.M)
++    require(snapshot_expected==SNAPSHOT_CASES and len(set(snapshot_expected))==16, 'expected exact reviewed16 snapshot XCTest source')
++    classes={'LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests':EXPECTED_CASES, 'LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests':SNAPSHOT_CASES}
+     case_lines=[line for line in log.splitlines() if line.startswith('Test Case ')]
+     pattern=r"Test Case '-\[([^ ]+) (test\w+)\]' (started|passed|failed|skipped)(?:\.| \([^\n]*\)\.)"
+     observed={}
+@@ -19,23 +25,35 @@
+         match=re.fullmatch(pattern,line)
+         require(match is not None, 'unrecognized XCTest case record')
+         cls,name,status=match.groups()
+-        require(cls=='LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests', 'unexpected XCTest class')
+-        observed.setdefault(name,[]).append(status)
+-    require(observed=={name:['started','passed'] for name in expected}, 'missing, extra, duplicate, failed or skipped XCTest cases')
++        require(cls in classes and name in classes[cls], 'unexpected XCTest class or case')
++        observed.setdefault((cls,name),[]).append(status)
++    require(observed=={(cls,name):['started','passed'] for cls,names in classes.items() for name in names}, 'missing, extra, duplicate, failed or skipped XCTest cases')
+     suite_lines=[line for line in log.splitlines() if line.startswith('Test Suite ')]
+     suites={}
+     for line in suite_lines:
+         match=re.fullmatch(r"Test Suite '([^']+)' (started|passed|failed) at .+\.",line)
+         require(match is not None, 'unrecognized XCTest suite record')
+         name,status=match.groups();suites.setdefault(name,[]).append(status)
+-    require(suites=={name:['started','passed'] for name in ['All tests','LiveMeshClassifiedBenchPackageTests.xctest','LiveMeshBenchIngressTests']}, 'missing, extra, contradictory or failed XCTest suite')
++    require(suites=={name:['started','passed'] for name in ['All tests','LiveMeshClassifiedBenchPackageTests.xctest','LiveMeshBenchIngressTests','SourceGeometrySnapshotTests']}, 'missing, extra, contradictory or failed XCTest suite')
+     totals=re.findall(r'Executed (\d+) tests?, with (\d+) failures? \((\d+) unexpected\)',log)
+-    require(len(totals)==3 and all(t==('18','0','0') for t in totals), 'missing or contradictory XCTest totals')
++    require(Counter(totals)==Counter({('18','0','0'):1,('16','0','0'):1,('34','0','0'):2}), 'missing or contradictory XCTest totals')
++    # Bind each total to its immediately preceding passed suite; swapped counts fail.
++    expected_totals={'All tests':34,'LiveMeshClassifiedBenchPackageTests.xctest':34,'LiveMeshBenchIngressTests':18,'SourceGeometrySnapshotTests':16}
++    suite_totals={}; last_passed=None
++    for line in log.splitlines():
++        matched=re.fullmatch(r"Test Suite '([^']+)' passed at .+\.",line)
++        if matched:last_passed=matched.group(1)
++        total=re.fullmatch(r'\s*Executed (\d+) tests?, with (\d+) failures? \((\d+) unexpected\).*',line)
++        if total:
++            require(last_passed in expected_totals and last_passed not in suite_totals, 'unbound or duplicate suite total')
++            require(tuple(map(int,total.groups()))==(expected_totals[last_passed],0,0), 'wrong suite-bound total')
++            suite_totals[last_passed]=int(total.group(1));last_passed=None
++    require(suite_totals==expected_totals, 'missing suite-bound totals')
+     require(command.get('swift_test_exit_code')==0 and command.get('log_writer_exit_code')==0, 'command failed')
+     require(before==after=='', 'source not clean before and after test')
+-    return {'status':'passed','scope':'18 macOS synthetic XCTest fixtures, not live sensing','executed':18,'passed':18,'failed':0,'ios_session_fixtures_excluded':5,'cases':[{'name':n,'status':'passed'} for n in expected],'swift_testing_zero_suite_not_counted':True,'source_clean_before_and_after':True}
++    return {'status':'passed','scope':'34 macOS synthetic XCTest fixtures, not live sensing','executed':34,'passed':34,'failed':0,'ios_session_fixtures_excluded':5,'cases':[{'class':cls,'name':n,'status':'passed'} for cls,names in classes.items() for n in names],'swift_testing_zero_suite_not_counted':True,'source_clean_before_and_after':True}
+ 
+ if __name__=='__main__':
+     parser=argparse.ArgumentParser();parser.add_argument('source',type=Path);parser.add_argument('artifact_dir',type=Path);args=parser.parse_args();d=args.artifact_dir
+-    result=collect(args.source.read_text(),(d/'swift-test.log').read_text(),json.loads((d/'result.json').read_text()),(d/'source-before.txt').read_text(),(d/'source-after.txt').read_text())
++    result=collect(args.source.read_text(),(d/'swift-test.log').read_text(),json.loads((d/'result.json').read_text()),(d/'source-before.txt').read_text(),(d/'source-after.txt').read_text(),(args.source.parent/'SourceGeometrySnapshotTests.swift').read_text())
+     (d/'xctest-results.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
+--- a/tools/ci/test_collect_classified_bench.py
++++ b/tools/ci/test_collect_classified_bench.py
+@@ -1,18 +1,25 @@
+-"""Synthetic parser tests for exact reviewed18-case current contract, not native execution."""
++"""Synthetic parser tests for exact reviewed34-case two-class current contract, not native execution."""
+ import importlib.util,json,unittest
+ from pathlib import Path
+ P=Path(__file__).parent
+ s=importlib.util.spec_from_file_location('collector',P/'collect-classified-bench.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+ ROOT=P.parents[1]
+ SOURCE=(ROOT/'research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift').read_text()
++SNAPSHOT_SOURCE=(ROOT/'research/live-mesh-classified-bench-20261028/Tests/SourceGeometrySnapshotTests.swift').read_text()
+ CLS='LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests'
+-SUITES=['All tests','LiveMeshClassifiedBenchPackageTests.xctest','LiveMeshBenchIngressTests']
+-LOG='\n'.join([*(f"Test Suite '{s}' started at synthetic." for s in SUITES),*(line for name in m.EXPECTED_CASES for line in [f"Test Case '-[{CLS} {name}]' started.",f"Test Case '-[{CLS} {name}]' passed (0.001 seconds)."]),*(line for s in reversed(SUITES) for line in [f"Test Suite '{s}' passed at synthetic.",'Executed 18 tests, with 0 failures (0 unexpected)'])])+'\n'
++OUTER=['All tests','LiveMeshClassifiedBenchPackageTests.xctest']
++lines=[f"Test Suite '{s}' started at synthetic." for s in OUTER]
++for cls,names in [(CLS,m.EXPECTED_CASES),('LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests',m.SNAPSHOT_CASES)]:
++ suite=cls.split('.')[-1];lines.append(f"Test Suite '{suite}' started at synthetic.")
++ for name in names:lines += [f"Test Case '-[{cls} {name}]' started.",f"Test Case '-[{cls} {name}]' passed (0.001 seconds)."]
++ lines += [f"Test Suite '{suite}' passed at synthetic.",f'Executed {len(names)} tests, with 0 failures (0 unexpected)']
++for suite in reversed(OUTER):lines += [f"Test Suite '{suite}' passed at synthetic.",'Executed 34 tests, with 0 failures (0 unexpected)']
++LOG='\n'.join(lines)+'\n'
+ COMMAND={'swift_test_exit_code':0,'log_writer_exit_code':0}
+ class CollectorTests(unittest.TestCase):
+- def reject(self,log=LOG,source=SOURCE,command=COMMAND,before='',after=''):
+-  with self.assertRaises(ValueError):m.collect(source,log,command,before,after)
+- def test_exact_synthetic18_passes(self):self.assertEqual(m.collect(SOURCE,LOG,COMMAND,'','')['executed'],18)
++ def reject(self,log=LOG,source=SOURCE,command=COMMAND,before='',after='',snapshot_source=SNAPSHOT_SOURCE):
++  with self.assertRaises(ValueError):m.collect(source,log,command,before,after,snapshot_source)
++ def test_exact_synthetic34_passes(self):self.assertEqual(m.collect(SOURCE,LOG,COMMAND,'','',SNAPSHOT_SOURCE)['executed'],34)
+  def test_missing_case(self):self.reject('\n'.join(l for l in LOG.splitlines() if m.EXPECTED_CASES[0] not in l))
+  def test_failed_case(self):self.reject(LOG.replace(m.EXPECTED_CASES[0]+"]' passed",m.EXPECTED_CASES[0]+"]' failed"))
+  def test_duplicate_case(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.EXPECTED_CASES[0] in l and 'passed' in l)+'\n')
+@@ -28,4 +35,12 @@
+  def test_missing_new_case_source(self):self.reject(source=SOURCE.replace('func '+m.EXPECTED_CASES[-1]+'(', 'func helper('))
+  def test_old15_totals_rejected(self):self.reject(LOG.replace('Executed 18 tests','Executed 15 tests'))
+  def test_all_new_cases_missing(self):self.reject('\n'.join(l for l in LOG.splitlines() if not any(n in l for n in m.EXPECTED_CASES[-3:])))
++ def test_missing_snapshot_case(self):self.reject('\n'.join(l for l in LOG.splitlines() if m.SNAPSHOT_CASES[0] not in l))
++ def test_renamed_snapshot_source(self):self.reject(snapshot_source=SNAPSHOT_SOURCE.replace('func '+m.SNAPSHOT_CASES[0]+'(', 'func testOther('))
++ def test_snapshot_class_spoof(self):self.reject(LOG.replace('LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests','LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests'))
++ def test_skipped_snapshot_case(self):self.reject(LOG.replace(m.SNAPSHOT_CASES[0]+"]' passed",m.SNAPSHOT_CASES[0]+"]' skipped"))
++ def test_wrong_34_total(self):self.reject(LOG.replace('Executed 34 tests','Executed 33 tests'))
++ def test_missing_snapshot_suite(self):self.reject('\n'.join(l for l in LOG.splitlines() if "Test Suite 'SourceGeometrySnapshotTests'" not in l))
++ def test_swapped_class_totals(self):self.reject(LOG.replace('Executed 18 tests','Executed XX tests').replace('Executed 16 tests','Executed 18 tests').replace('Executed XX tests','Executed 16 tests'))
++ def test_duplicate_snapshot_pass(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.SNAPSHOT_CASES[0] in l and 'passed' in l)+'\n')
+ if __name__=='__main__':unittest.main()

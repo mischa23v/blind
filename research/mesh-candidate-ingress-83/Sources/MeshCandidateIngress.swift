@@ -12,6 +12,14 @@ public final class MeshCandidateIngress83 {
         public var physicalAuthority: Bool { false }
         public var coverageKnown: Bool { false }
     }
+    public enum SourceSnapshotFailure: Error { case unavailable, stale, runtime(MeshSourceSnapshotError) }
+    public struct SourceSnapshot {
+        public let geometry: MeshSourceGeometrySnapshot
+        fileprivate let epoch: UUID, token: UInt64
+        public var physicalAuthority: Bool { false }
+        public var coverageKnown: Bool { false }
+    }
+    private var sourceSnapshotPending = false
     private let lock = NSLock()
     private let worker: DispatchQueue
     private let runtime: RoomMeshCandidateRuntime
@@ -196,6 +204,34 @@ public final class MeshCandidateIngress83 {
     }
     public func isCurrent(_ candidate: Candidate) -> Bool {
         locked { !stopped && copies == 0 && epoch == candidate.epoch && token == candidate.token && runtime.isCurrent(candidate.route) }
+    }
+    /// Read-only retained source inspection. Incomplete delivery is visible, not
+    /// repaired; no snapshot is a current sensor/body/support/route authority.
+    public func requestSourceSnapshot(limits: MeshSourceSnapshotLimits = .init(),
+        completion: @escaping (Result<SourceSnapshot, SourceSnapshotFailure>) -> Void) {
+        let accepted: Bool = locked {
+            guard !stopped, copies == 0, !sourceSnapshotPending else { return false }
+            sourceSnapshotPending = true
+            let e = epoch, t = token
+            runtime.requestSourceSnapshot(limits: limits) { [self] result in
+                defer { locked { sourceSnapshotPending = false } }
+                let value: Result<SourceSnapshot, SourceSnapshotFailure> = locked {
+                    guard !stopped, copies == 0, epoch == e, token == t else { return .failure(.stale) }
+                    switch result {
+                    case .failure(let error): return .failure(.runtime(error))
+                    case .success(let geometry):
+                        guard runtime.isCurrent(geometry) else { return .failure(.stale) }
+                        return .success(SourceSnapshot(geometry: geometry, epoch: e, token: t))
+                    }
+                }
+                completion(value) // consumers recheck at display/use, not just completion
+            }
+            return true
+        }
+        if !accepted { completion(.failure(.unavailable)) }
+    }
+    public func isCurrent(_ snapshot: SourceSnapshot) -> Bool {
+        locked { !stopped && copies == 0 && epoch == snapshot.epoch && token == snapshot.token && runtime.isCurrent(snapshot.geometry) }
     }
     public func request(start: [Float], goal: [Float], body: MeshCandidateBody,
                         completion: @escaping (Result<Candidate, Failure>) -> Void) {
