@@ -2,7 +2,7 @@
   "status": "SOURCE_FROZEN_AWAITING_ROOT_ADMISSION",
   "inputs": {
     "research/conference-replay-source-20261029/extract_source.py": "7dd0e5a2d77726f56ed92441080d1f944214b5bc0c4eb36ef2edf27ea0543335",
-    "research/conference-replay-source-20261029/run_comparison.py": "6df63fe9ecddc0585494fc78f81daf261dd06b80fec2a84ee182971bdd6aa57f",
+    "research/conference-replay-source-20261029/run_comparison.py": "fd306b11c61375db792b42df3f33befc6b514394feac9f63102f595d64952bdc",
     "research/conference-replay-source-20261029/freeze.py": "2a3c758a084cbbcce5bee5679fa7401c21ada5fc9a48c9dd0c82e98b721285f0",
     "research/conference-replay-source-20261029/run_aggregate.py": "ccdb636e2a2f3176c4139f44568bf46b005c92ceac6e651f0ff2ede3e8cb18b3",
     "@WORKSPACE@/conference-source-recovery/extracted-001/textured.obj": "79cfd017b9c88dca840c8ec969208a93593b03f600303d70cc6777b7c55438a1",
@@ -28,8 +28,8 @@
     "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/scipy-1.17.0.dist-info/RECORD": "94900eedcc86c473afe4836110d54baef222f0c57218d725902c9aa6ab10ff73"
   },
   "sourceDirectory": "@WORKSPACE@/conference-source-recovery/extracted-001",
-  "workRoot": "@WORKSPACE@/conference-native-comparison-attempt-001",
-  "comparisonDirectory": "@WORKSPACE@/conference-native-comparison-attempt-001/comparison",
+  "workRoot": "@WORKSPACE@/conference-native-comparison-attempt-002",
+  "comparisonDirectory": "@WORKSPACE@/conference-native-comparison-attempt-002/comparison",
   "controlsCommand": [
     "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
     "@REPO@/research/clearance-first-coffee-source-20261029/fixtures.py"

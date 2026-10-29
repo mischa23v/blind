@@ -17,15 +17,15 @@ def safe(x):
     return x
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument('--pins',type=pathlib.Path,required=True);ap.add_argument('--pins-sha256',required=True);a=ap.parse_args()
-    if sha(a.pins)!=a.pins_sha256: raise ValueError('admitted manifest SHA mismatch')
-    pins=json.loads(a.pins.read_text())
+    ap=argparse.ArgumentParser(); ap.add_argument('--pins',type=pathlib.Path,required=True);ap.add_argument('--pins-sha256',required=True);cli_args=ap.parse_args()
+    if sha(cli_args.pins)!=cli_args.pins_sha256: raise ValueError('admitted manifest SHA mismatch')
+    pins=json.loads(cli_args.pins.read_text())
     if pins['status']!='SOURCE_FROZEN_AWAITING_ROOT_ADMISSION': raise ValueError('unexpected manifest schema')
     def expand(p):
         value=p.replace('@WORKSPACE@',str(W)).replace('@REPO@',str(R))
         return value if value.startswith('/') else str(R/value)
     def verify():
-        if sha(a.pins)!=a.pins_sha256: raise ValueError('manifest changed')
+        if sha(cli_args.pins)!=cli_args.pins_sha256: raise ValueError('manifest changed')
         for name,digest in pins['inputs'].items():
             if sha(expand(name))!=digest: raise ValueError('source/input pin mismatch: '+name)
     verify(); source=pathlib.Path(expand(pins['sourceDirectory'])); out=pathlib.Path(expand(pins['comparisonDirectory']))

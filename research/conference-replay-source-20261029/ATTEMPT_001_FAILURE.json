@@ -1,0 +1,49 @@
+{
+  "status": "FAILED_ATTEMPT_PRESERVED_NOT_ACCEPTED",
+  "sourceCommit": "d40c1e193511305364c90b42e1c44038d901c0cb",
+  "manifestSHA256": "7e6b0a53277a2688c45382d5752c12bea051ce94bda5e1a4974e3c7104a4951f",
+  "attemptDirectory": "@WORKSPACE@/conference-native-comparison-attempt-001",
+  "controls": {
+    "count": 26,
+    "exitCode": 0,
+    "scope": "pure graph/control adapter only; not geometric collision/support tests"
+  },
+  "comparisonExitCode": 1,
+  "cause": "Final verify() read a route-start list through the shadowed argparse binding a: AttributeError: 'list' object has no attribute 'pins'",
+  "proposalRecordsRetained": 7,
+  "proposalRecordsAccepted": false,
+  "aggregateCPUSeconds": 7.200259000000001,
+  "wallSeconds": 7.217639466000037,
+  "peakObservedAggregateRSSBytes": 109928448,
+  "allProcessGroupsRetired": true,
+  "allPinnedInputsUnchanged": true,
+  "retainedFiles": {
+    "GUARD_RUN/RESULT.json": {
+      "bytes": 19601,
+      "sha256": "8f84694c4450078ba852b64457abce67f58c53dbbdaef5aff88594256687fb36"
+    },
+    "GUARD_RUN/comparison.stderr": {
+      "bytes": 650,
+      "sha256": "e051f275ef394774bddfd056465717a9cad21e02d0ace6247d4531a7bbac0549"
+    },
+    "GUARD_RUN/comparison.stdout": {
+      "bytes": 1035,
+      "sha256": "21fc76ec039b93ee0df718193eeca379fc640baf939451ab3b6d8704827801c9"
+    },
+    "GUARD_RUN/controls.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "GUARD_RUN/controls.stdout": {
+      "bytes": 887,
+      "sha256": "0bec017fb267fd71ebcb9b67ebfa536242ac3a6b5e970bc10d38590276e2123f"
+    },
+    "comparison/PROPOSALS.json": {
+      "bytes": 339757,
+      "sha256": "0f50fbbd52df3fa4369c0784579a93a2461b6c765b052acb2daf51d15f5f290f"
+    }
+  },
+  "physicalAuthority": false,
+  "movementExecuted": false,
+  "containsRawGeometry": false
+}

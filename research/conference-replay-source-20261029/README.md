@@ -1,4 +1,29 @@
-# Koivu source preparation and seven-objective adapter — not run
+# Koivu seven-objective comparator — failed attempt preserved; retry pending
+
+## Later execution failure and narrow repair — 2026-10-29
+
+The initial preparation notes below remain historical. Root subsequently ran
+`conference-native-comparison-attempt-001` at source
+`d40c1e193511305364c90b42e1c44038d901c0cb`. Its 26 graph controls exited 0, but
+the comparator exited 1: final `verify()` read the route-start list through the
+shadowed argparse variable `a`. All seven proposal records remain saved;
+**the failed attempt is not an accepted comparison**. Its receipt, logs and
+proposals are unchanged. `ATTEMPT_001_FAILURE.json` records the public failure
+summary and retained file hashes, without raw geometry; the exact previous
+manifest is preserved as `SOURCE_PINS.attempt-001.json`.
+
+The only comparator change is a dedicated `cli_args` binding and the three
+pin-check/load lines that use it. Four bounded standard-library source controls passed, including a
+negative control reproducing the original bug and checks that manifest/input
+mutation is still rejected after endpoint iteration. They execute extracted
+source bindings, not native routes or graph controls. The closure-sensitive
+binding audit and exact source hashes are in `ATTEMPT_002_PREPARATION.json`.
+
+`SOURCE_PINS.json` now proposes fresh
+`conference-native-comparison-attempt-002`; only the comparator hash and the two
+attempt output paths changed. The same 25 inputs, endpoints, native settings,
+limits and authority restrictions remain. No second native comparison has been
+run by this repair; root must review, publish and separately admit it.
 
 Prepared for root's separately admitted conference-room repeat after the active Coffee stages. **No extraction, scientific import, native load, route, body check or movement has been executed by this packet.** The initial task is exact source recovery and source-only planning; no FARO, floor filling or invented exclusions.
 

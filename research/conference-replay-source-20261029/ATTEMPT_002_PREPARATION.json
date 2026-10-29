@@ -1,0 +1,118 @@
+{
+  "status": "SOURCE_FIXED_STDLIB_CONTROL_PASSED_AWAITING_ROOT_ADMISSION",
+  "priorAttempt": "ATTEMPT_001_FAILURE.json",
+  "implementationChange": "Rename only the argparse namespace a to cli_args and the three pin-check/load lines that use it. Native route endpoint bindings and all policy remain unchanged.",
+  "files": {
+    "run_comparison.py": {
+      "bytes": 10824,
+      "sha256": "fd306b11c61375db792b42df3f33befc6b514394feac9f63102f595d64952bdc"
+    },
+    "test_cli_pins.py": {
+      "bytes": 4451,
+      "sha256": "e1935d4a0edcad4de50b65a05cb46ebf9c1ad5cb75d781de083d7da5d4a6812e"
+    },
+    "SOURCE_PINS.json": {
+      "bytes": 5036,
+      "sha256": "f3d386429ae60db883d910d5145ff0538b72ea4939f4ab3ddac61af3149cd6e0"
+    },
+    "SOURCE_PINS.attempt-001.json": {
+      "bytes": 5036,
+      "sha256": "7e6b0a53277a2688c45382d5752c12bea051ce94bda5e1a4974e3c7104a4951f"
+    }
+  },
+  "sourceControl": {
+    "command": "timeout 10s python -B research/conference-replay-source-20261029/test_cli_pins.py",
+    "exitCode": 0,
+    "testsRun": 4,
+    "failures": 0,
+    "errors": 0,
+    "secondsReported": 0.03,
+    "checks": [
+      "Actual CLI namespace and pins retained after both source endpoint-binding loops",
+      "Renaming cli_args back to a reproduces original AttributeError",
+      "Manifest mutation still rejected after endpoint iteration",
+      "Pinned input mutation still rejected after endpoint iteration"
+    ],
+    "scope": "Actual AST-extracted CLI/verify prefix and endpoint binding statements only; no scene parsing, scientific/native imports, graph controls or comparator execution."
+  },
+  "shadowingAudit": {
+    "run_comparison.py": {
+      "cli_args": [
+        20
+      ],
+      "pins": [
+        22
+      ],
+      "expand": [
+        24
+      ],
+      "verify": [
+        27
+      ],
+      "out": [
+        31
+      ],
+      "model": [
+        73
+      ]
+    },
+    "extract_source.py": {
+      "a": [
+        38
+      ],
+      "receipt": [
+        41
+      ]
+    },
+    "freeze.py": {
+      "a": [
+        10
+      ],
+      "inputs": [
+        19
+      ]
+    },
+    "run_aggregate.py": {
+      "pins": [
+        117
+      ],
+      "manifestDigest": [
+        116
+      ],
+      "head": [
+        131
+      ],
+      "work": [
+        143
+      ],
+      "out": [
+        145
+      ],
+      "receipt": [
+        147
+      ]
+    },
+    "interpretation": "Each listed closure-sensitive binding has exactly one assignment/definition in its enclosing main scope; nested function and comprehension-local names excluded. Comparator association() a/b locals and route a/b locals do not bind cli_args."
+  },
+  "manifestChangesFromAttempt001": [
+    "inputs.research/conference-replay-source-20261029/run_comparison.py",
+    "workRoot",
+    "comparisonDirectory"
+  ],
+  "inputCount": 25,
+  "workRoot": "@WORKSPACE@/conference-native-comparison-attempt-002",
+  "comparisonDirectory": "@WORKSPACE@/conference-native-comparison-attempt-002/comparison",
+  "limits": {
+    "cpuSeconds": 120,
+    "wallSeconds": 180,
+    "observedAggregateRSSBytes": 1073741824,
+    "outputBytes": 16777216
+  },
+  "endpointsAndAllOtherInputPinsUnchanged": true,
+  "attempt001RetainedFilesMatchGuardInventory": true,
+  "attempt002DirectoryCreated": false,
+  "scientificOrNativeCodeImported": false,
+  "nativeExecuted": false,
+  "physicalAuthority": false,
+  "publicationPerformed": false
+}
