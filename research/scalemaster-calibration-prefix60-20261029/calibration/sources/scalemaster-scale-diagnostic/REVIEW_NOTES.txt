@@ -1,0 +1,36 @@
+STATUS: SOURCE PREPARATION ONLY. No selector, extraction, synthetic test or estimator has been executed.
+
+Purpose
+Infer a possible saved-depth scale by fixed-pose multiview consistency, conditional on explicit geometry and ARKit translation assumptions. This is not author-documented units, independent calibration, detector accuracy, or navigation safety validation. No RGB is used.
+
+Staging
+1. freeze_pairs.py reads only raw pose CSV. Six equal temporal bins; one pair in each with 0.05–0.30m baseline, <=10deg rotation, about0.1–1s separation. Fixed holdout bins2/5; otherfour development. It refuses overwrite. No depth-driven pair replacement.
+2. synthetic checks must pass before real image extraction: known0.001 generated scale; injected occlusion; pure zero-translation degeneracy; missing-confidence overlap; tiny-scale/zero-coverage rejection. These validate implementation only, never real-unit semantics.
+3. extract_selected.py validates every member against existing complete safe inventory in one gzip pass; reads only the12-or-fewer frozen depth/confidence pairs; total output<=3MiB; no special paths, links, devices or archive code.
+4. diagnostic.py fits a global positive s only onfour development pairs. Two heldout pairs are evaluated at that fixed s without refitting. Raw poses remain fixed: no ICP, no Sim3, no per-pair scale or pose correction.
+
+Conditional geometry
+Derive K_depth directly from exact pinned camera_matrix.csv, scaled by observed1920x1440 ->256x192 ratios1/7.5. Record raw/derived matrices plus camera-matrix path/hash in the pair manifest; do not reconstruct rounded values from a report. Assume camera poses are world_from_ARKit_camera, and optical->ARKit camera axes diag(1,-1,-1). These are explicit unverified export conventions, not proven calibration. Result remains conditional; failure may reflect convention/synchronization errors rather than units.
+
+Objective / anti-collapse
+Fixed deterministic <=512 high-confidence source pixels each direction. Source/target raw codes0 and65535 are conservatively excluded and reported with zero/max-code/saturation counts; their exported invalid semantics are unknown. No unit-based depth cutoff. Dimensionless absolute log(predicted_z/(s*target_raw_depth)), capped0.25. Missing, out-of-view, low-confidence and occluded samples retain0.25 penalty in the ORIGINAL source-sample denominator. Require>=64 matched samples,>=35% correspondence coverage and>=25% nonoccluded coverage in BOTH directions of EVERY development pair. A tiny scale cannot win by yielding fewer matches or a small metric residual. Source point selection is independent of candidate scale.
+Coarse25 log-spaced scale hypotheses1e-6..1m/raw-unit, then<=11 local refinements. End-of-bracket or flat minima are inconclusive. Report full profile and a score-near-minimum range, explicitly not a confidence interval. A fail-closed decision layer also requires development/heldout loss<=0.15, each heldout loss<=development+0.03, heldout median visible log residual<=0.10, near-minimum scale-factor span<=4, zero-translation profile flat within0.001, and shuffled-pose best loss at least0.01 worse (or rejected on coverage). These are preregistered heuristic diagnostic choices, NOT accuracy thresholds or confidence intervals. Raw profiles remain available and failures stay inconclusive; no threshold relaxation after seeing selected data.
+
+Bounded reviewed invocation (DO NOT run before root CPU clearance)
+python coordination/scalemaster-scale-diagnostic/run_bounded.py --data-root private-datasets/scalemaster --output-root private-datasets/scalemaster/scale-diagnostic-run-001 --root-reviewed-and-slot-clear
+Runner caps cumulative controller+childCPU30s, wall45s, one CPU affinity and single-threaded numeric libraries. Simultaneously active processes have address-space reservations64MiB controller +192MiB child =256MiB total; this is an address-space guard, not a cgroup accounting claim. Receipt records both peakRSS values and their conservative sum. Extraction independently caps3MiB including64KiB receipt reserve. Budget exhaustion or insufficient confidence terminates inconclusive; no automatic relaxation or repeated extraction. Logs/receipts stay private. SOURCE_FREEZE.json pins all executable source, raw-pose/K/inventory metadata, and archive identity before selection. Compressed archive SHA is verified during the same extraction pass, not another scan.
+
+Zero-translation evidence gate
+Even a flat zero-translation control must fit at least0.01 worse than the candidate; equal/better zero-motion consistency is inconclusive rather than positive scale evidence.
+
+Quaternion rule
+Reject nonfinite poses and quaternion norm deviation>0.001, then fixed unit normalization; record max/mean norm residuals. This only corrects quaternion representation, not fitted poses.
+
+Additional synthetic review cases
+Known off-grid scale0.00037 with5degree rotation must recover within0.08 log-scale; lateral translation viewing a featureless infinite plane must be marked unidentifiable. No synthetic success is evidence of real encoding units.
+
+Review requirements before execution
+- Static code review and synthetic checks have not yet passed; source exists only.
+- Freeze actual pair IDs before extracting their depths; pairJSON does not exist yet under the CPU hold.
+- Verify results against coverage/occlusion, profile shape, holdout and controls; do not auto-label the best candidate a calibrated scale.
+- Preserve private data and original mapping-engine priority. No new archive downloads, no author contact, no raw publication.

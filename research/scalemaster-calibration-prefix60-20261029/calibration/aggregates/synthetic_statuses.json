@@ -1,0 +1,173 @@
+{
+  "axis_forward_plane_roll_ambiguity": {
+    "rejection_reasons": [
+      "convention_not_unique_at_preregistered_margin",
+      "convention_or_scale_not_stable_under_development_jackknife",
+      "inconclusive_flat_profile"
+    ]
+  },
+  "axis_known_case_controls": {
+    "cyclic_pose_shuffle": {
+      "best_score": 0.13839143665465303,
+      "eligible_scales": 15,
+      "evaluated_scales": 25,
+      "score_range": [
+        0.13839143665465303,
+        0.2103064387129882
+      ],
+      "status": "eligible_control_scores"
+    },
+    "zero_translation": {
+      "best_score": 0.12058230673736928,
+      "eligible_scales": 25,
+      "evaluated_scales": 25,
+      "score_range": [
+        0.12058230673736928,
+        0.1205823067373693
+      ],
+      "status": "eligible_control_scores"
+    }
+  },
+  "axis_known_case_equally_refined_controls": {
+    "cyclic_pose_shuffle": {
+      "best_scale_m_per_unit": 0.00223872113856834,
+      "best_score": 0.13769100843082524,
+      "profile_summary": {
+        "best_score": 0.13769100843082524,
+        "eligible_scales": 26,
+        "evaluated_scales": 36,
+        "score_range": [
+          0.13769100843082524,
+          0.2103064387129882
+        ],
+        "status": "eligible_control_scores"
+      },
+      "status": "inconclusive_broad_profile"
+    },
+    "zero_translation": {
+      "best_scale_m_per_unit": 5.623413251903491e-06,
+      "best_score": 0.12058230673736928,
+      "profile_summary": {
+        "best_score": 0.12058230673736928,
+        "eligible_scales": 36,
+        "evaluated_scales": 36,
+        "score_range": [
+          0.12058230673736928,
+          0.1205823067373693
+        ],
+        "status": "eligible_control_scores"
+      },
+      "status": "inconclusive_flat_profile"
+    }
+  },
+  "axis_known_convention_and_scale": {
+    "candidate": {
+      "id": "C05",
+      "optical_to_recorded_camera": [
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          0,
+          0,
+          -1
+        ],
+        [
+          1,
+          0,
+          0
+        ]
+      ],
+      "runner_up_convention_score_gap": 0.07965420877140483,
+      "scale_m_per_unit": 0.001,
+      "score": 0.043084652422536805
+    },
+    "gate_reasons": [],
+    "jackknife": [
+      {
+        "omitted_development_pair": 0,
+        "runner_up_gap": 0.07856227004734338,
+        "scale_factor_from_full_development": 1.0,
+        "scale_m_per_unit": 0.001,
+        "score": 0.044804446391403185,
+        "stable": true,
+        "winner_id": "C05"
+      },
+      {
+        "omitted_development_pair": 1,
+        "runner_up_gap": 0.0788412642723767,
+        "scale_factor_from_full_development": 1.0,
+        "scale_m_per_unit": 0.001,
+        "score": 0.04088693404016582,
+        "stable": true,
+        "winner_id": "C05"
+      },
+      {
+        "omitted_development_pair": 2,
+        "runner_up_gap": 0.07142605516697101,
+        "scale_factor_from_full_development": 1.0,
+        "scale_m_per_unit": 0.001,
+        "score": 0.04083845358655288,
+        "stable": true,
+        "winner_id": "C05"
+      },
+      {
+        "omitted_development_pair": 3,
+        "runner_up_gap": 0.06626880034069432,
+        "scale_factor_from_full_development": 1.0,
+        "scale_m_per_unit": 0.001,
+        "score": 0.04580877567202535,
+        "stable": true,
+        "winner_id": "C05"
+      }
+    ]
+  },
+  "axis_run_legacy_checks": {
+    "featureless_lateral_status": "inconclusive_broad_profile",
+    "known_scale_recovered": 0.001,
+    "meaning": "Implementation checks only; no evidence of real dataset encoding",
+    "missing_overlap_rejected": true,
+    "occlusion_recovered": 0.001,
+    "offgrid_rotated_recovered": 0.0003548133892335753,
+    "offgrid_true_scale": 0.00037,
+    "tiny_scale_rejected": true,
+    "zero_translation_status": "inconclusive_boundary_minimum"
+  },
+  "axis_wrong_original_F_control": {
+    "best_scale_m_per_unit": 0.223872113856834,
+    "best_score": 0.1389118131124632,
+    "profile_summary": {
+      "best_score": 0.1389118131124632,
+      "eligible_scales": 21,
+      "evaluated_scales": 36,
+      "score_range": [
+        0.1389118131124632,
+        0.1440752322424187
+      ],
+      "status": "eligible_control_scores"
+    },
+    "status": "inconclusive_broad_profile"
+  },
+  "axis_zero_motion_ambiguity": {
+    "rejection_reasons": [
+      "convention_not_unique_at_preregistered_margin",
+      "convention_or_scale_not_stable_under_development_jackknife",
+      "inconclusive_boundary_minimum"
+    ]
+  },
+  "meaning": "Implementation evidence only; synthetic success does not establish real dataset depth encoding or accuracy.",
+  "scale_run_legacy_checks": {
+    "featureless_lateral_status": "inconclusive_broad_profile",
+    "known_scale_recovered": 0.001,
+    "meaning": "Implementation checks only; no evidence of real dataset encoding",
+    "missing_overlap_rejected": true,
+    "occlusion_recovered": 0.001,
+    "offgrid_rotated_recovered": 0.0003548133892335753,
+    "offgrid_true_scale": 0.00037,
+    "tiny_scale_rejected": true,
+    "zero_translation_status": "inconclusive_boundary_minimum"
+  },
+  "status": "Recorded synthetic stages exited successfully; not rerun during packaging."
+}

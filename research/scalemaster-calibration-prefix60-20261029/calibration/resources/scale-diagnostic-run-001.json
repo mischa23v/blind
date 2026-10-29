@@ -1,0 +1,36 @@
+{
+  "all_stages_completed": true,
+  "controller_max_rss_KiB": 12452,
+  "cpu_seconds": 3.794823,
+  "limits": {
+    "child_address_space_MiB": 192,
+    "controller_address_space_MiB": 64,
+    "cumulative_controller_and_child_cpu_seconds": 30,
+    "extracted_data_MiB": 3,
+    "sum_address_space_reservations_MiB": 256,
+    "wall_seconds": 45
+  },
+  "max_child_rss_KiB": 33652,
+  "sanitization": "Stage stdout/stderr omitted; original receipt identity retained in provenance.",
+  "source_freeze_sha256": "1dcd6a6e101a7cb4ea42fd17e1171ed8b644e5fbb9f3dc148f137d8e7b4d0e20",
+  "stages": [
+    {
+      "returncode": 0,
+      "stage": "freeze_pairs.py"
+    },
+    {
+      "returncode": 0,
+      "stage": "diagnostic.py"
+    },
+    {
+      "returncode": 0,
+      "stage": "extract_selected.py"
+    },
+    {
+      "returncode": 0,
+      "stage": "diagnostic.py"
+    }
+  ],
+  "sum_of_peak_RSS_upper_bound_KiB": 46104,
+  "wall_seconds": 3.757836135002435
+}

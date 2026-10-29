@@ -1,0 +1,33 @@
+{
+  "all_stages_completed": true,
+  "controller_max_rss_KiB": 11612,
+  "cpu_seconds": 3.656098,
+  "failure_policy": "inconclusive; no gate changes, pair reselection or automatic retry",
+  "limits": {
+    "CPU_affinity_count": 1,
+    "archive_reads": 0,
+    "child_address_space_MiB": 192,
+    "controller_address_space_MiB": 64,
+    "cumulative_CPU_seconds": 30,
+    "new_extraction_bytes": 0,
+    "per_artifact_size_MiB": 20,
+    "sum_address_space_reservations_MiB": 256,
+    "wall_seconds": 45
+  },
+  "max_child_rss_KiB": 40248,
+  "resource_violations": [],
+  "sanitization": "Stage stdout/stderr omitted; original receipt identity retained in provenance.",
+  "source_freeze_sha256": "30ca5d9b480ce920f604707b9a31009ee88d836b89a805e6e31609819dbe35ed",
+  "stages": [
+    {
+      "returncode": 0,
+      "stage": 0
+    },
+    {
+      "returncode": 0,
+      "stage": 1
+    }
+  ],
+  "sum_of_peak_RSS_upper_bound_KiB": 51860,
+  "wall_seconds": 3.6243453409988433
+}

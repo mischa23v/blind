@@ -1,0 +1,114 @@
+SOURCE AND PLAN ONLY. No prefix extraction, Open3D import, software test,
+reconstruction, PNG decode or preview execution has occurred for this stage.
+Root source review and an explicit CPU slot are required before the single run.
+
+Scope
+Replay the FIXED first 60 Stairs_02 depth/confidence indices 0..59, chosen before
+visual selection, through the already-installed released Open3D0.19 CPU fixed-
+pose TSDF baseline. This roughly two-second prefix may show landing/approach;
+do not claim it spans a staircase or select different frames after viewing it.
+No SLAM, optimized poses, RGB, registration/ICP, floor fitting, mesh cleanup,
+hole filling, stair detector, ground truth or accuracy/navigation evaluation.
+Keep source archive and prior diagnostics immutable. All raw and derived scene
+geometry/previews remain private. No network, installs or publication.
+
+Explicit selected-calibration contract
+SELECTED_CALIBRATION.json is sourced from axis-diagnostic-run-001's locked
+development candidate and successful conditional result/receipt. It explicitly
+uses optical->recorded-camera IDENTITY and scale .001 m/raw-unit. Never inherit
+the diagnostic-result.geometry_assumptions.optical_to_arkit_camera value: that
+field deliberately retains the original F control. The original result remains
+unchanged. C and scale are inferred export calibration, not author documentation
+or independent metric proof. Pose direction world_from_recorded_camera, nominal
+metric translations, exact source K /7.5 and pixel-center association are still
+conditional. RGB/video synchronization is unresolved and irrelevant to this
+depth-only run. Do not use optimized_odometry.csv.
+
+Reuse and declared input-adapter changes
+Reuse the existing CPU Open3D0.19 binary/module identities and integration calls
+from research/open3d-same-data-benchmark-20261028/fresh-run/fusion_worker.py.
+Preserve voxel .04m, TSDF truncation .2m, depth limit4m and depth_scale1000;
+explicitly retain native defaults volume_unit_resolution16/depth_sampling_stride4.
+Change RGB8 to documented NoColor and pass an all-zero color placeholder because
+no synchronized RGB is available. Use the inferred identity camera axes, not the
+Koivu/ARKit sign flip. Mask confidence/numeric validity before integration. Omit
+the baseline's cumulative random cloud used for a separate author-initialization
+purpose; export the native final unfiltered mesh plus a separate observed-hit
+ledger. No substitute mesher or new reconstruction algorithm is introduced.
+
+Preflight/software controls (software checks, NOT real sensor proof)
+Pin script/backend/source/result/metadata identities. Before real extraction,
+run tiny native depth-scale, truncation and invalid-mask fixtures; incorrect
+depth_scale1 must clip all2000-code pixels. Integrate one analytic plane through
+a nonidentity rotation+translation, verifying native vertices lie on the expected
+world plane (p95<=.08m at .04m voxel). A deliberately wrong pose direction must
+produce median plane error>.1m. These are implementation controls only.
+For real data, verify all60 filename associations, unsigned16 depth and unsigned8
+confidence shape192x256, pinned CSVs and PNG hashes, finite/unique poses,
+strictly increasing prefix timestamps, quaternion norm tolerance.001 followed by
+fixed normalization, rigid inverse extrinsics, exact K derived from pinned CSV,
+and native factory output matching explicit masked-depth/1000 before creating
+any real TSDF volume. Unknown confidence values outside0/1/2 stop preflight;
+do not silently choose a new semantic mapping.
+
+Selective extraction
+One full bounded gzip/tar streaming pass validates every member against the
+already-audited member inventory, rejecting absolute/../backslash paths,
+duplicate/changed members, links/devices/nonregular selections. At most20000
+members,1GiB expanded stream,32MiB selected outputs including receipt reserve.
+Select exactly120 PNGs:60 depth +60 confidence. No tar extraction API writes
+member paths. Fixed sanitized destination names only. Verify compressed SHA256
+and gzip CRC/EOF in this SAME pass; no separate full archive reread. Do not
+execute or import anything from the dataset. Source archive remains untouched.
+
+Mask/observed-evidence contract
+Retain source PNGs unchanged and save per-pixel reason bitmaps: raw0; raw65535
+(conservative invalid/saturation exclusion, author semantics unverified);
+confidence0 excluded; confidence1 excluded; unknown confidence code (fatal);
+fixed4m range clip. Counts may overlap and are not independent measurements.
+Only confidence2 with0<raw<4000 is integrated. .001 inference gives strictly
+0<z<4m. Range-clipped points are separate from absent/invalid/low-confidence.
+Zero/missing/excluded geometry stays UNKNOWN; no free-floor or clearance claim.
+Separately unproject ALL accepted depth endpoints with the same K/pose, aggregate
+into .04m world cells, recording endpoint-pixel hit count, distinct frame-hit
+count and endpoint centroid. This is observed endpoint evidence, NOT TSDF
+weights, continuous surface truth, or a ray-carved free-space grid. Absent cells
+are not enumerated as free. Cap250000 observed cells; do not thin to rescue a
+cap failure. Native mesh may interpolate, so missing/present mesh is not physical
+authority. No full known/unknown/free-volume coverage statistic is claimed.
+
+Outputs and preview
+Private native unfiltered TSDF PLY; observed-endpoint centroid PLY and NPZ ledger;
+mask PNGs; per-frame and aggregate coverage counts; exact provenance/resource
+receipts. Empty surface is an honest completed-no-surface outcome, not filled in.
+Cap500000 mesh vertices/1000000 triangles before output. A separate lightweight
+Matplotlib worker renders actual saved geometry: fixed elev25/azim-60 view plus
+XY/XZ/YZ projections, trajectory, uniformly sampled visualization-only triangles/
+vertices/endpoints. No gravity/floor labels, semantic stair claims or frame
+selection. The native outputs are not altered by preview sampling. Axes and
+dimensions are labelled conditional. Inspect the PNG only after an admitted run.
+
+Guard proposal
+ONE attempt, fresh private output sibling stairs02-prefix60-run-001. Cumulative
+controller+child CPU<=60s, wall<=90s, one CPU affinity/single-thread numeric libs,
+RSS<=1GiB, total fresh outputs<=256MiB including extraction/cache, retain>=5GiB
+disk. Existing guard pattern samples process-tree RSS/CPU/disk every.05s, with
+early stops960MiB RSS/59CPU/89wall/240MiB output and per-child CPU hard limit
+reserving2s. Also fail postcheck if conservative sum of process-peak RSS>1GiB.
+This is sampled RSS enforcement, NOT a hard cgroup/RLIMIT_AS allocation limit;
+possible sub-sampling overshoot is explicitly disclosed for root acceptance.
+No budget expansion, pair/frame reselection, tuning or automatic retry on failure.
+Software failure prevents extraction; extraction failure prevents real replay.
+Preflight failure prevents real volume creation. Resource receipt must pass before
+interpreting geometry. Root's main mapping comparison retains CPU priority.
+
+Primary references (read-only checked)
+https://www.open3d.org/docs/release/python_api/open3d.pipelines.integration.ScalableTSDFVolume.html
+https://www.open3d.org/docs/release/python_api/open3d.pipelines.integration.TSDFVolumeColorType.html
+https://www.open3d.org/docs/release/tutorial/pipelines/rgbd_integration.html
+https://github.com/JooHyoSeok/ScaleMaster-Dataset/blob/a294c66617deac8d93a63ea39e655a35eee88f24/README.md
+
+Proposed invocation, NOT yet admitted
+python coordination/scalemaster-prefix60/run_bounded.py \
+  --output-root private-datasets/scalemaster/stairs02-prefix60-run-001 \
+  --root-reviewed-and-slot-clear
