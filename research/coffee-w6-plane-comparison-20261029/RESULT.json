@@ -1,0 +1,107 @@
+{
+  "softwareGuardStatus": "PASS",
+  "scientificStatus": "INCONCLUSIVE_NO_HELDOUT_COMPATIBLE_EVIDENCE",
+  "notEvidenceOfSuccessfulFloorRecovery": true,
+  "compileReturncode": 0,
+  "analyticGroupsPassed": 6,
+  "fullLegacyObservationsExactlyMatched": 1400,
+  "fixedControlCases": 1552,
+  "fixedW6Cases": 3492,
+  "pairedResidualSummary": {
+    "training": {
+      "allPointFrameCases": 3150,
+      "pairStatusCounts": {
+        "same_pixel_outside_original_triangle": 142,
+        "same_pixel_paired": 162,
+        "source_depth_not_admitted": 2846
+      },
+      "pairedCases": 162,
+      "distinctPairedFrames": 35,
+      "distinctPairedFramePixels": 162,
+      "baseline": {
+        "count": 162,
+        "medianAbs": 1.6309009959800123,
+        "p95Abs": 2.297559947763952,
+        "worstAbs": 2.863238923044314,
+        "medianSigned": -1.6309009959800123,
+        "minSigned": -2.863238923044314,
+        "maxSigned": 0.1480097605566515
+      },
+      "candidate": {
+        "count": 162,
+        "medianAbs": 1.6587312680283888,
+        "p95Abs": 2.3392786847226517,
+        "worstAbs": 2.9036711214311417,
+        "medianSigned": -1.6587312680283888,
+        "minSigned": -2.9036711214311417,
+        "maxSigned": 0.09896936972301917
+      },
+      "baselineCompatibleCases": 15,
+      "candidateCompatibleCases": 7
+    },
+    "heldout": {
+      "allPointFrameCases": 342,
+      "pairStatusCounts": {
+        "same_pixel_outside_original_triangle": 6,
+        "same_pixel_paired": 3,
+        "source_depth_not_admitted": 333
+      },
+      "pairedCases": 3,
+      "distinctPairedFrames": 1,
+      "distinctPairedFramePixels": 3,
+      "baseline": {
+        "count": 3,
+        "medianAbs": 1.8385732402726296,
+        "p95Abs": 1.8792866064624993,
+        "worstAbs": 1.8838103138169293,
+        "medianSigned": -1.8385732402726296,
+        "minSigned": -1.8838103138169293,
+        "maxSigned": -1.8347073678548353
+      },
+      "candidate": {
+        "count": 3,
+        "medianAbs": 1.8777978962350268,
+        "p95Abs": 1.9067710718277515,
+        "worstAbs": 1.9099903135602765,
+        "medianSigned": -1.8777978962350268,
+        "minSigned": -1.9099903135602765,
+        "maxSigned": -1.8568107387308328
+      },
+      "baselineCompatibleCases": 0,
+      "candidateCompatibleCases": 0
+    }
+  },
+  "allViewOrderStrataRecounted": true,
+  "maxAggregateArithmeticDifference": 0.0,
+  "patchVertices": 220,
+  "patchIntersectingTriangles": 499,
+  "PCLInlierVertices": 219,
+  "planeNormalAngleDegrees": 1.076424033862158,
+  "heldoutStatusCounts": {
+    "outsideRaster": 144,
+    "behindCamera": 189,
+    "admittedTSDFDepth": 9
+  },
+  "guardCPUSeconds": 12.554414000000001,
+  "guardWallSeconds": 12.596302710982854,
+  "guardConservativePeakRSSBytes": 558440448,
+  "guardOutputBytes": 2730556,
+  "sourceGeometryUnchanged": true,
+  "physicalAuthority": false,
+  "nearestSurfaceDiagnostic": {
+    "releasedRaycaster": "VTK9.3.1 vtkStaticCellLocator",
+    "rayCount": 3,
+    "distinctHeldoutFrames": 1,
+    "originalFloorTrianglesRecoveredFarther": 3,
+    "nearerMappedSurfacesWithinInherited4cmBand": 3,
+    "absoluteMappedMinusSensorAxialMinMetres": 0.0036873585877525983,
+    "absoluteMappedMinusSensorAxialMaxMetres": 0.010201301968956411,
+    "interpretation": "Foreground surface agreement supports occlusion on these three adopted rays; does not validate hidden floor or external calibration",
+    "CPUSeconds": 0.5829799999999999,
+    "wallSeconds": 0.5302439579972997,
+    "conservativePeakRSSBytes": 212766720
+  },
+  "noRefitOrNewRouteQuery": true,
+  "rawCoordinatesImagesOrPerRayResultListsIncluded": false,
+  "diagnosticSourceContainsFixedDatasetFrameFilename": true
+}
