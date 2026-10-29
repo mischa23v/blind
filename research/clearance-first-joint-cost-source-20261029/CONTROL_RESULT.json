@@ -1,0 +1,81 @@
+{
+  "status": "passed",
+  "command": [
+    "python",
+    "-B",
+    "research/clearance-first-joint-cost-source-20261029/fixtures.py"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "wallSeconds": 0.6458860009988712,
+  "childCPUSeconds": 0.650457,
+  "peakChildRSSKiB": 54080,
+  "limits": {
+    "cpuSeconds": 10,
+    "wallSeconds": 20,
+    "addressSpaceBytes": 536870912
+  },
+  "sourceHashesBefore": {
+    "research/clearance-first-joint-cost-source-20261029/joint_cost.py": "750c1bff3476d9b10c74d70faa98fcc96cc0f4412d25d1a013c6e3103aadb772",
+    "research/clearance-first-joint-cost-source-20261029/fixtures.py": "7e431cff24516a41a6251ae2cef9e7cdb26856146bd99c177377d463c93a04cf",
+    "research/clearance-first-joint-cost-source-20261029/run_controls.py": "225b4a54f87ed56d925b98142ee2e8bf4a7a39568c59e719d8946c10c6b075cd",
+    "research/clearance-first-coffee-source-20261029/selector.py": "0e94911d0244b9f5b11dd55d5f72b3c42d76077f2bcb66f107704ff51da41125",
+    "research/clearance-first-coffee-repair-source-20261029/manual_filter.py": "0221a4cee8939b188e17e41499ad2914e55de087c4c076df58cfe82972edb864",
+    "research/independent-2d-route-validator-20261029/validator.py": "7b86a1a5c38bc503d2f673434a158b7312713c0e20c177a03e6ef56c891c9619",
+    "research/independent-2d-route-validator-20261029/proposal_windows.py": "7cb80ed8984a246987b46c865c5cfded5e85ecbe27a1b946c08e8c3414ca5dd4"
+  },
+  "sourceHashesAfter": {
+    "research/clearance-first-joint-cost-source-20261029/joint_cost.py": "750c1bff3476d9b10c74d70faa98fcc96cc0f4412d25d1a013c6e3103aadb772",
+    "research/clearance-first-joint-cost-source-20261029/fixtures.py": "7e431cff24516a41a6251ae2cef9e7cdb26856146bd99c177377d463c93a04cf",
+    "research/clearance-first-joint-cost-source-20261029/run_controls.py": "225b4a54f87ed56d925b98142ee2e8bf4a7a39568c59e719d8946c10c6b075cd",
+    "research/clearance-first-coffee-source-20261029/selector.py": "0e94911d0244b9f5b11dd55d5f72b3c42d76077f2bcb66f107704ff51da41125",
+    "research/clearance-first-coffee-repair-source-20261029/manual_filter.py": "0221a4cee8939b188e17e41499ad2914e55de087c4c076df58cfe82972edb864",
+    "research/independent-2d-route-validator-20261029/validator.py": "7b86a1a5c38bc503d2f673434a158b7312713c0e20c177a03e6ef56c891c9619",
+    "research/independent-2d-route-validator-20261029/proposal_windows.py": "7cb80ed8984a246987b46c865c5cfded5e85ecbe27a1b946c08e8c3414ca5dd4"
+  },
+  "stderr": "",
+  "physicalAuthority": false,
+  "controls": {
+    "status": "passed",
+    "count": 35,
+    "controls": [
+      "transform_0_native_only_prefers_hugging_lane",
+      "transform_0_joint_prefers_middle_lane",
+      "transform_0_whole_route_manual_check",
+      "transform_0_immutable_inputs",
+      "transform_1_native_only_prefers_hugging_lane",
+      "transform_1_joint_prefers_middle_lane",
+      "transform_1_whole_route_manual_check",
+      "transform_1_immutable_inputs",
+      "transform_2_native_only_prefers_hugging_lane",
+      "transform_2_joint_prefers_middle_lane",
+      "transform_2_whole_route_manual_check",
+      "transform_2_immutable_inputs",
+      "transform_3_native_only_prefers_hugging_lane",
+      "transform_3_joint_prefers_middle_lane",
+      "transform_3_whole_route_manual_check",
+      "transform_3_immutable_inputs",
+      "same_endpoints",
+      "same_frozen_cap",
+      "joint_not_mislabeled_native_wall",
+      "two_channels_retained",
+      "no_physical_authority",
+      "native_inflation_not_reconstructed",
+      "unequal_gap_prefers_actual_authored_middle",
+      "native_channel_still_matters",
+      "body_offset_applied_to_manual_only",
+      "requested_connector_hard_veto",
+      "no_budget_widening",
+      "crossing_edge_cannot_be_rescued_by_cost",
+      "inside_numerical_guard_refused",
+      "missing_windows_refused",
+      "nonfinite_native_refused",
+      "nonfinite_node_refused",
+      "degenerate_window_refused",
+      "invalid_frozen_cap_refused",
+      "authored_timeout_preserves_failure_receipt"
+    ],
+    "scope": "authored GEOS/SciPy controls only; no actual Coffee native run",
+    "physicalAuthority": false
+  }
+}
