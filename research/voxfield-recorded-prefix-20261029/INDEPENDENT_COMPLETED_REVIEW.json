@@ -1,0 +1,51 @@
+{
+  "reviewUTC": "2026-10-29T05:49:26Z",
+  "frozenPinsVerified": 267,
+  "mismatches": 0,
+  "sharedValidatorTestsPassed": 36,
+  "testsBeforeEngineConstructionAndNativeCalls": true,
+  "frameSubmittedCounts": [
+    433900,
+    429680,
+    432840
+  ],
+  "totalPerArm": 1296420,
+  "rangeNormalReasonDenominatorsMatch": true,
+  "allThreePreflightErrors": {},
+  "nativeUpdates": 9,
+  "allNativeInvalidVoxelCountsZero": true,
+  "finalObservedByArm": {
+    "B": 166557,
+    "C0": 166556,
+    "C1": 167354
+  },
+  "finalC1NonzeroGradients": 65678,
+  "loadedD1CoreSHA256": "cf37b843a4f9987d0523d85f2bf04b0ce12ee7a6d718c7cf1e642aa36c5e018b",
+  "resource": {
+    "exitCode": 0,
+    "stopReason": null,
+    "wallSeconds": 8.178346497996245,
+    "peakSummedRSSBytes": 587558912,
+    "peakCumulativeCPUSeconds": 8.040000000000001,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 60,
+      "wallSeconds": 90,
+      "RSSBytes": 2147483648,
+      "diskBytes": 268435456,
+      "logicalCPUs": 1
+    },
+    "scope": "Exactly original training frames00001/2/3 D1+N2 engineering prefix B/C0/C1; no accuracy/reference/GT inputs",
+    "frozenIntegrityPassed": true
+  },
+  "interpretation": "Engineering-domain execution only. Supplied counts not independent voxel updates. No accuracy/reference scoring, mesh export/reload, general D2 native safety, full265 admission or winner.",
+  "evidenceSHA256": {
+    "EXECUTION_FREEZE.json": "e4bb5ae5176929cfe4e035acf08ba585fdf0332ce5e7001ce7e781e5fdc8a519",
+    "RESOURCE.json": "ce5776925f2bf66a07f4821cbdcb5cc9c2c73ed05331fa22d6ccd85580e2cc09",
+    "POST_RUN_INTEGRITY.json": "c7580931cf2df5faa4df23864bb0871a96c4869342592e0b50b0edcac83bda83",
+    "run/prefix.log": "b722e365d326b8329cee8aca9619f37a7ae45d6f764285ddac0cd22b9fd92058",
+    "run/PREFLIGHT.jsonl": "21e66e3dd944a3e9e9e0f57a14976cdb2e611c15b08b167bb9f8925d9f851917",
+    "run/ARMS.jsonl": "d691780681285d7df3f921b02a28c68f87c36cb83602121aa38bfdc2f47a39ff",
+    "run/ELF.json": "817ce8e3f6da70ea992aa0d0be99378e6d01d6fd838fff8a9d7ab67fab057a39"
+  }
+}

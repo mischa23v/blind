@@ -1,0 +1,561 @@
+{
+  "status": "PASS_EXACT_THREE_FRAME_ENGINEERING_PREFIX_ONLY",
+  "freezeSHA256": "e4bb5ae5176929cfe4e035acf08ba585fdf0332ce5e7001ce7e781e5fdc8a519",
+  "validatorSelftests": {
+    "shared_preflight_selftests": "PASS",
+    "checks": 36,
+    "engine_constructions": 0,
+    "native_calls": 0,
+    "native_invalid_input_claim": false
+  },
+  "totalDistinctSubmittedPerArm": 1296420,
+  "normalReasons": [
+    1275637,
+    4025,
+    3403,
+    13355,
+    0,
+    0
+  ],
+  "rangeByReason": [
+    [
+      1951,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      186505,
+      255,
+      0,
+      4892,
+      0,
+      0
+    ],
+    [
+      554380,
+      2510,
+      46,
+      5826,
+      0,
+      0
+    ],
+    [
+      443265,
+      740,
+      730,
+      2361,
+      0,
+      0
+    ],
+    [
+      89536,
+      520,
+      2627,
+      276,
+      0,
+      0
+    ]
+  ],
+  "frames": [
+    {
+      "frame": "frame_00001",
+      "raster_pixels": 733572,
+      "attempted_raw_admitted": 433900,
+      "validated_for_submission": 433900,
+      "admitted": 433900,
+      "zero": 0,
+      "masked_z_ge4m": 299672,
+      "normal_reasons_valid_boundary_missing_discontinuity_nonfinite_degenerate": [
+        427946,
+        1247,
+        1108,
+        3599,
+        0,
+        0
+      ],
+      "ray_range_bands_0_1_2_3_4_5p055": [
+        0,
+        56762,
+        202181,
+        148642,
+        26315
+      ],
+      "range_band_by_normal_reason": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          55595,
+          101,
+          0,
+          1066,
+          0,
+          0
+        ],
+        [
+          199641,
+          825,
+          30,
+          1685,
+          0,
+          0
+        ],
+        [
+          147457,
+          233,
+          211,
+          741,
+          0,
+          0
+        ],
+        [
+          25253,
+          88,
+          867,
+          107,
+          0,
+          0
+        ]
+      ],
+      "min_axial_z_m": 0.9190000295639038,
+      "min_ray_m": 1.078841209411621,
+      "max_scaled_magnitude": 111.36214447021484,
+      "max_world_local_range_difference_m": 1.1920928955078125e-06,
+      "SE3_orthogonality_residual": 4.842145754416198e-08,
+      "SE3_det_residual": 3.35356725722491e-08,
+      "native_pose_roundtrip_residual": 9.799708752308715e-08,
+      "native_quaternion_norm": 1,
+      "native_rotation_orthogonality_residual": 1.5377824524875905e-07,
+      "projective_weight_min_max": [
+        0.06256254762411118,
+        1.184046983718872
+      ],
+      "NP_weight_min_max": [
+        0.045998744666576385,
+        0.8591815829277039
+      ],
+      "max_ray_m": 4.662587642669678,
+      "maximum_ray_owned_indices": 187,
+      "point_order_fnv1a64_not_crypto": "8984249996992628720",
+      "preflight_seconds": 0.10520457,
+      "normal_validity_not_calibrated_confidence": true,
+      "first_rejected_pixels": {}
+    },
+    {
+      "frame": "frame_00002",
+      "raster_pixels": 733572,
+      "attempted_raw_admitted": 429680,
+      "validated_for_submission": 429680,
+      "admitted": 429680,
+      "zero": 0,
+      "masked_z_ge4m": 303892,
+      "normal_reasons_valid_boundary_missing_discontinuity_nonfinite_degenerate": [
+        422413,
+        1231,
+        1128,
+        4908,
+        0,
+        0
+      ],
+      "ray_range_bands_0_1_2_3_4_5p055": [
+        1951,
+        73582,
+        186786,
+        143028,
+        24333
+      ],
+      "range_band_by_normal_reason": [
+        [
+          1951,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          71628,
+          65,
+          0,
+          1889,
+          0,
+          0
+        ],
+        [
+          183869,
+          851,
+          16,
+          2050,
+          0,
+          0
+        ],
+        [
+          141750,
+          255,
+          203,
+          820,
+          0,
+          0
+        ],
+        [
+          23215,
+          60,
+          909,
+          149,
+          0,
+          0
+        ]
+      ],
+      "min_axial_z_m": 0.8140000104904175,
+      "min_ray_m": 0.9835442304611206,
+      "max_scaled_magnitude": 117.1103744506836,
+      "max_world_local_range_difference_m": 1.430511474609375e-06,
+      "SE3_orthogonality_residual": 9.880361205971914e-08,
+      "SE3_det_residual": 1.1100191876778354e-09,
+      "native_pose_roundtrip_residual": 1.2605580922729247e-07,
+      "native_quaternion_norm": 1,
+      "native_rotation_orthogonality_residual": 1.8760083264623972e-07,
+      "projective_weight_min_max": [
+        0.06256254762411118,
+        1.5092153549194336
+      ],
+      "NP_weight_min_max": [
+        0.046103063970804214,
+        1.033742070198059
+      ],
+      "max_ray_m": 4.657309532165527,
+      "maximum_ray_owned_indices": 187,
+      "point_order_fnv1a64_not_crypto": "1944951644557149991",
+      "preflight_seconds": 0.094577783,
+      "normal_validity_not_calibrated_confidence": true,
+      "first_rejected_pixels": {}
+    },
+    {
+      "frame": "frame_00003",
+      "raster_pixels": 733572,
+      "attempted_raw_admitted": 432840,
+      "validated_for_submission": 432840,
+      "admitted": 432840,
+      "zero": 0,
+      "masked_z_ge4m": 300732,
+      "normal_reasons_valid_boundary_missing_discontinuity_nonfinite_degenerate": [
+        425278,
+        1547,
+        1167,
+        4848,
+        0,
+        0
+      ],
+      "ray_range_bands_0_1_2_3_4_5p055": [
+        0,
+        61308,
+        173795,
+        155426,
+        42311
+      ],
+      "range_band_by_normal_reason": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          59282,
+          89,
+          0,
+          1937,
+          0,
+          0
+        ],
+        [
+          170870,
+          834,
+          0,
+          2091,
+          0,
+          0
+        ],
+        [
+          154058,
+          252,
+          316,
+          800,
+          0,
+          0
+        ],
+        [
+          41068,
+          372,
+          851,
+          20,
+          0,
+          0
+        ]
+      ],
+      "min_axial_z_m": 0.9679999947547913,
+      "min_ray_m": 1.0830278396606445,
+      "max_scaled_magnitude": 129.9844207763672,
+      "max_world_local_range_difference_m": 1.430511474609375e-06,
+      "SE3_orthogonality_residual": 8.632183600624653e-08,
+      "SE3_det_residual": 5.972782579632963e-08,
+      "native_pose_roundtrip_residual": 1.5949289969062542e-07,
+      "native_quaternion_norm": 0.9999999403953552,
+      "native_rotation_orthogonality_residual": 2.291583456326407e-07,
+      "projective_weight_min_max": [
+        0.06256254762411118,
+        1.0672085285186768
+      ],
+      "NP_weight_min_max": [
+        0.046362750232219696,
+        0.8525517582893372
+      ],
+      "max_ray_m": 4.644248008728027,
+      "maximum_ray_owned_indices": 191,
+      "point_order_fnv1a64_not_crypto": "6707622104782392242",
+      "preflight_seconds": 0.088982949,
+      "normal_validity_not_calibrated_confidence": true,
+      "first_rejected_pixels": {}
+    }
+  ],
+  "finalArmStates": {
+    "B": {
+      "arm": "B",
+      "frame": "frame_00003",
+      "submitted_this_frame_not_independent_integrated_points": 432840,
+      "cumulative_submitted": 1296420,
+      "integration_seconds": 0.140407359,
+      "state_scan_seconds": 0.002973221,
+      "arm_elapsed_seconds": 0.441139991,
+      "blocks": 171,
+      "allocated_voxels": 700416,
+      "observed_weight_positive": 166557,
+      "unknown_allocated": 533859,
+      "nonzero_gradient": 0,
+      "invalid_native_voxels": 0,
+      "accuracy_claim": false
+    },
+    "C0": {
+      "arm": "C0",
+      "frame": "frame_00003",
+      "submitted_this_frame_not_independent_integrated_points": 432840,
+      "cumulative_submitted": 1296420,
+      "integration_seconds": 0.148595156,
+      "state_scan_seconds": 0.003197848,
+      "arm_elapsed_seconds": 0.524583104,
+      "blocks": 171,
+      "allocated_voxels": 700416,
+      "observed_weight_positive": 166556,
+      "unknown_allocated": 533860,
+      "nonzero_gradient": 0,
+      "invalid_native_voxels": 0,
+      "accuracy_claim": false
+    },
+    "C1": {
+      "arm": "C1",
+      "frame": "frame_00003",
+      "submitted_this_frame_not_independent_integrated_points": 432840,
+      "cumulative_submitted": 1296420,
+      "integration_seconds": 0.162601935,
+      "state_scan_seconds": 0.002882196,
+      "arm_elapsed_seconds": 0.511496235,
+      "blocks": 171,
+      "allocated_voxels": 700416,
+      "observed_weight_positive": 167354,
+      "unknown_allocated": 533062,
+      "nonzero_gradient": 65678,
+      "invalid_native_voxels": 0,
+      "accuracy_claim": false
+    }
+  },
+  "all9NativeStateUpdates": [
+    {
+      "arm": "B",
+      "frame": "frame_00001",
+      "submitted_this_frame_not_independent_integrated_points": 433900,
+      "cumulative_submitted": 433900,
+      "integration_seconds": 0.148275777,
+      "state_scan_seconds": 0.002549446,
+      "arm_elapsed_seconds": 0.150865163,
+      "blocks": 120,
+      "allocated_voxels": 491520,
+      "observed_weight_positive": 100153,
+      "unknown_allocated": 391367,
+      "nonzero_gradient": 0,
+      "invalid_native_voxels": 0,
+      "accuracy_claim": false
+    },
+    {
+      "arm": "B",
+      "frame": "frame_00002",
+      "submitted_this_frame_not_independent_integrated_points": 429680,
+      "cumulative_submitted": 863580,
+      "integration_seconds": 0.144160487,
+      "state_scan_seconds": 0.002621654,
+      "arm_elapsed_seconds": 0.297705591,
+      "blocks": 137,
+      "allocated_voxels": 561152,
+      "observed_weight_positive": 123352,
+      "unknown_allocated": 437800,
+      "nonzero_gradient": 0,
+      "invalid_native_voxels": 0,
+      "accuracy_claim": false
+    },
+    {
+      "arm": "B",
+      "frame": "frame_00003",
+      "submitted_this_frame_not_independent_integrated_points": 432840,
+      "cumulative_submitted": 1296420,
+      "integration_seconds": 0.140407359,
+      "state_scan_seconds": 0.002973221,
+      "arm_elapsed_seconds": 0.441139991,
+      "blocks": 171,
+      "allocated_voxels": 700416,
+      "observed_weight_positive": 166557,
+      "unknown_allocated": 533859,
+      "nonzero_gradient": 0,
+      "invalid_native_voxels": 0,
+      "accuracy_claim": false
+    },
+    {
+      "arm": "C0",
+      "frame": "frame_00001",
+      "submitted_this_frame_not_independent_integrated_points": 433900,
+      "cumulative_submitted": 433900,
+      "integration_seconds": 0.183586952,
+      "state_scan_seconds": 0.00239876,
+      "arm_elapsed_seconds": 0.186066223,
+      "blocks": 120,
+      "allocated_voxels": 491520,
+      "observed_weight_positive": 100153,
+      "unknown_allocated": 391367,
+      "nonzero_gradient": 0,
+      "invalid_native_voxels": 0,
+      "accuracy_claim": false
+    },
+    {
+      "arm": "C0",
+      "frame": "frame_00002",
+      "submitted_this_frame_not_independent_integrated_points": 429680,
+      "cumulative_submitted": 863580,
+      "integration_seconds": 0.184313534,
+      "state_scan_seconds": 0.002306707,
+      "arm_elapsed_seconds": 0.372738472,
+      "blocks": 137,
+      "allocated_voxels": 561152,
+      "observed_weight_positive": 123350,
+      "unknown_allocated": 437802,
+      "nonzero_gradient": 0,
+      "invalid_native_voxels": 0,
+      "accuracy_claim": false
+    },
+    {
+      "arm": "C0",
+      "frame": "frame_00003",
+      "submitted_this_frame_not_independent_integrated_points": 432840,
+      "cumulative_submitted": 1296420,
+      "integration_seconds": 0.148595156,
+      "state_scan_seconds": 0.003197848,
+      "arm_elapsed_seconds": 0.524583104,
+      "blocks": 171,
+      "allocated_voxels": 700416,
+      "observed_weight_positive": 166556,
+      "unknown_allocated": 533860,
+      "nonzero_gradient": 0,
+      "invalid_native_voxels": 0,
+      "accuracy_claim": false
+    },
+    {
+      "arm": "C1",
+      "frame": "frame_00001",
+      "submitted_this_frame_not_independent_integrated_points": 433900,
+      "cumulative_submitted": 433900,
+      "integration_seconds": 0.171699279,
+      "state_scan_seconds": 0.002508338,
+      "arm_elapsed_seconds": 0.174233295,
+      "blocks": 120,
+      "allocated_voxels": 491520,
+      "observed_weight_positive": 100617,
+      "unknown_allocated": 390903,
+      "nonzero_gradient": 39818,
+      "invalid_native_voxels": 0,
+      "accuracy_claim": false
+    },
+    {
+      "arm": "C1",
+      "frame": "frame_00002",
+      "submitted_this_frame_not_independent_integrated_points": 429680,
+      "cumulative_submitted": 863580,
+      "integration_seconds": 0.168808961,
+      "state_scan_seconds": 0.002849457,
+      "arm_elapsed_seconds": 0.345947947,
+      "blocks": 137,
+      "allocated_voxels": 561152,
+      "observed_weight_positive": 123975,
+      "unknown_allocated": 437177,
+      "nonzero_gradient": 50206,
+      "invalid_native_voxels": 0,
+      "accuracy_claim": false
+    },
+    {
+      "arm": "C1",
+      "frame": "frame_00003",
+      "submitted_this_frame_not_independent_integrated_points": 432840,
+      "cumulative_submitted": 1296420,
+      "integration_seconds": 0.162601935,
+      "state_scan_seconds": 0.002882196,
+      "arm_elapsed_seconds": 0.511496235,
+      "blocks": 171,
+      "allocated_voxels": 700416,
+      "observed_weight_positive": 167354,
+      "unknown_allocated": 533062,
+      "nonzero_gradient": 65678,
+      "invalid_native_voxels": 0,
+      "accuracy_claim": false
+    }
+  ],
+  "preflightSummary": {
+    "preflight_frames_checked": 3,
+    "all_three_preflight_complete_before_integration": true,
+    "errors": {},
+    "external_raw_hash_verification_required": true
+  },
+  "resource": {
+    "exitCode": 0,
+    "stopReason": null,
+    "wallSeconds": 8.178346497996245,
+    "peakSummedRSSBytes": 587558912,
+    "peakCumulativeCPUSeconds": 8.040000000000001,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 60,
+      "wallSeconds": 90,
+      "RSSBytes": 2147483648,
+      "diskBytes": 268435456,
+      "logicalCPUs": 1
+    },
+    "scope": "Exactly original training frames00001/2/3 D1+N2 engineering prefix B/C0/C1; no accuracy/reference/GT inputs",
+    "frozenIntegrityPassed": true
+  },
+  "integrity": {
+    "checked": 267,
+    "changedOrMissing": [],
+    "passed": true
+  },
+  "diskBytesBeforeReport": 370078,
+  "accuracyEvaluated": false,
+  "normalReliabilityEvaluated": false,
+  "geometryExported": false,
+  "fullRun": false,
+  "recordedFrameCount": 3
+}
