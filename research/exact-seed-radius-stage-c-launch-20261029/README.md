@@ -1,0 +1,68 @@
+# Stage C Apple launcher — private candidate, not an execution admission
+
+This packet leaves the independently reviewed Stage B/C source manifest `ec2e36696ccd214f5c56b9dc3764607679f95410d56b597f1358c7925f8dae34` unchanged. Its source review is `c058bad95d186ea7cfd27b5e05779f1ba8ab4b67425c4a0816f923e5830edc6c`. **No compiler, native fixture or route matrix has run for this launcher.** Root must review, publish/transfer only allowed sources and explicitly admit its exact freeze before invocation.
+
+`MATERIALIZATION_MANIFEST.json` binds that unchanged full manifest and its exact **17-file / 225,134-byte Stage C runtime closure**, plus the separately retained original manifest file. The two-megabyte remote-tree audit, old base copies, Stage B-only sources and superseded preparation are not transferred. Their 28 original hashes remain listed as omitted evidence, not falsely claimed present at the base URL. The launcher independently derives the required closure from the unchanged recipe and validates every materialized file against the original manifest; it cannot silently omit a runtime input. The original 45-file private review packet remains unchanged.
+
+## Data availability: no new arrays to upload
+
+`INPUT_TRANSFER_SCOPE.json` pins all four runtime files already tracked at the exact public app source `50ea33d6eb2cf37edcd4c1c7daa46f5c6fdd9dfa`:
+
+| Existing repository input | Bytes | SHA-256 prefix |
+|---|---:|---|
+| Two packed Apple sample routing fixtures | 120,756 | `0731735bf24f` |
+| 25 frozen supplied requests/body profiles | 60,836 | `e5d2e07c7564` |
+| Six expected masks and full-layout hashes | 162,134 | `13f436a77608` |
+| Actual 50-row stock/strict native reference | 207,763 | `0858272d1fac` |
+
+Total: **551,489 existing public bytes**. The runner consumes the matching checkout files. It does not regenerate or replace expected masks, contacts, paths or references. The original producer's provenance/Apple permission notice is hash-pinned; only the two Apple sample Hallway2/Bedroom3 models are in scope. These are not user/home scans or personal movement records. Existing public availability alone is not a blanket license for other data.
+
+The local-only `FULL_CAPTURE.json` and Stage A `frozen_fields.txt` are neither uploaded nor required. Actual stock layouts are observed on the runner and matched to frozen hashes; expected mask bits are only compared, never applied. New raw results, compiler output and binaries remain runner-local.
+
+## Invocation contract
+
+`launch_stage_c.py` requires explicit `--repository`, `--source-packet`, `--admission`, and `--output`. Output must be the fresh, nonexistent `$RUNNER_TEMP/blind-exact-seed-radius-stage-c-attempt1`. It refuses other platforms, architectures, repository/branch identities, dirty tracked source, wrong pins or reused output. No automatic retry or installation is implemented.
+
+Root supplies an **unpublished** admission JSON with schema 1, stage `C`, singleAttempt true, exact source manifest/review and launch manifest SHA-256 values, exact repositoryCommit matching GITHUB_SHA, freePublicAppleRunner true, limits equal to the constants below, acknowledgesObservedPollingLimits true, and toolPinPolicy `validate-installed-Xcode-27.0-freeze-executable-hashes-before-compile-and-check-after`. This document is not that admission. No default/built-in authorization exists.
+
+The installed toolchain must identify as Xcode 27.0 on arm64 macOS. The launcher resolves and hashes clang++, swiftc, swift-frontend, ar, ld, xcodebuild, system shims, ps and Python before compilation; it rechecks hashes afterward. SDK settings metadata is hashed too. This is executable/metadata identity, **not a claim of every SDK header/library being hermetically pinned**. Root's admission must explicitly accept the installed-tool runtime-freeze policy; otherwise do not run.
+
+## Resource enforcement and limits
+
+One serial Stage C attempt, including preflight and postchecks: **120 aggregate CPU seconds, 300 wall seconds, 2 GiB observed process-family RSS, 128 MiB observed output**, one command/compiler job at a time. No Stage B/iOS simulator command is invoked. Source-check tests do not establish that this macOS runtime guard works on the target runner; launch review must decide whether the limitations are acceptable.
+
+- `ps -AS` observes the guard, descendants and owned command process groups. Exited-child CPU is rolled into parents; cumulative `getrusage` is also checked. A transition can conservatively double-count rather than discard observed CPU. Per-process RLIMIT_CPU supplements the aggregate monitor but is not described as the aggregate cap.
+- A 300-second signal watchdog and command process-group retirement enforce wall termination. The 50 ms polling target has a one-second timeout on process inspection. Inspection/parse failure, caps or unexpected surviving descendants stop the attempt. This is a trusted installed-tool guard, not a sandbox against hostile daemonization.
+- RSS and total-output checks are **observed peaks**, not kernel memory/disk quotas. Polling can overshoot before termination; any detected breach is a preserved failure, never a passing receipt. RSS includes the guard and monitor process. This does not promise one-core CPU affinity.
+- TMPDIR and module caches are isolated below the output root and included in its recursive accounting. RLIMIT_FSIZE limits each child output file; symlinks in the output tree are refused. The sole declared native-command addition to the reviewed 31-command recipe is `-module-cache-path <isolated output>/module-cache` for swiftc. It changes cache placement only, not geometry/algorithm/compiler optimization flags. Existing OS/toolchain-managed caches outside those explicit work directories are not counted as owned output.
+- All sources, inputs, generated sources and tools are checked before and after success. On a native failure, postchecks are attempted read-only only while the same budget permits; a cap-exhausted/unperformed postcheck remains explicit. No cap expansion, recompilation or replacement reference is attempted. Compiler/fixture failure and partial outputs are retained.
+
+The accounting uses Apple's documented [ps -S and output fields](https://github.com/apple-oss-distributions/adv_cmds/blob/main/ps/ps.1), [getrusage byte units](https://github.com/apple-oss-distributions/xnu/blob/main/bsd/man/man2/getrusage.2), and [child-usage roll-up](https://github.com/apple-oss-distributions/xnu/blob/main/bsd/kern/kern_exit.c). These sources inform the guard; they are not validation of this new implementation.
+
+## Success is the route result, not a green shell
+
+The 15 observer fixture labels and final aggregate must match. Then all 50 unchanged controls must match before 25 candidates execute. The launcher independently requires all result identities/order, all 25 per-request acceptance receipts, the 6/2/3/14 outcomes, unchanged initial contacts and validated layouts. A zero native exit with failed candidate goals is a launcher failure. All physical/app/continuous-clearance flags remain false.
+
+Only `AGGREGATE.review-required.json` is an export candidate, after root's separate allowlist review. It now includes the root-requested 25 coordinate-free candidate receipts (or zero if controls prevented the candidate): point counts, ordered Float32 path digest, status, path/connector lengths, contact counts and input/body identities. These receipts are retained even when the candidate fails its goals; they do not change acceptance. `PUBLIC_AGGREGATE_SCHEMA.json` lists the exact field/type boundary. Raw result JSON, command stdout/stderr, tool paths, admission material, geometry/field arrays and binaries must not be uploaded. The launcher itself uploads nothing and edits no source. Stage B's eight selected hosted tests are still a separate pending admission; a passing Stage C is not iOS validation or a live navigation release.
+
+`test_launch_source.py` contains 35 portable pure-function fixtures for parsing, path/output scope, fail-closed result validation, exact minimal materialization and coordinate-free aggregate encoding. They never construct Guard or invoke subprocess/native code. Their result is source-helper evidence only, not Apple enforcement or route evidence. The first 15 passed; the first expanded attempt exposed a fixture-shaping omission (old reference rows lack the new top-level requested endpoint fields). The fixture was corrected to use the unchanged frozen requested endpoints; all 23 then passed before the materialization fixture was added. This was not an algorithm, oracle or expected-contact change, and no native attempt took place.
+
+### Canonical path digest and length definitions
+
+For a present path, SHA-256 is over the ASCII bytes `blind.ordered-float32-xyz-path.v1`, one NUL byte, a four-byte unsigned little-endian point count, then each point's X, Y and Z components in order as IEEE-754 binary32 little-endian bytes. JSON numeric values are rounded to Float32; negative zero is preserved, including JSON's integer-looking `-0`. There is no translation, rotation, sorting, deduplication or rounding to display decimals. An absent path has `pathAvailable=false`, count zero and null digest; it is not hashed as an empty successful path. Input/projected point identities use the separate domain `blind.ordered-float32-xyz-points.v1`; segment endpoint identities use `blind.ordered-float32-xyz-segment-endpoints.v1`, otherwise the same count/XYZ encoding.
+
+`detourPathLength3DMetres` sums Euclidean consecutive-point lengths after Float32 canonicalization; the XZ version omits Y. `connectorInclusiveSegmentLength*` sums the existing oracle-evaluated segment lengths, including requested-to-projected endpoint connectors. Lengths are derived binary64 arithmetic, not a separate physical-distance assertion. Contact segment counts count boolean-contact segments, not collision manifold intersections. Unique contact witness counts count IDs internally but export only integers. Initial-contact counts stay separate, including refused requests. Body identity is the four UInt32 Float32 bit patterns from the unchanged frozen request. Published legacy/strict path hashes use this same path encoding; equality is null when either path is absent. Hash matches permit comparison/reconstruction from those already-published paths without exporting new coordinates.
+
+## Reviewed-launch revision
+
+The superseded `da3fa71c4aa0e13fecde8833dd97b4b625542b42be8c4339f384ed1af02a8328` packet remains intact in its original coordination directory. This revision addresses independent review findings without changing the `ec2e3669` engine/oracle, original controls, masks, body parameters or acceptance criteria.
+
+- Child environment is explicitly allowlisted, not inherited. Compiler/include/linker/SDK/toolchain/loader overrides and credentials are excluded. RUNNER_TRACKING_ID is deliberately retained for outer GitHub cancellation cleanup. HOME, TMP, caches and config are private output directories. The selected DEVELOPER_DIR is separately validated and locked before toolchain preflight.
+- Native compiler/archive commands use the original selected absolute clang++/swiftc/ar invocation paths, preserving driver aliases. Their resolved targets are hashed, alias resolutions checked before every native command and after completion, and no second xcrun tool selection occurs.
+- Every copied build-side generated source/header/module/observation patch is checked immediately after copy and after execution, including bounded failure reconciliation; checking only the packet originals is no longer sufficient.
+- Completion refuses any currently observed non-guard-group descendant, including an observed process-group escape, before clearing ownership bookkeeping. The limitation for unobserved hostile daemonization remains.
+- Exact result status, configuration block order, endpoint policies and four frozen result input digests are checked in addition to the prior identity/acceptance assertions.
+- The unchanged chain() can produce 259 segments / 518 endpoint triples for 256 route points; the exporter now covers that exact boundary. The public aggregate's 131,072-byte serialized limit is enforced before writing or printing.
+- Terminal resources are sampled after initial aggregate output and all native/postcheck work, not copied before finish. A final-monitor cap failure updates status and exports the latest measurements plus explicit limitBreached flags. The measurement boundary is explicitly before the final bounded metadata-only refresh; CPU/RSS are not falsely called post-serialization observations. The exact final owned-output size, including the aggregate itself, is solved before the last write and checked afterward. A successful attempt must leave 1 CPU second, 1 wall second, 2 MiB observed RSS and 256 KiB output headroom for this refresh; otherwise it is inconclusive without expanding the caps. No native command or monitor runs after that terminal snapshot.
+
+All 35 revised portable pure-function checks pass. They exercise late resource updates/cap failure, injected environment exclusion/tracking preservation, copied-source mutation, driver-alias retargeting, exact result identities, aggregate byte cap and the 259/518 boundary. They still do not construct the macOS Guard or execute native code. The independent launcher/workflow review and root admission are still required.
