@@ -1,3 +1,9 @@
+## Current navigation and testing — 2026-10-29 00:38 UTC
+
+See the [current source-bound status and next tests](research/navigation-testing-status-20261029/STATUS.md). Apple floor import is native-verified; strict endpoint admission preserves 8 of 11 diagnostic corridors and rejects 3 specified projected starts, with all 3 hosted strict fixtures passing. Both corner margin contacts remain; EDT diagnosis has not yet produced corrected routes. Coffee completes only one corridor in both directions among 20 fixed queries. The current hosted suite has 241 passes, 8 failures and 2 skips; UI is 14 passed, 1 failed and 3 skipped; Ask Dynamic Type remains open. CPU/identity diagnostics are published at b398c26 and awaiting native measurements. Live navigation, full support, the 400 journeys and physical readiness remain open. All earlier dated entries and task definitions below are preserved.
+
+---
+
 ## Active geometry-first acceptance — 2026-10-28 17:40 UTC
 
 The [current dependency-ordered checklist](research/geometry-tracker-checkpoint-20261028/STATUS.md) records completed evidence separately from open geometry correction, route/full-body validation and live localization work. All navigation readiness and complete-journey tasks remain open. Existing task definitions and historical evidence below are preserved.
