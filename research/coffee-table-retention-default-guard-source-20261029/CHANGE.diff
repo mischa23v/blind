@@ -1,0 +1,14 @@
+--- published-stage-b-binding-v2/retention.py
++++ default-guard-corrected/retention.py
+@@ -80,8 +80,9 @@
+     # Each camera-local frame owns a fresh tree: no guessed cross-view registration.
+     with engine.OctoMap(resolution=0.05) as tree:
+         defaults = tree.defaults()
+-        require(abs(defaults['hit']-.7) < 1e-12 and abs(defaults['miss']-.4) < 1e-12 and
+-                abs(defaults['occupancy']-.5) < 1e-12, 'upstream defaults changed')
++        # Upstream stores float32 log-odds; match original controls: atol=1e-7, rtol=0.
++        require(abs(defaults['hit']-.7) <= 1e-7 and abs(defaults['miss']-.4) <= 1e-7 and
++                abs(defaults['occupancy']-.5) <= 1e-7, 'upstream defaults changed')
+         keys = tree.keys(points)
+         before = tree.query_keys(keys)
+         require(not before['known'].any(), 'new tree must be unknown')
