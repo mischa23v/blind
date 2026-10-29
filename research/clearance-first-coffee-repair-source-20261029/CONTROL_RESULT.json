@@ -1,0 +1,31 @@
+{
+  "status": "passed",
+  "controls": [
+    "input_graph_unchanged",
+    "direct_centerline_crossing_removed",
+    "existing_solver_routes_around",
+    "independent_final_no_intersection",
+    "same_detour_cap",
+    "physical_unknown",
+    "overlong_repair_refused",
+    "requested_connector_never_exempt",
+    "body_margin_not_only_centerline",
+    "disconnected_after_prune",
+    "zero_length_edges_supported",
+    "empty_windows_refused"
+  ],
+  "count": 12,
+  "scope": "authored manual-window geometry only; no actual Coffee native query",
+  "physicalAuthority": false,
+  "wallSeconds": 0.933764291999978,
+  "peakRSSKiB": 52040,
+  "limits": {
+    "cpuSeconds": 10,
+    "wallSeconds": 20,
+    "addressSpaceBytes": 536870912
+  },
+  "sourceSHA256": {
+    "manual_filter.py": "0221a4cee8939b188e17e41499ad2914e55de087c4c076df58cfe82972edb864",
+    "fixtures.py": "d9a99a3a6b43008899ff11a96eaa0c261ff782dbf9ff9bc2f1690c0e32971264"
+  }
+}
