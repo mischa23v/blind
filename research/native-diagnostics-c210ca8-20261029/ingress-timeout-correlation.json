@@ -1,0 +1,18 @@
+{
+  "source": "GitHub read-only fetch_workflow_job_logs, mischa23v/blind job 123709537027, run 40948350087 attempt 1",
+  "note": "Bounded scalar timing and test-status lines only. GitHub timestamps are CI extraction time, not original event times. Runtime elapsed clocks are owner-relative; query elapsed clocks are query-relative.",
+  "lines": [
+    "2026-10-29T20:38:45.2007720Z CLASSIFICATION_INGRESS_TIMING query=31358C87-CB81-4B81-9699-773370E68456 runtime=24D2229F-893B-42F0-928C-AB62AEBC099E event=submitted elapsed_ms=0 main_thread=false stages=",
+    "2026-10-29T20:38:45.2009380Z CLASSIFICATION_INGRESS_TIMING query=31358C87-CB81-4B81-9699-773370E68456 runtime=24D2229F-893B-42F0-928C-AB62AEBC099E event=waitFinished elapsed_ms=23043 main_thread=false stages=requestEnqueued:2;workerStarted:4363;nativeBuildBegin:4363",
+    "2026-10-29T20:38:45.2010850Z CLASSIFICATION_INGRESS_TIMING query=2169DE85-4084-40A6-8A7F-E9712911300E runtime=8481FCAB-32BE-4464-AB2E-208886685C7E event=submitted elapsed_ms=0 main_thread=false stages=",
+    "2026-10-29T20:38:45.2012120Z CLASSIFICATION_INGRESS_TIMING query=2169DE85-4084-40A6-8A7F-E9712911300E runtime=8481FCAB-32BE-4464-AB2E-208886685C7E event=waitFinished elapsed_ms=10311 main_thread=false stages=requestEnqueued:212",
+    "2026-10-29T20:38:45.2013980Z CLASSIFICATION_INGRESS_TIMING query=BE577B7D-3376-4244-84ED-B267337470D2 runtime=B678958B-D604-42B9-BFE2-34E6D9FD4A23 event=submitted elapsed_ms=0 main_thread=false stages=",
+    "2026-10-29T20:38:45.2015290Z CLASSIFICATION_INGRESS_TIMING query=BE577B7D-3376-4244-84ED-B267337470D2 runtime=B678958B-D604-42B9-BFE2-34E6D9FD4A23 event=waitFinished elapsed_ms=10053 main_thread=false stages=requestEnqueued:0",
+    "2026-10-29T20:38:45.2017070Z CLASSIFICATION_INGRESS_TIMING query=E8FDD631-5EC1-456F-AAE4-5CC9895EF13F runtime=206898B1-B925-4913-B02D-B5F5070DC203 event=submitted elapsed_ms=0 main_thread=false stages=",
+    "2026-10-29T20:38:45.2018420Z CLASSIFICATION_INGRESS_TIMING query=E8FDD631-5EC1-456F-AAE4-5CC9895EF13F runtime=206898B1-B925-4913-B02D-B5F5070DC203 event=waitFinished elapsed_ms=10068 main_thread=false stages=requestEnqueued:0;workerStarted:834;nativeBuildBegin:834",
+    "2026-10-29T20:38:45.3251240Z Test Case '-[BlindAssistTests.ClassificationIngressTests testClassifiedFloorUsesRealRuntimeAndTransformOnceWithoutPhysicalAuthority]' failed (23.094 seconds).",
+    "2026-10-29T20:38:45.3393560Z Test Case '-[BlindAssistTests.ClassificationIngressTests testDefaultLegacyPolicyKeepsExistingUnclassifiedDiagnosticBehavior]' failed (10.325 seconds).",
+    "2026-10-29T20:38:45.3418170Z Test Case '-[BlindAssistTests.ClassificationIngressTests testKnownNonFloorMissingNoneAndUnsupportedNeverPromoteUpwardPlanes]' failed (10.301 seconds).",
+    "2026-10-29T20:38:45.3447080Z Test Case '-[BlindAssistTests.ClassificationIngressTests testKnownTableGeometryRemainsObstacleAndRemovalCanRestoreFloorCandidate]' failed (10.098 seconds)."
+  ]
+}

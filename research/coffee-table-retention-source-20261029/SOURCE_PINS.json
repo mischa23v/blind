@@ -1,0 +1,15 @@
+{
+  "baseline": "dce21dc937dfd0423f7721a23597bd4e33085b2b",
+  "upstreamRevision": "007a0b5b6e4d3bb6c54f2c65a12234e03adcd72f",
+  "vendoredUnchanged": {
+    "octomap_engine.py": "3dc587cf7086078ff4362906fe2fbe723ea43e4bcdc6a6c6acf946f8aa308186",
+    "octomap_adapter.cpp": "715b3e544dff913a82ec43f49c0255297af0c3a799397faceaa66ebe97f9dff7"
+  },
+  "newSource": {
+    "retention.py": "ced6ab06a578f7b211d532d978827b8583656a8f3b638d87f368b7cb8ec81e7c",
+    "test_retention.py": "47d361544b2d45284554082bcd575d014bbbe6697ab7dbb39288ddeb833e4406",
+    "FRESH_DEPTH_VETO_INTERFACE.md": "acaa41309b562666f436f5dfdebd7d41a2b80405d72a80e0c30b50924d4434f0"
+  },
+  "verification": "Python AST parse only; no imports, tests, native calls or build",
+  "nativeLibraryRequiredSHA256": "3c0a88593d07540d93dbbc3e404ee44b3f5167ff7bda74f16fc8075aab83b1db"
+}

@@ -1,0 +1,59 @@
+{
+  "complete": true,
+  "status": "passed",
+  "source_verified": true,
+  "expected_commit": "c210ca822ec4fdc339f808af58bc5b057fd98788",
+  "source_commit": "c210ca822ec4fdc339f808af58bc5b057fd98788",
+  "scope": "10 flag-only synthetic hosted fixtures; no live sensing or physical authority",
+  "executed": 10,
+  "counts": {
+    "Expected Failure": 0,
+    "Skipped": 0,
+    "Passed": 10,
+    "Failed": 0
+  },
+  "cases": [
+    {
+      "identifier": "SeatedMeshProjectionTests/testColumnMajorRotationTranslationAppliedExactlyOnce()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeatedMeshProjectionTests/testConfirmationIsExactSingleUseAndRetiresOnStopOrViewReplacement()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeatedMeshProjectionTests/testDoubleLocalValuesCanCancelBeforeBoundedFloatProjection()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeatedMeshProjectionTests/testEachAnchorUsesItsOwnTransformWithoutFrameSubstitution()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeatedMeshProjectionTests/testIdentityKeepsRawARKitAxesAndMetres()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeatedMeshProjectionTests/testMainDeliveryCannotReleaseOwnerBeforeWorkerClosureReturns()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeatedMeshProjectionTests/testMalformedNonfiniteAndPerspectiveInputRejectWholeProjection()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeatedMeshProjectionTests/testRouteMustMatchExactCurrentSourceSessionGenerationAndRevision()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeatedMeshProjectionTests/testStopKeepsOwnerUntilNativeAndHeldRendererBothDrain()",
+      "result": "Passed"
+    },
+    {
+      "identifier": "SeatedMeshProjectionTests/testWholeProjectionRejectsVertexBudgetAndFloatOverflow()",
+      "result": "Passed"
+    }
+  ],
+  "artifact_id": 12931850184,
+  "artifact_sha256": "eae607082386c5416bffbadff7a74716dcb2cea610b8ec0f82a3aec513a6c551"
+}

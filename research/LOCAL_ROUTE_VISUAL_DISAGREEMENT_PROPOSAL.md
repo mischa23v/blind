@@ -1,0 +1,36 @@
+# Extra picture check for route disagreement — proposal only
+
+2026-10-29. Source audit at `dce21dc937dfd0423f7721a23597bd4e33085b2b`; working-tree evidence identified below. **Not implemented, evaluated, device-verified or release-ready.** Navigation implementation remains the priority. Root owns any publication/tracker integration.
+
+## Exact user intention and existing backlog
+
+User: “you're improving a lot though maybe we can have llm alsoe check picture as another safety?” This follows the reported table-corner route failure, not a request to let a model direct movement. The local [aggregate admission note](coffee-room-journey-recovery-20261029/collision-protocol/AGGREGATE_ADMISSION.md), “Latest direct user visual review,” preserves the rejected practical-clearance result and missing tabletop mesh caveat. Another no-hit test against that incomplete mesh cannot overturn the observation.
+
+Latest steering: “no you'e thinking wrong it can tell them to ocntinue on path just avoid table right you are suppose to tell them where to go and if they're close to something and maybe c hecking camera maybe it shouldn't affect path unless it's 100% sure but it can warn user what to be careful of”. Desired behavior is **non-disruptive additional caution alongside code-verified guidance**, not an automatic stop for every model suspicion. “100% sure” is the user's desired reliability bar, not an achievable model-confidence certificate. Code must establish any proximity/avoidance direction and own actual route correction; neither this request nor a confident model can authorize the known clipping route.
+
+Reuse the **Narrow local visual-claim checker** entry in `TASKS.md:812–814` as the parent backlog item; add this bounded route-disagreement extension rather than a duplicate verifier project. The **Deferred Jev / visual-verifier research** entry at `TASKS.md:808–810` remains deferred. Its linked `research/JEV_IMAGE_VERIFICATION_REVIEW.md` and the local-checker entry's linked `research/LOCAL_VISUAL_CLAIM_CHECKER.md` are absent from this checkout; their contents were not audited. A text search of TASKS/TODO/PROGRESS and available research Markdown found no Woodpecker entry; that is not proof no such work exists elsewhere.
+
+## What actually receives the picture today
+
+- `ios/BlindAssist/VisionService.swift:43–67`: Vision receives `CVPixelBuffer` pixels and produces text/people/category observations. This is not an LLM independently inspecting a route.
+- `ios/BlindAssist/SceneQuestionClient.swift:83–93`, `BlindCore/Sources/BlindCore/OnDeviceLanguage.swift:52–65`: the default local summary model receives serialized observation text and selects IDs. No image attachment goes through this selector; prior dialogue is explicitly not evidence. Re-reading these observations cannot discover geometry omitted by the observation producer.
+- `ios/BlindAssist/LocalImageAssistant.swift:1255–1359`: `spot` and `describe` contain pixel attachments only behind `BLIND_APPLE_MULTIMODAL && canImport(FoundationModels)` and an iOS 27 availability gate. The default project compilation conditions (`ios/BlindAssist.xcodeproj/project.pbxproj:159–160`) do not enable that flag; inherited external overrides were not audited. The fallback explicitly says the image-model adapter is not enabled.
+- `ios/BlindAssist/NavigationModel.swift:2938–3010`: scene flow runs Vision on a captured frame, optionally attempts the gated image adapter, and explicitly declines to derive a walkable path from scene description. This is not a registered route/image verifier.
+
+**Capability blocker:** neither the import of FoundationModels nor the existence of dormant attachment code proves an available, compatible free on-device vision model. No Apple API/runtime capability claim is established by this source-only audit. Before implementation, verify the actual supported SDK/API, exact build flags, runtime/model/language availability, real pixel ingestion and device latency. Missing capability means unavailable, not a text-only substitute labelled “picture check.”
+
+## Proposed contract, not code
+
+An optional silent on-device checker could inspect the **current frame plus a code-projected candidate route/body envelope**, asking only whether visible evidence conflicts with that candidate. Bind immutable frame identity/content digest, capture time, source/session/request/goal epochs, image orientation/crop, camera intrinsics and pose, registration/calibration version and uncertainty, map/route revision, route segment and body-envelope identity. Code must verify those bindings both before inference and when receiving a result. An archived screenshot is diagnostic only; invalid/missing registration or stale/mismatched imagery yields unknown/unavailable.
+
+Allowed output: a typed possible-disagreement flag or uncertain/unavailable status, with a bounded image region for review if supported. Code decides whether independently grounded evidence warrants a short caution, further checking, withholding or replanning; a model suspicion alone must not automatically stop or alter an otherwise code-verified route. The intended normal case is concise non-disruptive caution while supported guidance continues. Proximity and “avoid table right” require authoritative target-bound geometry, not model wording. No model-generated movement, distances or handling instructions; no “all clear,” promotion of unknown coverage to clearance, override of sensor/code hazards, or waiting for this checker before urgent alerts. A no-disagreement response adds no movement authority. Known clipping still requires code correction, not permission to continue. Keep ordinary visual-claim verification separate from physical release policy.
+
+Use only transient on-device pixels; no cloud/private-photo uploads, new model downloads, subscriptions or API costs. Same-model retries may repeat the same errors; this is a possible diversity check, not guaranteed independent redundancy. No invented confidence percentage or accuracy promise.
+
+## Acceptance work still not done
+
+Freeze scene-separated held-out labels and paired baseline-versus-baseline-plus-checker results before execution. Measure **incremental hazard recall**, retained misses, false alarms/unnecessary withholding, abstention/unavailability and disagreement precision, with denominators. Include table corners missing from the mesh, low/thin/overhanging objects, occlusion, out-of-view regions and misleading route overlays. Controls must swap/blank/remove images, replay old frames, mismatch pose/crop/route/body versions, and retire results after movement, cancellation or session change. Confirm the checker reacts to pixels rather than prompt/text history alone.
+
+Measure real-phone end-to-end and tail latency, timeout/cancellation behavior, resource contention and hazard-alert delay with navigation running; slower checking must never block urgent code warnings. Test code-enforced inability to clear unknowns or emit LLM movement. A model's failure to flag remains a miss, not clearance. Device safety and supervised acceptance stay separate from source or fixture checks.
+
+This increment performed source reading and created this note only: no tests, native execution, model calls, downloads, code-feature changes, uploads, commit or push.
