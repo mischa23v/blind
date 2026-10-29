@@ -115,7 +115,7 @@ def main():
     manifestDigest=hashlib.sha256(manifestBytes).hexdigest()
     pins=json.loads(manifestBytes)
     def expand(value):
-        return value.replace('@PREPARED@',str(ROOT.parent/'coffee-native-replay-prepared'))
+        return value.replace('@PREPARED@',str(ROOT.parent/'coffee-native-replay-prepared-002'))
     def verify_pins():
         if sha(H/'COFFEE_RUN_PINS.json')!=manifestDigest: raise RuntimeError('Run manifest changed')
         actual={}

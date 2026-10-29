@@ -23,3 +23,7 @@ python3 research/coffee-room-journey-recovery-20261029/baseline/run_aggregate.py
 Receipt cap/reserve is256KiB (within unchanged64MiB owned-tree cap): a read-only serialization estimate using current prepared inventories and repeated pins was134,694bytes before new outputs/metrics, already above the old128KiB. No payload ran for this estimate. Full pin/inventory records are retained rather than truncated.
 
 Portable manifest token `@PREPARED@` expands deterministically to `ROOT.parent / coffee-native-replay-prepared`; expansion is applied to preparedRoot, argv (including -I arguments), and input keys only for filesystem access. Manifest hashes remain bound to the exact published tokenized bytes. No private workspace path is needed in the manifest.
+
+## Attempt002 recovery — source only, not yet run
+
+Attempt001 compile failure and full evidence remain untouched in the original prepared workspace. This checkpoint changes only the prepared token mapping to `ROOT.parent / coffee-native-replay-prepared-002`, exact missing published header closure, and its input hashes. Engine, native settings, endpoints, queries, oracle and budgets are unchanged. The auditor restored published native025/blind_detour.h and statically checked every quoted include;60 prepared files are now pinned, including INCLUDE_CLOSURE.json. No preprocess, compile or queries ran during preparation. Previous58-file and original-root statements above describe attempt001.

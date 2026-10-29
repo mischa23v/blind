@@ -1,5 +1,5 @@
 {
-  "status": "source-only-not-run",
+  "status": "source-only-not-run-attempt002",
   "preparedRoot": "@PREPARED@",
   "reuse": "c4dc7b1c9b438d5199114339447b089293dc7741fc674a3d743577c1c89968e5",
   "compileCommand": [
@@ -48,14 +48,25 @@
     "@PREPARED@/blind-coffee-native-topology/run.py"
   ],
   "inputs": {
-    "@PREPARED@/BUILD_COMMAND.json": "6cd6a8a1105cfcd55953c921736cb0a9a2c657d1654c3e0cfce8d9574641c0cc",
-    "@PREPARED@/PREPARED.json": "6525df7ae0d6fdd01c9f3463cf17f0d1c375c2484e318102f3e9bc8a73d26328",
+    "/usr/bin/x86_64-linux-gnu-g++-14": "6b3696e4dcb85e1c949c732a02befa50e3983ecf94ce7e8e58d9d503b954b79d",
+    "/usr/libexec/gcc/x86_64-linux-gnu/14/cc1plus": "3064a74d411cc6a72fa3d8d2ce47d72925a42807d89d60618d8467b0eb10c948",
+    "/usr/bin/x86_64-linux-gnu-as": "07dd8551ea0aa065975e4dddb8e1bb7dc308d12d54eca22c3858db79467c7cb9",
+    "/usr/bin/x86_64-linux-gnu-ld.bfd": "d2766988b6a1b1d1518cdc09242e726d1f24e151e16410ada3092b11ffd9081b",
+    "/usr/lib/x86_64-linux-gnu/libubsan.so.1.0.0": "c3912c88d4d1d3772d44c2a77fcda85ebf2790e6efc3602f9489a4e23f4899e2",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12": "fa67443527ed9647f760d807e2a38f26340757123e643c4639cf273ed15d5ea7",
+    "research/coffee-room-journey-recovery-20261029/baseline/run_aggregate.py": "0e509781d68232fac5229bed6caa08965ed606fa60e98d545c9205c6fe39034c",
+    "research/coffee-room-journey-recovery-20261029/baseline/AGGREGATE_ADMISSION_PROPOSAL.json": "d9a6f212ee6748b4740bedc224d828c04f2364d21b7bf7a54c146a5c1ebceb57",
+    "research/coffee-room-journey-recovery-20261029/baseline/FROZEN_QUERIES.json": "bf41417acd756cc212cc82139f537645bb6852f9a4977eea7b6be3fecd9c9f20",
+    "@PREPARED@/BUILD_COMMAND.json": "950f06aed9c3b565ecfd41ea5c874922d78fa046e45a8809d11d2b88705e4d5c",
+    "@PREPARED@/INCLUDE_CLOSURE.json": "e263f73fd3c5d766d67fbfd575a3d2833562e9df59df795a7498ffafdc608ce1",
+    "@PREPARED@/PREPARED.json": "ca1efa25922c77bf05f1dd1b8b5f50941f472afd31bbe8d57dc4dd3f258a99cf",
     "@PREPARED@/blind-clearance-centered-loop-55/planner.py": "2bab104d9df3e68b6aa8c9ff8b555eff0fd959cf2c9739966c77283fd3754c81",
     "@PREPARED@/blind-coffee-native-topology/PROTOCOL.json": "552bdce20612a34c00c865fe1308d055ace6ef628c4934cd35ea60a9d285fb7b",
     "@PREPARED@/blind-coffee-native-topology/run.py": "dd4f9199b4e75b500d2fcebff5b8ed31c4e25712449d6f1f1952ee97749db974",
     "@PREPARED@/blind-coffee-source-readiness/ORIENTATION_AUDIT.json": "a4e3bfd684a9316ceddedf1fcdd7d78b40b3c683e100732cec6439b063d45d0e",
     "@PREPARED@/blind-coffee-source-readiness/selected/room_datasets/coffee_room/iphone/long_capture/polycam_mesh/textured.obj": "f10de085426143ad095fefc713b4966d22fdf08beda9ff9ead759019a0a8306a",
     "@PREPARED@/blind-coffee-source-readiness/selected/room_datasets/coffee_room/iphone/long_capture/transformations.json": "46c8d1fc5188d38179e88eff98fd42f99956fb93b570bd9483e6e92764ae7010",
+    "@PREPARED@/blind-split-candidate-game-03/body-margin-variants-07/native025/blind_detour.h": "c6270b968024d0703800160d45d4110f04f73ad3ecca50ceb0fd0de3b002dbb4",
     "@PREPARED@/blind-split-candidate-game-03/body-margin-variants-07/native025/detour_engine.py": "8ab51b8fe7ac2585cfbe797615dd9ac78956e6cb14277deb092aca19df38787d",
     "@PREPARED@/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Include/DetourAlloc.h": "5f617c7f162069c395d7edfc59f0e06a9b6afaf6698de8fd674c80f00056ab71",
     "@PREPARED@/blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/Detour/Include/DetourAssert.h": "2859e197e1877d3c53f7acc455ceedbe9ce1181fe44779169a3dc16c1508b794",
@@ -106,20 +117,13 @@
     "@PREPARED@/blind-tabletop-exclusion-planner-66/native_exclusion.py": "aa1da6fe3f4bc962fafa2bfc597d81675d7da61daab181d8e834e5bd3414d0bd",
     "@PREPARED@/expected/blind-coffee-native-topology/FROZEN.json": "b27951cdd9d48df26dd9e6d4d5510663e7c35a5799d1e4cdbc6e6f1383640c12",
     "@PREPARED@/expected/blind-coffee-native-topology/RESULT.json": "bd60b9289888fe775dbd538a331a45ae354ae2d535b1b140042e7482ae437905",
-    "/usr/bin/x86_64-linux-gnu-g++-14": "6b3696e4dcb85e1c949c732a02befa50e3983ecf94ce7e8e58d9d503b954b79d",
-    "/usr/libexec/gcc/x86_64-linux-gnu/14/cc1plus": "3064a74d411cc6a72fa3d8d2ce47d72925a42807d89d60618d8467b0eb10c948",
-    "/usr/bin/x86_64-linux-gnu-as": "07dd8551ea0aa065975e4dddb8e1bb7dc308d12d54eca22c3858db79467c7cb9",
-    "/usr/bin/x86_64-linux-gnu-ld.bfd": "d2766988b6a1b1d1518cdc09242e726d1f24e151e16410ada3092b11ffd9081b",
-    "/usr/lib/x86_64-linux-gnu/libubsan.so.1.0.0": "c3912c88d4d1d3772d44c2a77fcda85ebf2790e6efc3602f9489a4e23f4899e2",
-    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12": "fa67443527ed9647f760d807e2a38f26340757123e643c4639cf273ed15d5ea7",
-    "research/coffee-room-journey-recovery-20261029/baseline/run_aggregate.py": "37beada6679b871c6d9edf20e530f017f0999f69e1e037146210067a33cc75ae",
-    "research/coffee-room-journey-recovery-20261029/baseline/AGGREGATE_ADMISSION_PROPOSAL.json": "d9a6f212ee6748b4740bedc224d828c04f2364d21b7bf7a54c146a5c1ebceb57",
-    "research/coffee-room-journey-recovery-20261029/baseline/FROZEN_QUERIES.json": "bf41417acd756cc212cc82139f537645bb6852f9a4977eea7b6be3fecd9c9f20"
+    "research/coffee-room-journey-recovery-20261029/baseline/prepare.py": "bdc928556b67d777c139c66a42da2e56ad578f139df1fc3cfd8239d6ad74eada"
   },
   "runtime": {
     "compiler": "GCC (Debian14.2.0-19)14.2.0",
     "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
     "numpyDistribution": "2.3.5",
     "historicalRuntimeEquality": false
-  }
+  },
+  "attempt": "002"
 }

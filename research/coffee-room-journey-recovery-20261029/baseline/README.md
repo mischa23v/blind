@@ -1,6 +1,6 @@
 # Prepared independent original-Coffee-mesh replay
 
-**Prepared; native build and route execution NOT run.** This is the original Polycam OBJ baseline, not older floor-fixed occupancy and not unavailable original-pose Open3D TSDF. Source recorded geometry is real; the nine query points are authored topology probes, not measured seats/doors/body locations.
+**Attempt001 compiled and failed before any route query; fresh attempt002 is prepared, not executed.** This is the original Polycam OBJ baseline, not older floor-fixed occupancy and not unavailable original-pose Open3D TSDF. Source recorded geometry is real; the nine query points are authored topology probes, not measured seats/doors/body locations.
 
 ## Source and frame contract
 
@@ -36,3 +36,9 @@ Historical:72 directed queries;30 native-complete,20 accepted after endpoint ass
 ## Latest priority
 
 Inside-room pathfinding is the immediate goal; images are only for diagnosing a specific routing issue. Unknown door/far-side semantics do not block the frozen72 source-coordinate inside-room queries. After baseline replay, preserve accepted and rejected original endpoints and pursue full-body/turn/source-triangle collision diagnostics on unchanged paths. Do not postpone these queries for galleries or invent a seat/exit label.
+
+## Recoverable attempt001 header-closure failure
+
+Root's admitted first compile stopped because the historical build receipt did not enumerate `native025/blind_detour.h`; no query ran. Failed receipts/output remain unchanged in the first owned workspace. The compiler also retained upstream warnings; the missing header was the fatal error, not route geometry.
+
+`prepare.py` now restores the exact published Coffee adapter header from the pinned c79 source (SHA256`c6270b968024d0703800160d45d4110f04f73ad3ecca50ceb0fd0de3b002dbb4`) and statically resolves every quoted include in all staged C++/header files. Fresh attempt002 contains60files/11,732,981bytes;45C++/headers,112resolved quoted includes. Standard angle/system headers remain the toolchain's responsibility; no preprocessing/compiler execution occurred during preparation. Existing algorithm, mesh, query, body and margin bytes are unchanged. Existing BUILD_COMMAND differs only by remapping paths to the new owned directory. `ATTEMPT002_SOURCE_FIX.json` records that comparison. The direct aggregate guard's separately reviewed002token/pins must be published before root admits one new serial build/query attempt; never reuse or erase the failed directory.

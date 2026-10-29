@@ -1,5 +1,5 @@
 """Prepare a new source-only Coffee replay. Never executes imported/native code."""
-import argparse, hashlib, json, pathlib, stat, subprocess, zipfile
+import argparse, hashlib, json, pathlib, re, stat, subprocess, zipfile
 PIN='c79fbd33171f78608f9eb2a1484fbc9266e3a695'
 def sha(b): return hashlib.sha256(b).hexdigest()
 def main():
@@ -26,6 +26,11 @@ def main():
     if name.endswith('/FROZEN.json') or name.endswith('/RESULT.json'):dest='expected/'+name
     save(dest,b)
  assert all((a.out/('expected/'+x if x.endswith(('/FROZEN.json','/RESULT.json')) else x)).exists() for x in wanted)
+ # Historical build receipt omitted the adapter header; restore exact published closure.
+ header='blind-split-candidate-game-03/body-margin-variants-07/native025/blind_detour.h'
+ headerSource='research/tools/koivu-coffee-room-tests-v1/'+header
+ hb=git(headerSource);assert sha(hb)=='c6270b968024d0703800160d45d4110f04f73ad3ecca50ceb0fd0de3b002dbb4'
+ save(header,hb)
  old=json.loads((a.out/'blind-tabletop-exclusion-planner-66/BUILD_RECEIPT.json').read_text())
  upstream='blind-split-candidate-game-03/body-margin-variants-07/native025/upstream/'
  paths=git_paths=subprocess.check_output(['git','ls-tree','-r','--name-only',PIN,'tools/navigation-recast/upstream'],cwd=a.repo,text=True).splitlines()
@@ -48,6 +53,20 @@ def main():
   return s
  cmd=[remap(x) for x in old['command']]
  save('BUILD_COMMAND.json',(json.dumps(cmd,indent=2)+'\n').encode())
+ # Static recursive quote-include closure audit; no compiler/preprocessor execution.
+ includeDirs=[pathlib.Path(x[2:]) for x in cmd if x.startswith('-I')]
+ closure=[];system=set();scanned=[]
+ for file in sorted(a.out.rglob('*')):
+  if file.suffix not in ('.cpp','.h'):continue
+  scanned.append(file.relative_to(a.out).as_posix())
+  for delimiter,name in re.findall(r'^\s*#\s*include\s*([<\"])([^>\"]+)[>\"]',file.read_text(),re.M):
+   if delimiter=='<':system.add(name);continue
+   candidates=[file.parent/name]+[d/name for d in includeDirs]
+   found=next((x.resolve() for x in candidates if x.is_file()),None)
+   assert found is not None, 'Unresolved quoted include '+str(file)+': '+name
+   found.relative_to(a.out.resolve())
+   closure.append({'source':file.relative_to(a.out).as_posix(),'include':name,'resolved':found.relative_to(a.out.resolve()).as_posix(),'sha256':sha(found.read_bytes())})
+ save('INCLUDE_CLOSURE.json',(json.dumps({'status':'STATIC_QUOTED_INCLUDE_CLOSURE_COMPLETE','headerSourceRepositoryPath':headerSource,'headerSourceRevision':PIN,'headerSHA256':sha(hb),'scannedFiles':scanned,'resolvedQuotedIncludes':closure,'externalAngleIncludes':sorted(system),'compilerOrPreprocessorRun':False,'systemHeaderCompatibilityNotEstablished':True},indent=2)+'\n').encode())
  save('PREPARED.json',(json.dumps({'repositoryRevision':PIN,'upstreamCommit':'9f4ce64458dfae86e1239c525ddc219c4e9e06f1','sourceFiles':written,'upstreamBytes':total,'historicalSourcesMatch':True,'nativeExecuted':False,'frameContract':'Original OBJ unchanged; candidate Y-up only; no camera alignment or metric calibration claim'},indent=2)+'\n').encode())
  print(json.dumps({'out':str(a.out),'files':len(written),'upstreamBytes':total,'nativeExecuted':False}))
 if __name__=='__main__':main()
