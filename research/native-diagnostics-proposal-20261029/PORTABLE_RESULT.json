@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "scope": "portable Python/parser and synthetic shell source-invariance checks only; no Swift/native execution",
+  "execution_owner": "root",
+  "exit_code": 0,
+  "passed": 7,
+  "failed": 0,
+  "wall_test_seconds": 2.33,
+  "resource_limits_reported_by_root": {
+    "wall_seconds": 20,
+    "cpu_seconds": 15,
+    "virtual_memory_mib": 512
+  },
+  "tests": [
+    "test_closed_grammar_accepts_known_metadata",
+    "test_line_limit_and_recovery",
+    "test_old_end_anchored_cpu_receipt_and_parser_unchanged",
+    "test_output_and_scan_bounds",
+    "test_timing_only_inside_debug_and_prelock",
+    "test_ui_exit_status_preserved_with_extractor_failure",
+    "test_unknown_formats_and_private_text_never_pass"
+  ],
+  "evidence_sha256": {
+    "stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr.txt": "8c3e64b18f5653e8e230adf7dbac2fdda0f2b295dd8d760c182483b2ddc87c0b",
+    "exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "inputs_sha256": {
+    "diagnostics-only.patch": "35f322f943266b235fcec323825b1549adba44f700345ffc144ce35ec6c9ad72",
+    "source-hashes.json": "57fb3ca85ec00ea56f9b7521ad518544c2223f583720cd6912dad36d2e82cf04",
+    "test_proposal.py": "cabe4ef1d5cfad34b81aff8d30e3379573d161698d96c1bbf89f5787d5250778"
+  },
+  "native_swift_executed": false,
+  "active_patch_applied": false,
+  "actual_native_ask_format": "unverified",
+  "ui_outcome": "not_inferred"
+}
