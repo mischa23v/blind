@@ -43,6 +43,12 @@ run_logged() {
     grep -E "^CLASSIFICATION_WORKER_CPU id=[0-9A-F-]{36} worker_begin_ms=$cpuNumber lane=(ingress83|runtime75) worker_wall_ms=$cpuNumber worker_cpu_us=$cpuNumber worker_pair_valid=(true|false) build_wall_ms=$cpuNumber build_cpu_us=$cpuNumber build_pair_valid=(true|false) route_wall_ms=$cpuNumber route_cpu_us=$cpuNumber route_pair_valid=(true|false) retired=(true|false) native_failed=(true|false) records=([0-9]|[1-5][0-9]|6[0-4])$" "$out/$label.log" | head -64 | cut -c 1-2000 || true
     echo 'CLASSIFICATION_WORKER_CPU_END'
   fi
+  if [[ "$label" = ui ]]; then
+    python3 tools/ci/extract-ask-layout-trace.py "$out/$label.log" || true
+  fi
+  if [[ "$label" = unit ]]; then
+    grep -E '^CLASSIFICATION_DIAGNOSTIC_LOCK lane=(ingress83|runtime75) records=([0-9]|[1-5][0-9]|6[0-4]) max_wait_us=[0-9]{1,15}$' "$out/$label.log" | head -64 | cut -c 1-200 || true
+  fi
   # Inputs are committed public source and synthetic tests only; no secrets are supplied.
   # Avoid an environment dump or full build settings. Keep failure diagnostics bounded.
   if (( status != 0 )); then

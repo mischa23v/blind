@@ -35,6 +35,8 @@ final class ClassifiedRoomMeshTests: XCTestCase {
             return (wall, bc - ac, true)
         }
         let began = rows.first(where: { $0.stage == .workerStarted })?.elapsedMilliseconds ?? -1
+        let maxLockWait = rows.map(\.diagnosticLockWaitMicroseconds).max() ?? 0
+        print("CLASSIFICATION_DIAGNOSTIC_LOCK lane=runtime75 records=\(rows.count) max_wait_us=\(maxLockWait)")
         let worker = pair(.workerStarted, .workerFinished)
         let build = pair(.nativeBuildBegin, .nativeBuildEnd)
         let route = pair(.routeBegin, .routeEnd)

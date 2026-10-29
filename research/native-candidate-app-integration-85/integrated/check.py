@@ -18,12 +18,25 @@ def check(name, value):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# Recover the exact pre-diagnostics source in scratch before every historical layer.
+pre_diagnostics_source={}
+with tempfile.TemporaryDirectory(prefix='stage85-diagnostics-source-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeSyntheticDiagnostics'])+manifest['syntheticDiagnosticsNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+    subprocess.run(['git','apply','-R',str(H/'synthetic-diagnostics-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeSyntheticDiagnostics'].items():
+        check('exact pre-synthetic-diagnostics source recovered '+name,hashlib.sha256((root/name).read_bytes()).hexdigest()==digest)
+        pre_diagnostics_source[name]=(root/name).read_bytes()
+    for name in manifest['syntheticDiagnosticsNewFiles']:
+        check('new synthetic diagnostics helper absent in historical layer '+name,not (root/name).exists())
+
 # New optional envelope/source-test layer reverses exactly before historical policy checks.
 pre_envelope_source={}
 with tempfile.TemporaryDirectory(prefix='stage85-envelope-source-') as temp:
     root=Path(temp)
     for name in list(manifest['beforeEnvelopeSource'])+manifest['envelopeSourceNewFiles']:
-        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_diagnostics_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'envelope-source-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeEnvelopeSource'].items():
         check('exact pre-envelope source recovered '+name,hashlib.sha256((root/name).read_bytes()).hexdigest()==digest)
@@ -69,7 +82,7 @@ with tempfile.TemporaryDirectory(prefix='stage85-ci-helper-') as temp:
     for name in dict.fromkeys(list(manifest['beforeSceneTimingHelper']) + list(manifest['beforeSeatedViewerCI']) + manifest['seatedViewerCINewFiles'] + list(manifest['beforeExactSeedRadiusCI']) + manifest['exactSeedRadiusCINewFiles'] + manifest['seedRadiusFocusedEvidenceNewFiles'] + list(manifest['beforeEnvelopeCI'])):
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(R / name, target)
+        target.write_bytes(pre_diagnostics_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'envelope-ci-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
     pre_envelope_ci={}
     for name,digest in manifest['beforeEnvelopeCI'].items():

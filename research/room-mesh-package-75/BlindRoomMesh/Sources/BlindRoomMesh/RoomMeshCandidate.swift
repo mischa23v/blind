@@ -326,6 +326,8 @@ public final class RoomMeshCandidateRuntime {
  public struct DiagnosticStageReceipt: Sendable {
   public let stage: DiagnosticStage
   public let elapsedMilliseconds: Int
+  /// Diagnostic owner-lock wait only, not native work; sampled on this caller.
+  public let diagnosticLockWaitMicroseconds: Int
   /// Current worker thread only; nil is unavailable, never zero CPU evidence.
   public let workerCPUTimeMicroseconds: Int64?
   public let workerThreadID: UInt64?
@@ -401,11 +403,16 @@ public final class RoomMeshCandidateRuntime {
  }
  private func recordDiagnosticStage(_ stage: DiagnosticStage, workerCPU:Bool=false) {
   guard let startedAt=diagnosticStartedAt else{return}
+  let sampledAt=ProcessInfo.processInfo.systemUptime
   let cpu=workerCPU ? Self.workerCPUClock():nil
+  let lockRequestedAt=ProcessInfo.processInfo.systemUptime
   locked {
+   let lockAcquiredAt=ProcessInfo.processInfo.systemUptime
    if diagnosticReceipts.count<64 {
-    let elapsed=max(0,Int((ProcessInfo.processInfo.systemUptime-startedAt)*1_000))
+    let elapsed=max(0,Int((sampledAt-startedAt)*1_000))
+    let lockWait=max(0,Int((lockAcquiredAt-lockRequestedAt)*1_000_000))
     diagnosticReceipts.append(.init(stage:stage,elapsedMilliseconds:elapsed,
+     diagnosticLockWaitMicroseconds:lockWait,
      workerCPUTimeMicroseconds:cpu?.0,workerThreadID:cpu?.1))
    }
   }
