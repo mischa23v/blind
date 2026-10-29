@@ -1,0 +1,49 @@
+{
+  "status": "admitted",
+  "authorizedBy": "root",
+  "sourceFreezeSHA256": "3865e42f7fd3bc15fdbb08f731229c32e89ca213d73c861002a1b630cb4c063a",
+  "arms": [
+    "C1_N3"
+  ],
+  "allMapperOutputsIndependentlyAdmitted": true,
+  "scoreSourceIndependentlyReviewed": true,
+  "sequentialExclusiveSlotRequired": true,
+  "freshEmptyMapNoResume": true,
+  "sameInputKernelConfiguration": true,
+  "onlyN3NormalProviderChange": true,
+  "originalInterruptedAttemptRemainsQuarantined": true,
+  "mapperOutputFreeze": {
+    "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/n3-reconstruction/full265-retry1/run/FUSION_OUTPUT_FREEZE.json",
+    "sha256": "b468a341c3815f82a9c558b5b0089b4a0289c2313bca489448924debc2cceef9"
+  },
+  "mapperOutputAdmission": {
+    "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/n3-reconstruction/full265-retry1/OUTPUT_ADMISSION.json",
+    "sha256": "35074fae6f43600144e8784cab6b35a03a6f0f08076af75d850c7572271d370b"
+  },
+  "mapperResource": {
+    "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/n3-reconstruction/full265-retry1/RESOURCE.json",
+    "sha256": "4b0bca7884617ccd947a64dca2f5060a6bd2859bddee812d467d10216dffe6f4"
+  },
+  "mapperIndependentReview": {
+    "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/n3-reconstruction/full265-retry1/INDEPENDENT_COMPLETED_REVIEW.json",
+    "sha256": "69954b77371cd051c15b68775c7bcffa062650485300d316dafd7c3718a36989"
+  },
+  "mapperN2LedgerMatch": {
+    "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/n3-reconstruction/full265-retry1/run/N2_INPUT_LEDGER_MATCH.json",
+    "sha256": "a9ef09f203a2d0f0ba56cbc348be266fd73341828bf66556ebe128938f400d0c"
+  },
+  "scoreSourceReview": {
+    "path": "<WORKSPACE_ROOT>/coordination/voxfield-n3-full265-same-protocol-score/INDEPENDENT_SOURCE_REVIEW.json",
+    "sha256": "64da432d9fbeda65839d70d5d57e2445fff0e4cb2f4eb2e613dfda2ca27e9de9"
+  },
+  "originalInterruptedAdmission": {
+    "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/n3-reconstruction/full265/INTERRUPTED_OUTPUT_ADMISSION.json",
+    "sha256": "d02afee8d7b8b0491d6bfb83ca4e614a30a04720a8d5b4beffacad56ec3edd08"
+  },
+  "previousN2OutputFreeze": {
+    "path": "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/OUTPUT_FREEZE.json",
+    "sha256": "f18050b5af9ea282ac3d3466262ef3a005091608a0e4811b039ba7246576d699"
+  },
+  "note": "Root creates SCORE_ADMISSION only after independent N3 full-output/source review; command needs exclusive CPU authorization. Includes unchanged primary score and separately frozen common-paired secondary saved-array analysis under same budget.",
+  "scope": "One unchanged offline primary score and frozen common-paired secondary; no physical guidance or public raw data authority."
+}

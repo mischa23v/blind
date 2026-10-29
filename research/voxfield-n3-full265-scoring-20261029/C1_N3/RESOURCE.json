@@ -1,0 +1,20 @@
+{
+  "arm": "C1_N3",
+  "exitCode": 0,
+  "stopReason": null,
+  "wallSeconds": 24.598971056002483,
+  "peakSummedRSSBytes": 267182080,
+  "peakCumulativeCPUSeconds": 24.526687000000003,
+  "finalActualChildPlusGuardCPUSeconds": 24.526687000000003,
+  "monitorAndPrechecksIncluded": true,
+  "samplingSeconds": 0.1,
+  "caps": {
+    "cpuSeconds": 60,
+    "wallSeconds": 90,
+    "RSSBytes": 1073741824,
+    "diskBytes": 1073741824,
+    "logicalCPUs": 1
+  },
+  "scope": "immutable source/output/cache checks + primary heldout score + original summary + frozen secondary common-pair analysis; no mapping",
+  "partialOutputsAdmissible": false
+}
