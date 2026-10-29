@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "noControlsRerunByReviewer": true,
+  "suites": [
+    {
+      "name": "Stage A projection controls",
+      "count": 8,
+      "status": "passed",
+      "evidence": "Independent verification of actual retained unittest log, exact source-test inventory and exit 0",
+      "sourceSHA256": "47d361544b2d45284554082bcd575d014bbbe6697ab7dbb39288ddeb833e4406",
+      "logSHA256": "21eef5665501c2af70ef16741621496c575823ec22c543df50cb6e576e0fd288",
+      "testNames": [
+        "test_empty_floor_evaluator_rejected",
+        "test_full_raster_unselected_pixels_survive",
+        "test_intrinsic_invalid_rejected",
+        "test_missing_zero_and_far_are_not_endpoints",
+        "test_original_intrinsics_no_axis_flip",
+        "test_original_shape_and_dtype_required",
+        "test_patch_bounds_half_open",
+        "test_semantic_evaluator_not_mapper_argument"
+      ]
+    },
+    {
+      "name": "Original native OctoMap adapter controls",
+      "count": 16,
+      "status": "passed",
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "evidence": "Hash-verified actual original-control receipt from the separate native-build result",
+      "receiptSHA256": "f8cd851c7afc3896b53f32720a725d4e81de55ca62ad42c2fa001528b6753bf6",
+      "sourceSHA256": "d1e032ae6be16dbb99255118d1776b0df14ec5c5ffc3271bb47867ed4a434fd5"
+    },
+    {
+      "name": "Default-guard AST controls",
+      "count": 7,
+      "status": "passed according to root-observed actual run and retained root summary",
+      "evidence": "Root reported tool result exit 0, seven named tests ok, Ran 7 tests in 0.004s, OK; no raw output file retained. Reviewer independently verifies test names/source hash, not raw test output.",
+      "rootReportedObservationTimeUTC": "2026-10-29T22:32:08Z",
+      "rootReportedElapsedSeconds": 0.004,
+      "savedRootSummary": "../coffee-table-retention-stage-b-failed001-20261029/README.md",
+      "savedRootSummarySHA256": "68e6af1c4bfb1c73f0041a9b86dfc461d3ac690e31576558b3a9dfc4be7cef2c",
+      "sourceSHA256": "040ebbdac5bae3ad15ef782dddb44b85452d6673689dbce7c473051ddfd534e7",
+      "testNames": [
+        "test_exact_absolute_tolerance_policy",
+        "test_inside_absolute_tolerance_accepted",
+        "test_material_default_changes_rejected",
+        "test_nominal_defaults_accepted",
+        "test_nonfinite_defaults_rejected",
+        "test_outside_absolute_tolerance_rejected",
+        "test_upstream_float32_logodds_roundtrip_accepted"
+      ],
+      "rawLogFabricated": false
+    }
+  ]
+}

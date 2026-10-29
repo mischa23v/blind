@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "kind": "public-text-only-stage-b-result",
+  "sourceCommit": "05e68926f69fa4dfd2566fb50c9e22453cd4e568",
+  "stageBActualStatus": "completed",
+  "stageBActualFrames": 3,
+  "retainedPriorFailure": true,
+  "nativeOrTestRerunByReviewer": false,
+  "physicalAuthority": false,
+  "payloadFileCount": 5,
+  "payloadBytes": 23384,
+  "files": [
+    {
+      "path": "CONTROL_STATUS.json",
+      "bytes": 2523,
+      "sha256": "2f729385014b3ed0894be79c3b4bf432b5c5fd3ec00e20720bcbe82a70dd9098"
+    },
+    {
+      "path": "EXIT.txt",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7717,
+      "sha256": "4ab71f3cecc44a16799cf9eb098a4b70c549b4d1ef57241c6247fd234282dbbd"
+    },
+    {
+      "path": "STAGE_B.json",
+      "bytes": 7486,
+      "sha256": "8f30237fde395b589af4f54464d1ca8a124634a94a77b86dba5985879b1c5fed"
+    },
+    {
+      "path": "VERIFICATION.json",
+      "bytes": 5656,
+      "sha256": "68aa369846c4deccc492f434dec353a758d0c99e1c15f2d87af1497a0579ad7b"
+    }
+  ],
+  "excluded": [
+    "raw RGB/depth captures",
+    "transformation file",
+    "native binary",
+    "private host paths/environment",
+    "archives"
+  ],
+  "manifestSelfExcluded": true
+}

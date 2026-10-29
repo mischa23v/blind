@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "reviewDateUTC": "2026-10-29",
+  "sourceCommit": "05e68926f69fa4dfd2566fb50c9e22453cd4e568",
+  "method": "Independent existing-receipt/source/input-byte recount; no native load, mapper query, projection rerun or test rerun by reviewer",
+  "reviewChecksPassed": true,
+  "publishedSourceBlobChecks": {
+    "count": 7,
+    "allMatch": true
+  },
+  "actualExitCode": 0,
+  "actualReceiptStage": "B",
+  "actualReceiptStatus": "completed",
+  "actualCompletedFrameCount": 3,
+  "frameChecks": [
+    {
+      "frame": "frame_00290",
+      "allStageAFrameFieldsExactlyEqual": true,
+      "projectionSHA256Unchanged": true,
+      "originalDepthBytesMatch": true,
+      "suppliedIntrinsicsMatch": true,
+      "countsCoverOriginalRaster": true,
+      "endpointCountsAgree": true,
+      "occupiedRepresentativeDistinctKeyCountsAgree": true,
+      "oneScanIndexZero": true,
+      "noHitFreeConflict": true,
+      "tableEvaluatorSetNonempty": true,
+      "tableEvaluatorInsetAllPixelsRetained": true,
+      "allTableKeysOccupied": true,
+      "unknownVolumeRemainsUnknown": true,
+      "independentTree": true,
+      "noFloorClearing": true,
+      "actualDefaultValuesEqualSourcePredictedFloatLogoddsRoundtrip": true
+    },
+    {
+      "frame": "frame_00357",
+      "allStageAFrameFieldsExactlyEqual": true,
+      "projectionSHA256Unchanged": true,
+      "originalDepthBytesMatch": true,
+      "suppliedIntrinsicsMatch": true,
+      "countsCoverOriginalRaster": true,
+      "endpointCountsAgree": true,
+      "occupiedRepresentativeDistinctKeyCountsAgree": true,
+      "oneScanIndexZero": true,
+      "noHitFreeConflict": true,
+      "tableEvaluatorSetNonempty": true,
+      "tableEvaluatorInsetAllPixelsRetained": true,
+      "allTableKeysOccupied": true,
+      "unknownVolumeRemainsUnknown": true,
+      "independentTree": true,
+      "noFloorClearing": true,
+      "actualDefaultValuesEqualSourcePredictedFloatLogoddsRoundtrip": true
+    },
+    {
+      "frame": "frame_00391",
+      "allStageAFrameFieldsExactlyEqual": true,
+      "projectionSHA256Unchanged": true,
+      "originalDepthBytesMatch": true,
+      "suppliedIntrinsicsMatch": true,
+      "countsCoverOriginalRaster": true,
+      "endpointCountsAgree": true,
+      "occupiedRepresentativeDistinctKeyCountsAgree": true,
+      "oneScanIndexZero": true,
+      "noHitFreeConflict": true,
+      "tableEvaluatorSetNonempty": true,
+      "tableEvaluatorInsetAllPixelsRetained": true,
+      "allTableKeysOccupied": true,
+      "unknownVolumeRemainsUnknown": true,
+      "independentTree": true,
+      "noFloorClearing": true,
+      "actualDefaultValuesEqualSourcePredictedFloatLogoddsRoundtrip": true
+    }
+  ],
+  "successfulSourcePathGuards": {
+    "evidence": "These unconditional require calls precede each native result return in the exact hashed source; completed frame receipts imply they did not raise. Reviewer did not independently requery native arrays.",
+    "guardFailureMessages": [
+      "upstream defaults changed",
+      "new tree must be unknown",
+      "lost measured endpoint key",
+      "pixels incorrectly counted as scan votes",
+      "empty tabletop evaluator set",
+      "tabletop endpoint retention failed",
+      "unobserved volume promoted to known"
+    ],
+    "allEndpointKeysKnownAndOccupied": true,
+    "everyEndpointKeyHasExactlyOneHitScanVote": true
+  },
+  "totalsAcrossIndependentTrees": {
+    "retainedEndpoints": 1822012,
+    "endpointKeyObservations": 24574,
+    "tableEvaluatorEndpoints": 11100,
+    "tableKeyObservations": 94,
+    "notAFusedMapOrIndependentSampleCount": true
+  },
+  "verifiedSHA256": {
+    "stageBReceipt": "8f30237fde395b589af4f54464d1ca8a124634a94a77b86dba5985879b1c5fed",
+    "stageAReceipt": "4d1360780619477f123e69f53ea6d655eab4ef1abb997ddd17a87b2c7b603f1a",
+    "retentionSource": "52027afeb32a38f49d69e25713fa434d01291e4fc8a75d111daf151b5f44d7d4",
+    "wrapperSource": "09645bd4065ccef13d28353d5a05e54c75f5ea284ca8e5c4439c58cc45aa4621",
+    "sourcePins": "043e966c47f2b951b2738aa1ece309022323c3a1e8a7fff28d7aee428271caef",
+    "guardControlSource": "040ebbdac5bae3ad15ef782dddb44b85452d6673689dbce7c473051ddfd534e7",
+    "nativeLibrary": "0a044001b1455634ab881cc42fb5954362d960abf5cd851b7b6dc99b6c3eb963",
+    "buildReceipt": "bd329fc48bd5e3e7dee4c0ef1c6bd30d556c4c58fa46e0da90c671f40fc3e077",
+    "originalNativeControlsReceipt": "f8cd851c7afc3896b53f32720a725d4e81de55ca62ad42c2fa001528b6753bf6",
+    "originalTransformations": "46c8d1fc5188d38179e88eff98fd42f99956fb93b570bd9483e6e92764ae7010",
+    "frozenPatchSelection": "7e938424d28ae9b3a64480c2629aacd422a75d00cb8087cbfc0724fd99b81497"
+  },
+  "executionEvidence": {
+    "exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "peakRSSKiB": 173584,
+    "elapsedCPUAndWallTotalsNotPresentInReceipt": true,
+    "rootReportedInvocationBounds": {
+      "cpuSeconds": 120,
+      "addressSpaceBytes": 536870912,
+      "wallSeconds": 180,
+      "cpuCount": 1
+    }
+  },
+  "preservedFirstFailure": {
+    "resultPacket": "../coffee-table-retention-stage-b-failed001-20261029/",
+    "sha256": "a8ece6ca766853628ce6bfdf10e0b4be3acad2e9c4889ad01e0dfa6188e4c107",
+    "publishedFailureBytesMatch": true,
+    "status": "failed",
+    "geometryInsertionNotReached": true
+  },
+  "physicalAuthority": false,
+  "collisionOrReadinessClaim": false,
+  "registrationStillUnverified": true
+}
