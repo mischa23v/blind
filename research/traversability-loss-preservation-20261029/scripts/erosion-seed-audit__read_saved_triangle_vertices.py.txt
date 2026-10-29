@@ -1,0 +1,22 @@
+"""Static binary PLY reads only: original IDs from saved rays, no geometry queries."""
+import resource,signal,os,json,hashlib,math
+from pathlib import Path
+resource.setrlimit(resource.RLIMIT_CPU,(10,10));resource.setrlimit(resource.RLIMIT_AS,(512*1024*1024,512*1024*1024));signal.alarm(15)
+os.sched_setaffinity(0,{min(os.sched_getaffinity(0))})
+import numpy as np
+H=Path(__file__).resolve().parent;M=Path('research/open3d-same-data-benchmark-20261028/fresh-run/fusion/unfiltered-tsdf-mesh.ply')
+d=json.loads((H/'SAVED_TRIANGLE_WITNESSES.json').read_text());ids=sorted({h['originalSourceTriangleID']for c in d['cells']for r in c['existingRays']for h in r['savedHits']})
+with M.open('rb')as f:
+ header=b''
+ while not header.endswith(b'end_header\n'):header+=f.readline()
+assert b'format binary_little_endian 1.0' in header and b'element vertex 242293' in header and b'element face 461256' in header
+v=np.memmap(M,mode='r',offset=len(header),dtype=np.dtype([('xyz','<f8',(3,)),('rgb','u1',(3,))]),shape=(242293,))
+f=np.memmap(M,mode='r',offset=len(header)+242293*27,dtype=np.dtype([('n','u1'),('ids','<u4',(3,))]),shape=(461256,))
+result=[]
+for i in ids:
+ assert f[i]['n']==3;p=np.array(v['xyz'][f[i]['ids']]);q=p.astype(np.float32)
+ normal=np.cross(p[1]-p[0],p[2]-p[0]);normal/=np.linalg.norm(normal)
+ nf=np.cross(q[1]-q[0],q[2]-q[0]);nf/=np.sqrt(np.sum(nf*nf,dtype=np.float32))
+ result.append({'originalTriangleID':i,'originalVertexIDs':f[i]['ids'].tolist(),'datasetXYZDouble':p.tolist(),'nativeIngressDatasetXYZFloat32':q.tolist(),'signedNormalWorldZDouble':float(normal[2]),'signedNormalWorldZFloat32Calculation':float(nf[2]),'angleDegreesDouble':math.degrees(math.acos(max(-1,min(1,float(normal[2]))))),'nominal15DegreeMarkDecisionFromFloat32':bool(float(nf[2])>math.cos(math.pi/12))})
+with (H/'SAVED_TRIANGLE_VERTICES.json').open('x')as out:json.dump({'scope':'static lookup of exact original triangle IDs already present in saved Open3D rays, not exhaustive cell contributors','meshSHA256':hashlib.sha256(M.read_bytes()).hexdigest(),'triangles':result,'physicalAuthority':False},out,indent=2);out.write('\n')
+print(len(result),'original triangle records saved')

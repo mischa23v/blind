@@ -1,0 +1,37 @@
+"""All saved ledge-causing neighbor columns for already-selected seed records."""
+from pathlib import Path
+import json,resource,signal,os
+resource.setrlimit(resource.RLIMIT_CPU,(10,10));resource.setrlimit(resource.RLIMIT_AS,(512*1024*1024,512*1024*1024));signal.alarm(15);os.sched_setaffinity(0,{min(os.sched_getaffinity(0))})
+import numpy as np
+H=Path(__file__).resolve().parent;P=H.parent/'stock-route-prep/run';r=json.loads((H/'SAVED_REPLAY.json').read_text());out={}
+for name,m in r['models'].items():
+ a=np.load(P/(name+'_SPANS.npy')).tolist();s=json.loads((P/(name+'_ROUTES.json')).read_text())['stageCounts'];cols={}
+ for i,v in enumerate(a):cols.setdefault(tuple(v[:2]),[]).append(i)
+ def detail(i):
+  v=a[i];return {'row':i,'cellXZ':v[:2],'smin':v[2],'smax':v[3],'bottomDatasetZ':s['oy']+v[2]*s['ch'],'topDatasetZ':s['oy']+v[3]*s['ch'],'initialArea':v[4],'afterLedgeArea':v[5],'afterHeadArea':v[6]}
+ def ceiling(i):
+  ids=cols[tuple(a[i][:2])];k=ids.index(i);return a[ids[k+1]][2]if k+1<len(ids)else 65535
+ rows={}
+ for t in m['targets']:
+  for v in t['spanAttributions']:
+   if v['firstRejectedStage']=='ledge':rows[v['row']]=1
+   for n in v.get('selectedBoundarySeedMissingNeighbors',[]):
+    for q in n['neighborRawSpans']:
+     if q['firstRejectedStage']=='ledge':rows[q['row']]=1
+ result=[]
+ for i in rows:
+  v=a[i];floor=v[3];ceil=ceiling(i);low=65535;lo=hi=floor;events=[];ng=[]
+  for k,(dx,dz)in enumerate([(-1,0),(0,1),(1,0),(0,-1)]):
+   key=(v[0]+dx,v[1]+dz);ids=cols.get(key,[]);ng.append({'direction':k,'cellXZ':key,'allRawSpans':[detail(j)for j in ids]});nc=a[ids[0]][2]if ids else 65535
+   if min(ceil,nc)-floor>=61:low=-3;events.append({'direction':k,'cellXZ':key,'cause':'gapBelowFirstNeighborSpan'});break
+   for j in ids:
+    nf=a[j][3];nc=ceiling(j)
+    if min(ceil,nc)-max(floor,nf)<61:continue
+    delta=nf-floor;low=min(low,delta)
+    if abs(delta)<=2:lo=min(lo,nf);hi=max(hi,nf)
+    elif delta < -2:events.append({'direction':k,'cellXZ':key,'cause':'stepDownBeyondClimb','row':j,'deltaVoxels':delta});break
+  assert low < -2 or hi-lo>2
+  result.append({'span':detail(i),'neighborsInspectedBeforeNativeEarlyOut':ng,'decisiveEvents':events,'lowestDeltaVoxels':low,'accessibleRangeVoxels':[lo,hi],'heightRangeExceedsClimb':hi-lo>2})
+ out[name]=result
+with (H/'LEDGE_CLOSURE.json').open('x')as f:json.dump({'scope':'read-only exact ledge predicate on all saved seed blockers; no source or native queries','models':out,'physicalAuthority':False},f,indent=2);f.write('\n')
+print({k:len(v)for k,v in out.items()})

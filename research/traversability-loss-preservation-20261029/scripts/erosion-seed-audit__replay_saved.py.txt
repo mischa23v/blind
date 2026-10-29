@@ -1,0 +1,114 @@
+"""Read-only forensic replay of pinned Recast integer decisions over saved spans.
+No native calls, mesh queries, mapper, planner, reference edits or route admission.
+Requires every ledge/head/erosion output to equal the already-saved native result.
+"""
+import os,resource,signal,time,json,math,hashlib
+from pathlib import Path
+resource.setrlimit(resource.RLIMIT_CPU,(10,10))
+resource.setrlimit(resource.RLIMIT_AS,(512*1024*1024,512*1024*1024))
+resource.setrlimit(resource.RLIMIT_FSIZE,(32*1024*1024,32*1024*1024))
+os.sched_setaffinity(0,{min(os.sched_getaffinity(0))}); signal.alarm(15)
+import numpy as np
+H=Path(__file__).resolve().parent; P=H.parent/'stock-route-prep/run'
+t0=time.monotonic();cpu=time.process_time()
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def fdiv(a,b):return float(np.float32(a)/np.float32(b))
+D=[(-1,0),(0,1),(1,0),(0,-1)]
+allout={}
+for name in ('Open3D','Voxblox'):
+ d=json.loads((P/(name+'_ROUTES.json')).read_text()); a=np.load(P/(name+'_SPANS.npy')).tolist(); st=d['stageCounts'];p=d['profile']
+ height=math.ceil(fdiv(p['height'],p['cell_height']));climb=math.floor(fdiv(p['max_climb'],p['cell_height']));radius=math.ceil(fdiv(p['radius'],p['cell_size']))
+ cols={}
+ for i,r in enumerate(a):cols.setdefault(tuple(r[:2]),[]).append(i)
+ def details(i):
+  r=a[i];return {'row':i,'cellXZ':r[:2],'smin':r[2],'smax':r[3],'bottomDatasetZ':st['oy']+r[2]*st['ch'],'topDatasetZ':st['oy']+r[3]*st['ch'],'initialArea':r[4],'afterLedgeArea':r[5],'afterHeadArea':r[6],'afterErosionArea':r[7],'regionID':r[8]}
+ def why(i):
+  r=a[i]
+  for col,label in [(4,'initial'),(5,'ledge'),(6,'headroom'),(7,'erosion'),(8,'unassignedRegion')]:
+   if not r[col]:return label
+  return 'survives'
+ def ceiling(i):
+  ids=cols[tuple(a[i][:2])];j=ids.index(i);return a[ids[j+1]][2] if j+1<len(ids) else 65535
+ def ledge(i):
+  r=a[i];floor=r[3];ceil=ceiling(i);low=65535;lo=hi=floor;events=[]
+  for k,(dx,dz) in enumerate(D):
+   key=(r[0]+dx,r[1]+dz);ids=cols.get(key,[]);nc=a[ids[0]][2] if ids else 65535
+   if min(ceil,nc)-floor>=height:
+    low=-climb-1;events.append({'direction':k,'neighborCellXZ':key,'cause':'gapBelowFirstNeighborSpan','neighborRawSpans':[details(j)for j in ids]});break
+   for j in ids:
+    nf=a[j][3];nc=ceiling(j)
+    if min(ceil,nc)-max(floor,nf)<height:continue
+    delta=nf-floor;low=min(low,delta)
+    if abs(delta)<=climb:lo=min(lo,nf);hi=max(hi,nf)
+    elif delta < -climb:
+     events.append({'direction':k,'neighborCellXZ':key,'cause':'stepDownBeyondClimb','deltaVoxels':delta,'neighborSpan':details(j)});break
+  bad=low < -climb or hi-lo>climb
+  return {'reject':bad,'lowestNeighborDeltaVoxels':low,'accessibleNeighborFloorRangeVoxels':[lo,hi],'heightRangeExceedsClimb':hi-lo>climb,'decisiveEvents':events}
+ # Exact local filters: no custom floor band enters their decisions.
+ for i,r in enumerate(a):
+  expected=0 if not r[4] or ledge(i)['reject'] else r[4]
+  assert expected==r[5],(name,'ledge',i,expected,r[5])
+  expected=0 if ceiling(i)-r[3]<height else r[5]
+  assert expected==r[6],(name,'head',i,expected,r[6])
+ compact=[i for i,r in enumerate(a)if r[6]];cc={}
+ for i in compact:cc.setdefault(tuple(a[i][:2]),[]).append(i)
+ h={i:min(ceiling(i)-a[i][3],255)for i in compact}; con={};missing={}
+ for i in compact:
+  r=a[i];links=[];miss=[]
+  for k,(dx,dz)in enumerate(D):
+   key=(r[0]+dx,r[1]+dz);choice=None
+   for j in cc.get(key,[]):
+    bot=max(r[3],a[j][3]);top=min(r[3]+h[i],a[j][3]+h[j])
+    if top-bot>=height and abs(a[j][3]-r[3])<=climb:choice=j;break
+   links.append(choice)
+   if choice is None:
+    miss.append({'direction':k,'neighborCellXZ':key,'neighborRawSpans':[dict(details(j),firstRejectedStage=why(j))for j in cols.get(key,[])]})
+  con[i]=links
+  if miss:missing[i]=miss
+ dist={i:0 if i in missing else 255 for i in compact};seed={i:i if i in missing else None for i in compact};path={i:[i] if i in missing else [] for i in compact}
+ # Same strict-less, 2/3 chamfer updates and scan order as RecastArea.cpp:141-273.
+ for reverse,dirs in [(False,[(0,3),(3,2)]),(True,[(2,1),(1,0)])]:
+  keys=sorted(cc,key=lambda q:(q[1],q[0]),reverse=reverse)
+  for key in keys:
+   for i in cc[key]:
+    for cardinal,diagonal in dirs:
+     j=con[i][cardinal]
+     if j is None:continue
+     for other,cost in [(j,2),(con[j][diagonal],3)]:
+      if other is None:continue
+      value=min(dist[other]+cost,255)
+      if value<dist[i]:dist[i]=value;seed[i]=seed[other];path[i]=path[other]+[i]
+ for i in compact:assert (0 if dist[i]<radius*2 else a[i][6])==a[i][7],(name,'erosion',i,dist[i],a[i][7])
+ targets={};omitted={}
+ def add(cell,reason,point=None):
+  v=targets.setdefault(tuple(cell),{'cellXZ':cell,'selectionReasons':[],'samplePoints':[]});v['selectionReasons'].append(reason)
+  if point is not None and point not in v['samplePoints']:v['samplePoints'].append(point)
+ for route in d['spatialEvidence']:
+  first=True
+  for s in route['referenceSamples']:
+   c=s['sourceColumn']
+   if c['firstRejectedStage']=='noFloorBandSpan':omitted[tuple(c['cellXZ'])]=c
+   if first and c['firstRejectedStage']!='survives':add(c['cellXZ'],'firstLossPair'+str(route['pairID']),s['pointDatasetXYZ']);first=False
+  for k in ('requestedStartDatasetXYZ','requestedGoalDatasetXYZ'):
+   e=route['endpoints'][k];add(e['sourceColumn']['cellXZ'],k+'Pair'+str(route['pairID']),e['pointDatasetXYZ'])
+ # PUBLIC EXPORT: original dataset cell selections are not redistributed.
+ for cell in json.loads((H/'PRIVATE_REPORTED_AISLE_CELLS.json').read_text()):add(cell,'previouslyReportedAisleWitness')
+ for cell,v in targets.items():
+  v['allRawSpans']=[details(i)for i in cols.get(cell,[])];out=[]
+  for i in cols.get(cell,[]):
+   r=a[i];entry=details(i);entry['firstRejectedStage']=why(i)
+   if r[4]and not r[5]:entry['ledgeDecision']=ledge(i)
+   if r[5]and not r[6]:entry['headroomVoxels']=ceiling(i)-r[3]
+   if i in dist:
+    entry['replayedBoundaryDistanceUnits']=dist[i];entry['replayedBoundaryDistanceMetres']=dist[i]*st['cs']/2;ss=seed[i]
+    entry['selectedBoundarySeed']=None if ss is None else details(ss)
+    entry['selectedBoundarySeedMissingNeighbors']=[]if ss is None else missing[ss]
+    entry['replayedSeedPathRows']=path[i]
+    entry['replayedSeedPathCells']=[a[j][:2]for j in path[i]]
+    entry['seedSelectionTiePolicy']='first strict-less improvement in pinned native scan order; not independent physical nearest obstacle'
+   out.append(entry)
+  v['spanAttributions']=out
+ allout[name]={'quantizedProfile':{'heightVoxels':height,'climbVoxels':climb,'radiusVoxels':radius,'erosionThresholdUnits':radius*2},'exactControl':{'allRawSpanLedgeDecisions':len(a),'allRawSpanHeadroomDecisions':len(a),'allCompactErosionDecisions':len(compact),'allMatched':True},'omittedBandAudit':{'uniqueColumns':len(omitted),'emptyRawColumns':sum(not c['rawSpans']for c in omitted.values()),'columns':[{'cellXZ':list(k),'allRawSpans':c['rawSpans']}for k,c in sorted(omitted.items())]},'targets':list(targets.values())}
+result={'scope':'saved-span-only pinned-algorithm forensic replay; no mesh/native/planner/reference queries','inputSHA256':{str(p):sha(p)for p in [P/(n+s)for n in ('Open3D','Voxblox')for s in ('_ROUTES.json','_SPANS.npy')]},'models':allout,'resourceUse':{'cpuSeconds':time.process_time()-cpu,'wallSeconds':time.monotonic()-t0,'maxRSSBytes':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024},'physicalAuthority':False,'shortAisleRestored':False}
+with (H/'SAVED_REPLAY.json').open('x')as f:json.dump(result,f,indent=2,allow_nan=False);f.write('\n')
+print(json.dumps({'controls':{k:v['exactControl']for k,v in allout.items()},'resourceUse':result['resourceUse']}))

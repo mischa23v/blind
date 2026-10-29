@@ -1,0 +1,75 @@
+{
+  "scope": "Own diagnostic/audit code preserved as non-executed archival text. Redactions are export-only, never applied to originals.",
+  "scripts": [
+    {
+      "path": "scripts/stock-route-prep__guard.py.txt",
+      "originalSourcePath": "stock-route-prep/guard.py",
+      "originalSHA256": "b33cafd3fb0f5ab83eb366ca075d61f78f48ff2c570dac1903834b8d09cbf3d0",
+      "publicSHA256": "b33cafd3fb0f5ab83eb366ca075d61f78f48ff2c570dac1903834b8d09cbf3d0",
+      "byteIdenticalToExecutedOriginal": true,
+      "publicExportChanges": [],
+      "execution": "not executed; archival .py.txt source only; restricted inputs and original one-run admission excluded"
+    },
+    {
+      "path": "scripts/stock-route-prep__worker.py.txt",
+      "originalSourcePath": "stock-route-prep/worker.py",
+      "originalSHA256": "123428b097ccadd099f4e0bbee63b2ae8929050f3ffb848ad83bbf2c15cc6f5b",
+      "publicSHA256": "123428b097ccadd099f4e0bbee63b2ae8929050f3ffb848ad83bbf2c15cc6f5b",
+      "byteIdenticalToExecutedOriginal": true,
+      "publicExportChanges": [],
+      "execution": "not executed; archival .py.txt source only; restricted inputs and original one-run admission excluded"
+    },
+    {
+      "path": "scripts/stock-route-prep__reader_fixtures.py.txt",
+      "originalSourcePath": "stock-route-prep/reader_fixtures.py",
+      "originalSHA256": "75f0d9663568dfbc4631f319694369fea5f9a617665dea41b531fc78f45ecf1a",
+      "publicSHA256": "d85c7d88623f5646b7e4404ba1b6f99d03d888f34348554b087b580380bc8a76",
+      "byteIdenticalToExecutedOriginal": false,
+      "publicExportChanges": [
+        "Synthetic vertex/face literals and float fixture constants externalized; no geometry fixture payload or replacement values distributed."
+      ],
+      "execution": "not executed; archival .py.txt source only; restricted inputs and original one-run admission excluded"
+    },
+    {
+      "path": "scripts/stock-route-prep__summarize_completed.py.txt",
+      "originalSourcePath": "stock-route-prep/summarize_completed.py",
+      "originalSHA256": "c95459bbadc9ecb05d924007a27af3207a678bafea1512fdf4ed80110ad07dd0",
+      "publicSHA256": "5847abf259f4c54bc995757d51ee0190ec49723fb7db2e3ea6731d8836ed4a4a",
+      "byteIdenticalToExecutedOriginal": false,
+      "publicExportChanges": [
+        "Dataset raster-domain coordinates and body dimensions externalized to an unshipped private input; no replacement geometry supplied."
+      ],
+      "execution": "not executed; archival .py.txt source only; restricted inputs and original one-run admission excluded"
+    },
+    {
+      "path": "scripts/erosion-seed-audit__replay_saved.py.txt",
+      "originalSourcePath": "erosion-seed-audit/replay_saved.py",
+      "originalSHA256": "0dae7fb3429a9f52ca68ac589f3266eb53d8ec4964da206268407260d6996f50",
+      "publicSHA256": "52c918b4a66e0317fcc7025d8aa0ff8618397dec60731876af912222741a5854",
+      "byteIdenticalToExecutedOriginal": false,
+      "publicExportChanges": [
+        "Four dataset-specific cell selections replaced by a required, unshipped private input. Algorithm/order unchanged."
+      ],
+      "execution": "not executed; archival .py.txt source only; restricted inputs and original one-run admission excluded"
+    },
+    {
+      "path": "scripts/erosion-seed-audit__trace_ledge_closure.py.txt",
+      "originalSourcePath": "erosion-seed-audit/trace_ledge_closure.py",
+      "originalSHA256": "53c8e6f608ff16d7538c8c84a30f6fa211a62f942544d4618ac78edc11a62ff6",
+      "publicSHA256": "53c8e6f608ff16d7538c8c84a30f6fa211a62f942544d4618ac78edc11a62ff6",
+      "byteIdenticalToExecutedOriginal": true,
+      "publicExportChanges": [],
+      "execution": "not executed; archival .py.txt source only; restricted inputs and original one-run admission excluded"
+    },
+    {
+      "path": "scripts/erosion-seed-audit__read_saved_triangle_vertices.py.txt",
+      "originalSourcePath": "erosion-seed-audit/read_saved_triangle_vertices.py",
+      "originalSHA256": "96af7dadf5739a5c75364d9fc32d000d2f2e461d8cb38ba302cd91b0680d5ef4",
+      "publicSHA256": "96af7dadf5739a5c75364d9fc32d000d2f2e461d8cb38ba302cd91b0680d5ef4",
+      "byteIdenticalToExecutedOriginal": true,
+      "publicExportChanges": [],
+      "execution": "not executed; archival .py.txt source only; restricted inputs and original one-run admission excluded"
+    }
+  ],
+  "newRunsAuthorized": false
+}
