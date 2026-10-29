@@ -1,0 +1,31 @@
+{
+  "full-audit-ask-issue-1-metadata.json": {
+    "auditType": 65536,
+    "compact": "Dynamic Type font sizes are partially unsupported",
+    "detailed": "User will not be able to change the font size of this SwiftUI.AccessibilityNode",
+    "element": {
+      "elementType": 48,
+      "enabled": true,
+      "frame": "{{20, 698.33333333333337}, {400, 72.333333333333371}}",
+      "identifier": "local-answer-unavailable-reason",
+      "label": "Camera monitoring is not running. Open Camera and safety to start it."
+    },
+    "elementPresent": true,
+    "index": 1,
+    "phase": "ask",
+    "schema": 1,
+    "snapshotStatus": "captured",
+    "timing": "callback_observation_not_historical_failure_state"
+  },
+  "full-audit-ask-issue-2-metadata.json": {
+    "auditType": 65536,
+    "compact": "Dynamic Type font sizes are unsupported",
+    "detailed": "User will not be able to change the font size of this element",
+    "elementPresent": false,
+    "index": 2,
+    "phase": "ask",
+    "schema": 1,
+    "snapshotStatus": "not_available",
+    "timing": "callback_observation_not_historical_failure_state"
+  }
+}
