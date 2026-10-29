@@ -1,0 +1,22 @@
+# Addendum: internal os.fwalk classification omissions
+
+This source-only addendum qualifies the filesystem-accounting claims in guard review `081be087dfc243186b2e5273bb1dcc12598037acb08144503e6e30cb6f330b15` and envelope002 closure review `0e0352c19b5f8f795b79997ac43e99eba44f1cc548913f3d6606cc8970661b8f`. Those historical bytes and all frozen/active sources remain unchanged. No Apple attempt was inspected, stopped, changed or rerun by this assessment.
+
+## Confirmed source gap
+Independent Coffee reviewer receipt SHA `31ed0707087f7665115f5a3f854626bfbb714ea128455203bab95b4df8d946ba` identifies host Python3.12 `os.py` SHA `54c43a1fc69c979c70d8f7d097174cee163bfe59937723ee353043dd4a0211e1`, lines536–553. I independently read and hash-matched that source. `_fwalk` calls `DirEntry.is_dir()` while building the directory/nondirectory name lists; on OSError it only appends the entry if `is_symlink()` succeeds and returns true. Otherwise it omits the name, including if the second classification raises. This branch does not call the supplied onerror handler.
+
+The exact reviewed envelope002 guard `0f7e114f1d17fe38fd01f5ead04982b06cde8b117cb3b8481f1eef967649eb23` receives only the names yielded by os.fwalk. Its explicit nofollow stat and non-ENOENT error handling cannot reject an entry never yielded. With an implementation exhibiting this branch, a repeated classification failure (for example on an entry whose directory type requires a metadata lookup) could produce two equal but incomplete strict inventories. The existing regression tests that inject errors through fwalk's onerror callback do not exercise this internal omission branch.
+
+Therefore the earlier blanket phrase “other/non-ENOENT errors refuse” must be read more narrowly: errors delivered to the guard's explicit stat/readlink/descent callbacks refuse; internal errors silently suppressed by the traversal library are not covered. Paired strict metadata inventories establish equality of the enumerated observations, not completeness of enumeration. This is an additional limitation beyond ordinary between-sample deletion/creation and non-atomic logical-byte accounting.
+
+## Impact and nonclaims
+The pinned host source control flow is confirmed; the actual selected Apple runner's Python standard-library implementation and any occurrence there are not verified. No fault injection or filesystem reproduction was executed in this assessment. The finding neither proves the disappeared path/cause in failed envelope001 nor demonstrates a flaw in the new envelope algorithm, frozen geometry, oracle, masks, 75-row controls/candidates or numerical outputs. Source/input/tool identities and exact result checks are separate gates, not derived from the output-size walk.
+
+The accounting risk is incomplete observed output/inventory and failure to refuse some library-suppressed filesystem errors. “No observed cap breach” remains an observation, not proof that a true instantaneous output peak stayed below the cap. A terminalObservationCompleted flag reports completion of the implemented observations, not a complete kernel quota or exhaustive filesystem proof. Do not elevate it to that stronger claim when interpreting current results.
+
+No new critical event in the active Apple attempt is observed here, and this assessment does not request cancellation or a new run. Any actual result should retain this accounting qualification while its independent numerical/parity evidence is evaluated. Do not silently rewrite frozen guards or retrospectively label the unknown001 cause as this mechanism.
+
+## Narrow future correction
+For a future separately reviewed guard, enumerate names without DirEntry type classification, then perform explicit descriptor-relative nofollow stat/open/fstat identity checks and bounded traversal under the guard's error policy. Preserve active-only ENOENT treatment, strict terminal refusal, root/child identity, symlink/escape/special-file checks, resource caps and failure evidence. Add a regression at the actual classification boundary, not merely a mocked onerror callback. This does not require an algorithm/oracle change, new watcher framework or cap increase. Coffee's independent source-preparation repair is separate and unexecuted; nothing here authorizes its execution or transplantation into an active Apple run.
+
+Receipt SHA256: `5c6d3124e09c4aac54381e8768ed4fd22f8354338d136922102d676aef866fd5`.
