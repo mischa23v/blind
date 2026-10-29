@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "scope": "reviewed authored test-only patch; not applied or natively executed",
+  "baseCommit": "2408f4381c83439452c58f18d1c9c400808b0d80",
+  "failingSourceCommit": "4b51e4273817bd7fa1d8830041bafdf302c11aee",
+  "source": {
+    "path": "ios/BlindAssistTests/RecordedRouteStoreTests.swift",
+    "baseGitBlob": "05019d37206df3e029cee7504b10841c1de1394b",
+    "baseSHA256": "02c540c82c91d61325f2a2572f4f43a048744aa864de5409cc4c951f3ef697b6",
+    "candidateGitBlob": "eb15453c0dfc94aecf590c99c69425dbefbddbd0",
+    "candidateSHA256": "2e1d932b393792e83151bf42f0f6e41f128632659e1a068706900d6b9c17efc2",
+    "bytes": 48818
+  },
+  "patchSHA256": "26fc39d670ed7c8d20f725777efa0ee60ac2fd9b4e072acf64534b40dece913d",
+  "reviewedCandidateManifestSHA256": "5f1ba6e292aae647b9f51209f5ae6169971c836edce9d4e4d7f8fd03ad511aca",
+  "reviewedPacketManifestSHA256": "4549a95576f0d67bd935dfc9869023fcfc4dec8f5ffc50995283e4050e87e9ca",
+  "independentReview": {
+    "status": "PASS source/inventory only",
+    "reportSHA256": "2cedfa4b4321435dee6ca060d04d083c6b9a151c02414c6aa34ea62ec3322409",
+    "reviewAssertions": 58,
+    "portableSourceChecks": 57,
+    "nativeExecution": false
+  },
+  "originalDeadlineSeconds": 5,
+  "productionChanges": false,
+  "appTestApplied": false,
+  "nativeCompiled": false,
+  "newFixtureStatus": "authored/unrun",
+  "firstDelayCause": "unknown",
+  "requiredFocusedSelectors": [
+    "BlindAssistTests/RecordedRouteStoreTests/testActiveTripSurvivesNewSessionAndRestartWithBoundedReversePages",
+    "BlindAssistTests/RecordedRouteStoreTests/testBusySnapshotCannotAcknowledgeStoppedOwnerDrainBeforeBlockedFactoryReturns"
+  ],
+  "preservedClassSelectors": 24,
+  "candidateClassSelectors": 25,
+  "historicalDefaultInventory": 290,
+  "candidateDefaultInventoryAfterAdoption": 291,
+  "historicalCounts": {
+    "Expected Failure": 0,
+    "Passed": 276,
+    "Failed": 12,
+    "Skipped": 2
+  },
+  "fullSuitePassClaimed": false
+}
