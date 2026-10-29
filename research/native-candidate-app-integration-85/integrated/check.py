@@ -53,10 +53,15 @@ with tempfile.TemporaryDirectory(prefix='stage85-exact-seed-policy-') as temp:
 # Recover the exact prior helper before assessing unchanged build-mode contracts.
 with tempfile.TemporaryDirectory(prefix='stage85-ci-helper-') as temp:
     root = Path(temp)
-    for name in dict.fromkeys(list(manifest['beforeSceneTimingHelper']) + list(manifest['beforeSeatedViewerCI']) + manifest['seatedViewerCINewFiles'] + list(manifest['beforeExactSeedRadiusCI']) + manifest['exactSeedRadiusCINewFiles']):
+    for name in dict.fromkeys(list(manifest['beforeSceneTimingHelper']) + list(manifest['beforeSeatedViewerCI']) + manifest['seatedViewerCINewFiles'] + list(manifest['beforeExactSeedRadiusCI']) + manifest['exactSeedRadiusCINewFiles'] + manifest['seedRadiusFocusedEvidenceNewFiles']):
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(R / name, target)
+    subprocess.run(['git','apply','-R',str(H/'seed-radius-focused-evidence-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeSeedRadiusFocusedEvidence'].items():
+        check('exact pre-focused-evidence source recovered '+name,hashlib.sha256((root/name).read_bytes()).hexdigest()==digest)
+    for name in manifest['seedRadiusFocusedEvidenceNewFiles']:
+        check('new focused evidence helper absent in historical layer '+name,not (root/name).exists())
     subprocess.run(['git','apply','-R',str(H/'exact-seed-radius-ci-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeExactSeedRadiusCI'].items():
         check('exact pre-seed-radius CI recovered '+name,hashlib.sha256((root/name).read_bytes()).hexdigest()==digest)
@@ -285,6 +290,12 @@ check('seed-radius default compile flags no retry or parallel testing', 'SWIFT_A
 check('seed-radius exit and separate xcresult preserved', 'seed-radius-unit.xcresult' in seed_mode and 'test || status=$?' in seed_mode and 'seed-radius-unit-exit.json' in seed_mode and 'exit "$status"' in seed_mode)
 check('seed-radius focused step bounded and collector always present', 'timeout-minutes: 10\n        run: bash tools/ci/native-apple.sh seed-radius-unit' in current_workflow and 'run: python3 tools/ci/collect-seed-radius.py' in current_workflow)
 check('seed-radius strict collector negative fixtures',subprocess.run([sys.executable,str(R/'tools/ci/test-collect-seed-radius.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
+native_job=current_workflow.split('  native:',1)[1].split('  mesh-diagnostics-compile:',1)[0]
+diagnostics_job=current_workflow.split('  mesh-diagnostics-compile:',1)[1].split('  classified-mesh-bench:',1)[0]
+check('focused8 moved to default job after hosted step only',native_job.index('run: bash tools/ci/native-apple.sh unit')<native_job.index('run: bash tools/ci/native-apple.sh seed-radius-unit')<native_job.index('run: bash tools/ci/native-apple.sh ui') and 'seed-radius-unit' not in diagnostics_job)
+check('focused8 default build guard survives hosted failure',"id: seed-radius\n        if: ${{ !cancelled() && steps.build.outcome == 'success' }}" in native_job)
+check('focused diagnostic export precedes strict collector',native_job.index('run: python3 tools/ci/export-seed-radius-diagnostics.py')<native_job.index('run: python3 tools/ci/collect-seed-radius.py') and 'seed-radius-diagnostics.json' in native_job)
+check('focused evidence portable negative fixtures',subprocess.run([sys.executable,str(R/'tools/ci/test-export-seed-radius-diagnostics.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 print(json.dumps(dict(sourceChecksPassed=len(checks), checks=checks, appPatchApplied=True, criticalOrderPatchApplied=True, practicePublicationPatchApplied=True, projectCanonicalizationPatchApplied=True, connectedBenchPreviewMembershipApplied=True, navigationTestRecordingApplied=True, savedFrameCameraAssociationApplied=True, sceneTimingCIHelperApplied=True, recorderTimingCIHelperApplied=True, savedRoomGeometryMembershipApplied=True, appleRoomPlanFixtureMembershipApplied=True, appleRoomRouteMembershipApplied=True, classificationIngressMembershipApplied=True, hostedDecoderLinkMembershipApplied=True,
     appleBuild='pending', historicalLayersReversedExactly=True, defaultAppActivation=False, runtimeOptIn='diagnostic flag plus explicit seated confirmation required', geometryCopyEnabled='only inside separately admitted diagnostic owner',
     physicalAuthority=False, experimental128MiBCapCompliance='not claimed'), indent=2))

@@ -103,6 +103,31 @@ jobs:
             ${{ runner.temp }}/blind-native-ci/public-apple-same-export/receipt.json
           if-no-files-found: error
           retention-days: 3
+      - name: Run exact optional seed-radius policy and existing strict controls
+        id: seed-radius
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        timeout-minutes: 10
+        run: bash tools/ci/native-apple.sh seed-radius-unit
+      - name: Export bounded focused identities and assertion failures before strict validation
+        if: always()
+        timeout-minutes: 3
+        run: python3 tools/ci/export-seed-radius-diagnostics.py "$RUNNER_TEMP/blind-native-ci"
+      - name: Verify exact eight seed-radius hosted cases and source identity
+        if: always()
+        timeout-minutes: 3
+        run: python3 tools/ci/collect-seed-radius.py "$RUNNER_TEMP/blind-native-ci"
+      - name: Preserve bounded optional-policy hosted receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: seed-radius-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/blind-native-ci/seed-radius-results.json
+            ${{ runner.temp }}/blind-native-ci/seed-radius-unit-exit.json
+            ${{ runner.temp }}/blind-native-ci/seed-radius-diagnostics.json
+          if-no-files-found: error
+          retention-days: 3
+
       - name: iOS UI and accessibility audit tests
         id: ui
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
@@ -200,23 +225,6 @@ jobs:
           if-no-files-found: error
           retention-days: 3
 
-      - name: Run exact optional seed-radius policy and existing strict controls
-        timeout-minutes: 10
-        run: bash tools/ci/native-apple.sh seed-radius-unit
-      - name: Verify exact eight seed-radius hosted cases and source identity
-        if: always()
-        timeout-minutes: 3
-        run: python3 tools/ci/collect-seed-radius.py "$RUNNER_TEMP/blind-native-ci"
-      - name: Preserve bounded optional-policy hosted receipt
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: seed-radius-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            ${{ runner.temp }}/blind-native-ci/seed-radius-results.json
-            ${{ runner.temp }}/blind-native-ci/seed-radius-unit-exit.json
-          if-no-files-found: error
-          retention-days: 3
 
   classified-mesh-bench:
     # Synthetic owned buffers only; macOS excludes the five iOS session fixtures.

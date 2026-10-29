@@ -13,9 +13,9 @@
     "ios/BlindAssist.xcodeproj/project.pbxproj": "5bf3a39347acba589af1e6fd6c3f95dc860806b0ae376fcccbe4c2b3cd1c3dee",
     "ios/BlindAssist/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
     "tools/ci/native-apple.sh": "00b51ff8ae12d8b698a037af8423f046d79dac8fb29654492cfa2b36427b485c",
-    ".github/workflows/native-apple.yml": "3c52b1a74339b90b415ef870fa84375d030571e3415b7681e5329d14514422bf",
+    ".github/workflows/native-apple.yml": "9b762450c94f6d3d57deb84739dd90cdebe53fbce149948d9b119e898f2e1ea8",
     ".github/workflows/native-candidate-app-integration.yml": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
-    "research/native-candidate-app-integration-85/integrated/check.py": "8ae716e00a276005c8ac18ed4d00ff864a399506261b3ec5c35da8fc7d3dd01d",
+    "research/native-candidate-app-integration-85/integrated/check.py": "b2f40159671f1db107642dff56a749f5df13ef44cd8cc7f6ae7948ed50ccfa38",
     "research/native-candidate-app-integration-85/integrated/README.md": "e0c2967287b5ce57ab0c630f3b07fd1f466121aceae1cf931d48d113a5703bb1",
     "research/native-candidate-app-integration-85/app-integration.patch": "3cbde1075811ebab3d9fc1a54101ffad0b3749030c3dfc920cbcdca4fde2c619",
     "research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
@@ -93,7 +93,10 @@
     "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json": "67ba14e6f1ba1ef98d69556715c14f8d90871b014b89443984b12efd3c585a56",
     "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "440af8deebef6b826bb9d6308b8f348b2218bbb618ec7d00444a432863005e42",
     "research/native-candidate-app-integration-85/integrated/exact-seed-radius-ci-layer.patch": "15df8e9d41d0560c7d8bec363acb85eaa31d46f30edddfacbef8e431abddf5ad",
-    "research/native-candidate-app-integration-85/integrated/exact-seed-radius-policy-layer.patch": "c3d045a4e914a49e0be7ad6c3875606b1b302e24a0c0bb7f4942229881ed0f43"
+    "research/native-candidate-app-integration-85/integrated/exact-seed-radius-policy-layer.patch": "c3d045a4e914a49e0be7ad6c3875606b1b302e24a0c0bb7f4942229881ed0f43",
+    "tools/ci/export-seed-radius-diagnostics.py": "fd4fdd290d6766850e6f90eec8c69b7854af767d69c5faf7be6d3d14414c7686",
+    "tools/ci/test-export-seed-radius-diagnostics.py": "4522966f16a1e5f98fe797158ccf2a8d957009b41d0625ac8eabb3867df9f40a",
+    "research/native-candidate-app-integration-85/integrated/seed-radius-focused-evidence-layer.patch": "045e7c8c30d6a9bd958e323a80b1e5cf2bdfaac43e754e2c1270d54bba7e1695"
   },
   "beforeCriticalOrder": {
     "ios/BlindAssist/NavigationModel.swift": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307"
@@ -259,5 +262,19 @@
     ],
     "callerActivation": false,
     "nativeStageBExecuted": false
+  },
+  "beforeSeedRadiusFocusedEvidence": {
+    ".github/workflows/native-apple.yml": "3c52b1a74339b90b415ef870fa84375d030571e3415b7681e5329d14514422bf"
+  },
+  "seedRadiusFocusedEvidenceNewFiles": [
+    "tools/ci/export-seed-radius-diagnostics.py",
+    "tools/ci/test-export-seed-radius-diagnostics.py"
+  ],
+  "seedRadiusFocusedEvidence": {
+    "originalFocusedExit65Preserved": true,
+    "originalCauseUnknown": true,
+    "sameDefaultBuildConfiguration": true,
+    "selectorsChanged": false,
+    "nativeExecutionPending": true
   }
 }
