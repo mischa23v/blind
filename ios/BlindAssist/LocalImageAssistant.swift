@@ -26,7 +26,7 @@ struct LocalImageAnswer {
         case .generationFailed:
             message = arabic ? "تعذر إكمال الرد على الجهاز الآن." : "I couldn't finish an on-device reply just now."
         case .modelUnavailable:
-            message = arabic ? "نموذج المحادثة على الجهاز غير متاح الآن." : "The on-device conversation model is unavailable right now."
+            message = arabic ? "نموذج المحادثة غير متاح على هذا الجهاز. لا يلزم اشتراك أو مفتاح API." : "The on-device conversation model is unavailable on this device. No subscription or API key is needed."
         }
         return LocalImageAnswer(text: nil, status: message, conversationRuntimeFailure: failure)
     }

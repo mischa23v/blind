@@ -13,6 +13,15 @@ final class ConversationRuntimeFailureTests: XCTestCase {
                 XCTAssertEqual(answer.conversationRuntimeFailure, failure)
                 XCTAssertEqual(answer.conversationOperationalFallback, answer.status)
                 XCTAssertFalse(answer.status.isEmpty)
+                if failure == .modelUnavailable {
+                    // Preserve the pre-existing unavailable-provider contract;
+                    // operational metadata must not change its public wording.
+                    let expected = arabic
+                        ? "نموذج المحادثة غير متاح على هذا الجهاز. لا يلزم اشتراك أو مفتاح API."
+                        : "The on-device conversation model is unavailable on this device. No subscription or API key is needed."
+                    XCTAssertEqual(answer.status, expected)
+                    XCTAssertEqual(answer.conversationOperationalFallback, expected)
+                }
             }
         }
     }
