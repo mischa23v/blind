@@ -13,6 +13,14 @@ run_logged() {
   local status=0
   "$@" > "$out/$label.log" 2>&1 || status=$?
   echo "$label exit status: $status"
+  if [[ "$label" = core ]]; then
+    # Fixed public synthetic class and case/status grammar only; no assertion payload.
+    # Evidence only: preserve original command, exit status, aggregates and failures.
+    echo 'MODEL_RESPONSE_AUTHORITY_CASES_BEGIN (at most 64 lines; 700 characters each)'
+    grep -E "^Test Case '(-\\[(BlindCoreTests\\.)?ModelResponseAuthorityTests test[A-Za-z0-9_]+\\]|(BlindCoreTests\\.)?ModelResponseAuthorityTests\\.test[A-Za-z0-9_]+)' (started\\.|(passed|failed|skipped) \\([0-9]+(\\.[0-9]+)? seconds\\)\\.)$" "$out/$label.log" | head -64 | cut -c 1-700 || true
+    echo 'MODEL_RESPONSE_AUTHORITY_CASES_END'
+  fi
+
   if [[ "$label" = unit ]]; then
     # Fixed test labels, allowlisted public availability and numeric runtime only.
     echo 'MODEL_AVAILABILITY_BEGIN (first 80 lines; 600 characters each)'

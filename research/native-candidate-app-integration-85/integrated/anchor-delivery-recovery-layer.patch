@@ -1,0 +1,240 @@
+--- a/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift
++++ b/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift
+@@ -24,6 +24,7 @@
+     private let worker: DispatchQueue
+     private let runtime: RoomMeshCandidateRuntime
+     private let supportPolicy: MeshSupportPolicy
++    private let deliveryPolicy: MeshDeliveryRecoveryPolicy
+     private let maxAnchors: Int, maxCopies: Int
+     private var epoch: UUID
+     private var token: UInt64 = 0
+@@ -46,13 +47,14 @@
+     public init(maxAnchors: Int = 128, maxCopies: Int = 1,
+                 supportPolicy: MeshSupportPolicy = .legacySlope,
+                 endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
++                deliveryRecoveryPolicy: MeshDeliveryRecoveryPolicy = .legacyStickyGap,
+                 decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh83.decode", qos: .utility)) throws {
+         guard (1...1024).contains(maxAnchors), (1...2).contains(maxCopies) else { throw Failure.unavailable }
+         self.maxAnchors = maxAnchors; self.maxCopies = maxCopies; worker = decodeQueue
+-        self.supportPolicy = supportPolicy
++        self.supportPolicy = supportPolicy; self.deliveryPolicy = deliveryRecoveryPolicy
+         let initialEpoch = UUID(); epoch = initialEpoch
+         runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1,
+-                                               supportPolicy: supportPolicy, endpointPolicy: endpointPolicy)
++                                               supportPolicy: supportPolicy, endpointPolicy: endpointPolicy, deliveryRecoveryPolicy: deliveryRecoveryPolicy)
+     }
+ #if DEBUG
+     /// Explicit synthetic-test timing only; the ordinary initializer and release
+@@ -60,15 +62,16 @@
+     public init(maxAnchors: Int = 128, maxCopies: Int = 1,
+                 supportPolicy: MeshSupportPolicy = .legacySlope,
+                 endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
++                deliveryRecoveryPolicy: MeshDeliveryRecoveryPolicy = .legacyStickyGap,
+                 captureSyntheticTestTiming: Bool,
+                 syntheticTimingCompletion: ((UUID,[RoomMeshCandidateRuntime.DiagnosticStageReceipt])->Void)? = nil,
+                 decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh83.decode", qos: .utility)) throws {
+         guard (1...1024).contains(maxAnchors), (1...2).contains(maxCopies) else { throw Failure.unavailable }
+         self.maxAnchors = maxAnchors; self.maxCopies = maxCopies; worker = decodeQueue
+-        self.supportPolicy = supportPolicy
++        self.supportPolicy = supportPolicy; self.deliveryPolicy = deliveryRecoveryPolicy
+         let initialEpoch = UUID(); epoch = initialEpoch
+         runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1,
+-            supportPolicy: supportPolicy, endpointPolicy: endpointPolicy,
++            supportPolicy: supportPolicy, endpointPolicy: endpointPolicy, deliveryRecoveryPolicy: deliveryRecoveryPolicy,
+             captureSyntheticTestTiming: captureSyntheticTestTiming,
+             syntheticTimingCompletion: syntheticTimingCompletion)
+     }
+@@ -85,7 +88,13 @@
+         token += 1; return true
+     }
+     private func gap() { runtime.invalidate() } // ONLY loss/failure, never ordinary updates.
+-    private func admit(_ anchor: UUID, _ time: Double) -> MeshSnapshot82.Context? {
++    private func anchorIssue(_ context: MeshSnapshot82.Context, _ anchor: UUID, _ issue: MeshAnchorDeliveryIssue) {
++        if deliveryPolicy == .latestValidatedAnchorRevision {
++            runtime.markAnchorDeliveryIssue(sessionID: context.sessionID.uuidString, generation: Int(context.generation),
++                anchorID: anchor.uuidString, revision: Int(context.revision), receiptUptime: context.receiptUptime, issue: issue)
++        } else { gap() }
++    }
++    private func admit(_ anchor: UUID, _ time: Double, removed: Bool = false) -> MeshSnapshot82.Context? {
+         // Even malformed/newer/overflow callbacks retire the outer result immediately.
+         guard advance(), !stopped else { return nil }
+         guard time.isFinite, time >= 0, time > receipt else { gap(); return nil }
+@@ -94,6 +103,10 @@
+         let revision = revisions[anchor, default: 0]
+         guard revision < UInt64(Int.max) else { stopped = true; runtime.stop(); return nil }
+         revisions[anchor] = revision + 1
++        if deliveryPolicy == .latestValidatedAnchorRevision {
++            guard runtime.noteAnchorRevision(sessionID: epoch.uuidString, generation: 1, anchorID: anchor.uuidString,
++                revision: Int(revision + 1), receiptUptime: time, removed: removed) else { gap(); return nil }
++        }
+         return .init(sessionID: epoch, generation: 1, revision: revision + 1, receiptUptime: time)
+     }
+     /// Call on the owning AR callback queue AFTER independent hazards. `capture` is
+@@ -103,7 +116,7 @@
+         capture: (MeshSnapshot82.Context) -> MeshSnapshot82.Capture) -> Bool {
+         let context: MeshSnapshot82.Context? = locked {
+             guard let c = admit(anchorID, receiptUptime) else { return nil }
+-            guard copies < maxCopies else { gap(); return nil }
++            guard copies < maxCopies else { anchorIssue(c, anchorID, .copyBudget); return nil }
+             copies += 1; return c
+         }
+         guard let context else { return false }
+@@ -125,9 +138,16 @@
+                 // A newer accepted update/removal subsumes this copy. Any refusal
+                 // already marked its own gap at ingress; stale completion adds none.
+                 guard revisions[anchorID] == context.revision else { return }
+-                guard let decoded else { gap(); return }
++                guard let decoded else { anchorIssue(context, anchorID, .bufferValidation); return }
+                 switch decoded {
+-                case .unknownGap: gap()
++                case .unknownGap(let loss):
++                    // Capture-provided identity and context are not trusted to
++                    // discharge or scope a different owner's delivery obligation.
++                    guard loss.anchorID == anchorID, loss.context.sessionID == context.sessionID,
++                          loss.context.generation == context.generation, loss.context.revision == context.revision,
++                          loss.context.receiptUptime == context.receiptUptime else { gap(); return }
++                    if case .invalidContext = loss.reason { gap() }
++                    else { anchorIssue(context, anchorID, .bufferValidation) }
+                 case .revision(let c, let id, let mesh):
+                     guard id == anchorID, c.sessionID == context.sessionID,
+                           c.generation == context.generation, c.revision == context.revision,
+@@ -135,8 +155,9 @@
+                           mesh.revision == context.revision,
+                           mesh.triangleIndices.allSatisfy({ $0 <= UInt32(Int32.max) }) else { gap(); return }
+                     var triangleSupport: [MeshTriangleSupport]?
++                    var sourceComplete = true
+                     if supportPolicy == .classifiedFloorOnly {
+-                        guard mesh.classifications.count == mesh.triangleIndices.count / 3 else { gap(); return }
++                        guard mesh.classifications.count == mesh.triangleIndices.count / 3 else { anchorIssue(context, anchorID, .classificationUnavailable); return }
+                         // ARMeshClassification.floor raw value is 2. Only that label
+                         // is eligible floor; all other faces still rasterize as obstacles.
+                         // No slope/height fallback and no discarded obstacle geometry.
+@@ -146,13 +167,16 @@
+                         // Install the replacement below: never retain its prior floor
+                         // merely because current classifications are absent.
+                         if !mesh.classificationDiagnostics.isEmpty ||
+-                           mesh.classifications.contains(where: { $0 == nil || $0 == 0 }) { gap() }
++                           mesh.classifications.contains(where: { $0 == nil || $0 == 0 }) {
++                            anchorIssue(context, anchorID, .classificationUnavailable)
++                            sourceComplete = deliveryPolicy == .legacyStickyGap
++                        }
+                     }
+                     // Local vertices and unmodified column-major transform: package applies ONCE.
+                     let event = MeshAnchorEvent(sessionID: epoch.uuidString, generation: 1,
+                         anchorID: id.uuidString, revision: Int(c.revision), timestamp: c.receiptUptime,
+                         vertices: mesh.localVertices.map(Double.init), triangles: mesh.triangleIndices.map(Int32.init),
+-                        columnMajorTransform: mesh.anchorTransform.map(Double.init), complete: true,
++                        columnMajorTransform: mesh.anchorTransform.map(Double.init), complete: sourceComplete,
+                         triangleSupport: triangleSupport)
+                     // Runtime itself marks a rejected offer as sticky unknown coverage.
+                     _ = runtime.offer(event)
+@@ -161,7 +185,7 @@
+     }
+     @discardableResult public func remove(anchorID: UUID, receiptUptime: Double) -> Bool {
+         locked {
+-            guard let c = admit(anchorID, receiptUptime) else { return false }
++            guard let c = admit(anchorID, receiptUptime, removed: true) else { return false }
+             return runtime.offer(.init(sessionID: epoch.uuidString, generation: 1,
+                 anchorID: anchorID.uuidString, revision: Int(c.revision), timestamp: c.receiptUptime,
+                 vertices: [], triangles: [], columnMajorTransform: [], complete: false, removed: true))
+--- a/tools/ci/collect-classified-bench.py
++++ b/tools/ci/collect-classified-bench.py
+@@ -12,12 +12,16 @@
+ 
+ SNAPSHOT_CASES = ['testSnapshotPreservesLocalValuesTransformRolesAndUnknownPhysicalAuthority', 'testStableAnchorOrderReadOnlyRevisionAndExactOwnerIdentity', 'testNoOwnerReturnsUnavailableNotSyntheticEmptyRoom', 'testWholeSnapshotBudgetsAndInvalidLimitsNeverReturnPrefixes', 'testRemovalRetiresSnapshotKeepsTombstoneAndUnknownNotFreeSpace', 'testMalformedReplacementRetainsOnlyExplicitlyIncompleteDiagnosticHistory', 'testProjectedOverflowCannotPairNewLedgerWithOldRetainedTile', 'testQueuedDeliveryRetainsReservationAndDiscardUntilPayloadReleased', 'testInvalidateAndResetRetireExactSnapshot', 'testQueuedSnapshotCannotDeliverAfterNewerUpdate', 'testOnlyOneOutstandingSnapshotAndDiscardWaitsForAdmittedWorker', 'testLateFailureGapRetiresPreviouslyCompleteSnapshotWithoutRevisionChange', 'testActualIngressAndBenchForwardOwnedGeometryAndKeepMissingClassesUnknown', 'testIngressResetRetiresSnapshotAndCannotExposePreviousEpochGeometry', 'testIngressOutstandingDecodeRefusesSnapshotWithoutCopyingAgain', 'testForeignBenchGenerationCannotRequestSnapshot']
+ 
+-def collect(source, log, command, before, after, snapshot_source):
++RECOVERY_CASES = ['test01LatestOwnedReplacementRecoversOnlyLogicalDelivery', 'test02ReplacementCannotClearAnotherAnchorsOmission', 'test03BusyCopyRequiresNewerObservationAndDoesNotInvokeRejectedCapture', 'test04PendingLatestRevisionQuarantinesOldTileAndLateCompletion', 'test05RefusedRemovalImmediatelyWithholdsAnotherRoutableFloor', 'test06MissingClassesReplaceOldFloorWithoutPromotingNonfloor', 'test07RejectedProjectedGeometryRecoversOnlyAfterValidNewerInstall', 'test08GoodReplacementCannotClearGlobalClockTrackingOrContextFailure', 'test09MetadataCapPreservesTombstonesAndCallerRecordLimit', 'test10QueuedQueryAndSnapshotCannotPublishBeforeNewerUpdate', 'test11LifecycleABAAndSameRevisionLateCommitCannotResolveFailures', 'test12AllRemovalsRemainUnknownEvenAfterSameUUIDReappears', 'test13MailboxRefusalNeedsExactNewerReplacementNotUnrelatedDrain', 'test14SnapshotBudgetsAndDeliveryDrainRemainBoundedAfterRecovery']
++
++def collect(source, log, command, before, after, snapshot_source, recovery_source):
+     expected=re.findall(r'^\s*func (test\w+)\(', source, re.M)
+     require(expected==EXPECTED_CASES and len(set(expected))==18, 'expected exact reviewed 18-fixture XCTest source')
+     snapshot_expected=re.findall(r'^\s*func (test\w+)\(', snapshot_source, re.M)
+     require(snapshot_expected==SNAPSHOT_CASES and len(set(snapshot_expected))==16, 'expected exact reviewed16 snapshot XCTest source')
+-    classes={'LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests':EXPECTED_CASES, 'LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests':SNAPSHOT_CASES}
++    recovery_expected=re.findall(r'^\s*func (test\w+)\(', recovery_source, re.M)
++    require(recovery_expected==RECOVERY_CASES and len(set(recovery_expected))==14, 'expected exact reviewed14 recovery XCTest source')
++    classes={'LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests':EXPECTED_CASES, 'LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests':SNAPSHOT_CASES, 'LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests':RECOVERY_CASES}
+     case_lines=[line for line in log.splitlines() if line.startswith('Test Case ')]
+     pattern=r"Test Case '-\[([^ ]+) (test\w+)\]' (started|passed|failed|skipped)(?:\.| \([^\n]*\)\.)"
+     observed={}
+@@ -34,11 +38,11 @@
+         match=re.fullmatch(r"Test Suite '([^']+)' (started|passed|failed) at .+\.",line)
+         require(match is not None, 'unrecognized XCTest suite record')
+         name,status=match.groups();suites.setdefault(name,[]).append(status)
+-    require(suites=={name:['started','passed'] for name in ['All tests','LiveMeshClassifiedBenchPackageTests.xctest','LiveMeshBenchIngressTests','SourceGeometrySnapshotTests']}, 'missing, extra, contradictory or failed XCTest suite')
++    require(suites=={name:['started','passed'] for name in ['All tests','LiveMeshClassifiedBenchPackageTests.xctest','LiveMeshBenchIngressTests','SourceGeometrySnapshotTests','AnchorDeliveryRecoveryTests']}, 'missing, extra, contradictory or failed XCTest suite')
+     totals=re.findall(r'Executed (\d+) tests?, with (\d+) failures? \((\d+) unexpected\)',log)
+-    require(Counter(totals)==Counter({('18','0','0'):1,('16','0','0'):1,('34','0','0'):2}), 'missing or contradictory XCTest totals')
++    require(Counter(totals)==Counter({('18','0','0'):1,('16','0','0'):1,('14','0','0'):1,('48','0','0'):2}), 'missing or contradictory XCTest totals')
+     # Bind each total to its immediately preceding passed suite; swapped counts fail.
+-    expected_totals={'All tests':34,'LiveMeshClassifiedBenchPackageTests.xctest':34,'LiveMeshBenchIngressTests':18,'SourceGeometrySnapshotTests':16}
++    expected_totals={'All tests':48,'LiveMeshClassifiedBenchPackageTests.xctest':48,'LiveMeshBenchIngressTests':18,'SourceGeometrySnapshotTests':16,'AnchorDeliveryRecoveryTests':14}
+     suite_totals={}; last_passed=None
+     for line in log.splitlines():
+         matched=re.fullmatch(r"Test Suite '([^']+)' passed at .+\.",line)
+@@ -51,9 +55,9 @@
+     require(suite_totals==expected_totals, 'missing suite-bound totals')
+     require(command.get('swift_test_exit_code')==0 and command.get('log_writer_exit_code')==0, 'command failed')
+     require(before==after=='', 'source not clean before and after test')
+-    return {'status':'passed','scope':'34 macOS synthetic XCTest fixtures, not live sensing','executed':34,'passed':34,'failed':0,'ios_session_fixtures_excluded':5,'cases':[{'class':cls,'name':n,'status':'passed'} for cls,names in classes.items() for n in names],'swift_testing_zero_suite_not_counted':True,'source_clean_before_and_after':True}
++    return {'status':'passed','scope':'48 macOS synthetic XCTest fixtures, not live sensing','executed':48,'passed':48,'failed':0,'ios_session_fixtures_excluded':5,'cases':[{'class':cls,'name':n,'status':'passed'} for cls,names in classes.items() for n in names],'swift_testing_zero_suite_not_counted':True,'source_clean_before_and_after':True}
+ 
+ if __name__=='__main__':
+     parser=argparse.ArgumentParser();parser.add_argument('source',type=Path);parser.add_argument('artifact_dir',type=Path);args=parser.parse_args();d=args.artifact_dir
+-    result=collect(args.source.read_text(),(d/'swift-test.log').read_text(),json.loads((d/'result.json').read_text()),(d/'source-before.txt').read_text(),(d/'source-after.txt').read_text(),(args.source.parent/'SourceGeometrySnapshotTests.swift').read_text())
++    result=collect(args.source.read_text(),(d/'swift-test.log').read_text(),json.loads((d/'result.json').read_text()),(d/'source-before.txt').read_text(),(d/'source-after.txt').read_text(),(args.source.parent/'SourceGeometrySnapshotTests.swift').read_text(),(args.source.parent/'AnchorDeliveryRecoveryTests.swift').read_text())
+     (d/'xctest-results.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
+--- a/tools/ci/test_collect_classified_bench.py
++++ b/tools/ci/test_collect_classified_bench.py
+@@ -1,4 +1,4 @@
+-"""Synthetic parser tests for exact reviewed34-case two-class current contract, not native execution."""
++"""Synthetic parser tests for exact reviewed48-case three-class current contract, not native execution."""
+ import importlib.util,json,unittest
+ from pathlib import Path
+ P=Path(__file__).parent
+@@ -6,20 +6,21 @@
+ ROOT=P.parents[1]
+ SOURCE=(ROOT/'research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift').read_text()
+ SNAPSHOT_SOURCE=(ROOT/'research/live-mesh-classified-bench-20261028/Tests/SourceGeometrySnapshotTests.swift').read_text()
++RECOVERY_SOURCE=(ROOT/'research/live-mesh-classified-bench-20261028/Tests/AnchorDeliveryRecoveryTests.swift').read_text()
+ CLS='LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests'
+ OUTER=['All tests','LiveMeshClassifiedBenchPackageTests.xctest']
+ lines=[f"Test Suite '{s}' started at synthetic." for s in OUTER]
+-for cls,names in [(CLS,m.EXPECTED_CASES),('LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests',m.SNAPSHOT_CASES)]:
++for cls,names in [(CLS,m.EXPECTED_CASES),('LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests',m.SNAPSHOT_CASES),('LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests',m.RECOVERY_CASES)]:
+  suite=cls.split('.')[-1];lines.append(f"Test Suite '{suite}' started at synthetic.")
+  for name in names:lines += [f"Test Case '-[{cls} {name}]' started.",f"Test Case '-[{cls} {name}]' passed (0.001 seconds)."]
+  lines += [f"Test Suite '{suite}' passed at synthetic.",f'Executed {len(names)} tests, with 0 failures (0 unexpected)']
+-for suite in reversed(OUTER):lines += [f"Test Suite '{suite}' passed at synthetic.",'Executed 34 tests, with 0 failures (0 unexpected)']
++for suite in reversed(OUTER):lines += [f"Test Suite '{suite}' passed at synthetic.",'Executed 48 tests, with 0 failures (0 unexpected)']
+ LOG='\n'.join(lines)+'\n'
+ COMMAND={'swift_test_exit_code':0,'log_writer_exit_code':0}
+ class CollectorTests(unittest.TestCase):
+- def reject(self,log=LOG,source=SOURCE,command=COMMAND,before='',after='',snapshot_source=SNAPSHOT_SOURCE):
+-  with self.assertRaises(ValueError):m.collect(source,log,command,before,after,snapshot_source)
+- def test_exact_synthetic34_passes(self):self.assertEqual(m.collect(SOURCE,LOG,COMMAND,'','',SNAPSHOT_SOURCE)['executed'],34)
++ def reject(self,log=LOG,source=SOURCE,command=COMMAND,before='',after='',snapshot_source=SNAPSHOT_SOURCE,recovery_source=RECOVERY_SOURCE):
++  with self.assertRaises(ValueError):m.collect(source,log,command,before,after,snapshot_source,recovery_source)
++ def test_exact_synthetic48_passes(self):self.assertEqual(m.collect(SOURCE,LOG,COMMAND,'','',SNAPSHOT_SOURCE,RECOVERY_SOURCE)['executed'],48)
+  def test_missing_case(self):self.reject('\n'.join(l for l in LOG.splitlines() if m.EXPECTED_CASES[0] not in l))
+  def test_failed_case(self):self.reject(LOG.replace(m.EXPECTED_CASES[0]+"]' passed",m.EXPECTED_CASES[0]+"]' failed"))
+  def test_duplicate_case(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.EXPECTED_CASES[0] in l and 'passed' in l)+'\n')
+@@ -39,8 +40,16 @@
+  def test_renamed_snapshot_source(self):self.reject(snapshot_source=SNAPSHOT_SOURCE.replace('func '+m.SNAPSHOT_CASES[0]+'(', 'func testOther('))
+  def test_snapshot_class_spoof(self):self.reject(LOG.replace('LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests','LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests'))
+  def test_skipped_snapshot_case(self):self.reject(LOG.replace(m.SNAPSHOT_CASES[0]+"]' passed",m.SNAPSHOT_CASES[0]+"]' skipped"))
+- def test_wrong_34_total(self):self.reject(LOG.replace('Executed 34 tests','Executed 33 tests'))
++ def test_wrong_48_total(self):self.reject(LOG.replace('Executed 48 tests','Executed 33 tests'))
+  def test_missing_snapshot_suite(self):self.reject('\n'.join(l for l in LOG.splitlines() if "Test Suite 'SourceGeometrySnapshotTests'" not in l))
+  def test_swapped_class_totals(self):self.reject(LOG.replace('Executed 18 tests','Executed XX tests').replace('Executed 16 tests','Executed 18 tests').replace('Executed XX tests','Executed 16 tests'))
+  def test_duplicate_snapshot_pass(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.SNAPSHOT_CASES[0] in l and 'passed' in l)+'\n')
++ def test_old34_total_rejected(self):self.reject(LOG.replace('Executed 48 tests','Executed 34 tests'))
++ def test_missing_recovery_case(self):self.reject('\n'.join(l for l in LOG.splitlines() if m.RECOVERY_CASES[0] not in l))
++ def test_renamed_recovery_source(self):self.reject(recovery_source=RECOVERY_SOURCE.replace('func '+m.RECOVERY_CASES[0]+'(', 'func testOther('))
++ def test_recovery_class_spoof(self):self.reject(LOG.replace('LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests','LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests'))
++ def test_skipped_recovery_case(self):self.reject(LOG.replace(m.RECOVERY_CASES[0]+"]' passed",m.RECOVERY_CASES[0]+"]' skipped"))
++ def test_missing_recovery_suite(self):self.reject('\n'.join(l for l in LOG.splitlines() if "Test Suite 'AnchorDeliveryRecoveryTests'" not in l))
++ def test_duplicate_recovery_pass(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.RECOVERY_CASES[0] in l and 'passed' in l)+'\n')
++ def test_swapped_recovery_totals(self):self.reject(LOG.replace('Executed 14 tests','Executed XX tests').replace('Executed 16 tests','Executed 14 tests').replace('Executed XX tests','Executed 16 tests'))
+ if __name__=='__main__':unittest.main()

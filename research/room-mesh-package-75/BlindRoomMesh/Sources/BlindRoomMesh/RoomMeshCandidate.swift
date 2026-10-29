@@ -69,6 +69,19 @@ public struct MeshCandidateRoute {
  public let endpointAdmission: MeshEndpointAdmissionReceipt?
  public let authorizesPhysicalGuidance=false, actualWorldCoverageKnown=false, rawDepthHazardImplemented=false, rawDepthHazardVeto=true
 }
+/// Opt-in delivery bookkeeping only. Legacy callers retain their sticky losses.
+public enum MeshDeliveryRecoveryPolicy: String, Sendable {
+ case legacyStickyGap, latestValidatedAnchorRevision
+}
+public enum MeshAnchorDeliveryIssue: String, Sendable {
+ case pending,copyBudget,bufferValidation,classificationUnavailable,mailboxBusy,incompleteRevision,sourceRejected,conflictingRevision,removed
+}
+/// Latest observed delivery obligation, NOT sensor capture time or physical coverage.
+public struct MeshAnchorDeliveryReceipt: Sendable {
+ public let anchorID:String,requiredRevision:Int,installedRevision:Int?,unresolvedThroughRevision:Int?,receiptUptime:Double
+ public let issue:MeshAnchorDeliveryIssue?,removed:Bool
+ public var captureUptime:Double? {nil}
+}
 /// Conservative logical retained-payload bounds (including reserved metadata),
 /// not an exact encoded size or a claim about allocator/RSS or device timing.
 public struct MeshSourceSnapshotLimits: Sendable {
@@ -82,7 +95,7 @@ public enum MeshSourceSnapshotError: Error {case invalidLimits,budget,unavailabl
 /// Ledger bookkeeping only: storedRevision is not a native mesh capture version.
 public struct MeshSourceAnchorReceipt: Sendable {
  public let anchorID:String,storedRevision:Int,receiptUptime:Double
- public let removed:Bool,hasRetainedGeometry:Bool,complete:Bool
+ public let removed:Bool,hasRetainedGeometry:Bool,includedInSnapshot:Bool,complete:Bool
  public var captureUptime:Double? {nil}
 }
 /// Original admitted anchor-local values. Apply columnMajorTransform ONCE to
@@ -100,6 +113,7 @@ public struct MeshSourceAnchorGeometry: Sendable {
 public struct MeshSourceGeometrySnapshot: Sendable {
  public let sessionID:String,generation:Int,revision:UInt64
  public let anchors:[MeshSourceAnchorGeometry],records:[MeshSourceAnchorReceipt]
+ public let deliveryRecoveryPolicy:MeshDeliveryRecoveryPolicy,anchorDelivery:[MeshAnchorDeliveryReceipt]
  public let sourceDeliveryComplete:Bool,unknownCoverage:[String],logicalPayloadBytes:Int
  public let coordinateConvention="arkit-anchor-local-column-major-to-session-world-y-up"
  public let units="metres"
@@ -132,12 +146,108 @@ public final class RoomMeshCandidateRuntime {
  private let maxPending=8, maxPendingScalars=900000
  private let supportPolicy: MeshSupportPolicy
  private let endpointPolicy: MeshEndpointPolicy
+ private let deliveryPolicy: MeshDeliveryRecoveryPolicy
+ private struct AnchorDeliveryState {
+  var required:Int,installed:Int?,blockedThrough:Int?,time:Double,issue:MeshAnchorDeliveryIssue?,removed:Bool
+ }
+ private var anchorDelivery:[String:AnchorDeliveryState]=[:]
+ private var removedCoverage=Set<String>()
+ private let maxDeliveryRecords=256
+ private struct DeliveryView {
+  let excluded:Set<String>,unknown:[String],receipts:[MeshAnchorDeliveryReceipt],complete:Bool,payloadBytes:Int
+ }
+ private func deliveryView()->DeliveryView {
+  guard deliveryPolicy == .latestValidatedAnchorRevision else {
+   return DeliveryView(excluded:[],unknown:[],receipts:[],complete:true,payloadBytes:0)
+  }
+  var excluded=Set<String>(),unknown=removedCoverage.sorted().map{"removed:"+$0}
+  var receipts=[MeshAnchorDeliveryReceipt](),bytes=0,complete=true
+  for id in anchorDelivery.keys.sorted() {
+   let state=anchorDelivery[id]!
+   if state.removed || state.installed != state.required {excluded.insert(id)}
+   if let issue=state.issue,issue != .removed {unknown.append("delivery:"+id+":"+issue.rawValue);complete=false}
+   receipts.append(.init(anchorID:id,requiredRevision:state.required,installedRevision:state.installed,unresolvedThroughRevision:state.blockedThrough,
+    receiptUptime:state.time,issue:state.issue,removed:state.removed))
+   bytes+=id.utf8.count+96
+  }
+  for value in unknown {bytes+=value.utf8.count+16}
+  return DeliveryView(excluded:excluded,unknown:unknown,receipts:receipts,complete:complete,payloadBytes:bytes)
+ }
+ /// Lock-held, bounded latest metadata only: no worker job or native object retained.
+ private func noteDelivery(anchorID:String,revision:Int,time:Double,removed:Bool)->Bool {
+  guard !anchorID.isEmpty,anchorID.utf8.count<=128,revision>0,time.isFinite,time>=0 else{gap=true;return false}
+  if let old=anchorDelivery[anchorID] {
+   guard revision>=old.required else{return false}
+   guard time>=old.time else{gap=true;return false}
+   if revision==old.required {guard time==old.time else{gap=true;return false};guard old.removed==removed else{gap=true;return false};return true}
+   guard time>old.time else{gap=true;return false}
+  } else if anchorDelivery.count>=maxDeliveryRecords {gap=true;return false}
+  let installed=anchorDelivery[anchorID]?.installed,blocked=anchorDelivery[anchorID]?.blockedThrough
+  anchorDelivery[anchorID]=AnchorDeliveryState(required:revision,installed:installed,blockedThrough:blocked,time:time,
+   issue:removed ? .removed : .pending,removed:removed)
+  if removed {removedCoverage.insert(anchorID)}
+  return true
+ }
+ /// Advance and quarantine before native copying; a valid removal warning is
+ /// immediately visible even when a later geometry-mailbox offer is refused.
+ @discardableResult public func noteAnchorRevision(sessionID:String,generation:Int,anchorID:String,
+  revision:Int,receiptUptime:Double,removed:Bool=false)->Bool {
+  locked {
+   guard deliveryPolicy == .latestValidatedAnchorRevision,!stopped,session==sessionID,self.generation==generation else{return false}
+   advance();return noteDelivery(anchorID:anchorID,revision:revision,time:receiptUptime,removed:removed)
+  }
+ }
+ public func markAnchorDeliveryIssue(sessionID:String,generation:Int,anchorID:String,revision:Int,
+  receiptUptime:Double,issue:MeshAnchorDeliveryIssue) {
+  locked {
+   guard deliveryPolicy == .latestValidatedAnchorRevision,!stopped,session==sessionID,self.generation==generation,
+    var state=anchorDelivery[anchorID],state.required==revision,state.time==receiptUptime,!state.removed else{return}
+   // Callers cannot declare removal or complete installation through this API.
+   guard issue != .removed else{gap=true;advance();return}
+   advance();state.issue=issue;if issue != .pending {state.installed=nil;state.blockedThrough=max(state.blockedThrough ?? 0,revision)};anchorDelivery[anchorID]=state
+  }
+ }
+ private func currentDelivery(_ event:MeshAnchorEvent)->Bool {
+  guard deliveryPolicy == .latestValidatedAnchorRevision else{return true}
+  guard let state=anchorDelivery[event.anchorID] else{return false}
+  return state.required==event.revision && state.time==event.timestamp && state.removed==event.removed
+ }
+ // Internal install-commit boundary, also exercised by exact stale-lifecycle
+ // fixtures. No public caller can assert successful installation through it.
+ // Install outcome is committed only for the exact still-latest source revision.
+ func finishDelivery(_ event:MeshAnchorEvent,lifecycle:UInt64,status:String,capacityLost:Bool) {
+  locked {
+   guard deliveryPolicy == .latestValidatedAnchorRevision,!stopped,self.lifecycle==lifecycle,
+    session==event.sessionID,generation==event.generation else{return}
+   // Retention/capacity loss is global even if this anchor was superseded while applying.
+   if capacityLost || status=="metadata-budget" || status=="ledger-geometry-budget" {gap=true}
+   guard currentDelivery(event),var state=anchorDelivery[event.anchorID] else{return}
+   // Admission already retired old snapshots; this serial install must not
+   // invalidate a read/query queued behind its own admitted source event.
+   switch status {
+   case "accepted":
+    // A refusal can race after queue admission; an earlier queued copy at the
+    // failed revision must not discharge it or expose its tile as active.
+    if event.complete,let blocked=state.blockedThrough,event.revision<=blocked {break}
+    state.installed=event.revision
+    if event.complete && !event.vertices.isEmpty && !event.triangles.isEmpty {state.issue=nil;state.blockedThrough=nil}
+    else {state.blockedThrough=max(state.blockedThrough ?? 0,event.revision);if state.issue != .classificationUnavailable {state.issue = .incompleteRevision}}
+   case "removed": state.installed=nil;state.issue = .removed;state.removed=true
+   case "duplicate": break // no new installation, so cannot discharge a missing revision
+   case "conflict": state.installed=nil;state.issue = .conflictingRevision;state.blockedThrough=event.revision
+   default: if !state.removed {state.installed=nil;state.issue = .sourceRejected;state.blockedThrough=event.revision}
+   }
+   anchorDelivery[event.anchorID]=state
+  }
+ }
+
  // Accessed only on worker. No native handles escape a single query.
  private var owner: Replay?
  public init(sessionID: String,generation: Int=0,supportPolicy: MeshSupportPolicy = .legacySlope,
-             endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection)throws {
+             endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
+             deliveryRecoveryPolicy:MeshDeliveryRecoveryPolicy = .legacyStickyGap)throws {
   guard !sessionID.isEmpty,sessionID.utf8.count<=128,generation>=0 else{throw MeshCandidateError.invalidInput}
-  session=sessionID;self.generation=generation;self.supportPolicy=supportPolicy;self.endpointPolicy=endpointPolicy
+  session=sessionID;self.generation=generation;self.supportPolicy=supportPolicy;self.endpointPolicy=endpointPolicy;self.deliveryPolicy=deliveryRecoveryPolicy
  }
 #if DEBUG
  /// Explicit synthetic-test opt-in. Release builds contain no receipt storage,
@@ -178,9 +288,10 @@ public final class RoomMeshCandidateRuntime {
  public private(set) var diagnosticReceiptID: UUID?
  public convenience init(sessionID: String,generation: Int=0,supportPolicy: MeshSupportPolicy = .legacySlope,
                          endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
+                         deliveryRecoveryPolicy:MeshDeliveryRecoveryPolicy = .legacyStickyGap,
                          captureSyntheticTestTiming: Bool,
                          syntheticTimingCompletion: ((UUID,[DiagnosticStageReceipt])->Void)? = nil)throws {
-  try self.init(sessionID:sessionID,generation:generation,supportPolicy:supportPolicy,endpointPolicy:endpointPolicy)
+  try self.init(sessionID:sessionID,generation:generation,supportPolicy:supportPolicy,endpointPolicy:endpointPolicy,deliveryRecoveryPolicy:deliveryRecoveryPolicy)
   // Assigned before this owner escapes; never enabled/disabled during work.
   if captureSyntheticTestTiming {
    diagnosticCompletion=syntheticTimingCompletion
@@ -272,7 +383,7 @@ public final class RoomMeshCandidateRuntime {
 #endif
    owner=nil;ownerLifecycle=nil
    let waiters=locked { ()->[()->Void] in
-    discarded=true
+    discarded=true;anchorDelivery.removeAll(keepingCapacity:false);removedCoverage.removeAll(keepingCapacity:false)
     let result=discardWaiters;discardWaiters.removeAll(keepingCapacity:false)
     return result
    }
@@ -293,6 +404,7 @@ public final class RoomMeshCandidateRuntime {
    guard !discarding else{throw MeshCandidateError.unavailable}
    guard !sessionID.isEmpty,sessionID.utf8.count<=128,generation>=0,(sessionID != session || generation>self.generation),revision<UInt64.max else{throw MeshCandidateError.invalidInput}
    advance();lifecycle=revision;session=sessionID;self.generation=generation;gap=false;stopped=false
+   anchorDelivery.removeAll(keepingCapacity:false);removedCoverage.removeAll(keepingCapacity:false)
   }
  }
  private func matches(_ s:String,_ g:Int,_ r:UInt64)->Bool {session==s && generation==g && revision==r && !stopped}
@@ -307,18 +419,34 @@ public final class RoomMeshCandidateRuntime {
   let admitted: Bool = {
    guard !stopped,event.sessionID==session,event.generation==generation else{return false}
    advance()
-   guard shapeBounded,supportValid,pending<maxPending,scalarCount<=maxPendingScalars-pendingScalars else{gap=true;return false}
+   if deliveryPolicy == .latestValidatedAnchorRevision {
+    guard noteDelivery(anchorID:event.anchorID,revision:event.revision,time:event.timestamp,removed:event.removed) else{return false}
+    guard shapeBounded,supportValid else{if !event.removed {anchorDelivery[event.anchorID]?.issue = .sourceRejected;anchorDelivery[event.anchorID]?.installed=nil;anchorDelivery[event.anchorID]?.blockedThrough=event.revision};return false}
+    // A failed delivery requires a newly observed newer revision, not replaying
+    // an old valid copy into the same obligation. Incomplete current geometry
+    // can still replace old floor while remaining explicitly unresolved.
+    if event.complete,let blocked=anchorDelivery[event.anchorID]?.blockedThrough,event.revision<=blocked{return false}
+    guard pending<maxPending,scalarCount<=maxPendingScalars-pendingScalars else{
+     if !event.removed {anchorDelivery[event.anchorID]?.issue = .mailboxBusy;anchorDelivery[event.anchorID]?.installed=nil;anchorDelivery[event.anchorID]?.blockedThrough=event.revision};return false
+    }
+   } else {
+    guard shapeBounded,supportValid,pending<maxPending,scalarCount<=maxPendingScalars-pendingScalars else{gap=true;return false}
+   }
    pending+=1;pendingScalars+=scalarCount;return true
   }()
   guard admitted else{lock.unlock();return false}
   let eventLifecycle=lifecycle
   Self.worker.async { [self] in
    defer{locked{pending-=1;pendingScalars-=scalarCount;scheduleDiscardIfDrained()}}
-   guard locked({!stopped && lifecycle==eventLifecycle && session==event.sessionID && generation==event.generation})else{return}
+   guard locked({!stopped && lifecycle==eventLifecycle && session==event.sessionID && generation==event.generation && currentDelivery(event)})else{return}
    do {
-    if ownerLifecycle != eventLifecycle || owner?.session != event.sessionID || owner?.generation != event.generation {owner=try Replay(event.sessionID,event.generation,supportPolicy:supportPolicy);ownerLifecycle=eventLifecycle}
-    _ = try owner!.apply(event.packet)
-   } catch {recordOfferFailure(sessionID:event.sessionID,generation:event.generation,lifecycle:eventLifecycle)}
+    if ownerLifecycle != eventLifecycle || owner?.session != event.sessionID || owner?.generation != event.generation {owner=try Replay(event.sessionID,event.generation,supportPolicy:supportPolicy,deliveryPolicy:deliveryPolicy);ownerLifecycle=eventLifecycle}
+    let status = try owner!.apply(event.packet)
+    finishDelivery(event,lifecycle:eventLifecycle,status:status,capacityLost:owner!.unknown.contains(where:{$0.hasPrefix("evicted:")}))
+   } catch {
+    if deliveryPolicy == .latestValidatedAnchorRevision {finishDelivery(event,lifecycle:eventLifecycle,status:"invalid-input",capacityLost:false)}
+    else{recordOfferFailure(sessionID:event.sessionID,generation:event.generation,lifecycle:eventLifecycle)}
+   }
   }
   lock.unlock()
   return true
@@ -330,6 +458,7 @@ public final class RoomMeshCandidateRuntime {
  func recordOfferFailure(sessionID:String,generation:Int,lifecycle:UInt64) {
   locked {
    guard !stopped,self.lifecycle==lifecycle,session==sessionID,self.generation==generation else{return}
+   if deliveryPolicy == .latestValidatedAnchorRevision {advance()}
    gap=true
   }
  }
@@ -378,13 +507,19 @@ public final class RoomMeshCandidateRuntime {
    guard locked({matches(s,g,r) && lifecycle==cycle}) else{finish(.failure(.stale));return}
    guard let owner=owner,ownerLifecycle==cycle,owner.session==s,owner.generation==g else{finish(.failure(.unavailable));return}
    do {
-    let (anchors,records,payloadBytes)=try owner.sourceSnapshotData(limits:limits)
+    let view=locked{deliveryView()}
+    // Caller record limits cover the UNION of retained and latest-observed IDs,
+    // including metadata-only obligations that have never entered Replay.ledger.
+    guard Set(owner.ledger.keys).union(view.receipts.map{ $0.anchorID }).count<=limits.records else{finish(.failure(.budget));return}
+    let excluded=locked{deliveryPolicy == .latestValidatedAnchorRevision && gap} ? Set(owner.tiles.keys) : view.excluded
+    let (anchors,records,payloadBytes)=try owner.sourceSnapshotData(limits:limits,excluding:excluded,additionalPayloadBytes:view.payloadBytes)
     let state=locked{(matches(s,g,r) && lifecycle==cycle,gap)}
     guard state.0 else{finish(.failure(.stale));return}
-    var unknown=owner.unknown.sorted();if state.1{unknown.append("ingress-or-lifecycle-gap")}
+    var unknown=Array(owner.unknown.union(view.unknown)).sorted();if state.1{unknown.append("ingress-or-lifecycle-gap")}
     // sourceSnapshotData reserves the optional gap label in its logical budget.
     let snapshot=MeshSourceGeometrySnapshot(sessionID:s,generation:g,revision:r,
-     anchors:anchors,records:records,sourceDeliveryComplete:owner.sourceComplete && !state.1,
+     anchors:anchors,records:records,deliveryRecoveryPolicy:deliveryPolicy,anchorDelivery:view.receipts,
+     sourceDeliveryComplete:owner.sourceComplete && view.complete && !state.1,
      unknownCoverage:unknown,logicalPayloadBytes:payloadBytes,
      ownerID:snapshotOwnerID,lifecycle:cycle,ingressHadGap:state.1)
     finish(.success(snapshot))
@@ -436,11 +571,13 @@ public final class RoomMeshCandidateRuntime {
 #endif
     finish(.failure(.stale));return}
    do {
-    let(v,t)=owner.geometry()
+    let view=locked{deliveryView()}
+    let excluded=locked{deliveryPolicy == .latestValidatedAnchorRevision && gap} ? Set(owner.tiles.keys) : view.excluded
+    let(v,t)=owner.geometry(excluding:excluded)
 #if DEBUG
     recordDiagnosticStage(.nativeBuildBegin,workerCPU:true)
 #endif
-    let native=try Native(v,t,radius:body.radius,height:body.height,triangleSupport:owner.geometrySupport())
+    let native=try Native(v,t,radius:body.radius,height:body.height,triangleSupport:owner.geometrySupport(excluding:excluded))
 #if DEBUG
     recordDiagnosticStage(.nativeBuildEnd,workerCPU:true)
     recordDiagnosticStage(.routeBegin,workerCPU:true)
@@ -455,8 +592,8 @@ public final class RoomMeshCandidateRuntime {
     recordDiagnosticStage(.requestRetired,workerCPU:true)
 #endif
     finish(.failure(.stale));return}
-    var unknown=owner.unknown.sorted();if state.1{unknown.append("ingress-or-lifecycle-gap")}
-    finish(.success(MeshCandidateRoute(sessionID:s,generation:g,revision:r,points:path.points,projectedStart:path.projected_start,projectedGoal:path.projected_goal,complete:path.complete,nativeStatus:path.status,sourceDeliveryComplete:owner.sourceComplete && !state.1,unknownCoverage:unknown,endpointPolicy:endpointPolicy,endpointAdmission:path.endpointAdmission)))
+    var unknown=Array(owner.unknown.union(view.unknown)).sorted();if state.1{unknown.append("ingress-or-lifecycle-gap")}
+    finish(.success(MeshCandidateRoute(sessionID:s,generation:g,revision:r,points:path.points,projectedStart:path.projected_start,projectedGoal:path.projected_goal,complete:path.complete,nativeStatus:path.status,sourceDeliveryComplete:owner.sourceComplete && view.complete && !state.1,unknownCoverage:unknown,endpointPolicy:endpointPolicy,endpointAdmission:path.endpointAdmission)))
    } catch MeshCandidateError.endpointAssociationRejected(let receipt) {
 #if DEBUG
     recordDiagnosticStage(.nativeFailure,workerCPU:true)

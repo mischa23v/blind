@@ -95,8 +95,8 @@
     },
     {
       "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
-      "bytes": 15532,
-      "sha256": "0fd937d63360a77a8e104d1b4e86b93bd49ca118ac5338853bede92bf9091510"
+      "bytes": 17752,
+      "sha256": "aae94159580ad7377c90ceae7b57833b74f60ddf632fc9961dd667cc6453838d"
     },
     {
       "path": "research/mesh-candidate-ingress-83/apple/ci.py",
@@ -145,8 +145,8 @@
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift",
-      "bytes": 13941,
-      "sha256": "be7c71e36a0e550958df505cea900a87ace05b9f3f7728f944bd1a78d1aad68d"
+      "bytes": 14617,
+      "sha256": "08baab68f4a3ecd01b8450a52f69ffe3ed192d0d4e8a9b7aaa5b97095b806681"
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Exclusion.swift",
@@ -155,8 +155,8 @@
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
-      "bytes": 25057,
-      "sha256": "92c17791144f079914ef87a4a0115e89d59449d8d3ec9aa50cebda3e02d9b27d"
+      "bytes": 34949,
+      "sha256": "7a23c224846a9fd8b31a26f1048b457ae66b606d5e37d504f8538cf6afcdd57e"
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp",
@@ -420,8 +420,13 @@
     },
     {
       "path": "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift",
-      "bytes": 6160,
-      "sha256": "ceb631ee375e4c01111a7bf3a721684a43eece6d8542d8db6e23867f6be2f32b"
+      "bytes": 6295,
+      "sha256": "fbc76b115b10f5e033a90a05e9d064717885d8fc5501d9cfa3758448d425b1b3"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Tests/AnchorDeliveryRecoveryTests.swift",
+      "bytes": 23931,
+      "sha256": "00f690bf3e22c29273533b1ed7a44c547f8c9688467cbd55cc6f2b114ec4c15b"
     }
   ],
   "changes": [
@@ -493,6 +498,35 @@
     "new_files": [
       "research/live-mesh-classified-bench-20261028/Tests/SourceGeometrySnapshotTests.swift",
       "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift"
+    ],
+    "nativeTestsExecuted": false
+  },
+  "anchor_delivery_recovery_layer": {
+    "base_manifest_sha256": "ecbb0c9f3daa42db6a7ad1eae4dd10aad22fcd3da970ce85acff63786c599c1e",
+    "changes": [
+      {
+        "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
+        "before": "0fd937d63360a77a8e104d1b4e86b93bd49ca118ac5338853bede92bf9091510",
+        "after": "aae94159580ad7377c90ceae7b57833b74f60ddf632fc9961dd667cc6453838d"
+      },
+      {
+        "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift",
+        "before": "be7c71e36a0e550958df505cea900a87ace05b9f3f7728f944bd1a78d1aad68d",
+        "after": "08baab68f4a3ecd01b8450a52f69ffe3ed192d0d4e8a9b7aaa5b97095b806681"
+      },
+      {
+        "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+        "before": "92c17791144f079914ef87a4a0115e89d59449d8d3ec9aa50cebda3e02d9b27d",
+        "after": "7a23c224846a9fd8b31a26f1048b457ae66b606d5e37d504f8538cf6afcdd57e"
+      },
+      {
+        "path": "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift",
+        "before": "ceb631ee375e4c01111a7bf3a721684a43eece6d8542d8db6e23867f6be2f32b",
+        "after": "fbc76b115b10f5e033a90a05e9d064717885d8fc5501d9cfa3758448d425b1b3"
+      }
+    ],
+    "new_files": [
+      "research/live-mesh-classified-bench-20261028/Tests/AnchorDeliveryRecoveryTests.swift"
     ],
     "nativeTestsExecuted": false
   }

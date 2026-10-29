@@ -14,10 +14,11 @@ final class Replay {
  var tiles:[String:Tile]=[:]; var ledger:[String:Packet]=[:]; var unknown=Set<String>()
  let maxTiles:Int,maxVertices:Int,maxTriangles:Int,maxRecords:Int
  let supportPolicy:MeshSupportPolicy
- init(_ session:String,_ generation:Int=0,maxTiles:Int=64,maxVertices:Int=200000,maxTriangles:Int=100000,maxRecords:Int=256,supportPolicy:MeshSupportPolicy = .legacySlope)throws {
+ let deliveryPolicy:MeshDeliveryRecoveryPolicy
+ init(_ session:String,_ generation:Int=0,maxTiles:Int=64,maxVertices:Int=200000,maxTriangles:Int=100000,maxRecords:Int=256,supportPolicy:MeshSupportPolicy = .legacySlope,deliveryPolicy:MeshDeliveryRecoveryPolicy = .legacyStickyGap)throws {
   guard !session.isEmpty,session.utf8.count<=128,generation>=0,maxTiles>0,maxTiles<=64,maxVertices>0,maxVertices<=200000,maxTriangles>0,maxTriangles<=100000,maxRecords>0,maxRecords<=256 else {throw Failure.invalid("limits")}
   self.session=session;self.generation=generation;self.maxTiles=maxTiles;self.maxVertices=maxVertices;self.maxTriangles=maxTriangles;self.maxRecords=maxRecords
-  self.supportPolicy=supportPolicy
+  self.supportPolicy=supportPolicy;self.deliveryPolicy=deliveryPolicy
  }
  func reset(_ s:String,_ g:Int)throws {
   guard !s.isEmpty,s.utf8.count<=128,g>=0,(s != session || g>generation) else {throw Failure.invalid("reset")}
@@ -28,7 +29,7 @@ final class Replay {
  var sourceComplete:Bool {!tiles.isEmpty && unknown.isEmpty && tiles.values.allSatisfy{!$0.vertices.isEmpty && !$0.triangles.isEmpty}}
  func apply(_ p:Packet)throws ->String {
   if p.session != session || p.generation != generation {return "wrong-session"}
-  do {return try accept(p)} catch {unknown.insert("invalid-input");epoch+=1;throw error}
+  do {return try accept(p)} catch {if deliveryPolicy == .legacyStickyGap {unknown.insert("invalid-input")};epoch+=1;throw error}
  }
  private func accept(_ p:Packet)throws ->String {
   guard !p.anchor.isEmpty,p.anchor.utf8.count<=128,p.revision>=0,p.timestamp.isFinite,p.timestamp>=0 else {throw Failure.invalid("metadata")}
@@ -49,7 +50,7 @@ final class Replay {
    if p.revision<old.revision || p.timestamp<old.timestamp {return "stale"}
    if p.revision==old.revision {
     if p==old{return "duplicate"}
-    tiles.removeValue(forKey:p.anchor);unknown.insert("conflict:"+p.anchor);epoch+=1;return "conflict"
+    tiles.removeValue(forKey:p.anchor);if deliveryPolicy == .legacyStickyGap {unknown.insert("conflict:"+p.anchor)};epoch+=1;return "conflict"
    }
    guard p.timestamp>old.timestamp else {throw Failure.invalid("timestamp")}
   }
@@ -61,38 +62,39 @@ final class Replay {
   for i in stride(from:0,to:p.vertices.count,by:3){for r in 0..<3 {let j=r*4;world.append(p.transform[j]*p.vertices[i]+p.transform[j+1]*p.vertices[i+1]+p.transform[j+2]*p.vertices[i+2]+p.transform[j+3])}}
   guard world.allSatisfy({$0.isFinite && Float($0).isFinite}) else {throw Failure.invalid("projected geometry")}
   tiles[p.anchor]=Tile(vertices:world,triangles:p.triangles,triangleSupport:p.triangleSupport)
-  if p.vertices.isEmpty || p.triangles.isEmpty{unknown.insert("empty:"+p.anchor)}
-  if !p.complete{unknown.insert("truncated:"+p.anchor)}
+  if deliveryPolicy == .legacyStickyGap && (p.vertices.isEmpty || p.triangles.isEmpty){unknown.insert("empty:"+p.anchor)}
+  if deliveryPolicy == .legacyStickyGap && !p.complete{unknown.insert("truncated:"+p.anchor)}
   while tiles.count>maxTiles || tiles.values.reduce(0,{$0+$1.vertices.count/3})>maxVertices || tiles.values.reduce(0,{$0+$1.triangles.count/3})>maxTriangles {
    let key=tiles.keys.sorted().first!;tiles.removeValue(forKey:key);unknown.insert("evicted:"+key)
   }
   return "accepted"
  }
- func geometry()->([Double],[Int32]) {
+ func geometry(excluding:Set<String>=[])->([Double],[Int32]) {
   var v=[Double](),f=[Int32]()
-  for key in tiles.keys.sorted(){let t=tiles[key]!;let n=Int32(v.count/3);v.append(contentsOf:t.vertices);f.append(contentsOf:t.triangles.map{$0+n})}
+  for key in tiles.keys.sorted() where !excluding.contains(key){let t=tiles[key]!;let n=Int32(v.count/3);v.append(contentsOf:t.vertices);f.append(contentsOf:t.triangles.map{$0+n})}
   return(v,f)
  }
  /// Same stable tile order as geometry(); no fallback for missing classifications.
- func geometrySupport()throws->[MeshTriangleSupport]? {
+ func geometrySupport(excluding:Set<String>=[])throws->[MeshTriangleSupport]? {
   guard supportPolicy == .classifiedFloorOnly else{return nil}
   var result=[MeshTriangleSupport]()
-  for key in tiles.keys.sorted(){let t=tiles[key]!;guard let support=t.triangleSupport,support.count==t.triangles.count/3 else{throw Failure.invalid("missing triangle support")};result.append(contentsOf:support)}
+  for key in tiles.keys.sorted() where !excluding.contains(key){let t=tiles[key]!;guard let support=t.triangleSupport,support.count==t.triangles.count/3 else{throw Failure.invalid("missing triangle support")};result.append(contentsOf:support)}
   return result
  }
  /// Read the same admitted ledger/tiles as geometry(), without a second mapper.
  /// Preflight ALL counts/bytes before constructing any output geometry arrays.
  /// Failed/rejected replacements may leave old tiles: unknown/sourceComplete
  /// must travel with this diagnostic payload and never imply current clearance.
- func sourceSnapshotData(limits:MeshSourceSnapshotLimits)throws->([MeshSourceAnchorGeometry],[MeshSourceAnchorReceipt],Int) {
+ func sourceSnapshotData(limits:MeshSourceSnapshotLimits,excluding:Set<String>=[],additionalPayloadBytes:Int=0)throws->([MeshSourceAnchorGeometry],[MeshSourceAnchorReceipt],Int) {
   guard limits.valid else{throw MeshSourceSnapshotError.invalidLimits}
-  guard tiles.count<=limits.anchors,ledger.count<=limits.records else{throw MeshSourceSnapshotError.budget}
-  var bytes=1024,vertices=0,triangles=0 // reserves bounded headers/session/frame/unit IDs and the optional ingress-gap label
+  let selected=tiles.keys.filter{!excluding.contains($0)}.sorted()
+  guard selected.count<=limits.anchors,ledger.count<=limits.records,additionalPayloadBytes>=0,additionalPayloadBytes<=limits.payloadBytes else{throw MeshSourceSnapshotError.budget}
+  var bytes=1024+additionalPayloadBytes,vertices=0,triangles=0 // reserves bounded headers/session/frame/unit IDs and the optional ingress-gap label
   func add(_ a:Int,_ b:Int)throws->Int {let(n,o)=a.addingReportingOverflow(b);guard !o else{throw MeshSourceSnapshotError.budget};return n}
   func mul(_ a:Int,_ b:Int)throws->Int {let(n,o)=a.multipliedReportingOverflow(by:b);guard !o else{throw MeshSourceSnapshotError.budget};return n}
   for (id,p) in ledger {bytes=try add(bytes,add(id.utf8.count,64));guard p.anchor==id else{throw MeshSourceSnapshotError.invalidRetainedState}}
   for label in unknown {bytes=try add(bytes,add(label.utf8.count,16))}
-  for id in tiles.keys {
+  for id in selected {
    guard let p=ledger[id],let tile=tiles[id],!p.removed,p.vertices.count==tile.vertices.count,
     p.triangles==tile.triangles,p.triangleSupport==tile.triangleSupport,p.transform.count==16 else{throw MeshSourceSnapshotError.invalidRetainedState}
    vertices=try add(vertices,p.vertices.count/3);triangles=try add(triangles,p.triangles.count/3)
@@ -104,7 +106,7 @@ final class Replay {
   // Never pair that newer packet with an older tile just because counts match.
   // Verify the exact transform-once world values against the retained tile;
   // reject the WHOLE snapshot on divergence without changing route/mutation policy.
-  for id in tiles.keys {
+  for id in selected {
    let p=ledger[id]!,tile=tiles[id]!
    for i in stride(from:0,to:p.vertices.count,by:3) {for r in 0..<3 {
     let j=r*4
@@ -115,9 +117,9 @@ final class Replay {
   let records=ledger.keys.sorted().map {id -> MeshSourceAnchorReceipt in
    let p=ledger[id]!
    return MeshSourceAnchorReceipt(anchorID:id,storedRevision:p.revision,receiptUptime:p.timestamp,
-    removed:p.removed,hasRetainedGeometry:tiles[id] != nil,complete:p.complete)
+    removed:p.removed,hasRetainedGeometry:tiles[id] != nil,includedInSnapshot:tiles[id] != nil && !excluding.contains(id),complete:p.complete)
   }
-  let anchors=tiles.keys.sorted().map {id -> MeshSourceAnchorGeometry in
+  let anchors=selected.map {id -> MeshSourceAnchorGeometry in
    let p=ledger[id]!
    // Packet stores rows; transpose back to the unchanged source column layout.
    let columns=(0..<16).map{p.transform[($0%4)*4+$0/4]}

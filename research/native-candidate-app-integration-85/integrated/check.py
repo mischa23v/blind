@@ -24,6 +24,10 @@ with tempfile.TemporaryDirectory(prefix='stage85-snapshot-') as temp:
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(R / name, target)
+    subprocess.run(['git', 'apply', '-R', str(H / 'anchor-delivery-recovery-layer.patch')], cwd=root,
+                   check=True, timeout=15, capture_output=True)
+    for name, digest in manifest['beforeAnchorDeliveryRecovery'].items():
+        check('exact pre-anchor-delivery-recovery source recovered ' + name, hashlib.sha256((root / name).read_bytes()).hexdigest() == digest)
     subprocess.run(['git', 'apply', '-R', str(H / 'immutable-snapshot-layer.patch')], cwd=root,
                    check=True, timeout=15, capture_output=True)
     for name, digest in manifest['beforeImmutableSnapshot'].items():
@@ -37,6 +41,10 @@ with tempfile.TemporaryDirectory(prefix='stage85-ci-helper-') as temp:
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(R / name, target)
+    subprocess.run(['git', 'apply', '-R', str(H / 'model-authority-core-identity-helper.patch')], cwd=root,
+                   check=True, timeout=15, capture_output=True)
+    for name, digest in manifest['beforeModelAuthorityCoreIdentityHelper'].items():
+        check('exact pre-model-authority-core-identity helper recovered ' + name, hashlib.sha256((root / name).read_bytes()).hexdigest() == digest)
     subprocess.run(['git', 'apply', '-R', str(H / 'worker-cpu-ci-helper.patch')], cwd=root,
                    check=True, timeout=15, capture_output=True)
     for name, digest in manifest['beforeWorkerCPUHelper'].items():

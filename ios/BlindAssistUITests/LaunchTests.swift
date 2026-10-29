@@ -18,6 +18,12 @@ final class LaunchTests: XCTestCase {
         continueAfterFailure = false
         app = XCUIApplication(); app.launchArguments = ["--ui-testing", "-AppleLanguages", "(en)", "-AppleLocale", "en_US",
             "-background-conversation", "NO", "-camera-awareness", "NO"]
+        // Observe only the existing full audit and dedicated endpoint probes.
+        // No category override, new launch, wait, or audit filtering.
+        if ["testAccessibilityAuditOfCameraAndAsk", "testPracticeLayoutAtDefaultSize",
+            "testPracticeLayoutAtLargestAccessibilitySize"].contains(where: { name.contains($0) }) {
+            app.launchArguments.append("--ask-layout-trace")
+        }
         app.launch()
     }
     private func openTab(_ name: String) {
@@ -338,6 +344,7 @@ final class LaunchTests: XCTestCase {
             ("practice-header", app.staticTexts.matching(NSPredicate(format: "label == %@", "Practice")).firstMatch),
             ("practice-footer", app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Practice pauses live sensors and ends by itself after two minutes.")).firstMatch),
             ("local-answer", app.buttons["local-answer"]),
+            ("local-answer-unavailable-reason", app.staticTexts["local-answer-unavailable-reason"]),
             ("voice-question", app.buttons["voice-question"])
         ]
         for (role, element) in controls {

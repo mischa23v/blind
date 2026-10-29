@@ -118,15 +118,19 @@ private actor ConnectedBenchIO: ConnectedJourneyRuntimeIO {
         try supply(router, runtime: runtime, installation: installation, arSession: arSession, mount: mount, x: 1, time: 10.1)
         let ticket = try runtime.next(now: 10.1)
         XCTAssertNotNil(ticket.route.directionalCue())
+        let message = try XCTUnwrap(SpatialRouteSpeech(ticket: ticket.route, arabic: false))
         let sink = SpatialRouteOutputController()
         var hazard: Hazard = .observing
         var fakeSpeech = [UUID](), fakeBeacon = [UUID](), stopped = [UUID]()
+        var fakeSpeechText = [String]()
         sink.permits = { candidate, _ in hazard == .observing && runtime.permits(candidate, now: 10.1) }
         sink.stopSpeech = { stopped.append($0) }; sink.stopBeacon = { _ in }
         runtime.onOutputRetired = { sink.retire() }
-        XCTAssertTrue(sink.deliver(ticket: ticket.route, goalRevision: ticket.route.goalRevision.uuidString,
-            speech: { fakeSpeech.append($0); return true }, beacon: { fakeBeacon.append($0); return true }))
+        XCTAssertTrue(sink.deliver(message: message, goalRevision: ticket.route.goalRevision.uuidString,
+            speech: { id, text in fakeSpeech.append(id); fakeSpeechText.append(text); return true }, beacon: { fakeBeacon.append($0); return true }))
         XCTAssertEqual(fakeSpeech.count, 1); XCTAssertEqual(fakeBeacon.count, 1)
+        XCTAssertEqual(fakeSpeechText, [message.text])
+        XCTAssertEqual(fakeSpeech, fakeBeacon)
         var detector = HazardDetector()
         hazard = detector.process(.init(timestamp: 10.1, camera: .init(1,1.3,3),
             forward: .init(1,0,0), samples: [], trackingNormal: false)).hazard
@@ -134,8 +138,10 @@ private actor ConnectedBenchIO: ConnectedJourneyRuntimeIO {
         sink.revalidate()
         XCTAssertNil(sink.active); XCTAssertEqual(stopped.count, 1)
         hazard = .observing
-        XCTAssertTrue(sink.deliver(ticket: ticket.route, goalRevision: ticket.route.goalRevision.uuidString,
-            speech: { fakeSpeech.append($0); return true }, beacon: { fakeBeacon.append($0); return true }))
+        XCTAssertTrue(sink.deliver(message: message, goalRevision: ticket.route.goalRevision.uuidString,
+            speech: { id, text in fakeSpeech.append(id); fakeSpeechText.append(text); return true }, beacon: { fakeBeacon.append($0); return true }))
+        XCTAssertEqual(fakeSpeechText, [message.text, message.text])
+        XCTAssertEqual(fakeSpeech, fakeBeacon)
         router.invalidate(.trackingUnavailable)
         XCTAssertNil(sink.active)
         XCTAssertFalse(runtime.permits(ticket.route, now: 10.1))

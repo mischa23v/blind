@@ -3,6 +3,55 @@ import UniformTypeIdentifiers
 import MapKit
 import BlindCore
 
+#if DEBUG
+/// Synthetic UI diagnostics only. Never adds an accessibility element or changes fonts.
+@MainActor
+private enum AskLayoutTrace {
+    static let enabled = ProcessInfo.processInfo.arguments.contains("--ui-testing") &&
+        ProcessInfo.processInfo.arguments.contains("--ask-layout-trace")
+    private static var count = 0
+    static func record(_ event: String, role: String, category: DynamicTypeSize, frame: CGRect) {
+        guard enabled, count < 64 else { return }
+        count += 1
+        print("ASK_LAYOUT_TRACE schema=1 sequence=\(count) uptime=\(ProcessInfo.processInfo.systemUptime) event=\(event) role=\(role) category=\(category) frame=\(frame) provenance=app_callback_not_audit_failure_state")
+        if count == 64 { print("ASK_LAYOUT_TRACE truncated=true limit=64") }
+    }
+}
+
+@MainActor
+private struct AskLayoutTraceBackground: View {
+    @Environment(\.dynamicTypeSize) private var category
+    let role: String
+    var body: some View {
+        GeometryReader { proxy in
+            let frame = proxy.frame(in: .global)
+            Color.clear
+                .onAppear { AskLayoutTrace.record("appear", role: role, category: category, frame: frame) }
+                .onDisappear { AskLayoutTrace.record("disappear", role: role, category: category, frame: frame) }
+                .onChange(of: category) { value in
+                    AskLayoutTrace.record("category", role: role, category: value, frame: frame)
+                }
+                .onChange(of: frame) { value in
+                    AskLayoutTrace.record("geometry", role: role, category: category, frame: value)
+                }
+        }
+        .accessibilityHidden(true)
+        .allowsHitTesting(false)
+    }
+}
+
+private extension View {
+    @MainActor @ViewBuilder
+    func askLayoutTrace(_ role: String) -> some View {
+        if AskLayoutTrace.enabled {
+            self.background(AskLayoutTraceBackground(role: role))
+        } else {
+            self
+        }
+    }
+}
+#endif
+
 struct DashboardView: View {
     @ObservedObject var model: NavigationModel
     var body: some View { AssistantToolsView(model: model, initialTab: "companion") }
@@ -501,6 +550,9 @@ struct AssistantToolsView: View {
                         .foregroundStyle(.primary)
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityIdentifier("local-answer-unavailable-reason")
+                        #if DEBUG
+                        .askLayoutTrace("reason")
+                        #endif
                 }
                 Button(model.voice.listening ? t("Finish question", "إنهاء السؤال") : t("Talk", "تحدث")) {
                     if model.voice.listening { model.voice.finish() } else { model.startVoiceQuestion() }
@@ -554,6 +606,9 @@ struct AssistantToolsView: View {
                 Text(t("Answers cover what the camera sees now. For directions, use Routes.", "الإجابات عما تراه الكاميرا الآن. للاتجاهات استخدم المسارات."))
             }
         }
+        #if DEBUG
+        .askLayoutTrace("ask-form")
+        #endif
         .navigationTitle(t("Ask and goals", "الأسئلة والأهداف"))
         .confirmationDialog(t("Clear the goal and recent conversation?", "مسح الهدف والمحادثة الأخيرة؟"), isPresented: $confirmClearConversation, titleVisibility: .visible) {
             Button(t("Clear", "امسح"), role: .destructive) { model.clearAssistantConversation() }

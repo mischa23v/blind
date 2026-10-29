@@ -28,14 +28,15 @@ public final class LiveMeshBenchIngress {
     public let phoneMonitoringAvailable = false
     public let authorizesPhysicalGuidance = false
 
-    public init(decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh-bench.decode", qos: .utility)) throws {
+    public init(deliveryRecoveryPolicy: MeshDeliveryRecoveryPolicy = .legacyStickyGap,
+                decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh-bench.decode", qos: .utility)) throws {
         // Source floor semantics only. Nonfloor/unknown faces remain geometry;
         // this does not certify support or convert an omitted revision to free space.
         // New bench queries require supplied XZ membership, not silent horizontal
         // projection. This still does not prove source/body/support clearance.
         ingress = try MeshCandidateIngress83(maxAnchors: 128, maxCopies: 1,
             supportPolicy: .classifiedFloorOnly,
-            endpointPolicy: .requireSuppliedXZOverPolygon, decodeQueue: decodeQueue)
+            endpointPolicy: .requireSuppliedXZOverPolygon, deliveryRecoveryPolicy: deliveryRecoveryPolicy, decodeQueue: decodeQueue)
     }
     private func active(_ generation: UUID) -> Bool {
         lock.lock(); defer { lock.unlock() }

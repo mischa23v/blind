@@ -24,6 +24,7 @@ public final class MeshCandidateIngress83 {
     private let worker: DispatchQueue
     private let runtime: RoomMeshCandidateRuntime
     private let supportPolicy: MeshSupportPolicy
+    private let deliveryPolicy: MeshDeliveryRecoveryPolicy
     private let maxAnchors: Int, maxCopies: Int
     private var epoch: UUID
     private var token: UInt64 = 0
@@ -46,13 +47,14 @@ public final class MeshCandidateIngress83 {
     public init(maxAnchors: Int = 128, maxCopies: Int = 1,
                 supportPolicy: MeshSupportPolicy = .legacySlope,
                 endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
+                deliveryRecoveryPolicy: MeshDeliveryRecoveryPolicy = .legacyStickyGap,
                 decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh83.decode", qos: .utility)) throws {
         guard (1...1024).contains(maxAnchors), (1...2).contains(maxCopies) else { throw Failure.unavailable }
         self.maxAnchors = maxAnchors; self.maxCopies = maxCopies; worker = decodeQueue
-        self.supportPolicy = supportPolicy
+        self.supportPolicy = supportPolicy; self.deliveryPolicy = deliveryRecoveryPolicy
         let initialEpoch = UUID(); epoch = initialEpoch
         runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1,
-                                               supportPolicy: supportPolicy, endpointPolicy: endpointPolicy)
+                                               supportPolicy: supportPolicy, endpointPolicy: endpointPolicy, deliveryRecoveryPolicy: deliveryRecoveryPolicy)
     }
 #if DEBUG
     /// Explicit synthetic-test timing only; the ordinary initializer and release
@@ -60,15 +62,16 @@ public final class MeshCandidateIngress83 {
     public init(maxAnchors: Int = 128, maxCopies: Int = 1,
                 supportPolicy: MeshSupportPolicy = .legacySlope,
                 endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
+                deliveryRecoveryPolicy: MeshDeliveryRecoveryPolicy = .legacyStickyGap,
                 captureSyntheticTestTiming: Bool,
                 syntheticTimingCompletion: ((UUID,[RoomMeshCandidateRuntime.DiagnosticStageReceipt])->Void)? = nil,
                 decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh83.decode", qos: .utility)) throws {
         guard (1...1024).contains(maxAnchors), (1...2).contains(maxCopies) else { throw Failure.unavailable }
         self.maxAnchors = maxAnchors; self.maxCopies = maxCopies; worker = decodeQueue
-        self.supportPolicy = supportPolicy
+        self.supportPolicy = supportPolicy; self.deliveryPolicy = deliveryRecoveryPolicy
         let initialEpoch = UUID(); epoch = initialEpoch
         runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1,
-            supportPolicy: supportPolicy, endpointPolicy: endpointPolicy,
+            supportPolicy: supportPolicy, endpointPolicy: endpointPolicy, deliveryRecoveryPolicy: deliveryRecoveryPolicy,
             captureSyntheticTestTiming: captureSyntheticTestTiming,
             syntheticTimingCompletion: syntheticTimingCompletion)
     }
@@ -85,7 +88,13 @@ public final class MeshCandidateIngress83 {
         token += 1; return true
     }
     private func gap() { runtime.invalidate() } // ONLY loss/failure, never ordinary updates.
-    private func admit(_ anchor: UUID, _ time: Double) -> MeshSnapshot82.Context? {
+    private func anchorIssue(_ context: MeshSnapshot82.Context, _ anchor: UUID, _ issue: MeshAnchorDeliveryIssue) {
+        if deliveryPolicy == .latestValidatedAnchorRevision {
+            runtime.markAnchorDeliveryIssue(sessionID: context.sessionID.uuidString, generation: Int(context.generation),
+                anchorID: anchor.uuidString, revision: Int(context.revision), receiptUptime: context.receiptUptime, issue: issue)
+        } else { gap() }
+    }
+    private func admit(_ anchor: UUID, _ time: Double, removed: Bool = false) -> MeshSnapshot82.Context? {
         // Even malformed/newer/overflow callbacks retire the outer result immediately.
         guard advance(), !stopped else { return nil }
         guard time.isFinite, time >= 0, time > receipt else { gap(); return nil }
@@ -94,6 +103,10 @@ public final class MeshCandidateIngress83 {
         let revision = revisions[anchor, default: 0]
         guard revision < UInt64(Int.max) else { stopped = true; runtime.stop(); return nil }
         revisions[anchor] = revision + 1
+        if deliveryPolicy == .latestValidatedAnchorRevision {
+            guard runtime.noteAnchorRevision(sessionID: epoch.uuidString, generation: 1, anchorID: anchor.uuidString,
+                revision: Int(revision + 1), receiptUptime: time, removed: removed) else { gap(); return nil }
+        }
         return .init(sessionID: epoch, generation: 1, revision: revision + 1, receiptUptime: time)
     }
     /// Call on the owning AR callback queue AFTER independent hazards. `capture` is
@@ -103,7 +116,7 @@ public final class MeshCandidateIngress83 {
         capture: (MeshSnapshot82.Context) -> MeshSnapshot82.Capture) -> Bool {
         let context: MeshSnapshot82.Context? = locked {
             guard let c = admit(anchorID, receiptUptime) else { return nil }
-            guard copies < maxCopies else { gap(); return nil }
+            guard copies < maxCopies else { anchorIssue(c, anchorID, .copyBudget); return nil }
             copies += 1; return c
         }
         guard let context else { return false }
@@ -125,9 +138,16 @@ public final class MeshCandidateIngress83 {
                 // A newer accepted update/removal subsumes this copy. Any refusal
                 // already marked its own gap at ingress; stale completion adds none.
                 guard revisions[anchorID] == context.revision else { return }
-                guard let decoded else { gap(); return }
+                guard let decoded else { anchorIssue(context, anchorID, .bufferValidation); return }
                 switch decoded {
-                case .unknownGap: gap()
+                case .unknownGap(let loss):
+                    // Capture-provided identity and context are not trusted to
+                    // discharge or scope a different owner's delivery obligation.
+                    guard loss.anchorID == anchorID, loss.context.sessionID == context.sessionID,
+                          loss.context.generation == context.generation, loss.context.revision == context.revision,
+                          loss.context.receiptUptime == context.receiptUptime else { gap(); return }
+                    if case .invalidContext = loss.reason { gap() }
+                    else { anchorIssue(context, anchorID, .bufferValidation) }
                 case .revision(let c, let id, let mesh):
                     guard id == anchorID, c.sessionID == context.sessionID,
                           c.generation == context.generation, c.revision == context.revision,
@@ -135,8 +155,9 @@ public final class MeshCandidateIngress83 {
                           mesh.revision == context.revision,
                           mesh.triangleIndices.allSatisfy({ $0 <= UInt32(Int32.max) }) else { gap(); return }
                     var triangleSupport: [MeshTriangleSupport]?
+                    var sourceComplete = true
                     if supportPolicy == .classifiedFloorOnly {
-                        guard mesh.classifications.count == mesh.triangleIndices.count / 3 else { gap(); return }
+                        guard mesh.classifications.count == mesh.triangleIndices.count / 3 else { anchorIssue(context, anchorID, .classificationUnavailable); return }
                         // ARMeshClassification.floor raw value is 2. Only that label
                         // is eligible floor; all other faces still rasterize as obstacles.
                         // No slope/height fallback and no discarded obstacle geometry.
@@ -146,13 +167,16 @@ public final class MeshCandidateIngress83 {
                         // Install the replacement below: never retain its prior floor
                         // merely because current classifications are absent.
                         if !mesh.classificationDiagnostics.isEmpty ||
-                           mesh.classifications.contains(where: { $0 == nil || $0 == 0 }) { gap() }
+                           mesh.classifications.contains(where: { $0 == nil || $0 == 0 }) {
+                            anchorIssue(context, anchorID, .classificationUnavailable)
+                            sourceComplete = deliveryPolicy == .legacyStickyGap
+                        }
                     }
                     // Local vertices and unmodified column-major transform: package applies ONCE.
                     let event = MeshAnchorEvent(sessionID: epoch.uuidString, generation: 1,
                         anchorID: id.uuidString, revision: Int(c.revision), timestamp: c.receiptUptime,
                         vertices: mesh.localVertices.map(Double.init), triangles: mesh.triangleIndices.map(Int32.init),
-                        columnMajorTransform: mesh.anchorTransform.map(Double.init), complete: true,
+                        columnMajorTransform: mesh.anchorTransform.map(Double.init), complete: sourceComplete,
                         triangleSupport: triangleSupport)
                     // Runtime itself marks a rejected offer as sticky unknown coverage.
                     _ = runtime.offer(event)
@@ -161,7 +185,7 @@ public final class MeshCandidateIngress83 {
     }
     @discardableResult public func remove(anchorID: UUID, receiptUptime: Double) -> Bool {
         locked {
-            guard let c = admit(anchorID, receiptUptime) else { return false }
+            guard let c = admit(anchorID, receiptUptime, removed: true) else { return false }
             return runtime.offer(.init(sessionID: epoch.uuidString, generation: 1,
                 anchorID: anchorID.uuidString, revision: Int(c.revision), timestamp: c.receiptUptime,
                 vertices: [], triangles: [], columnMajorTransform: [], complete: false, removed: true))
