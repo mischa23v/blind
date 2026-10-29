@@ -1,0 +1,1873 @@
+{
+  "scope": "Read-only retained rows/NPY plus original OBJ. No native calls or collision/eligibility recomputation. First witness is locator order, not contact time. Triangle span is whole source triangle, not exact contact height. Relative interval subtracts swept foot range, not an independently measured person foot. Signed Float64 slope is geometric context only, not a rerun of Recast Float32 marking. Membership is read directly from saved ground IDs. 3 cm is a descriptive grouping, not a changed threshold or exemption.",
+  "paths": [
+    {
+      "path": [
+        0,
+        1
+      ],
+      "nativeTerminalEvent": 10,
+      "nativeCRecords": 11,
+      "nativeTerminalCountsBodyMargin": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "originalInitialFailure": "GroundSupportUnavailable: initial support seed absent, outside patch or not slope eligible",
+      "exactXYZInitialFailure": "GroundSupportUnavailable: initial support seed absent, outside patch or not slope eligible",
+      "nativeInitialFailure": null,
+      "originalGroundCells": null,
+      "exactXYZGroundCells": null,
+      "nativeGroundCells": 1131,
+      "exactXYZTerminalEvent": null,
+      "exactXYZTerminalFailure": null,
+      "exactXYZTerminalCountsBodyMargin": null,
+      "nativeInitialSeedIDs": [
+        27598,
+        27600,
+        27615,
+        27590,
+        27603,
+        59224,
+        27624,
+        27586,
+        27620
+      ],
+      "allNativeInitialSeedsAreMembers": true,
+      "savedOriginalBlockerMembership": {
+        "27586": true,
+        "28034": true,
+        "28076": true
+      },
+      "witnesses": [
+        {
+          "faceID": 27557,
+          "originalVertexIDs": [
+            34535,
+            34536,
+            5113
+          ],
+          "originalXYZ": [
+            [
+              -1.891587,
+              -1.627073,
+              -2.567481
+            ],
+            [
+              -1.880245,
+              -1.615134,
+              -2.605842
+            ],
+            [
+              -1.924528,
+              -1.626011,
+              -2.58831
+            ]
+          ],
+          "nominalModelYRange": [
+            0.003090305139620275,
+            0.015029305139620197
+          ],
+          "signedNormalYFloat64DiagnosticOnly": 0.9568399732168656,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 16.89479806677912,
+          "halfSegment": 0,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 1,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003544179562700034,
+            0.0003544179562700034
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.002735887183350272,
+            0.014674887183350194
+          ],
+          "diagnosticHeightBand": "near-foot triangle (within +/-3 cm), not semantic floor",
+          "contactReason": "boundaryIntersection"
+        },
+        {
+          "faceID": 27557,
+          "originalVertexIDs": [
+            34535,
+            34536,
+            5113
+          ],
+          "originalXYZ": [
+            [
+              -1.891587,
+              -1.627073,
+              -2.567481
+            ],
+            [
+              -1.880245,
+              -1.615134,
+              -2.605842
+            ],
+            [
+              -1.924528,
+              -1.626011,
+              -2.58831
+            ]
+          ],
+          "nominalModelYRange": [
+            0.003090305139620275,
+            0.015029305139620197
+          ],
+          "signedNormalYFloat64DiagnosticOnly": 0.9568399732168656,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 16.89479806677912,
+          "halfSegment": 1,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 2,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003544179562700034,
+            0.0003544179562700034
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.002735887183350272,
+            0.014674887183350194
+          ],
+          "diagnosticHeightBand": "near-foot triangle (within +/-3 cm), not semantic floor",
+          "contactReason": "boundaryIntersection"
+        }
+      ]
+    },
+    {
+      "path": [
+        0,
+        6
+      ],
+      "nativeTerminalEvent": 10,
+      "nativeCRecords": 11,
+      "nativeTerminalCountsBodyMargin": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "originalInitialFailure": "GroundSupportUnavailable: initial support seed absent, outside patch or not slope eligible",
+      "exactXYZInitialFailure": "GroundSupportUnavailable: initial support seed absent, outside patch or not slope eligible",
+      "nativeInitialFailure": null,
+      "originalGroundCells": null,
+      "exactXYZGroundCells": null,
+      "nativeGroundCells": 1364,
+      "exactXYZTerminalEvent": null,
+      "exactXYZTerminalFailure": null,
+      "exactXYZTerminalCountsBodyMargin": null,
+      "nativeInitialSeedIDs": [
+        27598,
+        27600,
+        27615,
+        27590,
+        27603,
+        59224,
+        27624,
+        27586,
+        27620
+      ],
+      "allNativeInitialSeedsAreMembers": true,
+      "savedOriginalBlockerMembership": {
+        "27586": true,
+        "28034": false,
+        "28076": false
+      },
+      "witnesses": [
+        {
+          "faceID": 27557,
+          "originalVertexIDs": [
+            34535,
+            34536,
+            5113
+          ],
+          "originalXYZ": [
+            [
+              -1.891587,
+              -1.627073,
+              -2.567481
+            ],
+            [
+              -1.880245,
+              -1.615134,
+              -2.605842
+            ],
+            [
+              -1.924528,
+              -1.626011,
+              -2.58831
+            ]
+          ],
+          "nominalModelYRange": [
+            0.003090305139620275,
+            0.015029305139620197
+          ],
+          "signedNormalYFloat64DiagnosticOnly": 0.9568399732168656,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 16.89479806677912,
+          "halfSegment": 0,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 1,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003544179562700034,
+            0.0003544179562700034
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.002735887183350272,
+            0.014674887183350194
+          ],
+          "diagnosticHeightBand": "near-foot triangle (within +/-3 cm), not semantic floor",
+          "contactReason": "boundaryIntersection"
+        },
+        {
+          "faceID": 27557,
+          "originalVertexIDs": [
+            34535,
+            34536,
+            5113
+          ],
+          "originalXYZ": [
+            [
+              -1.891587,
+              -1.627073,
+              -2.567481
+            ],
+            [
+              -1.880245,
+              -1.615134,
+              -2.605842
+            ],
+            [
+              -1.924528,
+              -1.626011,
+              -2.58831
+            ]
+          ],
+          "nominalModelYRange": [
+            0.003090305139620275,
+            0.015029305139620197
+          ],
+          "signedNormalYFloat64DiagnosticOnly": 0.9568399732168656,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 16.89479806677912,
+          "halfSegment": 1,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 2,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003544179562700034,
+            0.0003544179562700034
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.002735887183350272,
+            0.014674887183350194
+          ],
+          "diagnosticHeightBand": "near-foot triangle (within +/-3 cm), not semantic floor",
+          "contactReason": "boundaryIntersection"
+        }
+      ]
+    },
+    {
+      "path": [
+        0,
+        7
+      ],
+      "nativeTerminalEvent": 10,
+      "nativeCRecords": 11,
+      "nativeTerminalCountsBodyMargin": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "originalInitialFailure": "GroundSupportUnavailable: initial support seed absent, outside patch or not slope eligible",
+      "exactXYZInitialFailure": "GroundSupportUnavailable: initial support seed absent, outside patch or not slope eligible",
+      "nativeInitialFailure": null,
+      "originalGroundCells": null,
+      "exactXYZGroundCells": null,
+      "nativeGroundCells": 2919,
+      "exactXYZTerminalEvent": null,
+      "exactXYZTerminalFailure": null,
+      "exactXYZTerminalCountsBodyMargin": null,
+      "nativeInitialSeedIDs": [
+        27598,
+        27600,
+        27615,
+        27590,
+        27603,
+        59224,
+        27624,
+        27586,
+        27620
+      ],
+      "allNativeInitialSeedsAreMembers": true,
+      "savedOriginalBlockerMembership": {
+        "27586": true,
+        "28034": true,
+        "28076": true
+      },
+      "witnesses": [
+        {
+          "faceID": 27557,
+          "originalVertexIDs": [
+            34535,
+            34536,
+            5113
+          ],
+          "originalXYZ": [
+            [
+              -1.891587,
+              -1.627073,
+              -2.567481
+            ],
+            [
+              -1.880245,
+              -1.615134,
+              -2.605842
+            ],
+            [
+              -1.924528,
+              -1.626011,
+              -2.58831
+            ]
+          ],
+          "nominalModelYRange": [
+            0.003090305139620275,
+            0.015029305139620197
+          ],
+          "signedNormalYFloat64DiagnosticOnly": 0.9568399732168656,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 16.89479806677912,
+          "halfSegment": 0,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 1,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003544179562700034,
+            0.0003544179562700034
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.002735887183350272,
+            0.014674887183350194
+          ],
+          "diagnosticHeightBand": "near-foot triangle (within +/-3 cm), not semantic floor",
+          "contactReason": "boundaryIntersection"
+        },
+        {
+          "faceID": 27557,
+          "originalVertexIDs": [
+            34535,
+            34536,
+            5113
+          ],
+          "originalXYZ": [
+            [
+              -1.891587,
+              -1.627073,
+              -2.567481
+            ],
+            [
+              -1.880245,
+              -1.615134,
+              -2.605842
+            ],
+            [
+              -1.924528,
+              -1.626011,
+              -2.58831
+            ]
+          ],
+          "nominalModelYRange": [
+            0.003090305139620275,
+            0.015029305139620197
+          ],
+          "signedNormalYFloat64DiagnosticOnly": 0.9568399732168656,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 16.89479806677912,
+          "halfSegment": 1,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 2,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003544179562700034,
+            0.0003544179562700034
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.002735887183350272,
+            0.014674887183350194
+          ],
+          "diagnosticHeightBand": "near-foot triangle (within +/-3 cm), not semantic floor",
+          "contactReason": "boundaryIntersection"
+        }
+      ]
+    },
+    {
+      "path": [
+        0,
+        8
+      ],
+      "nativeTerminalEvent": 10,
+      "nativeCRecords": 11,
+      "nativeTerminalCountsBodyMargin": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "originalInitialFailure": "GroundSupportUnavailable: initial support seed absent, outside patch or not slope eligible",
+      "exactXYZInitialFailure": "GroundSupportUnavailable: initial support seed absent, outside patch or not slope eligible",
+      "nativeInitialFailure": null,
+      "originalGroundCells": null,
+      "exactXYZGroundCells": null,
+      "nativeGroundCells": 4827,
+      "exactXYZTerminalEvent": null,
+      "exactXYZTerminalFailure": null,
+      "exactXYZTerminalCountsBodyMargin": null,
+      "nativeInitialSeedIDs": [
+        27598,
+        27600,
+        27615,
+        27590,
+        27603,
+        59224,
+        27624,
+        27586,
+        27620
+      ],
+      "allNativeInitialSeedsAreMembers": true,
+      "savedOriginalBlockerMembership": {
+        "27586": true,
+        "28034": true,
+        "28076": true
+      },
+      "witnesses": [
+        {
+          "faceID": 27557,
+          "originalVertexIDs": [
+            34535,
+            34536,
+            5113
+          ],
+          "originalXYZ": [
+            [
+              -1.891587,
+              -1.627073,
+              -2.567481
+            ],
+            [
+              -1.880245,
+              -1.615134,
+              -2.605842
+            ],
+            [
+              -1.924528,
+              -1.626011,
+              -2.58831
+            ]
+          ],
+          "nominalModelYRange": [
+            0.003090305139620275,
+            0.015029305139620197
+          ],
+          "signedNormalYFloat64DiagnosticOnly": 0.9568399732168656,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 16.89479806677912,
+          "halfSegment": 0,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 1,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003544179562700034,
+            0.0003544179562700034
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.002735887183350272,
+            0.014674887183350194
+          ],
+          "diagnosticHeightBand": "near-foot triangle (within +/-3 cm), not semantic floor",
+          "contactReason": "boundaryIntersection"
+        },
+        {
+          "faceID": 27557,
+          "originalVertexIDs": [
+            34535,
+            34536,
+            5113
+          ],
+          "originalXYZ": [
+            [
+              -1.891587,
+              -1.627073,
+              -2.567481
+            ],
+            [
+              -1.880245,
+              -1.615134,
+              -2.605842
+            ],
+            [
+              -1.924528,
+              -1.626011,
+              -2.58831
+            ]
+          ],
+          "nominalModelYRange": [
+            0.003090305139620275,
+            0.015029305139620197
+          ],
+          "signedNormalYFloat64DiagnosticOnly": 0.9568399732168656,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 16.89479806677912,
+          "halfSegment": 1,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 2,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003544179562700034,
+            0.0003544179562700034
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.002735887183350272,
+            0.014674887183350194
+          ],
+          "diagnosticHeightBand": "near-foot triangle (within +/-3 cm), not semantic floor",
+          "contactReason": "boundaryIntersection"
+        }
+      ]
+    },
+    {
+      "path": [
+        1,
+        0
+      ],
+      "nativeTerminalEvent": 219,
+      "nativeCRecords": 220,
+      "nativeTerminalCountsBodyMargin": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "originalInitialFailure": "GroundSupportUnavailable: initial support seeds lie in disconnected edge components",
+      "exactXYZInitialFailure": null,
+      "nativeInitialFailure": null,
+      "originalGroundCells": null,
+      "exactXYZGroundCells": 936,
+      "nativeGroundCells": 1131,
+      "exactXYZTerminalEvent": 4,
+      "exactXYZTerminalFailure": "finiteSupportOr3DCapRejected",
+      "exactXYZTerminalCountsBodyMargin": [],
+      "nativeInitialSeedIDs": [
+        28026,
+        27972,
+        28007,
+        28037,
+        28048,
+        27939,
+        14817,
+        28054,
+        28070
+      ],
+      "allNativeInitialSeedsAreMembers": true,
+      "savedOriginalBlockerMembership": {
+        "27586": true,
+        "28034": true,
+        "28076": true
+      },
+      "witnesses": [
+        {
+          "faceID": 27577,
+          "originalVertexIDs": [
+            7973,
+            7974,
+            7975
+          ],
+          "originalXYZ": [
+            [
+              -1.660654,
+              -1.601429,
+              -2.606706
+            ],
+            [
+              -1.663986,
+              -1.629802,
+              -2.553673
+            ],
+            [
+              -1.622916,
+              -1.629602,
+              -2.57504
+            ]
+          ],
+          "nominalModelYRange": [
+            0.00036130513962029376,
+            0.028734305139620275
+          ],
+          "signedNormalYFloat64DiagnosticOnly": 0.8495713347067045,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 31.834924045582262,
+          "halfSegment": 0,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 1,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003580523179804729,
+            0.0003583972030467564
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            2.907936573537384e-06,
+            0.028376252821639802
+          ],
+          "diagnosticHeightBand": "near-foot triangle (within +/-3 cm), not semantic floor",
+          "contactReason": "boundaryIntersection"
+        },
+        {
+          "faceID": 27577,
+          "originalVertexIDs": [
+            7973,
+            7974,
+            7975
+          ],
+          "originalXYZ": [
+            [
+              -1.660654,
+              -1.601429,
+              -2.606706
+            ],
+            [
+              -1.663986,
+              -1.629802,
+              -2.553673
+            ],
+            [
+              -1.622916,
+              -1.629602,
+              -2.57504
+            ]
+          ],
+          "nominalModelYRange": [
+            0.00036130513962029376,
+            0.028734305139620275
+          ],
+          "signedNormalYFloat64DiagnosticOnly": 0.8495713347067045,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 31.834924045582262,
+          "halfSegment": 1,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 3,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003583972030467564,
+            0.0003587425296682767
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            2.5626099520170698e-06,
+            0.02837590793657352
+          ],
+          "diagnosticHeightBand": "near-foot triangle (within +/-3 cm), not semantic floor",
+          "contactReason": "boundaryIntersection"
+        }
+      ]
+    },
+    {
+      "path": [
+        1,
+        6
+      ],
+      "nativeTerminalEvent": 117,
+      "nativeCRecords": 118,
+      "nativeTerminalCountsBodyMargin": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "originalInitialFailure": "GroundSupportUnavailable: initial support seeds lie in disconnected edge components",
+      "exactXYZInitialFailure": null,
+      "nativeInitialFailure": null,
+      "originalGroundCells": null,
+      "exactXYZGroundCells": 2291,
+      "nativeGroundCells": 2919,
+      "exactXYZTerminalEvent": 4,
+      "exactXYZTerminalFailure": "finiteSupportOr3DCapRejected",
+      "exactXYZTerminalCountsBodyMargin": [],
+      "nativeInitialSeedIDs": [
+        28026,
+        27972,
+        28007,
+        28037,
+        28048,
+        27939,
+        14817,
+        28054,
+        28070
+      ],
+      "allNativeInitialSeedsAreMembers": true,
+      "savedOriginalBlockerMembership": {
+        "27586": true,
+        "28034": true,
+        "28076": true
+      },
+      "witnesses": [
+        {
+          "faceID": 12275,
+          "originalVertexIDs": [
+            26932,
+            26934,
+            26841
+          ],
+          "originalXYZ": [
+            [
+              -0.325181,
+              -1.609973,
+              -1.058616
+            ],
+            [
+              -0.361679,
+              -1.624637,
+              -1.037345
+            ],
+            [
+              -0.313953,
+              -1.621584,
+              -1.017667
+            ]
+          ],
+          "nominalModelYRange": [
+            0.005526305139620158,
+            0.020190305139620168
+          ],
+          "signedNormalYFloat64DiagnosticOnly": 0.9297493412386364,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 21.604224464380724,
+          "halfSegment": 1,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 2,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0005987298665195429,
+            0.000657766785696845
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.004868538353923313,
+            0.019591575273100625
+          ],
+          "diagnosticHeightBand": "near-foot triangle (within +/-3 cm), not semantic floor",
+          "contactReason": "boundaryIntersection"
+        }
+      ]
+    },
+    {
+      "path": [
+        1,
+        7
+      ],
+      "nativeTerminalEvent": 53,
+      "nativeCRecords": 54,
+      "nativeTerminalCountsBodyMargin": [
+        [
+          0,
+          25
+        ],
+        [
+          0,
+          45
+        ]
+      ],
+      "originalInitialFailure": "GroundSupportUnavailable: initial support seeds lie in disconnected edge components",
+      "exactXYZInitialFailure": null,
+      "nativeInitialFailure": null,
+      "originalGroundCells": null,
+      "exactXYZGroundCells": 1480,
+      "nativeGroundCells": 1635,
+      "exactXYZTerminalEvent": 3,
+      "exactXYZTerminalFailure": "finiteSupportOr3DCapRejected",
+      "exactXYZTerminalCountsBodyMargin": [],
+      "nativeInitialSeedIDs": [
+        28026,
+        27972,
+        28007,
+        28037,
+        28048,
+        27939,
+        14817,
+        28054,
+        28070
+      ],
+      "allNativeInitialSeedsAreMembers": true,
+      "savedOriginalBlockerMembership": {
+        "27586": false,
+        "28034": true,
+        "28076": true
+      },
+      "witnesses": [
+        {
+          "faceID": 235,
+          "originalVertexIDs": [
+            37143,
+            30395,
+            30388
+          ],
+          "originalXYZ": [
+            [
+              -0.887222,
+              -1.629837,
+              0.254865
+            ],
+            [
+              -0.887017,
+              -1.629875,
+              0.288972
+            ],
+            [
+              -0.877277,
+              -1.625064,
+              0.258333
+            ]
+          ],
+          "nominalModelYRange": [
+            0.000288305139620304,
+            0.005099305139620203
+          ],
+          "signedNormalYFloat64DiagnosticOnly": 0.9010466556267475,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 25.704011675758228,
+          "halfSegment": 0,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 25,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.00030352300052127745,
+            0.0003123334464731897
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            -2.4028306852885706e-05,
+            0.004795782139098925
+          ],
+          "diagnosticHeightBand": "near-foot triangle (within +/-3 cm), not semantic floor",
+          "contactReason": "boundaryIntersection"
+        },
+        {
+          "faceID": 28353,
+          "originalVertexIDs": [
+            44890,
+            30392,
+            44891
+          ],
+          "originalXYZ": [
+            [
+              -0.887017,
+              -1.629875,
+              0.288972
+            ],
+            [
+              -0.883823,
+              -1.630283,
+              0.329569
+            ],
+            [
+              -0.873285,
+              -1.598118,
+              0.352217
+            ]
+          ],
+          "nominalModelYRange": [
+            -0.00011969486037965993,
+            0.03204530513962034
+          ],
+          "signedNormalYFloat64DiagnosticOnly": 0.2601458758635002,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 74.9212819243321,
+          "halfSegment": 1,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 45,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003123334464731897,
+            0.0003211438924255461
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            -0.000440838752805206,
+            0.03173297169314715
+          ],
+          "diagnosticHeightBand": "extends above 3 cm; not a floor-only near-foot witness",
+          "contactReason": "boundaryIntersection"
+        }
+      ]
+    },
+    {
+      "path": [
+        1,
+        8
+      ],
+      "nativeTerminalEvent": 53,
+      "nativeCRecords": 54,
+      "nativeTerminalCountsBodyMargin": [
+        [
+          0,
+          25
+        ],
+        [
+          0,
+          45
+        ]
+      ],
+      "originalInitialFailure": "GroundSupportUnavailable: initial support seeds lie in disconnected edge components",
+      "exactXYZInitialFailure": null,
+      "nativeInitialFailure": null,
+      "originalGroundCells": null,
+      "exactXYZGroundCells": 2351,
+      "nativeGroundCells": 3190,
+      "exactXYZTerminalEvent": 3,
+      "exactXYZTerminalFailure": "finiteSupportOr3DCapRejected",
+      "exactXYZTerminalCountsBodyMargin": [],
+      "nativeInitialSeedIDs": [
+        28026,
+        27972,
+        28007,
+        28037,
+        28048,
+        27939,
+        14817,
+        28054,
+        28070
+      ],
+      "allNativeInitialSeedsAreMembers": true,
+      "savedOriginalBlockerMembership": {
+        "27586": false,
+        "28034": true,
+        "28076": true
+      },
+      "witnesses": [
+        {
+          "faceID": 235,
+          "originalVertexIDs": [
+            37143,
+            30395,
+            30388
+          ],
+          "originalXYZ": [
+            [
+              -0.887222,
+              -1.629837,
+              0.254865
+            ],
+            [
+              -0.887017,
+              -1.629875,
+              0.288972
+            ],
+            [
+              -0.877277,
+              -1.625064,
+              0.258333
+            ]
+          ],
+          "nominalModelYRange": [
+            0.000288305139620304,
+            0.005099305139620203
+          ],
+          "signedNormalYFloat64DiagnosticOnly": 0.9010466556267475,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 25.704011675758228,
+          "halfSegment": 0,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 25,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.00030352300052127745,
+            0.0003123334464731897
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            -2.4028306852885706e-05,
+            0.004795782139098925
+          ],
+          "diagnosticHeightBand": "near-foot triangle (within +/-3 cm), not semantic floor",
+          "contactReason": "boundaryIntersection"
+        },
+        {
+          "faceID": 28353,
+          "originalVertexIDs": [
+            44890,
+            30392,
+            44891
+          ],
+          "originalXYZ": [
+            [
+              -0.887017,
+              -1.629875,
+              0.288972
+            ],
+            [
+              -0.883823,
+              -1.630283,
+              0.329569
+            ],
+            [
+              -0.873285,
+              -1.598118,
+              0.352217
+            ]
+          ],
+          "nominalModelYRange": [
+            -0.00011969486037965993,
+            0.03204530513962034
+          ],
+          "signedNormalYFloat64DiagnosticOnly": 0.2601458758635002,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 74.9212819243321,
+          "halfSegment": 1,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 45,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003123334464731897,
+            0.0003211438924255461
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            -0.000440838752805206,
+            0.03173297169314715
+          ],
+          "diagnosticHeightBand": "extends above 3 cm; not a floor-only near-foot witness",
+          "contactReason": "boundaryIntersection"
+        }
+      ]
+    },
+    {
+      "path": [
+        6,
+        0
+      ],
+      "nativeTerminalEvent": 0,
+      "nativeCRecords": 1,
+      "nativeTerminalCountsBodyMargin": [
+        [
+          112,
+          1155
+        ]
+      ],
+      "originalInitialFailure": null,
+      "exactXYZInitialFailure": null,
+      "nativeInitialFailure": null,
+      "originalGroundCells": 193,
+      "exactXYZGroundCells": 958,
+      "nativeGroundCells": 1364,
+      "exactXYZTerminalEvent": 0,
+      "exactXYZTerminalFailure": null,
+      "exactXYZTerminalCountsBodyMargin": [
+        [
+          112,
+          1165
+        ]
+      ],
+      "nativeInitialSeedIDs": [
+        57388,
+        57338,
+        57408,
+        57386,
+        57454,
+        57308,
+        57464,
+        57337,
+        57472
+      ],
+      "allNativeInitialSeedsAreMembers": true,
+      "savedOriginalBlockerMembership": {
+        "27586": true,
+        "28034": false,
+        "28076": false
+      },
+      "witnesses": [
+        {
+          "faceID": 29484,
+          "originalVertexIDs": [
+            34205,
+            41621,
+            41623
+          ],
+          "originalXYZ": [
+            [
+              1.97637,
+              -0.73074,
+              -2.220933
+            ],
+            [
+              1.997031,
+              -0.744202,
+              -2.205346
+            ],
+            [
+              1.990545,
+              -0.730661,
+              -2.186607
+            ]
+          ],
+          "nominalModelYRange": [
+            0.8859613051396202,
+            0.8995023051396203
+          ],
+          "signedNormalYFloat64DiagnosticOnly": -0.697438774252141,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 134.2218759881341,
+          "halfSegment": 0,
+          "bodyOrMargin": "actualBody",
+          "nonGroundContactCount": 112,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003930971743171252,
+            0.0003930971743171252
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.8855682079653031,
+            0.8991092079653031
+          ],
+          "diagnosticHeightBand": "extends above 3 cm; not a floor-only near-foot witness",
+          "contactReason": "boundaryIntersection"
+        },
+        {
+          "faceID": 29512,
+          "originalVertexIDs": [
+            34866,
+            34622,
+            34867
+          ],
+          "originalXYZ": [
+            [
+              1.771843,
+              -0.694224,
+              -2.60111
+            ],
+            [
+              1.790349,
+              -0.585506,
+              -2.552157
+            ],
+            [
+              1.750319,
+              -0.586709,
+              -2.626704
+            ]
+          ],
+          "nominalModelYRange": [
+            0.9359393051396203,
+            1.0446573051396202
+          ],
+          "signedNormalYFloat64DiagnosticOnly": -0.06335486429849703,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 93.6323990825604,
+          "halfSegment": 0,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 1155,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003930971743171252,
+            0.0003930971743171252
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.9355462079653032,
+            1.044264207965303
+          ],
+          "diagnosticHeightBand": "extends above 3 cm; not a floor-only near-foot witness",
+          "contactReason": "boundaryIntersection"
+        }
+      ]
+    },
+    {
+      "path": [
+        6,
+        1
+      ],
+      "nativeTerminalEvent": 0,
+      "nativeCRecords": 1,
+      "nativeTerminalCountsBodyMargin": [
+        [
+          112,
+          1155
+        ]
+      ],
+      "originalInitialFailure": null,
+      "exactXYZInitialFailure": null,
+      "nativeInitialFailure": null,
+      "originalGroundCells": 215,
+      "exactXYZGroundCells": 2291,
+      "nativeGroundCells": 2919,
+      "exactXYZTerminalEvent": 0,
+      "exactXYZTerminalFailure": null,
+      "exactXYZTerminalCountsBodyMargin": [
+        [
+          112,
+          1165
+        ]
+      ],
+      "nativeInitialSeedIDs": [
+        57388,
+        57338,
+        57408,
+        57386,
+        57454,
+        57308,
+        57464,
+        57337,
+        57472
+      ],
+      "allNativeInitialSeedsAreMembers": true,
+      "savedOriginalBlockerMembership": {
+        "27586": true,
+        "28034": true,
+        "28076": true
+      },
+      "witnesses": [
+        {
+          "faceID": 29484,
+          "originalVertexIDs": [
+            34205,
+            41621,
+            41623
+          ],
+          "originalXYZ": [
+            [
+              1.97637,
+              -0.73074,
+              -2.220933
+            ],
+            [
+              1.997031,
+              -0.744202,
+              -2.205346
+            ],
+            [
+              1.990545,
+              -0.730661,
+              -2.186607
+            ]
+          ],
+          "nominalModelYRange": [
+            0.8859613051396202,
+            0.8995023051396203
+          ],
+          "signedNormalYFloat64DiagnosticOnly": -0.697438774252141,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 134.2218759881341,
+          "halfSegment": 0,
+          "bodyOrMargin": "actualBody",
+          "nonGroundContactCount": 112,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003930971743171252,
+            0.0003930971743171252
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.8855682079653031,
+            0.8991092079653031
+          ],
+          "diagnosticHeightBand": "extends above 3 cm; not a floor-only near-foot witness",
+          "contactReason": "boundaryIntersection"
+        },
+        {
+          "faceID": 29512,
+          "originalVertexIDs": [
+            34866,
+            34622,
+            34867
+          ],
+          "originalXYZ": [
+            [
+              1.771843,
+              -0.694224,
+              -2.60111
+            ],
+            [
+              1.790349,
+              -0.585506,
+              -2.552157
+            ],
+            [
+              1.750319,
+              -0.586709,
+              -2.626704
+            ]
+          ],
+          "nominalModelYRange": [
+            0.9359393051396203,
+            1.0446573051396202
+          ],
+          "signedNormalYFloat64DiagnosticOnly": -0.06335486429849703,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 93.6323990825604,
+          "halfSegment": 0,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 1155,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003930971743171252,
+            0.0003930971743171252
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.9355462079653032,
+            1.044264207965303
+          ],
+          "diagnosticHeightBand": "extends above 3 cm; not a floor-only near-foot witness",
+          "contactReason": "boundaryIntersection"
+        }
+      ]
+    },
+    {
+      "path": [
+        6,
+        7
+      ],
+      "nativeTerminalEvent": 0,
+      "nativeCRecords": 1,
+      "nativeTerminalCountsBodyMargin": [
+        [
+          112,
+          1155
+        ]
+      ],
+      "originalInitialFailure": null,
+      "exactXYZInitialFailure": null,
+      "nativeInitialFailure": null,
+      "originalGroundCells": 215,
+      "exactXYZGroundCells": 759,
+      "nativeGroundCells": 1013,
+      "exactXYZTerminalEvent": 0,
+      "exactXYZTerminalFailure": null,
+      "exactXYZTerminalCountsBodyMargin": [
+        [
+          112,
+          1165
+        ]
+      ],
+      "nativeInitialSeedIDs": [
+        57388,
+        57338,
+        57408,
+        57386,
+        57454,
+        57308,
+        57464,
+        57337,
+        57472
+      ],
+      "allNativeInitialSeedsAreMembers": true,
+      "savedOriginalBlockerMembership": {
+        "27586": false,
+        "28034": false,
+        "28076": false
+      },
+      "witnesses": [
+        {
+          "faceID": 29484,
+          "originalVertexIDs": [
+            34205,
+            41621,
+            41623
+          ],
+          "originalXYZ": [
+            [
+              1.97637,
+              -0.73074,
+              -2.220933
+            ],
+            [
+              1.997031,
+              -0.744202,
+              -2.205346
+            ],
+            [
+              1.990545,
+              -0.730661,
+              -2.186607
+            ]
+          ],
+          "nominalModelYRange": [
+            0.8859613051396202,
+            0.8995023051396203
+          ],
+          "signedNormalYFloat64DiagnosticOnly": -0.697438774252141,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 134.2218759881341,
+          "halfSegment": 0,
+          "bodyOrMargin": "actualBody",
+          "nonGroundContactCount": 112,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003930971743171252,
+            0.0003930971743171252
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.8855682079653031,
+            0.8991092079653031
+          ],
+          "diagnosticHeightBand": "extends above 3 cm; not a floor-only near-foot witness",
+          "contactReason": "boundaryIntersection"
+        },
+        {
+          "faceID": 29512,
+          "originalVertexIDs": [
+            34866,
+            34622,
+            34867
+          ],
+          "originalXYZ": [
+            [
+              1.771843,
+              -0.694224,
+              -2.60111
+            ],
+            [
+              1.790349,
+              -0.585506,
+              -2.552157
+            ],
+            [
+              1.750319,
+              -0.586709,
+              -2.626704
+            ]
+          ],
+          "nominalModelYRange": [
+            0.9359393051396203,
+            1.0446573051396202
+          ],
+          "signedNormalYFloat64DiagnosticOnly": -0.06335486429849703,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 93.6323990825604,
+          "halfSegment": 0,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 1155,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003930971743171252,
+            0.0003930971743171252
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.9355462079653032,
+            1.044264207965303
+          ],
+          "diagnosticHeightBand": "extends above 3 cm; not a floor-only near-foot witness",
+          "contactReason": "boundaryIntersection"
+        }
+      ]
+    },
+    {
+      "path": [
+        6,
+        8
+      ],
+      "nativeTerminalEvent": 0,
+      "nativeCRecords": 1,
+      "nativeTerminalCountsBodyMargin": [
+        [
+          112,
+          1155
+        ]
+      ],
+      "originalInitialFailure": null,
+      "exactXYZInitialFailure": null,
+      "nativeInitialFailure": null,
+      "originalGroundCells": 215,
+      "exactXYZGroundCells": 1215,
+      "nativeGroundCells": 1661,
+      "exactXYZTerminalEvent": 0,
+      "exactXYZTerminalFailure": null,
+      "exactXYZTerminalCountsBodyMargin": [
+        [
+          112,
+          1165
+        ]
+      ],
+      "nativeInitialSeedIDs": [
+        57388,
+        57338,
+        57408,
+        57386,
+        57454,
+        57308,
+        57464,
+        57337,
+        57472
+      ],
+      "allNativeInitialSeedsAreMembers": true,
+      "savedOriginalBlockerMembership": {
+        "27586": false,
+        "28034": false,
+        "28076": false
+      },
+      "witnesses": [
+        {
+          "faceID": 29484,
+          "originalVertexIDs": [
+            34205,
+            41621,
+            41623
+          ],
+          "originalXYZ": [
+            [
+              1.97637,
+              -0.73074,
+              -2.220933
+            ],
+            [
+              1.997031,
+              -0.744202,
+              -2.205346
+            ],
+            [
+              1.990545,
+              -0.730661,
+              -2.186607
+            ]
+          ],
+          "nominalModelYRange": [
+            0.8859613051396202,
+            0.8995023051396203
+          ],
+          "signedNormalYFloat64DiagnosticOnly": -0.697438774252141,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 134.2218759881341,
+          "halfSegment": 0,
+          "bodyOrMargin": "actualBody",
+          "nonGroundContactCount": 112,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003930971743171252,
+            0.0003930971743171252
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.8855682079653031,
+            0.8991092079653031
+          ],
+          "diagnosticHeightBand": "extends above 3 cm; not a floor-only near-foot witness",
+          "contactReason": "boundaryIntersection"
+        },
+        {
+          "faceID": 29512,
+          "originalVertexIDs": [
+            34866,
+            34622,
+            34867
+          ],
+          "originalXYZ": [
+            [
+              1.771843,
+              -0.694224,
+              -2.60111
+            ],
+            [
+              1.790349,
+              -0.585506,
+              -2.552157
+            ],
+            [
+              1.750319,
+              -0.586709,
+              -2.626704
+            ]
+          ],
+          "nominalModelYRange": [
+            0.9359393051396203,
+            1.0446573051396202
+          ],
+          "signedNormalYFloat64DiagnosticOnly": -0.06335486429849703,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 93.6323990825604,
+          "halfSegment": 0,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 1155,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.0003930971743171252,
+            0.0003930971743171252
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.9355462079653032,
+            1.044264207965303
+          ],
+          "diagnosticHeightBand": "extends above 3 cm; not a floor-only near-foot witness",
+          "contactReason": "boundaryIntersection"
+        }
+      ]
+    },
+    {
+      "path": [
+        7,
+        0
+      ],
+      "nativeTerminalEvent": 0,
+      "nativeCRecords": 1,
+      "nativeTerminalCountsBodyMargin": [
+        [
+          0,
+          195
+        ]
+      ],
+      "originalInitialFailure": "GroundSupportUnavailable: initial support seeds lie in disconnected edge components",
+      "exactXYZInitialFailure": null,
+      "nativeInitialFailure": null,
+      "originalGroundCells": null,
+      "exactXYZGroundCells": 2291,
+      "nativeGroundCells": 2919,
+      "exactXYZTerminalEvent": 0,
+      "exactXYZTerminalFailure": null,
+      "exactXYZTerminalCountsBodyMargin": [
+        [
+          0,
+          195
+        ]
+      ],
+      "nativeInitialSeedIDs": [
+        8662,
+        8659,
+        8661,
+        8674,
+        8666,
+        33067,
+        8660,
+        8682,
+        8677
+      ],
+      "allNativeInitialSeedsAreMembers": true,
+      "savedOriginalBlockerMembership": {
+        "27586": true,
+        "28034": true,
+        "28076": true
+      },
+      "witnesses": [
+        {
+          "faceID": 33098,
+          "originalVertexIDs": [
+            40557,
+            3736,
+            40555
+          ],
+          "originalXYZ": [
+            [
+              2.08687,
+              -1.53037,
+              0.143741
+            ],
+            [
+              2.074224,
+              -1.504951,
+              0.104924
+            ],
+            [
+              2.103629,
+              -1.56514,
+              0.112747
+            ]
+          ],
+          "nominalModelYRange": [
+            0.06502330513962029,
+            0.12521230513962034
+          ],
+          "signedNormalYFloat64DiagnosticOnly": -0.4383482684595428,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 115.99854157513246,
+          "halfSegment": 0,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 195,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.00031060530841675593,
+            0.00031060530841675593
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.06471269983120354,
+            0.12490169983120358
+          ],
+          "diagnosticHeightBand": "extends above 3 cm; not a floor-only near-foot witness",
+          "contactReason": "containedTriangleVertex"
+        }
+      ]
+    },
+    {
+      "path": [
+        7,
+        1
+      ],
+      "nativeTerminalEvent": 0,
+      "nativeCRecords": 1,
+      "nativeTerminalCountsBodyMargin": [
+        [
+          0,
+          195
+        ]
+      ],
+      "originalInitialFailure": "GroundSupportUnavailable: initial support seeds lie in disconnected edge components",
+      "exactXYZInitialFailure": null,
+      "nativeInitialFailure": null,
+      "originalGroundCells": null,
+      "exactXYZGroundCells": 1480,
+      "nativeGroundCells": 1635,
+      "exactXYZTerminalEvent": 0,
+      "exactXYZTerminalFailure": null,
+      "exactXYZTerminalCountsBodyMargin": [
+        [
+          0,
+          195
+        ]
+      ],
+      "nativeInitialSeedIDs": [
+        8662,
+        8659,
+        8661,
+        8674,
+        8666,
+        33067,
+        8660,
+        8682,
+        8677
+      ],
+      "allNativeInitialSeedsAreMembers": true,
+      "savedOriginalBlockerMembership": {
+        "27586": false,
+        "28034": true,
+        "28076": true
+      },
+      "witnesses": [
+        {
+          "faceID": 33098,
+          "originalVertexIDs": [
+            40557,
+            3736,
+            40555
+          ],
+          "originalXYZ": [
+            [
+              2.08687,
+              -1.53037,
+              0.143741
+            ],
+            [
+              2.074224,
+              -1.504951,
+              0.104924
+            ],
+            [
+              2.103629,
+              -1.56514,
+              0.112747
+            ]
+          ],
+          "nominalModelYRange": [
+            0.06502330513962029,
+            0.12521230513962034
+          ],
+          "signedNormalYFloat64DiagnosticOnly": -0.4383482684595428,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 115.99854157513246,
+          "halfSegment": 0,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 195,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.00031060530841675593,
+            0.00031060530841675593
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.06471269983120354,
+            0.12490169983120358
+          ],
+          "diagnosticHeightBand": "extends above 3 cm; not a floor-only near-foot witness",
+          "contactReason": "containedTriangleVertex"
+        }
+      ]
+    },
+    {
+      "path": [
+        7,
+        6
+      ],
+      "nativeTerminalEvent": 0,
+      "nativeCRecords": 1,
+      "nativeTerminalCountsBodyMargin": [
+        [
+          0,
+          195
+        ]
+      ],
+      "originalInitialFailure": "GroundSupportUnavailable: initial support seeds lie in disconnected edge components",
+      "exactXYZInitialFailure": null,
+      "nativeInitialFailure": null,
+      "originalGroundCells": null,
+      "exactXYZGroundCells": 759,
+      "nativeGroundCells": 1013,
+      "exactXYZTerminalEvent": 0,
+      "exactXYZTerminalFailure": null,
+      "exactXYZTerminalCountsBodyMargin": [
+        [
+          0,
+          195
+        ]
+      ],
+      "nativeInitialSeedIDs": [
+        8662,
+        8659,
+        8661,
+        8674,
+        8666,
+        33067,
+        8660,
+        8682,
+        8677
+      ],
+      "allNativeInitialSeedsAreMembers": true,
+      "savedOriginalBlockerMembership": {
+        "27586": false,
+        "28034": false,
+        "28076": false
+      },
+      "witnesses": [
+        {
+          "faceID": 33098,
+          "originalVertexIDs": [
+            40557,
+            3736,
+            40555
+          ],
+          "originalXYZ": [
+            [
+              2.08687,
+              -1.53037,
+              0.143741
+            ],
+            [
+              2.074224,
+              -1.504951,
+              0.104924
+            ],
+            [
+              2.103629,
+              -1.56514,
+              0.112747
+            ]
+          ],
+          "nominalModelYRange": [
+            0.06502330513962029,
+            0.12521230513962034
+          ],
+          "signedNormalYFloat64DiagnosticOnly": -0.4383482684595428,
+          "signedSlopeDegreesFloat64DiagnosticOnly": 115.99854157513246,
+          "halfSegment": 0,
+          "bodyOrMargin": "horizontalMargin",
+          "nonGroundContactCount": 195,
+          "groundComponentMembership": false,
+          "sweepFootHeightRange": [
+            0.00031060530841675593,
+            0.00031060530841675593
+          ],
+          "triangleHeightRelativeToSweepFootRange": [
+            0.06471269983120354,
+            0.12490169983120358
+          ],
+          "diagnosticHeightBand": "extends above 3 cm; not a floor-only near-foot witness",
+          "contactReason": "containedTriangleVertex"
+        }
+      ]
+    }
+  ],
+  "physicalAuthority": false
+}

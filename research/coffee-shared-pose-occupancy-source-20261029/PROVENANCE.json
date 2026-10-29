@@ -1,0 +1,92 @@
+{
+  "status": "source-only prepared; no controls or native execution",
+  "dataset": {
+    "title": "MuSHRoom iPhone Basic Data",
+    "creator": "Xuqian Ren et al.",
+    "url": "https://zenodo.org/records/10230733",
+    "license": "CC-BY-4.0",
+    "archive": "coffee_room_iphone.tar.gz",
+    "archiveSHA256": "591672a1c4afa50e5109fc78ff08d8f608d05756a9181cfdd7cef38a57a1623d",
+    "archiveMD5": "cb467b3ad18d8f2c83dbf97a486d378b",
+    "archiveBytes": 183080957
+  },
+  "primarySources": [
+    {
+      "repository": "TUTvision/MuSHRoom",
+      "revision": "3f36dbfe24c783f85e320a613096eee5216839eb",
+      "path": "README.md",
+      "purpose": "Explicit original Polycam mesh/pose nonalignment warning",
+      "url": "https://github.com/TUTvision/MuSHRoom/blob/3f36dbfe24c783f85e320a613096eee5216839eb/README.md"
+    },
+    {
+      "repository": "TUTvision/MuSHRoom",
+      "revision": "3f36dbfe24c783f85e320a613096eee5216839eb",
+      "path": "iphone_tools/1_nerfstudio_to_sdfstudio_within.py",
+      "gitBlobSHA": "040dd178fb9451c8d5772c1d2ad4ab5dad2e5396",
+      "purpose": "Original pose OpenGL c2w and right-multiplied camera Y/Z basis change; source inspected, not copied/run",
+      "url": "https://github.com/TUTvision/MuSHRoom/blob/3f36dbfe24c783f85e320a613096eee5216839eb/iphone_tools/1_nerfstudio_to_sdfstudio_within.py"
+    },
+    {
+      "repository": "TUTvision/MuSHRoom",
+      "revision": "3f36dbfe24c783f85e320a613096eee5216839eb",
+      "path": "mushroom_method/nerfstudio/process_data/polycam_utils.py",
+      "gitBlobSHA": "a005f1b2fb653b8df6b3acb72963aedcdbf3b04c",
+      "license": "Apache-2.0 source header",
+      "purpose": "Already-converted raw world rows [2,0,1]; do not repeat",
+      "url": "https://github.com/TUTvision/MuSHRoom/blob/3f36dbfe24c783f85e320a613096eee5216839eb/mushroom_method/nerfstudio/process_data/polycam_utils.py"
+    },
+    {
+      "repository": "TUTvision/MuSHRoom",
+      "revision": "3f36dbfe24c783f85e320a613096eee5216839eb",
+      "path": "mushroom_method/docs/quickstart/data_conventions.md",
+      "gitBlobSHA": "98095af956ebcfb0aef9b25b8740493a3b4ae154",
+      "purpose": "Camera/world axes and transform columns",
+      "url": "https://github.com/TUTvision/MuSHRoom/blob/3f36dbfe24c783f85e320a613096eee5216839eb/mushroom_method/docs/quickstart/data_conventions.md"
+    },
+    {
+      "repository": "PolyCam/polyform",
+      "revision": "ad0111832d3b3860e60efd8928e76f4fe97c8b72",
+      "path": "README.md",
+      "license": "MIT repository",
+      "purpose": "Raw GL mesh alignmentTransform inverse and column-major storage, not recovered Coffee registration",
+      "url": "https://github.com/PolyCam/polyform/blob/ad0111832d3b3860e60efd8928e76f4fe97c8b72/README.md"
+    },
+    {
+      "repository": "maturk/dn-splatter",
+      "revision": "97588b4290128ce7ba6fdbfaac3020b42b17de4c",
+      "path": "dn_splatter/data/mushroom_utils/pointcloud_utils.py",
+      "gitBlobSHA": "aa105be42665a82c2e3db338b82425de0dc0c8e1",
+      "license": "Apache-2.0 root LICENSE",
+      "purpose": "Existing RGBD pose conversion/Open3D world-to-camera inversion; original-pose adaptation explicitly differs from upstream COLMAP selection",
+      "url": "https://github.com/maturk/dn-splatter/blob/97588b4290128ce7ba6fdbfaac3020b42b17de4c/dn_splatter/data/mushroom_utils/pointcloud_utils.py"
+    }
+  ],
+  "reuse": {
+    "projectionSource": "../coffee-table-retention-default-guard-source-20261029/retention.py",
+    "projectionSHA256": "52027afeb32a38f49d69e25713fa434d01291e4fc8a75d111daf151b5f44d7d4",
+    "wrapperSource": "../coffee-table-retention-default-guard-source-20261029/octomap_engine.py",
+    "wrapperSHA256": "09645bd4065ccef13d28353d5a05e54c75f5ea284ca8e5c4439c58cc45aa4621",
+    "librarySHA256": "0a044001b1455634ab881cc42fb5954362d960abf5cd851b7b6dc99b6c3eb963",
+    "buildAndOriginalControls": "../coffee-octomap-build-result-20261029/",
+    "existingCameraLocalResult": "../coffee-table-retention-stage-b-result-20261029/",
+    "oldArtifactsUnmodified": true
+  },
+  "localChanges": [
+    "Rigid-pose validation and documented camera basis conversion only",
+    "One shared-tree supplied-pose insertion sequencing",
+    "Per-scan current/prior endpoint occupancy and hit/free contradiction reports",
+    "Local geometry-only known-leaf export; no photo/raster publication",
+    "Source-only controls and bounded explicit launcher"
+  ],
+  "execution": {
+    "pythonASTParsed": true,
+    "shellSyntaxChecked": true,
+    "pureControlsExecuted": false,
+    "nativeCalls": 0,
+    "upstreamTestsRunByThisTask": false,
+    "registrationRun": false,
+    "newSLAM": false,
+    "routeAccepted": false,
+    "physicalAuthority": false
+  }
+}
