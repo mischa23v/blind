@@ -236,11 +236,12 @@ jobs:
           out="$RUNNER_TEMP/classified-mesh-bench"
           mkdir -p "$out"
           set +e
-          xcrun swift test --package-path research/live-mesh-classified-bench-20261028 --scratch-path "$RUNNER_TEMP/classified-mesh-bench-build" --build-system native --jobs 1 --xunit-output "$out/tests.xml" 2>&1 | tee "$out/swift-test.log"
+          xcrun swift test --package-path research/live-mesh-classified-bench-20261028 --scratch-path "$RUNNER_TEMP/classified-mesh-bench-build" --build-system native --jobs 1 --xunit-output "$out/tests.xml" 2> "$out/swift-test.stderr.log" | tee "$out/swift-test.log"
           statuses=("${PIPESTATUS[@]}")
           set -e
           printf '{"swift_test_exit_code":%s,"log_writer_exit_code":%s,"scope":"macOS synthetic dependency fixtures","ios_session_fixtures_excluded":5}\n' "${statuses[0]}" "${statuses[1]}" > "$out/result.json"
           git status --porcelain > "$out/source-after.txt"
+          cat "$out/swift-test.stderr.log" >&2
           test "${statuses[0]}" -eq 0
           test "${statuses[1]}" -eq 0
           python3 tools/ci/collect-classified-bench.py research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift "$out"

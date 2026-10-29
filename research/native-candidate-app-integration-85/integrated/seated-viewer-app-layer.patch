@@ -1045,7 +1045,7 @@
              inputBytes: 1_500_000, decodedBytes: 1_500_000)
          init(session: ARSession, queue: DispatchQueue) throws {
 -            expectedSession = session; self.queue = queue; ingress = try LiveMeshBenchIngress()
-+            expectedSession = session; self.queue = queue; ingress = try LiveMeshBenchIngress(recoveryPolicy: .latestValidatedAnchorRevision)
++            expectedSession = session; self.queue = queue; ingress = try LiveMeshBenchIngress(deliveryRecoveryPolicy: .latestValidatedAnchorRevision)
              super.init()
          }
 -        func begin() {

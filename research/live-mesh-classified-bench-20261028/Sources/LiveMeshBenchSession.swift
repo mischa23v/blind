@@ -227,7 +227,7 @@ public final class LiveMeshBenchSession {
         private let limits = MeshBufferDecoder.Limits(vertices: 32_000, faces: 32_000,
             inputBytes: 1_500_000, decodedBytes: 1_500_000)
         init(session: ARSession, queue: DispatchQueue) throws {
-            expectedSession = session; self.queue = queue; ingress = try LiveMeshBenchIngress(recoveryPolicy: .latestValidatedAnchorRevision)
+            expectedSession = session; self.queue = queue; ingress = try LiveMeshBenchIngress(deliveryRecoveryPolicy: .latestValidatedAnchorRevision)
             super.init()
         }
         func armFreshnessWatchdog() {

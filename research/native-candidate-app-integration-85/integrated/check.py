@@ -7,6 +7,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+import sys
 
 H = Path(__file__).resolve().parent
 R = H.parents[2]
@@ -259,6 +260,9 @@ current_workflow=(R/'.github/workflows/native-apple.yml').read_text()
 check('seated existing runner and overall job cap retained', current_workflow.count('runs-on: xcode-27')==pre_seated_workflow.count('runs-on: xcode-27') and current_workflow.count('timeout-minutes: 25')==pre_seated_workflow.count('timeout-minutes: 25'))
 check('seated focused bounded step and fail-closed collector', 'timeout-minutes: 10\n        run: bash tools/ci/native-apple.sh diagnostics-unit' in current_workflow and 'run: python3 tools/ci/collect-seated-projection.py' in current_workflow)
 
+check('classified stdout isolated from SwiftPM stderr', '--xunit-output "$out/tests.xml" 2> "$out/swift-test.stderr.log" | tee "$out/swift-test.log"' in current_workflow)
+check('classified stderr retained separately after both pipeline exits captured', current_workflow.index('statuses=("${PIPESTATUS[@]}")') < current_workflow.index('cat "$out/swift-test.stderr.log" >&2') and 'test "${statuses[0]}" -eq 0' in current_workflow and 'test "${statuses[1]}" -eq 0' in current_workflow)
+check('actual session initializer label source regressions', subprocess.run([sys.executable, str(R/'tools/ci/test_live_mesh_session_initializer.py')], cwd=R, capture_output=True, timeout=15).returncode == 0)
 print(json.dumps(dict(sourceChecksPassed=len(checks), checks=checks, appPatchApplied=True, criticalOrderPatchApplied=True, practicePublicationPatchApplied=True, projectCanonicalizationPatchApplied=True, connectedBenchPreviewMembershipApplied=True, navigationTestRecordingApplied=True, savedFrameCameraAssociationApplied=True, sceneTimingCIHelperApplied=True, recorderTimingCIHelperApplied=True, savedRoomGeometryMembershipApplied=True, appleRoomPlanFixtureMembershipApplied=True, appleRoomRouteMembershipApplied=True, classificationIngressMembershipApplied=True, hostedDecoderLinkMembershipApplied=True,
     appleBuild='pending', historicalLayersReversedExactly=True, defaultAppActivation=False, runtimeOptIn='diagnostic flag plus explicit seated confirmation required', geometryCopyEnabled='only inside separately admitted diagnostic owner',
     physicalAuthority=False, experimental128MiBCapCompliance='not claimed'), indent=2))
