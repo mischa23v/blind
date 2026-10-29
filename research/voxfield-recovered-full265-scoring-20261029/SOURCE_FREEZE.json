@@ -1,0 +1,42 @@
+{
+  "status": "prepared_not_executed",
+  "pins": {
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/B/PATH_ONLY.patch": "d9d3642981b3e1595d310cfbdfe2ab153089e5ffd1ccd992caf0fbf72b07ef46",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/B/SUMMARY_PATH_ONLY.patch": "d2e95886ff0074669f5a381ef638b4bb4f26b3e535c99f66f0feb7245533d06d",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/B/evaluate_mapper.py": "7a8bd3371d049d9178419a9e64ecc680431f3512a6e1b6cb23541b2558c5ad35",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/B/summarize_mapper.py": "adf7f95cb0f9228f321056d08303cdfbea3c55465cbbabd771fc3dcf312b7c67",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/C0/PATH_ONLY.patch": "864d62d80a2e9442d6c35de2fdee42568921d3a9bf38bc23d39656743e41be75",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/C0/SUMMARY_PATH_ONLY.patch": "4a82a975033d9c99fee523a4ba4e0f589248ff13d491a04533ad465bb77fdf05",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/C0/evaluate_mapper.py": "6b22e6e20a2c97b17e51c7f4fcfcff0dbd190f54ce7d4bc1c0ec6af52d38cb21",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/C0/summarize_mapper.py": "d7560dffd7a99e26bb5af63e1da7443baf6bb7c0d255a7b8ec03c2bc7aeb8a2d",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/C1/PATH_ONLY.patch": "5caa852090ec3e20533495cafefcaee66894133afbcf20276aaffdc244b7cd17",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/C1/SUMMARY_PATH_ONLY.patch": "f18626e8255b3c2a8768e6f66682c14a8a20821447543b5a0d5fa7e35fea04aa",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/C1/evaluate_mapper.py": "5186648769f50121158fe9345e379fad6077ab8686e2d660f69ee4cde9e429bb",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/C1/summarize_mapper.py": "2613332c4435cdde08114de12ac1468c8051637dc1ad460ea3b3d4c88f31dca8",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/PREPARATION_CHECK.json": "c7f239cc58752f0d545ce6a0ac02341dfa235a5afc441f887dbdf2e09d3071b8",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/PRERUN_MANIFEST.json": "ea38e2cf2986b256f505dfd56dd0796b9c8175bb5819d19c686133e848375572",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/PROTOCOL.md": "27c75069f1573a6afcfabd2b8809acd120b6363f42835215bdadd7c827c68881",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/RECOVERED_FUSION_OUTPUT_FREEZE.template.json": "3592a3e4293a96e7b41d6acb0ae2d149f6994decb0c3d7c5f9c339858f9d8357",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/RECOVERED_OUTPUT_ADMISSION.template.json": "a52c48cb2c2152bca251847d9643dccff30ac95a4b51e3076f2ac1c2bd6533df",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/SCORE_ADMISSION.template.json": "da2d27d91f465a5492a1a0f65230aa0dabde127c572ec545ac050f49897316b5",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/execute_score.py": "fd8a9ec2905268e1f42f4ea496fbc8900868b8a5f210c6893c6bc00cf9007198",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/run_guarded.py": "b25a795755244400d6437dc855360c51b419c549c64a4789f02a765238cb5b7c",
+    "<WORKSPACE_ROOT>/coordination/voxfield-recovered-full265-same-protocol-score/verify_inputs.py": "d0965c1124ddd4d67b58f3c5368d73dcabd7c8bcbee5bba0a424109cb95c0c9b",
+    "<WORKSPACE_ROOT>/research/open3d-same-data-benchmark-20261028/fresh-run/evaluate_common.py": "06503818a4a402a2e9ca73e622c8cef8e9eb92f124f0e32c9abd72204175c3ee",
+    "<WORKSPACE_ROOT>/research/open3d-same-data-benchmark-20261028/fresh-run/summarize_common.py": "74e553a69f06ad17875c6e01532b302ae473fc93a6bd30df56fc80859ac251e1",
+    "<WORKSPACE_ROOT>/coordination/voxfield-full265-same-protocol-score/SOURCE_FREEZE.json": "b254c308bf10ce35937535b4eb1708156d22edfbdcbdc10d90eb5322daf21497",
+    "<WORKSPACE_ROOT>/coordination/voxfield-full265-same-protocol-score/INDEPENDENT_SOURCE_REVIEW.json": "8b38bdfaf98deb42429a6ec0571a4ed3e65f5e85360308a5dd7515d1a0dfc868"
+  },
+  "caps": {
+    "logicalCPUs": 1,
+    "conservativeCPUSeconds": 60,
+    "wallSeconds": 90,
+    "RSSBytes": 1073741824,
+    "newOutputBytes": 1073741824
+  },
+  "requiresIndependentReviewAndExclusiveSlot": true,
+  "requiresAllMapperOutputsAdmitted": true,
+  "requiresExplicitRecoveryAmendment": true,
+  "scoresProduced": false,
+  "includesGuardMonitorAndAdmissionChecksInBudget": true
+}
