@@ -1,0 +1,141 @@
+// SOURCE PREPARATION ONLY. Execution requires independent review/admission.
+// Full265 streaming supplied-pose fusion. Final meshes only; no reference input,
+// ESDF, TSDF save/reload, classifier, smoothing, thinning or clearing.
+// External runner pins manifest and raw SHA256 before admission; internal hashes
+// bind each arm reload to pass1. No execution authorized by this source file.
+#include "../n2-normal-candidate/n2_adapter.h"
+#include <voxblox/core/layer.h>
+#include <voxblox/core/voxel.h>
+#include <voxblox/integrator/tsdf_integrator.h>
+#include <voxblox/integrator/np_tsdf_integrator.h>
+#include <voxblox/mesh/mesh_integrator.h>
+#include <voxblox/io/mesh_ply.h>
+#include "sha256.h"
+#include <set>
+#include <Eigen/Geometry>
+#include <array>
+#include <chrono>
+#include <cmath>
+#include <cstdint>
+#include <cstdlib>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <limits>
+#include <map>
+#include <memory>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+using namespace voxblox;
+namespace {
+constexpr float kRayMax=5.055f,kTrunc=.2f,kInvVoxel=25.f;
+constexpr double kPoseTolerance=1e-4;
+constexpr double kScaledCoordinateLimit=1e6;
+constexpr int64_t kMaximumIndicesPerRay=1000000;
+using Clock=std::chrono::steady_clock;
+using Errors=std::map<std::string,uint64_t>;
+uint64_t engineConstructions=0,nativeCalls=0;
+double elapsed(Clock::time_point t){return std::chrono::duration<double>(Clock::now()-t).count();}
+std::string quote(const std::string&s){std::ostringstream o;o<<'"';for(unsigned char c:s){if(c=='"'||c=='\\')o<<'\\'<<c;else if(c<32)o<<"\\u"<<std::hex<<std::setw(4)<<std::setfill('0')<<int(c)<<std::dec;else o<<c;}o<<'"';return o.str();}
+std::string finiteNumber(double v){if(!std::isfinite(v))return "null";std::ostringstream o;o<<std::setprecision(17)<<v;return o.str();}
+void error(Errors&e,const std::string&s){++e[s];}
+void writeErrors(std::ostream&o,const Errors&e){o<<"{";bool first=true;for(const auto&x:e){if(!first)o<<",";first=false;o<<quote(x.first)<<":"<<x.second;}o<<"}";}
+void require(bool b,const std::string&s){if(!b)throw std::runtime_error(s);}
+struct Frame{
+ std::string id,depthPath,rgbPath,depthSha,rgbSha;int width=0,height=0;double fx=0,fy=0,cx=0,cy=0;Eigen::Matrix4d cgl=Eigen::Matrix4d::Zero();
+ std::vector<uint16_t>depth;std::vector<uint8_t>rgb;Pointcloud points,normals;Colors colors;
+ std::array<uint64_t,6>normalReasons{};std::array<uint64_t,5>rayRangeBands{};std::array<std::array<uint64_t,6>,5>rangeNormalCross{};
+ std::map<std::string,size_t>firstRejectedPixels;
+ uint64_t attempted=0,zero=0,far=0,admitted=0,orderDigest=1469598103934665603ULL;double preflightSeconds=0,orthogonalityResidual=0,determinantResidual=0,nativeRoundtripResidual=0,maxWorldLocalRangeDifference=0,maxScaledMagnitude=0,nativeQuaternionNorm=0,nativeRotationResidual=0,minProjectiveWeight=std::numeric_limits<double>::infinity(),maxProjectiveWeight=0,minNpWeight=std::numeric_limits<double>::infinity(),maxNpWeight=0;float minZ=std::numeric_limits<float>::infinity(),minRay=std::numeric_limits<float>::infinity(),maxRay=0;int64_t maxIndices=0;Transformation pose;
+};
+template<class T>bool readExact(const std::string&path,size_t count,std::vector<T>&out,Errors&errors,const std::string&kind){std::ifstream s(path,std::ios::binary);if(!s){error(errors,kind+"_open");return false;}out.resize(count);s.read(reinterpret_cast<char*>(out.data()),std::streamsize(count*sizeof(T)));if(s.gcount()!=std::streamsize(count*sizeof(T))||s.peek()!=EOF){error(errors,kind+"_byte_count");return false;}return true;}
+std::vector<Frame>manifest(const std::string&path,Errors&errors){std::ifstream s(path);if(!s){error(errors,"manifest_open");return {};}std::vector<Frame>a;std::set<std::string>seen;std::string line;while(std::getline(s,line)){if(a.size()>=265){error(errors,"manifest_more_than_265_rows");break;}Frame f;std::istringstream row(line);row>>f.id>>f.depthPath>>f.rgbPath>>f.width>>f.height>>f.fx>>f.fy>>f.cx>>f.cy;for(int r=0;r<4;++r)for(int c=0;c<4;++c)row>>f.cgl(r,c);std::string extra;if(!row||row>>extra){error(errors,"manifest_row_schema");continue;}if(!seen.insert(f.id).second)error(errors,"manifest_duplicate_id");a.push_back(std::move(f));}if(a.size()!=265)error(errors,"manifest_not_265_frames");return a;}
+// SHA256 over actual loaded bytes, not paths/stat metadata. External pinning still required.
+std::map<std::string,std::pair<std::string,std::string>> expectedHashes(const std::string&path){std::ifstream in(path);require(bool(in),"expected_hash_file_open");std::map<std::string,std::pair<std::string,std::string>> hashes;std::string line;while(std::getline(in,line)){std::string id,d,r,extra;std::istringstream row(line);require(bool(row>>id>>d>>r)&&!(row>>extra),"expected_hash_schema");auto valid=[](const std::string&v){return v.size()==64&&v.find_first_not_of("0123456789abcdef")==std::string::npos;};require(valid(d)&&valid(r),"expected_hash_hex");require(hashes.emplace(id,std::make_pair(d,r)).second,"expected_hash_duplicate");}require(hashes.size()==265,"expected_hash_count");return hashes;}
+bool calibrationPose(Frame&f,Errors&e){bool good=true;
+ if(f.width!=738||f.height!=994){error(e,"original_raster_size");good=false;}
+ if(!std::isfinite(f.fx)||!std::isfinite(f.fy)||!std::isfinite(f.cx)||!std::isfinite(f.cy)||f.fx<=0||f.fy<=0){error(e,"intrinsics_finite_positive");good=false;}
+ if(!f.cgl.allFinite()){error(e,"pose_nonfinite");return false;}
+ if(f.cgl.block<3,1>(0,3).cwiseAbs().maxCoeff()>16.0){error(e,"pose_translation_precision_domain");return false;}
+ auto R=f.cgl.block<3,3>(0,0);if((f.cgl.row(3)-Eigen::RowVector4d(0,0,0,1)).cwiseAbs().maxCoeff()>kPoseTolerance){error(e,"pose_affine_bottom_row");good=false;}
+ f.orthogonalityResidual=(R.transpose()*R-Eigen::Matrix3d::Identity()).norm();f.determinantResidual=std::abs(R.determinant()-1);if(f.orthogonalityResidual>kPoseTolerance||f.determinantResidual>kPoseTolerance){error(e,"pose_not_proper_SE3");good=false;}
+ if(!good)return false;
+ Eigen::Matrix4d flip=Eigen::Matrix4d::Identity();flip(1,1)=-1;flip(2,2)=-1;const auto optical=(f.cgl*flip).eval();const Transformation::TransformationMatrix native=optical.cast<FloatingPoint>();if(!native.allFinite()){error(e,"native_pose_float_overflow_before_constructor");return false;}f.pose=Transformation(native);const auto& nativeQ=f.pose.getRotation().toImplementation();f.nativeQuaternionNorm=double(nativeQ.norm());const Eigen::Matrix3f nativeR=f.pose.getRotationMatrix();f.nativeRotationResidual=double((nativeR.transpose()*nativeR-Eigen::Matrix3f::Identity()).norm());if(!nativeQ.coeffs().allFinite()||!std::isfinite(f.nativeQuaternionNorm)||std::abs(f.nativeQuaternionNorm-1.0)>1e-6||!nativeR.allFinite()||!std::isfinite(f.nativeRotationResidual)||f.nativeRotationResidual>1e-4||f.pose.getPosition().cwiseAbs().maxCoeff()>16.f){error(e,"native_quaternion_rotation_domain");return false;}
+ f.nativeRoundtripResidual=(f.pose.getTransformationMatrix().cast<double>()-optical).norm();if(!f.pose.getTransformationMatrix().allFinite()||f.nativeRoundtripResidual>kPoseTolerance){error(e,"native_pose_roundtrip");return false;}return true;}
+bool scaledRaySafe(const Point&start,const Point&end,int64_t*count){if(!start.allFinite()||!end.allFinite())return false;int64_t n=1;for(int k=0;k<3;++k){if(std::abs(double(start[k]))>kScaledCoordinateLimit||std::abs(double(end[k]))>kScaledCoordinateLimit)return false;
+ // Pinned API ownership: float endpoint+epsilon before floor, bounded before cast.
+ double a=std::floor(float(start[k]+kEpsilon)),b=std::floor(float(end[k]+kEpsilon));if(!std::isfinite(a)||!std::isfinite(b))return false;if(std::max(std::abs(a),std::abs(b))+1>=16777216.)return false;double blockA=std::floor(float(float(a)*.0625f)),blockB=std::floor(float(float(b)*.0625f));if(blockA<=std::numeric_limits<int>::min()+1.||blockB<=std::numeric_limits<int>::min()+1.||blockA>=std::numeric_limits<int>::max()-1.||blockB>=std::numeric_limits<int>::max()-1.)return false;n+=std::llabs(int64_t(b)-int64_t(a));}*count=n;return n<=kMaximumIndicesPerRay;}
+struct RayDomain { int64_t indices=0;double maxScaled=0;float length=0; };
+bool rayDomain(const Point&origin,const Point&measurement,float inverse,float trunc,float maxrange,bool clearing,RayDomain*out,std::string*why){
+ auto bad=[&](const char*r){if(why)*why=r;return false;};
+ if(!std::isfinite(inverse)||inverse<=0||!std::isfinite(trunc)||trunc<0||!std::isfinite(maxrange)||maxrange<=0)return bad("ray_config_invalid");
+ if(!origin.allFinite()||!measurement.allFinite())return bad("ray_endpoint_nonfinite");Point delta=measurement-origin;float length=delta.norm();if(!delta.allFinite()||!std::isfinite(length)||length<=0)return bad("ray_zero_or_norm_overflow");Point unit=delta.normalized();if(!unit.allFinite())return bad("ray_unit_nonfinite");
+ float clipped=std::min(std::max(length-trunc,0.f),maxrange);if(clearing&&clipped<=0)return bad("empty_clearing_interval");Point end=clearing?Point(origin+unit*clipped):Point(measurement+unit*trunc);Point startScaled=origin*inverse,endScaled=end*inverse;int64_t indices=0;if(!scaledRaySafe(startScaled,endScaled,&indices))return bad("scaled_surface_ray_unrepresentable_or_L1_cap");if(out){out->indices=indices;out->length=length;out->maxScaled=std::max(double(startScaled.cwiseAbs().maxCoeff()),double(endScaled.cwiseAbs().maxCoeff()));}return true;
+}
+void preflightSelftests(){sha256Selftests();require(sha256("",0)=="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","SHA256_empty_vector");require(sha256("abc",3)=="ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad","SHA256_abc_vector");std::cout<<"{\"sha256_known_vectors\":\"PASS\",\"unique_vectors\":9,\"additional_repeated_checks\":2}"<<std::endl;require(engineConstructions==0&&nativeCalls==0,"selftest_must_precede_native");size_t checks=0;
+ auto good=[&](bool b,const char*name){require(b,std::string("preflight_selftest:")+name);++checks;};
+ Frame base;base.width=738;base.height=994;base.fx=810;base.fy=811;base.cx=366;base.cy=503;base.cgl=Eigen::Matrix4d::Identity();
+ auto frameOK=[&](Frame f){Errors e;return calibrationPose(f,e)&&e.empty();};good(frameOK(base),"positive_calibration");
+ {auto f=base;f.cgl(0,3)=15.9;good(frameOK(f),"positive_prefix_translation_bound");f.cgl(0,3)=16.1;good(!frameOK(f),"prefix_translation_bound_rejected");}
+ for(double value:{0.,-1.,std::numeric_limits<double>::quiet_NaN(),std::numeric_limits<double>::infinity()}){auto f=base;f.fx=value;good(!frameOK(f),"invalid_focal");}
+ {auto f=base;f.cx=std::numeric_limits<double>::quiet_NaN();good(!frameOK(f),"nonfinite_principal");}
+ for(double value:{std::numeric_limits<double>::quiet_NaN(),std::numeric_limits<double>::infinity()}){auto f=base;f.cgl(0,3)=value;good(!frameOK(f),"nonfinite_pose");}
+ {auto f=base;f.cgl(0,3)=1e300;good(!frameOK(f),"finite_double_pose_float_overflow_before_constructor");}
+ {auto f=base;f.cgl(0,0)=-1;good(!frameOK(f),"reflection_pose");f=base;f.cgl(0,0)=2;good(!frameOK(f),"nonorthogonal_pose");f=base;f.cgl(3,0)=.01;good(!frameOK(f),"nonaffine_pose");}
+ auto rayOK=[&](Point o,Point p,float inv,float tr,float max,bool clear){RayDomain d;std::string why;return rayDomain(o,p,inv,tr,max,clear,&d,&why);};Point o=Point::Zero(),p(0,0,1);
+ good(rayOK(o,p,25,.2,5.055,false),"ordinary_ray");good(rayOK(Point(39999,0,0),Point(39999,0,1),25,.2,5.055,false),"near_scaled_bound_ray");
+ good(!rayOK(o,o,25,.2,5.055,false),"physical_zero_ray");for(float value:{std::numeric_limits<float>::quiet_NaN(),std::numeric_limits<float>::infinity()}){Point q=p;q.x()=value;good(!rayOK(o,q,25,.2,5.055,false),"nonfinite_coordinate");}
+ for(float value:{0.f,-1.f,std::numeric_limits<float>::infinity(),std::numeric_limits<float>::quiet_NaN()}){good(!rayOK(o,p,value,.2,5.055,false),"invalid_voxel_inverse");good(!rayOK(o,p,25,.2,value,false),"invalid_range");}
+ good(!rayOK(o,p,25,-.2,5.055,false),"negative_truncation");good(!rayOK(o,p,25,std::numeric_limits<float>::infinity(),5.055,false),"nonfinite_truncation");good(!rayOK(o,Point(0,0,.1f),25,.2,5.055,true),"empty_clear_rejected");good(rayOK(o,p,25,.2,5.055,true),"nonempty_clear_domain_only");
+ good(!rayOK(o,Point(std::numeric_limits<float>::max(),0,1),25,.2,5.055,false),"norm_overflow");good(!rayOK(Point(40001,0,0),Point(40001,0,1),25,.2,5.055,false),"scaled_coordinate_over_limit");
+ int64_t count=0;good(scaledRaySafe(Point(-499999,0,0),Point(499999,0,0),&count)&&count==999999,"positive_near_count_cap");good(!scaledRaySafe(Point(-500000,0,0),Point(500000,0,0),&count),"index_count_cap");good(!scaledRaySafe(Point(1000001,0,0),Point(1000001,0,1),&count),"index_coordinate_cap");
+ require(engineConstructions==0&&nativeCalls==0,"negative_selftest_constructed_engine_or_called_native");std::cout<<"{\"shared_preflight_selftests\":\"PASS\",\"checks\":"<<checks<<",\"engine_constructions\":0,\"native_calls\":0,\"native_invalid_input_claim\":false}"<<std::endl;
+}
+void preflight(Frame&f,Errors&e){auto started=Clock::now();Errors local;if(!calibrationPose(f,local)){for(auto&x:local)e[f.id+":"+x.first]+=x.second;f.preflightSeconds=elapsed(started);return;}
+ const size_t count=size_t(f.width)*f.height;bool depthOK=readExact(f.depthPath,count,f.depth,local,"depth"),rgbOK=readExact(f.rgbPath,3*count,f.rgb,local,"rgb");if(!depthOK||!rgbOK){for(auto&x:local)e[f.id+":"+x.first]+=x.second;f.preflightSeconds=elapsed(started);return;}
+ f.depthSha=sha256(f.depth.data(),f.depth.size()*sizeof(uint16_t));f.rgbSha=sha256(f.rgb.data(),f.rgb.size());
+ for(auto d:f.depth)f.attempted+=d>0&&d<4000;
+ n2::Raster r;r.width=f.width;r.height=f.height;r.fx=f.fx;r.fy=f.fy;r.cx=f.cx;r.cy=f.cy;r.depthMm=f.depth;n2::Result n;
+ try{n=n2::compute(r);}catch(const std::exception&){error(local,"N2_provider_rejected");for(auto&x:local)e[f.id+":"+x.first]+=x.second;f.preflightSeconds=elapsed(started);return;}
+ f.zero=n.zero;f.far=n.far;f.admitted=n.points.size();if(f.admitted==0)error(local,"no_admitted_points_nonvacuity");for(size_t k=0;k<f.normalReasons.size();++k)f.normalReasons[k]=n.counts[k];
+ if(n.normals.size()!=n.points.size()||n.pixelIndices.size()!=n.points.size()||n.reasons.size()!=n.points.size()){error(local,"N2_array_shape");for(auto&x:local)e[f.id+":"+x.first]+=x.second;f.preflightSeconds=elapsed(started);return;}
+ auto reject=[&](const std::string&reason,size_t pixel){error(local,reason);f.firstRejectedPixels.emplace(reason,pixel);};size_t i=0;Point origin=f.pose.getPosition();for(size_t pixel=0;pixel<count;++pixel){if(f.depth[pixel]==0||f.depth[pixel]>=4000)continue;if(i>=n.points.size()){reject("N2_missing_admitted_points",pixel);break;}const Point p=n.points[i],normal=n.normals[i];
+  if(n.pixelIndices[i]!=pixel)reject("pixel_order_changed",pixel);const Point expectedPoint=n2::unproject(int(pixel%size_t(f.width)),int(pixel/size_t(f.width)),f.depth[pixel],r);if(p!=expectedPoint)reject("point_not_original_pixel_K_depth",pixel);for(unsigned b=0;b<8;++b){f.orderDigest^=(uint64_t(pixel)>>(b*8))&255;f.orderDigest*=1099511628211ULL;}
+  if(!p.allFinite()||!normal.allFinite()){reject("point_or_normal_nonfinite",pixel);++i;continue;}unsigned reasonIndex=static_cast<unsigned>(n.reasons[i]);if(reasonIndex>=6){reject("normal_reason_out_of_domain",pixel);++i;continue;}bool normalValid=n.reasons[i]==n2::Reason::Valid;if((normalValid&&std::abs(normal.norm()-1.f)>1e-4f)||(!normalValid&&normal.squaredNorm()!=0)){reject("normal_reason_unit_zero_contract",pixel);++i;continue;}float z2=p.z()*p.z(),r2=p.squaredNorm();if(p.z()<=0||p.z()>=4||!std::isfinite(z2)||!std::isfinite(r2)||z2<=0||r2<=0||!std::isfinite(1.f/z2)||!std::isfinite(1.f/r2)){reject("inverse_depth_range_weight_domain",pixel);++i;continue;}float range=p.norm();if(!std::isfinite(range)||range<=0){reject("physical_sensor_ray_zero_nonfinite",pixel);++i;continue;}
+  if(range>kRayMax){reject("admitted_point_exceeds_frozen_raymax_no_drop",pixel);++i;continue;}
+  const float wp=1.f/(std::abs(p.z())*std::abs(p.z())),wn=1.f/std::pow(std::abs(p.norm()),2.f);if(p.z()<.001f||!std::isfinite(wp)||!std::isfinite(wn)||wp<.03f||wn<.03f||wp>1000002.f||wn>1000002.f){reject("merged_weight_positive_finite_prefix_bound",pixel);++i;continue;}f.minProjectiveWeight=std::min(f.minProjectiveWeight,double(wp));f.maxProjectiveWeight=std::max(f.maxProjectiveWeight,double(wp));f.minNpWeight=std::min(f.minNpWeight,double(wn));f.maxNpWeight=std::max(f.maxNpWeight,double(wn));
+  f.minZ=std::min(f.minZ,p.z());f.minRay=std::min(f.minRay,range);f.maxRay=std::max(f.maxRay,range);size_t bin=range<1?0:range<2?1:range<3?2:range<4?3:4;++f.rayRangeBands[bin];++f.rangeNormalCross[bin][reasonIndex];
+  Point world=f.pose*p,worldNormal=f.pose.getRotationMatrix()*normal;if(!worldNormal.allFinite()){reject("transformed_normal_nonfinite",pixel);++i;continue;}RayDomain ray;std::string rayReason;if(!rayDomain(origin,world,kInvVoxel,kTrunc,kRayMax,false,&ray,&rayReason)){reject(rayReason,pixel);++i;continue;}f.maxWorldLocalRangeDifference=std::max(f.maxWorldLocalRangeDifference,std::abs(double(ray.length)-range));f.maxIndices=std::max(f.maxIndices,ray.indices);f.maxScaledMagnitude=std::max(f.maxScaledMagnitude,ray.maxScaled);
+  f.points.push_back(p);f.normals.push_back(normal);f.colors.emplace_back(f.rgb[3*pixel],f.rgb[3*pixel+1],f.rgb[3*pixel+2]);++i;
+ }
+ if(i!=n.points.size()||f.points.size()!=n.points.size())error(local,"not_all_admitted_points_preflighted");uint64_t reasons=0,bands=0;for(auto x:f.normalReasons)reasons+=x;for(auto x:f.rayRangeBands)bands+=x;if(reasons!=f.admitted||bands!=f.admitted||f.attempted!=f.admitted||f.admitted+f.zero+f.far!=count)error(local,"denominator_mismatch");
+ for(auto&x:local)e[f.id+":"+x.first]+=x.second;f.preflightSeconds=elapsed(started);
+}
+TsdfIntegratorBase::Config pcfg(){TsdfIntegratorBase::Config c;c.default_truncation_distance=kTrunc;c.max_weight=10000;c.voxel_carving_enabled=true;c.min_ray_length_m=0;c.max_ray_length_m=kRayMax;c.use_const_weight=false;c.allow_clear=false;c.use_weight_dropoff=true;c.use_sparsity_compensation_factor=false;c.sparsity_compensation_factor=1.f;c.integrator_threads=1;c.integration_order_mode="mixed";c.enable_anti_grazing=false;c.merge_with_clear=true;return c;}
+NpTsdfIntegratorBase::Config ncfg(bool on){NpTsdfIntegratorBase::Config c;c.default_truncation_distance=kTrunc;c.max_weight=10000;c.voxel_carving_enabled=true;c.min_ray_length_m=0;c.max_ray_length_m=kRayMax;c.use_const_weight=false;c.allow_clear=false;c.use_weight_dropoff=true;c.weight_dropoff_epsilon=-1;c.use_sparsity_compensation_factor=false;c.sparsity_compensation_factor=1.f;c.integrator_threads=1;c.integration_order_mode="mixed";c.enable_anti_grazing=false;c.merge_with_clear=true;c.normal_available=on;c.weight_reduction_exp=2;c.reliable_band_ratio=2;c.reliable_normal_ratio_thre=.1;c.curve_assumption=false;return c;}
+struct State{uint64_t blocks=0,allocatedVoxels=0,observed=0,unknownAllocated=0,gradientNonzero=0,invalid=0;};
+State state(const Layer<TsdfVoxel>&layer){State s;BlockIndexList ids;layer.getAllAllocatedBlocks(&ids);s.blocks=ids.size();for(auto&id:ids){auto b=layer.getBlockPtrByIndex(id);s.allocatedVoxels+=b->num_voxels();for(size_t i=0;i<b->num_voxels();++i){auto&v=b->getVoxelByLinearIndex(i);const float gradientNorm=v.gradient.norm();bool finite=std::isfinite(v.distance)&&std::isfinite(v.weight)&&v.gradient.allFinite()&&std::isfinite(gradientNorm);s.invalid+=!finite||v.weight<0;if(v.weight>0)++s.observed;else ++s.unknownAllocated;if(v.gradient.allFinite()&&std::isfinite(gradientNorm)&&gradientNorm>0)++s.gradientNonzero;}}return s;}
+void frameLedger(std::ostream&o,const Frame&f){o<<"{\"frame\":"<<quote(f.id)<<",\"raster_pixels\":"<<size_t(f.width)*f.height<<",\"attempted_raw_admitted\":"<<f.attempted<<",\"validated_for_submission\":"<<f.points.size()<<",\"admitted\":"<<f.admitted<<",\"zero\":"<<f.zero<<",\"masked_z_ge4m\":"<<f.far<<",\"normal_reasons_valid_boundary_missing_discontinuity_nonfinite_degenerate\":[";for(size_t i=0;i<6;++i){if(i)o<<",";o<<f.normalReasons[i];}o<<"],\"ray_range_bands_0_1_2_3_4_5p055\":[";for(size_t i=0;i<5;++i){if(i)o<<",";o<<f.rayRangeBands[i];}o<<"],\"range_band_by_normal_reason\":[";for(size_t b=0;b<5;++b){if(b)o<<",";o<<"[";for(size_t q=0;q<6;++q){if(q)o<<",";o<<f.rangeNormalCross[b][q];}o<<"]";}o<<"],\"min_axial_z_m\":"<<(std::isfinite(f.minZ)?f.minZ:0)<<",\"min_ray_m\":"<<(std::isfinite(f.minRay)?f.minRay:0)<<",\"max_scaled_magnitude\":"<<f.maxScaledMagnitude<<",\"max_world_local_range_difference_m\":"<<f.maxWorldLocalRangeDifference<<",\"SE3_orthogonality_residual\":"<<finiteNumber(f.orthogonalityResidual)<<",\"SE3_det_residual\":"<<finiteNumber(f.determinantResidual)<<",\"native_pose_roundtrip_residual\":"<<finiteNumber(f.nativeRoundtripResidual)<<",\"native_quaternion_norm\":"<<finiteNumber(f.nativeQuaternionNorm)<<",\"native_rotation_orthogonality_residual\":"<<finiteNumber(f.nativeRotationResidual)<<",\"projective_weight_min_max\":["<<finiteNumber(f.minProjectiveWeight)<<","<<finiteNumber(f.maxProjectiveWeight)<<"],\"NP_weight_min_max\":["<<finiteNumber(f.minNpWeight)<<","<<finiteNumber(f.maxNpWeight)<<"]"<<",\"max_ray_m\":"<<f.maxRay<<",\"maximum_ray_owned_indices\":"<<f.maxIndices<<",\"point_order_fnv1a64_not_crypto\":"<<quote(std::to_string(f.orderDigest))<<",\"preflight_seconds\":"<<f.preflightSeconds<<",\"normal_validity_not_calibrated_confidence\":true,\"first_rejected_pixels\":{";bool first=true;for(auto&x:f.firstRejectedPixels){if(!first)o<<",";first=false;o<<quote(x.first)<<":"<<x.second;}o<<"}}"<<std::endl;}
+// Copy only immutable metadata, never resident raster or cloud arrays.
+Frame metadata(const Frame&x){Frame f;f.id=x.id;f.depthPath=x.depthPath;f.rgbPath=x.rgbPath;f.width=x.width;f.height=x.height;f.fx=x.fx;f.fy=x.fy;f.cx=x.cx;f.cy=x.cy;f.cgl=x.cgl;return f;}
+// Full deterministic ledger except elapsed time; JSON exact equality checks all counters,
+// ranges, precision residuals and order digest. SHA binds all depth/RGB bytes separately.
+std::string signature(Frame&f){double seconds=f.preflightSeconds;f.preflightSeconds=0;std::ostringstream out;out<<std::setprecision(17);frameLedger(out,f);f.preflightSeconds=seconds;return out.str();}
+struct Expected{std::string ledger,depthSha,rgbSha;};
+void runArm(int mode,const std::vector<Frame>&frames,const std::vector<Expected>&expected,std::ostream&o,const std::string&outDir,bool&nativeStarted,Errors&errors){const char*name=mode==0?"B":mode==1?"C0":"C1";++engineConstructions;Layer<TsdfVoxel>layer(.04f,16);std::unique_ptr<MergedTsdfIntegrator>p;std::unique_ptr<MergedNpTsdfIntegrator>n;if(mode==0)p.reset(new MergedTsdfIntegrator(pcfg(),&layer));else n.reset(new MergedNpTsdfIntegrator(ncfg(mode==2),&layer));auto start=Clock::now();uint64_t total=0;
+ for(size_t index=0;index<frames.size();++index){Frame f=metadata(frames[index]);preflight(f,errors);o<<"{\"event\":\"arm_reload_preflight\",\"arm\":"<<quote(name)<<",\"frame\":"<<quote(f.id)<<",\"preflight_seconds\":"<<f.preflightSeconds<<",\"depth_sha256\":"<<quote(f.depthSha)<<",\"rgb_sha256\":"<<quote(f.rgbSha)<<"}"<<std::endl;
+  if(!errors.empty()){frameLedger(o,f);throw std::runtime_error("arm_reload_preflight_failed_no_skip");}require(f.depthSha==expected[index].depthSha&&f.rgbSha==expected[index].rgbSha,"raw_bytes_changed_since_all265_preflight");require(signature(f)==expected[index].ledger,"frame_ledger_changed_since_all265_preflight");
+  o<<"{\"event\":\"native_submission_attempt\",\"arm\":"<<quote(name)<<",\"frame\":"<<quote(f.id)<<",\"attempted\":"<<f.attempted<<",\"validated\":"<<f.points.size()<<",\"about_to_submit\":"<<f.points.size()<<"}"<<std::endl;nativeStarted=true;++nativeCalls;auto t=Clock::now();if(p)p->integratePointCloud(f.pose,f.points,f.colors,false);else n->integratePointCloud(f.pose,f.points,f.normals,f.colors,false);double integration=elapsed(t);total+=f.admitted;auto scan=Clock::now();auto st=state(layer);double inspection=elapsed(scan);
+  o<<"{\"arm\":"<<quote(name)<<",\"frame\":"<<quote(f.id)<<",\"submitted_this_frame_not_independent_integrated_points\":"<<f.admitted<<",\"cumulative_submitted\":"<<total<<",\"integration_seconds\":"<<integration<<",\"state_scan_seconds\":"<<inspection<<",\"arm_elapsed_seconds\":"<<elapsed(start)<<",\"blocks\":"<<st.blocks<<",\"allocated_voxels\":"<<st.allocatedVoxels<<",\"observed_weight_positive\":"<<st.observed<<",\"unknown_allocated\":"<<st.unknownAllocated<<",\"nonzero_gradient\":"<<st.gradientNonzero<<",\"invalid_native_voxels\":"<<st.invalid<<",\"accuracy_claim\":false}"<<std::endl;require(st.invalid==0,"native_nonfinite_or_negative_weight");require(st.observed>0,"native_empty_observation_nonvacuity");
+ } // Each Frame destructs here; no full-scene cloud cache.
+ auto meshStart=Clock::now();MeshLayer ml(layer.block_size());MeshIntegratorConfig mc;mc.integrator_threads=1;mc.use_color=true;mc.min_weight=1e-4;MeshIntegrator<TsdfVoxel> mesher(mc,&layer,&ml);mesher.generateMesh(false,false);Mesh result(ml.block_size(),Point::Zero());require(convertMeshLayerToMesh(ml,&result,false),"empty_native_mesh");require(!result.vertices.empty()&&!result.indices.empty(),"mesh_nonvacuity");require(result.indices.size()%3==0,"mesh_triangle_index_count");for(const auto&v:result.vertices)require(v.allFinite(),"nonfinite_mesh_vertex");for(auto i:result.indices)require(i<result.vertices.size(),"mesh_index_out_of_bounds");require(outputMeshAsPly(outDir+"/"+name+"_native_mesh.ply",result),"native_mesh_write");
+ o<<"{\"event\":\"final_mesh\",\"arm\":"<<quote(name)<<",\"frames\":265,\"submitted\":"<<total<<",\"mesh_vertices\":"<<result.vertices.size()<<",\"mesh_indices\":"<<result.indices.size()<<",\"mesh_seconds\":"<<elapsed(meshStart)<<",\"accuracy_claim\":false}"<<std::endl;
+}
+}
+int main(int argc,char**argv){google::InitGoogleLogging(argv[0]);Errors errors;std::string outDir;bool nativeStarted=false;try{require(argc==4,"usage adapter frozen_original_265_manifest existing_output_directory expected_sha256_file");outDir=argv[2];auto pinnedHashes=expectedHashes(argv[3]);uint16_t endian=1;require(*reinterpret_cast<uint8_t*>(&endian)==1,"little_endian_host_required");std::ofstream pre(outDir+"/PREFLIGHT.jsonl");require(bool(pre),"preflight_output_open");pre<<std::setprecision(17);preflightSelftests();auto frames=manifest(argv[1],errors);std::vector<Expected>expected;size_t checkedFrames=0;
+ if(errors.empty())for(const auto&meta:frames){Frame f=metadata(meta);preflight(f,errors);++checkedFrames;auto hash=pinnedHashes.find(f.id);if(hash==pinnedHashes.end()||f.depthSha!=hash->second.first||f.rgbSha!=hash->second.second)error(errors,f.id+":raw_hash_differs_from_frozen_expected");frameLedger(pre,f);pre<<"{\"frame\":"<<quote(f.id)<<",\"depth_sha256\":"<<quote(f.depthSha)<<",\"rgb_sha256\":"<<quote(f.rgbSha)<<"}"<<std::endl;expected.push_back({signature(f),f.depthSha,f.rgbSha});}
+ pre<<"{\"preflight_frames_checked\":"<<checkedFrames<<",\"all_265_preflight_complete_before_any_engine\":"<<((checkedFrames==265&&errors.empty())?"true":"false")<<",\"errors\":";writeErrors(pre,errors);pre<<",\"external_manifest_and_raw_SHA256_verification_required\":true}"<<std::endl;
+ require(engineConstructions==0&&nativeCalls==0,"preflight_constructed_native_engine");require(errors.empty(),"all265_preflight_gate_failed");require(frames.size()==265&&expected.size()==265,"265_frame_count");std::ofstream arms(outDir+"/ARMS.jsonl");require(bool(arms),"arm_output_open");arms<<std::setprecision(17);for(int mode=0;mode<3;++mode)runArm(mode,frames,expected,arms,outDir,nativeStarted,errors);std::cout<<"{\"status\":\"PASS\",\"scope\":\"all265_supplied_pose_fusion_only\",\"arms\":[\"B\",\"C0\",\"C1\"],\"full_run\":true,\"accuracy_claim\":false}"<<std::endl;return 0;
+ }catch(const std::exception&e){error(errors,e.what());std::cerr<<"{\"status\":\"FAIL\",\"native_started\":"<<(nativeStarted?"true":"false")<<",\"partial_outputs_quarantined\":true,\"partial_outputs_diagnostic_only\":true,\"reasons\":";writeErrors(std::cerr,errors);std::cerr<<"}"<<std::endl;if(!outDir.empty()){std::ofstream f(outDir+"/REJECTED.json");if(f){f<<"{\"partial_outputs_quarantined\":true,\"partial_outputs_diagnostic_only\":true,\"native_started\":"<<(nativeStarted?"true":"false")<<",\"reasons\":";writeErrors(f,errors);f<<"}\n";}}return 2;}}
