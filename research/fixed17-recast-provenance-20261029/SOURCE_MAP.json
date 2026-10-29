@@ -1,0 +1,73 @@
+{
+  "scope": "hash identity; exact originals distinct from unexecuted export variants",
+  "sources": [
+    {
+      "exportPath": "sources/erosion_observer.cpp",
+      "kind": "exact-original-source",
+      "originalFileName": "erosion_observer.cpp",
+      "originalSHA256": "795f7342f7062371843a65add803611b0d1a681850455f7dc0e75a95af9237a2",
+      "exportSHA256": "795f7342f7062371843a65add803611b0d1a681850455f7dc0e75a95af9237a2"
+    },
+    {
+      "exportPath": "sources/observer.h",
+      "kind": "exact-original-source",
+      "originalFileName": "observer.h",
+      "originalSHA256": "944dd14114d050249ae93c228b26c6aa249c73189ec46d3245ad385fee44ebc3",
+      "exportSHA256": "944dd14114d050249ae93c228b26c6aa249c73189ec46d3245ad385fee44ebc3"
+    },
+    {
+      "exportPath": "sources/observer_body.diff",
+      "kind": "exact-original-source",
+      "originalFileName": "observer_body.diff",
+      "originalSHA256": "db2ab814fd7146e2469e0ae29295b60f14594a165a10621b636b70fb5a31df18",
+      "exportSHA256": "db2ab814fd7146e2469e0ae29295b60f14594a165a10621b636b70fb5a31df18"
+    },
+    {
+      "exportPath": "sources/mesh_reader.py",
+      "kind": "exact-original-source",
+      "originalFileName": "mesh_reader.py",
+      "originalSHA256": "2b65b36c40460f088528fb29b899fad043051b083695280da27c3c0146c12b75",
+      "exportSHA256": "2b65b36c40460f088528fb29b899fad043051b083695280da27c3c0146c12b75"
+    },
+    {
+      "exportPath": "sources/provenance_shim.export.cpp",
+      "kind": "externalized-not-executed",
+      "originalFileName": "provenance_shim.cpp",
+      "originalSHA256": "1d7e780691eeff95a8f66149cf6155a5d1eb901de3b0d15de872f81756918913",
+      "exportSHA256": "e71a57d62997677d1d840eda3a1a8e54c80d4e3b7b917708a6214cbb3210ce01",
+      "changes": [
+        "Private grid dimensions, fixed cell list and input bounds replaced by withheld fixture configuration",
+        "Added export warning; other C ABI logic retained"
+      ]
+    },
+    {
+      "exportPath": "sources/worker.export.py",
+      "kind": "externalized-inert-not-executed",
+      "originalFileName": "worker.py",
+      "originalSHA256": "afdf03abe44d647697eb9e8ba5fb3df8ab9d22e51c6791c5e8a45cca1460c7a0",
+      "exportSHA256": "289b17f53476fd97a8336fff0d3e659e325bbdae13d1587552a4bdef73fdc3c0",
+      "changes": [
+        "Removed private admission/compiler launch block; unconditional inert refusal",
+        "Externalized actual cell list, grid origin/dimensions and saved-replay path",
+        "Preserved downstream parity/selection/readout source for inspection, unreachable without deliberate port"
+      ]
+    },
+    {
+      "exportPath": "sources/reader_fixtures.export.py",
+      "kind": "externalized-not-executed",
+      "originalFileName": "reader_fixtures.py",
+      "originalSHA256": "bddf137fcc709b183c6548710c5a653652dfdffdcafe0012bc156f5660c4b505",
+      "exportSHA256": "d76b6caa9dca60d7ac138ebcd3ffaf84790babb723f1e9f8858851bf06f1b9bc",
+      "changes": [
+        "Externalized synthetic triangle placement within actual fixed cells and its cell ordinal",
+        "Synthetic square/multilayer test values retained; these are not captured geometry"
+      ]
+    }
+  ],
+  "omittedSources": [
+    {
+      "name": "guard.py",
+      "sha256": "6fb40c488b5c28f61f74bd9364e32d2e682274996ce328047228c8ba30e8d0aa"
+    }
+  ]
+}
