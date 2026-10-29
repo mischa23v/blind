@@ -26,6 +26,21 @@ int bn_path(void* handle, const float* start, const float* goal,
             const float* query_half_extents, float* points, int max_points,
             float* projected_start, float* projected_goal,
             unsigned int* status, int* complete);
+/* Opt-in requested-XZ admission, NOT physical clearance/support. Legacy bn_path
+   is unchanged. Receipts are initialized on every call; an argument/admission
+   refusal returns -1, emits no route points and leaves route status/complete at
+   zero. After admission, downstream path failures retain bn_path status. */
+typedef struct BNEndpointAssociation {
+    int found, is_over_polygon;
+    float projected[3];
+    unsigned int status;
+} BNEndpointAssociation;
+int bn_path_strict(void* handle, const float* start, const float* goal,
+                   const float* query_half_extents, float* points, int max_points,
+                   float* projected_start, float* projected_goal,
+                   unsigned int* status, int* complete,
+                   BNEndpointAssociation* start_association,
+                   BNEndpointAssociation* goal_association);
 /* Upstream velocity sampler; candidate ONLY, not delayed-body clearance.
    circles: x,y,z,r,vx,vy,vz; segments: ax,ay,az,bx,by,bz. */
 int bn_velocity(const float* pos, float radius, float vmax,

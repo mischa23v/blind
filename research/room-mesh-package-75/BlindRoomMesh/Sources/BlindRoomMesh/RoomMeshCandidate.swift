@@ -1,6 +1,23 @@
 import Foundation
 
-public enum MeshCandidateError: Error { case invalidInput, unavailable, stale, nativeFailure }
+public enum MeshCandidateError: Error {
+ case invalidInput, unavailable, stale, nativeFailure
+ case endpointAssociationRejected(MeshEndpointAdmissionReceipt)
+}
+/// Default remains the original diagnostic comparator. Strict mode only checks
+/// requested XZ membership; it does not establish physical support or clearance.
+public enum MeshEndpointPolicy: String, Codable, Sendable {
+ case legacyNearestProjection, requireSuppliedXZOverPolygon
+}
+public struct MeshEndpointAssociation: Codable, Sendable {
+ public let requested: [Float], projected: [Float]
+ public let found: Bool, isOverPolygon: Bool, nativeStatus: UInt32
+}
+public struct MeshEndpointAdmissionReceipt: Codable, Sendable {
+ public let policy: MeshEndpointPolicy
+ public let start: MeshEndpointAssociation, goal: MeshEndpointAssociation
+ public let authorizesPhysicalGuidance: Bool
+}
 /// Source semantics, not live support evidence. Obstacles are still rasterized.
 public enum MeshTriangleSupport: UInt8, Codable, Sendable { case obstacle = 0, floor = 1 }
 /// Classified mode never promotes furniture tops or unclassified triangles to floor.
@@ -43,6 +60,8 @@ public struct MeshCandidateRoute {
  public let points: [[Float]], projectedStart: [Float], projectedGoal: [Float]
  public let complete: Bool, nativeStatus: UInt32, sourceDeliveryComplete: Bool
  public let unknownCoverage: [String]
+ public let endpointPolicy: MeshEndpointPolicy
+ public let endpointAdmission: MeshEndpointAdmissionReceipt?
  public let authorizesPhysicalGuidance=false, actualWorldCoverageKnown=false, rawDepthHazardImplemented=false, rawDepthHazardVeto=true
 }
 /// Candidate-only bounded mailbox. No ARKit, speech, haptics or motion outputs.
@@ -60,11 +79,13 @@ public final class RoomMeshCandidateRuntime {
  private var discardWaiters:[()->Void]=[]
  private let maxPending=8, maxPendingScalars=900000
  private let supportPolicy: MeshSupportPolicy
+ private let endpointPolicy: MeshEndpointPolicy
  // Accessed only on worker. No native handles escape a single query.
  private var owner: Replay?
- public init(sessionID: String,generation: Int=0,supportPolicy: MeshSupportPolicy = .legacySlope)throws {
+ public init(sessionID: String,generation: Int=0,supportPolicy: MeshSupportPolicy = .legacySlope,
+             endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection)throws {
   guard !sessionID.isEmpty,sessionID.utf8.count<=128,generation>=0 else{throw MeshCandidateError.invalidInput}
-  session=sessionID;self.generation=generation;self.supportPolicy=supportPolicy
+  session=sessionID;self.generation=generation;self.supportPolicy=supportPolicy;self.endpointPolicy=endpointPolicy
  }
 #if DEBUG
  /// Explicit synthetic-test opt-in. Release builds contain no receipt storage,
@@ -82,8 +103,9 @@ public final class RoomMeshCandidateRuntime {
  private var diagnosticReceipts: [DiagnosticStageReceipt] = []
  public private(set) var diagnosticReceiptID: UUID?
  public convenience init(sessionID: String,generation: Int=0,supportPolicy: MeshSupportPolicy = .legacySlope,
+                         endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
                          captureSyntheticTestTiming: Bool)throws {
-  try self.init(sessionID:sessionID,generation:generation,supportPolicy:supportPolicy)
+  try self.init(sessionID:sessionID,generation:generation,supportPolicy:supportPolicy,endpointPolicy:endpointPolicy)
   // Assigned before this owner escapes; never enabled/disabled during work.
   if captureSyntheticTestTiming {
    diagnosticReceiptID=UUID()
@@ -247,14 +269,20 @@ public final class RoomMeshCandidateRuntime {
     recordDiagnosticStage(.nativeBuildEnd)
     recordDiagnosticStage(.routeBegin)
 #endif
-    let path=try native.route(start,goal)
+    let path=try native.route(start,goal,endpointPolicy:endpointPolicy)
 #if DEBUG
     recordDiagnosticStage(.routeEnd)
 #endif
     let state=locked{(matches(s,g,r),gap)}
     guard state.0 else{finish(.failure(.stale));return}
     var unknown=owner.unknown.sorted();if state.1{unknown.append("ingress-or-lifecycle-gap")}
-    finish(.success(MeshCandidateRoute(sessionID:s,generation:g,revision:r,points:path.points,projectedStart:path.projected_start,projectedGoal:path.projected_goal,complete:path.complete,nativeStatus:path.status,sourceDeliveryComplete:owner.sourceComplete && !state.1,unknownCoverage:unknown)))
+    finish(.success(MeshCandidateRoute(sessionID:s,generation:g,revision:r,points:path.points,projectedStart:path.projected_start,projectedGoal:path.projected_goal,complete:path.complete,nativeStatus:path.status,sourceDeliveryComplete:owner.sourceComplete && !state.1,unknownCoverage:unknown,endpointPolicy:endpointPolicy,endpointAdmission:path.endpointAdmission)))
+   } catch MeshCandidateError.endpointAssociationRejected(let receipt) {
+#if DEBUG
+    recordDiagnosticStage(.nativeFailure)
+#endif
+    guard locked({matches(s,g,r)}) else{finish(.failure(.stale));return}
+    finish(.failure(.endpointAssociationRejected(receipt)))
    } catch {
 #if DEBUG
     recordDiagnosticStage(.nativeFailure)

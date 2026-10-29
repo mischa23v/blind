@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "scope": "reviewed current Earcut integration, not historical Apple proof",
+  "scope": "reviewed current Earcut and opt-in strict endpoint integration, not historical Apple proof",
   "historical_manifest": "APPLE_SOURCE_PINS.json",
   "historical_manifest_sha256": "d96e7e5ecf2f1bfdfe42e95e1717119ffccb7e306bfd54aa4815b2f5f40b8530",
   "reviewed_changes": [
@@ -8,6 +8,26 @@
       "path": "BlindRoomMesh/Package.swift",
       "before": "0b847f71419fa2f74e5231e5c32fc5db049ae512fbafe57ace7d7bf41ed8dfba",
       "after": "c63d781574c06f8a8a5bfeccb0268ad4ad2614408299c34bdc893f43a327a612"
+    },
+    {
+      "path": "BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift",
+      "before": "321a0488cc21b8367779b14898e551ac493af5472724fff74f682d3fa1915095",
+      "after": "353e43edd3ece7cd918c01a693c145f2682a59807b3db9c8fb942a31e9959dee"
+    },
+    {
+      "path": "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+      "before": "264a44959d812e9db9827644f3b5a6629acaa95d822cf4fe122adc2cb7a5f473",
+      "after": "d4684b7dcba25344fc219463f5b7a5560a9b976896f7a51e5e9e50a1068dd352"
+    },
+    {
+      "path": "BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp",
+      "before": "f20ab288f7e6372b1d615c98d0cf2952e6bfed2956aeea5ae616785b68418d0d",
+      "after": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036"
+    },
+    {
+      "path": "BlindRoomMesh/Sources/CDetour/include/blind_detour.h",
+      "before": "4f609d5d7db1e16ea257672d1dba04a178d56bd1d27a514a2bd66cbcf14eaba3",
+      "after": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b"
     },
     {
       "path": "apple/ci.py",
@@ -25,12 +45,12 @@
   "files": {
     "BlindRoomMesh/LICENSE-Recast.txt": "ffad87821cce7cfd3be00b63ffadd01b04e83a4c6a0bcc68f06362ffd42d705e",
     "BlindRoomMesh/Package.swift": "c63d781574c06f8a8a5bfeccb0268ad4ad2614408299c34bdc893f43a327a612",
-    "BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "321a0488cc21b8367779b14898e551ac493af5472724fff74f682d3fa1915095",
+    "BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "353e43edd3ece7cd918c01a693c145f2682a59807b3db9c8fb942a31e9959dee",
     "BlindRoomMesh/Sources/BlindRoomMesh/Exclusion.swift": "625e4458430ff8852a5772603c0fa1eaed35f0114edc411dfcc3dd47a3fc388a",
-    "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "264a44959d812e9db9827644f3b5a6629acaa95d822cf4fe122adc2cb7a5f473",
-    "BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "f20ab288f7e6372b1d615c98d0cf2952e6bfed2956aeea5ae616785b68418d0d",
+    "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "d4684b7dcba25344fc219463f5b7a5560a9b976896f7a51e5e9e50a1068dd352",
+    "BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036",
     "BlindRoomMesh/Sources/CDetour/clearance_adapter.cpp": "c1c69184a434bbb46280fd6125f52138f83802e114724d26369eb4e2a62ae2ee",
-    "BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "4f609d5d7db1e16ea257672d1dba04a178d56bd1d27a514a2bd66cbcf14eaba3",
+    "BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b",
     "BlindRoomMesh/Sources/CDetour/include/module.modulemap": "ca0948e7abf144baf7af21b209d23cb9f761e967ba97a81185ea9f678ed07460",
     "BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourAlloc.h": "5f617c7f162069c395d7edfc59f0e06a9b6afaf6698de8fd674c80f00056ab71",
     "BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourAssert.h": "2859e197e1877d3c53f7acc455ceedbe9ce1181fe44779169a3dc16c1508b794",

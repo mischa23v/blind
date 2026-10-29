@@ -196,6 +196,41 @@ extern "C" int bn_path(void* handle,const float* start,const float* goal,const f
     *complete=(corridor[nc-1]==b && !dtStatusDetail(*status,DT_PARTIAL_RESULT|DT_BUFFER_TOO_SMALL|DT_OUT_OF_NODES));
     return count;
 }
+extern "C" int bn_path_strict(void* handle,const float* start,const float* goal,const float* ext,
+                              float* points,int cap,float* projected_start,float* projected_goal,
+                              unsigned int* status,int* complete,
+                              BNEndpointAssociation* start_association,
+                              BNEndpointAssociation* goal_association) {
+    error_message[0]=0;
+    if (status) *status=0;
+    if (complete) *complete=0;
+    if (start_association) std::memset(start_association,0,sizeof(*start_association));
+    if (goal_association) std::memset(goal_association,0,sizeof(*goal_association));
+    if (!handle || !finite3(start) || !finite3(goal) || !finite3(ext) || !points ||
+        !projected_start || !projected_goal || !status || !complete ||
+        !start_association || !goal_association || start_association==goal_association || cap<2 || cap>4096 ||
+        ext[0]<=0 || ext[1]<=0 || ext[2]<=0 || ext[0]>3 || ext[1]>3 || ext[2]>3) {
+        fail("invalid strict endpoint query"); return -1;
+    }
+    BNHandle* h=static_cast<BNHandle*>(handle);
+    dtQueryFilter filter; filter.setIncludeFlags(1); filter.setExcludeFlags(0);
+    const float* requested[2]={start,goal};
+    BNEndpointAssociation* receipts[2]={start_association,goal_association};
+    for (int i=0;i<2;++i) {
+        dtPolyRef ref=0; bool over=false;
+        BNEndpointAssociation& receipt=*receipts[i];
+        receipt.status=h->query->findNearestPoly(requested[i],ext,&filter,&ref,receipt.projected,&over);
+        receipt.found=!dtStatusFailed(receipt.status) && ref!=0;
+        receipt.is_over_polygon=receipt.found && over;
+        if (!receipt.found) std::memset(receipt.projected,0,sizeof(receipt.projected));
+    }
+    if (!start_association->is_over_polygon || !goal_association->is_over_polygon) {
+        fail("requested endpoint outside candidate polygon XZ"); return -1;
+    }
+    // A private immutable handle is queried synchronously. Preserve the exact
+    // legacy path and vertical projections after both supplied-XZ checks pass.
+    return bn_path(handle,start,goal,ext,points,cap,projected_start,projected_goal,status,complete);
+}
 extern "C" int bn_velocity(const float* pos,float radius,float vmax,const float* vel,const float* desired,float horizon,
                            const float* circles,int nc,const float* segments,int ns,float* output) {
     error_message[0]=0;

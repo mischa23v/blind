@@ -84,6 +84,7 @@ final class Replay {
 }
 struct NativeRoute:Codable {
  let points:[[Float]];let projected_start:[Float];let projected_goal:[Float];let complete:Bool;let status:UInt32;let error:String?
+ let endpointAdmission:MeshEndpointAdmissionReceipt?
 }
 final class Native {
  let handle:UnsafeMutableRawPointer
@@ -103,12 +104,29 @@ final class Native {
  }
  var markedSpans:Int{Int(bn_excluded_span_count(handle))}
  deinit{bn_destroy(handle)}
- func route(_ start:[Float],_ goal:[Float])throws->NativeRoute {
+ func route(_ start:[Float],_ goal:[Float],endpointPolicy:MeshEndpointPolicy = .legacyNearestProjection)throws->NativeRoute {
   guard start.count==3,goal.count==3,(start+goal).allSatisfy({$0.isFinite}) else{throw Failure.invalid("query")}
   let extents:[Float]=[0.2,0.3,0.2];var points=[Float](repeating:0,count:768),ps=[Float](repeating:0,count:3),pg=ps;var status:UInt32=0,complete:Int32=0
-  let count=start.withUnsafeBufferPointer{a in goal.withUnsafeBufferPointer{b in extents.withUnsafeBufferPointer{e in points.withUnsafeMutableBufferPointer{o in ps.withUnsafeMutableBufferPointer{x in pg.withUnsafeMutableBufferPointer{y in bn_path(handle,a.baseAddress,b.baseAddress,e.baseAddress,o.baseAddress,256,x.baseAddress,y.baseAddress,&status,&complete)}}}}}}
+  var startAssociation=BNEndpointAssociation(),goalAssociation=BNEndpointAssociation()
+  let count=start.withUnsafeBufferPointer{a in goal.withUnsafeBufferPointer{b in extents.withUnsafeBufferPointer{e in points.withUnsafeMutableBufferPointer{o in ps.withUnsafeMutableBufferPointer{x in pg.withUnsafeMutableBufferPointer{y in
+   if endpointPolicy == .requireSuppliedXZOverPolygon {
+    return bn_path_strict(handle,a.baseAddress,b.baseAddress,e.baseAddress,o.baseAddress,256,x.baseAddress,y.baseAddress,&status,&complete,&startAssociation,&goalAssociation)
+   }
+   return bn_path(handle,a.baseAddress,b.baseAddress,e.baseAddress,o.baseAddress,256,x.baseAddress,y.baseAddress,&status,&complete)
+  }}}}}}
+  let receipt:MeshEndpointAdmissionReceipt?
+  if endpointPolicy == .requireSuppliedXZOverPolygon {
+   func association(_ value:BNEndpointAssociation,_ requested:[Float])->MeshEndpointAssociation {
+    .init(requested:requested,projected:[value.projected.0,value.projected.1,value.projected.2],
+          found:value.found != 0,isOverPolygon:value.is_over_polygon != 0,nativeStatus:value.status)
+   }
+   receipt = .init(policy:endpointPolicy,start:association(startAssociation,start),goal:association(goalAssociation,goal),authorizesPhysicalGuidance:false)
+   if let receipt, !receipt.start.isOverPolygon || !receipt.goal.isOverPolygon {
+    throw MeshCandidateError.endpointAssociationRejected(receipt)
+   }
+  } else { receipt=nil }
   let text=bn_last_error().map{String(cString:$0)};let err=text == "" ? nil:text
   guard count>=0,count<=256 else{throw Failure.invalid("native query: \(err ?? "unknown")")}
-  return NativeRoute(points:stride(from:0,to:Int(count)*3,by:3).map{Array(points[$0..<$0+3])},projected_start:ps,projected_goal:pg,complete:complete != 0,status:status,error:err)
+  return NativeRoute(points:stride(from:0,to:Int(count)*3,by:3).map{Array(points[$0..<$0+3])},projected_start:ps,projected_goal:pg,complete:complete != 0,status:status,error:err,endpointAdmission:receipt)
  }
 }
