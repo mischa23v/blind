@@ -1,4 +1,4 @@
-"""Synthetic parser tests for exact reviewed48-case three-class current contract, not native execution."""
+"""Synthetic parser tests for exact reviewed62-case four-class current contract, not native execution."""
 import importlib.util,json,unittest
 from pathlib import Path
 P=Path(__file__).parent
@@ -7,20 +7,21 @@ ROOT=P.parents[1]
 SOURCE=(ROOT/'research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift').read_text()
 SNAPSHOT_SOURCE=(ROOT/'research/live-mesh-classified-bench-20261028/Tests/SourceGeometrySnapshotTests.swift').read_text()
 RECOVERY_SOURCE=(ROOT/'research/live-mesh-classified-bench-20261028/Tests/AnchorDeliveryRecoveryTests.swift').read_text()
+HELPER_SOURCE=(ROOT/'research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift').read_text()
 CLS='LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests'
 OUTER=['All tests','LiveMeshClassifiedBenchPackageTests.xctest']
 lines=[f"Test Suite '{s}' started at synthetic." for s in OUTER]
-for cls,names in [(CLS,m.EXPECTED_CASES),('LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests',m.SNAPSHOT_CASES),('LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests',m.RECOVERY_CASES)]:
+for cls,names in [(CLS,m.EXPECTED_CASES),('LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests',m.SNAPSHOT_CASES),('LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests',m.RECOVERY_CASES),('LiveMeshClassifiedBenchTests.MeshBenchHelperTests',m.HELPER_CASES)]:
  suite=cls.split('.')[-1];lines.append(f"Test Suite '{suite}' started at synthetic.")
  for name in names:lines += [f"Test Case '-[{cls} {name}]' started.",f"Test Case '-[{cls} {name}]' passed (0.001 seconds)."]
  lines += [f"Test Suite '{suite}' passed at synthetic.",f'Executed {len(names)} tests, with 0 failures (0 unexpected)']
-for suite in reversed(OUTER):lines += [f"Test Suite '{suite}' passed at synthetic.",'Executed 48 tests, with 0 failures (0 unexpected)']
+for suite in reversed(OUTER):lines += [f"Test Suite '{suite}' passed at synthetic.",'Executed 62 tests, with 0 failures (0 unexpected)']
 LOG='\n'.join(lines)+'\n'
 COMMAND={'swift_test_exit_code':0,'log_writer_exit_code':0}
 class CollectorTests(unittest.TestCase):
- def reject(self,log=LOG,source=SOURCE,command=COMMAND,before='',after='',snapshot_source=SNAPSHOT_SOURCE,recovery_source=RECOVERY_SOURCE):
-  with self.assertRaises(ValueError):m.collect(source,log,command,before,after,snapshot_source,recovery_source)
- def test_exact_synthetic48_passes(self):self.assertEqual(m.collect(SOURCE,LOG,COMMAND,'','',SNAPSHOT_SOURCE,RECOVERY_SOURCE)['executed'],48)
+ def reject(self,log=LOG,source=SOURCE,command=COMMAND,before='',after='',snapshot_source=SNAPSHOT_SOURCE,recovery_source=RECOVERY_SOURCE,helper_source=HELPER_SOURCE):
+  with self.assertRaises(ValueError):m.collect(source,log,command,before,after,snapshot_source,recovery_source,helper_source)
+ def test_exact_synthetic62_passes(self):self.assertEqual(m.collect(SOURCE,LOG,COMMAND,'','',SNAPSHOT_SOURCE,RECOVERY_SOURCE,HELPER_SOURCE)['executed'],62)
  def test_missing_case(self):self.reject('\n'.join(l for l in LOG.splitlines() if m.EXPECTED_CASES[0] not in l))
  def test_failed_case(self):self.reject(LOG.replace(m.EXPECTED_CASES[0]+"]' passed",m.EXPECTED_CASES[0]+"]' failed"))
  def test_duplicate_case(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.EXPECTED_CASES[0] in l and 'passed' in l)+'\n')
@@ -40,11 +41,11 @@ class CollectorTests(unittest.TestCase):
  def test_renamed_snapshot_source(self):self.reject(snapshot_source=SNAPSHOT_SOURCE.replace('func '+m.SNAPSHOT_CASES[0]+'(', 'func testOther('))
  def test_snapshot_class_spoof(self):self.reject(LOG.replace('LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests','LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests'))
  def test_skipped_snapshot_case(self):self.reject(LOG.replace(m.SNAPSHOT_CASES[0]+"]' passed",m.SNAPSHOT_CASES[0]+"]' skipped"))
- def test_wrong_48_total(self):self.reject(LOG.replace('Executed 48 tests','Executed 33 tests'))
+ def test_wrong_62_total(self):self.reject(LOG.replace('Executed 62 tests','Executed 33 tests'))
  def test_missing_snapshot_suite(self):self.reject('\n'.join(l for l in LOG.splitlines() if "Test Suite 'SourceGeometrySnapshotTests'" not in l))
  def test_swapped_class_totals(self):self.reject(LOG.replace('Executed 18 tests','Executed XX tests').replace('Executed 16 tests','Executed 18 tests').replace('Executed XX tests','Executed 16 tests'))
  def test_duplicate_snapshot_pass(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.SNAPSHOT_CASES[0] in l and 'passed' in l)+'\n')
- def test_old34_total_rejected(self):self.reject(LOG.replace('Executed 48 tests','Executed 34 tests'))
+ def test_old34_total_rejected(self):self.reject(LOG.replace('Executed 62 tests','Executed 34 tests'))
  def test_missing_recovery_case(self):self.reject('\n'.join(l for l in LOG.splitlines() if m.RECOVERY_CASES[0] not in l))
  def test_renamed_recovery_source(self):self.reject(recovery_source=RECOVERY_SOURCE.replace('func '+m.RECOVERY_CASES[0]+'(', 'func testOther('))
  def test_recovery_class_spoof(self):self.reject(LOG.replace('LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests','LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests'))
@@ -52,4 +53,12 @@ class CollectorTests(unittest.TestCase):
  def test_missing_recovery_suite(self):self.reject('\n'.join(l for l in LOG.splitlines() if "Test Suite 'AnchorDeliveryRecoveryTests'" not in l))
  def test_duplicate_recovery_pass(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.RECOVERY_CASES[0] in l and 'passed' in l)+'\n')
  def test_swapped_recovery_totals(self):self.reject(LOG.replace('Executed 14 tests','Executed XX tests').replace('Executed 16 tests','Executed 14 tests').replace('Executed XX tests','Executed 16 tests'))
+ def test_old48_total_rejected(self):self.reject(LOG.replace('Executed 62 tests','Executed 48 tests'))
+ def test_missing_helper_case(self):self.reject('\n'.join(l for l in LOG.splitlines() if m.HELPER_CASES[0] not in l))
+ def test_renamed_helper_source(self):self.reject(helper_source=HELPER_SOURCE.replace('func '+m.HELPER_CASES[0]+'(', 'func testOther('))
+ def test_helper_class_spoof(self):self.reject(LOG.replace('LiveMeshClassifiedBenchTests.MeshBenchHelperTests','LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests'))
+ def test_skipped_helper_case(self):self.reject(LOG.replace(m.HELPER_CASES[0]+"]' passed",m.HELPER_CASES[0]+"]' skipped"))
+ def test_missing_helper_suite(self):self.reject('\n'.join(l for l in LOG.splitlines() if "Test Suite 'MeshBenchHelperTests'" not in l))
+ def test_duplicate_helper_pass(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.HELPER_CASES[0] in l and 'passed' in l)+'\n')
+ def test_wrong_helper_suite_total(self):self.reject(LOG.replace("Test Suite 'MeshBenchHelperTests' passed at synthetic.\nExecuted 14", "Test Suite 'MeshBenchHelperTests' passed at synthetic.\nExecuted 16"))
 if __name__=='__main__':unittest.main()

@@ -1,5 +1,8 @@
 import SwiftUI
 import ARKit
+#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+import LiveMeshClassifiedBench
+#endif
 import AVFoundation
 import CoreImage
 import ImageIO
@@ -72,6 +75,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     @Published var cameraAwareness = UserDefaults.standard.object(forKey: "camera-awareness") == nil
         ? true : UserDefaults.standard.bool(forKey: "camera-awareness") {
         didSet {
+            #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+            if !oldValue && cameraAwareness && seatedMeshDiagnostic == nil { seatedDiagnosticHold = false }
+            #endif
             UserDefaults.standard.set(cameraAwareness, forKey: "camera-awareness")
             if cameraAwareness && assistantSession.foregroundActive && !textOnly {
                 cameraRecovery.beginExplicitSession(); cameraRecoveryNoticeShown = false; start()
@@ -1186,7 +1192,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             self.nativeObservations.clearHistory(memory: self.places.memory, completion: completion)
         }
         places.onScanFinished = { [weak self] in
-            guard let self else { return }
+            guard let self, self.normalCameraSessionAllowed else { return }
             #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
             self.meshCandidateDiagnostics.beginEpoch(); self.meshCandidateDiagnostics.stop()
             #endif
@@ -1213,8 +1219,82 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         journeyConversationGoal = companionWorkingState.goal; journeyConversationSourceID = companionWorkingState.goalSource?.sourceID
     }
+    // A camera owner fence, not a guidance/readiness permission. Release stays unchanged.
+    private var normalCameraSessionAllowed: Bool {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        return !seatedDiagnosticHold && seatedMeshDiagnostic == nil
+        #else
+        return true
+        #endif
+    }
+    private var normalCameraCallbackAllowed: Bool {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        return normalCameraSessionAllowed && session.delegate === self && session.delegateQueue === DispatchQueue.main
+        #else
+        return true
+        #endif
+    }
+    #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+    @Published private(set) var seatedMeshDiagnostic: SeatedMeshDiagnosticController?
+    private var seatedDiagnosticHold = false
+    private var seatedDiagnosticPresentation = SeatedMeshPresentationLease()
+    // RoomPlan has no acknowledged native drain in the current owner API. Do not
+    // reinterpret cancelScan() as one. This first checkpoint refuses reuse until
+    // app relaunch if this ARSession has ever been handed to RoomPlan.
+    private var seatedDiagnosticRoomPlanTouched = false
+    func openSeatedMeshDiagnosticView() -> UUID { seatedDiagnosticPresentation.open() }
+    func confirmSeatedMeshDiagnostic(viewID: UUID) -> UUID? {
+        guard assistantSession.foregroundActive, seatedMeshDiagnostic == nil else { return nil }
+        return seatedDiagnosticPresentation.confirm(view: viewID)
+    }
+    func cancelSeatedMeshDiagnosticConfirmation() { seatedDiagnosticPresentation.cancelConfirmation() }
+    func closeSeatedMeshDiagnosticView(_ viewID: UUID) {
+        guard seatedDiagnosticPresentation.close(view: viewID) else { return }
+        stopSeatedMeshDiagnostic()
+    }
+    func beginSeatedMeshDiagnostic(viewID: UUID, confirmationID: UUID) -> String? {
+        dispatchPrecondition(condition: .onQueue(.main))
+        guard seatedDiagnosticPresentation.consume(view: viewID, confirmation: confirmationID) else {
+            return "Confirmation expired. Reopen the seated diagnostic and confirm again."
+        }
+        guard seatedMeshDiagnostic == nil, !places.scanning, !places.finishing,
+              !seatedDiagnosticRoomPlanTouched else {
+            return "Unavailable while a room scan owns or has used this session. Close the app and reopen before this diagnostic."
+        }
+        guard assistantSession.foregroundActive, !textOnly,
+              AVCaptureDevice.authorizationStatus(for: .video) == .authorized,
+              ARWorldTrackingConfiguration.supportsSceneReconstruction(.meshWithClassification),
+              session.delegate === self, session.delegateQueue === DispatchQueue.main else {
+            return "Requires foreground camera permission and a LiDAR iPhone with classified mesh support."
+        }
+        seatedDiagnosticHold = true // Before cleanup can trigger late completions.
+        stop()
+        do {
+            let controller = try SeatedMeshDiagnosticController(session: session, expectedDelegate: self) { [weak self] in
+                // Remain stopped after native drain. Foreground/conversation never
+                // clears the hold; only an explicit normal-camera action may do so.
+                self?.seatedMeshDiagnostic = nil
+            }
+            seatedMeshDiagnostic = controller
+            try controller.activate()
+            return nil
+        } catch {
+            seatedMeshDiagnostic?.stop()
+            return "Diagnostic could not acquire the camera. Normal camera remains stopped."
+        }
+    }
+    func stopSeatedMeshDiagnostic() { seatedDiagnosticPresentation.cancelConfirmation(); seatedMeshDiagnostic?.stop() }
+    func resumeNormalCameraAfterMeshDiagnostic(viewID: UUID) {
+        guard seatedDiagnosticPresentation.owns(view: viewID), assistantSession.foregroundActive,
+              seatedMeshDiagnostic == nil, seatedDiagnosticHold else { return }
+        seatedDiagnosticHold = false
+        cameraAwareness = true
+        start()
+    }
+    #endif
     var supported: Bool { ARWorldTrackingConfiguration.supportsFrameSemantics(.sceneDepth) }
     func start() {
+        guard normalCameraSessionAllowed else { return }
         defer { updateLiveActivity() }
         guard !running, !places.scanning, assistantSession.foregroundActive, cameraAwareness, !textOnly else { return }
         guard ARWorldTrackingConfiguration.isSupported else {
@@ -1230,7 +1310,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
                 DispatchQueue.main.async {
-                    guard let self, self.cameraStartupID == id, self.assistantSession.foregroundActive, self.cameraAwareness else { return }
+                    guard let self, self.normalCameraSessionAllowed, self.cameraStartupID == id, self.assistantSession.foregroundActive, self.cameraAwareness else { return }
                     if granted { self.outdoor.requestCoarseLocation(); self.launchWithNearbyPlace() } else { self.cameraPermissionNeeded() }
                 }
             }
@@ -1243,6 +1323,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         speakOperation(message)
     }
     private func launch(map: ARWorldMap? = nil, worldSessionID: UUID = UUID(), announceCalibration: Bool = true, recoveryAttempt: Bool = false) {
+        guard normalCameraSessionAllowed else { return }
         retireBodyWarning(publishChange: false)
         guard assistantSession.foregroundActive, cameraAwareness, !textOnly,
               AVCaptureDevice.authorizationStatus(for: .video) == .authorized,
@@ -1301,6 +1382,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     /// Camera/sensor lifecycle is independent of an opted-in audio conversation.
     private func stopCameraMonitoring() {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        seatedDiagnosticPresentation.cancelConfirmation()
+        if let seatedMeshDiagnostic { seatedMeshDiagnostic.stop(); return }
+        #endif
         nativeObservations.stop()
         voiceRoomScan.cancel()
         retireBodyWarning(publishChange: false)
@@ -1351,6 +1436,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     func calibrateBelt() { wearables.send(WearableCommand.calibrate) }
     func identifyBelt() { wearables.send(WearableCommand.identify) }
     private func startWatchdog() {
+        guard normalCameraSessionAllowed else { return }
         watchdog?.invalidate()
         watchdog = Timer(timeInterval: 0.1, repeats: true) { [weak self] _ in
             guard let self else { return }
@@ -1425,21 +1511,21 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         meshCandidateDiagnostics.discard(completion: completion)
     }
     func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
-        guard session === self.session else { return }
+        guard session === self.session, normalCameraCallbackAllowed else { return }
         for anchor in anchors where anchor is ARMeshAnchor {
             meshCandidateDiagnostics.observe(.added, anchorID: anchor.identifier,
                 receiptUptime: ProcessInfo.processInfo.systemUptime)
         }
     }
     func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
-        guard session === self.session else { return }
+        guard session === self.session, normalCameraCallbackAllowed else { return }
         for anchor in anchors where anchor is ARMeshAnchor {
             meshCandidateDiagnostics.observe(.updated, anchorID: anchor.identifier,
                 receiptUptime: ProcessInfo.processInfo.systemUptime)
         }
     }
     func session(_ session: ARSession, didRemove anchors: [ARAnchor]) {
-        guard session === self.session else { return }
+        guard session === self.session, normalCameraCallbackAllowed else { return }
         for anchor in anchors where anchor is ARMeshAnchor {
             meshCandidateDiagnostics.observe(.removed, anchorID: anchor.identifier,
                 receiptUptime: ProcessInfo.processInfo.systemUptime)
@@ -1447,7 +1533,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     #endif
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        guard session === self.session else { return }
+        guard session === self.session, normalCameraCallbackAllowed else { return }
         // Record only nonnormal tracking before throttling. This constant-work
         // hook preserves a real relocalizing callback without inspecting anchors.
         if let worldSessionID = UUID(uuidString: observationFrameID) {
@@ -1874,7 +1960,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func session(_ session: ARSession, didFailWithError error: Error) {
-        guard session === self.session else { return }
+        guard session === self.session, normalCameraCallbackAllowed else { return }
         places.invalidateWorldMapRecovery()
         retireBodyWarning(publishChange: false)
         nativeObservations.stop()
@@ -1895,6 +1981,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         requestCameraRecovery(now: ProcessInfo.processInfo.systemUptime)
     }
     private func requestCameraRecovery(now: Double) {
+        guard normalCameraSessionAllowed else { return }
         guard running, !simulation, !places.scanning, assistantSession.foregroundActive, cameraAwareness else { return }
         let authorized = AVCaptureDevice.authorizationStatus(for: .video) == .authorized
         if let retry = cameraRecovery.pendingRetry {
@@ -1917,7 +2004,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func sessionWasInterrupted(_ session: ARSession) {
-        guard session === self.session else { return }
+        guard session === self.session, normalCameraCallbackAllowed else { return }
         places.invalidateWorldMapRecovery()
         retireBodyWarning(publishChange: false)
         nativeObservations.stop()
@@ -1942,7 +2029,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if UIApplication.shared.applicationState == .active { _ = speakMobility(message) }
     }
     func sessionInterruptionEnded(_ session: ARSession) {
-        guard session === self.session else { return }
+        guard session === self.session, normalCameraCallbackAllowed else { return }
         #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
         meshCandidateDiagnostics.stop()
         #endif
@@ -1952,6 +2039,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         requestCameraRecovery(now: ProcessInfo.processInfo.systemUptime)
     }
     func scanPlace(name: String, compare: Bool = false) {
+        guard normalCameraSessionAllowed else { return }
         guard running, !simulation, !places.scanning else { message = "Start the live camera first."; return }
         guard !compare || recognizedPlace != nil else { message = "Recognize a saved place before comparing."; return }
         outdoor.requestCoarseLocation()
@@ -1966,9 +2054,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
         meshCandidateDiagnostics.scanStarted()
         #endif
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        seatedDiagnosticRoomPlanTouched = true
+        #endif
         places.startScan(session: session, name: name, compare: compare ? recognizedPlace : nil, relocalized: recognizedPlace != nil, registrationSessionID: UUID(uuidString: observationFrameID))
     }
     func recognize(_ place: SavedPlace) {
+        guard normalCameraSessionAllowed else { return }
         guard supported, AVCaptureDevice.authorizationStatus(for: .video) == .authorized, !places.scanning else {
             message = "Start the live camera before recognizing a place."; return
         }
@@ -1990,6 +2082,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func continueWithoutPlaceMatch() {
+        guard normalCameraSessionAllowed else { return }
         guard running, !simulation, supported, !places.scanning,
               AVCaptureDevice.authorizationStatus(for: .video) == .authorized else { return }
         cancelAutomaticRoomRecovery()
@@ -5164,6 +5257,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     func startSimulation() {
+        guard normalCameraSessionAllowed else { return }
         #if DEBUG
         beginPracticeRuntimeDiagnosticIfRequested()
         practiceRuntimeDiagnostic?.mark(.startEntered)
@@ -5341,10 +5435,16 @@ extension NavigationModel {
         interruptedSearch.cancel()
         cancelDescription(); voice.cancel()
         _ = feedback.stopInformation(announceCancellation: false)
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        if seatedMeshDiagnostic != nil { message = "Microphone muted. Seated mesh diagnostic has no phone hazard monitoring."; return }
+        #endif
         message = arabic ? "الميكروفون مكتوم. الكتابة متاحة وتنبيهات الخطر لا تتوقف." : "Microphone muted. You can still type; hazard alerts are not disabled."
     }
 
     func endConversation() {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        stopSeatedMeshDiagnostic()
+        #endif
         voiceRoomScan.cancel()
         clearSelectedDocument()
         companionWorkingState.searchAreaClue.clear()
@@ -5361,6 +5461,10 @@ extension NavigationModel {
     func reconnectListening() { startConversation() }
 
     func startExperience() {
+        #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+        guard seatedMeshDiagnostic == nil else { return }
+        seatedDiagnosticHold = false
+        #endif
         automaticStartupAllowed = true
         cameraAwareness = true
         startConversation()
@@ -5376,6 +5480,7 @@ extension NavigationModel {
     }
 
     func toggleHomeDescriptions() {
+        guard normalCameraSessionAllowed else { return }
         if ambientDescriptions {
             stopDescriptions()
             speakOperation(arabic ? "سأتوقف عن الوصف. تبقى تنبيهات المسار مفعلة." : "I'll be quiet. Path alerts stay on.")
@@ -5444,6 +5549,7 @@ extension NavigationModel {
 
     /// Start ordinary capture, then try bounded saved-map candidates without a room picker.
     private func launchWithNearbyPlace() {
+        guard normalCameraSessionAllowed else { return }
         cancelAutomaticRoomRecovery()
         automaticRoomRecoveryEnabled = true
         launch()
@@ -5491,6 +5597,7 @@ extension NavigationModel {
     }
 
     private func tickAutomaticRoomRecovery(now: Double) {
+        guard normalCameraSessionAllowed else { return }
         guard automaticRoomRecoveryEnabled, running, !simulation, !places.scanning,
               assistantSession.foregroundActive, UIApplication.shared.applicationState == .active,
               recognizedPlace == nil, alignedRoomID == nil,
@@ -5529,6 +5636,7 @@ extension NavigationModel {
 
     /// Appearance is a short-lived search clue, even without depth/calibration. It is never pose.
     private func probeAutomaticRoomAppearance(frame: ARFrame) {
+        guard normalCameraSessionAllowed else { return }
         let capturedAt = lastFrameWallTime
         guard automaticRoomRecoveryEnabled, awaitingPlace == nil, recognizedPlace == nil,
               alignedRoomID == nil, !recoveryProbeInFlight, !recallInFlight,
@@ -5540,7 +5648,7 @@ extension NavigationModel {
         lastRecoveryProbe = capturedAt; recoveryProbeInFlight = true
         let episode = recoveryProbeEpisode, frameID = observationFrameID
         roomRecall.evidence(image: frame.capturedImage, candidates: candidates) { [weak self] evidence, _ in
-            guard let self, self.recoveryProbeEpisode == episode else { return }
+            guard let self, self.normalCameraSessionAllowed, self.recoveryProbeEpisode == episode else { return }
             self.recoveryProbeInFlight = false
             let now = ProcessInfo.processInfo.systemUptime
             guard self.running, !self.places.scanning, self.automaticRoomRecoveryEnabled,

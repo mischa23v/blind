@@ -10,8 +10,8 @@
     },
     {
       "path": "ios/BlindAssist/NavigationModel.swift",
-      "bytes": 515507,
-      "sha256": "12fc1a2cc0f0bdda0b804318ff66b66df02770af8f833d44c3a5aaafb3831759"
+      "bytes": 521573,
+      "sha256": "d0ff7752d5044c91ce50382f9671fa6a011897bce2c59eb98de0a194d9d1e06e"
     },
     {
       "path": "research/arkit-mesh-adapter-82/Package.swift",
@@ -427,6 +427,26 @@
       "path": "research/live-mesh-classified-bench-20261028/Tests/AnchorDeliveryRecoveryTests.swift",
       "bytes": 23931,
       "sha256": "00f690bf3e22c29273533b1ed7a44c547f8c9688467cbd55cc6f2b114ec4c15b"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift",
+      "bytes": 23468,
+      "sha256": "e22bc9e977327382a04361aed694cb9c54f1adc838938c01d049eb467dc5c445"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Sources/MeshBenchFrameLease.swift",
+      "bytes": 4722,
+      "sha256": "009b9bb29dfff7d0496b792fadf1c7ab530d781bb725d53a96aa18f89ca49c3b"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Sources/MeshBenchReacquisition.swift",
+      "bytes": 8075,
+      "sha256": "245fc5522177807a46ed39891ed949f5b4deab160066ff8963441b5508cc8aae"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift",
+      "bytes": 14703,
+      "sha256": "7b9c513c6e2219c6358b2561ebdb7dcee5eb9108fb8f089d30497c06b4e66300"
     }
   ],
   "changes": [
@@ -527,6 +547,23 @@
     ],
     "new_files": [
       "research/live-mesh-classified-bench-20261028/Tests/AnchorDeliveryRecoveryTests.swift"
+    ],
+    "nativeTestsExecuted": false
+  },
+  "seated_viewer_layer": {
+    "base_manifest_sha256": "ce3394462a71de481d6403aa9268df210f4084832332c40567b7d54eb0ca11e5",
+    "changes": [
+      {
+        "path": "ios/BlindAssist/NavigationModel.swift",
+        "before": "12fc1a2cc0f0bdda0b804318ff66b66df02770af8f833d44c3a5aaafb3831759",
+        "after": "d0ff7752d5044c91ce50382f9671fa6a011897bce2c59eb98de0a194d9d1e06e"
+      }
+    ],
+    "new_files": [
+      "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift",
+      "research/live-mesh-classified-bench-20261028/Sources/MeshBenchFrameLease.swift",
+      "research/live-mesh-classified-bench-20261028/Sources/MeshBenchReacquisition.swift",
+      "research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift"
     ],
     "nativeTestsExecuted": false
   }

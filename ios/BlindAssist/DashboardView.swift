@@ -648,6 +648,15 @@ struct AssistantToolsView: View {
                 .onDelete { offsets in placesToDelete = offsets.map { model.places.places[$0] } }
             }
             Section(t("Local navigation diagnostic", "تشخيص التنقل المحلي")) {
+                #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
+                NavigationLink(t("Seated live mesh diagnostic", "تشخيص الشبكة الحية أثناء الجلوس")) {
+                    SeatedMeshDiagnosticView(model: model)
+                }
+                .frame(minHeight: 44)
+                .disabled(model.places.scanning || model.places.finishing)
+                .accessibilityIdentifier("seated-mesh-open")
+                #endif
+
                 NavigationLink(t("Record my phone path", "تسجيل مسار هاتفي")) {
                     model.makeNavigationTestRecordingView()
                 }

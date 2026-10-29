@@ -24,6 +24,10 @@ with tempfile.TemporaryDirectory(prefix='stage85-snapshot-') as temp:
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(R / name, target)
+    subprocess.run(['git', 'apply', '-R', str(H / 'seated-viewer-collector-layer.patch')], cwd=root,
+                   check=True, timeout=15, capture_output=True)
+    for name, digest in manifest['beforeSeatedViewerCollector'].items():
+        check('exact pre-seated-viewer collector recovered ' + name, hashlib.sha256((root / name).read_bytes()).hexdigest() == digest)
     subprocess.run(['git', 'apply', '-R', str(H / 'anchor-delivery-recovery-layer.patch')], cwd=root,
                    check=True, timeout=15, capture_output=True)
     for name, digest in manifest['beforeAnchorDeliveryRecovery'].items():
@@ -37,10 +41,18 @@ with tempfile.TemporaryDirectory(prefix='stage85-snapshot-') as temp:
 # Recover the exact prior helper before assessing unchanged build-mode contracts.
 with tempfile.TemporaryDirectory(prefix='stage85-ci-helper-') as temp:
     root = Path(temp)
-    for name in manifest['beforeSceneTimingHelper']:
+    for name in dict.fromkeys(list(manifest['beforeSceneTimingHelper']) + list(manifest['beforeSeatedViewerCI']) + manifest['seatedViewerCINewFiles']):
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(R / name, target)
+    subprocess.run(['git', 'apply', '-R', str(H / 'seated-viewer-ci-layer.patch')], cwd=root,
+                   check=True, timeout=15, capture_output=True)
+    for name, digest in manifest['beforeSeatedViewerCI'].items():
+        check('exact pre-seated-viewer CI recovered ' + name, hashlib.sha256((root / name).read_bytes()).hexdigest() == digest)
+    for name in manifest['seatedViewerCINewFiles']:
+        check('new seated-viewer CI absent in historical layer ' + name, not (root / name).exists())
+    pre_seated_helper = (root / 'tools/ci/native-apple.sh').read_text()
+    pre_seated_workflow = (root / '.github/workflows/native-apple.yml').read_text()
     subprocess.run(['git', 'apply', '-R', str(H / 'model-authority-core-identity-helper.patch')], cwd=root,
                    check=True, timeout=15, capture_output=True)
     for name, digest in manifest['beforeModelAuthorityCoreIdentityHelper'].items():
@@ -69,10 +81,18 @@ with tempfile.TemporaryDirectory(prefix='stage85-ci-helper-') as temp:
 # Preserve the original stage85 patch and verify its published intermediate bytes.
 with tempfile.TemporaryDirectory(prefix='stage85-integrated-') as temp:
     root = Path(temp)
-    for name in dict.fromkeys(manifest['appFiles'] + list(manifest['beforeGuidanceAuthority']) + manifest['guidanceAuthorityNewFiles']):
+    for name in dict.fromkeys(manifest['appFiles'] + list(manifest['beforeGuidanceAuthority']) + manifest['guidanceAuthorityNewFiles'] + list(manifest['beforeSeatedViewerApp']) + manifest['seatedViewerAppNewFiles']):
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(R / name, target)
+    subprocess.run(['git', 'apply', '-R', str(H / 'seated-viewer-app-layer.patch')], cwd=root,
+                   check=True, timeout=15, capture_output=True)
+    for name, digest in manifest['beforeSeatedViewerApp'].items():
+        check('exact pre-seated-viewer app source recovered ' + name, hashlib.sha256((root / name).read_bytes()).hexdigest() == digest)
+    for name in manifest['seatedViewerAppNewFiles']:
+        check('new seated-viewer app source absent in historical layer ' + name, not (root / name).exists())
+    pre_seated_nav = (root / 'ios/BlindAssist/NavigationModel.swift').read_text()
+    pre_seated_project = (root / 'ios/BlindAssist.xcodeproj/project.pbxproj').read_text()
     subprocess.run(['git', 'apply', '-R', str(H / 'guidance-authority-layer.patch')], cwd=root,
                    check=True, timeout=15, capture_output=True)
     for name, digest in manifest['beforeGuidanceAuthority'].items():
@@ -143,8 +163,11 @@ with tempfile.TemporaryDirectory(prefix='stage85-integrated-') as temp:
     check('bridge absent in original', not (root / 'ios/BlindAssist/MeshCandidateDiagnostics.swift').exists())
     original_nav = (root / 'ios/BlindAssist/NavigationModel.swift').read_text()
 bridge = (R / 'ios/BlindAssist/MeshCandidateDiagnostics.swift').read_text()
-nav = (R / 'ios/BlindAssist/NavigationModel.swift').read_text()
-project = (R / 'ios/BlindAssist.xcodeproj/project.pbxproj').read_text()
+# Historical critical-order contracts below run on exact recovered pre-viewer bytes.
+# Current default behavior and new diagnostic ownership are checked separately below.
+current_nav = (R / 'ios/BlindAssist/NavigationModel.swift').read_text()
+nav = pre_seated_nav
+project = pre_seated_project
 check('bridge exact reviewed proposal', bridge == (H.parent / 'proposal/MeshCandidateDiagnostics.swift').read_text())
 check('bridge compile fence', bridge.startswith('#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS\n') and bridge.endswith('#endif\n'))
 check('default off and not persisted', 'private(set) var enabled = false' in bridge and 'UserDefaults' not in bridge)
@@ -189,17 +212,53 @@ mesh_stop = 'if case .normal = frame.camera.trackingState {} else { meshCandidat
 throttle = 'guard running, !simulation, !places.scanning, frame.timestamp - lastProcessed >= 1.0 / 15 else { return }'
 check('tracking retirement precedes optional stop before frame throttle',
       frame.index('invalidateNativeLocalization(.trackingUnavailable)') < frame.index(retire_end) < frame.index(mesh_stop) < frame.index(throttle))
-helper = (R / 'tools/ci/native-apple.sh').read_text()
+helper = pre_seated_helper
 mode = helper.split('  diagnostics-build)\n', 1)[1].split('    ;;', 1)[0]
 check('flag mode build only', "'SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG BLIND_MESH_CANDIDATE_DIAGNOSTICS' build" in mode and 'run_logged diagnostics-build xcodebuild "${base[@]}"' in mode)
 check('default build unchanged', 'run_logged build xcodebuild "${base[@]}" -destination \'generic/platform=iOS Simulator\' build' in helper)
 check('no custom limits added', 'ulimit' not in mode and 'SDKROOT' not in mode)
-workflow = (R / '.github/workflows/native-apple.yml').read_text()
+workflow = pre_seated_workflow
 job = workflow.split('  mesh-diagnostics-compile:\n', 1)[1]
 check('compile isolated job', 'runs-on: xcode-27' in job and 'timeout-minutes: 25' in job)
 check('no diagnostic runtime steps', 'native-apple.sh diagnostics-build' in job and not re.search(r'native-apple.sh (unit|ui)\b', job))
 retired = (R / '.github/workflows/native-candidate-app-integration.yml').read_text()
 check('custom experiment retired', '  push:' not in retired and 'if: ${{ false }}' in retired)
+# The new default camera fences are unconditional true when the experimental flag is absent.
+# Prove exact whitespace-normalized default-source equivalence after removing only those no-op predicates.
+def without_mesh_flag(text, label):
+    output=[]; stack=[]
+    for line in text.splitlines(True):
+        stripped=line.strip()
+        if stripped.startswith('#if '):
+            target=stripped=='#if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS'
+            stack.append([target,False if target else True])
+            if not target and all(x[1] for x in stack):output.append(line)
+        elif stripped=='#else' and stack and stack[-1][0]:stack[-1][1]=not stack[-1][1]
+        elif stripped=='#endif' and stack:
+            target=stack[-1][0];active=all(x[1] for x in stack);stack.pop()
+            if not target and active:output.append(line)
+        elif all(x[1] for x in stack):output.append(line)
+    check('seated default source preprocessor balanced '+label, not stack)
+    return ''.join(output)
+def default_camera_source(text, current=False):
+    value=without_mesh_flag(text, "current" if current else "historical")
+    if current:
+        for name in ['normalCameraSessionAllowed','normalCameraCallbackAllowed']:
+            value,count=re.subn(r'    private var '+name+r': Bool \{\s*return true\s*\}\n', '',value)
+            check('seated default predicate is exact side-effect-free true '+name,count==1)
+        value=value.replace('    // A camera owner fence, not a guidance/readiness permission. Release stays unchanged.\n','')
+        value=value.replace('guard normalCameraSessionAllowed else { return }','').replace(', self.normalCameraSessionAllowed','').replace(', normalCameraCallbackAllowed','')
+    return re.sub(r'\s+','',value)
+check('seated flag-absent navigation exact after constant-true fence elimination', default_camera_source(current_nav,True)==default_camera_source(pre_seated_nav))
+check('seated current callbacks retain exact session identity before owner fence',current_nav.count('guard session === self.session, normalCameraCallbackAllowed else { return }')==7)
+current_helper=(R/'tools/ci/native-apple.sh').read_text()
+focused=current_helper.split('  diagnostics-unit)\n',1)[1].split('    ;;',1)[0]
+check('seated focused class only with explicit flag and no retries', "'-only-testing:BlindAssistTests/SeatedMeshProjectionTests'" in focused and 'BLIND_MESH_CANDIDATE_DIAGNOSTICS' in focused and '-parallel-testing-enabled NO' in focused and 'retry' not in focused)
+check('seated focused test exit preserved', 'test || status=$?' in focused and 'exit "$status"' in focused and 'diagnostics-unit-exit.json' in focused)
+current_workflow=(R/'.github/workflows/native-apple.yml').read_text()
+check('seated existing runner and overall job cap retained', current_workflow.count('runs-on: xcode-27')==pre_seated_workflow.count('runs-on: xcode-27') and current_workflow.count('timeout-minutes: 25')==pre_seated_workflow.count('timeout-minutes: 25'))
+check('seated focused bounded step and fail-closed collector', 'timeout-minutes: 10\n        run: bash tools/ci/native-apple.sh diagnostics-unit' in current_workflow and 'run: python3 tools/ci/collect-seated-projection.py' in current_workflow)
+
 print(json.dumps(dict(sourceChecksPassed=len(checks), checks=checks, appPatchApplied=True, criticalOrderPatchApplied=True, practicePublicationPatchApplied=True, projectCanonicalizationPatchApplied=True, connectedBenchPreviewMembershipApplied=True, navigationTestRecordingApplied=True, savedFrameCameraAssociationApplied=True, sceneTimingCIHelperApplied=True, recorderTimingCIHelperApplied=True, savedRoomGeometryMembershipApplied=True, appleRoomPlanFixtureMembershipApplied=True, appleRoomRouteMembershipApplied=True, classificationIngressMembershipApplied=True, hostedDecoderLinkMembershipApplied=True,
-    appleBuild='pending', runtimeOptIn=False, geometryCopyEnabled=False,
+    appleBuild='pending', historicalLayersReversedExactly=True, defaultAppActivation=False, runtimeOptIn='diagnostic flag plus explicit seated confirmation required', geometryCopyEnabled='only inside separately admitted diagnostic owner',
     physicalAuthority=False, experimental128MiBCapCompliance='not claimed'), indent=2))

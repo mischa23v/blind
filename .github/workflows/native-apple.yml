@@ -182,6 +182,23 @@ jobs:
       - name: Compile diagnostics flag present only
         timeout-minutes: 20
         run: bash tools/ci/native-apple.sh diagnostics-build
+      - name: Run exact flag-only seated projection and ownership fixtures
+        timeout-minutes: 10
+        run: bash tools/ci/native-apple.sh diagnostics-unit
+      - name: Verify exact ten synthetic hosted cases and source identity
+        if: always()
+        timeout-minutes: 3
+        run: python3 tools/ci/collect-seated-projection.py "$RUNNER_TEMP/blind-native-ci"
+      - name: Preserve bounded flag-only synthetic fixture receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: seated-projection-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/blind-native-ci/seated-projection-results.json
+            ${{ runner.temp }}/blind-native-ci/diagnostics-unit-exit.json
+          if-no-files-found: error
+          retention-days: 3
 
   classified-mesh-bench:
     # Synthetic owned buffers only; macOS excludes the five iOS session fixtures.

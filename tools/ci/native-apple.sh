@@ -129,6 +129,19 @@ PY
       -destination 'generic/platform=iOS Simulator' \
       'SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG BLIND_MESH_CANDIDATE_DIAGNOSTICS' build
     ;;
+  diagnostics-unit)
+    # Exact synthetic projection/ownership class only; no camera/model/live session activation.
+    device="$(cat "$out/simulator-id")"
+    status=0
+    run_logged diagnostics-unit xcodebuild "${base[@]}" \
+      -destination "platform=iOS Simulator,id=$device" -destination-timeout 120 \
+      -parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1 \
+      '-only-testing:BlindAssistTests/SeatedMeshProjectionTests' \
+      'SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG BLIND_MESH_CANDIDATE_DIAGNOSTICS' \
+      -resultBundlePath "$out/diagnostics-unit.xcresult" test || status=$?
+    printf '{"exit_code":%s}\n' "$status" > "$out/diagnostics-unit-exit.json"
+    exit "$status"
+    ;;
   build)
     run_logged build xcodebuild "${base[@]}" -destination 'generic/platform=iOS Simulator' build
     ;;

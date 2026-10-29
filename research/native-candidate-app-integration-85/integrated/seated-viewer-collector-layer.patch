@@ -1,0 +1,112 @@
+--- a/tools/ci/collect-classified-bench.py
++++ b/tools/ci/collect-classified-bench.py
+@@ -14,14 +14,18 @@
+ 
+ RECOVERY_CASES = ['test01LatestOwnedReplacementRecoversOnlyLogicalDelivery', 'test02ReplacementCannotClearAnotherAnchorsOmission', 'test03BusyCopyRequiresNewerObservationAndDoesNotInvokeRejectedCapture', 'test04PendingLatestRevisionQuarantinesOldTileAndLateCompletion', 'test05RefusedRemovalImmediatelyWithholdsAnotherRoutableFloor', 'test06MissingClassesReplaceOldFloorWithoutPromotingNonfloor', 'test07RejectedProjectedGeometryRecoversOnlyAfterValidNewerInstall', 'test08GoodReplacementCannotClearGlobalClockTrackingOrContextFailure', 'test09MetadataCapPreservesTombstonesAndCallerRecordLimit', 'test10QueuedQueryAndSnapshotCannotPublishBeforeNewerUpdate', 'test11LifecycleABAAndSameRevisionLateCommitCannotResolveFailures', 'test12AllRemovalsRemainUnknownEvenAfterSameUUIDReappears', 'test13MailboxRefusalNeedsExactNewerReplacementNotUnrelatedDrain', 'test14SnapshotBudgetsAndDeliveryDrainRemainBoundedAfterRecovery']
+ 
+-def collect(source, log, command, before, after, snapshot_source, recovery_source):
++HELPER_CASES = ['testStableOmittedAnchorReacquiredFromLaterFrameOnlyOnce', 'testAbsentAnchorRemainsPendingUntilTimeoutNeverRemoved', 'testAdmissionBackpressureRetriesAtMostThreeAndFairlyRotates', 'testMaximumRequestIssuesExactly192AttemptsThenStops', 'testWholeRequestOverflowDuplicatesAndPresentFrameOverflowRefused', 'testRepeatedRequestCancellationAndWrongAdmissionDoNotOverlap', 'testSchedulerClockFailuresAreTerminalWithinRequest', 'testStartupGraceIsNotCurrentButCanBecomeHealthy', 'testStartupExpiryAndFrameExpiryCannotRevive', 'testTrackingLossAndStopAreTerminalAndDoNotChangeReason', 'testLeaseRejectsDuplicateFutureNonfiniteAndBackwardsCapture', 'testIndependentWatchdogRetiresWhileProducerDoesNoWork', 'testActivationBoundaryAcceptsNewRunFrameBeforeDelayedProducerBegins', 'testLeaseBackwardsAndNonfiniteClockAreTerminal']
++
++def collect(source, log, command, before, after, snapshot_source, recovery_source, helper_source):
+     expected=re.findall(r'^\s*func (test\w+)\(', source, re.M)
+     require(expected==EXPECTED_CASES and len(set(expected))==18, 'expected exact reviewed 18-fixture XCTest source')
+     snapshot_expected=re.findall(r'^\s*func (test\w+)\(', snapshot_source, re.M)
+     require(snapshot_expected==SNAPSHOT_CASES and len(set(snapshot_expected))==16, 'expected exact reviewed16 snapshot XCTest source')
+     recovery_expected=re.findall(r'^\s*func (test\w+)\(', recovery_source, re.M)
+     require(recovery_expected==RECOVERY_CASES and len(set(recovery_expected))==14, 'expected exact reviewed14 recovery XCTest source')
+-    classes={'LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests':EXPECTED_CASES, 'LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests':SNAPSHOT_CASES, 'LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests':RECOVERY_CASES}
++    helper_expected=re.findall(r'^\s*func (test\w+)\(', helper_source, re.M)
++    require(helper_expected==HELPER_CASES and len(set(helper_expected))==14, 'expected exact reviewed14 helper XCTest source')
++    classes={'LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests':EXPECTED_CASES, 'LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests':SNAPSHOT_CASES, 'LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests':RECOVERY_CASES, 'LiveMeshClassifiedBenchTests.MeshBenchHelperTests':HELPER_CASES}
+     case_lines=[line for line in log.splitlines() if line.startswith('Test Case ')]
+     pattern=r"Test Case '-\[([^ ]+) (test\w+)\]' (started|passed|failed|skipped)(?:\.| \([^\n]*\)\.)"
+     observed={}
+@@ -38,11 +42,11 @@
+         match=re.fullmatch(r"Test Suite '([^']+)' (started|passed|failed) at .+\.",line)
+         require(match is not None, 'unrecognized XCTest suite record')
+         name,status=match.groups();suites.setdefault(name,[]).append(status)
+-    require(suites=={name:['started','passed'] for name in ['All tests','LiveMeshClassifiedBenchPackageTests.xctest','LiveMeshBenchIngressTests','SourceGeometrySnapshotTests','AnchorDeliveryRecoveryTests']}, 'missing, extra, contradictory or failed XCTest suite')
++    require(suites=={name:['started','passed'] for name in ['All tests','LiveMeshClassifiedBenchPackageTests.xctest','LiveMeshBenchIngressTests','SourceGeometrySnapshotTests','AnchorDeliveryRecoveryTests','MeshBenchHelperTests']}, 'missing, extra, contradictory or failed XCTest suite')
+     totals=re.findall(r'Executed (\d+) tests?, with (\d+) failures? \((\d+) unexpected\)',log)
+-    require(Counter(totals)==Counter({('18','0','0'):1,('16','0','0'):1,('14','0','0'):1,('48','0','0'):2}), 'missing or contradictory XCTest totals')
++    require(Counter(totals)==Counter({('18','0','0'):1,('16','0','0'):1,('14','0','0'):2,('62','0','0'):2}), 'missing or contradictory XCTest totals')
+     # Bind each total to its immediately preceding passed suite; swapped counts fail.
+-    expected_totals={'All tests':48,'LiveMeshClassifiedBenchPackageTests.xctest':48,'LiveMeshBenchIngressTests':18,'SourceGeometrySnapshotTests':16,'AnchorDeliveryRecoveryTests':14}
++    expected_totals={'All tests':62,'LiveMeshClassifiedBenchPackageTests.xctest':62,'LiveMeshBenchIngressTests':18,'SourceGeometrySnapshotTests':16,'AnchorDeliveryRecoveryTests':14,'MeshBenchHelperTests':14}
+     suite_totals={}; last_passed=None
+     for line in log.splitlines():
+         matched=re.fullmatch(r"Test Suite '([^']+)' passed at .+\.",line)
+@@ -55,9 +59,9 @@
+     require(suite_totals==expected_totals, 'missing suite-bound totals')
+     require(command.get('swift_test_exit_code')==0 and command.get('log_writer_exit_code')==0, 'command failed')
+     require(before==after=='', 'source not clean before and after test')
+-    return {'status':'passed','scope':'48 macOS synthetic XCTest fixtures, not live sensing','executed':48,'passed':48,'failed':0,'ios_session_fixtures_excluded':5,'cases':[{'class':cls,'name':n,'status':'passed'} for cls,names in classes.items() for n in names],'swift_testing_zero_suite_not_counted':True,'source_clean_before_and_after':True}
++    return {'status':'passed','scope':'62 macOS synthetic XCTest fixtures, not live sensing','executed':62,'passed':62,'failed':0,'ios_session_fixtures_excluded':5,'cases':[{'class':cls,'name':n,'status':'passed'} for cls,names in classes.items() for n in names],'swift_testing_zero_suite_not_counted':True,'source_clean_before_and_after':True}
+ 
+ if __name__=='__main__':
+     parser=argparse.ArgumentParser();parser.add_argument('source',type=Path);parser.add_argument('artifact_dir',type=Path);args=parser.parse_args();d=args.artifact_dir
+-    result=collect(args.source.read_text(),(d/'swift-test.log').read_text(),json.loads((d/'result.json').read_text()),(d/'source-before.txt').read_text(),(d/'source-after.txt').read_text(),(args.source.parent/'SourceGeometrySnapshotTests.swift').read_text(),(args.source.parent/'AnchorDeliveryRecoveryTests.swift').read_text())
++    result=collect(args.source.read_text(),(d/'swift-test.log').read_text(),json.loads((d/'result.json').read_text()),(d/'source-before.txt').read_text(),(d/'source-after.txt').read_text(),(args.source.parent/'SourceGeometrySnapshotTests.swift').read_text(),(args.source.parent/'AnchorDeliveryRecoveryTests.swift').read_text(),(args.source.parent/'MeshBenchHelperTests.swift').read_text())
+     (d/'xctest-results.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
+--- a/tools/ci/test_collect_classified_bench.py
++++ b/tools/ci/test_collect_classified_bench.py
+@@ -1,4 +1,4 @@
+-"""Synthetic parser tests for exact reviewed48-case three-class current contract, not native execution."""
++"""Synthetic parser tests for exact reviewed62-case four-class current contract, not native execution."""
+ import importlib.util,json,unittest
+ from pathlib import Path
+ P=Path(__file__).parent
+@@ -7,20 +7,21 @@
+ SOURCE=(ROOT/'research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift').read_text()
+ SNAPSHOT_SOURCE=(ROOT/'research/live-mesh-classified-bench-20261028/Tests/SourceGeometrySnapshotTests.swift').read_text()
+ RECOVERY_SOURCE=(ROOT/'research/live-mesh-classified-bench-20261028/Tests/AnchorDeliveryRecoveryTests.swift').read_text()
++HELPER_SOURCE=(ROOT/'research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift').read_text()
+ CLS='LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests'
+ OUTER=['All tests','LiveMeshClassifiedBenchPackageTests.xctest']
+ lines=[f"Test Suite '{s}' started at synthetic." for s in OUTER]
+-for cls,names in [(CLS,m.EXPECTED_CASES),('LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests',m.SNAPSHOT_CASES),('LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests',m.RECOVERY_CASES)]:
++for cls,names in [(CLS,m.EXPECTED_CASES),('LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests',m.SNAPSHOT_CASES),('LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests',m.RECOVERY_CASES),('LiveMeshClassifiedBenchTests.MeshBenchHelperTests',m.HELPER_CASES)]:
+  suite=cls.split('.')[-1];lines.append(f"Test Suite '{suite}' started at synthetic.")
+  for name in names:lines += [f"Test Case '-[{cls} {name}]' started.",f"Test Case '-[{cls} {name}]' passed (0.001 seconds)."]
+  lines += [f"Test Suite '{suite}' passed at synthetic.",f'Executed {len(names)} tests, with 0 failures (0 unexpected)']
+-for suite in reversed(OUTER):lines += [f"Test Suite '{suite}' passed at synthetic.",'Executed 48 tests, with 0 failures (0 unexpected)']
++for suite in reversed(OUTER):lines += [f"Test Suite '{suite}' passed at synthetic.",'Executed 62 tests, with 0 failures (0 unexpected)']
+ LOG='\n'.join(lines)+'\n'
+ COMMAND={'swift_test_exit_code':0,'log_writer_exit_code':0}
+ class CollectorTests(unittest.TestCase):
+- def reject(self,log=LOG,source=SOURCE,command=COMMAND,before='',after='',snapshot_source=SNAPSHOT_SOURCE,recovery_source=RECOVERY_SOURCE):
+-  with self.assertRaises(ValueError):m.collect(source,log,command,before,after,snapshot_source,recovery_source)
+- def test_exact_synthetic48_passes(self):self.assertEqual(m.collect(SOURCE,LOG,COMMAND,'','',SNAPSHOT_SOURCE,RECOVERY_SOURCE)['executed'],48)
++ def reject(self,log=LOG,source=SOURCE,command=COMMAND,before='',after='',snapshot_source=SNAPSHOT_SOURCE,recovery_source=RECOVERY_SOURCE,helper_source=HELPER_SOURCE):
++  with self.assertRaises(ValueError):m.collect(source,log,command,before,after,snapshot_source,recovery_source,helper_source)
++ def test_exact_synthetic62_passes(self):self.assertEqual(m.collect(SOURCE,LOG,COMMAND,'','',SNAPSHOT_SOURCE,RECOVERY_SOURCE,HELPER_SOURCE)['executed'],62)
+  def test_missing_case(self):self.reject('\n'.join(l for l in LOG.splitlines() if m.EXPECTED_CASES[0] not in l))
+  def test_failed_case(self):self.reject(LOG.replace(m.EXPECTED_CASES[0]+"]' passed",m.EXPECTED_CASES[0]+"]' failed"))
+  def test_duplicate_case(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.EXPECTED_CASES[0] in l and 'passed' in l)+'\n')
+@@ -40,11 +41,11 @@
+  def test_renamed_snapshot_source(self):self.reject(snapshot_source=SNAPSHOT_SOURCE.replace('func '+m.SNAPSHOT_CASES[0]+'(', 'func testOther('))
+  def test_snapshot_class_spoof(self):self.reject(LOG.replace('LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests','LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests'))
+  def test_skipped_snapshot_case(self):self.reject(LOG.replace(m.SNAPSHOT_CASES[0]+"]' passed",m.SNAPSHOT_CASES[0]+"]' skipped"))
+- def test_wrong_48_total(self):self.reject(LOG.replace('Executed 48 tests','Executed 33 tests'))
++ def test_wrong_62_total(self):self.reject(LOG.replace('Executed 62 tests','Executed 33 tests'))
+  def test_missing_snapshot_suite(self):self.reject('\n'.join(l for l in LOG.splitlines() if "Test Suite 'SourceGeometrySnapshotTests'" not in l))
+  def test_swapped_class_totals(self):self.reject(LOG.replace('Executed 18 tests','Executed XX tests').replace('Executed 16 tests','Executed 18 tests').replace('Executed XX tests','Executed 16 tests'))
+  def test_duplicate_snapshot_pass(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.SNAPSHOT_CASES[0] in l and 'passed' in l)+'\n')
+- def test_old34_total_rejected(self):self.reject(LOG.replace('Executed 48 tests','Executed 34 tests'))
++ def test_old34_total_rejected(self):self.reject(LOG.replace('Executed 62 tests','Executed 34 tests'))
+  def test_missing_recovery_case(self):self.reject('\n'.join(l for l in LOG.splitlines() if m.RECOVERY_CASES[0] not in l))
+  def test_renamed_recovery_source(self):self.reject(recovery_source=RECOVERY_SOURCE.replace('func '+m.RECOVERY_CASES[0]+'(', 'func testOther('))
+  def test_recovery_class_spoof(self):self.reject(LOG.replace('LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests','LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests'))
+@@ -52,4 +53,12 @@
+  def test_missing_recovery_suite(self):self.reject('\n'.join(l for l in LOG.splitlines() if "Test Suite 'AnchorDeliveryRecoveryTests'" not in l))
+  def test_duplicate_recovery_pass(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.RECOVERY_CASES[0] in l and 'passed' in l)+'\n')
+  def test_swapped_recovery_totals(self):self.reject(LOG.replace('Executed 14 tests','Executed XX tests').replace('Executed 16 tests','Executed 14 tests').replace('Executed XX tests','Executed 16 tests'))
++ def test_old48_total_rejected(self):self.reject(LOG.replace('Executed 62 tests','Executed 48 tests'))
++ def test_missing_helper_case(self):self.reject('\n'.join(l for l in LOG.splitlines() if m.HELPER_CASES[0] not in l))
++ def test_renamed_helper_source(self):self.reject(helper_source=HELPER_SOURCE.replace('func '+m.HELPER_CASES[0]+'(', 'func testOther('))
++ def test_helper_class_spoof(self):self.reject(LOG.replace('LiveMeshClassifiedBenchTests.MeshBenchHelperTests','LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests'))
++ def test_skipped_helper_case(self):self.reject(LOG.replace(m.HELPER_CASES[0]+"]' passed",m.HELPER_CASES[0]+"]' skipped"))
++ def test_missing_helper_suite(self):self.reject('\n'.join(l for l in LOG.splitlines() if "Test Suite 'MeshBenchHelperTests'" not in l))
++ def test_duplicate_helper_pass(self):self.reject(LOG+next(l for l in LOG.splitlines() if m.HELPER_CASES[0] in l and 'passed' in l)+'\n')
++ def test_wrong_helper_suite_total(self):self.reject(LOG.replace("Test Suite 'MeshBenchHelperTests' passed at synthetic.\nExecuted 14", "Test Suite 'MeshBenchHelperTests' passed at synthetic.\nExecuted 16"))
+ if __name__=='__main__':unittest.main()
