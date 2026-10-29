@@ -1,0 +1,71 @@
+{
+  "reviewUTC": "2026-10-29T05:27:35Z",
+  "frozenPinsVerified": 255,
+  "mismatches": 0,
+  "providerAssertionsPassed": 1382,
+  "providerAddressAndUndefinedSanitizersLoaded": true,
+  "leakChecking": "unavailable, detect_leaks=0 disclosed",
+  "nativeD1CoreSHA256": "cf37b843a4f9987d0523d85f2bf04b0ce12ee7a6d718c7cf1e642aa36c5e018b",
+  "coarseRetentionGates": 18,
+  "allNineSamplesPassEach": true,
+  "uniqueVoxelsPerGate": "4 or9, not9 independent cells universally",
+  "nativeGeometryOutputs": 27,
+  "pairedN1CloseBaseline": true,
+  "negativeResults": {
+    "closeN1N2BothTightCoverage": "25/25; no demonstrated coverage gain despite numerical valid0 to159201",
+    "4cmPatchNearZeroWithin2cm": "0/25 all three arms",
+    "12cmPatchNearZeroWithin2cm": [
+      9,
+      5,
+      9
+    ]
+  },
+  "holeFootprintUnsupportedOf33": [
+    27,
+    27,
+    24
+  ],
+  "dropUpperNearZeroOf25": [
+    0,
+    0,
+    0
+  ],
+  "history": {
+    "mutuallyObserved": 81,
+    "warmFreshMaxDifferenceM": 0.00193154812,
+    "warmC0MaxDifferenceM": 0.00185914896,
+    "attribution": "history and method combined, not fallback branch proof or calibrated confidence"
+  },
+  "resource": {
+    "exitCode": 0,
+    "stopReason": null,
+    "wallSeconds": 40.79404306799552,
+    "peakSummedRSSBytes": 534167552,
+    "peakCumulativeCPUSeconds": 40.650000000000006,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 120,
+      "wallSeconds": 150,
+      "RSSBytes": 2147483648,
+      "diskBytes": 67108864,
+      "logicalCPUs": 1
+    },
+    "scope": "N2 provider and native synthetic fixtures only; existing D1 core; no recorded inputs",
+    "frozenIntegrityPassed": true
+  },
+  "limits": [
+    "2/4cm objects unresolved",
+    "Vertex-nearness and discrete stencil not triangle/full-footprint/continuous-safety proof",
+    "Native image-border pipeline gap remains; provider bounds tested",
+    "No recorded inputs/admission, no accuracy winner or adoption"
+  ],
+  "evidenceSHA256": {
+    "EXECUTION_FREEZE.json": "4c5196599531d191d6a041af584270a54bd0f0e040cde287b048051096747efe",
+    "RESOURCE.json": "be15ede3d9b90b22ca41e866ec2bbd8cd0d9a5a3babcda5264589c4d9e3eab9d",
+    "POST_RUN_INTEGRITY.json": "8feebaad14a73679d67250747c02ace1d20c4678be75b0e61235fab9cda4bb54",
+    "run/provider.log": "689805b25431d0a7c3ce46ea569b12e5d627e0d9d0623ee8b3589d8f23f7243c",
+    "run/native.log": "c698ca696f9ff6ced56f68dd0e3ec643037eaf9a8c3c30274cded329a533fe42",
+    "run/ELF.json": "6d09bd8b0e60ebf17ee15aa08d63bb8f29a26da8d92e3ca1bfa0f191a77d8c16",
+    "run/PROVIDER_ELF.json": "eb0156028baf5c8abf1d5baee8117ab5799424137ed66105b3a2314436c875e4"
+  }
+}

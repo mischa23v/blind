@@ -1,0 +1,7 @@
+{
+  "ldd": "\tlinux-vdso.so.1 (0x00007f7d584f4000)\n\tlibasan.so.8 => /lib/x86_64-linux-gnu/libasan.so.8 (0x00007f7d57c3e000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f7d579d8000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f7d578e8000)\n\tlibubsan.so.1 => /lib/x86_64-linux-gnu/libubsan.so.1 (0x00007f7d572d3000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f7d572a6000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f7d570b2000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f7d584f6000)\n",
+  "sha256": "ddcf03866c82dc3a832b4d6ab303864986374b328ef5be0d63d8781f3f9e2fc4",
+  "ASAN_OPTIONS": "detect_leaks=0:halt_on_error=1",
+  "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1",
+  "leakChecking": "UNAVAILABLE_previous_ptrace_environment_fatal"
+}

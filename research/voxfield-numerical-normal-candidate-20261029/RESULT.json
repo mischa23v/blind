@@ -1,0 +1,1171 @@
+{
+  "status": "PASS_NARROW_NUMERICAL_AND_COARSE_SYNTHETIC_CONTRACTS",
+  "freezeSHA256": "4c5196599531d191d6a041af584270a54bd0f0e040cde287b048051096747efe",
+  "provider": [
+    {
+      "fixture": "normal_area_units",
+      "depth_m": 0.3,
+      "fx_px": 810.825,
+      "expected_cross_area_m2": 1.36895e-07,
+      "areaCutoff": false,
+      "admitted": 12,
+      "valid": 6,
+      "degenerate": 0,
+      "boundary": 6
+    },
+    {
+      "fixture": "normal_area_units",
+      "depth_m": 1,
+      "fx_px": 810.825,
+      "expected_cross_area_m2": 1.52106e-06,
+      "areaCutoff": false,
+      "admitted": 12,
+      "valid": 6,
+      "degenerate": 0,
+      "boundary": 6
+    },
+    {
+      "fixture": "normal_area_units",
+      "depth_m": 3,
+      "fx_px": 810.825,
+      "expected_cross_area_m2": 1.36895e-05,
+      "areaCutoff": false,
+      "admitted": 12,
+      "valid": 6,
+      "degenerate": 0,
+      "boundary": 6
+    },
+    {
+      "fixture": "near_collinear_policy",
+      "numericalValidNotConfidence": true,
+      "areaCutoff": false
+    },
+    {
+      "suite": "N2_provider_only",
+      "status": "PASS",
+      "assertions": 1382,
+      "scope": "synthetic organized rasters; no mapper or real scene",
+      "normalSign": "dx_cross_dy",
+      "ratio": 0.05,
+      "areaCutoff": false
+    }
+  ],
+  "nativeAggregates": [
+    {
+      "provider_case": "realK_plane_0.300000",
+      "admitted": 160000,
+      "zero": 573572,
+      "far": 0,
+      "N1_valid_numerical": 0,
+      "N2_valid_numerical": 159201,
+      "N2_reasons": [
+        159201,
+        0,
+        799,
+        0,
+        0,
+        0
+      ],
+      "same_points_order": true,
+      "calibrated_confidence": false
+    },
+    {
+      "samples": "realK_plane_0.300000_interior_and_boundary",
+      "mode": 0,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 25,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "realK_plane_0.300000",
+      "mode": 0,
+      "samples": 9,
+      "unique_query_voxels": 4,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "geometry_summary": "realK_plane_0.300000",
+      "mode": 0,
+      "gradient_voxels": 0,
+      "mesh_vertices": 54,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "realK_plane_0.300000_interior_and_boundary",
+      "mode": 1,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 25,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "realK_plane_0.300000",
+      "mode": 1,
+      "samples": 9,
+      "unique_query_voxels": 4,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "geometry_summary": "realK_plane_0.300000",
+      "mode": 1,
+      "gradient_voxels": 0,
+      "mesh_vertices": 54,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "realK_plane_0.300000_interior_and_boundary",
+      "mode": 2,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 25,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "realK_plane_0.300000",
+      "mode": 2,
+      "samples": 9,
+      "unique_query_voxels": 4,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "geometry_summary": "realK_plane_0.300000",
+      "mode": 2,
+      "gradient_voxels": 152,
+      "mesh_vertices": 54,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "provider_case": "realK_plane_1.000000",
+      "admitted": 160000,
+      "zero": 573572,
+      "far": 0,
+      "N1_valid_numerical": 159201,
+      "N2_valid_numerical": 159201,
+      "N2_reasons": [
+        159201,
+        0,
+        799,
+        0,
+        0,
+        0
+      ],
+      "same_points_order": true,
+      "calibrated_confidence": false
+    },
+    {
+      "samples": "realK_plane_1.000000_interior_and_boundary",
+      "mode": 0,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 17,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "realK_plane_1.000000",
+      "mode": 0,
+      "samples": 9,
+      "unique_query_voxels": 9,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "geometry_summary": "realK_plane_1.000000",
+      "mode": 0,
+      "gradient_voxels": 0,
+      "mesh_vertices": 1014,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "realK_plane_1.000000_interior_and_boundary",
+      "mode": 1,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 17,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "realK_plane_1.000000",
+      "mode": 1,
+      "samples": 9,
+      "unique_query_voxels": 9,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "geometry_summary": "realK_plane_1.000000",
+      "mode": 1,
+      "gradient_voxels": 0,
+      "mesh_vertices": 1014,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "realK_plane_1.000000_interior_and_boundary",
+      "mode": 2,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 25,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "realK_plane_1.000000",
+      "mode": 2,
+      "samples": 9,
+      "unique_query_voxels": 9,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "geometry_summary": "realK_plane_1.000000",
+      "mode": 2,
+      "gradient_voxels": 1812,
+      "mesh_vertices": 1014,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "provider_case": "realK_plane_3.000000",
+      "admitted": 160000,
+      "zero": 573572,
+      "far": 0,
+      "N1_valid_numerical": 159201,
+      "N2_valid_numerical": 159201,
+      "N2_reasons": [
+        159201,
+        0,
+        799,
+        0,
+        0,
+        0
+      ],
+      "same_points_order": true,
+      "calibrated_confidence": false
+    },
+    {
+      "samples": "realK_plane_3.000000_interior_and_boundary",
+      "mode": 0,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 22,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "realK_plane_3.000000",
+      "mode": 0,
+      "samples": 9,
+      "unique_query_voxels": 9,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "geometry_summary": "realK_plane_3.000000",
+      "mode": 0,
+      "gradient_voxels": 0,
+      "mesh_vertices": 8214,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "realK_plane_3.000000_interior_and_boundary",
+      "mode": 1,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 22,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "realK_plane_3.000000",
+      "mode": 1,
+      "samples": 9,
+      "unique_query_voxels": 9,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "geometry_summary": "realK_plane_3.000000",
+      "mode": 1,
+      "gradient_voxels": 0,
+      "mesh_vertices": 8214,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "realK_plane_3.000000_interior_and_boundary",
+      "mode": 2,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 24,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "realK_plane_3.000000",
+      "mode": 2,
+      "samples": 9,
+      "unique_query_voxels": 9,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "geometry_summary": "realK_plane_3.000000",
+      "mode": 2,
+      "gradient_voxels": 14344,
+      "mesh_vertices": 8214,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "provider_case": "low_top_patch_0.020000",
+      "admitted": 160000,
+      "zero": 573572,
+      "far": 0,
+      "N1_valid_numerical": 159201,
+      "N2_valid_numerical": 159201,
+      "N2_reasons": [
+        159201,
+        0,
+        799,
+        0,
+        0,
+        0
+      ],
+      "same_points_order": true,
+      "calibrated_confidence": false
+    },
+    {
+      "samples": "low_top_patch_0.020000_interior_and_boundary",
+      "mode": 0,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 25,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "geometry_summary": "low_top_patch_0.020000",
+      "mode": 0,
+      "gradient_voxels": 0,
+      "mesh_vertices": 1014,
+      "small_or_subvoxel_unresolved": true,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "low_top_patch_0.020000_interior_and_boundary",
+      "mode": 1,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 25,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "geometry_summary": "low_top_patch_0.020000",
+      "mode": 1,
+      "gradient_voxels": 0,
+      "mesh_vertices": 1014,
+      "small_or_subvoxel_unresolved": true,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "low_top_patch_0.020000_interior_and_boundary",
+      "mode": 2,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 25,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "geometry_summary": "low_top_patch_0.020000",
+      "mode": 2,
+      "gradient_voxels": 1812,
+      "mesh_vertices": 1014,
+      "small_or_subvoxel_unresolved": true,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "provider_case": "low_top_patch_0.040000",
+      "admitted": 160000,
+      "zero": 573572,
+      "far": 0,
+      "N1_valid_numerical": 159201,
+      "N2_valid_numerical": 159201,
+      "N2_reasons": [
+        159201,
+        0,
+        799,
+        0,
+        0,
+        0
+      ],
+      "same_points_order": true,
+      "calibrated_confidence": false
+    },
+    {
+      "samples": "low_top_patch_0.040000_interior_and_boundary",
+      "mode": 0,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 0,
+      "mesh_vertex_near": 24,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "geometry_summary": "low_top_patch_0.040000",
+      "mode": 0,
+      "gradient_voxels": 0,
+      "mesh_vertices": 1014,
+      "small_or_subvoxel_unresolved": true,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "low_top_patch_0.040000_interior_and_boundary",
+      "mode": 1,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 0,
+      "mesh_vertex_near": 24,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "geometry_summary": "low_top_patch_0.040000",
+      "mode": 1,
+      "gradient_voxels": 0,
+      "mesh_vertices": 1014,
+      "small_or_subvoxel_unresolved": true,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "low_top_patch_0.040000_interior_and_boundary",
+      "mode": 2,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 0,
+      "mesh_vertex_near": 24,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "geometry_summary": "low_top_patch_0.040000",
+      "mode": 2,
+      "gradient_voxels": 1816,
+      "mesh_vertices": 1014,
+      "small_or_subvoxel_unresolved": true,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "provider_case": "low_top_patch_0.120000",
+      "admitted": 160000,
+      "zero": 573572,
+      "far": 0,
+      "N1_valid_numerical": 158760,
+      "N2_valid_numerical": 158760,
+      "N2_reasons": [
+        158760,
+        0,
+        799,
+        441,
+        0,
+        0
+      ],
+      "same_points_order": true,
+      "calibrated_confidence": false
+    },
+    {
+      "samples": "low_top_patch_0.120000_interior_and_boundary",
+      "mode": 0,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 9,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "low_top_patch_0.120000",
+      "mode": 0,
+      "samples": 9,
+      "unique_query_voxels": 4,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "geometry_summary": "low_top_patch_0.120000",
+      "mode": 0,
+      "gradient_voxels": 0,
+      "mesh_vertices": 1254,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "low_top_patch_0.120000_interior_and_boundary",
+      "mode": 1,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 5,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "low_top_patch_0.120000",
+      "mode": 1,
+      "samples": 9,
+      "unique_query_voxels": 4,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "geometry_summary": "low_top_patch_0.120000",
+      "mode": 1,
+      "gradient_voxels": 0,
+      "mesh_vertices": 1254,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "low_top_patch_0.120000_interior_and_boundary",
+      "mode": 2,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 9,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "low_top_patch_0.120000",
+      "mode": 2,
+      "samples": 9,
+      "unique_query_voxels": 4,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "geometry_summary": "low_top_patch_0.120000",
+      "mode": 2,
+      "gradient_voxels": 1828,
+      "mesh_vertices": 1254,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "provider_case": "head_overhang",
+      "admitted": 160000,
+      "zero": 573572,
+      "far": 0,
+      "N1_valid_numerical": 159201,
+      "N2_valid_numerical": 159201,
+      "N2_reasons": [
+        159201,
+        0,
+        799,
+        0,
+        0,
+        0
+      ],
+      "same_points_order": true,
+      "calibrated_confidence": false
+    },
+    {
+      "samples": "head_overhang_interior_and_boundary",
+      "mode": 0,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 17,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "head_overhang",
+      "mode": 0,
+      "samples": 9,
+      "unique_query_voxels": 9,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "geometry_summary": "head_overhang",
+      "mode": 0,
+      "gradient_voxels": 0,
+      "mesh_vertices": 1014,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "head_overhang_interior_and_boundary",
+      "mode": 1,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 17,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "head_overhang",
+      "mode": 1,
+      "samples": 9,
+      "unique_query_voxels": 9,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "geometry_summary": "head_overhang",
+      "mode": 1,
+      "gradient_voxels": 0,
+      "mesh_vertices": 1014,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "head_overhang_interior_and_boundary",
+      "mode": 2,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 25,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "head_overhang",
+      "mode": 2,
+      "samples": 9,
+      "unique_query_voxels": 9,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "geometry_summary": "head_overhang",
+      "mode": 2,
+      "gradient_voxels": 1812,
+      "mesh_vertices": 1014,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "provider_case": "missing_floor_hole",
+      "admitted": 100708,
+      "zero": 632864,
+      "far": 0,
+      "N1_valid_numerical": 99422,
+      "N2_valid_numerical": 99422,
+      "N2_reasons": [
+        99422,
+        0,
+        1286,
+        0,
+        0,
+        0
+      ],
+      "same_points_order": true,
+      "calibrated_confidence": false
+    },
+    {
+      "samples": "missing_floor_hole_interior_and_boundary",
+      "mode": 0,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 0,
+      "unknown": 25,
+      "near_zero": 0,
+      "mesh_vertex_near": 0,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "sampled_swept_footprint": "hole",
+      "mode": 0,
+      "required": 33,
+      "unsupported": 27,
+      "admitted_as_supported": false,
+      "continuous_sweep_proven": false
+    },
+    {
+      "geometry_summary": "missing_floor_hole",
+      "mode": 0,
+      "gradient_voxels": 0,
+      "mesh_vertices": 720,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "missing_floor_hole_interior_and_boundary",
+      "mode": 1,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 0,
+      "unknown": 25,
+      "near_zero": 0,
+      "mesh_vertex_near": 0,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "sampled_swept_footprint": "hole",
+      "mode": 1,
+      "required": 33,
+      "unsupported": 27,
+      "admitted_as_supported": false,
+      "continuous_sweep_proven": false
+    },
+    {
+      "geometry_summary": "missing_floor_hole",
+      "mode": 1,
+      "gradient_voxels": 0,
+      "mesh_vertices": 720,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "missing_floor_hole_interior_and_boundary",
+      "mode": 2,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 0,
+      "unknown": 25,
+      "near_zero": 0,
+      "mesh_vertex_near": 0,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "sampled_swept_footprint": "hole",
+      "mode": 2,
+      "required": 33,
+      "unsupported": 24,
+      "admitted_as_supported": false,
+      "continuous_sweep_proven": false
+    },
+    {
+      "geometry_summary": "missing_floor_hole",
+      "mode": 2,
+      "gradient_voxels": 1364,
+      "mesh_vertices": 720,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "provider_case": "actual_drop_lower_surface",
+      "admitted": 160000,
+      "zero": 573572,
+      "far": 0,
+      "N1_valid_numerical": 158228,
+      "N2_valid_numerical": 158228,
+      "N2_reasons": [
+        158228,
+        0,
+        799,
+        973,
+        0,
+        0
+      ],
+      "same_points_order": true,
+      "calibrated_confidence": false
+    },
+    {
+      "samples": "actual_drop_lower_surface_interior_and_boundary",
+      "mode": 0,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 25,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "actual_drop_lower_surface",
+      "mode": 0,
+      "samples": 9,
+      "unique_query_voxels": 4,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "samples": "drop_missing_upper_support",
+      "mode": 0,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 0,
+      "mesh_vertex_near": 0,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "drop_upper_support": "not_admitted",
+      "mode": 0,
+      "required_samples": 25,
+      "near_zero_upper_samples": 0,
+      "continuous_sweep_proven": false
+    },
+    {
+      "geometry_summary": "actual_drop_lower_surface",
+      "mode": 0,
+      "gradient_voxels": 0,
+      "mesh_vertices": 2418,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "actual_drop_lower_surface_interior_and_boundary",
+      "mode": 1,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 25,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "actual_drop_lower_surface",
+      "mode": 1,
+      "samples": 9,
+      "unique_query_voxels": 4,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "samples": "drop_missing_upper_support",
+      "mode": 1,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 0,
+      "mesh_vertex_near": 0,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "drop_upper_support": "not_admitted",
+      "mode": 1,
+      "required_samples": 25,
+      "near_zero_upper_samples": 0,
+      "continuous_sweep_proven": false
+    },
+    {
+      "geometry_summary": "actual_drop_lower_surface",
+      "mode": 1,
+      "gradient_voxels": 0,
+      "mesh_vertices": 2418,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "actual_drop_lower_surface_interior_and_boundary",
+      "mode": 2,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 25,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "coarse_retention_gate": "actual_drop_lower_surface",
+      "mode": 2,
+      "samples": 9,
+      "unique_query_voxels": 4,
+      "observed": 9,
+      "sdf_within_one_voxel": 9,
+      "mesh_vertex_within_voxel_diagonal": 9,
+      "sdf_bound_m": 0.0399999991,
+      "vertex_bound_m": 0.0692820325,
+      "shape_or_safety_claim": false
+    },
+    {
+      "samples": "drop_missing_upper_support",
+      "mode": 2,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 0,
+      "mesh_vertex_near": 0,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "drop_upper_support": "not_admitted",
+      "mode": 2,
+      "required_samples": 25,
+      "near_zero_upper_samples": 0,
+      "continuous_sweep_proven": false
+    },
+    {
+      "geometry_summary": "actual_drop_lower_surface",
+      "mode": 2,
+      "gradient_voxels": 2604,
+      "mesh_vertices": 2418,
+      "small_or_subvoxel_unresolved": false,
+      "hazard_accuracy_pass": false
+    },
+    {
+      "samples": "N1_C1_close_plane_same_points_baseline",
+      "mode": 2,
+      "near_threshold_m": 0.02,
+      "mesh_vertex_threshold_m": 0.04,
+      "total": 25,
+      "observed": 25,
+      "unknown": 0,
+      "near_zero": 25,
+      "mesh_vertex_near": 25,
+      "complete_surface_or_clearance_claim": false
+    },
+    {
+      "paired_native_baseline": "N1_C1_close_plane",
+      "compare_to": "N2_C1_realK_plane_0.300000",
+      "point_count": 160000,
+      "N1_valid": 0,
+      "N2_valid": 159201,
+      "accuracy_gain_claim": false
+    },
+    {
+      "provider_case": "history_tilted_first",
+      "admitted": 160000,
+      "zero": 573572,
+      "far": 0,
+      "N1_valid_numerical": 159201,
+      "N2_valid_numerical": 159201,
+      "N2_reasons": [
+        159201,
+        0,
+        799,
+        0,
+        0,
+        0
+      ],
+      "same_points_order": true,
+      "calibrated_confidence": false
+    },
+    {
+      "provider_case": "history_checkerboard_second",
+      "admitted": 80000,
+      "zero": 653572,
+      "far": 0,
+      "N1_valid_numerical": 0,
+      "N2_valid_numerical": 0,
+      "N2_reasons": [
+        0,
+        0,
+        80000,
+        0,
+        0,
+        0
+      ],
+      "same_points_order": true,
+      "calibrated_confidence": false
+    },
+    {
+      "history_unknown_grid": "preserved",
+      "required_queries": 27,
+      "native_free_or_support_claim": false
+    },
+    {
+      "history": "cached_gradient_plus_unavailable_current_normal",
+      "before_gradients": 1812,
+      "warm_gradients": 1812,
+      "fresh_gradients": 0,
+      "C0_gradients": 0,
+      "second_current_normal_valid": 0,
+      "compared": 81,
+      "warm_fresh_differing": 81,
+      "warm_C0_differing": 81,
+      "max_distance_difference_warm_fresh": 0.00193154812,
+      "max_distance_difference_warm_C0": 0.00185914896,
+      "differences_attribution": "history_and_method_combined_not_isolated_confidence"
+    },
+    {
+      "sign_view_stress": "positive_then_opposite_then_mixed_translated",
+      "points": 480000,
+      "gradient_voxels": 2162,
+      "finite": true,
+      "confidence_increase_claim": false
+    },
+    {
+      "suite": "N2_native_contracts",
+      "contract_checks": "PASS",
+      "geometry_accuracy_or_safety_pass": false,
+      "recorded_data": false
+    }
+  ],
+  "resource": {
+    "exitCode": 0,
+    "stopReason": null,
+    "wallSeconds": 40.79404306799552,
+    "peakSummedRSSBytes": 534167552,
+    "peakCumulativeCPUSeconds": 40.650000000000006,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 120,
+      "wallSeconds": 150,
+      "RSSBytes": 2147483648,
+      "diskBytes": 67108864,
+      "logicalCPUs": 1
+    },
+    "scope": "N2 provider and native synthetic fixtures only; existing D1 core; no recorded inputs",
+    "frozenIntegrityPassed": true
+  },
+  "integrity": {
+    "checked": 255,
+    "changedOrMissing": [],
+    "passed": true
+  },
+  "diskBytesBeforeReport": 6062610,
+  "recordedData": false,
+  "geometryGainEstablished": false,
+  "physicalSafetyEstablished": false,
+  "cachedFallbackBranchWitness": false,
+  "nearCollinearNormalsCalibrated": false,
+  "smallObjectsResolved": false
+}
