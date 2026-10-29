@@ -1,3 +1,16 @@
+## Next: validated navigation, not inspection — 2026-10-29 15:23 UTC
+
+Stage C003 actually passed its unchanged fixed-fixture matrix: 8 complete/no modeled contacts, 17 refused/unsuccessful, including 2 corrected corners. Bodies/margins were unchanged. This is not live-phone or whole-journey acceptance.
+
+1. Finish exact-source native validation of published Stage B `4b51e4273817bd7fa1d8830041bafdf302c11aee`: reconcile the 3 existing strict-endpoint and 5 new seed-radius-veto Apple methods individually. Preserve failures/skips; do not infer their pass from standalone Stage C.
+2. Only after those gates, stage qualified navigation-caller wiring: explicit policy selection, strict endpoints, supported flat-layer/work bounds, current scene/pose/body and freshness checks; typed refusal outside scope. Keep stock default/no app activation until separately reviewed and authorized.
+3. Connect and evaluate real temporal sensor replay through actual navigation owners and a nonphysical sink. Measure full-body collision and full-footprint support, current obstacles/drop/head hazards, localization/drift, latency, stale/reordered updates, doors, deviation and return/recovery. Unknown or no movement is not successful navigation; old paths are not current clearance.
+4. Keep original controls, margins and failed cases. Broader supported geometry and supervised device evidence remain later gates; no extra viewer work, inferred floor filling, full bed/table-loop claim or 100-trial claim substitutes for them.
+
+Earlier dated TODO entries below are historical checkpoints, not permission to repeat superseded experiments or activate live guidance.
+
+---
+
 ## Current first priority: verified geometry — 2026-10-28 17:40 UTC
 
 Follow [GEO-01–04, then NAV-01–04](research/geometry-tracker-checkpoint-20261028/STATUS.md): native all-feature parity and support-contract correction; compatible reconstruction comparisons; then unchanged route/full-body acceptance and current localization/guidance. RTAB-Map is ongoing and InfiniTAM CPU feasibility is under review. No geometry or navigation task is closed merely by producing a mesh. Earlier dated instructions below are historical checkpoints.

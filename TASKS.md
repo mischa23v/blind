@@ -1,3 +1,14 @@
+## Navigation acceptance checkpoint — 2026-10-29 15:23 UTC
+
+- [x] **Actual Stage C003 fixed-fixture correction:** 8 completed candidate requests without modeled body/margin contacts (6 retained + 2 corrected corners); 17 remain refused/unsuccessful. All 50 original controls reproduced and all 25 declared criteria met, with unchanged bodies/margins. This closes the tested flat-single-layer discrete-mask correction only, not live navigation.
+- [ ] **Stage B:** published `4b51e4273817bd7fa1d8830041bafdf302c11aee`; exact 8 Apple hosted methods (3 existing strict-endpoint + 5 seed-radius-veto) await native results. Publication is not a pass; stock remains default and no app caller is activated.
+- [ ] After those gates pass, review qualified caller wiring with strict endpoint/support admission and current scene/pose/body identity. Do not silently fall back outside the supported topology/work envelope.
+- [ ] Validate connected navigation with real temporal sensor replay, full-body/full-footprint support and current hazards, including drift, stale geometry, obstacle changes, doors, return/deviation and recovery. Supplied-pose/fixture success cannot close these requirements.
+
+Priority is usable, verified navigation—not further inspection UI as a substitute. No full bed/table loop, 100 movement trials, live-phone clearance or physical authority is established by Stage C003. Earlier dated entries below are preserved as historical evidence; the old “corners remain” statement is superseded only for this exact fixed-fixture candidate.
+
+---
+
 ## Current navigation and testing — 2026-10-29 00:38 UTC
 
 See the [current source-bound status and next tests](research/navigation-testing-status-20261029/STATUS.md). Apple floor import is native-verified; strict endpoint admission preserves 8 of 11 diagnostic corridors and rejects 3 specified projected starts, with all 3 hosted strict fixtures passing. Both corner margin contacts remain; EDT diagnosis has not yet produced corrected routes. Coffee completes only one corridor in both directions among 20 fixed queries. The current hosted suite has 241 passes, 8 failures and 2 skips; UI is 14 passed, 1 failed and 3 skipped; Ask Dynamic Type remains open. CPU/identity diagnostics are published at b398c26 and awaiting native measurements. Live navigation, full support, the 400 journeys and physical readiness remain open. All earlier dated entries and task definitions below are preserved.

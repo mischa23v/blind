@@ -1,0 +1,606 @@
+{
+  "status": "PASS-fixed-public-fixture-matrix-only",
+  "sourceCommit": "9a3aeee70c235c33954760388770809478ca9f79",
+  "runID": 40895152519,
+  "jobID": 123522115667,
+  "launcherExit": 0,
+  "jobConclusion": "success",
+  "aggregateSHA256": "542601d651b822cea2ddc3a104e85e72173107de27a6db9231f8d48a2172a8c5",
+  "logSHA256": "3ae3ebbb4c37f4ae962c9cd1abb6a255aeae94b58ffc0daf45201cd5b026a028",
+  "artifactZIP_SHA256": "085ff0573932e1bca1e63a24d20330be9d35f22a061a79db4d7cfc0fc6833984",
+  "nativeCommandsCompleted": 31,
+  "observerGroupsReportedPassed": 15,
+  "controlsRecounted": {
+    "legacy": 25,
+    "strict": 25
+  },
+  "candidateGroupsRecounted": {
+    "preserve-fourteen-original-failures": 14,
+    "retain-six-no-contact": 6,
+    "seek-two-clear-corners": 2,
+    "retain-three-typed-endpoint-refusals": 3
+  },
+  "resources": {
+    "exportReserveUnavailable": false,
+    "finalOwnedOutputBytes": 71971227,
+    "limitBreached": {
+      "cpu": false,
+      "output": false,
+      "rss": false,
+      "wall": false
+    },
+    "measurementBoundary": "terminal-guard-observation-before-bounded-metadata-export-refresh",
+    "observedAggregateCPUSeconds": 26.151640999999998,
+    "observedPeakOutputBytes": 71971338,
+    "observedPeakRSSBytes": 454361088,
+    "terminalObservationCompleted": true,
+    "wallSeconds": 30.852131875000055
+  },
+  "beforeAfterSourceAndToolPins": true,
+  "perCase": {
+    "preserve-fourteen-original-failures": [
+      {
+        "requestID": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-aisle:declared-nominal",
+        "nativeStatus": 0,
+        "nativeSucceeded": false,
+        "nativeComplete": false,
+        "endpointAdmissionRejected": true,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-aisle:declared-wide",
+        "nativeStatus": 0,
+        "nativeSucceeded": false,
+        "nativeComplete": false,
+        "endpointAdmissionRejected": true,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-around-bed:declared-wide",
+        "nativeStatus": 0,
+        "nativeSucceeded": false,
+        "nativeComplete": false,
+        "endpointAdmissionRejected": true,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-contained-start:declared-nominal",
+        "nativeStatus": 0,
+        "nativeSucceeded": false,
+        "nativeComplete": false,
+        "endpointAdmissionRejected": true,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-contained-start:declared-wide",
+        "nativeStatus": 0,
+        "nativeSucceeded": false,
+        "nativeComplete": false,
+        "endpointAdmissionRejected": true,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-long:declared-wide",
+        "nativeStatus": null,
+        "nativeSucceeded": false,
+        "nativeComplete": null,
+        "endpointAdmissionRejected": null,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-corner:declared-wide",
+        "nativeStatus": null,
+        "nativeSucceeded": false,
+        "nativeComplete": null,
+        "endpointAdmissionRejected": null,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-missing-floor:declared-nominal",
+        "nativeStatus": 0,
+        "nativeSucceeded": false,
+        "nativeComplete": false,
+        "endpointAdmissionRejected": true,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-missing-floor:declared-wide",
+        "nativeStatus": null,
+        "nativeSucceeded": false,
+        "nativeComplete": null,
+        "endpointAdmissionRejected": null,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:bedroom-contained-start:declared-width28-assumed-depth20-height120",
+        "nativeStatus": 0,
+        "nativeSucceeded": false,
+        "nativeComplete": false,
+        "endpointAdmissionRejected": true,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:hall-missing-floor:declared-width28-assumed-depth20-height120",
+        "nativeStatus": 0,
+        "nativeSucceeded": false,
+        "nativeComplete": false,
+        "endpointAdmissionRejected": true,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:standing-inside-bed-is-invalid:inside-bed-connector-attempt",
+        "nativeStatus": 0,
+        "nativeSucceeded": false,
+        "nativeComplete": false,
+        "endpointAdmissionRejected": true,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:standing-inside-chair-is-invalid:inside-chair-connector-attempt",
+        "nativeStatus": 0,
+        "nativeSucceeded": false,
+        "nativeComplete": false,
+        "endpointAdmissionRejected": true,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:historically-open-hallway-door-outside-unknown-return:outside-original-floor-unsupported",
+        "nativeStatus": 0,
+        "nativeSucceeded": false,
+        "nativeComplete": false,
+        "endpointAdmissionRejected": true,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      }
+    ],
+    "retain-six-no-contact": [
+      {
+        "requestID": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:bedroom-around-bed:declared-nominal",
+        "nativeStatus": 1073741824,
+        "nativeSucceeded": true,
+        "nativeComplete": true,
+        "endpointAdmissionRejected": false,
+        "pathAvailable": true,
+        "pathPointCount": 2,
+        "orderedPathFloat32SHA256": "9a0879ab26b9df872361775d65d6e95f9838292a31d8d0cd5269af1ace6fce31",
+        "bodyContact": false,
+        "marginContact": false,
+        "detourPathLength3DMetres": 1.6999999627739428,
+        "connectorInclusiveSegmentLength3DMetres": 1.749999676671648,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 3,
+          "uniqueFloorSurfaceCount": 1,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-long:declared-nominal",
+        "nativeStatus": 1073741824,
+        "nativeSucceeded": true,
+        "nativeComplete": true,
+        "endpointAdmissionRejected": false,
+        "pathAvailable": true,
+        "pathPointCount": 2,
+        "orderedPathFloat32SHA256": "e56866ec51bffec3e01eb638909ee5faec4865e88f3d42e63bce5b8d29958424",
+        "bodyContact": false,
+        "marginContact": false,
+        "detourPathLength3DMetres": 5.800000520021246,
+        "connectorInclusiveSegmentLength3DMetres": 5.8500004723375305,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 3,
+          "uniqueFloorSurfaceCount": 1,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:bedroom-around-bed:declared-width28-assumed-depth20-height120",
+        "nativeStatus": 1073741824,
+        "nativeSucceeded": true,
+        "nativeComplete": true,
+        "endpointAdmissionRejected": false,
+        "pathAvailable": true,
+        "pathPointCount": 2,
+        "orderedPathFloat32SHA256": "9a0879ab26b9df872361775d65d6e95f9838292a31d8d0cd5269af1ace6fce31",
+        "bodyContact": false,
+        "marginContact": false,
+        "detourPathLength3DMetres": 1.6999999627739428,
+        "connectorInclusiveSegmentLength3DMetres": 1.749999676671648,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 3,
+          "uniqueFloorSurfaceCount": 1,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:hall-long:declared-width28-assumed-depth20-height120",
+        "nativeStatus": 1073741824,
+        "nativeSucceeded": true,
+        "nativeComplete": true,
+        "endpointAdmissionRejected": false,
+        "pathAvailable": true,
+        "pathPointCount": 2,
+        "orderedPathFloat32SHA256": "e56866ec51bffec3e01eb638909ee5faec4865e88f3d42e63bce5b8d29958424",
+        "bodyContact": false,
+        "marginContact": false,
+        "detourPathLength3DMetres": 5.800000520021246,
+        "connectorInclusiveSegmentLength3DMetres": 5.8500004723375305,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 3,
+          "uniqueFloorSurfaceCount": 1,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:historically-open-hallway-door-outside-unknown-return:open-door-approach",
+        "nativeStatus": 1073741824,
+        "nativeSucceeded": true,
+        "nativeComplete": true,
+        "endpointAdmissionRejected": false,
+        "pathAvailable": true,
+        "pathPointCount": 2,
+        "orderedPathFloat32SHA256": "bc72d6038d30c3f1ca7233560bf145050b5b50cada1e0adf096c10c969a59126",
+        "bodyContact": false,
+        "marginContact": false,
+        "detourPathLength3DMetres": 0.6506922153327289,
+        "connectorInclusiveSegmentLength3DMetres": 0.7006921676490131,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 3,
+          "uniqueFloorSurfaceCount": 1,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:historically-open-hallway-door-outside-unknown-return:return-within-original-supported-model",
+        "nativeStatus": 1073741824,
+        "nativeSucceeded": true,
+        "nativeComplete": true,
+        "endpointAdmissionRejected": false,
+        "pathAvailable": true,
+        "pathPointCount": 2,
+        "orderedPathFloat32SHA256": "d98e79da9cc56acf570f4cb40bed83690432118258a8aa45355f37806e68c0b9",
+        "bodyContact": false,
+        "marginContact": false,
+        "detourPathLength3DMetres": 0.6506922153327289,
+        "connectorInclusiveSegmentLength3DMetres": 0.7006921676490131,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 3,
+          "uniqueFloorSurfaceCount": 1,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      }
+    ],
+    "seek-two-clear-corners": [
+      {
+        "requestID": "APPLE_ROOM_ROUTE_original-baseline_OUTCOMES.json:hall-corner:declared-nominal",
+        "nativeStatus": 1073741824,
+        "nativeSucceeded": true,
+        "nativeComplete": true,
+        "endpointAdmissionRejected": false,
+        "pathAvailable": true,
+        "pathPointCount": 9,
+        "orderedPathFloat32SHA256": "535b9a77a4267c1a5fb37af32d37e8439a0eddc6f426be76c3f4e8160b0c0824",
+        "bodyContact": false,
+        "marginContact": false,
+        "detourPathLength3DMetres": 1.4713614812774622,
+        "connectorInclusiveSegmentLength3DMetres": 1.5213614335937464,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 10,
+          "uniqueFloorSurfaceCount": 1,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:hall-corner:declared-width28-assumed-depth20-height120",
+        "nativeStatus": 1073741824,
+        "nativeSucceeded": true,
+        "nativeComplete": true,
+        "endpointAdmissionRejected": false,
+        "pathAvailable": true,
+        "pathPointCount": 6,
+        "orderedPathFloat32SHA256": "40e1fc9361893b86aa88c24b5095f2690e9d46ce3559e23c46f5d7c8a28ef954",
+        "bodyContact": false,
+        "marginContact": false,
+        "detourPathLength3DMetres": 1.3582677974439954,
+        "connectorInclusiveSegmentLength3DMetres": 1.4082677497602796,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 7,
+          "uniqueFloorSurfaceCount": 1,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      }
+    ],
+    "retain-three-typed-endpoint-refusals": [
+      {
+        "requestID": "APPLE_ROOM_ROUTE_width28-addendum_OUTCOMES.json:bedroom-aisle:declared-width28-assumed-depth20-height120",
+        "nativeStatus": 0,
+        "nativeSucceeded": false,
+        "nativeComplete": false,
+        "endpointAdmissionRejected": true,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:bed-supplied-rise-around-closed-door-return:connector-to-existing-aisle-route",
+        "nativeStatus": 0,
+        "nativeSucceeded": false,
+        "nativeComplete": false,
+        "endpointAdmissionRejected": true,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      },
+      {
+        "requestID": "APPLE_SUPPLIED_POSTURE_JOURNEY_OUTCOMES.json:chair-supplied-rise-around-closed-door-return:connector-to-existing-aisle-route",
+        "nativeStatus": 0,
+        "nativeSucceeded": false,
+        "nativeComplete": false,
+        "endpointAdmissionRejected": true,
+        "pathAvailable": false,
+        "pathPointCount": 0,
+        "orderedPathFloat32SHA256": null,
+        "bodyContact": null,
+        "marginContact": null,
+        "detourPathLength3DMetres": null,
+        "connectorInclusiveSegmentLength3DMetres": null,
+        "routeContactCounts": {
+          "bodyContactSegmentCount": 0,
+          "marginContactSegmentCount": 0,
+          "segmentCount": 0,
+          "uniqueFloorSurfaceCount": 0,
+          "uniqueMarginFurnitureBoundCount": 0,
+          "uniqueMarginObstacleSurfaceCount": 0
+        }
+      }
+    ]
+  },
+  "limits": [
+    "Observer15 individual raw labels and original geometry/path arrays remain runner-private; count/pins are launcher-validated reports, not independently replayed here.",
+    "25 coordinate-free receipts validated against pinned requests/body/input hashes; path digests cannot independently be recomputed without private raw arrays.",
+    "No app activation, Stage B full-app validation, physical safety, unseen-room generalization, global nearest-distance proof or center-seeking objective claim.",
+    "Attempts001/002 remain failed; this is new admitted attempt003, not a retroactive repair of those results."
+  ]
+}

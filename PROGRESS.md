@@ -1,3 +1,13 @@
+## Actual Stage C003 passed; Stage B native pending — 2026-10-29 15:23 UTC
+
+[Apple run 40895152519](https://github.com/mischa23v/blind/actions/runs/40895152519), exact source `9a3aeee70c235c33954760388770809478ca9f79`: 31 native commands completed, 15 observer groups reported passed, all 50 legacy/strict controls reproduced, all 25 candidate criteria met. **8 requests completed without modeled body or margin contacts: 6 retained corridors + 2 corrected corners; 17 requests remain refused/unsuccessful.** The long-hall fixture is approximately 5.85 m including connectors. Fixture labels/profile duplicates are not independent rooms, full bed/table loops or 100 movement trials. Attempts 001/002 remain failed historical attempts.
+
+The bounded flat-single-layer seed-radius veto excludes cells after unchanged stock erosion; it does not relax body dimensions, safety margins or the collision oracle. The result is not continuous physical-clearance/full-support proof. No live app activation or navigation authority follows.
+
+Stage B policy/wrapper and hosted tests are published at `4b51e4273817bd7fa1d8830041bafdf302c11aee`; [native run 40900894239](https://github.com/mischa23v/blind/actions/runs/40900894239) is pending at this checkpoint. The next gate is the exact 8 selected Apple methods, then separately reviewed qualified caller wiring and real temporal sensor/full-body/support/current-hazard validation. Stock remains default. All older dated entries below remain preserved.
+
+---
+
 ## Geometry evidence checkpoint — 2026-10-28 17:40 UTC
 
 The independent Apple comparison confirms a representation-validation defect; fresh Open3D reconstruction and held-out reference scoring are complete, with substantial residual tails. Neither establishes navigation readiness. See the [current geometry-first status and open acceptance](research/geometry-tracker-checkpoint-20261028/STATUS.md). The older dated entries below remain unchanged historical evidence.
