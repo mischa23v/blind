@@ -1,0 +1,100 @@
+{
+  "status": "PASS_C1_FRESH_MAP_FUSION_ONLY",
+  "originalBatchStillFailed": true,
+  "scoreAdmissionGranted": false,
+  "frames": 265,
+  "submitted": 164771607,
+  "finalState": {
+    "arm": "C1",
+    "frame": "frame_00309",
+    "submitted_this_frame_not_independent_integrated_points": 724296,
+    "cumulative_submitted": 164771607,
+    "integration_seconds": 0.225143772,
+    "state_scan_seconds": 0.023383761,
+    "arm_elapsed_seconds": 89.015046248,
+    "blocks": 1167,
+    "allocated_voxels": 4780032,
+    "observed_weight_positive": 2700114,
+    "unknown_allocated": 2079918,
+    "nonzero_gradient": 1648209,
+    "invalid_native_voxels": 0,
+    "accuracy_claim": false
+  },
+  "mesh": {
+    "event": "final_mesh",
+    "arm": "C1",
+    "frames": 265,
+    "submitted": 164771607,
+    "mesh_vertices": 1346553,
+    "mesh_indices": 1346553,
+    "mesh_seconds": 3.072369792,
+    "accuracy_claim": false
+  },
+  "outputFreeze": {
+    "frames": 265,
+    "guardAdmissionRequired": true,
+    "arms": {
+      "C1": {
+        "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/full265-c1-recovery/run/C1_native_mesh.ply",
+        "bytes": 96197461,
+        "sha256": "a4bcce0129592ac3b8320c8262f1280a95b365ddf5246c0e1f36c3deb9665fe7",
+        "submitted": 164771607
+      }
+    },
+    "accuracyEvaluated": false,
+    "referenceUsedByMapper": false
+  },
+  "resource": {
+    "exitCode": 0,
+    "stopReason": null,
+    "wallSeconds": 138.29338416700193,
+    "peakSummedRSSBytes": 692645888,
+    "peakCumulativeCPUSeconds": 137.36847699999998,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 180,
+      "wallSeconds": 210,
+      "RSSBytes": 2147483648,
+      "diskBytes": 268435456,
+      "logicalCPUs": 1
+    },
+    "scope": "C1-only fresh-map recovery on all original265 frames, identical D1+N2; no accuracy/reference/GT inputs",
+    "frozenIntegrityPassed": true,
+    "finalActualChildPlusGuardCPUSeconds": 138.14973099999997
+  },
+  "integrity": {
+    "checked": 960,
+    "changedOrMissing": [],
+    "passed": true
+  },
+  "normalReasonTotals": [
+    162445241,
+    430018,
+    166478,
+    1729870,
+    0,
+    0
+  ],
+  "reproducibility": {
+    "comparison": "Original terminated C1 completed-prefix versus fresh C1 recovery",
+    "originalCompletedFrames": 245,
+    "recoveryCompletedFrames": 265,
+    "comparedFields": [
+      "frame",
+      "submitted_this_frame_not_independent_integrated_points",
+      "cumulative_submitted",
+      "blocks",
+      "allocated_voxels",
+      "observed_weight_positive",
+      "unknown_allocated",
+      "nonzero_gradient",
+      "invalid_native_voxels"
+    ],
+    "differences": [],
+    "same245StateCounters": true,
+    "notFullMapByteIdentityProof": true,
+    "noPartialMapLoaded": true,
+    "liveNativeProcesses": []
+  },
+  "diskBytesBeforeReport": 97671442
+}
