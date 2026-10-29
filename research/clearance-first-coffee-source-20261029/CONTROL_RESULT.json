@@ -1,0 +1,46 @@
+{
+  "status": "passed",
+  "controls": [
+    "wider_interior_tier",
+    "reasonable_detour",
+    "zero_endpoint_does_not_disable_centering",
+    "strict_detour_ceiling",
+    "disconnected",
+    "u_shape_global_connectivity",
+    "no_invented_corner_cut",
+    "coincident_anchor_zero_edge",
+    "other_anchors_not_shortcuts",
+    "endpoint_association_False_veto",
+    "endpoint_association_None_veto",
+    "swept_body_False_veto",
+    "swept_body_None_veto",
+    "swept_margin_False_veto",
+    "swept_margin_None_veto",
+    "full_footprint_support_False_veto",
+    "full_footprint_support_None_veto",
+    "observed_coverage_False_veto",
+    "observed_coverage_None_veto",
+    "fresh_depth_veto_False_veto",
+    "fresh_depth_veto_None_veto",
+    "empty_candidate_veto",
+    "disconnected_candidate_veto",
+    "nan_policy",
+    "invalid_start",
+    "duplicate_edge_refused"
+  ],
+  "count": 26,
+  "scope": "pure graph/control adapter only; not geometric collision/support tests",
+  "physicalAuthority": false,
+  "wallSeconds": 0.2899751960003414,
+  "peakRSSKiB": 48664,
+  "limits": {
+    "cpuSeconds": 10,
+    "wallSeconds": 20,
+    "addressSpaceBytes": 536870912
+  },
+  "sourceSHA256": {
+    "selector.py": "0e94911d0244b9f5b11dd55d5f72b3c42d76077f2bcb66f107704ff51da41125",
+    "fixtures.py": "fa380d9227b7231c0ee4e3ca364274e903e04d54e65905c79b0ec1544070b4cf"
+  },
+  "earlierInvocationFailure": "First runpy invocation from repo root failed ModuleNotFoundError before selector import; corrected cwd. No native Coffee query executed."
+}
