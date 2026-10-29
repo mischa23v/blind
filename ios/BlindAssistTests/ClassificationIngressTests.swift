@@ -40,11 +40,37 @@ final class ClassificationIngressTests: XCTestCase {
                 reason: (error as? MeshSnapshot82.Failure) ?? .invalidDescriptor))
         }
     }
+#if DEBUG
+    /// Runs only on the separate bounded diagnostic queue, never the timed
+    /// result callback. No runtime/owner/geometry capture is needed by the sink.
+    private static func cpuReceipt(id: UUID, rows: [RoomMeshCandidateRuntime.DiagnosticStageReceipt]) {
+        func pair(_ begin: RoomMeshCandidateRuntime.DiagnosticStage,
+                  _ end: RoomMeshCandidateRuntime.DiagnosticStage) -> (Int, Int64, Bool) {
+            guard let a = rows.first(where: { $0.stage == begin }),
+                  let b = rows.first(where: { $0.stage == end }),
+                  b.elapsedMilliseconds >= a.elapsedMilliseconds else { return (-1, -1, false) }
+            let wall = b.elapsedMilliseconds - a.elapsedMilliseconds
+            guard let at = a.workerThreadID, let bt = b.workerThreadID, at == bt,
+                  let ac = a.workerCPUTimeMicroseconds, let bc = b.workerCPUTimeMicroseconds,
+                  bc >= ac else { return (wall, -1, false) }
+            return (wall, bc - ac, true)
+        }
+        let began = rows.first(where: { $0.stage == .workerStarted })?.elapsedMilliseconds ?? -1
+        let worker = pair(.workerStarted, .workerFinished)
+        let build = pair(.nativeBuildBegin, .nativeBuildEnd)
+        let route = pair(.routeBegin, .routeEnd)
+        let retired = rows.contains { $0.stage == .requestRetired }
+        let failed = rows.contains { $0.stage == .nativeFailure }
+        // Missing/mismatched clocks are -1/false, not evidence of zero CPU.
+        print("CLASSIFICATION_WORKER_CPU id=\(id.uuidString) worker_begin_ms=\(began) lane=ingress83 worker_wall_ms=\(worker.0) worker_cpu_us=\(worker.1) worker_pair_valid=\(worker.2) build_wall_ms=\(build.0) build_cpu_us=\(build.1) build_pair_valid=\(build.2) route_wall_ms=\(route.0) route_cpu_us=\(route.1) route_pair_valid=\(route.2) retired=\(retired) native_failed=\(failed) records=\(rows.count)")
+    }
+#endif
     private func makeOwner(supportPolicy: MeshSupportPolicy = .legacySlope,
                            decodeQueue: DispatchQueue) throws -> MeshCandidateIngress83 {
 #if DEBUG
         try MeshCandidateIngress83(supportPolicy: supportPolicy,
-            captureSyntheticTestTiming: true, decodeQueue: decodeQueue)
+            captureSyntheticTestTiming: true, syntheticTimingCompletion: { Self.cpuReceipt(id: $0, rows: $1) },
+            decodeQueue: decodeQueue)
 #else
         try MeshCandidateIngress83(supportPolicy: supportPolicy, decodeQueue: decodeQueue)
 #endif

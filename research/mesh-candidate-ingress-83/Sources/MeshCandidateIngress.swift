@@ -49,13 +49,15 @@ public final class MeshCandidateIngress83 {
     public init(maxAnchors: Int = 128, maxCopies: Int = 1,
                 supportPolicy: MeshSupportPolicy = .legacySlope,
                 captureSyntheticTestTiming: Bool,
+                syntheticTimingCompletion: ((UUID,[RoomMeshCandidateRuntime.DiagnosticStageReceipt])->Void)? = nil,
                 decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh83.decode", qos: .utility)) throws {
         guard (1...1024).contains(maxAnchors), (1...2).contains(maxCopies) else { throw Failure.unavailable }
         self.maxAnchors = maxAnchors; self.maxCopies = maxCopies; worker = decodeQueue
         self.supportPolicy = supportPolicy
         let initialEpoch = UUID(); epoch = initialEpoch
         runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1,
-            supportPolicy: supportPolicy, captureSyntheticTestTiming: captureSyntheticTestTiming)
+            supportPolicy: supportPolicy, captureSyntheticTestTiming: captureSyntheticTestTiming,
+            syntheticTimingCompletion: syntheticTimingCompletion)
     }
     public var diagnosticReceiptID: UUID? { runtime.diagnosticReceiptID }
     public var diagnosticStageReceipts: [RoomMeshCandidateRuntime.DiagnosticStageReceipt] {

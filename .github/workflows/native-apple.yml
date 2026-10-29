@@ -122,6 +122,21 @@ jobs:
             ${{ runner.temp }}/blind-main-audit-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/*.json
           if-no-files-found: error
           retention-days: 3
+      - name: Inspect exact synthetic UI test device identities
+        if: always() && steps.preflight.outcome == 'success'
+        timeout-minutes: 2
+        run: python3 tools/ci/export-ui-test-device-evidence.py "$RUNNER_TEMP/blind-native-ci/ui.xcresult" "$RUNNER_TEMP/blind-native-ci/simulator-id" "$RUNNER_TEMP/blind-ui-devices-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+      - name: Preserve bounded synthetic UI device identity evidence
+        if: always() && steps.preflight.outcome == 'success'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ui-test-device-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/blind-ui-devices-${{ github.run_id }}-${{ github.run_attempt }}/ui-test-device-evidence.json
+            ${{ runner.temp }}/blind-ui-devices-${{ github.run_id }}-${{ github.run_attempt }}/xcresult-test-details-help.txt
+            ${{ runner.temp }}/blind-ui-devices-${{ github.run_id }}-${{ github.run_attempt }}/xcresult-test-details-schema.json
+          if-no-files-found: error
+          retention-days: 3
       - name: Extract bounded synthetic Practice runtime evidence
         if: always() && steps.preflight.outcome == 'success'
         timeout-minutes: 2

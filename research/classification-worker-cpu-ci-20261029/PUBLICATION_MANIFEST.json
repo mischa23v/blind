@@ -1,0 +1,151 @@
+{
+  "base": "ceaaa1c1fc685b043934c4be1ade75653227e1bf",
+  "status": "reviewed timing source; final CI review pending; native execution pending",
+  "files": [
+    {
+      "path": "ios/BlindAssistTests/ClassificationIngressTests.swift",
+      "bytes": 17791,
+      "sha256": "00efadb2602cbcb6dae7cdb9c7c21a7d35f98aaeb6791dc0d10a75dce3fa173a"
+    },
+    {
+      "path": "ios/BlindAssistTests/ClassifiedRoomMeshTests.swift",
+      "bytes": 10743,
+      "sha256": "4032fa8a950e246f25a60ba136ea4ee6ec4a2948d4509bd2ed112545a39835e9"
+    },
+    {
+      "path": "research/classification-ingress-worker-cpu-20261029/ClassificationIngressTests.swift.before",
+      "bytes": 15798,
+      "sha256": "20826a7aeabdef8db4f5246a27d64e090153a7f231431cc65e73215b28e00d33"
+    },
+    {
+      "path": "research/classification-ingress-worker-cpu-20261029/ClassifiedRoomMeshTests.swift.before",
+      "bytes": 8750,
+      "sha256": "85e424c8a9104c3cab30457ba7388ad85d2f1a51d1d95582ad95ee5a6468eb78"
+    },
+    {
+      "path": "research/classification-ingress-worker-cpu-20261029/MeshCandidateIngress.swift.before",
+      "bytes": 12873,
+      "sha256": "43f55037279271e19488abf2d288fe289644fdb086985847f0464e6c457f850b"
+    },
+    {
+      "path": "research/classification-ingress-worker-cpu-20261029/README.md",
+      "bytes": 4627,
+      "sha256": "0c029470d949d91e6cdfa6096f24ae46e12f1567cdde38606293120079bf781c"
+    },
+    {
+      "path": "research/classification-ingress-worker-cpu-20261029/RoomMeshCandidate.swift.before",
+      "bytes": 15313,
+      "sha256": "d4684b7dcba25344fc219463f5b7a5560a9b976896f7a51e5e9e50a1068dd352"
+    },
+    {
+      "path": "research/classification-ingress-worker-cpu-20261029/SOURCE_RESULT.json",
+      "bytes": 2013,
+      "sha256": "d9b667d78b66ef939bb7ebd86dfb818da1a63292dd255bfbebc4ad58ac3cb55d"
+    },
+    {
+      "path": "research/classification-ingress-worker-cpu-20261029/check_source.py",
+      "bytes": 2949,
+      "sha256": "fc26aaad6df14023e62e1d4ae5135b1654de6c4602f9df718f65c6a7714bf295"
+    },
+    {
+      "path": "research/classification-ingress-worker-cpu-20261029/instrumentation.patch",
+      "bytes": 14786,
+      "sha256": "eb7bbe10b45f1198391e927acf0dfe8d408c7c83d88b818a959303aee9310e03"
+    },
+    {
+      "path": "research/classification-worker-cpu-ci-20261029/README.md",
+      "bytes": 1233,
+      "sha256": "2463d3a65cc275fa5979b1aca65b6ab50e28dc97bd1736d42a4230e641050dcc"
+    },
+    {
+      "path": "research/classification-worker-cpu-ci-20261029/REVIEW.json",
+      "bytes": 508,
+      "sha256": "8d75de470e2914ae6e327b82d0d1791aab68163700b4705e94417419010d2b60"
+    },
+    {
+      "path": "research/classification-worker-cpu-ci-20261029/SOURCE_PINS.before.json",
+      "bytes": 7976,
+      "sha256": "b06d5c876ba3a6f2fe72a755533aa4c909fa368a6c826c320c6ed77448d0c88d"
+    },
+    {
+      "path": "research/classification-worker-cpu-ci-20261029/check.before.py",
+      "bytes": 14846,
+      "sha256": "29081f12fa01109437c33c8e5e369bef308e62c64fec5b266dcb61b762f88604"
+    },
+    {
+      "path": "research/classification-worker-cpu-ci-20261029/native-apple.before.sh",
+      "bytes": 9123,
+      "sha256": "9b59a6485339b2d64fde032f7965093e319d0f21571881ccf849111756acce70"
+    },
+    {
+      "path": "research/classification-worker-cpu-ci-20261029/research__live-mesh-classified-bench-20261028__CURRENT_INPUT_PINS.json.ceaaa-before",
+      "bytes": 20357,
+      "sha256": "61b69716953900206df2743aa119b6854437f3661675d5c908c3337f413ad959"
+    },
+    {
+      "path": "research/classification-worker-cpu-ci-20261029/research__mesh-candidate-ingress-83__CURRENT_SOURCE_PINS.json.ceaaa-before",
+      "bytes": 3069,
+      "sha256": "c6381c07498734a72844b2b7208dc1e361b43d94db7093b500f57b0ad279a19f"
+    },
+    {
+      "path": "research/classification-worker-cpu-ci-20261029/research__room-mesh-package-75__APPLE_CURRENT_SOURCE_PINS.json.ceaaa-before",
+      "bytes": 10443,
+      "sha256": "fab12760e9a4a03b4d5912356eb81601092a583bf5bbbbde444c63913d3f43f3"
+    },
+    {
+      "path": "research/classification-worker-cpu-ci-20261029/test_marker.py",
+      "bytes": 2679,
+      "sha256": "05e98950aacc85292ffe47b0c4d1e79edf2b4a36344f4690439ba8673233f7e9"
+    },
+    {
+      "path": "research/earcut-ci-integration-20261028/CURRENT_PIN_RECEIPT.json",
+      "bytes": 5646,
+      "sha256": "dd70895763ffec4fd49c41b6fe81a62d0fd1127002ca05aeb4519e7d3e084774"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json",
+      "bytes": 20357,
+      "sha256": "2662a3ac68ec0961b538a0816ed6f9e9448a26bd667fd54450ae8903aa2d6750"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json",
+      "bytes": 3069,
+      "sha256": "7ebe2a7d376b2674a790a4a6cca6fd361b450a88e14f91c1d4ff7697e599e138"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
+      "bytes": 13055,
+      "sha256": "8b3eddcc383d08c71770d538c7ffe2429bd1b6e07e03e3ae99d9c9584c177ea9"
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json",
+      "bytes": 8267,
+      "sha256": "14e2f66287958511def7898919f624b39235d52d91296331b309395fa8b3db99"
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/check.py",
+      "bytes": 15198,
+      "sha256": "a512bce655898f901250821f643d38bc5cbfabb74720d65c6af56761ee3ca622"
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/worker-cpu-ci-helper.patch",
+      "bytes": 2501,
+      "sha256": "ac57e5ac7525ac8807b076658028d4e481e5c38c7e2d9381050038a69feeff56"
+    },
+    {
+      "path": "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json",
+      "bytes": 10443,
+      "sha256": "1e64d3b00f3f6cb5ba7a54be032155e7c7eafd89c443c755bcffc6325cdd5351"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+      "bytes": 18415,
+      "sha256": "ce3e49d852258585f030377d3b56e2e1dd470c96d4146347735454784643434a"
+    },
+    {
+      "path": "tools/ci/native-apple.sh",
+      "bytes": 9879,
+      "sha256": "0825a5ac144218b755f1b8f62e73ca52c6f849a756a5e0c3553f7854bdc40ea2"
+    }
+  ]
+}

@@ -1,4 +1,9 @@
 import Foundation
+#if DEBUG && canImport(Darwin)
+import Darwin
+#elseif DEBUG && canImport(Glibc)
+import Glibc
+#endif
 
 public enum MeshCandidateError: Error {
  case invalidInput, unavailable, stale, nativeFailure
@@ -92,33 +97,92 @@ public final class RoomMeshCandidateRuntime {
  /// clock reads, stage locks or public diagnostic API. No geometry/identity is kept.
  public enum DiagnosticStage: String, Sendable {
   case requestEnqueued, workerStarted, nativeBuildBegin, nativeBuildEnd
+  case workerFinished, requestRetired
   case routeBegin, routeEnd, nativeFailure, completionQueued, completionDelivered
   case discardRequested, discardWorkerStarted, discardReleased, discardCompletionDelivered
  }
  public struct DiagnosticStageReceipt: Sendable {
   public let stage: DiagnosticStage
   public let elapsedMilliseconds: Int
+  /// Current worker thread only; nil is unavailable, never zero CPU evidence.
+  public let workerCPUTimeMicroseconds: Int64?
+  public let workerThreadID: UInt64?
  }
+ private var diagnosticCompletion: ((UUID,[DiagnosticStageReceipt])->Void)?
+ private var diagnosticDeliveryCount=0
+ // Fixed process-wide pending bound, independent of owner/query lifetime.
+ private final class DiagnosticDeliveryGate {
+  let lock=NSLock()
+  var pending=0
+  let queue=DispatchQueue(label:"blind.room-mesh.synthetic-timing",qos:.utility)
+  func submit(_ work:@escaping ()->Void) {
+   lock.lock()
+   guard pending<16 else{lock.unlock();return}
+   pending+=1;lock.unlock()
+   queue.async { [self] in
+    defer{lock.lock();pending-=1;lock.unlock()}
+    work()
+   }
+  }
+ }
+ private static let diagnosticDeliveryGate=DiagnosticDeliveryGate()
  private var diagnosticStartedAt: TimeInterval?
  private var diagnosticReceipts: [DiagnosticStageReceipt] = []
  public private(set) var diagnosticReceiptID: UUID?
  public convenience init(sessionID: String,generation: Int=0,supportPolicy: MeshSupportPolicy = .legacySlope,
                          endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
-                         captureSyntheticTestTiming: Bool)throws {
+                         captureSyntheticTestTiming: Bool,
+                         syntheticTimingCompletion: ((UUID,[DiagnosticStageReceipt])->Void)? = nil)throws {
   try self.init(sessionID:sessionID,generation:generation,supportPolicy:supportPolicy,endpointPolicy:endpointPolicy)
   // Assigned before this owner escapes; never enabled/disabled during work.
   if captureSyntheticTestTiming {
+   diagnosticCompletion=syntheticTimingCompletion
    diagnosticReceiptID=UUID()
    diagnosticStartedAt=ProcessInfo.processInfo.systemUptime
   }
  }
  public var diagnosticStageReceipts: [DiagnosticStageReceipt] { locked { diagnosticReceipts } }
- private func recordDiagnosticStage(_ stage: DiagnosticStage) {
+ private static func workerCPUClock()->(Int64,UInt64)? {
+#if canImport(Darwin) || canImport(Glibc)
+  var time=timespec()
+  guard clock_gettime(CLOCK_THREAD_CPUTIME_ID,&time)==0,
+        time.tv_sec>=0,time.tv_sec<=Int((Int64.max-999_999)/1_000_000),
+        time.tv_nsec>=0,time.tv_nsec<1_000_000_000 else{return nil}
+#if canImport(Darwin)
+  var thread:UInt64=0
+  guard pthread_threadid_np(nil,&thread)==0 else{return nil}
+#else
+  let thread=UInt64(pthread_self())
+#endif
+  return (Int64(time.tv_sec)*1_000_000+Int64(time.tv_nsec)/1_000,thread)
+#else
+  return nil
+#endif
+ }
+ private func diagnosticWorkerOffset()->Int? {
+  guard diagnosticStartedAt != nil else{return nil}
+  return locked{diagnosticReceipts.count}
+ }
+ private func deliverDiagnosticWorker(from offset:Int?) {
+  guard let offset,let completion=diagnosticCompletion,let id=diagnosticReceiptID else{return}
+  let snapshot:[DiagnosticStageReceipt]?=locked {
+   guard diagnosticDeliveryCount<8,offset<diagnosticReceipts.count else{return nil}
+   diagnosticDeliveryCount+=1
+   return Array(diagnosticReceipts[offset...])
+  }
+  guard let snapshot else{return}
+  // Snapshot contains scalar metadata only. Never retain self/geometry or invoke
+  // the consumer on the native worker, under locks, or on the result callback.
+  Self.diagnosticDeliveryGate.submit { completion(id,snapshot) }
+ }
+ private func recordDiagnosticStage(_ stage: DiagnosticStage, workerCPU:Bool=false) {
   guard let startedAt=diagnosticStartedAt else{return}
+  let cpu=workerCPU ? Self.workerCPUClock():nil
   locked {
    if diagnosticReceipts.count<64 {
     let elapsed=max(0,Int((ProcessInfo.processInfo.systemUptime-startedAt)*1_000))
-    diagnosticReceipts.append(.init(stage:stage,elapsedMilliseconds:elapsed))
+    diagnosticReceipts.append(.init(stage:stage,elapsedMilliseconds:elapsed,
+     workerCPUTimeMicroseconds:cpu?.0,workerThreadID:cpu?.1))
    }
   }
  }
@@ -255,37 +319,54 @@ public final class RoomMeshCandidateRuntime {
 #endif
   Self.worker.async { [self] in
 #if DEBUG
-   recordDiagnosticStage(.workerStarted)
+   let diagnosticOffset=diagnosticWorkerOffset()
+   recordDiagnosticStage(.workerStarted,workerCPU:true)
+   defer {
+    recordDiagnosticStage(.workerFinished,workerCPU:true)
+    deliverDiagnosticWorker(from:diagnosticOffset)
+   }
 #endif
    defer{locked{pending-=1;scheduleDiscardIfDrained()}}
-   guard locked({matches(s,g,r)}),let owner=owner,ownerLifecycle==cycle,owner.session==s,owner.generation==g else{finish(.failure(.stale));return}
+   guard locked({matches(s,g,r)}),let owner=owner,ownerLifecycle==cycle,owner.session==s,owner.generation==g else{
+#if DEBUG
+    recordDiagnosticStage(.requestRetired,workerCPU:true)
+#endif
+    finish(.failure(.stale));return}
    do {
     let(v,t)=owner.geometry()
 #if DEBUG
-    recordDiagnosticStage(.nativeBuildBegin)
+    recordDiagnosticStage(.nativeBuildBegin,workerCPU:true)
 #endif
     let native=try Native(v,t,radius:body.radius,height:body.height,triangleSupport:owner.geometrySupport())
 #if DEBUG
-    recordDiagnosticStage(.nativeBuildEnd)
-    recordDiagnosticStage(.routeBegin)
+    recordDiagnosticStage(.nativeBuildEnd,workerCPU:true)
+    recordDiagnosticStage(.routeBegin,workerCPU:true)
 #endif
     let path=try native.route(start,goal,endpointPolicy:endpointPolicy)
 #if DEBUG
-    recordDiagnosticStage(.routeEnd)
+    recordDiagnosticStage(.routeEnd,workerCPU:true)
 #endif
     let state=locked{(matches(s,g,r),gap)}
-    guard state.0 else{finish(.failure(.stale));return}
+    guard state.0 else{
+#if DEBUG
+    recordDiagnosticStage(.requestRetired,workerCPU:true)
+#endif
+    finish(.failure(.stale));return}
     var unknown=owner.unknown.sorted();if state.1{unknown.append("ingress-or-lifecycle-gap")}
     finish(.success(MeshCandidateRoute(sessionID:s,generation:g,revision:r,points:path.points,projectedStart:path.projected_start,projectedGoal:path.projected_goal,complete:path.complete,nativeStatus:path.status,sourceDeliveryComplete:owner.sourceComplete && !state.1,unknownCoverage:unknown,endpointPolicy:endpointPolicy,endpointAdmission:path.endpointAdmission)))
    } catch MeshCandidateError.endpointAssociationRejected(let receipt) {
 #if DEBUG
-    recordDiagnosticStage(.nativeFailure)
+    recordDiagnosticStage(.nativeFailure,workerCPU:true)
 #endif
-    guard locked({matches(s,g,r)}) else{finish(.failure(.stale));return}
+    guard locked({matches(s,g,r)}) else{
+#if DEBUG
+    recordDiagnosticStage(.requestRetired,workerCPU:true)
+#endif
+    finish(.failure(.stale));return}
     finish(.failure(.endpointAssociationRejected(receipt)))
    } catch {
 #if DEBUG
-    recordDiagnosticStage(.nativeFailure)
+    recordDiagnosticStage(.nativeFailure,workerCPU:true)
 #endif
     finish(.failure(.nativeFailure))
    }

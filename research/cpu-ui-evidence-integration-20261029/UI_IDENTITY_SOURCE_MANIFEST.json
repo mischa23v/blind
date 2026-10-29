@@ -1,0 +1,29 @@
+{
+  "source": "ceaaa1c1fc685b043934c4be1ade75653227e1bf",
+  "scope": "identity metadata only; no container retarget or UI changes",
+  "files": [
+    {
+      "path": "tools/ci/export-ui-test-device-evidence.py",
+      "baseSHA256": null,
+      "sha256": "905cd968e91553c2fa0a7d6b17b8708e316426b8a744955fd7b3bb5ff672bb97",
+      "bytes": 7826
+    },
+    {
+      "path": "tools/ci/test-ui-test-device-evidence.py",
+      "baseSHA256": null,
+      "sha256": "06ef2504bc39d1a4c58c1f0421d03b9c58e34ef91f41e3ee44c18779918aacef",
+      "bytes": 10745
+    },
+    {
+      "path": ".github/workflows/native-apple.yml",
+      "baseSHA256": "f166eb86192d21b30fb54235a21272dcc83fbb5672dd4dc3000e9aa8730752d4",
+      "sha256": "f0918d26a6542ce5a2d09e913b19e629009538f2421bd732b982564b58d4cc2b",
+      "bytes": 12258
+    }
+  ],
+  "patchSHA256": "362e4f33c272608d5cb751302265c4820498327e62ae9b4b2224cd70154604cd",
+  "dependency": {
+    "path": "tools/ci/export-practice-runtime-evidence.py",
+    "sha256": "2ae249a91c1a05ca0fd467c9fc23702cf0f97c8988b44d068bd5b18bc5f8c316"
+  }
+}

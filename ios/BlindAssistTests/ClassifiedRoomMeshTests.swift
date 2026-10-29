@@ -19,9 +19,35 @@ final class ClassifiedRoomMeshTests: XCTestCase {
               timestamp: 1, vertices: vertices, triangles: triangles, columnMajorTransform: identity,
               complete: true, triangleSupport: support)
     }
+#if DEBUG
+    /// Runs only on the separate bounded diagnostic queue, never the timed
+    /// result callback. No runtime/owner/geometry capture is needed by the sink.
+    private static func cpuReceipt(id: UUID, rows: [RoomMeshCandidateRuntime.DiagnosticStageReceipt]) {
+        func pair(_ begin: RoomMeshCandidateRuntime.DiagnosticStage,
+                  _ end: RoomMeshCandidateRuntime.DiagnosticStage) -> (Int, Int64, Bool) {
+            guard let a = rows.first(where: { $0.stage == begin }),
+                  let b = rows.first(where: { $0.stage == end }),
+                  b.elapsedMilliseconds >= a.elapsedMilliseconds else { return (-1, -1, false) }
+            let wall = b.elapsedMilliseconds - a.elapsedMilliseconds
+            guard let at = a.workerThreadID, let bt = b.workerThreadID, at == bt,
+                  let ac = a.workerCPUTimeMicroseconds, let bc = b.workerCPUTimeMicroseconds,
+                  bc >= ac else { return (wall, -1, false) }
+            return (wall, bc - ac, true)
+        }
+        let began = rows.first(where: { $0.stage == .workerStarted })?.elapsedMilliseconds ?? -1
+        let worker = pair(.workerStarted, .workerFinished)
+        let build = pair(.nativeBuildBegin, .nativeBuildEnd)
+        let route = pair(.routeBegin, .routeEnd)
+        let retired = rows.contains { $0.stage == .requestRetired }
+        let failed = rows.contains { $0.stage == .nativeFailure }
+        // Missing/mismatched clocks are -1/false, not evidence of zero CPU.
+        print("CLASSIFICATION_WORKER_CPU id=\(id.uuidString) worker_begin_ms=\(began) lane=runtime75 worker_wall_ms=\(worker.0) worker_cpu_us=\(worker.1) worker_pair_valid=\(worker.2) build_wall_ms=\(build.0) build_cpu_us=\(build.1) build_pair_valid=\(build.2) route_wall_ms=\(route.0) route_cpu_us=\(route.1) route_pair_valid=\(route.2) retired=\(retired) native_failed=\(failed) records=\(rows.count)")
+    }
+#endif
     private func makeRuntime(sessionID: String, supportPolicy: MeshSupportPolicy = .legacySlope) throws -> RoomMeshCandidateRuntime {
 #if DEBUG
-        try RoomMeshCandidateRuntime(sessionID: sessionID, supportPolicy: supportPolicy, captureSyntheticTestTiming: true)
+        try RoomMeshCandidateRuntime(sessionID: sessionID, supportPolicy: supportPolicy, captureSyntheticTestTiming: true,
+            syntheticTimingCompletion: { Self.cpuReceipt(id: $0, rows: $1) })
 #else
         try RoomMeshCandidateRuntime(sessionID: sessionID, supportPolicy: supportPolicy)
 #endif
