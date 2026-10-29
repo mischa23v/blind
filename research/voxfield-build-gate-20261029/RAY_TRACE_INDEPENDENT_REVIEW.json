@@ -1,0 +1,38 @@
+{
+  "reviewUTC": "2026-10-29T05:01:26Z",
+  "frozenPinsIndependentlyVerified": 265,
+  "mismatches": 0,
+  "actualForkOnly": true,
+  "stockExecuted": false,
+  "axis": {
+    "emissions": 31,
+    "uniqueIndices": 1,
+    "index": [
+      0,
+      0,
+      0
+    ],
+    "expectedProbeAllocated": false
+  },
+  "oblique": {
+    "emissions": 40,
+    "uniqueIndices": 40,
+    "analyticSequenceExact": true,
+    "offWeight": 0.9175153375,
+    "onWeight": 0
+  },
+  "limits": "Analytic oracle only valid for these positive origin-zero cases; no general boundary/tie validation. Original semantic failure remains. No upstream patch or rerun by reviewer.",
+  "proposedSourceOnlyFix": "Exact zero direction => positive infinity for both next-boundary and step times; no epsilon. Nonzero arithmetic unchanged. Zero-length and invalid constructor input policy separately specified before normalization/conversion.",
+  "neededFixtures": [
+    "six signed axes",
+    "fractional translated axes",
+    "exact grid boundaries in both directions",
+    "signed zero",
+    "one-zero direction",
+    "oblique unchanged",
+    "zero-length direct and physical constructor policy",
+    "nonfinite rejection before indexing"
+  ],
+  "resourceReceiptSHA256": "5eeab5453a6264efffde1c1759ba0a5485da8efdcb91659252bcaf1937863ada",
+  "traceSHA256": "58a340fdd743ad499a75a829d36d638fa517722f33500e8177fd0d2812f933b0"
+}

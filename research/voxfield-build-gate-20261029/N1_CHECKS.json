@@ -1,0 +1,44 @@
+[
+  {
+    "fixture": "normal_area_units",
+    "depth_m": 0.3,
+    "fx_px": 810.825,
+    "expected_cross_area_m2": 1.36895e-07,
+    "threshold_m2": 1e-06,
+    "admitted": 12,
+    "valid": 0,
+    "degenerate": 6,
+    "boundary": 6
+  },
+  {
+    "fixture": "normal_area_units",
+    "depth_m": 1,
+    "fx_px": 810.825,
+    "expected_cross_area_m2": 1.52106e-06,
+    "threshold_m2": 1e-06,
+    "admitted": 12,
+    "valid": 6,
+    "degenerate": 0,
+    "boundary": 6
+  },
+  {
+    "fixture": "normal_area_units",
+    "depth_m": 3,
+    "fx_px": 810.825,
+    "expected_cross_area_m2": 1.36895e-05,
+    "threshold_m2": 1e-06,
+    "admitted": 12,
+    "valid": 6,
+    "degenerate": 0,
+    "boundary": 6
+  },
+  {
+    "suite": "N1_provider_only",
+    "status": "PASS",
+    "assertions": 1303,
+    "scope": "synthetic organized rasters; no mapper or real scene",
+    "normalSign": "dx_cross_dy",
+    "ratio": 0.05,
+    "epsilon": 1e-06
+  }
+]

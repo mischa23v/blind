@@ -1,0 +1,91 @@
+{
+  "RESOURCE.json": {
+    "exitCode": 2,
+    "stopReason": null,
+    "wallSeconds": 136.85505066999758,
+    "peakSummedRSSBytes": 663343104,
+    "peakCumulativeCPUSeconds": 127.0,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 900,
+      "wallSeconds": 900,
+      "RSSBytes": 2147483648,
+      "diskBytes": 536870912,
+      "logicalCPUs": 1
+    },
+    "scope": "26-file native build + upstream tests + synthetic-only fixtures; no recorded inputs"
+  },
+  "CONTINUATION_RESOURCE.json": {
+    "exitCode": -15,
+    "stopReason": "rss_2GiB",
+    "wallSeconds": 26.20891827200103,
+    "peakSummedRSSBytes": 2165166080,
+    "peakCumulativeCPUSeconds": 26.09,
+    "aggregateConservativeCPUSeconds": 153.09,
+    "originalFreezeToEndWallSeconds": 261.6738028526306,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 900,
+      "wallSeconds": 900,
+      "RSSBytes": 2147483648,
+      "diskBytes": 536870912,
+      "logicalCPUs": 1
+    },
+    "scope": "26-file native build + upstream tests + synthetic-only fixtures; no recorded inputs"
+  },
+  "REMAINING_RESOURCE.json": {
+    "exitCode": 1,
+    "stopReason": null,
+    "wallSeconds": 36.487146608997136,
+    "peakSummedRSSBytes": 870252544,
+    "peakCumulativeCPUSeconds": 36.339999999999996,
+    "aggregateConservativeCPUSeconds": 189.43,
+    "originalFreezeToEndWallSeconds": 389.4909555912018,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 900,
+      "wallSeconds": 900,
+      "RSSBytes": 2147483648,
+      "diskBytes": 536870912,
+      "logicalCPUs": 1
+    },
+    "scope": "26-file native build + upstream tests + synthetic-only fixtures; no recorded inputs"
+  },
+  "FINAL_FIXTURE_RESOURCE.json": {
+    "exitCode": 2,
+    "stopReason": null,
+    "wallSeconds": 0.31833969399303896,
+    "peakSummedRSSBytes": 19501056,
+    "peakCumulativeCPUSeconds": 0.18,
+    "aggregateConservativeCPUSeconds": 189.61,
+    "originalFreezeToEndWallSeconds": 458.85986852645874,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 900,
+      "wallSeconds": 900,
+      "RSSBytes": 2147483648,
+      "diskBytes": 536870912,
+      "logicalCPUs": 1
+    },
+    "scope": "26-file native build + upstream tests + synthetic-only fixtures; no recorded inputs"
+  },
+  "RAY_TRACE_RESOURCE.json": {
+    "exitCode": 0,
+    "stopReason": null,
+    "wallSeconds": 2.471952694002539,
+    "peakSummedRSSBytes": 364859392,
+    "peakCumulativeCPUSeconds": 2.32,
+    "aggregateConservativeCPUSeconds": 191.93,
+    "originalFreezeToEndWallSeconds": 627.646213054657,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 15,
+      "wallSeconds": 30,
+      "originalCumulativeCPUWallCap": 900,
+      "RSSBytes": 2147483648,
+      "diskBytes": 536870912,
+      "logicalCPUs": 1
+    },
+    "scope": "26-file native build + upstream tests + synthetic-only fixtures; no recorded inputs"
+  }
+}
