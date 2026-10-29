@@ -38,14 +38,30 @@ with tempfile.TemporaryDirectory(prefix='stage85-snapshot-') as temp:
     for name, digest in manifest['beforeImmutableSnapshot'].items():
         check('exact pre-immutable-snapshot source recovered ' + name, hashlib.sha256((root / name).read_bytes()).hexdigest() == digest)
 
+# Optional exact-seed-radius policy is a new reversible layer, not a historical pin bypass.
+with tempfile.TemporaryDirectory(prefix='stage85-exact-seed-policy-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeExactSeedRadiusPolicy'])+manifest['exactSeedRadiusPolicyNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+    subprocess.run(['git','apply','-R',str(H/'exact-seed-radius-policy-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeExactSeedRadiusPolicy'].items():
+        check('exact pre-seed-radius policy recovered '+name,hashlib.sha256((root/name).read_bytes()).hexdigest()==digest)
+    for name in manifest['exactSeedRadiusPolicyNewFiles']:
+        check('new seed-radius private helper absent in historical layer '+name,not (root/name).exists())
+
 # The authorized CI metadata extraction is a separate reversible helper layer.
 # Recover the exact prior helper before assessing unchanged build-mode contracts.
 with tempfile.TemporaryDirectory(prefix='stage85-ci-helper-') as temp:
     root = Path(temp)
-    for name in dict.fromkeys(list(manifest['beforeSceneTimingHelper']) + list(manifest['beforeSeatedViewerCI']) + manifest['seatedViewerCINewFiles']):
+    for name in dict.fromkeys(list(manifest['beforeSceneTimingHelper']) + list(manifest['beforeSeatedViewerCI']) + manifest['seatedViewerCINewFiles'] + list(manifest['beforeExactSeedRadiusCI']) + manifest['exactSeedRadiusCINewFiles']):
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(R / name, target)
+    subprocess.run(['git','apply','-R',str(H/'exact-seed-radius-ci-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeExactSeedRadiusCI'].items():
+        check('exact pre-seed-radius CI recovered '+name,hashlib.sha256((root/name).read_bytes()).hexdigest()==digest)
+    for name in manifest['exactSeedRadiusCINewFiles']:
+        check('new seed-radius collector absent in historical layer '+name,not (root/name).exists())
     subprocess.run(['git', 'apply', '-R', str(H / 'seated-viewer-ci-layer.patch')], cwd=root,
                    check=True, timeout=15, capture_output=True)
     for name, digest in manifest['beforeSeatedViewerCI'].items():
@@ -263,6 +279,12 @@ check('seated focused bounded step and fail-closed collector', 'timeout-minutes:
 check('classified stdout isolated from SwiftPM stderr', '--xunit-output "$out/tests.xml" 2> "$out/swift-test.stderr.log" | tee "$out/swift-test.log"' in current_workflow)
 check('classified stderr retained separately after both pipeline exits captured', current_workflow.index('statuses=("${PIPESTATUS[@]}")') < current_workflow.index('cat "$out/swift-test.stderr.log" >&2') and 'test "${statuses[0]}" -eq 0' in current_workflow and 'test "${statuses[1]}" -eq 0' in current_workflow)
 check('actual session initializer label source regressions', subprocess.run([sys.executable, str(R/'tools/ci/test_live_mesh_session_initializer.py')], cwd=R, capture_output=True, timeout=15).returncode == 0)
+seed_mode=current_helper.split('  seed-radius-unit)\n',1)[1].split('    ;;',1)[0]
+check('seed-radius two exact classes only and original modes preserved', seed_mode.count('-only-testing:')==2 and "'-only-testing:BlindAssistTests/SavedRoomStrictEndpointTests'" in seed_mode and "'-only-testing:BlindAssistTests/SeedRadiusVetoAppleTests'" in seed_mode)
+check('seed-radius default compile flags no retry or parallel testing', 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' not in seed_mode and '-parallel-testing-enabled NO' in seed_mode and 'retry' not in seed_mode)
+check('seed-radius exit and separate xcresult preserved', 'seed-radius-unit.xcresult' in seed_mode and 'test || status=$?' in seed_mode and 'seed-radius-unit-exit.json' in seed_mode and 'exit "$status"' in seed_mode)
+check('seed-radius focused step bounded and collector always present', 'timeout-minutes: 10\n        run: bash tools/ci/native-apple.sh seed-radius-unit' in current_workflow and 'run: python3 tools/ci/collect-seed-radius.py' in current_workflow)
+check('seed-radius strict collector negative fixtures',subprocess.run([sys.executable,str(R/'tools/ci/test-collect-seed-radius.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 print(json.dumps(dict(sourceChecksPassed=len(checks), checks=checks, appPatchApplied=True, criticalOrderPatchApplied=True, practicePublicationPatchApplied=True, projectCanonicalizationPatchApplied=True, connectedBenchPreviewMembershipApplied=True, navigationTestRecordingApplied=True, savedFrameCameraAssociationApplied=True, sceneTimingCIHelperApplied=True, recorderTimingCIHelperApplied=True, savedRoomGeometryMembershipApplied=True, appleRoomPlanFixtureMembershipApplied=True, appleRoomRouteMembershipApplied=True, classificationIngressMembershipApplied=True, hostedDecoderLinkMembershipApplied=True,
     appleBuild='pending', historicalLayersReversedExactly=True, defaultAppActivation=False, runtimeOptIn='diagnostic flag plus explicit seated confirmation required', geometryCopyEnabled='only inside separately admitted diagnostic owner',
     physicalAuthority=False, experimental128MiBCapCompliance='not claimed'), indent=2))

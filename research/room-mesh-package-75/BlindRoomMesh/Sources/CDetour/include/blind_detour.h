@@ -16,6 +16,30 @@ void* bn_build(const float* vertices, int vertex_count, const int* triangles,
 void* bn_build_classified(const float* vertices, int vertex_count, const int* triangles,
                          int triangle_count, const BNConfig* config,
                          const unsigned char* triangle_support);
+/* Opt-in flat-layer discrete seed-radius exclusion. Not source-wall clearance,
+   continuous motion validity, floor support or physical output authority.
+   Stock APIs/defaults remain unchanged. R = ceil(original radius/cell size).
+   Threshold is strict: remove iff squared integer seed distance < R*R. */
+enum BNSeedRadiusStatus {
+    BN_SEED_RADIUS_NOT_REQUESTED = 0, BN_SEED_RADIUS_PREPARED = 1,
+    BN_SEED_RADIUS_APPLIED = 2, BN_SEED_RADIUS_INVALID_INPUT = -1,
+    BN_SEED_RADIUS_UNSUPPORTED_LAYER = -2, BN_SEED_RADIUS_INVALID_TOPOLOGY = -3,
+    BN_SEED_RADIUS_WORK_LIMIT = -4, BN_SEED_RADIUS_ALLOCATION_FAILED = -5,
+    BN_SEED_RADIUS_BUILD_FAILED = -6
+};
+typedef struct BNSeedRadiusVetoReceipt {
+    int schema, status, width, height, span_count, radius_cells, common_y_voxel;
+    int real_seed_count, exterior_seed_count, stock_keep_count, exact_keep_count;
+    int additional_rejected_count, build_succeeded;
+    unsigned long long work_limit, work_bound, work_performed;
+} BNSeedRadiusVetoReceipt;
+/* maximum_seed_tests must be 1...10,000,000. Budget refusal emits no handle;
+   no stock-policy fallback. On later build failure status may still be APPLIED
+   with build_succeeded=0, including a valid empty keep mask. */
+void* bn_build_classified_seed_radius(const float* vertices, int vertex_count,
+    const int* triangles, int triangle_count, const BNConfig* config,
+    const unsigned char* triangle_support, unsigned long long maximum_seed_tests,
+    BNSeedRadiusVetoReceipt* receipt);
 void* bn_build_excluded(const float* vertices,int vertex_count,const int* triangles,int triangle_count,const BNConfig* config,const float* polygon,int count,float observed_min_y,float observed_max_y);
 int bn_excluded_span_count(void* handle);
 void bn_destroy(void* handle);

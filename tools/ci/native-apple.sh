@@ -142,6 +142,20 @@ PY
     printf '{"exit_code":%s}\n' "$status" > "$out/diagnostics-unit-exit.json"
     exit "$status"
     ;;
+  seed-radius-unit)
+    # Fixed three existing strict controls plus five optional-policy integration tests.
+    # Default configuration; no caller activation, camera or model work.
+    device="$(cat "$out/simulator-id")"
+    status=0
+    run_logged seed-radius-unit xcodebuild "${base[@]}" \
+      -destination "platform=iOS Simulator,id=$device" -destination-timeout 120 \
+      -parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1 \
+      '-only-testing:BlindAssistTests/SavedRoomStrictEndpointTests' \
+      '-only-testing:BlindAssistTests/SeedRadiusVetoAppleTests' \
+      -resultBundlePath "$out/seed-radius-unit.xcresult" test || status=$?
+    printf '{"exit_code":%s}\n' "$status" > "$out/seed-radius-unit-exit.json"
+    exit "$status"
+    ;;
   build)
     run_logged build xcodebuild "${base[@]}" -destination 'generic/platform=iOS Simulator' build
     ;;

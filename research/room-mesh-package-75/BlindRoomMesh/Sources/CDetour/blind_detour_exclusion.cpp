@@ -2,6 +2,7 @@
 // NOT a replacement SLAM/search algorithm or a validated human controller.
 #include "include/blind_detour.h"
 #include "Recast.h"
+#include "exact_seed_radius_veto.h"
 #include "DetourNavMesh.h"
 #include "DetourNavMeshBuilder.h"
 #include "DetourNavMeshQuery.h"
@@ -39,8 +40,10 @@ struct BuildData {
 };
 extern "C" const char* bn_last_error() { return error_message; }
 extern "C" void bn_destroy(void* handle) { delete static_cast<BNHandle*>(handle); }
-static void* build_impl(const float* v, int nv, const int* t, int nt, const BNConfig* c, const float* exclusion, int exclusionCount, float observedMinY, float observedMaxY, const unsigned char* triangleSupport, bool classifiedFloorOnly) {
+static void* build_impl(const float* v, int nv, const int* t, int nt, const BNConfig* c, const float* exclusion, int exclusionCount, float observedMinY, float observedMaxY, const unsigned char* triangleSupport, bool classifiedFloorOnly,
+                        unsigned long long maximumSeedTests = 0, BNSeedRadiusVetoReceipt* seedReceipt = 0) {
     error_message[0] = 0;
+    if (seedReceipt) seedReceipt->status = BN_SEED_RADIUS_INVALID_INPUT;
     if (!v || !t || !c || nv < 3 || nv > 250000 || nt < 1 || nt > 500000) { fail("invalid/count-limited mesh input"); return 0; }
     if (classifiedFloorOnly && !triangleSupport) { fail("missing triangle support"); return 0; }
     if (classifiedFloorOnly) for (int i=0; i<nt; ++i) if (triangleSupport[i]>1) { fail("invalid triangle support"); return 0; }
@@ -81,6 +84,7 @@ static void* build_impl(const float* v, int nv, const int* t, int nt, const BNCo
     }
     for (int i=0; i<nv*3; ++i) if (!std::isfinite(v[i]) || std::fabs(v[i]) > 10000.f) { fail("invalid vertex"); return 0; }
     for (int i=0; i<nt*3; ++i) if (t[i] < 0 || t[i] >= nv) { fail("invalid triangle index"); return 0; }
+    if (seedReceipt) seedReceipt->status = BN_SEED_RADIUS_BUILD_FAILED;
     rcContext context(false);
     rcConfig config; std::memset(&config, 0, sizeof(config));
     config.cs = c->cell_size; config.ch = c->cell_height;
@@ -142,8 +146,20 @@ static void* build_impl(const float* v, int nv, const int* t, int nt, const BNCo
         for (int i=0; i<b.compact->spanCount; ++i) after += b.compact->areas[i]!=RC_NULL_AREA;
         excludedSpanCount=before-after;
     }
-    if (!rcErodeWalkableArea(&context, config.walkableRadius, *b.compact) ||
-        !rcBuildDistanceField(&context, *b.compact) ||
+    BNSeedRadiusVeto seedVeto;
+    // Capture only the original pre-erosion seeds. Stock erosion stays intact.
+    // The opt-in policy can remove additional spans; it cannot promote support.
+    if (seedReceipt && !seedVeto.prepare(*b.compact, config.walkableRadius, maximumSeedTests, *seedReceipt)) {
+        fail("seed-radius preparation refused"); return 0;
+    }
+    if (!rcErodeWalkableArea(&context, config.walkableRadius, *b.compact)) {
+        if (seedReceipt) seedReceipt->status = BN_SEED_RADIUS_BUILD_FAILED;
+        fail("Recast build stage"); return 0;
+    }
+    if (seedReceipt && !seedVeto.apply(*b.compact, *seedReceipt)) {
+        fail("seed-radius work or topology refused"); return 0;
+    }
+    if (!rcBuildDistanceField(&context, *b.compact) ||
         !rcBuildRegions(&context, *b.compact, 0, config.minRegionArea, config.mergeRegionArea) ||
         !rcBuildContours(&context, *b.compact, config.maxSimplificationError, config.maxEdgeLen, *b.contours) ||
         !rcBuildPolyMesh(&context, *b.contours, config.maxVertsPerPoly, *b.mesh) ||
@@ -170,6 +186,10 @@ static void* build_impl(const float* v, int nv, const int* t, int nt, const BNCo
     if (dtStatusFailed(h->mesh->init(data,bytes,DT_TILE_FREE_DATA))) { dtFree(data); delete h; fail("Detour mesh init"); return 0; }
     if (dtStatusFailed(h->query->init(h->mesh,c->max_nodes))) { delete h; fail("Detour query init"); return 0; }
     h->excludedSpanCount=excludedSpanCount;
+    if (seedReceipt) {
+        if (seedReceipt->status != BN_SEED_RADIUS_APPLIED) { delete h; fail("seed-radius receipt incomplete"); return 0; }
+        seedReceipt->build_succeeded = 1;
+    }
     return h;
 }
 extern "C" int bn_path(void* handle,const float* start,const float* goal,const float* ext,float* points,int cap,
@@ -252,6 +272,18 @@ extern "C" void* bn_build_excluded(const float* v, int nv, const int* t, int nt,
 }
 extern "C" void* bn_build_classified(const float* v, int nv, const int* t, int nt, const BNConfig* c, const unsigned char* triangleSupport) {
     return build_impl(v,nv,t,nt,c,0,0,0.f,0.f,triangleSupport,true);
+}
+extern "C" void* bn_build_classified_seed_radius(const float* v, int nv, const int* t, int nt,
+    const BNConfig* c, const unsigned char* triangleSupport, unsigned long long maximumSeedTests,
+    BNSeedRadiusVetoReceipt* receipt) {
+    error_message[0] = 0;
+    if (!receipt) { fail("missing seed-radius receipt"); return 0; }
+    std::memset(receipt, 0, sizeof(*receipt)); receipt->schema = 1;
+    receipt->work_limit = maximumSeedTests;
+    if (!maximumSeedTests || maximumSeedTests > 10000000ULL) {
+        receipt->status = BN_SEED_RADIUS_WORK_LIMIT; fail("invalid seed-radius work budget"); return 0;
+    }
+    return build_impl(v,nv,t,nt,c,0,0,0.f,0.f,triangleSupport,true,maximumSeedTests,receipt);
 }
 extern "C" void* bn_build(const float* v, int nv, const int* t, int nt, const BNConfig* c) {
     return bn_build_excluded(v,nv,t,nt,c,0,0,0.f,0.f);

@@ -136,19 +136,46 @@ struct NativeRoute:Codable {
 }
 final class Native {
  let handle:UnsafeMutableRawPointer
- init(_ vertices:[Double],_ triangles:[Int32],exclusion:Exclusion?=nil,radius:Float=0.225,height:Float=1.75,triangleSupport:[MeshTriangleSupport]?=nil)throws {
+ let seedRadiusReceipt:MeshSeedRadiusVetoReceipt?
+ init(_ vertices:[Double],_ triangles:[Int32],exclusion:Exclusion?=nil,radius:Float=0.225,height:Float=1.75,triangleSupport:[MeshTriangleSupport]?=nil,seedRadiusPolicy:MeshSeedRadiusPolicy = .stock)throws {
   guard vertices.count%3==0,triangles.count%3==0,vertices.count/3<=200000,triangles.count/3<=100000,vertices.allSatisfy({$0.isFinite && Float($0).isFinite}),triangles.allSatisfy({$0>=0 && Int($0)<vertices.count/3}) else {throw Failure.invalid("native input")}
   let packed:[Float]=vertices.map(Float.init)
   guard triangleSupport == nil || (exclusion == nil && triangleSupport!.count==triangles.count/3) else{throw Failure.invalid("native triangle support")}
+  guard seedRadiusPolicy.valid, seedRadiusPolicy == .stock || (triangleSupport != nil && exclusion == nil) else {throw MeshCandidateError.invalidInput}
   let supportBytes=triangleSupport?.map(\.rawValue)
+  var seedReceipt=BNSeedRadiusVetoReceipt()
   var c=BNConfig(radius:radius,height:height,cell_size:0.025,cell_height:0.025,max_climb:0.025,max_slope:15,max_cells:250000,max_nodes:4096)
   let polygon=try exclusion?.validatedPolygon(expectedFrame:"phone-corrected-level-game-yup-v1")
   let h=packed.withUnsafeBufferPointer{v in triangles.withUnsafeBufferPointer{t -> UnsafeMutableRawPointer? in
-   if let supportBytes=supportBytes{return supportBytes.withUnsafeBufferPointer{s in bn_build_classified(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,s.baseAddress)}}
+   if let supportBytes=supportBytes{return supportBytes.withUnsafeBufferPointer{s in
+    if let limit=seedRadiusPolicy.maximumSeedTests {
+     return bn_build_classified_seed_radius(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,s.baseAddress,limit,&seedReceipt)
+    }
+    return bn_build_classified(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,s.baseAddress)
+   }}
    if let e=exclusion,let polygon=polygon{return polygon.withUnsafeBufferPointer{p in bn_build_excluded(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,p.baseAddress,Int32(polygon.count/3),Float(e.observedTopHeightRange[0]),Float(e.observedTopHeightRange[1]))}}
    return bn_build(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c)
   }}
-  guard let h else {throw Failure.invalid("native build")};handle=h
+  if seedRadiusPolicy.maximumSeedTests != nil {
+   let receipt=MeshSeedRadiusVetoReceipt(schema:Int(seedReceipt.schema),
+    status:MeshSeedRadiusVetoStatus(rawValue:Int(seedReceipt.status)) ?? .invalidInput,
+    width:Int(seedReceipt.width),height:Int(seedReceipt.height),spanCount:Int(seedReceipt.span_count),
+    radiusCells:Int(seedReceipt.radius_cells),commonYVoxel:Int(seedReceipt.common_y_voxel),
+    realSeedCount:Int(seedReceipt.real_seed_count),exteriorSeedCount:Int(seedReceipt.exterior_seed_count),
+    stockKeepCount:Int(seedReceipt.stock_keep_count),exactKeepCount:Int(seedReceipt.exact_keep_count),
+    additionalRejectedCount:Int(seedReceipt.additional_rejected_count),buildSucceeded:seedReceipt.build_succeeded != 0,
+    workLimit:seedReceipt.work_limit,workBound:seedReceipt.work_bound,workPerformed:seedReceipt.work_performed)
+   seedRadiusReceipt=receipt
+   guard let h else {throw MeshCandidateError.seedRadiusUnavailable(receipt)}
+   guard receipt.schema==1,receipt.status == .applied,receipt.buildSucceeded,
+    receipt.workPerformed<=receipt.workBound,receipt.workBound<=receipt.workLimit else {
+    bn_destroy(h);throw MeshCandidateError.seedRadiusUnavailable(receipt)
+   }
+   handle=h
+  } else {
+   seedRadiusReceipt=nil
+   guard let h else {throw Failure.invalid("native build")};handle=h
+  }
  }
  var markedSpans:Int{Int(bn_excluded_span_count(handle))}
  deinit{bn_destroy(handle)}

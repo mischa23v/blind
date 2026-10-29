@@ -8,6 +8,32 @@ import Glibc
 public enum MeshCandidateError: Error {
  case invalidInput, unavailable, stale, nativeFailure
  case endpointAssociationRejected(MeshEndpointAdmissionReceipt)
+ case seedRadiusUnavailable(MeshSeedRadiusVetoReceipt)
+}
+/// Opt-in additional discrete-mask exclusion. Stock diagnostics stay unchanged.
+/// Exact policy requires classified support + strict requested-XZ admission.
+public enum MeshSeedRadiusPolicy: Equatable, Sendable {
+ case stock
+ case exactFlatLayer(maximumSeedTests: UInt64)
+ var maximumSeedTests: UInt64? { if case .exactFlatLayer(let value) = self { return value }; return nil }
+ var valid: Bool { maximumSeedTests.map { (1...10_000_000).contains($0) } ?? true }
+}
+public enum MeshSeedRadiusVetoStatus: Int, Codable, Sendable {
+ case notRequested = 0, prepared = 1, applied = 2
+ case invalidInput = -1, unsupportedLayer = -2, invalidTopology = -3
+ case workLimit = -4, allocationFailed = -5, buildFailed = -6
+}
+/// Bounded mask/build bookkeeping, never source-surface or physical clearance.
+/// applied + buildSucceeded=false may represent a valid empty keep mask.
+public struct MeshSeedRadiusVetoReceipt: Codable, Sendable {
+ public let schema: Int, status: MeshSeedRadiusVetoStatus
+ public let width: Int, height: Int, spanCount: Int, radiusCells: Int, commonYVoxel: Int
+ public let realSeedCount: Int, exteriorSeedCount: Int, stockKeepCount: Int, exactKeepCount: Int
+ public let additionalRejectedCount: Int, buildSucceeded: Bool
+ public let workLimit: UInt64, workBound: UInt64, workPerformed: UInt64
+ public var authorizesPhysicalGuidance: Bool { false }
+ public var continuousSourceClearanceVerified: Bool { false }
+ public var fullFootprintSupportVerified: Bool { false }
 }
 /// Default remains the original diagnostic comparator. Strict mode only checks
 /// requested XZ membership; it does not establish physical support or clearance.
@@ -67,6 +93,7 @@ public struct MeshCandidateRoute {
  public let unknownCoverage: [String]
  public let endpointPolicy: MeshEndpointPolicy
  public let endpointAdmission: MeshEndpointAdmissionReceipt?
+ public let seedRadiusReceipt: MeshSeedRadiusVetoReceipt?
  public let authorizesPhysicalGuidance=false, actualWorldCoverageKnown=false, rawDepthHazardImplemented=false, rawDepthHazardVeto=true
 }
 /// Opt-in delivery bookkeeping only. Legacy callers retain their sticky losses.
@@ -146,6 +173,7 @@ public final class RoomMeshCandidateRuntime {
  private let maxPending=8, maxPendingScalars=900000
  private let supportPolicy: MeshSupportPolicy
  private let endpointPolicy: MeshEndpointPolicy
+ private let seedRadiusPolicy: MeshSeedRadiusPolicy
  private let deliveryPolicy: MeshDeliveryRecoveryPolicy
  private struct AnchorDeliveryState {
   var required:Int,installed:Int?,blockedThrough:Int?,time:Double,issue:MeshAnchorDeliveryIssue?,removed:Bool
@@ -245,9 +273,13 @@ public final class RoomMeshCandidateRuntime {
  private var owner: Replay?
  public init(sessionID: String,generation: Int=0,supportPolicy: MeshSupportPolicy = .legacySlope,
              endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
-             deliveryRecoveryPolicy:MeshDeliveryRecoveryPolicy = .legacyStickyGap)throws {
-  guard !sessionID.isEmpty,sessionID.utf8.count<=128,generation>=0 else{throw MeshCandidateError.invalidInput}
+             deliveryRecoveryPolicy:MeshDeliveryRecoveryPolicy = .legacyStickyGap,
+             seedRadiusPolicy:MeshSeedRadiusPolicy = .stock)throws {
+  guard !sessionID.isEmpty,sessionID.utf8.count<=128,generation>=0,seedRadiusPolicy.valid,
+    seedRadiusPolicy == .stock || (supportPolicy == .classifiedFloorOnly && endpointPolicy == .requireSuppliedXZOverPolygon)
+    else{throw MeshCandidateError.invalidInput}
   session=sessionID;self.generation=generation;self.supportPolicy=supportPolicy;self.endpointPolicy=endpointPolicy;self.deliveryPolicy=deliveryRecoveryPolicy
+  self.seedRadiusPolicy=seedRadiusPolicy
  }
 #if DEBUG
  /// Explicit synthetic-test opt-in. Release builds contain no receipt storage,
@@ -289,9 +321,10 @@ public final class RoomMeshCandidateRuntime {
  public convenience init(sessionID: String,generation: Int=0,supportPolicy: MeshSupportPolicy = .legacySlope,
                          endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
                          deliveryRecoveryPolicy:MeshDeliveryRecoveryPolicy = .legacyStickyGap,
+                         seedRadiusPolicy:MeshSeedRadiusPolicy = .stock,
                          captureSyntheticTestTiming: Bool,
                          syntheticTimingCompletion: ((UUID,[DiagnosticStageReceipt])->Void)? = nil)throws {
-  try self.init(sessionID:sessionID,generation:generation,supportPolicy:supportPolicy,endpointPolicy:endpointPolicy,deliveryRecoveryPolicy:deliveryRecoveryPolicy)
+  try self.init(sessionID:sessionID,generation:generation,supportPolicy:supportPolicy,endpointPolicy:endpointPolicy,deliveryRecoveryPolicy:deliveryRecoveryPolicy,seedRadiusPolicy:seedRadiusPolicy)
   // Assigned before this owner escapes; never enabled/disabled during work.
   if captureSyntheticTestTiming {
    diagnosticCompletion=syntheticTimingCompletion
@@ -577,7 +610,7 @@ public final class RoomMeshCandidateRuntime {
 #if DEBUG
     recordDiagnosticStage(.nativeBuildBegin,workerCPU:true)
 #endif
-    let native=try Native(v,t,radius:body.radius,height:body.height,triangleSupport:owner.geometrySupport(excluding:excluded))
+    let native=try Native(v,t,radius:body.radius,height:body.height,triangleSupport:owner.geometrySupport(excluding:excluded),seedRadiusPolicy:seedRadiusPolicy)
 #if DEBUG
     recordDiagnosticStage(.nativeBuildEnd,workerCPU:true)
     recordDiagnosticStage(.routeBegin,workerCPU:true)
@@ -593,7 +626,18 @@ public final class RoomMeshCandidateRuntime {
 #endif
     finish(.failure(.stale));return}
     var unknown=Array(owner.unknown.union(view.unknown)).sorted();if state.1{unknown.append("ingress-or-lifecycle-gap")}
-    finish(.success(MeshCandidateRoute(sessionID:s,generation:g,revision:r,points:path.points,projectedStart:path.projected_start,projectedGoal:path.projected_goal,complete:path.complete,nativeStatus:path.status,sourceDeliveryComplete:owner.sourceComplete && view.complete && !state.1,unknownCoverage:unknown,endpointPolicy:endpointPolicy,endpointAdmission:path.endpointAdmission)))
+    finish(.success(MeshCandidateRoute(sessionID:s,generation:g,revision:r,points:path.points,projectedStart:path.projected_start,projectedGoal:path.projected_goal,complete:path.complete,nativeStatus:path.status,sourceDeliveryComplete:owner.sourceComplete && view.complete && !state.1,unknownCoverage:unknown,endpointPolicy:endpointPolicy,endpointAdmission:path.endpointAdmission,seedRadiusReceipt:native.seedRadiusReceipt)))
+   } catch MeshCandidateError.seedRadiusUnavailable(let receipt) {
+#if DEBUG
+    recordDiagnosticStage(.nativeFailure,workerCPU:true)
+#endif
+    guard locked({matches(s,g,r)}) else {
+#if DEBUG
+     recordDiagnosticStage(.requestRetired,workerCPU:true)
+#endif
+     finish(.failure(.stale));return
+    }
+    finish(.failure(.seedRadiusUnavailable(receipt)))
    } catch MeshCandidateError.endpointAssociationRejected(let receipt) {
 #if DEBUG
     recordDiagnosticStage(.nativeFailure,workerCPU:true)

@@ -43,7 +43,7 @@
     "research/native-mesh-decoder-81/Package.swift": "649ec8c4fc777b4cc59c9fb5112bc8980380246693add1ef7453b68223b3dcf3",
     "research/arkit-mesh-adapter-82/Package.swift": "0aad1917ef31086a63c7d1025ff088786ecc3a58890236484415a750cbfa297e",
     "research/mesh-candidate-ingress-83/Package.swift": "209713fc5f5d1b8098e1fa6435271dc0bfb58bd5785a85f9d691f4c71df45c15",
-    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "d8bd86678228d95c6f5be767faf9e1045342e2582f1f793a1ce66bf160f262d5"
+    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "a12d61b6119ca3c8fc0707aa846db26794011193643d07ae858e50cb8e158b80"
   },
   "immutable_snapshot_layer": {
     "scope": "current source only; new native tests authored, not executed",
@@ -76,5 +76,13 @@
         "after": "d8bd86678228d95c6f5be767faf9e1045342e2582f1f793a1ce66bf160f262d5"
       }
     ]
+  },
+  "optional_exact_seed_radius_layer": {
+    "baselineManifestSHA256": "de54c36a151998768789ef37ab56c48262256241b44b3a24566ecf98cf3a79f6",
+    "sourceManifestSHA256": "ec2e36696ccd214f5c56b9dc3764607679f95410d56b597f1358c7925f8dae34",
+    "before": {
+      "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "d8bd86678228d95c6f5be767faf9e1045342e2582f1f793a1ce66bf160f262d5"
+    },
+    "defaultCallerActivation": false
   }
 }

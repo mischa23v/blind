@@ -145,8 +145,8 @@
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift",
-      "bytes": 14617,
-      "sha256": "08baab68f4a3ecd01b8450a52f69ffe3ed192d0d4e8a9b7aaa5b97095b806681"
+      "bytes": 16392,
+      "sha256": "76b8c0a62ea731758368335e4ae3363fc1c59dd9f6dbfdd57ea0267c62c34e21"
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Exclusion.swift",
@@ -155,13 +155,13 @@
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
-      "bytes": 34949,
-      "sha256": "7a23c224846a9fd8b31a26f1048b457ae66b606d5e37d504f8538cf6afcdd57e"
+      "bytes": 37391,
+      "sha256": "0c39fa8c8b016d7d994bf8b647f69426740cf3c10f3ca22c39b5ba4ce0b718cd"
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp",
-      "bytes": 17989,
-      "sha256": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036"
+      "bytes": 19814,
+      "sha256": "80c5fabd84eeb50a2f0963a34f73c1d4e913ae6c944f5708d4a196c9e746d7d5"
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/clearance_adapter.cpp",
@@ -170,8 +170,8 @@
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h",
-      "bytes": 2925,
-      "sha256": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b"
+      "bytes": 4428,
+      "sha256": "ef16154015c03648ab61d242cee71820854910bcf355888392d745b9023845c4"
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/module.modulemap",
@@ -447,6 +447,11 @@
       "path": "research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift",
       "bytes": 14703,
       "sha256": "7b9c513c6e2219c6358b2561ebdb7dcee5eb9108fb8f089d30497c06b4e66300"
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h",
+      "sha256": "b0b4de9a807037f19c57d15890890de7b8186b0b46cc9c30a89067ee42c0b8d5",
+      "bytes": 9092
     }
   ],
   "changes": [
@@ -573,5 +578,16 @@
     "before": "e22bc9e977327382a04361aed694cb9c54f1adc838938c01d049eb467dc5c445",
     "after": "9ec520430877c8d3975b59e9105510e309dae11fc23d9631ec9fdd3c1ef451e2",
     "nativeExecutionPending": true
+  },
+  "optional_exact_seed_radius_layer": {
+    "baselineManifestSHA256": "472a4a3116f918c8c5bf136e421ee934aab426357502a1b9e9fdbba81934cee6",
+    "sourceManifestSHA256": "ec2e36696ccd214f5c56b9dc3764607679f95410d56b597f1358c7925f8dae34",
+    "before": {
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "08baab68f4a3ecd01b8450a52f69ffe3ed192d0d4e8a9b7aaa5b97095b806681",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "7a23c224846a9fd8b31a26f1048b457ae66b606d5e37d504f8538cf6afcdd57e",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b"
+    },
+    "defaultCallerActivation": false
   }
 }
