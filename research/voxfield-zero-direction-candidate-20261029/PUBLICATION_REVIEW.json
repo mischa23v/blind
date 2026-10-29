@@ -1,0 +1,29 @@
+{
+  "review_utc": "2026-10-29T05:17:00Z",
+  "original_hashes_and_receipt_hashes_verified": true,
+  "saved_trace_recount": {
+    "per_arm": 32,
+    "strict": 28,
+    "observational": 4,
+    "original_mismatches": 17,
+    "candidate_strict_matches": 28,
+    "candidate_observational_matches": 4
+  },
+  "native_rerun": false,
+  "redactions": [
+    {
+      "file": "ELF.json",
+      "original_sha256": "5e0f8e104a2165dc660b75bf534ee5a3e93349271e3e1cd2e2a3f9c3122feb3e",
+      "published_sha256": "f70052ece1ba6e60aecaef9f2102c7ebf9c57aac8f854a8f8b7a30f5deb37812",
+      "change": "Ephemeral workspace root replaced with <WORKSPACE_ROOT>"
+    },
+    {
+      "file": "execute.py",
+      "original_sha256": "002231ab22eb8051ca582943cb1826c99dbfead2af8815ae93e6fd037ae9137f",
+      "published_sha256": "5df4c86237824449280d8ed18eed3bf76397732d88d0c738d44da6747ddd1257",
+      "change": "Ephemeral workspace root replaced with <WORKSPACE_ROOT>"
+    }
+  ],
+  "np_continuation_included": false,
+  "remote_writes": false
+}

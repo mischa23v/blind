@@ -1,0 +1,880 @@
+{
+  "status": "PASS_BOUNDED_D1_SYNTHETIC_ONLY",
+  "sourceRevision": "78ee6403720e0aed87f4720c04c813bb38a3b260",
+  "freezeSHA256": "11e30170172c1bb4e5f80b7967dff97db7a2787a3190715cafa1e5546934e23c",
+  "strictCases": 28,
+  "strictCandidateMatches": 28,
+  "observationalEpsilonCases": 4,
+  "observationalCandidateMatches": 4,
+  "originalMismatches": [
+    "y_minus",
+    "y_plus",
+    "z_minus",
+    "z_plus",
+    "signed_negative_zero",
+    "one_zero_xy",
+    "one_zero_xz",
+    "one_zero_yz",
+    "edge_tie",
+    "near_epsilon_below",
+    "near_epsilon_above",
+    "near_epsilon_reverse",
+    "near_epsilon_end",
+    "original_axis_forward",
+    "original_axis_reverse",
+    "translated_axis_forward",
+    "translated_axis_reverse"
+  ],
+  "changedSequences": [
+    "y_minus",
+    "y_plus",
+    "z_minus",
+    "z_plus",
+    "signed_negative_zero",
+    "one_zero_xy",
+    "one_zero_xz",
+    "one_zero_yz",
+    "edge_tie",
+    "near_epsilon_below",
+    "near_epsilon_above",
+    "near_epsilon_reverse",
+    "near_epsilon_end",
+    "original_axis_forward",
+    "original_axis_reverse",
+    "translated_axis_forward",
+    "translated_axis_reverse"
+  ],
+  "originalAxis": {
+    "case": "original_axis_forward",
+    "kind": "physical",
+    "strict": true,
+    "start_scaled": [
+      0,
+      0,
+      0
+    ],
+    "end_scaled": [
+      0,
+      0,
+      30.00000191
+    ],
+    "oracle_start_scaled": [
+      0,
+      0,
+      0
+    ],
+    "oracle_end_scaled": [
+      0,
+      0,
+      30.00000191
+    ],
+    "expected": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        3
+      ],
+      [
+        0,
+        0,
+        4
+      ],
+      [
+        0,
+        0,
+        5
+      ],
+      [
+        0,
+        0,
+        6
+      ],
+      [
+        0,
+        0,
+        7
+      ],
+      [
+        0,
+        0,
+        8
+      ],
+      [
+        0,
+        0,
+        9
+      ],
+      [
+        0,
+        0,
+        10
+      ],
+      [
+        0,
+        0,
+        11
+      ],
+      [
+        0,
+        0,
+        12
+      ],
+      [
+        0,
+        0,
+        13
+      ],
+      [
+        0,
+        0,
+        14
+      ],
+      [
+        0,
+        0,
+        15
+      ],
+      [
+        0,
+        0,
+        16
+      ],
+      [
+        0,
+        0,
+        17
+      ],
+      [
+        0,
+        0,
+        18
+      ],
+      [
+        0,
+        0,
+        19
+      ],
+      [
+        0,
+        0,
+        20
+      ],
+      [
+        0,
+        0,
+        21
+      ],
+      [
+        0,
+        0,
+        22
+      ],
+      [
+        0,
+        0,
+        23
+      ],
+      [
+        0,
+        0,
+        24
+      ],
+      [
+        0,
+        0,
+        25
+      ],
+      [
+        0,
+        0,
+        26
+      ],
+      [
+        0,
+        0,
+        27
+      ],
+      [
+        0,
+        0,
+        28
+      ],
+      [
+        0,
+        0,
+        29
+      ],
+      [
+        0,
+        0,
+        30
+      ]
+    ],
+    "actual": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ],
+    "match": false,
+    "unique_count": 1,
+    "manhattan_bound": 31,
+    "endpoint_included": false,
+    "input_coordinates_finite": true,
+    "internal_dda_float_state": "private_not_observed"
+  },
+  "candidateAxis": {
+    "case": "original_axis_forward",
+    "kind": "physical",
+    "strict": true,
+    "start_scaled": [
+      0,
+      0,
+      0
+    ],
+    "end_scaled": [
+      0,
+      0,
+      30.00000191
+    ],
+    "oracle_start_scaled": [
+      0,
+      0,
+      0
+    ],
+    "oracle_end_scaled": [
+      0,
+      0,
+      30.00000191
+    ],
+    "expected": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        3
+      ],
+      [
+        0,
+        0,
+        4
+      ],
+      [
+        0,
+        0,
+        5
+      ],
+      [
+        0,
+        0,
+        6
+      ],
+      [
+        0,
+        0,
+        7
+      ],
+      [
+        0,
+        0,
+        8
+      ],
+      [
+        0,
+        0,
+        9
+      ],
+      [
+        0,
+        0,
+        10
+      ],
+      [
+        0,
+        0,
+        11
+      ],
+      [
+        0,
+        0,
+        12
+      ],
+      [
+        0,
+        0,
+        13
+      ],
+      [
+        0,
+        0,
+        14
+      ],
+      [
+        0,
+        0,
+        15
+      ],
+      [
+        0,
+        0,
+        16
+      ],
+      [
+        0,
+        0,
+        17
+      ],
+      [
+        0,
+        0,
+        18
+      ],
+      [
+        0,
+        0,
+        19
+      ],
+      [
+        0,
+        0,
+        20
+      ],
+      [
+        0,
+        0,
+        21
+      ],
+      [
+        0,
+        0,
+        22
+      ],
+      [
+        0,
+        0,
+        23
+      ],
+      [
+        0,
+        0,
+        24
+      ],
+      [
+        0,
+        0,
+        25
+      ],
+      [
+        0,
+        0,
+        26
+      ],
+      [
+        0,
+        0,
+        27
+      ],
+      [
+        0,
+        0,
+        28
+      ],
+      [
+        0,
+        0,
+        29
+      ],
+      [
+        0,
+        0,
+        30
+      ]
+    ],
+    "actual": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        3
+      ],
+      [
+        0,
+        0,
+        4
+      ],
+      [
+        0,
+        0,
+        5
+      ],
+      [
+        0,
+        0,
+        6
+      ],
+      [
+        0,
+        0,
+        7
+      ],
+      [
+        0,
+        0,
+        8
+      ],
+      [
+        0,
+        0,
+        9
+      ],
+      [
+        0,
+        0,
+        10
+      ],
+      [
+        0,
+        0,
+        11
+      ],
+      [
+        0,
+        0,
+        12
+      ],
+      [
+        0,
+        0,
+        13
+      ],
+      [
+        0,
+        0,
+        14
+      ],
+      [
+        0,
+        0,
+        15
+      ],
+      [
+        0,
+        0,
+        16
+      ],
+      [
+        0,
+        0,
+        17
+      ],
+      [
+        0,
+        0,
+        18
+      ],
+      [
+        0,
+        0,
+        19
+      ],
+      [
+        0,
+        0,
+        20
+      ],
+      [
+        0,
+        0,
+        21
+      ],
+      [
+        0,
+        0,
+        22
+      ],
+      [
+        0,
+        0,
+        23
+      ],
+      [
+        0,
+        0,
+        24
+      ],
+      [
+        0,
+        0,
+        25
+      ],
+      [
+        0,
+        0,
+        26
+      ],
+      [
+        0,
+        0,
+        27
+      ],
+      [
+        0,
+        0,
+        28
+      ],
+      [
+        0,
+        0,
+        29
+      ],
+      [
+        0,
+        0,
+        30
+      ]
+    ],
+    "match": true,
+    "unique_count": 31,
+    "manhattan_bound": 31,
+    "endpoint_included": true,
+    "input_coordinates_finite": true,
+    "internal_dda_float_state": "private_not_observed"
+  },
+  "NPOriginal": [
+    {
+      "np_case": "original_axis",
+      "point": [
+        0,
+        0,
+        1
+      ],
+      "probe": [
+        0.001000000047,
+        0.001000000047,
+        0.9800000191
+      ],
+      "normal_dot_point": 0,
+      "off_on": [
+        {
+          "enabled": false,
+          "allocated": false,
+          "weight": 0,
+          "distance": 0
+        },
+        {
+          "enabled": true,
+          "allocated": false,
+          "weight": 0,
+          "distance": 0
+        }
+      ]
+    },
+    {
+      "np_case": "original_oblique",
+      "point": [
+        0.1299999952,
+        0.2300000042,
+        1.00999999
+      ],
+      "probe": [
+        0.1261386126,
+        0.2231683284,
+        0.9800000191
+      ],
+      "normal_dot_point": 0,
+      "off_on": [
+        {
+          "enabled": false,
+          "allocated": true,
+          "weight": 0.9175153375,
+          "distance": 0.02998125553
+        },
+        {
+          "enabled": true,
+          "allocated": true,
+          "weight": 0,
+          "distance": 0
+        }
+      ]
+    }
+  ],
+  "NPCandidate": [
+    {
+      "np_case": "original_axis",
+      "point": [
+        0,
+        0,
+        1
+      ],
+      "probe": [
+        0.001000000047,
+        0.001000000047,
+        0.9800000191
+      ],
+      "normal_dot_point": 0,
+      "off_on": [
+        {
+          "enabled": false,
+          "allocated": true,
+          "weight": 1,
+          "distance": 0.02000004053
+        },
+        {
+          "enabled": true,
+          "allocated": true,
+          "weight": 0,
+          "distance": 0
+        }
+      ]
+    },
+    {
+      "np_case": "original_oblique",
+      "point": [
+        0.1299999952,
+        0.2300000042,
+        1.00999999
+      ],
+      "probe": [
+        0.1261386126,
+        0.2231683284,
+        0.9800000191
+      ],
+      "normal_dot_point": 0,
+      "off_on": [
+        {
+          "enabled": false,
+          "allocated": true,
+          "weight": 0.9175153375,
+          "distance": 0.02998125553
+        },
+        {
+          "enabled": true,
+          "allocated": true,
+          "weight": 0,
+          "distance": 0
+        }
+      ]
+    }
+  ],
+  "resource": {
+    "exitCode": 0,
+    "stopReason": null,
+    "wallSeconds": 77.17971822200343,
+    "peakSummedRSSBytes": 664125440,
+    "peakCumulativeCPUSeconds": 76.97,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 120,
+      "wallSeconds": 150,
+      "RSSBytes": 2147483648,
+      "diskBytes": 67108864,
+      "logicalCPUs": 1
+    },
+    "scope": "D1 isolated 26-file core build and synthetic clients only; no recorded inputs",
+    "frozenIntegrityPassed": true
+  },
+  "integrity": {
+    "checked": 479,
+    "changedOrMissing": [],
+    "passed": true
+  },
+  "diskBytesAtResult": 5955952,
+  "nativeInvalidInputSafety": false,
+  "postTerminalAdvanceChanged": false,
+  "recordedFrames": 0,
+  "stockBinaryExecuted": false
+}
