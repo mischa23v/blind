@@ -1,0 +1,63 @@
+--- production/RecastArea.cpp
++++ scratch/RecastArea-observed.cpp
+@@ -17,6 +17,7 @@
+ //
+ 
+ #include "Recast.h"
++extern "C" void blind_seed_probe_stock(const rcCompactHeightfield&,const unsigned char*,int,int);
+ #include "RecastAlloc.h"
+ #include "RecastAssert.h"
+ 
+@@ -272,6 +273,7 @@
+ 		}
+ 	}
+ 
++	blind_seed_probe_stock(compactHeightfield,distanceToBoundary,erosionRadius,0);
+ 	const unsigned char minBoundaryDistance = (unsigned char)(erosionRadius * 2);
+ 	for (int spanIndex = 0; spanIndex < compactHeightfield.spanCount; ++spanIndex)
+ 	{
+@@ -281,6 +283,7 @@
+ 		}
+ 	}
+ 
++	blind_seed_probe_stock(compactHeightfield,distanceToBoundary,erosionRadius,1);
+ 	rcFree(distanceToBoundary);
+ 	
+ 	return true;
+--- candidate/blind_detour_exclusion.cpp
++++ scratch/adapter-observed.cpp
+@@ -3,6 +3,8 @@
+ #include "include/blind_detour.h"
+ #include "Recast.h"
+ #include "exact_seed_radius_veto.h"
++extern "C" void blind_seed_probe_after_veto(const rcCompactHeightfield&,const BNSeedRadiusVetoReceipt&);
++extern "C" void blind_seed_probe_after_envelope(const rcCompactHeightfield&,const BNSeedRadiusEnvelopeReceipt&);
+ #include "exact_seed_radius_envelope.h"
+ #include "DetourNavMesh.h"
+ #include "DetourNavMeshBuilder.h"
+@@ -172,6 +174,8 @@
+     if (envelopeReceipt && !envelopeVeto.apply(*b.compact, *envelopeReceipt)) {
+         fail("envelope work or topology refused"); return 0;
+     }
++    if (seedReceipt) blind_seed_probe_after_veto(*b.compact, *seedReceipt); // SCRATCH READ-ONLY OBSERVATION
++    if (envelopeReceipt) blind_seed_probe_after_envelope(*b.compact, *envelopeReceipt); // SCRATCH READ-ONLY OBSERVATION
+     if (!rcBuildDistanceField(&context, *b.compact) ||
+         !rcBuildRegions(&context, *b.compact, 0, config.minRegionArea, config.mergeRegionArea) ||
+         !rcBuildContours(&context, *b.compact, config.maxSimplificationError, config.maxEdgeLen, *b.contours) ||
+@@ -322,3 +326,16 @@
+ extern "C" int bn_excluded_span_count(void* handle) {
+     return handle ? static_cast<BNHandle*>(handle)->excludedSpanCount : -1;
+ }
++
++// Diagnostic only: observe the documented upstream isOverPoly output. It does
++// NOT modify the route, admission policy, geometry, profile or projected point.
++extern "C" int bn_probe_association(void* handle, const float* position,
++                                      const float* extents, float* projected, int* over) {
++    if (!handle || !finite3(position) || !finite3(extents) || !projected || !over) return 0;
++    *over=0; BNHandle* h=static_cast<BNHandle*>(handle); dtQueryFilter filter;
++    filter.setIncludeFlags(1); filter.setExcludeFlags(0);
++    dtPolyRef ref=0; bool inside=false;
++    const dtStatus status=h->query->findNearestPoly(position,extents,&filter,&ref,projected,&inside);
++    if (dtStatusFailed(status) || !ref) return 0;
++    *over=inside ? 1 : 0; return 1;
++}
