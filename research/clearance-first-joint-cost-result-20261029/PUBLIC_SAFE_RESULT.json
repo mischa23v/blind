@@ -1,0 +1,238 @@
+{
+  "status": "savedAttempt003IndependentlyRecountedNoNewNativeOrGeometryQueries",
+  "sourceCommit": "1882514d76452b15107bb61ca192533052dd64ed",
+  "sourceManifestSHA256": "5f8e77402668621827362c2f6acba1b4fdc2165b3712b1521961b74cffe189c6",
+  "proposalSHA256": "7209ec5bd3f3f1e89ac7ecfba7ddb4c9b4551cbc183e7bb59238d1fd0d2e219e",
+  "proposalBytes": 737344,
+  "guardSHA256": "c9d88ddb021a7bc10719910b1a68c4a03ce8bcc4428e9e3a3a43c5bd2864950e",
+  "previousProposalsGzipSHA256": "6c8b71b3bd135d1edc7c214f7292c0f6ecce00eac4d71f6b071b6e6282c96ee3",
+  "firstBaselineArmsExactlyPreserved": true,
+  "previousRepairArmsExactlyPreserved": true,
+  "shortestRepairGeometryAndDiagnosticsExactlyUnchanged": true,
+  "requestedAndProjectedEndpointsExactlyPreserved": true,
+  "associationsExactlyPreserved": true,
+  "bodyWidthDepthHeightMetres": [
+    0.45,
+    0.3,
+    1.6
+  ],
+  "horizontalMarginMetres": 0.15,
+  "bodyCirclePlusRadialMarginMetres": 0.42041634565979924,
+  "unchangedNativeGridLengthCapMetres": 10.432711967719545,
+  "capScope": "native-grid length only, as before; requested connectors checked and reported separately",
+  "arms": {
+    "previousCentered": {
+      "nativeGridLengthMetres": 7.238872390754371,
+      "connectorInclusiveLengthMetres": 7.276987163265346,
+      "minimumSavedDistanceToManualWindowsMetres": 0.4242640855706678,
+      "minimumSavedResidualBeyondBodyCircleAndMarginMetres": 0.003847739910868564,
+      "connectorInclusiveSegmentsChecked": 133,
+      "savedWindowChecks": 266,
+      "allSavedSegmentsAndWindowsChecked": true,
+      "manualWindowContact": false,
+      "perWindow": {
+        "north-small-patches": {
+          "minimumResidualBeyondBodyCircleAndMarginMetres": 0.003847739910868564,
+          "segmentsChecked": 133,
+          "minimumSegmentIndices": [
+            107
+          ]
+        },
+        "south-small-patches": {
+          "minimumResidualBeyondBodyCircleAndMarginMetres": 0.3795836781820586,
+          "segmentsChecked": 133,
+          "minimumSegmentIndices": [
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28
+          ]
+        }
+      },
+      "sampledNativeWallProxy": {
+        "status": "sampledDiagnostic",
+        "samples": 291,
+        "missingSamples": 0,
+        "minimumSampledResidualWallMetres": 0.1217196062207222,
+        "p10SampledResidualWallMetres": 0.25496214628219604,
+        "maximumHorizontalProjectionMetres": 1.1715042952616155e-07,
+        "maximumVerticalProjectionMetres": 0.0014540448113424809,
+        "continuousBodyClearanceEstablished": false
+      }
+    },
+    "unchangedRepairedShortest": {
+      "nativeGridLengthMetres": 6.967846509317453,
+      "connectorInclusiveLengthMetres": 7.005961281828428,
+      "minimumSavedDistanceToManualWindowsMetres": 0.4242640855706678,
+      "minimumSavedResidualBeyondBodyCircleAndMarginMetres": 0.003847739910868564,
+      "connectorInclusiveSegmentsChecked": 123,
+      "savedWindowChecks": 246,
+      "allSavedSegmentsAndWindowsChecked": true,
+      "manualWindowContact": false,
+      "perWindow": {
+        "north-small-patches": {
+          "minimumResidualBeyondBodyCircleAndMarginMetres": 0.003847739910868564,
+          "segmentsChecked": 123,
+          "minimumSegmentIndices": [
+            98
+          ]
+        },
+        "south-small-patches": {
+          "minimumResidualBeyondBodyCircleAndMarginMetres": 0.5295836543402006,
+          "segmentsChecked": 123,
+          "minimumSegmentIndices": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27
+          ]
+        }
+      },
+      "sampledNativeWallProxy": {
+        "status": "sampledDiagnostic",
+        "samples": 280,
+        "missingSamples": 0,
+        "minimumSampledResidualWallMetres": 0.004961848258972168,
+        "p10SampledResidualWallMetres": 0.054046396911144275,
+        "maximumHorizontalProjectionMetres": 1.1380447814689419e-07,
+        "maximumVerticalProjectionMetres": 0.0017063251732349904,
+        "continuousBodyClearanceEstablished": false
+      }
+    },
+    "jointCentered": {
+      "nativeGridLengthMetres": 7.502607485320768,
+      "connectorInclusiveLengthMetres": 7.540722257831744,
+      "minimumSavedDistanceToManualWindowsMetres": 0.549999976158142,
+      "minimumSavedResidualBeyondBodyCircleAndMarginMetres": 0.12958363049834276,
+      "connectorInclusiveSegmentsChecked": 143,
+      "savedWindowChecks": 286,
+      "allSavedSegmentsAndWindowsChecked": true,
+      "manualWindowContact": false,
+      "perWindow": {
+        "north-small-patches": {
+          "minimumResidualBeyondBodyCircleAndMarginMetres": 0.12958363049834276,
+          "segmentsChecked": 143,
+          "minimumSegmentIndices": [
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83
+          ]
+        },
+        "south-small-patches": {
+          "minimumResidualBeyondBodyCircleAndMarginMetres": 0.47958370202391654,
+          "segmentsChecked": 143,
+          "minimumSegmentIndices": [
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29
+          ]
+        }
+      },
+      "sampledNativeWallProxy": {
+        "status": "sampledDiagnostic",
+        "samples": 302,
+        "missingSamples": 0,
+        "minimumSampledResidualWallMetres": 0.1217196062207222,
+        "p10SampledResidualWallMetres": 0.15496188402175903,
+        "maximumHorizontalProjectionMetres": 1.1809036060128619e-07,
+        "maximumVerticalProjectionMetres": 0.0014723480091625163,
+        "continuousBodyClearanceEstablished": false
+      }
+    }
+  },
+  "changeFromPreviousCentered": {
+    "nativeGridLengthAddedMetres": 0.263735094566397,
+    "lengthIncreasePercent": 3.6433173611852117,
+    "manualMinimumResidualAddedMetres": 0.1257358905874742,
+    "sampledNativeWallP10ChangeMetres": -0.10000026226043701,
+    "sampledNativeWallMinimumChangeMetres": 0.0
+  },
+  "all40CurrentInputHashesMatchGuard": true,
+  "beforeAfterInputHashesEqual": true,
+  "controlsPassed": 35,
+  "bothCommandsZeroAndGroupsRetired": true,
+  "guardResources": {
+    "aggregateCPUSeconds": 5.77654,
+    "wallSeconds": 5.790637076999701,
+    "peakObservedAggregateRSS": 121171968
+  },
+  "preservedPreflightFailure": {
+    "status": "preflight_failed_before_attempt_directory",
+    "sourceCommit": "1882514d76452b15107bb61ca192533052dd64ed",
+    "cause": "git show lazy blob fetch exceeded fixed 5 second timeout for run_controls.py",
+    "nativeExecution": false,
+    "remedy": "cache already remote-verified source bytes as local Git objects without changing commit or guard",
+    "recordSHA256": "1451ab1907089a4c2ee87708d5c09023b9dd15b93a847a6588cbbaf39f72b074"
+  },
+  "noArchivesCreatedOrUploaded": true,
+  "containsCoordinatesOrRawPhotos": false,
+  "physicalAuthority": false,
+  "full3DBodyAndSupportValidated": false,
+  "scope": "Manual diagnostic windows, not measured tables. Native eroded-navmesh boundary distance is a separate proxy. No live journey acceptance."
+}
