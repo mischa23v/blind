@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "attempt": "002",
+  "source_commit": "dce21dc937dfd0423f7721a23597bd4e33085b2b",
+  "status": "baseline-query-reproduction-passed",
+  "independent_review_reran_payload": false,
+  "historical_core_results_exactly_equal": true,
+  "counts": {
+    "authored_endpoints": 9,
+    "valid_endpoint_associations": 5,
+    "directed_queries": 72,
+    "native_complete": 30,
+    "accepted_native_proposals": 20,
+    "native_complete_rejected_by_endpoint_association": 10,
+    "native_not_complete": 42,
+    "movement_episodes": 0
+  },
+  "native_not_complete_reason": "no start or goal polygon within explicit association bounds",
+  "longest_accepted_polyline_metres": 6.1895263828785545,
+  "longest_authored_endpoint_pairs": [
+    [
+      0,
+      8
+    ],
+    [
+      8,
+      0
+    ]
+  ],
+  "mesh_counts": {
+    "vertices": 51965,
+    "triangles": 87370
+  },
+  "exclusion_spans": 0,
+  "verification": {
+    "input_pins_before_after_current": 70,
+    "whole_workroot_payload_inventory_entries": 93,
+    "current_workroot_regular_files_including_guard_receipt": 68,
+    "query_pairs_exactly_all_directed_nonself_pairs": true,
+    "every_polyline_length_independently_recomputed": true,
+    "core_equal_fields": [
+      "endpoints",
+      "queries",
+      "meshCounts",
+      "nativeMarkedExclusionSpans"
+    ],
+    "frozen_requested_endpoints_and_configuration_equal": true,
+    "new_shared_library_digest_verified": true
+  },
+  "guard": {
+    "status": "completed-zero-exit",
+    "compile_exit": 0,
+    "queries_exit": 0,
+    "both_groups_retired": true,
+    "aggregate_cpu_seconds": 5.433866,
+    "wall_seconds": 5.454665073000342,
+    "peak_observed_aggregate_rss_bytes": 65990656,
+    "peak_fast_exit_child_rss_bytes": 55160832,
+    "whole_workroot_file_bytes": 12271132,
+    "limits": {
+      "cpuSeconds": 120,
+      "wallSeconds": 180,
+      "observedRSSBytes": 1073741824,
+      "outputBytes": 67108864
+    }
+  },
+  "warnings": {
+    "count": 8,
+    "category": "-Wmaybe-uninitialized",
+    "source": "upstream DetourNavMesh.cpp",
+    "query_stderr_bytes": 0
+  },
+  "sha256": {
+    "raw_retained_guard_receipt": "003d3c944578e11d8904d70aec4667a747f2eb93fb88b92cdcddb6f4d440a6be",
+    "run_manifest": "65a764cc00f717c2cd6a5ce7a9ca9f27fa58d297f7c68a9547b3c21dcbe67bd6",
+    "shared_library_digest_only": "a0b6c3d84d20b1396a3239918abfafcc1d6fa613c5c390847cba92502a634c4a",
+    "query_result": "4d8ed568da8497e1e39e14b08918616107e54192676389bcee3b1c5dec7c5558",
+    "query_frozen_record": "16b0e142fa272421e6fe16994d0022333e5e8127943ba47882a1b173d9177c77",
+    "compile_stderr": "562825c81ce45ea7c6ca8310a98a6bf56758e53bb78c3ef156d962be615f0e5c",
+    "queries_stdout": "28d072908038b53d43b875f4f3ac85f141be05d36e4f3e2d1a88b1db02de65b6"
+  },
+  "limitations": [
+    "Known-source-mesh query reproduction only; original XYZ and candidate Y-up assumption retained.",
+    "Authored endpoint IDs do not establish room semantics, destinations or actor positions.",
+    "Polyline distances use assumed source metric units, not independently calibrated physical distances.",
+    "No collision check, full-body clearance, support evaluation, camera alignment, live sensing or movement trial.",
+    "42 native association failures do not prove that the real scene is impassable.",
+    "20 accepted native proposals are not collision-free or physically validated routes.",
+    "RSS/resource monitoring is sampled, not a hard hostile-process sandbox; runtime is not hermetic.",
+    "Attempt001 remains a separate preserved failed compilation; this success does not overwrite it."
+  ],
+  "physical_authority": false,
+  "app_activation": false,
+  "durable_query_evidence": {
+    "core_file": "QUERY_CORE_RESULT.json",
+    "source_attribution_and_hashes_file": "QUERY_SOURCE.json",
+    "core_file_sha256": "166c7caec2b55e5ca09fcc8aca924c0f72690a0b463852aa8a4f3da81464af87",
+    "source_file_sha256": "2e25a7928cc704990d0dbf42a8b59937cfae1a23fe636e23dafba18566c12059",
+    "all_9_endpoints_and_72_queries_preserved": true,
+    "exact_current_and_previously_published_core_equality": true
+  }
+}

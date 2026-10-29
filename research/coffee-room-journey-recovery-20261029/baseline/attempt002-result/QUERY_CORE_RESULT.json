@@ -1,0 +1,2574 @@
+{
+  "endpoints": [
+    {
+      "id": 0,
+      "requestedXYZ": [
+        -1.79842655,
+        -1.6301633051396203,
+        -2.1218404
+      ],
+      "projectedXYZ": [
+        -1.7984265089035034,
+        -1.6111059188842773,
+        -2.121840476989746
+      ],
+      "horizontalShiftMetres": 8.727166233481274e-08,
+      "validAssociation": true,
+      "residualNativeWallDistance": 0.23312139511108398
+    },
+    {
+      "id": 1,
+      "requestedXYZ": [
+        -1.79842655,
+        -1.6301633051396203,
+        0.10597399999999979
+      ],
+      "projectedXYZ": [
+        -1.7984265089035034,
+        -1.6179062128067017,
+        0.10597400367259979
+      ],
+      "horizontalShiftMetres": 4.1260271784035207e-08,
+      "validAssociation": true,
+      "residualNativeWallDistance": 0.5241385698318481
+    },
+    {
+      "id": 2,
+      "requestedXYZ": [
+        -1.79842655,
+        -1.6301633051396203,
+        2.3337883999999995
+      ],
+      "projectedXYZ": null,
+      "horizontalShiftMetres": null,
+      "validAssociation": false,
+      "residualNativeWallDistance": null
+    },
+    {
+      "id": 3,
+      "requestedXYZ": [
+        0.021560500000000093,
+        -1.6301633051396203,
+        -2.1218404
+      ],
+      "projectedXYZ": [
+        0.021560460329055786,
+        -1.6111059188842773,
+        -1.9799619913101196
+      ],
+      "horizontalShiftMetres": 0.14187840868988588,
+      "validAssociation": false,
+      "residualNativeWallDistance": 0.0
+    },
+    {
+      "id": 4,
+      "requestedXYZ": [
+        0.021560500000000093,
+        -1.6301633051396203,
+        0.10597399999999979
+      ],
+      "projectedXYZ": null,
+      "horizontalShiftMetres": null,
+      "validAssociation": false,
+      "residualNativeWallDistance": null
+    },
+    {
+      "id": 5,
+      "requestedXYZ": [
+        0.021560500000000093,
+        -1.6301633051396203,
+        2.3337883999999995
+      ],
+      "projectedXYZ": null,
+      "horizontalShiftMetres": null,
+      "validAssociation": false,
+      "residualNativeWallDistance": null
+    },
+    {
+      "id": 6,
+      "requestedXYZ": [
+        1.84154755,
+        -1.6301633051396203,
+        -2.1218404
+      ],
+      "projectedXYZ": [
+        1.777435302734375,
+        -1.6111059188842773,
+        -2.054962158203125
+      ],
+      "horizontalShiftMetres": 0.09264491068207642,
+      "validAssociation": true,
+      "residualNativeWallDistance": 0.0
+    },
+    {
+      "id": 7,
+      "requestedXYZ": [
+        1.84154755,
+        -1.6301633051396203,
+        0.10597399999999979
+      ],
+      "projectedXYZ": [
+        1.82743501663208,
+        -1.6111059188842773,
+        0.1059739887714386
+      ],
+      "horizontalShiftMetres": 0.014112533367924422,
+      "validAssociation": true,
+      "residualNativeWallDistance": 0.0
+    },
+    {
+      "id": 8,
+      "requestedXYZ": [
+        1.84154755,
+        -1.6301633051396203,
+        2.3337883999999995
+      ],
+      "projectedXYZ": [
+        1.8415476083755493,
+        -1.6111059188842773,
+        2.3337883949279785
+      ],
+      "horizontalShiftMetres": 5.85954789332231e-08,
+      "validAssociation": true,
+      "residualNativeWallDistance": 0.1217196062207222
+    }
+  ],
+  "queries": [
+    {
+      "start": 0,
+      "goal": 1,
+      "native": {
+        "points": [
+          [
+            -1.7984265089035034,
+            -1.6111059188842773,
+            -2.121840476989746
+          ],
+          [
+            -1.7984265089035034,
+            -1.6179062128067017,
+            0.10597400367259979
+          ]
+        ],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 2.2278248594192203
+    },
+    {
+      "start": 0,
+      "goal": 2,
+      "native": {
+        "points": [],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 0,
+      "goal": 3,
+      "native": {
+        "points": [
+          [
+            -1.7984265089035034,
+            -1.6111059188842773,
+            -2.121840476989746
+          ],
+          [
+            -0.822564959526062,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ],
+          [
+            0.021560460329055786,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ]
+        ],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "projected_goal": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 1.830246745175732
+    },
+    {
+      "start": 0,
+      "goal": 4,
+      "native": {
+        "points": [],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 0,
+      "goal": 5,
+      "native": {
+        "points": [],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 0,
+      "goal": 6,
+      "native": {
+        "points": [
+          [
+            -1.7984265089035034,
+            -1.6111059188842773,
+            -2.121840476989746
+          ],
+          [
+            -0.822564959526062,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ],
+          [
+            0.9524350166320801,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ],
+          [
+            1.777435302734375,
+            -1.6111059188842773,
+            -2.054962158203125
+          ]
+        ],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "projected_goal": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 3.5895236778049275
+    },
+    {
+      "start": 0,
+      "goal": 7,
+      "native": {
+        "points": [
+          [
+            -1.7984265089035034,
+            -1.6111059188842773,
+            -2.121840476989746
+          ],
+          [
+            -0.37256503105163574,
+            -1.6111059188842773,
+            -0.9799621105194092
+          ],
+          [
+            -0.2725648880004883,
+            -1.6111059188842773,
+            -0.9299619197845459
+          ],
+          [
+            0.37743496894836426,
+            -1.6111059188842773,
+            -0.7799620628356934
+          ],
+          [
+            1.277435064315796,
+            -1.6111059188842773,
+            -0.7299621105194092
+          ],
+          [
+            1.4274349212646484,
+            -1.6111059188842773,
+            -0.6549620628356934
+          ],
+          [
+            1.4774351119995117,
+            -1.6111059188842773,
+            -0.6049621105194092
+          ],
+          [
+            1.527435302734375,
+            -1.6111059188842773,
+            -0.5049619674682617
+          ],
+          [
+            1.82743501663208,
+            -1.6111059188842773,
+            0.1059739887714386
+          ]
+        ],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "projected_goal": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 4.537849944909705
+    },
+    {
+      "start": 0,
+      "goal": 8,
+      "native": {
+        "points": [
+          [
+            -1.7984265089035034,
+            -1.6111059188842773,
+            -2.121840476989746
+          ],
+          [
+            -1.1225649118423462,
+            -1.6111059188842773,
+            0.4450380802154541
+          ],
+          [
+            -1.072564959526062,
+            -1.6111059188842773,
+            0.5450379848480225
+          ],
+          [
+            -1.04756498336792,
+            -1.6111059188842773,
+            0.5700380802154541
+          ],
+          [
+            -0.9725649356842041,
+            -1.6111059188842773,
+            0.6450381278991699
+          ],
+          [
+            1.8415476083755493,
+            -1.6111059188842773,
+            2.3337883949279785
+          ]
+        ],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "projected_goal": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 6.1895263828785545
+    },
+    {
+      "start": 1,
+      "goal": 0,
+      "native": {
+        "points": [
+          [
+            -1.7984265089035034,
+            -1.6179062128067017,
+            0.10597400367259979
+          ],
+          [
+            -1.7984265089035034,
+            -1.6111059188842773,
+            -2.121840476989746
+          ]
+        ],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 2.2278248594192203
+    },
+    {
+      "start": 1,
+      "goal": 2,
+      "native": {
+        "points": [],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 1,
+      "goal": 3,
+      "native": {
+        "points": [
+          [
+            -1.7984265089035034,
+            -1.6179062128067017,
+            0.10597400367259979
+          ],
+          [
+            -0.4725649356842041,
+            -1.6111059188842773,
+            -1.4299620389938354
+          ],
+          [
+            0.021560460329055786,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ]
+        ],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "projected_goal": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 2.7684171501060395
+    },
+    {
+      "start": 1,
+      "goal": 4,
+      "native": {
+        "points": [],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 1,
+      "goal": 5,
+      "native": {
+        "points": [],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 1,
+      "goal": 6,
+      "native": {
+        "points": [
+          [
+            -1.7984265089035034,
+            -1.6179062128067017,
+            0.10597400367259979
+          ],
+          [
+            -0.4725649356842041,
+            -1.6111059188842773,
+            -1.4299620389938354
+          ],
+          [
+            -0.37256503105163574,
+            -1.6111059188842773,
+            -1.5299620628356934
+          ],
+          [
+            -0.32256484031677246,
+            -1.6111059188842773,
+            -1.5549620389938354
+          ],
+          [
+            -0.2225649356842041,
+            -1.6111059188842773,
+            -1.5799620151519775
+          ],
+          [
+            1.777435302734375,
+            -1.6111059188842773,
+            -2.054962158203125
+          ]
+        ],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "projected_goal": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 4.385086134874733
+    },
+    {
+      "start": 1,
+      "goal": 7,
+      "native": {
+        "points": [
+          [
+            -1.7984265089035034,
+            -1.6179062128067017,
+            0.10597400367259979
+          ],
+          [
+            -0.9725649356842041,
+            -1.6111059188842773,
+            0.6450381278991699
+          ],
+          [
+            -0.9225649833679199,
+            -1.6111059188842773,
+            0.6700382232666016
+          ],
+          [
+            -0.8725649118423462,
+            -1.6111059188842773,
+            0.695037841796875
+          ],
+          [
+            -0.7475649118423462,
+            -1.6111059188842773,
+            0.7200379371643066
+          ],
+          [
+            -0.5975649356842041,
+            -1.6111059188842773,
+            0.7200379371643066
+          ],
+          [
+            0.6774351596832275,
+            -1.6111059188842773,
+            0.6450381278991699
+          ],
+          [
+            1.07743501663208,
+            -1.6111059188842773,
+            0.6200380325317383
+          ],
+          [
+            1.2524349689483643,
+            -1.6111059188842773,
+            0.5700380802154541
+          ],
+          [
+            1.402435302734375,
+            -1.6111059188842773,
+            0.4950380325317383
+          ],
+          [
+            1.82743501663208,
+            -1.6111059188842773,
+            0.1059739887714386
+          ]
+        ],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "projected_goal": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 3.9794091642659435
+    },
+    {
+      "start": 1,
+      "goal": 8,
+      "native": {
+        "points": [
+          [
+            -1.7984265089035034,
+            -1.6179062128067017,
+            0.10597400367259979
+          ],
+          [
+            -0.9725649356842041,
+            -1.6111059188842773,
+            0.6450381278991699
+          ],
+          [
+            1.8415476083755493,
+            -1.6111059188842773,
+            2.3337883949279785
+          ]
+        ],
+        "projected_start": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "projected_goal": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 4.268183739531515
+    },
+    {
+      "start": 2,
+      "goal": 0,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 2,
+      "goal": 1,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 2,
+      "goal": 3,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 2,
+      "goal": 4,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 2,
+      "goal": 5,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 2,
+      "goal": 6,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 2,
+      "goal": 7,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 2,
+      "goal": 8,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 3,
+      "goal": 0,
+      "native": {
+        "points": [
+          [
+            0.021560460329055786,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ],
+          [
+            -0.822564959526062,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ],
+          [
+            -1.7984265089035034,
+            -1.6111059188842773,
+            -2.121840476989746
+          ]
+        ],
+        "projected_start": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 1.830246745175732
+    },
+    {
+      "start": 3,
+      "goal": 1,
+      "native": {
+        "points": [
+          [
+            0.021560460329055786,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ],
+          [
+            -0.4725649356842041,
+            -1.6111059188842773,
+            -1.4299620389938354
+          ],
+          [
+            -1.7984265089035034,
+            -1.6179062128067017,
+            0.10597400367259979
+          ]
+        ],
+        "projected_start": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 2.7684171501060395
+    },
+    {
+      "start": 3,
+      "goal": 2,
+      "native": {
+        "points": [],
+        "projected_start": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 3,
+      "goal": 4,
+      "native": {
+        "points": [],
+        "projected_start": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 3,
+      "goal": 5,
+      "native": {
+        "points": [],
+        "projected_start": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 3,
+      "goal": 6,
+      "native": {
+        "points": [
+          [
+            0.021560460329055786,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ],
+          [
+            0.9524350166320801,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ],
+          [
+            1.777435302734375,
+            -1.6111059188842773,
+            -2.054962158203125
+          ]
+        ],
+        "projected_start": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "projected_goal": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 1.7592769326291955
+    },
+    {
+      "start": 3,
+      "goal": 7,
+      "native": {
+        "points": [
+          [
+            0.021560460329055786,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ],
+          [
+            0.6524350643157959,
+            -1.6111059188842773,
+            -1.5549620389938354
+          ],
+          [
+            0.7024350166320801,
+            -1.6111059188842773,
+            -1.5049620866775513
+          ],
+          [
+            1.4774351119995117,
+            -1.6111059188842773,
+            -0.6049621105194092
+          ],
+          [
+            1.527435302734375,
+            -1.6111059188842773,
+            -0.5049619674682617
+          ],
+          [
+            1.82743501663208,
+            -1.6111059188842773,
+            0.1059739887714386
+          ]
+        ],
+        "projected_start": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "projected_goal": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 2.8115067091498704
+    },
+    {
+      "start": 3,
+      "goal": 8,
+      "native": {
+        "points": [
+          [
+            0.021560460329055786,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ],
+          [
+            0.6524350643157959,
+            -1.6111059188842773,
+            -1.5549620389938354
+          ],
+          [
+            0.7024350166320801,
+            -1.6111059188842773,
+            -1.5049620866775513
+          ],
+          [
+            1.4774351119995117,
+            -1.6111059188842773,
+            -0.6049621105194092
+          ],
+          [
+            1.527435302734375,
+            -1.6111059188842773,
+            -0.5049619674682617
+          ],
+          [
+            1.6024351119995117,
+            -1.6111059188842773,
+            -0.32996201515197754
+          ],
+          [
+            1.8415476083755493,
+            -1.6111059188842773,
+            2.3337883949279785
+          ]
+        ],
+        "projected_start": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "projected_goal": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 4.9957425487734
+    },
+    {
+      "start": 4,
+      "goal": 0,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 4,
+      "goal": 1,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 4,
+      "goal": 2,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 4,
+      "goal": 3,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 4,
+      "goal": 5,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 4,
+      "goal": 6,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 4,
+      "goal": 7,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 4,
+      "goal": 8,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 5,
+      "goal": 0,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 5,
+      "goal": 1,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 5,
+      "goal": 2,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 5,
+      "goal": 3,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 5,
+      "goal": 4,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 5,
+      "goal": 6,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 5,
+      "goal": 7,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 5,
+      "goal": 8,
+      "native": {
+        "points": [],
+        "projected_start": [
+          null,
+          null,
+          null
+        ],
+        "projected_goal": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 6,
+      "goal": 0,
+      "native": {
+        "points": [
+          [
+            1.777435302734375,
+            -1.6111059188842773,
+            -2.054962158203125
+          ],
+          [
+            0.9524350166320801,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ],
+          [
+            -0.822564959526062,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ],
+          [
+            -1.7984265089035034,
+            -1.6111059188842773,
+            -2.121840476989746
+          ]
+        ],
+        "projected_start": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 3.5895236778049275
+    },
+    {
+      "start": 6,
+      "goal": 1,
+      "native": {
+        "points": [
+          [
+            1.777435302734375,
+            -1.6111059188842773,
+            -2.054962158203125
+          ],
+          [
+            0.7774350643157959,
+            -1.6111059188842773,
+            -0.9549620151519775
+          ],
+          [
+            0.7274351119995117,
+            -1.6111059188842773,
+            -0.9049620628356934
+          ],
+          [
+            0.6524350643157959,
+            -1.6111059188842773,
+            -0.8549621105194092
+          ],
+          [
+            0.5524351596832275,
+            -1.6111059188842773,
+            -0.8049619197845459
+          ],
+          [
+            0.5024349689483643,
+            -1.6111059188842773,
+            -0.7799620628356934
+          ],
+          [
+            -0.7225649356842041,
+            -1.6111059188842773,
+            -0.6799619197845459
+          ],
+          [
+            -0.8975650072097778,
+            -1.6111059188842773,
+            -0.6299619674682617
+          ],
+          [
+            -0.947564959526062,
+            -1.6111059188842773,
+            -0.6049621105194092
+          ],
+          [
+            -0.9975649118423462,
+            -1.6111059188842773,
+            -0.5799620151519775
+          ],
+          [
+            -1.7984265089035034,
+            -1.6179062128067017,
+            0.10597400367259979
+          ]
+        ],
+        "projected_start": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 4.392525318274139
+    },
+    {
+      "start": 6,
+      "goal": 2,
+      "native": {
+        "points": [],
+        "projected_start": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 6,
+      "goal": 3,
+      "native": {
+        "points": [
+          [
+            1.777435302734375,
+            -1.6111059188842773,
+            -2.054962158203125
+          ],
+          [
+            0.9524350166320801,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ],
+          [
+            0.4774351119995117,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ],
+          [
+            0.021560460329055786,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ]
+        ],
+        "projected_start": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "projected_goal": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 1.7592769326291955
+    },
+    {
+      "start": 6,
+      "goal": 4,
+      "native": {
+        "points": [],
+        "projected_start": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 6,
+      "goal": 5,
+      "native": {
+        "points": [],
+        "projected_start": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 6,
+      "goal": 7,
+      "native": {
+        "points": [
+          [
+            1.777435302734375,
+            -1.6111059188842773,
+            -2.054962158203125
+          ],
+          [
+            1.777435302734375,
+            -1.6111059188842773,
+            -2.0299620628356934
+          ],
+          [
+            1.82743501663208,
+            -1.6111059188842773,
+            0.1059739887714386
+          ]
+        ],
+        "projected_start": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "projected_goal": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 2.161521283641706
+    },
+    {
+      "start": 6,
+      "goal": 8,
+      "native": {
+        "points": [
+          [
+            1.777435302734375,
+            -1.6111059188842773,
+            -2.054962158203125
+          ],
+          [
+            1.777435302734375,
+            -1.6111059188842773,
+            -2.0299620628356934
+          ],
+          [
+            1.8415476083755493,
+            -1.6111059188842773,
+            2.3337883949279785
+          ]
+        ],
+        "projected_start": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "projected_goal": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 4.389221497332195
+    },
+    {
+      "start": 7,
+      "goal": 0,
+      "native": {
+        "points": [
+          [
+            1.82743501663208,
+            -1.6111059188842773,
+            0.1059739887714386
+          ],
+          [
+            1.527435302734375,
+            -1.6111059188842773,
+            -0.5049619674682617
+          ],
+          [
+            1.4774351119995117,
+            -1.6111059188842773,
+            -0.6049621105194092
+          ],
+          [
+            0.7024350166320801,
+            -1.6111059188842773,
+            -1.5049620866775513
+          ],
+          [
+            0.6524350643157959,
+            -1.6111059188842773,
+            -1.5549620389938354
+          ],
+          [
+            0.5524351596832275,
+            -1.6111059188842773,
+            -1.6049619913101196
+          ],
+          [
+            -1.7984265089035034,
+            -1.6111059188842773,
+            -2.121840476989746
+          ]
+        ],
+        "projected_start": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 4.569647659396196
+    },
+    {
+      "start": 7,
+      "goal": 1,
+      "native": {
+        "points": [
+          [
+            1.82743501663208,
+            -1.6111059188842773,
+            0.1059739887714386
+          ],
+          [
+            1.402435302734375,
+            -1.6111059188842773,
+            0.4950380325317383
+          ],
+          [
+            1.2524349689483643,
+            -1.6111059188842773,
+            0.5700380802154541
+          ],
+          [
+            1.07743501663208,
+            -1.6111059188842773,
+            0.6200380325317383
+          ],
+          [
+            0.6774351596832275,
+            -1.6111059188842773,
+            0.6450381278991699
+          ],
+          [
+            -0.5975649356842041,
+            -1.6111059188842773,
+            0.7200379371643066
+          ],
+          [
+            -0.7475649118423462,
+            -1.6111059188842773,
+            0.7200379371643066
+          ],
+          [
+            -0.8725649118423462,
+            -1.6111059188842773,
+            0.695037841796875
+          ],
+          [
+            -0.9225649833679199,
+            -1.6111059188842773,
+            0.6700382232666016
+          ],
+          [
+            -0.9725649356842041,
+            -1.6111059188842773,
+            0.6450381278991699
+          ],
+          [
+            -1.7984265089035034,
+            -1.6179062128067017,
+            0.10597400367259979
+          ]
+        ],
+        "projected_start": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 3.979409164265943
+    },
+    {
+      "start": 7,
+      "goal": 2,
+      "native": {
+        "points": [],
+        "projected_start": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 7,
+      "goal": 3,
+      "native": {
+        "points": [
+          [
+            1.82743501663208,
+            -1.6111059188842773,
+            0.1059739887714386
+          ],
+          [
+            1.527435302734375,
+            -1.6111059188842773,
+            -0.5049619674682617
+          ],
+          [
+            1.4774351119995117,
+            -1.6111059188842773,
+            -0.6049621105194092
+          ],
+          [
+            0.7024350166320801,
+            -1.6111059188842773,
+            -1.5049620866775513
+          ],
+          [
+            0.6524350643157959,
+            -1.6111059188842773,
+            -1.5549620389938354
+          ],
+          [
+            0.021560460329055786,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ]
+        ],
+        "projected_start": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "projected_goal": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 2.8115067091498704
+    },
+    {
+      "start": 7,
+      "goal": 4,
+      "native": {
+        "points": [],
+        "projected_start": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 7,
+      "goal": 5,
+      "native": {
+        "points": [],
+        "projected_start": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 7,
+      "goal": 6,
+      "native": {
+        "points": [
+          [
+            1.82743501663208,
+            -1.6111059188842773,
+            0.1059739887714386
+          ],
+          [
+            1.777435302734375,
+            -1.6111059188842773,
+            -2.0299620628356934
+          ],
+          [
+            1.777435302734375,
+            -1.6111059188842773,
+            -2.054962158203125
+          ]
+        ],
+        "projected_start": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "projected_goal": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 2.161521283641706
+    },
+    {
+      "start": 7,
+      "goal": 8,
+      "native": {
+        "points": [
+          [
+            1.82743501663208,
+            -1.6111059188842773,
+            0.1059739887714386
+          ],
+          [
+            1.82743501663208,
+            -1.6111059188842773,
+            1.0450382232666016
+          ],
+          [
+            1.8415476083755493,
+            -1.6111059188842773,
+            2.3337883949279785
+          ]
+        ],
+        "projected_start": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "projected_goal": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 2.227891674536283
+    },
+    {
+      "start": 8,
+      "goal": 0,
+      "native": {
+        "points": [
+          [
+            1.8415476083755493,
+            -1.6111059188842773,
+            2.3337883949279785
+          ],
+          [
+            -0.9725649356842041,
+            -1.6111059188842773,
+            0.6450381278991699
+          ],
+          [
+            -1.04756498336792,
+            -1.6111059188842773,
+            0.5700380802154541
+          ],
+          [
+            -1.072564959526062,
+            -1.6111059188842773,
+            0.5450379848480225
+          ],
+          [
+            -1.1225649118423462,
+            -1.6111059188842773,
+            0.4450380802154541
+          ],
+          [
+            -1.7984265089035034,
+            -1.6111059188842773,
+            -2.121840476989746
+          ]
+        ],
+        "projected_start": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 6.1895263828785545
+    },
+    {
+      "start": 8,
+      "goal": 1,
+      "native": {
+        "points": [
+          [
+            1.8415476083755493,
+            -1.6111059188842773,
+            2.3337883949279785
+          ],
+          [
+            -0.9725649356842041,
+            -1.6111059188842773,
+            0.6450381278991699
+          ],
+          [
+            -1.7984265089035034,
+            -1.6179062128067017,
+            0.10597400367259979
+          ]
+        ],
+        "projected_start": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "projected_goal": [
+          -1.7984265089035034,
+          -1.6179062128067017,
+          0.10597400367259979
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 4.268183739531515
+    },
+    {
+      "start": 8,
+      "goal": 2,
+      "native": {
+        "points": [],
+        "projected_start": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 8,
+      "goal": 3,
+      "native": {
+        "points": [
+          [
+            1.8415476083755493,
+            -1.6111059188842773,
+            2.3337883949279785
+          ],
+          [
+            1.6024351119995117,
+            -1.6111059188842773,
+            -0.32996201515197754
+          ],
+          [
+            1.527435302734375,
+            -1.6111059188842773,
+            -0.5049619674682617
+          ],
+          [
+            1.4774351119995117,
+            -1.6111059188842773,
+            -0.6049621105194092
+          ],
+          [
+            0.7024350166320801,
+            -1.6111059188842773,
+            -1.5049620866775513
+          ],
+          [
+            0.6524350643157959,
+            -1.6111059188842773,
+            -1.5549620389938354
+          ],
+          [
+            0.021560460329055786,
+            -1.6111059188842773,
+            -1.9799619913101196
+          ]
+        ],
+        "projected_start": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "projected_goal": [
+          0.021560460329055786,
+          -1.6111059188842773,
+          -1.9799619913101196
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 4.995742548773399
+    },
+    {
+      "start": 8,
+      "goal": 4,
+      "native": {
+        "points": [],
+        "projected_start": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 8,
+      "goal": 5,
+      "native": {
+        "points": [],
+        "projected_start": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "projected_goal": [
+          null,
+          null,
+          null
+        ],
+        "complete": false,
+        "status": 1073741824,
+        "error": "no start or goal polygon within explicit association bounds"
+      },
+      "endpointAssociationsValid": false,
+      "acceptedNativeProposal": false,
+      "pathLengthMetres": 0
+    },
+    {
+      "start": 8,
+      "goal": 6,
+      "native": {
+        "points": [
+          [
+            1.8415476083755493,
+            -1.6111059188842773,
+            2.3337883949279785
+          ],
+          [
+            1.777435302734375,
+            -1.6111059188842773,
+            -2.0299620628356934
+          ],
+          [
+            1.777435302734375,
+            -1.6111059188842773,
+            -2.054962158203125
+          ]
+        ],
+        "projected_start": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "projected_goal": [
+          1.777435302734375,
+          -1.6111059188842773,
+          -2.054962158203125
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 4.389221497332195
+    },
+    {
+      "start": 8,
+      "goal": 7,
+      "native": {
+        "points": [
+          [
+            1.8415476083755493,
+            -1.6111059188842773,
+            2.3337883949279785
+          ],
+          [
+            1.82743501663208,
+            -1.6111059188842773,
+            1.0450382232666016
+          ],
+          [
+            1.82743501663208,
+            -1.6111059188842773,
+            0.22003793716430664
+          ],
+          [
+            1.82743501663208,
+            -1.6111059188842773,
+            0.1059739887714386
+          ]
+        ],
+        "projected_start": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "projected_goal": [
+          1.82743501663208,
+          -1.6111059188842773,
+          0.1059739887714386
+        ],
+        "complete": true,
+        "status": 1073741824,
+        "error": null
+      },
+      "endpointAssociationsValid": true,
+      "acceptedNativeProposal": true,
+      "pathLengthMetres": 2.227891674536283
+    }
+  ],
+  "meshCounts": [
+    51965,
+    87370
+  ],
+  "nativeMarkedExclusionSpans": 0
+}
