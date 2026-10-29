@@ -1,0 +1,64 @@
+name: Native fixed EDT navigation contrast
+
+on:
+  push:
+    branches: [master, codex/recovery-hazard-order-20261027]
+    paths:
+      - '.github/workflows/native-edt-navigation-probe.yml'
+      - 'research/native-floor-import-repair-20261028/edt-navigation-probe/main.swift'
+      - 'research/native-floor-import-repair-20261028/edt-navigation-probe/run_native.py'
+      - 'research/native-floor-import-repair-20261028/edt-navigation-probe/edt_probe.h'
+      - 'research/native-floor-import-repair-20261028/edt-navigation-probe/edt_mask_hook.cpp'
+      - 'research/native-floor-import-repair-20261028/edt-navigation-probe/hook_tests.cpp'
+      - 'research/native-floor-import-repair-20261028/edt-navigation-probe/hook_test_digest.hpp'
+      - 'research/native-floor-import-repair-20261028/edt-navigation-probe/HOOK_TEST_FIXTURE.json'
+      - 'research/native-floor-import-repair-20261028/edt-navigation-probe/EDT_MASK_INPUTS.json'
+      - 'research/native-floor-import-repair-20261028/edt-navigation-probe/NATIVE_SOURCE_PINS.json'
+      - 'research/native-floor-import-repair-20261028/strict-endpoint-probe/association_appendix.cpp'
+      - 'research/native-floor-import-repair-20261028/strict-endpoint-probe/PACKED_ROUTING_GEOMETRY.json'
+      - 'research/native-floor-import-repair-20261028/strict-endpoint-probe/REQUESTS_49A.json'
+      - 'research/native-floor-import-repair-20261028/native-strict-result-40791907324/RESULT.json'
+      - 'research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp'
+      - 'research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h'
+      - 'ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-edt-navigation-probe-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/codex/recovery-hazard-order-20261027')
+    runs-on: xcode-27
+    timeout-minutes: 7
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          lfs: false
+          submodules: false
+      - name: Verify50 original controls then run one fixed EDT candidate
+        timeout-minutes: 6
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 research/native-floor-import-repair-20261028/edt-navigation-probe/run_native.py
+      - name: Preserve bounded positive and negative evidence, never build products
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: native-edt-navigation-probe-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/blind-edt-navigation-probe/*.json
+            ${{ runner.temp }}/blind-edt-navigation-probe/*.txt
+          if-no-files-found: error
+          retention-days: 3

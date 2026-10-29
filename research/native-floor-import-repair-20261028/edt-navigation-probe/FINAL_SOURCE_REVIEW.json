@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "reviewer": "stage_binary_batch_two",
+  "result": "source-and-pin-coherence-pass",
+  "physicalAuthority": false,
+  "nativeCompilationPerformed": false,
+  "nativeExecutionPerformed": false,
+  "runtimePins": {
+    "sha256": "3e1f7d07cf3b70cc04ecb6e55694bdc01cca95738f7781e554cfbb1f66aaea3b",
+    "filesVerified": 58,
+    "compiledUpstreamSourcesAndHeadersVerified": 42
+  },
+  "minimalManifest": {
+    "sha256": "fbea37e19326a5086d55d636340d01b47b2f75be7b6d394800e0a9b634187926",
+    "filesVerified": 22,
+    "bytesVerified": 496146,
+    "largeRawCaptureExcluded": true
+  },
+  "reviewedSource": {
+    "run_native.py": "92eb8c0f99e005175fe0da96ff6c521d6430aaa3aec7246b5cf79bc7dcf5460f",
+    "main.swift": "cc1cc7e6423bd35fd767e8a1e3822f10dbda98de9a01656d3bd65e6f094c0546",
+    "edt_mask_hook.cpp": "9c98b1ce880e9ce556dbb69aab83837b3abf96d6185ccc6826651769b43ae840",
+    "hook_tests.cpp": "16d5ad629d67bdf422b3dd35a355d9915d6c54296df45f7ba03afe7d4ec5ac72",
+    "native-edt-navigation-probe.yml": "716caac891d1a5d37760a652b0f42fdf316c7c6eba2935d2bed85d4621abd37b"
+  },
+  "scope": "Ready for root separately authorized one fixed75-query diagnostic; no further variants, no production adoption or pipeline ranking",
+  "completedChecks": [
+    "exact50 original controls gate execution of candidate25",
+    "nonvacuous6+2+3+14 candidate acceptance",
+    "mandatory full-layout receipt before association/path even after nil build",
+    "51 authored hook checks compiled and required by native runner; not yet run",
+    "global deadline refuses late spawns and retires timed-out process groups"
+  ],
+  "sourceHistory": "PREPARATION_RECEIPT records earlier pin-review-pending point; this later record completes that review without rewriting it."
+}
