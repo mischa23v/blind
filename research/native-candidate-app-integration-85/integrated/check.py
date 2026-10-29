@@ -61,10 +61,16 @@ with tempfile.TemporaryDirectory(prefix='stage85-ci-helper-') as temp:
 # Preserve the original stage85 patch and verify its published intermediate bytes.
 with tempfile.TemporaryDirectory(prefix='stage85-integrated-') as temp:
     root = Path(temp)
-    for name in manifest['appFiles']:
+    for name in dict.fromkeys(manifest['appFiles'] + list(manifest['beforeGuidanceAuthority']) + manifest['guidanceAuthorityNewFiles']):
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(R / name, target)
+    subprocess.run(['git', 'apply', '-R', str(H / 'guidance-authority-layer.patch')], cwd=root,
+                   check=True, timeout=15, capture_output=True)
+    for name, digest in manifest['beforeGuidanceAuthority'].items():
+        check('exact pre-guidance-authority source recovered ' + name, hashlib.sha256((root / name).read_bytes()).hexdigest() == digest)
+    for name in manifest['guidanceAuthorityNewFiles']:
+        check('new guidance-authority source absent in historical layer ' + name, not (root / name).exists())
     subprocess.run(['git', 'apply', '-R', str(H / 'conversation-runtime-failure-layer.patch')], cwd=root,
                    check=True, timeout=15, capture_output=True)
     for name, digest in manifest['beforeConversationRuntimeFailure'].items():

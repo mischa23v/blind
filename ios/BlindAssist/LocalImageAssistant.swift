@@ -991,6 +991,8 @@ enum LocalImageAssistant {
     }
     #endif
 
+    /// Provenance reaches onSpeechCandidate before onPartial so display can use
+    /// the same admitted evidence, without changing the display callback API.
     /// onPartial receives each new validated sentence exactly once (not a
     /// cumulative snapshot) for display. onSpeechCandidate carries provenance
     /// for a second freshness/safety check at actual queued speech dispatch.
@@ -1114,9 +1116,9 @@ enum LocalImageAssistant {
                                     logger.info("First verified sentence after \(ProcessInfo.processInfo.systemUptime - started, privacy: .public) seconds")
                                     sentFirst = true
                                 }
-                                await onPartial?(chunk)
-                                try Task.checkCancellation()
                                 await onSpeechCandidate?(chunk, reports, evidence)
+                                try Task.checkCancellation()
+                                await onPartial?(chunk)
                             }
                             if chunks.rejected {
                                 #if DEBUG
@@ -1138,9 +1140,9 @@ enum LocalImageAssistant {
                             let evidence = assistantEvidence + (await runtime?.currentEvidence() ?? [])
                             if !suffix.isEmpty {
                                 try Task.checkCancellation()
-                                await onPartial?(suffix)
-                                try Task.checkCancellation()
                                 await onSpeechCandidate?(suffix, reports, evidence)
+                                try Task.checkCancellation()
+                                await onPartial?(suffix)
                             }
                             let kept = [chunks.delivered, suffix].filter { !$0.isEmpty }.joined(separator: " ")
                             try Task.checkCancellation()
@@ -1156,9 +1158,9 @@ enum LocalImageAssistant {
                 let evidence = assistantEvidence + (await runtime?.currentEvidence() ?? [])
                 for chunk in chunks.append(text, final: true, reports: reports, evidence: evidence) {
                     try Task.checkCancellation()
-                    await onPartial?(chunk)
-                    try Task.checkCancellation()
                     await onSpeechCandidate?(chunk, reports, evidence)
+                    try Task.checkCancellation()
+                    await onPartial?(chunk)
                 }
                 text = text.trimmingCharacters(in: .whitespacesAndNewlines)
                 let finalRejected = chunks.rejected || !usableChatReply(text) || !CompanionEvidenceGuard.allows(text, reports: reports, evidence: evidence)
@@ -1180,9 +1182,9 @@ enum LocalImageAssistant {
                     if fallback.split(whereSeparator: \.isWhitespace).count > remainingWords { fallback = "" }
                     try Task.checkCancellation()
                     if !fallback.isEmpty {
-                        await onPartial?(fallback)
-                        try Task.checkCancellation()
                         await onSpeechCandidate?(fallback, reports, evidence)
+                        try Task.checkCancellation()
+                        await onPartial?(fallback)
                     }
                     let safeText = [chunks.delivered, fallback].filter { !$0.isEmpty }.joined(separator: " ")
                     await onReplyComplete?(safeText)

@@ -64,6 +64,23 @@ public struct SpatialRouteTicket: Sendable {
     }
 }
 
+/// Immutable code-rendered words for one route ticket. There is deliberately no
+/// initializer accepting caller/model text. This is not a readiness certificate:
+/// the route owner and live sensor gates must revalidate the ticket at delivery.
+/// Imported/authored map labels are not speech authority. Exact-text validation
+/// binds these words to an attempt; it does not sanitize arbitrary metadata.
+public struct SpatialRouteSpeech: Sendable {
+    public let ticket: SpatialRouteTicket
+    public let text: String
+    public init?(ticket: SpatialRouteTicket, arabic: Bool) {
+        guard let cue = ticket.directionalCue() else { return nil }
+        self.ticket = ticket
+        text = arabic
+            ? "نقطة المسار التالية، على بعد نحو \(String(format: "%.1f", cue.distance)) متر."
+            : "Next waypoint, approximately \(String(format: "%.1f", cue.distance)) meters."
+    }
+}
+
 public enum SpatialRouteError: Error, Equatable {
     case invalidBody, staleGoal, noRoute, unsupportedTransition, missingSupport, blockedLeg, staleTicket, offRoute, ambiguousDirection, unpersistedRestrictions
 }

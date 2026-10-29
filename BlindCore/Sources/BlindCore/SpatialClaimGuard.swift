@@ -31,6 +31,10 @@ public enum SpatialClaimGuard {
     private static let arObjectRelation = regex(#"(?:علي|على|داخل|خارج|عند|بين|حول)\s+(?:ال|هذا |هذه |تلك |ذلك )?(?:مكتب|طاول|سرير|اريك|كنب|كرسي|باب|نافذ|حائط|جدار|ارض|رف|خزان|درج|مصباح|شاش|تلفاز|مقبض|يد|ذراع|قدم|جسم|شخص|سيار|طريق|سكين|كوب|زجاج|حقيب)|(?:يمكنك|تقدر|تستطيع)\s+(?:الوصول|الامساك|التقاط|اخذ|اخذه|اخذها|لمس)"#)
     private static let arPhysicalAction = regex(#"(?:^|[\s،؛.!؟:«»"'()])(?:و|ف)?(?:امش(?:ي)?|روح|سر|اقترب|اقربي|اتبع|اتبعي|تبع|الحق|امسك(?:ه|ها|يه|يها)?|التقط(?:ه|ها)?|التقطي|خذ(?:ه|ها|يه|يها)?|خدي|المس(?:ه|ها)?|المسي|تسلق|اصعد|انزل|اقفز|ازحف|انحن|ميل|مل|مد(?:ي)?|مدد|ارفع(?:ه|ها)?|ارفعى|اسحب(?:ه|ها)?|ادفع(?:ه|ها)?|اضغط|اضغطي|لف|لفي|ادر|دور|دوري|حرك(?:ه|ها)?|تقدم|تراجع|اعبر|اقطع|افتح(?:ه|ها)?|اغلق(?:ه|ها)?|ضع(?:ه|ها)?|حط(?:ه|ها)?|كل|اشرب|ذق|شم)(?:[\s،؛.!؟:«»"'()]|$)|(?:يمكنك|يمكن|تقدر|تستطيع|حاول|جرب)\s+(?:ان\s+)?(?:تمشي|تقترب|تتبع|توصل|تطول(?:ه|ها)?|تلف|تدور|تمسك(?:ه|ها)?|تاخذ(?:ه|ها)?|تلمس(?:ه|ها)?|تتسلق|تصعد|تنزل|تمد|تحرك|تفتح|تغلق|تاكل|تشرب)"#)
 
+    // Bounded locomotion paraphrases missed by the general action vocabulary.
+    // This is defense in depth; request ownership and typed route output remain separate.
+    private static let continuation = regex(#"\b(?:sidestep(?:ping)?|head\s+straight|(?:continue|carry on|keep going)\s+(?:straight|walking|moving))\b|(?:^|[\s،؛.!؟])(?:كمل|كملي|واصل|واصلي|استمر|استمري|تابع|تابعي)\s+(?:علي طول|على طول|مباشره|السير|المشي|عبر|نحو|باتجاه)(?:[\s،؛.!؟]|$)"#)
+
     private static let reference = regex(#"(?:\b(it|its|they|them|their|this|that|these|those|there)\b|^\s*(?:roughly|about|approximately|around|ahead|behind|to (?:your|the) (?:left|right))\b)"#)
 
     private static let arReference = regex(#"(هو|هي|انه|انها|انهم|هذا|هذه|ذلك|تلك|هناك|يبعد|تبعد|تقع|يقع|ارتفاعه|عمقها|^\s*(تقريبا|حوالي|امام|خلف|يمين|يسار))"#)
@@ -88,7 +92,7 @@ public enum SpatialClaimGuard {
         let prose = regex(#"\b(?:take your time|move on to (?:another|the next) (?:topic|question|subject))\b|(?:^|\s)خذ وقتك(?=[\s.!؟،]|$)"#)
             .stringByReplacingMatches(in: science, range: NSRange(science.startIndex..., in: science), withTemplate: "")
         let arabic = normalizeArabic(prose)
-        if found(direction, prose) || found(objectRelation, prose) || found(physicalAction, prose) ||
+        if found(continuation, arabic) || found(direction, prose) || found(objectRelation, prose) || found(physicalAction, prose) ||
             found(arDirection, arabic) || found(arObjectRelation, arabic) || found(arPhysicalAction, arabic) ||
             found(clearance, canonical) || found(stepCount, canonical) || found(arClearance, arabic) || found(arStepCount, arabic) { return true }
         // Conservative lexical defense, not a semantic safety proof. Preserve hazard

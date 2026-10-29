@@ -8,8 +8,9 @@ import BlindCore
 final class SpatialRouteOutputController {
     struct Attempt {
         let id: UUID
-        let ticket: SpatialRouteTicket
+        let message: SpatialRouteSpeech
         let goalRevision: String
+        var ticket: SpatialRouteTicket { message.ticket }
     }
     private(set) var active: Attempt?
     var permits: ((SpatialRouteTicket, String) -> Bool)?
@@ -17,19 +18,29 @@ final class SpatialRouteOutputController {
     var stopBeacon: ((UUID) -> Void)?
 
     @discardableResult
-    func deliver(ticket: SpatialRouteTicket, goalRevision: String,
-                 speech: (UUID) -> Bool, beacon: (UUID) -> Bool) -> Bool {
+    func deliver(message: SpatialRouteSpeech, goalRevision: String,
+                 speech: (UUID, String) -> Bool, beacon: (UUID) -> Bool) -> Bool {
         retire()
-        let attempt = Attempt(id: UUID(), ticket: ticket, goalRevision: goalRevision)
+        let attempt = Attempt(id: UUID(), message: message, goalRevision: goalRevision)
         active = attempt
         guard validateForStart(attempt.id) else { return false }
-        guard speech(attempt.id) else { retire(id: attempt.id); return false }
+        guard speech(attempt.id, message.text) else { retire(id: attempt.id); return false }
         // A synchronous callback or priority change can invalidate the ticket
         // between sinks. Do not promote speech admission into beacon permission.
         guard validateForStart(attempt.id) else { return false }
         _ = beacon(attempt.id)
         guard validateForStart(attempt.id) else { return false }
         return true
+    }
+    /// A borrowed ticket/attempt cannot authorize different words at a speech
+    /// sink. A stale callback must not retire a newer route or independent alert.
+    @discardableResult
+    func validateSpeechStart(_ id: UUID, text: String) -> Bool {
+        guard let active, active.id == id else { return false }
+        guard active.message.text.utf8.elementsEqual(text.utf8) else {
+            retire(id: id); return false
+        }
+        return validateForStart(id)
     }
     @discardableResult
     func validateForStart(_ id: UUID) -> Bool {

@@ -9,13 +9,13 @@
     "ios/BlindAssist.xcodeproj/project.pbxproj": "ae6019c332ab26081523defd8d97f0d728163171026cf70dcb00cdf4ad80ae67"
   },
   "integrated": {
-    "ios/BlindAssist/NavigationModel.swift": "36fe671be479ca0e6a0a92808920892045ecfad7c52f98eb3ae8152319585966",
+    "ios/BlindAssist/NavigationModel.swift": "12fc1a2cc0f0bdda0b804318ff66b66df02770af8f833d44c3a5aaafb3831759",
     "ios/BlindAssist.xcodeproj/project.pbxproj": "e32dfbdf22c19eda0880320d8d96818f8b43b7b62fee489b9dbb1b58c82fbb1a",
     "ios/BlindAssist/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
     "tools/ci/native-apple.sh": "0825a5ac144218b755f1b8f62e73ca52c6f849a756a5e0c3553f7854bdc40ea2",
     ".github/workflows/native-apple.yml": "f0918d26a6542ce5a2d09e913b19e629009538f2421bd732b982564b58d4cc2b",
     ".github/workflows/native-candidate-app-integration.yml": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
-    "research/native-candidate-app-integration-85/integrated/check.py": "dbf2ca1311886c8264be64650d374b59b2f153b89f3597ae6da5feef9add059f",
+    "research/native-candidate-app-integration-85/integrated/check.py": "43f152e9f8e8566a937ff22f9f62ab4ad1f6bf72d99a23a84364df5f94ba8f5c",
     "research/native-candidate-app-integration-85/integrated/README.md": "e0c2967287b5ce57ab0c630f3b07fd1f466121aceae1cf931d48d113a5703bb1",
     "research/native-candidate-app-integration-85/app-integration.patch": "3cbde1075811ebab3d9fc1a54101ffad0b3749030c3dfc920cbcdca4fde2c619",
     "research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
@@ -44,14 +44,26 @@
     "research/native-candidate-app-integration-85/integrated/worker-cpu-ci-helper.patch": "ac57e5ac7525ac8807b076658028d4e481e5c38c7e2d9381050038a69feeff56",
     "tools/ci/export-ui-test-device-evidence.py": "905cd968e91553c2fa0a7d6b17b8708e316426b8a744955fd7b3bb5ff672bb97",
     "tools/ci/test-ui-test-device-evidence.py": "06ef2504bc39d1a4c58c1f0421d03b9c58e34ef91f41e3ee44c18779918aacef",
-    "ios/BlindAssist/LocalImageAssistant.swift": "19886f5b9b246969dabaaf5dc283b226b6336825ff8df75870328d8daea38eb2",
-    "ios/BlindAssistTests/ConversationRuntimeFailureTests.swift": "9c64a3eacaf3c039e2b168efabf741851f33339996032618bebb856fde9fb98c",
+    "ios/BlindAssist/LocalImageAssistant.swift": "dea37e042da4bd17d2fec6fbe2c3ca9fa8fc73429560e7150c0fb6cb90c978bb",
+    "ios/BlindAssistTests/ConversationRuntimeFailureTests.swift": "3d077fa77b1fa76c794058e94b36cdbf26c94120d29d321a6f72f9977965b561",
     "tools/test/conversation-runtime-failure.test.py": "13da5dea93d3e5d10e6b094a846887cdcc0c73f536e82870a03d7571f7b11233",
     "research/native-candidate-app-integration-85/integrated/conversation-runtime-failure-layer.patch": "c21ec75b2585b22187096cc6f7de1ce4b46f49aee47738a970b71686c88703c6",
     "tools/ci/collect-classified-bench.py": "125f2e52af90f0bad671d80a47297c79b9d7214dfa4dd849284d23b938495dc5",
     "tools/ci/test_collect_classified_bench.py": "65c4edd947a8b224edaf6221a04383a9b07c64cf7bc9fd2349f71c19757207e2",
     "research/strict-caller-runtime-ci-integration-20261029/test_ci_contract.py": "4df89de97dec273c928873312d38c50f0f56416f8a0abfee51dfb3c5fe59a5b3",
-    "research/native-candidate-app-integration-85/integrated/immutable-snapshot-layer.patch": "242ce273e86b1978fe5f84e1b5e898a097927896c53ac00ce8f33ed3836eb35a"
+    "research/native-candidate-app-integration-85/integrated/immutable-snapshot-layer.patch": "242ce273e86b1978fe5f84e1b5e898a097927896c53ac00ce8f33ed3836eb35a",
+    "BlindCore/Sources/BlindCore/ConversationDomainPolicy.swift": "a22ff982c2e2c69a604d98ed6910a695e4df7efb45c173c3eafa3514110b01da",
+    "BlindCore/Sources/BlindCore/ModelResponseAuthority.swift": "034be0c186021e27b0f14e82d795825283434cd4596d15fc0bb3f8d3feec98e1",
+    "BlindCore/Sources/BlindCore/SpatialClaimGuard.swift": "fa3495c74ad625f6a1fbb2d832890ca61f623cd236254bb58ce4cae9391a5233",
+    "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift": "f496672e1b270e6ddc04cd6ca8aabd83240309257f4be531cd60c4fe49b1738b",
+    "BlindCore/Tests/BlindCoreTests/Fixtures/spatial-claims.json": "a941c4affcd4a9798ee896c2695f82fd029bf60cdc30ce42fe7b767e1e268cb1",
+    "BlindCore/Tests/BlindCoreTests/ModelResponseAuthorityTests.swift": "b27dbe57cc656cc05d5d57cea4edc8e46735f8bc19cf424cc88bc997f41cd125",
+    "ios/BlindAssist/Feedback.swift": "a9ba24a5066c1061f07427570bcd16c3481687103a93338d1f6b339672ce4034",
+    "ios/BlindAssist/SpatialRouteOutputController.swift": "8b39ced410fb886b164543b232a555399dd0af4a7cedf1e5e2f6e3757990dce9",
+    "ios/BlindAssistTests/SpatialRouteOutputControllerTests.swift": "f8e4051c84908db7f30e2d491ee3f7b65828198d872a82ffafb0b23235cb371a",
+    "server/src/spatial-guard.mjs": "44f9e7b85bc29f156c487cad5b969b39359cb09f7af87290029b5a6e2e50c16b",
+    "tools/test/model-response-authority.test.mjs": "2285dda523bb463074c82df09a69a583e98e60b699251f5e701fceca4a1d7b4b",
+    "research/native-candidate-app-integration-85/integrated/guidance-authority-layer.patch": "6f74ad5b1d41a321ffd5251aa9f198784e08e759002d5bf57f0c1ac2163563e3"
   },
   "beforeCriticalOrder": {
     "ios/BlindAssist/NavigationModel.swift": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307"
@@ -117,5 +129,23 @@
     "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "5197a43b0df0e08a6b1fde8f5235d3ad8320df3148610ad261244860f7b07a0d",
     "tools/ci/collect-classified-bench.py": "49834ea7edfc7fbca43e72ff96790b84987f082b9cacbb7eb338c2fc7a3beb7d",
     "tools/ci/test_collect_classified_bench.py": "93ca5c861e672d0202b5f5687d9a7c4f476821195e128720909e79b628da0eac"
-  }
+  },
+  "beforeGuidanceAuthority": {
+    "BlindCore/Sources/BlindCore/ConversationDomainPolicy.swift": "7f845dccb64a4e19afb0ba515d4bd5a170b2580c96fe42eb0a50c886308facd6",
+    "BlindCore/Sources/BlindCore/SpatialClaimGuard.swift": "b7f4461bf0142c2373aad0cf6812a37ceab77c1be8b2b55836e510358e5adab3",
+    "BlindCore/Sources/BlindCore/SpatialRouteOwner.swift": "cdd10af53179e7f56b3ae575145f56222edae2382177ade0e68d89e72c90a76f",
+    "BlindCore/Tests/BlindCoreTests/Fixtures/spatial-claims.json": "3fbe1e4a67a5e573c5a4476eb97985a4c68265e817c76119a8dc2a58b6c481a3",
+    "ios/BlindAssist/Feedback.swift": "6cf518195009105fcee772cd5be05536a7d6ff1651e7bf2756c83ec1aa252ef4",
+    "ios/BlindAssist/LocalImageAssistant.swift": "19886f5b9b246969dabaaf5dc283b226b6336825ff8df75870328d8daea38eb2",
+    "ios/BlindAssist/NavigationModel.swift": "36fe671be479ca0e6a0a92808920892045ecfad7c52f98eb3ae8152319585966",
+    "ios/BlindAssist/SpatialRouteOutputController.swift": "3583323ef7d59ba39d2a5e7db4657b3cc7be9e08e21ff89f33673b0478d4387c",
+    "ios/BlindAssistTests/ConversationRuntimeFailureTests.swift": "9c64a3eacaf3c039e2b168efabf741851f33339996032618bebb856fde9fb98c",
+    "ios/BlindAssistTests/SpatialRouteOutputControllerTests.swift": "097005663ae7e7107ad5943c5f134a2de134e92b71518a0a1adfda1cb66e07d9",
+    "server/src/spatial-guard.mjs": "895e8fca77f4cb04fa343565442bb37d3ed968b41db3ab0e5147442709754bff"
+  },
+  "guidanceAuthorityNewFiles": [
+    "BlindCore/Sources/BlindCore/ModelResponseAuthority.swift",
+    "BlindCore/Tests/BlindCoreTests/ModelResponseAuthorityTests.swift",
+    "tools/test/model-response-authority.test.mjs"
+  ]
 }

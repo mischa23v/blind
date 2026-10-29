@@ -66,6 +66,11 @@ public enum ConversationDomainPolicy {
         let text = normalizedPhysicalRequest(question)
         guard !text.isEmpty else { return false }
         func has(_ pattern: String) -> Bool { text.range(of: pattern, options: .regularExpression) != nil }
+        // A continuation toward a concrete local destination is still navigation,
+        // including when no route exists. Story/topic/appliance continuation stays
+        // under its existing domain rules; this is not a general task ban.
+        if has(#"\b(?:continue|carry on|keep going|head) (?:straight|walking|moving|(?:to|toward|towards|through|past) (?:the |this |that |my )?(?:kitchen|bathroom|door|doorway|exit|entrance|hallway|corridor|stairs|table|bed|chair))\b"#)
+            || has(#"(?:^| )(?:اكمل|اواصل|واصل|كمل|استمر) (?:علي طول|على طول|مباشره|السير|المشي|للمطبخ|للباب|للمخرج|للحمام|(?:الي|نحو|عبر) (?:المطبخ|الباب|المخرج|الحمام|الممر))(?: |$)"#) { return true }
         // Local object/person presence also needs evidence. Keep these concrete
         // forms bounded; history and general facts about these subjects remain chat.
         if has(#"^(?:please |can you tell me |tell me )?(?:where (?:is|are)|where s|wheres|wher is) (?:my |the |this |that )?(?:cane|cup|shoes|shose|mom|mum|mother|apples?|milk|it|they|them)(?: now| right now)?$"#)
