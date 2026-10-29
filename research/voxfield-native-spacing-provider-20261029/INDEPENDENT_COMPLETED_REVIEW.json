@@ -1,0 +1,42 @@
+{
+  "reviewUTC": "2026-10-29T06:46:06Z",
+  "pinsVerified": 14,
+  "syntheticRowsRecounted": 213,
+  "commonSupportComparisons": 16,
+  "commonValidDenominatorEach": 3600,
+  "independentRawArrayN3Recount": [
+    {
+      "frame": "frame_00001",
+      "N3Valid": 413192,
+      "N3ExactPlusZ": 176,
+      "admitted": 433900
+    },
+    {
+      "frame": "frame_00002",
+      "N3Valid": 405100,
+      "N3ExactPlusZ": 32,
+      "admitted": 429680
+    },
+    {
+      "frame": "frame_00003",
+      "N3Valid": 406900,
+      "N3ExactPlusZ": 196,
+      "admitted": 432840
+    }
+  ],
+  "totals": {
+    "admitted": 1296420,
+    "N2Valid": 1275637,
+    "N3Valid": 1225192,
+    "N2ExactPlusZ": 807230,
+    "N3ExactPlusZ": 404
+  },
+  "limits": [
+    "No actual mapping/scoring/GT evaluation ofN3",
+    "Recorded equal_depth_triplets field still offset1 conditionalonarmvalid; notN3support",
+    "Recorded interior_positions field baseline+1domain; notN3eligible domain",
+    "N3stillbridges2/4cmstepsat2m, diagonalinteriorholes notaxialchecked",
+    "Syntheticangles diagnostic normalizedfloatvectors; not directly identicalearlieranglefloor",
+    "LowerexactZfrequency is distributionchange, not proof ofrealnormalaccuracy"
+  ]
+}
