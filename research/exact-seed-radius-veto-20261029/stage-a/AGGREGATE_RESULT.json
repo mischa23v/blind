@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "status": "PASS_STAGE_A_ONLY",
+  "sourceBase": "2c390d9c5096bba7af6d34c33329a9dc55a375b6",
+  "reviewedCandidateManifestSHA256": "b09393d2e7f9ba3ec69a26259fa077cd09782e6390094c65d94b385ae1cdde4e",
+  "sourceReviewSHA256": "d553d42e04f6c281953adcdf22a2c02badaf404e3f02cad5b7ae0e8d940784f0",
+  "launchReviewSHA256": "7c4f33a690efba8c256b7abed91ef1f9b8d301884c3d345bbe917a7179b346e4",
+  "compileAttempts": 1,
+  "fixtureAttempts": 1,
+  "semanticFixtureGroupsPassed": 20,
+  "distinctStdoutLabels": 8,
+  "compileReturncode": 0,
+  "fixtureReturncode": 0,
+  "compilerVersion": "x86_64-linux-gnu-g++-14 (Debian 14.2.0-19) 14.2.0",
+  "fixtureStdoutSHA256": "7921fed5d62a3a286632d171cf2188cf274419a23e38b0dc852555f2ecea8837",
+  "nativeExecutableSHA256_onlyNoBinary": "9d486580639ab186e3687eaf542f3c7c005bc5dd4cbb2c5c2433b961db4d8a87",
+  "compilerStderrBytes": 0,
+  "fixtureStderrBytes": 0,
+  "aggregateCPUSeconds": 1.379597,
+  "wallSeconds": 1.4043926619924605,
+  "peakConservativeAggregateRSSBytes": 83492864,
+  "peakSampledAggregateRSSBytes": 81596416,
+  "peakObservedOutputBytes": 93284,
+  "finalOutputBytesIncludingReceipt": 57759,
+  "limits": {
+    "CPUCount": 1,
+    "RSSBytes": 536870912,
+    "cpuSeconds": 10,
+    "outputBytes": 33554432,
+    "wallSeconds": 15
+  },
+  "CPUCount": 1,
+  "workspacePinsBefore": 74,
+  "workspacePinsAfter": 74,
+  "compilerExecutablePinsBeforeAndAfter": 5,
+  "allFrozenPinsUnchangedAfter": true,
+  "allSixFrozenMasksBitIdentical": true,
+  "stockAreasExactlyReproduced": true,
+  "stockToExactKeepCounts": [
+    [
+      2112,
+      1910
+    ],
+    [
+      354,
+      234
+    ],
+    [
+      1665,
+      1221
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      3445,
+      3257
+    ],
+    [
+      4369,
+      4022
+    ]
+  ],
+  "fullProductionCABITranslationUnitCompiled": false,
+  "swiftExecuted": false,
+  "stageCRouteQueriesExecuted": false,
+  "productionCallersSwitched": false,
+  "physicalAuthority": false,
+  "limitations": [
+    "Sampled aggregate RSS plus peak-rusage fallback; not kernel hard aggregate resident cap.",
+    "Compiler executable pins are not complete SDK/header/dynamic-library attestation.",
+    "Helper/stock-erosion tests do not establish Swift integration, route collision outcomes, live support, freshness, or physical clearance."
+  ],
+  "privateOriginalReceiptSHA256": {
+    "guard": "fde761f4e1e889517273fb430d99754385c3e9cceb3d20caa35fd03277004c28",
+    "summary": "a2cea72d6a2ceeeef7f02e770e37699a312ee6580462bfe4188ffa0d7acefc9d"
+  },
+  "excluded": [
+    "Derived frozen geometry and full compact-field/mask arrays",
+    "Compiled/runtime executables and object files",
+    "ADMISSION.json, launch token and admission digest",
+    "Private full command/absolute-workspace logs"
+  ]
+}

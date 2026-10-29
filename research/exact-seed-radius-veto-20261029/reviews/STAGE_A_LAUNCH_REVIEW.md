@@ -1,0 +1,11 @@
+# Stage A launch source review — PASS, not executed
+
+Frozen launch `aaf83c6d837eeb9f536e84cf67941a198e60d74de4f9ae803a53dea04b752bbc` matches all 74 workspace pins and five installed compiler/helper executable hashes. Guard is byte-identical to the previously reviewed one-shot guard (`b33cafd3fb0f5ab83eb366ca075d61f78f48ff2c570dac1903834b8d09cbf3d0`); correct workspace depth for attempt1. All three Python files parse without importing/executing them. No ADMISSION, run, attempt or receipt existed at review.
+
+No blocker found. The 10 aggregate CPU-second / 15 wall-second / one-CPU / 512 MiB observed aggregate RSS / 32 MiB output envelope includes prechecks, compiler metadata probes, one compile, one fixture process and postchecks. The guard owns their process group, polls aggregate CPU/RSS/output, accounts for reaped child CPU, and refuses success on nonzero exit, missing success summary, drift or budget failure. There is no retry or cap expansion; exclusive outputs preserve failed attempts. This is sampled RSS enforcement, not a hard resident-memory kernel limit.
+
+Frozen worker compiles only the reviewed helper fixtures with the four pinned released Recast units, correct candidate/header includes, C++14 and original numeric flags. It does not build Swift, execute routes, switch callers or invoke a package manager. Environment overrides remove compiler/include/preload search overrides, use fixed /usr/bin:/bin and put scratch in guarded run/tmp. The five resolved executable identities are checked before and after; helper selection is probed. This is not full SDK/header/dynamic-runtime hermeticity, as documented.
+
+Native stdout must equal all 20 semantic groups in exact order plus the total line, with empty stderr and zero exit. Repeated group labels are counted honestly, not represented as distinct selectors. Candidate/review identity and all 74 workspace pins are rechecked; a source/data drift cannot produce admitted success. Root must create the explicit admission for this exact freeze. Existing source review approves only the bounded Stage A validation, not any subsequent native integration/caller selection.
+
+Reviewer performed source parsing and hashes only. No compiler, helper executable, guard, worker or native fixture was invoked. `RESULTS.json` records the bounded review measurements. No active or candidate source edited.

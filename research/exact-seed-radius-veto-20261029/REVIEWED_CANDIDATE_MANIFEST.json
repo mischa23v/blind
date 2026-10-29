@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "frozen": true,
+  "baseSHA": "2c390d9c5096bba7af6d34c33329a9dc55a375b6",
+  "changedFiles": [
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift",
+      "baseGitBlob": "733ab09b9b70b4e0bb4400bffe000f091157936f",
+      "baseSHA256": "08baab68f4a3ecd01b8450a52f69ffe3ed192d0d4e8a9b7aaa5b97095b806681",
+      "candidateGitBlob": "19c1fa7b750474e5178a72763b1fb9b5ed49985e",
+      "candidateSHA256": "76b8c0a62ea731758368335e4ae3363fc1c59dd9f6dbfdd57ea0267c62c34e21",
+      "bytes": 16392
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+      "baseGitBlob": "0769aff3a3e52179b9ea7bd682576a1106fd205e",
+      "baseSHA256": "7a23c224846a9fd8b31a26f1048b457ae66b606d5e37d504f8538cf6afcdd57e",
+      "candidateGitBlob": "9c717c314bdac9318ef4bfb4194563bf91008c78",
+      "candidateSHA256": "0c39fa8c8b016d7d994bf8b647f69426740cf3c10f3ca22c39b5ba4ce0b718cd",
+      "bytes": 37391
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp",
+      "baseGitBlob": "283be8a28f019ef2bde6d2c4d0c35fa8c6af580a",
+      "baseSHA256": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036",
+      "candidateGitBlob": "2ac095447969d55711659be6b185e14b8917e43e",
+      "candidateSHA256": "80c5fabd84eeb50a2f0963a34f73c1d4e913ae6c944f5708d4a196c9e746d7d5",
+      "bytes": 19814
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h",
+      "baseGitBlob": null,
+      "baseSHA256": null,
+      "candidateGitBlob": "4557fd36b8aa9154978ec44a29fc78b238596f8c",
+      "candidateSHA256": "b0b4de9a807037f19c57d15890890de7b8186b0b46cc9c30a89067ee42c0b8d5",
+      "bytes": 9092
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h",
+      "baseGitBlob": "dcc7da1bd935ec21f72b601aaba93d7d6b44c455",
+      "baseSHA256": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b",
+      "candidateGitBlob": "bee40e8ca4a3695d4c4496d81e1545fc440318db",
+      "candidateSHA256": "ef16154015c03648ab61d242cee71820854910bcf355888392d745b9023845c4",
+      "bytes": 4428
+    }
+  ],
+  "artifacts": {
+    "BASE_MANIFEST.json": "139489171ed6c96e4addb6363cf742e9e7feccbb8f8c572f74cc86b6d67ebc8a",
+    "PUBLISHED_BASE_READS.json": "1041623863e4946d34e6edbd8da81be5153d55cfad0a776295e3c38e7046de95",
+    "CANDIDATE.patch": "f44ebc128bf2db81bcc1d5a0ca559eec828c93adbbcc997dfaed5e6adffcb43a",
+    "README.md": "d06524178dfbf7d8bf2c9f90bffc8bf398304c490643a916fb365438cf750a37",
+    "APPLE_INTEGRATION_PLAN.md": "29553a321474438e83740805eb87f0cc601dd2a39df3610f358445031c20c88f",
+    "check_source.py": "5fd44b0644d242b593550a81dbb3b93d522ff220e5636261e19e571dedf47d7e",
+    "RESULTS.json": "ee949095cff2e601fc14c44c2a16c1320922e3458ff99c8d8ae0ea69de2ad5a9",
+    "FIXTURE_PREPARATION.json": "eef6bf656a150a6614cc12a0ca1f57738e904701864d92797ff045dab6cef8f0",
+    "UNCHANGED_UPSTREAM_PINS.json": "00c2fead0c079c19ee1de68c0a7b1b1468d93578b8526f25c05173da469c51c9",
+    "tests/seed_radius_veto_tests.cpp": "3b5c556ea10c1cf5b33b7ee9c1e67626c9846f9a66394cd0c8504caff3f53967",
+    "tests/prepare_frozen_fields.py": "dd02b521ab1937e4426d83915cb334cf86c115adb7ccca7408773f2a1524b538",
+    "tests/SeedRadiusVetoAppleTests.swift": "72097b19ac4b82d037a9c3da0e407a8fad37562f31c096747d0a2b2014bdb4f4",
+    "prepared/frozen_fields.txt": "a853b6ff7cd3f2af08d9ac03387f26805a5f93f98cd3a501ab32a04ab31b3ae2"
+  },
+  "nativeExecution": "Not run; independent source review required before new native execution",
+  "activeCallersOptedIn": false
+}
