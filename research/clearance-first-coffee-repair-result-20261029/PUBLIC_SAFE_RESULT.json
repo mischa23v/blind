@@ -1,0 +1,80 @@
+{
+  "status": "savedResultIndependentlyRecountedNoNativeQueries",
+  "sourceCommit": "3a0b3f1edf4167f781a043017b2169bda69f91ef",
+  "proposalSHA256": "50ffab8ce9f49a58f5f81b0bb1a956e7ab0649464c2311819ca33a40b46c4e5b",
+  "gzipSHA256": "6c8b71b3bd135d1edc7c214f7292c0f6ecce00eac4d71f6b071b6e6282c96ee3",
+  "gzipBytes": 26952,
+  "guardSHA256": "552ca4186f9692685770af86cbec1c7345784b73a2f4ee1e4dddd24e5c840453",
+  "baselineExactlyPreserved": true,
+  "baselineOriginalNativeLengthMetres": 6.1895263828785545,
+  "baselineCenteredLengthMetres": 7.02588025218012,
+  "baselineManualContact": {
+    "original": true,
+    "distanceGrid": true,
+    "clearanceGrid": true
+  },
+  "repairArms": {
+    "distanceGrid": {
+      "nativeGridLengthMetres": 6.967846509317453,
+      "connectorInclusiveLengthMetres": 7.005961281828428,
+      "minimumSavedDistanceToManualWindowsMetres": 0.4242640855706678,
+      "minimumSavedResidualAfterRadialBodyAndMarginMetres": 0.003847739910868564,
+      "connectorInclusiveSavedSegmentsChecked": 123,
+      "manualWindowContact": false,
+      "sampledNavmeshWall": {
+        "status": "sampledDiagnostic",
+        "samples": 280,
+        "missingSamples": 0,
+        "minimumSampledResidualWallMetres": 0.004961848258972168,
+        "p10SampledResidualWallMetres": 0.054046396911144275,
+        "maximumHorizontalProjectionMetres": 1.1380447814689419e-07,
+        "maximumVerticalProjectionMetres": 0.0017063251732349904,
+        "continuousBodyClearanceEstablished": false
+      }
+    },
+    "clearanceGrid": {
+      "nativeGridLengthMetres": 7.238872390754371,
+      "connectorInclusiveLengthMetres": 7.276987163265346,
+      "minimumSavedDistanceToManualWindowsMetres": 0.4242640855706678,
+      "minimumSavedResidualAfterRadialBodyAndMarginMetres": 0.003847739910868564,
+      "connectorInclusiveSavedSegmentsChecked": 133,
+      "manualWindowContact": false,
+      "sampledNavmeshWall": {
+        "status": "sampledDiagnostic",
+        "samples": 291,
+        "missingSamples": 0,
+        "minimumSampledResidualWallMetres": 0.1217196062207222,
+        "p10SampledResidualWallMetres": 0.25496214628219604,
+        "maximumHorizontalProjectionMetres": 1.1715042952616155e-07,
+        "maximumVerticalProjectionMetres": 0.0014540448113424809,
+        "continuousBodyClearanceEstablished": false
+      }
+    }
+  },
+  "unchangedLengthCapMetres": 10.432711967719545,
+  "edgePruning": {
+    "directedEdgesKept": 24934,
+    "directedEdgesRemoved": 16178,
+    "uniqueEdgeQueries": 20556
+  },
+  "guardResources": {
+    "aggregateCPUSeconds": 4.125313,
+    "wallSeconds": 4.141659914999764,
+    "peakObservedAggregateRSS": 118362112
+  },
+  "currentCodeHashesEqualGuardInputs": {
+    "research/clearance-first-coffee-repair-source-20261029/manual_filter.py": true,
+    "research/clearance-first-coffee-repair-source-20261029/prepare_coffee.py": true,
+    "research/clearance-first-coffee-repair-source-20261029/fixtures.py": true,
+    "research/clearance-first-coffee-repair-source-20261029/run_aggregate.py": true,
+    "research/clearance-first-coffee-repair-source-20261029/freeze.py": true,
+    "research/clearance-first-coffee-source-20261029/selector.py": true,
+    "research/independent-2d-route-validator-20261029/validator.py": true,
+    "research/independent-2d-route-validator-20261029/proposal_windows.py": true
+  },
+  "beforeAfterInputsEqual": true,
+  "full3DBodyAndSupportValidated": false,
+  "physicalAuthority": false,
+  "scope": "Manual diagnostic windows only; saved GEOS records recounted, not fresh geometry checks",
+  "containsCoordinatesOrRawPhotos": false
+}
