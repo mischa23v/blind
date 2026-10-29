@@ -349,39 +349,144 @@ final class RecordedRouteStoreTests: XCTestCase {
         XCTAssertFalse(result.capacityReached)
         XCTAssertTrue(result.preview?.gaps.contains(.retentionLoss) == true)
     }
+    // A callback is not necessarily worker progress: a second read can be
+    // answered inline with a busy/withheld Snapshot while the first is queued.
+    private func isCompletedRestartSnapshot(_ value: RecordedRouteStore.Snapshot?) -> Bool {
+        guard let value else { return false }
+        return !value.busy && !value.loadFailed && !value.persistenceFailed
+    }
+    private func completedRestartSnapshot(_ store: RecordedRouteStore) -> RecordedRouteStore.Snapshot? {
+        let failuresBefore = testRun?.failureCount ?? 0
+        let value = snapshot(store) // Preserve the original five-second wait/failure.
+        guard (testRun?.failureCount ?? 0) == failuresBefore else { return nil }
+        guard isCompletedRestartSnapshot(value) else {
+            if let value {
+                print("RECORDED_ROUTE_RESTART_REFUSED busy=\(value.busy) loadFailed=\(value.loadFailed) persistenceFailed=\(value.persistenceFailed) durable=\(value.durableSampleCount) volatile=\(value.volatileSampleCount)")
+            }
+            XCTFail("Restart fixture requires a completed, non-withheld snapshot without storage failure")
+            return nil
+        }
+        return value
+    }
+    // Functional owner fence, never a substitute for the snapshot latency test.
+    // Finite input only; callers must release injected blockers before cleanup.
+    private func stopAndDrainRestartOwner(_ store: RecordedRouteStore) -> Bool {
+        store.stop()
+        var completed = false
+        let done = expectation(description: "restart owner drained")
+        let failuresBefore = testRun?.failureCount ?? 0
+        store.drainTestSavesForTesting { completed = true; done.fulfill() }
+        wait(for: [done], timeout: 5)
+        return completed && (testRun?.failureCount ?? 0) == failuresBefore
+    }
     func testActiveTripSurvivesNewSessionAndRestartWithBoundedReversePages() throws {
         timingFixture = .activeTrip
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-        defer { try? FileManager.default.removeItem(at: directory) }
         let url = directory.appendingPathComponent("routes.sqlite"), clock = Clock(), session = UUID()
-        let store = RecordedRouteStore(url: url, now: clock.read)
-        store.enableOperationTimingForTesting()
-        store.begin(sessionID: session); clock.set(60)
+        var store: RecordedRouteStore? = RecordedRouteStore(url: url, now: clock.read)
+        var reopened: RecordedRouteStore?
+        weak var firstOwner = store
+        weak var secondOwner: RecordedRouteStore?
+        defer {
+            let firstDrained = store.map { stopAndDrainRestartOwner($0) } ?? true
+            let secondDrained = reopened.map { stopAndDrainRestartOwner($0) } ?? true
+            store = nil; reopened = nil
+            if firstDrained && secondDrained && firstOwner == nil && secondOwner == nil {
+                try? FileManager.default.removeItem(at: directory)
+            } else {
+                // A failed/late owner keeps its storage. Never delete underneath
+                // in-flight work or wait indefinitely just to make cleanup pass.
+                print("RECORDED_ROUTE_CLEANUP retainedOwnedDirectory=true")
+            }
+        }
+        store!.enableOperationTimingForTesting()
+        store!.begin(sessionID: session); clock.set(60)
         for i in 0..<90 {
             let time = 60 + Double(i)*0.21; clock.set(time)
-            let sample = record(session, time: time); store.offer(sessionID: session, at: time) { sample }; _ = snapshot(store)
+            let sample = record(session, time: time)
+            store!.offer(sessionID: session, at: time) { sample }
+            guard completedRestartSnapshot(store!) != nil else { return }
         }
-        store.stop(); let prior = try XCTUnwrap(snapshot(store))
-        let reopened = RecordedRouteStore(url: url, now: clock.read)
-        reopened.enableOperationTimingForTesting()
-        reopened.begin(sessionID: UUID())
+        guard stopAndDrainRestartOwner(store!) else { return }
+        guard let prior = completedRestartSnapshot(store!) else { return }
+        let priorTrip = try XCTUnwrap(prior.trip)
+        XCTAssertEqual(prior.durableSampleCount, 90)
+        XCTAssertEqual(prior.volatileSampleCount, 0)
+        guard prior.durableSampleCount == 90, prior.volatileSampleCount == 0 else { return }
+        store = nil // The first finite owner has drained before a new owner opens.
+        reopened = RecordedRouteStore(url: url, now: clock.read)
+        secondOwner = reopened
+        reopened!.enableOperationTimingForTesting()
+        reopened!.begin(sessionID: UUID())
         let restartFailuresBefore = testRun?.failureCount ?? 0
-        let current = try XCTUnwrap(snapshot(reopened))
-        let restartReceipt = reopened.diagnosticLastOperationForTesting(.read)
-        XCTAssertEqual(current.trip?.id, prior.trip?.id)
+        guard let current = completedRestartSnapshot(reopened!) else { return }
+        let restartReceipt = reopened!.diagnosticLastOperationForTesting(.read)
+        XCTAssertEqual(current.trip?.id, priorTrip.id)
         XCTAssertLessThanOrEqual(current.preview?.reverseSamples.count ?? 0, 64)
         XCTAssertNotNil(current.nextPage)
-        if (testRun?.failureCount ?? 0) > restartFailuresBefore { reportOperation(restartReceipt, wait: "reopenedSnapshot") }
+        if (testRun?.failureCount ?? 0) > restartFailuresBefore {
+            reportOperation(restartReceipt, wait: "reopenedSnapshot")
+            return
+        }
         let page = expectation(description: "earlier page")
         let pageFailuresBefore = testRun?.failureCount ?? 0
-        reopened.page(cursor: current.nextPage, reference: nil) { next in
+        reopened!.page(cursor: current.nextPage, reference: nil) { next in
+            XCTAssertTrue(self.isCompletedRestartSnapshot(next))
             XCTAssertLessThanOrEqual(next.preview?.reverseSamples.count ?? 0, 64)
             XCTAssertEqual(next.preview?.reverseSamples.last?.sourceID, "frame-60.0")
             page.fulfill()
         }
-        let pageReceipt = reopened.diagnosticLastOperationForTesting(.read)
+        let pageReceipt = reopened!.diagnosticLastOperationForTesting(.read)
         wait(for: [page], timeout: 5)
         if (testRun?.failureCount ?? 0) > pageFailuresBefore { reportOperation(pageReceipt, wait: "earlierPage") }
+    }
+    func testBusySnapshotCannotAcknowledgeStoppedOwnerDrainBeforeBlockedFactoryReturns() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let entered = expectation(description: "factory entered")
+        let factoryReleased = expectation(description: "factory explicitly released")
+        let release = DispatchSemaphore(value: 0)
+        let clock = Clock(), session = UUID()
+        var store: RecordedRouteStore? = RecordedRouteStore(url: directory.appendingPathComponent("routes.sqlite"), now: clock.read,
+            factory: { path in
+                entered.fulfill()
+                // Released by this test and unconditionally by cleanup. A finite
+                // safety bound also prevents an abandoned injected worker hang.
+                guard release.wait(timeout: .now() + 5) == .success else { throw RecordedRouteRepositoryError.invalid }
+                factoryReleased.fulfill()
+                return try RecordedRouteRepository(path: path)
+            })
+        weak var owner = store
+        defer {
+            release.signal()
+            let drained = store.map { stopAndDrainRestartOwner($0) } ?? true
+            store = nil
+            if drained && owner == nil { try? FileManager.default.removeItem(at: directory) }
+            else { print("RECORDED_ROUTE_CLEANUP retainedOwnedDirectory=true") }
+        }
+        store!.begin(sessionID: session); clock.set(60)
+        let sample = record(session, time: 60)
+        store!.offer(sessionID: session, at: 60) { sample }
+        let failuresBefore = testRun?.failureCount ?? 0
+        wait(for: [entered], timeout: 5)
+        guard (testRun?.failureCount ?? 0) == failuresBefore else { return }
+        var late: RecordedRouteStore.Snapshot?, busy: RecordedRouteStore.Snapshot?
+        let firstRead = expectation(description: "old read retired after worker release")
+        store!.preview { late = $0; firstRead.fulfill() }
+        store!.preview { busy = $0 }
+        XCTAssertTrue(busy?.busy == true)
+        XCTAssertFalse(isCompletedRestartSnapshot(busy))
+        XCTAssertFalse(isCompletedRestartSnapshot(nil))
+        XCTAssertNil(late)
+        store!.stop()
+        var drained = false
+        let actualDrain = expectation(description: "actual worker fence")
+        store!.drainTestSavesForTesting { drained = true; actualDrain.fulfill() }
+        XCTAssertFalse(drained) // Inline busy callback did not release the worker.
+        release.signal()
+        wait(for: [factoryReleased, firstRead, actualDrain], timeout: 5, enforceOrder: true)
+        XCTAssertTrue(drained)
+        XCTAssertTrue(late?.busy == true) // stop retired the original read's generation.
+        XCTAssertFalse(isCompletedRestartSnapshot(late))
     }
     func testTrackingLossAndSameSessionRestartWithdrawPinUntilFreshCapture() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)

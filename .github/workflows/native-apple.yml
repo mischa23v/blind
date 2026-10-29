@@ -112,7 +112,7 @@ jobs:
         if: always()
         timeout-minutes: 3
         run: python3 tools/ci/export-seed-radius-diagnostics.py "$RUNNER_TEMP/blind-native-ci"
-      - name: Verify exact eight seed-radius hosted cases and source identity
+      - name: Verify exact fourteen seed-radius hosted cases and source identity
         if: always()
         timeout-minutes: 3
         run: python3 tools/ci/collect-seed-radius.py "$RUNNER_TEMP/blind-native-ci"

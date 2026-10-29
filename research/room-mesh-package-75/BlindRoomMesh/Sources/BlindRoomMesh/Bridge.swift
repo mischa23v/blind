@@ -137,6 +137,7 @@ struct NativeRoute:Codable {
 final class Native {
  let handle:UnsafeMutableRawPointer
  let seedRadiusReceipt:MeshSeedRadiusVetoReceipt?
+ let seedRadiusEnvelopeReceipt:MeshSeedRadiusEnvelopeReceipt?
  init(_ vertices:[Double],_ triangles:[Int32],exclusion:Exclusion?=nil,radius:Float=0.225,height:Float=1.75,triangleSupport:[MeshTriangleSupport]?=nil,seedRadiusPolicy:MeshSeedRadiusPolicy = .stock)throws {
   guard vertices.count%3==0,triangles.count%3==0,vertices.count/3<=200000,triangles.count/3<=100000,vertices.allSatisfy({$0.isFinite && Float($0).isFinite}),triangles.allSatisfy({$0>=0 && Int($0)<vertices.count/3}) else {throw Failure.invalid("native input")}
   let packed:[Float]=vertices.map(Float.init)
@@ -144,6 +145,7 @@ final class Native {
   guard seedRadiusPolicy.valid, seedRadiusPolicy == .stock || (triangleSupport != nil && exclusion == nil) else {throw MeshCandidateError.invalidInput}
   let supportBytes=triangleSupport?.map(\.rawValue)
   var seedReceipt=BNSeedRadiusVetoReceipt()
+  var envelopeReceipt=BNSeedRadiusEnvelopeReceipt()
   var c=BNConfig(radius:radius,height:height,cell_size:0.025,cell_height:0.025,max_climb:0.025,max_slope:15,max_cells:250000,max_nodes:4096)
   let polygon=try exclusion?.validatedPolygon(expectedFrame:"phone-corrected-level-game-yup-v1")
   let h=packed.withUnsafeBufferPointer{v in triangles.withUnsafeBufferPointer{t -> UnsafeMutableRawPointer? in
@@ -151,12 +153,16 @@ final class Native {
     if let limit=seedRadiusPolicy.maximumSeedTests {
      return bn_build_classified_seed_radius(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,s.baseAddress,limit,&seedReceipt)
     }
+    if let limit=seedRadiusPolicy.maximumEnvelopeWork {
+     return bn_build_classified_seed_radius_envelope(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,s.baseAddress,limit,&envelopeReceipt)
+    }
     return bn_build_classified(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,s.baseAddress)
    }}
    if let e=exclusion,let polygon=polygon{return polygon.withUnsafeBufferPointer{p in bn_build_excluded(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c,p.baseAddress,Int32(polygon.count/3),Float(e.observedTopHeightRange[0]),Float(e.observedTopHeightRange[1]))}}
    return bn_build(v.baseAddress,Int32(packed.count/3),t.baseAddress,Int32(triangles.count/3),&c)
   }}
   if seedRadiusPolicy.maximumSeedTests != nil {
+   seedRadiusEnvelopeReceipt=nil
    let receipt=MeshSeedRadiusVetoReceipt(schema:Int(seedReceipt.schema),
     status:MeshSeedRadiusVetoStatus(rawValue:Int(seedReceipt.status)) ?? .invalidInput,
     width:Int(seedReceipt.width),height:Int(seedReceipt.height),spanCount:Int(seedReceipt.span_count),
@@ -172,8 +178,35 @@ final class Native {
     bn_destroy(h);throw MeshCandidateError.seedRadiusUnavailable(receipt)
    }
    handle=h
+  } else if let limit=seedRadiusPolicy.maximumEnvelopeWork {
+   seedRadiusReceipt=nil
+   guard let schema=MeshSeedRadiusEnvelopeSchema(rawValue:Int(envelopeReceipt.schema)),
+    let algorithm=MeshSeedRadiusEnvelopeAlgorithm(rawValue:Int(envelopeReceipt.algorithm)),
+    let unit=MeshSeedRadiusEnvelopeWorkUnit(rawValue:Int(envelopeReceipt.work_unit)),
+    let status=MeshSeedRadiusEnvelopeStatus(rawValue:Int(envelopeReceipt.status)) else {
+     if let h {bn_destroy(h)};throw MeshCandidateError.invalidInput
+   }
+   let receipt=MeshSeedRadiusEnvelopeReceipt(schema:schema,algorithm:algorithm,workUnit:unit,status:status,
+    width:Int(envelopeReceipt.width),height:Int(envelopeReceipt.height),spanCount:Int(envelopeReceipt.span_count),
+    radiusCells:Int(envelopeReceipt.radius_cells),commonYVoxel:Int(envelopeReceipt.common_y_voxel),
+    realSeedCount:Int(envelopeReceipt.real_seed_count),exteriorSeedCount:Int(envelopeReceipt.exterior_seed_count),
+    stockKeepCount:Int(envelopeReceipt.stock_keep_count),exactKeepCount:Int(envelopeReceipt.exact_keep_count),
+    additionalRejectedCount:Int(envelopeReceipt.additional_rejected_count),buildSucceeded:envelopeReceipt.build_succeeded != 0,
+    workLimit:envelopeReceipt.work_limit,workBound:envelopeReceipt.work_bound,workPerformed:envelopeReceipt.work_performed,
+    paddedCellCount:envelopeReceipt.padded_cell_count,workspaceBytesDeclared:envelopeReceipt.workspace_bytes_declared)
+   seedRadiusEnvelopeReceipt=receipt
+   guard let h else {throw MeshCandidateError.seedRadiusEnvelopeUnavailable(receipt)}
+   guard receipt.status == .applied,receipt.buildSucceeded,receipt.workLimit==limit,
+    receipt.workPerformed<=receipt.workBound,receipt.workBound<=receipt.workLimit,
+    receipt.workspaceBytesDeclared<=2*1024*1024,receipt.paddedCellCount<=250000,
+    receipt.exactKeepCount>=0,receipt.exactKeepCount<=receipt.stockKeepCount,
+    receipt.additionalRejectedCount==receipt.stockKeepCount-receipt.exactKeepCount else {
+     bn_destroy(h);throw MeshCandidateError.seedRadiusEnvelopeUnavailable(receipt)
+   }
+   handle=h
   } else {
    seedRadiusReceipt=nil
+   seedRadiusEnvelopeReceipt=nil
    guard let h else {throw Failure.invalid("native build")};handle=h
   }
  }

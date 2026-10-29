@@ -6,7 +6,7 @@ H=Path(__file__).parent;s=importlib.util.spec_from_file_location('diag',H/'expor
 NAME='SeedRadiusVetoAppleTests/testInsufficientWorkBudgetReturnsTypedRefusalNeverStockRoute'
 CASES=[{'identifier':x+'()','result':'Passed'} for x in sorted(m.EXPECTED)]
 class Tests(unittest.TestCase):
- def test_all8(self):self.assertEqual(len(m.summarize(CASES,{},None,{'exit_code':0})['cases']),8)
+ def test_all14(self):self.assertEqual(len(m.summarize(CASES,{},None,{'exit_code':0})['cases']),14)
  def test_failed_preserved(self):self.assertEqual(m.summarize([{'identifier':NAME,'result':'Failed'}],{},None,{'exit_code':65})['cases'][0]['result'],'Failed')
  def test_exit65_preserved(self):self.assertEqual(m.summarize(None,None,None,{'exit_code':65})['commandExit'],65)
  def test_missing_exit_unknown(self):self.assertIsNone(m.summarize(None,None,None,{})['commandExit'])
@@ -50,4 +50,20 @@ class MainPathTests(unittest.TestCase):
  def test_null_summary_explicit_unknown(self):self.assertTrue(self.run_main({'exit_code':65},None)['summarySchemaUnavailable'])
  def test_array_summary_explicit_unknown(self):self.assertTrue(self.run_main({'exit_code':65},[])['summarySchemaUnavailable'])
  def test_missing_failure_schema_explicit_unknown(self):self.assertTrue(self.run_main({'exit_code':65},{})['failureSchemaUnavailable'])
+ def test_all_six_envelope_failures_retained(self):
+  names=[x for x in m.EXPECTED if x.startswith('SeedRadiusEnvelopeAppleTests/')]
+  self.assertEqual(len(names),6)
+  for name in names:
+   with self.subTest(case=name):
+    result=m.summarize([{'identifier':name,'result':'Failed'}],{'testFailures':[{'testIdentifier':name,'failureText':'XCTAssertTrue failed'}]},None,{'exit_code':65})
+    self.assertEqual(result['cases'][0]['result'],'Failed');self.assertEqual(result['assertionFailures'][0]['identifier'],name)
+ def test_all_six_envelope_objc_identities_preserved(self):
+  for name in [x for x in m.EXPECTED if x.startswith('SeedRadiusEnvelopeAppleTests/')]:
+   with self.subTest(case=name):self.assertEqual(m.identity('-[BlindAssistTests.SeedRadiusEnvelopeAppleTests '+name.split('/')[1]+']'),name)
+ def test_all_six_envelope_log_failures_preserved(self):
+  for name in [x for x in m.EXPECTED if x.startswith('SeedRadiusEnvelopeAppleTests/')]:
+   with self.subTest(case=name):
+    log='/Users/runner/SavedRoomStrictEndpointTests.swift:321: error: -[BlindAssistTests.SeedRadiusEnvelopeAppleTests '+name.split('/')[1]+'] : XCTAssertTrue failed'
+    result=m.summarize(None,None,log,{'exit_code':65})
+    self.assertEqual(result['assertionFailures'][0]['identifier'],name);self.assertEqual(result['assertionFailures'][0]['line'],321)
 if __name__=='__main__':unittest.main()

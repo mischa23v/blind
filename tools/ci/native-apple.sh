@@ -143,7 +143,7 @@ PY
     exit "$status"
     ;;
   seed-radius-unit)
-    # Fixed three existing strict controls plus five optional-policy integration tests.
+    # Fixed three strict controls plus five disk and six envelope optional-policy tests.
     # Default configuration; no caller activation, camera or model work.
     device="$(cat "$out/simulator-id")"
     status=0
@@ -152,6 +152,7 @@ PY
       -parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1 \
       '-only-testing:BlindAssistTests/SavedRoomStrictEndpointTests' \
       '-only-testing:BlindAssistTests/SeedRadiusVetoAppleTests' \
+      '-only-testing:BlindAssistTests/SeedRadiusEnvelopeAppleTests' \
       -resultBundlePath "$out/seed-radius-unit.xcresult" test || status=$?
     printf '{"exit_code":%s}\n' "$status" > "$out/seed-radius-unit-exit.json"
     exit "$status"

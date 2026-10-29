@@ -1,17 +1,17 @@
-"""Bounded failure-preserving evidence for eight fixed public synthetic tests only."""
+"""Bounded failure-preserving evidence for fourteen fixed public fixture tests only."""
 import hashlib,importlib.util,json,os,re,sys
 from pathlib import Path
 sys.dont_write_bytecode=True
 H=Path(__file__).resolve().parent;ROOT=H.parents[1]
 s=importlib.util.spec_from_file_location('seed_collector',H/'collect-seed-radius.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
 EXPECTED=set(m.EXPECTED)
-FIXTURE_SHA='f3a87f124829c3316a457bd511566a195448a004067829812195cfcfcaf23149'
+FIXTURE_SHA='df12572e95906fb794606e42cecd678d230e204c016ef88b15b17ea1f0d7fde3'
 
 def identity(raw):
  if type(raw) is not str:return None
  raw=raw.removesuffix('()').removeprefix('BlindAssistTests/')
  if raw in EXPECTED:return raw
- match=re.fullmatch(r'-\[(?:BlindAssistTests\.)?(SavedRoomStrictEndpointTests|SeedRadiusVetoAppleTests) (test\w+)\]',raw)
+ match=re.fullmatch(r'-\[(?:BlindAssistTests\.)?(SavedRoomStrictEndpointTests|SeedRadiusVetoAppleTests|SeedRadiusEnvelopeAppleTests) (test\w+)\]',raw)
  if match and '/'.join(match.groups()) in EXPECTED:return '/'.join(match.groups())
  return None
 
@@ -24,7 +24,7 @@ def message(raw):
  return {'message':value[:768],'truncated':len(value)>768}
 
 def summarize(cases,summary,log,command):
- result={'expectedIdentities':sorted(EXPECTED),'commandExit':command.get('exit_code') if type(command.get('exit_code')) is int else None,'cases':[],'unexpectedCaseCount':0,'assertionFailures':[],'unparsedFailureRecordCount':0,'scope':'fixed public synthetic tests only; diagnostic receipt never authorizes pass'}
+ result={'expectedIdentities':sorted(EXPECTED),'commandExit':command.get('exit_code') if type(command.get('exit_code')) is int else None,'cases':[],'unexpectedCaseCount':0,'assertionFailures':[],'unparsedFailureRecordCount':0,'scope':'fixed public fixture tests only; diagnostic receipt never authorizes pass'}
  if cases is not None:
   for row in cases[:64]:
    name=identity(row.get('identifier'))
@@ -46,7 +46,7 @@ def summarize(cases,summary,log,command):
   else:result['failureSchemaUnavailable']=True
  # Only fixed fixture filename and exact test identity; never general compiler/app logs.
  if log is not None:
-  pattern=r'.*\bSavedRoomStrictEndpointTests\.swift:(\d{1,9}): error: (-\[(?:BlindAssistTests\.)?(?:SavedRoomStrictEndpointTests|SeedRadiusVetoAppleTests) test\w+\]) : (.*)'
+  pattern=r'.*\bSavedRoomStrictEndpointTests\.swift:(\d{1,9}): error: (-\[(?:BlindAssistTests\.)?(?:SavedRoomStrictEndpointTests|SeedRadiusVetoAppleTests|SeedRadiusEnvelopeAppleTests) test\w+\]) : (.*)'
   for line in log.splitlines():
    if len(line)>4096:continue
    match=re.fullmatch(pattern,line)

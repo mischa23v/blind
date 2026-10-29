@@ -41,17 +41,21 @@
     "BlindRoomMesh/Sources/CEarcut/include/blind_earcut.h",
     "BlindRoomMesh/Sources/CEarcut/upstream/mapbox/earcut.hpp",
     "BlindRoomMesh/Sources/BlindRoomMesh/HistoricalPolygonTriangulation.swift",
-    "BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h"
+    "BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h",
+    "BlindRoomMesh/Sources/CDetour/exact_seed_radius_envelope.h",
+    "BlindRoomMesh/Sources/CDetour/Envelope/LICENSE",
+    "BlindRoomMesh/Sources/CDetour/Envelope/NOTICE",
+    "BlindRoomMesh/Sources/CDetour/Envelope/candidate/seed_distance_maurer.h"
   ],
   "files": {
     "BlindRoomMesh/LICENSE-Recast.txt": "ffad87821cce7cfd3be00b63ffadd01b04e83a4c6a0bcc68f06362ffd42d705e",
     "BlindRoomMesh/Package.swift": "c63d781574c06f8a8a5bfeccb0268ad4ad2614408299c34bdc893f43a327a612",
-    "BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "76b8c0a62ea731758368335e4ae3363fc1c59dd9f6dbfdd57ea0267c62c34e21",
+    "BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "844d18ef9d7a65b7a3de0a2f947f070e1fc29b57034ae6d2dce63a0f53efa725",
     "BlindRoomMesh/Sources/BlindRoomMesh/Exclusion.swift": "625e4458430ff8852a5772603c0fa1eaed35f0114edc411dfcc3dd47a3fc388a",
-    "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "0c39fa8c8b016d7d994bf8b647f69426740cf3c10f3ca22c39b5ba4ce0b718cd",
-    "BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "80c5fabd84eeb50a2f0963a34f73c1d4e913ae6c944f5708d4a196c9e746d7d5",
+    "BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "b6193974a87fd79981360c8f3b87c13a2f48613d7dbbd5af5a2a2b04531a95d4",
+    "BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "4aea336d716ec2c319203794649a1ebaf2be23ef30a687265cb6c825ad9347a1",
     "BlindRoomMesh/Sources/CDetour/clearance_adapter.cpp": "c1c69184a434bbb46280fd6125f52138f83802e114724d26369eb4e2a62ae2ee",
-    "BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "ef16154015c03648ab61d242cee71820854910bcf355888392d745b9023845c4",
+    "BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c5a69f71f82e6fbfdc98a1b29185d37c8fa70c4a54e955d7d2954f3aa592f1ec",
     "BlindRoomMesh/Sources/CDetour/include/module.modulemap": "ca0948e7abf144baf7af21b209d23cb9f761e967ba97a81185ea9f678ed07460",
     "BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourAlloc.h": "5f617c7f162069c395d7edfc59f0e06a9b6afaf6698de8fd674c80f00056ab71",
     "BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourAssert.h": "2859e197e1877d3c53f7acc455ceedbe9ce1181fe44779169a3dc16c1508b794",
@@ -104,7 +108,11 @@
     "BlindRoomMesh/Sources/CEarcut/include/blind_earcut.h": "42febc3208e25671a7eab5a8d3d1b26168ad4038b02de4eaae118654d42d54dd",
     "BlindRoomMesh/Sources/CEarcut/upstream/mapbox/earcut.hpp": "ded9fbf9922d7d16374d4f55e1f7f76d605e53fb7fc2ef5c9e146bb669ed3d51",
     "BlindRoomMesh/Sources/BlindRoomMesh/HistoricalPolygonTriangulation.swift": "100ea24417bd1f10cd3706ac4e984516c6a1f9fadc3987fc6dd7ea1821500ecb",
-    "BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h": "b0b4de9a807037f19c57d15890890de7b8186b0b46cc9c30a89067ee42c0b8d5"
+    "BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h": "b0b4de9a807037f19c57d15890890de7b8186b0b46cc9c30a89067ee42c0b8d5",
+    "BlindRoomMesh/Sources/CDetour/exact_seed_radius_envelope.h": "cae4eab88d01ee6331623c95f20a68b5b944a3f7b75a97471c043c48d293b567",
+    "BlindRoomMesh/Sources/CDetour/Envelope/LICENSE": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747",
+    "BlindRoomMesh/Sources/CDetour/Envelope/NOTICE": "e5747cdfed2266316c820853df9307cfee1217f0bf74c4e822e63945721df4a6",
+    "BlindRoomMesh/Sources/CDetour/Envelope/candidate/seed_distance_maurer.h": "30abd5f7eca67304269245ad6d9db4c019a73e82933bd42f104eb87481546caf"
   },
   "immutable_snapshot_layer": {
     "scope": "current source only; new native tests authored, not executed",
@@ -148,5 +156,24 @@
       "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b"
     },
     "defaultCallerActivation": false
+  },
+  "optional_envelope_layer": {
+    "beforeManifestSHA256": "a12d61b6119ca3c8fc0707aa846db26794011193643d07ae858e50cb8e158b80",
+    "nativeSourceManifestSHA256": "b78b97365d458bcacdd7db19cf221a5bfd22ad7e3f712c55ed59061fd3e0a165",
+    "swiftSourceManifestSHA256": "5d70e1195c337a7e72d32d04114b04a5a0ef33443112dc33a2c9ea7900bfd5f7",
+    "before": {
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "76b8c0a62ea731758368335e4ae3363fc1c59dd9f6dbfdd57ea0267c62c34e21",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "0c39fa8c8b016d7d994bf8b647f69426740cf3c10f3ca22c39b5ba4ce0b718cd",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "80c5fabd84eeb50a2f0963a34f73c1d4e913ae6c944f5708d4a196c9e746d7d5",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "ef16154015c03648ab61d242cee71820854910bcf355888392d745b9023845c4"
+    },
+    "added": [
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_envelope.h",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/LICENSE",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/NOTICE",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/candidate/seed_distance_maurer.h"
+    ],
+    "defaultCallerActivation": false,
+    "nativeSwiftExecuted": false
   }
 }

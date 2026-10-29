@@ -40,6 +40,27 @@ void* bn_build_classified_seed_radius(const float* vertices, int vertex_count,
     const int* triangles, int triangle_count, const BNConfig* config,
     const unsigned char* triangle_support, unsigned long long maximum_seed_tests,
     BNSeedRadiusVetoReceipt* receipt);
+/* Separate schema2 policy. Does NOT reinterpret schema1 seed-test budgets.
+   Same flat-layer original-seed predicate; different envelope work units. */
+enum BNEnvelopeAlgorithm { BN_ENVELOPE_MAURER_INT64_V1 = 1 };
+enum BNEnvelopeWorkUnit { BN_ENVELOPE_LOOP_VISIT_OR_COMPARISON_V1 = 1 };
+enum BNEnvelopeExtraStatus { BN_ENVELOPE_MEMORY_LIMIT = -7, BN_ENVELOPE_KERNEL_REFUSED = -8 };
+typedef struct BNSeedRadiusEnvelopeReceipt {
+    int schema, algorithm, work_unit;
+    int status, width, height, span_count, radius_cells, common_y_voxel;
+    int real_seed_count, exterior_seed_count, stock_keep_count, exact_keep_count;
+    int additional_rejected_count, build_succeeded;
+    unsigned long long work_limit, work_bound, work_performed;
+    unsigned long long padded_cell_count, workspace_bytes_declared;
+} BNSeedRadiusEnvelopeReceipt;
+/* maximum_envelope_work counts only kernel init/commit visits, line input/output
+   visits and envelope comparisons; excludes topology/seed packing/build stages.
+   Limit1...10M. Typed refusal/no handle; never fallback to disk or stock.
+   Status codes0..2 and-1..-6 share BNSeedRadiusStatus meanings, not schema/units. */
+void* bn_build_classified_seed_radius_envelope(const float* vertices, int vertex_count,
+    const int* triangles, int triangle_count, const BNConfig* config,
+    const unsigned char* triangle_support, unsigned long long maximum_envelope_work,
+    BNSeedRadiusEnvelopeReceipt* receipt);
 void* bn_build_excluded(const float* vertices,int vertex_count,const int* triangles,int triangle_count,const BNConfig* config,const float* polygon,int count,float observed_min_y,float observed_max_y);
 int bn_excluded_span_count(void* handle);
 void bn_destroy(void* handle);

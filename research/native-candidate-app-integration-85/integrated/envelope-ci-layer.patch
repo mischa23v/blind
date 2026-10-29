@@ -1,0 +1,176 @@
+--- a/tools/ci/native-apple.sh
++++ b/tools/ci/native-apple.sh
+@@ -143,7 +143,7 @@
+     exit "$status"
+     ;;
+   seed-radius-unit)
+-    # Fixed three existing strict controls plus five optional-policy integration tests.
++    # Fixed three strict controls plus five disk and six envelope optional-policy tests.
+     # Default configuration; no caller activation, camera or model work.
+     device="$(cat "$out/simulator-id")"
+     status=0
+@@ -152,6 +152,7 @@
+       -parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1 \
+       '-only-testing:BlindAssistTests/SavedRoomStrictEndpointTests' \
+       '-only-testing:BlindAssistTests/SeedRadiusVetoAppleTests' \
++      '-only-testing:BlindAssistTests/SeedRadiusEnvelopeAppleTests' \
+       -resultBundlePath "$out/seed-radius-unit.xcresult" test || status=$?
+     printf '{"exit_code":%s}\n' "$status" > "$out/seed-radius-unit-exit.json"
+     exit "$status"
+--- a/.github/workflows/native-apple.yml
++++ b/.github/workflows/native-apple.yml
+@@ -112,7 +112,7 @@
+         if: always()
+         timeout-minutes: 3
+         run: python3 tools/ci/export-seed-radius-diagnostics.py "$RUNNER_TEMP/blind-native-ci"
+-      - name: Verify exact eight seed-radius hosted cases and source identity
++      - name: Verify exact fourteen seed-radius hosted cases and source identity
+         if: always()
+         timeout-minutes: 3
+         run: python3 tools/ci/collect-seed-radius.py "$RUNNER_TEMP/blind-native-ci"
+--- a/tools/ci/collect-seed-radius.py
++++ b/tools/ci/collect-seed-radius.py
+@@ -1,10 +1,10 @@
+-"""Exact flag-only synthetic hosted identities; no live camera, guidance or physical proof."""
++"""Exact default-configuration public-fixture hosted identities; no live camera, guidance or physical proof."""
+ import hashlib,importlib.util,json,os,re,sys
+ from pathlib import Path
+ sys.dont_write_bytecode=True
+ H=Path(__file__).resolve().parent;ROOT=H.parents[1]
+ spec=importlib.util.spec_from_file_location('native_status_reader',H/'export-native-unit-statuses.py');native=importlib.util.module_from_spec(spec);spec.loader.exec_module(native)
+-EXPECTED=['SavedRoomStrictEndpointTests/testDefaultLegacyAndOptInStrictPreserveInsidePathAndVerticalAssociation', 'SavedRoomStrictEndpointTests/testStrictGoalOutsideMissingPolygonAndNonfiniteRefuseWithoutCandidate', 'SavedRoomStrictEndpointTests/testThreeActualPublicMarginOverlappedStartsKeepInitialOracleAndRejectStrictAdmission', 'SeedRadiusVetoAppleTests/testExactPolicyRequiresClassifiedStrictAdmissionAndBoundedBudget', 'SeedRadiusVetoAppleTests/testStockDefaultHasNoVetoReceiptAndFlatOptInNeverClaimsPhysicalClearance', 'SeedRadiusVetoAppleTests/testInsufficientWorkBudgetReturnsTypedRefusalNeverStockRoute', 'SeedRadiusVetoAppleTests/testTwoDistinctFloorHeightsRefuseRatherThanFlattenOrChooseOne', 'SeedRadiusVetoAppleTests/testAllObstacleClassificationCannotBorrowSlopeSupport']
++EXPECTED=['SavedRoomStrictEndpointTests/testDefaultLegacyAndOptInStrictPreserveInsidePathAndVerticalAssociation', 'SavedRoomStrictEndpointTests/testStrictGoalOutsideMissingPolygonAndNonfiniteRefuseWithoutCandidate', 'SavedRoomStrictEndpointTests/testThreeActualPublicMarginOverlappedStartsKeepInitialOracleAndRejectStrictAdmission', 'SeedRadiusVetoAppleTests/testExactPolicyRequiresClassifiedStrictAdmissionAndBoundedBudget', 'SeedRadiusVetoAppleTests/testStockDefaultHasNoVetoReceiptAndFlatOptInNeverClaimsPhysicalClearance', 'SeedRadiusVetoAppleTests/testInsufficientWorkBudgetReturnsTypedRefusalNeverStockRoute', 'SeedRadiusVetoAppleTests/testTwoDistinctFloorHeightsRefuseRatherThanFlattenOrChooseOne', 'SeedRadiusVetoAppleTests/testAllObstacleClassificationCannotBorrowSlopeSupport', 'SeedRadiusEnvelopeAppleTests/testExactPolicyRequiresClassifiedStrictAdmissionAndBoundedBudget', 'SeedRadiusEnvelopeAppleTests/testStockDefaultHasNoVetoReceiptAndFlatOptInNeverClaimsPhysicalClearance', 'SeedRadiusEnvelopeAppleTests/testInsufficientWorkBudgetReturnsTypedRefusalNeverStockRoute', 'SeedRadiusEnvelopeAppleTests/testTwoDistinctFloorHeightsRefuseRatherThanFlattenOrChooseOne', 'SeedRadiusEnvelopeAppleTests/testAllObstacleClassificationCannotBorrowSlopeSupport', 'SeedRadiusEnvelopeAppleTests/testEnvelopeReceiptRejectsUnknownSchemaAlgorithmAndWorkUnit']
+ 
+ def require(value,message):
+     if not value:raise ValueError(message)
+@@ -14,21 +14,21 @@
+     names=[]
+     for i in range(1,len(classes),2):
+         names.extend(classes[i]+'/'+n for n in re.findall(r'^\s*func (test\w+)\(',classes[i+1],re.M))
+-    require(names==EXPECTED,'exact reviewed8 fixture source required')
++    require(names==EXPECTED,'exact reviewed14 fixture source required')
+     require(type(command.get('exit_code')) is int and command['exit_code']==0,'focused native command failed or unavailable')
+     counts=native.reconcile(cases,summary)
+-    require(len(cases)==8 and {x['identifier'].removesuffix('()') for x in cases}==set(EXPECTED),'missing/extra/duplicate focused identities')
++    require(len(cases)==14 and {x['identifier'].removesuffix('()') for x in cases}==set(EXPECTED),'missing/extra/duplicate focused identities')
+     require(all(x['result']=='Passed' for x in cases),'failed/skipped focused fixture')
+     require(len(log.encode())<=64*1024*1024,'bounded test log required')
+     events={}
+-    pattern=r"Test Case '-\[(?:BlindAssistTests\.)?(SavedRoomStrictEndpointTests|SeedRadiusVetoAppleTests) (test\w+)\]' (started|passed|failed|skipped)(?:\.| \([0-9]+(?:\.[0-9]+)? seconds\)\.)"
++    pattern=r"Test Case '-\[(?:BlindAssistTests\.)?(SavedRoomStrictEndpointTests|SeedRadiusVetoAppleTests|SeedRadiusEnvelopeAppleTests) (test\w+)\]' (started|passed|failed|skipped)(?:\.| \([0-9]+(?:\.[0-9]+)? seconds\)\.)"
+     for line in log.splitlines():
+         if not line.startswith('Test Case '):continue
+         match=re.fullmatch(pattern,line)
+         require(match is not None,'unexpected hosted test line/class')
+         cls,name,status=match.groups();events.setdefault(cls+'/'+name,[]).append(status)
+     require(events=={n:['started','passed'] for n in EXPECTED},'missing/extra/duplicate/failed/skipped exact log witnesses')
+-    return {'status':'passed','scope':'8 optional-policy hosted fixtures; no caller activation or physical authority','executed':8,'counts':counts,'cases':cases,'logWitnesses':events,'commandExit':0}
++    return {'status':'passed','scope':'14 optional-policy hosted fixtures; no caller activation or physical authority','executed':14,'counts':counts,'cases':cases,'logWitnesses':events,'commandExit':0}
+ 
+ def main():
+     out=Path(sys.argv[1]);result={'status':'unavailable','complete':False,'source_verified':False,'expected_commit':os.environ.get('GITHUB_SHA')}
+--- a/tools/ci/test-collect-seed-radius.py
++++ b/tools/ci/test-collect-seed-radius.py
+@@ -4,12 +4,12 @@
+ P=Path(__file__).parent;s=importlib.util.spec_from_file_location('seated',P/'collect-seed-radius.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+ SOURCE=(P.parents[1]/'ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift').read_text()
+ CASES=[{'identifier':x+'()','result':'Passed'} for x in m.EXPECTED]
+-SUMMARY={'totalTestCount':8,'passedTests':8,'failedTests':0,'skippedTests':0,'expectedFailures':0}
++SUMMARY={'totalTestCount':14,'passedTests':14,'failedTests':0,'skippedTests':0,'expectedFailures':0}
+ LOG='\n'.join(f"Test Case '-[BlindAssistTests.{x.split('/')[0]} {x.split('/')[1]}]' "+('started.' if event=='started' else 'passed (0.001 seconds).') for x in m.EXPECTED for event in ['started','passed'])+'\n'
+ class Tests(unittest.TestCase):
+  def reject(self,cases=CASES,summary=SUMMARY,log=LOG,command={'exit_code':0},source=SOURCE):
+   with self.assertRaises((ValueError,KeyError)):m.collect(cases,summary,log,command,source)
+- def test_exact8(self):self.assertEqual(m.collect(CASES,SUMMARY,LOG,{'exit_code':0},SOURCE)['executed'],8)
++ def test_exact14(self):self.assertEqual(m.collect(CASES,SUMMARY,LOG,{'exit_code':0},SOURCE)['executed'],14)
+  def test_missing_case(self):self.reject(cases=CASES[:-1])
+  def test_duplicate_case(self):self.reject(cases=CASES[:-1]+CASES[:1])
+  def test_failed_case(self):self.reject(cases=[dict(CASES[0],result='Failed')]+CASES[1:])
+@@ -28,5 +28,13 @@
+  def test_source_rename(self):self.reject(source=SOURCE.replace('func '+m.EXPECTED[0].split('/')[1]+'(', 'func testUnexpected('))
+  def test_source_class_removed(self):self.reject(source=SOURCE.replace('SeedRadiusVetoAppleTests','RemovedTests',1))
+  def test_empty_log(self):self.reject(log='')
+- def test_unqualified_hosted_class(self):self.assertEqual(m.collect(CASES,SUMMARY,LOG.replace('BlindAssistTests.',''),{'exit_code':0},SOURCE)['executed'],8)
++ def test_unqualified_hosted_class(self):self.assertEqual(m.collect(CASES,SUMMARY,LOG.replace('BlindAssistTests.',''),{'exit_code':0},SOURCE)['executed'],14)
++ def test_each_new_envelope_case_is_required_and_must_pass(self):
++  for index,row in enumerate(CASES):
++   if not row['identifier'].startswith('SeedRadiusEnvelopeAppleTests/'):continue
++   with self.subTest(case=row['identifier']):
++    self.reject(cases=CASES[:index]+CASES[index+1:])
++    self.reject(cases=CASES[:index]+[dict(row,result='Failed')]+CASES[index+1:])
++    self.reject(cases=CASES[:index]+[dict(row,result='Skipped')]+CASES[index+1:])
++ def test_new_envelope_log_class_required(self):self.reject(log=LOG.replace('SeedRadiusEnvelopeAppleTests','UnknownEnvelopeClass'))
+ if __name__=='__main__':unittest.main()
+--- a/tools/ci/export-seed-radius-diagnostics.py
++++ b/tools/ci/export-seed-radius-diagnostics.py
+@@ -1,17 +1,17 @@
+-"""Bounded failure-preserving evidence for eight fixed public synthetic tests only."""
++"""Bounded failure-preserving evidence for fourteen fixed public fixture tests only."""
+ import hashlib,importlib.util,json,os,re,sys
+ from pathlib import Path
+ sys.dont_write_bytecode=True
+ H=Path(__file__).resolve().parent;ROOT=H.parents[1]
+ s=importlib.util.spec_from_file_location('seed_collector',H/'collect-seed-radius.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+ EXPECTED=set(m.EXPECTED)
+-FIXTURE_SHA='f3a87f124829c3316a457bd511566a195448a004067829812195cfcfcaf23149'
++FIXTURE_SHA='df12572e95906fb794606e42cecd678d230e204c016ef88b15b17ea1f0d7fde3'
+ 
+ def identity(raw):
+  if type(raw) is not str:return None
+  raw=raw.removesuffix('()').removeprefix('BlindAssistTests/')
+  if raw in EXPECTED:return raw
+- match=re.fullmatch(r'-\[(?:BlindAssistTests\.)?(SavedRoomStrictEndpointTests|SeedRadiusVetoAppleTests) (test\w+)\]',raw)
++ match=re.fullmatch(r'-\[(?:BlindAssistTests\.)?(SavedRoomStrictEndpointTests|SeedRadiusVetoAppleTests|SeedRadiusEnvelopeAppleTests) (test\w+)\]',raw)
+  if match and '/'.join(match.groups()) in EXPECTED:return '/'.join(match.groups())
+  return None
+ 
+@@ -24,7 +24,7 @@
+  return {'message':value[:768],'truncated':len(value)>768}
+ 
+ def summarize(cases,summary,log,command):
+- result={'expectedIdentities':sorted(EXPECTED),'commandExit':command.get('exit_code') if type(command.get('exit_code')) is int else None,'cases':[],'unexpectedCaseCount':0,'assertionFailures':[],'unparsedFailureRecordCount':0,'scope':'fixed public synthetic tests only; diagnostic receipt never authorizes pass'}
++ result={'expectedIdentities':sorted(EXPECTED),'commandExit':command.get('exit_code') if type(command.get('exit_code')) is int else None,'cases':[],'unexpectedCaseCount':0,'assertionFailures':[],'unparsedFailureRecordCount':0,'scope':'fixed public fixture tests only; diagnostic receipt never authorizes pass'}
+  if cases is not None:
+   for row in cases[:64]:
+    name=identity(row.get('identifier'))
+@@ -46,7 +46,7 @@
+   else:result['failureSchemaUnavailable']=True
+  # Only fixed fixture filename and exact test identity; never general compiler/app logs.
+  if log is not None:
+-  pattern=r'.*\bSavedRoomStrictEndpointTests\.swift:(\d{1,9}): error: (-\[(?:BlindAssistTests\.)?(?:SavedRoomStrictEndpointTests|SeedRadiusVetoAppleTests) test\w+\]) : (.*)'
++  pattern=r'.*\bSavedRoomStrictEndpointTests\.swift:(\d{1,9}): error: (-\[(?:BlindAssistTests\.)?(?:SavedRoomStrictEndpointTests|SeedRadiusVetoAppleTests|SeedRadiusEnvelopeAppleTests) test\w+\]) : (.*)'
+   for line in log.splitlines():
+    if len(line)>4096:continue
+    match=re.fullmatch(pattern,line)
+--- a/tools/ci/test-export-seed-radius-diagnostics.py
++++ b/tools/ci/test-export-seed-radius-diagnostics.py
+@@ -6,7 +6,7 @@
+ NAME='SeedRadiusVetoAppleTests/testInsufficientWorkBudgetReturnsTypedRefusalNeverStockRoute'
+ CASES=[{'identifier':x+'()','result':'Passed'} for x in sorted(m.EXPECTED)]
+ class Tests(unittest.TestCase):
+- def test_all8(self):self.assertEqual(len(m.summarize(CASES,{},None,{'exit_code':0})['cases']),8)
++ def test_all14(self):self.assertEqual(len(m.summarize(CASES,{},None,{'exit_code':0})['cases']),14)
+  def test_failed_preserved(self):self.assertEqual(m.summarize([{'identifier':NAME,'result':'Failed'}],{},None,{'exit_code':65})['cases'][0]['result'],'Failed')
+  def test_exit65_preserved(self):self.assertEqual(m.summarize(None,None,None,{'exit_code':65})['commandExit'],65)
+  def test_missing_exit_unknown(self):self.assertIsNone(m.summarize(None,None,None,{})['commandExit'])
+@@ -50,4 +50,20 @@
+  def test_null_summary_explicit_unknown(self):self.assertTrue(self.run_main({'exit_code':65},None)['summarySchemaUnavailable'])
+  def test_array_summary_explicit_unknown(self):self.assertTrue(self.run_main({'exit_code':65},[])['summarySchemaUnavailable'])
+  def test_missing_failure_schema_explicit_unknown(self):self.assertTrue(self.run_main({'exit_code':65},{})['failureSchemaUnavailable'])
++ def test_all_six_envelope_failures_retained(self):
++  names=[x for x in m.EXPECTED if x.startswith('SeedRadiusEnvelopeAppleTests/')]
++  self.assertEqual(len(names),6)
++  for name in names:
++   with self.subTest(case=name):
++    result=m.summarize([{'identifier':name,'result':'Failed'}],{'testFailures':[{'testIdentifier':name,'failureText':'XCTAssertTrue failed'}]},None,{'exit_code':65})
++    self.assertEqual(result['cases'][0]['result'],'Failed');self.assertEqual(result['assertionFailures'][0]['identifier'],name)
++ def test_all_six_envelope_objc_identities_preserved(self):
++  for name in [x for x in m.EXPECTED if x.startswith('SeedRadiusEnvelopeAppleTests/')]:
++   with self.subTest(case=name):self.assertEqual(m.identity('-[BlindAssistTests.SeedRadiusEnvelopeAppleTests '+name.split('/')[1]+']'),name)
++ def test_all_six_envelope_log_failures_preserved(self):
++  for name in [x for x in m.EXPECTED if x.startswith('SeedRadiusEnvelopeAppleTests/')]:
++   with self.subTest(case=name):
++    log='/Users/runner/SavedRoomStrictEndpointTests.swift:321: error: -[BlindAssistTests.SeedRadiusEnvelopeAppleTests '+name.split('/')[1]+'] : XCTAssertTrue failed'
++    result=m.summarize(None,None,log,{'exit_code':65})
++    self.assertEqual(result['assertionFailures'][0]['identifier'],name);self.assertEqual(result['assertionFailures'][0]['line'],321)
+ if __name__=='__main__':unittest.main()

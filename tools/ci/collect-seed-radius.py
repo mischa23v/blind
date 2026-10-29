@@ -1,10 +1,10 @@
-"""Exact flag-only synthetic hosted identities; no live camera, guidance or physical proof."""
+"""Exact default-configuration public-fixture hosted identities; no live camera, guidance or physical proof."""
 import hashlib,importlib.util,json,os,re,sys
 from pathlib import Path
 sys.dont_write_bytecode=True
 H=Path(__file__).resolve().parent;ROOT=H.parents[1]
 spec=importlib.util.spec_from_file_location('native_status_reader',H/'export-native-unit-statuses.py');native=importlib.util.module_from_spec(spec);spec.loader.exec_module(native)
-EXPECTED=['SavedRoomStrictEndpointTests/testDefaultLegacyAndOptInStrictPreserveInsidePathAndVerticalAssociation', 'SavedRoomStrictEndpointTests/testStrictGoalOutsideMissingPolygonAndNonfiniteRefuseWithoutCandidate', 'SavedRoomStrictEndpointTests/testThreeActualPublicMarginOverlappedStartsKeepInitialOracleAndRejectStrictAdmission', 'SeedRadiusVetoAppleTests/testExactPolicyRequiresClassifiedStrictAdmissionAndBoundedBudget', 'SeedRadiusVetoAppleTests/testStockDefaultHasNoVetoReceiptAndFlatOptInNeverClaimsPhysicalClearance', 'SeedRadiusVetoAppleTests/testInsufficientWorkBudgetReturnsTypedRefusalNeverStockRoute', 'SeedRadiusVetoAppleTests/testTwoDistinctFloorHeightsRefuseRatherThanFlattenOrChooseOne', 'SeedRadiusVetoAppleTests/testAllObstacleClassificationCannotBorrowSlopeSupport']
+EXPECTED=['SavedRoomStrictEndpointTests/testDefaultLegacyAndOptInStrictPreserveInsidePathAndVerticalAssociation', 'SavedRoomStrictEndpointTests/testStrictGoalOutsideMissingPolygonAndNonfiniteRefuseWithoutCandidate', 'SavedRoomStrictEndpointTests/testThreeActualPublicMarginOverlappedStartsKeepInitialOracleAndRejectStrictAdmission', 'SeedRadiusVetoAppleTests/testExactPolicyRequiresClassifiedStrictAdmissionAndBoundedBudget', 'SeedRadiusVetoAppleTests/testStockDefaultHasNoVetoReceiptAndFlatOptInNeverClaimsPhysicalClearance', 'SeedRadiusVetoAppleTests/testInsufficientWorkBudgetReturnsTypedRefusalNeverStockRoute', 'SeedRadiusVetoAppleTests/testTwoDistinctFloorHeightsRefuseRatherThanFlattenOrChooseOne', 'SeedRadiusVetoAppleTests/testAllObstacleClassificationCannotBorrowSlopeSupport', 'SeedRadiusEnvelopeAppleTests/testExactPolicyRequiresClassifiedStrictAdmissionAndBoundedBudget', 'SeedRadiusEnvelopeAppleTests/testStockDefaultHasNoVetoReceiptAndFlatOptInNeverClaimsPhysicalClearance', 'SeedRadiusEnvelopeAppleTests/testInsufficientWorkBudgetReturnsTypedRefusalNeverStockRoute', 'SeedRadiusEnvelopeAppleTests/testTwoDistinctFloorHeightsRefuseRatherThanFlattenOrChooseOne', 'SeedRadiusEnvelopeAppleTests/testAllObstacleClassificationCannotBorrowSlopeSupport', 'SeedRadiusEnvelopeAppleTests/testEnvelopeReceiptRejectsUnknownSchemaAlgorithmAndWorkUnit']
 
 def require(value,message):
     if not value:raise ValueError(message)
@@ -14,21 +14,21 @@ def collect(cases,summary,log,command,source):
     names=[]
     for i in range(1,len(classes),2):
         names.extend(classes[i]+'/'+n for n in re.findall(r'^\s*func (test\w+)\(',classes[i+1],re.M))
-    require(names==EXPECTED,'exact reviewed8 fixture source required')
+    require(names==EXPECTED,'exact reviewed14 fixture source required')
     require(type(command.get('exit_code')) is int and command['exit_code']==0,'focused native command failed or unavailable')
     counts=native.reconcile(cases,summary)
-    require(len(cases)==8 and {x['identifier'].removesuffix('()') for x in cases}==set(EXPECTED),'missing/extra/duplicate focused identities')
+    require(len(cases)==14 and {x['identifier'].removesuffix('()') for x in cases}==set(EXPECTED),'missing/extra/duplicate focused identities')
     require(all(x['result']=='Passed' for x in cases),'failed/skipped focused fixture')
     require(len(log.encode())<=64*1024*1024,'bounded test log required')
     events={}
-    pattern=r"Test Case '-\[(?:BlindAssistTests\.)?(SavedRoomStrictEndpointTests|SeedRadiusVetoAppleTests) (test\w+)\]' (started|passed|failed|skipped)(?:\.| \([0-9]+(?:\.[0-9]+)? seconds\)\.)"
+    pattern=r"Test Case '-\[(?:BlindAssistTests\.)?(SavedRoomStrictEndpointTests|SeedRadiusVetoAppleTests|SeedRadiusEnvelopeAppleTests) (test\w+)\]' (started|passed|failed|skipped)(?:\.| \([0-9]+(?:\.[0-9]+)? seconds\)\.)"
     for line in log.splitlines():
         if not line.startswith('Test Case '):continue
         match=re.fullmatch(pattern,line)
         require(match is not None,'unexpected hosted test line/class')
         cls,name,status=match.groups();events.setdefault(cls+'/'+name,[]).append(status)
     require(events=={n:['started','passed'] for n in EXPECTED},'missing/extra/duplicate/failed/skipped exact log witnesses')
-    return {'status':'passed','scope':'8 optional-policy hosted fixtures; no caller activation or physical authority','executed':8,'counts':counts,'cases':cases,'logWitnesses':events,'commandExit':0}
+    return {'status':'passed','scope':'14 optional-policy hosted fixtures; no caller activation or physical authority','executed':14,'counts':counts,'cases':cases,'logWitnesses':events,'commandExit':0}
 
 def main():
     out=Path(sys.argv[1]);result={'status':'unavailable','complete':False,'source_verified':False,'expected_commit':os.environ.get('GITHUB_SHA')}

@@ -145,8 +145,8 @@
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift",
-      "bytes": 16392,
-      "sha256": "76b8c0a62ea731758368335e4ae3363fc1c59dd9f6dbfdd57ea0267c62c34e21"
+      "bytes": 18877,
+      "sha256": "844d18ef9d7a65b7a3de0a2f947f070e1fc29b57034ae6d2dce63a0f53efa725"
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Exclusion.swift",
@@ -155,13 +155,13 @@
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
-      "bytes": 37391,
-      "sha256": "0c39fa8c8b016d7d994bf8b647f69426740cf3c10f3ca22c39b5ba4ce0b718cd"
+      "bytes": 39802,
+      "sha256": "b6193974a87fd79981360c8f3b87c13a2f48613d7dbbd5af5a2a2b04531a95d4"
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp",
-      "bytes": 19814,
-      "sha256": "80c5fabd84eeb50a2f0963a34f73c1d4e913ae6c944f5708d4a196c9e746d7d5"
+      "bytes": 21712,
+      "sha256": "4aea336d716ec2c319203794649a1ebaf2be23ef30a687265cb6c825ad9347a1"
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/clearance_adapter.cpp",
@@ -170,8 +170,8 @@
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h",
-      "bytes": 4428,
-      "sha256": "ef16154015c03648ab61d242cee71820854910bcf355888392d745b9023845c4"
+      "bytes": 5874,
+      "sha256": "c5a69f71f82e6fbfdc98a1b29185d37c8fa70c4a54e955d7d2954f3aa592f1ec"
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/module.modulemap",
@@ -452,6 +452,26 @@
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h",
       "sha256": "b0b4de9a807037f19c57d15890890de7b8186b0b46cc9c30a89067ee42c0b8d5",
       "bytes": 9092
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_envelope.h",
+      "sha256": "cae4eab88d01ee6331623c95f20a68b5b944a3f7b75a97471c043c48d293b567",
+      "bytes": 9664
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/LICENSE",
+      "sha256": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747",
+      "bytes": 11361
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/NOTICE",
+      "sha256": "e5747cdfed2266316c820853df9307cfee1217f0bf74c4e822e63945721df4a6",
+      "bytes": 473
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/candidate/seed_distance_maurer.h",
+      "sha256": "30abd5f7eca67304269245ad6d9db4c019a73e82933bd42f104eb87481546caf",
+      "bytes": 5742
     }
   ],
   "changes": [
@@ -589,5 +609,24 @@
       "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b"
     },
     "defaultCallerActivation": false
+  },
+  "optional_envelope_layer": {
+    "beforeManifestSHA256": "440af8deebef6b826bb9d6308b8f348b2218bbb618ec7d00444a432863005e42",
+    "nativeSourceManifestSHA256": "b78b97365d458bcacdd7db19cf221a5bfd22ad7e3f712c55ed59061fd3e0a165",
+    "swiftSourceManifestSHA256": "5d70e1195c337a7e72d32d04114b04a5a0ef33443112dc33a2c9ea7900bfd5f7",
+    "before": {
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "76b8c0a62ea731758368335e4ae3363fc1c59dd9f6dbfdd57ea0267c62c34e21",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "0c39fa8c8b016d7d994bf8b647f69426740cf3c10f3ca22c39b5ba4ce0b718cd",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "80c5fabd84eeb50a2f0963a34f73c1d4e913ae6c944f5708d4a196c9e746d7d5",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "ef16154015c03648ab61d242cee71820854910bcf355888392d745b9023845c4"
+    },
+    "added": [
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_envelope.h",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/LICENSE",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/NOTICE",
+      "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/Envelope/candidate/seed_distance_maurer.h"
+    ],
+    "defaultCallerActivation": false,
+    "nativeSwiftExecuted": false
   }
 }

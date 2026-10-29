@@ -18,6 +18,19 @@ def check(name, value):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# New optional envelope/source-test layer reverses exactly before historical policy checks.
+pre_envelope_source={}
+with tempfile.TemporaryDirectory(prefix='stage85-envelope-source-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeEnvelopeSource'])+manifest['envelopeSourceNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+    subprocess.run(['git','apply','-R',str(H/'envelope-source-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeEnvelopeSource'].items():
+        check('exact pre-envelope source recovered '+name,hashlib.sha256((root/name).read_bytes()).hexdigest()==digest)
+        pre_envelope_source[name]=(root/name).read_bytes()
+    for name in manifest['envelopeSourceNewFiles']:
+        check('new envelope dependency absent from historical source '+name,not (root/name).exists())
+
 # Recover the exact prior ingress/collector bytes in scratch only; historical layers remain intact.
 with tempfile.TemporaryDirectory(prefix='stage85-snapshot-') as temp:
     root = Path(temp)
@@ -42,7 +55,7 @@ with tempfile.TemporaryDirectory(prefix='stage85-snapshot-') as temp:
 with tempfile.TemporaryDirectory(prefix='stage85-exact-seed-policy-') as temp:
     root=Path(temp)
     for name in list(manifest['beforeExactSeedRadiusPolicy'])+manifest['exactSeedRadiusPolicyNewFiles']:
-        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_envelope_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'exact-seed-radius-policy-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeExactSeedRadiusPolicy'].items():
         check('exact pre-seed-radius policy recovered '+name,hashlib.sha256((root/name).read_bytes()).hexdigest()==digest)
@@ -53,10 +66,15 @@ with tempfile.TemporaryDirectory(prefix='stage85-exact-seed-policy-') as temp:
 # Recover the exact prior helper before assessing unchanged build-mode contracts.
 with tempfile.TemporaryDirectory(prefix='stage85-ci-helper-') as temp:
     root = Path(temp)
-    for name in dict.fromkeys(list(manifest['beforeSceneTimingHelper']) + list(manifest['beforeSeatedViewerCI']) + manifest['seatedViewerCINewFiles'] + list(manifest['beforeExactSeedRadiusCI']) + manifest['exactSeedRadiusCINewFiles'] + manifest['seedRadiusFocusedEvidenceNewFiles']):
+    for name in dict.fromkeys(list(manifest['beforeSceneTimingHelper']) + list(manifest['beforeSeatedViewerCI']) + manifest['seatedViewerCINewFiles'] + list(manifest['beforeExactSeedRadiusCI']) + manifest['exactSeedRadiusCINewFiles'] + manifest['seedRadiusFocusedEvidenceNewFiles'] + list(manifest['beforeEnvelopeCI'])):
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(R / name, target)
+    subprocess.run(['git','apply','-R',str(H/'envelope-ci-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
+    pre_envelope_ci={}
+    for name,digest in manifest['beforeEnvelopeCI'].items():
+        check('exact pre-envelope CI recovered '+name,hashlib.sha256((root/name).read_bytes()).hexdigest()==digest)
+        pre_envelope_ci[name]=(root/name).read_text()
     subprocess.run(['git','apply','-R',str(H/'seed-radius-focused-evidence-layer.patch')],cwd=root,check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeSeedRadiusFocusedEvidence'].items():
         check('exact pre-focused-evidence source recovered '+name,hashlib.sha256((root/name).read_bytes()).hexdigest()==digest)
@@ -284,7 +302,7 @@ check('seated focused bounded step and fail-closed collector', 'timeout-minutes:
 check('classified stdout isolated from SwiftPM stderr', '--xunit-output "$out/tests.xml" 2> "$out/swift-test.stderr.log" | tee "$out/swift-test.log"' in current_workflow)
 check('classified stderr retained separately after both pipeline exits captured', current_workflow.index('statuses=("${PIPESTATUS[@]}")') < current_workflow.index('cat "$out/swift-test.stderr.log" >&2') and 'test "${statuses[0]}" -eq 0' in current_workflow and 'test "${statuses[1]}" -eq 0' in current_workflow)
 check('actual session initializer label source regressions', subprocess.run([sys.executable, str(R/'tools/ci/test_live_mesh_session_initializer.py')], cwd=R, capture_output=True, timeout=15).returncode == 0)
-seed_mode=current_helper.split('  seed-radius-unit)\n',1)[1].split('    ;;',1)[0]
+seed_mode=pre_envelope_ci['tools/ci/native-apple.sh'].split('  seed-radius-unit)\n',1)[1].split('    ;;',1)[0]
 check('seed-radius two exact classes only and original modes preserved', seed_mode.count('-only-testing:')==2 and "'-only-testing:BlindAssistTests/SavedRoomStrictEndpointTests'" in seed_mode and "'-only-testing:BlindAssistTests/SeedRadiusVetoAppleTests'" in seed_mode)
 check('seed-radius default compile flags no retry or parallel testing', 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' not in seed_mode and '-parallel-testing-enabled NO' in seed_mode and 'retry' not in seed_mode)
 check('seed-radius exit and separate xcresult preserved', 'seed-radius-unit.xcresult' in seed_mode and 'test || status=$?' in seed_mode and 'seed-radius-unit-exit.json' in seed_mode and 'exit "$status"' in seed_mode)
@@ -296,6 +314,17 @@ check('focused8 moved to default job after hosted step only',native_job.index('r
 check('focused8 default build guard survives hosted failure',"id: seed-radius\n        if: ${{ !cancelled() && steps.build.outcome == 'success' }}" in native_job)
 check('focused diagnostic export precedes strict collector',native_job.index('run: python3 tools/ci/export-seed-radius-diagnostics.py')<native_job.index('run: python3 tools/ci/collect-seed-radius.py') and 'seed-radius-diagnostics.json' in native_job)
 check('focused evidence portable negative fixtures',subprocess.run([sys.executable,str(R/'tools/ci/test-export-seed-radius-diagnostics.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
+envelope_mode=current_helper.split('  seed-radius-unit)\n',1)[1].split('    ;;',1)[0]
+check('envelope focused original two classes plus new third only',envelope_mode.count('-only-testing:')==3 and all("'-only-testing:BlindAssistTests/"+name+"'" in envelope_mode for name in ['SavedRoomStrictEndpointTests','SeedRadiusVetoAppleTests','SeedRadiusEnvelopeAppleTests']))
+check('envelope focus retains default flags serial execution original deadline', 'SWIFT_ACTIVE_COMPILATION_CONDITIONS' not in envelope_mode and '-parallel-testing-enabled NO' in envelope_mode and '-destination-timeout 120' in envelope_mode and 'retry' not in envelope_mode)
+check('envelope original eight fixture bytes exact prefix', (R/'ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift').read_bytes().startswith(pre_envelope_source['ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift']))
+fixture=(R/'ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift').read_bytes()[len(pre_envelope_source['ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift'])+1:]
+check('envelope six authored fixture bytes exact',hashlib.sha256(fixture).hexdigest()=='828bf475024ea1a93267dcd2580cd2fc4fde0047c4bf4f6d8bbb58940079a713')
+check('envelope fourteen collector strict source inventory',"'executed':14" in (R/'tools/ci/collect-seed-radius.py').read_text() and 'SeedRadiusEnvelopeAppleTests' in (R/'tools/ci/collect-seed-radius.py').read_text())
+check('envelope original disk helper unchanged',hashlib.sha256((R/'research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h').read_bytes()).hexdigest()==manifest['envelopeIntegration']['oldDiskHelperSHA256'])
+check('envelope old stock remains Swift default', 'seedRadiusPolicy:MeshSeedRadiusPolicy = .stock' in re.sub(r'\s+',' ',(R/'research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift').read_text()).replace('seedRadiusPolicy: ', 'seedRadiusPolicy:'))
+check('envelope strict collector original regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-collect-seed-radius.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
+check('envelope public diagnostic export regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-export-seed-radius-diagnostics.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 print(json.dumps(dict(sourceChecksPassed=len(checks), checks=checks, appPatchApplied=True, criticalOrderPatchApplied=True, practicePublicationPatchApplied=True, projectCanonicalizationPatchApplied=True, connectedBenchPreviewMembershipApplied=True, navigationTestRecordingApplied=True, savedFrameCameraAssociationApplied=True, sceneTimingCIHelperApplied=True, recorderTimingCIHelperApplied=True, savedRoomGeometryMembershipApplied=True, appleRoomPlanFixtureMembershipApplied=True, appleRoomRouteMembershipApplied=True, classificationIngressMembershipApplied=True, hostedDecoderLinkMembershipApplied=True,
     appleBuild='pending', historicalLayersReversedExactly=True, defaultAppActivation=False, runtimeOptIn='diagnostic flag plus explicit seated confirmation required', geometryCopyEnabled='only inside separately admitted diagnostic owner',
     physicalAuthority=False, experimental128MiBCapCompliance='not claimed'), indent=2))

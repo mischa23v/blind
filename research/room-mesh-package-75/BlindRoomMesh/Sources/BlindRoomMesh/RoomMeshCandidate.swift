@@ -9,14 +9,46 @@ public enum MeshCandidateError: Error {
  case invalidInput, unavailable, stale, nativeFailure
  case endpointAssociationRejected(MeshEndpointAdmissionReceipt)
  case seedRadiusUnavailable(MeshSeedRadiusVetoReceipt)
+ case seedRadiusEnvelopeUnavailable(MeshSeedRadiusEnvelopeReceipt)
 }
 /// Opt-in additional discrete-mask exclusion. Stock diagnostics stay unchanged.
 /// Exact policy requires classified support + strict requested-XZ admission.
 public enum MeshSeedRadiusPolicy: Equatable, Sendable {
  case stock
  case exactFlatLayer(maximumSeedTests: UInt64)
+ case exactFlatLayerEnvelope(maximumEnvelopeWork: UInt64)
  var maximumSeedTests: UInt64? { if case .exactFlatLayer(let value) = self { return value }; return nil }
- var valid: Bool { maximumSeedTests.map { (1...10_000_000).contains($0) } ?? true }
+ var maximumEnvelopeWork: UInt64? { if case .exactFlatLayerEnvelope(let value) = self { return value }; return nil }
+ var valid: Bool {
+  switch self {
+  case .stock: return true
+  case .exactFlatLayer(let value), .exactFlatLayerEnvelope(let value): return (1...10_000_000).contains(value)
+  }
+ }
+}
+public enum MeshSeedRadiusEnvelopeSchema: Int, Codable, Sendable { case version2 = 2 }
+public enum MeshSeedRadiusEnvelopeAlgorithm: Int, Codable, Sendable { case maurerIntegerV1 = 1 }
+public enum MeshSeedRadiusEnvelopeWorkUnit: Int, Codable, Sendable { case loopVisitOrComparisonV1 = 1 }
+public enum MeshSeedRadiusEnvelopeStatus: Int, Codable, Sendable {
+ case notRequested = 0, prepared = 1, applied = 2
+ case invalidInput = -1, unsupportedLayer = -2, invalidTopology = -3
+ case workLimit = -4, allocationFailed = -5, buildFailed = -6
+ case memoryLimit = -7, kernelRefused = -8
+}
+/// Distinct schema2 units; never reinterpret the historical disk schema1 receipt.
+/// Typed Codable discriminators reject unknown schema/algorithm/work-unit values.
+public struct MeshSeedRadiusEnvelopeReceipt: Codable, Sendable {
+ public let schema: MeshSeedRadiusEnvelopeSchema
+ public let algorithm: MeshSeedRadiusEnvelopeAlgorithm, workUnit: MeshSeedRadiusEnvelopeWorkUnit
+ public let status: MeshSeedRadiusEnvelopeStatus
+ public let width: Int, height: Int, spanCount: Int, radiusCells: Int, commonYVoxel: Int
+ public let realSeedCount: Int, exteriorSeedCount: Int, stockKeepCount: Int, exactKeepCount: Int
+ public let additionalRejectedCount: Int, buildSucceeded: Bool
+ public let workLimit: UInt64, workBound: UInt64, workPerformed: UInt64
+ public let paddedCellCount: UInt64, workspaceBytesDeclared: UInt64
+ public var authorizesPhysicalGuidance: Bool { false }
+ public var continuousSourceClearanceVerified: Bool { false }
+ public var fullFootprintSupportVerified: Bool { false }
 }
 public enum MeshSeedRadiusVetoStatus: Int, Codable, Sendable {
  case notRequested = 0, prepared = 1, applied = 2
@@ -94,6 +126,7 @@ public struct MeshCandidateRoute {
  public let endpointPolicy: MeshEndpointPolicy
  public let endpointAdmission: MeshEndpointAdmissionReceipt?
  public let seedRadiusReceipt: MeshSeedRadiusVetoReceipt?
+ public let seedRadiusEnvelopeReceipt: MeshSeedRadiusEnvelopeReceipt?
  public let authorizesPhysicalGuidance=false, actualWorldCoverageKnown=false, rawDepthHazardImplemented=false, rawDepthHazardVeto=true
 }
 /// Opt-in delivery bookkeeping only. Legacy callers retain their sticky losses.
@@ -626,7 +659,7 @@ public final class RoomMeshCandidateRuntime {
 #endif
     finish(.failure(.stale));return}
     var unknown=Array(owner.unknown.union(view.unknown)).sorted();if state.1{unknown.append("ingress-or-lifecycle-gap")}
-    finish(.success(MeshCandidateRoute(sessionID:s,generation:g,revision:r,points:path.points,projectedStart:path.projected_start,projectedGoal:path.projected_goal,complete:path.complete,nativeStatus:path.status,sourceDeliveryComplete:owner.sourceComplete && view.complete && !state.1,unknownCoverage:unknown,endpointPolicy:endpointPolicy,endpointAdmission:path.endpointAdmission,seedRadiusReceipt:native.seedRadiusReceipt)))
+    finish(.success(MeshCandidateRoute(sessionID:s,generation:g,revision:r,points:path.points,projectedStart:path.projected_start,projectedGoal:path.projected_goal,complete:path.complete,nativeStatus:path.status,sourceDeliveryComplete:owner.sourceComplete && view.complete && !state.1,unknownCoverage:unknown,endpointPolicy:endpointPolicy,endpointAdmission:path.endpointAdmission,seedRadiusReceipt:native.seedRadiusReceipt,seedRadiusEnvelopeReceipt:native.seedRadiusEnvelopeReceipt)))
    } catch MeshCandidateError.seedRadiusUnavailable(let receipt) {
 #if DEBUG
     recordDiagnosticStage(.nativeFailure,workerCPU:true)
@@ -638,6 +671,17 @@ public final class RoomMeshCandidateRuntime {
      finish(.failure(.stale));return
     }
     finish(.failure(.seedRadiusUnavailable(receipt)))
+   } catch MeshCandidateError.seedRadiusEnvelopeUnavailable(let receipt) {
+#if DEBUG
+    recordDiagnosticStage(.nativeFailure,workerCPU:true)
+#endif
+    guard locked({matches(s,g,r)}) else {
+#if DEBUG
+     recordDiagnosticStage(.requestRetired,workerCPU:true)
+#endif
+     finish(.failure(.stale));return
+    }
+    finish(.failure(.seedRadiusEnvelopeUnavailable(receipt)))
    } catch MeshCandidateError.endpointAssociationRejected(let receipt) {
 #if DEBUG
     recordDiagnosticStage(.nativeFailure,workerCPU:true)
