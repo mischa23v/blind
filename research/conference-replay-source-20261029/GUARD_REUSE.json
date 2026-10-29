@@ -1,0 +1,49 @@
+{
+  "status": "STATIC_SOURCE_COMPARISON_ONLY_NOT_EXECUTED",
+  "basePath": "research/clearance-first-coffee-source-20261029/run_aggregate.py",
+  "baseSHA256": "eeb384f886eeaa59e8946659cade38099e2b321ffaa9e55998a01f3d025e0cf8",
+  "adaptedSHA256": "ccdb636e2a2f3176c4139f44568bf46b005c92ceac6e651f0ff2ede3e8cb18b3",
+  "unchangedHelperFunctions": [
+    {
+      "function": "file_record",
+      "sha256": "db3d3478c1548d874a922f7dc8cd45496c0ec1683e93e7d1bc0f4e197fee4016"
+    },
+    {
+      "function": "sha",
+      "sha256": "e55157f9bd048352aa5345b646952cd487b03fdfb2d097ac993854504e06378e"
+    },
+    {
+      "function": "inventory",
+      "sha256": "20417cb1dfb5aecb20529670999e602b8572ce91e85c0dba9594803a3d6f561b"
+    },
+    {
+      "function": "stable_inventory",
+      "sha256": "b91f66efa43324d4c13682ed403fd6a2b8c252e7bd6a99185153ea6b42b57591"
+    },
+    {
+      "function": "usage",
+      "sha256": "dea5ca8b5158779578dbaea7f437b13c96509d29c16d855aa9c675b918b991b7"
+    },
+    {
+      "function": "group_sample",
+      "sha256": "0945468d18d6199dd1ec0ce3445d7f8947e287927dcab77aaac12c3243247db5"
+    },
+    {
+      "function": "kill_group",
+      "sha256": "5102364e8b21a41738ef171f1a343221dc901325690c1386f6c1ad2bef63c405"
+    }
+  ],
+  "changes": [
+    "Protocol identity and interpretation text",
+    "@REPO@ command expansion",
+    "Disable Git lazy fetching and remove irrelevant Coffee schedule exemption",
+    "Seven-objective terminal association, connector, cap, provenance and unknown-state checks"
+  ],
+  "resourceCapsUnchanged": {
+    "cpuSeconds": 120,
+    "wallSeconds": 180,
+    "observedRSSBytes": 1073741824,
+    "outputBytes": 16777216
+  },
+  "nativeExecuted": false
+}

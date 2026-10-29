@@ -1,0 +1,121 @@
+{
+  "scope": "prequery fixed source-only loop; camera anchors not body poses",
+  "anchors": [
+    {
+      "poseIndex": 92,
+      "frameID": "frame_00093",
+      "originalGameXYZ": [
+        -2.281401302639457,
+        0.0,
+        1.0373834286611066
+      ],
+      "cameraIsNotMeasuredBodyPose": true,
+      "registeredGameXYZ": [
+        -2.281401244789739,
+        0.0009086607581352268,
+        1.0373839570377266
+      ]
+    },
+    {
+      "poseIndex": 120,
+      "frameID": "frame_00121",
+      "originalGameXYZ": [
+        -0.9024904099661475,
+        0.0,
+        3.796214579425151
+      ],
+      "cameraIsNotMeasuredBodyPose": true,
+      "registeredGameXYZ": [
+        -0.9024902299197737,
+        -4.96541132373185e-05,
+        3.796214880284393
+      ]
+    },
+    {
+      "poseIndex": 200,
+      "frameID": "frame_00216",
+      "originalGameXYZ": [
+        0.9934880945505575,
+        0.0,
+        1.4958629589009271
+      ],
+      "cameraIsNotMeasuredBodyPose": true,
+      "registeredGameXYZ": [
+        0.9934880108773039,
+        -0.0002434645272815228,
+        1.4958630505636947
+      ]
+    },
+    {
+      "poseIndex": 220,
+      "frameID": "frame_00236",
+      "originalGameXYZ": [
+        0.2209646416855992,
+        0.0,
+        -0.6243470786782905
+      ],
+      "cameraIsNotMeasuredBodyPose": true,
+      "registeredGameXYZ": [
+        0.22096444884248076,
+        0.00039939608658245973,
+        -0.6243468497785633
+      ]
+    },
+    {
+      "poseIndex": 20,
+      "frameID": "frame_00021",
+      "originalGameXYZ": [
+        -1.5490109087842536,
+        0.0,
+        -3.84606766234802
+      ],
+      "cameraIsNotMeasuredBodyPose": true,
+      "registeredGameXYZ": [
+        -1.5490112358410875,
+        0.001570562930891306,
+        -3.8460671468402805
+      ]
+    },
+    {
+      "poseIndex": 92,
+      "frameID": "frame_00093",
+      "originalGameXYZ": [
+        -2.281401302639457,
+        0.0,
+        1.0373834286611066
+      ],
+      "cameraIsNotMeasuredBodyPose": true,
+      "registeredGameXYZ": [
+        -2.281401244789739,
+        0.0009086607581352268,
+        1.0373839570377266
+      ]
+    }
+  ],
+  "all5LegsQueriedWithoutReranking": true,
+  "configs": {
+    "slopes": [
+      5.0,
+      15.0
+    ],
+    "climb": 0.025,
+    "radii": [
+      0.225,
+      0.275
+    ],
+    "height": 1.75,
+    "cellSize": 0.025,
+    "cellHeight": 0.025
+  },
+  "files": {
+    "blind-remaining-room-traverse-23/planning-01/result/body45cmMargin0.json": "87f6d28b734a4e011c3f53a1664f4afe1fbce9ceea33dae9bba92945b1a3b548",
+    "blind-split-candidate-game-03/inputs/koivu_5cm_v2_pipeline2_out.npz": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d",
+    "blind-pose-experiments-review-17/upstream/pose-consistency/runs/koivu_floorfix/pipeline2_out.npz": "ac63b5219a61094d754b6303d40b7f9dc0905a2abe446b6070bab94458c592d7",
+    "blind-polycam-alignment-feasibility-36/POLYCAM_INTRINSIC_GEOMETRY.npz": "9a8b08d23ec1202b35028161a29c873cee296ca82b38381635440e4733b0f1fb",
+    "blind-polycam-rigid-registration-37/run-01/CANDIDATE_RIGID_TRANSFORM.npz": "4085c76c14e1e97acd939a302daf1a9cd1f258b86d97e8e08ea6e6e9aae8da8f",
+    "blind-split-candidate-game-03/body-margin-variants-07/native025/detour_engine.py": "8ab51b8fe7ac2585cfbe797615dd9ac78956e6cb14277deb092aca19df38787d",
+    "blind-split-candidate-game-03/body-margin-variants-07/native025/libblind_detour.so": "b6cd7e2ac35d738337e80597bcbdafd62e6884f5100867d7afbe1b77105709b0",
+    "blind-polycam-table-loop-proposals-44/query.py": "dea8872ebf364c1530a06f5ce8e17c6a7e0fd5d73b066c15901f1776e9ef8282",
+    "blind-polycam-table-loop-proposals-44/PROTOCOL.md": "ebfa32c888219ab388b7b1e93ed1379af705c865f99ce7e470f1765ad869df35"
+  }
+}

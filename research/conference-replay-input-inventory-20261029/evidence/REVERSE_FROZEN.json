@@ -1,0 +1,55 @@
+{
+  "tasks": [
+    {
+      "name": "originalInside160ToOriginalOutside130",
+      "requestedStartXYZ": [
+        4.559319120668386,
+        -0.0011885450791200292,
+        0.3174664138967077
+      ],
+      "requestedGoalXYZ": [
+        1.395818598103762,
+        -0.0007736767463522032,
+        3.6596092445038324
+      ],
+      "sourceOriginalStartXYZ": [
+        4.559319477295879,
+        0.0,
+        0.31746676921436623
+      ],
+      "sourceOriginalGoalXYZ": [
+        1.395818549852976,
+        0.0,
+        3.6596092423337994
+      ],
+      "cameraAnchorNotMeasuredBodyPose": true
+    },
+    {
+      "name": "entryRank0TargetToOriginalOutside130",
+      "requestedStartXYZ": [
+        4.625,
+        0.0,
+        0.22500000000000053
+      ],
+      "requestedGoalXYZ": [
+        1.395818598103762,
+        -0.0007736767463522032,
+        3.6596092445038324
+      ],
+      "sourceEntryRank": 0,
+      "continuousExecutionStillMustUseActualActorEndState": true
+    }
+  ],
+  "files": {
+    "blind-polycam-varpu-return-39/query.py": "19f0a6556e11d5d664015761965bbcd145ac7f3c8ca0c0615100aba8913ef1db",
+    "blind-polycam-varpu-return-39/PROTOCOL.md": "0bc3030528e051ceb0b87c7bcb42d9ac01265056d0c35ee142979b77bc72908d",
+    "blind-small-room-entry-return-24/planning-01/result/body45cmMargin0.json": "f5c74f8255fafd5dda7664b695b298f70b9d140427fecec90e1ce23c21a4678a",
+    "blind-registered-polycam-recast-38/S15_C25mm/run-01/VARPUFarInside-body45cmMargin0.json": "630d8897d69725e3a9e9a10a4bbdcd31b492315da57f8c49c91f474cc6fdc06b",
+    "blind-polycam-alignment-feasibility-36/POLYCAM_INTRINSIC_GEOMETRY.npz": "9a8b08d23ec1202b35028161a29c873cee296ca82b38381635440e4733b0f1fb",
+    "blind-polycam-rigid-registration-37/run-01/CANDIDATE_RIGID_TRANSFORM.npz": "4085c76c14e1e97acd939a302daf1a9cd1f258b86d97e8e08ea6e6e9aae8da8f",
+    "blind-split-candidate-game-03/body-margin-variants-07/native025/detour_engine.py": "8ab51b8fe7ac2585cfbe797615dd9ac78956e6cb14277deb092aca19df38787d",
+    "blind-split-candidate-game-03/body-margin-variants-07/native025/libblind_detour.so": "b6cd7e2ac35d738337e80597bcbdafd62e6884f5100867d7afbe1b77105709b0",
+    "blind-split-candidate-game-03/inputs/koivu_5cm_v2_pipeline2_out.npz": "a2fc5c13f86bf7033131347fd9b6d61db23ab716d12d668a3d969b9e87dbf48d",
+    "blind-pose-experiments-review-17/upstream/pose-consistency/runs/koivu_floorfix/pipeline2_out.npz": "ac63b5219a61094d754b6303d40b7f9dc0905a2abe446b6070bab94458c592d7"
+  }
+}
