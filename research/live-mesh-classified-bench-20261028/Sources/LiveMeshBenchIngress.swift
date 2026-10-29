@@ -31,8 +31,11 @@ public final class LiveMeshBenchIngress {
     public init(decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh-bench.decode", qos: .utility)) throws {
         // Source floor semantics only. Nonfloor/unknown faces remain geometry;
         // this does not certify support or convert an omitted revision to free space.
+        // New bench queries require supplied XZ membership, not silent horizontal
+        // projection. This still does not prove source/body/support clearance.
         ingress = try MeshCandidateIngress83(maxAnchors: 128, maxCopies: 1,
-            supportPolicy: .classifiedFloorOnly, decodeQueue: decodeQueue)
+            supportPolicy: .classifiedFloorOnly,
+            endpointPolicy: .requireSuppliedXZOverPolygon, decodeQueue: decodeQueue)
     }
     private func active(_ generation: UUID) -> Bool {
         lock.lock(); defer { lock.unlock() }

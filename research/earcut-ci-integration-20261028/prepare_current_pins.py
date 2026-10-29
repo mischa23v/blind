@@ -26,13 +26,13 @@ old75=json.loads((P/'APPLE_SOURCE_PINS.json').read_text());new75,d75=revised(P,o
 added=[p for p in (P/'BlindRoomMesh/Sources/CEarcut').rglob('*') if p.is_file()]+[P/'BlindRoomMesh/Sources/BlindRoomMesh/HistoricalPolygonTriangulation.swift']
 for p in added:new75[str(p.relative_to(P))]=sha(p)
 write(P/'APPLE_CURRENT_SOURCE_PINS.json',{'schema':1,'scope':'reviewed current Earcut and opt-in strict endpoint integration, not historical Apple proof','historical_manifest':'APPLE_SOURCE_PINS.json','historical_manifest_sha256':sha(P/'APPLE_SOURCE_PINS.json'),'reviewed_changes':d75,'new_files':[str(p.relative_to(P)) for p in added],'files':new75})
-old83=json.loads((I/'SOURCE_PINS.json').read_text());new83,d83=revised(R,old83,{'research/room-mesh-package-75/apple/ci.py','research/mesh-candidate-ingress-83/apple/ci.py','research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift'} | strictRoot)
+old83=json.loads((I/'SOURCE_PINS.json').read_text());new83,d83=revised(R,old83,{'research/room-mesh-package-75/apple/ci.py','research/mesh-candidate-ingress-83/apple/ci.py','research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift','research/mesh-candidate-ingress-83/tests/main.swift'} | strictRoot)
 new83['research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json']=sha(P/'APPLE_CURRENT_SOURCE_PINS.json');write(I/'CURRENT_SOURCE_PINS.json',{'schema':1,'scope':'reviewed current Earcut dependency CI, not historical stage83 proof','historical_manifest':'SOURCE_PINS.json','historical_manifest_sha256':sha(I/'SOURCE_PINS.json'),'reviewed_changes':d83,'new_files':['research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json'],'files':new83})
 oldC=json.loads((C/'INPUT_PINS.json').read_text());rows=[];dc=[]
 for row in oldC['files']:
  path=R/row['path'];h=sha(path)
  if h!=row['sha256']:
-  if row['path'] not in {'research/mesh-candidate-ingress-83/apple/ci.py','research/room-mesh-package-75/BlindRoomMesh/Package.swift','research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift','ios/BlindAssistTests/ClassificationIngressTests.swift','ios/BlindAssist/NavigationModel.swift'} | strictRoot:raise ValueError('unreviewed classifier delta '+row['path'])
+  if row['path'] not in {'research/mesh-candidate-ingress-83/apple/ci.py','research/room-mesh-package-75/BlindRoomMesh/Package.swift','research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift','ios/BlindAssistTests/ClassificationIngressTests.swift','ios/BlindAssist/NavigationModel.swift','research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift','research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift','research/mesh-candidate-ingress-83/tests/main.swift'} | strictRoot:raise ValueError('unreviewed classifier delta '+row['path'])
   dc.append({'path':row['path'],'before':row['sha256'],'after':h})
  rows.append({'path':row['path'],'bytes':path.stat().st_size,'sha256':h})
 for p in added:rows.append({'path':str(p.relative_to(R)),'bytes':p.stat().st_size,'sha256':sha(p)})

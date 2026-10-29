@@ -53,6 +53,10 @@ with tempfile.TemporaryDirectory(prefix='stage85-integrated-') as temp:
         target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(R / name, target)
+    subprocess.run(['git', 'apply', '-R', str(H / 'conversation-runtime-failure-layer.patch')], cwd=root,
+                   check=True, timeout=15, capture_output=True)
+    for name, digest in manifest['beforeConversationRuntimeFailure'].items():
+        check('exact pre-conversation-runtime source recovered ' + name, hashlib.sha256((root / name).read_bytes()).hexdigest() == digest)
     subprocess.run(['git', 'apply', '-R', str(H / 'strict-endpoint-test-membership.patch')], cwd=root,
                    check=True, timeout=15, capture_output=True)
     for name, digest in manifest['beforeStrictEndpointTestMembership'].items():

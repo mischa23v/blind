@@ -3702,6 +3702,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                   self.requestID == request, ConversationDomainPolicy.allowsModelResponse(to: text) else { return }
             self.unverifiedConversationTimeout?.cancel(); self.unverifiedConversationTimeout = nil
             self.unverifiedConversationTask = nil
+            if let fallback = answer.conversationOperationalFallback {
+                self.unverifiedConversationReply(fallback)
+                return
+            }
             guard let reply = answer.text,
                   !SpatialClaimGuard.containsSpatialClaim(reply),
                   CompanionEvidenceGuard.allows(reply, reports: dialogue.userRecords.map(\.text), evidence: [], now: Date()) else {
@@ -4494,8 +4498,9 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             self.questionTimeoutTask?.cancel(); self.questionTimeoutTask = nil
             self.busy = false; self.questionIsChat = false
             guard let rawText = answer.text else {
-                self.sceneAnswer = answer.status; self.currentReply = answer.status
-                if self.assistantSession.state == .active { self.speakOperation(answer.status) }
+                let fallback = answer.conversationOperationalFallback ?? answer.status
+                self.sceneAnswer = fallback; self.currentReply = fallback
+                if self.assistantSession.state == .active { self.speakOperation(fallback) }
                 return
             }
             // Metadata generation may outlast the read. Recheck the original

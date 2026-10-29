@@ -7,9 +7,11 @@ def require(value, message):
     if not value:
         raise ValueError(message)
 
+EXPECTED_CASES = ['testActualDependencyRouteAndExactlyOneTransformRemainNonphysical', 'testForeignGenerationCannotInvokeBorrowedCapture', 'testReplacementRetiresBeforeCopyAndExactRemovalWithholdsIncompletePreview', 'testMalformedReplacementCannotExposeRetainedOldFloorPreview', 'testSingleCopyBackpressureDoesNotInvokeSecondCaptureAndRetainsGap', 'testStopDuringCaptureFencesLateCompletionAndDoesNotReleaseReservationEarly', 'testCallbackBudgetBoundsSumWorkWithFastDecoderAndRotatesOmissions', 'testBlockedSynchronousCapturePreventsDiscardAcknowledgement', 'testClassifiedConsumerNeverPromotesMissingUnknownOrNonFloorPlane', 'testNonFloorGeometryStillBlocksAndExactRemovalCannotDeclareClearance', 'testUnclassifiedReplacementAndLaterFloorCannotEraseGapInSameOwner', 'testNewTerminalOwnerCannotReusePriorGenerationOrGeometry', 'testQueuedFloorThenRefusedRemovalCannotExposeStaleFloorPreview', 'testRotatedTranslatedMetreGeometryUsesExactlyOneRigidTransform', 'testScaleAndReflectionReplacementCannotExposePriorFloor', 'testStrictSelectionPreservesInsideAndVerticalEndpointReceipts', 'testStrictSelectionRejectsGoalAndStartProjectionWithTypedReceipts', 'testDebugIngressStrictPolicySurvivesResetWithoutChangingLegacyDefault']
+
 def collect(source, log, command, before, after):
     expected=re.findall(r'^\s*func (test\w+)\(', source, re.M)
-    require(len(expected)==15 and len(set(expected))==15, 'expected pinned 15-fixture XCTest source')
+    require(expected==EXPECTED_CASES and len(set(expected))==18, 'expected exact reviewed 18-fixture XCTest source')
     case_lines=[line for line in log.splitlines() if line.startswith('Test Case ')]
     pattern=r"Test Case '-\[([^ ]+) (test\w+)\]' (started|passed|failed|skipped)(?:\.| \([^\n]*\)\.)"
     observed={}
@@ -28,10 +30,10 @@ def collect(source, log, command, before, after):
         name,status=match.groups();suites.setdefault(name,[]).append(status)
     require(suites=={name:['started','passed'] for name in ['All tests','LiveMeshClassifiedBenchPackageTests.xctest','LiveMeshBenchIngressTests']}, 'missing, extra, contradictory or failed XCTest suite')
     totals=re.findall(r'Executed (\d+) tests?, with (\d+) failures? \((\d+) unexpected\)',log)
-    require(len(totals)==3 and all(t==('15','0','0') for t in totals), 'missing or contradictory XCTest totals')
+    require(len(totals)==3 and all(t==('18','0','0') for t in totals), 'missing or contradictory XCTest totals')
     require(command.get('swift_test_exit_code')==0 and command.get('log_writer_exit_code')==0, 'command failed')
     require(before==after=='', 'source not clean before and after test')
-    return {'status':'passed','scope':'15 macOS synthetic XCTest fixtures, not live sensing','executed':15,'passed':15,'failed':0,'ios_session_fixtures_excluded':5,'cases':[{'name':n,'status':'passed'} for n in expected],'swift_testing_zero_suite_not_counted':True,'source_clean_before_and_after':True}
+    return {'status':'passed','scope':'18 macOS synthetic XCTest fixtures, not live sensing','executed':18,'passed':18,'failed':0,'ios_session_fixtures_excluded':5,'cases':[{'name':n,'status':'passed'} for n in expected],'swift_testing_zero_suite_not_counted':True,'source_clean_before_and_after':True}
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('source',type=Path);parser.add_argument('artifact_dir',type=Path);args=parser.parse_args();d=args.artifact_dir

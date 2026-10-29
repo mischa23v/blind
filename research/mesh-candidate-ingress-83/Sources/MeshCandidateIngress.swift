@@ -33,21 +33,25 @@ public final class MeshCandidateIngress83 {
     private var revisions: [UUID: UInt64] = [:]
     /// Opt-in source classification only, NOT measured physical support. Legacy
     /// callers retain slope-based diagnostic behavior; policy is fixed across reset.
+    /// Explicit endpoint policy is forwarded unchanged to75 and also survives reset.
+    /// The default preserves legacy replay; strict XZ admission is not clearance.
     public init(maxAnchors: Int = 128, maxCopies: Int = 1,
                 supportPolicy: MeshSupportPolicy = .legacySlope,
+                endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
                 decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh83.decode", qos: .utility)) throws {
         guard (1...1024).contains(maxAnchors), (1...2).contains(maxCopies) else { throw Failure.unavailable }
         self.maxAnchors = maxAnchors; self.maxCopies = maxCopies; worker = decodeQueue
         self.supportPolicy = supportPolicy
         let initialEpoch = UUID(); epoch = initialEpoch
         runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1,
-                                               supportPolicy: supportPolicy)
+                                               supportPolicy: supportPolicy, endpointPolicy: endpointPolicy)
     }
 #if DEBUG
     /// Explicit synthetic-test timing only; the ordinary initializer and release
     /// API remain unchanged. No geometry or session/anchor identity is recorded.
     public init(maxAnchors: Int = 128, maxCopies: Int = 1,
                 supportPolicy: MeshSupportPolicy = .legacySlope,
+                endpointPolicy: MeshEndpointPolicy = .legacyNearestProjection,
                 captureSyntheticTestTiming: Bool,
                 syntheticTimingCompletion: ((UUID,[RoomMeshCandidateRuntime.DiagnosticStageReceipt])->Void)? = nil,
                 decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh83.decode", qos: .utility)) throws {
@@ -56,7 +60,8 @@ public final class MeshCandidateIngress83 {
         self.supportPolicy = supportPolicy
         let initialEpoch = UUID(); epoch = initialEpoch
         runtime = try RoomMeshCandidateRuntime(sessionID: initialEpoch.uuidString, generation: 1,
-            supportPolicy: supportPolicy, captureSyntheticTestTiming: captureSyntheticTestTiming,
+            supportPolicy: supportPolicy, endpointPolicy: endpointPolicy,
+            captureSyntheticTestTiming: captureSyntheticTestTiming,
             syntheticTimingCompletion: syntheticTimingCompletion)
     }
     public var diagnosticReceiptID: UUID? { runtime.diagnosticReceiptID }

@@ -240,3 +240,89 @@ check(resetDiscardDone.wait(timeout: .now()+5) == .success, "old epoch copy drai
 if case .failure = query(resetDiscard) { checks += 1 } else { preconditionFailure("old epoch restored terminal runtime") }
 
 print("RESULT: \(checks) stage83 real-runtime synthetic checks passed; no ARKit execution or privacy purge proof")
+
+// Explicit current caller-policy controls. The original83 checks/result above
+// remain the legacy comparator; this block does not grant physical authority.
+var endpointChecks = 0
+func endpointCheck(_ value: @autoclosure () -> Bool, _ name: String) {
+    precondition(value(), name); endpointChecks += 1
+}
+final class EndpointResultBox {
+    private let lock = NSLock()
+    private var value: Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>?
+    func put(_ value: Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>) {
+        lock.lock(); self.value = value; lock.unlock()
+    }
+    func get() -> Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>? {
+        lock.lock(); defer { lock.unlock() }; return value
+    }
+}
+func endpointQuery(_ owner: MeshCandidateIngress83, start: [Float], goal: [Float])
+    -> Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure> {
+    let done = DispatchSemaphore(value: 0), box = EndpointResultBox()
+    owner.request(start: start, goal: goal, body: body) { box.put($0); done.signal() }
+    precondition(done.wait(timeout: .now()+10) == .success, "bounded endpoint-policy result")
+    guard let result = box.get() else { preconditionFailure("missing endpoint-policy result") }
+    return result
+}
+func endpointRefusal(_ result: Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>)
+    -> MeshEndpointAdmissionReceipt {
+    guard case .failure(.runtime(.endpointAssociationRejected(let receipt))) = result else {
+        preconditionFailure("expected typed strict endpoint refusal, not any failure")
+    }
+    return receipt
+}
+func endpointDiscard(_ owner: MeshCandidateIngress83) {
+    let done = DispatchSemaphore(value: 0)
+    owner.stopAndDiscard { done.signal() }
+    precondition(done.wait(timeout: .now()+10) == .success, "bounded endpoint-policy drain")
+}
+let endpointQueue = DispatchQueue(label: "test.stage83.endpoint-policy")
+let endpointLegacy = try MeshCandidateIngress83(decodeQueue: endpointQueue)
+let endpointStrict = try MeshCandidateIngress83(endpointPolicy: .requireSuppliedXZOverPolygon,
+                                               decodeQueue: endpointQueue)
+let endpointAnchor = UUID()
+endpointCheck(endpointLegacy.ingest(anchorID: endpointAnchor, receiptUptime: 1) { capture($0, endpointAnchor) }, "legacy endpoint floor admitted")
+endpointCheck(endpointStrict.ingest(anchorID: endpointAnchor, receiptUptime: 1) { capture($0, endpointAnchor) }, "strict endpoint floor admitted")
+endpointQueue.sync {}
+let endpointStart: [Float] = [-1,-0.05,0], endpointGoal: [Float] = [1,-0.05,0]
+let endpointOld = try endpointQuery(endpointLegacy, start: endpointStart, goal: endpointGoal).get()
+let endpointInside = try endpointQuery(endpointStrict, start: endpointStart, goal: endpointGoal).get()
+guard let endpointReceipt = endpointInside.route.endpointAdmission else { preconditionFailure("strict admission receipt missing") }
+endpointCheck(endpointOld.route.complete && endpointInside.route.complete, "strict admitted inside route remains complete")
+endpointCheck(endpointOld.route.endpointPolicy == .legacyNearestProjection && endpointOld.route.endpointAdmission == nil, "83 default remains legacy comparator")
+endpointCheck(endpointInside.route.endpointPolicy == .requireSuppliedXZOverPolygon && endpointReceipt.policy == .requireSuppliedXZOverPolygon, "83 forwards explicit strict policy")
+endpointCheck(endpointOld.route.points.flatMap { $0 }.map(\.bitPattern) == endpointInside.route.points.flatMap { $0 }.map(\.bitPattern), "strict inside path bit-matches legacy")
+endpointCheck(endpointOld.route.projectedStart.map(\.bitPattern) == endpointInside.route.projectedStart.map(\.bitPattern) && endpointOld.route.projectedGoal.map(\.bitPattern) == endpointInside.route.projectedGoal.map(\.bitPattern), "strict projected endpoints bit-match legacy")
+endpointCheck(endpointReceipt.start.requested == endpointStart && endpointReceipt.goal.requested == endpointGoal, "strict receipt retains both supplied endpoints")
+endpointCheck(endpointReceipt.start.found && endpointReceipt.start.isOverPolygon && endpointReceipt.goal.found && endpointReceipt.goal.isOverPolygon, "strict inside receipt confirms both associations")
+endpointCheck(endpointInside.route.projectedStart[1] != endpointStart[1] && endpointInside.route.projectedStart[0] == endpointStart[0] && endpointInside.route.projectedStart[2] == endpointStart[2], "strict permits vertical-only association without erasing connector")
+endpointCheck(!endpointReceipt.authorizesPhysicalGuidance && !endpointInside.physicalAuthority && !endpointInside.coverageKnown && !endpointInside.route.authorizesPhysicalGuidance, "strict membership does not grant physical authority")
+let endpointCenter: [Float] = [0,0,0], endpointOutsideGoal: [Float] = [2.8,0,0]
+let endpointOldGoal = try endpointQuery(endpointLegacy, start: endpointCenter, goal: endpointOutsideGoal).get()
+endpointCheck(endpointOldGoal.route.complete, "legacy comparator still demonstrates goal projection")
+let endpointGoalRefusal = endpointRefusal(endpointQuery(endpointStrict, start: endpointCenter, goal: endpointOutsideGoal))
+endpointCheck(endpointGoalRefusal.start.requested == endpointCenter && endpointGoalRefusal.goal.requested == endpointOutsideGoal, "goal refusal retains both supplied endpoints")
+endpointCheck(endpointGoalRefusal.start.isOverPolygon && endpointGoalRefusal.goal.found && !endpointGoalRefusal.goal.isOverPolygon, "goal-only projection is typed refusal")
+endpointCheck(!endpointGoalRefusal.authorizesPhysicalGuidance && !endpointStrict.isCurrent(endpointInside), "refused request retires old route and carries no authority")
+let endpointOutsideStart: [Float] = [-2.8,0,0]
+let endpointOldStart = try endpointQuery(endpointLegacy, start: endpointOutsideStart, goal: endpointCenter).get()
+endpointCheck(endpointOldStart.route.complete, "legacy comparator still demonstrates start projection")
+let endpointStartRefusal = endpointRefusal(endpointQuery(endpointStrict, start: endpointOutsideStart, goal: endpointCenter))
+endpointCheck(endpointStartRefusal.start.requested == endpointOutsideStart && endpointStartRefusal.goal.requested == endpointCenter, "start refusal retains both supplied endpoints")
+endpointCheck(endpointStartRefusal.start.found && !endpointStartRefusal.start.isOverPolygon && endpointStartRefusal.goal.isOverPolygon, "start-only projection is typed refusal")
+endpointCheck(endpointStartRefusal.policy == .requireSuppliedXZOverPolygon && !endpointStartRefusal.authorizesPhysicalGuidance, "strict start refusal identity preserved")
+let endpointMissingGoal: [Float] = [20,0,0]
+let endpointMissing = endpointRefusal(endpointQuery(endpointStrict, start: endpointCenter, goal: endpointMissingGoal))
+endpointCheck(endpointMissing.start.isOverPolygon && !endpointMissing.goal.found && !endpointMissing.goal.isOverPolygon, "missing goal is deterministic typed refusal")
+endpointCheck(endpointMissing.goal.requested == endpointMissingGoal && endpointMissing.goal.projected == [0,0,0], "missing goal retains request and zero projection")
+try endpointStrict.reset()
+endpointCheck(!endpointStrict.isCurrent(endpointInside), "reset retires strict prior epoch")
+endpointCheck(endpointStrict.ingest(anchorID: endpointAnchor, receiptUptime: 1) { capture($0, endpointAnchor) }, "strict owner accepts new epoch floor")
+endpointQueue.sync {}
+let endpointAfterReset = try endpointQuery(endpointStrict, start: endpointStart, goal: endpointGoal).get()
+endpointCheck(endpointAfterReset.route.complete && endpointAfterReset.route.endpointPolicy == .requireSuppliedXZOverPolygon, "strict policy survives reset with valid positive control")
+let endpointResetRefusal = endpointRefusal(endpointQuery(endpointStrict, start: endpointCenter, goal: endpointOutsideGoal))
+endpointCheck(endpointResetRefusal.policy == .requireSuppliedXZOverPolygon && !endpointResetRefusal.goal.isOverPolygon, "reset cannot silently restore legacy projection")
+endpointDiscard(endpointLegacy); endpointDiscard(endpointStrict)
+print("STRICT_ENDPOINT_INGRESS_RESULT: \(endpointChecks) caller-policy checks passed; original83 comparator retained; no physical authority")

@@ -1,0 +1,39 @@
+    /// Missing polygons in a built, displaced/rotated mesh are now an explicit
+    /// strict endpoint refusal. This is intentionally separate from build/no-route
+    /// refusal above: an arbitrary stale/unavailable error is not accepted here.
+    private func assertMissingEndpointPolygons(_ result: Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>,
+                                               start: [Float], goal: [Float],
+                                               file: StaticString = #filePath, line: UInt = #line) {
+        guard case .failure(.runtime(.endpointAssociationRejected(let receipt))) = result else {
+            return XCTFail("Expected typed missing endpoint polygons, not any failure", file: file, line: line)
+        }
+        XCTAssertEqual(receipt.policy, .requireSuppliedXZOverPolygon, file: file, line: line)
+        XCTAssertEqual(receipt.start.requested, start, file: file, line: line)
+        XCTAssertEqual(receipt.goal.requested, goal, file: file, line: line)
+        XCTAssertFalse(receipt.start.found, file: file, line: line)
+        XCTAssertFalse(receipt.goal.found, file: file, line: line)
+        XCTAssertFalse(receipt.start.isOverPolygon, file: file, line: line)
+        XCTAssertFalse(receipt.goal.isOverPolygon, file: file, line: line)
+        XCTAssertEqual(receipt.start.projected, [0,0,0], file: file, line: line)
+        XCTAssertEqual(receipt.goal.projected, [0,0,0], file: file, line: line)
+        XCTAssertFalse(receipt.authorizesPhysicalGuidance, file: file, line: line)
+    }
+    private func queryEndpoints(_ owner: LiveMeshBenchIngress, start: [Float], goal: [Float]) throws
+        -> Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure> {
+        let done = expectation(description: "explicit strict bench endpoint result")
+        let box = ResultBox<Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>>()
+        owner.request(generation: owner.generation, start: start, goal: goal,
+            body: try MeshCandidateBody(radius: 0.225, height: 1.75)) { box.put($0); done.fulfill() }
+        wait(for: [done], timeout: 10)
+        return try XCTUnwrap(box.get())
+    }
+    private func queryIngressEndpoints(_ owner: MeshCandidateIngress83, start: [Float], goal: [Float]) throws
+        -> Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure> {
+        let done = expectation(description: "explicit ingress endpoint result")
+        let box = ResultBox<Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>>()
+        owner.request(start: start, goal: goal, body: try MeshCandidateBody(radius: 0.225, height: 1.75)) {
+            box.put($0); done.fulfill()
+        }
+        wait(for: [done], timeout: 10)
+        return try XCTUnwrap(box.get())
+    }

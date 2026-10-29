@@ -69,6 +69,45 @@ final class LiveMeshBenchIngressTests: XCTestCase {
         let done = expectation(description: "terminal native drain")
         owner.stopAndDiscard { done.fulfill() }; wait(for: [done], timeout: 10)
     }
+    /// Missing polygons in a built, displaced/rotated mesh are now an explicit
+    /// strict endpoint refusal. This is intentionally separate from build/no-route
+    /// refusal above: an arbitrary stale/unavailable error is not accepted here.
+    private func assertMissingEndpointPolygons(_ result: Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>,
+                                               start: [Float], goal: [Float],
+                                               file: StaticString = #filePath, line: UInt = #line) {
+        guard case .failure(.runtime(.endpointAssociationRejected(let receipt))) = result else {
+            return XCTFail("Expected typed missing endpoint polygons, not any failure", file: file, line: line)
+        }
+        XCTAssertEqual(receipt.policy, .requireSuppliedXZOverPolygon, file: file, line: line)
+        XCTAssertEqual(receipt.start.requested, start, file: file, line: line)
+        XCTAssertEqual(receipt.goal.requested, goal, file: file, line: line)
+        XCTAssertFalse(receipt.start.found, file: file, line: line)
+        XCTAssertFalse(receipt.goal.found, file: file, line: line)
+        XCTAssertFalse(receipt.start.isOverPolygon, file: file, line: line)
+        XCTAssertFalse(receipt.goal.isOverPolygon, file: file, line: line)
+        XCTAssertEqual(receipt.start.projected, [0,0,0], file: file, line: line)
+        XCTAssertEqual(receipt.goal.projected, [0,0,0], file: file, line: line)
+        XCTAssertFalse(receipt.authorizesPhysicalGuidance, file: file, line: line)
+    }
+    private func queryEndpoints(_ owner: LiveMeshBenchIngress, start: [Float], goal: [Float]) throws
+        -> Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure> {
+        let done = expectation(description: "explicit strict bench endpoint result")
+        let box = ResultBox<Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>>()
+        owner.request(generation: owner.generation, start: start, goal: goal,
+            body: try MeshCandidateBody(radius: 0.225, height: 1.75)) { box.put($0); done.fulfill() }
+        wait(for: [done], timeout: 10)
+        return try XCTUnwrap(box.get())
+    }
+    private func queryIngressEndpoints(_ owner: MeshCandidateIngress83, start: [Float], goal: [Float]) throws
+        -> Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure> {
+        let done = expectation(description: "explicit ingress endpoint result")
+        let box = ResultBox<Result<MeshCandidateIngress83.Candidate, MeshCandidateIngress83.Failure>>()
+        owner.request(start: start, goal: goal, body: try MeshCandidateBody(radius: 0.225, height: 1.75)) {
+            box.put($0); done.fulfill()
+        }
+        wait(for: [done], timeout: 10)
+        return try XCTUnwrap(box.get())
+    }
     func testActualDependencyRouteAndExactlyOneTransformRemainNonphysical() throws {
         let queue = DispatchQueue(label: "bench.test.decode")
         let owner = try LiveMeshBenchIngress(decodeQueue: queue), anchor = UUID()
@@ -256,7 +295,7 @@ final class LiveMeshBenchIngressTests: XCTestCase {
         queue.sync {}
         //83 can build a route again, but this consumer refuses its retained gap.
         assertIncompletePreviewRefused(try query(owner, x: 10))
-        assertNoCandidate(try query(owner)) // Original position must not survive replacement.
+        assertMissingEndpointPolygons(try query(owner), start: [-2,0,0], goal: [2,0,0]) // Original position must not survive replacement.
     }
     func testNewTerminalOwnerCannotReusePriorGenerationOrGeometry() throws {
         let queue = DispatchQueue(label: "bench.classified.new-owner"), anchor = UUID()
@@ -277,7 +316,7 @@ final class LiveMeshBenchIngressTests: XCTestCase {
         queue.sync {}; let replacement = try candidate(fresh, x: 10)
         XCTAssertTrue(replacement.route.complete); XCTAssertTrue(replacement.route.sourceDeliveryComplete)
         XCTAssertFalse(replacement.physicalAuthority); XCTAssertFalse(replacement.coverageKnown)
-        assertNoCandidate(try query(fresh))
+        assertMissingEndpointPolygons(try query(fresh), start: [-2,0,0], goal: [2,0,0])
     }
     func testQueuedFloorThenRefusedRemovalCannotExposeStaleFloorPreview() throws {
         let queue = DispatchQueue(label: "bench.classified.refused-removal"), anchor = UUID()
@@ -310,8 +349,8 @@ final class LiveMeshBenchIngressTests: XCTestCase {
         XCTAssertEqual(result.route.projectedGoal[2], 6, accuracy: 0.5)
         XCTAssertFalse(result.physicalAuthority); XCTAssertFalse(result.coverageKnown)
         // This horizontal path would exist if translation were applied without rotation.
-        assertNoCandidate(try query(owner, x: 10, z: 4))
-        assertNoCandidate(try query(owner))
+        assertMissingEndpointPolygons(try query(owner, x: 10, z: 4), start: [8,0,4], goal: [12,0,4])
+        assertMissingEndpointPolygons(try query(owner), start: [-2,0,0], goal: [2,0,0])
     }
     func testScaleAndReflectionReplacementCannotExposePriorFloor() throws {
         let scales: [Float] = [2, -1]
@@ -328,5 +367,91 @@ final class LiveMeshBenchIngressTests: XCTestCase {
             })
             queue.sync {}; assertIncompletePreviewRefused(try query(owner))
         }
+    }
+    func testStrictSelectionPreservesInsideAndVerticalEndpointReceipts() throws {
+        let queue = DispatchQueue(label: "bench.strict.inside"), anchor = UUID()
+        let owner = try LiveMeshBenchIngress(decodeQueue: queue)
+        defer { discard(owner) }
+        XCTAssertTrue(owner.observe(anchorID: anchor, generation: owner.generation, receiptUptime: 1) { floor($0, id: anchor) })
+        queue.sync {}
+        let start: [Float] = [-1,-0.05,0], goal: [Float] = [1,-0.05,0]
+        let candidate = try queryEndpoints(owner, start: start, goal: goal).get()
+        let receipt = try XCTUnwrap(candidate.route.endpointAdmission)
+        XCTAssertEqual(candidate.route.endpointPolicy, .requireSuppliedXZOverPolygon)
+        XCTAssertEqual(receipt.policy, .requireSuppliedXZOverPolygon)
+        XCTAssertTrue(candidate.route.complete); XCTAssertTrue(owner.isCurrent(candidate, generation: owner.generation))
+        XCTAssertTrue(receipt.start.found && receipt.start.isOverPolygon && receipt.goal.found && receipt.goal.isOverPolygon)
+        XCTAssertEqual(receipt.start.requested, start); XCTAssertEqual(receipt.goal.requested, goal)
+        XCTAssertEqual(receipt.start.projected, candidate.route.projectedStart)
+        XCTAssertNotEqual(candidate.route.projectedStart[1], start[1])
+        XCTAssertEqual(candidate.route.projectedStart[0], start[0]); XCTAssertEqual(candidate.route.projectedStart[2], start[2])
+        XCTAssertFalse(receipt.authorizesPhysicalGuidance); XCTAssertFalse(candidate.physicalAuthority)
+        XCTAssertFalse(candidate.coverageKnown); XCTAssertFalse(owner.authorizesPhysicalGuidance)
+    }
+    func testStrictSelectionRejectsGoalAndStartProjectionWithTypedReceipts() throws {
+        let queue = DispatchQueue(label: "bench.strict.refusal"), anchor = UUID()
+        let owner = try LiveMeshBenchIngress(decodeQueue: queue)
+        defer { discard(owner) }
+        XCTAssertTrue(owner.observe(anchorID: anchor, generation: owner.generation, receiptUptime: 1) { floor($0, id: anchor) })
+        queue.sync {}; let original = try candidate(owner)
+        let center: [Float] = [0,0,0], outsideGoal: [Float] = [2.8,0,0], outsideStart: [Float] = [-2.8,0,0]
+        guard case .failure(.runtime(.endpointAssociationRejected(let goalReceipt))) = try queryEndpoints(owner, start: center, goal: outsideGoal) else {
+            return XCTFail("Bench must not emit a projected-goal candidate or an untyped failure")
+        }
+        XCTAssertEqual(goalReceipt.policy, .requireSuppliedXZOverPolygon)
+        XCTAssertEqual(goalReceipt.start.requested, center); XCTAssertEqual(goalReceipt.goal.requested, outsideGoal)
+        XCTAssertTrue(goalReceipt.start.isOverPolygon); XCTAssertTrue(goalReceipt.goal.found)
+        XCTAssertFalse(goalReceipt.goal.isOverPolygon); XCTAssertFalse(goalReceipt.authorizesPhysicalGuidance)
+        XCTAssertFalse(owner.isCurrent(original, generation: owner.generation))
+        guard case .failure(.runtime(.endpointAssociationRejected(let startReceipt))) = try queryEndpoints(owner, start: outsideStart, goal: center) else {
+            return XCTFail("Bench must not emit a projected-start candidate or an untyped failure")
+        }
+        XCTAssertEqual(startReceipt.start.requested, outsideStart); XCTAssertEqual(startReceipt.goal.requested, center)
+        XCTAssertTrue(startReceipt.start.found); XCTAssertFalse(startReceipt.start.isOverPolygon)
+        XCTAssertTrue(startReceipt.goal.isOverPolygon); XCTAssertFalse(startReceipt.authorizesPhysicalGuidance)
+        // A valid request still succeeds after refusals: all-rejected behavior is not a pass.
+        let after = try queryEndpoints(owner, start: [-1,0,0], goal: [1,0,0]).get()
+        XCTAssertTrue(after.route.complete); XCTAssertTrue(owner.isCurrent(after, generation: owner.generation))
+        XCTAssertEqual(after.route.endpointPolicy, .requireSuppliedXZOverPolygon)
+    }
+    func testDebugIngressStrictPolicySurvivesResetWithoutChangingLegacyDefault() throws {
+#if DEBUG
+        let queue = DispatchQueue(label: "bench.strict.debug-forwarding"), anchor = UUID()
+        let legacy = try MeshCandidateIngress83(supportPolicy: .classifiedFloorOnly, decodeQueue: queue)
+        let strict = try MeshCandidateIngress83(supportPolicy: .classifiedFloorOnly,
+            endpointPolicy: .requireSuppliedXZOverPolygon, captureSyntheticTestTiming: false, decodeQueue: queue)
+        defer {
+            let drained = expectation(description: "both direct ingress owners drained")
+            drained.expectedFulfillmentCount = 2
+            legacy.stopAndDiscard { drained.fulfill() }; strict.stopAndDiscard { drained.fulfill() }
+            wait(for: [drained], timeout: 10)
+        }
+        XCTAssertTrue(legacy.ingest(anchorID: anchor, receiptUptime: 1) { floor($0, id: anchor) })
+        XCTAssertTrue(strict.ingest(anchorID: anchor, receiptUptime: 1) { floor($0, id: anchor) })
+        queue.sync {}
+        let center: [Float] = [0,0,0], outside: [Float] = [2.8,0,0]
+        let old = try queryIngressEndpoints(legacy, start: center, goal: outside).get()
+        XCTAssertTrue(old.route.complete); XCTAssertEqual(old.route.endpointPolicy, .legacyNearestProjection)
+        XCTAssertNil(old.route.endpointAdmission)
+        guard case .failure(.runtime(.endpointAssociationRejected(let before))) = try queryIngressEndpoints(strict, start: center, goal: outside) else {
+            return XCTFail("DEBUG initializer did not forward strict policy")
+        }
+        XCTAssertTrue(before.start.isOverPolygon && before.goal.found); XCTAssertFalse(before.goal.isOverPolygon)
+        XCTAssertEqual(before.start.requested, center); XCTAssertEqual(before.goal.requested, outside)
+        try strict.reset()
+        XCTAssertTrue(strict.ingest(anchorID: anchor, receiptUptime: 1) { floor($0, id: anchor) })
+        queue.sync {}
+        let inside = try queryIngressEndpoints(strict, start: [-1,0,0], goal: [1,0,0]).get()
+        XCTAssertTrue(inside.route.complete); XCTAssertEqual(inside.route.endpointPolicy, .requireSuppliedXZOverPolygon)
+        guard case .failure(.runtime(.endpointAssociationRejected(let after))) = try queryIngressEndpoints(strict, start: center, goal: outside) else {
+            return XCTFail("Reset changed immutable strict endpoint policy")
+        }
+        XCTAssertEqual(after.policy, .requireSuppliedXZOverPolygon); XCTAssertTrue(after.start.isOverPolygon)
+        XCTAssertTrue(after.goal.found); XCTAssertFalse(after.goal.isOverPolygon)
+        XCTAssertEqual(after.start.requested, center); XCTAssertEqual(after.goal.requested, outside)
+        XCTAssertFalse(after.authorizesPhysicalGuidance); XCTAssertFalse(strict.isCurrent(inside))
+#else
+        throw XCTSkip("DEBUG-only initializer is absent in a Release build")
+#endif
     }
 }

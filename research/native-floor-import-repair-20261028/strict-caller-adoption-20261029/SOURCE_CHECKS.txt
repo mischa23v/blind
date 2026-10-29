@@ -1,0 +1,27 @@
+{
+  "kind": "CURRENT_source_contract_only",
+  "currentChecksPassed": 27,
+  "historicalBaseSourceChecksPassed": 42,
+  "new83NativeChecksAuthored": 25,
+  "newBenchCasesAuthored": [
+    "testStrictSelectionPreservesInsideAndVerticalEndpointReceipts",
+    "testStrictSelectionRejectsGoalAndStartProjectionWithTypedReceipts",
+    "testDebugIngressStrictPolicySurvivesResetWithoutChangingLegacyDefault"
+  ],
+  "swiftTestsExecuted": false
+}
+test_baseline_current_source (test_current_contract.CurrentContractTests.test_baseline_current_source) ... ok
+test_refuse_all_rejected_vacuity (test_current_contract.CurrentContractTests.test_refuse_all_rejected_vacuity) ... ok
+test_refuse_any_failure_negative (test_current_contract.CurrentContractTests.test_refuse_any_failure_negative) ... ok
+test_refuse_bench_legacy_fallback (test_current_contract.CurrentContractTests.test_refuse_bench_legacy_fallback) ... ok
+test_refuse_cpu_callback_loss (test_current_contract.CurrentContractTests.test_refuse_cpu_callback_loss) ... ok
+test_refuse_debug_forwarding_loss (test_current_contract.CurrentContractTests.test_refuse_debug_forwarding_loss) ... ok
+test_refuse_default_activation (test_current_contract.CurrentContractTests.test_refuse_default_activation) ... ok
+test_refuse_legacy_comparator_relabel (test_current_contract.CurrentContractTests.test_refuse_legacy_comparator_relabel) ... ok
+test_refuse_missing_endpoint_receipt_weakened (test_current_contract.CurrentContractTests.test_refuse_missing_endpoint_receipt_weakened) ... ok
+test_refuse_normal_forwarding_loss (test_current_contract.CurrentContractTests.test_refuse_normal_forwarding_loss) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.010s
+
+OK

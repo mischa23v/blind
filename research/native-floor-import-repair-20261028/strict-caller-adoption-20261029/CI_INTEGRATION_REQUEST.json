@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "status": "authored candidate; independent review and native execution pending",
+  "liveSourceEdited": false,
+  "physicalAuthority": false,
+  "appActivation": false,
+  "baseSourceCommit": "b398c26b2ac4862b5440a31649a108a09011938c",
+  "changedSourceFiles": {
+    "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift": "5197a43b0df0e08a6b1fde8f5235d3ad8320df3148610ad261244860f7b07a0d",
+    "research/mesh-candidate-ingress-83/tests/main.swift": "ed2da9e2b0a70ad622a309bf5627274e8fb57280dd436e2ea572612649d4bf20",
+    "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift": "779ab0ca182bf75206b2284e6fa944296062e9a6fd5537debb57deb7f821f4dc",
+    "research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift": "231f444e91103a81f67eb686da03d566541ca0794b7f6e282e78b432aed78b83"
+  },
+  "original83ExpectedMarker": "RESULT: 83 stage83 real-runtime synthetic checks passed",
+  "new83ExpectedMarker": "STRICT_ENDPOINT_INGRESS_RESULT: 25 caller-policy checks passed; original83 comparator retained; no physical authority",
+  "classifiedBenchExpectedCaseCount": 18,
+  "classifiedBenchExpectedNames": [
+    "testActualDependencyRouteAndExactlyOneTransformRemainNonphysical",
+    "testForeignGenerationCannotInvokeBorrowedCapture",
+    "testReplacementRetiresBeforeCopyAndExactRemovalWithholdsIncompletePreview",
+    "testMalformedReplacementCannotExposeRetainedOldFloorPreview",
+    "testSingleCopyBackpressureDoesNotInvokeSecondCaptureAndRetainsGap",
+    "testStopDuringCaptureFencesLateCompletionAndDoesNotReleaseReservationEarly",
+    "testCallbackBudgetBoundsSumWorkWithFastDecoderAndRotatesOmissions",
+    "testBlockedSynchronousCapturePreventsDiscardAcknowledgement",
+    "testClassifiedConsumerNeverPromotesMissingUnknownOrNonFloorPlane",
+    "testNonFloorGeometryStillBlocksAndExactRemovalCannotDeclareClearance",
+    "testUnclassifiedReplacementAndLaterFloorCannotEraseGapInSameOwner",
+    "testNewTerminalOwnerCannotReusePriorGenerationOrGeometry",
+    "testQueuedFloorThenRefusedRemovalCannotExposeStaleFloorPreview",
+    "testRotatedTranslatedMetreGeometryUsesExactlyOneRigidTransform",
+    "testScaleAndReflectionReplacementCannotExposePriorFloor",
+    "testStrictSelectionPreservesInsideAndVerticalEndpointReceipts",
+    "testStrictSelectionRejectsGoalAndStartProjectionWithTypedReceipts",
+    "testDebugIngressStrictPolicySurvivesResetWithoutChangingLegacyDefault"
+  ],
+  "existingOriginalCaseCount": 15,
+  "newCaseNames": [
+    "testStrictSelectionPreservesInsideAndVerticalEndpointReceipts",
+    "testStrictSelectionRejectsGoalAndStartProjectionWithTypedReceipts",
+    "testDebugIngressStrictPolicySurvivesResetWithoutChangingLegacyDefault"
+  ],
+  "currentCompanion": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/check_current.py",
+  "newProjectMembershipRequired": false,
+  "ciOwnerOnlyUpdates": [
+    "research/mesh-candidate-ingress-83/apple/ci.py (require separate25-check marker)",
+    "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json",
+    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json",
+    "research/earcut-ci-integration-20261028/prepare_current_pins.py (explicit reviewed deltas as needed)",
+    "tools/ci/collect-classified-bench.py (retain exact source-derived names;18 rather than15)"
+  ],
+  "preserveHistorical": {
+    "research/live-mesh-classified-bench-20261028/check_source.py": "e1d4c7f93fd05dab9b241ba3f2fa1d74b658d9b2498f0292d0c479748c2a32a6",
+    "research/live-mesh-classified-bench-20261028/test_source_contract.py": "1cac5fe57a81ddc522605fccd07de1f4b434ea1e3ce332ee37468f690060b766",
+    "research/live-mesh-classified-bench-20261028/classified-consumer.patch": "6344958db3c1c633ae95a8326badfc01215160899e4b51a88f0d5e7568dad864",
+    "research/live-mesh-classified-bench-20261028/INPUT_PINS.json": "a3de515d8ed3cbda2a764c70c94c75cbffe6df882ef628cc1b1709453ad0236f"
+  },
+  "nativeCommands": [
+    "python3 research/mesh-candidate-ingress-83/apple/ci.py (existing guarded free-public workflow)",
+    "xcrun swift test --package-path research/live-mesh-classified-bench-20261028 --jobs 1 (existing guarded free-public job)"
+  ],
+  "remainingGaps": [
+    "Normal NavigationModel has no route-query wiring for this candidate",
+    "No physical guidance activation",
+    "Strict membership does not resolve two native corner margin contacts",
+    "iOS native execution of these new caller regression methods not yet established"
+  ]
+}

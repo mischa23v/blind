@@ -12,6 +12,30 @@ struct LocalImageAnswer {
     let text: String?
     let status: String
     var taskUpdate: CompanionTaskUpdate? = nil
+    // Operational failure is not model content or an evidence-guard refusal.
+    // Keep text nil so integration fixtures cannot pass on this fallback.
+    enum ConversationRuntimeFailure: String, Equatable {
+        case generationFailed
+        case modelUnavailable
+    }
+    var conversationRuntimeFailure: ConversationRuntimeFailure? = nil
+
+    static func conversationFailure(_ failure: ConversationRuntimeFailure, arabic: Bool) -> LocalImageAnswer {
+        let message: String
+        switch failure {
+        case .generationFailed:
+            message = arabic ? "تعذر إكمال الرد على الجهاز الآن." : "I couldn't finish an on-device reply just now."
+        case .modelUnavailable:
+            message = arabic ? "نموذج المحادثة على الجهاز غير متاح الآن." : "The on-device conversation model is unavailable right now."
+        }
+        return LocalImageAnswer(text: nil, status: message, conversationRuntimeFailure: failure)
+    }
+
+    /// Controllers still apply their current request/session/cancellation fences.
+    var conversationOperationalFallback: String? {
+        guard text == nil, conversationRuntimeFailure != nil else { return nil }
+        return status
+    }
 }
 
 /// App-owned state: a proposed step is never recorded as an executed action.
@@ -1215,11 +1239,15 @@ enum LocalImageAssistant {
                 #if DEBUG
                 debugTrace?.event(.unavailable) { .init(label: "conversation.failed; errorDetailsOmitted") }
                 #endif
-                return LocalImageAnswer(text: nil, status: arabic ? "تعذر إكمال الرد على الجهاز. لم يتم تنفيذ أي إجراء خارجي." : "The on-device reply could not finish. No external action was taken.")
+                // Some providers throw a non-CancellationError after cancellation.
+                // Never turn an interrupted request into a new operational reply.
+                guard !Task.isCancelled else { return LocalImageAnswer(text: nil, status: "Conversation interrupted.") }
+                return LocalImageAnswer.conversationFailure(.generationFailed, arabic: arabic)
             }
         }
         #endif
-        return LocalImageAnswer(text: nil, status: arabic ? "نموذج المحادثة غير متاح على هذا الجهاز. لا يلزم اشتراك أو مفتاح API." : "The on-device conversation model is unavailable on this device. No subscription or API key is needed.")
+        guard !Task.isCancelled else { return LocalImageAnswer(text: nil, status: "Conversation interrupted.") }
+        return LocalImageAnswer.conversationFailure(.modelUnavailable, arabic: arabic)
     }
     /// A constrained uncertain hint, never a sensor search result or identity.
     /// The controller must revalidate the frame and guard the code-written hint.

@@ -95,10 +95,14 @@ def main():
                 '-o', str(out / 'fixtures')], 'host-fixtures-compile', out)
             fixture_log = runner.run([str(out / 'fixtures')], 'host-fixtures-run', out)
             assert 'RESULT: 83 stage83 real-runtime synthetic checks passed' in fixture_log
+            strict_marker = 'STRICT_ENDPOINT_INGRESS_RESULT: 25 caller-policy checks passed; original83 comparator retained; no physical authority'
+            if [line for line in fixture_log.splitlines() if line.startswith('STRICT_ENDPOINT_INGRESS_RESULT:')] != [strict_marker]:
+                raise ValueError('missing, duplicate or contradictory strict caller 25-check receipt')
     result = dict(commit=os.environ['GITHUB_SHA'], hostRealPackageFixtures='passed',
         actualARKitSimulatorCompile='passed', swiftPMBuildSystem=package_runner.BUILD_SYSTEM,
         defaultSwiftBuildBackendPassed=False,
         fixtureResult=[line for line in fixture_log.splitlines() if line.startswith('RESULT:')],
+        strictCallerFixtureResult=[line for line in fixture_log.splitlines() if line.startswith('STRICT_ENDPOINT_INGRESS_RESULT:')],
         appActivation=False, simulatorExecution=False, deviceExecution=False,
         copyLatencyMeasured=False, physicalAuthority=False)
     (out / 'RESULT.json').write_text(json.dumps(result, indent=2) + '\n')

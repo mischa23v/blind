@@ -1,0 +1,283 @@
+{
+  "schema": 1,
+  "baseSource": "b398c26b2ac4862b5440a31649a108a09011938c",
+  "publicationParent": "635121fd61e70a1adf0618e159afe21bc3319bdc",
+  "status": "source integration candidate; independent final review pending; no new native results",
+  "files": [
+    {
+      "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
+      "bytes": 40931,
+      "sha256": "e32dfbdf22c19eda0880320d8d96818f8b43b7b62fee489b9dbb1b58c82fbb1a"
+    },
+    {
+      "path": "ios/BlindAssist/LocalImageAssistant.swift",
+      "bytes": 92427,
+      "sha256": "188b2e94360d1f4b952c36beef144919349211db21dc61924c706f2d239a1f96"
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "bytes": 497556,
+      "sha256": "36fe671be479ca0e6a0a92808920892045ecfad7c52f98eb3ae8152319585966"
+    },
+    {
+      "path": "ios/BlindAssistTests/ConversationRuntimeFailureTests.swift",
+      "bytes": 2282,
+      "sha256": "12f8ad4581cfc5283285a510878e67d590d4cd04715d60983daba78f6e591e5f"
+    },
+    {
+      "path": "research/earcut-ci-integration-20261028/CURRENT_PIN_RECEIPT.json",
+      "bytes": 6142,
+      "sha256": "f83360451e8cc6d1ac79ea115838f90f6e9399a01689627d8f0d74f481f4eb59"
+    },
+    {
+      "path": "research/earcut-ci-integration-20261028/prepare_current_pins.py",
+      "bytes": 4406,
+      "sha256": "d330b4e5bb58e62419fa294429ef853656932f2498b14c91612596e713bfa037"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json",
+      "bytes": 20605,
+      "sha256": "d257eb4318e2d85451f7d524ab37bed7b551ba187eca5c9ef12309a7b2e2dbe9"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift",
+      "bytes": 5125,
+      "sha256": "779ab0ca182bf75206b2284e6fa944296062e9a6fd5537debb57deb7f821f4dc"
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift",
+      "bytes": 30425,
+      "sha256": "231f444e91103a81f67eb686da03d566541ca0794b7f6e282e78b432aed78b83"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json",
+      "bytes": 3317,
+      "sha256": "b03d5ee01091bc1adde491e2f14f2e6bfb80a75c7856865a5aa32599dcbae1c7"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
+      "bytes": 13458,
+      "sha256": "5197a43b0df0e08a6b1fde8f5235d3ad8320df3148610ad261244860f7b07a0d"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/apple/ci.py",
+      "bytes": 6901,
+      "sha256": "615d816abcf85013f3d4d35eba806eba25a53101ac9f58e26d3b7cbc771e5c91"
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/tests/main.swift",
+      "bytes": 23965,
+      "sha256": "ed2da9e2b0a70ad622a309bf5627274e8fb57280dd436e2ea572612649d4bf20"
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json",
+      "bytes": 9700,
+      "sha256": "2ea1105b64b0761bc6545c2d14d1970bf1a197d483f458e91da5706a5233a338"
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/check.py",
+      "bytes": 15585,
+      "sha256": "3762ef709e8239c4c182cc53a50a9269b60e6e7582f6ea08b6c3e5111930ad04"
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/conversation-runtime-failure-layer.patch",
+      "bytes": 12709,
+      "sha256": "c21ec75b2585b22187096cc6f7de1ce4b46f49aee47738a970b71686c88703c6"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/BASE_MANIFEST.json",
+      "bytes": 1737,
+      "sha256": "d9aadcbd388d90f51274ec630c4fe111604cd0a1cbdc44efc9662d1ad89af59e"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/CI_INTEGRATION_REQUEST.json",
+      "bytes": 4516,
+      "sha256": "282a6c48f392348880d57722e26296de0594463e4168acab8f1a6bc22121d852"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/CURRENT_SOURCE_RESULT.json",
+      "bytes": 4416,
+      "sha256": "bc9e6dff7a95b31c69056924b660c4cadf6c6c50a43cd1e9ddc7faef957b6584"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/FREEZE.json",
+      "bytes": 6410,
+      "sha256": "06504e9b3bef1ed599d05be0312816b5c4d5141a0980bf27e52b94cb57c812ce"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/PUBLISHED_BASE_RECEIPT.json",
+      "bytes": 468,
+      "sha256": "9d90aabdd51fd4df2a8c8e31e148dd38d48a921678424823f5419c01f0806e47"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/README.md",
+      "bytes": 4564,
+      "sha256": "623e1d64ad1bb39a56e808cc27dd54b54302416e8632fbfb7eb0bf82dd591359"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/SOURCE_CHECKS.txt",
+      "bytes": 1739,
+      "sha256": "448caff5576be9f234d5519660cbe7af9211f6bf87e070e85b6959d704739b78"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/STRICT_CALLER_LAYER.patch",
+      "bytes": 24814,
+      "sha256": "54c84c42d8f989aa5c01bce4bfb164536f82a57ea7c0511c5772399b5436ae47"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/base/research/live-mesh-classified-bench-20261028/Package.swift",
+      "bytes": 1414,
+      "sha256": "59e0c99d177787a1b428c7097d3ae05781a71270613336333428d2e43359d21b"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/base/research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift",
+      "bytes": 4903,
+      "sha256": "b84d624dc6f6f56862fd03f1d37ba668d1979b004bd1eb81707c40aa812bd989"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/base/research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift",
+      "bytes": 15255,
+      "sha256": "478ae0ac2d1892a1d2955b9a97b3693057661bcf16a25db9dbd91f35ebb71371"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/base/research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift",
+      "bytes": 20630,
+      "sha256": "d3459c9658a53f289a6d762c942e66bdae7489d99c874b2ce1537273b026b0ed"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/base/research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchSessionTests.swift",
+      "bytes": 4547,
+      "sha256": "b97c01ee43b5fa9a777aa11c317a5cf7d5d42f741bd1032df96d72ba455352d1"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/base/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
+      "bytes": 13055,
+      "sha256": "8b3eddcc383d08c71770d538c7ffe2429bd1b6e07e03e3ae99d9c9584c177ea9"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/base/research/mesh-candidate-ingress-83/tests/main.swift",
+      "bytes": 15741,
+      "sha256": "b4d00b36d9dc58a7160817510f0e29d5f56dfd40358faec810db6b743ffd8123"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/bench-helpers.swift.fragment",
+      "bytes": 2825,
+      "sha256": "79104756245ca9be889ee9fbfd0bbfba0b3ccd85298cac2f7246e61d8e713f60"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/bench-tests.swift.fragment",
+      "bytes": 6794,
+      "sha256": "31e0c4d544dcc471416551c84ab3006bc0a999a076f6e6acfb42532af2a1a3b0"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/candidate/research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift",
+      "bytes": 5125,
+      "sha256": "779ab0ca182bf75206b2284e6fa944296062e9a6fd5537debb57deb7f821f4dc"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/candidate/research/live-mesh-classified-bench-20261028/Tests/LiveMeshBenchIngressTests.swift",
+      "bytes": 30425,
+      "sha256": "231f444e91103a81f67eb686da03d566541ca0794b7f6e282e78b432aed78b83"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/candidate/research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift",
+      "bytes": 13458,
+      "sha256": "5197a43b0df0e08a6b1fde8f5235d3ad8320df3148610ad261244860f7b07a0d"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/candidate/research/mesh-candidate-ingress-83/tests/main.swift",
+      "bytes": 23965,
+      "sha256": "ed2da9e2b0a70ad622a309bf5627274e8fb57280dd436e2ea572612649d4bf20"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/check_current.py",
+      "bytes": 7521,
+      "sha256": "22d54cacb7500d2483c101447f61f0d424e8278afc76a0d21dc2c0c88f5ae552"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/fixtures83.swift.fragment",
+      "bytes": 8224,
+      "sha256": "925ac0bfe5a429295bb18a7e2f249f551e1ea0cc49e31f770ae422c7c5cceff8"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/prepare_candidate.py",
+      "bytes": 6437,
+      "sha256": "bd7dfb1102b16269365496577336ed35989451073cbaa738bd8735b8683dddf8"
+    },
+    {
+      "path": "research/native-floor-import-repair-20261028/strict-caller-adoption-20261029/test_current_contract.py",
+      "bytes": 2319,
+      "sha256": "4ce9dfd22067f30334e2d492c0189afca754125c591e88e3f834411508b9657b"
+    },
+    {
+      "path": "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json",
+      "bytes": 10443,
+      "sha256": "1e64d3b00f3f6cb5ba7a54be032155e7c7eafd89c443c755bcffc6325cdd5351"
+    },
+    {
+      "path": "research/strict-caller-runtime-ci-integration-20261029/MODEL_CANDIDATE_MANIFEST.json",
+      "bytes": 1319,
+      "sha256": "5d65b03fd816252fae55d9824040a49351360615b9414f4fe842b7e35e9842eb"
+    },
+    {
+      "path": "research/strict-caller-runtime-ci-integration-20261029/README.md",
+      "bytes": 1709,
+      "sha256": "91c9d94b20e88d2a7493bd7ffb6519d95d68f1327db5949c5359ebe35d17797d"
+    },
+    {
+      "path": "research/strict-caller-runtime-ci-integration-20261029/before/research/earcut-ci-integration-20261028/prepare_current_pins.py",
+      "bytes": 4131,
+      "sha256": "64d5145a356ac23dac6d21c679d19b1c0a036c24eaf5e7d49067b426083af07e"
+    },
+    {
+      "path": "research/strict-caller-runtime-ci-integration-20261029/before/research/mesh-candidate-ingress-83/apple/ci.py",
+      "bytes": 6384,
+      "sha256": "d27fb357de78e4c29dfc9bc315b7e6ddd1a6ab3482686e3558a94eb80c0f5a44"
+    },
+    {
+      "path": "research/strict-caller-runtime-ci-integration-20261029/before/research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json",
+      "bytes": 8501,
+      "sha256": "036a8fd55d37bec487f65cbb248676dfa36f076efb4693880a9c6a5118502cff"
+    },
+    {
+      "path": "research/strict-caller-runtime-ci-integration-20261029/before/research/native-candidate-app-integration-85/integrated/check.py",
+      "bytes": 15198,
+      "sha256": "a512bce655898f901250821f643d38bc5cbfabb74720d65c6af56761ee3ca622"
+    },
+    {
+      "path": "research/strict-caller-runtime-ci-integration-20261029/before/tools/ci/collect-classified-bench.py",
+      "bytes": 2890,
+      "sha256": "c0bf3a8b6b17f7766a962659df7816dd879d296a5d70eab95f31229613646ab4"
+    },
+    {
+      "path": "research/strict-caller-runtime-ci-integration-20261029/before/tools/ci/test_collect_classified_bench.py",
+      "bytes": 2963,
+      "sha256": "27429e25db477f0755765310f46147b18eb78423077bbf42e505d96767ec1943"
+    },
+    {
+      "path": "research/strict-caller-runtime-ci-integration-20261029/test_ci_contract.py",
+      "bytes": 1753,
+      "sha256": "4df89de97dec273c928873312d38c50f0f56416f8a0abfee51dfb3c5fe59a5b3"
+    },
+    {
+      "path": "tools/ci/collect-classified-bench.py",
+      "bytes": 4130,
+      "sha256": "49834ea7edfc7fbca43e72ff96790b84987f082b9cacbb7eb338c2fc7a3beb7d"
+    },
+    {
+      "path": "tools/ci/test_collect_classified_bench.py",
+      "bytes": 3056,
+      "sha256": "93ca5c861e672d0202b5f5687d9a7c4f476821195e128720909e79b628da0eac"
+    },
+    {
+      "path": "tools/generate-xcode-project.mjs",
+      "bytes": 49999,
+      "sha256": "16f63833149243b3c83bf2d703b1c681e5fe30af891f9e40a8876cdd8c8689a2"
+    },
+    {
+      "path": "tools/test/conversation-runtime-failure.test.py",
+      "bytes": 2636,
+      "sha256": "13da5dea93d3e5d10e6b094a846887cdcc0c73f536e82870a03d7571f7b11233"
+    }
+  ]
+}
