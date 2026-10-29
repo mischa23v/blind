@@ -1,0 +1,11 @@
+# C1_N3 three-frame engineering pass
+
+Read RESULT.md and the independent completed review. Same D1 kernel, original inputs/configuration and a fresh empty persistent map; only the normal provider changes to N3. Three completed updates submitted the original 1,296,420 points. All non-normal deterministic input-ledger fields match N2; normal reasons/cross-counts and timing are explicitly excluded. This proves bounded input continuity and finite numerical state, not better reconstruction.
+
+The short prefix produced a privately retained mesh, whose identity and independent finite/index checks are recorded. The mesh is not published here and was not accuracy-scored. More observed voxels/gradients do not prove hazards, support or clearance improved. The later full-run environment interruption is a separate attempt and cannot convert this prefix pass into a full reconstruction. All original N2 results and N3 provider limitations remain.
+
+## Source and publication boundary
+
+Every original packet hash was checked before staging. Independent review is included; this publication lane did not rerun native integration. Source/result files persisted through the disconnection; no loss of those durable files is asserted. Ephemeral absolute workspace prefixes are replaced by <WORKSPACE_ROOT> only; dual hashes are in PUBLICATION_REVIEW.json. Original packet hashes refer to pre-sanitization bytes; PUBLICATION_SHA256SUMS records published bytes. No raw recording, PLY, binary, private dataset or large per-point array is included.
+
+Reproduction requires lawful matching source recordings, original calibration/poses, the prior D1/N3 source/dependency layout and separately reviewed local freezes/admission. These are not all bundled. Environment-specific scripts and placeholders are records, not turnkey checkout commands. Preserve empty-map starts, original masks/ordering and resource guards. Prior Voxfield candidate checkpoints document pinned upstream BSD source, dependencies and limitations. Four-export-pixel normal spacing is specific to the documented upsampled Koivu export, **not a native-iPhone, ScaleMaster or global-app setting**. No automatic further execution or accuracy claim follows from publication.
