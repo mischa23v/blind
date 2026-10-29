@@ -1,0 +1,39 @@
+{
+  "reviewUTC": "2026-10-29T07:11:05Z",
+  "status": "PASS engineering full265 N3 retry",
+  "pinsVerified": 980,
+  "mismatches": 0,
+  "frames": 265,
+  "submitted": 164771607,
+  "allNativeStatesFiniteNonempty": true,
+  "all265NonNormalFieldsExactlyN2": true,
+  "mesh": {
+    "path": "<WORKSPACE_ROOT>/coordination/accuracy-methods-review-20261029/voxfield-feasibility/n3-reconstruction/full265-retry1/run/C1_N3_native_mesh.ply",
+    "vertices": 1348401,
+    "faces": 449467,
+    "bytes": 96366532,
+    "sha256": "dc9a9844c16c1146b65943361b846a6866ce08a6a6795b59bdb6f8499a10fc2e",
+    "XYZFiniteIndicesValid": true
+  },
+  "resource": {
+    "exitCode": 0,
+    "stopReason": null,
+    "wallSeconds": 132.77342169199983,
+    "peakSummedRSSBytes": 324988928,
+    "peakCumulativeCPUSeconds": 131.964973,
+    "samplingSeconds": 0.1,
+    "caps": {
+      "cpuSeconds": 210,
+      "wallSeconds": 240,
+      "RSSBytes": 2147483648,
+      "diskBytes": 268435456,
+      "logicalCPUs": 1
+    },
+    "scope": "C1_N3 full265 fresh-map only, identical D1 inputs/kernel; no accuracy/reference/GT",
+    "frozenIntegrityPassed": true,
+    "finalActualChildPlusGuardCPUSeconds": 132.67288200000002
+  },
+  "originalInterruptionPreserved": true,
+  "accuracyEvaluated": false,
+  "scoringRequiresSeparateRootAdmission": true
+}

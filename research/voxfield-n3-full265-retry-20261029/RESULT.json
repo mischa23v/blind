@@ -1,0 +1,54 @@
+{
+  "status": "PASS_FULL265_FOR_REVIEW_NOT_ACCURACY",
+  "frames": 265,
+  "updates": 265,
+  "normalReasons": [
+    156478781,
+    1716625,
+    618956,
+    5957245,
+    0,
+    0
+  ],
+  "rayRangeBands": [
+    5737583,
+    44827252,
+    69330299,
+    37975050,
+    6901423
+  ],
+  "submitted": 164771607,
+  "finalState": {
+    "arm": "C1_N3",
+    "frame": "frame_00309",
+    "submitted_this_frame_not_independent_integrated_points": 724296,
+    "cumulative_submitted": 164771607,
+    "integration_seconds": 0.269416897,
+    "state_scan_seconds": 0.025117526,
+    "arm_elapsed_seconds": 91.701873223,
+    "blocks": 1167,
+    "allocated_voxels": 4780032,
+    "observed_weight_positive": 2707945,
+    "unknown_allocated": 2072087,
+    "nonzero_gradient": 1585068,
+    "invalid_native_voxels": 0,
+    "accuracy_claim": false
+  },
+  "mesh": {
+    "event": "final_mesh",
+    "arm": "C1_N3",
+    "frames": 265,
+    "submitted": 164771607,
+    "mesh_vertices": 1348401,
+    "mesh_indices": 1348401,
+    "mesh_seconds": 2.802587738,
+    "accuracy_claim": false
+  },
+  "allNonNormalPreflightFieldsEqualN2": true,
+  "allCompletedNativeInvalidZero": true,
+  "interrupted159PrefixCounterRowsCompared": 159,
+  "interruptedPrefixCounterDifferences": [],
+  "counterReproductionNotMapByteIdentity": true,
+  "originalInterruptedAttemptStillUnadmitted": true,
+  "accuracyEvaluated": false
+}
