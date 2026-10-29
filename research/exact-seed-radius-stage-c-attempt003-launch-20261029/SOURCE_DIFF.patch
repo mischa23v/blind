@@ -1,0 +1,570 @@
+--- attempt002/mac_guard.py
++++ attempt003/mac_guard.py
+@@ -5,9 +5,30 @@
+ CPU includes exited-child accounting; no claim of CPU affinity or hermetic SDK.
+ No installs, network, automatic retry, cap expansion, or output deletion.
+ """
+-import json,math,os,pathlib,re,resource,signal,subprocess,time
+-
+-class GuardFailure(RuntimeError):pass
++import json,math,os,pathlib,re,resource,signal,stat,subprocess,sys,time
++
++class GuardFailure(RuntimeError):
++    def __init__(self,message,metadata=None):
++        super().__init__(message);self.safe_metadata=metadata or {}
++
++def failure_event(error,stage,index=None):
++    # Fixed scalar metadata only: never copy exception text, paths, argv or env.
++    meta=getattr(error,'safe_metadata',{})
++    system_error=error if isinstance(error,OSError) else error.__cause__
++    errno=system_error.errno if isinstance(system_error,OSError) else None
++    return {'reasonCode':controlled_reason(error),'stage':stage,'guardCommandIndex':index,
++      'metadata':{'outputScope':meta.get('outputScope') if meta.get('outputScope') in {'module-cache','owned-output'} else None,
++      'entryKind':meta.get('entryKind') if meta.get('entryKind') in {'file','directory','symlink','other','unknown'} else None,
++      'errno':errno if type(errno) is int and 0<=errno<=4095 else None}}
++
++def remember_failure(owner,error,stage,secondary=False):
++    rows=getattr(owner,'records',[]);event=failure_event(error,stage,rows[-1]['index'] if rows else None)
++    if getattr(owner,'firstFailure',None) is None:owner.firstFailure=event
++    elif secondary:
++        if not hasattr(owner,'secondaryFailures'):owner.secondaryFailures={}
++        owner.secondaryFailures.setdefault(stage,event)
++    return owner.firstFailure
++
+ 
+ def safe_command_label(label):
+     return isinstance(label,str) and re.fullmatch(r'[A-Za-z0-9-]{1,80}',label) is not None
+@@ -24,12 +45,26 @@
+       ('manifest pin mismatch','SOURCE_PIN_MISMATCH'),('result input digest','RESULT_INPUT_DIGEST_MISMATCH'),
+       ('route acceptance false:','ROUTE_ACCEPTANCE_FAILED'),('result success status','ROUTE_ACCEPTANCE_FAILED'),
+       ('terminal export reserve unavailable','EXPORT_RESERVE_UNAVAILABLE'),('terminal aggregate output cap','OUTPUT_LIMIT'),
+-      ('public aggregate encoded-byte cap','PUBLIC_EXPORT_LIMIT')]
++      ('public aggregate encoded-byte cap','PUBLIC_EXPORT_LIMIT'),
++      ('unexpected ps stderr','PS_STDERR'),('invalid ps CPU field','PS_CPU_FORMAT'),
++      ('invalid ps CPU range','PS_CPU_RANGE'),('nonfinite CPU','PS_CPU_NONFINITE'),
++      ('ps output cap','PS_TEXT_LIMIT'),('ps columns changed','PS_COLUMNS'),
++      ('invalid ps identity','PS_IDENTITY'),('ps row cap','PS_ROW_LIMIT'),
++      ('guard missing from ps','PS_GUARD_MISSING'),('process-family traversal failed','PS_FAMILY'),
++      ('output file-count cap','OUTPUT_FILE_COUNT_LIMIT'),('output entry-count cap','OUTPUT_ENTRY_COUNT_LIMIT'),
++      ('output directory depth cap','OUTPUT_DEPTH_LIMIT'),('output symlink scope','OUTPUT_LINK_SCOPE'),
++      ('output symlink name','OUTPUT_LINK_NAME'),('output symlink target escape','OUTPUT_LINK_ESCAPE'),
++      ('output symlink target type','OUTPUT_LINK_TARGET_TYPE'),('output symlink changed','OUTPUT_LINK_CHANGED'),
++      ('output unsupported entry','OUTPUT_ENTRY_TYPE'),('output scan unavailable','OUTPUT_SCAN_UNAVAILABLE'),
++      ('output entry disappeared','OUTPUT_ENTRY_DISAPPEARED'),('output root not directory','OUTPUT_ROOT_TYPE'),
++      ('terminal aggregate size did not stabilize','EXPORT_SIZE_UNSTABLE'),
++      ('owned output changed during terminal export','EXPORT_OUTPUT_CHANGED')]
+     for prefix,code in prefixes:
+         if message.startswith(prefix):return code
+     if message.startswith('signal/deadline '):return 'INTERRUPTED'
+     if isinstance(error,subprocess.TimeoutExpired):return 'SUBPROCESS_TIMEOUT'
+     if isinstance(error,json.JSONDecodeError):return 'JSON_DECODE_FAILED'
++    if isinstance(error,OSError):return 'FILESYSTEM_ERROR'
+     return 'VALIDATION_REFUSED' if isinstance(error,GuardFailure) else 'LAUNCHER_EXCEPTION'
+ 
+ def child_environment(out,parent):
+@@ -65,11 +100,14 @@
+ def parse_ps(data):
+     if len(data)>1048576:raise GuardFailure('ps output cap')
+     rows={}
+-    for line in data.decode('ascii').splitlines():
++    try:lines=data.decode('ascii').splitlines()
++    except UnicodeDecodeError:raise GuardFailure('ps columns changed')
++    for line in lines:
+         if not line.strip():continue
+         fields=line.split()
+         if len(fields)!=5:raise GuardFailure('ps columns changed')
+-        pid,ppid,pgid=(int(x) for x in fields[:3]);rss=int(fields[4])*1024
++        try:pid,ppid,pgid=(int(x) for x in fields[:3]);rss=int(fields[4])*1024
++        except ValueError:raise GuardFailure('invalid ps identity')
+         if pid<0 or ppid<0 or pgid<0 or rss<0 or pid in rows:raise GuardFailure('invalid ps identity')
+         rows[pid]={'pid':pid,'ppid':ppid,'pgid':pgid,'cpu':parse_cpu(fields[3]),'rss':rss}
+     if len(rows)>16384:raise GuardFailure('ps row cap')
+@@ -85,14 +123,61 @@
+     raise GuardFailure('process-family traversal failed')
+ 
+ def output_bytes(root):
+-    total=count=0
+-    for directory,dirs,files in os.walk(root,followlinks=False):
+-        for name in dirs+files:
+-            path=pathlib.Path(directory)/name
+-            if path.is_symlink():raise GuardFailure('symlink in isolated output')
+-        for name in files:
+-            total+=(pathlib.Path(directory)/name).stat().st_size;count+=1
+-            if count>16384:raise GuardFailure('output file-count cap')
++    """No-follow owned-tree accounting; only LLVM file-lock links are admitted.
++
++    The explicit compiler cache is output/module-cache. Links must be *.lock ->
++    same-directory <same name>-<8 lowercase hex>, as LLVM createUniquePath emits.
++    A disappearing lock/unique-lock file or target is a permitted snapshot race;
++    unknown entries, directory/chain links and escapes remain refusals. Count
++    link inode bytes, not the target through the link. This is sampled accounting
++    for trusted compilers, not containment of malicious filesystem writers.
++    """
++    root=pathlib.Path(root).absolute();total=files_seen=entries_seen=0
++    def fail(message,scope='owned-output',kind='unknown'):
++        raise GuardFailure(message,{'outputScope':scope,'entryKind':kind})
++    def vanished(name,scope):
++        return scope=='module-cache' and re.fullmatch(r'.+\.lock(?:-[0-9a-f]{8})?',name) is not None
++    def scan_error(error):raise GuardFailure('output scan unavailable') from error
++    try:
++        if not stat.S_ISDIR(root.lstat().st_mode):fail('output root not directory')
++        for directory,dirs,files,fd in os.fwalk(root,follow_symlinks=False,onerror=scan_error):
++            relative=pathlib.Path(directory).relative_to(root)
++            scope='module-cache' if relative.parts and relative.parts[0]=='module-cache' else 'owned-output'
++            if len(relative.parts)>32:fail('output directory depth cap',scope,'directory')
++            for name in dirs+files:
++                entries_seen+=1
++                if entries_seen>32768:fail('output entry-count cap',scope)
++                try:info=os.stat(name,dir_fd=fd,follow_symlinks=False)
++                except FileNotFoundError:
++                    if vanished(name,scope):continue
++                    fail('output entry disappeared',scope)
++                mode=info.st_mode
++                if stat.S_ISDIR(mode):continue
++                files_seen+=1
++                if files_seen>16384:fail('output file-count cap',scope,'file')
++                if stat.S_ISREG(mode):total+=info.st_size;continue
++                if not stat.S_ISLNK(mode):fail('output unsupported entry',scope,'other')
++                if scope!='module-cache':fail('output symlink scope',scope,'symlink')
++                if not name.endswith('.lock') or len(name)>255:fail('output symlink name',scope,'symlink')
++                try:target=os.readlink(name,dir_fd=fd)
++                except FileNotFoundError:continue # This already-observed lock was unlinked.
++                # Lexical same-directory comparison: never resolve/traverse target.
++                candidate=pathlib.Path(target)
++                leaf=candidate.name
++                if (len(target)>4096 or not re.fullmatch(re.escape(name)+r'-[0-9a-f]{8}',leaf)
++                    or (candidate.is_absolute() and candidate.parent!=pathlib.Path(directory))
++                    or (not candidate.is_absolute() and target!=leaf)):
++                    fail('output symlink target escape',scope,'symlink')
++                try:
++                    target_info=os.stat(leaf,dir_fd=fd,follow_symlinks=False)
++                    if not stat.S_ISREG(target_info.st_mode):fail('output symlink target type',scope,'symlink')
++                except FileNotFoundError:pass # Permitted dangling same-directory file lock, never followed.
++                try:after=os.stat(name,dir_fd=fd,follow_symlinks=False)
++                except FileNotFoundError:continue
++                if (after.st_dev,after.st_ino,after.st_mode,after.st_size)!=(info.st_dev,info.st_ino,info.st_mode,info.st_size):
++                    fail('output symlink changed',scope,'symlink')
++                total+=info.st_size
++    except OSError as error:raise GuardFailure('output scan unavailable') from error
+     return total
+ 
+ class Guard:
+@@ -101,15 +186,19 @@
+         self.started=time.monotonic();self.groups=set();self.active=None
+         self.seen={};self.maximumCPU=0.;self.maximumRSS=0;self.maximumOutput=0
+         self.samples=0;self.records=[];self.failure=None
++        self.firstFailure=None;self.secondaryFailures={};self.lastValidSample=None
+         self.cpuLimit=120;self.wallLimit=300;self.rssLimit=2147483648;self.outputLimit=134217728
+         self.environment=child_environment(self.out,os.environ)
+         for name in ['tmp','module-cache','home','cache','config']:(self.out/name).mkdir()
+         for sig in [signal.SIGALRM,signal.SIGINT,signal.SIGTERM]:signal.signal(sig,self.interrupted)
+         signal.setitimer(signal.ITIMER_REAL,self.wallLimit)
+-        self.monitor() # Fail before compiler launch if process inspection is unavailable.
++        # Caller observes immediately after assignment, so init failures are exportable.
+ 
+     def interrupted(self,number,frame):
+-        self.retire();raise GuardFailure('signal/deadline '+str(number))
++        error=GuardFailure('signal/deadline '+str(number));remember_failure(self,error,'interrupt')
++        try:self.retire()
++        except BaseException as cleanup:remember_failure(self,cleanup,'retirement',secondary=True)
++        raise error
+ 
+     def retire(self):
+         for pg in self.groups:
+@@ -126,6 +215,11 @@
+             except subprocess.TimeoutExpired:raise GuardFailure('child retirement not confirmed')
+ 
+     def monitor(self):
++        try:return self._observe()
++        except BaseException as error:
++            remember_failure(self,error,'guard-monitor');raise
++
++    def _observe(self):
+         try:
+             snapshot=subprocess.run(['/bin/ps','-AS','-o','pid=,ppid=,pgid=,time=,rss='],
+                 stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=1,check=True,
+@@ -145,9 +239,12 @@
+         totalCPU=max(own.ru_utime+own.ru_stime+kids.ru_utime+kids.ru_stime,
+                      sum(x['cpu'] for x in selected.values()))
+         rss=max(sum(x['rss'] for x in selected.values()),own.ru_maxrss,kids.ru_maxrss)
++        self.maximumCPU=max(self.maximumCPU,totalCPU);self.maximumRSS=max(self.maximumRSS,rss)
+         size=output_bytes(self.out)
+-        self.maximumCPU=max(self.maximumCPU,totalCPU);self.maximumRSS=max(self.maximumRSS,rss)
+         self.maximumOutput=max(self.maximumOutput,size);self.samples+=1
++        self.lastValidSample={'sampleIndex':self.samples,'wallSeconds':time.monotonic()-self.started,
++          'observedAggregateCPUSeconds':self.maximumCPU,'observedPeakRSSBytes':self.maximumRSS,
++          'observedPeakOutputBytes':self.maximumOutput,'completeTerminalObservation':False,'capComplianceEstablished':False}
+         if time.monotonic()-self.started>=self.wallLimit:raise GuardFailure('aggregate wall cap')
+         if self.maximumCPU>self.cpuLimit:raise GuardFailure('aggregate CPU cap')
+         if self.maximumRSS>self.rssLimit:raise GuardFailure('observed process-family RSS cap')
+@@ -159,7 +256,8 @@
+           'observedPeakFamilyRSSBytes':self.maximumRSS,'observedPeakOutputBytes':self.maximumOutput,
+           'samples':self.samples,'pollTargetSeconds':0.05,'psTimeoutSeconds':1,
+           'limits':{'CPUSeconds':self.cpuLimit,'wallSeconds':self.wallLimit,'observedRSSBytes':self.rssLimit,'observedOutputBytes':self.outputLimit},
+-          'commands':self.records,'failure':self.failure,'physicalAuthority':False,
++          'commands':self.records,'failure':self.failure,'firstFailure':self.firstFailure,
++          'secondaryFailures':self.secondaryFailures,'lastValidSample':self.lastValidSample,'physicalAuthority':False,
+           'limitations':'Polling can overshoot before kill. RSS/output are observed peaks, not a kernel quota. Trusted installed tools; not hostile daemon containment. No CPU affinity guarantee.'}
+         target=self.out/'RESOURCE_RECEIPT.private.json';temporary=self.out/'RESOURCE_RECEIPT.private.tmp'
+         temporary.write_text(json.dumps(record,indent=2)+'\n');temporary.replace(target)
+@@ -189,9 +287,12 @@
+                     if code is not None:break
+                     time.sleep(0.05)
+                 row['exitCode']=code;row['processCompleted']=True
+-                selected=self.monitor()
+-                if self.seen:
+-                    raise GuardFailure('command left observed live descendants')
++                if code!=0:remember_failure(self,GuardFailure('nonzero command: '+label),'guard-command')
++                try:
++                    selected=self.monitor()
++                    if self.seen:raise GuardFailure('command left observed live descendants')
++                except BaseException as cleanup:
++                    remember_failure(self,cleanup,'command-finalization',secondary=True);raise
+                 self.groups.discard(process.pid);self.active=None
+                 # Do not later signal a recycled PID from a completed command.
+                 self.seen={}
+@@ -199,17 +300,24 @@
+             if stdout.stat().st_size>maximumText:raise GuardFailure('command text cap')
+             return stdout.read_text()
+         except BaseException as error:
++            remember_failure(self,error,'guard-command')
+             row['reasonCode']=controlled_reason(error)
+             self.failure=type(error).__name__+': '+str(error)[:300]
+-            self.retire()
++            try:self.retire()
++            except BaseException as cleanup:remember_failure(self,cleanup,'retirement',secondary=True)
+             if process is not None:
+                 row['exitCode']=process.returncode;row['processCompleted']=process.returncode is not None
+             raise
+         finally:
++            already_failing=sys.exc_info()[0] is not None
+             row['wallSeconds']=time.monotonic()-started
+-            for name,path in [('stdoutBytes',stdout),('stderrBytes',stderr)]:
+-                if path is not None and path.exists():row[name]=path.stat().st_size
+-            self.save()
++            try:
++                for name,path in [('stdoutBytes',stdout),('stderrBytes',stderr)]:
++                    if path is not None and path.exists():row[name]=path.stat().st_size
++                self.save()
++            except BaseException as cleanup:
++                remember_failure(self,cleanup,'command-finalization',secondary=True)
++                if not already_failing:raise
+ 
+     def finish(self):
+         self.monitor();self.save();self.monitor()
+--- attempt002/launch_stage_c.py
++++ attempt003/launch_stage_c.py
+@@ -2,7 +2,7 @@
+ """Root-admitted Apple Stage C only. Never invokes Stage B, installs or uploads."""
+ import argparse,hashlib,json,os,pathlib,platform,shutil,signal,sys
+ sys.dont_write_bytecode=True
+-from mac_guard import Guard,GuardFailure,output_bytes,safe_command_label,controlled_reason
++from mac_guard import Guard,GuardFailure,output_bytes,safe_command_label,controlled_reason,failure_event,remember_failure
+ from public_aggregate import load_json,candidate_receipts
+ from failure_evidence import failure_evidence,matrix_observation
+ HERE=pathlib.Path(__file__).resolve().parent
+@@ -128,7 +128,36 @@
+     require(len(encoded)<=131072,'public aggregate encoded-byte cap')
+     return encoded
+ 
++def retain_first_failure(record,guard,error,phase,secondary=None):
++    if guard is not None:remember_failure(guard,error,secondary or 'launcher',secondary=secondary is not None)
++    event=getattr(guard,'firstFailure',None) if guard is not None else None
++    event=event or failure_event(error,secondary or 'launcher')
++    if 'firstFailure' not in record:
++        record['firstFailure']=event;record['firstFailurePhase']=phase
++    record['controlledReasonCode']=record['firstFailure']['reasonCode']
++    if secondary:record.setdefault('secondaryFailureCodes',{}).setdefault(secondary,controlled_reason(error))
++    record['status']='failed-or-inconclusive'
++
+ def finalize_public_aggregate(output,aggregate,guard,record,save,failure_builder=None):
++    try:return _finalize_public_aggregate(output,aggregate,guard,record,save,failure_builder)
++    except BaseException as error:
++        # Never rescan an output tree which just refused accounting. Preserve the
++        # first cause and last completed sample, explicitly not terminal/compliant.
++        retain_first_failure(record,guard,error,'terminal-export',secondary='terminal-export')
++        aggregate['status']='failed-or-inconclusive';aggregate.pop('resources',None)
++        if guard is not None and getattr(guard,'lastValidSample',None) is not None:
++            aggregate['lastValidResourceSample']=guard.lastValidSample.copy()
++        try:save()
++        except BaseException as cleanup:retain_first_failure(record,guard,cleanup,'terminal-export',secondary='receipt-save')
++        if failure_builder is not None:aggregate['failureEvidence']=failure_builder()
++        encoded=encode_public_aggregate(aggregate)
++        target=output/'AGGREGATE.review-required.json'
++        # Best effort: inability to write even this failure receipt remains a
++        # nonzero launcher; never turn absence of evidence into a pass.
++        temporary=output/'AGGREGATE.failed.tmp';temporary.write_bytes(encoded);temporary.replace(target)
++        return encoded,error
++
++def _finalize_public_aggregate(output,aggregate,guard,record,save,failure_builder=None):
+     """Observe after initial export write, then bounded metadata-only refresh.
+ 
+     No native command or monitor runs after the declared terminal snapshot. The
+@@ -136,13 +165,15 @@
+     avoids silently reporting an earlier pre-finish sample as final resources.
+     """
+     target=output/'AGGREGATE.review-required.json';terminal_error=None
+-    target.write_bytes(encode_public_aggregate(aggregate))
++    provisional=dict(aggregate);provisional['status']='failed-or-inconclusive'
++    if failure_builder is not None:provisional['failureEvidence']=failure_builder()
++    target.write_bytes(encode_public_aggregate(provisional))
+     if guard is None:return encode_public_aggregate(aggregate),None
+     completed=False
+     try:guard.finish();completed=True
+     except BaseException as error:
+-        terminal_error=error;record['status']='failed-or-inconclusive'
+-        record['phase']='terminal-export';record['controlledReasonCode']=controlled_reason(error)
++        terminal_error=error;retain_first_failure(record,guard,error,'terminal-export',secondary='terminal-export')
++        record['phase']='terminal-export'
+         record['terminalFinalizationFailure']=type(error).__name__+': '+str(error)[:300]
+         guard.failure=record['terminalFinalizationFailure'];guard.save();save()
+     wall=time_elapsed(guard)
+@@ -160,8 +191,10 @@
+        guard.maximumOutput>CAPS['observedOutputBytes']-262144):
+         resources['exportReserveUnavailable']=True;record['status']='failed-or-inconclusive'
+         terminal_error=GuardFailure('terminal export reserve unavailable')
+-        record['phase']='terminal-export';record['controlledReasonCode']=controlled_reason(terminal_error);save()
++        record['phase']='terminal-export';retain_first_failure(record,guard,terminal_error,'terminal-export',secondary='terminal-export');save()
+     aggregate['resources']=resources;aggregate['status']=record['status']
++    if not completed and getattr(guard,'lastValidSample',None) is not None:
++        aggregate['lastValidResourceSample']=guard.lastValidSample.copy()
+     if aggregate['status']=='failed-or-inconclusive' and failure_builder is not None:aggregate['failureEvidence']=failure_builder()
+     for _ in range(10):
+         other=output_bytes(output)-target.stat().st_size
+@@ -173,7 +206,7 @@
+         if resources['limitBreached']['output'] and record['status']=='passed-fixed-source-route-matrix':
+             record['status']='failed-or-inconclusive';aggregate['status']=record['status']
+             terminal_error=GuardFailure('terminal aggregate output cap')
+-            record['phase']='terminal-export';record['controlledReasonCode']=controlled_reason(terminal_error)
++            record['phase']='terminal-export';retain_first_failure(record,guard,terminal_error,'terminal-export',secondary='terminal-export')
+             if failure_builder is not None:aggregate['failureEvidence']=failure_builder()
+             save();stable=False
+         if stable:break
+@@ -192,7 +225,7 @@
+     repo=args.repository.resolve(strict=True);source=args.source_packet.resolve(strict=True)
+     admission=json.loads(args.admission.read_text());launch_manifest=json.loads((HERE/'LAUNCH_MANIFEST.json').read_text())
+     require(admission['schema']==1 and admission['stage']=='C' and admission['singleAttempt'] is True,'wrong admission scope')
+-    require(admission['attemptID']=='002','wrong attempt admission')
++    require(admission['attemptID']=='003','wrong attempt admission')
+     require(admission['sourceManifestSHA256']==SOURCE_MANIFEST and admission['sourceReviewSHA256']==SOURCE_REVIEW,'wrong source admission')
+     require(admission['launchManifestSHA256']==digest(HERE/'LAUNCH_MANIFEST.json'),'wrong launch admission')
+     require(admission['limits']==CAPS and admission['freePublicAppleRunner'] is True,'wrong resource/runner admission')
+@@ -200,15 +233,15 @@
+     require(admission['acknowledgesObservedPollingLimits'] is True,'observational resource limitations not admitted')
+     require(admission['repositoryCommit']==os.environ.get('GITHUB_SHA'),'admitted repository commit mismatch')
+     output=args.output.resolve();temp=pathlib.Path(os.environ['RUNNER_TEMP']).resolve(strict=True)
+-    require(output.parent==temp and output.name=='blind-exact-seed-radius-stage-c-attempt002' and not output.exists(),'fresh single-attempt002 output required')
++    require(output.parent==temp and output.name=='blind-exact-seed-radius-stage-c-attempt003' and not output.exists(),'fresh single-attempt003 output required')
+     output.mkdir();guard=None;record={'schema':1,'status':'started','sourceManifestSHA256':SOURCE_MANIFEST,
+       'sourceReviewSHA256':SOURCE_REVIEW,'physicalAuthority':False,'appActivation':False,'nativeCompileStarted':False,
+-      'sourcePinsBefore':False,'sourcePinsAfter':False,'toolPinsBefore':False,'toolPinsAfter':False,'nativeCommandsCompleted':0,'phase':'preflight','attemptID':'002'}
++      'sourcePinsBefore':False,'sourcePinsAfter':False,'toolPinsBefore':False,'toolPinsAfter':False,'nativeCommandsCompleted':0,'phase':'preflight','attemptID':'003'}
+     tools={};resolved_tools={};tool_selections={};result=None;recipe=None;roots={}
+     def save():
+         (output/'LAUNCH_RECEIPT.private.json').write_text(json.dumps(record,indent=2)+'\n')
+     try:
+-        guard=Guard(output,repo);verify_manifest(HERE,launch_manifest,guard)
++        guard=Guard(output,repo);guard.monitor();verify_manifest(HERE,launch_manifest,guard)
+         require(digest(source/'CANDIDATE_MANIFEST.json')==SOURCE_MANIFEST,'source manifest changed')
+         source_manifest=json.loads((source/'CANDIDATE_MANIFEST.json').read_text())
+         material=json.loads((HERE/'MATERIALIZATION_MANIFEST.json').read_text())
+@@ -308,10 +341,16 @@
+             record['controlledReasonCode']=('MATRIX_STRUCTURE_REFUSED' if observed is None else
+               'CONTROL_BASELINE_MISMATCH' if not observed['all50OriginalControlsReproduced'] else
+               'CANDIDATE_CRITERION_FAILED' if not observed['candidateGoalsMet'] else 'MATRIX_STRUCTURE_REFUSED')
++        if record['phase']=='matrix-validation' and getattr(guard,'firstFailure',None) is None:
++            event=failure_event(error,'launcher');event['reasonCode']=record['controlledReasonCode']
++            record.setdefault('firstFailure',event);record.setdefault('firstFailurePhase',record['phase'])
++        retain_first_failure(record,guard,error,record['phase'])
+         if guard is not None:
+             guard.failure=record['errorType']+': '+record['error']
+             try:guard.retire();guard.save()
+-            except BaseException as terminal:record['retirementError']=type(terminal).__name__+': '+str(terminal)[:200]
++            except BaseException as terminal:
++                record['retirementError']=type(terminal).__name__+': '+str(terminal)[:200]
++                retain_first_failure(record,guard,terminal,record['phase'],secondary='retirement')
+             if record['nativeCompileStarted']:
+                 # After failure, only bounded read-only reconciliation; never
+                 # a second compile/run. If the cap is already exhausted, retain
+@@ -328,7 +367,10 @@
+                     record['toolPinsAfter']=True
+                 except BaseException as postcheck:
+                     record['postcheckFailure']=type(postcheck).__name__+': '+str(postcheck)[:200]
+-        save();raise
++                    retain_first_failure(record,guard,postcheck,record['phase'],secondary='postcheck')
++        try:save()
++        except BaseException as cleanup:retain_first_failure(record,guard,cleanup,record['phase'],secondary='receipt-save')
++        raise
+     finally:
+         # Only this fixed aggregate is an upload candidate. No raw arrays, logs,
+         # argv, admission token, machine tool paths or binaries are exported.
+--- attempt002/failure_evidence.py
++++ attempt003/failure_evidence.py
+@@ -103,16 +103,22 @@
+ 
+ def failure_evidence(record,guard,recipe,roots,output):
+     labels=[c['label'] for c in recipe['commands']] if recipe else []
+-    last=guard.records[-1] if guard is not None and guard.records else None
++    first=record.get('firstFailure') or (getattr(guard,'firstFailure',None) if guard is not None else None)
++    rows=guard.records if guard is not None else []
++    last=next((r for r in rows if first and r['index']==first['guardCommandIndex']),None) if first else (rows[-1] if rows else None)
+     label=last['label'] if last and last['label'] in set(labels)|PREFLIGHT_LABELS else None
+     index=labels.index(label)+1 if label in labels else None
+-    phase=record.get('phase','preflight');phase=phase if phase in PHASES else 'preflight'
+-    reason=record.get('controlledReasonCode','VALIDATION_REFUSED')
++    phase=record.get('firstFailurePhase',record.get('phase','preflight'));phase=phase if phase in PHASES else 'preflight'
++    reason=first['reasonCode'] if first else record.get('controlledReasonCode','VALIDATION_REFUSED')
+     row={'phase':phase,'guardCommandIndex':last['index'] if last else None,'recipeCommandIndex':index,
+       'commandLabel':label,'processStarted':last['processStarted'] if last else False,
+       'processCompleted':last['processCompleted'] if last else False,'returnCode':last['exitCode'] if last else None,
+       'commandWasFailureSite':bool(last and last.get('reasonCode')),'reasonCode':reason,
+       'compilerDiagnostic':{'status':'notCompilerPhase','stderrBytes':None,'sampleBytes':0,'lines':[],'truncated':False}}
++    row['failureStage']=first['stage'] if first else 'launcher'
++    row['safeMetadata']=first['metadata'] if first else {'outputScope':None,'entryKind':None,'errno':None}
++    secondary={k:v['reasonCode'] for k,v in getattr(guard,'secondaryFailures',{}).items()} if guard is not None else {}
++    secondary.update(record.get('secondaryFailureCodes',{}));row['secondaryFailureCodes']=secondary
+     compiler=phase in {'cxx-compile','observer-compile','swift-compile'} and label in labels and (label.startswith('compile-') or label in ['observer-tests-compile','swift-probe-compile'])
+     diag=row['compilerDiagnostic']
+     if not compiler:return row
+--- attempt002/PUBLIC_AGGREGATE_SCHEMA.json
++++ attempt003/PUBLIC_AGGREGATE_SCHEMA.json
+@@ -28,7 +28,8 @@
+     "candidateReceipts",
+     "pathDigestEncoding",
+     "failureEvidence",
+-    "matrixObservation"
++    "matrixObservation",
++    "lastValidResourceSample"
+   ],
+   "statusAllowed": [
+     "failed-or-inconclusive",
+@@ -190,7 +191,10 @@
+       "returnCode",
+       "commandWasFailureSite",
+       "reasonCode",
+-      "compilerDiagnostic"
++      "compilerDiagnostic",
++      "failureStage",
++      "safeMetadata",
++      "secondaryFailureCodes"
+     ],
+     "phases": [
+       "preflight",
+@@ -219,14 +223,39 @@
+       "CONTROL_BASELINE_MISMATCH",
+       "CPU_LIMIT",
+       "DESCENDANTS_REMAIN",
++      "EXPORT_OUTPUT_CHANGED",
+       "EXPORT_RESERVE_UNAVAILABLE",
++      "EXPORT_SIZE_UNSTABLE",
++      "FILESYSTEM_ERROR",
+       "GENERATED_SOURCE_CHANGED",
+       "INTERRUPTED",
+       "JSON_DECODE_FAILED",
+       "LAUNCHER_EXCEPTION",
+       "MATRIX_STRUCTURE_REFUSED",
++      "OUTPUT_DEPTH_LIMIT",
++      "OUTPUT_ENTRY_COUNT_LIMIT",
++      "OUTPUT_ENTRY_DISAPPEARED",
++      "OUTPUT_ENTRY_TYPE",
++      "OUTPUT_FILE_COUNT_LIMIT",
+       "OUTPUT_LIMIT",
++      "OUTPUT_LINK_CHANGED",
++      "OUTPUT_LINK_ESCAPE",
++      "OUTPUT_LINK_NAME",
++      "OUTPUT_LINK_SCOPE",
++      "OUTPUT_LINK_TARGET_TYPE",
++      "OUTPUT_ROOT_TYPE",
++      "OUTPUT_SCAN_UNAVAILABLE",
+       "PROCESS_OBSERVATION_UNAVAILABLE",
++      "PS_COLUMNS",
++      "PS_CPU_FORMAT",
++      "PS_CPU_NONFINITE",
++      "PS_CPU_RANGE",
++      "PS_FAMILY",
++      "PS_GUARD_MISSING",
++      "PS_IDENTITY",
++      "PS_ROW_LIMIT",
++      "PS_STDERR",
++      "PS_TEXT_LIMIT",
+       "PUBLIC_EXPORT_LIMIT",
+       "RESULT_INPUT_DIGEST_MISMATCH",
+       "RETIREMENT_UNCONFIRMED",
+@@ -274,7 +303,51 @@
+         "environment/admission dumps"
+       ],
+       "pinGate": "source/tool/generated build pins must all be verified before AND after"
+-    }
++    },
++    "failureStage": [
++      "guard-monitor",
++      "guard-command",
++      "interrupt",
++      "launcher",
++      "retirement",
++      "command-finalization",
++      "postcheck",
++      "terminal-export",
++      "receipt-save"
++    ],
++    "safeMetadata": {
++      "exactKeys": [
++        "outputScope",
++        "entryKind",
++        "errno"
++      ],
++      "outputScope": [
++        null,
++        "module-cache",
++        "owned-output"
++      ],
++      "entryKind": [
++        null,
++        "file",
++        "directory",
++        "symlink",
++        "other",
++        "unknown"
++      ],
++      "errno": "null or integer 0..4095; never raw exception/path text"
++    },
++    "secondaryFailureCodes": {
++      "maximumEntries": 5,
++      "allowedKeys": [
++        "retirement",
++        "command-finalization",
++        "postcheck",
++        "terminal-export",
++        "receipt-save"
++      ],
++      "value": "one member of reasonCode; first observed for each stage; never replaces primary"
++    },
++    "primaryOwnership": "reasonCode, phase, command context and safeMetadata belong to first failure, not later cleanup/finalization"
+   },
+   "matrixObservation": {
+     "exactKeys": [
+@@ -308,5 +381,24 @@
+     "controlChecks": "25 exact fixed IDs; exact keys requestID,legacyMatch,strictMatch; booleans",
+     "candidateAcceptanceChecks": "0or25 exact fixed IDs/groups; exact keys requestID,group,criterionPassed,initialSourceContactUnchanged,fullLayoutValidated; booleans",
+     "acceptanceFailure": "always launcher failed/nonzero; never relabelled pass to export evidence"
++  },
++  "lastValidResourceSample": {
++    "exactKeys": [
++      "sampleIndex",
++      "wallSeconds",
++      "observedAggregateCPUSeconds",
++      "observedPeakRSSBytes",
++      "observedPeakOutputBytes",
++      "completeTerminalObservation",
++      "capComplianceEstablished"
++    ],
++    "sampleIndex": "integer 1..1000000",
++    "wallSeconds": "finite nonnegative number",
++    "observedAggregateCPUSeconds": "finite nonnegative number",
++    "observedPeakRSSBytes": "integer 0..9223372036854775807",
++    "observedPeakOutputBytes": "integer 0..9223372036854775807",
++    "completeTerminalObservation": false,
++    "capComplianceEstablished": false,
++    "meaning": "last completed combined observation only; may itself exceed limits; never establishes final cap compliance"
+   }
+ }

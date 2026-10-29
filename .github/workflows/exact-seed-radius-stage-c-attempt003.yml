@@ -1,0 +1,44 @@
+name: Exact seed radius Stage C attempt003 fixed route matrix
+
+on:
+  push:
+    branches: [codex/recovery-hazard-order-20261027]
+    paths:
+      - 'research/exact-seed-radius-stage-c-attempt003-runner-20261029/ADMISSION_STAGE_C_003.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: exact-seed-radius-stage-c-attempt003-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  fixed-route-matrix:
+    if: github.repository == 'mischa23v/blind' && github.event.repository.private == false && github.ref == 'refs/heads/codex/recovery-hazard-order-20261027' && github.run_attempt == 1
+    runs-on: xcode-27
+    timeout-minutes: 8
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+          lfs: false
+          submodules: false
+      - name: Run one independently admitted bounded Stage C matrix
+        timeout-minutes: 6
+        run: python3 research/exact-seed-radius-stage-c-attempt003-runner-20261029/run_admitted.py
+      - name: Preserve only reviewed scalar aggregate and source identity
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: exact-seed-radius-stage-c-attempt003-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/blind-stage-c-attempt003-public-aggregate/AGGREGATE.json
+          if-no-files-found: error
+          retention-days: 3
