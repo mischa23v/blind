@@ -1,3 +1,16 @@
+## Actual navigation research checkpoints — 2026-10-29 22:42 UTC
+
+Published and verified on codex/recovery-hazard-order-20261027 through f4683841e164ba54a92d22c42f990705ddfb3a5d. Main unchanged.
+
+- Joint native/manual ranking actual attempt003: 35 controls plus comparison completed, 5.77654 CPU seconds / 5.790637 wall / 121,171,968 observed RSS. Manual extra residual 3.85→129.58mm, route 7.238872→7.502607m before connectors. Native-wall p10 proxy decreased. No uniformly improved physical-clearance claim.
+- OctoMap actual rebuild from published source e996371: 12.197197 CPU seconds; 16 original controls passed. Corrected Stage B three frames completed. First attempt failed before insertion on overly strict 1e-12 default-probability check; preserved. The minimal 1e-7 guard matches original controls and float log-odds representation, changes no geometry.
+- New native signed 15-degree ground-policy wrapper compiled and 67 controls passed; 20-path comparison terminated at 120.075956 CPU seconds under fixed 120-second budget. This is incomplete, not 20 route failures or 20 successful trials. Partial evidence is under review.
+- Original Koivu archive recovered from official MuSHRoom public CC-BY4.0 source and matches expected SHA 68735cfa0758e1288a006c30dc8b95ffb4caa3392bc9c68c0c3ea6c111966518. No new conference movement result yet.
+
+App source remains c210ca8; all later commits here are research/evidence, not new device-validated navigation. Raw private captures never uploaded. Two public-data diagnostic archives await explicit upload clarification after an automated upload block; do not claim those archives pushed.
+
+---
+
 ## Actual Stage C003 passed; Stage B native pending — 2026-10-29 15:23 UTC
 
 [Apple run 40895152519](https://github.com/mischa23v/blind/actions/runs/40895152519), exact source `9a3aeee70c235c33954760388770809478ca9f79`: 31 native commands completed, 15 observer groups reported passed, all 50 legacy/strict controls reproduced, all 25 candidate criteria met. **8 requests completed without modeled body or margin contacts: 6 retained corridors + 2 corrected corners; 17 requests remain refused/unsuccessful.** The long-hall fixture is approximately 5.85 m including connectors. Fixture labels/profile duplicates are not independent rooms, full bed/table loops or 100 movement trials. Attempts 001/002 remain failed historical attempts.

@@ -1,3 +1,15 @@
+## Navigation acceptance checkpoint — 2026-10-29 22:42 UTC
+
+- [x] Bounded Coffee 2D manual-exclusion comparator: new centered chain increases minimum extra manual-window residual 3.85→129.58mm for 0.264 m extra native-grid length; endpoints/profile/cap unchanged. All 143 complete-chain segments have two saved window checks. Manual rectangles are not measured table outlines; 3D/body/support acceptance remains open.
+- [x] Three frozen recorded Coffee frames: released OctoMap adapter retains all measured endpoint keys and tabletop inset keys 37/37/20 in independent camera-local trees. Untouched volume stays unknown. This is a regression, not held-out accuracy or cross-view registration.
+- [ ] Full-body validation of new joint-centered route and repeat conference/other-room tests. Original 20-path new floor-policy run hit fixed CPU budget; preserve partial outcomes.
+- [ ] Establish documented frames and independently validate any depth→room alignment. No inferred alignment from plausible pictures.
+- [ ] Live closed-loop localization/heading, current obstacle/support coverage, room transitions, chair/bed rise, exits, return/deviation/restart, phone performance and supervised adult acceptance remain open. No child trial/release readiness.
+
+Apple actual c210ca8 hosted result: 283 passed / 12 failed / 2 skipped; UI: 14 passed / 1 failed / 3 skipped. Focused checks do not turn that full suite green. See [native diagnostics](research/native-diagnostics-c210ca8-20261029/). Earlier dated checkpoints below are historical, not current pending/result claims.
+
+---
+
 ## Navigation acceptance checkpoint — 2026-10-29 15:23 UTC
 
 - [x] **Actual Stage C003 fixed-fixture correction:** 8 completed candidate requests without modeled body/margin contacts (6 retained + 2 corrected corners); 17 remain refused/unsuccessful. All 50 original controls reproduced and all 25 declared criteria met, with unchanged bodies/margins. This closes the tested flat-single-layer discrete-mask correction only, not live navigation.

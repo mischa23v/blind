@@ -1,3 +1,14 @@
+## Next navigation work — 2026-10-29 22:42 UTC
+
+1. Run full-body/support diagnostics on the actual new Coffee joint-centered chain, not only the old 20 path proposals. Retain initial refusals and all contacts. The 20-path native floor-policy comparison exhausted its fixed 120 CPU-second budget; partial records cannot be reported as20 completed trials.
+2. Resolve camera/mesh frame provenance before injecting the retained tabletop points into the displayed room mesh. Three camera-local OctoMap trees passed endpoint retention; no registered table corner or route clearance is established.
+3. Repeat fixed objectives on original conference/Koivu source. Official 146,575,749-byte archive is recovered and SHA-verified; extraction/scene-input adaptation remains pending. Historical fitted registration is a comparator, not calibrated camera-to-mesh truth.
+4. Finish current pose/heading, full-footprint support, live hazards, deviation/return and phone integration. Do not substitute a 2D manual-window pass for these gates.
+
+Latest verified published evidence: [joint-centering result](research/clearance-first-joint-cost-result-20261029/README.md), [three-frame retention](research/coffee-table-retention-stage-b-result-20261029/README.md). Research branch head at this checkpoint: f4683841e164ba54a92d22c42f990705ddfb3a5d. App source remains c210ca822ec4fdc339f808af58bc5b057fd98788; no new live caller activated.
+
+---
+
 ## Next: validated navigation, not inspection — 2026-10-29 15:23 UTC
 
 Stage C003 actually passed its unchanged fixed-fixture matrix: 8 complete/no modeled contacts, 17 refused/unsuccessful, including 2 corrected corners. Bodies/margins were unchanged. This is not live-phone or whole-journey acceptance.
