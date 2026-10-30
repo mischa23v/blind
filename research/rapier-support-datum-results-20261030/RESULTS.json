@@ -1,0 +1,2438 @@
+{
+  "status": "completed_saved_result_audit_only",
+  "sourceCommit": "71d1e68c65620106b2da97658951017420761c6a",
+  "manifestSHA256": "e93c2c5c4ea235a627dabab1fcb12a49b0d654d67169fc65c7e0b976609364ae",
+  "nativeRerun": false,
+  "physicalAuthority": false,
+  "movementApplied": false,
+  "arrivalEstablished": false,
+  "kccCalls": 48,
+  "vtkEnvelopeBandQueries": 96,
+  "all110InputHashesUnchanged": true,
+  "childGroupsRetired": true,
+  "wallSeconds": 3.806702027999563,
+  "aggregateCPUSeconds": 3.729362,
+  "peakObservedAggregateRSS": 369913856,
+  "rawEvidence": {
+    "GUARD_RUN/RESULT.json": {
+      "bytes": 47722,
+      "sha256": "b3aae70eed7f5eb3385bb6adfc45c4efe363a7523ce42561755c03c07872dfd1"
+    },
+    "probes/SUMMARY.json": {
+      "bytes": 850,
+      "sha256": "c4dfda49c9be4f10778750cd00eee752f666cf1ab49d1b24c49bdbd99151f4ff"
+    },
+    "probes/probe-rows.jsonl": {
+      "bytes": 245744,
+      "sha256": "f956ce30c93a457fc5e571129fdea149f1fb54363ea3d965274e4b78b999cc8d"
+    },
+    "probes/wrapper-records.jsonl": {
+      "bytes": 6918,
+      "sha256": "4e2bcfcd96223c4e6cbb30aeb7298353bb4df951a4b5329ddb31d38e77f8bb56"
+    },
+    "vtk/SUMMARY.json": {
+      "bytes": 1741,
+      "sha256": "5248a3761637cd17151e73197012f85286207125fb24ab136ba886078c44ef8c"
+    },
+    "vtk/rows.jsonl": {
+      "bytes": 549670,
+      "sha256": "d3e78c57a58cfc3461358c0d226196fa08e0e07522abc259dd01c577c3acf404"
+    }
+  },
+  "datumSHA256": "d6b7e3f29e5bf0d6aaecde6f7fddf741a03cbfc12299fa17555966f9b88ebbf5",
+  "uniqueContactTriangleRecords": 208,
+  "perPose": [
+    {
+      "id": "conference:table_92_to_120:960",
+      "shiftMetres": 0.0023336320028227633,
+      "allCornersExtrapolated": true,
+      "envelopes": {
+        "body": {
+          "zero": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          },
+          "original_xyz": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0.02499997615814209
+              ],
+              "kccProposed": [
+                -1.3047276592459411e-09,
+                0.0003519185120239854,
+                0.024996429681777954
+              ],
+              "kccCollisionCount": 1,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0.02499997615814209
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0.02499997615814209
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          }
+        },
+        "horizontal_margin": {
+          "zero": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 10,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.0029600595589727163,
+                    0.025880567729473114
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 6,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.0015316507779061794,
+                    0.025880567729473114
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0.010159117169678211,
+                -0.0017130179330706596
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 6,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.0038652827807289427,
+                    0.02354693572665035
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 6,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.0038652827807289427,
+                    0.02354693572665035
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0.007889850065112114,
+                -0.001330376835539937
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          },
+          "original_xyz": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 14,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.0029600595589727163,
+                    0.025880567729473114
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 6,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.0015316507779061794,
+                    0.025880567729473114
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0.02499997615814209
+              ],
+              "kccProposed": [
+                0,
+                0.004227856174111366,
+                0.024472031742334366
+              ],
+              "kccCollisionCount": 2,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 6,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.0038652827807289427,
+                    0.02354693572665035
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 6,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.0038652827807289427,
+                    0.02354693572665035
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0.02499997615814209
+              ],
+              "kccProposed": [
+                0,
+                0.004227856174111366,
+                0.024472031742334366
+              ],
+              "kccCollisionCount": 2,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "conference:table_120_to_200:2051",
+      "shiftMetres": 0.017946770579367013,
+      "allCornersExtrapolated": true,
+      "envelopes": {
+        "body": {
+          "zero": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 15,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.004044815940412283,
+                    0.012745273341985941
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 15,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.004044815940412283,
+                    0.012745273341985941
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                -8.346964023075998e-05,
+                0.0146926986053586,
+                8.122987310343888e-06
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          },
+          "original_xyz": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 15,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.004044815940412283,
+                    0.012745273341985941
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 15,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.004044815940412283,
+                    0.012745273341985941
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                -8.346964023075998e-05,
+                0.0146926986053586,
+                8.122987310343888e-06
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          }
+        },
+        "horizontal_margin": {
+          "zero": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 25,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.001213249792906046,
+                    0.012745273341985941
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 25,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.001213249792906046,
+                    0.012745273341985941
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0.01474529504776001,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          },
+          "original_xyz": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 25,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.001213249792906046,
+                    0.012745273341985941
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 25,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.001213249792906046,
+                    0.012745273341985941
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0.01474529504776001,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "conference:table_20_to_92:1057",
+      "shiftMetres": 0.005734749759279206,
+      "allCornersExtrapolated": true,
+      "envelopes": {
+        "body": {
+          "zero": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 8,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.01738879131153226,
+                    0.023321490734815598
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 6,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.01738879131153226,
+                    0.023321490734815598
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                -0.0024011863861232996,
+                0.014901130460202694,
+                0.0024011973291635513
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 6,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.023123541070811465,
+                    0.01758674097553639
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 6,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.023123541070811465,
+                    0.01758674097553639
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                -0.0015227037947624922,
+                0.009449498727917671,
+                0.0015227107796818018
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          },
+          "original_xyz": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 9,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.01738879131153226,
+                    0.023321490734815598
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 7,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.01738879131153226,
+                    0.023321490734815598
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0.016666730244954575,
+                0.0006944518536329269,
+                0.016666650772094727
+              ],
+              "kccProposed": [
+                0.002456027315929532,
+                0.0011355058522894979,
+                0.008470010943710804
+              ],
+              "kccCollisionCount": 2,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 7,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.023123541070811465,
+                    0.01758674097553639
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 7,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.023123541070811465,
+                    0.01758674097553639
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0.016666730244954575,
+                0.0006944518536329269,
+                0.016666650772094727
+              ],
+              "kccProposed": [
+                0.002462944481521845,
+                0.0011359074851498008,
+                0.008470970205962658
+              ],
+              "kccCollisionCount": 2,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          }
+        },
+        "horizontal_margin": {
+          "zero": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 25,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.028157369000837207,
+                    0.04047396779060364
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 24,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.028157369000837207,
+                    0.04047396779060364
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                -0.0019956491887569427,
+                0.04022301360964775,
+                0.001995657803490758
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 24,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.03389211876011641,
+                    0.03473921803132443
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 23,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.023123541070811465,
+                    0.03473921803132443
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                -0.0017125132726505399,
+                0.03451630845665932,
+                0.0017125207232311368
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          },
+          "original_xyz": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 26,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.028157369000837207,
+                    0.041330866515636444
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 25,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.028157369000837207,
+                    0.041330866515636444
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0.016666730244954575,
+                0.0006944518536329269,
+                0.016666650772094727
+              ],
+              "kccProposed": [
+                0.00708032725378871,
+                0.0006944152992218733,
+                0.016574524343013763
+              ],
+              "kccCollisionCount": 1,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 25,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.03389211876011641,
+                    0.03559611675635724
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 24,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.023123541070811465,
+                    0.03559611675635724
+                  ],
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0.016666730244954575,
+                0.0006944518536329269,
+                0.016666650772094727
+              ],
+              "kccProposed": [
+                0.007064810488373041,
+                0.0006942625623196363,
+                0.016574906185269356
+              ],
+              "kccCollisionCount": 1,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "conference:varpu_160_to_130:966",
+      "shiftMetres": -0.0024194458626298878,
+      "allCornersExtrapolated": true,
+      "envelopes": {
+        "body": {
+          "zero": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          },
+          "original_xyz": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                -0.016666730244954575,
+                0,
+                0.01666669050852465
+              ],
+              "kccProposed": [
+                -0.016666730865836143,
+                0,
+                0.01666668988764286
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                -0.016666730244954575,
+                0,
+                0.01666669050852465
+              ],
+              "kccProposed": [
+                -0.016666730865836143,
+                0,
+                0.01666668988764286
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          }
+        },
+        "horizontal_margin": {
+          "zero": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 6,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.0053814060859293964,
+                    0.012952612911918637
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0.0004008679243270308,
+                0.003790262620896101,
+                0.00040086908848024905
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          },
+          "original_xyz": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 5,
+                  "wholeTriangleRelativeHeightRange": [
+                    1.3309559300541878,
+                    1.5229594185948372
+                  ],
+                  "whollyAbove10cmIDs": [
+                    10860,
+                    15302,
+                    15299,
+                    15296,
+                    10859
+                  ]
+                },
+                "0.002": {
+                  "count": 5,
+                  "wholeTriangleRelativeHeightRange": [
+                    1.3309559300541878,
+                    1.5229594185948372
+                  ],
+                  "whollyAbove10cmIDs": [
+                    10860,
+                    15302,
+                    15299,
+                    15296,
+                    10859
+                  ]
+                }
+              },
+              "kccRequested": [
+                -0.016666730244954575,
+                0,
+                0.01666669050852465
+              ],
+              "kccProposed": [
+                -0.010947760194540024,
+                0.0004010939155705273,
+                0.01096866000443697
+              ],
+              "kccCollisionCount": 3,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 15,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.01160708329304171,
+                    1.525378864457467
+                  ],
+                  "whollyAbove10cmIDs": [
+                    10860,
+                    15302,
+                    15299,
+                    15296,
+                    10859
+                  ]
+                },
+                "0.002": {
+                  "count": 5,
+                  "wholeTriangleRelativeHeightRange": [
+                    1.3333753759168177,
+                    1.525378864457467
+                  ],
+                  "whollyAbove10cmIDs": [
+                    10860,
+                    15302,
+                    15299,
+                    15296,
+                    10859
+                  ]
+                }
+              },
+              "kccRequested": [
+                -0.016666730244954575,
+                0,
+                0.01666669050852465
+              ],
+              "kccProposed": [
+                -0.010983752086758614,
+                0.00350992102175951,
+                0.01092967577278614
+              ],
+              "kccCollisionCount": 4,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 5,
+                "candidateCount": 5,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 5,
+                "candidateCount": 5,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "coffee:0_to_8:630",
+      "shiftMetres": -0.013980962339170455,
+      "allCornersExtrapolated": true,
+      "envelopes": {
+        "body": {
+          "zero": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          },
+          "original_xyz": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0.016666670640309578,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0.016666671261191368,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0.016666670640309578,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0.016666671261191368,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          }
+        },
+        "horizontal_margin": {
+          "zero": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 9,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.6027789115905762,
+                    0.6792289018630981
+                  ],
+                  "whollyAbove10cmIDs": [
+                    32801,
+                    32793,
+                    32770,
+                    32764,
+                    32779,
+                    32783,
+                    32787,
+                    32807,
+                    32817
+                  ]
+                },
+                "0.002": {
+                  "count": 9,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.6027789115905762,
+                    0.6792289018630981
+                  ],
+                  "whollyAbove10cmIDs": [
+                    32801,
+                    32793,
+                    32770,
+                    32764,
+                    32779,
+                    32783,
+                    32787,
+                    32807,
+                    32817
+                  ]
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0.012576010078191757
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 9,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.6167598739297466,
+                    0.6932098642022686
+                  ],
+                  "whollyAbove10cmIDs": [
+                    32801,
+                    32793,
+                    32770,
+                    32764,
+                    32779,
+                    32783,
+                    32787,
+                    32807,
+                    32817
+                  ]
+                },
+                "0.002": {
+                  "count": 9,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.6167598739297466,
+                    0.6932098642022686
+                  ],
+                  "whollyAbove10cmIDs": [
+                    32801,
+                    32793,
+                    32770,
+                    32764,
+                    32779,
+                    32783,
+                    32787,
+                    32807,
+                    32817
+                  ]
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0.01257598027586937
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 9,
+                "candidateCount": 9,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 9,
+                "candidateCount": 9,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          },
+          "original_xyz": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 9,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.6027789115905762,
+                    0.6792289018630981
+                  ],
+                  "whollyAbove10cmIDs": [
+                    32801,
+                    32793,
+                    32770,
+                    32764,
+                    32779,
+                    32783,
+                    32787,
+                    32807,
+                    32817
+                  ]
+                },
+                "0.002": {
+                  "count": 9,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.6027789115905762,
+                    0.6792289018630981
+                  ],
+                  "whollyAbove10cmIDs": [
+                    32801,
+                    32793,
+                    32770,
+                    32764,
+                    32779,
+                    32783,
+                    32787,
+                    32807,
+                    32817
+                  ]
+                }
+              },
+              "kccRequested": [
+                0.016666670640309578,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0.016666671261191368,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 9,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.6167598739297466,
+                    0.6932098642022686
+                  ],
+                  "whollyAbove10cmIDs": [
+                    32801,
+                    32793,
+                    32770,
+                    32764,
+                    32779,
+                    32783,
+                    32787,
+                    32807,
+                    32817
+                  ]
+                },
+                "0.002": {
+                  "count": 9,
+                  "wholeTriangleRelativeHeightRange": [
+                    0.6167598739297466,
+                    0.6932098642022686
+                  ],
+                  "whollyAbove10cmIDs": [
+                    32801,
+                    32793,
+                    32770,
+                    32764,
+                    32779,
+                    32783,
+                    32787,
+                    32807,
+                    32817
+                  ]
+                }
+              },
+              "kccRequested": [
+                0.016666670640309578,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0.016666671261191368,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 9,
+                "candidateCount": 9,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 9,
+                "candidateCount": 9,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "coffee:0_to_8:1643",
+      "shiftMetres": 0.002374155540466827,
+      "allCornersExtrapolated": true,
+      "envelopes": {
+        "body": {
+          "zero": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 26,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.0024887391566443817,
+                    0.0003722837925743683
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0.0023721714969724417,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          },
+          "original_xyz": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 26,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.0024887391566443817,
+                    0.0003722837925743683
+                  ],
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0.0023721714969724417,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                },
+                "0.002": {
+                  "count": 0,
+                  "wholeTriangleRelativeHeightRange": null,
+                  "whollyAbove10cmIDs": []
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                0,
+                0,
+                0
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 0,
+                "candidateCount": 0,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          }
+        },
+        "horizontal_margin": {
+          "zero": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 119,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.004488713407437839,
+                    0.5414203337193322
+                  ],
+                  "whollyAbove10cmIDs": [
+                    35929,
+                    35925,
+                    17644,
+                    43156,
+                    43155,
+                    35905,
+                    35906,
+                    35916,
+                    35915,
+                    35914,
+                    35913,
+                    35912,
+                    35911,
+                    35910,
+                    35909,
+                    35908,
+                    17648,
+                    17647,
+                    17646,
+                    35907,
+                    35904,
+                    35903,
+                    43135,
+                    43134,
+                    43116,
+                    35917,
+                    11446,
+                    43193,
+                    35924,
+                    43178,
+                    43177,
+                    35920,
+                    35919,
+                    35918,
+                    35923,
+                    35922,
+                    35921,
+                    66445,
+                    66447,
+                    66444,
+                    35926,
+                    66463,
+                    35927,
+                    35931,
+                    35930,
+                    66442,
+                    66443,
+                    35902,
+                    66465,
+                    66466,
+                    35928
+                  ]
+                },
+                "0.002": {
+                  "count": 60,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.0031657287120032684,
+                    0.5414203337193322
+                  ],
+                  "whollyAbove10cmIDs": [
+                    35929,
+                    35925,
+                    17644,
+                    43156,
+                    43155,
+                    35905,
+                    35906,
+                    35916,
+                    35915,
+                    35914,
+                    35913,
+                    35912,
+                    35911,
+                    35910,
+                    35909,
+                    35908,
+                    17648,
+                    17647,
+                    17646,
+                    35907,
+                    35904,
+                    35903,
+                    43135,
+                    43134,
+                    43116,
+                    35917,
+                    11446,
+                    43193,
+                    35924,
+                    43178,
+                    43177,
+                    35920,
+                    35919,
+                    35918,
+                    35923,
+                    35922,
+                    35921,
+                    66445,
+                    66447,
+                    66444,
+                    35926,
+                    66463,
+                    35927,
+                    35931,
+                    35930,
+                    66442,
+                    66443,
+                    35902,
+                    66465,
+                    66466,
+                    35928
+                  ]
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                -0.05642782524228096,
+                0.003852852387353778,
+                -0.06440021842718124
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 60,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.005539884252470095,
+                    0.5390461781788654
+                  ],
+                  "whollyAbove10cmIDs": [
+                    35929,
+                    35925,
+                    17644,
+                    43156,
+                    43155,
+                    35905,
+                    35906,
+                    35916,
+                    35915,
+                    35914,
+                    35913,
+                    35912,
+                    35911,
+                    35910,
+                    35909,
+                    35908,
+                    17648,
+                    17647,
+                    17646,
+                    35907,
+                    35904,
+                    35903,
+                    43135,
+                    43134,
+                    43116,
+                    35917,
+                    11446,
+                    43193,
+                    35924,
+                    43178,
+                    43177,
+                    35920,
+                    35919,
+                    35918,
+                    35923,
+                    35922,
+                    35921,
+                    66445,
+                    66447,
+                    66444,
+                    35926,
+                    66463,
+                    35927,
+                    35931,
+                    35930,
+                    66442,
+                    66443,
+                    35902,
+                    66465,
+                    66466,
+                    35928
+                  ]
+                },
+                "0.002": {
+                  "count": 55,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.0031088492106610133,
+                    0.5390461781788654
+                  ],
+                  "whollyAbove10cmIDs": [
+                    35929,
+                    35925,
+                    17644,
+                    43156,
+                    43155,
+                    35905,
+                    35906,
+                    35916,
+                    35915,
+                    35914,
+                    35913,
+                    35912,
+                    35911,
+                    35910,
+                    35909,
+                    35908,
+                    17648,
+                    17647,
+                    17646,
+                    35907,
+                    35904,
+                    35903,
+                    43135,
+                    43134,
+                    43116,
+                    35917,
+                    11446,
+                    43193,
+                    35924,
+                    43178,
+                    43177,
+                    35920,
+                    35919,
+                    35918,
+                    35923,
+                    35922,
+                    35921,
+                    66445,
+                    66447,
+                    66444,
+                    35926,
+                    66463,
+                    35927,
+                    35931,
+                    35930,
+                    66442,
+                    66443,
+                    35902,
+                    66465,
+                    66466,
+                    35928
+                  ]
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                -0.05826951935887337,
+                0,
+                -0.06415516138076782
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 51,
+                "candidateCount": 51,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 51,
+                "candidateCount": 51,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          },
+          "original_xyz": {
+            "original": {
+              "vtk": {
+                "0": {
+                  "count": 119,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.004488713407437839,
+                    0.5414203337193322
+                  ],
+                  "whollyAbove10cmIDs": [
+                    35929,
+                    35925,
+                    17644,
+                    43156,
+                    43155,
+                    35905,
+                    35906,
+                    35916,
+                    35915,
+                    35914,
+                    35913,
+                    35912,
+                    35911,
+                    35910,
+                    35909,
+                    35908,
+                    17648,
+                    17647,
+                    17646,
+                    35907,
+                    35904,
+                    35903,
+                    43135,
+                    43134,
+                    43116,
+                    35917,
+                    11446,
+                    43193,
+                    35924,
+                    43178,
+                    43177,
+                    35920,
+                    35919,
+                    35918,
+                    35923,
+                    35922,
+                    35921,
+                    66445,
+                    66447,
+                    66444,
+                    35926,
+                    66463,
+                    35927,
+                    35931,
+                    35930,
+                    66442,
+                    66443,
+                    35902,
+                    66465,
+                    66466,
+                    35928
+                  ]
+                },
+                "0.002": {
+                  "count": 60,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.0031657287120032684,
+                    0.5414203337193322
+                  ],
+                  "whollyAbove10cmIDs": [
+                    35929,
+                    35925,
+                    17644,
+                    43156,
+                    43155,
+                    35905,
+                    35906,
+                    35916,
+                    35915,
+                    35914,
+                    35913,
+                    35912,
+                    35911,
+                    35910,
+                    35909,
+                    35908,
+                    17648,
+                    17647,
+                    17646,
+                    35907,
+                    35904,
+                    35903,
+                    43135,
+                    43134,
+                    43116,
+                    35917,
+                    11446,
+                    43193,
+                    35924,
+                    43178,
+                    43177,
+                    35920,
+                    35919,
+                    35918,
+                    35923,
+                    35922,
+                    35921,
+                    66445,
+                    66447,
+                    66444,
+                    35926,
+                    66463,
+                    35927,
+                    35931,
+                    35930,
+                    66442,
+                    66443,
+                    35902,
+                    66465,
+                    66466,
+                    35928
+                  ]
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                -0.05642782524228096,
+                0.003852852387353778,
+                -0.06440021842718124
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "candidate": {
+              "vtk": {
+                "0": {
+                  "count": 60,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.005539884252470095,
+                    0.5390461781788654
+                  ],
+                  "whollyAbove10cmIDs": [
+                    35929,
+                    35925,
+                    17644,
+                    43156,
+                    43155,
+                    35905,
+                    35906,
+                    35916,
+                    35915,
+                    35914,
+                    35913,
+                    35912,
+                    35911,
+                    35910,
+                    35909,
+                    35908,
+                    17648,
+                    17647,
+                    17646,
+                    35907,
+                    35904,
+                    35903,
+                    43135,
+                    43134,
+                    43116,
+                    35917,
+                    11446,
+                    43193,
+                    35924,
+                    43178,
+                    43177,
+                    35920,
+                    35919,
+                    35918,
+                    35923,
+                    35922,
+                    35921,
+                    66445,
+                    66447,
+                    66444,
+                    35926,
+                    66463,
+                    35927,
+                    35931,
+                    35930,
+                    66442,
+                    66443,
+                    35902,
+                    66465,
+                    66466,
+                    35928
+                  ]
+                },
+                "0.002": {
+                  "count": 55,
+                  "wholeTriangleRelativeHeightRange": [
+                    -0.0031088492106610133,
+                    0.5390461781788654
+                  ],
+                  "whollyAbove10cmIDs": [
+                    35929,
+                    35925,
+                    17644,
+                    43156,
+                    43155,
+                    35905,
+                    35906,
+                    35916,
+                    35915,
+                    35914,
+                    35913,
+                    35912,
+                    35911,
+                    35910,
+                    35909,
+                    35908,
+                    17648,
+                    17647,
+                    17646,
+                    35907,
+                    35904,
+                    35903,
+                    43135,
+                    43134,
+                    43116,
+                    35917,
+                    11446,
+                    43193,
+                    35924,
+                    43178,
+                    43177,
+                    35920,
+                    35919,
+                    35918,
+                    35923,
+                    35922,
+                    35921,
+                    66445,
+                    66447,
+                    66444,
+                    35926,
+                    66463,
+                    35927,
+                    35931,
+                    35930,
+                    66442,
+                    66443,
+                    35902,
+                    66465,
+                    66466,
+                    35928
+                  ]
+                }
+              },
+              "kccRequested": [
+                0,
+                0,
+                0
+              ],
+              "kccProposed": [
+                -0.05826951935887337,
+                0,
+                -0.06415516138076782
+              ],
+              "kccCollisionCount": 0,
+              "kccComputedGrounded": true
+            },
+            "highGeometryRetention": {
+              "0": {
+                "originalCount": 51,
+                "candidateCount": 51,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              },
+              "0.002": {
+                "originalCount": 51,
+                "candidateCount": 51,
+                "lostIDs": [],
+                "note": "10cm is descriptive whole-triangle height only, not safety threshold or semantic category"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Selected after observed outcomes, not held-out or representative.",
+    "All candidate corners extrapolate one center triangle.",
+    "No semantic floor or continuous support is established.",
+    "Whole triangle heights are not contact-point heights.",
+    "Higher contacts and low contacts are retained descriptively, neither deleted nor silently reclassified.",
+    "48 fixed KCC calls are not route movement; all proposals unapplied.",
+    "Two prior analytic down-step failures remain."
+  ]
+}
