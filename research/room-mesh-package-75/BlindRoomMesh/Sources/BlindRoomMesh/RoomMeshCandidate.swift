@@ -190,6 +190,33 @@ public final class RoomMeshCandidateRuntime {
  private let lock=NSLock()
  // Native adapter has process-global error text: serialize all package native calls.
  static let worker=DispatchQueue(label:"blind.room-mesh.native",qos:.utility)
+#if DEBUG
+ // Isolated experiment only. Explicit opt-in from the separately flagged test. Never a production scheduling setting.
+ private var comparisonQoS: DispatchQoS?
+ private var comparisonEffectiveQoS: UInt32?
+ public func configureSyntheticComparisonQoS(userInitiated: Bool) throws {
+  try locked {
+   guard pending == 0, owner == nil, !stopped, comparisonQoS == nil else { throw MeshCandidateError.invalidInput }
+   comparisonQoS = userInitiated ? .userInitiated : .utility
+  }
+ }
+ public var syntheticComparisonEffectiveQoS: UInt32? { locked { comparisonEffectiveQoS } }
+ private func enqueueNativeRequest(_ work: @escaping () -> Void) {
+  guard let qos=locked({comparisonQoS}) else { Self.worker.async(execute:work); return }
+  // Same serial worker, not a parallel native lane. Both arms use identical flags.
+  let item=DispatchWorkItem(qos:qos,flags:[.enforceQoS]) { [self] in
+#if canImport(Darwin)
+   let effective=qos_class_self().rawValue
+   locked { comparisonEffectiveQoS=effective }
+#endif
+   work()
+  }
+  Self.worker.async(execute:item)
+ }
+#else
+ private func enqueueNativeRequest(_ work: @escaping () -> Void) { Self.worker.async(execute:work) }
+#endif
+
  private var session: String, generation: Int, revision: UInt64=0
  private var lifecycle:UInt64=0, ownerLifecycle:UInt64?
  private var pending=0, pendingScalars=0, gap=false, stopped=false
@@ -641,7 +668,7 @@ public final class RoomMeshCandidateRuntime {
 #if DEBUG
   recordDiagnosticStage(.requestEnqueued)
 #endif
-  Self.worker.async { [self] in
+  enqueueNativeRequest { [self] in
 #if DEBUG
    let diagnosticOffset=diagnosticWorkerOffset()
    recordDiagnosticStage(.workerStarted,workerCPU:true)

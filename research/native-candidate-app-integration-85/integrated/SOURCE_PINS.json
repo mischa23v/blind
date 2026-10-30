@@ -10,12 +10,12 @@
   },
   "integrated": {
     "ios/BlindAssist/NavigationModel.swift": "d0ff7752d5044c91ce50382f9671fa6a011897bce2c59eb98de0a194d9d1e06e",
-    "ios/BlindAssist.xcodeproj/project.pbxproj": "8e3790105c8bae534682d6ea5b434390e8a25680f4ee84eea3cefcb12643224b",
+    "ios/BlindAssist.xcodeproj/project.pbxproj": "d5b6849e8ed532f02b3fbebea75349b1f333ba923e053abdf44a215ba5a95cc7",
     "ios/BlindAssist/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
     "tools/ci/native-apple.sh": "f040bd2f80f1c17be357606b14cdfe819155ee9e58116896b154d30fa1746c0a",
-    ".github/workflows/native-apple.yml": "5a624086db1b72cb04912b334e0c6a5d856498dbcd897fa659b2cbc9f955b960",
+    ".github/workflows/native-apple.yml": "3937a1fbdaf870e51ad89b9270a47cc97517d548b8e79fd5b0c948ef7f0ab26e",
     ".github/workflows/native-candidate-app-integration.yml": "53c558f2e60600f98079475cd9e046d4e67e1a6fb95a4a5d60f1fd3f2c0f5653",
-    "research/native-candidate-app-integration-85/integrated/check.py": "3b489ac2fca4809ba801986be0aee25625544d3eea0cac6e5b6b5cb7313944fe",
+    "research/native-candidate-app-integration-85/integrated/check.py": "7ed59f80e1230d144e5fdd15f58bae7d799bd4b485f514667044e898b063ce93",
     "research/native-candidate-app-integration-85/integrated/README.md": "e0c2967287b5ce57ab0c630f3b07fd1f466121aceae1cf931d48d113a5703bb1",
     "research/native-candidate-app-integration-85/app-integration.patch": "3cbde1075811ebab3d9fc1a54101ffad0b3749030c3dfc920cbcdca4fde2c619",
     "research/native-candidate-app-integration-85/proposal/MeshCandidateDiagnostics.swift": "f0ff40e279e210bec4b31b1e965b0c15c747a93f60530e67f40630a2a4147724",
@@ -23,7 +23,7 @@
     "research/native-candidate-app-integration-85/integrated/practice-publication.patch": "d63db63272a4bf53d9a4209cb5be2d3e55ff44a782242eeede2a46a4a5178156",
     "research/native-candidate-app-integration-85/integrated/project-canonicalization.patch": "57860e8d3c8513bfca04a636def7aec9aaaa2b201ac3985db2ebf011618f43f8",
     "research/native-candidate-app-integration-85/integrated/connected-bench-preview-membership.patch": "85d1a3c5982030f8437e7695ae3a70623a53747f0a96f3a7fbd89c515ed9a7c9",
-    "tools/generate-xcode-project.mjs": "edd50e8c8fb05415c2c47c6c872a621ede2fdd2be664c52f50e4ac8ade32a73d",
+    "tools/generate-xcode-project.mjs": "4d19234f27551c3bfb204f7ebdbad01807af5da3bdf44059931eb59e094c23b9",
     "research/native-candidate-app-integration-85/integrated/navigation-test-recording.patch": "e6cf0038fb7814ce20ed31baddf6ee48c8990a81afc8af92a4e1b766aa130865",
     "research/native-candidate-app-integration-85/integrated/saved-frame-camera-association.patch": "36703f6e1a78bf5c027e94563f7de8661be8a7862397aad96c16bb698247c2de",
     "research/native-candidate-app-integration-85/integrated/scene-timing-ci-helper.patch": "af1124b6dae32a945a625b2c017f532e15d23df721cce323fef09e580cd81e4b",
@@ -83,15 +83,15 @@
     "tools/ci/test_live_mesh_session_initializer.py": "0512ec12df94c21af0f5b199b8893290ebaeea7ec56ee0d6f58214af04027040",
     "ios/BlindAssistTests/SavedRoomStrictEndpointTests.swift": "df12572e95906fb794606e42cecd678d230e204c016ef88b15b17ea1f0d7fde3",
     "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/Bridge.swift": "844d18ef9d7a65b7a3de0a2f947f070e1fc29b57034ae6d2dce63a0f53efa725",
-    "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "c8f129eb7583da2ed81df04de1a86144c916d76f3211c604acba5c7317521d90",
+    "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "29e8df815419081212e22f07118c310857619460ba4a6faaf08f2c806f7166a5",
     "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "4aea336d716ec2c319203794649a1ebaf2be23ef30a687265cb6c825ad9347a1",
     "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h": "b0b4de9a807037f19c57d15890890de7b8186b0b46cc9c30a89067ee42c0b8d5",
     "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c5a69f71f82e6fbfdc98a1b29185d37c8fa70c4a54e955d7d2954f3aa592f1ec",
     "tools/ci/collect-seed-radius.py": "6db52f6eefb404592f3bcf37a0824fece678262253c86534f4e1c1b211647c03",
     "tools/ci/test-collect-seed-radius.py": "61b0478a5376deee60154d151bd871e48a37d750e49b9c184c45283d7d05bd04",
-    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "045cbcd82d2b4cdf1414a9dc2fe8d57579d289dbf1c8746bbda48ec13f4a8657",
-    "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json": "f084300ad988fad279ad9a33c803a552e38fc9b4bd1903a19310ef726655540d",
-    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "ff33b3e1d2fad1f1fbee3d969179238a18708a6cea6f0216c98e37dcebca9384",
+    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "7c14161c00a7049597c659a377589be1257a5c5260432d759c135dbe71c6be4a",
+    "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json": "706fbd96f0fe35de3691054f43ea36e820f5d63430e05563d65ab0cda5014e76",
+    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "0df32fdca1ebcf810395c434bfea93c7dc7a937df83f1e371ca41325ee0de29e",
     "research/native-candidate-app-integration-85/integrated/exact-seed-radius-ci-layer.patch": "15df8e9d41d0560c7d8bec363acb85eaa31d46f30edddfacbef8e431abddf5ad",
     "research/native-candidate-app-integration-85/integrated/exact-seed-radius-policy-layer.patch": "c3d045a4e914a49e0be7ad6c3875606b1b302e24a0c0bb7f4942229881ed0f43",
     "tools/ci/export-seed-radius-diagnostics.py": "91600e8003140cafe936222d0721f9030af351c83e62a07ff983e31efcc0c760",
@@ -157,7 +157,16 @@
     "research/native-edt-historical-view-20261030/test_snapshot.py": "ebb48e503cd60a9aa29f389e71f07bca2393ca670f6dab2fcd439835e0cca1dc",
     "research/native-edt-historical-view-20261030/verify_checkout_view.py": "f5d085376ecec6eefa38d108ea0d270e6d07d4085c5d0ea962aa93a5a0ba91c4",
     "research/native-candidate-app-integration-85/integrated/apple-preflight-historical-edt-repair.patch": "c3c87ce525f02fc9296275b9146f46ca65279faecdf380f2e76f05ecdfe657ef",
-    "research/native-candidate-app-integration-85/integrated/seated-expectation-ownership-repair.patch": "712ac9c3ba45ad2ec6309efe2f106085001b42a5217a52679dbac21b5665e45e"
+    "research/native-candidate-app-integration-85/integrated/seated-expectation-ownership-repair.patch": "712ac9c3ba45ad2ec6309efe2f106085001b42a5217a52679dbac21b5665e45e",
+    ".github/workflows/native-qos-comparison.yml": "0532d0bffbc1ddd87de435172e64f59b279bf88a7ffab2140b968cbf87a89973",
+    "tools/ci/native-qos-comparison.py": "42be731425576c22a166a5fa44a399b8ac3c5a5bb6d75794138d1360aad5c8e4",
+    "tools/ci/test_native_qos_comparison.py": "2a575392e632e33b94565c68c2c9d80c04bfa68ec7d090ae9c2fdd0237c226a3",
+    "ios/BlindAssistTests/NativeQoSComparisonTests.swift": "84248e3bc80f8b48cb6b4a6cfca890cd34da45b02a52e294324965aa2fc67965",
+    "tools/ci/export-seated-case-diagnostics.py": "c6d4e61d8175096faace4bee2f11732dddc80abf3447c4246d6f557e2fded571",
+    "tools/ci/test_export_seated_case_diagnostics.py": "0b39d597ae4f93bac4f01ac03ff7e5309a986cea029cc68459e29161409d68f8",
+    "research/native-qos-comparison-20261030/README.md": "8c591113fb202b1a0416f0903085d85b5ebe432c888ae7d095d1134aa9c7a256",
+    "research/native-qos-comparison-20261030/CI_PLAN.md": "be831bfcfd91c907c9bcdc7a046da53a0520ad891500d2f432d60bed7c470ad4",
+    "research/native-candidate-app-integration-85/integrated/native-qos-comparison-layer.patch": "6f0e5a0a9f779faf035ca96e75544bbd70d996d8c75d254b8792010cfa8ce898"
   },
   "beforeCriticalOrder": {
     "ios/BlindAssist/NavigationModel.swift": "06305bbb3a8f1b8800cb3454eade606b2749230b359a3d32fec36dda95a52307"
@@ -542,5 +551,24 @@
     "tools/ci/test_extract_seated_candidate_timing.py": "6f4eddfc17aceb8a25989e3644468843c87f907e1ebc0bc4b2ae31a3971dd476",
     "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "13ed1693e54bd1e9db1ce52dc8842b3e16677907d52779b6c652bac2fd8d9458"
   },
-  "expectationOwnershipRepairNewFiles": []
+  "expectationOwnershipRepairNewFiles": [],
+  "beforeQoSComparison": {
+    "tools/generate-xcode-project.mjs": "edd50e8c8fb05415c2c47c6c872a621ede2fdd2be664c52f50e4ac8ade32a73d",
+    "ios/BlindAssist.xcodeproj/project.pbxproj": "8e3790105c8bae534682d6ea5b434390e8a25680f4ee84eea3cefcb12643224b",
+    "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift": "c8f129eb7583da2ed81df04de1a86144c916d76f3211c604acba5c7317521d90",
+    ".github/workflows/native-apple.yml": "5a624086db1b72cb04912b334e0c6a5d856498dbcd897fa659b2cbc9f955b960",
+    "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json": "045cbcd82d2b4cdf1414a9dc2fe8d57579d289dbf1c8746bbda48ec13f4a8657",
+    "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json": "f084300ad988fad279ad9a33c803a552e38fc9b4bd1903a19310ef726655540d",
+    "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json": "ff33b3e1d2fad1f1fbee3d969179238a18708a6cea6f0216c98e37dcebca9384"
+  },
+  "qosComparisonNewFiles": [
+    ".github/workflows/native-qos-comparison.yml",
+    "tools/ci/native-qos-comparison.py",
+    "tools/ci/test_native_qos_comparison.py",
+    "ios/BlindAssistTests/NativeQoSComparisonTests.swift",
+    "tools/ci/export-seated-case-diagnostics.py",
+    "tools/ci/test_export_seated_case_diagnostics.py",
+    "research/native-qos-comparison-20261030/README.md",
+    "research/native-qos-comparison-20261030/CI_PLAN.md"
+  ]
 }

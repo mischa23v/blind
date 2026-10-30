@@ -225,6 +225,10 @@ jobs:
         id: unit
         timeout-minutes: 10
         run: bash tools/ci/native-apple.sh diagnostics-unit
+      - name: Export bounded seated case statuses and assertion categories
+        if: always()
+        timeout-minutes: 3
+        run: python3 -B tools/ci/export-seated-case-diagnostics.py "$RUNNER_TEMP/blind-native-ci"
       - name: Verify exact eighteen synthetic hosted cases and source identity
         id: collect
         if: always()

@@ -18,12 +18,27 @@ def check(name, value):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# Restore normal scheduling source before checking earlier acceptance evidence.
+pre_qos_comparison_source={}
+with tempfile.TemporaryDirectory(prefix='stage85-qos-comparison-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeQoSComparison'])+manifest['qosComparisonNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+    subprocess.run(['git','apply','-R',str(H/'native-qos-comparison-layer.patch')],cwd=root,
+                   check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeQoSComparison'].items():
+        value=(root/name).read_bytes()
+        check('exact pre-QoS-comparison input '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_qos_comparison_source[name]=value
+    for name in manifest['qosComparisonNewFiles']:
+        check('new QoS comparison input absent from prior layer '+name,not (root/name).exists())
+
 # Preserve actual e418 harness and runtime failures before repairing expectation ownership.
-pre_expectation_owner_source={}
+pre_expectation_owner_source=dict(pre_qos_comparison_source)
 with tempfile.TemporaryDirectory(prefix='stage85-expectation-owner-') as temp:
     root=Path(temp)
     for name in list(manifest['beforeExpectationOwnershipRepair'])+manifest['expectationOwnershipRepairNewFiles']:
-        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_qos_comparison_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'seated-expectation-ownership-repair.patch')],cwd=root,
                    check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeExpectationOwnershipRepair'].items():

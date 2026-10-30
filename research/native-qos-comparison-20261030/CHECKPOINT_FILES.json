@@ -1,0 +1,104 @@
+{
+  "status": "reviewed_source_adoption_native_results_pending",
+  "baseCommit": "08ebe14065cfb286c7a6d99fd53b7b377c2ad287",
+  "frozenProposalManifestSHA256": "8ee9fe6108da5257b60c5b88284f4e89724186bfbf3652188db081b043e2ef07",
+  "portableControls": 165,
+  "nativeExecutedByAuthor": false,
+  "files": [
+    {
+      "path": ".github/workflows/native-qos-comparison.yml",
+      "sha256": "0532d0bffbc1ddd87de435172e64f59b279bf88a7ffab2140b968cbf87a89973",
+      "bytes": 2026
+    },
+    {
+      "path": "tools/ci/native-qos-comparison.py",
+      "sha256": "42be731425576c22a166a5fa44a399b8ac3c5a5bb6d75794138d1360aad5c8e4",
+      "bytes": 18084
+    },
+    {
+      "path": "tools/ci/test_native_qos_comparison.py",
+      "sha256": "2a575392e632e33b94565c68c2c9d80c04bfa68ec7d090ae9c2fdd0237c226a3",
+      "bytes": 20473
+    },
+    {
+      "path": "tools/generate-xcode-project.mjs",
+      "sha256": "4d19234f27551c3bfb204f7ebdbad01807af5da3bdf44059931eb59e094c23b9",
+      "bytes": 51517
+    },
+    {
+      "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
+      "sha256": "d5b6849e8ed532f02b3fbebea75349b1f333ba923e053abdf44a215ba5a95cc7",
+      "bytes": 44311
+    },
+    {
+      "path": "ios/BlindAssistTests/NativeQoSComparisonTests.swift",
+      "sha256": "84248e3bc80f8b48cb6b4a6cfca890cd34da45b02a52e294324965aa2fc67965",
+      "bytes": 6758
+    },
+    {
+      "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift",
+      "sha256": "29e8df815419081212e22f07118c310857619460ba4a6faaf08f2c806f7166a5",
+      "bytes": 41875
+    },
+    {
+      "path": ".github/workflows/native-apple.yml",
+      "sha256": "3937a1fbdaf870e51ad89b9270a47cc97517d548b8e79fd5b0c948ef7f0ab26e",
+      "bytes": 16183
+    },
+    {
+      "path": "tools/ci/export-seated-case-diagnostics.py",
+      "sha256": "c6d4e61d8175096faace4bee2f11732dddc80abf3447c4246d6f557e2fded571",
+      "bytes": 10518
+    },
+    {
+      "path": "tools/ci/test_export_seated_case_diagnostics.py",
+      "sha256": "0b39d597ae4f93bac4f01ac03ff7e5309a986cea029cc68459e29161409d68f8",
+      "bytes": 14622
+    },
+    {
+      "path": "research/native-qos-comparison-20261030/README.md",
+      "sha256": "8c591113fb202b1a0416f0903085d85b5ebe432c888ae7d095d1134aa9c7a256",
+      "bytes": 6010
+    },
+    {
+      "path": "research/native-qos-comparison-20261030/CI_PLAN.md",
+      "sha256": "be831bfcfd91c907c9bcdc7a046da53a0520ad891500d2f432d60bed7c470ad4",
+      "bytes": 6861
+    },
+    {
+      "path": "research/room-mesh-package-75/APPLE_CURRENT_SOURCE_PINS.json",
+      "sha256": "7c14161c00a7049597c659a377589be1257a5c5260432d759c135dbe71c6be4a",
+      "bytes": 17840
+    },
+    {
+      "path": "research/mesh-candidate-ingress-83/CURRENT_SOURCE_PINS.json",
+      "sha256": "706fbd96f0fe35de3691054f43ea36e820f5d63430e05563d65ab0cda5014e76",
+      "bytes": 8707
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json",
+      "sha256": "0df32fdca1ebcf810395c434bfea93c7dc7a937df83f1e371ca41325ee0de29e",
+      "bytes": 44637
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/native-qos-comparison-layer.patch",
+      "sha256": "6f0e5a0a9f779faf035ca96e75544bbd70d996d8c75d254b8792010cfa8ce898",
+      "bytes": 112923
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/check.py",
+      "sha256": "7ed59f80e1230d144e5fdd15f58bae7d799bd4b485f514667044e898b063ce93",
+      "bytes": 43389
+    },
+    {
+      "path": "research/native-candidate-app-integration-85/integrated/SOURCE_PINS.json",
+      "sha256": "b8dc9135221fdd7e0ee96937fa1385560e3af4eb84c1aa6e5e635b68a24b9963",
+      "bytes": 52857
+    },
+    {
+      "path": "research/native-qos-comparison-20261030/ADOPTION.md",
+      "sha256": "5650c4b2e3794c33c8da6a57ba166194b7be1def6415b4a36938e686b230e2d5",
+      "bytes": 2626
+    }
+  ]
+}
