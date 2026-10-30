@@ -110,11 +110,10 @@ case "$mode" in
     sdk="$(xcrun --sdk iphonesimulator --show-sdk-version)"
     echo "Simulator SDK: $sdk"
     test "$sdk" = 27.0
-    # Do not accidentally test a machine-specific optional project as the default.
-    if grep -Eq 'BLIND_[A-Z_]+|opencv2|\.mlmodelc|\.mlpackage' "$project/project.pbxproj"; then
-      echo 'Unexpected optional backend/model in default project; refusing to regenerate or override it.' >&2
-      exit 1
-    fi
+    # Parse actual target/config ownership; only the exact hosted oracle-test flag
+    # is permitted. App/UI optional backend/model flags remain prohibited.
+    plutil -convert json -o "$out/default-project.json" "$project/project.pbxproj"
+    python3 -B tools/ci/verify-default-project.py "$project/project.pbxproj" "$out/default-project.json"
     xcrun simctl list devices available --json > "$out/devices.json"
     python3 - "$out" <<'PY'
 import json, pathlib, sys

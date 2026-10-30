@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/native-edt-navigation-probe.yml'
       - 'research/native-edt-oracle-bridge-20261030/**'
+      - 'research/native-edt-historical-view-20261030/**'
       - 'research/native-floor-import-repair-20261028/edt-navigation-probe/main.swift'
       - 'research/native-floor-import-repair-20261028/edt-navigation-probe/run_native.py'
       - 'research/native-floor-import-repair-20261028/edt-navigation-probe/edt_probe.h'
@@ -58,7 +59,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 research/native-edt-oracle-bridge-20261030/run_bridge.py
+          python3 -B research/native-edt-historical-view-20261030/run_snapshot.py
       - name: Preserve bounded positive and negative evidence, never build products
         if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

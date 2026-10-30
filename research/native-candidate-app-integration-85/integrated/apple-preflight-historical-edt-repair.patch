@@ -1,0 +1,2108 @@
+--- a/tools/ci/native-apple.sh
++++ b/tools/ci/native-apple.sh
+@@ -110,11 +110,10 @@
+     sdk="$(xcrun --sdk iphonesimulator --show-sdk-version)"
+     echo "Simulator SDK: $sdk"
+     test "$sdk" = 27.0
+-    # Do not accidentally test a machine-specific optional project as the default.
+-    if grep -Eq 'BLIND_[A-Z_]+|opencv2|\.mlmodelc|\.mlpackage' "$project/project.pbxproj"; then
+-      echo 'Unexpected optional backend/model in default project; refusing to regenerate or override it.' >&2
+-      exit 1
+-    fi
++    # Parse actual target/config ownership; only the exact hosted oracle-test flag
++    # is permitted. App/UI optional backend/model flags remain prohibited.
++    plutil -convert json -o "$out/default-project.json" "$project/project.pbxproj"
++    python3 -B tools/ci/verify-default-project.py "$project/project.pbxproj" "$out/default-project.json"
+     xcrun simctl list devices available --json > "$out/devices.json"
+     python3 - "$out" <<'PY'
+ import json, pathlib, sys
+--- /dev/null
++++ b/tools/ci/verify-default-project.py
+@@ -0,0 +1,161 @@
++#!/usr/bin/env python3
++"""Bounded guard for Apple's plutil JSON view of the committed default project.
++
++The one exception is the exact oracle flag in exclusively owned configurations
++of the root project's real hosted unit-test target. No text is globally stripped.
++The caller must obtain JSON using plutil from the same raw project passed here.
++"""
++import argparse
++import hashlib
++import json
++from pathlib import Path
++import re
++import sys
++
++INPUT_LIMIT = 2 * 1024 * 1024
++NODE_LIMIT = 40000
++DEPTH_LIMIT = 64
++FORBIDDEN = re.compile(r'BLIND_[A-Z_]+|opencv2|\.mlmodelc|\.mlpackage')
++FLAG = 'BLIND_COLLISION_ORACLE_TESTS'
++FLAG_VALUE = '$(inherited) -D ' + FLAG
++TARGET_TYPES = {
++    'BlindAssist': 'com.apple.product-type.application',
++    'BlindAssistTests': 'com.apple.product-type.bundle.unit-test',
++    'BlindAssistUITests': 'com.apple.product-type.bundle.ui-testing',
++}
++
++
++def require(ok, code):
++    if not ok:
++        raise ValueError(code)
++
++
++def unique_object(pairs):
++    result = {}
++    for key, value in pairs:
++        require(key not in result, 'duplicate-json-key')
++        result[key] = value
++    return result
++
++
++def walk(value, path=()):
++    pending = [(value, path)]
++    seen = 0
++    while pending:
++        item, location = pending.pop()
++        seen += 1
++        require(seen <= NODE_LIMIT and len(location) <= DEPTH_LIMIT, 'json-structure-budget')
++        yield location, item
++        if isinstance(item, dict):
++            for key, child in item.items():
++                require(isinstance(key, str), 'non-string-json-key')
++                require(FORBIDDEN.search(key) is None, 'forbidden-project-key')
++                pending.append((child, location + (key,)))
++        elif isinstance(item, list):
++            pending.extend((child, location + (index,)) for index, child in enumerate(item))
++        else:
++            require(item is None or type(item) in (str, int, bool), 'unexpected-json-value')
++
++
++def validate_project(project, raw):
++    require(isinstance(raw, str) and len(raw.encode()) <= INPUT_LIMIT, 'raw-project-budget')
++    require(isinstance(project, dict), 'project-object-required')
++    # Validate the entire bounded tree, not just the settings being excepted.
++    nodes = list(walk(project))
++    objects = project.get('objects')
++    require(isinstance(objects, dict) and 0 < len(objects) <= 4096, 'object-table-required')
++    require(all(isinstance(k, str) and isinstance(v, dict) for k, v in objects.items()), 'invalid-object-table')
++    root_id = project.get('rootObject')
++    require(isinstance(root_id, str) and root_id in objects, 'missing-root-project')
++    root = objects[root_id]
++    require(root.get('isa') == 'PBXProject', 'root-not-project')
++    require([key for key, obj in objects.items() if obj.get('isa') == 'PBXProject'] == [root_id], 'unexpected-project-object')
++    target_ids = root.get('targets')
++    require(isinstance(target_ids, list) and len(target_ids) == 3 and
++            all(isinstance(x, str) for x in target_ids) and len(set(target_ids)) == 3, 'exact-root-targets-required')
++    native_ids = {key for key, obj in objects.items() if obj.get('isa') == 'PBXNativeTarget'}
++    require(set(target_ids) == native_ids, 'orphan-or-missing-native-target')
++    targets = {}
++    for target_id in target_ids:
++        target = objects[target_id]
++        name = target.get('name')
++        require(name in TARGET_TYPES and name not in targets, 'unexpected-or-duplicate-target-name')
++        require(target.get('productName') == name and target.get('productType') == TARGET_TYPES[name], 'target-product-identity')
++        targets[name] = target_id
++    unit_id = targets['BlindAssistTests']
++    unit = objects[unit_id]
++    owner_list = unit.get('buildConfigurationList')
++    require(isinstance(owner_list, str) and owner_list in objects, 'missing-unit-configuration-list')
++    configuration_list = objects[owner_list]
++    require(configuration_list.get('isa') == 'XCConfigurationList', 'invalid-unit-configuration-list')
++    owners = [key for key, obj in objects.items() if obj.get('buildConfigurationList') == owner_list]
++    require(owners == [unit_id], 'shared-unit-configuration-list')
++    config_ids = configuration_list.get('buildConfigurations')
++    require(isinstance(config_ids, list) and len(config_ids) == 2 and
++            all(isinstance(x, str) for x in config_ids) and len(set(config_ids)) == 2, 'exact-unit-configurations-required')
++    attributes = root.get('attributes', {}).get('TargetAttributes', {})
++    require(isinstance(attributes, dict) and attributes.get(unit_id, {}).get('TestTargetID') == targets['BlindAssist'], 'unit-host-target-association')
++    approved = set()
++    names = set()
++    for config_id in config_ids:
++        config = objects.get(config_id)
++        require(isinstance(config, dict) and config.get('isa') == 'XCBuildConfiguration', 'invalid-unit-configuration')
++        name = config.get('name')
++        require(name in {'Debug', 'Release'} and name not in names, 'exact-unit-configuration-names')
++        names.add(name)
++        # Even orphan configuration lists must not share the privileged objects.
++        references = [key for key, obj in objects.items()
++                      if isinstance(obj.get('buildConfigurations'), list) and config_id in obj['buildConfigurations']]
++        require(references == [owner_list], 'shared-unit-configuration')
++        require('baseConfigurationReference' not in config, 'external-unit-configuration-not-reviewed')
++        settings = config.get('buildSettings')
++        require(isinstance(settings, dict), 'unit-build-settings-required')
++        require(settings.get('OTHER_SWIFT_FLAGS') == FLAG_VALUE, 'exact-oracle-test-flag-required')
++        require(settings.get('TEST_HOST') == '$(BUILT_PRODUCTS_DIR)/BlindAssist.app/BlindAssist' and
++                settings.get('BUNDLE_LOADER') == '$(TEST_HOST)', 'unit-host-settings')
++        approved.add(('objects', config_id, 'buildSettings', 'OTHER_SWIFT_FLAGS'))
++    require(names == {'Debug', 'Release'}, 'exact-unit-configuration-names')
++    for location, value in nodes:
++        if location and isinstance(location[-1], str) and location[-1].startswith('OTHER_SWIFT_FLAGS'):
++            require(location in approved and value == FLAG_VALUE, 'unreviewed-swift-flags')
++        if isinstance(value, str) and FORBIDDEN.search(value):
++            require(location in approved and value == FLAG_VALUE, 'forbidden-backend-model-or-flag')
++    # Keep the former whole-file prohibition, including comments. Only the two
++    # tokens proven above are admitted; backend/model strings never are.
++    require(FORBIDDEN.findall(raw) == [FLAG, FLAG], 'raw-project-optional-token-mismatch')
++    return {'schema': 1, 'status': 'passed', 'oracle_flag_target': 'BlindAssistTests',
++            'oracle_flag_configurations': ['Debug', 'Release'], 'oracle_flag_occurrences': 2,
++            'optional_backend_or_model_entries': 0, 'physical_authority': False}
++
++
++def read_bounded(path):
++    require(path.is_file() and not path.is_symlink(), 'regular-project-file-required')
++    with path.open('rb') as stream:
++        raw = stream.read(INPUT_LIMIT + 1)
++    require(len(raw) <= INPUT_LIMIT, 'project-input-budget')
++    return raw
++
++
++def main(argv=None):
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('raw_project', type=Path)
++    parser.add_argument('plutil_json', type=Path)
++    args = parser.parse_args(argv)
++    try:
++        raw = read_bounded(args.raw_project)
++        converted = read_bounded(args.plutil_json)
++        project = json.loads(converted, object_pairs_hook=unique_object)
++        receipt = validate_project(project, raw.decode('utf-8'))
++        receipt.update(raw_project_sha256=hashlib.sha256(raw).hexdigest(),
++                       plutil_json_sha256=hashlib.sha256(converted).hexdigest())
++    except (OSError, ValueError, TypeError, KeyError, AttributeError, RecursionError) as error:
++        # Do not print project strings, settings, or arbitrary exception payloads.
++        print('DEFAULT_PROJECT_GUARD=' + json.dumps({'schema': 1, 'status': 'refused',
++              'error_type': type(error).__name__, 'physical_authority': False}, sort_keys=True))
++        return 1
++    print('DEFAULT_PROJECT_GUARD=' + json.dumps(receipt, sort_keys=True))
++    return 0
++
++
++if __name__ == '__main__':
++    raise SystemExit(main())
+--- /dev/null
++++ b/tools/ci/test_verify_default_project.py
+@@ -0,0 +1,98 @@
++"""Portable JSON/source guard controls only; never invokes plutil or Apple tools."""
++import contextlib
++import copy
++import importlib.util
++import io
++import json
++from pathlib import Path
++import tempfile
++import unittest
++
++H=Path(__file__).resolve().parent
++spec=importlib.util.spec_from_file_location('guard',H/'verify-default-project.py')
++m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
++FIXTURE=json.loads((H/'fixtures/default-project-valid.json').read_text())
++RAW='OTHER_SWIFT_FLAGS = "'+m.FLAG_VALUE+'";\n'
++RAW=RAW*2
++
++class GuardTests(unittest.TestCase):
++ def setUp(self):self.p=copy.deepcopy(FIXTURE);self.o=self.p['objects']
++ def reject(self,raw=RAW):
++  with self.assertRaises((ValueError,TypeError,AttributeError,KeyError)):m.validate_project(self.p,raw)
++ def setting(self,target='BlindAssistTests',variant='Debug'):return self.o[target+'-'+variant]['buildSettings']
++ def test_exact_two_exclusive_unit_configs(self):
++  r=m.validate_project(self.p,RAW);self.assertEqual(r['oracle_flag_configurations'],['Debug','Release']);self.assertEqual(r['oracle_flag_occurrences'],2)
++ def test_existing_project_app_list_sharing_is_not_privileged(self):
++  self.assertEqual(self.o['project']['buildConfigurationList'],self.o['BlindAssist']['buildConfigurationList']);m.validate_project(self.p,RAW)
++ def test_target_order_is_not_assumed(self):self.o['project']['targets'].reverse();m.validate_project(self.p,RAW)
++ def test_app_flag_rejected(self):self.setting('BlindAssist')['OTHER_SWIFT_FLAGS']=m.FLAG_VALUE;self.reject()
++ def test_ui_flag_rejected(self):self.setting('BlindAssistUITests')['OTHER_SWIFT_FLAGS']=m.FLAG_VALUE;self.reject()
++ def test_project_level_flag_rejected(self):self.o['project']['OTHER_SWIFT_FLAGS']=m.FLAG_VALUE;self.reject()
++ def test_unknown_orphan_flag_rejected(self):self.o['orphan']={'isa':'XCBuildConfiguration','buildSettings':{'OTHER_SWIFT_FLAGS':m.FLAG_VALUE}};self.reject()
++ def test_flag_in_arbitrary_file_string_rejected(self):self.o['file']={'isa':'PBXFileReference','path':m.FLAG};self.reject()
++ def test_same_flag_under_wrong_setting_rejected(self):self.setting()['SWIFT_ACTIVE_COMPILATION_CONDITIONS']=m.FLAG;self.reject()
++ def test_extra_flag_rejected(self):self.setting()['OTHER_SWIFT_FLAGS']=m.FLAG_VALUE+' -D OTHER';self.reject()
++ def test_duplicate_flag_rejected(self):self.setting()['OTHER_SWIFT_FLAGS']=m.FLAG_VALUE+' -D '+m.FLAG;self.reject()
++ def test_extra_whitespace_rejected(self):self.setting()['OTHER_SWIFT_FLAGS']=m.FLAG_VALUE+' ';self.reject()
++ def test_array_flag_rejected(self):self.setting()['OTHER_SWIFT_FLAGS']=['$(inherited)','-D',m.FLAG];self.reject()
++ def test_flag_case_mutation_rejected(self):self.setting()['OTHER_SWIFT_FLAGS']=m.FLAG_VALUE.lower();self.reject()
++ def test_conditioned_setting_rejected(self):self.setting()['OTHER_SWIFT_FLAGS[sdk=iphoneos*]']=m.FLAG_VALUE;self.reject()
++ def test_other_app_flags_rejected(self):self.setting('BlindAssist')['OTHER_SWIFT_FLAGS']='-D UNREVIEWED';self.reject()
++ def test_missing_debug_flag_rejected(self):self.setting().pop('OTHER_SWIFT_FLAGS');self.reject()
++ def test_missing_release_flag_rejected(self):self.setting(variant='Release').pop('OTHER_SWIFT_FLAGS');self.reject()
++ def test_root_target_missing_rejected(self):self.o['project']['targets'].remove('BlindAssistTests');self.reject()
++ def test_orphan_native_target_rejected(self):self.o['orphan-target']=copy.deepcopy(self.o['BlindAssistTests']);self.reject()
++ def test_duplicate_target_name_rejected(self):self.o['BlindAssistUITests'].update(name='BlindAssistTests',productName='BlindAssistTests',productType=m.TARGET_TYPES['BlindAssistTests']);self.reject()
++ def test_non_unit_product_rejected(self):self.o['BlindAssistTests']['productType']=m.TARGET_TYPES['BlindAssist'];self.reject()
++ def test_product_name_mismatch_rejected(self):self.o['BlindAssistTests']['productName']='Other';self.reject()
++ def test_wrong_root_type_rejected(self):self.p['rootObject']='BlindAssistTests';self.reject()
++ def test_second_project_rejected(self):self.o['second-project']=copy.deepcopy(self.o['project']);self.reject()
++ def test_app_shared_unit_list_rejected(self):self.o['BlindAssist']['buildConfigurationList']='BlindAssistTests-list';self.reject()
++ def test_project_shared_unit_list_rejected(self):self.o['project']['buildConfigurationList']='BlindAssistTests-list';self.reject()
++ def test_ui_shared_unit_configuration_rejected(self):self.o['BlindAssistUITests-list']['buildConfigurations'][0]='BlindAssistTests-Debug';self.reject()
++ def test_orphan_shared_unit_configuration_rejected(self):self.o['orphan-list']={'isa':'XCConfigurationList','buildConfigurations':['BlindAssistTests-Debug']};self.reject()
++ def test_duplicate_unit_configuration_rejected(self):self.o['BlindAssistTests-list']['buildConfigurations']=['BlindAssistTests-Debug']*2;self.reject()
++ def test_extra_unit_configuration_rejected(self):self.o['BlindAssistTests-list']['buildConfigurations'].append('BlindAssist-Debug');self.reject()
++ def test_unknown_configuration_name_rejected(self):self.o['BlindAssistTests-Release']['name']='Profile';self.reject()
++ def test_duplicate_configuration_name_rejected(self):self.o['BlindAssistTests-Release']['name']='Debug';self.reject()
++ def test_wrong_configuration_type_rejected(self):self.o['BlindAssistTests-Debug']['isa']='PBXFileReference';self.reject()
++ def test_external_unit_configuration_rejected(self):self.o['BlindAssistTests-Debug']['baseConfigurationReference']='unreviewed.xcconfig';self.reject()
++ def test_host_target_association_rejected(self):self.o['project']['attributes']['TargetAttributes']['BlindAssistTests']['TestTargetID']='BlindAssistUITests';self.reject()
++ def test_host_settings_rejected(self):self.setting()['TEST_HOST']='$(BUILT_PRODUCTS_DIR)/Other.app/Other';self.reject()
++ def test_bundle_loader_rejected(self):self.setting()['BUNDLE_LOADER']='Other';self.reject()
++ def test_all_existing_optional_prohibitions_in_any_json_string(self):
++  for token in ['BLIND_MESH_CANDIDATE_DIAGNOSTICS','BLIND_DEVELOPER_CLOUD','opencv2','Model.mlmodelc','Model.mlpackage']:
++   with self.subTest(token=token):self.o['file']={'isa':'PBXFileReference','path':token};self.reject()
++ def test_optional_key_rejected(self):self.o['file']={'BLIND_BACKEND':'value'};self.reject()
++ def test_all_existing_raw_prohibitions_preserved_in_comments(self):
++  for token in ['BLIND_OTHER','opencv2','x.mlmodelc','x.mlpackage']:
++   with self.subTest(token=token):self.reject(raw=RAW+'// '+token)
++ def test_raw_extra_oracle_occurrence_rejected(self):self.reject(raw=RAW+'// '+m.FLAG)
++ def test_raw_missing_oracle_occurrence_rejected(self):self.reject(raw=RAW.splitlines()[0])
++ def test_raw_project_budget(self):self.reject(raw='x'*(m.INPUT_LIMIT+1))
++ def test_depth_budget(self):
++  child=self.o['deep']={}
++  for _ in range(m.DEPTH_LIMIT+1):child['next']={};child=child['next']
++  self.reject()
++ def test_node_budget(self):self.o['wide']={'values':[0]*m.NODE_LIMIT};self.reject()
++ def test_non_scalar_json_type_rejected(self):self.o['other']={'value':1.25};self.reject()
++ def test_json_duplicate_key_rejected(self):
++  with self.assertRaises(ValueError):json.loads('{"objects":{},"objects":{}}',object_pairs_hook=m.unique_object)
++ def invoke(self,project,raw=RAW):
++  with tempfile.TemporaryDirectory() as folder:
++   p=Path(folder);(p/'project.pbxproj').write_text(raw);(p/'project.json').write_text(project);out=io.StringIO()
++   with contextlib.redirect_stdout(out):status=m.main([str(p/'project.pbxproj'),str(p/'project.json')])
++   return status,json.loads(out.getvalue().split('=',1)[1])
++ def test_cli_valid_receipt(self):
++  status,receipt=self.invoke(json.dumps(self.p));self.assertEqual(status,0);self.assertEqual(receipt['status'],'passed');self.assertEqual(len(receipt['raw_project_sha256']),64)
++ def test_cli_malformed_json_fail_closed(self):self.assertEqual(self.invoke('{')[0],1)
++ def test_cli_failure_has_no_settings_or_error_payload(self):
++  self.setting()['OTHER_SWIFT_FLAGS']='private arbitrary setting';status,receipt=self.invoke(json.dumps(self.p));self.assertEqual(status,1);self.assertNotIn('private',json.dumps(receipt));self.assertEqual(receipt['status'],'refused')
++ def test_cli_duplicate_keys_fail_closed(self):self.assertEqual(self.invoke('{"objects":{},"objects":{}}')[0],1)
++ def test_cli_oversized_json_fail_closed(self):self.assertEqual(self.invoke(' '*(m.INPUT_LIMIT+1))[0],1)
++ def test_shared_script_uses_plutil_same_input_no_global_text_rewrite(self):
++  text=(H/'native-apple.sh').read_text();self.assertIn('plutil -convert json -o "$out/default-project.json" "$project/project.pbxproj"',text);self.assertIn('python3 -B tools/ci/verify-default-project.py "$project/project.pbxproj" "$out/default-project.json"',text)
++ def test_current_committed_raw_project_has_only_two_exact_oracle_tokens(self):
++  text=(H.parents[1]/'ios/BlindAssist.xcodeproj/project.pbxproj').read_text();self.assertEqual(m.FORBIDDEN.findall(text),[m.FLAG,m.FLAG]);self.assertEqual(text.count('OTHER_SWIFT_FLAGS = "'+m.FLAG_VALUE+'";'),2)
++
++if __name__=='__main__':unittest.main()
+--- /dev/null
++++ b/tools/ci/fixtures/default-project-valid.json
+@@ -0,0 +1,116 @@
++{
++  "archiveVersion": "1",
++  "objectVersion": "56",
++  "rootObject": "project",
++  "objects": {
++    "BlindAssist-Debug": {
++      "isa": "XCBuildConfiguration",
++      "name": "Debug",
++      "buildSettings": {
++        "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "$(inherited) DEBUG"
++      }
++    },
++    "BlindAssist-Release": {
++      "isa": "XCBuildConfiguration",
++      "name": "Release",
++      "buildSettings": {
++        "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "$(inherited)"
++      }
++    },
++    "BlindAssist-list": {
++      "isa": "XCConfigurationList",
++      "buildConfigurations": [
++        "BlindAssist-Debug",
++        "BlindAssist-Release"
++      ],
++      "defaultConfigurationName": "Debug"
++    },
++    "BlindAssist": {
++      "isa": "PBXNativeTarget",
++      "name": "BlindAssist",
++      "productName": "BlindAssist",
++      "productType": "com.apple.product-type.application",
++      "buildConfigurationList": "BlindAssist-list"
++    },
++    "BlindAssistTests-Debug": {
++      "isa": "XCBuildConfiguration",
++      "name": "Debug",
++      "buildSettings": {
++        "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "$(inherited) DEBUG",
++        "OTHER_SWIFT_FLAGS": "$(inherited) -D BLIND_COLLISION_ORACLE_TESTS",
++        "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/BlindAssist.app/BlindAssist",
++        "BUNDLE_LOADER": "$(TEST_HOST)"
++      }
++    },
++    "BlindAssistTests-Release": {
++      "isa": "XCBuildConfiguration",
++      "name": "Release",
++      "buildSettings": {
++        "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "$(inherited)",
++        "OTHER_SWIFT_FLAGS": "$(inherited) -D BLIND_COLLISION_ORACLE_TESTS",
++        "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/BlindAssist.app/BlindAssist",
++        "BUNDLE_LOADER": "$(TEST_HOST)"
++      }
++    },
++    "BlindAssistTests-list": {
++      "isa": "XCConfigurationList",
++      "buildConfigurations": [
++        "BlindAssistTests-Debug",
++        "BlindAssistTests-Release"
++      ],
++      "defaultConfigurationName": "Debug"
++    },
++    "BlindAssistTests": {
++      "isa": "PBXNativeTarget",
++      "name": "BlindAssistTests",
++      "productName": "BlindAssistTests",
++      "productType": "com.apple.product-type.bundle.unit-test",
++      "buildConfigurationList": "BlindAssistTests-list"
++    },
++    "BlindAssistUITests-Debug": {
++      "isa": "XCBuildConfiguration",
++      "name": "Debug",
++      "buildSettings": {
++        "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "$(inherited) DEBUG"
++      }
++    },
++    "BlindAssistUITests-Release": {
++      "isa": "XCBuildConfiguration",
++      "name": "Release",
++      "buildSettings": {
++        "SWIFT_ACTIVE_COMPILATION_CONDITIONS": "$(inherited)"
++      }
++    },
++    "BlindAssistUITests-list": {
++      "isa": "XCConfigurationList",
++      "buildConfigurations": [
++        "BlindAssistUITests-Debug",
++        "BlindAssistUITests-Release"
++      ],
++      "defaultConfigurationName": "Debug"
++    },
++    "BlindAssistUITests": {
++      "isa": "PBXNativeTarget",
++      "name": "BlindAssistUITests",
++      "productName": "BlindAssistUITests",
++      "productType": "com.apple.product-type.bundle.ui-testing",
++      "buildConfigurationList": "BlindAssistUITests-list"
++    },
++    "project": {
++      "isa": "PBXProject",
++      "targets": [
++        "BlindAssist",
++        "BlindAssistUITests",
++        "BlindAssistTests"
++      ],
++      "buildConfigurationList": "BlindAssist-list",
++      "attributes": {
++        "TargetAttributes": {
++          "BlindAssistTests": {
++            "TestTargetID": "BlindAssist"
++          }
++        }
++      }
++    }
++  }
++}
+--- a/.github/workflows/native-edt-navigation-probe.yml
++++ b/.github/workflows/native-edt-navigation-probe.yml
+@@ -6,6 +6,7 @@
+     paths:
+       - '.github/workflows/native-edt-navigation-probe.yml'
+       - 'research/native-edt-oracle-bridge-20261030/**'
++      - 'research/native-edt-historical-view-20261030/**'
+       - 'research/native-floor-import-repair-20261028/edt-navigation-probe/main.swift'
+       - 'research/native-floor-import-repair-20261028/edt-navigation-probe/run_native.py'
+       - 'research/native-floor-import-repair-20261028/edt-navigation-probe/edt_probe.h'
+@@ -58,7 +59,7 @@
+         shell: bash
+         run: |
+           set -euo pipefail
+-          python3 research/native-edt-oracle-bridge-20261030/run_bridge.py
++          python3 -B research/native-edt-historical-view-20261030/run_snapshot.py
+       - name: Preserve bounded positive and negative evidence, never build products
+         if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
+         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+--- /dev/null
++++ b/research/native-edt-historical-view-20261030/MANIFEST.json
+@@ -0,0 +1,17 @@
++{
++  "schema": 1,
++  "files": {
++    "OVERRIDES.json": "d6c14699e7d8a0a43264f06ea81fee0a4752fc5d1e3e5af8c46130da2ff55dca",
++    "README.md": "eae09c8cbb9ebad31500105225140d47668aa58cfe8eec0680c80d9ba115cee5",
++    "RUNNER_ADAPTER.diff": "c8fb1516aff505203220f92a0cfeef1a0cfe1e691b6fa2eace8a2c2d0c1b7598",
++    "SOURCE_RECONSTRUCTION_RECEIPT.json": "18ec5e81213ca0f510d999309fafba5074e7df282f2349b461a4ffad32163e50",
++    "baseline/NATIVE_SOURCE_PINS.json": "3e1f7d07cf3b70cc04ecb6e55694bdc01cca95738f7781e554cfbb1f66aaea3b",
++    "baseline/SavedRoomRouteCollisionOracle.swift.txt": "30941a88fda667560962fc1baca7f980ba534f613d093b79662b3951e0da5fd9",
++    "baseline/blind_detour.h.txt": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b",
++    "baseline/blind_detour_exclusion.cpp.txt": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036",
++    "baseline/run_native.py.txt": "92eb8c0f99e005175fe0da96ff6c521d6430aaa3aec7246b5cf79bc7dcf5460f",
++    "run_snapshot.py": "50b55900980406b63eb06431a556d55ad4c9edfcb6c73e0b01e59d5f4913ead5",
++    "test_snapshot.py": "ebb48e503cd60a9aa29f389e71f07bca2393ca670f6dab2fcd439835e0cca1dc",
++    "verify_checkout_view.py": "f5d085376ecec6eefa38d108ea0d270e6d07d4085c5d0ea962aa93a5a0ba91c4"
++  }
++}
+--- /dev/null
++++ b/research/native-edt-historical-view-20261030/OVERRIDES.json
+@@ -0,0 +1,23 @@
++{
++  "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift": {
++    "file": "baseline/SavedRoomRouteCollisionOracle.swift.txt",
++    "historicalSHA256": "30941a88fda667560962fc1baca7f980ba534f613d093b79662b3951e0da5fd9",
++    "currentSHA256": "9581e63244f89a5183d752124d306e6808bf114dfc5cb3eecf809b03183e9b53",
++    "historicalCommit": "5a6ad0ad5c64879a9e95bae9212054ab9daf950d",
++    "currentComparedCommit": "7bb0532073b541fe86dd6dec579e0927ab072eab"
++  },
++  "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": {
++    "file": "baseline/blind_detour_exclusion.cpp.txt",
++    "historicalSHA256": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036",
++    "currentSHA256": "4aea336d716ec2c319203794649a1ebaf2be23ef30a687265cb6c825ad9347a1",
++    "historicalCommit": "5a6ad0ad5c64879a9e95bae9212054ab9daf950d",
++    "currentComparedCommit": "7bb0532073b541fe86dd6dec579e0927ab072eab"
++  },
++  "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": {
++    "file": "baseline/blind_detour.h.txt",
++    "historicalSHA256": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b",
++    "currentSHA256": "c5a69f71f82e6fbfdc98a1b29185d37c8fa70c4a54e955d7d2954f3aa592f1ec",
++    "historicalCommit": "5a6ad0ad5c64879a9e95bae9212054ab9daf950d",
++    "currentComparedCommit": "7bb0532073b541fe86dd6dec579e0927ab072eab"
++  }
++}
+--- /dev/null
++++ b/research/native-edt-historical-view-20261030/README.md
+@@ -0,0 +1,94 @@
++# Exact historical EDT source-view comparator
++
++This is a separately labelled historical comparator, **not a test of the current
++optional seed-veto/envelope native implementation or the current app**. It repairs
++a stale provenance boundary without accepting changed native source as old code.
++No model, geometry, routing, collision, controls or candidate thresholds change.
++
++## Why a new packet
++
++Public run `41008743162` at `7bb0532073b541fe86dd6dec579e0927ab072eab`
++failed before native execution because an original native source pin no longer
++matched. Its original failure is retained, not overwritten or reclassified.
++The complete 58-input audit found 55 unchanged inputs and three differences:
++
++- The oracle shared guard/header at `7bb0532` (kernel unchanged).
++- Native seed-radius veto additions at `4b51e4273817bd7fa1d8830041bafdf302c11aee`.
++- Native envelope additions at `6d1a5d60511071e572ed586c7132af6f7805a869`.
++
++Those native additions are material compiled changes even though opt-in. The new
++comparator does not blind-repin them or include their new headers. All 58 original
++inputs are recoverable byte-for-byte at original protocol commit
++`5a6ad0ad5c64879a9e95bae9212054ab9daf950d`. `OVERRIDES.json` records exact old and
++current identities for the three files. Their original copies are public repo
++source, retaining their existing headers and licensing; no third-party dataset
++or private capture is added.
++
++## Exact execution and authorization boundary
++
++`run_snapshot.py` verifies this packet, the original pin manifest, and the actual
++workflow's repository, approved ref and checkout HEAD. It does not fabricate a
++historical Git checkout or set `GITHUB_SHA` to an old commit. The original runner's
++repository/ref/HEAD, tracked-diff and before/after status checks are also retained
++and execute with their working directory set to the **actual workflow checkout**.
++
++A fresh runner-temp source view contains only the 58 exact pinned inputs plus
++their original manifest. Fifty-five inputs come from the actual checkout and
++must match their historical hashes. Three explicitly pinned historical copies
++replace only the known current identities; unknown new changes fail closed.
++All 58 hashes, the manifest hash, and the exact file inventory are rechecked before
++every original subprocess and at successful completion. Symlinks, missing,
++altered and additional input files are rejected. Compilation source/include
++paths and fixed input data refer to this staged historical view, not the current
++app/native tree. Generated instrumented sources and compiler outputs remain in
++the original runner's output directory, as before.
++
++The original runner remains byte-identical on disk and its self-pin remains
++active. `RUNNER_ADAPTER.diff` documents the five in-memory orchestration changes:
++include staging in the same 300-second deadline, use the real checkout as process
++working directory, reverify the source view before commands and completion, and
++attach provenance to the existing receipt. Exact reversal reconstructs the
++original runner bytes. The original unguarded oracle is compiled: no extra
++compile flag is necessary. No validators are removed or bypassed.
++
++`receipt.sourceCommit` stays the actual workflow commit. A distinct
++`historicalSourceView` object identifies the historical protocol, manifest and
++58-input content identity. A closed `EDT_HISTORICAL_SOURCE_VIEW` JSON log line
++emits this small public provenance before native work; this is source provenance,
++not a successful native result. The existing receipt and result observer remains
++unchanged. Early staging rejection exits nonzero before the original native
++receipt exists; it cannot claim native success.
++
++## Unchanged test and resource contract
++
++Both original 25-request control arms (50 controls) must reproduce before the
++single fixed 25-request candidate runs. All 51 native hook checks remain required.
++The original source pins, test assertions, geometry and result schemas are
++unchanged. Job/step limits remain 7/6 minutes; original global time remains 300
++seconds including new staging, per-child CPU 120 seconds, output-file cap 128 MiB,
++and single-thread environment unchanged. Artifact upload stays disabled by
++default. No new install, cache, paid service, fetch or model is introduced.
++
++## Source checks and reviewed command
++
++Portable controls (no compiler, native library or Apple invocation):
++
++```
++python3 -B research/native-edt-historical-view-20261030/test_snapshot.py
++python3 -B research/native-edt-historical-view-20261030/verify_checkout_view.py --repo .
++```
++
++The second command requires the existing public checkout to contain the 58 input
++files. It creates a temporary source view only. Thirteen portable controls pass;
++the separate complete staging check reproduces all 58 historical hashes from the
++exact `7bb0532` source. See `SOURCE_RECONSTRUCTION_RECEIPT.json`.
++
++Only after independent review/publication, the approved Apple workflow invokes:
++
++```
++python3 -B research/native-edt-historical-view-20261030/run_snapshot.py
++```
++
++No native run has been performed for this packet. A later native result is about
++this historical fixed synthetic comparator, not room accuracy, live clearance,
++child safety, or validation of the current production geometry implementation.
+--- /dev/null
++++ b/research/native-edt-historical-view-20261030/RUNNER_ADAPTER.diff
+@@ -0,0 +1,45 @@
++--- historical/run_native.py
+++++ in-memory/orchestrated_run_native.py
++@@ -20,7 +20,7 @@
++ REPAIR=HERE.parent
++ OUT=pathlib.Path(os.environ['RUNNER_TEMP'])/'blind-edt-navigation-probe'
++ OUT.mkdir(parents=True,exist_ok=False) # Never overwrite retained earlier attempt evidence.
++-START=time.monotonic();DEADLINE=START+300
+++START=_view_started;DEADLINE=START+300
++ receipt={'schema':1,'sourceCommit':os.environ.get('GITHUB_SHA'),'physicalAuthority':False,
++          'appActivation':False,'status':'started','commands':[],'sourcePins':{},
++          'scope':'macOS fixed public geometry diagnostic; no production/iOS adoption'}
++@@ -37,6 +37,7 @@
++     resource.setrlimit(resource.RLIMIT_FSIZE,(128*1024**2,128*1024**2))
++ 
++ def command(args,label,limit=90):
+++    _verify_historical_view()
++     remaining=DEADLINE-time.monotonic()
++     if remaining<=0:
++         raise TimeoutError('global diagnostic deadline exhausted before '+label)
++@@ -47,7 +48,7 @@
++     with stdout.open('xb') as out,stderr.open('xb') as err:
++         process=None
++         try:
++-            process=subprocess.Popen([str(x) for x in args],cwd=ROOT,stdout=out,stderr=err,
+++            process=subprocess.Popen([str(x) for x in args],cwd=_workflow_checkout,stdout=out,stderr=err,
++                 start_new_session=True,preexec_fn=limits,
++                 env={**os.environ,'OMP_NUM_THREADS':'1','OPENBLAS_NUM_THREADS':'1','MKL_NUM_THREADS':'1'})
++             row.update(exitCode=process.wait(timeout=timeout),wallSeconds=time.monotonic()-before)
++@@ -91,7 +92,7 @@
++         assert not relative.is_absolute() and '..' not in relative.parts
++         path=ROOT/name
++         assert path.is_file() and sha(path)==digest,('source pin mismatch',name)
++-    receipt['sourcePins']=pins;save()
+++    receipt['sourcePins']=pins;receipt['historicalSourceView']=_view_provenance;save()
++     def require_pin(path):
++         name=str(path.relative_to(ROOT))
++         assert name in pins and sha(path)==pins[name],('unreviewed runtime input',name)
++@@ -195,6 +196,7 @@
++     for path in OUT.iterdir():
++         if path.suffix in ['.o','.a'] or path in (binary,hook_binary):
++             path.unlink()
+++    _verify_historical_view()
++     save()
++     print(json.dumps({'status':receipt['status'],'resultSHA256':receipt['resultSHA256'],
++                       'candidateGoalsMet':receipt['candidateGoalsMet'],'physicalAuthority':False}))
+--- /dev/null
++++ b/research/native-edt-historical-view-20261030/SOURCE_RECONSTRUCTION_RECEIPT.json
+@@ -0,0 +1,17 @@
++{
++  "schema": 1,
++  "actualComparedCheckoutCommit": "7bb0532073b541fe86dd6dec579e0927ab072eab",
++  "historicalProtocolCommit": "5a6ad0ad5c64879a9e95bae9212054ab9daf950d",
++  "stagedInputCount": 58,
++  "metadataFileCount": 1,
++  "all58HistoricalHashesMatch": true,
++  "historicalManifestSHA256": "3e1f7d07cf3b70cc04ecb6e55694bdc01cca95738f7781e554cfbb1f66aaea3b",
++  "historicalRunnerSHA256": "92eb8c0f99e005175fe0da96ff6c521d6430aaa3aec7246b5cf79bc7dcf5460f",
++  "generatedRunnerSHA256": "b4ae96f522f4fac1ea3668c16e2da093d1a33a048e2d283ca597adc45dbe9c16",
++  "runnerReverseByteIdentical": true,
++  "nativeExecuted": false,
++  "sourceStagingOnly": true,
++  "controls": 13,
++  "originalFailedRun": 41008743162,
++  "fullHistoricalInputViewSHA256": "9bbccec88727a02b8971eccb92a4236822549f8cc579e65c1fa7ebbf6d06e727"
++}
+--- /dev/null
++++ b/research/native-edt-historical-view-20261030/baseline/NATIVE_SOURCE_PINS.json
+@@ -0,0 +1,66 @@
++{
++  "schema": 1,
++  "scope": "isolated macOS fixed public geometry diagnostic; no production source change",
++  "physicalAuthority": false,
++  "nativeExecutionPerformed": false,
++  "files": {
++    "ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift": "30941a88fda667560962fc1baca7f980ba534f613d093b79662b3951e0da5fd9",
++    "research/native-floor-import-repair-20261028/edt-navigation-probe/EDT_MASK_INPUTS.json": "13f436a77608178789c6ba19db1f6de7f91d07229b3af3771106d7c4b218ed2a",
++    "research/native-floor-import-repair-20261028/edt-navigation-probe/HOOK_TEST_FIXTURE.json": "29585d1f90eabead130e473c2294431b437a54ff59953a2aa10e916e1caef686",
++    "research/native-floor-import-repair-20261028/edt-navigation-probe/edt_mask_hook.cpp": "9c98b1ce880e9ce556dbb69aab83837b3abf96d6185ccc6826651769b43ae840",
++    "research/native-floor-import-repair-20261028/edt-navigation-probe/edt_probe.h": "dc098e7e185ce9791d987284e0846606ac1395c0403a671e5b2ec9d21e3b772d",
++    "research/native-floor-import-repair-20261028/edt-navigation-probe/hook_test_digest.hpp": "3a8e961cf90f2f19523a53d0e136b9284168d5320115fd5488c66ad06f44f1b4",
++    "research/native-floor-import-repair-20261028/edt-navigation-probe/hook_tests.cpp": "16d5ad629d67bdf422b3dd35a355d9915d6c54296df45f7ba03afe7d4ec5ac72",
++    "research/native-floor-import-repair-20261028/edt-navigation-probe/main.swift": "cc1cc7e6423bd35fd767e8a1e3822f10dbda98de9a01656d3bd65e6f094c0546",
++    "research/native-floor-import-repair-20261028/edt-navigation-probe/native-edt-navigation-probe.yml": "716caac891d1a5d37760a652b0f42fdf316c7c6eba2935d2bed85d4621abd37b",
++    "research/native-floor-import-repair-20261028/edt-navigation-probe/run_native.py": "92eb8c0f99e005175fe0da96ff6c521d6430aaa3aec7246b5cf79bc7dcf5460f",
++    "research/native-floor-import-repair-20261028/native-strict-result-40791907324/RESULT.json": "0858272d1faca7e16268b772f0cd164652c08eb22277d36514d2eae72b803893",
++    "research/native-floor-import-repair-20261028/strict-endpoint-probe/PACKED_ROUTING_GEOMETRY.json": "0731735bf24f198288efea26d79c8a29929d49b10d3be0637e9e15fb983c63b7",
++    "research/native-floor-import-repair-20261028/strict-endpoint-probe/REQUESTS_49A.json": "e5d2e07c7564869d2abde1d4a947e022d1a166c64641a81f2b92fcdbab73ac51",
++    "research/native-floor-import-repair-20261028/strict-endpoint-probe/association_appendix.cpp": "7eb52fb231d5f8bc473386ae18817209d11e16e64c63523e256179ac2518103a",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/blind_detour_exclusion.cpp": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/include/blind_detour.h": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourAlloc.h": "5f617c7f162069c395d7edfc59f0e06a9b6afaf6698de8fd674c80f00056ab71",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourAssert.h": "2859e197e1877d3c53f7acc455ceedbe9ce1181fe44779169a3dc16c1508b794",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourCommon.h": "24d69468f73782718855b3691ae348e50437febc7594635b37a940f1c0c8db46",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourMath.h": "1251390f71e85b8b20cfd33340a42f712f2e8305e363c001fcdd9b55578a3cd4",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNavMesh.h": "aee0d0d332d3ac352ed14d0a3d86fe0fdfd1d9cd424e67c2a0438e1c41bb6e31",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNavMeshBuilder.h": "e2734317981bb9dfb973af6a33025f926ce28535389696d9babf15254817c682",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNavMeshQuery.h": "fa80858bb80c984f85ec15182c31e1757858bc86511f81fb8bb265b8fe20f6d6",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourNode.h": "7c295c61f09dff0de42bdcc873a5d698d687bb2052aca8b293425c0ef0444a9e",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Include/DetourStatus.h": "7255e33173c4bdb26f4224514d098fdc5c31e19cd80263a4e56475627602ade9",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourAlloc.cpp": "ddf4d9857e9e1714daa9dd9b687ac8139085cc602359db0dba4f1dedbedc69c1",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourAssert.cpp": "3caf6f89119fab5b89f3454cfb13b3776f429c9f0e4e5c8acb3ac56ab813273c",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourCommon.cpp": "c28eb2d5fd251e1b2e24a7c03a679ff82684e51a0ce95db3cf457fda60362008",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNavMesh.cpp": "637d8750f0d097ba00d9ef3fd4d8f30a36de5e482b8f8c3c8930d6df05b86600",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNavMeshBuilder.cpp": "159b4bacae86bdb2ff40225e837ff7b84e306456fbf08ec717b1da1dfeba4555",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNavMeshQuery.cpp": "73651e2cea3c162cd01574e24668a30ab4c3dc985e07d51a9d7038c0523b0db1",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Detour/Source/DetourNode.cpp": "067ffb9a81f7315f2253ff217263acb1c01590d130e01d4de4500308d756132b",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourCrowd.h": "66053c29eddcdb8794569e4f60d0a3d2102740f403822d451d63a1b336cf4855",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourLocalBoundary.h": "61a0bef8538a48de8e30a4e0e49442383c83543ce0b8d749affa24d452c8132c",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourObstacleAvoidance.h": "f3c6e39dd4b8c60a4a8ae4c1202ab06170fe673bcb43568cb910601fad993065",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourPathCorridor.h": "f252e962a4b3aef1e7f31caa367134c85d27264f9238d06763383b8a78dfce62",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourPathQueue.h": "7c48d76be6a59a9ec82ed11e687d4bdd414a6ba96aabd3adb28e869dccdceb82",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Include/DetourProximityGrid.h": "b98a88367f2eb29ed5e615d73dc3c8bcd7742a8010eec21fdbfa6ca048af6198",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourCrowd.cpp": "c0d5164dabc3e68ee25ba479d13ae7f77066ccf7bfb461963d16a144caaf3ac5",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourLocalBoundary.cpp": "ecb0196533c654d43894c061f1dd551008f95f3f03e2d03558962f82c77e486e",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourObstacleAvoidance.cpp": "a385493b551ea6a72af687fceaf1283e738570ea288a1ebe73e11c32aa3a386a",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourPathCorridor.cpp": "09fd84d977b48789fc5d999e53850ce9f47bcc3ab6d4c9dea98beec2789ced05",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourPathQueue.cpp": "69360fd1e15efb427fa43948234a3fb516ec1b53db2154c1bbf3e0df36f8bfea",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/DetourCrowd/Source/DetourProximityGrid.cpp": "ba4acb2161cfca60ec10669eafc665230150b6856efa33c0afa0c39f321a2521",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Include/Recast.h": "712634ac8d933af70ef08270a2f439270cddb821cc901c216494fa843e4e5990",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Include/RecastAlloc.h": "36dcd90719f0ff80d568eee808d7a05416265f2e370a32842411cd67f30eb4cd",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Include/RecastAssert.h": "22feb557dfcd302cff1ef882741a608a338b0a99689ea56d4320d8dafecd7912",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/Recast.cpp": "865595763451cde0aad5b99088bfab48d4ea35050fefd67f3d4f95885ba38d66",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastAlloc.cpp": "e77600ee0a1f4b36e9e0700480fcfccf8a62e31eb9e16aa7cb8eab5e93511a2e",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastArea.cpp": "445cce010d7a3220355497a3c2c3f45fbc4fcd2436db5cca15157d935a42d477",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastAssert.cpp": "335af77176d9ee1fb5c9763df6ce21a818aed19524f3dc251a50ae61ae853496",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastContour.cpp": "a9282897a5a5cb56cf8bbab97e0fd5edc3cd394ae8fe5266a28ce4199a4f3bfa",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastFilter.cpp": "0d133cdce1446babbf01bf47dc152c843e9cb2ee5dbb537c2e0ae566b6c95b9d",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastLayers.cpp": "f01d325fd096feee2971f71f9b03b1d37a6d0a4777bb9d529ce698253b484820",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastMesh.cpp": "9667e69e1886a520fcc84044b2e96154ff75e5c804fa32520b1cc0d991e42fd9",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastMeshDetail.cpp": "e77e8fc479215fe9a14c68051090fa16884a13ba03b0e424a80bbf6f506f818f",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastRasterization.cpp": "30ed7b12d42bd61dda5aa9eff2e559574d91a61145f40fe4cea449b9eabf792a",
++    "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/upstream/Recast/Source/RecastRegion.cpp": "174e00a76287e03eff20d889c0b744ea24c9cababd22c42f2d1f83e8d512c345"
++  }
++}
+--- /dev/null
++++ b/research/native-edt-historical-view-20261030/baseline/SavedRoomRouteCollisionOracle.swift.txt
+@@ -0,0 +1,571 @@
++import Foundation
++import SceneKit
++import simd
++
++/// Test-only, independently queried Apple physics shapes. Not a planner, sensor,
++/// support verifier or physical-output owner. The app target must not include it.
++///
++/// Static concave shapes retain the exported triangle surfaces. Original RoomPlan
++/// furniture bounds are separate solid SCNBox shapes so a contained start is not
++/// incorrectly cleared by a triangle-shell query. Their contacts stay separate:
++/// a box bound is not a claim that legs, recesses or object interiors were scanned.
++/// SceneKit is deprecated but remains a platform implementation on the iOS 17+
++/// test deployment target; no new collision algorithm or third-party dependency.
++/// Apple API references (reviewed 2026-10-28; native execution still required):
++/// https://developer.apple.com/documentation/scenekit/scnphysicsworld/convexsweeptest(with:from:to:options:)
++/// https://developer.apple.com/documentation/scenekit/scnphysicsworld/contacttest(with:options:)
++/// https://developer.apple.com/documentation/scenekit/scnphysicsworld/updatecollisionpairs()
++/// https://developer.apple.com/documentation/scenekit/scnphysicsshape/init(geometry:options:)
++/// https://developer.apple.com/documentation/scenekit/scnphysicsshape/shapetype/concavepolyhedron
++/// https://developer.apple.com/documentation/scenekit/scnrenderer/update(attime:)
++/// https://developer.apple.com/documentation/scenekit/scnphysicsbody/collisionbitmask
++@MainActor
++final class SavedRoomRouteCollisionOracle {
++    enum Failure: Error, Equatable {
++        case invalidGeometry, invalidQuery, invalidFurnitureBox
++        case backendUnavailable(String)
++    }
++
++    struct FurnitureBox: Sendable {
++        let featureID: UUID
++        let dimensions: [Double]
++        /// Original feature-to-saved-world column-major rigid transform.
++        let transform: [Double]
++    }
++
++    struct Contacts: Equatable, Sendable {
++        var obstacleSurfaceIDs = Set<UUID>()
++        var floorSurfaceIDs = Set<UUID>()
++        var furnitureBoundIDs = Set<UUID>()
++        var hasObstacleContact: Bool { !obstacleSurfaceIDs.isEmpty || !furnitureBoundIDs.isEmpty }
++        mutating func formUnion(_ other: Contacts) {
++            obstacleSurfaceIDs.formUnion(other.obstacleSurfaceIDs)
++            floorSurfaceIDs.formUnion(other.floorSurfaceIDs)
++            furnitureBoundIDs.formUnion(other.furnitureBoundIDs)
++        }
++    }
++
++    struct SweepResult: Sendable {
++        let initial: Contacts
++        let swept: Contacts
++        let terminal: Contacts
++        /// Whole-footprint support is deliberately NOT inferred from floor contact
++        /// or from absence of a non-floor collision. Holes remain unverified here.
++        let fullFootprintSupportVerified = false
++        let physicalAuthority = false
++        var all: Contacts { var value = initial; value.formUnion(swept); value.formUnion(terminal); return value }
++    }
++
++    private enum Kind: Equatable { case obstacleSurface, floorSurface, furnitureBound }
++    private struct Identity { let id: UUID; let kind: Kind }
++    private struct Group: Hashable { let id: UUID; let floor: Bool }
++    private let scene = SCNScene()
++    // Retain the renderer for the entire query world's lifetime. No view, camera,
++    // display link, render target, AR session or asynchronous render loop exists.
++    private var renderer: SCNRenderer?
++    private var simulationTick = 0
++    private static let physicsTimeStep: TimeInterval = 1.0 / 60.0
++    private let configuration: BackendConfiguration
++    private let queryMode: QueryMode
++    private var identities: [ObjectIdentifier: Identity] = [:]
++    private let sourceMask = 1
++    private let probeMask = 2
++    private var floorMask: Int { queryMode == .separated ? 4 : sourceMask }
++    private var allSourceMask: Int { sourceMask | floorMask }
++    private var queryMasks: [Int] { queryMode == .separated ? [sourceMask, floorMask] : [sourceMask] }
++
++    /// Array limits match the existing mesh package; no triangles are truncated.
++    /// Geometry stays uninflated. Caller-supplied query radius/height already carry
++    /// the declared body/margin variant. Physics collision margin is exactly zero.
++    convenience init(vertices: [Double], triangles: [Int32], floorSupport: [Bool],
++                     triangleFeatureIDs: [UUID], furnitureBoxes: [FurnitureBox] = []) throws {
++        try self.init(vertices: vertices, triangles: triangles, floorSupport: floorSupport,
++                      triangleFeatureIDs: triangleFeatureIDs, furnitureBoxes: furnitureBoxes,
++                      configuration: .candidate, queryMode: .separated, checkBackend: true)
++    }
++
++    private init(vertices: [Double], triangles: [Int32], floorSupport: [Bool],
++                 triangleFeatureIDs: [UUID], furnitureBoxes: [FurnitureBox],
++                 configuration: BackendConfiguration, queryMode: QueryMode, checkBackend: Bool) throws {
++        self.configuration = configuration
++        self.queryMode = queryMode
++        guard !vertices.isEmpty, vertices.count % 3 == 0, vertices.count <= 600_000,
++              !triangles.isEmpty, triangles.count % 3 == 0, triangles.count <= 300_000,
++              floorSupport.count == triangles.count / 3, triangleFeatureIDs.count == floorSupport.count,
++              vertices.allSatisfy({ $0.isFinite && abs($0) <= 10_000 && Float($0).isFinite }),
++              triangles.allSatisfy({ $0 >= 0 && Int($0) < vertices.count / 3 }),
++              Set(triangleFeatureIDs).count <= 512, furnitureBoxes.count <= 512,
++              Set(furnitureBoxes.map(\.featureID)).count == furnitureBoxes.count else { throw Failure.invalidGeometry }
++        scene.physicsWorld.gravity = SCNVector3Zero
++        scene.isPaused = false
++        // All bodies are static/kinematic: enabling physics cannot integrate a
++        // dynamic actor or change supplied geometry. Zero speed previously left
++        // startup ambiguous. Every diagnostic cell uses this same unpaused world.
++        scene.physicsWorld.speed = 1
++        scene.physicsWorld.timeStep = Self.physicsTimeStep
++        let positions = vertices.map(Float.init)
++        // Reject an exported triangle that collapses at the physics API's Float32
++        // boundary; do not silently drop it and interpret the gap as clear space.
++        for offset in stride(from: 0, to: triangles.count, by: 3) {
++            func point(_ index: Int32) -> SIMD3<Float> {
++                let i = Int(index) * 3
++                return SIMD3(positions[i], positions[i + 1], positions[i + 2])
++            }
++            let a = point(triangles[offset]), b = point(triangles[offset + 1]), c = point(triangles[offset + 2])
++            let cross = simd_cross(b - a, c - a)
++            guard [cross.x, cross.y, cross.z].allSatisfy(\.isFinite), simd_length_squared(cross) > 0 else { throw Failure.invalidGeometry }
++        }
++        let data = positions.withUnsafeBufferPointer { Data(buffer: $0) }
++        let source = SCNGeometrySource(data: data, semantic: .vertex, vectorCount: positions.count / 3,
++            usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float>.size,
++            dataOffset: 0, dataStride: 3 * MemoryLayout<Float>.size)
++        var groups: [Group: [Int32]] = [:]
++        var featureKinds: [UUID: Bool] = [:]
++        for triangle in floorSupport.indices {
++            let id = triangleFeatureIDs[triangle], floor = floorSupport[triangle]
++            if let previous = featureKinds[id], previous != floor { throw Failure.invalidGeometry }
++            featureKinds[id] = floor
++            groups[Group(id: id, floor: floor), default: []].append(contentsOf: triangles[(triangle * 3)..<(triangle * 3 + 3)])
++        }
++        for group in groups.keys.sorted(by: { $0.id.uuidString < $1.id.uuidString }) {
++            let indices = groups[group]!
++            let indexData = indices.withUnsafeBufferPointer { Data(buffer: $0) }
++            let element = SCNGeometryElement(data: indexData, primitiveType: .triangles,
++                primitiveCount: indices.count / 3, bytesPerIndex: MemoryLayout<Int32>.size)
++            let geometry = SCNGeometry(sources: [source], elements: [element])
++            let shape = SCNPhysicsShape(geometry: geometry, options: [
++                .type: SCNPhysicsShape.ShapeType.concavePolyhedron, .collisionMargin: 0.0])
++            add(shape: shape, id: group.id, kind: group.floor ? .floorSurface : .obstacleSurface,
++                transform: matrix_identity_float4x4)
++        }
++        for box in furnitureBoxes {
++            guard featureKinds[box.featureID] == false else { throw Failure.invalidFurnitureBox }
++            let transform = try Self.rigidTransform(box.transform)
++            guard box.dimensions.count == 3,
++                  box.dimensions.allSatisfy({ $0.isFinite && $0 > 0 && $0 <= 100 }) else { throw Failure.invalidFurnitureBox }
++            let geometry = SCNBox(width: CGFloat(box.dimensions[0]), height: CGFloat(box.dimensions[1]),
++                                  length: CGFloat(box.dimensions[2]), chamferRadius: 0)
++            // SCNBox has an idealized solid physics shape; no convex-hull repair.
++            let shape = SCNPhysicsShape(geometry: geometry, options: [.collisionMargin: 0.0])
++            add(shape: shape, id: box.featureID, kind: .furnitureBound, transform: transform)
++        }
++        if configuration.usesRenderer {
++            let retained = SCNRenderer(device: nil, options: nil)
++            retained.scene = scene
++            retained.isPlaying = true
++            renderer = retained
++            retained.update(atTime: 0)
++        }
++        synchronizePhysics()
++        if checkBackend { try Self.verifyBackend(configuration: configuration, queryMode: queryMode) }
++    }
++
++    private func add(shape: SCNPhysicsShape, id: UUID, kind: Kind, transform: simd_float4x4) {
++        let node = SCNNode()
++        node.simdTransform = transform
++        let body = SCNPhysicsBody(type: .static, shape: shape)
++        body.categoryBitMask = kind == .floorSurface ? floorMask : sourceMask
++        // Leave SceneKit's documented all-category collision mask unchanged in
++        // the candidate. The query's source-category filter remains explicit.
++        // Probe-only masking is retained solely as a diagnostic comparison cell.
++        if configuration.restrictsSourceMask { body.collisionBitMask = probeMask }
++        body.contactTestBitMask = probeMask
++        node.physicsBody = body
++        scene.rootNode.addChildNode(node)
++        identities[ObjectIdentifier(node)] = Identity(id: id, kind: kind)
++        body.resetTransform()
++    }
++
++    private func synchronizePhysics() {
++        // Synchronous, fixed clock, no sleeps or retry-until-contact loop. Apple
++        // documents update(atTime:) as updating scene state without drawing.
++        // This is a startup candidate, NOT proof the backend is ready: all
++        // positive and negative controls below must still pass on this runtime.
++        SCNTransaction.flush()
++        if let renderer {
++            simulationTick += 1
++            renderer.update(atTime: TimeInterval(simulationTick) * Self.physicsTimeStep)
++        }
++        scene.physicsWorld.updateCollisionPairs()
++    }
++
++    /// Feet/base-centre positions in the original saved world. Continuous sweep of
++    /// a full cylinder, plus explicit initial AND terminal overlap queries.
++    func sweep(from: SIMD3<Float>, to: SIMD3<Float>, radius: Float, height: Float) throws -> SweepResult {
++        guard Self.valid(from), Self.valid(to), radius.isFinite, height.isFinite,
++              (0.1...2).contains(radius), (0.5...3).contains(height) else { throw Failure.invalidQuery }
++        let geometry = SCNCylinder(radius: CGFloat(radius), height: CGFloat(height))
++        let shape = SCNPhysicsShape(geometry: geometry, options: [.collisionMargin: 0.0])
++        let initial = try overlap(at: from, height: height, shape: shape)
++        let start = Self.centreTransform(from, height: height), end = Self.centreTransform(to, height: height)
++        synchronizePhysics()
++        // Query both categories with the identical cylinder/transforms, then
++        // union every contact. No floor triangles or obstacle bounds are omitted,
++        // and a floor hit never becomes proof of whole-footprint support.
++        var swept = Contacts()
++        for mask in queryMasks {
++            let raw = scene.physicsWorld.convexSweepTest(with: shape, from: SCNMatrix4(start), to: SCNMatrix4(end),
++                options: [.collisionBitMask: mask, .searchMode: SCNPhysicsWorld.TestSearchMode.all,
++                          .backfaceCulling: false])
++            swept.formUnion(try contacts(raw))
++        }
++        let terminal = try overlap(at: to, height: height, shape: shape)
++        return SweepResult(initial: initial, swept: swept, terminal: terminal)
++    }
++
++    private func overlap(at foot: SIMD3<Float>, height: Float, shape: SCNPhysicsShape) throws -> Contacts {
++        let node = SCNNode()
++        node.simdTransform = Self.centreTransform(foot, height: height)
++        let body = SCNPhysicsBody(type: .kinematic, shape: shape)
++        body.categoryBitMask = probeMask; body.collisionBitMask = allSourceMask; body.contactTestBitMask = allSourceMask
++        node.physicsBody = body
++        scene.rootNode.addChildNode(node)
++        body.resetTransform()
++        synchronizePhysics()
++        defer { node.removeFromParentNode(); synchronizePhysics() }
++        var result = Contacts()
++        for mask in queryMasks {
++            result.formUnion(try contacts(scene.physicsWorld.contactTest(with: body, options: [.collisionBitMask: mask])))
++        }
++        return result
++    }
++
++    private func contacts(_ raw: [SCNPhysicsContact]) throws -> Contacts {
++        var result = Contacts()
++        for contact in raw {
++            var recognized = false
++            for node in [contact.nodeA, contact.nodeB] {
++                guard let identity = identities[ObjectIdentifier(node)] else { continue }
++                recognized = true
++                switch identity.kind {
++                case .obstacleSurface: result.obstacleSurfaceIDs.insert(identity.id)
++                case .floorSurface: result.floorSurfaceIDs.insert(identity.id)
++                case .furnitureBound: result.furnitureBoundIDs.insert(identity.id)
++                }
++            }
++            guard recognized else { throw Failure.backendUnavailable("unassociated physics contact") }
++        }
++        return result
++    }
++
++    private static func valid(_ value: SIMD3<Float>) -> Bool {
++        [value.x, value.y, value.z].allSatisfy { $0.isFinite && abs($0) <= 10_000 }
++    }
++    private static func centreTransform(_ foot: SIMD3<Float>, height: Float) -> simd_float4x4 {
++        var transform = matrix_identity_float4x4
++        transform.columns.3 = SIMD4(foot.x, foot.y + height / 2, foot.z, 1)
++        return transform
++    }
++    private static func rigidTransform(_ values: [Double]) throws -> simd_float4x4 {
++        guard values.count == 16, values.allSatisfy({ $0.isFinite && abs($0) <= 10_000 }),
++              values[3] == 0, values[7] == 0, values[11] == 0, values[15] == 1 else { throw Failure.invalidFurnitureBox }
++        var c: [SIMD4<Float>] = []
++        c.reserveCapacity(4)
++        for column in 0..<4 {
++            let base: Int = column * 4
++            let x: Float = Float(values[base])
++            let y: Float = Float(values[base + 1])
++            let z: Float = Float(values[base + 2])
++            let w: Float = Float(values[base + 3])
++            let vector = SIMD4<Float>(x, y, z, w)
++            c.append(vector)
++        }
++        let m = simd_float4x4(columns: (c[0], c[1], c[2], c[3]))
++        let r0 = SIMD3<Float>(c[0].x, c[0].y, c[0].z)
++        let r1 = SIMD3<Float>(c[1].x, c[1].y, c[1].z)
++        let r2 = SIMD3<Float>(c[2].x, c[2].y, c[2].z)
++        let rotation = simd_float3x3(columns: (r0, r1, r2))
++        // Match the existing mesh package's Float32 rigid-transform tolerance;
++        // this is numerical validation, not a measured spatial error allowance.
++        for a in 0..<3 { for b in 0..<3 {
++            guard abs(simd_dot(rotation[a], rotation[b]) - (a == b ? 1 : 0)) <= 1e-5 else { throw Failure.invalidFurnitureBox }
++        } }
++        guard abs(simd_determinant(rotation) - 1) <= 1e-5 else { throw Failure.invalidFurnitureBox }
++        return m
++    }
++
++    private enum QueryMode: String { case combined, separated }
++
++    private enum BackendConfiguration: String, CaseIterable {
++        case restrictedNoRenderer = "restricted-no-renderer"
++        case defaultNoRenderer = "default-no-renderer"
++        case restrictedOffscreenRenderer = "restricted-offscreen-renderer"
++        case defaultOffscreenRenderer = "default-offscreen-renderer"
++        static let candidate = BackendConfiguration.defaultOffscreenRenderer
++        var restrictsSourceMask: Bool {
++            self == .restrictedNoRenderer || self == .restrictedOffscreenRenderer
++        }
++        var usesRenderer: Bool {
++            self == .restrictedOffscreenRenderer || self == .defaultOffscreenRenderer
++        }
++    }
++
++    enum ControlName: String, CaseIterable, Encodable, Hashable {
++        case thinWallForward, thinWallReverse, wallInitialOverlap, wallTerminalOverlap
++        case containedSolid, overheadTallForward, overheadTallReverse, overheadShort, clear, floor
++    }
++
++    /// Only the fixed authored controls below can create this witness. No saved
++    /// room, device pose, private geometry, arbitrary errors or camera input is
++    /// accepted by the diagnostic entry point. Keep the collector allowlist in
++    /// sync if this versioned schema ever changes.
++    struct ContactWitness: Encodable {
++        let obstacleSurfaceIDs, floorSurfaceIDs, furnitureBoundIDs: [String]
++        fileprivate init(_ contacts: Contacts) {
++            obstacleSurfaceIDs = contacts.obstacleSurfaceIDs.map(\.uuidString).sorted()
++            floorSurfaceIDs = contacts.floorSurfaceIDs.map(\.uuidString).sorted()
++            furnitureBoundIDs = contacts.furnitureBoundIDs.map(\.uuidString).sorted()
++        }
++    }
++    struct QueryWitness: Encodable {
++        let name: ControlName
++        let passed: Bool
++        let errorCode: String
++        let initial, swept, terminal: ContactWitness
++        fileprivate static func failed(_ name: ControlName, error: Error) -> QueryWitness {
++            let code: String
++            switch error {
++            case Failure.invalidGeometry: code = "invalidGeometry"
++            case Failure.invalidQuery: code = "invalidQuery"
++            case Failure.invalidFurnitureBox: code = "invalidFurnitureBox"
++            case Failure.backendUnavailable("unassociated physics contact"): code = "unassociatedContact"
++            default: code = "unexpectedError"
++            }
++            let empty = ContactWitness(Contacts())
++            return QueryWitness(name: name, passed: false, errorCode: code,
++                                initial: empty, swept: empty, terminal: empty)
++        }
++    }
++    struct BackendCellWitness: Encodable {
++        let configurationID, sourceCollisionMask, rendererMode: String
++        let physicsSpeed = 1
++        let timeStepSeconds = 1.0 / 60.0
++        let gravity = [0, 0, 0]
++        let sourceCategoryMask = 1, probeCategoryMask = 2, queryCollisionMask = 1
++        let backendReady: Bool
++        let failedControls: [ControlName]
++        let queries: [QueryWitness]
++    }
++    struct BackendMatrixWitness: Encodable {
++        let schemaVersion = 1
++        let evidenceKind = "synthetic-collision-backend-matrix"
++        let physicalAuthority = false
++        let fullFootprintSupportVerified = false
++        let cells: [BackendCellWitness]
++    }
++
++    /// Four cells, ten queries per cell, once each; not a fallback search or a
++    /// retry policy. All cells are unpaused. Thus this isolates mask/renderer
++    /// effects at speed 1, not the independent causal effect of old speed 0.
++    static func backendDiagnosticMatrix() -> BackendMatrixWitness {
++        BackendMatrixWitness(cells: BackendConfiguration.allCases.map { diagnoseBackend(configuration: $0) })
++    }
++
++    /// Mandatory on every external oracle creation. A failed control always
++    /// throws, including a positive control whose raw hit arrays are empty.
++    /// No alternate matrix cell can substitute for the selected candidate.
++    private static func verifyBackend(configuration: BackendConfiguration, queryMode: QueryMode) throws {
++        let original = backendQueries(configuration: configuration, queryMode: queryMode)
++        let mixed = mixedSceneQueries(layout: .wallAndFloor, queryMode: queryMode)
++        let failedNames = Set((original + mixed).filter { !$0.passed }.map(\.name))
++        let failures = ControlName.allCases.filter { failedNames.contains($0) }
++        guard failures.isEmpty else {
++            throw Failure.backendUnavailable("backend controls failed: " +
++                failures.map(\.rawValue).joined(separator: ","))
++        }
++    }
++
++    private static let controlWall = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
++    private static let controlSolid = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
++    private static let controlOverhead = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
++    private static let controlFloor = UUID(uuidString: "00000000-0000-0000-0000-000000000004")!
++
++    private static func diagnoseBackend(configuration: BackendConfiguration) -> BackendCellWitness {
++        // Version-one bootstrap witness deliberately retains the original
++        // combined query mode; the separate mixed-scene witness diagnoses the
++        // candidate query split. Do not rewrite historical factorial meaning.
++        let queries = backendQueries(configuration: configuration, queryMode: .combined)
++        let failures = queries.filter { !$0.passed }.map(\.name)
++        return BackendCellWitness(configurationID: configuration.rawValue,
++            sourceCollisionMask: configuration.restrictsSourceMask ? "probe-only" : "platform-default-all",
++            rendererMode: configuration.usesRenderer ? "retained-offscreen-update" : "none",
++            backendReady: failures.isEmpty, failedControls: failures, queries: queries)
++    }
++
++    private static func backendQueries(configuration: BackendConfiguration, queryMode: QueryMode) -> [QueryWitness] {
++        let queries: [QueryWitness]
++        do {
++            let wall = controlWall, solid = controlSolid, overhead = controlOverhead, floor = controlFloor
++            let vertices: [Double] = [0,0,-1, 0,3,-1, 0,3,1, 0,0,1,
++                                     4,0,-1, 4,3,-1, 4,3,1, 4,0,1,
++                                     9,1.4,-1, 11,1.4,-1, 11,1.4,1, 9,1.4,1,
++                                     19,0,-1, 21,0,-1, 21,0,1, 19,0,1]
++            let triangles: [Int32] = [0,1,2, 0,2,3, 4,5,6, 4,6,7, 8,9,10, 8,10,11, 12,13,14, 12,14,15]
++            let oracle = try SavedRoomRouteCollisionOracle(vertices: vertices, triangles: triangles,
++                floorSupport: [false,false,false,false,false,false,true,true],
++                triangleFeatureIDs: [wall,wall,solid,solid,overhead,overhead,floor,floor],
++                furnitureBoxes: [.init(featureID: solid, dimensions: [2,3,2],
++                    transform: [1,0,0,0, 0,1,0,0, 0,0,1,0, 5,1.5,0,1])],
++                configuration: configuration, queryMode: queryMode, checkBackend: false)
++            // Do not short-circuit on a failed wall or thrown query: the witness
++            // must still record containment, height, clear and floor controls.
++            queries = ControlName.allCases.map { name in
++                do { return try runControl(name, oracle: oracle) }
++                catch { return QueryWitness.failed(name, error: error) }
++            }
++        } catch {
++            queries = ControlName.allCases.map { QueryWitness.failed($0, error: error) }
++        }
++        return queries
++    }
++
++    private enum MixedLayout: String { case wallOnly = "wall-only", wallAndFloor = "wall-and-floor" }
++    static let mixedControlNames: [ControlName] = [.thinWallForward, .thinWallReverse,
++        .wallInitialOverlap, .wallTerminalOverlap, .clear, .floor]
++    private static let mixedWall = UUID(uuidString: "10000000-0000-0000-0000-000000000001")!
++    private static let mixedFloor = UUID(uuidString: "10000000-0000-0000-0000-000000000002")!
++
++    struct MixedCellWitness: Encodable {
++        let configurationID, layout, queryMode: String
++        let rendererMode = "retained-offscreen-update"
++        let physicsSpeed = 1
++        let timeStepSeconds = 1.0 / 60.0
++        let gravity = [0, 0, 0]
++        let obstacleCategoryMask = 1, probeCategoryMask = 2
++        let floorCategoryMask: Int
++        let queryCollisionMasks: [Int]
++        let backendReady: Bool
++        let failedControls: [ControlName]
++        let queries: [QueryWitness]
++    }
++    struct MixedSceneWitness: Encodable {
++        let schemaVersion = 1
++        let evidenceKind = "synthetic-collision-mixed-scene"
++        let physicalAuthority = false
++        let fullFootprintSupportVerified = false
++        let cells: [MixedCellWitness]
++    }
++
++    /// Compare the unchanged failing wall+floor geometry with a wall-only
++    /// diagnostic control; then compare combined versus separated category
++    /// queries. Only the mixed layout can validate the candidate, never removal
++    /// of the floor, lifting/shrinking the cylinder, or a passing negative alone.
++    static func mixedSceneDiagnosticMatrix() -> MixedSceneWitness {
++        let configurations: [(MixedLayout, QueryMode)] = [(.wallOnly, .combined), (.wallAndFloor, .combined),
++            (.wallOnly, .separated), (.wallAndFloor, .separated)]
++        return MixedSceneWitness(cells: configurations.map { layout, mode in
++            let queries = mixedSceneQueries(layout: layout, queryMode: mode)
++            let failures = queries.filter { !$0.passed }.map(\.name)
++            return MixedCellWitness(configurationID: layout.rawValue + "-" + mode.rawValue,
++                layout: layout.rawValue, queryMode: mode.rawValue,
++                floorCategoryMask: mode == .separated ? 4 : 1,
++                queryCollisionMasks: mode == .separated ? [1, 4] : [1],
++                backendReady: failures.isEmpty, failedControls: failures, queries: queries)
++        })
++    }
++
++    private static func mixedSceneQueries(layout: MixedLayout, queryMode: QueryMode) -> [QueryWitness] {
++        do {
++            // Identical vertices, triangle ordering and IDs to wallAndFloor() in
++            // the original failed native test. Wall-only is a diagnostic control,
++            // NOT a geometry-reduced candidate or an alternative readiness gate.
++            let includeFloor = layout == .wallAndFloor
++            let oracle = try SavedRoomRouteCollisionOracle(
++                vertices: [0,0,-2, 0,3,-2, 0,3,2, 0,0,2,
++                           -3,0,-3, 3,0,-3, 3,0,3, -3,0,3],
++                triangles: includeFloor ? [0,1,2, 0,2,3, 4,5,6, 4,6,7] : [0,1,2, 0,2,3],
++                floorSupport: includeFloor ? [false,false,true,true] : [false,false],
++                triangleFeatureIDs: includeFloor ? [mixedWall,mixedWall,mixedFloor,mixedFloor] : [mixedWall,mixedWall],
++                furnitureBoxes: [], configuration: .candidate, queryMode: queryMode, checkBackend: false)
++            return mixedControlNames.map { name in
++                do { return try runMixedControl(name, oracle: oracle, layout: layout) }
++                catch { return QueryWitness.failed(name, error: error) }
++            }
++        } catch { return mixedControlNames.map { QueryWitness.failed($0, error: error) } }
++    }
++
++    private static func runMixedControl(_ name: ControlName, oracle: SavedRoomRouteCollisionOracle,
++                                        layout: MixedLayout) throws -> QueryWitness {
++        let from: SIMD3<Float>, to: SIMD3<Float>
++        switch name {
++        case .thinWallForward: from = SIMD3(-1,0,0); to = SIMD3(1,0,0)
++        case .thinWallReverse: from = SIMD3(1,0,0); to = SIMD3(-1,0,0)
++        case .wallInitialOverlap: from = SIMD3(0,0,0); to = SIMD3(1,0,0)
++        case .wallTerminalOverlap: from = SIMD3(-1,0,0); to = SIMD3(0,0,0)
++        case .clear: from = SIMD3(-1,0,3); to = SIMD3(1,0,3)
++        case .floor: from = SIMD3(2,-0.1,0); to = from
++        default: throw Failure.invalidQuery
++        }
++        let result = try oracle.sweep(from: from, to: to, radius: 0.2, height: 1.6)
++        let all = result.all
++        let validFloor = layout == .wallOnly ? all.floorSurfaceIDs.isEmpty : all.floorSurfaceIDs.isSubset(of: [mixedFloor])
++        let expected: Bool
++        switch name {
++        case .thinWallForward, .thinWallReverse:
++            expected = result.initial.obstacleSurfaceIDs.isEmpty && result.terminal.obstacleSurfaceIDs.isEmpty &&
++                result.swept.obstacleSurfaceIDs == [mixedWall]
++        case .wallInitialOverlap:
++            expected = result.initial.obstacleSurfaceIDs == [mixedWall] && result.terminal.obstacleSurfaceIDs.isEmpty &&
++                all.obstacleSurfaceIDs == [mixedWall]
++        case .wallTerminalOverlap:
++            expected = result.terminal.obstacleSurfaceIDs == [mixedWall] && result.initial.obstacleSurfaceIDs.isEmpty &&
++                all.obstacleSurfaceIDs == [mixedWall]
++        case .clear: expected = !all.hasObstacleContact
++        case .floor:
++            expected = layout == .wallOnly ? all == Contacts() :
++                result.initial.floorSurfaceIDs == [mixedFloor] && result.terminal.floorSurfaceIDs == [mixedFloor] &&
++                all.floorSurfaceIDs == [mixedFloor] && !all.hasObstacleContact
++        default: throw Failure.invalidQuery
++        }
++        return QueryWitness(name: name, passed: expected && validFloor && all.furnitureBoundIDs.isEmpty, errorCode: "none",
++            initial: ContactWitness(result.initial), swept: ContactWitness(result.swept), terminal: ContactWitness(result.terminal))
++    }
++
++    private static func runControl(_ name: ControlName, oracle: SavedRoomRouteCollisionOracle) throws -> QueryWitness {
++        let from: SIMD3<Float>, to: SIMD3<Float>, height: Float
++        switch name {
++        case .thinWallForward: from = SIMD3(-1,0,0); to = SIMD3(1,0,0); height = 1.6
++        case .thinWallReverse: from = SIMD3(1,0,0); to = SIMD3(-1,0,0); height = 1.6
++        case .wallInitialOverlap: from = SIMD3(0,0,0); to = SIMD3(1,0,0); height = 1.6
++        case .wallTerminalOverlap: from = SIMD3(-1,0,0); to = SIMD3(0,0,0); height = 1.6
++        case .containedSolid: from = SIMD3(5,0.5,0); to = from; height = 1
++        case .overheadTallForward: from = SIMD3(8,0,0); to = SIMD3(12,0,0); height = 1.6
++        case .overheadTallReverse: from = SIMD3(12,0,0); to = SIMD3(8,0,0); height = 1.6
++        case .overheadShort: from = SIMD3(8,0,0); to = SIMD3(12,0,0); height = 1
++        case .clear: from = SIMD3(-2,0,4); to = SIMD3(2,0,4); height = 1.6
++        case .floor: from = SIMD3(20,-0.1,0); to = from; height = 1.6
++        }
++        let result = try oracle.sweep(from: from, to: to, radius: 0.2, height: height)
++        let empty = Contacts()
++        let all = result.all
++        let passed: Bool
++        switch name {
++        case .thinWallForward, .thinWallReverse:
++            passed = result.initial == empty && result.terminal == empty &&
++                result.swept.obstacleSurfaceIDs == [controlWall] &&
++                all.floorSurfaceIDs.isEmpty && all.furnitureBoundIDs.isEmpty
++        case .wallInitialOverlap:
++            passed = result.initial.obstacleSurfaceIDs == [controlWall] && result.terminal == empty &&
++                all.obstacleSurfaceIDs == [controlWall] && all.floorSurfaceIDs.isEmpty && all.furnitureBoundIDs.isEmpty
++        case .wallTerminalOverlap:
++            passed = result.terminal.obstacleSurfaceIDs == [controlWall] && result.initial == empty &&
++                all.obstacleSurfaceIDs == [controlWall] && all.floorSurfaceIDs.isEmpty && all.furnitureBoundIDs.isEmpty
++        case .containedSolid:
++            passed = result.initial.furnitureBoundIDs == [controlSolid] &&
++                result.terminal.furnitureBoundIDs == [controlSolid] && all.furnitureBoundIDs == [controlSolid] &&
++                all.obstacleSurfaceIDs.isEmpty && all.floorSurfaceIDs.isEmpty
++        case .overheadTallForward, .overheadTallReverse:
++            passed = result.initial == empty && result.terminal == empty &&
++                result.swept.obstacleSurfaceIDs == [controlOverhead] &&
++                all.floorSurfaceIDs.isEmpty && all.furnitureBoundIDs.isEmpty
++        case .overheadShort, .clear:
++            passed = all == empty
++        case .floor:
++            passed = result.initial.floorSurfaceIDs == [controlFloor] &&
++                result.terminal.floorSurfaceIDs == [controlFloor] && all.floorSurfaceIDs == [controlFloor] &&
++                !all.hasObstacleContact
++        }
++        return QueryWitness(name: name, passed: passed, errorCode: "none",
++            initial: ContactWitness(result.initial), swept: ContactWitness(result.swept), terminal: ContactWitness(result.terminal))
++    }
++}
+--- /dev/null
++++ b/research/native-edt-historical-view-20261030/baseline/blind_detour.h.txt
+@@ -0,0 +1,53 @@
++#ifndef BLIND_DETOUR_H
++#define BLIND_DETOUR_H
++#ifdef __cplusplus
++extern "C" {
++#endif
++/* Local, simulation-stage adapter. +Y up; metres; no physical clearance claim. */
++typedef struct BNConfig {
++    float radius, height, cell_size, cell_height, max_climb, max_slope;
++    int max_cells, max_nodes;
++} BNConfig;
++void* bn_build(const float* vertices, int vertex_count, const int* triangles,
++               int triangle_count, const BNConfig* config);
++/* Explicit source classification per triangle: 0=obstacle, 1=original floor.
++   All triangles obstruct; only original-floor triangles may become walkable.
++   Null/malformed classification is rejected, never slope-only fallback. */
++void* bn_build_classified(const float* vertices, int vertex_count, const int* triangles,
++                         int triangle_count, const BNConfig* config,
++                         const unsigned char* triangle_support);
++void* bn_build_excluded(const float* vertices,int vertex_count,const int* triangles,int triangle_count,const BNConfig* config,const float* polygon,int count,float observed_min_y,float observed_max_y);
++int bn_excluded_span_count(void* handle);
++void bn_destroy(void* handle);
++const char* bn_last_error(void);
++/* Returns point count, or -1 on error. complete=0 includes partial/truncated paths.
++   Query projections are outputs ONLY: caller must not teleport physical state. */
++int bn_path(void* handle, const float* start, const float* goal,
++            const float* query_half_extents, float* points, int max_points,
++            float* projected_start, float* projected_goal,
++            unsigned int* status, int* complete);
++/* Opt-in requested-XZ admission, NOT physical clearance/support. Legacy bn_path
++   is unchanged. Receipts are initialized on every call; an argument/admission
++   refusal returns -1, emits no route points and leaves route status/complete at
++   zero. After admission, downstream path failures retain bn_path status. */
++typedef struct BNEndpointAssociation {
++    int found, is_over_polygon;
++    float projected[3];
++    unsigned int status;
++} BNEndpointAssociation;
++int bn_path_strict(void* handle, const float* start, const float* goal,
++                   const float* query_half_extents, float* points, int max_points,
++                   float* projected_start, float* projected_goal,
++                   unsigned int* status, int* complete,
++                   BNEndpointAssociation* start_association,
++                   BNEndpointAssociation* goal_association);
++/* Upstream velocity sampler; candidate ONLY, not delayed-body clearance.
++   circles: x,y,z,r,vx,vy,vz; segments: ax,ay,az,bx,by,bz. */
++int bn_velocity(const float* pos, float radius, float vmax,
++                const float* velocity, const float* desired, float horizon,
++                const float* circles, int circle_count,
++                const float* segments, int segment_count, float* output);
++#ifdef __cplusplus
++}
++#endif
++#endif
+--- /dev/null
++++ b/research/native-edt-historical-view-20261030/baseline/blind_detour_exclusion.cpp.txt
+@@ -0,0 +1,261 @@
++// Local adapter over unmodified Recast/Detour at the pin in UPSTREAM_MANIFEST.json.
++// NOT a replacement SLAM/search algorithm or a validated human controller.
++#include "include/blind_detour.h"
++#include "Recast.h"
++#include "DetourNavMesh.h"
++#include "DetourNavMeshBuilder.h"
++#include "DetourNavMeshQuery.h"
++#include "DetourObstacleAvoidance.h"
++#include <cmath>
++#include <cstdio>
++#include <cstring>
++#include <new>
++#include <vector>
++
++static thread_local char error_message[256] = "";
++static void fail(const char* s) { std::snprintf(error_message, sizeof(error_message), "%s", s); }
++static bool finite3(const float* p) { return p && std::isfinite(p[0]) && std::isfinite(p[1]) && std::isfinite(p[2]); }
++struct BNHandle {
++    dtNavMesh* mesh;
++    dtNavMeshQuery* query;
++    int excludedSpanCount;
++    BNHandle(): mesh(0), query(0), excludedSpanCount(0) {}
++    ~BNHandle() { if (query) dtFreeNavMeshQuery(query); if (mesh) dtFreeNavMesh(mesh); }
++};
++struct BuildData {
++    rcHeightfield* heightfield;
++    rcCompactHeightfield* compact;
++    rcContourSet* contours;
++    rcPolyMesh* mesh;
++    rcPolyMeshDetail* detail;
++    BuildData(): heightfield(0), compact(0), contours(0), mesh(0), detail(0) {}
++    ~BuildData() {
++        if (heightfield) rcFreeHeightField(heightfield);
++        if (compact) rcFreeCompactHeightfield(compact);
++        if (contours) rcFreeContourSet(contours);
++        if (mesh) rcFreePolyMesh(mesh);
++        if (detail) rcFreePolyMeshDetail(detail);
++    }
++};
++extern "C" const char* bn_last_error() { return error_message; }
++extern "C" void bn_destroy(void* handle) { delete static_cast<BNHandle*>(handle); }
++static void* build_impl(const float* v, int nv, const int* t, int nt, const BNConfig* c, const float* exclusion, int exclusionCount, float observedMinY, float observedMaxY, const unsigned char* triangleSupport, bool classifiedFloorOnly) {
++    error_message[0] = 0;
++    if (!v || !t || !c || nv < 3 || nv > 250000 || nt < 1 || nt > 500000) { fail("invalid/count-limited mesh input"); return 0; }
++    if (classifiedFloorOnly && !triangleSupport) { fail("missing triangle support"); return 0; }
++    if (classifiedFloorOnly) for (int i=0; i<nt; ++i) if (triangleSupport[i]>1) { fail("invalid triangle support"); return 0; }
++    if (!std::isfinite(c->radius) || c->radius < .1f || c->radius > 2.f ||
++        !std::isfinite(c->height) || c->height < .5f || c->height > 3.f ||
++        !std::isfinite(c->cell_size) || c->cell_size < .025f || c->cell_size > .5f ||
++        !std::isfinite(c->cell_height) || c->cell_height < .01f || c->cell_height > .2f ||
++        !std::isfinite(c->max_climb) || c->max_climb < 0.f || c->max_climb > .09f ||
++        !std::isfinite(c->max_slope) || c->max_slope < 0.f || c->max_slope > 15.f ||
++        c->max_cells < 1 || c->max_cells > 250000 || c->max_nodes < 16 || c->max_nodes > 65535) {
++        fail("invalid bounded configuration"); return 0;
++    }
++    if (exclusionCount < 0 || exclusionCount > 64 || (exclusionCount && (exclusionCount < 3 || !exclusion || !std::isfinite(observedMinY) || !std::isfinite(observedMaxY) || observedMinY > observedMaxY))) { fail("invalid exclusion count or observed height range"); return 0; }
++    if (exclusionCount) {
++        double orientation = 0.;
++        for (int i=0; i<exclusionCount; ++i) {
++            const float* a=exclusion+3*i; const float* b=exclusion+3*((i+1)%exclusionCount); const float* d=exclusion+3*((i+2)%exclusionCount);
++            if (!finite3(a) || std::fabs(a[0])>10000.f || std::fabs(a[2])>10000.f) { fail("nonfinite/out-of-range exclusion vertex"); return 0; }
++            double cross=(double(b[0])-a[0])*(double(d[2])-b[2])-(double(b[2])-a[2])*(double(d[0])-b[0]);
++            if (std::fabs(cross)>1e-12) { if (orientation && orientation*cross<0.) { fail("nonconvex exclusion"); return 0; } orientation=cross; }
++        }
++        if (!orientation) { fail("degenerate exclusion"); return 0; }
++        for (int i=0; i<exclusionCount; ++i) {
++            const float* a=exclusion+3*i; const float* b=exclusion+3*((i+1)%exclusionCount);
++            for (int j=i+1; j<exclusionCount; ++j) {
++                const float* q=exclusion+3*j;
++                double qx=double(q[0])-a[0], qz=double(q[2])-a[2];
++                if (qx*qx+qz*qz<1e-16) { fail("duplicate exclusion vertex"); return 0; }
++            }
++            double dx=double(b[0])-a[0], dz=double(b[2])-a[2];
++            if (dx*dx+dz*dz<1e-16) { fail("duplicate exclusion vertex"); return 0; }
++            for (int j=0; j<exclusionCount; ++j) {
++                const float* q=exclusion+3*j;
++                double cross=dx*(double(q[2])-a[2])-dz*(double(q[0])-a[0]);
++                if ((orientation>0 && cross < -1e-10) || (orientation<0 && cross > 1e-10)) { fail("nonconvex or self-intersecting exclusion"); return 0; }
++            }
++        }
++    }
++    for (int i=0; i<nv*3; ++i) if (!std::isfinite(v[i]) || std::fabs(v[i]) > 10000.f) { fail("invalid vertex"); return 0; }
++    for (int i=0; i<nt*3; ++i) if (t[i] < 0 || t[i] >= nv) { fail("invalid triangle index"); return 0; }
++    rcContext context(false);
++    rcConfig config; std::memset(&config, 0, sizeof(config));
++    config.cs = c->cell_size; config.ch = c->cell_height;
++    config.walkableSlopeAngle = c->max_slope;
++    config.walkableHeight = (int)std::ceil(c->height/config.ch);
++    config.walkableClimb = (int)std::floor(c->max_climb/config.ch);
++    config.walkableRadius = (int)std::ceil(c->radius/config.cs);
++    config.maxEdgeLen = 0; config.maxSimplificationError = .5f;
++    config.minRegionArea = 0; config.mergeRegionArea = 0; config.maxVertsPerPoly = 6;
++    config.detailSampleDist = config.cs*6.f; config.detailSampleMaxError = config.ch;
++    rcCalcBounds(v, nv, config.bmin, config.bmax);
++    if (config.bmax[0]-config.bmin[0] > 200.f || config.bmax[2]-config.bmin[2] > 200.f ||
++        config.bmax[1]-config.bmin[1] > 20.f) { fail("mesh extent limit"); return 0; }
++    config.bmin[1] -= config.ch;
++    config.bmax[1] += c->height + config.ch;
++    rcCalcGridSize(config.bmin, config.bmax, config.cs, &config.width, &config.height);
++    if (config.width < 1 || config.height < 1 || (long long)config.width*config.height > c->max_cells) { fail("grid cell cap"); return 0; }
++    BuildData b;
++    b.heightfield=rcAllocHeightfield(); b.compact=rcAllocCompactHeightfield();
++    b.contours=rcAllocContourSet(); b.mesh=rcAllocPolyMesh(); b.detail=rcAllocPolyMeshDetail();
++    if (!b.heightfield || !b.compact || !b.contours || !b.mesh || !b.detail) { fail("build allocation"); return 0; }
++    if (!rcCreateHeightfield(&context, *b.heightfield, config.width, config.height, config.bmin, config.bmax, config.cs, config.ch)) { fail("heightfield"); return 0; }
++    std::vector<unsigned char> areas(nt, RC_NULL_AREA);
++    if (classifiedFloorOnly) {
++        // Recast addSpan merges overlapping area IDs with max(). Its maximum
++        // height is updated BEFORE that comparison, so ordinary floor=63 and
++        // obstacle=0 can promote a floor-touching obstacle top. Use temporary
++        // priorities floor=1 / obstacle=2, then map only retained floor to 63.
++        // These are raster provenance tags, not new navigation/search logic.
++        for (int i=0; i<nt; ++i) if (triangleSupport[i]==1) areas[i]=1;
++        // Upstream only clears steep/downward floor triangles. It never promotes
++        // furniture, walls or unclassified geometry to support in this mode.
++        rcClearUnwalkableTriangles(&context, config.walkableSlopeAngle, v, nv, t, nt, areas.data());
++        for (int i=0; i<nt; ++i) if (triangleSupport[i]==0) areas[i]=2;
++    } else {
++        // Preserve the original unclassified diagnostic build byte-for-byte path.
++        rcMarkWalkableTriangles(&context, config.walkableSlopeAngle, v, nv, t, nt, areas.data());
++    }
++    if (!rcRasterizeTriangles(&context, v, nv, t, areas.data(), nt, *b.heightfield, config.walkableClimb)) { fail("rasterization"); return 0; }
++    if (classifiedFloorOnly) {
++        for (int i=0; i<config.width*config.height; ++i) {
++            for (rcSpan* span=b.heightfield->spans[i]; span; span=span->next) {
++                span->area=span->area==1 ? RC_WALKABLE_AREA : RC_NULL_AREA;
++            }
++        }
++    }
++    // No low-hanging-obstacle promotion: an observed obstacle is not made floor.
++    rcFilterLedgeSpans(&context, config.walkableHeight, config.walkableClimb, *b.heightfield);
++    rcFilterWalkableLowHeightSpans(&context, config.walkableHeight, *b.heightfield);
++    if (!rcBuildCompactHeightfield(&context, config.walkableHeight, config.walkableClimb, *b.heightfield, *b.compact)) { fail("compact heightfield"); return 0; }
++    int excludedSpanCount=0;
++    if (exclusionCount) {
++        int before=0, after=0;
++        for (int i=0; i<b.compact->spanCount; ++i) before += b.compact->areas[i]!=RC_NULL_AREA;
++        // A candidate body's vertical interval [foot, foot+nativeHeight]
++        // intersects the observed tabletop height hypothesis in this interval.
++        // Mark raw source exclusion BEFORE radius erosion: no double inflation.
++        rcMarkConvexPolyArea(&context, exclusion, exclusionCount, observedMinY-c->height, observedMaxY, RC_NULL_AREA, *b.compact);
++        for (int i=0; i<b.compact->spanCount; ++i) after += b.compact->areas[i]!=RC_NULL_AREA;
++        excludedSpanCount=before-after;
++    }
++    if (!rcErodeWalkableArea(&context, config.walkableRadius, *b.compact) ||
++        !rcBuildDistanceField(&context, *b.compact) ||
++        !rcBuildRegions(&context, *b.compact, 0, config.minRegionArea, config.mergeRegionArea) ||
++        !rcBuildContours(&context, *b.compact, config.maxSimplificationError, config.maxEdgeLen, *b.contours) ||
++        !rcBuildPolyMesh(&context, *b.contours, config.maxVertsPerPoly, *b.mesh) ||
++        !rcBuildPolyMeshDetail(&context, *b.mesh, *b.compact, config.detailSampleDist, config.detailSampleMaxError, *b.detail)) {
++        fail("Recast build stage"); return 0;
++    }
++    if (b.mesh->npolys < 1) { fail("no supported walkable polygons"); return 0; }
++    for (int i=0; i<b.mesh->npolys; ++i) { b.mesh->flags[i]=1; if (b.mesh->areas[i]==RC_WALKABLE_AREA) b.mesh->areas[i]=0; }
++    dtNavMeshCreateParams params; std::memset(&params, 0, sizeof(params));
++    params.verts=b.mesh->verts; params.vertCount=b.mesh->nverts;
++    params.polys=b.mesh->polys; params.polyAreas=b.mesh->areas; params.polyFlags=b.mesh->flags;
++    params.polyCount=b.mesh->npolys; params.nvp=b.mesh->nvp;
++    params.detailMeshes=b.detail->meshes; params.detailVerts=b.detail->verts; params.detailVertsCount=b.detail->nverts;
++    params.detailTris=b.detail->tris; params.detailTriCount=b.detail->ntris;
++    params.walkableHeight=c->height; params.walkableRadius=c->radius; params.walkableClimb=c->max_climb;
++    std::memcpy(params.bmin,b.mesh->bmin,sizeof(params.bmin)); std::memcpy(params.bmax,b.mesh->bmax,sizeof(params.bmax));
++    params.cs=config.cs; params.ch=config.ch; params.buildBvTree=true;
++    unsigned char* data=0; int bytes=0;
++    if (!dtCreateNavMeshData(&params,&data,&bytes)) { fail("Detour mesh creation"); return 0; }
++    BNHandle* h=new(std::nothrow) BNHandle();
++    if (!h) { dtFree(data); fail("handle allocation"); return 0; }
++    h->mesh=dtAllocNavMesh(); h->query=dtAllocNavMeshQuery();
++    if (!h->mesh || !h->query) { dtFree(data); delete h; fail("Detour allocation"); return 0; }
++    if (dtStatusFailed(h->mesh->init(data,bytes,DT_TILE_FREE_DATA))) { dtFree(data); delete h; fail("Detour mesh init"); return 0; }
++    if (dtStatusFailed(h->query->init(h->mesh,c->max_nodes))) { delete h; fail("Detour query init"); return 0; }
++    h->excludedSpanCount=excludedSpanCount;
++    return h;
++}
++extern "C" int bn_path(void* handle,const float* start,const float* goal,const float* ext,float* points,int cap,
++                       float* projected_start,float* projected_goal,unsigned int* status,int* complete) {
++    error_message[0]=0;
++    if (status) *status=0;
++    if (complete) *complete=0;
++    if (!handle || !finite3(start) || !finite3(goal) || !finite3(ext) || !points || !projected_start || !projected_goal || !status || !complete ||
++        cap<2 || cap>4096 || ext[0]<=0 || ext[1]<=0 || ext[2]<=0 || ext[0]>3 || ext[1]>3 || ext[2]>3) { fail("invalid query"); return -1; }
++    BNHandle* h=static_cast<BNHandle*>(handle); dtQueryFilter filter; filter.setIncludeFlags(1); filter.setExcludeFlags(0);
++    dtPolyRef a=0,b=0;
++    dtStatus s1=h->query->findNearestPoly(start,ext,&filter,&a,projected_start);
++    dtStatus s2=h->query->findNearestPoly(goal,ext,&filter,&b,projected_goal);
++    *status=s1|s2;
++    if (dtStatusFailed(s1)||dtStatusFailed(s2)||!a||!b) { fail("no start or goal polygon within explicit association bounds"); return -1; }
++    std::vector<dtPolyRef> corridor(4096); int nc=0;
++    dtStatus s3=h->query->findPath(a,b,projected_start,projected_goal,&filter,corridor.data(),&nc,(int)corridor.size()); *status|=s3;
++    if (dtStatusFailed(s3)||nc<1) { fail("no route corridor"); return -1; }
++    float end[3]; std::memcpy(end,projected_goal,sizeof(end));
++    if (corridor[nc-1]!=b && dtStatusFailed(h->query->closestPointOnPoly(corridor[nc-1],projected_goal,end,0))) { fail("partial endpoint query"); return -1; }
++    std::vector<unsigned char> flags(cap); std::vector<dtPolyRef> refs(cap); int count=0;
++    dtStatus s4=h->query->findStraightPath(projected_start,end,corridor.data(),nc,points,flags.data(),refs.data(),&count,cap); *status|=s4;
++    if (dtStatusFailed(s4)) { fail("straight path query"); return -1; }
++    *complete=(corridor[nc-1]==b && !dtStatusDetail(*status,DT_PARTIAL_RESULT|DT_BUFFER_TOO_SMALL|DT_OUT_OF_NODES));
++    return count;
++}
++extern "C" int bn_path_strict(void* handle,const float* start,const float* goal,const float* ext,
++                              float* points,int cap,float* projected_start,float* projected_goal,
++                              unsigned int* status,int* complete,
++                              BNEndpointAssociation* start_association,
++                              BNEndpointAssociation* goal_association) {
++    error_message[0]=0;
++    if (status) *status=0;
++    if (complete) *complete=0;
++    if (start_association) std::memset(start_association,0,sizeof(*start_association));
++    if (goal_association) std::memset(goal_association,0,sizeof(*goal_association));
++    if (!handle || !finite3(start) || !finite3(goal) || !finite3(ext) || !points ||
++        !projected_start || !projected_goal || !status || !complete ||
++        !start_association || !goal_association || start_association==goal_association || cap<2 || cap>4096 ||
++        ext[0]<=0 || ext[1]<=0 || ext[2]<=0 || ext[0]>3 || ext[1]>3 || ext[2]>3) {
++        fail("invalid strict endpoint query"); return -1;
++    }
++    BNHandle* h=static_cast<BNHandle*>(handle);
++    dtQueryFilter filter; filter.setIncludeFlags(1); filter.setExcludeFlags(0);
++    const float* requested[2]={start,goal};
++    BNEndpointAssociation* receipts[2]={start_association,goal_association};
++    for (int i=0;i<2;++i) {
++        dtPolyRef ref=0; bool over=false;
++        BNEndpointAssociation& receipt=*receipts[i];
++        receipt.status=h->query->findNearestPoly(requested[i],ext,&filter,&ref,receipt.projected,&over);
++        receipt.found=!dtStatusFailed(receipt.status) && ref!=0;
++        receipt.is_over_polygon=receipt.found && over;
++        if (!receipt.found) std::memset(receipt.projected,0,sizeof(receipt.projected));
++    }
++    if (!start_association->is_over_polygon || !goal_association->is_over_polygon) {
++        fail("requested endpoint outside candidate polygon XZ"); return -1;
++    }
++    // A private immutable handle is queried synchronously. Preserve the exact
++    // legacy path and vertical projections after both supplied-XZ checks pass.
++    return bn_path(handle,start,goal,ext,points,cap,projected_start,projected_goal,status,complete);
++}
++extern "C" int bn_velocity(const float* pos,float radius,float vmax,const float* vel,const float* desired,float horizon,
++                           const float* circles,int nc,const float* segments,int ns,float* output) {
++    error_message[0]=0;
++    if (!finite3(pos)||!finite3(vel)||!finite3(desired)||!output||!std::isfinite(radius)||radius<.1f||radius>2||!std::isfinite(vmax)||vmax<=0||vmax>3||
++        !std::isfinite(horizon)||horizon<=0||horizon>10||nc<0||nc>64||ns<0||ns>128||(nc&&!circles)||(ns&&!segments)) { fail("invalid velocity request"); return -1; }
++    for (int i=0;i<nc*7;i++) if (!std::isfinite(circles[i])) {fail("nonfinite circle");return -1;}
++    for (int i=0;i<ns*6;i++) if (!std::isfinite(segments[i])) {fail("nonfinite segment");return -1;}
++    dtObstacleAvoidanceQuery query; if (!query.init(64,128)) {fail("avoidance allocation");return -1;}
++    for (int i=0;i<nc;i++) {const float* c=circles+i*7;if(c[3]<=0||c[3]>5){fail("circle radius");return -1;}query.addCircle(c,c[3],c+4,c+4);}
++    for (int i=0;i<ns;i++) query.addSegment(segments+i*6,segments+i*6+3);
++    dtObstacleAvoidanceParams p; std::memset(&p,0,sizeof(p));
++    p.velBias=.4f;p.weightDesVel=2;p.weightCurVel=.75f;p.weightSide=.75f;p.weightToi=2.5f;p.horizTime=horizon;
++    p.gridSize=33;p.adaptiveDivs=7;p.adaptiveRings=2;p.adaptiveDepth=5;
++    return query.sampleVelocityAdaptive(pos,radius,vmax,vel,desired,output,&p);
++}
++
++extern "C" void* bn_build_excluded(const float* v, int nv, const int* t, int nt, const BNConfig* c, const float* exclusion, int exclusionCount, float observedMinY, float observedMaxY) {
++    return build_impl(v,nv,t,nt,c,exclusion,exclusionCount,observedMinY,observedMaxY,0,false);
++}
++extern "C" void* bn_build_classified(const float* v, int nv, const int* t, int nt, const BNConfig* c, const unsigned char* triangleSupport) {
++    return build_impl(v,nv,t,nt,c,0,0,0.f,0.f,triangleSupport,true);
++}
++extern "C" void* bn_build(const float* v, int nv, const int* t, int nt, const BNConfig* c) {
++    return bn_build_excluded(v,nv,t,nt,c,0,0,0.f,0.f);
++}
++extern "C" int bn_excluded_span_count(void* handle) {
++    return handle ? static_cast<BNHandle*>(handle)->excludedSpanCount : -1;
++}
+--- /dev/null
++++ b/research/native-edt-historical-view-20261030/baseline/run_native.py.txt
+@@ -0,0 +1,203 @@
++#!/usr/bin/env python3
++"""Frozen public Apple-host diagnostic. No install or production-source edits.
++Two25-request original controls gate execution of one25-request EDT candidate.
++A completed diagnostic may report a failed candidate; job-green is not clearance.
++"""
++import difflib
++import hashlib
++import json
++import os
++import pathlib
++import resource
++import signal
++import struct
++import subprocess
++import sys
++import time
++
++HERE=pathlib.Path(__file__).resolve().parent
++ROOT=HERE.parents[2]
++REPAIR=HERE.parent
++OUT=pathlib.Path(os.environ['RUNNER_TEMP'])/'blind-edt-navigation-probe'
++OUT.mkdir(parents=True,exist_ok=False) # Never overwrite retained earlier attempt evidence.
++START=time.monotonic();DEADLINE=START+300
++receipt={'schema':1,'sourceCommit':os.environ.get('GITHUB_SHA'),'physicalAuthority':False,
++         'appActivation':False,'status':'started','commands':[],'sourcePins':{},
++         'scope':'macOS fixed public geometry diagnostic; no production/iOS adoption'}
++
++def sha(path):
++    return hashlib.sha256(path.read_bytes()).hexdigest()
++
++def save():
++    receipt['elapsedSeconds']=time.monotonic()-START
++    (OUT/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
++
++def limits():
++    resource.setrlimit(resource.RLIMIT_CPU,(120,120))
++    resource.setrlimit(resource.RLIMIT_FSIZE,(128*1024**2,128*1024**2))
++
++def command(args,label,limit=90):
++    remaining=DEADLINE-time.monotonic()
++    if remaining<=0:
++        raise TimeoutError('global diagnostic deadline exhausted before '+label)
++    timeout=min(limit,remaining);before=time.monotonic()
++    stdout=OUT/(label+'.stdout.txt');stderr=OUT/(label+'.stderr.txt')
++    row={'label':label,'command':[str(x) for x in args],'timeoutSeconds':timeout}
++    receipt['commands'].append(row);save()
++    with stdout.open('xb') as out,stderr.open('xb') as err:
++        process=None
++        try:
++            process=subprocess.Popen([str(x) for x in args],cwd=ROOT,stdout=out,stderr=err,
++                start_new_session=True,preexec_fn=limits,
++                env={**os.environ,'OMP_NUM_THREADS':'1','OPENBLAS_NUM_THREADS':'1','MKL_NUM_THREADS':'1'})
++            row.update(exitCode=process.wait(timeout=timeout),wallSeconds=time.monotonic()-before)
++        except BaseException as error:
++            # xcrun can own compiler descendants. Kill the entire isolated group,
++            # not merely its parent, then reap the child before propagating.
++            if process is not None:
++                try:
++                    os.killpg(process.pid,signal.SIGKILL)
++                except ProcessLookupError:
++                    pass
++                process.wait()
++            row.update(exitCode=None,timedOut=isinstance(error,subprocess.TimeoutExpired),
++                       interruptedBy=type(error).__name__,wallSeconds=time.monotonic()-before)
++            raise
++        finally:
++            out.flush();err.flush()
++            for path in (stdout,stderr):
++                row[path.name]={'bytes':path.stat().st_size,'sha256':sha(path)}
++            save()
++    if row['exitCode']!=0:
++        raise RuntimeError('command failed: '+label)
++    return stdout.read_text().strip()
++
++def replace_once(text,old,new):
++    assert text.count(old)==1,('instrumentation site differs',old)
++    return text.replace(old,new,1)
++
++try:
++    assert sys.platform=='darwin','Apple host required; no local Swift/native execution'
++    assert os.environ.get('GITHUB_REPOSITORY')=='mischa23v/blind'
++    assert os.environ.get('GITHUB_REF') in ('refs/heads/master','refs/heads/codex/recovery-hazard-order-20261027')
++    head=command(['git','rev-parse','HEAD'],'source-head')
++    assert head==receipt['sourceCommit']
++    before_status=command(['git','status','--porcelain'],'source-before')
++    command(['git','diff','--exit-code'],'tracked-source-clean')
++    pins=json.loads((HERE/'NATIVE_SOURCE_PINS.json').read_text())['files']
++    assert 45<=len(pins)<=100
++    for name,digest in pins.items():
++        relative=pathlib.PurePosixPath(name)
++        assert not relative.is_absolute() and '..' not in relative.parts
++        path=ROOT/name
++        assert path.is_file() and sha(path)==digest,('source pin mismatch',name)
++    receipt['sourcePins']=pins;save()
++    def require_pin(path):
++        name=str(path.relative_to(ROOT))
++        assert name in pins and sha(path)==pins[name],('unreviewed runtime input',name)
++
++    geometry=REPAIR/'strict-endpoint-probe/PACKED_ROUTING_GEOMETRY.json'
++    requests=REPAIR/'strict-endpoint-probe/REQUESTS_49A.json'
++    masks=HERE/'EDT_MASK_INPUTS.json'
++    reference=REPAIR/'native-strict-result-40791907324/RESULT.json'
++    c=ROOT/'research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour'
++    oracle=ROOT/'ios/BlindAssistTests/SavedRoomRouteCollisionOracle.swift'
++    appendix=REPAIR/'strict-endpoint-probe/association_appendix.cpp'
++    for path in [geometry,requests,masks,reference,HERE/'main.swift',HERE/'run_native.py',
++                 HERE/'edt_probe.h',HERE/'edt_mask_hook.cpp',oracle,appendix,
++                 HERE/'hook_tests.cpp',HERE/'hook_test_digest.hpp',HERE/'HOOK_TEST_FIXTURE.json',
++                 c/'blind_detour_exclusion.cpp',c/'include/blind_detour.h']:
++        require_pin(path)
++    assert geometry.stat().st_size<=131072 and sha(geometry)=='0731735bf24f198288efea26d79c8a29929d49b10d3be0637e9e15fb983c63b7'
++    assert requests.stat().st_size<=131072 and sha(requests)=='e5d2e07c7564869d2abde1d4a947e022d1a166c64641a81f2b92fcdbab73ac51'
++    assert reference.stat().st_size<=1048576 and sha(reference)=='0858272d1faca7e16268b772f0cd164652c08eb22277d36514d2eae72b803893'
++    assert masks.stat().st_size<=1048576
++    mask_json=json.loads(masks.read_text())
++    assert mask_json['schema']=='blind.fixed-full-layer-edt-masks.v1' and mask_json['physicalAuthority'] is False
++    assert mask_json['sourceSurfaceClearanceEstablished'] is False and len(mask_json['profiles'])==6
++    hook_fixture=json.loads((HERE/'HOOK_TEST_FIXTURE.json').read_text())
++    hook_words=hook_fixture['headerWords']+[v for row in hook_fixture['columns'] for v in row]+[v for row in hook_fixture['spans'] for v in row]
++    hook_digest=hashlib.sha256(b''.join(struct.pack('<I',v & 0xffffffff) for v in hook_words)).hexdigest()
++    assert hook_digest==hook_fixture['layoutSHA256']=='37b9e02b8b09b02b2e08ebe9c3b825980862078a5b5722bff09a4c0aafbc9f76'
++    receipt['authoredHookControlLayoutSHA256']=hook_digest
++    receipt['inputHashes']={str(p.relative_to(ROOT)):sha(p) for p in [geometry,requests,masks,reference]}
++    save()
++    sdk=command(['xcrun','--sdk','macosx','--show-sdk-path'],'sdk')
++    version=command(['xcodebuild','-version'],'xcode-version')
++    assert version.splitlines()[0]=='Xcode 27.0'
++    command(['xcrun','swiftc','--version'],'swift-version')
++
++    include=OUT/'include';include.mkdir()
++    (include/'edt_probe.h').write_bytes((HERE/'edt_probe.h').read_bytes())
++    (include/'blind_detour.h').write_bytes((c/'include/blind_detour.h').read_bytes())
++    (include/'module.modulemap').write_text('module EDTNavigationProbe { header "edt_probe.h" export * }\n')
++    common=['xcrun','clang++','-std=c++14','-O1','-ffp-contract=off','-fno-rtti','-fno-exceptions',
++            '-fPIC','-isysroot',sdk,'-target','arm64-apple-macosx14.0','-I',c,'-I',c/'include','-I',include,'-I',HERE]
++    for component in ['Recast','Detour','DetourCrowd']:
++        common+=['-I',c/'upstream'/component/'Include']
++        for header in sorted((c/'upstream'/component/'Include').glob('*.h')):
++            require_pin(header)
++    area_source=c/'upstream/Recast/Source/RecastArea.cpp';require_pin(area_source)
++    original_area=area_source.read_text()
++    observed_area=replace_once(original_area,'#include "Recast.h"',
++        '#include "Recast.h"\nextern "C" void blind_edt_mask_hook(rcCompactHeightfield&,const unsigned char*,int,int);')
++    observed_area=replace_once(observed_area,
++        '\tconst unsigned char minBoundaryDistance = (unsigned char)(erosionRadius * 2);',
++        '\tblind_edt_mask_hook(compactHeightfield,distanceToBoundary,erosionRadius,0);\n'
++        '\tconst unsigned char minBoundaryDistance = (unsigned char)(erosionRadius * 2);')
++    observed_area=replace_once(observed_area,'\trcFree(distanceToBoundary);',
++        '\tblind_edt_mask_hook(compactHeightfield,distanceToBoundary,erosionRadius,1);\n\trcFree(distanceToBoundary);')
++    generated_area=OUT/'RecastArea.cpp';generated_area.write_text(observed_area)
++    patch=''.join(difflib.unified_diff(original_area.splitlines(True),observed_area.splitlines(True),
++                                     fromfile='original/RecastArea.cpp',tofile='scratch/RecastArea.cpp'))
++    (OUT/'NATIVE_MASK_INSTRUMENTATION.txt').write_text(patch)
++    receipt['instrumentedAreaSHA256']=sha(generated_area);save()
++    objects=[]
++    for component in ['Recast','Detour','DetourCrowd']:
++        for source in sorted((c/'upstream'/component/'Source').glob('*.cpp')):
++            require_pin(source)
++            selected=generated_area if source==area_source else source
++            obj=OUT/(component+'-'+source.stem+'.o')
++            command(common+['-c',selected,'-o',obj],'compile-'+component+'-'+source.stem)
++            objects.append(obj)
++    assert 15<=len(objects)<=64
++    original=(c/'blind_detour_exclusion.cpp').read_text()
++    assert original.count('config.maxSimplificationError = .5f;')==1
++    generated=OUT/'adapter.cpp';generated.write_text(original+'\n'+appendix.read_text())
++    receipt['generatedAdapterSHA256']=sha(generated);receipt['maskHookSHA256']=sha(HERE/'edt_mask_hook.cpp');save()
++    for source,label in [(generated,'adapter'),(HERE/'edt_mask_hook.cpp','edt-hook')]:
++        obj=OUT/(label+'.o');command(common+['-c',source,'-o',obj],'compile-'+label);objects.append(obj)
++    library=OUT/'libedtprobe.a'
++    command(['xcrun','ar','rcs',library]+objects,'archive')
++    hook_binary=OUT/'edt-hook-tests'
++    command(common+[HERE/'hook_tests.cpp',library,'-o',hook_binary],'hook-tests-compile')
++    hook_result=json.loads(command([hook_binary],'hook-tests-run',30))
++    assert hook_result=={'schema':1,'scope':'scratch-edt-hook','checks':51,'passed':51,'physicalAuthority':False}
++    receipt['nativeHookChecks']=hook_result;save()
++    binary=OUT/'edt-navigation-probe'
++    command(['xcrun','swiftc','-j','1','-num-threads','1','-swift-version','5','-parse-as-library',
++             '-sdk',sdk,'-target','arm64-apple-macosx14.0','-I',include,HERE/'main.swift',
++             oracle,library,'-lc++','-o',binary],'swift-probe-compile',120)
++    command([binary,geometry,requests,masks,reference,OUT/'RESULT.json'],'probe-run',120)
++    assert (OUT/'RESULT.json').stat().st_size<=1048576
++    data=json.loads((OUT/'RESULT.json').read_text())
++    assert data['schema']=='blind.public-fixed-full-layer-edt-navigation.v1'
++    assert data['physicalAuthority'] is False and data['appActivation'] is False
++    assert data['candidateExecuted']==data['all50OriginalControlsReproduced']
++    assert data['candidateRequests']==(25 if data['candidateExecuted'] else 0)
++    assert len(data['rows'])==50+data['candidateRequests']
++    receipt['status']=data['status'];receipt['resultSHA256']=sha(OUT/'RESULT.json')
++    receipt['all50OriginalControlsReproduced']=data['all50OriginalControlsReproduced']
++    receipt['candidateGoalsMet']=data['candidateGoalsMet']
++    after_status=command(['git','status','--porcelain'],'source-after')
++    assert before_status==after_status,'diagnostic changed checkout'
++    # Only bounded JSON/text receipts are upload candidates, never build products.
++    for path in OUT.iterdir():
++        if path.suffix in ['.o','.a'] or path in (binary,hook_binary):
++            path.unlink()
++    save()
++    print(json.dumps({'status':receipt['status'],'resultSHA256':receipt['resultSHA256'],
++                      'candidateGoalsMet':receipt['candidateGoalsMet'],'physicalAuthority':False}))
++except Exception as error:
++    receipt['status']='failed-or-inconclusive-diagnostic';receipt['errorType']=type(error).__name__
++    receipt['error']=str(error)[:1000];save();raise
+--- /dev/null
++++ b/research/native-edt-historical-view-20261030/run_snapshot.py
+@@ -0,0 +1,118 @@
++#!/usr/bin/env python3
++"""Exact historical EDT input view; actual workflow checkout remains authoritative."""
++import ast, hashlib, json, os, pathlib, subprocess, sys, time
++HERE=pathlib.Path(__file__).resolve().parent
++LANE='research/native-floor-import-repair-20261028/edt-navigation-probe'
++HISTORICAL_COMMIT='5a6ad0ad5c64879a9e95bae9212054ab9daf950d'
++PIN_SHA='3e1f7d07cf3b70cc04ecb6e55694bdc01cca95738f7781e554cfbb1f66aaea3b'
++RUNNER_SHA='92eb8c0f99e005175fe0da96ff6c521d6430aaa3aec7246b5cf79bc7dcf5460f'
++
++def digest(b): return hashlib.sha256(b).hexdigest()
++def require(ok, message):
++    if not ok: raise ValueError(message)
++def safe_file(root,name):
++    rel=pathlib.PurePosixPath(name)
++    require(not rel.is_absolute() and '..' not in rel.parts and bool(rel.parts),'Unsafe input path')
++    path=root.joinpath(*rel.parts)
++    for parent in [path,*path.parents]:
++        if parent==root: break
++        require(not parent.is_symlink(),'Symlink input rejected: '+name)
++    require(path.is_file(),'Missing input: '+name)
++    require(path.resolve().is_relative_to(root.resolve()),'Input outside view')
++    return path
++
++def verify_packet():
++    manifest=json.loads((HERE/'MANIFEST.json').read_text())
++    for name,h in manifest['files'].items():
++        require(digest(safe_file(HERE,name).read_bytes())==h,'Adapter packet mismatch: '+name)
++
++def load_pins():
++    b=(HERE/'baseline/NATIVE_SOURCE_PINS.json').read_bytes()
++    require(digest(b)==PIN_SHA,'Historical pin manifest changed')
++    pins=json.loads(b)['files'];require(len(pins)==58,'Historical inventory changed')
++    return b,pins
++
++def authorize_checkout(repo,env,git):
++    require(env.get('GITHUB_REPOSITORY')=='mischa23v/blind','Wrong actual workflow repository')
++    require(env.get('GITHUB_REF') in ('refs/heads/master','refs/heads/codex/recovery-hazard-order-20261027'),'Wrong actual workflow ref')
++    head=git(['rev-parse','HEAD'])
++    require(len(head)==40 and head==env.get('GITHUB_SHA'),'Wrong actual workflow checkout commit')
++    git(['diff','--exit-code'])
++    return head
++
++def verify_view(view,pins):
++    expected=set(pins)|{LANE+'/NATIVE_SOURCE_PINS.json'}
++    actual={p.relative_to(view).as_posix() for p in view.rglob('*') if p.is_file() or p.is_symlink()}
++    require(actual==expected,'Unexpected or missing staged input')
++    for name,h in pins.items():
++        require(digest(safe_file(view,name).read_bytes())==h,'Staged input mismatch: '+name)
++    require(digest(safe_file(view,LANE+'/NATIVE_SOURCE_PINS.json').read_bytes())==PIN_SHA,'Staged pin manifest mismatch')
++
++def stage_view(repo,view,pins,pin_bytes):
++    overrides=json.loads((HERE/'OVERRIDES.json').read_text())
++    require(len(overrides)==3 and set(overrides)<=set(pins),'Override inventory changed')
++    view.mkdir(exist_ok=False)
++    for name,h in pins.items():
++        current=safe_file(repo,name).read_bytes()
++        if name in overrides:
++            o=overrides[name]
++            require(digest(current)==o['currentSHA256'],'Current override source drift: '+name)
++            require(o['historicalSHA256']==h,'Override expected identity differs')
++            b=safe_file(HERE,o['file']).read_bytes()
++        else: b=current
++        require(digest(b)==h,'Unchanged historical input drift: '+name)
++        dest=view/name;dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(b)
++    dest=view/LANE/'NATIVE_SOURCE_PINS.json';dest.write_bytes(pin_bytes)
++    verify_view(view,pins)
++    return overrides
++
++def transform_runner(original):
++    require(digest(original)==RUNNER_SHA,'Original runner identity changed')
++    replacements=[
++      ('START=time.monotonic();DEADLINE=START+300','START=_view_started;DEADLINE=START+300'),
++      ('cwd=ROOT,stdout=out,stderr=err','cwd=_workflow_checkout,stdout=out,stderr=err'),
++      ('def command(args,label,limit=90):\n','def command(args,label,limit=90):\n    _verify_historical_view()\n'),
++      ("receipt['sourcePins']=pins;save()","receipt['sourcePins']=pins;receipt['historicalSourceView']=_view_provenance;save()"),
++      ("    save()\n    print(json.dumps({'status':receipt['status']", "    _verify_historical_view()\n    save()\n    print(json.dumps({'status':receipt['status']")]
++    text=original.decode()
++    for old,new in replacements:
++        require(text.count(old)==1,'Historical runner adaptation site changed');text=text.replace(old,new,1)
++    reversed_text=text
++    for old,new in reversed(replacements):
++        require(reversed_text.count(new)==1,'Runner reversal site changed');reversed_text=reversed_text.replace(new,old,1)
++    require(reversed_text.encode()==original,'Runner reverse differs');ast.parse(text)
++    return text,replacements
++
++def main():
++    started=time.monotonic();repo=HERE.parents[1]
++    require(sys.flags.optimize==0,'Original assertions must remain enabled')
++    require(sys.platform=='darwin','Apple host required; source controls are separate')
++    verify_packet();pin_bytes,pins=load_pins()
++    def git(args):
++        remaining=300-(time.monotonic()-started);require(remaining>0,'Original deadline exhausted')
++        return subprocess.check_output(['git',*args],cwd=repo,timeout=min(15,remaining),text=True).strip()
++    head=authorize_checkout(repo,os.environ,git)
++    # No git tree/HEAD is created in this directory. It is a source view, not a checkout.
++    view=pathlib.Path(os.environ['RUNNER_TEMP'])/'blind-edt-historical-source-view'
++    overrides=stage_view(repo,view,pins,pin_bytes)
++    original=(view/LANE/'run_native.py').read_bytes();text,_=transform_runner(original)
++    identity=digest(json.dumps(pins,sort_keys=True,separators=(',',':')).encode())
++    provenance={'schema':1,'actualWorkflowCommit':head,'historicalProtocolCommit':HISTORICAL_COMMIT,
++        'historicalPinManifestSHA256':PIN_SHA,'historicalInputViewSHA256':identity,
++        'historicalRunnerSHA256':RUNNER_SHA,'generatedRunnerSHA256':digest(text.encode()),
++        'historicalInputCount':58,'checkoutMatchedInputCount':55,'historicalOverrideCount':3,
++        'allHistoricalInputsVerified':True,'verifyAllInputsBeforeEveryCommand':True,
++        'runnerReverseByteIdentical':True,'actualCheckoutAuthorizationPreserved':True,
++        'originalControlsRequired':50,'candidateRequestsUnchanged':25,'nativeHookChecksRequired':51,
++        'compileFlagAdded':False,'appActivation':False,'physicalAuthority':False,
++        'currentNativeSourceCompared':False}
++    # Closed public source identity receipt, no rows, geometry, errors or private paths.
++    print('EDT_HISTORICAL_SOURCE_VIEW '+json.dumps(provenance,sort_keys=True),flush=True)
++    def verify(): verify_view(view,pins)
++    ns={'__name__':'__main__','__file__':str(view/LANE/'run_native.py'),
++        '_workflow_checkout':repo,'_view_started':started,'_view_provenance':provenance,
++        '_verify_historical_view':verify}
++    # Exact original repository/ref/HEAD/clean checks execute against actual checkout.
++    # Exact original 58 pin checks, 50 controls, 25 candidates and limits remain intact.
++    exec(compile(text,str(view/LANE/'run_native.py'),'exec'),ns)
++if __name__=='__main__': main()
+--- /dev/null
++++ b/research/native-edt-historical-view-20261030/test_snapshot.py
+@@ -0,0 +1,50 @@
++#!/usr/bin/env python3
++"""Portable source-only controls. No native/compiler/CI subprocesses."""
++import importlib.util,json,pathlib,tempfile,unittest
++SPEC=importlib.util.spec_from_file_location('snapshot',pathlib.Path(__file__).with_name('run_snapshot.py'))
++m=importlib.util.module_from_spec(SPEC);SPEC.loader.exec_module(m)
++class Tests(unittest.TestCase):
++ def setUp(self):
++  self.tmp=tempfile.TemporaryDirectory();self.root=pathlib.Path(self.tmp.name)
++  self.env={'GITHUB_REPOSITORY':'mischa23v/blind','GITHUB_REF':'refs/heads/master','GITHUB_SHA':'a'*40}
++ def tearDown(self): self.tmp.cleanup()
++ def git(self,args): return 'a'*40 if args==['rev-parse','HEAD'] else ''
++ def test_actual_checkout(self): self.assertEqual(m.authorize_checkout(self.root,self.env,self.git),'a'*40)
++ def test_wrong_head(self):
++  with self.assertRaises(ValueError): m.authorize_checkout(self.root,{**self.env,'GITHUB_SHA':'b'*40},self.git)
++ def test_wrong_repository(self):
++  with self.assertRaises(ValueError): m.authorize_checkout(self.root,{**self.env,'GITHUB_REPOSITORY':'other/blind'},self.git)
++ def test_wrong_ref(self):
++  with self.assertRaises(ValueError): m.authorize_checkout(self.root,{**self.env,'GITHUB_REF':'refs/pull/1/merge'},self.git)
++ def view(self):
++  pins={'source.txt':m.digest(b'exact')};(self.root/'source.txt').write_bytes(b'exact')
++  dest=self.root/m.LANE/'NATIVE_SOURCE_PINS.json';dest.parent.mkdir(parents=True);dest.write_bytes((m.HERE/'baseline/NATIVE_SOURCE_PINS.json').read_bytes());return pins
++ def test_exact_view(self): m.verify_view(self.root,self.view())
++ def test_altered_view(self):
++  pins=self.view();(self.root/'source.txt').write_bytes(b'changed')
++  with self.assertRaises(ValueError): m.verify_view(self.root,pins)
++ def test_missing_view(self):
++  pins=self.view();(self.root/'source.txt').unlink()
++  with self.assertRaises(ValueError): m.verify_view(self.root,pins)
++ def test_extra_header_rejected(self):
++  pins=self.view();(self.root/'optional_veto.h').write_text('new algorithm')
++  with self.assertRaises(ValueError): m.verify_view(self.root,pins)
++ def test_symlink_rejected(self):
++  pins=self.view();(self.root/'source.txt').unlink();(self.root/'source.txt').symlink_to('/dev/null')
++  with self.assertRaises(ValueError): m.verify_view(self.root,pins)
++ def test_path_escape(self):
++  with self.assertRaises(ValueError): m.safe_file(self.root,'../outside')
++ def test_manifest_and_overrides(self):
++  _,pins=m.load_pins();self.assertEqual(len(pins),58)
++  overrides=json.loads((m.HERE/'OVERRIDES.json').read_text());self.assertEqual(len(overrides),3)
++  for name,o in overrides.items(): self.assertEqual(m.digest((m.HERE/o['file']).read_bytes()),pins[name])
++ def test_exact_runner_transform(self):
++  original=(m.HERE/'baseline/run_native.py.txt').read_bytes();text,replacements=m.transform_runner(original)
++  for old,new in reversed(replacements): text=text.replace(new,old,1)
++  self.assertEqual(text.encode(),original)
++  adapted,_=m.transform_runner(original)
++  self.assertIn('cwd=_workflow_checkout',adapted);self.assertNotIn('cwd=ROOT',adapted)
++  for marker in ["assert head==receipt['sourceCommit']","assert data['candidateRequests']==(25 if data['candidateExecuted'] else 0)","assert data['candidateExecuted']==data['all50OriginalControlsReproduced']","resource.RLIMIT_CPU,(120,120)","128*1024**2","DEADLINE=START+300","assert path.is_file() and sha(path)==digest"]: self.assertIn(marker,adapted)
++ def test_changed_runner_rejected(self):
++  with self.assertRaises(ValueError): m.transform_runner(b'new runner')
++if __name__=='__main__': unittest.main()
+--- /dev/null
++++ b/research/native-edt-historical-view-20261030/verify_checkout_view.py
+@@ -0,0 +1,10 @@
++#!/usr/bin/env python3
++"""Reproduce source staging only from an existing checkout, never execute native code."""
++import argparse,json,pathlib,tempfile
++import run_snapshot as m
++p=argparse.ArgumentParser();p.add_argument('--repo',type=pathlib.Path,required=True);args=p.parse_args()
++m.verify_packet();b,pins=m.load_pins()
++with tempfile.TemporaryDirectory(prefix='edt-source-only-') as t:
++ view=pathlib.Path(t)/'view';m.stage_view(args.repo.resolve(),view,pins,b)
++ original=(view/m.LANE/'run_native.py').read_bytes();text,_=m.transform_runner(original)
++ print(json.dumps({'status':'historical-input-view-source-only-verified','all58HistoricalHashesMatch':True,'historicalInputCount':58,'historicalPinManifestSHA256':m.PIN_SHA,'generatedRunnerSHA256':m.digest(text.encode()),'nativeExecuted':False},sort_keys=True))
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -555,8 +555,8 @@
+     },
+     {
+       "path": ".github/workflows/native-edt-navigation-probe.yml",
+-      "bytes": 3799,
+-      "sha256": "d1eb09211bc8338a8358ae4714311b9faf573b74bab585bd8f05f2f330e0b0bb"
++      "bytes": 3864,
++      "sha256": "df81ce645f528e0fed551ba3a3e5af991cdaffa3a12c602e90f9121c735149e4"
+     },
+     {
+       "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
+@@ -630,13 +630,93 @@
+     },
+     {
+       "path": "tools/ci/native-apple.sh",
+-      "bytes": 12903,
+-      "sha256": "e9010c09f9e096f8e3ef6178b1219c3ff85ab28b7424454b68d403961353090e"
++      "bytes": 12940,
++      "sha256": "f040bd2f80f1c17be357606b14cdfe819155ee9e58116896b154d30fa1746c0a"
+     },
+     {
+       "path": "tools/generate-xcode-project.mjs",
+       "bytes": 51483,
+       "sha256": "edd50e8c8fb05415c2c47c6c872a621ede2fdd2be664c52f50e4ac8ade32a73d"
++    },
++    {
++      "path": "tools/ci/verify-default-project.py",
++      "bytes": 8313,
++      "sha256": "59932e18ab3d407481e86224abc3c13101c7e87515b5dd742e1bd3bf9f4c1500"
++    },
++    {
++      "path": "tools/ci/test_verify_default_project.py",
++      "bytes": 9037,
++      "sha256": "0b85d83293a141a14bd12af7971ce7a310e455842b0928dd5158331aadaba14c"
++    },
++    {
++      "path": "tools/ci/fixtures/default-project-valid.json",
++      "bytes": 3468,
++      "sha256": "7fb1d0574b5e94f28f5f96074d5dc38ce12257fbcd49ebe11d7ce2022e521358"
++    },
++    {
++      "path": "research/native-edt-historical-view-20261030/MANIFEST.json",
++      "bytes": 1249,
++      "sha256": "50564b8242917e14d4f97d2b8febba9ff2f25581c27ade89227aa782fb84038a"
++    },
++    {
++      "path": "research/native-edt-historical-view-20261030/OVERRIDES.json",
++      "bytes": 1391,
++      "sha256": "d6c14699e7d8a0a43264f06ea81fee0a4752fc5d1e3e5af8c46130da2ff55dca"
++    },
++    {
++      "path": "research/native-edt-historical-view-20261030/README.md",
++      "bytes": 5271,
++      "sha256": "eae09c8cbb9ebad31500105225140d47668aa58cfe8eec0680c80d9ba115cee5"
++    },
++    {
++      "path": "research/native-edt-historical-view-20261030/RUNNER_ADAPTER.diff",
++      "bytes": 2375,
++      "sha256": "c8fb1516aff505203220f92a0cfeef1a0cfe1e691b6fa2eace8a2c2d0c1b7598"
++    },
++    {
++      "path": "research/native-edt-historical-view-20261030/SOURCE_RECONSTRUCTION_RECEIPT.json",
++      "bytes": 800,
++      "sha256": "18ec5e81213ca0f510d999309fafba5074e7df282f2349b461a4ffad32163e50"
++    },
++    {
++      "path": "research/native-edt-historical-view-20261030/baseline/NATIVE_SOURCE_PINS.json",
++      "bytes": 10218,
++      "sha256": "3e1f7d07cf3b70cc04ecb6e55694bdc01cca95738f7781e554cfbb1f66aaea3b"
++    },
++    {
++      "path": "research/native-edt-historical-view-20261030/baseline/SavedRoomRouteCollisionOracle.swift.txt",
++      "bytes": 33036,
++      "sha256": "30941a88fda667560962fc1baca7f980ba534f613d093b79662b3951e0da5fd9"
++    },
++    {
++      "path": "research/native-edt-historical-view-20261030/baseline/blind_detour.h.txt",
++      "bytes": 2925,
++      "sha256": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b"
++    },
++    {
++      "path": "research/native-edt-historical-view-20261030/baseline/blind_detour_exclusion.cpp.txt",
++      "bytes": 17989,
++      "sha256": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036"
++    },
++    {
++      "path": "research/native-edt-historical-view-20261030/baseline/run_native.py.txt",
++      "bytes": 11994,
++      "sha256": "92eb8c0f99e005175fe0da96ff6c521d6430aaa3aec7246b5cf79bc7dcf5460f"
++    },
++    {
++      "path": "research/native-edt-historical-view-20261030/run_snapshot.py",
++      "bytes": 7059,
++      "sha256": "50b55900980406b63eb06431a556d55ad4c9edfcb6c73e0b01e59d5f4913ead5"
++    },
++    {
++      "path": "research/native-edt-historical-view-20261030/test_snapshot.py",
++      "bytes": 3572,
++      "sha256": "ebb48e503cd60a9aa29f389e71f07bca2393ca670f6dab2fcd439835e0cca1dc"
++    },
++    {
++      "path": "research/native-edt-historical-view-20261030/verify_checkout_view.py",
++      "bytes": 812,
++      "sha256": "f5d085376ecec6eefa38d108ea0d270e6d07d4085c5d0ea962aa93a5a0ba91c4"
+     }
+   ],
+   "changes": [
+@@ -843,5 +923,10 @@
+     "baseCommit": "c1fc5de6499f84f94f2c5d62adf3fcbf2666db00",
+     "status": "isolated_unexecuted_proposal",
+     "scope": "same original source, distinct Apple collision algorithm; no independent observation or physical clearance"
++  },
++  "apple_preflight_historical_edt_repair": {
++    "baseCommit": "7bb0532073b541fe86dd6dec579e0927ab072eab",
++    "status": "source_only_native_unexecuted",
++    "scope": "exact unit-target-only default-project exception and separately labelled historical EDT source view; preserve7bb failures"
+   }
+ }

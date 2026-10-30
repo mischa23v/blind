@@ -555,8 +555,8 @@
     },
     {
       "path": ".github/workflows/native-edt-navigation-probe.yml",
-      "bytes": 3799,
-      "sha256": "d1eb09211bc8338a8358ae4714311b9faf573b74bab585bd8f05f2f330e0b0bb"
+      "bytes": 3864,
+      "sha256": "df81ce645f528e0fed551ba3a3e5af991cdaffa3a12c602e90f9121c735149e4"
     },
     {
       "path": "ios/BlindAssist.xcodeproj/project.pbxproj",
@@ -630,13 +630,93 @@
     },
     {
       "path": "tools/ci/native-apple.sh",
-      "bytes": 12903,
-      "sha256": "e9010c09f9e096f8e3ef6178b1219c3ff85ab28b7424454b68d403961353090e"
+      "bytes": 12940,
+      "sha256": "f040bd2f80f1c17be357606b14cdfe819155ee9e58116896b154d30fa1746c0a"
     },
     {
       "path": "tools/generate-xcode-project.mjs",
       "bytes": 51483,
       "sha256": "edd50e8c8fb05415c2c47c6c872a621ede2fdd2be664c52f50e4ac8ade32a73d"
+    },
+    {
+      "path": "tools/ci/verify-default-project.py",
+      "bytes": 8313,
+      "sha256": "59932e18ab3d407481e86224abc3c13101c7e87515b5dd742e1bd3bf9f4c1500"
+    },
+    {
+      "path": "tools/ci/test_verify_default_project.py",
+      "bytes": 9037,
+      "sha256": "0b85d83293a141a14bd12af7971ce7a310e455842b0928dd5158331aadaba14c"
+    },
+    {
+      "path": "tools/ci/fixtures/default-project-valid.json",
+      "bytes": 3468,
+      "sha256": "7fb1d0574b5e94f28f5f96074d5dc38ce12257fbcd49ebe11d7ce2022e521358"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/MANIFEST.json",
+      "bytes": 1249,
+      "sha256": "50564b8242917e14d4f97d2b8febba9ff2f25581c27ade89227aa782fb84038a"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/OVERRIDES.json",
+      "bytes": 1391,
+      "sha256": "d6c14699e7d8a0a43264f06ea81fee0a4752fc5d1e3e5af8c46130da2ff55dca"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/README.md",
+      "bytes": 5271,
+      "sha256": "eae09c8cbb9ebad31500105225140d47668aa58cfe8eec0680c80d9ba115cee5"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/RUNNER_ADAPTER.diff",
+      "bytes": 2375,
+      "sha256": "c8fb1516aff505203220f92a0cfeef1a0cfe1e691b6fa2eace8a2c2d0c1b7598"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/SOURCE_RECONSTRUCTION_RECEIPT.json",
+      "bytes": 800,
+      "sha256": "18ec5e81213ca0f510d999309fafba5074e7df282f2349b461a4ffad32163e50"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/baseline/NATIVE_SOURCE_PINS.json",
+      "bytes": 10218,
+      "sha256": "3e1f7d07cf3b70cc04ecb6e55694bdc01cca95738f7781e554cfbb1f66aaea3b"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/baseline/SavedRoomRouteCollisionOracle.swift.txt",
+      "bytes": 33036,
+      "sha256": "30941a88fda667560962fc1baca7f980ba534f613d093b79662b3951e0da5fd9"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/baseline/blind_detour.h.txt",
+      "bytes": 2925,
+      "sha256": "c8dbb81be148cc407ab0c021dba289620ca1de8dd367c38c2afa16b0a0404a2b"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/baseline/blind_detour_exclusion.cpp.txt",
+      "bytes": 17989,
+      "sha256": "15172dcf17cbb12a617416d2e35e351d2618493d4fbd6bf57f8d4654944d5036"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/baseline/run_native.py.txt",
+      "bytes": 11994,
+      "sha256": "92eb8c0f99e005175fe0da96ff6c521d6430aaa3aec7246b5cf79bc7dcf5460f"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/run_snapshot.py",
+      "bytes": 7059,
+      "sha256": "50b55900980406b63eb06431a556d55ad4c9edfcb6c73e0b01e59d5f4913ead5"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/test_snapshot.py",
+      "bytes": 3572,
+      "sha256": "ebb48e503cd60a9aa29f389e71f07bca2393ca670f6dab2fcd439835e0cca1dc"
+    },
+    {
+      "path": "research/native-edt-historical-view-20261030/verify_checkout_view.py",
+      "bytes": 812,
+      "sha256": "f5d085376ecec6eefa38d108ea0d270e6d07d4085c5d0ea962aa93a5a0ba91c4"
     }
   ],
   "changes": [
@@ -843,5 +923,10 @@
     "baseCommit": "c1fc5de6499f84f94f2c5d62adf3fcbf2666db00",
     "status": "isolated_unexecuted_proposal",
     "scope": "same original source, distinct Apple collision algorithm; no independent observation or physical clearance"
+  },
+  "apple_preflight_historical_edt_repair": {
+    "baseCommit": "7bb0532073b541fe86dd6dec579e0927ab072eab",
+    "status": "source_only_native_unexecuted",
+    "scope": "exact unit-target-only default-project exception and separately labelled historical EDT source view; preserve7bb failures"
   }
 }

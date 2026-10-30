@@ -1,0 +1,45 @@
+--- historical/run_native.py
++++ in-memory/orchestrated_run_native.py
+@@ -20,7 +20,7 @@
+ REPAIR=HERE.parent
+ OUT=pathlib.Path(os.environ['RUNNER_TEMP'])/'blind-edt-navigation-probe'
+ OUT.mkdir(parents=True,exist_ok=False) # Never overwrite retained earlier attempt evidence.
+-START=time.monotonic();DEADLINE=START+300
++START=_view_started;DEADLINE=START+300
+ receipt={'schema':1,'sourceCommit':os.environ.get('GITHUB_SHA'),'physicalAuthority':False,
+          'appActivation':False,'status':'started','commands':[],'sourcePins':{},
+          'scope':'macOS fixed public geometry diagnostic; no production/iOS adoption'}
+@@ -37,6 +37,7 @@
+     resource.setrlimit(resource.RLIMIT_FSIZE,(128*1024**2,128*1024**2))
+ 
+ def command(args,label,limit=90):
++    _verify_historical_view()
+     remaining=DEADLINE-time.monotonic()
+     if remaining<=0:
+         raise TimeoutError('global diagnostic deadline exhausted before '+label)
+@@ -47,7 +48,7 @@
+     with stdout.open('xb') as out,stderr.open('xb') as err:
+         process=None
+         try:
+-            process=subprocess.Popen([str(x) for x in args],cwd=ROOT,stdout=out,stderr=err,
++            process=subprocess.Popen([str(x) for x in args],cwd=_workflow_checkout,stdout=out,stderr=err,
+                 start_new_session=True,preexec_fn=limits,
+                 env={**os.environ,'OMP_NUM_THREADS':'1','OPENBLAS_NUM_THREADS':'1','MKL_NUM_THREADS':'1'})
+             row.update(exitCode=process.wait(timeout=timeout),wallSeconds=time.monotonic()-before)
+@@ -91,7 +92,7 @@
+         assert not relative.is_absolute() and '..' not in relative.parts
+         path=ROOT/name
+         assert path.is_file() and sha(path)==digest,('source pin mismatch',name)
+-    receipt['sourcePins']=pins;save()
++    receipt['sourcePins']=pins;receipt['historicalSourceView']=_view_provenance;save()
+     def require_pin(path):
+         name=str(path.relative_to(ROOT))
+         assert name in pins and sha(path)==pins[name],('unreviewed runtime input',name)
+@@ -195,6 +196,7 @@
+     for path in OUT.iterdir():
+         if path.suffix in ['.o','.a'] or path in (binary,hook_binary):
+             path.unlink()
++    _verify_historical_view()
+     save()
+     print(json.dumps({'status':receipt['status'],'resultSHA256':receipt['resultSHA256'],
+                       'candidateGoalsMet':receipt['candidateGoalsMet'],'physicalAuthority':False}))
