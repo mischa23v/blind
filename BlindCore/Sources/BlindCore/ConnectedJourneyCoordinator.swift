@@ -131,6 +131,18 @@ public struct ConnectedJourneyCoordinator: Sendable {
         owner?.withholdLocalizationEvidence(); support = nil; armedPortal = nil
         rotateOutput(); return true
     }
+    /// Fresh source endpoint association can request a new localization owner.
+    /// This is destination intent, never an observed crossing or target-floor pose.
+    public func pendingPortalDestination(now:Double) -> JourneyEndpoint? {
+        guard let armedPortal,case .portal(let id,let from,let to)? = currentLeg,
+              id==armedPortal.id,from==armedPortal.from,to==armedPortal.to,
+              snapshot.goal?.revision==armedPortal.goal,snapshot.goal?.status == .active,
+              now.isFinite,now>=armedPortal.armedAt,now-armedPortal.armedAt<=120 else{return nil}
+        return to
+    }
+    /// Reuses the existing planner after a NEW supported unique mapped endpoint.
+    /// Never snap the current pose onto a route or silently bridge a blocked leg.
+    public mutating func requireRouteReassociation() {retirePlan()}
     public var expectedSessionID: UUID? { owner?.sessionID }
     public func currentPose(now: Double) -> SpatialLocalizationCapture? { owner?.currentPose(now: now) }
     public mutating func accept(_ capture: SpatialLocalizationCapture, support: SpatialFloorSupport, now: Double) throws {

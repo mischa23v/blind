@@ -15,7 +15,9 @@ import sys
 INPUT_LIMIT = 2 * 1024 * 1024
 NODE_LIMIT = 40000
 DEPTH_LIMIT = 64
-FORBIDDEN = re.compile(r'BLIND_[A-Z_]+|opencv2|\.mlmodelc|\.mlpackage')
+# Reject raw and compiled optional weights, including case variants on Apple filesystems.
+# Keep BLIND flags case-sensitive so the only exception remains the exact oracle token.
+FORBIDDEN = re.compile(r'BLIND_[A-Z_]+|(?i:opencv2|\.mlmodelc?|\.mlpackage|\.onnx)')
 FLAG = 'BLIND_COLLISION_ORACLE_TESTS'
 FLAG_VALUE = '$(inherited) -D ' + FLAG
 TARGET_TYPES = {

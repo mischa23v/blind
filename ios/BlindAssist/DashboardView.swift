@@ -148,6 +148,9 @@ private struct CompanionControlsView: View {
                 if !model.textOnly {
                     VStack(alignment: .leading, spacing: 12) {
                         if model.assistantSession.state == .active {
+                            if model.voice.requiresExplicitRestart {
+                                HomeAction(title: t("Reconnect microphone", "إعادة توصيل الميكروفون"), symbol: "mic", identifier: "reconnect-conversation", prominent: true, action: model.reconnectListening)
+                            }
                             HomeAction(title: t("Mute microphone", "كتم الميكروفون"), symbol: "mic.slash", identifier: "mute-conversation", action: model.muteConversation)
                         } else {
                             HomeAction(title: model.assistantSession.state == .muted ? t("Unmute microphone", "تشغيل الميكروفون") : t("Start voice conversation", "بدء المحادثة الصوتية"), symbol: "mic", identifier: "start-conversation", prominent: true, action: model.startConversation)
@@ -165,6 +168,12 @@ private struct CompanionControlsView: View {
                             .font(.footnote).accessibilityIdentifier("camera-status")
                     }
                 }
+                Button(model.ambientDescriptions ? t("Quiet descriptions, keep alerts", "أوقف الأوصاف وأبقِ التنبيهات") : t("Resume descriptions", "استأنف الأوصاف")) {
+                    if model.ambientDescriptions { model.stopDescriptions() } else { model.resumeDescriptions() }
+                }
+                .buttonStyle(.bordered)
+                .accessibilityIdentifier("conversation-descriptions")
+                .accessibilityValue(model.ambientDescriptions ? t("Descriptions on", "الأوصاف مفعّلة") : t("Descriptions quiet", "الأوصاف متوقفة"))
                 // Alternative access remains available when speech cannot be used.
                 Button(t("Write a message", "اكتب رسالة")) { pendingTypedSubmission = nil; writing = true }
                     .buttonStyle(.bordered).accessibilityIdentifier("write-message")
@@ -185,6 +194,10 @@ private struct CompanionControlsView: View {
                         .font(.footnote).fixedSize(horizontal: false, vertical: true)
                 }
                 .onChange(of: model.selectedDocumentPageCount) { _, _ in pdfPage = 1 }
+                NavigationLink(t("Local recipe reference", "مرجع وصفة محلي")) { LocalRecipeView(arabic: model.arabic) }
+                    .accessibilityIdentifier("open-local-recipe")
+                NavigationLink(t("Email draft", "مسودة بريد")) { LocalEmailDraftView(arabic: model.arabic) }
+                    .accessibilityIdentifier("open-local-email-draft")
                 HomeToolButtons(model: model)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -500,19 +513,25 @@ struct AssistantToolsView: View {
 
     /// Ask about the camera view, hear the answer, and set an ongoing goal.
     private var assistant: some View {
-        Form {
+        // Small, finite screen: use the Camera screen's eager layout so every
+        // row participates in reflow. Native Dynamic Type audit is still required;
+        // this does not establish the cause of the earlier Form audit failure.
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
             if let offer = model.companionOffer {
                 // The same answer can be spoken: say yes or no.
                 Section {
                     Text(offer.prompt)
                     Button(t("Yes", "نعم")) { model.answerCompanionOffer(.yes) }.accessibilityIdentifier("offer-yes")
                     Button(t("No", "لا")) { model.answerCompanionOffer(.no) }.accessibilityIdentifier("offer-no")
-                } header: { Text(t("The assistant asked", "سؤال من المساعد")) }
+                } header: { Text(t("The assistant asked", "سؤال من المساعد")).font(.headline).accessibilityAddTraits(.isHeader) }
             }
             Section {
                 TextField(t("Your question", "سؤالك"), text: $model.assistantQuestion,
                     prompt: Text(t("Your question", "سؤالك")).foregroundColor(.primary), axis: .vertical)
                     .accessibilityLabel(t("Question or target", "السؤال أو الهدف"))
+                    .textFieldStyle(.roundedBorder)
+                    .accessibilityIdentifier("ask-question")
                 Picker(t("Look at", "انظر إلى"), selection: $focus) {
                     Text(t("Everything in view", "كل ما في الصورة")).tag("surroundings")
                         .lineLimit(nil)
@@ -536,6 +555,7 @@ struct AssistantToolsView: View {
                 // Give each option a full row instead of squeezing the selected
                 // value beside "Look at". Keep native selection and text scaling.
                 .pickerStyle(.inline)
+                .accessibilityIdentifier("ask-focus")
                 Button(t("Ask about the camera view", "اسأل عن صورة الكاميرا")) {
                     model.readScene(cloud: false, question: sceneQuestion, focus: focus)
                 }
@@ -548,7 +568,9 @@ struct AssistantToolsView: View {
                     Text(localAnswerDisabledReason)
                         .font(.body)
                         .foregroundStyle(.primary)
+                        .lineLimit(nil)
                         .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(.leading)
                         .accessibilityIdentifier("local-answer-unavailable-reason")
                         #if DEBUG
                         .askLayoutTrace("reason")
@@ -566,7 +588,7 @@ struct AssistantToolsView: View {
                     .disabled(model.busy || model.simulation || !model.running || model.offlineOnly)
                     .accessibilityIdentifier("cloud-answer")
                 #endif
-            } header: { Text(t("Ask", "اسأل")) }
+            } header: { Text(t("Ask", "اسأل")).font(.headline).accessibilityAddTraits(.isHeader) }
             Section {
                 if model.busy { ProgressView(t("Looking…", "أنظر…")) }
                 if !model.message.isEmpty { Text(model.message) }
@@ -578,7 +600,7 @@ struct AssistantToolsView: View {
                     .disabled(model.sceneAnswer.isEmpty)
                 Button(t("Stop descriptions, keep alerts", "أوقف الوصف وأبقِ التنبيهات")) { model.stopDescriptions() }
                     .accessibilityIdentifier("stop-descriptions")
-            } header: { Text(t("Answer", "الإجابة")) }
+            } header: { Text(t("Answer", "الإجابة")).font(.headline).accessibilityAddTraits(.isHeader) }
             Section {
                 Button(t("Read text as it appears", "اقرأ النص عند ظهوره")) { model.startReadingTool(.liveText) }
                 Button(t("Read a whole page", "اقرأ صفحة كاملة")) { model.startReadingTool(.document) }
@@ -589,12 +611,14 @@ struct AssistantToolsView: View {
                 if model.readingTool != nil {
                     Button(t("Stop reading tool", "أوقف أداة القراءة")) { model.stopReadingTool(announce: true) }
                 }
-            } header: { Text(t("Reading tools", "أدوات القراءة")) }
+            } header: { Text(t("Reading tools", "أدوات القراءة")).font(.headline).accessibilityAddTraits(.isHeader) }
             Section {
                 if !model.assistantDialogue.goal.isEmpty { Text(t("Current goal: ", "الهدف الحالي: ") + model.assistantDialogue.goal) }
                 TextField(t("New goal, for example: the bathroom", "هدف جديد، مثلاً: الحمام"), text: $model.objectiveDraft,
                     prompt: Text(t("New goal, for example: the bathroom", "هدف جديد، مثلاً: الحمام")).foregroundColor(.primary), axis: .vertical)
                     .accessibilityLabel(t("New goal", "هدف جديد"))
+                    .textFieldStyle(.roundedBorder)
+                    .accessibilityIdentifier("ask-goal")
                 Button(t("Set goal", "حدد الهدف")) { model.setAssistantObjective() }
                 Button(t("Find my question on the saved map", "ابحث عن سؤالي في الخريطة المحفوظة")) { model.findMapDestination() }
                     .disabled(model.busy || model.indoor.map == nil || model.assistantQuestion.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -602,10 +626,14 @@ struct AssistantToolsView: View {
                 ConversationMemoryPersistenceView(model: model)
                 ConnectedJourneyPersistenceView(store: model.journeys, arabic: model.arabic)
                 Button(t("Clear goal and conversation", "امسح الهدف والمحادثة"), role: .destructive) { confirmClearConversation = true }
-            } header: { Text(t("Goal", "الهدف")) } footer: {
+            } header: { Text(t("Goal", "الهدف")).font(.headline).accessibilityAddTraits(.isHeader) } footer: {
                 Text(t("Answers cover what the camera sees now. For directions, use Routes.", "الإجابات عما تراه الكاميرا الآن. للاتجاهات استخدم المسارات."))
             }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(20)
         }
+        .buttonStyle(CameraControlButtonStyle())
         #if DEBUG
         .askLayoutTrace("ask-form")
         #endif

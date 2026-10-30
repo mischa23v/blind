@@ -282,6 +282,9 @@ export function agreedObjects(frames, minimum = 2) {
 // generic sighting is not the person's own item (identity needs image comparison with saved views).
 const VISUAL_ABSENCE = /\b(?:there(?:'s|’s|\s+is|\s+are)\s+no|there\s+(?:isn't|aren't|is not|are not)|(?:is|are)\s*(?:not|n't)\s+(?:here|there|visible|in (?:the |this )?(?:view|picture|photo|image|room))|(?:isn't|aren't)\s+(?:here|there|visible|any)|no\s+[a-z]+\s+(?:here|in view|visible|in (?:the |this )?(?:picture|photo|image))|no\s+[a-z]+\s+(?:is|are)\s+visible|see\s+no|i\s+(?:don't|do not|can't|cannot|couldn't|could not)\s+see\s+(?:a|an|any|the|your)|nothing\s+(?:here|in view|visible)|not\s+found|is missing|are missing)\b/i;
 const AR_VISUAL_ABSENCE = /(لا يوجد|لا توجد|ليس هناك|ليست هناك|لا اري|غير موجود|مفقود|ما في|مافي|مو موجود|ما اشوف)/;
+// Mirrors VisualGrounding: missed observations do not prove emptiness/departure.
+const EMPTY_VIEW = /\b(?:empty|unoccupied|vacant|nobody|no[\s-]?one)\b|\b(?:is|are|seems?|appears?)\s+(?:to be\s+)?(?:absent|gone|missing)\b|\b(?:everyone|everybody|all\s+people)\s+(?:has|have)\s+(?:left|gone)\b/i;
+const AR_EMPTY_VIEW = /(فارغ|فاضي|خاليه|خالي من|لا احد|ما احد)/;
 
 function identityClaim(sentence) {
   const list = words(sentence);
@@ -291,7 +294,9 @@ function identityClaim(sentence) {
 }
 
 export function isAbsenceClaim(sentence) {
-  return VISUAL_ABSENCE.test(sentence.replace(/[’‘]/g, "'")) || AR_VISUAL_ABSENCE.test(arabicFolded(sentence));
+  const plain = sentence.replace(/[’‘]/g, "'");
+  return VISUAL_ABSENCE.test(plain) || EMPTY_VIEW.test(plain) ||
+    AR_VISUAL_ABSENCE.test(arabicFolded(sentence)) || AR_EMPTY_VIEW.test(arabicFolded(sentence));
 }
 
 function hedged(sentence) {

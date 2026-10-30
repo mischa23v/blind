@@ -13,6 +13,10 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+
+# Source-reviewed opt-in only; normal runs use built-in logs and summaries.
+env:
+  BLIND_UPLOAD_ARTIFACTS: 'false'
 concurrency:
   group: accessibility-diagnostic-${{ github.ref }}
   cancel-in-progress: false
@@ -31,13 +35,14 @@ jobs:
           lfs: false
           submodules: false
       - name: Verify source and installed simulator
+        id: preflight
         run: bash tools/ci/native-apple.sh preflight
       - name: Record practice layout on a separate disposable simulator
         id: layout
         continue-on-error: true
         run: bash tools/ci/practice-layout-diagnostic.sh
       - name: Preserve bounded synthetic layout screenshots
-        if: always()
+        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: practice-layout-screenshots
@@ -45,16 +50,19 @@ jobs:
           if-no-files-found: error
           retention-days: 3
       - name: Run the unsuppressed camera and ask accessibility audit
+        id: full-audit
         if: always()
         run: bash tools/ci/native-apple.sh ui-diagnostic
       - name: Validate full-audit evidence selector
+        id: evidence-selector
         if: always()
         run: python3 tools/test/full-audit-evidence.test.py
       - name: Extract bounded full-audit phase evidence
+        id: full-audit-evidence
         if: always()
         run: python3 tools/ci/export-full-audit-evidence.py "$RUNNER_TEMP/blind-native-ci/ui-diagnostic.xcresult" "$RUNNER_TEMP/blind-full-audit-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
       - name: Preserve synthetic camera and ask audit evidence
-        if: always()
+        if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: full-audit-phase-evidence
@@ -67,3 +75,10 @@ jobs:
         if: always() && steps.layout.outcome != 'success'
         run: exit 1
 
+      - name: Emit bounded log-only CI status
+        if: always()
+        timeout-minutes: 1
+        env:
+          CI_STEP_OUTCOMES: ${{ toJSON(steps) }}
+          CI_JOB_STATUS: ${{ job.status }}
+        run: python3 -B tools/ci/emit-ci-log-receipts.py accessibility-diagnostic

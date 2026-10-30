@@ -149,7 +149,7 @@ def fixture_source():
 
 def collect(out):
     result = {'schema': 1, 'status': 'unavailable', 'sourceVerified': False,
-              'scope': '18 fixed synthetic hosted cases; diagnostic metadata only',
+              'scope': '21 fixed synthetic hosted cases; diagnostic metadata only',
               'acceptance': 'not_inferred_strict_collector_unchanged', 'physicalAuthority': False,
               'assertionOriginsCombined': False, 'commandExit': None, 'errors': []}
     expected = os.environ.get('GITHUB_SHA')

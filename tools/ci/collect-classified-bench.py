@@ -17,7 +17,7 @@ RECOVERY_CASES = ['test01LatestOwnedReplacementRecoversOnlyLogicalDelivery', 'te
 HELPER_CASES = ['testStableOmittedAnchorReacquiredFromLaterFrameOnlyOnce', 'testAbsentAnchorRemainsPendingUntilTimeoutNeverRemoved', 'testAdmissionBackpressureRetriesAtMostThreeAndFairlyRotates', 'testMaximumRequestIssuesExactly192AttemptsThenStops', 'testWholeRequestOverflowDuplicatesAndPresentFrameOverflowRefused', 'testRepeatedRequestCancellationAndWrongAdmissionDoNotOverlap', 'testSchedulerClockFailuresAreTerminalWithinRequest', 'testStartupGraceIsNotCurrentButCanBecomeHealthy', 'testStartupExpiryAndFrameExpiryCannotRevive', 'testTrackingLossAndStopAreTerminalAndDoNotChangeReason', 'testLeaseRejectsDuplicateFutureNonfiniteAndBackwardsCapture', 'testIndependentWatchdogRetiresWhileProducerDoesNoWork', 'testActivationBoundaryAcceptsNewRunFrameBeforeDelayedProducerBegins', 'testLeaseBackwardsAndNonfiniteClockAreTerminal']
 
 CAMERA_CASES = ['testOrdinaryFrameDoesNotRebindFrozenRequestButExplicitRecaptureDoes', 'testSessionChangeExpiryAndInvalidAdmissionRetireSnapshot']
-EXPECTED_SOURCE_CASES = ['testChangedGeometryBeforeQueryIsRefusedWithoutNativeReplan']
+EXPECTED_SOURCE_CASES = ['testChangedGeometryBeforeQueryIsRefusedWithoutNativeReplan', 'testSavedWorldRecoveryRequiresRelocalizingThenDistinctNormalFrames', 'testSavedWorldRecoveryBindsExactCaptureAndSession', 'testSavedWorldRecoveryMaintainsEpochWithoutRebindingOldCapture', 'testSavedWorldRecoveryRetirementAndRestartDoNotRestoreAssociation', 'testSavedWorldRecoveryRejectsOriginLossMappingLossAndStaleFrames', 'testSavedWorldRecoveryWrongDescriptorAndNonfiniteClockStayUnknown']
 
 
 def test_declarations(source):
@@ -44,7 +44,7 @@ def collect(source, log, command, before, after, snapshot_source, recovery_sourc
     recovery_expected=test_declarations(recovery_source)
     require(recovery_expected==RECOVERY_CASES and len(set(recovery_expected))==14, 'expected exact reviewed14 recovery XCTest source')
     helper_expected=test_declarations(helper_source)
-    require(helper_expected==HELPER_CASES+CAMERA_CASES+EXPECTED_SOURCE_CASES and len(set(helper_expected))==17, 'expected exact reviewed14 helper plus3 camera/source XCTest declarations')
+    require(helper_expected==HELPER_CASES+CAMERA_CASES+EXPECTED_SOURCE_CASES and len(set(helper_expected))==23, 'expected exact reviewed14 helper plus2 camera plus7 expected-source XCTest declarations')
     require(helper_classes(helper_source)=={'MeshBenchHelperTests':HELPER_CASES, 'MeshBenchCameraSnapshotTests':CAMERA_CASES, 'MeshBenchExpectedSourceTests':EXPECTED_SOURCE_CASES}, 'expected exact reviewed helper class membership')
     classes={'LiveMeshClassifiedBenchTests.LiveMeshBenchIngressTests':EXPECTED_CASES, 'LiveMeshClassifiedBenchTests.SourceGeometrySnapshotTests':SNAPSHOT_CASES, 'LiveMeshClassifiedBenchTests.AnchorDeliveryRecoveryTests':RECOVERY_CASES, 'LiveMeshClassifiedBenchTests.MeshBenchHelperTests':HELPER_CASES, 'LiveMeshClassifiedBenchTests.MeshBenchCameraSnapshotTests':CAMERA_CASES, 'LiveMeshClassifiedBenchTests.MeshBenchExpectedSourceTests':EXPECTED_SOURCE_CASES}
     case_lines=[line for line in log.splitlines() if line.startswith('Test Case ')]
@@ -65,9 +65,9 @@ def collect(source, log, command, before, after, snapshot_source, recovery_sourc
         name,status=match.groups();suites.setdefault(name,[]).append(status)
     require(suites=={name:['started','passed'] for name in ['All tests','LiveMeshClassifiedBenchPackageTests.xctest','LiveMeshBenchIngressTests','SourceGeometrySnapshotTests','AnchorDeliveryRecoveryTests','MeshBenchHelperTests','MeshBenchCameraSnapshotTests','MeshBenchExpectedSourceTests']}, 'missing, extra, contradictory or failed XCTest suite')
     totals=re.findall(r'Executed (\d+) tests?, with (\d+) failures? \((\d+) unexpected\)',log)
-    require(Counter(totals)==Counter({('18','0','0'):1,('16','0','0'):1,('14','0','0'):2,('2','0','0'):1,('1','0','0'):1,('65','0','0'):2}), 'missing or contradictory XCTest totals')
+    require(Counter(totals)==Counter({('18','0','0'):1,('16','0','0'):1,('14','0','0'):2,('2','0','0'):1,('7','0','0'):1,('71','0','0'):2}), 'missing or contradictory XCTest totals')
     # Bind each total to its immediately preceding passed suite; swapped counts fail.
-    expected_totals={'All tests':65,'LiveMeshClassifiedBenchPackageTests.xctest':65,'LiveMeshBenchIngressTests':18,'SourceGeometrySnapshotTests':16,'AnchorDeliveryRecoveryTests':14,'MeshBenchHelperTests':14,'MeshBenchCameraSnapshotTests':2,'MeshBenchExpectedSourceTests':1}
+    expected_totals={'All tests':71,'LiveMeshClassifiedBenchPackageTests.xctest':71,'LiveMeshBenchIngressTests':18,'SourceGeometrySnapshotTests':16,'AnchorDeliveryRecoveryTests':14,'MeshBenchHelperTests':14,'MeshBenchCameraSnapshotTests':2,'MeshBenchExpectedSourceTests':7}
     suite_totals={}; last_passed=None
     for line in log.splitlines():
         matched=re.fullmatch(r"Test Suite '([^']+)' passed at .+\.",line)
@@ -80,7 +80,7 @@ def collect(source, log, command, before, after, snapshot_source, recovery_sourc
     require(suite_totals==expected_totals, 'missing suite-bound totals')
     require(command.get('swift_test_exit_code')==0 and command.get('log_writer_exit_code')==0, 'command failed')
     require(before==after=='', 'source not clean before and after test')
-    return {'status':'passed','scope':'65 macOS synthetic XCTest fixtures (original62 plus3), not live sensing','executed':65,'passed':65,'failed':0,'ios_session_fixtures_excluded':5,'cases':[{'class':cls,'name':n,'status':'passed'} for cls,names in classes.items() for n in names],'swift_testing_zero_suite_not_counted':True,'source_clean_before_and_after':True}
+    return {'status':'passed','scope':'71 macOS synthetic XCTest fixtures (original65 plus6 same-owner recovery), not live sensing','executed':71,'passed':71,'failed':0,'ios_session_fixtures_excluded':5,'cases':[{'class':cls,'name':n,'status':'passed'} for cls,names in classes.items() for n in names],'swift_testing_zero_suite_not_counted':True,'source_clean_before_and_after':True}
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('source',type=Path);parser.add_argument('artifact_dir',type=Path);args=parser.parse_args();d=args.artifact_dir

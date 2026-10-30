@@ -62,6 +62,42 @@ final class LaunchTests: XCTestCase {
             reveal(app.buttons[id])
         }
     }
+
+    func testQuietDescriptionsCanResumeWithoutStartingMicrophoneOrCamera() {
+        openSettingsPage("conversation-controls")
+        let descriptions = app.buttons["conversation-descriptions"]
+        reveal(descriptions)
+        XCTAssertEqual(descriptions.label, "Resume descriptions")
+        XCTAssertEqual(descriptions.value as? String, "Descriptions quiet")
+        descriptions.tap()
+        XCTAssertEqual(descriptions.label, "Quiet descriptions, keep alerts")
+        XCTAssertEqual(descriptions.value as? String, "Descriptions on")
+        descriptions.tap()
+        XCTAssertEqual(descriptions.label, "Resume descriptions")
+        XCTAssertEqual(descriptions.value as? String, "Descriptions quiet")
+        XCTAssertTrue(app.staticTexts["microphone-status"].exists)
+        XCTAssertEqual(app.staticTexts["microphone-status"].label, "Microphone is not listening.")
+        XCTAssertTrue(app.staticTexts["camera-status"].label.hasPrefix("Camera off."))
+        XCTAssertTrue(app.buttons["write-message"].exists)
+    }
+
+    func testAskControlsAndUnavailableReasonRemainReachableWithoutCamera() {
+        openSettingsPage("ask-screen")
+        let answer = app.buttons["local-answer"]
+        reveal(answer)
+        XCTAssertFalse(answer.isEnabled)
+        let reason = app.staticTexts["local-answer-unavailable-reason"]
+        reveal(reason)
+        XCTAssertEqual(reason.label, "Camera monitoring is not running. Open Camera and safety to start it.")
+        XCTAssertTrue(app.descendants(matching: .any)["ask-focus"].exists)
+        let goal = app.descendants(matching: .any)["ask-goal"]
+        reveal(goal)
+        XCTAssertTrue(goal.exists)
+        let question = app.descendants(matching: .any)["ask-question"]
+        reveal(question)
+        XCTAssertTrue(question.exists)
+        XCTAssertFalse(answer.isEnabled, "Scrolling and selecting text must not start camera monitoring")
+    }
     func testRoomsShowSavedRoomsAndExplicitStartScan() {
         openTab("Rooms")
         XCTAssertTrue(app.buttons["room-scan-start"].waitForExistence(timeout: 5))

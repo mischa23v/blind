@@ -217,5 +217,39 @@ class ReceiptTests(unittest.TestCase):
         self.assertEqual(self.receipt(source)['metadata'], {'oracleBridgeProvenance': {
                          'oracleKernelByteIdentical': False, 'algorithmChanged': True}})
 
+class AccessibilityReceiptTests(unittest.TestCase):
+    def test_accessibility_scope_reads_no_screenshot_or_arbitrary_json(self):
+        self.assertEqual(M.RECEIPTS['accessibility-diagnostic'], [])
+
+    def test_accessibility_uploads_default_off_and_prior_failure_retained(self):
+        root = HERE.parents[1]
+        source = (root / '.github/workflows/accessibility-diagnostic.yml').read_text()
+        self.assertIn("BLIND_UPLOAD_ARTIFACTS: 'false'", source)
+        self.assertEqual(source.count("if: always() && env.BLIND_UPLOAD_ARTIFACTS == 'true'"), 2)
+        self.assertEqual(source.count('retention-days: 3'), 2)
+        self.assertIn("if: always() && steps.layout.outcome != 'success'", source)
+        self.assertIn('run: exit 1', source)
+        self.assertIn('run: bash tools/ci/native-apple.sh ui-diagnostic', source)
+        self.assertIn('run: bash tools/ci/practice-layout-diagnostic.sh', source)
+
+    def test_accessibility_failed_outcome_stays_failure_in_log_and_summary(self):
+        with tempfile.TemporaryDirectory() as folder:
+            summary = Path(folder) / 'summary.txt'
+            env = {'RUNNER_TEMP': folder, 'CI_STEP_OUTCOMES': json.dumps({
+                'layout': {'outcome': 'failure', 'conclusion': 'success'},
+                'full-audit': {'outcome': 'failure', 'conclusion': 'failure'}}),
+                'CI_JOB_STATUS': 'failure', 'BLIND_UPLOAD_ARTIFACTS': 'false',
+                'GITHUB_STEP_SUMMARY': str(summary)}
+            with patch.dict(os.environ, env, clear=True), patch('sys.argv', ['receipt', 'accessibility-diagnostic']), contextlib.redirect_stdout(io.StringIO()) as output:
+                M.main()
+            lines = output.getvalue().splitlines()
+            self.assertEqual(len(lines), 1)
+            receipt = json.loads(lines[0].split('=', 1)[1])
+            self.assertEqual(receipt['job_status_before_receipt'], 'failure')
+            self.assertEqual(receipt['steps']['layout']['outcome'], 'failure')
+            self.assertFalse(receipt['artifact_uploads_enabled'])
+            self.assertFalse(receipt['physical_authority'])
+            self.assertIn(lines[0], summary.read_text())
+
 if __name__ == '__main__':
     unittest.main()

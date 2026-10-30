@@ -18,12 +18,43 @@ def check(name, value):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# Restore the exact post-map source before historical assertions. This layer
+# intentionally changes current production behavior; no earlier pass is relabelled.
+pre_tracker_implementation_source={}
+with tempfile.TemporaryDirectory(prefix='stage85-tracker-implementation-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeTrackerImplementationBatch'])+manifest['trackerImplementationBatchNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+    subprocess.run(['git','apply','-R',str(H/'tracker-implementation-batch.patch')],cwd=root,
+                   check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeTrackerImplementationBatch'].items():
+        value=(root/name).read_bytes()
+        check('exact pre-tracker-implementation input '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_tracker_implementation_source[name]=value
+    for name in manifest['trackerImplementationBatchNewFiles']:
+        check('new tracker implementation input absent from prior layer '+name,not (root/name).exists())
+
+# Mapped-destination consumer retains the exact reviewed QoS/exporter base.
+pre_mapped_destination_source=dict(pre_tracker_implementation_source)
+with tempfile.TemporaryDirectory(prefix='stage85-mapped-destination-') as temp:
+    root=Path(temp)
+    for name in list(manifest['beforeMappedDestination'])+manifest['mappedDestinationNewFiles']:
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_tracker_implementation_source.get(name,(R/name).read_bytes()))
+    subprocess.run(['git','apply','-R',str(H/'seated-mapped-destination-layer.patch')],cwd=root,
+                   check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeMappedDestination'].items():
+        value=(root/name).read_bytes()
+        check('exact pre-mapped-destination input '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_mapped_destination_source[name]=value
+    for name in manifest['mappedDestinationNewFiles']:
+        check('new mapped destination input absent from prior layer '+name,not (root/name).exists())
+
 # Restore normal scheduling source before checking earlier acceptance evidence.
-pre_qos_comparison_source={}
+pre_qos_comparison_source=dict(pre_mapped_destination_source)
 with tempfile.TemporaryDirectory(prefix='stage85-qos-comparison-') as temp:
     root=Path(temp)
     for name in list(manifest['beforeQoSComparison'])+manifest['qosComparisonNewFiles']:
-        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(R/name,target)
+        target=root/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(pre_mapped_destination_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'native-qos-comparison-layer.patch')],cwd=root,
                    check=True,timeout=15,capture_output=True)
     for name,digest in manifest['beforeQoSComparison'].items():
@@ -368,6 +399,12 @@ bridge = (R / 'ios/BlindAssist/MeshCandidateDiagnostics.swift').read_text()
 # Historical critical-order contracts below run on exact recovered pre-viewer bytes.
 # Current default behavior and new diagnostic ownership are checked separately below.
 current_nav = (R / 'ios/BlindAssist/NavigationModel.swift').read_text()
+# Implementation contracts below read actual current production bytes, never the
+# recovered historical view. They are portable source checks, not native passes.
+check('current navigation seventy implementation contracts',subprocess.run([sys.executable,str(R/'tools/test/navigation-integration-current.test.py')],cwd=R,env={**__import__('os').environ,'BLIND_SOURCE_ROOT':str(R)},capture_output=True,timeout=15).returncode==0)
+check('current voice continuity contracts and negative mutations',subprocess.run([sys.executable,str(R/'tools/test/accessibility-voice-continuity.test.py')],cwd=R,env={**__import__('os').environ,'BLIND_SOURCE_ROOT':str(R)},capture_output=True,timeout=15).returncode==0)
+check('current captured-photo frame and absence contracts',subprocess.run(['node','--test',str(R/'tools/test/captured-photo-retention.test.mjs'),str(R/'tools/test/scene-frame-provenance.test.mjs'),str(R/'tools/test/visual-absence-contract.test.mjs')],cwd=R,capture_output=True,timeout=15).returncode==0)
+
 nav = pre_seated_nav
 project = pre_seated_project
 check('bridge exact reviewed proposal', bridge == (H.parent / 'proposal/MeshCandidateDiagnostics.swift').read_text())
@@ -451,7 +488,7 @@ def default_camera_source(text, current=False):
         value=value.replace('    // A camera owner fence, not a guidance/readiness permission. Release stays unchanged.\n','')
         value=value.replace('guard normalCameraSessionAllowed else { return }','').replace(', self.normalCameraSessionAllowed','').replace(', normalCameraCallbackAllowed','')
     return re.sub(r'\s+','',value)
-check('seated flag-absent navigation exact after constant-true fence elimination', default_camera_source(current_nav,True)==default_camera_source(pre_seated_nav))
+check('historical pre-tracker seated flag-absent navigation exact after constant-true fence elimination', default_camera_source(pre_tracker_implementation_source['ios/BlindAssist/NavigationModel.swift'].decode(),True)==default_camera_source(pre_seated_nav))
 check('seated current callbacks retain exact session identity before owner fence',current_nav.count('guard session === self.session, normalCameraCallbackAllowed else { return }')==7)
 current_helper=(R/'tools/ci/native-apple.sh').read_text()
 focused=current_helper.split('  diagnostics-unit)\n',1)[1].split('    ;;',1)[0]
@@ -488,5 +525,5 @@ check('envelope old stock remains Swift default', 'seedRadiusPolicy:MeshSeedRadi
 check('envelope strict collector original regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-collect-seed-radius.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 check('envelope public diagnostic export regressions retained',subprocess.run([sys.executable,str(R/'tools/ci/test-export-seed-radius-diagnostics.py')],cwd=R,capture_output=True,timeout=15).returncode==0)
 print(json.dumps(dict(sourceChecksPassed=len(checks), checks=checks, appPatchApplied=True, criticalOrderPatchApplied=True, practicePublicationPatchApplied=True, projectCanonicalizationPatchApplied=True, connectedBenchPreviewMembershipApplied=True, navigationTestRecordingApplied=True, savedFrameCameraAssociationApplied=True, sceneTimingCIHelperApplied=True, recorderTimingCIHelperApplied=True, savedRoomGeometryMembershipApplied=True, appleRoomPlanFixtureMembershipApplied=True, appleRoomRouteMembershipApplied=True, classificationIngressMembershipApplied=True, hostedDecoderLinkMembershipApplied=True,
-    appleBuild='pending', historicalLayersReversedExactly=True, defaultAppActivation=False, runtimeOptIn='diagnostic flag plus explicit seated confirmation required', geometryCopyEnabled='only inside separately admitted diagnostic owner',
+    appleBuild='pending', historicalLayersReversedExactly=True, defaultMeshDiagnosticActivation=False, trackerImplementationBatchApplied=True, currentProductionBehaviorChanged=True, wholeDefaultNavigationEqualityScope='exact recovered pre-tracker source only', meshDiagnosticRuntimeOptIn='diagnostic flag plus explicit seated confirmation required', meshDiagnosticGeometryCopyEnabled='only inside separately admitted diagnostic owner',
     physicalAuthority=False, experimental128MiBCapCompliance='not claimed'), indent=2))

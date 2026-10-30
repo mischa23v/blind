@@ -1,4 +1,5 @@
 import Foundation
+import BlindCore
 import XCTest
 import MeshCandidateIngress83
 import BlindRoomMesh
@@ -353,4 +354,71 @@ final class MeshBenchExpectedSourceTests: XCTestCase {
         }
         XCTAssertTrue(refused) // Admission refusal is synchronous; no native query submitted.
     }
+    private func savedDescriptor() -> SavedWorldFrame {
+        .init(placeID:UUID().uuidString,revision:UUID().uuidString,worldMapSHA256:String(repeating:"a",count:64),
+              roomCaptureSHA256:String(repeating:"b",count:64),originAnchorID:UUID().uuidString,capturedAt:Date(timeIntervalSince1970:1))
+    }
+    private func recoveredBench(_ frame:SavedWorldFrame,session:UUID) -> MeshBenchSavedWorldRecovery {
+        let value=MeshBenchSavedWorldRecovery();value.begin(frame:frame,session:session,now:1)
+        value.observe(session:session,tracking:.relocalizing,mappingAvailable:true,originMatches:true,capturedAt:1,now:1)
+        for t in [1.1,1.2,1.3] {value.observe(session:session,tracking:.normal,mappingAvailable:true,originMatches:true,capturedAt:t,now:t)}
+        return value
+    }
+    func testSavedWorldRecoveryRequiresRelocalizingThenDistinctNormalFrames() {
+        let value=MeshBenchSavedWorldRecovery(),frame=savedDescriptor(),session=UUID()
+        value.begin(frame:frame,session:session,now:1)
+        for t in [1.1,1.2,1.3] {value.observe(session:session,tracking:.normal,mappingAvailable:true,originMatches:true,capturedAt:t,now:t)}
+        XCTAssertNil(value.association(session:session,capturedAt:1.3,now:1.3))
+        value.observe(session:session,tracking:.relocalizing,mappingAvailable:true,originMatches:true,capturedAt:1.4,now:1.4)
+        for _ in 0..<3 {value.observe(session:session,tracking:.normal,mappingAvailable:true,originMatches:true,capturedAt:1.5,now:1.5)}
+        XCTAssertNil(value.association(session:session,capturedAt:1.5,now:1.5))
+        for t in [1.6,1.7] {value.observe(session:session,tracking:.normal,mappingAvailable:true,originMatches:true,capturedAt:t,now:t)}
+        XCTAssertNotNil(value.association(session:session,capturedAt:1.7,now:1.7))
+    }
+    func testSavedWorldRecoveryBindsExactCaptureAndSession() throws {
+        let frame=savedDescriptor(),session=UUID(),value=recoveredBench(frame,session:session)
+        let association=try XCTUnwrap(value.association(session:session,capturedAt:1.3,now:1.3))
+        XCTAssertEqual(association.frame,frame);XCTAssertEqual(association.sessionID,session)
+        XCTAssertNil(value.association(session:session,capturedAt:1.2,now:1.3))
+        XCTAssertNil(value.association(session:UUID(),capturedAt:1.3,now:1.3))
+        XCTAssertFalse(association.permitsPhysicalGuidance)
+    }
+    func testSavedWorldRecoveryMaintainsEpochWithoutRebindingOldCapture() throws {
+        let frame=savedDescriptor(),session=UUID(),value=recoveredBench(frame,session:session)
+        let old=try XCTUnwrap(value.association(session:session,capturedAt:1.3,now:1.3))
+        value.observe(session:session,tracking:.normal,mappingAvailable:true,originMatches:true,capturedAt:1.4,now:1.4)
+        let next=try XCTUnwrap(value.association(session:session,capturedAt:1.4,now:1.4))
+        XCTAssertEqual(old.recoveryID,next.recoveryID);XCTAssertNotEqual(old.capturedAt,next.capturedAt)
+        XCTAssertTrue(value.isCurrent(old,now:1.4))
+        XCTAssertNil(value.association(session:session,capturedAt:old.capturedAt,now:1.4))
+    }
+    func testSavedWorldRecoveryRetirementAndRestartDoNotRestoreAssociation() throws {
+        let frame=savedDescriptor(),session=UUID(),value=recoveredBench(frame,session:session)
+        let old=try XCTUnwrap(value.association(session:session,capturedAt:1.3,now:1.3))
+        value.retire();XCTAssertFalse(value.isCurrent(old,now:1.3))
+        value.begin(frame:frame,session:session,now:1.4)
+        XCTAssertNil(value.association(session:session,capturedAt:1.3,now:1.4))
+        XCTAssertFalse(value.isCurrent(old,now:1.4))
+        let other=recoveredBench(frame,session:session)
+        XCTAssertFalse(other.isCurrent(old,now:1.3)) // Same descriptor/session is not same recovery epoch.
+    }
+    func testSavedWorldRecoveryRejectsOriginLossMappingLossAndStaleFrames() throws {
+        for failure in ["origin","mapping","tracking","stale"] {
+            let frame=savedDescriptor(),session=UUID(),value=recoveredBench(frame,session:session)
+            let old=try XCTUnwrap(value.association(session:session,capturedAt:1.3,now:1.3))
+            value.observe(session:session,tracking:failure == "tracking" ? .unavailable:.normal,
+                mappingAvailable:failure != "mapping",originMatches:failure != "origin",capturedAt:1.4,now:failure == "stale" ? 2:1.4)
+            XCTAssertFalse(value.isCurrent(old,now:failure == "stale" ? 2:1.4))
+        }
+    }
+    func testSavedWorldRecoveryWrongDescriptorAndNonfiniteClockStayUnknown() throws {
+        let frame=savedDescriptor(),session=UUID(),value=recoveredBench(frame,session:session)
+        let old=try XCTUnwrap(value.association(session:session,capturedAt:1.3,now:1.3))
+        XCTAssertFalse(value.isCurrent(old,now:.nan));XCTAssertFalse(value.isCurrent(old,now:2))
+        let different=recoveredBench(savedDescriptor(),session:session)
+        XCTAssertFalse(different.isCurrent(old,now:1.3))
+        value.observe(session:UUID(),tracking:.normal,mappingAvailable:true,originMatches:true,capturedAt:1.4,now:1.4)
+        XCTAssertFalse(value.isCurrent(old,now:1.4))
+    }
+
 }

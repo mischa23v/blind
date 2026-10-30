@@ -3,6 +3,7 @@ import Foundation
 import SceneKit
 import simd
 import BlindRoomMesh
+import BlindCore
 
 /// Independent source-surface collision diagnostic, never physical clearance.
 /// The only collision implementation is the shared Apple oracle and its controls.
@@ -15,10 +16,24 @@ enum SeatedMeshRouteAudit {
         let id: String, local: [Double], transform: [Double], triangles: [Int32]
         let roles: [MeshTriangleSupport]?
     }
+    /// Exact saved-frame camera association, not an imported-map transform or body pose.
+    /// Pre-query source identity is retained separately from the post-query receipt.
+    struct MappedGoal: Equatable {
+        let destination: ConnectedJourneyRuntime.DiagnosticDestination
+        let association: SavedWorldFrameCameraAssociation
+        let sourceSession: String, sourceGeneration: Int, sourceRevision: UInt64
+        let cameraRequest: UUID, cameraFrame: UUID
+    }
     struct Request: Equatable {
         let id: UUID
         let start: [Float], goal: [Float]
         let radius: Float, height: Float, margin: Float
+        let mappedGoal: MappedGoal?
+        init(id: UUID, start: [Float], goal: [Float], radius: Float, height: Float,
+             margin: Float, mappedGoal: MappedGoal? = nil) {
+            self.id=id;self.start=start;self.goal=goal;self.radius=radius
+            self.height=height;self.margin=margin;self.mappedGoal=mappedGoal
+        }
         var valid: Bool {
             [start,goal].allSatisfy { $0.count == 3 && $0.allSatisfy(\.isFinite) }
                 && radius.isFinite && height.isFinite && margin.isFinite
@@ -140,6 +155,15 @@ enum SeatedMeshRouteAudit {
               admission.start.projected == route.projectedStart,admission.goal.projected == route.projectedGoal,
               admission.start.found,admission.goal.found,admission.start.isOverPolygon,admission.goal.isOverPolygon
         else {throw Failure.invalid}
+        if let mapped=request.mappedGoal {
+            let d=mapped.destination,p=d.position
+            guard mapped.sourceSession == source.sessionID,mapped.sourceGeneration == source.generation,
+                  mapped.sourceRevision <= source.revision,
+                  d.mapRevision.savedWorldFrame == mapped.association.frame,
+                  d.artifact.binding == d.reference.endpoint.binding,
+                  d.artifact.sha256 == d.reference.artifactSHA256,
+                  request.goal == [Float(p.x),Float(p.y),Float(p.z)] else {throw Failure.invalid}
+        }
         let geometry=try prepare(source.anchors.map {Anchor(id:$0.anchorID,local:$0.localVertices,transform:$0.columnMajorTransform,triangles:$0.triangleIndices,roles:$0.normalizedSupportRoles)})
         let chain=try segments(request:request,projectedStart:route.projectedStart,projectedGoal:route.projectedGoal,points:route.points,complete:route.complete)
         let hits=try await query(geometry:geometry,segments:chain,request:request,isCurrent:isCurrent,progress:progress)

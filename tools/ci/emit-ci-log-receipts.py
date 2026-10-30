@@ -18,6 +18,8 @@ INPUT_LIMIT = 1024 * 1024
 OUTPUT_LIMIT = 128 * 1024
 STEP_STATES = {'success', 'failure', 'cancelled', 'skipped'}
 RECEIPTS = {
+    # Job/step status only; synthetic image exports stay on the runner.
+    'accessibility-diagnostic': [],
     'native': [
         'blind-native-ci/unit-summary.json',
         'blind-native-ci/unit-case-statuses.json',

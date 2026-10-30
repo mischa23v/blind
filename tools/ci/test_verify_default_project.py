@@ -63,6 +63,24 @@ class GuardTests(unittest.TestCase):
  def test_all_existing_optional_prohibitions_in_any_json_string(self):
   for token in ['BLIND_MESH_CANDIDATE_DIAGNOSTICS','BLIND_DEVELOPER_CLOUD','opencv2','Model.mlmodelc','Model.mlpackage']:
    with self.subTest(token=token):self.o['file']={'isa':'PBXFileReference','path':token};self.reject()
+ def test_raw_and_compiled_weight_paths_rejected_in_json(self):
+  for token in ['Detector.mlmodel','face_detection_yunet_2023mar.onnx',
+                'Detector.MLMODEL','Recognizer.OnNx','Detector.MLMODELC',
+                'Detector.MLPACKAGE','OpenCV2.framework']:
+   with self.subTest(token=token):
+    self.o['file']={'isa':'PBXFileReference','path':'PrivateModels/'+token};self.reject()
+ def test_raw_weight_file_types_rejected_in_json(self):
+  self.o['file']={'isa':'PBXFileReference','path':'Detector','lastKnownFileType':'file.mlmodel'};self.reject()
+ def test_raw_weight_tokens_rejected_in_json_keys(self):
+  for token in ['Detector.mlmodel','Recognizer.onnx']:
+   with self.subTest(token=token):self.o['file']={token:'value'};self.reject()
+ def test_weight_tokens_rejected_in_raw_comments(self):
+  for token in ['Detector.mlmodel','Recognizer.onnx','Detector.MLMODEL','Recognizer.OnNx']:
+   with self.subTest(token=token):self.reject(raw=RAW+'// '+token)
+ def test_model_adapter_source_names_without_weight_extensions_remain_allowed(self):
+  self.o['file']={'isa':'PBXFileReference','path':'MLModelAdapter.swift'}
+  self.o['notice']={'isa':'PBXFileReference','path':'ONNXRuntimeNotice.swift'}
+  m.validate_project(self.p,RAW)
  def test_optional_key_rejected(self):self.o['file']={'BLIND_BACKEND':'value'};self.reject()
  def test_all_existing_raw_prohibitions_preserved_in_comments(self):
   for token in ['BLIND_OTHER','opencv2','x.mlmodelc','x.mlpackage']:

@@ -2,6 +2,8 @@
 import ARKit
 import AVFoundation
 import Foundation
+import CryptoKit
+import BlindCore
 import UIKit
 import MeshSnapshot82
 import MeshBufferDecoder81
@@ -20,7 +22,47 @@ public final class LiveMeshBenchSession {
     public var state: State {
         dispatchPrecondition(condition: .onQueue(.main)); return lifecycle
     }
+    /// Verified immutable handoff. Only this decoder can construct a seed; raw
+    /// descriptors/ARWorldMap objects cannot bypass paired-byte hash validation.
+    public final class SavedWorldSeed: @unchecked Sendable {
+        public static let maximumWorldBytes=32*1024*1024, maximumRoomBytes=8*1024*1024
+        public let frame: SavedWorldFrame
+        fileprivate let map: ARWorldMap
+        private init(frame:SavedWorldFrame,map:ARWorldMap) {self.frame=frame;self.map=map}
+        public static func decode(world:Data,room:Data,frame:SavedWorldFrame) throws -> SavedWorldSeed {
+            guard !world.isEmpty,!room.isEmpty,world.count<=maximumWorldBytes,room.count<=maximumRoomBytes,
+                  frame.matches(worldMapSHA256:digest(world),roomCaptureSHA256:digest(room)),
+                  let map=try NSKeyedUnarchiver.unarchivedObject(ofClass:ARWorldMap.self,from:world),
+                  map.anchors.count<=128,map.anchors.contains(where:{matchesOrigin($0,frame:frame)}) else {throw Failure.unavailable}
+            return SavedWorldSeed(frame:frame,map:map)
+        }
+        private static func digest(_ data:Data)->String {SHA256.hash(data:data).map{String(format:"%02x",$0)}.joined()}
+        fileprivate static func matchesOrigin(_ anchor:ARAnchor,frame:SavedWorldFrame)->Bool {
+            guard anchor.identifier.uuidString==frame.originAnchorID,anchor.name==frame.originAnchorName else{return false}
+            for c in 0..<4 {for r in 0..<4 {
+                let v=anchor.transform[c][r]
+                guard v.isFinite,abs(v-(c==r ? 1:0))<=0.0001 else{return false}
+            }}
+            return true
+        }
+    }
+    private var savedWorldSeed: SavedWorldSeed?
+    public func prepareSavedWorld(_ seed:SavedWorldSeed) throws {
+        dispatchPrecondition(condition:.onQueue(.main))
+        guard lifecycle == .prepared,session.delegate === producer,session.delegateQueue === producerQueue else{throw Failure.wrongOwner}
+        savedWorldSeed=seed
+    }
     public typealias CameraCapture = MeshBenchCameraCapture
+    public func savedFrameAssociation(for capture:CameraCapture,now:Double)->SavedWorldFrameCameraAssociation? {
+        dispatchPrecondition(condition:.onQueue(.main))
+        guard isCurrent(capture) else{return nil}
+        return producer.savedWorldRecovery.association(session:capture.session,capturedAt:capture.capturedAt,now:now)
+    }
+    public func isCurrent(_ association:SavedWorldFrameCameraAssociation,capture:CameraCapture,now:Double)->Bool {
+        dispatchPrecondition(condition:.onQueue(.main))
+        return isCurrent(capture) && capture.session==association.sessionID && capture.capturedAt==association.capturedAt
+            && producer.savedWorldRecovery.isCurrent(association,now:now)
+    }
     /// Explicit request snapshot, not a claim that the wearer has remained still.
     public func freezeCameraCapture() -> CameraCapture? {
         dispatchPrecondition(condition: .onQueue(.main))
@@ -74,13 +116,16 @@ public final class LiveMeshBenchSession {
         let configuration = ARWorldTrackingConfiguration()
         configuration.worldAlignment = .gravity
         configuration.sceneReconstruction = .meshWithClassification
+        let seed=savedWorldSeed
+        configuration.initialWorldMap=seed?.map
         // Depth/mesh output is diagnostic only. No floor rectangle or free space is invented.
         let runStartedAt = ProcessInfo.processInfo.systemUptime
         guard producer.frameLease.begin() else { throw Failure.unavailable }
         producer.armFreshnessWatchdog()
         lifecycle = .capturing
-        producerQueue.async { [producer] in producer.begin(runStartedAt: runStartedAt) }
+        producerQueue.async { [producer] in producer.begin(runStartedAt: runStartedAt,savedFrame:seed?.frame) }
         session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+        savedWorldSeed=nil // ARKit owns the configured map; no app byte cache retained.
     }
     /// Explicit supplied session-local test points only. Result delivery remains on
     /// main and rechecks native ownership as well as83's generation/revision token.
@@ -173,6 +218,7 @@ public final class LiveMeshBenchSession {
         guard state != .draining else { return }
         if case .stopped = state { return }
         lifecycle = .draining
+        savedWorldSeed=nil;producer.savedWorldRecovery.retire()
         producer.frameLease.stop()
         producer.ingress.stop() // Immediate cross-queue fence before pause or drains.
         let ownsSession = session.delegate === producer && session.delegateQueue === producerQueue
@@ -232,6 +278,8 @@ public final class LiveMeshBenchSession {
         let ingress: LiveMeshBenchIngress
         let frameLease = MeshBenchFrameLease()
         let cameraSnapshots = MeshBenchCameraSnapshot()
+        let savedWorldRecovery=MeshBenchSavedWorldRecovery()
+        private var savedFrame: SavedWorldFrame?
         private var reacquisition = MeshBenchReacquisition()
         private var reacquisitionRequestedAt: Double?
         private weak var expectedSession: ARSession?
@@ -263,15 +311,17 @@ public final class LiveMeshBenchSession {
             }
             watchdog = timer; timer.resume()
         }
-        func begin(runStartedAt: Double) {
+        func begin(runStartedAt: Double,savedFrame:SavedWorldFrame?) {
             dispatchPrecondition(condition: .onQueue(queue))
             guard !begun, !ended else { return }
             begun = true; beganAt = runStartedAt
+            self.savedFrame=savedFrame
+            if let savedFrame {savedWorldRecovery.begin(frame:savedFrame,session:ingress.generation,now:runStartedAt)}
 
         }
         func end() {
             dispatchPrecondition(condition: .onQueue(queue))
-            ended = true; cameraSnapshots.observe(nil); frameLease.stop(); reacquisition.cancel(); reacquisitionRequestedAt = nil
+            ended = true;savedWorldRecovery.retire();savedFrame=nil; cameraSnapshots.observe(nil); frameLease.stop(); reacquisition.cancel(); reacquisitionRequestedAt = nil
             watchdog?.cancel(); watchdog = nil; ingress.stop()
         }
         private func accepts(_ session: ARSession) -> Bool {
@@ -294,6 +344,19 @@ public final class LiveMeshBenchSession {
                   now >= frame.timestamp, now - frame.timestamp <= 0.5,
                   lastFrameCapture.map({ frame.timestamp > $0 }) ?? true else { failClosed(); return }
             lastFrameReceipt = now; lastFrameCapture = frame.timestamp
+            if let savedFrame {
+                guard frame.anchors.count<=128 else{failClosed();return}
+                let tracking: SavedWorldFrameRecovery.Tracking
+                switch frame.camera.trackingState {
+                case .normal:tracking = .normal
+                case .limited(.relocalizing):tracking = .relocalizing
+                default:tracking = .unavailable
+                }
+                savedWorldRecovery.observe(session:ingress.generation,tracking:tracking,
+                    mappingAvailable:frame.worldMappingStatus == .mapped || frame.worldMappingStatus == .extending,
+                    originMatches:frame.anchors.contains{SavedWorldSeed.matchesOrigin($0,frame:savedFrame)},
+                    capturedAt:frame.timestamp,now:now)
+            }
             let matrix = frame.camera.transform
             cameraSnapshots.observe(normal ? CameraCapture(session: ingress.generation, frame: UUID(), capturedAt: frame.timestamp,
                 columnMajorCameraToWorld: (0..<4).flatMap { c in (0..<4).map { r in Double(matrix[c][r]) } }) : nil)

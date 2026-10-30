@@ -373,3 +373,77 @@ final class NavigationModelResponseSinkTests: XCTestCase {
         assertEmptySink(model)
     }
 }
+
+
+/// Production controller controls in its existing XCTest text-only mode.
+/// These assert lifecycle state, not microphone/audio/VoiceOver or model acceptance.
+@MainActor
+final class ConversationControlLifecycleTests: XCTestCase {
+    func testQuietAndResumeDoNotMuteEndOrStartSensors() {
+        let model = NavigationModel()
+        XCTAssertTrue(model.textOnly)
+        let prior = model.ambientDescriptions
+        defer { model.ambientDescriptions = prior; model.endConversation() }
+        model.startConversation()
+        let generation = model.assistantSession.generation
+        let camera = model.cameraAwareness, running = model.running
+        model.stopDescriptions()
+        XCTAssertFalse(model.ambientDescriptions)
+        XCTAssertEqual(model.assistantSession.state, .active)
+        XCTAssertEqual(model.assistantSession.generation, generation)
+        model.resumeDescriptions()
+        XCTAssertTrue(model.ambientDescriptions)
+        XCTAssertEqual(model.assistantSession.state, .active)
+        XCTAssertEqual(model.assistantSession.generation, generation)
+        XCTAssertEqual(model.cameraAwareness, camera)
+        XCTAssertEqual(model.running, running)
+        XCTAssertFalse(model.voice.listening)
+    }
+
+    func testMuteAndEndRemainStoppedAcrossForegroundAndDescriptionResume() {
+        let model = NavigationModel()
+        XCTAssertTrue(model.textOnly)
+        let prior = model.ambientDescriptions
+        defer { model.ambientDescriptions = prior; model.endConversation() }
+        model.startConversation()
+        let active = model.assistantSession.generation
+        model.muteConversation()
+        XCTAssertEqual(model.assistantSession.state, .muted)
+        XCTAssertFalse(model.assistantSession.accepts(generation: active))
+        model.suspendExperience(); model.resumeExperienceIfNeeded(); model.resumeDescriptions()
+        XCTAssertEqual(model.assistantSession.state, .muted)
+        XCTAssertFalse(model.assistantSession.shouldListen)
+        XCTAssertFalse(model.voice.listening)
+        model.endConversation()
+        model.suspendExperience(); model.resumeExperienceIfNeeded(); model.resumeDescriptions()
+        XCTAssertEqual(model.assistantSession.state, .ended)
+        XCTAssertFalse(model.assistantSession.shouldListen)
+        XCTAssertFalse(model.voice.listening)
+        model.startConversation()
+        XCTAssertEqual(model.assistantSession.state, .active)
+        XCTAssertFalse(model.voice.listening, "Text-only fixture must never start real capture")
+    }
+    func testReportedCompletionKeepsExactParentSourceAcrossPauseAndRestart() throws {
+        let date = Date(timeIntervalSince1970: 1_700_000_000)
+        var state = CompanionWorkingState()
+        state.changeGoal("school", originalRequest: "Help me get ready for school", sourceID: "typed-parent", at: date)
+        let source = try XCTUnwrap(state.goalSource)
+        _ = state.respond(to: .find(object: "coat"), message: "Help me find my coat", arabic: false)
+        XCTAssertFalse(state.recordCompletedSubtask("Help me find my coat", report: "I found my keys"))
+        XCTAssertFalse(state.recordCompletedSubtask("Help me find my coat", report: "I have not found my coat"))
+        XCTAssertTrue(state.recordCompletedSubtask("Help me find my coat", report: "I found my coat"))
+        let reports = state.reportedCompletedSteps
+        XCTAssertEqual(reports, ["User reported completing Help me find my coat: I found my coat"])
+        XCTAssertEqual(state.goalSource, source)
+        XCTAssertTrue(state.suspendGoal())
+        var restored = try JSONDecoder().decode(CompanionWorkingState.self, from: JSONEncoder().encode(state))
+        XCTAssertTrue(restored.resumeGoal())
+        XCTAssertEqual(restored.goal, "school")
+        XCTAssertEqual(restored.goalSource?.originalRequest, "Help me get ready for school")
+        XCTAssertEqual(restored.goalSource?.sourceID, "typed-parent")
+        XCTAssertEqual(restored.goalSource?.recordedAt, date)
+        XCTAssertEqual(restored.reportedCompletedSteps, reports)
+        XCTAssertTrue(restored.proposedStep.isEmpty, "A retained report must not become a fresh movement suggestion")
+    }
+
+}

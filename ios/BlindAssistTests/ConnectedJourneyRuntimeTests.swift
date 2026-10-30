@@ -625,4 +625,83 @@ extension ConnectedJourneyRuntimeTests {
         XCTAssertEqual(try runtime.next(now:1.4).route.target.id,"p")
         traceBuffer.record("NATIVE_RECOVERY_RESTRICTION=blocked:s-m,afterRejection:retained,blockedRecovery:withheld,admissibleFreshEndpoint:m,replan:automatic")
     }
+    func testOffRouteRetiresPlanThenFreshUniqueEndpointReplansWithoutChangingGoal() async throws {
+        let runtime=try await installed()
+        try runtime.configure(body:F.body,limits:F.limits)
+        try runtime.setDestination(binding:F.a,nodeID:"p",origin:.trustedInterface)
+        try await completedWork(runtime)
+        _ = try runtime.beginLocalization(in:F.a)
+        try observe(runtime,F.endpoint(F.a,"s"),time:1)
+        try await completedWork(runtime)
+        try observe(runtime,F.endpoint(F.a,"s"),time:1.1)
+        let old=try runtime.next(now:1.1),goal=runtime.goal?.revision,start=runtime.snapshot.start
+        let away=SpatialLocalizationCapture(sessionID:try XCTUnwrap(runtime.expectedSessionID),binding:F.a,
+            floorID:"ground",roomID:"bedroom",position:.init(1.5,1.3,3.25),bodyYaw:-.pi/2,
+            source:.alignedMapPose,headingSource:.bodyAligned,trackingNormal:true,
+            positionUncertainty:0.05,headingUncertainty:0.05,capturedAt:1.2)
+        try runtime.accept(away,support:SpatialIntegrationFixture.support(away),now:1.2)
+        XCTAssertThrowsError(try runtime.next(now:1.2)) {XCTAssertEqual($0 as? SpatialRouteError,.offRoute)}
+        XCTAssertEqual(runtime.routeReassociationReason,.offRoute)
+        XCTAssertNil(runtime.diagnosticOwnedRoute);XCTAssertFalse(runtime.permits(old.route,now:1.2))
+        XCTAssertEqual(runtime.goal?.revision,goal);XCTAssertEqual(runtime.snapshot.start,start)
+        XCTAssertThrowsError(try runtime.next(now:1.2)) // No guessed join from off-route coordinates.
+        try observe(runtime,F.endpoint(F.a,"m"),time:1.3)
+        let renewed=try runtime.next(now:1.3)
+        XCTAssertEqual(renewed.route.target.id,"p");XCTAssertNotEqual(renewed.route.routeID,old.route.routeID)
+        XCTAssertNil(runtime.routeReassociationReason)
+        XCTAssertEqual(runtime.goal?.revision,goal);XCTAssertEqual(runtime.snapshot.start,start)
+    }
+
+    func testAutomaticPortalContextWaitsForFreshDestinationEvidence() async throws {
+        let runtime=try await installed()
+        try runtime.configure(body:F.body,limits:F.limits)
+        try runtime.setDestination(binding:F.b,nodeID:"p",origin:.trustedInterface)
+        try await completedWork(runtime)
+        let sourceSession=try runtime.beginLocalization(in:F.a)
+        try observe(runtime,F.endpoint(F.a,"s"),time:1)
+        try await completedWork(runtime)
+        try observe(runtime,F.endpoint(F.a,"s"),time:1.1)
+        try observe(runtime,F.endpoint(F.a,"m"),time:1.2)
+        let departure=try capture(runtime,F.endpoint(F.a,"p"),time:1.3)
+        try runtime.accept(departure,support:SpatialIntegrationFixture.support(departure),now:1.3)
+        try await completedWork(runtime)
+        XCTAssertNotEqual(runtime.expectedSessionID,sourceSession)
+        XCTAssertEqual(runtime.nativeLocalizationContext?.revision.binding,F.b)
+        XCTAssertNil(runtime.diagnosticOwnedRoute)
+        XCTAssertTrue(runtime.snapshot.events.filter{$0.kind == .portalEndpointsAssociated}.isEmpty)
+        XCTAssertThrowsError(try runtime.next(now:1.3)) // Destination context is NOT a pose or crossing.
+        try observe(runtime,F.endpoint(F.b,"s"),time:1.4)
+        try await completedWork(runtime)
+        let event=try XCTUnwrap(runtime.snapshot.events.last(where:{$0.kind == .portalEndpointsAssociated}))
+        XCTAssertEqual(event.portalDepartureCaptureID,departure.id)
+        XCTAssertEqual(event.endpoint?.binding,F.b)
+        let onward=try runtime.next(now:1.4)
+        XCTAssertEqual(onward.route.target.id,"m")
+        XCTAssertEqual(runtime.goal?.target.endpoint.binding,F.b)
+    }
+
+    func testAutomaticPortalContextRejectsOldSessionAndRestartRetainsIntentOnly() async throws {
+        let io=makeIO(),runtime=try await installed(io)
+        try runtime.configure(body:F.body,limits:F.limits)
+        try runtime.setDestination(binding:F.b,nodeID:"p",origin:.trustedInterface)
+        try await completedWork(runtime)
+        let oldSession=try runtime.beginLocalization(in:F.a)
+        try observe(runtime,F.endpoint(F.a,"s"),time:1)
+        try await completedWork(runtime)
+        try observe(runtime,F.endpoint(F.a,"s"),time:1.1)
+        try observe(runtime,F.endpoint(F.a,"m"),time:1.2)
+        try observe(runtime,F.endpoint(F.a,"p"),time:1.3)
+        try await completedWork(runtime)
+        let wrong=SpatialLocalizationCapture(sessionID:oldSession,binding:F.b,floorID:"ground",roomID:"hall",
+            position:.init(1,1.3,3),bodyYaw:-.pi/2,source:.alignedMapPose,headingSource:.bodyAligned,
+            trackingNormal:true,positionUncertainty:0.05,headingUncertainty:0.05,capturedAt:1.4)
+        XCTAssertThrowsError(try runtime.accept(wrong,support:SpatialIntegrationFixture.support(wrong),now:1.4))
+        XCTAssertThrowsError(try runtime.next(now:1.4))
+        let retained=runtime.goal?.revision
+        let restored=makeRuntime(io:io);restored.restore();try await completedWork(restored)
+        XCTAssertEqual(restored.goal?.revision,retained)
+        XCTAssertNil(restored.expectedSessionID);XCTAssertNil(restored.nativeLocalizationContext)
+        XCTAssertNil(restored.diagnosticOwnedRoute);XCTAssertThrowsError(try restored.next(now:2))
+    }
+
 }

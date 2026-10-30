@@ -1,5 +1,6 @@
 #if DEBUG && BLIND_MESH_CANDIDATE_DIAGNOSTICS
 import XCTest
+import CryptoKit
 import SceneKit
 import ARKit
 import BlindCore
@@ -345,6 +346,220 @@ final class SeatedMeshProjectionTests: XCTestCase {
         }
     }
 
+    @MainActor func testMappedDestinationFeedsActualStrictQueryAndCollisionReceipt() async throws {
+        let frame=SeatedMappedFixture.frame(),io=SeatedMappedIO()
+        let installation=try SeatedMappedFixture.installation(frame:frame)
+        let runtime=try await SeatedMappedFixture.runtime(installation,io:io)
+        let destination=try XCTUnwrap(runtime.diagnosticDestination)
+        let backend=try SeatedCandidateFixtureBackend(savedFrame:frame)
+        let (controller,finish)=mappedController(backend,destinationProvider:{runtime.diagnosticDestination})
+        try controller.activate();try await requireMappedSource(controller)
+        let ready=expectation(description:"actual mapped-goal native query")
+        backend.onHeld={ready.fulfill()}
+        requestMappedPreview(controller)
+        await fulfillment(of:[ready],timeout:10)
+        let candidate=try XCTUnwrap(backend.heldResult).get()
+        XCTAssertEqual(backend.submittedGoal,[1,0,0]) // Manual goal below is deliberately different.
+        XCTAssertEqual(candidate.route.endpointAdmission?.goal.requested,[1,0,0])
+        backend.now=10.1;backend.ordinaryFrame() // Do not rebind the frozen capture.
+        backend.release()
+        await fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in controller.collisionAudit != nil},object:nil)],timeout:10)
+        let audit=try XCTUnwrap(controller.collisionAudit),binding=try XCTUnwrap(audit.request.mappedGoal)
+        XCTAssertEqual(binding.destination,destination)
+        XCTAssertEqual(binding.sourceSession,backend.submittedSource?.geometry.sessionID)
+        XCTAssertEqual(binding.sourceGeneration,backend.submittedSource?.geometry.generation)
+        XCTAssertEqual(binding.sourceRevision,backend.submittedSource?.geometry.revision)
+        XCTAssertEqual(binding.cameraFrame,backend.submittedCapture?.frame)
+        XCTAssertEqual(binding.cameraRequest,backend.submittedCapture?.snapshot)
+        XCTAssertEqual(binding.association.capturedAt,10)
+        XCTAssertEqual(audit.session,candidate.route.sessionID);XCTAssertEqual(audit.revision,candidate.route.revision)
+        XCTAssertEqual(audit.request.goal,backend.submittedGoal)
+        XCTAssertFalse(audit.raw.isEmpty);XCTAssertEqual(audit.raw.count,audit.margin.count)
+        XCTAssertFalse(audit.physicalAuthority);XCTAssertFalse(binding.association.permitsPhysicalGuidance)
+        XCTAssertTrue(controller.hierarchyReceipt.contains("SELECTED DESTINATION context"))
+        XCTAssertTrue(controller.hierarchyReceipt.contains("Current room/floor/body/support NOT established"))
+        XCTAssertNil(runtime.diagnosticOwnedRoute) // No physical route was issued by catalog lookup.
+        try await finish()
+    }
+
+    @MainActor func testMappedDestinationRefusesMissingWrongStaleAndCrossFloorAssociation() async throws {
+        // Paired hashes alone cannot turn a corrupt archive into an ARWorldMap.
+        // Small synthetic bytes only; no capture/archive fixture is read or uploaded.
+        let invalid=Data([1,2,3,4]),digest=SHA256.hash(data:Data([1,2,3,4])).map{String(format:"%02x",$0)}.joined()
+        let descriptor=SavedWorldFrame(placeID:UUID().uuidString,revision:UUID().uuidString,
+            worldMapSHA256:digest,roomCaptureSHA256:digest,originAnchorID:UUID().uuidString,capturedAt:Date(timeIntervalSince1970:1))
+        XCTAssertThrowsError(try LiveMeshBenchSession.SavedWorldSeed.decode(world:invalid,room:invalid,frame:descriptor))
+        XCTAssertThrowsError(try LiveMeshBenchSession.SavedWorldSeed.decode(world:Data(),room:invalid,frame:descriptor))
+        XCTAssertThrowsError(try LiveMeshBenchSession.SavedWorldSeed.decode(world:invalid,room:invalid,frame:SeatedMappedFixture.frame()))
+        for reason in ["missing","wrong-frame","reset","stale-frame","floors","floor-transition"] {
+            let frame=SeatedMappedFixture.frame(),io=SeatedMappedIO()
+            let installation=try SeatedMappedFixture.installation(frame:frame,twoFloors:reason == "floors",upperFloor:reason == "floor-transition")
+            let runtime=try await SeatedMappedFixture.runtime(installation,io:io)
+            let backend=try SeatedCandidateFixtureBackend(savedFrame:reason == "missing" ? nil : ["wrong-frame","floor-transition"].contains(reason) ? SeatedMappedFixture.frame() : frame)
+            let (controller,finish)=mappedController(backend,destinationProvider:{runtime.diagnosticDestination})
+            try controller.activate();try await requireMappedSource(controller)
+            if reason == "reset" {backend.resetRecovery()}
+            if reason == "stale-frame" {backend.now=10.6;backend.ordinaryFrame()} // Gap resets recovered epoch.
+            requestMappedPreview(controller)
+            XCTAssertNil(backend.submittedGoal,"Unregistered/wrong-floor targets cannot reach native admission")
+            XCTAssertNotNil(controller.mappedGoalRefusal);XCTAssertNil(controller.collisionAudit)
+            XCTAssertTrue(controller.routeReceipt.hasPrefix("WITHHELD"))
+            if ["wrong-frame","floor-transition"].contains(reason) {XCTAssertEqual(controller.mappedGoalRefusal,.wrongFrame)}
+            if reason == "floors" {XCTAssertEqual(controller.mappedGoalRefusal,.floorUnresolved)}
+            if reason == "floor-transition" {XCTAssertEqual(runtime.diagnosticDestination?.reference.context.floorID,"upper")}
+            try await finish()
+        }
+    }
+
+    @MainActor func testMappedDestinationRetiresHeldResultsOnRestartMapGoalAndSourceChanges() async throws {
+        for change in ["restart","map-reinstall","map-delete","destination","source","recovery-reset","audit-map-delete"] {
+            let frame=SeatedMappedFixture.frame(),io=SeatedMappedIO()
+            let installation=try SeatedMappedFixture.installation(frame:frame)
+            var runtime=try await SeatedMappedFixture.runtime(installation,io:io)
+            let original=try XCTUnwrap(runtime.diagnosticDestination)
+            let backend=try SeatedCandidateFixtureBackend(savedFrame:frame)
+            let (controller,finish)=mappedController(backend,destinationProvider:{runtime.diagnosticDestination})
+            try controller.activate();try await requireMappedSource(controller)
+            let ready=expectation(description:"held actual mapped native result \(change)")
+            backend.onHeld={ready.fulfill()};requestMappedPreview(controller)
+            await fulfillment(of:[ready],timeout:10)
+            _=try XCTUnwrap(backend.heldResult).get() // Native refusal is not a passing stale-result case.
+            let gate=SeatedAuditProgressGate()
+            defer {gate.release()}
+            if change == "audit-map-delete" {
+                let progress=expectation(description:"real oracle before mapped catalog deletion")
+                var didProgress=false
+                controller.collisionProgressForTesting={_ in
+                    if !didProgress {didProgress=true;progress.fulfill();await gate.wait()}
+                }
+                backend.release()
+                await fulfillment(of:[progress],timeout:10)
+                XCTAssertTrue(didProgress);XCTAssertTrue(controller.hasPendingCollisionForTesting)
+            }
+            switch change {
+            case "restart":
+                let restored=ConnectedJourneyRuntime(io:io,sha256:ConnectedFixture.sha256)
+                restored.restore();try await restored.waitForPendingOperationsForTesting()
+                let next=try XCTUnwrap(restored.diagnosticDestination)
+                XCTAssertEqual(next.reference,original.reference);XCTAssertNotEqual(next.ownerID,original.ownerID)
+                runtime=restored;backend.resetRecovery()
+            case "map-reinstall":
+                try runtime.install(installation);try await runtime.waitForPendingOperationsForTesting()
+                XCTAssertNotEqual(runtime.diagnosticDestination?.catalogRevision,original.catalogRevision)
+            case "map-delete","audit-map-delete":
+                try runtime.withdrawMap(installation.binding);try await runtime.waitForPendingOperationsForTesting()
+                XCTAssertNil(runtime.diagnosticDestination)
+            case "destination":try runtime.setDestination(binding:installation.binding,nodeID:"other",origin:.trustedInterface)
+            case "source":backend.changeGeometry()
+            default:backend.resetRecovery()
+            }
+            backend.release();gate.release()
+            if change == "audit-map-delete" {
+                await fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in !controller.hasPendingCollisionForTesting && controller.routePointReceipts.isEmpty},object:nil)],timeout:10)
+            }
+            XCTAssertTrue(controller.routeReceipt.hasPrefix("WITHHELD"))
+            XCTAssertNil(controller.collisionAudit);XCTAssertTrue(controller.routePointReceipts.isEmpty)
+            XCTAssertNil(controller.scene?.rootNode.childNode(withName:"diagnostic-route",recursively:false))
+            try await runtime.waitForPendingOperationsForTesting()
+            try await finish()
+        }
+        try await exerciseHeldSavedWorldLoaderRetirement()
+    }
+
+    @MainActor private func exerciseHeldSavedWorldLoaderRetirement() async throws {
+        for reason in ["deletion","goal","cancel"] {
+            let root=FileManager.default.temporaryDirectory.appendingPathComponent("SeatedRestore-\(UUID().uuidString)")
+            let directory=root.appendingPathComponent("Places")
+            try FileManager.default.createDirectory(at:directory,withIntermediateDirectories:true)
+            let frame=SeatedMappedFixture.frame(),place=SavedPlace(id:try XCTUnwrap(UUID(uuidString:frame.placeID)),name:"Synthetic restore",createdAt:frame.capturedAt,objects:[],worldFrame:frame)
+            try JSONEncoder().encode(place).write(to:directory.appendingPathComponent("\(place.id).json"))
+            let places=PlaceStore(directory:directory),source=try XCTUnwrap(places.diagnosticGeometrySource(for:frame))
+            let runtime=try await SeatedMappedFixture.runtime(try SeatedMappedFixture.installation(frame:frame),io:SeatedMappedIO())
+            let destination=try XCTUnwrap(runtime.diagnosticDestination),backend=try SeatedCandidateFixtureBackend()
+            let entered=XCTestExpectation(description:"actual controller loader entered \(reason)"),ownerDone=XCTestExpectation(description:"restoration owner fully drained \(reason)")
+            ownerDone.assertForOverFulfill=true
+            let gate=DispatchSemaphore(value:0)
+            var stopped=false,draining=false
+            let request=SeatedMeshDiagnosticController.SavedWorldRequest(destination:destination,source:source,
+                isCurrent:{places.ownsDiagnosticGeometrySource(source)})
+            let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},destinationProvider:{runtime.diagnosticDestination},
+                savedWorldRequest:request,restoreLoader:{_ in
+                    entered.fulfill();_ = gate.wait(timeout:.now()+10)
+                    return .failure(LiveMeshBenchSession.Failure.unavailable) // No forged successful AR archive.
+                },onStopped:{stopped=true;ownerDone.fulfill()})
+            let retire: @MainActor () -> Void = {
+                guard !draining else{return};draining=true;controller.stop()
+                backend.stopAndDrain {DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting()}}
+            }
+            addTeardownBlock {
+                await MainActor.run {gate.signal();retire()}
+                await self.fulfillment(of:[ownerDone],timeout:10)
+                try? FileManager.default.removeItem(at:root)
+            }
+            try controller.activate()
+            await fulfillment(of:[entered],timeout:10)
+            XCTAssertTrue(controller.hasPendingRestorationForTesting);XCTAssertEqual(backend.activationCount,0)
+            if reason == "deletion" {places.retireDiagnosticGeometry(for:place)}
+            else if reason == "goal" {try runtime.setDestination(binding:destination.artifact.binding,nodeID:"other",origin:.trustedInterface)}
+            else {
+                retire()
+                XCTAssertFalse(stopped,"Native stop cannot release ownership while actual loader stack is held")
+            }
+            gate.signal()
+            await fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in !controller.hasPendingRestorationForTesting},object:nil)],timeout:10)
+            XCTAssertTrue(controller.stopped);XCTAssertEqual(backend.activationCount,0)
+            if reason != "cancel" {XCTAssertTrue(controller.sourceReceipt.contains("changed while loading"))}
+            XCTAssertNil(controller.collisionAudit);XCTAssertNil(controller.scene)
+            retire()
+            await fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in stopped},object:nil)],timeout:10)
+            guard stopped else{throw SeatedMappedFixtureFailure.noDrain}
+            try await runtime.waitForPendingOperationsForTesting()
+        }
+    }
+
+    @MainActor private func requestMappedPreview(_ controller:SeatedMeshDiagnosticController) {
+        controller.requestPreview(startText:"",goalText:"99 99 99",radiusText:"0.3",heightText:"1.7",
+            declaredMountText:"0 1.2 0",declaredYawText:"0",confirmed:true,marginText:"0.1",useMappedDestination:true)
+    }
+    @MainActor private func requireMappedSource(_ controller:SeatedMeshDiagnosticController) async throws {
+        await fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in controller.hasCurrentSourceForTesting},object:nil)],timeout:10)
+        guard controller.hasCurrentSourceForTesting else {
+            XCTFail("No admitted source; mapped consumer not executed")
+            throw SeatedMappedFixtureFailure.noSource
+        }
+    }
+    @MainActor private func mappedController(_ backend:SeatedCandidateFixtureBackend,
+        destinationProvider:@escaping () -> ConnectedJourneyRuntime.DiagnosticDestination?)
+        -> (SeatedMeshDiagnosticController, @MainActor () async throws -> Void) {
+        let hold=DispatchSemaphore(value:0)
+        let ownerDone=XCTestExpectation(description:"mapped fixture complete controller ownership drain")
+        ownerDone.assertForOverFulfill=true
+        var stopped=false,stopping=false
+        let controller=SeatedMeshDiagnosticController(testBackend:backend,clock:{backend.now},
+            destinationProvider:destinationProvider,onStopped:{stopped=true;ownerDone.fulfill()})
+        // Source and audit must NOT wait for optional visualization; preceding real
+        // visualization tests remain unchanged, not replaced by this fixture.
+        controller.enqueueSyntheticDisplayWorkForTesting(work:{},afterEnqueue:{hold.wait()},delivered:{})
+        let retire: @MainActor () -> Void = {
+            guard !stopping else {return};stopping=true
+            hold.signal();controller.stop()
+            backend.stopAndDrain {DispatchQueue.main.async {controller.acknowledgeTestBackendNativeDrainForTesting()}}
+        }
+        addTeardownBlock {
+            await MainActor.run {retire()}
+            // Sole waiter of this expectation, including thrown/refused outcomes.
+            await self.fulfillment(of:[ownerDone],timeout:10)
+        }
+        let finish: @MainActor () async throws -> Void = {
+            retire()
+            // Fresh predicate, never a second wait of ownerDone. Iterations cannot
+            // leave the actual native/source/render/audit owner active behind them.
+            await self.fulfillment(of:[XCTNSPredicateExpectation(predicate:NSPredicate {_,_ in stopped},object:nil)],timeout:10)
+            guard stopped else {XCTFail("Controller ownership did not drain");throw SeatedMappedFixtureFailure.noDrain}
+        }
+        return (controller,finish)
+    }
+
 }
 
 /// Copied synthetic frame scalars + an actual owned classified floor packet.
@@ -354,19 +569,24 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
     private let snapshots = MeshBenchCameraSnapshot()
     private let sessionID = UUID(), anchorID = UUID()
     private var active = true
+    private let recovery=MeshBenchSavedWorldRecovery()
+    private var recoveryTime: Double?
+    private var savedFrame: SavedWorldFrame?
     private let timingLock = NSLock()
     private var submittedAt: Double?, nativeCompletedAt: Double?, mainHeldAt: Double?
     private let sourceTiming=SeatedSourceTimingRecorder()
     var now = 10.0
     var state: LiveMeshBenchSession.State { active ? .capturing : .stopped(restored: false) }
     var hasCurrentTrackedSession: Bool { active }
+    var activationCount=0
+    var submittedGoal: [Float]?
     var submittedStart: [Float]?
     var submittedCapture: LiveMeshBenchSession.CameraCapture?
     var submittedSource: MeshCandidateIngress83.SourceSnapshot?
     var heldResult: Result<MeshCandidateIngress83.Candidate,MeshCandidateIngress83.Failure>?
     var onHeld: (() -> Void)?
     private var heldCompletion: ((Result<MeshCandidateIngress83.Candidate,MeshCandidateIngress83.Failure>) -> Void)?
-    init() throws {
+    init(savedFrame: SavedWorldFrame? = nil) throws {
         let decode = DispatchQueue(label: "seated.candidate.fixture.decode")
         ingress = try LiveMeshBenchIngress(captureSyntheticTestTiming: true,
             syntheticTimingCompletion: { id, rows in Self.printWorkerTiming(id: id, rows) }, decodeQueue: decode)
@@ -386,13 +606,26 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
         }
         guard accepted else { throw LiveMeshBenchSession.Failure.unavailable }
         decode.sync {}
+        self.savedFrame=savedFrame
+        if let savedFrame {
+            recovery.begin(frame:savedFrame,session:sessionID,now:9.7)
+            recovery.observe(session:sessionID,tracking:.relocalizing,mappingAvailable:true,originMatches:true,capturedAt:9.7,now:9.7)
+            for t in [9.8,9.9,10.0] {
+                recovery.observe(session:sessionID,tracking:.normal,mappingAvailable:true,originMatches:true,capturedAt:t,now:t)
+            }
+            recoveryTime=10.0
+        }
         ordinaryFrame()
     }
     func ordinaryFrame() {
+        if savedFrame != nil,let previous=recoveryTime,now > previous {
+            recovery.observe(session:sessionID,tracking:.normal,mappingAvailable:true,originMatches:true,capturedAt:now,now:now)
+            recoveryTime=now
+        }
         snapshots.observe(.init(session: sessionID,frame: UUID(),capturedAt: now,
             columnMajorCameraToWorld: [1,0,0,0,0,1,0,0,0,0,1,0,0,Double(Float(1.2)),0,1]))
     }
-    func activateForSeatedBench() throws {}
+    func activateForSeatedBench() throws {activationCount+=1}
     func stop() {
         active=false;snapshots.retire();ingress.stop()
         let retired=heldCompletion;heldCompletion=nil;heldResult=nil
@@ -437,12 +670,22 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
     func isCurrent(_ capture: LiveMeshBenchSession.CameraCapture) -> Bool { active && snapshots.isCurrent(capture,at: now) }
     func freezeCameraCapture() -> LiveMeshBenchSession.CameraCapture? { snapshots.freeze(at: now) }
     func retireCameraCapture() { snapshots.retire() }
+    func resetRecovery() { recovery.retire();recoveryTime=nil }
+    func savedFrameAssociation(for capture: LiveMeshBenchSession.CameraCapture, now: Double) -> SavedWorldFrameCameraAssociation? {
+        guard isCurrent(capture) else {return nil}
+        return recovery.association(session:capture.session,capturedAt:capture.capturedAt,now:now)
+    }
+    func isCurrent(_ association: SavedWorldFrameCameraAssociation,
+                   capture: LiveMeshBenchSession.CameraCapture, now: Double) -> Bool {
+        return isCurrent(capture) && capture.session == association.sessionID
+            && capture.capturedAt == association.capturedAt && recovery.isCurrent(association,now:now)
+    }
     func changeGeometry() { _ = ingress.remove(anchorID: anchorID,generation: ingress.generation,receiptUptime: now+0.01) }
     func requestPreview(start: [Float],goal: [Float],body: MeshCandidateBody,
                         capture: LiveMeshBenchSession.CameraCapture?,expectedSource: MeshCandidateIngress83.SourceSnapshot?,
                         completion: @escaping (Result<MeshCandidateIngress83.Candidate,MeshCandidateIngress83.Failure>) -> Void) {
         guard let capture, snapshots.canAdmit(capture,at: now), expectedSource != nil else { completion(.failure(.stale)); return }
-        submittedStart = start; submittedCapture = capture; submittedSource = expectedSource
+        submittedGoal = goal; submittedStart = start; submittedCapture = capture; submittedSource = expectedSource
         timingLock.lock(); submittedAt = ProcessInfo.processInfo.systemUptime; nativeCompletedAt = nil; mainHeldAt = nil; timingLock.unlock()
         ingress.request(generation: ingress.generation,start: start,goal: goal,body: body,expectedSource: expectedSource) { [weak self] result in
             if let self {
@@ -494,6 +737,49 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
         heldCompletion = nil; completion(heldResult)
     }
 }
+/// Supplied synthetic registry and copied frame sequence, not real saved-world
+/// relocalization. Uses the real installation/hash/catalog and recovery adapters.
+private enum SeatedMappedFixtureFailure: Error {case noSource,noDrain}
+private enum SeatedMappedFixture {
+    static func frame() -> SavedWorldFrame {
+        .init(placeID:UUID().uuidString,revision:UUID().uuidString,
+            worldMapSHA256:String(repeating:"a",count:64),roomCaptureSHA256:String(repeating:"b",count:64),
+            originAnchorID:UUID().uuidString,capturedAt:Date(timeIntervalSince1970:1))
+    }
+    static func installation(frame:SavedWorldFrame, twoFloors:Bool=false, upperFloor:Bool=false) throws -> SpatialMapInstallation {
+        let binding=SpatialMapBinding(mapID:"synthetic-mapped-seated",frameID:frame.frameID,revision:frame.revision)
+        let nodes:[SpatialPlaceNode]=[
+            .init(id:"world",kind:.world),.init(id:"place",kind:.place,parentID:"world"),
+            .init(id:"building",kind:.building,parentID:"place"),
+            .init(id:"floor",kind:.floor,parentID:"building"),
+            .init(id:"upper",kind:.floor,parentID:"building"),
+            .init(id:"room",kind:.room,parentID:upperFloor ? "upper" : "floor")]
+        let record=SpatialMapRevision(binding:binding,nodeID:twoFloors ? "building" : "room",metersPerUnit:1,
+            floorLevels:twoFloors ? ["ground":"floor","up":"upper"] : ["ground":upperFloor ? "upper" : "floor"],savedWorldFrame:frame)
+        let registry=SpatialRegistrySnapshot(nodes:nodes,maps:[record],activeBindings:[binding])
+        var map=IndoorMap(name:"SYNTHETIC selected destination",nodes:[
+            .init(id:"goal",name:"Goal",level:"ground",position:.init(1,0,0)),
+            .init(id:"other",name:"Other",level:"ground",position:.init(-1,0,0))],edges:[])
+        map.packageID=binding.mapID;map.packageRevision=binding.revision
+        let bytes=try SpatialMapInstallation.canonicalMapBytes(map)
+        return try .init(envelope:.init(snapshot:registry,binding:binding,mapBytes:bytes,
+            artifactHistory:[.init(binding:binding,sha256:try ConnectedFixture.sha256(bytes))]),sha256:ConnectedFixture.sha256)
+    }
+    @MainActor static func runtime(_ installation: SpatialMapInstallation, io:SeatedMappedIO) async throws -> ConnectedJourneyRuntime {
+        let runtime=ConnectedJourneyRuntime(io:io,sha256:ConnectedFixture.sha256)
+        runtime.restore();try await runtime.waitForPendingOperationsForTesting()
+        try runtime.install(installation);try await runtime.waitForPendingOperationsForTesting()
+        try runtime.setDestination(binding:installation.binding,nodeID:"goal",origin:.trustedInterface)
+        try await runtime.waitForPendingOperationsForTesting()
+        return runtime
+    }
+}
+private actor SeatedMappedIO: ConnectedJourneyRuntimeIO {
+    private var data:Data?
+    func read() -> Data? {data}
+    func write(_ payload:JourneyRuntimeWrite) throws {data=try payload.envelope().encoded()}
+}
+
 /// Only scalar metadata is retained by render callbacks, never the native owner.
 private final class SeatedSourceTimingRecorder {
     struct Context {let request:Int;let started:Double}

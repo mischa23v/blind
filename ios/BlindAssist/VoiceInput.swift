@@ -40,6 +40,7 @@ final class VoiceInput: ObservableObject {
     private var arabic = false
     private var backgroundAllowed = false
     var continuous: Bool { lifecycle.continuous }
+    var requiresExplicitRestart: Bool { lifecycle.requiresExplicitRestart }
     /// An open microphone is not itself a speaking turn.
     var awaitingUtterance: Bool {
         listening && (!continuous || acousticSpeechActive || (utterance.hasUserSpeech && !utterance.text.isEmpty && !utterance.ignored))
@@ -137,10 +138,10 @@ final class VoiceInput: ObservableObject {
         begin(arabic: arabic, continuous: false, timeout: timeout)
     }
 
-    func startContinuous(arabic: Bool) {
+    func startContinuous(arabic: Bool, explicitlyRequested: Bool = false) {
         // Do not duplicate permission requests or bypass an active interruption.
         guard !continuous || !lifecycle.requested || self.arabic != arabic else { return }
-        begin(arabic: arabic, continuous: true, timeout: 50)
+        begin(arabic: arabic, continuous: true, timeout: 50, explicitlyRequested: explicitlyRequested)
     }
 
     private var inBackground: Bool { UIApplication.shared.applicationState == .background }
@@ -149,9 +150,11 @@ final class VoiceInput: ObservableObject {
                                 backgroundAllowed: backgroundAllowed)
     }
 
-    private func begin(arabic: Bool, continuous: Bool, timeout: Double) {
+    private func begin(arabic: Bool, continuous: Bool, timeout: Double, explicitlyRequested: Bool = false) {
+        // Preserve the failure and reconnect affordance across automatic starts.
+        guard !lifecycle.requiresExplicitRestart || explicitlyRequested else { return }
         cancel(); self.arabic = arabic
-        let session = lifecycle.begin(continuous: continuous)
+        let session = lifecycle.begin(continuous: continuous, explicitlyRequested: explicitlyRequested)
         guard canCapture else { cancel(); return }
         state = .requestingPermission
         message = arabic ? "أتحقق من إذن الميكروفون والكلام." : "Checking microphone and speech permission."
@@ -398,7 +401,8 @@ final class VoiceInput: ObservableObject {
     }
     private func cancelRecovery() { recovery?.cancel(); recovery = nil }
     private func fail(_ text: String) {
-        cancel(); state = .failed; message = text; onUnavailable?(text)
+        cancel(); lifecycle.requireExplicitRestart()
+        state = .failed; message = text; onUnavailable?(text)
     }
     private func observe(_ name: Notification.Name, handler: @escaping (Notification) -> Void) {
         observers.append(NotificationCenter.default.addObserver(forName: name, object: nil, queue: .main, using: handler))

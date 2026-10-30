@@ -7,6 +7,7 @@ let package = Package(
     platforms: [.iOS(.v17), .macOS(.v13)],
     products: [.library(name: "LiveMeshClassifiedBench", targets: ["LiveMeshClassifiedBench"])],
     dependencies: [
+        .package(path: "../../BlindCore"),
         .package(path: "../mesh-candidate-ingress-83"),
         .package(path: "../arkit-mesh-adapter-82"),
         .package(path: "../native-mesh-decoder-81"),
@@ -14,6 +15,7 @@ let package = Package(
     ],
     targets: [
         .target(name: "LiveMeshClassifiedBench", dependencies: [
+            .product(name: "BlindCore", package: "BlindCore"),
             .product(name: "MeshCandidateIngress83", package: "mesh-candidate-ingress-83"),
             .product(name: "MeshSnapshot82", package: "arkit-mesh-adapter-82"),
             .product(name: "MeshBufferDecoder81", package: "native-mesh-decoder-81"),
@@ -21,6 +23,7 @@ let package = Package(
         ], path: "Sources"),
         .testTarget(name: "LiveMeshClassifiedBenchTests", dependencies: [
             "LiveMeshClassifiedBench",
+            .product(name: "BlindCore", package: "BlindCore"),
             .product(name: "MeshSnapshot82", package: "arkit-mesh-adapter-82"),
             .product(name: "MeshCandidateIngress83", package: "mesh-candidate-ingress-83"),
             .product(name: "BlindRoomMesh", package: "BlindRoomMesh")

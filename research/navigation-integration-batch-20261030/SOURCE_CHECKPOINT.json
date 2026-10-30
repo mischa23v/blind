@@ -1,0 +1,257 @@
+{
+  "scope": "shared source checkpoint; J01 adapter pending separate; CI/pins/project owned separately",
+  "base": "79951a34966f0881cd942fc27c833e020aacde2b plus reviewed map17 applied delta",
+  "receipts": [
+    "NAVIGATION_APPLIED.json",
+    "PHOTO_APPLIED.json",
+    "VOICE_APPLIED.json",
+    "LOCAL_REFERENCE_APPLIED.json",
+    "DELAYED_START_APPLIED.json",
+    "OPTIONAL_RTAB_APPLIED.json"
+  ],
+  "files": [
+    {
+      "path": "BlindCore/Sources/BlindCore/ConnectedJourneyCoordinator.swift",
+      "beforeSHA256": "a2c7aeb2546def7d84e1a378444cfe569fa22e8adccace3f4a71a28aaecd8ce7",
+      "sha256": "60ccdb7df639026dd315d2c8e563ed64a219b1f40e4008b4d919bcbf8bce2944",
+      "bytes": 30983
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/CurrentNavigationHazards.swift",
+      "beforeSHA256": null,
+      "sha256": "7ad37907f0fb752f9a7a328d9f13fff315a7c72221865fec148d8815bd1b2c5d",
+      "bytes": 3590
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/LocalRecipeReference.swift",
+      "beforeSHA256": null,
+      "sha256": "c826be8289a7d557abc5f157b5363e2cfa18e5e11b1099bcfc93c0befb2d0e34",
+      "bytes": 4210
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/NativeLocalGrid.swift",
+      "beforeSHA256": "333f3521ede9eb8c6af68f5ad87b1f595ed35343c6409ccb00f01620b14629c5",
+      "sha256": "4c607a6df58b155c3b42573c40124911271bbeaeee10dcd4498de29bed809343",
+      "bytes": 17248
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/RequestedVisualCapturePose.swift",
+      "beforeSHA256": "50735b9849c437c770f1dae63b7f8f70f1993a5bce6689901dce585d6e6350c8",
+      "sha256": "1c2b4fe930133b03bba76d3a1865656b3f015c3e1f824997783e431e5ddff5a8",
+      "bytes": 2188
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/VisualGrounding.swift",
+      "beforeSHA256": "807d6e547c5bed2fafb307a3aaf08ce22c8088316c14ee226356fd2568ff6443",
+      "sha256": "b71390ce4d557ec66913e66d09226606bc255c949d009fd59ee14394aec62191",
+      "bytes": 12608
+    },
+    {
+      "path": "BlindCore/Sources/BlindCore/VoiceCaptureRecoveryPolicy.swift",
+      "beforeSHA256": "028e306601df1764cf80ea40e10676a61756b10624d9860c2c044d7a0f953717",
+      "sha256": "29905d6c174e0edb43415ccf73ca59bd98dc5794ddcb6dc760b6557872fd4628",
+      "bytes": 5402
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/CurrentNavigationHazardsTests.swift",
+      "beforeSHA256": null,
+      "sha256": "268b7b2f7c3d3ac18e47d6cc4bcb083bd7be81fdd9d843c7aac0b093e0ac60cc",
+      "bytes": 4353
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/Fixtures/companion-evidence.json",
+      "beforeSHA256": "5ebe2d2cd4c1a637997ce935059bda682ed0324ff6fad0a6e24a03b4b35dbc0a",
+      "sha256": "33be5ec6e9715e9e4fcd2ba08ff1c6d72e249ca28071e2dd6c07c2f2ff8ee1b0",
+      "bytes": 22377
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/LocalRecipeReferenceTests.swift",
+      "beforeSHA256": null,
+      "sha256": "9a55624ddd1adbdd164e0222ed6f4ab740f5288c02e6220b502e1a93318d16f3",
+      "bytes": 2594
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/NativeCaptureRetentionTests.swift",
+      "beforeSHA256": null,
+      "sha256": "5718fa0781d381a69dd6e656ae53b2f9a50312d3941b0eae6aad089d864a10d8",
+      "bytes": 12589
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/NativeLocalGridTests.swift",
+      "beforeSHA256": "5e0d0902a45634e0f5bab5e081c2598a3db09f836b2cd4680abddb8760b1fc4c",
+      "sha256": "8f78d26a1dd1484c15e98c8afe9561a31f0067881d4268456ffc08470480267c",
+      "bytes": 18743
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/SceneFrameProvenanceTests.swift",
+      "beforeSHA256": null,
+      "sha256": "4eba63c00c46159fc6ed35e8dc3849c64ac748931b638dc6dfe52d595d4f2286",
+      "bytes": 2519
+    },
+    {
+      "path": "BlindCore/Tests/BlindCoreTests/VoiceCaptureRecoveryPolicyTests.swift",
+      "beforeSHA256": "ed6ad82daef06f0b46c3cba3975f3bd57442c268c756f8b088d56e76c4b4c5f0",
+      "sha256": "d692c97af3e34f7245fa609998eab297cf3caea297c05c5c0c738824d0191809",
+      "bytes": 12408
+    },
+    {
+      "path": "ios/BlindAssist/ConnectedJourneyRuntime.swift",
+      "beforeSHA256": "2ff5097fad719a5c6e562d2c067a209b4469eab009944129b2c94ae2265403e1",
+      "sha256": "5abf0b68a79afafb5d08b5ee7b3f2e80764df3b35dcd60a8e95725bedf382fc6",
+      "bytes": 46304
+    },
+    {
+      "path": "ios/BlindAssist/DashboardView.swift",
+      "beforeSHA256": "9dcaee803fb65a82a514821c75c688a81230bcd5d2593361cc1cac0390d1d03f",
+      "sha256": "cbefeebd8aa797bb0365e975e652b037767e6f42dbdc3b5436ce6f0f0d67cda3",
+      "bytes": 88351
+    },
+    {
+      "path": "ios/BlindAssist/LocalEmailDraftView.swift",
+      "beforeSHA256": null,
+      "sha256": "6cb63545feb877240c60c58a7668f7e966cc6c6a402f1b1e7fa5bbb0c8b2a512",
+      "bytes": 6445
+    },
+    {
+      "path": "ios/BlindAssist/LocalRecipeView.swift",
+      "beforeSHA256": null,
+      "sha256": "86ea9ea61c83c9b46b38141d28056f2f443e7a1809acf8addae02cc449e5db52",
+      "bytes": 7240
+    },
+    {
+      "path": "ios/BlindAssist/NativeMapping.swift",
+      "beforeSHA256": "a5fe0098cae590c0627aecc8da77ad847bd2f991f0bad0cbec66187c76221d9f",
+      "sha256": "81bb9e3bb42ae3eede0f2f81db837ab6faa885b0fad1dbc394189890ce3d6bd2",
+      "bytes": 12033
+    },
+    {
+      "path": "ios/BlindAssist/NavigationModel.swift",
+      "beforeSHA256": "d114861d0760fff9dbfd9e7caabb3f490ba058188ab798ca0db458faa4b5dd60",
+      "sha256": "62e54655e1133d52d7945f71ba0f38e8920afbc8c5fc363a2ecfeaa1abe40e42",
+      "bytes": 528143
+    },
+    {
+      "path": "ios/BlindAssist/SeatedMeshDiagnosticController.swift",
+      "beforeSHA256": "2a8b60835c13d94809376f7e9ff455b3c47d6d4a8177cd460e4e78239e130afa",
+      "sha256": "bb6527ad5e018e6316db2f4f103c16faf53cd4e5e142a8e513506c253a505565",
+      "bytes": 48177
+    },
+    {
+      "path": "ios/BlindAssist/SeatedMeshDiagnosticView.swift",
+      "beforeSHA256": "f29deaa1083e7d7d0dc86d6b871608cfdaa964ff30a587f171a21f37b3912a3c",
+      "sha256": "61981c8f5447b8b4b3dc8852e2ad8d7aa8442f217a34e9df896f7c02b68ac57f",
+      "bytes": 10008
+    },
+    {
+      "path": "ios/BlindAssist/VoiceInput.swift",
+      "beforeSHA256": "25e502117f31c077c94dd744080ffabcf6531421df95bf4934af188f14178a77",
+      "sha256": "d45140ec88d34bb9d14ab77da9682f299abdc2286e2c358fa9249befc832ae54",
+      "bytes": 26379
+    },
+    {
+      "path": "ios/BlindAssistTests/ConnectedJourneyRuntimeTests.swift",
+      "beforeSHA256": "1b39fcf6a76052ea4e5ba3db1ee7633299e6cdd55c00e8bee8965f80e01b92c3",
+      "sha256": "bc6d2d4dac8f961b998401b7c410149f5ad1d5045b0f04a7932b82f44c7e8dd5",
+      "bytes": 46428
+    },
+    {
+      "path": "ios/BlindAssistTests/ConversationRuntimeFailureTests.swift",
+      "beforeSHA256": "3d077fa77b1fa76c794058e94b36cdbf26c94120d29d321a6f72f9977965b561",
+      "sha256": "7df266e3b2b4d55d98292a1475c852f90c54783826956c2ea6800b4f2e721b03",
+      "bytes": 25207
+    },
+    {
+      "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
+      "beforeSHA256": "cdbdf36509ec6ea896ba43157c0540e3d79c878684a4fb4aaf128dd98c3ce215",
+      "sha256": "c0633d4c8b580ba749e0d51ea98b8b4584e2a99d7fec9dcae07f685286f4d51b",
+      "bytes": 56175
+    },
+    {
+      "path": "ios/BlindAssistUITests/LaunchTests.swift",
+      "beforeSHA256": "51c401ef12a0073380bf466de7ede815fbd87ef1c36a7b753bc4b3975fa94d1a",
+      "sha256": "187bc7f33b843c6f4e17b9a2e610c63a873907b9eb6acd9ac788a0d09d3ebbe3",
+      "bytes": 29513
+    },
+    {
+      "path": "research/accessibility-voice-continuity-20261030/README.md",
+      "beforeSHA256": null,
+      "sha256": "8f0b5ee8711e9282c51053d26cbb0293933a7c8cedd91b0af7e476d2d582835d",
+      "bytes": 6852
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Package.swift",
+      "beforeSHA256": "59e0c99d177787a1b428c7097d3ae05781a71270613336333428d2e43359d21b",
+      "sha256": "b74efac5a48710a6b98b9ab70b767f7d0ea751bc06bf56ccf9605b2a78d3aba1",
+      "bytes": 1583
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift",
+      "beforeSHA256": "ba6da6878b47193b9635e6655f751fc070eb8fa7b918e85d7f5b84f08979f391",
+      "sha256": "db8fcf844c97b92e66068fa1dbf10c9dbaeedea96abd666c3c1edfad5cb11b24",
+      "bytes": 29334
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Sources/MeshBenchSavedWorldRecovery.swift",
+      "beforeSHA256": null,
+      "sha256": "638b4266dde54dc0747c2a9141f867d70420669e079c297a836f1edefceca656",
+      "bytes": 2244
+    },
+    {
+      "path": "research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift",
+      "beforeSHA256": "84fb234067e2d20e3f309db55c6be34cf7488134536e06b4b2723125c116e3d8",
+      "sha256": "8ab39b3c8da0b686cc86b3f90e258294b16c78561b7eb7cc3408eb6155d5aa30",
+      "bytes": 25481
+    },
+    {
+      "path": "research/local-reference-actions-20261030/OFFLINE_ASSETS.json",
+      "beforeSHA256": null,
+      "sha256": "4a6351e948f56e3ac3334e5d89dc5aa60bfce3d3ea56d304cb136fe0aa645f19",
+      "bytes": 1528
+    },
+    {
+      "path": "research/local-reference-actions-20261030/README.md",
+      "beforeSHA256": null,
+      "sha256": "eab9b1cea3adb80999293df0a2237dd5a963b08f02a29d29336ac1e0eb275c07",
+      "bytes": 5605
+    },
+    {
+      "path": "research/local-reference-actions-20261030/example-format.json",
+      "beforeSHA256": null,
+      "sha256": "a48501c8937a12a3e3f02fa5a93293fe23a6b711f9dcb3cf0843a0585ca055f6",
+      "bytes": 405
+    },
+    {
+      "path": "server/src/companion-guards.mjs",
+      "beforeSHA256": "d86c3343d770ca476314d11aba8192f47e8370ff647c7c25de7fbae50fe8348f",
+      "sha256": "d6fb361f8ba5137bf69059b62a8b25b10d78d8684ff8bd29f4a4bdc14f977a20",
+      "bytes": 19889
+    },
+    {
+      "path": "tools/test/accessibility-voice-continuity.test.py",
+      "beforeSHA256": null,
+      "sha256": "dd23f98b05ef830ce56524609b1aa26dfcc7c7a8a804deff605a21ce0004ffef",
+      "bytes": 10098
+    },
+    {
+      "path": "tools/test/captured-photo-retention.test.mjs",
+      "beforeSHA256": null,
+      "sha256": "87e63c7e52f451caf835773fa97951c25d590c5e8d7240d628e774157ea9281e",
+      "bytes": 6172
+    },
+    {
+      "path": "tools/test/scene-frame-provenance.test.mjs",
+      "beforeSHA256": null,
+      "sha256": "984666f888e61dbc87d985037bf7d9863d5b42335fc49e3faaf1c90217816b8a",
+      "bytes": 6525
+    },
+    {
+      "path": "tools/test/visual-absence-contract.test.mjs",
+      "beforeSHA256": null,
+      "sha256": "32c81f254e0db6bbf7668dd6ee990f84ae717879d0c56268c346a96b7403df18",
+      "bytes": 1976
+    }
+  ],
+  "sourcePatchSHA256": "02d9f57b89d493dce100131bb5fa81a956510860a3382fe4fdb063f80e477689",
+  "exactReverseRestoresAppliedMapSource": true,
+  "nativeExecuted": false
+}

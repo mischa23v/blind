@@ -1,0 +1,35 @@
+{
+  "status": "reviewed_source_only_native_not_executed",
+  "trackerIDs": [
+    "N00 (tracker-reconciliation-20261028)",
+    "R09",
+    "R15"
+  ],
+  "baseCommit": "08ebe14065cfb286c7a6d99fd53b7b377c2ad287",
+  "requiredFutureBaseManifest": "8ee9fe6108da5257b60c5b88284f4e89724186bfbf3652188db081b043e2ef07",
+  "coreManifestSHA256": "50d25e4abd7371d3c72936232c7e782deebd7aba736076cb2665bdcc16483ff7",
+  "independentCoreReviewSHA256": "2b53d930326525091c086b60c9b69c683cfe5e4978df8dccd27a40dbc33653d5",
+  "CIManifestSHA256": "5d6763e3c8624f5fec6ffb0e2b599a8b747a11ab173bbed4e047ae98e63a575b",
+  "nativeExecuted": false,
+  "portableChecks": {
+    "core": 10,
+    "strictCollector": 62,
+    "diagnosticExporter": 57,
+    "integratedSourceChecks": 454,
+    "currentPins": 167
+  },
+  "productionSavedWorldProducer": "absent; reset source remains unregistered",
+  "sourceFiles": {
+    "ios/BlindAssist/ConnectedJourneyRuntime.swift": "2ff5097fad719a5c6e562d2c067a209b4469eab009944129b2c94ae2265403e1",
+    "ios/BlindAssist/SeatedMeshDiagnosticController.swift": "2a8b60835c13d94809376f7e9ff455b3c47d6d4a8177cd460e4e78239e130afa",
+    "ios/BlindAssist/SeatedMeshRouteAudit.swift": "e217126cda66bdb6299cea7da55d414b8d12b9d3293e15dc98bcd21fe23c433f",
+    "ios/BlindAssist/SeatedMeshDiagnosticView.swift": "f29deaa1083e7d7d0dc86d6b871608cfdaa964ff30a587f171a21f37b3912a3c",
+    "ios/BlindAssist/NavigationModel.swift": "d114861d0760fff9dbfd9e7caabb3f490ba058188ab798ca0db458faa4b5dd60",
+    "ios/BlindAssistTests/SeatedMeshProjectionTests.swift": "cdbdf36509ec6ea896ba43157c0540e3d79c878684a4fb4aaf128dd98c3ce215",
+    ".github/workflows/native-apple.yml": "53fd0097c5ee93e75856240ed3b72b3fc6b6317294cf780613bb450baafb4f76",
+    "tools/ci/collect-seated-projection.py": "330592b429c7d92ae71fb264857aa26a81a91d698ef01768e194c39a33ffd441",
+    "tools/ci/test-collect-seated-projection.py": "677ca50c4a95688996684d74fc1a465a433070ff562e78db07ad8997f4eac70c",
+    "tools/ci/export-seated-case-diagnostics.py": "9921aaedcf524067ac43a737c9773a8abe35bd932e94b8bb318c0961ab4f9ebd",
+    "tools/ci/test_export_seated_case_diagnostics.py": "4ecb3b818d2717f69c86836ac92154d10d0a02d3d23dd7ea9c2594558a38be42"
+  }
+}

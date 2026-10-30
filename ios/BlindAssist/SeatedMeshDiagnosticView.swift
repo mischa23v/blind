@@ -7,6 +7,7 @@ struct SeatedMeshDiagnosticView: View {
     @ObservedObject var model: NavigationModel
     @State private var entryError: String?
     @State private var confirming = false
+    @State private var restoreSelectedWorld = false
     @State private var viewID: UUID?
     @State private var confirmationID: UUID?
     var body: some View {
@@ -18,6 +19,8 @@ struct SeatedMeshDiagnosticView: View {
                 if let controller = model.seatedMeshDiagnostic {
                     SeatedMeshDiagnosticDisplay(controller: controller)
                 } else {
+                    Toggle("Restore selected destination's paired saved world",isOn:$restoreSelectedWorld)
+                    Text("Optional local-only relocalization in this diagnostic owner. Requires the exact paired saved map; no automatic location or body calibration. Missing/changed data stays unavailable.")
                     Button("I am seated with a helper — review camera handoff") {
                         guard let viewID, let confirmation = model.confirmSeatedMeshDiagnostic(viewID: viewID) else { return }
                         confirmationID = confirmation; confirming = true
@@ -33,10 +36,13 @@ struct SeatedMeshDiagnosticView: View {
         .confirmationDialog("Phone hazard monitoring will stop. Stay seated; this is not walking guidance.", isPresented: $confirming, titleVisibility: .visible) {
             Button("Start seated mesh diagnostic") {
                 guard let viewID, let confirmationID else { return }
-                entryError = model.beginSeatedMeshDiagnostic(viewID: viewID, confirmationID: confirmationID)
+                entryError = model.beginSeatedMeshDiagnostic(viewID: viewID, confirmationID: confirmationID,restoreSelectedWorld:restoreSelectedWorld)
                 self.confirmationID = nil
             }
             Button("Cancel", role: .cancel) { model.cancelSeatedMeshDiagnosticConfirmation(); confirmationID = nil }
+        }
+        .onChange(of:restoreSelectedWorld) {_ in
+            model.cancelSeatedMeshDiagnosticConfirmation();confirmationID=nil;confirming=false
         }
         .onAppear { viewID = model.openSeatedMeshDiagnosticView() }
         .onDisappear {
@@ -53,6 +59,7 @@ private struct SeatedMeshDiagnosticDisplay: View {
     @State private var height = "1.7"
     @State private var margin = ""
     @State private var useDeclaredFoot = false
+    @State private var useMappedDestination = false
     @State private var mount = ""
     @State private var yaw = ""
     @State private var confirmed = false
@@ -73,7 +80,10 @@ private struct SeatedMeshDiagnosticDisplay: View {
                     .frame(height: 280).accessibilityHidden(true)
                 Text("Actual source wireframe. Purple: normalized floor role, not verified support. Orange: obstacle role. Gray: unavailable role. Cyan: source-only preview, never a safe walking route. Raw ARKit class labels are unavailable. Drag to inspect the model, not to select a location.")
             }
-            Text("Supplied test coordinates only — session-local X Y Z, metres. No camera-to-body assumption. Radius and height are declared query parameters, not measured clearance.").font(.headline)
+            Text("Diagnostic endpoints — session-local test coordinates or an explicitly associated selected mapped goal. No camera-to-body assumption. Radius and height are declared query parameters, not measured clearance.").font(.headline)
+            Toggle("Use selected mapped destination — registered source required", isOn: $useMappedDestination)
+            Text("Selecting a mapped room does not locate this phone. Mapped mode requires the paired world selected before handoff and this exclusive owner’s fresh recovery evidence. Without it the source stays unregistered. Session-local test coordinates remain separate.")
+            Text(controller.hierarchyReceipt).textSelection(.enabled).accessibilityIdentifier("seated-mesh-hierarchy-receipt")
             Toggle("Use UNVALIDATED camera + declared mount candidate", isOn: $useDeclaredFoot)
             if useDeclaredFoot {
                 Text("Seated diagnostic only. Declare camera offset from floor below body centre: right, up, forward in metres. Body yaw is session-world: 0 faces -Z, +90 faces -X. Camera yaw is NOT body yaw. Yellow dot is the requested candidate, not verified feet.")
@@ -82,11 +92,11 @@ private struct SeatedMeshDiagnosticDisplay: View {
                 Toggle("Helper reviewed these unvalidated declarations", isOn: $confirmed)
             }
             TextField("Start X Y Z (metres)", text: $start).textFieldStyle(.roundedBorder).accessibilityIdentifier("seated-mesh-start-point")
-            TextField("Goal X Y Z (metres)", text: $goal).textFieldStyle(.roundedBorder).accessibilityIdentifier("seated-mesh-goal-point")
+            TextField("Goal X Y Z (metres)", text: $goal).textFieldStyle(.roundedBorder).disabled(useMappedDestination).accessibilityIdentifier("seated-mesh-goal-point")
             TextField("Declared radius (metres)", text: $radius).textFieldStyle(.roundedBorder)
             TextField("Declared height (metres)", text: $height).textFieldStyle(.roundedBorder)
             TextField("Explicit diagnostic margin (metres; zero allowed)",text:$margin).textFieldStyle(.roundedBorder)
-            Button("Request source-only strict preview") { controller.requestPreview(startText: start, goalText: goal, radiusText: radius, heightText: height, declaredMountText: useDeclaredFoot ? mount : nil, declaredYawText: useDeclaredFoot ? yaw : nil, confirmed: confirmed,marginText:margin) }
+            Button("Request source-only strict preview") { controller.requestPreview(startText: start, goalText: goal, radiusText: radius, heightText: height, declaredMountText: useDeclaredFoot ? mount : nil, declaredYawText: useDeclaredFoot ? yaw : nil, confirmed: confirmed,marginText:margin,useMappedDestination:useMappedDestination) }
                 .frame(minHeight: 44).disabled(controller.stopped).accessibilityIdentifier("seated-mesh-preview")
             Text(controller.footReceipt).textSelection(.enabled).accessibilityIdentifier("seated-mesh-foot-candidate")
             Text(controller.collisionReceipt).textSelection(.enabled).accessibilityIdentifier("seated-mesh-collision-receipt")
@@ -103,6 +113,7 @@ private struct SeatedMeshDiagnosticDisplay: View {
                 ForEach(Array(controller.anchorReceipts.enumerated()), id: \.offset) { _, receipt in Text(receipt).textSelection(.enabled) }
             }
         }
+        .onChange(of: useMappedDestination) { _ in controller.retirePreview() }
         .onChange(of: useDeclaredFoot) { _ in confirmed = false; controller.retirePreview() }
         .onChange(of: mount) { _ in confirmed = false; controller.retirePreview() }
         .onChange(of: yaw) { _ in confirmed = false; controller.retirePreview() }

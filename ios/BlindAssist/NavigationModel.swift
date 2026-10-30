@@ -129,7 +129,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         return ProcessInfo.processInfo.systemUptime
     }
     private var lastSceneModelReply: ModelResponseAuthority.Lease?
-    private var modelSceneCapture: (id: UUID, capturedAt: Double, origin: Point3, forward: Point3)?
+    private var modelSceneCapture: (id: UUID, capturedAt: Double, origin: Point3, forward: Point3, generation: UUID, sessionGeneration: UInt64)?
     private var modelResponseBinding: ModelResponseAuthority.Binding {
         .init(requestID: requestID, sessionGeneration: assistantSession.generation, goalRevision: companionWorkingState.goalRevision)
     }
@@ -137,11 +137,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         guard modelResponseAuthority.permits(lease, text: text, binding: modelResponseBinding,
             now: modelResponseNow) else { return false }
         if lease.producer == .sceneDescription {
-            guard running, !simulation, !places.scanning, let capture = modelSceneCapture, capture.id == lease.id else { return false }
-            return SceneDelivery.allowed(capturedAt: capture.capturedAt, now: ProcessInfo.processInfo.systemUptime,
-                origin: capture.origin, current: lastObservation?.camera, currentFrameAt: lastFrameWallTime,
+            guard running, !simulation, !places.scanning, let capture = modelSceneCapture, capture.id == lease.id,
+                  let frame = session.currentFrame, let current = captureObjectView(frame),
+                  current.generation == capture.generation, current.sessionGeneration == capture.sessionGeneration else { return false }
+            return RequestedVisualCapturePose.sceneDeliveryAllowed(capturedAt: capture.capturedAt, now: ProcessInfo.processInfo.systemUptime,
+                origin: capture.origin, current: current.origin, currentFrameAt: current.capturedAt,
                 hazard: detection.hazard, tracking: lastObservation?.trackingNormal == true,
-                originForward: capture.forward, currentForward: lastObservation?.forward)
+                originForward: capture.forward, currentForward: current.forward)
         }
         guard let required = CompanionEvidenceGuard.requiredVisualEvidence(text, reports: lease.reports, evidence: lease.evidence) else { return false }
         let captures = required.compactMap { conversationEvidenceCaptures[$0.id] }
@@ -658,6 +660,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     private var observationDeletionCutoffs = ObservationDeletionCutoffs()
     private var observedObjects = ObservedObjectMemory()
+    private var currentNavigationHazards = CurrentNavigationHazards()
     private var observationFrameID = UUID().uuidString
     private var nativeLocalizationMount = UUID()
     // Diagnostic marker only: no measured calibration/error/support provider exists.
@@ -678,6 +681,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     private func invalidateNativeLocalization(_ reason: NativeLocalizationNotReady) {
+        currentNavigationHazards.invalidate()
         withNativeLocalization { $0.invalidate(reason) }
     }
     private func offerNativeLocalization(_ frame: ARFrame, now: Double) {
@@ -696,6 +700,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
     }
     private func revalidateNativeLocalization(now: Double) {
+        _ = revalidateCurrentNavigationHazards(now: now)
         guard let arSession = UUID(uuidString: observationFrameID) else { invalidateNativeLocalization(.ownerChanged); return }
         withNativeLocalization { $0.watchdog(arSession: arSession,
             calibrationRevision: nativeLocalizationCalibrationRevision, mountRevision: nativeLocalizationMount, now: now) }
@@ -808,9 +813,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         selectedDocumentImportOwner != nil || selectedDocument.ownsAttention
     }
     private var selectedPhoto = SelectedPhotoReference()
-    // Retained until actual transfer/decode/Vision completion, even after UI
-    // cancellation. Never clear this lease merely because a result is stale.
-    private var selectedPhotoNativeLease: UUID?
+    // Shared by selected-library and captured-camera pictures. Retained until
+    // actual transfer/decode/Vision completion, even after UI cancellation.
+    // Never clear this lease merely because a result is stale.
+    @MainActor private var selectedPhotoNativeLease: UUID?
     private var selectedPhotoSpeechIDs = Set<UUID>()
     private var photoExpiryTask: Task<Void, Never>?
     private var selectedPhotoTask: Task<Void, Never>?
@@ -1252,7 +1258,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         guard seatedDiagnosticPresentation.close(view: viewID) else { return }
         stopSeatedMeshDiagnostic()
     }
-    func beginSeatedMeshDiagnostic(viewID: UUID, confirmationID: UUID) -> String? {
+    func beginSeatedMeshDiagnostic(viewID: UUID, confirmationID: UUID, restoreSelectedWorld: Bool = false) -> String? {
         dispatchPrecondition(condition: .onQueue(.main))
         guard seatedDiagnosticPresentation.consume(view: viewID, confirmation: confirmationID) else {
             return "Confirmation expired. Reopen the seated diagnostic and confirm again."
@@ -1267,10 +1273,30 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
               session.delegate === self, session.delegateQueue === DispatchQueue.main else {
             return "Requires foreground camera permission and a LiDAR iPhone with classified mesh support."
         }
+        var savedWorldRequest: SeatedMeshDiagnosticController.SavedWorldRequest?
+        if restoreSelectedWorld {
+            guard let destination=journeys.withConnectedJourney({$0.diagnosticDestination}),
+                  let frame=destination.mapRevision.savedWorldFrame,
+                  let source=MainActor.assumeIsolated({ places.diagnosticGeometrySource(for:frame) }) else {
+                return "Selected destination has no available paired saved world. No camera handoff or guessed alignment occurred."
+            }
+            savedWorldRequest = .init(destination:destination,source:source,isCurrent:{[weak self] in
+                guard let self else{return false}
+                guard MainActor.assumeIsolated({ self.places.ownsDiagnosticGeometrySource(source) }),
+                      let current=self.journeys.withConnectedJourney({$0.diagnosticDestination}) else{return false}
+                // Goal edits within this exact installed world retire the preview,
+                // not the recovered coordinate frame. Map/store replacement does.
+                return current.artifact==destination.artifact && current.mapRevision==destination.mapRevision
+                    && current.ownerID==destination.ownerID && current.catalogRevision==destination.catalogRevision
+                    && current.registryInstallationID==destination.registryInstallationID
+            })
+        }
         seatedDiagnosticHold = true // Before cleanup can trigger late completions.
         stop()
         do {
-            let controller = try SeatedMeshDiagnosticController(session: session, expectedDelegate: self) { [weak self] in
+            let controller = try SeatedMeshDiagnosticController(session: session, expectedDelegate: self,
+                destinationProvider: { [weak self] in self?.journeys.withConnectedJourney { $0.diagnosticDestination } },
+                savedWorldRequest:savedWorldRequest) { [weak self] in
                 // Remain stopped after native drain. Foreground/conversation never
                 // clears the hold; only an explicit normal-camera action may do so.
                 self?.seatedMeshDiagnostic = nil
@@ -1330,6 +1356,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
               ARWorldTrackingConfiguration.isSupported, !cameraRecovery.blocked,
               !cameraRecovery.exhausted || recoveryAttempt else { return }
         observationFrameID = worldSessionID.uuidString
+        currentNavigationHazards.begin(sessionID: worldSessionID)
         if map == nil { places.invalidateWorldMapRecovery() }
         observedObjects.invalidateGeometry()
         defer { updateLiveActivity() }
@@ -1749,6 +1776,20 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         publish()
     }
 
+    /// Additional veto only. Existing localization/body/support/map and route
+    /// output gates remain mandatory; no observed-status grant is issued here.
+    @discardableResult private func revalidateCurrentNavigationHazards(now: Double) -> Bool {
+        let accepted = running && cameraAwareness && assistantSession.foregroundActive && !simulation &&
+            UUID(uuidString: observationFrameID).map {
+                currentNavigationHazards.state(sessionID: $0, now: now).permitsFurtherIndependentChecks
+            } == true
+        if !accepted {
+            spatialRouteOutput.retire()
+            journeys.withConnectedJourney { $0.retireCurrentObstacleEvidence() }
+        }
+        return accepted
+    }
+
     private func processDepthHazards(_ observation: Observation, frame: ARFrame, receivedAt: Double) {
         let legacyDetection = detector.process(observation)
         if legacyDetection.hazard.isUrgent {
@@ -1762,6 +1803,12 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
             bodyWarningAssessment = bodyAssessment
             phoneDetection = BodyCollisionWarning.combining(legacyDetection, with: bodyAssessment)
         }
+        if let sessionID = UUID(uuidString: observationFrameID) {
+            currentNavigationHazards.consume(sessionID: sessionID, capturedAt: frame.timestamp,
+                receivedAt: receivedAt, trackingNormal: observation.trackingNormal,
+                detection: phoneDetection, estimatedFloorHeight: detector.floorHeight)
+        } else { currentNavigationHazards.invalidate() }
+        _ = revalidateCurrentNavigationHazards(now: receivedAt)
     }
 
     #if BLIND_FAMILIAR_PEOPLE
@@ -2124,6 +2171,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
               now >= lastFrameWallTime, now - lastFrameWallTime < 0.5,
               detection.hazard == .observing else { return false }
         guard connectedJourneyOwnsNavigation else { return false }
+        // Feedback invokes this permission again at actual delayed speech/beacon
+        // start. Pure inspection only: retirement here would re-enter this gate.
+        guard let hazardSession = UUID(uuidString: observationFrameID),
+              currentNavigationHazards.state(sessionID: hazardSession, now: now).permitsFurtherIndependentChecks else { return false }
         return journeys.withConnectedJourney { $0.goal?.revision == ticket.goalRevision && $0.permits(ticket, now: now) }
     }
     /// A selected connected owner remains selected after arrival/cancellation.
@@ -2882,16 +2933,19 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         }
         guard !cloud || !offlineOnly else { message = "Offline mode is enabled."; return }
         guard running, !simulation, !places.scanning, !busy, detection.hazard == .observing,
-              let origin = lastObservation?.camera,
-              let originForward = lastObservation?.forward,
-              let frame = session.currentFrame, ProcessInfo.processInfo.systemUptime - lastFrameWallTime < 0.5 else {
+              let frame = session.currentFrame, let capture = captureObjectView(frame) else {
             if !automatic {
                 answerConversation(question)
             }
             return
         }
+        // Pixels, timestamp and full optical pose come from the SAME admitted
+        // ARFrame, never a newer delegate callback clock or another observation.
+        let origin = capture.origin, originForward = capture.forward
+        guard let originHeading = NativeDepthObservationPolicy.horizontalForward(
+            opticalX: Float(originForward.x), opticalZ: Float(originForward.z)) else { return }
         if !automatic, !feedback.canSpeakAmbient {
-            queueQuestion(question, cloud: cloud, focus: focus, camera: origin, forward: originForward)
+            queueQuestion(question, cloud: cloud, focus: focus, camera: origin, forward: originHeading)
             return
         }
         voice.endManualTurn()
@@ -2919,7 +2973,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         let visualTracks = peopleTracking.snapshot(at: ProcessInfo.processInfo.systemUptime)
         initialSituation["visualTracks"] = visualTracks
         let situationCreatedAt = ProcessInfo.processInfo.systemUptime
-        let image = frame.capturedImage, capturedAt = lastFrameWallTime
+        let image = frame.capturedImage, capturedAt = capture.capturedAt
         let passiveOwner = passiveSceneOwner
         busy = true; questionIsAutomatic = automatic; questionIsChat = false
         let currentRequest = UUID(); requestID = currentRequest
@@ -2945,9 +2999,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 for _ in 0..<2 {
                     try await Task.sleep(for: .milliseconds(150))
                     guard self.requestID == currentRequest, let laterFrame = self.session.currentFrame,
+                          let laterCapture = self.captureObjectView(laterFrame),
+                          laterCapture.generation == capture.generation,
+                          laterCapture.sessionGeneration == capture.sessionGeneration,
                           laterFrame.timestamp > frame.timestamp,
                           !groundingTimestamps.contains(laterFrame.timestamp),
-                          ProcessInfo.processInfo.systemUptime - self.lastFrameWallTime < 0.5 else { break }
+                          RequestedVisualCapturePose.poseStable(origin: origin, current: laterCapture.origin,
+                            originForward: originForward, currentForward: laterCapture.forward) else { break }
                     groundingTimestamps.insert(laterFrame.timestamp)
                     let later = laterFrame.capturedImage
                     if let extra = try? await Task.detached(priority: .userInitiated, operation: {
@@ -3013,7 +3071,10 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     }
                 }
                 try Task.checkCancellation()
-                guard self.requestID == currentRequest, self.assistantDialogue.goalRevision == dialogue.goalRevision,
+                guard self.requestID == currentRequest,
+                      self.passiveObservationGeneration == capture.generation,
+                      self.assistantSession.generation == capture.sessionGeneration,
+                      self.assistantDialogue.goalRevision == dialogue.goalRevision,
                       self.preferencesRevision == interestRevision,
                       self.indoor.revision == mapRevision, self.indoor.alignmentRevision == alignmentRevision else { return }
                 guard self.recognizedPlace?.id == preview?.id else { return }
@@ -3027,10 +3088,14 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                     self.message = arabic ? "تغيرت قراءات الحساسات أو انقطع وصولها. اطلب وصفاً جديداً." : "Sensor readings changed or became unavailable. Request a new description."
                     return
                 }
-                guard SceneDelivery.allowed(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime,
-                    origin: origin, current: self.lastObservation?.camera, currentFrameAt: self.lastFrameWallTime,
-                    hazard: self.detection.hazard, tracking: self.lastObservation?.trackingNormal == true,
-                    originForward: originForward, currentForward: self.lastObservation?.forward) else {
+                guard let deliveryFrame = self.session.currentFrame,
+                      let deliveryCapture = self.captureObjectView(deliveryFrame),
+                      deliveryCapture.generation == capture.generation,
+                      deliveryCapture.sessionGeneration == capture.sessionGeneration,
+                      RequestedVisualCapturePose.sceneDeliveryAllowed(capturedAt: capturedAt, now: ProcessInfo.processInfo.systemUptime,
+                        origin: origin, current: deliveryCapture.origin, currentFrameAt: deliveryCapture.capturedAt,
+                        hazard: self.detection.hazard, tracking: self.lastObservation?.trackingNormal == true,
+                        originForward: originForward, currentForward: deliveryCapture.forward) else {
                     self.message = "The view changed before the answer was ready. Request a new description."; return
                 }
                 // Generic VLM and OCR summaries cannot bypass dedicated money recognition.
@@ -3075,7 +3140,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                 if fromModel {
                     guard let lease = self.modelResponseAuthority.admit(answer, producer: .sceneDescription,
                         binding: self.modelResponseBinding, createdAt: capturedAt, now: now) else { return }
-                    self.modelSceneCapture = (lease.id, capturedAt, origin, originForward)
+                    self.modelSceneCapture = (lease.id, capturedAt, origin, originForward, capture.generation, capture.sessionGeneration)
                     modelReply = lease
                 } else { modelReply = nil }
                 // Novelty belongs to independent observations and completed playback, not
@@ -3096,7 +3161,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
                                                          currentOwner: self.passiveSceneOwner)
                         self.companion.release(candidate.key)
                     }
-                    if !automatic { self.queueQuestion(question, cloud: cloud, focus: focus, camera: origin, forward: originForward) }
+                    if !automatic { self.queueQuestion(question, cloud: cloud, focus: focus, camera: origin, forward: originHeading) }
                     return
                 }
                 let sessionID = self.narrationSession, at = Date()
@@ -5202,6 +5267,7 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
     }
     private func connectedJourneyBeacon(automatic: Bool) {
         let now = ProcessInfo.processInfo.systemUptime
+        guard revalidateCurrentNavigationHazards(now: now) else { return }
         journeys.withConnectedJourney { $0.revalidate(now: now) }
         guard let held = try? journeys.withConnectedJourney({ try $0.next(now: now) }),
               let cue = held.route.directionalCue() else { return }
@@ -5210,11 +5276,13 @@ final class NavigationModel: NSObject, ObservableObject, ARSessionDelegate {
         if automatic, key == lastIndoorCueKey { return }
         guard let speech = SpatialRouteSpeech(ticket: ticket, arabic: arabic) else { return }
         if spatialRouteOutput.deliver(message: speech, goalRevision: revision, speech: { id, text in
+            guard self.revalidateCurrentNavigationHazards(now: ProcessInfo.processInfo.systemUptime) else { return false }
             let candidate = InformationCandidate(key: "spatial-route:" + id.uuidString, kind: .mobility,
                 text: text, words: Self.wordCount(text), revision: id.uuidString,
                 createdAt: now, expiresAt: now + SavedWorldFrameRecovery.maximumFrameAge)
             return self.deliverCandidate(candidate, speechID: id, spatialRouteID: id)
         }, beacon: { id in
+            guard self.revalidateCurrentNavigationHazards(now: ProcessInfo.processInfo.systemUptime) else { return }
             self.feedback.spatialRouteBeacon(sector: cue.sector, distance: min(10, cue.distance), id: id)
         }) {
             lastIndoorAnnouncement = now; lastIndoorCueKey = key
@@ -5421,7 +5489,7 @@ extension NavigationModel {
         cancelDescription()
         voice.setBackgroundAllowed(backgroundConversation)
         if cameraAwareness && assistantSession.foregroundActive && !textOnly && !running { start() }
-        if !textOnly && assistantSession.shouldListen { voice.startContinuous(arabic: arabic) }
+        if !textOnly && assistantSession.shouldListen { voice.startContinuous(arabic: arabic, explicitlyRequested: true) }
         message = arabic ? "المحادثة الصوتية مفعلة." : "Voice conversation is on."
     }
 
@@ -7412,7 +7480,23 @@ extension NavigationModel {
     }
 
     /// Captured pictures are explicitly snapshots, never evidence of the current room or path.
-    func captureExploreSnapshot() {
+    @MainActor func captureExploreSnapshot() {
+        // Cancellation retires output, not synchronous Vision. Reuse the photo
+        // worker lease so repeated capture/clear/picker actions cannot retain an
+        // unbounded backlog of camera buffers and preview images.
+        guard selectedPhotoNativeLease == nil else {
+            speakOperation(arabic ? "لا تزال الصورة السابقة قيد المعالجة. حاول مجدداً بعد قليل." : "The previous picture is still processing. Please try again shortly.")
+            return
+        }
+        // Actor-isolated acquisition precedes invalidation and image allocation.
+        // Early failures release here; an admitted task owns the same slot until
+        // its noncancellable native reader has really finished.
+        let nativeLease = UUID()
+        selectedPhotoNativeLease = nativeLease
+        var handedToNativeTask = false
+        defer {
+            if !handedToNativeTask, selectedPhotoNativeLease == nativeLease { selectedPhotoNativeLease = nil }
+        }
         clearSelectedDocument()
         clearExploreSnapshot()
         cancelDescription()
@@ -7426,6 +7510,10 @@ extension NavigationModel {
         guard let cg = CIContext().createCGImage(oriented, from: oriented.extent) else { return }
         let image = UIImage(cgImage: cg), token = exploreRequest, generation = assistantSession.generation
         exploreTask = Task { @MainActor [weak self] in
+            defer {
+                if self?.selectedPhotoNativeLease == nativeLease { self?.selectedPhotoNativeLease = nil }
+            }
+            guard !Task.isCancelled else { return }
             let regions = await Task.detached(priority: .userInitiated) {
                 (try? VisionService.exploreRegions(image: pixels, orientation: .right, arabic: arabic)) ?? []
             }.value
@@ -7437,6 +7525,7 @@ extension NavigationModel {
                 ? (arabic ? "الصورة الملتقطة جاهزة. لم أتعرف على مناطق فيها." : "Captured picture ready. I didn't recognize any regions in it.")
                 : (arabic ? "الصورة الملتقطة جاهزة. استكشف المناطق باللمس. هذه صورة سابقة وليست وصفاً حياً." : "Captured picture ready. Explore the regions by touch. This is a snapshot, not a live view."))
         }
+        handedToNativeTask = true
     }
     func clearExploreSnapshot() {
         photoReferenceFailed = false
@@ -7467,7 +7556,7 @@ extension NavigationModel {
         guard photoViewID == id else { return }
         clearExploreSnapshot(); photoViewID = nil; photoPickerRequested = false
     }
-    func beginSelectedPhoto(viewID: UUID) -> SelectedPhotoReference.Selection? {
+    @MainActor func beginSelectedPhoto(viewID: UUID) -> SelectedPhotoReference.Selection? {
         guard photoViewID == viewID, assistantSession.foregroundActive, selectedPhotoNativeLease == nil else { return nil }
         clearSelectedPhotoReference()
         let selection = selectedPhoto.select(viewID: viewID, generation: assistantSession.generation,
@@ -7476,7 +7565,7 @@ extension NavigationModel {
         startSelectedPhotoExpiry()
         return selection
     }
-    func finishSelectedPhotoNativeWork(_ selection: SelectedPhotoReference.Selection) {
+    @MainActor func finishSelectedPhotoNativeWork(_ selection: SelectedPhotoReference.Selection) {
         if selectedPhotoNativeLease == selection.id { selectedPhotoNativeLease = nil }
     }
     func selectedPhotoLoadIsCurrent(_ selection: SelectedPhotoReference.Selection) -> Bool {
@@ -7551,7 +7640,7 @@ extension NavigationModel {
 
     /// User-selected library photo, entirely on-device and separate from current
     /// camera/room evidence. Ownership was assigned before asynchronous loading.
-    @discardableResult func explorePhoto(_ image: UIImage, selection: SelectedPhotoReference.Selection, sha256: String) -> Bool {
+    @MainActor @discardableResult func explorePhoto(_ image: UIImage, selection: SelectedPhotoReference.Selection, sha256: String) -> Bool {
         guard selectedPhotoNativeLease == selection.id, selectedPhotoLoadIsCurrent(selection), let cg = image.cgImage else { return false }
         let orientation = CGImagePropertyOrientation(image.imageOrientation), arabic = self.arabic
         let token = selection.id, generation = assistantSession.generation

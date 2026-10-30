@@ -12,6 +12,7 @@ from unittest.mock import patch
 HERE=Path(__file__).resolve().parent
 spec=importlib.util.spec_from_file_location('seated_diagnostic', HERE/'export-seated-case-diagnostics.py')
 m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+MAPPED=['SeatedMeshProjectionTests/testMappedDestinationFeedsActualStrictQueryAndCollisionReceipt', 'SeatedMeshProjectionTests/testMappedDestinationRefusesMissingWrongStaleAndCrossFloorAssociation', 'SeatedMeshProjectionTests/testMappedDestinationRetiresHeldResultsOnRestartMapGoalAndSourceChanges']
 NAME=m.EXPECTED[0]
 CASES=[{'identifier':name+'()', 'result':'Passed'} for name in m.EXPECTED]
 
@@ -26,15 +27,15 @@ def assertion(name=NAME,message='XCTAssertTrue failed',filename=None):
     return f'/private/not-exported/{filename or cls}.swift:123: error: -[BlindAssistTests.{cls} {method}] : {message}\n'
 
 class ProjectionTests(unittest.TestCase):
-    def test_all_eighteen_exact_identities(self):
-        result=m.project_cases(CASES);self.assertEqual(len(result['cases']),18);self.assertTrue(result['exactCaseSetObserved'])
+    def test_all_twenty_one_exact_identities(self):
+        result=m.project_cases(CASES);self.assertEqual(len(result['cases']),21);self.assertTrue(result['exactCaseSetObserved'])
     def test_failed_skipped_and_expected_failures_preserved(self):
         for status in ['Failed','Skipped','Expected Failure']:
             rows=[{'identifier':NAME,'result':status}]
             self.assertEqual(m.project_cases(rows)['cases'],rows)
     def test_duplicates_preserved_not_clean(self):
         result=m.project_cases(CASES+[CASES[0]])
-        self.assertEqual(len(result['cases']),19);self.assertEqual(result['duplicateExpectedCaseRows'],1);self.assertFalse(result['exactCaseSetObserved'])
+        self.assertEqual(len(result['cases']),22);self.assertEqual(result['duplicateExpectedCaseRows'],1);self.assertFalse(result['exactCaseSetObserved'])
     def test_unknown_identity_withheld(self):
         result=m.project_cases([{'identifier':'PrivateTests/testPersonal','result':'Failed'}])
         self.assertEqual(result['unexpectedCaseCount'],1);self.assertNotIn('Personal',str(result))
@@ -146,9 +147,9 @@ class CollectTests(unittest.TestCase):
         result=self.run_export();self.assertEqual(result['status'],'diagnostic-only');self.assertEqual(result['acceptance'],'not_inferred_strict_collector_unchanged')
     def test_summary_count_mismatch_keeps_case_rows(self):
         self.summary['totalTestCount']=999;result=self.run_export()
-        self.assertFalse(result['aggregateCountsMatch']);self.assertEqual(len(result['cases']),18)
+        self.assertFalse(result['aggregateCountsMatch']);self.assertEqual(len(result['cases']),21)
     def test_missing_summary_keeps_cases_and_log_categories(self):
-        result=self.run_export(summary_error=True);self.assertEqual(len(result['cases']),18);self.assertIn('logFailureCategories',result)
+        result=self.run_export(summary_error=True);self.assertEqual(len(result['cases']),21);self.assertIn('logFailureCategories',result)
     def test_missing_cases_keeps_summary_categories(self):
         result=self.run_export(case_error=True);self.assertNotIn('cases',result);self.assertIn('summaryFailureCategories',result)
     def test_unknown_summary_schema_explicit(self):
@@ -198,5 +199,34 @@ class SourceTests(unittest.TestCase):
         source=(self.root/m.FIXTURES[0]).read_text();collision=(self.root/m.FIXTURES[1]).read_text()
         with self.assertRaises(ValueError):m.strict.collect(CASES,summary(CASES),'',{'exit_code':65},source,collision)
 
+
+class MappedDiagnosticControls(unittest.TestCase):
+    def test_same_closed_allowlist_as_strict_collector(self):
+        self.assertEqual(list(m.EXPECTED),m.strict.EXPECTED)
+        self.assertEqual(m.EXPECTED[14:17],tuple(MAPPED))
+        self.assertEqual(len(m.EXPECTED),21)
+    def test_all_original_eighteen_retained(self):
+        original=list(m.EXPECTED[:14])+list(m.EXPECTED[17:])
+        self.assertEqual(len(original),18)
+        result=m.project_cases([{'identifier':x,'result':'Failed'} for x in original])
+        self.assertEqual([x['identifier'] for x in result['cases']],original)
+    def test_each_mapped_failed_skipped_and_expected_failure_retained(self):
+        for name in MAPPED:
+            for status in ['Failed','Skipped','Expected Failure']:
+                with self.subTest(name=name,status=status):
+                    self.assertEqual(m.project_cases([{'identifier':name,'result':status}])['cases'],[{'identifier':name,'result':status}])
+    def test_each_mapped_summary_category_retained_without_message(self):
+        for name in MAPPED:
+            result=m.summary_failures({'testFailures':[{'testIdentifier':name,'message':'XCTAssertEqual failed PRIVATE'}]})
+            with self.subTest(name=name):
+                self.assertEqual(result['records'],[{'identifier':name,'category':'assert_equal'}]);self.assertNotIn('PRIVATE',str(result))
+    def test_each_mapped_fixed_log_category_retained(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'log'
+            for name in MAPPED:
+                path.write_text(assertion(name))
+                with self.subTest(name=name):self.assertEqual(m.log_failures(path)['records'][0]['identifier'],name)
+    def test_similar_mapped_name_withheld(self):
+        for name in MAPPED:self.assertIsNone(m.identity(name+'Extra'))
 
 if __name__=='__main__':unittest.main()
