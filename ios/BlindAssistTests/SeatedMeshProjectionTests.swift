@@ -137,6 +137,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
         controller.requestPreview(startText: "ignored",goalText: "1 0 0",radiusText: "0.3",heightText: "1.7",
             declaredMountText: "0 1.2 0",declaredYawText: "0",confirmed: true)
         await fulfillment(of: [resultReady],timeout: 10)
+        backend.printTiming(event: "happy_wait_finished")
         let submitted = try XCTUnwrap(backend.submittedStart)
         let captured = try XCTUnwrap(backend.submittedCapture)
         XCTAssertEqual(submitted[0],0); XCTAssertEqual(submitted[1],0,accuracy: 1e-6); XCTAssertEqual(submitted[2],0)
@@ -180,6 +181,7 @@ final class SeatedMeshProjectionTests: XCTestCase {
             controller.requestPreview(startText: "",goalText: "1 0 0",radiusText: "0.3",heightText: "1.7",
                 declaredMountText: "0 1.2 0",declaredYawText: "0",confirmed: true)
             await fulfillment(of: [ready],timeout: 10)
+            backend.printTiming(event: "rejection_wait_finished")
             _ = try XCTUnwrap(backend.heldResult).get() // A native refusal is not a passing retirement test.
             if retireSource { backend.changeGeometry() }
             else { _ = backend.freezeCameraCapture() } // Explicit request replacement within same frame.
@@ -203,6 +205,8 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
     private let snapshots = MeshBenchCameraSnapshot()
     private let sessionID = UUID(), anchorID = UUID()
     private var active = true
+    private let timingLock = NSLock()
+    private var submittedAt: Double?, nativeCompletedAt: Double?, mainHeldAt: Double?
     var now = 10.0
     var state: LiveMeshBenchSession.State { active ? .capturing : .stopped(restored: false) }
     var hasCurrentTrackedSession: Bool { active }
@@ -214,7 +218,8 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
     private var heldCompletion: ((Result<MeshCandidateIngress83.Candidate,MeshCandidateIngress83.Failure>) -> Void)?
     init() throws {
         let decode = DispatchQueue(label: "seated.candidate.fixture.decode")
-        ingress = try LiveMeshBenchIngress(decodeQueue: decode)
+        ingress = try LiveMeshBenchIngress(captureSyntheticTestTiming: true,
+            syntheticTimingCompletion: { id, rows in Self.printWorkerTiming(id: id, rows) }, decodeQueue: decode)
         let values: [Float] = [-3,0,-3,-3,0,3,3,0,3,3,0,-3]
         let bytes = values.flatMap { value in (0..<4).map { UInt8(truncatingIfNeeded: value.bitPattern >> ($0*8)) } }
         let indices: [UInt8] = [0,0,1,0,2,0,0,0,2,0,3,0]
@@ -241,7 +246,10 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
     func stop() { active = false; snapshots.retire(); ingress.stop() }
     func stopAndDrain(_ completion: @escaping () -> Void) {
         stop(); heldCompletion = nil; heldResult = nil; onHeld = nil
-        ingress.stopAndDiscard(completion: completion)
+        ingress.stopAndDiscard { [self] in
+            printTiming(event: "drain_complete")
+            completion()
+        }
     }
     func reacquireTrackedFrameAnchors() { snapshots.retire() }
     func requestStatus(completion: @escaping (String) -> Void) { completion("Synthetic owned geometry; no device capture") }
@@ -259,11 +267,45 @@ private final class SeatedCandidateFixtureBackend: SeatedMeshDiagnosticBackend {
                         completion: @escaping (Result<MeshCandidateIngress83.Candidate,MeshCandidateIngress83.Failure>) -> Void) {
         guard let capture, snapshots.canAdmit(capture,at: now), expectedSource != nil else { completion(.failure(.stale)); return }
         submittedStart = start; submittedCapture = capture; submittedSource = expectedSource
+        timingLock.lock(); submittedAt = ProcessInfo.processInfo.systemUptime; nativeCompletedAt = nil; mainHeldAt = nil; timingLock.unlock()
         ingress.request(generation: ingress.generation,start: start,goal: goal,body: body,expectedSource: expectedSource) { [weak self] result in
+            if let self {
+                self.timingLock.lock(); self.nativeCompletedAt = ProcessInfo.processInfo.systemUptime; self.timingLock.unlock()
+            }
             DispatchQueue.main.async {
-                self?.heldResult = result; self?.heldCompletion = completion; self?.onHeld?()
+                if let self {
+                    self.timingLock.lock(); self.mainHeldAt = ProcessInfo.processInfo.systemUptime; self.timingLock.unlock()
+                    self.heldResult = result; self.heldCompletion = completion; self.onHeld?()
+                }
             }
         }
+    }
+    /// Called after XCTest's bounded wait or drain, never in native completion's
+    /// critical path. Missing stages remain -1, not invented zero-time successes.
+    func printTiming(event: String) {
+        timingLock.lock()
+        let submitted = submittedAt, native = nativeCompletedAt, main = mainHeldAt
+        timingLock.unlock()
+        let now = ProcessInfo.processInfo.systemUptime
+        func elapsed(_ time: Double?) -> Int {
+            guard let submitted, let time, time >= submitted else { return -1 }
+            return Int((time-submitted)*1000)
+        }
+        let stages = ingress.diagnosticStageReceipts.map { "\($0.stage.rawValue):\($0.elapsedMilliseconds)" }.joined(separator: ";")
+        print("SEATED_CANDIDATE_PHASE id=\(ingress.diagnosticReceiptID?.uuidString ?? "none") event=\(event) elapsed_ms=\(elapsed(now)) native_callback_ms=\(elapsed(native)) main_held_ms=\(elapsed(main)) stages=\(stages)")
+    }
+    private static func printWorkerTiming(id: UUID, _ rows: [RoomMeshCandidateRuntime.DiagnosticStageReceipt]) {
+        func pair(_ begin: RoomMeshCandidateRuntime.DiagnosticStage, _ end: RoomMeshCandidateRuntime.DiagnosticStage) -> (Int,Int64,Bool) {
+            guard let a = rows.first(where: { $0.stage == begin }), let b = rows.first(where: { $0.stage == end }),
+                  b.elapsedMilliseconds >= a.elapsedMilliseconds else { return (-1,-1,false) }
+            let wall = b.elapsedMilliseconds-a.elapsedMilliseconds
+            guard let at = a.workerThreadID, let bt = b.workerThreadID, at == bt,
+                  let ac = a.workerCPUTimeMicroseconds, let bc = b.workerCPUTimeMicroseconds, bc >= ac else { return (wall,-1,false) }
+            return (wall,bc-ac,true)
+        }
+        let worker = pair(.workerStarted,.workerFinished), build = pair(.nativeBuildBegin,.nativeBuildEnd), route = pair(.routeBegin,.routeEnd)
+        let workerBegin = rows.first(where: { $0.stage == .workerStarted })?.elapsedMilliseconds ?? -1
+        print("SEATED_CANDIDATE_WORKER id=\(id.uuidString) worker_begin_ms=\(workerBegin) worker_wall_ms=\(worker.0) worker_cpu_us=\(worker.1) worker_pair_valid=\(worker.2) build_wall_ms=\(build.0) build_cpu_us=\(build.1) build_pair_valid=\(build.2) route_wall_ms=\(route.0) route_cpu_us=\(route.1) route_pair_valid=\(route.2) records=\(rows.count)")
     }
     func release() {
         guard let heldResult, let completion = heldCompletion else { return }

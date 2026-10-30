@@ -1,0 +1,551 @@
+--- a/research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift
++++ b/research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift
+@@ -2,6 +2,7 @@
+ import XCTest
+ import MeshCandidateIngress83
+ import BlindRoomMesh
++@testable import MeshSnapshot82
+ @testable import LiveMeshClassifiedBench
+ 
+ /// Pure ownership/freshness schedules. No ARSession is created or activated.
+@@ -308,8 +309,32 @@
+ 
+ final class MeshBenchExpectedSourceTests: XCTestCase {
+     func testChangedGeometryBeforeQueryIsRefusedWithoutNativeReplan() throws {
+-        let ingress = try LiveMeshBenchIngress()
+-        let read = expectation(description: "empty source inspection")
++        let decode = DispatchQueue(label: "bench.expected-source.decode")
++        let ingress = try LiveMeshBenchIngress(decodeQueue: decode)
++        // Always acknowledge owned/native drain, including failed unwrap/timeout.
++        defer {
++            let drained = expectation(description: "expected-source owner drained")
++            ingress.stopAndDiscard { drained.fulfill() }
++            wait(for: [drained], timeout: 10)
++        }
++        let anchor = UUID()
++        let vertices: [Float] = [-3,0,-3,-3,0,3,3,0,3,3,0,-3]
++        let bytes = vertices.flatMap { value in
++            (0..<4).map { UInt8(truncatingIfNeeded: value.bitPattern >> ($0 * 8)) }
++        }
++        let indices: [UInt8] = [0,0,1,0,2,0,0,0,2,0,3,0]
++        XCTAssertTrue(ingress.observe(anchorID: anchor,generation: ingress.generation,receiptUptime: 1) { context in
++            do {
++                let plan = try MeshSnapshot82.preflight(context: context,
++                    vertices: .init(count: 4,offset: 0,stride: 12,bufferLength: bytes.count,format: .float3),
++                    indices: .init(count: 6,offset: 0,stride: 2,bufferLength: indices.count,format: .uint16),
++                    classification: .init(count: 2,offset: 0,stride: 1,bufferLength: 2,format: .uint8))
++                return .owned(.init(context: context,anchorID: anchor,plan: plan,vertexBytes: bytes,indexBytes: indices,
++                    classificationBytes: [2,2],transform: [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]))
++            } catch { return .unknownGap(.init(context: context,anchorID: anchor,reason: .invalidDescriptor)) }
++        })
++        decode.sync {} // The actual owned decoder finishes before source inspection.
++        let read = expectation(description: "admitted classified source inspection")
+         var snapshot: MeshCandidateIngress83.SourceSnapshot?
+         ingress.requestSourceSnapshot(generation: ingress.generation) { result in
+             if case .success(let source) = result { snapshot = source }
+@@ -317,8 +342,9 @@
+         }
+         wait(for: [read], timeout: 10)
+         let source = try XCTUnwrap(snapshot)
++        XCTAssertEqual(source.geometry.anchors.map(\.anchorID),[anchor.uuidString])
+         XCTAssertTrue(ingress.isCurrent(source,generation: ingress.generation))
+-        _ = ingress.remove(anchorID: UUID(),generation: ingress.generation,receiptUptime: 1)
++        XCTAssertTrue(ingress.remove(anchorID: anchor,generation: ingress.generation,receiptUptime: 2))
+         XCTAssertFalse(ingress.isCurrent(source,generation: ingress.generation))
+         var refused = false
+         ingress.request(generation: ingress.generation,start: [0,0,0],goal: [1,0,0],
+@@ -326,6 +352,5 @@
+             if case .failure(.unavailable) = result { refused = true }
+         }
+         XCTAssertTrue(refused) // Admission refusal is synchronous; no native query submitted.
+-        ingress.stop()
+     }
+ }
+--- a/ios/BlindAssistTests/SeatedMeshProjectionTests.swift
++++ b/ios/BlindAssistTests/SeatedMeshProjectionTests.swift
+@@ -137,6 +137,7 @@
+         controller.requestPreview(startText: "ignored",goalText: "1 0 0",radiusText: "0.3",heightText: "1.7",
+             declaredMountText: "0 1.2 0",declaredYawText: "0",confirmed: true)
+         await fulfillment(of: [resultReady],timeout: 10)
++        backend.printTiming(event: "happy_wait_finished")
+         let submitted = try XCTUnwrap(backend.submittedStart)
+         let captured = try XCTUnwrap(backend.submittedCapture)
+         XCTAssertEqual(submitted[0],0); XCTAssertEqual(submitted[1],0,accuracy: 1e-6); XCTAssertEqual(submitted[2],0)
+@@ -180,6 +181,7 @@
+             controller.requestPreview(startText: "",goalText: "1 0 0",radiusText: "0.3",heightText: "1.7",
+                 declaredMountText: "0 1.2 0",declaredYawText: "0",confirmed: true)
+             await fulfillment(of: [ready],timeout: 10)
++            backend.printTiming(event: "rejection_wait_finished")
+             _ = try XCTUnwrap(backend.heldResult).get() // A native refusal is not a passing retirement test.
+             if retireSource { backend.changeGeometry() }
+             else { _ = backend.freezeCameraCapture() } // Explicit request replacement within same frame.
+@@ -203,6 +205,8 @@
+     private let snapshots = MeshBenchCameraSnapshot()
+     private let sessionID = UUID(), anchorID = UUID()
+     private var active = true
++    private let timingLock = NSLock()
++    private var submittedAt: Double?, nativeCompletedAt: Double?, mainHeldAt: Double?
+     var now = 10.0
+     var state: LiveMeshBenchSession.State { active ? .capturing : .stopped(restored: false) }
+     var hasCurrentTrackedSession: Bool { active }
+@@ -214,7 +218,8 @@
+     private var heldCompletion: ((Result<MeshCandidateIngress83.Candidate,MeshCandidateIngress83.Failure>) -> Void)?
+     init() throws {
+         let decode = DispatchQueue(label: "seated.candidate.fixture.decode")
+-        ingress = try LiveMeshBenchIngress(decodeQueue: decode)
++        ingress = try LiveMeshBenchIngress(captureSyntheticTestTiming: true,
++            syntheticTimingCompletion: { id, rows in Self.printWorkerTiming(id: id, rows) }, decodeQueue: decode)
+         let values: [Float] = [-3,0,-3,-3,0,3,3,0,3,3,0,-3]
+         let bytes = values.flatMap { value in (0..<4).map { UInt8(truncatingIfNeeded: value.bitPattern >> ($0*8)) } }
+         let indices: [UInt8] = [0,0,1,0,2,0,0,0,2,0,3,0]
+@@ -241,7 +246,10 @@
+     func stop() { active = false; snapshots.retire(); ingress.stop() }
+     func stopAndDrain(_ completion: @escaping () -> Void) {
+         stop(); heldCompletion = nil; heldResult = nil; onHeld = nil
+-        ingress.stopAndDiscard(completion: completion)
++        ingress.stopAndDiscard { [self] in
++            printTiming(event: "drain_complete")
++            completion()
++        }
+     }
+     func reacquireTrackedFrameAnchors() { snapshots.retire() }
+     func requestStatus(completion: @escaping (String) -> Void) { completion("Synthetic owned geometry; no device capture") }
+@@ -259,11 +267,45 @@
+                         completion: @escaping (Result<MeshCandidateIngress83.Candidate,MeshCandidateIngress83.Failure>) -> Void) {
+         guard let capture, snapshots.canAdmit(capture,at: now), expectedSource != nil else { completion(.failure(.stale)); return }
+         submittedStart = start; submittedCapture = capture; submittedSource = expectedSource
++        timingLock.lock(); submittedAt = ProcessInfo.processInfo.systemUptime; nativeCompletedAt = nil; mainHeldAt = nil; timingLock.unlock()
+         ingress.request(generation: ingress.generation,start: start,goal: goal,body: body,expectedSource: expectedSource) { [weak self] result in
++            if let self {
++                self.timingLock.lock(); self.nativeCompletedAt = ProcessInfo.processInfo.systemUptime; self.timingLock.unlock()
++            }
+             DispatchQueue.main.async {
+-                self?.heldResult = result; self?.heldCompletion = completion; self?.onHeld?()
++                if let self {
++                    self.timingLock.lock(); self.mainHeldAt = ProcessInfo.processInfo.systemUptime; self.timingLock.unlock()
++                    self.heldResult = result; self.heldCompletion = completion; self.onHeld?()
++                }
+             }
+         }
++    }
++    /// Called after XCTest's bounded wait or drain, never in native completion's
++    /// critical path. Missing stages remain -1, not invented zero-time successes.
++    func printTiming(event: String) {
++        timingLock.lock()
++        let submitted = submittedAt, native = nativeCompletedAt, main = mainHeldAt
++        timingLock.unlock()
++        let now = ProcessInfo.processInfo.systemUptime
++        func elapsed(_ time: Double?) -> Int {
++            guard let submitted, let time, time >= submitted else { return -1 }
++            return Int((time-submitted)*1000)
++        }
++        let stages = ingress.diagnosticStageReceipts.map { "\($0.stage.rawValue):\($0.elapsedMilliseconds)" }.joined(separator: ";")
++        print("SEATED_CANDIDATE_PHASE id=\(ingress.diagnosticReceiptID?.uuidString ?? "none") event=\(event) elapsed_ms=\(elapsed(now)) native_callback_ms=\(elapsed(native)) main_held_ms=\(elapsed(main)) stages=\(stages)")
++    }
++    private static func printWorkerTiming(id: UUID, _ rows: [RoomMeshCandidateRuntime.DiagnosticStageReceipt]) {
++        func pair(_ begin: RoomMeshCandidateRuntime.DiagnosticStage, _ end: RoomMeshCandidateRuntime.DiagnosticStage) -> (Int,Int64,Bool) {
++            guard let a = rows.first(where: { $0.stage == begin }), let b = rows.first(where: { $0.stage == end }),
++                  b.elapsedMilliseconds >= a.elapsedMilliseconds else { return (-1,-1,false) }
++            let wall = b.elapsedMilliseconds-a.elapsedMilliseconds
++            guard let at = a.workerThreadID, let bt = b.workerThreadID, at == bt,
++                  let ac = a.workerCPUTimeMicroseconds, let bc = b.workerCPUTimeMicroseconds, bc >= ac else { return (wall,-1,false) }
++            return (wall,bc-ac,true)
++        }
++        let worker = pair(.workerStarted,.workerFinished), build = pair(.nativeBuildBegin,.nativeBuildEnd), route = pair(.routeBegin,.routeEnd)
++        let workerBegin = rows.first(where: { $0.stage == .workerStarted })?.elapsedMilliseconds ?? -1
++        print("SEATED_CANDIDATE_WORKER id=\(id.uuidString) worker_begin_ms=\(workerBegin) worker_wall_ms=\(worker.0) worker_cpu_us=\(worker.1) worker_pair_valid=\(worker.2) build_wall_ms=\(build.0) build_cpu_us=\(build.1) build_pair_valid=\(build.2) route_wall_ms=\(route.0) route_cpu_us=\(route.1) route_pair_valid=\(route.2) records=\(rows.count)")
+     }
+     func release() {
+         guard let heldResult, let completion = heldCompletion else { return }
+--- a/research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift
++++ b/research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift
+@@ -38,6 +38,21 @@
+             supportPolicy: .classifiedFloorOnly,
+             endpointPolicy: .requireSuppliedXZOverPolygon, deliveryRecoveryPolicy: deliveryRecoveryPolicy, decodeQueue: decodeQueue)
+     }
++#if DEBUG
++    /// Opt-in synthetic-fixture instrumentation only. Production initializer and
++    /// routing policies are unchanged; the existing83/75 bounded metadata hooks
++    /// report phases/CPU, never geometry or camera data.
++    public init(captureSyntheticTestTiming: Bool,
++                syntheticTimingCompletion: ((UUID,[RoomMeshCandidateRuntime.DiagnosticStageReceipt])->Void)? = nil,
++                decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh-bench.decode", qos: .utility)) throws {
++        ingress = try MeshCandidateIngress83(maxAnchors: 128, maxCopies: 1,
++            supportPolicy: .classifiedFloorOnly, endpointPolicy: .requireSuppliedXZOverPolygon,
++            deliveryRecoveryPolicy: .legacyStickyGap, captureSyntheticTestTiming: captureSyntheticTestTiming,
++            syntheticTimingCompletion: syntheticTimingCompletion, decodeQueue: decodeQueue)
++    }
++    public var diagnosticReceiptID: UUID? { ingress.diagnosticReceiptID }
++    public var diagnosticStageReceipts: [RoomMeshCandidateRuntime.DiagnosticStageReceipt] { ingress.diagnosticStageReceipts }
++#endif
+     private func active(_ generation: UUID) -> Bool {
+         lock.lock(); defer { lock.unlock() }
+         return !stopped && self.generation == generation
+--- a/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
++++ b/research/live-mesh-classified-bench-20261028/CURRENT_INPUT_PINS.json
+@@ -420,8 +420,8 @@
+     },
+     {
+       "path": "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift",
+-      "bytes": 6397,
+-      "sha256": "fd456244ad66ce0ee78be63f849c2a7408d992a2138994f9d0cf6903d5a87c8c"
++      "bytes": 7499,
++      "sha256": "48a8329aea5dba8486aa2943ef52cbb44df57f422dd447f10d45eb9cf0cfd0b0"
+     },
+     {
+       "path": "research/live-mesh-classified-bench-20261028/Tests/AnchorDeliveryRecoveryTests.swift",
+@@ -445,8 +445,8 @@
+     },
+     {
+       "path": "research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift",
+-      "bytes": 18543,
+-      "sha256": "8bcf1b44747e8c3cb1ea54a023fbaddd804745e506bff3c67860b40950abac85"
++      "bytes": 20295,
++      "sha256": "84fb234067e2d20e3f309db55c6be34cf7488134536e06b4b2723125c116e3d8"
+     },
+     {
+       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h",
+@@ -475,8 +475,8 @@
+     },
+     {
+       "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
+-      "bytes": 17862,
+-      "sha256": "f4506d6363b0cb033f31fdae90193baa1c1ecddaecffc0bdb27981ab8c1f42b2"
++      "bytes": 21132,
++      "sha256": "730ae3f7fcba5fb606f4ccc9a730855c29065158d5ac1c35b7d22c5980fa3520"
+     },
+     {
+       "path": ".github/workflows/native-apple.yml",
+@@ -724,5 +724,14 @@
+     "status": "unbuilt_source",
+     "beforeManifestSHA256": "fb45495a6c7045d52ef653baf88b2e2f5092210e93603a352e1e20f87ba7843e",
+     "scope": "explicit seated historical candidate plus executable fixtures and no-artifact CI; not device validation"
++  },
++  "expected_source_fixture_repair": {
++    "baseCommit": "457c3f33dae01b2f036d5a391f42aa444cd7d304",
++    "status": "unexecuted_targeted_fixture_fix",
++    "beforeManifestSHA256": "d1f057db25572e8391aff327cf13d16871ba1598598a1b0cefe75395757b3cf8",
++    "beforeTestSHA256": "8bcf1b44747e8c3cb1ea54a023fbaddd804745e506bff3c67860b40950abac85",
++    "cause": "no-owner source request correctly unavailable; fixture must ingest actual owned classified geometry",
++    "productionUnchanged": true,
++    "seatedTimeout": "unresolved10s callback wait; metadata-only phase/workerCPU instrumented without deadline change"
+   }
+ }
+--- a/tools/ci/native-apple.sh
++++ b/tools/ci/native-apple.sh
+@@ -42,6 +42,12 @@
+     local cpuNumber='(-1|[0-9]+)'
+     grep -E "^CLASSIFICATION_WORKER_CPU id=[0-9A-F-]{36} worker_begin_ms=$cpuNumber lane=(ingress83|runtime75) worker_wall_ms=$cpuNumber worker_cpu_us=$cpuNumber worker_pair_valid=(true|false) build_wall_ms=$cpuNumber build_cpu_us=$cpuNumber build_pair_valid=(true|false) route_wall_ms=$cpuNumber route_cpu_us=$cpuNumber route_pair_valid=(true|false) retired=(true|false) native_failed=(true|false) records=([0-9]|[1-5][0-9]|6[0-4])$" "$out/$label.log" | head -64 | cut -c 1-2000 || true
+     echo 'CLASSIFICATION_WORKER_CPU_END'
++  fi
++  if [[ "$label" = diagnostics-unit ]]; then
++    # Fixed synthetic seated-fixture metadata on BOTH success and failure paths.
++    # Scan the bounded log, not its final tail; never print geometry or error text.
++    # Observation only: extractor availability cannot replace the command status.
++    python3 -B tools/ci/extract-seated-candidate-timing.py "$out/$label.log" || true
+   fi
+   if [[ "$label" = ui ]]; then
+     python3 tools/ci/extract-ask-layout-trace.py "$out/$label.log" || true
+--- /dev/null
++++ b/tools/ci/extract-seated-candidate-timing.py
+@@ -0,0 +1,110 @@
++#!/usr/bin/env python3
++"""Closed-schema synthetic seated timing only; no test-outcome inference."""
++import json
++from pathlib import Path
++import re
++import stat
++import sys
++
++INPUT_LIMIT = 64 * 1024 * 1024
++LINE_LIMIT = 4096
++RECORD_LIMIT = 32  # Per prefix: one kind cannot evict the other kind.
++UUID = r'[0-9A-F]{8}(?:-[0-9A-F]{4}){3}-[0-9A-F]{12}'
++NUMBER = r'(?:-1|[0-9]{1,15})'
++STAGE = r'(?:requestEnqueued|workerStarted|nativeBuildBegin|nativeBuildEnd|routeBegin|routeEnd|nativeFailure|completionQueued|completionDelivered|discardRequested|discardWorkerStarted|discardReleased|discardCompletionDelivered|workerFinished|requestRetired)'
++PHASE = re.compile(
++    rf'SEATED_CANDIDATE_PHASE id=(?:{UUID}|none) '
++    r'event=(?:happy_wait_finished|rejection_wait_finished|drain_complete) '
++    rf'elapsed_ms={NUMBER} native_callback_ms={NUMBER} main_held_ms={NUMBER} '
++    rf'stages=(?:{STAGE}:[0-9]{{1,15}}(?:;{STAGE}:[0-9]{{1,15}}){{0,63}})?'
++)
++# worker_begin_ms is owner-clock-relative, not request queue latency.
++WORKER = re.compile(
++    rf'SEATED_CANDIDATE_WORKER id={UUID} worker_begin_ms={NUMBER} '
++    + ' '.join(rf'{name}_wall_ms=(?P<{name}_wall>{NUMBER}) '
++               rf'{name}_cpu_us=(?P<{name}_cpu>{NUMBER}) '
++               rf'{name}_pair_valid=(?P<{name}_valid>true|false)'
++               for name in ('worker', 'build', 'route'))
++    + r' records=(?:[0-9]|[1-5][0-9]|6[0-4])'
++)
++PREFIXES = {'phase': b'SEATED_CANDIDATE_PHASE ',
++            'worker': b'SEATED_CANDIDATE_WORKER '}
++
++
++def valid(kind, line):
++    match = (PHASE if kind == 'phase' else WORKER).fullmatch(line)
++    if not match:
++        return False
++    if kind == 'worker':
++        for name in ('worker', 'build', 'route'):
++            wall, cpu = int(match[name + '_wall']), int(match[name + '_cpu'])
++            paired = match[name + '_valid'] == 'true'
++            # Unavailable CPU remains -1/false, not a fabricated zero or valid pair.
++            if paired and (wall < 0 or cpu < 0) or not paired and cpu != -1:
++                return False
++    return True
++
++
++def collect(stream, emit, input_limit=INPUT_LIMIT, line_limit=LINE_LIMIT,
++            record_limit=RECORD_LIMIT):
++    counts = {kind: 0 for kind in PREFIXES}
++    dropped = {kind: 0 for kind in PREFIXES}
++    rejected = consumed = 0
++    oversized = unterminated = False
++    while consumed < input_limit:
++        raw = stream.readline(min(line_limit + 1, input_limit - consumed))
++        if not raw:
++            break
++        consumed += len(raw)
++        ended = raw.endswith(b'\n')
++        kind = next((k for k, prefix in PREFIXES.items() if raw.startswith(prefix)), None)
++        if oversized or len(raw) > line_limit or not ended:
++            if not oversized and kind:
++                rejected += 1
++            oversized = not ended
++            unterminated = not ended
++            continue
++        unterminated = False
++        if not kind:
++            continue
++        try:
++            line = raw.rstrip(b'\r\n').decode('ascii')
++        except UnicodeDecodeError:
++            rejected += 1
++            continue
++        if not valid(kind, line):
++            rejected += 1
++        elif counts[kind] < record_limit:
++            emit(line)
++            counts[kind] += 1
++        else:
++            dropped[kind] += 1
++    budget_reached = consumed >= input_limit
++    incomplete = budget_reached or unterminated or rejected > 0 or any(dropped.values())
++    return {'schema': 1, 'records': counts, 'dropped_valid_records': dropped,
++            'rejected_prefix_records': rejected, 'input_bytes_scanned': consumed,
++            'scan_budget_reached': budget_reached, 'unterminated_input': unterminated,
++            'status': ('unavailable' if not any(counts.values()) else
++                       'partial' if incomplete else 'observed'),
++            'test_outcome': 'not_inferred', 'physical_authority': False}
++
++
++def main():
++    print(f'SEATED_CANDIDATE_TIMING_BEGIN max_records_per_kind={RECORD_LIMIT} '
++          f'max_input_bytes={INPUT_LIMIT} max_line_bytes={LINE_LIMIT}')
++    try:
++        path = Path(sys.argv[1])
++        if path.is_symlink() or not stat.S_ISREG(path.stat().st_mode):
++            raise ValueError('regular owned log required')
++        with path.open('rb') as stream:
++            summary = collect(stream, print)
++    except (OSError, ValueError, IndexError) as error:
++        # Never include an arbitrary OS/parser message or private path.
++        summary = {'schema': 1, 'status': 'unavailable',
++                   'error_type': type(error).__name__, 'test_outcome': 'not_inferred',
++                   'physical_authority': False}
++    print('SEATED_CANDIDATE_TIMING_SUMMARY=' + json.dumps(summary, separators=(',', ':'), sort_keys=True))
++
++
++if __name__ == '__main__':
++    main()
+--- /dev/null
++++ b/tools/ci/test_extract_seated_candidate_timing.py
+@@ -0,0 +1,187 @@
++"""Bounded stdlib + synthetic shell checks; never invokes Swift/Xcode or CI."""
++import importlib.util
++import io
++import json
++from pathlib import Path
++import subprocess
++import tempfile
++import unittest
++
++HERE = Path(__file__).parent
++ROOT = HERE.parents[1]
++SPEC = importlib.util.spec_from_file_location('seated_timing', HERE / 'extract-seated-candidate-timing.py')
++M = importlib.util.module_from_spec(SPEC)
++SPEC.loader.exec_module(M)
++ID = '12345678-1234-4ABC-8DEF-123456789ABC'
++PHASE = (f'SEATED_CANDIDATE_PHASE id={ID} event=happy_wait_finished '
++         'elapsed_ms=10000 native_callback_ms=-1 main_held_ms=-1 '
++         'stages=requestEnqueued:0;workerStarted:14;nativeBuildBegin:15')
++WORKER = (f'SEATED_CANDIDATE_WORKER id={ID} worker_begin_ms=14 '
++          'worker_wall_ms=1 worker_cpu_us=-1 worker_pair_valid=false '
++          'build_wall_ms=0 build_cpu_us=0 build_pair_valid=true '
++          'route_wall_ms=-1 route_cpu_us=-1 route_pair_valid=false records=4')
++
++
++class ExtractorTests(unittest.TestCase):
++    def collect(self, text, **limits):
++        emitted = []
++        data = text.encode() if isinstance(text, str) else text
++        summary = M.collect(io.BytesIO(data), emitted.append, **limits)
++        return emitted, summary
++
++    def reject(self, text):
++        output, summary = self.collect(text + '\n')
++        self.assertEqual(output, [])
++        self.assertEqual(summary['status'], 'unavailable')
++        self.assertEqual(summary['rejected_prefix_records'], 1)
++
++    def test_both_records_round_trip_without_value_rewriting(self):
++        output, summary = self.collect(PHASE + '\n' + WORKER + '\n')
++        self.assertEqual(output, [PHASE, WORKER])
++        self.assertEqual(summary['records'], {'phase': 1, 'worker': 1})
++        self.assertEqual(summary['test_outcome'], 'not_inferred')
++        self.assertFalse(summary['physical_authority'])
++
++    def test_all_three_closed_phase_events(self):
++        for event in ['happy_wait_finished', 'rejection_wait_finished', 'drain_complete']:
++            line = PHASE.replace('happy_wait_finished', event)
++            self.assertEqual(self.collect(line + '\n')[0], [line])
++
++    def test_empty_stages_and_missing_id_remain_explicit(self):
++        line = PHASE.split('stages=')[0].replace(ID, 'none') + 'stages='
++        self.assertEqual(self.collect(line + '\n')[0], [line])
++
++    def test_owner_relative_worker_begin_rejects_old_queue_latency_label(self):
++        self.reject(WORKER.replace('worker_begin_ms=', 'queue_ms='))
++
++    def test_valid_worker_zero_cpu_is_preserved_not_missing(self):
++        line = WORKER.replace('worker_cpu_us=-1 worker_pair_valid=false',
++                              'worker_cpu_us=0 worker_pair_valid=true')
++        self.assertEqual(self.collect(line + '\n')[0], [line])
++
++    def test_missing_cpu_cannot_be_marked_valid(self):
++        self.reject(WORKER.replace('worker_pair_valid=false', 'worker_pair_valid=true'))
++
++    def test_invalid_pair_cannot_mint_zero_cpu(self):
++        self.reject(WORKER.replace('worker_cpu_us=-1', 'worker_cpu_us=0'))
++
++    def test_valid_pair_requires_wall_time(self):
++        self.reject(WORKER.replace('build_wall_ms=0', 'build_wall_ms=-1'))
++
++    def test_unknown_phase_event_rejected(self):
++        self.reject(PHASE.replace('happy_wait_finished', 'secret_event'))
++
++    def test_unknown_stage_rejected(self):
++        self.reject(PHASE.replace('nativeBuildBegin', 'privateGeometry'))
++
++    def test_malformed_uuid_rejected(self):
++        self.reject(PHASE.replace(ID, '-' * 36))
++
++    def test_none_worker_id_rejected(self):
++        self.reject(WORKER.replace(ID, 'none'))
++
++    def test_negative_other_than_missing_rejected(self):
++        self.reject(PHASE.replace('native_callback_ms=-1', 'native_callback_ms=-2'))
++
++    def test_noninteger_and_unbounded_number_rejected(self):
++        self.reject(PHASE.replace('elapsed_ms=10000', 'elapsed_ms=NaN'))
++        self.reject(PHASE.replace('elapsed_ms=10000', 'elapsed_ms=1.5'))
++        self.reject(PHASE.replace('elapsed_ms=10000', 'elapsed_ms=' + '9' * 16))
++
++    def test_stage_and_worker_record_limits(self):
++        prefix = PHASE.split('stages=')[0]
++        self.assertEqual(len(self.collect(prefix + 'stages=' + ';'.join(['routeEnd:1'] * 64) + '\n')[0]), 1)
++        self.reject(prefix + 'stages=' + ';'.join(['routeEnd:1'] * 65))
++        self.reject(WORKER.replace('records=4', 'records=65'))
++
++    def test_extra_geometry_or_error_fields_rejected(self):
++        self.reject(PHASE + ' geometry=1,2,3')
++        self.reject(WORKER + ' error=private')
++
++    def test_nonascii_prefix_record_rejected(self):
++        self.reject(PHASE.replace('happy_wait_finished', 'private_é'))
++
++    def test_arbitrary_nonrecords_are_not_emitted(self):
++        output, summary = self.collect('private model text and geometry\n' + PHASE + '\n')
++        self.assertEqual(output, [PHASE])
++        self.assertEqual(summary['status'], 'observed')
++
++    def test_records_before_long_tail_remain_available(self):
++        output, _ = self.collect(PHASE + '\n' + WORKER + '\n' + 'later unrelated output\n' * 200)
++        self.assertEqual(output, [PHASE, WORKER])
++
++    def test_each_prefix_has_independent_output_cap(self):
++        output, summary = self.collect((PHASE + '\n') * 3 + WORKER + '\n', record_limit=2)
++        self.assertEqual(output, [PHASE, PHASE, WORKER])
++        self.assertEqual(summary['dropped_valid_records'], {'phase': 1, 'worker': 0})
++        self.assertEqual(summary['status'], 'partial')
++
++    def test_input_cap_never_scans_or_prints_beyond_budget(self):
++        output, summary = self.collect('noise\n' * 20 + PHASE + '\n', input_limit=100)
++        self.assertEqual(output, [])
++        self.assertEqual(summary['input_bytes_scanned'], 100)
++        self.assertTrue(summary['scan_budget_reached'])
++
++    def test_overlong_line_cannot_smuggle_a_prefix_continuation(self):
++        text = 'x' * (M.LINE_LIMIT + 1) + PHASE + '\n' + WORKER + '\n'
++        self.assertEqual(self.collect(text)[0], [WORKER])
++        self.reject(PHASE + 'x' * M.LINE_LIMIT)
++
++    def test_unterminated_record_rejected(self):
++        output, summary = self.collect(PHASE)
++        self.assertEqual(output, [])
++        self.assertTrue(summary['unterminated_input'])
++
++    def test_empty_input_unavailable(self):
++        self.assertEqual(self.collect('')[1]['status'], 'unavailable')
++
++    def test_missing_file_reports_type_not_path(self):
++        with tempfile.TemporaryDirectory() as folder:
++            result = subprocess.run(['python3', '-B', str(HERE / 'extract-seated-candidate-timing.py'),
++                                     str(Path(folder) / 'private-missing.log')],
++                                    capture_output=True, text=True, timeout=5)
++        self.assertEqual(result.returncode, 0)
++        self.assertNotIn('private-missing', result.stdout)
++        summary = json.loads(result.stdout.split('SEATED_CANDIDATE_TIMING_SUMMARY=', 1)[1])
++        self.assertEqual(summary['status'], 'unavailable')
++
++    def shell_result(self, code, label='diagnostics-unit', extractor_fails=False):
++        # Execute only the actual run_logged function with a synthetic cat/exit
++        # producer. The script's case dispatch/native commands are never sourced.
++        script = (HERE / 'native-apple.sh').read_text()
++        function = script[script.index('run_logged() {'):script.index('\ncase "$mode" in')]
++        wrapper = ('set -euo pipefail\nout="$1"\n' + function + '\n'
++                   + ('python3() { return 97; }\n' if extractor_fails else '')
++                   + 'status=0\nrun_logged "$2" bash -c \'cat "$1"; exit "$2"\' '
++                     'synthetic "$3" "$4" || status=$?\nexit "$status"\n')
++        with tempfile.TemporaryDirectory() as folder:
++            source = Path(folder) / 'synthetic-input.txt'
++            source.write_text(PHASE + '\n' + WORKER + '\n' + 'unrelated later output\n' * 200)
++            return subprocess.run(['bash', '-c', wrapper, 'synthetic', folder, label, str(source), str(code)],
++                                  cwd=ROOT, capture_output=True, text=True, timeout=10)
++
++    def test_actual_shell_success_prints_both_records_before_tail(self):
++        result = self.shell_result(0)
++        self.assertEqual(result.returncode, 0, result.stderr)
++        self.assertIn(PHASE, result.stdout)
++        self.assertIn(WORKER, result.stdout)
++
++    def test_actual_shell_failure_preserves_nonzero_exit_and_records(self):
++        result = self.shell_result(65)
++        self.assertEqual(result.returncode, 65, result.stderr)
++        self.assertIn(PHASE, result.stdout)
++        self.assertIn(WORKER, result.stdout)
++
++    def test_extractor_failure_cannot_change_test_success_or_failure(self):
++        for code in [0, 65]:
++            self.assertEqual(self.shell_result(code, extractor_fails=True).returncode, code)
++
++    def test_other_labels_do_not_activate_seated_extractor(self):
++        result = self.shell_result(0, label='diagnostics-build')
++        self.assertEqual(result.returncode, 0)
++        self.assertNotIn('SEATED_CANDIDATE_TIMING_BEGIN', result.stdout)
++        self.assertNotIn(PHASE, result.stdout)
++
++
++if __name__ == '__main__':
++    unittest.main()

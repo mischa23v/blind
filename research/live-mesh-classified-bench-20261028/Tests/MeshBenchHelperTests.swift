@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 import MeshCandidateIngress83
 import BlindRoomMesh
+@testable import MeshSnapshot82
 @testable import LiveMeshClassifiedBench
 
 /// Pure ownership/freshness schedules. No ARSession is created or activated.
@@ -308,8 +309,32 @@ final class MeshBenchCameraSnapshotTests: XCTestCase {
 
 final class MeshBenchExpectedSourceTests: XCTestCase {
     func testChangedGeometryBeforeQueryIsRefusedWithoutNativeReplan() throws {
-        let ingress = try LiveMeshBenchIngress()
-        let read = expectation(description: "empty source inspection")
+        let decode = DispatchQueue(label: "bench.expected-source.decode")
+        let ingress = try LiveMeshBenchIngress(decodeQueue: decode)
+        // Always acknowledge owned/native drain, including failed unwrap/timeout.
+        defer {
+            let drained = expectation(description: "expected-source owner drained")
+            ingress.stopAndDiscard { drained.fulfill() }
+            wait(for: [drained], timeout: 10)
+        }
+        let anchor = UUID()
+        let vertices: [Float] = [-3,0,-3,-3,0,3,3,0,3,3,0,-3]
+        let bytes = vertices.flatMap { value in
+            (0..<4).map { UInt8(truncatingIfNeeded: value.bitPattern >> ($0 * 8)) }
+        }
+        let indices: [UInt8] = [0,0,1,0,2,0,0,0,2,0,3,0]
+        XCTAssertTrue(ingress.observe(anchorID: anchor,generation: ingress.generation,receiptUptime: 1) { context in
+            do {
+                let plan = try MeshSnapshot82.preflight(context: context,
+                    vertices: .init(count: 4,offset: 0,stride: 12,bufferLength: bytes.count,format: .float3),
+                    indices: .init(count: 6,offset: 0,stride: 2,bufferLength: indices.count,format: .uint16),
+                    classification: .init(count: 2,offset: 0,stride: 1,bufferLength: 2,format: .uint8))
+                return .owned(.init(context: context,anchorID: anchor,plan: plan,vertexBytes: bytes,indexBytes: indices,
+                    classificationBytes: [2,2],transform: [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]))
+            } catch { return .unknownGap(.init(context: context,anchorID: anchor,reason: .invalidDescriptor)) }
+        })
+        decode.sync {} // The actual owned decoder finishes before source inspection.
+        let read = expectation(description: "admitted classified source inspection")
         var snapshot: MeshCandidateIngress83.SourceSnapshot?
         ingress.requestSourceSnapshot(generation: ingress.generation) { result in
             if case .success(let source) = result { snapshot = source }
@@ -317,8 +342,9 @@ final class MeshBenchExpectedSourceTests: XCTestCase {
         }
         wait(for: [read], timeout: 10)
         let source = try XCTUnwrap(snapshot)
+        XCTAssertEqual(source.geometry.anchors.map(\.anchorID),[anchor.uuidString])
         XCTAssertTrue(ingress.isCurrent(source,generation: ingress.generation))
-        _ = ingress.remove(anchorID: UUID(),generation: ingress.generation,receiptUptime: 1)
+        XCTAssertTrue(ingress.remove(anchorID: anchor,generation: ingress.generation,receiptUptime: 2))
         XCTAssertFalse(ingress.isCurrent(source,generation: ingress.generation))
         var refused = false
         ingress.request(generation: ingress.generation,start: [0,0,0],goal: [1,0,0],
@@ -326,6 +352,5 @@ final class MeshBenchExpectedSourceTests: XCTestCase {
             if case .failure(.unavailable) = result { refused = true }
         }
         XCTAssertTrue(refused) // Admission refusal is synchronous; no native query submitted.
-        ingress.stop()
     }
 }

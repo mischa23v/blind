@@ -420,8 +420,8 @@
     },
     {
       "path": "research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift",
-      "bytes": 6397,
-      "sha256": "fd456244ad66ce0ee78be63f849c2a7408d992a2138994f9d0cf6903d5a87c8c"
+      "bytes": 7499,
+      "sha256": "48a8329aea5dba8486aa2943ef52cbb44df57f422dd447f10d45eb9cf0cfd0b0"
     },
     {
       "path": "research/live-mesh-classified-bench-20261028/Tests/AnchorDeliveryRecoveryTests.swift",
@@ -445,8 +445,8 @@
     },
     {
       "path": "research/live-mesh-classified-bench-20261028/Tests/MeshBenchHelperTests.swift",
-      "bytes": 18543,
-      "sha256": "8bcf1b44747e8c3cb1ea54a023fbaddd804745e506bff3c67860b40950abac85"
+      "bytes": 20295,
+      "sha256": "84fb234067e2d20e3f309db55c6be34cf7488134536e06b4b2723125c116e3d8"
     },
     {
       "path": "research/room-mesh-package-75/BlindRoomMesh/Sources/CDetour/exact_seed_radius_veto.h",
@@ -475,8 +475,8 @@
     },
     {
       "path": "ios/BlindAssistTests/SeatedMeshProjectionTests.swift",
-      "bytes": 17862,
-      "sha256": "f4506d6363b0cb033f31fdae90193baa1c1ecddaecffc0bdb27981ab8c1f42b2"
+      "bytes": 21132,
+      "sha256": "730ae3f7fcba5fb606f4ccc9a730855c29065158d5ac1c35b7d22c5980fa3520"
     },
     {
       "path": ".github/workflows/native-apple.yml",
@@ -724,5 +724,14 @@
     "status": "unbuilt_source",
     "beforeManifestSHA256": "fb45495a6c7045d52ef653baf88b2e2f5092210e93603a352e1e20f87ba7843e",
     "scope": "explicit seated historical candidate plus executable fixtures and no-artifact CI; not device validation"
+  },
+  "expected_source_fixture_repair": {
+    "baseCommit": "457c3f33dae01b2f036d5a391f42aa444cd7d304",
+    "status": "unexecuted_targeted_fixture_fix",
+    "beforeManifestSHA256": "d1f057db25572e8391aff327cf13d16871ba1598598a1b0cefe75395757b3cf8",
+    "beforeTestSHA256": "8bcf1b44747e8c3cb1ea54a023fbaddd804745e506bff3c67860b40950abac85",
+    "cause": "no-owner source request correctly unavailable; fixture must ingest actual owned classified geometry",
+    "productionUnchanged": true,
+    "seatedTimeout": "unresolved10s callback wait; metadata-only phase/workerCPU instrumented without deadline change"
   }
 }

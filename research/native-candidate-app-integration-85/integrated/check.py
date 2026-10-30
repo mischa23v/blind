@@ -18,14 +18,31 @@ def check(name, value):
 manifest = json.loads((H / 'SOURCE_PINS.json').read_text())
 for name, digest in manifest['integrated'].items():
     check('integrated pin ' + name, hashlib.sha256((R / name).read_bytes()).hexdigest() == digest)
+# The first Apple run exposed a fixture setup failure, not a production defect.
+# Restore its published failing inputs before reversing the original candidate layer.
+pre_fixture_repair_source = {}
+with tempfile.TemporaryDirectory(prefix='stage85-source-fixture-repair-') as temp:
+    root = Path(temp)
+    for name in list(manifest['beforeExpectedSourceFixtureRepair']) + manifest['expectedSourceFixtureRepairNewFiles']:
+        target = root/name; target.parent.mkdir(parents=True,exist_ok=True)
+        shutil.copyfile(R/name,target)
+    subprocess.run(['git','apply','-R',str(H/'seated-expected-source-fixture-repair.patch')],cwd=root,
+                   check=True,timeout=15,capture_output=True)
+    for name,digest in manifest['beforeExpectedSourceFixtureRepair'].items():
+        value = (root/name).read_bytes()
+        check('exact failing fixture source recovered '+name,hashlib.sha256(value).hexdigest()==digest)
+        pre_fixture_repair_source[name] = value
+    for name in manifest['expectedSourceFixtureRepairNewFiles']:
+        check('new fixture metadata extractor absent in historical layer '+name,not (root/name).exists())
+
 # Restore the exact prior source before checking historical layers. This new
 # candidate/CI layer is reversible provenance, not execution or safety evidence.
-pre_candidate_source = {}
+pre_candidate_source = dict(pre_fixture_repair_source)
 with tempfile.TemporaryDirectory(prefix='stage85-body-foot-source-') as temp:
     root = Path(temp)
     for name in list(manifest['beforeBodyFootCandidate']) + manifest['bodyFootCandidateNewFiles']:
         target = root / name; target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(R / name, target)
+        target.write_bytes(pre_fixture_repair_source.get(name,(R/name).read_bytes()))
     subprocess.run(['git','apply','-R',str(H/'seated-body-foot-candidate-layer.patch')], cwd=root,
                    check=True, timeout=15, capture_output=True)
     for name,digest in manifest['beforeBodyFootCandidate'].items():

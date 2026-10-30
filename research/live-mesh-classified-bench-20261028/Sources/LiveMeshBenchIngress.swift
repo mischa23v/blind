@@ -38,6 +38,21 @@ public final class LiveMeshBenchIngress {
             supportPolicy: .classifiedFloorOnly,
             endpointPolicy: .requireSuppliedXZOverPolygon, deliveryRecoveryPolicy: deliveryRecoveryPolicy, decodeQueue: decodeQueue)
     }
+#if DEBUG
+    /// Opt-in synthetic-fixture instrumentation only. Production initializer and
+    /// routing policies are unchanged; the existing83/75 bounded metadata hooks
+    /// report phases/CPU, never geometry or camera data.
+    public init(captureSyntheticTestTiming: Bool,
+                syntheticTimingCompletion: ((UUID,[RoomMeshCandidateRuntime.DiagnosticStageReceipt])->Void)? = nil,
+                decodeQueue: DispatchQueue = DispatchQueue(label: "blind.mesh-bench.decode", qos: .utility)) throws {
+        ingress = try MeshCandidateIngress83(maxAnchors: 128, maxCopies: 1,
+            supportPolicy: .classifiedFloorOnly, endpointPolicy: .requireSuppliedXZOverPolygon,
+            deliveryRecoveryPolicy: .legacyStickyGap, captureSyntheticTestTiming: captureSyntheticTestTiming,
+            syntheticTimingCompletion: syntheticTimingCompletion, decodeQueue: decodeQueue)
+    }
+    public var diagnosticReceiptID: UUID? { ingress.diagnosticReceiptID }
+    public var diagnosticStageReceipts: [RoomMeshCandidateRuntime.DiagnosticStageReceipt] { ingress.diagnosticStageReceipts }
+#endif
     private func active(_ generation: UUID) -> Bool {
         lock.lock(); defer { lock.unlock() }
         return !stopped && self.generation == generation

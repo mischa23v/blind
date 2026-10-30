@@ -43,6 +43,12 @@ run_logged() {
     grep -E "^CLASSIFICATION_WORKER_CPU id=[0-9A-F-]{36} worker_begin_ms=$cpuNumber lane=(ingress83|runtime75) worker_wall_ms=$cpuNumber worker_cpu_us=$cpuNumber worker_pair_valid=(true|false) build_wall_ms=$cpuNumber build_cpu_us=$cpuNumber build_pair_valid=(true|false) route_wall_ms=$cpuNumber route_cpu_us=$cpuNumber route_pair_valid=(true|false) retired=(true|false) native_failed=(true|false) records=([0-9]|[1-5][0-9]|6[0-4])$" "$out/$label.log" | head -64 | cut -c 1-2000 || true
     echo 'CLASSIFICATION_WORKER_CPU_END'
   fi
+  if [[ "$label" = diagnostics-unit ]]; then
+    # Fixed synthetic seated-fixture metadata on BOTH success and failure paths.
+    # Scan the bounded log, not its final tail; never print geometry or error text.
+    # Observation only: extractor availability cannot replace the command status.
+    python3 -B tools/ci/extract-seated-candidate-timing.py "$out/$label.log" || true
+  fi
   if [[ "$label" = ui ]]; then
     python3 tools/ci/extract-ask-layout-trace.py "$out/$label.log" || true
   fi
