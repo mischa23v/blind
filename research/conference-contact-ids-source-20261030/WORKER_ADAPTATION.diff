@@ -1,0 +1,97 @@
+--- blind/research/conference-body-source-20261029/run_comparison.py	2026-10-30 03:02:17.901160126 +0300
++++ blind/research/conference-contact-ids-source-20261030/run_comparison_ids.py	2026-10-30 03:17:03.106989875 +0300
+@@ -1,12 +1,10 @@
+ #!/usr/bin/env python3
+-"""Prepared raw-only VTK all-hit comparison. Run ONLY under admitted aggregate guard.
++"""Prepared additive all-hit-ID recording only. Root admission required; NOT RUN.
+ 
+ Uses unchanged conservative sweep/all-hit kernels. No planner call, support probe,
+ ground-label construction, ground-following, contact avoidance or arrival claim.
+ """
+-import argparse, gzip, hashlib, json, math, os, pathlib, sys, time
+-from contracts import (PROPOSAL_SHA,MESH_SHA,VERTEX_SHA,TRIANGLE_SHA,
+-                       encoded,select_routes,check_schedule,validate_receipt)
++import argparse, gzip, hashlib, importlib.util, json, math, os, pathlib, sys, time
+ H=pathlib.Path(__file__).resolve().parent;R=H.parents[1];W=R.parent
+ MAX_BOXES=55000;MAX_TRIANGLES=30000000;MAX_LOGICAL=64*1024**2
+ 
+@@ -26,9 +24,20 @@
+         for name,digest in pins['inputs'].items():
+             if sha(expand(name))!=digest:raise ValueError('input changed: '+name)
+     verify()
++    original=R/'research/conference-body-source-20261029'
++    spec=importlib.util.spec_from_file_location('conference_fixed_guard',R/'research/conference-body-postrun-source-20261030/run_aggregate_isolated.py')
++    loader=importlib.util.module_from_spec(spec);spec.loader.exec_module(loader)
++    prefix='research/conference-body-source-20261029/'
++    c=loader.load_frozen_contracts(original,pins['inputs'][prefix+'contracts.py'],pins['inputs'][prefix+'schedule_source.py'])
++    PROPOSAL_SHA,MESH_SHA,VERTEX_SHA,TRIANGLE_SHA=c.PROPOSAL_SHA,c.MESH_SHA,c.VERTEX_SHA,c.TRIANGLE_SHA
++    encoded,select_routes,check_schedule,validate_receipt=c.encoded,c.select_routes,c.check_schedule,c.validate_receipt
++    recorder_spec=importlib.util.spec_from_file_location('conference_hit_recorder',H/'hit_recorder.py')
++    recorder_module=importlib.util.module_from_spec(recorder_spec);recorder_spec.loader.exec_module(recorder_module)
++    expected=json.loads((H/'EXPECTED_COUNTS.json').read_text())
++    recorder=recorder_module.FixedHitRecorder(expected)
+     proposal=expand(pins['proposalPath']);meshpath=expand(pins['meshPath'])
+     if sha(proposal)!=PROPOSAL_SHA or sha(meshpath)!=MESH_SHA:raise ValueError('wrong actual proposal/source')
+-    frozen=json.loads((H/'ROUTES.json').read_text())
++    frozen=json.loads((original/'ROUTES.json').read_text())
+     if select_routes(json.loads(proposal.read_text()))!=frozen:raise ValueError('frozen chain selection changed')
+     out=expand(pins['comparisonDirectory']);out.mkdir(exist_ok=False)
+     for key in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS'):os.environ[key]='1'
+@@ -42,7 +51,9 @@
+     import vtk
+     from reference_geometry import ReferenceSurface,serial_vtk
+     from oriented_container import BodyGeometry
+-    from oriented_ground_container import GroundedReferenceContainer
++    debug_spec=importlib.util.spec_from_file_location('conference_debug_container',H/'oriented_ground_container_debug.py')
++    debug=importlib.util.module_from_spec(debug_spec);debug_spec.loader.exec_module(debug)
++    GroundedReferenceContainer=debug.GroundedReferenceContainer
+     from ground_support import GroundSupport
+     runtime=serial_vtk();began=time.monotonic();logical=0;scorer=None
+     model={'status':'started','error':None,'proposalSHA256':PROPOSAL_SHA,'sourceMeshSHA256':MESH_SHA,
+@@ -79,6 +90,7 @@
+         if c['boxes']>MAX_BOXES or c['triangles']>MAX_TRIANGLES or time.monotonic()-began>170:
+             raise RuntimeError('worker budget exhausted; all pending events remain incomplete')
+     def save():
++        model['hitRecorder']=recorder.summary()
+         model.update(counters=counters(),wallSeconds=time.monotonic()-began,outputLogicalBytes=logical)
+         data=json.dumps(model,indent=2,allow_nan=False)+'\n'
+         if len(data.encode())>262144:raise RuntimeError('receipt size cap')
+@@ -134,13 +146,15 @@
+         # Preserve the original Coffee lower-body exclusion exactly. No triangle
+         # is ground-exempted; the explicit lower 2 mm query-band trim remains.
+         scorer=GroundedReferenceContainer(surface,identity,ground=empty,
+-          body=BodyGeometry(width=.45,depth=.30,height=1.60,horizontal_margin=.15,floor_contact_exclusion=.002))
+-        with gzip.open(out/'CONTACTS.jsonl.gz','xt',encoding='utf8') as log:
++          body=BodyGeometry(width=.45,depth=.30,height=1.60,horizontal_margin=.15,floor_contact_exclusion=.002),
++          contact_recorder=recorder.record_hit)
++        with gzip.open(out/'CONTACTS.jsonl.gz','xt',encoding='utf8') as log, gzip.open(out/'HIT_IDS.jsonl.gz','wb') as ids_log:
+             for row,summary in zip(frozen['paths'],model['paths']):
+                 if row['status']=='unavailable':summary['status']='unavailable';save();continue
+                 schedule=check_schedule(row);summary['status']='running';save()
+                 for n,event in enumerate(schedule['events']):
+                     check_budget()
++                    recorder.begin_event(row['name'],n,scorer.box_queries)
+                     result=scorer.swept_contacts(event['a'],event['b'],event['yaw'],event['dyaw'])
+                     check_budget()
+                     for kind in ('actualBody','horizontalMargin'):
+@@ -161,15 +175,19 @@
+                                   'referenceCellID':r['firstReferenceCellID'],'wholeTriangleRegisteredHeightRange':height,
+                                   'wholeTriangleRelativeToStartFootRange':relative,
+                                   'nearFoot25mmReportingBand':r['firstWitnessWithin25mmOfStartFootPlane']}
++                    ids_data=recorder.finish_event(result);ids_log.write(ids_data);ids_log.flush()
+                     record={'path':row['name'],'event':n,'authoredIncrement':event,'contacts':result}
+                     data=encoded(record);logical+=len(data)
+-                    if logical>MAX_LOGICAL:raise RuntimeError('logical output cap; incomplete')
++                    if logical+recorder.logical>MAX_LOGICAL:raise RuntimeError('logical output cap; incomplete')
+                     log.write(data.decode());log.flush()
+                     summary['completedEvents']=n+1
+                     if n%128==0:save()
+                 summary['status']='rawDiagnosticComplete';save()
+                 print(json.dumps({'path':row['name'],'status':summary['status'],
+                                   'events':summary['completedEvents'],'contactEvents':summary['contactEvents']}),flush=True)
++        model['hitRecorder']=recorder.summary(require_complete=True)
++        model['sourceCountsSHA256']=sha(H/'EXPECTED_COUNTS.json')
++        model['sourcePriorContactsSHA256']=expected['sourceContactsSHA256']
+         model['status']='rawDiagnosticCompleted';save();validate_receipt(model,frozen)
+     except BaseException as exc:
+         model.update(status='incompleteUnknown',error=type(exc).__name__+': '+str(exc));save();raise
