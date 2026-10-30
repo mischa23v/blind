@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/90f3f6703064/blind/research/detour-height-follow-source-20261030/vtk_worker.py", line 89, in main
+    emit(out,rec);need(triangles<=MAX_TRIANGLES,'triangle budget exhausted')
+    ^^^^^^^^^^^^^
+  File "/workspace/scratch/90f3f6703064/blind/research/detour-height-follow-source-20261030/vtk_worker.py", line 52, in emit
+    b=encoded(row);payload+=len(b);need(payload<=MAX_BYTES,'uncompressed evidence byte budget');stream.write(b);count+=1
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/90f3f6703064/blind/research/detour-height-follow-source-20261030/vtk_worker.py", line 9, in need
+    if not v:raise ValueError(m)
+             ^^^^^^^^^^^^^^^^^^^
+ValueError: uncompressed evidence byte budget
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/workspace/scratch/90f3f6703064/blind/research/detour-height-follow-source-20261030/vtk_worker.py", line 102, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/scratch/90f3f6703064/blind/research/detour-height-follow-source-20261030/vtk_worker.py", line 99, in main
+    need(payload+len(catalog_bytes)<=MAX_BYTES,'total uncompressed evidence budget')
+  File "/workspace/scratch/90f3f6703064/blind/research/detour-height-follow-source-20261030/vtk_worker.py", line 9, in need
+    if not v:raise ValueError(m)
+             ^^^^^^^^^^^^^^^^^^^
+ValueError: total uncompressed evidence budget

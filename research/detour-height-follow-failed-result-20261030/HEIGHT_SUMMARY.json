@@ -1,0 +1,243 @@
+{
+  "schema": 1,
+  "status": "completed_local_polygon_height_diagnostic",
+  "movementApplied": false,
+  "physicalAuthority": false,
+  "supportEstablished": false,
+  "semanticFloorEstablished": false,
+  "arrivalEstablished": false,
+  "sourceMeshHashes": {
+    "coffee.vertices.f32": "e373a1dba8872e7d9201ba9e35e3f28598fdc660842a28f7867386b1d40fb503",
+    "coffee.indices.u32": "a7f7238114579bebe9951f35b2122559540d4076c3186bee767d2e8a2d096767",
+    "conference.vertices.f32": "50557edee3f4f0b1432c21206f1cc4f3b4c1133f0c0e754db70268eca7c250eb",
+    "conference.indices.u32": "2c5cb77f5548e12c2bcf59680b459389a097567cec0079f30526481d6e9b9324"
+  },
+  "librarySHA256": "779be4f106c9abbe4bbb4d20f8a204d70f5c582ec29f06129b5aada0a3754f4d",
+  "config": {
+    "radius": 0.225,
+    "height": 1.75,
+    "cell_size": 0.025,
+    "cell_height": 0.025,
+    "max_climb": 0.025,
+    "max_slope": 15,
+    "max_cells": 250000,
+    "max_nodes": 4096
+  },
+  "xzReportingToleranceMetres": 1e-06,
+  "footOffsetMetres": 0,
+  "stateMethod": "official moveAlongSurface/getPolyHeight; active polygon ref and last native XYZ; not dtPathCorridor or global replan",
+  "scenes": [
+    {
+      "scene": "conference",
+      "name": "table_120_to_200",
+      "scheduledEvents": 2052,
+      "validEvents": 2052,
+      "unavailableEvents": 0,
+      "firstUnavailableEvent": null,
+      "requestedStartXYZ": [
+        -0.9024902299197737,
+        -4.96541132373185e-05,
+        3.796214880284393
+      ],
+      "requestedGoalXYZ": [
+        0.9934880108773039,
+        -0.0002434645272815228,
+        1.4958630505636947
+      ],
+      "associationDoesNotRelocateBody": true,
+      "movementApplied": false,
+      "buildSucceeded": true,
+      "startAssociation": {
+        "queryExecuted": true,
+        "valid": true,
+        "failureStage": 0,
+        "reason": "none",
+        "nearestStatus": 1073741824,
+        "moveStatus": 0,
+        "heightStatus": 1073741824,
+        "previousRef": 1918,
+        "resultRef": 1918,
+        "horizontalResidualToFloat32Request": 0.0,
+        "previousXYZ": [
+          -0.9024902582168579,
+          0.0257081538438797,
+          3.7962148189544678
+        ],
+        "projectedXYZBeforeHeight": [
+          -0.9024902582168579,
+          0.0257081538438797,
+          3.7962148189544678
+        ],
+        "actualXYZ": [
+          -0.9024902582168579,
+          0.0257081538438797,
+          3.7962148189544678
+        ],
+        "visitedReferences": [],
+        "requestedXYZ": [
+          -0.9024902299197737,
+          -4.96541132373185e-05,
+          3.796214880284393
+        ],
+        "requestedXYZFloat32": [
+          -0.9024902582168579,
+          -4.9654114263830706e-05,
+          3.7962148189544678
+        ],
+        "horizontalResidualToOriginal": 6.754320612377865e-08,
+        "actorRelocated": false
+      },
+      "goalAssociation": {
+        "queryExecuted": true,
+        "valid": true,
+        "failureStage": 0,
+        "reason": "none",
+        "nearestStatus": 1073741824,
+        "moveStatus": 0,
+        "heightStatus": 1073741824,
+        "previousRef": 1670,
+        "resultRef": 1670,
+        "horizontalResidualToFloat32Request": 0.0,
+        "previousXYZ": [
+          0.9934880137443542,
+          0.0257081538438797,
+          1.4958630800247192
+        ],
+        "projectedXYZBeforeHeight": [
+          0.9934880137443542,
+          0.0257081538438797,
+          1.4958630800247192
+        ],
+        "actualXYZ": [
+          0.9934880137443542,
+          0.0257081538438797,
+          1.4958630800247192
+        ],
+        "visitedReferences": [],
+        "requestedXYZ": [
+          0.9934880108773039,
+          -0.0002434645272815228,
+          1.4958630505636947
+        ],
+        "requestedXYZFloat32": [
+          0.9934880137443542,
+          -0.00024346452846657485,
+          1.4958630800247192
+        ],
+        "horizontalResidualToOriginal": 2.960020173855372e-08,
+        "actorRelocated": false
+      },
+      "terminalReason": null,
+      "status": "fixed_schedule_evaluated_not_movement"
+    },
+    {
+      "scene": "coffee",
+      "name": "0_to_8",
+      "scheduledEvents": 1644,
+      "validEvents": 1644,
+      "unavailableEvents": 0,
+      "firstUnavailableEvent": null,
+      "requestedStartXYZ": [
+        -1.79842655,
+        -1.6301633051396203,
+        -2.1218404
+      ],
+      "requestedGoalXYZ": [
+        1.84154755,
+        -1.6301633051396203,
+        2.3337883999999995
+      ],
+      "associationDoesNotRelocateBody": true,
+      "movementApplied": false,
+      "buildSucceeded": true,
+      "startAssociation": {
+        "queryExecuted": true,
+        "valid": true,
+        "failureStage": 0,
+        "reason": "none",
+        "nearestStatus": 1073741824,
+        "moveStatus": 0,
+        "heightStatus": 1073741824,
+        "previousRef": 585,
+        "resultRef": 585,
+        "horizontalResidualToFloat32Request": 0.0,
+        "previousXYZ": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "projectedXYZBeforeHeight": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "actualXYZ": [
+          -1.7984265089035034,
+          -1.6111059188842773,
+          -2.121840476989746
+        ],
+        "visitedReferences": [],
+        "requestedXYZ": [
+          -1.79842655,
+          -1.6301633051396203,
+          -2.1218404
+        ],
+        "requestedXYZFloat32": [
+          -1.7984265089035034,
+          -1.630163311958313,
+          -2.121840476989746
+        ],
+        "horizontalResidualToOriginal": 8.727166233481274e-08,
+        "actorRelocated": false
+      },
+      "goalAssociation": {
+        "queryExecuted": true,
+        "valid": true,
+        "failureStage": 0,
+        "reason": "none",
+        "nearestStatus": 1073741824,
+        "moveStatus": 0,
+        "heightStatus": 1073741824,
+        "previousRef": 743,
+        "resultRef": 743,
+        "horizontalResidualToFloat32Request": 0.0,
+        "previousXYZ": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "projectedXYZBeforeHeight": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "actualXYZ": [
+          1.8415476083755493,
+          -1.6111059188842773,
+          2.3337883949279785
+        ],
+        "visitedReferences": [],
+        "requestedXYZ": [
+          1.84154755,
+          -1.6301633051396203,
+          2.3337883999999995
+        ],
+        "requestedXYZFloat32": [
+          1.8415476083755493,
+          -1.630163311958313,
+          2.3337883949279785
+        ],
+        "horizontalResidualToOriginal": 5.85954789332231e-08,
+        "actorRelocated": false
+      },
+      "terminalReason": null,
+      "status": "fixed_schedule_evaluated_not_movement"
+    }
+  ],
+  "inputHashesAfterMatch": true,
+  "eventRows": 3696,
+  "stepCalls": 3696,
+  "beginCalls": 4,
+  "outputPayloadBytes": 4364308,
+  "wallSeconds": 1.2839275459991768
+}
