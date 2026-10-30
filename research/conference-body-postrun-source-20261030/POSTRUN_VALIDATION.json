@@ -1,0 +1,310 @@
+{
+  "status": "COMPLETED_WORKER_EVIDENCE_RECONCILED_AGGREGATE_STILL_FAILED",
+  "originalAggregateOutcome": "failed",
+  "originalAggregateOutcomeUnchanged": true,
+  "workerNativeRerun": false,
+  "nativeImportsExecuted": false,
+  "physicalAuthority": false,
+  "physicalPass": false,
+  "postrunManifestSHA256": "076949164d5bb614da9f13c6340321e533f66ce21e293d6367561b7c1c4b13a8",
+  "originalAggregateSourceCommit": "c204b0e63e4c7444c02ea8ccf50e347693a15684",
+  "originalAggregateManifestSHA256": "ed735949ea0d21bf0fbf64754980a61d67d8b8095193b11d5ba72920dc8d6dc9",
+  "originalAggregateError": "ModuleNotFoundError: No module named 'contracts'",
+  "originalGuardCPUSeconds": 65.999001,
+  "originalGuardWallSeconds": 66.03300030900027,
+  "workerReceiptStatus": "rawDiagnosticCompleted",
+  "unchangedOriginalInputCount": 32,
+  "originalControlsVerified": 38,
+  "allOriginalCommandGroupsRetired": true,
+  "registeredMesh": {
+    "verticesSHA256": "50557edee3f4f0b1432c21206f1cc4f3b4c1133f0c0e754db70268eca7c250eb",
+    "trianglesSHA256": "2c5cb77f5548e12c2bcf59680b459389a097567cec0079f30526481d6e9b9324",
+    "method": "stdlib scalar rigid transform and little-endian float32/int32 packing; no native imports"
+  },
+  "completeStream": {
+    "events": 13704,
+    "boxes": 27408,
+    "triangleCandidates": 8710095,
+    "supportRays": 0,
+    "logicalBytes": 41413079,
+    "decodedStreamSHA256": "dbb4d0a550bec18ee50d339ed9d43e98a2da06610a392b1a5cf538150ef74f9c",
+    "paths": [
+      {
+        "name": "table_92_to_120",
+        "verifiedEvents": 1844,
+        "contactEvents": {
+          "actualBody": 0,
+          "horizontalMargin": 855
+        },
+        "firstWitnessNearFootBandEvents": {
+          "actualBody": 0,
+          "horizontalMargin": 591
+        },
+        "firstContactByEnvelope": {
+          "horizontalMargin": {
+            "event": 0,
+            "kind": "initial",
+            "referenceCellID": 26870,
+            "wholeTriangleRegisteredHeightRange": [
+              0.8400605320930481,
+              0.9367474913597107
+            ],
+            "wholeTriangleRelativeToStartFootRange": [
+              0.8391518713349129,
+              0.9358388306015755
+            ],
+            "nearFoot25mmReportingBand": false
+          }
+        }
+      },
+      {
+        "name": "table_120_to_200",
+        "verifiedEvents": 2052,
+        "contactEvents": {
+          "actualBody": 2,
+          "horizontalMargin": 652
+        },
+        "firstWitnessNearFootBandEvents": {
+          "actualBody": 2,
+          "horizontalMargin": 459
+        },
+        "firstContactByEnvelope": {
+          "horizontalMargin": {
+            "event": 0,
+            "kind": "initial",
+            "referenceCellID": 15858,
+            "wholeTriangleRegisteredHeightRange": [
+              -0.000610964372754097,
+              0.0041341171599924564
+            ],
+            "wholeTriangleRelativeToStartFootRange": [
+              -0.0005613102595167785,
+              0.004183771273229775
+            ],
+            "nearFoot25mmReportingBand": true
+          },
+          "actualBody": {
+            "event": 2050,
+            "kind": "translate",
+            "referenceCellID": 19234,
+            "wholeTriangleRegisteredHeightRange": [
+              0.00450246874243021,
+              0.010389317758381367
+            ],
+            "wholeTriangleRelativeToStartFootRange": [
+              -0.008229875915868878,
+              -0.0023430268999177217
+            ],
+            "nearFoot25mmReportingBand": true
+          }
+        }
+      },
+      {
+        "name": "table_200_to_220",
+        "verifiedEvents": 1530,
+        "contactEvents": {
+          "actualBody": 2,
+          "horizontalMargin": 101
+        },
+        "firstWitnessNearFootBandEvents": {
+          "actualBody": 2,
+          "horizontalMargin": 46
+        },
+        "firstContactByEnvelope": {
+          "actualBody": {
+            "event": 0,
+            "kind": "initial",
+            "referenceCellID": 19234,
+            "wholeTriangleRegisteredHeightRange": [
+              0.00450246874243021,
+              0.010389317758381367
+            ],
+            "wholeTriangleRelativeToStartFootRange": [
+              0.004745933269711733,
+              0.01063278228566289
+            ],
+            "nearFoot25mmReportingBand": true
+          },
+          "horizontalMargin": {
+            "event": 0,
+            "kind": "initial",
+            "referenceCellID": 8078,
+            "wholeTriangleRegisteredHeightRange": [
+              0.004226891323924065,
+              0.0056978133507072926
+            ],
+            "wholeTriangleRelativeToStartFootRange": [
+              0.004470355851205587,
+              0.005941277877988815
+            ],
+            "nearFoot25mmReportingBand": true
+          }
+        }
+      },
+      {
+        "name": "table_220_to_20",
+        "verifiedEvents": 1555,
+        "contactEvents": {
+          "actualBody": 0,
+          "horizontalMargin": 119
+        },
+        "firstWitnessNearFootBandEvents": {
+          "actualBody": 0,
+          "horizontalMargin": 37
+        },
+        "firstContactByEnvelope": {
+          "horizontalMargin": {
+            "event": 0,
+            "kind": "initial",
+            "referenceCellID": 20821,
+            "wholeTriangleRegisteredHeightRange": [
+              -0.007246417924761772,
+              0.0278550386428833
+            ],
+            "wholeTriangleRelativeToStartFootRange": [
+              -0.007645814011344232,
+              0.02745564255630084
+            ],
+            "nearFoot25mmReportingBand": false
+          }
+        }
+      },
+      {
+        "name": "table_20_to_92",
+        "verifiedEvents": 2863,
+        "contactEvents": {
+          "actualBody": 265,
+          "horizontalMargin": 1590
+        },
+        "firstWitnessNearFootBandEvents": {
+          "actualBody": 250,
+          "horizontalMargin": 602
+        },
+        "firstContactByEnvelope": {
+          "horizontalMargin": {
+            "event": 306,
+            "kind": "translate",
+            "referenceCellID": 13319,
+            "wholeTriangleRegisteredHeightRange": [
+              -0.0011355458991602063,
+              0.01088660303503275
+            ],
+            "wholeTriangleRelativeToStartFootRange": [
+              -0.0018437012331560254,
+              0.01017844770103693
+            ],
+            "nearFoot25mmReportingBand": true
+          },
+          "actualBody": {
+            "event": 659,
+            "kind": "turn",
+            "referenceCellID": 3234,
+            "wholeTriangleRegisteredHeightRange": [
+              0.013934304006397724,
+              0.021726740524172783
+            ],
+            "wholeTriangleRelativeToStartFootRange": [
+              0.001347857527434826,
+              0.009140294045209885
+            ],
+            "nearFoot25mmReportingBand": true
+          }
+        }
+      },
+      {
+        "name": "varpu_130_to_160",
+        "verifiedEvents": 1923,
+        "contactEvents": {
+          "actualBody": 374,
+          "horizontalMargin": 979
+        },
+        "firstWitnessNearFootBandEvents": {
+          "actualBody": 264,
+          "horizontalMargin": 420
+        },
+        "firstContactByEnvelope": {
+          "horizontalMargin": {
+            "event": 0,
+            "kind": "initial",
+            "referenceCellID": 21954,
+            "wholeTriangleRegisteredHeightRange": [
+              -0.008125687018036842,
+              0.008529607206583023
+            ],
+            "wholeTriangleRelativeToStartFootRange": [
+              -0.007352010271684639,
+              0.009303283952935226
+            ],
+            "nearFoot25mmReportingBand": true
+          },
+          "actualBody": {
+            "event": 1082,
+            "kind": "translate",
+            "referenceCellID": 18677,
+            "wholeTriangleRegisteredHeightRange": [
+              -0.00040489889215677977,
+              0.004107472486793995
+            ],
+            "wholeTriangleRelativeToStartFootRange": [
+              -0.0011130542261525989,
+              0.003399317152798176
+            ],
+            "nearFoot25mmReportingBand": true
+          }
+        }
+      },
+      {
+        "name": "varpu_160_to_130",
+        "verifiedEvents": 1937,
+        "contactEvents": {
+          "actualBody": 376,
+          "horizontalMargin": 988
+        },
+        "firstWitnessNearFootBandEvents": {
+          "actualBody": 266,
+          "horizontalMargin": 424
+        },
+        "firstContactByEnvelope": {
+          "horizontalMargin": {
+            "event": 0,
+            "kind": "initial",
+            "referenceCellID": 17252,
+            "wholeTriangleRegisteredHeightRange": [
+              -0.00926485750824213,
+              0.03531492501497269
+            ],
+            "wholeTriangleRelativeToStartFootRange": [
+              -0.008076312429122101,
+              0.036503470094092716
+            ],
+            "nearFoot25mmReportingBand": false
+          },
+          "actualBody": {
+            "event": 5,
+            "kind": "turn",
+            "referenceCellID": 17252,
+            "wholeTriangleRegisteredHeightRange": [
+              -0.00926485750824213,
+              0.03531492501497269
+            ],
+            "wholeTriangleRelativeToStartFootRange": [
+              -0.00997301284223795,
+              0.03460676968097687
+            ],
+            "nearFoot25mmReportingBand": false
+          }
+        }
+      }
+    ]
+  },
+  "limitations": [
+    "Post-run stdlib reconciliation does not replace the failed aggregate run.",
+    "VTK intersections were not recomputed; recorded contacts are the completed native worker evidence.",
+    "Near-foot first-witness labels are not semantic floors or complete hit-height classification.",
+    "Retained 2 mm lower-body exclusion can miss lower contacts; no tiny-object guarantee.",
+    "No physical travel, support, arrival, registration accuracy or safe clearance is established."
+  ],
+  "validationCPUSeconds": 1.1538759809999999,
+  "validationWallSeconds": 1.1540115299994795,
+  "peakRSSBytes": 25329664
+}
