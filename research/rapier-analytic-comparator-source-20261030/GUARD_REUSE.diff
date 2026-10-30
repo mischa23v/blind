@@ -1,0 +1,17 @@
+--- conference/run_aggregate.py helper prefix
++++ guard_helpers.py
+@@ -1,12 +1,12 @@
+ #!/usr/bin/env python3
+ """SOURCE ONLY: root review/admission required. Never invokes installs or retries.
+-Same passed conference aggregate supervisor, with seven-route raw-body terminal checks.
++Exact helper reuse from passed conference aggregate supervisor; output cap changed to16MiB.
+ Historical estimated registration is diagnostic only, not camera-mesh calibration.
+ """
+ import hashlib, json, math, os, pathlib, re, resource, signal, stat, subprocess, sys, time
+ H = pathlib.Path(__file__).resolve().parent
+ ROOT = H.parents[1]
+-CPU, WALL, RSS, OUTPUT = 120, 180, 1024**3, 64*1024**2
++CPU, WALL, RSS, OUTPUT = 120, 180, 1024**3, 16*1024**2
+ 
+ def file_record(fd, hashed):
+     before=os.fstat(fd)

@@ -1,0 +1,77 @@
+{
+  "cryptographicallyVerified": false,
+  "statements": [
+    {
+      "type": "https://github.com/npm/attestation/tree/main/specs/publish/v0.1",
+      "digestMatchesMetadata": true,
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [
+          {
+            "name": "pkg:npm/%40dimforge/rapier3d-compat@0.21.0",
+            "digest": {
+              "sha512": "b429751cf1b03a19f968241b82a59b387f8dc7fe5f9ebdc83c09f342e47bcc8842feb6aa8b6cb10ba2e1bd9aa3748d84979850818e510c0c03ac08c08b615d3c"
+            }
+          }
+        ],
+        "predicateType": "https://github.com/npm/attestation/tree/main/specs/publish/v0.1",
+        "predicate": {
+          "name": "@dimforge/rapier3d-compat",
+          "version": "0.21.0",
+          "registry": "https://registry.npmjs.org"
+        }
+      }
+    },
+    {
+      "type": "https://slsa.dev/provenance/v1",
+      "digestMatchesMetadata": true,
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v1",
+        "subject": [
+          {
+            "name": "pkg:npm/%40dimforge/rapier3d-compat@0.21.0",
+            "digest": {
+              "sha512": "b429751cf1b03a19f968241b82a59b387f8dc7fe5f9ebdc83c09f342e47bcc8842feb6aa8b6cb10ba2e1bd9aa3748d84979850818e510c0c03ac08c08b615d3c"
+            }
+          }
+        ],
+        "predicateType": "https://slsa.dev/provenance/v1",
+        "predicate": {
+          "buildDefinition": {
+            "buildType": "https://slsa-framework.github.io/github-actions-buildtypes/workflow/v1",
+            "externalParameters": {
+              "workflow": {
+                "ref": "refs/tags/js-v0.21.0",
+                "repository": "https://github.com/dimforge/rapier",
+                "path": ".github/workflows/typescript-bindings.yml"
+              }
+            },
+            "internalParameters": {
+              "github": {
+                "event_name": "push",
+                "repository_id": "290312103",
+                "repository_owner_id": "43279238"
+              }
+            },
+            "resolvedDependencies": [
+              {
+                "uri": "git+https://github.com/dimforge/rapier@refs/tags/js-v0.21.0",
+                "digest": {
+                  "gitCommit": "b716d375efc0201003f0cd9ef7168eee0b62c177"
+                }
+              }
+            ]
+          },
+          "runDetails": {
+            "builder": {
+              "id": "https://github.com/actions/runner/github-hosted"
+            },
+            "metadata": {
+              "invocationId": "https://github.com/dimforge/rapier/actions/runs/36112107426/attempts/1"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
