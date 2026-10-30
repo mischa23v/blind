@@ -1,0 +1,295 @@
+{
+  "status": "completed-saved-array-and-original-pixel-audit",
+  "nativeLibraryLoaded": false,
+  "thresholdsChanged": false,
+  "sourceResultSHA256": "26a4bba48dea9b1434f20817c2d73c27ba6aee23747d65dcc784ae9c48655a96",
+  "scope": "exploratory deterministic pixel-to-occupied-key attribution; not validation",
+  "frames": [
+    {
+      "frame": "frame_00290",
+      "depthSHA256": "333eeb023a27656ae4f313db27a6b4ecee72acfff4cf8691a769aa92117ac38e",
+      "maxFullRasterRayProjectionWorldDifferenceMetres": 1.7763568394002505e-15,
+      "cases": [
+        {
+          "kind": "single",
+          "hitCount": 9899,
+          "maxCenterResidualAssociationDifferenceMetres": 8.881784197001252e-16,
+          "allHitsHaveOriginalEndpointInSameNativeKey": true,
+          "ownPixelInHitKey": 2156,
+          "nearestSupportingPixelDistance": {
+            "count": 9899,
+            "signed": {
+              "min": 0.0,
+              "p05": 0.0,
+              "p25": 1.0,
+              "median": 5.0,
+              "p75": 10.295630140987,
+              "p95": 20.634840519948025,
+              "max": 53.36665625650534,
+              "mean": 6.797759672498013,
+              "rms": 9.906849715218621
+            },
+            "absolute": {
+              "min": 0.0,
+              "p05": 0.0,
+              "p25": 1.0,
+              "median": 5.0,
+              "p75": 10.295630140987,
+              "p95": 20.634840519948025,
+              "max": 53.36665625650534,
+              "mean": 6.797759672498013,
+              "rms": 9.906849715218621
+            }
+          },
+          "nearestSupportingSourceMinusTargetAxialMetres": {
+            "count": 9899,
+            "signed": {
+              "min": -1.8479999999999999,
+              "p05": -0.45100000000000007,
+              "p25": -0.07399999999999984,
+              "median": -0.02499999999999991,
+              "p75": 0.0,
+              "p95": 0.0,
+              "max": 0.02499999999999991,
+              "mean": -0.08953626628952419,
+              "rms": 0.2340109097767341
+            },
+            "absolute": {
+              "min": 0.0,
+              "p05": 0.0,
+              "p25": 0.0,
+              "median": 0.02499999999999991,
+              "p75": 0.07399999999999984,
+              "p95": 0.45100000000000007,
+              "max": 1.8479999999999999,
+              "mean": 0.08979487827053238,
+              "rms": 0.2340109097767341
+            }
+          },
+          "targetDistanceOutsideSupportingDepthIntervalMetres": {
+            "count": 9899,
+            "signed": {
+              "min": 0.0,
+              "p05": 0.0,
+              "p25": 0.0,
+              "median": 0.020999999999999908,
+              "p75": 0.07200000000000006,
+              "p95": 0.4404000000000014,
+              "max": 1.8479999999999999,
+              "mean": 0.08712344681280937,
+              "rms": 0.23235672171441757
+            },
+            "absolute": {
+              "min": 0.0,
+              "p05": 0.0,
+              "p25": 0.0,
+              "median": 0.020999999999999908,
+              "p75": 0.07200000000000006,
+              "p95": 0.4404000000000014,
+              "max": 1.8479999999999999,
+              "mean": 0.08712344681280937,
+              "rms": 0.23235672171441757
+            }
+          },
+          "method": "all original full-raster endpoints in exact returned hit key; nearest image pixel with median across all distance ties; no cutoff"
+        },
+        {
+          "kind": "fused",
+          "hitCount": 9899,
+          "maxCenterResidualAssociationDifferenceMetres": 8.881784197001252e-16
+        }
+      ]
+    },
+    {
+      "frame": "frame_00357",
+      "depthSHA256": "cc2282608bc1f34157c2504d8058baf7af43db786067210aad0569f2c190708f",
+      "maxFullRasterRayProjectionWorldDifferenceMetres": 8.881784197001252e-16,
+      "cases": [
+        {
+          "kind": "single",
+          "hitCount": 7433,
+          "maxCenterResidualAssociationDifferenceMetres": 4.440892098500626e-16,
+          "allHitsHaveOriginalEndpointInSameNativeKey": true,
+          "ownPixelInHitKey": 1344,
+          "nearestSupportingPixelDistance": {
+            "count": 7433,
+            "signed": {
+              "min": 0.0,
+              "p05": 0.0,
+              "p25": 1.0,
+              "median": 8.0,
+              "p75": 12.041594578792296,
+              "p95": 25.270506477886457,
+              "max": 55.569775957799216,
+              "mean": 8.66525544896793,
+              "rms": 11.974748084436927
+            },
+            "absolute": {
+              "min": 0.0,
+              "p05": 0.0,
+              "p25": 1.0,
+              "median": 8.0,
+              "p75": 12.041594578792296,
+              "p95": 25.270506477886457,
+              "max": 55.569775957799216,
+              "mean": 8.66525544896793,
+              "rms": 11.974748084436927
+            }
+          },
+          "nearestSupportingSourceMinusTargetAxialMetres": {
+            "count": 7433,
+            "signed": {
+              "min": -2.489,
+              "p05": -0.7753999999999999,
+              "p25": -0.10399999999999965,
+              "median": -0.04399999999999982,
+              "p75": -0.0050000000000001155,
+              "p95": 0.0,
+              "max": 0.04800000000000004,
+              "mean": -0.14103558455536125,
+              "rms": 0.3744605830692575
+            },
+            "absolute": {
+              "min": 0.0,
+              "p05": 0.0,
+              "p25": 0.007000000000000117,
+              "median": 0.04400000000000004,
+              "p75": 0.10399999999999965,
+              "p95": 0.7753999999999979,
+              "max": 2.489,
+              "mean": 0.14150067267590474,
+              "rms": 0.3744605830692575
+            }
+          },
+          "targetDistanceOutsideSupportingDepthIntervalMetres": {
+            "count": 7433,
+            "signed": {
+              "min": 0.0,
+              "p05": 0.0,
+              "p25": 0.0009999999999998899,
+              "median": 0.040000000000000036,
+              "p75": 0.10199999999999987,
+              "p95": 0.768399999999998,
+              "max": 2.489,
+              "mean": 0.1389632718956007,
+              "rms": 0.3730981586321586
+            },
+            "absolute": {
+              "min": 0.0,
+              "p05": 0.0,
+              "p25": 0.0009999999999998899,
+              "median": 0.040000000000000036,
+              "p75": 0.10199999999999987,
+              "p95": 0.768399999999998,
+              "max": 2.489,
+              "mean": 0.1389632718956007,
+              "rms": 0.3730981586321586
+            }
+          },
+          "method": "all original full-raster endpoints in exact returned hit key; nearest image pixel with median across all distance ties; no cutoff"
+        },
+        {
+          "kind": "fused",
+          "hitCount": 7433,
+          "maxCenterResidualAssociationDifferenceMetres": 4.440892098500626e-16
+        }
+      ]
+    },
+    {
+      "frame": "frame_00391",
+      "depthSHA256": "42e35845a580ec2b66a5d6741b0973eea173c10d92a8f6b3b0758da4c4e0c2c9",
+      "maxFullRasterRayProjectionWorldDifferenceMetres": 8.881784197001252e-16,
+      "cases": [
+        {
+          "kind": "single",
+          "hitCount": 11625,
+          "maxCenterResidualAssociationDifferenceMetres": 4.440892098500626e-16,
+          "allHitsHaveOriginalEndpointInSameNativeKey": true,
+          "ownPixelInHitKey": 4282,
+          "nearestSupportingPixelDistance": {
+            "count": 11625,
+            "signed": {
+              "min": 0.0,
+              "p05": 0.0,
+              "p25": 0.0,
+              "median": 2.0,
+              "p75": 6.0,
+              "p95": 13.892443989449804,
+              "max": 38.27531841800928,
+              "mean": 4.025327575826683,
+              "rms": 6.580930417599803
+            },
+            "absolute": {
+              "min": 0.0,
+              "p05": 0.0,
+              "p25": 0.0,
+              "median": 2.0,
+              "p75": 6.0,
+              "p95": 13.892443989449804,
+              "max": 38.27531841800928,
+              "mean": 4.025327575826683,
+              "rms": 6.580930417599803
+            }
+          },
+          "nearestSupportingSourceMinusTargetAxialMetres": {
+            "count": 11625,
+            "signed": {
+              "min": -1.3499999999999999,
+              "p05": -0.2040000000000001,
+              "p25": -0.039000000000000146,
+              "median": -0.0019999999999997797,
+              "p75": 0.0,
+              "p95": 0.0,
+              "max": 0.0369999999999997,
+              "mean": -0.0539538064516129,
+              "rms": 0.16367095748049085
+            },
+            "absolute": {
+              "min": 0.0,
+              "p05": 0.0,
+              "p25": 0.0,
+              "median": 0.002000000000000224,
+              "p75": 0.039000000000000146,
+              "p95": 0.2040000000000001,
+              "max": 1.3499999999999999,
+              "mean": 0.05417092473118279,
+              "rms": 0.16367095748049085
+            }
+          },
+          "targetDistanceOutsideSupportingDepthIntervalMetres": {
+            "count": 11625,
+            "signed": {
+              "min": 0.0,
+              "p05": 0.0,
+              "p25": 0.0,
+              "median": 0.0,
+              "p75": 0.03599999999999959,
+              "p95": 0.19999999999999973,
+              "max": 1.3499999999999999,
+              "mean": 0.052196129032258065,
+              "rms": 0.1624096638895949
+            },
+            "absolute": {
+              "min": 0.0,
+              "p05": 0.0,
+              "p25": 0.0,
+              "median": 0.0,
+              "p75": 0.03599999999999959,
+              "p95": 0.19999999999999973,
+              "max": 1.3499999999999999,
+              "mean": 0.052196129032258065,
+              "rms": 0.1624096638895949
+            }
+          },
+          "method": "all original full-raster endpoints in exact returned hit key; nearest image pixel with median across all distance ties; no cutoff"
+        },
+        {
+          "kind": "fused",
+          "hitCount": 11625,
+          "maxCenterResidualAssociationDifferenceMetres": 4.440892098500626e-16
+        }
+      ]
+    }
+  ],
+  "wallSeconds": 1.1373395740010892
+}
