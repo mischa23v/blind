@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "observation_window_utc": "2026-10-30 04:36",
+  "scope": "Focused synthetic host checks and simulator compile/link only; not latest hosted runtime or device acceptance",
+  "groups_are_not_summed_as_independent_test_cases": true,
+  "artifact_handling": "Existing room-mesh artifact retained with original expiry; no download/delete; observed bytes are not an observed charge.",
+  "jobs": [
+    {
+      "source_commit": "561532e8dc302b190e3f34ab9546faf364e0905f",
+      "job": "room-mesh",
+      "run_id": 41003352926,
+      "job_id": 123892584491,
+      "url": "https://github.com/mischa23v/blind/actions/runs/41003352926/job/123892584491",
+      "input_log": "apple-candidate-561532e/room-mesh-job.log",
+      "input_sha256": "fa40818936aee00fbc38c4c6263ba7dd187d72bd9bd1152fb0c731508451fbcb",
+      "input_bytes": 24517,
+      "focused_receipt": {
+        "sourceCommit": "561532e8dc302b190e3f34ab9546faf364e0905f",
+        "toolchain": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+        "swiftPMBuildSystem": "native",
+        "defaultSwiftBuildBackendPassed": false,
+        "macOSSwiftPMPackageBuilt": true,
+        "publicImportedClientExecuted": true,
+        "legacyChecks": 55,
+        "runtimeChecks": 32,
+        "failureCommitChecks": 5,
+        "discardChecks": 19,
+        "iOSSimulatorPackageAndClientLinked": true,
+        "iOSSimulatorExecuted": false,
+        "appProjectBuilt": false,
+        "ARKitExecuted": false,
+        "physicalAuthority": false,
+        "publicExclusionUpdatesImplemented": false
+      },
+      "job_status": "completed",
+      "job_conclusion": "success",
+      "artifacts": [
+        {
+          "id": 12954566763,
+          "name": "candidate-room-mesh-75-receipts",
+          "size_in_bytes": 16630,
+          "url": "https://api.github.com/repos/mischa23v/blind/actions/artifacts/12954566763",
+          "archive_download_url": "https://api.github.com/repos/mischa23v/blind/actions/artifacts/12954566763/zip",
+          "expired": false,
+          "created_at": "2026-10-30T04:32:46Z",
+          "expires_at": "2026-11-02T04:32:44Z",
+          "updated_at": "2026-10-30T04:32:46Z",
+          "digest": "sha256:c90a5bdf3fcc7449a7ce0b88e4aa913696630ce1d682499947a1b3c302b2a57e",
+          "workflow_run": {
+            "id": 41003352926,
+            "repository_id": 1412065500,
+            "head_repository_id": 1412065500,
+            "head_branch": "codex/recovery-hazard-order-20261027",
+            "head_sha": "561532e8dc302b190e3f34ab9546faf364e0905f"
+          }
+        }
+      ]
+    },
+    {
+      "source_commit": "561532e8dc302b190e3f34ab9546faf364e0905f",
+      "job": "ingress",
+      "run_id": 41003352916,
+      "job_id": 123892584122,
+      "url": "https://github.com/mischa23v/blind/actions/runs/41003352916/job/123892584122",
+      "input_log": "apple-candidate-561532e/ingress-job.log",
+      "input_sha256": "2f7ff70e18ce3b6c7d391da4bd0fc033f4cda61ea57ab85d7b8795e91ee49114",
+      "input_bytes": 49369,
+      "focused_receipt": {
+        "commit": "561532e8dc302b190e3f34ab9546faf364e0905f",
+        "hostRealPackageFixtures": "passed",
+        "actualARKitSimulatorCompile": "passed",
+        "swiftPMBuildSystem": "native",
+        "defaultSwiftBuildBackendPassed": false,
+        "fixtureResult": [
+          "RESULT: 83 stage83 real-runtime synthetic checks passed; no ARKit execution or privacy purge proof"
+        ],
+        "strictCallerFixtureResult": [
+          "STRICT_ENDPOINT_INGRESS_RESULT: 25 caller-policy checks passed; original83 comparator retained; no physical authority"
+        ],
+        "appActivation": false,
+        "simulatorExecution": false,
+        "deviceExecution": false,
+        "copyLatencyMeasured": false,
+        "physicalAuthority": false
+      },
+      "job_status": "completed",
+      "job_conclusion": "success",
+      "artifacts": []
+    }
+  ]
+}
