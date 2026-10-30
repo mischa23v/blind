@@ -1,0 +1,78 @@
+# iOS floor metadata and the missing body-foot diagnostic connection
+
+2026-10-30. **Read-only source/evidence audit; proposed implementation below is unimplemented.** No app edits, build, native execution, private capture access, upload, or physical guidance.
+
+Audited app source: [`c210ca822ec4fdc339f808af58bc5b057fd98788`](https://github.com/mischa23v/blind/tree/c210ca822ec4fdc339f808af58bc5b057fd98788). At inspected repository HEAD `0a1a59cd580239a52939f5cdc9642cc608ece425`, `git diff c210ca8 HEAD -- ios BlindCore` is empty. Line references below apply to both. Research-package paths were also read at the exact app commit; newer research results do not change the app.
+
+## Conclusion
+
+**The app already obtains floor classifications and plane geometry. The unlabeled Coffee/Conference mesh benchmark does not exercise that capability.** The missing connection is a current, explicitly referenced body-foot state and support association—not another floor detector or another viewer. Existing code intentionally stops short of treating camera pose, a floor label, or a reported mount height as independently validated physical support.
+
+The complete native-height benchmark is useful evidence about source geometry and authored height conventions, not a phone test. Its contact reduction must not be presented as either an on-device floor-classification failure or a physically safe route. See the separate [exact benchmark result](../detour-height-follow-compact-result-20261030/README.md).
+
+## What exists, and where it stops
+
+All paths in this table are relative to the repository.
+
+| Source and exact lines | Actual behavior / boundary |
+|---|---|
+| [`ios/BlindAssist/NavigationModel.swift:1350–1360`](https://github.com/mischa23v/blind/blob/c210ca822ec4fdc339f808af58bc5b057fd98788/ios/BlindAssist/NavigationModel.swift#L1350-L1360); `NativeARObservationAdapter.swift:11–17` | Normal camera configuration uses gravity alignment, scene depth where supported, horizontal-plane detection, and classified mesh where supported; otherwise unclassified mesh. This is not only a research configuration. |
+| [`ios/BlindAssist/NativeARObservationAdapter.swift:49–100,143–198`](https://github.com/mischa23v/blind/blob/c210ca822ec4fdc339f808af58bc5b057fd98788/ios/BlindAssist/NativeARObservationAdapter.swift#L49-L100) | Retains camera intrinsics/full matrix, tracking/session/frame/timestamps, anchor ID and transform, plane boundary/classification/alignment, and per-face mesh classifications. Buffer offset/stride/count are checked. Inspection is capped at 128 anchors, 32 retained surfaces and 2,048 vertices; omissions/truncation remain explicit. No full-room coverage claim. |
+| `ios/BlindAssist/NativeARObservationBridge.swift:93–109`; [`BlindCore/Sources/BlindCore/NativeObservation.swift:120–198`](https://github.com/mischa23v/blind/blob/c210ca822ec4fdc339f808af58bc5b057fd98788/BlindCore/Sources/BlindCore/NativeObservation.swift#L120-L198) | The normal lane retains bounded **historical** geometry. `mapTarget` is ownership metadata, not a coordinate transform. Missing body-camera calibration, floor identity, pose uncertainty, corridor coverage and map alignment are explicitly listed. Source search found no normal hazard consumer of `triangleClassifications`. |
+| `ios/BlindAssist/DepthSampler.swift:52–93`; `BlindCore/Sources/BlindCore/NativeDepthObservationPolicy.swift:7–27`; `HazardDetector.swift:129–155`; `NavigationModel.swift:1752–1763` | Existing urgent warnings instead project confidence-2 scene depth through scaled intrinsics and the full camera matrix. The detector separately calibrates a retained **level-floor** scalar from depth. Mesh/plane labels do not currently replace this detector. |
+| [`BlindCore/Sources/BlindCore/BodyProfile.swift:52–68,159–192`](https://github.com/mischa23v/blind/blob/c210ca822ec4fdc339f808af58bc5b057fd98788/BlindCore/Sources/BlindCore/BodyProfile.swift#L52-L68); `BodyCollisionWarning.swift:39–75`; `ios/BlindAssist/BodyProfileSettingsView.swift:41–63,114–126` | Reported camera right/up/forward offsets and body dimensions exist. Supplemental warning base is retained floor height, or camera Y minus reported mount-up when unavailable. Horizontal mount offsets enlarge an isotropic camera-centred bound; they do not locate the actual body centre. The supplemental warning intentionally excludes the lowest 9cm and does not replace terrain warnings. Helper entry is not calibration. |
+| `BlindCore/Sources/BlindCore/BodyHeading.swift:3–12`; `ios/BlindAssist/NavigationModel.swift:5536–5539` | Walking/declared-mount heading estimation exists, but is not a validated full camera-to-body transform. A seated diagnostic must not demand walking to manufacture this evidence. |
+| `ios/BlindAssist/PlaceStore.swift:520–546`; `BlindCore/Sources/BlindCore/SavedWorldFrame.swift:3–38,62–85`; `SavedRoomDiagnosticGeometryProvider.swift:43–75` | RoomPlan capture and its paired ARWorldMap have source hashes, revision, origin-anchor identity and shared-world provenance. Original floor polygons, transforms and feature IDs are retained. Recovered camera association remains camera-only, with unmeasured uncertainty—not body/feet or imported-map alignment. |
+| [`ios/BlindAssist/SavedRoomRouteMeshAdapter.swift:9–57,344–409`](https://github.com/mischa23v/blind/blob/c210ca822ec4fdc339f808af58bc5b057fd98788/ios/BlindAssist/SavedRoomRouteMeshAdapter.swift#L344-L409) | Existing historical routing adapter preserves raw export, retains non-floor geometry, and tessellates the original semantic floor polygon using released Earcut. Exported slab top/sides/underside are not substituted for the original floor. Repository calls to `decode` are in hosted tests, not normal live guidance. |
+| [`ios/BlindAssist/NativeLocalizationIssuer.swift:20–32,45–56`](https://github.com/mischa23v/blind/blob/c210ca822ec4fdc339f808af58bc5b057fd98788/ios/BlindAssist/NativeLocalizationIssuer.swift#L20-L56); `BlindCore/Sources/BlindCore/NativeLocalizationEvidence.swift:73–114,166–207` | Exact camera candidate is wired, but production issuance stops at `missingCalibration`. No production measurement producer or independently validating implementation is supplied; it never calls `acceptRegisteredCapture`. Even the bench seam does not install its returned pair. |
+
+### Apple's supplied capabilities, not our accuracy claims
+
+Apple documents [per-face mesh classifications](https://developer.apple.com/documentation/arkit/armeshclassification), including floor and unclassified faces. Its [reconstruction sample](https://developer.apple.com/documentation/arkit/visualizing-and-interacting-with-a-reconstructed-scene) states that simultaneous plane detection flattens mesh where a plane is detected. The normal app already enables horizontal planes. This is materially different from evaluating a static unlabeled mesh without ARKit plane metadata.
+
+RoomPlan provides [identified floors](https://developer.apple.com/documentation/roomplan/capturedroom) and [polygon corners in local-plane coordinates](https://developer.apple.com/documentation/roomplan/capturedroom/surface/polygoncorners). These APIs supply useful source semantics/geometry; none of those facts establishes wearer pose, missing-object detection or physical navigation safety.
+
+## Reuse the existing iPhone diagnostic; do not build another one
+
+The existing DEBUG/`BLIND_MESH_CANDIDATE_DIAGNOSTICS` screen is already reachable:
+
+- `ios/BlindAssist/SeatedMeshDiagnosticView.swift:15–45,48–88`: explicit seated/helper handoff, source wireframe/receipts, bounded refresh, stop/erase, manual XYZ start/goal and declared radius/height.
+- `research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchIngress.swift:31–39`: existing classified-only ingress and strict supplied-XZ endpoint policy.
+- `research/mesh-candidate-ingress-83/Sources/MeshCandidateIngress.swift:157–179`: only ARKit floor label 2 is candidate support; other faces remain obstacles, missing/unknown classification leaves a gap. No slope fallback or discarded obstacle geometry.
+- `research/live-mesh-classified-bench-20261028/Sources/LiveMeshBenchSession.swift:266–288`: the producer already checks fresh, normal, increasing ARFrame timestamps, but currently retains no camera transform for the display/request. No ARFrame/image escapes the callback.
+- `ios/BlindAssist/SeatedMeshDiagnosticController.swift:178–208`: the request currently accepts manual test XYZ only. Existing token checks, retirement and native/display drain are reusable.
+- `research/room-mesh-package-75/BlindRoomMesh/Sources/BlindRoomMesh/RoomMeshCandidate.swift:121–130`: results already carry `projectedStart`, `projectedGoal`, endpoint-admission receipt, source revision and explicit false physical-authority/coverage flags. No new projection algorithm is needed.
+
+## Smallest proposed implementation: a candidate-start adapter
+
+**Scope for a separate root decision: extend this screen and its existing owner only.** No new camera session, floor detector, planner, background mapper, normal-navigation caller, independent validator or output channel.
+
+1. **Copy a pose-only snapshot at the existing producer boundary.** Copy the 16 scalar camera-matrix values, original capture time, frame/session generation and tracking status on its owned queue. Use the existing freshness lease and bounded request lifecycle; never retain an ARFrame, raster or borrowed buffer. Source-mesh delivery revision and camera time remain separate: a fresh camera does not refresh old mesh capture time.
+2. **Introduce a diagnostic-only candidate body-foot value, distinct from `SpatialLocalizationCapture`/`SpatialFloorSupport`.** Carry the untouched camera snapshot; explicitly supplied camera-above-foot and right/forward offsets; declared body-heading or declared camera-to-body yaw-offset input; body-query dimensions; input revision; and unknown calibration/uncertainty. Missing inputs stay missing. Do not substitute stature for camera height, assume zero offsets/yaw, or treat camera optical pitch/roll as body orientation. If using a declared yaw offset, compute a declared gravity-upright body frame and subtract its declared mount translation from the camera origin; label that arithmetic **unvalidated candidate**, not measured feet. Source author/reviewer must freeze the sign/axis convention before implementation. Existing local profile values may populate an explicit helper-reviewed proposal, not silently become calibration.
+3. **Feed that candidate start into the unchanged strict query; retain the original goal and body parameters.** Keep manual XYZ mode. Display camera origin, proposed body-foot XYZ and returned native source-associated start separately, including vertical delta and endpoint residual/refusal. No height overwrite, hidden endpoint reset or physical relocation. Keep the existing projected goal separate from requested goal. An unsupported/clamped/unknown result stays withheld; never use a RoomPlan floor as fallback for absent live support.
+4. **Reuse the current display and invalidation.** Render a separately labelled candidate-foot marker/declared envelope alongside the existing route, using the exact source/session/revision. Revalidate pose age, source revision, mount/input revision and owner before delivery. Retire on edit, update/removal, tracking loss, stop/background or stale completion; use existing stop/drain. No speech, haptic movement cue, saved private trace or automatic walking instruction.
+5. **Keep RoomPlan as an explicitly separate source frame.** Its original floor-polygon adapter is reusable in existing saved-room fixture tests with explicit declared start inputs. Do not splice a saved RoomPlan floor into the seated live session: that session resets tracking and does not establish saved-world recovery. Adding live-to-saved-room association is a later scoped change, not part of this smallest seam.
+
+**Phone-testable outcome:** a seated helper can see which current camera capture and declared mount inputs generated the candidate start, how the existing classified native route associates it to source floor, and exactly why it is withheld. This closes a real capture→candidate→native-query→display gap. It does not complete walking navigation or fresh footprint support validation.
+
+## Existing tests and failures to preserve
+
+The latest source-bound [c210ca8 native evidence](../native-diagnostics-c210ca8-20261029/README.md), run [40948350087](https://github.com/mischa23v/blind/actions/runs/40948350087), supersedes older source-only README statements:
+
+- Both relevant compilation paths/classified bench compiled. [All 10 seated synthetic hosted tests passed](../native-diagnostics-c210ca8-20261029/seated-summary.json): axes/metres, transform-once, source-token matching, confirmation and native/render drain. These are not live sensing tests.
+- Full hosted suite: **283 passed / 12 failed / 2 skipped**. Four classification-ingress tests timed out: classified floor/transform, legacy unclassified policy, nonfloor/missing/none/unsupported labels, and table obstacle/removal. Their actual native refusals/timeouts remain failures.
+- [Source/timing diagnosis](../native-diagnostics-c210ca8-20261029/SOURCE_STALL_DIAGNOSIS.md) identifies queued requests behind outstanding shared-worker work; the initiating long wall/low-CPU build cause remains unknown. Do not widen timeouts, skip cases, change geometry/QoS or declare a fix as part of candidate wiring. Bound and expose pending/refused state.
+- Three saved-route contact failures and five model/conversation failures remain; UI retains the Camera/Ask accessibility failure. No full-app green or physical-device acceptance.
+
+### Proposed focused acceptance cases, not executed
+
+1. Exact axes/metres with translated/rotated camera; original camera matrix unchanged; declared yaw/right/forward signs verified independently. Camera pitch/roll cannot rotate world-up mount height or silently set body yaw.
+2. Missing/nonfinite offsets, missing heading, absent profile, stature-only input and unconfirmed mount all refuse candidate derivation; explicitly declared zero is distinguishable from absent.
+3. Existing floor-labelled fixture admits a source association; table/wall/none/unsupported/missing classification never becomes floor. Preserve current four failing ingress cases unchanged and report them separately.
+4. Requested and projected starts/goals are retained; vertical delta is visible; outside-XZ start remains refused. No manual endpoint Y reset and no claimed physical start/arrival.
+5. One held request followed by source update/removal, pose expiry, tracking loss, mount/input edit, stop or replacement cannot publish an old candidate/route. Camera and mesh-source freshness remain distinct.
+6. Existing RoomPlan fixtures reuse original semantic polygons/nonfloor geometry without world-frame substitution; a saved-room/live-session mismatch refuses association. No private captures are needed for these controls.
+7. Hosted synthetic test drives the **actual existing controller request/display path**, not a duplicate mock planner; checks false physical-authority flags and absence of registered-capture issuance/speech/haptics. Existing confirmation/drain tests remain in the run.
+8. Later separately authorized iPhone smoke test: enter existing seated mode, inspect current source/camera/candidate receipts, exercise refusal and stop, and measure actual latency/retained memory. No walking trial, private upload or inferred safety percentage.
+
+Implementation and native/device execution await separate scope approval. This audit changes documentation only.

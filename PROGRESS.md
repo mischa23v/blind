@@ -1,3 +1,43 @@
+## Released height-following comparison completed and audited — 2026-10-30 02:39 UTC
+
+Actual compact attempt 002 from source `0a1a59cd580239a52939f5cdc9642cc608ece425` completed all three stages with zero exits: **3,696 native-height events and 29,568 full-body collision records**. Independent saved-data checks reproduced the old native event bytes exactly and all 29,069 saved attempt-001 records after lossless decoding. Runtime: 89.319 CPU / 89.361 wall seconds; observed peak RSS 193,658,880 B. All 101 input pins stayed unchanged. Attempt 001 remains failed and preserved.
+
+The offline endpoint-Y reset is correctable: Conference terminal contacts change nominal 15→0 and margin 25→0; Coffee terminal changes nominal untrimmed 26→0, but margin retains 51 faces. Whole-route native nominal contacts are Conference 20 untrimmed / 0 with the historical 2 mm lower trim, Coffee 0 / 0. Margin contact events remain Conference 718 / 652 and Coffee 430 / 426. **Every lost triangle lies entirely below the native foot datum**; raising that virtual lower boundary leaves unresolved near-floor coverage, up to 25.95 mm / 19.06 mm. No higher geometry was erased. These are authored query events, not physical journeys, safe clearance or arrivals.
+
+[Completed audit and exact changed IDs](research/detour-height-follow-compact-result-20261030/README.md). Next: keep destination association separate from proposed body-foot Y, preserve independent support/low-hazard evidence, and address remaining full-body/margin contacts without shrinking profiles or silently clearing geometry. App `c210ca8`, main and live guidance remain unchanged. Earlier pending entries below are preserved history, superseded only for this research run.
+
+---
+
+## Development-evaluation scope and compact recorder running — 2026-10-30 02:29 UTC
+
+The Coffee frames 232/370 were withheld from map construction but already inspected during diagnosis. Their fine/coarse comparison is **iterative development evaluation**, not an untouched final model-selection holdout or independent safety validation. [Scope clarification](research/coffee-fine-fused-heldout-result-20261030/EVALUATION_SCOPE.md); published results, source protocols and pins are unchanged.
+
+The separately frozen compact-recorder source `0a1a59cd580239a52939f5cdc9642cc608ece425` is running as attempt 002. At this checkpoint its saved guard status is `started`: compilation/height exited 0; VTK has no terminal exit yet. **No completed collision result is claimed.** Attempt 001 remains failed and preserved below. No geometry, app defaults or physical movement were changed.
+
+---
+
+## Height-follow attempt 001 failed in evidence recording — 2026-10-30 02:23 UTC
+
+The `1521e1af` experiment has now terminated; this supersedes the pending status in the preserved 02:18 checkpoint below. Compilation and the native-height worker succeeded: **all 3,696 scheduled local-height events were valid**. The aggregate experiment nevertheless **failed** when VTK evidence reached its 64 MiB uncompressed limit; cleanup then masked the original exception with a catalog-budget exception. Streaming audit recovered 29,069/29,568 complete records (499 missing), not a complete collision result. Runtime: 79.853 CPU / 79.895 wall seconds; sampled peak RSS 197,959,680 bytes. Original source, failure, partial gzip checksum and byte-identical receipts are preserved in the [failed-attempt packet](research/detour-height-follow-failed-result-20261030/README.md).
+
+No physical movement was applied; no full-route collision, support, arrival or device-safety verdict follows. A separately reviewed recorder repair is needed, not a geometry or safety-threshold change. App defaults remain unchanged; prior voxel gains and unresolved tails/coverage remain as recorded below.
+
+---
+
+## Representation findings and height-following source — 2026-10-30 02:18 UTC
+
+Research evidence is published through `930dffd`; the separate released-height diagnostic source is published at `1521e1af`. **Its native run is in progress at this checkpoint; no height-following outcome is claimed.** Earlier dated sections below remain unchanged historical evidence, not current pending/result claims.
+
+- **Self-reprojection isolated a representation contribution:** substantial first-hit disagreement already exists in each single-view map. Projection/pixel association agrees to numerical precision; an independent slab calculation matches saved voxel-entry results within 0.728 µm. Neighboring source pixels populate many earlier-hit boxes. This is not evidence of a corresponding room-scale error or bad hardware; grazing incidence/foreground voxel extent can amplify axial residuals. [Self-view audit](research/coffee-self-reprojection-result-20261030/README.md).
+- **Fixed 5 cm → 2.5 cm singleton ablation completed:** same-data median absolute entry residuals improve 5.92/7.21/3.95 → 2.91/3.61/2.29 cm. Same-pixel comparisons confirm gains without lost hits, but conservative unknown-before-hit counts increase. All source endpoints remain retained; that is not independent hazard recall. Preserve the first frozen 500k enumeration failure; the separately reviewed 1M protocol kept the original 512 MiB process budget. [Result](research/coffee-resolution-ablation-v2-result-20261030/README.md).
+- **Fine fused held-out comparison completed under its separate 1 GiB research protocol:** on common hit pixels, medians improve 10.21→4.92 cm and 8.94→4.75 cm; p95 tails remain 79.91/66.34 cm. There are 248/230 lost coarse hits and 0/10 new fine hits, so conditional selection effects are explicitly separated. Primary guidance still has **18,904 origin-unknown rays and zero scored residuals**. Actual fine map: 2,006,545 nodes / 1,733,066 leaves; 11.07 s wall / 378,888 KiB peak RSS. No production resolution, free-space claim or iPhone performance verdict follows. [Paired/lost-hit audit](research/coffee-fine-fused-heldout-result-20261030/README.md).
+- **Foot-datum diagnosis and source trace completed:** six fixed-pose comparisons show some low contacts depend on authored foot Y, while higher contacts and other limitations remain. The offline scheduler appends endpoint-Y resets of approximately 25.95 mm (Conference) and 19.06 mm (Coffee), despite retaining native Y at interior nodes. This is a demonstrated offline association issue, **not proof the live app executes those downward moves**. [Pose result](research/rapier-support-datum-results-20261030/README.md), [source trace](research/recast-foot-datum-source-trace-20261030/REVIEW.md).
+- **Height-following source only:** published `1521e1af` preserves the two fixed authored routes, full geometry, profiles, original contacts and low-object uncovered bands; it uses released local `moveAlongSurface` + `getPolyHeight`. It is not the full `dtPathCorridor` controller, an applied body relocation or verified floor support. Await its actual terminal evidence. [Frozen source](research/detour-height-follow-source-20261030/README.md).
+
+The user's complementary surface/occupancy/semantic multi-system design remains [proposed, not implemented](research/multi-representation-map-plan-20261030/README.md). App source remains `c210ca822ec4fdc339f808af58bc5b057fd98788`; main/defaults/live guidance are unchanged. Full-body/full-footprint acceptance, calibrated current pose/heading, fresh hazards, transitions, device validation and the 400 complete journeys remain open. No child readiness or physical-navigation acceptance is established.
+
+---
+
 ## Actual room and observation diagnostics — 2026-10-30 01:35 UTC
 
 Published evidence checkpoint: `4e0fd5ecbb2aebd4cafb1a5883f1fabd8df21ca3`. These are research results, not a new app build or live-navigation acceptance. Earlier dated sections below remain unchanged historical evidence.

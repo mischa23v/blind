@@ -1,3 +1,46 @@
+## Height-following terminal audit — 2026-10-30 02:39 UTC
+
+- [x] Complete and independently audit compact attempt 002 (`0a1a59cd580239a52939f5cdc9642cc608ece425`): all 3,696 native events, 29,568 collision records, unchanged 101 inputs, three zero exits and retired process groups.
+- [x] Verify exact old native event bytes and all 29,069 decoded attempt-001 prefix records; preserve attempt 001's recording failure. [Completed report](research/detour-height-follow-compact-result-20261030/README.md).
+- [x] Separate endpoint-Y-reset improvement from unresolved low-geometry coverage: every lost contact triangle is below native foot; do not mark it harmless noise. Desired XZ/headings and goal identities are unchanged, not measured physical motion.
+- [ ] Integrate map-destination versus proposed foot-datum separation only under a reviewed offline change; do not activate native Y as wearer-foot authority.
+- [ ] Resolve remaining full-height contacts, margin contacts, physical support, toys/stairs and live localization before any safety or arrival claim. Other routes, actual 100 movement episodes / 400 journeys, and iPhone validation remain open.
+
+App `c210ca8`, main and physical guidance unchanged. Dated pending checkpoints below remain historical; this entry supersedes only the compact-run pending status.
+
+---
+
+## Current pending evidence — 2026-10-30 02:29 UTC
+
+1. Audit compact-recorder attempt 002 only after its actual terminal receipt. It is currently `started`, not passed; compile/height exited 0 and VTK remains pending. Preserve failed attempt 001 regardless of the next outcome.
+2. Keep the [Coffee evaluation-use distinction](research/coffee-fine-fused-heldout-result-20261030/EVALUATION_SCOPE.md) explicit: frames 232/370 were construction-withheld but diagnosis-exposed. Further generalization/model-selection claims need separate uninspected evaluation data and a frozen protocol, not relabeling these development results.
+
+No app-default activation or physical-clearance verdict follows from either task. Earlier dated sections remain historical checkpoints.
+
+---
+
+## Next: repair and review the failed evidence recorder — 2026-10-30 02:23 UTC
+
+1. Preserve [height-follow attempt 001](research/detour-height-follow-failed-result-20261030/README.md) as **failed**, despite all 3,696 local native-height events being valid. Its VTK output stops at 29,069/29,568 records; do not infer a full collision verdict.
+2. In a separate frozen source, repair evidence accounting and failure logging: retain the first exception and bounded summary, reserve catalog capacity, and retain all required contact IDs. Independently review and publish before another serial attempt. No geometry/default activation or silent bound expansion.
+3. Only after a complete recorded run, audit original/native-height contact differences and exposed lower bands. Full-footprint support, physical movement, current hazards and iPhone acceptance remain open. The 02:18 section below is preserved historical context, not a claim its run is still active.
+
+---
+
+## Next acceptance work after measured voxel improvements — 2026-10-30 02:18 UTC
+
+Current actual findings are in the leading PROGRESS checkpoint (published research through `930dffd`). Earlier dated TODO sections remain preserved history; self-view, resolution and fine held-out experiments are now completed, not pending reruns.
+
+1. **Finish and audit the already running released-height comparison** from `1521e1af`. No result is claimed yet. Retain both original routes/XYZ intent, every contact ID, untrimmed/2 mm bands, higher obstacles, numerical XZ refusals and any exposed low-object band. A changed virtual foot Y must not silently relocate the user or authorize exact-XYZ arrival.
+2. Diagnose the remaining **long residual tails, unknown coverage and lost/new hits** in the fixed Coffee evidence before selecting a production representation. Same-pixel gains are real, but all 18,904 conservative held-out rays remain origin-unknown. A lost coarse hit is not verified clearance. No new resolution or threshold selection is authorized by aggregate medians alone.
+3. Separate the demonstrated **offline endpoint-Y association defect** from app behavior. Only after native diagnostic evidence, review whether/how a qualified caller should retain polygon/height state and source identity; do not activate app defaults or claim the full released corridor controller is already integrated.
+4. Keep the user's [multi-representation map proposal](research/multi-representation-map-plan-20261030/README.md) as planned integration. Shared-input methods can share errors; an extra 2D/LLM check must not erase unknowns, change collision truth or turn remembered geometry into present clearance.
+5. After a demonstrated correction, repeat unchanged meaningful complete-route body/support acceptance, then current localization/heading, incremental/live hazards, deviation/return/restart, doors/floors, chair/bed rise, phone performance and supervised adult/device validation. Complete the 400 journeys and final reproducible review package; research diagnostics do not close those gates.
+
+Publish reviewed source and actual receipts, including failures, and verify the remote. Keep app `c210ca8`, main and live guidance unchanged unless separately reviewed and authorized.
+
+---
+
 ## Next isolated navigation diagnostics — 2026-10-30 01:35 UTC
 
 The real-room Rapier and Coffee observation comparisons are now completed diagnostics; see the corresponding current PROGRESS checkpoint. Earlier dated TODO sections remain historical, not instructions to rerun already completed experiments.

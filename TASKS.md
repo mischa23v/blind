@@ -1,3 +1,52 @@
+## Height-following terminal audit — 2026-10-30 02:39 UTC
+
+- [x] Complete and independently audit compact attempt 002 (`0a1a59cd580239a52939f5cdc9642cc608ece425`): all 3,696 native events, 29,568 collision records, unchanged 101 inputs, three zero exits and retired process groups.
+- [x] Verify exact old native event bytes and all 29,069 decoded attempt-001 prefix records; preserve attempt 001's recording failure. [Completed report](research/detour-height-follow-compact-result-20261030/README.md).
+- [x] Separate endpoint-Y-reset improvement from unresolved low-geometry coverage: every lost contact triangle is below native foot; do not mark it harmless noise. Desired XZ/headings and goal identities are unchanged, not measured physical motion.
+- [ ] Integrate map-destination versus proposed foot-datum separation only under a reviewed offline change; do not activate native Y as wearer-foot authority.
+- [ ] Resolve remaining full-height contacts, margin contacts, physical support, toys/stairs and live localization before any safety or arrival claim. Other routes, actual 100 movement episodes / 400 journeys, and iPhone validation remain open.
+
+App `c210ca8`, main and physical guidance unchanged. Dated pending checkpoints below remain historical; this entry supersedes only the compact-run pending status.
+
+---
+
+## Recorder retry and evaluation-scope checkpoint — 2026-10-30 02:29 UTC
+
+- [x] Add [evaluation-use clarification](research/coffee-fine-fused-heldout-result-20261030/EVALUATION_SCOPE.md) without changing published README, numerical results or source pins: 232/370 are construction-withheld development views, not untouched final validation.
+- [ ] Await and audit compact-recorder attempt 002 terminal evidence (`0a1a59cd580239a52939f5cdc9642cc608ece425`); current guard says `started`, compile/height 0, VTK pending. Do not mark the collision comparison complete yet.
+- [x] Keep attempt 001's recorder failure, original receipts and partial stream intact. App defaults, physical support/arrival acceptance and all actual movement authority remain unchanged.
+
+---
+
+## Current height-follow outcome: recorder failed — 2026-10-30 02:23 UTC
+
+- [x] Preserve actual attempt 001 terminal evidence: compile/height exits 0; 3,696/3,696 native-height events valid; aggregate **failed** at VTK uncompressed evidence cap. [Packet](research/detour-height-follow-failed-result-20261030/README.md).
+- [x] Audit partial gzip with streaming stdlib: 29,069/29,568 complete rows, 499 absent; stream readable to EOF. Preserve raw checksum, original receipts and both failure exceptions; do not rewrite the earlier attempt as passed.
+- [ ] Independently review/publish a separate recorder repair before execution; preserve contact IDs, geometry and limits, with explicit terminal failure reporting.
+- [ ] Complete and audit the original-versus-native-height collision comparison. No physical movement, full-route acceptance, support or app-default activation is established by the successful height stage.
+
+Earlier 02:18 entries remain unchanged as dated history; their pending-height status is superseded by this failed recording outcome. Other measured representation findings and outstanding multi-system/device work are unchanged.
+
+---
+
+## Current representation and movement-association checkpoint — 2026-10-30 02:18 UTC
+
+Research evidence published through `930dffd`; height-following source `1521e1af` is running, with **no result claimed at this checkpoint**. Earlier dated checklists remain intact as historical evidence.
+
+- [x] Complete singleton-versus-fused self-reprojection and saved-pixel/analytical-box audits. Internal projection association and voxel intersection arithmetic match; substantial same-view residuals expose a representation contribution, not established hardware failure. [Report](research/coffee-self-reprojection-result-20261030/README.md).
+- [x] Complete the fixed 5 cm/2.5 cm singleton comparison and paired-pixel audit. Preserve the original enumeration-bound failure and separately declared successful protocol. Better observed residuals coexist with more conservative unknown gaps. [Report](research/coffee-resolution-ablation-v2-result-20261030/README.md).
+- [x] Complete fine fused held-out comparison, exact coarse reproduction and common/lost/new-hit audit. Same-pixel medians improve, but large tails and primary 18,904 unknown-origin rays remain; no production resolution or physical accuracy claim. [Report](research/coffee-fine-fused-heldout-result-20261030/README.md).
+- [x] Complete six-pose support-datum diagnosis and source trace of the offline endpoint-Y resets. Retain higher contacts and distinguish authored replay from untested live app behavior. [Pose result](research/rapier-support-datum-results-20261030/README.md), [trace](research/recast-foot-datum-source-trace-20261030/REVIEW.md).
+- [x] Prepare, review and publish the two-route released Detour per-tick height diagnostic at `1521e1af`, preserving raw geometry, profiles, all original contacts and uncovered low-object bands. [Source](research/detour-height-follow-source-20261030/README.md).
+- [ ] Finish and independently audit its actual native result; preserve partial/refused/failed outcomes. Native height is only a proposal, not physical support or exact-original-XYZ arrival.
+- [ ] Resolve remaining representation tails/coverage and selected VTK/controller disagreements without deleting hazards, filling unknowns, shrinking margins or silently moving the body.
+- [ ] Implement and validate the complementary surface/occupancy/semantic [multi-system proposal](research/multi-representation-map-plan-20261030/README.md); it is not completed or activated.
+- [ ] Demonstrate useful complete routes with full-body collision, full-footprint support, calibrated current location/heading and fresh hazards; then phone integration, supervised adult acceptance, 400 end-to-end journeys and final reproducible review package.
+
+App source remains `c210ca822ec4fdc339f808af58bc5b057fd98788`; main/defaults/live guidance unchanged. No device/child readiness, safety percentage or generalized obstacle-avoidance acceptance follows from these research results.
+
+---
+
 ## Room and observation acceptance checkpoint — 2026-10-30 01:35 UTC
 
 - [x] Complete the frozen Coffee/Conference Rapier diagnostic: 49 original probes plus two saved-state probes, 16 groups / 408 rows / 328 calls / 80 unsupported turns. Raw/internal-edge motion is identical across 164 called pairs. Original VTK evidence and higher margin overlaps remain retained; no proposal was applied. This closes an experiment, not navigation acceptance. [Report](research/rapier-real-room-results-20261030/README.md).
