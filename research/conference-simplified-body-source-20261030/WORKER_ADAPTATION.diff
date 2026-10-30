@@ -1,0 +1,68 @@
+--- blind/research/conference-contact-ids-source-20261030/run_comparison_ids.py	2026-10-30 03:17:03.106989875 +0300
++++ blind/research/conference-simplified-body-source-20261030/run_comparison_simplified.py	2026-10-30 03:48:35.394558785 +0300
+@@ -1,11 +1,12 @@
+ #!/usr/bin/env python3
+-"""Prepared additive all-hit-ID recording only. Root admission required; NOT RUN.
++"""Prepared simplified-chain body and complete-ID diagnostic only. Root admission required; NOT RUN.
+ 
+ Uses unchanged conservative sweep/all-hit kernels. No planner call, support probe,
+ ground-label construction, ground-following, contact avoidance or arrival claim.
+ """
+ import argparse, gzip, hashlib, importlib.util, json, math, os, pathlib, sys, time
+ H=pathlib.Path(__file__).resolve().parent;R=H.parents[1];W=R.parent
++sys.dont_write_bytecode=True
+ MAX_BOXES=55000;MAX_TRIANGLES=30000000;MAX_LOGICAL=64*1024**2
+ 
+ def sha(p):
+@@ -31,14 +32,19 @@
+     c=loader.load_frozen_contracts(original,pins['inputs'][prefix+'contracts.py'],pins['inputs'][prefix+'schedule_source.py'])
+     PROPOSAL_SHA,MESH_SHA,VERTEX_SHA,TRIANGLE_SHA=c.PROPOSAL_SHA,c.MESH_SHA,c.VERTEX_SHA,c.TRIANGLE_SHA
+     encoded,select_routes,check_schedule,validate_receipt=c.encoded,c.select_routes,c.check_schedule,c.validate_receipt
+-    recorder_spec=importlib.util.spec_from_file_location('conference_hit_recorder',H/'hit_recorder.py')
++    recorder_spec=importlib.util.spec_from_file_location('simplified_query_recorder',H/'query_recorder.py')
+     recorder_module=importlib.util.module_from_spec(recorder_spec);recorder_spec.loader.exec_module(recorder_module)
+-    expected=json.loads((H/'EXPECTED_COUNTS.json').read_text())
+-    recorder=recorder_module.FixedHitRecorder(expected)
++    selection_spec=importlib.util.spec_from_file_location('simplified_selection',H/'selection.py')
++    selection=importlib.util.module_from_spec(selection_spec);selection_spec.loader.exec_module(selection)
+     proposal=expand(pins['proposalPath']);meshpath=expand(pins['meshPath'])
+     if sha(proposal)!=PROPOSAL_SHA or sha(meshpath)!=MESH_SHA:raise ValueError('wrong actual proposal/source')
+-    frozen=json.loads((original/'ROUTES.json').read_text())
+-    if select_routes(json.loads(proposal.read_text()))!=frozen:raise ValueError('frozen chain selection changed')
++    baseline_routes=json.loads((original/'ROUTES.json').read_text())
++    if select_routes(json.loads(proposal.read_text()))!=baseline_routes:raise ValueError('original baseline chain selection changed')
++    pairs_path=expand(pins['pairsPath'])
++    if sha(pairs_path)!=selection.PAIRS_SHA:raise ValueError('actual simplified pairs identity')
++    pairs=json.loads(pairs_path.read_text());frozen=json.loads((H/'ROUTES.json').read_text())
++    if selection.select_simplified(pairs,baseline_routes,c.make_schedule)!=frozen:raise ValueError('exact simplified chain selection changed')
++    recorder=recorder_module.BoundedQueryHitRecorder(frozen)
+     out=expand(pins['comparisonDirectory']);out.mkdir(exist_ok=False)
+     for key in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS'):os.environ[key]='1'
+     sys.dont_write_bytecode=True
+@@ -51,12 +57,14 @@
+     import vtk
+     from reference_geometry import ReferenceSurface,serial_vtk
+     from oriented_container import BodyGeometry
+-    debug_spec=importlib.util.spec_from_file_location('conference_debug_container',H/'oriented_ground_container_debug.py')
++    debug_spec=importlib.util.spec_from_file_location('conference_debug_container',R/'research/conference-contact-ids-source-20261030/oriented_ground_container_debug.py')
+     debug=importlib.util.module_from_spec(debug_spec);debug_spec.loader.exec_module(debug)
+     GroundedReferenceContainer=debug.GroundedReferenceContainer
+     from ground_support import GroundSupport
+     runtime=serial_vtk();began=time.monotonic();logical=0;scorer=None
+     model={'status':'started','error':None,'proposalSHA256':PROPOSAL_SHA,'sourceMeshSHA256':MESH_SHA,
++           'sourcePairsSHA256':selection.PAIRS_SHA,'sourcePairsCommit':selection.PAIR_SOURCE,
++           'selectedRouteArm':'all seven actual geos025CenteredCandidate.chainXYZ',
+            'registeredFloat32VerticesSHA256':None,'trianglesInt32SHA256':None,
+            'bodyWidthDepthHeightMetres':[.45,.30,1.60],'horizontalMarginMetres':.15,
+            'floorContactExclusionMetres':.002,'groundExemptedFaceCount':0,
+@@ -186,8 +194,8 @@
+                 print(json.dumps({'path':row['name'],'status':summary['status'],
+                                   'events':summary['completedEvents'],'contactEvents':summary['contactEvents']}),flush=True)
+         model['hitRecorder']=recorder.summary(require_complete=True)
+-        model['sourceCountsSHA256']=sha(H/'EXPECTED_COUNTS.json')
+-        model['sourcePriorContactsSHA256']=expected['sourceContactsSHA256']
++        model['baselineComparison']=selection.compare_baseline(json.loads((H/'BASELINE.json').read_text()),model['hitRecorder'])
++        model['baselineFreezeSHA256']=sha(H/'BASELINE.json')
+         model['status']='rawDiagnosticCompleted';save();validate_receipt(model,frozen)
+     except BaseException as exc:
+         model.update(status='incompleteUnknown',error=type(exc).__name__+': '+str(exc));save();raise

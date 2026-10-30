@@ -1,0 +1,54 @@
+--- blind/research/conference-contact-ids-source-20261030/run_aggregate_ids.py	2026-10-30 03:17:36.162725241 +0300
++++ blind/research/conference-simplified-body-source-20261030/run_aggregate_simplified.py	2026-10-30 03:52:26.344926580 +0300
+@@ -281,6 +281,11 @@
+         if not re.search(r'\nRan 6 tests in [^\n]+\n\nOK\n\Z',recorder_text):
+             raise RuntimeError('Expected six recorder-only source controls')
+         receipt['recorderSourceControlsExecuted']=6
++        command([expand(arg) for arg in pins['candidateSourceControlsCommand']],'candidate-source-controls')
++        candidate_text=(out/'candidate-source-controls.stderr').read_text()
++        if not re.search(r'\nRan 9 tests in [^\n]+\n\nOK\n\Z',candidate_text):
++            raise RuntimeError('Expected nine simplified-chain/returned-query recorder source controls')
++        receipt['candidateSourceControlsExecuted']=9
+         command([expand(arg) for arg in pins['controlsCommand']],'controls')
+         control_text=(out/'controls.stderr').read_text()
+         if not re.search(r'\nRan 35 tests in [^\n]+\n\nOK\n\Z',control_text):
+@@ -288,22 +293,32 @@
+         receipt['controlsExecuted']=35
+         command([expand(arg) for arg in pins['comparisonCommand']],'comparison')
+         actual=json.loads((work/'comparison/RECEIPT.json').read_text())
++        if actual['pinsSHA256']!=manifestDigest:raise RuntimeError('worker receipt manifest provenance mismatch')
+         frozen_directory=ROOT/'research/conference-body-source-20261029'
+-        frozen=json.loads((frozen_directory/'ROUTES.json').read_text())
++        frozen=json.loads((H/'ROUTES.json').read_text())
+         prefix='research/conference-body-source-20261029/'
+         contracts=load_frozen_contracts(frozen_directory,pins['inputs'][prefix+'contracts.py'],
+                                       pins['inputs'][prefix+'schedule_source.py'])
+         contracts.validate_receipt(actual,frozen)
+         debug=actual['hitRecorder']
+-        if (debug['complete'] is not True or debug['completedEvents']!=13704 or
+-            debug['loggedHitOccurrences']!=108582 or debug['allOldPerEventCountsMatched'] is not True or
+-            debug['candidateTriangles']!=8710095 or debug['oldCandidateCountStreamMatched'] is not True or
++        if (debug['complete'] is not True or debug['completedEvents']!=7470 or
++            not 0<=debug['loggedHitOccurrences']<=200000 or debug['returnedQueryCountsMatched'] is not True or
++            debug['oldPerEventCountEqualityRequired'] is not False or debug['candidateTriangles']!=actual['counters']['triangles'] or
+             debug['fixedIDCap']!=200000 or debug['fixedLogicalByteCap']!=8*1024**2 or
+             debug['geometryOrClassificationChanged'] is not False or debug['physicalAuthority'] is not False):
+-            raise RuntimeError('complete bounded exact-count ID recording not established')
+-        if actual['sourceCountsSHA256']!=pins['inputs']['research/conference-contact-ids-source-20261030/EXPECTED_COUNTS.json'] or actual['sourcePriorContactsSHA256']!='f1b930185ee94b4b61fd8dbd2b85815ebe1d22148e34bbc3e796b010d91395be':
+-            raise RuntimeError('old exact per-event count source changed')
++            raise RuntimeError('complete bounded new-trajectory query-ID recording not established')
++        if actual['sourcePairsSHA256']!='3b47960077f817b627b2868748204174020378832b50c3459c8bcdf35d73be47' or actual['sourcePairsCommit']!='dad87dcc75d86e3b170201e778ccef69c76ccca4':
++            raise RuntimeError('actual simplification source changed')
++        if actual['baselineFreezeSHA256']!=pins['inputs']['research/conference-simplified-body-source-20261030/BASELINE.json']:
++            raise RuntimeError('completed old body baseline identity changed')
++        selection_bytes=(H/'selection.py').read_bytes()
++        if hashlib.sha256(selection_bytes).hexdigest()!=pins['inputs']['research/conference-simplified-body-source-20261030/selection.py']:
++            raise RuntimeError('terminal selection source pin mismatch before execution')
++        selection={};exec(compile(selection_bytes,str(H/'selection.py'),'exec'),selection)
++        comparison=selection['compare_baseline'](json.loads((H/'BASELINE.json').read_text()),debug)
++        if comparison!=actual['baselineComparison']:raise RuntimeError('old/new descriptive comparison mismatch')
+         receipt['completeHitRecorder']=debug
++        receipt['baselineComparison']=comparison
+         receipt['comparison']={key:actual[key] for key in
+             ('status','error','proposalSHA256','sourceMeshSHA256','registeredFloat32VerticesSHA256',
+              'trianglesInt32SHA256','bodyWidthDepthHeightMetres','horizontalMarginMetres',

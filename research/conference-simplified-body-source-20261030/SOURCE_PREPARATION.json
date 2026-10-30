@@ -1,0 +1,27 @@
+{
+  "status": "SOURCE_ONLY_NOT_NATIVE_EXECUTED",
+  "manifestSHA256": "4ace6a45b6693ec6b64daed25e6e3965b4328812fa42828d7b21cbb7e622f774",
+  "sourcePairsCommit": "dad87dcc75d86e3b170201e778ccef69c76ccca4",
+  "sourcePairsSHA256": "3b47960077f817b627b2868748204174020378832b50c3459c8bcdf35d73be47",
+  "paths": 7,
+  "authoredEvents": 7470,
+  "expectedBoxes": 14940,
+  "sourceTests": {
+    "passed": 9,
+    "seconds": 0.156,
+    "stdlibOnly": true
+  },
+  "astSourceCount": 6,
+  "all46OriginalExecutionInputsUnchanged": true,
+  "oldFixedRecorderUnmodified": true,
+  "kernelUnmodified": true,
+  "simplifiedBodyNativeExecuted": false,
+  "physicalAuthority": false,
+  "comparisonUsesEventPercentages": false,
+  "reviewHardening": [
+    "reject backwards callback slot order",
+    "reject first-ID witness mismatch",
+    "terminal worker manifest digest equality",
+    "hash exact terminal selection bytes before compilation"
+  ]
+}
