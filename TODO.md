@@ -1,3 +1,17 @@
+## Next isolated navigation diagnostics — 2026-10-30 01:35 UTC
+
+The real-room Rapier and Coffee observation comparisons are now completed diagnostics; see the corresponding current PROGRESS checkpoint. Earlier dated TODO sections remain historical, not instructions to rerun already completed experiments.
+
+1. Prepare and independently review **single-view self-reprojection versus fused-map observation** using the same three training frames, accepted pixels, calibration, grids, OctoMap defaults and read-only query adapter. Preserve every denominator and no-hit/unknown status. This separates representation consistency from cross-view disagreement; it is proposed, not executed, and cannot alone identify hardware error.
+2. Prepare and independently review the **six-pose support-datum diagnostic**. Preserve original mesh triangles, full body and margin, supplied poses, higher furniture overlaps and unknown semantic floor/support. No geometry deletion, automatic depenetration or live caller activation. This is proposed, not executed.
+3. Use the completed [real-room comparator](research/rapier-real-room-results-20261030/README.md) to explain selected VTK/controller disagreements. Both mesh flags behaved identically; returned displacement and grounded flags must not override preserved overlaps. Distinguish conservative swept bounds, the omitted VTK lower 2 mm, controller offset, starting overlap and actual support evidence.
+4. Preserve the completed [observation result](research/coffee-heldout-observation-result-20261030/README.md): 2,654 / 7,404 conditional occupied hits, approximately 10.84 / 9.34 cm median residuals and near-metre p95 tails. The primary 18,904 unknown-origin rays remain unscored. Do not turn observation-only unknown skipping into navigable free space.
+5. Only after a demonstrated representation correction, repeat unchanged whole-route body/support acceptance and then proceed through live localization/heading, freshness/current hazards, deviation/return/restart, door/floor transitions and phone integration. No fixed-pose diagnostic closes these gates or the 400 end-to-end journeys.
+
+Publish reviewed source and actual receipts with failures, and verify the remote. App source and main remain unchanged; no new live guidance or physical authority is granted.
+
+---
+
 ## Next navigation work — 2026-10-30 01:16 UTC
 
 1. Materialize the already selected Coffee/conference real-room Rapier probes with exact source poses, headings, registered mesh bytes and original VTK body/margin evidence. Use unchanged profiles and both flags as a diagnostic comparison. Preserve unknown support, the analytic down-step failure and unsupported turns. Do not apply depenetration or treat a controller proposal as clearance.

@@ -1,3 +1,15 @@
+## Actual room and observation diagnostics — 2026-10-30 01:35 UTC
+
+Published evidence checkpoint: `4e0fd5ecbb2aebd4cafb1a5883f1fabd8df21ca3`. These are research results, not a new app build or live-navigation acceptance. Earlier dated sections below remain unchanged historical evidence.
+
+- **Rapier real-room comparison completed:** all 16 groups / 408 selected rows / 328 controller calls / 80 unsupported turns were retained. Raw and internal-edge flags produced identical movement proposals on all 164 called pairs. No proposal was applied; all calls reporting grounded does not establish support. Zero-input proposals and original VTK overlaps—including higher margin geometry—remain unresolved. Query differences do not justify deleting hazards or declaring a route usable. See [fixed-pose report](research/rapier-real-room-results-20261030/README.md). The two earlier analytic down-step failures remain failed.
+- **Coffee observation-only comparison completed:** the unchanged three-view OctoMap returned 2,654 / 7,404 occupied hits for held-out frames 232 / 370. Conditional absolute entry-residual medians were 10.84 / 9.34 cm; p95 values were 92.35 / 99.25 cm. These describe returned hits only, not all rays or sensor accuracy. Observation-only queries can skip unknown space; they cannot establish clearance. The original conservative result remains **all 18,904 valid rays origin-unknown and zero scored residuals**. No-hit rays were not scored as zero error. See [observation report](research/coffee-heldout-observation-result-20261030/README.md).
+- **Next experiments are proposed, not executed:** isolate single-view self-reprojection versus the original fused three-view map, and prepare six frozen pose/support-datum diagnostics while preserving full geometry, furniture contacts and unknown support. Neither is an adopted map correction or authorization to move a user.
+
+App source remains `c210ca822ec4fdc339f808af58bc5b057fd98788`; main and live guidance remain unchanged. Full-body/full-footprint acceptance, live localization, current hazards, room transitions and device validation remain open. No success percentage, physical-clearance claim or child-trial readiness follows.
+
+---
+
 ## Actual navigation research checkpoint — 2026-10-30 01:16 UTC
 
 This checkpoint is research/evidence only. App source remains `c210ca822ec4fdc339f808af58bc5b057fd98788`; main and live guidance are unchanged. Earlier dated entries remain historical evidence.

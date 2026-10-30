@@ -1,3 +1,16 @@
+## Room and observation acceptance checkpoint — 2026-10-30 01:35 UTC
+
+- [x] Complete the frozen Coffee/Conference Rapier diagnostic: 49 original probes plus two saved-state probes, 16 groups / 408 rows / 328 calls / 80 unsupported turns. Raw/internal-edge motion is identical across 164 called pairs. Original VTK evidence and higher margin overlaps remain retained; no proposal was applied. This closes an experiment, not navigation acceptance. [Report](research/rapier-real-room-results-20261030/README.md).
+- [x] Complete Coffee observation-only held-out agreement: 2,654 / 7,404 occupied hits, conditional median absolute entry residuals 10.84 / 9.34 cm and p95 92.35 / 99.25 cm. Preserve all primary 18,904 origin-unknown rays as unscored. Unknown skipping is diagnostic only, never free-space permission. [Report](research/coffee-heldout-observation-result-20261030/README.md).
+- [ ] Prepare, review and execute the isolated single-view self-reprojection versus original fused-map diagnostic. Proposed, not executed; no revised accuracy claim yet.
+- [ ] Prepare, review and execute six frozen pose/support-datum diagnostics without deleting geometry or higher furniture contacts. Proposed, not executed; semantic floor and full-footprint support remain unknown.
+- [ ] Resolve selected low and high VTK/controller disagreements before any correction is adopted. Preserve both failed analytic down-step checks, all unsupported turns, original poses and full body/margin profiles.
+- [ ] Demonstrate useful complete routes with independently checked full-body collision and full-footprint support, current localization/heading and live hazards; then device integration, supervised adult acceptance, 400 complete journeys and final reproducible review package.
+
+Evidence published through `4e0fd5ecbb2aebd4cafb1a5883f1fabd8df21ca3`. App source remains `c210ca822ec4fdc339f808af58bc5b057fd98788`; main/live guidance unchanged. Older dated task sections below remain intact as history, not current pending/result claims. No physical or child readiness is established.
+
+---
+
 ## Navigation acceptance checkpoint — 2026-10-30 01:16 UTC
 
 - [x] Complete the seven-objective conference GEOS simplification/body diagnostic, preserving every objective, source geometry and profile. Published result `8cd2459`: nominal contacts on five of seven routes; margin contacts on all seven. This closes the experiment, not navigation acceptance.
